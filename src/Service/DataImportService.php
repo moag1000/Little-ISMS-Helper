@@ -289,12 +289,22 @@ class DataImportService
             $this->addLog("Loaded data from {$filePath}");
 
             // Importiere Entitäten basierend auf Datenstruktur
-            $imported = $this->importEntities($data);
+            $errors = [];
+            $imported = $this->importEntities($data, $errors);
+
+            $hasErrors = $errors !== [];
+            $message = "{$imported} Datensätze importiert";
+            if ($hasErrors) {
+                $errorPreview = implode(' | ', array_slice($errors, 0, 3));
+                $more = count($errors) > 3 ? sprintf(' (+%d weitere)', count($errors) - 3) : '';
+                $message .= sprintf(' — %d Fehler: %s%s', count($errors), $errorPreview, $more);
+            }
 
             return [
-                'success' => true,
-                'message' => "{$imported} Datensätze importiert",
+                'success' => $imported > 0 && !$hasErrors,
+                'message' => $message,
                 'count' => $imported,
+                'errors' => $errors,
             ];
         } catch (Exception $e) {
             $this->addLog("Error importing from file '{$file}': " . $e->getMessage());
@@ -310,18 +320,24 @@ class DataImportService
     /**
      * Importiert Entitäten aus Array
      */
-    private function importEntities(array $data): int
+    /**
+     * @param-out list<string> $errors
+     */
+    private function importEntities(array $data, array &$errors = []): int
     {
         $count = 0;
         $ctx = $this->activeImportContext;
         $tenant = $ctx['tenant'] ?? $this->resolveImportTenant();
         $created = [];
+        $errors = [];
 
         foreach ($data as $entityType => $entities) {
             $entityClass = $this->resolveEntityClass($entityType);
 
             if (!$entityClass) {
-                $this->addLog("Unknown entity type: {$entityType}");
+                $msg = "Unknown entity type: {$entityType}";
+                $this->addLog($msg);
+                $errors[] = $msg;
                 continue;
             }
 
@@ -339,12 +355,26 @@ class DataImportService
                     $created[] = $entity;
                     $count++;
                 } catch (Exception $e) {
+                    $hint = $entityClass . ': ' . $e->getMessage();
                     $this->addLog("Error creating entity {$entityClass}: " . $e->getMessage());
+                    $errors[] = $hint;
                 }
             }
         }
 
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->flush();
+        } catch (Exception $e) {
+            $msg = 'Flush fehlgeschlagen: ' . $e->getMessage();
+            $this->addLog($msg);
+            $errors[] = $msg;
+            // EntityManager schließt nach Constraint-Violation — neu öffnen
+            // damit nachfolgende Tracking-Persists nicht ebenfalls scheitern.
+            if (!$this->entityManager->isOpen()) {
+                $this->addLog('EntityManager closed — bailing out for this import');
+                return 0;
+            }
+        }
 
         // Tracking-Records nach dem Flush (damit Entity-IDs existieren).
         if ($ctx !== null && $count > 0) {
