@@ -60,6 +60,9 @@ services:
       # Note: APP_SECRET und DATABASE_URL werden vom Deployment Wizard konfiguriert
       APP_ENV: ${APP_ENV:-prod}
       APP_DEBUG: ${APP_DEBUG:-0}
+      # External-DB mode — skip embedded MariaDB bootstrap in init-mysql.sh
+      EMBEDDED_DB: none
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-isms_user}:${POSTGRES_PASSWORD:-isms_password}@db:5432/${POSTGRES_DB:-little_isms}?serverVersion=16&charset=utf8"
       # MailHog für Email-Testing
       MAILER_DSN: smtp://mailhog:1025
     networks:

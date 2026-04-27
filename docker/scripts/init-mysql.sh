@@ -3,6 +3,46 @@
 
 set -e
 
+# Skip entire embedded-MariaDB bootstrap when running against an external DB
+# (postgres / external mysql). Used by the CI compose-smoke-test and any
+# deployment that wants to bring its own DB. Default behaviour
+# (EMBEDDED_DB=mariadb) keeps the self-contained image working unchanged.
+if [ "${EMBEDDED_DB:-mariadb}" = "none" ]; then
+    echo "EMBEDDED_DB=none — skipping internal MariaDB bootstrap, using external DATABASE_URL"
+
+    # Ensure app writable directories exist (still needed regardless of DB).
+    for dir in var/cache var/log var/sessions public/uploads var/backups; do
+        mkdir -p "/var/www/html/$dir"
+        chown www-data:www-data "/var/www/html/$dir"
+        chmod 775 "/var/www/html/$dir"
+    done
+
+    cd /var/www/html
+
+    # Wait briefly for external DB to accept connections (compose may start
+    # us before db is fully ready, even with depends_on: condition: healthy).
+    for i in $(seq 1 30); do
+        if php bin/console dbal:run-sql "SELECT 1" --no-interaction >/dev/null 2>&1; then
+            echo "External DB reachable"
+            break
+        fi
+        sleep 1
+    done
+
+    # Apply migrations against external DB. Missing migrations are
+    # non-fatal — surfaced via /admin/data-repair Schema-Maintenance UI.
+    php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration 2>&1 \
+        || echo "External-DB migrations failed (non-fatal — check Schema-Maintenance UI)"
+
+    # Cache rebuild without touching .env.local — DATABASE_URL stays as-is.
+    php bin/console cache:clear --env=prod 2>&1 || echo "Cache clear failed"
+    php bin/console cache:warmup --env=prod 2>&1 || echo "Cache warmup failed"
+    echo "External-DB bootstrap done"
+
+    # Supervisor expects this program to stay running.
+    exec tail -f /dev/null
+fi
+
 # Store MariaDB data in the application's var directory to keep all data in one volume
 DATADIR=/var/www/html/var/mysql
 
