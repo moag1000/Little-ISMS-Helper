@@ -1501,6 +1501,330 @@
         {% endblock %}
     {% endembed %}
 
+    {# ────────────────────────────────────────────────────────────────────────
+       Operational Health (ISO 27001 Tier 2)
+       Seven checks for supplier assessments, BCM testing, audit findings,
+       corrective actions, training, document freshness, and management reviews.
+    ──────────────────────────────────────────────────────────────────────── #}
+    {% set totalOperationalIssues = 0 %}
+    {% for issueGroup in operationalHealthIssues %}{% set totalOperationalIssues = totalOperationalIssues + issueGroup|length %}{% endfor %}
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4 border-' ~ (totalOperationalIssues > 0 ? 'warning' : 'success') } %}
+        {% block card_header %}
+            <div class="card-header {{ totalOperationalIssues > 0 ? 'bg-warning-subtle text-warning' : '' }}">
+                <h2 class="mb-0">
+                    <i class="fa-icon fa-icon--{{ totalOperationalIssues > 0 ? 'status-warning' : 'ui-check-circle' }}" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.operational_health.title'|trans({}, 'admin') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+            {% if totalOperationalIssues == 0 %}
+                {{ _fa_alert.render({ variant: 'success', class: 'mb-0', body: 'admin.data_repair.operational_health.all_ok'|trans({}, 'admin') }) }}
+            {% else %}
+                {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.operational_health.issues_found'|trans({'%count%': totalOperationalIssues}, 'admin') }) }}
+
+                {# Summary grid #}
+                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+                    {% set opCheckKeys = [
+                        'suppliers_unassessed',
+                        'bc_plans_untested',
+                        'findings_overdue',
+                        'capa_overdue',
+                        'training_overdue',
+                        'documents_stale',
+                        'reviews_overdue'
+                    ] %}
+                    {% for checkKey in opCheckKeys %}
+                        {% set items = operationalHealthIssues[checkKey] is defined ? operationalHealthIssues[checkKey] : [] %}
+                        <div class="col">
+                            {% embed '_components/_card.html.twig' with { class: 'text-center h-100 ' ~ (items|length > 0 ? 'bg-warning bg-opacity-10' : 'bg-success bg-opacity-10') } %}
+                                {% block card_body %}
+                                    <h3 class="text-{{ items|length > 0 ? 'warning' : 'success' }} mb-1">{{ items|length }}</h3>
+                                    <p class="mb-0 small">{{ ('admin.data_repair.operational_health.' ~ checkKey)|trans({}, 'admin') }}</p>
+                                {% endblock %}
+                            {% endembed %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {# Check 1: Critical suppliers never assessed #}
+                {% if operationalHealthIssues.suppliers_unassessed is defined and operationalHealthIssues.suppliers_unassessed|length > 0 %}
+                <details class="mb-4">
+                    <summary class="fw-semibold cursor-pointer text-warning">
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.operational_health.suppliers_unassessed'|trans({}, 'admin') }}
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: operationalHealthIssues.suppliers_unassessed|length } only %}
+                    </summary>
+                    <div class="mt-2">
+                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.suppliers_unassessed_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for supplier in operationalHealthIssues.suppliers_unassessed %}
+                            <tr class="table-warning">
+                                <td>{{ supplier.id }}</td>
+                                <td>{{ supplier.name }}{% if supplier.tenant %}<br><small class="text-muted">{{ supplier.tenant.name }}</small>{% endif %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: supplier.criticality } only %}</td>
+                                <td>
+                                    <a href="{{ path('app_supplier_edit', {id: supplier.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.edit'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                    </div>
+                </details>
+                {% endif %}
+
+                {# Check 2: Active BC Plans never tested #}
+                {% if operationalHealthIssues.bc_plans_untested is defined and operationalHealthIssues.bc_plans_untested|length > 0 %}
+                <details class="mb-4">
+                    <summary class="fw-semibold cursor-pointer text-warning">
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.operational_health.bc_plans_untested'|trans({}, 'admin') }}
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: operationalHealthIssues.bc_plans_untested|length } only %}
+                    </summary>
+                    <div class="mt-2">
+                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.bc_plans_untested_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for plan in operationalHealthIssues.bc_plans_untested %}
+                            <tr class="table-warning">
+                                <td>{{ plan.id }}</td>
+                                <td>{{ plan.name }}{% if plan.tenant %}<br><small class="text-muted">{{ plan.tenant.name }}</small>{% endif %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: plan.status } only %}</td>
+                                <td>
+                                    <a href="{{ path('app_business_continuity_plan_edit', {id: plan.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.edit'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                    </div>
+                </details>
+                {% endif %}
+
+                {# Check 3: Audit findings overdue #}
+                {% if operationalHealthIssues.findings_overdue is defined and operationalHealthIssues.findings_overdue|length > 0 %}
+                <details class="mb-4">
+                    <summary class="fw-semibold cursor-pointer text-warning">
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.operational_health.findings_overdue'|trans({}, 'admin') }}
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: operationalHealthIssues.findings_overdue|length } only %}
+                    </summary>
+                    <div class="mt-2">
+                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.findings_overdue_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for finding in operationalHealthIssues.findings_overdue %}
+                            <tr class="table-warning">
+                                <td>{{ finding.id }}</td>
+                                <td>{{ finding.title }}{% if finding.tenant %}<br><small class="text-muted">{{ finding.tenant.name }}</small>{% endif %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: finding.status } only %}</td>
+                                <td>
+                                    <a href="{{ path('app_audit_finding_show', {id: finding.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.view'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                    </div>
+                </details>
+                {% endif %}
+
+                {# Check 4: Corrective actions overdue #}
+                {% if operationalHealthIssues.capa_overdue is defined and operationalHealthIssues.capa_overdue|length > 0 %}
+                <details class="mb-4">
+                    <summary class="fw-semibold cursor-pointer text-warning">
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.operational_health.capa_overdue'|trans({}, 'admin') }}
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: operationalHealthIssues.capa_overdue|length } only %}
+                    </summary>
+                    <div class="mt-2">
+                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.capa_overdue_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for capa in operationalHealthIssues.capa_overdue %}
+                            <tr class="table-warning">
+                                <td>{{ capa.id }}</td>
+                                <td>{{ capa.title }}{% if capa.tenant %}<br><small class="text-muted">{{ capa.tenant.name }}</small>{% endif %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: capa.status } only %}</td>
+                                <td>
+                                    <a href="{{ path('app_corrective_action_show', {id: capa.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.view'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                    </div>
+                </details>
+                {% endif %}
+
+                {# Check 5: Training past due and uncompleted #}
+                {% if operationalHealthIssues.training_overdue is defined and operationalHealthIssues.training_overdue|length > 0 %}
+                <details class="mb-4">
+                    <summary class="fw-semibold cursor-pointer text-warning">
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.operational_health.training_overdue'|trans({}, 'admin') }}
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: operationalHealthIssues.training_overdue|length } only %}
+                    </summary>
+                    <div class="mt-2">
+                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.training_overdue_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for training in operationalHealthIssues.training_overdue %}
+                            <tr class="table-warning">
+                                <td>{{ training.id }}</td>
+                                <td>{{ training.title }}{% if training.tenant %}<br><small class="text-muted">{{ training.tenant.name }}</small>{% endif %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: training.status } only %}</td>
+                                <td>
+                                    <a href="{{ path('app_training_edit', {id: training.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.edit'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                    </div>
+                </details>
+                {% endif %}
+
+                {# Check 6: Stale policy/procedure/guideline documents #}
+                {% if operationalHealthIssues.documents_stale is defined and operationalHealthIssues.documents_stale|length > 0 %}
+                <details class="mb-4">
+                    <summary class="fw-semibold cursor-pointer text-warning">
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.operational_health.documents_stale'|trans({}, 'admin') }}
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: operationalHealthIssues.documents_stale|length } only %}
+                    </summary>
+                    <div class="mt-2">
+                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.documents_stale_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.category'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for doc in operationalHealthIssues.documents_stale %}
+                            <tr class="table-warning">
+                                <td>{{ doc.id }}</td>
+                                <td>{{ doc.originalFilename ?? doc.filename }}{% if doc.tenant %}<br><small class="text-muted">{{ doc.tenant.name }}</small>{% endif %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: doc.category } only %}</td>
+                                <td>
+                                    <a href="{{ path('app_document_show', {id: doc.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.view'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                    </div>
+                </details>
+                {% endif %}
+
+                {# Check 7: Management reviews overdue #}
+                {% if operationalHealthIssues.reviews_overdue is defined and operationalHealthIssues.reviews_overdue|length > 0 %}
+                <details class="mb-4">
+                    <summary class="fw-semibold cursor-pointer text-warning">
+                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                        {{ 'admin.data_repair.operational_health.reviews_overdue'|trans({}, 'admin') }}
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: operationalHealthIssues.reviews_overdue|length } only %}
+                    </summary>
+                    <div class="mt-2">
+                    <p class="text-muted small">{{ 'admin.data_repair.operational_health.reviews_overdue_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for review in operationalHealthIssues.reviews_overdue %}
+                            <tr class="table-warning">
+                                <td>{{ review.id }}</td>
+                                <td>{{ review.title }}{% if review.tenant %}<br><small class="text-muted">{{ review.tenant.name }}</small>{% endif %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: review.status } only %}</td>
+                                <td>
+                                    <a href="{{ path('app_management_review_show', {id: review.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.view'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                    </div>
+                </details>
+                {% endif %}
+
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+
     {# Broken References #}
     {% if brokenReferences|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
@@ -1541,5 +1865,180 @@
         {% endblock %}
     {% endembed %}
     {% endif %}
+
+    {# ────────────────────────────────────────────────────────────────────────
+       Data Quality (Tier 3) — Operational gaps beyond structural integrity.
+       Four checks: stuck workflows, risks without values, incidents without
+       RCA, and completed treatment plans missing effectiveness review.
+    ──────────────────────────────────────────────────────────────────────── #}
+    {% set totalDataQualityIssues = 0 %}
+    {% for issueGroup in dataQualityIssues %}{% set totalDataQualityIssues = totalDataQualityIssues + issueGroup|length %}{% endfor %}
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4 border-' ~ (totalDataQualityIssues > 0 ? 'warning' : 'success') } %}
+        {% block card_header %}
+            <div class="card-header {{ totalDataQualityIssues > 0 ? 'bg-warning-subtle text-warning' : '' }}">
+                <h2 class="mb-0">
+                    <i class="fa-icon fa-icon--{{ totalDataQualityIssues > 0 ? 'status-warning' : 'ui-check-circle' }}" aria-hidden="true"></i>
+                    {{ 'admin.data_repair.data_quality.title'|trans({}, 'admin') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+            {% if totalDataQualityIssues == 0 %}
+                {{ _fa_alert.render({ variant: 'success', class: 'mb-0', body: 'admin.data_repair.data_quality.all_ok'|trans({}, 'admin') }) }}
+            {% else %}
+                {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.data_quality.issues_found'|trans({'%count%': totalDataQualityIssues}, 'admin') }) }}
+
+                {# Summary grid #}
+                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+                    {% set dqCheckKeys = [
+                        'workflows_stuck',
+                        'risks_zero_values',
+                        'incidents_no_rca',
+                        'treatments_unreviewed'
+                    ] %}
+                    {% for checkKey in dqCheckKeys %}
+                        {% set items = dataQualityIssues[checkKey] is defined ? dataQualityIssues[checkKey] : [] %}
+                        <div class="col">
+                            {% embed '_components/_card.html.twig' with { class: 'text-center h-100 ' ~ (items|length > 0 ? 'bg-warning bg-opacity-10' : 'bg-success bg-opacity-10') } %}
+                                {% block card_body %}
+                                    <h3 class="text-{{ items|length > 0 ? 'warning' : 'success' }} mb-1">{{ items|length }}</h3>
+                                    <p class="mb-0 small">{{ ('admin.data_repair.data_quality.' ~ checkKey)|trans({}, 'admin') }}</p>
+                                {% endblock %}
+                            {% endembed %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {# Check 1: Stuck workflows #}
+                {% if dataQualityIssues.workflows_stuck is defined and dataQualityIssues.workflows_stuck|length > 0 %}
+                <div class="mb-4">
+                    <h3 class="fs-5">{{ 'admin.data_repair.data_quality.workflows_stuck'|trans({}, 'admin') }}</h3>
+                    <p class="text-muted small">{{ 'admin.data_repair.data_quality.workflows_stuck_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'admin.data_repair.data_quality.col_workflow'|trans({}, 'admin') }}</th>
+                                <th scope="col">{{ 'admin.data_repair.data_quality.col_entity'|trans({}, 'admin') }}</th>
+                                <th scope="col">{{ 'admin.data_repair.data_quality.col_started'|trans({}, 'admin') }}</th>
+                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for instance in dataQualityIssues.workflows_stuck %}
+                            <tr class="table-warning">
+                                <td>{{ instance.id }}</td>
+                                <td>{{ instance.workflow ? instance.workflow.name : '-' }}{% if instance.tenant %}<br><small class="text-muted">{{ instance.tenant.name }}</small>{% endif %}</td>
+                                <td><small class="text-muted">{{ instance.entityType }}</small> #{{ instance.entityId }}</td>
+                                <td>{{ instance.startedAt ? instance.startedAt|date('Y-m-d') : '-' }}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'warning', content: instance.status } only %}</td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+                {% endif %}
+
+                {# Check 2: Risks with zero probability/impact #}
+                {% if dataQualityIssues.risks_zero_values is defined and dataQualityIssues.risks_zero_values|length > 0 %}
+                <div class="mb-4">
+                    <h3 class="fs-5">{{ 'admin.data_repair.data_quality.risks_zero_values'|trans({}, 'admin') }}</h3>
+                    <p class="text-muted small">{{ 'admin.data_repair.data_quality.risks_zero_values_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
+                                <th scope="col">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
+                                <th scope="col">{{ 'risk.field.probability'|trans({}, 'risk') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for risk in dataQualityIssues.risks_zero_values %}
+                            <tr class="table-warning">
+                                <td>{{ risk.id }}</td>
+                                <td>{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.status.value } only %}</td>
+                                <td>{{ risk.probability ?? '-' }}</td>
+                                <td>
+                                    <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.view'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+                {% endif %}
+
+                {# Check 3: Incidents closed without root cause #}
+                {% if dataQualityIssues.incidents_no_rca is defined and dataQualityIssues.incidents_no_rca|length > 0 %}
+                <div class="mb-4">
+                    <h3 class="fs-5">{{ 'admin.data_repair.data_quality.incidents_no_rca'|trans({}, 'admin') }}</h3>
+                    <p class="text-muted small">{{ 'admin.data_repair.data_quality.incidents_no_rca_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'incidents.field.title'|trans({}, 'incidents') }}</th>
+                                <th scope="col">{{ 'incidents.field.status'|trans({}, 'incidents') }}</th>
+                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for incident in dataQualityIssues.incidents_no_rca %}
+                            <tr class="table-warning">
+                                <td>{{ incident.id }}</td>
+                                <td>{{ incident.title }}{% if incident.tenant %}<br><small class="text-muted">{{ incident.tenant.name }}</small>{% endif %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: incident.status } only %}</td>
+                                <td>
+                                    <a href="{{ path('app_incident_show', {id: incident.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                                        {{ 'common.view'|trans({}, 'messages') }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+                {% endif %}
+
+                {# Check 4: Treatment plans completed without effectiveness review date #}
+                {% if dataQualityIssues.treatments_unreviewed is defined and dataQualityIssues.treatments_unreviewed|length > 0 %}
+                <div class="mb-4">
+                    <h3 class="fs-5">{{ 'admin.data_repair.data_quality.treatments_unreviewed'|trans({}, 'admin') }}</h3>
+                    <p class="text-muted small">{{ 'admin.data_repair.data_quality.treatments_unreviewed_hint'|trans({}, 'admin') }}</p>
+                    {% embed '_components/_table.html.twig' with { 'class': 'table-sm table-striped', 'responsive': true, 'noMargin': true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">{{ 'admin.data_repair.data_quality.col_treatment'|trans({}, 'admin') }}</th>
+                                <th scope="col">{{ 'admin.data_repair.data_quality.col_risk'|trans({}, 'admin') }}</th>
+                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for plan in dataQualityIssues.treatments_unreviewed %}
+                            <tr class="table-warning">
+                                <td>{{ plan.id }}</td>
+                                <td>{{ plan.title }}{% if plan.tenant %}<br><small class="text-muted">{{ plan.tenant.name }}</small>{% endif %}</td>
+                                <td>{{ plan.risk ? plan.risk.title : '-' }}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'success', content: plan.status } only %}</td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+                {% endif %}
+
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+
 </div>
 {% endblock %}

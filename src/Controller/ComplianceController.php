@@ -771,8 +771,11 @@ class ComplianceController extends AbstractController
             $totalPossibleWeight = 0;
             $achievedWeight = 0;
 
-            // TODO: This needs to be refactored to use tenant-specific fulfillment data
-            // For now, using basic calculation without fulfillment percentages
+            // BACKLOG: Refactor to use tenant-specific fulfillment percentages.
+            // Currently assumes 0% fulfillment for gap requirements and 100% for met ones.
+            // A proper implementation would query ComplianceRequirementFulfillment records
+            // per tenant and use their actual fulfillmentPercentage values in the weighting.
+            // This requires a ComplianceRequirementFulfillmentRepository with tenant scoping.
             foreach ($requirements as $requirement) {
                 $priority = $requirement->getPriority() ?? 'medium';
                 $weight = $priorityWeights[$priority] ?? 1.0;
