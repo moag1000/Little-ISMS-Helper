@@ -132,6 +132,7 @@ class ComplianceController extends AbstractController
         }
 
         $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework);
+        $allRequirements = $this->complianceRequirementRepository->findByFramework($framework);
         $criticalGaps = $this->complianceRequirementRepository->findByFrameworkAndPriority($framework, 'critical');
 
         // Analyze each gap for detailed insights
@@ -144,11 +145,16 @@ class ComplianceController extends AbstractController
             ];
         }
 
+        $totalRequirements = count($allRequirements);
+        $metRequirements = $totalRequirements - count($gaps);
+
         return $this->render('compliance/gap_analysis.html.twig', [
             'framework' => $framework,
             'gaps' => $gapAnalysis,
             'critical_gaps' => $criticalGaps,
             'total_gaps' => count($gaps),
+            'total_requirements' => $totalRequirements,
+            'met_requirements' => $metRequirements,
         ]);
     }
     #[Route('/compliance/framework/{id}/data-reuse', name: 'app_compliance_data_reuse', requirements: ['id' => '\d+'])]
@@ -557,8 +563,8 @@ class ComplianceController extends AbstractController
                 $requirement->getCategory() ?? '-',
                 $requirement->getDescription() ?? '-',
                 $priorityMap[$requirement->getPriority() ?? 'low'] ?? 'Niedrig',
-                $statusMap[$requirement->getStatus() ?? 'not_assessed'] ?? 'Nicht bewertet',
-                $requirement->getFulfillmentPercentage() ?? 0,
+                $statusMap[$analysis['status'] ?? 'not_assessed'] ?? 'Nicht bewertet',
+                $analysis['fulfillment_percentage'] ?? $requirement->getFulfillmentPercentage(),
                 $analysis['gap_reason'] ?? 'Nicht erfüllt',
             ];
         }
@@ -676,8 +682,8 @@ class ComplianceController extends AbstractController
                 $requirement->getTitle(),
                 $requirement->getCategory() ?? '-',
                 $priorityMap[$requirement->getPriority() ?? 'low'] ?? 'Niedrig',
-                $statusMap[$requirement->getStatus() ?? 'not_assessed'] ?? '-',
-                $requirement->getFulfillmentPercentage() ?? 0,
+                $statusMap[$analysis['status'] ?? 'not_assessed'] ?? '-',
+                $analysis['fulfillment_percentage'] ?? $requirement->getFulfillmentPercentage(),
                 substr($analysis['gap_reason'] ?? 'Nicht erfüllt', 0, 100),
             ];
         }
