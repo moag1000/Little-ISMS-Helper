@@ -33,6 +33,12 @@ class DeploymentWizardControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
+
+        $lockFile = static::getContainer()
+            ->getParameter('kernel.project_dir') . '/config/setup_complete.lock';
+        if (file_exists($lockFile)) {
+            @unlink($lockFile);
+        }
     }
 
     // ========== INDEX TESTS ==========
