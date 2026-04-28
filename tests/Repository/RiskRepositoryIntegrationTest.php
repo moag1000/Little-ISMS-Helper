@@ -131,25 +131,46 @@ class RiskRepositoryIntegrationTest extends KernelTestCase
 
     // -------------------------------------------------------------------------
     // findDueForReview
-    // NOTE: The repository query references r.nextReviewDate but the Risk entity
-    // only has a $reviewDate property. This test documents and exposes that gap.
     // -------------------------------------------------------------------------
 
     #[Test]
-    public function findDueForReviewExposesFieldNameMismatch(): void
+    public function findDueForReviewReturnsRisksWithOverdueReviewDate(): void
     {
         $tenant = $this->createTestTenant();
-        $pastDate = new DateTime('-1 day');
-        $risk = $this->createRisk($tenant, 'Overdue Review', 2, 2, 'mitigate');
-        $risk->setReviewDate($pastDate);
+
+        $overdueRisk = $this->createRisk($tenant, 'Overdue Review', 2, 2, 'mitigate');
+        $overdueRisk->setReviewDate(new DateTime('-1 day'));
+
+        $futureRisk = $this->createRisk($tenant, 'Future Review', 2, 2, 'mitigate');
+        $futureRisk->setReviewDate(new DateTime('+30 days'));
+
+        $this->createRisk($tenant, 'No Review Date', 2, 2, 'mitigate');
+
         $this->em->flush();
 
-        // The repository method references r.nextReviewDate which does not exist
-        // on the Risk entity (the field is $reviewDate / review_date in the DB).
-        // Calling this method is expected to throw a Doctrine mapping exception
-        // until the field reference in RiskRepository::findDueForReview() is fixed.
-        $this->expectException(\Throwable::class);
-        $this->repository->findDueForReview($tenant);
+        $results = $this->repository->findDueForReview($tenant);
+
+        $this->assertCount(1, $results);
+        $this->assertSame($overdueRisk->getId(), $results[0]->getId());
+    }
+
+    #[Test]
+    public function findDueForReviewIsolatesByTenant(): void
+    {
+        $tenantA = $this->createTestTenant('due-a');
+        $tenantB = $this->createTestTenant('due-b');
+
+        $riskA = $this->createRisk($tenantA, 'A Overdue', 2, 2, 'mitigate');
+        $riskA->setReviewDate(new DateTime('-2 days'));
+        $riskB = $this->createRisk($tenantB, 'B Overdue', 2, 2, 'mitigate');
+        $riskB->setReviewDate(new DateTime('-2 days'));
+
+        $this->em->flush();
+
+        $resultsA = $this->repository->findDueForReview($tenantA);
+
+        $this->assertCount(1, $resultsA);
+        $this->assertSame($riskA->getId(), $resultsA[0]->getId());
     }
 
     // -------------------------------------------------------------------------
