@@ -25,8 +25,11 @@ final class FourEyesController extends AbstractController
     }
 
     #[Route('/{id}/approve', name: 'approve', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function approve(FourEyesApprovalRequest $request): Response
+    public function approve(FourEyesApprovalRequest $request, Request $httpRequest): Response
     {
+        if (!$this->isCsrfTokenValid('four_eyes_approve_' . $request->getId(), $httpRequest->request->get('_token', ''))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
         $this->assertSameTenant($request);
         /** @var User $user */
         $user = $this->getUser();
@@ -44,6 +47,9 @@ final class FourEyesController extends AbstractController
     #[Route('/{id}/reject', name: 'reject', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function reject(FourEyesApprovalRequest $request, Request $httpRequest): Response
     {
+        if (!$this->isCsrfTokenValid('four_eyes_reject_' . $request->getId(), $httpRequest->request->get('_token', ''))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
         $this->assertSameTenant($request);
         /** @var User $user */
         $user = $this->getUser();

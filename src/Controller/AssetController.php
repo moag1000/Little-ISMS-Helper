@@ -201,6 +201,9 @@ class AssetController extends AbstractController
     public function bulkDelete(Request $request): Response
     {
         $data = json_decode($request->getContent(), true);
+        if (!$this->isCsrfTokenValid('bulk_delete', $data['_token'] ?? '')) {
+            return $this->json(['error' => 'Invalid CSRF token'], 403);
+        }
         $ids = $data['ids'] ?? [];
 
         if (empty($ids)) {

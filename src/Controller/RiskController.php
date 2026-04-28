@@ -784,6 +784,7 @@ class RiskController extends AbstractController
         ]);
     }
     #[Route('/risk/matrix', name: 'app_risk_matrix')]
+    #[IsGranted('ROLE_USER')]
     public function matrix(): Response
     {
         // Get current user's tenant
@@ -817,6 +818,9 @@ class RiskController extends AbstractController
     public function bulkDelete(Request $request): Response
     {
         $data = json_decode($request->getContent(), true);
+        if (!$this->isCsrfTokenValid('bulk_delete', $data['_token'] ?? '')) {
+            return $this->json(['error' => 'Invalid CSRF token'], 403);
+        }
         $ids = $data['ids'] ?? [];
 
         if (empty($ids)) {
