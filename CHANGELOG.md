@@ -7,6 +7,57 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 _Noch keine Aenderungen._
 
+## [3.2.2] — 2026-04-28
+
+### Patch-Release: Test-Suite grün nach Enum-Migration
+
+v3.2.1 wurde von kaputtem CI-Lauf getaggt — 3 Errors + 4 Failures aus laufender
+String→BackedEnum-Migration für `IncidentStatus` / `RiskStatus`. v3.2.2 bringt
+genau diese Fixes nach.
+
+#### Enum-Vergleiche in Service-Layer
+
+* `DashboardStatisticsService::computeDashboardStatistics()` — Open-Incident-
+  Filter verglich `getStatus() === 'open'`. `Incident::getStatus()` liefert
+  jetzt `IncidentStatus`-Enum, nie String → Filter immer false. Ersetzt durch
+  `in_array($i->getStatus(), [Reported, InInvestigation, InResolution], true)`.
+  Zweite Stelle in der Backlog-Score-Komponente identisch gefixt.
+* `ReviewReminderService::getOverdueRiskReviews()` /
+  `getUpcomingReviews()` — Closed/Accepted-Ausschluss verglich
+  `in_array($risk->getStatus(), ['closed','accepted'], true)`. Risk liefert
+  `RiskStatus`-Enum → Vergleich nie wahr → akzeptierte/geschlossene Risiken
+  sind als overdue durchgerutscht. Auf `[RiskStatus::Closed,
+  RiskStatus::Accepted]` umgestellt.
+
+#### Route-Namen korrigiert
+
+Drei Stellen referenzierten den nicht-existenten Routen-Namen
+`app_business_continuity_plan_edit/_show`. BC-Plan-Routen heißen
+`app_bc_plan_*`. Betroffen:
+
+* `templates/admin/data_repair/index.html.twig` (Edit-Link in BC-untested-Tabelle)
+* `templates/home/_overdue_reviews_widget.html.twig` (Show-Link im Widget)
+* `src/Service/ReviewReminderService::generateUpcomingReviewLinks()` (E-Mail-Reminder)
+
+DataRepairController-Test-Render brach an Stelle 1, die anderen warfen erst zur
+Laufzeit beim Rendering der jeweiligen View.
+
+#### Integration-Test-Helpers an Enum-Schema angepasst
+
+* `IncidentRepositoryIntegrationTest::createIncidentRaw()` schrieb status via
+  raw DBAL-`UPDATE`-Statement mit Legacy-Strings (`'open'`, `'investigating'`,
+  `'in_progress'`). Nach Enum-Migration warf `IncidentStatus::from('open')`
+  beim Rehydrate `ValueError`. Durch sauberes Mapping legacy → enum-case
+  ersetzt — keine raw-DBAL-Update mehr nötig.
+* `RiskRepositoryIntegrationTest`: fehlender `use DateTime;` Import.
+
+#### Test-Daten-Bereinigung
+
+* `DashboardStatisticsServiceTest` + `SiemExportServiceTest`:
+  `IncidentStatus::tryFrom('open')` (lieferte `null`) → `IncidentStatus::Reported`.
+
+**Lokale Suite:** 4155 Tests, 12185 Assertions, 0 Errors, 0 Failures.
+
 ## [3.2.1] — 2026-04-27
 
 ### Patch-Release: Sample-Data-Import komplett überarbeitet + kritischer TenantFilter-Bug behoben

@@ -1613,7 +1613,7 @@
                                 <td>{{ plan.name }}{% if plan.tenant %}<br><small class="text-muted">{{ plan.tenant.name }}</small>{% endif %}</td>
                                 <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: plan.status } only %}</td>
                                 <td>
-                                    <a href="{{ path('app_business_continuity_plan_edit', {id: plan.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                    <a href="{{ path('app_bc_plan_edit', {id: plan.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.edit'|trans({}, 'messages') }}
                                     </a>

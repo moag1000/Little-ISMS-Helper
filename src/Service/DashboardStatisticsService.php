@@ -312,7 +312,11 @@ class DashboardStatisticsService
 
             // Get all accessible incidents
             $allAccessibleIncidents = $this->getAllAccessibleIncidents($tenant);
-            $openIncidents = array_filter($allAccessibleIncidents, fn($incident): bool => $incident->getStatus() === 'open');
+            $openIncidents = array_filter($allAccessibleIncidents, fn($incident): bool => in_array($incident->getStatus(), [
+                \App\Enum\IncidentStatus::Reported,
+                \App\Enum\IncidentStatus::InInvestigation,
+                \App\Enum\IncidentStatus::InResolution,
+            ], true));
             $openIncidentCount = count($openIncidents);
         } else {
             // Fallback for users without tenant (admin view)
@@ -955,7 +959,11 @@ class DashboardStatisticsService
         if (in_array('incidents', $activeModules, true)) {
             $incidents = $tenant ? $this->getAllAccessibleIncidents($tenant) : $this->incidentRepository->findAll();
             $total = count($incidents);
-            $open = count(array_filter($incidents, fn($i): bool => $i->getStatus() === 'open'));
+            $open = count(array_filter($incidents, fn($i): bool => in_array($i->getStatus(), [
+                \App\Enum\IncidentStatus::Reported,
+                \App\Enum\IncidentStatus::InInvestigation,
+                \App\Enum\IncidentStatus::InResolution,
+            ], true)));
             $incidentScore = $total > 0 ? max(0.0, 100.0 - (($open / $total) * 100.0)) : 100.0;
         }
 

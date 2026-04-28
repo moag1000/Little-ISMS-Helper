@@ -323,7 +323,7 @@ class SiemExportServiceTest extends TestCase
         $incident->method('getId')->willReturn(1);
         $incident->method('getTitle')->willReturn('Security Incident');
         $incident->method('getSeverity')->willReturn(\App\Enum\IncidentSeverity::High);
-        $incident->method('getStatus')->willReturn(\App\Enum\IncidentStatus::tryFrom('open'));
+        $incident->method('getStatus')->willReturn(\App\Enum\IncidentStatus::Reported);
         $incident->method('getCategory')->willReturn('security');
         $incident->method('getReportedBy')->willReturn('admin');
         $incident->method('getDetectedAt')->willReturn(new \DateTime());
