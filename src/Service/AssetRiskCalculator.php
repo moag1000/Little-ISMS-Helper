@@ -47,7 +47,7 @@ class AssetRiskCalculator
         $score += $asset->getTotalValue() * 10;
 
         // Risks impact
-        $activeRisks = $asset->getRisks()->filter(fn($r): bool => $r->getStatus() === 'active')->count();
+        $activeRisks = $asset->getRisks()->filter(fn($r): bool => $r->getStatus() === \App\Enum\RiskStatus::Open)->count();
         $score += $activeRisks * 5;
 
         // Incidents impact (recent incidents = higher risk)
@@ -87,7 +87,7 @@ class AssetRiskCalculator
     public function getProtectionStatus(Asset $asset): string
     {
         $controlCount = $asset->getProtectingControls()->count();
-        $riskCount = $asset->getRisks()->filter(fn($r): bool => $r->getStatus() === 'active')->count();
+        $riskCount = $asset->getRisks()->filter(fn($r): bool => $r->getStatus() === \App\Enum\RiskStatus::Open)->count();
         if ($controlCount === 0 && $riskCount > 0) {
             return 'unprotected';
         }
