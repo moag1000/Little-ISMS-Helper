@@ -685,10 +685,11 @@ class AssetControllerTest extends WebTestCase
         $this->entityManager->flush();
 
         $ids = [$this->testAsset->getId(), $asset2->getId()];
+        $csrfToken = static::getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
 
         $this->client->request('POST', '/en/asset/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => $ids]));
+        ], json_encode(['ids' => $ids, '_token' => $csrfToken]));
 
         $this->assertResponseIsSuccessful();
 
@@ -701,10 +702,11 @@ class AssetControllerTest extends WebTestCase
     public function testBulkDeleteReturnsErrorForEmptyIds(): void
     {
         $this->loginAsUser($this->adminUser);
+        $csrfToken = static::getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
 
         $this->client->request('POST', '/en/asset/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => []]));
+        ], json_encode(['ids' => [], '_token' => $csrfToken]));
 
         $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
 
@@ -738,12 +740,13 @@ class AssetControllerTest extends WebTestCase
         $this->entityManager->flush();
 
         $this->loginAsUser($this->adminUser);
+        $csrfToken = static::getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
 
         $ids = [$this->testAsset->getId(), $otherAsset->getId()];
 
         $this->client->request('POST', '/en/asset/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => $ids]));
+        ], json_encode(['ids' => $ids, '_token' => $csrfToken]));
 
         $this->assertResponseIsSuccessful();
 
@@ -757,12 +760,13 @@ class AssetControllerTest extends WebTestCase
     public function testBulkDeleteHandlesNonexistentAssets(): void
     {
         $this->loginAsUser($this->adminUser);
+        $csrfToken = static::getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
 
         $ids = [999999, 999998];
 
         $this->client->request('POST', '/en/asset/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
-        ], json_encode(['ids' => $ids]));
+        ], json_encode(['ids' => $ids, '_token' => $csrfToken]));
 
         $response = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertEquals(0, $response['deleted']);
