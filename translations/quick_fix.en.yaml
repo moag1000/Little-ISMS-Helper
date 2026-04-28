@@ -1,0 +1,36 @@
+quick_fix:
+    title: 'Quick Fix — Schema Maintenance'
+    pending:
+        title: 'Database update required'
+        body: 'This instance has been upgraded but the database schema is still at the previous version. Apply with one click:'
+        count_label: 'pending migration(s)'
+        button: 'Apply migrations now'
+    ok:
+        title: 'All up to date'
+        body: 'No pending schema migrations.'
+        return: 'Go to home page'
+    error:
+        title: 'Diagnostic failed'
+        body: 'Quick Fix could not determine the schema status. Check logs or apply via CLI:'
+    locked:
+        title: 'Quick Fix locked'
+        body: 'Access to this page is restricted by admin settings. Contact an administrator.'
+        token_hint: 'If you have an installer token, enter it here:'
+        token_placeholder: 'Token from var/setup-token'
+        token_submit: 'Unlock with token'
+    settings:
+        title: 'Quick Fix'
+        description: 'Controls the public fallback page shown on schema mismatch instead of a 500 error.'
+        fallback_ui_enabled:
+            label: 'Fallback UI enabled'
+            help: 'When disabled, schema errors return a standard 500 page. Recommended for audit-critical production.'
+        require_installer_token:
+            label: 'Require installer token'
+            help: 'Quick Fix reachable only with a matching token. Token is written to var/setup-token by composer install. Recommended for publicly reachable Composer deployments.'
+        allow_in_dev_only:
+            label: 'Dev environment only'
+            help: 'Quick Fix only reachable when APP_ENV=dev.'
+        ip_allowlist:
+            label: 'IP allowlist'
+            help: 'Comma-separated list of permitted client IPs. Empty = disabled.'
+        save: 'Save'

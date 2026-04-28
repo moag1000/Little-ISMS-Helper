@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'quick_fix.settings.title'|trans({}, 'quick_fix') }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col">
+            <h1>
+                <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i>
+                {{ 'quick_fix.settings.title'|trans({}, 'quick_fix') }}
+            </h1>
+            <p class="lead">{{ 'quick_fix.settings.description'|trans({}, 'quick_fix') }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <form method="post" action="{{ path('app_admin_quick_fix_settings') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_settings') }}">
+
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" role="switch"
+                                   id="fallback_ui_enabled" name="fallback_ui_enabled" value="1"
+                                   {% if current.fallback_ui_enabled %}checked{% endif %}>
+                            <label class="form-check-label fw-semibold" for="fallback_ui_enabled">
+                                {{ 'quick_fix.settings.fallback_ui_enabled.label'|trans({}, 'quick_fix') }}
+                            </label>
+                            <div class="form-text">{{ 'quick_fix.settings.fallback_ui_enabled.help'|trans({}, 'quick_fix') }}</div>
+                        </div>
+
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" role="switch"
+                                   id="require_installer_token" name="require_installer_token" value="1"
+                                   {% if current.require_installer_token %}checked{% endif %}>
+                            <label class="form-check-label fw-semibold" for="require_installer_token">
+                                {{ 'quick_fix.settings.require_installer_token.label'|trans({}, 'quick_fix') }}
+                            </label>
+                            <div class="form-text">{{ 'quick_fix.settings.require_installer_token.help'|trans({}, 'quick_fix') }}</div>
+                        </div>
+
+                        <div class="form-check form-switch mb-4">
+                            <input class="form-check-input" type="checkbox" role="switch"
+                                   id="allow_in_dev_only" name="allow_in_dev_only" value="1"
+                                   {% if current.allow_in_dev_only %}checked{% endif %}>
+                            <label class="form-check-label fw-semibold" for="allow_in_dev_only">
+                                {{ 'quick_fix.settings.allow_in_dev_only.label'|trans({}, 'quick_fix') }}
+                            </label>
+                            <div class="form-text">{{ 'quick_fix.settings.allow_in_dev_only.help'|trans({}, 'quick_fix') }}</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="ip_allowlist" class="form-label fw-semibold">
+                                {{ 'quick_fix.settings.ip_allowlist.label'|trans({}, 'quick_fix') }}
+                            </label>
+                            <input type="text" class="form-control" id="ip_allowlist" name="ip_allowlist"
+                                   value="{{ current.ip_allowlist }}"
+                                   placeholder="10.0.0.1, 192.168.1.5">
+                            <div class="form-text">{{ 'quick_fix.settings.ip_allowlist.help'|trans({}, 'quick_fix') }}</div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                                <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
+                                {{ 'quick_fix.settings.save'|trans({}, 'quick_fix') }}
+                            </button>
+                        </div>
+                    </form>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+</div>
+{% endblock %}

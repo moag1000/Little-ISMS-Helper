@@ -1,0 +1,29 @@
+{% extends 'base_auth.html.twig' %}
+
+{% block title %}{{ 'error.429.title'|trans({}, 'messages')|default('Zu viele Anfragen') }}{% endblock %}
+
+{% block auth_mood %}warning{% endblock %}
+{% block auth_alva_line %}{{ 'error.429.alva_line'|trans({}, 'messages')|default('Kurze Pause.') }}{% endblock %}
+{% block auth_alva_sub %}{{ 'error.429.alva_sub'|trans({}, 'messages')|default('Du hast in kurzer Zeit zu viele Anfragen geschickt. Probier es gleich wieder.') }}{% endblock %}
+
+{% block body %}
+    {% import '_components/_cyber_button.html.twig' as btn %}
+    <div class="fa-auth-form">
+        <header class="fa-auth-form__head">
+            <div class="fa-auth-form__eyebrow">429 · {{ 'error.code_label_rate_limit'|trans({}, 'messages')|default('Rate-Limit') }}</div>
+            <h1 class="fa-auth-form__title">{{ 'error.429.heading'|trans({}, 'messages')|default('Zu viele Anfragen in kurzer Zeit') }}</h1>
+            <p class="fa-auth-form__desc">{{ 'error.429.message'|trans({}, 'messages')|default('Aus Sicherheitsgründen begrenzen wir die Anzahl von Anfragen pro Minute. Bitte warte kurz und versuche es dann erneut.') }}</p>
+        </header>
+
+        {% if retry_after is defined and retry_after > 0 %}
+            <div style="margin: 8px 0; padding: 8px 12px; background: var(--surface-2); border-radius: var(--r-md); font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em;">
+                Retry-After: <span style="color: var(--fg);">{{ retry_after }}s</span>
+            </div>
+        {% endif %}
+
+        <div style="display:flex; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
+            {{ btn.link('javascript:location.reload()', 'error.action.retry'|trans({}, 'messages')|default('Nochmal versuchen'), { variant: 'primary', icon: 'bi-arrow-clockwise' }) }}
+            {{ btn.link(path('app_home'), 'error.action.homepage'|trans({}, 'messages'), { variant: 'secondary', icon: 'bi-house' }) }}
+        </div>
+    </div>
+{% endblock %}

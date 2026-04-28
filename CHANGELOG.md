@@ -7,6 +7,61 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 _Noch keine Aenderungen._
 
+## [3.2.3] — 2026-04-28
+
+### Quick-Fix-Fallback für Schema-Mismatch nach Composer-Upgrade
+
+Nach `composer install` / `git pull` ohne Container-Neustart konnte ein
+fehlendes Schema-Update (`Doctrine\DBAL\Exception\TableNotFoundException`,
+`MappingException`, `Unknown column …`) nur einen 500er produzieren — auf
+shared-hosting Setups ohne SSH-Zugriff praktisch nicht behebbar ohne
+Anleitungen, die User händisch befolgen.
+
+Neuer Fallback:
+
+* **SchemaExceptionSubscriber** (`kernel.exception`, priority 64) fängt
+  TableNotFound / Mapping-Exceptions ab und leitet auf `/quick-fix` statt
+  500 — locale-prefix-frei, weil der Schema-Fehler den Locale-Resolver
+  selbst brechen kann.
+* **Quick-Fix-UI** (`/quick-fix`) zeigt minimalen Diagnostic-Output (nur
+  Anzahl pending Migrationen, keine Tabellen-/Spalten-Namen) + Button
+  "Migrationen jetzt anwenden" → POST `/quick-fix/apply` ruft den
+  bestehenden `SchemaMaintenanceService::executePendingMigrations()`. UI
+  ist standalone (keine `base.html.twig`-Abhängigkeiten), funktioniert
+  auch wenn Sidebar/Locale-Resolver kaputt sind.
+* **QuickFixGuard** mit 4 Settings unter `quick_fix.*` Kategorie:
+  - `fallback_ui_enabled` (default true) — Master-Schalter, off → Standard-500
+  - `require_installer_token` — Token-Match gegen `var/setup-token`
+  - `allow_in_dev_only` — nur erreichbar wenn `APP_ENV=dev`
+  - `ip_allowlist` — Komma-Liste erlaubter Client-IPs
+  Defaults sind Docker-Self-Hosting-tauglich (alle Toggles aus).
+  Composer-Installs schreiben automatisch via post-install-cmd ein
+  64-Hex-Token nach `var/setup-token` für späteres Aktivieren.
+* **Admin-Settings-UI** unter `/admin/quick-fix-settings` (ROLE_ADMIN) +
+  Eintrag im Admin-Dashboard-Quick-Actions.
+* **Locked-Page** (Token-Mode + Guard-Block) mit Inline-Token-Eingabe-Form
+  und Cookie-Persist (sodass POST-Apply nicht erneut Token braucht).
+
+### Aurora-Error-Pages für 429 + 503
+
+Bisher fielen `429 Too Many Requests` und `503 Service Unavailable` auf
+das generische `error.html.twig` Template. Jetzt eigene Aurora-Templates
+mit `Retry-After`-Anzeige (wenn vom Listener mitgegeben), Alva-Mood
+`warning`, Reload + Home-Buttons. Pattern matcht 403/404/500.
+
+### Test-Coverage
+
+* `QuickFixGuardTest` — 10 Tests (default-open, 3 Toggles, fail-closed bei
+  fehlender Settings-Tabelle, Token-Cookie + Query-Param)
+* `SchemaExceptionSubscriberTest` — 6 Tests (TableNotFound, MappingException,
+  Recursion-Guard, Disabled-Mode, Previous-Chain-Unwrap)
+
+### Versionsanzeige
+
+`composer.json` Version-Feld auf `3.2.3` gebumpt — wurde bei v3.2.2 vergessen,
+sodass Footer-Branding (`AppVersionExtension`) und Email-Templates noch
+v3.2.1 anzeigten.
+
 ## [3.2.2] — 2026-04-28
 
 ### Patch-Release: Test-Suite grün nach Enum-Migration
