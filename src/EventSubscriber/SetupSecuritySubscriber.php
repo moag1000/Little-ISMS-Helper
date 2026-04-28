@@ -34,8 +34,15 @@ class SetupSecuritySubscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
+        // Priority 4: AFTER Symfony firewall (priority 8 in REQUEST event).
+        // Höhere Priority würde vor Firewall laufen — dann gäbe es keinen
+        // resolved User aus der Session, und der Subscriber würde Admins
+        // fälschlich als unauthenticated zum Login leiten (Login-Loop für
+        // bereits eingeloggte User). Lower-priority garantiert dass
+        // $security->getUser() den authentifizierten User aus der Session
+        // korrekt zurückliefert.
         return [
-            KernelEvents::REQUEST => ['onKernelRequest', 9], // Before firewall (priority 8)
+            KernelEvents::REQUEST => ['onKernelRequest', 4],
         ];
     }
 
