@@ -328,7 +328,7 @@ class RiskController extends AbstractController
         // Create CSV content
         $handle = fopen('php://temp', 'r+');
         foreach ($csv as $row) {
-            fputcsv($handle, $row, ';', escape: '\\'); // Use semicolon as delimiter for Excel compatibility
+            fputcsv($handle, array_map([$this, 'sanitizeCsvValue'], $row), ';', escape: '\\'); // Use semicolon as delimiter for Excel compatibility
         }
         rewind($handle);
         $csvContent .= stream_get_contents($handle);
@@ -793,10 +793,9 @@ class RiskController extends AbstractController
         // Get risks: tenant-filtered if user has tenant, all risks if not
         $risks = $tenant ? $this->riskService->getRisksForTenant($tenant) : $this->riskRepository->findAll();
 
-        $risksArray = $risks instanceof \Traversable ? iterator_to_array($risks) : (array) $risks;
-        $matrixData = $this->riskMatrixService->generateMatrix($risksArray);
-        $statistics = $this->riskMatrixService->getRiskStatistics($risksArray);
-        $risksByLevel = $this->riskMatrixService->getRisksByLevel($risksArray);
+        $matrixData = $this->riskMatrixService->generateMatrix();
+        $statistics = $this->riskMatrixService->getRiskStatistics();
+        $risksByLevel = $this->riskMatrixService->getRisksByLevel();
 
         // Serialize risks for JavaScript consumption
         $serializedRisks = array_map(fn(Risk $risk): array => [
@@ -804,7 +803,7 @@ class RiskController extends AbstractController
             'title' => $risk->getTitle(),
             'probability' => $risk->getProbability() ?? 1,
             'impact' => $risk->getImpact() ?? 1,
-        ], $risksArray);
+        ], $risks instanceof Traversable ? iterator_to_array($risks) : $risks);
 
         return $this->render('risk/matrix.html.twig', [
             'risks' => $serializedRisks,
@@ -1142,5 +1141,20 @@ class RiskController extends AbstractController
             'subsidiaries' => $subsidiariesCount,
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
+    }
+
+    /**
+     * Sanitize a CSV cell value to prevent formula injection (OWASP - Injection).
+     * Prefixes values starting with =, +, -, @, TAB or CR with a single quote.
+     */
+    private function sanitizeCsvValue(mixed $value): mixed
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+        if ($value !== '' && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+            return "'" . $value;
+        }
+        return $value;
     }
 }
