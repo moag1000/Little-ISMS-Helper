@@ -685,7 +685,8 @@ class AssetControllerTest extends WebTestCase
         $this->entityManager->flush();
 
         $ids = [$this->testAsset->getId(), $asset2->getId()];
-        $csrfToken = static::getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
+        $this->client->request('GET', '/en/asset/');
+$csrfToken = static::getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
 
         $this->client->request('POST', '/en/asset/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
@@ -702,7 +703,8 @@ class AssetControllerTest extends WebTestCase
     public function testBulkDeleteReturnsErrorForEmptyIds(): void
     {
         $this->loginAsUser($this->adminUser);
-        $csrfToken = static::getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
+        $this->client->request('GET', '/en/asset/');
+$csrfToken = static::getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
 
         $this->client->request('POST', '/en/asset/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
@@ -740,7 +742,8 @@ class AssetControllerTest extends WebTestCase
         $this->entityManager->flush();
 
         $this->loginAsUser($this->adminUser);
-        $csrfToken = static::getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
+        $this->client->request('GET', '/en/asset/');
+$csrfToken = static::getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
 
         $ids = [$this->testAsset->getId(), $otherAsset->getId()];
 
@@ -760,7 +763,8 @@ class AssetControllerTest extends WebTestCase
     public function testBulkDeleteHandlesNonexistentAssets(): void
     {
         $this->loginAsUser($this->adminUser);
-        $csrfToken = static::getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
+        $this->client->request('GET', '/en/asset/');
+$csrfToken = static::getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
 
         $ids = [999999, 999998];
 
