@@ -38,8 +38,11 @@ class RiskTreatmentPlanController extends AbstractController
         $responsiblePerson = $request->query->get('responsible_person');
         $overdueOnly = $request->query->get('overdue_only');
 
-        // Get all treatment plans
-        $plans = $this->riskTreatmentPlanRepository->findAll();
+        // Get treatment plans scoped to current tenant
+        $currentTenant = $this->tenantContext->getCurrentTenant();
+        $plans = $currentTenant !== null
+            ? $this->riskTreatmentPlanRepository->findBy(['tenant' => $currentTenant])
+            : $this->riskTreatmentPlanRepository->findAll();
 
         // Apply filters
         if ($status) {

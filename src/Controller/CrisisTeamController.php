@@ -31,7 +31,11 @@ class CrisisTeamController extends AbstractController
     #[Route('/crisis-team/', name: 'app_crisis_team_index')]
     public function index(): Response
     {
-        $crisisTeams = $this->crisisTeamRepository->findAll();
+        $user = $this->security->getUser();
+        $tenant = $user instanceof UserInterface ? $user->getTenant() : null;
+        $crisisTeams = $tenant !== null
+            ? $this->crisisTeamRepository->findBy(['tenant' => $tenant])
+            : $this->crisisTeamRepository->findAll();
 
         // Statistics
         $activeTeams = array_filter($crisisTeams, fn(CrisisTeam $crisisTeam): bool => $crisisTeam->isActive());

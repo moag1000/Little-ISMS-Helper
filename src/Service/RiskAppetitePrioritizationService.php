@@ -163,11 +163,12 @@ class RiskAppetitePrioritizationService
     /**
      * Find all risks exceeding appetite
      *
+     * @param Risk[]|null $risks Pre-filtered risk list (e.g. tenant-scoped). If null, all risks are loaded.
      * @return array<int, array{risk: Risk, appetite: RiskAppetite, exceedance: int, priority: string}>
      */
-    public function findRisksExceedingAppetite(): array
+    public function findRisksExceedingAppetite(?array $risks = null): array
     {
-        $allRisks = $this->riskRepository->findAll();
+        $allRisks = $risks ?? $this->riskRepository->findAll();
         $exceedingRisks = [];
 
         foreach ($allRisks as $allRisk) {
@@ -198,11 +199,12 @@ class RiskAppetitePrioritizationService
     /**
      * Get dashboard statistics for risk appetite compliance
      *
+     * @param Risk[]|null $risks Pre-filtered risk list (e.g. tenant-scoped). If null, all risks are loaded.
      * @return array{total_risks: int, within_appetite: int, exceeding_appetite: int, critical: int, high: int, medium: int, acceptable: int, compliance_rate: float}
      */
-    public function getDashboardStatistics(): array
+    public function getDashboardStatistics(?array $risks = null): array
     {
-        $allRisks = $this->riskRepository->findAll();
+        $allRisks = $risks ?? $this->riskRepository->findAll();
 
         $stats = [
             'total_risks' => count($allRisks),
@@ -260,11 +262,12 @@ class RiskAppetitePrioritizationService
      * 3. Residual risk level
      *
      * @param int $limit Maximum number of risks to return
+     * @param Risk[]|null $risks Pre-filtered risk list (e.g. tenant-scoped). If null, all risks are loaded.
      * @return array<int, array{risk: Risk, analysis: array}>
      */
-    public function getPrioritizedRisks(int $limit = 10): array
+    public function getPrioritizedRisks(int $limit = 10, ?array $risks = null): array
     {
-        $allRisks = $this->riskRepository->findAll();
+        $allRisks = $risks ?? $this->riskRepository->findAll();
         $prioritized = [];
 
         foreach ($allRisks as $allRisk) {

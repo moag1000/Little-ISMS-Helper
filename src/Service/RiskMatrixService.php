@@ -224,9 +224,11 @@ class RiskMatrixService
     /**
      * Gibt Risiko-Statistiken zurück
      */
-    public function getRiskStatistics(): array
+    public function getRiskStatistics(?array $risks = null): array
     {
-        $risks = $this->riskRepository->findAll();
+        if ($risks === null) {
+            $risks = $this->riskRepository->findAll();
+        }
         $matrixData = $this->generateMatrix($risks);
 
         return $matrixData['statistics'];
@@ -235,9 +237,11 @@ class RiskMatrixService
     /**
      * Gruppiert Risiken nach Risikolevel
      */
-    public function getRisksByLevel(): array
+    public function getRisksByLevel(?array $risks = null): array
     {
-        $risks = $this->riskRepository->findAll();
+        if ($risks === null) {
+            $risks = $this->riskRepository->findAll();
+        }
         $grouped = [
             'critical' => [],
             'high' => [],
