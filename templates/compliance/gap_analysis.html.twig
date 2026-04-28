@@ -26,45 +26,19 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.total_requirements'|trans({}, 'compliance'), totalRequirements, null, null, null, null) }}
+        {{ cards.kpi_card('compliance.stats.total_requirements'|trans({}, 'compliance'), total_requirements, null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.met_requirements'|trans({}, 'compliance'), metRequirements, null, null, 'success', null) }}
+        {{ cards.kpi_card('compliance.stats.met_requirements'|trans({}, 'compliance'), met_requirements, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.gaps_identified'|trans({}, 'compliance'), gaps|length, null, null, 'danger', 'border-danger') }}
+        {{ cards.kpi_card('compliance.stats.gaps_identified'|trans({}, 'compliance'), total_gaps, null, null, 'danger', 'border-danger') }}
     </div>
     <div class="col-auto">
-        {% set score = totalRequirements > 0 ? (metRequirements / totalRequirements * 100)|round : 0 %}
+        {% set score = total_requirements > 0 ? (met_requirements / total_requirements * 100)|round : 0 %}
         {{ cards.kpi_card('compliance.stats.compliance_score'|trans({}, 'compliance'), score ~ '%', null, null, null, null) }}
     </div>
 </div>
-
-{# Framework Selection #}
-{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-    {% block card_header %}
-        <div class="card-header">
-            <h2 class="mb-0">{{ 'compliance.section.framework_selection'|trans({}, 'compliance') }}</h2>
-        </div>
-    {% endblock %}
-    {% block card_body %}
-        <form method="get" class="mt-md" data-controller="ui-actions">
-            <div class="form-group">
-                <label for="framework">{{ 'compliance.field.select_framework'|trans({}, 'compliance') }}</label>
-                <select name="framework" id="framework" class="form-select"
-                        data-action="change->ui-actions#autoSubmit"
-                        aria-label="{{ 'compliance.field.select_framework'|trans({}, 'compliance') }}">
-                    <option value="">{{ 'compliance.option.all_frameworks'|trans({}, 'compliance') }}</option>
-                    {% for framework in frameworks %}
-                        <option value="{{ framework.id }}" {% if selectedFramework and selectedFramework.id == framework.id %}selected{% endif %}>
-                            {{ framework.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-        </form>
-    {% endblock %}
-{% endembed %}
 
 {# Gap Analysis by Severity #}
 <div class="module-grid mb-4">
@@ -73,7 +47,7 @@
             <div class="fs-2-mb-sm"><i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i></div>
             <h2>{{ 'compliance.severity.critical'|trans({}, 'compliance') }}</h2>
             <div class="mt-2">
-                <strong class="fs-15-danger">{{ gaps|filter(g => g.severity == 'critical')|length }}</strong>
+                <strong class="fs-15-danger">{{ gaps|filter(g => g.requirement.priority == 'critical')|length }}</strong>
             </div>
             <p class="text-muted-mt-xs">
                 {{ 'compliance.description.critical_gaps'|trans({}, 'compliance') }}
@@ -86,7 +60,7 @@
             <div class="fs-2-mb-sm"><i class="bi bi-circle-fill text-warning" aria-hidden="true"></i></div>
             <h2>{{ 'compliance.severity.high'|trans({}, 'compliance') }}</h2>
             <div class="mt-2">
-                <strong class="fs-15-warning">{{ gaps|filter(g => g.severity == 'high')|length }}</strong>
+                <strong class="fs-15-warning">{{ gaps|filter(g => g.requirement.priority == 'high')|length }}</strong>
             </div>
             <p class="text-muted-mt-xs">
                 {{ 'compliance.description.high_gaps'|trans({}, 'compliance') }}
@@ -99,7 +73,7 @@
             <div class="fs-2-mb-sm"><i class="bi bi-circle-fill text-info" aria-hidden="true"></i></div>
             <h2>{{ 'compliance.severity.medium'|trans({}, 'compliance') }}</h2>
             <div class="mt-2">
-                <strong class="fs-15-info">{{ gaps|filter(g => g.severity == 'medium')|length }}</strong>
+                <strong class="fs-15-info">{{ gaps|filter(g => g.requirement.priority == 'medium')|length }}</strong>
             </div>
             <p class="text-muted-mt-xs">
                 {{ 'compliance.description.medium_gaps'|trans({}, 'compliance') }}
@@ -112,7 +86,7 @@
             <div class="fs-2-mb-sm"><i class="bi bi-circle text-secondary" aria-hidden="true"></i></div>
             <h2>{{ 'compliance.severity.low'|trans({}, 'compliance') }}</h2>
             <div class="mt-2">
-                <strong class="fs-4">{{ gaps|filter(g => g.severity == 'low')|length }}</strong>
+                <strong class="fs-4">{{ gaps|filter(g => g.requirement.priority == 'low')|length }}</strong>
             </div>
             <p class="text-muted-mt-xs">
                 {{ 'compliance.description.low_gaps'|trans({}, 'compliance') }}
@@ -133,8 +107,7 @@
             <th scope="col">{{ 'compliance.field.framework'|trans({}, 'compliance') }}</th>
             <th scope="col">{{ 'compliance.field.severity'|trans({}, 'compliance') }}</th>
             <th scope="col">{{ 'compliance.field.gap_description'|trans({}, 'compliance') }}</th>
-            <th scope="col">{{ 'compliance.field.remediation'|trans({}, 'compliance') }}</th>
-            <th scope="col">{{ 'compliance.field.due_date'|trans({}, 'compliance') }}</th>
+            <th scope="col">{{ 'compliance.field.fulfillment'|trans({}, 'compliance') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
@@ -142,11 +115,11 @@
         {% for gap in gaps %}
         <tr>
             <td>
-                <strong>{{ gap.requirement.identifier }}</strong>
-                <br><small class="text-muted">{{ gap.requirement.name }}</small>
+                <strong>{{ gap.requirement.requirementId }}</strong>
+                <br><small class="text-muted">{{ gap.requirement.title }}</small>
             </td>
             <td>
-                {% include '_components/_badge.html.twig' with { variant: 'info', content: gap.framework.name } %}
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: framework.name } only %}
             </td>
             <td>
                 {% set severityColors = {
@@ -155,23 +128,18 @@
                     'medium': 'info',
                     'low': 'secondary'
                 } %}
-                {% include '_components/_badge.html.twig' with { variant: severityColors[gap.severity] ?? 'secondary', content: ('compliance.severity.' ~ gap.severity)|trans({}, 'compliance') } %}
+                {% set priority = gap.requirement.priority ?? 'low' %}
+                {% include '_components/_badge.html.twig' with { variant: severityColors[priority] ?? 'secondary', content: ('compliance.severity.' ~ priority)|trans({}, 'compliance') } only %}
             </td>
             <td>
-                <small>{{ gap.description|default('-') }}</small>
+                <small>{{ gap.requirement.description|default('-') }}</small>
             </td>
             <td>
-                <small>{{ gap.remediationPlan|default('-') }}</small>
-            </td>
-            <td>
-                {% if gap.targetDate %}
-                    {{ gap.targetDate|date('d.m.Y') }}
-                    {% if gap.targetDate < date() %}
-                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'compliance.badge.overdue'|trans({}, 'compliance'), class: 'ml-xs' } %}
-                    {% endif %}
-                {% else %}
-                    <span class="text-muted">-</span>
-                {% endif %}
+                {% set fulfillment = gap.analysis.calculated_fulfillment ?? 0 %}
+                <div class="progress" style="height: 6px;" title="{{ fulfillment }}%">
+                    <div class="progress-bar" role="progressbar" style="width: {{ fulfillment }}%" aria-valuenow="{{ fulfillment }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <small class="text-muted">{{ fulfillment }}%</small>
             </td>
             <td class="text-center">
                 <a href="{{ path('app_compliance_requirement_show', {id: gap.requirement.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
@@ -181,7 +149,7 @@
         </tr>
         {% else %}
         <tr>
-            <td colspan="7" class="text-center p-4 text-muted">
+            <td colspan="6" class="text-center p-4 text-muted">
                 <div class="fs-2 mb-2"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></div>
                 <p><strong>{{ 'compliance.message.no_gaps'|trans({}, 'compliance') }}</strong></p>
                 <p class="mt-1">{{ 'compliance.message.no_gaps_desc'|trans({}, 'compliance') }}</p>
