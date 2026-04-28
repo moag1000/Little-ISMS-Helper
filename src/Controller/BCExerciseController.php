@@ -29,7 +29,10 @@ class BCExerciseController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
-        $bcExercises = $this->bcExerciseRepository->findAll();
+        $currentTenant = $this->tenantContext->getCurrentTenant();
+        $bcExercises = $currentTenant !== null
+            ? $this->bcExerciseRepository->findBy(['tenant' => $currentTenant])
+            : $this->bcExerciseRepository->findAll();
         $statistics = $this->bcExerciseRepository->getStatistics();
         $upcoming = $this->bcExerciseRepository->findUpcoming();
         $incompleteReports = $this->bcExerciseRepository->findIncompleteReports();

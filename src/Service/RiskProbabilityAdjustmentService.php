@@ -277,12 +277,13 @@ class RiskProbabilityAdjustmentService
     /**
      * Find all risks requiring probability adjustment
      *
+     * @param Risk[]|null $risks Pre-filtered risk list (e.g. tenant-scoped). If null, all risks are loaded.
      * @return array<int, array{risk: Risk, analysis: array}>
      */
-    public function findRisksRequiringAdjustment(): array
+    public function findRisksRequiringAdjustment(?array $risks = null): array
     {
         $entityRepository = $this->entityManager->getRepository(Risk::class);
-        $allRisks = $entityRepository->findAll();
+        $allRisks = $risks ?? $entityRepository->findAll();
 
         $requiresAdjustment = [];
 

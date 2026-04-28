@@ -235,17 +235,23 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
      *
      * Used by scheduled compliance reporting
      *
+     * @param Tenant|null $tenant When provided, count is scoped to that tenant's fulfillments
      * @return int Number of requirements with 100% fulfillment
      */
-    public function countCompliant(): int
+    public function countCompliant(?Tenant $tenant = null): int
     {
-        return (int) $this->createQueryBuilder('cr')
+        $qb = $this->createQueryBuilder('cr')
             ->select('COUNT(DISTINCT cr.id)')
             ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.complianceRequirement = cr')
             ->where('crf.applicable = :applicable')
             ->andWhere('crf.fulfillmentPercentage >= 100')
-            ->setParameter('applicable', true)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->setParameter('applicable', true);
+
+        if ($tenant !== null) {
+            $qb->andWhere('crf.tenant = :tenant')
+                ->setParameter('tenant', $tenant);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 }

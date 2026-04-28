@@ -165,12 +165,13 @@ class RiskImpactCalculatorService
     /**
      * Get all risks with impact misalignment (suggested != current, difference >= 2)
      *
+     * @param Risk[]|null $risks Pre-filtered risk list (e.g. tenant-scoped). If null, all risks are loaded.
      * @return array<int, array{risk: Risk, details: array}>
      */
-    public function findMisalignedRisks(): array
+    public function findMisalignedRisks(?array $risks = null): array
     {
         $entityRepository = $this->entityManager->getRepository(Risk::class);
-        $allRisks = $entityRepository->findAll();
+        $allRisks = $risks ?? $entityRepository->findAll();
 
         $misaligned = [];
 
