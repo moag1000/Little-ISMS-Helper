@@ -27,9 +27,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_USER')]
 class ComplianceController extends AbstractController
 {
     public function __construct(
@@ -1095,7 +1095,9 @@ class ComplianceController extends AbstractController
             'framework2Unique' => $framework2Unique ?? [],
         ]);
     }
-    #[Route('/compliance/framework/{id}/assess', name: 'app_compliance_assess', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/assess', name: 'app_compliance_assess', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_MANAGER')]
+    #[IsCsrfTokenValid('assess_framework')]
     public function assessFramework(int $id): Response
     {
         $framework = $this->complianceFrameworkRepository->find($id);

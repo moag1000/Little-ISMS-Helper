@@ -46,6 +46,7 @@ class DataBreachType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'help' => 'data_breach.help.detected_at',
             ])
+            // TODO: Add tenant filter to EntityType (requires passing tenant via form options, see RiskType.php for pattern)
             ->add('incident', EntityType::class, [
                 'label' => 'data_breach.form.incident',
                 'class' => Incident::class,
@@ -55,6 +56,7 @@ class DataBreachType extends AbstractType
                 'attr' => ['class' => 'form-select select2'],
                 'help' => 'data_breach.help.incident',
             ])
+            // TODO: Add tenant filter to EntityType (requires passing tenant via form options, see RiskType.php for pattern)
             ->add('processingActivity', EntityType::class, [
                 'label' => 'data_breach.form.processing_activity',
                 'class' => ProcessingActivity::class,

@@ -21,6 +21,37 @@ use Symfony\Component\Process\Process;
 #[AsMessageHandler]
 class ExecuteScheduledTaskHandler
 {
+    /**
+     * Whitelist of allowed console commands to prevent command injection.
+     * Only commands explicitly listed here may be executed by scheduled tasks.
+     */
+    private const ALLOWED_COMMANDS = [
+        // Workflow automation
+        'app:process-timed-workflows',
+        'app:generate-regulatory-workflows',
+        // Notifications & reminders
+        'app:send-notifications',
+        'app:review:send-reminders',
+        'app:nis2-notification-check',
+        'app:risk:monitor-treatment-plans',
+        'app:risk:schedule-reviews',
+        // Scheduled reports
+        'app:process-scheduled-reports',
+        // KPI & snapshots
+        'app:kpi-snapshot',
+        'app:portfolio:capture-snapshot',
+        'app:reuse:capture-snapshot',
+        // Backup management
+        'app:backup:create',
+        'app:backup:prune',
+        // Audit log maintenance
+        'app:audit-log:cleanup',
+        'app:four-eyes:cleanup-expired',
+        // Schema & migrations
+        'app:schema:reconcile',
+        'doctrine:migrations:migrate',
+    ];
+
     public function __construct(
         private readonly ScheduledTaskRepository $taskRepository,
         private readonly EntityManagerInterface $em,
@@ -53,6 +84,16 @@ class ExecuteScheduledTaskHandler
             'task_name' => $task->getName(),
             'command' => $task->getCommand(),
         ]);
+
+        // Security: validate command against whitelist to prevent command injection
+        if (!in_array($task->getCommand(), self::ALLOWED_COMMANDS, true)) {
+            $this->logger->error('Blocked non-whitelisted scheduled task command', [
+                'task_id' => $task->getId(),
+                'task_name' => $task->getName(),
+                'command' => $task->getCommand(),
+            ]);
+            return;
+        }
 
         $task->setLastRunAt(new DateTime());
         $task->setLastStatus('running');

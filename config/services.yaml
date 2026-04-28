@@ -274,8 +274,8 @@ services:
     Symfony\Component\RateLimiter\RateLimiterFactory $apiLimiter: '@limiter.api'
     Symfony\Component\RateLimiter\RateLimiterFactory $passwordResetLimiter: '@limiter.password_reset'
     Symfony\Component\RateLimiter\RateLimiterFactory $documentUploadLimiter: '@limiter.document_upload'
-    # Aliases for Rector-renamed parameters
-    Symfony\Component\RateLimiter\RateLimiterFactory $rateLimiterFactory: '@limiter.document_upload'
+    # Aliases for Rector-renamed parameters (SecurityController login limiter)
+    Symfony\Component\RateLimiter\RateLimiterFactory $rateLimiterFactory: '@limiter.login'
 
     # Configure Security Headers Subscriber
     App\EventSubscriber\SecurityHeadersSubscriber:
