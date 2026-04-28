@@ -222,6 +222,10 @@ class DataBreachController extends AbstractController
         }
 
         try {
+            // Capture overdue state BEFORE the service sets supervisoryAuthorityNotifiedAt,
+            // because isAuthorityNotificationOverdue() returns false once that field is set.
+            $wasOverdue = $dataBreach->isAuthorityNotificationOverdue();
+
             $this->dataBreachService->notifySupervisoryAuthority(
                 $dataBreach,
                 $authorityName,
@@ -230,8 +234,8 @@ class DataBreachController extends AbstractController
                 []
             );
 
-            // Record delay reason if overdue
-            if ($delayReason && $dataBreach->isAuthorityNotificationOverdue()) {
+            // Record delay reason if overdue (use pre-captured value)
+            if ($delayReason && $wasOverdue) {
                 $this->dataBreachService->recordNotificationDelay($dataBreach, $delayReason);
             }
 

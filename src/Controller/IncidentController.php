@@ -81,18 +81,18 @@ class IncidentController extends AbstractController
                 case 'own':
                     // Only own incidents
                     $allIncidents = $this->incidentRepository->findByTenant($tenant);
-                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), ['reported', 'in_investigation', 'in_resolution']));
+                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
                     break;
                 case 'subsidiaries':
                     // Own + from all subsidiaries (for parent companies)
                     $allIncidents = $this->incidentRepository->findByTenantIncludingSubsidiaries($tenant);
-                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), ['reported', 'in_investigation', 'in_resolution']));
+                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
                     break;
                 case 'inherited':
                 default:
                     // Own + inherited from parents (default behavior)
                     $allIncidents = $this->incidentRepository->findByTenantIncludingParent($tenant);
-                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), ['reported', 'in_investigation', 'in_resolution']));
+                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
                     break;
             }
 

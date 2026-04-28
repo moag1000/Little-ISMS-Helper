@@ -280,7 +280,7 @@ class DataBreach
      * Risk to rights and freedoms: low, medium, high
      */
     #[ORM\Column(length: 20, nullable: true)]
-    #[Assert\Choice(choices: ['low', 'medium', 'high'])]
+    #[Assert\Choice(choices: ['low', 'medium', 'high', 'critical'])]
     private ?string $riskLevel = null;
 
     /**

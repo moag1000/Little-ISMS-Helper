@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\CustomReport;
 use App\Entity\User;
+use App\Enum\IncidentStatus;
 use App\Enum\RiskStatus;
 use App\Repository\CustomReportRepository;
 use App\Repository\RiskRepository;
@@ -622,7 +623,7 @@ class ReportBuilderService
     private function getKpiOpenIncidents(array $filters): array
     {
         $incidents = $this->incidentRepository->findAll();
-        $open = count(array_filter($incidents, fn($i) => in_array($i->getStatus(), ['new', 'investigating', 'in_progress'])));
+        $open = count(array_filter($incidents, fn($i) => in_array($i->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true)));
 
         return [
             'value' => $open,

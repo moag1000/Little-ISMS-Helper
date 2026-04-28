@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Enum\IncidentSeverity;
+use App\Enum\IncidentStatus;
 use DateTime;
 use DateTimeImmutable;
 use App\Entity\Risk;
@@ -95,7 +96,7 @@ class ManagementReportService
             $this->incidentRepository->findAll(),
             fn(Incident $i): bool => $i->getDetectedAt() >= $yearAgo
         );
-        $openIncidents = array_filter($recentIncidents, fn(Incident $i): bool => in_array($i->getStatus(), ['new', 'investigating', 'in_progress']));
+        $openIncidents = array_filter($recentIncidents, fn(Incident $i): bool => in_array($i->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
 
         // Compliance calculation (implemented / applicable to match getComplianceStatusReport)
         $applicableControls = array_filter($controls, fn(Control $c): bool => $c->isApplicable());

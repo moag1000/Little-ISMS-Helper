@@ -195,10 +195,10 @@ class SendNotificationsCommand
         $thresholdDate = new DateTime("-{$daysAhead} days");
 
         $incidents = $this->incidentRepository->createQueryBuilder('i')
-            ->where('i.detectedDate < :thresholdDate')
+            ->where('i.detectedAt < :thresholdDate')
             ->andWhere('i.status IN (:statuses)')
             ->setParameter('thresholdDate', $thresholdDate)
-            ->setParameter('statuses', ['new', 'investigating', 'in_progress'])
+            ->setParameter('statuses', ['reported', 'in_investigation', 'in_resolution'])
             ->getQuery()
             ->getResult();
 
@@ -220,7 +220,7 @@ class SendNotificationsCommand
             }
 
             if ($recipients !== []) {
-                $daysOpen = $incident->getDetectedDate()->diff(new DateTime())->days;
+                $daysOpen = $incident->getDetectedAt()->diff(new DateTime())->days;
                 $symfonyStyle->text(sprintf('  - Incident "%s" [%s] open for %d days → %d recipients',
                     $incident->getTitle(),
                     strtoupper($incident->getSeverity()?->value ?? ''),

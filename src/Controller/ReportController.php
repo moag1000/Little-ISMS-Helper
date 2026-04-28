@@ -7,6 +7,7 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\Risk;
 use App\Entity\Control;
+use App\Enum\IncidentStatus;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
@@ -396,7 +397,7 @@ class ReportController extends AbstractController
             'controls_count' => count($controls),
             'implemented_controls' => count($implementedControls),
             'compliance_percentage' => count($applicableControls) > 0 ? round((count($implementedControls) / count($applicableControls)) * 100) : 0,
-            'open_incidents' => $this->incidentRepository->count(['status' => ['new', 'investigating', 'in_progress']]),
+            'open_incidents' => count($this->incidentRepository->findBy(['status' => [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution]])),
             'total_trainings' => $this->trainingRepository->count([]),
             'audits_this_year' => count($this->internalAuditRepository->findBy(['status' => 'completed'])),
         ];

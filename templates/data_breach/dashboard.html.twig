@@ -227,7 +227,7 @@
                                     </a>
                                 </td>
                                 <td>{{ breach.title }}</td>
-                                <td>{{ breach.incident.detectedAt|date('Y-m-d H:i') }}</td>
+                                <td>{{ breach.detectedAt|date('Y-m-d H:i') }}</td>
                                 <td>
                                     {% set status_class = {
                                         'draft': 'secondary',

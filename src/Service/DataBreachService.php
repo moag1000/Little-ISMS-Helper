@@ -291,15 +291,22 @@ class DataBreachService
         }
 
         $notifiedAt = new DateTime();
+
+        // Capture overdue state BEFORE setting the notification timestamp, because
+        // isAuthorityNotificationOverdue() / getHoursUntilAuthorityDeadline() short-circuit
+        // to null/false once supervisoryAuthorityNotifiedAt is set ("Already notified").
+        $wasOverdue = $dataBreach->isAuthorityNotificationOverdue();
+        $hoursUntilDeadline = $dataBreach->getHoursUntilAuthorityDeadline();
+
         $dataBreach->setSupervisoryAuthorityNotifiedAt($notifiedAt);
         $dataBreach->setSupervisoryAuthorityName($authorityName);
         $dataBreach->setNotificationMethod($notificationMethod);
         $dataBreach->setSupervisoryAuthorityReference($authorityReference);
         $dataBreach->setNotificationDocuments($documents);
 
-        // Check if notification is overdue (>72h)
-        if ($dataBreach->isAuthorityNotificationOverdue()) {
-            $hoursLate = abs($dataBreach->getHoursUntilAuthorityDeadline());
+        // Check if notification is overdue (>72h) using the pre-captured value
+        if ($wasOverdue) {
+            $hoursLate = abs($hoursUntilDeadline);
             $logContext = [
                 'breach_id' => $dataBreach->getId(),
                 'reference_number' => $dataBreach->getReferenceNumber(),
@@ -330,8 +337,8 @@ class DataBreachService
                 'authority_name' => $authorityName,
                 'notification_method' => $notificationMethod,
                 'notified_at' => $notifiedAt->format('Y-m-d H:i:s'),
-                'hours_until_deadline' => $dataBreach->getHoursUntilAuthorityDeadline(),
-                'overdue' => $dataBreach->isAuthorityNotificationOverdue(),
+                'hours_until_deadline' => $hoursUntilDeadline,
+                'overdue' => $wasOverdue,
             ]
         );
 
@@ -339,7 +346,7 @@ class DataBreachService
             'breach_id' => $dataBreach->getId(),
             'reference_number' => $dataBreach->getReferenceNumber(),
             'authority_name' => $authorityName,
-            'hours_until_deadline' => $dataBreach->getHoursUntilAuthorityDeadline(),
+            'hours_until_deadline' => $hoursUntilDeadline,
         ]);
 
         return $dataBreach;

@@ -131,9 +131,9 @@ class BusinessProcessRepository extends ServiceEntityRepository
     public function findHighImpactProcesses(int $threshold = 8): array
     {
         return $this->createQueryBuilder('bp')
-            ->where('bp.financialImpact >= :threshold OR bp.reputationalImpact >= :threshold OR bp.operationalImpact >= :threshold')
+            ->where('bp.financialImpactPerHour >= :threshold OR bp.reputationalImpact >= :threshold OR bp.operationalImpact >= :threshold')
             ->setParameter('threshold', $threshold)
-            ->orderBy('bp.financialImpact', 'DESC')
+            ->orderBy('bp.financialImpactPerHour', 'DESC')
             ->addOrderBy('bp.reputationalImpact', 'DESC')
             ->getQuery()
             ->getResult();

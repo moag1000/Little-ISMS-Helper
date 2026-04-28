@@ -45,12 +45,16 @@ class BadgeExtension
      * Status to Bootstrap color mapping
      */
     private const array STATUS_MAP = [
-        // Incident statuses
+        // Incident statuses (correct IncidentStatus enum backed values)
+        'reported' => 'danger',
+        'in_investigation' => 'info',
+        'in_resolution' => 'warning',
+        'resolved' => 'success',
+        'closed' => 'secondary',
+        // Legacy incident status aliases (kept for backward-compat)
         'open' => 'danger',
         'in_progress' => 'warning',
         'investigating' => 'info',
-        'resolved' => 'success',
-        'closed' => 'secondary',
 
         // Generic statuses
         'active' => 'success',
@@ -71,7 +75,6 @@ class BadgeExtension
         'scheduled' => 'info',
         'completed' => 'success',
         'cancelled' => 'secondary',
-        'reported' => 'primary',
 
         // Audit results
         'passed' => 'success',
