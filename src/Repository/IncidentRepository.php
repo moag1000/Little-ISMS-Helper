@@ -68,7 +68,11 @@ class IncidentRepository extends ServiceEntityRepository
             ->where('i.tenant = :tenant')
             ->andWhere('i.status IN (:statuses)')
             ->setParameter('tenant', $tenant)
-            ->setParameter('statuses', ['open', 'investigating', 'in_progress'])
+            ->setParameter('statuses', [
+                \App\Enum\IncidentStatus::Reported,
+                \App\Enum\IncidentStatus::InInvestigation,
+                \App\Enum\IncidentStatus::InResolution,
+            ])
             ->orderBy('i.severity', 'DESC')
             ->addOrderBy('i.detectedAt', 'DESC')
             ->getQuery()

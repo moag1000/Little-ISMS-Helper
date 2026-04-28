@@ -138,7 +138,7 @@ class RiskRepositoryIntegrationTest extends KernelTestCase
     public function findDueForReviewExposesFieldNameMismatch(): void
     {
         $tenant = $this->createTestTenant();
-        $pastDate = new DateTimeImmutable('-1 day');
+        $pastDate = new DateTime('-1 day');
         $risk = $this->createRisk($tenant, 'Overdue Review', 2, 2, 'mitigate');
         $risk->setReviewDate($pastDate);
         $this->em->flush();
@@ -198,7 +198,8 @@ class RiskRepositoryIntegrationTest extends KernelTestCase
 
         $resultsA = $this->repository->countByTreatmentStrategy($tenantA);
         $this->assertCount(1, $resultsA);
-        $this->assertSame('mitigate', $resultsA[0]['treatmentStrategy']);
+        $tsA = $resultsA[0]['treatmentStrategy'];
+        $this->assertSame('mitigate', $tsA instanceof \App\Enum\TreatmentStrategy ? $tsA->value : (string) $tsA);
         $this->assertSame(1, (int) $resultsA[0]['count']);
     }
 

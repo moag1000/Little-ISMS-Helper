@@ -158,7 +158,8 @@ class IncidentRepositoryIntegrationTest extends KernelTestCase
 
         $resultsA = $this->repository->countBySeverity($tenantA);
         $this->assertCount(1, $resultsA);
-        $this->assertSame('critical', $resultsA[0]['severity']);
+        $sevA = $resultsA[0]['severity'];
+        $this->assertSame('critical', $sevA instanceof \App\Enum\IncidentSeverity ? $sevA->value : (string) $sevA);
         $this->assertSame(1, (int) $resultsA[0]['count']);
     }
 
