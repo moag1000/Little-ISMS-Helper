@@ -29,16 +29,29 @@ use PHPUnit\Framework\Attributes\Test;
 class DeploymentWizardControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
+    private string $lockFile;
+    private ?string $lockBackup = null;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
 
-        $lockFile = static::getContainer()
+        $this->lockFile = static::getContainer()
             ->getParameter('kernel.project_dir') . '/config/setup_complete.lock';
-        if (file_exists($lockFile)) {
-            @unlink($lockFile);
+        if (file_exists($this->lockFile)) {
+            $this->lockBackup = file_get_contents($this->lockFile) ?: '';
+            @unlink($this->lockFile);
         }
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->lockBackup !== null) {
+            file_put_contents($this->lockFile, $this->lockBackup);
+        } elseif (file_exists($this->lockFile)) {
+            @unlink($this->lockFile);
+        }
+        parent::tearDown();
     }
 
     // ========== INDEX TESTS ==========
