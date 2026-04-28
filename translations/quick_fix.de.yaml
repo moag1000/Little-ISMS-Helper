@@ -1,0 +1,36 @@
+quick_fix:
+    title: 'Quick-Fix — Schema-Wartung'
+    pending:
+        title: 'Datenbank-Update erforderlich'
+        body: 'Diese Instanz wurde aktualisiert, das Datenbank-Schema ist aber noch auf dem alten Stand. Mit einem Klick anwenden:'
+        count_label: 'ausstehende Migration(en)'
+        button: 'Migrationen jetzt anwenden'
+    ok:
+        title: 'Alles aktuell'
+        body: 'Keine ausstehenden Schema-Migrationen.'
+        return: 'Zur Startseite'
+    error:
+        title: 'Diagnose nicht möglich'
+        body: 'Der Quick-Fix konnte den Schema-Status nicht ermitteln. Bitte Logs prüfen oder per CLI applyen:'
+    locked:
+        title: 'Quick-Fix gesperrt'
+        body: 'Der Zugriff auf diese Seite ist durch die Admin-Settings beschränkt. Wende dich an einen Administrator.'
+        token_hint: 'Wenn dir ein Installer-Token vorliegt, kannst du es hier eingeben:'
+        token_placeholder: 'Token aus var/setup-token'
+        token_submit: 'Mit Token freischalten'
+    settings:
+        title: 'Quick-Fix'
+        description: 'Steuert die öffentliche Fallback-Seite, die bei Schema-Mismatch statt eines 500er erscheint.'
+        fallback_ui_enabled:
+            label: 'Fallback-UI aktiv'
+            help: 'Wenn deaktiviert, zeigt das System bei Schema-Errors den Standard-500. Empfohlen für audit-kritische Produktion.'
+        require_installer_token:
+            label: 'Installer-Token verlangen'
+            help: 'Quick-Fix nur mit Token erreichbar. Token wird beim composer install in var/setup-token geschrieben. Empfohlen für öffentlich erreichbare Composer-Deployments.'
+        allow_in_dev_only:
+            label: 'Nur im Dev-Mode erlauben'
+            help: 'Quick-Fix nur erreichbar wenn APP_ENV=dev.'
+        ip_allowlist:
+            label: 'IP-Allowlist'
+            help: 'Komma-getrennte Liste erlaubter Client-IPs. Leer = deaktiviert.'
+        save: 'Speichern'

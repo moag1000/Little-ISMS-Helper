@@ -1,0 +1,54 @@
+{# Standalone — same self-contained styling as quick_fix/index.html.twig
+   so it works even when the rest of the app is broken. #}
+{% set lang = app.request.locale|default('de') %}
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ 'quick_fix.locked.title'|trans({}, 'quick_fix') }} — Little ISMS Helper</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <style>
+        :root {
+            --bg: #0f172a; --surface: #1e293b; --border: #334155;
+            --text: #f1f5f9; --muted: #94a3b8; --accent: #38bdf8;
+            --warning: #f59e0b;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+               background: var(--bg); color: var(--text); min-height: 100vh;
+               display: flex; align-items: center; justify-content: center; padding: 24px; }
+        .card { background: var(--surface); border: 1px solid var(--border);
+                border-radius: 12px; padding: 32px; max-width: 520px; width: 100%;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        .icon { font-size: 48px; margin-bottom: 16px; }
+        h1 { font-size: 22px; margin: 0 0 8px; font-weight: 600; }
+        p { color: var(--muted); line-height: 1.6; margin: 8px 0; }
+        .footer { color: var(--muted); font-size: 12px; margin-top: 24px; text-align: center; }
+        input[type=text] { width: 100%; padding: 10px 12px; background: var(--bg);
+                           border: 1px solid var(--border); border-radius: 8px;
+                           color: var(--text); font-size: 14px; font-family: monospace;
+                           margin-top: 8px; }
+        button { background: var(--accent); color: var(--bg); border: 0;
+                 padding: 10px 16px; border-radius: 8px; font-size: 14px;
+                 font-weight: 600; cursor: pointer; margin-top: 12px; width: 100%; }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <div class="icon">🔒</div>
+        <h1>{{ 'quick_fix.locked.title'|trans({}, 'quick_fix') }}</h1>
+        <p>{{ 'quick_fix.locked.body'|trans({}, 'quick_fix') }}</p>
+
+        {% if token_required %}
+            <p style="font-size: 13px; margin-top: 16px;">{{ 'quick_fix.locked.token_hint'|trans({}, 'quick_fix') }}</p>
+            <form method="GET" action="">
+                <input type="text" name="token" placeholder="{{ 'quick_fix.locked.token_placeholder'|trans({}, 'quick_fix') }}" autofocus>
+                <button type="submit">{{ 'quick_fix.locked.token_submit'|trans({}, 'quick_fix') }}</button>
+            </form>
+        {% endif %}
+
+        <div class="footer">Little ISMS Helper</div>
+    </main>
+</body>
+</html>

@@ -615,6 +615,45 @@ Admin API endpoints (require `ROLE_ADMIN`):
 
 ---
 
+## Quick-Fix Fallback (Schema-Upgrade nach Composer-Install)
+
+Nach `composer install` / `git pull` ohne Container-Neustart kann das Schema
+gegenüber den Entity-Definitionen veralten und einen 500-Fehler produzieren
+(`TableNotFoundException`, `Unknown column …`, `MappingException`). Statt
+500 leitet die App auf `/quick-fix` — eine standalone Seite mit einem Button
+"Migrationen jetzt anwenden". Funktioniert ohne Login.
+
+### Drei Deployment-Szenarien
+
+| Szenario | Hauptlösung | Quick-Fix-Rolle |
+|---|---|---|
+| Docker / Self-Host (`docker compose up -d`) | Entrypoint `init-mysql.sh` ruft `migrate` beim Start auf | Nicht nötig — Safety-Net |
+| VPS mit SSH | `php bin/console doctrine:migrations:migrate` nach Code-Update | Safety-Net falls vergessen |
+| Shared Hosting / FTP-only | Quick-Fix-UI ist die einzige Lösung | Hauptlösung — Token-Mode empfohlen |
+
+### Konfiguration
+
+Admin-Settings unter `/admin/quick-fix-settings`:
+
+| Setting | Default | Bedeutung |
+|---|---|---|
+| `fallback_ui_enabled` | true | Master-Schalter. Off = 500er wie zuvor (audit-kritische Prod) |
+| `require_installer_token` | false | Token aus `var/setup-token` muss übergeben werden |
+| `allow_in_dev_only` | false | Nur erreichbar wenn `APP_ENV=dev` |
+| `ip_allowlist` | leer | Komma-Liste erlaubter Client-IPs |
+
+Token wird beim `composer install` automatisch in `var/setup-token` (mode 0640)
+geschrieben. Per FTP/SFTP auslesbar. Cookie-Persist nach erstem Aufruf via
+`?token=…`, sodass POST-Apply nicht erneut den Token braucht.
+
+### Was angewendet wird
+
+Nur Migrationen aus dem aktuellen Build (`migrations/` Verzeichnis) werden
+ausgeführt — kein manueller SQL, keine Schema-Reconcile (das verlangt
+weiterhin `app:schema:reconcile` per CLI durch einen Admin).
+
+---
+
 ## Changelog
 
 ### Version 1.0 (2025-01-12)
@@ -622,6 +661,9 @@ Admin API endpoints (require `ROLE_ADMIN`):
 - Documented all Phase 6L features
 - Added troubleshooting section
 - Best practices guidelines
+
+### Version 1.1 (2026-04-28)
+- Added Quick-Fix fallback section (composer-deployment scenario)
 
 ---
 

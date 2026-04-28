@@ -5,6 +5,18 @@ security_routes:
         namespace: App\Controller
     type: attribute
 
+# Quick-Fix fallback routes WITHOUT locale prefix — must remain reachable when
+# the schema-error that brought the user here also broke the locale resolver.
+app_quick_fix_index:
+    path: /quick-fix
+    controller: App\Controller\QuickFixController::index
+    methods: [GET]
+
+app_quick_fix_apply:
+    path: /quick-fix/apply
+    controller: App\Controller\QuickFixController::apply
+    methods: [POST]
+
 # Root redirect - smart locale detection (without locale)
 app_home:
     path: /
@@ -52,3 +64,4 @@ app_routes:
     exclude:
         - '../src/Controller/SecurityController.php'
         - '../src/Controller/HomeController.php'
+        - '../src/Controller/QuickFixController.php'

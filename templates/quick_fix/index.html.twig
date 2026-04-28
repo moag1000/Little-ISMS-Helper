@@ -1,0 +1,112 @@
+{# Standalone template — does NOT extend the main layout because the schema
+   error that brought us here may have broken services the main layout
+   depends on (locale resolver, sidebar query, RoleDashboard). Inline minimal
+   styling keeps it usable even when CSS/JS pipelines are partially broken. #}
+{% set lang = app.request.locale|default('de') %}
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ 'quick_fix.title'|trans({}, 'quick_fix') }} — Little ISMS Helper</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --border: #334155;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --danger: #f87171;
+            --success: #4ade80;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 520px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        .icon { font-size: 48px; margin-bottom: 16px; }
+        h1 { font-size: 22px; margin: 0 0 8px; font-weight: 600; }
+        p { color: var(--muted); line-height: 1.6; margin: 8px 0; }
+        .count {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--accent);
+            margin: 16px 0 4px;
+        }
+        .count-label { color: var(--muted); font-size: 14px; }
+        button {
+            background: var(--accent);
+            color: var(--bg);
+            border: 0;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+            width: 100%;
+        }
+        button:hover:not(:disabled) { background: var(--accent-hover); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .flash { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+        .flash.success { background: rgba(74,222,128,0.15); border: 1px solid var(--success); color: var(--success); }
+        .flash.error { background: rgba(248,113,113,0.15); border: 1px solid var(--danger); color: var(--danger); }
+        .empty { color: var(--muted); font-size: 15px; margin-top: 8px; }
+        .footer { color: var(--muted); font-size: 12px; margin-top: 24px; text-align: center; }
+    </style>
+</head>
+<body>
+    <main class="card">
+        {% for label, messages in app.flashes(['success', 'error']) %}
+            {% for message in messages %}
+                <div class="flash {{ label }}">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        {% if error_message %}
+            <div class="icon">⚠️</div>
+            <h1>{{ 'quick_fix.error.title'|trans({}, 'quick_fix') }}</h1>
+            <p>{{ 'quick_fix.error.body'|trans({}, 'quick_fix') }}</p>
+            <p style="font-family: monospace; font-size: 12px; word-break: break-word;">{{ error_message }}</p>
+        {% elseif pending_count > 0 %}
+            <div class="icon">🔧</div>
+            <h1>{{ 'quick_fix.pending.title'|trans({}, 'quick_fix') }}</h1>
+            <p>{{ 'quick_fix.pending.body'|trans({}, 'quick_fix') }}</p>
+            <div class="count">{{ pending_count }}</div>
+            <div class="count-label">{{ 'quick_fix.pending.count_label'|trans({}, 'quick_fix') }}</div>
+            <form method="POST" action="{{ path('app_quick_fix_apply') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_apply') }}">
+                <button type="submit" onclick="this.disabled=true;this.form.submit();">
+                    {{ 'quick_fix.pending.button'|trans({}, 'quick_fix') }}
+                </button>
+            </form>
+        {% else %}
+            <div class="icon">✅</div>
+            <h1>{{ 'quick_fix.ok.title'|trans({}, 'quick_fix') }}</h1>
+            <p class="empty">{{ 'quick_fix.ok.body'|trans({}, 'quick_fix') }}</p>
+            <a href="/" style="color: var(--accent);">{{ 'quick_fix.ok.return'|trans({}, 'quick_fix') }}</a>
+        {% endif %}
+
+        <div class="footer">Little ISMS Helper</div>
+    </main>
+</body>
+</html>

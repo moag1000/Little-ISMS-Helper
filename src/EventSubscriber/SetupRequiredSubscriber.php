@@ -57,6 +57,11 @@ class SetupRequiredSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // Skip for quick-fix fallback page (post-upgrade migration applier)
+        if (str_starts_with($path, '/quick-fix')) {
+            return;
+        }
+
         // Skip for assets and profiler
         if (str_starts_with($path, '/_') || str_starts_with($path, '/bundles/')) {
             return;

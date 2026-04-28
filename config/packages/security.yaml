@@ -102,6 +102,11 @@ security:
         - { path: ^/oauth, roles: PUBLIC_ACCESS }
         - { path: ^/saml, roles: PUBLIC_ACCESS }
 
+        # Quick-Fix fallback: must remain reachable when schema-error blocks
+        # the user-table query the firewall would otherwise need. Per-request
+        # access is gated by App\Service\QuickFixGuard inside the controller.
+        - { path: ^/quick-fix, roles: PUBLIC_ACCESS }
+
         # MFA Challenge (NIS2 Compliance - Art. 21.2.b)
         # User is authenticated but hasn't completed MFA yet
         - { path: '^/(de|en)/mfa-challenge$', roles: IS_AUTHENTICATED_REMEMBERED }
