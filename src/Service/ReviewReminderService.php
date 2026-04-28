@@ -92,7 +92,7 @@ class ReviewReminderService
                 return false;
             }
             // Only check non-closed risks
-            return $reviewDate < $now && !in_array($risk->getStatus(), ['closed', 'accepted'], true);
+            return $reviewDate < $now && !in_array($risk->getStatus(), [\App\Enum\RiskStatus::Closed, \App\Enum\RiskStatus::Accepted], true);
         });
     }
 
@@ -288,7 +288,7 @@ class ReviewReminderService
                             'review_date' => $plan->getNextReviewDate(),
                             'test_date' => $plan->getNextTestDate(),
                             'entity_id' => $plan->getId(),
-                            'route_name' => 'app_business_continuity_plan_show',
+                            'route_name' => 'app_bc_plan_show',
                             'is_test_overdue' => $plan->isTestOverdue(),
                             'is_review_overdue' => $plan->isReviewOverdue(),
                         ],
@@ -366,7 +366,7 @@ class ReviewReminderService
             if (!$reviewDate instanceof DateTimeInterface) {
                 return false;
             }
-            return $reviewDate >= $now && $reviewDate <= $threshold && !in_array($risk->getStatus(), ['closed', 'accepted'], true);
+            return $reviewDate >= $now && $reviewDate <= $threshold && !in_array($risk->getStatus(), [\App\Enum\RiskStatus::Closed, \App\Enum\RiskStatus::Accepted], true);
         });
     }
 

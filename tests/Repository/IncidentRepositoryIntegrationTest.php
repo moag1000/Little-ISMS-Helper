@@ -19,14 +19,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  * Requires a real database (APP_ENV=test with configured DATABASE_URL).
  * Run with: php bin/phpunit --group integration tests/Repository/IncidentRepositoryIntegrationTest.php
  *
- * Valid incident statuses (from Incident entity):
- *   reported, in_investigation, in_resolution, resolved, closed
- *
- * Open-incident statuses used by findOpenIncidents():
- *   open, investigating, in_progress
- *
- * NOTE: The repository queries for statuses 'open', 'investigating', 'in_progress'
- * which are NOT in the entity's @Assert\Choice list. Tests document this discrepancy.
+ * IncidentStatus enum values: Reported, InInvestigation, InResolution, Resolved, Closed.
+ * findOpenIncidents() returns Reported / InInvestigation / InResolution.
  */
 #[Group('integration')]
 class IncidentRepositoryIntegrationTest extends KernelTestCase
@@ -52,10 +46,6 @@ class IncidentRepositoryIntegrationTest extends KernelTestCase
 
     // -------------------------------------------------------------------------
     // findOpenIncidents
-    // NOTE: The repository filters on statuses 'open', 'investigating', 'in_progress'.
-    // The entity's @Assert\Choice only allows: reported, in_investigation,
-    // in_resolution, resolved, closed. The test stores raw DB values to bypass
-    // validator and documents this status-name mismatch.
     // -------------------------------------------------------------------------
 
     #[Test]
@@ -259,11 +249,9 @@ class IncidentRepositoryIntegrationTest extends KernelTestCase
     }
 
     /**
-     * Create an Incident bypassing PHP-level validation to set legacy status
-     * values used by findOpenIncidents() ('open', 'investigating', 'in_progress').
-     *
-     * We persist via the entity but directly mutate the DB column value so we can
-     * test the actual repository query without changing the entity schema.
+     * Create an Incident, mapping legacy status names to current enum values.
+     * findOpenIncidents() now matches IncidentStatus::Reported, InInvestigation,
+     * InResolution. Tests still pass legacy names for readability.
      */
     private function createIncidentRaw(
         Tenant $tenant,
@@ -272,6 +260,18 @@ class IncidentRepositoryIntegrationTest extends KernelTestCase
         string $category,
         string $status,
     ): Incident {
+        $statusMap = [
+            'open' => \App\Enum\IncidentStatus::Reported,
+            'investigating' => \App\Enum\IncidentStatus::InInvestigation,
+            'in_progress' => \App\Enum\IncidentStatus::InResolution,
+            'reported' => \App\Enum\IncidentStatus::Reported,
+            'in_investigation' => \App\Enum\IncidentStatus::InInvestigation,
+            'in_resolution' => \App\Enum\IncidentStatus::InResolution,
+            'resolved' => \App\Enum\IncidentStatus::Resolved,
+            'closed' => \App\Enum\IncidentStatus::Closed,
+        ];
+        $statusEnum = $statusMap[$status] ?? \App\Enum\IncidentStatus::Reported;
+
         $incident = new Incident();
         $incident->setTenant($tenant);
         $incident->setIncidentNumber('INC-' . uniqid());
@@ -279,24 +279,12 @@ class IncidentRepositoryIntegrationTest extends KernelTestCase
         $incident->setDescription('Test description for ' . $title);
         $incident->setCategory($category);
         $incident->setSeverity(\App\Enum\IncidentSeverity::from($severity));
-        // Use 'reported' as a placeholder that passes entity validation
-        $incident->setStatus(\App\Enum\IncidentStatus::Reported);
+        $incident->setStatus($statusEnum);
         $incident->setReportedBy('Integration Test');
         $incident->setDetectedAt(new DateTimeImmutable());
         $incident->setDataBreachOccurred(false);
         $incident->setNotificationRequired(false);
         $this->em->persist($incident);
-        $this->em->flush();
-
-        // Now update the status directly to bypass Symfony validator
-        $this->em->getConnection()->executeStatement(
-            'UPDATE incident SET status = :status WHERE id = :id',
-            ['status' => $status, 'id' => $incident->getId()]
-        );
-
-        // Refresh the entity so Doctrine reads back the updated status
-        $this->em->refresh($incident);
-
         return $incident;
     }
 }
