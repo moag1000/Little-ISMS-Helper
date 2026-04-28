@@ -273,9 +273,12 @@
                     <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--warning">
                         <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i> {{ 'compliance.framework.action.gap_analysis'|trans({}, 'compliance') }}
                     </a>
-                    <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="fa-icon fa-icon--sop" aria-hidden="true"></i> {{ 'compliance.framework.action.assess'|trans({}, 'compliance') }}
-                    </a>
+                    <form method="post" action="{{ path('app_compliance_assess', {id: framework.id}) }}" style="display: inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('assess_framework') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
+                            <i class="fa-icon fa-icon--sop" aria-hidden="true"></i> {{ 'compliance.framework.action.assess'|trans({}, 'compliance') }}
+                        </button>
+                    </form>
                 </div>
                 {% endblock %}
             {% endembed %}

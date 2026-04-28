@@ -38,9 +38,12 @@
             <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 ← {{ 'compliance.button.back'|trans({}, 'compliance') }}
             </a>
-            <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--success">
-                {{ 'compliance.button.reassess'|trans({}, 'compliance') }}
-            </a>
+            <form method="post" action="{{ path('app_compliance_assess', {id: framework.id}) }}" style="display: inline;">
+                <input type="hidden" name="_token" value="{{ csrf_token('assess_framework') }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
+                    {{ 'compliance.button.reassess'|trans({}, 'compliance') }}
+                </button>
+            </form>
             {# CM-2: Delta-Assessment Export — requires a baseline framework (i.e. another active framework) #}
             {% set baseline_candidates = (all_frameworks|default(get_compliance_frameworks_quick()))|filter(fw => fw.id != framework.id) %}
             {% if is_granted('ROLE_MANAGER') %}
