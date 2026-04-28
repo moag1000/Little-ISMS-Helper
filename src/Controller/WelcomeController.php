@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Enum\IncidentStatus;
 use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
@@ -173,7 +174,7 @@ class WelcomeController extends AbstractController
 
         // Incidents
         if ($this->moduleConfigurationService->isModuleActive('incidents')) {
-            $count = $tenant ? $this->incidentRepository->count(['tenant' => $tenant, 'status' => 'open']) : 0;
+            $count = $tenant ? count($this->incidentRepository->findBy(['tenant' => $tenant, 'status' => [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution]])) : 0;
             $modules[] = [
                 'key' => 'incidents',
                 'name_key' => 'welcome.module.incidents',

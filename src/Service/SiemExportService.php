@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service;
 
 use DateTime;
+use App\Enum\IncidentSeverity;
+use App\Enum\IncidentStatus;
 use App\Repository\AuditLogRepository;
 use App\Repository\CryptographicOperationRepository;
 use App\Repository\IncidentRepository;
@@ -96,9 +98,9 @@ class SiemExportService
             ],
             'incidents' => [
                 'total' => count($this->incidentRepository->findAll()),
-                'critical' => count($this->incidentRepository->findBy(['severity' => 'critical'])),
-                'high' => count($this->incidentRepository->findBy(['severity' => 'high'])),
-                'open' => count($this->incidentRepository->findBy(['status' => 'open'])),
+                'critical' => count($this->incidentRepository->findBy(['severity' => IncidentSeverity::Critical])),
+                'high' => count($this->incidentRepository->findBy(['severity' => IncidentSeverity::High])),
+                'open' => count($this->incidentRepository->findBy(['status' => [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution]])),
             ],
             'threats' => $this->threatIntelligenceRepository->getStatistics(),
             'cryptographic_operations' => $this->cryptographicOperationRepository->getStatistics($startDate, $endDate),
@@ -121,7 +123,7 @@ class SiemExportService
             'physical_access' => $this->physicalAccessLogRepository->findAll(),
             'audit_logs' => $this->auditLogRepository->findAll(),
             'security_incidents' => array_merge(
-                $this->incidentRepository->findBy(['severity' => ['critical', 'high']]),
+                $this->incidentRepository->findBy(['severity' => [IncidentSeverity::Critical, IncidentSeverity::High]]),
                 $this->physicalAccessLogRepository->findRecentSecurityIncidents(30)
             ),
             default => [],

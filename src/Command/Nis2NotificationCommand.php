@@ -8,6 +8,7 @@ use Symfony\Component\Console\Attribute\Option;
 use DateTimeImmutable;
 use Exception;
 use App\Entity\Incident;
+use App\Enum\IncidentStatus;
 use App\Repository\IncidentRepository;
 use App\Repository\UserRepository;
 use App\Service\EmailNotificationService;
@@ -73,7 +74,7 @@ class Nis2NotificationCommand
         $incidents = $this->incidentRepository->createQueryBuilder('i')
             ->where('i.status IN (:statuses)')
             ->andWhere('(i.crossBorderImpact = true OR i.nis2Category IS NOT NULL)')
-            ->setParameter('statuses', ['new', 'investigating', 'contained', 'recovery'])
+            ->setParameter('statuses', [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution])
             ->getQuery()
             ->getResult();
 

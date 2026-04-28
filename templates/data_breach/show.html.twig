@@ -34,7 +34,7 @@
                     <p class="fa-alert__message">{{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': 1}, 'privacy')|raw }}</p>
                     <hr>
                     <p class="mb-0">
-                        <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }} ·
+                        <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|date('Y-m-d H:i') }} ·
                         <strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
                     </p>
                 {% endblock %}
@@ -47,7 +47,7 @@
                         {{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }} {{ 'privacy.data_breach.field.within'|default('within') }} <strong>{{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans({}, 'privacy') }}</strong>.
                     </p>
                     <p class="mb-0">
-                        <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }} ·
+                        <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|date('Y-m-d H:i') }} ·
                         <strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
                     </p>
                 {% endblock %}

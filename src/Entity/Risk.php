@@ -660,7 +660,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function getInherentRiskLevel(): int
     {
-        return $this->probability * $this->impact;
+        return ($this->probability ?? 0) * ($this->impact ?? 0);
     }
 
     /**
@@ -676,7 +676,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function getResidualRiskLevel(): int
     {
-        return $this->residualProbability * $this->residualImpact;
+        return ($this->residualProbability ?? 0) * ($this->residualImpact ?? 0);
     }
 
     #[Groups(['risk:read'])]

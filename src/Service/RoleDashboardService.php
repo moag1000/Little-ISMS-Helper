@@ -739,7 +739,7 @@ class RoleDashboardService
 
         // Open incidents
         $incidents = $this->getRecentIncidents($tenant, 1);
-        $openIncidents = array_filter($incidents, fn($i) => $i['status'] === 'open');
+        $openIncidents = array_filter($incidents, fn($i) => in_array($i['status'], ['reported', 'in_investigation', 'in_resolution'], true));
         if (!empty($openIncidents)) {
             $incident = reset($openIncidents);
             $items[] = [
