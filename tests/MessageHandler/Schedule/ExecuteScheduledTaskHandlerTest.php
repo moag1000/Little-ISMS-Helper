@@ -89,7 +89,7 @@ class ExecuteScheduledTaskHandlerTest extends TestCase
         $task = $this->createMock(ScheduledTask::class);
         $task->method('getId')->willReturn(1);
         $task->method('getName')->willReturn('Test Task');
-        $task->method('getCommand')->willReturn('app:test-command');
+        $task->method('getCommand')->willReturn('app:process-timed-workflows');
         $task->method('getArguments')->willReturn(['--verbose']);
         $task->method('isEnabled')->willReturn(true);
 
@@ -118,7 +118,7 @@ class ExecuteScheduledTaskHandlerTest extends TestCase
         $task = $this->createMock(ScheduledTask::class);
         $task->method('getId')->willReturn(1);
         $task->method('getName')->willReturn('Test Task');
-        $task->method('getCommand')->willReturn('app:simple-command');
+        $task->method('getCommand')->willReturn('app:send-notifications');
         $task->method('getArguments')->willReturn(null);
         $task->method('isEnabled')->willReturn(true);
 
