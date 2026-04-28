@@ -49,8 +49,14 @@ class SetupSecuritySubscriber implements EventSubscriberInterface
         $request = $requestEvent->getRequest();
         $path = $request->getPathInfo();
 
-        // Only check setup routes
-        if (!str_starts_with($path, '/setup')) {
+        // Only check setup routes — auch hinter Locale-Prefix matchen.
+        // Symfony routet /setup standardmaessig als /{_locale}/setup wenn
+        // app.supported_locales (de, en) gesetzt ist. Ohne diesen Strip
+        // rutschten /de/setup/step2-... und /en/setup/step4-admin am
+        // Subscriber vorbei → Privilege-Escalation nach Setup-Abschluss
+        // (Step 4 erlaubte Admin-Anlegen ohne Auth).
+        $normalizedPath = preg_replace('#^/[a-z]{2}(?=/|$)#', '', $path) ?? $path;
+        if (!str_starts_with($normalizedPath, '/setup')) {
             return;
         }
 
