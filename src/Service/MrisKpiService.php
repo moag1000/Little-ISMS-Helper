@@ -116,7 +116,7 @@ final class MrisKpiService
             SELECT
                 COUNT(*) AS total,
                 SUM(CASE WHEN success_rating >= 4 THEN 1 ELSE 0 END) AS passing
-            FROM b_c_exercise
+            FROM bc_exercise
             WHERE tenant_id = :tenant
               AND status = 'completed'
               AND exercise_date >= DATE_SUB(NOW(), INTERVAL 365 DAY)
