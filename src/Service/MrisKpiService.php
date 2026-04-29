@@ -86,8 +86,8 @@ final class MrisKpiService
      */
     private function phishingResistantMfaShare(Tenant $tenant): array
     {
-        $totalSql = 'SELECT COUNT(DISTINCT mt.user_id) FROM mfa_token mt JOIN user u ON u.id = mt.user_id WHERE u.tenant_id = :tenant AND mt.is_active = 1';
-        $resistantSql = 'SELECT COUNT(DISTINCT mt.user_id) FROM mfa_token mt JOIN user u ON u.id = mt.user_id WHERE u.tenant_id = :tenant AND mt.is_active = 1 AND mt.token_type = :type';
+        $totalSql = 'SELECT COUNT(DISTINCT mt.user_id) FROM mfa_tokens mt JOIN users u ON u.id = mt.user_id WHERE u.tenant_id = :tenant AND mt.is_active = 1';
+        $resistantSql = 'SELECT COUNT(DISTINCT mt.user_id) FROM mfa_tokens mt JOIN users u ON u.id = mt.user_id WHERE u.tenant_id = :tenant AND mt.is_active = 1 AND mt.token_type = :type';
 
         $conn = $this->entityManager->getConnection();
         $total = (int) $conn->executeQuery($totalSql, ['tenant' => $tenant->getId()])->fetchOne();
