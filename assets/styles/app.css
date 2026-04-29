@@ -1869,6 +1869,7 @@ h3 {
     margin-right: 0.5rem;
 }
 
+/* @deprecated — use _fa_alert.html.twig component instead. Kept for PDF/email backward compat. */
 /* Info/Warning Boxes */
 .info-box,
 .warning-box,

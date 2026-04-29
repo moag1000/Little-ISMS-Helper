@@ -191,7 +191,9 @@
         icon: 'bi-shield-check',
         title: 'incident.empty.title'|trans({}, 'incident'),
         description: 'incident.empty.description'|trans({}, 'incident'),
-        action: { label: 'incident.header.action.report'|trans({}, 'incident'), url: path('app_incident_new'), icon: 'bi-exclamation-circle' }
+        action: { label: 'incident.header.action.report'|trans({}, 'incident'), url: path('app_incident_new'), icon: 'bi-exclamation-circle' },
+        norm_ref: 'ISO 27001 A.5.24-28 · ISO 9001: Nichtkonformität (10.2)',
+        help_link: path('app_help_glossary') ~ '#glossary-incident'
     } %}
 {% else %}
 {% embed '_components/_card.html.twig' %}

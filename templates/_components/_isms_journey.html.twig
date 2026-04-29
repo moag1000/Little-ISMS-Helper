@@ -1,0 +1,267 @@
+{#
+ # ISMS Implementation Journey Widget
+ #
+ # Shows overall progress toward ISO 27001 certification readiness
+ # with 7 phases, Alva mascot mood, and a "next step" call-to-action.
+ #
+ # Expected variable: journey (JourneyProgress object)
+ #}
+{% import '_components/_alva.html.twig' as alva %}
+{% trans_default_domain 'journey' %}
+
+{% set progress = journey %}
+{% set current = progress.currentPhase %}
+
+<div class="isms-journey mb-4" data-widget-id="isms-journey">
+    {# Header row: Alva + title + overall progress #}
+    <div class="isms-journey__header">
+        <div class="isms-journey__alva">
+            {{ alva.render(progress.alvaMood, { size: 80, decorative: true }) }}
+        </div>
+        <div class="isms-journey__summary">
+            <h2 class="isms-journey__title">
+                <i class="bi bi-rocket-takeoff me-2" aria-hidden="true"></i>
+                {{ 'journey.title'|trans }}
+            </h2>
+            <p class="isms-journey__subtitle text-muted mb-2">
+                {{ 'journey.subtitle'|trans }}
+            </p>
+            <div class="d-flex align-items-center gap-3">
+                <div class="isms-journey__progress-bar flex-grow-1">
+                    <div class="progress" style="height: 10px;" role="progressbar"
+                         aria-valuenow="{{ progress.overallPercent }}"
+                         aria-valuemin="0" aria-valuemax="100"
+                         aria-label="{{ 'journey.percent_complete'|trans({'%percent%': progress.overallPercent}) }}">
+                        <div class="progress-bar bg-primary"
+                             style="width: {{ progress.overallPercent }}%;"></div>
+                    </div>
+                </div>
+                <span class="isms-journey__percent fw-bold text-primary">
+                    {{ 'journey.percent_complete'|trans({'%percent%': progress.overallPercent}) }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    {# Phase indicators row #}
+    <div class="isms-journey__phases">
+        {% for phase in progress.phases %}
+            {% set status = phase.status %}
+            <div class="isms-journey__phase isms-journey__phase--{{ status }}{% if loop.index0 == progress.currentPhaseIndex %} isms-journey__phase--current{% endif %}"
+                 title="{{ ('journey.phase.' ~ phase.key ~ '.label')|trans }} — {{ ('journey.status.' ~ status)|trans }} ({{ phase.completionPercent }}%)">
+
+                {# Status indicator #}
+                <div class="isms-journey__phase-icon">
+                    {% if status == 'complete' %}
+                        <span class="isms-journey__status-icon text-success" aria-hidden="true">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </span>
+                    {% elseif status == 'partial' %}
+                        <span class="isms-journey__status-icon text-primary" aria-hidden="true">
+                            <i class="bi bi-circle-half"></i>
+                        </span>
+                    {% elseif status == 'locked' %}
+                        <span class="isms-journey__status-icon text-muted" aria-hidden="true">
+                            <i class="bi bi-lock-fill"></i>
+                        </span>
+                    {% elseif status == 'dismissed' %}
+                        <span class="isms-journey__status-icon text-secondary" aria-hidden="true">
+                            <i class="bi bi-dash-circle"></i>
+                        </span>
+                    {% else %}
+                        <span class="isms-journey__status-icon text-muted" aria-hidden="true">
+                            <i class="bi bi-circle"></i>
+                        </span>
+                    {% endif %}
+                </div>
+
+                {# Phase icon + label #}
+                <div class="isms-journey__phase-body">
+                    <i class="bi bi-{{ phase.icon }} isms-journey__phase-bi" aria-hidden="true"></i>
+                    <span class="isms-journey__phase-label">
+                        {{ ('journey.phase.' ~ phase.key ~ '.label')|trans }}
+                    </span>
+                </div>
+
+                {# Mini progress bar #}
+                {% if status != 'locked' and status != 'dismissed' %}
+                    <div class="isms-journey__phase-progress">
+                        <div class="progress" style="height: 3px;">
+                            <div class="progress-bar {% if status == 'complete' %}bg-success{% else %}bg-primary{% endif %}"
+                                 style="width: {{ phase.completionPercent }}%;"></div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    {# Next step hint #}
+    {% if current and current.status != 'complete' %}
+        <div class="isms-journey__next-step">
+            <span class="fw-semibold text-primary">
+                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>
+                {{ 'journey.next_step'|trans }}:
+            </span>
+            <a href="{{ path(current.route) }}" class="ms-1">
+                {{ ('journey.phase.' ~ current.key ~ '.label')|trans }}
+            </a>
+            <span class="text-muted ms-1">
+                &mdash; {{ ('journey.phase.' ~ current.key ~ '.hint')|trans }}
+            </span>
+        </div>
+    {% endif %}
+
+    {# Footer: dismiss + full dashboard link #}
+    <div class="isms-journey__footer">
+        <form method="post" action="{{ path('app_dashboard_dismiss_journey') }}" class="d-inline">
+            <input type="hidden" name="_token" value="{{ csrf_token('dismiss_journey') }}">
+            <button type="submit" class="btn btn-link btn-sm text-muted p-0">
+                <i class="bi bi-eye-slash me-1" aria-hidden="true"></i>
+                {{ 'journey.dismiss'|trans }}
+            </button>
+        </form>
+    </div>
+</div>
+
+{# Scoped styles #}
+<style>
+    .isms-journey {
+        background: var(--surface, var(--bs-body-bg));
+        border: 1px solid var(--border, var(--bs-border-color));
+        border-radius: var(--radius-lg, 0.75rem);
+        padding: 1.25rem 1.5rem;
+    }
+
+    .isms-journey__header {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .isms-journey__alva {
+        flex-shrink: 0;
+    }
+
+    .isms-journey__summary {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    .isms-journey__title {
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin-bottom: 0.15rem;
+    }
+
+    .isms-journey__subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .isms-journey__percent {
+        white-space: nowrap;
+        font-size: 0.9rem;
+    }
+
+    /* Phase indicators row */
+    .isms-journey__phases {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .isms-journey__phase {
+        flex: 1 1 0;
+        min-width: 100px;
+        text-align: center;
+        padding: 0.6rem 0.4rem 0.4rem;
+        border-radius: var(--radius, 0.5rem);
+        border: 1px solid var(--border, var(--bs-border-color));
+        background: var(--surface-2, var(--bs-tertiary-bg));
+        transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .isms-journey__phase--current {
+        border-color: var(--primary, var(--bs-primary));
+        box-shadow: 0 0 0 2px rgba(var(--bs-primary-rgb, 13, 110, 253), 0.15);
+    }
+
+    .isms-journey__phase--locked {
+        opacity: 0.55;
+    }
+
+    .isms-journey__phase--dismissed {
+        opacity: 0.5;
+    }
+
+    .isms-journey__phase-icon {
+        font-size: 1.1rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .isms-journey__phase-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.15rem;
+    }
+
+    .isms-journey__phase-bi {
+        font-size: 1.2rem;
+        color: var(--fg-2, var(--bs-secondary-color));
+    }
+
+    .isms-journey__phase--complete .isms-journey__phase-bi {
+        color: var(--bs-success);
+    }
+
+    .isms-journey__phase--current .isms-journey__phase-bi {
+        color: var(--primary, var(--bs-primary));
+    }
+
+    .isms-journey__phase-label {
+        font-size: 0.72rem;
+        font-weight: 500;
+        line-height: 1.2;
+        color: var(--fg, var(--bs-body-color));
+    }
+
+    .isms-journey__phase-progress {
+        margin-top: 0.35rem;
+    }
+
+    /* Next step */
+    .isms-journey__next-step {
+        font-size: 0.88rem;
+        padding: 0.6rem 0;
+        border-top: 1px solid var(--border, var(--bs-border-color));
+        margin-bottom: 0.5rem;
+    }
+
+    /* Footer */
+    .isms-journey__footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        font-size: 0.8rem;
+    }
+
+    /* Responsive: stack on small screens */
+    @media (max-width: 576px) {
+        .isms-journey__header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .isms-journey__phases {
+            gap: 0.4rem;
+        }
+
+        .isms-journey__phase {
+            min-width: 80px;
+        }
+    }
+</style>

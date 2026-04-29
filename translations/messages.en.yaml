@@ -1779,6 +1779,7 @@ common.regenerate: 'Regenerate'
 common.error.unknown: 'An unknown error occurred'
 common.statistics: 'Statistics'
 common.loading: 'Loading...'
+common.learn_more: 'Learn more'
 
 # Role comparison keys
 role.compare.system_badge: 'System'

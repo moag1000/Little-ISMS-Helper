@@ -339,6 +339,7 @@ processing_activity:
         dpia_required: 'DPIA Required'
     empty:
         title: 'No processing activities found.'
+        description: 'A record of processing activities (ROPA) documents which personal data you process, why, and how. It is mandatory under GDPR Art. 30.'
         filter_hint: 'Try changing the filter or'
         create_hint: 'Start by'
         create_first: 'creating your first processing activity'

@@ -350,7 +350,9 @@
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {{ _fa_empty_state.render({
     mood: 'curious',
-    title: 'soa.message.no_controls_filtered'|trans({}, 'soa')
+    title: 'soa.message.no_controls_filtered'|trans({}, 'soa'),
+    norm_ref: 'ISO 27001 Clause 6.1.3 / Annex A',
+    help_link: path('app_help_glossary') ~ '#glossary-soa'
 }) }}
 {% endif %}
 </main>

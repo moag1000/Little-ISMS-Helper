@@ -22,6 +22,7 @@ use App\Service\ComplianceAnalyticsService;
 use App\Service\ComplianceWizardService;
 use App\Service\DashboardStatisticsService;
 use App\Service\GuidedTourService;
+use App\Service\ImplementationJourneyService;
 use App\Service\InheritanceMetricsService;
 use App\Service\ISOComplianceIntelligenceService;
 use App\Service\RiskReviewService;
@@ -55,6 +56,7 @@ class HomeController extends AbstractController
         private readonly ?ISMSContextRepository $ismsContextRepository = null,
         private readonly ?InheritanceMetricsService $inheritanceMetricsService = null,
         private readonly ?GuidedTourService $guidedTourService = null,
+        private readonly ?ImplementationJourneyService $journeyService = null,
     ) {}
 
     public function index(Request $request): Response
@@ -161,7 +163,13 @@ class HomeController extends AbstractController
         $totalUrgentCount = array_sum(array_column($urgentTasks, 'count'));
 
         // First Steps visibility (session-based dismiss)
-        $showFirstSteps = !$request->getSession()->get('first_steps_dismissed', false);
+        $showJourney = !$request->getSession()->get('journey_dismissed', false);
+
+        // ISMS Journey Progress (AP 2)
+        $journeyProgress = null;
+        if ($showJourney && $tenant instanceof Tenant && $this->journeyService !== null) {
+            $journeyProgress = $this->journeyService->getProgress($tenant);
+        }
 
         // Cross-Framework Control Mapping Data
         $crossFrameworkData = ['shared_controls' => 0, 'reuse_ratio' => 0, 'top_shared' => []];
@@ -265,10 +273,11 @@ class HomeController extends AbstractController
             'my_tasks' => $myTasks,
             'urgent_tasks' => $urgentTasks,
             'total_urgent_count' => $totalUrgentCount,
-            'show_first_steps' => $showFirstSteps,
+            'show_journey' => $showJourney,
+            'journey' => $journeyProgress,
             'cross_framework_data' => $crossFrameworkData,
 
-            // S5 / Junior-Finding #4: 5-Step-Onboarding-Checklist counters.
+            // ISMS Journey phase-completion counters (AP 1 will move this to ImplementationJourneyService).
             'context_defined' => $this->hasContextDefined($tenant),
             'asset_count' => $tenant ? $this->assetRepository->count(['tenant' => $tenant]) : 0,
             'risk_count' => $tenant ? $this->riskRepository->count(['tenant' => $tenant]) : 0,
@@ -295,19 +304,19 @@ class HomeController extends AbstractController
     }
 
     #[IsGranted('ROLE_USER')]
-    public function dismissFirstSteps(Request $request): Response
+    public function dismissJourney(Request $request): Response
     {
-        if ($this->isCsrfTokenValid('dismiss_first_steps', $request->request->get('_token'))) {
-            $request->getSession()->set('first_steps_dismissed', true);
+        if ($this->isCsrfTokenValid('dismiss_journey', $request->request->get('_token'))) {
+            $request->getSession()->set('journey_dismissed', true);
         }
 
         return $this->redirectToRoute('app_dashboard');
     }
 
     #[IsGranted('ROLE_USER')]
-    public function restoreFirstSteps(Request $request): Response
+    public function restoreJourney(Request $request): Response
     {
-        $request->getSession()->remove('first_steps_dismissed');
+        $request->getSession()->remove('journey_dismissed');
         $request->getSession()->remove('skip_welcome_page');
 
         // Also reset entity-persisted preference

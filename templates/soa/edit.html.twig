@@ -24,13 +24,16 @@
 
 </div>
 
-<div class="info-box mb-4">
-    <h2>{{ control.name|trans({}, 'control') }}</h2>
-    <p class="mt-sm-text-light">{{ control.description|trans({}, 'control') }}</p>
-    <div class="mt-2">
-        {% include '_components/_badge.html.twig' with { variant: 'info', content: control.category|trans({}, 'control') } %}
-    </div>
-</div>
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-4' } } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">{{ control.name|trans({}, 'control') }}</div>
+        <p class="mt-sm-text-light">{{ control.description|trans({}, 'control') }}</p>
+        <div class="mt-2">
+            {% include '_components/_badge.html.twig' with { variant: 'info', content: control.category|trans({}, 'control') } %}
+        </div>
+    {% endblock %}
+{% endembed %}
 
 {{ form_start(form) }}
 

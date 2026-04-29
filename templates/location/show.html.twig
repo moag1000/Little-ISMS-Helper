@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'locations' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ location.name }} - {{ 'location.title.show'|trans({}, 'locations') }} - Little ISMS Helper{% endblock %}
 
@@ -95,20 +96,22 @@
 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
     {% block card_body %}
     <h2>{{ 'location.section.address'|trans({}, 'locations') }}</h2>
-    <div class="info-box mt-2 bg-body-secondary">
-        {% if location.address %}
-            <p>{{ location.address }}</p>
-        {% endif %}
-        {% if location.postalCode or location.city %}
-            <p>
-                {% if location.postalCode %}{{ location.postalCode }}{% endif %}
-                {{ location.city }}
-            </p>
-        {% endif %}
-        {% if location.country %}
-            <p><strong>{{ location.country }}</strong></p>
-        {% endif %}
-    </div>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mt-2' } } %}
+        {% block alert_body %}
+            {% if location.address %}
+                <p>{{ location.address }}</p>
+            {% endif %}
+            {% if location.postalCode or location.city %}
+                <p>
+                    {% if location.postalCode %}{{ location.postalCode }}{% endif %}
+                    {{ location.city }}
+                </p>
+            {% endif %}
+            {% if location.country %}
+                <p><strong>{{ location.country }}</strong></p>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
     {% endblock %}
 {% endembed %}
 {% endif %}

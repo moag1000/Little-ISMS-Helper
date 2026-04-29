@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}Benutzeraktivität{% endblock %}
 {% block admin_subtitle %}
@@ -13,10 +14,12 @@
     </a>
 </p>
 
-<div class="info-box">
-    <h2>Benutzer: {{ userName }}</h2>
-    <p><strong>Anzahl Aktivitäten:</strong> {{ auditLogs|length }}</p>
-</div>
+{% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">Benutzer: {{ userName }}</div>
+        <p><strong>Anzahl Aktivitäten:</strong> {{ auditLogs|length }}</p>
+    {% endblock %}
+{% endembed %}
 
 {% if auditLogs|length > 0 %}
 <div class="mt-4">
@@ -71,9 +74,7 @@
     </div>
 </div>
 {% else %}
-<div class="info-box mt-4">
-    <p class="text-muted">{{ 'audit_log.message.no_user_activities'|trans({}, 'audit_log') }}</p>
-</div>
+{{ _fa_alert.render({ variant: 'info', class: 'mt-4', body: 'audit_log.message.no_user_activities'|trans({}, 'audit_log') }) }}
 {% endif %}
 
 {% endblock %}

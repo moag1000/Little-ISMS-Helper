@@ -144,7 +144,9 @@
                                 icon: 'bi-diagram-3',
                                 title: 'bcm.empty.title'|trans({}, 'bcm'),
                                 description: 'bcm.empty.description'|trans({}, 'bcm'),
-                                action: { label: 'bcm.action.add_process'|trans({}, 'bcm'), url: path('app_business_process_new'), icon: 'bi-plus-circle' }
+                                action: { label: 'bcm.action.add_process'|trans({}, 'bcm'), url: path('app_business_process_new'), icon: 'bi-plus-circle' },
+                                norm_ref: 'ISO 27001 A.5.29-30 · ISO 22301',
+                                help_link: path('app_help_glossary') ~ '#glossary-bcm'
                             } %}
                         </td>
                     </tr>
