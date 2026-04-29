@@ -1,0 +1,54 @@
+schema_version: '1.0'
+baseline:
+  id: 'msp-multi-tenant'
+  name: 'Managed Service Provider (Multi-Tenant)'
+  industry: 'msp'
+  description: |
+    Pre-Konfiguration für Managed Service Provider — IT-Outsourcing,
+    NOC/SOC-as-a-Service, Hosting + Co-Location. Multi-Tenant ist Kern-
+    Geschäftsmodell. Anker: ISO 27001, SOC 2 Type II (Trust Service Criteria),
+    BSI C5 (wo Cloud-Anteil), TISAX (für Automotive-OEM-Kunden).
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung MSP-Praxis'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: defined
+      reason: 'Krypto-Inventar zwingend bei Multi-Customer-PKIs. PQC-Roadmap als Wettbewerbsvorteil.'
+    MHC-02:
+      target: managed
+      reason: 'SBOM für alle eigene + verwaltete Stacks — Kunden fragen das im SOC2/TISAX-Audit.'
+    MHC-03:
+      target: managed
+      reason: 'Phishing-resistente MFA passwortlos für Admin-Accounts pro Tenant — Lateral-Movement-Risk hoch.'
+    MHC-04:
+      target: managed
+      reason: 'Workload-Identity (SPIFFE) im Multi-Tenant-Stack — Zero Static Credentials zwischen Kunden-Workloads.'
+    MHC-05:
+      target: managed
+      reason: 'Behavioural Detection im SOC, ATT&CK-Cloud + Endpoint Coverage. Kern-Service.'
+    MHC-06:
+      target: managed
+      reason: 'Endpoint-Härtung + EDR auf jedem verwalteten Asset. Kunden-Compliance-Pflicht.'
+    MHC-07:
+      target: managed
+      reason: 'Multi-Tenancy-Isolation Kern-Geschäft — automatisierte Tests + Audit-Pfade pro Kunde Pflicht.'
+    MHC-08:
+      target: managed
+      reason: 'Immutable Backups + DR-Tests Quartalsweise — SLA-relevant gegenüber Kunden.'
+    MHC-09:
+      target: managed
+      reason: 'KEV-Patch-Latency < 7 Tage Kunden-SLA-Standard. Automated Vulnerability-Mgmt.'
+    MHC-10:
+      target: managed
+      reason: 'CCM (Continuous Control Monitoring) + Policy-as-Code Pflicht — pro Kunde-Mandant getrennt.'
+    MHC-11:
+      target: managed
+      reason: 'SOAR mit Tenant-Routing — 24/7 IR-Team, MTTC < 4h für Kritische Vorfälle.'
+    MHC-12:
+      target: managed
+      reason: 'Threat-Led Pen-Testing jährlich + nach jeder Major-Stack-Änderung. Kunden-Vertrauensanker.'
+    MHC-13:
+      target: defined
+      reason: 'AI-Agent-Governance für Eng + SOC-Tools — Detection + Response sollten nicht durch AI-Halluzinationen blind werden.'
