@@ -1,0 +1,470 @@
+baseline:
+  id: bsi-grundschutz-manufacturing
+  name: 'BSI IT-Grundschutz - Fertigung / Industrie (TISAX/OT)'
+  name_en: 'BSI IT-Grundschutz - Manufacturing / Industry (TISAX/OT)'
+  industry: manufacturing
+  description: |
+    Baseline für produzierendes Gewerbe (Automotive, Maschinenbau, Chemie) nach
+    BSI 200-2 Basis-Absicherung mit Standard-Absicherung auf NET/SYS/IND-Bausteinen.
+    Adressiert TISAX VDA-ISA AL2/AL3, IEC 62443 für OT-Sicherheit, KRITIS-Industrie
+    bei Schwellwert-Überschreitung sowie Produktions-Continuity. Schwerpunkt:
+    OT/IT-Trennung, Anlagen-Verfügbarkeit und Lieferketten-Resilienz.
+  description_en: |
+    Baseline for manufacturing (automotive, machinery, chemicals) following BSI
+    200-2 Basic Protection with Standard Protection on NET/SYS/IND building blocks.
+    Addresses TISAX VDA-ISA AL2/AL3, IEC 62443 for OT security, KRITIS-Industry
+    above thresholds and production continuity. Focus: OT/IT separation, plant
+    availability and supply chain resilience.
+  targets:
+    "ISMS.1.A1":
+      maturity_target: "3"
+      reason: "Leitungsverantwortung — TISAX VDA-ISA 1.1 + Werks-/Produktionsleitung in IS-Steuerung einbinden."
+      reason_en: "Top-management responsibility — TISAX VDA-ISA 1.1 + plant/production management embedded in IS governance."
+    "ISMS.1.A2":
+      maturity_target: "3"
+      reason: "IS-Leitlinie — TISAX-Audit-Standard, Pflichtartefakt für AL2/AL3."
+      reason_en: "IS policy — TISAX audit standard, mandatory artefact for AL2/AL3."
+    "ISMS.1.A3":
+      maturity_target: "3"
+      reason: "IS-Organisation mit dediziertem ISB — bei Konzernen oft Werks-ISB plus zentraler CISO."
+      reason_en: "IS organisation with dedicated ISO — at corporates often plant ISO plus central CISO."
+    "ISMS.1.A4":
+      maturity_target: "3"
+      reason: "Ressourcen — Produktion vs. IT-Budget-Konkurrenz, IS-Investitionen müssen Anlagen-Verfügbarkeit unterstützen."
+      reason_en: "Resources — production vs. IT budget competition, IS investments must support plant availability."
+    "ISMS.1.A5":
+      maturity_target: "3"
+      reason: "Mitarbeiter-Einbindung in IS-Prozess inkl. Schichtarbeiter und Werker (USB-Disziplin, Phishing)."
+      reason_en: "Staff engagement in IS process including shift workers and operators (USB discipline, phishing)."
+    "ORP.1.A1":
+      maturity_target: "3"
+      reason: "Aufgaben/Verantwortungen — TISAX 1.2 RACI-Matrix, OT-Verantwortung klar trennen von IT."
+      reason_en: "Roles and responsibilities — TISAX 1.2 RACI matrix, separate OT responsibility from IT."
+    "ORP.2.A1":
+      maturity_target: "3"
+      reason: "Personal-Sicherheit — TISAX VDA-ISA 2.x, NDA für Konstruktionsdaten/Prototypen."
+      reason_en: "Personnel security — TISAX VDA-ISA 2.x, NDAs for construction data/prototypes."
+    "ORP.3.A1":
+      maturity_target: "3"
+      reason: "Sensibilisierungsprogramm — TISAX 2.1 mit Werker-spezifischen Schulungen (USB, Engineering-VPN)."
+      reason_en: "Awareness programme — TISAX 2.1 with operator-specific training (USB, engineering VPN)."
+    "ORP.3.A2":
+      maturity_target: "3"
+      reason: "Rollenbasierte Schulung für OT-Engineers, Konstrukteure und Sales (Spear-Phishing-Risiko)."
+      reason_en: "Role-based training for OT engineers, designers and sales (spear phishing risk)."
+    "ORP.3.A3":
+      maturity_target: "3"
+      reason: "Erfolgsmessung mit Phishing-Simulation und Teilnahmequote pro Werk."
+      reason_en: "Effectiveness measurement with phishing simulation and per-plant participation rate."
+    "CON.1.A1":
+      maturity_target: "3"
+      reason: "Krypto-Konzept — TISAX 6.4 Stand der Technik, BSI TR-02102. Konstruktionsdaten verschlüsselt."
+      reason_en: "Crypto concept — TISAX 6.4 state of the art, BSI TR-02102. Construction data encrypted."
+    "CON.2.A1":
+      maturity_target: "3"
+      reason: "Datenschutz-Konzept — Mitarbeiterdaten und Lieferanten-Daten DSGVO-relevant."
+      reason_en: "Data protection concept — employee and supplier data are GDPR relevant."
+    "CON.3.A1":
+      maturity_target: "4"
+      reason: "Datensicherungskonzept — Produktions-Stillstand bei Datenverlust extrem teuer; Air-Gapped-Backups gegen Ransomware."
+      reason_en: "Backup concept — production downtime on data loss extremely expensive; air-gapped backups against ransomware."
+    "CON.3.A2":
+      maturity_target: "3"
+      reason: "Festlegung Verfahrensweise Datensicherung — TISAX VDA-ISA 5.2.6 verlangt dokumentierte Backup-Verfahren auch für Engineering-Daten und MES-Konfigurationen."
+      reason_en: "Backup procedure definition — TISAX VDA-ISA 5.2.6 requires documented backup procedures for engineering data and MES configurations."
+    "CON.4.A1":
+      maturity_target: "3"
+      reason: "Auswahl/Beschaffung — TISAX 7.x Lieferanten-Audits, IS-Anforderungen in RFQ."
+      reason_en: "Procurement — TISAX 7.x supplier audits, IS requirements in RFQ."
+    "CON.4.A2":
+      maturity_target: "3"
+      reason: "Vertragsgestaltung mit Lieferanten — TISAX-Label-Anforderung an Tier-1/Tier-2 verbindlich."
+      reason_en: "Supplier contracts — TISAX label requirement for Tier 1/Tier 2 binding."
+    "CON.4.A5":
+      maturity_target: "3"
+      reason: "Abnahmeprüfung neuer Anlagen mit IT-Sicherheits-Komponente (FAT/SAT mit IS-Tests)."
+      reason_en: "Acceptance testing of new plant with IT security component (FAT/SAT with IS tests)."
+    "CON.5.A1":
+      maturity_target: "3"
+      reason: "Löschkonzept — Konstruktions-Altdaten mit Aufbewahrungsfrist nach BetrSichV/BHO."
+      reason_en: "Deletion concept — legacy construction data with retention per BetrSichV/BHO."
+    "CON.5.A2":
+      maturity_target: "3"
+      reason: "Sichere Datenträger-Vernichtung — alte SPS-Festplatten mit Konstruktions-IP."
+      reason_en: "Secure media destruction — old PLC drives with construction IP."
+    "CON.5.A7":
+      maturity_target: "3"
+      reason: "Cloud-/Outsourcing-Daten Rückgabe bei Engineering-PLM-Cloud-Diensten."
+      reason_en: "Cloud/outsourcing data return for engineering PLM cloud services."
+    "CON.11.A1":
+      maturity_target: "3"
+      reason: "Cloud-Strategie — Manufacturing-Execution-Systeme zunehmend Cloud, Souveränität wichtig."
+      reason_en: "Cloud strategy — manufacturing execution systems increasingly cloud, sovereignty important."
+    "CON.11.A2":
+      maturity_target: "3"
+      reason: "Cloud-Sicherheitskonzept — TISAX 7.4 Cloud-Anforderungen, C5 für Engineering-Daten."
+      reason_en: "Cloud security concept — TISAX 7.4 cloud requirements, C5 for engineering data."
+    "OPS.1.1.2.A1":
+      maturity_target: "4"
+      reason: "Privilegierte Administration — OT-Admins mit Jump-Hosts, IT/OT-Domain-Trennung."
+      reason_en: "Privileged administration — OT admins with jump hosts, IT/OT domain separation."
+    "OPS.1.1.3.A1":
+      maturity_target: "3"
+      reason: "Patch-Management — IT-Seite zeitnah; OT-Seite mit Wartungsfenster (oft quartalsweise) gem. IEC 62443."
+      reason_en: "Patch management — IT side timely; OT side in maintenance windows (often quarterly) per IEC 62443."
+    "OPS.1.1.3.A2":
+      maturity_target: "3"
+      reason: "Schwachstellen-Management — IT-Bereich mit Scans; OT mit passiver Erkennung (keine aktiven Scans auf SPS)."
+      reason_en: "Vulnerability management — IT with scans; OT with passive detection (no active scans on PLCs)."
+    "OPS.1.1.5.A1":
+      maturity_target: "3"
+      reason: "Protokollierung — OT/IT-Logs in zentralem SIEM mit Sanitization-Layer."
+      reason_en: "Logging — OT/IT logs in central SIEM with sanitisation layer."
+    "OPS.1.1.5.A2":
+      maturity_target: "3"
+      reason: "Auswertung Logs mit Use-Cases für OT-Anomalien (unerwartete SPS-Schreibzugriffe)."
+      reason_en: "Log evaluation with use cases for OT anomalies (unexpected PLC writes)."
+    "OPS.1.2.2.A1":
+      maturity_target: "3"
+      reason: "Archivierung Produktions-/Qualitätsdaten gem. ProdHaftG / ISO 9001."
+      reason_en: "Archiving of production/quality data per ProdHaftG / ISO 9001."
+    "OPS.1.2.3.A1":
+      maturity_target: "3"
+      reason: "Datenträgertausch in OT relevant — USB-Updates für Engineering-Workstations und SPS-Programme."
+      reason_en: "Media exchange relevant in OT — USB updates for engineering workstations and PLC programs."
+    "OPS.1.2.3.A2":
+      maturity_target: "3"
+      reason: "Sicherer Versand — geprüfte USB-Sticks (BadUSB-Schutz) mit Schleusen-PCs für OT."
+      reason_en: "Secure shipment — vetted USB sticks (BadUSB protection) with airlock PCs for OT."
+    "OPS.1.2.3.A3":
+      maturity_target: "3"
+      reason: "Verschlüsselung mobiler Datenträger Pflicht — Konstruktions-IP nicht in falsche Hände."
+      reason_en: "Encryption of mobile media mandatory — construction IP must not fall into wrong hands."
+    "OPS.2.2.A1":
+      maturity_target: "3"
+      reason: "Cloud-Anbieter-Strategie — PLM/CAD-Cloud-Dienste (Siemens Teamcenter, PTC) typisch."
+      reason_en: "Cloud provider strategy — PLM/CAD cloud services (Siemens Teamcenter, PTC) typical."
+    "OPS.2.2.A2":
+      maturity_target: "3"
+      reason: "Sicherheitskonzept Cloud — Engineering-Daten mit Lokalitäts-/Souveränitäts-Anforderungen."
+      reason_en: "Cloud security concept — engineering data with locality/sovereignty requirements."
+    "OPS.2.2.A3":
+      maturity_target: "3"
+      reason: "Service-Definition — SLAs müssen Produktions-Verfügbarkeit unterstützen."
+      reason_en: "Service definition — SLAs must support production availability."
+    "OPS.2.3.A1":
+      maturity_target: "3"
+      reason: "Outsourcing-Strategie — Wartungsdienstleister an SPS/Robotern strategisch."
+      reason_en: "Outsourcing strategy — service providers maintaining PLCs/robots are strategic."
+    "OPS.2.3.A2":
+      maturity_target: "3"
+      reason: "Risikoanalyse Outsourcing — Wartungs-VPNs sind kritischer Vektor (vgl. SolarWinds)."
+      reason_en: "Outsourcing risk analysis — maintenance VPNs are a critical vector (cf. SolarWinds)."
+    "OPS.2.3.A6":
+      maturity_target: "3"
+      reason: "Vertragsgestaltung mit IS-Klauseln und Audit-Recht — TISAX-Anforderung an OT-Lieferanten."
+      reason_en: "Contract design with IS clauses and audit rights — TISAX requirement for OT suppliers."
+    "DER.1.A1":
+      maturity_target: "3"
+      reason: "Detektion — IT mit SIEM/EDR; OT mit passiver NDR (Claroty, Nozomi, Dragos)."
+      reason_en: "Detection — IT with SIEM/EDR; OT with passive NDR (Claroty, Nozomi, Dragos)."
+    "DER.2.1.A1":
+      maturity_target: "3"
+      reason: "Vorfallsbehandlung mit OT-Notbetrieb-Plan — Produktions-Stillstand muss kalkulierbar sein."
+      reason_en: "Incident handling with OT fallback plan — production downtime must be calculable."
+    "DER.2.1.A2":
+      maturity_target: "3"
+      reason: "Etablierung IRT mit OT-Engineering-Beteiligung — Standard-IT-Forensik nicht auf SPS anwendbar."
+      reason_en: "IRT establishment with OT engineering involvement — standard IT forensics not applicable to PLCs."
+    "DER.2.2.A1":
+      maturity_target: "3"
+      reason: "Vorsorge — OT-Recovery-Images, Konfigurations-Snapshots in safe location."
+      reason_en: "Preparedness — OT recovery images, configuration snapshots in safe location."
+    "APP.1.A1":
+      maturity_target: "3"
+      reason: "Office-Härtung — Makros restriktiv, Konstruktionsdaten oft in Excel/CAD-Begleitdoks."
+      reason_en: "Office hardening — restrictive macros, construction data often in Excel/CAD support docs."
+    "APP.2.1.A1":
+      maturity_target: "3"
+      reason: "Active Directory mit Tier-Modell — IT- und OT-Domains getrennt verwalten."
+      reason_en: "Active Directory with tier model — IT and OT domains managed separately."
+    "APP.3.2.A1":
+      maturity_target: "3"
+      reason: "Webserver-Härtung — Kunden-/Lieferanten-Portale sind Spear-Phishing-Ziele."
+      reason_en: "Web server hardening — customer/supplier portals are spear phishing targets."
+    "APP.3.2.A2":
+      maturity_target: "3"
+      reason: "Planung Webserver mit DMZ und WAF — Konstruktions-Download-Portale schützen."
+      reason_en: "Web server planning with DMZ and WAF — protect construction download portals."
+    "APP.3.2.A5":
+      maturity_target: "3"
+      reason: "Protokollierung Webserver — Forensik bei Industriespionage-Verdachtsfällen."
+      reason_en: "Web server logging — forensics in industrial espionage suspected cases."
+    "APP.3.3.A1":
+      maturity_target: "3"
+      reason: "Fileserver-Planung — Konstruktions-/Stücklistendaten Schutzbedarf hoch."
+      reason_en: "File server planning — construction/BOM data have high protection needs."
+    "APP.3.3.A2":
+      maturity_target: "3"
+      reason: "Auswahl mit ABE und Audit-Logs — Insider-Datenabfluss häufig in Manufacturing."
+      reason_en: "Selection with ABE and audit logs — insider data exfiltration common in manufacturing."
+    "APP.3.3.A3":
+      maturity_target: "3"
+      reason: "Sicherheitsanforderungen Fileserver mit DLP für Konstruktions-IP."
+      reason_en: "File server security requirements with DLP for construction IP."
+    "APP.3.6.A1":
+      maturity_target: "3"
+      reason: "DNS-Server-Planung — interne DNS-Zonen für OT-Netz strikt getrennt."
+      reason_en: "DNS server planning — internal DNS zones strictly separated for OT network."
+    "APP.3.6.A2":
+      maturity_target: "3"
+      reason: "Auswahl DNS mit RPZ gegen Phishing-Domains."
+      reason_en: "DNS selection with RPZ against phishing domains."
+    "APP.3.6.A5":
+      maturity_target: "3"
+      reason: "Schutz vor DNS-Manipulation — DNSSEC für externe Zonen."
+      reason_en: "Protection against DNS manipulation — DNSSEC for external zones."
+    "APP.4.2.A1":
+      maturity_target: "4"
+      reason: "SAP ist Manufacturing-Kern — ERP/MES/QM mit SoD-Matrix und Custom-Code-Reviews."
+      reason_en: "SAP is core to manufacturing — ERP/MES/QM with SoD matrix and custom code reviews."
+    "APP.4.2.A2":
+      maturity_target: "4"
+      reason: "Auswahl SAP-Module mit Berechtigungs-Konzept und SAP-S/4HANA-Migration."
+      reason_en: "SAP module selection with authorisation concept and SAP S/4HANA migration."
+    "APP.4.2.A3":
+      maturity_target: "4"
+      reason: "Absicherung SAP — monatlicher Patch-Day, RFC-Härtung, Gateway-ACLs."
+      reason_en: "SAP hardening — monthly patch day, RFC hardening, gateway ACLs."
+    "APP.4.4.A1":
+      maturity_target: "2"
+      reason: "Kubernetes-Planung — bei Industrie 4.0 / Edge-Computing relevant; sonst klassisch VM."
+      reason_en: "Kubernetes planning — relevant for Industry 4.0 / edge computing; otherwise classic VMs."
+    "APP.4.4.A4":
+      maturity_target: "2"
+      reason: "Trennung von Workloads in Kubernetes — Edge-IoT-Plattform relevant."
+      reason_en: "Workload separation in Kubernetes — relevant for edge IoT platforms."
+    "APP.4.4.A8":
+      maturity_target: "2"
+      reason: "Container-Image-Härtung — bei MES/Edge-Workloads."
+      reason_en: "Container image hardening — for MES/edge workloads."
+    "APP.5.3.A1":
+      maturity_target: "3"
+      reason: "Mail-Server mit SPF/DKIM/DMARC — CEO-Fraud und Konstruktions-Phishing kritisch."
+      reason_en: "Mail server with SPF/DKIM/DMARC — CEO fraud and construction phishing critical."
+    "APP.5.3.A2":
+      maturity_target: "3"
+      reason: "Mail-Server-Auswahl mit ATP/Defender — Spear-Phishing auf F&E-Bereich."
+      reason_en: "Mail server selection with ATP/Defender — spear phishing on R&D area."
+    "APP.6.A1":
+      maturity_target: "3"
+      reason: "Software-Entwicklung intern — Embedded-Code für Anlagen mit Secure-Coding-Guidelines (IEC 62443-4-1)."
+      reason_en: "In-house software development — embedded code for plants with secure coding guidelines (IEC 62443-4-1)."
+    "APP.6.A2":
+      maturity_target: "3"
+      reason: "Anforderungsanalyse mit Security-by-Design — IEC 62443-4-2 für Komponenten."
+      reason_en: "Requirements analysis with security by design — IEC 62443-4-2 for components."
+    "SYS.1.1.A1":
+      maturity_target: "3"
+      reason: "Server-Härtung — IT-Server mit CIS-Benchmark; OT-Server mit IEC 62443-3-3-Härtung."
+      reason_en: "Server hardening — IT servers with CIS benchmark; OT servers with IEC 62443-3-3 hardening."
+    "SYS.1.2.A1":
+      maturity_target: "3"
+      reason: "Windows-Server-Planung — viele MES/SCADA-Server auf Windows; Patch-Disziplin schwierig."
+      reason_en: "Windows Server planning — many MES/SCADA servers on Windows; patch discipline difficult."
+    "SYS.1.2.A2":
+      maturity_target: "3"
+      reason: "Windows-Server-Beschaffung — LTSC für OT-Stabilität."
+      reason_en: "Windows Server procurement — LTSC for OT stability."
+    "SYS.1.2.3.A1":
+      maturity_target: "3"
+      reason: "Planung Windows-Server-Einsatz — getrennte Domains IT/OT, kein Kerberos-Trust."
+      reason_en: "Windows Server deployment planning — separate IT/OT domains, no Kerberos trust."
+    "SYS.1.2.3.A2":
+      maturity_target: "3"
+      reason: "AppLocker für Engineering-Workstations gegen unautorisierte Tools."
+      reason_en: "AppLocker for engineering workstations against unauthorised tools."
+    "SYS.1.2.3.A5":
+      maturity_target: "4"
+      reason: "Schutz administrativer Zugänge — PAM für OT-Wartung kritisch (IEC 62443-3-3 SR 1.5)."
+      reason_en: "Admin access protection — PAM for OT maintenance critical (IEC 62443-3-3 SR 1.5)."
+    "SYS.1.3.A1":
+      maturity_target: "3"
+      reason: "Linux-Server-Planung — bei MES/Industrie-PCs verbreitet."
+      reason_en: "Linux server planning — common on MES/industrial PCs."
+    "SYS.1.3.A5":
+      maturity_target: "3"
+      reason: "Sichere Installation Linux mit minimalem Footprint, FIM (AIDE)."
+      reason_en: "Secure Linux installation with minimal footprint, FIM (AIDE)."
+    "SYS.1.3.A10":
+      maturity_target: "3"
+      reason: "Schutz vor Schadsoftware Linux — EDR auf IT-Linux; OT-Linux mit Whitelisting."
+      reason_en: "Linux malware protection — EDR on IT Linux; OT Linux with whitelisting."
+    "SYS.1.3.A11":
+      maturity_target: "3"
+      reason: "Härtung Linux mit AppArmor und seccomp."
+      reason_en: "Linux hardening with AppArmor and seccomp."
+    "SYS.1.6.A1":
+      maturity_target: "2"
+      reason: "Container-Planung — Edge-/IoT-Workloads mit Containern bei Industrie 4.0."
+      reason_en: "Container planning — edge/IoT workloads with containers in Industry 4.0."
+    "SYS.1.6.A3":
+      maturity_target: "2"
+      reason: "Sichere Container-Runtime mit rootless für Edge-Geräte."
+      reason_en: "Secure container runtime with rootless for edge devices."
+    "SYS.1.8.A1":
+      maturity_target: "3"
+      reason: "Speicher-Planung mit Snapshots, Replication, WORM für Qualitätsdaten."
+      reason_en: "Storage planning with snapshots, replication, WORM for quality data."
+    "SYS.1.8.A2":
+      maturity_target: "3"
+      reason: "Auswahl Speicher mit Encryption-at-rest und Backup-Replikation."
+      reason_en: "Storage selection with encryption at rest and backup replication."
+    "SYS.1.9.A1":
+      maturity_target: "4"
+      reason: "Terminalserver — Jump-Hosts für OT-Wartung über IT/OT-Demarkation Pflicht (IEC 62443)."
+      reason_en: "Terminal servers — jump hosts for OT maintenance across IT/OT demarcation mandatory (IEC 62443)."
+    "SYS.1.9.A3":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration Terminalserver mit Session-Recording und MFA — TISAX VDA-ISA 5.x."
+      reason_en: "Secure terminal server configuration with session recording and MFA — TISAX VDA-ISA 5.x."
+    "SYS.2.1.A1":
+      maturity_target: "3"
+      reason: "Allgemeine Client-Härtung — Werker-Clients oft ohne Internetzugang als Härtung."
+      reason_en: "General client hardening — operator clients often without internet access as hardening."
+    "SYS.2.2.A1":
+      maturity_target: "3"
+      reason: "Windows-Client-Planung mit BitLocker und AppLocker — TISAX VDA-ISA 6.5."
+      reason_en: "Windows client planning with BitLocker and AppLocker — TISAX VDA-ISA 6.5."
+    "SYS.2.2.A3":
+      maturity_target: "3"
+      reason: "Sichere Installation Windows-Client via SCCM/Intune mit Konfig-Baseline."
+      reason_en: "Secure Windows client installation via SCCM/Intune with config baseline."
+    "SYS.2.4.A1":
+      maturity_target: "2"
+      reason: "macOS-Client-Planung — bei Konstruktion (CAD) und Marketing verbreitet."
+      reason_en: "macOS client planning — common in design (CAD) and marketing."
+    "SYS.2.4.A2":
+      maturity_target: "2"
+      reason: "Auswahl macOS mit FileVault und MDM."
+      reason_en: "macOS selection with FileVault and MDM."
+    "SYS.2.4.A4":
+      maturity_target: "2"
+      reason: "Sichere Konfiguration macOS via MDM-Profile."
+      reason_en: "Secure macOS configuration via MDM profiles."
+    "SYS.3.1.A2":
+      maturity_target: "3"
+      reason: "Beschaffung Laptops mit FDE und TPM 2.0 — Außendienst-Engineering Pool."
+      reason_en: "Laptop procurement with FDE and TPM 2.0 — field-engineering pool."
+    "SYS.3.1.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration Laptops mit VPN und EDR."
+      reason_en: "Secure laptop configuration with VPN and EDR."
+    "SYS.3.2.2.A1":
+      maturity_target: "3"
+      reason: "Mobilgeräte-Planung mit MDM — Werker-Tablets/Service-Techniker zunehmend mobil."
+      reason_en: "Mobile device planning with MDM — operator tablets/service technicians increasingly mobile."
+    "SYS.3.2.2.A2":
+      maturity_target: "3"
+      reason: "Auswahl Mobilgeräte mit Enterprise-MDM."
+      reason_en: "Mobile device selection with enterprise MDM."
+    "SYS.3.2.2.A5":
+      maturity_target: "3"
+      reason: "Schutz Mobilgeräte mit Remote-Wipe und Container-Apps."
+      reason_en: "Mobile device protection with remote wipe and container apps."
+    "SYS.3.3.A1":
+      maturity_target: "2"
+      reason: "Sonstige Mobilgeräte (Wearables in Kommissionierung, AR-Brillen) zunehmend bei Industrie 4.0."
+      reason_en: "Other mobile devices (wearables for picking, AR glasses) increasing in Industry 4.0."
+    "SYS.3.3.A3":
+      maturity_target: "2"
+      reason: "Sichere Konfiguration mit dedizierter MDM-Policy."
+      reason_en: "Secure configuration with dedicated MDM policy."
+    "SYS.4.1.A1":
+      maturity_target: "3"
+      reason: "Drucker-Planung mit Pull-Print — Konstruktionszeichnungen vertraulich."
+      reason_en: "Printer planning with pull print — construction drawings are confidential."
+    "SYS.4.1.A2":
+      maturity_target: "3"
+      reason: "Auswahl Drucker mit Audit-Logs und CC-Zertifikat."
+      reason_en: "Printer selection with audit logs and CC certificate."
+    "SYS.4.1.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration mit SNMPv3 und Firmware-Patches."
+      reason_en: "Secure configuration with SNMPv3 and firmware patches."
+    "SYS.4.5.A1":
+      maturity_target: "4"
+      reason: "Wechseldatenträger-Planung kritisch in OT — USB für SPS-Updates BadUSB-Vektor (vgl. Stuxnet)."
+      reason_en: "Removable media planning critical in OT — USB for PLC updates is a BadUSB vector (cf. Stuxnet)."
+    "SYS.4.5.A2":
+      maturity_target: "4"
+      reason: "Auswahl Wechselmedien mit Hardware-Verschlüsselung und Schleusen-PCs."
+      reason_en: "Removable media selection with hardware encryption and airlock PCs."
+    "NET.1.1.A1":
+      maturity_target: "4"
+      reason: "Netzarchitektur Standard-Absicherung — IEC 62443-3-2 Zonen-/Conduits-Modell, OT/IT-Trennung Pflicht."
+      reason_en: "Network architecture Standard Protection — IEC 62443-3-2 zones/conduits model, OT/IT separation mandatory."
+    "NET.1.1.A2":
+      maturity_target: "4"
+      reason: "Anforderungsanalyse Netz mit IEC 62443-Risiko-Bewertung pro Zone (Security-Level SL1-SL4)."
+      reason_en: "Network requirements analysis with IEC 62443 risk assessment per zone (security level SL1-SL4)."
+    "NET.4.1.A1":
+      maturity_target: "3"
+      reason: "TK-Anlagen-Planung — Werks-Notruf, Feuerwehr-Anbindung verfügbarkeitsrelevant."
+      reason_en: "PBX planning — plant emergency call, fire brigade connection availability-relevant."
+    "NET.4.1.A2":
+      maturity_target: "3"
+      reason: "Auswahl TK-Anlage mit Notstrom und Redundanz."
+      reason_en: "PBX selection with emergency power and redundancy."
+    "NET.4.2.A1":
+      maturity_target: "3"
+      reason: "VoIP-Planung mit SRTP — Werks-interne Kommunikation oft Klartext-Risiko."
+      reason_en: "VoIP planning with SRTP — plant-internal communication often a cleartext risk."
+    "NET.4.2.A3":
+      maturity_target: "3"
+      reason: "Sichere VoIP-Konfiguration mit SBC."
+      reason_en: "Secure VoIP configuration with SBC."
+    "NET.4.2.A8":
+      maturity_target: "3"
+      reason: "VoIP-Verschlüsselung — bei vertraulichen F&E-Calls Pflicht."
+      reason_en: "VoIP encryption — mandatory for confidential R&D calls."
+    "NET.4.3.A1":
+      maturity_target: "2"
+      reason: "Faxgeräte rückläufig — bei Manufacturing-Lieferanten gelegentlich noch."
+      reason_en: "Fax devices declining — occasionally still seen at manufacturing suppliers."
+    "NET.4.3.A2":
+      maturity_target: "2"
+      reason: "Auswahl Faxgerät mit Empfänger-Authentifizierung."
+      reason_en: "Fax device selection with recipient authentication."
+    "NET.4.3.A3":
+      maturity_target: "2"
+      reason: "Sichere Konfiguration mit deaktivierten Remote-Diagnoseports."
+      reason_en: "Secure configuration with disabled remote diagnostic ports."
+    "INF.1.A1":
+      maturity_target: "3"
+      reason: "Gebäude-Planung — Werks-Perimeter mit Zaun, Zugangskontrolle, Pförtnerdienst."
+      reason_en: "Building planning — plant perimeter with fence, access control, gatekeeper."
+    "INF.1.A2":
+      maturity_target: "3"
+      reason: "Brandschutz — bei Chemie/Lacken Hochsicherheits-Anforderungen, Werks-RZ mit Notstrom."
+      reason_en: "Fire protection — high-security requirements at chemicals/paints, plant data centre with emergency power."
+    "INF.10.A1":
+      maturity_target: "3"
+      reason: "Besprechungsräume — F&E-/Vorstands-Räume mit abhörsicherer Ausstattung."
+      reason_en: "Meeting rooms — R&D/board rooms with eavesdropping-proof equipment."
+    "INF.10.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration Konferenztechnik mit deaktivierten USB."
+      reason_en: "Secure conference technology configuration with disabled USB."
+    "INF.13.A1":
+      maturity_target: "3"
+      reason: "Wegeleitsysteme/sonstige Infrastruktur — Werks-Sicherheitsbeschilderung und Sabotage-Schutz."
+      reason_en: "Wayfinding systems/other infrastructure — plant security signage and sabotage protection."
+    "INF.13.A2":
+      maturity_target: "3"
+      reason: "Auswahl mit Manipulations-Erkennung."
+      reason_en: "Selection with tamper detection."
+    "INF.13.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration und regelmäßige Wartung."
+      reason_en: "Secure configuration and regular maintenance."

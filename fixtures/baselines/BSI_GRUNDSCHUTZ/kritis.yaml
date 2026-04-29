@@ -1,0 +1,470 @@
+baseline:
+  id: bsi-grundschutz-kritis
+  name: 'BSI IT-Grundschutz - KRITIS / NIS2-essential'
+  name_en: 'BSI IT-Grundschutz - KRITIS / NIS2-essential'
+  industry: kritis
+  description: |
+    Baseline für Betreiber Kritischer Infrastrukturen (Energie, Wasser, Gesundheit,
+    Transport, Telekom) nach BSI 200-2 Standard-Absicherung mit Kern-Absicherung
+    auf NET/OPS/DER-Bausteinen. Adressiert §8a BSIG-Auditpflicht, KRITIS-Verordnung
+    und NIS2-Anforderungen. Hohe Reifegrad-Erwartung durch staatliche APT-Bedrohung
+    und 24/7-Meldepflicht an BSI (§8b BSIG).
+  description_en: |
+    Baseline for Critical Infrastructure operators (energy, water, health, transport,
+    telecom) following BSI 200-2 Standard Protection with Core Protection on
+    NET/OPS/DER building blocks. Addresses §8a BSIG audit obligation, KRITIS
+    regulation and NIS2 directive. High maturity expectations due to nation-state
+    APT threat and 24/7 BSI notification duty (§8b BSIG).
+  targets:
+    "ISMS.1.A1":
+      maturity_target: "5"
+      reason: "KRITIS-Auditpflicht §8a BSIG: Leitungsverantwortung für ISMS muss formell und nachweisbar durch Geschäftsführung übernommen sein."
+      reason_en: "KRITIS audit duty §8a BSIG: Top-management responsibility for the ISMS must be formally assumed and demonstrable."
+    "ISMS.1.A2":
+      maturity_target: "5"
+      reason: "Sicherheitsleitlinie ist §8a-Pflichtnachweis — BSI prüft formale Verabschiedung und Aktualität alle 2 Jahre."
+      reason_en: "Security policy is a §8a mandatory artefact — BSI reviews formal adoption and currency every 2 years."
+    "ISMS.1.A3":
+      maturity_target: "4"
+      reason: "Eigene IS-Organisation mit hauptamtlichem ISB ist KRITIS-Standard, oft mit Stellvertreter wegen 24/7-Bereitschaft."
+      reason_en: "Dedicated IS organisation with full-time ISO is KRITIS standard, often with deputy for 24/7 coverage."
+    "ISMS.1.A4":
+      maturity_target: "4"
+      reason: "Ressourcenbereitstellung dokumentiert in §8a-Nachweis — Budget-Knappheit ist Audit-Findings-Klassiker bei KRITIS."
+      reason_en: "Resource provision documented in §8a evidence — budget shortage is a classic audit finding in KRITIS."
+    "ISMS.1.A5":
+      maturity_target: "4"
+      reason: "Einbindung aller Beschäftigten in IS-Prozess ist §8a-Pflicht und Voraussetzung für KRITIS-Zertifikat."
+      reason_en: "Engagement of all staff in the IS process is mandatory under §8a and prerequisite for KRITIS certification."
+    "ORP.1.A1":
+      maturity_target: "4"
+      reason: "Aufgaben/Verantwortungen schriftlich für KRITIS-Prozesse — Stellenbeschreibungen mit IS-Anteil sind Standard."
+      reason_en: "Roles and responsibilities documented for KRITIS processes — job descriptions with IS responsibilities are standard."
+    "ORP.2.A1":
+      maturity_target: "4"
+      reason: "Personal-Sicherheit (Background-Check, Verschwiegenheit) ist KRITIS-typisch wegen Zugang zu staatskritischen Anlagen."
+      reason_en: "Personnel security (background checks, NDAs) is typical for KRITIS due to access to nationally critical facilities."
+    "ORP.3.A1":
+      maturity_target: "4"
+      reason: "Sensibilisierungs-/Schulungsprogramm dokumentiert Pflicht — Phishing/Social-Engineering primärer KRITIS-Vektor."
+      reason_en: "Awareness/training programme documented as mandatory — phishing/social engineering is the primary KRITIS vector."
+    "ORP.3.A2":
+      maturity_target: "4"
+      reason: "Rollenbasierte Schulung für Krisenstab, Admins, Operatoren — KRITIS-Übungspflicht alle 2 Jahre nach BBK-Empfehlung."
+      reason_en: "Role-based training for crisis team, admins, operators — KRITIS exercise duty every 2 years per BBK recommendation."
+    "ORP.3.A3":
+      maturity_target: "4"
+      reason: "Erfolgsmessung (Phishing-Click-Rate, Quiz-Scores) ist KRITIS-Audit-Erwartung gegen wiederholte APT-Versuche."
+      reason_en: "Effectiveness measurement (phishing click rate, quiz scores) is a KRITIS audit expectation against repeated APT attempts."
+    "CON.1.A1":
+      maturity_target: "4"
+      reason: "Krypto-Konzept Pflicht für KRITIS — BSI TR-02102 wird im §8a-Audit als Mindeststandard geprüft."
+      reason_en: "Crypto concept mandatory for KRITIS — BSI TR-02102 is reviewed as minimum standard in the §8a audit."
+    "CON.2.A1":
+      maturity_target: "4"
+      reason: "Datenschutz-Konzept (DSGVO) flankiert KRITIS-Schutzbedarf bei Kunden-/Mitarbeiterdaten."
+      reason_en: "Data protection concept (GDPR) flanks KRITIS protection needs for customer/employee data."
+    "CON.3.A1":
+      maturity_target: "5"
+      reason: "Datensicherungskonzept ist KRITIS-Verfügbarkeits-Kern — BSI verlangt geprüfte Restore-Tests gegen Ransomware-APT."
+      reason_en: "Backup concept is core to KRITIS availability — BSI requires verified restore tests against ransomware APTs."
+    "CON.3.A2":
+      maturity_target: "5"
+      reason: "Festlegung Verfahrensweise Datensicherung — KRITIS-Betreiber brauchen offline/air-gapped Kopien und georedundante Lagerung gemäß BSIG §8a."
+      reason_en: "Backup procedure definition — KRITIS operators require offline/air-gapped copies and geo-redundant storage per BSIG §8a."
+    "CON.4.A1":
+      maturity_target: "4"
+      reason: "Auswahl/Beschaffung mit IS-Anforderungen ist §8a-Audit-Standard — Lieferantenrisiken (NIS2 Art. 21 (2) d)."
+      reason_en: "Procurement with IS requirements is §8a audit standard — supplier risks (NIS2 Art. 21 (2) d)."
+    "CON.4.A2":
+      maturity_target: "4"
+      reason: "Vertragsgestaltung mit IS-Klauseln und Audit-Recht ist NIS2-Pflicht für KRITIS-Zulieferer."
+      reason_en: "Contract design with IS clauses and audit rights is NIS2 mandatory for KRITIS suppliers."
+    "CON.4.A5":
+      maturity_target: "4"
+      reason: "Abnahmeprüfung neuer Komponenten bei KRITIS Pflicht — vor Produktiv-Übergabe Penetrationstest typisch."
+      reason_en: "Acceptance testing of new components is mandatory in KRITIS — penetration test before go-live is typical."
+    "CON.5.A1":
+      maturity_target: "4"
+      reason: "Löschkonzept für ausgemusterte Anlagen-IT — BSI verlangt zertifiziertes Vernichtungsverfahren bei KRITIS."
+      reason_en: "Deletion concept for decommissioned plant IT — BSI requires certified destruction procedures in KRITIS."
+    "CON.5.A2":
+      maturity_target: "4"
+      reason: "Verfahren zur sicheren Datenträger-Vernichtung dokumentiert; Zeugen-/Vier-Augen-Prinzip Standard."
+      reason_en: "Procedures for secure media destruction documented; witness/four-eyes principle is standard."
+    "CON.5.A7":
+      maturity_target: "4"
+      reason: "Eindeutige Regelungen für Cloud-/Outsourcing-Daten mit Rückgabe-/Löschnachweis — KRITIS-Kontrollerfordernis."
+      reason_en: "Clear rules for cloud/outsourcing data with return/deletion evidence — KRITIS control requirement."
+    "CON.11.A1":
+      maturity_target: "4"
+      reason: "Cloud-Nutzungsstrategie für KRITIS — Souveränitäts-/Lokalitätsanforderungen (BSI C5, EU-Datenraum)."
+      reason_en: "Cloud usage strategy for KRITIS — sovereignty/locality requirements (BSI C5, EU data space)."
+    "CON.11.A2":
+      maturity_target: "4"
+      reason: "Cloud-Sicherheitskonzept mit C5-Testaten — BSI verlangt für KRITIS-Workloads in Cloud zwingend C5-Typ-2."
+      reason_en: "Cloud security concept with C5 attestations — BSI requires C5 Type 2 for KRITIS workloads in cloud."
+    "OPS.1.1.2.A1":
+      maturity_target: "5"
+      reason: "Privilegierte IT-Administration ist KRITIS-Hochrisiko — PAM/Jump-Server, Vier-Augen, Session-Recording Standard."
+      reason_en: "Privileged administration is KRITIS high risk — PAM/jump servers, four-eyes, session recording are standard."
+    "OPS.1.1.3.A1":
+      maturity_target: "5"
+      reason: "Patch-Management ist KRITIS-Audit-Klassiker — BSI verlangt definierte SLAs (kritische CVE < 72h)."
+      reason_en: "Patch management is a KRITIS audit classic — BSI requires defined SLAs (critical CVE < 72h)."
+    "OPS.1.1.3.A2":
+      maturity_target: "5"
+      reason: "Schwachstellen-Management mit CVE-Feeds (CERT-Bund, BSI-WID) und priorisierter Behebung — §8a-Standard."
+      reason_en: "Vulnerability management with CVE feeds (CERT-Bund, BSI WID) and prioritised remediation — §8a standard."
+    "OPS.1.1.5.A1":
+      maturity_target: "4"
+      reason: "Protokollierung relevanter Ereignisse — KRITIS verlangt zentrale, manipulationssichere Logs (SIEM)."
+      reason_en: "Logging of relevant events — KRITIS requires central, tamper-proof logs (SIEM)."
+    "OPS.1.1.5.A2":
+      maturity_target: "4"
+      reason: "Auswertung der Protokolldaten in 24/7-SOC ist KRITIS-Standard für rechtzeitige APT-Erkennung."
+      reason_en: "Log evaluation in 24/7 SOC is KRITIS standard for timely APT detection."
+    "OPS.1.2.2.A1":
+      maturity_target: "4"
+      reason: "Geregelte Archivierung relevanter KRITIS-Daten (Anlagen-Logs, Steuerbefehle) für Forensik."
+      reason_en: "Regulated archiving of KRITIS-relevant data (plant logs, control commands) for forensics."
+    "OPS.1.2.3.A1":
+      maturity_target: "4"
+      reason: "Informationen zum Datenträgertausch — bei OT/SCADA-Updates oft physischer Transfer (USB-Sneakernet)."
+      reason_en: "Information on media exchange — OT/SCADA updates often involve physical transfer (USB sneakernet)."
+    "OPS.1.2.3.A2":
+      maturity_target: "4"
+      reason: "Sicherer Versand/Transport von Datenträgern — KRITIS verlangt versiegelte/getrackte Wege."
+      reason_en: "Secure shipment/transport of media — KRITIS requires sealed/tracked routes."
+    "OPS.1.2.3.A3":
+      maturity_target: "4"
+      reason: "Verschlüsselung mobiler Datenträger Pflicht (BSI TR-02102 / FIPS 140-2)."
+      reason_en: "Encryption of mobile media is mandatory (BSI TR-02102 / FIPS 140-2)."
+    "OPS.2.2.A1":
+      maturity_target: "4"
+      reason: "Cloud-Anbieter-Strategie für KRITIS mit C5/ISO-27017 Mindestnachweisen."
+      reason_en: "Cloud provider strategy for KRITIS with C5/ISO 27017 minimum evidence."
+    "OPS.2.2.A2":
+      maturity_target: "4"
+      reason: "Sicherheitskonzept für Cloud-Nutzung mit Exit-Strategie — NIS2 Art. 21 (2) d Lieferketten-Resilienz."
+      reason_en: "Security concept for cloud usage with exit strategy — NIS2 Art. 21 (2) d supply chain resilience."
+    "OPS.2.2.A3":
+      maturity_target: "4"
+      reason: "Service-Definition und SLAs vertraglich festgelegt — KRITIS verlangt Audit-Recht und Pönalen."
+      reason_en: "Service definition and SLAs contractually agreed — KRITIS requires audit rights and penalties."
+    "OPS.2.3.A1":
+      maturity_target: "4"
+      reason: "Outsourcing-Strategie mit IS-Anforderungen — NIS2 verschärft Anforderungen an Sub-Lieferanten."
+      reason_en: "Outsourcing strategy with IS requirements — NIS2 tightens requirements for sub-suppliers."
+    "OPS.2.3.A2":
+      maturity_target: "4"
+      reason: "Risikoanalyse Outsourcing — KRITIS-Lieferanten müssen vergleichbares Niveau erfüllen."
+      reason_en: "Outsourcing risk analysis — KRITIS suppliers must meet comparable level."
+    "OPS.2.3.A6":
+      maturity_target: "4"
+      reason: "Vertragsgestaltung mit IS-Klauseln, Berichtspflichten und Audit-Recht — §8a-Audit-Standard."
+      reason_en: "Contract design with IS clauses, reporting duties and audit rights — §8a audit standard."
+    "DER.1.A1":
+      maturity_target: "5"
+      reason: "Detektion ist KRITIS-Kern: SIEM, IDS/IPS, NDR, EDR — BSI Standard-Absicherung verlangt mehrschichtige Detektion."
+      reason_en: "Detection is core to KRITIS: SIEM, IDS/IPS, NDR, EDR — BSI Standard Protection requires layered detection."
+    "DER.2.1.A1":
+      maturity_target: "5"
+      reason: "Behandlung von Sicherheitsvorfällen mit 24/7-Bereitschaft — §8b BSIG-Meldung an BSI binnen 24h."
+      reason_en: "Incident handling with 24/7 readiness — §8b BSIG notification to BSI within 24h."
+    "DER.2.1.A2":
+      maturity_target: "5"
+      reason: "Etablierung Vorfallsbehandlung mit IRT, Playbooks, Eskalationsmatrix — KRITIS-Übungspflicht."
+      reason_en: "Establishment of incident handling with IRT, playbooks, escalation matrix — KRITIS exercise duty."
+    "DER.2.2.A1":
+      maturity_target: "5"
+      reason: "Vorsorge für Sicherheitsvorfälle (Forensik-Toolkit, Out-of-Band-Comms) — KRITIS-Krisenfall-Standard."
+      reason_en: "Preparedness for incidents (forensic toolkit, out-of-band comms) — KRITIS crisis standard."
+    "APP.1.A1":
+      maturity_target: "4"
+      reason: "Office-Produkte gehärtet — Makro-Restriktionen Pflicht gegen Phishing in KRITIS-Verwaltung."
+      reason_en: "Office products hardened — macro restrictions mandatory against phishing in KRITIS administration."
+    "APP.2.1.A1":
+      maturity_target: "4"
+      reason: "Active Directory ist KRITIS-Hochwertziel — Tier-Modell (BSI APP.2.1) und Privileged Access verpflichtend."
+      reason_en: "Active Directory is a KRITIS high-value target — tier model (BSI APP.2.1) and Privileged Access mandatory."
+    "APP.3.2.A1":
+      maturity_target: "4"
+      reason: "Webserver-Härtung Pflicht; KRITIS-Webportale (Kundencenter, Behörden-API) sind APT-Ziele."
+      reason_en: "Web server hardening mandatory; KRITIS web portals (customer centre, authority API) are APT targets."
+    "APP.3.2.A2":
+      maturity_target: "4"
+      reason: "Planung Webserver-Einsatz mit DMZ und WAF — BSI Standard-Absicherung."
+      reason_en: "Planning of web server deployment with DMZ and WAF — BSI Standard Protection."
+    "APP.3.2.A5":
+      maturity_target: "4"
+      reason: "Protokollierung Webserver für Forensik — KRITIS-Webangriffe oft Erstvektor APT."
+      reason_en: "Web server logging for forensics — KRITIS web attacks often the initial APT vector."
+    "APP.3.3.A1":
+      maturity_target: "4"
+      reason: "Fileserver-Planung mit Berechtigungs-Konzept — KRITIS-Pläne/Konstruktionsdaten Schutzbedarf hoch."
+      reason_en: "File server planning with permission concept — KRITIS plans/construction data have high protection needs."
+    "APP.3.3.A2":
+      maturity_target: "4"
+      reason: "Auswahl Fileserver mit ABE/Auditing — BSI-Audit prüft Zugriffsprotokollierung."
+      reason_en: "Selection of file server with ABE/auditing — BSI audit reviews access logging."
+    "APP.3.3.A3":
+      maturity_target: "4"
+      reason: "Festlegung Sicherheitsanforderungen Fileserver (Verschlüsselung at-rest, Backup)."
+      reason_en: "Definition of file server security requirements (encryption at rest, backup)."
+    "APP.3.6.A1":
+      maturity_target: "4"
+      reason: "DNS-Server-Planung mit DNSSEC und Anycast — KRITIS-DNS-Ausfall = Versorgungsunterbrechung."
+      reason_en: "DNS server planning with DNSSEC and anycast — KRITIS DNS outage = supply disruption."
+    "APP.3.6.A2":
+      maturity_target: "4"
+      reason: "Auswahl DNS-Server mit RPZ/Logging — Schutz vor DNS-Hijacking (APT-Vektor)."
+      reason_en: "Selection of DNS server with RPZ/logging — protection against DNS hijacking (APT vector)."
+    "APP.3.6.A5":
+      maturity_target: "4"
+      reason: "Schutz vor DNS-Manipulation mit DNSSEC-Validierung — BSI Empfehlung TR-03116."
+      reason_en: "Protection against DNS manipulation via DNSSEC validation — BSI recommendation TR-03116."
+    "APP.4.2.A1":
+      maturity_target: "4"
+      reason: "SAP-Härtung wenn KRITIS SAP für Anlagensteuerung/Billing nutzt — BSI APP.4.2 verbindlich."
+      reason_en: "SAP hardening where KRITIS uses SAP for plant control/billing — BSI APP.4.2 binding."
+    "APP.4.2.A2":
+      maturity_target: "4"
+      reason: "Geeignete Auswahl SAP-Module — Berechtigungs-Modell (SoD) ist Audit-Pflicht."
+      reason_en: "Appropriate SAP module selection — authorisation model (SoD) is audit-mandatory."
+    "APP.4.2.A3":
+      maturity_target: "4"
+      reason: "Absicherung SAP-Installation — Sicherheitspatch-Day SAP, regelmäßige Reviews."
+      reason_en: "SAP installation hardening — SAP security patch day, regular reviews."
+    "APP.4.4.A1":
+      maturity_target: "3"
+      reason: "Kubernetes-Planung — KRITIS-Cloud-Workloads brauchen Pod-Security, Network-Policies."
+      reason_en: "Kubernetes planning — KRITIS cloud workloads need pod security, network policies."
+    "APP.4.4.A4":
+      maturity_target: "3"
+      reason: "Trennung von Workloads in Kubernetes — Multi-Tenancy mit Namespaces und RBAC."
+      reason_en: "Workload separation in Kubernetes — multi-tenancy with namespaces and RBAC."
+    "APP.4.4.A8":
+      maturity_target: "3"
+      reason: "Absicherung Container-Images mit Image-Signing und Schwachstellen-Scan in CI/CD."
+      reason_en: "Container image hardening with image signing and vulnerability scan in CI/CD."
+    "APP.5.3.A1":
+      maturity_target: "4"
+      reason: "E-Mail-Server-Planung mit SPF/DKIM/DMARC — Phishing primärer KRITIS-Angriffsvektor."
+      reason_en: "Mail server planning with SPF/DKIM/DMARC — phishing is the primary KRITIS attack vector."
+    "APP.5.3.A2":
+      maturity_target: "4"
+      reason: "Auswahl E-Mail-Server mit S/MIME/PGP-Support — BSI-Empfehlung für KRITIS-interne Kommunikation."
+      reason_en: "Mail server selection with S/MIME/PGP support — BSI recommendation for KRITIS internal communication."
+    "APP.6.A1":
+      maturity_target: "4"
+      reason: "Software-Entwicklung intern bei KRITIS (z.B. Anlagensteuerung) — SDLC mit Threat-Modeling Pflicht."
+      reason_en: "Internal software development at KRITIS (e.g. plant control) — SDLC with threat modelling mandatory."
+    "APP.6.A2":
+      maturity_target: "4"
+      reason: "Anforderungsanalyse Software mit IS-Anforderungen — Privacy/Security-by-Design (NIS2 Art. 21 (2) e)."
+      reason_en: "Software requirements analysis with IS requirements — privacy/security by design (NIS2 Art. 21 (2) e)."
+    "SYS.1.1.A1":
+      maturity_target: "4"
+      reason: "Allgemeine Server-Härtung — KRITIS-Server unter konstanter APT-Bedrohung."
+      reason_en: "General server hardening — KRITIS servers under constant APT threat."
+    "SYS.1.2.A1":
+      maturity_target: "4"
+      reason: "Windows-Server-Planung mit Härtungs-Baseline (CIS, BSI SiSyPHus)."
+      reason_en: "Windows Server planning with hardening baseline (CIS, BSI SiSyPHus)."
+    "SYS.1.2.A2":
+      maturity_target: "4"
+      reason: "Windows-Server-Beschaffung — LTSC-Versionen für KRITIS wegen Lifecycle-Sicherheit."
+      reason_en: "Windows Server procurement — LTSC versions for KRITIS due to lifecycle security."
+    "SYS.1.2.3.A1":
+      maturity_target: "4"
+      reason: "Planung Windows-Server-Einsatz — Domain-Tier-Modell und Hardening-Baseline."
+      reason_en: "Planning of Windows Server deployment — domain tier model and hardening baseline."
+    "SYS.1.2.3.A2":
+      maturity_target: "4"
+      reason: "Anwendungswhitelisting und sichere Konfiguration (AppLocker/WDAC) — BSI SiSyPHus."
+      reason_en: "Application whitelisting and secure configuration (AppLocker/WDAC) — BSI SiSyPHus."
+    "SYS.1.2.3.A5":
+      maturity_target: "4"
+      reason: "Schutz administrativer Zugänge mit MFA und PAM — KRITIS-Admin-Konten Hochwertziel."
+      reason_en: "Protection of admin access with MFA and PAM — KRITIS admin accounts are high-value targets."
+    "SYS.1.3.A1":
+      maturity_target: "4"
+      reason: "Linux-Server-Planung mit Härtungs-Baseline (CIS, ANSSI)."
+      reason_en: "Linux server planning with hardening baseline (CIS, ANSSI)."
+    "SYS.1.3.A5":
+      maturity_target: "4"
+      reason: "Sichere Installation Linux — minimaler Footprint, kein GUI, AIDE/Tripwire."
+      reason_en: "Secure Linux installation — minimal footprint, no GUI, AIDE/Tripwire."
+    "SYS.1.3.A10":
+      maturity_target: "4"
+      reason: "Schutz vor Schadsoftware Linux — ClamAV, ChkRootkit oder kommerzielle EDR."
+      reason_en: "Linux malware protection — ClamAV, ChkRootkit or commercial EDR."
+    "SYS.1.3.A11":
+      maturity_target: "4"
+      reason: "Härtung Linux mit SELinux/AppArmor MAC und kernel-hardening (lockdown, kASLR)."
+      reason_en: "Linux hardening with SELinux/AppArmor MAC and kernel hardening (lockdown, kASLR)."
+    "SYS.1.6.A1":
+      maturity_target: "4"
+      reason: "Container-Planung mit minimalem Image und Read-only Root — KRITIS-Container in DMZ."
+      reason_en: "Container planning with minimal image and read-only root — KRITIS containers in DMZ."
+    "SYS.1.6.A3":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration Container-Runtime (rootless, seccomp, AppArmor)."
+      reason_en: "Secure container runtime configuration (rootless, seccomp, AppArmor)."
+    "SYS.1.8.A1":
+      maturity_target: "4"
+      reason: "Speicher-Planung mit Replication, Snapshots, Air-Gap-Backup gegen Ransomware."
+      reason_en: "Storage planning with replication, snapshots, air-gapped backup against ransomware."
+    "SYS.1.8.A2":
+      maturity_target: "4"
+      reason: "Auswahl Speicherlösung mit Verschlüsselung at-rest und WORM für KRITIS-Logs."
+      reason_en: "Storage selection with encryption at rest and WORM for KRITIS logs."
+    "SYS.1.9.A1":
+      maturity_target: "4"
+      reason: "Terminalserver-Planung — Jump-Host-Modell für KRITIS-Admin-Zugang."
+      reason_en: "Terminal server planning — jump host model for KRITIS admin access."
+    "SYS.1.9.A3":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration Terminalserver mit Session-Recording und MFA."
+      reason_en: "Secure terminal server configuration with session recording and MFA."
+    "SYS.2.1.A1":
+      maturity_target: "4"
+      reason: "Allgemeine Client-Härtung — KRITIS-Mitarbeiter-Clients oft initialer APT-Vektor."
+      reason_en: "General client hardening — KRITIS staff clients are often the initial APT vector."
+    "SYS.2.2.A1":
+      maturity_target: "4"
+      reason: "Windows-Client-Planung mit BitLocker, AppLocker, BSI SiSyPHus-Hardening."
+      reason_en: "Windows client planning with BitLocker, AppLocker, BSI SiSyPHus hardening."
+    "SYS.2.2.A3":
+      maturity_target: "4"
+      reason: "Sichere Installation Windows-Client mit Image-Building und PXE-Boot-Schutz."
+      reason_en: "Secure Windows client installation with image building and PXE boot protection."
+    "SYS.2.4.A1":
+      maturity_target: "4"
+      reason: "macOS-Client-Planung — bei KRITIS-Führungs-/Engineering-Bereichen verbreitet."
+      reason_en: "macOS client planning — common in KRITIS executive/engineering areas."
+    "SYS.2.4.A2":
+      maturity_target: "4"
+      reason: "Auswahl macOS mit FileVault, Gatekeeper, MDM-Verwaltung."
+      reason_en: "macOS selection with FileVault, Gatekeeper, MDM management."
+    "SYS.2.4.A4":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration macOS via MDM-Profile und CIS-Benchmark."
+      reason_en: "Secure macOS configuration via MDM profiles and CIS benchmark."
+    "SYS.3.1.A2":
+      maturity_target: "4"
+      reason: "Beschaffung Laptops mit FDE, TPM 2.0 und Hardware-Root-of-Trust für KRITIS-Außendienst."
+      reason_en: "Laptop procurement with FDE, TPM 2.0 and hardware root of trust for KRITIS field service."
+    "SYS.3.1.A3":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration Laptops mit Always-On-VPN und EDR — APT-Schutz mobiler Workforce."
+      reason_en: "Secure laptop configuration with always-on VPN and EDR — APT protection for mobile workforce."
+    "SYS.3.2.2.A1":
+      maturity_target: "4"
+      reason: "Mobilgeräte-Planung mit MDM und Container — KRITIS-Mobile-Workforce hochmobil."
+      reason_en: "Mobile device planning with MDM and containerisation — KRITIS mobile workforce highly mobile."
+    "SYS.3.2.2.A2":
+      maturity_target: "4"
+      reason: "Auswahl Mobilgeräte (iOS/Android) mit Enterprise-MDM und Compliance-Policies."
+      reason_en: "Mobile device (iOS/Android) selection with enterprise MDM and compliance policies."
+    "SYS.3.2.2.A5":
+      maturity_target: "4"
+      reason: "Schutz Mobilgeräte mit MTD, Remote-Wipe und Geo-Fencing für sensible KRITIS-Standorte."
+      reason_en: "Mobile device protection with MTD, remote wipe and geo-fencing for sensitive KRITIS sites."
+    "SYS.3.3.A1":
+      maturity_target: "3"
+      reason: "Sonstige Mobilgeräte (Wearables, IoT) bei KRITIS sparsam — wenn vorhanden, dann mit Trennnetz."
+      reason_en: "Other mobile devices (wearables, IoT) used sparingly in KRITIS — if used, on segregated network."
+    "SYS.3.3.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration mit dedizierter MDM-Profilierung und Restriktionen."
+      reason_en: "Secure configuration with dedicated MDM profiling and restrictions."
+    "SYS.4.1.A1":
+      maturity_target: "3"
+      reason: "Drucker-Planung mit Pull-Print, Verschlüsselung Druckjobs — KRITIS-Pläne nicht offen liegen lassen."
+      reason_en: "Printer planning with pull print, encrypted print jobs — KRITIS plans must not be left out in the open."
+    "SYS.4.1.A2":
+      maturity_target: "3"
+      reason: "Auswahl Drucker mit Common-Criteria-Zertifikat und Audit-Logs."
+      reason_en: "Printer selection with Common Criteria certificate and audit logs."
+    "SYS.4.1.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration Drucker — Default-Passwörter weg, SNMPv3, Firmware-Patches."
+      reason_en: "Secure printer configuration — change default passwords, SNMPv3, firmware patches."
+    "SYS.4.5.A1":
+      maturity_target: "4"
+      reason: "Wechseldatenträger-Planung mit Verschlüsselungs-Pflicht und Whitelisting."
+      reason_en: "Removable media planning with encryption mandate and whitelisting."
+    "SYS.4.5.A2":
+      maturity_target: "4"
+      reason: "Auswahl USB/Wechselmedien mit Hardware-Verschlüsselung (FIPS 140-2)."
+      reason_en: "USB/removable media selection with hardware encryption (FIPS 140-2)."
+    "NET.1.1.A1":
+      maturity_target: "5"
+      reason: "Netzarchitektur-Planung ist KRITIS-Kern — Zonenkonzept, OT/IT-Trennung, Mikro-Segmentierung."
+      reason_en: "Network architecture planning is core to KRITIS — zone concept, OT/IT separation, micro-segmentation."
+    "NET.1.1.A2":
+      maturity_target: "5"
+      reason: "Anforderungsanalyse Netz mit Schutzbedarfsfeststellung je Zone — BSI Standard-Absicherung."
+      reason_en: "Network requirements analysis with protection-needs determination per zone — BSI Standard Protection."
+    "NET.4.1.A1":
+      maturity_target: "3"
+      reason: "TK-Anlagen-Planung — KRITIS-Notruf/Hotline-Verfügbarkeit kritisch."
+      reason_en: "PBX planning — KRITIS emergency call/hotline availability is critical."
+    "NET.4.1.A2":
+      maturity_target: "3"
+      reason: "Auswahl TK-Anlage mit Redundanz und Notstromversorgung."
+      reason_en: "PBX selection with redundancy and emergency power supply."
+    "NET.4.2.A1":
+      maturity_target: "3"
+      reason: "VoIP-Planung mit SRTP/TLS — keine Klartext-Telefonie in KRITIS-Krisenkommunikation."
+      reason_en: "VoIP planning with SRTP/TLS — no cleartext telephony in KRITIS crisis communication."
+    "NET.4.2.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration VoIP-Komponenten mit gehärteten Codecs und SBC."
+      reason_en: "Secure VoIP component configuration with hardened codecs and SBC."
+    "NET.4.2.A8":
+      maturity_target: "3"
+      reason: "Verschlüsselung VoIP — bei KRITIS-Krisenstab-Calls Pflicht."
+      reason_en: "VoIP encryption — mandatory for KRITIS crisis team calls."
+    "NET.4.3.A1":
+      maturity_target: "2"
+      reason: "Faxgeräte rückläufig in KRITIS — wenn vorhanden, nur in geschützter Zone."
+      reason_en: "Fax devices declining in KRITIS — if present, only in protected zone."
+    "NET.4.3.A2":
+      maturity_target: "2"
+      reason: "Auswahl Faxgerät mit Speicher-Löschung und Empfänger-Authentifizierung."
+      reason_en: "Fax device selection with memory clearing and recipient authentication."
+    "NET.4.3.A3":
+      maturity_target: "2"
+      reason: "Sichere Konfiguration mit deaktivierten Remote-Diagnoseports."
+      reason_en: "Secure configuration with deactivated remote diagnostic ports."
+    "INF.1.A1":
+      maturity_target: "4"
+      reason: "Gebäude-Planung mit perimeter-Schutz — KRITIS-Anlagen Hochsicherheits-Standorte."
+      reason_en: "Building planning with perimeter protection — KRITIS facilities are high-security sites."
+    "INF.1.A2":
+      maturity_target: "4"
+      reason: "Brandschutz und Stromversorgung — KRITIS-RZ mit USV und Notstrom-Diesel."
+      reason_en: "Fire protection and power — KRITIS data centres with UPS and emergency diesel."
+    "INF.10.A1":
+      maturity_target: "3"
+      reason: "Besprechungsräume mit abhörsicheren Setups bei KRITIS-Krisenstab und Vorstand."
+      reason_en: "Meeting rooms with eavesdropping-proof setups for KRITIS crisis team and board."
+    "INF.10.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration Konferenztechnik (deaktivierte USB, gehärtete Firmware)."
+      reason_en: "Secure conference technology configuration (disabled USB, hardened firmware)."
+    "INF.13.A1":
+      maturity_target: "3"
+      reason: "Wegeleitsysteme/sonstige Infrastruktur — KRITIS-Standort-Sicherheit gegen Sabotage."
+      reason_en: "Wayfinding systems/other infrastructure — KRITIS site security against sabotage."
+    "INF.13.A2":
+      maturity_target: "3"
+      reason: "Auswahl mit Manipulations-Erkennung und sicheren Komponenten."
+      reason_en: "Selection with tamper detection and secure components."
+    "INF.13.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration und regelmäßige Wartung dokumentiert."
+      reason_en: "Secure configuration and regular maintenance documented."
