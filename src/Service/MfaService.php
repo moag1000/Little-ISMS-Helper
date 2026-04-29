@@ -85,8 +85,7 @@ class MfaService
         }
 
         $user = $mfaToken->getUser();
-        $decryptedSecret = $this->mfaEncryptionService->decrypt($mfaToken->getSecret());
-        $totp = TOTP::createFromSecret($decryptedSecret);
+        $totp = TOTP::createFromSecret($this->decryptAndMigrate($mfaToken));
         $totp->setLabel($user->getEmail());
         $totp->setIssuer($this->appName);
 
@@ -120,8 +119,7 @@ class MfaService
         // Rate limiting check
         $this->checkRateLimit($mfaToken);
 
-        $decryptedSecret = $this->mfaEncryptionService->decrypt($mfaToken->getSecret());
-        $totp = TOTP::createFromSecret($decryptedSecret);
+        $totp = TOTP::createFromSecret($this->decryptAndMigrate($mfaToken));
 
         // Verify with time window (allows ±1 time step for clock drift)
         $isValid = $totp->verify($code, null, 1);
@@ -274,6 +272,41 @@ class MfaService
             ['is_active' => false],
             sprintf('MFA token disabled for user %s', $mfaToken->getUser()->getEmail())
         );
+    }
+
+    /**
+     * Get decrypted TOTP secret, auto-encrypting plaintext on first access.
+     */
+    public function getDecryptedSecret(MfaToken $mfaToken): string
+    {
+        return $this->decryptAndMigrate($mfaToken);
+    }
+
+    /**
+     * Decrypt a TOTP secret and auto-encrypt if still plaintext (lazy migration).
+     *
+     * Eliminates the need to run app:encrypt-mfa-secrets manually after deploy.
+     * On first access of a plaintext secret, it is encrypted in-place and flushed.
+     */
+    private function decryptAndMigrate(MfaToken $mfaToken): string
+    {
+        $stored = $mfaToken->getSecret();
+        if ($stored === null) {
+            return '';
+        }
+
+        $plaintext = $this->mfaEncryptionService->decrypt($stored);
+
+        // Auto-encrypt plaintext secrets on first read
+        if (!$this->mfaEncryptionService->isEncrypted($stored)) {
+            $mfaToken->setSecret($this->mfaEncryptionService->encrypt($plaintext));
+            $this->entityManager->flush();
+            $this->logger->info('Auto-encrypted plaintext TOTP secret', [
+                'mfa_token_id' => $mfaToken->getId(),
+            ]);
+        }
+
+        return $plaintext;
     }
 
     /**

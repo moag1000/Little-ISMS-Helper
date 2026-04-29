@@ -9,7 +9,6 @@ use App\Entity\MfaToken;
 use App\Entity\User;
 use App\Repository\MfaTokenRepository;
 use App\Service\AuditLogger;
-use App\Service\MfaEncryptionService;
 use App\Service\MfaService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -26,7 +25,6 @@ class MfaTokenController extends AbstractController
         private readonly MfaTokenRepository $mfaTokenRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly MfaService $mfaService,
-        private readonly MfaEncryptionService $mfaEncryptionService,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger
     ) {}
@@ -96,7 +94,7 @@ class MfaTokenController extends AbstractController
             'user' => $user,
             'qr_code' => $qrCode,
             'backup_codes' => $backupCodes,
-            'secret' => $this->mfaEncryptionService->decrypt($mfaToken->getSecret()),
+            'secret' => $this->mfaService->getDecryptedSecret($mfaToken),
         ]);
     }
     #[Route('/admin/mfa/{id}/verify', name: 'admin_mfa_verify', requirements: ['id' => '\d+'], methods: ['POST'])]

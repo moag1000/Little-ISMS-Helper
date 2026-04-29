@@ -8,7 +8,6 @@ use Exception;
 use App\Entity\MfaToken;
 use App\Repository\MfaTokenRepository;
 use App\Service\AuditLogger;
-use App\Service\MfaEncryptionService;
 use App\Service\MfaService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -31,7 +30,6 @@ class ProfileMfaController extends AbstractController
         private readonly MfaTokenRepository $mfaTokenRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly MfaService $mfaService,
-        private readonly MfaEncryptionService $mfaEncryptionService,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
         private readonly TranslatorInterface $translator
@@ -97,7 +95,7 @@ class ProfileMfaController extends AbstractController
             'user' => $user,
             'qr_code' => $qrCode,
             'backup_codes' => $backupCodes,
-            'secret' => $this->mfaEncryptionService->decrypt($mfaToken->getSecret()),
+            'secret' => $this->mfaService->getDecryptedSecret($mfaToken),
         ]);
     }
 
