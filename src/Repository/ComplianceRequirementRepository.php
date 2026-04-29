@@ -146,16 +146,17 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
      */
     public function getFrameworkStatisticsForTenant(ComplianceFramework $complianceFramework, Tenant $tenant): array
     {
-        $queryBuilder = $this->createQueryBuilder('cr');
-
+        // Cast to int — Doctrine getSingleScalarResult() returns string for COUNT()
+        // on MySQL/PDO. PHP 8.5 strict mode errors on string→int|float coercion.
         return [
-            'total' => $queryBuilder->select('COUNT(cr.id)')
+            'total' => (int) $this->createQueryBuilder('cr')
+                ->select('COUNT(cr.id)')
                 ->where('cr.complianceFramework = :framework')
                 ->setParameter('framework', $complianceFramework)
                 ->getQuery()
                 ->getSingleScalarResult(),
 
-            'applicable' => $this->createQueryBuilder('cr')
+            'applicable' => (int) $this->createQueryBuilder('cr')
                 ->select('COUNT(DISTINCT cr.id)')
                 ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.complianceRequirement = cr AND crf.tenant = :tenant')
                 ->where('cr.complianceFramework = :framework')
@@ -166,7 +167,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getSingleScalarResult(),
 
-            'fulfilled' => $this->createQueryBuilder('cr')
+            'fulfilled' => (int) $this->createQueryBuilder('cr')
                 ->select('COUNT(DISTINCT cr.id)')
                 ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.complianceRequirement = cr AND crf.tenant = :tenant')
                 ->where('cr.complianceFramework = :framework')
@@ -178,7 +179,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getSingleScalarResult(),
 
-            'critical_gaps' => $this->createQueryBuilder('cr')
+            'critical_gaps' => (int) $this->createQueryBuilder('cr')
                 ->select('COUNT(DISTINCT cr.id)')
                 ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.complianceRequirement = cr AND crf.tenant = :tenant')
                 ->where('cr.complianceFramework = :framework')
