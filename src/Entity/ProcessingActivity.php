@@ -31,6 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_processing_activity_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_processing_activity_legal_basis', columns: ['legal_basis'])]
 #[ORM\Index(name: 'idx_processing_activity_high_risk', columns: ['is_high_risk'])]
+#[ORM\HasLifecycleCallbacks]
 class ProcessingActivity
 {
     #[ORM\Id]

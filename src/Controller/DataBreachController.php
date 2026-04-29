@@ -10,6 +10,7 @@ use App\Entity\DataBreach;
 use App\Form\DataBreachType;
 use App\Service\DataBreachService;
 use App\Service\PdfExportService;
+use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +24,7 @@ class DataBreachController extends AbstractController
     public function __construct(
         private readonly DataBreachService $dataBreachService,
         private readonly PdfExportService $pdfExportService,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
@@ -90,7 +92,9 @@ class DataBreachController extends AbstractController
         // Create a new breach with tenant and reference number pre-set
         $breach = $this->dataBreachService->prepareNewBreach();
 
-        $form = $this->createForm(DataBreachType::class, $breach);
+        $form = $this->createForm(DataBreachType::class, $breach, [
+            'tenant' => $this->tenantContext->getCurrentTenant(),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -134,7 +138,9 @@ class DataBreachController extends AbstractController
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
-        $form = $this->createForm(DataBreachType::class, $dataBreach);
+        $form = $this->createForm(DataBreachType::class, $dataBreach, [
+            'tenant' => $this->tenantContext->getCurrentTenant(),
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

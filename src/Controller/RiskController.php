@@ -283,10 +283,13 @@ class RiskController extends AbstractController
             $statusMap = [
                 'identified' => 'Identifiziert',
                 'assessed' => 'Bewertet',
+                'in_treatment' => 'In Behandlung',
                 'treated' => 'Behandelt',
+                'mitigated' => 'Mitigiert',
                 'monitored' => 'Überwacht',
                 'closed' => 'Geschlossen',
                 'accepted' => 'Akzeptiert',
+                'open' => 'Offen',
             ];
 
             $csv[] = [
@@ -479,10 +482,13 @@ class RiskController extends AbstractController
                 match($risk->getStatus()) {
                     RiskStatus::Identified => 'Identifiziert',
                     RiskStatus::Assessed => 'Bewertet',
+                    RiskStatus::InTreatment => 'In Behandlung',
                     RiskStatus::Treated => 'Behandelt',
+                    RiskStatus::Mitigated => 'Mitigiert',
                     RiskStatus::Monitored => 'Überwacht',
                     RiskStatus::Closed => 'Geschlossen',
                     RiskStatus::Accepted => 'Akzeptiert',
+                    RiskStatus::Open => 'Offen',
                     default => $risk->getStatus()?->value
                 },
                 $risk->getRiskOwner() ? $risk->getRiskOwner()->getFullName() : '-',
@@ -657,10 +663,13 @@ class RiskController extends AbstractController
         $statusBreakdown = [
             'identified' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Identified)),
             'assessed' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Assessed)),
+            'in_treatment' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::InTreatment)),
             'treated' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Treated)),
+            'mitigated' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Mitigated)),
             'monitored' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Monitored)),
             'closed' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Closed)),
             'accepted' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Accepted)),
+            'open' => count(array_filter($risks, fn(Risk $risk): bool => $risk->getStatus() === RiskStatus::Open)),
         ];
         // Remove zero counts
         $statusBreakdown = array_filter($statusBreakdown, fn(int $count): bool => $count > 0);

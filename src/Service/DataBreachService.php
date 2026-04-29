@@ -541,7 +541,17 @@ class DataBreachService
 
     public function findById(int $id): ?DataBreach
     {
-        return $this->dataBreachRepository->find($id);
+        $dataBreach = $this->dataBreachRepository->find($id);
+        if ($dataBreach === null) {
+            return null;
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant instanceof Tenant && $dataBreach->getTenant() !== $tenant) {
+            return null;
+        }
+
+        return $dataBreach;
     }
 
     public function findByStatus(string $status): array
@@ -764,7 +774,7 @@ class DataBreachService
         // HIGH: Pending authority notifications (within 72h)
         $pendingAuthority = $this->dataBreachRepository->findRequiringAuthorityNotification($tenant);
         foreach ($pendingAuthority as $breach) {
-            if (!in_array($breach->getId(), array_column($overdueBreaches, 'id'))) {
+            if (!in_array($breach->getId(), array_map(fn(DataBreach $b): ?int => $b->getId(), $overdueBreaches), true)) {
                 $hoursRemaining = $breach->getHoursUntilAuthorityDeadline();
                 $items[] = [
                     'priority' => $hoursRemaining < 24 ? 'high' : 'medium',

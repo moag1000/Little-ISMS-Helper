@@ -19,9 +19,13 @@ risk:
     all_status: Alle Status
     status_identified: Identifiziert
     status_assessed: Bewertet
+    status_in_treatment: In Behandlung
     status_treated: Behandelt
+    status_mitigated: Mitigiert
     status_monitored: Überwacht
     status_closed: Geschlossen
+    status_accepted: Akzeptiert
+    status_open: Offen
     treatment_label: Behandlungsstrategie
     all_strategies: Alle Strategien
     owner_label: Risk Owner

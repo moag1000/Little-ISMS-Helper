@@ -731,7 +731,8 @@ class BusinessContinuityPlan
 
         // Tested recently (30%)
         if ($this->lastTested instanceof DateTimeInterface) {
-            $monthsSinceTest = new DateTime()->diff($this->lastTested)->m;
+            $testInterval = new DateTime()->diff($this->lastTested);
+            $monthsSinceTest = $testInterval->y * 12 + $testInterval->m;
             if ($monthsSinceTest <= 6) {
                 $score += 30;
             } elseif ($monthsSinceTest <= 12) {
@@ -743,7 +744,8 @@ class BusinessContinuityPlan
 
         // Reviewed recently (20%)
         if ($this->lastReviewDate instanceof DateTimeInterface) {
-            $monthsSinceReview = new DateTime()->diff($this->lastReviewDate)->m;
+            $reviewInterval = new DateTime()->diff($this->lastReviewDate);
+            $monthsSinceReview = $reviewInterval->y * 12 + $reviewInterval->m;
             if ($monthsSinceReview <= 6) {
                 $score += 20;
             } elseif ($monthsSinceReview <= 12) {

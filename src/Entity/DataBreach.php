@@ -32,6 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_data_breach_severity', columns: ['severity'])]
 #[ORM\Index(name: 'idx_data_breach_authority_notified', columns: ['supervisory_authority_notified_at'])]
 #[ORM\Index(name: 'idx_data_breach_created', columns: ['created_at'])]
+#[ORM\HasLifecycleCallbacks]
 class DataBreach
 {
     #[ORM\Id]
