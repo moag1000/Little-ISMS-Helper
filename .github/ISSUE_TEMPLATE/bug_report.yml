@@ -1,0 +1,69 @@
+name: Bug Report
+description: Report a runtime error, broken UI, or unexpected behaviour
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. **Do not include security
+        vulnerabilities here** — please use [private vulnerability reporting](https://github.com/moag1000/Little-ISMS-Helper/security/advisories/new)
+        instead.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Value of `composer.json` `"version"`, or the Docker tag.
+      placeholder: e.g. v3.2.8
+    validations:
+      required: true
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment
+      options:
+        - Docker (self-hosted, embedded MariaDB)
+        - Docker (external DB)
+        - Composer + Apache/Nginx (VPS)
+        - Composer + shared hosting (FTP-only)
+        - Local dev (symfony serve)
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Login as ...
+        2. Click ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: Include error message, stack trace, or screenshot if applicable.
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      placeholder: |
+        - PHP version:
+        - MySQL/MariaDB version:
+        - Browser (if UI bug):
+        - APP_ENV:
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log lines
+      description: From `var/log/dev.log` or `docker compose logs app`. Strip secrets first.
+      render: text
