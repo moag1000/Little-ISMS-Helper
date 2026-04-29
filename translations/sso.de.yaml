@@ -1,0 +1,93 @@
+sso:
+    admin:
+        title: 'Single Sign-On'
+        subtitle: 'OIDC- und OAuth2-Identity-Provider verwalten. Buttons im Login werden nur für aktive Provider angezeigt.'
+        new_provider: 'Neuer Provider'
+        edit_provider: 'Provider bearbeiten'
+        approvals: 'Freigabe-Warteschlange'
+        empty: 'Noch keine SSO-Provider konfiguriert. Lege einen an, um den Login-Button anzuzeigen.'
+        help: |
+            <strong>Globale Provider</strong> (nur SUPER_ADMIN) gelten mandantenübergreifend. <strong>Mandanten-Provider</strong> sind nur in ihrem Mandanten sichtbar.
+            <strong>Domain-Bindung</strong>: <code>optional</code> — Button immer sichtbar, <code>enforce</code> — nur für matchende Email-Domains, <code>disabled</code> — keine Domain-Prüfung.
+        col:
+            name: 'Name'
+            slug: 'Slug'
+            scope: 'Bereich'
+            type: 'Typ'
+            domains: 'Domains'
+            status: 'Status'
+            actions: 'Aktionen'
+    section:
+        identity: 'Identität & Bereich'
+        credentials: 'Anmeldedaten'
+        endpoints: 'Endpoints / Discovery'
+        claims: 'Scopes & Claim-Mapping'
+        button: 'Login-Button'
+        domain_binding: 'Domain-Bindung'
+        provisioning: 'Benutzer-Provisionierung'
+    field:
+        slug: 'Slug (URL-sicher)'
+        name: 'Anzeigename'
+        type: 'Protokoll'
+        enabled: 'Aktiviert'
+        scope: 'Bereich (leer = global)'
+        client_id: 'Client-ID'
+        client_secret: 'Client-Secret (verschlüsselt gespeichert)'
+        discovery_url: 'OIDC-Discovery-URL'
+        issuer: 'Issuer'
+        auth_endpoint: 'Authorization-Endpoint'
+        token_endpoint: 'Token-Endpoint'
+        userinfo_endpoint: 'UserInfo-Endpoint'
+        jwks_uri: 'JWKS-URI'
+        scopes: 'Scopes (Leerzeichen-getrennt)'
+        attribute_map: 'Claim-Mapping (JSON)'
+        button_label: 'Button-Text'
+        button_icon: 'Icon (Bootstrap-Klasse)'
+        button_color: 'Akzentfarbe (CSS)'
+        domain_bindings: 'Email-Domain-Liste (kommagetrennt)'
+        domain_mode: 'Bindungs-Modus'
+        jit: 'JIT-Provisioning aktivieren'
+        auto_approve: 'Auto-Approve (kein Freigabe-Schritt)'
+        default_role: 'Standard-Rolle'
+    help:
+        slug: 'Wird in der URL benutzt: /sso/<slug>/start'
+        client_secret_edit: 'Leer lassen = unverändert. Eintrag verschlüsselt mit kernel.secret.'
+        discovery_url: 'Wenn gesetzt, werden Endpoints + JWKS automatisch geladen.'
+        scopes: 'Standard: openid profile email'
+        attribute_map: 'JSON: {"<claim>":"<user-feld>"}. Felder: email, firstName, lastName, jobTitle, department.'
+        button_icon: 'Beispiel: bi-google, bi-microsoft, bi-shield-lock'
+        domain_bindings: 'z. B. acme.com, acme.de — leer = keine Bindung.'
+        auto_approve: 'Wenn aus → neue User landen in der Freigabe-Warteschlange.'
+        scope: 'Leer = global (alle Mandanten sehen den Button).'
+    type:
+        oidc: 'OpenID Connect'
+        oauth2: 'OAuth2 (generisch)'
+    domain_mode:
+        disabled: 'Deaktiviert'
+        optional: 'Optional'
+        enforce: 'Erzwingen'
+    status:
+        enabled: 'Aktiv'
+        disabled: 'Inaktiv'
+    scope:
+        global: 'Global'
+    action:
+        enable: 'Aktivieren'
+        disable: 'Deaktivieren'
+        discover: 'Discovery laden'
+        approve: 'Freigeben'
+        reject: 'Ablehnen'
+    confirm:
+        delete: 'Provider „%name%" wirklich löschen? Verknüpfte User-Sessions bleiben aktiv, aber Folge-Logins schlagen fehl.'
+    prompt:
+        reject_reason: 'Ablehnungsgrund (optional, wird gespeichert):'
+    approvals:
+        empty: 'Keine offenen Freigaben. SSO-User werden hier eingeordnet, sofern Auto-Approve deaktiviert ist.'
+        show_claims: 'Claims anzeigen'
+        col:
+            email: 'Email'
+            provider: 'Provider'
+            tenant: 'Mandant'
+            requested_at: 'Angefragt am'
+            claims: 'Claims (vom IdP)'
+            actions: 'Aktionen'

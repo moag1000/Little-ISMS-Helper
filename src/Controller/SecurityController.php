@@ -8,6 +8,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use LogicException;
 use Exception;
 use App\Security\SamlAuthFactory;
+use App\Service\Sso\SsoProviderRegistry;
+use App\Service\TenantContext;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +24,9 @@ class SecurityController extends AbstractController
     public function __construct(
         private readonly RateLimiterFactory $rateLimiterFactory,
         private readonly SamlAuthFactory $samlAuthFactory,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly SsoProviderRegistry $ssoRegistry,
+        private readonly TenantContext $tenantContext,
     ) {}
 
     #[Route('/login', name: 'app_login')]
@@ -38,6 +42,7 @@ class SecurityController extends AbstractController
                 'last_username' => '',
                 'error' => null,
                 'rate_limited' => true,
+                'sso_providers' => $this->ssoRegistry->getLoginButtons($this->tenantContext->getCurrentTenant(), null),
             ]);
 
             // Prevent caching of login page to ensure fresh CSRF tokens
@@ -73,6 +78,10 @@ class SecurityController extends AbstractController
             'last_username' => $lastUsername,
             'error' => $error,
             'rate_limited' => false,
+            'sso_providers' => $this->ssoRegistry->getLoginButtons(
+                $this->tenantContext->getCurrentTenant(),
+                $lastUsername !== '' ? $lastUsername : null
+            ),
         ]);
 
         // Prevent caching of login page to ensure fresh CSRF tokens

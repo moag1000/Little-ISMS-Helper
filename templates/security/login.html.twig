@@ -70,31 +70,27 @@
             }) }}
         </form>
 
-        <div class="fa-auth-form__divider">
-            <span>{{ 'login.or_divider'|trans({}, 'messages')|default('oder') }}</span>
-        </div>
+        {% set has_sso_buttons = (sso_providers is defined and sso_providers|length > 0) %}
+        {% if has_sso_buttons %}
+            <div class="fa-auth-form__divider">
+                <span>{{ 'login.or_divider'|trans({}, 'messages')|default('oder') }}</span>
+            </div>
 
-        <div class="fa-auth-form__oauth">
-            <a href="{{ path('oauth_azure_connect') }}" class="fa-auth-oauth-btn">
-                <svg class="fa-auth-oauth-btn__logo" width="18" height="18" viewBox="0 0 23 23" aria-hidden="true">
-                    <path fill="#f35325" d="M1 1h10v10H1z"/>
-                    <path fill="#81bc06" d="M12 1h10v10H12z"/>
-                    <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-                    <path fill="#ffba08" d="M12 12h10v10H12z"/>
-                </svg>
-                <span>{{ 'login.azure_oauth'|trans({}, 'messages') }}</span>
-            </a>
-
-            <a href="{{ path('saml_login') }}" class="fa-auth-oauth-btn">
-                <svg class="fa-auth-oauth-btn__logo" width="18" height="18" viewBox="0 0 23 23" aria-hidden="true">
-                    <path fill="#f35325" d="M1 1h10v10H1z"/>
-                    <path fill="#81bc06" d="M12 1h10v10H12z"/>
-                    <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-                    <path fill="#ffba08" d="M12 12h10v10H12z"/>
-                </svg>
-                <span>{{ 'login.azure_saml'|trans({}, 'messages') }}</span>
-            </a>
-        </div>
+            <div class="fa-auth-form__oauth">
+                {% for p in sso_providers %}
+                    <a href="{{ path('app_sso_start', {slug: p.slug}) }}" class="fa-auth-oauth-btn"
+                       {% if p.buttonColor %}style="border-color: {{ p.buttonColor }};"{% endif %}>
+                        {% if p.buttonIcon %}
+                            <i class="bi {{ p.buttonIcon }}" aria-hidden="true"
+                               {% if p.buttonColor %}style="color: {{ p.buttonColor }};"{% endif %}></i>
+                        {% else %}
+                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                        {% endif %}
+                        <span>{{ p.buttonLabel ?: p.name }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
 
         <p class="fa-auth-form__help">
             {{ 'login.no_account_message'|trans({}, 'messages') }}

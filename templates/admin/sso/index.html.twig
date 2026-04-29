@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'sso' %}
+
+{% block title %}{{ 'sso.admin.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">{{ 'common.dashboard'|trans({}, 'messages') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'sso.admin.title'|trans }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
+        <div>
+            <h1>{{ 'sso.admin.title'|trans }}</h1>
+            <p class="text-muted small mb-0">{{ 'sso.admin.subtitle'|trans }}</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ path('admin_sso_approvals') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                <i class="bi bi-person-check"></i>
+                {{ 'sso.admin.approvals'|trans }}
+                {% if pending_count > 0 %}
+                    <span class="badge bg-warning text-dark ms-1">{{ pending_count }}</span>
+                {% endif %}
+            </a>
+            <a href="{{ path('admin_sso_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
+                <i class="bi bi-plus-lg"></i>
+                {{ 'sso.admin.new_provider'|trans }}
+            </a>
+        </div>
+    </div>
+
+    {% if providers|length == 0 %}
+        <div class="alert alert-info small">
+            <i class="bi bi-info-circle"></i>
+            {{ 'sso.admin.empty'|trans }}
+        </div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>{{ 'sso.admin.col.name'|trans }}</th>
+                        <th>{{ 'sso.admin.col.slug'|trans }}</th>
+                        <th>{{ 'sso.admin.col.scope'|trans }}</th>
+                        <th>{{ 'sso.admin.col.type'|trans }}</th>
+                        <th>{{ 'sso.admin.col.domains'|trans }}</th>
+                        <th>{{ 'sso.admin.col.status'|trans }}</th>
+                        <th class="text-end">{{ 'sso.admin.col.actions'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for p in providers %}
+                    <tr>
+                        <td>
+                            <strong>{{ p.name }}</strong>
+                            {% if p.buttonLabel %}
+                                <div class="text-muted small">{{ p.buttonLabel }}</div>
+                            {% endif %}
+                        </td>
+                        <td><code>{{ p.slug }}</code></td>
+                        <td>
+                            {% if p.global %}
+                                <span class="badge bg-primary">{{ 'sso.scope.global'|trans }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ p.tenant.name }}</span>
+                            {% endif %}
+                        </td>
+                        <td><code class="small">{{ p.type }}</code></td>
+                        <td class="small">
+                            {% if p.domainBindings|length > 0 %}
+                                {{ p.domainBindings|join(', ') }}
+                                <span class="badge bg-light text-dark border ms-1">{{ ('sso.domain_mode.' ~ p.domainBindingMode)|trans }}</span>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if p.enabled %}
+                                <span class="badge bg-success">{{ 'sso.status.enabled'|trans }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ 'sso.status.disabled'|trans }}</span>
+                            {% endif %}
+                            {% if p.autoApprove %}
+                                <span class="badge bg-info ms-1" title="{{ 'sso.field.auto_approve'|trans }}">A</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{{ path('admin_sso_edit', {id: p.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                <i class="bi bi-pencil"></i> {{ 'common.edit'|trans({}, 'messages') }}
+                            </a>
+                            <form method="post" action="{{ path('admin_sso_toggle', {id: p.id}) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('sso_provider_toggle') }}">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                    {{ p.enabled ? 'sso.action.disable'|trans : 'sso.action.enable'|trans }}
+                                </button>
+                            </form>
+                            <form method="post" action="{{ path('admin_sso_delete', {id: p.id}) }}" class="d-inline"
+                                  data-confirm="{{ 'sso.confirm.delete'|trans({'%name%': p.name}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('sso_provider_delete') }}">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    <div class="alert alert-light small mt-4">
+        <i class="bi bi-info-circle"></i>
+        {{ 'sso.admin.help'|trans|raw }}
+    </div>
+</div>
+{% endblock %}

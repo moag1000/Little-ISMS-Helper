@@ -1,0 +1,93 @@
+sso:
+    admin:
+        title: 'Single Sign-On'
+        subtitle: 'Manage OIDC and OAuth2 identity providers. Login shows buttons only for enabled providers.'
+        new_provider: 'New provider'
+        edit_provider: 'Edit provider'
+        approvals: 'Approval queue'
+        empty: 'No SSO providers configured yet. Add one to show a login button.'
+        help: |
+            <strong>Global providers</strong> (SUPER_ADMIN only) apply across tenants. <strong>Tenant providers</strong> are visible only within their tenant.
+            <strong>Domain binding</strong>: <code>optional</code> — button always visible, <code>enforce</code> — only when email matches a listed domain, <code>disabled</code> — no domain check.
+        col:
+            name: 'Name'
+            slug: 'Slug'
+            scope: 'Scope'
+            type: 'Type'
+            domains: 'Domains'
+            status: 'Status'
+            actions: 'Actions'
+    section:
+        identity: 'Identity & scope'
+        credentials: 'Credentials'
+        endpoints: 'Endpoints / Discovery'
+        claims: 'Scopes & claim mapping'
+        button: 'Login button'
+        domain_binding: 'Domain binding'
+        provisioning: 'User provisioning'
+    field:
+        slug: 'Slug (URL-safe)'
+        name: 'Display name'
+        type: 'Protocol'
+        enabled: 'Enabled'
+        scope: 'Scope (empty = global)'
+        client_id: 'Client ID'
+        client_secret: 'Client secret (stored encrypted)'
+        discovery_url: 'OIDC discovery URL'
+        issuer: 'Issuer'
+        auth_endpoint: 'Authorization endpoint'
+        token_endpoint: 'Token endpoint'
+        userinfo_endpoint: 'UserInfo endpoint'
+        jwks_uri: 'JWKS URI'
+        scopes: 'Scopes (space-separated)'
+        attribute_map: 'Claim map (JSON)'
+        button_label: 'Button label'
+        button_icon: 'Icon (Bootstrap class)'
+        button_color: 'Accent color (CSS)'
+        domain_bindings: 'Email domain list (comma-separated)'
+        domain_mode: 'Binding mode'
+        jit: 'Enable JIT provisioning'
+        auto_approve: 'Auto-approve (skip approval step)'
+        default_role: 'Default role'
+    help:
+        slug: 'Used in URL: /sso/<slug>/start'
+        client_secret_edit: 'Leave empty to keep unchanged. Stored encrypted with kernel.secret.'
+        discovery_url: 'When set, endpoints + JWKS are auto-loaded.'
+        scopes: 'Default: openid profile email'
+        attribute_map: 'JSON: {"<claim>":"<user-field>"}. Fields: email, firstName, lastName, jobTitle, department.'
+        button_icon: 'Example: bi-google, bi-microsoft, bi-shield-lock'
+        domain_bindings: 'e.g. acme.com, acme.de — empty = no binding.'
+        auto_approve: 'If off → new users land in the approval queue.'
+        scope: 'Empty = global (all tenants see the button).'
+    type:
+        oidc: 'OpenID Connect'
+        oauth2: 'OAuth2 (generic)'
+    domain_mode:
+        disabled: 'Disabled'
+        optional: 'Optional'
+        enforce: 'Enforce'
+    status:
+        enabled: 'Active'
+        disabled: 'Inactive'
+    scope:
+        global: 'Global'
+    action:
+        enable: 'Enable'
+        disable: 'Disable'
+        discover: 'Load discovery'
+        approve: 'Approve'
+        reject: 'Reject'
+    confirm:
+        delete: 'Really delete provider "%name%"? Active sessions stay valid but subsequent logins will fail.'
+    prompt:
+        reject_reason: 'Rejection reason (optional, will be stored):'
+    approvals:
+        empty: 'No pending approvals. SSO users land here when auto-approve is off.'
+        show_claims: 'Show claims'
+        col:
+            email: 'Email'
+            provider: 'Provider'
+            tenant: 'Tenant'
+            requested_at: 'Requested at'
+            claims: 'Claims (from IdP)'
+            actions: 'Actions'
