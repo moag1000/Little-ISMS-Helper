@@ -340,7 +340,21 @@
                     <h3>{{ 'privacy.data_breach.follow_up_actions'|trans({}, 'privacy') }}:</h3>
                     <ul>
                         {% for action in breach.followUpActions %}
-                            <li>{{ action }}</li>
+                            {# Entries may be plain strings (legacy) or structured dicts
+                               with action/status/due_date keys (post-v3.2 schema). #}
+                            {% if action is iterable %}
+                                <li>
+                                    {{ action.action|default('—') }}
+                                    {% if action.status|default('') %}
+                                        <span class="badge text-bg-secondary ms-1">{{ action.status }}</span>
+                                    {% endif %}
+                                    {% if action.due_date|default('') %}
+                                        <small class="text-muted ms-1">({{ action.due_date }})</small>
+                                    {% endif %}
+                                </li>
+                            {% else %}
+                                <li>{{ action|default('—') }}</li>
+                            {% endif %}
                         {% endfor %}
                     </ul>
                 {% endif %}
