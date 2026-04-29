@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gstool-export version="1.0">
+  <metadata>
+    <created>2024-01-15</created>
+    <bsi-version>2023</bsi-version>
+    <tenant-hint>example-gmbh</tenant-hint>
+  </metadata>
+  <zielobjekte>
+    <zielobjekt id="ZO-001" type="IT-System">
+      <name>Webserver-Production</name>
+      <kurzbeschreibung>Hauptwebserver für Kundenportal</kurzbeschreibung>
+      <verantwortlich>IT-Abteilung</verantwortlich>
+      <standort>RZ-Nord</standort>
+      <schutzbedarf>
+        <vertraulichkeit>hoch</vertraulichkeit>
+        <integritaet>sehr hoch</integritaet>
+        <verfuegbarkeit>hoch</verfuegbarkeit>
+      </schutzbedarf>
+    </zielobjekt>
+    <zielobjekt id="ZO-002" type="Anwendung">
+      <name>Customer-CRM</name>
+      <kurzbeschreibung>Kundenverwaltungs-Anwendung</kurzbeschreibung>
+      <verantwortlich>Vertrieb</verantwortlich>
+      <schutzbedarf>
+        <vertraulichkeit>hoch</vertraulichkeit>
+        <integritaet>hoch</integritaet>
+        <verfuegbarkeit>normal</verfuegbarkeit>
+      </schutzbedarf>
+    </zielobjekt>
+    <zielobjekt id="ZO-003" type="Raum">
+      <name>Server-Raum-A</name>
+      <kurzbeschreibung>Physischer Serverraum</kurzbeschreibung>
+      <standort>Hauptgebäude EG</standort>
+      <schutzbedarf>
+        <vertraulichkeit>normal</vertraulichkeit>
+        <integritaet>normal</integritaet>
+        <verfuegbarkeit>sehr hoch</verfuegbarkeit>
+      </schutzbedarf>
+    </zielobjekt>
+    <zielobjekt id="ZO-004" type="Mitarbeiter">
+      <name>Administrator</name>
+      <kurzbeschreibung>Systemadministrator-Rolle</kurzbeschreibung>
+      <schutzbedarf>
+        <vertraulichkeit>hoch</vertraulichkeit>
+        <integritaet>hoch</integritaet>
+        <verfuegbarkeit>normal</verfuegbarkeit>
+      </schutzbedarf>
+    </zielobjekt>
+    <zielobjekt id="ZO-099" type="Sonstig">
+      <name>Test-Asset-ohne-Schutzbedarf</name>
+    </zielobjekt>
+  </zielobjekte>
+</gstool-export>
