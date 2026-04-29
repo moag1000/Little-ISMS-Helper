@@ -45,7 +45,7 @@
             {% for exercise in upcoming %}
             <li>
                 <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a>
-                - {{ exercise.exerciseDate|date('Y-m-d') }} ({{ ('bc_exercises.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bc_exercises') }})
+                - {{ exercise.exerciseDate|locale_date }} ({{ ('bc_exercises.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bc_exercises') }})
             </li>
             {% endfor %}
         </ul>
@@ -102,7 +102,7 @@
                     <tr data-filter-target="filterableRow">
                         <td><a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a></td>
                         <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('bc_exercises.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bc_exercises') } %}</td>
-                        <td>{{ exercise.exerciseDate|date('Y-m-d') }}</td>
+                        <td>{{ exercise.exerciseDate|locale_date }}</td>
                         <td><span class="{{ badge_status(exercise.status) }}">{{ ('bc_exercises.status.' ~ exercise.status)|trans({}, 'bc_exercises') }}</span></td>
                         <td>
                             {% if exercise.status == 'completed' %}

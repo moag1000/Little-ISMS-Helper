@@ -274,7 +274,7 @@
                     {{ ('incident.status.' ~ incident.status.value)|trans({}, 'incident') }}
                 </td>
                 <td>
-                    {{ incident.detectedAt|date('d.m.Y H:i') }}
+                    {{ incident.detectedAt|locale_datetime }}
                     {% if incident.detectedAt %}
                         {% set daysSince = (date().diff(incident.detectedAt).days) %}
                         {% if daysSince == 0 %}

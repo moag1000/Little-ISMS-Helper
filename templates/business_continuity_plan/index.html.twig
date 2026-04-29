@@ -32,7 +32,7 @@
                 {% for plan in overdue_tests %}
                 <li>
                     <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
-                    - {{ 'bc_plans.field.next_test'|trans({}, 'bc_plans') }}: {{ plan.nextTestDate ? plan.nextTestDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
+                    - {{ 'bc_plans.field.next_test'|trans({}, 'bc_plans') }}: {{ plan.nextTestDate ? plan.nextTestDate|locale_date : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
                 </li>
                 {% endfor %}
             </ul>
@@ -48,7 +48,7 @@
                 {% for plan in overdue_reviews %}
                 <li>
                     <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
-                    - {{ 'bc_plans.field.next_review'|trans({}, 'bc_plans') }}: {{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
+                    - {{ 'bc_plans.field.next_review'|trans({}, 'bc_plans') }}: {{ plan.nextReviewDate ? plan.nextReviewDate|locale_date : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
                 </li>
                 {% endfor %}
             </ul>
@@ -97,7 +97,7 @@
                             {% set readiness = plan.getReadinessScore() %}
                             {% include '_components/_badge.html.twig' with { variant: readiness >= 80 ? 'success' : (readiness >= 60 ? 'warning' : 'danger'), content: readiness ~ '%' } %}
                         </td>
-                        <td>{{ plan.lastTested ? plan.lastTested|date('Y-m-d') : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</td>
+                        <td>{{ plan.lastTested ? plan.lastTested|locale_date : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                 <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'common.view'|trans({}, 'messages') }}">
