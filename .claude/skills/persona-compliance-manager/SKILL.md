@@ -88,7 +88,7 @@ allowed-tools: Read, Grep, Glob
 - Aufwand-Reduktion durch Reuse messbar: "Durch Wiederverwendung wurden X FTE-Tage bei NIS2-Onboarding eingespart."
 - Reifegradmodell (NIST CSF Tiers oder eigenes).
 
-### Library-Format als Architektur-Prinzip ⭐ neu
+### Library-Format als Architektur-Prinzip
 
 **Die Idee:** Frameworks, Mappings und Branchen-Profile gehören in **versionierte YAML-Files** statt nur als DB-Daten oder Excel-Imports.
 
