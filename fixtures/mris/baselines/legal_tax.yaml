@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'legal-tax-notary'
   name: 'Berufsgeheimnis-Träger (Anwalt / Steuerberater / Notar)'
+  name_en: 'Professional Secrecy Holders (Lawyer / Tax Advisor / Notary)'
   industry: 'legal'
   description: |
     Pre-Konfiguration für rechts- und steuerberatende Berufe — Rechtsanwälte,
@@ -10,6 +11,14 @@ baseline:
     DSGVO Art. 9 (besondere Kategorien), beA / beSt / beN (besonderes
     elektronisches Postfach). Mandantengeheimnis ist absolutes Schutzgut,
     nicht Risikoabwägung.
+  description_en: |
+    Pre-configuration for legal and tax-advisory professions — lawyers,
+    notaries, tax advisors, auditors, patent attorneys. Anchors: StGB
+    §203 (professional secrecy — criminal liability!), BORA / BNotO /
+    StBerG / WPO (German professional codes), GDPR Art. 9 (special
+    categories), beA / beSt / beN (special electronic mailbox systems).
+    Client confidentiality is an absolute protected interest, not a risk
+    trade-off.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung RA/StB-IT'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -18,39 +27,52 @@ baseline:
     MHC-01:
       target: defined
       reason: 'PQC für langjährige Mandanten-Akten + Notar-Urkunden (30+ Jahre Aufbewahrung).'
+      reason_en: 'PQC for long-term client files + notarial deeds (30+ years retention).'
     MHC-02:
       target: initial
       reason: 'SBOM für eigene + Kanzlei-Software-Stacks. RA-MICRO/DATEV-Lieferanten-Pflicht.'
+      reason_en: 'SBOM for own + law-firm software stacks. RA-MICRO/DATEV supplier obligation.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA Pflicht — Mandanten-Daten = absolute Verschwiegenheit StGB §203.'
+      reason_en: 'Phishing-resistant MFA mandatory — client data = absolute confidentiality StGB §203.'
     MHC-04:
       target: initial
       reason: 'Workload-Identity in Klein-Kanzlei meist N/A — Service-Account-Hygiene reicht.'
+      reason_en: 'Workload identity in small firms mostly N/A — service-account hygiene suffices.'
     MHC-05:
       target: defined
       reason: 'Behavioural Detection — gezielte BEC + IP-Theft bei M&A-Transaktionen.'
+      reason_en: 'Behavioural detection — targeted BEC + IP theft in M&A transactions.'
     MHC-06:
       target: managed
       reason: 'Endpoint-Härtung Pflicht. Kanzlei-Notebooks Hochrisiko-Vector (Verlust = Berufsgeheimnis-Bruch).'
+      reason_en: 'Endpoint hardening mandatory. Firm laptops are high-risk vector (loss = breach of professional secrecy).'
     MHC-07:
       target: defined
       reason: 'Multi-Mandant-Trennung — Sozietät: Akten zwischen Anwälten getrennt (Interessenkonflikt-Vermeidung).'
+      reason_en: 'Multi-tenant separation — partnership: files separated between lawyers (conflict-of-interest avoidance).'
     MHC-08:
       target: managed
       reason: 'Immutable Backups + Verschlüsselung. Notar-Urkunden gesetzlich unveränderbar.'
+      reason_en: 'Immutable backups + encryption. Notarial deeds legally unalterable.'
     MHC-09:
       target: defined
       reason: 'KEV-Patch-Latency < 14 Tage. beA/beSt/beN-Schnittstellen kritisch.'
+      reason_en: 'KEV patch latency < 14 days. beA/beSt/beN interfaces critical.'
     MHC-10:
       target: initial
       reason: 'CCM bei BRAK-Audit + DSGVO-Self-Assessment. Audit-Trail für Mandanten-Datenzugriff.'
+      reason_en: 'CCM for BRAK audit + GDPR self-assessment. Audit trail for client-data access.'
     MHC-11:
       target: defined
       reason: 'IR + DSGVO-72h-Meldepflicht bei Datenpanne. BRAK/Notarkammer-Eskalation bei Verschwiegenheits-Bruch.'
+      reason_en: 'IR + GDPR 72h reporting obligation on data breach. BRAK/Notary Chamber escalation on secrecy breach.'
     MHC-12:
       target: initial
       reason: 'Pen-Test bei Kanzleien ab 50+ MA empfohlen, sonst Awareness-Training priorisieren.'
+      reason_en: 'Pen test recommended for firms 50+ employees, otherwise prioritise awareness training.'
     MHC-13:
       target: managed
       reason: 'AI-Agent-Governance KRITISCH — AI-Tools (ChatGPT/Claude/Lex-DocGPT) dürfen Mandanten-Daten nicht in Cloud-Inferenz schicken (StGB §203).'
+      reason_en: 'AI agent governance CRITICAL — AI tools (ChatGPT/Claude/Lex-DocGPT) must not send client data to cloud inference (StGB §203).'

@@ -2,11 +2,17 @@ schema_version: '1.0'
 baseline:
   id: 'finance-dora'
   name: 'Finance / DORA-Adressat'
+  name_en: 'Finance / DORA-Regulated Entity'
   industry: 'finance'
   description: |
     Pre-Konfiguration für Finanzunternehmen unter DORA (Verordnung 2022/2554).
     Banken, Versicherungen, Wertpapierfirmen, Zahlungsdienstleister.
     Anker: DORA Art. 6/9-15, DORA Art. 26/27 TLPT, BAIT, ergänzend NIS2.
+  description_en: |
+    Pre-configuration for financial entities under DORA (Regulation
+    2022/2554). Banks, insurers, investment firms, payment service
+    providers. Anchors: DORA Art. 6/9-15, DORA Art. 26/27 TLPT, BAIT,
+    supplementary NIS2.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Finance/BaFin-Praxis'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -15,39 +21,52 @@ baseline:
     MHC-01:
       target: defined
       reason: 'PQC-Strategie für Langzeit-Vertraulichkeit von Transaktionsdaten.'
+      reason_en: 'PQC strategy for long-term confidentiality of transaction data.'
     MHC-02:
       target: defined
       reason: 'SBOM Pflicht — DORA Art. 28 ICT-Drittanbieter-Risiken.'
+      reason_en: 'SBOM mandatory — DORA Art. 28 ICT third-party risks.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA — DORA Art. 9 + BAIT 5.6 Authentisierung.'
+      reason_en: 'Phishing-resistant MFA — DORA Art. 9 + BAIT 5.6 authentication.'
     MHC-04:
       target: defined
       reason: 'Workload-Identity für Trading-/Settlement-Microservices.'
+      reason_en: 'Workload identity for trading/settlement microservices.'
     MHC-05:
       target: defined
       reason: 'Behavioural Detection — Schutz vor Account-Takeover-Schemata.'
+      reason_en: 'Behavioural detection — protection against account-takeover schemes.'
     MHC-06:
       target: defined
       reason: 'Container-Sicherheit für Cloud-Banking-Workloads.'
+      reason_en: 'Container security for cloud-banking workloads.'
     MHC-07:
       target: defined
       reason: 'Multi-Tenancy-Isolation für Banking-as-a-Service-Provider.'
+      reason_en: 'Multi-tenancy isolation for Banking-as-a-Service providers.'
     MHC-08:
       target: managed
       reason: 'Immutable Backups Pflicht — DORA Art. 12 Backup-Methoden + RTO-Pflicht.'
+      reason_en: 'Immutable backups mandatory — DORA Art. 12 backup methods + RTO requirement.'
     MHC-09:
       target: defined
       reason: 'AI-Security-Testing für Trading-Algorithmen + KI-gestützte Risk-Models.'
+      reason_en: 'AI security testing for trading algorithms + AI-driven risk models.'
     MHC-10:
       target: defined
       reason: 'Continuous Control Monitoring — DORA Art. 6(5) angemessene Überwachung.'
+      reason_en: 'Continuous control monitoring — DORA Art. 6(5) appropriate monitoring.'
     MHC-11:
       target: managed
       reason: 'SOAR/Tier-1-Automation Pflicht — DORA Art. 17/19 Klassifikation + Meldefristen.'
+      reason_en: 'SOAR/Tier-1 automation mandatory — DORA Art. 17/19 classification + reporting deadlines.'
     MHC-12:
       target: managed
       reason: 'TLPT VERPFLICHTEND — DORA Art. 26/27 Threat-Led Penetration Testing.'
+      reason_en: 'TLPT MANDATORY — DORA Art. 26/27 Threat-Led Penetration Testing.'
     MHC-13:
       target: defined
       reason: 'AI-Agent-Governance für robo-advisory + KI-Trading; Hochrisiko gem. EU AI Act.'
+      reason_en: 'AI agent governance for robo-advisory + AI trading; high-risk per EU AI Act.'

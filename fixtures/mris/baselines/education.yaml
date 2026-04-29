@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'education-research'
   name: 'Bildung / Hochschule / Forschung'
+  name_en: 'Education / Higher Education / Research'
   industry: 'education'
   description: |
     Pre-Konfiguration für Hochschulen, Forschungseinrichtungen, Schulträger
@@ -9,6 +10,13 @@ baseline:
     den-Daten), Hochschulgesetze der Länder, KMK-Strategie "Bildung in der
     digitalen Welt", DFN-Mitgliedschaft (Wissenschaftsnetz). Schwerpunkt
     offene Forschung vs. IP-Schutz, Bring-Your-Own-Device, Kritische APT-Targeting.
+  description_en: |
+    Pre-configuration for universities, research institutions, school
+    operators, and adult education centres. Anchors: NIS2 Annex II
+    "Research", GDPR (student data), state higher-education acts
+    (Hochschulgesetze), KMK strategy "Education in the digital world",
+    DFN membership (German research network). Focus on open research vs.
+    IP protection, bring-your-own-device, critical APT targeting.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Hochschul-IT'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -17,39 +25,52 @@ baseline:
     MHC-01:
       target: initial
       reason: 'Crypto-Inventar Standard, Forschungs-Daten + Klausuren langfristig.'
+      reason_en: 'Crypto inventory standard; research data + exams require long-term protection.'
     MHC-02:
       target: initial
       reason: 'SBOM bei eigenen Stacks + selbstentwickelter Forschungs-Software.'
+      reason_en: 'SBOM for own stacks + in-house developed research software.'
     MHC-03:
       target: defined
       reason: 'Phishing-resistente MFA für Verwaltungs-Accounts + Forschende mit Drittmittel-Zugriff.'
+      reason_en: 'Phishing-resistant MFA for administration accounts + researchers with third-party funding access.'
     MHC-04:
       target: initial
       reason: 'Workload-Identity bei zentralen IT-Services (eduGAIN-Federation als bestehende Identity).'
+      reason_en: 'Workload identity for central IT services (eduGAIN federation as existing identity).'
     MHC-05:
       target: defined
       reason: 'Behavioural Detection — Hochschulen APT-Targeted (z.B. Industrie-Spionage).'
+      reason_en: 'Behavioural detection — universities are APT-targeted (e.g., industrial espionage).'
     MHC-06:
       target: initial
       reason: 'Endpoint-Härtung wo IT-zentral verwaltet. BYOD-Devices via Kapselung (MAM/Container).'
+      reason_en: 'Endpoint hardening where IT is centrally managed. BYOD devices via containerization (MAM/container).'
     MHC-07:
       target: defined
       reason: 'Multi-Mandant-Trennung Forschung/Lehre/Verwaltung — DFG-Drittmittel-Forschung getrennt.'
+      reason_en: 'Multi-tenant separation research/teaching/administration — DFG-funded research separated.'
     MHC-08:
       target: defined
       reason: 'Immutable Backups Verwaltung + Forschungs-Daten. RTO Klausur-Phase relevant.'
+      reason_en: 'Immutable backups for administration + research data. RTO relevant during exam periods.'
     MHC-09:
       target: defined
       reason: 'KEV-Patch-Latency Verwaltungsnetz < 14 Tage. Forschungsnetze BYOD-tolerant.'
+      reason_en: 'KEV patch latency for admin network < 14 days. Research networks BYOD-tolerant.'
     MHC-10:
       target: initial
       reason: 'CCM bei NIS2-pflichtigen Forschungseinrichtungen. Sonst Audit-Trail.'
+      reason_en: 'CCM for NIS2-regulated research institutions. Otherwise audit trail suffices.'
     MHC-11:
       target: defined
       reason: 'IR + DFN-CERT-Anbindung Pflicht. NIS2-Meldepflicht für relevante Einrichtungen.'
+      reason_en: 'IR + DFN-CERT connection mandatory. NIS2 reporting obligation for relevant institutions.'
     MHC-12:
       target: initial
       reason: 'Pen-Test bei kritischen Verwaltungsverfahren (Prüfungsamt, Finanzbuchhaltung).'
+      reason_en: 'Pen test for critical administrative processes (examination office, finance).'
     MHC-13:
       target: defined
       reason: 'AI-Agent-Governance — AI-Tutoren + AI-Klausurkorrektur sind didaktisch + datenschutz-sensibel.'
+      reason_en: 'AI agent governance — AI tutors + AI exam grading are pedagogically + data-protection sensitive.'

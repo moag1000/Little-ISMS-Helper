@@ -2,11 +2,17 @@ schema_version: '1.0'
 baseline:
   id: 'saas-cra-2027'
   name: 'SaaS-Anbieter / CRA-pflichtig 2027'
+  name_en: 'SaaS Provider / CRA-Regulated 2027'
   industry: 'saas'
   description: |
     Pre-Konfiguration für SaaS-Anbieter mit Cyber-Resilience-Act-Pflicht
     ab 2027 (Verordnung 2024/2847). Inkl. Cloud-Native-Stack, Multi-Tenant,
     SBOM-Rechtspflicht, Vulnerability-Disclosure-Pflicht.
+  description_en: |
+    Pre-configuration for SaaS providers with Cyber Resilience Act
+    obligation from 2027 (Regulation 2024/2847). Includes cloud-native
+    stack, multi-tenancy, SBOM legal obligation, vulnerability disclosure
+    obligation.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung CRA-Readiness'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -15,39 +21,52 @@ baseline:
     MHC-01:
       target: defined
       reason: 'PQC-Strategie für Kunden-Datenkryptografie.'
+      reason_en: 'PQC strategy for customer-data cryptography.'
     MHC-02:
       target: managed
       reason: 'SBOM RECHTSPFLICHT — CRA Annex I Teil II + automatisierte Provenance.'
+      reason_en: 'SBOM LEGAL OBLIGATION — CRA Annex I Part II + automated provenance.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA passwortlos für alle Kunden-Admin-Accounts.'
+      reason_en: 'Phishing-resistant passwordless MFA for all customer admin accounts.'
     MHC-04:
       target: defined
       reason: 'Workload-Identity SPIFFE/SPIRE für alle Microservices.'
+      reason_en: 'Workload identity SPIFFE/SPIRE for all microservices.'
     MHC-05:
       target: defined
       reason: 'Behavioural Detection mit ATT&CK-Coverage für Cloud-SaaS-typische TTPs.'
+      reason_en: 'Behavioural detection with ATT&CK coverage for typical cloud-SaaS TTPs.'
     MHC-06:
       target: managed
       reason: 'Container-Sicherheit + Confidential Computing für Tenant-Isolation.'
+      reason_en: 'Container security + confidential computing for tenant isolation.'
     MHC-07:
       target: managed
       reason: 'Multi-Tenancy-Isolation Kern-Geschäftsmodell — automatisierte Tests Pflicht.'
+      reason_en: 'Multi-tenancy isolation core business model — automated tests mandatory.'
     MHC-08:
       target: defined
       reason: 'Immutable Backups je Tenant-Schema — DR-RTO < 4h.'
+      reason_en: 'Immutable backups per tenant schema — DR RTO < 4h.'
     MHC-09:
       target: managed
       reason: 'AI-gestütztes Security-Testing in CI — CRA Art. 13 Vulnerability-Handling.'
+      reason_en: 'AI-driven security testing in CI — CRA Art. 13 vulnerability handling.'
     MHC-10:
       target: defined
       reason: 'Continuous Control Monitoring + Policy-as-Code für Cloud-Native.'
+      reason_en: 'Continuous control monitoring + policy-as-code for cloud-native.'
     MHC-11:
       target: defined
       reason: 'SOAR für 24/7-Incident-Response — CRA Art. 14 Meldepflichten.'
+      reason_en: 'SOAR for 24/7 incident response — CRA Art. 14 reporting obligations.'
     MHC-12:
       target: defined
       reason: 'Threat-Led Pen-Testing in Releases ≥ Major.'
+      reason_en: 'Threat-led pen testing in releases ≥ major.'
     MHC-13:
       target: defined
       reason: 'AI-Agent-Governance verpflichtend bei Coding-Tools im Eng-Team (Copilot/Claude).'
+      reason_en: 'AI agent governance mandatory for coding tools in engineering team (Copilot/Claude).'

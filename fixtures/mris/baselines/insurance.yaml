@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'insurance'
   name: 'Versicherung / Insurance'
+  name_en: 'Insurance'
   industry: 'insurance'
   description: |
     Pre-Konfiguration für Versicherungsunternehmen — Erst- und
@@ -10,6 +11,14 @@ baseline:
     DORA (für ICT-Risk + Drittdienstleister-Pflichten ab 2025), NIS2
     Annex II "Banken und Finanzmarktinfrastrukturen — analog", DSGVO
     Art. 9 (Gesundheits-/Vermögensdaten), KWG-analoge Aufsichtsstrukturen.
+  description_en: |
+    Pre-configuration for insurance entities — primary and reinsurers,
+    pension funds, occupational pension schemes. Anchors: VAIT (BaFin
+    circular "Supervisory Requirements for IT in Insurance Undertakings"),
+    DORA (for ICT risk + third-party service-provider obligations from
+    2025), NIS2 Annex II "Banking and financial market infrastructures
+    — analogous", GDPR Art. 9 (health/financial data), KWG-analogous
+    supervisory structures.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Versicherungs-IT'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -18,39 +27,52 @@ baseline:
     MHC-01:
       target: defined
       reason: 'PQC-Strategie für Polizen-Daten (Aufbewahrung 30+ Jahre) + Aktuariats-Modelle.'
+      reason_en: 'PQC strategy for policy data (retention 30+ years) + actuarial models.'
     MHC-02:
       target: managed
       reason: 'SBOM Pflicht — DORA Art. 28 Drittdienstleister-Register. Lieferanten-Bilanz im Audit.'
+      reason_en: 'SBOM mandatory — DORA Art. 28 third-party register. Supplier inventory part of audit.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA Pflicht für Innendienst + Vertrieb (Datenfreigabe + Schadenregulierung).'
+      reason_en: 'Phishing-resistant MFA mandatory for back office + sales (data release + claims handling).'
     MHC-04:
       target: defined
       reason: 'Workload-Identity für Microservices in Vertrags-/Schaden-/Aktuariats-Plattformen.'
+      reason_en: 'Workload identity for microservices in contract/claims/actuarial platforms.'
     MHC-05:
       target: managed
       reason: 'Behavioural Detection — gezielte BEC-Angriffe Vertrieb + Rückversicherer (Schadens-Manipulation).'
+      reason_en: 'Behavioural detection — targeted BEC attacks on sales + reinsurers (claims manipulation).'
     MHC-06:
       target: managed
       reason: 'Endpoint-Härtung Pflicht. Außendienst-Tablets + Home-Office Hochrisiko-Vector.'
+      reason_en: 'Endpoint hardening mandatory. Field-service tablets + home office are high-risk vectors.'
     MHC-07:
       target: defined
       reason: 'Multi-Mandant-Trennung wo IT-Provider mehrere Versicherer betreut. SoT pro Spartenkanal.'
+      reason_en: 'Multi-tenant separation where IT provider serves multiple insurers. SoT per business line.'
     MHC-08:
       target: managed
       reason: 'Immutable Backups + DR-Test (DORA Art. 11) — RTO < 4h für Schadens-/Leistungsfall.'
+      reason_en: 'Immutable backups + DR test (DORA Art. 11) — RTO < 4h for claims/benefit cases.'
     MHC-09:
       target: managed
       reason: 'KEV-Patch-Latency < 7 Tage VAIT-Pflicht. Vulnerability-Coordination DORA Art. 26.'
+      reason_en: 'KEV patch latency < 7 days VAIT requirement. Vulnerability coordination DORA Art. 26.'
     MHC-10:
       target: managed
       reason: 'CCM für VAIT-Selbstauskunft + DORA-Continuous-Reporting an BaFin.'
+      reason_en: 'CCM for VAIT self-assessment + DORA continuous reporting to BaFin.'
     MHC-11:
       target: managed
       reason: 'IR + 24/7 Pflicht. DORA Art. 19 Major-Incident-Reporting an BaFin (4h/72h/30d).'
+      reason_en: 'IR + 24/7 mandatory. DORA Art. 19 major-incident reporting to BaFin (4h/72h/30d).'
     MHC-12:
       target: managed
       reason: 'TLPT (DORA Art. 26/27) ab 2025 für signifikante Versicherer Pflicht.'
+      reason_en: 'TLPT (DORA Art. 26/27) mandatory from 2025 for significant insurers.'
     MHC-13:
       target: managed
       reason: 'AI-Agent-Governance — AI-Risikoprüfung (Underwriting) und Schadensbearbeitung sind regulatorisch sensibel (Diskriminierungsverbot).'
+      reason_en: 'AI agent governance — AI risk assessment (underwriting) and claims handling are regulatorily sensitive (anti-discrimination).'

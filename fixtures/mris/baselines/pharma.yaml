@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'pharma-biotech'
   name: 'Pharma / Biotech'
+  name_en: 'Pharma / Biotech'
   industry: 'pharma'
   description: |
     Pre-Konfiguration für pharmazeutische Hersteller, Biotechnologie-
@@ -9,6 +10,12 @@ baseline:
     GCP), EU-GMP Annex 11 (Computerised Systems), Eudralex Vol. 4, MDR/
     IVDR (für Medizinprodukte), DSGVO Art. 9 (Studien-/Patientendaten),
     NIS2 (für KRITIS-Hersteller). Validierung + Audit-Trail Kerndogma.
+  description_en: |
+    Pre-configuration for pharmaceutical manufacturers, biotechnology
+    companies, contract manufacturers (CMO/CDMO). Anchors: GxP (GMP/GLP/
+    GCP), EU-GMP Annex 11 (Computerised Systems), Eudralex Vol. 4, MDR/
+    IVDR (for medical devices), GDPR Art. 9 (study/patient data), NIS2
+    (for KRITIS manufacturers). Validation + audit trail are core doctrine.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Pharma-IT-Praxis'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -17,39 +24,52 @@ baseline:
     MHC-01:
       target: defined
       reason: 'PQC für Studien-Daten (Aufbewahrung 25+ Jahre) + GxP-elektronische Signaturen.'
+      reason_en: 'PQC for study data (retention 25+ years) + GxP electronic signatures.'
     MHC-02:
       target: managed
       reason: 'SBOM für validierte Software-Stacks (LIMS/MES/ERP). GxP-Lieferanten-Qualifikation.'
+      reason_en: 'SBOM for validated software stacks (LIMS/MES/ERP). GxP supplier qualification.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA Pflicht — GxP-Audit-Trail erfordert eindeutige Identität.'
+      reason_en: 'Phishing-resistant MFA mandatory — GxP audit trail requires unique identity.'
     MHC-04:
       target: defined
       reason: 'Workload-Identity zwischen LIMS / MES / SAP. Service-Account-Inventar GxP-Pflicht.'
+      reason_en: 'Workload identity between LIMS / MES / SAP. Service-account inventory is GxP requirement.'
     MHC-05:
       target: defined
       reason: 'Behavioural Detection — Forschungs-IP top APT-Ziel, IP-Theft Risk hoch.'
+      reason_en: 'Behavioural detection — research IP is top APT target, IP-theft risk high.'
     MHC-06:
       target: managed
       reason: 'Endpoint + OT-Härtung in Produktion. PLC-Zugang nur via Jump-Host.'
+      reason_en: 'Endpoint + OT hardening in production. PLC access only via jump host.'
     MHC-07:
       target: defined
       reason: 'Multi-Site-Trennung (Forschung / Entwicklung / Produktion / QA) zwingend.'
+      reason_en: 'Multi-site separation (research / development / production / QA) mandatory.'
     MHC-08:
       target: managed
       reason: 'Immutable Backups + DR — Studien-Daten sind regulatorisch unveränderlich (ALCOA+).'
+      reason_en: 'Immutable backups + DR — study data is regulatorily immutable (ALCOA+).'
     MHC-09:
       target: defined
       reason: 'KEV-Patch-Latency in OT meist eingeschränkt — kompensierende Maßnahmen + Re-Validierung.'
+      reason_en: 'KEV patch latency in OT mostly constrained — compensating measures + re-validation.'
     MHC-10:
       target: managed
       reason: 'CCM zwingend — GxP-Audit-Trail muss continuous + integer sein (FDA 21 CFR Part 11 / EU GMP Annex 11).'
+      reason_en: 'CCM mandatory — GxP audit trail must be continuous + integer (FDA 21 CFR Part 11 / EU GMP Annex 11).'
     MHC-11:
       target: defined
       reason: 'IR + Eskalation. Bei Studien-Daten-Verlust: BfArM-/EMA-Meldepflicht.'
+      reason_en: 'IR + escalation. On study-data loss: BfArM/EMA reporting obligation.'
     MHC-12:
       target: defined
       reason: 'Pen-Test bei kritischen Validated-Systems jährlich + Re-Test nach Major-Change.'
+      reason_en: 'Pen test for critical validated systems annually + re-test after major change.'
     MHC-13:
       target: defined
       reason: 'AI-Agent-Governance bei AI-gestützter Wirkstoff-Entwicklung + Klinik-Datenanalyse — MDR-IVDR-Sondersituation.'
+      reason_en: 'AI agent governance for AI-driven drug development + clinical data analysis — MDR/IVDR special situation.'

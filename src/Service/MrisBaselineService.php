@@ -10,6 +10,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use DomainException;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -32,8 +33,24 @@ final class MrisBaselineService
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly MrisMaturityService $maturityService,
+        private readonly RequestStack $requestStack,
         private readonly string $projectDir,
     ) {
+    }
+
+    /**
+     * Resolve a localised baseline field. YAML schema supports `name`,
+     * `description`, and `mhc_targets.*.reason` as DE (default). EN variants
+     * use the `_en` suffix (`name_en`, `description_en`, `reason_en`). Falls
+     * back to DE if the EN variant is missing.
+     */
+    private function localisedField(array $payload, string $field): string
+    {
+        $locale = $this->requestStack->getCurrentRequest()?->getLocale() ?? 'de';
+        if ($locale === 'en' && !empty($payload[$field . '_en'])) {
+            return (string) $payload[$field . '_en'];
+        }
+        return (string) ($payload[$field] ?? '');
     }
 
     /**
@@ -51,9 +68,9 @@ final class MrisBaselineService
             $b = $payload['baseline'] ?? [];
             $out[] = [
                 'id' => $b['id'] ?? basename($file, '.yaml'),
-                'name' => $b['name'] ?? basename($file, '.yaml'),
+                'name' => $this->localisedField($b, 'name') ?: basename($file, '.yaml'),
                 'industry' => $b['industry'] ?? 'unknown',
-                'description' => $b['description'] ?? '',
+                'description' => $this->localisedField($b, 'description'),
                 'file' => basename($file),
             ];
         }
@@ -100,11 +117,27 @@ final class MrisBaselineService
             throw new DomainException(sprintf('Baseline "%s" ist ungültig (id oder mhc_targets fehlt).', $found));
         }
 
+        // Normalise mhc_targets so the consumer always sees a localised
+        // `reason` field — original `reason` (DE) or `reason_en` based on
+        // the active request locale.
+        $locale = $this->requestStack->getCurrentRequest()?->getLocale() ?? 'de';
+        $localisedTargets = [];
+        foreach ($b['mhc_targets'] as $mhcId => $config) {
+            if (is_array($config)) {
+                $reason = ($locale === 'en' && !empty($config['reason_en']))
+                    ? $config['reason_en']
+                    : ($config['reason'] ?? '');
+                $localisedTargets[$mhcId] = ['target' => $config['target'] ?? null, 'reason' => $reason];
+            } else {
+                $localisedTargets[$mhcId] = $config;
+            }
+        }
+
         return [
             'id' => $b['id'],
-            'name' => $b['name'] ?? $b['id'],
+            'name' => $this->localisedField($b, 'name') ?: $b['id'],
             'industry' => $b['industry'] ?? 'unknown',
-            'mhc_targets' => $b['mhc_targets'],
+            'mhc_targets' => $localisedTargets,
         ];
     }
 

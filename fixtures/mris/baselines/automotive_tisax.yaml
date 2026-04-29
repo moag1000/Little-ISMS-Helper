@@ -2,12 +2,18 @@ schema_version: '1.0'
 baseline:
   id: 'automotive-tisax-al3'
   name: 'Automotive / TISAX AL3'
+  name_en: 'Automotive / TISAX AL3'
   industry: 'automotive'
   description: |
     Pre-Konfiguration für Automotive-OEMs und Tier-1-Lieferanten mit
     TISAX-Assessment-Level AL3 (hoher Schutzbedarf, inkl. Prototypenschutz).
     Anker: VDA ISA 6.0, ISO 21434 (Cybersecurity Engineering), CRA für
     vernetzte Fahrzeuge ab 2027.
+  description_en: |
+    Pre-configuration for automotive OEMs and Tier-1 suppliers with
+    TISAX Assessment Level AL3 (high protection needs, incl. prototype
+    protection). Anchors: VDA ISA 6.0, ISO 21434 (Cybersecurity Engineering),
+    CRA for connected vehicles from 2027.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung TISAX AL3'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -16,39 +22,52 @@ baseline:
     MHC-01:
       target: initial
       reason: 'PQC-Inventar für embedded Krypto in Fahrzeug-ECUs (Langzeit-Schutz).'
+      reason_en: 'PQC inventory for embedded crypto in vehicle ECUs (long-term protection).'
     MHC-02:
       target: defined
       reason: 'SBOM Pflicht für CRA-konforme Fahrzeug-Software ab 2027 + ISA 6.1.1.'
+      reason_en: 'SBOM mandatory for CRA-compliant vehicle software from 2027 + ISA 6.1.1.'
     MHC-03:
       target: defined
       reason: 'Phishing-resistente MFA für Engineering-Domains und PLM-Systeme.'
+      reason_en: 'Phishing-resistant MFA for engineering domains and PLM systems.'
     MHC-04:
       target: defined
       reason: 'Workload-Identity für Cloud-Connected-Vehicle-Backends.'
+      reason_en: 'Workload identity for cloud-connected vehicle backends.'
     MHC-05:
       target: defined
       reason: 'Behavioural Detection für VSOC (Vehicle Security Operations Center).'
+      reason_en: 'Behavioural detection for VSOC (Vehicle Security Operations Center).'
     MHC-06:
       target: defined
       reason: 'Container-Sicherheit für Vehicle-Cloud-Backends (over-the-air Update).'
+      reason_en: 'Container security for vehicle cloud backends (over-the-air update).'
     MHC-07:
       target: defined
       reason: 'Multi-Tenancy-Isolation kritisch für Tier-1-Plattformen mit mehreren OEMs.'
+      reason_en: 'Multi-tenancy isolation critical for Tier-1 platforms serving multiple OEMs.'
     MHC-08:
       target: defined
       reason: 'Immutable Backups für Engineering-Daten (Pre-Production-IP-Schutz).'
+      reason_en: 'Immutable backups for engineering data (pre-production IP protection).'
     MHC-09:
       target: defined
       reason: 'AI-Security-Testing für ADAS- und ML-basierte Fahrfunktionen.'
+      reason_en: 'AI security testing for ADAS and ML-based driving functions.'
     MHC-10:
       target: defined
       reason: 'Continuous Control Monitoring für TISAX-Re-Audits + ISO 21434-Conformance.'
+      reason_en: 'Continuous control monitoring for TISAX re-audits + ISO 21434 conformance.'
     MHC-11:
       target: defined
       reason: 'SOAR für Vehicle-Cyber-Incident-Response (UN-R155-konform).'
+      reason_en: 'SOAR for vehicle cyber incident response (UN-R155 compliant).'
     MHC-12:
       target: defined
       reason: 'Threat-Led Pen-Testing für Connected-Vehicle-Backends + ISA-Audits.'
+      reason_en: 'Threat-led pen testing for connected-vehicle backends + ISA audits.'
     MHC-13:
       target: initial
       reason: 'AI-Agent-Governance einstiegsweise — Engineering-Coding-Tools (Copilot/Cursor).'
+      reason_en: 'AI agent governance at entry level — engineering coding tools (Copilot/Cursor).'

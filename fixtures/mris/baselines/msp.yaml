@@ -2,12 +2,19 @@ schema_version: '1.0'
 baseline:
   id: 'msp-multi-tenant'
   name: 'Managed Service Provider (Multi-Tenant)'
+  name_en: 'Managed Service Provider (Multi-Tenant)'
   industry: 'msp'
   description: |
     Pre-Konfiguration für Managed Service Provider — IT-Outsourcing,
     NOC/SOC-as-a-Service, Hosting + Co-Location. Multi-Tenant ist Kern-
     Geschäftsmodell. Anker: ISO 27001, SOC 2 Type II (Trust Service Criteria),
     BSI C5 (wo Cloud-Anteil), TISAX (für Automotive-OEM-Kunden).
+  description_en: |
+    Pre-configuration for managed service providers — IT outsourcing,
+    NOC/SOC-as-a-Service, hosting + co-location. Multi-tenancy is core
+    business model. Anchors: ISO 27001, SOC 2 Type II (Trust Service
+    Criteria), BSI C5 (where cloud share applies), TISAX (for automotive
+    OEM customers).
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung MSP-Praxis'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -16,39 +23,52 @@ baseline:
     MHC-01:
       target: defined
       reason: 'Krypto-Inventar zwingend bei Multi-Customer-PKIs. PQC-Roadmap als Wettbewerbsvorteil.'
+      reason_en: 'Crypto inventory mandatory for multi-customer PKIs. PQC roadmap as competitive advantage.'
     MHC-02:
       target: managed
       reason: 'SBOM für alle eigene + verwaltete Stacks — Kunden fragen das im SOC2/TISAX-Audit.'
+      reason_en: 'SBOM for all own + managed stacks — customers request this in SOC2/TISAX audits.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA passwortlos für Admin-Accounts pro Tenant — Lateral-Movement-Risk hoch.'
+      reason_en: 'Phishing-resistant passwordless MFA for admin accounts per tenant — high lateral-movement risk.'
     MHC-04:
       target: managed
       reason: 'Workload-Identity (SPIFFE) im Multi-Tenant-Stack — Zero Static Credentials zwischen Kunden-Workloads.'
+      reason_en: 'Workload identity (SPIFFE) in multi-tenant stack — zero static credentials between customer workloads.'
     MHC-05:
       target: managed
       reason: 'Behavioural Detection im SOC, ATT&CK-Cloud + Endpoint Coverage. Kern-Service.'
+      reason_en: 'Behavioural detection in SOC, ATT&CK cloud + endpoint coverage. Core service.'
     MHC-06:
       target: managed
       reason: 'Endpoint-Härtung + EDR auf jedem verwalteten Asset. Kunden-Compliance-Pflicht.'
+      reason_en: 'Endpoint hardening + EDR on every managed asset. Customer compliance obligation.'
     MHC-07:
       target: managed
       reason: 'Multi-Tenancy-Isolation Kern-Geschäft — automatisierte Tests + Audit-Pfade pro Kunde Pflicht.'
+      reason_en: 'Multi-tenancy isolation core business — automated tests + per-customer audit trails mandatory.'
     MHC-08:
       target: managed
       reason: 'Immutable Backups + DR-Tests Quartalsweise — SLA-relevant gegenüber Kunden.'
+      reason_en: 'Immutable backups + quarterly DR tests — SLA-relevant to customers.'
     MHC-09:
       target: managed
       reason: 'KEV-Patch-Latency < 7 Tage Kunden-SLA-Standard. Automated Vulnerability-Mgmt.'
+      reason_en: 'KEV patch latency < 7 days as customer SLA standard. Automated vulnerability management.'
     MHC-10:
       target: managed
       reason: 'CCM (Continuous Control Monitoring) + Policy-as-Code Pflicht — pro Kunde-Mandant getrennt.'
+      reason_en: 'CCM (continuous control monitoring) + policy-as-code mandatory — separated per customer tenant.'
     MHC-11:
       target: managed
       reason: 'SOAR mit Tenant-Routing — 24/7 IR-Team, MTTC < 4h für Kritische Vorfälle.'
+      reason_en: 'SOAR with tenant routing — 24/7 IR team, MTTC < 4h for critical incidents.'
     MHC-12:
       target: managed
       reason: 'Threat-Led Pen-Testing jährlich + nach jeder Major-Stack-Änderung. Kunden-Vertrauensanker.'
+      reason_en: 'Threat-led pen testing annually + after every major stack change. Customer trust anchor.'
     MHC-13:
       target: defined
       reason: 'AI-Agent-Governance für Eng + SOC-Tools — Detection + Response sollten nicht durch AI-Halluzinationen blind werden.'
+      reason_en: 'AI agent governance for engineering + SOC tools — detection + response must not be blinded by AI hallucinations.'

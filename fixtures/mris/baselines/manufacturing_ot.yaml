@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'manufacturing-ot'
   name: 'Industrielle Fertigung / OT-Security (non-Automotive)'
+  name_en: 'Industrial Manufacturing / OT Security (non-Automotive)'
   industry: 'manufacturing'
   description: |
     Pre-Konfiguration für Industrie-Fertiger außerhalb Automotive — Maschinen-
@@ -10,6 +11,14 @@ baseline:
     CRA 2024/2847 für vernetzte IoT-Produkte (ab 2027), VDI-Richtlinien
     2182/2185, ISO/IEC 27001 Standard-IT. Schwerpunkt IT/OT-Trennung +
     Lifecycle-Management alter Steuerungs-Komponenten.
+  description_en: |
+    Pre-configuration for industrial manufacturers outside automotive —
+    mechanical engineering, plant engineering, chemicals, food industry,
+    packaging. Anchors: IEC 62443 (OT security), NIS2 Annex I
+    "Important industrial sectors", CRA 2024/2847 for connected IoT
+    products (from 2027), VDI guidelines 2182/2185, ISO/IEC 27001
+    standard IT. Focus on IT/OT separation + lifecycle management of
+    legacy control components.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Industrie-OT'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -18,39 +27,52 @@ baseline:
     MHC-01:
       target: initial
       reason: 'Crypto-Inventar — alte SCADA mit eingebrannten Zertifikaten priorisieren. PQC längerfristig.'
+      reason_en: 'Crypto inventory — prioritise legacy SCADA with hardcoded certificates. PQC longer-term.'
     MHC-02:
       target: defined
       reason: 'SBOM für eigene OT-Software-Komponenten. CRA-Vorbereitung für IoT-Produkte ab 2027.'
+      reason_en: 'SBOM for own OT software components. CRA preparation for IoT products from 2027.'
     MHC-03:
       target: defined
       reason: 'Phishing-resistente MFA für Engineering + Fernwartungs-Accounts.'
+      reason_en: 'Phishing-resistant MFA for engineering + remote-maintenance accounts.'
     MHC-04:
       target: initial
       reason: 'Workload-Identity in OT meist nicht umsetzbar — Alternative: Network-Segmentation + Static-AC-Lists.'
+      reason_en: 'Workload identity in OT mostly infeasible — alternative: network segmentation + static ACLs.'
     MHC-05:
       target: defined
       reason: 'Behavioural Detection in IT/OT-Übergang (Conduit-Monitoring per IEC 62443).'
+      reason_en: 'Behavioural detection at IT/OT boundary (conduit monitoring per IEC 62443).'
     MHC-06:
       target: defined
       reason: 'Endpoint + Engineering-Workstation-Härtung. Whitelisting für HMI/SCADA-Workstations.'
+      reason_en: 'Endpoint + engineering-workstation hardening. Whitelisting for HMI/SCADA workstations.'
     MHC-07:
       target: managed
       reason: 'IT/OT/Office-Trennung Kern-Pflicht (3+1-Zonen-Modell, Conduits dokumentiert).'
+      reason_en: 'IT/OT/office separation core requirement (3+1 zone model, conduits documented).'
     MHC-08:
       target: defined
       reason: 'Backup auch für PLC-Konfigurationen + SCADA-Datenbanken. DR-Test halbjährlich.'
+      reason_en: 'Backup also for PLC configurations + SCADA databases. DR test every six months.'
     MHC-09:
       target: initial
       reason: 'KEV-Patch-Latency in OT eingeschränkt — kompensierend Network-Segmentation. Patch-Window-Plan.'
+      reason_en: 'KEV patch latency in OT constrained — compensate via network segmentation. Patch-window plan.'
     MHC-10:
       target: defined
       reason: 'CCM mit IEC-62443-konformer Asset-Inventur als Basis.'
+      reason_en: 'CCM with IEC 62443-compliant asset inventory as foundation.'
     MHC-11:
       target: defined
       reason: 'IR-Plan inkl. OT-Eskalation. Bei NIS2-pflichtig: Meldepflicht 24h/72h/30d.'
+      reason_en: 'IR plan incl. OT escalation. If NIS2-regulated: reporting obligation 24h/72h/30d.'
     MHC-12:
       target: defined
       reason: 'Pen-Test inkl. OT-Zonen jährlich. Vorsicht bei aktivem Test gegen Steuerungen.'
+      reason_en: 'Pen test incl. OT zones annually. Caution with active testing against controllers.'
     MHC-13:
       target: initial
       reason: 'AI-Agent-Governance vorerst niedrig — bei AI-gestützter Predictive-Maintenance höher priorisieren.'
+      reason_en: 'AI agent governance initially low — raise priority with AI-based predictive maintenance.'

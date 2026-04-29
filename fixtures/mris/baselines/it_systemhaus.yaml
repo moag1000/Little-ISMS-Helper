@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'it-systemhaus'
   name: 'IT-Systemhaus / Reseller + Wartung'
+  name_en: 'IT Systems House / Reseller + Maintenance'
   industry: 'it_systemhaus'
   description: |
     Pre-Konfiguration für klassische IT-Systemhäuser — Beratung, Hardware-/
@@ -9,6 +10,13 @@ baseline:
     ISO 27001 (Mindeststandard für ÖV-Aufträge), TISAX (bei Automotive-
     Kunden), DSGVO Art. 28 (Auftragsverarbeitung). Geringere Multi-Tenant-
     Tiefe als MSP — eher Endpoint-zentriertes Geschäft.
+  description_en: |
+    Pre-configuration for classic IT systems houses — consulting,
+    hardware/software resellers, maintenance + on-site service,
+    end-customer support. Anchors: ISO 27001 (minimum standard for
+    public-sector contracts), TISAX (for automotive customers),
+    GDPR Art. 28 (data processing on behalf). Less multi-tenant
+    depth than MSP — more endpoint-centric business model.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Mittelstand-IT-Praxis'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -17,39 +25,52 @@ baseline:
     MHC-01:
       target: initial
       reason: 'Krypto-Inventar einsteigerfreundlich — meist nur AD/PKI, VPN-Stack, Backup-Encryption.'
+      reason_en: 'Crypto inventory entry-level — usually only AD/PKI, VPN stack, backup encryption.'
     MHC-02:
       target: defined
       reason: 'SBOM für eigene Custom-Lösungen + Lieferanten-Anforderung an verkaufte Software.'
+      reason_en: 'SBOM for own custom solutions + supplier requirement for resold software.'
     MHC-03:
       target: defined
       reason: 'Phishing-resistente MFA für Admin-Accounts. Tech-Personal auf Kundensystemen ist Hochrisiko-Vector.'
+      reason_en: 'Phishing-resistant MFA for admin accounts. Tech staff on customer systems is high-risk vector.'
     MHC-04:
       target: initial
       reason: 'Workload-Identity meist nicht zentral — Zentral-Inventar Service-Accounts mit Rotation reicht initial.'
+      reason_en: 'Workload identity rarely central — central inventory of service accounts with rotation suffices initially.'
     MHC-05:
       target: defined
       reason: 'EDR-Lösung für eigene + Kunden-Endpoints (Reseller-Lizenz oder MSSP-Anbindung).'
+      reason_en: 'EDR solution for own + customer endpoints (reseller licence or MSSP integration).'
     MHC-06:
       target: defined
       reason: 'Endpoint-Härtung Standard-Baseline. CIS-Benchmark Tier 1 als Mindestmaßnahme.'
+      reason_en: 'Endpoint hardening standard baseline. CIS Benchmark Tier 1 as minimum.'
     MHC-07:
       target: initial
       reason: 'Multi-Tenancy meist nur Ticket-System + Remote-Tools — Mandanten-Trennung dort dokumentiert + auditiert.'
+      reason_en: 'Multi-tenancy mostly only ticket system + remote tools — tenant separation documented + audited there.'
     MHC-08:
       target: defined
       reason: 'Immutable Backups für Kunden-Daten unter Auftragsverarbeitung. DR-Test jährlich.'
+      reason_en: 'Immutable backups for customer data under data-processing agreement. DR test annually.'
     MHC-09:
       target: defined
       reason: 'Patch-Management ist Kern-Service — KEV-Latency < 14 Tage für Kunden-Stack.'
+      reason_en: 'Patch management is core service — KEV latency < 14 days for customer stack.'
     MHC-10:
       target: initial
       reason: 'CCM nur wenn ein Kunde explizit fragt — meist Audit-Trail + Quartals-Review reicht.'
+      reason_en: 'CCM only when a customer explicitly requests — usually audit trail + quarterly review suffices.'
     MHC-11:
       target: defined
       reason: 'IR-Plan + Eskalationsmatrix mit Kunden-Kontakten. MTTC nach Klassifikation gestaffelt.'
+      reason_en: 'IR plan + escalation matrix with customer contacts. MTTC tiered by classification.'
     MHC-12:
       target: initial
       reason: 'Pen-Test jährlich (extern beauftragt) — TLPT meist Overkill für KMU-Systemhaus.'
+      reason_en: 'Pen test annually (external) — TLPT usually overkill for SME systems house.'
     MHC-13:
       target: defined
       reason: 'AI-Agent-Governance für Coding/Scripting-Tools im Tech-Team — Halluzinationen in Kunden-Skripten = Reputations-Risiko.'
+      reason_en: 'AI agent governance for coding/scripting tools in tech team — hallucinations in customer scripts = reputational risk.'

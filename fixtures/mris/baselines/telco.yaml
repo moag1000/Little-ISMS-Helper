@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'telco-isp'
   name: 'Telekommunikation / ISP / Hosting'
+  name_en: 'Telecommunications / ISP / Hosting'
   industry: 'telco'
   description: |
     Pre-Konfiguration für Telekommunikations-Anbieter, Internet-Service-
@@ -10,6 +11,14 @@ baseline:
     Sicherheitskatalog, NIS2 Annex I "Digitale Infrastruktur", NIS2UmsuCG
     deutsche Umsetzung, BSI-Mindeststandard für Telco-Carrier. Eigene
     Reporting-Pflichten an BNetzA (zusätzlich zu BSI).
+  description_en: |
+    Pre-configuration for telecommunications providers, internet
+    service providers, hosting providers, data-centre operators.
+    Anchors: TKG-2024 §165/167 (security requirements + reporting
+    obligations), BNetzA (Federal Network Agency) security catalogue,
+    NIS2 Annex I "Digital infrastructure", NIS2UmsuCG German
+    implementation, BSI minimum standard for telco carriers. Separate
+    reporting obligations to BNetzA (in addition to BSI).
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Telco-IT-Praxis'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -18,39 +27,52 @@ baseline:
     MHC-01:
       target: defined
       reason: 'PQC für Carrier-Grade Crypto + langfristige Customer-Zertifikate.'
+      reason_en: 'PQC for carrier-grade crypto + long-term customer certificates.'
     MHC-02:
       target: managed
       reason: 'SBOM für eigene Stack + Drittlieferanten — Supply-Chain-Targeting Telco-Top-Risk.'
+      reason_en: 'SBOM for own stack + third-party suppliers — supply-chain targeting is top telco risk.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA für Admin/NOC. SS7/RCS-Signaling-Attacks Reality-Check.'
+      reason_en: 'Phishing-resistant MFA for admin/NOC. SS7/RCS signaling attacks are a reality check.'
     MHC-04:
       target: managed
       reason: 'Workload-Identity in Carrier-Stack — alte Service-Account-Praxis war APT-Einfallstor.'
+      reason_en: 'Workload identity in carrier stack — legacy service-account practice was APT entry point.'
     MHC-05:
       target: managed
       reason: 'Behavioural Detection im Carrier-Backbone Pflicht. APT-Targeted-Sektor.'
+      reason_en: 'Behavioural detection in carrier backbone mandatory. APT-targeted sector.'
     MHC-06:
       target: managed
       reason: 'Endpoint + Carrier-Equipment-Härtung (Routers/Switches Hardening Standards).'
+      reason_en: 'Endpoint + carrier-equipment hardening (router/switch hardening standards).'
     MHC-07:
       target: managed
       reason: 'Multi-Tenancy = Kern-Geschäft (Customer-VLAN-Trennung, MPLS-VPN-Isolation, IP-Adressplan-Audit).'
+      reason_en: 'Multi-tenancy = core business (customer VLAN separation, MPLS-VPN isolation, IP-address-plan audit).'
     MHC-08:
       target: managed
       reason: 'Immutable Backups + Geo-Redundanz. RTO < 1h für Voice/Internet-Service.'
+      reason_en: 'Immutable backups + geo-redundancy. RTO < 1h for voice/internet service.'
     MHC-09:
       target: managed
       reason: 'KEV-Patch-Latency < 7 Tage — TKG-2024 Mindestanforderung für aktive Komponenten.'
+      reason_en: 'KEV patch latency < 7 days — TKG-2024 minimum requirement for active components.'
     MHC-10:
       target: managed
       reason: 'CCM für TKG-Selbstauskunft + BNetzA-Audit + KRITIS-Nachweis (alle 2 Jahre).'
+      reason_en: 'CCM for TKG self-attestation + BNetzA audit + KRITIS attestation (every 2 years).'
     MHC-11:
       target: managed
       reason: 'IR + 24/7 Pflicht. Meldepflicht TKG §168 (BNetzA + BSI), parallel NIS2 Art. 23.'
+      reason_en: 'IR + 24/7 mandatory. Reporting obligation TKG §168 (BNetzA + BSI), parallel NIS2 Art. 23.'
     MHC-12:
       target: defined
       reason: 'Pen-Test KRITIS-pflichtig + Carrier-Spezial (Signaling-/SBC-/IMS-Tests).'
+      reason_en: 'Pen test KRITIS-mandated + carrier-specific (signaling/SBC/IMS tests).'
     MHC-13:
       target: defined
       reason: 'AI-Agent-Governance — AIOps + autonome Network-Self-Healing-Tools brauchen Audit-Trails.'
+      reason_en: 'AI agent governance — AIOps + autonomous network self-healing tools require audit trails.'
