@@ -25,11 +25,11 @@ class AuditChecklist
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(name: 'audit_id', nullable: false)]
-    private ?InternalAudit $internalAudit = null;
+    private ?InternalAudit $audit = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(name: 'requirement_id', nullable: false)]
-    private ?ComplianceRequirement $complianceRequirement = null;
+    private ?ComplianceRequirement $requirement = null;
 
     #[ORM\Column(length: 50)]
     private string $verificationStatus = 'not_checked'; // not_checked, compliant, partial, non_compliant, not_applicable
@@ -78,23 +78,23 @@ public function __construct()
 
     public function getAudit(): ?InternalAudit
     {
-        return $this->internalAudit;
+        return $this->audit;
     }
 
     public function setAudit(?InternalAudit $internalAudit): static
     {
-        $this->internalAudit = $internalAudit;
+        $this->audit = $internalAudit;
         return $this;
     }
 
     public function getRequirement(): ?ComplianceRequirement
     {
-        return $this->complianceRequirement;
+        return $this->requirement;
     }
 
     public function setRequirement(?ComplianceRequirement $complianceRequirement): static
     {
-        $this->complianceRequirement = $complianceRequirement;
+        $this->requirement = $complianceRequirement;
         return $this;
     }
 

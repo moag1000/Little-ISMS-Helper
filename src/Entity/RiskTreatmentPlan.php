@@ -120,7 +120,7 @@ class RiskTreatmentPlan
     #[ORM\JoinColumn(name: 'responsible_person_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
     #[MaxDepth(1)]
-    private ?User $user = null;
+    private ?User $responsiblePerson = null;
 
     /**
      * Controls implementing this treatment plan
@@ -277,12 +277,12 @@ class RiskTreatmentPlan
 
     public function getResponsiblePerson(): ?User
     {
-        return $this->user;
+        return $this->responsiblePerson;
     }
 
     public function setResponsiblePerson(?User $user): static
     {
-        $this->user = $user;
+        $this->responsiblePerson = $user;
         return $this;
     }
 
@@ -423,7 +423,7 @@ class RiskTreatmentPlan
     #[Groups(['treatment_plan:read'])]
     public function getResponsiblePersonName(): ?string
     {
-        return $this->user?->getFullName();
+        return $this->responsiblePerson?->getFullName();
     }
 
     /**

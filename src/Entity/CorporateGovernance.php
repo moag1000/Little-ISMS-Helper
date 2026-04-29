@@ -66,7 +66,7 @@ class CorporateGovernance
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'created_by_id', nullable: true)]
-    private ?User $user = null;
+    private ?User $createdBy = null;
 
     public function __construct()
     {
@@ -168,12 +168,12 @@ class CorporateGovernance
 
     public function getCreatedBy(): ?User
     {
-        return $this->user;
+        return $this->createdBy;
     }
 
     public function setCreatedBy(?User $user): static
     {
-        $this->user = $user;
+        $this->createdBy = $user;
         return $this;
     }
 

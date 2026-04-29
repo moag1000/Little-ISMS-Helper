@@ -55,7 +55,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
     public function findByAuditAndFramework(InternalAudit $internalAudit, ComplianceFramework $complianceFramework): array
     {
         return $this->createQueryBuilder('ac')
-            ->join('ac.complianceRequirement', 'r')
+            ->join('ac.requirement', 'r')
             ->where('ac.audit = :audit')
             ->andWhere('r.complianceFramework = :framework')
             ->setParameter('audit', $internalAudit)
@@ -201,7 +201,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
     public function getGroupedByFramework(InternalAudit $internalAudit): array
     {
         $items = $this->createQueryBuilder('ac')
-            ->join('ac.complianceRequirement', 'r')
+            ->join('ac.requirement', 'r')
             ->join('r.complianceFramework', 'f')
             ->where('ac.audit = :audit')
             ->setParameter('audit', $internalAudit)
@@ -231,7 +231,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
     public function findDetailedRequirements(InternalAudit $internalAudit): array
     {
         return $this->createQueryBuilder('ac')
-            ->join('ac.complianceRequirement', 'r')
+            ->join('ac.requirement', 'r')
             ->where('ac.audit = :audit')
             ->andWhere('r.requirementType IN (:types)')
             ->setParameter('audit', $internalAudit)

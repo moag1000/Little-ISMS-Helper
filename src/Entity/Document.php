@@ -53,7 +53,7 @@ class Document
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'uploaded_by_id', nullable: true, onDelete: 'SET NULL')]
-    private ?User $user = null;
+    private ?User $uploadedBy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeInterface $uploadedAt = null;
@@ -158,8 +158,8 @@ class Document
     public function setEntityType(?string $entityType): static { $this->entityType = $entityType; return $this; }
     public function getEntityId(): ?int { return $this->entityId; }
     public function setEntityId(?int $entityId): static { $this->entityId = $entityId; return $this; }
-    public function getUploadedBy(): ?User { return $this->user; }
-    public function setUploadedBy(?User $user): static { $this->user = $user; return $this; }
+    public function getUploadedBy(): ?User { return $this->uploadedBy; }
+    public function setUploadedBy(?User $user): static { $this->uploadedBy = $user; return $this; }
     public function getUploadedAt(): ?DateTimeInterface { return $this->uploadedAt; }
     public function setUploadedAt(DateTimeInterface $uploadedAt): static { $this->uploadedAt = $uploadedAt; return $this; }
     public function getUpdatedAt(): ?DateTimeInterface { return $this->updatedAt; }

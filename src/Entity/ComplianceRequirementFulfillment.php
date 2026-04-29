@@ -58,7 +58,7 @@ class ComplianceRequirementFulfillment
      */
     #[ORM\ManyToOne(targetEntity: ComplianceRequirement::class)]
     #[ORM\JoinColumn(name: 'requirement_id', nullable: false, onDelete: 'CASCADE')]
-    private ?ComplianceRequirement $complianceRequirement = null;
+    private ?ComplianceRequirement $requirement = null;
 
     /**
      * Is this requirement applicable to this tenant?
@@ -157,12 +157,12 @@ class ComplianceRequirementFulfillment
 
     public function getRequirement(): ?ComplianceRequirement
     {
-        return $this->complianceRequirement;
+        return $this->requirement;
     }
 
     public function setRequirement(?ComplianceRequirement $complianceRequirement): static
     {
-        $this->complianceRequirement = $complianceRequirement;
+        $this->requirement = $complianceRequirement;
         return $this;
     }
 
@@ -386,6 +386,6 @@ class ComplianceRequirementFulfillment
         if ($this->adjustedEffortDays !== null) {
             return $this->adjustedEffortDays;
         }
-        return $this->complianceRequirement?->getBaseEffortDays();
+        return $this->requirement?->getBaseEffortDays();
     }
 }

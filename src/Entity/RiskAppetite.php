@@ -85,7 +85,7 @@ class RiskAppetite
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'approved_by_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
-    private ?User $user = null;
+    private ?User $approvedBy = null;
 
     /**
      * Date when this risk appetite was approved
@@ -169,12 +169,12 @@ class RiskAppetite
 
     public function getApprovedBy(): ?User
     {
-        return $this->user;
+        return $this->approvedBy;
     }
 
     public function setApprovedBy(?User $user): static
     {
-        $this->user = $user;
+        $this->approvedBy = $user;
         return $this;
     }
 
@@ -307,6 +307,6 @@ class RiskAppetite
     #[Groups(['risk_appetite:read'])]
     public function isApproved(): bool
     {
-        return $this->user instanceof User && $this->approvedAt instanceof DateTimeInterface;
+        return $this->approvedBy instanceof User && $this->approvedAt instanceof DateTimeInterface;
     }
 }

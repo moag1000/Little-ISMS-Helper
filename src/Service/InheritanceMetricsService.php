@@ -182,7 +182,7 @@ class InheritanceMetricsService
     {
         $result = $this->fulfillmentRepository->createQueryBuilder('f')
             ->select('COUNT(f.id)')
-            ->innerJoin('f.complianceRequirement', 'r')
+            ->innerJoin('f.requirement', 'r')
             ->where('f.tenant = :tenant')
             ->andWhere('r.complianceFramework = :framework')
             ->setParameter('tenant', $tenant)
@@ -204,7 +204,7 @@ class InheritanceMetricsService
         $rows = $this->logRepository->createQueryBuilder('l')
             ->select('l.reviewStatus AS status, COUNT(l.id) AS cnt')
             ->innerJoin('l.fulfillment', 'f')
-            ->innerJoin('f.complianceRequirement', 'r')
+            ->innerJoin('f.requirement', 'r')
             ->where('l.tenant = :tenant')
             ->andWhere('r.complianceFramework = :framework')
             ->groupBy('l.reviewStatus')
