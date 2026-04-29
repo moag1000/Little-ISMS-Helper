@@ -151,6 +151,10 @@ final class GstoolXmlImporter
 
         $em = $this->entityManager;
 
+        // Map GSTOOL-ID → Asset, used in Phase 2 (Modellierung) to resolve
+        // dependsOn relationships after all Zielobjekte are persisted.
+        $assetByGstoolId = [];
+
         foreach ($preview['rows'] as $row) {
             if ($row['error'] !== null) {
                 $this->sessionRecorder->recordRow(
@@ -183,6 +187,10 @@ final class GstoolXmlImporter
             $em->persist($asset);
             $em->flush();
 
+            if ($row['id'] !== null) {
+                $assetByGstoolId[$row['id']] = $asset;
+            }
+
             $this->sessionRecorder->recordRow(
                 session: $session,
                 lineNumber: (int) $row['line'],
@@ -196,9 +204,85 @@ final class GstoolXmlImporter
             );
         }
 
+        // Phase 2: resolve <modellierung>/<abhaengigkeit> entries to
+        // Asset.dependsOn. We only link assets that participated in this
+        // import (cross-import links would silently dangle otherwise).
+        $rootResult = $this->loadRoot($path);
+        if ($rootResult['root'] !== null) {
+            $this->applyModellierung(
+                root: $rootResult['root'],
+                assetByGstoolId: $assetByGstoolId,
+                session: $session,
+            );
+        }
+
         $this->sessionRecorder->closeSession($session, ImportSession::STATUS_COMMITTED);
 
         return $preview + ['session_id' => $session->getId()];
+    }
+
+    /**
+     * Phase 2: apply <modellierung>/<abhaengigkeit von="X" zu="Y"/> to
+     * Asset.dependsOn. The semantics are "X depends on Y", which matches
+     * BSI 200-2 § 3.6 Maximumprinzip — dependent assets inherit the maximum
+     * Schutzbedarf of their dependencies.
+     *
+     * @param array<string, Asset> $assetByGstoolId
+     */
+    private function applyModellierung(SimpleXMLElement $root, array $assetByGstoolId, ImportSession $session): void
+    {
+        if (!isset($root->modellierung)) {
+            return;
+        }
+
+        $line = 0;
+        foreach ($root->modellierung->abhaengigkeit as $dep) {
+            $line++;
+            $from = trim((string) $dep['von']);
+            $to = trim((string) $dep['zu']);
+
+            $fromAsset = $assetByGstoolId[$from] ?? null;
+            $toAsset = $assetByGstoolId[$to] ?? null;
+
+            if ($fromAsset === null || $toAsset === null) {
+                $this->sessionRecorder->recordRow(
+                    session: $session,
+                    lineNumber: 1000 + $line,
+                    decision: ImportRowEvent::DECISION_SKIP,
+                    targetEntityType: Asset::class,
+                    targetEntityId: null,
+                    beforeState: null,
+                    afterState: null,
+                    sourceRowRaw: ['from' => $from, 'to' => $to],
+                    errorMessage: sprintf('Dependency references unknown Zielobjekt(e): von=%s, zu=%s', $from, $to),
+                );
+                continue;
+            }
+
+            $alreadyLinked = $fromAsset->getDependsOn()->exists(
+                static fn (int $key, Asset $a) => $a->getId() === $toAsset->getId(),
+            );
+            if ($alreadyLinked) {
+                continue;
+            }
+
+            $fromAsset->addDependsOn($toAsset);
+            $this->entityManager->persist($fromAsset);
+
+            $this->sessionRecorder->recordRow(
+                session: $session,
+                lineNumber: 1000 + $line,
+                decision: ImportRowEvent::DECISION_MERGE,
+                targetEntityType: Asset::class,
+                targetEntityId: $fromAsset->getId(),
+                beforeState: null,
+                afterState: ['dependsOn' => $toAsset->getId(), 'fromGstool' => $from, 'toGstool' => $to],
+                sourceRowRaw: ['from' => $from, 'to' => $to],
+                errorMessage: null,
+            );
+        }
+
+        $this->entityManager->flush();
     }
 
     /**

@@ -50,4 +50,9 @@
       <name>Test-Asset-ohne-Schutzbedarf</name>
     </zielobjekt>
   </zielobjekte>
+  <modellierung>
+    <abhaengigkeit von="ZO-001" zu="ZO-003"/>
+    <abhaengigkeit von="ZO-001" zu="ZO-004"/>
+    <abhaengigkeit von="ZO-002" zu="ZO-001"/>
+  </modellierung>
 </gstool-export>
