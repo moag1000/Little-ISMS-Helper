@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'defense-vsnfd'
   name: 'Defense / Wehrtechnik / Geheimschutz (VS-NfD)'
+  name_en: 'Defense / Defense Industry / Classified Information Protection (VS-NfD)'
   industry: 'defense'
   description: |
     Pre-Konfiguration für Wehrtechnik-Hersteller, Verteidigungs-Ministerial-
@@ -10,6 +11,14 @@ baseline:
     SÜG (Sicherheitsüberprüfungsgesetz), NATO-Sicherheitsrichtlinien (für
     NATO-Lieferanten), ITAR/EAR (für US-Komponenten). Höchste Schutzbedarfs-
     Klasse — keine Cloud-Auslagerung von VS-Material.
+  description_en: |
+    Pre-configuration for defense industry manufacturers, defense
+    ministerial sector, and suppliers with classified information
+    obligations. Anchors: BSI Classified Information Handbook (GHB),
+    VS instructions (VSA), VS-NfD (Restricted/Official Use Only), SÜG
+    (German Security Clearance Act), NATO security directives (for
+    NATO suppliers), ITAR/EAR (for US components). Highest protection
+    class — no cloud outsourcing of classified material.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Wehrtechnik-IT'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -18,39 +27,52 @@ baseline:
     MHC-01:
       target: managed
       reason: 'PQC zwingend — VS-NfD-Material muss Quantum-resistent verschlüsselt sein (BSI TR-02102).'
+      reason_en: 'PQC mandatory — VS-NfD material must be quantum-resistant encrypted (BSI TR-02102).'
     MHC-02:
       target: managed
       reason: 'SBOM strict — keine unkontrollierten Lieferanten-Komponenten. ITAR/EAR-Compliance.'
+      reason_en: 'SBOM strict — no uncontrolled supplier components. ITAR/EAR compliance.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA Pflicht — VS-Authentifizierung mit Hardware-Token + biometrisch.'
+      reason_en: 'Phishing-resistant MFA mandatory — VS authentication with hardware tokens + biometrics.'
     MHC-04:
       target: managed
       reason: 'Workload-Identity + Air-Gap zwischen VS-Netz und Office-IT. Strict Static-Allowlists.'
+      reason_en: 'Workload identity + air gap between VS network and office IT. Strict static allowlists.'
     MHC-05:
       target: managed
       reason: 'Behavioural Detection KRITISCH — APT-Targeted-Sektor #1, gezielte Spionage permanent.'
+      reason_en: 'Behavioural detection CRITICAL — APT-targeted sector #1, persistent targeted espionage.'
     MHC-06:
       target: managed
       reason: 'Endpoint-Härtung absolute Pflicht. VS-Geräte verschlüsselt, BSI-zertifiziert (BSI-zugelassen).'
+      reason_en: 'Endpoint hardening absolute requirement. VS devices encrypted, BSI-certified (BSI-approved).'
     MHC-07:
       target: managed
       reason: 'Multi-Tenancy meist N/A — Single-Tenant + Air-Gapped pro Geheimhaltungsstufe.'
+      reason_en: 'Multi-tenancy mostly N/A — single-tenant + air-gapped per classification level.'
     MHC-08:
       target: managed
       reason: 'Immutable Backups + Off-grid + bunkered. Klassifizierungs-konform getrennt.'
+      reason_en: 'Immutable backups + off-grid + bunkered. Separated per classification level.'
     MHC-09:
       target: managed
       reason: 'KEV-Patch-Latency < 7 Tage. VS-Netz: Out-of-band-Patching via geprüfte Medien.'
+      reason_en: 'KEV patch latency < 7 days. VS network: out-of-band patching via vetted media.'
     MHC-10:
       target: managed
       reason: 'CCM für Geheimschutz-Audit + BMI/BSI-Aufsicht. Kontrollierte Auditoren.'
+      reason_en: 'CCM for classified information audit + BMI/BSI oversight. Vetted auditors only.'
     MHC-11:
       target: managed
       reason: 'IR + Eskalation an BSI Geheimschutz-Stelle / Sicherheitsoffizier. Strict Reporting-Pflicht.'
+      reason_en: 'IR + escalation to BSI Classified Information office / security officer. Strict reporting obligation.'
     MHC-12:
       target: managed
       reason: 'TLPT durch BSI-zertifizierte Pen-Tester mit Sicherheitsüberprüfung Stufe Ü1+.'
+      reason_en: 'TLPT by BSI-certified pen testers with security clearance level Ü1+.'
     MHC-13:
       target: managed
       reason: 'AI-Agent-Governance ABSOLUT — keine VS-Daten in Cloud-AI. On-Premise-AI mit Klassifizierungs-Filter Pflicht.'
+      reason_en: 'AI agent governance ABSOLUTE — no VS data in cloud AI. On-premise AI with classification filter mandatory.'

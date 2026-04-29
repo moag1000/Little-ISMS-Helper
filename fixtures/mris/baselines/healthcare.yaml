@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'healthcare-provider'
   name: 'Healthcare Provider (Krankenhaus / MVZ / MDV)'
+  name_en: 'Healthcare Provider (Hospital / MVZ / Medical Service Provider)'
   industry: 'healthcare'
   description: |
     Pre-Konfiguration für Gesundheitseinrichtungen — Krankenhäuser,
@@ -10,6 +11,13 @@ baseline:
     BSIG (ab 30.000 Behandlungsfälle/Jahr), MDR (für Medizinprodukte),
     NIS2 Annex I "Gesundheit", DSGVO Art. 9 (Gesundheitsdaten = besondere
     Kategorie). 24/7-Verfügbarkeit ist Patientensicherheit.
+  description_en: |
+    Pre-configuration for healthcare providers — hospitals, medical
+    care centres (MVZ), medical service providers (MDV). Anchors: KHZG
+    (Hospital Future Act / Critical Hospital Regulation), KRITIS § 8a
+    BSIG (from 30,000 treatment cases/year), MDR (for medical devices),
+    NIS2 Annex I "Health", GDPR Art. 9 (health data = special category).
+    24/7 availability equals patient safety.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Klinik-IT-Praxis'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -18,39 +26,52 @@ baseline:
     MHC-01:
       target: defined
       reason: 'PQC-Strategie für Patienten-Daten — Aufbewahrungsfristen 30 Jahre, Quantum-Risiko real.'
+      reason_en: 'PQC strategy for patient data — retention periods of 30 years, quantum risk is real.'
     MHC-02:
       target: defined
       reason: 'SBOM für Medizinprodukte (MDR Art. 16) + Klinik-Kern-Stack. KIS/RIS/PACS-Lieferanten haftbar.'
+      reason_en: 'SBOM for medical devices (MDR Art. 16) + hospital core stack. KIS/RIS/PACS suppliers liable.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA für Admin + Ärzte/Pflege mit Privileged-Access. Ransomware-Top-Vector.'
+      reason_en: 'Phishing-resistant MFA for admins + physicians/nurses with privileged access. Top ransomware vector.'
     MHC-04:
       target: defined
       reason: 'Workload-Identity für KIS-Microservices + DICOM/HL7-Integrationsschicht.'
+      reason_en: 'Workload identity for HIS microservices + DICOM/HL7 integration layer.'
     MHC-05:
       target: managed
       reason: 'Behavioural Detection Pflicht — Ransomware-Welle 2024/25 traf gezielt Kliniken.'
+      reason_en: 'Behavioural detection mandatory — ransomware wave 2024/25 specifically targeted hospitals.'
     MHC-06:
       target: managed
       reason: 'Endpoint-Härtung Pflicht — medizinische Workstations, Tablets am Bett, OP-Steuerung.'
+      reason_en: 'Endpoint hardening mandatory — medical workstations, bedside tablets, OR control systems.'
     MHC-07:
       target: defined
       reason: 'Multi-Tenancy meist nur intern (Stationen/Fachbereiche) — RBAC + Audit-Trail Pflicht.'
+      reason_en: 'Multi-tenancy mostly internal only (wards/departments) — RBAC + audit trail mandatory.'
     MHC-08:
       target: managed
       reason: 'Immutable Backups + DR-Test halbjährlich. RTO < 4h für Notaufnahme/OP/Intensiv.'
+      reason_en: 'Immutable backups + DR test every six months. RTO < 4h for ER/OR/ICU.'
     MHC-09:
       target: managed
       reason: 'KEV-Patch-Latency < 7 Tage für medizinische IT — KHZG-Audit-Frage.'
+      reason_en: 'KEV patch latency < 7 days for medical IT — KHZG audit topic.'
     MHC-10:
       target: defined
       reason: 'CCM für KRITIS-Nachweise (alle 2 Jahre). Policy-as-Code für Standard-Klinik-Stack.'
+      reason_en: 'CCM for KRITIS attestation (every 2 years). Policy-as-code for standard hospital stack.'
     MHC-11:
       target: managed
       reason: 'IR + 24/7 Bereitschaft Pflicht. Meldepflicht NIS2 Art. 23 (24h/72h/30d).'
+      reason_en: 'IR + 24/7 readiness mandatory. Reporting obligation NIS2 Art. 23 (24h/72h/30d).'
     MHC-12:
       target: defined
       reason: 'Pen-Test KRITIS-pflichtig. TLPT bei Verbund-Strukturen (Konzern-Klinikum).'
+      reason_en: 'Pen test KRITIS-mandated. TLPT for group structures (hospital corporations).'
     MHC-13:
       target: defined
       reason: 'AI-Agent-Governance für KIS-Module mit AI-Diagnose-Unterstützung — MDR-relevant.'
+      reason_en: 'AI agent governance for HIS modules with AI diagnostic support — MDR-relevant.'

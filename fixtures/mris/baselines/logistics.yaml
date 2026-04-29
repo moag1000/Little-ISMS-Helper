@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'logistics-transport'
   name: 'Logistik / Transport / Speditionen'
+  name_en: 'Logistics / Transport / Freight Forwarding'
   industry: 'logistics'
   description: |
     Pre-Konfiguration für Speditionen, Transport-Dienstleister, Reedereien,
@@ -9,6 +10,14 @@ baseline:
     Annex II "Verkehr (Luft/See/Schiene/Straße)", IT-Sicherheitsgesetz
     §8a für KRITIS-Logistik (Häfen/Flughäfen/Postzentren), DSGVO Art. 28
     bei Sub-Spedition, EU-Mobilitätspaket digitaler Frachtbrief (eFTI 2024).
+  description_en: |
+    Pre-configuration for freight forwarders, transport service
+    providers, shipping companies, logistics platforms, postal services,
+    CEP (courier/express/parcel) providers. Anchors: NIS2 Annex II
+    "Transport (air/sea/rail/road)", IT Security Act §8a for KRITIS
+    logistics (ports/airports/postal centres), GDPR Art. 28 for
+    sub-forwarding, EU Mobility Package digital consignment note
+    (eFTI 2024).
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Logistik-IT'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -17,39 +26,52 @@ baseline:
     MHC-01:
       target: initial
       reason: 'Crypto-Inventar Standard. Telematik-Geräte oft mit Long-Lifetime-Zertifikaten.'
+      reason_en: 'Crypto inventory standard. Telematics devices often have long-lifetime certificates.'
     MHC-02:
       target: defined
       reason: 'SBOM für TMS/WMS + Track-and-Trace-Plattformen. Lieferanten-Anforderung.'
+      reason_en: 'SBOM for TMS/WMS + track-and-trace platforms. Supplier requirement.'
     MHC-03:
       target: defined
       reason: 'Phishing-resistente MFA für Disposition + Fernzugriff (Fahrer-Apps mit Zahlfunktion).'
+      reason_en: 'Phishing-resistant MFA for dispatch + remote access (driver apps with payment functions).'
     MHC-04:
       target: initial
       reason: 'Workload-Identity bei Multi-Standort-Architekturen. Service-Account-Inventar zuerst.'
+      reason_en: 'Workload identity for multi-site architectures. Service-account inventory first.'
     MHC-05:
       target: defined
       reason: 'Behavioural Detection — gezielte Frachtdiebstahl-Vorbereitung via TMS-Zugriff.'
+      reason_en: 'Behavioural detection — targeted cargo-theft preparation via TMS access.'
     MHC-06:
       target: defined
       reason: 'Endpoint-Härtung Disposition + Fahrer-Geräte (BYOD-Risiko reduzieren).'
+      reason_en: 'Endpoint hardening for dispatch + driver devices (reduce BYOD risk).'
     MHC-07:
       target: defined
       reason: 'Multi-Mandant-Trennung wenn Carrier-Plattform mehrere Versender + Empfänger bedient.'
+      reason_en: 'Multi-tenant separation when carrier platform serves multiple shippers + consignees.'
     MHC-08:
       target: defined
       reason: 'Immutable Backups TMS + Customs-Daten. RTO Werktag-relevant (<8h).'
+      reason_en: 'Immutable backups for TMS + customs data. RTO relevant per business day (<8h).'
     MHC-09:
       target: defined
       reason: 'KEV-Patch-Latency < 14 Tage. Telematik-Geräte oft Long-Update-Zyklen — kompensierend.'
+      reason_en: 'KEV patch latency < 14 days. Telematics devices often have long update cycles — compensating.'
     MHC-10:
       target: initial
       reason: 'CCM bei NIS2-pflichtigen Logistik-Anbietern. Audit-Trail-Pflicht.'
+      reason_en: 'CCM for NIS2-regulated logistics providers. Audit-trail requirement.'
     MHC-11:
       target: defined
       reason: 'IR + Eskalation. Bei NIS2: Meldepflicht. Bei KRITIS-Logistik: BSI-Meldepflicht.'
+      reason_en: 'IR + escalation. Under NIS2: reporting obligation. Under KRITIS logistics: BSI reporting obligation.'
     MHC-12:
       target: initial
       reason: 'Pen-Test bei Customer-Facing-Plattformen + Customs-Schnittstellen jährlich.'
+      reason_en: 'Pen test for customer-facing platforms + customs interfaces annually.'
     MHC-13:
       target: initial
       reason: 'AI-Agent-Governance vorerst niedrig — bei AI-gestützter Routenplanung später erhöhen.'
+      reason_en: 'AI agent governance initially low — raise later for AI-assisted route planning.'

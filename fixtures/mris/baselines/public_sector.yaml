@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'public-sector'
   name: 'Public Sector / Behörde / Kommune'
+  name_en: 'Public Sector / Government Agency / Municipality'
   industry: 'public_sector'
   description: |
     Pre-Konfiguration für öffentliche Verwaltung — Bundesbehörden, Länder,
@@ -9,6 +10,13 @@ baseline:
     (Technische Richtlinien), IT-Grundschutz Standard-Absicherung, OZG
     (Online-Zugangs-Gesetz), NIS2 Annex II "Öffentliche Verwaltung",
     NIS2UmsuCG (deutsche Umsetzung ab 2026), eIDAS für Authentifizierung.
+  description_en: |
+    Pre-configuration for public administration — federal authorities,
+    states, municipal administrations, municipal enterprises. Anchors:
+    BSI minimum standard (technical guidelines), IT-Grundschutz
+    standard protection, OZG (Online Access Act), NIS2 Annex II "Public
+    administration", NIS2UmsuCG (German implementation from 2026),
+    eIDAS for authentication.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Public-Sector-IT'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -17,39 +25,52 @@ baseline:
     MHC-01:
       target: defined
       reason: 'PQC-Strategie BSI-TR-02102 + BSI Migrations-Roadmap PQC. eIDAS-Signaturen langlebig.'
+      reason_en: 'PQC strategy BSI TR-02102 + BSI PQC migration roadmap. eIDAS signatures long-lived.'
     MHC-02:
       target: defined
       reason: 'SBOM für Eigenentwicklungen + Pflicht-Kriterium öffentliche Beschaffung (UfAB). Nachhaltige Software 2026.'
+      reason_en: 'SBOM for in-house development + mandatory criterion in public procurement (UfAB). Sustainable software 2026.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA für Verwaltungs-Accounts — Behörden Ransomware-Top-Ziel 2024/25.'
+      reason_en: 'Phishing-resistant MFA for administration accounts — government top ransomware target 2024/25.'
     MHC-04:
       target: initial
       reason: 'Workload-Identity meist später nach Cloud-Strategie. Bund-API-Hub als Vorbild.'
+      reason_en: 'Workload identity usually later, following cloud strategy. Federal API Hub as reference.'
     MHC-05:
       target: defined
       reason: 'Behavioural Detection im Verwaltungsnetz. CERT-Bund Anbindung Pflicht für KRITIS-Verwaltung.'
+      reason_en: 'Behavioural detection in administration network. CERT-Bund integration mandatory for KRITIS administration.'
     MHC-06:
       target: defined
       reason: 'Endpoint-Härtung + EDR. BSI-Mindeststandard für Endpunkte BSI-TR-03182.'
+      reason_en: 'Endpoint hardening + EDR. BSI minimum standard for endpoints BSI TR-03182.'
     MHC-07:
       target: initial
       reason: 'Mehr-Mandanten-Trennung selten — interne Fachverfahren-Trennung über Berechtigungen reicht meist.'
+      reason_en: 'Multi-tenant separation rare — internal application separation via permissions usually suffices.'
     MHC-08:
       target: defined
       reason: 'Immutable Backups + Datenschutz-konform (DSGVO Art. 32). Ransomware-Resilienz politisch hoch sichtbar.'
+      reason_en: 'Immutable backups + GDPR-compliant (Art. 32). Ransomware resilience highly visible politically.'
     MHC-09:
       target: defined
       reason: 'KEV-Patch-Latency < 14 Tage für Verwaltungs-Stack. CERT-Bund-Warnungen einarbeiten.'
+      reason_en: 'KEV patch latency < 14 days for administration stack. Incorporate CERT-Bund warnings.'
     MHC-10:
       target: defined
       reason: 'CCM via BSI-Mindeststandard-Selbstauskunft + IT-Grundschutz-Check zwingend.'
+      reason_en: 'CCM via BSI minimum-standard self-attestation + IT-Grundschutz check mandatory.'
     MHC-11:
       target: managed
       reason: 'IR + Meldepflicht NIS2UmsuCG, BSI als Aufsichtsbehörde. 24h/72h/30d-Reporting.'
+      reason_en: 'IR + reporting obligation NIS2UmsuCG, BSI as supervisory authority. 24h/72h/30d reporting.'
     MHC-12:
       target: initial
       reason: 'Pen-Test bei kritischen Fachverfahren (KFZ-Zulassung, Meldewesen, Sozialhilfe). TLPT überzogen.'
+      reason_en: 'Pen test for critical applications (vehicle registration, civil registry, social services). TLPT excessive.'
     MHC-13:
       target: defined
       reason: 'AI-Agent-Governance — KI-Bots in Bürger-Service (Chat-Tools) bedürfen DSFA + Governance-Doku.'
+      reason_en: 'AI agent governance — AI bots in citizen services (chat tools) require DPIA + governance documentation.'

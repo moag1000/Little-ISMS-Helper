@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'retail-ecommerce'
   name: 'Retail / E-Commerce / Marketplace'
+  name_en: 'Retail / E-Commerce / Marketplace'
   industry: 'retail'
   description: |
     Pre-Konfiguration für stationären Einzelhandel, E-Commerce-Plattformen,
@@ -9,6 +10,13 @@ baseline:
     Acceptance ab 2024 Pflicht), DSGVO (Customer-Profiling + Tracking),
     CRA 2024/2847 für IoT-Produkte (Smart-Devices ab 2027), DSA (Digital
     Services Act für Marketplace), GwG (Geldwäsche-Pflichten ab Schwellwert).
+  description_en: |
+    Pre-configuration for brick-and-mortar retail, e-commerce platforms,
+    marketplace operators, omnichannel retailers. Anchors: PCI-DSS v4.0
+    (card acceptance mandatory from 2024), GDPR (customer profiling +
+    tracking), CRA 2024/2847 for IoT products (smart devices from 2027),
+    DSA (Digital Services Act for marketplaces), GwG (German
+    Anti-Money-Laundering Act obligations above threshold).
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Retail-Tech'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -17,39 +25,52 @@ baseline:
     MHC-01:
       target: initial
       reason: 'Crypto-Inventar Standard, Customer-Daten + Payment-Tokens.'
+      reason_en: 'Crypto inventory standard, customer data + payment tokens.'
     MHC-02:
       target: defined
       reason: 'SBOM für Plattform + IoT-Produkte (CRA-Vorbereitung 2027).'
+      reason_en: 'SBOM for platform + IoT products (CRA preparation 2027).'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA für Admin/Customer-Service. PCI-DSS v4.0 Anforderung 8.4.'
+      reason_en: 'Phishing-resistant MFA for admin/customer service. PCI-DSS v4.0 requirement 8.4.'
     MHC-04:
       target: defined
       reason: 'Workload-Identity für Microservices in E-Commerce-Stack (Cart/Checkout/Payment).'
+      reason_en: 'Workload identity for microservices in e-commerce stack (cart/checkout/payment).'
     MHC-05:
       target: managed
       reason: 'Behavioural Detection — Account-Takeover, Card-Skimming, Bot-Traffic.'
+      reason_en: 'Behavioural detection — account takeover, card skimming, bot traffic.'
     MHC-06:
       target: defined
       reason: 'POS-Endpoint-Härtung (PCI-DSS) + Office-Stack-Härtung.'
+      reason_en: 'POS endpoint hardening (PCI-DSS) + office stack hardening.'
     MHC-07:
       target: defined
       reason: 'Marketplace = Multi-Tenancy (Händler-Konten getrennt vom Plattform-Stack).'
+      reason_en: 'Marketplace = multi-tenancy (merchant accounts separated from platform stack).'
     MHC-08:
       target: defined
       reason: 'Backup + DR — Verlust kostet pro Stunde Down-Time (Black-Friday-Szenario).'
+      reason_en: 'Backup + DR — outage costs scale per hour of downtime (Black Friday scenario).'
     MHC-09:
       target: managed
       reason: 'KEV-Patch-Latency < 7 Tage. PCI-DSS v4.0 Req 6 zwingend.'
+      reason_en: 'KEV patch latency < 7 days. PCI-DSS v4.0 Req 6 mandatory.'
     MHC-10:
       target: defined
       reason: 'CCM für PCI-DSS-Compliance + DSA-Reporting bei großen Marketplaces.'
+      reason_en: 'CCM for PCI-DSS compliance + DSA reporting for large marketplaces.'
     MHC-11:
       target: defined
       reason: 'IR-Plan inkl. PCI-Forensics-Anbindung. Card-Breach-Reporting an Acquirer.'
+      reason_en: 'IR plan incl. PCI forensics integration. Card-breach reporting to acquirer.'
     MHC-12:
       target: defined
       reason: 'Pen-Test ASV-Scan quartalsweise (PCI-DSS v4.0 Req 11). Web-App-Pen-Test jährlich.'
+      reason_en: 'ASV pen-test scan quarterly (PCI-DSS v4.0 Req 11). Web-app pen test annually.'
     MHC-13:
       target: defined
       reason: 'AI-Agent-Governance — Recommender-Systeme + Dynamic-Pricing brauchen DSGVO/DSA-Compliance-Review.'
+      reason_en: 'AI agent governance — recommender systems + dynamic pricing require GDPR/DSA compliance review.'

@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'software-developer'
   name: 'Software-Entwicklungs-Unternehmen'
+  name_en: 'Software Development Company'
   industry: 'software_developer'
   description: |
     Pre-Konfiguration für Software-Entwicklungs-Häuser — Custom-Software,
@@ -10,6 +11,13 @@ baseline:
     Anker: ISO 27001, ISO 27034 (Application Security), CRA 2024/2847 ab
     2027, NIS2 Annex II Sektor "Digital Service Providers". Bei
     SaaS-Auslieferung zusätzlich saas-cra-2027 anwenden.
+  description_en: |
+    Pre-configuration for software development houses — custom software,
+    open-source maintainers, embedded/industrial software suppliers.
+    Focus on SDLC hardening, supply-chain security, AI coding tools.
+    Anchors: ISO 27001, ISO 27034 (Application Security), CRA 2024/2847
+    from 2027, NIS2 Annex II sector "Digital Service Providers".
+    Additionally apply saas-cra-2027 for SaaS delivery.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Software-Eng-Praxis'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -18,39 +26,52 @@ baseline:
     MHC-01:
       target: defined
       reason: 'PQC-Strategie für Crypto-Bibliotheken in Produkten — Store-now-decrypt-later betrifft jede ausgelieferte Lib.'
+      reason_en: 'PQC strategy for crypto libraries in products — store-now-decrypt-later affects every shipped lib.'
     MHC-02:
       target: managed
       reason: 'SBOM CRA-Pflicht ab 2027 (Annex I Teil II). Auto-Generation in CI Pflicht, Provenance signed.'
+      reason_en: 'SBOM CRA obligation from 2027 (Annex I Part II). Auto-generation in CI mandatory, provenance signed.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA für Build-/Release-Accounts. Supply-Chain-Compromise Top-Risk (XZ, npm-attacks).'
+      reason_en: 'Phishing-resistant MFA for build/release accounts. Supply-chain compromise is top risk (XZ, npm attacks).'
     MHC-04:
       target: defined
       reason: 'Workload-Identity in CI/CD — keine Static-Credentials für Deploy-Pipelines. OIDC-Federation Standard.'
+      reason_en: 'Workload identity in CI/CD — no static credentials for deploy pipelines. OIDC federation standard.'
     MHC-05:
       target: defined
       reason: 'Behavioural Detection im Source-Repo + Build-Stack — anomalous PRs / Build-Skripte als IOC.'
+      reason_en: 'Behavioural detection in source repo + build stack — anomalous PRs / build scripts as IOCs.'
     MHC-06:
       target: managed
       reason: 'Dev-Endpoint-Härtung + Build-Server-Hardening Pflicht. Reproduzierbare Builds wo möglich.'
+      reason_en: 'Dev endpoint hardening + build-server hardening mandatory. Reproducible builds where possible.'
     MHC-07:
       target: initial
       reason: 'Multi-Tenancy meist N/A für reine Software-Auslieferung. Falls SaaS-Anteil → saas-cra-2027 ergänzend.'
+      reason_en: 'Multi-tenancy mostly N/A for pure software delivery. If SaaS component → apply saas-cra-2027 additionally.'
     MHC-08:
       target: defined
       reason: 'Source-Code + Artifact-Repos immutable + offsite. Backup von Build-Maschinen (Reproduzierbarkeit).'
+      reason_en: 'Source code + artifact repos immutable + off-site. Backup of build machines (reproducibility).'
     MHC-09:
       target: managed
       reason: 'CRA Art. 13 Vulnerability-Handling-Process — KEV-Latency < 7 Tage für eigene Komponenten + Coordinated Disclosure.'
+      reason_en: 'CRA Art. 13 vulnerability-handling process — KEV latency < 7 days for own components + coordinated disclosure.'
     MHC-10:
       target: defined
       reason: 'CCM für SDLC-Gates — Pre-Merge-SAST/DAST/Secrets-Scan + Policy-as-Code in CI.'
+      reason_en: 'CCM for SDLC gates — pre-merge SAST/DAST/secrets scanning + policy-as-code in CI.'
     MHC-11:
       target: defined
       reason: 'IR-Process für Customer-Reported-Vulnerabilities. PSIRT-Team oder externer Anbieter.'
+      reason_en: 'IR process for customer-reported vulnerabilities. PSIRT team or external provider.'
     MHC-12:
       target: defined
       reason: 'Threat-Led Pen-Testing in Releases ≥ Major. SAST + DAST + SCA in CI als Continuous-Layer.'
+      reason_en: 'Threat-led pen testing in releases ≥ major. SAST + DAST + SCA in CI as continuous layer.'
     MHC-13:
       target: managed
       reason: 'AI-Agent-Governance KRITISCH — Copilot/Claude/Cursor schreiben Code der ausgeliefert wird. Output-Provenance + Security-Review-Gates Pflicht.'
+      reason_en: 'AI agent governance CRITICAL — Copilot/Claude/Cursor write code that ships. Output provenance + security review gates mandatory.'

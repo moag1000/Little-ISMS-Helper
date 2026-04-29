@@ -2,12 +2,19 @@ schema_version: '1.0'
 baseline:
   id: 'kritis-essential'
   name: 'KRITIS / NIS2-Essential'
+  name_en: 'KRITIS / NIS2 Essential'
   industry: 'kritis'
   description: |
     Pre-Konfiguration für KRITIS-Betreiber und NIS2-Essential-Adressaten
     (Energie, Wasser, Gesundheit, Transport, Finanzdienstleistungen,
     digitale Infrastruktur ab Schwellwert).
     Anker: NIS2-Richtlinie Art. 21, NIS2-DVO Nr. 2.2 / 3.5, KRITIS-DachG.
+  description_en: |
+    Pre-configuration for KRITIS operators and NIS2 essential entities
+    (energy, water, health, transport, financial services, digital
+    infrastructure above threshold).
+    Anchors: NIS2 Directive Art. 21, NIS2 Implementing Regulation
+    No. 2.2 / 3.5, KRITIS-DachG (Critical Infrastructure Umbrella Act).
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung KRITIS-Praxis'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -17,39 +24,52 @@ baseline:
     MHC-01:
       target: defined
       reason: 'PQC-Strategie für Langzeit-Vertraulichkeit kritischer Infrastrukturdaten.'
+      reason_en: 'PQC strategy for long-term confidentiality of critical infrastructure data.'
     MHC-02:
       target: defined
       reason: 'SBOM für Lieferkettentransparenz — NIS2-DVO Nr. 5 Voraussetzung.'
+      reason_en: 'SBOM for supply-chain transparency — NIS2 Implementing Regulation No. 5 prerequisite.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA Pflicht für privilegierte KRITIS-Zugänge — NIS2-DVO Nr. 11.2.'
+      reason_en: 'Phishing-resistant MFA mandatory for privileged KRITIS access — NIS2 Implementing Regulation No. 11.2.'
     MHC-04:
       target: defined
       reason: 'Workload-Identity + Zero Trust für OT/IT-Konvergenz.'
+      reason_en: 'Workload identity + zero trust for OT/IT convergence.'
     MHC-05:
       target: managed
       reason: 'Behavioural Detection Pflicht für KRITIS-SOC — NIS2-DVO Nr. 3.2.'
+      reason_en: 'Behavioural detection mandatory for KRITIS SOC — NIS2 Implementing Regulation No. 3.2.'
     MHC-06:
       target: defined
       reason: 'Container-Sicherheit für Cloud-basierte OT/IT-Workloads.'
+      reason_en: 'Container security for cloud-based OT/IT workloads.'
     MHC-07:
       target: defined
       reason: 'Multi-Tenancy-Isolation für Shared-Service-KRITIS (Stadtwerke-Verbund).'
+      reason_en: 'Multi-tenancy isolation for shared-service KRITIS (municipal utility consortium).'
     MHC-08:
       target: managed
       reason: 'Immutable Backups — Ransomware-Recovery binnen Wiederanlauffrist.'
+      reason_en: 'Immutable backups — ransomware recovery within recovery time objective.'
     MHC-09:
       target: defined
       reason: 'AI-Security-Testing für KRITIS-Software ohne TLPT-Pflicht.'
+      reason_en: 'AI security testing for KRITIS software without TLPT requirement.'
     MHC-10:
       target: managed
       reason: 'Continuous Control Monitoring — NIS2-DVO Nr. 2.2 verlangt kontinuierliche Bewertung.'
+      reason_en: 'Continuous control monitoring — NIS2 Implementing Regulation No. 2.2 requires continuous assessment.'
     MHC-11:
       target: managed
       reason: 'SOAR/Tier-1-Automation Pflicht für 24h-/72h-Meldefristen NIS2-DVO Nr. 3.5.'
+      reason_en: 'SOAR/Tier-1 automation mandatory for 24h/72h reporting deadlines NIS2 Implementing Regulation No. 3.5.'
     MHC-12:
       target: defined
       reason: 'TLPT empfehlenswert für KRITIS-Funktionsbereiche, Pflicht erst bei DORA-Adressaten.'
+      reason_en: 'TLPT recommended for KRITIS functional areas, mandatory only for DORA-regulated entities.'
     MHC-13:
       target: initial
       reason: 'AI-Agent-Governance einstiegsweise — wenig AI-Einsatz in OT-Bereichen erwartet.'
+      reason_en: 'AI agent governance at entry level — limited AI use expected in OT environments.'

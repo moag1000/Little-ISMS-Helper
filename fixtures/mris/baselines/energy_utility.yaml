@@ -2,6 +2,7 @@ schema_version: '1.0'
 baseline:
   id: 'energy-utility'
   name: 'Energie / Versorgungsunternehmen'
+  name_en: 'Energy / Utility Providers'
   industry: 'energy'
   description: |
     Pre-Konfiguration für Stromnetzbetreiber, Stadtwerke, Erneuerbare-
@@ -10,6 +11,13 @@ baseline:
     NIS2 Annex I "Energie/Wasser", IEC 62443 für OT-Komponenten,
     EnWG § 11 (1a) für Fernsteuerbare Anlagen. Hochpolitisch wegen
     Energie-Sicherheits-Lage.
+  description_en: |
+    Pre-configuration for power grid operators, municipal utilities,
+    renewable-energy plant operators, water and district-heating
+    providers. Anchors: KRITIS § 8a BSIG, BNetzA IT security catalogue
+    (KritisV § 1(2)), NIS2 Annex I "Energy/Water", IEC 62443 for OT
+    components, EnWG § 11(1a) for remotely controllable installations.
+    Highly political due to energy security situation.
 
   source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Versorger-OT-IT'
   license: 'CC BY 4.0 (MRIS-Konzepte)'
@@ -18,39 +26,52 @@ baseline:
     MHC-01:
       target: defined
       reason: 'PQC-Strategie für Smart-Meter-Gateways + Zertifikate (langfristige Lebensdauer der Anlagen).'
+      reason_en: 'PQC strategy for smart meter gateways + certificates (long lifespan of installations).'
     MHC-02:
       target: managed
       reason: 'SBOM Pflicht für Steuerungs-Software (BNetzA-Katalog). Lieferanten-Anforderungen explizit.'
+      reason_en: 'SBOM mandatory for control software (BNetzA catalogue). Explicit supplier requirements.'
     MHC-03:
       target: managed
       reason: 'Phishing-resistente MFA für Leitstellenpersonal + Fernwartungs-Accounts. Stuxnet-Lessons.'
+      reason_en: 'Phishing-resistant MFA for control-room staff + remote-maintenance accounts. Stuxnet lessons.'
     MHC-04:
       target: defined
       reason: 'Workload-Identity zwischen IT/OT-Schicht. Zero-Trust-Architektur Mindestmaßnahme.'
+      reason_en: 'Workload identity between IT/OT layers. Zero-trust architecture as minimum.'
     MHC-05:
       target: managed
       reason: 'Behavioural Detection in OT-Netz Pflicht — APT-Targeted-Sektor (BSI Lagebild).'
+      reason_en: 'Behavioural detection in OT network mandatory — APT-targeted sector (BSI threat report).'
     MHC-06:
       target: managed
       reason: 'Endpoint + OT-Härtung. Whitelisting auf Engineering-Workstations Standard.'
+      reason_en: 'Endpoint + OT hardening. Whitelisting on engineering workstations standard.'
     MHC-07:
       target: defined
       reason: 'Multi-Site-Trennung Leitwarte ↔ Anlagen ↔ Office-IT zwingend (3-Zonen-Modell).'
+      reason_en: 'Multi-site separation control room ↔ plants ↔ office IT mandatory (3-zone model).'
     MHC-08:
       target: managed
       reason: 'Immutable Backups + Off-grid-fähige DR. Schwarzstart-Fähigkeit Reglement-Pflicht.'
+      reason_en: 'Immutable backups + off-grid-capable DR. Black-start capability is regulatory requirement.'
     MHC-09:
       target: defined
       reason: 'KEV-Patch-Latency OT meist eingeschränkt — kompensierende Maßnahmen Pflicht (Network-Segm).'
+      reason_en: 'KEV patch latency in OT mostly constrained — compensating measures mandatory (network segmentation).'
     MHC-10:
       target: managed
       reason: 'CCM für KRITIS-Nachweise alle 2 Jahre. BNetzA-Audit + IT-Sicherheitskatalog-Konformität.'
+      reason_en: 'CCM for KRITIS attestation every 2 years. BNetzA audit + IT security catalogue conformance.'
     MHC-11:
       target: managed
       reason: 'IR + 24/7-Bereitschaft Pflicht. Meldepflicht KRITIS § 8b BSIG + NIS2 Art. 23.'
+      reason_en: 'IR + 24/7 readiness mandatory. Reporting obligation KRITIS § 8b BSIG + NIS2 Art. 23.'
     MHC-12:
       target: defined
       reason: 'Pen-Test KRITIS-pflichtig + OT-spezifisch (IEC 62443-Zonen-Test).'
+      reason_en: 'Pen test KRITIS-mandated + OT-specific (IEC 62443 zone test).'
     MHC-13:
       target: defined
       reason: 'AI-Agent-Governance für Smart-Grid-Steuerung + AI-basierte Anomaly-Detection.'
+      reason_en: 'AI agent governance for smart-grid control + AI-based anomaly detection.'
