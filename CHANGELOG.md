@@ -7,6 +7,68 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 _Noch keine Aenderungen._
 
+## [3.2.5] — 2026-04-29
+
+### Security
+
+* **TOTP-Secrets at-rest verschlüsselt** (CVSS 6.5, T1-7) — MFA-Tokens
+  speichern Geheimnisse jetzt verschlüsselt in der DB. Alte Plaintext-Secrets
+  werden beim ersten Zugriff transparent migriert (Auto-Heal-Pattern, kein
+  User-Action nötig). Verhindert Disclosure bei DB-Backup-Diebstahl.
+* **CSRF-Token-Persistierung in Tests** — `generateCsrfToken()` ruft jetzt
+  `$session->save()` auf, weshalb die 4 zuvor `SessionNotFoundException`-
+  betroffenen `AssetControllerTest::testBulkDelete*` jetzt grün laufen.
+  Test-seitig — keine Produktions-Auswirkung.
+
+### Dependencies (Major-Bumps)
+
+Major-Bumps in der Liste — alle CI-validiert (Tests + Code-Quality + Docker):
+
+* **PHP 8.4 → 8.5** Base-Image (`php:8.5-fpm-trixie@sha256:7d1586e8…`).
+  Extension-Build-Issues aus früheren 8.5-Versionen sind in 8.5.4+ resolved.
+* **Doctrine Migrations Bundle** 3.7 → 4.0
+* **PHPUnit** 12.5 → 13.1
+* **Hotwired Turbo** 7.3.0 → 8.0.23 (CVE-Fix)
+* **Chart.js** 3.9.1 → 4.5.1
+* **stylelint** 16.26.1 → 17.9.1
+* **stylelint-config-standard** 36.0.1 → 40.0.0
+* **GitHub Actions**: docker/setup-qemu 3→4, docker/build-push 5→7,
+  actions/cache 4→5, actions/setup-node 4→6, actions/upload-artifact 4→7
+
+### UX (Aurora-Sprint T3)
+
+* `feat(ux)` T3-10: locale-aware date formatting via Twig extension
+* `refactor(ux)` T3-2 + T3-6: KPI cards migrated + empty states consolidated
+* `refactor(ux)` T3-3: 5 modules standardized on `_search_filter_form`
+* `fix(ux)` T3-8: client-side search added to 4 index pages
+
+### CI/CD-Workflow
+
+* **Dependabot** aktiviert (`/.github/dependabot.yml`) — wöchentliche
+  Auto-PRs für composer, npm, github-actions, docker. Gruppiert
+  symfony/* und doctrine/* zu Sammel-PRs.
+* **Pre-commit-Hooks** (`/.pre-commit-config.yaml`) — trailing-whitespace,
+  large-file-guard, JSON/YAML-Lint, PHP -l, Hadolint, Symfony Twig-Lint,
+  Symfony YAML-Lint, GitLeaks Secret-Scan. Install via
+  `pip install pre-commit && pre-commit install`.
+* **Codecov-Config** (`/.codecov.yml`) — Coverage-Trend-Range 60-90%, Tests
+  + Vendor + Migrations ignored, project + patch status informational.
+  Codecov-Action war bereits gewired; jetzt mit Repo-Config-Datei auswertbar.
+* **Hadolint Dockerfile-Smells** behoben — DL3059 (consecutive RUN) +
+  2× SC2015 (`A && B || C`-Pattern). Lint-clean lokal.
+* **Repo-Labels** angelegt (`dependencies`, `composer`, `javascript`,
+  `docker`, `github-actions`) — Dependabot kann Labels auf PRs nun setzen
+  ohne Fehler-Comment.
+
+### Repository-Cleanup
+
+3 obsolete Branches gelöscht:
+
+* `claude/symfony-best-practices-review-…` (PR #264 längst gemerged)
+* `feat/mris-integration` (Integration-Plan-Doc; MRIS-Schema längst in main)
+* `feat/phase10-workflows` (10 regulatory Workflows längst in main via
+  andere Routen)
+
 ## [3.2.4] — 2026-04-29
 
 ### Docker-Hardening + Source-Updates
