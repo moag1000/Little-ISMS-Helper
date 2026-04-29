@@ -53,7 +53,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $frameworks = $this->service->getAvailableFrameworks();
 
         $this->assertIsArray($frameworks);
-        $this->assertCount(23, $frameworks);
+        $this->assertCount(24, $frameworks);
 
         // Verify TISAX framework structure
         $this->assertEquals('TISAX', $frameworks[0]['code']);
@@ -86,7 +86,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
     {
         $stats = $this->service->getFrameworkStatistics();
 
-        $this->assertEquals(23, $stats['total_available']);
+        $this->assertEquals(24, $stats['total_available']);
         $this->assertArrayHasKey('total_loaded', $stats);
         $this->assertArrayHasKey('total_not_loaded', $stats);
         $this->assertArrayHasKey('compliance_percentage', $stats);
@@ -120,7 +120,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
             'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2026',
             'KRITIS', 'KRITIS-HEALTH', 'DIGAV', 'TKG-2024', 'GXP',
             'SOC2', 'NIST-CSF', 'CIS-CONTROLS', 'ISO-22301', 'ISO27005',
-            'BDSG', 'EU-AI-ACT', 'NIS2UMSUCG',
+            'BDSG', 'EU-AI-ACT', 'NIS2UMSUCG', 'MRIS-v1.5',
         ];
 
         foreach ($expectedCodes as $expectedCode) {
@@ -141,6 +141,7 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
         $conditional = [
             'TISAX', 'DORA', 'NIS2', 'BSI_GRUNDSCHUTZ', 'KRITIS', 'KRITIS-HEALTH',
             'DIGAV', 'TKG-2024', 'GXP', 'BDSG', 'EU-AI-ACT', 'NIS2UMSUCG',
+            'MRIS-v1.5',
         ];
         $voluntary = [
             'ISO27001', 'ISO27701', 'ISO27701_2025', 'BSI-C5', 'BSI-C5-2026',
