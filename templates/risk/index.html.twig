@@ -249,7 +249,9 @@
         icon: 'bi-exclamation-triangle',
         title: 'risk.index.empty.title'|trans({}, 'risk'),
         description: 'risk.index.empty.description'|trans({}, 'risk'),
-        action: { label: 'risk.index.empty.action'|trans({}, 'risk'), url: path('app_risk_new'), icon: 'bi-plus-circle' }
+        action: { label: 'risk.index.empty.action'|trans({}, 'risk'), url: path('app_risk_new'), icon: 'bi-plus-circle' },
+        norm_ref: 'ISO 27001 Clause 6.1.2 · ISO 9001: Risiken & Chancen (6.1)',
+        help_link: path('app_help_glossary') ~ '#glossary-risk'
     } %}
 {% else %}
 {% embed '_components/_card.html.twig' %}

@@ -1,0 +1,44 @@
+journey:
+    title: 'ISMS-Implementierung'
+    subtitle: 'Ihr Fortschritt auf dem Weg zur Zertifizierungsreife'
+    percent_complete: '%percent%% umgesetzt'
+    dismiss: 'Fortschritt ausblenden'
+    restore: 'Implementierungsfortschritt anzeigen'
+    show_full_dashboard: 'Vollständiges Dashboard anzeigen'
+    next_step: 'Nächster Schritt'
+    phase:
+        context:
+            label: 'Kontext verstehen'
+            hint: 'Scope festlegen, Interessierte Parteien dokumentieren'
+            nine001: 'Identisch mit QMS Clause 4'
+        assets:
+            label: 'Assets inventarisieren'
+            hint: 'Schützenswerte Werte erfassen und klassifizieren'
+            nine001: 'Infrastrukturregister (7.1.3)'
+        risks:
+            label: 'Risiken bewerten'
+            hint: 'Bedrohungen identifizieren, Wahrscheinlichkeit und Auswirkung bewerten'
+            nine001: 'Risiken und Chancen (6.1), aber mit 5x5 Matrix'
+        controls:
+            label: 'Controls zuordnen'
+            hint: 'Statement of Applicability ausfüllen, Maßnahmen implementieren'
+            nine001: 'Prozesslandkarte + CAPA'
+        emergency:
+            label: 'Notfall planen'
+            hint: 'BC-Pläne erstellen, Incident-Response vorbereiten'
+            nine001: 'Notfallplanung (neu für Sicherheit)'
+        evidence:
+            label: 'Nachweisen'
+            hint: 'Internes Audit durchführen, Management Review erstellen'
+            nine001: 'Internes Audit (9.2) — identisch'
+        improvement:
+            label: 'Verbessern'
+            hint: 'Audit-Findings bearbeiten, Maßnahmen umsetzen'
+            nine001: 'KVP/CAPA (10.2) — identisch'
+    status:
+        not_started: 'Nicht begonnen'
+        partial: 'In Bearbeitung'
+        complete: 'Abgeschlossen'
+        locked: 'Voraussetzung fehlt'
+        dismissed: 'Bewusst leer gelassen'
+    dismissed_hint: 'Diese Phase wurde als nicht zutreffend markiert.'

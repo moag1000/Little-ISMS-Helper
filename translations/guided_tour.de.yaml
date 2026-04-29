@@ -59,8 +59,8 @@ guided_tour:
                 title: 'Ihr erstes Asset anlegen'
                 body: 'Assets (IT-Systeme, Informationen, Prozesse) sind die Grundlage — auf ihnen ruhen Risiken, Controls und Compliance. Legen Sie eines an und tragen Sie den Schutzbedarf ein (Vertraulichkeit / Integrität / Verfügbarkeit auf einer 1-5-Skala).'
             shortcuts:
-                title: 'Hilfe jederzeit erreichbar'
-                body: 'Im Menü unter „Hilfe & Ressourcen" finden Sie die ISO 9001 → 27001 Brücke, das Glossar und alle Tastenkürzel. Tipp: „?" auf der Tastatur öffnet die Shortcut-Übersicht, ⌘P/Ctrl+P die Command-Palette. Viel Erfolg!'
+                title: 'Hilfe und Implementierungsfortschritt'
+                body: 'Im Menü unter „Hilfe & Ressourcen" finden Sie die ISO 9001 → 27001 Brücke, das Glossar und alle Tastenkürzel. Auf dem Dashboard zeigt Ihnen der Implementierungsfortschritt in 7 Phasen, wo Sie stehen und was als nächstes dran ist. Tipp: „?" auf der Tastatur öffnet die Shortcut-Übersicht. Viel Erfolg!'
 
     # Compliance-Manager (5 Steps)
     cm:

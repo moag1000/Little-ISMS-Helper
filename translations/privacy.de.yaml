@@ -336,6 +336,7 @@ processing_activity:
         dpia_required: 'DSFA erforderlich'
     empty:
         title: 'Keine Verarbeitungstätigkeiten gefunden.'
+        description: 'Ein Verzeichnis von Verarbeitungstätigkeiten (VVT) dokumentiert, welche personenbezogenen Daten Sie verarbeiten, warum und wie. Es ist Pflicht nach DSGVO Art. 30.'
         filter_hint: 'Versuchen Sie einen anderen Filter oder'
         create_hint: 'Beginnen Sie mit dem'
         create_first: 'Erstellen Ihrer ersten Verarbeitungstätigkeit'

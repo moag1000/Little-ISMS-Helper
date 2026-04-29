@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}{{ 'entity_history.title'|trans({}, 'messages') }}{% endblock %}
 {% block admin_subtitle %}
@@ -12,10 +13,12 @@
     </a>
 </p>
 
-<div class="info-box">
-    <h2>{{ entityType }} #{{ entityId }}</h2>
-    <p><strong>{{ 'entity_history.entry_count'|trans({}, 'messages') }}</strong> {{ auditLogs|length }}</p>
-</div>
+{% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">{{ entityType }} #{{ entityId }}</div>
+        <p><strong>{{ 'entity_history.entry_count'|trans({}, 'messages') }}</strong> {{ auditLogs|length }}</p>
+    {% endblock %}
+{% endembed %}
 
 {% if auditLogs|length > 0 %}
 <div class="mt-4">
@@ -66,9 +69,7 @@
     </div>
 </div>
 {% else %}
-<div class="info-box mt-4">
-    <p>{{ 'entity_history.no_entries'|trans({}, 'messages') }}</p>
-</div>
+{{ _fa_alert.render({ variant: 'info', class: 'mt-4', body: 'entity_history.no_entries'|trans({}, 'messages') }) }}
 {% endif %}
 
 {% endblock %}

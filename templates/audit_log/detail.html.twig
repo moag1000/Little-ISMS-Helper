@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}{{ 'audit_log.title'|trans({}, 'audit_log') }}{% endblock %}
 {% block admin_subtitle %}
@@ -13,126 +14,130 @@
     </a>
 </p>
 
-<div class="info-box mt-2">
-    <h2>{{ 'audit_log.entry'|trans({'%id%': auditLog.id}, 'audit_log') }}</h2>
+{% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mt-2' } } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">{{ 'audit_log.entry'|trans({'%id%': auditLog.id}, 'audit_log') }}</div>
 
-    {% embed '_components/_table.html.twig' with {
-        'class': 'w-100 mt-lg',
-        'noMargin': true,
-        'responsive': true
-    } %}
-        {% block table_body %}
-            <tr>
-                <td class="p-sm fw-bold w-200px">{{ 'audit_log.field.timestamp'|trans({}, 'audit_log') }}</td>
-                <td class="p-sm">{{ auditLog.createdAt|date('d.m.Y H:i:s') }}</td>
-            </tr>
-            <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.action'|trans({}, 'audit_log') }}</td>
-                <td class="p-sm">
-                    <span class="badge badge-{{ auditLog.action }}">{{ auditLog.action|capitalize }}</span>
-                </td>
-            </tr>
-            <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.entity_type'|trans({}, 'audit_log') }}</td>
-                <td class="p-sm">{{ auditLog.entityType }}</td>
-            </tr>
-            {% if auditLog.entityId %}
-            <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.entity_id'|trans({}, 'audit_log') }}</td>
-                <td class="p-sm">
-                    <a href="{{ path('app_audit_log_entity', {entityType: auditLog.entityType, entityId: auditLog.entityId}) }}"
-                       class="link-primary">
-                        #{{ auditLog.entityId }}
-                    </a>
-                </td>
-            </tr>
-            {% endif %}
-            <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.user'|trans({}, 'audit_log') }}</td>
-                <td class="p-sm">
-                    <a href="{{ path('app_audit_log_user', {userName: auditLog.userName}) }}"
-                       class="link-primary">
-                        {{ auditLog.userName }}
-                    </a>
-                </td>
-            </tr>
-            {% if auditLog.ipAddress %}
-            <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.ip_address'|trans({}, 'audit_log') }}</td>
-                <td class="p-sm">{{ auditLog.ipAddress }}</td>
-            </tr>
-            {% endif %}
-            {% if auditLog.userAgent %}
-            <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.user_agent'|trans({}, 'audit_log') }}</td>
-                <td class="p-sm fs-09">{{ auditLog.userAgent }}</td>
-            </tr>
-            {% endif %}
-            {% if auditLog.description %}
-            <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.description'|trans({}, 'audit_log') }}</td>
-                <td class="p-sm">{{ auditLog.description }}</td>
-            </tr>
-            {% endif %}
-        {% endblock %}
-    {% endembed %}
-</div>
+        {% embed '_components/_table.html.twig' with {
+            'class': 'w-100 mt-lg',
+            'noMargin': true,
+            'responsive': true
+        } %}
+            {% block table_body %}
+                <tr>
+                    <td class="p-sm fw-bold w-200px">{{ 'audit_log.field.timestamp'|trans({}, 'audit_log') }}</td>
+                    <td class="p-sm">{{ auditLog.createdAt|date('d.m.Y H:i:s') }}</td>
+                </tr>
+                <tr>
+                    <td class="p-sm fw-bold">{{ 'audit_log.field.action'|trans({}, 'audit_log') }}</td>
+                    <td class="p-sm">
+                        <span class="badge badge-{{ auditLog.action }}">{{ auditLog.action|capitalize }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="p-sm fw-bold">{{ 'audit_log.field.entity_type'|trans({}, 'audit_log') }}</td>
+                    <td class="p-sm">{{ auditLog.entityType }}</td>
+                </tr>
+                {% if auditLog.entityId %}
+                <tr>
+                    <td class="p-sm fw-bold">{{ 'audit_log.field.entity_id'|trans({}, 'audit_log') }}</td>
+                    <td class="p-sm">
+                        <a href="{{ path('app_audit_log_entity', {entityType: auditLog.entityType, entityId: auditLog.entityId}) }}"
+                           class="link-primary">
+                            #{{ auditLog.entityId }}
+                        </a>
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td class="p-sm fw-bold">{{ 'audit_log.field.user'|trans({}, 'audit_log') }}</td>
+                    <td class="p-sm">
+                        <a href="{{ path('app_audit_log_user', {userName: auditLog.userName}) }}"
+                           class="link-primary">
+                            {{ auditLog.userName }}
+                        </a>
+                    </td>
+                </tr>
+                {% if auditLog.ipAddress %}
+                <tr>
+                    <td class="p-sm fw-bold">{{ 'audit_log.field.ip_address'|trans({}, 'audit_log') }}</td>
+                    <td class="p-sm">{{ auditLog.ipAddress }}</td>
+                </tr>
+                {% endif %}
+                {% if auditLog.userAgent %}
+                <tr>
+                    <td class="p-sm fw-bold">{{ 'audit_log.field.user_agent'|trans({}, 'audit_log') }}</td>
+                    <td class="p-sm fs-09">{{ auditLog.userAgent }}</td>
+                </tr>
+                {% endif %}
+                {% if auditLog.description %}
+                <tr>
+                    <td class="p-sm fw-bold">{{ 'audit_log.field.description'|trans({}, 'audit_log') }}</td>
+                    <td class="p-sm">{{ auditLog.description }}</td>
+                </tr>
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
+    {% endblock %}
+{% endembed %}
 
 {% set oldValues = auditLog.oldValuesArray %}
 {% set newValues = auditLog.newValuesArray %}
 
 {% if oldValues or newValues %}
-<div class="info-box mt-2">
-    <h2>{{ 'audit_log.changes'|trans({}, 'audit_log') }}</h2>
+{% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mt-2' } } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">{{ 'audit_log.changes'|trans({}, 'audit_log') }}</div>
 
-    <div class="grid-2-cols mt-lg">
-        {% if oldValues %}
-        <div>
-            <h3 class="text-danger">{{ 'audit_log.old_values'|trans({}, 'audit_log') }}</h3>
-            {% embed '_components/_table.html.twig' with {
-                'class': 'table-collapse-mt',
-                'noMargin': true
-            } %}
-                {% block table_body %}
-                    {% for key, value in oldValues %}
-                    <tr>
-                        <td class="table-cell-header">
-                            {{ key }}
-                        </td>
-                        <td class="table-cell-sm">
-                            {{ value|default('-') }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                {% endblock %}
-            {% endembed %}
-        </div>
-        {% endif %}
+        <div class="grid-2-cols mt-lg">
+            {% if oldValues %}
+            <div>
+                <h3 class="text-danger">{{ 'audit_log.old_values'|trans({}, 'audit_log') }}</h3>
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-collapse-mt',
+                    'noMargin': true
+                } %}
+                    {% block table_body %}
+                        {% for key, value in oldValues %}
+                        <tr>
+                            <td class="table-cell-header">
+                                {{ key }}
+                            </td>
+                            <td class="table-cell-sm">
+                                {{ value|default('-') }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            </div>
+            {% endif %}
 
-        {% if newValues %}
-        <div>
-            <h3 class="text-success">{{ 'audit_log.new_values'|trans({}, 'audit_log') }}</h3>
-            {% embed '_components/_table.html.twig' with {
-                'class': 'table-collapse-mt',
-                'noMargin': true
-            } %}
-                {% block table_body %}
-                    {% for key, value in newValues %}
-                    <tr>
-                        <td class="table-cell-header">
-                            {{ key }}
-                        </td>
-                        <td class="table-cell-sm">
-                            {{ value|default('-') }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                {% endblock %}
-            {% endembed %}
+            {% if newValues %}
+            <div>
+                <h3 class="text-success">{{ 'audit_log.new_values'|trans({}, 'audit_log') }}</h3>
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-collapse-mt',
+                    'noMargin': true
+                } %}
+                    {% block table_body %}
+                        {% for key, value in newValues %}
+                        <tr>
+                            <td class="table-cell-header">
+                                {{ key }}
+                            </td>
+                            <td class="table-cell-sm">
+                                {{ value|default('-') }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'people' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ person.fullName }} - {{ 'person.title.show'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
 
@@ -134,9 +135,11 @@
         </div>
     {% endblock %}
     {% block card_body %}
-        <div class="info-box bg-body-secondary">
-            <p class="pre-wrap">{{ person.notes }}</p>
-        </div>
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+            {% block alert_body %}
+                <p class="pre-wrap">{{ person.notes }}</p>
+            {% endblock %}
+        {% endembed %}
     {% endblock %}
 {% endembed %}
 {% endif %}

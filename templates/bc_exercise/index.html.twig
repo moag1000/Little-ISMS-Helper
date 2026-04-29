@@ -39,17 +39,19 @@
     {% endif %}
 
     {% if upcoming|length > 0 %}
-    <div class="info-box">
-        <h2 class="h4">{{ 'bc_exercises.section.upcoming'|trans({}, 'bc_exercises') }}</h2>
-        <ul>
-            {% for exercise in upcoming %}
-            <li>
-                <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a>
-                - {{ exercise.exerciseDate|locale_date }} ({{ ('bc_exercises.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bc_exercises') }})
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+        {% block alert_body %}
+            <div class="fa-alert__title">{{ 'bc_exercises.section.upcoming'|trans({}, 'bc_exercises') }}</div>
+            <ul>
+                {% for exercise in upcoming %}
+                <li>
+                    <a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a>
+                    - {{ exercise.exerciseDate|locale_date }} ({{ ('bc_exercises.exercise_type.' ~ exercise.exerciseType)|trans({}, 'bc_exercises') }})
+                </li>
+                {% endfor %}
+            </ul>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {% if incomplete_reports|length > 0 %}

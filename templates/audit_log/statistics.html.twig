@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block admin_title %}Audit Log Statistiken{% endblock %}
 {% block admin_subtitle %}
@@ -12,116 +13,124 @@
     </a>
 </p>
 
-<div class="info-box">
-    <h2>Gesamtstatistik</h2>
-    <p><strong>Gesamt Protokolleinträge:</strong> {{ totalLogs }}</p>
-</div>
+{% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">Gesamtstatistik</div>
+        <p><strong>Gesamt Protokolleinträge:</strong> {{ totalLogs }}</p>
+    {% endblock %}
+{% endembed %}
 
 <div class="grid-2-col-gap-mt">
-    <div class="info-box">
-        <h2>Aktionen</h2>
-        {% if actionStats|length > 0 %}
-        {% embed '_components/_table.html.twig' with {
-            'class': 'table-stats',
-            'noMargin': true
-        } %}
-            {% block table_head %}
-                <tr class="tr-header">
-                    <th scope="col" class="th-stats-left">Aktion</th>
-                    <th scope="col" class="td-stats-right">Anzahl</th>
-                    <th scope="col" class="td-stats-right">Anteil</th>
-                </tr>
-            {% endblock %}
-            {% block table_body %}
-                {% for stat in actionStats %}
-                <tr>
-                    <td class="td-stats">
-                        <span class="badge badge-{{ stat.action }}">{{ stat.action|capitalize }}</span>
-                    </td>
-                    <td class="td-stats-right">
-                        {{ stat.count }}
-                    </td>
-                    <td class="td-stats-right">
-                        {{ ((stat.count / totalLogs) * 100)|number_format(1) }}%
-                    </td>
-                </tr>
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+        {% block alert_body %}
+            <div class="fa-alert__title">Aktionen</div>
+            {% if actionStats|length > 0 %}
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-stats',
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr class="tr-header">
+                        <th scope="col" class="th-stats-left">Aktion</th>
+                        <th scope="col" class="td-stats-right">Anzahl</th>
+                        <th scope="col" class="td-stats-right">Anteil</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for stat in actionStats %}
+                    <tr>
+                        <td class="td-stats">
+                            <span class="badge badge-{{ stat.action }}">{{ stat.action|capitalize }}</span>
+                        </td>
+                        <td class="td-stats-right">
+                            {{ stat.count }}
+                        </td>
+                        <td class="td-stats-right">
+                            {{ ((stat.count / totalLogs) * 100)|number_format(1) }}%
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+            {% else %}
+            <p class="text-muted">{{ 'audit_log.message.no_data_available'|trans({}, 'audit_log') }}</p>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+
+    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+        {% block alert_body %}
+            <div class="fa-alert__title">Entitätstypen</div>
+            {% if entityTypeStats|length > 0 %}
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-stats',
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr class="tr-header">
+                        <th scope="col" class="th-stats-left">Entitätstyp</th>
+                        <th scope="col" class="td-stats-right">Anzahl</th>
+                        <th scope="col" class="td-stats-right">Anteil</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for stat in entityTypeStats %}
+                    <tr>
+                        <td class="td-stats">
+                            {{ stat.entityType }}
+                        </td>
+                        <td class="td-stats-right">
+                            {{ stat.count }}
+                        </td>
+                        <td class="td-stats-right">
+                            {{ ((stat.count / totalLogs) * 100)|number_format(1) }}%
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+            {% else %}
+            <p class="text-muted">{{ 'audit_log.message.no_data_available'|trans({}, 'audit_log') }}</p>
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
+</div>
+
+{% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mt-2' } } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">Aktivität der letzten 30 Tage</div>
+        {% if activityByDay|length > 0 %}
+        <div class="chart-container">
+            <svg viewBox="0 0 900 300" class="w-h-100">
+                {% set maxValue = max(activityByDay) %}
+                {% set barWidth = 900 / activityByDay|length %}
+                {% set i = 0 %}
+                {% for date, count in activityByDay %}
+                    {% set barHeight = maxValue > 0 ? (count / maxValue * 250) : 0 %}
+                    {% set x = i * barWidth %}
+                    {% set y = 250 - barHeight %}
+
+                    <rect x="{{ x + 2 }}" y="{{ y }}" width="{{ barWidth - 4 }}" height="{{ barHeight }}"
+                          style="fill: var(--primary-strong);" opacity="0.8">
+                        <title>{{ date }}: {{ count }} Einträge</title>
+                    </rect>
+
+                    {% if i % 5 == 0 %}
+                        <text x="{{ x + barWidth/2 }}" y="280" text-anchor="middle" font-size="10" style="fill: var(--fg-3);">
+                            {{ date|slice(5) }}
+                        </text>
+                    {% endif %}
+
+                    {% set i = i + 1 %}
                 {% endfor %}
-            {% endblock %}
-        {% endembed %}
+
+                <line x1="0" y1="250" x2="900" y2="250" style="stroke: var(--border);" stroke-width="1"/>
+            </svg>
+        </div>
         {% else %}
         <p class="text-muted">{{ 'audit_log.message.no_data_available'|trans({}, 'audit_log') }}</p>
         {% endif %}
-    </div>
-
-    <div class="info-box">
-        <h2>Entitätstypen</h2>
-        {% if entityTypeStats|length > 0 %}
-        {% embed '_components/_table.html.twig' with {
-            'class': 'table-stats',
-            'noMargin': true
-        } %}
-            {% block table_head %}
-                <tr class="tr-header">
-                    <th scope="col" class="th-stats-left">Entitätstyp</th>
-                    <th scope="col" class="td-stats-right">Anzahl</th>
-                    <th scope="col" class="td-stats-right">Anteil</th>
-                </tr>
-            {% endblock %}
-            {% block table_body %}
-                {% for stat in entityTypeStats %}
-                <tr>
-                    <td class="td-stats">
-                        {{ stat.entityType }}
-                    </td>
-                    <td class="td-stats-right">
-                        {{ stat.count }}
-                    </td>
-                    <td class="td-stats-right">
-                        {{ ((stat.count / totalLogs) * 100)|number_format(1) }}%
-                    </td>
-                </tr>
-                {% endfor %}
-            {% endblock %}
-        {% endembed %}
-        {% else %}
-        <p class="text-muted">{{ 'audit_log.message.no_data_available'|trans({}, 'audit_log') }}</p>
-        {% endif %}
-    </div>
-</div>
-
-<div class="info-box mt-2">
-    <h2>Aktivität der letzten 30 Tage</h2>
-    {% if activityByDay|length > 0 %}
-    <div class="chart-container">
-        <svg viewBox="0 0 900 300" class="w-h-100">
-            {% set maxValue = max(activityByDay) %}
-            {% set barWidth = 900 / activityByDay|length %}
-            {% set i = 0 %}
-            {% for date, count in activityByDay %}
-                {% set barHeight = maxValue > 0 ? (count / maxValue * 250) : 0 %}
-                {% set x = i * barWidth %}
-                {% set y = 250 - barHeight %}
-
-                <rect x="{{ x + 2 }}" y="{{ y }}" width="{{ barWidth - 4 }}" height="{{ barHeight }}"
-                      style="fill: var(--primary-strong);" opacity="0.8">
-                    <title>{{ date }}: {{ count }} Einträge</title>
-                </rect>
-
-                {% if i % 5 == 0 %}
-                    <text x="{{ x + barWidth/2 }}" y="280" text-anchor="middle" font-size="10" style="fill: var(--fg-3);">
-                        {{ date|slice(5) }}
-                    </text>
-                {% endif %}
-
-                {% set i = i + 1 %}
-            {% endfor %}
-
-            <line x1="0" y1="250" x2="900" y2="250" style="stroke: var(--border);" stroke-width="1"/>
-        </svg>
-    </div>
-    {% else %}
-    <p class="text-muted">{{ 'audit_log.message.no_data_available'|trans({}, 'audit_log') }}</p>
-    {% endif %}
-</div>
+    {% endblock %}
+{% endembed %}
 
 {% endblock %}

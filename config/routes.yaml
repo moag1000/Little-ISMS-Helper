@@ -31,19 +31,19 @@ app_dashboard:
     defaults:
         _locale: de
 
-# Dashboard First Steps routes (HomeController is excluded from attribute scanning)
-app_dashboard_dismiss_first_steps:
-    path: /{_locale}/dashboard/dismiss-first-steps
-    controller: App\Controller\HomeController::dismissFirstSteps
+# ISMS Journey progress widget dismiss/restore (HomeController)
+app_dashboard_dismiss_journey:
+    path: /{_locale}/dashboard/dismiss-journey
+    controller: App\Controller\HomeController::dismissJourney
     methods: [POST]
     requirements:
         _locale: de|en
     defaults:
         _locale: de
 
-app_dashboard_restore_first_steps:
-    path: /{_locale}/dashboard/restore-first-steps
-    controller: App\Controller\HomeController::restoreFirstSteps
+app_dashboard_restore_journey:
+    path: /{_locale}/dashboard/restore-journey
+    controller: App\Controller\HomeController::restoreJourney
     methods: [GET]
     requirements:
         _locale: de|en

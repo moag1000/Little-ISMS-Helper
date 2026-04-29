@@ -1,0 +1,44 @@
+journey:
+    title: 'ISMS Implementation'
+    subtitle: 'Your progress toward certification readiness'
+    percent_complete: '%percent%% complete'
+    dismiss: 'Hide progress'
+    restore: 'Show implementation progress'
+    show_full_dashboard: 'Show full dashboard'
+    next_step: 'Next step'
+    phase:
+        context:
+            label: 'Understand context'
+            hint: 'Define scope, document interested parties'
+            nine001: 'Identical to QMS Clause 4'
+        assets:
+            label: 'Inventory assets'
+            hint: 'Identify and classify assets worth protecting'
+            nine001: 'Infrastructure register (7.1.3)'
+        risks:
+            label: 'Assess risks'
+            hint: 'Identify threats, evaluate likelihood and impact'
+            nine001: 'Risks and opportunities (6.1), but with 5x5 matrix'
+        controls:
+            label: 'Assign controls'
+            hint: 'Complete Statement of Applicability, implement measures'
+            nine001: 'Process landscape + CAPA'
+        emergency:
+            label: 'Plan for emergencies'
+            hint: 'Create BC plans, prepare incident response'
+            nine001: 'Emergency planning (new for security)'
+        evidence:
+            label: 'Provide evidence'
+            hint: 'Conduct internal audit, create management review'
+            nine001: 'Internal audit (9.2) — identical'
+        improvement:
+            label: 'Improve'
+            hint: 'Address audit findings, implement corrective actions'
+            nine001: 'Continual improvement/CAPA (10.2) — identical'
+    status:
+        not_started: 'Not started'
+        partial: 'In progress'
+        complete: 'Complete'
+        locked: 'Prerequisite missing'
+        dismissed: 'Intentionally skipped'
+    dismissed_hint: 'This phase has been marked as not applicable.'

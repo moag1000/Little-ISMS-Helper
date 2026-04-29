@@ -208,16 +208,28 @@
                     {% endblock %}
                 {% endembed %}
             {% else %}
-                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'm-4' } } %}
-                    {% block alert_body %}
-                    <div class="fa-alert__title">{{ 'processing_activity.empty.title'|trans({}, 'privacy')}}</div>
-                    {% if current_filter != 'all' %}
+                {% if current_filter is defined and current_filter != 'all' and current_filter is not empty %}
+                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'm-4' } } %}
+                        {% block alert_body %}
+                        <div class="fa-alert__title">{{ 'processing_activity.empty.title'|trans({}, 'privacy')}}</div>
                         {{ 'processing_activity.empty.filter_hint'|trans({}, 'privacy')}} <a href="{{ path('app_processing_activity_index') }}">{{ 'processing_activity.view_all_activities'|trans({}, 'privacy')}}</a>.
-                    {% else %}
-                        {{ 'processing_activity.empty.create_hint'|trans({}, 'privacy')}} <a href="{{ path('app_processing_activity_new') }}">{{ 'processing_activity.empty.create_first'|trans({}, 'privacy')}}</a>.
-                    {% endif %}
-                    {% endblock %}
-                {% endembed %}
+                        {% endblock %}
+                    {% endembed %}
+                {% else %}
+                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+                    <div class="m-4">
+                    {{ _fa_empty_state.render({
+                        mood: 'thinking',
+                        title: 'processing_activity.empty.title'|trans({}, 'privacy'),
+                        text: 'processing_activity.empty.description'|trans({}, 'privacy'),
+                        norm_ref: 'DSGVO Art. 30 · ISO 27701',
+                        help_link: path('app_help_glossary') ~ '#glossary-processing-activity',
+                        actions: [
+                            { label: 'processing_activity.empty.create_first'|trans({}, 'privacy'), variant: 'primary', icon: 'plus-circle', href: path('app_processing_activity_new') }
+                        ]
+                    }) }}
+                    </div>
+                {% endif %}
             {% endif %}
         {% endblock %}
     {% endembed %}

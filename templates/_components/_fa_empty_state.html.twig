@@ -25,6 +25,9 @@
  #   actions - array of { label, variant, icon?, href } (optional)
  #   alvaSize - Alva SVG size in px (default 96)
  #   class   - extra CSS classes on wrapper (optional)
+ #   norm_ref      - ISO reference line (string, optional) — small muted text below description
+ #   prerequisite  - warning text (string, optional) — alert above CTA buttons
+ #   help_link     - URL for glossary link (string, optional) — ghost CTA button with ? icon
  #}
 
 {% macro render(props = {}) %}
@@ -55,8 +58,23 @@
             <p class="fa-empty-state__desc">{{ props.text }}</p>
         {% endif %}
 
+        {# Norm reference #}
+        {% if props.norm_ref is defined and props.norm_ref %}
+            <p class="fa-empty-state__norm-ref text-muted small mb-2">
+                <i class="bi bi-book" aria-hidden="true"></i> {{ props.norm_ref }}
+            </p>
+        {% endif %}
+
+        {# Prerequisite warning #}
+        {% if props.prerequisite is defined and props.prerequisite %}
+            <div class="fa-empty-state__prereq alert alert-warning d-inline-flex align-items-center gap-2 mt-2 mb-3 py-2 px-3 small">
+                <i class="bi bi-lock-fill" aria-hidden="true"></i>
+                {{ props.prerequisite }}
+            </div>
+        {% endif %}
+
         {# CTA buttons #}
-        {% if actions|length > 0 %}
+        {% if actions|length > 0 or (props.help_link is defined and props.help_link) %}
             <div class="fa-empty-state__actions">
                 {% for action in actions %}
                     {% set variant = action.variant|default('primary') %}
@@ -68,6 +86,12 @@
                         <span class="fa-cyber-btn__label">{{ action.label }}</span>
                     </a>
                 {% endfor %}
+                {% if props.help_link is defined and props.help_link %}
+                    <a href="{{ props.help_link }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                        <i class="bi bi-question-circle" aria-hidden="true"></i>
+                        <span class="fa-cyber-btn__label">{{ 'common.learn_more'|trans({}, 'messages') }}</span>
+                    </a>
+                {% endif %}
             </div>
         {% endif %}
     </div>

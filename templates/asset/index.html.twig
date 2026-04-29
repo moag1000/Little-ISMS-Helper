@@ -201,7 +201,9 @@
         icon: 'bi-server',
         title: 'asset.modern.empty.title'|trans({}, 'asset'),
         description: 'asset.modern.empty.description'|trans({}, 'asset'),
-        action: { label: 'asset.action.create'|trans({}, 'asset'), url: path('app_asset_new'), icon: 'bi-plus-circle' }
+        action: { label: 'asset.action.create'|trans({}, 'asset'), url: path('app_asset_new'), icon: 'bi-plus-circle' },
+        norm_ref: 'ISO 27001 A.5.9 · ISO 9001: Infrastruktur (7.1.3)',
+        help_link: path('app_help_glossary') ~ '#glossary-asset'
     } %}
 {% else %}
 {% embed '_components/_card.html.twig' %}

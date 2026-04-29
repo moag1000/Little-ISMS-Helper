@@ -149,9 +149,11 @@
     {% block card_body %}
         <h2>{{ 'soa.section.justification'|trans({}, 'soa') }}</h2>
         {% if control.justification %}
-            <div class="info-box mt-2 bg-body-secondary">
-                <p class="ws-pre-wrap-lh">{{ control.justification }}</p>
-            </div>
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mt-2' } } %}
+                {% block alert_body %}
+                    <p class="ws-pre-wrap-lh">{{ control.justification }}</p>
+                {% endblock %}
+            {% endembed %}
         {% else %}
             <p class="text-muted mt-sm">
                 {{ 'soa.message.no_justification'|trans({}, 'soa') }}
@@ -169,9 +171,11 @@
         <div class="form-group mt-3">
             <h2 class="fs-1 mb-sm">{{ 'soa.section.implementation_notes'|trans({}, 'soa') }}</h2>
             {% if control.implementationNotes %}
-                <div class="info-box bg-body-secondary">
-                    <p class="ws-pre-wrap-lh">{{ control.implementationNotes }}</p>
-                </div>
+                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                    {% block alert_body %}
+                        <p class="ws-pre-wrap-lh">{{ control.implementationNotes }}</p>
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 <p class="text-muted">
                     {{ 'soa.message.no_implementation_notes'|trans({}, 'soa') }}

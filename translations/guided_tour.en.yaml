@@ -59,8 +59,8 @@ guided_tour:
                 title: 'Create your first asset'
                 body: 'Assets (IT systems, information, processes) are the foundation — risks, controls and compliance build on them. Create one and record the protection needs (confidentiality / integrity / availability on a 1–5 scale).'
             shortcuts:
-                title: 'Help is always one click away'
-                body: 'In the menu under "Help & Resources" you''ll find the ISO 9001 → 27001 bridge, the glossary and all keyboard shortcuts. Tip: press "?" for the shortcut overview, ⌘P/Ctrl+P for the command palette. Good luck!'
+                title: 'Help and implementation progress'
+                body: 'In the menu under "Help & Resources" you''ll find the ISO 9001 → 27001 bridge, the glossary and all keyboard shortcuts. On the dashboard, the implementation progress shows your status across 7 phases and what to tackle next. Tip: press "?" for the shortcut overview. Good luck!'
 
     # Compliance-Manager (5 Steps)
     cm:
