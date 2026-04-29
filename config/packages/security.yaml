@@ -39,10 +39,11 @@ security:
                 # Security: Invalidate session on logout (default: true)
                 invalidate_session: true
 
-            # Custom authenticators for Azure OAuth and SAML
+            # Custom authenticators for Azure OAuth, SAML, and generic SSO (OIDC)
             custom_authenticators:
                 - App\Security\AzureOAuthAuthenticator
                 - App\Security\AzureSamlAuthenticator
+                - App\Security\GenericOidcAuthenticator
 
             # Entry point: use form_login for unauthenticated users
             # OAuth/SAML accessible via their explicit routes
@@ -101,6 +102,8 @@ security:
         - { path: ^/logout$, roles: PUBLIC_ACCESS }
         - { path: ^/oauth, roles: PUBLIC_ACCESS }
         - { path: ^/saml, roles: PUBLIC_ACCESS }
+        - { path: ^/sso, roles: PUBLIC_ACCESS }
+        - { path: '^/(de|en)/sso/', roles: PUBLIC_ACCESS }
 
         # Quick-Fix fallback: must remain reachable when schema-error blocks
         # the user-table query the firewall would otherwise need. Per-request

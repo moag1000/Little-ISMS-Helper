@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'sso' %}
+
+{% block title %}{{ 'sso.admin.approvals'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">{{ 'common.dashboard'|trans({}, 'messages') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('admin_sso_index') }}">{{ 'sso.admin.title'|trans }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'sso.admin.approvals'|trans }}</li>
+        </ol>
+    </nav>
+
+    <h1 class="mb-4">{{ 'sso.admin.approvals'|trans }}</h1>
+
+    {% if approvals|length == 0 %}
+        <div class="alert alert-info small">
+            <i class="bi bi-info-circle"></i>
+            {{ 'sso.approvals.empty'|trans }}
+        </div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>{{ 'sso.approvals.col.email'|trans }}</th>
+                        <th>{{ 'sso.approvals.col.provider'|trans }}</th>
+                        <th>{{ 'sso.approvals.col.tenant'|trans }}</th>
+                        <th>{{ 'sso.approvals.col.requested_at'|trans }}</th>
+                        <th>{{ 'sso.approvals.col.claims'|trans }}</th>
+                        <th class="text-end">{{ 'sso.approvals.col.actions'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for a in approvals %}
+                    <tr>
+                        <td><strong>{{ a.email }}</strong></td>
+                        <td>{{ a.provider.name }} <code class="small text-muted">{{ a.provider.slug }}</code></td>
+                        <td>
+                            {% if a.tenant %}
+                                {{ a.tenant.name }}
+                            {% else %}
+                                <span class="badge bg-primary">{{ 'sso.scope.global'|trans }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="small text-muted">{{ a.requestedAt|date('Y-m-d H:i') }}</td>
+                        <td>
+                            <details>
+                                <summary class="small text-primary" style="cursor: pointer;">{{ 'sso.approvals.show_claims'|trans }}</summary>
+                                <pre class="small bg-light p-2 mt-1 mb-0" style="max-width: 480px; overflow-x: auto;">{{ a.claims|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                            </details>
+                        </td>
+                        <td class="text-end">
+                            <form method="post" action="{{ path('admin_sso_approval_approve', {id: a.id}) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('sso_approval') }}">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success">
+                                    <i class="bi bi-check-lg"></i> {{ 'sso.action.approve'|trans }}
+                                </button>
+                            </form>
+                            <form method="post" action="{{ path('admin_sso_approval_reject', {id: a.id}) }}" class="d-inline ms-1"
+                                  onsubmit="this.querySelector('[name=reason]').value = prompt('{{ 'sso.prompt.reject_reason'|trans }}') || '';">
+                                <input type="hidden" name="_token" value="{{ csrf_token('sso_approval') }}">
+                                <input type="hidden" name="reason" value="">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">
+                                    <i class="bi bi-x-lg"></i> {{ 'sso.action.reject'|trans }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

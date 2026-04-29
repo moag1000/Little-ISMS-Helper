@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'sso' %}
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+{% block title %}
+    {{ (is_new ? 'sso.admin.new_provider' : 'sso.admin.edit_provider')|trans }}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">{{ 'common.dashboard'|trans({}, 'messages') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('admin_sso_index') }}">{{ 'sso.admin.title'|trans }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ (is_new ? 'sso.admin.new_provider' : 'sso.admin.edit_provider')|trans }}
+            </li>
+        </ol>
+    </nav>
+
+    <h1 class="mb-4">{{ (is_new ? 'sso.admin.new_provider' : 'sso.admin.edit_provider')|trans }}</h1>
+
+    {{ form_start(form) }}
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header"><strong>{{ 'sso.section.identity'|trans }}</strong></div>
+                <div class="card-body">
+                    {{ form_row(form.slug) }}
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.type) }}
+                    {{ form_row(form.enabled) }}
+                    {% if form.tenant is defined %}
+                        {{ form_row(form.tenant) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header"><strong>{{ 'sso.section.credentials'|trans }}</strong></div>
+                <div class="card-body">
+                    {{ form_row(form.clientId) }}
+                    {{ form_row(form.clientSecretPlain) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong>{{ 'sso.section.endpoints'|trans }}</strong>
+                    {% if not is_new %}
+                        <form method="post" action="{{ path('admin_sso_test', {id: provider.id}) }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('sso_provider_test') }}">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                <i class="bi bi-cloud-arrow-down"></i> {{ 'sso.action.discover'|trans }}
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {{ form_row(form.discoveryUrl) }}
+                    <div class="row g-3">
+                        <div class="col-md-6">{{ form_row(form.issuer) }}</div>
+                        <div class="col-md-6">{{ form_row(form.jwksUri) }}</div>
+                        <div class="col-md-6">{{ form_row(form.authorizationEndpoint) }}</div>
+                        <div class="col-md-6">{{ form_row(form.tokenEndpoint) }}</div>
+                        <div class="col-md-12">{{ form_row(form.userinfoEndpoint) }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header"><strong>{{ 'sso.section.claims'|trans }}</strong></div>
+                <div class="card-body">
+                    {{ form_row(form.scopesCsv) }}
+                    {{ form_row(form.attributeMapJson) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header"><strong>{{ 'sso.section.button'|trans }}</strong></div>
+                <div class="card-body">
+                    {{ form_row(form.buttonLabel) }}
+                    {{ form_row(form.buttonIcon) }}
+                    {{ form_row(form.buttonColor) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header"><strong>{{ 'sso.section.domain_binding'|trans }}</strong></div>
+                <div class="card-body">
+                    {{ form_row(form.domainBindingsCsv) }}
+                    {{ form_row(form.domainBindingMode) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header"><strong>{{ 'sso.section.provisioning'|trans }}</strong></div>
+                <div class="card-body">
+                    {{ form_row(form.jitProvisioning) }}
+                    {{ form_row(form.autoApprove) }}
+                    {{ form_row(form.defaultRole) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ path('admin_sso_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+            <i class="bi bi-arrow-left"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+        </a>
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+            <i class="bi bi-check-lg"></i> {{ 'common.save'|trans({}, 'messages') }}
+        </button>
+    </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
