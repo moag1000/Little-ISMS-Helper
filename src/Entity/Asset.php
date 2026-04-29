@@ -16,6 +16,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\AssetRepository;
+use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -33,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(
             description: 'Retrieve a specific asset by ID',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('view', object)"
         ),
         new GetCollection(
             description: 'Retrieve the collection of assets with pagination and filtering',
@@ -41,19 +42,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             description: 'Create a new asset with protection requirements',
-            security: "is_granted('ROLE_USER')"
+            securityPostDenormalize: "is_granted('ROLE_USER')"
         ),
         new Put(
             description: 'Update an existing asset',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('edit', object)"
         ),
         new Delete(
             description: 'Delete an asset (Admin only)',
-            security: "is_granted('ROLE_ADMIN')"
+            security: "is_granted('delete', object)"
         ),
     ],
     normalizationContext: ['groups' => ['asset:read']],
-    denormalizationContext: ['groups' => ['asset:write']]
+    denormalizationContext: ['groups' => ['asset:write']],
+    processor: TenantAwareStateProcessor::class
 )]
 #[ApiFilter(SearchFilter::class, properties: ['name' => 'partial', 'assetType' => 'exact', 'owner' => 'partial', 'status' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['name', 'assetType', 'createdAt'])]

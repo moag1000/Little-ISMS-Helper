@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\ControlRepository;
+use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -37,7 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(
             description: 'Retrieve a specific ISO 27001 control by ID',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('view', object)"
         ),
         new GetCollection(
             description: 'Retrieve the collection of ISO 27001 controls with filtering by category, status, and applicability',
@@ -45,19 +46,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             description: 'Create a new control implementation',
-            security: "is_granted('ROLE_USER')"
+            securityPostDenormalize: "is_granted('ROLE_USER')"
         ),
         new Put(
             description: 'Update an existing control implementation status',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('edit', object)"
         ),
         new Delete(
             description: 'Delete a control (Admin only)',
-            security: "is_granted('ROLE_ADMIN')"
+            security: "is_granted('delete', object)"
         ),
     ],
     normalizationContext: ['groups' => ['control:read']],
-    denormalizationContext: ['groups' => ['control:write']]
+    denormalizationContext: ['groups' => ['control:write']],
+    processor: TenantAwareStateProcessor::class
 )]
 #[ApiFilter(SearchFilter::class, properties: ['controlId' => 'exact', 'name' => 'partial', 'category' => 'exact', 'implementationStatus' => 'exact'])]
 #[ApiFilter(BooleanFilter::class, properties: ['applicable'])]

@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\SupplierRepository;
+use App\State\TenantAwareStateProcessor;
 use App\Entity\Document;
 use App\Entity\Tenant;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -41,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(
             description: 'Retrieve a specific supplier by ID',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('API_VIEW', object)"
         ),
         new GetCollection(
             description: 'Retrieve the collection of suppliers with filtering',
@@ -49,19 +50,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             description: 'Create a new supplier',
-            security: "is_granted('ROLE_USER')"
+            securityPostDenormalize: "is_granted('API_CREATE', object)"
         ),
         new Put(
             description: 'Update an existing supplier',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('API_EDIT', object)"
         ),
         new Delete(
             description: 'Delete a supplier (Admin only)',
-            security: "is_granted('ROLE_ADMIN')"
+            security: "is_granted('API_DELETE', object)"
         ),
     ],
     normalizationContext: ['groups' => ['supplier:read']],
-    denormalizationContext: ['groups' => ['supplier:write']]
+    denormalizationContext: ['groups' => ['supplier:write']],
+    processor: TenantAwareStateProcessor::class
 )]
 #[ApiFilter(SearchFilter::class, properties: ['name' => 'partial', 'status' => 'exact', 'criticality' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['name', 'criticality', 'nextAssessmentDate'])]

@@ -19,6 +19,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\TrainingRepository;
+use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -35,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(
             description: 'Retrieve a specific security awareness training by ID',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('API_VIEW', object)"
         ),
         new GetCollection(
             description: 'Retrieve the collection of security awareness trainings with filtering by type, status, and date',
@@ -43,19 +44,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             description: 'Create a new security awareness training event',
-            security: "is_granted('ROLE_USER')"
+            securityPostDenormalize: "is_granted('API_CREATE', object)"
         ),
         new Put(
             description: 'Update an existing training event',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('API_EDIT', object)"
         ),
         new Delete(
             description: 'Delete a training event (Admin only)',
-            security: "is_granted('ROLE_ADMIN')"
+            security: "is_granted('API_DELETE', object)"
         ),
     ],
     normalizationContext: ['groups' => ['training:read']],
-    denormalizationContext: ['groups' => ['training:write']]
+    denormalizationContext: ['groups' => ['training:write']],
+    processor: TenantAwareStateProcessor::class
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'trainingType' => 'exact', 'status' => 'exact'])]
 #[ApiFilter(BooleanFilter::class, properties: ['mandatory'])]

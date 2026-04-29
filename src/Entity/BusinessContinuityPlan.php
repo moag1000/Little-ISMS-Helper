@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
 use App\Repository\BusinessContinuityPlanRepository;
+use App\State\TenantAwareStateProcessor;
 use App\Entity\Tenant;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -30,12 +31,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ApiResource(
     operations: [
-        new Get(security: "is_granted('ROLE_USER')"),
+        new Get(security: "is_granted('API_VIEW', object)"),
         new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_USER')"),
-        new Put(security: "is_granted('ROLE_USER')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
-    ]
+        new Post(securityPostDenormalize: "is_granted('API_CREATE', object)"),
+        new Put(security: "is_granted('API_EDIT', object)"),
+        new Delete(security: "is_granted('API_DELETE', object)"),
+    ],
+    processor: TenantAwareStateProcessor::class
 )]
 #[ORM\Entity(repositoryClass: BusinessContinuityPlanRepository::class)]
 #[ORM\Table(name: 'business_continuity_plan')]

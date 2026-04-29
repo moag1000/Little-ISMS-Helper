@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\ISMSObjectiveRepository;
+use App\State\TenantAwareStateProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -24,14 +25,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Get(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_ADMIN')"),
-        new Put(security: "is_granted('ROLE_ADMIN')"),
-        new Patch(security: "is_granted('ROLE_ADMIN')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Get(security: "is_granted('API_VIEW', object)"),
+        new Post(securityPostDenormalize: "is_granted('API_CREATE', object)"),
+        new Put(security: "is_granted('API_EDIT', object)"),
+        new Patch(security: "is_granted('API_EDIT', object)"),
+        new Delete(security: "is_granted('API_DELETE', object)"),
     ],
     normalizationContext: ['groups' => ['isms_objective:read']],
-    denormalizationContext: ['groups' => ['isms_objective:write']]
+    denormalizationContext: ['groups' => ['isms_objective:write']],
+    processor: TenantAwareStateProcessor::class
 )]
 class ISMSObjective
 {
