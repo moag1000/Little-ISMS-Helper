@@ -33,6 +33,7 @@ class MfaService
         private readonly MfaTokenRepository $mfaTokenRepository,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
+        private readonly MfaEncryptionService $mfaEncryptionService,
         private readonly string $appName = 'Little ISMS Helper',
     ) {
     }
@@ -52,7 +53,7 @@ class MfaService
         $mfaToken->setUser($user);
         $mfaToken->setTokenType('totp');
         $mfaToken->setDeviceName($deviceName);
-        $mfaToken->setSecret($totp->getSecret());
+        $mfaToken->setSecret($this->mfaEncryptionService->encrypt($totp->getSecret()));
         $mfaToken->setIsActive(false); // Will be activated after verification
 
         // Generate backup codes
@@ -84,7 +85,8 @@ class MfaService
         }
 
         $user = $mfaToken->getUser();
-        $totp = TOTP::createFromSecret($mfaToken->getSecret());
+        $decryptedSecret = $this->mfaEncryptionService->decrypt($mfaToken->getSecret());
+        $totp = TOTP::createFromSecret($decryptedSecret);
         $totp->setLabel($user->getEmail());
         $totp->setIssuer($this->appName);
 
@@ -118,7 +120,8 @@ class MfaService
         // Rate limiting check
         $this->checkRateLimit($mfaToken);
 
-        $totp = TOTP::createFromSecret($mfaToken->getSecret());
+        $decryptedSecret = $this->mfaEncryptionService->decrypt($mfaToken->getSecret());
+        $totp = TOTP::createFromSecret($decryptedSecret);
 
         // Verify with time window (allows ±1 time step for clock drift)
         $isValid = $totp->verify($code, null, 1);
