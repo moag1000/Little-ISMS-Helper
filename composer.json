@@ -14,7 +14,7 @@
         "api-platform/core": "^4.3.3",
         "doctrine/dbal": "^4.4.3",
         "doctrine/doctrine-bundle": "^3.2.2",
-        "doctrine/doctrine-migrations-bundle": "^3.7",
+        "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.6.3",
         "dompdf/dompdf": ">=3.1.5",
         "dragonmantank/cron-expression": ">=3.6",
