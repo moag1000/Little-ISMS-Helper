@@ -116,7 +116,7 @@ XML;
         $requirementRepo->method('findOneBy')->willReturnCallback(
             function (array $criteria): ?ComplianceRequirement {
                 // Always resolve if framework is set — emulates existing requirements.
-                if (!isset($criteria['complianceFramework']) || !isset($criteria['requirementId'])) {
+                if (!isset($criteria['framework']) || !isset($criteria['requirementId'])) {
                     return null;
                 }
 
