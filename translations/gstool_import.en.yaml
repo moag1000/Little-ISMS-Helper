@@ -38,3 +38,33 @@ gstool_import:
     error:
         no_tenant: No tenant active. Please select a tenant first.
         upload_failed: Upload failed.
+    tab:
+        assets: Zielobjekte → Assets
+        bausteine: Bausteine
+        massnahmen: Maßnahmen
+        risiken: Risk analysis
+    bausteine:
+        note: >-
+            Bausteine are shown as a migration preview only — no automatic
+            ComplianceRequirement linking. The Compliance Manager reviews
+            each entry and creates the links manually.
+        legacy_id: GSTOOL ID
+        title_old: Old title
+        kompendium_2023: Kompendium 2023
+        title_new: New title
+        zielobjekt: Target object
+        status: Status
+        unmapped: no mapping
+    massnahmen:
+        legacy_id: GSTOOL measure
+        titel: Title
+        baustein: Baustein (old → new)
+        umsetzungsstatus: GSTOOL status
+        implementation_status: Tool status
+    risiken:
+        legacy_id: Risk ID
+        titel: Title
+        haeufigkeit: Likelihood
+        schaden: Impact
+        score: Risk score
+        behandlung: Treatment
