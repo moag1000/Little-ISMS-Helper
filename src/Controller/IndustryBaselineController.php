@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Command\LoadIndustryBaselinesCommand;
 use App\Entity\User;
 use App\Repository\AppliedBaselineRepository;
 use App\Repository\IndustryBaselineRepository;
@@ -13,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -26,7 +28,30 @@ final class IndustryBaselineController extends AbstractController
         private readonly IndustryBaselineApplier $applier,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
+        private readonly LoadIndustryBaselinesCommand $seeder,
     ) {
+    }
+
+    /**
+     * One-click seeding for the built-in baseline catalogue. Same logic as the
+     * `app:load-industry-baselines` CLI command — just exposed via POST so a
+     * Manager can trigger it from the empty-state on the index page without
+     * needing shell access.
+     */
+    #[Route('/seed', name: 'seed', methods: ['POST'])]
+    #[IsCsrfTokenValid('industry_baseline_seed')]
+    public function seed(): Response
+    {
+        $stats = $this->seeder->seed();
+        $this->addFlash(
+            'success',
+            $this->translator->trans(
+                'industry_baseline.seed.success',
+                ['%created%' => $stats['created'], '%updated%' => $stats['updated']],
+                'industry_baseline',
+            ),
+        );
+        return $this->redirectToRoute('app_industry_baseline_index');
     }
 
     #[Route('', name: 'index', methods: ['GET'])]

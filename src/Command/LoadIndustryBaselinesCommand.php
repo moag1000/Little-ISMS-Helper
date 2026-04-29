@@ -42,6 +42,25 @@ final class LoadIndustryBaselinesCommand
 
     public function __invoke(SymfonyStyle $io): int
     {
+        $stats = $this->seed();
+        $io->success(sprintf(
+            'Industry baselines: %d created, %d updated',
+            $stats['created'],
+            $stats['updated'],
+        ));
+
+        return Command::SUCCESS;
+    }
+
+    /**
+     * Idempotent seeding logic — extracted from __invoke() so the
+     * IndustryBaselineController can trigger the same load via a button on
+     * the web UI when the baseline catalogue is empty.
+     *
+     * @return array{created: int, updated: int}
+     */
+    public function seed(): array
+    {
         $stats = ['created' => 0, 'updated' => 0];
 
         foreach ($this->definitions() as $def) {
@@ -71,13 +90,7 @@ final class LoadIndustryBaselinesCommand
 
         $this->entityManager->flush();
 
-        $io->success(sprintf(
-            'Industry baselines: %d created, %d updated',
-            $stats['created'],
-            $stats['updated'],
-        ));
-
-        return Command::SUCCESS;
+        return $stats;
     }
 
     /**

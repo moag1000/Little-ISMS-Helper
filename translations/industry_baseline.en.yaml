@@ -2,7 +2,12 @@ industry_baseline:
     title: 'Industry Baselines'
     subtitle: 'Pre-configured starter packs per industry — do not bootstrap your tenant from zero.'
     intro: 'An <strong>industry baseline</strong> is a vetted starter pack: typical risks, core assets, mandatory controls, and framework recommendations for a specific industry. One click → your tenant has the baseline documentation. Refine from there.'
-    empty: 'No baselines loaded yet. Run the seed command:'
+    empty: 'No industry baselines loaded yet.'
+    seed:
+        button: 'Load standard baselines now'
+        hint: 'Imports 9 predefined industry packages into your database (idempotent, safe to re-run).'
+        cli_alternative: 'Prefer CLI?'
+        success: '%created% baselines created, %updated% updated.'
     industry:
         production: 'Manufacturing'
         finance: 'Financial sector'
