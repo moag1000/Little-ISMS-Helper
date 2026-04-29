@@ -1,0 +1,56 @@
+schema_version: '1.0'
+baseline:
+  id: 'insurance'
+  name: 'Versicherung / Insurance'
+  industry: 'insurance'
+  description: |
+    Pre-Konfiguration für Versicherungsunternehmen — Erst- und
+    Rückversicherer, Pensionskassen, Versorgungswerke. Anker: VAIT
+    (BaFin-Verfügung "Versicherungsaufsichtliche Anforderungen an die IT"),
+    DORA (für ICT-Risk + Drittdienstleister-Pflichten ab 2025), NIS2
+    Annex II "Banken und Finanzmarktinfrastrukturen — analog", DSGVO
+    Art. 9 (Gesundheits-/Vermögensdaten), KWG-analoge Aufsichtsstrukturen.
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Versicherungs-IT'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: defined
+      reason: 'PQC-Strategie für Polizen-Daten (Aufbewahrung 30+ Jahre) + Aktuariats-Modelle.'
+    MHC-02:
+      target: managed
+      reason: 'SBOM Pflicht — DORA Art. 28 Drittdienstleister-Register. Lieferanten-Bilanz im Audit.'
+    MHC-03:
+      target: managed
+      reason: 'Phishing-resistente MFA Pflicht für Innendienst + Vertrieb (Datenfreigabe + Schadenregulierung).'
+    MHC-04:
+      target: defined
+      reason: 'Workload-Identity für Microservices in Vertrags-/Schaden-/Aktuariats-Plattformen.'
+    MHC-05:
+      target: managed
+      reason: 'Behavioural Detection — gezielte BEC-Angriffe Vertrieb + Rückversicherer (Schadens-Manipulation).'
+    MHC-06:
+      target: managed
+      reason: 'Endpoint-Härtung Pflicht. Außendienst-Tablets + Home-Office Hochrisiko-Vector.'
+    MHC-07:
+      target: defined
+      reason: 'Multi-Mandant-Trennung wo IT-Provider mehrere Versicherer betreut. SoT pro Spartenkanal.'
+    MHC-08:
+      target: managed
+      reason: 'Immutable Backups + DR-Test (DORA Art. 11) — RTO < 4h für Schadens-/Leistungsfall.'
+    MHC-09:
+      target: managed
+      reason: 'KEV-Patch-Latency < 7 Tage VAIT-Pflicht. Vulnerability-Coordination DORA Art. 26.'
+    MHC-10:
+      target: managed
+      reason: 'CCM für VAIT-Selbstauskunft + DORA-Continuous-Reporting an BaFin.'
+    MHC-11:
+      target: managed
+      reason: 'IR + 24/7 Pflicht. DORA Art. 19 Major-Incident-Reporting an BaFin (4h/72h/30d).'
+    MHC-12:
+      target: managed
+      reason: 'TLPT (DORA Art. 26/27) ab 2025 für signifikante Versicherer Pflicht.'
+    MHC-13:
+      target: managed
+      reason: 'AI-Agent-Governance — AI-Risikoprüfung (Underwriting) und Schadensbearbeitung sind regulatorisch sensibel (Diskriminierungsverbot).'

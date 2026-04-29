@@ -1,0 +1,56 @@
+schema_version: '1.0'
+baseline:
+  id: 'energy-utility'
+  name: 'Energie / Versorgungsunternehmen'
+  industry: 'energy'
+  description: |
+    Pre-Konfiguration für Stromnetzbetreiber, Stadtwerke, Erneuerbare-
+    Energien-Anlagenbetreiber, Wasser- und Fernwärme-Versorger. Anker:
+    KRITIS § 8a BSIG, BNetzA-IT-Sicherheitskatalog (KritisV § 1 Abs. 2),
+    NIS2 Annex I "Energie/Wasser", IEC 62443 für OT-Komponenten,
+    EnWG § 11 (1a) für Fernsteuerbare Anlagen. Hochpolitisch wegen
+    Energie-Sicherheits-Lage.
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Versorger-OT-IT'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: defined
+      reason: 'PQC-Strategie für Smart-Meter-Gateways + Zertifikate (langfristige Lebensdauer der Anlagen).'
+    MHC-02:
+      target: managed
+      reason: 'SBOM Pflicht für Steuerungs-Software (BNetzA-Katalog). Lieferanten-Anforderungen explizit.'
+    MHC-03:
+      target: managed
+      reason: 'Phishing-resistente MFA für Leitstellenpersonal + Fernwartungs-Accounts. Stuxnet-Lessons.'
+    MHC-04:
+      target: defined
+      reason: 'Workload-Identity zwischen IT/OT-Schicht. Zero-Trust-Architektur Mindestmaßnahme.'
+    MHC-05:
+      target: managed
+      reason: 'Behavioural Detection in OT-Netz Pflicht — APT-Targeted-Sektor (BSI Lagebild).'
+    MHC-06:
+      target: managed
+      reason: 'Endpoint + OT-Härtung. Whitelisting auf Engineering-Workstations Standard.'
+    MHC-07:
+      target: defined
+      reason: 'Multi-Site-Trennung Leitwarte ↔ Anlagen ↔ Office-IT zwingend (3-Zonen-Modell).'
+    MHC-08:
+      target: managed
+      reason: 'Immutable Backups + Off-grid-fähige DR. Schwarzstart-Fähigkeit Reglement-Pflicht.'
+    MHC-09:
+      target: defined
+      reason: 'KEV-Patch-Latency OT meist eingeschränkt — kompensierende Maßnahmen Pflicht (Network-Segm).'
+    MHC-10:
+      target: managed
+      reason: 'CCM für KRITIS-Nachweise alle 2 Jahre. BNetzA-Audit + IT-Sicherheitskatalog-Konformität.'
+    MHC-11:
+      target: managed
+      reason: 'IR + 24/7-Bereitschaft Pflicht. Meldepflicht KRITIS § 8b BSIG + NIS2 Art. 23.'
+    MHC-12:
+      target: defined
+      reason: 'Pen-Test KRITIS-pflichtig + OT-spezifisch (IEC 62443-Zonen-Test).'
+    MHC-13:
+      target: defined
+      reason: 'AI-Agent-Governance für Smart-Grid-Steuerung + AI-basierte Anomaly-Detection.'
