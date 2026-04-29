@@ -165,12 +165,12 @@
                                             <br>{% include '_components/_badge.html.twig' with { variant: 'danger', content: 'dsr.badge.overdue'|trans({}, 'data_subject_request') } only %}
                                         {% endif %}
                                     </td>
-                                    <td>{{ dsr.receivedAt|date('Y-m-d') }}</td>
+                                    <td>{{ dsr.receivedAt|locale_date }}</td>
                                     <td>
                                         {% set deadline = dsr.effectiveDeadline %}
                                         {% if deadline %}
                                             <span class="{% if dsr.overdue %}text-danger fw-bold{% elseif dsr.daysUntilDeadline <= 7 %}text-warning{% endif %}">
-                                                {{ deadline|date('Y-m-d') }}
+                                                {{ deadline|locale_date }}
                                             </span>
                                             {% if dsr.status not in ['completed', 'rejected'] %}
                                                 <br><small class="{% if dsr.overdue %}text-danger{% else %}text-muted{% endif %}">
