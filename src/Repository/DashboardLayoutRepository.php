@@ -25,13 +25,20 @@ class DashboardLayoutRepository extends ServiceEntityRepository
      */
     public function findForUser(User $user, Tenant $tenant): ?DashboardLayout
     {
-        return $this->createQueryBuilder('d')
+        // Tolerate stale duplicates (race condition in earlier findOrCreate
+        // could create more than one row per user+tenant). Take the most
+        // recently updated and let any cleanup happen out-of-band.
+        $results = $this->createQueryBuilder('d')
             ->where('d.user = :user')
             ->andWhere('d.tenant = :tenant')
             ->setParameter('user', $user)
             ->setParameter('tenant', $tenant)
+            ->orderBy('d.updatedAt', 'DESC')
+            ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
+
+        return $results[0] ?? null;
     }
 
     /**

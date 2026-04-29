@@ -46,9 +46,13 @@ class MfaEncryptionService
 
     public function __destruct()
     {
-        // Defense-in-depth: wipe key from memory when service is destroyed
+        // Defense-in-depth: wipe key from memory when service is destroyed.
+        // PHP 8.5 disallows indirect modify of typed-properties via reference
+        // (sodium_memzero takes by-ref). Detour via a local copy + reassign.
         if ($this->encryptionKey !== '') {
-            sodium_memzero($this->encryptionKey);
+            $key = $this->encryptionKey;
+            sodium_memzero($key);
+            $this->encryptionKey = '';
         }
     }
 
