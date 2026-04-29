@@ -8,6 +8,7 @@ use App\Entity\MfaToken;
 use App\Entity\User;
 use App\Repository\MfaTokenRepository;
 use App\Service\AuditLogger;
+use App\Service\MfaEncryptionService;
 use App\Service\MfaService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -24,6 +25,7 @@ class MfaServiceTest extends TestCase
     private MockObject $mfaTokenRepository;
     private MockObject $auditLogger;
     private MockObject $logger;
+    private MfaEncryptionService $mfaEncryptionService;
     private MfaService $service;
 
     protected function setUp(): void
@@ -32,12 +34,14 @@ class MfaServiceTest extends TestCase
         $this->mfaTokenRepository = $this->createMock(MfaTokenRepository::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+        $this->mfaEncryptionService = new MfaEncryptionService('test-secret-key-for-unit-tests');
 
         $this->service = new MfaService(
             $this->entityManager,
             $this->mfaTokenRepository,
             $this->auditLogger,
             $this->logger,
+            $this->mfaEncryptionService,
             'Test ISMS'
         );
     }
