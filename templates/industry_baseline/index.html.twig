@@ -26,7 +26,23 @@
 
     {% if baselines is empty %}
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
-            {% block alert_body %}{{ 'industry_baseline.empty'|trans({}, 'industry_baseline') }} <code>php bin/console app:load-industry-baselines</code>{% endblock %}
+            {% block alert_body %}
+                <div class="d-flex flex-column gap-2">
+                    <div>{{ 'industry_baseline.empty'|trans({}, 'industry_baseline') }}</div>
+                    <form method="POST" action="{{ path('app_industry_baseline_seed') }}" class="d-flex gap-2 align-items-center">
+                        <input type="hidden" name="_token" value="{{ csrf_token('industry_baseline_seed') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--util-download" aria-hidden="true"></i>
+                            {{ 'industry_baseline.seed.button'|trans({}, 'industry_baseline') }}
+                        </button>
+                        <small class="text-muted">{{ 'industry_baseline.seed.hint'|trans({}, 'industry_baseline') }}</small>
+                    </form>
+                    <details class="small">
+                        <summary class="text-muted">{{ 'industry_baseline.seed.cli_alternative'|trans({}, 'industry_baseline') }}</summary>
+                        <code class="d-block mt-1">php bin/console app:load-industry-baselines</code>
+                    </details>
+                </div>
+            {% endblock %}
         {% endembed %}
     {% else %}
         <div class="row row-cols-1 row-cols-md-2 g-3">
