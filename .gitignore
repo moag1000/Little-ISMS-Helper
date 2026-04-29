@@ -14,6 +14,10 @@
 /.phpunit.cache/
 ###< phpunit/phpunit ###
 
+###> npm ###
+/node_modules/
+###< npm ###
+
 ###> symfony/asset-mapper ###
 /public/assets/
 /assets/vendor/
