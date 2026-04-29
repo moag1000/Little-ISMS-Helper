@@ -27,9 +27,6 @@ return [
     '@symfony/stimulus-bundle' => [
         'path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js',
     ],
-    'chart.js' => [
-        'version' => '3.9.1',
-    ],
     '@popperjs/core' => [
         'version' => '2.11.8',
     ],
@@ -58,5 +55,11 @@ return [
     ],
     '@hotwired/turbo' => [
         'version' => '8.0.23',
+    ],
+    'chart.js' => [
+        'version' => '4.5.1',
+    ],
+    '@kurkle/color' => [
+        'version' => '0.3.4',
     ],
 ];
