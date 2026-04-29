@@ -92,7 +92,7 @@ class InterestedPartyRepository extends ServiceEntityRepository
             'total' => $total,
             'high_importance' => $highImportance,
             'overdue_communications' => $overdueCommunications,
-            'avg_satisfaction' => round($avgEngagement ?? 0, 2)
+            'avg_satisfaction' => round((float) ($avgEngagement ?? 0), 2)
         ];
     }
 }

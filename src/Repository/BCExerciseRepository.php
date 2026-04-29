@@ -85,7 +85,7 @@ class BCExerciseRepository extends ServiceEntityRepository
             'total' => $total,
             'completed' => $completed,
             'planned' => $planned,
-            'avg_success_rating' => round($avgSuccessRating ?? 0, 2)
+            'avg_success_rating' => round((float) ($avgSuccessRating ?? 0), 2)
         ];
     }
 }

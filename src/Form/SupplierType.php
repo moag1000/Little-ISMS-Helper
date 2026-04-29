@@ -379,7 +379,13 @@ class SupplierType extends AbstractType
         );
     }
 
-    public function buildView(
+    /**
+     * Hydrate the unmapped textarea fields (subcontractorChain,
+     * processingLocations) from entity arrays. Must run in finishView() —
+     * children FormViews are only populated after buildView() returns, so
+     * `$view['subcontractorChain']` would not yet exist.
+     */
+    public function finishView(
         \Symfony\Component\Form\FormView $view,
         \Symfony\Component\Form\FormInterface $form,
         array $options,
@@ -388,7 +394,7 @@ class SupplierType extends AbstractType
         if (!$supplier instanceof Supplier) {
             return;
         }
-        if ($form->has('subcontractorChain') && !$form->get('subcontractorChain')->getViewData()) {
+        if (isset($view['subcontractorChain']) && !$form->get('subcontractorChain')->getViewData()) {
             $chain = $supplier->getSubcontractorChain();
             if (is_array($chain) && $chain !== []) {
                 // JSON-encode so the Stimulus editor picks up structured rows.
@@ -396,10 +402,13 @@ class SupplierType extends AbstractType
                 $view['subcontractorChain']->vars['value'] = json_encode($chain, JSON_UNESCAPED_UNICODE);
             }
         }
-        if ($form->has('processingLocations') && !$form->get('processingLocations')->getViewData()) {
+        if (isset($view['processingLocations']) && !$form->get('processingLocations')->getViewData()) {
             $locs = $supplier->getProcessingLocations();
             if (is_array($locs) && $locs !== []) {
-                $view['processingLocations']->vars['value'] = implode(', ', array_map('strval', $locs));
+                // Defensive: filter out non-scalars (legacy data may contain nested
+                // structures); only strings/scalars survive into the textarea value.
+                $flat = array_values(array_filter($locs, 'is_scalar'));
+                $view['processingLocations']->vars['value'] = implode(', ', array_map('strval', $flat));
             }
         }
     }

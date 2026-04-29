@@ -58,6 +58,10 @@ Repo-Cleanup) gelten in v3.2.6 weiterhin.
   speichern Geheimnisse jetzt verschlüsselt in der DB. Alte Plaintext-Secrets
   werden beim ersten Zugriff transparent migriert (Auto-Heal-Pattern, kein
   User-Action nötig). Verhindert Disclosure bei DB-Backup-Diebstahl.
+  **Deployment-Hinweis:** Optional `MFA_ENCRYPTION_KEY` in `.env` setzen für
+  unabhängige Key-Rotation (Fallback: APP_SECRET). Bulk-Migration aller Secrets:
+  `php bin/console app:encrypt-mfa-secrets --dry-run` dann
+  `php bin/console app:encrypt-mfa-secrets`.
 * **CSRF-Token-Persistierung in Tests** — `generateCsrfToken()` ruft jetzt
   `$session->save()` auf, weshalb die 4 zuvor `SessionNotFoundException`-
   betroffenen `AssetControllerTest::testBulkDelete*` jetzt grün laufen.
