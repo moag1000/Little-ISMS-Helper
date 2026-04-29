@@ -44,7 +44,7 @@ class SupplementDoraRtsRequirementsCommand
                 $existing = $this->entityManager
                     ->getRepository(ComplianceRequirement::class)
                     ->findOneBy([
-                        'complianceFramework' => $framework,
+                        'framework' => $framework,
                         'requirementId' => $rtRequirement['id']
                     ]);
 

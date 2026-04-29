@@ -398,7 +398,7 @@ final class MrisVersionMigrationCommand extends Command
 
         // UPDATE (title/description)
         foreach ($diff['renamed'] as $id) {
-            $req = $this->requirementRepository->findOneBy(['complianceFramework' => $framework, 'requirementId' => $id]);
+            $req = $this->requirementRepository->findOneBy(['framework' => $framework, 'requirementId' => $id]);
             if (!$req instanceof ComplianceRequirement) {
                 continue;
             }
@@ -424,7 +424,7 @@ final class MrisVersionMigrationCommand extends Command
 
         // MATURITY RESET
         foreach ($diff['maturity_changed'] as $id) {
-            $req = $this->requirementRepository->findOneBy(['complianceFramework' => $framework, 'requirementId' => $id]);
+            $req = $this->requirementRepository->findOneBy(['framework' => $framework, 'requirementId' => $id]);
             if (!$req instanceof ComplianceRequirement) {
                 continue;
             }
@@ -435,7 +435,7 @@ final class MrisVersionMigrationCommand extends Command
 
         // DEPRECATE (soft-delete, kein DB-Delete)
         foreach ($diff['removed'] as $id) {
-            $req = $this->requirementRepository->findOneBy(['complianceFramework' => $framework, 'requirementId' => $id]);
+            $req = $this->requirementRepository->findOneBy(['framework' => $framework, 'requirementId' => $id]);
             if (!$req instanceof ComplianceRequirement) {
                 continue;
             }

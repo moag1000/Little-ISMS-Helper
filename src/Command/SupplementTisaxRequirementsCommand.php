@@ -44,7 +44,7 @@ class SupplementTisaxRequirementsCommand
                 $existing = $this->entityManager
                     ->getRepository(ComplianceRequirement::class)
                     ->findOneBy([
-                        'complianceFramework' => $framework,
+                        'framework' => $framework,
                         'requirementId' => $additionalRequirement['id']
                     ]);
 

@@ -81,7 +81,7 @@ class CreateCrossFrameworkMappingsCommand
             $symfonyStyle->writeln(sprintf('  Processing %s...', $framework->getName()));
 
             $requirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-                ->findBy(['complianceFramework' => $framework]);
+                ->findBy(['framework' => $framework]);
 
             foreach ($requirements as $requirement) {
                 $dataSourceMapping = $requirement->getDataSourceMapping();
@@ -104,7 +104,7 @@ class CreateCrossFrameworkMappingsCommand
                     // Find corresponding ISO 27001 requirement
                     $isoRequirement = $this->entityManager->getRepository(ComplianceRequirement::class)
                         ->findOneBy([
-                            'complianceFramework' => $complianceFramework,
+                            'framework' => $complianceFramework,
                             'requirementId' => $normalizedId
                         ]);
 
@@ -112,7 +112,7 @@ class CreateCrossFrameworkMappingsCommand
                         // Try without the 'A.' prefix
                         $isoRequirement = $this->entityManager->getRepository(ComplianceRequirement::class)
                             ->findOneBy([
-                                'complianceFramework' => $complianceFramework,
+                                'framework' => $complianceFramework,
                                 'requirementId' => $isoControl
                             ]);
                     }
@@ -152,7 +152,7 @@ class CreateCrossFrameworkMappingsCommand
         $mappingCount = 0;
 
         $isoRequirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-            ->findBy(['complianceFramework' => $complianceFramework]);
+            ->findBy(['framework' => $complianceFramework]);
 
         foreach ($isoRequirements as $isoRequirement) {
             foreach ($frameworks as $framework) {
@@ -162,7 +162,7 @@ class CreateCrossFrameworkMappingsCommand
 
                 // Find all requirements in target framework that map to this ISO control
                 $targetRequirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-                    ->findBy(['complianceFramework' => $framework]);
+                    ->findBy(['framework' => $framework]);
 
                 foreach ($targetRequirements as $targetRequirement) {
                     $dataSourceMapping = $targetRequirement->getDataSourceMapping();
@@ -249,7 +249,7 @@ class CreateCrossFrameworkMappingsCommand
                 $symfonyStyle->writeln(sprintf('  Processing %s <-> %s...', $framework->getCode(), $targetFramework->getCode()));
 
                 $sourceRequirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-                    ->findBy(['complianceFramework' => $framework]);
+                    ->findBy(['framework' => $framework]);
 
                 foreach ($sourceRequirements as $sourceRequirement) {
                     $sourceMapping = $sourceRequirement->getDataSourceMapping();
@@ -266,7 +266,7 @@ class CreateCrossFrameworkMappingsCommand
                     }
 
                     $targetRequirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-                        ->findBy(['complianceFramework' => $targetFramework]);
+                        ->findBy(['framework' => $targetFramework]);
 
                     foreach ($targetRequirements as $targetRequirement) {
                         $targetMapping = $targetRequirement->getDataSourceMapping();

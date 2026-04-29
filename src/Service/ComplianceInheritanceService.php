@@ -63,7 +63,7 @@ class ComplianceInheritanceService
         bool $dryRun = false,
     ): array {
         $targetRequirements = $this->requirementRepository->findBy([
-            'complianceFramework' => $targetFramework,
+            'framework' => $targetFramework,
         ]);
 
         $created = 0;
@@ -85,7 +85,7 @@ class ComplianceInheritanceService
 
             $fulfillment = $this->fulfillmentRepository->findOneBy([
                 'tenant' => $tenant,
-                'complianceRequirement' => $targetRequirement,
+                'requirement' => $targetRequirement,
             ]);
             if (!$fulfillment instanceof ComplianceRequirementFulfillment) {
                 $fulfillment = new ComplianceRequirementFulfillment();
@@ -365,7 +365,7 @@ class ComplianceInheritanceService
 
             $sourceFulfillment = $this->fulfillmentRepository->findOneBy([
                 'tenant' => $tenant,
-                'complianceRequirement' => $sourceRequirement,
+                'requirement' => $sourceRequirement,
             ]);
             if (!$sourceFulfillment instanceof ComplianceRequirementFulfillment) {
                 continue;

@@ -77,7 +77,7 @@ class SupplementBsiGrundschutzRequirementsCommand
                 $existing = $this->entityManager
                     ->getRepository(ComplianceRequirement::class)
                     ->findOneBy([
-                        'complianceFramework' => $framework,
+                        'framework' => $framework,
                         'requirementId' => $reqData['id']
                     ]);
 

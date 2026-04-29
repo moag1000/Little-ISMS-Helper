@@ -37,8 +37,8 @@ class MapIso27701VersionsCommand
             return Command::FAILURE;
         }
         // Get all requirements
-        $requirements2019 = $this->complianceRequirementRepository->findBy(['complianceFramework' => $framework2019]);
-        $requirements2025 = $this->complianceRequirementRepository->findBy(['complianceFramework' => $framework2025]);
+        $requirements2019 = $this->complianceRequirementRepository->findBy(['framework' => $framework2019]);
+        $requirements2025 = $this->complianceRequirementRepository->findBy(['framework' => $framework2025]);
         if (empty($requirements2019)) {
             $symfonyStyle->error('No ISO 27701:2019 requirements found. Please load them first.');
             return Command::FAILURE;

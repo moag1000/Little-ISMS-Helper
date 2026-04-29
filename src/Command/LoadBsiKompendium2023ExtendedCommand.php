@@ -84,7 +84,7 @@ class LoadBsiKompendium2023ExtendedCommand
 
             foreach ($rows as $row) {
                 $existing = $repo->findOneBy([
-                    'complianceFramework' => $framework,
+                    'framework' => $framework,
                     'requirementId' => $row['id'],
                 ]);
                 if ($existing instanceof ComplianceRequirement) {

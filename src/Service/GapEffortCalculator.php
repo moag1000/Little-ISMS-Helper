@@ -68,7 +68,7 @@ class GapEffortCalculator
         string $sort = self::SORT_REMAINING_EFFORT,
     ): array {
         $requirements = $this->requirementRepository->findBy(
-            ['complianceFramework' => $framework],
+            ['framework' => $framework],
             ['requirementId' => 'ASC'],
         );
 

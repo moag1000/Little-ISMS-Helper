@@ -115,7 +115,7 @@ class MappingLibrarySmokeTestCommand extends Command
                 $fw = $this->frameworkRepository->findOneBy(['code' => $fwCode]);
                 foreach (array_keys($reqIds) as $reqId) {
                     $existing = $this->requirementRepository->findOneBy([
-                        'complianceFramework' => $fw,
+                        'framework' => $fw,
                         'requirementId' => $reqId,
                     ]);
                     if ($existing === null) {

@@ -48,7 +48,7 @@ class LoadIso27701v2025RequirementsCommand
             // Framework exists - check if requirements are already loaded
             $existingRequirements = $this->entityManager
                 ->getRepository(ComplianceRequirement::class)
-                ->findBy(['complianceFramework' => $framework]);
+                ->findBy(['framework' => $framework]);
 
             if ($existingRequirements !== []) {
                 // Persist updated metadata before early return so re-runs refresh it.

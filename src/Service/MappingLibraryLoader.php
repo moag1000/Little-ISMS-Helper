@@ -85,11 +85,11 @@ class MappingLibraryLoader
 
         foreach ($entries as $entry) {
             $sourceReq = $this->requirementRepository->findOneBy([
-                'complianceFramework' => $sourceFw,
+                'framework' => $sourceFw,
                 'requirementId' => $entry['source'],
             ]);
             $targetReq = $this->requirementRepository->findOneBy([
-                'complianceFramework' => $targetFw,
+                'framework' => $targetFw,
                 'requirementId' => $entry['target'],
             ]);
             if ($sourceReq === null || $targetReq === null) {
@@ -158,11 +158,11 @@ class MappingLibraryLoader
         // MQS-Score für jedes geladene Mapping berechnen
         foreach ($entries as $entry) {
             $sourceReq = $this->requirementRepository->findOneBy([
-                'complianceFramework' => $sourceFw,
+                'framework' => $sourceFw,
                 'requirementId' => $entry['source'],
             ]);
             $targetReq = $this->requirementRepository->findOneBy([
-                'complianceFramework' => $targetFw,
+                'framework' => $targetFw,
                 'requirementId' => $entry['target'],
             ]);
             if ($sourceReq === null || $targetReq === null) {

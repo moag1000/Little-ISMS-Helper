@@ -144,7 +144,7 @@ class ThreatIntelligence
     /**
      * @var Collection<int, Incident>
      */
-    #[ORM\OneToMany(targetEntity: Incident::class, mappedBy: 'threatIntelligence')]
+    #[ORM\OneToMany(targetEntity: Incident::class, mappedBy: 'originatingThreat')]
     #[Groups(['threat:read'])]
     private Collection $resultingIncidents;
 

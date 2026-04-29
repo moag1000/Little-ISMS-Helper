@@ -143,7 +143,7 @@ final class MrisScoreService
         if (!$framework instanceof ComplianceFramework) {
             return 0.0;
         }
-        $reqs = $this->requirementRepository->findBy(['complianceFramework' => $framework]);
+        $reqs = $this->requirementRepository->findBy(['framework' => $framework]);
         if (count($reqs) === 0) {
             return 0.0;
         }

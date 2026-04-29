@@ -788,7 +788,7 @@ final class ComplianceImportController extends AbstractController
 
         foreach ($this->candidateIds($framework, $requirementId) as $candidate) {
             $hit = $this->requirementRepository->findOneBy([
-                'complianceFramework' => $framework,
+                'framework' => $framework,
                 'requirementId' => $candidate,
             ]);
             if ($hit instanceof ComplianceRequirement) {

@@ -36,7 +36,7 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     ): ComplianceRequirementFulfillment {
         $fulfillment = $this->findOneBy([
             'tenant' => $tenant,
-            'complianceRequirement' => $complianceRequirement,
+            'requirement' => $complianceRequirement,
         ]);
 
         if (!$fulfillment) {

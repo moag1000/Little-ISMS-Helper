@@ -163,7 +163,7 @@ final class BsiKompendiumXmlImporter
 
             $requirementId = sprintf('%s.A%d', $bausteinId, $reqIndex);
             $existing = $this->requirementRepository->findOneBy([
-                'complianceFramework' => $framework,
+                'framework' => $framework,
                 'requirementId' => $requirementId,
             ]);
             if ($existing instanceof ComplianceRequirement) {

@@ -145,7 +145,7 @@ class MappingValidatorService
 
             // 8. Coverage-Warnung wenn < 50 %
             if ($sourceFw) {
-                $totalSourceItems = count($this->requirementRepository->findBy(['complianceFramework' => $sourceFw]));
+                $totalSourceItems = count($this->requirementRepository->findBy(['framework' => $sourceFw]));
                 if ($totalSourceItems > 0) {
                     $coveragePct = (count($coveredSourceIds) / $totalSourceItems) * 100;
                     if ($coveragePct < 50) {
@@ -172,7 +172,7 @@ class MappingValidatorService
     private function requirementExists(ComplianceFramework $fw, string $identifier): bool
     {
         return $this->requirementRepository->findOneBy([
-            'complianceFramework' => $fw,
+            'framework' => $fw,
             'requirementId' => $identifier,
         ]) !== null;
     }

@@ -94,7 +94,7 @@ class ComplianceFramework
      * ComplianceAnalyticsService, several commands). getRequirements()
      * stays as the canonical method path.
      */
-    #[ORM\OneToMany(targetEntity: ComplianceRequirement::class, mappedBy: 'complianceFramework', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: ComplianceRequirement::class, mappedBy: 'framework', cascade: ['persist', 'remove'])]
     public Collection $requirements;
 
     /**

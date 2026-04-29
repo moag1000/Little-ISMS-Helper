@@ -2017,8 +2017,8 @@ class ComplianceController extends AbstractController
             $createdPairs = [];
 
             // Get requirements for both frameworks
-            $requirements1 = $this->complianceRequirementRepository->findBy(['complianceFramework' => $framework1]);
-            $requirements2 = $this->complianceRequirementRepository->findBy(['complianceFramework' => $framework2]);
+            $requirements1 = $this->complianceRequirementRepository->findBy(['framework' => $framework1]);
+            $requirements2 = $this->complianceRequirementRepository->findBy(['framework' => $framework2]);
 
             // Strategy 1: Direct mapping via ISO controls if available
             if ($iso27001) {
@@ -2288,7 +2288,7 @@ class ComplianceController extends AbstractController
                     continue;
                 }
 
-                $requirements = $this->complianceRequirementRepository->findBy(['complianceFramework' => $framework]);
+                $requirements = $this->complianceRequirementRepository->findBy(['framework' => $framework]);
 
                 foreach ($requirements as $requirement) {
                     $dataSourceMapping = $requirement->getDataSourceMapping();
@@ -2308,7 +2308,7 @@ class ComplianceController extends AbstractController
                         $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $isoControl);
 
                         $isoRequirement = $this->complianceRequirementRepository->findOneBy([
-                            'complianceFramework' => $iso27001,
+                            'framework' => $iso27001,
                             'requirementId' => $normalizedId
                         ]);
 
@@ -2344,7 +2344,7 @@ class ComplianceController extends AbstractController
 
             // 2. Collect transitive mappings between non-ISO frameworks
             // If Framework A → ISO Control X and Framework B → ISO Control X, then A ↔ B
-            $isoRequirements = $this->complianceRequirementRepository->findBy(['complianceFramework' => $iso27001]);
+            $isoRequirements = $this->complianceRequirementRepository->findBy(['framework' => $iso27001]);
 
             foreach ($isoRequirements as $isoRequirement) {
                 // Find all frameworks that map to this ISO requirement
@@ -2355,7 +2355,7 @@ class ComplianceController extends AbstractController
                         continue;
                     }
 
-                    $requirements = $this->complianceRequirementRepository->findBy(['complianceFramework' => $framework]);
+                    $requirements = $this->complianceRequirementRepository->findBy(['framework' => $framework]);
 
                     foreach ($requirements as $requirement) {
                         $dataSourceMapping = $requirement->getDataSourceMapping();
@@ -2465,7 +2465,7 @@ class ComplianceController extends AbstractController
             // Debug info
             $frameworkCounts = [];
             foreach ($frameworks as $framework) {
-                $reqCount = count($this->complianceRequirementRepository->findBy(['complianceFramework' => $framework]));
+                $reqCount = count($this->complianceRequirementRepository->findBy(['framework' => $framework]));
                 $frameworkCounts[$framework->getCode()] = $reqCount;
             }
 
@@ -2510,7 +2510,7 @@ class ComplianceController extends AbstractController
             // Check if TISAX exists and has ISO controls
             $tisax = $this->complianceFrameworkRepository->findOneBy(['code' => 'TISAX']);
             if ($tisax) {
-                $tisaxReqs = $this->complianceRequirementRepository->findBy(['complianceFramework' => $tisax]);
+                $tisaxReqs = $this->complianceRequirementRepository->findBy(['framework' => $tisax]);
                 $tisaxWithIsoControls = 0;
                 $sampleIsoControls = [];
 
