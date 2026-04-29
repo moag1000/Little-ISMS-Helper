@@ -1,0 +1,56 @@
+schema_version: '1.0'
+baseline:
+  id: 'legal-tax-notary'
+  name: 'Berufsgeheimnis-Träger (Anwalt / Steuerberater / Notar)'
+  industry: 'legal'
+  description: |
+    Pre-Konfiguration für rechts- und steuerberatende Berufe — Rechtsanwälte,
+    Notare, Steuerberater, Wirtschaftsprüfer, Patent-Anwälte. Anker: StGB
+    §203 (Berufsgeheimnis — strafbewehrt!), BORA / BNotO / StBerG / WPO,
+    DSGVO Art. 9 (besondere Kategorien), beA / beSt / beN (besonderes
+    elektronisches Postfach). Mandantengeheimnis ist absolutes Schutzgut,
+    nicht Risikoabwägung.
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung RA/StB-IT'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: defined
+      reason: 'PQC für langjährige Mandanten-Akten + Notar-Urkunden (30+ Jahre Aufbewahrung).'
+    MHC-02:
+      target: initial
+      reason: 'SBOM für eigene + Kanzlei-Software-Stacks. RA-MICRO/DATEV-Lieferanten-Pflicht.'
+    MHC-03:
+      target: managed
+      reason: 'Phishing-resistente MFA Pflicht — Mandanten-Daten = absolute Verschwiegenheit StGB §203.'
+    MHC-04:
+      target: initial
+      reason: 'Workload-Identity in Klein-Kanzlei meist N/A — Service-Account-Hygiene reicht.'
+    MHC-05:
+      target: defined
+      reason: 'Behavioural Detection — gezielte BEC + IP-Theft bei M&A-Transaktionen.'
+    MHC-06:
+      target: managed
+      reason: 'Endpoint-Härtung Pflicht. Kanzlei-Notebooks Hochrisiko-Vector (Verlust = Berufsgeheimnis-Bruch).'
+    MHC-07:
+      target: defined
+      reason: 'Multi-Mandant-Trennung — Sozietät: Akten zwischen Anwälten getrennt (Interessenkonflikt-Vermeidung).'
+    MHC-08:
+      target: managed
+      reason: 'Immutable Backups + Verschlüsselung. Notar-Urkunden gesetzlich unveränderbar.'
+    MHC-09:
+      target: defined
+      reason: 'KEV-Patch-Latency < 14 Tage. beA/beSt/beN-Schnittstellen kritisch.'
+    MHC-10:
+      target: initial
+      reason: 'CCM bei BRAK-Audit + DSGVO-Self-Assessment. Audit-Trail für Mandanten-Datenzugriff.'
+    MHC-11:
+      target: defined
+      reason: 'IR + DSGVO-72h-Meldepflicht bei Datenpanne. BRAK/Notarkammer-Eskalation bei Verschwiegenheits-Bruch.'
+    MHC-12:
+      target: initial
+      reason: 'Pen-Test bei Kanzleien ab 50+ MA empfohlen, sonst Awareness-Training priorisieren.'
+    MHC-13:
+      target: managed
+      reason: 'AI-Agent-Governance KRITISCH — AI-Tools (ChatGPT/Claude/Lex-DocGPT) dürfen Mandanten-Daten nicht in Cloud-Inferenz schicken (StGB §203).'

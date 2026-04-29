@@ -1,0 +1,55 @@
+schema_version: '1.0'
+baseline:
+  id: 'logistics-transport'
+  name: 'Logistik / Transport / Speditionen'
+  industry: 'logistics'
+  description: |
+    Pre-Konfiguration für Speditionen, Transport-Dienstleister, Reedereien,
+    Logistik-Plattformen, Postdienste, KEP-Dienstleister. Anker: NIS2
+    Annex II "Verkehr (Luft/See/Schiene/Straße)", IT-Sicherheitsgesetz
+    §8a für KRITIS-Logistik (Häfen/Flughäfen/Postzentren), DSGVO Art. 28
+    bei Sub-Spedition, EU-Mobilitätspaket digitaler Frachtbrief (eFTI 2024).
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Logistik-IT'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: initial
+      reason: 'Crypto-Inventar Standard. Telematik-Geräte oft mit Long-Lifetime-Zertifikaten.'
+    MHC-02:
+      target: defined
+      reason: 'SBOM für TMS/WMS + Track-and-Trace-Plattformen. Lieferanten-Anforderung.'
+    MHC-03:
+      target: defined
+      reason: 'Phishing-resistente MFA für Disposition + Fernzugriff (Fahrer-Apps mit Zahlfunktion).'
+    MHC-04:
+      target: initial
+      reason: 'Workload-Identity bei Multi-Standort-Architekturen. Service-Account-Inventar zuerst.'
+    MHC-05:
+      target: defined
+      reason: 'Behavioural Detection — gezielte Frachtdiebstahl-Vorbereitung via TMS-Zugriff.'
+    MHC-06:
+      target: defined
+      reason: 'Endpoint-Härtung Disposition + Fahrer-Geräte (BYOD-Risiko reduzieren).'
+    MHC-07:
+      target: defined
+      reason: 'Multi-Mandant-Trennung wenn Carrier-Plattform mehrere Versender + Empfänger bedient.'
+    MHC-08:
+      target: defined
+      reason: 'Immutable Backups TMS + Customs-Daten. RTO Werktag-relevant (<8h).'
+    MHC-09:
+      target: defined
+      reason: 'KEV-Patch-Latency < 14 Tage. Telematik-Geräte oft Long-Update-Zyklen — kompensierend.'
+    MHC-10:
+      target: initial
+      reason: 'CCM bei NIS2-pflichtigen Logistik-Anbietern. Audit-Trail-Pflicht.'
+    MHC-11:
+      target: defined
+      reason: 'IR + Eskalation. Bei NIS2: Meldepflicht. Bei KRITIS-Logistik: BSI-Meldepflicht.'
+    MHC-12:
+      target: initial
+      reason: 'Pen-Test bei Customer-Facing-Plattformen + Customs-Schnittstellen jährlich.'
+    MHC-13:
+      target: initial
+      reason: 'AI-Agent-Governance vorerst niedrig — bei AI-gestützter Routenplanung später erhöhen.'

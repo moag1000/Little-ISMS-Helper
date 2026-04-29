@@ -1,0 +1,55 @@
+schema_version: '1.0'
+baseline:
+  id: 'retail-ecommerce'
+  name: 'Retail / E-Commerce / Marketplace'
+  industry: 'retail'
+  description: |
+    Pre-Konfiguration für stationären Einzelhandel, E-Commerce-Plattformen,
+    Marketplace-Anbieter, Omnichannel-Händler. Anker: PCI-DSS v4.0 (Card-
+    Acceptance ab 2024 Pflicht), DSGVO (Customer-Profiling + Tracking),
+    CRA 2024/2847 für IoT-Produkte (Smart-Devices ab 2027), DSA (Digital
+    Services Act für Marketplace), GwG (Geldwäsche-Pflichten ab Schwellwert).
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Retail-Tech'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: initial
+      reason: 'Crypto-Inventar Standard, Customer-Daten + Payment-Tokens.'
+    MHC-02:
+      target: defined
+      reason: 'SBOM für Plattform + IoT-Produkte (CRA-Vorbereitung 2027).'
+    MHC-03:
+      target: managed
+      reason: 'Phishing-resistente MFA für Admin/Customer-Service. PCI-DSS v4.0 Anforderung 8.4.'
+    MHC-04:
+      target: defined
+      reason: 'Workload-Identity für Microservices in E-Commerce-Stack (Cart/Checkout/Payment).'
+    MHC-05:
+      target: managed
+      reason: 'Behavioural Detection — Account-Takeover, Card-Skimming, Bot-Traffic.'
+    MHC-06:
+      target: defined
+      reason: 'POS-Endpoint-Härtung (PCI-DSS) + Office-Stack-Härtung.'
+    MHC-07:
+      target: defined
+      reason: 'Marketplace = Multi-Tenancy (Händler-Konten getrennt vom Plattform-Stack).'
+    MHC-08:
+      target: defined
+      reason: 'Backup + DR — Verlust kostet pro Stunde Down-Time (Black-Friday-Szenario).'
+    MHC-09:
+      target: managed
+      reason: 'KEV-Patch-Latency < 7 Tage. PCI-DSS v4.0 Req 6 zwingend.'
+    MHC-10:
+      target: defined
+      reason: 'CCM für PCI-DSS-Compliance + DSA-Reporting bei großen Marketplaces.'
+    MHC-11:
+      target: defined
+      reason: 'IR-Plan inkl. PCI-Forensics-Anbindung. Card-Breach-Reporting an Acquirer.'
+    MHC-12:
+      target: defined
+      reason: 'Pen-Test ASV-Scan quartalsweise (PCI-DSS v4.0 Req 11). Web-App-Pen-Test jährlich.'
+    MHC-13:
+      target: defined
+      reason: 'AI-Agent-Governance — Recommender-Systeme + Dynamic-Pricing brauchen DSGVO/DSA-Compliance-Review.'
