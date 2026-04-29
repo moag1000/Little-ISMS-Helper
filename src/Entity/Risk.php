@@ -21,6 +21,7 @@ use App\Enum\IncidentSeverity;
 use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
 use App\Repository\RiskRepository;
+use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -38,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(
             description: 'Retrieve a specific risk assessment by ID',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('view', object)"
         ),
         new GetCollection(
             description: 'Retrieve the collection of risk assessments with filtering by status and date',
@@ -46,19 +47,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             description: 'Create a new risk assessment with probability and impact analysis',
-            security: "is_granted('ROLE_USER')"
+            securityPostDenormalize: "is_granted('ROLE_USER')"
         ),
         new Put(
             description: 'Update an existing risk assessment',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('edit', object)"
         ),
         new Delete(
             description: 'Delete a risk assessment (Admin only)',
-            security: "is_granted('ROLE_ADMIN')"
+            security: "is_granted('delete', object)"
         ),
     ],
     normalizationContext: ['groups' => ['risk:read']],
-    denormalizationContext: ['groups' => ['risk:write']]
+    denormalizationContext: ['groups' => ['risk:write']],
+    processor: TenantAwareStateProcessor::class
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'status' => 'exact', 'riskOwner.email' => 'partial', 'riskOwner.firstName' => 'partial', 'riskOwner.lastName' => 'partial'])]
 #[ApiFilter(OrderFilter::class, properties: ['title', 'createdAt', 'status'])]

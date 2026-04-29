@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\Delete;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use App\Repository\IncidentRepository;
+use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -40,7 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(
             description: 'Retrieve a specific security incident by ID',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('view', object)"
         ),
         new GetCollection(
             description: 'Retrieve the collection of security incidents with filtering by severity, status, and category',
@@ -48,19 +49,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             description: 'Create a new security incident report',
-            security: "is_granted('ROLE_USER')"
+            securityPostDenormalize: "is_granted('ROLE_USER')"
         ),
         new Put(
             description: 'Update an existing security incident',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('edit', object)"
         ),
         new Delete(
             description: 'Delete a security incident (Admin only)',
-            security: "is_granted('ROLE_ADMIN')"
+            security: "is_granted('delete', object)"
         ),
     ],
     normalizationContext: ['groups' => ['incident:read']],
-    denormalizationContext: ['groups' => ['incident:write']]
+    denormalizationContext: ['groups' => ['incident:write']],
+    processor: TenantAwareStateProcessor::class
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'incidentNumber' => 'exact', 'severity' => 'exact', 'status' => 'exact', 'category' => 'exact'])]
 #[ApiFilter(BooleanFilter::class, properties: ['dataBreachOccurred', 'notificationRequired'])]

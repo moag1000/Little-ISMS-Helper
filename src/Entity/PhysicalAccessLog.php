@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Repository\PhysicalAccessLogRepository;
+use App\State\TenantAwareStateProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -24,11 +25,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Get(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_ADMIN')"),
+        new Get(security: "is_granted('API_VIEW', object)"),
+        new Post(securityPostDenormalize: "is_granted('API_CREATE', object)"),
     ],
     normalizationContext: ['groups' => ['physical_access:read']],
-    denormalizationContext: ['groups' => ['physical_access:write']]
+    denormalizationContext: ['groups' => ['physical_access:write']],
+    processor: TenantAwareStateProcessor::class
 )]
 class PhysicalAccessLog
 {

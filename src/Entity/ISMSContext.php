@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\ISMSContextRepository;
+use App\State\TenantAwareStateProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -23,14 +24,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Get(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_ADMIN')"),
-        new Put(security: "is_granted('ROLE_ADMIN')"),
-        new Patch(security: "is_granted('ROLE_ADMIN')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Get(security: "is_granted('API_VIEW', object)"),
+        new Post(securityPostDenormalize: "is_granted('API_CREATE', object)"),
+        new Put(security: "is_granted('API_EDIT', object)"),
+        new Patch(security: "is_granted('API_EDIT', object)"),
+        new Delete(security: "is_granted('API_DELETE', object)"),
     ],
     normalizationContext: ['groups' => ['isms_context:read']],
-    denormalizationContext: ['groups' => ['isms_context:write']]
+    denormalizationContext: ['groups' => ['isms_context:write']],
+    processor: TenantAwareStateProcessor::class
 )]
 class ISMSContext
 {

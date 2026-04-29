@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\InternalAuditRepository;
+use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -35,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(
             description: 'Retrieve a specific internal audit by ID',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('API_VIEW', object)"
         ),
         new GetCollection(
             description: 'Retrieve the collection of internal ISMS audits with filtering by status, scope, and date',
@@ -43,19 +44,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             description: 'Create a new internal audit plan',
-            security: "is_granted('ROLE_USER')"
+            securityPostDenormalize: "is_granted('API_CREATE', object)"
         ),
         new Put(
             description: 'Update an existing internal audit',
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('API_EDIT', object)"
         ),
         new Delete(
             description: 'Delete an internal audit (Admin only)',
-            security: "is_granted('ROLE_ADMIN')"
+            security: "is_granted('API_DELETE', object)"
         ),
     ],
     normalizationContext: ['groups' => ['audit:read']],
-    denormalizationContext: ['groups' => ['audit:write']]
+    denormalizationContext: ['groups' => ['audit:write']],
+    processor: TenantAwareStateProcessor::class
 )]
 #[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'auditNumber' => 'exact', 'status' => 'exact', 'scopeType' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['plannedDate', 'actualDate', 'status'])]

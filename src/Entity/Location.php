@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\LocationRepository;
+use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -32,13 +33,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
-        new Get(security: "is_granted('ROLE_USER')"),
-        new Post(security: "is_granted('ROLE_USER')"),
-        new Put(security: "is_granted('ROLE_USER')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')"),
+        new Get(security: "is_granted('API_VIEW', object)"),
+        new Post(securityPostDenormalize: "is_granted('API_CREATE', object)"),
+        new Put(security: "is_granted('API_EDIT', object)"),
+        new Delete(security: "is_granted('API_DELETE', object)"),
     ],
     normalizationContext: ['groups' => ['location:read']],
-    denormalizationContext: ['groups' => ['location:write']]
+    denormalizationContext: ['groups' => ['location:write']],
+    processor: TenantAwareStateProcessor::class
 )]
 class Location
 {
