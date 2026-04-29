@@ -5,6 +5,39 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
+_Noch keine Aenderungen._
+
+## [3.2.7] — 2026-04-29
+
+### Refactor: Property/Getter-Alignment in 17 Entities
+
+17 latente Landminen behoben — Properties die nicht zum Getter-Namen passten
+(z.B. `private $user` mit `getUploadedBy()`). Twig-Magic-Resolution braucht
+`entity.foo` → `getFoo()` Korrespondenz; Mismatches werfen "Neither the
+property X nor methods getX/isX/hasX exist". Eines davon (`complianceFramework`)
+hatte uns zur Laufzeit getroffen, der Audit hat 16 weitere gefunden.
+
+JoinColumn-`name=` ist überall gepinnt → keine DB-Migration nötig.
+
+In drei Tiers gemerged:
+
+* **Tier A** (8 isolierte Entities): RiskAppetite/Document/ManagementReview/
+  CorporateGovernance/MappingGapItem/RiskTreatmentPlan/AuditChecklist/
+  ComplianceRequirementFulfillment
+* **Tier B** (DQL-touched): WorkflowInstance.workflowStep→currentStep,
+  ComplianceRequirement.complianceFramework→framework + parent self-ref
+* **Tier C** (high-fanout): InternalAudit, Incident.threatIntelligence,
+  ThreatIntelligence.user, Risk.user
+
+Folge-Fixes nach erstem CI-Lauf:
+
+* 3 inverse `mappedBy`-Refs auf Owning-Side angepasst
+  (ComplianceFramework→requirements, ComplianceMapping→gapItems,
+  ThreatIntelligence→resultingIncidents)
+* `findBy()`-Criteria-Arrays in src/ + tests/ massweise umbenannt
+  (`'complianceRequirement' => …` etc.)
+* BsiProfileXmlImporter-Test Bracket-Access aktualisiert
+
 ### Fix: Post-v3.2.6 Stabilisierung (PHP 8.5 + Templates + Setup)
 
 13 Folge-Fixes nach dem v3.2.6-Tag, allesamt punktuelle Laufzeit- und
