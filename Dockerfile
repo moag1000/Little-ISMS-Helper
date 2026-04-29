@@ -123,36 +123,39 @@ RUN chown -R www-data:www-data /var/www/html && \
     chmod -R 775 /var/www/html/var /var/www/html/public/uploads && \
     chown -R root:root /var/log/supervisor /var/log/nginx
 
-# Configure PHP session storage to use the application var/sessions directory.
-# Without this, PHP defaults to /var/lib/php/sessions which doesn't exist in
-# this container — Symfony's framework.yaml save_path overrides per-request,
-# but any code path that uses PHP-native session_start() before the kernel
-# would silently fail to persist. Explicit setting here keeps both paths consistent.
-RUN cat > "$PHP_INI_DIR/conf.d/session.ini" <<'EOF'
-session.save_path = "/var/www/html/var/sessions"
-session.gc_maxlifetime = 3600
-session.cookie_httponly = 1
-session.cookie_samesite = "Lax"
-session.use_strict_mode = 1
-EOF
-
-# Configure OPcache for production (separate file for better management)
-RUN cat > "$PHP_INI_DIR/conf.d/opcache-prod.ini" <<'EOF'
-opcache.enable=1
-opcache.enable_cli=1
-opcache.memory_consumption=256
-opcache.interned_strings_buffer=16
-opcache.max_accelerated_files=20000
-opcache.validate_timestamps=0
-opcache.revalidate_freq=0
-EOF
-
-# Configure PHP-FPM to listen on TCP 127.0.0.1:9000 (matches nginx upstream).
-# Unix-socket variant had race + ENOENT in supervisor-managed scenarios; TCP
-# is loopback-only so the perf hit is negligible and the wire-up is robust.
-RUN sed -i 's|listen = .*|listen = 127.0.0.1:9000|' /usr/local/etc/php-fpm.d/www.conf \
-    && (test -f /usr/local/etc/php-fpm.d/zz-docker.conf && \
-        sed -i 's|listen = .*|listen = 127.0.0.1:9000|' /usr/local/etc/php-fpm.d/zz-docker.conf || true)
+# Configure PHP-INI fragments + PHP-FPM listen address in one consolidated RUN
+# (DL3059 — fewer consecutive RUNs = fewer image layers).
+#
+# Session storage: PHP defaults to /var/lib/php/sessions which doesn't exist in
+# this container — Symfony framework.yaml save_path overrides per-request, but
+# any code path using PHP-native session_start() before the kernel would
+# silently fail to persist.
+#
+# OPcache: production-tuned (no timestamp revalidation, big string buffer).
+#
+# PHP-FPM: switch to TCP 127.0.0.1:9000 (nginx upstream); unix-socket variant
+# had race + ENOENT in supervisor-managed scenarios. `if/then/fi` instead of
+# `&& ... || true` so non-existent zz-docker.conf is a clean no-op (SC2015).
+RUN { \
+        echo 'session.save_path = "/var/www/html/var/sessions"'; \
+        echo 'session.gc_maxlifetime = 3600'; \
+        echo 'session.cookie_httponly = 1'; \
+        echo 'session.cookie_samesite = "Lax"'; \
+        echo 'session.use_strict_mode = 1'; \
+    } > "$PHP_INI_DIR/conf.d/session.ini" && \
+    { \
+        echo 'opcache.enable=1'; \
+        echo 'opcache.enable_cli=1'; \
+        echo 'opcache.memory_consumption=256'; \
+        echo 'opcache.interned_strings_buffer=16'; \
+        echo 'opcache.max_accelerated_files=20000'; \
+        echo 'opcache.validate_timestamps=0'; \
+        echo 'opcache.revalidate_freq=0'; \
+    } > "$PHP_INI_DIR/conf.d/opcache-prod.ini" && \
+    sed -i 's|listen = .*|listen = 127.0.0.1:9000|' /usr/local/etc/php-fpm.d/www.conf && \
+    if [ -f /usr/local/etc/php-fpm.d/zz-docker.conf ]; then \
+        sed -i 's|listen = .*|listen = 127.0.0.1:9000|' /usr/local/etc/php-fpm.d/zz-docker.conf; \
+    fi
 
 # Configure MariaDB for standalone deployment
 # Note: Data is stored in /var/www/html/var/mysql (part of app volume), not /var/lib/mysql
@@ -213,11 +216,12 @@ RUN echo "xdebug.mode=debug,coverage" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xde
 # So we just need to replace it with the development version
 RUN cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
-# Clean vendor from production stage and install all dependencies including dev
-# Use --no-scripts first since we already have bin/console but need to reinstall vendor
+# Clean vendor from production stage and install all dependencies including dev.
+# auto-scripts wrapped in `{ ...; }` so its tolerated failure doesn't mask a
+# preceding `composer install` failure (SC2015 — `A && B || C` is not if-then-else).
 RUN rm -rf vendor/ && \
     composer install --optimize-autoloader --no-interaction --no-scripts --verbose && \
-    composer run-script auto-scripts || true
+    { composer run-script auto-scripts || true; }
 
 # Replace production OPcache config with development version
 RUN cat > "$PHP_INI_DIR/conf.d/opcache-prod.ini" <<'EOF'
