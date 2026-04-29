@@ -1,0 +1,76 @@
+baseline:
+  id: dora-finance
+  name: 'DORA - Banken / Versicherer (BaFin/DORA)'
+  name_en: 'DORA - Banking / Insurance (BaFin/DORA)'
+  industry: finance
+  description: |
+    Baseline für regulierte Finanzinstitute unter BaFin-MaRisk/BAIT/VAIT und EU-DORA.
+    Extreme Anforderungen an ICT-Resilienz, Drittparteien-Risiko und Resilience-Testing
+    (TLPT). Bußgeld-Risiko hoch, Aufsicht prüft kontinuierlich.
+    Fokus: ICT-Risk-Management, TPRM, BCM, Reporting an Aufsicht.
+  description_en: |
+    Baseline for regulated financial institutions under BaFin-MaRisk/BAIT/VAIT and
+    EU-DORA. Extreme requirements on ICT resilience, third-party risk and resilience
+    testing (TLPT). Penalty risk is high, supervisor reviews continuously.
+    Focus: ICT risk mgmt, TPRM, BCM, supervisory reporting.
+  targets:
+    "Art.5":
+      maturity_target: "5"
+      reason: "ICT-Risk-Mgmt-Framework in Finanzbranche: BaFin-MaRisk/BAIT verlangt formell verabschiedete IT-Strategie — Vorstand haftet persönlich."
+      reason_en: "ICT risk mgmt framework in finance: BaFin MaRisk/BAIT requires formally adopted IT strategy — board is personally liable."
+    "Art.6":
+      maturity_target: "5"
+      reason: "ICT-Risk-Strategie in Finanzbranche: BaFin-MaRisk/BAIT verlangt formell verabschiedete IT-Strategie — Vorstand haftet persönlich."
+      reason_en: "ICT risk strategy in finance: BaFin MaRisk/BAIT requires formally adopted IT strategy — board is personally liable."
+    "Art.7":
+      maturity_target: "4"
+      reason: "ICT-Systeme und Tools in Finanzbranche: BAIT 4.1 verlangt vollständiges IT-Asset-Inventar mit Kritikalitätsklassifizierung."
+      reason_en: "ICT systems and tools in finance: BAIT 4.1 demands a complete IT asset inventory with criticality classification."
+    "Art.8":
+      maturity_target: "4"
+      reason: "Asset-Identifikation in Finanzbranche: BAIT 4.1 verlangt vollständiges IT-Asset-Inventar mit Kritikalitätsklassifizierung."
+      reason_en: "Identification in finance: BAIT 4.1 demands a complete IT asset inventory with criticality classification."
+    "Art.9":
+      maturity_target: "5"
+      reason: "Schutz und Prävention in Finanzbranche: privilegierte Zugriffe auf Kernbankensysteme/Trading sind FIN-/Lazarus-Top-Ziel — PAM mit MFA Pflicht."
+      reason_en: "Protection and prevention in finance: privileged access to core banking/trading systems is FIN/Lazarus top target — PAM with MFA is mandatory."
+    "Art.10":
+      maturity_target: "5"
+      reason: "Detection in Finanzbranche: Markt-Manipulation und Fraud-Detection erfordern korreliertes 24/7-SOC mit AML-Anbindung."
+      reason_en: "Detection in finance: market manipulation and fraud detection require correlated 24/7 SOC with AML integration."
+    "Art.11":
+      maturity_target: "5"
+      reason: "Response and Recovery in Finanzbranche: DORA Art. 17 schreibt strukturiertes ICT-Incident-Reporting an BaFin und ESAs vor (Major Incidents binnen 4h)."
+      reason_en: "Response and recovery in finance: DORA Art. 17 mandates structured ICT incident reporting to BaFin and ESAs (major incidents within 4h)."
+    "Art.12":
+      maturity_target: "5"
+      reason: "Backup und Restore in Finanzbranche: Versicherungs-/Bankgeschäft braucht RTO < 2h für kritische Funktionen — DORA Art. 11/12 Standard."
+      reason_en: "Backup and restoration in finance: insurance/banking demand RTO < 2h for critical functions — DORA Art. 11/12 standard."
+    "Art.13":
+      maturity_target: "5"
+      reason: "Learning und Evolving in Finanzbranche: BaFin-Audits, DORA-Reporting, MaRisk-Berichte sind kontinuierlich, parallele Frameworks erfordern hohe Reife."
+      reason_en: "Learning and evolving in finance: BaFin audits, DORA reporting, MaRisk reports are continuous; parallel frameworks demand high maturity."
+    "Art.14":
+      maturity_target: "5"
+      reason: "Krisen-Kommunikation in Finanzbranche: DORA Art. 17 schreibt strukturiertes ICT-Incident-Reporting an BaFin und ESAs vor (Major Incidents binnen 4h)."
+      reason_en: "Communication in finance: DORA Art. 17 mandates structured ICT incident reporting to BaFin and ESAs (major incidents within 4h)."
+    "Art.15":
+      maturity_target: "5"
+      reason: "Simplified Framework in Finanzbranche: BaFin-Audits, DORA-Reporting, MaRisk-Berichte sind kontinuierlich, parallele Frameworks erfordern hohe Reife."
+      reason_en: "Simplified framework in finance: BaFin audits, DORA reporting, MaRisk reports are continuous; parallel frameworks demand high maturity."
+    "Art.17":
+      maturity_target: "5"
+      reason: "ICT-Incident-Mgmt in Finanzbranche: DORA Art. 17 schreibt strukturiertes ICT-Incident-Reporting an BaFin und ESAs vor (Major Incidents binnen 4h)."
+      reason_en: "ICT incident mgmt in finance: DORA Art. 17 mandates structured ICT incident reporting to BaFin and ESAs (major incidents within 4h)."
+    "Art.24":
+      maturity_target: "5"
+      reason: "Resilience-Testing in Finanzbranche: BAIT 7.4 verlangt strukturiertes Schwachstellen-Management; DORA Art. 24 fordert TLPT (Threat-Led-Penetration-Testing)."
+      reason_en: "Operational resilience testing in finance: BAIT 7.4 demands structured vulnerability mgmt; DORA Art. 24 mandates TLPT (threat-led penetration testing)."
+    "Art.28":
+      maturity_target: "5"
+      reason: "Third-Party-Risk in Finanzbranche: DORA Art. 28 verlangt vollständiges TPRM mit Konzentrations-Risiko-Analyse, ungenügendes Vendor-Mgmt ist BaFin-Top-Finding."
+      reason_en: "Third-party risk mgmt in finance: DORA Art. 28 demands full TPRM with concentration-risk analysis; weak vendor mgmt is a top BaFin finding."
+    "Art.30":
+      maturity_target: "5"
+      reason: "Vertragsklauseln in Finanzbranche: DORA Art. 28 verlangt vollständiges TPRM mit Konzentrations-Risiko-Analyse, ungenügendes Vendor-Mgmt ist BaFin-Top-Finding."
+      reason_en: "Contractual provisions in finance: DORA Art. 28 demands full TPRM with concentration-risk analysis; weak vendor mgmt is a top BaFin finding."

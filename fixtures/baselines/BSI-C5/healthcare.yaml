@@ -1,0 +1,112 @@
+baseline:
+  id: bsi-c5-healthcare
+  name: 'BSI-C5 - Krankenhäuser / MDR / GxP'
+  name_en: 'BSI-C5 - Hospitals / MDR / GxP'
+  industry: healthcare
+  description: |
+    Baseline für Krankenhäuser (KHZG, B3S Gesundheit), Medizinprodukte-Hersteller
+    (MDR, FDA 21 CFR Part 11) und Pharma-GxP. Verfügbarkeits-Druck (Patientensicherheit),
+    hochsensible Gesundheitsdaten (DSGVO Art. 9), Ransomware-Top-Ziel.
+    Fokus: Datenschutz, Verfügbarkeit, Audit-Trail, Validierte Systeme.
+  description_en: |
+    Baseline for hospitals (KHZG, B3S Health), medical-device manufacturers (MDR,
+    FDA 21 CFR Part 11) and pharma GxP. Availability pressure (patient safety),
+    highly sensitive health data (GDPR Art. 9), top ransomware target.
+    Focus: privacy, availability, audit trail, validated systems.
+  targets:
+    "AM-01":
+      maturity_target: "4"
+      reason: "Asset-Management in Healthcare: Medizingeräte-Inventar mit Software-Versionen ist B3S-Pflicht, Schutzbedarf je Modalität dokumentiert."
+      reason_en: "Asset management in healthcare: medical-device inventory with software versions is a B3S mandate; protection per modality documented."
+    "BCM-01":
+      maturity_target: "5"
+      reason: "BCM-Top-Level in Healthcare: Patientensicherheit erzwingt RTO < 1h für klinische Kernsysteme (KIS, PACS) — manueller Notbetrieb dokumentiert."
+      reason_en: "BCM governance in healthcare: patient safety enforces RTO < 1h for clinical core systems (HIS, PACS); manual fallback documented."
+    "BEI-01":
+      maturity_target: "4"
+      reason: "Beschaffung in Healthcare: Medizingeräte-Hersteller mit MDR-Pflicht, Cloud-Health-Dienste mit BSI-C5-Audits — strenger als Industriestandard."
+      reason_en: "Procurement in healthcare: medical device manufacturers under MDR, cloud health services with BSI-C5 audits — stricter than industry standard."
+    "BEI-04":
+      maturity_target: "4"
+      reason: "Beschaffungs-Sicherheit in Healthcare: Medizingeräte-Hersteller mit MDR-Pflicht, Cloud-Health-Dienste mit BSI-C5-Audits — strenger als Industriestandard."
+      reason_en: "Procurement security in healthcare: medical device manufacturers under MDR, cloud health services with BSI-C5 audits — stricter than industry standard."
+    "BFM-01":
+      maturity_target: "5"
+      reason: "Berechtigungs-Management in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Authorisation management in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "COS-01":
+      maturity_target: "5"
+      reason: "Compliance-Steuerung in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Compliance steering in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "DEV-01":
+      maturity_target: "3"
+      reason: "Secure Development in Healthcare: MDR Class IIb/III medizingeräte-Software unterliegt IEC 62304 + IEC 81001-5-1 (Cyber-Sec), formaler SDLC zwingend."
+      reason_en: "Secure development in healthcare: MDR Class IIb/III medical-device software falls under IEC 62304 + IEC 81001-5-1; formal SDLC mandatory."
+    "DEV-02":
+      maturity_target: "3"
+      reason: "Security-Testing in Dev in Healthcare: MDR Class IIb/III medizingeräte-Software unterliegt IEC 62304 + IEC 81001-5-1 (Cyber-Sec), formaler SDLC zwingend."
+      reason_en: "Security testing in dev in healthcare: MDR Class IIb/III medical-device software falls under IEC 62304 + IEC 81001-5-1; formal SDLC mandatory."
+    "HR-03":
+      maturity_target: "4"
+      reason: "Personal-Sicherheit in Healthcare: Klinik-Personal mit hoher Stundenbelastung — schnelle, visuelle Awareness und Phishing-Simulation Standard."
+      reason_en: "HR security in healthcare: clinical staff with high workload need fast, visual awareness and phishing simulation."
+    "IDM-01":
+      maturity_target: "5"
+      reason: "Identity-Management in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Identity management in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "IDM-02":
+      maturity_target: "5"
+      reason: "Authentisierung in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Authentication in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "IDM-09":
+      maturity_target: "5"
+      reason: "Privileged-Account-Mgmt in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Privileged account mgmt in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "KOS-01":
+      maturity_target: "5"
+      reason: "Kommunikationssicherheit in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Communications security in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "KRY-01":
+      maturity_target: "5"
+      reason: "Kryptografie-Policy in Healthcare: Patientendaten Art. 9 DSGVO erfordern Encryption-at-Rest und in-Transit, FHIR-Standards mit TLS 1.3."
+      reason_en: "Cryptography policy in healthcare: GDPR Art. 9 patient data demands encryption at rest and in transit; FHIR with TLS 1.3."
+    "MA-01":
+      maturity_target: "5"
+      reason: "Mandantenabgrenzung in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Tenant separation in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "OPS-01":
+      maturity_target: "4"
+      reason: "Operations-Mgmt in Healthcare: Validierte GxP-Systeme erfordern Change-Control mit IQ/OQ/PQ-Re-Validierung — Audit-Trail FDA Part 11."
+      reason_en: "Operations management in healthcare: validated GxP systems demand change control with IQ/OQ/PQ revalidation; FDA Part 11 audit trail."
+    "OPS-10":
+      maturity_target: "4"
+      reason: "Logging und Monitoring in Healthcare: 24/7-Monitoring der Klinik-IT mit medizingeräte-spezifischen Alerts, B3S-Gesundheit-konform."
+      reason_en: "Logging and monitoring in healthcare: 24/7 clinic IT monitoring with medical-device-specific alerts; B3S Health compliant."
+    "OPS-15":
+      maturity_target: "4"
+      reason: "Patch-Management in Healthcare: Medizingeräte sind oft EOL/ungepatcht — Mikrosegmentierung kompensierend; B3S verlangt Schwachstellen-Mgmt."
+      reason_en: "Patch management in healthcare: medical devices are often EOL/unpatched — micro-segmentation compensates; B3S demands vulnerability mgmt."
+    "OPS-18":
+      maturity_target: "5"
+      reason: "Backup in Healthcare: Patientensicherheit erzwingt RTO < 1h für klinische Kernsysteme (KIS, PACS) — manueller Notbetrieb dokumentiert."
+      reason_en: "Backup in healthcare: patient safety enforces RTO < 1h for clinical core systems (HIS, PACS); manual fallback documented."
+    "PI-01":
+      maturity_target: "4"
+      reason: "Portabilität und Interoperabilität in Healthcare: KHZG-Förderung erzwingt formelle InfoSec-Policies; Krankenhaus-Vorstand zunehmend persönlich haftbar."
+      reason_en: "Portability/interop in healthcare: KHZG funding mandates formal InfoSec policies; hospital boards increasingly personally liable."
+    "PSC-01":
+      maturity_target: "4"
+      reason: "Physische Sicherheit in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Physical security in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "RB-01":
+      maturity_target: "5"
+      reason: "Regulatory Baseline in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Regulatory baseline in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "RB-04":
+      maturity_target: "5"
+      reason: "Regulatory Reporting in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Regulatory reporting in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "SIM-01":
+      maturity_target: "5"
+      reason: "Security Incident Mgmt in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "Security incident mgmt in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."

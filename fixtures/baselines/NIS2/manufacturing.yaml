@@ -1,0 +1,55 @@
+baseline:
+  id: nis2-manufacturing
+  name: 'NIS2 - Fertigung / Automotive (TISAX)'
+  name_en: 'NIS2 - Manufacturing / Automotive (TISAX)'
+  industry: manufacturing
+  description: |
+    Baseline für Fertigungsunternehmen, insb. Automotive-Zulieferer im TISAX-Scope.
+    Kern-Themen: Prototypen-Schutz, OT/Office-Trennung, Lieferantensicherheit. TISAX-
+    Self-Assessment Level 2/3 ist Industrie-Standard. OEM-Audits sind unmittelbar
+    Geschäfts-relevant.
+  description_en: |
+    Baseline for manufacturing, esp. automotive suppliers in TISAX scope. Core themes:
+    prototype protection, OT/office segregation, supplier security. TISAX self-assessment
+    level 2/3 is industry standard. OEM audits are directly business-relevant.
+  targets:
+    "21.2.a":
+      maturity_target: "3"
+      reason: "Risiko-Policies in Fertigung: TISAX-Anforderung an verabschiedete Policies — OEM-Auditoren prüfen Existenz und Aktualität strikt."
+      reason_en: "Risk policies in manufacturing: TISAX requires adopted policies — OEM auditors verify existence and currency strictly."
+    "21.2.b":
+      maturity_target: "3"
+      reason: "Incident-Handling in Fertigung: Produktionsausfall durch Cyber ist teuer — strukturiertes Incident-Mgmt mit OEM-Notifikation Pflicht."
+      reason_en: "Incident handling in manufacturing: production downtime due to cyber is expensive — structured incident mgmt with OEM notification is mandatory."
+    "21.2.c":
+      maturity_target: "3"
+      reason: "Business-Continuity in Fertigung: Just-in-Time-Lieferketten bedeuten kurze Toleranz — RTO 24h für Auslieferung kritisch."
+      reason_en: "Business continuity in manufacturing: just-in-time supply chains have low tolerance — RTO 24h for delivery is critical."
+    "21.2.d":
+      maturity_target: "4"
+      reason: "Lieferketten-Sicherheit in Fertigung: Tier-2/Tier-3-Zulieferer im Automotive-Wertstrom müssen TISAX-konform sein, Sub-Supplier-Audits üblich."
+      reason_en: "Supply-chain security in manufacturing: Tier-2/Tier-3 suppliers in the automotive value chain must be TISAX-conformant; sub-supplier audits common."
+    "21.2.e":
+      maturity_target: "3"
+      reason: "Sichere Entwicklung in Fertigung: Embedded-Software in Steuergeräten verlangt MISRA-C/Secure-SDLC, OEM-OEM-Lasten­hefte (BMW IT-SR) sind verbindlich."
+      reason_en: "Secure development in manufacturing: embedded software in ECUs demands MISRA-C/secure SDLC; OEM specs (BMW IT-SR) are binding."
+    "21.2.f":
+      maturity_target: "3"
+      reason: "Wirksamkeitsmessung in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "Effectiveness measurement in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "21.2.g":
+      maturity_target: "3"
+      reason: "Cyber-Hygiene und Training in Fertigung: Werker am Shopfloor brauchen einfache, visuelle Awareness — gedruckte Poster + Toolbox-Talks effizienter als E-Learning."
+      reason_en: "Cyber hygiene/training in manufacturing: shopfloor workers need simple, visual awareness — printed posters and toolbox talks beat e-learning."
+    "21.2.h":
+      maturity_target: "3"
+      reason: "Kryptografie-Policy in Fertigung: Engineering-Daten und CAD-IP brauchen At-Rest-Encryption, KEM-Schlüssel-Rotation Standard."
+      reason_en: "Cryptography policy in manufacturing: engineering data and CAD IP need at-rest encryption; KEM key rotation is standard."
+    "21.2.i":
+      maturity_target: "4"
+      reason: "HR-Security und Access-Control in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "HR security and access control in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "21.2.j":
+      maturity_target: "4"
+      reason: "MFA und sichere Kommunikation in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "MFA and secure comms in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."

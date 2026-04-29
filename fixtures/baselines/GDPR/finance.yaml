@@ -1,0 +1,80 @@
+baseline:
+  id: gdpr-finance
+  name: 'GDPR - Banken / Versicherer (BaFin/DORA)'
+  name_en: 'GDPR - Banking / Insurance (BaFin/DORA)'
+  industry: finance
+  description: |
+    Baseline für regulierte Finanzinstitute unter BaFin-MaRisk/BAIT/VAIT und EU-DORA.
+    Extreme Anforderungen an ICT-Resilienz, Drittparteien-Risiko und Resilience-Testing
+    (TLPT). Bußgeld-Risiko hoch, Aufsicht prüft kontinuierlich.
+    Fokus: ICT-Risk-Management, TPRM, BCM, Reporting an Aufsicht.
+  description_en: |
+    Baseline for regulated financial institutions under BaFin-MaRisk/BAIT/VAIT and
+    EU-DORA. Extreme requirements on ICT resilience, third-party risk and resilience
+    testing (TLPT). Penalty risk is high, supervisor reviews continuously.
+    Focus: ICT risk mgmt, TPRM, BCM, supervisory reporting.
+  targets:
+    "Art.13":
+      maturity_target: "5"
+      reason: "Informationspflichten in Finanzbranche: Kontodaten und Trading-Records sind DSGVO + Bankgeheimnis + AML — höchste Sensibilität."
+      reason_en: "Information duties in finance: account data and trading records combine GDPR + bank secrecy + AML — highest sensitivity."
+    "Art.15":
+      maturity_target: "5"
+      reason: "Auskunftsrecht in Finanzbranche: Kontodaten und Trading-Records sind DSGVO + Bankgeheimnis + AML — höchste Sensibilität."
+      reason_en: "Right of access in finance: account data and trading records combine GDPR + bank secrecy + AML — highest sensitivity."
+    "Art.17":
+      maturity_target: "5"
+      reason: "Löschrecht in Finanzbranche: Kontodaten und Trading-Records sind DSGVO + Bankgeheimnis + AML — höchste Sensibilität."
+      reason_en: "Right to erasure in finance: account data and trading records combine GDPR + bank secrecy + AML — highest sensitivity."
+    "Art.20":
+      maturity_target: "5"
+      reason: "Datenportabilität in Finanzbranche: Kontodaten und Trading-Records sind DSGVO + Bankgeheimnis + AML — höchste Sensibilität."
+      reason_en: "Data portability in finance: account data and trading records combine GDPR + bank secrecy + AML — highest sensitivity."
+    "Art.25":
+      maturity_target: "4"
+      reason: "Privacy by Design in Finanzbranche: Kernbankensysteme verlangen formellen Secure-SDLC mit DSGVO-Privacy-by-Design und FAT/UAT-Trennung."
+      reason_en: "Privacy by design in finance: core banking demands formal secure SDLC with GDPR privacy-by-design and FAT/UAT separation."
+    "Art.28":
+      maturity_target: "5"
+      reason: "Auftragsverarbeitung in Finanzbranche: DORA Art. 28 verlangt vollständiges TPRM mit Konzentrations-Risiko-Analyse, ungenügendes Vendor-Mgmt ist BaFin-Top-Finding."
+      reason_en: "Processor agreements in finance: DORA Art. 28 demands full TPRM with concentration-risk analysis; weak vendor mgmt is a top BaFin finding."
+    "Art.30":
+      maturity_target: "5"
+      reason: "Verarbeitungs-Verzeichnis in Finanzbranche: BaFin-Audits, DORA-Reporting, MaRisk-Berichte sind kontinuierlich, parallele Frameworks erfordern hohe Reife."
+      reason_en: "Records of processing in finance: BaFin audits, DORA reporting, MaRisk reports are continuous; parallel frameworks demand high maturity."
+    "Art.32":
+      maturity_target: "5"
+      reason: "TOMs / Sicherheit in Finanzbranche: PSD2/SWIFT/HSM-Pflicht treibt Crypto-Reife — Schlüsselrotation und FIPS-140-3-Validierung Standard."
+      reason_en: "Security of processing in finance: PSD2/SWIFT/HSM mandates drive crypto maturity — key rotation and FIPS 140-3 validation are standard."
+    "Art.33":
+      maturity_target: "5"
+      reason: "Breach-Notification an Aufsicht in Finanzbranche: DORA Art. 17 schreibt strukturiertes ICT-Incident-Reporting an BaFin und ESAs vor (Major Incidents binnen 4h)."
+      reason_en: "Breach notification in finance: DORA Art. 17 mandates structured ICT incident reporting to BaFin and ESAs (major incidents within 4h)."
+    "Art.34":
+      maturity_target: "5"
+      reason: "Breach-Notification an Betroffene in Finanzbranche: DORA Art. 17 schreibt strukturiertes ICT-Incident-Reporting an BaFin und ESAs vor (Major Incidents binnen 4h)."
+      reason_en: "Notification to data subjects in finance: DORA Art. 17 mandates structured ICT incident reporting to BaFin and ESAs (major incidents within 4h)."
+    "Art.35":
+      maturity_target: "5"
+      reason: "DSFA / DPIA in Finanzbranche: BaFin-MaRisk/BAIT verlangt formell verabschiedete IT-Strategie — Vorstand haftet persönlich."
+      reason_en: "DPIA in finance: BaFin MaRisk/BAIT requires formally adopted IT strategy — board is personally liable."
+    "Art.37":
+      maturity_target: "5"
+      reason: "DSB / DPO in Finanzbranche: BaFin-MaRisk/BAIT verlangt formell verabschiedete IT-Strategie — Vorstand haftet persönlich."
+      reason_en: "Data protection officer in finance: BaFin MaRisk/BAIT requires formally adopted IT strategy — board is personally liable."
+    "Art.44":
+      maturity_target: "5"
+      reason: "Drittlandstransfers in Finanzbranche: BaFin-Audits, DORA-Reporting, MaRisk-Berichte sind kontinuierlich, parallele Frameworks erfordern hohe Reife."
+      reason_en: "International transfers in finance: BaFin audits, DORA reporting, MaRisk reports are continuous; parallel frameworks demand high maturity."
+    "Art.5":
+      maturity_target: "5"
+      reason: "Verarbeitungs-Grundsätze in Finanzbranche: Kontodaten und Trading-Records sind DSGVO + Bankgeheimnis + AML — höchste Sensibilität."
+      reason_en: "Processing principles in finance: account data and trading records combine GDPR + bank secrecy + AML — highest sensitivity."
+    "Art.6":
+      maturity_target: "5"
+      reason: "Rechtmäßigkeit in Finanzbranche: Kontodaten und Trading-Records sind DSGVO + Bankgeheimnis + AML — höchste Sensibilität."
+      reason_en: "Lawfulness in finance: account data and trading records combine GDPR + bank secrecy + AML — highest sensitivity."
+    "Art.7":
+      maturity_target: "5"
+      reason: "Einwilligung in Finanzbranche: Kontodaten und Trading-Records sind DSGVO + Bankgeheimnis + AML — höchste Sensibilität."
+      reason_en: "Consent in finance: account data and trading records combine GDPR + bank secrecy + AML — highest sensitivity."

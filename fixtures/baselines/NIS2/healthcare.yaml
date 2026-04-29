@@ -1,0 +1,56 @@
+baseline:
+  id: nis2-healthcare
+  name: 'NIS2 - Krankenhäuser / MDR / GxP'
+  name_en: 'NIS2 - Hospitals / MDR / GxP'
+  industry: healthcare
+  description: |
+    Baseline für Krankenhäuser (KHZG, B3S Gesundheit), Medizinprodukte-Hersteller
+    (MDR, FDA 21 CFR Part 11) und Pharma-GxP. Verfügbarkeits-Druck (Patientensicherheit),
+    hochsensible Gesundheitsdaten (DSGVO Art. 9), Ransomware-Top-Ziel.
+    Fokus: Datenschutz, Verfügbarkeit, Audit-Trail, Validierte Systeme.
+  description_en: |
+    Baseline for hospitals (KHZG, B3S Health), medical-device manufacturers (MDR,
+    FDA 21 CFR Part 11) and pharma GxP. Availability pressure (patient safety),
+    highly sensitive health data (GDPR Art. 9), top ransomware target.
+    Focus: privacy, availability, audit trail, validated systems.
+  targets:
+    "21.2.a":
+      maturity_target: "4"
+      reason: "Risiko-Policies in Healthcare: KHZG-Förderung erzwingt formelle InfoSec-Policies; Krankenhaus-Vorstand zunehmend persönlich haftbar."
+      reason_en: "Risk policies in healthcare: KHZG funding mandates formal InfoSec policies; hospital boards increasingly personally liable."
+    "21.2.b":
+      maturity_target: "5"
+      reason: "Incident-Handling in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "Incident handling in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."
+    "21.2.c":
+      maturity_target: "5"
+      reason: "Business-Continuity in Healthcare: Patientensicherheit erzwingt RTO < 1h für klinische Kernsysteme (KIS, PACS) — manueller Notbetrieb dokumentiert."
+      reason_en: "Business continuity in healthcare: patient safety enforces RTO < 1h for clinical core systems (HIS, PACS); manual fallback documented."
+    "21.2.d":
+      maturity_target: "4"
+      reason: "Lieferketten-Sicherheit in Healthcare: Medizingeräte-Hersteller mit MDR-Pflicht, Cloud-Health-Dienste mit BSI-C5-Audits — strenger als Industriestandard."
+      reason_en: "Supply-chain security in healthcare: medical device manufacturers under MDR, cloud health services with BSI-C5 audits — stricter than industry standard."
+    "21.2.e":
+      maturity_target: "3"
+      reason: "Sichere Entwicklung in Healthcare: MDR Class IIb/III medizingeräte-Software unterliegt IEC 62304 + IEC 81001-5-1 (Cyber-Sec), formaler SDLC zwingend."
+      reason_en: "Secure development in healthcare: MDR Class IIb/III medical-device software falls under IEC 62304 + IEC 81001-5-1; formal SDLC mandatory."
+    "21.2.f":
+      maturity_target: "5"
+      reason: "Wirksamkeitsmessung in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Effectiveness measurement in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "21.2.g":
+      maturity_target: "4"
+      reason: "Cyber-Hygiene und Training in Healthcare: Klinik-Personal mit hoher Stundenbelastung — schnelle, visuelle Awareness und Phishing-Simulation Standard."
+      reason_en: "Cyber hygiene/training in healthcare: clinical staff with high workload need fast, visual awareness and phishing simulation."
+    "21.2.h":
+      maturity_target: "5"
+      reason: "Kryptografie-Policy in Healthcare: Patientendaten Art. 9 DSGVO erfordern Encryption-at-Rest und in-Transit, FHIR-Standards mit TLS 1.3."
+      reason_en: "Cryptography policy in healthcare: GDPR Art. 9 patient data demands encryption at rest and in transit; FHIR with TLS 1.3."
+    "21.2.i":
+      maturity_target: "5"
+      reason: "HR-Security und Access-Control in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "HR security and access control in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "21.2.j":
+      maturity_target: "5"
+      reason: "MFA und sichere Kommunikation in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "MFA and secure comms in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."

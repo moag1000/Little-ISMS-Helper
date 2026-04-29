@@ -1,0 +1,412 @@
+baseline:
+  id: tisax-healthcare
+  name: 'TISAX - Krankenhäuser / MDR / GxP'
+  name_en: 'TISAX - Hospitals / MDR / GxP'
+  industry: healthcare
+  description: |
+    Baseline für Krankenhäuser (KHZG, B3S Gesundheit), Medizinprodukte-Hersteller
+    (MDR, FDA 21 CFR Part 11) und Pharma-GxP. Verfügbarkeits-Druck (Patientensicherheit),
+    hochsensible Gesundheitsdaten (DSGVO Art. 9), Ransomware-Top-Ziel.
+    Fokus: Datenschutz, Verfügbarkeit, Audit-Trail, Validierte Systeme.
+  description_en: |
+    Baseline for hospitals (KHZG, B3S Health), medical-device manufacturers (MDR,
+    FDA 21 CFR Part 11) and pharma GxP. Availability pressure (patient safety),
+    highly sensitive health data (GDPR Art. 9), top ransomware target.
+    Focus: privacy, availability, audit trail, validated systems.
+  targets:
+    "ACC-1.1":
+      maturity_target: "5"
+      reason: "Access-Control-Policy in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Access-Control-Policy in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "ACC-2.1":
+      maturity_target: "5"
+      reason: "Berechtigungsmanagement in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Berechtigungsmanagement in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "ACC-2.2":
+      maturity_target: "5"
+      reason: "Privilegierte Zugriffe in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Privilegierte Zugriffe in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "ACC-2.3":
+      maturity_target: "5"
+      reason: "User-Lifecycle in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "User-Lifecycle in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "ACC-2.4":
+      maturity_target: "5"
+      reason: "Authentisierung in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Authentisierung in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "ACC-2.5":
+      maturity_target: "5"
+      reason: "MFA / Starke Auth in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "MFA / Starke Auth in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "ACC-3.1":
+      maturity_target: "5"
+      reason: "Logischer Zugriff Apps in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Logischer Zugriff Apps in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "ACC-3.2":
+      maturity_target: "5"
+      reason: "Logischer Zugriff Daten in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Logischer Zugriff Daten in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "ACC-3.3":
+      maturity_target: "5"
+      reason: "Remote-Access in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Remote-Access in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "ACC-3.4":
+      maturity_target: "5"
+      reason: "Externe Zugriffe in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Externe Zugriffe in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "ACC-3.5":
+      maturity_target: "5"
+      reason: "Zugriffs-Reviews in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Zugriffs-Reviews in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "BCM-1.1":
+      maturity_target: "5"
+      reason: "BCM-Strategie in Healthcare: Patientensicherheit erzwingt RTO < 1h für klinische Kernsysteme (KIS, PACS) — manueller Notbetrieb dokumentiert."
+      reason_en: "BCM-Strategie in healthcare: patient safety enforces RTO < 1h for clinical core systems (HIS, PACS); manual fallback documented."
+    "BCM-1.2":
+      maturity_target: "5"
+      reason: "BC-Übungen in Healthcare: Patientensicherheit erzwingt RTO < 1h für klinische Kernsysteme (KIS, PACS) — manueller Notbetrieb dokumentiert."
+      reason_en: "BC-Übungen in healthcare: patient safety enforces RTO < 1h for clinical core systems (HIS, PACS); manual fallback documented."
+    "CMP-1.1":
+      maturity_target: "5"
+      reason: "Compliance-Anforderungen in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Compliance-Anforderungen in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "CMP-1.2":
+      maturity_target: "5"
+      reason: "Geistiges Eigentum in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Geistiges Eigentum in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "CMP-1.3":
+      maturity_target: "5"
+      reason: "Datenschutz / GDPR in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Datenschutz / GDPR in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "CMP-1.4":
+      maturity_target: "5"
+      reason: "Audit-Reviews in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Audit-Reviews in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "CMP-2.1":
+      maturity_target: "5"
+      reason: "Crypto-Compliance in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Crypto-Compliance in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "CMP-2.2":
+      maturity_target: "5"
+      reason: "Recht und Gesetz in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Recht und Gesetz in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "CMP-2.3":
+      maturity_target: "5"
+      reason: "Audit-Logs Compliance in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Audit-Logs Compliance in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "COM-1.1":
+      maturity_target: "5"
+      reason: "Netzwerksicherheit in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Netzwerksicherheit in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "COM-1.2":
+      maturity_target: "5"
+      reason: "Netzwerk-Segmentierung in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Netzwerk-Segmentierung in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "COM-1.3":
+      maturity_target: "5"
+      reason: "Wireless-Security in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Wireless-Security in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "COM-2.1":
+      maturity_target: "5"
+      reason: "Datenübertragungs-Verschlüsselung in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Datenübertragungs-Verschlüsselung in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "COM-2.2":
+      maturity_target: "5"
+      reason: "E-Mail-Sicherheit in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "E-Mail-Sicherheit in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "COM-2.3":
+      maturity_target: "5"
+      reason: "Kollaborations-Tools in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Kollaborations-Tools in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "COM-2.4":
+      maturity_target: "5"
+      reason: "Datenträger-Versand in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Datenträger-Versand in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "CRY-1.1":
+      maturity_target: "5"
+      reason: "Kryptografie-Policy in Healthcare: Patientendaten Art. 9 DSGVO erfordern Encryption-at-Rest und in-Transit, FHIR-Standards mit TLS 1.3."
+      reason_en: "Kryptografie-Policy in healthcare: GDPR Art. 9 patient data demands encryption at rest and in transit; FHIR with TLS 1.3."
+    "CRY-1.2":
+      maturity_target: "5"
+      reason: "Schlüsselmanagement in Healthcare: Patientendaten Art. 9 DSGVO erfordern Encryption-at-Rest und in-Transit, FHIR-Standards mit TLS 1.3."
+      reason_en: "Schlüsselmanagement in healthcare: GDPR Art. 9 patient data demands encryption at rest and in transit; FHIR with TLS 1.3."
+    "DEV-1.1":
+      maturity_target: "3"
+      reason: "Secure-Development-Policy in Healthcare: MDR Class IIb/III medizingeräte-Software unterliegt IEC 62304 + IEC 81001-5-1 (Cyber-Sec), formaler SDLC zwingend."
+      reason_en: "Secure-Development-Policy in healthcare: MDR Class IIb/III medical-device software falls under IEC 62304 + IEC 81001-5-1; formal SDLC mandatory."
+    "DEV-1.2":
+      maturity_target: "3"
+      reason: "Sichere Entwicklungsumgebung in Healthcare: MDR Class IIb/III medizingeräte-Software unterliegt IEC 62304 + IEC 81001-5-1 (Cyber-Sec), formaler SDLC zwingend."
+      reason_en: "Sichere Entwicklungsumgebung in healthcare: MDR Class IIb/III medical-device software falls under IEC 62304 + IEC 81001-5-1; formal SDLC mandatory."
+    "DEV-2.1":
+      maturity_target: "3"
+      reason: "Sichere Architektur in Healthcare: MDR Class IIb/III medizingeräte-Software unterliegt IEC 62304 + IEC 81001-5-1 (Cyber-Sec), formaler SDLC zwingend."
+      reason_en: "Sichere Architektur in healthcare: MDR Class IIb/III medical-device software falls under IEC 62304 + IEC 81001-5-1; formal SDLC mandatory."
+    "DEV-2.2":
+      maturity_target: "3"
+      reason: "Code-Reviews in Healthcare: MDR Class IIb/III medizingeräte-Software unterliegt IEC 62304 + IEC 81001-5-1 (Cyber-Sec), formaler SDLC zwingend."
+      reason_en: "Code-Reviews in healthcare: MDR Class IIb/III medical-device software falls under IEC 62304 + IEC 81001-5-1; formal SDLC mandatory."
+    "DEV-2.3":
+      maturity_target: "3"
+      reason: "Security-Tests in Healthcare: MDR Class IIb/III medizingeräte-Software unterliegt IEC 62304 + IEC 81001-5-1 (Cyber-Sec), formaler SDLC zwingend."
+      reason_en: "Security-Tests in healthcare: MDR Class IIb/III medical-device software falls under IEC 62304 + IEC 81001-5-1; formal SDLC mandatory."
+    "DEV-3.1":
+      maturity_target: "3"
+      reason: "Outsourced Development in Healthcare: MDR Class IIb/III medizingeräte-Software unterliegt IEC 62304 + IEC 81001-5-1 (Cyber-Sec), formaler SDLC zwingend."
+      reason_en: "Outsourced Development in healthcare: MDR Class IIb/III medical-device software falls under IEC 62304 + IEC 81001-5-1; formal SDLC mandatory."
+    "DEV-3.2":
+      maturity_target: "3"
+      reason: "Software-Acceptance in Healthcare: MDR Class IIb/III medizingeräte-Software unterliegt IEC 62304 + IEC 81001-5-1 (Cyber-Sec), formaler SDLC zwingend."
+      reason_en: "Software-Acceptance in healthcare: MDR Class IIb/III medical-device software falls under IEC 62304 + IEC 81001-5-1; formal SDLC mandatory."
+    "HRS-1.1":
+      maturity_target: "4"
+      reason: "Pre-Employment-Checks in Healthcare: Klinik-Personal mit hoher Stundenbelastung — schnelle, visuelle Awareness und Phishing-Simulation Standard."
+      reason_en: "Pre-Employment-Checks in healthcare: clinical staff with high workload need fast, visual awareness and phishing simulation."
+    "HRS-1.2":
+      maturity_target: "4"
+      reason: "Vertraulichkeit in Healthcare: Klinik-Personal mit hoher Stundenbelastung — schnelle, visuelle Awareness und Phishing-Simulation Standard."
+      reason_en: "Vertraulichkeit in healthcare: clinical staff with high workload need fast, visual awareness and phishing simulation."
+    "HRS-2.1":
+      maturity_target: "4"
+      reason: "InfoSec-Schulung in Healthcare: Klinik-Personal mit hoher Stundenbelastung — schnelle, visuelle Awareness und Phishing-Simulation Standard."
+      reason_en: "InfoSec-Schulung in healthcare: clinical staff with high workload need fast, visual awareness and phishing simulation."
+    "HRS-2.2":
+      maturity_target: "4"
+      reason: "Sensibilisierung in Healthcare: Klinik-Personal mit hoher Stundenbelastung — schnelle, visuelle Awareness und Phishing-Simulation Standard."
+      reason_en: "Sensibilisierung in healthcare: clinical staff with high workload need fast, visual awareness and phishing simulation."
+    "HRS-2.3":
+      maturity_target: "4"
+      reason: "Schulungs-Wirksamkeit in Healthcare: Klinik-Personal mit hoher Stundenbelastung — schnelle, visuelle Awareness und Phishing-Simulation Standard."
+      reason_en: "Schulungs-Wirksamkeit in healthcare: clinical staff with high workload need fast, visual awareness and phishing simulation."
+    "HRS-3.1":
+      maturity_target: "4"
+      reason: "Austritts-Prozess in Healthcare: Klinik-Personal mit hoher Stundenbelastung — schnelle, visuelle Awareness und Phishing-Simulation Standard."
+      reason_en: "Austritts-Prozess in healthcare: clinical staff with high workload need fast, visual awareness and phishing simulation."
+    "INC-1.1":
+      maturity_target: "5"
+      reason: "Incident-Management-Policy in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "Incident-Management-Policy in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."
+    "INC-1.2":
+      maturity_target: "5"
+      reason: "Meldewege in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "Meldewege in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."
+    "INC-1.3":
+      maturity_target: "5"
+      reason: "Incident-Klassifikation in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "Incident-Klassifikation in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."
+    "INC-1.4":
+      maturity_target: "5"
+      reason: "Forensik in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "Forensik in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."
+    "INC-1.5":
+      maturity_target: "5"
+      reason: "Lessons-Learned in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "Lessons-Learned in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."
+    "INC-1.6":
+      maturity_target: "5"
+      reason: "Behörden-Kommunikation in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "Behörden-Kommunikation in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."
+    "INF-1.1":
+      maturity_target: "4"
+      reason: "Sichere Bereiche in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Sichere Bereiche in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "INF-1.2":
+      maturity_target: "4"
+      reason: "Lieferzonen in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Lieferzonen in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "INF-2.1":
+      maturity_target: "4"
+      reason: "Schutz vor Umgebung in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Schutz vor Umgebung in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "INF-3.1":
+      maturity_target: "4"
+      reason: "Verkabelung in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Verkabelung in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "INF-3.2":
+      maturity_target: "4"
+      reason: "Wartung in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Wartung in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "INF-3.3":
+      maturity_target: "4"
+      reason: "Asset-Removal in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Asset-Removal in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "INF-3.4":
+      maturity_target: "4"
+      reason: "Off-Premises-Assets in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Off-Premises-Assets in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "INF-4.1":
+      maturity_target: "4"
+      reason: "Sichere Entsorgung in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Sichere Entsorgung in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "INF-4.2":
+      maturity_target: "4"
+      reason: "Clear-Desk in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Clear-Desk in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "INF-4.3":
+      maturity_target: "4"
+      reason: "Sichere Wiederverwendung in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Sichere Wiederverwendung in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "INF-5.1":
+      maturity_target: "4"
+      reason: "Stromversorgung in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Stromversorgung in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "INF-5.2":
+      maturity_target: "4"
+      reason: "Gebäudetechnik in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Gebäudetechnik in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "MOB-1.1":
+      maturity_target: "5"
+      reason: "Mobile-Device-Policy in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Mobile-Device-Policy in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "MOB-1.2":
+      maturity_target: "5"
+      reason: "Telearbeit in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Telearbeit in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "OPS-1.1":
+      maturity_target: "4"
+      reason: "Betriebs-Dokumentation in Healthcare: Validierte GxP-Systeme erfordern Change-Control mit IQ/OQ/PQ-Re-Validierung — Audit-Trail FDA Part 11."
+      reason_en: "Betriebs-Dokumentation in healthcare: validated GxP systems demand change control with IQ/OQ/PQ revalidation; FDA Part 11 audit trail."
+    "OPS-1.2":
+      maturity_target: "4"
+      reason: "Change-Management in Healthcare: Validierte GxP-Systeme erfordern Change-Control mit IQ/OQ/PQ-Re-Validierung — Audit-Trail FDA Part 11."
+      reason_en: "Change-Management in healthcare: validated GxP systems demand change control with IQ/OQ/PQ revalidation; FDA Part 11 audit trail."
+    "OPS-1.3":
+      maturity_target: "4"
+      reason: "Kapazitätsmanagement in Healthcare: Validierte GxP-Systeme erfordern Change-Control mit IQ/OQ/PQ-Re-Validierung — Audit-Trail FDA Part 11."
+      reason_en: "Kapazitätsmanagement in healthcare: validated GxP systems demand change control with IQ/OQ/PQ revalidation; FDA Part 11 audit trail."
+    "OPS-1.4":
+      maturity_target: "4"
+      reason: "Trennung Dev/Test/Prod in Healthcare: Validierte GxP-Systeme erfordern Change-Control mit IQ/OQ/PQ-Re-Validierung — Audit-Trail FDA Part 11."
+      reason_en: "Trennung Dev/Test/Prod in healthcare: validated GxP systems demand change control with IQ/OQ/PQ revalidation; FDA Part 11 audit trail."
+    "OPS-2.1":
+      maturity_target: "4"
+      reason: "Schutz vor Malware in Healthcare: 24/7-Monitoring der Klinik-IT mit medizingeräte-spezifischen Alerts, B3S-Gesundheit-konform."
+      reason_en: "Schutz vor Malware in healthcare: 24/7 clinic IT monitoring with medical-device-specific alerts; B3S Health compliant."
+    "OPS-3.1":
+      maturity_target: "5"
+      reason: "Backup in Healthcare: Patientensicherheit erzwingt RTO < 1h für klinische Kernsysteme (KIS, PACS) — manueller Notbetrieb dokumentiert."
+      reason_en: "Backup in healthcare: patient safety enforces RTO < 1h for clinical core systems (HIS, PACS); manual fallback documented."
+    "OPS-4.1":
+      maturity_target: "4"
+      reason: "Logging in Healthcare: 24/7-Monitoring der Klinik-IT mit medizingeräte-spezifischen Alerts, B3S-Gesundheit-konform."
+      reason_en: "Logging in healthcare: 24/7 clinic IT monitoring with medical-device-specific alerts; B3S Health compliant."
+    "OPS-4.2":
+      maturity_target: "4"
+      reason: "Admin-Logs in Healthcare: 24/7-Monitoring der Klinik-IT mit medizingeräte-spezifischen Alerts, B3S-Gesundheit-konform."
+      reason_en: "Admin-Logs in healthcare: 24/7 clinic IT monitoring with medical-device-specific alerts; B3S Health compliant."
+    "OPS-4.3":
+      maturity_target: "4"
+      reason: "Log-Schutz in Healthcare: 24/7-Monitoring der Klinik-IT mit medizingeräte-spezifischen Alerts, B3S-Gesundheit-konform."
+      reason_en: "Log-Schutz in healthcare: 24/7 clinic IT monitoring with medical-device-specific alerts; B3S Health compliant."
+    "OPS-4.4":
+      maturity_target: "4"
+      reason: "Zeit-Synchronisation in Healthcare: 24/7-Monitoring der Klinik-IT mit medizingeräte-spezifischen Alerts, B3S-Gesundheit-konform."
+      reason_en: "Zeit-Synchronisation in healthcare: 24/7 clinic IT monitoring with medical-device-specific alerts; B3S Health compliant."
+    "OPS-5.1":
+      maturity_target: "4"
+      reason: "Schwachstellen-Management in Healthcare: Medizingeräte sind oft EOL/ungepatcht — Mikrosegmentierung kompensierend; B3S verlangt Schwachstellen-Mgmt."
+      reason_en: "Schwachstellen-Management in healthcare: medical devices are often EOL/unpatched — micro-segmentation compensates; B3S demands vulnerability mgmt."
+    "OPS-6.1":
+      maturity_target: "5"
+      reason: "Audit-Aktivitäten in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Audit-Aktivitäten in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "OPS-7.1":
+      maturity_target: "4"
+      reason: "Software-Installation in Healthcare: Validierte GxP-Systeme erfordern Change-Control mit IQ/OQ/PQ-Re-Validierung — Audit-Trail FDA Part 11."
+      reason_en: "Software-Installation in healthcare: validated GxP systems demand change control with IQ/OQ/PQ revalidation; FDA Part 11 audit trail."
+    "PHY-1.1":
+      maturity_target: "4"
+      reason: "Sicherheits-Perimeter in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Sicherheits-Perimeter in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-1.2":
+      maturity_target: "4"
+      reason: "Physische Zugangskontrolle in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Physische Zugangskontrolle in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-1.3":
+      maturity_target: "4"
+      reason: "Sichere Räume in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Sichere Räume in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-1.4":
+      maturity_target: "4"
+      reason: "Schutz vor Bedrohungen (Feuer/Wasser) in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Schutz vor Bedrohungen (Feuer/Wasser) in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-1.5":
+      maturity_target: "4"
+      reason: "Lade-/Lieferzonen in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Lade-/Lieferzonen in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-1.6":
+      maturity_target: "4"
+      reason: "Sichere Arbeitsbereiche in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Sichere Arbeitsbereiche in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-2.1":
+      maturity_target: "4"
+      reason: "Gerätesicherung in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Gerätesicherung in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-2.2":
+      maturity_target: "4"
+      reason: "Versorgungsleitungen in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Versorgungsleitungen in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-2.3":
+      maturity_target: "4"
+      reason: "Verkabelungs-Schutz in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Verkabelungs-Schutz in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-2.4":
+      maturity_target: "4"
+      reason: "Wartungs-Sicherheit in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Wartungs-Sicherheit in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-2.5":
+      maturity_target: "4"
+      reason: "Asset-Removal-Kontrolle in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Asset-Removal-Kontrolle in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-2.6":
+      maturity_target: "4"
+      reason: "Off-Site-Equipment in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Off-Site-Equipment in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-2.7":
+      maturity_target: "4"
+      reason: "Sichere Entsorgung in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Sichere Entsorgung in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-2.8":
+      maturity_target: "4"
+      reason: "Unbeaufsichtigte Geräte in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Unbeaufsichtigte Geräte in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PHY-2.9":
+      maturity_target: "4"
+      reason: "Clear-Screen in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Clear-Screen in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PROT-1.1":
+      maturity_target: "4"
+      reason: "Prototypenschutz Identifikation in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Prototypenschutz Identifikation in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PROT-1.2":
+      maturity_target: "4"
+      reason: "Prototypenschutz Lager in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Prototypenschutz Lager in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PROT-1.3":
+      maturity_target: "4"
+      reason: "Prototypenschutz Transport in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Prototypenschutz Transport in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PROT-2.1":
+      maturity_target: "4"
+      reason: "Erprobungsfahrten in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Erprobungsfahrten in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "PROT-2.2":
+      maturity_target: "4"
+      reason: "Veranstaltungen / Filmen in Healthcare: Server-Räume in Kliniken sind oft historisch gewachsen — Aufrüstung mit Zutrittskontrolle und Brandschutz nötig."
+      reason_en: "Veranstaltungen / Filmen in healthcare: server rooms in clinics are often legacy — upgrades with access control and fire protection needed."
+    "SUP-1.1":
+      maturity_target: "4"
+      reason: "Lieferanten-InfoSec in Healthcare: Medizingeräte-Hersteller mit MDR-Pflicht, Cloud-Health-Dienste mit BSI-C5-Audits — strenger als Industriestandard."
+      reason_en: "Lieferanten-InfoSec in healthcare: medical device manufacturers under MDR, cloud health services with BSI-C5 audits — stricter than industry standard."
+    "SUP-1.2":
+      maturity_target: "4"
+      reason: "Lieferanten-Reviews in Healthcare: Medizingeräte-Hersteller mit MDR-Pflicht, Cloud-Health-Dienste mit BSI-C5-Audits — strenger als Industriestandard."
+      reason_en: "Lieferanten-Reviews in healthcare: medical device manufacturers under MDR, cloud health services with BSI-C5 audits — stricter than industry standard."
+    "SUP-2.1":
+      maturity_target: "4"
+      reason: "Cloud-Dienstleister in Healthcare: Medizingeräte-Hersteller mit MDR-Pflicht, Cloud-Health-Dienste mit BSI-C5-Audits — strenger als Industriestandard."
+      reason_en: "Cloud-Dienstleister in healthcare: medical device manufacturers under MDR, cloud health services with BSI-C5 audits — stricter than industry standard."
+    "SUP-2.2":
+      maturity_target: "4"
+      reason: "Cloud-Sicherheit in Healthcare: Medizingeräte-Hersteller mit MDR-Pflicht, Cloud-Health-Dienste mit BSI-C5-Audits — strenger als Industriestandard."
+      reason_en: "Cloud-Sicherheit in healthcare: medical device manufacturers under MDR, cloud health services with BSI-C5 audits — stricter than industry standard."

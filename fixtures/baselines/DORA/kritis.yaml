@@ -1,0 +1,77 @@
+baseline:
+  id: dora-kritis
+  name: 'DORA - KRITIS / NIS2-essential'
+  name_en: 'DORA - KRITIS / NIS2-essential'
+  industry: kritis
+  description: |
+    Baseline für Betreiber Kritischer Infrastrukturen (Energie, Wasser, Gesundheit,
+    Transport, Telekom) im Geltungsbereich der BSI-KRITIS-Verordnung und NIS2.
+    Hohe Reife-Erwartung wegen staatlicher APT-Bedrohung, BSI-Meldepflicht (§8b BSIG)
+    und 24/7-Verfügbarkeitsdruck. Fokus: Detection, Incident-Response, Lieferketten
+    und OT-Integration.
+  description_en: |
+    Baseline for critical infrastructure operators (energy, water, health, transport,
+    telecom) under BSI-KRITIS regulation and NIS2. High maturity expectations due to
+    nation-state APT threat, BSI reporting (§8b BSIG) and 24/7 availability pressure.
+    Focus: detection, incident response, supply chain, OT integration.
+  targets:
+    "Art.5":
+      maturity_target: "5"
+      reason: "ICT-Risk-Mgmt-Framework bei KRITIS: §8a-BSIG-Audit prüft Top-Level-Steuerung — formelle Verabschiedung und jährlicher Review sind Audit-Standard."
+      reason_en: "ICT risk mgmt framework in KRITIS: §8a BSIG audits review top-level governance — formal adoption and annual review are audit standard."
+    "Art.6":
+      maturity_target: "5"
+      reason: "ICT-Risk-Strategie bei KRITIS: §8a-BSIG-Audit prüft Top-Level-Steuerung — formelle Verabschiedung und jährlicher Review sind Audit-Standard."
+      reason_en: "ICT risk strategy in KRITIS: §8a BSIG audits review top-level governance — formal adoption and annual review are audit standard."
+    "Art.7":
+      maturity_target: "4"
+      reason: "ICT-Systeme und Tools bei KRITIS: vollständiges Inventar inkl. OT/ICS ist §8a-Audit-Pflicht — Schutzbedarfsfeststellung je Asset."
+      reason_en: "ICT systems and tools in KRITIS: complete inventory including OT/ICS is §8a audit mandate — protection-need classification per asset."
+    "Art.8":
+      maturity_target: "4"
+      reason: "Asset-Identifikation bei KRITIS: vollständiges Inventar inkl. OT/ICS ist §8a-Audit-Pflicht — Schutzbedarfsfeststellung je Asset."
+      reason_en: "Identification in KRITIS: complete inventory including OT/ICS is §8a audit mandate — protection-need classification per asset."
+    "Art.9":
+      maturity_target: "5"
+      reason: "Schutz und Prävention bei KRITIS: privilegierte OT-Zugänge sind häufigster APT-Initialvektor — strikte Härtung mit MFA und PAM Pflicht."
+      reason_en: "Protection and prevention in KRITIS: privileged OT access is the most common APT initial vector — strict hardening with MFA and PAM is mandatory."
+    "Art.10":
+      maturity_target: "5"
+      reason: "Detection bei KRITIS: 24/7-SOC mit OT-spezifischen SIEM-Use-Cases ist State-of-the-Art für APT-Detection."
+      reason_en: "Detection in KRITIS: 24/7 SOC with OT-specific SIEM use cases is state of the art for APT detection."
+    "Art.11":
+      maturity_target: "5"
+      reason: "Response and Recovery bei KRITIS: §8b-BSIG-Meldepflicht binnen 24h an BSI/CERT-Bund, Krisenstab muss 24/7 erreichbar sein."
+      reason_en: "Response and recovery in KRITIS: §8b BSIG mandates notification within 24h to BSI/CERT-Bund; crisis team must be reachable 24/7."
+    "Art.12":
+      maturity_target: "5"
+      reason: "Backup und Restore bei KRITIS: Versorgungssicherheit ist Schutzziel-Spitze — RTO < 4h für versorgungsrelevante Services Standard."
+      reason_en: "Backup and restoration in KRITIS: supply security is the top protection objective — RTO < 4h for supply-critical services standard."
+    "Art.13":
+      maturity_target: "4"
+      reason: "Learning und Evolving bei KRITIS: BSI-/NIS2-Konformitätsnachweise sind kontinuierlich zu führen, externes Audit alle 2 Jahre."
+      reason_en: "Learning and evolving in KRITIS: BSI/NIS2 conformity evidence must be maintained continuously; external audit every 2 years."
+    "Art.14":
+      maturity_target: "5"
+      reason: "Krisen-Kommunikation bei KRITIS: §8b-BSIG-Meldepflicht binnen 24h an BSI/CERT-Bund, Krisenstab muss 24/7 erreichbar sein."
+      reason_en: "Communication in KRITIS: §8b BSIG mandates notification within 24h to BSI/CERT-Bund; crisis team must be reachable 24/7."
+    "Art.15":
+      maturity_target: "4"
+      reason: "Simplified Framework bei KRITIS: BSI-/NIS2-Konformitätsnachweise sind kontinuierlich zu führen, externes Audit alle 2 Jahre."
+      reason_en: "Simplified framework in KRITIS: BSI/NIS2 conformity evidence must be maintained continuously; external audit every 2 years."
+    "Art.17":
+      maturity_target: "5"
+      reason: "ICT-Incident-Mgmt bei KRITIS: §8b-BSIG-Meldepflicht binnen 24h an BSI/CERT-Bund, Krisenstab muss 24/7 erreichbar sein."
+      reason_en: "ICT incident mgmt in KRITIS: §8b BSIG mandates notification within 24h to BSI/CERT-Bund; crisis team must be reachable 24/7."
+    "Art.24":
+      maturity_target: "5"
+      reason: "Resilience-Testing bei KRITIS: OT-CVEs (Siemens, ABB) brauchen koordinierten Patch-Plan; BSI-Audit-Schwerpunkt."
+      reason_en: "Operational resilience testing in KRITIS: OT CVEs (Siemens, ABB) need coordinated patch plans; BSI audit focus."
+    "Art.28":
+      maturity_target: "5"
+      reason: "Third-Party-Risk bei KRITIS: §8a-BSIG verlangt Sicherheitsnachweise bis zum Sub-Lieferanten, Solarwinds-Klasse-Risiken sind real."
+      reason_en: "Third-party risk mgmt in KRITIS: §8a BSIG demands security evidence down to sub-suppliers; Solarwinds-class risks are real."
+    "Art.30":
+      maturity_target: "5"
+      reason: "Vertragsklauseln bei KRITIS: §8a-BSIG verlangt Sicherheitsnachweise bis zum Sub-Lieferanten, Solarwinds-Klasse-Risiken sind real."
+      reason_en: "Contractual provisions in KRITIS: §8a BSIG demands security evidence down to sub-suppliers; Solarwinds-class risks are real."

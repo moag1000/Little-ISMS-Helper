@@ -1,0 +1,76 @@
+baseline:
+  id: dora-healthcare
+  name: 'DORA - Krankenhäuser / MDR / GxP'
+  name_en: 'DORA - Hospitals / MDR / GxP'
+  industry: healthcare
+  description: |
+    Baseline für Krankenhäuser (KHZG, B3S Gesundheit), Medizinprodukte-Hersteller
+    (MDR, FDA 21 CFR Part 11) und Pharma-GxP. Verfügbarkeits-Druck (Patientensicherheit),
+    hochsensible Gesundheitsdaten (DSGVO Art. 9), Ransomware-Top-Ziel.
+    Fokus: Datenschutz, Verfügbarkeit, Audit-Trail, Validierte Systeme.
+  description_en: |
+    Baseline for hospitals (KHZG, B3S Health), medical-device manufacturers (MDR,
+    FDA 21 CFR Part 11) and pharma GxP. Availability pressure (patient safety),
+    highly sensitive health data (GDPR Art. 9), top ransomware target.
+    Focus: privacy, availability, audit trail, validated systems.
+  targets:
+    "Art.5":
+      maturity_target: "4"
+      reason: "ICT-Risk-Mgmt-Framework in Healthcare: KHZG-Förderung erzwingt formelle InfoSec-Policies; Krankenhaus-Vorstand zunehmend persönlich haftbar."
+      reason_en: "ICT risk mgmt framework in healthcare: KHZG funding mandates formal InfoSec policies; hospital boards increasingly personally liable."
+    "Art.6":
+      maturity_target: "4"
+      reason: "ICT-Risk-Strategie in Healthcare: KHZG-Förderung erzwingt formelle InfoSec-Policies; Krankenhaus-Vorstand zunehmend persönlich haftbar."
+      reason_en: "ICT risk strategy in healthcare: KHZG funding mandates formal InfoSec policies; hospital boards increasingly personally liable."
+    "Art.7":
+      maturity_target: "4"
+      reason: "ICT-Systeme und Tools in Healthcare: Medizingeräte-Inventar mit Software-Versionen ist B3S-Pflicht, Schutzbedarf je Modalität dokumentiert."
+      reason_en: "ICT systems and tools in healthcare: medical-device inventory with software versions is a B3S mandate; protection per modality documented."
+    "Art.8":
+      maturity_target: "4"
+      reason: "Asset-Identifikation in Healthcare: Medizingeräte-Inventar mit Software-Versionen ist B3S-Pflicht, Schutzbedarf je Modalität dokumentiert."
+      reason_en: "Identification in healthcare: medical-device inventory with software versions is a B3S mandate; protection per modality documented."
+    "Art.9":
+      maturity_target: "5"
+      reason: "Schutz und Prävention in Healthcare: Zugriffe auf Patientendaten sind DSGVO Art. 9 + Strafrecht (§203 StGB) — strikte Rollen mit Need-to-Know."
+      reason_en: "Protection and prevention in healthcare: access to patient data is GDPR Art. 9 plus criminal law (§203 StGB) — strict roles with need-to-know."
+    "Art.10":
+      maturity_target: "4"
+      reason: "Detection in Healthcare: 24/7-Monitoring der Klinik-IT mit medizingeräte-spezifischen Alerts, B3S-Gesundheit-konform."
+      reason_en: "Detection in healthcare: 24/7 clinic IT monitoring with medical-device-specific alerts; B3S Health compliant."
+    "Art.11":
+      maturity_target: "5"
+      reason: "Response and Recovery in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "Response and recovery in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."
+    "Art.12":
+      maturity_target: "5"
+      reason: "Backup und Restore in Healthcare: Patientensicherheit erzwingt RTO < 1h für klinische Kernsysteme (KIS, PACS) — manueller Notbetrieb dokumentiert."
+      reason_en: "Backup and restoration in healthcare: patient safety enforces RTO < 1h for clinical core systems (HIS, PACS); manual fallback documented."
+    "Art.13":
+      maturity_target: "5"
+      reason: "Learning und Evolving in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Learning and evolving in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "Art.14":
+      maturity_target: "5"
+      reason: "Krisen-Kommunikation in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "Communication in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."
+    "Art.15":
+      maturity_target: "5"
+      reason: "Simplified Framework in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Simplified framework in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "Art.17":
+      maturity_target: "5"
+      reason: "ICT-Incident-Mgmt in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "ICT incident mgmt in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."
+    "Art.24":
+      maturity_target: "4"
+      reason: "Resilience-Testing in Healthcare: Medizingeräte sind oft EOL/ungepatcht — Mikrosegmentierung kompensierend; B3S verlangt Schwachstellen-Mgmt."
+      reason_en: "Operational resilience testing in healthcare: medical devices are often EOL/unpatched — micro-segmentation compensates; B3S demands vulnerability mgmt."
+    "Art.28":
+      maturity_target: "4"
+      reason: "Third-Party-Risk in Healthcare: Medizingeräte-Hersteller mit MDR-Pflicht, Cloud-Health-Dienste mit BSI-C5-Audits — strenger als Industriestandard."
+      reason_en: "Third-party risk mgmt in healthcare: medical device manufacturers under MDR, cloud health services with BSI-C5 audits — stricter than industry standard."
+    "Art.30":
+      maturity_target: "4"
+      reason: "Vertragsklauseln in Healthcare: Medizingeräte-Hersteller mit MDR-Pflicht, Cloud-Health-Dienste mit BSI-C5-Audits — strenger als Industriestandard."
+      reason_en: "Contractual provisions in healthcare: medical device manufacturers under MDR, cloud health services with BSI-C5 audits — stricter than industry standard."

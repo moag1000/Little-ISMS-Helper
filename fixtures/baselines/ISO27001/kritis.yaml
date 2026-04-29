@@ -1,0 +1,206 @@
+baseline:
+  id: iso27001-kritis
+  name: 'ISO 27001 - KRITIS / NIS2-essential'
+  name_en: 'ISO 27001 - KRITIS / NIS2-essential'
+  industry: kritis
+  description: |
+    Baseline für Betreiber Kritischer Infrastrukturen (Energie, Wasser, Gesundheit,
+    Transport, Telekom) im Geltungsbereich der BSI-KRITIS-Verordnung und NIS2.
+    Hohe Reife-Erwartung wegen staatlicher APT-Bedrohung, Meldepflichten an BSI
+    (§8b BSIG) und 24/7-Verfügbarkeitsdruck. Fokus: Detection, Incident-Response,
+    Lieferketten und OT-Integration.
+  description_en: |
+    Baseline for Critical Infrastructure operators (energy, water, health, transport,
+    telecom) under the BSI-KRITIS regulation and NIS2 directive. High maturity
+    expectations due to nation-state APT threat, mandatory BSI reporting (§8b BSIG)
+    and 24/7 availability pressure. Focus: detection, incident response, supply
+    chain and OT integration.
+  targets:
+    "A.5.1":
+      maturity_target: "5"
+      reason: "KRITIS-Geltungsbereich verlangt formell verabschiedete, jährlich reviewte InfoSec-Policies — BSI-Audit nach §8a BSIG prüft die Top-Level-Steuerung explizit."
+      reason_en: "KRITIS scope mandates formally adopted, annually reviewed InfoSec policies — the §8a BSIG audit explicitly examines top-level governance."
+    "A.5.2":
+      maturity_target: "5"
+      reason: "Klare Rollen (CISO, BSI-Ansprechpartner, Krisenstab) sind nach §8b BSIG meldepflichtig und müssen 24/7 erreichbar sein."
+      reason_en: "Defined roles (CISO, BSI liaison, crisis team) are mandatory under §8b BSIG and must be reachable 24/7."
+    "A.5.5":
+      maturity_target: "4"
+      reason: "Behördenkontakte zum BSI/CERT-Bund sind Pflicht — formaler Kontaktkatalog und Meldewege sind Audit-Standard."
+      reason_en: "Authority contacts with BSI/CERT-Bund are mandatory — a formal contact catalogue with reporting channels is audit standard."
+    "A.5.7":
+      maturity_target: "5"
+      reason: "Threat Intelligence ist KRITIS-zentral wegen gezielter APT-Kampagnen (z.B. Sandworm gegen Energie); CERT-Bund-Feeds und ISACs sind operativ einzubinden."
+      reason_en: "Threat intelligence is central for KRITIS due to targeted APT campaigns (e.g. Sandworm against energy); CERT-Bund feeds and ISACs must be operationalised."
+    "A.5.9":
+      maturity_target: "4"
+      reason: "Asset-Inventar inkl. OT/ICS muss vollständig und aktuell sein — bei §8a-Audit wird Schutzbedarf je Asset geprüft."
+      reason_en: "Asset inventory including OT/ICS must be complete and current — §8a audits review protection needs per asset."
+    "A.5.15":
+      maturity_target: "5"
+      reason: "Strikte Zugangskontrolle ist KRITIS-Pflicht — privilegierte OT-Zugänge sind häufigster APT-Initialvektor."
+      reason_en: "Strict access control is mandatory for KRITIS — privileged OT access is the most common APT initial vector."
+    "A.5.16":
+      maturity_target: "4"
+      reason: "Identitätslebenszyklus inkl. Onboarding/Offboarding kritischer Operator muss revisionssicher dokumentiert sein."
+      reason_en: "Identity lifecycle including onboarding/offboarding of critical operators must be documented in audit-proof form."
+    "A.5.17":
+      maturity_target: "5"
+      reason: "Authentication-Hardening (MFA, Passwortless für OT-Bridges) ist KRITIS-Standard nach BSI Orientierungshilfe."
+      reason_en: "Authentication hardening (MFA, passwordless for OT bridges) is KRITIS standard per BSI guidance."
+    "A.5.18":
+      maturity_target: "4"
+      reason: "Zugriffsrechte für OT-Engineering-Stations und SCADA müssen rollenbasiert und regelmäßig rezertifiziert sein."
+      reason_en: "Access rights for OT engineering stations and SCADA must be role-based and periodically recertified."
+    "A.5.19":
+      maturity_target: "5"
+      reason: "Lieferantensicherheit ist NIS2-21.2.d und KRITIS-Top-Risiko (Solarwinds-Klasse-Angriffe gegen Energieversorger)."
+      reason_en: "Supplier security is NIS2-21.2.d and a top KRITIS risk (Solarwinds-class attacks targeted utilities)."
+    "A.5.20":
+      maturity_target: "5"
+      reason: "Vertragliche Sicherheitsanforderungen an Dienstleister müssen NIS2-konform und revisionsfähig sein."
+      reason_en: "Contractual security requirements for service providers must comply with NIS2 and be auditable."
+    "A.5.21":
+      maturity_target: "4"
+      reason: "ICT-Lieferketten in Energie/Wasser sind kritisch — §8a BSIG verlangt Sicherheitsnachweise bis zum Sub-Lieferanten."
+      reason_en: "ICT supply chains in energy/water are critical — §8a BSIG demands security evidence down to sub-suppliers."
+    "A.5.23":
+      maturity_target: "4"
+      reason: "Cloud-Nutzung in KRITIS muss BSI-C5-konform sein, Datenstandort und Souveränität sind regulatorisch relevant."
+      reason_en: "Cloud usage in KRITIS must be BSI-C5 compliant; data location and sovereignty are regulatorily relevant."
+    "A.5.24":
+      maturity_target: "5"
+      reason: "Incident-Management ist Kern der §8b-Meldepflicht — Meldung binnen 24h an BSI nach NIS2."
+      reason_en: "Incident management is core to §8b reporting — notification within 24h to BSI under NIS2."
+    "A.5.25":
+      maturity_target: "5"
+      reason: "Bewertung und Klassifikation von Events trennt regulatorisch meldepflichtige von trivialen Vorfällen."
+      reason_en: "Event assessment and classification separates reportable incidents from trivial events under the regulation."
+    "A.5.26":
+      maturity_target: "5"
+      reason: "Incident-Response inkl. Krisenstab muss geübt sein — BSI verlangt jährliche Lübeck-Übungen oder Äquivalent."
+      reason_en: "Incident response including crisis team must be exercised — BSI requires annual Lübeck-style drills or equivalent."
+    "A.5.27":
+      maturity_target: "4"
+      reason: "Lessons Learned aus Vorfällen sind KRITIS-Audit-Pflicht und werden in §8a-Audits stichprobenartig geprüft."
+      reason_en: "Lessons learned from incidents are mandatory for KRITIS audit and sampled during §8a reviews."
+    "A.5.29":
+      maturity_target: "5"
+      reason: "Verfügbarkeit ist die KRITIS-Schutzziel-Spitze — BCM mit RTO < 4h für versorgungsrelevante Services Standard."
+      reason_en: "Availability is the top KRITIS protection objective — BCM with RTO < 4h for supply-critical services is standard."
+    "A.5.30":
+      maturity_target: "5"
+      reason: "ICT-Readiness im BCM-Kontext ist NIS2-21.2.c zentral — getestete Failover-Pläne mit dokumentierten Übungsergebnissen."
+      reason_en: "ICT readiness in the BCM context is central to NIS2-21.2.c — tested failover plans with documented exercise results."
+    "A.5.33":
+      maturity_target: "4"
+      reason: "Schutz von Aufzeichnungen (Logs, Operating-Records) ist forensisch und regulatorisch relevant."
+      reason_en: "Records protection (logs, operating records) is forensically and regulatorily relevant."
+    "A.5.34":
+      maturity_target: "4"
+      reason: "Datenschutz und PII-Schutz sind in Gesundheit/Telekom KRITIS-zentral, GDPR-Bußgeld-Risiko hoch."
+      reason_en: "Data protection and PII safeguards are central in health/telecom KRITIS; GDPR fine risk is high."
+    "A.5.35":
+      maturity_target: "4"
+      reason: "Unabhängige InfoSec-Reviews sind §8a-BSIG-pflichtig im 2-Jahres-Rhythmus."
+      reason_en: "Independent InfoSec reviews are mandatory under §8a BSIG every two years."
+    "A.5.36":
+      maturity_target: "4"
+      reason: "Compliance-Nachweise für KRITIS sind kontinuierlich (BSI-Audit, NIS2, eventuell DORA) zu führen."
+      reason_en: "Compliance evidence for KRITIS must be maintained continuously (BSI audit, NIS2, possibly DORA)."
+    "A.6.3":
+      maturity_target: "4"
+      reason: "Awareness-Schulung für Operator ist NIS2-21.2.g; KRITIS-Phishing-Simulationen sind State-of-the-Art."
+      reason_en: "Awareness training for operators is NIS2-21.2.g; KRITIS phishing simulations are state of the art."
+    "A.6.7":
+      maturity_target: "4"
+      reason: "Remote-Work in Leitstellen ist sensibel — abgesichertes VDI mit MFA und Session-Recording ist Pflicht."
+      reason_en: "Remote work in control rooms is sensitive — hardened VDI with MFA and session recording is mandatory."
+    "A.7.1":
+      maturity_target: "5"
+      reason: "Physische Sicherheit von Leitwarten und Umspannwerken ist BSI-KRITIS-Top-Schutzobjekt."
+      reason_en: "Physical security of control rooms and substations is a top BSI-KRITIS protection asset."
+    "A.7.4":
+      maturity_target: "4"
+      reason: "Physisches Monitoring (Zaun, Kamera, Bewegungssensor) ist KRITIS-Pflicht für Substations."
+      reason_en: "Physical monitoring (fence, CCTV, motion sensors) is mandatory for KRITIS substations."
+    "A.7.10":
+      maturity_target: "4"
+      reason: "Storage-Medien für SCADA-Konfigurationen müssen verschlüsselt und sicher entsorgt werden."
+      reason_en: "Storage media for SCADA configurations must be encrypted and securely disposed."
+    "A.8.1":
+      maturity_target: "4"
+      reason: "Endgeräte in Leitstellen müssen gehärtet (Application-Whitelisting, kein Internet) sein."
+      reason_en: "Endpoints in control rooms must be hardened (application whitelisting, no Internet)."
+    "A.8.2":
+      maturity_target: "5"
+      reason: "Privileged Access Management für OT-Bridges ist KRITIS-PAM-Pflicht."
+      reason_en: "Privileged Access Management for OT bridges is a KRITIS PAM requirement."
+    "A.8.4":
+      maturity_target: "4"
+      reason: "Source-Code-Schutz für SCADA/HMI-Customization muss revisionssicher gehandhabt werden."
+      reason_en: "Source code protection for SCADA/HMI customisation must be handled in audit-proof form."
+    "A.8.5":
+      maturity_target: "5"
+      reason: "Sichere Authentisierung für OT-Zugänge ist NIS2-21.2.j MFA-Anker."
+      reason_en: "Secure authentication for OT access is the NIS2-21.2.j MFA anchor."
+    "A.8.7":
+      maturity_target: "4"
+      reason: "Schutz vor Malware in OT — Anti-Malware-Policies inkl. Engineering-Stations sind Pflicht."
+      reason_en: "Malware protection in OT — anti-malware policies including engineering stations are mandatory."
+    "A.8.8":
+      maturity_target: "5"
+      reason: "Vulnerability Management für OT (z.B. Siemens-CVEs) ist BSI-Audit-Schwerpunkt."
+      reason_en: "Vulnerability management for OT (e.g. Siemens CVEs) is a BSI audit focus."
+    "A.8.9":
+      maturity_target: "4"
+      reason: "Konfigurationsmanagement von SCADA-Komponenten muss versioniert und änderungsverfolgt sein."
+      reason_en: "Configuration management of SCADA components must be versioned and change-tracked."
+    "A.8.13":
+      maturity_target: "5"
+      reason: "Backups versorgungsrelevanter Systeme — offline und getestet — sind NIS2-21.2.c und BSI-Pflicht."
+      reason_en: "Backups of supply-critical systems — offline and tested — are NIS2-21.2.c and BSI mandates."
+    "A.8.14":
+      maturity_target: "5"
+      reason: "Redundanz und HA für Leitsysteme sind KRITIS-Verfügbarkeits-Standard."
+      reason_en: "Redundancy and HA for control systems are KRITIS availability standards."
+    "A.8.16":
+      maturity_target: "5"
+      reason: "Monitoring (SOC 24/7) ist KRITIS-Top-Reife — APT-Detection benötigt OT-spezifische SIEM-Use-Cases."
+      reason_en: "Monitoring (24/7 SOC) is top KRITIS maturity — APT detection needs OT-specific SIEM use cases."
+    "A.8.20":
+      maturity_target: "5"
+      reason: "Netzsicherheit (Purdue-Modell-Segmentierung IT/OT) ist KRITIS-Audit-Schwerpunkt."
+      reason_en: "Network security (Purdue-model IT/OT segmentation) is a KRITIS audit focus."
+    "A.8.22":
+      maturity_target: "5"
+      reason: "Netzwerksegmentierung zwischen IT, DMZ und OT-Levels ist BSI-Mindestanforderung."
+      reason_en: "Network segmentation between IT, DMZ and OT levels is a BSI minimum requirement."
+    "A.8.24":
+      maturity_target: "4"
+      reason: "Kryptografie für SCADA-Kommunikation (TLS, IEC-62351) ist NIS2-21.2.h."
+      reason_en: "Cryptography for SCADA communication (TLS, IEC 62351) is NIS2-21.2.h."
+    "A.8.25":
+      maturity_target: "4"
+      reason: "Sicherer Entwicklungs-Lifecycle für Customizing-Code in HMI/SCADA — NIS2-21.2.e."
+      reason_en: "Secure SDLC for customisation code in HMI/SCADA — NIS2-21.2.e."
+    "A.8.27":
+      maturity_target: "4"
+      reason: "Sichere Architektur-Reviews bei OT-Modernisierung sind BSI-Empfehlung."
+      reason_en: "Secure architecture reviews during OT modernisation are a BSI recommendation."
+    "A.8.29":
+      maturity_target: "4"
+      reason: "Security-Testing inkl. OT-Pentests (mit Vendor-Koordination) ist KRITIS-Standard."
+      reason_en: "Security testing including OT pentests (with vendor coordination) is a KRITIS standard."
+    "A.8.30":
+      maturity_target: "4"
+      reason: "Outsourcing-Audits sind §8a-BSIG-Pflicht bei kritischen Dienstleistern."
+      reason_en: "Outsourcing audits are §8a BSIG mandates for critical service providers."
+    "A.8.31":
+      maturity_target: "4"
+      reason: "Trennung Test/Prod ist bei Leitsystemen besonders kritisch — Test darf nie auf Live-OT."
+      reason_en: "Test/prod separation is especially critical for control systems — test must never touch live OT."
+    "A.8.32":
+      maturity_target: "5"
+      reason: "Change-Management mit Risk-Assessment ist KRITIS-Pflicht; ungesteuerte Änderungen verursachten Black-Outs."
+      reason_en: "Change management with risk assessment is mandatory for KRITIS; uncontrolled changes have caused blackouts."
