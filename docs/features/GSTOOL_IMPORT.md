@@ -17,10 +17,11 @@ GSTOOL-Inhalte so in das Tool-Datenmodell überführen, dass die Daten **direkt 
 | Phase | Inhalt | Format-Übersetzung | Status |
 |---|---|---|---|
 | **Phase 1** (MVP) | Zielobjekte → `Asset` mit Schutzbedarf C/I/A | Skala-Normalisierung (4-stufig BSI → 5-stufig Tool) | ✅ implementiert |
-| **Phase 2** | Modellierungs-Hierarchie | `Zielobjekt.modelledIn` → `Asset.dependsOn` (BSI 3.6 Maximumprinzip greift) | offen |
-| **Phase 3** | Bausteine-Zuordnung | Alt-Baustein-IDs → Kompendium-2023-IDs via Migration-Tabelle | offen |
-| **Phase 4** | Maßnahmen + Umsetzungsstatus | Alt-M-IDs → Kompendium-Anforderungen; Status erhalten + mit `migrationNote`-Flag | offen |
-| **Phase 5** | Risikoanalyse-Einträge | → `Risk` mit `inherentRisk` aus GSTOOL-Schwellenwerten | offen |
+| **Phase 2** | Modellierungs-Hierarchie | `<abhaengigkeit von zu>` → `Asset.dependsOn` (BSI 3.6 Maximumprinzip greift) | ✅ implementiert |
+| **UI** | Admin-Wizard | Upload + Dry-Run-Preview + Commit unter `/admin/import/gstool` | ✅ implementiert |
+| **Phase 3** | Bausteine-Zuordnung | Alt-Baustein-IDs → Kompendium-2023-IDs via Migration-Tabelle | offen — braucht kuratiertes Mapping-YAML |
+| **Phase 4** | Maßnahmen + Umsetzungsstatus | Alt-M-IDs → Kompendium-Anforderungen; Status erhalten + mit `migrationNote`-Flag | offen — braucht Control-Entity-Vorlagen pro Tenant |
+| **Phase 5** | Risikoanalyse-Einträge | → `Risk` mit `inherentRisk` aus GSTOOL-Schwellenwerten | offen — braucht Schwellenwert-Mapping je Tenant-RiskAppetite |
 
 ## Eingabe-Format (v1)
 
