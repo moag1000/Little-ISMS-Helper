@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'crisis_team' %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'crisis_team.title'|trans({}, 'crisis_team') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 {% block body %}
@@ -24,13 +24,13 @@
     <main class="fa-aurora-surface">
     <div class="row mb-4">
         <div class="col-md-4">
-            {{ cards.kpi_card('crisis_team.kpi.active'|trans({}, 'crisis_team'), active_count, null, null, 'success', 'border-success') }}
+            {{ _fa_feature_card.render({ label: 'crisis_team.kpi.active'|trans({}, 'crisis_team'), value: active_count, variant: 'success' }) }}
         </div>
         <div class="col-md-4">
-            {{ cards.kpi_card('crisis_team.type.operational'|trans({}, 'crisis_team'), operational_count, null, null, 'primary', null) }}
+            {{ _fa_feature_card.render({ label: 'crisis_team.type.operational'|trans({}, 'crisis_team'), value: operational_count, variant: 'primary' }) }}
         </div>
         <div class="col-md-4">
-            {{ cards.kpi_card('crisis_team.type.strategic'|trans({}, 'crisis_team'), strategic_count, null, null, 'info', null) }}
+            {{ _fa_feature_card.render({ label: 'crisis_team.type.strategic'|trans({}, 'crisis_team'), value: strategic_count, variant: 'info' }) }}
         </div>
     </div>
     {% if crisis_teams|length == 0 %}

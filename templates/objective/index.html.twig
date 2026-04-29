@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'objective'%}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'objective.page.title'|trans({}, 'objective') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -27,16 +27,16 @@
     <turbo-frame id="objective-stats">
         <div class="row mb-4">
             <div class="col-md-3">
-                {{ cards.kpi_card(('objective.stats.total'|trans({}, 'objective')), statistics.total, null, null, 'primary', 'border-primary') }}
+                {{ _fa_feature_card.render({ label: 'objective.stats.total'|trans({}, 'objective'), value: statistics.total, variant: 'primary' }) }}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card(('objective.stats.active'|trans({}, 'objective')), statistics.active, null, null, 'info', 'border-info') }}
+                {{ _fa_feature_card.render({ label: 'objective.stats.active'|trans({}, 'objective'), value: statistics.active, variant: 'info' }) }}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card(('objective.stats.achieved'|trans({}, 'objective')), statistics.achieved, null, null, 'success', 'border-success') }}
+                {{ _fa_feature_card.render({ label: 'objective.stats.achieved'|trans({}, 'objective'), value: statistics.achieved, variant: 'success' }) }}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card(('objective.stats.delayed'|trans({}, 'objective')), statistics.delayed, null, null, 'warning', 'border-warning') }}
+                {{ _fa_feature_card.render({ label: 'objective.stats.delayed'|trans({}, 'objective'), value: statistics.delayed, variant: 'warning' }) }}
             </div>
         </div>
     </turbo-frame>

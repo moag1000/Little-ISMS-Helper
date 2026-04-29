@@ -3,7 +3,7 @@
 {% block title %}{{ 'dpia.dashboard.title'|trans({}, 'privacy') }}{% endblock %}
 
 {% block body %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
@@ -61,16 +61,16 @@
     {# Key Metrics #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {{ cards.kpi_card('dpia.dashboard.total_dpias'|trans({}, 'privacy'), statistics.total, statistics.approved ~ ' ' ~ 'dpia.dashboard.approved'|trans({}, 'privacy'), null, null, null) }}
+            {{ _fa_feature_card.render({ label: 'dpia.dashboard.total_dpias'|trans({}, 'privacy'), value: statistics.total, hint: statistics.approved ~ ' ' ~ 'dpia.dashboard.approved'|trans({}, 'privacy'), variant: 'primary' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('dpia.dashboard.in_review'|trans({}, 'privacy'), statistics.in_review, 'dpia.dashboard.awaiting_approval'|trans({}, 'privacy'), null, 'info', null) }}
+            {{ _fa_feature_card.render({ label: 'dpia.dashboard.in_review'|trans({}, 'privacy'), value: statistics.in_review, hint: 'dpia.dashboard.awaiting_approval'|trans({}, 'privacy'), variant: 'info' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('dpia.dashboard.high_risk'|trans({}, 'privacy'), statistics.high_risk, 'dpia.dashboard.requires_attention'|trans({}, 'privacy'), null, 'danger', null) }}
+            {{ _fa_feature_card.render({ label: 'dpia.dashboard.high_risk'|trans({}, 'privacy'), value: statistics.high_risk, hint: 'dpia.dashboard.requires_attention'|trans({}, 'privacy'), variant: 'danger' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('dpia.dashboard.completeness'|trans({}, 'privacy'), statistics.completeness_rate ~ '%', null, statistics.completeness_rate, 'success', null) }}
+            {{ _fa_feature_card.render({ label: 'dpia.dashboard.completeness'|trans({}, 'privacy'), value: statistics.completeness_rate ~ '%', variant: 'success' }) }}
         </div>
     </div>
 

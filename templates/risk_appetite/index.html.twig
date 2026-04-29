@@ -5,7 +5,7 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -27,21 +27,21 @@
 
 <div class="stats-grid mb-4">
     <div class="col-auto">
-        {{ cards.kpi_card('risk_appetite.stats.total'|trans({}, 'risk_appetite'), appetites|length, null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'risk_appetite.stats.total'|trans({}, 'risk_appetite'), value: appetites|length, variant: 'primary' }) }}
     </div>
     {% if globalAppetite %}
     <div class="col-auto">
-        {{ cards.kpi_card('risk_appetite.stats.global_threshold'|trans({}, 'risk_appetite'), globalAppetite.maxAcceptableRisk, null, null, 'primary', null) }}
+        {{ _fa_feature_card.render({ label: 'risk_appetite.stats.global_threshold'|trans({}, 'risk_appetite'), value: globalAppetite.maxAcceptableRisk, variant: 'primary' }) }}
     </div>
     {% endif %}
     <div class="col-auto">
-        {{ cards.kpi_card('risk_appetite.stats.categories'|trans({}, 'risk_appetite'), categories|length, null, null, 'info', null) }}
+        {{ _fa_feature_card.render({ label: 'risk_appetite.stats.categories'|trans({}, 'risk_appetite'), value: categories|length, variant: 'info' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_appetite.stats.total_risks'|trans({}, 'risk_appetite'), totalRisks, null, null, 'success', null) }}
+        {{ _fa_feature_card.render({ label: 'risk_appetite.stats.total_risks'|trans({}, 'risk_appetite'), value: totalRisks, variant: 'success' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_appetite.stats.exceeding'|trans({}, 'risk_appetite'), risksExceedingAppetite|length, null, null, risksExceedingAppetite|length > 0 ? 'danger' : null, null) }}
+        {{ _fa_feature_card.render({ label: 'risk_appetite.stats.exceeding'|trans({}, 'risk_appetite'), value: risksExceedingAppetite|length, variant: risksExceedingAppetite|length > 0 ? 'danger' : 'primary' }) }}
     </div>
 </div>
 

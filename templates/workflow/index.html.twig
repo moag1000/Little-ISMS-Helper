@@ -5,7 +5,7 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_macros/workflow.html.twig' as workflow_macros %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
@@ -30,16 +30,16 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.total'|trans({}, 'workflows'), statistics.total, null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.total'|trans({}, 'workflows'), value: statistics.total, variant: 'primary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.in_progress'|trans({}, 'workflows'), statistics.in_progress, null, null, 'info', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.in_progress'|trans({}, 'workflows'), value: statistics.in_progress, variant: 'info' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.pending'|trans({}, 'workflows'), statistics.pending, null, null, 'warning', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.pending'|trans({}, 'workflows'), value: statistics.pending, variant: 'warning' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.approved'|trans({}, 'workflows'), statistics.approved, null, null, 'success', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.approved'|trans({}, 'workflows'), value: statistics.approved, variant: 'success' }) }}
     </div>
 </div>
 

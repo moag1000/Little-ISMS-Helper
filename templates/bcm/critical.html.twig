@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bcm' %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'bcm.title.critical'|trans({}, 'bcm') }} - Little ISMS Helper{% endblock %}
 
@@ -20,7 +20,7 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('bcm.stats.critical_processes'|trans({}, 'bcm'), processes|length, null, null, 'danger', 'border-danger') }}
+        {{ _fa_feature_card.render({ label: 'bcm.stats.critical_processes'|trans({}, 'bcm'), value: processes|length, variant: 'danger' }) }}
     </div>
     <div class="col-auto">
         {% set avgRTO = 0 %}
@@ -31,7 +31,7 @@
             {% endfor %}
             {% set avgRTO = (totalRTO / processes|length)|round(1) %}
         {% endif %}
-        {{ cards.kpi_card('bcm.stats.avg_rto'|trans({}, 'bcm'), avgRTO ~ 'h', null, null, 'info', null) }}
+        {{ _fa_feature_card.render({ label: 'bcm.stats.avg_rto'|trans({}, 'bcm'), value: avgRTO ~ 'h', variant: 'info' }) }}
     </div>
     <div class="col-auto">
         {% set highPriorityCount = 0 %}
@@ -40,7 +40,7 @@
                 {% set highPriorityCount = highPriorityCount + 1 %}
             {% endif %}
         {% endfor %}
-        {{ cards.kpi_card('bcm.stats.high_priority'|trans({}, 'bcm'), highPriorityCount, null, null, 'warning', null) }}
+        {{ _fa_feature_card.render({ label: 'bcm.stats.high_priority'|trans({}, 'bcm'), value: highPriorityCount, variant: 'warning' }) }}
     </div>
 </div>
 

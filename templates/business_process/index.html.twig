@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'business_process' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'business_process.index.title'|trans({}, 'business_process') }}{% endblock %}
 
@@ -66,19 +66,19 @@
             <div class="col-md-3">
                 {% if currentTenant %}
                     {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') %}
-                    {{ cards.kpi_card('business_process.index.stats.total'|trans({}, 'business_process'), detailedStats.total, subtitle, null, null, null) }}
+                    {{ _fa_feature_card.render({ label: 'business_process.index.stats.total'|trans({}, 'business_process'), value: detailedStats.total, hint: subtitle, variant: 'primary' }) }}
                 {% else %}
-                    {{ cards.kpi_card('business_process.index.stats.total'|trans({}, 'business_process'), detailedStats.total, 'business_process.index.stats.total_subtitle'|trans({}, 'business_process'), null, null, null) }}
+                    {{ _fa_feature_card.render({ label: 'business_process.index.stats.total'|trans({}, 'business_process'), value: detailedStats.total, hint: 'business_process.index.stats.total_subtitle'|trans({}, 'business_process'), variant: 'primary' }) }}
                 {% endif %}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card('business_process.index.stats.critical'|trans({}, 'business_process'), stats.critical, 'business_process.index.stats.critical_subtitle'|trans({}, 'business_process'), null, 'danger', 'border-danger') }}
+                {{ _fa_feature_card.render({ label: 'business_process.index.stats.critical'|trans({}, 'business_process'), value: stats.critical, hint: 'business_process.index.stats.critical_subtitle'|trans({}, 'business_process'), variant: 'danger' }) }}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card('business_process.index.stats.avg_rto'|trans({}, 'business_process'), stats.avg_rto ~ 'business_process.index.stats.rto_unit'|trans({}, 'business_process'), 'business_process.index.stats.rto_subtitle'|trans({}, 'business_process'), null, 'info', null) }}
+                {{ _fa_feature_card.render({ label: 'business_process.index.stats.avg_rto'|trans({}, 'business_process'), value: stats.avg_rto ~ 'business_process.index.stats.rto_unit'|trans({}, 'business_process'), hint: 'business_process.index.stats.rto_subtitle'|trans({}, 'business_process'), variant: 'info' }) }}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card('business_process.index.stats.with_risks'|trans({}, 'business_process'), stats.processes_with_risks, 'business_process.index.stats.with_risks_subtitle'|trans({}, 'business_process'), null, 'warning', null) }}
+                {{ _fa_feature_card.render({ label: 'business_process.index.stats.with_risks'|trans({}, 'business_process'), value: stats.processes_with_risks, hint: 'business_process.index.stats.with_risks_subtitle'|trans({}, 'business_process'), variant: 'warning' }) }}
             </div>
         </div>
     </turbo-frame>

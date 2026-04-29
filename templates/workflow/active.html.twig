@@ -4,7 +4,7 @@
 {% block title %}{{ 'workflow.title.active'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_macros/workflow.html.twig' as workflow_macros %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
@@ -23,7 +23,7 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.active'|trans({}, 'workflows'), active_workflows|length, null, null, 'info', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.active'|trans({}, 'workflows'), value: active_workflows|length, variant: 'info' }) }}
     </div>
     <div class="col-auto">
         {% set overdueCount = 0 %}
@@ -32,7 +32,7 @@
                 {% set overdueCount = overdueCount + 1 %}
             {% endif %}
         {% endfor %}
-        {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'workflows'), overdueCount, null, null, 'danger', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.overdue'|trans({}, 'workflows'), value: overdueCount, variant: 'danger' }) }}
     </div>
     <div class="col-auto">
         {% set myCount = 0 %}
@@ -41,7 +41,7 @@
                 {% set myCount = myCount + 1 %}
             {% endif %}
         {% endfor %}
-        {{ cards.kpi_card('workflow.stats.my_workflows'|trans({}, 'workflows'), myCount, null, null, 'success', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.my_workflows'|trans({}, 'workflows'), value: myCount, variant: 'success' }) }}
     </div>
 </div>
 

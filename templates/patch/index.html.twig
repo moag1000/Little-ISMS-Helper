@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'patches' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
@@ -60,17 +60,17 @@
 
     <div class="row mb-4">
         <div class="col-md-4">
-            {{ cards.kpi_card('patch.kpi.pending'|trans({}, 'patches'), pending_count, null, null, 'warning', null) }}
+            {{ _fa_feature_card.render({ label: 'patch.kpi.pending'|trans({}, 'patches'), value: pending_count, variant: 'warning' }) }}
         </div>
         <div class="col-md-4">
-            {{ cards.kpi_card('patch.kpi.deployed'|trans({}, 'patches'), deployment_stats.deployed ?? 0, null, null, 'success', 'border-success') }}
+            {{ _fa_feature_card.render({ label: 'patch.kpi.deployed'|trans({}, 'patches'), value: deployment_stats.deployed ?? 0, variant: 'success' }) }}
         </div>
         <div class="col-md-4">
             {% if currentTenant %}
                 {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') %}
-                {{ cards.kpi_card('patch.kpi.total'|trans({}, 'patches'), detailedStats.total, subtitle, null, null, null) }}
+                {{ _fa_feature_card.render({ label: 'patch.kpi.total'|trans({}, 'patches'), value: detailedStats.total, hint: subtitle, variant: 'primary' }) }}
             {% else %}
-                {{ cards.kpi_card('patch.kpi.total'|trans({}, 'patches'), detailedStats.total, null, null, null, null) }}
+                {{ _fa_feature_card.render({ label: 'patch.kpi.total'|trans({}, 'patches'), value: detailedStats.total, variant: 'primary' }) }}
             {% endif %}
         </div>
     </div>

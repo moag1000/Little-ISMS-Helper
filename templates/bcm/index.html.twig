@@ -4,7 +4,7 @@
 {% block title %}{{ 'bcm.page.title'|trans({}, 'bcm') }}{% endblock %}
 
 {% block body %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 <div class="container">
@@ -28,19 +28,19 @@
     {# KPI Overview Cards #}
     <div class="kpi-grid">
         <div class="col-auto">
-            {{ cards.kpi_card('bcm.stats.total_processes'|trans({}, 'bcm'), stats.total, null, null, 'primary', null) }}
+            {{ _fa_feature_card.render({ label: 'bcm.stats.total_processes'|trans({}, 'bcm'), value: stats.total, variant: 'primary' }) }}
         </div>
         <div class="col-auto">
-            {{ cards.kpi_card('bcm.stats.critical_processes'|trans({}, 'bcm'), stats.critical, null, null, 'danger', null) }}
+            {{ _fa_feature_card.render({ label: 'bcm.stats.critical_processes'|trans({}, 'bcm'), value: stats.critical, variant: 'danger' }) }}
         </div>
         <div class="col-auto">
-            {{ cards.kpi_card('bcm.stats.high_priority'|trans({}, 'bcm'), stats.high, null, null, 'warning', null) }}
+            {{ _fa_feature_card.render({ label: 'bcm.stats.high_priority'|trans({}, 'bcm'), value: stats.high, variant: 'warning' }) }}
         </div>
         <div class="col-auto">
-            {{ cards.kpi_card('bcm.stats.avg_rto'|trans({}, 'bcm'), stats.avg_rto|number_format(1) ~ 'h', null, null, 'success', null) }}
+            {{ _fa_feature_card.render({ label: 'bcm.stats.avg_rto'|trans({}, 'bcm'), value: stats.avg_rto|number_format(1) ~ 'h', variant: 'success' }) }}
         </div>
         <div class="col-auto">
-            {{ cards.kpi_card('bcm.stats.avg_mtpd'|trans({}, 'bcm'), stats.avg_mtpd|number_format(1) ~ 'h', null, null, 'info', null) }}
+            {{ _fa_feature_card.render({ label: 'bcm.stats.avg_mtpd'|trans({}, 'bcm'), value: stats.avg_mtpd|number_format(1) ~ 'h', variant: 'info' }) }}
         </div>
     </div>
 

@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'soa' %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ category }} {{ 'soa.label.controls'|trans({}, 'soa') }} - Statement of Applicability - Little ISMS Helper{% endblock %}
 
@@ -21,21 +21,21 @@
 {# Statistics Cards #}
 <div class="kpi-grid kpi-grid-responsive">
     <div class="col-auto">
-        {{ cards.kpi_card('soa.kpi.total_controls'|trans({}, 'soa'), controls|length, null, null, 'primary', null) }}
+        {{ _fa_feature_card.render({ label: 'soa.kpi.total_controls'|trans({}, 'soa'), value: controls|length, variant: 'primary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('soa.kpi.applicable_controls'|trans({}, 'soa'), controls|filter(c => c.applicable)|length, null, null, 'success', null) }}
+        {{ _fa_feature_card.render({ label: 'soa.kpi.applicable_controls'|trans({}, 'soa'), value: controls|filter(c => c.applicable)|length, variant: 'success' }) }}
     </div>
     <div class="col-auto">
         {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
         {% set applicable = controls|filter(c => c.applicable)|length %}
-        {{ cards.kpi_card('soa.kpi.implemented_controls'|trans({}, 'soa'), implemented, 'soa.kpi.of'|trans({}, 'soa') ~ ' ' ~ applicable, null, 'info', null) }}
+        {{ _fa_feature_card.render({ label: 'soa.kpi.implemented_controls'|trans({}, 'soa'), value: implemented, hint: 'soa.kpi.of'|trans({}, 'soa') ~ ' ' ~ applicable, variant: 'info' }) }}
     </div>
     <div class="col-auto">
         {% set applicable = controls|filter(c => c.applicable)|length %}
         {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
         {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
-        {{ cards.kpi_card('soa.kpi.compliance_rate'|trans({}, 'soa'), percentage ~ '%', null, percentage, 'warning', null) }}
+        {{ _fa_feature_card.render({ label: 'soa.kpi.compliance_rate'|trans({}, 'soa'), value: percentage ~ '%', variant: 'warning' }) }}
     </div>
 </div>
 

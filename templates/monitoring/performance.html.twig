@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block admin_content %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
     <div class="mb-3">
         <a href="{{ path('monitoring_health') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
@@ -19,16 +19,16 @@
     {# Overview Statistics #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {{ cards.kpi_card('monitoring.performance.total_requests'|trans({}, 'monitoring'), total_requests, 'monitoring.performance.last_24h'|trans({}, 'monitoring'), null, 'primary', 'border-primary') }}
+            {{ _fa_feature_card.render({ label: 'monitoring.performance.total_requests'|trans({}, 'monitoring'), value: total_requests, hint: 'monitoring.performance.last_24h'|trans({}, 'monitoring'), variant: 'primary' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('monitoring.performance.unique_users'|trans({}, 'monitoring'), unique_users, 'monitoring.performance.active_today'|trans({}, 'monitoring'), null, 'success', 'border-success') }}
+            {{ _fa_feature_card.render({ label: 'monitoring.performance.unique_users'|trans({}, 'monitoring'), value: unique_users, hint: 'monitoring.performance.active_today'|trans({}, 'monitoring'), variant: 'success' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('monitoring.performance.memory_usage'|trans({}, 'monitoring'), memory_usage, 'monitoring.performance.current'|trans({}, 'monitoring'), null, 'info', 'border-info') }}
+            {{ _fa_feature_card.render({ label: 'monitoring.performance.memory_usage'|trans({}, 'monitoring'), value: memory_usage, hint: 'monitoring.performance.current'|trans({}, 'monitoring'), variant: 'info' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('monitoring.performance.memory_peak'|trans({}, 'monitoring'), memory_peak, 'monitoring.performance.peak_usage'|trans({}, 'monitoring'), null, 'warning', 'border-warning') }}
+            {{ _fa_feature_card.render({ label: 'monitoring.performance.memory_peak'|trans({}, 'monitoring'), value: memory_peak, hint: 'monitoring.performance.peak_usage'|trans({}, 'monitoring'), variant: 'warning' }) }}
         </div>
     </div>
 

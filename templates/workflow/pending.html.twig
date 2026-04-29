@@ -4,7 +4,7 @@
 {% block title %}{{ 'workflow.title.pending'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_macros/workflow.html.twig' as workflow_macros %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
@@ -23,17 +23,17 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.pending'|trans({}, 'workflows'), pending_approvals|length, null, null, 'warning', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.pending'|trans({}, 'workflows'), value: pending_approvals|length, variant: 'warning' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'workflows'), pending_approvals|filter(i => i.overdue)|length, null, null, 'danger', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.overdue'|trans({}, 'workflows'), value: pending_approvals|filter(i => i.overdue)|length, variant: 'danger' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.my_tasks'|trans({}, 'workflows'), pending_approvals|filter(i => i.initiatedBy and i.initiatedBy.id == app.user.id)|length, null, null, 'success', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.my_tasks'|trans({}, 'workflows'), value: pending_approvals|filter(i => i.initiatedBy and i.initiatedBy.id == app.user.id)|length, variant: 'success' }) }}
     </div>
     <div class="col-auto">
         {% set weekEnd = 'now'|date_modify('+7 days') %}
-        {{ cards.kpi_card('workflow.stats.due_this_week'|trans({}, 'workflows'), pending_approvals|filter(i => i.dueDate and i.dueDate <= weekEnd)|length, null, null, 'info', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.due_this_week'|trans({}, 'workflows'), value: pending_approvals|filter(i => i.dueDate and i.dueDate <= weekEnd)|length, variant: 'info' }) }}
     </div>
 </div>
 

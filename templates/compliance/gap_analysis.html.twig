@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'compliance.title.gap_analysis'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
@@ -26,17 +26,17 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.total_requirements'|trans({}, 'compliance'), total_requirements, null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.total_requirements'|trans({}, 'compliance'), value: total_requirements, variant: 'primary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.met_requirements'|trans({}, 'compliance'), met_requirements, null, null, 'success', null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.met_requirements'|trans({}, 'compliance'), value: met_requirements, variant: 'success' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.gaps_identified'|trans({}, 'compliance'), total_gaps, null, null, 'danger', 'border-danger') }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.gaps_identified'|trans({}, 'compliance'), value: total_gaps, variant: 'danger' }) }}
     </div>
     <div class="col-auto">
         {% set score = total_requirements > 0 ? (met_requirements / total_requirements * 100)|round : 0 %}
-        {{ cards.kpi_card('compliance.stats.compliance_score'|trans({}, 'compliance'), score ~ '%', null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.compliance_score'|trans({}, 'compliance'), value: score ~ '%', variant: 'primary' }) }}
     </div>
 </div>
 
