@@ -16,12 +16,13 @@ GSTOOL-Inhalte so in das Tool-Datenmodell überführen, dass die Daten **direkt 
 
 | Phase | Inhalt | Format-Übersetzung | Status |
 |---|---|---|---|
-| **Phase 1** (MVP) | Zielobjekte → `Asset` mit Schutzbedarf C/I/A | Skala-Normalisierung (4-stufig BSI → 5-stufig Tool) | ✅ implementiert |
-| **Phase 2** | Modellierungs-Hierarchie | `<abhaengigkeit von zu>` → `Asset.dependsOn` (BSI 3.6 Maximumprinzip greift) | ✅ implementiert |
-| **UI** | Admin-Wizard | Upload + Dry-Run-Preview + Commit unter `/admin/import/gstool` | ✅ implementiert |
-| **Phase 3** | Bausteine-Zuordnung | Alt-Baustein-IDs → Kompendium-2023-IDs via Migration-Tabelle | offen — braucht kuratiertes Mapping-YAML |
-| **Phase 4** | Maßnahmen + Umsetzungsstatus | Alt-M-IDs → Kompendium-Anforderungen; Status erhalten + mit `migrationNote`-Flag | offen — braucht Control-Entity-Vorlagen pro Tenant |
-| **Phase 5** | Risikoanalyse-Einträge | → `Risk` mit `inherentRisk` aus GSTOOL-Schwellenwerten | offen — braucht Schwellenwert-Mapping je Tenant-RiskAppetite |
+| **Phase 1** | Zielobjekte → `Asset` mit Schutzbedarf C/I/A | Skala-Normalisierung (4-stufig BSI → 5-stufig Tool) | ✅ shipped |
+| **Phase 2** | Modellierungs-Hierarchie | `<abhaengigkeit>` → `Asset.dependsOn` (BSI 3.6 Maximumprinzip greift) | ✅ shipped |
+| **Phase 3** | Bausteine-Zuordnung | Alt-Baustein-IDs → Kompendium-2023-IDs via 65+ kuratierten Mappings (`fixtures/migrations/gstool-to-kompendium-2023.yaml`); Audit-Log statt Auto-Link | ✅ shipped |
+| **Phase 4** | Maßnahmen + Umsetzungsstatus | Alt-M-IDs + ja/teilweise/nein/entbehrlich → `implementation_status` im Audit-Log | ✅ shipped |
+| **Phase 5** | Risikoanalyse | BSI-200-3 Eintrittshäufigkeit + Schadenshöhe + Risikobehandlung → Risk-Score + Strategy im Audit-Log | ✅ shipped |
+| **UI** | Admin-Wizard | Upload + Dry-Run-Preview + Commit unter `/admin/import/gstool` | ✅ shipped |
+| **Phase 6** (offen) | Entity-Auto-Creation | ComplianceRequirement-Link + Control-Entity + Risk-Entity tatsächlich erzeugen statt nur Audit-Log | offen — Tenant-Review-Pflicht macht das aktuell zu einem manuellen Schritt |
 
 ## Eingabe-Format (v1)
 
