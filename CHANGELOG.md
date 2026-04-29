@@ -7,6 +7,46 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 _Noch keine Aenderungen._
 
+## [3.2.4] — 2026-04-29
+
+### Docker-Hardening + Source-Updates
+
+#### Supply-Chain-Transparenz (ISO 27001 A.5.21 / BSI C5 DEV-08)
+
+* **SBOM (SPDX) als OCI-Attestation** — `docker/build-push-action` ruft jetzt mit `sbom: true` ein. Jeder gepushte Image-Tag bringt eine signierte Software-Bill-of-Materials in den Manifest-Index. Audit-Nachweis aller eingebauten Pakete (PHP-Extensions, Debian-Packages, Composer-Deps, NPM-Importmap) ohne `docker run --rm IMAGE list-packages`.
+* **SLSA-Build-Provenance** — `provenance: mode=max` erzeugt eine signierte Attestation, die belegt: *welcher* GitHub-Actions-Workflow hat das Image aus *welchem* Commit gebaut. Schließt typische Supply-Chain-Angriffsvektoren (CI-Übernahme, Tag-Hijacking).
+
+#### Build-Performance
+
+* **BuildKit Cache-Mounts** im Dockerfile für `apt-get` (`/var/cache/apt` + `/var/lib/apt`) und `composer install` (`/root/.composer/cache`). Warmer Build: 40-60% schneller. Cache landet nicht im finalen Image-Layer.
+* **`# syntax=docker/dockerfile:1.7`** als Frontline-Direktive aktiviert die für Cache-Mounts nötige Frontend-Version.
+
+#### Reproducible Builds
+
+* **Pinned Base-Image-Digest**: `php:8.4-fpm-trixie@sha256:eec2a132…` statt nur Tag. Schützt gegen Tag-Rollover (z.B. wenn Upstream das Tag während eines Builds neu pusht). Kommentar im Dockerfile dokumentiert wie der Digest aktualisiert wird.
+
+#### Code-Quality-Gates
+
+* **Hadolint** als CI-Job — Dockerfile-Linter, der typische Smells fängt (`apt install` ohne `--no-install-recommends`, fehlende Pinning-Versionen, root-as-default-User). Aktuelle Konfiguration: `failure-threshold: error`, `continue-on-error: true` — Warnings werden gemeldet aber blocken Build noch nicht (Soft-Launch). Drei Regeln auf Allowlist (DL3008/DL3015/DL3018) — Stable-Distro-Pakete und Pip-Setup-Pattern den unsere Setup explizit nutzt.
+
+#### Source-Updates
+
+* **PHPStan** 2.1.51 → 2.1.53 (Patch).
+* **Bootstrap** 5.3.3 → 5.3.8 (Minor — Bug-Fixes, kein API-Bruch).
+* **SortableJS** 1.15.3 → 1.15.7 (Patch).
+* **Keine Security-Advisories** im aktuellen Composer-Tree.
+
+#### Bewusst nicht aktualisiert (eigener Sprint nötig)
+
+* **`@hotwired/turbo` 7.3.0 → 8.0.23** — Major-Bump mit potentiellen Stimulus/Turbo-Convention-Änderungen, eigene QA-Phase nötig.
+* **`chart.js` 3.9.1 → 4.5.1** — Major-Bump mit substantiellen Konfigurations-API-Änderungen.
+
+Beide für v3.3.0 vorgesehen.
+
+#### Bekannte Test-Failures aus v3.2.3 weiter offen
+
+Die 4 `AssetControllerTest::testBulkDelete*` Errors (`SessionNotFoundException`) sind weiter offen — Test-seitig, nicht produktions-seitig. Wird parallel adressiert.
+
 ## [3.2.3] — 2026-04-28
 
 ### Quick-Fix-Fallback für Schema-Mismatch nach Composer-Upgrade

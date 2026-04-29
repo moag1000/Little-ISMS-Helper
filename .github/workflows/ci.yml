@@ -176,6 +176,19 @@ jobs:
       - name: DQL Field Mismatch Check
         run: php scripts/quality/check-dql-mismatches.php
 
+      # Hadolint — Dockerfile best-practice linting
+      # Catches typical smells (apt-get install without --no-install-recommends,
+      # missing pinned versions, root-as-default user, etc.)
+      - name: Hadolint Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          # severity: only fail on errors, warnings reported but non-blocking
+          failure-threshold: error
+          # ignore rules our setup intentionally violates
+          ignore: DL3008,DL3015,DL3018
+        continue-on-error: true
+
   security:
     name: Security Checks
     runs-on: ubuntu-latest
@@ -254,6 +267,13 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: true
+          # Software Bill of Materials (SBOM) — required for ISO 27001 A.5.21
+          # supply-chain transparency + BSI C5 DEV-08. Embedded into the OCI
+          # manifest as an SPDX attestation.
+          sbom: true
+          # SLSA Provenance (build attestation) — proves *which* CI workflow built
+          # this image from *which* source commit. Cuts supply-chain attack risk.
+          provenance: mode=max
           build-args: |
             BUILDKIT_PROGRESS=plain
 

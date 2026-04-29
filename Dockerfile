@@ -1,8 +1,11 @@
+# syntax=docker/dockerfile:1.7
 # Multi-stage Dockerfile for Little ISMS Helper
 # Stage 1: Production Build
 # Using Debian Trixie (13) instead of Alpine for better QEMU cross-compilation support
 # PHP 8.4 used instead of 8.5 due to extension build issues in 8.5 Docker images
-FROM php:8.4-fpm-trixie AS production
+# Pinned digest for reproducible builds — update via:
+#   docker buildx imagetools inspect php:8.4-fpm-trixie | grep '^Digest:'
+FROM php:8.4-fpm-trixie@sha256:eec2a132b91271dcf51e86119311ec4b22105736af704997a690594b8f88af31 AS production
 
 # OCI Image Labels (https://github.com/opencontainers/image-spec/blob/main/annotations.md)
 LABEL org.opencontainers.image.title="Little ISMS Helper"
@@ -15,11 +18,18 @@ LABEL org.opencontainers.image.source="https://github.com/moag1000/Little-ISMS-H
 LABEL org.opencontainers.image.documentation="https://github.com/moag1000/Little-ISMS-Helper/blob/main/README.md"
 LABEL maintainer="Little ISMS Helper Project"
 
-# Security: Update all packages to latest security patches
-RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+# Security: Update all packages to latest security patches.
+# BuildKit cache-mounts speed up rebuilds by reusing apt downloads + lists across
+# builds, while keeping the cache OUT of the final image layer.
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    rm -f /etc/apt/apt.conf.d/docker-clean && \
+    apt-get update && apt-get upgrade -y
 
 # Install system dependencies including MariaDB server for standalone deployment
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
     libzip-dev \
@@ -36,8 +46,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     supervisor \
     python3-pip \
     curl \
-    gosu \
-    && rm -rf /var/lib/apt/lists/*
+    gosu
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
@@ -64,8 +73,10 @@ COPY composer.json symfony.lock ./
 # Note: composer.lock intentionally omitted - will be generated during install
 
 # Install dependencies (production) WITHOUT running scripts (bin/console doesn't exist yet)
-# This will generate a fresh composer.lock with the latest compatible versions
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts --verbose
+# This will generate a fresh composer.lock with the latest compatible versions.
+# BuildKit cache-mount reuses Composer's package cache across builds.
+RUN --mount=type=cache,target=/root/.composer/cache,sharing=locked \
+    composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts --verbose
 
 # Copy application files
 COPY . .
@@ -182,9 +193,10 @@ CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 FROM production AS development
 
 # Install development dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    linux-headers-generic \
-    && rm -rf /var/lib/apt/lists/*
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends \
+    linux-headers-generic
 
 # Install Xdebug for development (latest stable version)
 RUN pecl channel-update pecl.php.net && \

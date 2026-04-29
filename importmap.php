@@ -33,14 +33,8 @@ return [
     'chart.js' => [
         'version' => '3.9.1',
     ],
-    'bootstrap' => [
-        'version' => '5.3.3',
-    ],
     '@popperjs/core' => [
         'version' => '2.11.8',
-    ],
-    'sortablejs' => [
-        'version' => '1.15.3',
     ],
     'tom-select' => [
         'version' => '2.6.0',
@@ -53,6 +47,16 @@ return [
     ],
     'tom-select/dist/css/tom-select.default.min.css' => [
         'version' => '2.6.0',
+        'type' => 'css',
+    ],
+    'bootstrap' => [
+        'version' => '5.3.8',
+    ],
+    'sortablejs' => [
+        'version' => '1.15.7',
+    ],
+    'bootstrap/dist/css/bootstrap.min.css' => [
+        'version' => '5.3.8',
         'type' => 'css',
     ],
 ];

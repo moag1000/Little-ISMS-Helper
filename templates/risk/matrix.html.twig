@@ -60,22 +60,22 @@
 
                 <div class="matrix-legend">
                     <h3>{{ 'risk.matrix.legend_title'|trans({}, 'risk') }}</h3>
-                    <div class="legend-items" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; margin-top: 1rem;">
-                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; white-space: nowrap; position: relative;">
-                            <span class="legend-color risk-critical" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
-                            <span class="d-inline-block">{{ 'risk.matrix.level.critical'|trans({}, 'risk') }}</span>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <span class="legend-color risk-critical"></span>
+                            <span>{{ 'risk.matrix.level.critical'|trans({}, 'risk') }}</span>
                         </div>
-                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; white-space: nowrap; position: relative;">
-                            <span class="legend-color risk-high" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
-                            <span class="d-inline-block">{{ 'risk.matrix.level.high'|trans({}, 'risk') }}</span>
+                        <div class="legend-item">
+                            <span class="legend-color risk-high"></span>
+                            <span>{{ 'risk.matrix.level.high'|trans({}, 'risk') }}</span>
                         </div>
-                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; white-space: nowrap; position: relative;">
-                            <span class="legend-color risk-medium" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
-                            <span class="d-inline-block">{{ 'risk.matrix.level.medium'|trans({}, 'risk') }}</span>
+                        <div class="legend-item">
+                            <span class="legend-color risk-medium"></span>
+                            <span>{{ 'risk.matrix.level.medium'|trans({}, 'risk') }}</span>
                         </div>
-                        <div class="legend-item" style="display: flex; flex-direction: row; align-items: center; gap: 0.625rem; padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; white-space: nowrap; position: relative;">
-                            <span class="legend-color risk-low" style="width: 20px; height: 20px; display: inline-block; flex-shrink: 0;"></span>
-                            <span class="d-inline-block">{{ 'risk.matrix.level.low'|trans({}, 'risk') }}</span>
+                        <div class="legend-item">
+                            <span class="legend-color risk-low"></span>
+                            <span>{{ 'risk.matrix.level.low'|trans({}, 'risk') }}</span>
                         </div>
                     </div>
                 </div>
@@ -85,6 +85,33 @@
 </div>
 
 <style>
+.legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
 .risk-matrix-container {
     padding: 2rem;
     display: flex;
