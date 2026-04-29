@@ -45,6 +45,15 @@ class AssetControllerTest extends WebTestCase
         $container = static::getContainer();
         $this->entityManager = $container->get(EntityManagerInterface::class);
 
+        // Ensure setup-complete lock exists — without it SetupRequiredSubscriber
+        // redirects every authenticated request to /setup/. The lock is removed
+        // by DeploymentWizardControllerTest::setUp; if its tearDown doesn't run
+        // (test crash), the lock stays missing for downstream tests.
+        $lockFile = $container->getParameter('kernel.project_dir') . '/config/setup_complete.lock';
+        if (!file_exists($lockFile)) {
+            @file_put_contents($lockFile, date('c'));
+        }
+
         // Create test data and commit it so HTTP requests can see it
         $this->createTestData();
     }
@@ -183,16 +192,18 @@ class AssetControllerTest extends WebTestCase
 
     private function generateCsrfToken(string $tokenId): string
     {
-        // Make a request first to ensure the client has an active session
+        // Bootstrap session via GET, then set token in the SAME session and
+        // immediately save+close. Without explicit save, late `set()` after
+        // the GET response stays in-memory only and never reaches storage —
+        // the next POST request opens a fresh session that doesn't see the
+        // token.
         $this->client->request('GET', '/en/asset/');
-
-        // Get the session from the client's request
         $session = $this->client->getRequest()->getSession();
 
-        // Generate a token and store it directly in the session
         $tokenGenerator = new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator();
         $tokenValue = $tokenGenerator->generateToken();
         $session->set('_csrf/' . $tokenId, $tokenValue);
+        $session->save();
 
         return $tokenValue;
     }
@@ -685,9 +696,7 @@ class AssetControllerTest extends WebTestCase
         $this->entityManager->flush();
 
         $ids = [$this->testAsset->getId(), $asset2->getId()];
-        // Make a request to initialize the session (loginUser doesn't start one)
-        $crawler = $this->client->request('GET', '/en/asset/');
-        $csrfToken = $this->client->getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
+        $csrfToken = $this->generateCsrfToken('bulk_delete');
 
         $this->client->request('POST', '/en/asset/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
@@ -704,9 +713,7 @@ class AssetControllerTest extends WebTestCase
     public function testBulkDeleteReturnsErrorForEmptyIds(): void
     {
         $this->loginAsUser($this->adminUser);
-        // Make a request to initialize the session (loginUser doesn't start one)
-        $crawler = $this->client->request('GET', '/en/asset/');
-        $csrfToken = $this->client->getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
+        $csrfToken = $this->generateCsrfToken('bulk_delete');
 
         $this->client->request('POST', '/en/asset/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
@@ -744,9 +751,7 @@ class AssetControllerTest extends WebTestCase
         $this->entityManager->flush();
 
         $this->loginAsUser($this->adminUser);
-        // Make a request to initialize the session (loginUser doesn't start one)
-        $crawler = $this->client->request('GET', '/en/asset/');
-        $csrfToken = $this->client->getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
+        $csrfToken = $this->generateCsrfToken('bulk_delete');
 
         $ids = [$this->testAsset->getId(), $otherAsset->getId()];
 
@@ -766,9 +771,7 @@ class AssetControllerTest extends WebTestCase
     public function testBulkDeleteHandlesNonexistentAssets(): void
     {
         $this->loginAsUser($this->adminUser);
-        // Make a request to initialize the session (loginUser doesn't start one)
-        $crawler = $this->client->request('GET', '/en/asset/');
-        $csrfToken = $this->client->getContainer()->get('security.csrf.token_manager')->getToken('bulk_delete')->getValue();
+        $csrfToken = $this->generateCsrfToken('bulk_delete');
 
         $ids = [999999, 999998];
 
