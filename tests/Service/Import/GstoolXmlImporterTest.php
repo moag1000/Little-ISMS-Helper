@@ -209,6 +209,71 @@ XML);
     }
 
     #[Test]
+    public function testApplyLogsBausteineMigrationToAuditTrail(): void
+    {
+        $result = $this->importer->apply($this->fixturePath, $this->tenant, null, 'sample.xml');
+        self::assertNull($result['header_error']);
+
+        // Pull all row events for this session and bucket Phase-3 ones
+        // (lineNumber >= 2000) for assertion.
+        $events = $this->em->getRepository(\App\Entity\ImportRowEvent::class)
+            ->findBy(['session' => $result['session_id']]);
+
+        $bausteinEvents = array_filter(
+            $events,
+            static fn ($e) => $e->getLineNumber() >= 2000 && $e->getLineNumber() < 3000,
+        );
+        self::assertCount(6, $bausteinEvents, 'Six baustein-refs in fixture');
+
+        $afterStates = array_map(
+            static fn ($e) => json_decode((string) $e->getAfterState(), true),
+            $bausteinEvents,
+        );
+        $byLegacyId = [];
+        foreach ($afterStates as $s) {
+            $byLegacyId[$s['legacy_id']] = $s;
+        }
+
+        self::assertSame('ISMS.1', $byLegacyId['B 1.0']['kompendium_2023_id']);
+        self::assertSame('CON.3', $byLegacyId['B 1.4']['kompendium_2023_id']);
+        self::assertSame('SYS.1.1', $byLegacyId['B 3.101']['kompendium_2023_id']);
+        self::assertSame('INF.5', $byLegacyId['B 2.4']['kompendium_2023_id']);
+        self::assertSame('APP.3.1', $byLegacyId['B 5.21']['kompendium_2023_id']);
+        self::assertNull(
+            $byLegacyId['B 9.99']['kompendium_2023_id'],
+            'Unknown legacy Baustein should resolve to null',
+        );
+    }
+
+    #[Test]
+    public function testApplyLogsMassnahmenWithUmsetzungsstatusMapping(): void
+    {
+        $result = $this->importer->apply($this->fixturePath, $this->tenant, null, 'sample.xml');
+        self::assertNull($result['header_error']);
+
+        $events = $this->em->getRepository(\App\Entity\ImportRowEvent::class)
+            ->findBy(['session' => $result['session_id']]);
+        $massnahmenEvents = array_filter(
+            $events,
+            static fn ($e) => $e->getLineNumber() >= 3000 && $e->getLineNumber() < 4000,
+        );
+        self::assertCount(4, $massnahmenEvents);
+
+        $byMid = [];
+        foreach ($massnahmenEvents as $e) {
+            $payload = json_decode((string) $e->getAfterState(), true);
+            $byMid[$payload['legacy_id']] = $payload;
+        }
+
+        self::assertSame('implemented', $byMid['M 2.1']['implementation_status']);
+        self::assertSame('partially_implemented', $byMid['M 2.2']['implementation_status']);
+        self::assertSame('not_implemented', $byMid['M 2.3']['implementation_status']);
+        self::assertSame('not_applicable', $byMid['M 5.99']['implementation_status']);
+        // Mapping carries baustein-migration too:
+        self::assertSame('ISMS.1', $byMid['M 2.1']['baustein_kompendium_2023']);
+    }
+
+    #[Test]
     public function testRejectsWrongRootElement(): void
     {
         $tmp = tempnam(sys_get_temp_dir(), 'gstool-test-');

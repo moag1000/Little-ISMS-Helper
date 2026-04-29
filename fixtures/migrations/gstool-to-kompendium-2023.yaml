@@ -1,0 +1,400 @@
+# GSTOOL Alt-Bausteine → IT-Grundschutz-Kompendium 2023 — Migration Table
+#
+# Curated best-effort mapping. Sources:
+# - BSI IT-Grundschutz-Kataloge 15. EL (April 2016) — Schicht B 1-5
+# - BSI IT-Grundschutz-Kompendium Edition 2023 (Bausteine ISMS/ORP/CON/OPS/DER/APP/SYS/IND/NET/INF)
+# - Each modernised Baustein in the 2018 Kompendium ships its own migration table inside the Baustein-PDF.
+#
+# WARNING: this is a migration-helper, NOT an authoritative replacement.
+# Some legacy Bausteine were split into multiple new modules; some were
+# fully removed. Always have a Compliance Manager review the import
+# before committing to production.
+#
+# Status legend:
+#   direct       — single-target migration, content largely preserved
+#   split        — single legacy Baustein → multiple new (default chosen, alternatives noted)
+#   merged       — the new ID covers more than just the legacy content
+#   removed      — legacy Baustein has no direct successor
+#   bcm          — moved to BSI 200-4 BCM standard, no Kompendium ID
+#
+# Format:
+# B X.Y:
+#   to: <Kompendium-2023-ID> | null
+#   title_old: "..."
+#   title_new: "..."
+#   status: direct | split | merged | removed | bcm
+#   note: "optional reviewer hint"
+
+# ── Schicht B 1: Übergeordnete Aspekte ──────────────────────────────
+B 1.0:
+  to: ISMS.1
+  title_old: Sicherheitsmanagement
+  title_new: Sicherheitsmanagement
+  status: direct
+B 1.1:
+  to: ORP.1
+  title_old: Organisation
+  title_new: Organisation
+  status: direct
+B 1.2:
+  to: ORP.2
+  title_old: Personal
+  title_new: Personal
+  status: direct
+B 1.3:
+  to: DER.4
+  title_old: Notfallmanagement
+  title_new: Notfallmanagement
+  status: bcm
+  note: Inhaltlich überwiegend in BSI 200-4 BCM verlagert; Tool-Modul BCM nutzen.
+B 1.4:
+  to: CON.3
+  title_old: Datensicherungskonzept
+  title_new: Datensicherungskonzept
+  status: direct
+B 1.5:
+  to: CON.2
+  title_old: Datenschutz
+  title_new: Datenschutz
+  status: direct
+  note: Tool-Modul Datenschutz (DSGVO/BDSG) zusätzlich pflegen.
+B 1.6:
+  to: OPS.1.1.4
+  title_old: Schutz vor Schadprogrammen
+  title_new: Schutz vor Schadprogrammen
+  status: direct
+B 1.7:
+  to: CON.1
+  title_old: Kryptokonzept
+  title_new: Kryptokonzept
+  status: direct
+B 1.8:
+  to: DER.2.1
+  title_old: Behandlung von Sicherheitsvorfällen
+  title_new: Behandlung von Sicherheitsvorfällen
+  status: direct
+B 1.9:
+  to: OPS.1.1.6
+  title_old: Hard- und Software-Management
+  title_new: Software-Tests und -Freigaben
+  status: split
+  note: Auch OPS.1.1.3 Patch- und Änderungsmanagement prüfen.
+B 1.10:
+  to: APP.6
+  title_old: Standardsoftware
+  title_new: Allgemeine Software
+  status: split
+B 1.11:
+  to: OPS.2.3
+  title_old: Outsourcing
+  title_new: Nutzung von Outsourcing
+  status: direct
+  note: Auch OPS.3.2 (Anbieter-Sicht) prüfen wenn Tenant Provider ist.
+B 1.12:
+  to: OPS.1.2.2
+  title_old: Archivierung
+  title_new: Archivierung
+  status: direct
+B 1.13:
+  to: ORP.3
+  title_old: IT-Sicherheitssensibilisierung und -schulung
+  title_new: Sensibilisierung und Schulung
+  status: direct
+B 1.14:
+  to: OPS.1.1.3
+  title_old: Patch- und Änderungsmanagement
+  title_new: Patch- und Änderungsmanagement
+  status: direct
+B 1.15:
+  to: CON.6
+  title_old: Löschen und Vernichten
+  title_new: Löschen und Vernichten
+  status: direct
+B 1.16:
+  to: CON.10
+  title_old: Anforderungsmanagement
+  title_new: Entwicklung von Webanwendungen
+  status: split
+  note: Auch CON.8 Software-Entwicklung prüfen.
+B 1.17:
+  to: OPS.2.2
+  title_old: Cloud-Nutzung
+  title_new: Cloud-Nutzung
+  status: direct
+B 1.18:
+  to: ORP.4
+  title_old: Identitäts- und Berechtigungsmanagement
+  title_new: Identitäts- und Berechtigungsmanagement
+  status: direct
+
+# ── Schicht B 2: Infrastruktur ──────────────────────────────────────
+B 2.1:
+  to: INF.1
+  title_old: Allgemeines Gebäude
+  title_new: Allgemeines Gebäude
+  status: direct
+B 2.2:
+  to: INF.7
+  title_old: Elektrotechnische Verkabelung
+  title_new: Büroarbeitsplatz
+  status: split
+  note: Auch INF.12 Verkabelung prüfen.
+B 2.3:
+  to: INF.7
+  title_old: Büroraum/Arbeitsplatz
+  title_new: Büroarbeitsplatz
+  status: direct
+B 2.4:
+  to: INF.5
+  title_old: Serverraum
+  title_new: Raum sowie Schrank für technische Infrastruktur
+  status: direct
+B 2.5:
+  to: INF.6
+  title_old: Datenträgerarchiv
+  title_new: Datenträgerarchiv
+  status: direct
+B 2.6:
+  to: INF.5
+  title_old: Raum für technische Infrastruktur
+  title_new: Raum sowie Schrank für technische Infrastruktur
+  status: direct
+B 2.7:
+  to: INF.6
+  title_old: Schutzschrank
+  title_new: Datenträgerarchiv
+  status: merged
+B 2.8:
+  to: INF.8
+  title_old: Häuslicher Arbeitsplatz
+  title_new: Häuslicher Arbeitsplatz
+  status: direct
+B 2.9:
+  to: INF.2
+  title_old: Rechenzentrum
+  title_new: Rechenzentrum sowie Serverraum
+  status: direct
+B 2.10:
+  to: INF.9
+  title_old: Mobiler Arbeitsplatz
+  title_new: Mobiler Arbeitsplatz
+  status: direct
+B 2.11:
+  to: INF.10
+  title_old: Besprechungs-, Veranstaltungs- und Schulungsräume
+  title_new: Besprechungs-, Veranstaltungs- und Schulungsräume
+  status: direct
+B 2.12:
+  to: INF.12
+  title_old: IT-Verkabelung
+  title_new: Verkabelung
+  status: direct
+
+# ── Schicht B 3: IT-Systeme ─────────────────────────────────────────
+B 3.101:
+  to: SYS.1.1
+  title_old: Allgemeiner Server
+  title_new: Allgemeiner Server
+  status: direct
+B 3.102:
+  to: SYS.1.3
+  title_old: Server unter Unix
+  title_new: Server unter Linux und Unix
+  status: direct
+B 3.106:
+  to: SYS.1.2.2
+  title_old: Server unter Windows Server 2008
+  title_new: Windows Server
+  status: merged
+B 3.107:
+  to: SYS.1.5
+  title_old: S/390- und zSeries-Mainframe
+  title_new: Virtualisierung
+  status: split
+  note: Mainframe-Spezifika ggf. via INF/SYS-Kombination abbilden.
+B 3.108:
+  to: SYS.1.2.2
+  title_old: Windows Server 2012
+  title_new: Windows Server
+  status: merged
+B 3.201:
+  to: SYS.2.1
+  title_old: Allgemeiner Client
+  title_new: Allgemeiner Client
+  status: direct
+B 3.203:
+  to: SYS.2.1
+  title_old: Laptop
+  title_new: Allgemeiner Client
+  status: merged
+  note: Laptop-spezifische Anforderungen über SYS.3.1 Mobile Devices ergänzen.
+B 3.205:
+  to: SYS.2.3
+  title_old: Client unter Unix
+  title_new: Clients unter Linux und Unix
+  status: direct
+B 3.207:
+  to: SYS.2.2.3
+  title_old: Client unter Windows 8.1
+  title_new: Clients unter Windows 10/11
+  status: merged
+B 3.208:
+  to: SYS.2.2.3
+  title_old: Client unter Windows 10
+  title_new: Clients unter Windows 10/11
+  status: direct
+B 3.301:
+  to: NET.3.2
+  title_old: Sicherheitsgateway (Firewall)
+  title_new: Firewall
+  status: direct
+B 3.302:
+  to: NET.3.1
+  title_old: Router und Switches
+  title_new: Router und Switches
+  status: direct
+B 3.303:
+  to: NET.4.2
+  title_old: VoIP-Endgerät
+  title_new: VoIP
+  status: merged
+B 3.401:
+  to: NET.4.1
+  title_old: TK-Anlage
+  title_new: TK-Anlagen
+  status: direct
+B 3.402:
+  to: null
+  title_old: Anrufbeantworter
+  title_new: ""
+  status: removed
+  note: Keine direkte Entsprechung — vermutlich obsolet.
+B 3.403:
+  to: null
+  title_old: Faxgerät
+  title_new: ""
+  status: removed
+B 3.404:
+  to: SYS.3.2.1
+  title_old: Mobiltelefon
+  title_new: Allgemeine Smartphones und Tablets
+  status: direct
+B 3.406:
+  to: SYS.4.1
+  title_old: Drucker, Kopierer und Multifunktionsgeräte
+  title_new: Drucker, Kopierer und Multifunktionsgeräte
+  status: direct
+
+# ── Schicht B 4: Netze ──────────────────────────────────────────────
+B 4.1:
+  to: NET.1.1
+  title_old: Heterogene Netze
+  title_new: Netzarchitektur und -design
+  status: direct
+B 4.2:
+  to: NET.1.2
+  title_old: Netz- und Systemmanagement
+  title_new: Netzmanagement
+  status: direct
+B 4.3:
+  to: NET.4.3
+  title_old: Modem
+  title_new: Faxserver / Modem
+  status: merged
+B 4.4:
+  to: NET.3.3
+  title_old: VPN
+  title_new: VPN
+  status: direct
+B 4.5:
+  to: INF.8
+  title_old: LAN-Anbindung eines Telearbeitsplatzes
+  title_new: Häuslicher Arbeitsplatz
+  status: merged
+B 4.6:
+  to: NET.2.1
+  title_old: WLAN
+  title_new: WLAN-Betrieb
+  status: direct
+B 4.7:
+  to: NET.4.2
+  title_old: VoIP
+  title_new: VoIP
+  status: direct
+B 4.8:
+  to: SYS.3.4
+  title_old: Bluetooth
+  title_new: Mobile Datenträger
+  status: split
+
+# ── Schicht B 5: Anwendungen ────────────────────────────────────────
+B 5.2:
+  to: CON.4
+  title_old: Datenträgeraustausch
+  title_new: Auswahl und Einsatz von Standardsoftware
+  status: split
+B 5.3:
+  to: APP.5.1
+  title_old: Groupware
+  title_new: Groupware
+  status: direct
+B 5.4:
+  to: APP.3.2
+  title_old: Webserver
+  title_new: Webserver
+  status: direct
+B 5.7:
+  to: APP.4.3
+  title_old: Datenbanken
+  title_new: Relationale Datenbanksysteme
+  status: direct
+B 5.8:
+  to: INF.8
+  title_old: Telearbeit
+  title_new: Häuslicher Arbeitsplatz
+  status: direct
+B 5.11:
+  to: APP.3.2
+  title_old: Apache Webserver
+  title_new: Webserver
+  status: merged
+B 5.12:
+  to: APP.5.2
+  title_old: Microsoft Exchange/Outlook
+  title_new: Microsoft Exchange und Outlook
+  status: direct
+B 5.13:
+  to: APP.4.6
+  title_old: SAP-System
+  title_new: SAP ERP-System
+  status: direct
+B 5.16:
+  to: APP.2.2
+  title_old: Active Directory
+  title_new: Active Directory Domain Services
+  status: direct
+B 5.18:
+  to: APP.3.6
+  title_old: DNS-Server
+  title_new: DNS-Server
+  status: direct
+B 5.19:
+  to: APP.1.2
+  title_old: Internet-Nutzung
+  title_new: Webbrowser
+  status: direct
+B 5.21:
+  to: APP.3.1
+  title_old: Webanwendungen
+  title_new: Webanwendungen und Webservices
+  status: direct
+B 5.22:
+  to: OPS.1.1.5
+  title_old: Protokollierung
+  title_new: Protokollierung
+  status: direct
+B 5.23:
+  to: OPS.2.2
+  title_old: Cloud-Speicher-Nutzung
+  title_new: Cloud-Nutzung
+  status: merged

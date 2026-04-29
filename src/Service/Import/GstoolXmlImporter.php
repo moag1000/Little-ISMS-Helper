@@ -48,6 +48,25 @@ final class GstoolXmlImporter
     ];
 
     /**
+     * GSTOOL-Umsetzungsstatus → Tool Control.implementationStatus.
+     * The four GSTOOL values (ja/nein/teilweise/entbehrlich) are well
+     * known — see BSI IT-Grundschutz-Methodik (BSI 200-2) §8.2.4.
+     */
+    public const array UMSETZUNGSSTATUS_MAP = [
+        'ja'           => 'implemented',
+        'yes'          => 'implemented',
+        'vollstaendig' => 'implemented',
+        'vollständig'  => 'implemented',
+        'teilweise'    => 'partially_implemented',
+        'partial'      => 'partially_implemented',
+        'nein'         => 'not_implemented',
+        'no'           => 'not_implemented',
+        'entbehrlich'  => 'not_applicable',
+        'n.a.'         => 'not_applicable',
+        'na'           => 'not_applicable',
+    ];
+
+    /**
      * GSTOOL-Type (lowercase, normalised) → Tool Asset.assetType.
      * Schicht-Information wird zusätzlich für die spätere Phase-3
      * Baustein-Zuordnung im Audit-Log mitgeführt.
@@ -80,6 +99,7 @@ final class GstoolXmlImporter
         private readonly EntityManagerInterface $entityManager,
         private readonly AssetRepository $assetRepository,
         private readonly ImportSessionRecorder $sessionRecorder,
+        private readonly GstoolMigrationTable $migrationTable,
     ) {
     }
 
@@ -214,6 +234,22 @@ final class GstoolXmlImporter
                 assetByGstoolId: $assetByGstoolId,
                 session: $session,
             );
+
+            // Phase 3+4: log Bausteine and Maßnahmen with their migration
+            // mapping into the audit trail. The actual entity-creation is
+            // deliberately deferred — the Compliance Manager reviews the
+            // mapping and decides per migration whether to link
+            // ComplianceRequirements / create Controls.
+            $this->logBausteineMigration(
+                root: $rootResult['root'],
+                assetByGstoolId: $assetByGstoolId,
+                session: $session,
+            );
+            $this->logMassnahmenMigration(
+                root: $rootResult['root'],
+                assetByGstoolId: $assetByGstoolId,
+                session: $session,
+            );
         }
 
         $this->sessionRecorder->closeSession($session, ImportSession::STATUS_COMMITTED);
@@ -283,6 +319,118 @@ final class GstoolXmlImporter
         }
 
         $this->entityManager->flush();
+    }
+
+    /**
+     * Phase 3: log <bausteine>/<baustein-ref> entries with their migration
+     * mapping into the audit trail. No ComplianceRequirement linking is
+     * created automatically — this is deliberately a "review-then-act"
+     * step because some legacy Bausteine map to multiple new modules.
+     *
+     * @param array<string, Asset> $assetByGstoolId
+     */
+    private function logBausteineMigration(SimpleXMLElement $root, array $assetByGstoolId, ImportSession $session): void
+    {
+        if (!isset($root->bausteine)) {
+            return;
+        }
+        $line = 0;
+        foreach ($root->bausteine->{'baustein-ref'} as $ref) {
+            $line++;
+            $legacy = trim((string) $ref['id']);
+            $zoId = trim((string) $ref['zielobjekt']);
+            if ($legacy === '') {
+                continue;
+            }
+
+            $migration = $this->migrationTable->resolveBaustein($legacy);
+            $asset = $assetByGstoolId[$zoId] ?? null;
+
+            $payload = [
+                'legacy_id' => $legacy,
+                'zielobjekt' => $zoId !== '' ? $zoId : null,
+                'asset_name' => $asset?->getName(),
+                'kompendium_2023_id' => $migration['to'] ?? null,
+                'title_old' => $migration['title_old'] ?? null,
+                'title_new' => $migration['title_new'] ?? null,
+                'status' => $migration['status'] ?? 'unknown',
+                'note' => $migration['note'] ?? null,
+            ];
+
+            $this->sessionRecorder->recordRow(
+                session: $session,
+                lineNumber: 2000 + $line,
+                decision: $migration === null ? ImportRowEvent::DECISION_SKIP : ImportRowEvent::DECISION_MERGE,
+                targetEntityType: Asset::class,
+                targetEntityId: $asset?->getId(),
+                beforeState: null,
+                afterState: $payload,
+                sourceRowRaw: ['from' => $legacy, 'zielobjekt' => $zoId],
+                errorMessage: $migration === null
+                    ? sprintf('Unknown legacy Baustein "%s" — no migration entry available.', $legacy)
+                    : null,
+            );
+        }
+    }
+
+    /**
+     * Phase 4: log <massnahmen>/<massnahme> entries with their
+     * Umsetzungsstatus → implementationStatus mapping.
+     *
+     * @param array<string, Asset> $assetByGstoolId
+     */
+    private function logMassnahmenMigration(SimpleXMLElement $root, array $assetByGstoolId, ImportSession $session): void
+    {
+        if (!isset($root->massnahmen)) {
+            return;
+        }
+        $line = 0;
+        foreach ($root->massnahmen->massnahme as $m) {
+            $line++;
+            $mId = trim((string) $m['id']);
+            $bausteinRef = trim((string) $m['baustein']);
+            $zoId = trim((string) $m['zielobjekt']);
+            $titel = trim((string) $m->titel);
+            $statusRaw = strtolower(trim((string) $m->umsetzungsstatus));
+            $statusMapped = self::UMSETZUNGSSTATUS_MAP[$statusRaw] ?? null;
+            $bausteinMigration = $bausteinRef !== ''
+                ? $this->migrationTable->resolveBaustein($bausteinRef)
+                : null;
+            $asset = $assetByGstoolId[$zoId] ?? null;
+
+            $payload = [
+                'legacy_id' => $mId,
+                'titel' => $titel !== '' ? $titel : null,
+                'baustein_legacy' => $bausteinRef !== '' ? $bausteinRef : null,
+                'baustein_kompendium_2023' => $bausteinMigration['to'] ?? null,
+                'umsetzungsstatus_raw' => $statusRaw !== '' ? $statusRaw : null,
+                'implementation_status' => $statusMapped,
+                'asset_name' => $asset?->getName(),
+            ];
+
+            $decision = $statusMapped === null && $bausteinMigration === null
+                ? ImportRowEvent::DECISION_SKIP
+                : ImportRowEvent::DECISION_MERGE;
+
+            $this->sessionRecorder->recordRow(
+                session: $session,
+                lineNumber: 3000 + $line,
+                decision: $decision,
+                targetEntityType: Asset::class,
+                targetEntityId: $asset?->getId(),
+                beforeState: null,
+                afterState: $payload,
+                sourceRowRaw: [
+                    'massnahme' => $mId,
+                    'baustein' => $bausteinRef,
+                    'zielobjekt' => $zoId,
+                    'umsetzung' => $statusRaw,
+                ],
+                errorMessage: $statusMapped === null && $statusRaw !== ''
+                    ? sprintf('Unknown Umsetzungsstatus "%s" — expected ja/nein/teilweise/entbehrlich.', $statusRaw)
+                    : null,
+            );
+        }
     }
 
     /**
