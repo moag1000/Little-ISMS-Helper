@@ -5,7 +5,7 @@
 {% block title %}{{ 'person.title.list'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
@@ -29,16 +29,16 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('person.stats.total'|trans({}, 'messages'), persons|length, null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'person.stats.total'|trans({}, 'messages'), value: persons|length, variant: 'primary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('person.stats.employees'|trans({}, 'messages'), persons|filter(p => p.personType == 'employee')|length, null, null, 'success', null) }}
+        {{ _fa_feature_card.render({ label: 'person.stats.employees'|trans({}, 'messages'), value: persons|filter(p => p.personType == 'employee')|length, variant: 'success' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('person.stats.contractors'|trans({}, 'messages'), persons|filter(p => p.personType == 'contractor')|length, null, null, 'info', null) }}
+        {{ _fa_feature_card.render({ label: 'person.stats.contractors'|trans({}, 'messages'), value: persons|filter(p => p.personType == 'contractor')|length, variant: 'info' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('person.stats.with_badge'|trans({}, 'messages'), persons|filter(p => p.badgeId)|length, null, null, 'warning', null) }}
+        {{ _fa_feature_card.render({ label: 'person.stats.with_badge'|trans({}, 'messages'), value: persons|filter(p => p.badgeId)|length, variant: 'warning' }) }}
     </div>
 </div>
 

@@ -4,7 +4,7 @@
 {% block title %}{{ 'workflow.title.overdue'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_macros/workflow.html.twig' as workflow_macros %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
@@ -28,7 +28,7 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'workflows'), overdue_workflows|length, null, null, 'danger', 'border-danger') }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.overdue'|trans({}, 'workflows'), value: overdue_workflows|length, variant: 'danger' }) }}
     </div>
     <div class="col-auto">
         {% set myOverdue = 0 %}
@@ -37,7 +37,7 @@
                 {% set myOverdue = myOverdue + 1 %}
             {% endif %}
         {% endfor %}
-        {{ cards.kpi_card('workflow.stats.my_overdue'|trans({}, 'workflows'), myOverdue, null, null, 'warning', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.my_overdue'|trans({}, 'workflows'), value: myOverdue, variant: 'warning' }) }}
     </div>
     <div class="col-auto">
         {% set totalDaysOverdue = 0 %}
@@ -47,7 +47,7 @@
                 {% set totalDaysOverdue = totalDaysOverdue + daysOverdue %}
             {% endif %}
         {% endfor %}
-        {{ cards.kpi_card('workflow.stats.overdue_days_avg'|trans({}, 'workflows'), overdue_workflows|length > 0 ? (totalDaysOverdue / overdue_workflows|length)|round : 0, null, null, 'info', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.overdue_days_avg'|trans({}, 'workflows'), value: overdue_workflows|length > 0 ? (totalDaysOverdue / overdue_workflows|length)|round : 0, variant: 'info' }) }}
     </div>
     <div class="col-auto">
         {% set criticalOverdue = 0 %}
@@ -59,7 +59,7 @@
                 {% endif %}
             {% endif %}
         {% endfor %}
-        {{ cards.kpi_card('workflow.stats.critical_overdue'|trans({}, 'workflows'), criticalOverdue, null, null, 'danger', null) }}
+        {{ _fa_feature_card.render({ label: 'workflow.stats.critical_overdue'|trans({}, 'workflows'), value: criticalOverdue, variant: 'danger' }) }}
     </div>
 </div>
 

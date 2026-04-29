@@ -1,53 +1,40 @@
 {#
-  FairyAurora v3.0 — Empty-State mit Alva-Character-Anchor
+  FairyAurora v3→v4 Bridge — delegates to _fa_empty_state macro.
 
-  Usage:
+  Usage (unchanged — backward-compatible):
   {% include '_components/_empty_state.html.twig' with {
       mood: 'thinking',
-      icon: 'bi-inbox',
       title: 'Noch keine Assets vorhanden',
       description: 'Legen Sie Ihr erstes Asset an, um zu beginnen.',
       action: { label: 'Asset erstellen', url: path('app_asset_new'), icon: 'bi-plus-circle' }
   } %}
 
-  Optional props:
-    mood: idle|thinking|focused|sleeping|warning (Default-Mapping aus Plan § 21)
-    alvaSize: 80 (default)
-    icon: nur Fallback wenn kein Alva (mood: 'none')
-    secondary: { label, url } — optionaler Secondary-Link (z.B. "Import")
-
-  Mood-Mapping (Plan § 21):
-    - Noch nichts angelegt       → thinking   (default)
-    - Filter-Empty / kein Treffer → focused
-    - Alles erledigt              → sleeping
-    - Feature nicht aktiviert     → idle
-    - Fehler beim Laden           → warning
+  New code should use _fa_empty_state.html.twig directly (macro pattern).
 #}
 
-{% import '_components/_alva.html.twig' as alva %}
-{% import '_components/_cyber_button.html.twig' as btn %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
-<div class="empty-state fa-empty-state">
-    {% if mood|default('thinking') != 'none' %}
-        {{ alva.render(mood|default('thinking'), { size: alvaSize|default(80), decorative: true, class: 'fa-empty-state__alva' }) }}
-    {% else %}
-        <div class="empty-state-icon">
-            <i class="bi {{ icon|default('bi-inbox') }}" aria-hidden="true"></i>
-        </div>
+{% set _actions = [] %}
+{% if action is defined and is_granted('ROLE_USER') %}
+    {% set _icon = action.icon|default('bi-plus-circle') %}
+    {# Strip 'bi-' prefix — v4 macro adds it back #}
+    {% if _icon starts with 'bi-' %}
+        {% set _icon = _icon[3:] %}
     {% endif %}
-
-    <h3 class="empty-state-title fa-empty-state__title">{{ title }}</h3>
-
-    {% if description is defined %}
-        <p class="empty-state-description fa-empty-state__desc">{{ description }}</p>
+    {% set _actions = _actions|merge([{ label: action.label, variant: 'primary', icon: _icon, href: action.url }]) %}
+    {% if secondary is defined %}
+        {% set _sec_icon = secondary.icon|default(null) %}
+        {% if _sec_icon and _sec_icon starts with 'bi-' %}
+            {% set _sec_icon = _sec_icon[3:] %}
+        {% endif %}
+        {% set _actions = _actions|merge([{ label: secondary.label, variant: 'ghost', icon: _sec_icon, href: secondary.url }]) %}
     {% endif %}
+{% endif %}
 
-    {% if action is defined and is_granted('ROLE_USER') %}
-        <div class="fa-empty-state__actions">
-            {{ btn.link(action.url, action.label, { variant: 'primary', icon: action.icon|default('bi-plus-circle') }) }}
-            {% if secondary is defined %}
-                {{ btn.link(secondary.url, secondary.label, { variant: 'ghost', icon: secondary.icon|default(null) }) }}
-            {% endif %}
-        </div>
-    {% endif %}
-</div>
+{{ _fa_empty_state.render({
+    mood: mood|default('thinking'),
+    title: title|default(''),
+    text: description|default(null),
+    actions: _actions,
+    alvaSize: alvaSize|default(80)
+}) }}

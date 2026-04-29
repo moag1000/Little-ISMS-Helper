@@ -5,7 +5,7 @@
 
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -26,22 +26,22 @@
 <main class="fa-aurora-surface">
 <div class="stats-grid mb-4">
     <div class="col-auto">
-        {{ cards.kpi_card('risk_treatment_plan.stats.total'|trans({}, 'risk_treatment_plan'), stats.total, null, null, 'primary', null) }}
+        {{ _fa_feature_card.render({ label: 'risk_treatment_plan.stats.total'|trans({}, 'risk_treatment_plan'), value: stats.total, variant: 'primary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_treatment_plan.stats.planned'|trans({}, 'risk_treatment_plan'), stats.planned, null, null, 'secondary', null) }}
+        {{ _fa_feature_card.render({ label: 'risk_treatment_plan.stats.planned'|trans({}, 'risk_treatment_plan'), value: stats.planned, variant: 'secondary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_treatment_plan.stats.in_progress'|trans({}, 'risk_treatment_plan'), stats.in_progress, null, null, 'info', null) }}
+        {{ _fa_feature_card.render({ label: 'risk_treatment_plan.stats.in_progress'|trans({}, 'risk_treatment_plan'), value: stats.in_progress, variant: 'info' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_treatment_plan.stats.completed'|trans({}, 'risk_treatment_plan'), stats.completed, null, null, 'success', null) }}
+        {{ _fa_feature_card.render({ label: 'risk_treatment_plan.stats.completed'|trans({}, 'risk_treatment_plan'), value: stats.completed, variant: 'success' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_treatment_plan.stats.overdue'|trans({}, 'risk_treatment_plan'), overduePlans|length, null, null, 'danger', null) }}
+        {{ _fa_feature_card.render({ label: 'risk_treatment_plan.stats.overdue'|trans({}, 'risk_treatment_plan'), value: overduePlans|length, variant: 'danger' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_treatment_plan.stats.avg_completion'|trans({}, 'risk_treatment_plan'), stats.avg_completion|number_format(0) ~ '%', null, stats.avg_completion, 'warning', null) }}
+        {{ _fa_feature_card.render({ label: 'risk_treatment_plan.stats.avg_completion'|trans({}, 'risk_treatment_plan'), value: stats.avg_completion|number_format(0) ~ '%', variant: 'warning' }) }}
     </div>
 </div>
 

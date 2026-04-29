@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'compliance.title.data_reuse'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
@@ -26,17 +26,17 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.total_data_points'|trans({}, 'compliance'), totalDataPoints, null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.total_data_points'|trans({}, 'compliance'), value: totalDataPoints, variant: 'primary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.reused_data'|trans({}, 'compliance'), reusedDataPoints, null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.reused_data'|trans({}, 'compliance'), value: reusedDataPoints, variant: 'primary' }) }}
     </div>
     <div class="col-auto">
         {% set reuseRate = totalDataPoints > 0 ? (reusedDataPoints / totalDataPoints * 100)|round : 0 %}
-        {{ cards.kpi_card('compliance.stats.reuse_rate'|trans({}, 'compliance'), reuseRate ~ '%', null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.reuse_rate'|trans({}, 'compliance'), value: reuseRate ~ '%', variant: 'primary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.effort_saved'|trans({}, 'compliance'), effortSavedHours ~ 'h', null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.effort_saved'|trans({}, 'compliance'), value: effortSavedHours ~ 'h', variant: 'primary' }) }}
     </div>
 </div>
 

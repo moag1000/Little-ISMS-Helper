@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'compliance.title.compare'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
@@ -72,17 +72,17 @@
 {# Comparison Overview #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card(selectedFramework1.name, framework1Requirements ~ ' ' ~ ('compliance.unit.requirements'|trans({}, 'compliance')), null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: selectedFramework1.name, value: framework1Requirements ~ ' ' ~ ('compliance.unit.requirements'|trans({}, 'compliance')), variant: 'primary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card(selectedFramework2.name, framework2Requirements ~ ' ' ~ ('compliance.unit.requirements'|trans({}, 'compliance')), null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: selectedFramework2.name, value: framework2Requirements ~ ' ' ~ ('compliance.unit.requirements'|trans({}, 'compliance')), variant: 'primary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.common_requirements'|trans({}, 'compliance'), commonRequirements, null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.common_requirements'|trans({}, 'compliance'), value: commonRequirements, variant: 'primary' }) }}
     </div>
     <div class="col-auto">
         {% set overlap = ((commonRequirements / framework1Requirements * 100) + (commonRequirements / framework2Requirements * 100)) / 2 %}
-        {{ cards.kpi_card('compliance.stats.overlap_percentage'|trans({}, 'compliance'), overlap|round ~ '%', null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.overlap_percentage'|trans({}, 'compliance'), value: overlap|round ~ '%', variant: 'primary' }) }}
     </div>
 </div>
 

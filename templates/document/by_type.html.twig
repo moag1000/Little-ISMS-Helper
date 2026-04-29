@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'document.title.by_type'|trans({}, 'document') }} - Little ISMS Helper{% endblock %}
 
@@ -22,16 +22,16 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('document.stats.total'|trans({}, 'document'), totalDocuments, null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'document.stats.total'|trans({}, 'document'), value: totalDocuments, variant: 'primary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('document.stats.document_types'|trans({}, 'document'), documentTypes|length, null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'document.stats.document_types'|trans({}, 'document'), value: documentTypes|length, variant: 'primary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('document.stats.expiring_soon'|trans({}, 'document'), expiringSoonCount, null, null, 'warning', null) }}
+        {{ _fa_feature_card.render({ label: 'document.stats.expiring_soon'|trans({}, 'document'), value: expiringSoonCount, variant: 'warning' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('document.stats.avg_per_type'|trans({}, 'document'), documentTypes|length > 0 ? (totalDocuments / documentTypes|length)|round : 0, null, null, null, null) }}
+        {{ _fa_feature_card.render({ label: 'document.stats.avg_per_type'|trans({}, 'document'), value: documentTypes|length > 0 ? (totalDocuments / documentTypes|length)|round : 0, variant: 'primary' }) }}
     </div>
 </div>
 

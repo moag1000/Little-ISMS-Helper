@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bc_exercises' %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'bc_exercises.page.title'|trans({}, 'bc_exercises') }}{% endblock %}
 
@@ -27,13 +27,13 @@
     {% if statistics %}
     <div class="row mb-4">
         <div class="col-md-4">
-            {{ cards.kpi_card(('bc_exercises.stats.total'|trans({}, 'bc_exercises')), statistics.total, null, null, 'primary', null) }}
+            {{ _fa_feature_card.render({ label: 'bc_exercises.stats.total'|trans({}, 'bc_exercises'), value: statistics.total, variant: 'primary' }) }}
         </div>
         <div class="col-md-4">
-            {{ cards.kpi_card(('bc_exercises.stats.completed'|trans({}, 'bc_exercises')), statistics.completed, null, null, 'success', null) }}
+            {{ _fa_feature_card.render({ label: 'bc_exercises.stats.completed'|trans({}, 'bc_exercises'), value: statistics.completed, variant: 'success' }) }}
         </div>
         <div class="col-md-4">
-            {{ cards.kpi_card(('bc_exercises.stats.planned'|trans({}, 'bc_exercises')), statistics.planned, null, null, 'info', null) }}
+            {{ _fa_feature_card.render({ label: 'bc_exercises.stats.planned'|trans({}, 'bc_exercises'), value: statistics.planned, variant: 'info' }) }}
         </div>
     </div>
     {% endif %}

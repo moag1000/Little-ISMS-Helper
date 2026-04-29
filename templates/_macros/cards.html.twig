@@ -80,6 +80,7 @@
   - progress_color: Optional Bootstrap color for progress bar and text
   - border_class: Optional border class (e.g., 'border-warning')
 #}
+{# @deprecated Use _fa_feature_card.html.twig directly instead. This macro remains for backward-compat only. #}
 {% macro kpi_card(title, value, subtitle, progress_value, progress_color, border_class) %}
     <div class="card shadow-sm h-100 {{ border_class|default('') }}">
         <div class="card-body">

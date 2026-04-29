@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'change_requests' %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'change_request.title'|trans({}, 'change_requests') }}{% endblock %}
 
@@ -27,16 +27,16 @@
     {% if statistics %}
     <div class="row mb-4">
         <div class="col-md-3">
-            {{ cards.kpi_card('change_request.statistics.total'|trans({}, 'change_requests'), statistics.total, null, null, 'primary', null) }}
+            {{ _fa_feature_card.render({ label: 'change_request.statistics.total'|trans({}, 'change_requests'), value: statistics.total, variant: 'primary' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('change_request.statistics.pending_approval'|trans({}, 'change_requests'), statistics.pending_approval, null, null, 'warning', null) }}
+            {{ _fa_feature_card.render({ label: 'change_request.statistics.pending_approval'|trans({}, 'change_requests'), value: statistics.pending_approval, variant: 'warning' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('change_request.statistics.in_implementation'|trans({}, 'change_requests'), statistics.in_implementation, null, null, 'info', null) }}
+            {{ _fa_feature_card.render({ label: 'change_request.statistics.in_implementation'|trans({}, 'change_requests'), value: statistics.in_implementation, variant: 'info' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('change_request.statistics.overdue'|trans({}, 'change_requests'), statistics.overdue, null, null, 'danger', null) }}
+            {{ _fa_feature_card.render({ label: 'change_request.statistics.overdue'|trans({}, 'change_requests'), value: statistics.overdue, variant: 'danger' }) }}
         </div>
     </div>
     {% endif %}

@@ -2,7 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'suppliers' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'supplier.title'|trans({}, 'suppliers') }}{% endblock %}
@@ -68,19 +68,19 @@
         <div class="col-md-3">
             {% if currentTenant %}
                 {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') %}
-                {{ cards.kpi_card('supplier.statistics.total'|trans({}, 'suppliers'), detailedStats.total, subtitle, null, 'primary', null) }}
+                {{ _fa_feature_card.render({ label: 'supplier.statistics.total'|trans({}, 'suppliers'), value: detailedStats.total, hint: subtitle, variant: 'primary' }) }}
             {% else %}
-                {{ cards.kpi_card('supplier.statistics.total'|trans({}, 'suppliers'), detailedStats.total, null, null, 'primary', null) }}
+                {{ _fa_feature_card.render({ label: 'supplier.statistics.total'|trans({}, 'suppliers'), value: detailedStats.total, variant: 'primary' }) }}
             {% endif %}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('supplier.statistics.critical'|trans({}, 'suppliers'), statistics.critical, null, null, 'danger', null) }}
+            {{ _fa_feature_card.render({ label: 'supplier.statistics.critical'|trans({}, 'suppliers'), value: statistics.critical, variant: 'danger' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('supplier.statistics.overdue_assessments'|trans({}, 'suppliers'), statistics.overdue_assessments, null, null, 'warning', null) }}
+            {{ _fa_feature_card.render({ label: 'supplier.statistics.overdue_assessments'|trans({}, 'suppliers'), value: statistics.overdue_assessments, variant: 'warning' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('supplier.statistics.non_compliant'|trans({}, 'suppliers'), statistics.non_compliant, null, null, 'danger', null) }}
+            {{ _fa_feature_card.render({ label: 'supplier.statistics.non_compliant'|trans({}, 'suppliers'), value: statistics.non_compliant, variant: 'danger' }) }}
         </div>
     </div>
     {% endif %}

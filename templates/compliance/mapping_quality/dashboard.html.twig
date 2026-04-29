@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block body %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 <div class="container">
     <div class="page-header">
@@ -73,16 +73,16 @@
     {% if quality_stats.total_mappings > 0 %}
     <div class="row mb-4">
         <div class="col-md-3">
-            {{ cards.kpi_card('compliance.stats.total_mappings'|trans({}, 'compliance'), quality_stats.total_mappings, null, null, 'primary') }}
+            {{ _fa_feature_card.render({ label: 'compliance.stats.total_mappings'|trans({}, 'compliance'), value: quality_stats.total_mappings, variant: 'primary' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('compliance.mapping_quality.progress.analyzed'|trans({}, 'compliance'), quality_stats.analyzed_mappings, quality_stats.analysis_coverage ~ '%', null, 'success') }}
+            {{ _fa_feature_card.render({ label: 'compliance.mapping_quality.progress.analyzed'|trans({}, 'compliance'), value: quality_stats.analyzed_mappings, hint: quality_stats.analysis_coverage ~ '%', variant: 'success' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('compliance.mapping_quality.needs_urgent_review'|trans({}, 'compliance'), quality_stats.requires_review, null, null, 'warning') }}
+            {{ _fa_feature_card.render({ label: 'compliance.mapping_quality.needs_urgent_review'|trans({}, 'compliance'), value: quality_stats.requires_review, variant: 'warning' }) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('compliance.mapping_quality.column.gaps'|trans({}, 'compliance'), quality_stats.with_unresolved_gaps, null, null, 'danger') }}
+            {{ _fa_feature_card.render({ label: 'compliance.mapping_quality.column.gaps'|trans({}, 'compliance'), value: quality_stats.with_unresolved_gaps, variant: 'danger' }) }}
         </div>
     </div>
 

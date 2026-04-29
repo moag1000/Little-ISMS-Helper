@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bcm' %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}BCM Data Reuse Insights{% endblock %}
 
@@ -21,16 +21,16 @@
     {# Summary Cards #}
     <div class="kpi-grid">
         <div class="col-auto">
-            {{ cards.kpi_card('Business Processes', total_processes, null, null, 'primary', null) }}
+            {{ _fa_feature_card.render({ label: 'Business Processes', value: total_processes, variant: 'primary' }) }}
         </div>
         <div class="col-auto">
-            {{ cards.kpi_card('Assets Influenced', assets_influenced, null, null, 'success', null) }}
+            {{ _fa_feature_card.render({ label: 'Assets Influenced', value: assets_influenced, variant: 'success' }) }}
         </div>
         <div class="col-auto">
-            {{ cards.kpi_card('Recommendations', insights|length, null, null, 'info', null) }}
+            {{ _fa_feature_card.render({ label: 'Recommendations', value: insights|length, variant: 'info' }) }}
         </div>
         <div class="col-auto">
-            {{ cards.kpi_card('Data Reuse Rate', (assets_influenced > 0 ? (assets_influenced / total_processes * 100)|number_format(0) : 0) ~ '%', null, null, 'warning', null) }}
+            {{ _fa_feature_card.render({ label: 'Data Reuse Rate', value: (assets_influenced > 0 ? (assets_influenced / total_processes * 100)|number_format(0) : 0) ~ '%', variant: 'warning' }) }}
         </div>
     </div>
 

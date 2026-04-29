@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
-{% import '_macros/cards.html.twig' as cards %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block title %}{{ 'compliance.title.transitive'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
@@ -32,17 +32,17 @@
 {# Statistics Cards - Prominently displayed #}
 <div class="kpi-grid mb-2">
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.total_relationships'|trans({}, 'compliance'), total_relationships, null, null, 'primary', null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.total_relationships'|trans({}, 'compliance'), value: total_relationships, variant: 'primary' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.transitive_compliance'|trans({}, 'compliance'), transitive_compliance, null, null, 'success', null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.transitive_compliance'|trans({}, 'compliance'), value: transitive_compliance, variant: 'success' }) }}
     </div>
     <div class="col-auto">
         {% set leverageRate = total_relationships > 0 ? (transitive_compliance / total_relationships * 100)|round : 0 %}
-        {{ cards.kpi_card('compliance.stats.leverage_rate'|trans({}, 'compliance'), leverageRate ~ '%', null, null, 'info', null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.leverage_rate'|trans({}, 'compliance'), value: leverageRate ~ '%', variant: 'info' }) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.frameworks_leveraged'|trans({}, 'compliance'), frameworks_leveraged, null, null, 'warning', null) }}
+        {{ _fa_feature_card.render({ label: 'compliance.stats.frameworks_leveraged'|trans({}, 'compliance'), value: frameworks_leveraged, variant: 'warning' }) }}
     </div>
 </div>
 
