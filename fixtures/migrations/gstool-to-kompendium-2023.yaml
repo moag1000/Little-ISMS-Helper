@@ -398,3 +398,118 @@ B 5.23:
   title_old: Cloud-Speicher-Nutzung
   title_new: Cloud-Nutzung
   status: merged
+
+# ── Erweiterung: Spezialisierte Bausteine ───────────────────────────
+B 3.103:
+  to: NET.3.2
+  title_old: Bastion-Host
+  title_new: Firewall
+  status: merged
+B 3.104:
+  to: NET.3.2
+  title_old: Sicherheitsgateway
+  title_new: Firewall
+  status: direct
+B 3.105:
+  to: SYS.1.1
+  title_old: Sicherheitsserver
+  title_new: Allgemeiner Server
+  status: merged
+  note: Zusätzlich SYS.1.6 (Container) prüfen wenn Container-basiert.
+B 3.202:
+  to: SYS.2.1
+  title_old: Allgemeines nicht vernetztes IT-System
+  title_new: Allgemeiner Client
+  status: merged
+B 3.204:
+  to: SYS.2.4
+  title_old: Macintosh-Client
+  title_new: Client unter macOS
+  status: direct
+B 3.206:
+  to: SYS.2.2.3
+  title_old: Client unter Windows 7
+  title_new: Clients unter Windows 10/11
+  status: merged
+  note: Windows 7 ist EOL — Migration auf Windows 10/11 erforderlich.
+B 3.405:
+  to: SYS.3.2.1
+  title_old: PDA
+  title_new: Allgemeine Smartphones und Tablets
+  status: merged
+B 5.1:
+  to: NET.4.x
+  title_old: Peer-to-Peer
+  title_new: ""
+  status: removed
+  note: Kein direkter Nachfolger. Tenant-spezifisch über NET-Modul abbilden.
+B 5.5:
+  to: APP.5.2
+  title_old: Lotus Notes
+  title_new: Microsoft Exchange und Outlook
+  status: merged
+  note: IBM/HCL Notes-Spezifika via APP.5 + custom Tenant-Anforderungen.
+B 5.6:
+  to: null
+  title_old: Faxserver
+  title_new: ""
+  status: removed
+  note: Inhaltlich obsolet. Fax-Workflow via APP.5.1 oder Drittanbieter.
+B 5.9:
+  to: APP.2.x
+  title_old: Novell eDirectory
+  title_new: Verzeichnisdienste (allgemein)
+  status: merged
+B 5.10:
+  to: APP.3.2
+  title_old: Internet Information Server
+  title_new: Webserver
+  status: merged
+B 5.14:
+  to: SYS.4.5
+  title_old: Mobile Datenträger
+  title_new: Wechseldatenträger
+  status: direct
+B 5.15:
+  to: APP.2.1
+  title_old: Allgemeiner Verzeichnisdienst
+  title_new: Allgemeiner Verzeichnisdienst
+  status: direct
+B 5.17:
+  to: APP.2.x
+  title_old: Samba
+  title_new: Verzeichnisdienste (Samba)
+  status: merged
+B 5.20:
+  to: APP.2.1
+  title_old: OpenLDAP
+  title_new: Allgemeiner Verzeichnisdienst
+  status: merged
+B 5.24:
+  to: APP.3.1
+  title_old: Web-Services
+  title_new: Webanwendungen und Webservices
+  status: direct
+B 5.25:
+  to: APP.6
+  title_old: Allgemeine Anwendungen
+  title_new: Allgemeine Software
+  status: direct
+
+# ── Übergeordnete Aspekte (zusätzlich) ─────────────────────────────
+B 1.0a:
+  to: ISMS.1
+  title_old: Sicherheitsmanagement (alt)
+  title_new: Sicherheitsmanagement
+  status: direct
+B 1.7a:
+  to: CRYPTO.1
+  title_old: Kryptokonzept (alt)
+  title_new: Kryptokonzept
+  status: direct
+  note: Lege auch CON.1 als alternativ — beide Codes existierten parallel.
+
+# ── Industrielle/OT-Bausteine ───────────────────────────────────────
+# Keine direkten Vorgänger im klassischen GSTOOL — IND.* Schicht ist
+# komplett neu im Kompendium 2018+. Tenant muss IND-Bausteine direkt
+# aus dem Kompendium übernehmen.
