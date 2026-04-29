@@ -28,27 +28,16 @@
     <details class="mb-3">
         <summary class="text-primary small" style="cursor: pointer;">
             <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
-            Was tut eine MRIS-Baseline genau?
+            {{ 'mris.baselines.explainer.summary'|trans({}, 'mris') }}
         </summary>
         <div class="alert alert-light small mt-2 mb-0">
-            <p class="mb-2">
-                Eine MRIS-Baseline ist eine <strong>branchenspezifische Voreinstellung der Reifegrad-Ziele</strong>
-                für die 13 Mythos-Härtungs-Controls (MHC-01..13). Beim Anwenden auf einen Mandanten setzt sie:
-            </p>
+            <p class="mb-2">{{ 'mris.baselines.explainer.intro'|trans({}, 'mris')|raw }}</p>
             <ul class="mb-2 ps-3">
-                <li>pro MHC einen <strong>Ziel-Reifegrad</strong> (<code>initial</code> / <code>defined</code> / <code>managed</code>)
-                    — was die Branche mindestens braucht,</li>
-                <li>eine <strong>Begründung</strong> warum dieser Reifegrad relevant ist (Regulatorik, Risikolage,
-                    typische Bedrohungen),</li>
-                <li><strong>bestehende Reifegrad-Bewertungen bleiben unangetastet</strong>
-                    (<code>maturity_current</code>-Werte werden nicht überschrieben).</li>
+                <li>{{ 'mris.baselines.explainer.point_target'|trans({}, 'mris')|raw }}</li>
+                <li>{{ 'mris.baselines.explainer.point_reason'|trans({}, 'mris')|raw }}</li>
+                <li>{{ 'mris.baselines.explainer.point_preserve'|trans({}, 'mris')|raw }}</li>
             </ul>
-            <p class="mb-0">
-                <strong>Beispiel:</strong> <code>healthcare-provider</code> setzt Phishing-resistente MFA (MHC-03)
-                auf <code>managed</code> wegen der Ransomware-Welle 2024/25, aber Multi-Tenancy (MHC-07) nur auf
-                <code>defined</code> weil intern. Nach Anwendung siehst du im SoA + Reifegrad-Report die Lücke
-                zwischen Ist (deine Bewertung) und Soll (Baseline-Ziel) als priorisierte Maßnahmen-Liste.
-            </p>
+            <p class="mb-0">{{ 'mris.baselines.explainer.example'|trans({}, 'mris')|raw }}</p>
         </div>
     </details>
 

@@ -1,4 +1,14 @@
 mris:
+    baselines:
+        explainer:
+            summary: 'Was tut eine MRIS-Baseline?'
+            intro: |
+                Eine MRIS-Baseline ist eine <strong>branchenspezifische Voreinstellung der Reifegrad-Ziele</strong>
+                für die 13 Mythos-Härtungs-Controls (MHC-01..13). Beim Anwenden auf einen Mandanten setzt sie:
+            point_target: 'pro MHC einen <strong>Ziel-Reifegrad</strong> (<code>initial</code> / <code>defined</code> / <code>managed</code>) — was die Branche mindestens braucht,'
+            point_reason: 'eine <strong>Begründung</strong> warum dieser Reifegrad relevant ist (Regulatorik, Risikolage, typische Bedrohungen),'
+            point_preserve: '<strong>bestehende Reifegrad-Bewertungen bleiben unangetastet</strong> (<code>maturity_current</code>-Werte werden nicht überschrieben).'
+            example: '<strong>Beispiel:</strong> <code>healthcare-provider</code> setzt Phishing-resistente MFA (MHC-03) auf <code>managed</code> wegen der Ransomware-Welle 2024/25, aber Multi-Tenancy (MHC-07) nur auf <code>defined</code> weil intern. Nach Anwendung siehst du im SoA + Reifegrad-Report die Lücke zwischen Ist (deine Bewertung) und Soll (Baseline-Ziel) als priorisierte Maßnahmen-Liste.'
     page:
         kpi_title: 'Mythos-relevante Kennzahlen'
         kpi_intro: |
