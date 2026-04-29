@@ -108,18 +108,22 @@
     } %}
 {% else %}
 {% embed '_components/_card.html.twig' %}
-    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/consent"{% endblock %}
+    {% block card_attrs %}data-controller="bulk-actions consent-filter" data-bulk-actions-endpoint-value="/consent"{% endblock %}
     {% block card_header %}
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'consent.list.all_consents'|trans({'%count%': consents|length}, 'consent') }}</h2>
             <div class="d-flex gap-2">
-                <select class="form-select form-select-sm w-150px" id="consent-status-filter">
+                <select class="form-select form-select-sm w-150px" id="consent-status-filter"
+                        data-consent-filter-target="statusFilter"
+                        data-action="change->consent-filter#filter">
                     <option value="">{{ 'consent.filter.all_status'|trans({}, 'consent') }}</option>
                     <option value="pending_verification">{{ 'consent.status.pending_verification'|trans({}, 'consent') }}</option>
                     <option value="active">{{ 'consent.status.active'|trans({}, 'consent') }}</option>
                     <option value="revoked">{{ 'consent.status.revoked'|trans({}, 'consent') }}</option>
                 </select>
-                <select class="form-select form-select-sm w-150px" id="consent-verified-filter">
+                <select class="form-select form-select-sm w-150px" id="consent-verified-filter"
+                        data-consent-filter-target="verifiedFilter"
+                        data-action="change->consent-filter#filter">
                     <option value="">{{ 'consent.filter.all_verified'|trans({}, 'consent') }}</option>
                     <option value="verified">{{ 'consent.filter.verified'|trans({}, 'consent') }}</option>
                     <option value="unverified">{{ 'consent.filter.unverified'|trans({}, 'consent') }}</option>
@@ -128,6 +132,8 @@
                 <input type="search"
                        class="form-control form-control-sm w-200px"
                        id="consent-search"
+                       data-consent-filter-target="search"
+                       data-action="input->consent-filter#filter"
                        placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
             </div>
         </div>
@@ -158,7 +164,8 @@
         {% endblock %}
         {% block table_body %}
             {% for consent in consents %}
-            <tr data-consent-id="{{ consent.id }}"
+            <tr data-consent-filter-target="row"
+                data-consent-id="{{ consent.id }}"
                 data-consent-status="{{ consent.status }}"
                 data-consent-verified="{{ consent.verifiedBy ? 'verified' : 'unverified' }}">
                 <td>
@@ -301,42 +308,5 @@
 
 </main>
 
-{# Search & Filter functionality #}
-<script>
-// Search
-document.getElementById('consent-search')?.addEventListener('input', function(e) {
-    const query = e.target.value.toLowerCase();
-    filterConsents();
-});
-
-// Status filter
-document.getElementById('consent-status-filter')?.addEventListener('change', function(e) {
-    filterConsents();
-});
-
-// Verified filter
-document.getElementById('consent-verified-filter')?.addEventListener('change', function(e) {
-    filterConsents();
-});
-
-function filterConsents() {
-    const query = document.getElementById('consent-search')?.value.toLowerCase() || '';
-    const status = document.getElementById('consent-status-filter')?.value || '';
-    const verified = document.getElementById('consent-verified-filter')?.value || '';
-    const rows = document.querySelectorAll('tbody tr[data-consent-id]');
-
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        const rowStatus = row.dataset.consentStatus;
-        const rowVerified = row.dataset.consentVerified;
-
-        const matchesSearch = !query || text.includes(query);
-        const matchesStatus = !status || rowStatus === status;
-        const matchesVerified = !verified || rowVerified === verified;
-
-        row.style.display = (matchesSearch && matchesStatus && matchesVerified) ? '' : 'none';
-    });
-}
-</script>
 
 {% endblock %}
