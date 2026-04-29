@@ -279,7 +279,7 @@ class RiskAppetite
      * Default: 1.5 (preserves historic behaviour before QW-2).
      * Range: 1.0–3.0
      */
-    #[ORM\Column(type: Types::DECIMAL, precision: 4, scale: 2)]
+    #[ORM\Column(type: Types::FLOAT)]
     #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
     #[Assert\NotNull]
     #[Assert\Range(
