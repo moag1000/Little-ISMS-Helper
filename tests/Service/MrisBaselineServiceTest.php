@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 #[AllowMockObjectsWithoutExpectations]
 final class MrisBaselineServiceTest extends TestCase
@@ -44,7 +45,7 @@ final class MrisBaselineServiceTest extends TestCase
         $audit = $this->createMock(AuditLogger::class);
         $maturity = new MrisMaturityService($em, $audit);
 
-        return new MrisBaselineService($em, $frameworkRepo, $reqRepo, $maturity, $this->projectDir);
+        return new MrisBaselineService($em, $frameworkRepo, $reqRepo, $maturity, new RequestStack(), $this->projectDir);
     }
 
     #[Test]
