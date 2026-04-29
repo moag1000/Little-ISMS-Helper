@@ -1131,7 +1131,7 @@ class DashboardStatisticsService
         $highRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= 12));
         $criticalRisks = count(array_filter($allRisks, fn($r): bool => $r->getInherentRiskLevel() >= 16));
         $treatedRisks = count(array_filter($allRisks, fn($r): bool => $r->getTreatmentStrategy() !== null));
-        $treatmentRate = $totalRisks > 0 ? round(($treatedRisks / $totalRisks) * 100) : 0;
+        $treatmentRate = $totalRisks > 0 ? (int) round(($treatedRisks / $totalRisks) * 100) : 0;
 
         // A3: Residual Risk Exposure — sum of all residual risk levels, plus counts by severity
         // A2: Risk Appetite Compliance — count risks exceeding their category's appetite
@@ -1237,7 +1237,7 @@ class DashboardStatisticsService
         ));
         $classifiedAssets = count(array_filter($activeAssets, fn($a): bool => $a->getConfidentialityValue() > 0 && $a->getIntegrityValue() > 0 && $a->getAvailabilityValue() > 0
         ));
-        $classificationRate = $totalAssets > 0 ? round(($classifiedAssets / $totalAssets) * 100) : 0;
+        $classificationRate = $totalAssets > 0 ? (int) round(($classifiedAssets / $totalAssets) * 100) : 0;
 
         return [
             'total_assets' => [
@@ -1375,7 +1375,7 @@ class DashboardStatisticsService
             $criticalProcesses = array_filter($allProcesses, fn($p): bool => $p->getCriticality() === 'critical' || $p->getCriticality() === 'high');
             $processesWithBia = array_filter($criticalProcesses, fn($p): bool => $p->getRto() !== null || $p->getRpo() !== null);
             $biaCoverage = count($criticalProcesses) > 0
-                ? round((count($processesWithBia) / count($criticalProcesses)) * 100)
+                ? (int) round((count($processesWithBia) / count($criticalProcesses)) * 100)
                 : 0;
 
             $kpis['critical_processes'] = [
@@ -1442,7 +1442,7 @@ class DashboardStatisticsService
         );
 
         $completionRate = count($allTrainings) > 0
-            ? round((count($completedTrainings) / count($allTrainings)) * 100)
+            ? (int) round((count($completedTrainings) / count($allTrainings)) * 100)
             : 0;
 
         return [
@@ -1532,7 +1532,7 @@ class DashboardStatisticsService
         );
         $hasCriticalSuppliers = count($criticalSuppliers) > 0;
         $assessmentRate = $hasCriticalSuppliers
-            ? round((count($assessedSuppliers) / count($criticalSuppliers)) * 100)
+            ? (int) round((count($assessedSuppliers) / count($criticalSuppliers)) * 100)
             : null;
 
         // Check for overdue assessments (> 12 months)
@@ -1716,7 +1716,7 @@ class DashboardStatisticsService
         ));
 
         $reportingCompliance = count($majorIncidents) > 0
-            ? round(($reportedWithin4h / count($majorIncidents)) * 100)
+            ? (int) round(($reportedWithin4h / count($majorIncidents)) * 100)
             : 100;
 
         return [

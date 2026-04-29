@@ -7,6 +7,49 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 _Noch keine Aenderungen._
 
+## [3.2.6] — 2026-04-29
+
+### Fix: PHP 8.5 strict type-coercion auf Dashboard-KPIs
+
+PHP 8.5 enforces stricter type-coercion: `round()` returnt `float`, kann
+nicht mehr implizit in einen `int`-typed Parameter gecastet werden. Mit dem
+Base-Image-Bump auf `php:8.5-fpm-trixie` in v3.2.5 (Tag-Build wurde wegen
+genau dieses Bugs vor Docker-Push gecancelt — **v3.2.5 hat kein
+Docker-Image**) brach `DashboardStatisticsService::getStatus()` zur Laufzeit
+beim Aufruf mit `round()`-Argumenten:
+
+```
+TypeError: getStatus(): Argument #1 ($value) must be of type int, float given
+```
+
+Fünf Call-Sites in `DashboardStatisticsService` mit explizitem `(int)` Cast
+versehen:
+
+* `$treatmentRate` (Zeile 1134) — Risk-Treatment-Rate-KPI
+* `$classificationRate` (Zeile 1240) — Asset-Classification-KPI
+* `$biaCoverage` (Zeile 1377) — BIA-Coverage-KPI
+* `$completionRate` (Zeile 1444) — Training-Completion-KPI
+* `$assessmentRate` (Zeile 1534) — Supplier-Assessment-KPI
+* `$reportingCompliance` (Zeile 1718) — Incident-4h-Reporting-KPI
+
+Audit über die gesamte `src/`-Codebase (96 Dateien mit `round(`, 344
+Vorkommen): **keine weiteren akuten PHP-8.5-strict-coercion-Bugs**. Die
+Codebase nutzt durchgängig diszipliniertes `(int) round(...)`-Pattern an
+allen kritischen int-Boundaries (Entity-Setter, Method-Returns mit `: int`,
+KPI-Threshold-Vergleiche).
+
+### Hinweis zu v3.2.5
+
+Tag `v3.2.5` existiert auf GitHub aber **wurde nicht released** — der
+Docker-Build wurde gecancelt, sobald der Bug auffiel. Kein gepushtes
+Docker-Image, keine GitHub-Release-Seite. v3.2.6 enthält alle v3.2.5
+Inhalte plus diesen Fix. Der Tag bleibt als historischer Marker bestehen.
+
+Alle v3.2.5-Inhalte (TOTP-Encryption, PHP-8.5, Doctrine-Migrations-4.0,
+PHPUnit-13.1, Turbo-8, Chart.js-4, stylelint-17, GitHub-Actions-Bumps,
+Aurora-T3-Sprint, Dependabot/Pre-commit/Codecov-Config, Hadolint-Smell-Fixes,
+Repo-Cleanup) gelten in v3.2.6 weiterhin.
+
 ## [3.2.5] — 2026-04-29
 
 ### Security
