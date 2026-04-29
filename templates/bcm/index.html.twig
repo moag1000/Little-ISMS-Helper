@@ -44,27 +44,32 @@
         </div>
     </div>
 
+    {# Filters #}
+    {% embed '_components/_search_filter_form.html.twig' with {
+        action: path('app_bcm_index'),
+        filter_keys: ['criticality'],
+        show_search: false,
+        form_id: 'bcm-filter-form'
+    } %}
+        {% block filters %}
+            <div class="col-md-4">
+                <label for="filter-criticality" class="form-label">{{ 'bcm.filter.all_criticality'|trans({}, 'bcm') }}</label>
+                <select class="form-select" id="filter-criticality" name="criticality">
+                    <option value="">{{ 'bcm.filter.all_criticality'|trans({}, 'bcm') }}</option>
+                    <option value="critical" {{ current_criticality == 'critical' ? 'selected' : '' }}>{{ 'bcm.criticality.critical'|trans({}, 'bcm') }}</option>
+                    <option value="high" {{ current_criticality == 'high' ? 'selected' : '' }}>{{ 'bcm.criticality.high'|trans({}, 'bcm') }}</option>
+                    <option value="medium" {{ current_criticality == 'medium' ? 'selected' : '' }}>{{ 'bcm.criticality.medium'|trans({}, 'bcm') }}</option>
+                    <option value="low" {{ current_criticality == 'low' ? 'selected' : '' }}>{{ 'bcm.criticality.low'|trans({}, 'bcm') }}</option>
+                </select>
+            </div>
+        {% endblock %}
+    {% endembed %}
+
     {# Business Processes Table #}
     {% embed '_components/_card.html.twig' %}
-        {% block card_attrs %}data-controller="filter" data-filter-filterable-columns-value="{{ ['name', 'description', 'criticality']|json_encode }}"{% endblock %}
         {% block card_header %}
             <div class="card-header">
                 <h2>{{ 'bcm.section.business_processes'|trans({}, 'bcm') }}</h2>
-                <div class="filter-panel">
-                    <input type="text"
-                           class="search-input"
-                           placeholder="{{ 'common.search_processes'|trans({}, 'messages') }}"
-                           data-filter-target="searchInput"
-                           data-action="input->filter#filterRows">
-
-                    <select class="filter-select" data-action="change->filter#filterByCategory">
-                        <option value="">{{ 'bcm.filter.all_criticality'|trans({}, 'bcm') }}</option>
-                        <option value="critical">{{ 'bcm.criticality.critical'|trans({}, 'bcm') }}</option>
-                        <option value="high">{{ 'bcm.criticality.high'|trans({}, 'bcm') }}</option>
-                        <option value="medium">{{ 'bcm.criticality.medium'|trans({}, 'bcm') }}</option>
-                        <option value="low">{{ 'bcm.criticality.low'|trans({}, 'bcm') }}</option>
-                    </select>
-                </div>
             </div>
         {% endblock %}
         {% block card_body %}
@@ -87,8 +92,7 @@
             {% endblock %}
             {% block table_body %}
                 {% for process in processes %}
-                    <tr data-filter-target="filterableRow"
-                        data-category="{{ process.criticality }}">
+                    <tr>
                         <td>
                             <strong>{{ process.name }}</strong>
                             {% if process.description %}
@@ -148,9 +152,6 @@
             {% endblock %}
         {% endembed %}
 
-        <div data-filter-target="noResults" class="no-results d-none">
-            <p>{{ 'bcm.message.no_matching_processes'|trans({}, 'bcm') }}</p>
-        </div>
         {% endblock %}
     {% endembed %}
 

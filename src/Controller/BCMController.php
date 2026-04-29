@@ -8,6 +8,7 @@ use App\Entity\BusinessProcess;
 use App\Repository\BusinessProcessRepository;
 use App\Service\ProtectionRequirementService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -20,11 +21,11 @@ class BCMController extends AbstractController
         private readonly ProtectionRequirementService $protectionRequirementService
     ) {}
     #[Route('/bcm/', name: 'app_bcm_index')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $processes = $this->businessProcessRepository->findAll();
 
-        // Statistiken
+        // Statistiken (always based on all processes)
         $stats = [
             'total' => count($processes),
             'critical' => count(array_filter($processes, fn(BusinessProcess $businessProcess): bool => $businessProcess->getCriticality() === 'critical')),
@@ -33,9 +34,17 @@ class BCMController extends AbstractController
             'avg_mtpd' => $this->calculateAverageMTPD($processes)
         ];
 
+        // Filter by criticality if requested
+        $criticality = $request->query->get('criticality');
+        if ($criticality !== null && $criticality !== '') {
+            $processes = array_filter($processes, fn(BusinessProcess $p): bool => $p->getCriticality() === $criticality);
+            $processes = array_values($processes);
+        }
+
         return $this->render('bcm/index.html.twig', [
             'processes' => $processes,
             'stats' => $stats,
+            'current_criticality' => $criticality,
         ]);
     }
     #[Route('/bcm/data-reuse-insights', name: 'app_bcm_data_reuse')]
