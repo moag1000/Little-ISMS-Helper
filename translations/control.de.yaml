@@ -25,6 +25,7 @@ control:
     next_review_date: Nächste Überprüfung
     protected_assets: Geschützte Assets
     responsible_person_legacy: Verantwortliche Person (freitext, veraltet)
+    essential_for_small_business: Wesentlich für KMU
   help:
     control_id: ISO 27001:2022 Annex A Maßnahmen-ID
     applicable_explained: "Anwendbarkeit (ISO 27001 6.1.3 d): 'Anwendbar' = diese Massnahme ist fuer Ihre Organisation relevant und MUSS umgesetzt werden. 'Nicht anwendbar' = diese Massnahme ist fuer Ihren ISMS-Scope nicht relevant — Begruendung im Feld 'Justification' PFLICHT. Beispiel: A.7.4 (Physische Ueberwachung) kann fuer ein reines Cloud-Unternehmen 'nicht anwendbar' sein."

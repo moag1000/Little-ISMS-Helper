@@ -22,11 +22,13 @@ use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
 use App\Repository\TenantRepository;
 use App\Security\SetupAccessChecker;
+use App\Repository\IndustryBaselineRepository;
 use App\Service\BackupService;
 use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\FrameworkApplicabilityService;
 use App\Service\DatabaseTestService;
 use App\Service\DataImportService;
+use App\Service\IndustryBaselineApplier;
 use App\Service\EnvironmentWriter;
 use App\Service\ModuleConfigurationService;
 use App\Service\RestoreService;
@@ -66,6 +68,8 @@ class DeploymentWizardController extends AbstractController
         private readonly FrameworkApplicabilityService $applicabilityService,
         private readonly SetupJobStatusService $setupJobStatusService,
         private readonly \Symfony\Bundle\SecurityBundle\Security $security,
+        private readonly IndustryBaselineRepository $industryBaselineRepository,
+        private readonly IndustryBaselineApplier $industryBaselineApplier,
     ) {
     }
     /**
@@ -1549,6 +1553,7 @@ class DeploymentWizardController extends AbstractController
         // Larger organizations typically need more structure
         $isLargeOrg = in_array($employeeCount, ['251-1000', '1001+'], true);
         $isMediumOrg = in_array($employeeCount, ['51-250', '251-1000', '1001+'], true);
+        $isSmallOrg = in_array($employeeCount, ['1-10', '11-50'], true);
 
         // Core modules recommended for all
         $recommendations[] = 'asset_management';
@@ -1645,6 +1650,16 @@ class DeploymentWizardController extends AbstractController
             $recommendations[] = 'audit_management';
         }
 
+        // SMB-5: Small orgs (1-50 employees) don't need BCM, multi-framework
+        // compliance, or audit logging initially — keep it lean.
+        if ($isSmallOrg) {
+            $recommendations = array_values(array_diff($recommendations, [
+                'bcm',
+                'compliance',
+                'audit_logging',
+            ]));
+        }
+
         return array_unique($recommendations);
     }
     /**
@@ -1684,6 +1699,60 @@ class DeploymentWizardController extends AbstractController
 
         return array_unique($allRecommendations);
     }
+
+    /**
+     * SMB-2: Apply the Generic Starter baseline (BL-GENERIC-v1) to the current tenant.
+     *
+     * Ensures the baseline entity is loaded first. If the baseline or tenant
+     * cannot be resolved, returns a human-readable skip message instead of
+     * throwing — the base-data import should not fail because of this.
+     */
+    private function applyGenericStarterBaseline(): string
+    {
+        try {
+            // Ensure baselines are seeded (idempotent command)
+            $baseline = $this->industryBaselineRepository->findByCode('BL-GENERIC-v1');
+            if ($baseline === null) {
+                $app = new Application($this->kernel);
+                $app->setAutoExit(false);
+                $app->run(
+                    new ArrayInput(['command' => 'app:load-industry-baselines']),
+                    new BufferedOutput(),
+                );
+                // Re-query after seeding — clear identity map so Doctrine sees the new row
+                $this->entityManager->clear();
+                $baseline = $this->industryBaselineRepository->findByCode('BL-GENERIC-v1');
+            }
+
+            if ($baseline === null) {
+                return 'Baseline BL-GENERIC-v1 nicht gefunden';
+            }
+
+            $tenant = $this->tenantRepository->findOneBy([]);
+            if ($tenant === null) {
+                return 'Kein Tenant vorhanden';
+            }
+
+            /** @var \App\Entity\User|null $user */
+            $user = $this->security->getUser();
+
+            $result = $this->industryBaselineApplier->apply($baseline, $tenant, $user);
+
+            if ($result['already_applied']) {
+                return 'Generic Starter bereits angewendet';
+            }
+
+            return sprintf(
+                'Generic Starter: %d Risiken, %d Assets, %d Controls',
+                $result['risks_created'],
+                $result['assets_created'],
+                $result['controls_marked_applicable'],
+            );
+        } catch (\Throwable $e) {
+            return 'Baseline-Fehler: ' . $e->getMessage();
+        }
+    }
+
     /**
      * Step 9: Base Data Import
      */
@@ -1705,9 +1774,16 @@ class DeploymentWizardController extends AbstractController
 
         $baseData = $this->moduleConfigurationService->getBaseData();
 
+        // SMB-2: Suggest Generic Starter baseline for small orgs
+        $employeeCount = $session->get('setup_organisation_employee_count', '1-10');
+        $suggestBaseline = in_array($employeeCount, ['1-10', '11-50'], true);
+        $baselineName = 'Generic Starter';
+
         return $this->render('setup/step9_base_data.html.twig', [
             'selected_modules' => $selectedModules,
             'base_data' => $baseData,
+            'suggest_baseline' => $suggestBaseline,
+            'baseline_name' => $baselineName,
         ]);
     }
     /**
@@ -1732,8 +1808,9 @@ class DeploymentWizardController extends AbstractController
         // Async-job pattern (file-based status — see SetupJobStatusService)
         $this->setupJobStatusService->start('base_data');
 
-        // Pre-read session data — session becomes read-only after fastcgi_finish_request
+        // Pre-read session + request data — session becomes read-only after fastcgi_finish_request
         $selectedModules = $session->get('setup_selected_modules', []);
+        $applyBaseline = $request->request->getBoolean('apply_baseline');
 
         // Release session lock so polling doesn't block on it.
         $session->save();
@@ -1761,10 +1838,17 @@ class DeploymentWizardController extends AbstractController
                 }
             }
 
+            // SMB-2: Apply Generic Starter baseline if requested
+            $baselineMessage = '';
+            if ($applyBaseline) {
+                $baselineMessage = $this->applyGenericStarterBaseline();
+            }
+
             $message = sprintf(
-                '%d Imports erfolgreich%s',
+                '%d Imports erfolgreich%s%s',
                 $successCount,
-                $errorCount > 0 ? ' (' . $errorCount . ' Fehler: ' . implode('; ', $details) . ')' : ''
+                $errorCount > 0 ? ' (' . $errorCount . ' Fehler: ' . implode('; ', $details) . ')' : '',
+                $baselineMessage !== '' ? ' | ' . $baselineMessage : '',
             );
             $this->setupJobStatusService->succeed(
                 'base_data',

@@ -1,0 +1,100 @@
+{#
+ # First-Hour Checklist — Post-Setup guided onboarding for small businesses.
+ #
+ # Shows 4 actionable steps after the setup wizard has seeded initial data:
+ # 1. Review pre-loaded assets (edit names, adjust CIA)
+ # 2. Review pre-loaded risks (adjust scores)
+ # 3. Review essential controls (mark applicable/not-applicable)
+ # 4. Generate SoA draft (export PDF)
+ #
+ # Only shown when:
+ # - ISMS Journey overall percent < 50%
+ # - Tenant has setup completed
+ # - Asset count > 0 (baseline was applied)
+ #
+ # Variables:
+ #   journey  — JourneyProgress object
+ #   asset_count, risk_count, applicable_control_count — from dashboard
+ #}
+{% trans_default_domain 'journey' %}
+
+{% if journey and journey.overallPercent < 50 and asset_count|default(0) > 0 %}
+<div class="card border-primary mb-4 shadow-sm">
+    <div class="card-header bg-primary-subtle d-flex align-items-center">
+        <div class="me-3">
+            {% include '_components/_alva.html.twig' with { mood: 'working', size: 40, decorative: true } only %}
+        </div>
+        <div>
+            <h2 class="h5 mb-0">{{ 'first_hour.title'|trans }}</h2>
+            <small class="text-muted">{{ 'first_hour.subtitle'|trans }}</small>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="list-group list-group-flush">
+            {# Step 1: Review assets #}
+            <a href="{{ path('app_asset_index') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                <span class="me-3 fs-5">
+                    {% if asset_count|default(0) > 0 %}
+                        <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
+                    {% else %}
+                        <i class="bi bi-circle text-muted" aria-hidden="true"></i>
+                    {% endif %}
+                </span>
+                <div class="flex-grow-1">
+                    <div class="fw-semibold">{{ 'first_hour.step1_title'|trans }}</div>
+                    <small class="text-muted">{{ 'first_hour.step1_hint'|trans({'%count%': asset_count|default(0)}) }}</small>
+                </div>
+                <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
+            </a>
+
+            {# Step 2: Review risks #}
+            <a href="{{ path('app_risk_index') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                <span class="me-3 fs-5">
+                    {% if risk_count|default(0) >= 5 %}
+                        <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
+                    {% elseif risk_count|default(0) > 0 %}
+                        <i class="bi bi-circle-half text-primary" aria-hidden="true"></i>
+                    {% else %}
+                        <i class="bi bi-circle text-muted" aria-hidden="true"></i>
+                    {% endif %}
+                </span>
+                <div class="flex-grow-1">
+                    <div class="fw-semibold">{{ 'first_hour.step2_title'|trans }}</div>
+                    <small class="text-muted">{{ 'first_hour.step2_hint'|trans({'%count%': risk_count|default(0)}) }}</small>
+                </div>
+                <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
+            </a>
+
+            {# Step 3: Review controls #}
+            <a href="{{ path('app_soa_index') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                <span class="me-3 fs-5">
+                    {% if applicable_control_count|default(0) >= 25 %}
+                        <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
+                    {% elseif applicable_control_count|default(0) > 0 %}
+                        <i class="bi bi-circle-half text-primary" aria-hidden="true"></i>
+                    {% else %}
+                        <i class="bi bi-circle text-muted" aria-hidden="true"></i>
+                    {% endif %}
+                </span>
+                <div class="flex-grow-1">
+                    <div class="fw-semibold">{{ 'first_hour.step3_title'|trans }}</div>
+                    <small class="text-muted">{{ 'first_hour.step3_hint'|trans({'%count%': applicable_control_count|default(0)}) }}</small>
+                </div>
+                <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
+            </a>
+
+            {# Step 4: Generate SoA PDF #}
+            <a href="{{ path('app_soa_index') }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                <span class="me-3 fs-5">
+                    <i class="bi bi-circle text-muted" aria-hidden="true"></i>
+                </span>
+                <div class="flex-grow-1">
+                    <div class="fw-semibold">{{ 'first_hour.step4_title'|trans }}</div>
+                    <small class="text-muted">{{ 'first_hour.step4_hint'|trans }}</small>
+                </div>
+                <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}

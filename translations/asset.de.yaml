@@ -11,6 +11,7 @@ asset:
     qr_label: QR-Etikett
     print_qr_label: QR-Code-Etikett drucken
     print_all_labels: Alle QR-Etiketten
+    quick_new: Schnell erfassen
   details:
     title: Asset‑Details
   risk_item:
@@ -266,6 +267,10 @@ asset:
     high: High
     medium: Medium
     low: Low
+  quick_form:
+    title: Asset schnell erfassen
+    subtitle: 6 Felder -- für den schnellen Einstieg
+    switch_to_full: Zum vollständigen Formular wechseln
   title.new: Neues Asset
   title.edit: Asset bearbeiten
   title.bcm_insights: BCM-Erkenntnisse

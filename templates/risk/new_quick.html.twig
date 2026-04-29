@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'risk' %}
+
+{% block title %}{{ 'risk.quick_form.title'|trans({}, 'risk') }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+{# Breadcrumb Navigation #}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index'), icon: 'bi-exclamation-triangle' },
+        { label: 'risk.quick_form.title'|trans({}, 'risk') }
+    ]
+} %}
+
+{# Page Header #}
+{% include '_components/_page_header.html.twig' with {
+    title: 'risk.quick_form.title'|trans({}, 'risk'),
+    subtitle: 'risk.quick_form.subtitle'|trans({}, 'risk'),
+    icon: 'bi-lightning',
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), url: path('app_risk_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+    ]
+} %}
+
+{% embed '_components/_card.html.twig' %}
+    {% block card_body %}
+        <div class="mb-3">
+            <a href="{{ path('app_risk_new') }}" class="text-muted">
+                <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
+                {{ 'risk.quick_form.switch_to_full'|trans({}, 'risk') }}
+            </a>
+        </div>
+
+        {{ form_start(form) }}
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': 'risk.section.basic_info'|trans({}, 'risk'),
+                        'fields': ['title', 'category', 'description', 'asset']
+                    },
+                    'assessment': {
+                        'label': 'risk.section.inherent_risk'|trans({}, 'risk'),
+                        'fields': ['probability', 'impact']
+                    },
+                    'ownership': {
+                        'label': 'risk.field.risk_owner'|trans({}, 'risk'),
+                        'fields': ['riskOwner']
+                    }
+                },
+                'col_widths': {
+                    'title': 6,
+                    'category': 6,
+                    'description': 12,
+                    'asset': 12,
+                    'probability': 6,
+                    'impact': 6,
+                    'riskOwner': 12
+                },
+                'tooltips': {
+                    'probability': 'risk.tooltip.probability',
+                    'impact': 'risk.tooltip.impact'
+                },
+                'translation_domain': 'risk'
+            } %}
+
+            <div class="d-flex gap-2 justify-content-between mt-4 pt-3 border-top">
+                <a href="{{ path('app_risk_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
+                    <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
+                    {{ 'risk.create'|trans({}, 'risk') }}
+                </button>
+            </div>
+
+        {{ form_end(form) }}
+    {% endblock %}
+{% endembed %}
+{% endblock %}

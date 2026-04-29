@@ -60,6 +60,8 @@ class StatementOfApplicabilityController extends AbstractController
         // MRIS-Mythos-Klassifikation gem. Peddi (2026) MRIS v1.5 Anhang A.
         // Werte: standfest|degradiert|reibung|nicht_betroffen.
         $mris = $request->query->get('mris');
+        // Essential-for-small-business filter (KMU/SME toggle)
+        $essential = $request->query->get('essential');
 
         // Get controls based on view filter
         if ($tenant) {
@@ -102,6 +104,9 @@ class StatementOfApplicabilityController extends AbstractController
         }
         if (is_string($mris) && $mris !== '') {
             $controls = array_filter($controls, fn(Control $c): bool => $c->getMythosResilience() === $mris);
+        }
+        if ($essential === '1') {
+            $controls = array_filter($controls, fn(Control $c): bool => $c->isEssentialForSmallBusiness());
         }
         if ($q !== '') {
             $needle = mb_strtolower($q);
@@ -156,6 +161,7 @@ class StatementOfApplicabilityController extends AbstractController
             'detailedStats' => $detailedStats,
             'mrisStats' => $mrisStats,
             'mrisFilter' => $mris,
+            'essentialFilter' => $essential,
         ]);
     }
     #[Route('/soa/category/{category}', name: 'app_soa_by_category')]

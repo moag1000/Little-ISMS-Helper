@@ -56,6 +56,7 @@ class ImplementationJourneyService
     {
         // --- Collect raw counts / flags per phase ---
         $metrics = $this->collectMetrics($tenant);
+        $metrics['thresholds'] = $this->getThresholdsForTenant($tenant);
 
         // --- Phase definitions (order matters) ---
         $definitions = $this->getPhaseDefinitions();
@@ -317,24 +318,27 @@ class ImplementationJourneyService
 
     /**
      * Phase 2 -- Assets (ISO 8.1)
-     * Linear ramp to 20 assets = 100 %
+     * Linear ramp to threshold = 100 %. Threshold scales with company size.
      *
      * @param array<string, mixed> $m
      */
     private function calcAssets(array $m): int
     {
-        return (int) min(100, round($m['assetCount'] / 20 * 100));
+        $target = $m['thresholds']['assets'];
+
+        return (int) min(100, round($m['assetCount'] / $target * 100));
     }
 
     /**
      * Phase 3 -- Risks (ISO 6.1)
-     * 10 risks = 80 pts + appetite exists = 20 pts
+     * Risks at threshold = 80 pts + appetite exists = 20 pts
      *
      * @param array<string, mixed> $m
      */
     private function calcRisks(array $m): int
     {
-        $riskPart = (int) min(80, round($m['riskCount'] / 10 * 80));
+        $target = $m['thresholds']['risks'];
+        $riskPart = (int) min(80, round($m['riskCount'] / $target * 80));
         $appetitePart = $m['hasAppetite'] ? 20 : 0;
 
         return $riskPart + $appetitePart;
@@ -342,13 +346,15 @@ class ImplementationJourneyService
 
     /**
      * Phase 4 -- Controls / SoA (ISO 6.1.3)
-     * 50 applicable & reviewed controls = 100 %
+     * Applicable & reviewed controls at threshold = 100 %
      *
      * @param array<string, mixed> $m
      */
     private function calcControls(array $m): int
     {
-        return (int) min(100, round($m['applicableReviewedCount'] / 50 * 100));
+        $target = $m['thresholds']['controls'];
+
+        return (int) min(100, round($m['applicableReviewedCount'] / $target * 100));
     }
 
     /**
@@ -404,6 +410,47 @@ class ImplementationJourneyService
             $overallPercent >= 61 => 'focused',
             $overallPercent >= 21 => 'working',
             default               => 'thinking',
+        };
+    }
+
+    // ------------------------------------------------------------------
+    //  Size-adaptive thresholds
+    // ------------------------------------------------------------------
+
+    /**
+     * Completion thresholds scaled by company size.
+     *
+     * employee_count is collected in setup wizard Step 6 and stored in
+     * Tenant settings JSON at settings.organisation.employee_count.
+     *
+     * @return array{assets: int, risks: int, controls: int}
+     */
+    private function getThresholdsForTenant(Tenant $tenant): array
+    {
+        $size = $this->resolveCompanySize($tenant);
+
+        return match ($size) {
+            'small'  => ['assets' => 8,  'risks' => 5,  'controls' => 25],
+            'medium' => ['assets' => 15, 'risks' => 8,  'controls' => 40],
+            default  => ['assets' => 20, 'risks' => 10, 'controls' => 50],
+        };
+    }
+
+    /**
+     * Resolve company size category from tenant settings.
+     *
+     * @return 'small'|'medium'|'large'
+     */
+    private function resolveCompanySize(Tenant $tenant): string
+    {
+        $settings = $tenant->getSettings();
+        $employeeCount = $settings['organisation']['employee_count'] ?? null;
+
+        return match ($employeeCount) {
+            '1-10', '11-50'       => 'small',
+            '51-250'              => 'medium',
+            '251-1000', '1001+'   => 'large',
+            default               => 'large', // conservative default
         };
     }
 }

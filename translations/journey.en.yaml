@@ -42,3 +42,15 @@ journey:
         locked: 'Prerequisite missing'
         dismissed: 'Intentionally skipped'
     dismissed_hint: 'This phase has been marked as not applicable.'
+
+first_hour:
+    title: 'Your first hour — 4 steps to an audit draft'
+    subtitle: 'Review the pre-filled data and adapt it to your organization'
+    step1_title: 'Review assets'
+    step1_hint: '%count% pre-filled assets — adjust names and protection needs to your company'
+    step2_title: 'Assess risks'
+    step2_hint: '%count% typical risks — adjust likelihood and impact to your situation'
+    step3_title: 'Review controls'
+    step3_hint: '%count% controls marked applicable — verify which are relevant for you'
+    step4_title: 'Export SoA draft'
+    step4_hint: 'Export the Statement of Applicability as PDF — your first audit draft'

@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'asset' %}
+
+{% block title %}{{ 'asset.quick_form.title'|trans({}, 'asset') }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+{# Breadcrumb Navigation #}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.assets'|trans({}, 'nav'), url: path('app_asset_index'), icon: 'bi-cpu' },
+        { label: 'asset.quick_form.title'|trans({}, 'asset') }
+    ]
+} %}
+
+{# Page Header #}
+{% include '_components/_page_header.html.twig' with {
+    title: 'asset.quick_form.title'|trans({}, 'asset'),
+    subtitle: 'asset.quick_form.subtitle'|trans({}, 'asset'),
+    icon: 'bi-lightning',
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), url: path('app_asset_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+    ]
+} %}
+
+{% embed '_components/_card.html.twig' %}
+    {% block card_body %}
+        <div class="mb-3">
+            <a href="{{ path('app_asset_new') }}" class="text-muted">
+                <i class="bi bi-arrow-right-circle" aria-hidden="true"></i>
+                {{ 'asset.quick_form.switch_to_full'|trans({}, 'asset') }}
+            </a>
+        </div>
+
+        {{ form_start(form) }}
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': 'asset.section.basic_info'|trans({}, 'asset'),
+                        'fields': ['name', 'assetType', 'ownerUser']
+                    },
+                    'cia_values': {
+                        'label': 'asset.section.cia_values'|trans({}, 'asset'),
+                        'fields': ['confidentialityValue', 'integrityValue', 'availabilityValue']
+                    }
+                },
+                'col_widths': {
+                    'name': 6,
+                    'assetType': 6,
+                    'ownerUser': 12,
+                    'confidentialityValue': 4,
+                    'integrityValue': 4,
+                    'availabilityValue': 4
+                },
+                'tooltips': {
+                    'confidentialityValue': 'asset.tooltip.confidentiality',
+                    'integrityValue': 'asset.tooltip.integrity',
+                    'availabilityValue': 'asset.tooltip.availability'
+                },
+                'translation_domain': 'asset'
+            } %}
+
+            <div class="form-actions d-flex gap-2 justify-content-end">
+                <a href="{{ path('app_asset_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>
+                    {{ 'asset.action.create'|trans({}, 'asset') }}
+                </button>
+            </div>
+        {{ form_end(form) }}
+    {% endblock %}
+{% endembed %}
+{% endblock %}

@@ -204,7 +204,7 @@
 {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
 {% embed '_components/_search_filter_form.html.twig' with {
     action: path('app_soa_index'),
-    filter_keys: ['category', 'status', 'mris', 'view', 'tag'],
+    filter_keys: ['category', 'status', 'mris', 'view', 'tag', 'essential'],
     search_placeholder: 'soa.filter.search_placeholder'|trans({}, 'soa'),
     form_id: 'soa-filter-form'
 } %}
@@ -243,6 +243,20 @@
                 <option value="reibung" {{ mrisFilter == 'reibung' ? 'selected' : '' }}>{{ 'soa.mris.reibung'|trans({}, 'soa') }} ({{ mrisStats.reibung|default(0) }})</option>
                 <option value="nicht_betroffen" {{ mrisFilter == 'nicht_betroffen' ? 'selected' : '' }}>{{ 'soa.mris.nicht_betroffen'|trans({}, 'soa') }} ({{ mrisStats.nicht_betroffen|default(0) }})</option>
             </select>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check form-switch mt-4">
+                <input class="form-check-input" type="checkbox" role="switch"
+                       id="essential-filter" name="essential" value="1"
+                       {{ essentialFilter == '1' ? 'checked' : '' }}
+                       data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                <label class="form-check-label" for="essential-filter">
+                    {{ 'soa.filter.essential_only'|trans({}, 'soa') }}
+                </label>
+            </div>
+            <div class="form-text small text-muted">
+                {{ 'soa.filter.essential_hint'|trans({}, 'soa') }}
+            </div>
         </div>
     {% endblock %}
 {% endembed %}

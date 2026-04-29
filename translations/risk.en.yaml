@@ -149,6 +149,12 @@ risk:
   edit: Edit
   update: Update
   delete_warning: Delete Warning
+  action:
+    quick_new: Quick entry
+  quick_form:
+    title: Quick risk entry
+    subtitle: 7 fields -- for a quick start
+    switch_to_full: Switch to full form
   new: New
   create: Create
   guidance:

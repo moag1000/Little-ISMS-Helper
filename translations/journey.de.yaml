@@ -42,3 +42,15 @@ journey:
         locked: 'Voraussetzung fehlt'
         dismissed: 'Bewusst leer gelassen'
     dismissed_hint: 'Diese Phase wurde als nicht zutreffend markiert.'
+
+first_hour:
+    title: 'Ihre erste Stunde — 4 Schritte zum Audit-Draft'
+    subtitle: 'Prüfen Sie die vorausgefüllten Daten und passen Sie sie an Ihr Unternehmen an'
+    step1_title: 'Assets prüfen'
+    step1_hint: '%count% vorausgefüllte Assets — Namen und Schutzbedarf an Ihr Unternehmen anpassen'
+    step2_title: 'Risiken bewerten'
+    step2_hint: '%count% typische Risiken — Wahrscheinlichkeit und Auswirkung auf Ihre Situation anpassen'
+    step3_title: 'Controls bewerten'
+    step3_hint: '%count% Controls als anwendbar markiert — prüfen welche für Sie relevant sind'
+    step4_title: 'SoA-Entwurf exportieren'
+    step4_hint: 'Anwendbarkeitserklärung als PDF exportieren — Ihr erster Audit-Draft'
