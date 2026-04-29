@@ -12,6 +12,7 @@ use App\Entity\Asset;
 use App\Security\Voter\ApiTenantVoter;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class ApiTenantVoterTest extends TestCase
@@ -20,8 +21,15 @@ class ApiTenantVoterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->voter = new ApiTenantVoter();
+        $security = $this->createMock(Security::class);
+        // ROLE_ADMIN check via Security::isGranted — default false, overridden per-test
+        $security->method('isGranted')->willReturnCallback(
+            fn(string $role): bool => $role === 'ROLE_ADMIN' && $this->currentUserIsAdmin
+        );
+        $this->voter = new ApiTenantVoter($security);
     }
+
+    private bool $currentUserIsAdmin = false;
 
     private function createToken(User $user): UsernamePasswordToken
     {
@@ -152,6 +160,7 @@ class ApiTenantVoterTest extends TestCase
     #[Test]
     public function grantsAllForAdmin(): void
     {
+        $this->currentUserIsAdmin = true;
         $tenantA = $this->createTenant(1);
         $tenantB = $this->createTenant(2);
         $admin = $this->createUser($tenantA, ['ROLE_USER', 'ROLE_ADMIN']);

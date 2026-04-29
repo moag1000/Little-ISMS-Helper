@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 
 use App\Entity\Tenant;
 use App\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -33,6 +34,11 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class ApiTenantVoter extends Voter
 {
     use HoldingTreeAccessTrait;
+
+    public function __construct(
+        private readonly Security $security,
+    ) {
+    }
 
     public const string API_VIEW = 'API_VIEW';
     public const string API_EDIT = 'API_EDIT';
@@ -78,8 +84,8 @@ class ApiTenantVoter extends Voter
             return false;
         }
 
-        // ROLE_ADMIN bypasses tenant checks
-        if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+        // ROLE_ADMIN bypasses tenant checks (respects Symfony role hierarchy)
+        if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
 
