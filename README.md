@@ -70,6 +70,23 @@ Besonders geeignet fuer regulierte Branchen im DACH-Raum:
 - **Kein Dokumentenmanagementsystem** -- es verlinkt Nachweise zu Controls, ist aber kein SharePoint-Ersatz
 - **Kein Fertigprodukt fuer den Enterprise-Massenmarkt** -- Integrationen (Jira, ServiceNow, Nessus) muessen fuer grosse Umgebungen ergaenzt werden
 
+### Roadmap und Unterstuetzung
+
+Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitaet ist produktionsreif -- die folgenden Features erfordern Funding:
+
+| Feature | Status | Impact |
+|---------|--------|--------|
+| Scanner-Integration (OpenVAS / Nessus) | Geplant | Automatisierte Schwachstellenerfassung |
+| Ticketing-Connector (Jira / ServiceNow) | Geplant | Massnahmen-Tracking in bestehenden Workflows |
+| SaaS-Deployment mit Self-Service-Signup | Architektur steht | Organisationen ohne Docker-Know-how erreichen |
+| Weitere Sprachen (FR, IT, NL, PL) | Infrastruktur steht (96 Domaenen) | Schweizer Markt, EU-weite NIS2-Umsetzung |
+| Unabhaengiges Security-Audit | Geplant | Vertrauen fuer sicherheitskritisches Tool |
+| API-Ausbau (80 Entities, aktuell 18 exponiert) | Architektur steht | Enterprise-Integrationsfaehigkeit |
+
+**Das Projekt unterstuetzen:** Ueber den Sponsor-Button auf GitHub koennen Sie die Weiterentwicklung direkt foerdern. Jeder Beitrag fliesst in die oben genannten Features.
+
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-red?logo=github)](https://github.com/sponsors/moag1000)
+
 ---
 
 ## Funktionen
@@ -80,6 +97,9 @@ Besonders geeignet fuer regulierte Branchen im DACH-Raum:
 - **25 Compliance-Frameworks** -- ISO 27001, ISO 22301, ISO 27005, ISO 27701 (2019+2025), NIS2, NIS2UmsuCG, DORA, TISAX, BSI IT-Grundschutz, BSI C5 (2020+2026), SOC 2, NIST CSF 2.0, CIS Controls v8.1, GDPR, BDSG, EU AI Act, GxP, DiGAV, TKG, KRITIS, KRITIS-Health, MRIS v1.5
 - **Cross-Framework-Mapping** -- 8 kuratierte Seed-Kataloge mit transitiver Compliance-Ableitung; ein Nachweis bedient mehrere Frameworks gleichzeitig (Data-Reuse-Prinzip)
 - **Branchen-Baselines** -- 9 vorkonfigurierte Starter-Pakete (Generic, Production, Finance, KRITIS-Health, Automotive, Cloud, MSP, IT-Service, Hosting) fuer sofortigen Einstieg
+- **Framework-Reife-Baselines** -- 35 Reife-Soll-Pakete (7 Frameworks x 5 Branchen: ISO 27001, BSI IT-Grundschutz, BSI C5, NIS2, DORA, TISAX, GDPR x KRITIS/Finance/SaaS/Manufacturing/Healthcare)
+- **MRIS v1.5** -- 19 zusaetzliche Branchen-Reife-Baselines mit DE/EN-i18n
+- **GSTOOL-XML-Import** -- 5-phasiger Migrationspfad fuer Verinice-Profile (Zielobjekte -> Bausteine -> Massnahmen -> Risikoanalyse), Admin-UI mit Tabbed-Preview
 - **SoA-Export** -- Statement of Applicability als PDF, inklusive Management-Review nach Clause 9.3
 
 ### Risikomanagement
