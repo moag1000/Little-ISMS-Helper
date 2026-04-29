@@ -62,7 +62,8 @@
         "twig/extra-bundle": "^3.24.0",
         "twig/string-extra": "^3.24.0",
         "twig/twig": "^3.24.0",
-        "vich/uploader-bundle": ">=2.9.2"
+        "vich/uploader-bundle": ">=2.9.2",
+        "web-token/jwt-library": "^4.0"
     },
     "config": {
         "allow-plugins": {
