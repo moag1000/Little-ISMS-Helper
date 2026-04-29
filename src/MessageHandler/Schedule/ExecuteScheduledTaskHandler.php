@@ -98,12 +98,20 @@ class ExecuteScheduledTaskHandler
         $task->setLastRunAt(new DateTime());
         $task->setLastStatus('running');
 
-        // Build command with arguments
+        // Build command with sanitized arguments
         $commandParts = ['php', $this->projectDir . '/bin/console', $task->getCommand()];
 
         if ($task->getArguments()) {
             foreach ($task->getArguments() as $arg) {
-                $commandParts[] = $arg;
+                // Block dangerous flags that could alter command behavior
+                if (preg_match('/^--env=|^--kernel-class=|^-e\s/', (string) $arg)) {
+                    $this->logger->warning('Blocked dangerous argument in scheduled task', [
+                        'task_id' => $task->getId(),
+                        'blocked_arg' => $arg,
+                    ]);
+                    continue;
+                }
+                $commandParts[] = (string) $arg;
             }
         }
 

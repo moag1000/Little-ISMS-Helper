@@ -188,7 +188,7 @@
                                         'subjects_notified': 'success',
                                         'closed': 'dark'
                                     }[breach.status] %}
-                                    {% include '_components/_badge.html.twig' with { variant: status_class, content: breach.status|replace({'_': ' '})|upper } %}
+                                    {% include '_components/_badge.html.twig' with { variant: status_class, content: ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy') } %}
                                 </td>
                                 <td>
                                     {% if breach.riskLevel %}
@@ -198,7 +198,7 @@
                                             'high': 'warning',
                                             'critical': 'danger'
                                         }[breach.riskLevel] %}
-                                        {% include '_components/_badge.html.twig' with { variant: risk_class, content: breach.riskLevel|upper } %}
+                                        {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans({}, 'privacy') } %}
                                     {% else %}
                                         <span class="text-muted">-</span>
                                     {% endif %}

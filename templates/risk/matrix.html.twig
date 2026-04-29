@@ -211,11 +211,11 @@
 .risk-high { background-color: color-mix(in srgb, var(--warning) 20%, transparent); }
 .risk-critical { background-color: var(--danger-glow); }
 
-/* Legend color boxes */
-.legend-color.risk-low { background-color: var(--success-glow) !important; }
-.legend-color.risk-medium { background-color: var(--warning-glow) !important; }
-.legend-color.risk-high { background-color: color-mix(in srgb, var(--warning) 20%, transparent) !important; }
-.legend-color.risk-critical { background-color: var(--danger-glow) !important; }
+/* Legend color boxes — .legend-color specificity sufficient via compound selector */
+.legend-color.risk-low { background-color: var(--success-glow); }
+.legend-color.risk-medium { background-color: var(--warning-glow); }
+.legend-color.risk-high { background-color: color-mix(in srgb, var(--warning) 20%, transparent); }
+.legend-color.risk-critical { background-color: var(--danger-glow); }
 
 .risk-item {
     width: 12px;
@@ -241,50 +241,19 @@
 }
 
 .matrix-legend .legend-items {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    gap: 1rem !important;
-    row-gap: 0.75rem !important;
-    margin-top: 1rem !important;
-    justify-content: center !important;
-    align-items: center !important;
+    row-gap: 0.75rem;
 }
 
 .matrix-legend .legend-item {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 0.625rem !important;
-    padding: 0.5rem 1rem !important;
-    background: var(--surface) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 6px !important;
-    font-size: 0.875rem !important;
-    font-weight: 500 !important;
-    white-space: nowrap !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-    position: relative !important;
-    margin: 0 !important;
-    flex: 0 0 auto !important;
-    min-width: fit-content !important;
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    flex: 0 0 auto;
 }
 
 .matrix-legend .legend-color {
-    width: 20px !important;
-    height: 20px !important;
-    border-radius: 3px !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    flex-shrink: 0 !important;
-    flex-grow: 0 !important;
-    display: inline-block !important;
-    position: static !important;
-}
-
-.matrix-legend .legend-item > span:not(.legend-color) {
-    display: inline-block !important;
-    position: static !important;
-    flex-shrink: 0 !important;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 </style>
 {% endblock %}

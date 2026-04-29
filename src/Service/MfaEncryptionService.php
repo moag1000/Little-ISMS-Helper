@@ -9,9 +9,13 @@ use RuntimeException;
 /**
  * Application-level encryption for MFA TOTP secrets.
  *
- * Uses libsodium XSalsa20-Poly1305 (crypto_secretbox) with a key derived
- * from APP_SECRET. Encrypted values are prefixed with "enc:" so plaintext
- * secrets (pre-migration) can be detected and handled transparently.
+ * Uses libsodium XSalsa20-Poly1305 (crypto_secretbox) with a dedicated
+ * encryption key (MFA_ENCRYPTION_KEY env var), falling back to APP_SECRET
+ * derivation if not set. Encrypted values are prefixed with "enc:" so
+ * plaintext secrets (pre-migration) can be detected transparently.
+ *
+ * Key rotation: set MFA_ENCRYPTION_KEY, run app:encrypt-mfa-secrets to
+ * re-encrypt all secrets under the new key.
  *
  * PenTest Finding PT-003 (CVSS 6.5): TOTP secrets were stored in cleartext.
  * Backup codes were already Argon2id-hashed — this closes the gap.
@@ -20,18 +24,32 @@ class MfaEncryptionService
 {
     private const string ENCRYPTED_PREFIX = 'enc:';
 
-    private readonly string $encryptionKey;
+    private string $encryptionKey;
 
     public function __construct(
         #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%kernel.secret%')]
         string $appSecret,
+        #[\Symfony\Component\DependencyInjection\Attribute\Autowire(env: 'default::MFA_ENCRYPTION_KEY')]
+        ?string $mfaEncryptionKey = null,
     ) {
-        // Derive a fixed 32-byte key from APP_SECRET using BLAKE2b
+        // Prefer dedicated key; fall back to APP_SECRET derivation
+        $source = ($mfaEncryptionKey !== null && $mfaEncryptionKey !== '')
+            ? $mfaEncryptionKey
+            : $appSecret;
+
         $this->encryptionKey = sodium_crypto_generichash(
-            $appSecret,
+            $source,
             '',
             SODIUM_CRYPTO_SECRETBOX_KEYBYTES
         );
+    }
+
+    public function __destruct()
+    {
+        // Defense-in-depth: wipe key from memory when service is destroyed
+        if ($this->encryptionKey !== '') {
+            sodium_memzero($this->encryptionKey);
+        }
     }
 
     /**
