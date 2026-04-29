@@ -1,10 +1,7 @@
 ---
 name: ux-specialist
-description: UI/UX specialist for efficient, accessible, and consistent interface design with strong focus on data reuse and component reuse
-version: 1.1.0
-author: Little-ISMS-Helper Team
-tags: [ui, ux, accessibility, design-system, navigation, bootstrap, stimulus, data-reuse, component-reuse]
-activationKeywords: [ux, ui, interface, navigation, accessibility, a11y, aria, design system, component, responsive, user experience, usability, data reuse, component reuse, consistency]
+description: UI/UX specialist for efficient, accessible (WCAG 2.2 AA), and consistent interface design with strong focus on data reuse and component reuse. Automatically activated when user asks about UX, UI, interface design, accessibility, ARIA, navigation patterns, design system, component reuse, FairyAurora v4, Bootstrap 5.3, or Stimulus controllers.
+allowed-tools: Read, Grep, Glob, Edit, Write
 ---
 
 # UX Specialist
