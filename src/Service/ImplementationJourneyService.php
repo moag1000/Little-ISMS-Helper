@@ -443,7 +443,7 @@ class ImplementationJourneyService
      */
     private function resolveCompanySize(Tenant $tenant): string
     {
-        $settings = $tenant->getSettings();
+        $settings = $tenant->getSettings() ?? [];
         $employeeCount = $settings['organisation']['employee_count'] ?? null;
 
         return match ($employeeCount) {
