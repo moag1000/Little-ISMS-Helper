@@ -15,6 +15,7 @@ use DomainException;
 use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Entity\Vulnerability;
+use App\Form\RiskQuickType;
 use App\Form\RiskType;
 use App\Repository\AuditLogRepository;
 use App\Repository\IncidentRepository;
@@ -788,6 +789,40 @@ class RiskController extends AbstractController
         }
 
         return $this->render('risk/new.html.twig', [
+            'risk' => $risk,
+            'form' => $form,
+        ]);
+    }
+    #[Route('/risk/new/quick', name: 'app_risk_new_quick', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function newQuick(Request $request): Response
+    {
+        $risk = new Risk();
+
+        // Set tenant from current user
+        $user = $this->security->getUser();
+        if ($user instanceof UserInterface && $user->getTenant()) {
+            $risk->setTenant($user->getTenant());
+        }
+
+        $form = $this->createForm(RiskQuickType::class, $risk);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($risk);
+            $this->entityManager->flush();
+
+            // Check and auto-progress workflow if conditions are met
+            $currentUser = $this->security->getUser();
+            if ($currentUser instanceof User) {
+                $this->workflowAutoProgressionService->checkAndProgressWorkflow($risk, $currentUser);
+            }
+
+            $this->addFlash('success', $this->translator->trans('risk.success.created'));
+            return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
+        }
+
+        return $this->render('risk/new_quick.html.twig', [
             'risk' => $risk,
             'form' => $form,
         ]);

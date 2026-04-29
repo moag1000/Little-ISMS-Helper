@@ -366,6 +366,8 @@ setup:
             title: 'Note'
             message: 'This data is essential for operation and is based on official standards (ISO 27001:2022). The import may take a few minutes.'
         import_button: 'Import Base Data'
+        apply_baseline: 'Auto-apply %name% baseline (recommended risks, assets and controls)'
+        apply_baseline_hint: 'Creates pre-configured risks, assets and marks relevant Annex A controls as applicable. Ideal for small organisations that want to get started quickly.'
         command: 'Command'
         modules: 'Modules'
     can_delete_later: 'Data can be deleted later.'

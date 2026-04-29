@@ -21,6 +21,8 @@ soa:
         all_status: 'All statuses'
         mris: 'MRIS Mythos category'
         mris_all: 'All MRIS categories'
+        essential_only: 'Essential controls only (SME)'
+        essential_hint: '31 of 93 controls — recommended for companies under 50 employees'
         reset: 'Reset filters'
     kpi:
         total_controls: 'Total controls'

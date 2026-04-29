@@ -147,6 +147,12 @@ risk:
   update: Risiko aktualisieren
   delete_warning: 'WARNUNG: Das Löschen dieses Risikos kann nicht rückgängig gemacht
     werden.'
+  action:
+    quick_new: Schnell erfassen
+  quick_form:
+    title: Risiko schnell erfassen
+    subtitle: 7 Felder -- für den schnellen Einstieg
+    switch_to_full: Zum vollständigen Formular wechseln
   new: Neues Risiko
   create: Risiko erstellen
   guidance:

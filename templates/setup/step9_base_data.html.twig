@@ -76,6 +76,19 @@
                               data-async-job-redirect-url-value="{{ path('setup_step10_sample_data') }}"
                               data-action="submit->async-job#start">
                             <input type="hidden" name="_token" value="{{ csrf_token('setup_base_data') }}">
+
+                            {# SMB-2: Suggest Generic Starter baseline for small orgs #}
+                            {% if suggest_baseline|default(false) %}
+                            <div class="form-check mt-3" id="baseline-suggestion">
+                                <input type="checkbox" class="form-check-input" id="apply-baseline" name="apply_baseline" value="1" checked>
+                                <label class="form-check-label" for="apply-baseline">
+                                    {{ 'setup.step9.apply_baseline'|trans({'%name%': baseline_name|default('Generic Starter')}, 'setup') }}
+                                </label>
+                                <small class="form-text text-muted d-block">
+                                    {{ 'setup.step9.apply_baseline_hint'|trans({}, 'setup') }}
+                                </small>
+                            </div>
+                            {% endif %}
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{{ path('setup_step8_compliance_frameworks') }}" class="btn btn-outline-secondary">
                                     <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>

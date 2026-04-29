@@ -28,6 +28,7 @@
     {# ISMS Journey Progress (AP 2) #}
     {% if show_journey|default(false) and journey is defined and journey %}
         {% include '_components/_isms_journey.html.twig' %}
+        {% include '_components/_first_hour_checklist.html.twig' %}
     {% endif %}
 
     {# Page Header with Customize Button and Role Dashboard Switcher #}

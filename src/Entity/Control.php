@@ -679,6 +679,14 @@ class Control
     }
 
     /**
+     * Flag indicating this control is essential for small businesses (SME/KMU).
+     * Derived from the Generic Starter baseline (~31 controls out of 93).
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['control:read', 'control:write'])]
+    private bool $essentialForSmallBusiness = false;
+
+    /**
      * Pattern A dual-state: preferred structured owner. Falls back to string responsiblePerson.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
@@ -702,6 +710,17 @@ class Control
     public function getEffectiveResponsiblePerson(): ?string
     {
         return $this->responsiblePersonUser?->getFullName() ?? $this->responsiblePerson;
+    }
+
+    public function isEssentialForSmallBusiness(): bool
+    {
+        return $this->essentialForSmallBusiness;
+    }
+
+    public function setEssentialForSmallBusiness(bool $essentialForSmallBusiness): static
+    {
+        $this->essentialForSmallBusiness = $essentialForSmallBusiness;
+        return $this;
     }
 
 }

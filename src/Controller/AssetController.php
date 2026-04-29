@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use Exception;
 use App\Entity\Asset;
+use App\Form\AssetQuickType;
 use App\Form\AssetType;
 use App\Repository\AssetRepository;
 use App\Repository\AuditLogRepository;
@@ -192,6 +193,35 @@ class AssetController extends AbstractController
         }
 
         return $this->render('asset/new.html.twig', [
+            'asset' => $asset,
+            'form' => $form,
+        ]);
+    }
+    #[Route('/asset/new/quick', name: 'app_asset_new_quick', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function newQuick(Request $request): Response
+    {
+        $asset = new Asset();
+        $asset->setTenant($this->tenantContext->getCurrentTenant());
+
+        $form = $this->createForm(AssetQuickType::class, $asset);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->persist($asset);
+            $this->entityManager->flush();
+
+            // Check and auto-progress workflow if conditions are met
+            $currentUser = $this->security->getUser();
+            if ($currentUser instanceof User) {
+                $this->workflowAutoProgressionService->checkAndProgressWorkflow($asset, $currentUser);
+            }
+
+            $this->addFlash('success', $this->translator->trans('asset.success.created'));
+            return $this->redirectToRoute('app_asset_show', ['id' => $asset->getId()]);
+        }
+
+        return $this->render('asset/new_quick.html.twig', [
             'asset' => $asset,
             'form' => $form,
         ]);

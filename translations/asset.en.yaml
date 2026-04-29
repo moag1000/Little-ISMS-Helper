@@ -11,6 +11,7 @@ asset:
     qr_label: QR Label
     print_qr_label: Print QR code label
     print_all_labels: All QR Labels
+    quick_new: Quick entry
   details:
     title: Asset details
   risk_item:
@@ -263,6 +264,10 @@ asset:
     high: High
     medium: Medium
     low: Low
+  quick_form:
+    title: Quick asset entry
+    subtitle: 6 fields -- for a quick start
+    switch_to_full: Switch to full form
   title.new: New Asset
   title.edit: Edit Asset
   title.bcm_insights: Bcm Insights
