@@ -116,7 +116,7 @@
                                     <code class="small">{{ m.sourceRequirement.requirementId }}</code>
                                     <i class="fa-icon fa-icon--util-arrow-right small text-muted" aria-hidden="true"></i>
                                     <code class="small">{{ m.targetRequirement.requirementId }}</code>
-                                    <div class="small text-muted">{{ m.sourceRequirement.complianceFramework.name }} → {{ m.targetRequirement.complianceFramework.name }}</div>
+                                    <div class="small text-muted">{{ m.sourceRequirement.framework.name }} → {{ m.targetRequirement.framework.name }}</div>
                                 </td>
                                 <td>{% if m.relationship %}{% include '_components/_badge.html.twig' with { variant: 'secondary', content: m.relationship|replace({'_': ' '}) } %}{% else %}—{% endif %}</td>
                                 <td>{% include '_components/_badge.html.twig' with { variant: m.confidence == 'high' ? 'success' : (m.confidence == 'medium' ? 'warning' : 'secondary'), content: m.confidence } %}</td>
