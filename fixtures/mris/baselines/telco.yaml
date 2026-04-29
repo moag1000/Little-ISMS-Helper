@@ -1,0 +1,56 @@
+schema_version: '1.0'
+baseline:
+  id: 'telco-isp'
+  name: 'Telekommunikation / ISP / Hosting'
+  industry: 'telco'
+  description: |
+    Pre-Konfiguration für Telekommunikations-Anbieter, Internet-Service-
+    Provider, Hosting-Provider, Rechenzentrums-Betreiber. Anker: TKG-2024
+    §165/167 (Sicherheitsanforderungen + Meldepflichten), BNetzA-
+    Sicherheitskatalog, NIS2 Annex I "Digitale Infrastruktur", NIS2UmsuCG
+    deutsche Umsetzung, BSI-Mindeststandard für Telco-Carrier. Eigene
+    Reporting-Pflichten an BNetzA (zusätzlich zu BSI).
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Telco-IT-Praxis'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: defined
+      reason: 'PQC für Carrier-Grade Crypto + langfristige Customer-Zertifikate.'
+    MHC-02:
+      target: managed
+      reason: 'SBOM für eigene Stack + Drittlieferanten — Supply-Chain-Targeting Telco-Top-Risk.'
+    MHC-03:
+      target: managed
+      reason: 'Phishing-resistente MFA für Admin/NOC. SS7/RCS-Signaling-Attacks Reality-Check.'
+    MHC-04:
+      target: managed
+      reason: 'Workload-Identity in Carrier-Stack — alte Service-Account-Praxis war APT-Einfallstor.'
+    MHC-05:
+      target: managed
+      reason: 'Behavioural Detection im Carrier-Backbone Pflicht. APT-Targeted-Sektor.'
+    MHC-06:
+      target: managed
+      reason: 'Endpoint + Carrier-Equipment-Härtung (Routers/Switches Hardening Standards).'
+    MHC-07:
+      target: managed
+      reason: 'Multi-Tenancy = Kern-Geschäft (Customer-VLAN-Trennung, MPLS-VPN-Isolation, IP-Adressplan-Audit).'
+    MHC-08:
+      target: managed
+      reason: 'Immutable Backups + Geo-Redundanz. RTO < 1h für Voice/Internet-Service.'
+    MHC-09:
+      target: managed
+      reason: 'KEV-Patch-Latency < 7 Tage — TKG-2024 Mindestanforderung für aktive Komponenten.'
+    MHC-10:
+      target: managed
+      reason: 'CCM für TKG-Selbstauskunft + BNetzA-Audit + KRITIS-Nachweis (alle 2 Jahre).'
+    MHC-11:
+      target: managed
+      reason: 'IR + 24/7 Pflicht. Meldepflicht TKG §168 (BNetzA + BSI), parallel NIS2 Art. 23.'
+    MHC-12:
+      target: defined
+      reason: 'Pen-Test KRITIS-pflichtig + Carrier-Spezial (Signaling-/SBC-/IMS-Tests).'
+    MHC-13:
+      target: defined
+      reason: 'AI-Agent-Governance — AIOps + autonome Network-Self-Healing-Tools brauchen Audit-Trails.'

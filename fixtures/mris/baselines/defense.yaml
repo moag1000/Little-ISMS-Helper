@@ -1,0 +1,56 @@
+schema_version: '1.0'
+baseline:
+  id: 'defense-vsnfd'
+  name: 'Defense / Wehrtechnik / Geheimschutz (VS-NfD)'
+  industry: 'defense'
+  description: |
+    Pre-Konfiguration für Wehrtechnik-Hersteller, Verteidigungs-Ministerial-
+    Bereich, Lieferanten mit Geheimschutz-Auflagen. Anker: BSI Geheimschutz-
+    Handbuch (GHB), VS-Anweisung (VSA), VS-NfD (Nur für den Dienstgebrauch),
+    SÜG (Sicherheitsüberprüfungsgesetz), NATO-Sicherheitsrichtlinien (für
+    NATO-Lieferanten), ITAR/EAR (für US-Komponenten). Höchste Schutzbedarfs-
+    Klasse — keine Cloud-Auslagerung von VS-Material.
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Wehrtechnik-IT'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: managed
+      reason: 'PQC zwingend — VS-NfD-Material muss Quantum-resistent verschlüsselt sein (BSI TR-02102).'
+    MHC-02:
+      target: managed
+      reason: 'SBOM strict — keine unkontrollierten Lieferanten-Komponenten. ITAR/EAR-Compliance.'
+    MHC-03:
+      target: managed
+      reason: 'Phishing-resistente MFA Pflicht — VS-Authentifizierung mit Hardware-Token + biometrisch.'
+    MHC-04:
+      target: managed
+      reason: 'Workload-Identity + Air-Gap zwischen VS-Netz und Office-IT. Strict Static-Allowlists.'
+    MHC-05:
+      target: managed
+      reason: 'Behavioural Detection KRITISCH — APT-Targeted-Sektor #1, gezielte Spionage permanent.'
+    MHC-06:
+      target: managed
+      reason: 'Endpoint-Härtung absolute Pflicht. VS-Geräte verschlüsselt, BSI-zertifiziert (BSI-zugelassen).'
+    MHC-07:
+      target: managed
+      reason: 'Multi-Tenancy meist N/A — Single-Tenant + Air-Gapped pro Geheimhaltungsstufe.'
+    MHC-08:
+      target: managed
+      reason: 'Immutable Backups + Off-grid + bunkered. Klassifizierungs-konform getrennt.'
+    MHC-09:
+      target: managed
+      reason: 'KEV-Patch-Latency < 7 Tage. VS-Netz: Out-of-band-Patching via geprüfte Medien.'
+    MHC-10:
+      target: managed
+      reason: 'CCM für Geheimschutz-Audit + BMI/BSI-Aufsicht. Kontrollierte Auditoren.'
+    MHC-11:
+      target: managed
+      reason: 'IR + Eskalation an BSI Geheimschutz-Stelle / Sicherheitsoffizier. Strict Reporting-Pflicht.'
+    MHC-12:
+      target: managed
+      reason: 'TLPT durch BSI-zertifizierte Pen-Tester mit Sicherheitsüberprüfung Stufe Ü1+.'
+    MHC-13:
+      target: managed
+      reason: 'AI-Agent-Governance ABSOLUT — keine VS-Daten in Cloud-AI. On-Premise-AI mit Klassifizierungs-Filter Pflicht.'

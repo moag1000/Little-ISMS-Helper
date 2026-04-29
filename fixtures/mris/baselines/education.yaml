@@ -1,0 +1,55 @@
+schema_version: '1.0'
+baseline:
+  id: 'education-research'
+  name: 'Bildung / Hochschule / Forschung'
+  industry: 'education'
+  description: |
+    Pre-Konfiguration für Hochschulen, Forschungseinrichtungen, Schulträger
+    und Volkshochschulen. Anker: NIS2 Annex II "Forschung", DSGVO (Studieren-
+    den-Daten), Hochschulgesetze der Länder, KMK-Strategie "Bildung in der
+    digitalen Welt", DFN-Mitgliedschaft (Wissenschaftsnetz). Schwerpunkt
+    offene Forschung vs. IP-Schutz, Bring-Your-Own-Device, Kritische APT-Targeting.
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Hochschul-IT'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: initial
+      reason: 'Crypto-Inventar Standard, Forschungs-Daten + Klausuren langfristig.'
+    MHC-02:
+      target: initial
+      reason: 'SBOM bei eigenen Stacks + selbstentwickelter Forschungs-Software.'
+    MHC-03:
+      target: defined
+      reason: 'Phishing-resistente MFA für Verwaltungs-Accounts + Forschende mit Drittmittel-Zugriff.'
+    MHC-04:
+      target: initial
+      reason: 'Workload-Identity bei zentralen IT-Services (eduGAIN-Federation als bestehende Identity).'
+    MHC-05:
+      target: defined
+      reason: 'Behavioural Detection — Hochschulen APT-Targeted (z.B. Industrie-Spionage).'
+    MHC-06:
+      target: initial
+      reason: 'Endpoint-Härtung wo IT-zentral verwaltet. BYOD-Devices via Kapselung (MAM/Container).'
+    MHC-07:
+      target: defined
+      reason: 'Multi-Mandant-Trennung Forschung/Lehre/Verwaltung — DFG-Drittmittel-Forschung getrennt.'
+    MHC-08:
+      target: defined
+      reason: 'Immutable Backups Verwaltung + Forschungs-Daten. RTO Klausur-Phase relevant.'
+    MHC-09:
+      target: defined
+      reason: 'KEV-Patch-Latency Verwaltungsnetz < 14 Tage. Forschungsnetze BYOD-tolerant.'
+    MHC-10:
+      target: initial
+      reason: 'CCM bei NIS2-pflichtigen Forschungseinrichtungen. Sonst Audit-Trail.'
+    MHC-11:
+      target: defined
+      reason: 'IR + DFN-CERT-Anbindung Pflicht. NIS2-Meldepflicht für relevante Einrichtungen.'
+    MHC-12:
+      target: initial
+      reason: 'Pen-Test bei kritischen Verwaltungsverfahren (Prüfungsamt, Finanzbuchhaltung).'
+    MHC-13:
+      target: defined
+      reason: 'AI-Agent-Governance — AI-Tutoren + AI-Klausurkorrektur sind didaktisch + datenschutz-sensibel.'

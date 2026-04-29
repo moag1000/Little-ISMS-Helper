@@ -1,0 +1,56 @@
+schema_version: '1.0'
+baseline:
+  id: 'manufacturing-ot'
+  name: 'Industrielle Fertigung / OT-Security (non-Automotive)'
+  industry: 'manufacturing'
+  description: |
+    Pre-Konfiguration für Industrie-Fertiger außerhalb Automotive — Maschinen-
+    bau, Anlagenbau, Chemie, Lebensmittel-Industrie, Verpackung. Anker:
+    IEC 62443 (OT-Security), NIS2 Annex I "Industrie wichtige Sektoren",
+    CRA 2024/2847 für vernetzte IoT-Produkte (ab 2027), VDI-Richtlinien
+    2182/2185, ISO/IEC 27001 Standard-IT. Schwerpunkt IT/OT-Trennung +
+    Lifecycle-Management alter Steuerungs-Komponenten.
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Industrie-OT'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: initial
+      reason: 'Crypto-Inventar — alte SCADA mit eingebrannten Zertifikaten priorisieren. PQC längerfristig.'
+    MHC-02:
+      target: defined
+      reason: 'SBOM für eigene OT-Software-Komponenten. CRA-Vorbereitung für IoT-Produkte ab 2027.'
+    MHC-03:
+      target: defined
+      reason: 'Phishing-resistente MFA für Engineering + Fernwartungs-Accounts.'
+    MHC-04:
+      target: initial
+      reason: 'Workload-Identity in OT meist nicht umsetzbar — Alternative: Network-Segmentation + Static-AC-Lists.'
+    MHC-05:
+      target: defined
+      reason: 'Behavioural Detection in IT/OT-Übergang (Conduit-Monitoring per IEC 62443).'
+    MHC-06:
+      target: defined
+      reason: 'Endpoint + Engineering-Workstation-Härtung. Whitelisting für HMI/SCADA-Workstations.'
+    MHC-07:
+      target: managed
+      reason: 'IT/OT/Office-Trennung Kern-Pflicht (3+1-Zonen-Modell, Conduits dokumentiert).'
+    MHC-08:
+      target: defined
+      reason: 'Backup auch für PLC-Konfigurationen + SCADA-Datenbanken. DR-Test halbjährlich.'
+    MHC-09:
+      target: initial
+      reason: 'KEV-Patch-Latency in OT eingeschränkt — kompensierend Network-Segmentation. Patch-Window-Plan.'
+    MHC-10:
+      target: defined
+      reason: 'CCM mit IEC-62443-konformer Asset-Inventur als Basis.'
+    MHC-11:
+      target: defined
+      reason: 'IR-Plan inkl. OT-Eskalation. Bei NIS2-pflichtig: Meldepflicht 24h/72h/30d.'
+    MHC-12:
+      target: defined
+      reason: 'Pen-Test inkl. OT-Zonen jährlich. Vorsicht bei aktivem Test gegen Steuerungen.'
+    MHC-13:
+      target: initial
+      reason: 'AI-Agent-Governance vorerst niedrig — bei AI-gestützter Predictive-Maintenance höher priorisieren.'
