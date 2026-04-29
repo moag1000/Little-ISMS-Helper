@@ -143,8 +143,8 @@ class WizardSessionRepository extends ServiceEntityRepository
                     'avg_score' => 0,
                 ];
             }
-            $stats[$wizardType]['total'] += $row['count'];
-            $stats[$wizardType][$row['status']] = $row['count'];
+            $stats[$wizardType]['total'] += (int) $row['count'];
+            $stats[$wizardType][$row['status']] = (int) $row['count'];
             if ($row['status'] === WizardSession::STATUS_COMPLETED && $row['avgScore'] !== null) {
                 $stats[$wizardType]['avg_score'] = round((float) $row['avgScore']);
             }

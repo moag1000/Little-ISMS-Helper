@@ -128,7 +128,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getSingleScalarResult(),
 
-            'verified' => $this->createQueryBuilder('ac')
+            'verified' => (int) $this->createQueryBuilder('ac')
                 ->select('COUNT(ac.id)')
                 ->where('ac.audit = :audit')
                 ->andWhere('ac.verifiedAt IS NOT NULL')
@@ -136,7 +136,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getSingleScalarResult(),
 
-            'with_findings' => $this->createQueryBuilder('ac')
+            'with_findings' => (int) $this->createQueryBuilder('ac')
                 ->select('COUNT(ac.id)')
                 ->where('ac.audit = :audit')
                 ->andWhere('ac.findings IS NOT NULL')
@@ -146,14 +146,14 @@ class AuditChecklistRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getSingleScalarResult(),
 
-            'average_score' => $this->createQueryBuilder('ac')
+            'average_score' => (float) ($this->createQueryBuilder('ac')
                 ->select('AVG(ac.complianceScore)')
                 ->where('ac.audit = :audit')
                 ->andWhere('ac.verificationStatus != :na')
                 ->setParameter('audit', $internalAudit)
                 ->setParameter('na', 'not_applicable')
                 ->getQuery()
-                ->getSingleScalarResult() ?? 0,
+                ->getSingleScalarResult() ?? 0),
         ];
     }
 

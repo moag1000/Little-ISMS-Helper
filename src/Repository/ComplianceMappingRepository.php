@@ -325,12 +325,12 @@ class ComplianceMappingRepository extends ServiceEntityRepository
 
         // Calculate percentages and averages
         foreach ($categoryStats as &$categoryStat) {
-            $categoryStat['coverage'] = $categoryStat['total'] > 0
-                ? round(($categoryStat['mapped'] / $categoryStat['total']) * 100, 1)
+            $categoryStat['coverage'] = (int) $categoryStat['total'] > 0
+                ? round(((int) $categoryStat['mapped'] / (int) $categoryStat['total']) * 100, 1)
                 : 0;
 
-            $categoryStat['avg_quality'] = $categoryStat['mapped'] > 0
-                ? round($categoryStat['quality_sum'] / $categoryStat['mapped'], 1)
+            $categoryStat['avg_quality'] = (int) $categoryStat['mapped'] > 0
+                ? round((float) $categoryStat['quality_sum'] / (int) $categoryStat['mapped'], 1)
                 : 0;
 
             // Remove quality_sum as it's just for calculation
@@ -757,8 +757,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
 
         // Calculate category patterns
         foreach ($categoryPatterns as &$categoryPattern) {
-            $categoryPattern['avg_fulfillment'] = $categoryPattern['count'] > 0
-                ? round($categoryPattern['total_fulfillment'] / $categoryPattern['count'], 1)
+            $categoryPattern['avg_fulfillment'] = (int) $categoryPattern['count'] > 0
+                ? round((float) $categoryPattern['total_fulfillment'] / (int) $categoryPattern['count'], 1)
                 : 0;
 
             // Determine dominant root cause for category
@@ -1054,7 +1054,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             'total_mappings' => (int) $totalMappings,
             'analyzed_mappings' => (int) $analyzedMappings,
             'unanalyzed_mappings' => (int) ($totalMappings - $analyzedMappings),
-            'analysis_coverage' => $totalMappings > 0 ? round(($analyzedMappings / $totalMappings) * 100, 1) : 0,
+            'analysis_coverage' => (int) $totalMappings > 0 ? round(((int) $analyzedMappings / (int) $totalMappings) * 100, 1) : 0,
             'high_confidence' => (int) $highConfidence,
             'medium_confidence' => (int) $mediumConfidence,
             'low_confidence' => (int) $lowConfidence,
