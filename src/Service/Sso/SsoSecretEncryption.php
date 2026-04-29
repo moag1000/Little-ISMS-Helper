@@ -30,7 +30,11 @@ final class SsoSecretEncryption
         if ($kernelSecret === '') {
             throw new RuntimeException('Kernel secret must not be empty.');
         }
-        $this->key = sodium_crypto_generichash($kernelSecret, self::CTX, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES);
+        $this->key = sodium_crypto_generichash(
+            self::CTX . '|' . $kernelSecret,
+            '',
+            SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES,
+        );
     }
 
     public function encrypt(#[\SensitiveParameter] ?string $plaintext): ?string
