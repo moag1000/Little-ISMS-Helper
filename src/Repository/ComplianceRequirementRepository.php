@@ -72,15 +72,26 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
      * @param int $maxFulfillment Maximum fulfillment percentage to consider as gap (default: 75%)
      * @return ComplianceRequirement[] Array of requirements sorted by priority then fulfillment
      */
-    public function findGapsByFramework(ComplianceFramework $complianceFramework, int $maxFulfillment = 75): array
+    public function findGapsByFramework(ComplianceFramework $complianceFramework, int $maxFulfillment = 75, ?Tenant $tenant = null): array
     {
-        // Note: fulfillment data is in ComplianceRequirementFulfillment (tenant-specific)
-        // This query should be refactored to join with fulfillment table
-        // For now, return all requirements sorted by priority
-        return $this->createQueryBuilder('cr')
+        $qb = $this->createQueryBuilder('cr')
             ->where('cr.complianceFramework = :framework')
-            ->setParameter('framework', $complianceFramework)
-            ->orderBy('cr.priority', 'ASC')
+            ->setParameter('framework', $complianceFramework);
+
+        if ($tenant !== null) {
+            // LEFT JOIN: include requirements with no fulfillment record (= 0% fulfilled)
+            $qb->leftJoin(
+                    'App\Entity\ComplianceRequirementFulfillment',
+                    'crf',
+                    'WITH',
+                    'crf.complianceRequirement = cr AND crf.tenant = :tenant'
+                )
+                ->setParameter('tenant', $tenant)
+                ->andWhere('crf.fulfillmentPercentage IS NULL OR crf.fulfillmentPercentage <= :maxFulfillment')
+                ->setParameter('maxFulfillment', $maxFulfillment);
+        }
+
+        return $qb->orderBy('cr.priority', 'ASC')
             ->getQuery()
             ->getResult();
     }

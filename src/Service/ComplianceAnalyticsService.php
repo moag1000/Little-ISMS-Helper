@@ -232,7 +232,8 @@ class ComplianceAnalyticsService
         $allGaps = [];
 
         foreach ($frameworks as $framework) {
-            $gaps = $this->requirementRepository->findGapsByFramework($framework);
+            $tenant = $this->tenantContext->getCurrentTenant();
+            $gaps = $this->requirementRepository->findGapsByFramework($framework, 75, $tenant);
 
             foreach ($gaps as $gap) {
                 // Use the direct fulfillment percentage from the requirement

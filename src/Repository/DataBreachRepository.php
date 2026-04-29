@@ -107,15 +107,15 @@ class DataBreachRepository extends ServiceEntityRepository
         $deadline = new DateTime('-72 hours');
 
         return $this->createQueryBuilder('db')
-            ->innerJoin('db.incident', 'i')
+            ->leftJoin('db.incident', 'i')
             ->where('db.tenant = :tenant')
             ->andWhere('db.requiresAuthorityNotification = :required')
             ->andWhere('db.supervisoryAuthorityNotifiedAt IS NULL')
-            ->andWhere('i.detectedAt < :deadline')
+            ->andWhere('(i.detectedAt < :deadline OR (i.id IS NULL AND db.detectedAt < :deadline))')
             ->setParameter('tenant', $tenant)
             ->setParameter('required', true)
             ->setParameter('deadline', $deadline)
-            ->orderBy('i.detectedAt', 'ASC') // Oldest first (most overdue)
+            ->orderBy('db.detectedAt', 'ASC') // Oldest first (most overdue)
             ->getQuery()
             ->getResult();
     }
@@ -197,13 +197,13 @@ class DataBreachRepository extends ServiceEntityRepository
     public function findByDateRange(Tenant $tenant, DateTimeInterface $start, DateTimeInterface $end): array
     {
         return $this->createQueryBuilder('db')
-            ->innerJoin('db.incident', 'i')
+            ->leftJoin('db.incident', 'i')
             ->where('db.tenant = :tenant')
-            ->andWhere('i.detectedAt BETWEEN :start AND :end')
+            ->andWhere('(i.detectedAt BETWEEN :start AND :end OR (i.id IS NULL AND db.detectedAt BETWEEN :start AND :end))')
             ->setParameter('tenant', $tenant)
             ->setParameter('start', $start)
             ->setParameter('end', $end)
-            ->orderBy('i.detectedAt', 'DESC')
+            ->orderBy('db.detectedAt', 'DESC')
             ->getQuery()
             ->getResult();
     }

@@ -204,9 +204,13 @@
                 <option value="">{{ 'risk.filter.all_status'|trans({}, 'risk') }}</option>
                 <option value="identified" {{ app.request.query.get('status') == 'identified' ? 'selected' : '' }}>{{ 'risk.filter.status_identified'|trans({}, 'risk') }}</option>
                 <option value="assessed" {{ app.request.query.get('status') == 'assessed' ? 'selected' : '' }}>{{ 'risk.filter.status_assessed'|trans({}, 'risk') }}</option>
+                <option value="in_treatment" {{ app.request.query.get('status') == 'in_treatment' ? 'selected' : '' }}>{{ 'risk.filter.status_in_treatment'|trans({}, 'risk') }}</option>
                 <option value="treated" {{ app.request.query.get('status') == 'treated' ? 'selected' : '' }}>{{ 'risk.filter.status_treated'|trans({}, 'risk') }}</option>
+                <option value="mitigated" {{ app.request.query.get('status') == 'mitigated' ? 'selected' : '' }}>{{ 'risk.filter.status_mitigated'|trans({}, 'risk') }}</option>
                 <option value="monitored" {{ app.request.query.get('status') == 'monitored' ? 'selected' : '' }}>{{ 'risk.filter.status_monitored'|trans({}, 'risk') }}</option>
                 <option value="closed" {{ app.request.query.get('status') == 'closed' ? 'selected' : '' }}>{{ 'risk.filter.status_closed'|trans({}, 'risk') }}</option>
+                <option value="accepted" {{ app.request.query.get('status') == 'accepted' ? 'selected' : '' }}>{{ 'risk.filter.status_accepted'|trans({}, 'risk') }}</option>
+                <option value="open" {{ app.request.query.get('status') == 'open' ? 'selected' : '' }}>{{ 'risk.filter.status_open'|trans({}, 'risk') }}</option>
             </select>
         </div>
         <div class="col-md-3">

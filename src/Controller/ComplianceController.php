@@ -131,7 +131,8 @@ class ComplianceController extends AbstractController
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework);
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework, 75, $tenant);
         $criticalGaps = $this->complianceRequirementRepository->findByFrameworkAndPriority($framework, 'critical');
 
         // Analyze each gap for detailed insights
@@ -353,8 +354,8 @@ class ComplianceController extends AbstractController
 
             $reusableDataSources = [];
             if (!empty($analysis['reusable_data'])) {
-                foreach ($analysis['reusable_data'] as $data) {
-                    $reusableDataSources[] = $data['source'] ?? 'Unknown';
+                foreach ($analysis['reusable_data'] as $reuseItem) {
+                    $reusableDataSources[] = $reuseItem['source'] ?? 'Unknown';
                 }
             }
 
@@ -460,7 +461,8 @@ class ComplianceController extends AbstractController
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework);
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework, 75, $tenant);
         $requirements = $this->complianceRequirementRepository->findByFramework($framework);
         $metRequirements = count($requirements) - count($gaps);
 
@@ -599,7 +601,8 @@ class ComplianceController extends AbstractController
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework);
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework, 75, $tenant);
         $requirements = $this->complianceRequirementRepository->findByFramework($framework);
         $metRequirements = count($requirements) - count($gaps);
 
@@ -720,12 +723,11 @@ class ComplianceController extends AbstractController
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework);
-        $requirements = $this->complianceRequirementRepository->findByFramework($framework);
-        $metRequirements = count($requirements) - count($gaps);
-
         // Get current tenant for fulfillment data
         $tenant = $this->tenantContext->getCurrentTenant();
+        $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework, 75, $tenant);
+        $requirements = $this->complianceRequirementRepository->findByFramework($framework);
+        $metRequirements = count($requirements) - count($gaps);
         if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
         }

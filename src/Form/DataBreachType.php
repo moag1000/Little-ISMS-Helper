@@ -7,7 +7,11 @@ namespace App\Form;
 use App\Entity\DataBreach;
 use App\Entity\Incident;
 use App\Entity\ProcessingActivity;
+use App\Entity\Tenant;
 use App\Entity\User;
+use App\Repository\IncidentRepository;
+use App\Repository\ProcessingActivityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -46,7 +50,6 @@ class DataBreachType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'help' => 'data_breach.help.detected_at',
             ])
-            // TODO: Add tenant filter to EntityType (requires passing tenant via form options, see RiskType.php for pattern)
             ->add('incident', EntityType::class, [
                 'label' => 'data_breach.form.incident',
                 'class' => Incident::class,
@@ -55,8 +58,15 @@ class DataBreachType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-select select2'],
                 'help' => 'data_breach.help.incident',
+                'query_builder' => function (IncidentRepository $repo) use ($options): QueryBuilder {
+                    $qb = $repo->createQueryBuilder('i')->orderBy('i.detectedAt', 'DESC');
+                    $tenant = $options['tenant'] ?? null;
+                    if ($tenant instanceof Tenant) {
+                        $qb->where('i.tenant = :tenant')->setParameter('tenant', $tenant);
+                    }
+                    return $qb;
+                },
             ])
-            // TODO: Add tenant filter to EntityType (requires passing tenant via form options, see RiskType.php for pattern)
             ->add('processingActivity', EntityType::class, [
                 'label' => 'data_breach.form.processing_activity',
                 'class' => ProcessingActivity::class,
@@ -65,6 +75,14 @@ class DataBreachType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-select select2'],
                 'help' => 'data_breach.help.processing_activity',
+                'query_builder' => function (ProcessingActivityRepository $repo) use ($options): QueryBuilder {
+                    $qb = $repo->createQueryBuilder('pa')->orderBy('pa.name', 'ASC');
+                    $tenant = $options['tenant'] ?? null;
+                    if ($tenant instanceof Tenant) {
+                        $qb->where('pa.tenant = :tenant')->setParameter('tenant', $tenant);
+                    }
+                    return $qb;
+                },
             ])
 
             // ================================================================
@@ -289,9 +307,12 @@ class DataBreachType extends AbstractType
         $resolver->setDefaults([
             'data_class' => DataBreach::class,
             'translation_domain' => 'privacy',
+            'tenant' => null,
             'attr' => [
                 'data-controller' => 'conditional-fields',
             ],
         ]);
+
+        $resolver->setAllowedTypes('tenant', ['null', Tenant::class]);
     }
 }

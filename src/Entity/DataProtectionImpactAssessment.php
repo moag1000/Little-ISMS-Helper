@@ -33,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_dpia_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_dpia_status', columns: ['status'])]
 #[ORM\Index(name: 'idx_dpia_risk_level', columns: ['risk_level'])]
+#[ORM\HasLifecycleCallbacks]
 class DataProtectionImpactAssessment
 {
     #[ORM\Id]

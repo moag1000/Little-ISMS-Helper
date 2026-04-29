@@ -396,14 +396,13 @@ class BusinessContinuityPlanTest extends TestCase
         $plan->setLastTested(new \DateTime('-9 months'));
         $this->assertEquals(60, $plan->getReadinessScore());
 
-        // Test 18 months ago - diff()->m will be 6 (only month part), so gets 30 points
-        // This is a quirk of using diff()->m which only gets the month component
+        // Test 18 months ago - total months = 18, which is > 12 but <= 24, so 10 points
         $plan->setLastTested(new \DateTime('-18 months'));
-        $this->assertEquals(70, $plan->getReadinessScore());
+        $this->assertEquals(50, $plan->getReadinessScore());
 
-        // Review 8 months ago - diff()->m will be 8, which is > 6 but <= 12, so 10 points
+        // Review 8 months ago - total months = 8, which is > 6 but <= 12, so 10 points
         $plan->setLastReviewDate(new \DateTime('-8 months'));
-        $this->assertEquals(80, $plan->getReadinessScore());
+        $this->assertEquals(60, $plan->getReadinessScore());
     }
 
     #[Test]

@@ -220,7 +220,7 @@ class ComplianceAssessmentService
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         $stats = $this->complianceRequirementRepository->getFrameworkStatisticsForTenant($complianceFramework, $tenant);
-        $gaps = $this->complianceRequirementRepository->findGapsByFramework($complianceFramework);
+        $gaps = $this->complianceRequirementRepository->findGapsByFramework($complianceFramework, 75, $tenant);
         $criticalGaps = $this->complianceRequirementRepository->findByFrameworkAndPriority($complianceFramework, 'critical');
 
         // Calculate data reuse metrics
