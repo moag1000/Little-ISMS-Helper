@@ -1,0 +1,40 @@
+gstool_import:
+    title: GSTOOL XML Import
+    intro: >-
+        Imports GSTOOL XML exports into the tool's BSI IT-Grundschutz module.
+        Phase 1 turns Zielobjekte into Assets (including Schutzbedarf),
+        Phase 2 resolves Modellierung relationships into Asset dependencies.
+        Phase 3 (Bausteine), 4 (Maßnahmen) and 5 (Risikoanalyse) follow.
+    upload:
+        card_title: Upload GSTOOL XML
+        file_label: GSTOOL XML file (gstool_xml_v1 schema)
+        file_type_error: Please upload an XML file.
+        dry_run_label: Preview (no database writes)
+        dry_run_help: Recommended for the first run. No writes, no ImportSession recorded.
+        submit: Import
+    schema:
+        title: Expected XML schema (v1)
+        description: >-
+            Real GSTOOL exports must be transformed into this pragmatic
+            intermediate format. Full schema documentation in
+            docs/features/GSTOOL_IMPORT.md.
+    result:
+        preview_title: Preview result
+        commit_title: Import completed
+        summary: '%new% new / %update% updated / %error% error(s)'
+        line: Line
+        action: Action
+        gstool_id: GSTOOL ID
+        name: Name
+        asset_type: Asset type
+        error: Error
+    action:
+        new: new
+        update: update
+        error: error
+    flash:
+        preview_ok: Preview generated — no data written.
+        commit_ok: Import committed successfully.
+    error:
+        no_tenant: No tenant active. Please select a tenant first.
+        upload_failed: Upload failed.

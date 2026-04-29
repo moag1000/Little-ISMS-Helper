@@ -1,0 +1,134 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'gstool_import.title'|trans({}, 'gstool_import') }}{% endblock %}
+
+{% block admin_title %}{{ 'gstool_import.title'|trans({}, 'gstool_import') }}{% endblock %}
+
+{% block admin_content %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
+            { label: 'gstool_import.title'|trans({}, 'gstool_import') }
+        ]
+    } only %}
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="h5 mb-0">
+                <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
+                {{ 'gstool_import.upload.card_title'|trans({}, 'gstool_import') }}
+            </h2>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">{{ 'gstool_import.intro'|trans({}, 'gstool_import') }}</p>
+
+            {{ form_start(form) }}
+                {{ form_row(form.file) }}
+                {{ form_row(form.dryRun) }}
+                {{ form_row(form.submit) }}
+            {{ form_end(form) }}
+
+            <div class="mt-4">
+                <h3 class="h6">{{ 'gstool_import.schema.title'|trans({}, 'gstool_import') }}</h3>
+                <p class="small text-muted">{{ 'gstool_import.schema.description'|trans({}, 'gstool_import') }}</p>
+                <pre class="small bg-body-secondary p-3 rounded"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;gstool-export version="1.0"&gt;
+  &lt;zielobjekte&gt;
+    &lt;zielobjekt id="ZO-001" type="IT-System"&gt;
+      &lt;name&gt;Webserver-Prod&lt;/name&gt;
+      &lt;kurzbeschreibung&gt;...&lt;/kurzbeschreibung&gt;
+      &lt;verantwortlich&gt;IT&lt;/verantwortlich&gt;
+      &lt;standort&gt;RZ-Nord&lt;/standort&gt;
+      &lt;schutzbedarf&gt;
+        &lt;vertraulichkeit&gt;hoch&lt;/vertraulichkeit&gt;
+        &lt;integritaet&gt;sehr hoch&lt;/integritaet&gt;
+        &lt;verfuegbarkeit&gt;hoch&lt;/verfuegbarkeit&gt;
+      &lt;/schutzbedarf&gt;
+    &lt;/zielobjekt&gt;
+  &lt;/zielobjekte&gt;
+  &lt;modellierung&gt;
+    &lt;abhaengigkeit von="ZO-001" zu="ZO-002"/&gt;
+  &lt;/modellierung&gt;
+&lt;/gstool-export&gt;</code></pre>
+            </div>
+        </div>
+    </div>
+
+    {% if result is not null %}
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">
+                    {% if isDryRun %}
+                        <i class="fa-icon fa-icon--status-pending text-warning" aria-hidden="true"></i>
+                        {{ 'gstool_import.result.preview_title'|trans({}, 'gstool_import') }}
+                    {% else %}
+                        <i class="fa-icon fa-icon--status-ok text-success" aria-hidden="true"></i>
+                        {{ 'gstool_import.result.commit_title'|trans({}, 'gstool_import') }}
+                        {% if result.session_id is defined and result.session_id %}
+                            <small class="text-muted">#{{ result.session_id }}</small>
+                        {% endif %}
+                    {% endif %}
+                </h2>
+                <span class="badge bg-secondary">
+                    {{ 'gstool_import.result.summary'|trans({
+                        '%new%': result.summary.new,
+                        '%update%': result.summary.update,
+                        '%error%': result.summary.error,
+                    }, 'gstool_import') }}
+                </span>
+            </div>
+            <div class="card-body p-0">
+                {% if result.header_error is not null %}
+                    <div class="p-3">
+                        <div class="alert alert-danger mb-0">{{ result.header_error }}</div>
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'gstool_import.result.line'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.result.action'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.result.gstool_id'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.result.name'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.result.asset_type'|trans({}, 'gstool_import') }}</th>
+                                    <th class="text-end">C</th>
+                                    <th class="text-end">I</th>
+                                    <th class="text-end">A</th>
+                                    <th>{{ 'gstool_import.result.error'|trans({}, 'gstool_import') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for row in result.rows %}
+                                <tr>
+                                    <td class="text-muted small">{{ row.line ?? '' }}</td>
+                                    <td>
+                                        {% if row.action == 'new' %}
+                                            <span class="badge bg-success">{{ 'gstool_import.action.new'|trans({}, 'gstool_import') }}</span>
+                                        {% elseif row.action == 'update' %}
+                                            <span class="badge bg-info">{{ 'gstool_import.action.update'|trans({}, 'gstool_import') }}</span>
+                                        {% elseif row.action == 'error' %}
+                                            <span class="badge bg-danger">{{ 'gstool_import.action.error'|trans({}, 'gstool_import') }}</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">{{ row.action }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><code>{{ row.id ?? '' }}</code></td>
+                                    <td>{{ row.name ?? '' }}</td>
+                                    <td><code class="small">{{ row.assetType ?? '' }}</code></td>
+                                    <td class="text-end">{{ row.confidentiality ?? '–' }}</td>
+                                    <td class="text-end">{{ row.integrity ?? '–' }}</td>
+                                    <td class="text-end">{{ row.availability ?? '–' }}</td>
+                                    <td class="text-danger small">{{ row.error ?? '' }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
