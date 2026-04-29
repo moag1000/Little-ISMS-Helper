@@ -168,6 +168,7 @@ dsr:
 
     # Table headers
     table:
+        title: "Data Subject Requests"
         id: "ID"
         type: "Type"
         data_subject: "Data Subject"

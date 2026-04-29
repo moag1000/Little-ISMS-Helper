@@ -57,9 +57,16 @@
     {% endif %}
 
     {% embed '_components/_card.html.twig' %}
+        {% block card_attrs %}data-controller="filter"{% endblock %}
         {% block card_header %}
-            <div class="card-header">
-                <h2>{{ 'bc_plans.page.header'|trans({}, 'bc_plans') }} ({{ bc_plans|length }})</h2>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">{{ 'bc_plans.page.header'|trans({}, 'bc_plans') }} ({{ bc_plans|length }})</h2>
+                {% if bc_plans|length > 0 %}
+                <input type="search" class="form-control form-control-sm w-250px"
+                       data-filter-target="searchInput"
+                       data-action="input->filter#filterRows"
+                       placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
+                {% endif %}
             </div>
         {% endblock %}
         {% block card_body %}
@@ -81,7 +88,7 @@
                 {% endblock %}
                 {% block table_body %}
                     {% for plan in bc_plans %}
-                    <tr>
+                    <tr data-filter-target="filterableRow">
                         <td><a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a></td>
                         <td>{{ plan.businessProcess ? plan.businessProcess.name : '-' }}</td>
                         <td>{{ plan.planOwner }}</td>
