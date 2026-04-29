@@ -139,7 +139,7 @@ class InternalAudit
     #[ORM\JoinColumn(name: 'scoped_framework_id', nullable: true)]
     #[Groups(['audit:read'])]
     #[MaxDepth(1)]
-    private ?ComplianceFramework $complianceFramework = null;
+    private ?ComplianceFramework $scopedFramework = null;
 
     /**
      * Sprint 3 / B4 — Additional frameworks covered by the same audit.
@@ -297,8 +297,8 @@ public function __construct()
     public function getAllScopedFrameworks(): array
     {
         $all = [];
-        if ($this->complianceFramework instanceof ComplianceFramework) {
-            $all[(int) $this->complianceFramework->id] = $this->complianceFramework;
+        if ($this->scopedFramework instanceof ComplianceFramework) {
+            $all[(int) $this->scopedFramework->id] = $this->scopedFramework;
         }
         foreach ($this->additionalScopedFrameworks as $fw) {
             if (!$fw instanceof ComplianceFramework) {
@@ -633,12 +633,12 @@ public function __construct()
 
     public function getScopedFramework(): ?ComplianceFramework
     {
-        return $this->complianceFramework;
+        return $this->scopedFramework;
     }
 
     public function setScopedFramework(?ComplianceFramework $complianceFramework): static
     {
-        $this->complianceFramework = $complianceFramework;
+        $this->scopedFramework = $complianceFramework;
         return $this;
     }
 
@@ -649,8 +649,8 @@ public function __construct()
     {
         return match($this->scopeType) {
             'full_isms' => 'Vollständiges ISMS Audit',
-            'compliance_framework' => $this->complianceFramework instanceof ComplianceFramework
-                ? 'Compliance Audit: ' . $this->complianceFramework->getName()
+            'compliance_framework' => $this->scopedFramework instanceof ComplianceFramework
+                ? 'Compliance Audit: ' . $this->scopedFramework->getName()
                 : 'Compliance Framework Audit',
             'asset' => sprintf('Asset Audit (%d Assets)', $this->scopedAssets->count()),
             'asset_type' => 'Asset-Typ Audit: ' . ($this->scopeDetails['type'] ?? 'N/A'),
@@ -676,7 +676,7 @@ public function __construct()
      */
     public function isComplianceAudit(): bool
     {
-        return $this->scopeType === 'compliance_framework' && $this->complianceFramework instanceof ComplianceFramework;
+        return $this->scopeType === 'compliance_framework' && $this->scopedFramework instanceof ComplianceFramework;
     }
 
     /**

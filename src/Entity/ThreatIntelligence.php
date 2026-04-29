@@ -115,7 +115,7 @@ class ThreatIntelligence
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'assigned_to_id', nullable: true)]
     #[Groups(['threat:read'])]
-    private ?User $user = null;
+    private ?User $assignedTo = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['threat:read', 'threat:write'])]
@@ -308,12 +308,12 @@ class ThreatIntelligence
 
     public function getAssignedTo(): ?User
     {
-        return $this->user;
+        return $this->assignedTo;
     }
 
     public function setAssignedTo(?User $user): static
     {
-        $this->user = $user;
+        $this->assignedTo = $user;
         return $this;
     }
 

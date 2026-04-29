@@ -241,7 +241,7 @@ class Risk
     #[Groups(['risk:read', 'risk:write'])]
     #[MaxDepth(1)]
     #[Assert\NotNull(message: 'risk.validation.risk_owner_required')]
-    private ?User $user = null;
+    private ?User $riskOwner = null;
 
     #[ORM\Column(type: 'string', length: 50, enumType: RiskStatus::class)]
     #[Groups(['risk:read', 'risk:write'])]
@@ -571,12 +571,12 @@ class Risk
 
     public function getRiskOwner(): ?User
     {
-        return $this->user;
+        return $this->riskOwner;
     }
 
     public function setRiskOwner(?User $user): static
     {
-        $this->user = $user;
+        $this->riskOwner = $user;
         return $this;
     }
 
@@ -587,7 +587,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function getRiskOwnerName(): ?string
     {
-        return $this->user?->getFullName();
+        return $this->riskOwner?->getFullName();
     }
 
     public function getStatus(): ?RiskStatus

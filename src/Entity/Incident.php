@@ -99,7 +99,7 @@ class Incident
     #[ORM\ManyToOne(targetEntity: ThreatIntelligence::class, inversedBy: 'resultingIncidents')]
     #[ORM\JoinColumn(name: 'originating_threat_id', nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    private ?ThreatIntelligence $threatIntelligence = null;
+    private ?ThreatIntelligence $originatingThreat = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['incident:read', 'incident:write'])]
@@ -681,12 +681,12 @@ class Incident
 
     public function getOriginatingThreat(): ?ThreatIntelligence
     {
-        return $this->threatIntelligence;
+        return $this->originatingThreat;
     }
 
     public function setOriginatingThreat(?ThreatIntelligence $threatIntelligence): static
     {
-        $this->threatIntelligence = $threatIntelligence;
+        $this->originatingThreat = $threatIntelligence;
         return $this;
     }
 
