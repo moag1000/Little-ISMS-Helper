@@ -83,34 +83,23 @@
     </div>
 
     {# Filters #}
-    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
-        {% block card_body %}
-            <h2 class="h5 mb-3"><i class="fa-icon fa-icon--filter" aria-hidden="true"></i> {{ 'processing_activity.filter.title'|trans({}, 'privacy')}}</h2>
-            <div class="btn-group" role="group">
-                <a href="{{ path('app_processing_activity_index') }}"
-                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'all' ? 'active' : '' }}">
-                    {{ 'processing_activity.filter.all'|trans({}, 'privacy')}} ({{ statistics.total }})
-                </a>
-                <a href="{{ path('app_processing_activity_index', {filter: 'active'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--success {{ current_filter == 'active' ? : '' }}">
-                    {{ 'processing_activity.filter.active'|trans({}, 'privacy')}} ({{ statistics.active }})
-                </a>
-                <a href="{{ path('app_processing_activity_index', {filter: 'incomplete'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--warning {{ current_filter == 'incomplete' ? 'active' : '' }}">
-                    {{ 'processing_activity.filter.incomplete'|trans({}, 'privacy')}}
-                </a>
-                <a href="{{ path('app_processing_activity_index', {filter: 'requiring_dpia'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--danger {{ current_filter == 'requiring_dpia' ? 'active' : '' }}">
-                    {{ 'processing_activity.filter.requiring_dpia'|trans({}, 'privacy')}} ({{ statistics.missing_dpia }})
-                </a>
-                <a href="{{ path('app_processing_activity_index', {filter: 'special_categories'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'special_categories' ? 'active' : '' }}">
-                    {{ 'processing_activity.filter.special_categories'|trans({}, 'privacy')}} ({{ statistics.special_categories }})
-                </a>
-                <a href="{{ path('app_processing_activity_index', {filter: 'third_country_transfers'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'third_country_transfers' ? 'active' : '' }}">
-                    {{ 'processing_activity.filter.third_country'|trans({}, 'privacy')}} ({{ statistics.third_country_transfers }})
-                </a>
+    {% embed '_components/_search_filter_form.html.twig' with {
+        action: path('app_processing_activity_index'),
+        filter_keys: ['filter'],
+        show_search: false,
+        form_id: 'processing-activity-filter-form'
+    } %}
+        {% block filters %}
+            <div class="col-md-4">
+                <label for="filter-status" class="form-label">{{ 'processing_activity.filter.title'|trans({}, 'privacy') }}</label>
+                <select class="form-select" id="filter-status" name="filter">
+                    <option value="">{{ 'processing_activity.filter.all'|trans({}, 'privacy') }} ({{ statistics.total }})</option>
+                    <option value="active" {{ current_filter == 'active' ? 'selected' : '' }}>{{ 'processing_activity.filter.active'|trans({}, 'privacy') }} ({{ statistics.active }})</option>
+                    <option value="incomplete" {{ current_filter == 'incomplete' ? 'selected' : '' }}>{{ 'processing_activity.filter.incomplete'|trans({}, 'privacy') }}</option>
+                    <option value="requiring_dpia" {{ current_filter == 'requiring_dpia' ? 'selected' : '' }}>{{ 'processing_activity.filter.requiring_dpia'|trans({}, 'privacy') }} ({{ statistics.missing_dpia }})</option>
+                    <option value="special_categories" {{ current_filter == 'special_categories' ? 'selected' : '' }}>{{ 'processing_activity.filter.special_categories'|trans({}, 'privacy') }} ({{ statistics.special_categories }})</option>
+                    <option value="third_country_transfers" {{ current_filter == 'third_country_transfers' ? 'selected' : '' }}>{{ 'processing_activity.filter.third_country'|trans({}, 'privacy') }} ({{ statistics.third_country_transfers }})</option>
+                </select>
             </div>
         {% endblock %}
     {% endembed %}

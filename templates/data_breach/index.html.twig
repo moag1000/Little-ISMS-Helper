@@ -124,44 +124,25 @@
     </div>
 
     {# Filters #}
-    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
-        {% block card_header %}
-            <div class="card-header"><h2 class="mb-0"><i class="bi bi-filter" aria-hidden="true"></i> {{ 'data_breach.index.filter_title'|trans }}</h2></div>
-        {% endblock %}
-        {% block card_body %}
-            <div class="btn-group flex-wrap" role="group">
-                <a href="{{ path('app_data_breach_index') }}"
-                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'all' ? 'active' : '' }}">
-                    {{ 'data_breach.index.filter_all'|trans }} ({{ statistics.total }})
-                </a>
-                <a href="{{ path('app_data_breach_index', {filter: 'overdue'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--danger {{ current_filter == 'overdue' ? 'active' : '' }}">
-                    {{ 'data_breach.index.filter_overdue'|trans }} ({{ compliance_score.overdue_notifications }})
-                </a>
-                <a href="{{ path('app_data_breach_index', {filter: 'pending_authority'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--warning {{ current_filter == 'pending_authority' ? 'active' : '' }}">
-                    {{ 'data_breach.index.filter_pending_authority'|trans }}
-                </a>
-                <a href="{{ path('app_data_breach_index', {filter: 'pending_subjects'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--warning {{ current_filter == 'pending_subjects' ? 'active' : '' }}">
-                    {{ 'data_breach.index.filter_pending_subjects'|trans }}
-                </a>
-                <a href="{{ path('app_data_breach_index', {filter: 'draft'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'draft' ? 'active' : '' }}">
-                    {{ 'data_breach.index.filter_draft'|trans }} ({{ statistics.draft }})
-                </a>
-                <a href="{{ path('app_data_breach_index', {filter: 'under_assessment'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'under_assessment' ? 'active' : '' }}">
-                    {{ 'data_breach.index.filter_under_assessment'|trans }} ({{ statistics.under_assessment }})
-                </a>
-                <a href="{{ path('app_data_breach_index', {filter: 'authority_notified'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--success {{ current_filter == 'authority_notified' ? 'active' : '' }}">
-                    {{ 'data_breach.index.filter_authority_notified'|trans }} ({{ statistics.authority_notified }})
-                </a>
-                <a href="{{ path('app_data_breach_index', {filter: 'closed'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'closed' ? 'active' : '' }}">
-                    {{ 'data_breach.index.filter_closed'|trans }} ({{ statistics.closed }})
-                </a>
+    {% embed '_components/_search_filter_form.html.twig' with {
+        action: path('app_data_breach_index'),
+        filter_keys: ['filter'],
+        show_search: false,
+        form_id: 'data-breach-filter-form'
+    } %}
+        {% block filters %}
+            <div class="col-md-4">
+                <label for="filter-status" class="form-label">{{ 'data_breach.index.filter_title'|trans }}</label>
+                <select class="form-select" id="filter-status" name="filter">
+                    <option value="">{{ 'data_breach.index.filter_all'|trans }} ({{ statistics.total }})</option>
+                    <option value="overdue" {{ current_filter == 'overdue' ? 'selected' : '' }}>{{ 'data_breach.index.filter_overdue'|trans }} ({{ compliance_score.overdue_notifications }})</option>
+                    <option value="pending_authority" {{ current_filter == 'pending_authority' ? 'selected' : '' }}>{{ 'data_breach.index.filter_pending_authority'|trans }}</option>
+                    <option value="pending_subjects" {{ current_filter == 'pending_subjects' ? 'selected' : '' }}>{{ 'data_breach.index.filter_pending_subjects'|trans }}</option>
+                    <option value="draft" {{ current_filter == 'draft' ? 'selected' : '' }}>{{ 'data_breach.index.filter_draft'|trans }} ({{ statistics.draft }})</option>
+                    <option value="under_assessment" {{ current_filter == 'under_assessment' ? 'selected' : '' }}>{{ 'data_breach.index.filter_under_assessment'|trans }} ({{ statistics.under_assessment }})</option>
+                    <option value="authority_notified" {{ current_filter == 'authority_notified' ? 'selected' : '' }}>{{ 'data_breach.index.filter_authority_notified'|trans }} ({{ statistics.authority_notified }})</option>
+                    <option value="closed" {{ current_filter == 'closed' ? 'selected' : '' }}>{{ 'data_breach.index.filter_closed'|trans }} ({{ statistics.closed }})</option>
+                </select>
             </div>
         {% endblock %}
     {% endembed %}

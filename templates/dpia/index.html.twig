@@ -94,44 +94,25 @@
     </div>
 
     {# Filters #}
-    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
-        {% block card_header %}
-            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-filter" aria-hidden="true"></i> {{ 'dpia.index.filter_dpias'|trans({}, 'privacy') }}</h2></div>
-        {% endblock %}
-        {% block card_body %}
-            <div class="btn-group flex-wrap" role="group">
-                <a href="{{ path('app_dpia_index') }}"
-                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'all' ? 'active' : '' }}">
-                    {{ 'dpia.index.all'|trans({}, 'privacy') }} ({{ statistics.total }})
-                </a>
-                <a href="{{ path('app_dpia_index', {filter: 'draft'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'draft' ? 'active' : '' }}">
-                    {{ 'dpia.index.draft'|trans({}, 'privacy') }} ({{ statistics.draft }})
-                </a>
-                <a href="{{ path('app_dpia_index', {filter: 'in_review'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--ghost {{ current_filter == 'in_review' ? 'active' : '' }}">
-                    {{ 'dpia.index.in_review'|trans({}, 'privacy') }} ({{ statistics.in_review }})
-                </a>
-                <a href="{{ path('app_dpia_index', {filter: 'approved'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--success {{ current_filter == 'approved' ? 'active' : '' }}">
-                    {{ 'dpia.index.approved_filter'|trans({}, 'privacy') }} ({{ statistics.approved }})
-                </a>
-                <a href="{{ path('app_dpia_index', {filter: 'high_risk'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--danger {{ current_filter == 'high_risk' ? 'active' : '' }}">
-                    {{ 'dpia.index.high_risk_filter'|trans({}, 'privacy') }} ({{ statistics.high_risk }})
-                </a>
-                <a href="{{ path('app_dpia_index', {filter: 'incomplete'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--warning {{ current_filter == 'incomplete' ? 'active' : '' }}">
-                    {{ 'dpia.index.incomplete'|trans({}, 'privacy') }}
-                </a>
-                <a href="{{ path('app_dpia_index', {filter: 'awaiting_dpo'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--warning {{ current_filter == 'awaiting_dpo' ? 'active' : '' }}">
-                    {{ 'dpia.index.awaiting_dpo'|trans({}, 'privacy') }} ({{ statistics.awaiting_dpo_consultation }})
-                </a>
-                <a href="{{ path('app_dpia_index', {filter: 'requires_supervisory'}) }}"
-                   class="fa-cyber-btn fa-cyber-btn--warning {{ current_filter == 'requires_supervisory' ? 'active' : '' }}">
-                    {{ 'dpia.index.requires_supervisory'|trans({}, 'privacy') }} ({{ statistics.requires_supervisory_consultation }})
-                </a>
+    {% embed '_components/_search_filter_form.html.twig' with {
+        action: path('app_dpia_index'),
+        filter_keys: ['filter'],
+        show_search: false,
+        form_id: 'dpia-filter-form'
+    } %}
+        {% block filters %}
+            <div class="col-md-4">
+                <label for="filter-status" class="form-label">{{ 'dpia.index.filter_dpias'|trans({}, 'privacy') }}</label>
+                <select class="form-select" id="filter-status" name="filter">
+                    <option value="">{{ 'dpia.index.all'|trans({}, 'privacy') }} ({{ statistics.total }})</option>
+                    <option value="draft" {{ current_filter == 'draft' ? 'selected' : '' }}>{{ 'dpia.index.draft'|trans({}, 'privacy') }} ({{ statistics.draft }})</option>
+                    <option value="in_review" {{ current_filter == 'in_review' ? 'selected' : '' }}>{{ 'dpia.index.in_review'|trans({}, 'privacy') }} ({{ statistics.in_review }})</option>
+                    <option value="approved" {{ current_filter == 'approved' ? 'selected' : '' }}>{{ 'dpia.index.approved_filter'|trans({}, 'privacy') }} ({{ statistics.approved }})</option>
+                    <option value="high_risk" {{ current_filter == 'high_risk' ? 'selected' : '' }}>{{ 'dpia.index.high_risk_filter'|trans({}, 'privacy') }} ({{ statistics.high_risk }})</option>
+                    <option value="incomplete" {{ current_filter == 'incomplete' ? 'selected' : '' }}>{{ 'dpia.index.incomplete'|trans({}, 'privacy') }}</option>
+                    <option value="awaiting_dpo" {{ current_filter == 'awaiting_dpo' ? 'selected' : '' }}>{{ 'dpia.index.awaiting_dpo'|trans({}, 'privacy') }} ({{ statistics.awaiting_dpo_consultation }})</option>
+                    <option value="requires_supervisory" {{ current_filter == 'requires_supervisory' ? 'selected' : '' }}>{{ 'dpia.index.requires_supervisory'|trans({}, 'privacy') }} ({{ statistics.requires_supervisory_consultation }})</option>
+                </select>
             </div>
         {% endblock %}
     {% endembed %}

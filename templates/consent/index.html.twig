@@ -98,6 +98,34 @@
     {% endblock %}
 {% endembed %}
 
+{# Filters #}
+{% embed '_components/_search_filter_form.html.twig' with {
+    action: path('app_consent_index'),
+    filter_keys: ['status', 'verified'],
+    show_search: false,
+    form_id: 'consent-filter-form'
+} %}
+    {% block filters %}
+        <div class="col-md-4">
+            <label for="filter-status" class="form-label">{{ 'consent.filter.all_status'|trans({}, 'consent') }}</label>
+            <select class="form-select" id="filter-status" name="status">
+                <option value="">{{ 'consent.filter.all_status'|trans({}, 'consent') }}</option>
+                <option value="pending_verification" {{ app.request.query.get('status') == 'pending_verification' ? 'selected' : '' }}>{{ 'consent.status.pending_verification'|trans({}, 'consent') }}</option>
+                <option value="active" {{ app.request.query.get('status') == 'active' ? 'selected' : '' }}>{{ 'consent.status.active'|trans({}, 'consent') }}</option>
+                <option value="revoked" {{ app.request.query.get('status') == 'revoked' ? 'selected' : '' }}>{{ 'consent.status.revoked'|trans({}, 'consent') }}</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="filter-verified" class="form-label">{{ 'consent.filter.all_verified'|trans({}, 'consent') }}</label>
+            <select class="form-select" id="filter-verified" name="verified">
+                <option value="">{{ 'consent.filter.all_verified'|trans({}, 'consent') }}</option>
+                <option value="verified" {{ app.request.query.get('verified') == 'verified' ? 'selected' : '' }}>{{ 'consent.filter.verified'|trans({}, 'consent') }}</option>
+                <option value="unverified" {{ app.request.query.get('verified') == 'unverified' ? 'selected' : '' }}>{{ 'consent.filter.unverified'|trans({}, 'consent') }}</option>
+            </select>
+        </div>
+    {% endblock %}
+{% endembed %}
+
 {# Consents Table or Empty State #}
 {% if consents|length == 0 %}
     {% include '_components/_empty_state.html.twig' with {
@@ -108,34 +136,10 @@
     } %}
 {% else %}
 {% embed '_components/_card.html.twig' %}
-    {% block card_attrs %}data-controller="bulk-actions consent-filter" data-bulk-actions-endpoint-value="/consent"{% endblock %}
+    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/consent"{% endblock %}
     {% block card_header %}
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0"><i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'consent.list.all_consents'|trans({'%count%': consents|length}, 'consent') }}</h2>
-            <div class="d-flex gap-2">
-                <select class="form-select form-select-sm w-150px" id="consent-status-filter"
-                        data-consent-filter-target="statusFilter"
-                        data-action="change->consent-filter#filter">
-                    <option value="">{{ 'consent.filter.all_status'|trans({}, 'consent') }}</option>
-                    <option value="pending_verification">{{ 'consent.status.pending_verification'|trans({}, 'consent') }}</option>
-                    <option value="active">{{ 'consent.status.active'|trans({}, 'consent') }}</option>
-                    <option value="revoked">{{ 'consent.status.revoked'|trans({}, 'consent') }}</option>
-                </select>
-                <select class="form-select form-select-sm w-150px" id="consent-verified-filter"
-                        data-consent-filter-target="verifiedFilter"
-                        data-action="change->consent-filter#filter">
-                    <option value="">{{ 'consent.filter.all_verified'|trans({}, 'consent') }}</option>
-                    <option value="verified">{{ 'consent.filter.verified'|trans({}, 'consent') }}</option>
-                    <option value="unverified">{{ 'consent.filter.unverified'|trans({}, 'consent') }}</option>
-                </select>
-                <label for="consent-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
-                <input type="search"
-                       class="form-control form-control-sm w-200px"
-                       id="consent-search"
-                       data-consent-filter-target="search"
-                       data-action="input->consent-filter#filter"
-                       placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
-            </div>
         </div>
     {% endblock %}
     {% block card_body %}
@@ -164,10 +168,7 @@
         {% endblock %}
         {% block table_body %}
             {% for consent in consents %}
-            <tr data-consent-filter-target="row"
-                data-consent-id="{{ consent.id }}"
-                data-consent-status="{{ consent.status }}"
-                data-consent-verified="{{ consent.verifiedBy ? 'verified' : 'unverified' }}">
+            <tr data-consent-id="{{ consent.id }}">
                 <td>
                     <input type="checkbox"
                            class="form-check-input"
