@@ -1,0 +1,42 @@
+name: Feature Request
+description: Suggest a new feature, framework, or workflow
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / use-case
+      description: What problem are you trying to solve? Who is affected?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What should the tool do? UI sketch, sample data, API shape — whatever fits.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Are there workarounds today? Other tools that solve it?
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - Single tenant feature
+        - Cross-tenant / Konzern
+        - Compliance framework (new norm/regulation)
+        - Workflow / approval process
+        - Reporting / dashboard
+        - Integration (API / SSO / Email / SIEM)
+        - Documentation
+        - Other
+  - type: input
+    id: regulatory
+    attributes:
+      label: Regulatory hook (if any)
+      placeholder: e.g. ISO 27001 A.5.21, NIS2 Art. 21, DORA Art. 26
