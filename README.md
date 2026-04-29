@@ -4,18 +4,17 @@
 
 <img src="public/logo.svg" alt="Little ISMS Helper" width="280" />
 
-**Multi-Tenant ISMS-Plattform mit Multi-Framework-Compliance -- ISO 27001:2022, NIS2, DORA, TISAX, BSI IT-Grundschutz und 18 weitere Frameworks.**
+**Multi-Tenant ISMS-Plattform mit Multi-Framework-Compliance -- ISO 27001:2022, NIS2, DORA, TISAX, BSI IT-Grundschutz und 20 weitere Frameworks.**
 
 [![PHP 8.4+](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
 [![Symfony 7.4](https://img.shields.io/badge/Symfony-7.4-000000?logo=symfony&logoColor=white)](https://symfony.com/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
 
-![Entities](https://img.shields.io/badge/Entities-78-informational)
-![Frameworks](https://img.shields.io/badge/Frameworks-23-informational)
+![Entities](https://img.shields.io/badge/Entities-80-informational)
+![Frameworks](https://img.shields.io/badge/Frameworks-25-informational)
 ![Controls](https://img.shields.io/badge/ISO%2027001%20Controls-93-informational)
-![Tests](https://img.shields.io/badge/Tests-8%2C290-informational)
-![LOC](https://img.shields.io/badge/LOC-186k-informational)
+![Tests](https://img.shields.io/badge/Tests-2%2C850%2B-informational)
 
 [Funktionen](#funktionen) |
 [Quick Start](#quick-start) |
@@ -28,12 +27,57 @@
 
 ---
 
+## Fuer wen ist dieses Tool?
+
+### Der Sweet Spot
+
+Little ISMS Helper wurde fuer Organisationen gebaut, fuer die Enterprise-ISMS-Tools zu teuer und Spreadsheets zu riskant sind. Der typische Nutzer ist ein IT-Leiter, QM-Beauftragter oder nebenberuflicher ISB der ein ISMS aufbauen muss -- oft ohne dediziertes Security-Budget und ohne externen Berater.
+
+| Organisationsgroesse | Passt? | Warum |
+|----------------------|--------|-------|
+| **10-50 Mitarbeiter** | Ja | Quick-Entry-Formulare, Essential-Controls-Filter (31 statt 93), Branchen-Baselines mit Vorausfuellung, adaptive Fortschrittsschwellen |
+| **51-250 Mitarbeiter** | Ja (Sweet Spot) | Voller Feature-Umfang, Multi-Framework mit Data-Reuse, Holding-Struktur fuer Tochtergesellschaften |
+| **251-1.000 Mitarbeiter** | Ja, mit Einschraenkungen | Alle Features vorhanden, aber API-Integrationen (SIEM, Ticketing) muessen selbst gebaut werden |
+| **1.000+ Mitarbeiter** | Machbar, braucht Investment | Architektur traegt (Multi-Tenancy, API Platform), aber Integrationslandschaft und SaaS-Betrieb muessen aufgebaut werden |
+
+### Branchen
+
+Besonders geeignet fuer regulierte Branchen im DACH-Raum:
+
+- **Automotive** -- TISAX-Baseline mit VDA-ISA-Mapping
+- **Finanzdienstleister** -- DORA-Compliance, BaFin-Anforderungen
+- **Gesundheitswesen** -- KRITIS-Health, DiGAV, Patientendatenschutz
+- **IT-Dienstleister / Systemhaeuser** -- ISO 27001 fuer Ausschreibungsfaehigkeit, SOC 2
+- **Cloud-/Hosting-Provider** -- BSI C5 (2020 + 2026), SOC 2
+- **Produktion / Fertigung** -- NIS2 (ab 50 MA / 10 Mio. EUR), BSI IT-Grundschutz
+- **Kritische Infrastruktur** -- KRITIS-Dachgesetz, BSI-Meldepflichten
+
+### Typische Nutzerprofile
+
+| Rolle | Was das Tool ihnen bringt |
+|-------|--------------------------|
+| **IT-Admin als Teilzeit-ISB** | Gefuehrter Einstieg in 7 Phasen, ISO-9001-Bruecke im Glossar, Quick-Entry fuer die ersten Assets und Risiken |
+| **Informationssicherheitsbeauftragter (ISB)** | Voller ISMS-Lifecycle, SoA-Management, Risikobehandlungsplaene, Management-Reviews, Audit-Vorbereitung |
+| **CISO / Geschaeftsfuehrung** | Board-One-Pager, KPI-Dashboards, Zertifizierungs-Dokumentenpaket als ZIP, Konzern-Uebersicht |
+| **Datenschutzbeauftragter (DSB/DPO)** | Verarbeitungsverzeichnis, DSFA, Datenschutzverletzungen mit 72h-Frist, Betroffenenrechte |
+| **Compliance Manager** | 25 Frameworks mit Cross-Mapping, transitive Coverage, FTE-Einsparung durch Data-Reuse |
+| **Interner / externer Auditor** | Evidence-Management, Audit-Freeze, Audit-Pakete, tamper-evidenter Audit-Trail |
+
+### Was dieses Tool nicht ist
+
+- **Kein Vulnerability-Scanner** -- es verwaltet Schwachstellen, scannt aber keine Systeme
+- **Kein SIEM** -- es nimmt Incidents entgegen, sammelt aber keine Logs
+- **Kein Dokumentenmanagementsystem** -- es verlinkt Nachweise zu Controls, ist aber kein SharePoint-Ersatz
+- **Kein Fertigprodukt fuer den Enterprise-Massenmarkt** -- Integrationen (Jira, ServiceNow, Nessus) muessen fuer grosse Umgebungen ergaenzt werden
+
+---
+
 ## Funktionen
 
 ### Compliance und Frameworks
 
 - **ISO 27001:2022** -- Alle 93 Annex-A-Controls und Clauses 4-10 vollstaendig abgedeckt
-- **23 Compliance-Frameworks** -- ISO 27001, ISO 22301, ISO 27005, ISO 27701, NIS2, NIS2UmsuCG, DORA, TISAX, BSI IT-Grundschutz, BSI Kompendium, C5, SOC 2, NIST CSF, CIS Controls, GDPR, BDSG, EU AI Act, GxP, DiGAV, TKG, KRITIS, KRITIS-Health, und weitere
+- **25 Compliance-Frameworks** -- ISO 27001, ISO 22301, ISO 27005, ISO 27701 (2019+2025), NIS2, NIS2UmsuCG, DORA, TISAX, BSI IT-Grundschutz, BSI C5 (2020+2026), SOC 2, NIST CSF 2.0, CIS Controls v8.1, GDPR, BDSG, EU AI Act, GxP, DiGAV, TKG, KRITIS, KRITIS-Health, MRIS v1.5
 - **Cross-Framework-Mapping** -- 8 kuratierte Seed-Kataloge mit transitiver Compliance-Ableitung; ein Nachweis bedient mehrere Frameworks gleichzeitig (Data-Reuse-Prinzip)
 - **Branchen-Baselines** -- 9 vorkonfigurierte Starter-Pakete (Generic, Production, Finance, KRITIS-Health, Automotive, Cloud, MSP, IT-Service, Hosting) fuer sofortigen Einstieg
 - **SoA-Export** -- Statement of Applicability als PDF, inklusive Management-Review nach Clause 9.3
