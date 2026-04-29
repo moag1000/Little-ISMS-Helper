@@ -1,0 +1,36 @@
+codecov:
+  require_ci_to_pass: false  # Upload coverage even if test job fails (we still want trend data)
+  notify:
+    after_n_builds: 1
+
+coverage:
+  precision: 2
+  round: down
+  range: "60...90"  # Red below 60%, green above 90%
+
+  status:
+    project:
+      default:
+        target: auto                # Compare against base branch
+        threshold: 0.5%             # Allow 0.5% regression without failing
+        informational: true         # Report status, do not block PR
+    patch:
+      default:
+        target: 70%                 # New code coverage target — informational
+        informational: true
+
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: false
+
+ignore:
+  - "tests/**"                       # Coverage of tests is meaningless
+  - "vendor/**"
+  - "var/**"
+  - "config/preload.php"
+  - "src/Kernel.php"
+  - "migrations/**"
+  - "src/Migrations/**"
+  - "public/**"
+  - "scripts/**"
