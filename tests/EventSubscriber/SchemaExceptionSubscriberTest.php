@@ -6,6 +6,7 @@ namespace App\Tests\EventSubscriber;
 
 use App\EventSubscriber\SchemaExceptionSubscriber;
 use App\Service\QuickFixGuard;
+use App\Service\SchemaMaintenanceService;
 use Doctrine\DBAL\Driver\Exception as DriverExceptionInterface;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\ORM\Mapping\MappingException;
@@ -25,6 +26,7 @@ class SchemaExceptionSubscriberTest extends TestCase
     private QuickFixGuard&MockObject $guard;
     private UrlGeneratorInterface&MockObject $urlGenerator;
     private HttpKernelInterface&MockObject $kernel;
+    private SchemaMaintenanceService&MockObject $maintenance;
     private SchemaExceptionSubscriber $subscriber;
 
     protected function setUp(): void
@@ -32,10 +34,20 @@ class SchemaExceptionSubscriberTest extends TestCase
         $this->guard = $this->createMock(QuickFixGuard::class);
         $this->urlGenerator = $this->createMock(UrlGeneratorInterface::class);
         $this->kernel = $this->createMock(HttpKernelInterface::class);
+        $this->maintenance = $this->createMock(SchemaMaintenanceService::class);
 
         $this->urlGenerator->method('generate')->willReturn('/quick-fix');
+        // Default: pending migrations exist (positive case for redirect).
+        $this->maintenance->method('getMaintenanceStatus')->willReturn([
+            'migration_status' => ['pending' => 1, 'names' => ['VersionXXX']],
+            'schema_drift' => ['count' => 0, 'statements' => [], 'destructive' => []],
+        ]);
 
-        $this->subscriber = new SchemaExceptionSubscriber($this->guard, $this->urlGenerator);
+        $this->subscriber = new SchemaExceptionSubscriber(
+            $this->guard,
+            $this->urlGenerator,
+            $this->maintenance,
+        );
     }
 
     #[Test]
@@ -112,6 +124,32 @@ class SchemaExceptionSubscriberTest extends TestCase
         $this->subscriber->onKernelException($event);
 
         $this->assertInstanceOf(RedirectResponse::class, $event->getResponse());
+    }
+
+    #[Test]
+    public function noRedirectWhenNoPendingMigrations(): void
+    {
+        // Override the default maintenance-status mock — simulate "schema is
+        // up-to-date, no pending migrations". A TableNotFoundException now
+        // means a typo or bug in custom SQL, not an out-of-date schema, so
+        // the original exception should bubble up as a normal 500.
+        $maintenance = $this->createMock(SchemaMaintenanceService::class);
+        $maintenance->method('getMaintenanceStatus')->willReturn([
+            'migration_status' => ['pending' => 0, 'names' => []],
+            'schema_drift' => ['count' => 0, 'statements' => [], 'destructive' => []],
+        ]);
+        $subscriber = new SchemaExceptionSubscriber($this->guard, $this->urlGenerator, $maintenance);
+
+        $this->guard->method('fallbackUiEnabled')->willReturn(true);
+
+        $event = $this->makeEvent('/some-page', new TableNotFoundException(
+            $this->driverException('Table b_c_exercise does not exist'),
+            null,
+        ));
+
+        $subscriber->onKernelException($event);
+
+        $this->assertNull($event->getResponse());
     }
 
     private function makeEvent(string $path, \Throwable $throwable): ExceptionEvent

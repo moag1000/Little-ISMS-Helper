@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Service\QuickFixGuard;
+use App\Service\SchemaMaintenanceService;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\ORM\Mapping\MappingException as ORMMappingException;
@@ -31,6 +32,7 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
     public function __construct(
         private readonly QuickFixGuard $guard,
         private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly SchemaMaintenanceService $maintenance,
     ) {
     }
 
@@ -64,6 +66,23 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
         }
 
         if (!$this->isSchemaException($event->getThrowable())) {
+            return;
+        }
+
+        // Guard against false-positives: only redirect to Quick-Fix when there
+        // are actually pending Doctrine migrations. A "table not found" error
+        // can also come from a typo in raw SQL, which has nothing to do with
+        // an out-of-date schema — those should bubble up as a normal 500 with
+        // the original stack trace, not a misleading "apply migrations" page.
+        try {
+            $status = $this->maintenance->getMaintenanceStatus();
+            $pending = (int) ($status['migration_status']['pending'] ?? 0);
+        } catch (\Throwable) {
+            // If even reading status fails, the schema is presumably very
+            // broken — keep the redirect to give the user a recovery path.
+            $pending = 1;
+        }
+        if ($pending === 0) {
             return;
         }
 
