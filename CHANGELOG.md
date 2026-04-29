@@ -7,6 +7,22 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 _Noch keine Aenderungen._
 
+## [3.2.8] — 2026-04-29
+
+### Fix: PHP 8.4 base image (revert) für Docker-Build
+
+v3.2.7 ist getaggt, hat aber **kein Docker-Image** — Docker-Build brach an
+`docker-php-ext-install` (gd/pdo/mysqli-Extension-Chain) auf dem PHP-8.5-
+fpm-Base. Fehler: `cp: cannot stat 'modules/*': No such file or directory`.
+Upstream-`docker-php-ext` Helper-Skripte unterstützen den 8.5er Module-Build
+noch nicht zuverlässig.
+
+Zurück auf `php:8.4-fpm-trixie@sha256:eec2a132…` für jetzt. Tests, Code-Quality,
+Security-Checks waren auf v3.2.7 alle grün — der Code selbst läuft mit beiden
+PHP-Versionen. v3.2.8 ist v3.2.7 mit funktionierendem Docker-Build.
+
+PHP-8.5-Bump wird in eigenem Sprint nach `php:8.5.5+` Image-Release nachgeholt.
+
 ## [3.2.7] — 2026-04-29
 
 ### Refactor: Property/Getter-Alignment in 17 Entities
