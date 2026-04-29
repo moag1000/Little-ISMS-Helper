@@ -5,7 +5,7 @@
 # PHP 8.4 used instead of 8.5 due to extension build issues in 8.5 Docker images
 # Pinned digest for reproducible builds — update via:
 #   docker buildx imagetools inspect php:8.4-fpm-trixie | grep '^Digest:'
-FROM php:8.5-fpm-trixie@sha256:7d1586e8949f50449c2ca173aad9dac624a5cabb9a01780f9aa2ca8347a09af2 AS production
+FROM php:8.4-fpm-trixie@sha256:eec2a132b91271dcf51e86119311ec4b22105736af704997a690594b8f88af31 AS production
 
 # OCI Image Labels (https://github.com/opencontainers/image-spec/blob/main/annotations.md)
 LABEL org.opencontainers.image.title="Little ISMS Helper"
