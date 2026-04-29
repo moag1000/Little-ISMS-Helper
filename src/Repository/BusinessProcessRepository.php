@@ -110,15 +110,15 @@ class BusinessProcessRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getSingleScalarResult(),
 
-            'avg_rto' => $this->createQueryBuilder('bp')
+            'avg_rto' => (float) ($this->createQueryBuilder('bp')
                 ->select('AVG(bp.rto)')
                 ->getQuery()
-                ->getSingleScalarResult() ?? 0,
+                ->getSingleScalarResult() ?? 0),
 
-            'avg_mtpd' => $this->createQueryBuilder('bp')
+            'avg_mtpd' => (float) ($this->createQueryBuilder('bp')
                 ->select('AVG(bp.mtpd)')
                 ->getQuery()
-                ->getSingleScalarResult() ?? 0,
+                ->getSingleScalarResult() ?? 0),
         ];
     }
 

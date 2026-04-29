@@ -122,7 +122,7 @@ class SupplierRepository extends ServiceEntityRepository
             'iso27001_certified' => $iso27001,
             'overdue_assessments' => $overdue,
             'non_compliant' => $nonCompliant,
-            'compliance_rate' => $total > 0 ? round(($iso27001 / $total) * 100, 2) : 0
+            'compliance_rate' => (int) $total > 0 ? round(((int) $iso27001 / (int) $total) * 100, 2) : 0
         ];
     }
 
@@ -318,7 +318,7 @@ class SupplierRepository extends ServiceEntityRepository
             'iso27001_certified' => (int) $iso27001,
             'overdue_assessments' => (int) $overdueAssessments,
             'non_compliant' => (int) $nonCompliant,
-            'compliance_rate' => $total > 0 ? round(($iso27001 / $total) * 100, 2) : 0
+            'compliance_rate' => (int) $total > 0 ? round(((int) $iso27001 / (int) $total) * 100, 2) : 0
         ];
     }
 
