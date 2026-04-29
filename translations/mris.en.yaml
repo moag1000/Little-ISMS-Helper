@@ -1,4 +1,14 @@
 mris:
+    baselines:
+        explainer:
+            summary: 'What does an MRIS baseline do?'
+            intro: |
+                An MRIS baseline is an <strong>industry-specific preset of maturity targets</strong>
+                for the 13 Myth-Hardening Controls (MHC-01..13). Applied to a tenant it sets:
+            point_target: 'a <strong>target maturity level</strong> per MHC (<code>initial</code> / <code>defined</code> / <code>managed</code>) — what the industry needs at minimum,'
+            point_reason: 'a <strong>rationale</strong> why this level is relevant (regulation, risk landscape, typical threats),'
+            point_preserve: '<strong>existing maturity assessments are preserved</strong> (<code>maturity_current</code> values are never overwritten).'
+            example: '<strong>Example:</strong> <code>healthcare-provider</code> sets phishing-resistant MFA (MHC-03) to <code>managed</code> due to the 2024/25 ransomware wave, but multi-tenancy (MHC-07) only to <code>defined</code> because it is internal. After application, the SoA + maturity report shows the gap between actual (your assessment) and target (baseline) as a prioritised action list.'
     page:
         kpi_title: 'Mythos-relevant KPIs'
         kpi_intro: |
