@@ -82,11 +82,11 @@ class SeedSoc2Iso27001MappingsCommand extends Command
 
         foreach ($this->mappings() as $row) {
             $src = $this->requirementRepository->findOneBy([
-                'complianceFramework' => $source,
+                'framework' => $source,
                 'requirementId' => $row['source'],
             ]);
             $tgt = $this->requirementRepository->findOneBy([
-                'complianceFramework' => $target,
+                'framework' => $target,
                 'requirementId' => $row['target'],
             ]);
             if (!$src instanceof ComplianceRequirement || !$tgt instanceof ComplianceRequirement) {

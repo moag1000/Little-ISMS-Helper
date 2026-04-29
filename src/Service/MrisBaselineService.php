@@ -136,7 +136,7 @@ final class MrisBaselineService
             }
 
             $requirement = $this->requirementRepository->findOneBy([
-                'complianceFramework' => $framework,
+                'framework' => $framework,
                 'requirementId' => $mhcId,
             ]);
             if ($requirement === null) {

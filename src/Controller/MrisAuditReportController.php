@@ -188,7 +188,7 @@ final class MrisAuditReportController extends AbstractController
         if (!$framework instanceof ComplianceFramework) {
             return [];
         }
-        $reqs = $this->requirementRepository->findBy(['complianceFramework' => $framework]);
+        $reqs = $this->requirementRepository->findBy(['framework' => $framework]);
         $rows = [];
         foreach ($reqs as $req) {
             $rows[] = [

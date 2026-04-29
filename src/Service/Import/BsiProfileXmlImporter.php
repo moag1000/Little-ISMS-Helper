@@ -488,7 +488,7 @@ final class BsiProfileXmlImporter
         $candidates = $this->candidateIds($framework, $requirementId);
         foreach ($candidates as $candidate) {
             $hit = $this->requirementRepository->findOneBy([
-                'complianceFramework' => $framework,
+                'framework' => $framework,
                 'requirementId' => $candidate,
             ]);
             if ($hit instanceof ComplianceRequirement) {

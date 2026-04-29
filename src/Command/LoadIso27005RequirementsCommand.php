@@ -51,7 +51,7 @@ final class LoadIso27005RequirementsCommand
 
         foreach ($this->requirements() as $data) {
             $existing = $this->entityManager->getRepository(ComplianceRequirement::class)
-                ->findOneBy(['complianceFramework' => $framework, 'requirementId' => $data['id']]);
+                ->findOneBy(['framework' => $framework, 'requirementId' => $data['id']]);
             if ($existing instanceof ComplianceRequirement) {
                 continue;
             }

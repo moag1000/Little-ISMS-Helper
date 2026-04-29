@@ -87,7 +87,7 @@ class SampleDataController extends AbstractController
             if (isset($data['command']) && isset($commandFrameworkMap[$data['command']])) {
                 $framework = $frameworkRepo->findOneBy(['code' => $commandFrameworkMap[$data['command']]]);
                 if ($framework !== null) {
-                    $reqCount = $reqRepo->count(['complianceFramework' => $framework]);
+                    $reqCount = $reqRepo->count(['framework' => $framework]);
                     $rawCount = $reqCount;
                     $imported = $reqCount > 0;
                 }
@@ -183,7 +183,7 @@ class SampleDataController extends AbstractController
                 return $this->redirectToRoute('admin_sample_data_index');
             }
             $reqCount = $this->em->getRepository(\App\Entity\ComplianceRequirement::class)
-                ->count(['complianceFramework' => $framework]);
+                ->count(['framework' => $framework]);
             try {
                 $this->em->remove($framework);
                 $this->em->flush();

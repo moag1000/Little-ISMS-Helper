@@ -76,7 +76,7 @@ class LoadBsiKompendium2023DeltaCommand
 
             foreach ($requirements as $req) {
                 $existing = $repo->findOneBy([
-                    'complianceFramework' => $framework,
+                    'framework' => $framework,
                     'requirementId' => $req['id'],
                 ]);
 

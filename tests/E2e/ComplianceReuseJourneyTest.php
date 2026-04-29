@@ -135,7 +135,7 @@ final class ComplianceReuseJourneyTest extends KernelTestCase
         // ── Step 2 — Load ISO 27001 framework + 30 implemented + 20 partial ──
         $iso = $this->loadIsoFramework();
         $isoRequirements = $this->em->getRepository(ComplianceRequirement::class)
-            ->findBy(['complianceFramework' => $iso], ['requirementId' => 'ASC']);
+            ->findBy(['framework' => $iso], ['requirementId' => 'ASC']);
         self::assertGreaterThanOrEqual(
             70,
             count($isoRequirements),
@@ -156,7 +156,7 @@ final class ComplianceReuseJourneyTest extends KernelTestCase
         // ── Step 3 — Activate NIS2 framework + wire mappings (ISO27001 → NIS2)
         $nis2 = $this->loadNis2Framework();
         $nis2Requirements = $this->em->getRepository(ComplianceRequirement::class)
-            ->findBy(['complianceFramework' => $nis2], ['requirementId' => 'ASC']);
+            ->findBy(['framework' => $nis2], ['requirementId' => 'ASC']);
         self::assertGreaterThanOrEqual(
             40,
             count($nis2Requirements),
@@ -416,7 +416,7 @@ final class ComplianceReuseJourneyTest extends KernelTestCase
     ): ComplianceRequirementFulfillment {
         /** @var ComplianceRequirementFulfillmentRepository $repo */
         $repo = $this->em->getRepository(ComplianceRequirementFulfillment::class);
-        $existing = $repo->findOneBy(['tenant' => $this->tenant, 'complianceRequirement' => $requirement]);
+        $existing = $repo->findOneBy(['tenant' => $this->tenant, 'requirement' => $requirement]);
         if ($existing instanceof ComplianceRequirementFulfillment) {
             $existing->setFulfillmentPercentage($percentage);
             $existing->setApplicable($applicable);

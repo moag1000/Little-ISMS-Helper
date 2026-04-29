@@ -84,7 +84,7 @@ final class DeltaAssessmentExcelExporter
         ));
 
         $targetRequirements = $this->requirementRepository->findBy(
-            ['complianceFramework' => $targetFramework],
+            ['framework' => $targetFramework],
             ['requirementId' => 'ASC'],
         );
 

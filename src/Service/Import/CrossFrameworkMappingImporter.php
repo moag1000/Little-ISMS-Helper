@@ -139,11 +139,11 @@ final class CrossFrameworkMappingImporter
             }
 
             $srcReq = $this->requirementRepository->findOneBy([
-                'complianceFramework' => $source,
+                'framework' => $source,
                 'requirementId' => $sourceId,
             ]);
             $tgtReq = $this->requirementRepository->findOneBy([
-                'complianceFramework' => $target,
+                'framework' => $target,
                 'requirementId' => $targetId,
             ]);
 

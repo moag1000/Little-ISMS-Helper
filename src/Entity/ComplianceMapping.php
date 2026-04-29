@@ -75,7 +75,7 @@ class ComplianceMapping
     /**
      * Collection of gap items for this mapping
      */
-    #[ORM\OneToMany(targetEntity: MappingGapItem::class, mappedBy: 'complianceMapping', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: MappingGapItem::class, mappedBy: 'mapping', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $gapItems;
 
     /**

@@ -62,7 +62,7 @@ class LoadNis2UmsuCGRequirementsCommand
         foreach ($requirements as $reqData) {
             $existing = $this->entityManager->getRepository(ComplianceRequirement::class)
                 ->findOneBy([
-                    'complianceFramework' => $framework,
+                    'framework' => $framework,
                     'requirementId' => $reqData['id'],
                 ]);
 

@@ -94,7 +94,7 @@ class ComplianceLoaderFixerService
         foreach ($this->map as $code => $entry) {
             $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
             $loaded = $framework !== null
-                ? $this->requirementRepository->count(['complianceFramework' => $framework])
+                ? $this->requirementRepository->count(['framework' => $framework])
                 : 0;
             $rows[] = [
                 'code' => $code,
@@ -208,7 +208,7 @@ class ComplianceLoaderFixerService
         $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
         return $framework === null
             ? 0
-            : $this->requirementRepository->count(['complianceFramework' => $framework]);
+            : $this->requirementRepository->count(['framework' => $framework]);
     }
 
     /**
