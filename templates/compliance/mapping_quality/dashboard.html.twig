@@ -421,6 +421,27 @@
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
+        // Chart.js 4 requires explicit Colors-plugin registration; without it
+        // datasets fall back to black/no-fill (was unrelated in v3 because the
+        // default-color generator was always-on).
+        if (window.Chart && window.Chart.Colors) {
+            Chart.register(Chart.Colors);
+        }
+
+        // Canvas can't parse `var(--token)` strings — resolve to computed
+        // values from :root before passing to Chart.js.
+        const _rootStyle = getComputedStyle(document.documentElement);
+        function _cssVar(name, fallback) {
+            const v = _rootStyle.getPropertyValue(name).trim();
+            return v || fallback;
+        }
+        function _resolveColors(arr) {
+            return arr.map(c => {
+                const m = typeof c === 'string' && c.match(/^var\((--[a-zA-Z0-9-]+)(?:\s*,\s*(.+))?\)$/);
+                return m ? _cssVar(m[1], m[2] || c) : c;
+            });
+        }
+
         // Confidence Distribution Donut Chart
         const confidenceCtx = document.getElementById('confidenceChart');
         if (confidenceCtx) {
@@ -434,16 +455,16 @@
                             {{ quality_stats.medium_confidence }},
                             {{ quality_stats.low_confidence }}
                         ],
-                        backgroundColor: [
+                        backgroundColor: _resolveColors([
                             'var(--success)',
                             'var(--warning)',
                             'var(--danger)'
-                        ],
-                        borderColor: [
+                        ]),
+                        borderColor: _resolveColors([
                             'var(--success)',
                             'var(--warning)',
                             'var(--danger)'
-                        ],
+                        ]),
                         borderWidth: 2
                     }]
                 },
@@ -495,12 +516,12 @@
                 {% endfor %}
             ];
 
-            const backgroundColors = gapLabels.map(label => {
+            const backgroundColors = _resolveColors(gapLabels.map(label => {
                 if (label === 'CRITICAL') return 'var(--danger-strong)';
                 if (label === 'HIGH') return 'var(--danger)';
                 if (label === 'MEDIUM') return 'var(--warning)';
                 return 'var(--fg-3)';
-            });
+            }));
 
             new Chart(gapStatsCtx, {
                 type: 'bar',
@@ -510,7 +531,7 @@
                         label: 'Anzahl Gaps',
                         data: gapCounts,
                         backgroundColor: backgroundColors,
-                        borderColor: backgroundColors.map(c => c.replace('0.8', '1')),
+                        borderColor: backgroundColors,
                         borderWidth: 2
                     }]
                 },

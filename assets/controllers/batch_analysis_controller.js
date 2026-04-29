@@ -47,12 +47,14 @@ export default class extends Controller {
         this.analyzed = 0;
         this.errors = 0;
 
-        // Show progress UI
+        // Show progress UI — using classList because the elements use the
+        // Bootstrap `d-none` utility class, which sets `display:none!important`
+        // and therefore is NOT overridable via inline `style.display = 'block'`.
         if (this.hasProgressTarget) {
-            this.progressTarget.style.display = 'block';
+            this.progressTarget.classList.remove('d-none');
         }
         if (this.hasResultsTarget) {
-            this.resultsTarget.style.display = 'none';
+            this.resultsTarget.classList.add('d-none');
         }
 
         // Calculate total
@@ -70,9 +72,16 @@ export default class extends Controller {
         this.runningValue = false;
     }
 
-    async processBatches(count, force) {
+    async processBatches(count, reanalyze) {
         const isAll = count === 'all';
         let remaining = isAll ? Infinity : parseInt(count);
+        // Offset stays 0 for incremental analysis: the backend filters out
+        // already-analyzed records, so the next batch's "first row" is again
+        // an unanalyzed record. Advancing offset would skip exactly the rows
+        // we just processed (they fall out of the filtered set), causing
+        // "alle analysieren" to miss every other batch_size chunk.
+        // For reanalyze=true the filter doesn't exclude, so offset must
+        // advance to avoid re-processing the same chunk.
         let offset = 0;
 
         while (remaining > 0 && !this.cancelledValue) {
@@ -88,7 +97,8 @@ export default class extends Controller {
                     body: JSON.stringify({
                         limit: batchSize,
                         offset: offset,
-                        force: force
+                        // Backend parameter is `reanalyze`, not `force`.
+                        reanalyze: reanalyze
                     })
                 });
 
@@ -96,12 +106,13 @@ export default class extends Controller {
 
                 if (!result.success) {
                     this.errors++;
-                    this.log('Error: ' + result.message);
+                    this.log('Error: ' + (result.error || result.message || 'unknown error'));
                     break;
                 }
 
                 const processed = result.analyzed || 0;
                 this.analyzed += processed;
+                this.errors += result.errors || 0;
 
                 if (processed === 0) {
                     // No more to process
@@ -111,7 +122,12 @@ export default class extends Controller {
                 if (!isAll) {
                     remaining -= processed;
                 }
-                offset += batchSize;
+
+                // Only advance offset in reanalyze mode (filter doesn't shrink
+                // the result set there). For incremental analysis stay at 0.
+                if (reanalyze) {
+                    offset += batchSize;
+                }
 
                 this.updateProgress();
 
@@ -170,10 +186,10 @@ export default class extends Controller {
 
     showResults() {
         if (this.hasProgressTarget) {
-            this.progressTarget.style.display = 'none';
+            this.progressTarget.classList.add('d-none');
         }
         if (this.hasResultsTarget) {
-            this.resultsTarget.style.display = 'block';
+            this.resultsTarget.classList.remove('d-none');
         }
         if (this.hasResultsMessageTarget) {
             this.resultsMessageTarget.textContent =

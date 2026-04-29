@@ -9,11 +9,15 @@ import {
     LinearScale,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Colors
 } from 'chart.js';
 import { readTokens, applyAuroraDefaults, subscribeToThemeChanges } from '../chart-theme.js';
 
-// Register Chart.js components
+// Register Chart.js components.
+// Colors is REQUIRED in Chart.js 4 — without it datasets default to no fill +
+// black stroke (we hit "alle Charts schwarz" right after the v3 → v4 bump).
+// See https://www.chartjs.org/docs/latest/general/colors.html
 Chart.register(
     ArcElement,
     BarElement,
@@ -23,7 +27,8 @@ Chart.register(
     LinearScale,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    Colors
 );
 
 // FairyAurora v3.0: Aurora-Defaults global anwenden (liest CSS-Vars).
