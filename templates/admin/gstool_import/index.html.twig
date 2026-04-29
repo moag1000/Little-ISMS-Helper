@@ -84,6 +84,41 @@
                         <div class="alert alert-danger mb-0">{{ result.header_error }}</div>
                     </div>
                 {% else %}
+                    <ul class="nav nav-tabs px-3 pt-3" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="tab-assets" data-bs-toggle="tab" data-bs-target="#pane-assets" type="button" role="tab">
+                                {{ 'gstool_import.tab.assets'|trans({}, 'gstool_import') }}
+                                <span class="badge bg-secondary ms-1">{{ result.rows|length }}</span>
+                            </button>
+                        </li>
+                        {% if result.bausteine_rows is defined and result.bausteine_rows|length > 0 %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tab-bausteine" data-bs-toggle="tab" data-bs-target="#pane-bausteine" type="button" role="tab">
+                                {{ 'gstool_import.tab.bausteine'|trans({}, 'gstool_import') }}
+                                <span class="badge bg-secondary ms-1">{{ result.bausteine_rows|length }}</span>
+                            </button>
+                        </li>
+                        {% endif %}
+                        {% if result.massnahmen_rows is defined and result.massnahmen_rows|length > 0 %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tab-massnahmen" data-bs-toggle="tab" data-bs-target="#pane-massnahmen" type="button" role="tab">
+                                {{ 'gstool_import.tab.massnahmen'|trans({}, 'gstool_import') }}
+                                <span class="badge bg-secondary ms-1">{{ result.massnahmen_rows|length }}</span>
+                            </button>
+                        </li>
+                        {% endif %}
+                        {% if result.risiken_rows is defined and result.risiken_rows|length > 0 %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="tab-risiken" data-bs-toggle="tab" data-bs-target="#pane-risiken" type="button" role="tab">
+                                {{ 'gstool_import.tab.risiken'|trans({}, 'gstool_import') }}
+                                <span class="badge bg-secondary ms-1">{{ result.risiken_rows|length }}</span>
+                            </button>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    <div class="tab-content">
+
+                    <div class="tab-pane fade show active" id="pane-assets" role="tabpanel">
                     <div class="table-responsive">
                         <table class="table table-sm mb-0">
                             <thead>
@@ -126,6 +161,147 @@
                             </tbody>
                         </table>
                     </div>
+                    </div>
+
+                    {% if result.bausteine_rows is defined and result.bausteine_rows|length > 0 %}
+                    <div class="tab-pane fade" id="pane-bausteine" role="tabpanel">
+                    <div class="alert alert-info mx-3 mt-3 mb-0 small">
+                        {{ 'gstool_import.bausteine.note'|trans({}, 'gstool_import') }}
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'gstool_import.bausteine.legacy_id'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.bausteine.title_old'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.bausteine.kompendium_2023'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.bausteine.title_new'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.bausteine.zielobjekt'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.bausteine.status'|trans({}, 'gstool_import') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for r in result.bausteine_rows %}
+                                <tr>
+                                    <td><code>{{ r.legacy_id }}</code></td>
+                                    <td class="small">{{ r.title_old ?? '–' }}</td>
+                                    <td>
+                                        {% if r.kompendium_2023_id %}
+                                            <code class="text-success">{{ r.kompendium_2023_id }}</code>
+                                        {% else %}
+                                            <span class="text-danger small">{{ 'gstool_import.bausteine.unmapped'|trans({}, 'gstool_import') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="small">{{ r.title_new ?? '–' }}</td>
+                                    <td><code class="small">{{ r.zielobjekt ?? '–' }}</code></td>
+                                    <td>
+                                        {% set s = r.status %}
+                                        <span class="badge bg-{{ s == 'direct' ? 'success' : s == 'split' ? 'warning' : s == 'merged' ? 'info' : s == 'removed' ? 'danger' : s == 'bcm' ? 'primary' : 'secondary' }}">
+                                            {{ s }}
+                                        </span>
+                                        {% if r.note %}<div class="small text-muted">{{ r.note }}</div>{% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                    {% endif %}
+
+                    {% if result.massnahmen_rows is defined and result.massnahmen_rows|length > 0 %}
+                    <div class="tab-pane fade" id="pane-massnahmen" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'gstool_import.massnahmen.legacy_id'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.massnahmen.titel'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.massnahmen.baustein'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.massnahmen.umsetzungsstatus'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.massnahmen.implementation_status'|trans({}, 'gstool_import') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for r in result.massnahmen_rows %}
+                                <tr>
+                                    <td><code>{{ r.legacy_id }}</code></td>
+                                    <td class="small">{{ r.titel ?? '–' }}</td>
+                                    <td>
+                                        <code>{{ r.baustein_legacy ?? '–' }}</code>
+                                        {% if r.baustein_kompendium_2023 %}
+                                            <span class="text-muted">→</span> <code class="text-success">{{ r.baustein_kompendium_2023 }}</code>
+                                        {% endif %}
+                                    </td>
+                                    <td><code class="small">{{ r.umsetzungsstatus_raw ?? '–' }}</code></td>
+                                    <td>
+                                        {% set s = r.implementation_status %}
+                                        {% if s == 'implemented' %}
+                                            <span class="badge bg-success">{{ s }}</span>
+                                        {% elseif s == 'partially_implemented' %}
+                                            <span class="badge bg-warning">{{ s }}</span>
+                                        {% elseif s == 'not_implemented' %}
+                                            <span class="badge bg-danger">{{ s }}</span>
+                                        {% elseif s == 'not_applicable' %}
+                                            <span class="badge bg-secondary">{{ s }}</span>
+                                        {% else %}
+                                            <span class="text-muted small">unmapped</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                    {% endif %}
+
+                    {% if result.risiken_rows is defined and result.risiken_rows|length > 0 %}
+                    <div class="tab-pane fade" id="pane-risiken" role="tabpanel">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'gstool_import.risiken.legacy_id'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.risiken.titel'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.risiken.haeufigkeit'|trans({}, 'gstool_import') }}</th>
+                                    <th class="text-end">L</th>
+                                    <th>{{ 'gstool_import.risiken.schaden'|trans({}, 'gstool_import') }}</th>
+                                    <th class="text-end">I</th>
+                                    <th class="text-end">{{ 'gstool_import.risiken.score'|trans({}, 'gstool_import') }}</th>
+                                    <th>{{ 'gstool_import.risiken.behandlung'|trans({}, 'gstool_import') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for r in result.risiken_rows %}
+                                <tr>
+                                    <td><code>{{ r.legacy_id }}</code></td>
+                                    <td class="small">{{ r.titel ?? '–' }}</td>
+                                    <td class="small">{{ r.eintrittshaeufigkeit_raw ?? '–' }}</td>
+                                    <td class="text-end"><strong>{{ r.inherent_likelihood ?? '–' }}</strong></td>
+                                    <td class="small">{{ r.schadenshoehe_raw ?? '–' }}</td>
+                                    <td class="text-end"><strong>{{ r.inherent_impact ?? '–' }}</strong></td>
+                                    <td class="text-end">
+                                        {% if r.inherent_risk_score %}
+                                            <span class="badge bg-{{ r.inherent_risk_score >= 13 ? 'danger' : r.inherent_risk_score >= 7 ? 'warning' : 'success' }}">
+                                                {{ r.inherent_risk_score }}
+                                            </span>
+                                        {% else %}–{% endif %}
+                                    </td>
+                                    <td>
+                                        {% if r.treatment_strategy %}
+                                            <span class="badge bg-info">{{ r.treatment_strategy }}</span>
+                                        {% else %}<span class="text-muted small">–</span>{% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                    {% endif %}
+
+                    </div>{# /.tab-content #}
                 {% endif %}
             </div>
         </div>

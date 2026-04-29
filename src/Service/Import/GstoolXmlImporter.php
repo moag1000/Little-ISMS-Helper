@@ -185,7 +185,105 @@ final class GstoolXmlImporter
             $rows[] = $row;
         }
 
-        return ['rows' => $rows, 'summary' => $summary, 'header_error' => null];
+        // Phase 3+4+5 previews — purely informational, no DB touch.
+        $bausteinPreview = $this->previewBausteine($root);
+        $massnahmenPreview = $this->previewMassnahmen($root);
+        $risikenPreview = $this->previewRisiken($root);
+
+        return [
+            'rows' => $rows,
+            'summary' => $summary,
+            'header_error' => null,
+            'bausteine_rows' => $bausteinPreview,
+            'massnahmen_rows' => $massnahmenPreview,
+            'risiken_rows' => $risikenPreview,
+        ];
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function previewBausteine(SimpleXMLElement $root): array
+    {
+        if (!isset($root->bausteine)) {
+            return [];
+        }
+        $rows = [];
+        foreach ($root->bausteine->{'baustein-ref'} as $ref) {
+            $legacy = trim((string) $ref['id']);
+            if ($legacy === '') {
+                continue;
+            }
+            $migration = $this->migrationTable->resolveBaustein($legacy);
+            $rows[] = [
+                'legacy_id' => $legacy,
+                'zielobjekt' => trim((string) $ref['zielobjekt']) ?: null,
+                'kompendium_2023_id' => $migration['to'] ?? null,
+                'title_old' => $migration['title_old'] ?? null,
+                'title_new' => $migration['title_new'] ?? null,
+                'status' => $migration['status'] ?? 'unknown',
+                'note' => $migration['note'] ?? null,
+            ];
+        }
+        return $rows;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function previewMassnahmen(SimpleXMLElement $root): array
+    {
+        if (!isset($root->massnahmen)) {
+            return [];
+        }
+        $rows = [];
+        foreach ($root->massnahmen->massnahme as $m) {
+            $bausteinRef = trim((string) $m['baustein']);
+            $statusRaw = strtolower(trim((string) $m->umsetzungsstatus));
+            $bausteinMigration = $bausteinRef !== '' ? $this->migrationTable->resolveBaustein($bausteinRef) : null;
+            $rows[] = [
+                'legacy_id' => trim((string) $m['id']),
+                'titel' => trim((string) $m->titel) ?: null,
+                'baustein_legacy' => $bausteinRef ?: null,
+                'baustein_kompendium_2023' => $bausteinMigration['to'] ?? null,
+                'umsetzungsstatus_raw' => $statusRaw ?: null,
+                'implementation_status' => self::UMSETZUNGSSTATUS_MAP[$statusRaw] ?? null,
+                'zielobjekt' => trim((string) $m['zielobjekt']) ?: null,
+            ];
+        }
+        return $rows;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function previewRisiken(SimpleXMLElement $root): array
+    {
+        if (!isset($root->risikoanalyse)) {
+            return [];
+        }
+        $rows = [];
+        foreach ($root->risikoanalyse->risiko as $r) {
+            $haeufigkeitRaw = strtolower(trim((string) $r->eintrittshaeufigkeit));
+            $schadenRaw = strtolower(trim((string) $r->schadenshoehe));
+            $behandlungRaw = strtolower(trim((string) $r->risikobehandlung));
+            $likelihood = self::EINTRITTSHAEUFIGKEIT_MAP[$haeufigkeitRaw] ?? null;
+            $impact = self::SCHADENSHOEHE_MAP[$schadenRaw] ?? null;
+            $rows[] = [
+                'legacy_id' => trim((string) $r['id']),
+                'titel' => trim((string) $r->titel) ?: null,
+                'gefaehrdung' => trim((string) $r->gefaehrdung) ?: null,
+                'zielobjekt' => trim((string) $r['zielobjekt']) ?: null,
+                'eintrittshaeufigkeit_raw' => $haeufigkeitRaw ?: null,
+                'inherent_likelihood' => $likelihood,
+                'schadenshoehe_raw' => $schadenRaw ?: null,
+                'inherent_impact' => $impact,
+                'inherent_risk_score' => ($likelihood !== null && $impact !== null) ? $likelihood * $impact : null,
+                'risikobehandlung_raw' => $behandlungRaw ?: null,
+                'treatment_strategy' => self::RISIKOBEHANDLUNG_MAP[$behandlungRaw] ?? null,
+            ];
+        }
+        return $rows;
     }
 
     /**
