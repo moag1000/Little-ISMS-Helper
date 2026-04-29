@@ -231,8 +231,8 @@ class ComplianceMappingSeedController extends AbstractController
             ->select('COUNT(m.id)')
             ->innerJoin('m.sourceRequirement', 'sr')
             ->innerJoin('m.targetRequirement', 'tr')
-            ->where('sr.complianceFramework = :src')
-            ->andWhere('tr.complianceFramework = :tgt')
+            ->where('sr.framework = :src')
+            ->andWhere('tr.framework = :tgt')
             ->setParameter('src', $src)
             ->setParameter('tgt', $tgt);
 

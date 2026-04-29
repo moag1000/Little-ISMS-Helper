@@ -57,7 +57,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('ac')
             ->join('ac.requirement', 'r')
             ->where('ac.audit = :audit')
-            ->andWhere('r.complianceFramework = :framework')
+            ->andWhere('r.framework = :framework')
             ->setParameter('audit', $internalAudit)
             ->setParameter('framework', $complianceFramework)
             ->orderBy('r.requirementId', 'ASC')
@@ -202,7 +202,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
     {
         $items = $this->createQueryBuilder('ac')
             ->join('ac.requirement', 'r')
-            ->join('r.complianceFramework', 'f')
+            ->join('r.framework', 'f')
             ->where('ac.audit = :audit')
             ->setParameter('audit', $internalAudit)
             ->orderBy('f.name', 'ASC')

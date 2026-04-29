@@ -214,7 +214,7 @@ class MappingQualityController extends AbstractController
             ->select('m.confidence AS c, COUNT(m.id) AS n')
             ->join('m.sourceRequirement', 'sr')
             ->join('m.targetRequirement', 'tr')
-            ->where('sr.complianceFramework = :s AND tr.complianceFramework = :t')
+            ->where('sr.framework = :s AND tr.framework = :t')
             ->andWhere("m.lifecycleState != 'deprecated'")
             ->groupBy('m.confidence')
             ->setParameter('s', $source)

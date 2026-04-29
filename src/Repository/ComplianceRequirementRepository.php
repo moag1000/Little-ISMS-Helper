@@ -40,7 +40,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     public function findByFramework(ComplianceFramework $complianceFramework): array
     {
         return $this->createQueryBuilder('cr')
-            ->where('cr.complianceFramework = :framework')
+            ->where('cr.framework = :framework')
             ->setParameter('framework', $complianceFramework)
             ->orderBy('cr.requirementId', 'ASC')
             ->getQuery()
@@ -58,7 +58,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
         // Note: 'applicable' is tracked in ComplianceRequirementFulfillment, not ComplianceRequirement
         // This method returns all requirements - applicability is tenant-specific
         return $this->createQueryBuilder('cr')
-            ->where('cr.complianceFramework = :framework')
+            ->where('cr.framework = :framework')
             ->setParameter('framework', $complianceFramework)
             ->orderBy('cr.requirementId', 'ASC')
             ->getQuery()
@@ -75,7 +75,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     public function findGapsByFramework(ComplianceFramework $complianceFramework, int $maxFulfillment = 75, ?Tenant $tenant = null): array
     {
         $qb = $this->createQueryBuilder('cr')
-            ->where('cr.complianceFramework = :framework')
+            ->where('cr.framework = :framework')
             ->setParameter('framework', $complianceFramework);
 
         if ($tenant !== null) {
@@ -108,7 +108,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
         // Note: fulfillment is tenant-specific (ComplianceRequirementFulfillment)
         // Returning all requirements by framework and priority
         return $this->createQueryBuilder('cr')
-            ->where('cr.complianceFramework = :framework')
+            ->where('cr.framework = :framework')
             ->andWhere('cr.priority = :priority')
             ->setParameter('framework', $complianceFramework)
             ->setParameter('priority', $priority)
@@ -151,7 +151,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
         return [
             'total' => (int) $this->createQueryBuilder('cr')
                 ->select('COUNT(cr.id)')
-                ->where('cr.complianceFramework = :framework')
+                ->where('cr.framework = :framework')
                 ->setParameter('framework', $complianceFramework)
                 ->getQuery()
                 ->getSingleScalarResult(),
@@ -159,7 +159,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
             'applicable' => (int) $this->createQueryBuilder('cr')
                 ->select('COUNT(DISTINCT cr.id)')
                 ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.requirement = cr AND crf.tenant = :tenant')
-                ->where('cr.complianceFramework = :framework')
+                ->where('cr.framework = :framework')
                 ->andWhere('crf.applicable = :applicable')
                 ->setParameter('framework', $complianceFramework)
                 ->setParameter('tenant', $tenant)
@@ -170,7 +170,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
             'fulfilled' => (int) $this->createQueryBuilder('cr')
                 ->select('COUNT(DISTINCT cr.id)')
                 ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.requirement = cr AND crf.tenant = :tenant')
-                ->where('cr.complianceFramework = :framework')
+                ->where('cr.framework = :framework')
                 ->andWhere('crf.applicable = :applicable')
                 ->andWhere('crf.fulfillmentPercentage >= 100')
                 ->setParameter('framework', $complianceFramework)
@@ -182,7 +182,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
             'critical_gaps' => (int) $this->createQueryBuilder('cr')
                 ->select('COUNT(DISTINCT cr.id)')
                 ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.requirement = cr AND crf.tenant = :tenant')
-                ->where('cr.complianceFramework = :framework')
+                ->where('cr.framework = :framework')
                 ->andWhere('crf.applicable = :applicable')
                 ->andWhere('cr.priority = :priority')
                 ->andWhere('crf.fulfillmentPercentage < 100')
@@ -216,7 +216,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
 
         return [
             'total' => $queryBuilder->select('COUNT(cr.id)')
-                ->where('cr.complianceFramework = :framework')
+                ->where('cr.framework = :framework')
                 ->setParameter('framework', $complianceFramework)
                 ->getQuery()
                 ->getSingleScalarResult(),
@@ -224,7 +224,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
             // DEPRECATED: These counts don't reflect tenant-specific applicability
             // Returning total count for all metrics as fallback
             'applicable' => $queryBuilder->select('COUNT(cr.id)')
-                ->where('cr.complianceFramework = :framework')
+                ->where('cr.framework = :framework')
                 ->setParameter('framework', $complianceFramework)
                 ->getQuery()
                 ->getSingleScalarResult(),
@@ -233,7 +233,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
 
             'critical_gaps' => $this->createQueryBuilder('cr')
                 ->select('COUNT(cr.id)')
-                ->where('cr.complianceFramework = :framework')
+                ->where('cr.framework = :framework')
                 ->andWhere('cr.priority = :priority')
                 ->setParameter('framework', $complianceFramework)
                 ->setParameter('priority', 'critical')

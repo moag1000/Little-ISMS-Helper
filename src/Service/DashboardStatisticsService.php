@@ -238,7 +238,7 @@ class DashboardStatisticsService
         $qb->select('COUNT(DISTINCT f.id)')
             ->from(\App\Entity\ComplianceRequirement::class, 'r')
             ->join('r.mappedControls', 'c')
-            ->join('r.complianceFramework', 'f')
+            ->join('r.framework', 'f')
             ->where('c.id = :id')
             ->setParameter('id', $controlId);
         return (int) $qb->getQuery()->getSingleScalarResult();
