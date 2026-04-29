@@ -87,6 +87,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $azureMetadata = null; // Additional Azure metadata
 
+    /** Generic SSO: external subject claim (sub) — unique per provider, not globally. */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $ssoExternalId = null;
+
+    #[ORM\ManyToOne(targetEntity: IdentityProvider::class)]
+    #[ORM\JoinColumn(name: 'sso_provider_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?IdentityProvider $ssoProvider = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeImmutable $createdAt = null;
 
@@ -364,6 +372,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAzureMetadata(?array $azureMetadata): static
     {
         $this->azureMetadata = $azureMetadata;
+        return $this;
+    }
+
+    public function getSsoExternalId(): ?string
+    {
+        return $this->ssoExternalId;
+    }
+
+    public function setSsoExternalId(?string $id): static
+    {
+        $this->ssoExternalId = $id;
+        return $this;
+    }
+
+    public function getSsoProvider(): ?IdentityProvider
+    {
+        return $this->ssoProvider;
+    }
+
+    public function setSsoProvider(?IdentityProvider $provider): static
+    {
+        $this->ssoProvider = $provider;
         return $this;
     }
 

@@ -62,4 +62,16 @@ class IdentityProviderRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['slug' => $slug]);
     }
+
+    /**
+     * Every enabled provider, regardless of tenant. Used by anonymous-login
+     * resolution where the visitor's tenant is not yet known but a configured
+     * email-domain binding may still match a tenant-scoped IdP.
+     *
+     * @return list<IdentityProvider>
+     */
+    public function findAllEnabled(): array
+    {
+        return array_values($this->findBy(['enabled' => true], ['tenant' => 'ASC', 'name' => 'ASC']));
+    }
 }
