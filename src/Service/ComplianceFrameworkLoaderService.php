@@ -28,6 +28,7 @@ use App\Command\LoadCisControlsRequirementsCommand;
 use App\Command\LoadEuAiActRequirementsCommand;
 use App\Command\LoadIso22301RequirementsCommand;
 use App\Command\LoadIso27005RequirementsCommand;
+use App\Command\LoadMrisRequirementsCommand;
 use App\Command\LoadNis2UmsuCGRequirementsCommand;
 use App\Command\LoadNistCsfRequirementsCommand;
 use App\Command\LoadSoc2RequirementsCommand;
@@ -65,6 +66,7 @@ class ComplianceFrameworkLoaderService
         private readonly LoadNis2UmsuCGRequirementsCommand $loadNis2UmsuCGRequirementsCommand,
         private readonly LoadNistCsfRequirementsCommand $loadNistCsfRequirementsCommand,
         private readonly LoadSoc2RequirementsCommand $loadSoc2RequirementsCommand,
+        private readonly LoadMrisRequirementsCommand $loadMrisRequirementsCommand,
     ) {}
 
     /**
@@ -398,6 +400,20 @@ class ComplianceFrameworkLoaderService
                 'icon' => '🇩🇪',
                 'required_modules' => ['compliance', 'controls', 'incidents', 'audit_logging'],
             ],
+            [
+                'code' => 'MRIS-v1.5',
+                'name' => 'MRIS — Mythos-resistente Informationssicherheit v1.5',
+                'description' => 'Open-source Zusatzkatalog auf bestehendem ISO-27001-ISMS für Gen-AI-Bedrohungslage. 13 Mythos-Härtungs-Controls (MHC-01..13). CC BY 4.0 (Peddi 2026). Voraussetzung für mehrere Industry-Baselines (z.B. automotive-tisax-al3).',
+                'industry' => 'all_sectors',
+                'regulatory_body' => 'Independent (Open Standard)',
+                'mandatory' => false,
+                'applicability' => 'conditional',
+                'applicability_condition_key' => 'admin.compliance.applicability.condition.mris',
+                'version' => '1.5',
+                'loaded' => in_array('MRIS-v1.5', $loadedCodes),
+                'icon' => '🛡️',
+                'required_modules' => ['compliance', 'controls'],
+            ],
         ];
     }
 
@@ -430,6 +446,7 @@ class ComplianceFrameworkLoaderService
             'BDSG' => $this->loadBdsgRequirementsCommand,
             'EU-AI-ACT' => $this->loadEuAiActRequirementsCommand,
             'NIS2UMSUCG' => $this->loadNis2UmsuCGRequirementsCommand,
+            'MRIS-v1.5' => $this->loadMrisRequirementsCommand,
             default => null,
         };
 

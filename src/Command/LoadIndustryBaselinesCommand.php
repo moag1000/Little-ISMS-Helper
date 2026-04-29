@@ -1073,7 +1073,7 @@ TXT,
             'industry' => IndustryBaseline::INDUSTRY_CLOUD,
             'source' => IndustryBaseline::SOURCE_COMMUNITY,
             'version' => '1.0',
-            'required_frameworks' => ['ISO27001', 'BSI_C5_2026', 'SOC2'],
+            'required_frameworks' => ['ISO27001', 'BSI-C5-2026', 'SOC2'],
             'recommended_frameworks' => ['ISO27017', 'ISO27018', 'ISO22301', 'GDPR', 'NIS2', 'ISO27701'],
             'fte_days_saved_estimate' => 30.0,
             'preset_risks' => [
