@@ -15,12 +15,12 @@ setup:
     alva:
         busy:
             default: 'Alva kümmert sich gerade darum – einen Moment bitte.'
-            schema: 'Alva baut das Datenbank-Schema auf. Bei großen Datenmengen kann das einige Minuten dauern.'
+            schema: 'Alva baut das Datenbank-Schema auf – ~40 Sekunden auf einer typischen Setup-DB. Bitte das Fenster nicht schließen.'
             restore: 'Alva stellt das Backup wieder her. Bitte das Fenster nicht schließen – das kann mehrere Minuten dauern.'
             repair: 'Alva repariert verwaiste Einträge und setzt die Datenbank zurück – bitte warten.'
             base_data: 'Alva importiert die Stammdaten (Rollen, Framework-Defaults) – einen Moment bitte.'
             sample_data: 'Alva lädt Beispieldaten (Demo-Risiken, -Assets, -Controls) – das dauert ein paar Sekunden.'
-            skip_restore: 'Alva überspringt den Backup-Restore – einen Moment bitte.'
+            skip_restore: 'Alva legt das Datenbank-Schema neu an – ~40 Sekunden Geduld. (Tipp: Ein DB-User mit SUPER-Recht halbiert die Wartezeit.)'
             db_test: 'Alva testet die Datenbank-Verbindung – einen Moment bitte.'
             admin: 'Alva legt den Admin-Benutzer an – einen Moment bitte.'
             frameworks: 'Alva richtet die Compliance-Frameworks ein – kann einige Sekunden dauern.'
