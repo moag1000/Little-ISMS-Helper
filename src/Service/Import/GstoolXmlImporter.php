@@ -48,6 +48,50 @@ final class GstoolXmlImporter
     ];
 
     /**
+     * BSI 200-3 Eintrittshäufigkeit (4-stufig) → Tool Risk.likelihood (1-5).
+     * Wert 3 wird übersprungen (4-stufig BSI → 5-stufig Tool).
+     */
+    public const array EINTRITTSHAEUFIGKEIT_MAP = [
+        'selten'      => 1,
+        'mittel'      => 2,
+        'gelegentlich'=> 2,
+        'haeufig'     => 4,
+        'häufig'      => 4,
+        'sehr haeufig'=> 5,
+        'sehr häufig' => 5,
+        'sehrhaeufig' => 5,
+        'sehrhäufig'  => 5,
+    ];
+
+    /**
+     * BSI 200-3 Schadenshöhe (4-stufig) → Tool Risk.impact (1-5).
+     */
+    public const array SCHADENSHOEHE_MAP = [
+        'vernachlaessigbar' => 1,
+        'vernachlässigbar'  => 1,
+        'begrenzt'          => 2,
+        'betraechtlich'     => 4,
+        'beträchtlich'      => 4,
+        'existenzbedrohend' => 5,
+    ];
+
+    /**
+     * BSI 200-3 Risikobehandlung → Tool Risk.treatmentStrategy.
+     * GSTOOL und Tool nutzen weitgehend identische Begriffe — Mapping ist
+     * kanonisch.
+     */
+    public const array RISIKOBEHANDLUNG_MAP = [
+        'risikovermeidung' => 'Avoid',
+        'risikoreduktion'  => 'Reduce',
+        'risikotransfer'   => 'Transfer',
+        'risikoakzeptanz'  => 'Accept',
+        'avoid'            => 'Avoid',
+        'reduce'           => 'Reduce',
+        'transfer'         => 'Transfer',
+        'accept'           => 'Accept',
+    ];
+
+    /**
      * GSTOOL-Umsetzungsstatus → Tool Control.implementationStatus.
      * The four GSTOOL values (ja/nein/teilweise/entbehrlich) are well
      * known — see BSI IT-Grundschutz-Methodik (BSI 200-2) §8.2.4.
@@ -250,6 +294,11 @@ final class GstoolXmlImporter
                 assetByGstoolId: $assetByGstoolId,
                 session: $session,
             );
+            $this->logRisikoanalyse(
+                root: $rootResult['root'],
+                assetByGstoolId: $assetByGstoolId,
+                session: $session,
+            );
         }
 
         $this->sessionRecorder->closeSession($session, ImportSession::STATUS_COMMITTED);
@@ -429,6 +478,84 @@ final class GstoolXmlImporter
                 errorMessage: $statusMapped === null && $statusRaw !== ''
                     ? sprintf('Unknown Umsetzungsstatus "%s" — expected ja/nein/teilweise/entbehrlich.', $statusRaw)
                     : null,
+            );
+        }
+    }
+
+    /**
+     * Phase 5: log <risikoanalyse>/<risiko> entries with their BSI-200-3
+     * Eintrittshäufigkeit + Schadenshöhe + Risikobehandlung mapping.
+     *
+     * No Risk-entity is created automatically because Risk-Owner-
+     * Zuweisung, RiskAppetite-Vergleich und Treatment-Plan-Erstellung
+     * verlangen Tenant-spezifische Entscheidungen.
+     *
+     * @param array<string, Asset> $assetByGstoolId
+     */
+    private function logRisikoanalyse(SimpleXMLElement $root, array $assetByGstoolId, ImportSession $session): void
+    {
+        if (!isset($root->risikoanalyse)) {
+            return;
+        }
+        $line = 0;
+        foreach ($root->risikoanalyse->risiko as $r) {
+            $line++;
+            $rId = trim((string) $r['id']);
+            $zoId = trim((string) $r['zielobjekt']);
+            $titel = trim((string) $r->titel);
+            $gefaehrdung = trim((string) $r->gefaehrdung);
+            $haeufigkeitRaw = strtolower(trim((string) $r->eintrittshaeufigkeit));
+            $schadenRaw = strtolower(trim((string) $r->schadenshoehe));
+            $behandlungRaw = strtolower(trim((string) $r->risikobehandlung));
+
+            $likelihood = self::EINTRITTSHAEUFIGKEIT_MAP[$haeufigkeitRaw] ?? null;
+            $impact = self::SCHADENSHOEHE_MAP[$schadenRaw] ?? null;
+            $treatment = self::RISIKOBEHANDLUNG_MAP[$behandlungRaw] ?? null;
+            $asset = $assetByGstoolId[$zoId] ?? null;
+
+            $payload = [
+                'legacy_id' => $rId,
+                'titel' => $titel !== '' ? $titel : null,
+                'gefaehrdung' => $gefaehrdung !== '' ? $gefaehrdung : null,
+                'asset_name' => $asset?->getName(),
+                'eintrittshaeufigkeit_raw' => $haeufigkeitRaw !== '' ? $haeufigkeitRaw : null,
+                'inherent_likelihood' => $likelihood,
+                'schadenshoehe_raw' => $schadenRaw !== '' ? $schadenRaw : null,
+                'inherent_impact' => $impact,
+                'inherent_risk_score' => ($likelihood !== null && $impact !== null) ? $likelihood * $impact : null,
+                'risikobehandlung_raw' => $behandlungRaw !== '' ? $behandlungRaw : null,
+                'treatment_strategy' => $treatment,
+            ];
+
+            $errors = [];
+            if ($haeufigkeitRaw !== '' && $likelihood === null) {
+                $errors[] = sprintf('unknown Eintrittshäufigkeit "%s"', $haeufigkeitRaw);
+            }
+            if ($schadenRaw !== '' && $impact === null) {
+                $errors[] = sprintf('unknown Schadenshöhe "%s"', $schadenRaw);
+            }
+            if ($behandlungRaw !== '' && $treatment === null) {
+                $errors[] = sprintf('unknown Risikobehandlung "%s"', $behandlungRaw);
+            }
+
+            $this->sessionRecorder->recordRow(
+                session: $session,
+                lineNumber: 4000 + $line,
+                decision: $errors === [] && $likelihood !== null && $impact !== null
+                    ? ImportRowEvent::DECISION_MERGE
+                    : ImportRowEvent::DECISION_SKIP,
+                targetEntityType: Asset::class,
+                targetEntityId: $asset?->getId(),
+                beforeState: null,
+                afterState: $payload,
+                sourceRowRaw: [
+                    'risiko' => $rId,
+                    'zielobjekt' => $zoId,
+                    'haeufigkeit' => $haeufigkeitRaw,
+                    'schaden' => $schadenRaw,
+                    'behandlung' => $behandlungRaw,
+                ],
+                errorMessage: $errors === [] ? null : implode('; ', $errors),
             );
         }
     }

@@ -81,4 +81,27 @@
       <umsetzungsstatus>entbehrlich</umsetzungsstatus>
     </massnahme>
   </massnahmen>
+  <risikoanalyse>
+    <risiko id="R-001" zielobjekt="ZO-001">
+      <titel>Ausfall des Webservers</titel>
+      <gefaehrdung>G 0.18 Fehlplanung oder fehlende Anpassung</gefaehrdung>
+      <eintrittshaeufigkeit>mittel</eintrittshaeufigkeit>
+      <schadenshoehe>beträchtlich</schadenshoehe>
+      <risikobehandlung>Risikoreduktion</risikobehandlung>
+    </risiko>
+    <risiko id="R-002" zielobjekt="ZO-002">
+      <titel>Datenleck CRM</titel>
+      <gefaehrdung>G 0.14 Ausspähen von Informationen</gefaehrdung>
+      <eintrittshaeufigkeit>selten</eintrittshaeufigkeit>
+      <schadenshoehe>existenzbedrohend</schadenshoehe>
+      <risikobehandlung>Risikotransfer</risikobehandlung>
+    </risiko>
+    <risiko id="R-003" zielobjekt="ZO-003">
+      <titel>Stromausfall RZ</titel>
+      <gefaehrdung>G 0.8 Ausfall oder Störung der Stromversorgung</gefaehrdung>
+      <eintrittshaeufigkeit>sehr häufig</eintrittshaeufigkeit>
+      <schadenshoehe>vernachlässigbar</schadenshoehe>
+      <risikobehandlung>Risikoakzeptanz</risikobehandlung>
+    </risiko>
+  </risikoanalyse>
 </gstool-export>
