@@ -55,4 +55,30 @@
     <abhaengigkeit von="ZO-001" zu="ZO-004"/>
     <abhaengigkeit von="ZO-002" zu="ZO-001"/>
   </modellierung>
+  <bausteine>
+    <baustein-ref id="B 1.0" zielobjekt="ZO-001"/>
+    <baustein-ref id="B 1.4" zielobjekt="ZO-001"/>
+    <baustein-ref id="B 3.101" zielobjekt="ZO-001"/>
+    <baustein-ref id="B 2.4" zielobjekt="ZO-003"/>
+    <baustein-ref id="B 5.21" zielobjekt="ZO-002"/>
+    <baustein-ref id="B 9.99" zielobjekt="ZO-001"/>
+  </bausteine>
+  <massnahmen>
+    <massnahme id="M 2.1" baustein="B 1.0" zielobjekt="ZO-001">
+      <titel>Festlegung von Verantwortlichkeiten</titel>
+      <umsetzungsstatus>ja</umsetzungsstatus>
+    </massnahme>
+    <massnahme id="M 2.2" baustein="B 1.4" zielobjekt="ZO-001">
+      <titel>Datensicherungskonzept erstellen</titel>
+      <umsetzungsstatus>teilweise</umsetzungsstatus>
+    </massnahme>
+    <massnahme id="M 2.3" baustein="B 3.101" zielobjekt="ZO-001">
+      <titel>Servervalidierung</titel>
+      <umsetzungsstatus>nein</umsetzungsstatus>
+    </massnahme>
+    <massnahme id="M 5.99" baustein="B 9.99" zielobjekt="ZO-001">
+      <titel>Test-unbekannter Baustein</titel>
+      <umsetzungsstatus>entbehrlich</umsetzungsstatus>
+    </massnahme>
+  </massnahmen>
 </gstool-export>
