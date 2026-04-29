@@ -1,0 +1,97 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Service\Sso;
+
+use App\Entity\IdentityProvider;
+use App\Entity\Tenant;
+use App\Repository\IdentityProviderRepository;
+use App\Service\TenantContext;
+
+/**
+ * Runtime registry for active identity providers.
+ *
+ * Resolves the visible provider list for a request: global IdPs are visible
+ * to everyone; tenant-scoped IdPs are only visible inside their tenant.
+ * Domain-binding rules filter further when an email is known.
+ */
+final class SsoProviderRegistry
+{
+    public function __construct(
+        private readonly IdentityProviderRepository $repo,
+        private readonly TenantContext $tenantContext,
+    ) {
+    }
+
+    /**
+     * @return list<IdentityProvider>
+     */
+    public function getEnabledForCurrentTenant(): array
+    {
+        return $this->repo->findEnabledForTenant($this->tenantContext->getCurrentTenant());
+    }
+
+    /**
+     * Providers selectable on a login screen given an optional email hint.
+     *
+     * Filtering:
+     *  - domain mode "disabled" → always show
+     *  - domain mode "optional" → show if list empty OR email matches OR no email yet
+     *  - domain mode "enforce"  → only show if email is provided AND matches
+     *
+     * @return list<IdentityProvider>
+     */
+    public function getLoginButtons(?Tenant $tenant, ?string $emailHint = null): array
+    {
+        $providers = $this->repo->findEnabledForTenant($tenant);
+        $out = [];
+        foreach ($providers as $p) {
+            $mode = $p->getDomainBindingMode();
+            if ($mode === IdentityProvider::DOMAIN_MODE_DISABLED) {
+                $out[] = $p;
+                continue;
+            }
+            if ($p->getDomainBindings() === []) {
+                if ($mode === IdentityProvider::DOMAIN_MODE_ENFORCE) {
+                    continue;
+                }
+                $out[] = $p;
+                continue;
+            }
+            if ($emailHint === null || $emailHint === '') {
+                if ($mode === IdentityProvider::DOMAIN_MODE_ENFORCE) {
+                    continue;
+                }
+                $out[] = $p;
+                continue;
+            }
+            if ($p->matchesEmailDomain($emailHint)) {
+                $out[] = $p;
+            }
+        }
+
+        return $out;
+    }
+
+    /**
+     * Returns the IdP an enforced-binding email MUST use, if any.
+     */
+    public function findEnforcedProviderForEmail(?Tenant $tenant, string $email): ?IdentityProvider
+    {
+        foreach ($this->repo->findEnabledForTenant($tenant) as $p) {
+            if ($p->getDomainBindingMode() === IdentityProvider::DOMAIN_MODE_ENFORCE
+                && $p->matchesEmailDomain($email)
+            ) {
+                return $p;
+            }
+        }
+
+        return null;
+    }
+
+    public function findOneBySlugForTenant(string $slug, ?Tenant $tenant): ?IdentityProvider
+    {
+        return $this->repo->findOneBySlugForTenant($slug, $tenant);
+    }
+}
