@@ -177,6 +177,38 @@ XML);
     }
 
     #[Test]
+    public function testApplyResolvesModellierungToDependsOn(): void
+    {
+        $this->importer->apply($this->fixturePath, $this->tenant, null, 'sample.xml');
+
+        $webserver = $this->assetRepository->findOneBy([
+            'tenant' => $this->tenant,
+            'name' => 'Webserver-Production',
+        ]);
+        $room = $this->assetRepository->findOneBy([
+            'tenant' => $this->tenant,
+            'name' => 'Server-Raum-A',
+        ]);
+        $admin = $this->assetRepository->findOneBy([
+            'tenant' => $this->tenant,
+            'name' => 'Administrator',
+        ]);
+        $crm = $this->assetRepository->findOneBy([
+            'tenant' => $this->tenant,
+            'name' => 'Customer-CRM',
+        ]);
+
+        $webserverDeps = $webserver->getDependsOn()->toArray();
+        self::assertContains($room, $webserverDeps);
+        self::assertContains($admin, $webserverDeps);
+        self::assertCount(2, $webserverDeps);
+
+        $crmDeps = $crm->getDependsOn()->toArray();
+        self::assertContains($webserver, $crmDeps);
+        self::assertCount(1, $crmDeps);
+    }
+
+    #[Test]
     public function testRejectsWrongRootElement(): void
     {
         $tmp = tempnam(sys_get_temp_dir(), 'gstool-test-');
