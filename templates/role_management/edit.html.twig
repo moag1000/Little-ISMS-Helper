@@ -41,7 +41,7 @@
                 'sections': {
                     'basic_info': {
                         'label': 'role_management.section.basic_info'|trans({}, 'role_management'),
-                        'fields': ['name', 'description'] ~ (not role.systemRole ? ['isSystemRole'] : [])
+                        'fields': ['name', 'description']|merge(not role.systemRole ? ['isSystemRole'] : [])
                     },
                     'permissions': {
                         'label': 'role_management.section.permissions'|trans({}, 'role_management'),
