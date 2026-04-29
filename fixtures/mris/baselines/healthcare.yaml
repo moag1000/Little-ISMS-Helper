@@ -1,0 +1,56 @@
+schema_version: '1.0'
+baseline:
+  id: 'healthcare-provider'
+  name: 'Healthcare Provider (Krankenhaus / MVZ / MDV)'
+  industry: 'healthcare'
+  description: |
+    Pre-Konfiguration für Gesundheitseinrichtungen — Krankenhäuser,
+    Medizinische Versorgungszentren (MVZ), Medizinische Dienstleister
+    (MDV). Anker: KHZG (KritischeKrankenhausverordnung), KRITIS § 8a
+    BSIG (ab 30.000 Behandlungsfälle/Jahr), MDR (für Medizinprodukte),
+    NIS2 Annex I "Gesundheit", DSGVO Art. 9 (Gesundheitsdaten = besondere
+    Kategorie). 24/7-Verfügbarkeit ist Patientensicherheit.
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Klinik-IT-Praxis'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: defined
+      reason: 'PQC-Strategie für Patienten-Daten — Aufbewahrungsfristen 30 Jahre, Quantum-Risiko real.'
+    MHC-02:
+      target: defined
+      reason: 'SBOM für Medizinprodukte (MDR Art. 16) + Klinik-Kern-Stack. KIS/RIS/PACS-Lieferanten haftbar.'
+    MHC-03:
+      target: managed
+      reason: 'Phishing-resistente MFA für Admin + Ärzte/Pflege mit Privileged-Access. Ransomware-Top-Vector.'
+    MHC-04:
+      target: defined
+      reason: 'Workload-Identity für KIS-Microservices + DICOM/HL7-Integrationsschicht.'
+    MHC-05:
+      target: managed
+      reason: 'Behavioural Detection Pflicht — Ransomware-Welle 2024/25 traf gezielt Kliniken.'
+    MHC-06:
+      target: managed
+      reason: 'Endpoint-Härtung Pflicht — medizinische Workstations, Tablets am Bett, OP-Steuerung.'
+    MHC-07:
+      target: defined
+      reason: 'Multi-Tenancy meist nur intern (Stationen/Fachbereiche) — RBAC + Audit-Trail Pflicht.'
+    MHC-08:
+      target: managed
+      reason: 'Immutable Backups + DR-Test halbjährlich. RTO < 4h für Notaufnahme/OP/Intensiv.'
+    MHC-09:
+      target: managed
+      reason: 'KEV-Patch-Latency < 7 Tage für medizinische IT — KHZG-Audit-Frage.'
+    MHC-10:
+      target: defined
+      reason: 'CCM für KRITIS-Nachweise (alle 2 Jahre). Policy-as-Code für Standard-Klinik-Stack.'
+    MHC-11:
+      target: managed
+      reason: 'IR + 24/7 Bereitschaft Pflicht. Meldepflicht NIS2 Art. 23 (24h/72h/30d).'
+    MHC-12:
+      target: defined
+      reason: 'Pen-Test KRITIS-pflichtig. TLPT bei Verbund-Strukturen (Konzern-Klinikum).'
+    MHC-13:
+      target: defined
+      reason: 'AI-Agent-Governance für KIS-Module mit AI-Diagnose-Unterstützung — MDR-relevant.'

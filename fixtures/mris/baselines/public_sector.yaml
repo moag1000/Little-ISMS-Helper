@@ -1,0 +1,55 @@
+schema_version: '1.0'
+baseline:
+  id: 'public-sector'
+  name: 'Public Sector / Behörde / Kommune'
+  industry: 'public_sector'
+  description: |
+    Pre-Konfiguration für öffentliche Verwaltung — Bundesbehörden, Länder,
+    kommunale Verwaltung, kommunale Eigenbetriebe. Anker: BSI Mindeststandard
+    (Technische Richtlinien), IT-Grundschutz Standard-Absicherung, OZG
+    (Online-Zugangs-Gesetz), NIS2 Annex II "Öffentliche Verwaltung",
+    NIS2UmsuCG (deutsche Umsetzung ab 2026), eIDAS für Authentifizierung.
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Public-Sector-IT'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: defined
+      reason: 'PQC-Strategie BSI-TR-02102 + BSI Migrations-Roadmap PQC. eIDAS-Signaturen langlebig.'
+    MHC-02:
+      target: defined
+      reason: 'SBOM für Eigenentwicklungen + Pflicht-Kriterium öffentliche Beschaffung (UfAB). Nachhaltige Software 2026.'
+    MHC-03:
+      target: managed
+      reason: 'Phishing-resistente MFA für Verwaltungs-Accounts — Behörden Ransomware-Top-Ziel 2024/25.'
+    MHC-04:
+      target: initial
+      reason: 'Workload-Identity meist später nach Cloud-Strategie. Bund-API-Hub als Vorbild.'
+    MHC-05:
+      target: defined
+      reason: 'Behavioural Detection im Verwaltungsnetz. CERT-Bund Anbindung Pflicht für KRITIS-Verwaltung.'
+    MHC-06:
+      target: defined
+      reason: 'Endpoint-Härtung + EDR. BSI-Mindeststandard für Endpunkte BSI-TR-03182.'
+    MHC-07:
+      target: initial
+      reason: 'Mehr-Mandanten-Trennung selten — interne Fachverfahren-Trennung über Berechtigungen reicht meist.'
+    MHC-08:
+      target: defined
+      reason: 'Immutable Backups + Datenschutz-konform (DSGVO Art. 32). Ransomware-Resilienz politisch hoch sichtbar.'
+    MHC-09:
+      target: defined
+      reason: 'KEV-Patch-Latency < 14 Tage für Verwaltungs-Stack. CERT-Bund-Warnungen einarbeiten.'
+    MHC-10:
+      target: defined
+      reason: 'CCM via BSI-Mindeststandard-Selbstauskunft + IT-Grundschutz-Check zwingend.'
+    MHC-11:
+      target: managed
+      reason: 'IR + Meldepflicht NIS2UmsuCG, BSI als Aufsichtsbehörde. 24h/72h/30d-Reporting.'
+    MHC-12:
+      target: initial
+      reason: 'Pen-Test bei kritischen Fachverfahren (KFZ-Zulassung, Meldewesen, Sozialhilfe). TLPT überzogen.'
+    MHC-13:
+      target: defined
+      reason: 'AI-Agent-Governance — KI-Bots in Bürger-Service (Chat-Tools) bedürfen DSFA + Governance-Doku.'
