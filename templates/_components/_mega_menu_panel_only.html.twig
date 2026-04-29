@@ -332,6 +332,13 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.management_reviews'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        <li><a href="{{ path('app_certification_bundle_index') }}" class="{% if current_route starts with 'app_certification_bundle_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.certification_bundle'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.certification_bundle'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
                     </ul>
                 </div>
                 <div class="mega-menu-section">

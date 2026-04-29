@@ -1,0 +1,158 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% trans_default_domain 'evidence' %}
+
+{% block title %}{{ 'evidence.coverage.title'|trans({}, 'evidence') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dashboard'|trans({}, 'nav'), url: path('app_dashboard') },
+            { label: 'evidence.title'|trans({}, 'evidence'), url: path('app_evidence_index') },
+            { label: 'evidence.coverage.title'|trans({}, 'evidence') }
+        ]
+    } %}
+</div>
+
+<div class="page-header">
+    <div>
+        <h1><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'evidence.coverage.title'|trans({}, 'evidence') }}</h1>
+        <p class="text-muted">{{ 'evidence.coverage.subtitle'|trans({}, 'evidence') }}</p>
+    </div>
+    <div class="button-group">
+        <a href="{{ path('app_evidence_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+        </a>
+    </div>
+</div>
+
+{# Summary Cards #}
+<div class="row mb-4">
+    <div class="col-md-3">
+        {{ _fa_feature_card.render({
+            label: 'evidence.coverage.total_controls'|trans({}, 'evidence'),
+            value: coverage.total_controls,
+            variant: 'primary',
+            icon: 'shield-lock'
+        }) }}
+    </div>
+    <div class="col-md-3">
+        {{ _fa_feature_card.render({
+            label: 'evidence.coverage.with_evidence'|trans({}, 'evidence'),
+            value: coverage.controls_with_evidence,
+            variant: 'success',
+            icon: 'check-circle'
+        }) }}
+    </div>
+    <div class="col-md-3">
+        {{ _fa_feature_card.render({
+            label: 'evidence.coverage.without_evidence'|trans({}, 'evidence'),
+            value: coverage.total_controls - coverage.controls_with_evidence,
+            variant: (coverage.total_controls - coverage.controls_with_evidence) == 0 ? 'success' : 'danger',
+            icon: 'x-circle'
+        }) }}
+    </div>
+    <div class="col-md-3">
+        {{ _fa_feature_card.render({
+            label: 'evidence.coverage.coverage_percent'|trans({}, 'evidence'),
+            value: coverage.coverage_percent,
+            unit: '%',
+            variant: coverage.coverage_percent >= 80 ? 'success' : (coverage.coverage_percent >= 50 ? 'warning' : 'danger'),
+            icon: 'pie-chart-fill'
+        }) }}
+    </div>
+</div>
+
+{# Coverage Table #}
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'evidence.coverage.control_list'|trans({}, 'evidence') }}</h2>
+            <div>
+                <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" id="toggle-missing"
+                        onclick="toggleMissing()">
+                    <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'evidence.coverage.missing_only'|trans({}, 'evidence') }}
+                </button>
+            </div>
+        </div>
+    {% endblock %}
+    {% block card_body %}
+        {% embed '_components/_table.html.twig' with {
+            'class': 'table-sm',
+            'responsive': true,
+            'noMargin': true
+        } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col">{{ 'evidence.table.control_id'|trans({}, 'evidence') }}</th>
+                    <th scope="col">{{ 'evidence.table.control_name'|trans({}, 'evidence') }}</th>
+                    <th scope="col">{{ 'evidence.table.evidence_count'|trans({}, 'evidence') }}</th>
+                    <th scope="col">{{ 'evidence.table.status'|trans({}, 'evidence') }}</th>
+                    <th scope="col">{{ 'evidence.table.actions'|trans({}, 'evidence') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for item in controlCoverage %}
+                <tr class="evidence-row {{ item.hasEvidence ? 'has-evidence' : 'missing-evidence' }}">
+                    <td>
+                        <a href="{{ path('app_soa_show', {id: item.control.id}) }}">{{ item.control.controlId }}</a>
+                    </td>
+                    <td>{{ item.control.name }}</td>
+                    <td>
+                        {% if item.evidenceCount > 0 %}
+                            {% include '_components/_badge.html.twig' with { variant: 'success', content: item.evidenceCount } %}
+                        {% else %}
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: '0' } %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item.hasEvidence %}
+                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'evidence.status.has_evidence'|trans({}, 'evidence') } %}
+                        {% else %}
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'evidence.status.missing'|trans({}, 'evidence') } %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_soa_show', {id: item.control.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                            <i class="fa-icon fa-icon--ui-view" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
+    {% endblock %}
+{% endembed %}
+
+<script>
+    let showMissingOnly = false;
+    function toggleMissing() {
+        showMissingOnly = !showMissingOnly;
+        const rows = document.querySelectorAll('.evidence-row');
+        const btn = document.getElementById('toggle-missing');
+        rows.forEach(function(row) {
+            if (showMissingOnly && row.classList.contains('has-evidence')) {
+                row.style.display = 'none';
+            } else {
+                row.style.display = '';
+            }
+        });
+        btn.classList.toggle('fa-cyber-btn--primary', showMissingOnly);
+        btn.classList.toggle('fa-cyber-btn--ghost', !showMissingOnly);
+    }
+</script>
+
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-xl);
+}
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+</style>
+{% endblock %}

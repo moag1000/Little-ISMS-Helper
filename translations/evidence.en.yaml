@@ -1,0 +1,56 @@
+evidence:
+    title: 'Evidence Documents'
+    subtitle: 'Evidence management for ISO 27001 audit preparation'
+    upload: 'Upload Evidence'
+    upload_success: 'Evidence uploaded and linked successfully.'
+    upload_hint: 'Max. 10 MB. Allowed formats: PDF, Office, images, text, ZIP.'
+    link: 'Link Existing Document'
+    unlink: 'Unlink'
+    unlink_confirm: 'Are you sure you want to unlink this evidence document?'
+    recent_uploads: 'Recent Uploads'
+    coverage:
+        title: 'Evidence Coverage'
+        subtitle: 'Evidence coverage overview for all ISO 27001 controls'
+        total_controls: 'Total Controls'
+        with_evidence: 'With Evidence'
+        without_evidence: 'Without Evidence'
+        coverage_percent: 'Coverage'
+        missing_only: 'Show missing only'
+        control_list: 'Control Overview'
+    kpi:
+        total_documents: 'Evidence Documents'
+        controls_covered: 'Controls Covered'
+        coverage: 'Coverage Rate'
+        gaps: 'Missing Evidence'
+    status:
+        has_evidence: 'Evidence available'
+        missing: 'Evidence missing'
+    widget:
+        title: 'Evidence'
+        empty: 'No evidence documents linked yet.'
+        upload_here: 'Upload evidence here'
+    field:
+        entity_type: 'Entity Type'
+        entity_id: 'Entity ID'
+        file: 'File'
+        select_type: 'Select type'
+    entity:
+        control: 'Control'
+        requirement: 'Compliance Requirement'
+        risk_treatment_plan: 'Risk Treatment Plan'
+    table:
+        filename: 'Filename'
+        entity: 'Linked To'
+        size: 'Size'
+        uploaded_by: 'Uploaded By'
+        uploaded_at: 'Uploaded At'
+        control_id: 'Control ID'
+        control_name: 'Control Name'
+        evidence_count: 'Evidence Count'
+        status: 'Status'
+        actions: 'Actions'
+    error:
+        no_file: 'No file selected.'
+        missing_entity: 'Entity type and ID are required.'
+    empty:
+        no_documents: 'No evidence documents yet.'

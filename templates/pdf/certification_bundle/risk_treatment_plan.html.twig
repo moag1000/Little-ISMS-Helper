@@ -1,0 +1,108 @@
+{% extends 'pdf/_base_document.html.twig' %}
+
+{% block document_type %}Risk Treatment Plan{% endblock %}
+{% block document_id %}DOC-CERT-RTP{% endblock %}
+{% block document_title %}Risk Treatment Plan{% endblock %}
+{% block document_version %}{{ version }}{% endblock %}
+{% block document_status_class %}approved{% endblock %}
+{% block document_status %}GENERATED{% endblock %}
+{% block classification_class %}confidential{% endblock %}
+{% block document_classification %}CONFIDENTIAL{% endblock %}
+{% block organization_name %}{{ tenant_name }}{% endblock %}
+{% block header_left %}{{ tenant_name }}{% endblock %}
+{% block header_center %}Risk Treatment Plan{% endblock %}
+{% block header_right %}CONFIDENTIAL{% endblock %}
+{% block footer_left %}DOC-CERT-RTP | Version {{ version }}{% endblock %}
+{% block footer_center %}{{ tenant_name }}{% endblock %}
+{% block footer_version %}{{ version }}{% endblock %}
+{% block created_date %}{{ generated_at|date('d.m.Y') }}{% endblock %}
+{% block modified_date %}{{ generated_at|date('d.m.Y H:i') }}{% endblock %}
+
+{% block custom_styles %}
+    .risk-critical { color: #dc2626; font-weight: bold; }
+    .risk-high { color: #f97316; font-weight: bold; }
+    .risk-medium { color: #eab308; }
+    .risk-low { color: #22c55e; }
+{% endblock %}
+
+{% block document_content %}
+<h1>Risk Treatment Plan</h1>
+<p class="text-muted">Generated: {{ generated_at|date('d.m.Y H:i') }} | Organization: {{ tenant_name }}</p>
+<p>Total risks: <strong>{{ risks|length }}</strong> | Active treatment plans: <strong>{{ treatment_plans|length }}</strong></p>
+
+<h2>Risk Register with Treatment Status</h2>
+
+{% if risks|length == 0 %}
+    <p class="text-muted">No risks have been registered.</p>
+{% else %}
+<table>
+    <thead>
+        <tr>
+            <th scope="col" style="width: 5%;">ID</th>
+            <th scope="col" style="width: 18%;">Title</th>
+            <th scope="col" style="width: 10%;">Treatment</th>
+            <th scope="col" style="width: 8%;">Inherent</th>
+            <th scope="col" style="width: 8%;">Residual</th>
+            <th scope="col" style="width: 8%;">Status</th>
+            <th scope="col" style="width: 13%;">Owner</th>
+            <th scope="col" style="width: 10%;">Review Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for risk in risks %}
+        {% set score = risk.riskScore %}
+        {% set residual = risk.residualRiskLevel %}
+        {% set level = score >= 20 ? 'critical' : (score >= 12 ? 'high' : (score >= 6 ? 'medium' : 'low')) %}
+        {% set residualLevel = residual >= 20 ? 'critical' : (residual >= 12 ? 'high' : (residual >= 6 ? 'medium' : 'low')) %}
+        <tr>
+            <td>{{ risk.id }}</td>
+            <td>{{ risk.title }}</td>
+            <td>{{ risk.treatmentStrategy ? risk.treatmentStrategy.value : '-' }}</td>
+            <td class="risk-{{ level }}">{{ score }}</td>
+            <td class="risk-{{ residualLevel }}">{{ residual }}</td>
+            <td>{{ risk.status ? risk.status.value : '-' }}</td>
+            <td>{{ risk.riskOwnerName ?? '-' }}</td>
+            <td>{{ risk.reviewDate ? risk.reviewDate|date('d.m.Y') : '-' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% if treatment_plans|length > 0 %}
+<div class="page-break"></div>
+<h2>Active Treatment Plans</h2>
+<table>
+    <thead>
+        <tr>
+            <th scope="col" style="width: 20%;">Title</th>
+            <th scope="col" style="width: 15%;">Related Risk</th>
+            <th scope="col" style="width: 10%;">Priority</th>
+            <th scope="col" style="width: 10%;">Status</th>
+            <th scope="col" style="width: 8%;">Progress</th>
+            <th scope="col" style="width: 12%;">Responsible</th>
+            <th scope="col" style="width: 12%;">Target Date</th>
+            <th scope="col" style="width: 8%;">Budget</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for plan in treatment_plans %}
+        <tr>
+            <td>{{ plan.title }}</td>
+            <td>{{ plan.risk ? plan.risk.title : '-' }}</td>
+            <td>
+                <span class="{% if plan.priority == 'critical' %}risk-critical{% elseif plan.priority == 'high' %}risk-high{% else %}risk-medium{% endif %}">
+                    {{ plan.priority|upper }}
+                </span>
+            </td>
+            <td>{{ plan.status|replace({'_': ' '})|capitalize }}</td>
+            <td>{{ plan.completionPercentage }}%</td>
+            <td>{{ plan.responsiblePersonName ?? '-' }}</td>
+            <td>{{ plan.targetCompletionDate ? plan.targetCompletionDate|date('d.m.Y') : '-' }}</td>
+            <td>{{ plan.budget ?? '-' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

@@ -215,12 +215,28 @@ class Control
     #[MaxDepth(1)]
     private Collection $trainings;
 
+    /**
+     * Evidence documents linked to this control (ISO 27001 Clause 7.5).
+     *
+     * @var Collection<int, Document>
+     */
+    #[ORM\ManyToMany(targetEntity: Document::class)]
+    #[ORM\JoinTable(
+        name: 'control_evidence',
+        joinColumns: [new ORM\JoinColumn(onDelete: 'CASCADE')],
+        inverseJoinColumns: [new ORM\JoinColumn(onDelete: 'CASCADE')]
+    )]
+    #[Groups(['control:read'])]
+    #[MaxDepth(1)]
+    private Collection $evidenceDocuments;
+
     public function __construct()
     {
         $this->risks = new ArrayCollection();
         $this->incidents = new ArrayCollection();
         $this->protectedAssets = new ArrayCollection();
         $this->trainings = new ArrayCollection();
+        $this->evidenceDocuments = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -720,6 +736,28 @@ class Control
     public function setEssentialForSmallBusiness(bool $essentialForSmallBusiness): static
     {
         $this->essentialForSmallBusiness = $essentialForSmallBusiness;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getEvidenceDocuments(): Collection
+    {
+        return $this->evidenceDocuments;
+    }
+
+    public function addEvidenceDocument(Document $document): static
+    {
+        if (!$this->evidenceDocuments->contains($document)) {
+            $this->evidenceDocuments->add($document);
+        }
+        return $this;
+    }
+
+    public function removeEvidenceDocument(Document $document): static
+    {
+        $this->evidenceDocuments->removeElement($document);
         return $this;
     }
 
