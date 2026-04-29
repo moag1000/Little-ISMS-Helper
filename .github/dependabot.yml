@@ -1,0 +1,90 @@
+# Dependabot config — automated dependency PRs
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # PHP dependencies via Composer
+  - package-ecosystem: composer
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Berlin
+    open-pull-requests-limit: 5
+    groups:
+      symfony:
+        patterns:
+          - "symfony/*"
+        update-types:
+          - patch
+          - minor
+      doctrine:
+        patterns:
+          - "doctrine/*"
+        update-types:
+          - patch
+          - minor
+      twig:
+        patterns:
+          - "twig/*"
+        update-types:
+          - patch
+          - minor
+    labels:
+      - dependencies
+      - composer
+    commit-message:
+      prefix: chore(deps)
+      include: scope
+
+  # JavaScript via importmap (asset-mapper)
+  # NOTE: Dependabot does not directly support importmap.php; the underlying
+  # ecosystem npm covers most JSDelivr/JSPM-served packages our importmap
+  # references, so monitoring npm catches the same upstreams.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:30"
+      timezone: Europe/Berlin
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - javascript
+    commit-message:
+      prefix: chore(deps)
+      include: scope
+
+  # GitHub Actions versions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:45"
+      timezone: Europe/Berlin
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: chore(ci)
+      include: scope
+
+  # Docker base images in Dockerfile (php:8.4-fpm-trixie etc.)
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:00"
+      timezone: Europe/Berlin
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: chore(docker)
+      include: scope
