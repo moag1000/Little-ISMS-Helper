@@ -274,6 +274,44 @@ XML);
     }
 
     #[Test]
+    public function testApplyLogsRisikoanalyseWithBsi200_3Mapping(): void
+    {
+        $result = $this->importer->apply($this->fixturePath, $this->tenant, null, 'sample.xml');
+        self::assertNull($result['header_error']);
+
+        $events = $this->em->getRepository(\App\Entity\ImportRowEvent::class)
+            ->findBy(['session' => $result['session_id']]);
+        $risikoEvents = array_filter(
+            $events,
+            static fn ($e) => $e->getLineNumber() >= 4000 && $e->getLineNumber() < 5000,
+        );
+        self::assertCount(3, $risikoEvents);
+
+        $byId = [];
+        foreach ($risikoEvents as $e) {
+            $payload = json_decode((string) $e->getAfterState(), true);
+            $byId[$payload['legacy_id']] = $payload;
+        }
+
+        // R-001: mittel × beträchtlich = 2 × 4 = 8
+        self::assertSame(2, $byId['R-001']['inherent_likelihood']);
+        self::assertSame(4, $byId['R-001']['inherent_impact']);
+        self::assertSame(8, $byId['R-001']['inherent_risk_score']);
+        self::assertSame('Reduce', $byId['R-001']['treatment_strategy']);
+
+        // R-002: selten × existenzbedrohend = 1 × 5 = 5
+        self::assertSame(1, $byId['R-002']['inherent_likelihood']);
+        self::assertSame(5, $byId['R-002']['inherent_impact']);
+        self::assertSame(5, $byId['R-002']['inherent_risk_score']);
+        self::assertSame('Transfer', $byId['R-002']['treatment_strategy']);
+
+        // R-003: sehr häufig × vernachlässigbar = 5 × 1 = 5
+        self::assertSame(5, $byId['R-003']['inherent_likelihood']);
+        self::assertSame(1, $byId['R-003']['inherent_impact']);
+        self::assertSame('Accept', $byId['R-003']['treatment_strategy']);
+    }
+
+    #[Test]
     public function testRejectsWrongRootElement(): void
     {
         $tmp = tempnam(sys_get_temp_dir(), 'gstool-test-');
