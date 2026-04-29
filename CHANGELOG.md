@@ -7,6 +7,62 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 _Noch keine Aenderungen._
 
+## [3.3.1] — 2026-04-30
+
+### Fix: Docker-Build wieder auf PHP 8.5 + Setup-Wizard ~36 % schneller
+
+`v3.2.8` hatte das Docker-Image vorübergehend auf PHP 8.4 zurückgerollt,
+weil der `docker-php-ext-install`-Pfad auf Debian Trixie + 8.5 brach
+(`cp: modules/* No such file or directory`). Lösung: Build-Pfad auf das
+gepflegte `mlocati/install-php-extensions:2`-Helper-Image umgestellt; das
+löst die apt-Build-Deps + Cleanup automatisch und kommt mit PHP 8.5 klar.
+
+Gleichzeitig wurde der Setup-Wizard-Pfad „Step 3 → Option 2 (Skip / Neu-
+Installation)" merklich beschleunigt — aus ~62 Sekunden wurden ~40 Sek.
+Die verbleibenden 40 s sind disk-bound (`innodb_flush_log_at_trx_commit=1`
+des MariaDB-Defaults); ein DB-User mit SUPER-Recht halbiert das nochmals
+(best-effort `SET GLOBAL innodb_flush_log_at_trx_commit=2`).
+
+#### Docker
+
+- **PHP 8.4 → 8.5.5** (`php:8.5-fpm-trixie@sha256:7d1586e8…`).
+- **`docker-php-ext-install` → `mlocati/install-php-extensions:2`**: ein
+  COPY + ein RUN, statt zerbrechlicher Configure-Compile-Cleanup-Dance.
+- **Apt-Liste -8 Pakete**: `libzip-dev`, `libonig-dev`, `libpng-dev`,
+  `libfreetype6-dev`, `libjpeg62-turbo-dev`, `libxml2-dev`, `libicu-dev`,
+  `libmariadb-dev` werden vom Installer transient gezogen und nach
+  Compile wieder entfernt → Image bleibt kompakt.
+- **Dev-Stage**: `pecl install xdebug` + `linux-headers-generic` raus,
+  `install-php-extensions xdebug` rein.
+- Lokal verifiziert: `docker build --target production` 4 m 17 s,
+  Container startet `healthy` in 6 s, Symfony 7.4.8 prod-boot OK.
+
+#### Setup-Wizard Step 3 / Option 2
+
+- **Redundanter `dropAndRecreateDatabase`-Call** (per-Table-Loop auf
+  separater PDO-Verbindung, ~125 RTTs) entfernt — `runFreshSchemaInstall`
+  macht den Drop bereits batched.
+- **DROP DATABASE / CREATE DATABASE** statt 125 × `DROP TABLE` (Drop-
+  Phase: 14.9 s → 8.2 s). Fallback auf per-Table-Loop, falls dem Setup-
+  User die `DROP/CREATE DATABASE`-Privilegien fehlen.
+- **`SET UNIQUE_CHECKS = 0`** während des CREATE-Bulks (Create-Exec-
+  Phase: 46.0 s → 28.4 s).
+- **Best-effort `SET GLOBAL innodb_flush_log_at_trx_commit = 2`** für die
+  Dauer des Bulks; greift nur, wenn der Setup-User SUPER hat. Ohne SUPER
+  kein Schaden.
+- **Timing-Diagnose**: `runFreshSchemaInstall` schreibt jetzt eine
+  `timings`-Map ins Resultat (metadata, drop, create_sql_gen, create_exec,
+  migrations_register, total) — Logger-Eintrag in beiden Pfaden
+  (`step3CreateSchema`, `step3RestoreBackupSkip`).
+- **Alva-Hilfetext** kommuniziert jetzt offen die ~40 Sekunden Wartezeit
+  und den SUPER-Recht-Tipp (DE + EN).
+
+#### Tooling
+
+- Neuer Konsolenbefehl `app:bench-schema-install` benchmarkt den exakt
+  gleichen Code-Pfad gegen die aktuelle DB und gibt die Per-Phasen-
+  Timings aus (DESTRUCTIVE — Test-DB only).
+
 ## [3.3.0] — 2026-04-29
 
 Erstes Minor-Release nach `3.2.x` — bringt zwei substantielle neue Module

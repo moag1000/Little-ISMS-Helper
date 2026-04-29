@@ -15,12 +15,12 @@ setup:
     alva:
         busy:
             default: 'Alva is working on it — one moment please.'
-            schema: 'Alva is building the database schema. This may take a few minutes for larger datasets.'
+            schema: 'Alva is building the database schema — ~40 seconds on a typical setup DB. Please don''t close this window.'
             restore: 'Alva is restoring the backup. Please do not close this window — this may take several minutes.'
             repair: 'Alva is repairing orphan entries and resetting the database — please wait.'
             base_data: 'Alva is importing master data (roles, framework defaults) — one moment please.'
             sample_data: 'Alva is loading sample data (demo risks, assets, controls) — this takes a few seconds.'
-            skip_restore: 'Alva is skipping the backup restore — one moment please.'
+            skip_restore: 'Alva is creating the database schema from scratch — about 40 seconds. (Tip: a DB user with SUPER privilege halves the wait.)'
             db_test: 'Alva is testing the database connection — one moment please.'
             admin: 'Alva is creating the admin user — one moment please.'
             frameworks: 'Alva is setting up compliance frameworks — this may take a few seconds.'

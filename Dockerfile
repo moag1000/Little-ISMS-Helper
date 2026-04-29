@@ -2,10 +2,11 @@
 # Multi-stage Dockerfile for Little ISMS Helper
 # Stage 1: Production Build
 # Using Debian Trixie (13) instead of Alpine for better QEMU cross-compilation support
-# PHP 8.4 used instead of 8.5 due to extension build issues in 8.5 Docker images
+# PHP 8.5 via mlocati/install-php-extensions — handles the apt build-deps + cleanup
+# automatically and works around the docker-php-ext-install failures on Trixie.
 # Pinned digest for reproducible builds — update via:
-#   docker buildx imagetools inspect php:8.4-fpm-trixie | grep '^Digest:'
-FROM php:8.4-fpm-trixie@sha256:eec2a132b91271dcf51e86119311ec4b22105736af704997a690594b8f88af31 AS production
+#   docker buildx imagetools inspect php:8.5-fpm-trixie | grep '^Digest:'
+FROM php:8.5-fpm-trixie@sha256:7d1586e8949f50449c2ca173aad9dac624a5cabb9a01780f9aa2ca8347a09af2 AS production
 
 # OCI Image Labels (https://github.com/opencontainers/image-spec/blob/main/annotations.md)
 LABEL org.opencontainers.image.title="Little ISMS Helper"
@@ -26,40 +27,34 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     rm -f /etc/apt/apt.conf.d/docker-clean && \
     apt-get update && apt-get upgrade -y
 
-# Install system dependencies including MariaDB server for standalone deployment
+# Install system dependencies. The `*-dev` libraries that PHP-extension builds
+# need (libpng-dev, libicu-dev, libfreetype6-dev, libjpeg-dev, libxml2-dev,
+# libonig-dev, libzip-dev) are no longer listed here — install-php-extensions
+# pulls them on demand and removes them again after the extension is built.
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
-    libzip-dev \
-    libmariadb-dev \
     mariadb-server \
     mariadb-client \
-    libicu-dev \
-    libonig-dev \
-    libpng-dev \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libxml2-dev \
     nginx \
     supervisor \
     python3-pip \
     curl \
     gosu
 
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install -j"$(nproc)" \
-    pdo \
+# Install PHP extensions via mlocati/install-php-extensions:
+#  - handles all apt build-deps internally and removes them after compile
+#  - works around docker-php-ext-install failures on Debian Trixie + PHP 8.5
+#  - opcache/mbstring/xml ship with php:8.5-fpm-trixie; only build the rest.
+COPY --from=mlocati/php-extension-installer:2 /usr/bin/install-php-extensions /usr/local/bin/
+RUN install-php-extensions \
     pdo_mysql \
     mysqli \
     intl \
     zip \
-    opcache \
     gd \
-    mbstring \
-    xml \
     soap
 
 # Install Composer (pinned to major version 2 for stability)
@@ -195,15 +190,10 @@ CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 # Stage 2: Development Build
 FROM production AS development
 
-# Install development dependencies
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update && apt-get install -y --no-install-recommends \
-    linux-headers-generic
-
-# Install Xdebug for development (latest stable version)
-RUN pecl channel-update pecl.php.net && \
-    pecl install xdebug && docker-php-ext-enable xdebug
+# Install Xdebug via the same installer used in the production stage.
+# linux-headers etc. that the old `pecl install xdebug` flow needed are no
+# longer required — install-php-extensions handles all build deps + cleanup.
+RUN install-php-extensions xdebug
 
 # Configure Xdebug
 RUN echo "xdebug.mode=debug,coverage" >> "$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini" && \

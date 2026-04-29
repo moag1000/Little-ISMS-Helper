@@ -495,6 +495,7 @@ class DeploymentWizardController extends AbstractController
         try {
             $logger->info('Creating database schema (fresh-install via SchemaTool)');
             $migrationResult = $this->runFreshSchemaInstall();
+            $logger->info('Schema-install timings', ['timings' => $migrationResult['timings'] ?? null]);
 
             if ($migrationResult['success']) {
                 $this->setupJobStatusService->succeed(
@@ -793,12 +794,20 @@ class DeploymentWizardController extends AbstractController
 
         try {
             $logger->info('Step 3 Skip: Starting fresh database setup');
-            $logger->info('Step 3 Skip: Dropping existing tables');
-            $this->dropAndRecreateDatabase($dbConfig);
+            // runFreshSchemaInstall() already does a batched DROP (single multi-
+            // statement, ~1 RTT) before creating the schema. We previously also
+            // called dropAndRecreateDatabase() here, which performed a per-table
+            // DROP loop on a separate PDO connection — ~150 round-trips against
+            // the same server. Removing it cuts the skip-restore step by ~750ms
+            // on Docker MySQL and avoids two competing connections.
 
             $logger->info('Step 3 Skip: Running fresh-install schema-create');
             $migrationResult = $this->runFreshSchemaInstall();
-            $logger->info('Step 3 Skip: Schema-install result', ['success' => $migrationResult['success'], 'message' => $migrationResult['message'] ?? 'no message']);
+            $logger->info('Step 3 Skip: Schema-install result', [
+                'success' => $migrationResult['success'],
+                'message' => $migrationResult['message'] ?? 'no message',
+                'timings' => $migrationResult['timings'] ?? null,
+            ]);
 
             if (!$migrationResult['success']) {
                 $logger->error('Step 3 Skip: Migration failed', ['result' => $migrationResult]);
@@ -2106,9 +2115,12 @@ class DeploymentWizardController extends AbstractController
      */
     private function runFreshSchemaInstall(): array
     {
+        $timings = [];
+        $t0 = microtime(true);
         try {
             $em = $this->entityManager;
             $metadata = $em->getMetadataFactory()->getAllMetadata();
+            $timings['metadata_ms'] = (int) round((microtime(true) - $t0) * 1000);
 
             if ($metadata === []) {
                 return ['success' => false, 'message' => 'No entity metadata found — Doctrine not configured?'];
@@ -2150,15 +2162,47 @@ class DeploymentWizardController extends AbstractController
                 );
 
                 if ($existingAppTables !== []) {
-                    // Brute-drop in one multi-statement: SET checks=0 + DROPs +
-                    // re-enable. ~250 RTTs collapsed to 1.
-                    $dropSql = "SET FOREIGN_KEY_CHECKS = 0;\n";
-                    foreach ($existingAppTables as $table) {
-                        $clean = str_replace('`', '', (string) $table);
-                        $dropSql .= "DROP TABLE IF EXISTS `{$clean}`;\n";
+                    // Bulk-drop strategy: prefer DROP DATABASE / CREATE DATABASE
+                    // over per-table DROP — MariaDB / MySQL serialise each
+                    // DROP TABLE through innodb_flush_log_at_trx_commit, so
+                    // 125 DROPs become 125 fsyncs (~15s on a typical SSD).
+                    // DROP DATABASE collapses that to two statements that
+                    // execute in milliseconds. Falls back to the per-table
+                    // loop if the user lacks DROP/CREATE DATABASE privileges
+                    // (managed-DB scenarios).
+                    $tDrop = microtime(true);
+                    $dbName = (string) $nativeConn->query('SELECT DATABASE()')->fetchColumn();
+                    $dropMode = 'per_table';
+                    $charset = (string) ($nativeConn->query("SELECT @@character_set_database")->fetchColumn() ?: 'utf8mb4');
+                    $collation = (string) ($nativeConn->query("SELECT @@collation_database")->fetchColumn() ?: 'utf8mb4_unicode_ci');
+                    if ($dbName !== '') {
+                        try {
+                            $nativeConn->exec(sprintf('DROP DATABASE `%s`', str_replace('`', '', $dbName)));
+                            $nativeConn->exec(sprintf(
+                                'CREATE DATABASE `%s` CHARACTER SET %s COLLATE %s',
+                                str_replace('`', '', $dbName),
+                                $charset,
+                                $collation
+                            ));
+                            $nativeConn->exec(sprintf('USE `%s`', str_replace('`', '', $dbName)));
+                            $dropMode = 'recreate_db';
+                        } catch (\Throwable) {
+                            // Fall back to per-table drops if DROP DATABASE
+                            // is not permitted (managed-DB / user privilege).
+                        }
                     }
-                    $dropSql .= "SET FOREIGN_KEY_CHECKS = 1;\n";
-                    $nativeConn->exec($dropSql);
+                    if ($dropMode === 'per_table') {
+                        $dropSql = "SET FOREIGN_KEY_CHECKS = 0;\n";
+                        foreach ($existingAppTables as $table) {
+                            $clean = str_replace('`', '', (string) $table);
+                            $dropSql .= "DROP TABLE IF EXISTS `{$clean}`;\n";
+                        }
+                        $dropSql .= "SET FOREIGN_KEY_CHECKS = 1;\n";
+                        $nativeConn->exec($dropSql);
+                    }
+                    $timings['drop_ms'] = (int) round((microtime(true) - $tDrop) * 1000);
+                    $timings['drop_count'] = count($existingAppTables);
+                    $timings['drop_mode'] = $dropMode;
                 }
             } elseif ($isPostgres) {
                 $stmt = $nativeConn->query("SELECT tablename FROM pg_tables WHERE schemaname = 'public'");
@@ -2186,23 +2230,58 @@ class DeploymentWizardController extends AbstractController
             // entity metadata, join with semicolons, submit to PDO::exec
             // in ONE call. Server executes the whole batch in one RTT
             // instead of 250.
+            $tSql = microtime(true);
             $createSqls = $schemaTool->getCreateSchemaSql($metadata);
+            $timings['create_sql_gen_ms'] = (int) round((microtime(true) - $tSql) * 1000);
+            $timings['create_sql_count'] = count($createSqls);
             if ($createSqls !== []) {
+                // Disable FK + uniqueness checks for the duration of bulk DDL.
+                // For MariaDB/MySQL we also try to relax durability (commit
+                // log fsync per DDL) for the bulk install — this requires
+                // SUPER on the global flag, so we wrap in try/catch and fall
+                // back gracefully if the user lacks the privilege.
+                $relaxedDurability = false;
+                if ($isMysql) {
+                    try {
+                        $nativeConn->exec('SET @bench_old_flush := @@GLOBAL.innodb_flush_log_at_trx_commit');
+                        $nativeConn->exec('SET GLOBAL innodb_flush_log_at_trx_commit = 2');
+                        $relaxedDurability = true;
+                    } catch (\Throwable) {
+                        // Lack of SUPER privilege — keep default durability.
+                    }
+                }
+
                 $sqlBatch = '';
                 if ($isMysql) {
                     $sqlBatch .= "SET FOREIGN_KEY_CHECKS = 0;\n";
+                    $sqlBatch .= "SET UNIQUE_CHECKS = 0;\n";
                 }
                 $sqlBatch .= implode(";\n", $createSqls);
                 if (!str_ends_with(rtrim($sqlBatch), ';')) {
                     $sqlBatch .= ';';
                 }
                 if ($isMysql) {
+                    $sqlBatch .= "\nSET UNIQUE_CHECKS = 1;";
                     $sqlBatch .= "\nSET FOREIGN_KEY_CHECKS = 1;";
                 }
-                $nativeConn->exec($sqlBatch);
+                $tExec = microtime(true);
+                try {
+                    $nativeConn->exec($sqlBatch);
+                } finally {
+                    if ($relaxedDurability) {
+                        try {
+                            $nativeConn->exec('SET GLOBAL innodb_flush_log_at_trx_commit = IFNULL(@bench_old_flush, 1)');
+                        } catch (\Throwable) {
+                            // Best-effort; the session will end soon anyway.
+                        }
+                    }
+                }
+                $timings['create_exec_ms'] = (int) round((microtime(true) - $tExec) * 1000);
+                $timings['relaxed_durability'] = $relaxedDurability;
             }
 
             // Mark every migration version as executed so future migrate-calls skip them.
+            $tReg = microtime(true);
             $migrationFiles = glob($this->getParameter('kernel.project_dir') . '/migrations/Version*.php') ?: [];
             $registered = 0;
             if ($migrationFiles !== []) {
@@ -2221,15 +2300,19 @@ class DeploymentWizardController extends AbstractController
                 $registered = count($migrationFiles);
             }
 
+            $timings['migrations_register_ms'] = (int) round((microtime(true) - $tReg) * 1000);
+
             // Force Doctrine to re-establish its connection state — the raw
             // PDO calls above bypassed Doctrine's transaction tracker, so
             // subsequent Doctrine queries could see stale state.
             $connection->close();
+            $timings['total_ms'] = (int) round((microtime(true) - $t0) * 1000);
 
             return [
                 'success' => true,
                 'message' => sprintf('Schema created from entity metadata (%d migrations marked executed)', $registered),
                 'output' => sprintf('Tables created: %d, migrations registered: %d', count($metadata), $registered),
+                'timings' => $timings,
             ];
         } catch (\Throwable $e) {
             return [
