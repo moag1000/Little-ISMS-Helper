@@ -29,10 +29,10 @@ class MfaEncryptionService
     public function __construct(
         #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%kernel.secret%')]
         string $appSecret,
-        #[\Symfony\Component\DependencyInjection\Attribute\Autowire(env: 'default::MFA_ENCRYPTION_KEY')]
+        #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%env(default::MFA_ENCRYPTION_KEY)%')]
         ?string $mfaEncryptionKey = null,
     ) {
-        // Prefer dedicated key; fall back to APP_SECRET derivation
+        // Prefer dedicated MFA_ENCRYPTION_KEY env var; fall back to APP_SECRET
         $source = ($mfaEncryptionKey !== null && $mfaEncryptionKey !== '')
             ? $mfaEncryptionKey
             : $appSecret;

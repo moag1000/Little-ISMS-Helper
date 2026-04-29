@@ -109,15 +109,13 @@ class ImplementationJourneyService
             : 0;
 
         // --- Current phase index: first non-complete, non-dismissed, non-locked ---
-        $currentIndex = 0;
+        $currentIndex = count($phases) - 1; // Default: last phase (all complete)
         foreach ($phases as $i => $phase) {
             $status = $phase->getStatus();
             if ($status !== 'complete' && $status !== 'dismissed' && $status !== 'locked') {
                 $currentIndex = $i;
                 break;
             }
-            // If everything is complete, stay on the last phase
-            $currentIndex = $i;
         }
 
         $alvaMood = $this->resolveAlvaMood($overallPercent);
@@ -234,10 +232,15 @@ class ImplementationJourneyService
 
         // Phase 7: Improvement
         $openFindingsCount = count($this->auditFindingRepository->findOpenByTenant($tenant));
-        $openCorrectiveCount = count($this->correctiveActionRepository->findBy([
-            'tenant' => $tenant,
-            'status' => [CorrectiveAction::STATUS_PLANNED, CorrectiveAction::STATUS_IN_PROGRESS],
-        ]));
+        $openCorrectiveCount = (int) $this->correctiveActionRepository
+            ->createQueryBuilder('ca')
+            ->select('COUNT(ca.id)')
+            ->where('ca.tenant = :tenant')
+            ->andWhere('ca.status IN (:statuses)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('statuses', [CorrectiveAction::STATUS_PLANNED, CorrectiveAction::STATUS_IN_PROGRESS])
+            ->getQuery()
+            ->getSingleScalarResult();
 
         return [
             'hasScope'                => $hasScope,
@@ -263,7 +266,7 @@ class ImplementationJourneyService
 
         $count = 0;
         foreach ($allControls as $control) {
-            if ($control->getApplicable() === true
+            if ($control->isApplicable() === true
                 && $control->getImplementationStatus() !== 'not_started'
             ) {
                 ++$count;
