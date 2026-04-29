@@ -1,0 +1,55 @@
+schema_version: '1.0'
+baseline:
+  id: 'it-systemhaus'
+  name: 'IT-Systemhaus / Reseller + Wartung'
+  industry: 'it_systemhaus'
+  description: |
+    Pre-Konfiguration für klassische IT-Systemhäuser — Beratung, Hardware-/
+    Software-Reseller, Wartung + Vor-Ort-Service, Endkunden-Support. Anker:
+    ISO 27001 (Mindeststandard für ÖV-Aufträge), TISAX (bei Automotive-
+    Kunden), DSGVO Art. 28 (Auftragsverarbeitung). Geringere Multi-Tenant-
+    Tiefe als MSP — eher Endpoint-zentriertes Geschäft.
+
+  source: 'Peddi (2026) MRIS v1.5 + Senior-Consultant-Erfahrung Mittelstand-IT-Praxis'
+  license: 'CC BY 4.0 (MRIS-Konzepte)'
+
+  mhc_targets:
+    MHC-01:
+      target: initial
+      reason: 'Krypto-Inventar einsteigerfreundlich — meist nur AD/PKI, VPN-Stack, Backup-Encryption.'
+    MHC-02:
+      target: defined
+      reason: 'SBOM für eigene Custom-Lösungen + Lieferanten-Anforderung an verkaufte Software.'
+    MHC-03:
+      target: defined
+      reason: 'Phishing-resistente MFA für Admin-Accounts. Tech-Personal auf Kundensystemen ist Hochrisiko-Vector.'
+    MHC-04:
+      target: initial
+      reason: 'Workload-Identity meist nicht zentral — Zentral-Inventar Service-Accounts mit Rotation reicht initial.'
+    MHC-05:
+      target: defined
+      reason: 'EDR-Lösung für eigene + Kunden-Endpoints (Reseller-Lizenz oder MSSP-Anbindung).'
+    MHC-06:
+      target: defined
+      reason: 'Endpoint-Härtung Standard-Baseline. CIS-Benchmark Tier 1 als Mindestmaßnahme.'
+    MHC-07:
+      target: initial
+      reason: 'Multi-Tenancy meist nur Ticket-System + Remote-Tools — Mandanten-Trennung dort dokumentiert + auditiert.'
+    MHC-08:
+      target: defined
+      reason: 'Immutable Backups für Kunden-Daten unter Auftragsverarbeitung. DR-Test jährlich.'
+    MHC-09:
+      target: defined
+      reason: 'Patch-Management ist Kern-Service — KEV-Latency < 14 Tage für Kunden-Stack.'
+    MHC-10:
+      target: initial
+      reason: 'CCM nur wenn ein Kunde explizit fragt — meist Audit-Trail + Quartals-Review reicht.'
+    MHC-11:
+      target: defined
+      reason: 'IR-Plan + Eskalationsmatrix mit Kunden-Kontakten. MTTC nach Klassifikation gestaffelt.'
+    MHC-12:
+      target: initial
+      reason: 'Pen-Test jährlich (extern beauftragt) — TLPT meist Overkill für KMU-Systemhaus.'
+    MHC-13:
+      target: defined
+      reason: 'AI-Agent-Governance für Coding/Scripting-Tools im Tech-Team — Halluzinationen in Kunden-Skripten = Reputations-Risiko.'
