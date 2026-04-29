@@ -1,5 +1,9 @@
 # Migration Guide - Corporate Structure Management
 
+> **Hinweis:** Dieser Guide deckt die `corporate_governance`-Tabellenmigration ab.
+> Für die initiale Multi-Tenancy-Migration (`tenant_id`-Spalten) siehe
+> [`/MIGRATION_GUIDE.md`](../MIGRATION_GUIDE.md) im Repo-Root.
+
 ## Überblick
 
 Diese Anleitung beschreibt die Migration von der alten `governance_model` Spalte in der `tenant` Tabelle zur neuen `corporate_governance` Tabelle.

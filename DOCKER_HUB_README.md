@@ -2,8 +2,8 @@
 
 **Moderne, webbasierte ISMS-Lösung für KMUs – ISO 27001:2022 konform**
 
-[![Version](https://img.shields.io/badge/Version-2.2.1-success)](https://github.com/moag1000/Little-ISMS-Helper/releases)
-[![PHP](https://img.shields.io/badge/PHP-8.4-777BB4)](https://www.php.net/)
+[![Version](https://img.shields.io/badge/Version-3.2.6-success)](https://github.com/moag1000/Little-ISMS-Helper/releases)
+[![PHP](https://img.shields.io/badge/PHP-8.5-777BB4)](https://www.php.net/)
 [![Symfony](https://img.shields.io/badge/Symfony-7.4-000000)](https://symfony.com/)
 [![License](https://img.shields.io/badge/License-AGPL%20v3-blue)](https://github.com/moag1000/Little-ISMS-Helper/blob/main/LICENSE)
 
@@ -75,9 +75,10 @@ volumes:
 | Tag | Beschreibung |
 |-----|--------------|
 | `latest` | Aktuelle stabile Version |
-| `2.2.1` | Version 2.2.1 (Proactive Compliance Monitoring) |
-| `2.2.0` | Version 2.2.0 |
-| `2.1.x` | Legacy Versionen |
+| `3.2.6` | TOTP-Verschlüsselung, Doctrine-Migrations 4, PHPUnit 13, Chart.js 4, Turbo 8 |
+| `3.2.x` | v3.2-Linie (PHP 8.5, Aurora v4) |
+| `3.1.x` | v3.1-Linie (Mapping-Quality, Phase-10-Workflows) |
+| `3.0.x` | v3.0-Linie (Aurora v3) |
 
 ## 💡 Umgebungsvariablen
 

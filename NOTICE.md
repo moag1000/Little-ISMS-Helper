@@ -1,8 +1,8 @@
 # NOTICE - Third-Party Software Attributions
 
 **Project:** Little ISMS Helper
-**Version:** 1.0
-**Last Updated:** 2025-11-10
+**Version:** 3.2.6
+**Last Updated:** 2026-04-29
 
 This software includes components from third-party open source projects. This document contains the required attributions and license notices for these components.
 
@@ -10,7 +10,7 @@ This software includes components from third-party open source projects. This do
 
 ## License Compliance Summary
 
-This project uses **163 third-party packages**:
+This project uses **167 third-party packages**:
 
 | License Type | Count | Commercial Use | Requirements |
 |--------------|-------|----------------|--------------|

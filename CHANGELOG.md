@@ -5,7 +5,89 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
-_Noch keine Aenderungen._
+### Fix: Post-v3.2.6 Stabilisierung (PHP 8.5 + Templates + Setup)
+
+13 Folge-Fixes nach dem v3.2.6-Tag, allesamt punktuelle Laufzeit- und
+Template-Reparaturen aus den Spezialisten-Reviews. Kein Schema-Bruch,
+keine API-Änderungen.
+
+#### PHP 8.5 strict type-coercion (Fortsetzung von v3.2.6)
+
+* **Repository-Scalars an der Quelle gecastet** — Aggregations-Queries
+  (`COUNT`, `SUM`, `AVG`) lieferten je nach Treiber `int|string`. Statt an
+  jeder Aufrufstelle zu casten, normalisieren die Repositories jetzt direkt
+  auf `int`/`float` zurück. Schließt eine Klasse von TypeError-Restbügeln,
+  die nur unter PHP 8.5 sichtbar wurden.
+* **`SupplierType::finishView` + Repository-Scalars** — analoge
+  Coercion-Bügel im Form-Layer (Form-Type liest gecastete Werte direkt).
+* **Vier Template-Runtime-Issues aus dev.log** — implizite Float→Int-Casts
+  in vier Twig-Aufrufpfaden (Render-Layer, nicht Service-Layer).
+
+#### Templates / UI
+
+* **`fix(charts+batch-analysis)`** — Chart.js 4 Colors-Plugin korrekt
+  registriert (war v3-API-Stub). `.d-none`-Visibility für Empty-State auf
+  Batch-Analysis-Karten + ein Offset-Off-by-One in der Pagination.
+* **`fix(mapping-quality)`** — Twig referenzierte `complianceFramework`,
+  Entity-Property heißt seit v3.2.0 nur noch `framework`. Drei Templates
+  angepasst.
+* **`fix(role-management)`** — `~`-Concat-Operator in Twig ist
+  string-only; Array-Merge braucht den `|merge`-Filter.
+* **`fix(data-breach)`** — `followUpActions` ist ein strukturiertes
+  Array (Action + Owner + Due-Date), Template hatte es als String
+  ausgegeben (`Array to string conversion`-Notice).
+
+#### Setup / MRIS
+
+* **`fix(mris+quick-fix)`** — `bc_exercise` heißt im Schema so, nicht
+  `bc_exercises`. Der Quick-Fix-Subscriber prüfte den Plural-Tabellennamen
+  und leitete deshalb auch auf intakten Schemata zur Quick-Fix-Seite um.
+* **`fix(mris)`** — analoger Tabellennamen-Bug für `mfa_tokens` (heißt
+  `mfa_token`) und `users` (heißt `user`) in Raw-SQL-Konstanten.
+
+#### Industry Baselines
+
+* **`feat(industry-baseline)`** — One-Click-Seed-Button auf der
+  Baseline-Übersicht, wenn der Katalog leer ist. Erspart frischen
+  Installationen den Konsolen-Befehl.
+
+#### Repo-Hygiene
+
+* **`chore(git)`** — `node_modules/` in `.gitignore` (war seit
+  stylelint-Einführung untracked aber nicht ignored).
+* **`chore(deps)`** — `package-lock.json`-Name auf Lower-Case normalisiert
+  (npm flippte ihn bei jedem Install hin und her).
+
+### Schema-Reconciliation (post-Migrations-4.0)
+
+`doctrine:schema:validate` zeigte nach dem Bundle-4-Bump drei harmlose
+Pre-Existing-Inkonsistenzen — alle in einer reversiblen Migration
+behoben:
+
+* `RiskAppetite#reviewBufferMultiplier`: `DECIMAL(4,2)` → `FLOAT`. PHP-Property war `float`, DBAL liefert für `DECIMAL` aber `string` — implizite Casts in Arithmetik. Werte 1.0–3.0 mit 2 Nachkommastellen sind FP32-präzise.
+* `incident.severity`: nullable enforce (matched ORM-Mapping).
+* DPIA: Index-Rename auf Doctrine-Convention (rein kosmetisch).
+
+`migrations/Version20260429110455.php`. `schema:validate` jetzt grün auf
+beiden Sektionen.
+
+### Tests
+
+* **DeploymentWizardControllerTest setUp/tearDown** — Lock-Backup +
+  Restore. Vorher entfernte das setUp den `setup_complete.lock` global
+  im PHPUnit-Prozess; Folge-Tests in anderen Klassen wurden danach von
+  `SetupRequiredSubscriber` zur Setup-Seite redirected (CI: 3 → 193
+  Failures-Spike). Backup im setUp, Wiederherstellung im tearDown.
+* **CSRF-Token via Session-Save** — `bulk-delete`-Tests brauchen aktive
+  Session bevor `getToken()` aufgerufen wird (`security.csrf.token_manager`
+  schreibt in die Session, ohne Save-Call greift der Submit-Read den Token
+  nicht).
+
+### Skills
+
+* `pentester-specialist`-Skill für OWASP/PTES/NIST-800-115/OSSTMM-aligned
+  Security-Reviews. Treiber für PT-001 (MFA-Bypass) und PT-003
+  (TOTP-Klartext) während der v3.2.5-Welle.
 
 ## [3.2.6] — 2026-04-29
 

@@ -2,7 +2,7 @@
 
 > **Lizenz:** CC-BY 4.0 — frei nutzbar, Namensnennung bei Weitergabe.
 > **Quelle:** kuratiert aus öffentlichen Referenzkatalogen (siehe pro Datei).
-> **Pflege:** Senior-GRC-Consultant (initial), ab 2026-04-17 Compliance-Manager intern.
+> **Pflege:** Compliance-Manager intern (Initial-Kuration durch Senior-GRC-Consultant).
 > **Beschluss-Grundlage:** `docs/DATA_REUSE_IMPROVEMENT_PLAN.md` Anhang C, Entscheidung ENT-3 (Hybrid-Modell).
 
 ## Zweck

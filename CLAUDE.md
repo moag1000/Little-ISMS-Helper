@@ -17,11 +17,11 @@ Guidelines for Claude Code in this repository.
 
 ## Quick Reference
 
-**Stack:** Symfony 7.4.8, PHP 8.5+, Doctrine ORM 3.6, Twig 3.24, Stimulus/Turbo, Bootstrap 5.3, FairyAurora v4 Design System, PHPUnit 12.5, API Platform 4.3
+**Stack:** Symfony 7.4 LTS, PHP 8.4+ (8.5 tested), Doctrine ORM 3.6, Doctrine-Migrations-Bundle 4.0, Twig 3.24, Stimulus 3.2 / Turbo 8, Bootstrap 5.3, FairyAurora v4 Design System, PHPUnit 13.1, Chart.js 4, API Platform 4.3
 
 **Multi-tenancy:** All entities use `tenant_id` field. `TenantContext` service manages context.
 
-**RBAC:** USER → AUDITOR → MANAGER → ADMIN → SUPER_ADMIN with 50+ permissions.
+**RBAC:** USER → AUDITOR → MANAGER → ADMIN → SUPER_ADMIN, plus holding-level ROLE_GROUP_CISO and ROLE_KONZERN_AUDITOR. 50+ permissions.
 
 ## Essential Commands
 
@@ -55,13 +55,13 @@ php bin/console lint:twig templates/  # validate all templates
 
 **Directory Layout:**
 - `src/Entity/` - Doctrine entities (78 total, all with `tenant_id`)
-- `src/Service/` - Business logic (121 services)
-- `src/Controller/` - HTTP handlers (104 controllers)
-- `src/Command/` - Console commands (82 total)
+- `src/Service/` - Business logic (143 services)
+- `src/Controller/` - HTTP handlers (123 controllers)
+- `src/Command/` - Console commands (91 total)
 - `src/Security/Voter/` - Authorization voters
 - `templates/` - Twig templates
 - `assets/controllers/` - Stimulus JS controllers
-- `translations/` - Translation files (174 YAML files organized by domain)
+- `translations/` - Translation files (180 YAML files organized by 90 domains)
 
 **Key Services:**
 - `RiskService`, `AssetService`, `ControlService` - Core CRUD
@@ -108,7 +108,7 @@ Custom modals (like command palette) use CSS classes instead of Bootstrap Modal 
 The application uses domain-specific translation files instead of monolithic `messages.*.yaml` files.
 
 Structure:
-- `translations/` contains 174 YAML files (87 domains × 2 languages)
+- `translations/` contains 180 YAML files (90 domains × 2 languages)
 - Each functional area has its own domain: `nav`, `mfa`, `tenant`, `role_management`, etc.
 - `messages.{de,en}.yaml` remains as fallback for common/cross-domain terms
 
@@ -123,7 +123,7 @@ Usage in Twig templates:
 {{ 'common.save'|trans({}, 'messages') }}
 ```
 
-Available domains (87 total):
+Available domains (90 total):
 - **Navigation:** nav, dashboard, ui, help, welcome
 - **Access Control:** mfa, role_management, session, user, security, four_eyes
 - **ISMS Core:** assets, risk, control, incident, audits, audit_log, audit_freeze, soa, context, risk_appetite, risk_treatment_plan
@@ -228,9 +228,9 @@ $dataBreach->setNotificationRequired(true);
 **Entities:** PHP 8 attributes (`#[ORM\Entity]`), no annotations. Typed properties. `Collection<int, T>` generics.
 **Repositories:** `ServiceEntityRepository` pattern. Autowired.
 **Forms:** Single-action with `handleRequest()`. Translation domain via FormType.
-**Testing:** PHPUnit 12.5. Use `#[Test]` attribute. `WebTestCase` for HTTP, `KernelTestCase` for services.
+**Testing:** PHPUnit 13.1. Use `#[Test]` attribute. `WebTestCase` for HTTP, `KernelTestCase` for services.
 **Templates:** FairyAurora v4 macros (`_fa_page_header`, `_fa_empty_state`, `_fa_alert`). `_breadcrumb.html.twig` for navigation. `trans_default_domain` at top of every template.
-**Translations:** 87 domains x 2 languages. Check `debug:translation --only-missing` before commit. No YAML duplicate keys.
+**Translations:** 90 domains x 2 languages. Check `debug:translation --only-missing` before commit. No YAML duplicate keys.
 **PHP 8.5:** `readonly` properties, `match` expressions, `enum` types where appropriate.
 
 ## Security Checklist

@@ -29,7 +29,7 @@ chmod +x validate-setup.sh
 ```
 
 **Prüft:**
-- ✅ PHP-Version (8.2+ erforderlich)
+- ✅ PHP-Version (8.4+ erforderlich, 8.5 getestet)
 - ✅ PHP-Extensions (pdo, intl, mbstring, xml, etc.)
 - ✅ Composer Dependencies
 - ✅ Entity-Migration Konsistenz

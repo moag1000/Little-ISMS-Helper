@@ -1,5 +1,9 @@
 # Migration Guide: Tenant Multi-Tenancy Setup
 
+> **Hinweis:** Dieser Guide deckt die Multi-Tenancy-Setup-Migration ab.
+> Für die `corporate_governance`-Tabellenmigration siehe
+> [`docs/MIGRATION_GUIDE.md`](docs/MIGRATION_GUIDE.md).
+
 ## Problem
 
 Die Anwendung zeigt Fehler wie:
