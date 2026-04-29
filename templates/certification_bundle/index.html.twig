@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% trans_default_domain 'certification_bundle' %}
+
+{% block title %}{{ 'certification_bundle.title'|trans({}, 'certification_bundle') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), path: 'app_management_reports' },
+            { label: 'certification_bundle.title'|trans({}, 'certification_bundle') }
+        ]
+    } only %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 mb-1">
+                <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
+                {{ 'certification_bundle.title'|trans({}, 'certification_bundle') }}
+            </h1>
+            <p class="text-muted mb-0">{{ 'certification_bundle.subtitle'|trans({}, 'certification_bundle') }}</p>
+        </div>
+    </div>
+
+    {# Tenant & Framework Info #}
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_body %}
+            <div class="row">
+                <div class="col-md-6">
+                    <strong>{{ 'certification_bundle.preview.organization'|trans({}, 'certification_bundle') }}:</strong>
+                    {{ tenant.name }}
+                </div>
+                <div class="col-md-6">
+                    <strong>{{ 'certification_bundle.preview.framework'|trans({}, 'certification_bundle') }}:</strong>
+                    ISO/IEC 27001:2022
+                </div>
+            </div>
+        {% endblock %}
+    {% endembed %}
+
+    {# Gap Warning #}
+    {% if counts.gaps > 0 %}
+        {{ _fa_alert.render({
+            variant: 'warning',
+            class: 'mb-4',
+            body: 'certification_bundle.warning_gaps'|trans({'%count%': counts.gaps}, 'certification_bundle')
+        }) }}
+    {% endif %}
+
+    {# Preview Counts #}
+    <div class="row mb-4">
+        <div class="col-md-4 col-lg-2 mb-3">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 text-center', 'variant': 'kpi', 'borderColor': 'primary' } %}
+                {% block card_body %}
+                    <div class="kpi-card-value">{{ counts.assets }}</div>
+                    <div class="kpi-card-label">{{ 'certification_bundle.preview.assets'|trans({}, 'certification_bundle') }}</div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+        <div class="col-md-4 col-lg-2 mb-3">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 text-center', 'variant': 'kpi', 'borderColor': 'warning' } %}
+                {% block card_body %}
+                    <div class="kpi-card-value">{{ counts.risks }}</div>
+                    <div class="kpi-card-label">{{ 'certification_bundle.preview.risks'|trans({}, 'certification_bundle') }}</div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+        <div class="col-md-4 col-lg-2 mb-3">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 text-center', 'variant': 'kpi', 'borderColor': 'success' } %}
+                {% block card_body %}
+                    <div class="kpi-card-value">{{ counts.controls_applicable }}</div>
+                    <div class="kpi-card-label">{{ 'certification_bundle.preview.controls_applicable'|trans({}, 'certification_bundle') }}</div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+        <div class="col-md-4 col-lg-2 mb-3">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 text-center', 'variant': 'kpi', 'borderColor': 'success' } %}
+                {% block card_body %}
+                    <div class="kpi-card-value">{{ counts.controls_implemented }}</div>
+                    <div class="kpi-card-label">{{ 'certification_bundle.preview.controls_implemented'|trans({}, 'certification_bundle') }}</div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+        <div class="col-md-4 col-lg-2 mb-3">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 text-center', 'variant': 'kpi', 'borderColor': 'info' } %}
+                {% block card_body %}
+                    <div class="kpi-card-value">{{ counts.evidence_documents }}</div>
+                    <div class="kpi-card-label">{{ 'certification_bundle.preview.evidence_documents'|trans({}, 'certification_bundle') }}</div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+        <div class="col-md-4 col-lg-2 mb-3">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 text-center', 'variant': 'kpi', 'borderColor': counts.gaps > 0 ? 'danger' : 'success' } %}
+                {% block card_body %}
+                    <div class="kpi-card-value {% if counts.gaps > 0 %}text-danger{% else %}text-success{% endif %}">{{ counts.gaps }}</div>
+                    <div class="kpi-card-label">{{ 'certification_bundle.preview.gaps'|trans({}, 'certification_bundle') }}</div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+
+    {# Bundle Contents Preview #}
+    {% embed '_components/_card.html.twig' with { 'header': 'certification_bundle.preview.bundle_contents'|trans({}, 'certification_bundle'), 'class': 'mb-4' } %}
+        {% block card_body %}
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ 'certification_bundle.preview.file'|trans({}, 'certification_bundle') }}</th>
+                        <th>{{ 'certification_bundle.preview.description'|trans({}, 'certification_bundle') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><i class="bi bi-file-earmark-pdf text-danger" aria-hidden="true"></i> 00_ISMS_OVERVIEW.pdf</td>
+                        <td>{{ 'certification_bundle.preview.desc_overview'|trans({}, 'certification_bundle') }}</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-file-earmark-pdf text-danger" aria-hidden="true"></i> 01_STATEMENT_OF_APPLICABILITY.pdf</td>
+                        <td>{{ 'certification_bundle.preview.desc_soa'|trans({}, 'certification_bundle') }}</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-file-earmark-pdf text-danger" aria-hidden="true"></i> 02_RISK_TREATMENT_PLAN.pdf</td>
+                        <td>{{ 'certification_bundle.preview.desc_rtp'|trans({}, 'certification_bundle') }}</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-file-earmark-pdf text-danger" aria-hidden="true"></i> 03_ASSET_REGISTER.pdf</td>
+                        <td>{{ 'certification_bundle.preview.desc_assets'|trans({}, 'certification_bundle') }}</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-folder text-warning" aria-hidden="true"></i> 04_EVIDENCE/</td>
+                        <td>{{ 'certification_bundle.preview.desc_evidence'|trans({'%count%': counts.evidence_documents}, 'certification_bundle') }}</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-file-earmark-spreadsheet text-success" aria-hidden="true"></i> 05_GAP_ANALYSIS.csv</td>
+                        <td>{{ 'certification_bundle.preview.desc_gaps'|trans({'%count%': counts.gaps}, 'certification_bundle') }}</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-file-earmark-code text-info" aria-hidden="true"></i> METADATA.json</td>
+                        <td>{{ 'certification_bundle.preview.desc_metadata'|trans({}, 'certification_bundle') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {% endblock %}
+    {% endembed %}
+
+    {# Generate Button #}
+    <div class="text-center">
+        <form method="post" action="{{ path('app_certification_bundle_export') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_export') }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
+                <i class="bi bi-download" aria-hidden="true"></i>
+                {{ 'certification_bundle.generate'|trans({}, 'certification_bundle') }}
+            </button>
+            <p class="text-muted mt-2 small">
+                {{ 'certification_bundle.preview.note_generation'|trans({}, 'certification_bundle') }}
+            </p>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

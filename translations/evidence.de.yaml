@@ -1,0 +1,56 @@
+evidence:
+    title: 'Nachweisdokumente'
+    subtitle: 'Evidence Management für ISO 27001 Audit-Vorbereitung'
+    upload: 'Nachweis hochladen'
+    upload_success: 'Nachweis erfolgreich hochgeladen und verknüpft.'
+    upload_hint: 'Max. 10 MB. Erlaubte Formate: PDF, Office, Bilder, Text, ZIP.'
+    link: 'Bestehendes Dokument verknüpfen'
+    unlink: 'Verknüpfung aufheben'
+    unlink_confirm: 'Soll die Verknüpfung zu diesem Nachweis wirklich aufgehoben werden?'
+    recent_uploads: 'Letzte Uploads'
+    coverage:
+        title: 'Evidence Coverage'
+        subtitle: 'Übersicht der Nachweisabdeckung für alle ISO 27001 Controls'
+        total_controls: 'Gesamte Controls'
+        with_evidence: 'Mit Nachweis'
+        without_evidence: 'Ohne Nachweis'
+        coverage_percent: 'Abdeckung'
+        missing_only: 'Nur fehlende anzeigen'
+        control_list: 'Control-Übersicht'
+    kpi:
+        total_documents: 'Nachweisdokumente'
+        controls_covered: 'Controls abgedeckt'
+        coverage: 'Abdeckungsgrad'
+        gaps: 'Fehlende Nachweise'
+    status:
+        has_evidence: 'Nachweis vorhanden'
+        missing: 'Nachweis fehlt'
+    widget:
+        title: 'Nachweise'
+        empty: 'Noch keine Nachweise verknüpft.'
+        upload_here: 'Nachweis hier hochladen'
+    field:
+        entity_type: 'Entitätstyp'
+        entity_id: 'Entitäts-ID'
+        file: 'Datei'
+        select_type: 'Typ wählen'
+    entity:
+        control: 'Control (Maßnahme)'
+        requirement: 'Compliance-Anforderung'
+        risk_treatment_plan: 'Risikobehandlungsplan'
+    table:
+        filename: 'Dateiname'
+        entity: 'Verknüpfung'
+        size: 'Größe'
+        uploaded_by: 'Hochgeladen von'
+        uploaded_at: 'Hochgeladen am'
+        control_id: 'Control-ID'
+        control_name: 'Control-Name'
+        evidence_count: 'Anzahl Nachweise'
+        status: 'Status'
+        actions: 'Aktionen'
+    error:
+        no_file: 'Keine Datei ausgewählt.'
+        missing_entity: 'Entitätstyp und ID sind erforderlich.'
+    empty:
+        no_documents: 'Noch keine Nachweisdokumente vorhanden.'

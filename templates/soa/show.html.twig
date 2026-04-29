@@ -297,6 +297,13 @@
 {% endembed %}
 {% endif %}
 
+{# Evidence Documents #}
+{% include 'evidence/_upload_widget.html.twig' with {
+    entityType: 'control',
+    entityId: control.id,
+    documents: control.evidenceDocuments
+} %}
+
 {# Control Effectiveness Score #}
 {% if control.applicable and control.implementationPercentage == 100 %}
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}

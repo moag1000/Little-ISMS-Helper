@@ -134,6 +134,20 @@ class RiskTreatmentPlan
     #[MaxDepth(1)]
     private Collection $controls;
 
+    /**
+     * Evidence documents linked to this treatment plan (ISO 27001 Clause 7.5).
+     *
+     * @var Collection<int, Document>
+     */
+    #[ORM\ManyToMany(targetEntity: Document::class)]
+    #[ORM\JoinTable(
+        name: 'risk_treatment_plan_evidence',
+        joinColumns: [new ORM\JoinColumn(onDelete: 'CASCADE')],
+        inverseJoinColumns: [new ORM\JoinColumn(onDelete: 'CASCADE')]
+    )]
+    #[Groups(['treatment_plan:read'])]
+    private Collection $evidenceDocuments;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
     private ?string $implementationNotes = null;
@@ -157,6 +171,7 @@ class RiskTreatmentPlan
     public function __construct()
     {
         $this->controls = new ArrayCollection();
+        $this->evidenceDocuments = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -442,5 +457,27 @@ class RiskTreatmentPlan
     public function isComplete(): bool
     {
         return $this->status === 'completed' && $this->actualCompletionDate instanceof DateTimeInterface;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getEvidenceDocuments(): Collection
+    {
+        return $this->evidenceDocuments;
+    }
+
+    public function addEvidenceDocument(Document $document): static
+    {
+        if (!$this->evidenceDocuments->contains($document)) {
+            $this->evidenceDocuments->add($document);
+        }
+        return $this;
+    }
+
+    public function removeEvidenceDocument(Document $document): static
+    {
+        $this->evidenceDocuments->removeElement($document);
+        return $this;
     }
 }

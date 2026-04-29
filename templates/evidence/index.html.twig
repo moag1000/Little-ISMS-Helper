@@ -1,0 +1,171 @@
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% trans_default_domain 'evidence' %}
+
+{% block title %}{{ 'evidence.title'|trans({}, 'evidence') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dashboard'|trans({}, 'nav'), url: path('app_dashboard') },
+            { label: 'evidence.title'|trans({}, 'evidence') }
+        ]
+    } %}
+</div>
+
+<div class="page-header">
+    <div>
+        <h1><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'evidence.title'|trans({}, 'evidence') }}</h1>
+        <p class="text-muted">{{ 'evidence.subtitle'|trans({}, 'evidence') }}</p>
+    </div>
+    <div class="button-group">
+        <a href="{{ path('app_evidence_coverage') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+            <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'evidence.coverage.title'|trans({}, 'evidence') }}
+        </a>
+    </div>
+</div>
+
+{# KPI Cards #}
+<div class="row mb-4">
+    <div class="col-md-3">
+        {{ _fa_feature_card.render({
+            label: 'evidence.kpi.total_documents'|trans({}, 'evidence'),
+            value: totalDocuments,
+            variant: 'primary',
+            icon: 'file-earmark-text'
+        }) }}
+    </div>
+    <div class="col-md-3">
+        {{ _fa_feature_card.render({
+            label: 'evidence.kpi.controls_covered'|trans({}, 'evidence'),
+            value: coverage.controls_with_evidence ~ '/' ~ coverage.total_controls,
+            variant: coverage.coverage_percent >= 80 ? 'success' : (coverage.coverage_percent >= 50 ? 'warning' : 'danger'),
+            icon: 'shield-check'
+        }) }}
+    </div>
+    <div class="col-md-3">
+        {{ _fa_feature_card.render({
+            label: 'evidence.kpi.coverage'|trans({}, 'evidence'),
+            value: coverage.coverage_percent,
+            unit: '%',
+            variant: coverage.coverage_percent >= 80 ? 'success' : (coverage.coverage_percent >= 50 ? 'warning' : 'danger'),
+            icon: 'pie-chart-fill'
+        }) }}
+    </div>
+    <div class="col-md-3">
+        {{ _fa_feature_card.render({
+            label: 'evidence.kpi.gaps'|trans({}, 'evidence'),
+            value: coverage.missing|length,
+            variant: coverage.missing|length == 0 ? 'success' : 'danger',
+            icon: 'exclamation-triangle'
+        }) }}
+    </div>
+</div>
+
+{# Upload Form #}
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2><i class="fa-icon fa-icon--ui-upload" aria-hidden="true"></i> {{ 'evidence.upload'|trans({}, 'evidence') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
+        <form method="post" action="{{ path('app_evidence_upload') }}" enctype="multipart/form-data">
+            <input type="hidden" name="_token" value="{{ csrf_token('evidence_upload') }}">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="entity_type" class="form-label">{{ 'evidence.field.entity_type'|trans({}, 'evidence') }}</label>
+                    <select name="entity_type" id="entity_type" class="form-select" required>
+                        <option value="">-- {{ 'evidence.field.select_type'|trans({}, 'evidence') }} --</option>
+                        <option value="control">{{ 'evidence.entity.control'|trans({}, 'evidence') }}</option>
+                        <option value="requirement">{{ 'evidence.entity.requirement'|trans({}, 'evidence') }}</option>
+                        <option value="risk_treatment_plan">{{ 'evidence.entity.risk_treatment_plan'|trans({}, 'evidence') }}</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="entity_id" class="form-label">{{ 'evidence.field.entity_id'|trans({}, 'evidence') }}</label>
+                    <input type="number" name="entity_id" id="entity_id" class="form-control" min="1" required>
+                </div>
+                <div class="col-md-5">
+                    <label for="evidence_file" class="form-label">{{ 'evidence.field.file'|trans({}, 'evidence') }}</label>
+                    <input type="file" name="evidence_file" id="evidence_file" class="form-control" required
+                           accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.jpg,.jpeg,.png,.gif,.webp,.zip,.7z">
+                </div>
+            </div>
+            <div class="mt-3">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--ui-upload" aria-hidden="true"></i> {{ 'evidence.upload'|trans({}, 'evidence') }}
+                </button>
+            </div>
+            <p class="text-muted mt-2 small">{{ 'evidence.upload_hint'|trans({}, 'evidence') }}</p>
+        </form>
+    {% endblock %}
+{% endembed %}
+
+{# Recent Uploads #}
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2><i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'evidence.recent_uploads'|trans({}, 'evidence') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
+        {% if recentEvidence|length > 0 %}
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-sm',
+                'responsive': true,
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'evidence.table.filename'|trans({}, 'evidence') }}</th>
+                        <th scope="col">{{ 'evidence.table.entity'|trans({}, 'evidence') }}</th>
+                        <th scope="col">{{ 'evidence.table.size'|trans({}, 'evidence') }}</th>
+                        <th scope="col">{{ 'evidence.table.uploaded_by'|trans({}, 'evidence') }}</th>
+                        <th scope="col">{{ 'evidence.table.uploaded_at'|trans({}, 'evidence') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for doc in recentEvidence %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('app_document_show', {id: doc.id}) }}">
+                                <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                                {{ doc.originalFilename }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if doc.entityType %}
+                                {% include '_components/_badge.html.twig' with { variant: 'info', content: doc.entityType } %}
+                                <small>#{{ doc.entityId }}</small>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ doc.fileSizeFormatted }}</td>
+                        <td>{{ doc.uploadedBy ? doc.uploadedBy.fullName : '-' }}</td>
+                        <td>{{ doc.uploadedAt|date('d.m.Y H:i') }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+        {% else %}
+            <p class="text-muted text-center py-4">{{ 'evidence.empty.no_documents'|trans({}, 'evidence') }}</p>
+        {% endif %}
+    {% endblock %}
+{% endembed %}
+
+<style>
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-xl);
+}
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+</style>
+{% endblock %}

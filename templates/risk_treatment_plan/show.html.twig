@@ -210,6 +210,13 @@
 {% endembed %}
 {% endif %}
 
+{# Evidence Documents #}
+{% include 'evidence/_upload_widget.html.twig' with {
+    entityType: 'risk_treatment_plan',
+    entityId: plan.id,
+    documents: plan.evidenceDocuments
+} %}
+
 {# Audit Log History #}
 {% if auditLogs is defined and auditLogs|length > 0 %}
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}

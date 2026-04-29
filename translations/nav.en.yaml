@@ -23,6 +23,7 @@ nav:
     industry_baselines: 'Industry Baselines'
     group_report: 'Group Reports'
     management_reports: 'Management Reports'
+    certification_bundle: 'Certification Bundle'
     treatment_plans: 'Treatment Plans'
     roles: 'Roles & Permissions'
     tenants: Tenants
@@ -39,6 +40,8 @@ nav:
     patches: Patches
     users: Users
     documents: Documents
+    evidence: Evidence
+    evidence_coverage: 'Evidence Coverage'
     assets_risk_hub: 'Assets & Risks'
     risk_matrix: 'Risk Matrix'
     bcm_hub: 'BCM Hub'
@@ -158,6 +161,7 @@ nav:
             industry_baselines: 'Per-industry starter packs — do not bootstrap from zero'
             group_report: 'Corporate tree + NIS2 registration matrix (Group-CISO)'
             management_reports: 'Board One-Pager, Executive Summary, Risk/BCM/Compliance reports (PDF + Excel)'
+            certification_bundle: 'All ISMS documents in one ZIP archive for certification audits'
             users: 'User account management'
             roles: 'Roles and permissions'
             tenants: 'Multi-tenant administration'

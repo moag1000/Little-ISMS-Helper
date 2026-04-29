@@ -1,0 +1,66 @@
+{% extends 'pdf/_base_document.html.twig' %}
+
+{% block document_type %}Asset Register{% endblock %}
+{% block document_id %}DOC-CERT-ASR{% endblock %}
+{% block document_title %}Asset Register{% endblock %}
+{% block document_version %}{{ version }}{% endblock %}
+{% block document_status_class %}approved{% endblock %}
+{% block document_status %}GENERATED{% endblock %}
+{% block classification_class %}confidential{% endblock %}
+{% block document_classification %}CONFIDENTIAL{% endblock %}
+{% block organization_name %}{{ tenant_name }}{% endblock %}
+{% block header_left %}{{ tenant_name }}{% endblock %}
+{% block header_center %}Asset Register{% endblock %}
+{% block header_right %}CONFIDENTIAL{% endblock %}
+{% block footer_left %}DOC-CERT-ASR | Version {{ version }}{% endblock %}
+{% block footer_center %}{{ tenant_name }}{% endblock %}
+{% block footer_version %}{{ version }}{% endblock %}
+{% block created_date %}{{ generated_at|date('d.m.Y') }}{% endblock %}
+{% block modified_date %}{{ generated_at|date('d.m.Y H:i') }}{% endblock %}
+
+{% block document_content %}
+<h1>Asset Register</h1>
+<p class="text-muted">Generated: {{ generated_at|date('d.m.Y H:i') }} | Organization: {{ tenant_name }}</p>
+<p>Total assets: <strong>{{ assets|length }}</strong></p>
+
+{% if assets|length == 0 %}
+    <p class="text-muted">No assets have been registered.</p>
+{% else %}
+<table>
+    <thead>
+        <tr>
+            <th scope="col" style="width: 5%;">ID</th>
+            <th scope="col" style="width: 20%;">Name</th>
+            <th scope="col" style="width: 12%;">Type</th>
+            <th scope="col" style="width: 5%;">C</th>
+            <th scope="col" style="width: 5%;">I</th>
+            <th scope="col" style="width: 5%;">A</th>
+            <th scope="col" style="width: 12%;">Classification</th>
+            <th scope="col" style="width: 13%;">Owner</th>
+            <th scope="col" style="width: 13%;">Location</th>
+            <th scope="col" style="width: 8%;">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for asset in assets %}
+        <tr>
+            <td>{{ asset.id }}</td>
+            <td>{{ asset.name }}</td>
+            <td>{{ asset.assetType ?? '-' }}</td>
+            <td class="text-center">{{ asset.confidentialityValue ?? '-' }}</td>
+            <td class="text-center">{{ asset.integrityValue ?? '-' }}</td>
+            <td class="text-center">{{ asset.availabilityValue ?? '-' }}</td>
+            <td>{{ asset.dataClassification ?? '-' }}</td>
+            <td>{{ asset.effectiveOwner ?? '-' }}</td>
+            <td>{{ asset.location ?? '-' }}</td>
+            <td>{{ asset.status ?? '-' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="margin-top: 20pt; font-size: 8pt; color: #64748b;">
+    <p><strong>Legend:</strong> C = Confidentiality, I = Integrity, A = Availability (scale 1-5, where 5 = highest protection requirement)</p>
+</div>
+{% endif %}
+{% endblock %}
