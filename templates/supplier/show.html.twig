@@ -437,7 +437,14 @@
                             <dd class="col-sm-8">
                                 {% if supplier.processingLocations is iterable and supplier.processingLocations|length > 0 %}
                                     {% for loc in supplier.processingLocations %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'light', class: 'me-1 border', content: loc } %}
+                                        {# Entries may be plain strings (legacy) or structured dicts with
+                                           country/city/region keys. Render a human-readable label. #}
+                                        {% set label = loc is iterable
+                                            ? [loc.country|default(''), loc.city|default(''), loc.region|default('')]|filter(v => v != '')|join(', ')
+                                            : loc|default('') %}
+                                        {% if label %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'light', class: 'me-1 border', content: label } %}
+                                        {% endif %}
                                     {% endfor %}
                                 {% else %}
                                     <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>

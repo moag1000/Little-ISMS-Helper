@@ -49,8 +49,9 @@
         variant: 'warning'
     }) }}
 
-    {% set avgResolutionDays = allIncidents|filter(i => i.status.value == 'resolved')|length > 0
-        ? ((allIncidents|filter(i => i.status.value == 'resolved')|reduce((carry, i) => carry + (i.resolvedAt ? (i.resolvedAt.diff(i.occurredAt).days) : 0), 0)) / (allIncidents|filter(i => i.status.value == 'resolved')|length))|round(1)
+    {% set _resolvedIncidents = allIncidents|filter(i => i.status.value == 'resolved' and i.resolvedAt and i.occurredAt) %}
+    {% set avgResolutionDays = _resolvedIncidents|length > 0
+        ? (_resolvedIncidents|reduce((carry, i) => carry + i.resolvedAt.diff(i.occurredAt).days, 0) / _resolvedIncidents|length)|round(1)
         : 0 %}
     <div class="position-relative">
         {{ _fa_feature_card.render({
