@@ -1,0 +1,80 @@
+baseline:
+  id: gdpr-healthcare
+  name: 'GDPR - Krankenhäuser / MDR / GxP'
+  name_en: 'GDPR - Hospitals / MDR / GxP'
+  industry: healthcare
+  description: |
+    Baseline für Krankenhäuser (KHZG, B3S Gesundheit), Medizinprodukte-Hersteller
+    (MDR, FDA 21 CFR Part 11) und Pharma-GxP. Verfügbarkeits-Druck (Patientensicherheit),
+    hochsensible Gesundheitsdaten (DSGVO Art. 9), Ransomware-Top-Ziel.
+    Fokus: Datenschutz, Verfügbarkeit, Audit-Trail, Validierte Systeme.
+  description_en: |
+    Baseline for hospitals (KHZG, B3S Health), medical-device manufacturers (MDR,
+    FDA 21 CFR Part 11) and pharma GxP. Availability pressure (patient safety),
+    highly sensitive health data (GDPR Art. 9), top ransomware target.
+    Focus: privacy, availability, audit trail, validated systems.
+  targets:
+    "Art.13":
+      maturity_target: "5"
+      reason: "Informationspflichten in Healthcare: Gesundheitsdaten Art. 9 DSGVO + Patientenakten — strengster Schutz, Sonderkategorie."
+      reason_en: "Information duties in healthcare: GDPR Art. 9 health data plus patient records — highest protection class."
+    "Art.15":
+      maturity_target: "5"
+      reason: "Auskunftsrecht in Healthcare: Gesundheitsdaten Art. 9 DSGVO + Patientenakten — strengster Schutz, Sonderkategorie."
+      reason_en: "Right of access in healthcare: GDPR Art. 9 health data plus patient records — highest protection class."
+    "Art.17":
+      maturity_target: "5"
+      reason: "Löschrecht in Healthcare: Gesundheitsdaten Art. 9 DSGVO + Patientenakten — strengster Schutz, Sonderkategorie."
+      reason_en: "Right to erasure in healthcare: GDPR Art. 9 health data plus patient records — highest protection class."
+    "Art.20":
+      maturity_target: "5"
+      reason: "Datenportabilität in Healthcare: Gesundheitsdaten Art. 9 DSGVO + Patientenakten — strengster Schutz, Sonderkategorie."
+      reason_en: "Data portability in healthcare: GDPR Art. 9 health data plus patient records — highest protection class."
+    "Art.25":
+      maturity_target: "3"
+      reason: "Privacy by Design in Healthcare: MDR Class IIb/III medizingeräte-Software unterliegt IEC 62304 + IEC 81001-5-1 (Cyber-Sec), formaler SDLC zwingend."
+      reason_en: "Privacy by design in healthcare: MDR Class IIb/III medical-device software falls under IEC 62304 + IEC 81001-5-1; formal SDLC mandatory."
+    "Art.28":
+      maturity_target: "4"
+      reason: "Auftragsverarbeitung in Healthcare: Medizingeräte-Hersteller mit MDR-Pflicht, Cloud-Health-Dienste mit BSI-C5-Audits — strenger als Industriestandard."
+      reason_en: "Processor agreements in healthcare: medical device manufacturers under MDR, cloud health services with BSI-C5 audits — stricter than industry standard."
+    "Art.30":
+      maturity_target: "5"
+      reason: "Verarbeitungs-Verzeichnis in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "Records of processing in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "Art.32":
+      maturity_target: "5"
+      reason: "TOMs / Sicherheit in Healthcare: Patientendaten Art. 9 DSGVO erfordern Encryption-at-Rest und in-Transit, FHIR-Standards mit TLS 1.3."
+      reason_en: "Security of processing in healthcare: GDPR Art. 9 patient data demands encryption at rest and in transit; FHIR with TLS 1.3."
+    "Art.33":
+      maturity_target: "5"
+      reason: "Breach-Notification an Aufsicht in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "Breach notification in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."
+    "Art.34":
+      maturity_target: "5"
+      reason: "Breach-Notification an Betroffene in Healthcare: Ransomware ist Top-Bedrohung gegen Kliniken (Lukaskrankenhaus, Düsseldorf-Vorfall) — Notbetriebs-Pläne kritisch."
+      reason_en: "Notification to data subjects in healthcare: ransomware is the top threat against clinics (Lukas hospital, Düsseldorf incident) — fallback plans critical."
+    "Art.35":
+      maturity_target: "4"
+      reason: "DSFA / DPIA in Healthcare: KHZG-Förderung erzwingt formelle InfoSec-Policies; Krankenhaus-Vorstand zunehmend persönlich haftbar."
+      reason_en: "DPIA in healthcare: KHZG funding mandates formal InfoSec policies; hospital boards increasingly personally liable."
+    "Art.37":
+      maturity_target: "4"
+      reason: "DSB / DPO in Healthcare: KHZG-Förderung erzwingt formelle InfoSec-Policies; Krankenhaus-Vorstand zunehmend persönlich haftbar."
+      reason_en: "Data protection officer in healthcare: KHZG funding mandates formal InfoSec policies; hospital boards increasingly personally liable."
+    "Art.44":
+      maturity_target: "5"
+      reason: "Drittlandstransfers in Healthcare: B3S Gesundheit, KHZG, MDR, GxP, DSGVO Art. 9 — paralleles Compliance-Portfolio Standard."
+      reason_en: "International transfers in healthcare: B3S Health, KHZG, MDR, GxP, GDPR Art. 9 — parallel compliance portfolio is standard."
+    "Art.5":
+      maturity_target: "5"
+      reason: "Verarbeitungs-Grundsätze in Healthcare: Gesundheitsdaten Art. 9 DSGVO + Patientenakten — strengster Schutz, Sonderkategorie."
+      reason_en: "Processing principles in healthcare: GDPR Art. 9 health data plus patient records — highest protection class."
+    "Art.6":
+      maturity_target: "5"
+      reason: "Rechtmäßigkeit in Healthcare: Gesundheitsdaten Art. 9 DSGVO + Patientenakten — strengster Schutz, Sonderkategorie."
+      reason_en: "Lawfulness in healthcare: GDPR Art. 9 health data plus patient records — highest protection class."
+    "Art.7":
+      maturity_target: "5"
+      reason: "Einwilligung in Healthcare: Gesundheitsdaten Art. 9 DSGVO + Patientenakten — strengster Schutz, Sonderkategorie."
+      reason_en: "Consent in healthcare: GDPR Art. 9 health data plus patient records — highest protection class."

@@ -1,0 +1,113 @@
+baseline:
+  id: bsi-c5-kritis
+  name: 'BSI-C5 - KRITIS / NIS2-essential'
+  name_en: 'BSI-C5 - KRITIS / NIS2-essential'
+  industry: kritis
+  description: |
+    Baseline für Betreiber Kritischer Infrastrukturen (Energie, Wasser, Gesundheit,
+    Transport, Telekom) im Geltungsbereich der BSI-KRITIS-Verordnung und NIS2.
+    Hohe Reife-Erwartung wegen staatlicher APT-Bedrohung, BSI-Meldepflicht (§8b BSIG)
+    und 24/7-Verfügbarkeitsdruck. Fokus: Detection, Incident-Response, Lieferketten
+    und OT-Integration.
+  description_en: |
+    Baseline for critical infrastructure operators (energy, water, health, transport,
+    telecom) under BSI-KRITIS regulation and NIS2. High maturity expectations due to
+    nation-state APT threat, BSI reporting (§8b BSIG) and 24/7 availability pressure.
+    Focus: detection, incident response, supply chain, OT integration.
+  targets:
+    "AM-01":
+      maturity_target: "4"
+      reason: "Asset-Management bei KRITIS: vollständiges Inventar inkl. OT/ICS ist §8a-Audit-Pflicht — Schutzbedarfsfeststellung je Asset."
+      reason_en: "Asset management in KRITIS: complete inventory including OT/ICS is §8a audit mandate — protection-need classification per asset."
+    "BCM-01":
+      maturity_target: "5"
+      reason: "BCM-Top-Level bei KRITIS: Versorgungssicherheit ist Schutzziel-Spitze — RTO < 4h für versorgungsrelevante Services Standard."
+      reason_en: "BCM governance in KRITIS: supply security is the top protection objective — RTO < 4h for supply-critical services standard."
+    "BEI-01":
+      maturity_target: "5"
+      reason: "Beschaffung bei KRITIS: §8a-BSIG verlangt Sicherheitsnachweise bis zum Sub-Lieferanten, Solarwinds-Klasse-Risiken sind real."
+      reason_en: "Procurement in KRITIS: §8a BSIG demands security evidence down to sub-suppliers; Solarwinds-class risks are real."
+    "BEI-04":
+      maturity_target: "5"
+      reason: "Beschaffungs-Sicherheit bei KRITIS: §8a-BSIG verlangt Sicherheitsnachweise bis zum Sub-Lieferanten, Solarwinds-Klasse-Risiken sind real."
+      reason_en: "Procurement security in KRITIS: §8a BSIG demands security evidence down to sub-suppliers; Solarwinds-class risks are real."
+    "BFM-01":
+      maturity_target: "5"
+      reason: "Berechtigungs-Management bei KRITIS: privilegierte OT-Zugänge sind häufigster APT-Initialvektor — strikte Härtung mit MFA und PAM Pflicht."
+      reason_en: "Authorisation management in KRITIS: privileged OT access is the most common APT initial vector — strict hardening with MFA and PAM is mandatory."
+    "COS-01":
+      maturity_target: "4"
+      reason: "Compliance-Steuerung bei KRITIS: BSI-/NIS2-Konformitätsnachweise sind kontinuierlich zu führen, externes Audit alle 2 Jahre."
+      reason_en: "Compliance steering in KRITIS: BSI/NIS2 conformity evidence must be maintained continuously; external audit every 2 years."
+    "DEV-01":
+      maturity_target: "4"
+      reason: "Secure Development bei KRITIS: Customizing-Code in HMI/SCADA muss revisionssicher entwickelt sein, NIS2-21.2.e fordert das ausdrücklich."
+      reason_en: "Secure development in KRITIS: customisation code in HMI/SCADA must be developed in audit-proof form; NIS2-21.2.e demands it."
+    "DEV-02":
+      maturity_target: "4"
+      reason: "Security-Testing in Dev bei KRITIS: Customizing-Code in HMI/SCADA muss revisionssicher entwickelt sein, NIS2-21.2.e fordert das ausdrücklich."
+      reason_en: "Security testing in dev in KRITIS: customisation code in HMI/SCADA must be developed in audit-proof form; NIS2-21.2.e demands it."
+    "HR-03":
+      maturity_target: "4"
+      reason: "Personal-Sicherheit bei KRITIS: Operator-Schulung mit Phishing-Simulationen ist NIS2-21.2.g — KRITIS-Branchen sind Spear-Phishing-Top-Ziel."
+      reason_en: "HR security in KRITIS: operator training with phishing simulations is NIS2-21.2.g — KRITIS sectors are top spear-phishing targets."
+    "IDM-01":
+      maturity_target: "5"
+      reason: "Identity-Management bei KRITIS: privilegierte OT-Zugänge sind häufigster APT-Initialvektor — strikte Härtung mit MFA und PAM Pflicht."
+      reason_en: "Identity management in KRITIS: privileged OT access is the most common APT initial vector — strict hardening with MFA and PAM is mandatory."
+    "IDM-02":
+      maturity_target: "5"
+      reason: "Authentisierung bei KRITIS: privilegierte OT-Zugänge sind häufigster APT-Initialvektor — strikte Härtung mit MFA und PAM Pflicht."
+      reason_en: "Authentication in KRITIS: privileged OT access is the most common APT initial vector — strict hardening with MFA and PAM is mandatory."
+    "IDM-09":
+      maturity_target: "5"
+      reason: "Privileged-Account-Mgmt bei KRITIS: privilegierte OT-Zugänge sind häufigster APT-Initialvektor — strikte Härtung mit MFA und PAM Pflicht."
+      reason_en: "Privileged account mgmt in KRITIS: privileged OT access is the most common APT initial vector — strict hardening with MFA and PAM is mandatory."
+    "KOS-01":
+      maturity_target: "5"
+      reason: "Kommunikationssicherheit bei KRITIS: privilegierte OT-Zugänge sind häufigster APT-Initialvektor — strikte Härtung mit MFA und PAM Pflicht."
+      reason_en: "Communications security in KRITIS: privileged OT access is the most common APT initial vector — strict hardening with MFA and PAM is mandatory."
+    "KRY-01":
+      maturity_target: "4"
+      reason: "Kryptografie-Policy bei KRITIS: SCADA-Kommunikation muss IEC-62351-konform abgesichert sein, Quanten-Resistenz absehbar."
+      reason_en: "Cryptography policy in KRITIS: SCADA communication must comply with IEC 62351; quantum resistance is on the horizon."
+    "MA-01":
+      maturity_target: "5"
+      reason: "Mandantenabgrenzung bei KRITIS: privilegierte OT-Zugänge sind häufigster APT-Initialvektor — strikte Härtung mit MFA und PAM Pflicht."
+      reason_en: "Tenant separation in KRITIS: privileged OT access is the most common APT initial vector — strict hardening with MFA and PAM is mandatory."
+    "OPS-01":
+      maturity_target: "5"
+      reason: "Operations-Mgmt bei KRITIS: ungesteuerte Änderungen verursachten in der Vergangenheit Black-Outs — ITIL-konformer Change-Prozess Pflicht."
+      reason_en: "Operations management in KRITIS: uncontrolled changes have caused blackouts — ITIL change process is mandatory."
+    "OPS-10":
+      maturity_target: "5"
+      reason: "Logging und Monitoring bei KRITIS: 24/7-SOC mit OT-spezifischen SIEM-Use-Cases ist State-of-the-Art für APT-Detection."
+      reason_en: "Logging and monitoring in KRITIS: 24/7 SOC with OT-specific SIEM use cases is state of the art for APT detection."
+    "OPS-15":
+      maturity_target: "5"
+      reason: "Patch-Management bei KRITIS: OT-CVEs (Siemens, ABB) brauchen koordinierten Patch-Plan; BSI-Audit-Schwerpunkt."
+      reason_en: "Patch management in KRITIS: OT CVEs (Siemens, ABB) need coordinated patch plans; BSI audit focus."
+    "OPS-18":
+      maturity_target: "5"
+      reason: "Backup bei KRITIS: Versorgungssicherheit ist Schutzziel-Spitze — RTO < 4h für versorgungsrelevante Services Standard."
+      reason_en: "Backup in KRITIS: supply security is the top protection objective — RTO < 4h for supply-critical services standard."
+    "PI-01":
+      maturity_target: "5"
+      reason: "Portabilität und Interoperabilität bei KRITIS: §8a-BSIG-Audit prüft Top-Level-Steuerung — formelle Verabschiedung und jährlicher Review sind Audit-Standard."
+      reason_en: "Portability/interop in KRITIS: §8a BSIG audits review top-level governance — formal adoption and annual review are audit standard."
+    "PSC-01":
+      maturity_target: "5"
+      reason: "Physische Sicherheit bei KRITIS: Leitstellen und Substations sind BSI-Top-Schutzobjekt; physische Hochsicherheit ist Pflicht."
+      reason_en: "Physical security in KRITIS: control rooms and substations are top BSI protection assets; physical high security is mandatory."
+    "RB-01":
+      maturity_target: "4"
+      reason: "Regulatory Baseline bei KRITIS: BSI-/NIS2-Konformitätsnachweise sind kontinuierlich zu führen, externes Audit alle 2 Jahre."
+      reason_en: "Regulatory baseline in KRITIS: BSI/NIS2 conformity evidence must be maintained continuously; external audit every 2 years."
+    "RB-04":
+      maturity_target: "4"
+      reason: "Regulatory Reporting bei KRITIS: BSI-/NIS2-Konformitätsnachweise sind kontinuierlich zu führen, externes Audit alle 2 Jahre."
+      reason_en: "Regulatory reporting in KRITIS: BSI/NIS2 conformity evidence must be maintained continuously; external audit every 2 years."
+    "SIM-01":
+      maturity_target: "5"
+      reason: "Security Incident Mgmt bei KRITIS: §8b-BSIG-Meldepflicht binnen 24h an BSI/CERT-Bund, Krisenstab muss 24/7 erreichbar sein."
+      reason_en: "Security incident mgmt in KRITIS: §8b BSIG mandates notification within 24h to BSI/CERT-Bund; crisis team must be reachable 24/7."

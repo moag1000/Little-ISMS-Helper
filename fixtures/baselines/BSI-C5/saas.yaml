@@ -1,0 +1,111 @@
+baseline:
+  id: bsi-c5-saas
+  name: 'BSI-C5 - Cloud-SaaS / Software-Anbieter'
+  name_en: 'BSI-C5 - Cloud SaaS / Software Vendor'
+  industry: saas
+  description: |
+    Baseline für Cloud-SaaS-Anbieter mit Multi-Tenant-Architektur. Customer-Audits
+    (SOC 2, ISO 27001, BSI-C5) treiben die Reife. Fokus: IAM, Crypto, Secure-SDLC,
+    Mandantenabgrenzung, Vulnerability-Management. BCM moderat, da Hyperscaler-IaaS
+    viel abdeckt.
+  description_en: |
+    Baseline for cloud SaaS vendors with multi-tenant architecture. Customer audits
+    (SOC 2, ISO 27001, BSI-C5) drive maturity. Focus: IAM, crypto, secure SDLC, tenant
+    separation, vulnerability management. BCM moderate as hyperscaler IaaS covers much.
+  targets:
+    "AM-01":
+      maturity_target: "4"
+      reason: "Asset-Management für Cloud-SaaS: Cloud-Asset-Inventar via CSPM-Tools ist Standard, Shadow-IT-Risiko durch SaaS-Wildwuchs."
+      reason_en: "Asset management for cloud SaaS: cloud asset inventory via CSPM tools is standard; shadow IT risk via SaaS sprawl."
+    "BCM-01":
+      maturity_target: "3"
+      reason: "BCM-Top-Level für Cloud-SaaS: Hyperscaler-IaaS deckt Infrastruktur-Resilienz weitgehend ab; Multi-Region-Aktiv/Passiv ist Mindestbild."
+      reason_en: "BCM governance for cloud SaaS: hyperscaler IaaS covers most infra resilience; multi-region active/passive is the minimum."
+    "BEI-01":
+      maturity_target: "4"
+      reason: "Beschaffung für Cloud-SaaS: Sub-Processor-Listen (DPA-Pflicht) und Hyperscaler-Audit-Reports sind im Vendor-Mgmt zu führen."
+      reason_en: "Procurement for cloud SaaS: sub-processor lists (DPA mandate) and hyperscaler audit reports must be tracked in vendor mgmt."
+    "BEI-04":
+      maturity_target: "4"
+      reason: "Beschaffungs-Sicherheit für Cloud-SaaS: Sub-Processor-Listen (DPA-Pflicht) und Hyperscaler-Audit-Reports sind im Vendor-Mgmt zu führen."
+      reason_en: "Procurement security for cloud SaaS: sub-processor lists (DPA mandate) and hyperscaler audit reports must be tracked in vendor mgmt."
+    "BFM-01":
+      maturity_target: "5"
+      reason: "Berechtigungs-Management für Cloud-SaaS: SaaS-Multi-Tenant erzwingt strikte IAM mit MFA, SSO und SCIM-Provisioning — Customer-Pflichtanforderung."
+      reason_en: "Authorisation management for cloud SaaS: multi-tenant SaaS forces strict IAM with MFA, SSO and SCIM provisioning — customer mandate."
+    "COS-01":
+      maturity_target: "4"
+      reason: "Compliance-Steuerung für Cloud-SaaS: parallele Frameworks (SOC 2, ISO 27001, BSI-C5, DSGVO) effizient via Mappings und Data-Reuse handhaben."
+      reason_en: "Compliance steering for cloud SaaS: parallel frameworks (SOC 2, ISO 27001, BSI-C5, GDPR) handled efficiently via mappings and data reuse."
+    "DEV-01":
+      maturity_target: "5"
+      reason: "Secure Development für Cloud-SaaS: Secure-SDLC mit SAST/SCA/DAST in CI/CD ist Reife-Treiber, OWASP-ASVS-Konformität wird von Kunden gefordert."
+      reason_en: "Secure development for cloud SaaS: secure SDLC with SAST/SCA/DAST in CI/CD drives maturity; OWASP ASVS conformity is customer-demanded."
+    "DEV-02":
+      maturity_target: "5"
+      reason: "Security-Testing in Dev für Cloud-SaaS: Secure-SDLC mit SAST/SCA/DAST in CI/CD ist Reife-Treiber, OWASP-ASVS-Konformität wird von Kunden gefordert."
+      reason_en: "Security testing in dev for cloud SaaS: secure SDLC with SAST/SCA/DAST in CI/CD drives maturity; OWASP ASVS conformity is customer-demanded."
+    "HR-03":
+      maturity_target: "3"
+      reason: "Personal-Sicherheit für Cloud-SaaS: verteiltes Team mit hoher Fluktuation braucht regelmäßiges Onboarding-Security-Training."
+      reason_en: "HR security for cloud SaaS: distributed team with high turnover needs regular onboarding security training."
+    "IDM-01":
+      maturity_target: "5"
+      reason: "Identity-Management für Cloud-SaaS: SaaS-Multi-Tenant erzwingt strikte IAM mit MFA, SSO und SCIM-Provisioning — Customer-Pflichtanforderung."
+      reason_en: "Identity management for cloud SaaS: multi-tenant SaaS forces strict IAM with MFA, SSO and SCIM provisioning — customer mandate."
+    "IDM-02":
+      maturity_target: "5"
+      reason: "Authentisierung für Cloud-SaaS: SaaS-Multi-Tenant erzwingt strikte IAM mit MFA, SSO und SCIM-Provisioning — Customer-Pflichtanforderung."
+      reason_en: "Authentication for cloud SaaS: multi-tenant SaaS forces strict IAM with MFA, SSO and SCIM provisioning — customer mandate."
+    "IDM-09":
+      maturity_target: "5"
+      reason: "Privileged-Account-Mgmt für Cloud-SaaS: SaaS-Multi-Tenant erzwingt strikte IAM mit MFA, SSO und SCIM-Provisioning — Customer-Pflichtanforderung."
+      reason_en: "Privileged account mgmt for cloud SaaS: multi-tenant SaaS forces strict IAM with MFA, SSO and SCIM provisioning — customer mandate."
+    "KOS-01":
+      maturity_target: "5"
+      reason: "Kommunikationssicherheit für Cloud-SaaS: SaaS-Multi-Tenant erzwingt strikte IAM mit MFA, SSO und SCIM-Provisioning — Customer-Pflichtanforderung."
+      reason_en: "Communications security for cloud SaaS: multi-tenant SaaS forces strict IAM with MFA, SSO and SCIM provisioning — customer mandate."
+    "KRY-01":
+      maturity_target: "5"
+      reason: "Kryptografie-Policy für Cloud-SaaS: TLS 1.3, Encryption-at-Rest mit KMS, BYOK für Enterprise-Kunden ist Marktstandard, NIS2-21.2.h-konform."
+      reason_en: "Cryptography policy for cloud SaaS: TLS 1.3, encryption-at-rest with KMS, BYOK for enterprise customers is market standard, NIS2-21.2.h aligned."
+    "MA-01":
+      maturity_target: "5"
+      reason: "Mandantenabgrenzung für Cloud-SaaS: SaaS-Multi-Tenant erzwingt strikte IAM mit MFA, SSO und SCIM-Provisioning — Customer-Pflichtanforderung."
+      reason_en: "Tenant separation for cloud SaaS: multi-tenant SaaS forces strict IAM with MFA, SSO and SCIM provisioning — customer mandate."
+    "OPS-01":
+      maturity_target: "4"
+      reason: "Operations-Mgmt für Cloud-SaaS: GitOps und Feature-Flags ermöglichen kontrollierte Deployments — Change-Failures sofort Customer-sichtbar."
+      reason_en: "Operations management for cloud SaaS: GitOps and feature flags enable controlled deployments — change failures are immediately customer-visible."
+    "OPS-10":
+      maturity_target: "4"
+      reason: "Logging und Monitoring für Cloud-SaaS: Cloud-native SIEM mit Anomalie-Detection auf Tenant-Ebene ist Standard, BSI-C5-OPS-10 verlangt Logging."
+      reason_en: "Logging and monitoring for cloud SaaS: cloud-native SIEM with tenant-level anomaly detection is standard; BSI-C5 OPS-10 mandates logging."
+    "OPS-15":
+      maturity_target: "5"
+      reason: "Patch-Management für Cloud-SaaS: kontinuierliches Patch-Management mit Container-Scanning und automatischem CVE-Triaging ist Marktstandard."
+      reason_en: "Patch management for cloud SaaS: continuous patch mgmt with container scanning and automated CVE triage is market standard."
+    "OPS-18":
+      maturity_target: "3"
+      reason: "Backup für Cloud-SaaS: Hyperscaler-IaaS deckt Infrastruktur-Resilienz weitgehend ab; Multi-Region-Aktiv/Passiv ist Mindestbild."
+      reason_en: "Backup for cloud SaaS: hyperscaler IaaS covers most infra resilience; multi-region active/passive is the minimum."
+    "PI-01":
+      maturity_target: "4"
+      reason: "Portabilität und Interoperabilität für Cloud-SaaS: Customer-Audits (SOC 2, ISO 27001) verlangen formelle Policies, Trust-Center-Veröffentlichung Standard."
+      reason_en: "Portability/interop for cloud SaaS: customer audits (SOC 2, ISO 27001) demand formal policies; trust-centre publication is standard."
+    "PSC-01":
+      maturity_target: "3"
+      reason: "Physische Sicherheit für Cloud-SaaS: physische Sicherheit ist meist Hyperscaler-Verantwortung (Shared-Responsibility), Office-Sicherheit moderat."
+      reason_en: "Physical security for cloud SaaS: physical security mostly sits with hyperscalers (shared responsibility); office security is moderate."
+    "RB-01":
+      maturity_target: "4"
+      reason: "Regulatory Baseline für Cloud-SaaS: parallele Frameworks (SOC 2, ISO 27001, BSI-C5, DSGVO) effizient via Mappings und Data-Reuse handhaben."
+      reason_en: "Regulatory baseline for cloud SaaS: parallel frameworks (SOC 2, ISO 27001, BSI-C5, GDPR) handled efficiently via mappings and data reuse."
+    "RB-04":
+      maturity_target: "4"
+      reason: "Regulatory Reporting für Cloud-SaaS: parallele Frameworks (SOC 2, ISO 27001, BSI-C5, DSGVO) effizient via Mappings und Data-Reuse handhaben."
+      reason_en: "Regulatory reporting for cloud SaaS: parallel frameworks (SOC 2, ISO 27001, BSI-C5, GDPR) handled efficiently via mappings and data reuse."
+    "SIM-01":
+      maturity_target: "4"
+      reason: "Security Incident Mgmt für Cloud-SaaS: Customer-SLAs und DSGVO Art. 33 (72h) zwingen zu strukturiertem Incident-Response mit Statuspage-Kommunikation."
+      reason_en: "Security incident mgmt for cloud SaaS: customer SLAs and GDPR Art. 33 (72h) force structured incident response with statuspage comms."

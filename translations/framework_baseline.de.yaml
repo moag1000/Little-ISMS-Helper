@@ -1,0 +1,30 @@
+framework_baseline:
+    title: 'Framework-Baselines (Reife-Soll)'
+    subtitle: 'Vorkonfigurierte Soll-Reifegrade pro Anforderung, abgestimmt auf typische Branchen — KRITIS, Finance, SaaS, Manufacturing, Healthcare. Anwenden setzt nur das Soll (maturityTarget); Self-Assessments bleiben unangetastet.'
+    no_frameworks: 'Noch keine Framework-Baselines verfügbar. Erwartet werden YAML-Dateien unter fixtures/baselines/<FRAMEWORK_CODE>/<branche>.yaml.'
+    empty_for_framework: 'Für dieses Framework sind noch keine Baselines hinterlegt.'
+    tenant_required: 'Mandantenkontext erforderlich — Baselines wirken pro Mandant.'
+    requires_manager: 'Anwenden erfordert Rolle Manager (ROLE_MANAGER).'
+    baselines_count: '%count% Baseline(s) verfügbar'
+    help: |
+        <strong>So wirkt eine Baseline:</strong> Pro Anforderung wird die Soll-Reife (z. B. 3/5) gesetzt — basierend auf branchentypischen Erwartungen aus Audits, Aufsichtsbehörden und Best Practices. Du kannst danach mandantenspezifisch nachjustieren. <strong>Vorschau (Dry-Run)</strong> zeigt vorab, wie viele Anforderungen gefunden bzw. unbekannt sind.
+    show:
+        subtitle: 'Verfügbare Baselines für dieses Framework. Anwenden überschreibt die Soll-Reife pro Anforderung.'
+    framework:
+        ISO27001: 'ISO/IEC 27001:2022'
+        BSI_GRUNDSCHUTZ: 'BSI IT-Grundschutz'
+        BSI-C5: 'BSI C5:2020'
+        BSI-C5-2026: 'BSI C5:2026'
+        NIS2: 'NIS2-Richtlinie (EU 2022/2555)'
+        DORA: 'DORA (EU 2022/2554)'
+        TISAX: 'TISAX / VDA-ISA'
+        GDPR: 'DSGVO / GDPR'
+        ISO27701: 'ISO/IEC 27701'
+        ISO27701_2025: 'ISO/IEC 27701:2025'
+        NIST-CSF: 'NIST Cybersecurity Framework 2.0'
+    action:
+        view: 'Baselines anzeigen'
+        preview: 'Vorschau (Dry-Run)'
+        apply: 'Anwenden'
+    confirm:
+        apply: 'Baseline „%name%" wirklich auf Mandant „%tenant%" anwenden? Bestehende Soll-Reifen werden überschrieben.'

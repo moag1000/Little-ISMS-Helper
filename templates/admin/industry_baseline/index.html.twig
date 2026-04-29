@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'framework_baseline' %}
+
+{% block title %}{{ 'framework_baseline.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">{{ 'common.dashboard'|trans({}, 'messages') }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'framework_baseline.title'|trans }}</li>
+        </ol>
+    </nav>
+
+    <div class="page-header mb-4">
+        <h1>{{ 'framework_baseline.title'|trans }}</h1>
+        <p class="text-muted small mb-0">{{ 'framework_baseline.subtitle'|trans }}</p>
+    </div>
+
+    {% if tenant is null %}
+        <div class="alert alert-warning small">
+            <i class="bi bi-exclamation-triangle"></i>
+            {{ 'framework_baseline.tenant_required'|trans }}
+        </div>
+    {% endif %}
+
+    {% if frameworks|length == 0 %}
+        <div class="alert alert-info small">
+            <i class="bi bi-info-circle"></i>
+            {{ 'framework_baseline.no_frameworks'|trans }}
+        </div>
+    {% else %}
+        <div class="row g-3">
+            {% for f in frameworks %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <code class="small text-muted mb-2">{{ f.code }}</code>
+                            <h2 class="h5">{{ ('framework_baseline.framework.' ~ f.code)|trans({}, 'framework_baseline')|default(f.code) }}</h2>
+                            <p class="small text-muted flex-grow-1">
+                                {{ 'framework_baseline.baselines_count'|trans({'%count%': f.count}) }}
+                            </p>
+                            <a href="{{ path('admin_industry_baselines_show', {framework: f.code}) }}"
+                               class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary mt-2">
+                                <i class="bi bi-arrow-right"></i> {{ 'framework_baseline.action.view'|trans }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="alert alert-light mt-4 small">
+        <i class="bi bi-info-circle"></i>
+        {{ 'framework_baseline.help'|trans|raw }}
+    </div>
+</div>
+{% endblock %}

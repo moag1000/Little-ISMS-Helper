@@ -1,0 +1,75 @@
+baseline:
+  id: dora-manufacturing
+  name: 'DORA - Fertigung / Automotive (TISAX)'
+  name_en: 'DORA - Manufacturing / Automotive (TISAX)'
+  industry: manufacturing
+  description: |
+    Baseline für Fertigungsunternehmen, insb. Automotive-Zulieferer im TISAX-Scope.
+    Kern-Themen: Prototypen-Schutz, OT/Office-Trennung, Lieferantensicherheit. TISAX-
+    Self-Assessment Level 2/3 ist Industrie-Standard. OEM-Audits sind unmittelbar
+    Geschäfts-relevant.
+  description_en: |
+    Baseline for manufacturing, esp. automotive suppliers in TISAX scope. Core themes:
+    prototype protection, OT/office segregation, supplier security. TISAX self-assessment
+    level 2/3 is industry standard. OEM audits are directly business-relevant.
+  targets:
+    "Art.5":
+      maturity_target: "3"
+      reason: "ICT-Risk-Mgmt-Framework in Fertigung: TISAX-Anforderung an verabschiedete Policies — OEM-Auditoren prüfen Existenz und Aktualität strikt."
+      reason_en: "ICT risk mgmt framework in manufacturing: TISAX requires adopted policies — OEM auditors verify existence and currency strictly."
+    "Art.6":
+      maturity_target: "3"
+      reason: "ICT-Risk-Strategie in Fertigung: TISAX-Anforderung an verabschiedete Policies — OEM-Auditoren prüfen Existenz und Aktualität strikt."
+      reason_en: "ICT risk strategy in manufacturing: TISAX requires adopted policies — OEM auditors verify existence and currency strictly."
+    "Art.7":
+      maturity_target: "4"
+      reason: "ICT-Systeme und Tools in Fertigung: OT/IT-Asset-Inventar mit Schutzbedarfs-Klassifizierung ist TISAX-INF-Pflicht."
+      reason_en: "ICT systems and tools in manufacturing: OT/IT asset inventory with protection classification is a TISAX INF mandate."
+    "Art.8":
+      maturity_target: "4"
+      reason: "Asset-Identifikation in Fertigung: OT/IT-Asset-Inventar mit Schutzbedarfs-Klassifizierung ist TISAX-INF-Pflicht."
+      reason_en: "Identification in manufacturing: OT/IT asset inventory with protection classification is a TISAX INF mandate."
+    "Art.9":
+      maturity_target: "4"
+      reason: "Schutz und Prävention in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Protection and prevention in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "Art.10":
+      maturity_target: "3"
+      reason: "Detection in Fertigung: OT-Anomalie-Detection mit passivem Listening (Claroty, Nozomi) ist State-of-the-Art."
+      reason_en: "Detection in manufacturing: OT anomaly detection via passive listening (Claroty, Nozomi) is state of the art."
+    "Art.11":
+      maturity_target: "3"
+      reason: "Response and Recovery in Fertigung: Produktionsausfall durch Cyber ist teuer — strukturiertes Incident-Mgmt mit OEM-Notifikation Pflicht."
+      reason_en: "Response and recovery in manufacturing: production downtime due to cyber is expensive — structured incident mgmt with OEM notification is mandatory."
+    "Art.12":
+      maturity_target: "3"
+      reason: "Backup und Restore in Fertigung: Just-in-Time-Lieferketten bedeuten kurze Toleranz — RTO 24h für Auslieferung kritisch."
+      reason_en: "Backup and restoration in manufacturing: just-in-time supply chains have low tolerance — RTO 24h for delivery is critical."
+    "Art.13":
+      maturity_target: "3"
+      reason: "Learning und Evolving in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "Learning and evolving in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "Art.14":
+      maturity_target: "3"
+      reason: "Krisen-Kommunikation in Fertigung: Produktionsausfall durch Cyber ist teuer — strukturiertes Incident-Mgmt mit OEM-Notifikation Pflicht."
+      reason_en: "Communication in manufacturing: production downtime due to cyber is expensive — structured incident mgmt with OEM notification is mandatory."
+    "Art.15":
+      maturity_target: "3"
+      reason: "Simplified Framework in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "Simplified framework in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "Art.17":
+      maturity_target: "3"
+      reason: "ICT-Incident-Mgmt in Fertigung: Produktionsausfall durch Cyber ist teuer — strukturiertes Incident-Mgmt mit OEM-Notifikation Pflicht."
+      reason_en: "ICT incident mgmt in manufacturing: production downtime due to cyber is expensive — structured incident mgmt with OEM notification is mandatory."
+    "Art.24":
+      maturity_target: "3"
+      reason: "Resilience-Testing in Fertigung: OT-Patching ist schwierig (Validierung, Wartungsfenster), kompensierende Kontrollen wichtig."
+      reason_en: "Operational resilience testing in manufacturing: OT patching is hard (validation, maintenance windows) — compensating controls matter."
+    "Art.28":
+      maturity_target: "4"
+      reason: "Third-Party-Risk in Fertigung: Tier-2/Tier-3-Zulieferer im Automotive-Wertstrom müssen TISAX-konform sein, Sub-Supplier-Audits üblich."
+      reason_en: "Third-party risk mgmt in manufacturing: Tier-2/Tier-3 suppliers in the automotive value chain must be TISAX-conformant; sub-supplier audits common."
+    "Art.30":
+      maturity_target: "4"
+      reason: "Vertragsklauseln in Fertigung: Tier-2/Tier-3-Zulieferer im Automotive-Wertstrom müssen TISAX-konform sein, Sub-Supplier-Audits üblich."
+      reason_en: "Contractual provisions in manufacturing: Tier-2/Tier-3 suppliers in the automotive value chain must be TISAX-conformant; sub-supplier audits common."

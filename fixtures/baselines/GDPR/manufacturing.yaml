@@ -1,0 +1,79 @@
+baseline:
+  id: gdpr-manufacturing
+  name: 'GDPR - Fertigung / Automotive (TISAX)'
+  name_en: 'GDPR - Manufacturing / Automotive (TISAX)'
+  industry: manufacturing
+  description: |
+    Baseline für Fertigungsunternehmen, insb. Automotive-Zulieferer im TISAX-Scope.
+    Kern-Themen: Prototypen-Schutz, OT/Office-Trennung, Lieferantensicherheit. TISAX-
+    Self-Assessment Level 2/3 ist Industrie-Standard. OEM-Audits sind unmittelbar
+    Geschäfts-relevant.
+  description_en: |
+    Baseline for manufacturing, esp. automotive suppliers in TISAX scope. Core themes:
+    prototype protection, OT/office segregation, supplier security. TISAX self-assessment
+    level 2/3 is industry standard. OEM audits are directly business-relevant.
+  targets:
+    "Art.13":
+      maturity_target: "3"
+      reason: "Informationspflichten in Fertigung: Konstruktions-Daten und Lieferanten-Verträge sind IP-relevant, DSGVO begrenzt auf Mitarbeiter-Daten."
+      reason_en: "Information duties in manufacturing: design data and supplier contracts are IP-relevant; GDPR limited to staff data."
+    "Art.15":
+      maturity_target: "3"
+      reason: "Auskunftsrecht in Fertigung: Konstruktions-Daten und Lieferanten-Verträge sind IP-relevant, DSGVO begrenzt auf Mitarbeiter-Daten."
+      reason_en: "Right of access in manufacturing: design data and supplier contracts are IP-relevant; GDPR limited to staff data."
+    "Art.17":
+      maturity_target: "3"
+      reason: "Löschrecht in Fertigung: Konstruktions-Daten und Lieferanten-Verträge sind IP-relevant, DSGVO begrenzt auf Mitarbeiter-Daten."
+      reason_en: "Right to erasure in manufacturing: design data and supplier contracts are IP-relevant; GDPR limited to staff data."
+    "Art.20":
+      maturity_target: "3"
+      reason: "Datenportabilität in Fertigung: Konstruktions-Daten und Lieferanten-Verträge sind IP-relevant, DSGVO begrenzt auf Mitarbeiter-Daten."
+      reason_en: "Data portability in manufacturing: design data and supplier contracts are IP-relevant; GDPR limited to staff data."
+    "Art.25":
+      maturity_target: "3"
+      reason: "Privacy by Design in Fertigung: Embedded-Software in Steuergeräten verlangt MISRA-C/Secure-SDLC, OEM-OEM-Lasten­hefte (BMW IT-SR) sind verbindlich."
+      reason_en: "Privacy by design in manufacturing: embedded software in ECUs demands MISRA-C/secure SDLC; OEM specs (BMW IT-SR) are binding."
+    "Art.28":
+      maturity_target: "4"
+      reason: "Auftragsverarbeitung in Fertigung: Tier-2/Tier-3-Zulieferer im Automotive-Wertstrom müssen TISAX-konform sein, Sub-Supplier-Audits üblich."
+      reason_en: "Processor agreements in manufacturing: Tier-2/Tier-3 suppliers in the automotive value chain must be TISAX-conformant; sub-supplier audits common."
+    "Art.30":
+      maturity_target: "3"
+      reason: "Verarbeitungs-Verzeichnis in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "Records of processing in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "Art.32":
+      maturity_target: "3"
+      reason: "TOMs / Sicherheit in Fertigung: Engineering-Daten und CAD-IP brauchen At-Rest-Encryption, KEM-Schlüssel-Rotation Standard."
+      reason_en: "Security of processing in manufacturing: engineering data and CAD IP need at-rest encryption; KEM key rotation is standard."
+    "Art.33":
+      maturity_target: "3"
+      reason: "Breach-Notification an Aufsicht in Fertigung: Produktionsausfall durch Cyber ist teuer — strukturiertes Incident-Mgmt mit OEM-Notifikation Pflicht."
+      reason_en: "Breach notification in manufacturing: production downtime due to cyber is expensive — structured incident mgmt with OEM notification is mandatory."
+    "Art.34":
+      maturity_target: "3"
+      reason: "Breach-Notification an Betroffene in Fertigung: Produktionsausfall durch Cyber ist teuer — strukturiertes Incident-Mgmt mit OEM-Notifikation Pflicht."
+      reason_en: "Notification to data subjects in manufacturing: production downtime due to cyber is expensive — structured incident mgmt with OEM notification is mandatory."
+    "Art.35":
+      maturity_target: "3"
+      reason: "DSFA / DPIA in Fertigung: TISAX-Anforderung an verabschiedete Policies — OEM-Auditoren prüfen Existenz und Aktualität strikt."
+      reason_en: "DPIA in manufacturing: TISAX requires adopted policies — OEM auditors verify existence and currency strictly."
+    "Art.37":
+      maturity_target: "3"
+      reason: "DSB / DPO in Fertigung: TISAX-Anforderung an verabschiedete Policies — OEM-Auditoren prüfen Existenz und Aktualität strikt."
+      reason_en: "Data protection officer in manufacturing: TISAX requires adopted policies — OEM auditors verify existence and currency strictly."
+    "Art.44":
+      maturity_target: "3"
+      reason: "Drittlandstransfers in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "International transfers in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "Art.5":
+      maturity_target: "3"
+      reason: "Verarbeitungs-Grundsätze in Fertigung: Konstruktions-Daten und Lieferanten-Verträge sind IP-relevant, DSGVO begrenzt auf Mitarbeiter-Daten."
+      reason_en: "Processing principles in manufacturing: design data and supplier contracts are IP-relevant; GDPR limited to staff data."
+    "Art.6":
+      maturity_target: "3"
+      reason: "Rechtmäßigkeit in Fertigung: Konstruktions-Daten und Lieferanten-Verträge sind IP-relevant, DSGVO begrenzt auf Mitarbeiter-Daten."
+      reason_en: "Lawfulness in manufacturing: design data and supplier contracts are IP-relevant; GDPR limited to staff data."
+    "Art.7":
+      maturity_target: "3"
+      reason: "Einwilligung in Fertigung: Konstruktions-Daten und Lieferanten-Verträge sind IP-relevant, DSGVO begrenzt auf Mitarbeiter-Daten."
+      reason_en: "Consent in manufacturing: design data and supplier contracts are IP-relevant; GDPR limited to staff data."

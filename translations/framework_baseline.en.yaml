@@ -1,0 +1,30 @@
+framework_baseline:
+    title: 'Framework baselines (maturity targets)'
+    subtitle: 'Pre-configured target maturity per requirement, tuned for typical industries — KRITIS, Finance, SaaS, Manufacturing, Healthcare. Applying only sets the target (maturityTarget); self-assessments stay untouched.'
+    no_frameworks: 'No framework baselines available yet. Expected layout: fixtures/baselines/<FRAMEWORK_CODE>/<industry>.yaml.'
+    empty_for_framework: 'No baselines have been bundled for this framework yet.'
+    tenant_required: 'Tenant context required — baselines apply per tenant.'
+    requires_manager: 'Applying requires the Manager role (ROLE_MANAGER).'
+    baselines_count: '%count% baseline(s) available'
+    help: |
+        <strong>How a baseline works:</strong> for each requirement we set the target maturity (e.g. 3/5) based on industry-typical expectations from audits, regulators and best practice. You can fine-tune per tenant afterwards. <strong>Preview (dry-run)</strong> shows up-front how many requirements are matched vs. unknown.
+    show:
+        subtitle: 'Baselines bundled with this framework. Applying overwrites target maturity per requirement.'
+    framework:
+        ISO27001: 'ISO/IEC 27001:2022'
+        BSI_GRUNDSCHUTZ: 'BSI IT-Grundschutz'
+        BSI-C5: 'BSI C5:2020'
+        BSI-C5-2026: 'BSI C5:2026'
+        NIS2: 'NIS2 Directive (EU 2022/2555)'
+        DORA: 'DORA (EU 2022/2554)'
+        TISAX: 'TISAX / VDA-ISA'
+        GDPR: 'GDPR / DSGVO'
+        ISO27701: 'ISO/IEC 27701'
+        ISO27701_2025: 'ISO/IEC 27701:2025'
+        NIST-CSF: 'NIST Cybersecurity Framework 2.0'
+    action:
+        view: 'Show baselines'
+        preview: 'Preview (dry-run)'
+        apply: 'Apply'
+    confirm:
+        apply: 'Really apply baseline "%name%" to tenant "%tenant%"? Existing target maturities will be overwritten.'

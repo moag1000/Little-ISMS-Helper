@@ -1,0 +1,411 @@
+baseline:
+  id: tisax-manufacturing
+  name: 'TISAX - Fertigung / Automotive (TISAX)'
+  name_en: 'TISAX - Manufacturing / Automotive (TISAX)'
+  industry: manufacturing
+  description: |
+    Baseline für Fertigungsunternehmen, insb. Automotive-Zulieferer im TISAX-Scope.
+    Kern-Themen: Prototypen-Schutz, OT/Office-Trennung, Lieferantensicherheit. TISAX-
+    Self-Assessment Level 2/3 ist Industrie-Standard. OEM-Audits sind unmittelbar
+    Geschäfts-relevant.
+  description_en: |
+    Baseline for manufacturing, esp. automotive suppliers in TISAX scope. Core themes:
+    prototype protection, OT/office segregation, supplier security. TISAX self-assessment
+    level 2/3 is industry standard. OEM audits are directly business-relevant.
+  targets:
+    "ACC-1.1":
+      maturity_target: "4"
+      reason: "Access-Control-Policy in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Access-Control-Policy in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "ACC-2.1":
+      maturity_target: "4"
+      reason: "Berechtigungsmanagement in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Berechtigungsmanagement in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "ACC-2.2":
+      maturity_target: "4"
+      reason: "Privilegierte Zugriffe in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Privilegierte Zugriffe in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "ACC-2.3":
+      maturity_target: "4"
+      reason: "User-Lifecycle in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "User-Lifecycle in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "ACC-2.4":
+      maturity_target: "4"
+      reason: "Authentisierung in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Authentisierung in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "ACC-2.5":
+      maturity_target: "4"
+      reason: "MFA / Starke Auth in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "MFA / Starke Auth in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "ACC-3.1":
+      maturity_target: "4"
+      reason: "Logischer Zugriff Apps in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Logischer Zugriff Apps in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "ACC-3.2":
+      maturity_target: "4"
+      reason: "Logischer Zugriff Daten in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Logischer Zugriff Daten in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "ACC-3.3":
+      maturity_target: "4"
+      reason: "Remote-Access in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Remote-Access in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "ACC-3.4":
+      maturity_target: "4"
+      reason: "Externe Zugriffe in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Externe Zugriffe in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "ACC-3.5":
+      maturity_target: "4"
+      reason: "Zugriffs-Reviews in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Zugriffs-Reviews in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "BCM-1.1":
+      maturity_target: "3"
+      reason: "BCM-Strategie in Fertigung: Just-in-Time-Lieferketten bedeuten kurze Toleranz — RTO 24h für Auslieferung kritisch."
+      reason_en: "BCM-Strategie in manufacturing: just-in-time supply chains have low tolerance — RTO 24h for delivery is critical."
+    "BCM-1.2":
+      maturity_target: "3"
+      reason: "BC-Übungen in Fertigung: Just-in-Time-Lieferketten bedeuten kurze Toleranz — RTO 24h für Auslieferung kritisch."
+      reason_en: "BC-Übungen in manufacturing: just-in-time supply chains have low tolerance — RTO 24h for delivery is critical."
+    "CMP-1.1":
+      maturity_target: "3"
+      reason: "Compliance-Anforderungen in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "Compliance-Anforderungen in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "CMP-1.2":
+      maturity_target: "3"
+      reason: "Geistiges Eigentum in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "Geistiges Eigentum in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "CMP-1.3":
+      maturity_target: "3"
+      reason: "Datenschutz / GDPR in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "Datenschutz / GDPR in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "CMP-1.4":
+      maturity_target: "3"
+      reason: "Audit-Reviews in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "Audit-Reviews in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "CMP-2.1":
+      maturity_target: "3"
+      reason: "Crypto-Compliance in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "Crypto-Compliance in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "CMP-2.2":
+      maturity_target: "3"
+      reason: "Recht und Gesetz in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "Recht und Gesetz in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "CMP-2.3":
+      maturity_target: "3"
+      reason: "Audit-Logs Compliance in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "Audit-Logs Compliance in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "COM-1.1":
+      maturity_target: "4"
+      reason: "Netzwerksicherheit in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Netzwerksicherheit in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "COM-1.2":
+      maturity_target: "4"
+      reason: "Netzwerk-Segmentierung in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Netzwerk-Segmentierung in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "COM-1.3":
+      maturity_target: "4"
+      reason: "Wireless-Security in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Wireless-Security in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "COM-2.1":
+      maturity_target: "4"
+      reason: "Datenübertragungs-Verschlüsselung in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Datenübertragungs-Verschlüsselung in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "COM-2.2":
+      maturity_target: "4"
+      reason: "E-Mail-Sicherheit in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "E-Mail-Sicherheit in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "COM-2.3":
+      maturity_target: "4"
+      reason: "Kollaborations-Tools in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Kollaborations-Tools in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "COM-2.4":
+      maturity_target: "4"
+      reason: "Datenträger-Versand in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Datenträger-Versand in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "CRY-1.1":
+      maturity_target: "3"
+      reason: "Kryptografie-Policy in Fertigung: Engineering-Daten und CAD-IP brauchen At-Rest-Encryption, KEM-Schlüssel-Rotation Standard."
+      reason_en: "Kryptografie-Policy in manufacturing: engineering data and CAD IP need at-rest encryption; KEM key rotation is standard."
+    "CRY-1.2":
+      maturity_target: "3"
+      reason: "Schlüsselmanagement in Fertigung: Engineering-Daten und CAD-IP brauchen At-Rest-Encryption, KEM-Schlüssel-Rotation Standard."
+      reason_en: "Schlüsselmanagement in manufacturing: engineering data and CAD IP need at-rest encryption; KEM key rotation is standard."
+    "DEV-1.1":
+      maturity_target: "3"
+      reason: "Secure-Development-Policy in Fertigung: Embedded-Software in Steuergeräten verlangt MISRA-C/Secure-SDLC, OEM-OEM-Lasten­hefte (BMW IT-SR) sind verbindlich."
+      reason_en: "Secure-Development-Policy in manufacturing: embedded software in ECUs demands MISRA-C/secure SDLC; OEM specs (BMW IT-SR) are binding."
+    "DEV-1.2":
+      maturity_target: "3"
+      reason: "Sichere Entwicklungsumgebung in Fertigung: Embedded-Software in Steuergeräten verlangt MISRA-C/Secure-SDLC, OEM-OEM-Lasten­hefte (BMW IT-SR) sind verbindlich."
+      reason_en: "Sichere Entwicklungsumgebung in manufacturing: embedded software in ECUs demands MISRA-C/secure SDLC; OEM specs (BMW IT-SR) are binding."
+    "DEV-2.1":
+      maturity_target: "3"
+      reason: "Sichere Architektur in Fertigung: Embedded-Software in Steuergeräten verlangt MISRA-C/Secure-SDLC, OEM-OEM-Lasten­hefte (BMW IT-SR) sind verbindlich."
+      reason_en: "Sichere Architektur in manufacturing: embedded software in ECUs demands MISRA-C/secure SDLC; OEM specs (BMW IT-SR) are binding."
+    "DEV-2.2":
+      maturity_target: "3"
+      reason: "Code-Reviews in Fertigung: Embedded-Software in Steuergeräten verlangt MISRA-C/Secure-SDLC, OEM-OEM-Lasten­hefte (BMW IT-SR) sind verbindlich."
+      reason_en: "Code-Reviews in manufacturing: embedded software in ECUs demands MISRA-C/secure SDLC; OEM specs (BMW IT-SR) are binding."
+    "DEV-2.3":
+      maturity_target: "3"
+      reason: "Security-Tests in Fertigung: Embedded-Software in Steuergeräten verlangt MISRA-C/Secure-SDLC, OEM-OEM-Lasten­hefte (BMW IT-SR) sind verbindlich."
+      reason_en: "Security-Tests in manufacturing: embedded software in ECUs demands MISRA-C/secure SDLC; OEM specs (BMW IT-SR) are binding."
+    "DEV-3.1":
+      maturity_target: "3"
+      reason: "Outsourced Development in Fertigung: Embedded-Software in Steuergeräten verlangt MISRA-C/Secure-SDLC, OEM-OEM-Lasten­hefte (BMW IT-SR) sind verbindlich."
+      reason_en: "Outsourced Development in manufacturing: embedded software in ECUs demands MISRA-C/secure SDLC; OEM specs (BMW IT-SR) are binding."
+    "DEV-3.2":
+      maturity_target: "3"
+      reason: "Software-Acceptance in Fertigung: Embedded-Software in Steuergeräten verlangt MISRA-C/Secure-SDLC, OEM-OEM-Lasten­hefte (BMW IT-SR) sind verbindlich."
+      reason_en: "Software-Acceptance in manufacturing: embedded software in ECUs demands MISRA-C/secure SDLC; OEM specs (BMW IT-SR) are binding."
+    "HRS-1.1":
+      maturity_target: "3"
+      reason: "Pre-Employment-Checks in Fertigung: Werker am Shopfloor brauchen einfache, visuelle Awareness — gedruckte Poster + Toolbox-Talks effizienter als E-Learning."
+      reason_en: "Pre-Employment-Checks in manufacturing: shopfloor workers need simple, visual awareness — printed posters and toolbox talks beat e-learning."
+    "HRS-1.2":
+      maturity_target: "3"
+      reason: "Vertraulichkeit in Fertigung: Werker am Shopfloor brauchen einfache, visuelle Awareness — gedruckte Poster + Toolbox-Talks effizienter als E-Learning."
+      reason_en: "Vertraulichkeit in manufacturing: shopfloor workers need simple, visual awareness — printed posters and toolbox talks beat e-learning."
+    "HRS-2.1":
+      maturity_target: "3"
+      reason: "InfoSec-Schulung in Fertigung: Werker am Shopfloor brauchen einfache, visuelle Awareness — gedruckte Poster + Toolbox-Talks effizienter als E-Learning."
+      reason_en: "InfoSec-Schulung in manufacturing: shopfloor workers need simple, visual awareness — printed posters and toolbox talks beat e-learning."
+    "HRS-2.2":
+      maturity_target: "3"
+      reason: "Sensibilisierung in Fertigung: Werker am Shopfloor brauchen einfache, visuelle Awareness — gedruckte Poster + Toolbox-Talks effizienter als E-Learning."
+      reason_en: "Sensibilisierung in manufacturing: shopfloor workers need simple, visual awareness — printed posters and toolbox talks beat e-learning."
+    "HRS-2.3":
+      maturity_target: "3"
+      reason: "Schulungs-Wirksamkeit in Fertigung: Werker am Shopfloor brauchen einfache, visuelle Awareness — gedruckte Poster + Toolbox-Talks effizienter als E-Learning."
+      reason_en: "Schulungs-Wirksamkeit in manufacturing: shopfloor workers need simple, visual awareness — printed posters and toolbox talks beat e-learning."
+    "HRS-3.1":
+      maturity_target: "3"
+      reason: "Austritts-Prozess in Fertigung: Werker am Shopfloor brauchen einfache, visuelle Awareness — gedruckte Poster + Toolbox-Talks effizienter als E-Learning."
+      reason_en: "Austritts-Prozess in manufacturing: shopfloor workers need simple, visual awareness — printed posters and toolbox talks beat e-learning."
+    "INC-1.1":
+      maturity_target: "3"
+      reason: "Incident-Management-Policy in Fertigung: Produktionsausfall durch Cyber ist teuer — strukturiertes Incident-Mgmt mit OEM-Notifikation Pflicht."
+      reason_en: "Incident-Management-Policy in manufacturing: production downtime due to cyber is expensive — structured incident mgmt with OEM notification is mandatory."
+    "INC-1.2":
+      maturity_target: "3"
+      reason: "Meldewege in Fertigung: Produktionsausfall durch Cyber ist teuer — strukturiertes Incident-Mgmt mit OEM-Notifikation Pflicht."
+      reason_en: "Meldewege in manufacturing: production downtime due to cyber is expensive — structured incident mgmt with OEM notification is mandatory."
+    "INC-1.3":
+      maturity_target: "3"
+      reason: "Incident-Klassifikation in Fertigung: Produktionsausfall durch Cyber ist teuer — strukturiertes Incident-Mgmt mit OEM-Notifikation Pflicht."
+      reason_en: "Incident-Klassifikation in manufacturing: production downtime due to cyber is expensive — structured incident mgmt with OEM notification is mandatory."
+    "INC-1.4":
+      maturity_target: "3"
+      reason: "Forensik in Fertigung: Produktionsausfall durch Cyber ist teuer — strukturiertes Incident-Mgmt mit OEM-Notifikation Pflicht."
+      reason_en: "Forensik in manufacturing: production downtime due to cyber is expensive — structured incident mgmt with OEM notification is mandatory."
+    "INC-1.5":
+      maturity_target: "3"
+      reason: "Lessons-Learned in Fertigung: Produktionsausfall durch Cyber ist teuer — strukturiertes Incident-Mgmt mit OEM-Notifikation Pflicht."
+      reason_en: "Lessons-Learned in manufacturing: production downtime due to cyber is expensive — structured incident mgmt with OEM notification is mandatory."
+    "INC-1.6":
+      maturity_target: "3"
+      reason: "Behörden-Kommunikation in Fertigung: Produktionsausfall durch Cyber ist teuer — strukturiertes Incident-Mgmt mit OEM-Notifikation Pflicht."
+      reason_en: "Behörden-Kommunikation in manufacturing: production downtime due to cyber is expensive — structured incident mgmt with OEM notification is mandatory."
+    "INF-1.1":
+      maturity_target: "4"
+      reason: "Sichere Bereiche in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Sichere Bereiche in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "INF-1.2":
+      maturity_target: "4"
+      reason: "Lieferzonen in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Lieferzonen in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "INF-2.1":
+      maturity_target: "4"
+      reason: "Schutz vor Umgebung in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Schutz vor Umgebung in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "INF-3.1":
+      maturity_target: "4"
+      reason: "Verkabelung in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Verkabelung in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "INF-3.2":
+      maturity_target: "4"
+      reason: "Wartung in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Wartung in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "INF-3.3":
+      maturity_target: "4"
+      reason: "Asset-Removal in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Asset-Removal in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "INF-3.4":
+      maturity_target: "4"
+      reason: "Off-Premises-Assets in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Off-Premises-Assets in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "INF-4.1":
+      maturity_target: "4"
+      reason: "Sichere Entsorgung in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Sichere Entsorgung in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "INF-4.2":
+      maturity_target: "4"
+      reason: "Clear-Desk in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Clear-Desk in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "INF-4.3":
+      maturity_target: "4"
+      reason: "Sichere Wiederverwendung in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Sichere Wiederverwendung in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "INF-5.1":
+      maturity_target: "4"
+      reason: "Stromversorgung in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Stromversorgung in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "INF-5.2":
+      maturity_target: "4"
+      reason: "Gebäudetechnik in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Gebäudetechnik in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "MOB-1.1":
+      maturity_target: "4"
+      reason: "Mobile-Device-Policy in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Mobile-Device-Policy in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "MOB-1.2":
+      maturity_target: "4"
+      reason: "Telearbeit in Fertigung: OT-Office-Trennung mit dedizierten Zugängen ist TISAX-Anforderung, OEM-Audits prüfen Engineer-Stations."
+      reason_en: "Telearbeit in manufacturing: OT/office separation with dedicated access is a TISAX requirement; OEM audits review engineering stations."
+    "OPS-1.1":
+      maturity_target: "3"
+      reason: "Betriebs-Dokumentation in Fertigung: Änderungen an Produktionsrezepturen brauchen Change-Control mit Validation; ungeplante Changes verursachen Ausschuss."
+      reason_en: "Betriebs-Dokumentation in manufacturing: changes to production recipes need change control with validation; unplanned changes cause scrap."
+    "OPS-1.2":
+      maturity_target: "3"
+      reason: "Change-Management in Fertigung: Änderungen an Produktionsrezepturen brauchen Change-Control mit Validation; ungeplante Changes verursachen Ausschuss."
+      reason_en: "Change-Management in manufacturing: changes to production recipes need change control with validation; unplanned changes cause scrap."
+    "OPS-1.3":
+      maturity_target: "3"
+      reason: "Kapazitätsmanagement in Fertigung: Änderungen an Produktionsrezepturen brauchen Change-Control mit Validation; ungeplante Changes verursachen Ausschuss."
+      reason_en: "Kapazitätsmanagement in manufacturing: changes to production recipes need change control with validation; unplanned changes cause scrap."
+    "OPS-1.4":
+      maturity_target: "3"
+      reason: "Trennung Dev/Test/Prod in Fertigung: Änderungen an Produktionsrezepturen brauchen Change-Control mit Validation; ungeplante Changes verursachen Ausschuss."
+      reason_en: "Trennung Dev/Test/Prod in manufacturing: changes to production recipes need change control with validation; unplanned changes cause scrap."
+    "OPS-2.1":
+      maturity_target: "3"
+      reason: "Schutz vor Malware in Fertigung: OT-Anomalie-Detection mit passivem Listening (Claroty, Nozomi) ist State-of-the-Art."
+      reason_en: "Schutz vor Malware in manufacturing: OT anomaly detection via passive listening (Claroty, Nozomi) is state of the art."
+    "OPS-3.1":
+      maturity_target: "3"
+      reason: "Backup in Fertigung: Just-in-Time-Lieferketten bedeuten kurze Toleranz — RTO 24h für Auslieferung kritisch."
+      reason_en: "Backup in manufacturing: just-in-time supply chains have low tolerance — RTO 24h for delivery is critical."
+    "OPS-4.1":
+      maturity_target: "3"
+      reason: "Logging in Fertigung: OT-Anomalie-Detection mit passivem Listening (Claroty, Nozomi) ist State-of-the-Art."
+      reason_en: "Logging in manufacturing: OT anomaly detection via passive listening (Claroty, Nozomi) is state of the art."
+    "OPS-4.2":
+      maturity_target: "3"
+      reason: "Admin-Logs in Fertigung: OT-Anomalie-Detection mit passivem Listening (Claroty, Nozomi) ist State-of-the-Art."
+      reason_en: "Admin-Logs in manufacturing: OT anomaly detection via passive listening (Claroty, Nozomi) is state of the art."
+    "OPS-4.3":
+      maturity_target: "3"
+      reason: "Log-Schutz in Fertigung: OT-Anomalie-Detection mit passivem Listening (Claroty, Nozomi) ist State-of-the-Art."
+      reason_en: "Log-Schutz in manufacturing: OT anomaly detection via passive listening (Claroty, Nozomi) is state of the art."
+    "OPS-4.4":
+      maturity_target: "3"
+      reason: "Zeit-Synchronisation in Fertigung: OT-Anomalie-Detection mit passivem Listening (Claroty, Nozomi) ist State-of-the-Art."
+      reason_en: "Zeit-Synchronisation in manufacturing: OT anomaly detection via passive listening (Claroty, Nozomi) is state of the art."
+    "OPS-5.1":
+      maturity_target: "3"
+      reason: "Schwachstellen-Management in Fertigung: OT-Patching ist schwierig (Validierung, Wartungsfenster), kompensierende Kontrollen wichtig."
+      reason_en: "Schwachstellen-Management in manufacturing: OT patching is hard (validation, maintenance windows) — compensating controls matter."
+    "OPS-6.1":
+      maturity_target: "3"
+      reason: "Audit-Aktivitäten in Fertigung: TISAX, IATF 16949, ggf. NIS2 (für KRITIS-relevante Hersteller) — Mehrfach-Audits konsolidieren."
+      reason_en: "Audit-Aktivitäten in manufacturing: TISAX, IATF 16949, possibly NIS2 (for KRITIS-relevant manufacturers) — consolidate multi-audits."
+    "OPS-7.1":
+      maturity_target: "3"
+      reason: "Software-Installation in Fertigung: Änderungen an Produktionsrezepturen brauchen Change-Control mit Validation; ungeplante Changes verursachen Ausschuss."
+      reason_en: "Software-Installation in manufacturing: changes to production recipes need change control with validation; unplanned changes cause scrap."
+    "PHY-1.1":
+      maturity_target: "4"
+      reason: "Sicherheits-Perimeter in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Sicherheits-Perimeter in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-1.2":
+      maturity_target: "4"
+      reason: "Physische Zugangskontrolle in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Physische Zugangskontrolle in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-1.3":
+      maturity_target: "4"
+      reason: "Sichere Räume in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Sichere Räume in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-1.4":
+      maturity_target: "4"
+      reason: "Schutz vor Bedrohungen (Feuer/Wasser) in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Schutz vor Bedrohungen (Feuer/Wasser) in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-1.5":
+      maturity_target: "4"
+      reason: "Lade-/Lieferzonen in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Lade-/Lieferzonen in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-1.6":
+      maturity_target: "4"
+      reason: "Sichere Arbeitsbereiche in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Sichere Arbeitsbereiche in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-2.1":
+      maturity_target: "4"
+      reason: "Gerätesicherung in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Gerätesicherung in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-2.2":
+      maturity_target: "4"
+      reason: "Versorgungsleitungen in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Versorgungsleitungen in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-2.3":
+      maturity_target: "4"
+      reason: "Verkabelungs-Schutz in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Verkabelungs-Schutz in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-2.4":
+      maturity_target: "4"
+      reason: "Wartungs-Sicherheit in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Wartungs-Sicherheit in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-2.5":
+      maturity_target: "4"
+      reason: "Asset-Removal-Kontrolle in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Asset-Removal-Kontrolle in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-2.6":
+      maturity_target: "4"
+      reason: "Off-Site-Equipment in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Off-Site-Equipment in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-2.7":
+      maturity_target: "4"
+      reason: "Sichere Entsorgung in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Sichere Entsorgung in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-2.8":
+      maturity_target: "4"
+      reason: "Unbeaufsichtigte Geräte in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Unbeaufsichtigte Geräte in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PHY-2.9":
+      maturity_target: "4"
+      reason: "Clear-Screen in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Clear-Screen in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PROT-1.1":
+      maturity_target: "4"
+      reason: "Prototypenschutz Identifikation in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Prototypenschutz Identifikation in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PROT-1.2":
+      maturity_target: "4"
+      reason: "Prototypenschutz Lager in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Prototypenschutz Lager in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PROT-1.3":
+      maturity_target: "4"
+      reason: "Prototypenschutz Transport in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Prototypenschutz Transport in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PROT-2.1":
+      maturity_target: "4"
+      reason: "Erprobungsfahrten in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Erprobungsfahrten in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "PROT-2.2":
+      maturity_target: "4"
+      reason: "Veranstaltungen / Filmen in Fertigung: Prototypenschutz ist TISAX-Kern, Werkszugang mit Foto-Verbot und sicheren Test-Räumen Pflicht."
+      reason_en: "Veranstaltungen / Filmen in manufacturing: prototype protection is core to TISAX; site access with photo bans and secure test rooms is mandatory."
+    "SUP-1.1":
+      maturity_target: "4"
+      reason: "Lieferanten-InfoSec in Fertigung: Tier-2/Tier-3-Zulieferer im Automotive-Wertstrom müssen TISAX-konform sein, Sub-Supplier-Audits üblich."
+      reason_en: "Lieferanten-InfoSec in manufacturing: Tier-2/Tier-3 suppliers in the automotive value chain must be TISAX-conformant; sub-supplier audits common."
+    "SUP-1.2":
+      maturity_target: "4"
+      reason: "Lieferanten-Reviews in Fertigung: Tier-2/Tier-3-Zulieferer im Automotive-Wertstrom müssen TISAX-konform sein, Sub-Supplier-Audits üblich."
+      reason_en: "Lieferanten-Reviews in manufacturing: Tier-2/Tier-3 suppliers in the automotive value chain must be TISAX-conformant; sub-supplier audits common."
+    "SUP-2.1":
+      maturity_target: "4"
+      reason: "Cloud-Dienstleister in Fertigung: Tier-2/Tier-3-Zulieferer im Automotive-Wertstrom müssen TISAX-konform sein, Sub-Supplier-Audits üblich."
+      reason_en: "Cloud-Dienstleister in manufacturing: Tier-2/Tier-3 suppliers in the automotive value chain must be TISAX-conformant; sub-supplier audits common."
+    "SUP-2.2":
+      maturity_target: "4"
+      reason: "Cloud-Sicherheit in Fertigung: Tier-2/Tier-3-Zulieferer im Automotive-Wertstrom müssen TISAX-konform sein, Sub-Supplier-Audits üblich."
+      reason_en: "Cloud-Sicherheit in manufacturing: Tier-2/Tier-3 suppliers in the automotive value chain must be TISAX-conformant; sub-supplier audits common."

@@ -1,0 +1,204 @@
+baseline:
+  id: iso27001-finance
+  name: 'ISO27001 - Banken / Versicherer (BaFin/DORA)'
+  name_en: 'ISO27001 - Banking / Insurance (BaFin/DORA)'
+  industry: finance
+  description: |
+    Baseline für regulierte Finanzinstitute unter BaFin-MaRisk/BAIT/VAIT und EU-DORA.
+    Extreme Anforderungen an ICT-Resilienz, Drittparteien-Risiko und Resilience-Testing
+    (TLPT). Bußgeld-Risiko hoch, Aufsicht prüft kontinuierlich.
+    Fokus: ICT-Risk-Management, TPRM, BCM, Reporting an Aufsicht.
+  description_en: |
+    Baseline for regulated financial institutions under BaFin-MaRisk/BAIT/VAIT and
+    EU-DORA. Extreme requirements on ICT resilience, third-party risk and resilience
+    testing (TLPT). Penalty risk is high, supervisor reviews continuously.
+    Focus: ICT risk mgmt, TPRM, BCM, supervisory reporting.
+  targets:
+    "A.5.1":
+      maturity_target: "5"
+      reason: "Informationssicherheits-Policies in Finanzbranche: BaFin-MaRisk/BAIT verlangt formell verabschiedete IT-Strategie — Vorstand haftet persönlich."
+      reason_en: "Information security policies in finance: BaFin MaRisk/BAIT requires formally adopted IT strategy — board is personally liable."
+    "A.5.15":
+      maturity_target: "5"
+      reason: "Access Control in Finanzbranche: privilegierte Zugriffe auf Kernbankensysteme/Trading sind FIN-/Lazarus-Top-Ziel — PAM mit MFA Pflicht."
+      reason_en: "Access control in finance: privileged access to core banking/trading systems is FIN/Lazarus top target — PAM with MFA is mandatory."
+    "A.5.16":
+      maturity_target: "5"
+      reason: "Identity Management in Finanzbranche: privilegierte Zugriffe auf Kernbankensysteme/Trading sind FIN-/Lazarus-Top-Ziel — PAM mit MFA Pflicht."
+      reason_en: "Identity management in finance: privileged access to core banking/trading systems is FIN/Lazarus top target — PAM with MFA is mandatory."
+    "A.5.17":
+      maturity_target: "5"
+      reason: "Authentication-Information in Finanzbranche: privilegierte Zugriffe auf Kernbankensysteme/Trading sind FIN-/Lazarus-Top-Ziel — PAM mit MFA Pflicht."
+      reason_en: "Authentication information in finance: privileged access to core banking/trading systems is FIN/Lazarus top target — PAM with MFA is mandatory."
+    "A.5.18":
+      maturity_target: "5"
+      reason: "Zugriffsrechte in Finanzbranche: privilegierte Zugriffe auf Kernbankensysteme/Trading sind FIN-/Lazarus-Top-Ziel — PAM mit MFA Pflicht."
+      reason_en: "Access rights in finance: privileged access to core banking/trading systems is FIN/Lazarus top target — PAM with MFA is mandatory."
+    "A.5.19":
+      maturity_target: "5"
+      reason: "Lieferantensicherheit in Finanzbranche: DORA Art. 28 verlangt vollständiges TPRM mit Konzentrations-Risiko-Analyse, ungenügendes Vendor-Mgmt ist BaFin-Top-Finding."
+      reason_en: "Supplier security in finance: DORA Art. 28 demands full TPRM with concentration-risk analysis; weak vendor mgmt is a top BaFin finding."
+    "A.5.2":
+      maturity_target: "5"
+      reason: "InfoSec-Rollen und -Verantwortlichkeiten in Finanzbranche: BaFin-MaRisk/BAIT verlangt formell verabschiedete IT-Strategie — Vorstand haftet persönlich."
+      reason_en: "InfoSec roles and responsibilities in finance: BaFin MaRisk/BAIT requires formally adopted IT strategy — board is personally liable."
+    "A.5.20":
+      maturity_target: "5"
+      reason: "Vertragliche Sicherheitsanforderungen in Finanzbranche: DORA Art. 28 verlangt vollständiges TPRM mit Konzentrations-Risiko-Analyse, ungenügendes Vendor-Mgmt ist BaFin-Top-Finding."
+      reason_en: "Contractual security requirements in finance: DORA Art. 28 demands full TPRM with concentration-risk analysis; weak vendor mgmt is a top BaFin finding."
+    "A.5.21":
+      maturity_target: "5"
+      reason: "ICT-Lieferkette in Finanzbranche: DORA Art. 28 verlangt vollständiges TPRM mit Konzentrations-Risiko-Analyse, ungenügendes Vendor-Mgmt ist BaFin-Top-Finding."
+      reason_en: "ICT supply chain in finance: DORA Art. 28 demands full TPRM with concentration-risk analysis; weak vendor mgmt is a top BaFin finding."
+    "A.5.23":
+      maturity_target: "5"
+      reason: "Cloud-Security in Finanzbranche: DORA Art. 28 verlangt vollständiges TPRM mit Konzentrations-Risiko-Analyse, ungenügendes Vendor-Mgmt ist BaFin-Top-Finding."
+      reason_en: "Cloud services security in finance: DORA Art. 28 demands full TPRM with concentration-risk analysis; weak vendor mgmt is a top BaFin finding."
+    "A.5.24":
+      maturity_target: "5"
+      reason: "Incident-Management Planung in Finanzbranche: DORA Art. 17 schreibt strukturiertes ICT-Incident-Reporting an BaFin und ESAs vor (Major Incidents binnen 4h)."
+      reason_en: "Incident management planning in finance: DORA Art. 17 mandates structured ICT incident reporting to BaFin and ESAs (major incidents within 4h)."
+    "A.5.25":
+      maturity_target: "5"
+      reason: "Event-Bewertung in Finanzbranche: DORA Art. 17 schreibt strukturiertes ICT-Incident-Reporting an BaFin und ESAs vor (Major Incidents binnen 4h)."
+      reason_en: "Event assessment in finance: DORA Art. 17 mandates structured ICT incident reporting to BaFin and ESAs (major incidents within 4h)."
+    "A.5.26":
+      maturity_target: "5"
+      reason: "Incident-Response in Finanzbranche: DORA Art. 17 schreibt strukturiertes ICT-Incident-Reporting an BaFin und ESAs vor (Major Incidents binnen 4h)."
+      reason_en: "Incident response in finance: DORA Art. 17 mandates structured ICT incident reporting to BaFin and ESAs (major incidents within 4h)."
+    "A.5.27":
+      maturity_target: "5"
+      reason: "Lessons Learned in Finanzbranche: DORA Art. 17 schreibt strukturiertes ICT-Incident-Reporting an BaFin und ESAs vor (Major Incidents binnen 4h)."
+      reason_en: "Lessons learned in finance: DORA Art. 17 mandates structured ICT incident reporting to BaFin and ESAs (major incidents within 4h)."
+    "A.5.29":
+      maturity_target: "5"
+      reason: "InfoSec während Disruption in Finanzbranche: Versicherungs-/Bankgeschäft braucht RTO < 2h für kritische Funktionen — DORA Art. 11/12 Standard."
+      reason_en: "InfoSec during disruption in finance: insurance/banking demand RTO < 2h for critical functions — DORA Art. 11/12 standard."
+    "A.5.30":
+      maturity_target: "5"
+      reason: "ICT-Readiness for BC in Finanzbranche: Versicherungs-/Bankgeschäft braucht RTO < 2h für kritische Funktionen — DORA Art. 11/12 Standard."
+      reason_en: "ICT readiness for BC in finance: insurance/banking demand RTO < 2h for critical functions — DORA Art. 11/12 standard."
+    "A.5.33":
+      maturity_target: "5"
+      reason: "Schutz von Aufzeichnungen in Finanzbranche: BaFin-Audits, DORA-Reporting, MaRisk-Berichte sind kontinuierlich, parallele Frameworks erfordern hohe Reife."
+      reason_en: "Records protection in finance: BaFin audits, DORA reporting, MaRisk reports are continuous; parallel frameworks demand high maturity."
+    "A.5.34":
+      maturity_target: "5"
+      reason: "Privacy / PII-Schutz in Finanzbranche: Kontodaten und Trading-Records sind DSGVO + Bankgeheimnis + AML — höchste Sensibilität."
+      reason_en: "Privacy and PII in finance: account data and trading records combine GDPR + bank secrecy + AML — highest sensitivity."
+    "A.5.35":
+      maturity_target: "5"
+      reason: "Unabhängige Reviews in Finanzbranche: BaFin-Audits, DORA-Reporting, MaRisk-Berichte sind kontinuierlich, parallele Frameworks erfordern hohe Reife."
+      reason_en: "Independent reviews in finance: BaFin audits, DORA reporting, MaRisk reports are continuous; parallel frameworks demand high maturity."
+    "A.5.36":
+      maturity_target: "5"
+      reason: "Compliance-Konformität in Finanzbranche: BaFin-Audits, DORA-Reporting, MaRisk-Berichte sind kontinuierlich, parallele Frameworks erfordern hohe Reife."
+      reason_en: "Compliance conformity in finance: BaFin audits, DORA reporting, MaRisk reports are continuous; parallel frameworks demand high maturity."
+    "A.5.5":
+      maturity_target: "5"
+      reason: "Behördenkontakte in Finanzbranche: BaFin-MaRisk/BAIT verlangt formell verabschiedete IT-Strategie — Vorstand haftet persönlich."
+      reason_en: "Contact with authorities in finance: BaFin MaRisk/BAIT requires formally adopted IT strategy — board is personally liable."
+    "A.5.7":
+      maturity_target: "5"
+      reason: "Threat Intelligence in Finanzbranche: BaFin-MaRisk/BAIT verlangt formell verabschiedete IT-Strategie — Vorstand haftet persönlich."
+      reason_en: "Threat intelligence in finance: BaFin MaRisk/BAIT requires formally adopted IT strategy — board is personally liable."
+    "A.5.9":
+      maturity_target: "4"
+      reason: "Asset-Inventar in Finanzbranche: BAIT 4.1 verlangt vollständiges IT-Asset-Inventar mit Kritikalitätsklassifizierung."
+      reason_en: "Asset inventory in finance: BAIT 4.1 demands a complete IT asset inventory with criticality classification."
+    "A.6.3":
+      maturity_target: "4"
+      reason: "Awareness-Training in Finanzbranche: Phishing-Resistenz gegen Business-Email-Compromise ist top Bedrohung — jährliche Übungen + Wirksamkeitsmessung."
+      reason_en: "Awareness training in finance: phishing resistance against BEC is top threat — annual exercises plus effectiveness measurement."
+    "A.6.7":
+      maturity_target: "5"
+      reason: "Remote-Work in Finanzbranche: privilegierte Zugriffe auf Kernbankensysteme/Trading sind FIN-/Lazarus-Top-Ziel — PAM mit MFA Pflicht."
+      reason_en: "Remote working in finance: privileged access to core banking/trading systems is FIN/Lazarus top target — PAM with MFA is mandatory."
+    "A.7.1":
+      maturity_target: "4"
+      reason: "Physische Sicherheit in Finanzbranche: Rechenzentren und Trading-Floors brauchen physische Hochsicherheit (FIB-Tresorklasse, Biometrie)."
+      reason_en: "Physical security perimeters in finance: data centres and trading floors require physical high security (FIB vault class, biometrics)."
+    "A.7.10":
+      maturity_target: "4"
+      reason: "Storage Media in Finanzbranche: Rechenzentren und Trading-Floors brauchen physische Hochsicherheit (FIB-Tresorklasse, Biometrie)."
+      reason_en: "Storage media in finance: data centres and trading floors require physical high security (FIB vault class, biometrics)."
+    "A.7.4":
+      maturity_target: "4"
+      reason: "Physisches Monitoring in Finanzbranche: Rechenzentren und Trading-Floors brauchen physische Hochsicherheit (FIB-Tresorklasse, Biometrie)."
+      reason_en: "Physical monitoring in finance: data centres and trading floors require physical high security (FIB vault class, biometrics)."
+    "A.8.1":
+      maturity_target: "5"
+      reason: "Endgerätesicherheit in Finanzbranche: privilegierte Zugriffe auf Kernbankensysteme/Trading sind FIN-/Lazarus-Top-Ziel — PAM mit MFA Pflicht."
+      reason_en: "User endpoint devices in finance: privileged access to core banking/trading systems is FIN/Lazarus top target — PAM with MFA is mandatory."
+    "A.8.13":
+      maturity_target: "5"
+      reason: "Backups in Finanzbranche: Versicherungs-/Bankgeschäft braucht RTO < 2h für kritische Funktionen — DORA Art. 11/12 Standard."
+      reason_en: "Information backup in finance: insurance/banking demand RTO < 2h for critical functions — DORA Art. 11/12 standard."
+    "A.8.14":
+      maturity_target: "5"
+      reason: "Redundanz in Finanzbranche: Versicherungs-/Bankgeschäft braucht RTO < 2h für kritische Funktionen — DORA Art. 11/12 Standard."
+      reason_en: "Redundancy in finance: insurance/banking demand RTO < 2h for critical functions — DORA Art. 11/12 standard."
+    "A.8.16":
+      maturity_target: "5"
+      reason: "Monitoring in Finanzbranche: Markt-Manipulation und Fraud-Detection erfordern korreliertes 24/7-SOC mit AML-Anbindung."
+      reason_en: "Monitoring activities in finance: market manipulation and fraud detection require correlated 24/7 SOC with AML integration."
+    "A.8.2":
+      maturity_target: "5"
+      reason: "Privileged Access in Finanzbranche: privilegierte Zugriffe auf Kernbankensysteme/Trading sind FIN-/Lazarus-Top-Ziel — PAM mit MFA Pflicht."
+      reason_en: "Privileged access rights in finance: privileged access to core banking/trading systems is FIN/Lazarus top target — PAM with MFA is mandatory."
+    "A.8.20":
+      maturity_target: "5"
+      reason: "Netzsicherheit in Finanzbranche: privilegierte Zugriffe auf Kernbankensysteme/Trading sind FIN-/Lazarus-Top-Ziel — PAM mit MFA Pflicht."
+      reason_en: "Networks security in finance: privileged access to core banking/trading systems is FIN/Lazarus top target — PAM with MFA is mandatory."
+    "A.8.22":
+      maturity_target: "5"
+      reason: "Netzwerksegmentierung in Finanzbranche: privilegierte Zugriffe auf Kernbankensysteme/Trading sind FIN-/Lazarus-Top-Ziel — PAM mit MFA Pflicht."
+      reason_en: "Network segregation in finance: privileged access to core banking/trading systems is FIN/Lazarus top target — PAM with MFA is mandatory."
+    "A.8.24":
+      maturity_target: "5"
+      reason: "Kryptografie in Finanzbranche: PSD2/SWIFT/HSM-Pflicht treibt Crypto-Reife — Schlüsselrotation und FIPS-140-3-Validierung Standard."
+      reason_en: "Use of cryptography in finance: PSD2/SWIFT/HSM mandates drive crypto maturity — key rotation and FIPS 140-3 validation are standard."
+    "A.8.25":
+      maturity_target: "4"
+      reason: "Secure SDLC in Finanzbranche: Kernbankensysteme verlangen formellen Secure-SDLC mit DSGVO-Privacy-by-Design und FAT/UAT-Trennung."
+      reason_en: "Secure development lifecycle in finance: core banking demands formal secure SDLC with GDPR privacy-by-design and FAT/UAT separation."
+    "A.8.27":
+      maturity_target: "4"
+      reason: "Architektur-Sicherheit in Finanzbranche: Kernbankensysteme verlangen formellen Secure-SDLC mit DSGVO-Privacy-by-Design und FAT/UAT-Trennung."
+      reason_en: "Secure system architecture in finance: core banking demands formal secure SDLC with GDPR privacy-by-design and FAT/UAT separation."
+    "A.8.29":
+      maturity_target: "4"
+      reason: "Security-Testing in Finanzbranche: Kernbankensysteme verlangen formellen Secure-SDLC mit DSGVO-Privacy-by-Design und FAT/UAT-Trennung."
+      reason_en: "Security testing in finance: core banking demands formal secure SDLC with GDPR privacy-by-design and FAT/UAT separation."
+    "A.8.30":
+      maturity_target: "5"
+      reason: "Outsourcing-Audits in Finanzbranche: DORA Art. 28 verlangt vollständiges TPRM mit Konzentrations-Risiko-Analyse, ungenügendes Vendor-Mgmt ist BaFin-Top-Finding."
+      reason_en: "Outsourced development in finance: DORA Art. 28 demands full TPRM with concentration-risk analysis; weak vendor mgmt is a top BaFin finding."
+    "A.8.31":
+      maturity_target: "5"
+      reason: "Trennung Test/Prod in Finanzbranche: Change-Failures verursachten Trade-Outages in Millionenhöhe — Vier-Augen-Prinzip mit Change-Advisory-Board Standard."
+      reason_en: "Test/prod separation in finance: change failures have caused multi-million trade outages — four-eyes with CAB is standard."
+    "A.8.32":
+      maturity_target: "5"
+      reason: "Change-Management in Finanzbranche: Change-Failures verursachten Trade-Outages in Millionenhöhe — Vier-Augen-Prinzip mit Change-Advisory-Board Standard."
+      reason_en: "Change management in finance: change failures have caused multi-million trade outages — four-eyes with CAB is standard."
+    "A.8.4":
+      maturity_target: "4"
+      reason: "Source-Code-Schutz in Finanzbranche: Kernbankensysteme verlangen formellen Secure-SDLC mit DSGVO-Privacy-by-Design und FAT/UAT-Trennung."
+      reason_en: "Source code access in finance: core banking demands formal secure SDLC with GDPR privacy-by-design and FAT/UAT separation."
+    "A.8.5":
+      maturity_target: "5"
+      reason: "Sichere Authentisierung in Finanzbranche: privilegierte Zugriffe auf Kernbankensysteme/Trading sind FIN-/Lazarus-Top-Ziel — PAM mit MFA Pflicht."
+      reason_en: "Secure authentication in finance: privileged access to core banking/trading systems is FIN/Lazarus top target — PAM with MFA is mandatory."
+    "A.8.7":
+      maturity_target: "5"
+      reason: "Schutz vor Malware in Finanzbranche: Markt-Manipulation und Fraud-Detection erfordern korreliertes 24/7-SOC mit AML-Anbindung."
+      reason_en: "Protection against malware in finance: market manipulation and fraud detection require correlated 24/7 SOC with AML integration."
+    "A.8.8":
+      maturity_target: "5"
+      reason: "Vulnerability-Management in Finanzbranche: BAIT 7.4 verlangt strukturiertes Schwachstellen-Management; DORA Art. 24 fordert TLPT (Threat-Led-Penetration-Testing)."
+      reason_en: "Technical vulnerability management in finance: BAIT 7.4 demands structured vulnerability mgmt; DORA Art. 24 mandates TLPT (threat-led penetration testing)."
+    "A.8.9":
+      maturity_target: "5"
+      reason: "Configuration-Management in Finanzbranche: Change-Failures verursachten Trade-Outages in Millionenhöhe — Vier-Augen-Prinzip mit Change-Advisory-Board Standard."
+      reason_en: "Configuration management in finance: change failures have caused multi-million trade outages — four-eyes with CAB is standard."

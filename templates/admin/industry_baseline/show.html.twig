@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'framework_baseline' %}
+
+{% block title %}{{ 'framework_baseline.title'|trans }} — {{ framework }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard') }}">{{ 'common.dashboard'|trans({}, 'messages') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('admin_industry_baselines_index') }}">{{ 'framework_baseline.title'|trans }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ framework }}</li>
+        </ol>
+    </nav>
+
+    <div class="page-header mb-4">
+        <h1>{{ ('framework_baseline.framework.' ~ framework)|trans({}, 'framework_baseline')|default(framework) }}</h1>
+        <p class="text-muted small mb-0"><code>{{ framework }}</code> — {{ 'framework_baseline.show.subtitle'|trans }}</p>
+    </div>
+
+    {% if tenant is null %}
+        <div class="alert alert-warning small">
+            <i class="bi bi-exclamation-triangle"></i>
+            {{ 'framework_baseline.tenant_required'|trans }}
+        </div>
+    {% endif %}
+
+    {% if baselines|length == 0 %}
+        <div class="alert alert-info small">
+            <i class="bi bi-info-circle"></i>
+            {{ 'framework_baseline.empty_for_framework'|trans }}
+        </div>
+    {% else %}
+        <div class="row g-3">
+            {% for baseline in baselines %}
+                <div class="col-md-6 col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <code class="small text-muted">{{ baseline.id }}</code>
+                                <span class="badge bg-info">{{ baseline.industry }}</span>
+                            </div>
+                            <h2 class="h5 mb-2">{{ baseline.name }}</h2>
+                            <p class="small text-muted mb-3" style="white-space: pre-line;">{{ baseline.description }}</p>
+                            <p class="small text-muted mb-3">
+                                <i class="bi bi-file-earmark-code"></i>
+                                <code>{{ baseline.file }}</code>
+                            </p>
+
+                            {% if is_granted('ROLE_MANAGER') and tenant is not null %}
+                                <form method="post" action="{{ path('admin_industry_baselines_apply', {framework: framework}) }}" class="d-flex gap-2 flex-wrap">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('industry_baseline_apply') }}">
+                                    <input type="hidden" name="baseline_id" value="{{ baseline.id }}">
+                                    <button type="submit" name="dry_run" value="1" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                        <i class="bi bi-eye"></i>
+                                        {{ 'framework_baseline.action.preview'|trans }}
+                                    </button>
+                                    <button type="submit"
+                                            class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
+                                            data-confirm="{{ 'framework_baseline.confirm.apply'|trans({'%name%': baseline.name, '%tenant%': tenant.name}) }}">
+                                        <i class="bi bi-check-lg"></i>
+                                        {{ 'framework_baseline.action.apply'|trans }}
+                                    </button>
+                                </form>
+                            {% else %}
+                                <p class="small text-muted fst-italic mb-0">
+                                    {% if tenant is null %}
+                                        {{ 'framework_baseline.tenant_required'|trans }}
+                                    {% else %}
+                                        {{ 'framework_baseline.requires_manager'|trans }}
+                                    {% endif %}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
