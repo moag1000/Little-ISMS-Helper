@@ -338,6 +338,10 @@ final class OidcAuthenticationFlow
         $user->setIsVerified(true);
         $user->setIsActive(true);
         $user->setRoles([$provider->getDefaultRole() ?: 'ROLE_USER']);
+        $user->setCreatedAt(new DateTimeImmutable());
+        if ($provider->getTenant() !== null) {
+            $user->setTenant($provider->getTenant());
+        }
         $this->updateProfile($user, $provider, $claims);
 
         return $user;

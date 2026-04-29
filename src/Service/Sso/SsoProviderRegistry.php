@@ -44,11 +44,25 @@ final class SsoProviderRegistry
      */
     public function getLoginButtons(?Tenant $tenant, ?string $emailHint = null): array
     {
-        $providers = $this->repo->findEnabledForTenant($tenant);
+        // Anonymous login (tenant === null) can't see tenant-scoped providers
+        // by default — but providers with explicit domain bindings can still be
+        // discovered via the entered email. So when tenant is unknown we widen
+        // the candidate set to all enabled providers and let domain matching
+        // filter visibility below.
+        $providers = $tenant === null
+            ? $this->repo->findAllEnabled()
+            : $this->repo->findEnabledForTenant($tenant);
         $out = [];
         foreach ($providers as $p) {
+            $isAnonAndScoped = $tenant === null && !$p->isGlobal();
+
             $mode = $p->getDomainBindingMode();
             if ($mode === IdentityProvider::DOMAIN_MODE_DISABLED) {
+                if ($isAnonAndScoped) {
+                    // Don't leak tenant-scoped IdPs to anonymous visitors
+                    // unless they explicitly bound a domain that matches.
+                    continue;
+                }
                 $out[] = $p;
                 continue;
             }
@@ -56,11 +70,17 @@ final class SsoProviderRegistry
                 if ($mode === IdentityProvider::DOMAIN_MODE_ENFORCE) {
                     continue;
                 }
+                if ($isAnonAndScoped) {
+                    continue;
+                }
                 $out[] = $p;
                 continue;
             }
             if ($emailHint === null || $emailHint === '') {
                 if ($mode === IdentityProvider::DOMAIN_MODE_ENFORCE) {
+                    continue;
+                }
+                if ($isAnonAndScoped) {
                     continue;
                 }
                 $out[] = $p;

@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\IdentityProvider;
 use App\Security\GenericOidcAuthenticator;
+use App\Repository\IdentityProviderRepository;
 use App\Service\Sso\OidcAuthenticationFlow;
 use App\Service\Sso\SsoProviderRegistry;
 use App\Service\TenantContext;
@@ -27,6 +28,7 @@ final class SsoController extends AbstractController
 {
     public function __construct(
         private readonly SsoProviderRegistry $registry,
+        private readonly IdentityProviderRepository $providerRepo,
         private readonly OidcAuthenticationFlow $flow,
         private readonly TenantContext $tenantContext,
         private readonly RouterInterface $router,
@@ -38,6 +40,13 @@ final class SsoController extends AbstractController
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         $provider = $this->registry->findOneBySlugForTenant($slug, $tenant);
+        if (!$provider instanceof IdentityProvider) {
+            // Anonymous visitors have tenant=null and therefore can only see
+            // global IdPs through findOneBySlugForTenant. Fall back to the
+            // global slug index so a tenant-scoped IdP that the visitor
+            // discovered via email-domain binding still resolves.
+            $provider = $this->providerRepo->findOneBySlugAnywhere($slug);
+        }
         if (!$provider instanceof IdentityProvider || !$provider->isEnabled()) {
             $this->addFlash('error', 'SSO-Provider not found or disabled.');
             return $this->redirectToRoute('app_login');

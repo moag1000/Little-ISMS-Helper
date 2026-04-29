@@ -87,7 +87,8 @@ final class GenericOidcAuthenticator extends AbstractAuthenticator
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
-        $provider = $this->providerRepo->findOneBySlugForTenant($slug, $tenant);
+        $provider = $this->providerRepo->findOneBySlugForTenant($slug, $tenant)
+            ?? $this->providerRepo->findOneBySlugAnywhere($slug);
         if (!$provider instanceof IdentityProvider || !$provider->isEnabled()) {
             throw new AuthenticationException('SSO provider not found or disabled.');
         }
