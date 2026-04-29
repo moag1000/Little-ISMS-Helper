@@ -52,7 +52,7 @@ final class InverseCoverageService
     {
         $qb = $this->requirementRepository->createQueryBuilder('r')
             ->innerJoin('r.evidenceDocuments', 'd')
-            ->innerJoin('r.complianceFramework', 'f')
+            ->innerJoin('r.framework', 'f')
             ->andWhere('d.id = :docId')
             ->setParameter('docId', $document->getId())
             ->orderBy('f.code', 'ASC')

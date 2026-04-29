@@ -252,7 +252,7 @@ final class ImportMappingCsvCommand extends Command
         // Pick the first requirement whose id starts with the normalised prefix.
         foreach ($this->prefixCandidates($framework, $requirementId) as $prefix) {
             $qb = $this->requirementRepository->createQueryBuilder('r')
-                ->andWhere('r.complianceFramework = :f')
+                ->andWhere('r.framework = :f')
                 ->andWhere('r.requirementId LIKE :p')
                 ->setParameter('f', $framework)
                 ->setParameter('p', $prefix . '%')

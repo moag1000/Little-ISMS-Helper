@@ -35,11 +35,11 @@ class WorkflowInstance
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'initiated_by_id', nullable: true)]
-    private ?User $user = null;
+    private ?User $initiatedBy = null;
 
     #[ORM\ManyToOne(targetEntity: WorkflowStep::class)]
     #[ORM\JoinColumn(name: 'current_step_id', nullable: true)]
-    private ?WorkflowStep $workflowStep = null;
+    private ?WorkflowStep $currentStep = null;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $completedSteps = []; // Array of step IDs
@@ -120,23 +120,23 @@ public function __construct()
 
     public function getInitiatedBy(): ?User
     {
-        return $this->user;
+        return $this->initiatedBy;
     }
 
     public function setInitiatedBy(?User $user): static
     {
-        $this->user = $user;
+        $this->initiatedBy = $user;
         return $this;
     }
 
     public function getCurrentStep(): ?WorkflowStep
     {
-        return $this->workflowStep;
+        return $this->currentStep;
     }
 
     public function setCurrentStep(?WorkflowStep $workflowStep): static
     {
-        $this->workflowStep = $workflowStep;
+        $this->currentStep = $workflowStep;
         return $this;
     }
 

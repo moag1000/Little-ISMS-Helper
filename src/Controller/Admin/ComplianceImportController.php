@@ -800,7 +800,7 @@ final class ComplianceImportController extends AbstractController
 
         foreach ($this->prefixCandidates($framework, $requirementId) as $prefix) {
             $qb = $this->requirementRepository->createQueryBuilder('r')
-                ->andWhere('r.complianceFramework = :f')
+                ->andWhere('r.framework = :f')
                 ->andWhere('r.requirementId LIKE :p')
                 ->setParameter('f', $framework)
                 ->setParameter('p', $prefix . '%')

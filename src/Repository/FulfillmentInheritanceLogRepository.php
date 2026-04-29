@@ -36,7 +36,7 @@ class FulfillmentInheritanceLogRepository extends ServiceEntityRepository
         if ($framework !== null) {
             $qb->innerJoin('l.fulfillment', 'f')
                 ->innerJoin('f.requirement', 'r')
-                ->andWhere('r.complianceFramework = :framework')
+                ->andWhere('r.framework = :framework')
                 ->setParameter('framework', $framework);
         }
 
@@ -53,7 +53,7 @@ class FulfillmentInheritanceLogRepository extends ServiceEntityRepository
             ->innerJoin('f.requirement', 'r')
             ->innerJoin('l.derivedFromMapping', 'm')
             ->where('l.tenant = :tenant')
-            ->andWhere('r.complianceFramework = :framework')
+            ->andWhere('r.framework = :framework')
             ->setParameter('tenant', $tenant)
             ->setParameter('framework', $framework)
             ->orderBy('m.confidence', 'DESC')

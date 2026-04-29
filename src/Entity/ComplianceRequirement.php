@@ -22,7 +22,7 @@ class ComplianceRequirement
 
     #[ORM\ManyToOne(inversedBy: 'requirements')]
     #[ORM\JoinColumn(name: 'framework_id', nullable: false)]
-    private ?ComplianceFramework $complianceFramework = null;
+    private ?ComplianceFramework $framework = null;
 
     #[ORM\Column(length: 50)]
     private ?string $requirementId = null;
@@ -44,12 +44,12 @@ class ComplianceRequirement
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'detailedRequirements')]
     #[ORM\JoinColumn(name: 'parent_requirement_id', nullable: true, onDelete: 'SET NULL')]
-    private ?ComplianceRequirement $complianceRequirement = null;
+    private ?ComplianceRequirement $parentRequirement = null;
 
     /**
      * @var Collection<int, ComplianceRequirement>
      */
-    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'complianceRequirement', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentRequirement', cascade: ['persist', 'remove'])]
     private Collection $detailedRequirements;
 
     /**
@@ -130,12 +130,12 @@ class ComplianceRequirement
 
     public function getFramework(): ?ComplianceFramework
     {
-        return $this->complianceFramework;
+        return $this->framework;
     }
 
     public function setFramework(?ComplianceFramework $complianceFramework): static
     {
-        $this->complianceFramework = $complianceFramework;
+        $this->framework = $complianceFramework;
         return $this;
     }
 
@@ -359,12 +359,12 @@ class ComplianceRequirement
 
     public function getParentRequirement(): ?self
     {
-        return $this->complianceRequirement;
+        return $this->parentRequirement;
     }
 
     public function setParentRequirement(?self $parentRequirement): static
     {
-        $this->complianceRequirement = $parentRequirement;
+        $this->parentRequirement = $parentRequirement;
         return $this;
     }
 
@@ -400,7 +400,7 @@ class ComplianceRequirement
      */
     public function isCoreRequirement(): bool
     {
-        return !$this->complianceRequirement instanceof ComplianceRequirement && $this->requirementType === 'core';
+        return !$this->parentRequirement instanceof ComplianceRequirement && $this->requirementType === 'core';
     }
 
     /**
