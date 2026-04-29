@@ -254,7 +254,7 @@ jobs:
 
       - name: Build and Push Docker image (production)
         id: docker-build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         timeout-minutes: 60
         with:
           context: .
