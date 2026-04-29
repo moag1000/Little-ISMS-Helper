@@ -1,0 +1,471 @@
+baseline:
+  id: bsi-grundschutz-finance
+  name: 'BSI IT-Grundschutz - Finanzdienstleister (Banken/Versicherungen)'
+  name_en: 'BSI IT-Grundschutz - Financial Services (Banks/Insurers)'
+  industry: finance
+  description: |
+    Baseline für regulierte Finanzdienstleister (Banken, Versicherer, FinTechs)
+    nach BSI 200-2 Standard-Absicherung mit Kern-Absicherung auf
+    Identitäts-/Krypto-/Detektions-Bausteinen. Adressiert MaRisk AT 7.2, BAIT/VAIT,
+    DORA Art. 9/17 und EBA-Guidelines on ICT Risk Management. Hohes Reifegrad-
+    Niveau wegen BaFin-Sonderprüfungen und finanzieller Hebelwirkung von
+    IT-Risiken.
+  description_en: |
+    Baseline for regulated financial services (banks, insurers, FinTechs) following
+    BSI 200-2 Standard Protection with Core Protection on identity/crypto/detection
+    building blocks. Addresses MaRisk AT 7.2, BAIT/VAIT, DORA Art. 9/17 and EBA
+    Guidelines on ICT Risk Management. High maturity required due to BaFin special
+    audits and the financial leverage of IT risks.
+  targets:
+    "ISMS.1.A1":
+      maturity_target: "5"
+      reason: "Leitungsverantwortung ist MaRisk AT 4.3 / BAIT-Kapitel 2 Pflicht — Vorstand muss IS-Strategie persönlich verantworten."
+      reason_en: "Top-management responsibility is mandatory under MaRisk AT 4.3 / BAIT chapter 2 — the board must personally own IS strategy."
+    "ISMS.1.A2":
+      maturity_target: "5"
+      reason: "IS-Leitlinie ist BAIT 3.1 / DORA Art. 6 Pflicht — formal verabschiedet, jährlich reviewt, BaFin-prüfungsfest."
+      reason_en: "IS policy is mandatory under BAIT 3.1 / DORA Art. 6 — formally adopted, annually reviewed, BaFin audit-proof."
+    "ISMS.1.A3":
+      maturity_target: "4"
+      reason: "IS-Organisation mit hauptamtlichem ISB — BAIT 3.2 verlangt ausreichend Ressourcen und unabhängige Position."
+      reason_en: "IS organisation with full-time CISO — BAIT 3.2 requires sufficient resources and independent position."
+    "ISMS.1.A4":
+      maturity_target: "4"
+      reason: "Ressourcen für IS-Prozess sind in DORA Art. 5 / Art. 6 explizit gefordert; BaFin-Prüfung adressiert Underfunding."
+      reason_en: "Resources for the IS process are explicitly required by DORA Art. 5 / Art. 6; BaFin audits address underfunding."
+    "ISMS.1.A5":
+      maturity_target: "4"
+      reason: "Mitarbeiter-Einbindung in IS-Prozess — MaRisk AT 7.1 verlangt nachvollziehbare Awareness-Programme."
+      reason_en: "Staff engagement in the IS process — MaRisk AT 7.1 requires traceable awareness programmes."
+    "ORP.1.A1":
+      maturity_target: "4"
+      reason: "Aufgaben/Verantwortungen schriftlich — MaRisk AT 4.3.1, Funktionstrennung (SoD) audit-relevant."
+      reason_en: "Roles and responsibilities documented — MaRisk AT 4.3.1, segregation of duties is audit-relevant."
+    "ORP.2.A1":
+      maturity_target: "4"
+      reason: "Personal-Sicherheit (Background-Check, KWG §25a) — Bank-Mitarbeiter mit Zugang zu Handelssystemen erweiterte Prüfung."
+      reason_en: "Personnel security (background checks, KWG §25a) — bank staff with access to trading systems require extended vetting."
+    "ORP.3.A1":
+      maturity_target: "4"
+      reason: "Sensibilisierungsprogramm Pflicht — BAIT 3.3, Phishing-Awareness gegen CEO-Fraud kritisch."
+      reason_en: "Awareness programme mandatory — BAIT 3.3, phishing awareness against CEO fraud is critical."
+    "ORP.3.A2":
+      maturity_target: "4"
+      reason: "Rollenbasierte Schulung — Händler, Treasury, Admins haben spezifische IS-Themen (Insider-Trading, Marktabuse)."
+      reason_en: "Role-based training — traders, treasury, admins have specific IS topics (insider trading, market abuse)."
+    "ORP.3.A3":
+      maturity_target: "4"
+      reason: "Erfolgsmessung Awareness — BaFin verlangt KPIs und Maßnahmen bei wiederkehrenden Phishing-Klicks."
+      reason_en: "Awareness effectiveness measurement — BaFin requires KPIs and corrective action on repeated phishing clicks."
+    "CON.1.A1":
+      maturity_target: "5"
+      reason: "Krypto-Konzept Kern-Absicherung — BSI TR-02102 + PCI-DSS für Kartendaten + EBA-PSD2-Anforderungen an Strong Authentication."
+      reason_en: "Crypto concept Core Protection — BSI TR-02102 + PCI-DSS for card data + EBA PSD2 strong authentication requirements."
+    "CON.2.A1":
+      maturity_target: "4"
+      reason: "Datenschutz-Konzept — Kunden-Finanzdaten sind DSGVO-besondere Risikokategorie; Bankgeheimnis (§ 39 KWG)."
+      reason_en: "Data protection concept — customer financial data is a GDPR high-risk category; banking secrecy (§ 39 KWG)."
+    "CON.3.A1":
+      maturity_target: "4"
+      reason: "Datensicherungskonzept — DORA Art. 12 verlangt Backup-Strategie mit RTO/RPO und regelmäßigen Restore-Tests."
+      reason_en: "Backup concept — DORA Art. 12 requires backup strategy with RTO/RPO and regular restore tests."
+    "CON.3.A2":
+      maturity_target: "4"
+      reason: "Festlegung Verfahrensweise Datensicherung — BAIT 7.4 / DORA Art. 12 (3) verlangt dokumentierte Backup-Frequenzen, Aufbewahrung und Offsite-Lagerung."
+      reason_en: "Backup procedure definition — BAIT 7.4 / DORA Art. 12 (3) requires documented backup frequency, retention and off-site storage."
+    "CON.4.A1":
+      maturity_target: "4"
+      reason: "Auswahl/Beschaffung mit IS-Klauseln — DORA Art. 28-30 Drittanbieter-Risiko-Management Pflicht."
+      reason_en: "Procurement with IS clauses — DORA Art. 28-30 third-party risk management mandatory."
+    "CON.4.A2":
+      maturity_target: "4"
+      reason: "Vertragsgestaltung mit Audit-Recht — DORA Art. 30 verlangt vertragliche Mindestinhalte für ICT-Provider."
+      reason_en: "Contract design with audit rights — DORA Art. 30 requires contractual minimum content for ICT providers."
+    "CON.4.A5":
+      maturity_target: "4"
+      reason: "Abnahmeprüfung neuer Komponenten — vor Produktiv-Einsatz (Trading-/Core-Banking) ist Pen-Test BaFin-Erwartung."
+      reason_en: "Acceptance testing of new components — pen test before go-live (trading/core banking) is BaFin expectation."
+    "CON.5.A1":
+      maturity_target: "4"
+      reason: "Löschkonzept — BaFin-Aufbewahrungspflichten 6/10 Jahre + DSGVO-Löschpflicht parallel managen."
+      reason_en: "Deletion concept — BaFin retention obligations of 6/10 years plus GDPR deletion obligations managed in parallel."
+    "CON.5.A2":
+      maturity_target: "4"
+      reason: "Sichere Datenträger-Vernichtung mit Zertifikat — Kunden-Daten/Verträge dürfen nicht rekonstruierbar sein."
+      reason_en: "Secure media destruction with certificate — customer data/contracts must not be reconstructible."
+    "CON.5.A7":
+      maturity_target: "4"
+      reason: "Cloud-/Outsourcing-Daten Rückgabe — DORA Exit-Strategie Art. 28 (8) Pflicht."
+      reason_en: "Cloud/outsourcing data return — DORA exit strategy Art. 28 (8) mandatory."
+    "CON.11.A1":
+      maturity_target: "4"
+      reason: "Cloud-Strategie — BaFin Cloud-Rundschreiben + DORA Drittanbieter-Register Pflicht."
+      reason_en: "Cloud strategy — BaFin cloud circular + DORA third-party register mandatory."
+    "CON.11.A2":
+      maturity_target: "4"
+      reason: "Cloud-Sicherheitskonzept — BaFin verlangt C5-Typ-2 oder ISO-27017 + Lokalitäts-/Souveränitäts-Klauseln."
+      reason_en: "Cloud security concept — BaFin requires C5 Type 2 or ISO 27017 plus locality/sovereignty clauses."
+    "OPS.1.1.2.A1":
+      maturity_target: "5"
+      reason: "Privilegierte Administration ist BAIT 6 Pflicht — PAM, MFA, Vier-Augen-Prinzip, Session-Recording."
+      reason_en: "Privileged administration is mandatory under BAIT 6 — PAM, MFA, four-eyes principle, session recording."
+    "OPS.1.1.3.A1":
+      maturity_target: "4"
+      reason: "Patch-Management — DORA Art. 9 verlangt zeitnahe Schwachstellenbeseitigung; SLAs nach Kritikalität."
+      reason_en: "Patch management — DORA Art. 9 requires timely vulnerability remediation; SLAs by criticality."
+    "OPS.1.1.3.A2":
+      maturity_target: "4"
+      reason: "Schwachstellen-Management — BAIT 6 verlangt regelmäßige Scans + Bewertung + Tracking bis Behebung."
+      reason_en: "Vulnerability management — BAIT 6 requires regular scans, assessment, and tracking to resolution."
+    "OPS.1.1.5.A1":
+      maturity_target: "4"
+      reason: "Protokollierung — MaRisk AT 7.2 + DORA Art. 17 zentrale Logging-Pflicht inkl. Adminzugriffe."
+      reason_en: "Logging — MaRisk AT 7.2 + DORA Art. 17 central logging duty including admin access."
+    "OPS.1.1.5.A2":
+      maturity_target: "4"
+      reason: "Auswertung Logs — Fraud-Detection und Marktmissbrauchs-Monitoring (MAR) verlangen aktive Auswertung."
+      reason_en: "Log evaluation — fraud detection and market abuse monitoring (MAR) require active analysis."
+    "OPS.1.2.2.A1":
+      maturity_target: "4"
+      reason: "Archivierung — HGB §257 / AO §147 Aufbewahrungspflichten 6/10 Jahre für Buchungs-/Handelsdaten."
+      reason_en: "Archiving — HGB §257 / AO §147 retention 6/10 years for accounting/trading data."
+    "OPS.1.2.3.A1":
+      maturity_target: "3"
+      reason: "Datenträgertausch — bei Banken meist nur Backup/Archiv-Bänder; klar geregelter Prozess."
+      reason_en: "Media exchange — at banks usually only backup/archive tapes; clearly governed process."
+    "OPS.1.2.3.A2":
+      maturity_target: "3"
+      reason: "Sicherer Versand mit Tracking und Verschlüsselung — BAIT 8.3."
+      reason_en: "Secure shipment with tracking and encryption — BAIT 8.3."
+    "OPS.1.2.3.A3":
+      maturity_target: "4"
+      reason: "Verschlüsselung mobiler Datenträger Pflicht — BSI TR-02102, FIPS 140-2 für regulatorische Daten."
+      reason_en: "Encryption of mobile media mandatory — BSI TR-02102, FIPS 140-2 for regulatory data."
+    "OPS.2.2.A1":
+      maturity_target: "4"
+      reason: "Cloud-Anbieter-Strategie — BaFin Cloud-Rundschreiben verlangt formale Strategie-Dokumentation."
+      reason_en: "Cloud provider strategy — BaFin cloud circular requires formal strategy documentation."
+    "OPS.2.2.A2":
+      maturity_target: "4"
+      reason: "Sicherheitskonzept Cloud — DORA Art. 28-30 mit Exit-Strategie, Konzentrations-Risiko-Analyse."
+      reason_en: "Cloud security concept — DORA Art. 28-30 with exit strategy, concentration risk analysis."
+    "OPS.2.2.A3":
+      maturity_target: "4"
+      reason: "Service-Definition und SLAs — DORA Art. 30 (3) verlangt vertragliche Mindestinhalte."
+      reason_en: "Service definition and SLAs — DORA Art. 30 (3) requires contractual minimum content."
+    "OPS.2.3.A1":
+      maturity_target: "4"
+      reason: "Outsourcing-Strategie — BaFin MaRisk AT 9 + DORA Art. 28-30 Drittanbieter-Register."
+      reason_en: "Outsourcing strategy — BaFin MaRisk AT 9 + DORA Art. 28-30 third-party register."
+    "OPS.2.3.A2":
+      maturity_target: "4"
+      reason: "Risikoanalyse Outsourcing — wesentliche Auslagerungen mit Konzentrations-/Substituierbarkeitsanalyse."
+      reason_en: "Outsourcing risk analysis — material outsourcings with concentration/substitutability analysis."
+    "OPS.2.3.A6":
+      maturity_target: "4"
+      reason: "Vertragsgestaltung mit BaFin-Pflichtklauseln (Audit-Recht, Kündigung, Sub-Delegation)."
+      reason_en: "Contract design with BaFin mandatory clauses (audit rights, termination, sub-delegation)."
+    "DER.1.A1":
+      maturity_target: "5"
+      reason: "Detektion Kern-Absicherung — DORA Art. 10 + BAIT 9: SIEM, Fraud-Detection, Marktmissbrauch-Monitoring 24/7."
+      reason_en: "Detection Core Protection — DORA Art. 10 + BAIT 9: SIEM, fraud detection, market abuse monitoring 24/7."
+    "DER.2.1.A1":
+      maturity_target: "5"
+      reason: "Vorfallsbehandlung — DORA Art. 17-19: Major-ICT-Incidents Meldung an BaFin + ESMA innerhalb 4h Initial-Notification."
+      reason_en: "Incident handling — DORA Art. 17-19: major ICT incidents reportable to BaFin + ESMA within 4h initial notification."
+    "DER.2.1.A2":
+      maturity_target: "5"
+      reason: "Etablierung IRT mit Playbooks — DORA TLPT (Threat-Led-Pen-Tests) Pflicht alle 3 Jahre für G-SIBs."
+      reason_en: "IRT establishment with playbooks — DORA TLPT (threat-led pen tests) mandatory every 3 years for G-SIBs."
+    "DER.2.2.A1":
+      maturity_target: "4"
+      reason: "Vorsorge mit Forensik-Toolkit, Out-of-Band-Comms — DORA Art. 11 Resilienz-Tests."
+      reason_en: "Preparedness with forensic toolkit, out-of-band comms — DORA Art. 11 resilience tests."
+    "APP.1.A1":
+      maturity_target: "4"
+      reason: "Office-Härtung — Makros restriktiv, Analyst-Workstations mit DLP gegen Insider-Datenabfluss."
+      reason_en: "Office hardening — restrictive macros, analyst workstations with DLP against insider data exfiltration."
+    "APP.2.1.A1":
+      maturity_target: "5"
+      reason: "Active Directory ist Bank-Hochwertziel — Tier-Modell, Red-Forest, ESAE für Trading-Domains."
+      reason_en: "Active Directory is a bank high-value target — tier model, red forest, ESAE for trading domains."
+    "APP.3.2.A1":
+      maturity_target: "4"
+      reason: "Webserver-Härtung — Online-Banking ist OWASP-Top-10-Frontline, WAF + Bot-Detection Standard."
+      reason_en: "Web server hardening — online banking is the OWASP Top 10 frontline, WAF + bot detection standard."
+    "APP.3.2.A2":
+      maturity_target: "4"
+      reason: "Planung Webserver mit DMZ, Reverse-Proxy, mTLS für PSD2-APIs."
+      reason_en: "Web server planning with DMZ, reverse proxy, mTLS for PSD2 APIs."
+    "APP.3.2.A5":
+      maturity_target: "4"
+      reason: "Protokollierung Webserver für Forensik — Online-Banking-Logs Pflicht für Streitfälle und Fraud-Recht."
+      reason_en: "Web server logging for forensics — online banking logs mandatory for disputes and fraud claims."
+    "APP.3.3.A1":
+      maturity_target: "4"
+      reason: "Fileserver-Planung mit ABE — Kunden-/Vertragsdokumente Schutzbedarf hoch."
+      reason_en: "File server planning with ABE — customer/contract documents have high protection needs."
+    "APP.3.3.A2":
+      maturity_target: "4"
+      reason: "Auswahl Fileserver mit Audit-Logging — BaFin verlangt nachvollziehbare Datenzugriffe."
+      reason_en: "File server selection with audit logging — BaFin requires traceable data access."
+    "APP.3.3.A3":
+      maturity_target: "4"
+      reason: "Sicherheitsanforderungen Fileserver mit Verschlüsselung at-rest und Zugriffsmatrix."
+      reason_en: "File server security requirements with encryption at rest and access matrix."
+    "APP.3.6.A1":
+      maturity_target: "4"
+      reason: "DNS-Server-Planung mit DNSSEC — Bank-Phishing-Domains erfordern Defensive-DNS."
+      reason_en: "DNS server planning with DNSSEC — bank phishing domains require defensive DNS."
+    "APP.3.6.A2":
+      maturity_target: "4"
+      reason: "Auswahl DNS-Server mit RPZ und Threat-Feeds gegen DNS-Tunneling."
+      reason_en: "DNS server selection with RPZ and threat feeds against DNS tunnelling."
+    "APP.3.6.A5":
+      maturity_target: "4"
+      reason: "Schutz vor DNS-Manipulation — DNSSEC-Validierung BSI TR-03116."
+      reason_en: "Protection against DNS manipulation — DNSSEC validation BSI TR-03116."
+    "APP.4.2.A1":
+      maturity_target: "4"
+      reason: "SAP häufig Kern-Buchhaltung in Banken — SAP-Hardening + SoD-Matrix verbindlich."
+      reason_en: "SAP is often core accounting in banks — SAP hardening + SoD matrix binding."
+    "APP.4.2.A2":
+      maturity_target: "4"
+      reason: "Auswahl SAP-Module mit Berechtigungs-Konzept — BAIT 7 Compliance."
+      reason_en: "SAP module selection with authorisation concept — BAIT 7 compliance."
+    "APP.4.2.A3":
+      maturity_target: "4"
+      reason: "Absicherung SAP-Installation — monatlicher SAP-Security-Patch-Day."
+      reason_en: "SAP installation hardening — monthly SAP security patch day."
+    "APP.4.4.A1":
+      maturity_target: "3"
+      reason: "Kubernetes-Planung — Banken-Microservices/FinTech-Plattformen mit Pod-Security-Standards."
+      reason_en: "Kubernetes planning — bank microservices/FinTech platforms with pod security standards."
+    "APP.4.4.A4":
+      maturity_target: "3"
+      reason: "Trennung von Workloads in Kubernetes — Multi-Tenancy mit Namespace-Isolation."
+      reason_en: "Workload separation in Kubernetes — multi-tenancy with namespace isolation."
+    "APP.4.4.A8":
+      maturity_target: "3"
+      reason: "Container-Image-Härtung mit Signing (cosign) und SBOM für DORA Art. 8."
+      reason_en: "Container image hardening with signing (cosign) and SBOM for DORA Art. 8."
+    "APP.5.3.A1":
+      maturity_target: "4"
+      reason: "Mail-Server-Planung mit SPF/DKIM/DMARC — CEO-Fraud Top-Bank-Risiko."
+      reason_en: "Mail server planning with SPF/DKIM/DMARC — CEO fraud is a top bank risk."
+    "APP.5.3.A2":
+      maturity_target: "4"
+      reason: "Mail-Server-Auswahl mit S/MIME für Kunden-Korrespondenz und ATP-Anti-Phishing."
+      reason_en: "Mail server selection with S/MIME for customer correspondence and ATP anti-phishing."
+    "APP.6.A1":
+      maturity_target: "4"
+      reason: "Software-Entwicklung intern (Core-Banking, Trading) — SDLC mit Threat-Modeling und SAST/DAST Pflicht."
+      reason_en: "In-house software development (core banking, trading) — SDLC with threat modelling and SAST/DAST mandatory."
+    "APP.6.A2":
+      maturity_target: "4"
+      reason: "Anforderungsanalyse mit Security/Privacy-by-Design — DORA Art. 9 (4)."
+      reason_en: "Requirements analysis with security/privacy by design — DORA Art. 9 (4)."
+    "SYS.1.1.A1":
+      maturity_target: "4"
+      reason: "Server-Härtung — Trading- und Core-Banking-Server unter konstantem Angriff."
+      reason_en: "Server hardening — trading and core banking servers under constant attack."
+    "SYS.1.2.A1":
+      maturity_target: "4"
+      reason: "Windows-Server-Planung mit BSI SiSyPHus / CIS-Benchmark."
+      reason_en: "Windows Server planning with BSI SiSyPHus / CIS benchmark."
+    "SYS.1.2.A2":
+      maturity_target: "4"
+      reason: "Windows-Server-Beschaffung — LTSC für regulatorische Stabilität."
+      reason_en: "Windows Server procurement — LTSC for regulatory stability."
+    "SYS.1.2.3.A1":
+      maturity_target: "4"
+      reason: "Planung Windows-Server-Einsatz mit Domain-Tier-Modell und JEA/JIT."
+      reason_en: "Windows Server deployment planning with domain tier model and JEA/JIT."
+    "SYS.1.2.3.A2":
+      maturity_target: "4"
+      reason: "AppLocker/WDAC für Trading-Workstations gegen Insider-Tools."
+      reason_en: "AppLocker/WDAC for trading workstations against insider tools."
+    "SYS.1.2.3.A5":
+      maturity_target: "5"
+      reason: "Schutz administrativer Zugänge — PAM, MFA, Vier-Augen-Prinzip BAIT 6 zwingend."
+      reason_en: "Protection of admin access — PAM, MFA, four-eyes principle BAIT 6 mandatory."
+    "SYS.1.3.A1":
+      maturity_target: "4"
+      reason: "Linux-Server-Planung mit CIS-Benchmark — typisch für Trading-Plattformen."
+      reason_en: "Linux server planning with CIS benchmark — typical for trading platforms."
+    "SYS.1.3.A5":
+      maturity_target: "4"
+      reason: "Sichere Installation Linux mit minimalem Footprint und FIM (AIDE/Tripwire)."
+      reason_en: "Secure Linux installation with minimal footprint and FIM (AIDE/Tripwire)."
+    "SYS.1.3.A10":
+      maturity_target: "4"
+      reason: "EDR auf Linux — kommerzielle Lösungen (CrowdStrike, SentinelOne) Standard in Banken."
+      reason_en: "Linux EDR — commercial solutions (CrowdStrike, SentinelOne) standard in banks."
+    "SYS.1.3.A11":
+      maturity_target: "4"
+      reason: "SELinux/AppArmor MAC und kernel-hardening Standard in Bank-Prod."
+      reason_en: "SELinux/AppArmor MAC and kernel hardening standard in bank production."
+    "SYS.1.6.A1":
+      maturity_target: "3"
+      reason: "Container-Planung — FinTechs/Microservices verbreitet, Bank-Core meist Mainframe/VM."
+      reason_en: "Container planning — common in FinTech/microservices, bank core usually mainframe/VM."
+    "SYS.1.6.A3":
+      maturity_target: "3"
+      reason: "Sichere Container-Runtime mit rootless und seccomp."
+      reason_en: "Secure container runtime with rootless and seccomp."
+    "SYS.1.8.A1":
+      maturity_target: "4"
+      reason: "Speicher-Planung mit Snapshots, Replication, WORM für Buchungsdaten."
+      reason_en: "Storage planning with snapshots, replication, WORM for accounting data."
+    "SYS.1.8.A2":
+      maturity_target: "4"
+      reason: "Auswahl Speicher mit Encryption-at-rest (KMIP) und Audit-Logs."
+      reason_en: "Storage selection with encryption at rest (KMIP) and audit logs."
+    "SYS.1.9.A1":
+      maturity_target: "4"
+      reason: "Terminalserver — Jump-Hosts für Trading/Treasury-Zugang."
+      reason_en: "Terminal servers — jump hosts for trading/treasury access."
+    "SYS.1.9.A3":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration mit Session-Recording und MFA."
+      reason_en: "Secure configuration with session recording and MFA."
+    "SYS.2.1.A1":
+      maturity_target: "4"
+      reason: "Client-Härtung mit DLP und EDR — Bank-Mitarbeiter-Clients high-value."
+      reason_en: "Client hardening with DLP and EDR — bank staff clients are high value."
+    "SYS.2.2.A1":
+      maturity_target: "4"
+      reason: "Windows-Client-Planung mit BitLocker, AppLocker, BSI SiSyPHus."
+      reason_en: "Windows client planning with BitLocker, AppLocker, BSI SiSyPHus."
+    "SYS.2.2.A3":
+      maturity_target: "4"
+      reason: "Sichere Installation Windows-Client mit zentralem Imaging."
+      reason_en: "Secure Windows client installation with central imaging."
+    "SYS.2.4.A1":
+      maturity_target: "3"
+      reason: "macOS-Client-Planung — bei Bank-Executives/Designern verbreitet."
+      reason_en: "macOS client planning — common for bank executives/designers."
+    "SYS.2.4.A2":
+      maturity_target: "3"
+      reason: "Auswahl macOS mit FileVault, Gatekeeper, MDM."
+      reason_en: "macOS selection with FileVault, Gatekeeper, MDM."
+    "SYS.2.4.A4":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration macOS via MDM-Profile."
+      reason_en: "Secure macOS configuration via MDM profiles."
+    "SYS.3.1.A2":
+      maturity_target: "4"
+      reason: "Beschaffung Laptops mit FDE, TPM 2.0 — Bank-Außendienst/Auditoren-Pool."
+      reason_en: "Laptop procurement with FDE, TPM 2.0 — bank field staff/auditor pool."
+    "SYS.3.1.A3":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration Laptops mit Always-On-VPN und EDR."
+      reason_en: "Secure laptop configuration with always-on VPN and EDR."
+    "SYS.3.2.2.A1":
+      maturity_target: "4"
+      reason: "Mobilgeräte-Planung mit MDM und Container — Banking-App-Tester/Vertrieb."
+      reason_en: "Mobile device planning with MDM and containerisation — banking app testers/sales."
+    "SYS.3.2.2.A2":
+      maturity_target: "4"
+      reason: "Auswahl Mobilgeräte mit Enterprise-MDM (Intune, MaaS360, Workspace ONE)."
+      reason_en: "Mobile device selection with enterprise MDM (Intune, MaaS360, Workspace ONE)."
+    "SYS.3.2.2.A5":
+      maturity_target: "4"
+      reason: "Schutz Mobilgeräte mit MTD und Remote-Wipe — verlorene Geräte Datenschutzfall."
+      reason_en: "Mobile device protection with MTD and remote wipe — lost devices are data protection incidents."
+    "SYS.3.3.A1":
+      maturity_target: "2"
+      reason: "Sonstige Mobilgeräte (Wearables) bei Banken sehr selten — nur bei Innovation Labs."
+      reason_en: "Other mobile devices (wearables) very rare in banks — only in innovation labs."
+    "SYS.3.3.A3":
+      maturity_target: "2"
+      reason: "Sichere Konfiguration falls genutzt — auf Pilot-Setups beschränkt."
+      reason_en: "Secure configuration if used — limited to pilot setups."
+    "SYS.4.1.A1":
+      maturity_target: "3"
+      reason: "Drucker-Planung mit Pull-Print — Kunden-Daten auf Druckern Vertraulichkeitsrisiko."
+      reason_en: "Printer planning with pull print — customer data on printers is a confidentiality risk."
+    "SYS.4.1.A2":
+      maturity_target: "3"
+      reason: "Auswahl Drucker mit CC-Zertifikat und Audit-Logs."
+      reason_en: "Printer selection with CC certificate and audit logs."
+    "SYS.4.1.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration mit SNMPv3 und Firmware-Patches."
+      reason_en: "Secure configuration with SNMPv3 and firmware patches."
+    "SYS.4.5.A1":
+      maturity_target: "4"
+      reason: "Wechseldatenträger-Planung — bei Banken oft restriktiv USB-blockiert (DLP)."
+      reason_en: "Removable media planning — often restrictively USB-blocked at banks (DLP)."
+    "SYS.4.5.A2":
+      maturity_target: "4"
+      reason: "Auswahl Wechselmedien mit Hardware-Verschlüsselung (FIPS 140-2)."
+      reason_en: "Removable media selection with hardware encryption (FIPS 140-2)."
+    "NET.1.1.A1":
+      maturity_target: "4"
+      reason: "Netzarchitektur — BAIT 5 verlangt Zonenkonzept und Trennung Trading/Settlement."
+      reason_en: "Network architecture — BAIT 5 requires zone concept and trading/settlement separation."
+    "NET.1.1.A2":
+      maturity_target: "4"
+      reason: "Anforderungsanalyse Netz mit Schutzbedarfsfeststellung je Zone."
+      reason_en: "Network requirements analysis with protection-needs determination per zone."
+    "NET.4.1.A1":
+      maturity_target: "3"
+      reason: "TK-Anlagen-Planung — Bank-Hotline und Rechtsabteilung verfügbarkeitsrelevant."
+      reason_en: "PBX planning — bank hotline and legal department are availability-relevant."
+    "NET.4.1.A2":
+      maturity_target: "3"
+      reason: "Auswahl TK-Anlage mit Redundanz und MAR-Voice-Recording-Compliance."
+      reason_en: "PBX selection with redundancy and MAR voice recording compliance."
+    "NET.4.2.A1":
+      maturity_target: "3"
+      reason: "VoIP-Planung mit SRTP/TLS — Trader-Voice-Recording (MiFID II) verbindlich."
+      reason_en: "VoIP planning with SRTP/TLS — trader voice recording (MiFID II) binding."
+    "NET.4.2.A3":
+      maturity_target: "3"
+      reason: "Sichere VoIP-Konfiguration mit SBC und gehärteten Codecs."
+      reason_en: "Secure VoIP configuration with SBC and hardened codecs."
+    "NET.4.2.A8":
+      maturity_target: "3"
+      reason: "VoIP-Verschlüsselung — SRTP für vertrauliche Bank-Calls."
+      reason_en: "VoIP encryption — SRTP for confidential bank calls."
+    "NET.4.3.A1":
+      maturity_target: "2"
+      reason: "Faxgeräte rückläufig — bei Banken nur noch selten (z.B. Auslandsüberweisungen)."
+      reason_en: "Fax devices declining — rare at banks (e.g. foreign payments)."
+    "NET.4.3.A2":
+      maturity_target: "2"
+      reason: "Auswahl Faxgerät mit Empfänger-Authentifizierung."
+      reason_en: "Fax device selection with recipient authentication."
+    "NET.4.3.A3":
+      maturity_target: "2"
+      reason: "Sichere Konfiguration mit deaktivierten Remote-Diagnoseports."
+      reason_en: "Secure configuration with disabled remote diagnostic ports."
+    "INF.1.A1":
+      maturity_target: "4"
+      reason: "Gebäude-Planung mit perimeter-Schutz — Bank-RZ Hochsicherheits-Standorte."
+      reason_en: "Building planning with perimeter protection — bank data centres are high-security sites."
+    "INF.1.A2":
+      maturity_target: "4"
+      reason: "Brandschutz und Stromversorgung — Bank-RZ mit USV und Notstrom."
+      reason_en: "Fire protection and power — bank data centres with UPS and emergency power."
+    "INF.10.A1":
+      maturity_target: "3"
+      reason: "Besprechungsräume mit abhörsicheren Setups bei M&A/Treasury-Calls."
+      reason_en: "Meeting rooms with eavesdropping-proof setups for M&A/treasury calls."
+    "INF.10.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration Konferenztechnik (deaktivierte USB)."
+      reason_en: "Secure conference technology configuration (disabled USB)."
+    "INF.13.A1":
+      maturity_target: "3"
+      reason: "Wegeleitsysteme/sonstige Infrastruktur — Bank-Filiale-Sicherheit."
+      reason_en: "Wayfinding systems/other infrastructure — bank branch security."
+    "INF.13.A2":
+      maturity_target: "3"
+      reason: "Auswahl mit Manipulations-Erkennung."
+      reason_en: "Selection with tamper detection."
+    "INF.13.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration und regelmäßige Wartung."
+      reason_en: "Secure configuration and regular maintenance."

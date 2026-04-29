@@ -7,6 +7,137 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 _Noch keine Aenderungen._
 
+## [3.3.0] — 2026-04-29
+
+Erstes Minor-Release nach `3.2.x` — bringt zwei substantielle neue Module
+(Generic-SSO, Framework-Baselines), den GSTOOL-XML-Import-Pfad sowie i18n
+für die MRIS-Baselines. Keine Breaking-Changes, alle Migrationen sind
+additiv und idempotent.
+
+### Feature: Generic SSO (OIDC/OAuth2)
+
+Multi-IdP-Login mit Admin-Modul. Login-Seite zeigt Buttons nur für
+aktive Provider; Tenant-scoped + globale IdPs koexistieren; Domain-
+Bindung filtert Sichtbarkeit per E-Mail-Domain.
+
+- OAuth2 Authorization-Code-Flow mit PKCE (S256), `state`-Schutz via
+  `hash_equals`, Session-gestützte Nonce-Verwaltung.
+- ID-Token-Verifikation gegen JWKS via `web-token/jwt-library`
+  (RS256/RS384/RS512/PS256/ES256), Issuer/Audience/Exp/Iat-Checks.
+- Discovery-Doc + JWKS-Cache (1h, Auto-Refresh bei unbekanntem `kid`).
+- Client-Secret AEAD-verschlüsselt at-rest (XChaCha20-Poly1305-IETF mit
+  BLAKE2b-abgeleitetem Schlüssel aus `kernel.secret`).
+- JIT-Provisioning mit Approval-Queue (Default: Admin freigibt; opt-in
+  Auto-Approve), domain-bound Account-Linking, Default-Rollen-Vergabe.
+- Admin-UI `/{locale}/admin/sso` (CRUD, Toggle, Discovery-Test, Delete)
+  + `/admin/sso/approvals` (Approve/Reject mit Begründung).
+- ROLE_ADMIN für Tenant-IdPs, ROLE_SUPER_ADMIN für globale IdPs.
+- Migration `Version20260429210000_generic_sso` legt
+  `identity_provider`, `sso_user_approval` und
+  `users.sso_external_id`/`users.sso_provider_id` an.
+
+### Feature: Framework-Baselines (Industry-Maturity-Targets)
+
+35 vorkonfigurierte Reife-Soll-Pakete pro Branche × Framework. Anwenden
+setzt nur `maturityTarget` — Self-Assessments (Ist-Werte) bleiben
+unangetastet.
+
+| Framework | KRITIS | Finance | SaaS | Manufacturing | Healthcare |
+|-----------|--------|---------|------|---------------|------------|
+| ISO 27001:2022 (47 Annex-A) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| BSI IT-Grundschutz (113 Anf.) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| BSI C5:2020 (24 Kriterien) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| NIS2 Art. 21.2 (10 Maßnahmen) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| DORA (15 Artikel) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| TISAX/VDA-ISA (99 Controls) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| GDPR (16 Artikel) | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+Reasons referenzieren konkrete Aufsichtserwartungen: BSIG §8a/§8b,
+KRITIS-Verordnung, BAIT, MaRisk, B3S-Gesundheit, KHZG (§ 75c SGB V),
+MDR (EU 2017/745), DSGVO Art. 9, IEC 62443, TISAX VDA-ISA, BSI
+TR-02102.
+
+- Service `IndustryBaselineService` framework-agnostisch, locale-aware
+  (DE/EN via `*_en`-Suffix), path-traversal-geschützt.
+- Admin-UI `/{locale}/admin/industry-baselines` mit Framework-Listing,
+  Per-Framework-Detail, Manager-gated Apply mit Dry-Run-Vorschau und
+  Audit-Log-Eintrag (`compliance.baseline.apply`).
+- 7 Unit-Tests (Loader, Locale, Dry-Run, Path-Traversal, alle 35
+  YAMLs gegen Schema).
+
+### Feature: GSTOOL-XML-Import (5 Phasen + Admin-UI)
+
+Vollständiger Migrationspfad für GSTOOL/Verinice-Profile (Edition 2023).
+
+- **Phase 1**: Zielobjekte → `Asset` (mit Schutzbedarf-Mapping
+  vernachlässigbar/normal/hoch/sehr-hoch → 1..5).
+- **Phase 2**: Modellierung → `Asset.dependsOn` (Abhängigkeitsgraph für
+  BSI-3.6-Maximumprinzip).
+- **Phase 3+4**: Bausteine + Maßnahmen → `ComplianceRequirement` +
+  `Control` mit ISO-27001-Mapping.
+- **Phase 5**: Risikoanalyse (BSI 200-3) → `Risk` mit
+  Eintrittshäufigkeit/Schadenshöhe-Mapping (4-stufig BSI → 5-stufig
+  Tool, Wert 3 übersprungen).
+- Admin-UI `/admin/gstool-import` mit Upload + Tabbed-Preview (Bausteine/
+  Maßnahmen/Risiken) + Commit-Button.
+- XSLT-Wrapper für reale Verinice-Exporte (decoupling von Schema-
+  Varianten).
+- 1 neuer XML-Import-Command + Importer-Service + Tests.
+
+### Feature: MRIS-Baselines i18n + 11 neue Branchen
+
+19 MRIS-Branchen-Baselines bilingual (DE/EN via `*_en`-Suffix-Felder),
+`MrisBaselineService` jetzt locale-aware via `RequestStack`.
+
+Neue Branchen (zu den 8 bestehenden): Pharma, Telekommunikation,
+Manufacturing-OT, Logistics, Retail, Education, Legal/Tax, Defense,
+MSP, IT-Systemhaus, Software-Developer.
+
+Hilfetext "Was tut eine MRIS-Baseline?" als Collapse-Element auf der
+Baselines-Seite (DE/EN).
+
+### Feature: Audit-Certification-Bundle-Export
+
+`CertificationBundleExporter`-Service + Controller exportiert ein
+Audit-fertiges Beweis-Bundle (Evidence-Collection inkl. Dokumente,
+Audit-Logs, Compliance-Status) für externe Prüfer.
+
+### Feature: Small-Business-Accessibility (<50 FTE)
+
+7 vereinfachte Maßnahmen-Sets für KMUs unter 50 Mitarbeitenden — runtime-
+gehärtet gegen `null` Tenant-Settings in `resolveCompanySize`.
+
+### Feature: Onboarding-Journey + Community-Profile
+
+- Unified Guidance-System: ISMS-Journey-Widget + reichere Empty-States
+  in allen ISMS-Modulen.
+- GitHub-Community-Profile auf 100 % (SECURITY.md, CODE_OF_CONDUCT.md,
+  Issue-Forms, PR-Template) — `SECURITY.md` unter `.github/` für
+  Auto-Detection.
+
+### Fix: SSO-Hardening (Post-Audit)
+
+- `users.created_at` jetzt in JIT-User-Provision gesetzt (NOT-NULL-
+  Constraint hätte `INSERT` zerlegt).
+- Anonyme Login-Visitor sehen tenant-scoped IdPs nur über matching
+  Email-Domain (kein IdP-Leak); Slug-Resolution fällt auf
+  `findOneBySlugAnywhere` zurück.
+- BLAKE2b-Key-Derivation korrigiert (CTX-Tag war kürzer als
+  16 Bytes — `sodium_crypto_generichash` lehnte ab).
+
+### Fix: Composer-Pin web-token/jwt-library
+
+`web-token/jwt-library` war im `composer.lock` aber nicht in
+`composer.json require` → PHPStan/Code-Quality-Job meldete jede
+`Jose\Component\*`-Klasse als "not found". Jetzt explizit auf `^4.0`
+gepinnt.
+
+### Fix: MRIS-Baseline-Service-Test
+
+`MrisBaselineService::__construct` bekam in 3.2.x einen `RequestStack`-
+Parameter vor `$projectDir` — der Test rief das alte Signatur-Layout
+auf. Test injiziert jetzt `new RequestStack()` an Position 5.
+
 ## [3.2.8] — 2026-04-29
 
 ### Fix: PHP 8.4 base image (revert) für Docker-Build

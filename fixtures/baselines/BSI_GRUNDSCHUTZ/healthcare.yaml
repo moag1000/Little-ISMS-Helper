@@ -1,0 +1,474 @@
+baseline:
+  id: bsi-grundschutz-healthcare
+  name: 'BSI IT-Grundschutz - Gesundheitswesen (Krankenhäuser/MDR)'
+  name_en: 'BSI IT-Grundschutz - Healthcare (Hospitals/MDR)'
+  industry: healthcare
+  description: |
+    Baseline für Krankenhäuser, MVZ, Pflegeeinrichtungen und Medizinprodukte-
+    Hersteller nach BSI 200-2 Standard-Absicherung mit Kern-Absicherung auf
+    patientendaten- und versorgungsrelevanten Bausteinen (ORP/CON/SYS).
+    Adressiert B3S-Gesundheitsversorgung, KHZG-Förderbedingungen (§ 14a SGB V),
+    MDR (EU 2017/745) sowie DSGVO Art. 9 für besondere Kategorien
+    personenbezogener Daten. Hohe Reife wegen Patientensicherheit und
+    KRITIS-Schwellwerten ab 30.000 vollstationären Fällen pro Jahr.
+  description_en: |
+    Baseline for hospitals, medical care centres, care facilities and medical
+    device manufacturers following BSI 200-2 Standard Protection with Core
+    Protection on patient-data and care-relevant building blocks (ORP/CON/SYS).
+    Addresses B3S Healthcare, KHZG funding conditions (§ 14a SGB V), MDR
+    (EU 2017/745) and GDPR Art. 9 for special categories of personal data.
+    High maturity required due to patient safety and KRITIS thresholds from
+    30,000 inpatient cases per year.
+  targets:
+    "ISMS.1.A1":
+      maturity_target: "4"
+      reason: "Leitungsverantwortung — Krankenhausvorstand muss IS-Strategie persönlich verantworten; KHZG-Audit prüft Top-Down-Commitment."
+      reason_en: "Top-management responsibility — hospital board must personally own IS strategy; KHZG audits review top-down commitment."
+    "ISMS.1.A2":
+      maturity_target: "4"
+      reason: "IS-Leitlinie ist B3S-Gesundheit Pflicht; jährliche Review wegen sich ändernder Bedrohungslage (Ransomware-Häufung in DE-Kliniken 2023-2025)."
+      reason_en: "IS policy mandatory under B3S Healthcare; annual review due to evolving threat landscape (ransomware wave in German hospitals 2023-2025)."
+    "ISMS.1.A3":
+      maturity_target: "4"
+      reason: "IS-Organisation mit hauptamtlichem ISB — KHZG-Tatbestand 10 fordert dedizierte IT-Sicherheits-Rolle."
+      reason_en: "IS organisation with full-time CISO — KHZG criterion 10 requires a dedicated IT security role."
+    "ISMS.1.A4":
+      maturity_target: "4"
+      reason: "Ressourcen für IS-Prozess — KHZG-Förderung deckt explizit IT-Sicherheits-Investitionen, Underfunding ist Audit-Finding."
+      reason_en: "Resources for IS process — KHZG funding explicitly covers IT security investments, underfunding is an audit finding."
+    "ISMS.1.A5":
+      maturity_target: "4"
+      reason: "Mitarbeiter-Einbindung in IS-Prozess — medizinisches Personal ist Hauptangriffsvektor (Phishing, USB-Sticks)."
+      reason_en: "Staff engagement in IS process — medical staff are the main attack vector (phishing, USB sticks)."
+    "ORP.1.A1":
+      maturity_target: "5"
+      reason: "Aufgaben/Verantwortungen schriftlich — Patientenversorgung verlangt klare Eskalations- und Vertretungsregeln rund um die Uhr."
+      reason_en: "Roles and responsibilities documented — patient care requires clear escalation and substitution rules 24/7."
+    "ORP.2.A1":
+      maturity_target: "5"
+      reason: "Personal-Sicherheit — ärztliches Personal mit Zugriff auf Patientendaten (DSGVO Art. 9), Schweigepflicht §203 StGB, erweiterte Zuverlässigkeitsprüfung."
+      reason_en: "Personnel security — medical staff access patient data (GDPR Art. 9), §203 StGB confidentiality, extended reliability checks."
+    "ORP.3.A1":
+      maturity_target: "5"
+      reason: "Sensibilisierungsprogramm Pflicht — B3S-Gesundheit Modul 5; Pflegekräfte und Ärzte sind primäre Phishing-Ziele in Klinik-Ransomware-Vorfällen."
+      reason_en: "Awareness programme mandatory — B3S Healthcare module 5; nurses and physicians are primary phishing targets in hospital ransomware incidents."
+    "ORP.3.A2":
+      maturity_target: "5"
+      reason: "Rollenbasierte Schulung — Ärzte, Pflege, Verwaltung, MTRA haben unterschiedliche IS-Themen (Patientendaten, Medizingeräte, Abrechnungsdaten)."
+      reason_en: "Role-based training — physicians, nurses, administration, MTRA have different IS topics (patient data, medical devices, billing data)."
+    "ORP.3.A3":
+      maturity_target: "4"
+      reason: "Erfolgsmessung Awareness — KHZG-Förderbescheid verlangt Wirksamkeitsnachweis der Schulungsmaßnahmen."
+      reason_en: "Awareness effectiveness measurement — KHZG funding decision requires evidence of training effectiveness."
+    "CON.1.A1":
+      maturity_target: "5"
+      reason: "Krypto-Konzept Kern-Absicherung — Patientendaten in Ruhe und in Übertragung verschlüsselt (DSGVO Art. 32, BSI TR-02102, KIM-Dienste)."
+      reason_en: "Crypto concept Core Protection — patient data encrypted at rest and in transit (GDPR Art. 32, BSI TR-02102, KIM services)."
+    "CON.2.A1":
+      maturity_target: "5"
+      reason: "Datenschutz-Konzept Kern-Absicherung — Gesundheitsdaten sind DSGVO Art. 9 besondere Kategorie; Patientendaten-Kompromittierung ist meldepflichtig binnen 72h."
+      reason_en: "Data protection concept Core Protection — health data is GDPR Art. 9 special category; patient data breaches notifiable within 72h."
+    "CON.3.A1":
+      maturity_target: "5"
+      reason: "Datensicherungskonzept — KIS/RIS/PACS-Datenverlust gefährdet Patientensicherheit; Air-Gapped-Backups gegen Ransomware Pflicht."
+      reason_en: "Backup concept — KIS/RIS/PACS data loss endangers patient safety; air-gapped backups against ransomware mandatory."
+    "CON.3.A2":
+      maturity_target: "5"
+      reason: "Festlegung Verfahrensweise Datensicherung — B3S-Gesundheit verlangt RPO ≤ 4h für versorgungsrelevante Systeme, dokumentierte Restore-Tests."
+      reason_en: "Backup procedure definition — B3S Healthcare requires RPO ≤ 4h for care-relevant systems, documented restore tests."
+    "CON.4.A1":
+      maturity_target: "4"
+      reason: "Auswahl/Beschaffung — Medizinprodukte (MDR) und IT-Lieferanten brauchen IS-Anforderungen in der Ausschreibung."
+      reason_en: "Procurement — medical devices (MDR) and IT suppliers require IS requirements in tenders."
+    "CON.4.A2":
+      maturity_target: "4"
+      reason: "Vertragsgestaltung — MDR Art. 10 (16) Hersteller-Pflichten zu Cybersecurity, AVV nach DSGVO Art. 28 mit IT-Dienstleistern."
+      reason_en: "Contract design — MDR Art. 10 (16) manufacturer cybersecurity duties, GDPR Art. 28 DPAs with IT providers."
+    "CON.4.A5":
+      maturity_target: "3"
+      reason: "Beschaffung mit Sicherheitsfunktionen — Medizingeräte oft Legacy, daher kompensierende Maßnahmen wie Netzsegmentierung dokumentieren."
+      reason_en: "Procurement with security features — medical devices often legacy, document compensating controls such as network segmentation."
+    "CON.5.A1":
+      maturity_target: "4"
+      reason: "Löschen/Vernichten von Datenträgern — Patientenakten unterliegen 30-jähriger Aufbewahrung; Löschung danach DSGVO Art. 17 Pflicht."
+      reason_en: "Deletion/destruction of media — patient records subject to 30-year retention; deletion afterwards mandatory under GDPR Art. 17."
+    "CON.5.A2":
+      maturity_target: "4"
+      reason: "Verfahren zum Löschen — zertifizierte Vernichtung (DIN 66399 H-5/H-6) für Diagnose-Befunde und PACS-Bilder."
+      reason_en: "Deletion procedures — certified destruction (DIN 66399 H-5/H-6) for diagnostic reports and PACS images."
+    "CON.5.A7":
+      maturity_target: "3"
+      reason: "Beseitigung Restinformationen — Defekte Festplatten aus medizintechnischen Geräten erfordern Hersteller-konforme Vernichtung."
+      reason_en: "Residual information removal — defective disks from medical devices require manufacturer-compliant destruction."
+    "CON.11.A1":
+      maturity_target: "4"
+      reason: "Cloud-Nutzung — KIS/RIS-Cloud-Services brauchen DSGVO-konforme EU-Region und ggf. C5-Testat; Patientendaten-Hosting ist heikel."
+      reason_en: "Cloud usage — KIS/RIS cloud services require GDPR-compliant EU region and C5 attestation; patient-data hosting is sensitive."
+    "CON.11.A2":
+      maturity_target: "4"
+      reason: "Cloud-Strategie und Lieferantenauswahl — Lock-in vermeiden, Exit-Strategie, B3S-Cloud-Anforderungen erfüllen."
+      reason_en: "Cloud strategy and provider selection — avoid lock-in, exit strategy, meet B3S cloud requirements."
+    "OPS.1.1.2.A1":
+      maturity_target: "4"
+      reason: "IT-Administrator-Tätigkeiten — Trennung Admin-Konto/User-Konto, Dokumentation aller administrativen Eingriffe an KIS."
+      reason_en: "IT admin activities — separation of admin/user accounts, documentation of all administrative interventions on KIS."
+    "OPS.1.1.3.A1":
+      maturity_target: "4"
+      reason: "Patch-Management — Medizinprodukte oft mit eingeschränkter Patch-Fähigkeit; Risikobewertung pro Gerät dokumentieren."
+      reason_en: "Patch management — medical devices often have limited patch capability; document risk assessment per device."
+    "OPS.1.1.3.A2":
+      maturity_target: "4"
+      reason: "Bewertung sicherheitsrelevanter Updates — MDR-Hersteller-Freigabe abwarten, kompensierende Maßnahmen bis zum Patch."
+      reason_en: "Security update assessment — await MDR manufacturer release, compensating controls until patch available."
+    "OPS.1.1.5.A1":
+      maturity_target: "4"
+      reason: "Schwachstellenmanagement — CERT@VDE und BSI-Warnmeldungen für Medizinprodukte regelmäßig auswerten."
+      reason_en: "Vulnerability management — regularly evaluate CERT@VDE and BSI advisories for medical devices."
+    "OPS.1.1.5.A2":
+      maturity_target: "3"
+      reason: "Behandlung von Schwachstellen — formaler Prozess von Detektion über Risikobewertung bis Mitigation, B3S-konform."
+      reason_en: "Vulnerability handling — formal process from detection via risk assessment to mitigation, B3S-conformant."
+    "OPS.1.2.2.A1":
+      maturity_target: "3"
+      reason: "Archivierung — eAkte/Patientenakte nach SGB V/X 30 Jahre, Lesbarkeit über Lebenszyklus von Speicher-Medien sicherstellen."
+      reason_en: "Archival — electronic patient record per SGB V/X for 30 years, ensure readability across storage media lifecycle."
+    "OPS.1.2.3.A1":
+      maturity_target: "4"
+      reason: "Informations- und Datenträgeraustausch — KIM/TI-Dienste für ärztliche Kommunikation, sichere Datenträger-Übergabe Notaufnahme/Verlegung."
+      reason_en: "Information and media exchange — KIM/TI services for physician communication, secure media transfer ER/transfer."
+    "OPS.1.2.3.A2":
+      maturity_target: "4"
+      reason: "Regelungen für Datenträger-Austausch — Verschlüsselung von USB/CD bei Verlegungen und externen Konsilen."
+      reason_en: "Media exchange rules — encryption of USB/CDs during transfers and external consultations."
+    "OPS.1.2.3.A3":
+      maturity_target: "3"
+      reason: "Vereinbarung mit Kommunikationspartner — schriftliche Übergabe-Protokolle bei Verlegungen oder externer Befundung."
+      reason_en: "Communication-partner agreement — written handover protocols for transfers or external diagnosis."
+    "OPS.2.2.A1":
+      maturity_target: "4"
+      reason: "Cloud-Anbieter-Strategie — IT-Outsourcing an Rechenzentrums-Verbünde (z. B. KKVD) mit B3S-konformer Vertragsgestaltung."
+      reason_en: "Cloud provider strategy — IT outsourcing to data-centre consortia (e.g. KKVD) with B3S-compliant contracts."
+    "OPS.2.2.A2":
+      maturity_target: "4"
+      reason: "Service-Definition für Cloud-Dienste — SLA für KIS/PACS in der Cloud, RTO/RPO patientensicherheits-tauglich."
+      reason_en: "Cloud service definition — SLA for KIS/PACS in the cloud, RTO/RPO suitable for patient safety."
+    "OPS.2.2.A3":
+      maturity_target: "4"
+      reason: "Vertragsgestaltung Cloud-Nutzung — Audit-Rechte, Sub-Provider-Transparenz, EU-Datenresidenz."
+      reason_en: "Cloud-usage contract design — audit rights, sub-provider transparency, EU data residency."
+    "OPS.2.3.A1":
+      maturity_target: "4"
+      reason: "Outsourcing-Strategie — Reinigung, Wartung Medizingeräte, Hersteller-Fernwartung sind sensibel; Risikoanalyse Pflicht."
+      reason_en: "Outsourcing strategy — cleaning, medical-device maintenance, manufacturer remote maintenance are sensitive; risk analysis mandatory."
+    "OPS.2.3.A2":
+      maturity_target: "4"
+      reason: "Vertragsgestaltung Outsourcing — Wartungsverträge für Medizinprodukte mit IS-Klauseln und Fernzugriffs-Auflagen."
+      reason_en: "Outsourcing contracts — maintenance contracts for medical devices with IS clauses and remote-access conditions."
+    "OPS.2.3.A6":
+      maturity_target: "3"
+      reason: "Notfallvorsorge bei Outsourcing — Hersteller-Insolvenz oder Betriebsstörung darf Patientenversorgung nicht gefährden."
+      reason_en: "Outsourcing contingency — manufacturer insolvency or disruption must not endanger patient care."
+    "DER.1.A1":
+      maturity_target: "5"
+      reason: "Detektion sicherheitsrelevanter Ereignisse — SIEM mit medizingeräte-spezifischen Use-Cases, B3S-Gesundheit Modul 8."
+      reason_en: "Security event detection — SIEM with medical-device-specific use cases, B3S Healthcare module 8."
+    "DER.2.1.A1":
+      maturity_target: "5"
+      reason: "Behandlung von Sicherheitsvorfällen — Krankenhaus-CERT mit 24/7 Erreichbarkeit; Ransomware-Playbook für KIS-Ausfall."
+      reason_en: "Incident handling — hospital CERT with 24/7 availability; ransomware playbook for KIS outage."
+    "DER.2.1.A2":
+      maturity_target: "4"
+      reason: "Erstreaktion bei Sicherheitsvorfällen — geübte Notfall-Verfahren (Papier-Modus, manuelle Befunderhebung) bei IT-Ausfall."
+      reason_en: "Initial incident response — practiced fallback procedures (paper mode, manual diagnostics) during IT outage."
+    "DER.2.2.A1":
+      maturity_target: "4"
+      reason: "Vorsorge für IS-Vorfall-Behandlung — § 75c SGB V verlangt Stand der Technik bei Krankenhaus-Cybersicherheit, KHZG-förderfähig."
+      reason_en: "Incident-handling preparedness — § 75c SGB V requires state-of-the-art hospital cybersecurity, KHZG-eligible."
+    "APP.1.A1":
+      maturity_target: "3"
+      reason: "Allgemeine Office-Anwendungen — Verwaltungs-Arbeitsplätze mit Standard-Härtung, Makros restriktiv."
+      reason_en: "General office applications — administrative workstations with standard hardening, restricted macros."
+    "APP.2.1.A1":
+      maturity_target: "4"
+      reason: "Active Directory — zentrales Identity-Backbone für KIS/RIS/PACS; Tier-Modell für Domänen-Admins Pflicht."
+      reason_en: "Active Directory — central identity backbone for KIS/RIS/PACS; tier model for domain admins mandatory."
+    "APP.3.2.A1":
+      maturity_target: "4"
+      reason: "Web-Anwendungen — Patienten-Portale, Telemedizin-Plattformen brauchen Authentisierung gemäß TI-Anforderungen."
+      reason_en: "Web applications — patient portals, telemedicine platforms require authentication per TI requirements."
+    "APP.3.2.A2":
+      maturity_target: "4"
+      reason: "Authentisierung bei Web-Anwendungen — Patienten-Identifizierung gegen Identitätsdiebstahl im Gesundheitswesen."
+      reason_en: "Web-application authentication — patient identification against identity theft in healthcare."
+    "APP.3.2.A5":
+      maturity_target: "3"
+      reason: "Sichere Web-Konfiguration — TLS 1.2+, HSTS, sichere Cookies bei Patienten-Portalen."
+      reason_en: "Secure web configuration — TLS 1.2+, HSTS, secure cookies for patient portals."
+    "APP.3.3.A1":
+      maturity_target: "4"
+      reason: "Datei-Server — Patientendaten-Shares mit strikter ACL und Read/Write-Audit-Logging."
+      reason_en: "File server — patient-data shares with strict ACLs and read/write audit logging."
+    "APP.3.3.A2":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration Datei-Server — Härtung gegen Ransomware-Bewegung im Klinik-LAN."
+      reason_en: "Secure file-server configuration — hardening against ransomware lateral movement on hospital LAN."
+    "APP.3.3.A3":
+      maturity_target: "4"
+      reason: "Sichere Administration Datei-Server — administrative Zugriffe auf Patientendaten-Shares besonders überwachen."
+      reason_en: "Secure file-server administration — administrative access to patient-data shares specifically monitored."
+    "APP.3.6.A1":
+      maturity_target: "3"
+      reason: "DNS — interne Auflösung muss verfügbar bleiben; externe DNS-Filter gegen C2-Kommunikation."
+      reason_en: "DNS — internal resolution must remain available; external DNS filtering against C2 communication."
+    "APP.3.6.A2":
+      maturity_target: "3"
+      reason: "DNS-Server-Auswahl — DNSSEC oder DoH/DoT für externe Anfragen, lokale Resolver redundant."
+      reason_en: "DNS server selection — DNSSEC or DoH/DoT for external queries, redundant local resolvers."
+    "APP.3.6.A5":
+      maturity_target: "3"
+      reason: "Sichere DNS-Konfiguration — Split-DNS für TI-Anbindung (Konnektor) und allgemeine Klinik-Dienste."
+      reason_en: "Secure DNS configuration — split DNS for TI connector and general hospital services."
+    "APP.4.2.A1":
+      maturity_target: "3"
+      reason: "SAP — Verwaltungs-/Abrechnungs-SAP häufig vorhanden; Berechtigungskonzept und SoD-Audits."
+      reason_en: "SAP — administrative/billing SAP often present; authorization concept and SoD audits."
+    "APP.4.2.A2":
+      maturity_target: "3"
+      reason: "SAP-Berechtigungskonzept — Trennung Patientenabrechnung vs. Personalbuchhaltung wegen Datenschutz."
+      reason_en: "SAP authorization concept — separation of patient billing vs. payroll for data-protection reasons."
+    "APP.4.2.A3":
+      maturity_target: "3"
+      reason: "Absicherung SAP-Datenbank — Zugriffskontrolle und verschlüsselte Backups der HR-/Patienten-Stammdaten."
+      reason_en: "SAP database protection — access control and encrypted backups of HR/patient master data."
+    "APP.4.4.A1":
+      maturity_target: "3"
+      reason: "Kubernetes — kommt mit Telemedizin-/eHealth-Plattformen, Cluster-RBAC und Network-Policies pflicht."
+      reason_en: "Kubernetes — used with telemedicine/eHealth platforms, cluster RBAC and network policies mandatory."
+    "APP.4.4.A4":
+      maturity_target: "3"
+      reason: "Trennung Kubernetes-Anwendungen — Tenants (Stationen, Fachbereiche) per Namespace und Network-Policy isolieren."
+      reason_en: "Kubernetes app separation — tenants (wards, departments) isolated by namespace and network policy."
+    "APP.4.4.A8":
+      maturity_target: "3"
+      reason: "Absicherung Container-Images — signierte Images, CVE-Scan vor Deployment, B3S-Cloud-Modul 6."
+      reason_en: "Container image protection — signed images, CVE scan before deployment, B3S cloud module 6."
+    "APP.5.3.A1":
+      maturity_target: "4"
+      reason: "Mail-Server — Phishing ist Hauptangriffsvektor in Klinik-Ransomware-Vorfällen; SPF/DKIM/DMARC enforced."
+      reason_en: "Mail server — phishing is the main attack vector in hospital ransomware incidents; SPF/DKIM/DMARC enforced."
+    "APP.5.3.A2":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration Mail-Server — Anti-Malware/Anti-Phishing, S/MIME-Optionalität für KIM-Anbindung."
+      reason_en: "Secure mail-server configuration — anti-malware/anti-phishing, S/MIME optionality for KIM connection."
+    "APP.6.A1":
+      maturity_target: "3"
+      reason: "Allgemeine Software-Entwicklung — interne Eigenentwicklungen (Forschung, Studien-Tools) brauchen SSDLC."
+      reason_en: "General software development — in-house development (research, study tools) requires SSDLC."
+    "APP.6.A2":
+      maturity_target: "3"
+      reason: "Vorgaben Software-Entwicklung — bei Eigenentwicklung mit Patientenbezug DSGVO-Privacy-by-Design Pflicht."
+      reason_en: "Software-development specifications — in-house development with patient data requires GDPR privacy-by-design."
+    "NET.1.1.A1":
+      maturity_target: "4"
+      reason: "Netzarchitektur — strikte Segmentierung Medizingeräte/IT/Verwaltung; B3S-Gesundheit Modul 4 Pflicht."
+      reason_en: "Network architecture — strict segmentation medical devices/IT/administration; B3S Healthcare module 4 mandatory."
+    "NET.1.1.A2":
+      maturity_target: "4"
+      reason: "Dokumentation Netzarchitektur — KRITIS-Audit verlangt aktuelle Netzpläne mit Sicherheitszonen."
+      reason_en: "Network architecture documentation — KRITIS audit requires up-to-date network diagrams with security zones."
+    "NET.4.1.A1":
+      maturity_target: "3"
+      reason: "TK-Anlagen — DECT/VoIP für Schwesternruf und Notfall-Pager; Verfügbarkeit versorgungskritisch."
+      reason_en: "Telephony systems — DECT/VoIP for nurse call and emergency pagers; availability critical for care."
+    "NET.4.1.A2":
+      maturity_target: "3"
+      reason: "Authentisierung TK-Anlagen — Admin-Zugang gehärtet, Default-Passwörter raus."
+      reason_en: "Telephony authentication — admin access hardened, default passwords removed."
+    "NET.4.2.A1":
+      maturity_target: "3"
+      reason: "VoIP — Trennung Sprach-/Datennetz, Verschlüsselung bei Patientendaten-Telefonaten (Konsile)."
+      reason_en: "VoIP — voice/data segregation, encryption for patient-data calls (consultations)."
+    "NET.4.2.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration VoIP — SRTP für sensible Gespräche, Härtung der SIP-Trunks."
+      reason_en: "Secure VoIP configuration — SRTP for sensitive calls, hardening of SIP trunks."
+    "NET.4.2.A8":
+      maturity_target: "3"
+      reason: "Absicherung VoIP-Endgeräte — DECT-Telefone und Schwesternruf-Geräte gegen Manipulation."
+      reason_en: "VoIP endpoint protection — DECT phones and nurse-call devices against tampering."
+    "NET.4.3.A1":
+      maturity_target: "3"
+      reason: "Faxgeräte — in DE-Kliniken weiterhin verbreitet (eRezept-Übergang); Verschlüsselung patientendaten-relevanter Faxe."
+      reason_en: "Fax machines — still widespread in German hospitals (eRezept transition); encryption of patient-data faxes."
+    "NET.4.3.A2":
+      maturity_target: "3"
+      reason: "Aufstellung Faxgeräte — Aufstellung in nicht-öffentlichen Bereichen, kein freier Zugriff Dritter."
+      reason_en: "Fax placement — installed in non-public areas, no free access to third parties."
+    "NET.4.3.A3":
+      maturity_target: "3"
+      reason: "Geeignete Nutzung Fax — Bestätigungsdrucke, Empfänger-Verifikation bei Befunden zwingend."
+      reason_en: "Appropriate fax usage — confirmation printouts, recipient verification mandatory for diagnostic reports."
+    "INF.1.A1":
+      maturity_target: "4"
+      reason: "Allgemeine Gebäudesicherheit — Krankenhaus mit 24/7-Betrieb, kontrollierter Zugang zu Funktionsbereichen."
+      reason_en: "General building security — hospital with 24/7 operation, controlled access to functional areas."
+    "INF.1.A2":
+      maturity_target: "4"
+      reason: "Planung Gebäudeabsicherung — Schutz von Server-/Technik-Räumen, MTRA-/OP-Bereichen mit Zutrittskontrolle."
+      reason_en: "Building protection planning — protection of server/technical rooms, MTRA/OR areas with access control."
+    "INF.10.A1":
+      maturity_target: "3"
+      reason: "Besprechungsräume — Konferenzräume mit Patientenfall-Diskussionen brauchen Zutritts- und Vertraulichkeitskontrolle."
+      reason_en: "Meeting rooms — conference rooms with patient-case discussions require access and confidentiality controls."
+    "INF.10.A3":
+      maturity_target: "3"
+      reason: "Sichere Nutzung Besprechungsräume — keine Whiteboards mit Patientennamen unbeobachtet, Bildschirme aus."
+      reason_en: "Secure meeting-room usage — no whiteboards with patient names left unattended, screens off."
+    "INF.13.A1":
+      maturity_target: "3"
+      reason: "Wegeleitsysteme — digitale Beschilderung darf kein Patientendaten-Leak zeigen, Anzeigen gehärtet."
+      reason_en: "Wayfinding systems — digital signage must not leak patient data, displays hardened."
+    "INF.13.A2":
+      maturity_target: "3"
+      reason: "Beschaffung Wegeleitsysteme — IS-Anforderungen in Ausschreibungen für Display-/Kiosk-Systeme."
+      reason_en: "Wayfinding procurement — IS requirements in tenders for display/kiosk systems."
+    "INF.13.A3":
+      maturity_target: "2"
+      reason: "Sichere Nutzung Wegeleitsysteme — kein Patientennamen-Aufruf auf öffentlichen Bildschirmen ohne Pseudonymisierung."
+      reason_en: "Secure wayfinding usage — no patient names on public displays without pseudonymisation."
+    "SYS.1.1.A1":
+      maturity_target: "4"
+      reason: "Allgemeiner Server — KIS/RIS/PACS-Server härten, Patch-Lifecycle dokumentieren."
+      reason_en: "General server — harden KIS/RIS/PACS servers, document patch lifecycle."
+    "SYS.1.2.A1":
+      maturity_target: "4"
+      reason: "Windows Server — größte installierte Basis im Krankenhaus, Härtung nach BSI/CIS Benchmarks."
+      reason_en: "Windows Server — largest installed base in hospitals, harden per BSI/CIS benchmarks."
+    "SYS.1.2.A2":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration Windows-Server — LAPS, Tier-Modell, kein RDP-Direktzugriff aus User-Netz."
+      reason_en: "Secure Windows-server configuration — LAPS, tier model, no direct RDP access from user network."
+    "SYS.1.2.3.A1":
+      maturity_target: "3"
+      reason: "Windows Server 2019/2022 — laufende Edition aktuell halten, ESU-Strategie für Legacy-Anwendungen."
+      reason_en: "Windows Server 2019/2022 — keep current edition up to date, ESU strategy for legacy applications."
+    "SYS.1.2.3.A2":
+      maturity_target: "3"
+      reason: "Planung Windows-Server-Einsatz — Lebenszyklus-Planung wegen langlebiger medizintechnischer Anwendungen."
+      reason_en: "Windows-server planning — lifecycle planning due to long-lived medical-tech applications."
+    "SYS.1.2.3.A5":
+      maturity_target: "3"
+      reason: "Sicheres Patch-Management Windows-Server — Test-Stage vor PROD wegen Medizingeräte-Abhängigkeiten."
+      reason_en: "Secure Windows-server patching — test stage before PROD due to medical-device dependencies."
+    "SYS.1.3.A1":
+      maturity_target: "4"
+      reason: "Linux-/Unix-Server — Backend für PACS, Forschungsanwendungen, Gerätesteuerung."
+      reason_en: "Linux/Unix servers — backend for PACS, research applications, device control."
+    "SYS.1.3.A5":
+      maturity_target: "3"
+      reason: "Schutz vor Schadsoftware Linux — auch Linux-Systeme mit AV/EDR ausstatten, BSI-Stand-der-Technik."
+      reason_en: "Linux malware protection — equip Linux systems with AV/EDR, BSI state of the art."
+    "SYS.1.3.A10":
+      maturity_target: "3"
+      reason: "Schutz vor Schadsoftware Linux — Härtung gegen Cross-Plattform-Ransomware (z. B. RansomEXX-Linux)."
+      reason_en: "Linux malware protection — hardening against cross-platform ransomware (e.g. RansomEXX-Linux)."
+    "SYS.1.3.A11":
+      maturity_target: "3"
+      reason: "Einsatz von Sicherheits-Erweiterungen — SELinux/AppArmor für PACS-/Gerätesteuerungs-Server."
+      reason_en: "Security-extension deployment — SELinux/AppArmor for PACS/device-control servers."
+    "SYS.1.6.A1":
+      maturity_target: "3"
+      reason: "Container — kommen über eHealth-/Forschungsplattformen, Image-Registry und CVE-Scan Pflicht."
+      reason_en: "Containers — arrive via eHealth/research platforms, image registry and CVE scan mandatory."
+    "SYS.1.6.A3":
+      maturity_target: "3"
+      reason: "Sichere Beschaffung Container-Images — signierte Basis-Images, kein Einsatz von Public-Registry ohne Vetting."
+      reason_en: "Secure container-image procurement — signed base images, no public registry usage without vetting."
+    "SYS.1.8.A1":
+      maturity_target: "4"
+      reason: "Speicherlösungen — PACS-Storage und Forschungs-Archive auf SAN/NAS mit Redundanz und Verschlüsselung."
+      reason_en: "Storage solutions — PACS storage and research archives on SAN/NAS with redundancy and encryption."
+    "SYS.1.8.A2":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration Speichersysteme — Snapshot-Schutz (Immutable Snapshots) gegen Ransomware."
+      reason_en: "Secure storage configuration — snapshot protection (immutable snapshots) against ransomware."
+    "SYS.1.9.A1":
+      maturity_target: "3"
+      reason: "Terminalserver — Citrix/RDS für Stationsarbeitsplätze, zentrale Härtung statt jeden Fat-Client."
+      reason_en: "Terminal servers — Citrix/RDS for ward workstations, central hardening instead of each fat client."
+    "SYS.1.9.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration Terminalserver — Application-Whitelisting, Block USB-Mapping bei Patienten-Daten."
+      reason_en: "Secure terminal-server configuration — application whitelisting, block USB mapping for patient data."
+    "SYS.2.1.A1":
+      maturity_target: "4"
+      reason: "Allgemeiner Client — stationsweite Standard-Härtung, Auto-Lock nach 2 Minuten in Patienten-bereichen."
+      reason_en: "General client — ward-wide standard hardening, auto-lock after 2 minutes in patient areas."
+    "SYS.2.2.A1":
+      maturity_target: "4"
+      reason: "Windows-Clients — dominant in Krankenhäusern; AppLocker/WDAC, BitLocker Pflicht."
+      reason_en: "Windows clients — dominant in hospitals; AppLocker/WDAC, BitLocker mandatory."
+    "SYS.2.2.A3":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration Windows-Clients — keine lokalen Admin-Rechte für medizinisches Personal."
+      reason_en: "Secure Windows-client configuration — no local admin rights for medical staff."
+    "SYS.2.4.A1":
+      maturity_target: "3"
+      reason: "macOS-Clients — bei Ärzte-Notebooks und Forschung; FileVault, MDM-Pflicht."
+      reason_en: "macOS clients — for physician laptops and research; FileVault, MDM mandatory."
+    "SYS.2.4.A2":
+      maturity_target: "3"
+      reason: "Planung macOS-Einsatz — Patientendaten-Trennung, MDM-basierte Compliance-Profile."
+      reason_en: "macOS deployment planning — patient-data segregation, MDM-based compliance profiles."
+    "SYS.2.4.A4":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration macOS — Gatekeeper, XProtect, FileVault, automatische Updates verbindlich."
+      reason_en: "Secure macOS configuration — Gatekeeper, XProtect, FileVault, automatic updates mandatory."
+    "SYS.3.1.A2":
+      maturity_target: "4"
+      reason: "Laptops — visitenführende Ärzte und Konsiliardienst; Festplattenverschlüsselung Pflicht (Verlust-Risiko)."
+      reason_en: "Laptops — ward-round physicians and consultant service; disk encryption mandatory (loss risk)."
+    "SYS.3.1.A3":
+      maturity_target: "4"
+      reason: "Sicherer Umgang mit Laptops — Verlustmeldung binnen 24h, Remote-Wipe-Fähigkeit per MDM."
+      reason_en: "Secure laptop handling — loss reporting within 24h, remote-wipe capability via MDM."
+    "SYS.3.2.2.A1":
+      maturity_target: "4"
+      reason: "Mobiltelefone iOS/Android — Schwester-Smartphones und Visite-iPads; MDM-Enrollment Pflicht."
+      reason_en: "iOS/Android mobile devices — nurse smartphones and ward-round iPads; MDM enrollment mandatory."
+    "SYS.3.2.2.A2":
+      maturity_target: "4"
+      reason: "Planung Mobiltelefon-Einsatz — App-Whitelisting, Container für Patientendaten-Apps."
+      reason_en: "Mobile-device planning — app whitelisting, containers for patient-data apps."
+    "SYS.3.2.2.A5":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration Mobiltelefone — Geräte-PIN, Biometrie, Auto-Lock 1 Minute."
+      reason_en: "Secure mobile-device configuration — device PIN, biometrics, 1-minute auto-lock."
+    "SYS.3.3.A1":
+      maturity_target: "3"
+      reason: "Sonstige Mobilgeräte — DECT-Telefone, Vital-Tracker, Wearable-Studiengeräte; Inventarisierung."
+      reason_en: "Other mobile devices — DECT phones, vital trackers, wearable study devices; inventory."
+    "SYS.3.3.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration sonstiger Mobilgeräte — Default-Passwörter raus, Updates regelmäßig."
+      reason_en: "Secure other-mobile-device configuration — remove default passwords, regular updates."
+    "SYS.4.1.A1":
+      maturity_target: "3"
+      reason: "Drucker — Befund-/Arztbriefdrucker enthalten Patientendaten-Cache; Pull-Printing mit Authentisierung."
+      reason_en: "Printers — diagnostic-report/letter printers cache patient data; pull printing with authentication."
+    "SYS.4.1.A2":
+      maturity_target: "3"
+      reason: "Planung Drucker-Einsatz — Standorte (Stationsbereich, Station, OP) mit Vertraulichkeitsanforderung planen."
+      reason_en: "Printer planning — plan locations (ward, station, OR) with confidentiality requirements."
+    "SYS.4.1.A3":
+      maturity_target: "3"
+      reason: "Sichere Beschaffung Drucker — IS-Anforderungen, Festplatten-Verschlüsselung, Secure-Erase bei Rückgabe."
+      reason_en: "Secure printer procurement — IS requirements, disk encryption, secure erase on return."
+    "SYS.4.5.A1":
+      maturity_target: "4"
+      reason: "Wechseldatenträger — USB/CD-Übergaben für externe Befundung restriktiv, nur verschlüsselte Datenträger."
+      reason_en: "Removable media — USB/CD handovers for external diagnosis restricted, only encrypted media."
+    "SYS.4.5.A2":
+      maturity_target: "4"
+      reason: "Sichere Nutzung Wechseldatenträger — Device-Control auf Endpoints, Whitelist von Klinik-USB-Sticks."
+      reason_en: "Secure removable-media usage — device control on endpoints, whitelist of hospital USB sticks."

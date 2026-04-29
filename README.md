@@ -158,7 +158,7 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 ### Sicherheit und Administration
 
 - **RBAC** -- USER, AUDITOR, MANAGER, ADMIN, SUPER_ADMIN plus Holding-Rollen ROLE_GROUP_CISO und ROLE_KONZERN_AUDITOR (50+ Permissions)
-- **Multi-Auth** -- Lokale Anmeldung, Azure OAuth, SAML
+- **Multi-Auth** -- Lokale Anmeldung, Azure OAuth, SAML, Generic-SSO (OIDC/OAuth2 mit PKCE, JWKS-Verifikation, JIT-Provisioning + Approval-Queue, Domain-Bindung, AEAD-verschluesselte Client-Secrets)
 - **MFA** -- TOTP mit Backup-Codes
 - **Audit-Log** -- HMAC-SHA256-Chain, tamper-evident, NIS2-konform
 - **Audit-Freeze** -- SHA-256-versiegeltes Compliance-Abbild zum Stichtag

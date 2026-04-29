@@ -1,0 +1,470 @@
+baseline:
+  id: bsi-grundschutz-saas
+  name: 'BSI IT-Grundschutz - SaaS / Software-Anbieter'
+  name_en: 'BSI IT-Grundschutz - SaaS / Software Vendors'
+  industry: saas
+  description: |
+    Baseline für Cloud-/SaaS-Anbieter und Software-Hersteller nach BSI 200-2
+    Basis-Absicherung mit Standard-Absicherung auf APP/CON/DEV/IDM-Bausteinen.
+    Adressiert BSI C5:2020/2026, B3S-Cloud, OWASP-ASVS, DSGVO Art. 32 sowie
+    typische SaaS-Bedrohungen (Multi-Tenancy-Lecks, Supply-Chain-Angriffe).
+    Pragmatisches Niveau für agile Software-Entwicklung mit Compliance-Reife.
+  description_en: |
+    Baseline for cloud/SaaS providers and software vendors following BSI 200-2
+    Basic Protection with Standard Protection on APP/CON/DEV/IDM building blocks.
+    Addresses BSI C5:2020/2026, B3S Cloud, OWASP ASVS, GDPR Art. 32 and typical
+    SaaS threats (multi-tenancy leaks, supply chain attacks). A pragmatic level
+    for agile software development with mature compliance.
+  targets:
+    "ISMS.1.A1":
+      maturity_target: "3"
+      reason: "Leitungsverantwortung dokumentiert — DSGVO Art. 32 + C5-OIS-01 verlangen Top-Management-Commitment."
+      reason_en: "Top-management responsibility documented — GDPR Art. 32 + C5 OIS-01 require top-management commitment."
+    "ISMS.1.A2":
+      maturity_target: "3"
+      reason: "IS-Leitlinie schriftlich vorhanden — C5-OIS-02 Pflichtartefakt für Cloud-Audits."
+      reason_en: "IS policy documented — C5 OIS-02 mandatory artefact for cloud audits."
+    "ISMS.1.A3":
+      maturity_target: "3"
+      reason: "IS-Organisation oft Doppelrolle (CTO + Sec-Lead) bei kleineren SaaS — bei Wachstum eigener CISO."
+      reason_en: "IS organisation often a dual role (CTO + sec lead) at smaller SaaS — dedicated CISO once scaling."
+    "ISMS.1.A4":
+      maturity_target: "3"
+      reason: "Ressourcen für IS-Prozess in Engineering-Backlog priorisieren — DevSecOps-Modell."
+      reason_en: "IS resources prioritised in engineering backlog — DevSecOps model."
+    "ISMS.1.A5":
+      maturity_target: "3"
+      reason: "Mitarbeiter-Einbindung über Onboarding und Security-Champions in Squads."
+      reason_en: "Staff engagement via onboarding and security champions in squads."
+    "ORP.1.A1":
+      maturity_target: "3"
+      reason: "Rollen/Verantwortungen schriftlich — flache Hierarchien, RACI für IS-Prozesse."
+      reason_en: "Roles/responsibilities documented — flat hierarchies, RACI for IS processes."
+    "ORP.2.A1":
+      maturity_target: "3"
+      reason: "Personal-Sicherheit pragmatisch — NDA, Reference-Checks, Background-Checks für Admin-Rollen."
+      reason_en: "Personnel security pragmatic — NDAs, reference checks, background checks for admin roles."
+    "ORP.3.A1":
+      maturity_target: "3"
+      reason: "Sensibilisierungsprogramm via E-Learning und Phishing-Simulationen — DevSec-Awareness."
+      reason_en: "Awareness programme via e-learning and phishing simulations — DevSec awareness."
+    "ORP.3.A2":
+      maturity_target: "3"
+      reason: "Rollenbasierte Schulung für Devs (OWASP Top 10), Ops (Härtung), Support (Social-Engineering)."
+      reason_en: "Role-based training for devs (OWASP Top 10), ops (hardening), support (social engineering)."
+    "ORP.3.A3":
+      maturity_target: "3"
+      reason: "Erfolgsmessung über Phishing-Click-Rate und CTF-Quiz."
+      reason_en: "Effectiveness measurement via phishing click rate and CTF quizzes."
+    "CON.1.A1":
+      maturity_target: "4"
+      reason: "Krypto-Konzept Standard-Absicherung — TLS 1.3, At-Rest-Encryption, Key-Rotation, BYOK für Enterprise-Kunden."
+      reason_en: "Crypto concept Standard Protection — TLS 1.3, at-rest encryption, key rotation, BYOK for enterprise customers."
+    "CON.2.A1":
+      maturity_target: "4"
+      reason: "Datenschutz-Konzept — Multi-Tenant-Daten DSGVO-relevant, AVV mit Kunden Pflicht."
+      reason_en: "Data protection concept — multi-tenant data is GDPR relevant, DPAs with customers mandatory."
+    "CON.3.A1":
+      maturity_target: "3"
+      reason: "Datensicherungskonzept mit Cross-Region-Replication, Restore-Tests quartalsweise."
+      reason_en: "Backup concept with cross-region replication, quarterly restore tests."
+    "CON.3.A2":
+      maturity_target: "3"
+      reason: "Festlegung Verfahrensweise Datensicherung — Tenant-isolierte Backups, RPO/RTO im SaaS-SLA dokumentiert; B3S-Cloud / SOC 2 CC A1.2."
+      reason_en: "Backup procedure definition — tenant-isolated backups, RPO/RTO documented in SaaS SLA; B3S cloud / SOC 2 CC A1.2."
+    "CON.4.A1":
+      maturity_target: "3"
+      reason: "Auswahl/Beschaffung Sub-Provider mit IS-Anforderungen — Software-Bill-of-Materials (SBOM) für Lieferketten."
+      reason_en: "Sub-provider procurement with IS requirements — Software Bill of Materials (SBOM) for supply chains."
+    "CON.4.A2":
+      maturity_target: "3"
+      reason: "Vertragsgestaltung mit Sub-Processors — DSGVO Art. 28 (4) + C5-Sub-Service-Provider-Listing."
+      reason_en: "Contract design with sub-processors — GDPR Art. 28 (4) + C5 sub-service-provider listing."
+    "CON.4.A5":
+      maturity_target: "3"
+      reason: "Abnahmeprüfung neuer Komponenten via CI/CD-Gates und Pen-Test bei Major-Releases."
+      reason_en: "Acceptance testing of new components via CI/CD gates and pen tests at major releases."
+    "CON.5.A1":
+      maturity_target: "3"
+      reason: "Löschkonzept — DSGVO Art. 17 + Vertrags-Ende-Löschpflichten je Tenant."
+      reason_en: "Deletion concept — GDPR Art. 17 plus contract-end deletion duties per tenant."
+    "CON.5.A2":
+      maturity_target: "3"
+      reason: "Sichere Datenträger-Vernichtung — bei Cloud delegiert an Hyperscaler (AWS/Azure/GCP-Zertifikate)."
+      reason_en: "Secure media destruction — delegated to hyperscaler in the cloud (AWS/Azure/GCP certificates)."
+    "CON.5.A7":
+      maturity_target: "3"
+      reason: "Cloud-/Outsourcing-Daten Rückgabe — Tenant-Offboarding-Prozess mit Bestätigungsmail."
+      reason_en: "Cloud/outsourcing data return — tenant offboarding process with confirmation email."
+    "CON.11.A1":
+      maturity_target: "4"
+      reason: "Cloud-Strategie ist SaaS-Kerngeschäft — Multi-Cloud / Region-Wahl strategisch."
+      reason_en: "Cloud strategy is core to SaaS business — multi-cloud / region selection is strategic."
+    "CON.11.A2":
+      maturity_target: "4"
+      reason: "Cloud-Sicherheitskonzept mit C5-Testat angestrebt — Verkaufsargument für Enterprise-Kunden."
+      reason_en: "Cloud security concept aiming for C5 attestation — sales argument for enterprise customers."
+    "OPS.1.1.2.A1":
+      maturity_target: "4"
+      reason: "Privilegierte Administration Standard-Absicherung — IAM mit MFA, Just-in-Time-Access, kein Permanent-Admin."
+      reason_en: "Privileged administration Standard Protection — IAM with MFA, just-in-time access, no permanent admin."
+    "OPS.1.1.3.A1":
+      maturity_target: "4"
+      reason: "Patch-Management automatisiert via Container-Rebuilds — kritische CVE < 7 Tage."
+      reason_en: "Patch management automated via container rebuilds — critical CVE < 7 days."
+    "OPS.1.1.3.A2":
+      maturity_target: "4"
+      reason: "Schwachstellen-Management mit Snyk/Dependabot/Trivy in CI/CD — SaaS-Standard."
+      reason_en: "Vulnerability management with Snyk/Dependabot/Trivy in CI/CD — SaaS standard."
+    "OPS.1.1.5.A1":
+      maturity_target: "3"
+      reason: "Protokollierung in CloudWatch/Stackdriver/Datadog mit zentralem Aggregator."
+      reason_en: "Logging in CloudWatch/Stackdriver/Datadog with central aggregator."
+    "OPS.1.1.5.A2":
+      maturity_target: "3"
+      reason: "Auswertung Logs mit SIEM-as-a-Service (z.B. Sumo, Datadog, Elastic) und Alerts."
+      reason_en: "Log evaluation with SIEM-as-a-Service (e.g. Sumo, Datadog, Elastic) and alerts."
+    "OPS.1.2.2.A1":
+      maturity_target: "3"
+      reason: "Archivierung Logs gemäß Tenant-Vereinbarung und Aufbewahrungsfristen."
+      reason_en: "Log archiving per tenant agreement and retention periods."
+    "OPS.1.2.3.A1":
+      maturity_target: "2"
+      reason: "Datenträgertausch in SaaS minimal — kein physischer Versand bei Cloud-only-Modellen."
+      reason_en: "Media exchange minimal in SaaS — no physical shipment in cloud-only models."
+    "OPS.1.2.3.A2":
+      maturity_target: "2"
+      reason: "Sicherer Versand selten benötigt — wenn ja, dann verschlüsselt."
+      reason_en: "Secure shipment rarely needed — if so, encrypted."
+    "OPS.1.2.3.A3":
+      maturity_target: "3"
+      reason: "Verschlüsselung mobiler Datenträger für Mitarbeiter-Laptops Pflicht (DSGVO Art. 32)."
+      reason_en: "Encryption of mobile media on staff laptops mandatory (GDPR Art. 32)."
+    "OPS.2.2.A1":
+      maturity_target: "3"
+      reason: "Cloud-Anbieter-Strategie — Hyperscaler-Auswahl mit Region/Compliance-Mapping."
+      reason_en: "Cloud provider strategy — hyperscaler selection with region/compliance mapping."
+    "OPS.2.2.A2":
+      maturity_target: "3"
+      reason: "Sicherheitskonzept Cloud-Nutzung — Shared-Responsibility-Modell dokumentiert."
+      reason_en: "Cloud usage security concept — shared responsibility model documented."
+    "OPS.2.2.A3":
+      maturity_target: "3"
+      reason: "Service-Definition und SLAs vertraglich festgelegt — typisch 99.9% Uptime."
+      reason_en: "Service definition and SLAs contractually defined — typically 99.9% uptime."
+    "OPS.2.3.A1":
+      maturity_target: "3"
+      reason: "Outsourcing-Strategie — Sub-Processors in C5-/AVV-Liste verwalten."
+      reason_en: "Outsourcing strategy — manage sub-processors in C5/DPA list."
+    "OPS.2.3.A2":
+      maturity_target: "3"
+      reason: "Risikoanalyse Outsourcing — Konzentrations-Risiko bei einzelnem Hyperscaler."
+      reason_en: "Outsourcing risk analysis — concentration risk on a single hyperscaler."
+    "OPS.2.3.A6":
+      maturity_target: "3"
+      reason: "Vertragsgestaltung mit IS-/DSGVO-Klauseln und Sub-Processor-Listing-Pflicht."
+      reason_en: "Contract design with IS/GDPR clauses and sub-processor listing duty."
+    "DER.1.A1":
+      maturity_target: "4"
+      reason: "Detektion Standard-Absicherung — WAF, Cloud-Native-Detection (GuardDuty, Defender) Pflicht für SaaS."
+      reason_en: "Detection Standard Protection — WAF, cloud-native detection (GuardDuty, Defender) mandatory for SaaS."
+    "DER.2.1.A1":
+      maturity_target: "3"
+      reason: "Vorfallsbehandlung mit On-Call-Rotation und PagerDuty/Opsgenie — DSGVO Art. 33 72h-Meldefrist."
+      reason_en: "Incident handling with on-call rotation and PagerDuty/Opsgenie — GDPR Art. 33 72h notification."
+    "DER.2.1.A2":
+      maturity_target: "3"
+      reason: "Etablierung IRT mit Runbooks und Post-Mortem-Kultur (Blameless)."
+      reason_en: "IRT establishment with runbooks and (blameless) post-mortem culture."
+    "DER.2.2.A1":
+      maturity_target: "3"
+      reason: "Vorsorge mit Forensik-Snapshots, Tabletop-Exercises halbjährlich."
+      reason_en: "Preparedness with forensic snapshots, semi-annual tabletop exercises."
+    "APP.1.A1":
+      maturity_target: "3"
+      reason: "Office-Härtung — bei SaaS oft Google Workspace/M365, Makro-Restriktionen Standard."
+      reason_en: "Office hardening — often Google Workspace/M365 at SaaS, macro restrictions standard."
+    "APP.2.1.A1":
+      maturity_target: "4"
+      reason: "Identity-Provider (Okta, Azure AD, Auth0) statt klassisches AD — Tier-Modell + MFA + SSO."
+      reason_en: "Identity provider (Okta, Azure AD, Auth0) instead of classic AD — tier model + MFA + SSO."
+    "APP.3.2.A1":
+      maturity_target: "4"
+      reason: "Webserver-Härtung Standard-Absicherung — SaaS-Web-App ist Hauptangriffsfläche, OWASP ASVS L2/L3."
+      reason_en: "Web server hardening Standard Protection — SaaS web app is the main attack surface, OWASP ASVS L2/L3."
+    "APP.3.2.A2":
+      maturity_target: "4"
+      reason: "Planung Webserver mit CDN/WAF (Cloudflare, AWS WAF) und Rate-Limiting."
+      reason_en: "Web server planning with CDN/WAF (Cloudflare, AWS WAF) and rate limiting."
+    "APP.3.2.A5":
+      maturity_target: "4"
+      reason: "Protokollierung Webserver für Forensik und SOC2-/C5-Nachweise."
+      reason_en: "Web server logging for forensics and SOC2/C5 evidence."
+    "APP.3.3.A1":
+      maturity_target: "3"
+      reason: "Fileserver — bei SaaS oft S3/Object-Storage; Bucket-Policies und ABE."
+      reason_en: "File server — often S3/object storage at SaaS; bucket policies and ABE."
+    "APP.3.3.A2":
+      maturity_target: "3"
+      reason: "Auswahl mit Audit-Logs und Versionierung."
+      reason_en: "Selection with audit logs and versioning."
+    "APP.3.3.A3":
+      maturity_target: "3"
+      reason: "Sicherheitsanforderungen mit Encryption-at-rest (SSE-KMS) und VPC-Endpoint-Restriktionen."
+      reason_en: "Security requirements with encryption at rest (SSE-KMS) and VPC endpoint restrictions."
+    "APP.3.6.A1":
+      maturity_target: "3"
+      reason: "DNS-Server-Planung — typisch managed DNS (Route53, CloudDNS) mit DNSSEC."
+      reason_en: "DNS server planning — typically managed DNS (Route53, CloudDNS) with DNSSEC."
+    "APP.3.6.A2":
+      maturity_target: "3"
+      reason: "Auswahl DNS mit Anycast und Threat-Detection."
+      reason_en: "DNS selection with anycast and threat detection."
+    "APP.3.6.A5":
+      maturity_target: "3"
+      reason: "Schutz vor DNS-Manipulation — DNSSEC und CAA-Records für TLS."
+      reason_en: "Protection against DNS manipulation — DNSSEC and CAA records for TLS."
+    "APP.4.2.A1":
+      maturity_target: "1"
+      reason: "SAP bei reinen SaaS-Anbietern selten — nur bei Enterprise-Backoffice relevant; Skalierung 1 = ad-hoc."
+      reason_en: "SAP rarely used by pure SaaS providers — only relevant for enterprise back office; level 1 = ad-hoc."
+    "APP.4.2.A2":
+      maturity_target: "1"
+      reason: "Wenn SAP nicht im Scope, keine SaaS-spezifische Begründung — initial-Niveau ausreichend."
+      reason_en: "If SAP is out of scope, no SaaS-specific justification — initial level sufficient."
+    "APP.4.2.A3":
+      maturity_target: "1"
+      reason: "SAP-Absicherung optional — gilt nur falls SAP HCM/Finance bei größeren SaaS-Anbietern."
+      reason_en: "SAP hardening optional — applies only if SAP HCM/Finance at larger SaaS providers."
+    "APP.4.4.A1":
+      maturity_target: "4"
+      reason: "Kubernetes ist SaaS-Kern-Plattform — Pod-Security-Standards, Network-Policies, Admission-Controller Pflicht."
+      reason_en: "Kubernetes is SaaS core platform — pod security standards, network policies, admission controllers mandatory."
+    "APP.4.4.A4":
+      maturity_target: "4"
+      reason: "Trennung von Workloads in Kubernetes — Multi-Tenancy mit Namespaces, NetworkPolicies und vCluster."
+      reason_en: "Workload separation in Kubernetes — multi-tenancy with namespaces, NetworkPolicies and vCluster."
+    "APP.4.4.A8":
+      maturity_target: "4"
+      reason: "Container-Image-Härtung mit Distroless, Image-Signing (cosign), SBOM und Trivy/Grype-Scans in CI."
+      reason_en: "Container image hardening with distroless, image signing (cosign), SBOM and Trivy/Grype scans in CI."
+    "APP.5.3.A1":
+      maturity_target: "3"
+      reason: "Mail-Server-Planung — typisch managed (Google/M365) mit SPF/DKIM/DMARC-Strict-Policy."
+      reason_en: "Mail server planning — typically managed (Google/M365) with strict SPF/DKIM/DMARC policy."
+    "APP.5.3.A2":
+      maturity_target: "3"
+      reason: "Auswahl Mail-Provider mit ATP/Defender für Phishing- und BEC-Schutz."
+      reason_en: "Mail provider selection with ATP/Defender for phishing and BEC protection."
+    "APP.6.A1":
+      maturity_target: "4"
+      reason: "Software-Entwicklung Kern-Geschäft — Secure-SDLC mit Threat-Modeling, SAST, DAST, SCA Pflicht."
+      reason_en: "Software development is the core business — secure SDLC with threat modelling, SAST, DAST, SCA mandatory."
+    "APP.6.A2":
+      maturity_target: "4"
+      reason: "Anforderungsanalyse mit Privacy/Security-by-Design — DSGVO Art. 25 + OWASP-ASVS."
+      reason_en: "Requirements analysis with privacy/security by design — GDPR Art. 25 + OWASP ASVS."
+    "SYS.1.1.A1":
+      maturity_target: "3"
+      reason: "Server-Härtung — bei SaaS meist Cloud-VMs/Container, Hardening via IaC (Terraform + Ansible)."
+      reason_en: "Server hardening — usually cloud VMs/containers at SaaS, hardening via IaC (Terraform + Ansible)."
+    "SYS.1.2.A1":
+      maturity_target: "2"
+      reason: "Windows-Server bei reinen SaaS-Anbietern selten — meist Linux-only."
+      reason_en: "Windows Server rare at pure SaaS providers — mostly Linux only."
+    "SYS.1.2.A2":
+      maturity_target: "2"
+      reason: "Windows-Server-Beschaffung selten — bei .NET-Stacks Standard."
+      reason_en: "Windows Server procurement rare — standard for .NET stacks."
+    "SYS.1.2.3.A1":
+      maturity_target: "2"
+      reason: "Falls Windows-Server, dann mit AD/Tier-Modell."
+      reason_en: "If Windows Server is used, with AD/tier model."
+    "SYS.1.2.3.A2":
+      maturity_target: "2"
+      reason: "AppLocker bei Windows-Workloads — selten in SaaS-Stack."
+      reason_en: "AppLocker on Windows workloads — rare in SaaS stack."
+    "SYS.1.2.3.A5":
+      maturity_target: "3"
+      reason: "Schutz administrativer Zugänge — falls Windows, dann mit MFA und PAM."
+      reason_en: "Admin access protection — if Windows, with MFA and PAM."
+    "SYS.1.3.A1":
+      maturity_target: "4"
+      reason: "Linux ist SaaS-Standardplattform — CIS-Benchmark via IaC durchgesetzt."
+      reason_en: "Linux is the SaaS standard platform — CIS benchmark enforced via IaC."
+    "SYS.1.3.A5":
+      maturity_target: "4"
+      reason: "Sichere Installation Linux mit Immutable-Images (Packer, AMI-Pipelines)."
+      reason_en: "Secure Linux installation with immutable images (Packer, AMI pipelines)."
+    "SYS.1.3.A10":
+      maturity_target: "3"
+      reason: "Schutz vor Schadsoftware Linux — EDR (Falcon, SentinelOne) bei kritischen Hosts."
+      reason_en: "Linux malware protection — EDR (Falcon, SentinelOne) on critical hosts."
+    "SYS.1.3.A11":
+      maturity_target: "3"
+      reason: "Härtung Linux mit AppArmor-Profilen und seccomp in Containern."
+      reason_en: "Linux hardening with AppArmor profiles and seccomp in containers."
+    "SYS.1.6.A1":
+      maturity_target: "4"
+      reason: "Container ist SaaS-Architektur-Default — minimaler Image, Read-only-Root, Non-root-User."
+      reason_en: "Containers are SaaS architecture default — minimal image, read-only root, non-root user."
+    "SYS.1.6.A3":
+      maturity_target: "4"
+      reason: "Sichere Container-Runtime mit rootless, seccomp, gVisor/Kata für Mandanten-Trennung."
+      reason_en: "Secure container runtime with rootless, seccomp, gVisor/Kata for tenant separation."
+    "SYS.1.8.A1":
+      maturity_target: "3"
+      reason: "Speicher-Planung — Object-Storage (S3/GCS) mit Versioning, Encryption, Cross-Region-Replikation."
+      reason_en: "Storage planning — object storage (S3/GCS) with versioning, encryption, cross-region replication."
+    "SYS.1.8.A2":
+      maturity_target: "3"
+      reason: "Auswahl Speicher mit KMS-Encryption und Bucket-Policies (Public-Block)."
+      reason_en: "Storage selection with KMS encryption and bucket policies (public block)."
+    "SYS.1.9.A1":
+      maturity_target: "2"
+      reason: "Terminalserver bei SaaS selten — typisch Bastion-Hosts/Teleport für DevOps."
+      reason_en: "Terminal servers rare at SaaS — typically bastion hosts/Teleport for DevOps."
+    "SYS.1.9.A3":
+      maturity_target: "2"
+      reason: "Sichere Konfiguration Bastion mit Session-Recording (Teleport, AWS SSM)."
+      reason_en: "Secure bastion configuration with session recording (Teleport, AWS SSM)."
+    "SYS.2.1.A1":
+      maturity_target: "3"
+      reason: "Client-Härtung Standard — DevSec-Workforce mit MDM (JAMF/Kandji für macOS)."
+      reason_en: "Client hardening standard — DevSec workforce with MDM (JAMF/Kandji for macOS)."
+    "SYS.2.2.A1":
+      maturity_target: "3"
+      reason: "Windows-Client-Planung — bei SaaS-Mitarbeitern Mischflotte mit BitLocker und Defender."
+      reason_en: "Windows client planning — mixed fleet at SaaS staff with BitLocker and Defender."
+    "SYS.2.2.A3":
+      maturity_target: "3"
+      reason: "Sichere Installation Windows-Client via Intune Autopilot."
+      reason_en: "Secure Windows client installation via Intune Autopilot."
+    "SYS.2.4.A1":
+      maturity_target: "4"
+      reason: "macOS-Clients dominieren in SaaS-Engineering — JAMF/Kandji-MDM mit Compliance-Profilen."
+      reason_en: "macOS clients dominate SaaS engineering — JAMF/Kandji MDM with compliance profiles."
+    "SYS.2.4.A2":
+      maturity_target: "4"
+      reason: "Auswahl macOS mit FileVault Pflicht, Gatekeeper, MDM-Enrollment via DEP."
+      reason_en: "macOS selection with mandatory FileVault, Gatekeeper, MDM enrolment via DEP."
+    "SYS.2.4.A4":
+      maturity_target: "4"
+      reason: "Sichere Konfiguration macOS via MDM-Profile (CIS-Level 1) und EDR."
+      reason_en: "Secure macOS configuration via MDM profiles (CIS Level 1) and EDR."
+    "SYS.3.1.A2":
+      maturity_target: "3"
+      reason: "Beschaffung Laptops mit FDE und TPM/T2 — Standard für Remote-First SaaS-Teams."
+      reason_en: "Laptop procurement with FDE and TPM/T2 — standard for remote-first SaaS teams."
+    "SYS.3.1.A3":
+      maturity_target: "3"
+      reason: "Sichere Konfiguration mit Always-On-VPN/ZeroTrust (Tailscale, Cloudflare Access)."
+      reason_en: "Secure configuration with always-on VPN/ZeroTrust (Tailscale, Cloudflare Access)."
+    "SYS.3.2.2.A1":
+      maturity_target: "3"
+      reason: "Mobilgeräte mit MDM und Container — BYOD bei SaaS verbreitet."
+      reason_en: "Mobile devices with MDM and containerisation — BYOD common at SaaS."
+    "SYS.3.2.2.A2":
+      maturity_target: "3"
+      reason: "Auswahl Mobilgeräte mit Enterprise-MDM (Intune, JAMF, Kandji)."
+      reason_en: "Mobile device selection with enterprise MDM (Intune, JAMF, Kandji)."
+    "SYS.3.2.2.A5":
+      maturity_target: "3"
+      reason: "Schutz Mobilgeräte mit Remote-Wipe und App-Compliance-Policies."
+      reason_en: "Mobile device protection with remote wipe and app compliance policies."
+    "SYS.3.3.A1":
+      maturity_target: "1"
+      reason: "Sonstige Mobilgeräte (Wearables, IoT) bei SaaS-Engineering selten — keine Geschäftsfunktion."
+      reason_en: "Other mobile devices (wearables, IoT) rare in SaaS engineering — no business function."
+    "SYS.3.3.A3":
+      maturity_target: "1"
+      reason: "Konfiguration ad-hoc — wenn überhaupt vorhanden, dann persönliche Geräte."
+      reason_en: "Configuration ad-hoc — if present at all, personal devices."
+    "SYS.4.1.A1":
+      maturity_target: "2"
+      reason: "Drucker selten in Remote-First SaaS — nur in HQ-Büros."
+      reason_en: "Printers rare in remote-first SaaS — only in HQ offices."
+    "SYS.4.1.A2":
+      maturity_target: "2"
+      reason: "Auswahl Drucker mit Pull-Print falls Office vorhanden."
+      reason_en: "Printer selection with pull print if office is present."
+    "SYS.4.1.A3":
+      maturity_target: "2"
+      reason: "Sichere Konfiguration Default-Setup mit Firmware-Updates."
+      reason_en: "Secure configuration default setup with firmware updates."
+    "SYS.4.5.A1":
+      maturity_target: "3"
+      reason: "Wechseldatenträger — DLP-Policy via MDM (USB-Block für Devs)."
+      reason_en: "Removable media — DLP policy via MDM (USB block for devs)."
+    "SYS.4.5.A2":
+      maturity_target: "3"
+      reason: "Auswahl Wechselmedien mit Verschlüsselung (BitLocker-To-Go, FileVault-USB)."
+      reason_en: "Removable media selection with encryption (BitLocker To Go, FileVault USB)."
+    "NET.1.1.A1":
+      maturity_target: "4"
+      reason: "Netzarchitektur — VPC-Design mit Public/Private/Data-Subnets, Security-Groups, NACLs."
+      reason_en: "Network architecture — VPC design with public/private/data subnets, security groups, NACLs."
+    "NET.1.1.A2":
+      maturity_target: "4"
+      reason: "Anforderungsanalyse mit Threat-Model und Schutzbedarfsfeststellung je VPC-Zone."
+      reason_en: "Requirements analysis with threat model and protection-needs determination per VPC zone."
+    "NET.4.1.A1":
+      maturity_target: "1"
+      reason: "TK-Anlagen bei SaaS irrelevant — Kommunikation über Slack/Teams/Zoom."
+      reason_en: "PBX irrelevant at SaaS — communication via Slack/Teams/Zoom."
+    "NET.4.1.A2":
+      maturity_target: "1"
+      reason: "Keine eigene TK-Infrastruktur — Cloud-VoIP delegiert."
+      reason_en: "No own PBX infrastructure — cloud VoIP delegated."
+    "NET.4.2.A1":
+      maturity_target: "2"
+      reason: "VoIP über Zoom/Teams — Provider-Verschlüsselung wird genutzt, eigene Konfiguration minimal."
+      reason_en: "VoIP via Zoom/Teams — provider encryption used, own configuration minimal."
+    "NET.4.2.A3":
+      maturity_target: "2"
+      reason: "Sichere Konfiguration VoIP via SaaS-Defaults (Zoom E2E, Teams Compliance)."
+      reason_en: "Secure VoIP configuration via SaaS defaults (Zoom E2E, Teams compliance)."
+    "NET.4.2.A8":
+      maturity_target: "2"
+      reason: "VoIP-Verschlüsselung durch Provider — keine eigene SRTP-Konfiguration nötig."
+      reason_en: "VoIP encryption by provider — no own SRTP configuration required."
+    "NET.4.3.A1":
+      maturity_target: "1"
+      reason: "Faxgeräte irrelevant in SaaS-Umgebung."
+      reason_en: "Fax devices irrelevant in SaaS environments."
+    "NET.4.3.A2":
+      maturity_target: "1"
+      reason: "Keine Faxgeräte beschafft."
+      reason_en: "No fax devices procured."
+    "NET.4.3.A3":
+      maturity_target: "1"
+      reason: "Faxgeräte nicht im Einsatz — nicht anwendbar."
+      reason_en: "Fax devices not in use — not applicable."
+    "INF.1.A1":
+      maturity_target: "2"
+      reason: "Gebäude-Sicherheit für HQ-Büro — Cloud-Workloads in Hyperscaler-RZ delegiert."
+      reason_en: "Building security for HQ office — cloud workloads delegated to hyperscaler data centres."
+    "INF.1.A2":
+      maturity_target: "2"
+      reason: "Brandschutz/Strom über Provider — eigene Verantwortung minimal (Office-USV)."
+      reason_en: "Fire protection/power through provider — own responsibility minimal (office UPS)."
+    "INF.10.A1":
+      maturity_target: "2"
+      reason: "Besprechungsräume — Standard-Office mit grundlegender Zugangskontrolle."
+      reason_en: "Meeting rooms — standard office with basic access control."
+    "INF.10.A3":
+      maturity_target: "2"
+      reason: "Konferenztechnik mit Defaults konfiguriert (Polycom, Logitech Rally)."
+      reason_en: "Conference technology configured with defaults (Polycom, Logitech Rally)."
+    "INF.13.A1":
+      maturity_target: "2"
+      reason: "Wegeleitsysteme/sonstige Infrastruktur — Standard für Office-Sicherheit."
+      reason_en: "Wayfinding systems/other infrastructure — standard for office security."
+    "INF.13.A2":
+      maturity_target: "2"
+      reason: "Auswahl Standard-Komponenten ohne erhöhte Anforderungen."
+      reason_en: "Selection of standard components without elevated requirements."
+    "INF.13.A3":
+      maturity_target: "2"
+      reason: "Sichere Konfiguration Default-Setup."
+      reason_en: "Secure configuration default setup."
