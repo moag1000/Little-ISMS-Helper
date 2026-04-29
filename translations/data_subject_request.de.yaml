@@ -168,6 +168,7 @@ dsr:
 
     # Tabellenkoepfe
     table:
+        title: "Betroffenenanfragen"
         id: "ID"
         type: "Art"
         data_subject: "Betroffene Person"
