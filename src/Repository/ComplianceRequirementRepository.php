@@ -84,7 +84,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
                     'App\Entity\ComplianceRequirementFulfillment',
                     'crf',
                     'WITH',
-                    'crf.complianceRequirement = cr AND crf.tenant = :tenant'
+                    'crf.requirement = cr AND crf.tenant = :tenant'
                 )
                 ->setParameter('tenant', $tenant)
                 ->andWhere('crf.fulfillmentPercentage IS NULL OR crf.fulfillmentPercentage <= :maxFulfillment')
@@ -158,7 +158,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
 
             'applicable' => (int) $this->createQueryBuilder('cr')
                 ->select('COUNT(DISTINCT cr.id)')
-                ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.complianceRequirement = cr AND crf.tenant = :tenant')
+                ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.requirement = cr AND crf.tenant = :tenant')
                 ->where('cr.complianceFramework = :framework')
                 ->andWhere('crf.applicable = :applicable')
                 ->setParameter('framework', $complianceFramework)
@@ -169,7 +169,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
 
             'fulfilled' => (int) $this->createQueryBuilder('cr')
                 ->select('COUNT(DISTINCT cr.id)')
-                ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.complianceRequirement = cr AND crf.tenant = :tenant')
+                ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.requirement = cr AND crf.tenant = :tenant')
                 ->where('cr.complianceFramework = :framework')
                 ->andWhere('crf.applicable = :applicable')
                 ->andWhere('crf.fulfillmentPercentage >= 100')
@@ -181,7 +181,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
 
             'critical_gaps' => (int) $this->createQueryBuilder('cr')
                 ->select('COUNT(DISTINCT cr.id)')
-                ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.complianceRequirement = cr AND crf.tenant = :tenant')
+                ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.requirement = cr AND crf.tenant = :tenant')
                 ->where('cr.complianceFramework = :framework')
                 ->andWhere('crf.applicable = :applicable')
                 ->andWhere('cr.priority = :priority')
@@ -254,7 +254,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('cr')
             ->select('COUNT(DISTINCT cr.id)')
-            ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.complianceRequirement = cr')
+            ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.requirement = cr')
             ->where('crf.applicable = :applicable')
             ->andWhere('crf.fulfillmentPercentage >= 100')
             ->setParameter('applicable', true);

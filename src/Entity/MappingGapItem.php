@@ -24,7 +24,7 @@ class MappingGapItem
 
     #[ORM\ManyToOne(targetEntity: ComplianceMapping::class, inversedBy: 'gapItems')]
     #[ORM\JoinColumn(name: 'mapping_id', nullable: false, onDelete: 'CASCADE')]
-    private ?ComplianceMapping $complianceMapping = null;
+    private ?ComplianceMapping $mapping = null;
 
     /**
      * Type of gap identified
@@ -153,12 +153,12 @@ class MappingGapItem
 
     public function getMapping(): ?ComplianceMapping
     {
-        return $this->complianceMapping;
+        return $this->mapping;
     }
 
     public function setMapping(?ComplianceMapping $complianceMapping): static
     {
-        $this->complianceMapping = $complianceMapping;
+        $this->mapping = $complianceMapping;
         return $this;
     }
 

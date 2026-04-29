@@ -82,7 +82,7 @@ class ManagementReview
     // Neue, formularkompatible Felder (Option B)
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'reviewed_by_id', nullable: true)]
-    private ?User $user = null;
+    private ?User $reviewedBy = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $nonconformitiesReview = null;
@@ -330,12 +330,12 @@ public function __construct()
 
     public function getReviewedBy(): ?User
     {
-        return $this->user;
+        return $this->reviewedBy;
     }
 
     public function setReviewedBy(?User $user): static
     {
-        $this->user = $user;
+        $this->reviewedBy = $user;
         return $this;
     }
 

@@ -32,7 +32,7 @@ class MappingGapItemRepository extends ServiceEntityRepository
     public function findByMapping(ComplianceMapping $complianceMapping): array
     {
         return $this->createQueryBuilder('g')
-            ->where('g.complianceMapping = :mapping')
+            ->where('g.mapping = :mapping')
             ->setParameter('mapping', $complianceMapping)
             ->orderBy('g.priority', 'ASC')
             ->addOrderBy('g.percentageImpact', 'DESC')
