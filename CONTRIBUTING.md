@@ -35,9 +35,9 @@ We are committed to providing a welcoming and inspiring community for everyone. 
 
 ### Prerequisites
 
-- PHP 8.4 (recommended) or 8.2+
+- PHP 8.4+ required (8.5 supported and tested in CI)
 - Composer 2.x
-- PostgreSQL 16+ or MySQL 8.0+
+- PostgreSQL 16+ or MySQL 8.0+ or MariaDB 10.11+
 - Git
 - Symfony CLI (optional but recommended)
 
@@ -506,5 +506,5 @@ For questions about these guidelines, please open an issue or contact the mainta
 
 ---
 
-**Last Updated:** 2025-11-07
-**Version:** 1.0.0
+**Last Updated:** 2026-04-29
+**Project Version:** 3.2.6
