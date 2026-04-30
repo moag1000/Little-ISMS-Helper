@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Person;
 use App\Repository\AuditFindingRepository;
+use App\Service\OwnerResolver;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -87,9 +89,27 @@ class AuditFinding
     #[ORM\JoinColumn(nullable: true)]
     private ?User $reportedBy = null;
 
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Person $reportedByPerson = null;
+
+    /** @var Collection<int, Person> */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'audit_finding_reported_by_deputies')]
+    private Collection $reportedByDeputyPersons;
+
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $assignedTo = null;
+
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Person $assignedPerson = null;
+
+    /** @var Collection<int, Person> */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'audit_finding_assigned_deputies')]
+    private Collection $assignedDeputyPersons;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $dueDate = null;
@@ -107,6 +127,8 @@ class AuditFinding
     public function __construct()
     {
         $this->correctiveActions = new ArrayCollection();
+        $this->reportedByDeputyPersons = new ArrayCollection();
+        $this->assignedDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -247,6 +269,48 @@ class AuditFinding
         return $this;
     }
 
+    public function getReportedByPerson(): ?Person
+    {
+        return $this->reportedByPerson;
+    }
+
+    public function setReportedByPerson(?Person $reportedByPerson): static
+    {
+        $this->reportedByPerson = $reportedByPerson;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getReportedByDeputyPersons(): Collection
+    {
+        return $this->reportedByDeputyPersons;
+    }
+
+    public function addReportedByDeputyPerson(Person $person): static
+    {
+        if (!$this->reportedByDeputyPersons->contains($person)) {
+            $this->reportedByDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeReportedByDeputyPerson(Person $person): static
+    {
+        $this->reportedByDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    public function getEffectiveReportedBy(): ?string
+    {
+        return OwnerResolver::resolveEffective($this->reportedBy, $this->reportedByPerson, null);
+    }
+
+    /** @return list<string> */
+    public function getAllReportedByOwners(): array
+    {
+        return OwnerResolver::resolveAll($this->reportedBy, $this->reportedByPerson, null, $this->reportedByDeputyPersons);
+    }
+
     public function getAssignedTo(): ?User
     {
         return $this->assignedTo;
@@ -256,6 +320,48 @@ class AuditFinding
     {
         $this->assignedTo = $assignedTo;
         return $this;
+    }
+
+    public function getAssignedPerson(): ?Person
+    {
+        return $this->assignedPerson;
+    }
+
+    public function setAssignedPerson(?Person $assignedPerson): static
+    {
+        $this->assignedPerson = $assignedPerson;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getAssignedDeputyPersons(): Collection
+    {
+        return $this->assignedDeputyPersons;
+    }
+
+    public function addAssignedDeputyPerson(Person $person): static
+    {
+        if (!$this->assignedDeputyPersons->contains($person)) {
+            $this->assignedDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeAssignedDeputyPerson(Person $person): static
+    {
+        $this->assignedDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    public function getEffectiveAssignedTo(): ?string
+    {
+        return OwnerResolver::resolveEffective($this->assignedTo, $this->assignedPerson, null);
+    }
+
+    /** @return list<string> */
+    public function getAllAssignedOwners(): array
+    {
+        return OwnerResolver::resolveAll($this->assignedTo, $this->assignedPerson, null, $this->assignedDeputyPersons);
     }
 
     public function getDueDate(): ?DateTimeInterface

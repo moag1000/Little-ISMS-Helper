@@ -243,11 +243,17 @@ audit_finding:
         evidence: 'Nachweis / Evidenz'
         related_control: 'Verknüpfter Control'
         assigned_to: 'Zugewiesen an'
+        assigned_person: 'Verantwortlich (Person)'
+        assigned_deputy_persons: 'Vertretungen (Personen)'
+        reported_by_person: 'Gemeldet von (Person)'
+        reported_by_deputy_persons: 'Vertretungen Meldender (Personen)'
         due_date: 'Fällig bis'
     placeholder:
         audit: '-- Audit auswählen --'
         related_control: '-- Control auswählen (optional) --'
         assigned_to: '-- Verantwortliche Person --'
+        assigned_person: '-- Person aus Stammdaten --'
+        reported_by_person: '-- Person aus Stammdaten --'
     help:
         audit: 'Internes Audit, in dem diese Feststellung entstanden ist'
         finding_number: 'Eindeutige Nummer (optional — z.B. F-2026-001)'
@@ -256,6 +262,10 @@ audit_finding:
         clause_reference: 'Norm-Referenz (z.B. ISO 27001 A.5.1, Clause 9.3)'
         evidence: 'Belegmaterial (Interview, Dokument, Screenshot, …)'
         due_date: 'Termin bis zur Behebung. ISO 27001 erwartet nachvollziehbare Fristen.'
+        assigned_person: 'Person ohne System-Login als Verantwortliche. Reihenfolge: User > Person > leer.'
+        assigned_deputy_persons: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
+        reported_by_person: 'Person ohne System-Login als Meldende. Reihenfolge: User > Person > leer.'
+        reported_by_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Meldenden.'
     type:
         major_nc: 'Major Nonconformity'
         minor_nc: 'Minor Nonconformity'
