@@ -20,6 +20,8 @@ control:
     implementation_percentage: Umsetzungsgrad (%)
     implementation_notes: Umsetzungshinweise
     responsible_person: Verantwortliche Person
+    responsible_person_contact: Verantwortliche Person (Person aus Stammdaten)
+    responsible_deputies: Vertretungen (Personen)
     target_date: Zieldatum
     last_review_date: Letzte Überprüfung
     next_review_date: Nächste Überprüfung
@@ -37,12 +39,15 @@ control:
     next_review_date: Wann soll das Control das nächste Mal überprüft werden?
     protected_assets: Welche Assets werden durch dieses Control geschützt?
     responsible_person_user: Verantwortliche Person aus der Benutzerverwaltung.
+    responsible_person_contact: 'Person ohne System-Login als Verantwortliche wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
+    responsible_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
   placeholder:
     control_id: z.B. A.5.1
     name: z.B. Policies for information security
     justification: Begründen Sie die Anwendbarkeit oder Nicht-Anwendbarkeit...
     responsible_person: Name der verantwortlichen Person
     responsible_person_user: -- Verantwortliche Person --
+    responsible_person_contact: -- Person aus Stammdaten --
   status:
     implemented: Implementiert
     in_progress: In Bearbeitung
