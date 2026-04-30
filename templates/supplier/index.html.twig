@@ -126,6 +126,7 @@
         form_id: 'supplier-filter-form'
     } %}
         {% block filters %}
+            {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
             {% if app.request.query.get('view') %}
                 <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
             {% endif %}

@@ -154,6 +154,7 @@
     form_id: 'asset-filter-form'
 } %}
     {% block filters %}
+        {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
         {# Preserve the view parameter across filter submissions #}
         {% if app.request.query.get('view') %}
             <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
