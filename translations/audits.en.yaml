@@ -319,11 +319,17 @@ audit_finding:
         evidence: 'Evidence'
         related_control: 'Related Control'
         assigned_to: 'Assigned to'
+        assigned_person: 'Responsible (Person)'
+        assigned_deputy_persons: 'Deputies (Persons)'
+        reported_by_person: 'Reported by (Person)'
+        reported_by_deputy_persons: 'Reporter Deputies (Persons)'
         due_date: 'Due Date'
     placeholder:
         audit: '-- Select audit --'
         related_control: '-- Select control (optional) --'
         assigned_to: '-- Responsible person --'
+        assigned_person: '-- Person from master data --'
+        reported_by_person: '-- Person from master data --'
     help:
         audit: 'Internal audit during which this finding was raised'
         finding_number: 'Unique identifier (optional — e.g. F-2026-001)'
@@ -332,6 +338,10 @@ audit_finding:
         clause_reference: 'Standard reference (e.g. ISO 27001 A.5.1, Clause 9.3)'
         evidence: 'Supporting material (interview, document, screenshot, …)'
         due_date: 'Deadline for remediation. ISO 27001 expects traceable dates.'
+        assigned_person: 'Person without system login as responsible. Order: User > Person > empty.'
+        assigned_deputy_persons: 'Additional persons with deputy or shared responsibility.'
+        reported_by_person: 'Person without system login as reporter. Order: User > Person > empty.'
+        reported_by_deputy_persons: 'Additional persons with deputy role for reporter.'
     type:
         major_nc: 'Major Nonconformity'
         minor_nc: 'Minor Nonconformity'

@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\AuditFinding;
 use App\Entity\Control;
 use App\Entity\InternalAudit;
+use App\Entity\Person;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -113,6 +114,50 @@ class AuditFindingType extends AbstractType
                 'placeholder' => 'audit_finding.placeholder.assigned_to',
                 'required' => false,
                 'attr' => ['class' => 'form-select'],
+            ])
+            ->add('assignedPerson', EntityType::class, [
+                'label' => 'audit_finding.field.assigned_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'audit_finding.placeholder.assigned_person',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+                'help' => 'audit_finding.help.assigned_person',
+            ])
+            ->add('assignedDeputyPersons', EntityType::class, [
+                'label' => 'audit_finding.field.assigned_deputy_persons',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'audit_finding.help.assigned_deputy_persons',
+            ])
+            ->add('reportedByPerson', EntityType::class, [
+                'label' => 'audit_finding.field.reported_by_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'audit_finding.placeholder.reported_by_person',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+                'help' => 'audit_finding.help.reported_by_person',
+            ])
+            ->add('reportedByDeputyPersons', EntityType::class, [
+                'label' => 'audit_finding.field.reported_by_deputy_persons',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'audit_finding.help.reported_by_deputy_persons',
             ])
             ->add('dueDate', DateType::class, [
                 'label' => 'audit_finding.field.due_date',
