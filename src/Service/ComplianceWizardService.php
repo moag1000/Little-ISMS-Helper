@@ -16,6 +16,7 @@ use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
+use App\Repository\ConsentRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -56,6 +57,7 @@ class ComplianceWizardService
         private readonly TrainingRepository $trainingRepository,
         private readonly RiskTreatmentPlanRepository $treatmentPlanRepository,
         private readonly SupplierRepository $supplierRepository,
+        private readonly ConsentRepository $consentRepository,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator
     ) {
@@ -331,6 +333,10 @@ class ComplianceWizardService
 
             case 'treatment_plan':
                 $result = $this->checkTreatmentPlanStatus($check, $tenant);
+                break;
+
+            case 'consent_coverage':
+                $result = $this->checkConsentCoverage($check, $tenant);
                 break;
 
             default:
@@ -990,6 +996,44 @@ class ComplianceWizardService
                 'overdue' => count($overdue),
             ],
             'gap' => $gap,
+        ];
+    }
+
+    /**
+     * Counts active vs. revoked consents (GDPR Art. 6/7 + ISO 27701 7.2.4).
+     * Score = % of consents that are not revoked. Returns 0 + gap when no
+     * consents are tracked at all.
+     */
+    private function checkConsentCoverage(array $check, ?Tenant $tenant): array
+    {
+        $qbTotal = $this->consentRepository->createQueryBuilder('c')->select('COUNT(c.id)');
+        $qbActive = $this->consentRepository->createQueryBuilder('c')->select('COUNT(c.id)')
+            ->where('c.isRevoked = :revoked')->setParameter('revoked', false);
+        if ($tenant !== null) {
+            $qbTotal->andWhere('c.tenant = :t')->setParameter('t', $tenant);
+            $qbActive->andWhere('c.tenant = :t')->setParameter('t', $tenant);
+        }
+
+        $total = (int) $qbTotal->getQuery()->getSingleScalarResult();
+        $active = (int) $qbActive->getQuery()->getSingleScalarResult();
+
+        if ($total === 0) {
+            return [
+                'score' => 0,
+                'details' => ['total' => 0, 'active' => 0],
+                'gap' => [
+                    'title' => 'wizard.gap.no_consents',
+                    'description' => 'wizard.gap.no_consents_desc',
+                    'priority' => 'high',
+                    'route' => $check['route'] ?? 'app_consent_index',
+                ],
+            ];
+        }
+
+        $score = ($active / $total) * 100;
+        return [
+            'score' => $score,
+            'details' => ['total' => $total, 'active' => $active],
         ];
     }
 
