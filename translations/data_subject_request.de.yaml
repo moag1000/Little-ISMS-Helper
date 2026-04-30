@@ -55,6 +55,8 @@ dsr:
         identity_verified: "Identitaet verifiziert"
         identity_verification_method: "Verifizierungsmethode"
         assigned_to: "Zugewiesen an"
+        assigned_person: "Verantwortlich (Person)"
+        assigned_deputy_persons: "Vertretungen (Personen)"
         processing_activity: "Zugehoerige Verarbeitungstaetigkeit (VVT)"
         notes: "Interne Notizen"
         placeholder:
@@ -65,6 +67,7 @@ dsr:
             data_subject_identifier: "z.B. Kundennummer, Mitarbeiternummer"
             verification_method: "-- Verifizierungsmethode waehlen --"
             assigned_to: "-- Benutzer zuweisen --"
+            assigned_person: "-- Person aus Stammdaten --"
             processing_activity: "-- Mit Verarbeitungstaetigkeit verknuepfen --"
             notes: "Interne Notizen (werden nicht mit der betroffenen Person geteilt)..."
             response_description: "Beschreiben Sie, was zur Erfuellung der Anfrage unternommen wurde..."
@@ -76,6 +79,8 @@ dsr:
             data_subject_identifier: "Beliebige Kennung zur Identifikation der Person in Ihren Systemen"
             processing_activity: "Verknuepfung mit einer relevanten Verarbeitungstaetigkeit aus dem VVT"
             notes: "Interne Notizen werden nicht mit der betroffenen Person geteilt"
+            assigned_person: "Person ohne System-Login als Verantwortliche. Reihenfolge: User > Person > leer."
+            assigned_deputy_persons: "Weitere Personen mit Vertretungs- oder Mitverantwortung."
 
     # Abschnittueberschriften
     section:

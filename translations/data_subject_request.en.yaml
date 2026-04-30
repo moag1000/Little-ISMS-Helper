@@ -55,6 +55,8 @@ dsr:
         identity_verified: "Identity Verified"
         identity_verification_method: "Verification Method"
         assigned_to: "Assigned To"
+        assigned_person: "Responsible (Person)"
+        assigned_deputy_persons: "Deputies (Persons)"
         processing_activity: "Related Processing Activity (VVT)"
         notes: "Internal Notes"
         placeholder:
@@ -65,6 +67,7 @@ dsr:
             data_subject_identifier: "e.g. Customer ID, Employee ID"
             verification_method: "-- Select verification method --"
             assigned_to: "-- Assign to user --"
+            assigned_person: "-- Person from master data --"
             processing_activity: "-- Link to processing activity --"
             notes: "Internal notes (not shared with the data subject)..."
             response_description: "Describe what was done to fulfill the request..."
@@ -76,6 +79,8 @@ dsr:
             data_subject_identifier: "Any identifier to locate the person in your systems"
             processing_activity: "Link to a relevant processing activity from the VVT"
             notes: "Internal notes are not shared with the data subject"
+            assigned_person: "Person without system login as responsible. Order: User > Person > empty."
+            assigned_deputy_persons: "Additional persons with deputy or shared responsibility."
 
     # Section headings
     section:
