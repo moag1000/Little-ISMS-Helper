@@ -308,4 +308,26 @@ class ComplianceWizardServiceTest extends KernelTestCase
                 "ISO 22301 missing category '$key'");
         }
     }
+
+    #[Test]
+    public function testConsentCoverageCheckReturnsZeroWhenNoConsents(): void
+    {
+        $this->requireDatabase();
+
+        $reflect = new \ReflectionClass($this->wizardService);
+        if (!$reflect->hasMethod('checkConsentCoverage')) {
+            $this->fail('ComplianceWizardService::checkConsentCoverage() not implemented');
+        }
+
+        $method = $reflect->getMethod('checkConsentCoverage');
+        $method->setAccessible(true);
+        $result = $method->invoke($this->wizardService, ['type' => 'consent_coverage'], null);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('score', $result);
+        $this->assertArrayHasKey('details', $result);
+        // No tenant + likely no consents → score is 0 and a gap is reported.
+        $this->assertSame(0.0, (float) $result['score']);
+        $this->assertArrayHasKey('gap', $result);
+    }
 }
