@@ -350,7 +350,7 @@ class HomeController extends AbstractController
         // My overdue treatment plans (where I am the responsible person)
         foreach ($overdueTreatmentPlans as $plan) {
             if ($plan->getResponsiblePerson() === $user) {
-                $overdueDays = abs($plan->getDaysUntilTarget());
+                $overdueDays = $plan->getDaysOverdue() ?? 0;
                 $myTasks[] = [
                     'type' => 'treatment_plan',
                     'title' => $plan->getTitle(),

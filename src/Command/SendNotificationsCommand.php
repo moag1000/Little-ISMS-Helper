@@ -220,7 +220,8 @@ class SendNotificationsCommand
             }
 
             if ($recipients !== []) {
-                $daysOpen = $incident->getDetectedAt()->diff(new DateTime())->days;
+                $detectedDiff = $incident->getDetectedAt()->diff(new DateTime());
+                $daysOpen = $detectedDiff->invert ? 0 : $detectedDiff->days;
                 $symfonyStyle->text(sprintf('  - Incident "%s" [%s] open for %d days → %d recipients',
                     $incident->getTitle(),
                     strtoupper($incident->getSeverity()?->value ?? ''),
@@ -359,7 +360,8 @@ class SendNotificationsCommand
 
             // Calculate days remaining
             $dueDate = $instance->getDueDate();
-            $daysRemaining = (int) $today->diff($dueDate)->days;
+            $dueDiff = $today->diff($dueDate);
+            $daysRemaining = $dueDiff->invert ? 0 : (int) $dueDiff->days;
 
             $recipients = [];
 
