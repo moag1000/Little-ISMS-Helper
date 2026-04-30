@@ -246,4 +246,15 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->assertContains($status, [200, 302],
             "Expected 200 or 302 from iso22301 start, got $status");
     }
+
+    #[Test]
+    public function testIso27701WizardStartPageRendersOrSkipsCleanly(): void
+    {
+        $this->client->request('GET', '/de/compliance-wizard/iso27701');
+        // 200 (rendered) or 302 (redirect to index because controls module
+        // inactive in this test env) — both acceptable. Rule out 500.
+        $status = $this->client->getResponse()->getStatusCode();
+        $this->assertContains($status, [200, 302],
+            "Expected 200 or 302 from iso27701 start, got $status");
+    }
 }

@@ -494,6 +494,17 @@ wizard:
         iso22301_audit: 'BCM audit conducted'
         iso22301_treatment: 'Recovery strategies as treatment plan'
 
+        # ISO 27701 checks
+        iso27701_role: 'Controller/processor role documented'
+        iso27701_role_desc: 'PIMS role per ISO 27701 5.2.1 defined in writing.'
+        iso27701_policy: 'Privacy policy current'
+        iso27701_dsr: 'DSR pipeline (access/erasure)'
+        iso27701_dpia: 'DPIA coverage for high-risk processing'
+        iso27701_records: 'Records of processing complete'
+        iso27701_breach: 'Breach notification process (72h SLA)'
+        iso27701_consent: 'Consent management'
+        iso27701_suppliers: 'Processor assessments'
+
     # TISAX Categories
     tisax:
         description: "Assess your information security according to VDA ISA for the automotive industry."
@@ -535,3 +546,23 @@ wizard:
         evaluation_desc: 'Monitoring, BCM audits, management review.'
         improvement: 'Improvement (Clause 10)'
         improvement_desc: 'Corrective actions from exercises and reviews.'
+
+    # ISO 27701 PIMS Categories
+    iso27701:
+        description: 'PIMS maturity check per ISO 27701:2019 (Privacy Information Management).'
+        pims_context: 'PIMS Context and Roles'
+        pims_context_desc: 'Controller or processor role, PIMS scope.'
+        privacy_policy: 'Privacy Policy and Notice'
+        privacy_policy_desc: 'Privacy policy and data-subject information.'
+        data_subject_rights: 'Data Subject Rights'
+        data_subject_rights_desc: 'Access, erasure, portability (GDPR Art. 12-22).'
+        privacy_risk: 'Privacy Risk Management'
+        privacy_risk_desc: 'DPIA for high-risk processing (Art. 35).'
+        records_of_processing: 'Records of Processing'
+        records_of_processing_desc: 'Art. 30 — record of processing activities.'
+        breach_notification: 'Data Breach Notification'
+        breach_notification_desc: 'Art. 33/34 — 72h notification to supervisory authority.'
+        privacy_by_design: 'Privacy by Design & Default'
+        privacy_by_design_desc: 'Art. 25 — technical and organisational measures.'
+        third_party_processors: 'Processors and Sub-Processors'
+        third_party_processors_desc: 'Art. 28 — DPAs and supplier assessments.'
