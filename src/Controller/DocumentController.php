@@ -77,7 +77,9 @@ class DocumentController extends AbstractController
             ];
         }
 
-        $documents = $allDocuments;
+        // Hide soft-deleted/archived documents from the default list. KPI / audit
+        // views can bypass via dedicated endpoints.
+        $documents = array_filter($allDocuments, fn(Document $document): bool => $document->isOperational());
 
         // Sort by upload date descending
         usort($documents, fn($a, $b): int => $b->getUploadedAt() <=> $a->getUploadedAt());
