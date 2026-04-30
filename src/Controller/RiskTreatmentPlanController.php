@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
 use DateTimeImmutable;
 use App\Entity\RiskTreatmentPlan;
 use App\Form\RiskTreatmentPlanType;
@@ -55,8 +54,8 @@ class RiskTreatmentPlanController extends AbstractController
 
         if ($responsiblePerson) {
             $plans = array_filter($plans, fn(RiskTreatmentPlan $plan): bool =>
-                $plan->getResponsiblePerson() instanceof User &&
-                stripos($plan->getResponsiblePerson()->getFullName(), $responsiblePerson) !== false
+                $plan->getEffectiveResponsiblePerson() !== null &&
+                stripos($plan->getEffectiveResponsiblePerson(), $responsiblePerson) !== false
             );
         }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Control;
+use App\Entity\Person;
 use App\Entity\Risk;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\User;
@@ -141,16 +142,38 @@ class RiskTreatmentPlanType extends AbstractType
                     new Assert\PositiveOrZero(message: 'risk_treatment_plan.validation.budget_positive')
                 ]
             ])
-            ->add('responsiblePerson', EntityType::class, [
-                'label' => 'risk_treatment_plan.field.responsible_person',
+            ->add('responsiblePersonUser', EntityType::class, [
+                'label' => 'risk_treatment_plan.field.responsible_person_user',
                 'class' => User::class,
                 'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
+                'placeholder' => 'risk_treatment_plan.placeholder.responsible_person_user',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-select'
+                ],
+                'help' => 'risk_treatment_plan.help.responsible_person_user'
+            ])
+            ->add('responsiblePerson', EntityType::class, [
+                'label' => 'risk_treatment_plan.field.responsible_person',
+                'class' => Person::class,
+                'choice_label' => 'fullName',
                 'placeholder' => 'risk_treatment_plan.placeholder.responsible_person',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-select'
                 ],
                 'help' => 'risk_treatment_plan.help.responsible_person'
+            ])
+            ->add('responsibleDeputyPersons', EntityType::class, [
+                'label' => 'risk_treatment_plan.field.responsible_deputy_persons',
+                'class' => Person::class,
+                'choice_label' => 'fullName',
+                'multiple' => true,
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-select'
+                ],
+                'help' => 'risk_treatment_plan.help.responsible_deputy_persons'
             ])
             ->add('controls', EntityType::class, [
                 'label' => 'risk_treatment_plan.field.controls',

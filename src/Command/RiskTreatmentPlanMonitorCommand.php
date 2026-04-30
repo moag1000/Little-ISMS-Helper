@@ -133,11 +133,11 @@ class RiskTreatmentPlanMonitorCommand
                         $overduePlan->getTargetCompletionDate()->format('Y-m-d'),
                         $daysOverdue . ' days',
                         $overduePlan->getCompletionPercentage() . '%',
-                        $overduePlan->getResponsiblePerson()?->getFullName() ?? 'Unassigned'
+                        $overduePlan->getEffectiveResponsiblePerson() ?? 'Unassigned'
                     ];
 
                     // Send notification
-                    if ($sendNotifications && $overduePlan->getResponsiblePerson()) {
+                    if ($sendNotifications && $overduePlan->getResponsiblePersonUser()) {
                         try {
                             $this->sendOverdueNotification($overduePlan);
                             $notificationsSent++;
@@ -168,11 +168,11 @@ class RiskTreatmentPlanMonitorCommand
                         $approachingPlan->getTargetCompletionDate()->format('Y-m-d'),
                         $daysRemaining . ' days',
                         $approachingPlan->getCompletionPercentage() . '%',
-                        $approachingPlan->getResponsiblePerson()?->getFullName() ?? 'Unassigned'
+                        $approachingPlan->getEffectiveResponsiblePerson() ?? 'Unassigned'
                     ];
 
                     // Send notification for approaching deadlines
-                    if ($sendNotifications && $approachingPlan->getResponsiblePerson()) {
+                    if ($sendNotifications && $approachingPlan->getResponsiblePersonUser()) {
                         try {
                             $this->sendApproachingDeadlineNotification($approachingPlan, $daysRemaining);
                             $notificationsSent++;
@@ -218,7 +218,7 @@ class RiskTreatmentPlanMonitorCommand
                 'risk' => $plan->getRisk(),
                 'days_overdue' => $plan->getDaysOverdue() ?? 0
             ],
-            recipients: [$plan->getResponsiblePerson()]
+            recipients: [$plan->getResponsiblePersonUser()]
         );
     }
 
@@ -235,7 +235,7 @@ class RiskTreatmentPlanMonitorCommand
                 'risk' => $plan->getRisk(),
                 'days_remaining' => $daysRemaining
             ],
-            recipients: [$plan->getResponsiblePerson()]
+            recipients: [$plan->getResponsiblePersonUser()]
         );
     }
 }

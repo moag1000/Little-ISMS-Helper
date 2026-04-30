@@ -110,8 +110,8 @@
 
                 <div class="detail-item">
                     <strong>{{ 'risk_treatment_plan.field.responsible_person'|trans({}, 'risk_treatment_plan') }}:</strong>
-                    {% if plan.responsiblePerson %}
-                        {{ plan.responsiblePerson.fullName }} ({{ plan.responsiblePerson.email }})
+                    {% if plan.effectiveResponsiblePerson %}
+                        {{ plan.effectiveResponsiblePerson }}
                     {% else %}
                         <span class="text-muted">{{ 'common.not_assigned'|trans({}, 'messages') }}</span>
                     {% endif %}
