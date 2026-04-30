@@ -67,6 +67,7 @@ asset:
     return_date: Rückgabedatum
     status: Status
     owner_legacy: Verantwortlich (freitext, veraltet)
+    owner_person: Verantwortlich (Person aus Stammdaten)
     depends_on: Abhängigkeiten (Upstream)
   help:
     name: Eindeutiger Name des Assets
@@ -90,8 +91,10 @@ asset:
     handling_instructions: Besondere Anweisungen für den Umgang mit diesem Asset
     return_date: Datum der geplanten Rückgabe (bei temporär zugewiesenen Assets)
     status: Aktueller Nutzungsstatus des Assets
-    owner_user: Verantwortliche Person aus der Benutzerverwaltung. Wenn nicht in der
-      Liste, im Legacy-Feld Text eintragen.
+    owner_user: Verantwortliche Person aus der Benutzerverwaltung. Wenn die Person
+      keinen System-Login hat, im "Person"-Feld auswählen oder ggf. das Legacy-Freitext-Feld nutzen.
+    owner_person: Verantwortliche Person aus den Stammdaten (auch externe Stakeholder
+      ohne System-Login). Reihenfolge der Anzeige in Listen&#58; User &gt; Person &gt; Legacy-Freitext.
     depends_on: 'Assets, von denen dieser Asset abhängt. BSI 3.6 Maximumprinzip: höchste
       CIA-Werte werden vererbt.'
   protection:
@@ -211,6 +214,7 @@ asset:
     acceptable_use_policy: Beschreiben Sie die Nutzungsrichtlinien...
     handling_instructions: Besondere Handhabungshinweise...
     owner_user: -- Verantwortliche Person --
+    owner_person: -- Person aus Stammdaten --
   type:
     information: Information
     software: Software

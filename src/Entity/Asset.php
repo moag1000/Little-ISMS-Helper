@@ -720,11 +720,35 @@ class Asset
     }
 
     /**
-     * Effective owner: prefer ownerUser.fullName, fall back to legacy string.
+     * Person-based owner: für Personen-Eintraege ohne System-Login (externe
+     * Stakeholder, Berater, abteilungs-shared Mailbox-Inhaber). Drittstufe
+     * der Pattern-A-Kette zwischen User und Legacy-String.
+     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Person::class)]
+    #[ORM\JoinColumn(name: 'owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?\App\Entity\Person $ownerPerson = null;
+
+    public function getOwnerPerson(): ?\App\Entity\Person
+    {
+        return $this->ownerPerson;
+    }
+
+    public function setOwnerPerson(?\App\Entity\Person $ownerPerson): static
+    {
+        $this->ownerPerson = $ownerPerson;
+        return $this;
+    }
+
+    /**
+     * Effective owner: prefer ownerUser.fullName, then ownerPerson.fullName,
+     * fall back to legacy string. List/render-paths should use this; raw
+     * owner string only when intentionally bypassing the resolution chain.
      */
     public function getEffectiveOwner(): ?string
     {
-        return $this->ownerUser?->getFullName() ?? $this->owner;
+        return $this->ownerUser?->getFullName()
+            ?? $this->ownerPerson?->getFullName()
+            ?? $this->owner;
     }
 
     /** @return Collection<int, Asset> */

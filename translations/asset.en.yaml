@@ -67,6 +67,7 @@ asset:
     return_date: Return Date
     status: Status
     owner_legacy: Owner (free text, legacy)
+    owner_person: Owner (Person from master data)
     depends_on: Dependencies (upstream)
   help:
     name: Unique name of the asset
@@ -90,8 +91,10 @@ asset:
     handling_instructions: Special instructions for handling this asset
     return_date: Date of planned return (for temporarily assigned assets)
     status: Current usage status of the asset
-    owner_user: Owner from user management. If not listed, enter free text in the
-      legacy field.
+    owner_user: Owner from user management. If the person has no system login,
+      pick them from the "Person" master-data list or use the legacy free-text field.
+    owner_person: Owner from master-data Person records (also external stakeholders
+      without a system login). Display order in lists&#58; User &gt; Person &gt; legacy.
     depends_on: 'Assets this one depends on. BSI 3.6 Maximumprinzip: highest CIA values
       are inherited.'
   protection:
@@ -208,6 +211,7 @@ asset:
     acceptable_use_policy: Describe usage guidelines...
     handling_instructions: Special handling instructions...
     owner_user: -- Select owner --
+    owner_person: -- Select Person from master data --
   type:
     information: Information
     software: Software
