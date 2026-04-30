@@ -329,4 +329,24 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertSame(0.0, (float) $result['score']);
         $this->assertArrayHasKey('gap', $result);
     }
+
+    #[Test]
+    public function testDsrCoverageCheckReturnsScoreShape(): void
+    {
+        $this->requireDatabase();
+
+        $reflect = new \ReflectionClass($this->wizardService);
+        if (!$reflect->hasMethod('checkDsrCoverage')) {
+            $this->fail('ComplianceWizardService::checkDsrCoverage() not implemented');
+        }
+
+        $method = $reflect->getMethod('checkDsrCoverage');
+        $result = $method->invoke($this->wizardService, ['type' => 'dsr_coverage'], null);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('score', $result);
+        $this->assertArrayHasKey('details', $result);
+        $this->assertGreaterThanOrEqual(0, $result['score']);
+        $this->assertLessThanOrEqual(100, $result['score']);
+    }
 }

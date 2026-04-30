@@ -17,6 +17,7 @@ use App\Repository\InternalAuditRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\ConsentRepository;
+use App\Repository\DataSubjectRequestRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -58,6 +59,7 @@ class ComplianceWizardService
         private readonly RiskTreatmentPlanRepository $treatmentPlanRepository,
         private readonly SupplierRepository $supplierRepository,
         private readonly ConsentRepository $consentRepository,
+        private readonly DataSubjectRequestRepository $dataSubjectRequestRepository,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator
     ) {
@@ -337,6 +339,10 @@ class ComplianceWizardService
 
             case 'consent_coverage':
                 $result = $this->checkConsentCoverage($check, $tenant);
+                break;
+
+            case 'dsr_coverage':
+                $result = $this->checkDsrCoverage($check, $tenant);
                 break;
 
             default:
@@ -1052,6 +1058,58 @@ class ComplianceWizardService
         return [
             'score' => $score,
             'details' => ['total' => $total, 'active' => $active],
+            'gap' => $gap,
+        ];
+    }
+
+    /**
+     * Counts open vs. completed Data-Subject Requests (GDPR Art. 12-22).
+     * Score = % of requests in terminal status (completed or rejected),
+     * rounded to 1 decimal. When zero requests exist, score=100 + an
+     * advisory gap is emitted because GDPR doesn't require requests but
+     * the absence of any DSR records suggests the process is untested.
+     */
+    private function checkDsrCoverage(array $check, ?Tenant $tenant): array
+    {
+        $qbTotal = $this->dataSubjectRequestRepository->createQueryBuilder('d')->select('COUNT(d.id)');
+        $qbDone = $this->dataSubjectRequestRepository->createQueryBuilder('d')->select('COUNT(d.id)')
+            ->where('d.status IN (:done)')->setParameter('done', ['completed', 'rejected']);
+        if ($tenant !== null) {
+            $qbTotal->andWhere('d.tenant = :t')->setParameter('t', $tenant);
+            $qbDone->andWhere('d.tenant = :t')->setParameter('t', $tenant);
+        }
+
+        $total = (int) $qbTotal->getQuery()->getSingleScalarResult();
+        $done = (int) $qbDone->getQuery()->getSingleScalarResult();
+
+        if ($total === 0) {
+            return [
+                'score' => 100,
+                'details' => ['total' => 0, 'completed' => 0, 'message' => 'no_requests_yet'],
+                'gap' => [
+                    'title' => $this->translator->trans('wizard.gap.no_dsr', [], 'wizard'),
+                    'description' => $this->translator->trans('wizard.gap.no_dsr_desc', [], 'wizard'),
+                    'priority' => 'medium',
+                    'route' => $check['route'] ?? 'app_data_subject_request_index',
+                ],
+            ];
+        }
+
+        $score = round(($done / $total) * 100, 1);
+
+        $gap = null;
+        if ($score < 90) {
+            $gap = [
+                'title' => $this->translator->trans('wizard.gap.dsr_open_high', [], 'wizard'),
+                'description' => $this->translator->trans('wizard.gap.dsr_open_high_desc', [], 'wizard'),
+                'priority' => 'high',
+                'route' => $check['route'] ?? 'app_data_subject_request_index',
+            ];
+        }
+
+        return [
+            'score' => $score,
+            'details' => ['total' => $total, 'completed' => $done],
             'gap' => $gap,
         ];
     }

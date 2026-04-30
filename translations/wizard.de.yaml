@@ -151,6 +151,10 @@ wizard:
         no_consents_desc: 'GDPR Art. 6/7 + ISO 27701 7.2.4 setzen nachweisbare Einwilligungen voraus.'
         consent_revoked_high: 'Hoher Anteil widerrufener Einwilligungen'
         consent_revoked_high_desc: 'Mehr als 10% der Einwilligungen wurden widerrufen — Review empfohlen.'
+        no_dsr: 'Noch keine Betroffenenanfragen verarbeitet'
+        no_dsr_desc: 'Auch ohne aktuelle Anfragen sollte der Prozess getestet sein.'
+        dsr_open_high: 'Hoher Anteil offener Betroffenenanfragen'
+        dsr_open_high_desc: 'Mehr als 10% sind nicht in einem Endzustand (completed/rejected). 30-Tage-Frist (Art. 12 Abs. 3) prüfen.'
 
     # Actions
     action:
