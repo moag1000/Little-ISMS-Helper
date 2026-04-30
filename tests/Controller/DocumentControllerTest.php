@@ -994,6 +994,7 @@ class DocumentControllerTest extends TestCase
         $document = $this->createConfiguredMock(Document::class, [
             'getId' => $id,
             'getStatus' => $status,
+            'isOperational' => !in_array($status, ['deleted', 'archived'], true),
             'getCategory' => $category,
             'getFilename' => "document_{$id}.pdf",
             'getOriginalFilename' => "Document {$id}.pdf",

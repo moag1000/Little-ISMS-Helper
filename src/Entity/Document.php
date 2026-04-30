@@ -173,6 +173,15 @@ class Document
     public function getStatus(): string { return $this->status; }
     public function setStatus(string $status): static { $this->status = $status; return $this; }
 
+    /**
+     * Operationally visible = not soft-deleted or archived. Used for
+     * default index listings; KPI / audit views may bypass this.
+     */
+    public function isOperational(): bool
+    {
+        return !in_array($this->status, ['deleted', 'archived'], true);
+    }
+
     public function getTisaxInformationClassification(): ?string { return $this->tisaxInformationClassification; }
     public function setTisaxInformationClassification(?string $value): static { $this->tisaxInformationClassification = $value; return $this; }
 
