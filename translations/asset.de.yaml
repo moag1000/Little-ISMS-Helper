@@ -68,6 +68,7 @@ asset:
     status: Status
     owner_legacy: Verantwortlich (freitext, veraltet)
     owner_person: Verantwortlich (Person aus Stammdaten)
+    owner_deputies: Vertretungen (Personen)
     depends_on: Abhängigkeiten (Upstream)
   help:
     name: Eindeutiger Name des Assets
@@ -95,6 +96,7 @@ asset:
       keinen System-Login hat, im "Person"-Feld auswählen oder ggf. das Legacy-Freitext-Feld nutzen.
     owner_person: Verantwortliche Person aus den Stammdaten (auch externe Stakeholder
       ohne System-Login). Reihenfolge der Anzeige in Listen&#58; User &gt; Person &gt; Legacy-Freitext.
+    owner_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
     depends_on: 'Assets, von denen dieser Asset abhängt. BSI 3.6 Maximumprinzip: höchste
       CIA-Werte werden vererbt.'
   protection:

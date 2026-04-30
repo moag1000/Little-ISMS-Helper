@@ -68,6 +68,7 @@ asset:
     status: Status
     owner_legacy: Owner (free text, legacy)
     owner_person: Owner (Person from master data)
+    owner_deputies: Deputies (Persons)
     depends_on: Dependencies (upstream)
   help:
     name: Unique name of the asset
@@ -95,6 +96,7 @@ asset:
       pick them from the "Person" master-data list or use the legacy free-text field.
     owner_person: Owner from master-data Person records (also external stakeholders
       without a system login). Display order in lists&#58; User &gt; Person &gt; legacy.
+    owner_deputies: Additional persons sharing ownership or deputising. Multiple selection possible.
     depends_on: 'Assets this one depends on. BSI 3.6 Maximumprinzip: highest CIA values
       are inherited.'
   protection:

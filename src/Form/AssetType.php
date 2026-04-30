@@ -77,6 +77,19 @@ class AssetType extends AbstractType
                 'attr' => ['class' => 'form-select'],
                 'help' => 'asset.help.owner_person',
             ])
+            ->add('ownerDeputyPersons', EntityType::class, [
+                'label' => 'asset.field.owner_deputies',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'asset.help.owner_deputies',
+            ])
             ->add('owner', TextType::class, [
                 'label' => 'asset.field.owner_legacy',
                 'required' => false,
