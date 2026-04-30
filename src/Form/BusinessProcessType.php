@@ -44,6 +44,28 @@ class BusinessProcessType extends AbstractType
                 'attr' => ['class' => 'form-select'],
                 'help' => 'business_process.help.process_owner_user',
             ])
+            ->add('processOwnerPerson', EntityType::class, [
+                'label' => 'business_process.field.process_owner_person',
+                'class' => \App\Entity\Person::class,
+                'choice_label' => fn(\App\Entity\Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'business_process.placeholder.process_owner_person',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'business_process.help.process_owner_person',
+            ])
+            ->add('processOwnerDeputyPersons', EntityType::class, [
+                'label' => 'business_process.field.process_owner_deputies',
+                'class' => \App\Entity\Person::class,
+                'choice_label' => fn(\App\Entity\Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'business_process.help.process_owner_deputies',
+            ])
             ->add('processOwner', TextType::class, [
                 'label' => 'business_process.field.process_owner_legacy',
                 'attr' => ['class' => 'form-control'],

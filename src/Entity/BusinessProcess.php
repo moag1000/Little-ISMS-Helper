@@ -133,6 +133,7 @@ class BusinessProcess
         $this->upstreamDependencies = new ArrayCollection();
         $this->dependentProcesses = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
+        $this->processOwnerDeputyPersons = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function getId(): ?int
@@ -776,11 +777,86 @@ class BusinessProcess
     }
 
     /**
-     * Effective processOwner: prefer processOwnerUser.fullName, fall back to legacy string.
+     * Person-based primary owner: when the process owner has no system login
+     * (external stakeholder, shared mailbox, contractor), use this slot
+     * instead of `processOwnerUser`. Falls back to the legacy string when
+     * neither is set.
+     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Person::class)]
+    #[ORM\JoinColumn(name: 'process_owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?\App\Entity\Person $processOwnerPerson = null;
+
+    public function getProcessOwnerPerson(): ?\App\Entity\Person
+    {
+        return $this->processOwnerPerson;
+    }
+
+    public function setProcessOwnerPerson(?\App\Entity\Person $processOwnerPerson): static
+    {
+        $this->processOwnerPerson = $processOwnerPerson;
+        return $this;
+    }
+
+    /**
+     * Deputies / Vertretung — n additional Persons sharing ownership of this
+     * process. ManyToMany via dedicated join table; cascade detach on Person
+     * delete keeps the link table clean. UI should sort by Person.fullName
+     * when displaying the roster.
+     *
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Person>
+     */
+    #[ORM\ManyToMany(targetEntity: \App\Entity\Person::class)]
+    #[ORM\JoinTable(name: 'business_process_owner_deputy')]
+    #[ORM\JoinColumn(name: 'business_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private \Doctrine\Common\Collections\Collection $processOwnerDeputyPersons;
+
+    /** @return \Doctrine\Common\Collections\Collection<int, \App\Entity\Person> */
+    public function getProcessOwnerDeputyPersons(): \Doctrine\Common\Collections\Collection
+    {
+        return $this->processOwnerDeputyPersons;
+    }
+
+    public function addProcessOwnerDeputyPerson(\App\Entity\Person $person): static
+    {
+        if (!$this->processOwnerDeputyPersons->contains($person)) {
+            $this->processOwnerDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeProcessOwnerDeputyPerson(\App\Entity\Person $person): static
+    {
+        $this->processOwnerDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    /**
+     * Effective processOwner: prefer processOwnerUser.fullName, fall back to Person, then legacy string.
      */
     public function getEffectiveProcessOwner(): ?string
     {
-        return $this->processOwnerUser?->getFullName() ?? $this->processOwner;
+        return (new \App\Service\OwnerResolver())->resolveEffective(
+            $this->processOwnerUser,
+            $this->processOwnerPerson,
+            $this->processOwner,
+        );
+    }
+
+    /**
+     * Full owner roster: primary (Tri-State chain) followed by every deputy.
+     * Returns a list of display names. Empty when no owner is assigned.
+     *
+     * @return list<string>
+     */
+    public function getAllProcessOwners(): array
+    {
+        return (new \App\Service\OwnerResolver())->resolveAll(
+            $this->processOwnerUser,
+            $this->processOwnerPerson,
+            $this->processOwner,
+            $this->processOwnerDeputyPersons,
+        );
     }
 
 }
