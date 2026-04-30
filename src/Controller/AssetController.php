@@ -65,6 +65,14 @@ class AssetController extends AbstractController
         $status = $request->query->get('status');
         $view = $request->query->get('view', 'inherited'); // Default: inherited
 
+        // Cross-tenant + orphan views are admin-only — silently coerce to
+        // 'own' for non-admins so a hand-crafted ?view=all URL doesn't leak
+        // foreign-tenant data.
+        $isAdmin = $this->isGranted('ROLE_ADMIN');
+        if (in_array($view, ['orphaned', 'all'], true) && !$isAdmin) {
+            $view = 'own';
+        }
+
         // Get assets based on view filter
         if ($tenant) {
             // Determine which assets to load based on view parameter
@@ -73,12 +81,17 @@ class AssetController extends AbstractController
                 'own' => $this->assetRepository->findByTenant($tenant),
                 // Own + from all subsidiaries (for parent companies)
                 'subsidiaries' => $this->assetRepository->findByTenantIncludingSubsidiaries($tenant),
+                // Tenant-less (orphan) assets — admin only
+                'orphaned' => $this->assetRepository->findOrphaned(),
+                // Cross-tenant overview — admin only
+                'all' => $this->assetRepository->findAllAcrossTenants(),
                 // Own + inherited from parents (default behavior)
                 default => $this->assetService->getAssetsForTenant($tenant),
             };
             $inheritanceInfo = $this->assetService->getAssetInheritanceInfo($tenant);
             $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
             $inheritanceInfo['currentView'] = $view;
+            $inheritanceInfo['isAdmin'] = $isAdmin;
         } else {
             $assets = $this->assetRepository->findAll();
             $inheritanceInfo = [
@@ -86,7 +99,8 @@ class AssetController extends AbstractController
                 'canInherit' => false,
                 'governanceModel' => null,
                 'hasSubsidiaries' => false,
-                'currentView' => 'own'
+                'currentView' => 'own',
+                'isAdmin' => $isAdmin,
             ];
         }
 
