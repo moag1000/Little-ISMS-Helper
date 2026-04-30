@@ -58,6 +58,8 @@ training:
     duration: Dauer (Minuten)
     location: Ort
     trainer: Trainer
+    trainer_person: 'Trainer (Person)'
+    trainer_deputy_persons: 'Vertretungen Trainer (Personen)'
     target_audience: Zielgruppe
     participants: Teilnehmende
     status: Status
@@ -76,6 +78,7 @@ training:
     duration: z.B. 60
     location: z.B. Konferenzraum A oder Zoom-Link
     trainer_user: -- Trainer --
+    trainer_person: '-- Person aus Stammdaten --'
   help:
     duration: Dauer in Minuten (15-480)
     participants: STRG gedrückt halten um mehrere Teilnehmer auszuwählen
@@ -86,6 +89,8 @@ training:
     feedback: Feedback von Teilnehmern oder Trainer-Notizen
     trainer_user: Trainer aus der Benutzerverwaltung. Für externe Trainer das Legacy-Feld
       nutzen.
+    trainer_person: 'Person ohne System-Login als Trainer. Reihenfolge: User > Person > Legacy-Text.'
+    trainer_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Training.'
   validation:
     title_required: Bitte geben Sie einen Titel ein
     date_required: Bitte wählen Sie ein Datum

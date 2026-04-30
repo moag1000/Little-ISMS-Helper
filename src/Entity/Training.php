@@ -6,7 +6,9 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Entity\Person;
 use App\Entity\Tenant;
+use App\Service\OwnerResolver;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -185,6 +187,7 @@ public function __construct()
     {
         $this->coveredControls = new ArrayCollection();
         $this->complianceRequirements = new ArrayCollection();
+        $this->trainerDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -550,6 +553,15 @@ public function __construct()
     #[ORM\JoinColumn(name: 'trainer_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?User $trainerUser = null;
 
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Person $trainerPerson = null;
+
+    /** @var Collection<int, Person> */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'training_trainer_deputies')]
+    private Collection $trainerDeputyPersons;
+
     public function getTrainerUser(): ?User
     {
         return $this->trainerUser;
@@ -561,12 +573,49 @@ public function __construct()
         return $this;
     }
 
+    public function getTrainerPerson(): ?Person
+    {
+        return $this->trainerPerson;
+    }
+
+    public function setTrainerPerson(?Person $trainerPerson): static
+    {
+        $this->trainerPerson = $trainerPerson;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getTrainerDeputyPersons(): Collection
+    {
+        return $this->trainerDeputyPersons;
+    }
+
+    public function addTrainerDeputyPerson(Person $person): static
+    {
+        if (!$this->trainerDeputyPersons->contains($person)) {
+            $this->trainerDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeTrainerDeputyPerson(Person $person): static
+    {
+        $this->trainerDeputyPersons->removeElement($person);
+        return $this;
+    }
+
     /**
-     * Effective trainer: prefer trainerUser.fullName, fall back to legacy string.
+     * Effective trainer: prefer trainerUser.fullName, then trainerPerson, fall back to legacy string.
      */
     public function getEffectiveTrainer(): ?string
     {
-        return $this->trainerUser?->getFullName() ?? $this->trainer;
+        return OwnerResolver::resolveEffective($this->trainerUser, $this->trainerPerson, $this->trainer);
+    }
+
+    /** @return list<string> */
+    public function getAllTrainerOwners(): array
+    {
+        return OwnerResolver::resolveAll($this->trainerUser, $this->trainerPerson, $this->trainer, $this->trainerDeputyPersons);
     }
 
 }
