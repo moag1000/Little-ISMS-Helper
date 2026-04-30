@@ -59,8 +59,8 @@ class RiskTreatmentPlanTest extends TestCase
         $plan->setTenant($tenant);
         $this->assertSame($tenant, $plan->getTenant());
 
-        $plan->setResponsiblePerson($user);
-        $this->assertSame($user, $plan->getResponsiblePerson());
+        $plan->setResponsiblePersonUser($user);
+        $this->assertSame($user, $plan->getResponsiblePersonUser());
     }
 
     #[Test]
@@ -290,7 +290,7 @@ class RiskTreatmentPlanTest extends TestCase
         $user = new User();
         $user->setFirstName('Jane');
         $user->setLastName('Doe');
-        $plan->setResponsiblePerson($user);
+        $plan->setResponsiblePersonUser($user);
 
         $this->assertEquals('Jane Doe', $plan->getResponsiblePersonName());
     }
