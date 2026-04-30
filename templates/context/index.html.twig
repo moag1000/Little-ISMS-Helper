@@ -46,8 +46,10 @@
     {# Use service-calculated completeness (more granular) #}
     {% set completenessPercentage = completeness|default(0) %}
 
-    {% set daysSinceReview = context.lastReviewDate ? ((date().diff(context.lastReviewDate).days)) : null %}
-    {% set daysUntilReview = context.nextReviewDate ? ((date().diff(context.nextReviewDate).days * -1)) : null %}
+    {% set lastReviewDiff = context.lastReviewDate ? date().diff(context.lastReviewDate) : null %}
+    {% set daysSinceReview = lastReviewDiff ? (lastReviewDiff.invert ? lastReviewDiff.days : -lastReviewDiff.days) : null %}
+    {% set nextReviewDiff = context.nextReviewDate ? date().diff(context.nextReviewDate) : null %}
+    {% set daysUntilReview = nextReviewDiff ? (nextReviewDiff.invert ? -nextReviewDiff.days : nextReviewDiff.days) : null %}
 
     {# KPI Cards #}
     <div class="kpi-grid">
