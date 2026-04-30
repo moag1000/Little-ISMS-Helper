@@ -6,6 +6,8 @@ namespace App\Repository;
 
 use DateTime;
 use App\Entity\Person;
+use App\Entity\Tenant;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -133,6 +135,34 @@ class PersonRepository extends ServiceEntityRepository
             'expired' => count($this->findWithExpiredAccess()),
             'by_type' => $this->getCountByType(),
         ];
+    }
+
+    /**
+     * Active Users in tenant that are not linked to any Person yet.
+     *
+     * @return User[]
+     */
+    public function findUsersAvailableToLink(?Tenant $tenant): array
+    {
+        if (!$tenant instanceof Tenant) {
+            return [];
+        }
+
+        $em = $this->getEntityManager();
+        $qb = $em->createQueryBuilder();
+
+        $qb->select('u')
+            ->from(User::class, 'u')
+            ->leftJoin(Person::class, 'p', 'WITH', 'p.linkedUser = u')
+            ->where('u.tenant = :tenant')
+            ->andWhere('u.isActive = :active')
+            ->andWhere('p.id IS NULL')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('active', true)
+            ->orderBy('u.lastName', 'ASC')
+            ->addOrderBy('u.firstName', 'ASC');
+
+        return $qb->getQuery()->getResult();
     }
 
     private function getCountByType(): array

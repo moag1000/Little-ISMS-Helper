@@ -24,6 +24,43 @@
     </div>
 </div>
 
+{% if available_users|default([])|length > 0 and not prefilled_from_user %}
+<div class="fa-alert fa-alert--info mb-4" role="region" aria-labelledby="from-user-title">
+    <i class="fa-icon fa-icon--ui-info-circle fa-alert__icon" aria-hidden="true"></i>
+    <div class="fa-alert__body">
+        <div class="fw-bold mb-2" id="from-user-title">{{ 'person.from_user.title'|trans({}, 'people') }}</div>
+        <p class="mb-2 small">{{ 'person.from_user.help'|trans({}, 'people') }}</p>
+        <form method="get" action="{{ path('app_person_new') }}" class="row g-2 align-items-end">
+            <div class="col-sm-8">
+                <label for="from_user" class="form-label small mb-1">{{ 'person.from_user.label'|trans({}, 'people') }}</label>
+                <select id="from_user" name="from_user" class="form-select form-select-sm" required>
+                    <option value="">{{ 'person.from_user.placeholder'|trans({}, 'people') }}</option>
+                    {% for u in available_users %}
+                        <option value="{{ u.id }}">{{ u.fullName }} &lt;{{ u.email }}&gt;</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-4">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--secondary fa-cyber-btn--sm w-100">
+                    <i class="fa-icon fa-icon--ui-arrow-right" aria-hidden="true"></i>
+                    {{ 'person.from_user.submit'|trans({}, 'people') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+{% if prefilled_from_user %}
+<div class="fa-alert fa-alert--success mb-4" role="status">
+    <i class="fa-icon fa-icon--ui-check fa-alert__icon" aria-hidden="true"></i>
+    <div class="fa-alert__body">
+        <div class="fw-bold">{{ 'person.from_user.prefilled_title'|trans({}, 'people') }}</div>
+        <p class="mb-0 small">{{ 'person.from_user.prefilled_help'|trans({}, 'people') }}</p>
+    </div>
+</div>
+{% endif %}
+
 {% embed '_components/_card.html.twig' %}
     {% block card_body %}
         {{ form_start(form) }}
