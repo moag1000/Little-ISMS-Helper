@@ -127,6 +127,8 @@ risk:
     residual_probability: Residual Probability
     residual_impact: Residual Impact
     risk_owner: Risk Owner
+    risk_owner_person: Risk Owner (Person from master data)
+    risk_owner_deputies: Deputies (Persons)
     treatment_description: Treatment Description
     acceptance_approved_by: Acceptance Approved By
     acceptance_approved_at: Acceptance Approved At
@@ -238,6 +240,8 @@ risk:
     treatment_strategy: Risk treatment strategy (Avoid, Mitigate, Transfer, Accept)
     treatment: Risk treatment strategy
     risk_owner: Person responsible for risk monitoring and treatment
+    risk_owner_person: 'Select a person without a system login as risk owner. Priority&#58; User &gt; Person.'
+    risk_owner_deputies: Additional persons sharing risk ownership or deputising. Multiple selection possible.
     treatment_description: Detailed description of planned or implemented treatment
       measures
     acceptance_approved_by: Person who formally accepted the residual risk (required
@@ -420,6 +424,7 @@ risk:
     location: -- Select location --
     supplier: -- Select supplier --
     risk_owner: -- Select risk owner --
+    risk_owner_person: -- Person from master data --
     treatment_description: Describe the planned treatment measures...
     acceptance_approved_by: Name of approving person
     acceptance_justification: Justification for accepting the residual risk...

@@ -234,11 +234,33 @@ class RiskType extends AbstractType
                 'class' => User::class,
                 'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
                 'placeholder' => 'risk.placeholder.risk_owner',
-                'required' => true,
+                'required' => false,
                 'help' => 'risk.help.risk_owner',
                 'attr' => [
                     'class' => 'form-select',
                 ],
+            ])
+            ->add('riskOwnerPerson', EntityType::class, [
+                'label' => 'risk.field.risk_owner_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'risk.placeholder.risk_owner_person',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'risk.help.risk_owner_person',
+            ])
+            ->add('riskOwnerDeputyPersons', EntityType::class, [
+                'label' => 'risk.field.risk_owner_deputies',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'risk.help.risk_owner_deputies',
             ])
             ->add('treatmentStrategy', EnumType::class, [
                 'label' => 'risk.field.treatment_strategy',

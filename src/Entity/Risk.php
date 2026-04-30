@@ -21,6 +21,7 @@ use App\Enum\IncidentSeverity;
 use App\Enum\RiskStatus;
 use App\Enum\TreatmentStrategy;
 use App\Repository\RiskRepository;
+use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -336,6 +337,7 @@ class Risk
     {
         $this->controls = new ArrayCollection();
         $this->incidents = new ArrayCollection();
+        $this->riskOwnerDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -1066,6 +1068,85 @@ class Risk
     public function getEffectiveAcceptanceApprovedBy(): ?string
     {
         return $this->acceptanceApprovedByUser?->getFullName() ?? $this->acceptanceApprovedBy;
+    }
+
+    /**
+     * Person-based primary risk owner: for persons without a system login.
+     * Falls back to riskOwner (User) → Person → no legacy string (Risk had no
+     * string field; getEffectiveRiskOwner falls back to null when both are unset).
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'risk_owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Person $riskOwnerPerson = null;
+
+    public function getRiskOwnerPerson(): ?Person
+    {
+        return $this->riskOwnerPerson;
+    }
+
+    public function setRiskOwnerPerson(?Person $riskOwnerPerson): static
+    {
+        $this->riskOwnerPerson = $riskOwnerPerson;
+        return $this;
+    }
+
+    /**
+     * Deputies / Vertretung — n additional Persons sharing ownership of this risk.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'risk_owner_deputy')]
+    #[ORM\JoinColumn(name: 'risk_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $riskOwnerDeputyPersons;
+
+    /** @return Collection<int, Person> */
+    public function getRiskOwnerDeputyPersons(): Collection
+    {
+        return $this->riskOwnerDeputyPersons;
+    }
+
+    public function addRiskOwnerDeputyPerson(Person $person): static
+    {
+        if (!$this->riskOwnerDeputyPersons->contains($person)) {
+            $this->riskOwnerDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeRiskOwnerDeputyPerson(Person $person): static
+    {
+        $this->riskOwnerDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    /**
+     * Effective risk owner: prefer riskOwner (User), then riskOwnerPerson, then null.
+     * Note: Risk has no legacy string field — the chain stops at Person.
+     */
+    public function getEffectiveRiskOwner(): ?string
+    {
+        return OwnerResolver::resolveEffective(
+            $this->riskOwner,
+            $this->riskOwnerPerson,
+            null,
+        );
+    }
+
+    /**
+     * Full risk owner roster: primary + every deputy.
+     *
+     * @return list<string>
+     */
+    public function getAllRiskOwners(): array
+    {
+        return OwnerResolver::resolveAll(
+            $this->riskOwner,
+            $this->riskOwnerPerson,
+            null,
+            $this->riskOwnerDeputyPersons,
+        );
     }
 
 }
