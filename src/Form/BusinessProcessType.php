@@ -69,7 +69,7 @@ class BusinessProcessType extends AbstractType
             ->add('processOwner', TextType::class, [
                 'label' => 'business_process.field.process_owner_legacy',
                 'attr' => ['class' => 'form-control'],
-                'constraints' => [new NotBlank()],
+                'required' => false,
             ])
             ->add('criticality', ChoiceType::class, [
                 'label' => 'business_process.field.criticality',
