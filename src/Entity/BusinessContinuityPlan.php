@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
 use App\Repository\BusinessContinuityPlanRepository;
+use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
 use App\Entity\Tenant;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -281,6 +282,7 @@ class BusinessContinuityPlan
         $this->criticalSuppliers = new ArrayCollection();
         $this->criticalAssets = new ArrayCollection();
         $this->documents = new ArrayCollection();
+        $this->planOwnerDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -861,11 +863,79 @@ class BusinessContinuityPlan
     }
 
     /**
-     * Effective planOwner: prefer planOwnerUser.fullName, fall back to legacy string.
+     * Person-based plan owner: for contacts without a system login.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'plan_owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Person $planOwnerPerson = null;
+
+    public function getPlanOwnerPerson(): ?Person
+    {
+        return $this->planOwnerPerson;
+    }
+
+    public function setPlanOwnerPerson(?Person $planOwnerPerson): static
+    {
+        $this->planOwnerPerson = $planOwnerPerson;
+        return $this;
+    }
+
+    /**
+     * Deputies / Vertretung — n additional Persons sharing plan ownership.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'bc_plan_owner_deputy')]
+    #[ORM\JoinColumn(name: 'bc_plan_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $planOwnerDeputyPersons;
+
+    /** @return Collection<int, Person> */
+    public function getPlanOwnerDeputyPersons(): Collection
+    {
+        return $this->planOwnerDeputyPersons;
+    }
+
+    public function addPlanOwnerDeputyPerson(Person $person): static
+    {
+        if (!$this->planOwnerDeputyPersons->contains($person)) {
+            $this->planOwnerDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removePlanOwnerDeputyPerson(Person $person): static
+    {
+        $this->planOwnerDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    /**
+     * Effective planOwner: prefer planOwnerUser.fullName, then Person, fall back to legacy string.
      */
     public function getEffectivePlanOwner(): ?string
     {
-        return $this->planOwnerUser?->getFullName() ?? $this->planOwner;
+        return OwnerResolver::resolveEffective(
+            $this->planOwnerUser,
+            $this->planOwnerPerson,
+            $this->planOwner,
+        );
+    }
+
+    /**
+     * Full plan owner roster: primary + every deputy.
+     *
+     * @return list<string>
+     */
+    public function getAllPlanOwners(): array
+    {
+        return OwnerResolver::resolveAll(
+            $this->planOwnerUser,
+            $this->planOwnerPerson,
+            $this->planOwner,
+            $this->planOwnerDeputyPersons,
+        );
     }
 
 }
