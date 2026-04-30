@@ -33,12 +33,18 @@ prototype_protection:
         supplier: 'Lieferant'
         location: 'Standort'
         assessor: 'Assessor / Prüfer'
+        assessor_person: 'Assessor (Person)'
+        assessor_deputy_persons: 'Vertretungen Assessor (Personen)'
         assessment_date: 'Bewertungsdatum'
         next_assessment_due: 'Nächste Bewertung fällig'
         overall_result: 'Gesamtergebnis'
+    placeholder:
+        assessor_person: '-- Person aus Stammdaten --'
     help:
         scope: 'Programm, Baureihe, Fahrzeugvariante oder Event, auf das sich dieses Assessment bezieht.'
         required_labels: 'Mehrfachauswahl — alle für den Scope anwendbaren Prototype-Labels.'
+        assessor_person: 'Person ohne System-Login als Assessor. Reihenfolge: User > Person > leer.'
+        assessor_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Assessment.'
     status:
         draft: 'Entwurf'
         in_review: 'In Prüfung'

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Location;
+use App\Entity\Person;
 use App\Entity\PrototypeProtectionAssessment;
 use App\Entity\Supplier;
 use App\Entity\User;
@@ -96,6 +97,28 @@ class PrototypeProtectionAssessmentType extends AbstractType
                 'choice_label' => fn(User $u): string => (string) ($u->getFullName() ?: $u->getEmail()),
                 'required' => false,
                 'placeholder' => 'prototype_protection.value.na',
+            ])
+            ->add('assessorPerson', EntityType::class, [
+                'label' => 'prototype_protection.field.assessor_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'prototype_protection.placeholder.assessor_person',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+                'help' => 'prototype_protection.help.assessor_person',
+            ])
+            ->add('assessorDeputyPersons', EntityType::class, [
+                'label' => 'prototype_protection.field.assessor_deputy_persons',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'prototype_protection.help.assessor_deputy_persons',
             ])
             ->add('assessmentDate', DateType::class, [
                 'label' => 'prototype_protection.field.assessment_date',
