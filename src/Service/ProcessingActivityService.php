@@ -378,7 +378,7 @@ class ProcessingActivityService
 
                 // Organizational
                 'responsible_department' => $processingActivity->getResponsibleDepartment(),
-                'contact_person' => $processingActivity->getContactPerson()?->getUsername(),
+                'contact_person' => $processingActivity->getContactPersonUser()?->getUsername(),
                 'data_protection_officer' => $processingActivity->getDataProtectionOfficer()?->getUsername(),
 
                 // Processors & Joint Controllers
@@ -526,7 +526,7 @@ class ProcessingActivityService
         $clone->setLegalBasisDetails($processingActivity->getLegalBasisDetails());
         $clone->setLegalBasisSpecialCategories($processingActivity->getLegalBasisSpecialCategories());
         $clone->setResponsibleDepartment($processingActivity->getResponsibleDepartment());
-        $clone->setContactPerson($processingActivity->getContactPerson());
+        $clone->setContactPersonUser($processingActivity->getContactPersonUser());
         $clone->setDataProtectionOfficer($processingActivity->getDataProtectionOfficer());
         $clone->setInvolvesProcessors($processingActivity->getInvolvesProcessors());
         $clone->setProcessors($processingActivity->getProcessors());

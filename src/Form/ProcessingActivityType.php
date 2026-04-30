@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Control;
+use App\Entity\Person;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -332,13 +333,35 @@ class ProcessingActivityType extends AbstractType
                 'help' => 'processing_activity.help.responsible_department',
                 'required' => false,
             ])
-            ->add('contactPerson', EntityType::class, [
+            ->add('contactPersonUser', EntityType::class, [
                 'label' => 'processing_activity.form.contact_person',
                 'help' => 'processing_activity.help.contact_person',
                 'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'attr' => ['class' => 'select2'],
+            ])
+            ->add('contactPerson', EntityType::class, [
+                'label' => 'processing_activity.form.contact_person_person',
+                'help' => 'processing_activity.help.contact_person_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'processing_activity.placeholder.contact_person_person',
+                'attr' => ['class' => 'form-select'],
+            ])
+            ->add('contactDeputyPersons', EntityType::class, [
+                'label' => 'processing_activity.form.contact_deputies',
+                'help' => 'processing_activity.help.contact_deputies',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
             ])
             ->add('dataProtectionOfficer', EntityType::class, [
                 'label' => 'processing_activity.form.data_protection_officer',
@@ -347,6 +370,28 @@ class ProcessingActivityType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'attr' => ['class' => 'select2'],
+            ])
+            ->add('dataProtectionOfficerPerson', EntityType::class, [
+                'label' => 'processing_activity.form.data_protection_officer_person',
+                'help' => 'processing_activity.help.data_protection_officer_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'processing_activity.placeholder.data_protection_officer_person',
+                'attr' => ['class' => 'form-select'],
+            ])
+            ->add('dataProtectionOfficerDeputyPersons', EntityType::class, [
+                'label' => 'processing_activity.form.data_protection_officer_deputies',
+                'help' => 'processing_activity.help.data_protection_officer_deputies',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
             ])
 
             // ============================================================================
