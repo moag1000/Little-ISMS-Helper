@@ -233,3 +233,13 @@ board_one_pager:
         prepared_by: 'Prepared by'
         generated: 'Generated'
         confidential: 'Confidential'
+
+custom_report:
+    field:
+        owner_person: 'Owner (Person)'
+        owner_deputy_persons: 'Deputies (Persons)'
+    placeholder:
+        owner_person: '-- Person from master data --'
+    help:
+        owner_person: 'Person without system login as owner. Order: User > Person > empty.'
+        owner_deputy_persons: 'Additional persons with deputy or shared ownership.'

@@ -233,3 +233,13 @@ board_one_pager:
         prepared_by: 'Erstellt von'
         generated: 'Generiert'
         confidential: 'Vertraulich'
+
+custom_report:
+    field:
+        owner_person: 'Verantwortlich (Person)'
+        owner_deputy_persons: 'Vertretungen (Personen)'
+    placeholder:
+        owner_person: '-- Person aus Stammdaten --'
+    help:
+        owner_person: 'Person ohne System-Login als Verantwortliche. Reihenfolge: User > Person > leer.'
+        owner_deputy_persons: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
