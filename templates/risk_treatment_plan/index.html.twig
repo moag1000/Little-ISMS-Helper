@@ -149,11 +149,7 @@
                     {% include '_components/_badge.html.twig' with { variant: plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')), content: ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')|upper } %}
                 </td>
                 <td>
-                    {% if plan.responsiblePerson %}
-                        {{ plan.responsiblePerson.fullName }}
-                    {% else %}
-                        <span class="text-muted">-</span>
-                    {% endif %}
+                    {{ plan.effectiveResponsiblePerson ?? '<span class="text-muted">-</span>'|raw }}
                 </td>
                 <td class="text-center">
                     <div class="progress progress-h-20">

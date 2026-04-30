@@ -8,6 +8,7 @@ use DateTimeInterface;
 use DateTimeImmutable;
 use DateTime;
 use App\Repository\RiskTreatmentPlanRepository;
+use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -114,13 +115,34 @@ class RiskTreatmentPlan
     private ?string $budget = null;
 
     /**
-     * Person responsible for implementing this plan
+     * Person responsible for implementing this plan (legacy User slot).
+     * DB column kept as `responsible_person_id` for zero-data-loss rename.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'responsible_person_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
     #[MaxDepth(1)]
-    private ?User $responsiblePerson = null;
+    private ?User $responsiblePersonUser = null;
+
+    /**
+     * Tri-State Person slot: responsible person as Person master-data record.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'responsible_person_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
+    private ?Person $responsiblePerson = null;
+
+    /**
+     * Deputy Persons for the responsible person slot.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'rtp_responsible_deputy')]
+    #[ORM\JoinColumn(name: 'risk_treatment_plan_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Groups(['treatment_plan:read'])]
+    private Collection $responsibleDeputyPersons;
 
     /**
      * Controls implementing this treatment plan
@@ -172,6 +194,7 @@ class RiskTreatmentPlan
     {
         $this->controls = new ArrayCollection();
         $this->evidenceDocuments = new ArrayCollection();
+        $this->responsibleDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -290,15 +313,69 @@ class RiskTreatmentPlan
         return $this;
     }
 
-    public function getResponsiblePerson(): ?User
+    public function getResponsiblePersonUser(): ?User
+    {
+        return $this->responsiblePersonUser;
+    }
+
+    public function setResponsiblePersonUser(?User $user): static
+    {
+        $this->responsiblePersonUser = $user;
+        return $this;
+    }
+
+    public function getResponsiblePerson(): ?Person
     {
         return $this->responsiblePerson;
     }
 
-    public function setResponsiblePerson(?User $user): static
+    public function setResponsiblePerson(?Person $person): static
     {
-        $this->responsiblePerson = $user;
+        $this->responsiblePerson = $person;
         return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getResponsibleDeputyPersons(): Collection
+    {
+        return $this->responsibleDeputyPersons;
+    }
+
+    public function addResponsibleDeputyPerson(Person $person): static
+    {
+        if (!$this->responsibleDeputyPersons->contains($person)) {
+            $this->responsibleDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeResponsibleDeputyPerson(Person $person): static
+    {
+        $this->responsibleDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    /**
+     * Effective responsible person: prefer User, then Person, then null.
+     */
+    public function getEffectiveResponsiblePerson(): ?string
+    {
+        return OwnerResolver::resolveEffective($this->responsiblePersonUser, $this->responsiblePerson, null);
+    }
+
+    /**
+     * All responsible persons (primary + deputies).
+     *
+     * @return list<string>
+     */
+    public function getAllResponsiblePersons(): array
+    {
+        return OwnerResolver::resolveAll(
+            $this->responsiblePersonUser,
+            $this->responsiblePerson,
+            null,
+            $this->responsibleDeputyPersons
+        );
     }
 
     /**
@@ -450,13 +527,13 @@ class RiskTreatmentPlan
     }
 
     /**
-     * Get responsible person's name
-     * Data Reuse: Quick display without loading full User entity
+     * Get responsible person's name (effective: User → Person → null).
+     * Data Reuse: Quick display for serialization / PDF templates.
      */
     #[Groups(['treatment_plan:read'])]
     public function getResponsiblePersonName(): ?string
     {
-        return $this->responsiblePerson?->getFullName();
+        return $this->getEffectiveResponsiblePerson();
     }
 
     /**
