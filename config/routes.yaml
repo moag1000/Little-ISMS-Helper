@@ -17,6 +17,11 @@ app_quick_fix_apply:
     controller: App\Controller\QuickFixController::apply
     methods: [POST]
 
+app_quick_fix_reconcile:
+    path: /quick-fix/reconcile
+    controller: App\Controller\QuickFixController::reconcile
+    methods: [POST]
+
 # Root redirect - smart locale detection (without locale)
 app_home:
     path: /

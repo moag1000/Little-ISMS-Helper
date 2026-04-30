@@ -9,8 +9,11 @@
 {% macro framework_card(child, framework, classification, bucket) %}
     {% set bucketTone = bucket == 'mandatory' ? 'danger' : (bucket == 'recommended' ? 'warning' : 'neutral') %}
     {# Kein for="…" — Input ist im Label genested; zusätzlich for=… löst Double-Toggle-Bug aus (Click zählt doppelt → Netto-Null).
-       .is-on initial-state server-seitig setzen (Fallback falls :has() nicht greift). #}
-    <label class="fa-toggle-card fa-toggle-card--bucket fa-toggle-card--bucket-{{ bucket }}{% if child.vars.checked %} is-on{% endif %}{% if child.vars.disabled %} is-disabled{% endif %}">
+       Initial-state .is-on nur für disabled-Cards: Mandatory ist server-side
+       fixed checked → Browser sendet kein Update. Toggle-bare Cards lassen
+       das CSS via :has(:checked) das Häkchen rendern; sonst bleibt die Klasse
+       beim Uncheck stehen und der Haken wirkt visuell „klebt". #}
+    <label class="fa-toggle-card fa-toggle-card--bucket fa-toggle-card--bucket-{{ bucket }}{% if child.vars.checked and child.vars.disabled %} is-on{% endif %}{% if child.vars.disabled %} is-disabled{% endif %}">
         <input type="checkbox"
                id="{{ child.vars.id }}"
                name="{{ child.vars.full_name }}"

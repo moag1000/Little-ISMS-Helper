@@ -5,6 +5,13 @@ quick_fix:
         body: 'Diese Instanz wurde aktualisiert, das Datenbank-Schema ist aber noch auf dem alten Stand. Mit einem Klick anwenden:'
         count_label: 'ausstehende Migration(en)'
         button: 'Migrationen jetzt anwenden'
+    drift:
+        title: 'Schema-Drift erkannt'
+        body: 'Alle Migrationen sind angewendet, aber das Datenbank-Schema weicht von der Entity-Definition ab. Mit einem Klick reconcilen:'
+        count_label: 'ausstehende Schema-Statement(s)'
+        show_sql: 'SQL anzeigen'
+        button: 'Schema jetzt reconcilen'
+        destructive_warning: 'Achtung: %count% destruktive(s) Statement(s) erkannt (DROP). Manueller Review erforderlich. Bitte CLI verwenden:'
     ok:
         title: 'Alles aktuell'
         body: 'Keine ausstehenden Schema-Migrationen.'

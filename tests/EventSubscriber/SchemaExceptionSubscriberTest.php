@@ -152,6 +152,36 @@ class SchemaExceptionSubscriberTest extends TestCase
         $this->assertNull($event->getResponse());
     }
 
+    #[Test]
+    public function redirectsOnSchemaDriftWithoutPendingMigrations(): void
+    {
+        // Drift-only case: all migrations applied but entity metadata still
+        // diverges from the live DB (e.g. column added via faulty migration).
+        // Subscriber must redirect so the operator sees Quick-Fix instead of 500.
+        $maintenance = $this->createMock(SchemaMaintenanceService::class);
+        $maintenance->method('getMaintenanceStatus')->willReturn([
+            'migration_status' => ['pending' => 0, 'names' => []],
+            'schema_drift' => [
+                'count' => 1,
+                'statements' => ['ALTER TABLE users ADD sso_external_id VARCHAR(255) DEFAULT NULL'],
+                'destructive' => [],
+            ],
+        ]);
+        $subscriber = new SchemaExceptionSubscriber($this->guard, $this->urlGenerator, $maintenance);
+
+        $this->guard->method('fallbackUiEnabled')->willReturn(true);
+
+        $event = $this->makeEvent('/dashboard', new TableNotFoundException(
+            $this->driverException("Unknown column 't0.sso_external_id' in 'SELECT'"),
+            null,
+        ));
+
+        $subscriber->onKernelException($event);
+
+        $this->assertInstanceOf(RedirectResponse::class, $event->getResponse());
+        $this->assertSame('/quick-fix', $event->getResponse()->getTargetUrl());
+    }
+
     private function makeEvent(string $path, \Throwable $throwable): ExceptionEvent
     {
         $request = Request::create($path);

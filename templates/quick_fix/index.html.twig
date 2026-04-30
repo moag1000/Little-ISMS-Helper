@@ -99,6 +99,34 @@
                     {{ 'quick_fix.pending.button'|trans({}, 'quick_fix') }}
                 </button>
             </form>
+        {% elseif drift_count > 0 %}
+            <div class="icon">🛠️</div>
+            <h1>{{ 'quick_fix.drift.title'|trans({}, 'quick_fix') }}</h1>
+            <p>{{ 'quick_fix.drift.body'|trans({}, 'quick_fix') }}</p>
+            <div class="count">{{ drift_count }}</div>
+            <div class="count-label">{{ 'quick_fix.drift.count_label'|trans({}, 'quick_fix') }}</div>
+
+            <details style="margin-top: 16px;">
+                <summary style="cursor: pointer; color: var(--muted); font-size: 13px;">
+                    {{ 'quick_fix.drift.show_sql'|trans({}, 'quick_fix') }}
+                </summary>
+                <pre style="background: var(--bg); padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 11px; color: var(--muted); margin-top: 8px;">{% for s in drift_statements %}{{ s }}
+{% endfor %}</pre>
+            </details>
+
+            {% if drift_destructive|length > 0 %}
+                <div class="flash error" style="margin-top: 16px;">
+                    {{ 'quick_fix.drift.destructive_warning'|trans({'count': drift_destructive|length}, 'quick_fix') }}
+                </div>
+                <p style="font-family: monospace; font-size: 12px;">php bin/console app:schema:reconcile</p>
+            {% else %}
+                <form method="POST" action="{{ path('app_quick_fix_reconcile') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_reconcile') }}">
+                    <button type="submit" onclick="this.disabled=true;this.form.submit();">
+                        {{ 'quick_fix.drift.button'|trans({}, 'quick_fix') }}
+                    </button>
+                </form>
+            {% endif %}
         {% else %}
             <div class="icon">✅</div>
             <h1>{{ 'quick_fix.ok.title'|trans({}, 'quick_fix') }}</h1>
