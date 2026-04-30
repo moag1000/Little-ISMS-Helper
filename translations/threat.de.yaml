@@ -17,6 +17,13 @@ threat:
     cvss_score: CVSS-Score
     references: Referenzen
     assigned_to: 'Zugewiesen an'
+    assigned_person: 'Verantwortlich (Person)'
+    assigned_deputy_persons: 'Vertretungen (Personen)'
+    placeholder:
+        assigned_person: '-- Person aus Stammdaten --'
+    help:
+        assigned_person: 'Person ohne System-Login als Verantwortliche. Reihenfolge: User > Person > leer.'
+        assigned_deputy_persons: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
     type:
         malware: Malware
         phishing: Phishing
