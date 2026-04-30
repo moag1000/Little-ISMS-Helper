@@ -46,12 +46,7 @@
     {# Use service-calculated completeness (more granular) #}
     {% set completenessPercentage = completeness|default(0) %}
 
-    {% set lastReviewDiff = context.lastReviewDate ? date().diff(context.lastReviewDate) : null %}
-    {% set daysSinceReview = lastReviewDiff ? (lastReviewDiff.invert ? lastReviewDiff.days : -lastReviewDiff.days) : null %}
-    {% set nextReviewDiff = context.nextReviewDate ? date().diff(context.nextReviewDate) : null %}
-    {% set daysUntilReview = nextReviewDiff ? (nextReviewDiff.invert ? -nextReviewDiff.days : nextReviewDiff.days) : null %}
-
-    {# KPI Cards #}
+    {# KPI Cards (daysSinceReview / daysUntilReview / isReviewDue from controller) #}
     <div class="kpi-grid">
         {{ _fa_feature_card.render({
             icon: 'check-circle',

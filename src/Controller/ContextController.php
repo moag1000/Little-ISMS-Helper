@@ -63,6 +63,7 @@ class ContextController extends AbstractController
             'completeness' => $this->ismsContextService->calculateCompleteness($effectiveContext),
             'isReviewDue' => $this->ismsContextService->isReviewDue($effectiveContext),
             'daysUntilReview' => $this->ismsContextService->getDaysUntilReview($effectiveContext),
+            'daysSinceReview' => $this->ismsContextService->getDaysSinceReview($effectiveContext),
             'statistics' => $statistics,
             'objectives' => $objectives, // Active objectives for KPI and table display
             'auditLogs' => $auditLogs,
