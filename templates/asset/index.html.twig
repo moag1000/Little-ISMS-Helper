@@ -112,6 +112,9 @@
 
 {# Type Distribution Chart #}
 {% if typeStats|length > 0 %}
+{% if typeStats|length > 0 %}
+    {% set typeStatsTotal = typeStats|reduce((carry, stat) => carry + stat.count, 0) %}
+    {% if typeStatsTotal > 0 %}
 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
     {% block card_header %}
         <div class="card-header">
@@ -121,22 +124,25 @@
     {% block card_body %}
         <div class="row">
             {% for stat in typeStats %}
+            {% set sharePercent = (stat.count / typeStatsTotal * 100)|round %}
             <div class="col-md-3 mb-3">
                 <div class="stat-item">
                     <strong>{{ stat.assetType }}</strong>
                     <div class="progress mt-2 progress-h-8">
                         <div class="progress-bar"
-                             style="width: {{ (stat.count / assets|length * 100)|round }}%"
+                             style="width: {{ sharePercent }}%"
                              title="{{ stat.count }} Assets">
                         </div>
                     </div>
-                    <small class="text-muted">{{ stat.count }} Assets ({{ (stat.count / assets|length * 100)|round }}%)</small>
+                    <small class="text-muted">{{ stat.count }} Assets ({{ sharePercent }}%)</small>
                 </div>
             </div>
             {% endfor %}
         </div>
     {% endblock %}
 {% endembed %}
+    {% endif %}
+{% endif %}
 {% endif %}
 
 {# Search-first Filter: search input prominent, filter dropdowns in collapsible details.
