@@ -96,14 +96,17 @@ class DataRepairController extends AbstractController
         // Get all tenants
         $tenants = $this->tenantRepository->findAll();
 
-        // Get all risks, incidents and assets for dropdown assignment
-        $allRisks = $this->riskRepository->findAll();
-        $allIncidents = $this->incidentRepository->findAll();
-        $allAssets = $this->assetRepository->findAll();
-
-        // Find controls without risks AND without framework assignments
-        $allControls = $this->controlRepository->findAll();
-        $allComplianceRequirements = $this->complianceRequirementRepository->findAll();
+        // Get all risks, incidents and assets for dropdown assignment.
+        // TenantFilter wird bewusst umgangen — Admin-Repair-Page muss
+        // tenant-lose Orphans + Cross-Tenant-Entities in den Dropdowns
+        // anbieten, sonst kann der Admin Orphans nicht reassignen.
+        [$allRisks, $allIncidents, $allAssets, $allControls, $allComplianceRequirements] = $this->withoutTenantFilter(fn() => [
+            $this->riskRepository->findAll(),
+            $this->incidentRepository->findAll(),
+            $this->assetRepository->findAll(),
+            $this->controlRepository->findAll(),
+            $this->complianceRequirementRepository->findAll(),
+        ]);
 
         // Build a set of control IDs that are mapped to compliance requirements
         $controlsWithFrameworks = [];
