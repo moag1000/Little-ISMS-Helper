@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Person;
 use App\Repository\FourEyesApprovalRequestRepository;
+use App\Service\OwnerResolver;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -50,6 +54,15 @@ class FourEyesApprovalRequest
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $requestedApprover = null;
 
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Person $requestedApproverPerson = null;
+
+    /** @var Collection<int, Person> */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'four_eyes_approver_deputies')]
+    private Collection $requestedApproverDeputyPersons;
+
     #[ORM\Column(length: 20)]
     private string $status = self::STATUS_PENDING;
 
@@ -73,6 +86,7 @@ class FourEyesApprovalRequest
     {
         $this->createdAt = new DateTimeImmutable();
         $this->expiresAt = (new DateTimeImmutable())->modify('+7 days');
+        $this->requestedApproverDeputyPersons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -133,6 +147,48 @@ class FourEyesApprovalRequest
     {
         $this->requestedApprover = $user;
         return $this;
+    }
+
+    public function getRequestedApproverPerson(): ?Person
+    {
+        return $this->requestedApproverPerson;
+    }
+
+    public function setRequestedApproverPerson(?Person $requestedApproverPerson): static
+    {
+        $this->requestedApproverPerson = $requestedApproverPerson;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getRequestedApproverDeputyPersons(): Collection
+    {
+        return $this->requestedApproverDeputyPersons;
+    }
+
+    public function addRequestedApproverDeputyPerson(Person $person): static
+    {
+        if (!$this->requestedApproverDeputyPersons->contains($person)) {
+            $this->requestedApproverDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeRequestedApproverDeputyPerson(Person $person): static
+    {
+        $this->requestedApproverDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    public function getEffectiveRequestedApprover(): ?string
+    {
+        return OwnerResolver::resolveEffective($this->requestedApprover, $this->requestedApproverPerson, null);
+    }
+
+    /** @return list<string> */
+    public function getAllRequestedApproverOwners(): array
+    {
+        return OwnerResolver::resolveAll($this->requestedApprover, $this->requestedApproverPerson, null, $this->requestedApproverDeputyPersons);
     }
 
     public function getStatus(): string
