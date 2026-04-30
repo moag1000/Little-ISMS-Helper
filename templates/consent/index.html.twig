@@ -107,6 +107,7 @@
     form_id: 'consent-filter-form'
 } %}
     {% block filters %}
+        {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
         <div class="col-md-4">
             {{ _fa_filter_select.render({
                 name: 'status',
