@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\ManagementReview;
+use App\Entity\Person;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -47,6 +48,28 @@ class ManagementReviewType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-select'],
                 'help' => 'management_review.help.reviewed_by',
+            ])
+            ->add('reviewedByPerson', EntityType::class, [
+                'label' => 'management_review.field.reviewed_by_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'management_review.placeholder.reviewed_by_person',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+                'help' => 'management_review.help.reviewed_by_person',
+            ])
+            ->add('reviewedByDeputyPersons', EntityType::class, [
+                'label' => 'management_review.field.reviewed_by_deputy_persons',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'management_review.help.reviewed_by_deputy_persons',
             ])
             ->add('participants', EntityType::class, [
                 'label' => 'management_review.field.participants',

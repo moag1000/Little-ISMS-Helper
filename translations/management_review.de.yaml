@@ -51,6 +51,8 @@ management_review:
         title: Titel
         review_date: Bewertungsdatum
         reviewed_by: 'Durchgeführt von'
+        reviewed_by_person: 'Durchgeführt von (Person)'
+        reviewed_by_deputy_persons: 'Vertretungen (Personen)'
         participants: Teilnehmende
         status: Status
         changes_relevant_to_isms: 'Änderungen mit Relevanz für das ISMS'
@@ -127,8 +129,11 @@ management_review:
     edit: Bearbeiten
     placeholder:
         title: 'z.B. Management Review Q1 2025'
+        reviewed_by_person: '-- Person aus Stammdaten --'
     help:
         reviewed_by: 'Üblicherweise ein Mitglied des Top-Managements'
+        reviewed_by_person: 'Person ohne System-Login als Reviewer. Reihenfolge: User > Person > leer.'
+        reviewed_by_deputy_persons: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
         performance_evaluation: 'Bewertung der ISMS-Performance und KPIs'
         changes_relevant_to_isms: 'Änderungen, die für das ISMS relevant sind (z.B. gesetzliche, organisatorische, technologische)'
         feedback_from_interested_parties: 'Rückmeldungen interessierter Parteien (Kunden, Partner, Behörden, Mitarbeitende)'

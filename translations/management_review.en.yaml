@@ -27,6 +27,8 @@ management_review:
         title: Title
         review_date: 'Review Date'
         reviewed_by: 'Reviewed by'
+        reviewed_by_person: 'Reviewed by (Person)'
+        reviewed_by_deputy_persons: 'Deputies (Persons)'
         participants: Participants
         status: Status
         changes_relevant_to_isms: 'Changes relevant to the ISMS'
@@ -126,8 +128,11 @@ management_review:
     edit: Edit
     placeholder:
         title: 'e.g. Management Review Q1 2025'
+        reviewed_by_person: '-- Person from master data --'
     help:
         reviewed_by: 'Usually a member of top management'
+        reviewed_by_person: 'Person without system login as reviewer. Order: User > Person > empty.'
+        reviewed_by_deputy_persons: 'Additional persons with deputy or shared responsibility.'
         performance_evaluation: 'Assessment of ISMS performance and KPIs'
         changes_relevant_to_isms: 'Changes relevant to the ISMS (e.g. legal, organizational, technological)'
         feedback_from_interested_parties: 'Feedback from interested parties (customers, partners, authorities, employees)'

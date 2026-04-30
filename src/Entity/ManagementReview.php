@@ -6,8 +6,10 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Repository\ManagementReviewRepository;
+use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -84,6 +86,15 @@ class ManagementReview
     #[ORM\JoinColumn(name: 'reviewed_by_id', nullable: true)]
     private ?User $reviewedBy = null;
 
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Person $reviewedByPerson = null;
+
+    /** @var Collection<int, Person> */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'management_review_reviewed_by_deputies')]
+    private Collection $reviewedByDeputyPersons;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $nonconformitiesReview = null;
 
@@ -112,6 +123,7 @@ public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
         $this->participants = new ArrayCollection();
+        $this->reviewedByDeputyPersons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -351,6 +363,48 @@ public function __construct()
     {
         $this->reviewedBy = $user;
         return $this;
+    }
+
+    public function getReviewedByPerson(): ?Person
+    {
+        return $this->reviewedByPerson;
+    }
+
+    public function setReviewedByPerson(?Person $reviewedByPerson): static
+    {
+        $this->reviewedByPerson = $reviewedByPerson;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getReviewedByDeputyPersons(): Collection
+    {
+        return $this->reviewedByDeputyPersons;
+    }
+
+    public function addReviewedByDeputyPerson(Person $person): static
+    {
+        if (!$this->reviewedByDeputyPersons->contains($person)) {
+            $this->reviewedByDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeReviewedByDeputyPerson(Person $person): static
+    {
+        $this->reviewedByDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    public function getEffectiveReviewedBy(): ?string
+    {
+        return OwnerResolver::resolveEffective($this->reviewedBy, $this->reviewedByPerson, null);
+    }
+
+    /** @return list<string> */
+    public function getAllReviewedByOwners(): array
+    {
+        return OwnerResolver::resolveAll($this->reviewedBy, $this->reviewedByPerson, null, $this->reviewedByDeputyPersons);
     }
 
     public function getNonconformitiesReview(): ?string
