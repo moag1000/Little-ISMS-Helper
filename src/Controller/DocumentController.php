@@ -77,8 +77,7 @@ class DocumentController extends AbstractController
             ];
         }
 
-        // Filter to active only
-        $documents = array_filter($allDocuments, fn(Document $document): bool => $document->getStatus() === 'active');
+        $documents = $allDocuments;
 
         // Sort by upload date descending
         usort($documents, fn($a, $b): int => $b->getUploadedAt() <=> $a->getUploadedAt());

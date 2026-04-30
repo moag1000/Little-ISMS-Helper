@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
 {% trans_default_domain 'suppliers' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
@@ -139,13 +140,15 @@
                 </select>
             </div>
             <div class="col-md-4">
-                <label for="filter-status" class="form-label">{{ 'supplier.table.status'|trans({}, 'suppliers') }}</label>
-                <select class="form-select" id="filter-status" name="status">
-                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="active" {{ app.request.query.get('status') == 'active' ? 'selected' : '' }}>{{ 'supplier.status.active'|trans({}, 'suppliers') }}</option>
-                    <option value="inactive" {{ app.request.query.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'supplier.status.inactive'|trans({}, 'suppliers') }}</option>
-                    <option value="terminated" {{ app.request.query.get('status') == 'terminated' ? 'selected' : '' }}>{{ 'supplier.status.terminated'|trans({}, 'suppliers') }}</option>
-                </select>
+                {{ _fa_filter_select.render({
+                    name: 'status',
+                    label: 'supplier.table.status'|trans({}, 'suppliers'),
+                    values: ['active', 'inactive', 'evaluation', 'terminated'],
+                    prefix: 'supplier.status.',
+                    domain: 'suppliers',
+                    selected: app.request.query.get('status'),
+                    all_label: 'common.all'|trans({}, 'messages')
+                }) }}
             </div>
             <div class="col-md-4">
                 <label for="filter-iso27001" class="form-label">{{ 'supplier.table.iso27001'|trans({}, 'suppliers') }}</label>

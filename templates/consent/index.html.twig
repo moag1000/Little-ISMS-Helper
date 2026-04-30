@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'consent' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
 
 {% block title %}{{ 'consent.header.title'|trans({}, 'consent') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -107,13 +108,15 @@
 } %}
     {% block filters %}
         <div class="col-md-4">
-            <label for="filter-status" class="form-label">{{ 'consent.filter.all_status'|trans({}, 'consent') }}</label>
-            <select class="form-select" id="filter-status" name="status">
-                <option value="">{{ 'consent.filter.all_status'|trans({}, 'consent') }}</option>
-                <option value="pending_verification" {{ app.request.query.get('status') == 'pending_verification' ? 'selected' : '' }}>{{ 'consent.status.pending_verification'|trans({}, 'consent') }}</option>
-                <option value="active" {{ app.request.query.get('status') == 'active' ? 'selected' : '' }}>{{ 'consent.status.active'|trans({}, 'consent') }}</option>
-                <option value="revoked" {{ app.request.query.get('status') == 'revoked' ? 'selected' : '' }}>{{ 'consent.status.revoked'|trans({}, 'consent') }}</option>
-            </select>
+            {{ _fa_filter_select.render({
+                name: 'status',
+                label: 'consent.filter.all_status'|trans({}, 'consent'),
+                values: ['pending_verification', 'active', 'revoked', 'expired', 'rejected'],
+                prefix: 'consent.status.',
+                domain: 'consent',
+                selected: app.request.query.get('status'),
+                all_label: 'consent.filter.all_status'|trans({}, 'consent')
+            }) }}
         </div>
         <div class="col-md-4">
             <label for="filter-verified" class="form-label">{{ 'consent.filter.all_verified'|trans({}, 'consent') }}</label>
