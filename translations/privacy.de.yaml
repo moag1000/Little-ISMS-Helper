@@ -391,7 +391,11 @@ processing_activity:
         implemented_controls: 'Implementierte Kontrollen'
         responsible_department: 'Verantwortliche Abteilung'
         contact_person: Ansprechperson
+        contact_person_person: 'Ansprechperson (Personenstammdaten)'
+        contact_deputies: 'Ansprechperson-Vertretungen'
         data_protection_officer: 'Datenschutzbeauftragter (DSB)'
+        data_protection_officer_person: 'DSB (Personenstammdaten)'
+        data_protection_officer_deputies: 'DSB-Vertretungen'
         involves_processors: 'Auftragsverarbeiter eingebunden (Art. 28 DSGVO)'
         is_joint_controller: 'Gemeinsame Verantwortlichkeit (Art. 26 DSGVO)'
         is_high_risk: 'Hohes Risiko für Rechte und Freiheiten'
@@ -404,6 +408,9 @@ processing_activity:
         start_date: 'Beginn der Verarbeitung'
         end_date: 'Ende der Verarbeitung'
         next_review_date: 'Nächstes Überprüfungsdatum'
+    placeholder:
+        contact_person_person: 'Person aus Stammdaten auswählen...'
+        data_protection_officer_person: 'Person aus Stammdaten auswählen...'
     field:
         name: 'Bezeichnung der Verarbeitungstätigkeit'
         status: Status
@@ -468,7 +475,11 @@ processing_activity:
         legal_basis_special_categories: 'Rechtsgrundlage für Verarbeitung besonderer Kategorien (Art. 9(2) DSGVO)'
         responsible_department: 'Abteilung/Einheit, die für diese Verarbeitung verantwortlich ist'
         contact_person: 'Ansprechperson für diese Verarbeitungstätigkeit'
+        contact_person_person: 'Ansprechperson aus Personenstammdaten (alternativ zum Benutzerkonto)'
+        contact_deputies: 'Stellvertretende Personen für den Ansprechperson-Slot'
         data_protection_officer: 'Datenschutzbeauftragter (falls zutreffend)'
+        data_protection_officer_person: 'Datenschutzbeauftragter aus Personenstammdaten (alternativ zum Benutzerkonto)'
+        data_protection_officer_deputies: 'Stellvertretende Personen für den DSB-Slot'
         involves_processors: 'Sind Auftragsverarbeiter eingebunden (Art. 28)?'
         is_joint_controller: 'Liegt eine gemeinsame Verantwortlichkeit vor (Art. 26)?'
         is_high_risk: 'Gilt dies als Hochrisiko-Verarbeitung?'

@@ -151,7 +151,7 @@
                         <dd class="col-sm-9">{{ processing_activity.responsibleDepartment ?? '—' }}</dd>
 
                         <dt class="col-sm-3">{{ 'processing_activity.field.contact_person'|trans({}, 'privacy') }}:</dt>
-                        <dd class="col-sm-9">{{ processing_activity.contactPerson ? processing_activity.contactPerson.userIdentifier : '—' }}</dd>
+                        <dd class="col-sm-9">{{ processing_activity.effectiveContactPerson ?? (processing_activity.contactPersonUser ? processing_activity.contactPersonUser.userIdentifier : '—') }}</dd>
 
                         <dt class="col-sm-3">{{ 'processing_activity.field.data_protection_officer'|trans({}, 'privacy') }}:</dt>
                         <dd class="col-sm-9">{{ processing_activity.dataProtectionOfficer ? processing_activity.dataProtectionOfficer.userIdentifier : '—' }}</dd>
