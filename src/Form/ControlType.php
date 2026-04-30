@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Control;
+use App\Entity\Person;
 use App\Entity\User;
 use App\Entity\Asset;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -134,6 +135,28 @@ class ControlType extends AbstractType
                 'placeholder' => 'control.placeholder.responsible_person_user',
                 'attr' => ['class' => 'form-select'],
                 'help' => 'control.help.responsible_person_user',
+            ])
+            ->add('responsiblePersonContact', EntityType::class, [
+                'label' => 'control.field.responsible_person_contact',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'control.placeholder.responsible_person_contact',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'control.help.responsible_person_contact',
+            ])
+            ->add('responsibleDeputyPersons', EntityType::class, [
+                'label' => 'control.field.responsible_deputies',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'control.help.responsible_deputies',
             ])
             ->add('responsiblePerson', TextType::class, [
                 'label' => 'control.field.responsible_person_legacy',

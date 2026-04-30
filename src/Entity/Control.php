@@ -18,6 +18,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\ControlRepository;
+use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -237,6 +238,7 @@ class Control
         $this->protectedAssets = new ArrayCollection();
         $this->trainings = new ArrayCollection();
         $this->evidenceDocuments = new ArrayCollection();
+        $this->responsibleDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -735,11 +737,82 @@ class Control
     }
 
     /**
-     * Effective responsiblePerson: prefer responsiblePersonUser.fullName, fall back to legacy string.
+     * Person-based responsible person: for contacts without a system login.
+     * Named `responsiblePersonContact` to avoid collision with the existing
+     * legacy string field `responsiblePerson`.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'responsible_person_contact_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Person $responsiblePersonContact = null;
+
+    public function getResponsiblePersonContact(): ?Person
+    {
+        return $this->responsiblePersonContact;
+    }
+
+    public function setResponsiblePersonContact(?Person $responsiblePersonContact): static
+    {
+        $this->responsiblePersonContact = $responsiblePersonContact;
+        return $this;
+    }
+
+    /**
+     * Deputies / Vertretung — n additional Persons sharing responsibility.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'control_responsible_deputy')]
+    #[ORM\JoinColumn(name: 'control_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $responsibleDeputyPersons;
+
+    /** @return Collection<int, Person> */
+    public function getResponsibleDeputyPersons(): Collection
+    {
+        return $this->responsibleDeputyPersons;
+    }
+
+    public function addResponsibleDeputyPerson(Person $person): static
+    {
+        if (!$this->responsibleDeputyPersons->contains($person)) {
+            $this->responsibleDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeResponsibleDeputyPerson(Person $person): static
+    {
+        $this->responsibleDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    /**
+     * Effective responsiblePerson: prefer responsiblePersonUser.fullName,
+     * then responsiblePersonContact (Person), fall back to legacy string.
      */
     public function getEffectiveResponsiblePerson(): ?string
     {
-        return $this->responsiblePersonUser?->getFullName() ?? $this->responsiblePerson;
+        return OwnerResolver::resolveEffective(
+            $this->responsiblePersonUser,
+            $this->responsiblePersonContact,
+            $this->responsiblePerson,
+        );
+    }
+
+    /**
+     * Full responsible-person roster: primary + every deputy.
+     *
+     * @return list<string>
+     */
+    public function getAllResponsiblePersons(): array
+    {
+        return OwnerResolver::resolveAll(
+            $this->responsiblePersonUser,
+            $this->responsiblePersonContact,
+            $this->responsiblePerson,
+            $this->responsibleDeputyPersons,
+        );
     }
 
     public function isEssentialForSmallBusiness(): bool

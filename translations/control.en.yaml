@@ -20,6 +20,8 @@ control:
     implementation_percentage: Implementation (%)
     implementation_notes: Implementation Notes
     responsible_person: Responsible Person
+    responsible_person_contact: Responsible Person (Person from master data)
+    responsible_deputies: Deputies (Persons)
     target_date: Target Date
     last_review_date: Last Review Date
     next_review_date: Next Review Date
@@ -37,12 +39,15 @@ control:
     next_review_date: When should this control be reviewed next?
     protected_assets: Which assets are protected by this control?
     responsible_person_user: Responsible person from user management.
+    responsible_person_contact: 'Select a person without a system login as responsible person. Priority&#58; User &gt; Person &gt; legacy.'
+    responsible_deputies: Additional persons sharing responsibility or deputising. Multiple selection possible.
   placeholder:
     control_id: e.g. A.5.1
     name: e.g. Policies for information security
     justification: Justify the applicability or non-applicability...
     responsible_person: Name of the responsible person
     responsible_person_user: -- Select responsible --
+    responsible_person_contact: -- Person from master data --
   status:
     implemented: Implemented
     in_progress: In Progress
