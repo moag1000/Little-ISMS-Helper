@@ -8,6 +8,7 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 ### Added
 - **Compliance-Wizard ISO 22301 (BCM)** — 7-Klausel-Readiness-Check (Context, Leadership, Planning, Support, Operation, Evaluation, Improvement). Wiederverwendet vorhandene Check-Types `bcm_coverage`, `audit_status`, `document_review`, `training_coverage`, `risk_coverage`, `treatment_plan`, `manual`. Erscheint im Wizard-Index sobald das `bcm`-Modul aktiv ist.
 - **Compliance-Wizard ISO 27701 (PIMS)** — 8-Bereich-Readiness-Check (PIMS-Kontext, Privacy-Policy, Betroffenenrechte, Privacy-Risikomanagement, Verarbeitungsverzeichnis, Datenschutzvorfälle, Privacy by Design, Auftragsverarbeiter). Neue Check-Types `consent_coverage`, `dsr_coverage`, `dpia_coverage` lesen `Consent`, `DataSubjectRequest` und `ProcessingActivity`-Entities mit gerundeten Prozent-Scores + Partial-Coverage-Gaps + Translator-wrapped Gap-Texte.
+- **Tri-State Person Foundation** — neuer Service `OwnerResolver` (statisch, pure-function) zentralisiert die `User → Person → Legacy-String`-Aufloesung quer ueber Entities mit Person-Slots. BusinessProcess ist der Reference-Rollout: `processOwnerPerson` (ManyToOne) + `processOwnerDeputyPersons` (ManyToMany, Vertretung) + `getAllProcessOwners()` Liste fuer mehrfache Verantwortliche. Audit-Doc `docs/audit/person-slots.md` mappt alle 27 Owner-Slots (12 Plan B + 14 Plan C) fuer den Folge-Rollout.
 
 ## [3.3.2] — 2026-04-30
 
