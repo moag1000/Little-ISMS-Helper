@@ -1,0 +1,65 @@
+name: Dev Release (manual)
+
+# Erzeugt einen Pre-Release-Tag (v{NEXT}-dev.{N}) auf dem aktuellen main-HEAD
+# und pusht ihn — der bestehende ci.yml-Workflow baut darauf das Docker-Image
+# mit den Tags :{NEXT}-dev.{N} + :dev (rolling), aber NICHT :latest und NICHT
+# :{major}.{minor}. So koennen Pi-Container, die :latest ziehen, nicht
+# versehentlich auf einer Dev-Build landen.
+#
+# Aufruf: GitHub Actions → "Dev Release (manual)" → Run workflow.
+# Optional: dev_label-Input fuer custom Suffixe (default: auto-incremented N).
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Welche Version soll als Basis dienen?"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Compute next dev tag
+        id: nexttag
+        run: |
+          set -euo pipefail
+          # Aktuelle Stable-Version aus composer.json lesen.
+          CURRENT=$(jq -r .version composer.json)
+          IFS='.' read -r MA MI PA <<< "$CURRENT"
+          case "${{ inputs.bump }}" in
+            patch) PA=$((PA+1));;
+            minor) MI=$((MI+1)); PA=0;;
+            major) MA=$((MA+1)); MI=0; PA=0;;
+          esac
+          BASE="${MA}.${MI}.${PA}"
+          # Wieviele dev-Tags existieren schon fuer diese Base?
+          N=$(git tag -l "v${BASE}-dev.*" | wc -l)
+          N=$((N+1))
+          TAG="v${BASE}-dev.${N}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Computed tag: $TAG"
+
+      - name: Create + push tag
+        env:
+          TAG: ${{ steps.nexttag.outputs.tag }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Dev pre-release $TAG"
+          git push origin "$TAG"
+          echo "::notice::Pushed $TAG — ci.yml will now build :${TAG#v} + :dev Docker images."

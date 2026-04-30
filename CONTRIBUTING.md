@@ -281,6 +281,52 @@ fix bug
 - **Keep commits atomic** - each commit should be self-contained
 - **Avoid commits with "WIP" or "temp"** - squash them before submitting PR
 
+### Release Cadence
+
+This project uses **release-please** for automated releases. The flow:
+
+1. Conventional commits land on `main` continuously.
+2. release-please opens (and keeps updating) a `chore(main): release X.Y.Z` PR
+   that bumps `composer.json` + `CHANGELOG.md` from accumulated commits.
+3. **Releases ship by merging that PR** — typically once per week (Mon/Thu)
+   or when a meaningful batch of fixes/features has accumulated. Avoid
+   merging the release PR multiple times per day to keep the release
+   feed stable and professional.
+4. Merge → tag (`vX.Y.Z`) + GitHub Release auto-created.
+
+Version-bump rules driven by commit `type`:
+
+- `fix:` → patch (e.g. 3.3.2 → 3.3.3)
+- `feat:` → minor (e.g. 3.3.2 → 3.4.0)
+- `feat!:` / `BREAKING CHANGE:` footer → major (e.g. 3.3.2 → 4.0.0)
+- `docs:` / `chore:` / `test:` → no release (hidden in changelog)
+
+Hot-fixes bypass this only when a production-breaking issue is live —
+otherwise let the release PR accumulate and ship on cadence.
+
+### Dev / Pre-Release Builds
+
+For Docker test deployments without affecting `:latest`:
+
+- **Manual**: trigger the **Dev Release (manual)** GitHub Action with the
+  desired bump (patch / minor / major). It computes the next semver,
+  appends `-dev.N` (auto-incremented), tags `main` HEAD, pushes — CI builds
+  Docker image with `:vX.Y.Z-dev.N` + `:dev` (rolling). **Never `:latest`,
+  never `:X.Y`** (semver minor floating tag).
+- **Manual via CLI** (alternative): `git tag v3.4.0-dev.1 && git push origin v3.4.0-dev.1`.
+  CI applies the same dev-tag rules based on the `-dev.` segment.
+
+Tag-to-image mapping enforced in `.github/workflows/ci.yml`:
+
+| Tag                | Image tags                          |
+|--------------------|-------------------------------------|
+| `v3.4.0`           | `:3.4.0`, `:3.4`, `:latest`         |
+| `v3.4.0-dev.1`     | `:3.4.0-dev.1`, `:dev`              |
+| `v3.4.0-rc.1`      | `:3.4.0-rc.1`, `:rc`                |
+
+Pi / production deployments stay on `:latest`. Test environments pull
+`:dev` (or pin to a specific `:vX.Y.Z-dev.N`) for QA cycles.
+
 ---
 
 ## Pull Request Process
