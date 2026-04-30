@@ -6,8 +6,10 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Repository\BusinessProcessRepository;
+use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -133,7 +135,7 @@ class BusinessProcess
         $this->upstreamDependencies = new ArrayCollection();
         $this->dependentProcesses = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
-        $this->processOwnerDeputyPersons = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->processOwnerDeputyPersons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -782,16 +784,16 @@ class BusinessProcess
      * instead of `processOwnerUser`. Falls back to the legacy string when
      * neither is set.
      */
-    #[ORM\ManyToOne(targetEntity: \App\Entity\Person::class)]
+    #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'process_owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?\App\Entity\Person $processOwnerPerson = null;
+    private ?Person $processOwnerPerson = null;
 
-    public function getProcessOwnerPerson(): ?\App\Entity\Person
+    public function getProcessOwnerPerson(): ?Person
     {
         return $this->processOwnerPerson;
     }
 
-    public function setProcessOwnerPerson(?\App\Entity\Person $processOwnerPerson): static
+    public function setProcessOwnerPerson(?Person $processOwnerPerson): static
     {
         $this->processOwnerPerson = $processOwnerPerson;
         return $this;
@@ -803,21 +805,21 @@ class BusinessProcess
      * delete keeps the link table clean. UI should sort by Person.fullName
      * when displaying the roster.
      *
-     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Person>
+     * @var Collection<int, Person>
      */
-    #[ORM\ManyToMany(targetEntity: \App\Entity\Person::class)]
+    #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'business_process_owner_deputy')]
     #[ORM\JoinColumn(name: 'business_process_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private \Doctrine\Common\Collections\Collection $processOwnerDeputyPersons;
+    private Collection $processOwnerDeputyPersons;
 
-    /** @return \Doctrine\Common\Collections\Collection<int, \App\Entity\Person> */
-    public function getProcessOwnerDeputyPersons(): \Doctrine\Common\Collections\Collection
+    /** @return Collection<int, Person> */
+    public function getProcessOwnerDeputyPersons(): Collection
     {
         return $this->processOwnerDeputyPersons;
     }
 
-    public function addProcessOwnerDeputyPerson(\App\Entity\Person $person): static
+    public function addProcessOwnerDeputyPerson(Person $person): static
     {
         if (!$this->processOwnerDeputyPersons->contains($person)) {
             $this->processOwnerDeputyPersons->add($person);
@@ -825,7 +827,7 @@ class BusinessProcess
         return $this;
     }
 
-    public function removeProcessOwnerDeputyPerson(\App\Entity\Person $person): static
+    public function removeProcessOwnerDeputyPerson(Person $person): static
     {
         $this->processOwnerDeputyPersons->removeElement($person);
         return $this;
@@ -836,7 +838,7 @@ class BusinessProcess
      */
     public function getEffectiveProcessOwner(): ?string
     {
-        return (new \App\Service\OwnerResolver())->resolveEffective(
+        return OwnerResolver::resolveEffective(
             $this->processOwnerUser,
             $this->processOwnerPerson,
             $this->processOwner,
@@ -851,7 +853,7 @@ class BusinessProcess
      */
     public function getAllProcessOwners(): array
     {
-        return (new \App\Service\OwnerResolver())->resolveAll(
+        return OwnerResolver::resolveAll(
             $this->processOwnerUser,
             $this->processOwnerPerson,
             $this->processOwner,

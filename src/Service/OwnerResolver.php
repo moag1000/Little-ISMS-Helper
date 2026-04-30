@@ -20,7 +20,7 @@ final class OwnerResolver
     /**
      * Returns the display name of the highest-priority owner that is set.
      */
-    public function resolveEffective(?User $user, ?Person $person, ?string $legacy): ?string
+    public static function resolveEffective(?User $user, ?Person $person, ?string $legacy): ?string
     {
         return $user?->getFullName()
             ?? $person?->getFullName()
@@ -35,10 +35,10 @@ final class OwnerResolver
      * @param iterable<Person> $deputies
      * @return list<string>
      */
-    public function resolveAll(?User $primaryUser, ?Person $primaryPerson, ?string $primaryLegacy, iterable $deputies): array
+    public static function resolveAll(?User $primaryUser, ?Person $primaryPerson, ?string $primaryLegacy, iterable $deputies): array
     {
         $names = [];
-        $primary = $this->resolveEffective($primaryUser, $primaryPerson, $primaryLegacy);
+        $primary = self::resolveEffective($primaryUser, $primaryPerson, $primaryLegacy);
         if ($primary !== null && $primary !== '') {
             $names[] = $primary;
         }

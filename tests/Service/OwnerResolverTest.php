@@ -12,13 +12,6 @@ use PHPUnit\Framework\TestCase;
 
 final class OwnerResolverTest extends TestCase
 {
-    private OwnerResolver $resolver;
-
-    protected function setUp(): void
-    {
-        $this->resolver = new OwnerResolver();
-    }
-
     #[Test]
     public function userTakesPrecedenceOverPersonAndLegacy(): void
     {
@@ -26,26 +19,26 @@ final class OwnerResolverTest extends TestCase
         $person = (new Person())->setFullName('Bob B.');
         $legacy = 'Carol C.';
 
-        $this->assertSame('Alice A.', $this->resolver->resolveEffective($user, $person, $legacy));
+        $this->assertSame('Alice A.', OwnerResolver::resolveEffective($user, $person, $legacy));
     }
 
     #[Test]
     public function personUsedWhenNoUser(): void
     {
         $person = (new Person())->setFullName('Bob B.');
-        $this->assertSame('Bob B.', $this->resolver->resolveEffective(null, $person, 'Carol'));
+        $this->assertSame('Bob B.', OwnerResolver::resolveEffective(null, $person, 'Carol'));
     }
 
     #[Test]
     public function legacyUsedWhenNoUserOrPerson(): void
     {
-        $this->assertSame('Carol', $this->resolver->resolveEffective(null, null, 'Carol'));
+        $this->assertSame('Carol', OwnerResolver::resolveEffective(null, null, 'Carol'));
     }
 
     #[Test]
     public function returnsNullWhenNothingProvided(): void
     {
-        $this->assertNull($this->resolver->resolveEffective(null, null, null));
+        $this->assertNull(OwnerResolver::resolveEffective(null, null, null));
     }
 
     #[Test]
@@ -55,7 +48,7 @@ final class OwnerResolverTest extends TestCase
         $deputy1 = (new Person())->setFullName('Bob B.');
         $deputy2 = (new Person())->setFullName('Carol C.');
 
-        $names = $this->resolver->resolveAll($primaryUser, null, null, [$deputy1, $deputy2]);
+        $names = OwnerResolver::resolveAll($primaryUser, null, null, [$deputy1, $deputy2]);
         $this->assertSame(['Alice A.', 'Bob B.', 'Carol C.'], $names);
     }
 
@@ -63,12 +56,12 @@ final class OwnerResolverTest extends TestCase
     public function aggregateAllSkipsEmptyPrimary(): void
     {
         $deputy = (new Person())->setFullName('Bob B.');
-        $this->assertSame(['Bob B.'], $this->resolver->resolveAll(null, null, null, [$deputy]));
+        $this->assertSame(['Bob B.'], OwnerResolver::resolveAll(null, null, null, [$deputy]));
     }
 
     #[Test]
     public function aggregateAllReturnsEmptyArrayWhenNothing(): void
     {
-        $this->assertSame([], $this->resolver->resolveAll(null, null, null, []));
+        $this->assertSame([], OwnerResolver::resolveAll(null, null, null, []));
     }
 }
