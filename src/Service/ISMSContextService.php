@@ -163,6 +163,23 @@ class ISMSContextService
     }
 
     /**
+     * Get days since last review (positive when in past, negative when future-dated)
+     */
+    public function getDaysSinceReview(ISMSContext $ismsContext): ?int
+    {
+        $lastReview = $ismsContext->getLastReviewDate();
+
+        if (!$lastReview instanceof DateTimeInterface) {
+            return null;
+        }
+
+        $now = new DateTime();
+        $dateInterval = $now->diff($lastReview);
+
+        return $dateInterval->invert ? $dateInterval->days : -$dateInterval->days;
+    }
+
+    /**
      * Schedule next review (default: 1 year from last review or today)
      */
     public function scheduleNextReview(ISMSContext $ismsContext, ?DateTime $baseDate = null): void
