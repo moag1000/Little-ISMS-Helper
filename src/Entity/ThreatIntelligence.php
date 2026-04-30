@@ -6,6 +6,8 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Entity\Person;
+use App\Service\OwnerResolver;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -117,6 +119,15 @@ class ThreatIntelligence
     #[Groups(['threat:read'])]
     private ?User $assignedTo = null;
 
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Person $assignedPerson = null;
+
+    /** @var Collection<int, Person> */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'threat_intelligence_assigned_deputies')]
+    private Collection $assignedDeputyPersons;
+
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['threat:read', 'threat:write'])]
     private ?bool $affectsOrganization = false;
@@ -154,6 +165,7 @@ class ThreatIntelligence
         $this->detectionDate = new DateTimeImmutable();
         $this->affectedAssets = new ArrayCollection();
         $this->resultingIncidents = new ArrayCollection();
+        $this->assignedDeputyPersons = new ArrayCollection();
     }
 
     // Getters and Setters
@@ -315,6 +327,48 @@ class ThreatIntelligence
     {
         $this->assignedTo = $user;
         return $this;
+    }
+
+    public function getAssignedPerson(): ?Person
+    {
+        return $this->assignedPerson;
+    }
+
+    public function setAssignedPerson(?Person $assignedPerson): static
+    {
+        $this->assignedPerson = $assignedPerson;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getAssignedDeputyPersons(): Collection
+    {
+        return $this->assignedDeputyPersons;
+    }
+
+    public function addAssignedDeputyPerson(Person $person): static
+    {
+        if (!$this->assignedDeputyPersons->contains($person)) {
+            $this->assignedDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeAssignedDeputyPerson(Person $person): static
+    {
+        $this->assignedDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    public function getEffectiveAssignedTo(): ?string
+    {
+        return OwnerResolver::resolveEffective($this->assignedTo, $this->assignedPerson, null);
+    }
+
+    /** @return list<string> */
+    public function getAllAssignedOwners(): array
+    {
+        return OwnerResolver::resolveAll($this->assignedTo, $this->assignedPerson, null, $this->assignedDeputyPersons);
     }
 
     public function isAffectsOrganization(): ?bool
