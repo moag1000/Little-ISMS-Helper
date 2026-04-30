@@ -219,6 +219,35 @@ $dataBreach->setNotificationRequired(true);
 - Type hints and return types required
 - Commit format: `feat(scope): message` / `fix(scope): message`
 
+## Release-Workflow (since 2026-04-30)
+
+**NIE direkt `git tag vX.Y.Z` + `git push`.** Releases laufen ausschliesslich
+ueber drei definierte Kanaele — wenn der User "Release machen" / "publish" /
+"taggen" sagt OHNE Form, IMMER zurueckfragen welche der drei Optionen:
+
+| Form | Trigger | Docker-Tags | composer.json bumped? |
+|---|---|---|---|
+| **Stable** | release-please-PR (`chore(main): release X.Y.Z`) reviewen + mergen | `:vX.Y.Z`, `:X.Y`, `:latest` | ja, automatisch via release-please |
+| **Dev** | GitHub Actions → *"Dev Release (manual)"* → bump-Input (patch/minor/major) | `:vX.Y.Z-dev.N`, `:dev` (rolling) | nein |
+| **RC** | manuell `git tag vX.Y.Z-rc.1 && git push --tags` | `:vX.Y.Z-rc.N`, `:rc` | nein |
+
+Conventional-Commits auf `main` sammeln; release-please haelt PR
+automatisch aktuell. `fix:` → patch, `feat:` → minor, `feat!:` → major.
+`chore/ci/test/style/docs` sind hidden im Changelog. CHANGELOG.md NICHT
+manuell editieren (ausser fuer Backfill-Edge-Cases) — release-please
+verwaltet `[Unreleased]` + Sections.
+
+Cadence-Disziplin: Stable-Releases idealerweise gebuendelt (Mo/Do oder
+sobald sinnvoller Batch beisammen) — kein "Maschinengewehr-Tagging" mit
+mehreren Releases pro Tag. Hot-Fix nur bei Production-Breaker, sonst PR
+sammeln lassen.
+
+Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
+`.github/workflows/release-please.yml`, `.github/workflows/dev-release.yml`,
+Tag-Regeln in `.github/workflows/ci.yml` (`steps.meta.tags` Block).
+Vollstaendige Doku in `CONTRIBUTING.md` § *Release Cadence* + § *Dev /
+Pre-Release Builds*.
+
 ## Symfony 7.4 Best Practices (Audit Apr 2026)
 
 **Routing:** ALL routes via `#[Route]` attributes — no YAML route definitions.
