@@ -19,7 +19,11 @@ crisis_team:
         team_type: Team-Typ
         is_active: Aktiv
         team_leader: Teamleiter
+        team_leader_person: 'Teamleiter (Person)'
+        team_leader_deputy_persons: 'Vertretungen Teamleiter (Personen)'
         deputy_leader: Stellvertreter
+        deputy_leader_person: 'Stellvertreter (Person)'
+        deputy_leader_deputy_persons: 'Vertretungen Stellvertreter (Personen)'
         primary_phone: 'Primäre Telefonnummer'
         primary_email: 'Primäre E-Mail'
         meeting_location: Versammlungsort
@@ -42,7 +46,9 @@ crisis_team:
         team_name: 'z.B. Operativer Krisenstab IT'
         description: 'Aufgaben und Verantwortlichkeiten des Krisenstabs'
         team_leader: 'Leiter des Krisenstabs auswählen'
-        deputy_leader: 'Stellvertretender Leiter auswählen'
+        team_leader_person: '-- Person aus Stammdaten --'
+        deputy_leader: 'Stellvertretenden Leiter auswählen'
+        deputy_leader_person: '-- Person aus Stammdaten --'
         primary_phone: '+49 123 456789'
         primary_email: 'crisis@company.com'
         meeting_location: 'z.B. Konferenzraum 1, Gebäude A'
@@ -56,7 +62,11 @@ crisis_team:
         team_name: 'Bezeichnung des Krisenstabs'
         team_type: 'Art des Krisenstabs nach BSI 200-4'
         team_leader: 'Leiter des Krisenstabs'
+        team_leader_person: 'Person ohne System-Login als Teamleiter. Reihenfolge: User > Person > leer.'
+        team_leader_deputy_persons: 'Weitere Personen mit Vertretungsfunktion für den Teamleiter.'
         deputy_leader: 'Stellvertreter bei Abwesenheit des Leiters'
+        deputy_leader_person: 'Person ohne System-Login als Stellvertreter. Reihenfolge: User > Person > leer.'
+        deputy_leader_deputy_persons: 'Weitere Personen mit Vertretungsfunktion für den Stellvertreter.'
         primary_phone: 'Zentrale Rufnummer für Krisenstab'
         meeting_location: 'Physischer Treffpunkt bei Krisen'
         virtual_meeting_url: 'Teams, Zoom, etc. für virtuelle Treffen'

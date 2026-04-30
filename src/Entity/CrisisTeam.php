@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use DateTimeImmutable;
+use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Repository\CrisisTeamRepository;
+use App\Service\OwnerResolver;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -62,12 +64,30 @@ class CrisisTeam
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $teamLeader = null;
 
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Person $teamLeaderPerson = null;
+
+    /** @var Collection<int, Person> */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'crisis_team_leader_deputies')]
+    private Collection $teamLeaderDeputyPersons;
+
     /**
      * Deputy team leader
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $deputyLeader = null;
+
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Person $deputyLeaderPerson = null;
+
+    /** @var Collection<int, Person> */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'crisis_team_deputy_leader_deputies')]
+    private Collection $deputyLeaderDeputyPersons;
 
     /**
      * Team members with roles
@@ -195,6 +215,8 @@ class CrisisTeam
 public function __construct()
     {
         $this->businessContinuityPlans = new ArrayCollection();
+        $this->teamLeaderDeputyPersons = new ArrayCollection();
+        $this->deputyLeaderDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -258,6 +280,48 @@ public function __construct()
         return $this;
     }
 
+    public function getTeamLeaderPerson(): ?Person
+    {
+        return $this->teamLeaderPerson;
+    }
+
+    public function setTeamLeaderPerson(?Person $teamLeaderPerson): static
+    {
+        $this->teamLeaderPerson = $teamLeaderPerson;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getTeamLeaderDeputyPersons(): Collection
+    {
+        return $this->teamLeaderDeputyPersons;
+    }
+
+    public function addTeamLeaderDeputyPerson(Person $person): static
+    {
+        if (!$this->teamLeaderDeputyPersons->contains($person)) {
+            $this->teamLeaderDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeTeamLeaderDeputyPerson(Person $person): static
+    {
+        $this->teamLeaderDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    public function getEffectiveTeamLeader(): ?string
+    {
+        return OwnerResolver::resolveEffective($this->teamLeader, $this->teamLeaderPerson, null);
+    }
+
+    /** @return list<string> */
+    public function getAllTeamLeaderOwners(): array
+    {
+        return OwnerResolver::resolveAll($this->teamLeader, $this->teamLeaderPerson, null, $this->teamLeaderDeputyPersons);
+    }
+
     public function getDeputyLeader(): ?User
     {
         return $this->deputyLeader;
@@ -267,6 +331,48 @@ public function __construct()
     {
         $this->deputyLeader = $user;
         return $this;
+    }
+
+    public function getDeputyLeaderPerson(): ?Person
+    {
+        return $this->deputyLeaderPerson;
+    }
+
+    public function setDeputyLeaderPerson(?Person $deputyLeaderPerson): static
+    {
+        $this->deputyLeaderPerson = $deputyLeaderPerson;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getDeputyLeaderDeputyPersons(): Collection
+    {
+        return $this->deputyLeaderDeputyPersons;
+    }
+
+    public function addDeputyLeaderDeputyPerson(Person $person): static
+    {
+        if (!$this->deputyLeaderDeputyPersons->contains($person)) {
+            $this->deputyLeaderDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeDeputyLeaderDeputyPerson(Person $person): static
+    {
+        $this->deputyLeaderDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    public function getEffectiveDeputyLeader(): ?string
+    {
+        return OwnerResolver::resolveEffective($this->deputyLeader, $this->deputyLeaderPerson, null);
+    }
+
+    /** @return list<string> */
+    public function getAllDeputyLeaderOwners(): array
+    {
+        return OwnerResolver::resolveAll($this->deputyLeader, $this->deputyLeaderPerson, null, $this->deputyLeaderDeputyPersons);
     }
 
     public function getMembers(): array
