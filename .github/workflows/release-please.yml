@@ -1,0 +1,26 @@
+name: Release Please
+
+# Sammelt Conventional-Commits auf main, oeffnet/aktualisiert einen
+# Release-PR mit auto-generiertem CHANGELOG.md + Version-Bumps in
+# composer.json + .release-please-manifest.json. Merge des PRs erzeugt
+# Tag + GitHub Release. Aufgesetzt 2026-04-30 zur Stabilisierung der
+# Release-Cadence (siehe CONTRIBUTING.md).
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          # Pull config + manifest aus Repo-Root.
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

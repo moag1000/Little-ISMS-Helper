@@ -7,6 +7,23 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 _Noch keine Aenderungen._
 
+## [3.3.2] — 2026-04-30
+
+### Fixed
+- **HTTP-Deployments hinter Reverse-Proxy**: prod-Config `cookie_secure: true` (hardcoded) brach Sessions ueber HTTP — jeder Request neue Session, CSRF-Token immer fail, Setup-Wizard-POST→302→Loop. Jetzt `'auto'` + trusted_proxies-Config fuer X-Forwarded-Proto.
+- **Skip-Restore Race-Condition**: Symfony-Messenger Doctrine-Transport (`auto_setup: true`) legte parallel `messenger_messages` an waehrend `runFreshSchemaInstall` lief → Bulk-Batch crash "already exists". Idempotenter Batch via `CREATE TABLE IF NOT EXISTS` Munging.
+- **Async-Job-Pattern**: `detachAndContinue()` Helper mit explizitem `ob_end_flush + flush` vor `fastcgi_finish_request()`. 5 Call-Sites umgestellt — POST-Hang gegen `output_buffering=4096` default behoben.
+- **Step 8 Compliance-Frameworks**: Mandatory-Frameworks jetzt korrekt `disabled` gerendert + force-included server-side (DOM-Tampering-safe). Recommended bleibt pre-checked aber abwaehlbar.
+- **`::placeholder` Ueberlagerung in Floating-Labels**: Aurora-Override hatte Bootstrap-Default ueberschrieben → Placeholder + Label uebereinander unleserlich. Jetzt transparent in `.form-floating`-Wrappern.
+- **Schema-Drift Detection**: `SchemaExceptionSubscriber` redirected jetzt auch bei Schema-Drift ohne pending Migration (Column-Mismatch nach fehlgeschlagener Migration zeigte vorher 500).
+
+### Added
+- **Quick-Fix Reconcile-UI**: Drift-Branch mit SQL-Preview + Apply-Button (nur additive Statements; destructive blockiert mit CLI-Hinweis). Neuer Endpoint `/quick-fix/reconcile`.
+- **ISMSContext Wizard-Seeding**: Step-6-Daten werden jetzt in den ISMS-Kontext (Clause 4) uebernommen — Organisationsname identisch zum Tenant, Scope-Starter aus Branchen/Land/Mitarbeiterzahl, Beschreibung in `internalIssues`. Idempotent — User-Edits werden nicht ueberschrieben.
+
+### Changed
+- nginx `fastcgi_read_timeout 1800s` + `fastcgi_buffering off` als Safety net fuer langsame Hardware (Pi/SD-Card-I/O).
+
 ## [3.3.1] — 2026-04-30
 
 ### Fix: Docker-Build wieder auf PHP 8.5 + Setup-Wizard ~36 % schneller
