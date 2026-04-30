@@ -8,6 +8,9 @@ use DateTimeInterface;
 use DateTimeImmutable;
 use DateTime;
 use App\Repository\DataBreachRepository;
+use App\Service\OwnerResolver;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -171,6 +174,24 @@ class DataBreach
     #[ORM\JoinColumn(nullable: true)]
     private ?User $dataProtectionOfficer = null;
 
+    /**
+     * Tri-State Person slot: DPO as Person master-data record.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'data_protection_officer_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Person $dataProtectionOfficerPerson = null;
+
+    /**
+     * Deputy Persons for the DPO slot.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'data_breach_dpo_deputy')]
+    #[ORM\JoinColumn(name: 'data_breach_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $dataProtectionOfficerDeputyPersons;
+
     // ============================================================================
     // Art. 33 - Notification to Supervisory Authority
     // ============================================================================
@@ -320,6 +341,24 @@ class DataBreach
     private ?User $assessor = null;
 
     /**
+     * Tri-State Person slot: assessor as Person master-data record.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'assessor_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Person $assessorPerson = null;
+
+    /**
+     * Deputy Persons for the assessor slot.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'data_breach_assessor_deputy')]
+    #[ORM\JoinColumn(name: 'data_breach_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $assessorDeputyPersons;
+
+    /**
      * Lessons learned
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -351,6 +390,8 @@ class DataBreach
 
     public function __construct()
     {
+        $this->dataProtectionOfficerDeputyPersons = new ArrayCollection();
+        $this->assessorDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
     }
@@ -686,6 +727,64 @@ class DataBreach
         return $this;
     }
 
+    public function getDataProtectionOfficerPerson(): ?Person
+    {
+        return $this->dataProtectionOfficerPerson;
+    }
+
+    public function setDataProtectionOfficerPerson(?Person $dataProtectionOfficerPerson): static
+    {
+        $this->dataProtectionOfficerPerson = $dataProtectionOfficerPerson;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getDataProtectionOfficerDeputyPersons(): Collection
+    {
+        return $this->dataProtectionOfficerDeputyPersons;
+    }
+
+    public function addDataProtectionOfficerDeputyPerson(Person $person): static
+    {
+        if (!$this->dataProtectionOfficerDeputyPersons->contains($person)) {
+            $this->dataProtectionOfficerDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeDataProtectionOfficerDeputyPerson(Person $person): static
+    {
+        $this->dataProtectionOfficerDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    /**
+     * Effective DPO: prefer dataProtectionOfficer (User), then dataProtectionOfficerPerson, then null.
+     */
+    public function getEffectiveDataProtectionOfficer(): ?string
+    {
+        return OwnerResolver::resolveEffective(
+            $this->dataProtectionOfficer,
+            $this->dataProtectionOfficerPerson,
+            null,
+        );
+    }
+
+    /**
+     * Full DPO roster: primary + every deputy.
+     *
+     * @return list<string>
+     */
+    public function getAllDataProtectionOfficers(): array
+    {
+        return OwnerResolver::resolveAll(
+            $this->dataProtectionOfficer,
+            $this->dataProtectionOfficerPerson,
+            null,
+            $this->dataProtectionOfficerDeputyPersons,
+        );
+    }
+
     public function getRequiresAuthorityNotification(): bool
     {
         return $this->requiresAuthorityNotification;
@@ -904,6 +1003,64 @@ class DataBreach
     {
         $this->assessor = $user;
         return $this;
+    }
+
+    public function getAssessorPerson(): ?Person
+    {
+        return $this->assessorPerson;
+    }
+
+    public function setAssessorPerson(?Person $assessorPerson): static
+    {
+        $this->assessorPerson = $assessorPerson;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getAssessorDeputyPersons(): Collection
+    {
+        return $this->assessorDeputyPersons;
+    }
+
+    public function addAssessorDeputyPerson(Person $person): static
+    {
+        if (!$this->assessorDeputyPersons->contains($person)) {
+            $this->assessorDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeAssessorDeputyPerson(Person $person): static
+    {
+        $this->assessorDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    /**
+     * Effective assessor: prefer assessor (User), then assessorPerson, then null.
+     */
+    public function getEffectiveAssessor(): ?string
+    {
+        return OwnerResolver::resolveEffective(
+            $this->assessor,
+            $this->assessorPerson,
+            null,
+        );
+    }
+
+    /**
+     * Full assessor roster: primary + every deputy.
+     *
+     * @return list<string>
+     */
+    public function getAllAssessors(): array
+    {
+        return OwnerResolver::resolveAll(
+            $this->assessor,
+            $this->assessorPerson,
+            null,
+            $this->assessorDeputyPersons,
+        );
     }
 
     public function getLessonsLearned(): ?string

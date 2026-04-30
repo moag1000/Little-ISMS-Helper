@@ -682,6 +682,10 @@ data_breach:
         lessons_learned: 'Erkenntnisse'
         data_protection_officer: 'Datenschutzbeauftragter'
         severity: 'Schweregrad'
+        data_protection_officer_person: 'DSB (Personenstammdaten)'
+        data_protection_officer_deputies: 'DSB-Vertretungen'
+        assessor_person: 'Bewerter (Personenstammdaten)'
+        assessor_deputies: 'Bewerter-Vertretungen'
     severity:
         low: 'Niedrig'
         medium: 'Mittel'
@@ -746,6 +750,8 @@ data_breach:
         lessons_learned: 'Aus dieser Verletzung gelernte Lektionen...'
         data_protection_officer: 'DSB auswählen...'
         severity: 'Schweregrad auswählen...'
+        data_protection_officer_person: 'Person aus Stammdaten auswählen...'
+        assessor_person: 'Person aus Stammdaten auswählen...'
     help:
         detected_at: 'Wann wurde die Datenschutzverletzung entdeckt? Die 72-Stunden-Frist beginnt ab diesem Zeitpunkt.'
         incident: 'Optional: Falls die Verletzung durch einen Sicherheitsvorfall verursacht wurde, können Sie diesen hier verknüpfen.'
@@ -765,6 +771,10 @@ data_breach:
         requires_subject_notification: 'Art. 34(1) DSGVO - Nur bei HOHEM Risiko erforderlich. Faktoren: Sensible Daten (Art. 9), viele Betroffene, Identitätsdiebstahl/Betrug möglich, keine Verschlüsselung, keine schnelle Eindämmung.'
         no_subject_notification_reason: 'Art. 34(3) DSGVO Ausnahmen: (a) Schutzmaßnahmen, (b) Nachfolgende Maßnahmen, (c) Unverhältnismäßiger Aufwand'
         data_protection_officer: 'Datenschutzbeauftragter (Art. 35(4) DSGVO)'
+        data_protection_officer_person: 'Datenschutzbeauftragter aus Personenstammdaten (alternativ zum Benutzerkonto)'
+        data_protection_officer_deputies: 'Stellvertretende Personen für den DSB-Slot'
+        assessor_person: 'Bewerter aus Personenstammdaten (alternativ zum Benutzerkonto)'
+        assessor_deputies: 'Stellvertretende Personen für den Bewerter-Slot'
     wizard:
         trigger_button: 'DSGVO-Verletzungsassistent starten'
         trigger_hint: 'Verwenden Sie den Assistenten, um zu ermitteln, ob eine DSGVO-Meldung erforderlich ist (Art. 33)'

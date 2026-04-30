@@ -519,6 +519,10 @@ data_breach:
         incident: 'Related Security Incident (optional)'
         processing_activity: 'Processing Activity (ROPA)'
         severity: 'Severity'
+        data_protection_officer_person: 'DPO (Person master data)'
+        data_protection_officer_deputies: 'DPO Deputies'
+        assessor_person: 'Assessor (Person master data)'
+        assessor_deputies: 'Assessor Deputies'
     severity:
         low: 'Low'
         medium: 'Medium'
@@ -583,6 +587,8 @@ data_breach:
         root_cause: 'Root cause analysis...'
         lessons_learned: 'Lessons learned from this breach...'
         data_protection_officer: 'Select DPO...'
+        data_protection_officer_person: 'Select person from master data...'
+        assessor_person: 'Select person from master data...'
     help:
         detected_at: 'When was the data breach discovered? The 72-hour deadline starts from this point.'
         incident: 'Optional: If the breach was caused by a security incident, you can link it here.'
@@ -602,6 +608,10 @@ data_breach:
         requires_subject_notification: 'Art. 34(1) GDPR - Only required for HIGH risk. Factors: Sensitive data (Art. 9), many affected, identity theft/fraud possible, no encryption, no quick containment.'
         no_subject_notification_reason: 'Art. 34(3) GDPR exemptions: (a) Protection measures, (b) Subsequent measures, (c) Disproportionate effort'
         data_protection_officer: 'Data Protection Officer (Art. 35(4) GDPR)'
+        data_protection_officer_person: 'DPO from person master data (alternative to user account)'
+        data_protection_officer_deputies: 'Deputy persons for the DPO slot'
+        assessor_person: 'Assessor from person master data (alternative to user account)'
+        assessor_deputies: 'Deputy persons for the assessor slot'
     wizard:
         trigger_button: 'Start GDPR Breach Wizard'
         trigger_hint: 'Use the wizard to determine if GDPR reporting is required (Art. 33)'
