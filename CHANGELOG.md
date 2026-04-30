@@ -5,7 +5,9 @@ Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
 ## [Unreleased]
 
-_Noch keine Aenderungen._
+### Added
+- **Compliance-Wizard ISO 22301 (BCM)** — 7-Klausel-Readiness-Check (Context, Leadership, Planning, Support, Operation, Evaluation, Improvement). Wiederverwendet vorhandene Check-Types `bcm_coverage`, `audit_status`, `document_review`, `training_coverage`, `risk_coverage`, `treatment_plan`, `manual`. Erscheint im Wizard-Index sobald das `bcm`-Modul aktiv ist.
+- **Compliance-Wizard ISO 27701 (PIMS)** — 8-Bereich-Readiness-Check (PIMS-Kontext, Privacy-Policy, Betroffenenrechte, Privacy-Risikomanagement, Verarbeitungsverzeichnis, Datenschutzvorfälle, Privacy by Design, Auftragsverarbeiter). Neue Check-Types `consent_coverage`, `dsr_coverage`, `dpia_coverage` lesen `Consent`, `DataSubjectRequest` und `ProcessingActivity`-Entities mit gerundeten Prozent-Scores + Partial-Coverage-Gaps + Translator-wrapped Gap-Texte.
 
 ## [3.3.2] — 2026-04-30
 
