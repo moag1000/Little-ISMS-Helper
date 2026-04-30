@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\CrisisTeam;
+use App\Entity\Person;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -71,6 +72,28 @@ class CrisisTeamType extends AbstractType
                 'required' => false,
                 'help' => 'crisis_team.help.team_leader',
             ])
+            ->add('teamLeaderPerson', EntityType::class, [
+                'label' => 'crisis_team.field.team_leader_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'crisis_team.placeholder.team_leader_person',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+                'help' => 'crisis_team.help.team_leader_person',
+            ])
+            ->add('teamLeaderDeputyPersons', EntityType::class, [
+                'label' => 'crisis_team.field.team_leader_deputy_persons',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'crisis_team.help.team_leader_deputy_persons',
+            ])
             ->add('deputyLeader', EntityType::class, [
                 'label' => 'crisis_team.field.deputy_leader',
                 'class' => User::class,
@@ -78,6 +101,28 @@ class CrisisTeamType extends AbstractType
                 'placeholder' => 'crisis_team.placeholder.deputy_leader',
                 'required' => false,
                 'help' => 'crisis_team.help.deputy_leader',
+            ])
+            ->add('deputyLeaderPerson', EntityType::class, [
+                'label' => 'crisis_team.field.deputy_leader_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'crisis_team.placeholder.deputy_leader_person',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+                'help' => 'crisis_team.help.deputy_leader_person',
+            ])
+            ->add('deputyLeaderDeputyPersons', EntityType::class, [
+                'label' => 'crisis_team.field.deputy_leader_deputy_persons',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'crisis_team.help.deputy_leader_deputy_persons',
             ])
             ->add('primaryPhone', TelType::class, [
                 'label' => 'crisis_team.field.primary_phone',
