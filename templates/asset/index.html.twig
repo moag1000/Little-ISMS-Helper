@@ -190,9 +190,9 @@
             <label for="filter-status" class="form-label">{{ 'asset.label.status'|trans({}, 'asset') }}</label>
             <select class="form-select" id="filter-status" name="status">
                 <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                <option value="active" {{ app.request.query.get('status') == 'active' ? 'selected' : '' }}>{{ 'asset.status.active'|trans({}, 'asset') }}</option>
-                <option value="inactive" {{ app.request.query.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'asset.status.inactive'|trans({}, 'asset') }}</option>
-                <option value="retired" {{ app.request.query.get('status') == 'retired' ? 'selected' : '' }}>{{ 'asset.status.retired'|trans({}, 'asset') }}</option>
+                {% for value in ['active', 'inactive', 'in_use', 'returned', 'retired', 'disposed'] %}
+                    <option value="{{ value }}" {{ app.request.query.get('status') == value ? 'selected' : '' }}>{{ ('asset.status.' ~ value)|trans({}, 'asset') }}</option>
+                {% endfor %}
             </select>
         </div>
     {% endblock %}
