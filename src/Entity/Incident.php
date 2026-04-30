@@ -20,6 +20,7 @@ use ApiPlatform\Metadata\Delete;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use App\Repository\IncidentRepository;
+use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -340,6 +341,7 @@ class Incident
         $this->failedControls = new ArrayCollection();
         $this->affectedBusinessProcesses = new ArrayCollection();
         $this->relatedVulnerabilities = new ArrayCollection();
+        $this->reportedByDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->detectedAt = new DateTimeImmutable();
     }
@@ -1262,11 +1264,79 @@ class Incident
     }
 
     /**
-     * Effective reportedBy: prefer reportedByUser.fullName, fall back to legacy string.
+     * Person-based reporter: for persons without a system login.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'reported_by_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Person $reportedByPerson = null;
+
+    public function getReportedByPerson(): ?Person
+    {
+        return $this->reportedByPerson;
+    }
+
+    public function setReportedByPerson(?Person $reportedByPerson): static
+    {
+        $this->reportedByPerson = $reportedByPerson;
+        return $this;
+    }
+
+    /**
+     * Deputies / Vertretung — n additional Persons sharing reporter role.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'incident_reporter_deputy')]
+    #[ORM\JoinColumn(name: 'incident_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $reportedByDeputyPersons;
+
+    /** @return Collection<int, Person> */
+    public function getReportedByDeputyPersons(): Collection
+    {
+        return $this->reportedByDeputyPersons;
+    }
+
+    public function addReportedByDeputyPerson(Person $person): static
+    {
+        if (!$this->reportedByDeputyPersons->contains($person)) {
+            $this->reportedByDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeReportedByDeputyPerson(Person $person): static
+    {
+        $this->reportedByDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    /**
+     * Effective reportedBy: prefer reportedByUser.fullName, then Person, fall back to legacy string.
      */
     public function getEffectiveReportedBy(): ?string
     {
-        return $this->reportedByUser?->getFullName() ?? $this->reportedBy;
+        return OwnerResolver::resolveEffective(
+            $this->reportedByUser,
+            $this->reportedByPerson,
+            $this->reportedBy,
+        );
+    }
+
+    /**
+     * Full reporter roster: primary + every deputy.
+     *
+     * @return list<string>
+     */
+    public function getAllReporters(): array
+    {
+        return OwnerResolver::resolveAll(
+            $this->reportedByUser,
+            $this->reportedByPerson,
+            $this->reportedBy,
+            $this->reportedByDeputyPersons,
+        );
     }
 
     /*

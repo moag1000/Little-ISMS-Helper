@@ -121,6 +121,8 @@ incident:
     visible_to_holding: 'Für Konzern-Krisenstab sichtbar'
     data_breach_occurred: Datenschutzverletzung aufgetreten
     reported_by_legacy: Gemeldet von (freitext, veraltet)
+    reported_by_person: Gemeldet von (Person aus Stammdaten)
+    reported_by_deputies: Vertretungen (Personen)
   nis2_compliance:
     title: NIS2 Compliance-Status
     not_applicable: Nicht NIS2-relevant
@@ -194,6 +196,7 @@ incident:
     national_authority: z.B. BSI, BNetzA
     authority_reference: Aktenzeichen von der Behörde
     reported_by_user: -- Meldende Person --
+    reported_by_person: -- Person aus Stammdaten --
   help:
     visible_to_holding: 'Standard ein: Holding-/Konzern-CISO kann diesen Vorfall sehen, um Konzern-Response zu koordinieren. Nur für vertrauliche Fälle (z. B. HR) deaktivieren.'
     severity: Bewerten Sie den Schweregrad basierend auf Auswirkung und Umfang (ISO
@@ -218,6 +221,8 @@ incident:
       ausfüllen
     reported_by_user: Meldende Person aus der Benutzerverwaltung. Leer lassen wenn
       extern gemeldet.
+    reported_by_person: 'Person ohne System-Login als Melder wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
+    reported_by_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
   category:
     data_breach: Datenschutzverletzung
     security_incident: Sicherheitsvorfall

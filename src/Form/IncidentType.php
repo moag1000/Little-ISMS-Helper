@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Asset;
-use App\Entity\User;
 use App\Entity\Incident;
+use App\Entity\Person;
+use App\Entity\User;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -95,6 +96,28 @@ class IncidentType extends AbstractType
                 'placeholder' => 'incident.placeholder.reported_by_user',
                 'attr' => ['class' => 'form-select'],
                 'help' => 'incident.help.reported_by_user',
+            ])
+            ->add('reportedByPerson', EntityType::class, [
+                'label' => 'incident.field.reported_by_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'incident.placeholder.reported_by_person',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'incident.help.reported_by_person',
+            ])
+            ->add('reportedByDeputyPersons', EntityType::class, [
+                'label' => 'incident.field.reported_by_deputies',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'incident.help.reported_by_deputies',
             ])
             ->add('reportedBy', TextType::class, [
                 'label' => 'incident.field.reported_by_legacy',
