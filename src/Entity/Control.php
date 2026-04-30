@@ -424,6 +424,20 @@ class Control
         return $this;
     }
 
+    /**
+     * Days since lastReviewDate. Positive when in past, negative when future-dated, null when unset.
+     */
+    public function getDaysSinceLastReview(): ?int
+    {
+        if (!$this->lastReviewDate instanceof DateTimeInterface) {
+            return null;
+        }
+
+        $diff = (new \DateTime())->diff($this->lastReviewDate);
+
+        return $diff->invert ? $diff->days : -$diff->days;
+    }
+
     public function getNextReviewDate(): ?DateTimeInterface
     {
         return $this->nextReviewDate;

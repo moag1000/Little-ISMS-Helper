@@ -382,14 +382,32 @@ class RiskTreatmentPlan
     }
 
     /**
-     * Get days until target completion (negative = overdue)
+     * Days until targetCompletionDate. Positive = future, negative = overdue, null = no target set.
      */
     #[Groups(['treatment_plan:read'])]
-    public function getDaysUntilTarget(): int
+    public function getDaysUntilTarget(): ?int
     {
-        $now = new DateTime();
-        $dateInterval = $now->diff($this->targetCompletionDate);
-        return (int)($dateInterval->invert ? -$dateInterval->days : $dateInterval->days);
+        if (!$this->targetCompletionDate instanceof DateTimeInterface) {
+            return null;
+        }
+
+        $diff = (new DateTime())->diff($this->targetCompletionDate);
+
+        return $diff->invert ? -$diff->days : $diff->days;
+    }
+
+    /**
+     * Convenience: positive days overdue, null when no target or still on time.
+     */
+    #[Groups(['treatment_plan:read'])]
+    public function getDaysOverdue(): ?int
+    {
+        $days = $this->getDaysUntilTarget();
+        if ($days === null || $days >= 0) {
+            return null;
+        }
+
+        return -$days;
     }
 
     /**

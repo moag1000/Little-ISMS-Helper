@@ -142,6 +142,20 @@ public function __construct()
     }
 
     /**
+     * Days since reviewDate. Positive when in past, negative when future-dated, null when unset.
+     */
+    public function getDaysSinceReview(): ?int
+    {
+        if (!$this->reviewDate instanceof DateTimeInterface) {
+            return null;
+        }
+
+        $diff = (new \DateTime())->diff($this->reviewDate);
+
+        return $diff->invert ? $diff->days : -$diff->days;
+    }
+
+    /**
      * @return Collection<int, User>
      */
     public function getParticipants(): Collection
