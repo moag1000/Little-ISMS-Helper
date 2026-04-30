@@ -2077,9 +2077,71 @@ class DeploymentWizardController extends AbstractController
             }
 
             $this->entityManager->flush();
+
+            // Seed "Kontext der Organisation" (ISO 27001 Clause 4) from wizard.
+            // Without this the dedicated context-of-organisation page starts
+            // empty even though the user already provided org-name + scope-
+            // adjacent data in step 6 — duplicate data entry, junior frustration.
+            $this->seedISMSContextFromWizard($tenant, $session);
+
+            $this->entityManager->flush();
         } catch (Exception) {
             // Log error but don't fail setup
             // The organization data is already saved in session and modules are configured
+        }
+    }
+
+    /**
+     * Pre-fills the ISMSContext entity (Clause 4 — Kontext der Organisation)
+     * with whatever the wizard already collected in step 6. Idempotent: if a
+     * row for the tenant exists, its previously-set fields are not overwritten.
+     */
+    private function seedISMSContextFromWizard(Tenant $tenant, SessionInterface $session): void
+    {
+        $contextRepo = $this->entityManager->getRepository(\App\Entity\ISMSContext::class);
+        $context = $contextRepo->findOneBy(['tenant' => $tenant]);
+        $isNew = false;
+        if (!$context instanceof \App\Entity\ISMSContext) {
+            $context = new \App\Entity\ISMSContext();
+            $context->setTenant($tenant);
+            $isNew = true;
+        }
+
+        $orgName = $session->get('setup_organisation_name', $tenant->getName() ?: 'Default Organization');
+        if ($context->getOrganizationName() === null || $context->getOrganizationName() === '') {
+            $context->setOrganizationName((string) $orgName);
+        }
+
+        // Map step-6 free-text description into internalIssues as a starting
+        // point — user can refine in the dedicated context-edit form later.
+        $description = (string) ($session->get('setup_organisation_description', '') ?? '');
+        if ($description !== '' && ($context->getInternalIssues() === null || $context->getInternalIssues() === '')) {
+            $context->setInternalIssues($description);
+        }
+
+        // Build a starter scope sentence from industry/country/employee-count
+        // so the SoA + audit-prep pages have something to anchor on.
+        $industries = $session->get('setup_organisation_industries', []);
+        $employeeCount = $session->get('setup_organisation_employee_count', '');
+        $country = $session->get('setup_organisation_country', '');
+        if ($context->getIsmsScope() === null || $context->getIsmsScope() === '') {
+            $scopeParts = [];
+            if (is_array($industries) && $industries !== []) {
+                $scopeParts[] = 'Branchen: ' . implode(', ', $industries);
+            }
+            if ($employeeCount !== '') {
+                $scopeParts[] = 'Mitarbeiter: ' . $employeeCount;
+            }
+            if ($country !== '') {
+                $scopeParts[] = 'Sitz: ' . $country;
+            }
+            if ($scopeParts !== []) {
+                $context->setIsmsScope(implode(' · ', $scopeParts));
+            }
+        }
+
+        if ($isNew) {
+            $this->entityManager->persist($context);
         }
     }
     /**
