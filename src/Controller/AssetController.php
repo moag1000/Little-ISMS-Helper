@@ -104,8 +104,14 @@ class AssetController extends AbstractController
             ];
         }
 
-        // Filter to active only first
-        $assets = array_filter($assets, fn(Asset $asset): bool => $asset->getStatus() === 'active');
+        // Hide end-of-life assets from the default list. Users can still surface
+        // them explicitly via ?status=retired / ?status=disposed.
+        if ($status === null || $status === '') {
+            $assets = array_filter(
+                $assets,
+                fn(Asset $asset): bool => !in_array($asset->getStatus(), ['retired', 'disposed'], true)
+            );
+        }
 
         if ($type) {
             $assets = array_filter($assets, fn(Asset $asset): bool => $asset->getAssetType() === $type);
