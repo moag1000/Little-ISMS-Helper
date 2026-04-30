@@ -2,13 +2,28 @@
 # Security: Enhanced session security settings
 
 framework:
+    # Trust the reverse-proxy in front of the container so X-Forwarded-Proto /
+    # X-Forwarded-For are read when computing Request::isSecure() / clientIp().
+    # Without this, self-hosted setups behind Traefik / NPM / HAProxy where TLS
+    # terminates at the proxy will see "http" inside the container and the
+    # 'auto' cookie_secure below will refuse to mark the cookie secure even on
+    # an HTTPS request — and inversely, a hardcoded 'true' would set secure
+    # over plain HTTP and the browser would silently drop the cookie (every
+    # request gets a new session, CSRF tokens never match).
+    trusted_proxies: '127.0.0.1,REMOTE_ADDR'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port', 'x-forwarded-prefix']
+
     # Security: Secure session cookie configuration
     session:
         # Security: Prevent JavaScript access to session cookies (XSS protection)
         cookie_httponly: true
 
-        # Security: Only send cookies over HTTPS in production
-        cookie_secure: true
+        # Security: cookie 'secure' flag follows the request scheme so HTTPS
+        # deployments still get secure cookies, while HTTP-only self-hosted
+        # setups (Pi/LAN) don't break with browsers dropping the cookie.
+        # Trusted_proxies above ensures isSecure() correctly detects HTTPS
+        # behind a reverse proxy.
+        cookie_secure: 'auto'
 
         # Security: Strict SameSite policy to prevent CSRF
         # 'lax' allows cookies on top-level navigation (good for authentication)

@@ -70,19 +70,22 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
         }
 
         // Guard against false-positives: only redirect to Quick-Fix when there
-        // are actually pending Doctrine migrations. A "table not found" error
-        // can also come from a typo in raw SQL, which has nothing to do with
-        // an out-of-date schema — those should bubble up as a normal 500 with
-        // the original stack trace, not a misleading "apply migrations" page.
+        // are actually pending Doctrine migrations OR a schema drift between
+        // entity metadata and the live DB. A "table not found" error can also
+        // come from a typo in raw SQL, which has nothing to do with an
+        // out-of-date schema — those should bubble up as a normal 500 with the
+        // original stack trace, not a misleading "apply migrations" page.
         try {
             $status = $this->maintenance->getMaintenanceStatus();
             $pending = (int) ($status['migration_status']['pending'] ?? 0);
+            $drift = (int) ($status['schema_drift']['count'] ?? 0);
         } catch (\Throwable) {
             // If even reading status fails, the schema is presumably very
             // broken — keep the redirect to give the user a recovery path.
             $pending = 1;
+            $drift = 0;
         }
-        if ($pending === 0) {
+        if ($pending === 0 && $drift === 0) {
             return;
         }
 

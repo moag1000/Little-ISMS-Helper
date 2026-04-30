@@ -19,6 +19,7 @@ class ComplianceFrameworkSelectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $availableFrameworks = $options['available_frameworks'] ?? [];
+        $mandatoryCodes = $options['mandatory_codes'] ?? [];
 
         // Build choices from available frameworks
         $choices = [];
@@ -47,6 +48,14 @@ class ComplianceFrameworkSelectionType extends AbstractType
                 'help' => 'setup.compliance.frameworks_help',
                 'translation_domain' => 'setup',
                 'choice_translation_domain' => 'compliance',
+                // Mandatory frameworks (regulatorische Pflicht laut Klassifikation)
+                // werden als disabled-Checkbox gerendert. Recommended bleibt
+                // pre-checked aber abwählbar — User kann das Set anpassen.
+                'choice_attr' => function (string $code) use ($mandatoryCodes): array {
+                    return in_array($code, $mandatoryCodes, true)
+                        ? ['disabled' => 'disabled']
+                        : [];
+                },
             ]);
     }
 
@@ -58,8 +67,10 @@ class ComplianceFrameworkSelectionType extends AbstractType
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'compliance_frameworks',
             'available_frameworks' => [],
+            'mandatory_codes' => [],
         ]);
 
         $resolver->setAllowedTypes('available_frameworks', 'array');
+        $resolver->setAllowedTypes('mandatory_codes', 'array');
     }
 }

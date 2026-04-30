@@ -2761,6 +2761,16 @@ label .required,
 .form-floating > .form-control:focus,
 .form-floating > .form-control:not(:placeholder-shown) { background-color: var(--surface); }
 
+/* Hide placeholder INSIDE floating-label fields. Bootstrap normally sets
+   ::placeholder to transparent so the label alone acts as the placeholder
+   (and floats up on focus / value). Our generic .form-control.form-control
+   override above (line ~2689) re-colours the placeholder, which Bootstrap
+   loses on specificity + source-order — placeholder text and label render
+   on top of each other in empty fields, illegible.
+   Restore Bootstrap's intent only for floating-label wrappers. */
+.form-floating > .form-control.form-control::placeholder,
+.form-floating > .form-control.form-control:focus::placeholder { color: transparent; }
+
 /* ═══════════════════════════════════════════════════════════════════
    Bootstrap-Badge override moved to Aurora v4 bridge below (~line 4470).
    This older block was dominated by the newer rules via source-order.

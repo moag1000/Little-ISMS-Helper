@@ -5,6 +5,13 @@ quick_fix:
         body: 'This instance has been upgraded but the database schema is still at the previous version. Apply with one click:'
         count_label: 'pending migration(s)'
         button: 'Apply migrations now'
+    drift:
+        title: 'Schema drift detected'
+        body: 'All migrations applied, but the database schema differs from the entity definition. Reconcile with one click:'
+        count_label: 'pending schema statement(s)'
+        show_sql: 'Show SQL'
+        button: 'Reconcile schema now'
+        destructive_warning: 'Warning: %count% destructive statement(s) detected (DROP). Manual review required. Please use CLI:'
     ok:
         title: 'All up to date'
         body: 'No pending schema migrations.'

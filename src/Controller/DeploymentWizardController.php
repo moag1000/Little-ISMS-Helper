@@ -484,12 +484,7 @@ class DeploymentWizardController extends AbstractController
         $response = new \Symfony\Component\HttpFoundation\JsonResponse(
             ['status' => 'started']
         );
-        $response->send();
-        if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();
-        } elseif (function_exists('litespeed_finish_request')) {
-            litespeed_finish_request();
-        }
+        $this->detachAndContinue($response);
 
         // Background work
         try {
@@ -629,12 +624,7 @@ class DeploymentWizardController extends AbstractController
         $session->save();
 
         $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
-        $immediateResponse->send();
-        if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();
-        } elseif (function_exists('litespeed_finish_request')) {
-            litespeed_finish_request();
-        }
+        $this->detachAndContinue($immediateResponse);
 
         try {
             // Save file temporarily
@@ -782,12 +772,7 @@ class DeploymentWizardController extends AbstractController
         $session->save();
 
         $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
-        $immediateResponse->send();
-        if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();
-        } elseif (function_exists('litespeed_finish_request')) {
-            litespeed_finish_request();
-        }
+        $this->detachAndContinue($immediateResponse);
 
         // Start output buffering to capture any stray output
         ob_start();
@@ -1360,12 +1345,22 @@ class DeploymentWizardController extends AbstractController
             'frameworks' => $recommendedFrameworks,
         ], [
             'available_frameworks' => $availableFrameworks,
+            'mandatory_codes' => $mandatoryCodes,
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $selectedFrameworks = $data['frameworks'] ?? ['ISO27001'];
+
+            // Force-include mandatory codes server-side — disabled inputs are
+            // not posted by the browser, so re-add them after submit so users
+            // can't bypass regulatory frameworks by tampering with the DOM.
+            foreach ($mandatoryCodes as $code) {
+                if (!in_array($code, $selectedFrameworks, true)) {
+                    $selectedFrameworks[] = $code;
+                }
+            }
 
             // Ensure ISO27001 is always selected
             if (!in_array('ISO27001', $selectedFrameworks, true)) {
@@ -1825,12 +1820,7 @@ class DeploymentWizardController extends AbstractController
         $session->save();
 
         $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
-        $immediateResponse->send();
-        if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();
-        } elseif (function_exists('litespeed_finish_request')) {
-            litespeed_finish_request();
-        }
+        $this->detachAndContinue($immediateResponse);
 
         try {
             $result = $this->dataImportService->importBaseData($selectedModules);
@@ -1939,12 +1929,7 @@ class DeploymentWizardController extends AbstractController
         $session->save();
 
         $immediateResponse = new \Symfony\Component\HttpFoundation\JsonResponse(['status' => 'started']);
-        $immediateResponse->send();
-        if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();
-        } elseif (function_exists('litespeed_finish_request')) {
-            litespeed_finish_request();
-        }
+        $this->detachAndContinue($immediateResponse);
 
         try {
             $result = $this->dataImportService->importSampleData($selectedSamples, $selectedModules);
@@ -2251,12 +2236,33 @@ class DeploymentWizardController extends AbstractController
                     }
                 }
 
+                // Munge CREATE TABLE → CREATE TABLE IF NOT EXISTS so the batch is
+                // idempotent against background workers that auto-create their own
+                // tables in parallel. Concrete case: Symfony Messenger doctrine
+                // transport (auto_setup: true) racing with the wizard during Skip:
+                // DROP DATABASE wipes everything, messenger-scheduler then sends a
+                // message → transport CREATEs messenger_messages → bulk batch hits
+                // "Table 'messenger_messages' already exists" and the whole install
+                // aborts. IF NOT EXISTS is safe here because SchemaTool emits the
+                // same definition the auto-setup uses.
+                $idempotentSqls = array_map(
+                    static function (string $sql): string {
+                        return preg_replace(
+                            '/^\s*CREATE TABLE(?!\s+IF\s+NOT\s+EXISTS)/i',
+                            'CREATE TABLE IF NOT EXISTS',
+                            $sql,
+                            1,
+                        ) ?? $sql;
+                    },
+                    $createSqls,
+                );
+
                 $sqlBatch = '';
                 if ($isMysql) {
                     $sqlBatch .= "SET FOREIGN_KEY_CHECKS = 0;\n";
                     $sqlBatch .= "SET UNIQUE_CHECKS = 0;\n";
                 }
-                $sqlBatch .= implode(";\n", $createSqls);
+                $sqlBatch .= implode(";\n", $idempotentSqls);
                 if (!str_ends_with(rtrim($sqlBatch), ';')) {
                     $sqlBatch .= ';';
                 }
@@ -2513,6 +2519,31 @@ class DeploymentWizardController extends AbstractController
             PDO::ATTR_TIMEOUT => 5,
         ]);
     }
+    /**
+     * Sends the immediate JSON response and detaches the FCGI worker so the
+     * client sees status=started while the long-running setup-wizard work
+     * continues in the background.
+     *
+     * Flushes every active output buffer before fastcgi_finish_request() —
+     * with PHP's default output_buffering=4096 the JSON body would otherwise
+     * sit in the buffer and the FCGI stream would stay open until script
+     * exit, defeating the async-job pattern (browser hangs on POST until
+     * the reverse-proxy gateway-timeout fires).
+     */
+    private function detachAndContinue(\Symfony\Component\HttpFoundation\Response $response): void
+    {
+        $response->send();
+        while (ob_get_level() > 0) {
+            @ob_end_flush();
+        }
+        flush();
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } elseif (function_exists('litespeed_finish_request')) {
+            litespeed_finish_request();
+        }
+    }
+
     /**
      * Get Docker MySQL password from auto-generated credentials file
      */

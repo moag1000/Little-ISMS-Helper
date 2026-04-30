@@ -44,16 +44,25 @@ class QuickFixController extends AbstractController
         }
 
         $pendingCount = 0;
+        $driftCount = 0;
+        $driftStatements = [];
+        $driftDestructive = [];
         $errorMessage = null;
         try {
             $status = $maintenance->getMaintenanceStatus();
             $pendingCount = (int) ($status['migration_status']['pending'] ?? 0);
+            $driftCount = (int) ($status['schema_drift']['count'] ?? 0);
+            $driftStatements = $status['schema_drift']['statements'] ?? [];
+            $driftDestructive = $status['schema_drift']['destructive'] ?? [];
         } catch (\Throwable $e) {
             $errorMessage = $e->getMessage();
         }
 
         $response = $this->render('quick_fix/index.html.twig', [
             'pending_count' => $pendingCount,
+            'drift_count' => $driftCount,
+            'drift_statements' => $driftStatements,
+            'drift_destructive' => $driftDestructive,
             'error_message' => $errorMessage,
         ]);
 
@@ -90,6 +99,43 @@ class QuickFixController extends AbstractController
         }
 
         $this->addFlash('success', sprintf('%d Migration(en) erfolgreich angewendet.', $result['executed']));
+        return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
+    }
+
+    #[IsCsrfTokenValid('quick_fix_reconcile')]
+    public function reconcile(
+        Request $request,
+        QuickFixGuard $guard,
+        SchemaMaintenanceService $maintenance,
+    ): Response {
+        if (!$guard->mayAccess($request)) {
+            return $this->render('quick_fix/locked.html.twig', [
+                'token_required' => $guard->isTokenRequired(),
+            ], new Response('', Response::HTTP_FORBIDDEN));
+        }
+
+        // Refuse when destructive drift exists — those need manual review.
+        try {
+            $status = $maintenance->getMaintenanceStatus();
+            $destructive = $status['schema_drift']['destructive'] ?? [];
+        } catch (\Throwable $e) {
+            $this->addFlash('error', sprintf('Status-Abfrage fehlgeschlagen: %s', $e->getMessage()));
+            return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
+        }
+
+        if ($destructive !== []) {
+            $this->addFlash('error', 'Destruktive Schema-Änderungen erkannt. Bitte manuell prüfen via CLI: php bin/console app:schema:reconcile');
+            return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
+        }
+
+        $result = $maintenance->reconcileSchema('quick-fix');
+
+        if (!$result['success']) {
+            $this->addFlash('error', sprintf('Schema-Reconcile fehlgeschlagen: %s', $result['error'] ?? ($result['blocked'] ?? 'unbekannter Fehler')));
+            return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
+        }
+
+        $this->addFlash('success', sprintf('%d Schema-Statement(s) erfolgreich angewendet.', $result['executed']));
         return new RedirectResponse($this->generateUrl('app_quick_fix_index', ['fixed' => 1]));
     }
 }
