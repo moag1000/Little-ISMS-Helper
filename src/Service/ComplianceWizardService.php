@@ -1001,8 +1001,15 @@ class ComplianceWizardService
 
     /**
      * Counts active vs. revoked consents (GDPR Art. 6/7 + ISO 27701 7.2.4).
-     * Score = % of consents that are not revoked. Returns 0 + gap when no
-     * consents are tracked at all.
+     * Score = % of consents that are not revoked, rounded to 1 decimal.
+     *
+     * Semantic divergence from sibling checks like checkRiskCoverage which
+     * return score=100 when no entities exist: for consent-tracking we
+     * treat "zero consents" as a gap because GDPR Art. 6/7 requires
+     * demonstrable consent records for any tenant processing personal data
+     * on consent legal basis. Tenants on other legal bases (contract,
+     * legitimate interest) can ignore this wizard category — the gap is
+     * informational, not a hard fail.
      */
     private function checkConsentCoverage(array $check, ?Tenant $tenant): array
     {
@@ -1022,18 +1029,30 @@ class ComplianceWizardService
                 'score' => 0,
                 'details' => ['total' => 0, 'active' => 0],
                 'gap' => [
-                    'title' => 'wizard.gap.no_consents',
-                    'description' => 'wizard.gap.no_consents_desc',
+                    'title' => $this->translator->trans('wizard.gap.no_consents', [], 'wizard'),
+                    'description' => $this->translator->trans('wizard.gap.no_consents_desc', [], 'wizard'),
                     'priority' => 'high',
                     'route' => $check['route'] ?? 'app_consent_index',
                 ],
             ];
         }
 
-        $score = ($active / $total) * 100;
+        $score = round(($active / $total) * 100, 1);
+
+        $gap = null;
+        if ($score < 90) {
+            $gap = [
+                'title' => $this->translator->trans('wizard.gap.consent_revoked_high', [], 'wizard'),
+                'description' => $this->translator->trans('wizard.gap.consent_revoked_high_desc', [], 'wizard'),
+                'priority' => 'medium',
+                'route' => $check['route'] ?? 'app_consent_index',
+            ];
+        }
+
         return [
             'score' => $score,
             'details' => ['total' => $total, 'active' => $active],
+            'gap' => $gap,
         ];
     }
 

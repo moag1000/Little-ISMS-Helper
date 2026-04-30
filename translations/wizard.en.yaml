@@ -147,6 +147,10 @@ wizard:
         suppliers_assessment_description: "%count% critical suppliers have no risk assessment."
         treatment_plans_overdue: "Overdue treatment plans"
         treatment_plans_description: "%count% risk treatment plans are overdue."
+        no_consents: 'No consents recorded'
+        no_consents_desc: 'GDPR Art. 6/7 + ISO 27701 7.2.4 require demonstrable consents.'
+        consent_revoked_high: 'High consent-revocation rate'
+        consent_revoked_high_desc: 'More than 10% of consents are revoked — review recommended.'
 
     # Actions
     action:

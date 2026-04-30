@@ -147,6 +147,10 @@ wizard:
         suppliers_assessment_description: "%count% kritische Lieferanten haben keine Risikobewertung."
         treatment_plans_overdue: "Überfällige Behandlungspläne"
         treatment_plans_description: "%count% Risikobehandlungspläne sind überfällig."
+        no_consents: 'Keine Einwilligungen erfasst'
+        no_consents_desc: 'GDPR Art. 6/7 + ISO 27701 7.2.4 setzen nachweisbare Einwilligungen voraus.'
+        consent_revoked_high: 'Hoher Anteil widerrufener Einwilligungen'
+        consent_revoked_high_desc: 'Mehr als 10% der Einwilligungen wurden widerrufen — Review empfohlen.'
 
     # Actions
     action:
