@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'asset' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
 
 {% block title %}{{ 'asset.modern.header.title'|trans({}, 'asset')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -187,13 +188,15 @@
                    placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
         </div>
         <div class="col-md-3">
-            <label for="filter-status" class="form-label">{{ 'asset.label.status'|trans({}, 'asset') }}</label>
-            <select class="form-select" id="filter-status" name="status">
-                <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                {% for value in ['active', 'inactive', 'in_use', 'returned', 'retired', 'disposed'] %}
-                    <option value="{{ value }}" {{ app.request.query.get('status') == value ? 'selected' : '' }}>{{ ('asset.status.' ~ value)|trans({}, 'asset') }}</option>
-                {% endfor %}
-            </select>
+            {{ _fa_filter_select.render({
+                name: 'status',
+                label: 'asset.label.status'|trans({}, 'asset'),
+                values: ['active', 'inactive', 'in_use', 'returned', 'retired', 'disposed'],
+                prefix: 'asset.status.',
+                domain: 'asset',
+                selected: app.request.query.get('status'),
+                all_label: 'common.all'|trans({}, 'messages')
+            }) }}
         </div>
     {% endblock %}
 {% endembed %}

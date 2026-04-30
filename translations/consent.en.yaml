@@ -64,6 +64,8 @@ consent:
         active: Active
         pending_verification: 'Pending Verification'
         revoked: Revoked
+        expired: Expired
+        rejected: Rejected
         overview: 'Status Overview'
 
     # Identifier types

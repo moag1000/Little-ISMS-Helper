@@ -64,6 +64,8 @@ consent:
         active: Aktiv
         pending_verification: 'Verifizierung ausstehend'
         revoked: Widerrufen
+        expired: Abgelaufen
+        rejected: Abgelehnt
         overview: 'Statusübersicht'
 
     # Identifier types
