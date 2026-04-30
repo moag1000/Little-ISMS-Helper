@@ -349,4 +349,23 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertGreaterThanOrEqual(0, $result['score']);
         $this->assertLessThanOrEqual(100, $result['score']);
     }
+
+    #[Test]
+    public function testDpiaCoverageCheckReturnsScoreShape(): void
+    {
+        $this->requireDatabase();
+
+        $reflect = new \ReflectionClass($this->wizardService);
+        if (!$reflect->hasMethod('checkDpiaCoverage')) {
+            $this->fail('ComplianceWizardService::checkDpiaCoverage() not implemented');
+        }
+
+        $method = $reflect->getMethod('checkDpiaCoverage');
+        $result = $method->invoke($this->wizardService, ['type' => 'dpia_coverage'], null);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('score', $result);
+        $this->assertGreaterThanOrEqual(0, $result['score']);
+        $this->assertLessThanOrEqual(100, $result['score']);
+    }
 }

@@ -155,6 +155,8 @@ wizard:
         no_dsr_desc: 'Even without active requests the process should be tested.'
         dsr_open_high: 'High share of open DSRs'
         dsr_open_high_desc: 'More than 10% are not in a terminal state (completed/rejected). Check 30-day deadline (Art. 12(3)).'
+        dpia_missing: 'DPIA missing for high-risk processing'
+        dpia_missing_desc: 'GDPR Art. 35 mandates a Data Protection Impact Assessment for every high-risk processing activity.'
 
     # Actions
     action:

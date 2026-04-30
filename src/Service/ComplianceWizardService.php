@@ -18,6 +18,7 @@ use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\ConsentRepository;
 use App\Repository\DataSubjectRequestRepository;
+use App\Repository\ProcessingActivityRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -60,6 +61,7 @@ class ComplianceWizardService
         private readonly SupplierRepository $supplierRepository,
         private readonly ConsentRepository $consentRepository,
         private readonly DataSubjectRequestRepository $dataSubjectRequestRepository,
+        private readonly ProcessingActivityRepository $processingActivityRepository,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator
     ) {
@@ -343,6 +345,10 @@ class ComplianceWizardService
 
             case 'dsr_coverage':
                 $result = $this->checkDsrCoverage($check, $tenant);
+                break;
+
+            case 'dpia_coverage':
+                $result = $this->checkDpiaCoverage($check, $tenant);
                 break;
 
             default:
@@ -1110,6 +1116,60 @@ class ComplianceWizardService
         return [
             'score' => $score,
             'details' => ['total' => $total, 'completed' => $done],
+            'gap' => $gap,
+        ];
+    }
+
+    /**
+     * Of all ProcessingActivity rows flagged isHighRisk=true (= DPIA required
+     * per Art. 35 DSGVO), how many have at least one linked Risk row whose
+     * requiresDPIA flag is also true? Lower bound: 0 (no DPIA performed).
+     * Upper bound: 100 (every high-risk activity has a documented DPIA risk).
+     * When no high-risk activities exist, score=100 (vacuously true).
+     */
+    private function checkDpiaCoverage(array $check, ?Tenant $tenant): array
+    {
+        $qbHighRisk = $this->processingActivityRepository->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.isHighRisk = :hr')->setParameter('hr', true);
+        if ($tenant !== null) {
+            $qbHighRisk->andWhere('p.tenant = :t')->setParameter('t', $tenant);
+        }
+        $highRisk = (int) $qbHighRisk->getQuery()->getSingleScalarResult();
+
+        if ($highRisk === 0) {
+            return [
+                'score' => 100,
+                'details' => ['high_risk_activities' => 0, 'documented_dpias' => 0],
+                'gap' => null,
+            ];
+        }
+
+        $qbDpia = $this->riskRepository->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->where('r.requiresDPIA = :rq')->setParameter('rq', true);
+        if ($tenant !== null) {
+            $qbDpia->andWhere('r.tenant = :t')->setParameter('t', $tenant);
+        }
+        $documented = (int) $qbDpia->getQuery()->getSingleScalarResult();
+
+        // Cap at 100 — a tenant might over-document (more DPIA-risks than
+        // high-risk activities); we don't want a score >100.
+        $score = round(min(100, ($documented / $highRisk) * 100), 1);
+
+        $gap = null;
+        if ($score < 100) {
+            $gap = [
+                'title' => $this->translator->trans('wizard.gap.dpia_missing', [], 'wizard'),
+                'description' => $this->translator->trans('wizard.gap.dpia_missing_desc', [], 'wizard'),
+                'priority' => 'critical',
+                'route' => $check['route'] ?? 'app_processing_activity_index',
+            ];
+        }
+
+        return [
+            'score' => $score,
+            'details' => ['high_risk_activities' => $highRisk, 'documented_dpias' => $documented],
             'gap' => $gap,
         ];
     }
