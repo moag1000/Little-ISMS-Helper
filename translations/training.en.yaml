@@ -60,6 +60,8 @@ training:
     duration: Duration (minutes)
     location: Location
     trainer: Trainer
+    trainer_person: 'Trainer (Person)'
+    trainer_deputy_persons: 'Trainer Deputies (Persons)'
     target_audience: Target Audience
     participants: Participants
     status: Status
@@ -88,6 +90,7 @@ training:
     duration: e.g. 60
     location: e.g. Conference Room A or Zoom link
     trainer_user: -- Select trainer --
+    trainer_person: '-- Person from master data --'
   help:
     duration: Duration in minutes (15-480)
     participants: Hold CTRL to select multiple participants
@@ -97,6 +100,8 @@ training:
     materials: Links or descriptions of training materials
     feedback: Feedback from participants or trainer notes
     trainer_user: Trainer from user management. Use legacy field for external trainers.
+    trainer_person: 'Person without system login as trainer. Order: User > Person > legacy text.'
+    trainer_deputy_persons: 'Additional persons with deputy role for the training.'
   validation:
     title_required: Please enter a title
     date_required: Please select a date

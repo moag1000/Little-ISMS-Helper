@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\ComplianceFramework;
+use App\Entity\Person;
 use App\Entity\User;
 use App\Entity\Training;
 use App\Entity\Control;
@@ -104,6 +105,28 @@ class TrainingType extends AbstractType
                 'placeholder' => 'training.placeholder.trainer_user',
                 'attr' => ['class' => 'form-select'],
                 'help' => 'training.help.trainer_user',
+            ])
+            ->add('trainerPerson', EntityType::class, [
+                'label' => 'training.field.trainer_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'training.placeholder.trainer_person',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+                'help' => 'training.help.trainer_person',
+            ])
+            ->add('trainerDeputyPersons', EntityType::class, [
+                'label' => 'training.field.trainer_deputy_persons',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'training.help.trainer_deputy_persons',
             ])
             ->add('trainer', TextType::class, [
                 'label' => 'training.field.trainer_legacy',
