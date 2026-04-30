@@ -46,8 +46,8 @@
                 {% if a.finding %}
                     {% set _meta = _meta|merge([a.finding.findingNumber ?? ('#' ~ a.finding.id)]) %}
                 {% endif %}
-                {% if a.responsiblePerson %}
-                    {% set _meta = _meta|merge([a.responsiblePerson.fullName]) %}
+                {% if a.effectiveResponsiblePerson %}
+                    {% set _meta = _meta|merge([a.effectiveResponsiblePerson]) %}
                 {% endif %}
                 {% if a.plannedCompletionDate %}
                     {% set _meta = _meta|merge([

@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\AuditFinding;
 use App\Entity\CorrectiveAction;
+use App\Entity\Person;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -60,11 +61,27 @@ class CorrectiveActionType extends AbstractType
                 'required' => true,
                 'attr' => ['class' => 'form-select'],
             ])
-            ->add('responsiblePerson', EntityType::class, [
-                'label' => 'corrective_action.field.responsible_person',
+            ->add('responsiblePersonUser', EntityType::class, [
+                'label' => 'corrective_action.field.responsible_person_user',
                 'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
+                'placeholder' => 'corrective_action.placeholder.responsible_person_user',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+            ])
+            ->add('responsiblePerson', EntityType::class, [
+                'label' => 'corrective_action.field.responsible_person',
+                'class' => Person::class,
+                'choice_label' => 'fullName',
                 'placeholder' => 'corrective_action.placeholder.responsible_person',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+            ])
+            ->add('responsibleDeputyPersons', EntityType::class, [
+                'label' => 'corrective_action.field.responsible_deputy_persons',
+                'class' => Person::class,
+                'choice_label' => 'fullName',
+                'multiple' => true,
                 'required' => false,
                 'attr' => ['class' => 'form-select'],
             ])

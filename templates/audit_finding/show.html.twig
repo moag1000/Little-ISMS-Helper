@@ -75,7 +75,7 @@
                                 <tr>
                                     <td>{{ ca.title }}</td>
                                     <td><span class="fa-status-pill fa-status-pill--primary">{{ ('corrective_action.status.' ~ ca.status)|trans({}, 'audits') }}</span></td>
-                                    <td>{{ ca.responsiblePerson ? ca.responsiblePerson.fullName : '—' }}</td>
+                                    <td>{{ ca.effectiveResponsiblePerson ?? '—' }}</td>
                                     <td>
                                         {% if ca.plannedCompletionDate %}
                                             <span {% if ca.isOverdue %}class="text-danger fw-bold"{% endif %}>
