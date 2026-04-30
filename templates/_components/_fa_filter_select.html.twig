@@ -4,6 +4,12 @@
   Single source of truth for choices: pass an enum class OR a list of values.
   Translation keys derived from `prefix ~ value` in `domain`.
 
+  IMPORT NOTE: Twig macros imported at the top of a template do NOT
+  propagate into {% embed %} blocks. When using this macro inside an
+  embed (e.g. inside a _search_filter_form embed), import it again
+  inside the embedded {% block filters %} or the variable will be
+  undefined.
+
   Usage:
     {{ _fa_filter_select.render({
         name: 'status',
