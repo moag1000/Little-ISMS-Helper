@@ -368,4 +368,27 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertGreaterThanOrEqual(0, $result['score']);
         $this->assertLessThanOrEqual(100, $result['score']);
     }
+
+    #[Test]
+    public function testIso27701WizardIsAvailableWhenPrivacyModulesActive(): void
+    {
+        $this->requireDatabase();
+        $config = $this->wizardService->getWizardConfig('iso27701');
+
+        if ($config === null) {
+            $this->markTestSkipped('iso27701 wizard requires the "controls" module');
+        }
+
+        $this->assertSame('ISO27701', $config['code']);
+        $this->assertArrayHasKey('categories', $config);
+        $this->assertGreaterThanOrEqual(8, count($config['categories']),
+            'ISO 27701 should expose at least 8 PIMS-Annex blocks');
+
+        foreach (['pims_context', 'privacy_policy', 'data_subject_rights',
+                  'privacy_risk', 'records_of_processing', 'breach_notification',
+                  'privacy_by_design', 'third_party_processors'] as $key) {
+            $this->assertArrayHasKey($key, $config['categories'],
+                "ISO 27701 missing category '$key'");
+        }
+    }
 }

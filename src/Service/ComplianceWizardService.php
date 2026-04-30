@@ -137,6 +137,16 @@ class ComplianceWizardService
                 'recommended_modules' => ['risks', 'audits', 'documents'],
                 'categories' => $this->getIso22301Categories(),
             ],
+            'iso27701' => [
+                'code' => 'ISO27701',
+                'name' => 'ISO 27701:2019 PIMS Readiness',
+                'description' => 'wizard.iso27701.description',
+                'icon' => 'bi-shield-fill-check',
+                'color' => 'primary',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['gdpr', 'incidents', 'suppliers'],
+                'categories' => $this->getIso27701Categories(),
+            ],
         ];
 
         // Filter wizards by required modules
@@ -2708,6 +2718,133 @@ class ComplianceWizardService
                         'type' => 'treatment_plan',
                         'module' => 'risks',
                         'route' => 'app_risk_treatment_plan_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Categories for ISO 27701:2019 readiness — Privacy Information Management
+     * System. Maps to the PIMS-specific extensions on top of ISO 27001 — focuses
+     * on the eight blocks the standard's Annex A/B require organisations to
+     * demonstrate.
+     */
+    private function getIso27701Categories(): array
+    {
+        return [
+            'pims_context' => [
+                'name' => 'wizard.iso27701.pims_context',
+                'description' => 'wizard.iso27701.pims_context_desc',
+                'icon' => 'bi-diagram-3',
+                'weight' => 1.5,
+                'checks' => [
+                    'controller_processor_role' => [
+                        'name' => 'wizard.check.iso27701_role',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'description' => 'wizard.check.iso27701_role_desc',
+                        'route' => 'app_context_edit',
+                    ],
+                ],
+            ],
+            'privacy_policy' => [
+                'name' => 'wizard.iso27701.privacy_policy',
+                'description' => 'wizard.iso27701.privacy_policy_desc',
+                'icon' => 'bi-file-earmark-lock',
+                'weight' => 1.5,
+                'checks' => [
+                    'policy_doc' => [
+                        'name' => 'wizard.check.iso27701_policy',
+                        'type' => 'document_review',
+                        'document_categories' => ['policy', 'privacy'],
+                        'module' => 'documents',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'data_subject_rights' => [
+                'name' => 'wizard.iso27701.data_subject_rights',
+                'description' => 'wizard.iso27701.data_subject_rights_desc',
+                'icon' => 'bi-person-check',
+                'weight' => 2,
+                'checks' => [
+                    'dsr_pipeline' => [
+                        'name' => 'wizard.check.iso27701_dsr',
+                        'type' => 'dsr_coverage',
+                        'module' => 'gdpr',
+                        'route' => 'app_data_subject_request_index',
+                    ],
+                ],
+            ],
+            'privacy_risk' => [
+                'name' => 'wizard.iso27701.privacy_risk',
+                'description' => 'wizard.iso27701.privacy_risk_desc',
+                'icon' => 'bi-exclamation-octagon',
+                'weight' => 3,
+                'checks' => [
+                    'dpia' => [
+                        'name' => 'wizard.check.iso27701_dpia',
+                        'type' => 'dpia_coverage',
+                        'module' => 'gdpr',
+                        'route' => 'app_processing_activity_index',
+                    ],
+                ],
+            ],
+            'records_of_processing' => [
+                'name' => 'wizard.iso27701.records_of_processing',
+                'description' => 'wizard.iso27701.records_of_processing_desc',
+                'icon' => 'bi-list-columns',
+                'weight' => 2,
+                'checks' => [
+                    'processing_records' => [
+                        'name' => 'wizard.check.iso27701_records',
+                        'type' => 'manual',
+                        'priority' => 'critical',
+                        'route' => 'app_processing_activity_index',
+                    ],
+                ],
+            ],
+            'breach_notification' => [
+                'name' => 'wizard.iso27701.breach_notification',
+                'description' => 'wizard.iso27701.breach_notification_desc',
+                'icon' => 'bi-exclamation-triangle',
+                'weight' => 1.5,
+                'checks' => [
+                    'breach_process' => [
+                        'name' => 'wizard.check.iso27701_breach',
+                        'type' => 'incident_process',
+                        'sla_hours' => 72,
+                        'module' => 'incidents',
+                        'route' => 'app_incident_index',
+                    ],
+                ],
+            ],
+            'privacy_by_design' => [
+                'name' => 'wizard.iso27701.privacy_by_design',
+                'description' => 'wizard.iso27701.privacy_by_design_desc',
+                'icon' => 'bi-tools',
+                'weight' => 1.5,
+                'checks' => [
+                    'consent_pipeline' => [
+                        'name' => 'wizard.check.iso27701_consent',
+                        'type' => 'consent_coverage',
+                        'module' => 'gdpr',
+                        'route' => 'app_consent_index',
+                    ],
+                ],
+            ],
+            'third_party_processors' => [
+                'name' => 'wizard.iso27701.third_party_processors',
+                'description' => 'wizard.iso27701.third_party_processors_desc',
+                'icon' => 'bi-people-fill',
+                'weight' => 2,
+                'checks' => [
+                    'supplier_assessment' => [
+                        'name' => 'wizard.check.iso27701_suppliers',
+                        'type' => 'supplier_assessment',
+                        'module' => 'suppliers',
+                        'route' => 'app_supplier_index',
                     ],
                 ],
             ],
