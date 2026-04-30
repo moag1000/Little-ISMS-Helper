@@ -244,7 +244,8 @@ class WelcomeController extends AbstractController
             usort($overdueReviews, fn($a, $b) => ($a->getReviewDate() ?? new \DateTime('1970-01-01')) <=> ($b->getReviewDate() ?? new \DateTime('1970-01-01')));
             $topReview = $overdueReviews[0];
             $reviewDate = $topReview->getReviewDate();
-            $daysOverdue = $reviewDate ? (new \DateTime())->diff($reviewDate)->days : null;
+            $daysOverdue = $this->signedDaysFromNow($reviewDate);
+            $daysOverdue = $daysOverdue !== null && $daysOverdue < 0 ? -$daysOverdue : null;
 
             $task = [
                 'type' => 'overdue_reviews',
@@ -268,8 +269,7 @@ class WelcomeController extends AbstractController
         if (count($overduePlans) > 0) {
             // Already sorted by targetCompletionDate ASC from repository (most overdue first)
             $topPlan = $overduePlans[0];
-            $targetDate = $topPlan->getTargetCompletionDate();
-            $daysOverdue = $targetDate ? (new \DateTime())->diff($targetDate)->days : null;
+            $daysOverdue = $topPlan->getDaysOverdue();
 
             $task = [
                 'type' => 'overdue_treatment_plans',
@@ -293,8 +293,10 @@ class WelcomeController extends AbstractController
         if (count($approachingPlans) > 0) {
             // Already sorted by targetCompletionDate ASC (soonest deadline first)
             $topApproaching = $approachingPlans[0];
-            $targetDate = $topApproaching->getTargetCompletionDate();
-            $daysLeft = $targetDate ? (new \DateTime())->diff($targetDate)->days : null;
+            $daysLeft = $topApproaching->getDaysUntilTarget();
+            if ($daysLeft !== null && $daysLeft < 0) {
+                $daysLeft = 0;
+            }
 
             $task = [
                 'type' => 'approaching_deadlines',
@@ -340,7 +342,8 @@ class WelcomeController extends AbstractController
             $topOverdueWf = $overdueWorkflows[0];
             $wfName = $topOverdueWf->getWorkflow()?->getName();
             $wfDueDate = $topOverdueWf->getDueDate();
-            $wfDaysOverdue = $wfDueDate ? (new \DateTime())->diff($wfDueDate)->days : null;
+            $wfDaysOverdue = $this->signedDaysFromNow($wfDueDate);
+            $wfDaysOverdue = $wfDaysOverdue !== null && $wfDaysOverdue < 0 ? -$wfDaysOverdue : null;
 
             $task = [
                 'type' => 'overdue_workflows',
@@ -368,5 +371,19 @@ class WelcomeController extends AbstractController
     private function countUrgentTasks(array $tasks): int
     {
         return array_sum(array_column($tasks, 'count'));
+    }
+
+    /**
+     * Signed days between now and $target. Positive = future, negative = past, null when null.
+     */
+    private function signedDaysFromNow(?\DateTimeInterface $target): ?int
+    {
+        if ($target === null) {
+            return null;
+        }
+
+        $diff = (new \DateTime())->diff($target);
+
+        return $diff->invert ? -$diff->days : $diff->days;
     }
 }

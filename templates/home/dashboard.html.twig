@@ -552,7 +552,7 @@
                                     <div class="small text-muted">
                                         <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i>
                                         {{ 'dashboard.overdue_treatment_plans.due_date'|trans({}, 'dashboard') }}: {{ plan.targetCompletionDate|locale_date }}
-                                        {% set daysOverdue = date().diff(plan.targetCompletionDate).days %}
+                                        {% set daysOverdue = plan.daysOverdue ?? 0 %}
                                         <span class="text-danger">({{ daysOverdue }} {{ 'dashboard.overdue_treatment_plans.days_overdue'|trans({}, 'dashboard') }})</span>
                                     </div>
                                     <div class="progress progress-h-4 mt-1">
@@ -611,7 +611,7 @@
                                     <div class="small text-muted">
                                         <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
                                         {{ plan.targetCompletionDate|locale_date }}
-                                        {% set daysRemaining = date().diff(plan.targetCompletionDate).days %}
+                                        {% set daysRemaining = plan.daysUntilTarget ?? 0 %}
                                         <span>({{ daysRemaining }} {{ 'dashboard.approaching_treatment_plans.days_remaining'|trans({}, 'dashboard') }})</span>
                                     </div>
                                     <div class="progress progress-h-4 mt-1">

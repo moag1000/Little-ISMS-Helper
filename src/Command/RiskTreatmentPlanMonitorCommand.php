@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Command;
 
 use Symfony\Component\Console\Attribute\Option;
-use DateTime;
 use Exception;
 use App\Repository\TenantRepository;
 use App\Repository\RiskTreatmentPlanRepository;
@@ -125,7 +124,7 @@ class RiskTreatmentPlanMonitorCommand
 
                 $overdueData = [];
                 foreach ($overduePlans as $overduePlan) {
-                    $daysOverdue = new DateTime()->diff($overduePlan->getTargetCompletionDate())->days;
+                    $daysOverdue = $overduePlan->getDaysOverdue() ?? 0;
 
                     $overdueData[] = [
                         $overduePlan->getId(),
@@ -160,7 +159,7 @@ class RiskTreatmentPlanMonitorCommand
 
                 $approachingData = [];
                 foreach ($approachingPlans as $approachingPlan) {
-                    $daysRemaining = new DateTime()->diff($approachingPlan->getTargetCompletionDate())->days;
+                    $daysRemaining = max(0, $approachingPlan->getDaysUntilTarget() ?? 0);
 
                     $approachingData[] = [
                         $approachingPlan->getId(),
@@ -217,7 +216,7 @@ class RiskTreatmentPlanMonitorCommand
             context: [
                 'plan' => $plan,
                 'risk' => $plan->getRisk(),
-                'days_overdue' => new DateTime()->diff($plan->getTargetCompletionDate())->days
+                'days_overdue' => $plan->getDaysOverdue() ?? 0
             ],
             recipients: [$plan->getResponsiblePerson()]
         );
