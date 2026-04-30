@@ -431,6 +431,20 @@ public function __construct()
         return $this;
     }
 
+    /**
+     * Days since actualDate. Positive when in past, negative when future-dated, null when unset.
+     */
+    public function getDaysSinceActual(): ?int
+    {
+        if (!$this->actualDate instanceof DateTimeInterface) {
+            return null;
+        }
+
+        $diff = (new \DateTime())->diff($this->actualDate);
+
+        return $diff->invert ? $diff->days : -$diff->days;
+    }
+
     public function getLeadAuditor(): ?string
     {
         return $this->leadAuditor;
