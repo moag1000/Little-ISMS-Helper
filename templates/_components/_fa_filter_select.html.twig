@@ -1,0 +1,50 @@
+{#
+  Generic filter <select> for index-page query-string filters.
+
+  Single source of truth for choices: pass an enum class OR a list of values.
+  Translation keys derived from `prefix ~ value` in `domain`.
+
+  Usage:
+    {{ _fa_filter_select.render({
+        name: 'status',
+        label: 'asset.label.status'|trans({}, 'asset'),
+        values: ['active', 'inactive', 'in_use', 'returned', 'retired', 'disposed'],
+        prefix: 'asset.status.',
+        domain: 'asset',
+        selected: app.request.query.get('status'),
+        all_label: 'common.all'|trans({}, 'messages')
+    }) }}
+
+  OR with backed enum:
+    {{ _fa_filter_select.render({
+        name: 'status',
+        label: 'incident.label.status'|trans({}, 'incident'),
+        values: enum_cases('App\\Enum\\IncidentStatus')|keys,
+        prefix: 'incident.status.',
+        domain: 'incident',
+        selected: app.request.query.get('status'),
+        all_label: 'common.all'|trans({}, 'messages')
+    }) }}
+#}
+{% macro render(opts) %}
+    {% set name = opts.name %}
+    {% set selected = opts.selected ?? '' %}
+    {% set prefix = opts.prefix ?? '' %}
+    {% set domain = opts.domain ?? 'messages' %}
+    {% set values = opts.values ?? [] %}
+    <div class="filter-select">
+        {% if opts.label is defined %}
+            <label for="filter-{{ name }}" class="form-label">{{ opts.label }}</label>
+        {% endif %}
+        <select class="form-select" id="filter-{{ name }}" name="{{ name }}">
+            {% if opts.all_label is defined %}
+                <option value="">{{ opts.all_label }}</option>
+            {% endif %}
+            {% for value in values %}
+                <option value="{{ value }}" {{ selected == value ? 'selected' : '' }}>
+                    {{ (prefix ~ value)|trans({}, domain) }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+{% endmacro %}
