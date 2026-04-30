@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Person;
 use App\Repository\PrototypeProtectionAssessmentRepository;
+use App\Service\OwnerResolver;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -111,6 +113,15 @@ class PrototypeProtectionAssessment
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $assessor = null;
 
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Person $assessorPerson = null;
+
+    /** @var Collection<int, Person> */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'ppa_assessor_deputies')]
+    private Collection $assessorDeputyPersons;
+
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $assessmentDate = null;
 
@@ -174,6 +185,7 @@ class PrototypeProtectionAssessment
     {
         $this->createdAt = new DateTimeImmutable();
         $this->evidenceDocuments = new ArrayCollection();
+        $this->assessorDeputyPersons = new ArrayCollection();
     }
 
     #[ORM\PreUpdate]
@@ -212,6 +224,37 @@ class PrototypeProtectionAssessment
 
     public function getAssessor(): ?User { return $this->assessor; }
     public function setAssessor(?User $assessor): self { $this->assessor = $assessor; return $this; }
+
+    public function getAssessorPerson(): ?Person { return $this->assessorPerson; }
+    public function setAssessorPerson(?Person $assessorPerson): self { $this->assessorPerson = $assessorPerson; return $this; }
+
+    /** @return Collection<int, Person> */
+    public function getAssessorDeputyPersons(): Collection { return $this->assessorDeputyPersons; }
+
+    public function addAssessorDeputyPerson(Person $person): self
+    {
+        if (!$this->assessorDeputyPersons->contains($person)) {
+            $this->assessorDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeAssessorDeputyPerson(Person $person): self
+    {
+        $this->assessorDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    public function getEffectiveAssessor(): ?string
+    {
+        return OwnerResolver::resolveEffective($this->assessor, $this->assessorPerson, null);
+    }
+
+    /** @return list<string> */
+    public function getAllAssessorOwners(): array
+    {
+        return OwnerResolver::resolveAll($this->assessor, $this->assessorPerson, null, $this->assessorDeputyPersons);
+    }
 
     public function getAssessmentDate(): ?DateTimeInterface { return $this->assessmentDate; }
     public function setAssessmentDate(?DateTimeInterface $d): self { $this->assessmentDate = $d; return $this; }
