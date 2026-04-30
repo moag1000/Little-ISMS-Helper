@@ -427,8 +427,8 @@
                 {% endblock %}
                 {% block card_body %}
                     <p><small><strong>Responsible:</strong>
-                        {% if fulfillment.responsiblePerson %}
-                            {{ fulfillment.responsiblePerson.fullName|default(fulfillment.responsiblePerson.email) }}
+                        {% if fulfillment.effectiveResponsiblePerson %}
+                            {{ fulfillment.effectiveResponsiblePerson }}
                             {% if is_inherited %}<span class="text-muted">(from parent)</span>{% endif %}
                         {% else %}
                             -

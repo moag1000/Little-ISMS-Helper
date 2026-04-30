@@ -1067,5 +1067,18 @@ admin:
                 bdsg: 'Controllers or processors established in or processing PII in Germany.'
                 eu_ai_act: 'Providers or deployers of AI systems classified as High-Risk per EU AI Act Annex III.'
 
+fulfillment:
+    field:
+        responsible_person_user: 'Responsible person (user)'
+        responsible_person: 'Responsible person (contact)'
+        responsible_deputy_persons: 'Deputies'
+    placeholder:
+        responsible_person_user: '-- Select user --'
+        responsible_person: '-- Select contact person --'
+    help:
+        responsible_person_user: 'System user responsible for implementing this requirement'
+        responsible_person: 'Contact person (person directory) as responsible party'
+        responsible_deputy_persons: 'Deputy contact persons for this requirement'
+
 nis2:
     article: Article

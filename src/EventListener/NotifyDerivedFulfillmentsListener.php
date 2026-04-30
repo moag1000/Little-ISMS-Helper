@@ -48,7 +48,7 @@ final class NotifyDerivedFulfillmentsListener
         foreach ($derived as $log) {
             $this->inheritanceService->markSourceUpdated($log);
 
-            $owner = $log->getReviewedBy() ?? $log->getFulfillment()?->getResponsiblePerson();
+            $owner = $log->getReviewedBy() ?? $log->getFulfillment()?->getResponsiblePersonUser();
             if ($owner !== null) {
                 $notifyPerOwner[$owner->getId()] ??= [
                     'user' => $owner,

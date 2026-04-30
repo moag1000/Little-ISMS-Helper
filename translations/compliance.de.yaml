@@ -1069,3 +1069,16 @@ admin:
                 gxp: 'Hersteller, Distributoren oder Service-Provider von Arzneimitteln, Medizinprodukten oder deren IT-Systemen (GMP-/GxP-regulierte Branchen).'
                 bdsg: 'Verantwortliche oder Auftragsverarbeiter mit Sitz oder PII-Verarbeitung in Deutschland.'
                 eu_ai_act: 'Anbieter oder Deployer von KI-Systemen, die als High-Risk nach EU AI Act Anhang III klassifiziert sind.'
+
+fulfillment:
+    field:
+        responsible_person_user: 'Verantwortliche Person (Benutzer)'
+        responsible_person: 'Verantwortliche Person (Kontakt)'
+        responsible_deputy_persons: 'Stellvertreter'
+    placeholder:
+        responsible_person_user: '-- Benutzer auswählen --'
+        responsible_person: '-- Kontaktperson auswählen --'
+    help:
+        responsible_person_user: 'Systembenutzer, der für die Umsetzung verantwortlich ist'
+        responsible_person: 'Kontaktperson (Personenstamm) als Verantwortliche'
+        responsible_deputy_persons: 'Stellvertretende Kontaktpersonen für diesen Anforderungspunkt'

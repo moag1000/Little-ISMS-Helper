@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use DateTimeImmutable;
-use InvalidArgumentException;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
+use App\Service\OwnerResolver;
+use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use InvalidArgumentException;
 
 /**
  * Compliance Requirement Fulfillment
@@ -109,11 +112,30 @@ class ComplianceRequirementFulfillment
     private ?DateTimeImmutable $nextReviewDate = null;
 
     /**
-     * Responsible person for implementing this requirement
+     * Responsible person for implementing this requirement (legacy User slot).
+     * DB column kept as `responsible_person_id` for zero-data-loss rename.
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?User $responsiblePerson = null;
+    #[ORM\JoinColumn(name: 'responsible_person_id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $responsiblePersonUser = null;
+
+    /**
+     * Tri-State Person slot: responsible person as Person master-data record.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'responsible_person_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Person $responsiblePerson = null;
+
+    /**
+     * Deputy Persons for the responsible person slot.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'crf_responsible_deputy')]
+    #[ORM\JoinColumn(name: 'fulfillment_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $responsibleDeputyPersons;
 
     /**
      * Implementation status
@@ -137,6 +159,7 @@ class ComplianceRequirementFulfillment
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
+        $this->responsibleDeputyPersons = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -244,15 +267,69 @@ class ComplianceRequirementFulfillment
         return $this;
     }
 
-    public function getResponsiblePerson(): ?User
+    public function getResponsiblePersonUser(): ?User
+    {
+        return $this->responsiblePersonUser;
+    }
+
+    public function setResponsiblePersonUser(?User $user): static
+    {
+        $this->responsiblePersonUser = $user;
+        return $this;
+    }
+
+    public function getResponsiblePerson(): ?Person
     {
         return $this->responsiblePerson;
     }
 
-    public function setResponsiblePerson(?User $user): static
+    public function setResponsiblePerson(?Person $person): static
     {
-        $this->responsiblePerson = $user;
+        $this->responsiblePerson = $person;
         return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getResponsibleDeputyPersons(): Collection
+    {
+        return $this->responsibleDeputyPersons;
+    }
+
+    public function addResponsibleDeputyPerson(Person $person): static
+    {
+        if (!$this->responsibleDeputyPersons->contains($person)) {
+            $this->responsibleDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeResponsibleDeputyPerson(Person $person): static
+    {
+        $this->responsibleDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    /**
+     * Effective responsible person: prefer User, then Person, then null.
+     */
+    public function getEffectiveResponsiblePerson(): ?string
+    {
+        return OwnerResolver::resolveEffective($this->responsiblePersonUser, $this->responsiblePerson, null);
+    }
+
+    /**
+     * All responsible persons (primary + deputies).
+     *
+     * @return list<string>
+     */
+    public function getAllResponsiblePersons(): array
+    {
+        return OwnerResolver::resolveAll(
+            $this->responsiblePersonUser,
+            $this->responsiblePerson,
+            null,
+            $this->responsibleDeputyPersons
+        );
     }
 
     public function getStatus(): string
