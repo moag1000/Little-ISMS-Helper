@@ -192,6 +192,8 @@ corporate:
         own_only: 'Nur eigene'
         including_inherited: 'Inkl. geerbte'
         including_subsidiaries: 'Inkl. Tochtergesellschaften'
+        orphaned: 'Nur unzugeordnete (ohne Tenant)'
+        all_tenants: 'Über alle Tenants'
     stats:
         breakdown: Aufschlüsselung
         groups: Gruppen

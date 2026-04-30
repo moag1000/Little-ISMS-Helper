@@ -184,4 +184,64 @@ class AssetRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find tenant-less (orphaned) assets — tenant_id IS NULL.
+     *
+     * TenantFilter wird waehrend der Query deaktiviert; sonst kombiniert
+     * Doctrine "tenant IS NULL" mit "tenant_id = :current" zu einer
+     * widerspruechlichen Bedingung und liefert 0 Resultate. Caller-Side
+     * Authorization noetig: Nur Admins/SuperAdmins sollen Orphans sehen.
+     *
+     * @return Asset[]
+     */
+    public function findOrphaned(): array
+    {
+        return $this->withoutTenantFilter(
+            fn() => $this->createQueryBuilder('a')
+                ->where('a.tenant IS NULL')
+                ->orderBy('a.name', 'ASC')
+                ->getQuery()
+                ->getResult()
+        );
+    }
+
+    /**
+     * Find every asset in the system, regardless of tenant scope.
+     *
+     * Bypasses TenantFilter — for admin/super-admin tools that need a
+     * cross-tenant overview (Data-Repair, Konzern-Reporting). Caller MUST
+     * enforce role-based authorization.
+     *
+     * @return Asset[]
+     */
+    public function findAllAcrossTenants(): array
+    {
+        return $this->withoutTenantFilter(
+            fn() => $this->createQueryBuilder('a')
+                ->orderBy('a.name', 'ASC')
+                ->getQuery()
+                ->getResult()
+        );
+    }
+
+    /**
+     * Run a callback with the Doctrine TenantFilter temporarily disabled.
+     */
+    private function withoutTenantFilter(callable $fn): mixed
+    {
+        $em = $this->getEntityManager();
+        $filters = $em->getFilters();
+        $wasEnabled = $filters->isEnabled('tenant_filter');
+        if ($wasEnabled) {
+            $filters->disable('tenant_filter');
+        }
+        try {
+            return $fn();
+        } finally {
+            if ($wasEnabled) {
+                $filters->enable('tenant_filter');
+            }
+        }
+    }
 }

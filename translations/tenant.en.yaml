@@ -192,6 +192,8 @@ corporate:
         own_only: 'Own Only'
         including_inherited: 'Including Inherited'
         including_subsidiaries: 'Including Subsidiaries'
+        orphaned: 'Orphaned only (no tenant)'
+        all_tenants: 'Across all tenants'
     stats:
         breakdown: Breakdown
         groups: Groups

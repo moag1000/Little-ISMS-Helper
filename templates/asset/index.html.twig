@@ -49,6 +49,14 @@
                     {{ 'corporate.view.including_subsidiaries'|trans({}, 'tenant') }}
                 </option>
                 {% endif %}
+                {% if inheritanceInfo.isAdmin %}
+                <option value="orphaned" {{ inheritanceInfo.currentView == 'orphaned' ? 'selected' : '' }}>
+                    {{ 'corporate.view.orphaned'|trans({}, 'tenant') }}
+                </option>
+                <option value="all" {{ inheritanceInfo.currentView == 'all' ? 'selected' : '' }}>
+                    {{ 'corporate.view.all_tenants'|trans({}, 'tenant') }}
+                </option>
+                {% endif %}
             </select>
             <noscript>
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
