@@ -11,6 +11,14 @@ action:
 
 requested_by: 'Requested by'
 expires_at: 'Expires on'
+field:
+    requested_approver_person: 'Approver (Person)'
+    requested_approver_deputy_persons: 'Approver Deputies (Persons)'
+placeholder:
+    requested_approver_person: '-- Person from master data --'
+help:
+    requested_approver_person: 'Person without system login as approver. Order: User > Person > empty.'
+    requested_approver_deputy_persons: 'Additional persons with deputy role for the approver.'
 
 approve: 'Approve'
 reject: 'Reject'

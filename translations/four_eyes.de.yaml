@@ -11,6 +11,14 @@ action:
 
 requested_by: 'Angefordert von'
 expires_at: 'Läuft ab am'
+field:
+    requested_approver_person: 'Genehmiger (Person)'
+    requested_approver_deputy_persons: 'Vertretungen Genehmiger (Personen)'
+placeholder:
+    requested_approver_person: '-- Person aus Stammdaten --'
+help:
+    requested_approver_person: 'Person ohne System-Login als Genehmiger. Reihenfolge: User > Person > leer.'
+    requested_approver_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Genehmiger.'
 
 approve: 'Freigeben'
 reject: 'Ablehnen'
