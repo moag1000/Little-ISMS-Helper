@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use DateTimeImmutable;
+use App\Entity\Person;
 use App\Repository\CustomReportRepository;
+use App\Service\OwnerResolver;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -144,6 +148,15 @@ class CustomReport
     #[ORM\JoinColumn(name: 'owner_id', nullable: false)]
     private ?User $owner = null;
 
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Person $ownerPerson = null;
+
+    /** @var Collection<int, Person> */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'custom_report_owner_deputies')]
+    private Collection $ownerDeputyPersons;
+
     /**
      * Users this report is shared with (JSON array of user IDs)
      */
@@ -170,6 +183,7 @@ class CustomReport
 
     public function __construct()
     {
+        $this->ownerDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->styles = [
             'primaryColor' => '#0d6efd',
@@ -354,6 +368,48 @@ class CustomReport
     {
         $this->owner = $owner;
         return $this;
+    }
+
+    public function getOwnerPerson(): ?Person
+    {
+        return $this->ownerPerson;
+    }
+
+    public function setOwnerPerson(?Person $ownerPerson): static
+    {
+        $this->ownerPerson = $ownerPerson;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getOwnerDeputyPersons(): Collection
+    {
+        return $this->ownerDeputyPersons;
+    }
+
+    public function addOwnerDeputyPerson(Person $person): static
+    {
+        if (!$this->ownerDeputyPersons->contains($person)) {
+            $this->ownerDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeOwnerDeputyPerson(Person $person): static
+    {
+        $this->ownerDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    public function getEffectiveOwner(): ?string
+    {
+        return OwnerResolver::resolveEffective($this->owner, $this->ownerPerson, null);
+    }
+
+    /** @return list<string> */
+    public function getAllOwners(): array
+    {
+        return OwnerResolver::resolveAll($this->owner, $this->ownerPerson, null, $this->ownerDeputyPersons);
     }
 
     public function getSharedWith(): array
