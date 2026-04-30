@@ -320,7 +320,6 @@ class ComplianceWizardServiceTest extends KernelTestCase
         }
 
         $method = $reflect->getMethod('checkConsentCoverage');
-        $method->setAccessible(true);
         $result = $method->invoke($this->wizardService, ['type' => 'consent_coverage'], null);
 
         $this->assertIsArray($result);
