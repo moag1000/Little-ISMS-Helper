@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use Doctrine\Migrations\DependencyFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -34,6 +35,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   php bin/console app:schema:reconcile
  *   php bin/console app:schema:reconcile --dry-run
  *   php bin/console app:schema:reconcile --dump-sql
+ *   php bin/console app:schema:reconcile --mark-migrations-executed
  */
 #[AsCommand(
     name: 'app:schema:reconcile',
@@ -41,8 +43,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class SchemaReconcileCommand
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ?DependencyFactory $migrationsDependencyFactory = null,
+    ) {
     }
 
     public function __invoke(
@@ -50,6 +54,8 @@ class SchemaReconcileCommand
         bool $dryRun = false,
         #[Option(description: 'Dump SQL statements instead of executing them', name: 'dump-sql')]
         bool $dumpSql = false,
+        #[Option(description: 'After reconcile, mark all known migrations as executed without running them (use after a fresh schema:update to prevent CREATE TABLE re-runs)', name: 'mark-migrations-executed')]
+        bool $markMigrationsExecuted = false,
         ?SymfonyStyle $io = null,
     ): int {
         $io?->title('Schema Reconcile');
@@ -150,10 +156,54 @@ class SchemaReconcileCommand
                 . 'subsequent runs will keep reporting these no-op statements. Safe to ignore.',
                 count($secondPass),
             ));
-            return Command::SUCCESS;
+        } else {
+            $io?->success(sprintf('Applied %d schema statements. DB is now in sync with entity metadata.', count($sqls)));
         }
 
-        $io?->success(sprintf('Applied %d schema statements. DB is now in sync with entity metadata.', count($sqls)));
+        if ($markMigrationsExecuted) {
+            $this->markAllMigrationsExecuted($io);
+        }
+
         return Command::SUCCESS;
+    }
+
+    /**
+     * Mark all available migrations as executed without running them. Used after
+     * a fresh schema:update / reconcile so subsequent doctrine:migrations:migrate
+     * runs do not try to CREATE TABLE on already-existing tables.
+     */
+    private function markAllMigrationsExecuted(?SymfonyStyle $io): void
+    {
+        if ($this->migrationsDependencyFactory === null) {
+            $io?->warning('doctrine/migrations not available — skipping --mark-migrations-executed.');
+            return;
+        }
+
+        $factory = $this->migrationsDependencyFactory;
+        $storage = $factory->getMetadataStorage();
+        $storage->ensureInitialized();
+
+        $availableMigrations = $factory->getMigrationPlanCalculator()->getMigrations();
+        $executedSet = $storage->getExecutedMigrations();
+
+        $marked = 0;
+        foreach ($availableMigrations->getItems() as $migration) {
+            $version = $migration->getVersion();
+            if ($executedSet->hasMigration($version)) {
+                continue;
+            }
+
+            $result = new \Doctrine\Migrations\Version\ExecutionResult($version, \Doctrine\Migrations\Version\Direction::UP, new \DateTimeImmutable());
+            $result->setTime(0.0);
+            $storage->complete($result);
+            $marked++;
+        }
+
+        if ($marked === 0) {
+            $io?->note('All migrations were already recorded as executed.');
+            return;
+        }
+
+        $io?->success(sprintf('Marked %d migrations as executed. doctrine:migrations:migrate will now skip them.', $marked));
     }
 }
