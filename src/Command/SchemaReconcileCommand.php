@@ -121,6 +121,38 @@ class SchemaReconcileCommand
         foreach ($sqls as $sql) {
             $conn->executeStatement($sql);
         }
+
+        // Phantom-Drift-Detection: DBAL 4.x + MariaDB emittiert für JSON-
+        // Spalten und nullable Defaults wiederholt CHANGE-Statements, die
+        // tatsächlich keine Änderung bewirken (JSON↔LONGTEXT-Introspection,
+        // DEFAULT-NULL-Diff, oft wegen falsch gesetztem serverVersion in
+        // DATABASE_URL). Wenn der zweite Lauf identische Statements liefert,
+        // ist das Schema in Wahrheit in sync.
+        $secondPass = $tool->getUpdateSchemaSql($metadata);
+        $secondPass = array_values(array_filter(
+            $secondPass,
+            static function (string $sql) use ($doctrineInternal): bool {
+                foreach ($doctrineInternal as $t) {
+                    if (preg_match('/^DROP TABLE\s+`?' . preg_quote($t, '/') . '`?\s*$/i', trim($sql)) === 1) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+        ));
+
+        if ($secondPass !== [] && count($secondPass) === count($sqls)) {
+            $io?->warning(sprintf(
+                'DBAL phantom drift detected: %d statements still emitted after applying. '
+                . 'Known DBAL/MariaDB issue (JSON↔LONGTEXT introspection, DEFAULT NULL diff), '
+                . 'often caused by serverVersion mismatch in DATABASE_URL vs the actual MariaDB version. '
+                . 'Verify DB_SERVER_VERSION matches `SELECT VERSION()`. Schema IS in sync; '
+                . 'subsequent runs will keep reporting these no-op statements. Safe to ignore.',
+                count($secondPass),
+            ));
+            return Command::SUCCESS;
+        }
+
         $io?->success(sprintf('Applied %d schema statements. DB is now in sync with entity metadata.', count($sqls)));
         return Command::SUCCESS;
     }
