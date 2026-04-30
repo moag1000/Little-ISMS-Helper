@@ -68,3 +68,11 @@ person:
         no_persons: 'Keine Personen vorhanden.'
     confirm:
         delete: 'Sind Sie sicher, dass Sie diese Person löschen möchten?'
+    from_user:
+        title: 'Person aus Benutzer anlegen'
+        help: 'Optional: Wählen Sie einen vorhandenen Benutzer aus, um Name, E‑Mail, Telefon, Abteilung und Position automatisch zu übernehmen. Sie können das Formular auch ohne Benutzer ausfüllen.'
+        label: 'Benutzer auswählen'
+        placeholder: '-- Benutzer auswählen --'
+        submit: 'Daten übernehmen'
+        prefilled_title: 'Daten aus Benutzer übernommen'
+        prefilled_help: 'Die Felder wurden mit den Daten des Benutzers vorausgefüllt. Sie können sie vor dem Speichern noch anpassen.'

@@ -6,8 +6,10 @@ namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Person;
+use App\Entity\User;
 use App\Form\PersonType;
 use App\Repository\PersonRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -21,6 +23,7 @@ class PersonController extends AbstractController
 {
     public function __construct(
         private readonly PersonRepository $personRepository,
+        private readonly UserRepository $userRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly Security $security
@@ -44,10 +47,24 @@ class PersonController extends AbstractController
     {
         $person = new Person();
 
-        // Set tenant from current user
-        $user = $this->security->getUser();
-        if ($user instanceof UserInterface && $user->getTenant()) {
-            $person->setTenant($user->getTenant());
+        $currentUser = $this->security->getUser();
+        $tenant = $currentUser instanceof UserInterface ? $currentUser->getTenant() : null;
+
+        if ($tenant) {
+            $person->setTenant($tenant);
+        }
+
+        $prefilledFromUser = false;
+        $fromUserId = $request->query->get('from_user');
+        if ($fromUserId !== null && ctype_digit((string) $fromUserId)) {
+            $sourceUser = $this->userRepository->find((int) $fromUserId);
+            if ($sourceUser instanceof User
+                && $tenant !== null
+                && $sourceUser->getTenant() === $tenant
+            ) {
+                $this->prefillPersonFromUser($person, $sourceUser);
+                $prefilledFromUser = true;
+            }
         }
 
         $form = $this->createForm(PersonType::class, $person);
@@ -64,7 +81,32 @@ class PersonController extends AbstractController
         return $this->render('person/new.html.twig', [
             'person' => $person,
             'form' => $form,
+            'available_users' => $this->personRepository->findUsersAvailableToLink($tenant),
+            'prefilled_from_user' => $prefilledFromUser,
         ]);
+    }
+
+    private function prefillPersonFromUser(Person $person, User $sourceUser): void
+    {
+        $person->setLinkedUser($sourceUser);
+        $person->setPersonType('employee');
+
+        $fullName = trim((string) $sourceUser->getFullName());
+        if ($fullName !== '') {
+            $person->setFullName($fullName);
+        }
+        if ($sourceUser->getEmail()) {
+            $person->setEmail($sourceUser->getEmail());
+        }
+        if ($sourceUser->getPhoneNumber()) {
+            $person->setPhone($sourceUser->getPhoneNumber());
+        }
+        if ($sourceUser->getDepartment()) {
+            $person->setDepartment($sourceUser->getDepartment());
+        }
+        if ($sourceUser->getJobTitle()) {
+            $person->setJobTitle($sourceUser->getJobTitle());
+        }
     }
     #[Route('/person/{id}', name: 'app_person_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
