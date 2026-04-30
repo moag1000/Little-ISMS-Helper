@@ -155,6 +155,8 @@ wizard:
         no_dsr_desc: 'Auch ohne aktuelle Anfragen sollte der Prozess getestet sein.'
         dsr_open_high: 'Hoher Anteil offener Betroffenenanfragen'
         dsr_open_high_desc: 'Mehr als 10% sind nicht in einem Endzustand (completed/rejected). 30-Tage-Frist (Art. 12 Abs. 3) prüfen.'
+        dpia_missing: 'DPIA für High-Risk-Verarbeitung fehlt'
+        dpia_missing_desc: 'Art. 35 DSGVO verlangt eine Datenschutz-Folgenabschätzung für jede High-Risk-Verarbeitungstätigkeit.'
 
     # Actions
     action:
