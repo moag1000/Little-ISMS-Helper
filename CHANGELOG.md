@@ -3,6 +3,82 @@
 Alle wesentlichen Aenderungen an diesem Projekt werden in dieser Datei dokumentiert.
 Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.4.0](https://github.com/moag1000/Little-ISMS-Helper/compare/v3.3.2...v3.4.0) (2026-04-30)
+
+
+### Added
+
+* **asset:** add 'orphaned' + 'all tenants' view filters (admin only) ([11d85b3](https://github.com/moag1000/Little-ISMS-Helper/commit/11d85b36f2a7d935f129f1db63b77663c69efe96))
+* **asset:** add ownerPerson tri-state — User → Person → legacy ([4fed1f8](https://github.com/moag1000/Little-ISMS-Helper/commit/4fed1f86d3baecb3874af97979071e9e8b1be4a4))
+* **asset:** tri-state Person ownership + n-deputies ([ecdc717](https://github.com/moag1000/Little-ISMS-Helper/commit/ecdc71711f0f35140fc2f48b99368b5f01a856e7))
+* **audit-finding:** tri-state Person ownership + n-deputies for assignedTo + reportedBy ([2ecace6](https://github.com/moag1000/Little-ISMS-Helper/commit/2ecace611de37b18944e15eeca8a66a5f475938c))
+* **bc-plan:** tri-state Person ownership + n-deputies ([60bb2fd](https://github.com/moag1000/Little-ISMS-Helper/commit/60bb2fd224ac3f3e6d82f78c44e0d376c5b243e4))
+* **business-process:** tri-state Person ownership + n-deputies ([8017b8c](https://github.com/moag1000/Little-ISMS-Helper/commit/8017b8cfa792eb42641ee90853f907ebb8fe92f5))
+* **compliance-requirement-fulfillment:** tri-state Person ownership + n-deputies (with rename) ([c5465ee](https://github.com/moag1000/Little-ISMS-Helper/commit/c5465ee006acddfee6c9a836672dc907bcaae707))
+* **compliance-wizard:** add consent_coverage check type ([ad559a3](https://github.com/moag1000/Little-ISMS-Helper/commit/ad559a34250fd4e4fec85ffc57b3f7a9fe4dc927))
+* **compliance-wizard:** add dpia_coverage check type ([f111288](https://github.com/moag1000/Little-ISMS-Helper/commit/f111288b9d27a521f0308af6224a53ad2577caf8))
+* **compliance-wizard:** add dsr_coverage check type ([592c6d3](https://github.com/moag1000/Little-ISMS-Helper/commit/592c6d3f461dde98a6bb644b63c33a8cc6091f6f))
+* **compliance-wizard:** add ISO 22301 BCM readiness wizard ([51b59dd](https://github.com/moag1000/Little-ISMS-Helper/commit/51b59dd0b5a1ba4b1f7acff45371bd82f9e63d47))
+* **compliance-wizard:** add ISO 27701 PIMS readiness wizard ([b2cd1ca](https://github.com/moag1000/Little-ISMS-Helper/commit/b2cd1cae0a484860bfb409d4484328dd5b128475))
+* **compliance-wizard:** wire ISO 22301 wizard route + translations ([293611c](https://github.com/moag1000/Little-ISMS-Helper/commit/293611ce2d09e4f9ec453dc47a36d041bb45df15))
+* **compliance-wizard:** wire ISO 27701 wizard route + translations ([1e920b5](https://github.com/moag1000/Little-ISMS-Helper/commit/1e920b5620638e86ee743e60ab1cbbac9132257e))
+* **control:** tri-state Person ownership + n-deputies ([93249f1](https://github.com/moag1000/Little-ISMS-Helper/commit/93249f1e31a02899ed716061d3867368c9cdf75b))
+* **corrective-action:** tri-state Person ownership + n-deputies (with rename) ([ab7a330](https://github.com/moag1000/Little-ISMS-Helper/commit/ab7a330f5294aa1ec9312ce16baec9fc22ddcd92))
+* **crisis-team:** tri-state Person ownership + n-deputies for teamLeader + deputyLeader ([0d7d47d](https://github.com/moag1000/Little-ISMS-Helper/commit/0d7d47dc6540866b26c9c45cab24939901ba4459))
+* **custom-report:** tri-state Person ownership + n-deputies for owner (form skipped: no CustomReportType exists) ([660e8c7](https://github.com/moag1000/Little-ISMS-Helper/commit/660e8c7c4136d1c1e896e7e84daf4939a0220e88))
+* **data-breach:** tri-state Person ownership + n-deputies ([b2da6c2](https://github.com/moag1000/Little-ISMS-Helper/commit/b2da6c23459f7d0546e1a2c6b4a2a950223df2ff))
+* **data-subject-request:** tri-state Person ownership + n-deputies for assignedTo ([2dd760b](https://github.com/moag1000/Little-ISMS-Helper/commit/2dd760b1887dc41b04dd6256110098e668fa7c31))
+* **dpia:** tri-state Person ownership + n-deputies (3 slots) ([87f32f7](https://github.com/moag1000/Little-ISMS-Helper/commit/87f32f7cb13cbfe0155f3727ffe40a3cecf08721))
+* **entity:** add signed days helpers for review/target dates ([7191374](https://github.com/moag1000/Little-ISMS-Helper/commit/719137451f91d9a02fd81ecde2812703d64e67bb))
+* **four-eyes-approval:** tri-state Person ownership + n-deputies for requestedApprover (form skipped: no FourEyesApprovalRequestType) ([7559fc0](https://github.com/moag1000/Little-ISMS-Helper/commit/7559fc058392a0a7d92938baeaaacc2615415a29))
+* **incident:** tri-state Person ownership + n-deputies ([a955c66](https://github.com/moag1000/Little-ISMS-Helper/commit/a955c668a00a5a14f4437f000ff829c9fdf1e0b5))
+* **management-review:** tri-state Person ownership + n-deputies for reviewedBy ([b1db738](https://github.com/moag1000/Little-ISMS-Helper/commit/b1db738b4c8f466f2b6108a61045578b9593959d))
+* **owner-resolver:** centralize Tri-State Person resolution ([b9468c4](https://github.com/moag1000/Little-ISMS-Helper/commit/b9468c4d65107a8d1f8ed0c527c714a2a75941ba))
+* **person:** allow creating Person from existing User account ([d1e59b7](https://github.com/moag1000/Little-ISMS-Helper/commit/d1e59b76123938ee4073889009961a9806d78138))
+* **processing-activity:** tri-state Person ownership + n-deputies + contactPerson rename ([004002e](https://github.com/moag1000/Little-ISMS-Helper/commit/004002ee79becfb8311778722ad6ac59c8a7b3b3))
+* **prototype-protection:** tri-state Person ownership + n-deputies for assessor ([42da5b1](https://github.com/moag1000/Little-ISMS-Helper/commit/42da5b138d250599f9a5a50b450dfee9ed0b3706))
+* **risk-treatment-plan:** tri-state Person ownership + n-deputies (with rename) ([8e47793](https://github.com/moag1000/Little-ISMS-Helper/commit/8e477930cea2dc12cd8e967071d6b6a2b99d39b5))
+* **risk:** tri-state Person ownership + n-deputies ([a973c97](https://github.com/moag1000/Little-ISMS-Helper/commit/a973c97f08e2f2739d8efa3db6f337da5de8f754))
+* **threat-intelligence:** tri-state Person ownership + n-deputies for assignedTo (form skipped: API-only, no ThreatIntelligenceType) ([bd81f94](https://github.com/moag1000/Little-ISMS-Helper/commit/bd81f940e40a16daf01652cc56431dbc4a5640c5))
+* **training:** tri-state Person ownership + n-deputies for trainerUser (extends Pattern A dual-state) ([cfff5dc](https://github.com/moag1000/Little-ISMS-Helper/commit/cfff5dc717a9f6366c04fa277fcfa415ad7fc477))
+* **twig:** generic filter-select macro and enum_cases() function ([5ad058c](https://github.com/moag1000/Little-ISMS-Helper/commit/5ad058c78854228d696cd9c1cd178eb134beef1f))
+
+
+### Fixed
+
+* **admin:** data-repair Dropdowns zeigen jetzt Orphans + Cross-Tenant ([a360317](https://github.com/moag1000/Little-ISMS-Helper/commit/a36031788d06d83b0d3ad1ac93c2f19c7ad2d515))
+* **asset:** expose all six lifecycle states in status filter ([7bac6df](https://github.com/moag1000/Little-ISMS-Helper/commit/7bac6dfdaae64a29508c444a625c00bb2f4e7064))
+* **asset:** guard type-distribution chart against empty assets list ([61e7d8c](https://github.com/moag1000/Little-ISMS-Helper/commit/61e7d8c0d53c3fe90dc46b688b84d109a382bceb))
+* **asset:** stop hiding non-active assets from the index ([c6ce2e5](https://github.com/moag1000/Little-ISMS-Helper/commit/c6ce2e5ed9a9585ee462c3a2bb20d4a83608ff88))
+* **business-process:** review fixes — imports, static OwnerResolver, drop NotBlank ([ea9ddb9](https://github.com/moag1000/Little-ISMS-Helper/commit/ea9ddb928dbced99bd97e5374f7903127cf2c73a))
+* **compliance-wizard:** correct route names in ISO 22301 categories ([04c26dd](https://github.com/moag1000/Little-ISMS-Helper/commit/04c26ddd2d5577da7bdeb1e004150f7260b0f04e))
+* **compliance-wizard:** translate consent_coverage gaps, round score, add partial gap ([acb07ae](https://github.com/moag1000/Little-ISMS-Helper/commit/acb07aea62a500854acdf975a85c2852ae0a3383))
+* **context:** correct sign for daysUntilReview/daysSinceReview KPI ([3c5d606](https://github.com/moag1000/Little-ISMS-Helper/commit/3c5d606690ecf65669ec85cd85ee1953f3d0afd9))
+* **dashboard:** count operationally active assets, not just status='active' ([23e9619](https://github.com/moag1000/Little-ISMS-Helper/commit/23e96190c527ffd7c296da6491d029723603eeed))
+* **date-math:** use entity helpers / invert flag in remaining call sites ([b4a6066](https://github.com/moag1000/Little-ISMS-Helper/commit/b4a6066fe0e5ff7952823d77ba730a460ba4e854))
+* **document:** hide soft-deleted/archived documents via isOperational() ([3c17f75](https://github.com/moag1000/Little-ISMS-Helper/commit/3c17f759115c0b52458b6fef836084f1333e5d3f))
+* **filters:** align dropdowns with form/entity choices, drop hardcoded active filters ([758fb1a](https://github.com/moag1000/Little-ISMS-Helper/commit/758fb1a2f96d1a68b614d1e4aba2b2d2c81f2ea0))
+* **filters:** re-import filter macro inside embed blocks ([aea3be5](https://github.com/moag1000/Little-ISMS-Helper/commit/aea3be5bb6922075f0490e776221a0ee3d8e8b87))
+* **schema:** add --mark-migrations-executed to reconcile command ([1a3f02d](https://github.com/moag1000/Little-ISMS-Helper/commit/1a3f02de9d65d90815562d48f9a557788ec5e6eb))
+* **schema:** detect DBAL phantom drift in reconcile command ([7d6a83c](https://github.com/moag1000/Little-ISMS-Helper/commit/7d6a83c51e8e031e72dc4ed185e3a5d9f9d57572))
+* **setup:** seed ISMSContext from wizard step 6 ([1654391](https://github.com/moag1000/Little-ISMS-Helper/commit/165439161a562fb3c997a5ca1a83846135a0663d))
+* **stats:** use entity helpers for sign-correct days math ([fe09a0e](https://github.com/moag1000/Little-ISMS-Helper/commit/fe09a0e70302896a193b662c41e4052900f39ad1))
+
+
+### Changed
+
+* **context:** move days-since-review math out of template ([8816879](https://github.com/moag1000/Little-ISMS-Helper/commit/881687970bba311e456be7de64b1fdeede8597f6))
+
+
+### Documentation
+
+* **audit:** map all entity Person-slots for Tri-State rollout ([8cdf266](https://github.com/moag1000/Little-ISMS-Helper/commit/8cdf2660bc1fac239886d2dedd6cd490e64f5211))
+* **changelog:** note ISO 22301 + ISO 27701 wizards in [Unreleased] ([5d4fd41](https://github.com/moag1000/Little-ISMS-Helper/commit/5d4fd4129572516cc95df8b162c073780713d911))
+* **changelog:** note Tri-State Person complete rollout ([7d90a19](https://github.com/moag1000/Little-ISMS-Helper/commit/7d90a192f4ebad8b462ff77a38bdbd110317c989))
+* **changelog:** note Tri-State Person Foundation in [Unreleased] ([d5ea20d](https://github.com/moag1000/Little-ISMS-Helper/commit/d5ea20db0c86d5c444f268274e9432a59ec12124))
+* **claude:** document release-please workflow + cadence rules ([96338b7](https://github.com/moag1000/Little-ISMS-Helper/commit/96338b7c900276e621716c74cc27489f0a516caf))
+* **filter-select:** note embed-scope import requirement ([6fe2497](https://github.com/moag1000/Little-ISMS-Helper/commit/6fe2497405f6b5e30c079d40519eb740f1e88c13))
+
 ## [Unreleased]
 
 ### Added
