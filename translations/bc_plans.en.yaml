@@ -60,6 +60,8 @@ bc_plans:
     next_review_date: Next Review Date
     review_notes: Review Notes
     plan_owner_legacy: Plan Owner (free text, legacy)
+    plan_owner_person: Plan Owner (Person from master data)
+    plan_owner_deputies: Deputies (Persons)
   status:
     draft: Draft
     under_review: Under Review
@@ -106,8 +108,11 @@ bc_plans:
     next_review_date: Date of next scheduled review (at least annually per ISO 22301)
     review_notes: Notes from the last plan review (changes needed, improvements)
     plan_owner_user: Plan owner from user management.
+    plan_owner_person: 'Select a person without a system login as plan owner. Priority&#58; User &gt; Person &gt; legacy.'
+    plan_owner_deputies: Additional persons sharing plan ownership or deputising. Multiple selection possible.
   placeholder:
     plan_owner_user: -- Select owner --
+    plan_owner_person: -- Person from master data --
   tooltip:
     activation_criteria: 'Predefined conditions that trigger plan activation (e.g. server outage > 4h, building evacuation). Measurable thresholds make the decision easier during a crisis.'
     recovery_procedures: 'Step-by-step guide to restoring business operations. Each step should include responsible persons, time targets and verification criteria (ISO 22301 Cl. 8.4).'

@@ -60,6 +60,8 @@ bc_plans:
     next_review_date: Datum nächstes Review
     review_notes: Review-Notizen
     plan_owner_legacy: Verantwortlich (freitext, veraltet)
+    plan_owner_person: Verantwortlich (Person aus Stammdaten)
+    plan_owner_deputies: Vertretungen (Personen)
   status:
     draft: Entwurf
     under_review: In Überprüfung
@@ -108,8 +110,11 @@ bc_plans:
       gemäß ISO 22301)
     review_notes: Notizen aus der letzten Planüberprüfung (Änderungsbedarf, Verbesserungen)
     plan_owner_user: Verantwortliche Person aus der Benutzerverwaltung.
+    plan_owner_person: 'Person ohne System-Login als Planverantwortliche wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
+    plan_owner_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
   placeholder:
     plan_owner_user: -- Verantwortliche Person --
+    plan_owner_person: -- Person aus Stammdaten --
   tooltip:
     activation_criteria: 'Vordefinierte Bedingungen, bei deren Eintreten der Plan aktiviert wird (z. B. Serverausfall > 4h, Gebäudeevakuierung). Messbare Schwellenwerte erleichtern die Entscheidung im Krisenfall.'
     recovery_procedures: 'Schritt-für-Schritt-Anleitung zur Wiederherstellung des Geschäftsbetriebs. Jeder Schritt sollte Verantwortliche, Zeitvorgaben und Prüfkriterien enthalten (ISO 22301 Kl. 8.4).'

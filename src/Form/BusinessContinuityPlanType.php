@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\BusinessContinuityPlan;
-use App\Entity\User;
 use App\Entity\BusinessProcess;
+use App\Entity\Person;
+use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -48,6 +49,28 @@ class BusinessContinuityPlanType extends AbstractType
                 'placeholder' => 'bc_plans.placeholder.plan_owner_user',
                 'attr' => ['class' => 'form-select'],
                 'help' => 'bc_plans.help.plan_owner_user',
+            ])
+            ->add('planOwnerPerson', EntityType::class, [
+                'label' => 'bc_plans.field.plan_owner_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'bc_plans.placeholder.plan_owner_person',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'bc_plans.help.plan_owner_person',
+            ])
+            ->add('planOwnerDeputyPersons', EntityType::class, [
+                'label' => 'bc_plans.field.plan_owner_deputies',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'bc_plans.help.plan_owner_deputies',
             ])
             ->add('planOwner', TextType::class, [
                 'label' => 'bc_plans.field.plan_owner_legacy',
