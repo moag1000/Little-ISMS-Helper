@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\Control;
 use App\Entity\DataProtectionImpactAssessment;
+use App\Entity\Person;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -278,6 +279,28 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'placeholder' => 'dpia.placeholder.data_protection_officer',
                 'attr' => ['class' => 'select2'],
             ])
+            ->add('dataProtectionOfficerPerson', EntityType::class, [
+                'label' => 'dpia.form.data_protection_officer_person',
+                'help' => 'dpia.help.data_protection_officer_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'dpia.placeholder.data_protection_officer_person',
+                'attr' => ['class' => 'form-select'],
+            ])
+            ->add('dataProtectionOfficerDeputyPersons', EntityType::class, [
+                'label' => 'dpia.form.data_protection_officer_deputies',
+                'help' => 'dpia.help.data_protection_officer_deputies',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+            ])
             ->add('dpoConsultationDate', DateType::class, [
                 'label' => 'dpia.form.dpo_consultation_date',
                 'help' => 'dpia.help.dpo_consultation_date',
@@ -346,6 +369,50 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.conductor',
                 'attr' => ['class' => 'select2'],
+            ])
+            ->add('conductorPerson', EntityType::class, [
+                'label' => 'dpia.form.conductor_person',
+                'help' => 'dpia.help.conductor_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'dpia.placeholder.conductor_person',
+                'attr' => ['class' => 'form-select'],
+            ])
+            ->add('conductorDeputyPersons', EntityType::class, [
+                'label' => 'dpia.form.conductor_deputies',
+                'help' => 'dpia.help.conductor_deputies',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+            ])
+            ->add('approverPerson', EntityType::class, [
+                'label' => 'dpia.form.approver_person',
+                'help' => 'dpia.help.approver_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'dpia.placeholder.approver_person',
+                'attr' => ['class' => 'form-select'],
+            ])
+            ->add('approverDeputyPersons', EntityType::class, [
+                'label' => 'dpia.form.approver_deputies',
+                'help' => 'dpia.help.approver_deputies',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
             ])
 
             // ============================================================================
