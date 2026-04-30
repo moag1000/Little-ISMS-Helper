@@ -303,7 +303,7 @@ class DashboardStatisticsService
         if ($tenant) {
             // Get all accessible assets (own + inherited from parent + from subsidiaries)
             $allAccessibleAssets = $this->getAllAccessibleAssets($tenant);
-            $activeAssets = array_filter($allAccessibleAssets, fn($asset): bool => $asset->getStatus() === 'active');
+            $activeAssets = array_filter($allAccessibleAssets, fn($asset): bool => $asset->isOperational());
             $assetCount = count($activeAssets);
 
             // Get all accessible risks
@@ -502,7 +502,7 @@ class DashboardStatisticsService
     private function countCriticalAssetsAccessible(Tenant $tenant): int
     {
         $allAssets = $this->getAllAccessibleAssets($tenant);
-        $activeAssets = array_filter($allAssets, fn($asset): bool => $asset->getStatus() === 'active');
+        $activeAssets = array_filter($allAssets, fn($asset): bool => $asset->isOperational());
 
         return count(array_filter(
             $activeAssets,
@@ -965,7 +965,7 @@ class DashboardStatisticsService
         $assetScore = 100.0;
         if (in_array('assets', $activeModules, true)) {
             $assets = $tenant ? $this->getAllAccessibleAssets($tenant) : [];
-            $active = array_filter($assets, fn($a): bool => $a->getStatus() === 'active');
+            $active = array_filter($assets, fn($a): bool => $a->isOperational());
             $total = count($active);
             if ($total > 0) {
                 $classified = count(array_filter($active, fn($a): bool => $a->getConfidentialityValue() > 0 && $a->getIntegrityValue() > 0 && $a->getAvailabilityValue() > 0));
@@ -1225,7 +1225,7 @@ class DashboardStatisticsService
             ? $this->getAllAccessibleAssets($tenant)
             : [];
 
-        $activeAssets = array_filter($allAssets, fn($a): bool => $a->getStatus() === 'active');
+        $activeAssets = array_filter($allAssets, fn($a): bool => $a->isOperational());
         $totalAssets = count($activeAssets);
         $criticalAssets = count(array_filter($activeAssets, fn($a): bool => $a->getConfidentialityValue() >= 4 || $a->getIntegrityValue() >= 4 || $a->getAvailabilityValue() >= 4
         ));

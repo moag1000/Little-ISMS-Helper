@@ -16,6 +16,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\AssetRepository;
+use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -304,6 +305,7 @@ class Asset
         $this->protectingControls = new ArrayCollection();
         $this->dependsOn = new ArrayCollection();
         $this->dependentAssets = new ArrayCollection();
+        $this->ownerDeputyPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -478,6 +480,16 @@ class Asset
     {
         $this->status = $status;
         return $this;
+    }
+
+    /**
+     * Operationally active = not retired/disposed. Covers active, inactive,
+     * in_use, returned. Use this for KPI counts that mean "assets currently
+     * in scope" rather than the literal status === 'active' string.
+     */
+    public function isOperational(): bool
+    {
+        return !in_array($this->status, ['retired', 'disposed'], true);
     }
 
     public function getCreatedAt(): ?DateTimeInterface
@@ -724,31 +736,79 @@ class Asset
      * Stakeholder, Berater, abteilungs-shared Mailbox-Inhaber). Drittstufe
      * der Pattern-A-Kette zwischen User und Legacy-String.
      */
-    #[ORM\ManyToOne(targetEntity: \App\Entity\Person::class)]
+    #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?\App\Entity\Person $ownerPerson = null;
+    private ?Person $ownerPerson = null;
 
-    public function getOwnerPerson(): ?\App\Entity\Person
+    public function getOwnerPerson(): ?Person
     {
         return $this->ownerPerson;
     }
 
-    public function setOwnerPerson(?\App\Entity\Person $ownerPerson): static
+    public function setOwnerPerson(?Person $ownerPerson): static
     {
         $this->ownerPerson = $ownerPerson;
         return $this;
     }
 
     /**
+     * Deputies / Vertretung — n additional Persons sharing ownership of this
+     * asset. ManyToMany via dedicated join table.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'asset_owner_deputy')]
+    #[ORM\JoinColumn(name: 'asset_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $ownerDeputyPersons;
+
+    /** @return Collection<int, Person> */
+    public function getOwnerDeputyPersons(): Collection
+    {
+        return $this->ownerDeputyPersons;
+    }
+
+    public function addOwnerDeputyPerson(Person $person): static
+    {
+        if (!$this->ownerDeputyPersons->contains($person)) {
+            $this->ownerDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeOwnerDeputyPerson(Person $person): static
+    {
+        $this->ownerDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    /**
      * Effective owner: prefer ownerUser.fullName, then ownerPerson.fullName,
-     * fall back to legacy string. List/render-paths should use this; raw
-     * owner string only when intentionally bypassing the resolution chain.
+     * fall back to legacy string.
      */
     public function getEffectiveOwner(): ?string
     {
-        return $this->ownerUser?->getFullName()
-            ?? $this->ownerPerson?->getFullName()
-            ?? $this->owner;
+        return OwnerResolver::resolveEffective(
+            $this->ownerUser,
+            $this->ownerPerson,
+            $this->owner,
+        );
+    }
+
+    /**
+     * Full owner roster: primary (Tri-State chain) followed by every deputy.
+     *
+     * @return list<string>
+     */
+    public function getAllOwners(): array
+    {
+        return OwnerResolver::resolveAll(
+            $this->ownerUser,
+            $this->ownerPerson,
+            $this->owner,
+            $this->ownerDeputyPersons,
+        );
     }
 
     /** @return Collection<int, Asset> */
