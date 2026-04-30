@@ -474,6 +474,16 @@ wizard:
         gdpr_training: "Data Protection Training"
         gdpr_training_desc: "Regular data protection training for employees"
 
+        # ISO 22301 checks
+        iso22301_scope: 'BCM scope documented?'
+        iso22301_scope_desc: 'BCM-system scope defined in writing.'
+        iso22301_policy: 'BCM policy in place and current'
+        iso22301_bia: 'Business Impact Analysis performed'
+        iso22301_training: 'BCM awareness training'
+        iso22301_bcplans: 'BC plans and exercises'
+        iso22301_audit: 'BCM audit conducted'
+        iso22301_treatment: 'Recovery strategies as treatment plan'
+
     # TISAX Categories
     tisax:
         description: "Assess your information security according to VDA ISA for the automotive industry."
@@ -497,3 +507,21 @@ wizard:
         breach_notification_desc: "Notification obligations for data breaches (Art. 33-34)"
         awareness: "Awareness"
         awareness_desc: "Training and awareness of employees"
+
+    # ISO 22301 BCM Categories
+    iso22301:
+        description: 'BCM maturity check per ISO 22301:2019 (Business Continuity Management).'
+        context: 'Context of the Organisation (Clause 4)'
+        context_desc: 'BCM scope, stakeholders, external/internal factors.'
+        leadership: 'Leadership & Commitment (Clause 5)'
+        leadership_desc: 'BCM policy, roles and responsibilities.'
+        planning: 'Planning (Clause 6)'
+        planning_desc: 'Risks/opportunities, BCM objectives, BIA as risk driver.'
+        support: 'Support (Clause 7)'
+        support_desc: 'Resources, competence, awareness, communication.'
+        operation: 'Operation (Clause 8)'
+        operation_desc: 'BIA, BC strategies, plans, exercises and tests.'
+        evaluation: 'Performance Evaluation (Clause 9)'
+        evaluation_desc: 'Monitoring, BCM audits, management review.'
+        improvement: 'Improvement (Clause 10)'
+        improvement_desc: 'Corrective actions from exercises and reviews.'
