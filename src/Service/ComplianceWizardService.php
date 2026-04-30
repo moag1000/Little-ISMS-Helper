@@ -121,6 +121,16 @@ class ComplianceWizardService
                 'recommended_modules' => ['incidents', 'training'],
                 'categories' => $this->getGdprCategories(),
             ],
+            'iso22301' => [
+                'code' => 'ISO22301',
+                'name' => 'ISO 22301:2019 BCM Readiness',
+                'description' => 'wizard.iso22301.description',
+                'icon' => 'bi-life-preserver',
+                'color' => 'danger',
+                'required_modules' => ['bcm'],
+                'recommended_modules' => ['risks', 'audits', 'documents'],
+                'categories' => $this->getIso22301Categories(),
+            ],
         ];
 
         // Filter wizards by required modules
@@ -2404,6 +2414,119 @@ class ComplianceWizardService
                         'type' => 'training_coverage',
                         'module' => 'training',
                         'route' => 'app_training_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Categories for ISO 22301:2019 readiness — Business Continuity Management.
+     *
+     * Maps to the 7 management-system clauses (4-10) and reuses the existing
+     * check-types (bcm_coverage, document_review, audit_status, etc.) so this
+     * wizard can ship without new dependencies.
+     */
+    private function getIso22301Categories(): array
+    {
+        return [
+            'context' => [
+                'name' => 'wizard.iso22301.context',
+                'description' => 'wizard.iso22301.context_desc',
+                'icon' => 'bi-globe',
+                'weight' => 1.5,
+                'checks' => [
+                    'scope_definition' => [
+                        'name' => 'wizard.check.iso22301_scope',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'description' => 'wizard.check.iso22301_scope_desc',
+                        'route' => 'app_isms_context_edit',
+                    ],
+                ],
+            ],
+            'leadership' => [
+                'name' => 'wizard.iso22301.leadership',
+                'description' => 'wizard.iso22301.leadership_desc',
+                'icon' => 'bi-person-badge',
+                'weight' => 1.5,
+                'checks' => [
+                    'bcm_policy' => [
+                        'name' => 'wizard.check.iso22301_policy',
+                        'type' => 'document_review',
+                        'document_categories' => ['policy'],
+                        'module' => 'documents',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'planning' => [
+                'name' => 'wizard.iso22301.planning',
+                'description' => 'wizard.iso22301.planning_desc',
+                'icon' => 'bi-clipboard-data',
+                'weight' => 2,
+                'checks' => [
+                    'bia_risks' => [
+                        'name' => 'wizard.check.iso22301_bia',
+                        'type' => 'risk_coverage',
+                        'module' => 'risks',
+                        'route' => 'app_risk_index',
+                    ],
+                ],
+            ],
+            'support' => [
+                'name' => 'wizard.iso22301.support',
+                'description' => 'wizard.iso22301.support_desc',
+                'icon' => 'bi-people',
+                'weight' => 1,
+                'checks' => [
+                    'training' => [
+                        'name' => 'wizard.check.iso22301_training',
+                        'type' => 'training_coverage',
+                        'module' => 'training',
+                        'route' => 'app_training_index',
+                    ],
+                ],
+            ],
+            'operation' => [
+                'name' => 'wizard.iso22301.operation',
+                'description' => 'wizard.iso22301.operation_desc',
+                'icon' => 'bi-gear',
+                'weight' => 3,
+                'checks' => [
+                    'bc_plans' => [
+                        'name' => 'wizard.check.iso22301_bcplans',
+                        'type' => 'bcm_coverage',
+                        'module' => 'bcm',
+                        'route' => 'app_bcm_index',
+                    ],
+                ],
+            ],
+            'evaluation' => [
+                'name' => 'wizard.iso22301.evaluation',
+                'description' => 'wizard.iso22301.evaluation_desc',
+                'icon' => 'bi-graph-up',
+                'weight' => 2,
+                'checks' => [
+                    'bcm_audit' => [
+                        'name' => 'wizard.check.iso22301_audit',
+                        'type' => 'audit_status',
+                        'module' => 'audits',
+                        'route' => 'app_audits_index',
+                    ],
+                ],
+            ],
+            'improvement' => [
+                'name' => 'wizard.iso22301.improvement',
+                'description' => 'wizard.iso22301.improvement_desc',
+                'icon' => 'bi-arrow-up-circle',
+                'weight' => 1,
+                'checks' => [
+                    'treatment' => [
+                        'name' => 'wizard.check.iso22301_treatment',
+                        'type' => 'treatment_plan',
+                        'module' => 'risks',
+                        'route' => 'app_risk_treatment_plan_index',
                     ],
                 ],
             ],

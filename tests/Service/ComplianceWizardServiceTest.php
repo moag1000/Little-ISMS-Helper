@@ -286,4 +286,26 @@ class ComplianceWizardServiceTest extends KernelTestCase
             );
         }
     }
+
+    #[Test]
+    public function testIso22301WizardIsAvailableWhenBcmModuleActive(): void
+    {
+        $this->requireDatabase();
+        $config = $this->wizardService->getWizardConfig('iso22301');
+
+        // Wizard only registers when 'bcm' module is active. If inactive in
+        // this env we skip — the smoke test still proves no fatal error.
+        if ($config === null) {
+            $this->markTestSkipped('iso22301 wizard requires the "bcm" module');
+        }
+
+        $this->assertSame('ISO22301', $config['code']);
+        $this->assertArrayHasKey('categories', $config);
+        $this->assertGreaterThanOrEqual(7, count($config['categories']),
+            'ISO 22301 should expose at least 7 clauses (4-10)');
+        foreach (['context', 'leadership', 'planning', 'support', 'operation', 'evaluation', 'improvement'] as $key) {
+            $this->assertArrayHasKey($key, $config['categories'],
+                "ISO 22301 missing category '$key'");
+        }
+    }
 }
