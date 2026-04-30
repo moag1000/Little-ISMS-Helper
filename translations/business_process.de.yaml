@@ -52,6 +52,8 @@ business_process:
     supporting_assets: Unterstützende Assets und Ressourcen
     identified_risks: Identifizierte Risiken für diesen Prozess
     process_owner_legacy: Prozesseigentümer (freitext, veraltet)
+    process_owner_person: 'Prozessverantwortlich (Person aus Stammdaten)'
+    process_owner_deputies: 'Vertretungen (Personen)'
   help:
     name: Eindeutiger Name des Geschäftsprozesses (z.B. "Kundenauftragsabwicklung")
     process_owner: Verantwortlicher für den Prozess (fachlicher und strategischer
@@ -83,6 +85,8 @@ business_process:
       Prozess unterstützen
     identified_risks: Verknüpfte Risiken, die diesen Prozess gefährden könnten
     process_owner_user: Prozesseigentümer aus der Benutzerverwaltung.
+    process_owner_person: 'Person ohne System-Login als Prozessverantwortlichen wählen. Reihenfolge der Anzeige in Listen&#58; User &gt; Person &gt; Legacy-Freitext.'
+    process_owner_deputies: 'Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.'
   tooltip:
     criticality: <strong>Geschäftskritikalität (ISO 22301)</strong><br><table class="table
       table-sm table-borderless mb-0 mt-1"><tr><td><strong>Niedrig</strong></td><td>Ausfall
@@ -120,6 +124,7 @@ business_process:
     rpo: z.B. 2 (Stunden)
     mtpd: z.B. 24 (Stunden)
     process_owner_user: -- Prozesseigentümer --
+    process_owner_person: '-- Person aus Stammdaten --'
   empty:
     title: Noch keine Geschäftsprozesse vorhanden
     description: Erstellen Sie Ihren ersten Geschäftsprozess, um mit der Business-Impact-Analyse

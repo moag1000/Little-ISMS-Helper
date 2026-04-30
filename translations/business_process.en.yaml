@@ -47,6 +47,8 @@ business_process:
     supporting_assets: Supporting Assets
     identified_risks: Identified Risks
     process_owner_legacy: Process Owner (free text, legacy)
+    process_owner_person: 'Process Owner (Person from master data)'
+    process_owner_deputies: 'Deputies (Persons)'
   help:
     name: Unique name of the business process
     process_owner: Person responsible for the process
@@ -75,6 +77,8 @@ business_process:
     supporting_assets: Which IT assets support this process?
     identified_risks: Which risks affect this process?
     process_owner_user: Process owner from user management.
+    process_owner_person: 'Pick a Person without system login as process owner. List display order&#58; User &gt; Person &gt; legacy free-text.'
+    process_owner_deputies: 'Additional Persons with deputy or shared responsibility. Multi-select.'
   tooltip:
     criticality: <strong>Business Criticality (ISO 22301)</strong><br><table class="table
       table-sm table-borderless mb-0 mt-1"><tr><td><strong>Low</strong></td><td>Outage
@@ -111,6 +115,7 @@ business_process:
     rpo: e.g. 2 (hours)
     mtpd: e.g. 24 (hours)
     process_owner_user: -- Select process owner --
+    process_owner_person: '-- Select Person from master data --'
   empty:
     title: No business processes yet
     description: Create your first business process to start with the business impact
