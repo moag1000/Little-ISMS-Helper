@@ -124,6 +124,8 @@ risk:
     residual_probability: Restrisiko-Wahrscheinlichkeit
     residual_impact: Restrisiko-Auswirkung
     risk_owner: Risikoverantwortlicher
+    risk_owner_person: Risikoverantwortlicher (Person aus Stammdaten)
+    risk_owner_deputies: Vertretungen (Personen)
     treatment_description: Beschreibung der Behandlungsmaßnahmen
     acceptance_approved_by: Risikoakzeptanz genehmigt durch
     acceptance_approved_at: Risikoakzeptanz genehmigt am
@@ -242,6 +244,8 @@ risk:
     treatment: Strategie zur Risikobehandlung
     risk_owner: Person, die für die Risikoüberwachung und -behandlung verantwortlich
       ist
+    risk_owner_person: 'Person ohne System-Login als Risikoverantwortlichen wählen. Reihenfolge&#58; User &gt; Person.'
+    risk_owner_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
     treatment_description: Detaillierte Beschreibung der geplanten oder umgesetzten
       Behandlungsmaßnahmen
     acceptance_approved_by: Person, die das Restrisiko formal akzeptiert hat (erforderlich
@@ -432,6 +436,7 @@ risk:
     location: -- Standort auswählen --
     supplier: -- Lieferant auswählen --
     risk_owner: -- Risikoverantwortlichen auswählen --
+    risk_owner_person: -- Person aus Stammdaten --
     treatment_description: Beschreiben Sie die geplanten Behandlungsmaßnahmen...
     acceptance_approved_by: Name der genehmigenden Person
     acceptance_justification: Begründung für die Akzeptanz des Restrisikos...
