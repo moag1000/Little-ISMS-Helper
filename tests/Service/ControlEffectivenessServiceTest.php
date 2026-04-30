@@ -351,6 +351,7 @@ class ControlEffectivenessServiceTest extends TestCase
         $control->method('getCategory')->willReturn('A.5');
         $control->method('getRisks')->willReturn(new ArrayCollection());
         $control->method('getLastReviewDate')->willReturn(null);
+        $control->method('getDaysSinceLastReview')->willReturn(null);
         return $control;
     }
 
@@ -365,6 +366,7 @@ class ControlEffectivenessServiceTest extends TestCase
         $control->method('getCategory')->willReturn('A.5');
         $control->method('getRisks')->willReturn(new ArrayCollection($risks));
         $control->method('getLastReviewDate')->willReturn(null);
+        $control->method('getDaysSinceLastReview')->willReturn(null);
         return $control;
     }
 
@@ -379,6 +381,8 @@ class ControlEffectivenessServiceTest extends TestCase
         $control->method('getCategory')->willReturn('A.5');
         $control->method('getRisks')->willReturn(new ArrayCollection());
         $control->method('getLastReviewDate')->willReturn($reviewDate);
+        $diff = (new \DateTime())->diff($reviewDate);
+        $control->method('getDaysSinceLastReview')->willReturn($diff->invert ? $diff->days : -$diff->days);
         return $control;
     }
 
@@ -393,6 +397,8 @@ class ControlEffectivenessServiceTest extends TestCase
         $control->method('getCategory')->willReturn('A.5');
         $control->method('getRisks')->willReturn(new ArrayCollection($risks));
         $control->method('getLastReviewDate')->willReturn($reviewDate);
+        $diff = (new \DateTime())->diff($reviewDate);
+        $control->method('getDaysSinceLastReview')->willReturn($diff->invert ? $diff->days : -$diff->days);
         return $control;
     }
 
@@ -407,6 +413,7 @@ class ControlEffectivenessServiceTest extends TestCase
         $control->method('getCategory')->willReturn($category);
         $control->method('getRisks')->willReturn(new ArrayCollection());
         $control->method('getLastReviewDate')->willReturn(null);
+        $control->method('getDaysSinceLastReview')->willReturn(null);
         return $control;
     }
 

@@ -188,9 +188,9 @@ class DashboardStatisticsService
         // Management review within last 365 days
         if ($this->managementReviewRepository !== null) {
             $latest = $this->managementReviewRepository->findLatest(1);
-            if (isset($latest[0]) && $latest[0]->getReviewDate() !== null) {
-                $days = (int) $latest[0]->getReviewDate()->diff(new \DateTime())->days;
-                if ($days <= 365) {
+            if (isset($latest[0])) {
+                $days = $latest[0]->getDaysSinceReview();
+                if ($days !== null && $days >= 0 && $days <= 365) {
                     $checklist['management_review_within_year'] = 1;
                 }
             }
@@ -199,9 +199,9 @@ class DashboardStatisticsService
         // Internal audit within last 365 days
         if ($this->auditRepository !== null) {
             $audits = $this->auditRepository->findBy(['tenant' => $tenant], ['actualDate' => 'DESC'], 1);
-            if (isset($audits[0]) && $audits[0]->getActualDate() !== null) {
-                $days = (int) $audits[0]->getActualDate()->diff(new \DateTime())->days;
-                if ($days <= 365) {
+            if (isset($audits[0])) {
+                $days = $audits[0]->getDaysSinceActual();
+                if ($days !== null && $days >= 0 && $days <= 365) {
                     $checklist['internal_audit_within_year'] = 1;
                 }
             }
@@ -806,11 +806,7 @@ class DashboardStatisticsService
         // A6: days since last management review
         if ($this->managementReviewRepository !== null) {
             $latest = $this->managementReviewRepository->findLatest(1);
-            $daysSince = null;
-            if (isset($latest[0]) && $latest[0]->getReviewDate() !== null) {
-                $reviewDate = $latest[0]->getReviewDate();
-                $daysSince = (int) $reviewDate->diff(new \DateTime())->days;
-            }
+            $daysSince = isset($latest[0]) ? $latest[0]->getDaysSinceReview() : null;
             $out['days_since_management_review'] = [
                 'label' => 'kpi.days_since_management_review',
                 'value' => $daysSince,
@@ -826,15 +822,13 @@ class DashboardStatisticsService
         // A7: oldest overdue item across risk reviews and treatment plans
         $oldestOverdueDays = 0;
         if ($tenant !== null && $this->treatmentPlanRepository !== null) {
-            $plans = $this->treatmentPlanRepository->findAll();
-            $now = new \DateTime();
-            foreach ($plans as $plan) {
-                $target = $plan->getTargetCompletionDate();
-                if ($target !== null && $target < $now && $plan->getStatus() !== 'completed') {
-                    $days = (int) $target->diff($now)->days;
-                    if ($days > $oldestOverdueDays) {
-                        $oldestOverdueDays = $days;
-                    }
+            foreach ($this->treatmentPlanRepository->findAll() as $plan) {
+                if ($plan->getStatus() === 'completed') {
+                    continue;
+                }
+                $days = $plan->getDaysOverdue();
+                if ($days !== null && $days > $oldestOverdueDays) {
+                    $oldestOverdueDays = $days;
                 }
             }
         }

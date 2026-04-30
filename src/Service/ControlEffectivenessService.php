@@ -141,9 +141,8 @@ class ControlEffectivenessService
         $factors++;
 
         // Factor 5: Review freshness (0-10 points)
-        $lastReview = $control->getLastReviewDate();
-        if ($lastReview) {
-            $daysSinceReview = (new \DateTime())->diff($lastReview)->days;
+        $daysSinceReview = $control->getDaysSinceLastReview();
+        if ($daysSinceReview !== null && $daysSinceReview >= 0) {
             $freshnessScore = match (true) {
                 $daysSinceReview <= 90 => 10,
                 $daysSinceReview <= 180 => 7,
@@ -179,9 +178,7 @@ class ControlEffectivenessService
                 'effectiveness_score' => $effectiveness,
                 'linked_risks' => $linkedRisks ? count($linkedRisks) : 0,
                 'last_review' => $control->getLastReviewDate()?->format('Y-m-d'),
-                'days_since_review' => $control->getLastReviewDate()
-                    ? (new \DateTime())->diff($control->getLastReviewDate())->days
-                    : null,
+                'days_since_review' => $control->getDaysSinceLastReview(),
             ];
         }
 
@@ -239,12 +236,11 @@ class ControlEffectivenessService
         ];
 
         $overdueControls = [];
-        $now = new \DateTime();
 
         foreach ($controls as $control) {
-            $lastReview = $control->getLastReviewDate();
+            $daysSince = $control->getDaysSinceLastReview();
 
-            if (!$lastReview) {
+            if ($daysSince === null) {
                 $aging['never_reviewed']++;
                 $overdueControls[] = [
                     'control_id' => $control->getControlId(),
@@ -255,7 +251,7 @@ class ControlEffectivenessService
                 continue;
             }
 
-            $daysSince = $now->diff($lastReview)->days;
+            $daysSince = max(0, $daysSince);
 
             match (true) {
                 $daysSince <= 90 => $aging['current']++,
