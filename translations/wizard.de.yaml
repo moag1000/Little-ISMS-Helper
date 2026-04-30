@@ -494,6 +494,17 @@ wizard:
         iso22301_audit: 'BCM-Audit absolviert'
         iso22301_treatment: 'Recovery-Strategien als Treatment-Plan'
 
+        # ISO 27701 checks
+        iso27701_role: 'Controller- oder Processor-Rolle dokumentiert'
+        iso27701_role_desc: 'PIMS-Rolle laut ISO 27701 5.2.1 schriftlich definiert.'
+        iso27701_policy: 'Privacy-Policy aktuell'
+        iso27701_dsr: 'DSR-Pipeline (Auskunft/Löschung)'
+        iso27701_dpia: 'DPIA-Abdeckung für High-Risk-Verarbeitungen'
+        iso27701_records: 'Verarbeitungsverzeichnis vollständig'
+        iso27701_breach: 'Breach-Notification-Prozess (72h SLA)'
+        iso27701_consent: 'Einwilligungsmanagement'
+        iso27701_suppliers: 'Auftragsverarbeiter-Bewertungen'
+
     # TISAX Categories
     tisax:
         description: "Bewerten Sie Ihre Informationssicherheit nach VDA ISA für die Automobilindustrie."
@@ -535,3 +546,23 @@ wizard:
         evaluation_desc: 'Überwachung, BCM-Audits, Management-Review.'
         improvement: 'Verbesserung (Klausel 10)'
         improvement_desc: 'Korrekturmaßnahmen aus Übungen und Reviews.'
+
+    # ISO 27701 PIMS Categories
+    iso27701:
+        description: 'PIMS-Reife-Check nach ISO 27701:2019 (Privacy Information Management).'
+        pims_context: 'PIMS-Kontext und Rollen'
+        pims_context_desc: 'Controller- bzw. Processor-Rolle, PIMS-Scope.'
+        privacy_policy: 'Privacy-Policy und Information'
+        privacy_policy_desc: 'Datenschutz-Richtlinie und Betroffeneninformation.'
+        data_subject_rights: 'Betroffenenrechte'
+        data_subject_rights_desc: 'Auskunft, Löschung, Übertragbarkeit (Art. 12-22 DSGVO).'
+        privacy_risk: 'Privacy-Risikomanagement'
+        privacy_risk_desc: 'DSFA / DPIA für High-Risk-Verarbeitungen (Art. 35).'
+        records_of_processing: 'Verarbeitungsverzeichnis'
+        records_of_processing_desc: 'Art. 30 — Verzeichnis von Verarbeitungstätigkeiten.'
+        breach_notification: 'Datenschutzvorfälle'
+        breach_notification_desc: 'Art. 33/34 — 72h-Meldung an Aufsichtsbehörde.'
+        privacy_by_design: 'Privacy by Design & Default'
+        privacy_by_design_desc: 'Art. 25 — technische und organisatorische Maßnahmen.'
+        third_party_processors: 'Auftragsverarbeiter'
+        third_party_processors_desc: 'Art. 28 — AVV und Lieferanten-Assessments.'
