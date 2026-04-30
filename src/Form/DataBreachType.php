@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\DataBreach;
 use App\Entity\Incident;
+use App\Entity\Person;
 use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
 use App\Entity\User;
@@ -298,6 +299,54 @@ class DataBreachType extends AbstractType
                 'required' => false,
                 'attr' => ['class' => 'form-select select2'],
                 'help' => 'data_breach.help.data_protection_officer',
+            ])
+            ->add('dataProtectionOfficerPerson', EntityType::class, [
+                'label' => 'data_breach.form.data_protection_officer_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'data_breach.placeholder.data_protection_officer_person',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+                'help' => 'data_breach.help.data_protection_officer_person',
+            ])
+            ->add('dataProtectionOfficerDeputyPersons', EntityType::class, [
+                'label' => 'data_breach.form.data_protection_officer_deputies',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'data_breach.help.data_protection_officer_deputies',
+            ])
+
+            // ================================================================
+            // SECTION 7: Assessor (Investigation)
+            // ================================================================
+            ->add('assessorPerson', EntityType::class, [
+                'label' => 'data_breach.form.assessor_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'data_breach.placeholder.assessor_person',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+                'help' => 'data_breach.help.assessor_person',
+            ])
+            ->add('assessorDeputyPersons', EntityType::class, [
+                'label' => 'data_breach.form.assessor_deputies',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'data_breach.help.assessor_deputies',
             ])
         ;
     }
