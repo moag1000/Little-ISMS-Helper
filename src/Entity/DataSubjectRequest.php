@@ -6,7 +6,11 @@ namespace App\Entity;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use App\Entity\Person;
 use App\Repository\DataSubjectRequestRepository;
+use App\Service\OwnerResolver;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -213,6 +217,15 @@ class DataSubjectRequest
     #[ORM\JoinColumn(nullable: true)]
     private ?User $assignedTo = null;
 
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Person $assignedPerson = null;
+
+    /** @var Collection<int, Person> */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'dsr_assigned_deputies')]
+    private Collection $assignedDeputyPersons;
+
     /**
      * Linked processing activity (VVT Art. 30)
      */
@@ -235,6 +248,11 @@ class DataSubjectRequest
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $updatedAt = null;
+
+    public function __construct()
+    {
+        $this->assignedDeputyPersons = new ArrayCollection();
+    }
 
     // ============================================================================
     // Lifecycle Callbacks
@@ -524,6 +542,48 @@ class DataSubjectRequest
     {
         $this->assignedTo = $assignedTo;
         return $this;
+    }
+
+    public function getAssignedPerson(): ?Person
+    {
+        return $this->assignedPerson;
+    }
+
+    public function setAssignedPerson(?Person $assignedPerson): static
+    {
+        $this->assignedPerson = $assignedPerson;
+        return $this;
+    }
+
+    /** @return Collection<int, Person> */
+    public function getAssignedDeputyPersons(): Collection
+    {
+        return $this->assignedDeputyPersons;
+    }
+
+    public function addAssignedDeputyPerson(Person $person): static
+    {
+        if (!$this->assignedDeputyPersons->contains($person)) {
+            $this->assignedDeputyPersons->add($person);
+        }
+        return $this;
+    }
+
+    public function removeAssignedDeputyPerson(Person $person): static
+    {
+        $this->assignedDeputyPersons->removeElement($person);
+        return $this;
+    }
+
+    public function getEffectiveAssignedTo(): ?string
+    {
+        return OwnerResolver::resolveEffective($this->assignedTo, $this->assignedPerson, null);
+    }
+
+    /** @return list<string> */
+    public function getAllAssignedOwners(): array
+    {
+        return OwnerResolver::resolveAll($this->assignedTo, $this->assignedPerson, null, $this->assignedDeputyPersons);
     }
 
     public function getProcessingActivity(): ?ProcessingActivity

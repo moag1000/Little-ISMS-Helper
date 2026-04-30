@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\DataSubjectRequest;
+use App\Entity\Person;
 use App\Entity\ProcessingActivity;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -130,6 +131,28 @@ class DataSubjectRequestType extends AbstractType
                 'placeholder' => 'dsr.form.placeholder.assigned_to',
                 'required' => false,
                 'attr' => ['class' => 'form-select select2'],
+            ])
+            ->add('assignedPerson', EntityType::class, [
+                'label' => 'dsr.form.assigned_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'dsr.form.placeholder.assigned_person',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+                'help' => 'dsr.form.help.assigned_person',
+            ])
+            ->add('assignedDeputyPersons', EntityType::class, [
+                'label' => 'dsr.form.assigned_deputy_persons',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'multiple' => true,
+                'expanded' => false,
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'dsr.form.help.assigned_deputy_persons',
             ])
             ->add('processingActivity', EntityType::class, [
                 'label' => 'dsr.form.processing_activity',
