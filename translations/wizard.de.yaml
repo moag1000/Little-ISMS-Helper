@@ -474,6 +474,16 @@ wizard:
         gdpr_training: "Datenschutz-Schulungen"
         gdpr_training_desc: "Regelmäßige Datenschutzschulungen für Mitarbeiter"
 
+        # ISO 22301 checks
+        iso22301_scope: 'BCM-Scope dokumentiert?'
+        iso22301_scope_desc: 'Geltungsbereich des BCM-Systems schriftlich definiert.'
+        iso22301_policy: 'BCM-Policy vorhanden und aktuell'
+        iso22301_bia: 'Business-Impact-Analyse durchgeführt'
+        iso22301_training: 'BCM-Awareness-Schulungen'
+        iso22301_bcplans: 'BC-Pläne und Notfall-Übungen'
+        iso22301_audit: 'BCM-Audit absolviert'
+        iso22301_treatment: 'Recovery-Strategien als Treatment-Plan'
+
     # TISAX Categories
     tisax:
         description: "Bewerten Sie Ihre Informationssicherheit nach VDA ISA für die Automobilindustrie."
@@ -497,3 +507,21 @@ wizard:
         breach_notification_desc: "Meldepflichten bei Datenpannen (Art. 33-34)"
         awareness: "Sensibilisierung"
         awareness_desc: "Schulung und Sensibilisierung der Mitarbeiter"
+
+    # ISO 22301 BCM Categories
+    iso22301:
+        description: 'BCM-Reife-Check nach ISO 22301:2019 (Business Continuity Management).'
+        context: 'Kontext der Organisation (Klausel 4)'
+        context_desc: 'BCM-Scope, Stakeholder, externe und interne Faktoren.'
+        leadership: 'Führung & Engagement (Klausel 5)'
+        leadership_desc: 'BCM-Policy, Rollen und Verantwortlichkeiten.'
+        planning: 'Planung (Klausel 6)'
+        planning_desc: 'Risiken/Chancen, BCM-Ziele, BIA als Risiko-Treiber.'
+        support: 'Unterstützung (Klausel 7)'
+        support_desc: 'Ressourcen, Kompetenz, Awareness, Kommunikation.'
+        operation: 'Betrieb (Klausel 8)'
+        operation_desc: 'BIA, BC-Strategien, Pläne, Übungen und Tests.'
+        evaluation: 'Bewertung (Klausel 9)'
+        evaluation_desc: 'Überwachung, BCM-Audits, Management-Review.'
+        improvement: 'Verbesserung (Klausel 10)'
+        improvement_desc: 'Korrekturmaßnahmen aus Übungen und Reviews.'

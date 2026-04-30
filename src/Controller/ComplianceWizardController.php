@@ -73,7 +73,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Start a specific wizard
      */
-    #[Route('/{wizard}', name: 'app_compliance_wizard_start', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr'])]
+    #[Route('/{wizard}', name: 'app_compliance_wizard_start', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301'])]
     public function start(string $wizard): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -105,7 +105,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Run the assessment and show results
      */
-    #[Route('/{wizard}/assess', name: 'app_compliance_wizard_assess', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr'])]
+    #[Route('/{wizard}/assess', name: 'app_compliance_wizard_assess', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301'])]
     public function assess(string $wizard): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -306,7 +306,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * WS-6: Gap-Report with FTE estimates (`sort=effort|quick-wins`).
      */
-    #[Route('/{wizard}/gap-report', name: 'app_compliance_wizard_gap_report', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr'])]
+    #[Route('/{wizard}/gap-report', name: 'app_compliance_wizard_gap_report', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301'])]
     public function gapReport(string $wizard, Request $request): Response
     {
         if ($this->gapEffortCalculator === null || $this->frameworkRepository === null) {

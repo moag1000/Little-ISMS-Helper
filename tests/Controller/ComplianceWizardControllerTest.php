@@ -233,4 +233,17 @@ class ComplianceWizardControllerTest extends WebTestCase
         $content = $this->client->getResponse()->getContent();
         $this->assertNotEmpty($content);
     }
+
+    #[Test]
+    public function testIso22301WizardStartPageRendersOrSkipsCleanly(): void
+    {
+        $this->client->loginUser($this->managerUser);
+        $this->client->request('GET', '/de/compliance-wizard/iso22301');
+        // Either: 200 (wizard rendered) or 302 (redirect to index because
+        // bcm module not active in this test env). Both are acceptable
+        // smoke-test outcomes — what we want to rule out is a 500.
+        $status = $this->client->getResponse()->getStatusCode();
+        $this->assertContains($status, [200, 302],
+            "Expected 200 or 302 from iso22301 start, got $status");
+    }
 }
