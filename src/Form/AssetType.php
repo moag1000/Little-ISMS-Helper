@@ -6,6 +6,7 @@ namespace App\Form;
 
 use App\Entity\Asset;
 use App\Entity\Location;
+use App\Entity\Person;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -66,6 +67,15 @@ class AssetType extends AbstractType
                 'placeholder' => 'asset.placeholder.owner_user',
                 'attr' => ['class' => 'form-select'],
                 'help' => 'asset.help.owner_user',
+            ])
+            ->add('ownerPerson', EntityType::class, [
+                'label' => 'asset.field.owner_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'asset.placeholder.owner_person',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'asset.help.owner_person',
             ])
             ->add('owner', TextType::class, [
                 'label' => 'asset.field.owner_legacy',
