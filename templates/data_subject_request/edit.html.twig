@@ -48,7 +48,7 @@
                         },
                         'assignment': {
                             'label': '<i class="fa-icon fa-icon--role" aria-hidden="true"></i> ' ~ 'dsr.section.assignment'|trans({}, 'data_subject_request'),
-                            'fields': ['assignedTo', 'processingActivity']
+                            'fields': ['assignedTo', 'assignedPerson', 'assignedDeputyPersons', 'processingActivity']
                         },
                         'internal': {
                             'label': '<i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i> ' ~ 'dsr.section.internal_notes'|trans({}, 'data_subject_request'),
@@ -65,6 +65,8 @@
                         'identityVerified': 6,
                         'identityVerificationMethod': 6,
                         'assignedTo': 6,
+                        'assignedPerson': 6,
+                        'assignedDeputyPersons': 12,
                         'processingActivity': 6,
                         'notes': 12
                     },

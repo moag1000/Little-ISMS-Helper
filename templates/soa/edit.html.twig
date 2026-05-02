@@ -120,6 +120,19 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">{{ 'control.section.responsibility'|trans({}, 'control') }}</legend>
     <div class="row">
+        <div class="col-md-6">
+            {{ form_row(form.responsiblePersonUser) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.responsiblePersonRef) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_row(form.responsibleDeputyPersons) }}
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.responsiblePerson,

@@ -53,7 +53,7 @@
                         },
                         'responsible_persons': {
                             'label': '<i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> Responsible Persons'|raw,
-                            'fields': ['dataProtectionOfficer']
+                            'fields': ['dataProtectionOfficer', 'dataProtectionOfficerPerson', 'dataProtectionOfficerDeputyPersons', 'assessorPerson', 'assessorDeputyPersons']
                         }
                     },
                     'col_widths': {
@@ -78,7 +78,11 @@
                         'noSubjectNotificationReason': 12,
                         'rootCause': 12,
                         'lessonsLearned': 12,
-                        'dataProtectionOfficer': 12
+                        'dataProtectionOfficer': 6,
+                        'dataProtectionOfficerPerson': 6,
+                        'dataProtectionOfficerDeputyPersons': 12,
+                        'assessorPerson': 6,
+                        'assessorDeputyPersons': 6
                     },
                     'tooltips': {
                         'affectedDataSubjects': 'data_breach.tooltip.affected_data_subjects',

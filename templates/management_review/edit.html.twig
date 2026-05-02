@@ -49,7 +49,7 @@
                         'sections': {
                             'basic_info': {
                                 'label': 'management_review.section.basic_info'|trans({}, 'management_review'),
-                                'fields': ['title', 'reviewDate', 'participants', 'status']
+                                'fields': ['title', 'reviewDate', 'participants', 'reviewedBy', 'reviewedByPerson', 'reviewedByDeputyPersons', 'status']
                             },
                             'inputs': {
                                 'label': 'management_review.section.inputs'|trans({}, 'management_review'),
@@ -67,6 +67,9 @@
                         'col_widths': {
                             'title': 8,
                             'reviewDate': 4,
+                            'reviewedBy': 6,
+                            'reviewedByPerson': 6,
+                            'reviewedByDeputyPersons': 12,
                             'status': 6
                         }
                     } %}

@@ -48,7 +48,7 @@
                 },
                 'treatment': {
                     'label': 'risk.section.treatment'|trans({}, 'risk'),
-                    'fields': ['treatmentStrategy', 'riskOwner', 'treatmentDescription']
+                    'fields': ['treatmentStrategy', 'riskOwner', 'riskOwnerPerson', 'riskOwnerDeputyPersons', 'treatmentDescription']
                 },
                 'acceptance': {
                     'label': 'risk.section.acceptance'|trans({}, 'risk'),
@@ -77,6 +77,8 @@
                 'residualImpact': 6,
                 'treatmentStrategy': 6,
                 'riskOwner': 6,
+                'riskOwnerPerson': 6,
+                'riskOwnerDeputyPersons': 12,
                 'treatmentDescription': 12,
                 'acceptanceApprovedBy': 6,
                 'acceptanceApprovedAt': 6,

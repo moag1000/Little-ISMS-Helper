@@ -47,7 +47,7 @@
                 },
                 'treatment': {
                     'label': 'risk.section.treatment'|trans({}, 'risk') ~ '<a href="' ~ path('app_help_glossary') ~ '#glossary-treatment-strategy" class="text-muted ms-1" title="' ~ 'common.glossary_link'|trans({}, 'messages') ~ '" data-bs-toggle="tooltip"><i class="bi bi-question-circle" aria-hidden="true" style="font-size: 0.75rem;"></i></a>',
-                    'fields': ['treatmentStrategy', 'riskOwner', 'treatmentDescription']
+                    'fields': ['treatmentStrategy', 'riskOwner', 'riskOwnerPerson', 'riskOwnerDeputyPersons', 'treatmentDescription']
                 },
                 'acceptance': {
                     'label': 'risk.section.acceptance'|trans({}, 'risk'),
@@ -76,6 +76,8 @@
                 'residualImpact': 6,
                 'treatmentStrategy': 6,
                 'riskOwner': 6,
+                'riskOwnerPerson': 6,
+                'riskOwnerDeputyPersons': 12,
                 'treatmentDescription': 12,
                 'acceptanceApprovedBy': 6,
                 'acceptanceApprovedAt': 6,

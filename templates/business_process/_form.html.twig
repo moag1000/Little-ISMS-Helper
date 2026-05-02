@@ -37,6 +37,15 @@
 
     <div class="row">
         <div class="col-md-6">
+            {{ form_row(form.processOwnerPerson) }}
+        </div>
+        <div class="col-md-6">
+            {{ form_row(form.processOwnerDeputyPersons) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.description,
                 'label': 'business_process.field.description'|trans({}, 'business_process'),

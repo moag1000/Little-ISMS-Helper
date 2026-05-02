@@ -61,7 +61,7 @@
                         },
                         'consultation': {
                             'label': '<i class="fa-icon fa-icon--group" aria-hidden="true"></i> Stakeholder Consultation (Art. 35(4), 35(9))'|raw,
-                            'fields': ['dataProtectionOfficer', 'dpoConsultationDate', 'dpoAdvice', 'dataSubjectsConsulted', 'dataSubjectConsultationDetails']
+                            'fields': ['dataProtectionOfficer', 'dataProtectionOfficerPerson', 'dataProtectionOfficerDeputyPersons', 'dpoConsultationDate', 'dpoAdvice', 'dataSubjectsConsulted', 'dataSubjectConsultationDetails']
                         },
                         'supervisory': {
                             'label': '<i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> Supervisory Authority Consultation (Art. 36)'|raw,
@@ -69,7 +69,7 @@
                         },
                         'workflow': {
                             'label': '<i class="fa-icon fa-icon--recovery" aria-hidden="true"></i> Workflow & Review'|raw,
-                            'fields': ['conductor', 'reviewFrequencyMonths', 'nextReviewDate']
+                            'fields': ['conductor', 'conductorPerson', 'conductorDeputyPersons', 'approverPerson', 'approverDeputyPersons', 'reviewFrequencyMonths', 'nextReviewDate']
                         }
                     },
                     'col_widths': {
@@ -98,6 +98,8 @@
                         'residualRiskAssessment': 6,
                         'residualRiskLevel': 6,
                         'dataProtectionOfficer': 6,
+                        'dataProtectionOfficerPerson': 6,
+                        'dataProtectionOfficerDeputyPersons': 12,
                         'dpoConsultationDate': 6,
                         'dpoAdvice': 12,
                         'dataSubjectsConsulted': 12,
@@ -105,7 +107,11 @@
                         'requiresSupervisoryConsultation': 12,
                         'supervisoryConsultationDate': 6,
                         'supervisoryAuthorityFeedback': 6,
-                        'conductor': 12,
+                        'conductor': 6,
+                        'conductorPerson': 6,
+                        'conductorDeputyPersons': 12,
+                        'approverPerson': 6,
+                        'approverDeputyPersons': 6,
                         'reviewFrequencyMonths': 6,
                         'nextReviewDate': 6
                     },

@@ -30,7 +30,7 @@
                         'sections': {
                             'basic_info': {
                                 'label': 'bc_plans.section.basic_info'|trans({}, 'bc_plans'),
-                                'fields': ['name', 'businessProcess', 'description', 'planOwner', 'status']
+                                'fields': ['name', 'businessProcess', 'description', 'planOwner', 'planOwnerUser', 'planOwnerPerson', 'planOwnerDeputyPersons', 'status']
                             },
                             'team': {
                                 'label': 'bc_plans.section.team'|trans({}, 'bc_plans'),
@@ -62,6 +62,9 @@
                             'businessProcess': 12,
                             'description': 12,
                             'planOwner': 6,
+                            'planOwnerUser': 6,
+                            'planOwnerPerson': 6,
+                            'planOwnerDeputyPersons': 12,
                             'status': 6,
                             'bcTeam': 12,
                             'activationCriteria': 12,

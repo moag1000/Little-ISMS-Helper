@@ -61,6 +61,17 @@
     </legend>
 
     <div class="row">
+        <div class="col-md-4">
+            {{ form_row(form.ownerUser) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.ownerPerson) }}
+        </div>
+        <div class="col-md-4">
+            {{ form_row(form.ownerDeputyPersons) }}
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.owner,
