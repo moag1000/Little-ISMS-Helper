@@ -18,6 +18,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class AssetType extends AbstractType
 {
@@ -376,6 +378,21 @@ class AssetType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Asset::class,
             'translation_domain' => 'asset',
+            'constraints' => [
+                new Callback([$this, 'validateOwnerSlot']),
+            ],
         ]);
+    }
+
+    public function validateOwnerSlot(?Asset $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getOwnerUser() === null && $entity->getOwnerPerson() === null) {
+            $context->buildViolation('asset.error.owner_required_user_or_person')
+                ->atPath('ownerUser')
+                ->addViolation();
+        }
     }
 }

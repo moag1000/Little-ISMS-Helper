@@ -96,6 +96,8 @@ control:
       no_selection: 'Keine Control-IDs angegeben. Bitte mindestens eine ID wählen.'
       reason_required: 'Eine Begründung ist Pflicht, wenn Controls als N/A markiert werden.'
       updated: '%count% Control(s) als %status% aktualisiert.'
+  error:
+    owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
 inverse_coverage:
   total: 'Deckt %count% Anforderung(en) in %frameworks% Framework(s)'
   document:

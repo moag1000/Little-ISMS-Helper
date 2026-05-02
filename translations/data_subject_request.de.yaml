@@ -225,3 +225,5 @@ dsr:
         deadline_text: "Sie muessen unverzueglich und spaetestens innerhalb eines Monats nach Eingang antworten. Bei komplexen oder zahlreichen Anfragen kann dies um bis zu zwei weitere Monate verlaengert werden – die betroffene Person muss jedoch innerhalb des ersten Monats informiert werden."
         verification_title: "Identitaetspruefung"
         verification_text: "Vor der Erfuellung einer Anfrage muessen Sie die Identitaet der anfragenden Person pruefen, um unberechtigte Offenbarungen zu verhindern. Die Methode muss verhaeltnismaessig sein – fordern Sie keine uebertriebenen Angaben an."
+    error:
+        owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'

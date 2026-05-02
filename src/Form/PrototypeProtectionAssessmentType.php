@@ -17,6 +17,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Prototype-Protection assessment form.
@@ -158,6 +160,21 @@ class PrototypeProtectionAssessmentType extends AbstractType
         $resolver->setDefaults([
             'data_class' => PrototypeProtectionAssessment::class,
             'translation_domain' => 'prototype_protection',
+            'constraints' => [
+                new Callback([$this, 'validateAssessorSlot']),
+            ],
         ]);
+    }
+
+    public function validateAssessorSlot(?PrototypeProtectionAssessment $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getAssessor() === null && $entity->getAssessorPerson() === null) {
+            $context->buildViolation('prototype_protection.error.owner_required_user_or_person')
+                ->atPath('assessor')
+                ->addViolation();
+        }
     }
 }

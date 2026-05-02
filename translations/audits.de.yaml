@@ -1,6 +1,8 @@
 audits:
     page:
         title: Audits
+    error:
+        owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
 
 audit:
     new: 'Neues Audit'

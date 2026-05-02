@@ -99,3 +99,5 @@ risk_treatment_plan:
         target_completion_date_required: 'Bitte geben Sie einen Zieltermin an'
         budget_positive: 'Das Budget muss 0 oder größer sein'
         completion_percentage_range: 'Der Fertigstellungsgrad muss zwischen 0 und 100 liegen'
+    error:
+        owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'

@@ -149,3 +149,5 @@ training:
   completion_rate: Abschlussquote
   attendee_count: Anzahl Teilnehmer
   completed_on: Abgeschlossen am
+  error:
+    owner_required_user_or_person: 'Trainer: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'

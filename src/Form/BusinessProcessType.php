@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Asset;
+use App\Entity\Person;
 use App\Entity\User;
 use App\Entity\BusinessProcess;
 use App\Entity\Risk;
@@ -17,8 +18,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class BusinessProcessType extends AbstractType
 {
@@ -220,6 +223,21 @@ class BusinessProcessType extends AbstractType
         $resolver->setDefaults([
             'data_class' => BusinessProcess::class,
             'translation_domain' => 'business_process',
+            'constraints' => [
+                new Callback([$this, 'validateProcessOwnerSlot']),
+            ],
         ]);
+    }
+
+    public function validateProcessOwnerSlot(?BusinessProcess $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getProcessOwnerUser() === null && $entity->getProcessOwnerPerson() === null) {
+            $context->buildViolation('business_process.error.owner_required_user_or_person')
+                ->atPath('processOwnerUser')
+                ->addViolation();
+        }
     }
 }

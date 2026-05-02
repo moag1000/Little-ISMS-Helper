@@ -17,6 +17,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Form type for Data Subject Request (GDPR Art. 15-22)
@@ -188,6 +190,21 @@ class DataSubjectRequestType extends AbstractType
             'attr' => [
                 'data-controller' => 'conditional-fields',
             ],
+            'constraints' => [
+                new Callback([$this, 'validateAssignedSlot']),
+            ],
         ]);
+    }
+
+    public function validateAssignedSlot(?DataSubjectRequest $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getAssignedTo() === null && $entity->getAssignedPerson() === null) {
+            $context->buildViolation('dsr.error.owner_required_user_or_person')
+                ->atPath('assignedTo')
+                ->addViolation();
+        }
     }
 }

@@ -143,3 +143,5 @@ training:
   completion_rate: Completion Rate
   attendee_count: Attendee Count
   completed_on: Completed on
+  error:
+    owner_required_user_or_person: 'Trainer: User or master-data Person required (free-text alone is not sufficient).'

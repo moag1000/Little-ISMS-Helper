@@ -20,6 +20,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class RiskTreatmentPlanType extends AbstractType
 {
@@ -219,6 +221,21 @@ class RiskTreatmentPlanType extends AbstractType
         $resolver->setDefaults([
             'data_class' => RiskTreatmentPlan::class,
             'translation_domain' => 'risk_treatment_plan',
+            'constraints' => [
+                new Callback([$this, 'validateResponsibleSlot']),
+            ],
         ]);
+    }
+
+    public function validateResponsibleSlot(?RiskTreatmentPlan $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getResponsiblePersonUser() === null && $entity->getResponsiblePerson() === null) {
+            $context->buildViolation('risk_treatment_plan.error.owner_required_user_or_person')
+                ->atPath('responsiblePersonUser')
+                ->addViolation();
+        }
     }
 }

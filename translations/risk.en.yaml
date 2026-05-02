@@ -454,6 +454,8 @@ risk:
     critical: Set Critical Risk
   show_matrix: Show Risk Matrix
   matrix_help: Click on a cell to set probability and impact directly
+  error:
+    owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
 risk_management:
   title: Title
   description: Description

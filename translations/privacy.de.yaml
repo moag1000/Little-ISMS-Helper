@@ -273,6 +273,12 @@ privacy:
             reportable_medium: 'Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Folgenabschätzung beginnen und mögliche Benachrichtigung betroffener Personen vorbereiten.'
             reportable_high: 'DRINGEND: Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Benachrichtigung betroffener Personen prüfen (Art. 34). Sofortiges Handeln erforderlich.'
             reportable_very_high: 'KRITISCH: Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Benachrichtigung betroffener Personen unverzüglich (Art. 34). Sofortige Eskalation erforderlich.'
+    error:
+        dpo_required_user_or_person: 'Datenschutzbeauftragter: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+        assessor_required_user_or_person: 'Gutachter: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+        conductor_required_user_or_person: 'Durchführender: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+        approver_required_user_or_person: 'Genehmiger: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+        contact_person_required_user_or_person: 'Kontaktperson: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
 
 
 processing_activity:

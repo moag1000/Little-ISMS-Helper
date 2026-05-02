@@ -107,3 +107,5 @@ prototype_protection:
     validation:
         title_required: 'Please provide a title for the assessment.'
         level_invalid: 'TISAX level must be AL2 or AL3.'
+    error:
+        owner_required_user_or_person: 'Assessor: User or master-data Person required (free-text alone is not sufficient).'

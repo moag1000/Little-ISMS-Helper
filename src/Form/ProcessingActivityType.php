@@ -17,6 +17,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * CRITICAL-06: ProcessingActivity Form Type
@@ -555,6 +557,34 @@ class ProcessingActivityType extends AbstractType
             'attr' => [
                 'data-controller' => 'conditional-fields',
             ],
+            'constraints' => [
+                new Callback([$this, 'validateContactPersonSlot']),
+                new Callback([$this, 'validateDpoSlot']),
+            ],
         ]);
+    }
+
+    public function validateContactPersonSlot(?ProcessingActivity $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getContactPersonUser() === null && $entity->getContactPerson() === null) {
+            $context->buildViolation('privacy.error.contact_person_required_user_or_person')
+                ->atPath('contactPersonUser')
+                ->addViolation();
+        }
+    }
+
+    public function validateDpoSlot(?ProcessingActivity $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getDataProtectionOfficer() === null && $entity->getDataProtectionOfficerPerson() === null) {
+            $context->buildViolation('privacy.error.dpo_required_user_or_person')
+                ->atPath('dataProtectionOfficer')
+                ->addViolation();
+        }
     }
 }

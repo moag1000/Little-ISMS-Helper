@@ -81,3 +81,6 @@ crisis_team:
         updated: 'Krisenstab erfolgreich aktualisiert.'
         deleted: 'Krisenstab erfolgreich gelöscht.'
         activated: 'Krisenstab erfolgreich aktiviert.'
+    error:
+        owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+        deputy_required_user_or_person: 'Stellvertretung: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'

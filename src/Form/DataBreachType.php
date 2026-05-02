@@ -23,6 +23,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Form type for Data Breach (Art. 33/34 GDPR)
@@ -360,8 +362,36 @@ class DataBreachType extends AbstractType
             'attr' => [
                 'data-controller' => 'conditional-fields',
             ],
+            'constraints' => [
+                new Callback([$this, 'validateDpoSlot']),
+                new Callback([$this, 'validateAssessorSlot']),
+            ],
         ]);
 
         $resolver->setAllowedTypes('tenant', ['null', Tenant::class]);
+    }
+
+    public function validateDpoSlot(?DataBreach $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getDataProtectionOfficer() === null && $entity->getDataProtectionOfficerPerson() === null) {
+            $context->buildViolation('privacy.error.dpo_required_user_or_person')
+                ->atPath('dataProtectionOfficer')
+                ->addViolation();
+        }
+    }
+
+    public function validateAssessorSlot(?DataBreach $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getAssessor() === null && $entity->getAssessorPerson() === null) {
+            $context->buildViolation('privacy.error.assessor_required_user_or_person')
+                ->atPath('assessorPerson')
+                ->addViolation();
+        }
     }
 }

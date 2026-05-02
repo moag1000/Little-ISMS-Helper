@@ -107,3 +107,5 @@ prototype_protection:
     validation:
         title_required: 'Bitte geben Sie eine Bezeichnung für das Assessment an.'
         level_invalid: 'TISAX-Level muss AL2 oder AL3 sein.'
+    error:
+        owner_required_user_or_person: 'Gutachter: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'

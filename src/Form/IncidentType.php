@@ -22,6 +22,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class IncidentType extends AbstractType
 {
@@ -284,6 +286,21 @@ class IncidentType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Incident::class,
             'translation_domain' => 'incident',
+            'constraints' => [
+                new Callback([$this, 'validateReportedBySlot']),
+            ],
         ]);
+    }
+
+    public function validateReportedBySlot(?Incident $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getReportedByUser() === null && $entity->getReportedByPerson() === null) {
+            $context->buildViolation('incident.error.owner_required_user_or_person')
+                ->atPath('reportedByUser')
+                ->addViolation();
+        }
     }
 }
