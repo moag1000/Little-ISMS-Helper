@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Person;
 use App\Entity\Tenant;
+use App\Entity\User;
 use DateTimeImmutable;
 use App\Entity\ComplianceRequirement;
 use App\Form\ComplianceRequirementType;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\PersonRepository;
+use App\Repository\UserRepository;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\MrisMaturityService;
 use App\Service\TenantContext;
@@ -32,6 +36,8 @@ class ComplianceRequirementController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly TransitiveCoverageService $transitiveCoverageService,
         private readonly MrisMaturityService $mrisMaturityService,
+        private readonly UserRepository $userRepository,
+        private readonly PersonRepository $personRepository,
     ) {}
 
     #[Route('/compliance/requirement/', name: 'app_compliance_requirement_index', methods: ['GET'])]
@@ -174,6 +180,8 @@ class ComplianceRequirementController extends AbstractController
             'transitive_coverage' => $this->transitiveCoverageService->computeForRequirement($complianceRequirement),
             'is_mris' => $isMris,
             'mris' => $mrisData,
+            'available_users' => $this->userRepository->findAll(),
+            'available_persons' => $this->personRepository->findAll(),
         ]);
     }
 
@@ -305,6 +313,36 @@ class ComplianceRequirementController extends AbstractController
         }
 
         $fulfillment->setApplicable($applicable);
+
+        // Person fields (Tri-State responsible owner)
+        $responsiblePersonUserId = $request->request->get('responsiblePersonUserId');
+        if ($responsiblePersonUserId !== null) {
+            $responsibleUser = $responsiblePersonUserId !== ''
+                ? $this->userRepository->find((int) $responsiblePersonUserId)
+                : null;
+            $fulfillment->setResponsiblePersonUser($responsibleUser instanceof User ? $responsibleUser : null);
+        }
+
+        $responsiblePersonId = $request->request->get('responsiblePersonId');
+        if ($responsiblePersonId !== null) {
+            $responsiblePerson = $responsiblePersonId !== ''
+                ? $this->personRepository->find((int) $responsiblePersonId)
+                : null;
+            $fulfillment->setResponsiblePerson($responsiblePerson instanceof Person ? $responsiblePerson : null);
+        }
+
+        $deputyIds = $request->request->all('responsibleDeputyPersonIds');
+        $currentDeputies = $fulfillment->getResponsibleDeputyPersons()->toArray();
+        foreach ($currentDeputies as $deputy) {
+            $fulfillment->removeResponsibleDeputyPerson($deputy);
+        }
+        foreach ($deputyIds as $deputyId) {
+            $deputy = $this->personRepository->find((int) $deputyId);
+            if ($deputy instanceof Person) {
+                $fulfillment->addResponsibleDeputyPerson($deputy);
+            }
+        }
+
         $fulfillment->setUpdatedAt(new DateTimeImmutable());
         $fulfillment->setLastUpdatedBy($this->getUser());
 

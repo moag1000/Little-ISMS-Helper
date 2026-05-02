@@ -364,6 +364,52 @@
                                 </label>
                             </div>
 
+                            {# Person fields — Tri-State responsible owner #}
+                            <div class="mb-3">
+                                <label for="responsiblePersonUserId" class="form-label small fw-semibold">
+                                    {{ 'fulfillment.field.responsible_person_user'|trans({}, 'compliance') }}
+                                </label>
+                                <select id="responsiblePersonUserId" name="responsiblePersonUserId" class="form-select form-select-sm">
+                                    <option value="">{{ 'fulfillment.placeholder.responsible_person_user'|trans({}, 'compliance') }}</option>
+                                    {% for user in available_users %}
+                                        <option value="{{ user.id }}"{% if fulfillment.responsiblePersonUser and fulfillment.responsiblePersonUser.id == user.id %} selected{% endif %}>
+                                            {{ user.fullName }} ({{ user.email }})
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-muted">{{ 'fulfillment.help.responsible_person_user'|trans({}, 'compliance') }}</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="responsiblePersonId" class="form-label small fw-semibold">
+                                    {{ 'fulfillment.field.responsible_person'|trans({}, 'compliance') }}
+                                </label>
+                                <select id="responsiblePersonId" name="responsiblePersonId" class="form-select form-select-sm">
+                                    <option value="">{{ 'fulfillment.placeholder.responsible_person'|trans({}, 'compliance') }}</option>
+                                    {% for person in available_persons %}
+                                        <option value="{{ person.id }}"{% if fulfillment.responsiblePerson and fulfillment.responsiblePerson.id == person.id %} selected{% endif %}>
+                                            {{ person.fullName }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-muted">{{ 'fulfillment.help.responsible_person'|trans({}, 'compliance') }}</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="responsibleDeputyPersonIds" class="form-label small fw-semibold">
+                                    {{ 'fulfillment.field.responsible_deputy_persons'|trans({}, 'compliance') }}
+                                </label>
+                                <select id="responsibleDeputyPersonIds" name="responsibleDeputyPersonIds[]" class="form-select form-select-sm"
+                                        multiple data-controller="tom-select">
+                                    {% for person in available_persons %}
+                                        <option value="{{ person.id }}"{% if fulfillment.responsibleDeputyPersons.contains(person) %} selected{% endif %}>
+                                            {{ person.fullName }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-muted">{{ 'fulfillment.help.responsible_deputy_persons'|trans({}, 'compliance') }}</small>
+                            </div>
+
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary w-100"
                                     data-bs-toggle="tooltip" data-bs-placement="top"
                                     title="{{ 'compliance.requirement.tooltip.save'|trans({}, 'compliance') }}">
