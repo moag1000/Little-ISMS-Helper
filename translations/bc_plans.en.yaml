@@ -119,6 +119,8 @@ bc_plans:
     communication_plan: 'Communication strategy during a disruption: who informs whom, via which channel, in what order? Includes escalation paths and backup communication channels.'
     alternative_site: 'Fallback location for emergency operations if the primary site is unavailable. Describe capacity, available infrastructure and activation lead time.'
     required_resources: 'Minimum resources needed for emergency operations: staff, IT systems, communication tools, premises and critical third-party service providers (ISO 22301 Cl. 8.1).'
+  error:
+    owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
 bcm:
   field:
     activation_criteria: Activation Criteria

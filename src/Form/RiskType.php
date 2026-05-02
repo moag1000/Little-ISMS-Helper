@@ -25,6 +25,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class RiskType extends AbstractType
 {
@@ -334,6 +336,21 @@ class RiskType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Risk::class,
             'translation_domain' => 'risk',
+            'constraints' => [
+                new Callback([$this, 'validateRiskOwnerSlot']),
+            ],
         ]);
+    }
+
+    public function validateRiskOwnerSlot(?Risk $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getRiskOwner() === null && $entity->getRiskOwnerPerson() === null) {
+            $context->buildViolation('risk.error.owner_required_user_or_person')
+                ->atPath('riskOwner')
+                ->addViolation();
+        }
     }
 }

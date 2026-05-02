@@ -15,7 +15,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ManagementReviewType extends AbstractType
 {
@@ -263,6 +265,21 @@ class ManagementReviewType extends AbstractType
         $resolver->setDefaults([
             'data_class' => ManagementReview::class,
             'translation_domain' => 'management_review',
+            'constraints' => [
+                new Callback([$this, 'validateReviewedBySlot']),
+            ],
         ]);
+    }
+
+    public function validateReviewedBySlot(?ManagementReview $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getReviewedBy() === null && $entity->getReviewedByPerson() === null) {
+            $context->buildViolation('management_review.error.owner_required_user_or_person')
+                ->atPath('reviewedBy')
+                ->addViolation();
+        }
     }
 }

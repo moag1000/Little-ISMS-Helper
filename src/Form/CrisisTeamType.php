@@ -19,6 +19,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class CrisisTeamType extends AbstractType
 {
@@ -242,6 +244,34 @@ class CrisisTeamType extends AbstractType
         $resolver->setDefaults([
             'data_class' => CrisisTeam::class,
             'translation_domain' => 'crisis_team',
+            'constraints' => [
+                new Callback([$this, 'validateTeamLeaderSlot']),
+                new Callback([$this, 'validateDeputyLeaderSlot']),
+            ],
         ]);
+    }
+
+    public function validateTeamLeaderSlot(?CrisisTeam $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getTeamLeader() === null && $entity->getTeamLeaderPerson() === null) {
+            $context->buildViolation('crisis_team.error.owner_required_user_or_person')
+                ->atPath('teamLeader')
+                ->addViolation();
+        }
+    }
+
+    public function validateDeputyLeaderSlot(?CrisisTeam $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getDeputyLeader() === null && $entity->getDeputyLeaderPerson() === null) {
+            $context->buildViolation('crisis_team.error.deputy_required_user_or_person')
+                ->atPath('deputyLeader')
+                ->addViolation();
+        }
     }
 }

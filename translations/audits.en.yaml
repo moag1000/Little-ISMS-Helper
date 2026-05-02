@@ -1,6 +1,8 @@
 audits:
     page:
         title: Audits
+    error:
+        owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
 
 title: Audits
 description: 'Planning, execution and follow-up of internal and external audits'

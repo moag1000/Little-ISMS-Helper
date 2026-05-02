@@ -121,6 +121,8 @@ bc_plans:
     communication_plan: 'Kommunikationsstrategie während einer Unterbrechungssituation: Wer informiert wen, über welchen Kanal, in welcher Reihenfolge? Enthält Eskalationswege und Backup-Kommunikationskanäle.'
     alternative_site: 'Ausweichstandort für den Notbetrieb, falls der primäre Standort nicht verfügbar ist. Beschreiben Sie Kapazität, vorhandene Infrastruktur und Aktivierungsdauer.'
     required_resources: 'Mindestressourcen, die für den Notbetrieb benötigt werden: Personal, IT-Systeme, Kommunikationsmittel, Räumlichkeiten und kritische Drittdienstleister (ISO 22301 Kl. 8.1).'
+  error:
+    owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
 bcm:
   field:
     activation_criteria: Aktivierungskriterien

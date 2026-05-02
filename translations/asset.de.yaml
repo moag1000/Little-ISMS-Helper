@@ -367,6 +367,8 @@ qr:
   printed_on: Gedruckt am
   page: Seite
   no_assets: Keine Assets zum Drucken ausgewählt
+  error:
+    owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
 asset_management:
   title: Titel
   description: Beschreibung

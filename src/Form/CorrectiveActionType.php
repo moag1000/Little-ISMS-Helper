@@ -13,6 +13,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -119,7 +121,22 @@ class CorrectiveActionType extends AbstractType
             'data_class' => CorrectiveAction::class,
             'translation_domain' => 'audits',
             'finding_locked' => false,
+            'constraints' => [
+                new Callback([$this, 'validateResponsibleSlot']),
+            ],
         ]);
         $resolver->setAllowedTypes('finding_locked', 'bool');
+    }
+
+    public function validateResponsibleSlot(?CorrectiveAction $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getResponsiblePersonUser() === null && $entity->getResponsiblePerson() === null) {
+            $context->buildViolation('audits.error.owner_required_user_or_person')
+                ->atPath('responsiblePersonUser')
+                ->addViolation();
+        }
     }
 }

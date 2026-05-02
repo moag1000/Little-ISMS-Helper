@@ -278,6 +278,12 @@ privacy:
         yes_reportable: 'YES - Reportable to Supervisory Authority'
         no_not_reportable: 'NO - Not Reportable'
         step_of: 'of'
+    error:
+        dpo_required_user_or_person: 'Data Protection Officer: User or master-data Person required (free-text alone is not sufficient).'
+        assessor_required_user_or_person: 'Assessor: User or master-data Person required (free-text alone is not sufficient).'
+        conductor_required_user_or_person: 'Conductor: User or master-data Person required (free-text alone is not sufficient).'
+        approver_required_user_or_person: 'Approver: User or master-data Person required (free-text alone is not sufficient).'
+        contact_person_required_user_or_person: 'Contact person: User or master-data Person required (free-text alone is not sufficient).'
 processing_activity:
     title: 'VVT - Record of Processing Activities'
     subtitle: 'Art. 30 GDPR - Record of Processing Activities'

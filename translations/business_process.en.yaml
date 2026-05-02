@@ -193,3 +193,5 @@ business_process:
     residual_risk: Residual Risk
     treatment: Treatment
     no_risks: No risks linked.
+  error:
+    owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'

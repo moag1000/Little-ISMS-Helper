@@ -152,3 +152,5 @@ management_review:
         action_items: 'Konkrete Maßnahmen mit Verantwortlichkeiten und Fristen'
         resource_needs: 'Budget, Personal oder sonstige Ressourcen'
         summary: 'Executive Summary des Management Reviews'
+    error:
+        owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'

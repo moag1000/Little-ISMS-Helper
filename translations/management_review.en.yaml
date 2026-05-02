@@ -151,3 +151,5 @@ management_review:
         action_items: 'Specific actions with responsibilities and deadlines'
         resource_needs: 'Budget, personnel or other resources'
         summary: 'Executive summary of the management review'
+    error:
+        owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'

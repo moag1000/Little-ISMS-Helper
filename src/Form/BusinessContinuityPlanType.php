@@ -16,6 +16,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class BusinessContinuityPlanType extends AbstractType
 {
@@ -212,7 +214,22 @@ class BusinessContinuityPlanType extends AbstractType
             'attr' => [
                 'novalidate' => 'novalidate',
             ],
-            'empty_data' => 'new'
+            'empty_data' => 'new',
+            'constraints' => [
+                new Callback([$this, 'validatePlanOwnerSlot']),
+            ],
         ]);
+    }
+
+    public function validatePlanOwnerSlot(?BusinessContinuityPlan $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getPlanOwnerUser() === null && $entity->getPlanOwnerPerson() === null) {
+            $context->buildViolation('bc_plans.error.owner_required_user_or_person')
+                ->atPath('planOwnerUser')
+                ->addViolation();
+        }
     }
 }

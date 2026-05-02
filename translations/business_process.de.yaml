@@ -202,3 +202,5 @@ business_process:
     residual_risk: Restrisiko
     treatment: Behandlung
     no_risks: Keine Risiken verknüpft.
+  error:
+    owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'

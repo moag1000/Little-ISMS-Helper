@@ -17,8 +17,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ControlType extends AbstractType
 {
@@ -208,6 +210,21 @@ class ControlType extends AbstractType
             'data_class' => Control::class,
             'allow_control_id_edit' => false, // Default: Control ID kann nicht geändert werden
             'translation_domain' => 'control',
+            'constraints' => [
+                new Callback([$this, 'validateResponsibleSlot']),
+            ],
         ]);
+    }
+
+    public function validateResponsibleSlot(?Control $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getResponsiblePersonUser() === null && $entity->getResponsiblePersonRef() === null) {
+            $context->buildViolation('control.error.owner_required_user_or_person')
+                ->atPath('responsiblePersonUser')
+                ->addViolation();
+        }
     }
 }

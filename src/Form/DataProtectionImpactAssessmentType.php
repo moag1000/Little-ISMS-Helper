@@ -18,6 +18,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * CRITICAL-07: DataProtectionImpactAssessment Form Type
@@ -438,6 +440,47 @@ class DataProtectionImpactAssessmentType extends AbstractType
         $resolver->setDefaults([
             'data_class' => DataProtectionImpactAssessment::class,
             'translation_domain' => 'privacy',
+            'constraints' => [
+                new Callback([$this, 'validateDpoSlot']),
+                new Callback([$this, 'validateConductorSlot']),
+                new Callback([$this, 'validateApproverSlot']),
+            ],
         ]);
+    }
+
+    public function validateDpoSlot(?DataProtectionImpactAssessment $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getDataProtectionOfficer() === null && $entity->getDataProtectionOfficerPerson() === null) {
+            $context->buildViolation('privacy.error.dpo_required_user_or_person')
+                ->atPath('dataProtectionOfficer')
+                ->addViolation();
+        }
+    }
+
+    public function validateConductorSlot(?DataProtectionImpactAssessment $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getConductor() === null && $entity->getConductorPerson() === null) {
+            $context->buildViolation('privacy.error.conductor_required_user_or_person')
+                ->atPath('conductor')
+                ->addViolation();
+        }
+    }
+
+    public function validateApproverSlot(?DataProtectionImpactAssessment $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity === null) {
+            return;
+        }
+        if ($entity->getApprover() === null && $entity->getApproverPerson() === null) {
+            $context->buildViolation('privacy.error.approver_required_user_or_person')
+                ->atPath('approverPerson')
+                ->addViolation();
+        }
     }
 }

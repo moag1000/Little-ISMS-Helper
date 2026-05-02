@@ -298,3 +298,5 @@ incident:
   feedback:
     risk_re_evaluation_triggered: Risiko-Neubewertung wurde für verknüpfte Risiken
       ausgelöst
+  error:
+    owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'

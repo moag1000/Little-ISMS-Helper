@@ -467,6 +467,8 @@ risk:
   show_matrix: Risikomatrix anzeigen
   matrix_help: Klicken Sie auf eine Zelle, um Wahrscheinlichkeit und Auswirkung direkt
     zu setzen
+  error:
+    owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
 risk_management:
   title: Titel
   description: Beschreibung

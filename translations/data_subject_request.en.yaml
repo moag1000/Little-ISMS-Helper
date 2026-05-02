@@ -225,3 +225,5 @@ dsr:
         deadline_text: "You must respond without undue delay and at the latest within one month of receipt. For complex or numerous requests, this may be extended by up to two additional months — but the data subject must be informed within the first month."
         verification_title: "Identity Verification"
         verification_text: "Before fulfilling a request you must verify the identity of the requesting person to prevent unauthorised disclosure. The method must be proportionate — do not request more information than necessary."
+    error:
+        owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
