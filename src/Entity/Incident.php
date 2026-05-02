@@ -144,9 +144,8 @@ class Incident
     #[Groups(['incident:read', 'incident:write'])]
     private ?DateTimeInterface $occurredAt = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    #[Assert\NotBlank(message: 'Reporter name is required')]
     #[Assert\Length(max: 100, maxMessage: 'Reporter name cannot exceed { limit } characters')]
     private ?string $reportedBy = null;
 

@@ -141,9 +141,8 @@ class Asset
     #[Groups(['asset:read', 'asset:write'])]
     private ?array $aiAgentExtensionAllowlist = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['asset:read', 'asset:write'])]
-    #[Assert\NotBlank(message: 'Asset owner is required')]
     #[Assert\Length(max: 100, maxMessage: 'Owner cannot exceed { limit } characters')]
     private ?string $owner = null;
 
