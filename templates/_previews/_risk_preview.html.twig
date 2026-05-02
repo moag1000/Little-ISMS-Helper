@@ -26,9 +26,9 @@
             </dd>
             {% endif %}
 
-            {% if risk.riskOwner %}
+            {% if risk.effectiveRiskOwner %}
             <dt class="col-sm-4">{{ 'risk.field.risk_owner'|trans({}, 'risk') }}:</dt>
-            <dd class="col-sm-8">{{ risk.riskOwner }}</dd>
+            <dd class="col-sm-8">{{ risk.effectiveRiskOwner }}</dd>
             {% endif %}
         </dl>
     </div>

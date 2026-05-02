@@ -91,7 +91,7 @@
                     <tr data-filter-target="filterableRow">
                         <td><a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a></td>
                         <td>{{ plan.businessProcess ? plan.businessProcess.name : '-' }}</td>
-                        <td>{{ plan.planOwner }}</td>
+                        <td>{{ plan.effectivePlanOwner }}</td>
                         <td><span class="{{ badge_status(plan.status) }}">{{ ('bc_plans.status.' ~ plan.status)|trans({}, 'bc_plans')|upper }}</span></td>
                         <td>
                             {% set readiness = plan.getReadinessScore() %}
