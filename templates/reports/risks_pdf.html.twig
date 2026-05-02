@@ -100,7 +100,7 @@
                 <td>{{ riskLevel|upper }}</td>
                 <td>{{ risk.treatmentDescription|slice(0, 25)|default('-') }}{% if risk.treatmentDescription|length > 25 %}...{% endif %}</td>
                 <td>{{ risk.status ? risk.status.value : '' }}</td>
-                <td>{{ risk.riskOwner ? risk.riskOwner.email|slice(0, 20) : '-' }}</td>
+                <td>{{ (risk.effectiveRiskOwner ?? '-')|slice(0, 20) }}</td>
             </tr>
             {% endfor %}
         </tbody>

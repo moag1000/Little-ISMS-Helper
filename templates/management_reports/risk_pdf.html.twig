@@ -129,7 +129,7 @@
                     {% endif %}
                 </td>
                 <td>{{ (risk.treatmentStrategy ? risk.treatmentStrategy.value : '-')|slice(0, 20) }}</td>
-                <td>{{ risk.riskOwner ? risk.riskOwner.email|slice(0, 20) : '-' }}</td>
+                <td>{{ (risk.effectiveRiskOwner ?? '-')|slice(0, 20) }}</td>
             </tr>
             {% endfor %}
         </table>

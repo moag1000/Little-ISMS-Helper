@@ -57,10 +57,10 @@
                 <span class="value">{{ risk.treatmentStrategy ? risk.treatmentStrategy.value|upper : '' }}</span>
             </div>
 
-            {% if risk.riskOwner %}
+            {% if risk.effectiveRiskOwner %}
             <div class="field">
                 <span class="label">{{ 'risk.field.risk_owner'|trans({}, 'risk') }}:</span>
-                <span class="value">{{ risk.riskOwner.fullName }}</span>
+                <span class="value">{{ risk.effectiveRiskOwner }}</span>
             </div>
             {% endif %}
 

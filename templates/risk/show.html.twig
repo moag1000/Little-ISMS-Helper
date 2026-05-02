@@ -127,10 +127,10 @@
             </div>
 
             {# Data Reuse: Risk Owner #}
-            {% if risk.riskOwner is defined and risk.riskOwner %}
+            {% if risk.effectiveRiskOwner %}
                 <div class="detail-section">
                     <h3>{{ 'risk.section.risk_owner'|trans({}, 'risk') }}</h3>
-                    <p><strong>{{ risk.riskOwner.fullName }}</strong> ({{ risk.riskOwner.email }})</p>
+                    <p><strong>{{ risk.effectiveRiskOwner }}</strong>{% if risk.riskOwner %} ({{ risk.riskOwner.email }}){% endif %}</p>
                 </div>
             {% endif %}
 
