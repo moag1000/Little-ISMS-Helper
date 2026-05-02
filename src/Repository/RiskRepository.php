@@ -214,4 +214,62 @@ class RiskRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find tenant-less (orphaned) risks — tenant_id IS NULL.
+     *
+     * TenantFilter is disabled during the query; otherwise Doctrine combines
+     * "tenant IS NULL" with "tenant_id = :current", producing zero results.
+     * Caller-side authorization required: only Admins/SuperAdmins may see orphans.
+     *
+     * @return Risk[]
+     */
+    public function findOrphaned(): array
+    {
+        return $this->withoutTenantFilter(
+            fn() => $this->createQueryBuilder('r')
+                ->where('r.tenant IS NULL')
+                ->orderBy('r.createdAt', 'DESC')
+                ->getQuery()
+                ->getResult()
+        );
+    }
+
+    /**
+     * Find every risk in the system, regardless of tenant scope.
+     *
+     * Bypasses TenantFilter — for admin/super-admin tools that need a
+     * cross-tenant overview. Caller MUST enforce role-based authorization.
+     *
+     * @return Risk[]
+     */
+    public function findAllAcrossTenants(): array
+    {
+        return $this->withoutTenantFilter(
+            fn() => $this->createQueryBuilder('r')
+                ->orderBy('r.createdAt', 'DESC')
+                ->getQuery()
+                ->getResult()
+        );
+    }
+
+    /**
+     * Run a callback with the Doctrine TenantFilter temporarily disabled.
+     */
+    private function withoutTenantFilter(callable $fn): mixed
+    {
+        $em = $this->getEntityManager();
+        $filters = $em->getFilters();
+        $wasEnabled = $filters->isEnabled('tenant_filter');
+        if ($wasEnabled) {
+            $filters->disable('tenant_filter');
+        }
+        try {
+            return $fn();
+        } finally {
+            if ($wasEnabled) {
+                $filters->enable('tenant_filter');
+            }
+        }
+    }
 }

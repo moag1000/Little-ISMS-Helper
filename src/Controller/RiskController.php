@@ -71,6 +71,14 @@ class RiskController extends AbstractController
         $owner = $request->query->get('owner');
         $view = $request->query->get('view', 'own'); // Default: own tenant's risks
 
+        // Cross-tenant + orphan views are admin-only — silently coerce to
+        // 'own' for non-admins so a hand-crafted ?view=all URL doesn't leak
+        // foreign-tenant data.
+        $isAdmin = $this->isGranted('ROLE_ADMIN');
+        if (in_array($view, ['orphaned', 'all'], true) && !$isAdmin) {
+            $view = 'own';
+        }
+
         // Get risks based on view filter
         if ($tenant) {
             // Determine which risks to load based on view parameter
@@ -79,6 +87,10 @@ class RiskController extends AbstractController
                 'own' => $this->riskRepository->findByTenant($tenant),
                 // Own + from all subsidiaries (for parent companies)
                 'subsidiaries' => $this->riskRepository->findByTenantIncludingSubsidiaries($tenant),
+                // Tenant-less (orphan) risks — admin only
+                'orphaned' => $this->riskRepository->findOrphaned(),
+                // Cross-tenant overview — admin only
+                'all' => $this->riskRepository->findAllAcrossTenants(),
                 // Own + inherited from parents (default behavior)
                 default => $this->riskService->getRisksForTenant($tenant),
             };
@@ -89,6 +101,7 @@ class RiskController extends AbstractController
             $inheritanceInfo = $this->riskService->getRiskInheritanceInfo($tenant);
             $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
             $inheritanceInfo['currentView'] = $view;
+            $inheritanceInfo['isAdmin'] = $isAdmin;
         } else {
             // Fallback for users without tenant (e.g., super admins)
             $risks = $this->riskRepository->findAll();
@@ -99,7 +112,8 @@ class RiskController extends AbstractController
                 'canInherit' => false,
                 'governanceModel' => null,
                 'hasSubsidiaries' => false,
-                'currentView' => 'own'
+                'currentView' => 'own',
+                'isAdmin' => $isAdmin,
             ];
         }
 
