@@ -130,12 +130,10 @@ class TrainingType extends AbstractType
             ])
             ->add('trainer', TextType::class, [
                 'label' => 'training.field.trainer_legacy',
+                'required' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'training.placeholder.trainer',
-                ],
-                'constraints' => [
-                    new NotBlank(message: 'training.validation.trainer_required'),
                 ],
             ])
             ->add('targetAudience', TextType::class, [

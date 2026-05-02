@@ -932,7 +932,7 @@ class AssetControllerTest extends WebTestCase
     }
 
     #[Test]
-    public function testNewRequiresOwner(): void
+    public function testNewAllowsEmptyLegacyOwner(): void
     {
         $this->loginAsUser($this->testUser);
 
@@ -940,7 +940,7 @@ class AssetControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="asset"]')->form([
             'asset[name]' => 'Test Name',
             'asset[assetType]' => 'Hardware',
-            'asset[owner]' => '',  // Empty owner should fail validation
+            'asset[owner]' => '',  // Empty legacy owner is fine — Tri-State: ownerUser/ownerPerson also optional
             'asset[confidentialityValue]' => 2,
             'asset[integrityValue]' => 2,
             'asset[availabilityValue]' => 2,
@@ -949,9 +949,9 @@ class AssetControllerTest extends WebTestCase
 
         $this->client->submit($form);
 
-        // Should re-display form with validation errors - modern Symfony returns 422
-        $this->assertResponseStatusCodeSame(422);
-        $this->assertSelectorExists('form[name="asset"]');
+        // Tri-State semantics: any of the 3 levels (ownerUser, ownerPerson, owner) is sufficient.
+        // All empty → asset is still created without an assigned owner (nullable).
+        $this->assertResponseRedirects();
     }
 
     // ========== FLASH MESSAGE TESTS ==========

@@ -99,9 +99,8 @@ class Training
     #[Assert\Positive(message: 'Duration must be a positive number')]
     private ?int $durationMinutes = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
-    #[Assert\NotBlank(message: 'Trainer name is required')]
     #[Assert\Length(max: 100, maxMessage: 'Trainer name cannot exceed { limit } characters')]
     private ?string $trainer = null;
 

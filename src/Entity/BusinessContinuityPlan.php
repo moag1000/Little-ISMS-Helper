@@ -81,8 +81,7 @@ class BusinessContinuityPlan
     /**
      * Plan owner/responsible person
      */
-    #[ORM\Column(length: 100)]
-    #[Assert\NotBlank]
+    #[ORM\Column(length: 100, nullable: true)]
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $planOwner = null;
 
