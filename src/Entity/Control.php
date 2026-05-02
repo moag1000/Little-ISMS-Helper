@@ -738,21 +738,22 @@ class Control
 
     /**
      * Person-based responsible person: for contacts without a system login.
-     * Named `responsiblePersonContact` to avoid collision with the existing
-     * legacy string field `responsiblePerson`.
+     * Renamed from `responsiblePersonContact` (awkward "Contact" suffix);
+     * uses `responsiblePersonRef` to parallel the User-FK field naming.
+     * DB column name `responsible_person_contact_id` is unchanged (avoids DDL).
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'responsible_person_contact_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
-    private ?Person $responsiblePersonContact = null;
+    private ?Person $responsiblePersonRef = null;
 
-    public function getResponsiblePersonContact(): ?Person
+    public function getResponsiblePersonRef(): ?Person
     {
-        return $this->responsiblePersonContact;
+        return $this->responsiblePersonRef;
     }
 
-    public function setResponsiblePersonContact(?Person $responsiblePersonContact): static
+    public function setResponsiblePersonRef(?Person $responsiblePersonRef): static
     {
-        $this->responsiblePersonContact = $responsiblePersonContact;
+        $this->responsiblePersonRef = $responsiblePersonRef;
         return $this;
     }
 
@@ -789,13 +790,13 @@ class Control
 
     /**
      * Effective responsiblePerson: prefer responsiblePersonUser.fullName,
-     * then responsiblePersonContact (Person), fall back to legacy string.
+     * then responsiblePersonRef (Person), fall back to legacy string.
      */
     public function getEffectiveResponsiblePerson(): ?string
     {
         return OwnerResolver::resolveEffective(
             $this->responsiblePersonUser,
-            $this->responsiblePersonContact,
+            $this->responsiblePersonRef,
             $this->responsiblePerson,
         );
     }
@@ -809,7 +810,7 @@ class Control
     {
         return OwnerResolver::resolveAll(
             $this->responsiblePersonUser,
-            $this->responsiblePersonContact,
+            $this->responsiblePersonRef,
             $this->responsiblePerson,
             $this->responsibleDeputyPersons,
         );

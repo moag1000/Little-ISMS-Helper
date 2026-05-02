@@ -136,7 +136,7 @@ class ControlType extends AbstractType
                 'attr' => ['class' => 'form-select'],
                 'help' => 'control.help.responsible_person_user',
             ])
-            ->add('responsiblePersonContact', EntityType::class, [
+            ->add('responsiblePersonRef', EntityType::class, [
                 'label' => 'control.field.responsible_person_contact',
                 'class' => Person::class,
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
