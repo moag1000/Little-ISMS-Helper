@@ -550,13 +550,16 @@ public function __construct()
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'trainer_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['training:read', 'training:write'])]
     private ?User $trainerUser = null;
 
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['training:read', 'training:write'])]
     private ?Person $trainerPerson = null;
 
     /** @var Collection<int, Person> */
+    #[Groups(['training:read', 'training:write'])]
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'training_trainer_deputies')]
     #[ORM\JoinColumn(name: 'training_id', referencedColumnName: 'id', onDelete: 'CASCADE')]

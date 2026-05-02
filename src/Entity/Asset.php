@@ -717,6 +717,7 @@ class Asset
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'owner_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['asset:read', 'asset:write'])]
     private ?User $ownerUser = null;
 
     public function getOwnerUser(): ?User
@@ -737,6 +738,7 @@ class Asset
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['asset:read', 'asset:write'])]
     private ?Person $ownerPerson = null;
 
     public function getOwnerPerson(): ?Person
@@ -756,6 +758,7 @@ class Asset
      *
      * @var Collection<int, Person>
      */
+    #[Groups(['asset:read', 'asset:write'])]
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'asset_owner_deputy')]
     #[ORM\JoinColumn(name: 'asset_id', referencedColumnName: 'id', onDelete: 'CASCADE')]

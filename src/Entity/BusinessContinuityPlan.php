@@ -848,6 +848,7 @@ class BusinessContinuityPlan
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'plan_owner_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?User $planOwnerUser = null;
 
     public function getPlanOwnerUser(): ?User
@@ -866,6 +867,7 @@ class BusinessContinuityPlan
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'plan_owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?Person $planOwnerPerson = null;
 
     public function getPlanOwnerPerson(): ?Person
@@ -884,6 +886,7 @@ class BusinessContinuityPlan
      *
      * @var Collection<int, Person>
      */
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'bc_plan_owner_deputy')]
     #[ORM\JoinColumn(name: 'bc_plan_id', referencedColumnName: 'id', onDelete: 'CASCADE')]

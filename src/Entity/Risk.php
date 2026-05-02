@@ -1077,6 +1077,7 @@ class Risk
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'risk_owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['risk:read', 'risk:write'])]
     private ?Person $riskOwnerPerson = null;
 
     public function getRiskOwnerPerson(): ?Person
@@ -1095,6 +1096,7 @@ class Risk
      *
      * @var Collection<int, Person>
      */
+    #[Groups(['risk:read', 'risk:write'])]
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'risk_owner_deputy')]
     #[ORM\JoinColumn(name: 'risk_id', referencedColumnName: 'id', onDelete: 'CASCADE')]

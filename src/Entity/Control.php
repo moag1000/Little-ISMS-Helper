@@ -723,6 +723,7 @@ class Control
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'responsible_person_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['control:read', 'control:write'])]
     private ?User $responsiblePersonUser = null;
 
     public function getResponsiblePersonUser(): ?User
@@ -744,6 +745,7 @@ class Control
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'responsible_person_contact_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['control:read', 'control:write'])]
     private ?Person $responsiblePersonRef = null;
 
     public function getResponsiblePersonRef(): ?Person
@@ -762,6 +764,7 @@ class Control
      *
      * @var Collection<int, Person>
      */
+    #[Groups(['control:read', 'control:write'])]
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'control_responsible_deputy')]
     #[ORM\JoinColumn(name: 'control_id', referencedColumnName: 'id', onDelete: 'CASCADE')]

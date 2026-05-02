@@ -1249,6 +1249,7 @@ class Incident
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'reported_by_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['incident:read', 'incident:write'])]
     private ?User $reportedByUser = null;
 
     public function getReportedByUser(): ?User
@@ -1267,6 +1268,7 @@ class Incident
      */
     #[ORM\ManyToOne(targetEntity: Person::class)]
     #[ORM\JoinColumn(name: 'reported_by_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['incident:read', 'incident:write'])]
     private ?Person $reportedByPerson = null;
 
     public function getReportedByPerson(): ?Person
@@ -1285,6 +1287,7 @@ class Incident
      *
      * @var Collection<int, Person>
      */
+    #[Groups(['incident:read', 'incident:write'])]
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'incident_reporter_deputy')]
     #[ORM\JoinColumn(name: 'incident_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
