@@ -9,6 +9,17 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20260430185000_training_person extends AbstractMigration
 {
+    /**
+     * Disable per-migration transaction wrapping. MySQL DDL (ALTER TABLE,
+     * CREATE TABLE) implicitly commits, which invalidates Doctrine 's
+     * SAVEPOINT and breaks the next migration in the run with
+     * "SAVEPOINT DOCTRINE_X does not exist".
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'Training: tri-state Person slot for trainerUser';
