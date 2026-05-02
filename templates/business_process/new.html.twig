@@ -25,7 +25,7 @@
                     'sections': {
                         'basic_info': {
                             'label': 'business_process.section.basic_info'|trans({}, 'business_process'),
-                            'fields': ['name', 'processOwner', 'description', 'criticality']
+                            'fields': ['name', 'processOwner', 'processOwnerUser', 'processOwnerPerson', 'processOwnerDeputyPersons', 'description', 'criticality']
                         },
                         'recovery_objectives': {
                             'label': 'business_process.section.recovery_objectives'|trans({}, 'business_process'),
@@ -55,6 +55,9 @@
                     'col_widths': {
                         'name': 6,
                         'processOwner': 6,
+                        'processOwnerUser': 6,
+                        'processOwnerPerson': 6,
+                        'processOwnerDeputyPersons': 12,
                         'description': 6,
                         'criticality': 6,
                         'rto': 4,
