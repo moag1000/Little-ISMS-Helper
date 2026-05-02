@@ -257,4 +257,28 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->assertContains($status, [200, 302],
             "Expected 200 or 302 from iso27701 start, got $status");
     }
+
+    #[Test]
+    public function testIso27017WizardStartPageReachable(): void
+    {
+        $this->client->request('GET', '/de/compliance-wizard/iso27017');
+        $status = $this->client->getResponse()->getStatusCode();
+        $this->assertContains($status, [200, 302], "Expected 200 or 302 from iso27017 start, got $status");
+    }
+
+    #[Test]
+    public function testIso27018WizardStartPageReachable(): void
+    {
+        $this->client->request('GET', '/de/compliance-wizard/iso27018');
+        $status = $this->client->getResponse()->getStatusCode();
+        $this->assertContains($status, [200, 302], "Expected 200 or 302 from iso27018 start, got $status");
+    }
+
+    #[Test]
+    public function testIso42001WizardStartPageReachable(): void
+    {
+        $this->client->request('GET', '/de/compliance-wizard/iso42001');
+        $status = $this->client->getResponse()->getStatusCode();
+        $this->assertContains($status, [200, 302], "Expected 200 or 302 from iso42001 start, got $status");
+    }
 }

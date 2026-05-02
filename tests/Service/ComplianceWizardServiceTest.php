@@ -391,4 +391,40 @@ class ComplianceWizardServiceTest extends KernelTestCase
                 "ISO 27701 missing category '$key'");
         }
     }
+
+    #[Test]
+    public function testIso27017WizardIsAvailableWhenControlsModuleActive(): void
+    {
+        $this->requireDatabase();
+        $config = $this->wizardService->getWizardConfig('iso27017');
+        if ($config === null) {
+            $this->markTestSkipped('iso27017 wizard requires the "controls" module');
+        }
+        $this->assertSame('ISO27017', $config['code']);
+        $this->assertGreaterThanOrEqual(7, count($config['categories']));
+    }
+
+    #[Test]
+    public function testIso27018WizardIsAvailableWhenControlsModuleActive(): void
+    {
+        $this->requireDatabase();
+        $config = $this->wizardService->getWizardConfig('iso27018');
+        if ($config === null) {
+            $this->markTestSkipped('iso27018 wizard requires the "controls" module');
+        }
+        $this->assertSame('ISO27018', $config['code']);
+        $this->assertGreaterThanOrEqual(6, count($config['categories']));
+    }
+
+    #[Test]
+    public function testIso42001WizardIsAvailableWhenControlsModuleActive(): void
+    {
+        $this->requireDatabase();
+        $config = $this->wizardService->getWizardConfig('iso42001');
+        if ($config === null) {
+            $this->markTestSkipped('iso42001 wizard requires the "controls" module');
+        }
+        $this->assertSame('ISO42001', $config['code']);
+        $this->assertGreaterThanOrEqual(8, count($config['categories']));
+    }
 }

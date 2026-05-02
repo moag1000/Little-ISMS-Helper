@@ -505,6 +505,33 @@ wizard:
         iso27701_consent: 'Consent management'
         iso27701_suppliers: 'Processor assessments'
 
+        # ISO 27017 checks
+        iso27017_shared_responsibility: 'Shared responsibility model documented'
+        iso27017_cloud_assets: 'Cloud asset inventory complete'
+        iso27017_separation: 'Customer/tenant separation implemented'
+        iso27017_vm_hardening: 'VM/container hardening applied'
+        iso27017_admin_access: 'Privileged cloud access secured'
+        iso27017_cloud_suppliers: 'Cloud providers regularly assessed'
+        iso27017_monitoring: 'Cloud monitoring and logging active'
+
+        # ISO 27018 checks
+        iso27018_consent: 'Consent management for cloud PII'
+        iso27018_purpose: 'Purpose limitation for cloud PII processing'
+        iso27018_retention: 'Retention and deletion policy for cloud PII'
+        iso27018_dsr: 'DSR pipeline for cloud PII'
+        iso27018_breach: 'Breach notification (72h SLA)'
+        iso27018_subprocessors: 'Sub-processor governance'
+
+        # ISO 42001 checks
+        iso42001_context: 'AI scope and stakeholders documented'
+        iso42001_policy: 'AI policy current'
+        iso42001_ai_inventory: 'AI system inventory complete'
+        iso42001_ai_risk: 'AI risks treated'
+        iso42001_data_governance: 'AI training data governance implemented'
+        iso42001_oversight: 'Human oversight implemented'
+        iso42001_transparency: 'Model decisions explainable'
+        iso42001_incidents: 'AI incident response process'
+
     # TISAX Categories
     tisax:
         description: "Assess your information security according to VDA ISA for the automotive industry."
@@ -566,3 +593,57 @@ wizard:
         privacy_by_design_desc: 'Art. 25 — technical and organisational measures.'
         third_party_processors: 'Processors and Sub-Processors'
         third_party_processors_desc: 'Art. 28 — DPAs and supplier assessments.'
+
+    # ISO 27017 Cloud Security Categories
+    iso27017:
+        description: 'Cloud security maturity check per ISO/IEC 27017:2015 (cloud-specific controls extending ISO 27001).'
+        shared_responsibility: 'Shared Responsibility'
+        shared_responsibility_desc: 'Security responsibilities between cloud provider and customer documented.'
+        cloud_asset_inventory: 'Cloud Asset Inventory'
+        cloud_asset_inventory_desc: 'Complete inventory of cloud services and components in use.'
+        customer_separation: 'Customer/Tenant Separation'
+        customer_separation_desc: 'Technical separation between different customers in the cloud environment.'
+        vm_hardening: 'VM/Container Hardening'
+        vm_hardening_desc: 'Virtual machines and containers hardened according to best practices.'
+        admin_access: 'Privileged Access'
+        admin_access_desc: 'Admin access to cloud accounts secured via MFA, JIT, and dual-control.'
+        cloud_supplier_governance: 'Cloud Provider Governance'
+        cloud_supplier_governance_desc: 'Regular assessment of cloud providers (SLA, certifications, audits).'
+        monitoring_logging: 'Monitoring & Logging'
+        monitoring_logging_desc: 'Centralised collection of security-relevant cloud logs with retention periods.'
+
+    # ISO 27018 Cloud Privacy (PII Processor) Categories
+    iso27018:
+        description: 'Cloud privacy maturity check per ISO/IEC 27018:2019 (PII processing in the cloud).'
+        pii_consent_processor: 'Consent Management (PII Processor)'
+        pii_consent_processor_desc: 'Documented consent management for cloud PII processing.'
+        purpose_limitation: 'Purpose Limitation'
+        purpose_limitation_desc: 'Cloud PII processed only for agreed purposes.'
+        retention_disposal: 'Retention & Disposal'
+        retention_disposal_desc: 'Deletion concept for cloud PII including retention schedules.'
+        access_transparency: 'Access & Transparency'
+        access_transparency_desc: 'Data-subject rights (access, erasure) for cloud PII.'
+        breach_notification: 'Breach Notification'
+        breach_notification_desc: 'Notification process for cloud PII breaches (72h SLA).'
+        subprocessor_governance: 'Sub-Processor Governance'
+        subprocessor_governance_desc: 'Regular assessment and control of cloud sub-processors.'
+
+    # ISO 42001 AI Management System Categories
+    iso42001:
+        description: 'AI management maturity check per ISO/IEC 42001:2023 (AI Management System / EU AI Act preparation).'
+        ai_context: 'AI Context (Clause 4)'
+        ai_context_desc: 'AI system scope, stakeholders, regulatory environment (EU AI Act).'
+        ai_leadership_policy: 'AI Policy & Leadership'
+        ai_leadership_policy_desc: 'Top-management commitment and documented AI policy.'
+        ai_inventory: 'AI Inventory'
+        ai_inventory_desc: 'Complete inventory of all AI systems and models in use (assets.assetType = ai_agent).'
+        ai_risk: 'AI Risk Management'
+        ai_risk_desc: 'Risks from AI use identified and treated (discrimination, hallucinations, model drift).'
+        ai_data_governance: 'AI Data Governance'
+        ai_data_governance_desc: 'Training data quality, provenance, bias, and versioning.'
+        ai_human_oversight: 'Human Oversight'
+        ai_human_oversight_desc: 'Human supervision and intervention capability in the AI lifecycle.'
+        ai_transparency: 'Transparency & Explainability'
+        ai_transparency_desc: 'Traceable model decisions and information to affected individuals.'
+        ai_incident_response: 'AI Incident Response'
+        ai_incident_response_desc: 'Response to AI model misbehaviour (drift, bias escalation, hallucinations).'

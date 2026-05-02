@@ -147,6 +147,36 @@ class ComplianceWizardService
                 'recommended_modules' => ['gdpr', 'incidents', 'suppliers'],
                 'categories' => $this->getIso27701Categories(),
             ],
+            'iso27017' => [
+                'code' => 'ISO27017',
+                'name' => 'ISO 27017:2015 Cloud Security',
+                'description' => 'wizard.iso27017.description',
+                'icon' => 'bi-cloud-lock',
+                'color' => 'info',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['assets', 'suppliers'],
+                'categories' => $this->getIso27017Categories(),
+            ],
+            'iso27018' => [
+                'code' => 'ISO27018',
+                'name' => 'ISO 27018:2019 Cloud Privacy',
+                'description' => 'wizard.iso27018.description',
+                'icon' => 'bi-cloud-check',
+                'color' => 'success',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['gdpr', 'suppliers'],
+                'categories' => $this->getIso27018Categories(),
+            ],
+            'iso42001' => [
+                'code' => 'ISO42001',
+                'name' => 'ISO 42001:2023 AI Management',
+                'description' => 'wizard.iso42001.description',
+                'icon' => 'bi-robot',
+                'color' => 'warning',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['risks', 'assets'],
+                'categories' => $this->getIso42001Categories(),
+            ],
         ];
 
         // Filter wizards by required modules
@@ -2845,6 +2875,329 @@ class ComplianceWizardService
                         'type' => 'supplier_assessment',
                         'module' => 'suppliers',
                         'route' => 'app_supplier_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Categories for ISO/IEC 27017:2015 readiness — Cloud Security.
+     * Covers the cloud-specific control extensions to ISO 27001 Annex A
+     * for both cloud service customers and cloud service providers.
+     */
+    private function getIso27017Categories(): array
+    {
+        return [
+            'shared_responsibility' => [
+                'name' => 'wizard.iso27017.shared_responsibility',
+                'description' => 'wizard.iso27017.shared_responsibility_desc',
+                'icon' => 'bi-people-fill',
+                'weight' => 2,
+                'checks' => [
+                    'iso27017_shared_responsibility' => [
+                        'name' => 'wizard.check.iso27017_shared_responsibility',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_supplier_index',
+                    ],
+                ],
+            ],
+            'cloud_asset_inventory' => [
+                'name' => 'wizard.iso27017.cloud_asset_inventory',
+                'description' => 'wizard.iso27017.cloud_asset_inventory_desc',
+                'icon' => 'bi-cloud-arrow-down',
+                'weight' => 2,
+                'checks' => [
+                    'iso27017_cloud_assets' => [
+                        'name' => 'wizard.check.iso27017_cloud_assets',
+                        'type' => 'asset_coverage',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'customer_separation' => [
+                'name' => 'wizard.iso27017.customer_separation',
+                'description' => 'wizard.iso27017.customer_separation_desc',
+                'icon' => 'bi-diagram-3',
+                'weight' => 1.5,
+                'checks' => [
+                    'iso27017_separation' => [
+                        'name' => 'wizard.check.iso27017_separation',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'virtual_machine_hardening' => [
+                'name' => 'wizard.iso27017.vm_hardening',
+                'description' => 'wizard.iso27017.vm_hardening_desc',
+                'icon' => 'bi-pc-display',
+                'weight' => 1.5,
+                'checks' => [
+                    'iso27017_vm_hardening' => [
+                        'name' => 'wizard.check.iso27017_vm_hardening',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'admin_access' => [
+                'name' => 'wizard.iso27017.admin_access',
+                'description' => 'wizard.iso27017.admin_access_desc',
+                'icon' => 'bi-key',
+                'weight' => 2,
+                'checks' => [
+                    'iso27017_admin_access' => [
+                        'name' => 'wizard.check.iso27017_admin_access',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'cloud_supplier_governance' => [
+                'name' => 'wizard.iso27017.cloud_supplier_governance',
+                'description' => 'wizard.iso27017.cloud_supplier_governance_desc',
+                'icon' => 'bi-building-check',
+                'weight' => 2,
+                'checks' => [
+                    'iso27017_cloud_suppliers' => [
+                        'name' => 'wizard.check.iso27017_cloud_suppliers',
+                        'type' => 'supplier_assessment',
+                        'module' => 'suppliers',
+                        'route' => 'app_supplier_index',
+                    ],
+                ],
+            ],
+            'monitoring_and_logging' => [
+                'name' => 'wizard.iso27017.monitoring_logging',
+                'description' => 'wizard.iso27017.monitoring_logging_desc',
+                'icon' => 'bi-activity',
+                'weight' => 1.5,
+                'checks' => [
+                    'iso27017_monitoring' => [
+                        'name' => 'wizard.check.iso27017_monitoring',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Categories for ISO/IEC 27018:2019 readiness — PII in Cloud.
+     * Covers PII processor obligations on top of ISO 27001 + 27002 for
+     * organisations acting as public cloud PII processors.
+     */
+    private function getIso27018Categories(): array
+    {
+        return [
+            'pii_consent_processor' => [
+                'name' => 'wizard.iso27018.pii_consent_processor',
+                'description' => 'wizard.iso27018.pii_consent_processor_desc',
+                'icon' => 'bi-file-earmark-check',
+                'weight' => 2,
+                'checks' => [
+                    'iso27018_consent' => [
+                        'name' => 'wizard.check.iso27018_consent',
+                        'type' => 'consent_coverage',
+                        'module' => 'gdpr',
+                        'route' => 'app_consent_index',
+                    ],
+                ],
+            ],
+            'pii_purpose_limitation' => [
+                'name' => 'wizard.iso27018.purpose_limitation',
+                'description' => 'wizard.iso27018.purpose_limitation_desc',
+                'icon' => 'bi-bullseye',
+                'weight' => 2,
+                'checks' => [
+                    'iso27018_purpose' => [
+                        'name' => 'wizard.check.iso27018_purpose',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_processing_activity_index',
+                    ],
+                ],
+            ],
+            'pii_retention_disposal' => [
+                'name' => 'wizard.iso27018.retention_disposal',
+                'description' => 'wizard.iso27018.retention_disposal_desc',
+                'icon' => 'bi-trash3',
+                'weight' => 2,
+                'checks' => [
+                    'iso27018_retention' => [
+                        'name' => 'wizard.check.iso27018_retention',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_processing_activity_index',
+                    ],
+                ],
+            ],
+            'pii_access_transparency' => [
+                'name' => 'wizard.iso27018.access_transparency',
+                'description' => 'wizard.iso27018.access_transparency_desc',
+                'icon' => 'bi-eye',
+                'weight' => 1.5,
+                'checks' => [
+                    'iso27018_dsr' => [
+                        'name' => 'wizard.check.iso27018_dsr',
+                        'type' => 'dsr_coverage',
+                        'module' => 'gdpr',
+                        'route' => 'app_data_subject_request_index',
+                    ],
+                ],
+            ],
+            'pii_breach_notification' => [
+                'name' => 'wizard.iso27018.breach_notification',
+                'description' => 'wizard.iso27018.breach_notification_desc',
+                'icon' => 'bi-bell-fill',
+                'weight' => 2,
+                'checks' => [
+                    'iso27018_breach' => [
+                        'name' => 'wizard.check.iso27018_breach',
+                        'type' => 'incident_process',
+                        'sla_hours' => 72,
+                        'module' => 'incidents',
+                        'route' => 'app_incident_index',
+                    ],
+                ],
+            ],
+            'pii_subprocessor_governance' => [
+                'name' => 'wizard.iso27018.subprocessor_governance',
+                'description' => 'wizard.iso27018.subprocessor_governance_desc',
+                'icon' => 'bi-people',
+                'weight' => 2,
+                'checks' => [
+                    'iso27018_subprocessors' => [
+                        'name' => 'wizard.check.iso27018_subprocessors',
+                        'type' => 'supplier_assessment',
+                        'module' => 'suppliers',
+                        'route' => 'app_supplier_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Categories for ISO/IEC 42001:2023 readiness — AI Management System.
+     * Covers management-system clauses 4-10 plus Annex A AI-specific controls
+     * for organisations developing, providing or using AI systems.
+     */
+    private function getIso42001Categories(): array
+    {
+        return [
+            'ai_context' => [
+                'name' => 'wizard.iso42001.ai_context',
+                'description' => 'wizard.iso42001.ai_context_desc',
+                'icon' => 'bi-globe-americas',
+                'weight' => 1.5,
+                'checks' => [
+                    'iso42001_context' => [
+                        'name' => 'wizard.check.iso42001_context',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_context_edit',
+                    ],
+                ],
+            ],
+            'ai_leadership_policy' => [
+                'name' => 'wizard.iso42001.ai_leadership_policy',
+                'description' => 'wizard.iso42001.ai_leadership_policy_desc',
+                'icon' => 'bi-megaphone',
+                'weight' => 1.5,
+                'checks' => [
+                    'iso42001_policy' => [
+                        'name' => 'wizard.check.iso42001_policy',
+                        'type' => 'document_review',
+                        'document_categories' => ['policy'],
+                        'module' => 'documents',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'ai_inventory' => [
+                'name' => 'wizard.iso42001.ai_inventory',
+                'description' => 'wizard.iso42001.ai_inventory_desc',
+                'icon' => 'bi-list-columns-reverse',
+                'weight' => 3,
+                'checks' => [
+                    // filters assetType = 'ai_agent'
+                    'iso42001_ai_inventory' => [
+                        'name' => 'wizard.check.iso42001_ai_inventory',
+                        'type' => 'asset_coverage',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'ai_risk' => [
+                'name' => 'wizard.iso42001.ai_risk',
+                'description' => 'wizard.iso42001.ai_risk_desc',
+                'icon' => 'bi-exclamation-octagon',
+                'weight' => 3,
+                'checks' => [
+                    'iso42001_ai_risk' => [
+                        'name' => 'wizard.check.iso42001_ai_risk',
+                        'type' => 'risk_coverage',
+                        'module' => 'risks',
+                        'route' => 'app_risk_index',
+                    ],
+                ],
+            ],
+            'ai_data_governance' => [
+                'name' => 'wizard.iso42001.ai_data_governance',
+                'description' => 'wizard.iso42001.ai_data_governance_desc',
+                'icon' => 'bi-database-lock',
+                'weight' => 2,
+                'checks' => [
+                    'iso42001_data_governance' => [
+                        'name' => 'wizard.check.iso42001_data_governance',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'ai_human_oversight' => [
+                'name' => 'wizard.iso42001.ai_human_oversight',
+                'description' => 'wizard.iso42001.ai_human_oversight_desc',
+                'icon' => 'bi-eye-fill',
+                'weight' => 2,
+                'checks' => [
+                    'iso42001_oversight' => [
+                        'name' => 'wizard.check.iso42001_oversight',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'ai_transparency' => [
+                'name' => 'wizard.iso42001.ai_transparency',
+                'description' => 'wizard.iso42001.ai_transparency_desc',
+                'icon' => 'bi-info-square',
+                'weight' => 1.5,
+                'checks' => [
+                    'iso42001_transparency' => [
+                        'name' => 'wizard.check.iso42001_transparency',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'ai_incident_response' => [
+                'name' => 'wizard.iso42001.ai_incident_response',
+                'description' => 'wizard.iso42001.ai_incident_response_desc',
+                'icon' => 'bi-shield-exclamation',
+                'weight' => 1.5,
+                'checks' => [
+                    'iso42001_incidents' => [
+                        'name' => 'wizard.check.iso42001_incidents',
+                        'type' => 'incident_process',
+                        'module' => 'incidents',
+                        'route' => 'app_incident_index',
                     ],
                 ],
             ],
