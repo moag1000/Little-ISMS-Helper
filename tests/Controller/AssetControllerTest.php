@@ -355,6 +355,7 @@ class AssetControllerTest extends WebTestCase
             'asset[name]' => 'New Test Asset',
             'asset[assetType]' => 'Software',
             'asset[owner]' => 'New Owner',
+            'asset[ownerUser]' => (string) $this->testUser->getId(),
             'asset[description]' => 'New asset description',
             'asset[confidentialityValue]' => 2,
             'asset[integrityValue]' => 2,
@@ -385,6 +386,7 @@ class AssetControllerTest extends WebTestCase
             'asset[name]' => 'Tenant Test Asset',
             'asset[assetType]' => 'Information',
             'asset[owner]' => 'Tenant Owner',
+            'asset[ownerUser]' => (string) $this->testUser->getId(),
             'asset[description]' => 'Testing tenant assignment',
             'asset[confidentialityValue]' => 3,
             'asset[integrityValue]' => 3,
@@ -497,6 +499,7 @@ class AssetControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="asset"]')->form([
             'asset[name]' => 'Updated Test Server',
             'asset[description]' => 'Updated description',
+            'asset[ownerUser]' => (string) $this->testUser->getId(),
         ]);
 
         $this->client->submit($form);
@@ -920,6 +923,7 @@ class AssetControllerTest extends WebTestCase
 
         $form['asset[name]'] = 'Test Name';
         $form['asset[owner]'] = 'Owner';
+        $form['asset[ownerUser]'] = (string) $this->testUser->getId();
         $form['asset[confidentialityValue]'] = '3';
         $form['asset[integrityValue]'] = '3';
         $form['asset[availabilityValue]'] = '3';
@@ -940,7 +944,7 @@ class AssetControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="asset"]')->form([
             'asset[name]' => 'Test Name',
             'asset[assetType]' => 'Hardware',
-            'asset[owner]' => '',  // Empty legacy owner is fine — Tri-State: ownerUser/ownerPerson also optional
+            'asset[owner]' => '',  // Empty legacy owner
             'asset[confidentialityValue]' => 2,
             'asset[integrityValue]' => 2,
             'asset[availabilityValue]' => 2,
@@ -949,9 +953,9 @@ class AssetControllerTest extends WebTestCase
 
         $this->client->submit($form);
 
-        // Tri-State semantics: any of the 3 levels (ownerUser, ownerPerson, owner) is sufficient.
-        // All empty → asset is still created without an assigned owner (nullable).
-        $this->assertResponseRedirects();
+        // Tri-State validator requires at least ownerUser OR ownerPerson — legacy string alone is not sufficient.
+        // All empty → validator rejects with 422.
+        $this->assertResponseStatusCodeSame(422);
     }
 
     // ========== FLASH MESSAGE TESTS ==========
@@ -966,6 +970,7 @@ class AssetControllerTest extends WebTestCase
             'asset[name]' => 'Flash Test Asset',
             'asset[assetType]' => 'Software',
             'asset[owner]' => 'Flash Owner',
+            'asset[ownerUser]' => (string) $this->testUser->getId(),
             'asset[confidentialityValue]' => 2,
             'asset[integrityValue]' => 2,
             'asset[availabilityValue]' => 2,
@@ -987,6 +992,7 @@ class AssetControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/en/asset/' . $this->testAsset->getId() . '/edit');
         $form = $crawler->filter('form[name="asset"]')->form([
             'asset[name]' => 'Flash Updated Asset',
+            'asset[ownerUser]' => (string) $this->testUser->getId(),
         ]);
 
         $this->client->submit($form);

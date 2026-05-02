@@ -349,6 +349,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
             'business_continuity_plan[description]' => 'New plan description',
             'business_continuity_plan[businessProcess]' => $this->testProcess->getId(),
             'business_continuity_plan[planOwner]' => 'New Owner',
+            'business_continuity_plan[planOwnerUser]' => (string) $this->testUser->getId(),
             'business_continuity_plan[status]' => 'draft',
             'business_continuity_plan[activationCriteria]' => 'When systems fail',
             'business_continuity_plan[recoveryProcedures]' => 'Step 1: Do something',
@@ -413,6 +414,7 @@ class BusinessContinuityPlanControllerTest extends WebTestCase
         $form = $crawler->filter('form[name="business_continuity_plan"]')->form([
             'business_continuity_plan[name]' => 'Updated Test BC Plan',
             'business_continuity_plan[description]' => 'Updated description',
+            'business_continuity_plan[planOwnerUser]' => (string) $this->testUser->getId(),
         ]);
 
         $this->client->submit($form);
