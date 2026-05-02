@@ -19,6 +19,17 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260430140000_asset_owner_person extends AbstractMigration
 {
+    /**
+     * Disable per-migration transaction wrapping. MySQL DDL (ALTER TABLE,
+     * CREATE TABLE) implicitly commits, which invalidates Doctrine 's
+     * SAVEPOINT and breaks the next migration in the run with
+     * "SAVEPOINT DOCTRINE_X does not exist".
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'Add asset.owner_person_id (FK → person.id, nullable, ON DELETE SET NULL) for Pattern-A tri-state owner.';

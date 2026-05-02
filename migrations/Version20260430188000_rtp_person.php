@@ -23,6 +23,17 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20260430188000_rtp_person extends AbstractMigration
 {
+    /**
+     * Disable per-migration transaction wrapping. MySQL DDL (ALTER TABLE,
+     * CREATE TABLE) implicitly commits, which invalidates Doctrine 's
+     * SAVEPOINT and breaks the next migration in the run with
+     * "SAVEPOINT DOCTRINE_X does not exist".
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'RiskTreatmentPlan Tri-State Person ownership: responsiblePerson Person FK + deputy join table.';

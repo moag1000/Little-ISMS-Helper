@@ -9,6 +9,17 @@ use Doctrine\Migrations\AbstractMigration;
 
 final class Version20260430178000_crisis_team_person extends AbstractMigration
 {
+    /**
+     * Disable per-migration transaction wrapping. MySQL DDL (ALTER TABLE,
+     * CREATE TABLE) implicitly commits, which invalidates Doctrine 's
+     * SAVEPOINT and breaks the next migration in the run with
+     * "SAVEPOINT DOCTRINE_X does not exist".
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
         return 'CrisisTeam: tri-state Person slots for teamLeader + deputyLeader';
