@@ -8,13 +8,36 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
 /**
- * Auto-generated Migration: Please modify to your needs!
+ * Tri-State NotBlank-Cleanup + Index-Naming-Konsolidierung.
+ *
+ * Echte Schema-Aenderungen:
+ *  - asset.owner / business_continuity_plan.plan_owner / incident.reported_by /
+ *    training.trainer: NOT NULL → DEFAULT NULL (Tri-State semantik — Legacy
+ *    string ist nicht mehr required, wenn *User oder *Person gesetzt sind).
+ *  - identity_provider.created_at/updated_at + sso_user_approval.requested_at/
+ *    reviewed_at: Drift-Korrektur (DC2Type-Comment-Drift).
+ *  - corrective_actions.responsible_person_id: FK-Constraint umbenannt
+ *    FK_CA_USER → FK_673EF8CEEF64F467 (Standard-Doctrine-Hash).
+ *  - Restliche ~80 Statements: kosmetische Index-Umbennenungen — bringt DB
+ *    auf Doctrine-Standard-Index-Namen. Kein Verhalten geaendert.
  */
 final class Version20260502114544 extends AbstractMigration
 {
+    /**
+     * Disable per-migration transaction wrapping. Diese Migration enthaelt
+     * 100+ ALTER TABLE Statements; MySQL DDL committet implizit, was die
+     * Doctrine-SAVEPOINT bricht. Ohne diesen Override fail die Migration
+     * mit "There is no active transaction" beim ersten Index-Rename nach
+     * dem ersten ALTER. Siehe CLAUDE.md Pitfall #6.
+     */
+    public function isTransactional(): bool
+    {
+        return false;
+    }
+
     public function getDescription(): string
     {
-        return '';
+        return 'Tri-State NotBlank-Cleanup (4 Spalten nullable) + Doctrine-Standard-Index-Namen + minor drift fixes.';
     }
 
     public function up(Schema $schema): void
