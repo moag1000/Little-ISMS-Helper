@@ -155,6 +155,8 @@ class CustomReport
     /** @var Collection<int, Person> */
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'custom_report_owner_deputies')]
+    #[ORM\JoinColumn(name: 'custom_report_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $ownerDeputyPersons;
 
     /**

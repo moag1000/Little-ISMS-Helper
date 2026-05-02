@@ -71,6 +71,8 @@ class CrisisTeam
     /** @var Collection<int, Person> */
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'crisis_team_leader_deputies')]
+    #[ORM\JoinColumn(name: 'crisis_team_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $teamLeaderDeputyPersons;
 
     /**
@@ -87,6 +89,8 @@ class CrisisTeam
     /** @var Collection<int, Person> */
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'crisis_team_deputy_leader_deputies')]
+    #[ORM\JoinColumn(name: 'crisis_team_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $deputyLeaderDeputyPersons;
 
     /**

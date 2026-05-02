@@ -126,6 +126,8 @@ class ThreatIntelligence
     /** @var Collection<int, Person> */
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'threat_intelligence_assigned_deputies')]
+    #[ORM\JoinColumn(name: 'threat_intelligence_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $assignedDeputyPersons;
 
     #[ORM\Column(type: Types::BOOLEAN)]

@@ -559,6 +559,8 @@ public function __construct()
     /** @var Collection<int, Person> */
     #[ORM\ManyToMany(targetEntity: Person::class)]
     #[ORM\JoinTable(name: 'training_trainer_deputies')]
+    #[ORM\JoinColumn(name: 'training_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $trainerDeputyPersons;
 
     public function getTrainerUser(): ?User
