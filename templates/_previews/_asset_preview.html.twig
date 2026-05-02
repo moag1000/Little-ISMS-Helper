@@ -15,7 +15,7 @@
             </dd>
 
             <dt class="col-sm-4">{{ 'asset.field.owner'|trans({}, 'asset') }}:</dt>
-            <dd class="col-sm-8">{{ asset.owner }}</dd>
+            <dd class="col-sm-8">{{ asset.effectiveOwner ?? '—' }}</dd>
 
             {% if asset.location %}
             <dt class="col-sm-4">{{ 'asset.field.location'|trans({}, 'asset') }}:</dt>

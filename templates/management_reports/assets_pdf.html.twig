@@ -133,7 +133,7 @@
                     <span class="badge badge-secondary">{{ label }}</span>
                     {% endif %}
                 </td>
-                <td>{{ asset.owner ? asset.owner.email|slice(0, 20) : '-' }}</td>
+                <td>{{ (asset.effectiveOwner ?? '-')|slice(0, 20) }}</td>
                 <td>{{ asset.status|default('Active') }}</td>
             </tr>
             {% endfor %}
