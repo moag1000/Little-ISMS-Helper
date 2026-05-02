@@ -74,6 +74,14 @@ class IncidentController extends AbstractController
         $nis2Only = $request->query->get('nis2_only');
         $view = $request->query->get('view', 'inherited'); // Default: inherited
 
+        // Cross-tenant + orphan views are admin-only — silently coerce to
+        // 'own' for non-admins so a hand-crafted ?view=all URL doesn't leak
+        // foreign-tenant data.
+        $isAdmin = $this->isGranted('ROLE_ADMIN');
+        if (in_array($view, ['orphaned', 'all'], true) && !$isAdmin) {
+            $view = 'own';
+        }
+
         // Get incidents based on view filter
         if ($tenant) {
             // Determine which incidents to load based on view parameter
@@ -88,6 +96,16 @@ class IncidentController extends AbstractController
                     $allIncidents = $this->incidentRepository->findByTenantIncludingSubsidiaries($tenant);
                     $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
                     break;
+                case 'orphaned':
+                    // Tenant-less (orphan) incidents — admin only
+                    $allIncidents = $this->incidentRepository->findOrphaned();
+                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
+                    break;
+                case 'all':
+                    // Cross-tenant overview — admin only
+                    $allIncidents = $this->incidentRepository->findAllAcrossTenants();
+                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), [IncidentStatus::Reported, IncidentStatus::InInvestigation, IncidentStatus::InResolution], true));
+                    break;
                 case 'inherited':
                 default:
                     // Own + inherited from parents (default behavior)
@@ -99,7 +117,8 @@ class IncidentController extends AbstractController
             $inheritanceInfo = [
                 'hasParent' => $tenant->getParent() !== null,
                 'hasSubsidiaries' => $tenant->getSubsidiaries()->count() > 0,
-                'currentView' => $view
+                'currentView' => $view,
+                'isAdmin' => $isAdmin,
             ];
         } else {
             // Fallback for users without tenant (e.g., super admins)
@@ -108,7 +127,8 @@ class IncidentController extends AbstractController
             $inheritanceInfo = [
                 'hasParent' => false,
                 'hasSubsidiaries' => false,
-                'currentView' => 'own'
+                'currentView' => 'own',
+                'isAdmin' => $isAdmin,
             ];
         }
 
