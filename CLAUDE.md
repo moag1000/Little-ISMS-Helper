@@ -288,12 +288,16 @@ Pre-Release Builds*.
    - **DDL migrations need `isTransactional()=false`**: MySQL `ALTER TABLE` /
      `CREATE TABLE` commit implicitly, which invalidates Doctrine's per-migration
      SAVEPOINT — running >1 DDL migration in a single `migrate` call fails with
-     `SAVEPOINT DOCTRINE_X does not exist`. Override:
+     `SAVEPOINT DOCTRINE_X does not exist` (or `There is no active transaction`
+     when MANY ALTERs in ONE migration each implicitly commit). Override:
      ```php
      public function isTransactional(): bool { return false; }
      ```
      Required for every migration that contains ALTER TABLE or CREATE TABLE.
      Data-only migrations (INSERT/UPDATE) can keep the default (true).
+     **`doctrine:migrations:diff` does NOT add this override automatically** —
+     after every diff-generated migration, manually inject the method before
+     committing. Otherwise the next migration run on a non-trivial DB fails.
    - **Recovery**: run `php bin/console app:schema:reconcile --dry-run` then
      `php bin/console app:schema:reconcile` to bring schema in sync with
      entity metadata. Non-destructive for additive changes.
