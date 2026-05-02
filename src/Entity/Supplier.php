@@ -370,6 +370,18 @@ class Supplier
         return $this;
     }
 
+    /**
+     * Operational supplier = currently in productive use. evaluation
+     * (still being assessed), inactive, and terminated do NOT count as
+     * operational. Domain decision: only `active` suppliers feed KPIs
+     * like "active suppliers", "overdue assessments", critical-supplier
+     * counts. SupplierRepository's status = :active queries match this.
+     */
+    public function isOperational(): bool
+    {
+        return $this->status === 'active';
+    }
+
     public function getSecurityScore(): ?int
     {
         return $this->securityScore;
