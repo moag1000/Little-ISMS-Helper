@@ -24,6 +24,47 @@
 
 <main class="fa-aurora-surface">
 
+{# Tenant View Filter (Multi-Tenant Support) #}
+{% if currentTenant %}
+{% embed '_components/_card.html.twig' with {
+    'class': 'mb-3'
+} %}
+    {% block card_body %}
+        <form method="get" action="{{ path('app_incident_index') }}" class="d-flex align-items-center gap-2">
+            <label for="view-filter" class="mb-0 fw-bold">
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
+            </label>
+            <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
+                    {{ 'corporate.view.own_only'|trans({}, 'tenant') }}
+                </option>
+                {% if inheritanceInfo.hasParent %}
+                <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
+                    {{ 'corporate.view.including_inherited'|trans({}, 'tenant') }}
+                </option>
+                {% endif %}
+                {% if inheritanceInfo.hasSubsidiaries %}
+                <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
+                    {{ 'corporate.view.including_subsidiaries'|trans({}, 'tenant') }}
+                </option>
+                {% endif %}
+                {% if inheritanceInfo.isAdmin %}
+                <option value="orphaned" {{ inheritanceInfo.currentView == 'orphaned' ? 'selected' : '' }}>
+                    {{ 'corporate.view.orphaned'|trans({}, 'tenant') }}
+                </option>
+                <option value="all" {{ inheritanceInfo.currentView == 'all' ? 'selected' : '' }}>
+                    {{ 'corporate.view.all_tenants'|trans({}, 'tenant') }}
+                </option>
+                {% endif %}
+            </select>
+            <noscript>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
+            </noscript>
+        </form>
+    {% endblock %}
+{% endembed %}
+{% endif %}
+
 {# KPI Cards Grid #}
 <div class="kpi-grid kpi-grid-responsive">
     {{ _fa_feature_card.render({
