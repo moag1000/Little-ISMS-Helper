@@ -22,6 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
  * are returned by repository stubs so the analyse() path can be tested
  * end-to-end against a real fixture file on disk.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class BsiProfileXmlImporterTest extends TestCase
 {
     private const FIXTURE_VALID = __DIR__ . '/../../Fixtures/import/bsi_profile_v1_sample.xml';

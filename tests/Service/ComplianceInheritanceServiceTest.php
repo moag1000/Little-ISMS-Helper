@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\Test;
  * Minimal contract-level tests for the inheritance service guard clauses.
  * Full integration tests (E2E 27001 → NIS2) in tests/E2e once fixtures load.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class ComplianceInheritanceServiceTest extends TestCase
 {
     #[Test]

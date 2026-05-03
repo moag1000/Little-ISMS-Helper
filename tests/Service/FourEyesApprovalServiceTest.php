@@ -15,6 +15,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use ReflectionProperty;
 use PHPUnit\Framework\Attributes\Test;
 
+#[AllowMockObjectsWithoutExpectations]
 final class FourEyesApprovalServiceTest extends TestCase
 {
     private function createPartialService(): FourEyesApprovalService
