@@ -590,6 +590,14 @@ wizard:
         bsi_c5_bc: 'BC: CISO role, reporting and management reviews'
         bsi_c5_bc_desc: 'Officers, reporting and management review documented.'
 
+        # NIST CSF 2.0 checks
+        nist_csf_govern: 'Governance + Strategy + Risk-Management'
+        nist_csf_identify: 'Asset inventory + Business environment'
+        nist_csf_protect: 'Identity mgmt + Data security + Platform security'
+        nist_csf_detect: 'Monitoring + Adverse-event analysis'
+        nist_csf_respond: 'Incident mgmt + Mitigation + Reporting'
+        nist_csf_recover: 'Recovery-plan execution + Communications'
+
         # BSI Grundschutz Kern checks
         bsi_gs_kern_crown_jewels: 'Crown jewels identified'
         bsi_gs_kern_protection_needs: 'Protection-needs assessment (core)'
@@ -784,6 +792,22 @@ wizard:
         pss_desc: 'Contractual requirements and regular supplier assessments.'
         bc: 'BC — Officers and Reporting'
         bc_desc: 'CISO role, reporting and management reviews.'
+
+    # NIST Cybersecurity Framework 2.0 Categories
+    nist_csf:
+        description: 'Maturity check per NIST Cybersecurity Framework 2.0 — 6 functions (GV/ID/PR/DE/RS/RC).'
+        govern: 'GV — Govern'
+        govern_desc: 'Strategy, cyber governance, roles & responsibilities, risk management.'
+        identify: 'ID — Identify'
+        identify_desc: 'Asset inventory, business environment, risk assessment, improvement.'
+        protect: 'PR — Protect'
+        protect_desc: 'Identity management, awareness, data security, platform security, tech-infrastructure resilience.'
+        detect: 'DE — Detect'
+        detect_desc: 'Continuous monitoring, adverse-event analysis.'
+        respond: 'RS — Respond'
+        respond_desc: 'Incident management, analysis, mitigation, reporting, communication.'
+        recover: 'RC — Recover'
+        recover_desc: 'Recovery-plan execution, communications.'
 
     # BSI IT-Grundschutz Kern-Absicherung Categories
     bsi_grundschutz_kern:

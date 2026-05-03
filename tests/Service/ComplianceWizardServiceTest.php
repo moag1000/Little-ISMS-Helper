@@ -475,4 +475,16 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertSame('BSI-GRUNDSCHUTZ-KERN', $config['code']);
         $this->assertGreaterThanOrEqual(5, count($config['categories']));
     }
+
+    #[Test]
+    public function testNistCsfWizardIsAvailable(): void
+    {
+        $this->requireDatabase();
+        $config = $this->wizardService->getWizardConfig('nist_csf');
+        if ($config === null) {
+            $this->markTestSkipped('nist_csf wizard requires the "controls" module');
+        }
+        $this->assertSame('NIST-CSF-2.0', $config['code']);
+        $this->assertGreaterThanOrEqual(6, count($config['categories']));
+    }
 }

@@ -313,4 +313,12 @@ class ComplianceWizardControllerTest extends WebTestCase
         $status = $this->client->getResponse()->getStatusCode();
         $this->assertContains($status, [200, 302]);
     }
+
+    #[Test]
+    public function testNistCsfWizardStartReachable(): void
+    {
+        $this->client->request('GET', '/de/compliance-wizard/nist_csf');
+        $status = $this->client->getResponse()->getStatusCode();
+        $this->assertContains($status, [200, 302]);
+    }
 }

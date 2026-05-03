@@ -217,6 +217,16 @@ class ComplianceWizardService
                 'recommended_modules' => ['assets', 'risks'],
                 'categories' => $this->getBsiGrundschutzKernCategories(),
             ],
+            'nist_csf' => [
+                'code' => 'NIST-CSF-2.0',
+                'name' => 'NIST Cybersecurity Framework 2.0',
+                'description' => 'wizard.nist_csf.description',
+                'icon' => 'bi-shield-fill-check',
+                'color' => 'primary',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['risks', 'assets', 'incidents', 'bcm'],
+                'categories' => $this->getNistCsfCategories(),
+            ],
         ];
 
         // Filter wizards by required modules
@@ -3835,6 +3845,96 @@ class ComplianceWizardService
                         'name' => 'wizard.check.bsi_gs_kern_realization',
                         'type' => 'treatment_plan',
                         'route' => 'app_risk_treatment_plan_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * NIST Cybersecurity Framework 2.0 categories (6 Functions: GV/ID/PR/DE/RS/RC)
+     *
+     * Covers the six core functions of NIST CSF 2.0 including the new Govern function.
+     */
+    private function getNistCsfCategories(): array
+    {
+        return [
+            'govern' => [
+                'name' => 'wizard.nist_csf.govern',
+                'description' => 'wizard.nist_csf.govern_desc',
+                'icon' => 'bi-bookmark-check',
+                'weight' => 2,
+                'checks' => [
+                    'nist_csf_govern' => [
+                        'name' => 'wizard.check.nist_csf_govern',
+                        'type' => 'document_review',
+                        'document_categories' => ['policy'],
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'identify' => [
+                'name' => 'wizard.nist_csf.identify',
+                'description' => 'wizard.nist_csf.identify_desc',
+                'icon' => 'bi-search',
+                'weight' => 2,
+                'checks' => [
+                    'nist_csf_identify' => [
+                        'name' => 'wizard.check.nist_csf_identify',
+                        'type' => 'asset_coverage',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'protect' => [
+                'name' => 'wizard.nist_csf.protect',
+                'description' => 'wizard.nist_csf.protect_desc',
+                'icon' => 'bi-shield-lock',
+                'weight' => 3,
+                'checks' => [
+                    'nist_csf_protect' => [
+                        'name' => 'wizard.check.nist_csf_protect',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'detect' => [
+                'name' => 'wizard.nist_csf.detect',
+                'description' => 'wizard.nist_csf.detect_desc',
+                'icon' => 'bi-eye-fill',
+                'weight' => 2,
+                'checks' => [
+                    'nist_csf_detect' => [
+                        'name' => 'wizard.check.nist_csf_detect',
+                        'type' => 'incident_process',
+                        'route' => 'app_incident_index',
+                    ],
+                ],
+            ],
+            'respond' => [
+                'name' => 'wizard.nist_csf.respond',
+                'description' => 'wizard.nist_csf.respond_desc',
+                'icon' => 'bi-exclamation-triangle',
+                'weight' => 2,
+                'checks' => [
+                    'nist_csf_respond' => [
+                        'name' => 'wizard.check.nist_csf_respond',
+                        'type' => 'incident_process',
+                        'route' => 'app_incident_index',
+                    ],
+                ],
+            ],
+            'recover' => [
+                'name' => 'wizard.nist_csf.recover',
+                'description' => 'wizard.nist_csf.recover_desc',
+                'icon' => 'bi-arrow-repeat',
+                'weight' => 2,
+                'checks' => [
+                    'nist_csf_recover' => [
+                        'name' => 'wizard.check.nist_csf_recover',
+                        'type' => 'bcm_coverage',
+                        'route' => 'app_bcm_index',
                     ],
                 ],
             ],
