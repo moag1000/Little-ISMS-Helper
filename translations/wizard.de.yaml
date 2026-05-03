@@ -590,6 +590,15 @@ wizard:
         bsi_c5_bc: 'BC: CISO-Rolle, Reporting und Management-Reviews'
         bsi_c5_bc_desc: 'Beauftragte, Berichtswesen und Management-Review dokumentiert.'
 
+        # KRITIS checks
+        kritis_scope: 'KRITIS-Schwellwert + Sektor geprueft'
+        kritis_state_of_art: 'Stand der Technik (B3S) implementiert'
+        kritis_incident_reporting: '24h-Meldepflicht-Prozess (BSI)'
+        kritis_bcm: 'Notfall- und Kontinuitaetsmanagement'
+        kritis_audit_proof: 'BSI-Nachweis alle 2 Jahre'
+        kritis_top_mgmt: 'Geschaeftsleitungs-Schulung'
+        kritis_suppliers: 'Lieferketten-Sicherheit'
+
         # NIST CSF 2.0 checks
         nist_csf_govern: 'Governance + Strategy + Risk-Management'
         nist_csf_identify: 'Asset-Inventar + Business-Environment'
@@ -792,6 +801,24 @@ wizard:
         pss_desc: 'Vertragliche Anforderungen, regelmaessige Bewertung.'
         bc: 'BC — Beauftragte und Berichtswesen'
         bc_desc: 'CISO-Rolle, Reporting, Management-Reviews.'
+
+    # KRITIS / NIS2-DE-Umsetzung Categories
+    kritis:
+        description: 'Reife-Check nach BSI-Kritisverordnung + NIS2-Umsetzungsgesetz (Kritische Infrastrukturen DE).'
+        scope_determination: 'Anwendungsbereich-Bestimmung'
+        scope_determination_desc: 'Pruefung KRITIS-Schwellwert + Sektor-Zuordnung (Energie, Wasser, Gesundheit usw.).'
+        state_of_the_art: 'Stand der Technik'
+        state_of_the_art_desc: 'Sicherheitsmassnahmen nach Branchenstandard (B3S) oder gleichwertig.'
+        incident_reporting: 'Meldepflicht'
+        incident_reporting_desc: '24h-Erstmeldung erheblicher Stoerungen an BSI + 72h-Folgemeldung + Abschlussbericht.'
+        bcm_kritis: 'Notfall- und Kontinuitaetsmanagement'
+        bcm_kritis_desc: 'Verfuegbarkeit kritischer Dienstleistungen, BCP, RTO/RPO fuer kritische Prozesse.'
+        audit_proof: 'Nachweispflicht'
+        audit_proof_desc: 'Mindestens alle 2 Jahre Nachweis der Sicherheitsmassnahmen an BSI.'
+        top_management: 'Geschaeftsleitungs-Pflicht'
+        top_management_desc: 'Schulung + Aufsicht durch Geschaeftsleitung (NIS2 Art. 21).'
+        supplier_due_diligence: 'Lieferketten-Sicherheit'
+        supplier_due_diligence_desc: 'Risiken aus Lieferanten und Drittparteien (NIS2 Art. 21.2.d).'
 
     # NIST Cybersecurity Framework 2.0 Categories
     nist_csf:

@@ -487,4 +487,16 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertSame('NIST-CSF-2.0', $config['code']);
         $this->assertGreaterThanOrEqual(6, count($config['categories']));
     }
+
+    #[Test]
+    public function testKritisWizardIsAvailable(): void
+    {
+        $this->requireDatabase();
+        $config = $this->wizardService->getWizardConfig('kritis');
+        if ($config === null) {
+            $this->markTestSkipped('kritis wizard requires the "controls" module');
+        }
+        $this->assertSame('KRITIS-DE', $config['code']);
+        $this->assertGreaterThanOrEqual(7, count($config['categories']));
+    }
 }

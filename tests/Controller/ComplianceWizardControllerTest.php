@@ -321,4 +321,12 @@ class ComplianceWizardControllerTest extends WebTestCase
         $status = $this->client->getResponse()->getStatusCode();
         $this->assertContains($status, [200, 302]);
     }
+
+    #[Test]
+    public function testKritisWizardStartReachable(): void
+    {
+        $this->client->request('GET', '/de/compliance-wizard/kritis');
+        $status = $this->client->getResponse()->getStatusCode();
+        $this->assertContains($status, [200, 302]);
+    }
 }
