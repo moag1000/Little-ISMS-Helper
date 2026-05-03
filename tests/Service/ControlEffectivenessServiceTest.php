@@ -289,7 +289,6 @@ class ControlEffectivenessServiceTest extends TestCase
         $control = $this->createControlWithRisks('A.5.1', 'Test', 'implemented', 100, [$risk]);
 
         $this->controlRepository->method('findBy')
-            ->with(['implementationStatus' => 'implemented'])
             ->willReturn([$control]);
         $this->requirementRepository->method('findByControl')->willReturn([]);
 

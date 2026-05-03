@@ -158,7 +158,6 @@ final class AiAgentInventoryServiceTest extends TestCase
 
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getRepository')
-            ->with(DataProtectionImpactAssessment::class)
             ->willReturn($dpiaRepo);
 
         $service = new AiAgentInventoryService($assetRepo, $em);

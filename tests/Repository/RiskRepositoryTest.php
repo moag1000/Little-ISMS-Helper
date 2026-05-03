@@ -94,14 +94,12 @@ class RiskRepositoryTest extends TestCase
 
         // Configure registry to return the entity manager
         $this->registry->method('getManagerForClass')
-            ->with(Risk::class)
             ->willReturn($this->entityManager);
 
         // Configure entity manager to return class metadata
         $classMetadata = $this->createMock(ClassMetadata::class);
         $classMetadata->name = Risk::class;
         $this->entityManager->method('getClassMetadata')
-            ->with(Risk::class)
             ->willReturn($classMetadata);
 
         // Create repository instance

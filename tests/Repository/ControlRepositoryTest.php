@@ -44,7 +44,6 @@ class ControlRepositoryTest extends TestCase
         // Mock ManagerRegistry
         $this->managerRegistry = $this->createMock(ManagerRegistry::class);
         $this->managerRegistry->method('getManagerForClass')
-            ->with(Control::class)
             ->willReturn($this->entityManager);
 
         // Create repository instance

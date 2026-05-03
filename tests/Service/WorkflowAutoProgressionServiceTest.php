@@ -72,7 +72,6 @@ class WorkflowAutoProgressionServiceTest extends TestCase
         $user = $this->createMock(User::class);
 
         $this->workflowService->method('getWorkflowInstance')
-            ->with('TestEntity', 1)
             ->willReturn(null);
 
         $result = $this->service->checkAndProgressWorkflow($entity, $user);

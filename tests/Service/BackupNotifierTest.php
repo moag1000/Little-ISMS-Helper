@@ -65,6 +65,7 @@ class BackupNotifierTest extends TestCase
         $sentEmail = null;
 
         $this->mailer
+            ->expects($this->once())
             ->method('send')
             ->with($this->callback(static function (Email $email) use (&$sentEmail): bool {
                 $sentEmail = $email;
@@ -94,6 +95,7 @@ class BackupNotifierTest extends TestCase
         $sentEmail = null;
 
         $this->mailer
+            ->expects($this->once())
             ->method('send')
             ->with($this->callback(static function (Email $email) use (&$sentEmail): bool {
                 $sentEmail = $email;
@@ -143,6 +145,7 @@ class BackupNotifierTest extends TestCase
         $sentEmail = null;
 
         $this->mailer
+            ->expects($this->once())
             ->method('send')
             ->with($this->callback(static function (Email $email) use (&$sentEmail): bool {
                 $sentEmail = $email;
@@ -163,6 +166,7 @@ class BackupNotifierTest extends TestCase
         $sentEmail = null;
 
         $this->mailer
+            ->expects($this->once())
             ->method('send')
             ->with($this->callback(static function (Email $email) use (&$sentEmail): bool {
                 $sentEmail = $email;
@@ -184,6 +188,7 @@ class BackupNotifierTest extends TestCase
         $sentEmail = null;
 
         $this->mailer
+            ->expects($this->once())
             ->method('send')
             ->with($this->callback(static function (Email $email) use (&$sentEmail): bool {
                 $sentEmail = $email;

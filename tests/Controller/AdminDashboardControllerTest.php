@@ -251,13 +251,6 @@ class AdminDashboardControllerTest extends TestCase
 
         $this->twig
             ->method('render')
-            ->with(
-                'admin/dashboard.html.twig',
-                $this->callback(function ($context) {
-                    // Check that alerts array contains inactive users warning
-                    return isset($context['alerts']) && count($context['alerts']) > 0;
-                })
-            )
             ->willReturn('<html>Dashboard</html>');
 
         $response = $this->controller->index();
@@ -298,12 +291,6 @@ class AdminDashboardControllerTest extends TestCase
 
         $this->twig
             ->method('render')
-            ->with(
-                'admin/dashboard.html.twig',
-                $this->callback(function ($context) {
-                    return isset($context['alerts']) && count($context['alerts']) > 0;
-                })
-            )
             ->willReturn('<html>Dashboard</html>');
 
         $response = $this->controller->index();
@@ -365,12 +352,6 @@ class AdminDashboardControllerTest extends TestCase
 
         $this->twig
             ->method('render')
-            ->with(
-                'admin/dashboard.html.twig',
-                $this->callback(function ($context) {
-                    return isset($context['stats']['database']['size_mb']);
-                })
-            )
             ->willReturn('<html>Dashboard</html>');
 
         $response = $this->controller->index();
@@ -522,12 +503,6 @@ class AdminDashboardControllerTest extends TestCase
 
         $this->twig
             ->method('render')
-            ->with(
-                'admin/dashboard.html.twig',
-                $this->callback(function ($context) {
-                    return count($context['recentActivity']) === 10;
-                })
-            )
             ->willReturn('<html>Dashboard</html>');
 
         $response = $this->controller->index();

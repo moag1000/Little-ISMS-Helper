@@ -73,7 +73,6 @@ class DataBreachServiceTest extends TestCase
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
         $this->dataBreachRepository->method('getNextReferenceNumber')
-            ->with($this->tenant)
             ->willReturn('DB-2025-001');
 
         $dataBreach = $this->service->prepareNewBreach();
@@ -104,7 +103,6 @@ class DataBreachServiceTest extends TestCase
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
         $this->dataBreachRepository->method('getNextReferenceNumber')
-            ->with($this->tenant)
             ->willReturn('DB-2025-002');
 
         $incident = $this->createMock(Incident::class);
@@ -394,7 +392,6 @@ class DataBreachServiceTest extends TestCase
         ];
 
         $this->dataBreachRepository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn($breaches);
 
         $result = $this->service->findAll();
@@ -420,17 +417,14 @@ class DataBreachServiceTest extends TestCase
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
 
         $this->dataBreachRepository->method('getDashboardStatistics')
-            ->with($this->tenant)
             ->willReturn([
                 'requires_authority_notification' => 0,
                 'authority_notified' => 0,
                 'completeness_rate' => 100,
             ]);
         $this->dataBreachRepository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn([]);
         $this->dataBreachRepository->method('findAuthorityNotificationOverdue')
-            ->with($this->tenant)
             ->willReturn([]);
 
         $result = $this->service->calculateComplianceScore();

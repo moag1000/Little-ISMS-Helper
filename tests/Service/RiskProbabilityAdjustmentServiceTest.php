@@ -238,7 +238,6 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $riskRepository->method('findAll')->willReturn([]);
 
         $this->entityManager->method('getRepository')
-            ->with(Risk::class)
             ->willReturn($riskRepository);
 
         $result = $this->service->findRisksRequiringAdjustment();
@@ -265,7 +264,6 @@ class RiskProbabilityAdjustmentServiceTest extends TestCase
         $riskRepository->method('findAll')->willReturn([$risk1, $risk2]);
 
         $this->entityManager->method('getRepository')
-            ->with(Risk::class)
             ->willReturn($riskRepository);
 
         $result = $this->service->findRisksRequiringAdjustment();

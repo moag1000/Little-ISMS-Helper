@@ -31,7 +31,6 @@ class EnvironmentWriterTest extends TestCase
 
         $this->parameterBag = $this->createMock(ParameterBagInterface::class);
         $this->parameterBag->method('get')
-            ->with('kernel.project_dir')
             ->willReturn($this->testDir);
 
         $this->service = new EnvironmentWriter($this->parameterBag);
@@ -524,7 +523,6 @@ class EnvironmentWriterTest extends TestCase
 
         $parameterBag2 = $this->createMock(ParameterBagInterface::class);
         $parameterBag2->method('get')
-            ->with('kernel.project_dir')
             ->willReturn($testDir2);
 
         $service2 = new EnvironmentWriter($parameterBag2);

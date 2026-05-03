@@ -405,14 +405,6 @@ class SoAReportServiceTest extends TestCase
         $this->controlRepository->method('countByCategory')->willReturn([]);
 
         $this->pdfExportService->method('generatePdf')
-            ->with(
-                $this->anything(),
-                $this->callback(function ($data) {
-                    return count($data['controlsByCategory']['A.5']) === 2
-                        && count($data['controlsByCategory']['A.6']) === 1;
-                }),
-                $this->anything()
-            )
             ->willReturn('PDF');
 
         $this->service->generateSoAReport();

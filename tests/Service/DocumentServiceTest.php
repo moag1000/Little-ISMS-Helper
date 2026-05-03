@@ -45,7 +45,6 @@ class DocumentServiceTest extends TestCase
         $documents = [$this->createMock(Document::class)];
 
         $this->documentRepository->method('findByTenant')
-            ->with($tenant)
             ->willReturn($documents);
 
         $result = $this->service->getDocumentsForTenant($tenant);
@@ -67,11 +66,9 @@ class DocumentServiceTest extends TestCase
 
         $governance = $this->createGovernance('hierarchical');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'document')
             ->willReturn($governance);
 
         $this->documentRepository->method('findByTenantIncludingParent')
-            ->with($child, $parent)
             ->willReturn($inheritedDocuments);
 
         $result = $this->service->getDocumentsForTenant($child);
@@ -89,11 +86,9 @@ class DocumentServiceTest extends TestCase
 
         $governance = $this->createGovernance('independent');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'document')
             ->willReturn($governance);
 
         $this->documentRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownDocuments);
 
         $result = $this->service->getDocumentsForTenant($child);
@@ -108,17 +103,14 @@ class DocumentServiceTest extends TestCase
         $child = $this->createTenant(2, $parent);
 
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'document')
             ->willReturn(null);
 
         $defaultGovernance = $this->createGovernance('shared');
         $this->governanceRepository->method('findDefaultGovernance')
-            ->with($child)
             ->willReturn($defaultGovernance);
 
         $ownDocuments = [$this->createMock(Document::class)];
         $this->documentRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownDocuments);
 
         $result = $this->service->getDocumentsForTenant($child);
@@ -146,7 +138,6 @@ class DocumentServiceTest extends TestCase
 
         $governance = $this->createGovernance('hierarchical');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'document')
             ->willReturn($governance);
 
         $info = $this->service->getDocumentInheritanceInfo($child);
@@ -164,7 +155,6 @@ class DocumentServiceTest extends TestCase
 
         $governance = $this->createGovernance('shared');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'document')
             ->willReturn($governance);
 
         $info = $this->service->getDocumentInheritanceInfo($child);
@@ -268,7 +258,6 @@ class DocumentServiceTest extends TestCase
             ->willReturn($allDocuments);
 
         $this->documentRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownDocuments);
 
         $stats = $this->service->getDocumentStatsWithInheritance($child);
@@ -288,7 +277,6 @@ class DocumentServiceTest extends TestCase
         $ownDocuments = [$this->createMock(Document::class)];
 
         $this->documentRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownDocuments);
 
         $result = $simpleService->getDocumentsForTenant($child);

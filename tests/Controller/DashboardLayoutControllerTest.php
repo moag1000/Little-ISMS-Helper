@@ -360,7 +360,6 @@ class DashboardLayoutControllerTest extends TestCase
         $dashboardLayout = $this->createMock(DashboardLayout::class);
         $dashboardLayout
             ->method('getWidgetConfig')
-            ->with($widgetId)
             ->willReturn(['visible' => false, 'order' => 5, 'size' => 'large']);
 
         $this->mockAuthenticatedUser($user);
@@ -404,7 +403,6 @@ class DashboardLayoutControllerTest extends TestCase
         $dashboardLayout = $this->createMock(DashboardLayout::class);
         $dashboardLayout
             ->method('getWidgetConfig')
-            ->with($widgetId)
             ->willReturn(null);
 
         $this->mockAuthenticatedUser($user);

@@ -90,14 +90,12 @@ class ComplianceFrameworkRepositoryTest extends TestCase
 
         // Configure registry to return the entity manager
         $this->registry->method('getManagerForClass')
-            ->with(ComplianceFramework::class)
             ->willReturn($this->entityManager);
 
         // Configure entity manager to return class metadata
         $classMetadata = $this->createMock(ClassMetadata::class);
         $classMetadata->name = ComplianceFramework::class;
         $this->entityManager->method('getClassMetadata')
-            ->with(ComplianceFramework::class)
             ->willReturn($classMetadata);
 
         // Create repository instance with dependencies

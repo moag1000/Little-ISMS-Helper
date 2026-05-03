@@ -216,7 +216,6 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $appetite->method('isApproved')->willReturn(false);
 
         $this->riskAppetiteService->method('getApplicableAppetite')
-            ->with($risk)
             ->willReturn($appetite);
 
         $this->expectException(DomainException::class);
@@ -237,10 +236,8 @@ class RiskAcceptanceWorkflowServiceTest extends TestCase
         $appetite->method('getMaxAcceptableRisk')->willReturn(5);
 
         $this->riskAppetiteService->method('getApplicableAppetite')
-            ->with($risk)
             ->willReturn($appetite);
         $this->riskAppetiteService->method('exceedsAppetite')
-            ->with($risk)
             ->willReturn(true);
 
         $this->expectException(DomainException::class);

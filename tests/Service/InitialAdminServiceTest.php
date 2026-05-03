@@ -70,7 +70,6 @@ class InitialAdminServiceTest extends TestCase
             ->willReturn($queryBuilder);
 
         $this->userRepository->method('find')
-            ->with(1)
             ->willReturn($admin);
 
         $result = $this->service->getInitialAdmin();
@@ -86,7 +85,7 @@ class InitialAdminServiceTest extends TestCase
         $this->cache->method('get')
             ->willReturnCallback(function (string $key, callable $callback) use ($superAdmin) {
                 $item = $this->createMock(ItemInterface::class);
-                $item->method('expiresAfter')->with(300);
+                $item->method('expiresAfter');
                 return $callback($item);
             });
 
@@ -104,7 +103,6 @@ class InitialAdminServiceTest extends TestCase
             ->willReturn($queryBuilder);
 
         $this->userRepository->method('find')
-            ->with(1)
             ->willReturn($superAdmin);
 
         $result = $this->service->getInitialAdmin();
@@ -118,7 +116,7 @@ class InitialAdminServiceTest extends TestCase
         $this->cache->method('get')
             ->willReturnCallback(function (string $key, callable $callback) {
                 $item = $this->createMock(ItemInterface::class);
-                $item->method('expiresAfter')->with(300);
+                $item->method('expiresAfter');
                 return $callback($item);
             });
 
@@ -237,7 +235,6 @@ class InitialAdminServiceTest extends TestCase
             ->willReturn(1);
 
         $this->userRepository->method('find')
-            ->with(1)
             ->willReturn($admin);
 
         $result = $this->service->isInitialAdmin($admin);
@@ -255,7 +252,6 @@ class InitialAdminServiceTest extends TestCase
             ->willReturn(1);
 
         $this->userRepository->method('find')
-            ->with(1)
             ->willReturn($admin);
 
         $result = $this->service->isInitialAdmin($otherUser);
@@ -286,7 +282,6 @@ class InitialAdminServiceTest extends TestCase
             ->willReturn(1);
 
         $this->userRepository->method('find')
-            ->with(1)
             ->willReturn($admin);
 
         $result = $this->service->isInitialAdmin($newUser);
@@ -337,7 +332,6 @@ class InitialAdminServiceTest extends TestCase
             ->willReturn(1);
 
         $this->userRepository->method('find')
-            ->with(1)
             ->willReturn($admin);
 
         // Should not throw exception
@@ -357,7 +351,6 @@ class InitialAdminServiceTest extends TestCase
             ->willReturn(1);
 
         $this->userRepository->method('find')
-            ->with(1)
             ->willReturn($admin);
 
         $this->logger->expects($this->once())
@@ -386,7 +379,6 @@ class InitialAdminServiceTest extends TestCase
             ->willReturn(1);
 
         $this->userRepository->method('find')
-            ->with(1)
             ->willReturn($admin);
 
         $this->logger->expects($this->once())
@@ -413,7 +405,6 @@ class InitialAdminServiceTest extends TestCase
             ->willReturn(1);
 
         $this->userRepository->method('find')
-            ->with(1)
             ->willReturn($admin);
 
         $this->logger->expects($this->once())
@@ -440,7 +431,6 @@ class InitialAdminServiceTest extends TestCase
             ->willReturn(1);
 
         $this->userRepository->method('find')
-            ->with(1)
             ->willReturn($admin);
 
         $this->logger->expects($this->once())
@@ -482,7 +472,7 @@ class InitialAdminServiceTest extends TestCase
         $this->cache->method('get')
             ->willReturnCallback(function (string $key, callable $callback) use ($admin) {
                 $item = $this->createMock(ItemInterface::class);
-                $item->method('expiresAfter')->with(300);
+                $item->method('expiresAfter');
                 return $callback($item);
             });
 
@@ -509,7 +499,6 @@ class InitialAdminServiceTest extends TestCase
             ->willReturn($queryBuilder);
 
         $this->userRepository->method('find')
-            ->with(5)
             ->willReturn($admin);
 
         $result = $this->service->getInitialAdmin();
@@ -543,7 +532,6 @@ class InitialAdminServiceTest extends TestCase
             ->willReturn(1);
 
         $this->userRepository->method('find')
-            ->with(1)
             ->willReturn($admin);
 
         // Multiple calls

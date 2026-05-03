@@ -65,12 +65,10 @@ class IncidentRepositoryTest extends TestCase
 
         // Configure registry to return the entity manager
         $this->registry->method('getManagerForClass')
-            ->with(Incident::class)
             ->willReturn($this->entityManager);
 
         // Configure entity manager to return class metadata
         $this->entityManager->method('getClassMetadata')
-            ->with(Incident::class)
             ->willReturn($this->classMetadata);
 
         // Create the repository

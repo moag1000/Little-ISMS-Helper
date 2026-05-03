@@ -29,7 +29,6 @@ class DatabaseTestServiceTest extends TestCase
         }
 
         $this->parameterBag->method('get')
-            ->with('kernel.project_dir')
             ->willReturn($this->projectDir);
 
         $this->service = new DatabaseTestService($this->parameterBag);

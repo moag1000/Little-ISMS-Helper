@@ -66,14 +66,12 @@ class TenantRepositoryTest extends TestCase
 
         // Configure registry to return the entity manager
         $this->registry->method('getManagerForClass')
-            ->with(Tenant::class)
             ->willReturn($this->entityManager);
 
         // Configure entity manager to return class metadata
         $classMetadata = $this->createMock(ClassMetadata::class);
         $classMetadata->name = Tenant::class;
         $this->entityManager->method('getClassMetadata')
-            ->with(Tenant::class)
             ->willReturn($classMetadata);
 
         // Create repository instance

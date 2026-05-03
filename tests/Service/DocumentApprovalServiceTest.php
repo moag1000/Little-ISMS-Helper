@@ -64,11 +64,9 @@ class DocumentApprovalServiceTest extends TestCase
         $workflowInstance->method('getStatus')->willReturn('in_progress');
 
         $this->workflowService->method('getWorkflowInstance')
-            ->with('Document', 1)
             ->willReturn(null);
 
         $this->workflowService->method('startWorkflow')
-            ->with('Document', 1, 'document_approval')
             ->willReturn($workflowInstance);
 
         // Act

@@ -51,12 +51,10 @@ class DocumentRepositoryTest extends TestCase
 
         // Configure registry to return our mocked entity manager
         $this->registry->method('getManagerForClass')
-            ->with(Document::class)
             ->willReturn($this->entityManager);
 
         // Configure entity manager to return class metadata
         $this->entityManager->method('getClassMetadata')
-            ->with(Document::class)
             ->willReturn($this->classMetadata);
 
         // Create the repository with mocked dependencies

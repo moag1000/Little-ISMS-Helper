@@ -55,7 +55,6 @@ class ISMSContextServiceTest extends TestCase
 
         $this->security->method('getUser')->willReturn($user);
         $this->contextRepository->method('getContextForTenant')
-            ->with($tenant)
             ->willReturn($context);
 
         $result = $this->service->getCurrentContext();
@@ -71,7 +70,6 @@ class ISMSContextServiceTest extends TestCase
 
         $this->security->method('getUser')->willReturn($user);
         $this->contextRepository->method('getContextForTenant')
-            ->with($tenant)
             ->willReturn(null);
 
         $this->entityManager->expects($this->once())
@@ -377,7 +375,6 @@ class ISMSContextServiceTest extends TestCase
         $parentContext->setOrganizationName('Parent Corp');
 
         $this->corporateStructureService->method('getEffectiveISMSContext')
-            ->with($tenant)
             ->willReturn($parentContext);
 
         $result = $this->service->getEffectiveContext($context);

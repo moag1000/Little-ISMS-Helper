@@ -77,7 +77,6 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
 
         // Mock user repository to return incident manager
         $this->userRepository->method('findByRole')
-            ->with('ROLE_INCIDENT_MANAGER')
             ->willReturn([$incidentManager]);
 
         // Low severity should NOT start a workflow (only notification)
@@ -119,7 +118,6 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
         $workflowInstance = $this->createWorkflowInstance('in_progress');
 
         $this->userRepository->method('findByRole')
-            ->with('ROLE_INCIDENT_MANAGER')
             ->willReturn([$incidentManager]);
 
         // Medium severity should start workflow

@@ -184,7 +184,6 @@ class IncidentControllerTest extends TestCase
 
         $this->security->method('getUser')->willReturn($user);
         $this->incidentRepository->method('findByTenantIncludingParent')
-            ->with($tenant)
             ->willReturn($incidents);
         $this->incidentRepository->method('countByCategory')->willReturn([]);
         $this->incidentRepository->method('countBySeverity')->willReturn([]);
@@ -288,7 +287,6 @@ class IncidentControllerTest extends TestCase
 
         $this->security->method('getUser')->willReturn($user);
         $this->incidentRepository->method('findByTenant')
-            ->with($tenant)
             ->willReturn($incidents);
         $this->incidentRepository->method('countByCategory')->willReturn([]);
         $this->incidentRepository->method('countBySeverity')->willReturn([]);
@@ -315,11 +313,9 @@ class IncidentControllerTest extends TestCase
 
         $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
         $this->incidentRepository->method('getNextIncidentNumber')
-            ->with($tenant)
             ->willReturn('INC-2025-0001');
 
         $this->formFactory->method('create')
-            ->with(IncidentType::class, $this->isInstanceOf(Incident::class))
             ->willReturn($form);
 
         $form->method('handleRequest')->willReturnSelf();
@@ -417,7 +413,6 @@ class IncidentControllerTest extends TestCase
         $form->method('isValid')->willReturn(true);
 
         $this->userRepository->method('findByRole')
-            ->with('ROLE_ADMIN')
             ->willReturn($admins);
 
         $this->emailNotificationService->expects($this->once())
@@ -447,11 +442,9 @@ class IncidentControllerTest extends TestCase
         $auditLogs = [];
 
         $this->auditLogRepository->method('findByEntity')
-            ->with('Incident', 1)
             ->willReturn($auditLogs);
 
         $this->incidentEscalationWorkflowService->method('getEscalationStatus')
-            ->with($incident)
             ->willReturn(['status' => 'active']);
 
         $this->twig->expects($this->once())
@@ -482,7 +475,6 @@ class IncidentControllerTest extends TestCase
         $formView = $this->createMock(\Symfony\Component\Form\FormView::class);
 
         $this->formFactory->method('create')
-            ->with(IncidentType::class, $incident)
             ->willReturn($form);
 
         $form->method('handleRequest')->willReturnSelf();
@@ -555,7 +547,6 @@ class IncidentControllerTest extends TestCase
         $form->method('isValid')->willReturn(true);
 
         $this->userRepository->method('findByRole')
-            ->with('ROLE_ADMIN')
             ->willReturn($admins);
 
         $this->emailNotificationService->expects($this->once())
@@ -668,7 +659,7 @@ class IncidentControllerTest extends TestCase
         $incident->setTenant($otherTenant);
 
         $this->security->method('getUser')->willReturn($user);
-        $this->incidentRepository->method('find')->with(1)->willReturn($incident);
+        $this->incidentRepository->method('find')->willReturn($incident);
 
         $this->entityManager->expects($this->never())->method('remove');
 
@@ -696,7 +687,6 @@ class IncidentControllerTest extends TestCase
         ];
 
         $this->gdprBreachAssessmentService->method('assessBreachRisk')
-            ->with(['personal_data'], 'large')
             ->willReturn($assessment);
 
         $request = new Request(
@@ -745,7 +735,6 @@ class IncidentControllerTest extends TestCase
         $session = $this->createMock(SessionInterface::class);
 
         $this->complianceFrameworkRepository->method('findOneBy')
-            ->with(['code' => 'NIS2'])
             ->willReturn($framework);
 
         $this->pdfExportService->method('generatePdf')
@@ -773,7 +762,6 @@ class IncidentControllerTest extends TestCase
         $framework->method('isActive')->willReturn(false);
 
         $this->complianceFrameworkRepository->method('findOneBy')
-            ->with(['code' => 'NIS2'])
             ->willReturn($framework);
 
         $this->translator->method('trans')->willReturn('NIS2 not available');
@@ -795,7 +783,6 @@ class IncidentControllerTest extends TestCase
         $analysis = ['totalImpact' => 50000, 'criticalProcesses' => 2];
 
         $this->incidentBCMImpactService->method('analyzeBusinessImpact')
-            ->with($incident)
             ->willReturn($analysis);
 
         $this->twig->expects($this->once())
@@ -824,7 +811,6 @@ class IncidentControllerTest extends TestCase
         $analysis = ['totalImpact' => 50000];
 
         $this->incidentBCMImpactService->method('analyzeBusinessImpact')
-            ->with($incident, 24)
             ->willReturn($analysis);
 
         $request = new Request(['downtime_hours' => '24']);
@@ -846,7 +832,6 @@ class IncidentControllerTest extends TestCase
         $process2 = $this->createMock(BusinessProcess::class);
 
         $this->incidentBCMImpactService->method('identifyAffectedProcesses')
-            ->with($incident)
             ->willReturn([$process1, $process2]);
 
         $this->entityManager->expects($this->once())->method('flush');

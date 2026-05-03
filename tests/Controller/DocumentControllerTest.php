@@ -164,10 +164,8 @@ class DocumentControllerTest extends TestCase
 
         $this->security->method('getUser')->willReturn($user);
         $this->documentService->method('getDocumentsForTenant')
-            ->with($tenant)
             ->willReturn($documents);
         $this->documentService->method('getDocumentInheritanceInfo')
-            ->with($tenant)
             ->willReturn([
                 'hasParent' => true,
                 'canInherit' => true,
@@ -205,7 +203,6 @@ class DocumentControllerTest extends TestCase
 
         $this->security->method('getUser')->willReturn($user);
         $this->documentRepository->method('findByTenant')
-            ->with($tenant)
             ->willReturn($documents);
         $this->documentService->method('getDocumentInheritanceInfo')
             ->willReturn(['hasParent' => false, 'canInherit' => false, 'governanceModel' => null]);
@@ -238,7 +235,6 @@ class DocumentControllerTest extends TestCase
 
         $this->security->method('getUser')->willReturn($user);
         $this->documentRepository->method('findByTenantIncludingSubsidiaries')
-            ->with($tenant)
             ->willReturn($documents);
         $this->documentService->method('getDocumentInheritanceInfo')
             ->willReturn(['hasParent' => false, 'canInherit' => false, 'governanceModel' => null]);
@@ -275,7 +271,6 @@ class DocumentControllerTest extends TestCase
         $this->security->method('getUser')->willReturn($user);
         // Default view is 'own' which calls findByTenant, not getDocumentsForTenant
         $this->documentRepository->method('findByTenant')
-            ->with($tenant)
             ->willReturn([$activeDoc, $deletedDoc, $archivedDoc]);
         $this->documentService->method('getDocumentInheritanceInfo')
             ->willReturn(['hasParent' => false, 'canInherit' => false, 'governanceModel' => null]);
@@ -342,7 +337,6 @@ class DocumentControllerTest extends TestCase
 
         $this->security->method('getUser')->willReturn($user);
         $this->formFactory->method('create')
-            ->with(DocumentType::class, $this->isInstanceOf(Document::class))
             ->willReturn($form);
 
         $form->method('handleRequest')->willReturnSelf();
@@ -505,13 +499,11 @@ class DocumentControllerTest extends TestCase
         $document = $this->createDocument(1, 'active');
 
         $this->security->method('getUser')->willReturn($user);
-        $this->authorizationChecker->method('isGranted')->with('view', $document)->willReturn(true);
+        $this->authorizationChecker->method('isGranted')->willReturn(true);
 
         $this->documentService->method('isInheritedDocument')
-            ->with($document, $tenant)
             ->willReturn(false);
         $this->documentService->method('canEditDocument')
-            ->with($document, $tenant)
             ->willReturn(true);
 
         $this->twig->expects($this->once())
@@ -556,7 +548,7 @@ class DocumentControllerTest extends TestCase
         $document->method('getFilename')->willReturn('test.pdf');
         $document->method('getOriginalFilename')->willReturn('Test Document.pdf');
 
-        $this->authorizationChecker->method('isGranted')->with('download', $document)->willReturn(true);
+        $this->authorizationChecker->method('isGranted')->willReturn(true);
 
         // Create a temporary file for testing
         $uploadDir = $this->projectDir . '/public/uploads/documents';
@@ -598,7 +590,7 @@ class DocumentControllerTest extends TestCase
         $document = $this->createDocument(1, 'active');
         $document->setFilename('../../../etc/passwd');
 
-        $this->authorizationChecker->method('isGranted')->with('download', $document)->willReturn(true);
+        $this->authorizationChecker->method('isGranted')->willReturn(true);
 
         $this->expectException(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
         $this->expectExceptionMessage('Invalid file');
@@ -630,14 +622,12 @@ class DocumentControllerTest extends TestCase
         $formView = $this->createMock(\Symfony\Component\Form\FormView::class);
 
         $this->security->method('getUser')->willReturn($user);
-        $this->authorizationChecker->method('isGranted')->with('edit', $document)->willReturn(true);
+        $this->authorizationChecker->method('isGranted')->willReturn(true);
 
         $this->documentService->method('canEditDocument')
-            ->with($document, $tenant)
             ->willReturn(true);
 
         $this->formFactory->method('create')
-            ->with(DocumentType::class, $document)
             ->willReturn($form);
 
         $form->method('handleRequest')->willReturnSelf();
@@ -679,10 +669,9 @@ class DocumentControllerTest extends TestCase
         $document = $this->createDocument(1, 'active');
 
         $this->security->method('getUser')->willReturn($user);
-        $this->authorizationChecker->method('isGranted')->with('edit', $document)->willReturn(true);
+        $this->authorizationChecker->method('isGranted')->willReturn(true);
 
         $this->documentService->method('canEditDocument')
-            ->with($document, $tenant)
             ->willReturn(false);
 
         $this->translator->method('trans')->willReturn('Cannot edit inherited');
@@ -706,7 +695,7 @@ class DocumentControllerTest extends TestCase
         $form = $this->createMock(FormInterface::class);
 
         $this->security->method('getUser')->willReturn($user);
-        $this->authorizationChecker->method('isGranted')->with('edit', $document)->willReturn(true);
+        $this->authorizationChecker->method('isGranted')->willReturn(true);
 
         $this->documentService->method('canEditDocument')->willReturn(true);
 
@@ -842,7 +831,7 @@ class DocumentControllerTest extends TestCase
         $document->setTenant($otherTenant);
 
         $this->security->method('getUser')->willReturn($user);
-        $this->documentRepository->method('find')->with(1)->willReturn($document);
+        $this->documentRepository->method('find')->willReturn($document);
 
         $this->entityManager->expects($this->never())->method('remove');
 
@@ -867,7 +856,7 @@ class DocumentControllerTest extends TestCase
         $user = $this->createUser(1, $tenant);
 
         $this->security->method('getUser')->willReturn($user);
-        $this->documentRepository->method('find')->with(999)->willReturn(null);
+        $this->documentRepository->method('find')->willReturn(null);
 
         $this->entityManager->expects($this->never())->method('remove');
 

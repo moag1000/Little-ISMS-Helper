@@ -45,7 +45,6 @@ class AssetServiceTest extends TestCase
         $assets = [$this->createMock(Asset::class)];
 
         $this->assetRepository->method('findByTenant')
-            ->with($tenant)
             ->willReturn($assets);
 
         $result = $this->service->getAssetsForTenant($tenant);
@@ -66,11 +65,9 @@ class AssetServiceTest extends TestCase
 
         $governance = $this->createGovernance('hierarchical');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'asset')
             ->willReturn($governance);
 
         $this->assetRepository->method('findByTenantIncludingParent')
-            ->with($child, $parent)
             ->willReturn($inheritedAssets);
 
         $result = $this->service->getAssetsForTenant($child);
@@ -88,11 +85,9 @@ class AssetServiceTest extends TestCase
 
         $governance = $this->createGovernance('independent');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'asset')
             ->willReturn($governance);
 
         $this->assetRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownAssets);
 
         $result = $this->service->getAssetsForTenant($child);
@@ -107,17 +102,14 @@ class AssetServiceTest extends TestCase
         $child = $this->createTenant(2, $parent);
 
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'asset')
             ->willReturn(null);
 
         $defaultGovernance = $this->createGovernance('shared');
         $this->governanceRepository->method('findDefaultGovernance')
-            ->with($child)
             ->willReturn($defaultGovernance);
 
         $ownAssets = [$this->createMock(Asset::class)];
         $this->assetRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownAssets);
 
         $result = $this->service->getAssetsForTenant($child);
@@ -145,7 +137,6 @@ class AssetServiceTest extends TestCase
 
         $governance = $this->createGovernance('hierarchical');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'asset')
             ->willReturn($governance);
 
         $info = $this->service->getAssetInheritanceInfo($child);
@@ -163,7 +154,6 @@ class AssetServiceTest extends TestCase
 
         $governance = $this->createGovernance('shared');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'asset')
             ->willReturn($governance);
 
         $info = $this->service->getAssetInheritanceInfo($child);
@@ -252,7 +242,6 @@ class AssetServiceTest extends TestCase
         $ownAssets = [$this->createMock(Asset::class)];
 
         $this->assetRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownAssets);
 
         $result = $simpleService->getAssetsForTenant($child);

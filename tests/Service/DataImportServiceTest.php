@@ -312,7 +312,6 @@ class DataImportServiceTest extends TestCase
     public function testExportModuleDataWithNonexistentModule(): void
     {
         $this->moduleConfigService->method('getModule')
-            ->with('nonexistent')
             ->willReturn(null);
 
         $result = $this->service->exportModuleData('nonexistent');
@@ -331,7 +330,6 @@ class DataImportServiceTest extends TestCase
         ];
 
         $this->moduleConfigService->method('getModule')
-            ->with('risk')
             ->willReturn($module);
 
         // Mock repositories to return empty arrays

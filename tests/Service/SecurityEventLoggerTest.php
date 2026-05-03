@@ -101,7 +101,7 @@ class SecurityEventLoggerTest extends TestCase
         $this->logger->expects($this->once())->method('info');
         $this->auditLogger->expects($this->once())->method('logCustom');
         // Session manager may or may not be called depending on implementation
-        $this->sessionManager->expects($this->any())->method('createSession');
+        $this->sessionManager->method('createSession');
 
         $this->securityLogger->logLoginSuccess($user);
     }
@@ -486,7 +486,7 @@ class SecurityEventLoggerTest extends TestCase
         }
 
         $headers = $this->createMock(\Symfony\Component\HttpFoundation\HeaderBag::class);
-        $headers->method('get')->with('User-Agent')->willReturn($userAgent);
+        $headers->method('get')->willReturn($userAgent);
         $request->headers = $headers;
 
         $this->requestStack->method('getCurrentRequest')->willReturn($request);

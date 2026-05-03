@@ -258,7 +258,6 @@ class BackupRepairServiceTest extends TestCase
 
         $mockEm = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
         $mockEm->method('getClassMetadata')
-            ->with('App\\Entity\\Asset')
             ->willReturn($mockMeta);
 
         $service = new BackupRepairService(entityManager: $mockEm);
