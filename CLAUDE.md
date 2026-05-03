@@ -227,7 +227,7 @@ ueber drei definierte Kanaele — wenn der User "Release machen" / "publish" /
 
 | Form | Trigger | Docker-Tags | composer.json bumped? |
 |---|---|---|---|
-| **Stable** | release-please-PR (`chore(main): release X.Y.Z`) reviewen + mergen | `:vX.Y.Z`, `:X.Y`, `:latest` | ja, automatisch via release-please |
+| **Stable** | release-please-PR wird **Mo 09:00 UTC automatisch gemerged** (`release-please-auto-merge.yml`) — Skip via Label `release-blocked`/`do-not-merge`, Force via workflow_dispatch | `:vX.Y.Z`, `:X.Y`, `:latest` | ja, automatisch via release-please |
 | **Dev** | GitHub Actions → *"Dev Release (manual)"* → bump-Input (patch/minor/major) | `:vX.Y.Z-dev.N`, `:dev` (rolling) | nein |
 | **RC** | manuell `git tag vX.Y.Z-rc.1 && git push --tags` | `:vX.Y.Z-rc.N`, `:rc` | nein |
 
@@ -237,16 +237,17 @@ automatisch aktuell. `fix:` → patch, `feat:` → minor, `feat!:` → major.
 manuell editieren (ausser fuer Backfill-Edge-Cases) — release-please
 verwaltet `[Unreleased]` + Sections.
 
-Cadence-Disziplin: Stable-Releases idealerweise gebuendelt (Mo/Do oder
-sobald sinnvoller Batch beisammen) — kein "Maschinengewehr-Tagging" mit
-mehreren Releases pro Tag. Hot-Fix nur bei Production-Breaker, sonst PR
-sammeln lassen.
+Cadence-Disziplin: Stable-Releases werden automatisch wochentlich gebuendelt
+(Mo). Kein "Maschinengewehr-Tagging" mehr moeglich. Hot-Fix-Bedarf vor Mo:
+workflow_dispatch auf "Release Please Auto-Merge". User-Disziplin-Erinnerung:
+PR-Label `release-blocked` setzen wenn Mo-Release uebersprungen werden soll
+(z.B. wenn ungeloester Bug noch reinmuss).
 
 Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
-`.github/workflows/release-please.yml`, `.github/workflows/dev-release.yml`,
-Tag-Regeln in `.github/workflows/ci.yml` (`steps.meta.tags` Block).
-Vollstaendige Doku in `CONTRIBUTING.md` § *Release Cadence* + § *Dev /
-Pre-Release Builds*.
+`.github/workflows/release-please.yml`, `.github/workflows/release-please-auto-merge.yml`,
+`.github/workflows/dev-release.yml`, Tag-Regeln in
+`.github/workflows/ci.yml` (`steps.meta.tags` Block). Vollstaendige Doku in
+`CONTRIBUTING.md` § *Release Cadence* + § *Dev / Pre-Release Builds*.
 
 ## Symfony 7.4 Best Practices (Audit Apr 2026)
 

@@ -1,0 +1,107 @@
+name: Release Please Auto-Merge
+
+# Auto-merge fuer den offenen release-please-PR — laeuft wochentlich Mo 9 UTC
+# (11:00 MESZ / 10:00 MEZ). Akkumulierte Commits werden in einem Stable-Release
+# gebuendelt veroeffentlicht ohne manuellen Klick.
+#
+# Erzwingt Cadence-Disziplin: kein "Maschinengewehr-Tagging" mehr — selbst
+# wenn 20 fix-/feat-Commits in der Woche landen, wird genau einmal Mo
+# gemerged → genau ein Stable-Tag pro Woche.
+#
+# Skip-Bedingungen:
+#   - Kein offener release-please-PR (keine Commits seit letztem Tag)
+#   - PR hat Label "release-blocked" oder "do-not-merge"
+#   - Branch-Protection / Required-Checks fehlen → Standard-Merge schlaegt fehl,
+#     Workflow loggt Fehler aber stirbt nicht laut
+#
+# Manueller Bypass: GitHub Actions → "Release Please Auto-Merge" → Run workflow
+# (workflow_dispatch). Praktisch wenn z. B. ein dringender Bugfix sofort raus
+# soll statt bis Montag zu warten.
+
+on:
+  schedule:
+    # Mo 09:00 UTC = 11:00 MESZ / 10:00 MEZ
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find release-please PR
+        id: find_pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # release-please nutzt Branch-Pattern release-please--branches--<base>--*
+          # Plus PR-Title-Prefix "chore(main): release " als Backup-Filter.
+          pr_number=$(gh pr list \
+            --repo "${{ github.repository }}" \
+            --state open \
+            --search 'in:title "chore(main): release"' \
+            --json number,labels,headRefName \
+            --jq '.[] | select(.headRefName | startswith("release-please--branches--")) | select([.labels[].name] | any(. == "release-blocked" or . == "do-not-merge") | not) | .number' \
+            | head -1 || true)
+
+          if [ -z "$pr_number" ]; then
+            echo "::notice::No release-please PR open (or all blocked) — nothing to merge."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Found release PR #$pr_number"
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "number=$pr_number" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for required checks
+        if: steps.find_pr.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          pr=${{ steps.find_pr.outputs.number }}
+          # Up to ~30 min Wartezeit auf laufende CI-Runs der PR.
+          for _ in $(seq 1 60); do
+            state=$(gh pr checks "$pr" --repo "${{ github.repository }}" --json state --jq '[.[].state] | unique | sort | join(",")' 2>/dev/null || echo "PENDING")
+            echo "Current check states: $state"
+            case "$state" in
+              "")          echo "No checks reported (yet)."; sleep 30 ;;
+              *FAILURE*|*CANCELLED*|*TIMED_OUT*|*ACTION_REQUIRED*)
+                echo "::error::PR #$pr has failing/blocked checks: $state"
+                exit 1
+                ;;
+              SUCCESS|SUCCESS,SUCCESS)
+                echo "All checks succeeded."
+                break
+                ;;
+              *)
+                sleep 30
+                ;;
+            esac
+          done
+
+      - name: Merge release-please PR
+        if: steps.find_pr.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          pr=${{ steps.find_pr.outputs.number }}
+          # Squash-Merge wie release-please es default macht — Commit-Message
+          # bleibt wie vom Tool generiert. Nach Merge baut release-please
+          # selber den Tag + GitHub Release; CI/CD-Pipeline-Workflow zieht
+          # weiter und pusht das Docker-Image.
+          gh pr merge "$pr" \
+            --repo "${{ github.repository }}" \
+            --squash \
+            --delete-branch \
+            --auto || gh pr merge "$pr" \
+              --repo "${{ github.repository }}" \
+              --squash \
+              --delete-branch
+          echo "::notice::PR #$pr merged. release-please will tag + release shortly."

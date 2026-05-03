@@ -288,11 +288,17 @@ This project uses **release-please** for automated releases. The flow:
 1. Conventional commits land on `main` continuously.
 2. release-please opens (and keeps updating) a `chore(main): release X.Y.Z` PR
    that bumps `composer.json` + `CHANGELOG.md` from accumulated commits.
-3. **Releases ship by merging that PR** — typically once per week (Mon/Thu)
-   or when a meaningful batch of fixes/features has accumulated. Avoid
-   merging the release PR multiple times per day to keep the release
-   feed stable and professional.
-4. Merge → tag (`vX.Y.Z`) + GitHub Release auto-created.
+3. **Auto-merge runs every Monday at 09:00 UTC** via `.github/workflows/release-please-auto-merge.yml`.
+   Required checks must be green; PR is squash-merged + branch deleted.
+4. Merge → tag (`vX.Y.Z`) + GitHub Release auto-created + CI/CD Pipeline
+   builds + pushes Docker image (`:vX.Y.Z`, `:X.Y`, `:latest`).
+
+**Skip a weekly release:** add label `release-blocked` or `do-not-merge` to
+the open release PR before Monday.
+
+**Force a release outside cadence:** GitHub Actions → "Release Please
+Auto-Merge" → Run workflow (workflow_dispatch). Use sparingly — defeats
+the cadence-discipline purpose.
 
 Version-bump rules driven by commit `type`:
 
