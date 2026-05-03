@@ -10,11 +10,13 @@ use App\Entity\Training;
 use App\Entity\User;
 use App\Entity\Asset;
 use App\Security\Voter\ApiTenantVoter;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
+#[AllowMockObjectsWithoutExpectations]
 class ApiTenantVoterTest extends TestCase
 {
     private ApiTenantVoter $voter;

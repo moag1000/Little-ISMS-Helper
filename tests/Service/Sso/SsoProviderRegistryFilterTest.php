@@ -9,6 +9,7 @@ use App\Entity\Tenant;
 use App\Repository\IdentityProviderRepository;
 use App\Service\Sso\SsoProviderRegistry;
 use App\Service\TenantContext;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -19,6 +20,7 @@ use PHPUnit\Framework\TestCase;
  * doesn't need a database — the goal is to pin down the filter logic
  * (domain binding modes, anonymous-vs-tenant scope) precisely.
  */
+#[AllowMockObjectsWithoutExpectations]
 final class SsoProviderRegistryFilterTest extends TestCase
 {
     #[Test]
