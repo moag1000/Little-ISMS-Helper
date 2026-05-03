@@ -227,6 +227,16 @@ class ComplianceWizardService
                 'recommended_modules' => ['risks', 'assets', 'incidents', 'bcm'],
                 'categories' => $this->getNistCsfCategories(),
             ],
+            'kritis' => [
+                'code' => 'KRITIS-DE',
+                'name' => 'KRITIS / NIS2-DE-Umsetzung',
+                'description' => 'wizard.kritis.description',
+                'icon' => 'bi-building-fill-gear',
+                'color' => 'warning',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['incidents', 'bcm', 'risks', 'audits'],
+                'categories' => $this->getKritisCategories(),
+            ],
         ];
 
         // Filter wizards by required modules
@@ -3765,6 +3775,112 @@ class ComplianceWizardService
                         'name' => 'wizard.check.bsi_gs_std_realization',
                         'type' => 'treatment_plan',
                         'route' => 'app_risk_treatment_plan_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * KRITIS / NIS2-DE-Umsetzung categories (BSI-Kritisverordnung + NIS2-Umsetzungsgesetz)
+     *
+     * Covers obligations for critical infrastructure operators in Germany:
+     * KRITIS threshold check, state of the art, 24h incident reporting,
+     * BCM, biannual audit proof, top-management training, supply chain security.
+     */
+    private function getKritisCategories(): array
+    {
+        return [
+            'scope_determination' => [
+                'name' => 'wizard.kritis.scope_determination',
+                'description' => 'wizard.kritis.scope_determination_desc',
+                'icon' => 'bi-bullseye',
+                'weight' => 2,
+                'checks' => [
+                    'kritis_scope' => [
+                        'name' => 'wizard.check.kritis_scope',
+                        'type' => 'manual',
+                        'priority' => 'critical',
+                        'route' => 'app_context_edit',
+                    ],
+                ],
+            ],
+            'state_of_the_art' => [
+                'name' => 'wizard.kritis.state_of_the_art',
+                'description' => 'wizard.kritis.state_of_the_art_desc',
+                'icon' => 'bi-stars',
+                'weight' => 3,
+                'checks' => [
+                    'kritis_state_of_art' => [
+                        'name' => 'wizard.check.kritis_state_of_art',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'incident_reporting' => [
+                'name' => 'wizard.kritis.incident_reporting',
+                'description' => 'wizard.kritis.incident_reporting_desc',
+                'icon' => 'bi-megaphone-fill',
+                'weight' => 3,
+                'checks' => [
+                    'kritis_incident_reporting' => [
+                        'name' => 'wizard.check.kritis_incident_reporting',
+                        'type' => 'incident_process',
+                        'sla_hours' => 24,
+                        'route' => 'app_incident_index',
+                    ],
+                ],
+            ],
+            'bcm_kritis' => [
+                'name' => 'wizard.kritis.bcm_kritis',
+                'description' => 'wizard.kritis.bcm_kritis_desc',
+                'icon' => 'bi-life-preserver',
+                'weight' => 2,
+                'checks' => [
+                    'kritis_bcm' => [
+                        'name' => 'wizard.check.kritis_bcm',
+                        'type' => 'bcm_coverage',
+                        'route' => 'app_bcm_index',
+                    ],
+                ],
+            ],
+            'audit_proof' => [
+                'name' => 'wizard.kritis.audit_proof',
+                'description' => 'wizard.kritis.audit_proof_desc',
+                'icon' => 'bi-clipboard-data',
+                'weight' => 2,
+                'checks' => [
+                    'kritis_audit_proof' => [
+                        'name' => 'wizard.check.kritis_audit_proof',
+                        'type' => 'audit_status',
+                        'route' => 'app_audit_index',
+                    ],
+                ],
+            ],
+            'top_management' => [
+                'name' => 'wizard.kritis.top_management',
+                'description' => 'wizard.kritis.top_management_desc',
+                'icon' => 'bi-person-badge-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'kritis_top_mgmt' => [
+                        'name' => 'wizard.check.kritis_top_mgmt',
+                        'type' => 'training_coverage',
+                        'route' => 'app_training_index',
+                    ],
+                ],
+            ],
+            'supplier_due_diligence' => [
+                'name' => 'wizard.kritis.supplier_due_diligence',
+                'description' => 'wizard.kritis.supplier_due_diligence_desc',
+                'icon' => 'bi-people-fill',
+                'weight' => 2,
+                'checks' => [
+                    'kritis_suppliers' => [
+                        'name' => 'wizard.check.kritis_suppliers',
+                        'type' => 'supplier_assessment',
+                        'route' => 'app_supplier_index',
                     ],
                 ],
             ],

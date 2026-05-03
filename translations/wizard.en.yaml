@@ -590,6 +590,15 @@ wizard:
         bsi_c5_bc: 'BC: CISO role, reporting and management reviews'
         bsi_c5_bc_desc: 'Officers, reporting and management review documented.'
 
+        # KRITIS checks
+        kritis_scope: 'KRITIS threshold + sector verified'
+        kritis_state_of_art: 'State of the art (B3S) implemented'
+        kritis_incident_reporting: '24h reporting process (BSI)'
+        kritis_bcm: 'Emergency and continuity management'
+        kritis_audit_proof: 'BSI proof every 2 years'
+        kritis_top_mgmt: 'Management training'
+        kritis_suppliers: 'Supply chain security'
+
         # NIST CSF 2.0 checks
         nist_csf_govern: 'Governance + Strategy + Risk-Management'
         nist_csf_identify: 'Asset inventory + Business environment'
@@ -792,6 +801,24 @@ wizard:
         pss_desc: 'Contractual requirements and regular supplier assessments.'
         bc: 'BC — Officers and Reporting'
         bc_desc: 'CISO role, reporting and management reviews.'
+
+    # KRITIS / NIS2-DE-Umsetzung Categories
+    kritis:
+        description: 'Maturity check per BSI KRITIS Regulation + NIS2 Implementation Act (critical infrastructure DE).'
+        scope_determination: 'Scope Determination'
+        scope_determination_desc: 'KRITIS threshold check + sector classification (energy, water, health, etc.).'
+        state_of_the_art: 'State of the Art'
+        state_of_the_art_desc: 'Security measures per industry standard (B3S) or equivalent.'
+        incident_reporting: 'Reporting Obligation'
+        incident_reporting_desc: '24h initial report of significant disruptions to BSI + 72h follow-up + final report.'
+        bcm_kritis: 'Emergency and Continuity Management'
+        bcm_kritis_desc: 'Availability of critical services, BCP, RTO/RPO for critical processes.'
+        audit_proof: 'Proof of Compliance'
+        audit_proof_desc: 'At least every 2 years proof of security measures to BSI.'
+        top_management: 'Management Obligation'
+        top_management_desc: 'Training and oversight by executive management (NIS2 Art. 21).'
+        supplier_due_diligence: 'Supply Chain Security'
+        supplier_due_diligence_desc: 'Risks from suppliers and third parties (NIS2 Art. 21.2.d).'
 
     # NIST Cybersecurity Framework 2.0 Categories
     nist_csf:
