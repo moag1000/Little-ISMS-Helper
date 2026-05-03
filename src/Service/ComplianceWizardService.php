@@ -207,6 +207,16 @@ class ComplianceWizardService
                 'recommended_modules' => ['assets', 'risks', 'audits', 'bcm', 'documents'],
                 'categories' => $this->getBsiGrundschutzStandardCategories(),
             ],
+            'bsi_grundschutz_kern' => [
+                'code' => 'BSI-GRUNDSCHUTZ-KERN',
+                'name' => 'BSI IT-Grundschutz (Kern-Absicherung)',
+                'description' => 'wizard.bsi_grundschutz_kern.description',
+                'icon' => 'bi-flag-fill',
+                'color' => 'dark',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['assets', 'risks'],
+                'categories' => $this->getBsiGrundschutzKernCategories(),
+            ],
         ];
 
         // Filter wizards by required modules
@@ -3743,6 +3753,86 @@ class ComplianceWizardService
                 'checks' => [
                     'bsi_gs_std_realization' => [
                         'name' => 'wizard.check.bsi_gs_std_realization',
+                        'type' => 'treatment_plan',
+                        'route' => 'app_risk_treatment_plan_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * BSI IT-Grundschutz Kern-Absicherung categories (BSI 200-2 Kern-Absicherung)
+     *
+     * Focused on crown-jewel assets and accelerated protection assessment.
+     * Smaller scope than Standard-Absicherung — only critical business processes.
+     */
+    private function getBsiGrundschutzKernCategories(): array
+    {
+        return [
+            'crown_jewels' => [
+                'name' => 'wizard.bsi_grundschutz_kern.crown_jewels',
+                'description' => 'wizard.bsi_grundschutz_kern.crown_jewels_desc',
+                'icon' => 'bi-gem',
+                'weight' => 3,
+                'checks' => [
+                    'bsi_gs_kern_crown_jewels' => [
+                        'name' => 'wizard.check.bsi_gs_kern_crown_jewels',
+                        'type' => 'manual',
+                        'priority' => 'critical',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'accelerated_protection_needs' => [
+                'name' => 'wizard.bsi_grundschutz_kern.accelerated_protection_needs',
+                'description' => 'wizard.bsi_grundschutz_kern.accelerated_protection_needs_desc',
+                'icon' => 'bi-lightning',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_gs_kern_protection_needs' => [
+                        'name' => 'wizard.check.bsi_gs_kern_protection_needs',
+                        'type' => 'manual',
+                        'priority' => 'critical',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'kern_modeling' => [
+                'name' => 'wizard.bsi_grundschutz_kern.kern_modeling',
+                'description' => 'wizard.bsi_grundschutz_kern.kern_modeling_desc',
+                'icon' => 'bi-puzzle',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_gs_kern_modeling' => [
+                        'name' => 'wizard.check.bsi_gs_kern_modeling',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'kern_check' => [
+                'name' => 'wizard.bsi_grundschutz_kern.kern_check',
+                'description' => 'wizard.bsi_grundschutz_kern.kern_check_desc',
+                'icon' => 'bi-check2-circle',
+                'weight' => 3,
+                'checks' => [
+                    'bsi_gs_kern_check' => [
+                        'name' => 'wizard.check.bsi_gs_kern_check',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'kern_realization' => [
+                'name' => 'wizard.bsi_grundschutz_kern.kern_realization',
+                'description' => 'wizard.bsi_grundschutz_kern.kern_realization_desc',
+                'icon' => 'bi-list-check',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_gs_kern_realization' => [
+                        'name' => 'wizard.check.bsi_gs_kern_realization',
                         'type' => 'treatment_plan',
                         'route' => 'app_risk_treatment_plan_index',
                     ],

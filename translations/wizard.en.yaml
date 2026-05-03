@@ -590,6 +590,13 @@ wizard:
         bsi_c5_bc: 'BC: CISO role, reporting and management reviews'
         bsi_c5_bc_desc: 'Officers, reporting and management review documented.'
 
+        # BSI Grundschutz Kern checks
+        bsi_gs_kern_crown_jewels: 'Crown jewels identified'
+        bsi_gs_kern_protection_needs: 'Protection-needs assessment (core)'
+        bsi_gs_kern_modeling: 'Core modeling completed'
+        bsi_gs_kern_check: 'IT-Grundschutz check for crown jewels'
+        bsi_gs_kern_realization: 'Core realisation plan'
+
         # BSI Grundschutz Standard checks
         bsi_gs_std_initiation: 'Security policy and security organisation established'
         bsi_gs_std_concept: 'Documented security concept in place'
@@ -777,6 +784,20 @@ wizard:
         pss_desc: 'Contractual requirements and regular supplier assessments.'
         bc: 'BC — Officers and Reporting'
         bc_desc: 'CISO role, reporting and management reviews.'
+
+    # BSI IT-Grundschutz Kern-Absicherung Categories
+    bsi_grundschutz_kern:
+        description: 'Maturity check per BSI IT-Grundschutz (Core Protection) — focused protection for crown-jewel assets.'
+        crown_jewels: 'Crown-Jewel Identification'
+        crown_jewels_desc: 'Identification of the most critical business processes and supporting assets.'
+        accelerated_protection_needs: 'Accelerated Protection-Needs Assessment'
+        accelerated_protection_needs_desc: 'Protection-needs rating restricted to crown-jewel assets.'
+        kern_modeling: 'Core Modeling'
+        kern_modeling_desc: 'Mapping of IT-Grundschutz building blocks focused on crown-jewel assets.'
+        kern_check: 'IT-Grundschutz Check (Core)'
+        kern_check_desc: 'Verify requirement fulfilment for crown-jewel assets.'
+        kern_realization: 'Core Realisation'
+        kern_realization_desc: 'Prioritised measure implementation for critical areas.'
 
     # BSI IT-Grundschutz Standard-Absicherung Categories
     bsi_grundschutz_standard:
