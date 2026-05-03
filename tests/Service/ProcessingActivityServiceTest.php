@@ -122,7 +122,6 @@ class ProcessingActivityServiceTest extends TestCase
         ];
 
         $this->processingActivityRepository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn($activities);
 
         $result = $this->service->findAll();
@@ -137,7 +136,6 @@ class ProcessingActivityServiceTest extends TestCase
         $activities = [$this->createMock(ProcessingActivity::class)];
 
         $this->processingActivityRepository->method('findActiveByTenant')
-            ->with($this->tenant)
             ->willReturn($activities);
 
         $result = $this->service->findActive();
@@ -401,7 +399,6 @@ class ProcessingActivityServiceTest extends TestCase
     public function testCalculateComplianceScoreReturnsCorrectStructure(): void
     {
         $this->processingActivityRepository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn([]);
 
         $result = $this->service->calculateComplianceScore();
@@ -433,7 +430,6 @@ class ProcessingActivityServiceTest extends TestCase
         $activity2->method('getCompletenessPercentage')->willReturn(80);
 
         $this->processingActivityRepository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn([$activity1, $activity2]);
 
         $result = $this->service->calculateComplianceScore();

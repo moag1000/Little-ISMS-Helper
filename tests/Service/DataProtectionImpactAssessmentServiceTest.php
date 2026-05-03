@@ -73,7 +73,6 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
         $this->security->method('getUser')->willReturn($this->user);
         $this->repository->method('getNextReferenceNumber')
-            ->with($this->tenant)
             ->willReturn('DPIA-2025-001');
 
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
@@ -170,7 +169,6 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         ];
 
         $this->repository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn($dpias);
 
         $result = $this->service->findAll();
@@ -187,7 +185,6 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpias = [$this->createMock(DataProtectionImpactAssessment::class)];
 
         $this->repository->method('findByStatus')
-            ->with($this->tenant, 'draft')
             ->willReturn($dpias);
 
         $result = $this->service->findByStatus('draft');
@@ -203,7 +200,6 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpias = [$this->createMock(DataProtectionImpactAssessment::class)];
 
         $this->repository->method('findHighRisk')
-            ->with($this->tenant)
             ->willReturn($dpias);
 
         $result = $this->service->findHighRisk();
@@ -219,7 +215,6 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpias = [$this->createMock(DataProtectionImpactAssessment::class)];
 
         $this->repository->method('findRequiringSupervisoryConsultation')
-            ->with($this->tenant)
             ->willReturn($dpias);
 
         $result = $this->service->findRequiringSupervisoryConsultation();
@@ -235,7 +230,6 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpias = [$this->createMock(DataProtectionImpactAssessment::class)];
 
         $this->repository->method('findDueForReview')
-            ->with($this->tenant)
             ->willReturn($dpias);
 
         $result = $this->service->findDueForReview();
@@ -250,7 +244,6 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $dpia = $this->createMock(DataProtectionImpactAssessment::class);
 
         $this->repository->method('findByProcessingActivity')
-            ->with($processingActivity)
             ->willReturn($dpia);
 
         $result = $this->service->findByProcessingActivity($processingActivity);
@@ -689,7 +682,6 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         ];
 
         $this->repository->method('getStatistics')
-            ->with($this->tenant)
             ->willReturn($stats);
 
         $result = $this->service->getDashboardStatistics();
@@ -702,7 +694,6 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     {
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
         $this->repository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn([]);
 
         $result = $this->service->calculateComplianceScore();
@@ -728,11 +719,9 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $incompleteDPIA->method('getStatus')->willReturn('draft');
 
         $this->repository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn([$completeDPIA, $incompleteDPIA]);
 
         $this->repository->method('findDueForReview')
-            ->with($this->tenant)
             ->willReturn([]);
 
         $result = $this->service->calculateComplianceScore();
@@ -786,7 +775,6 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->tenantContext->method('getCurrentTenant')->willReturn($this->tenant);
         $this->security->method('getUser')->willReturn($this->user);
         $this->repository->method('getNextReferenceNumber')
-            ->with($this->tenant)
             ->willReturn('DPIA-2025-002');
 
         $original = $this->createMock(DataProtectionImpactAssessment::class);

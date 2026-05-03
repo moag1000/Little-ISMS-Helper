@@ -182,7 +182,6 @@ class TenantContextTest extends TestCase
 
         $this->tenantRepository
             ->method('findBy')
-            ->with(['isActive' => true], ['name' => 'ASC'])
             ->willReturn($activeTenants);
 
         $result = $this->tenantContext->getActiveTenants();

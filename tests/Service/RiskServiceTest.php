@@ -45,7 +45,6 @@ class RiskServiceTest extends TestCase
         $risks = [$this->createMock(Risk::class)];
 
         $this->riskRepository->method('findByTenant')
-            ->with($tenant)
             ->willReturn($risks);
 
         $result = $this->service->getRisksForTenant($tenant);
@@ -67,11 +66,9 @@ class RiskServiceTest extends TestCase
 
         $governance = $this->createGovernance('hierarchical');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'risk')
             ->willReturn($governance);
 
         $this->riskRepository->method('findByTenantIncludingParent')
-            ->with($child, $parent)
             ->willReturn($inheritedRisks);
 
         $result = $this->service->getRisksForTenant($child);
@@ -89,11 +86,9 @@ class RiskServiceTest extends TestCase
 
         $governance = $this->createGovernance('shared');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'risk')
             ->willReturn($governance);
 
         $this->riskRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownRisks);
 
         $result = $this->service->getRisksForTenant($child);
@@ -109,16 +104,13 @@ class RiskServiceTest extends TestCase
         $inheritedRisks = [$this->createMock(Risk::class), $this->createMock(Risk::class)];
 
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'risk')
             ->willReturn(null);
 
         $defaultGovernance = $this->createGovernance('hierarchical');
         $this->governanceRepository->method('findDefaultGovernance')
-            ->with($child)
             ->willReturn($defaultGovernance);
 
         $this->riskRepository->method('findByTenantIncludingParent')
-            ->with($child, $parent)
             ->willReturn($inheritedRisks);
 
         $result = $this->service->getRisksForTenant($child);
@@ -146,7 +138,6 @@ class RiskServiceTest extends TestCase
 
         $governance = $this->createGovernance('hierarchical');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'risk')
             ->willReturn($governance);
 
         $info = $this->service->getRiskInheritanceInfo($child);
@@ -164,7 +155,6 @@ class RiskServiceTest extends TestCase
 
         $governance = $this->createGovernance('independent');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'risk')
             ->willReturn($governance);
 
         $info = $this->service->getRiskInheritanceInfo($child);
@@ -268,11 +258,9 @@ class RiskServiceTest extends TestCase
             ->willReturn($allRisks);
 
         $this->riskRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownRisks);
 
         $this->riskRepository->method('getRiskStatsByTenant')
-            ->with($child)
             ->willReturn([
                 'total' => 5,
                 'high' => 2,
@@ -298,7 +286,6 @@ class RiskServiceTest extends TestCase
         $ownRisks = [$this->createMock(Risk::class)];
 
         $this->riskRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownRisks);
 
         $result = $simpleService->getRisksForTenant($child);
@@ -313,12 +300,10 @@ class RiskServiceTest extends TestCase
         $child = $this->createTenant(2, $parent);
 
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'risk')
             ->willReturn(null);
 
         $defaultGovernance = $this->createGovernance('shared');
         $this->governanceRepository->method('findDefaultGovernance')
-            ->with($child)
             ->willReturn($defaultGovernance);
 
         $info = $this->service->getRiskInheritanceInfo($child);
@@ -344,7 +329,6 @@ class RiskServiceTest extends TestCase
         $allRisks = [$highRisk1, $highRisk2, $mediumRisk, $lowRisk];
 
         $this->riskRepository->method('findByTenant')
-            ->with($tenant)
             ->willReturn($allRisks);
 
         $result = $this->service->getHighRisksForTenant($tenant);

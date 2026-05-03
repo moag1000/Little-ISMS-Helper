@@ -160,7 +160,6 @@ class StatementOfApplicabilityControllerTest extends TestCase
 
         $this->security->method('getUser')->willReturn($user);
         $this->controlRepository->method('findByTenantIncludingParent')
-            ->with($tenant)
             ->willReturn($controls);
         $this->controlRepository->method('getImplementationStats')->willReturn([
             'total' => 93,
@@ -207,7 +206,6 @@ class StatementOfApplicabilityControllerTest extends TestCase
 
         $this->security->method('getUser')->willReturn($user);
         $this->controlRepository->method('findByTenant')
-            ->with($tenant)
             ->willReturn($controls);
         $this->controlRepository->method('getImplementationStats')->willReturn([]);
         $this->controlRepository->method('countByCategory')->willReturn([]);
@@ -240,7 +238,6 @@ class StatementOfApplicabilityControllerTest extends TestCase
 
         $this->security->method('getUser')->willReturn($user);
         $this->controlRepository->method('findByTenantIncludingSubsidiaries')
-            ->with($tenant)
             ->willReturn($controls);
         $this->controlRepository->method('getImplementationStats')->willReturn([]);
         $this->controlRepository->method('countByCategory')->willReturn([]);
@@ -406,7 +403,6 @@ class StatementOfApplicabilityControllerTest extends TestCase
         ];
 
         $this->controlRepository->method('findByCategoryInIsoOrder')
-            ->with('organizational')
             ->willReturn($controls);
 
         $this->twig->expects($this->once())

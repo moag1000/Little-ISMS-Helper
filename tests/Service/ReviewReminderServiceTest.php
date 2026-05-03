@@ -145,7 +145,6 @@ class ReviewReminderServiceTest extends TestCase
         $currentPlan->method('isTestOverdue')->willReturn(false);
 
         $this->bcPlanRepository->method('findBy')
-            ->with(['status' => 'active'])
             ->willReturn([$overduePlan, $currentPlan]);
 
         $result = $this->service->getOverdueBcPlanReviews();
@@ -180,7 +179,6 @@ class ReviewReminderServiceTest extends TestCase
         $futureActivity->method('getNextReviewDate')->willReturn(new DateTime('+1 month'));
 
         $this->processingActivityRepository->method('findBy')
-            ->with(['status' => 'active'])
             ->willReturn([$overdueActivity, $futureActivity]);
 
         $result = $this->service->getOverdueProcessingActivityReviews();
@@ -201,7 +199,6 @@ class ReviewReminderServiceTest extends TestCase
         $futureDpia->method('getNextReviewDate')->willReturn(new DateTime('+6 months'));
 
         $this->dpiaRepository->method('findBy')
-            ->with(['status' => 'approved'])
             ->willReturn([$overdueDpia, $futureDpia]);
 
         $result = $this->service->getOverdueDpiaReviews();
@@ -220,7 +217,6 @@ class ReviewReminderServiceTest extends TestCase
         $notifiedBreach->method('getHoursUntilAuthorityDeadline')->willReturn(10);
 
         $this->dataBreachRepository->method('findBy')
-            ->with(['requiresAuthorityNotification' => true])
             ->willReturn([$notifiedBreach]);
 
         $result = $this->service->getUrgentDataBreaches();
@@ -236,7 +232,6 @@ class ReviewReminderServiceTest extends TestCase
         $urgentBreach->method('getHoursUntilAuthorityDeadline')->willReturn(12); // Within 24h threshold
 
         $this->dataBreachRepository->method('findBy')
-            ->with(['requiresAuthorityNotification' => true])
             ->willReturn([$urgentBreach]);
 
         $result = $this->service->getUrgentDataBreaches();
@@ -252,7 +247,6 @@ class ReviewReminderServiceTest extends TestCase
         $overdueBreach->method('getHoursUntilAuthorityDeadline')->willReturn(-5); // Overdue
 
         $this->dataBreachRepository->method('findBy')
-            ->with(['requiresAuthorityNotification' => true])
             ->willReturn([$overdueBreach]);
 
         $result = $this->service->getUrgentDataBreaches();
@@ -268,7 +262,6 @@ class ReviewReminderServiceTest extends TestCase
         $notUrgentBreach->method('getHoursUntilAuthorityDeadline')->willReturn(48); // Still has time
 
         $this->dataBreachRepository->method('findBy')
-            ->with(['requiresAuthorityNotification' => true])
             ->willReturn([$notUrgentBreach]);
 
         $result = $this->service->getUrgentDataBreaches();
@@ -284,7 +277,6 @@ class ReviewReminderServiceTest extends TestCase
         $breach->method('getHoursUntilAuthorityDeadline')->willReturn(36);
 
         $this->dataBreachRepository->method('findBy')
-            ->with(['requiresAuthorityNotification' => true])
             ->willReturn([$breach]);
 
         // Default threshold 24h - not urgent

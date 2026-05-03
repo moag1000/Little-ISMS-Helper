@@ -45,7 +45,6 @@ class ControlServiceTest extends TestCase
         $controls = [$this->createMock(Control::class)];
 
         $this->controlRepository->method('findByTenant')
-            ->with($tenant)
             ->willReturn($controls);
 
         $result = $this->service->getControlsForTenant($tenant);
@@ -66,11 +65,9 @@ class ControlServiceTest extends TestCase
 
         $governance = $this->createGovernance('hierarchical');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'control')
             ->willReturn($governance);
 
         $this->controlRepository->method('findByTenantIncludingParent')
-            ->with($child, $parent)
             ->willReturn($inheritedControls);
 
         $result = $this->service->getControlsForTenant($child);
@@ -88,11 +85,9 @@ class ControlServiceTest extends TestCase
 
         $governance = $this->createGovernance('independent');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'control')
             ->willReturn($governance);
 
         $this->controlRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownControls);
 
         $result = $this->service->getControlsForTenant($child);
@@ -109,17 +104,14 @@ class ControlServiceTest extends TestCase
 
         // No specific governance for 'control' scope
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'control')
             ->willReturn(null);
 
         // Fall back to default governance (independent)
         $defaultGovernance = $this->createGovernance('shared');
         $this->governanceRepository->method('findDefaultGovernance')
-            ->with($child)
             ->willReturn($defaultGovernance);
 
         $this->controlRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownControls);
 
         $result = $this->service->getControlsForTenant($child);
@@ -147,7 +139,6 @@ class ControlServiceTest extends TestCase
 
         $governance = $this->createGovernance('hierarchical');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'control')
             ->willReturn($governance);
 
         $info = $this->service->getControlInheritanceInfo($child);
@@ -165,7 +156,6 @@ class ControlServiceTest extends TestCase
 
         $governance = $this->createGovernance('independent');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'control')
             ->willReturn($governance);
 
         $info = $this->service->getControlInheritanceInfo($child);
@@ -243,7 +233,6 @@ class ControlServiceTest extends TestCase
         $ownControls = [$this->createMock(Control::class)];
 
         $this->controlRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownControls);
 
         // Should return own controls without considering governance

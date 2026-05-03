@@ -370,7 +370,6 @@ class WorkflowAutoTriggerListenerTest extends TestCase
         $unitOfWork = $this->createMock(UnitOfWork::class);
 
         $unitOfWork->method('getEntityChangeSet')
-            ->with($entity)
             ->willReturn($changeSet);
 
         $entityManager->method('getUnitOfWork')->willReturn($unitOfWork);

@@ -45,7 +45,6 @@ class SupplierServiceTest extends TestCase
         $suppliers = [$this->createMock(Supplier::class)];
 
         $this->supplierRepository->method('findByTenant')
-            ->with($tenant)
             ->willReturn($suppliers);
 
         $result = $this->service->getSuppliersForTenant($tenant);
@@ -67,11 +66,9 @@ class SupplierServiceTest extends TestCase
 
         $governance = $this->createGovernance('hierarchical');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'supplier')
             ->willReturn($governance);
 
         $this->supplierRepository->method('findByTenantIncludingParent')
-            ->with($child, $parent)
             ->willReturn($inheritedSuppliers);
 
         $result = $this->service->getSuppliersForTenant($child);
@@ -89,11 +86,9 @@ class SupplierServiceTest extends TestCase
 
         $governance = $this->createGovernance('shared');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'supplier')
             ->willReturn($governance);
 
         $this->supplierRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownSuppliers);
 
         $result = $this->service->getSuppliersForTenant($child);
@@ -110,11 +105,9 @@ class SupplierServiceTest extends TestCase
 
         $governance = $this->createGovernance('independent');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'supplier')
             ->willReturn($governance);
 
         $this->supplierRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownSuppliers);
 
         $result = $this->service->getSuppliersForTenant($child);
@@ -133,16 +126,13 @@ class SupplierServiceTest extends TestCase
         ];
 
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'supplier')
             ->willReturn(null);
 
         $defaultGovernance = $this->createGovernance('hierarchical');
         $this->governanceRepository->method('findDefaultGovernance')
-            ->with($child)
             ->willReturn($defaultGovernance);
 
         $this->supplierRepository->method('findByTenantIncludingParent')
-            ->with($child, $parent)
             ->willReturn($inheritedSuppliers);
 
         $result = $this->service->getSuppliersForTenant($child);
@@ -170,7 +160,6 @@ class SupplierServiceTest extends TestCase
 
         $governance = $this->createGovernance('hierarchical');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'supplier')
             ->willReturn($governance);
 
         $info = $this->service->getSupplierInheritanceInfo($child);
@@ -188,7 +177,6 @@ class SupplierServiceTest extends TestCase
 
         $governance = $this->createGovernance('shared');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'supplier')
             ->willReturn($governance);
 
         $info = $this->service->getSupplierInheritanceInfo($child);
@@ -206,7 +194,6 @@ class SupplierServiceTest extends TestCase
 
         $governance = $this->createGovernance('independent');
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'supplier')
             ->willReturn($governance);
 
         $info = $this->service->getSupplierInheritanceInfo($child);
@@ -312,11 +299,9 @@ class SupplierServiceTest extends TestCase
             ->willReturn($allSuppliers);
 
         $this->supplierRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownSuppliers);
 
         $this->supplierRepository->method('getStatisticsByTenant')
-            ->with($child)
             ->willReturn([
                 'total' => 5,
                 'active' => 4,
@@ -343,7 +328,6 @@ class SupplierServiceTest extends TestCase
         $ownSuppliers = [$this->createMock(Supplier::class)];
 
         $this->supplierRepository->method('findByTenant')
-            ->with($child)
             ->willReturn($ownSuppliers);
 
         $result = $simpleService->getSuppliersForTenant($child);
@@ -380,11 +364,9 @@ class SupplierServiceTest extends TestCase
         ];
 
         $this->supplierRepository->method('findByTenant')
-            ->with($tenant)
             ->willReturn($ownSuppliers);
 
         $this->supplierRepository->method('getStatisticsByTenant')
-            ->with($tenant)
             ->willReturn([
                 'total' => 2,
                 'active' => 2,

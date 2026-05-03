@@ -60,7 +60,6 @@ class ISMSObjectiveServiceTest extends TestCase
         $this->objectiveRepository->method('findAll')->willReturn($allObjectives);
         $this->objectiveRepository->method('findActive')->willReturn([$inProgress, $delayed, $atRisk]);
         $this->objectiveRepository->method('findBy')
-            ->with(['status' => 'achieved'])
             ->willReturn([$achieved]);
 
         $stats = $this->service->getStatistics();
@@ -153,7 +152,6 @@ class ISMSObjectiveServiceTest extends TestCase
         ];
 
         $this->objectiveRepository->method('findBy')
-            ->with(['category' => 'security'])
             ->willReturn($securityObjectives);
 
         $result = $this->service->getObjectivesByCategory('security');

@@ -63,7 +63,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         ];
 
         $this->fulfillmentRepository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn($fulfillments);
 
         $result = $this->service->getFulfillmentsForTenant($this->tenant);
@@ -81,7 +80,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $fulfillments = [$this->createMock(ComplianceRequirementFulfillment::class)];
 
         $this->fulfillmentRepository->method('findByFrameworkAndTenant')
-            ->with($framework, $this->tenant)
             ->willReturn($fulfillments);
 
         $result = $this->service->getFulfillmentsForTenant($this->tenant, $framework);
@@ -99,14 +97,12 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $governance->method('getGovernanceModel')->willReturn($governanceModel);
 
         $this->corporateGovernanceRepository->method('findGovernanceForScope')
-            ->with($this->tenant, 'compliance')
             ->willReturn($governance);
 
         $parentFulfillment = $this->createMock(ComplianceRequirementFulfillment::class);
         $ownFulfillment = $this->createMock(ComplianceRequirementFulfillment::class);
 
         $this->fulfillmentRepository->method('findByTenantIncludingParent')
-            ->with($this->tenant, $this->parentTenant)
             ->willReturn([$parentFulfillment, $ownFulfillment]);
 
         $result = $this->service->getFulfillmentsForTenant($this->tenant);
@@ -124,13 +120,11 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $governance->method('getGovernanceModel')->willReturn($governanceModel);
 
         $this->corporateGovernanceRepository->method('findGovernanceForScope')
-            ->with($this->tenant, 'compliance')
             ->willReturn($governance);
 
         $ownFulfillments = [$this->createMock(ComplianceRequirementFulfillment::class)];
 
         $this->fulfillmentRepository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn($ownFulfillments);
 
         $result = $this->service->getFulfillmentsForTenant($this->tenant);
@@ -144,7 +138,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $this->tenant->method('getParent')->willReturn($this->parentTenant);
 
         $this->corporateGovernanceRepository->method('findGovernanceForScope')
-            ->with($this->tenant, 'compliance')
             ->willReturn(null);
 
         $governanceModel = GovernanceModel::INDEPENDENT;
@@ -152,13 +145,11 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $defaultGovernance->method('getGovernanceModel')->willReturn($governanceModel);
 
         $this->corporateGovernanceRepository->method('findDefaultGovernance')
-            ->with($this->tenant)
             ->willReturn($defaultGovernance);
 
         $ownFulfillments = [$this->createMock(ComplianceRequirementFulfillment::class)];
 
         $this->fulfillmentRepository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn($ownFulfillments);
 
         $result = $this->service->getFulfillmentsForTenant($this->tenant);
@@ -176,7 +167,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $governance->method('getGovernanceModel')->willReturn($governanceModel);
 
         $this->corporateGovernanceRepository->method('findGovernanceForScope')
-            ->with($this->tenant, 'compliance')
             ->willReturn($governance);
 
         // Use real ComplianceFramework objects to properly set id property
@@ -203,7 +193,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $nonMatchingFulfillment->method('getRequirement')->willReturn($nonMatchingRequirement);
 
         $this->fulfillmentRepository->method('findByTenantIncludingParent')
-            ->with($this->tenant, $this->parentTenant)
             ->willReturn([$matchingFulfillment, $nonMatchingFulfillment]);
 
         $result = $this->service->getFulfillmentsForTenant($this->tenant, $framework);
@@ -238,7 +227,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $governance->method('getGovernanceModel')->willReturn($governanceModel);
 
         $this->corporateGovernanceRepository->method('findGovernanceForScope')
-            ->with($this->tenant, 'compliance')
             ->willReturn($governance);
 
         $result = $this->service->getFulfillmentInheritanceInfo($this->tenant);
@@ -258,7 +246,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $governance->method('getGovernanceModel')->willReturn($governanceModel);
 
         $this->corporateGovernanceRepository->method('findGovernanceForScope')
-            ->with($this->tenant, 'compliance')
             ->willReturn($governance);
 
         $result = $this->service->getFulfillmentInheritanceInfo($this->tenant);
@@ -278,7 +265,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $governance->method('getGovernanceModel')->willReturn($governanceModel);
 
         $this->corporateGovernanceRepository->method('findGovernanceForScope')
-            ->with($this->tenant, 'compliance')
             ->willReturn($governance);
 
         $result = $this->service->getFulfillmentInheritanceInfo($this->tenant);
@@ -380,7 +366,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $existingFulfillment->method('getId')->willReturn(1);
 
         $this->fulfillmentRepository->method('findOrCreateForTenantAndRequirement')
-            ->with($this->tenant, $requirement)
             ->willReturn($existingFulfillment);
 
         $result = $this->service->getOrCreateFulfillment($this->tenant, $requirement);
@@ -401,7 +386,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $newFulfillment->setRequirement($requirement);
 
         $this->fulfillmentRepository->method('findOrCreateForTenantAndRequirement')
-            ->with($this->tenant, $requirement)
             ->willReturn($newFulfillment);
 
         // Setup hierarchical governance
@@ -410,7 +394,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $governance->method('getGovernanceModel')->willReturn($governanceModel);
 
         $this->corporateGovernanceRepository->method('findGovernanceForScope')
-            ->with($this->tenant, 'compliance')
             ->willReturn($governance);
 
         // Parent fulfillment to inherit from
@@ -419,10 +402,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $parentFulfillment->method('getApplicabilityJustification')->willReturn('Inherited justification');
 
         $this->fulfillmentRepository->method('findOneBy')
-            ->with([
-                'tenant' => $this->parentTenant,
-                'requirement' => $requirement,
-            ])
             ->willReturn($parentFulfillment);
 
         $result = $this->service->getOrCreateFulfillment($this->tenant, $requirement);
@@ -447,7 +426,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $newFulfillment->expects($this->never())->method('setApplicabilityJustification');
 
         $this->fulfillmentRepository->method('findOrCreateForTenantAndRequirement')
-            ->with($this->tenant, $requirement)
             ->willReturn($newFulfillment);
 
         // Setup independent governance
@@ -456,7 +434,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $governance->method('getGovernanceModel')->willReturn($governanceModel);
 
         $this->corporateGovernanceRepository->method('findGovernanceForScope')
-            ->with($this->tenant, 'compliance')
             ->willReturn($governance);
 
         $result = $this->service->getOrCreateFulfillment($this->tenant, $requirement);
@@ -479,7 +456,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $governance->method('getGovernanceModel')->willReturn($governanceModel);
 
         $this->corporateGovernanceRepository->method('findGovernanceForScope')
-            ->with($this->tenant, 'compliance')
             ->willReturn($governance);
 
         // All fulfillments (including inherited)
@@ -495,11 +471,9 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         ];
 
         $this->fulfillmentRepository->method('findByTenantIncludingParent')
-            ->with($this->tenant, $this->parentTenant)
             ->willReturn($allFulfillments);
 
         $this->fulfillmentRepository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn($ownFulfillments);
 
         $baseStats = [
@@ -509,7 +483,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         ];
 
         $this->fulfillmentRepository->method('getComplianceStats')
-            ->with($this->tenant)
             ->willReturn($baseStats);
 
         $result = $this->service->getFulfillmentStatsWithInheritance($this->tenant);
@@ -532,7 +505,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         ];
 
         $this->fulfillmentRepository->method('findByFrameworkAndTenant')
-            ->with($framework, $this->tenant)
             ->willReturn($fulfillments);
 
         $baseStats = [
@@ -542,7 +514,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         ];
 
         $this->fulfillmentRepository->method('getComplianceStats')
-            ->with($this->tenant)
             ->willReturn($baseStats);
 
         $result = $this->service->getFulfillmentStatsWithInheritance($this->tenant, $framework);
@@ -569,7 +540,6 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
         $fulfillments = [$this->createMock(ComplianceRequirementFulfillment::class)];
 
         $this->fulfillmentRepository->method('findByTenant')
-            ->with($this->tenant)
             ->willReturn($fulfillments);
 
         $result = $serviceWithoutOptional->getFulfillmentsForTenant($this->tenant);

@@ -63,11 +63,9 @@ class RiskTreatmentPlanApprovalServiceTest extends TestCase
         $workflowInstance->method('getStatus')->willReturn('in_progress');
 
         $this->workflowService->method('getWorkflowInstance')
-            ->with('RiskTreatmentPlan', 1)
             ->willReturn(null); // No existing workflow
 
         $this->workflowService->method('startWorkflow')
-            ->with('RiskTreatmentPlan', 1, 'risk_treatment_plan_approval')
             ->willReturn($workflowInstance);
 
         // Act

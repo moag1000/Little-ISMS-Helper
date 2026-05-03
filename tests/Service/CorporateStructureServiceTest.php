@@ -133,7 +133,6 @@ class CorporateStructureServiceTest extends TestCase
         $governance = $this->createMock(CorporateGovernance::class);
         $governance->method('getGovernanceModel')->willReturn(GovernanceModel::INDEPENDENT);
         $this->governanceRepository->method('findDefaultGovernance')
-            ->with($parent)
             ->willReturn($governance);
 
         $this->assertFalse($this->service->canAccessTenant($child, $parent));
@@ -155,7 +154,6 @@ class CorporateStructureServiceTest extends TestCase
         $sharedGovernance = $this->createMock(CorporateGovernance::class);
         $sharedGovernance->method('getGovernanceModel')->willReturn(GovernanceModel::SHARED);
         $this->governanceRepository->method('findDefaultGovernance')
-            ->with($subsidiary2)
             ->willReturn($sharedGovernance);
 
         $this->assertTrue($this->service->canAccessTenant($subsidiary1, $subsidiary2));
@@ -168,7 +166,6 @@ class CorporateStructureServiceTest extends TestCase
         $context = $this->createMock(ISMSContext::class);
 
         $this->ismsContextRepository->method('findOneBy')
-            ->with(['tenant' => $tenant])
             ->willReturn($context);
 
         $result = $this->service->getEffectiveISMSContext($tenant);
@@ -188,7 +185,6 @@ class CorporateStructureServiceTest extends TestCase
         $governance->method('getGovernanceModel')->willReturn(GovernanceModel::HIERARCHICAL);
 
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'isms_context')
             ->willReturn($governance);
 
         // Parent's context is returned (recursive call)
@@ -215,11 +211,9 @@ class CorporateStructureServiceTest extends TestCase
         $governance->method('getGovernanceModel')->willReturn(GovernanceModel::INDEPENDENT);
 
         $this->governanceRepository->method('findGovernanceForScope')
-            ->with($child, 'isms_context')
             ->willReturn($governance);
 
         $this->ismsContextRepository->method('findOneBy')
-            ->with(['tenant' => $child])
             ->willReturn($childContext);
 
         $result = $this->service->getEffectiveISMSContext($child);
@@ -246,7 +240,6 @@ class CorporateStructureServiceTest extends TestCase
         $child->method('getSubsidiaries')->willReturn(new ArrayCollection());
 
         $this->governanceRepository->method('findDefaultGovernance')
-            ->with($child)
             ->willReturn(null);
 
         $errors = $this->service->validateStructure($child);

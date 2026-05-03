@@ -176,7 +176,6 @@ class ComplianceControllerTest extends TestCase
         $fulfillment = $this->createMock(ComplianceRequirementFulfillment::class);
 
         $this->complianceFrameworkRepository->method('find')
-            ->with(1)
             ->willReturn($framework);
 
         $this->complianceAssessmentService->method('getComplianceDashboard')
@@ -207,7 +206,6 @@ class ComplianceControllerTest extends TestCase
     public function testFrameworkDashboardThrowsNotFoundForInvalidFramework(): void
     {
         $this->complianceFrameworkRepository->method('find')
-            ->with(999)
             ->willReturn(null);
 
         $this->expectException(NotFoundHttpException::class);
@@ -225,7 +223,6 @@ class ComplianceControllerTest extends TestCase
         $analysis = ['status' => 'not_met', 'coverage' => 0];
 
         $this->complianceFrameworkRepository->method('find')
-            ->with(1)
             ->willReturn($framework);
 
         $this->complianceRequirementRepository->method('findGapsByFramework')
@@ -247,7 +244,6 @@ class ComplianceControllerTest extends TestCase
     public function testGapAnalysisThrowsNotFoundForInvalidFramework(): void
     {
         $this->complianceFrameworkRepository->method('find')
-            ->with(999)
             ->willReturn(null);
 
         $this->expectException(NotFoundHttpException::class);
@@ -265,7 +261,6 @@ class ComplianceControllerTest extends TestCase
         $reuseValue = ['estimated_hours_saved' => 20];
 
         $this->complianceFrameworkRepository->method('find')
-            ->with(1)
             ->willReturn($framework);
 
         $this->complianceRequirementRepository->method('findApplicableByFramework')
@@ -287,7 +282,6 @@ class ComplianceControllerTest extends TestCase
     public function testDataReuseInsightsThrowsNotFoundForInvalidFramework(): void
     {
         $this->complianceFrameworkRepository->method('find')
-            ->with(999)
             ->willReturn(null);
 
         $this->expectException(NotFoundHttpException::class);
@@ -309,7 +303,6 @@ class ComplianceControllerTest extends TestCase
         $request->setSession($session);
 
         $this->complianceFrameworkRepository->method('find')
-            ->with(1)
             ->willReturn($framework);
 
         $this->complianceRequirementRepository->method('findApplicableByFramework')
@@ -336,7 +329,6 @@ class ComplianceControllerTest extends TestCase
         $request->setSession($session);
 
         $this->complianceFrameworkRepository->method('find')
-            ->with(999)
             ->willReturn(null);
 
         $this->expectException(NotFoundHttpException::class);
@@ -425,7 +417,6 @@ class ComplianceControllerTest extends TestCase
     public function testAssessFrameworkThrowsNotFoundForInvalidFramework(): void
     {
         $this->complianceFrameworkRepository->method('find')
-            ->with(999)
             ->willReturn(null);
 
         $this->expectException(NotFoundHttpException::class);

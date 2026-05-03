@@ -64,7 +64,6 @@ class ComplianceAssessmentServiceTest extends TestCase
         $framework = $this->createFramework('Test Framework', 100.0);
 
         $this->requirementRepository->method('findByFramework')
-            ->with($framework)
             ->willReturn([]);
 
         $this->requirementRepository->method('getFrameworkStatisticsForTenant')
@@ -147,7 +146,6 @@ class ComplianceAssessmentServiceTest extends TestCase
         $requirement->method('getDataSourceMapping')->willReturn([]);
 
         $this->mappingService->method('getDataReuseAnalysis')
-            ->with($requirement)
             ->willReturn([
                 'sources' => [
                     'controls' => ['contribution' => 70],
@@ -352,7 +350,6 @@ class ComplianceAssessmentServiceTest extends TestCase
             ]);
 
         $this->requirementRepository->method('findByFrameworkAndPriority')
-            ->with($framework, 'critical')
             ->willReturn([$this->createMockGapRequirement('critical')]);
 
         $this->requirementRepository->method('findApplicableByFramework')

@@ -30,7 +30,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testIsMultiTenantReturnsTrueWhenMultipleTenantsExist(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(2);
 
         $result = $this->service->isMultiTenant();
@@ -42,7 +41,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testIsMultiTenantReturnsFalseWhenOnlyOneTenantExists(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(1);
 
         $result = $this->service->isMultiTenant();
@@ -54,7 +52,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testIsMultiTenantReturnsFalseWhenNoTenantsExist(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(0);
 
         $result = $this->service->isMultiTenant();
@@ -87,7 +84,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testGetActiveTenantCountReturnsCorrectCount(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(5);
 
         $count = $this->service->getActiveTenantCount();
@@ -99,7 +95,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testGetActiveTenantCountReturnsZeroWhenNoTenants(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(0);
 
         $count = $this->service->getActiveTenantCount();
@@ -172,7 +167,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testShowCorporateFeaturesReturnsTrueForMultipleTenants(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(3);
 
         $result = $this->service->showCorporateFeatures();
@@ -184,7 +178,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testShowCorporateFeaturesReturnsFalseForSingleTenant(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(1);
 
         $result = $this->service->showCorporateFeatures();
@@ -196,7 +189,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testShowCorporateFeaturesReturnsFalseWhenNoTenants(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(0);
 
         $result = $this->service->showCorporateFeatures();
@@ -281,7 +273,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testGetHiddenReasonReturnsMessageWhenNoTenants(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(0);
 
         $reason = $this->service->getHiddenReason();
@@ -293,7 +284,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testGetHiddenReasonReturnsMessageWhenOnlyOneTenant(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(1);
 
         $reason = $this->service->getHiddenReason();
@@ -308,7 +298,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testGetHiddenReasonReturnsEmptyStringWhenMultipleTenants(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(2);
 
         $reason = $this->service->getHiddenReason();
@@ -320,7 +309,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testGetHiddenReasonReturnsEmptyStringWhenManyTenants(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(10);
 
         $reason = $this->service->getHiddenReason();
@@ -352,7 +340,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testExactlyTwoTenantsIsConsideredMultiTenant(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(2);
 
         $this->assertTrue($this->service->isMultiTenant());
@@ -384,7 +371,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testServiceHandlesEdgeCaseOfExactlyOneTenant(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(1);
 
         $this->assertFalse($this->service->isMultiTenant());
@@ -400,7 +386,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testServiceHandlesLargeNumberOfTenants(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(999);
 
         $this->assertTrue($this->service->isMultiTenant());
@@ -440,7 +425,6 @@ class MultiTenantCheckServiceTest extends TestCase
     public function testMultipleSequentialClearCacheCalls(): void
     {
         $this->tenantRepository->method('count')
-            ->with(['isActive' => true])
             ->willReturn(2);
 
         // Populate cache

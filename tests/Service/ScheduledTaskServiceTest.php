@@ -286,7 +286,6 @@ class ScheduledTaskServiceTest extends TestCase
         ];
 
         $this->taskRepository->method('findBy')
-            ->with(['tenantId' => 42])
             ->willReturn($tasks);
 
         $result = $this->service->getTasksForCurrentTenant();

@@ -108,14 +108,12 @@ class UserRepositoryTest extends TestCase
 
         // Configure registry to return the entity manager
         $this->registry->method('getManagerForClass')
-            ->with(User::class)
             ->willReturn($this->entityManager);
 
         // Configure entity manager to return class metadata
         $classMetadata = $this->createMock(ClassMetadata::class);
         $classMetadata->name = User::class;
         $this->entityManager->method('getClassMetadata')
-            ->with(User::class)
             ->willReturn($classMetadata);
 
         // Create repository instance

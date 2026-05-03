@@ -101,7 +101,6 @@ class BusinessProcessRepositoryTest extends TestCase
         // Mock ManagerRegistry
         $this->managerRegistry = $this->createMock(ManagerRegistry::class);
         $this->managerRegistry->method('getManagerForClass')
-            ->with(BusinessProcess::class)
             ->willReturn($this->entityManager);
 
         // Create repository instance

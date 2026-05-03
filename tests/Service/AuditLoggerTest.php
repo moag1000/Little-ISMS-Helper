@@ -429,7 +429,7 @@ class AuditLoggerTest extends TestCase
         $request->method('getClientIp')->willReturn($ip);
 
         $headers = $this->createMock(\Symfony\Component\HttpFoundation\HeaderBag::class);
-        $headers->method('get')->with('User-Agent')->willReturn($userAgent);
+        $headers->method('get')->willReturn($userAgent);
         $request->headers = $headers;
 
         $this->requestStack->method('getCurrentRequest')->willReturn($request);

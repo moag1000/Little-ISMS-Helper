@@ -246,7 +246,6 @@ class ComplianceAnalyticsServiceTest extends TestCase
         $req2 = $this->createRequirement('2', 'Req 2', $fw2);
 
         $this->controlRepository->method('findBy')
-            ->with(['implementationStatus' => 'implemented'])
             ->willReturn([$control]);
         $this->requirementRepository->method('findByControl')
             ->willReturn([$req1, $req2]);

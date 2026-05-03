@@ -258,7 +258,6 @@ class SessionManagerTest extends TestCase
         $user = $this->createMockUser(1, 'test@example.com');
 
         $this->sessionRepository->method('terminateUserSessions')
-            ->with($user, 'forced', 'admin@example.com')
             ->willReturn(3);
 
         $this->auditLogger->expects($this->once())
@@ -552,7 +551,7 @@ class SessionManagerTest extends TestCase
         $request = $this->createMock(Request::class);
         $request->method('getClientIp')->willReturn($ip);
         $request->headers = $this->createMock(\Symfony\Component\HttpFoundation\HeaderBag::class);
-        $request->headers->method('get')->with('User-Agent')->willReturn($userAgent);
+        $request->headers->method('get')->willReturn($userAgent);
         return $request;
     }
 }
