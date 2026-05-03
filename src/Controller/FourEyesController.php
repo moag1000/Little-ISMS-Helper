@@ -6,8 +6,10 @@ namespace App\Controller;
 
 use App\Entity\FourEyesApprovalRequest;
 use App\Entity\User;
+use App\Form\FourEyesApprovalRequestType;
 use App\Service\FourEyesApprovalService;
 use App\Service\TenantContext;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +23,7 @@ final class FourEyesController extends AbstractController
     public function __construct(
         private readonly FourEyesApprovalService $service,
         private readonly TenantContext $tenantContext,
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -62,6 +65,33 @@ final class FourEyesController extends AbstractController
         }
 
         return $this->redirect($this->generateUrl('app_dashboard'));
+    }
+
+    /**
+     * Edit the approver Tri-State fields of a pending approval request.
+     * Only ADMIN users may reassign approvers; the request must still be pending.
+     */
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function edit(FourEyesApprovalRequest $approvalRequest, Request $httpRequest): Response
+    {
+        $this->assertSameTenant($approvalRequest);
+
+        $form = $this->createForm(FourEyesApprovalRequestType::class, $approvalRequest);
+        $form->handleRequest($httpRequest);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->flush();
+
+            $this->addFlash('success', 'four_eyes.flash.approver_updated');
+
+            return $this->redirectToRoute('app_four_eyes_inbox');
+        }
+
+        return $this->render('four_eyes/edit.html.twig', [
+            'approvalRequest' => $approvalRequest,
+            'form' => $form,
+        ]);
     }
 
     private function assertSameTenant(FourEyesApprovalRequest $request): void

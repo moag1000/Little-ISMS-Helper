@@ -4,24 +4,44 @@ inbox:
     empty: 'Keine offenen Freigabe-Anfragen.'
 
 action:
-    inheritance_implement: 'Statusübergang „Umgesetzt“'
+    inheritance_implement: 'Statusübergang „Umgesetzt"'
     mapping_override: 'Mapping-Override'
     bulk_tag_removal: 'Bulk-Tag-Entfernung'
     import_large_commit: 'Großer Import-Commit'
 
+action_type: 'Aktionstyp'
+
 requested_by: 'Angefordert von'
 expires_at: 'Läuft ab am'
+
 field:
     requested_approver_person: 'Genehmiger (Person)'
     requested_approver_deputy_persons: 'Vertretungen Genehmiger (Personen)'
+    requested_approver_user: 'Genehmiger (Benutzer)'
+
 placeholder:
     requested_approver_person: '-- Person aus Stammdaten --'
+    requested_approver_user: '-- Benutzer auswählen --'
+
 help:
     requested_approver_person: 'Person ohne System-Login als Genehmiger. Reihenfolge: User > Person > leer.'
     requested_approver_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Genehmiger.'
+    requested_approver_user: 'Systembenutzer als Genehmiger. Mindestens einer von Benutzer oder Person ist erforderlich.'
+
+error:
+    approver_required_user_or_person: 'Mindestens einer von Genehmiger (Benutzer) oder Genehmiger (Person) muss gesetzt sein.'
 
 approve: 'Freigeben'
 reject: 'Ablehnen'
+
+edit:
+    title: 'Freigabe-Anfrage bearbeiten'
+    subtitle: 'Genehmiger für diese ausstehende Anfrage neu zuweisen'
+    action:
+        save: 'Genehmiger speichern'
+
+section:
+    approver: 'Angeforderter Genehmiger'
 
 reject_modal:
     title: 'Freigabe ablehnen'
@@ -30,6 +50,7 @@ reject_modal:
 flash:
     approved: 'Freigabe erteilt.'
     rejected: 'Freigabe abgelehnt.'
+    approver_updated: 'Genehmiger erfolgreich aktualisiert.'
 
 # Prefixed keys (used by templates with explicit domain prefix)
 four_eyes:

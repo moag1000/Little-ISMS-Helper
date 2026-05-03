@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'four_eyes' %}
+
+{% block title %}{{ 'edit.title'|trans({}, 'four_eyes') }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'four_eyes.inbox.title'|trans({}, 'four_eyes'), path: path('app_four_eyes_inbox') },
+        { label: 'edit.title'|trans({}, 'four_eyes') }
+    ]
+} %}
+
+{% include '_components/_page_header.html.twig' with {
+    title: 'edit.title'|trans({}, 'four_eyes'),
+    icon: 'bi-pencil-square',
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), url: path('app_four_eyes_inbox'), variant: 'secondary', icon: 'bi-arrow-left' }
+    ]
+} %}
+
+{% embed '_components/_card.html.twig' %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2 class="h5 mb-0">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {{ 'edit.subtitle'|trans({}, 'four_eyes') }}
+            </h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
+        <dl class="row mb-3">
+            <dt class="col-sm-3">{{ 'action_type'|trans({}, 'four_eyes') }}</dt>
+            <dd class="col-sm-9">
+                {% if approvalRequest.actionType is defined %}
+                    {{ ('action.' ~ approvalRequest.actionType)|trans({}, 'four_eyes') }}
+                {% endif %}
+            </dd>
+            <dt class="col-sm-3">{{ 'requested_by'|trans({}, 'four_eyes') }}</dt>
+            <dd class="col-sm-9">{{ approvalRequest.requestedBy ? approvalRequest.requestedBy.fullName : '-' }}</dd>
+            <dt class="col-sm-3">{{ 'expires_at'|trans({}, 'four_eyes') }}</dt>
+            <dd class="col-sm-9">{{ approvalRequest.expiresAt|date('Y-m-d H:i') }}</dd>
+        </dl>
+
+        {{ form_start(form) }}
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'approver': {
+                        'label': 'section.approver'|trans({}, 'four_eyes'),
+                        'fields': ['requestedApprover', 'requestedApproverPerson', 'requestedApproverDeputyPersons']
+                    }
+                },
+                'col_widths': {
+                    'requestedApprover': 6,
+                    'requestedApproverPerson': 6,
+                    'requestedApproverDeputyPersons': 12
+                },
+                'translation_domain': 'four_eyes'
+            } %}
+
+            <div class="form-actions d-flex gap-2 justify-content-end">
+                <a href="{{ path('app_four_eyes_inbox') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                    {{ 'edit.action.save'|trans({}, 'four_eyes') }}
+                </button>
+            </div>
+        {{ form_end(form) }}
+    {% endblock %}
+{% endembed %}
+{% endblock %}
