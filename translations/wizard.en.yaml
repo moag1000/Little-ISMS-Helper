@@ -590,6 +590,16 @@ wizard:
         bsi_c5_bc: 'BC: CISO role, reporting and management reviews'
         bsi_c5_bc_desc: 'Officers, reporting and management review documented.'
 
+        # BSI Grundschutz Standard checks
+        bsi_gs_std_initiation: 'Security policy and security organisation established'
+        bsi_gs_std_concept: 'Documented security concept in place'
+        bsi_gs_std_structure: 'Complete structure analysis of all target objects'
+        bsi_gs_std_protection_needs: 'Protection-needs assessment completed per process'
+        bsi_gs_std_modeling: 'Mapping of building blocks to target objects completed'
+        bsi_gs_std_check: 'IT-Grundschutz check per building block'
+        bsi_gs_std_risk_analysis: 'Risk analysis for high protection needs'
+        bsi_gs_std_realization: 'Realisation plan with measures and deadlines'
+
     # TISAX Categories
     tisax:
         description: "Assess your information security according to VDA ISA for the automotive industry."
@@ -767,3 +777,23 @@ wizard:
         pss_desc: 'Contractual requirements and regular supplier assessments.'
         bc: 'BC — Officers and Reporting'
         bc_desc: 'CISO role, reporting and management reviews.'
+
+    # BSI IT-Grundschutz Standard-Absicherung Categories
+    bsi_grundschutz_standard:
+        description: 'Maturity check per BSI IT-Grundschutz (Standard protection) — full security-process per BSI 200-2.'
+        initiation: 'Security-Process Initiation'
+        initiation_desc: 'Security policy, responsibilities, security organisation establishment.'
+        security_concept: 'Security Concept'
+        security_concept_desc: 'Documented security concept covering all relevant processes and measures.'
+        structure_analysis: 'Structure Analysis'
+        structure_analysis_desc: 'Full inventory of business processes, applications, IT systems, rooms, networks.'
+        protection_needs: 'Protection-Needs Assessment'
+        protection_needs_desc: 'Protection-needs rating (CIA) per business process + inheritance to dependent target objects.'
+        modeling: 'Modeling'
+        modeling_desc: 'Mapping of IT-Grundschutz building blocks to structure-analysis target objects.'
+        grundschutz_check: 'IT-Grundschutz Check'
+        grundschutz_check_desc: 'Verify requirement fulfilment per building block (basic, standard, higher requirements).'
+        risk_analysis: 'Risk Analysis'
+        risk_analysis_desc: 'Supplementary risk analysis for target objects with high / very-high protection needs.'
+        realization: 'Realisation Planning'
+        realization_desc: 'Measure prioritisation, implementation plan, owners, deadlines.'

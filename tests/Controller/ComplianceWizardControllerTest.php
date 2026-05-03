@@ -297,4 +297,12 @@ class ComplianceWizardControllerTest extends WebTestCase
         $status = $this->client->getResponse()->getStatusCode();
         $this->assertContains($status, [200, 302], "Expected 200 or 302 from bsi_c5 start, got $status");
     }
+
+    #[Test]
+    public function testBsiGrundschutzStandardWizardStartPageReachable(): void
+    {
+        $this->client->request('GET', '/de/compliance-wizard/bsi_grundschutz_standard');
+        $status = $this->client->getResponse()->getStatusCode();
+        $this->assertContains($status, [200, 302], "Expected 200 or 302 from bsi_grundschutz_standard start, got $status");
+    }
 }

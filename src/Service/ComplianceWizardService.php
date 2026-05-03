@@ -197,6 +197,16 @@ class ComplianceWizardService
                 'recommended_modules' => ['suppliers', 'assets', 'incidents'],
                 'categories' => $this->getBsiC5Categories(),
             ],
+            'bsi_grundschutz_standard' => [
+                'code' => 'BSI-GRUNDSCHUTZ-STANDARD',
+                'name' => 'BSI IT-Grundschutz (Standard-Absicherung)',
+                'description' => 'wizard.bsi_grundschutz_standard.description',
+                'icon' => 'bi-flag-fill',
+                'color' => 'dark',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['assets', 'risks', 'audits', 'bcm', 'documents'],
+                'categories' => $this->getBsiGrundschutzStandardCategories(),
+            ],
         ];
 
         // Filter wizards by required modules
@@ -3620,6 +3630,121 @@ class ComplianceWizardService
                         'priority' => 'high',
                         'description' => 'wizard.check.bsi_c5_bc_desc',
                         'route' => 'app_management_review_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    private function getBsiGrundschutzStandardCategories(): array
+    {
+        return [
+            'initiation' => [
+                'name' => 'wizard.bsi_grundschutz_standard.initiation',
+                'description' => 'wizard.bsi_grundschutz_standard.initiation_desc',
+                'icon' => 'bi-play-circle',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_gs_std_initiation' => [
+                        'name' => 'wizard.check.bsi_gs_std_initiation',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_context_edit',
+                    ],
+                ],
+            ],
+            'security_concept' => [
+                'name' => 'wizard.bsi_grundschutz_standard.security_concept',
+                'description' => 'wizard.bsi_grundschutz_standard.security_concept_desc',
+                'icon' => 'bi-file-earmark-text',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_gs_std_concept' => [
+                        'name' => 'wizard.check.bsi_gs_std_concept',
+                        'type' => 'document_review',
+                        'document_categories' => ['policy', 'concept'],
+                        'module' => 'documents',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'structure_analysis' => [
+                'name' => 'wizard.bsi_grundschutz_standard.structure_analysis',
+                'description' => 'wizard.bsi_grundschutz_standard.structure_analysis_desc',
+                'icon' => 'bi-diagram-3-fill',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_gs_std_structure' => [
+                        'name' => 'wizard.check.bsi_gs_std_structure',
+                        'type' => 'asset_coverage',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'protection_needs' => [
+                'name' => 'wizard.bsi_grundschutz_standard.protection_needs',
+                'description' => 'wizard.bsi_grundschutz_standard.protection_needs_desc',
+                'icon' => 'bi-shield-exclamation',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_gs_std_protection_needs' => [
+                        'name' => 'wizard.check.bsi_gs_std_protection_needs',
+                        'type' => 'manual',
+                        'priority' => 'critical',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'modeling' => [
+                'name' => 'wizard.bsi_grundschutz_standard.modeling',
+                'description' => 'wizard.bsi_grundschutz_standard.modeling_desc',
+                'icon' => 'bi-puzzle',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_gs_std_modeling' => [
+                        'name' => 'wizard.check.bsi_gs_std_modeling',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'grundschutz_check' => [
+                'name' => 'wizard.bsi_grundschutz_standard.grundschutz_check',
+                'description' => 'wizard.bsi_grundschutz_standard.grundschutz_check_desc',
+                'icon' => 'bi-check2-circle',
+                'weight' => 3,
+                'checks' => [
+                    'bsi_gs_std_check' => [
+                        'name' => 'wizard.check.bsi_gs_std_check',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'risk_analysis' => [
+                'name' => 'wizard.bsi_grundschutz_standard.risk_analysis',
+                'description' => 'wizard.bsi_grundschutz_standard.risk_analysis_desc',
+                'icon' => 'bi-exclamation-triangle',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_gs_std_risk_analysis' => [
+                        'name' => 'wizard.check.bsi_gs_std_risk_analysis',
+                        'type' => 'risk_coverage',
+                        'route' => 'app_risk_index',
+                    ],
+                ],
+            ],
+            'realization' => [
+                'name' => 'wizard.bsi_grundschutz_standard.realization',
+                'description' => 'wizard.bsi_grundschutz_standard.realization_desc',
+                'icon' => 'bi-list-check',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_gs_std_realization' => [
+                        'name' => 'wizard.check.bsi_gs_std_realization',
+                        'type' => 'treatment_plan',
+                        'route' => 'app_risk_treatment_plan_index',
                     ],
                 ],
             ],
