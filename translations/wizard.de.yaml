@@ -590,6 +590,16 @@ wizard:
         bsi_c5_bc: 'BC: CISO-Rolle, Reporting und Management-Reviews'
         bsi_c5_bc_desc: 'Beauftragte, Berichtswesen und Management-Review dokumentiert.'
 
+        # BSI Grundschutz Standard checks
+        bsi_gs_std_initiation: 'Sicherheitsleitlinie und Sicherheitsorganisation etabliert'
+        bsi_gs_std_concept: 'Dokumentiertes Sicherheitskonzept vorhanden'
+        bsi_gs_std_structure: 'Vollstaendige Strukturanalyse aller Zielobjekte'
+        bsi_gs_std_protection_needs: 'Schutzbedarfsfeststellung pro Prozess durchgefuehrt'
+        bsi_gs_std_modeling: 'Modellierung der Bausteine zu Zielobjekten abgeschlossen'
+        bsi_gs_std_check: 'IT-Grundschutz-Check pro Baustein'
+        bsi_gs_std_risk_analysis: 'Risikoanalyse fuer hohen Schutzbedarf'
+        bsi_gs_std_realization: 'Realisierungsplan mit Massnahmen + Termine'
+
     # TISAX Categories
     tisax:
         description: "Bewerten Sie Ihre Informationssicherheit nach VDA ISA für die Automobilindustrie."
@@ -767,3 +777,23 @@ wizard:
         pss_desc: 'Vertragliche Anforderungen, regelmaessige Bewertung.'
         bc: 'BC — Beauftragte und Berichtswesen'
         bc_desc: 'CISO-Rolle, Reporting, Management-Reviews.'
+
+    # BSI IT-Grundschutz Standard-Absicherung Categories
+    bsi_grundschutz_standard:
+        description: 'Reife-Check nach BSI IT-Grundschutz (Standard-Absicherung) — vollstaendiger Sicherheitsprozess nach BSI 200-2.'
+        initiation: 'Initiierung des Sicherheitsprozesses'
+        initiation_desc: 'Sicherheitsleitlinie, Verantwortlichkeiten, Sicherheitsorganisation aufbauen.'
+        security_concept: 'Sicherheitskonzept'
+        security_concept_desc: 'Dokumentiertes Sicherheitskonzept mit allen relevanten Prozessen und Massnahmen.'
+        structure_analysis: 'Strukturanalyse'
+        structure_analysis_desc: 'Vollstaendige Erhebung von Geschaeftsprozessen, Anwendungen, IT-Systemen, Raeumen, Netzen.'
+        protection_needs: 'Schutzbedarfsfeststellung'
+        protection_needs_desc: 'Schutzbedarfsbewertung (CIA) pro Geschaeftsprozess + Vererbung an abhaengige Zielobjekte.'
+        modeling: 'Modellierung'
+        modeling_desc: 'Zuordnung der IT-Grundschutz-Bausteine zu den Zielobjekten der Strukturanalyse.'
+        grundschutz_check: 'IT-Grundschutz-Check'
+        grundschutz_check_desc: 'Pruefung der Anforderungserfuellung pro Baustein (Basis-, Standard- und ggf. Hoehere Anforderungen).'
+        risk_analysis: 'Risikoanalyse'
+        risk_analysis_desc: 'Ergaenzende Risikoanalyse fuer Zielobjekte mit hohem/sehr hohem Schutzbedarf.'
+        realization: 'Realisierungsplanung'
+        realization_desc: 'Massnahmenpriorisierung, Umsetzungsplan, Verantwortliche, Termine.'

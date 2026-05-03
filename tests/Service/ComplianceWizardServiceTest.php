@@ -451,4 +451,16 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertSame('BSI-C5', $config['code']);
         $this->assertGreaterThanOrEqual(17, count($config['categories']));
     }
+
+    #[Test]
+    public function testBsiGrundschutzStandardWizardIsAvailableWhenControlsModuleActive(): void
+    {
+        $this->requireDatabase();
+        $config = $this->wizardService->getWizardConfig('bsi_grundschutz_standard');
+        if ($config === null) {
+            $this->markTestSkipped('bsi_grundschutz_standard wizard requires the "controls" module');
+        }
+        $this->assertSame('BSI-GRUNDSCHUTZ-STANDARD', $config['code']);
+        $this->assertGreaterThanOrEqual(8, count($config['categories']));
+    }
 }
