@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'report_builder' %}
+
+{% block title %}{{ 'settings.title'|trans({}, 'report_builder') }} - {{ report.name }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.reports'|trans({}, 'nav'), path: path('app_reports_overview') },
+        { label: 'page.title'|trans({}, 'report_builder'), path: path('report_builder_index') },
+        { label: report.name, path: path('report_builder_edit', {id: report.id}) },
+        { label: 'settings.title'|trans({}, 'report_builder') }
+    ]
+} %}
+
+{% include '_components/_page_header.html.twig' with {
+    title: 'settings.title'|trans({}, 'report_builder') ~ ': ' ~ report.name,
+    icon: 'bi-gear',
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), url: path('report_builder_edit', {id: report.id}), variant: 'secondary', icon: 'bi-arrow-left' }
+    ]
+} %}
+
+{% embed '_components/_card.html.twig' %}
+    {% block card_body %}
+        {{ form_start(form) }}
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': 'section.basic_info'|trans({}, 'report_builder'),
+                        'fields': ['name', 'description', 'category', 'layout']
+                    },
+                    'ownership': {
+                        'label': 'section.ownership'|trans({}, 'report_builder'),
+                        'fields': ['owner', 'ownerPerson', 'ownerDeputyPersons']
+                    },
+                    'sharing': {
+                        'label': 'section.sharing'|trans({}, 'report_builder'),
+                        'fields': ['isShared', 'isTemplate']
+                    }
+                },
+                'col_widths': {
+                    'name': 8,
+                    'description': 12,
+                    'category': 6,
+                    'layout': 6,
+                    'owner': 6,
+                    'ownerPerson': 6,
+                    'ownerDeputyPersons': 12,
+                    'isShared': 6,
+                    'isTemplate': 6
+                },
+                'translation_domain': 'report_builder'
+            } %}
+
+            <div class="form-actions d-flex gap-2 justify-content-end">
+                <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                    {{ 'action.save'|trans({}, 'report_builder') }}
+                </button>
+            </div>
+        {{ form_end(form) }}
+    {% endblock %}
+{% endembed %}
+{% endblock %}

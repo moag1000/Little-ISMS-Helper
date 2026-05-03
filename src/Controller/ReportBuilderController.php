@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\CustomReport;
 use App\Entity\User;
+use App\Form\CustomReportType;
 use App\Repository\CustomReportRepository;
 use App\Repository\UserRepository;
 use App\Service\ReportBuilderService;
@@ -370,6 +371,37 @@ class ReportBuilderController extends AbstractController
             'success' => true,
             'template_id' => $template->getId(),
             'message' => $this->translator->trans('report_builder.template_created', [], 'report_builder'),
+        ]);
+    }
+
+    /**
+     * Settings edit — Symfony-form-based editing of owner Tri-State fields and metadata.
+     * The drag-and-drop designer handles widget layout; this route handles ownership.
+     */
+    #[Route('/{id}/settings', name: 'report_builder_settings_edit', methods: ['GET', 'POST'])]
+    public function settingsEdit(CustomReport $report, Request $request): Response
+    {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+
+        if ($report->getOwner() !== $currentUser && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $form = $this->createForm(CustomReportType::class, $report);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->entityManager->flush();
+
+            $this->addFlash('success', $this->translator->trans('settings.saved', [], 'report_builder'));
+
+            return $this->redirectToRoute('report_builder_settings_edit', ['id' => $report->getId()]);
+        }
+
+        return $this->render('report_builder/settings_edit.html.twig', [
+            'report' => $report,
+            'form' => $form,
         ]);
     }
 
