@@ -590,6 +590,13 @@ wizard:
         bsi_c5_bc: 'BC: CISO-Rolle, Reporting und Management-Reviews'
         bsi_c5_bc_desc: 'Beauftragte, Berichtswesen und Management-Review dokumentiert.'
 
+        # BSI Grundschutz Kern checks
+        bsi_gs_kern_crown_jewels: 'Kronjuwelen identifiziert'
+        bsi_gs_kern_protection_needs: 'Schutzbedarfsfeststellung Kern'
+        bsi_gs_kern_modeling: 'Kern-Modellierung abgeschlossen'
+        bsi_gs_kern_check: 'Grundschutz-Check fuer Kronjuwelen'
+        bsi_gs_kern_realization: 'Realisierungsplan Kern'
+
         # BSI Grundschutz Standard checks
         bsi_gs_std_initiation: 'Sicherheitsleitlinie und Sicherheitsorganisation etabliert'
         bsi_gs_std_concept: 'Dokumentiertes Sicherheitskonzept vorhanden'
@@ -777,6 +784,20 @@ wizard:
         pss_desc: 'Vertragliche Anforderungen, regelmaessige Bewertung.'
         bc: 'BC — Beauftragte und Berichtswesen'
         bc_desc: 'CISO-Rolle, Reporting, Management-Reviews.'
+
+    # BSI IT-Grundschutz Kern-Absicherung Categories
+    bsi_grundschutz_kern:
+        description: 'Reife-Check nach BSI IT-Grundschutz (Kern-Absicherung) — fokussierter Schutz fuer Kronjuwelen.'
+        crown_jewels: 'Kronjuwelen-Identifikation'
+        crown_jewels_desc: 'Identifizierung der kritischsten Geschaeftsprozesse und unterstuetzenden Assets.'
+        accelerated_protection_needs: 'Beschleunigte Schutzbedarfsfeststellung'
+        accelerated_protection_needs_desc: 'Schutzbedarfsbewertung beschraenkt auf Kronjuwelen.'
+        kern_modeling: 'Kern-Modellierung'
+        kern_modeling_desc: 'Modellierung mit Fokus auf Bausteine fuer Kronjuwelen.'
+        kern_check: 'Grundschutz-Check (Kern)'
+        kern_check_desc: 'Anforderungserfuellung fuer Kronjuwelen pruefen.'
+        kern_realization: 'Realisierung (Kern)'
+        kern_realization_desc: 'Massnahmenumsetzung priorisiert fuer kritische Bereiche.'
 
     # BSI IT-Grundschutz Standard-Absicherung Categories
     bsi_grundschutz_standard:
