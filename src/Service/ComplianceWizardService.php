@@ -177,6 +177,26 @@ class ComplianceWizardService
                 'recommended_modules' => ['risks', 'assets'],
                 'categories' => $this->getIso42001Categories(),
             ],
+            'bsi_grundschutz' => [
+                'code' => 'BSI-GRUNDSCHUTZ',
+                'name' => 'BSI IT-Grundschutz (Basis-Absicherung)',
+                'description' => 'wizard.bsi_grundschutz.description',
+                'icon' => 'bi-flag-fill',
+                'color' => 'danger',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['assets', 'risks', 'audits', 'bcm'],
+                'categories' => $this->getBsiGrundschutzCategories(),
+            ],
+            'bsi_c5' => [
+                'code' => 'BSI-C5',
+                'name' => 'BSI C5:2020 Cloud Compliance',
+                'description' => 'wizard.bsi_c5.description',
+                'icon' => 'bi-cloud-fill',
+                'color' => 'info',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['suppliers', 'assets', 'incidents'],
+                'categories' => $this->getBsiC5Categories(),
+            ],
         ];
 
         // Filter wizards by required modules
@@ -3198,6 +3218,408 @@ class ComplianceWizardService
                         'type' => 'incident_process',
                         'module' => 'incidents',
                         'route' => 'app_incident_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * BSI IT-Grundschutz (Basis-Absicherung) Categories
+     *
+     * Based on the 10 layers of the BSI IT-Grundschutz-Kompendium:
+     * ISMS, ORP, CON, OPS, DET, APP, SYS, IND, NET, INF
+     */
+    private function getBsiGrundschutzCategories(): array
+    {
+        return [
+            'isms' => [
+                'name' => 'wizard.bsi_grundschutz.isms',
+                'description' => 'wizard.bsi_grundschutz.isms_desc',
+                'icon' => 'bi-shield-check',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_grundschutz_isms' => [
+                        'name' => 'wizard.check.bsi_grundschutz_isms',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'description' => 'wizard.check.bsi_grundschutz_isms_desc',
+                        'route' => 'app_context_edit',
+                    ],
+                ],
+            ],
+            'orp' => [
+                'name' => 'wizard.bsi_grundschutz.orp',
+                'description' => 'wizard.bsi_grundschutz.orp_desc',
+                'icon' => 'bi-people',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_grundschutz_orp' => [
+                        'name' => 'wizard.check.bsi_grundschutz_orp',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'description' => 'wizard.check.bsi_grundschutz_orp_desc',
+                        'route' => 'app_context_edit',
+                    ],
+                ],
+            ],
+            'con' => [
+                'name' => 'wizard.bsi_grundschutz.con',
+                'description' => 'wizard.bsi_grundschutz.con_desc',
+                'icon' => 'bi-file-earmark-text',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_grundschutz_con' => [
+                        'name' => 'wizard.check.bsi_grundschutz_con',
+                        'type' => 'document_review',
+                        'document_categories' => ['policy', 'concept'],
+                        'module' => 'documents',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'ops' => [
+                'name' => 'wizard.bsi_grundschutz.ops',
+                'description' => 'wizard.bsi_grundschutz.ops_desc',
+                'icon' => 'bi-gear-wide-connected',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_grundschutz_ops' => [
+                        'name' => 'wizard.check.bsi_grundschutz_ops',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'det' => [
+                'name' => 'wizard.bsi_grundschutz.det',
+                'description' => 'wizard.bsi_grundschutz.det_desc',
+                'icon' => 'bi-search',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_grundschutz_det' => [
+                        'name' => 'wizard.check.bsi_grundschutz_det',
+                        'type' => 'incident_process',
+                        'module' => 'incidents',
+                        'route' => 'app_incident_index',
+                    ],
+                ],
+            ],
+            'app' => [
+                'name' => 'wizard.bsi_grundschutz.app',
+                'description' => 'wizard.bsi_grundschutz.app_desc',
+                'icon' => 'bi-app-indicator',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_grundschutz_app' => [
+                        'name' => 'wizard.check.bsi_grundschutz_app',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'sys' => [
+                'name' => 'wizard.bsi_grundschutz.sys',
+                'description' => 'wizard.bsi_grundschutz.sys_desc',
+                'icon' => 'bi-pc-display',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_grundschutz_sys' => [
+                        'name' => 'wizard.check.bsi_grundschutz_sys',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'ind' => [
+                'name' => 'wizard.bsi_grundschutz.ind',
+                'description' => 'wizard.bsi_grundschutz.ind_desc',
+                'icon' => 'bi-cpu-fill',
+                'weight' => 1,
+                'checks' => [
+                    'bsi_grundschutz_ind' => [
+                        'name' => 'wizard.check.bsi_grundschutz_ind',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'description' => 'wizard.check.bsi_grundschutz_ind_desc',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'net' => [
+                'name' => 'wizard.bsi_grundschutz.net',
+                'description' => 'wizard.bsi_grundschutz.net_desc',
+                'icon' => 'bi-router-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_grundschutz_net' => [
+                        'name' => 'wizard.check.bsi_grundschutz_net',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'inf' => [
+                'name' => 'wizard.bsi_grundschutz.inf',
+                'description' => 'wizard.bsi_grundschutz.inf_desc',
+                'icon' => 'bi-building-fill-gear',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_grundschutz_inf' => [
+                        'name' => 'wizard.check.bsi_grundschutz_inf',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'description' => 'wizard.check.bsi_grundschutz_inf_desc',
+                        'route' => 'app_location_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * BSI C5:2020 Cloud Compliance Categories
+     *
+     * Based on 17 chapters of the BSI Cloud Computing Compliance Controls Catalogue (C5:2020).
+     */
+    private function getBsiC5Categories(): array
+    {
+        return [
+            'ois' => [
+                'name' => 'wizard.bsi_c5.ois',
+                'description' => 'wizard.bsi_c5.ois_desc',
+                'icon' => 'bi-bookmark-check',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_ois' => [
+                        'name' => 'wizard.check.bsi_c5_ois',
+                        'type' => 'document_review',
+                        'document_categories' => ['policy'],
+                        'module' => 'documents',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'sp' => [
+                'name' => 'wizard.bsi_c5.sp',
+                'description' => 'wizard.bsi_c5.sp_desc',
+                'icon' => 'bi-shield',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_sp' => [
+                        'name' => 'wizard.check.bsi_c5_sp',
+                        'type' => 'document_review',
+                        'document_categories' => ['policy'],
+                        'module' => 'documents',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'hr' => [
+                'name' => 'wizard.bsi_c5.hr',
+                'description' => 'wizard.bsi_c5.hr_desc',
+                'icon' => 'bi-person-badge',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_hr' => [
+                        'name' => 'wizard.check.bsi_c5_hr',
+                        'type' => 'training_coverage',
+                        'module' => 'training',
+                        'route' => 'app_training_index',
+                    ],
+                ],
+            ],
+            'am' => [
+                'name' => 'wizard.bsi_c5.am',
+                'description' => 'wizard.bsi_c5.am_desc',
+                'icon' => 'bi-server',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_am' => [
+                        'name' => 'wizard.check.bsi_c5_am',
+                        'type' => 'asset_coverage',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'ps' => [
+                'name' => 'wizard.bsi_c5.ps',
+                'description' => 'wizard.bsi_c5.ps_desc',
+                'icon' => 'bi-building-lock',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_ps' => [
+                        'name' => 'wizard.check.bsi_c5_ps',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'description' => 'wizard.check.bsi_c5_ps_desc',
+                        'route' => 'app_location_index',
+                    ],
+                ],
+            ],
+            'rb' => [
+                'name' => 'wizard.bsi_c5.rb',
+                'description' => 'wizard.bsi_c5.rb_desc',
+                'icon' => 'bi-arrow-clockwise',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_rb' => [
+                        'name' => 'wizard.check.bsi_c5_rb',
+                        'type' => 'bcm_coverage',
+                        'module' => 'bcm',
+                        'route' => 'app_bcm_index',
+                    ],
+                ],
+            ],
+            'idm' => [
+                'name' => 'wizard.bsi_c5.idm',
+                'description' => 'wizard.bsi_c5.idm_desc',
+                'icon' => 'bi-key',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_idm' => [
+                        'name' => 'wizard.check.bsi_c5_idm',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'co' => [
+                'name' => 'wizard.bsi_c5.co',
+                'description' => 'wizard.bsi_c5.co_desc',
+                'icon' => 'bi-lock-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_co' => [
+                        'name' => 'wizard.check.bsi_c5_co',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'kos' => [
+                'name' => 'wizard.bsi_c5.kos',
+                'description' => 'wizard.bsi_c5.kos_desc',
+                'icon' => 'bi-diagram-3',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_kos' => [
+                        'name' => 'wizard.check.bsi_c5_kos',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'bcm' => [
+                'name' => 'wizard.bsi_c5.bcm',
+                'description' => 'wizard.bsi_c5.bcm_desc',
+                'icon' => 'bi-life-preserver',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_bcm' => [
+                        'name' => 'wizard.check.bsi_c5_bcm',
+                        'type' => 'bcm_coverage',
+                        'module' => 'bcm',
+                        'route' => 'app_bcm_index',
+                    ],
+                ],
+            ],
+            'im' => [
+                'name' => 'wizard.bsi_c5.im',
+                'description' => 'wizard.bsi_c5.im_desc',
+                'icon' => 'bi-exclamation-octagon',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_im' => [
+                        'name' => 'wizard.check.bsi_c5_im',
+                        'type' => 'incident_process',
+                        'module' => 'incidents',
+                        'route' => 'app_incident_index',
+                    ],
+                ],
+            ],
+            'com' => [
+                'name' => 'wizard.bsi_c5.com',
+                'description' => 'wizard.bsi_c5.com_desc',
+                'icon' => 'bi-clipboard-check',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_com' => [
+                        'name' => 'wizard.check.bsi_c5_com',
+                        'type' => 'audit_status',
+                        'module' => 'audits',
+                        'route' => 'app_audit_index',
+                    ],
+                ],
+            ],
+            'inq' => [
+                'name' => 'wizard.bsi_c5.inq',
+                'description' => 'wizard.bsi_c5.inq_desc',
+                'icon' => 'bi-people-fill',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_inq' => [
+                        'name' => 'wizard.check.bsi_c5_inq',
+                        'type' => 'supplier_assessment',
+                        'module' => 'suppliers',
+                        'route' => 'app_supplier_index',
+                    ],
+                ],
+            ],
+            'pi' => [
+                'name' => 'wizard.bsi_c5.pi',
+                'description' => 'wizard.bsi_c5.pi_desc',
+                'icon' => 'bi-tools',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_pi' => [
+                        'name' => 'wizard.check.bsi_c5_pi',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'bei' => [
+                'name' => 'wizard.bsi_c5.bei',
+                'description' => 'wizard.bsi_c5.bei_desc',
+                'icon' => 'bi-graph-up',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_bei' => [
+                        'name' => 'wizard.check.bsi_c5_bei',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'description' => 'wizard.check.bsi_c5_bei_desc',
+                        'route' => 'app_audit_index',
+                    ],
+                ],
+            ],
+            'pss' => [
+                'name' => 'wizard.bsi_c5.pss',
+                'description' => 'wizard.bsi_c5.pss_desc',
+                'icon' => 'bi-people-fill',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_pss' => [
+                        'name' => 'wizard.check.bsi_c5_pss',
+                        'type' => 'supplier_assessment',
+                        'module' => 'suppliers',
+                        'route' => 'app_supplier_index',
+                    ],
+                ],
+            ],
+            'bc' => [
+                'name' => 'wizard.bsi_c5.bc',
+                'description' => 'wizard.bsi_c5.bc_desc',
+                'icon' => 'bi-arrow-repeat',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_bc' => [
+                        'name' => 'wizard.check.bsi_c5_bc',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'description' => 'wizard.check.bsi_c5_bc_desc',
+                        'route' => 'app_management_review_index',
                     ],
                 ],
             ],
