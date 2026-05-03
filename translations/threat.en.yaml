@@ -21,9 +21,17 @@ threat:
     assigned_deputy_persons: 'Deputies (Persons)'
     placeholder:
         assigned_person: '-- Person from master data --'
+        title: 'Enter threat title'
+        description: 'Describe the threat in detail'
+        source: 'e.g. CERT advisory, internal detection'
+        cve_id: 'e.g. CVE-2024-12345'
+        assigned_to_user: '-- Select a user --'
     help:
         assigned_person: 'Person without system login as responsible. Order: User > Person > empty.'
         assigned_deputy_persons: 'Additional persons with deputy or shared responsibility.'
+        cvss_score: 'Common Vulnerability Scoring System score (0–10).'
+        affected_assets: 'Assets affected by this threat. Supports multi-selection.'
+        assigned_to_user: 'System user responsible for this threat. At least one of User or Person is required.'
     type:
         malware: Malware
         phishing: Phishing
@@ -34,6 +42,7 @@ threat:
         ransomware: Ransomware
         apt: APT
         zero_day: 'Zero Day'
+        social_engineering: 'Social Engineering'
         other: Other
     status_type:
         new: New
@@ -41,3 +50,103 @@ threat:
         mitigated: Mitigated
         monitoring: Monitoring
         closed: Closed
+    severity_type:
+        critical: Critical
+        high: High
+        medium: Medium
+        low: Low
+        informational: Informational
+    field:
+        title: Title
+        description: Description
+        threat_type: 'Threat Type'
+        severity: Severity
+        source: Source
+        cve_id: 'CVE ID'
+        status: Status
+        detection_date: 'Detection Date'
+        mitigation_date: 'Mitigation Date'
+        cvss_score: 'CVSS Score'
+        mitigation_recommendations: 'Mitigation Recommendations'
+        actions_taken: 'Actions Taken'
+        references: References
+        affects_organization: 'Affects Organization'
+        affected_assets: 'Affected Assets'
+        assigned_to_user: 'Assigned To (User)'
+        assigned_person: 'Responsible (Person)'
+        assigned_deputy_persons: 'Deputies (Persons)'
+    error:
+        assignee_required_user_or_person: 'At least one of Assigned To (User) or Responsible (Person) must be set.'
+    choice:
+        yes: 'Yes'
+        no: 'No'
+
+# Top-level keys used by ThreatIntelligenceType (translation_domain = 'threat')
+field:
+    title: Title
+    description: Description
+    threat_type: 'Threat Type'
+    severity: Severity
+    source: Source
+    cve_id: 'CVE ID'
+    status: Status
+    detection_date: 'Detection Date'
+    mitigation_date: 'Mitigation Date'
+    cvss_score: 'CVSS Score'
+    mitigation_recommendations: 'Mitigation Recommendations'
+    actions_taken: 'Actions Taken'
+    references: References
+    affects_organization: 'Affects Organization'
+    affected_assets: 'Affected Assets'
+    assigned_to_user: 'Assigned To (User)'
+    assigned_person: 'Responsible (Person)'
+    assigned_deputy_persons: 'Deputies (Persons)'
+
+placeholder:
+    title: 'Enter threat title'
+    description: 'Describe the threat in detail'
+    source: 'e.g. CERT advisory, internal detection'
+    cve_id: 'e.g. CVE-2024-12345'
+    assigned_to_user: '-- Select a user --'
+    assigned_person: '-- Person from master data --'
+
+help:
+    cvss_score: 'Common Vulnerability Scoring System score (0–10).'
+    affected_assets: 'Assets affected by this threat. Supports multi-selection.'
+    assigned_to_user: 'System user responsible for this threat. At least one of User or Person is required.'
+    assigned_person: 'Person without system login as responsible. Order: User > Person > empty.'
+    assigned_deputy_persons: 'Additional persons with deputy or shared responsibility.'
+
+error:
+    assignee_required_user_or_person: 'At least one of Assigned To (User) or Responsible (Person) must be set.'
+
+choice:
+    yes: 'Yes'
+    no: 'No'
+
+type:
+    malware: Malware
+    phishing: Phishing
+    vulnerability: Vulnerability
+    data_breach: 'Data Breach'
+    ddos: DDoS
+    insider_threat: 'Insider Threat'
+    ransomware: Ransomware
+    apt: APT
+    zero_day: 'Zero Day'
+    social_engineering: 'Social Engineering'
+    other: Other
+
+severity:
+    critical: Critical
+    high: High
+    medium: Medium
+    low: Low
+    informational: Informational
+
+status_type:
+    new: New
+    analyzing: Analyzing
+    mitigated: Mitigated
+    monitoring: Monitoring
+    closed: Closed
