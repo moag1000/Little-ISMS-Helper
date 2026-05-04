@@ -180,7 +180,7 @@ jobs:
       # Catches typical smells (apt-get install without --no-install-recommends,
       # missing pinned versions, root-as-default user, etc.)
       - name: Hadolint Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
+        uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: Dockerfile
           # severity: only fail on errors, warnings reported but non-blocking
