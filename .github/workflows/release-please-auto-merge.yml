@@ -93,9 +93,7 @@ jobs:
           set -euo pipefail
           pr=${{ steps.find_pr.outputs.number }}
           # Squash-Merge wie release-please es default macht — Commit-Message
-          # bleibt wie vom Tool generiert. Nach Merge baut release-please
-          # selber den Tag + GitHub Release; CI/CD-Pipeline-Workflow zieht
-          # weiter und pusht das Docker-Image.
+          # bleibt wie vom Tool generiert.
           gh pr merge "$pr" \
             --repo "${{ github.repository }}" \
             --squash \
@@ -104,4 +102,23 @@ jobs:
               --repo "${{ github.repository }}" \
               --squash \
               --delete-branch
-          echo "::notice::PR #$pr merged. release-please will tag + release shortly."
+          echo "::notice::PR #$pr merged."
+
+      - name: Trigger Release Please post-merge
+        if: steps.find_pr.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # GITHUB_TOKEN-Pushes triggern downstream-Workflows nicht (Anti-
+          # Infinite-Loop-Schutz). Heisst: der Squash-Merge-Commit oben
+          # loest die "Release Please"-Action NICHT automatisch aus →
+          # kein Tag, kein GitHub Release, kein Docker-Build. Workaround:
+          # explizit via workflow_dispatch nachtreten.
+          # Bis zu 30 sec Pause damit der Merge tatsaechlich auf main
+          # ist bevor wir release-please drueberlaufen lassen.
+          sleep 30
+          gh workflow run "Release Please" \
+            --repo "${{ github.repository }}" \
+            --ref main
+          echo "::notice::Release Please workflow_dispatch triggered. Tag + Release in ~1 min."

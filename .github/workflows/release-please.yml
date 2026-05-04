@@ -10,6 +10,12 @@ on:
   push:
     branches:
       - main
+  # Manueller Trigger noetig wenn Auto-Merge-Workflow den Squash-Commit
+  # mit GITHUB_TOKEN gepusht hat — solche Pushes triggern downstream
+  # Workflows aus Sicherheitsgruenden nicht automatisch (GitHub-Schutz
+  # vor Infinite-Loops). Workaround bis PAT-basierter Token konfiguriert
+  # ist: Actions-UI → "Release Please" → Run workflow.
+  workflow_dispatch:
 
 permissions:
   contents: write
