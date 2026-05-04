@@ -2,7 +2,7 @@
     "name": "little-isms-helper",
     "private": true,
     "devDependencies": {
-        "stylelint": "^17.9.1",
+        "stylelint": "^17.10.0",
         "stylelint-config-standard": "^40.0.0"
     },
     "scripts": {
