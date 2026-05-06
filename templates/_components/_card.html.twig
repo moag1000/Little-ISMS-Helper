@@ -72,8 +72,11 @@
     {# stat is deprecated alias for kpi #}
     {% set cardClasses = cardClasses|merge(['stat-card', 'fa-kpi-card']) %}
 {% elseif variant == 'widget' %}
-    {% set cardClasses = cardClasses|merge(['widget-card']) %}
+    {% set cardClasses = cardClasses|merge(['widget-card', 'fa-widget-card']) %}
 {% elseif variant == 'bordered' %}
+    {# 'bordered' bleibt Bootstrap-only — kein Aurora-Pendant designed.
+       Cleanup-Trigger §0 BC-Alias-Cleanup: zur Cleanup-Zeit auf .fa-section
+       mit border-left-token migrieren. #}
     {% set cardClasses = cardClasses|merge(['card-border-left-' ~ borderColor]) %}
 {% elseif variant == 'feature' %}
     {% set cardClasses = cardClasses|merge(['feature-card', 'fa-feature-card']) %}
