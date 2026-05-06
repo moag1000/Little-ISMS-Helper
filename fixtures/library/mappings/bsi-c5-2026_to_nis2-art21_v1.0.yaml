@@ -1,0 +1,898 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'bsi-c5-2026_to_nis2-art21_v1.0'
+  source_framework: 'BSI-C5-2026'
+  target_framework: 'NIS2'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'BSI C5:2026 final 2026-03-26 + EU NIS2-Richtlinie 2022/2555'
+    primary_source_url: 'https://www.bsi.bund.de/EN/Themen/Unternehmen-und-Organisationen/Informationen-und-Empfehlungen/Empfehlungen-nach-Angriffszielen/Cloud-Computing/Kriterienkatalog-C5/'
+    secondary_sources:
+      - 'ENISA Implementation Guidance NIS2 Technical and Methodological Requirements 2024-09'
+      - 'BSI Mindestanforderungen NIS2-UmsuCG (Konsultationsentwurf 2024-12)'
+      - 'fixtures/library/catalogues/bsi-c5-2026-en/ — 18 BSI YAML files (verbatim BSI publication, CC-BY-ND 4.0)'
+      - 'EU-Richtlinie (EU) 2022/2555 (NIS2-Richtlinie), Art. 20-23'
+    publisher: 'Little ISMS Helper Maintainers'
+    license_note: 'Mapping is original derivative work (AGPL-3.0). C5:2026 source IDs and names © BSI 2026 used under CC-BY-ND 4.0 with attribution. NIS2 article references © Europäische Union, public-domain-equivalent (Amtliches Werk).'
+
+  methodology:
+    type: 'catalogue_text_comparison_with_expert_review'
+    description: |
+      Jedes C5:2026-Kriterium wurde gegen die NIS2-Pflichten-Anker geprüft:
+      Art. 20 (Governance, Mgmt-Verantwortung, Mgmt-Schulung), Art. 21(2)
+      (10 Risikomanagement-Massnahmen a-j), Art. 23 (Meldepflichten:
+      24h Frühwarnung, 72h Meldung, Abschlussbericht 1 Monat).
+
+      NIS2-Sub-IDs im Mapping:
+      - '20.1' = Governance / Genehmigung Risk-Mgmt-Massnahmen durch Leitungsorgane
+      - '20.2' = Cybersicherheits-Schulung der Leitungsorgane
+      - '21.2.a' = Risikoanalyse-Konzepte + Sicherheitsrichtlinien
+      - '21.2.b' = Bewältigung von Sicherheitsvorfällen
+      - '21.2.c' = Aufrechterhaltung des Betriebs / Backup-Mgmt / Krisenmgmt
+      - '21.2.d' = Sicherheit der Lieferkette (Beziehungen zu Anbietern/Dienstleistern)
+      - '21.2.e' = Sicherheit bei Erwerb, Entwicklung und Wartung von IT-Systemen
+      - '21.2.f' = Konzepte und Verfahren zur Bewertung der Wirksamkeit
+      - '21.2.g' = Cyberhygiene-Massnahmen + Schulung in Cybersicherheit
+      - '21.2.h' = Konzepte und Verfahren für Kryptografie und Verschlüsselung
+      - '21.2.i' = Personalsicherheit, Zugriffskonzepte, Asset-Mgmt
+      - '21.2.j' = MFA / kontinuierliche Authentifizierung + gesicherte Sprach/Video/Text-Kommunikation
+      - '23.1'  = 24h-Frühwarnung an CSIRT/zuständige Behörde
+      - '23.2'  = 72h-Meldung mit erster Einschätzung
+      - '23.3'  = Abschlussbericht binnen 1 Monat (oder Zwischenbericht bei laufender Behandlung)
+
+      Confidence-Verteilung:
+      - high: direkter Themen-Overlap, keine wesentliche Lücke
+      - medium: Teilabdeckung, Bündelung mit anderen Kriterien empfohlen
+      - low: enge Schnittmenge oder neuer/abweichender Pflichtenkomplex
+
+      Themen ohne NIS2-Pendant (gap_warning, kein Mapping):
+      - Bereich PI (Portability & Interoperability) — NIS2 adressiert nicht Daten-Portabilität
+      - Bereich INQ (Investigation Requests) — NIS2 hat keine CLOUD-Act/MLAT-Pflichten
+      - Bereich PSS (Product Safety & Security) — primär Cloud-Anbieter-spezifisch
+      - Bereich GC (Generic Client / Anbieter-Transparenz) — kundenseitige Information
+      Diese Bereiche werden im Forward-Mapping bewusst nicht aufgeführt; das
+      umgekehrte Mapping NIS2 → C5:2026 markiert sie ggf. als Gap.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-05-06', actor: 'maintainer' }
+      - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
+
+mappings:
+  # ===== OIS — Organisation of Information Security =====
+  - source: 'OIS-01'
+    target: '21.2.a'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OIS-01 „Information Security Management System (ISMS)"
+      verlangt ein dokumentiertes ISMS gemäß ISO/IEC 27001. Damit ist die
+      Grundlage für „Konzepte für Risikoanalyse und Sicherheit der
+      Informationssysteme" (NIS2 21(2)(a)) gelegt. ISMS ist breiter als
+      21(2)(a), deckt aber den Konzept-Anteil zuverlässig ab.
+    cross_refs: ['OIS-02', 'OIS-07']
+    audit_evidence_hint: 'ISMS-Scope-Dokument, ISMS-Handbuch, ISO-27001-Zertifikat oder gleichwertige Dokumentation, Management-Review-Protokolle.'
+
+  - source: 'OIS-02'
+    target: '20.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-02 „Information Security Policy" verlangt Top-Management-
+      Verabschiedung der InfoSec-Policy. NIS2 Art. 20(1) verpflichtet die
+      Leitungsorgane, die Risikomanagement-Maßnahmen zu billigen und ihre
+      Umsetzung zu überwachen. Direkter Overlap auf Governance-Ebene.
+    audit_evidence_hint: 'Geschäftsführungs-/Vorstands-Beschluss zur InfoSec-Policy, Kommunikation an interne und externe Stakeholder, jährlicher Review.'
+
+  - source: 'OIS-04'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OIS-04 „Segregation of Duties" deckt Funktionstrennung bei
+      Rollen-/Rechtevergabe und Risikomanagement ab — Teilaspekt des breit
+      angelegten NIS2 21(2)(i) (Personalsicherheit, Zugang, Asset-Mgmt).
+    cross_refs: ['IAM-01', 'HR-01']
+    audit_evidence_hint: 'SoD-Matrix für kritische Prozesse, Konflikt-Reviews letzte 12 Monate.'
+
+  - source: 'OIS-05'
+    target: '21.2.a'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OIS-05 „Threat Intelligence" speist Bedrohungsinformationen
+      in den Risk-Mgmt-Prozess ein und unterstützt damit die Risikoanalyse-
+      Pflichten von NIS2 21(2)(a). Threat-Intel ist Input, nicht
+      Risikoanalyse selbst — daher 'related' statt 'equivalent'.
+    cross_refs: ['OIS-07', 'OIS-08']
+    audit_evidence_hint: 'Threat-Intel-Quellen-Inventar, ausgewertete Meldungen letzte 12 Monate, Integration ins Risk-Register.'
+
+  - source: 'OIS-06'
+    target: '23.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OIS-06 „Contact with Relevant Government Agencies and
+      Interest Groups" verlangt Kontakte zum BSI Lagezentrum / CERT-Bund.
+      Voraussetzung für Erfüllung der NIS2-Meldepflicht (24h-Frühwarnung
+      an CSIRT/zuständige Behörde) — Meldekanäle müssen vor Vorfall
+      etabliert sein.
+    cross_refs: ['SIM-04', '23.2', '23.3']
+    audit_evidence_hint: 'Kontaktverzeichnis BSI/CERT-Bund/zuständige NIS2-Behörde, Eskalations-Matrix mit Telefon/E-Mail-Routing, Test der Meldekette letzte 12 Monate.'
+
+  - source: 'OIS-07'
+    target: '21.2.a'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-07 „Risk Management Policy" verlangt eine dokumentierte
+      Risikomanagement-Methodik (ISO 27005-konform). NIS2 21(2)(a) verlangt
+      „Konzepte für Risikoanalyse und Sicherheit der Informationssysteme".
+      Direkter 1:1-Overlap.
+    cross_refs: ['OIS-08', 'OIS-09']
+    audit_evidence_hint: 'Risikomanagement-Richtlinie ISO-27005-konform, Risikoregister, Risk-Treatment-Plan, jährliche Reviews.'
+
+  - source: 'OIS-08'
+    target: '21.2.a'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-08 „Application of the Risk Management Policy - Risk
+      Assessment" entspricht direkt der Operationalisierung von 21(2)(a)
+      (Identifikation und Bewertung von Risiken). Mindestens jährlicher
+      Review-Zyklus deckt sich mit ENISA-NIS2-Implementation-Guidance.
+    cross_refs: ['OIS-07', 'OIS-09']
+    audit_evidence_hint: 'Risk-Assessment-Reports letzte 12 Monate, Risikoregister mit Owner und Behandlungsstatus.'
+
+  - source: 'OIS-09'
+    target: '21.2.a'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-09 „Application of the Risk Management Policy - Risk
+      Treatment" entspricht direkt dem Risk-Treatment-Anteil von NIS2
+      21(2)(a). Risk Treatment Plan + Restrisiko-Akzeptanz durch Risk
+      Owner sind in beiden Frameworks Pflichtbestandteile.
+    cross_refs: ['OIS-07', 'OIS-08']
+    audit_evidence_hint: 'Risk-Treatment-Plan, Restrisiko-Akzeptanzen mit Risk-Owner-Unterschrift, Tracking offener Risk-Treatments.'
+
+  # ===== HR — Human Resources =====
+  - source: 'HR-01'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-01 „Verification of Qualification and Trustworthiness"
+      (Hintergrund-Checks, Führungszeugnis bei privilegierten Rollen)
+      ist konkrete Personalsicherheits-Maßnahme aus NIS2 21(2)(i).
+    cross_refs: ['HR-02', 'HR-04']
+    audit_evidence_hint: 'Hintergrundüberprüfungen, Führungszeugnis (privilegierte Rollen), Referenzprüfungen.'
+
+  - source: 'HR-02'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 HR-02 „Employment Terms and Conditions" verankert InfoSec-
+      Pflichten arbeitsvertraglich — Teilaspekt von 21(2)(i)
+      (Personalsicherheit).
+    audit_evidence_hint: 'Mustervertrag mit InfoSec-Klauseln, NDA-Templates, Onboarding-Checkliste.'
+
+  - source: 'HR-03'
+    target: '21.2.g'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-03 „Security Training and Awareness Programme" entspricht
+      direkt NIS2 21(2)(g) „Cybersicherheits-Schulungen + grundlegende
+      Cyberhygiene". Beide verlangen rollenspezifische Curricula und
+      Phishing-Drills.
+    cross_refs: ['20.2']
+    audit_evidence_hint: 'Schulungsplan, Schulungsquoten ≥95%, rollenspezifische Curricula, Phishing-Drill-Ergebnisse.'
+
+  - source: 'HR-03'
+    target: '20.2'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 HR-03 deckt allgemeine Mitarbeitenden-Schulung ab. NIS2
+      Art. 20(2) verlangt zusätzlich spezifische Schulung der
+      Leitungsorgane (Geschäftsführung, Vorstand). HR-03 deckt diese
+      Management-Schulung implizit über „rollenspezifische Curricula" ab,
+      aber explizite Management-Schulung sollte separat dokumentiert sein.
+    gap_warning: |
+      Wer NIS2 20(2) nur über HR-03 nachweist, sollte ein separates
+      Management-Cybersecurity-Curriculum dokumentieren — Schulungsbeleg
+      mit Teilnehmer-Liste auf C-Level.
+    audit_evidence_hint: 'Geschäftsführungs-/Vorstands-Schulungs-Nachweis, jährliche Wiederholung, Themenkatalog NIS2-konform.'
+
+  - source: 'HR-04'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 HR-04 „Disciplinary Measures" verankert Sanktionen bei
+      InfoSec-Verstößen — Teilaspekt der Personalsicherheit (21(2)(i)).
+    audit_evidence_hint: 'Disziplinarordnung, Eskalations-Matrix, Sanktions-Katalog.'
+
+  - source: 'HR-05'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 HR-05 „Responsibilities in the Event of Termination or
+      Change of Employment" deckt Joiner/Mover/Leaver-Pflichten ab —
+      Teilaspekt von 21(2)(i) (Personalsicherheit + Zugriff).
+    cross_refs: ['IAM-04']
+    audit_evidence_hint: 'Offboarding-Checkliste, Asset-Rückgabe, Berechtigungs-Entzug-Protokolle.'
+
+  - source: 'HR-06'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 HR-06 „Non-disclosure Agreements" sichert Vertraulichkeit
+      über Vertragsende hinaus — Teilaspekt der Personalsicherheit
+      (21(2)(i)).
+    audit_evidence_hint: 'NDA-Templates, NDA-Unterschriften aller Personen mit Zugriff auf vertrauliche Daten.'
+
+  - source: 'HR-07'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 HR-07 „Remote Working - Policy" definiert Pflichten bei
+      Telearbeit — Teilaspekt des Asset/Access-Mgmt aus 21(2)(i).
+    cross_refs: ['HR-08', 'IAM-08']
+    audit_evidence_hint: 'Remote-Work-Policy, VPN-Konfiguration, Endpoint-Hardening-Konzept für mobile Geräte.'
+
+  # ===== AM — Asset Management =====
+  - source: 'AM-01'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-01 „Asset Management Framework" definiert Rollen und
+      Pflichten für Asset-Mgmt — Asset-Mgmt ist explizit Teil von NIS2
+      21(2)(i) („Personalsicherheit, Zugriffskonzepte, Asset-Mgmt").
+    cross_refs: ['AM-02', 'AM-09']
+    audit_evidence_hint: 'Asset-Mgmt-Framework-Dokument, Owner-Zuordnung, Asset-Lebenszyklus-Definition.'
+
+  - source: 'AM-02'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-02 „Asset Inventory" verlangt vollständiges Inventar mit
+      Owner und Klassifikation — direkter Teilaspekt von 21(2)(i)
+      (Asset-Mgmt).
+    cross_refs: ['AM-03', 'AM-04']
+    audit_evidence_hint: 'Asset-Inventar, Owner-Feld, Klassifikation, Cloud-Provisioning-Stichtagsabgleich CMDB.'
+
+  - source: 'AM-09'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 AM-09 „Asset Classification and Labelling" formalisiert
+      Schutzbedarfsklassen (öffentlich/intern/vertraulich/streng
+      vertraulich) — Voraussetzung für angemessene Schutzmaßnahmen iSv
+      21(2)(i).
+    audit_evidence_hint: 'Klassifikations-Schema, Labelling-Konvention, Stichprobe klassifizierter Assets.'
+
+  # ===== IAM — Identity & Access Management =====
+  - source: 'IAM-01'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-01 „Policy for Identities and Access Rights" deckt den
+      Zugriffskonzept-Anteil von NIS2 21(2)(i) ab.
+    cross_refs: ['IAM-02', 'IAM-06']
+    audit_evidence_hint: 'Identity-Mgmt-Richtlinie, Berechtigungskonzept, Rollen-Modell, RBAC-Matrix.'
+
+  - source: 'IAM-02'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-02 „Granting and Change of Identities and Access
+      Rights" operationalisiert Joiner/Mover/Leaver-Provisioning —
+      konkreter Teilaspekt von 21(2)(i).
+    cross_refs: ['IAM-04', 'IAM-05']
+    audit_evidence_hint: 'Provisioning-Workflow, Joiner/Mover/Leaver-Tickets letzte 90 Tage, Genehmiger-Trail.'
+
+  - source: 'IAM-05'
+    target: '21.2.f'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 IAM-05 „Regular Review of Access Rights" ist klassische
+      Wirksamkeits-Bewertungs-Maßnahme (21(2)(f)) am Beispiel
+      Berechtigungs-Compliance.
+    audit_evidence_hint: 'Access-Review-Protokolle (jährlich für reguläre, halbjährlich für privilegierte Accounts), Bereinigungsmaßnahmen.'
+
+  - source: 'IAM-06'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-06 „Privileged Access Rights" (PAM) ist Schlüssel-
+      Massnahme für privilegierte Zugriffe — Kern-Bestandteil von 21(2)(i).
+    cross_refs: ['IAM-08']
+    audit_evidence_hint: 'PAM-Lösung mit Session-Recording, Just-in-Time-Vergabe-Protokolle, Liste aller privilegierten Accounts.'
+
+  - source: 'IAM-08'
+    target: '21.2.j'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-08 „Authentication Mechanisms" verlangt MFA für
+      administrative Zugriffe gemäß BSI TR-03116. NIS2 21(2)(j) verlangt
+      „Multi-Faktor-Authentifizierung oder kontinuierliche
+      Authentifizierung" — direkter 1:1-Overlap.
+    cross_refs: ['IAM-09']
+    audit_evidence_hint: 'MFA-Coverage 100% Admin-Accounts, MFA-Methoden-Inventar (FIDO2 / TOTP / Smartcard), Authenticator-Migration-Plan.'
+
+  - source: 'IAM-09'
+    target: '21.2.j'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 IAM-09 „Confidentiality of Authentication Information"
+      sichert Auth-Secrets — Teilaspekt der Auth-Anforderungen aus
+      21(2)(j).
+    audit_evidence_hint: 'Password-Hashing-Konfiguration, Secret-Mgmt-Lösung (Vault), Rotation-Logs.'
+
+  # ===== CRY — Cryptography =====
+  - source: 'CRY-01'
+    target: '21.2.h'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-01 „Policy for the Use of Cryptographic Mechanisms"
+      entspricht direkt NIS2 21(2)(h) „Konzepte und Verfahren für
+      Kryptografie und Verschlüsselung". Beide referenzieren Algorithmen-
+      Baselines (BSI TR-02102 bzw. Stand der Technik).
+    cross_refs: ['CRY-04', 'CRY-05']
+    audit_evidence_hint: 'Krypto-Richtlinie BSI TR-02102 konform, Algorithmen-Allowlist, HSM-Inventar, Schlüssel-Klassifikation.'
+
+  - source: 'CRY-02'
+    target: '21.2.h'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-02 „Cryptographic Change Management" (Krypto-Agilität /
+      PQC-Migration) ist konkrete Operationalisierung von 21(2)(h).
+      ENISA NIS2-Guidance referenziert PQC-Vorbereitung als
+      „Stand-der-Technik"-Erweiterung.
+    cross_refs: ['CRY-12', 'CRY-17']
+    audit_evidence_hint: 'Krypto-Inventar, PQC-Migration-Roadmap, Algorithmen-Sunset-Plan.'
+
+  - source: 'CRY-04'
+    target: '21.2.h'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-04 „Protection of Data for Transmission" (TLS 1.3 /
+      IPsec) ist konkrete Maßnahme zu NIS2 21(2)(h). Cipher-Suite-
+      Hardening und PFS sind Stand der Technik.
+    audit_evidence_hint: 'TLS-Konfigurations-Tests (z.B. SSL-Labs A+ Rating), VPN-Konfiguration, Cipher-Suite-Inventar.'
+
+  - source: 'CRY-05'
+    target: '21.2.h'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-05 „Encryption of Sensitive Data at Rest" ist konkrete
+      Maßnahme zu NIS2 21(2)(h) (Verschlüsselung).
+    audit_evidence_hint: 'Disk-/Object-Storage-Encryption-Konfiguration, KMS-Integration, Stichprobe verschlüsselter Volumes.'
+
+  - source: 'CRY-17'
+    target: '21.2.h'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-17 „Cryptographic Key Lifecycle Management" deckt
+      Schlüssel-Lebenszyklus (Generierung, Rotation, Archivierung,
+      Vernichtung) — Teilaspekt von 21(2)(h).
+    cross_refs: ['CRY-06', 'CRY-07', 'CRY-14']
+    audit_evidence_hint: 'Key-Mgmt-Policy, Rotations-Protokolle, KMS-Audit-Logs, Schlüssel-Sunset-Tracking.'
+
+  # ===== COS — Communication Security =====
+  - source: 'COS-01'
+    target: '21.2.j'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 COS-01 „Technical Safeguards" (Netzwerk-Segmentierung,
+      Firewall-Regeln, kryptografische Transportsicherung) deckt den
+      „gesicherte Kommunikation"-Anteil von NIS2 21(2)(j) ab.
+    cross_refs: ['COS-02', 'COS-07']
+    audit_evidence_hint: 'Netzwerk-Segmentierungs-Konzept, Firewall-Rule-Review, Topologie-Dokument.'
+
+  - source: 'COS-08'
+    target: '21.2.j'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 COS-08 „Policies for Data Transmission" deckt sichere
+      Datenübermittlungs-Pflichten — direkter Beitrag zu „gesicherte
+      Sprach-, Video- und Textkommunikation" (21(2)(j)).
+    gap_warning: |
+      „Gesicherte Notfallkommunikation" (Out-of-Band-Channels für
+      Krisenfälle) wird in C5:2026 nicht eigenständig adressiert; bei
+      NIS2-Compliance muss separater Notfallkommunikations-Plan
+      dokumentiert werden.
+    audit_evidence_hint: 'Datenübertragungs-Richtlinie, Encryption-in-Transit-Stichproben, Notfall-Kommunikations-Plan (separat).'
+
+  # ===== SIM — Security Incident Management =====
+  - source: 'SIM-01'
+    target: '21.2.b'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-01 „Policy for Security Incident Management" mit
+      CSIRT, Klassifikation, Eskalation und Kunden-Kommunikation
+      entspricht direkt NIS2 21(2)(b) „Bewältigung von
+      Sicherheitsvorfällen".
+    cross_refs: ['SIM-02', 'SIM-03', 'SIM-04']
+    audit_evidence_hint: 'IR-Policy mit Incident-Klassifikation, Eskalations-Matrix, dokumentierte Rollen, externe Kommunikations-Templates.'
+
+  - source: 'SIM-02'
+    target: '21.2.b'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-02 „Security Incident Response Plans" mit allen Phasen
+      (Identification, Containment, Eradication, Recovery, Lessons
+      Learned) ist konkrete Operationalisierung von 21(2)(b).
+    audit_evidence_hint: 'IR-Playbooks pro Incident-Typ, jährlicher Review, Tabletop-Übungs-Protokolle.'
+
+  - source: 'SIM-03'
+    target: '21.2.b'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-03 „Processing of Security Incidents" mit Klassifikation,
+      Priorisierung und Root-Cause-Analyse ist Operations-Layer von 21(2)(b).
+    audit_evidence_hint: 'Incident-Tickets letzte 12 Monate mit Klassifikation, RCA-Reports, Forensik-Chain-of-Custody.'
+
+  - source: 'SIM-04'
+    target: '23.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-04 „Documentation and Reporting of Security Incidents"
+      dokumentiert Incident-Lösung und Kunden-Kommunikation — Voraussetzung
+      für NIS2 23(2)-Meldepflicht (72h-Meldung mit erster Einschätzung).
+      Kunden-Kommunikation deckt nicht Behörden-Kommunikation ab; siehe
+      OIS-06 für Behörden-Meldekette.
+    cross_refs: ['OIS-06', 'SIM-04', '23.1', '23.3']
+    audit_evidence_hint: 'Incident-Reports mit Zeitstempel-Trail (Erkennung → 24h → 72h → Abschluss), Behörden-Meldungs-Templates, Kunden-Notifikationen.'
+
+  - source: 'SIM-04'
+    target: '23.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SIM-04 in Kombination mit OIS-06 (Behördenkontakt) erfüllt
+      die 24h-Frühwarnung. Allein deckt SIM-04 nur die Dokumentations-
+      und Kunden-Kommunikations-Pflicht — Behörden-Routing muss separat
+      sichergestellt sein.
+    gap_warning: |
+      24h-Frühwarnung ist NIS2-spezifisch und in C5:2026 nicht
+      eigenständig benannt. Bestandsanwender müssen die Meldekette
+      (Erkennung → CISO → 24h-Notification → CSIRT/zuständige Behörde)
+      formal etablieren.
+    cross_refs: ['OIS-06', 'SIM-01']
+    audit_evidence_hint: 'Meldekette-Dokumentation, 24h-Test-Protokolle, NIS2-Behörden-Routing-Verzeichnis.'
+
+  - source: 'SIM-04'
+    target: '23.3'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SIM-04 deckt den Abschlussbericht-Anteil (Solution-
+      Documentation) ab. Die 1-Monats-Frist ist NIS2-spezifisch und muss
+      durch SLA-Definition operationalisiert werden.
+    audit_evidence_hint: 'Abschlussbericht-Template, SLA-Tracking ≤30 Tage, Zwischenbericht-Mechanismus bei laufender Behandlung.'
+
+  - source: 'SIM-05'
+    target: '21.2.g'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SIM-05 „Duty of the Personnel to Report Security Incidents
+      to a Central Body" ist Cyber-Hygiene-Maßnahme: Mitarbeitende müssen
+      Sicherheitsvorfälle melden können. Teilaspekt der Awareness-Pflicht
+      aus 21(2)(g).
+    cross_refs: ['HR-03']
+    audit_evidence_hint: 'Meldekanal (Hotline/Mailbox), Awareness-Schulung „How to report an incident", Incident-Reporting-Statistiken.'
+
+  - source: 'SIM-06'
+    target: '21.2.f'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SIM-06 „Evaluation and Learning Process" (KPI-Tracking,
+      Knowledge Repository, Lessons Learned) entspricht der NIS2-Pflicht
+      zur „Bewertung der Wirksamkeit der Risikomanagement-Maßnahmen"
+      (21(2)(f)) bezogen auf Incident-Mgmt-KPIs.
+    audit_evidence_hint: 'PIR-Reports, MTTD/MTTR-Dashboard, Recurrence-Rate-Tracking, Lessons-Learned-Knowledge-Base.'
+
+  # ===== BCM — Business Continuity Management =====
+  - source: 'BCM-01'
+    target: '21.2.c'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 BCM-01 „Business Continuity and Emergency Management
+      System" (ISO 22301 / BSI 200-4) deckt direkt NIS2 21(2)(c)
+      „Aufrechterhaltung des Betriebs (Backup-Mgmt, DR, Krisenmgmt)" ab.
+    cross_refs: ['BCM-02', 'BCM-03', 'BCM-04']
+    audit_evidence_hint: 'BC-Strategie, Top-Management-Freigabe, BIA, BC-Plans, Krisenmgmt-Strukturen, Übungs-Reports.'
+
+  - source: 'BCM-02'
+    target: '21.2.c'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 BCM-02 „Business Impact Analysis" mit RTO/RPO ist
+      konkrete Methodik-Maßnahme aus 21(2)(c).
+    audit_evidence_hint: 'BIA-Methodik, BIA-Ergebnisse je Geschäftsprozess, RTO/RPO-Definitionen.'
+
+  - source: 'BCM-03'
+    target: '21.2.c'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 BCM-03 „Business Continuity Plans" mit Recovery Procedures
+      und definierten Kommunikationskanälen ist konkrete BC-Plan-Pflicht
+      aus 21(2)(c).
+    audit_evidence_hint: 'BC-Plans pro kritischem Service, Eigentümer-Zuordnung, jährlicher Review.'
+
+  - source: 'BCM-04'
+    target: '21.2.c'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 BCM-04 „Testing Business Continuity" (mind. jährliche Tests
+      mit Kunden/Sub-Providern) deckt Test-Pflicht aus 21(2)(c) ab.
+    audit_evidence_hint: 'BC-Test-Protokolle letzte 24 Monate, Tabletop-Übungen, Lessons Learned.'
+
+  - source: 'OPS-06'
+    target: '21.2.c'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-06 „Data Backup and Recovery - Policies and Procedures"
+      ist Backup-Mgmt-Pflicht aus 21(2)(c).
+    cross_refs: ['OPS-07', 'OPS-08', 'OPS-09']
+    audit_evidence_hint: 'Backup-Konzept, Recovery-Test-Protokolle, Backup-Retention-Definitionen.'
+
+  - source: 'OPS-08'
+    target: '21.2.c'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-08 „Data Backup and Recovery - Regular Testing" deckt
+      Restore-Test-Pflicht ab — kritisch für 21(2)(c) (BCM-Effektivität).
+    audit_evidence_hint: 'Restore-Test-Protokolle (mind. quartalsweise), Recovery-Time-Messungen, Tape/Object-Retention-Verifikation.'
+
+  # ===== SSO — Sub-Service Organisations =====
+  - source: 'SSO-01'
+    target: '21.2.d'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-01 „Policies and Procedures for Controlling and
+      Monitoring Service Organisations" entspricht direkt NIS2 21(2)(d)
+      „Sicherheit der Lieferkette".
+    cross_refs: ['SSO-02', 'SSO-04', 'SSO-05']
+    audit_evidence_hint: 'Sub-Provider-Policy, Vertragstemplate mit InfoSec-Klauseln, Monitoring-Berichte.'
+
+  - source: 'SSO-02'
+    target: '21.2.d'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-02 „Risk Assessment of Service Organisations" mit CSOC-
+      Bewertung und Vendor-Lock-in-Analyse ist konkrete
+      Lieferketten-Risikobewertung aus 21(2)(d).
+    audit_evidence_hint: 'Sub-Provider-Risikobewertungen, CSOC-Tracking, Vendor-Diversification-Analyse.'
+
+  - source: 'SSO-04'
+    target: '21.2.d'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-04 „Directory of Service Organisations" mit Klassifikation
+      und Compliance-Nachweisen ist Lieferketten-Inventar — Voraussetzung
+      für 21(2)(d).
+    audit_evidence_hint: 'Sub-Provider-Verzeichnis mit Klassifikation, Standorten, Compliance-Status, jährlicher Review.'
+
+  - source: 'SSO-05'
+    target: '21.2.d'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-05 „Monitoring of Compliance with Requirements"
+      operationalisiert Lieferketten-Monitoring (ISAE 3402, SOC 2, BSI C5,
+      CSA CCM Reports) — Kern-Maßnahme aus 21(2)(d).
+    cross_refs: ['SSO-02']
+    audit_evidence_hint: 'SOC-2-Berichte, ISAE-3402-Berichte, Lieferanten-Audit-Reports letzte 24 Monate, Issue-Tracker.'
+
+  - source: 'SSO-06'
+    target: '21.2.c'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SSO-06 „Contract Termination Strategy for Service
+      Organisations" (Exit-Strategie) ist BC-relevante Vorsorge —
+      Teilaspekt von 21(2)(c) für Anbieter-Ausfallszenarien.
+    cross_refs: ['SSO-02']
+    audit_evidence_hint: 'Exit-Strategie-Dokument pro kritischem Sub-Provider, Datenrücknahme-Plan, Migrations-Runbook.'
+
+  - source: 'SSO-08'
+    target: '21.2.d'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SSO-08 „Controlling Exchanges with Suppliers of Functional
+      Components" deckt Software-Update-Authorisierung aus dem Lieferanten-
+      Kanal — Teilaspekt der Lieferkettensicherheit (21(2)(d)).
+    audit_evidence_hint: 'Update-Authorisierungs-Protokolle, Supplier-Update-Channel-Inventar, Out-of-Band-Verifikation.'
+
+  # ===== DEV — Development =====
+  - source: 'DEV-01'
+    target: '21.2.e'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-01 „Policies for the Development/Procurement of System
+      Components" deckt sichere Entwicklung und Beschaffung — direkter
+      Overlap mit NIS2 21(2)(e) „Sicherheit bei Erwerb, Entwicklung und
+      Wartung von IT-Systemen".
+    cross_refs: ['DEV-02', 'DEV-04']
+    audit_evidence_hint: 'Secure-SDLC-Richtlinie, Procurement-Policy mit Security-Anforderungen.'
+
+  - source: 'DEV-04'
+    target: '21.2.g'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 DEV-04 „Safety Training and Awareness Programme regarding
+      Continuous Software Delivery" ist rollenspezifische
+      Cyberhygiene-Schulung für DevOps — Teilaspekt von 21(2)(g).
+    cross_refs: ['HR-03']
+    audit_evidence_hint: 'Secure-Coding-Schulung, DevSecOps-Curriculum, Schulungsquoten Entwickler.'
+
+  - source: 'DEV-06'
+    target: '21.2.e'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-06 „Risk Assessment, Categorisation and Prioritisation
+      of Changes" ist Change-Risk-Mgmt — direkter Beitrag zu 21(2)(e)
+      (Wartung von IT-Systemen).
+    cross_refs: ['DEV-07', 'DEV-15']
+    audit_evidence_hint: 'Change-Risk-Bewertung, CAB-Protokolle, Change-Tickets letzte 90 Tage.'
+
+  - source: 'DEV-07'
+    target: '21.2.e'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-07 „Testing Changes" deckt Test-Pflichten vor
+      Production-Deployment — direkter Beitrag zu 21(2)(e).
+    audit_evidence_hint: 'Test-Plan, Pre-Prod-Tests, automatisierte CI-Pipelines mit Security-Gates.'
+
+  - source: 'DEV-11'
+    target: '21.2.e'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 DEV-11 „Protection of Development and Test Environments"
+      sichert Dev/Test-Umgebungen ab — Teilaspekt der sicheren Entwicklung
+      aus 21(2)(e).
+    cross_refs: ['DEV-12']
+    audit_evidence_hint: 'Dev-/Test-Environment-Hardening, Daten-Klassifikations-Compliance (keine Prod-Daten in Test ohne Anonymisierung).'
+
+  - source: 'DEV-13'
+    target: '21.2.d'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 DEV-13 „Transparency about Software Components" (SBOM)
+      ist Lieferketten-Sicherheits-Massnahme — Teilaspekt von 21(2)(d).
+      Auch 21(2)(e) (sichere Entwicklung) wird durch SBOM-basierte
+      Vulnerability-Tracking unterstützt.
+    cross_refs: ['DEV-14', 'OPS-29']
+    audit_evidence_hint: 'SBOM pro Software-Release (CycloneDX/SPDX), CVE-Tracking gegen SBOM, SBOM-API-Endpoint.'
+
+  - source: 'DEV-14'
+    target: '21.2.d'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 DEV-14 „Secure Use of Third Party Hardware and Software"
+      adressiert Drittanbieter-Komponenten-Risiken — Teilaspekt von
+      21(2)(d).
+    audit_evidence_hint: '3rd-Party-Software-Inventar, Vulnerability-Scans, Lizenz-Compliance.'
+
+  # ===== OPS — Operations =====
+  - source: 'OPS-04'
+    target: '21.2.g'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-04 „Protection Against Malware - Policies and
+      Procedures" ist Kern-Cyberhygiene-Massnahme aus NIS2 21(2)(g).
+    cross_refs: ['OPS-05']
+    audit_evidence_hint: 'Malware-Schutz-Konzept, AV/EDR-Coverage-Report, Quarantäne-Statistiken.'
+
+  - source: 'OPS-10'
+    target: '21.2.f'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-10 „Logging and Monitoring - Policies and Procedures"
+      ist Wirksamkeits-Bewertungs-Maßnahme — direkter Beitrag zu 21(2)(f)
+      über Sicherheits-Monitoring.
+    cross_refs: ['OPS-13', 'OPS-14']
+    audit_evidence_hint: 'Logging-Konzept, SIEM-Use-Case-Katalog, 24/7-SOC-Coverage.'
+
+  - source: 'OPS-13'
+    target: '21.2.b'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OPS-13 „Logging and Monitoring - SIEM" liefert Detektion
+      sicherheitsrelevanter Events — Voraussetzung für 21(2)(b)
+      (Bewältigung von Sicherheitsvorfällen).
+    cross_refs: ['SIM-01']
+    audit_evidence_hint: 'SIEM-Use-Case-Inventar, Detection-Tuning-Reports, Mean-Time-to-Detect-KPI.'
+
+  - source: 'OPS-18'
+    target: '21.2.g'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-18 „Managing Vulnerabilities - Policies and Procedures"
+      ist Kern-Cyberhygiene-Massnahme (21(2)(g)). Patching ist explizit
+      in ENISA-Guidance als Cyber-Hygiene benannt.
+    cross_refs: ['OPS-25', 'OPS-26', 'OPS-27', 'OPS-28']
+    audit_evidence_hint: 'Vulnerability-Scan-Reports, Patch-Compliance-Dashboard, CVE-Tracking, SLA für Critical/High-Vulns.'
+
+  - source: 'OPS-22'
+    target: '21.2.f'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OPS-22 „Managing Vulnerabilities, Incidents and Crashes -
+      Penetration Tests" ist konkrete Wirksamkeits-Prüfungs-Maßnahme aus
+      21(2)(f).
+    audit_evidence_hint: 'Pentest-Reports letzte 24 Monate, Findings-Tracking, Re-Test-Nachweis behobener Findings.'
+
+  - source: 'OPS-23'
+    target: '21.2.f'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-23 „Managing Vulnerabilities, Incidents and Crashes -
+      Measurements, Analyses and Assessments of Procedures" entspricht
+      direkt 21(2)(f) (Wirksamkeitsbewertung) — KPI-basierte Messung der
+      Schutzmaßnahmen.
+    audit_evidence_hint: 'KPI-Dashboard (MTTD, MTTR, Patch-SLA-Compliance), Verbesserungs-Maßnahmen-Tracking.'
+
+  - source: 'OPS-26'
+    target: '21.2.g'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-26 „Managing Vulnerabilities, Incidents and Crashes -
+      System Hardening" ist Cyberhygiene-Massnahme (21(2)(g)) — CIS-
+      Benchmark-Compliance ist Stand der Technik.
+    audit_evidence_hint: 'Hardening-Baselines, CIS-Benchmark-Compliance-Reports, Drift-Detection.'
+
+  - source: 'OPS-27'
+    target: '21.2.g'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-27 „Managing Vulnerabilities - Patch Management
+      Policies and Procedures" deckt Patching-Pflichten — Kern-
+      Cyberhygiene aus 21(2)(g).
+    cross_refs: ['OPS-28']
+    audit_evidence_hint: 'Patch-Mgmt-Policy mit SLA, Patch-Compliance-Dashboard, Exception-Tracking.'
+
+  # ===== COM — Compliance =====
+  - source: 'COM-01'
+    target: '21.2.a'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 COM-01 „Identification of Applicable Legal, Regulatory,
+      Self-imposed or Contractual Requirements" speist regulatorische
+      Anforderungen ins Risikomanagement ein — Teilaspekt von 21(2)(a).
+    audit_evidence_hint: 'Compliance-Anforderungs-Register (GDPR, NIS2, DORA, regionale Cloud-Gesetze), Reviews letzte 12 Monate.'
+
+  - source: 'COM-03'
+    target: '21.2.f'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COM-03 „Internal Audits of the ISMS" entspricht direkt
+      NIS2 21(2)(f) „Konzepte und Verfahren zur Bewertung der Wirksamkeit
+      der Risikomanagement-Maßnahmen". Interne Audits gemäß ISO 19011
+      sind die klassische Wirksamkeits-Prüfungs-Methodik.
+    audit_evidence_hint: 'Audit-Plan, Audit-Reports letzte 24 Monate, Maßnahmen-Tracking aus Audit-Findings, ISO-19011-konforme Methodik.'
+
+  - source: 'COM-04'
+    target: '20.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 COM-04 „Information on Information Security Performance
+      and Management Assessment of the ISMS" liefert Top-Management
+      regelmäßig InfoSec-KPIs — Voraussetzung für die Governance-
+      Verantwortung der Leitungsorgane (NIS2 Art. 20(1)).
+    cross_refs: ['OIS-02']
+    audit_evidence_hint: 'Management-Review-Protokolle (mind. jährlich), KPI-Dashboard für Geschäftsführung, Beschluss-Trail.'
+
+  # ===== SP — Security Policies =====
+  - source: 'SP-01'
+    target: '21.2.a'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SP-01 „Documentation, Communication and Provision of
+      Policies and Procedures" ist Policy-Lifecycle-Mgmt — Voraussetzung
+      für „Sicherheitsrichtlinien" aus 21(2)(a).
+    cross_refs: ['SP-02', 'SP-03']
+    audit_evidence_hint: 'Policy-Inventar mit Review-Datum und Genehmiger, Policy-Distribution-Nachweis, Versionsstand.'
+
+  - source: 'SP-02'
+    target: '21.2.f'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SP-02 „Review and Approval of Policies and Procedures"
+      (jährlicher Review-Zyklus) ist Wirksamkeits-Prüfungs-Massnahme
+      auf Policy-Ebene — Teilaspekt von 21(2)(f).
+    audit_evidence_hint: 'Policy-Review-Protokolle, Genehmigungs-Workflow, Versions-Historie.'
+
+  # ===== PS — Physical Security =====
+  - source: 'PS-01'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PS-01 „Physical Security and Environmental Control
+      Requirements" ist physische Schutzmassnahme — NIS2 21(2)(i) deckt
+      Personalsicherheit/Asset/Zugriff hauptsächlich logisch, physische
+      Sicherheit ist über Asset-Mgmt-Anforderung implizit relevant.
+      ENISA-Guidance referenziert physische Sicherheit als Teil des
+      breiten Asset-Schutzes.
+    gap_warning: |
+      NIS2 21(2)(i) hat keinen expliziten Anker „Physische Sicherheit".
+      Deckung über Asset-Mgmt-/Zugriffs-Argument; bei Audit defensiv
+      argumentieren mit ISO 27002 A.7.x als Verbindung.
+    cross_refs: ['PS-03', 'PS-04']
+    audit_evidence_hint: 'TIER-Zertifizierung des RZ, Perimeter-Dokumentation, Zutrittskontroll-Logs.'
+
+  - source: 'PS-04'
+    target: '21.2.i'
+    relationship: 'subset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PS-04 „Physical Site Access Control" ist Zugriffs-Mgmt
+      auf physischer Ebene — schwacher Anker an 21(2)(i) (Zugriffs-
+      Mgmt). Argument analog PS-01.
+    audit_evidence_hint: 'Zutrittskontroll-System, Besucher-Mgmt, Access-Logs.'
