@@ -129,12 +129,12 @@ mappings:
     audit_evidence_hint: 'BC-Strategie mit Top-Management-Freigabe, BIA-Ergebnisse, BC-Plans, jährliche BC-Übungs-Reports.'
 
   # ===== Beziehungen zu Dritten / Sub-Service Organisations =====
-  - source: 'BEI-01'
+  - source: 'SSO-01'
     target: 'SSO-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5:2020 BEI-01 „Richtlinien und Anweisungen für Beziehungen zu
+      C5:2020 SSO-01 „Richtlinien und Anweisungen für Beziehungen zu
       Dritten" regelt vertragliche InfoSec-Pflichten gegenüber
       Sub-Dienstleistern. C5:2026 SSO-01 „Policies and Procedures for
       Controlling and Monitoring Service Organisations" übernimmt diesen
@@ -143,12 +143,12 @@ mappings:
     cross_refs: ['SSO-04', 'SSO-05']
     audit_evidence_hint: 'Lieferanten-Policy, Vertragstemplate mit InfoSec-Klauseln, Monitoring-Berichte zu Sub-Dienstleistern.'
 
-  - source: 'BEI-04'
+  - source: 'SSO-04'
     target: 'SSO-02'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5:2020 BEI-04 „Anforderungen an Lieferanten" verlangt
+      C5:2020 SSO-04 „Anforderungen an Lieferanten" verlangt
       Risikobewertung und Sicherheitsanforderungen an Sub-Dienstleister.
       C5:2026 SSO-02 „Risk Assessment of Service Organisations"
       übernimmt diesen Pflichteninhalt; ergänzend SSO-04 (Directory) und
@@ -157,31 +157,31 @@ mappings:
     audit_evidence_hint: 'Sub-Provider-Risikobewertungen, Sub-Provider-Verzeichnis, Compliance-Monitoring-Berichte.'
 
   # ===== Berichtswesen / Beauftragten-Funktion (BFM 2020 → COM/OIS 2026) =====
-  - source: 'BFM-01'
+  - source: 'COM-04'
     target: 'COM-01'
     relationship: 'partial_overlap'
     confidence: 'low'
     rationale: |
-      C5:2020 BFM-01 (Beauftragten-/Berichtswesen-Funktion: Steuerung
+      C5:2020 COM-04 (Beauftragten-/Berichtswesen-Funktion: Steuerung
       regulatorischer und vertraglicher Anforderungen) findet in C5:2026
       keine 1:1-Entsprechung. Inhalte verteilen sich auf COM-01
       „Identification of Applicable Legal, Regulatory, Self-imposed or
       Contractual Requirements" (regulatorische Anforderungen) und OIS-01
       (ISMS-Verantwortung).
     gap_warning: |
-      Wer C5:2020 BFM-01 ausschließlich auf COM-01 abbildet, deckt nicht
+      Wer C5:2020 COM-04 ausschließlich auf COM-01 abbildet, deckt nicht
       die organisatorische Beauftragten-Rollen-Abgrenzung ab. Empfehlung:
       COM-01 mit OIS-04 (Segregation of Duties) und OIS-01 (ISMS) bündeln.
     cross_refs: ['OIS-01', 'OIS-04']
     audit_evidence_hint: 'Compliance-Anforderungs-Register, Rollen- und Verantwortlichkeitsmatrix, ISB-/CISO-Bestellschreiben.'
 
   # ===== Communication Security (KOS → COS) =====
-  - source: 'KOS-01'
+  - source: 'COS-01'
     target: 'COS-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5:2020 KOS-01 „Technische Schutzmaßnahmen" und C5:2026 COS-01
+      C5:2020 COS-01 „Technische Schutzmaßnahmen" und C5:2026 COS-01
       „Technical Safeguards" sind direkter Carryover. Der Präfixwechsel
       (Kommunikationssicherheit → Communication Security) ist rein eine
       Anpassung an die englischsprachige Erstpublikation 2026;
@@ -225,12 +225,12 @@ mappings:
       privilegierte Nutzer in beiden Versionen verlangt.
     audit_evidence_hint: 'Schulungsplan, Schulungsquoten ≥95%, rollenspezifische Curricula, Phishing-Drill-Ergebnisse.'
 
-  - source: 'PSC-01'
+  - source: 'HR-01'
     target: 'HR-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5:2020 PSC-01 „Personalsicherheit — Verifikation der Qualifikation
+      C5:2020 HR-01 „Personalsicherheit — Verifikation der Qualifikation
       und Vertrauenswürdigkeit" wird in C5:2026 als HR-01 „Verification
       of Qualification and Trustworthiness" wieder aufgenommen. Der
       eigene 2020-Bereich PSC ist 2026 vollständig in HR aufgelöst;
@@ -238,19 +238,7 @@ mappings:
     cross_refs: ['HR-02', 'HR-04']
     audit_evidence_hint: 'Hintergrundüberprüfungen, Führungszeugnis (für privilegierte Rollen), Referenzprüfungen.'
 
-  - source: 'MA-01'
-    target: 'HR-07'
-    relationship: 'equivalent'
-    confidence: 'medium'
-    rationale: |
-      C5:2020 MA-01 (Mobile Arbeit / Telearbeits-Richtlinie) findet in
-      C5:2026 ihre Entsprechung in HR-07 „Remote Working - Policy"
-      (ergänzt durch HR-08 zur Implementierung). Der eigene 2020-Bereich
-      MA ist 2026 entfallen; alle Anforderungen wurden in HR konsolidiert.
-    cross_refs: ['HR-08', 'PS-08']
-    audit_evidence_hint: 'Telearbeits-/Remote-Work-Policy, VPN-Konfiguration, Endpoint-Hardening für mobile Geräte.'
 
-  # ===== Identity & Access Management (IDM → IAM) =====
   - source: 'IDM-01'
     target: 'IAM-01'
     relationship: 'equivalent'
@@ -288,12 +276,12 @@ mappings:
     audit_evidence_hint: 'MFA-Coverage 100% für Admin-Accounts, Auth-Methoden-Inventar, fehlgeschlagene-Login-Logs.'
 
   # ===== Cryptography (KRY → CRY) =====
-  - source: 'KRY-01'
+  - source: 'CRY-01'
     target: 'CRY-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5:2020 KRY-01 „Richtlinie zur Verwendung von Verschlüsselungs-
+      C5:2020 CRY-01 „Richtlinie zur Verwendung von Verschlüsselungs-
       verfahren und Schlüsselverwaltung" entspricht direkt C5:2026
       CRY-01 „Policy for the Use of Cryptographic Mechanisms".
       Präfixwechsel KRY → CRY ist redaktionell. Inhaltlich verlangen
@@ -302,7 +290,7 @@ mappings:
     gap_warning: |
       C5:2026 ergänzt CRY-01 um implizite Krypto-Agilitäts-Anforderungen,
       die in CRY-02 „Cryptographic Change Management" konkretisiert sind
-      und 2020 keine Entsprechung haben. Wer KRY-01-Reife auf CRY-01
+      und 2020 keine Entsprechung haben. Wer CRY-01-Reife auf CRY-01
       überträgt, sollte CRY-02 separat adressieren (PQC-Migration,
       Algorithmen-Sunset-Planung).
     cross_refs: ['CRY-02', 'CRY-04', 'CRY-05']
@@ -361,31 +349,31 @@ mappings:
     audit_evidence_hint: 'API-Dokumentation, Datenexport-Funktionalität, Input-Validation-Konzept.'
 
   # ===== Regelbetrieb (RB 2020 → split OPS/DEV/PSS 2026) =====
-  - source: 'RB-01'
+  - source: 'OPS-06'
     target: 'OPS-06'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
-      C5:2020 RB-01 (Regelbetrieb — Backup & Recovery Konzept) findet in
+      C5:2020 OPS-06 (Regelbetrieb — Backup & Recovery Konzept) findet in
       C5:2026 seine Entsprechung in OPS-06 „Data Backup and Recovery -
       Policies and Procedures" (ergänzt durch OPS-07 Monitoring, OPS-08
       Testing, OPS-09 Storage). Der eigene 2020-Bereich RB ist 2026
       entfallen; Backup-Pflichten konsolidiert in OPS.
     gap_warning: |
-      C5:2020 RB-01 deckte breiter „Regelbetrieb" ab inkl. Change Management
+      C5:2020 OPS-06 deckte breiter „Regelbetrieb" ab inkl. Change Management
       und Bereitstellung. In C5:2026 ist dies aufgeteilt: Backup → OPS-06..09;
       Change Management → DEV-03..10; sichere Bereitstellung → PSS. Wer
-      RB-01-Erfüllung auf OPS-06 überträgt, muss DEV-03 und PSS-01 ergänzend
+      OPS-06-Erfüllung auf OPS-06 überträgt, muss DEV-03 und PSS-01 ergänzend
       adressieren.
     cross_refs: ['OPS-07', 'OPS-08', 'OPS-09', 'DEV-03', 'PSS-01']
     audit_evidence_hint: 'Backup-Konzept, Recovery-Test-Protokolle, Backup-Retention-Konfiguration.'
 
-  - source: 'RB-04'
+  - source: 'OIS-05'
     target: 'OIS-05'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5:2020 RB-04 „Identifikation von Schwachstellen, Bedrohungen und
+      C5:2020 OIS-05 „Identifikation von Schwachstellen, Bedrohungen und
       funktionalen Mängeln" (Threat Intelligence) entspricht direkt
       C5:2026 OIS-05 „Threat Intelligence". Pflichteninhalt deckungs-
       gleich: Bezug, Auswertung und Verteilung von Bedrohungsmeldungen
@@ -395,7 +383,7 @@ mappings:
 
   # ===== BEI-Restanteile (Logging-Pflichten 2020 BEI → OPS 2026) =====
   # Achtung: BEI in 2020 hatte mehrere Beweissicherungs-Aspekte.
-  # BEI-01/04 sind oben Vertragspflichten (→ SSO). Logging-Anteile siehe OPS-10.
+  # SSO-01/04 sind oben Vertragspflichten (→ SSO). Logging-Anteile siehe OPS-10.
 
   # ===== Sicherheitsvorfälle / Incident Management =====
   # Der 2020-Bereich SIM (= ISMS) wurde in 2026 OIS-01 abgebildet (siehe oben).

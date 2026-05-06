@@ -47,16 +47,16 @@ mappings:
       Pflichteninhalt und Freigabe-Logik sind identisch.
     audit_evidence_hint: 'Verabschiedete InfoSec-Leitlinie mit Management-Freigabe-Datum, jährliche Review-Protokolle, Veröffentlichung im Mitarbeiter-Intranet.'
 
-  - source: 'RB-04'
+  - source: 'OIS-05'
     target: 'A.5.7'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5 RB-04 „Identifikation von Schwachstellen, Bedrohungen und
+      C5 OIS-05 „Identifikation von Schwachstellen, Bedrohungen und
       funktionalen Mängeln" verlangt im Cloud-Kontext den Bezug, die
       Auswertung und die Verteilung von Bedrohungsinformationen sowie
       Schwachstellen-Tracking. ISO 27001 A.5.7 „Threat Intelligence" deckt
-      denselben Pflichtenkreis ab. C5 Anlage A führt RB-04 als Entsprechung;
+      denselben Pflichtenkreis ab. C5 Anlage A führt OIS-05 als Entsprechung;
       typische Quellen wie BSI-CERT und CERT-Bund decken beide Kontrollen.
     audit_evidence_hint: 'Threat-Intel-Quellen-Liste, ausgewertete Bedrohungsmeldungen der letzten 12 Monate, dokumentierte Eskalation an Cloud-Operations.'
 
@@ -80,12 +80,12 @@ mappings:
     cross_refs: ['A.5.10']
     audit_evidence_hint: 'Asset-Inventar mit Owner-Feld, Klassifikation und Stichtagsabgleich CMDB ↔ Cloud-Provisioning.'
 
-  - source: 'BEI-01'
+  - source: 'SSO-01'
     target: 'A.5.20'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5 BEI-01 „Richtlinien und Anweisungen für Beziehungen zu Dritten"
+      C5 SSO-01 „Richtlinien und Anweisungen für Beziehungen zu Dritten"
       regelt vertragliche InfoSec-Pflichten gegenüber Sub-Dienstleistern
       und Sub-Auftragsverarbeitern des Cloud-Anbieters. ISO 27001 A.5.20
       „Addressing information security in supplier agreements" verlangt
@@ -157,7 +157,7 @@ mappings:
       Wer C5 IDM-01 NUR über ISO A.8.1 nachweist, fehlen die Identity-
       Lifecycle-Pflichten (Provisioning, Rezertifizierung, Deprovisioning).
       Wer umgekehrt A.8.1 über IDM-01 nachweist, fehlen Endpoint-Hardening
-      und MDM-Policy. Empfehlung: IDM-01 zusätzlich mit C5 KRY-04 und
+      und MDM-Policy. Empfehlung: IDM-01 zusätzlich mit C5 CRY-04 und
       separater Endpoint-Hardening-Maßnahme bündeln.
     cross_refs: ['A.5.16', 'A.8.5']
     audit_evidence_hint: 'MDM-Compliance-Report, Disk-Encryption-Stichproben, Endpoint-Hardening-Baseline (CIS L1 oder strenger).'
@@ -218,18 +218,18 @@ mappings:
     cross_refs: ['OPS-11', 'OPS-12']
     audit_evidence_hint: 'SIEM-Use-Case-Katalog, Alert-MTTR-Statistik, 24/7-Coverage-Nachweis (SOC), Log-Retention-Konfiguration.'
 
-  - source: 'KRY-01'
+  - source: 'CRY-01'
     target: 'A.8.24'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5 KRY-01 „Richtlinie zur Verwendung von Verschlüsselungsverfahren
+      C5 CRY-01 „Richtlinie zur Verwendung von Verschlüsselungsverfahren
       und Schlüsselverwaltung" verlangt eine dokumentierte Krypto-Richtlinie
       inkl. Algorithmen-Allowlist und Key-Management. ISO 27001 A.8.24
       „Use of cryptography" fordert inhaltsgleiche Vorgaben. C5 Anlage A
       bestätigt die direkte Entsprechung; beide Frameworks referenzieren
       BSI TR-02102 als Algorithmen-Baseline.
-    cross_refs: ['KRY-02', 'KRY-03', 'KRY-04']
+    cross_refs: ['CRY-02', 'CRY-03', 'CRY-04']
     audit_evidence_hint: 'Krypto-Richtlinie, Algorithmen-Allowlist (BSI TR-02102 konform), Key-Management-Verfahren (HSM oder gleichwertig).'
 
   - source: 'IDM-02'
@@ -246,21 +246,21 @@ mappings:
     cross_refs: ['IDM-03', 'IDM-04']
     audit_evidence_hint: 'Berechtigungskonzept, Provisioning-Workflow-Auszüge, Stichprobe Joiner/Mover/Leaver der letzten 90 Tage.'
 
-  - source: 'BEI-04'
+  - source: 'SSO-04'
     target: 'A.5.23'
     relationship: 'superset'
     confidence: 'medium'
     rationale: |
-      C5 BEI-04 „Anforderungen an Lieferanten" verlangt aus Anbieter-Sicht
+      C5 SSO-04 „Anforderungen an Lieferanten" verlangt aus Anbieter-Sicht
       umfassende Sub-Dienstleister-Steuerung inkl. Sicherheitsanforderungen,
       Audit-Rechten und Sub-Provider-Risikobewertung. ISO 27001 A.5.23
       „Information security for use of cloud services" adressiert
-      Cloud-Nutzung aus Kundensicht. Aus C5-Sicht ist BEI-04 Obermenge
+      Cloud-Nutzung aus Kundensicht. Aus C5-Sicht ist SSO-04 Obermenge
       bezüglich Sub-Provider-Pflichten, deckt aber Cloud-Strategie und
       Exit-Strategie der Kundenseite nicht ab.
     gap_warning: |
-      Wer C5 BEI-04 NUR über ISO A.5.23 nachweist, fehlen die anbieter-
+      Wer C5 SSO-04 NUR über ISO A.5.23 nachweist, fehlen die anbieter-
       seitigen Sub-Provider-Audit-Rechte und die formelle Risikobewertung
       eingebundener Drittparteien. A.5.23 ist Kundenkontrolle und kein
-      Ersatz für die anbieter-zentrierten BEI-04-Pflichten.
+      Ersatz für die anbieter-zentrierten SSO-04-Pflichten.
     audit_evidence_hint: 'Cloud-Governance-Richtlinie, Exit-Strategie-Dokument, Datenresidenz-Mapping pro Cloud-Service.'

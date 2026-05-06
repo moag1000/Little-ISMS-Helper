@@ -121,32 +121,32 @@ mappings:
     cross_refs: ['ORP.4', 'IDM-01']
     audit_evidence_hint: 'IDM-09: MFA-Coverage privilegierte Cloud-Konten (Soll: 100 %), Passwort-Policy, Session-Timeout-Konfiguration. ORP.4.A8 Geregelte Verfahren zur Authentisierung.'
 
-  - source: 'KOS-01'
+  - source: 'COS-01'
     target: 'NET.1.1'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
-      C5-Kriterium KOS-01 "Technische Schutzmaßnahmen — Netzwerksicherheit"
+      C5-Kriterium COS-01 "Technische Schutzmaßnahmen — Netzwerksicherheit"
       verlangt vom Cloud-Anbieter Netzsegmentierung, Firewall-Konzepte und
       Schutz der Mandantentrennung auf Netzebene. IT-Grundschutz-Baustein
       NET.1.1 "Netzarchitektur und -design" deckt Netzsegmentierung und
       Zonierung ab; ergänzend adressiert NET.4.1 "TK-Anlagen" bzw. NET.3.2
-      die Firewall-Komponente. KOS-01 ist somit Teilmenge des umfassenderen
+      die Firewall-Komponente. COS-01 ist somit Teilmenge des umfassenderen
       NET.1.1-Bausteins, der über reine Cloud-Mandantentrennung hinausgeht.
     gap_warning: |
-      KOS-01 fokussiert auf Cloud-Mandantentrennung (Tenant-Isolation,
+      COS-01 fokussiert auf Cloud-Mandantentrennung (Tenant-Isolation,
       VLAN/VPC-Segregation). NET.1.1 verlangt zusätzlich vollständige
       Zonierungs-Strategie inkl. DMZ, Management-Netz, Backend-Netz —
       diese müssen im Grundschutz-Modell separat dokumentiert werden.
-    cross_refs: ['NET.4.1', 'NET.3.2', 'KOS-02']
+    cross_refs: ['NET.4.1', 'NET.3.2', 'COS-02']
     audit_evidence_hint: 'KOS-01: Cloud-Netzarchitektur-Diagramm mit Tenant-Isolation. NET.1.1.A1 Sicherheitsrichtlinie für Netzarchitektur, Zonenkonzept, Firewall-Regelwerk.'
 
-  - source: 'KRY-01'
+  - source: 'CRY-01'
     target: 'CON.1'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5-Kriterium KRY-01 "Richtlinie zum Einsatz von Verschlüsselung und
+      C5-Kriterium CRY-01 "Richtlinie zum Einsatz von Verschlüsselung und
       Schlüsselverwaltung" verlangt ein Kryptokonzept mit Algorithmen-
       Allowlist, Key-Lifecycle und Verfahren zur Verschlüsselung von Daten
       at-rest und in-transit. IT-Grundschutz-Baustein CON.1 "Kryptokonzept"
@@ -155,41 +155,41 @@ mappings:
       vollständig; der BSI-Crosswalk bestätigt das 1:1-Mapping.
     audit_evidence_hint: 'KRY-01: Cloud-Krypto-Policy, Algorithmen-Allowlist (BSI TR-02102 konform), HSM/KMS-Konfiguration. CON.1.A1 Auswahl geeigneter kryptografischer Verfahren, Key-Management-Verfahren.'
 
-  - source: 'BFM-01'
+  - source: 'COM-04'
     target: 'CON.5'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
-      C5-Kriterium BFM-01 "Beschaffung — Anforderungen an Lieferanten und
+      C5-Kriterium COM-04 "Beschaffung — Anforderungen an Lieferanten und
       Dienstleister" verlangt vom Cloud-Anbieter dokumentierte Anforderungs-
       kataloge für Sub-Dienstleister und Sub-Sub-Cloud-Anbieter. IT-Grund-
       schutz-Baustein CON.5 "Entwicklung und Einsatz allgemeiner Anwendungen"
       sowie ergänzend CON.6 "Löschen und Vernichten" bündeln Beschaffungs-
-      anforderungen für Software und Daten-Lifecycle. BFM-01 ist Teilmenge —
+      anforderungen für Software und Daten-Lifecycle. COM-04 ist Teilmenge —
       der Baustein deckt darüber hinaus Lifecycle-Aspekte ab.
     gap_warning: |
-      BFM-01 deckt primär die Lieferanten-Beschaffungs-Phase. Wer CON.5/CON.6
+      COM-04 deckt primär die Lieferanten-Beschaffungs-Phase. Wer CON.5/CON.6
       als Anker nutzt, muss zusätzlich OPS.2.3 "Nutzung von Outsourcing"
       referenzieren, da die Sub-Dienstleister-Steuerung dort detaillierter
       adressiert wird.
     cross_refs: ['CON.6', 'OPS.2.3']
     audit_evidence_hint: 'BFM-01: Lieferanten-Beschaffungs-Kriterienkatalog, Sub-Cloud-Anbieter-Liste. CON.5.A1 Erstellung eines generischen Anforderungskatalogs für Anwendungen.'
 
-  - source: 'RB-01'
+  - source: 'OPS-06'
     target: 'DER.4'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
-      C5-Kriterium RB-01 "Notfallmanagement — Business Continuity Strategy"
+      C5-Kriterium OPS-06 "Notfallmanagement — Business Continuity Strategy"
       verlangt vom Cloud-Anbieter eine BC-Strategie mit Wiederanlaufzielen
       (RTO/RPO) für Cloud-Dienste, Notfallpläne und regelmäßige Übungen.
       IT-Grundschutz-Baustein DER.4 "Notfallmanagement" bündelt Notfall-
       vorsorgekonzept, Krisenstab-Strukturen, Wiederanlaufpläne und
-      Notfallübungen über alle Geschäftsprozesse hinweg. RB-01 fokussiert
+      Notfallübungen über alle Geschäftsprozesse hinweg. OPS-06 fokussiert
       auf den Cloud-Dienst-Aspekt; DER.4 deckt das umfassend ab.
     gap_warning: |
       DER.4 verlangt vollständiges Notfallhandbuch und Krisenstab-
-      Geschäftsordnung — RB-01 fokussiert primär auf BC-Strategie und
+      Geschäftsordnung — OPS-06 fokussiert primär auf BC-Strategie und
       RTO/RPO der Cloud-Dienste. Für vollständigen DER.4-Nachweis sind
       auch nicht-Cloud-Geschäftsprozesse zu adressieren.
     cross_refs: ['BCM-01']
@@ -256,7 +256,7 @@ mappings:
       sind die Anforderungen weitgehend deckungsgleich; kleinere Delta
       bestehen bei Cloud-spezifischen Aspekten (z. B. OAuth2-Flows), die
       sich aber unter dem Schutzziel "sichere Schnittstellen" subsumieren.
-    cross_refs: ['KOS-01']
+    cross_refs: ['COS-01']
     audit_evidence_hint: 'PI-01: API-Sicherheits-Spezifikation (OpenAPI mit Security-Schemes), Rate-Limiting-Konfiguration, OAuth2-Flow-Dokumentation. APP.4.6 Schnittstellen-Konzept.'
 
   - source: 'COS-01'
@@ -272,38 +272,24 @@ mappings:
       modell. Die Entsprechung ist auf Anforderungs-Niveau 1:1; aus
       C5-Cloud-Sicht (DSGVO-Compliance, AVV-Klauseln) bestätigt der
       BSI-Crosswalk das direkte Mapping.
-    cross_refs: ['BFM-01']
+    cross_refs: ['COM-04']
     audit_evidence_hint: 'COS-01: Rechts- und Pflichtenkataster mit DSGVO-Bezug, AVV-Templates. CON.2.A1 Umsetzung Standard-Datenschutzmodell, Verfahrensverzeichnis.'
 
-  - source: 'MA-01'
-    target: 'ISMS.1.1'
-    relationship: 'equivalent'
-    confidence: 'high'
-    rationale: |
-      C5-Kriterium MA-01 "Management — Organisation des Sicherheitsprozesses
-      und Verantwortlichkeiten" verlangt eine dokumentierte InfoSec-
-      Organisation mit Rollen, Verantwortlichkeiten und Management-Steuerung.
-      IT-Grundschutz-Baustein ISMS.1.1 (Management-Steuerung als integraler
-      Teil von ISMS.1) adressiert diese Aspekte auf gleichem Detail-Niveau.
-      Aus C5-Cloud-Sicht ist die Entsprechung vollständig — beide verlangen
-      Management-Reviews, Ressourcen-Bereitstellung und Berichtspflichten.
-    cross_refs: ['ISMS.1', 'OPS-01']
-    audit_evidence_hint: 'MA-01: InfoSec-Organigramm Cloud-Anbieter, Management-Review-Protokolle. ISMS.1.A1 Übernahme der Gesamtverantwortung, ISMS.1.A11 Management-Reviews.'
 
-  - source: 'PSC-01'
+  - source: 'HR-01'
     target: 'INF.1'
     relationship: 'subset'
     confidence: 'high'
     rationale: |
-      C5-Kriterium PSC-01 "Physische Sicherheit — Zutrittskontrolle und
+      C5-Kriterium HR-01 "Physische Sicherheit — Zutrittskontrolle und
       Schutz der Rechenzentren" verlangt Mehrfaktor-Zutrittskontrolle,
       Videoüberwachung und Besucher-Management für Cloud-RZ. IT-Grundschutz-
       Baustein INF.1 "Allgemeines Gebäude" bündelt Zutrittskontrolle,
       Brandschutz, Stromversorgung, Klimatisierung und bauliche Maßnahmen
-      umfassend. PSC-01 fokussiert auf den Zutritts- und Überwachungs-
+      umfassend. HR-01 fokussiert auf den Zutritts- und Überwachungs-
       Aspekt; INF.1 ist breiter und schließt RZ-Versorgungs-Themen ein.
     gap_warning: |
-      Wer INF.1 als Baustein-Anker für PSC-01 nutzt, deckt zwar Zutritts-
+      Wer INF.1 als Baustein-Anker für HR-01 nutzt, deckt zwar Zutritts-
       kontrolle ab, muss für vollständigen INF.1-Nachweis aber Brandschutz
       (INF.1.A2), USV-Tests und Klima-Monitoring ergänzend dokumentieren —
       typisch über INF.2 (RZ) und INF.5/6 (Verkabelung/USV).

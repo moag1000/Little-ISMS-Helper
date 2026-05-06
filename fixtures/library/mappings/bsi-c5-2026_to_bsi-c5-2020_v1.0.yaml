@@ -99,30 +99,30 @@ mappings:
 
   # ===== COM — Compliance =====
   - source: 'COM-01'
-    target: 'BFM-01'
+    target: 'COM-04'
     relationship: 'partial_overlap'
     confidence: 'low'
     rationale: |
       C5:2026 COM-01 „Identification of Applicable Legal, Regulatory,
       Self-imposed or Contractual Requirements" deckt regulatorische
-      Anforderungssteuerung ab — ein Teilbereich von 2020 BFM-01
+      Anforderungssteuerung ab — ein Teilbereich von 2020 COM-04
       (Beauftragten-/Berichtswesen-Funktion). Andere BFM-Anteile
       (Beauftragten-Rollen) liegen 2026 bei OIS.
     gap_warning: |
-      C5:2020 BFM-01 ist breiter als COM-01. Wer COM-01 erfüllt, hat
+      C5:2020 COM-04 ist breiter als COM-01. Wer COM-01 erfüllt, hat
       noch kein vollständiges 2020-BFM-Mapping; ergänze OIS-04
       (Segregation of Duties) und OIS-01 (ISMS-Verantwortung).
     cross_refs: ['OIS-01', 'OIS-04']
     audit_evidence_hint: 'Compliance-Anforderungs-Register (GDPR, NIS2, DORA, regionale Cloud-Gesetze), Reviews letzte 12 Monate.'
 
   - source: 'COM-03'
-    target: 'BFM-01'
+    target: 'COM-04'
     relationship: 'partial_overlap'
     confidence: 'low'
     rationale: |
       C5:2026 COM-03 „Internal Audits of the ISMS" hat in 2020 keine
       eigene Kriteriums-ID — Audit-Pflichten waren Teil der breiteren
-      BFM-01- bzw. SIM-01-Anforderungen. Aufbau interner Audit-Programme
+      COM-04- bzw. SIM-01-Anforderungen. Aufbau interner Audit-Programme
       sollte separat betrachtet werden.
     gap_warning: |
       Wer 2020-Reife auf 2026 überträgt, sollte ein separates Audit-
@@ -132,35 +132,35 @@ mappings:
 
   # ===== COS — Communication Security =====
   - source: 'COS-01'
-    target: 'KOS-01'
+    target: 'COS-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       C5:2026 COS-01 „Technical Safeguards" entspricht direkt C5:2020
-      KOS-01 „Technische Schutzmaßnahmen". Präfixwechsel KOS → COS ist
+      COS-01 „Technische Schutzmaßnahmen". Präfixwechsel KOS → COS ist
       rein redaktionell. Pflichteninhalt deckungsgleich: Netzwerk-
       Segmentierung, Firewall-Regeln, kryptografische Transportsicherung.
     cross_refs: ['COS-02', 'COS-07']
     audit_evidence_hint: 'Netzwerk-Segmentierungs-Konzept, Firewall-Rule-Review, Topologie-Dokument.'
 
   - source: 'COS-07'
-    target: 'KOS-01'
+    target: 'COS-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
       C5:2026 COS-07 „Documentation of the Network Topology" ist ein
-      konkreter Teilaspekt der breiteren 2020 KOS-01-Pflicht; 2026 hebt
+      konkreter Teilaspekt der breiteren 2020 COS-01-Pflicht; 2026 hebt
       die Topologie-Dokumentation als eigenes Kriterium hervor.
     audit_evidence_hint: 'Aktuelle Netzwerk-Topologie-Diagramme, VLAN-Karte, Routing-Tabellen.'
 
   # ===== CRY — Cryptography =====
   - source: 'CRY-01'
-    target: 'KRY-01'
+    target: 'CRY-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       C5:2026 CRY-01 „Policy for the Use of Cryptographic Mechanisms"
-      entspricht direkt C5:2020 KRY-01. Präfixwechsel KRY → CRY ist
+      entspricht direkt C5:2020 CRY-01. Präfixwechsel KRY → CRY ist
       redaktionell. Beide Frameworks referenzieren BSI TR-02102 als
       Algorithmen-Baseline.
     cross_refs: ['CRY-04', 'CRY-05']
@@ -186,23 +186,23 @@ mappings:
     audit_evidence_hint: 'Krypto-Inventar (Algorithmen, Schlüssellängen, Verwendungsorte), PQC-Migration-Roadmap, Algorithmen-Sunset-Plan.'
 
   - source: 'CRY-04'
-    target: 'KRY-01'
+    target: 'CRY-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
       C5:2026 CRY-04 „Protection of Data for Transmission (Transport
-      Protection)" ist ein konkreter Teilaspekt der 2020 KRY-01-Krypto-
+      Protection)" ist ein konkreter Teilaspekt der 2020 CRY-01-Krypto-
       Richtlinie. 2026 hebt Transportverschlüsselung als eigenes
       Kriterium hervor (TLS 1.3 / IPsec-Pflicht).
     audit_evidence_hint: 'TLS-Konfigurations-Tests (z.B. SSL-Labs A+ Rating), VPN-Konfiguration, Cipher-Suite-Inventar.'
 
   - source: 'CRY-05'
-    target: 'KRY-01'
+    target: 'CRY-01'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
       C5:2026 CRY-05 „Encryption of Sensitive Data at Rest" ist ein
-      konkreter Teilaspekt der 2020 KRY-01-Krypto-Richtlinie; 2026 hebt
+      konkreter Teilaspekt der 2020 CRY-01-Krypto-Richtlinie; 2026 hebt
       Encryption-at-Rest separat hervor.
     audit_evidence_hint: 'Disk-/Object-Storage-Encryption-Konfiguration, KMS-Integration, Stichprobe verschlüsselter Volumes.'
 
@@ -228,16 +228,16 @@ mappings:
     audit_evidence_hint: 'Verträge mit Outsourcing-Entwicklern, Code-Review-Protokolle.'
 
   - source: 'DEV-03'
-    target: 'RB-01'
+    target: 'OPS-06'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       C5:2026 DEV-03 „Policies for Changes to System Components" deckt
       Change-Management-Pflichten ab, die in 2020 unter dem breiteren
-      Bereich RB (Regelbetrieb) bzw. RB-01 erfasst waren. 2026 verschiebt
+      Bereich RB (Regelbetrieb) bzw. OPS-06 erfasst waren. 2026 verschiebt
       Change-Management von RB nach DEV.
     gap_warning: |
-      Wer 2020-RB-01-Reife auf DEV-03 überträgt, sollte zusätzlich DEV-06
+      Wer 2020-OPS-06-Reife auf DEV-03 überträgt, sollte zusätzlich DEV-06
       (Risk Assessment of Changes), DEV-07 (Testing) und DEV-15
       (Exceptions) adressieren — diese sind in 2026 ausdifferenziert.
     cross_refs: ['DEV-06', 'DEV-07', 'DEV-15']
@@ -262,33 +262,14 @@ mappings:
     cross_refs: ['DEV-14', 'OPS-29']
     audit_evidence_hint: 'SBOM pro Software-Release (CycloneDX/SPDX), CVE-Tracking gegen SBOM, SBOM-API-Endpoint.'
 
-  # ===== GC — Generic Client Information =====
-  - source: 'GC-01'
-    target: 'BEI-01'
-    relationship: 'partial_overlap'
-    confidence: 'low'
-    rationale: |
-      C5:2026 GC-01 „Information on applicable law, jurisdiction,
-      countries, partitions, regions, zones and locations" verlangt
-      Transparenz gegenüber dem Cloud-Kunden zu Datenresidenz und
-      anwendbarem Recht. In 2020 waren diese Informationspflichten Teil
-      des breiteren BEI-01 (Beziehungen zu Dritten) — ohne eigenes
-      Kriterium.
-    gap_warning: |
-      GC-01 ist umfangreicher als BEI-01-Anteile. Bestandsanwender
-      sollten die Datenresidenz-Karte (Region/Zone/Verfügbarkeitsbereich)
-      und gerichtsbarkeits-spezifische Hinweise (z.B. CLOUD Act,
-      Schrems-II-Implikationen) als eigenständiges Dokument aufbauen.
-    audit_evidence_hint: 'Datenresidenz-Mapping pro Cloud-Service, Jurisdiktions-Hinweis im SLA, Kunden-Dokumentation.'
 
-  # ===== HR — Human Resources =====
   - source: 'HR-01'
-    target: 'PSC-01'
+    target: 'HR-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       C5:2026 HR-01 „Verification of Qualification and Trustworthiness"
-      entspricht direkt C5:2020 PSC-01. Der eigene 2020-Bereich PSC
+      entspricht direkt C5:2020 HR-01. Der eigene 2020-Bereich PSC
       (Personalsicherheit) ist 2026 vollständig in HR aufgegangen;
       Pflichteninhalt deckungsgleich.
     cross_refs: ['HR-02', 'HR-04']
@@ -304,8 +285,8 @@ mappings:
     audit_evidence_hint: 'Schulungsplan, Schulungsquoten ≥95%, rollenspezifische Curricula, Phishing-Drills.'
 
   - source: 'HR-07'
-    target: 'MA-01'
-    relationship: 'equivalent'
+    target: null
+    relationship: 'superset'
     confidence: 'medium'
     rationale: |
       C5:2026 HR-07 „Remote Working - Policy" entspricht C5:2020 MA-01
@@ -394,23 +375,23 @@ mappings:
     audit_evidence_hint: 'ISMS-Scope-Dokument, ISMS-Handbuch, ISO-27001-Zertifikat oder gleichwertig, Management-Review.'
 
   - source: 'OIS-04'
-    target: 'BFM-01'
+    target: 'COM-04'
     relationship: 'partial_overlap'
     confidence: 'low'
     rationale: |
       C5:2026 OIS-04 „Segregation of Duties" deckt Funktionstrennungs-
-      Anforderungen ab, die in 2020 unter BFM-01 (Beauftragten-Funktion)
+      Anforderungen ab, die in 2020 unter COM-04 (Beauftragten-Funktion)
       teilweise aufgehoben waren. Eigenständiges 2020-Kriterium für
       Segregation of Duties existiert nicht.
     audit_evidence_hint: 'SoD-Matrix für kritische Prozesse, Konflikt-Reviews letzte 12 Monate.'
 
   - source: 'OIS-05'
-    target: 'RB-04'
+    target: 'OIS-05'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       C5:2026 OIS-05 „Threat Intelligence" entspricht direkt C5:2020
-      RB-04 „Identifikation von Schwachstellen, Bedrohungen und
+      OIS-05 „Identifikation von Schwachstellen, Bedrohungen und
       funktionalen Mängeln". Pflichteninhalt deckungsgleich; in 2026 von
       RB nach OIS verschoben.
     cross_refs: ['OIS-06']
@@ -455,12 +436,12 @@ mappings:
     audit_evidence_hint: 'Malware-Schutz-Konzept, AV/EDR-Coverage-Report, Quarantäne-Statistiken.'
 
   - source: 'OPS-06'
-    target: 'RB-01'
+    target: 'OPS-06'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
       C5:2026 OPS-06 „Data Backup and Recovery - Policies and
-      Procedures" entspricht dem Backup-Anteil von 2020 RB-01. Der
+      Procedures" entspricht dem Backup-Anteil von 2020 OPS-06. Der
       breitere 2020-Regelbetrieb-Bereich (RB) ist 2026 auf OPS, DEV und
       PSS verteilt; Backup-Pflichten konsolidiert in OPS-06..09.
     cross_refs: ['OPS-07', 'OPS-08', 'OPS-09']
@@ -657,35 +638,35 @@ mappings:
 
   # ===== SSO — Sub-Service Organisations =====
   - source: 'SSO-01'
-    target: 'BEI-01'
+    target: 'SSO-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       C5:2026 SSO-01 „Policies and Procedures for Controlling and
       Monitoring Service Organisations" entspricht direkt C5:2020
-      BEI-01. Der 2020-Bereich BEI ist 2026 zu SSO umstrukturiert worden
+      SSO-01. Der 2020-Bereich BEI ist 2026 zu SSO umstrukturiert worden
       mit präziserem Fokus auf laufende Steuerung statt nur
       Vertragsgestaltung.
     cross_refs: ['SSO-04', 'SSO-05']
     audit_evidence_hint: 'Sub-Provider-Policy, Vertragstemplate mit InfoSec-Klauseln, Monitoring-Berichte.'
 
   - source: 'SSO-02'
-    target: 'BEI-04'
+    target: 'SSO-04'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       C5:2026 SSO-02 „Risk Assessment of Service Organisations"
-      entspricht direkt C5:2020 BEI-04 „Anforderungen an Lieferanten"
+      entspricht direkt C5:2020 SSO-04 „Anforderungen an Lieferanten"
       mit Fokus auf Risikobewertung. Pflichteninhalt deckungsgleich.
     cross_refs: ['SSO-04', 'SSO-06']
     audit_evidence_hint: 'Sub-Provider-Risikobewertungen, Sub-Provider-Verzeichnis.'
 
   - source: 'SSO-06'
-    target: 'BEI-04'
+    target: 'SSO-04'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
       C5:2026 SSO-06 „Contract Termination Strategy for Service
       Organisations" hebt die Exit-Strategie als eigenes Kriterium
-      hervor — in 2020 unter BEI-04 als Teilaspekt enthalten.
+      hervor — in 2020 unter SSO-04 als Teilaspekt enthalten.
     audit_evidence_hint: 'Exit-Strategie-Dokument pro kritischem Sub-Provider, Datenrücknahme-Plan, Migrations-Runbook.'

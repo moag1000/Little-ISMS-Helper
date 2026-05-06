@@ -47,7 +47,7 @@ library:
       Strukturelle Hinweise:
       - C5:2020 SIM-01 = ISMS-Steuerung (NICHT Security Incident
         Management — diese Bedeutungs-Verschiebung gilt erst in C5:2026)
-      - C5:2020 BFM-01 (Beauftragten-/Berichtswesen-Funktion) hat in
+      - C5:2020 COM-04 (Beauftragten-/Berichtswesen-Funktion) hat in
         EUCS kein 1:1-Pendant; Anteile in EUCS A1 OIS-04 (SoD) und A16
         (Compliance Reviews)
       - C5:2020 hatte keinen dedizierten Behördenanfrage-Bereich (wird
@@ -89,26 +89,26 @@ mappings:
     audit_evidence_hint: 'BC-Strategie, Top-Management-Freigabe, BIA, BC-Plans, Übungs-Reports der letzten 12 Monate.'
 
   # ===== BEI — Beziehungen zu Dritten =====
-  - source: 'BEI-01'
+  - source: 'SSO-01'
     target: 'PM-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      BSI C5:2020 BEI-01 „Richtlinien und Anweisungen für Beziehungen zu
+      BSI C5:2020 SSO-01 „Richtlinien und Anweisungen für Beziehungen zu
       Dritten" entspricht direkt EUCS A13 „Procurement and Suppliers"
       mit Sub-Kriterium PM-01. Pflichteninhalt deckungsgleich:
       vertragliche InfoSec-Pflichten gegenüber Sub-Dienstleistern,
       AVV-Klauseln nach Art. 28 DSGVO. Konkrete EUCS-Sub-ID gegen Final-
       Veröffentlichung zu validieren.
-    cross_refs: ['BEI-04']
+    cross_refs: ['SSO-04']
     audit_evidence_hint: 'Lieferantenverträge mit InfoSec-Klauseln, AVV nach Art. 28 DSGVO, Sub-Provider-Liste mit Risikobewertung.'
 
-  - source: 'BEI-04'
+  - source: 'SSO-04'
     target: 'PM-02'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      BSI C5:2020 BEI-04 „Anforderungen an Lieferanten" entspricht
+      BSI C5:2020 SSO-04 „Anforderungen an Lieferanten" entspricht
       direkt EUCS A13 PM-02 (Lieferanten-Risikobewertung).
       Pflichteninhalt deckungsgleich: Sub-Provider-Audit-Rechte,
       Risikobewertung eingebundener Drittparteien, formale Steuerung
@@ -116,18 +116,18 @@ mappings:
     audit_evidence_hint: 'Sub-Provider-Risikobewertungen, Audit-Rechte-Klauseln, Sub-Provider-Verzeichnis.'
 
   # ===== BFM — Beauftragten-/Berichtswesen-Funktion =====
-  - source: 'BFM-01'
+  - source: 'COM-04'
     target: 'OIS-04'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
-      BSI C5:2020 BFM-01 „Beauftragten-/Berichtswesen-Funktion" hat in
+      BSI C5:2020 COM-04 „Beauftragten-/Berichtswesen-Funktion" hat in
       EUCS keine 1:1-Entsprechung. Schnittmenge mit EUCS A1 OIS-04
-      „Segregation of Duties" (Funktionstrennung war in BFM-01
+      „Segregation of Duties" (Funktionstrennung war in COM-04
       teilweise enthalten). Andere BFM-Anteile (Compliance-Reviews,
       Beauftragten-Rollen) liegen in EUCS A16 — kein einzelnes Pendant.
     gap_warning: |
-      Wer C5:2020 BFM-01 erfüllt, hat in EUCS Anteile in OIS-04 (SoD)
+      Wer C5:2020 COM-04 erfüllt, hat in EUCS Anteile in OIS-04 (SoD)
       und A16 (Compliance Reviews). Empfehlung: separate Beauftragten-
       Rollen-Dokumentation pflegen, da EUCS keine konsolidierte
       Beauftragten-Funktion fordert.
@@ -135,12 +135,12 @@ mappings:
     audit_evidence_hint: 'SoD-Matrix, Beauftragten-Bestellungen (DSB, ISB, BC-Beauftragter), Berichtswesen-Templates.'
 
   # ===== KOS — Kommunikationssicherheit =====
-  - source: 'KOS-01'
+  - source: 'COS-01'
     target: 'CS-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      BSI C5:2020 KOS-01 „Technische Schutzmaßnahmen" entspricht direkt
+      BSI C5:2020 COS-01 „Technische Schutzmaßnahmen" entspricht direkt
       EUCS A9 „Communication Security" mit Sub-Kriterium CS-01.
       Pflichteninhalt deckungsgleich: Netzwerk-Segmentierung, Firewall-
       Regeln, kryptografische Transportsicherung. Konkrete EUCS-Sub-ID
@@ -148,12 +148,12 @@ mappings:
     audit_evidence_hint: 'Netzwerk-Segmentierungs-Konzept, Firewall-Rule-Review, Topologie-Dokument, TLS-Konfiguration.'
 
   # ===== KRY — Kryptographie =====
-  - source: 'KRY-01'
+  - source: 'CRY-01'
     target: 'CKM-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      BSI C5:2020 KRY-01 „Richtlinie zur Verwendung von
+      BSI C5:2020 CRY-01 „Richtlinie zur Verwendung von
       Verschlüsselungsverfahren und Schlüsselverwaltung" entspricht
       direkt EUCS A8 „Cryptography and Key Management" mit Sub-
       Kriterium CKM-01. Pflichteninhalt deckungsgleich; beide
@@ -171,21 +171,21 @@ mappings:
       Pflichteninhalt deckungsgleich: regelmäßige Awareness-Schulungen
       für alle Beschäftigten inkl. rollenspezifischer Vertiefung für
       privilegierte Nutzer (z.B. Plattform-Admins).
-    cross_refs: ['PSC-01']
+    cross_refs: ['HR-01']
     audit_evidence_hint: 'Schulungs-Quote (≥95%), Phishing-Drill-Ergebnisse, rollenspezifische Curricula für Privileged Users.'
 
-  - source: 'PSC-01'
+  - source: 'HR-01'
     target: 'AT-02'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
-      BSI C5:2020 PSC-01 „Personalsicherheit" hat Schnittmenge mit EUCS
-      A20 AT-02 (HR-Lifecycle-Awareness). PSC-01 fokussiert auf
+      BSI C5:2020 HR-01 „Personalsicherheit" hat Schnittmenge mit EUCS
+      A20 AT-02 (HR-Lifecycle-Awareness). HR-01 fokussiert auf
       Hintergrundüberprüfungen und vertragliche Pflichten; AT-02 auf
       Awareness-Vertiefung im Onboarding/Offboarding. Konkrete EUCS-
       Sub-ID gegen Final-Veröffentlichung zu validieren.
     gap_warning: |
-      Wer C5:2020 PSC-01 erfüllt, hat die EUCS-Pflichten zu Awareness-
+      Wer C5:2020 HR-01 erfüllt, hat die EUCS-Pflichten zu Awareness-
       Verzahnung mit HR-Lifecycle nur teilweise abgedeckt — Empfehlung:
       Onboarding-/Offboarding-Checklisten mit dediziertem Awareness-
       Modul ergänzen.
@@ -288,39 +288,39 @@ mappings:
     audit_evidence_hint: 'API-Dokumentation, Datenexport-Funktionalität, Input-Validation, Daten-Lösch-Konzept.'
 
   # ===== RB — Regelbetrieb =====
-  - source: 'RB-01'
+  - source: 'OPS-06'
     target: 'A11-1'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
-      BSI C5:2020 RB-01 (Regelbetrieb-Steuerung inkl. Change Management)
+      BSI C5:2020 OPS-06 (Regelbetrieb-Steuerung inkl. Change Management)
       hat Schnittmenge mit EUCS A11 „Change and Configuration
-      Management". RB-01 ist breiter und deckt zusätzliche
+      Management". OPS-06 ist breiter und deckt zusätzliche
       Regelbetrieb-Aspekte (Backup, Konfiguration) ab; A11 fokussiert
       enger auf Change/Config. Konkrete EUCS-Sub-ID gegen Final-
       Veröffentlichung zu validieren.
     gap_warning: |
-      Wer C5:2020 RB-01 nur über EUCS A11 nachweist, hat ggf. Backup-
+      Wer C5:2020 OPS-06 nur über EUCS A11 nachweist, hat ggf. Backup-
       und Recovery-Pflichten nicht abgedeckt — diese liegen in EUCS A6
       (Operational Security) oder A15 (Business Continuity) verteilt.
     cross_refs: ['BC-01']
     audit_evidence_hint: 'Change-Management-Richtlinie, CAB-Protokolle, Konfigurations-Baseline, Backup-Konzept.'
 
-  - source: 'RB-04'
+  - source: 'OIS-05'
     target: 'RM-02'
     relationship: 'partial_overlap'
     confidence: 'medium'
     rationale: |
-      BSI C5:2020 RB-04 „Identifikation von Schwachstellen, Bedrohungen
+      BSI C5:2020 OIS-05 „Identifikation von Schwachstellen, Bedrohungen
       und funktionalen Mängeln" hat Schnittmenge mit EUCS A3 RM-02
-      (Risikobewertung mit Threat-Komponente). RB-04 fokussiert auf
+      (Risikobewertung mit Threat-Komponente). OIS-05 fokussiert auf
       operatives Threat-Intelligence und Schwachstellen-Identifikation;
       RM-02 ist breiter und deckt strategisches Risk-Assessment ab.
       Konkrete EUCS-Sub-ID gegen Final-Veröffentlichung zu validieren.
     gap_warning: |
-      Wer C5:2020 RB-04 nur über EUCS A3 RM-02 nachweist, fehlt der
+      Wer C5:2020 OIS-05 nur über EUCS A3 RM-02 nachweist, fehlt der
       operative Threat-Intel-Bezug (CERT-Bund, BSI-CERT). Empfehlung:
-      RB-04-Pflichten auch gegen EUCS A6 OS-03 (Vuln-Mgmt) abbilden.
+      OIS-05-Pflichten auch gegen EUCS A6 OS-03 (Vuln-Mgmt) abbilden.
     cross_refs: ['OS-03']
     audit_evidence_hint: 'Threat-Intel-Quellen-Liste, ausgewertete Bedrohungsmeldungen letzte 12 Monate, dokumentierte Eskalation an Cloud-Operations.'
 
@@ -380,21 +380,3 @@ mappings:
       Pflichteninhalt deckungsgleich.
     audit_evidence_hint: 'Verträge mit Outsourcing-Entwicklern, Code-Review-Protokolle, Sub-Provider-Sicherheits-Klauseln.'
 
-  # ===== MA — Mobile Arbeit (entfaellt in C5:2026 in HR; in EUCS Anteile in A6/A7) =====
-  - source: 'MA-01'
-    target: 'A7-1'
-    relationship: 'partial_overlap'
-    confidence: 'low'
-    rationale: |
-      BSI C5:2020 MA-01 (Mobile Arbeit / Telearbeits-Richtlinie) hat in
-      EUCS keine 1:1-Entsprechung. Anteile finden sich in EUCS A7
-      (Identity/Access Control für Remote-Zugriff) und A6 (Operational
-      Security für Endpoint-Hardening). Konkrete EUCS-Sub-ID gegen
-      Final-Veröffentlichung zu validieren.
-    gap_warning: |
-      Wer C5:2020 MA-01 erfüllt, sollte sicherstellen, dass Remote-
-      Work-Pflichten gegen EUCS A6 (Endpoint-Schutz, MDM) und A7 (VPN-
-      Authentisierung, MFA für Remote-Zugriff) abgebildet sind. EUCS
-      hat Remote Work nicht als eigenständigen Bereich strukturiert.
-    cross_refs: ['IAM-08']
-    audit_evidence_hint: 'Remote-Work-Policy, VPN-Konfiguration, Endpoint-Hardening für mobile Geräte, MDM-Compliance-Report.'
