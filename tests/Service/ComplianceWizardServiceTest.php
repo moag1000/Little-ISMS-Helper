@@ -499,4 +499,28 @@ class ComplianceWizardServiceTest extends KernelTestCase
         $this->assertSame('KRITIS-DE', $config['code']);
         $this->assertGreaterThanOrEqual(7, count($config['categories']));
     }
+
+    #[Test]
+    public function testPciDssWizardIsAvailable(): void
+    {
+        $this->requireDatabase();
+        $config = $this->wizardService->getWizardConfig('pci_dss');
+        if ($config === null) {
+            $this->markTestSkipped('pci_dss wizard requires the "controls" module');
+        }
+        $this->assertSame('PCI-DSS-4.0.1', $config['code']);
+        $this->assertGreaterThanOrEqual(12, count($config['categories']));
+    }
+
+    #[Test]
+    public function testSoc2WizardIsAvailable(): void
+    {
+        $this->requireDatabase();
+        $config = $this->wizardService->getWizardConfig('soc2');
+        if ($config === null) {
+            $this->markTestSkipped('soc2 wizard requires the "controls" module');
+        }
+        $this->assertSame('SOC2-TYPE-II', $config['code']);
+        $this->assertGreaterThanOrEqual(5, count($config['categories']));
+    }
 }

@@ -237,6 +237,26 @@ class ComplianceWizardService
                 'recommended_modules' => ['incidents', 'bcm', 'risks', 'audits'],
                 'categories' => $this->getKritisCategories(),
             ],
+            'pci_dss' => [
+                'code' => 'PCI-DSS-4.0.1',
+                'name' => 'PCI-DSS v4.0.1 (Payment Card Industry)',
+                'description' => 'wizard.pci_dss.description',
+                'icon' => 'bi-credit-card-fill',
+                'color' => 'info',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['assets', 'risks', 'incidents', 'audits'],
+                'categories' => $this->getPciDssCategories(),
+            ],
+            'soc2' => [
+                'code' => 'SOC2-TYPE-II',
+                'name' => 'SOC 2 Type II (AICPA Trust Services)',
+                'description' => 'wizard.soc2.description',
+                'icon' => 'bi-patch-check-fill',
+                'color' => 'success',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['incidents', 'bcm', 'risks', 'audits', 'suppliers'],
+                'categories' => $this->getSoc2Categories(),
+            ],
         ];
 
         // Filter wizards by required modules
@@ -3881,6 +3901,253 @@ class ComplianceWizardService
                         'name' => 'wizard.check.kritis_suppliers',
                         'type' => 'supplier_assessment',
                         'route' => 'app_supplier_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * PCI-DSS v4.0.1 categories — 12 Requirements mapped to ISMS check types.
+     *
+     * Covers all 12 PCI-DSS Requirements of the Payment Card Industry Data Security Standard v4.0.1.
+     */
+    private function getPciDssCategories(): array
+    {
+        return [
+            'req_1_network' => [
+                'name' => 'wizard.pci_dss.req_1_network',
+                'description' => 'wizard.pci_dss.req_1_network_desc',
+                'icon' => 'bi-router',
+                'weight' => 2,
+                'checks' => [
+                    'pci_dss_req_1' => [
+                        'name' => 'wizard.check.pci_dss_req_1',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'req_2_secure_config' => [
+                'name' => 'wizard.pci_dss.req_2_secure_config',
+                'description' => 'wizard.pci_dss.req_2_secure_config_desc',
+                'icon' => 'bi-gear-fill',
+                'weight' => 2,
+                'checks' => [
+                    'pci_dss_req_2' => [
+                        'name' => 'wizard.check.pci_dss_req_2',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'req_3_protect_data' => [
+                'name' => 'wizard.pci_dss.req_3_protect_data',
+                'description' => 'wizard.pci_dss.req_3_protect_data_desc',
+                'icon' => 'bi-shield-lock-fill',
+                'weight' => 3,
+                'checks' => [
+                    'pci_dss_req_3' => [
+                        'name' => 'wizard.check.pci_dss_req_3',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'req_4_transit' => [
+                'name' => 'wizard.pci_dss.req_4_transit',
+                'description' => 'wizard.pci_dss.req_4_transit_desc',
+                'icon' => 'bi-shield-shaded',
+                'weight' => 2,
+                'checks' => [
+                    'pci_dss_req_4' => [
+                        'name' => 'wizard.check.pci_dss_req_4',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'req_5_malware' => [
+                'name' => 'wizard.pci_dss.req_5_malware',
+                'description' => 'wizard.pci_dss.req_5_malware_desc',
+                'icon' => 'bi-bug-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'pci_dss_req_5' => [
+                        'name' => 'wizard.check.pci_dss_req_5',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'req_6_secure_dev' => [
+                'name' => 'wizard.pci_dss.req_6_secure_dev',
+                'description' => 'wizard.pci_dss.req_6_secure_dev_desc',
+                'icon' => 'bi-code-square',
+                'weight' => 2,
+                'checks' => [
+                    'pci_dss_req_6' => [
+                        'name' => 'wizard.check.pci_dss_req_6',
+                        'type' => 'document_review',
+                        'document_categories' => ['policy', 'concept'],
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'req_7_access' => [
+                'name' => 'wizard.pci_dss.req_7_access',
+                'description' => 'wizard.pci_dss.req_7_access_desc',
+                'icon' => 'bi-key-fill',
+                'weight' => 2,
+                'checks' => [
+                    'pci_dss_req_7' => [
+                        'name' => 'wizard.check.pci_dss_req_7',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'req_8_idauth' => [
+                'name' => 'wizard.pci_dss.req_8_idauth',
+                'description' => 'wizard.pci_dss.req_8_idauth_desc',
+                'icon' => 'bi-person-vcard',
+                'weight' => 2,
+                'checks' => [
+                    'pci_dss_req_8' => [
+                        'name' => 'wizard.check.pci_dss_req_8',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'req_9_physical' => [
+                'name' => 'wizard.pci_dss.req_9_physical',
+                'description' => 'wizard.pci_dss.req_9_physical_desc',
+                'icon' => 'bi-building-lock',
+                'weight' => 1.5,
+                'checks' => [
+                    'pci_dss_req_9' => [
+                        'name' => 'wizard.check.pci_dss_req_9',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_location_index',
+                    ],
+                ],
+            ],
+            'req_10_logging' => [
+                'name' => 'wizard.pci_dss.req_10_logging',
+                'description' => 'wizard.pci_dss.req_10_logging_desc',
+                'icon' => 'bi-journal-text',
+                'weight' => 2,
+                'checks' => [
+                    'pci_dss_req_10' => [
+                        'name' => 'wizard.check.pci_dss_req_10',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'req_11_test' => [
+                'name' => 'wizard.pci_dss.req_11_test',
+                'description' => 'wizard.pci_dss.req_11_test_desc',
+                'icon' => 'bi-clipboard-check-fill',
+                'weight' => 2,
+                'checks' => [
+                    'pci_dss_req_11' => [
+                        'name' => 'wizard.check.pci_dss_req_11',
+                        'type' => 'audit_status',
+                        'route' => 'app_audit_index',
+                    ],
+                ],
+            ],
+            'req_12_policy' => [
+                'name' => 'wizard.pci_dss.req_12_policy',
+                'description' => 'wizard.pci_dss.req_12_policy_desc',
+                'icon' => 'bi-file-earmark-ruled',
+                'weight' => 1.5,
+                'checks' => [
+                    'pci_dss_req_12' => [
+                        'name' => 'wizard.check.pci_dss_req_12',
+                        'type' => 'document_review',
+                        'document_categories' => ['policy'],
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * SOC 2 Type II categories — 5 AICPA Trust Services Criteria.
+     *
+     * Covers Security (mandatory), Availability, Processing Integrity, Confidentiality, Privacy.
+     */
+    private function getSoc2Categories(): array
+    {
+        return [
+            'security' => [
+                'name' => 'wizard.soc2.security',
+                'description' => 'wizard.soc2.security_desc',
+                'icon' => 'bi-shield-fill-check',
+                'weight' => 3,
+                'checks' => [
+                    'soc2_security' => [
+                        'name' => 'wizard.check.soc2_security',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'availability' => [
+                'name' => 'wizard.soc2.availability',
+                'description' => 'wizard.soc2.availability_desc',
+                'icon' => 'bi-life-preserver',
+                'weight' => 2,
+                'checks' => [
+                    'soc2_availability' => [
+                        'name' => 'wizard.check.soc2_availability',
+                        'type' => 'bcm_coverage',
+                        'route' => 'app_bcm_index',
+                    ],
+                ],
+            ],
+            'processing_integrity' => [
+                'name' => 'wizard.soc2.processing_integrity',
+                'description' => 'wizard.soc2.processing_integrity_desc',
+                'icon' => 'bi-check2-square',
+                'weight' => 2,
+                'checks' => [
+                    'soc2_processing_integrity' => [
+                        'name' => 'wizard.check.soc2_processing_integrity',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_audit_index',
+                    ],
+                ],
+            ],
+            'confidentiality' => [
+                'name' => 'wizard.soc2.confidentiality',
+                'description' => 'wizard.soc2.confidentiality_desc',
+                'icon' => 'bi-incognito',
+                'weight' => 2,
+                'checks' => [
+                    'soc2_confidentiality' => [
+                        'name' => 'wizard.check.soc2_confidentiality',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'privacy' => [
+                'name' => 'wizard.soc2.privacy',
+                'description' => 'wizard.soc2.privacy_desc',
+                'icon' => 'bi-person-check-fill',
+                'weight' => 2,
+                'checks' => [
+                    'soc2_privacy' => [
+                        'name' => 'wizard.check.soc2_privacy',
+                        'type' => 'dsr_coverage',
+                        'route' => 'app_data_subject_request_index',
                     ],
                 ],
             ],
