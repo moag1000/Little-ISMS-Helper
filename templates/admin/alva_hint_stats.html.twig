@@ -1,58 +1,74 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'alva' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
-{% block title %}{{ 'alva.stats.title'|trans({}, 'alva') }}{% endblock %}
+{% block admin_title %}{{ 'alva.stats.title'|trans({}, 'alva') }}{% endblock %}
 
-{% block body %}
-<div class="container-fluid mt-4">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
-            { label: 'alva.stats.title'|trans({}, 'alva') }
-        ]
-    } %}
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'alva.stats.title'|trans({}, 'alva') }}</li>
+{% endblock %}
 
-    <h1 class="h3 mb-4">{{ 'alva.stats.title'|trans({}, 'alva') }}</h1>
-    <p class="text-muted small">{{ 'alva.stats.description'|trans({}, 'alva') }}</p>
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'stars', label: 'Alva' },
+        title: 'alva.stats.title'|trans({}, 'alva'),
+        subtitle: 'alva.stats.description'|trans({}, 'alva'),
+    }) }}
 
     {% if stats|length == 0 %}
-        <div class="fa-alert fa-alert--info">
-            <i class="fa-icon fa-icon--ui-info-circle fa-alert__icon" aria-hidden="true"></i>
-            <div class="fa-alert__body">{{ 'alva.stats.empty'|trans({}, 'alva') }}</div>
-        </div>
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'alva.stats.empty'|trans({}, 'alva')
+        }) }}
     {% else %}
         {% set chart_labels = stats|map(r => r.hintKey) %}
         {% set chart_renders = stats|map(r => r.rendered) %}
         {% set chart_dismiss = stats|map(r => r.total) %}
-        <div class="chart-container mb-4" style="max-height:360px;">
-            <canvas data-controller="chart"
-                    data-chart-type-value="bar"
-                    data-chart-data-value='{"labels":{{ chart_labels|json_encode|raw }},"datasets":[{"label":"{{ 'alva.stats.col.rendered'|trans({}, 'alva')|escape('js') }}","data":{{ chart_renders|json_encode|raw }},"backgroundColor":"#0ea5e9"},{"label":"{{ 'alva.stats.col.total'|trans({}, 'alva')|escape('js') }}","data":{{ chart_dismiss|json_encode|raw }},"backgroundColor":"#7c3aed"}]}'
-                    data-chart-options-value='{"indexAxis":"y","scales":{"x":{"beginAtZero":true,"ticks":{"precision":0}}},"plugins":{"legend":{"position":"bottom"}}}'></canvas>
-        </div>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">{{ 'alva.stats.col.hint_key'|trans({}, 'alva') }}</th>
-                    <th scope="col" class="text-end">{{ 'alva.stats.col.rendered'|trans({}, 'alva') }}</th>
-                    <th scope="col" class="text-end">{{ 'alva.stats.col.total'|trans({}, 'alva') }}</th>
-                    <th scope="col" class="text-end">{{ 'alva.stats.col.snoozed'|trans({}, 'alva') }}</th>
-                    <th scope="col" class="text-end">{{ 'alva.stats.col.distinct_users'|trans({}, 'alva') }}</th>
-                    <th scope="col" class="text-end">{{ 'alva.stats.col.dismiss_rate'|trans({}, 'alva') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in stats %}
-                    <tr>
-                        <td><code>{{ row.hintKey }}</code></td>
-                        <td class="text-end">{{ row.rendered }}</td>
-                        <td class="text-end">{{ row.total }}</td>
-                        <td class="text-end">{{ row.snoozed }}</td>
-                        <td class="text-end">{{ row.distinctUsers }}</td>
-                        <td class="text-end">{{ row.dismissRate }} %</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+
+        <section class="fa-section">
+            <div class="fa-section__body">
+                <div class="chart-container mb-4" style="max-height:360px;">
+                    <canvas data-controller="chart"
+                            data-chart-type-value="bar"
+                            data-chart-data-value='{"labels":{{ chart_labels|json_encode|raw }},"datasets":[{"label":"{{ 'alva.stats.col.rendered'|trans({}, 'alva')|escape('js') }}","data":{{ chart_renders|json_encode|raw }},"backgroundColor":"#0ea5e9"},{"label":"{{ 'alva.stats.col.total'|trans({}, 'alva')|escape('js') }}","data":{{ chart_dismiss|json_encode|raw }},"backgroundColor":"#7c3aed"}]}'
+                            data-chart-options-value='{"indexAxis":"y","scales":{"x":{"beginAtZero":true,"ticks":{"precision":0}}},"plugins":{"legend":{"position":"bottom"}}}'></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="fa-section">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'alva.stats.title'|trans({}, 'alva') }}</h2>
+            </div>
+            <div class="fa-section__body">
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'alva.stats.col.hint_key'|trans({}, 'alva') }}</th>
+                                <th scope="col" class="text-end">{{ 'alva.stats.col.rendered'|trans({}, 'alva') }}</th>
+                                <th scope="col" class="text-end">{{ 'alva.stats.col.total'|trans({}, 'alva') }}</th>
+                                <th scope="col" class="text-end">{{ 'alva.stats.col.snoozed'|trans({}, 'alva') }}</th>
+                                <th scope="col" class="text-end">{{ 'alva.stats.col.distinct_users'|trans({}, 'alva') }}</th>
+                                <th scope="col" class="text-end">{{ 'alva.stats.col.dismiss_rate'|trans({}, 'alva') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in stats %}
+                                <tr>
+                                    <td><code>{{ row.hintKey }}</code></td>
+                                    <td class="text-end">{{ row.rendered }}</td>
+                                    <td class="text-end">{{ row.total }}</td>
+                                    <td class="text-end">{{ row.snoozed }}</td>
+                                    <td class="text-end">{{ row.distinctUsers }}</td>
+                                    <td class="text-end">{{ row.dismissRate }} %</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
     {% endif %}
-</div>
 {% endblock %}

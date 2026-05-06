@@ -1,32 +1,35 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'supplier_criticality' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'supplier_criticality.action.new'|trans({}, 'supplier_criticality') }}{% endblock %}
+{% block admin_title %}{{ 'supplier_criticality.action.new'|trans({}, 'supplier_criticality') }}{% endblock %}
 
-{% block body %}
-<div class="container mt-4">
-    <div class="row mb-3">
-        <div class="col">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="{{ path('app_admin_supplier_criticality_index') }}">
-                            {{ 'supplier_criticality.title'|trans({}, 'supplier_criticality') }}
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active">{{ 'supplier_criticality.action.new'|trans({}, 'supplier_criticality') }}</li>
-                </ol>
-            </nav>
-            <h1>
-                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
-                {{ 'supplier_criticality.action.new'|trans({}, 'supplier_criticality') }}
-            </h1>
-        </div>
-    </div>
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('app_admin_supplier_criticality_index') }}">
+            {{ 'supplier_criticality.title'|trans({}, 'supplier_criticality') }}
+        </a>
+    </li>
+    <li class="breadcrumb-item active">{{ 'supplier_criticality.action.new'|trans({}, 'supplier_criticality') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'building', label: 'Suppliers' },
+        title: 'supplier_criticality.action.new'|trans({}, 'supplier_criticality'),
+        subtitle: 'supplier_criticality.subtitle'|trans({}, 'supplier_criticality'),
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                        {{ 'supplier_criticality.action.new'|trans({}, 'supplier_criticality') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     {{ form_start(form) }}
                         <div class="mb-3">
                             {{ form_label(form.code) }}
@@ -78,9 +81,8 @@
                             </a>
                         </div>
                     {{ form_end(form) }}
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
     </div>
-</div>
 {% endblock %}

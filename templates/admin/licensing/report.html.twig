@@ -1,37 +1,30 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}Lizenzbericht - Detailliert{% endblock %}
+{% block admin_title %}Lizenzbericht - Detailliert{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('app_reports_overview') }}">Reports</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('admin_licensing_index') }}">Lizenzen</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Detaillierter Bericht</li>
+{% endblock %}
 
 {% block admin_content %}
-<div class="container-fluid">
-    {# Breadcrumb Navigation #}
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'Reports', url: path('app_reports_overview') },
-            { label: 'Lizenzen', url: path('admin_licensing_index') },
-            { label: 'Detaillierter Bericht' }
-        ]
-    } %}
-
-    {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
+        badge: { icon: 'patch-check', label: 'Lizenzen' },
         title: 'Detaillierter Lizenzbericht',
         subtitle: 'Vollständige Compliance-Analyse aller Dependencies',
-        icon: 'bi-file-earmark-bar-graph'
-    } %}
+    }) }}
 
     <div class="row">
         <div class="col-lg-3 mb-4">
-            {# Navigation Sidebar #}
-            {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title mb-0">
-                            <i class="fa-icon fa-icon--ui-list me-2" aria-hidden="true"></i>Navigation
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> Navigation
+                    </h2>
+                </div>
+                <div class="fa-section__body p-0">
                     <div class="list-group list-group-flush">
                         <a href="{{ path('admin_licensing_index') }}" class="list-group-item list-group-item-action">
                             <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>NOTICE
@@ -43,19 +36,16 @@
                             <i class="fa-icon fa-icon--nav-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
                         </a>
                     </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
 
-            {# Quick Actions #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mt-3' } %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title mb-0">
-                            <i class="fa-icon fa-icon--nav-tools me-2" aria-hidden="true"></i>Aktionen
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section mt-3">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> Aktionen
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     <div class="d-grid gap-2">
                         <button data-controller="ui-actions" data-action="ui-actions#print" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                             <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i>Drucken
@@ -78,74 +68,67 @@
                             Bericht lokal mit <code>./license-report.sh</code> aktualisieren
                         </small>
                     </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
 
         <div class="col-lg-9">
-            {# Report Content #}
-            {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
-                {% block card_header %}
-                    <div class="card-header bg-body-secondary">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h2 class="card-title mb-0">
-                                <i class="fa-icon fa-icon--nav-reports me-2" aria-hidden="true"></i>Vollständiger Compliance-Report
-                            </h2>
-                            <div class="btn-group btn-group-sm" role="group" data-controller="ui-actions">
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-action="ui-actions#setFontSize" data-ui-actions-size-param="13px" data-ui-actions-target-param="#report-content">
-                                    <i class="fa-icon fa-icon--util-zoom-out" aria-hidden="true"></i>
-                                </button>
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#report-content">
-                                    <i class="fa-icon fa-icon--util-zoom-in" aria-hidden="true"></i>
-                                </button>
-                            </div>
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-reports" aria-hidden="true"></i> Vollständiger Compliance-Report
+                    </h2>
+                    <div class="fa-section__tools">
+                        <div class="btn-group btn-group-sm" role="group" data-controller="ui-actions">
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-action="ui-actions#setFontSize" data-ui-actions-size-param="13px" data-ui-actions-target-param="#report-content">
+                                <i class="fa-icon fa-icon--util-zoom-out" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#report-content">
+                                <i class="fa-icon fa-icon--util-zoom-in" aria-hidden="true"></i>
+                            </button>
                         </div>
                     </div>
-                {% endblock %}
-                {% block card_body %}
+                </div>
+                <div class="fa-section__body p-0">
                     <div id="report-content" class="markdown-content p-4" style="font-size: 13px; max-height: 80vh; overflow-y: auto;">
                         {{ report_content|raw|nl2br }}
                     </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
 
-            {# Legend #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mt-3' } %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title mb-0">
-                            <i class="fa-icon fa-icon--nav-help me-2" aria-hidden="true"></i>Legende
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section mt-3">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-help" aria-hidden="true"></i> Legende
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     <div class="row">
                         <div class="col-md-6 mb-2">
-                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Erlaubt', class: 'me-2' } %}
+                            <span class="badge bg-success me-2"><i class="bi bi-check-circle" aria-hidden="true"></i> Erlaubt</span>
                             <small>Permissive Lizenzen (MIT, BSD, Apache-2.0)</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'Eingeschränkt', class: 'me-2' } %}
+                            <span class="badge bg-warning text-dark me-2"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Eingeschränkt</span>
                             <small>Weak copyleft (MPL-2.0, EPL, CC-BY)</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-arrow-repeat', content: 'Copyleft', class: 'me-2' } %}
+                            <span class="badge bg-info text-dark me-2"><i class="bi bi-arrow-repeat" aria-hidden="true"></i> Copyleft</span>
                             <small>Strong copyleft (GPL/LGPL/AGPL)</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'Nicht erlaubt', class: 'me-2' } %}
+                            <span class="badge bg-danger me-2"><i class="bi bi-x-circle" aria-hidden="true"></i> Nicht erlaubt</span>
                             <small>Non-commercial licenses</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: '❓ Unbekannt', class: 'me-2' } %}
+                            <span class="badge bg-secondary me-2">❓ Unbekannt</span>
                             <small>Manuelle Prüfung erforderlich</small>
                         </div>
                     </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
     </div>
-</div>
 
 <style>
 .markdown-content {
@@ -251,8 +234,9 @@
 @media print {
     .breadcrumb,
     .page-header-actions,
-    .card:not(.card:has(.markdown-content)),
-    .btn {
+    .fa-section:not(.fa-section:has(.markdown-content)),
+    .btn,
+    .fa-cyber-btn {
         display: none !important;
     }
 
@@ -262,5 +246,4 @@
     }
 }
 </style>
-
-{% endblock admin_content %}
+{% endblock %}

@@ -1,22 +1,27 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'admin' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'kpi_threshold.page.new'|trans({}, 'admin') }}{% endblock %}
+{% block admin_title %}{{ 'kpi_threshold.page.new'|trans({}, 'admin') }}{% endblock %}
 
-{% block body %}
-<div class="container-fluid py-4">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'admin.title'|trans({}, 'admin'), url: path('admin_dashboard') },
-            { label: 'admin.nav.kpi_thresholds'|trans({}, 'admin'), url: path('admin_kpi_threshold_index') },
-            { label: 'kpi_threshold.page.new'|trans({}, 'admin') }
-        ]
-    } %}
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_kpi_threshold_index') }}">{{ 'admin.nav.kpi_thresholds'|trans({}, 'admin') }}</a></li>
+    <li class="breadcrumb-item active">{{ 'kpi_threshold.page.new'|trans({}, 'admin') }}</li>
+{% endblock %}
 
-    <h1 class="h3 mb-4">{{ 'kpi_threshold.page.new'|trans({}, 'admin') }}</h1>
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'speedometer2', label: 'KPI' },
+        title: 'kpi_threshold.page.new'|trans({}, 'admin'),
+        subtitle: 'kpi_threshold.page.subtitle'|trans({}, 'admin'),
+    }) }}
+
+    <section class="fa-section">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'kpi_threshold.page.new'|trans({}, 'admin') }}</h2>
+        </div>
+        <div class="fa-section__body">
             {% include 'admin/kpi_threshold/_form.html.twig' with {form: form} %}
-        {% endblock %}
-    {% endembed %}
-</div>
+        </div>
+    </section>
 {% endblock %}
