@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\AlvaHint\AlvaHintService;
 use App\Entity\User;
 use App\Service\AuditLogger;
+use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +45,20 @@ class AlvaHintController extends AbstractController
             return new JsonResponse(['error' => 'invalid_token'], 400);
         }
 
-        $this->alvaHintService->dismiss($user, $hintKey, $entityType, $entityId);
+        $until = null;
+        $snoozeDays = (int) $request->request->get('snooze_days', 0);
+        if ($snoozeDays > 0 && $snoozeDays <= 365) {
+            $until = (new DateTimeImmutable())->modify(sprintf('+%d days', $snoozeDays));
+        }
+
+        $this->alvaHintService->dismiss(
+            $user,
+            $user->getTenant(),
+            $hintKey,
+            $entityType,
+            $entityId,
+            $until,
+        );
 
         $this->auditLogger->logCustom(
             'alva_hint.dismissed',

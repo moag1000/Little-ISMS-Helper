@@ -22,9 +22,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'alva_hint_dismissal')]
 #[ORM\UniqueConstraint(
     name: 'uq_alva_hint_dismissal',
-    columns: ['user_id', 'hint_key', 'entity_type', 'entity_id'],
+    columns: ['user_id', 'tenant_id', 'hint_key', 'entity_type', 'entity_id'],
 )]
 #[ORM\Index(name: 'idx_alva_hint_dismissal_user', columns: ['user_id'])]
+#[ORM\Index(name: 'idx_alva_hint_dismissal_tenant', columns: ['tenant_id'])]
 class AlvaHintDismissal
 {
     #[ORM\Id]
@@ -35,6 +36,15 @@ class AlvaHintDismissal
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
+
+    /**
+     * Tenant scope. A user dismissing the same hint key + entity_id
+     * across tenants stays a per-tenant decision; nullable lets
+     * tenant-less hints (super-admin views) work too.
+     */
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Tenant $tenant = null;
 
     /**
      * Stable hint identifier from the corresponding HintRule
@@ -59,6 +69,13 @@ class AlvaHintDismissal
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeInterface $dismissedAt = null;
 
+    /**
+     * When set, the dismissal expires and the hint reappears for the
+     * user. Null means "dismissed forever" (default behaviour).
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeInterface $dismissedUntil = null;
+
     public function __construct()
     {
         $this->dismissedAt = new DateTimeImmutable();
@@ -68,6 +85,9 @@ class AlvaHintDismissal
 
     public function getUser(): ?User { return $this->user; }
     public function setUser(?User $user): self { $this->user = $user; return $this; }
+
+    public function getTenant(): ?Tenant { return $this->tenant; }
+    public function setTenant(?Tenant $tenant): self { $this->tenant = $tenant; return $this; }
 
     public function getHintKey(): ?string { return $this->hintKey; }
     public function setHintKey(string $hintKey): self { $this->hintKey = $hintKey; return $this; }
@@ -80,4 +100,7 @@ class AlvaHintDismissal
 
     public function getDismissedAt(): ?DateTimeInterface { return $this->dismissedAt; }
     public function setDismissedAt(DateTimeInterface $dismissedAt): self { $this->dismissedAt = $dismissedAt; return $this; }
+
+    public function getDismissedUntil(): ?DateTimeInterface { return $this->dismissedUntil; }
+    public function setDismissedUntil(?DateTimeInterface $dismissedUntil): self { $this->dismissedUntil = $dismissedUntil; return $this; }
 }
