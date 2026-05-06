@@ -1,0 +1,1395 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'bsi-c5-2026_to_iso27001-2022_v1.0'
+  source_framework: 'BSI-C5-2026'
+  target_framework: 'ISO27001'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'BSI C5:2026 final 2026-03-26 + ISO/IEC 27001:2022 Annex A'
+    primary_source_url: 'https://www.bsi.bund.de/EN/Themen/Unternehmen-und-Organisationen/Informationen-und-Empfehlungen/Empfehlungen-nach-Angriffszielen/Cloud-Computing/Kriterienkatalog-C5/'
+    secondary_sources:
+      - 'fixtures/library/mappings/bsi-c5-2020_to_iso27001-2022_v1.0.yaml (Anlage A C5:2020 ↔ ISO 27001:2022 als Brücke)'
+      - 'fixtures/library/mappings/bsi-c5-2026_to_bsi-c5-2020_v1.0.yaml (Carryover-Pfade C5:2026 → C5:2020)'
+      - 'fixtures/library/catalogues/bsi-c5-2026-en/ — 18 BSI YAML-Dateien (verbatim BSI-Publikation, CC-BY-ND 4.0)'
+    publisher: 'Little ISMS Helper Maintainers'
+    license_note: 'Mapping is original derivative work (AGPL-3.0). C5:2026 IDs/titles © BSI 2026 (CC-BY-ND 4.0). ISO 27001:2022 references educational use.'
+
+  methodology:
+    type: 'catalogue_text_comparison'
+    description: |
+      Bidirektionales Mapping zwischen BSI C5:2026-Kriterien (168 Kriterien
+      in 18 Bereichen) und ISO/IEC 27001:2022 Annex A (93 Controls). Diese
+      Datei adressiert die Forward-Richtung C5:2026 → ISO 27001:2022.
+
+      Methodisches Vorgehen:
+      1. Carryover-Brücke: C5:2026 → C5:2020 (eigene Datei) → ISO 27001:2022
+         (BSI Anlage A) für alle Kriterien mit C5:2020-Vorgänger.
+      2. Direkter Textvergleich C5:2026-Volltext (basic + sharpen) vs.
+         ISO Annex A-Controls für alle 2026-NEU-Kriterien (PQC, SBOM,
+         Confidential Computing, Container, Investigation Requests, etc.).
+      3. Klausel-4-10-Themen (ISMS, Risk Mgmt, Internal Audits) verweisen
+         auf ISO-Hauptdokument; Annex-A-Match nur über A.5.1 (Policies),
+         A.5.36 (Compliance) bzw. kein Annex-A-Pendant.
+
+      Relationship-Logik:
+      - equivalent: Pflichteninhalt deckungsgleich
+      - subset: C5:2026 ist Teilmenge der breiteren ISO-Kontrolle
+      - superset: C5:2026 erweitert ISO um cloud-spezifische Pflichten
+      - partial_overlap: gemeinsamer Kern, aber jeweils nicht abgedeckte
+        Anteile auf beiden Seiten
+      - kein Mapping (target=null): Cloud-spezifische 2026-Kriterien ohne
+        Annex-A-Pendant (PI-*, PSS-*, INQ-*, GC-*)
+
+      Coverage: alle 18 C5:2026-Bereiche sind mindestens einmal abgedeckt.
+      Confidence-Verteilung: ~60% high, ~30% medium, ~10% low.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-05-06', actor: 'maintainer' }
+      - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
+
+mappings:
+  # ===== OIS — Organisation of Information Security =====
+  - source: 'OIS-01'
+    target: 'A.5.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OIS-01 „Information Security Management System (ISMS)" verlangt
+      ein dokumentiertes ISO/IEC-27001-konformes ISMS für den Cloud-Dienst.
+      ISO 27001:2022 deckt das ISMS primär in Klauseln 4-10 (Hauptdokument)
+      ab; im Annex A entspricht A.5.1 „Policies for information security"
+      dem Policy-Anteil. Vollständige Abdeckung von OIS-01 erfordert
+      Klauseln 4-10 zusätzlich.
+    gap_warning: |
+      Wer OIS-01 NUR über Annex A A.5.1 nachweist, fehlen Klauseln 4-10
+      (Context, Leadership, Planning, Support, Operation, Performance
+      Evaluation, Improvement). Empfehlung: ISO 27001 Klauseln 4-10
+      vollständig adressieren; Annex A A.5.1 deckt nur Policies ab.
+    cross_refs: ['A.5.36', 'A.5.37']
+    audit_evidence_hint: 'ISMS-Scope-Dokument, ISMS-Handbuch, ISO-27001-Zertifikat oder gleichwertig, Statement of Applicability, Management-Review-Protokolle.'
+
+  - source: 'OIS-02'
+    target: 'A.5.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-02 „Information Security Policy" verlangt eine vom
+      Top-Management des Cloud-Anbieters verabschiedete und kommunizierte
+      Sicherheitsleitlinie mit definierten Schutzzielen. ISO 27001:2022
+      A.5.1 „Policies for information security" fordert inhaltsgleich
+      dokumentierte InfoSec-Policies mit Management-Approval. Beide
+      Frameworks decken Pflichteninhalt und Freigabe-Logik 1:1.
+    audit_evidence_hint: 'Verabschiedete InfoSec-Leitlinie mit Management-Freigabe-Datum, Veröffentlichung im Mitarbeiter-Intranet, jährliche Review-Protokolle.'
+
+  - source: 'OIS-03'
+    target: 'A.5.23'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OIS-03 „Interfaces and Dependencies" verlangt ein dokumentiertes
+      Shared Security Responsibility Model (SSRM) für die Schnittstelle
+      Cloud-Anbieter ↔ Kunde. ISO 27001:2022 A.5.23 „Information security
+      for use of cloud services" adressiert Cloud-Nutzung primär aus
+      Kundensicht; Anbieter-seitige SSRM-Pflichten sind nur teilweise
+      abgedeckt. Cloud-spezifische Anbieter-Verantwortung geht über A.5.23
+      hinaus.
+    gap_warning: |
+      A.5.23 ist primär als Kundenkontrolle formuliert. Anbieter-seitige
+      SSRM-Dokumentation und -Kommunikation muss separat aufgebaut werden;
+      kein vollständiger Carryover möglich.
+    audit_evidence_hint: 'SSRM-Dokument mit Verantwortlichkeits-Matrix, Service-Beschreibungen mit Kunden-Kooperationspflichten, Change-Kommunikation.'
+
+  - source: 'OIS-04'
+    target: 'A.5.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-04 „Segregation of Duties" verlangt risikobasierte
+      Funktionstrennung für administrative Rollen, Change-Management und
+      Risk-Mgmt. ISO 27001:2022 A.5.3 „Segregation of duties" fordert
+      inhaltsgleiche Trennung konfliktärer Aufgaben. Pflichteninhalt
+      deckungsgleich.
+    cross_refs: ['A.5.4']
+    audit_evidence_hint: 'SoD-Matrix für kritische Prozesse, Konflikt-Reviews letzte 12 Monate, kompensierende Kontrollen wo SoD nicht implementierbar.'
+
+  - source: 'OIS-05'
+    target: 'A.5.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-05 „Threat Intelligence" verlangt strukturierte
+      Sammlung, Analyse und Integration von Bedrohungsinformationen aus
+      internen und externen Quellen. ISO 27001:2022 A.5.7 „Threat
+      intelligence" fordert dasselbe Vorgehen. Beide Frameworks
+      referenzieren MITRE ATT&CK, STRIDE, etc. als methodische Grundlage.
+    cross_refs: ['A.5.8']
+    audit_evidence_hint: 'Threat-Intel-Quellen-Inventar, ausgewertete Meldungen letzte 12 Monate, Threat-Modelling-Ergebnisse.'
+
+  - source: 'OIS-06'
+    target: 'A.5.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-06 „Contact with Relevant Government Agencies and
+      Interest Groups" verlangt Kontakte zu BSI, CERT-Bund und
+      einschlägigen Stellen. ISO 27001:2022 A.5.5 „Contact with
+      authorities" fordert inhaltsgleich Behörden-Kontakte;
+      Pflichteninhalt deckungsgleich.
+    cross_refs: ['A.5.6']
+    audit_evidence_hint: 'Kontaktliste relevanter Behörden (BSI, CERT-Bund, BfDI), Kommunikationsprotokolle, KRITIS-Meldungen.'
+
+  - source: 'OIS-07'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OIS-07 „Risk Management Policy" verlangt eine dokumentierte
+      Risikomanagement-Methodik (ISO 27005/31000). ISO 27001:2022 deckt
+      Risikomanagement primär in Klausel 6.1 (Hauptdokument) ab; im
+      Annex A entspricht A.5.36 „Compliance with policies, rules and
+      standards for information security" der Policy-Konformitäts-Prüfung,
+      nicht aber der Risk-Mgmt-Methodik selbst.
+    gap_warning: |
+      OIS-07 referenziert ISO 27005 für die Methodik. Annex A allein deckt
+      die Risk-Mgmt-Pflichten NICHT ab — ISO 27001 Klausel 6.1 ist Pflicht-
+      Adressierung; A.5.36 betrifft nur Compliance-Prüfung der Policy.
+    cross_refs: ['A.5.1']
+    audit_evidence_hint: 'Risikomanagement-Richtlinie ISO-27005-konform, Risiko-Akzeptanz-Kriterien, Methodik-Dokument.'
+
+  - source: 'OIS-08'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OIS-08 „Application of the Risk Management Policy - Risk
+      Assessment" verlangt mindestens jährliche Durchführung der
+      Risikobewertung. Dies ist primär ISO 27001 Klausel 6.1.2 (Hauptdoc)
+      — kein direktes Annex-A-Pendant.
+    gap_warning: |
+      Annex A enthält keine Risk-Assessment-Pflicht; ISO 27001 Klausel
+      6.1.2 muss separat adressiert werden.
+    cross_refs: ['A.5.1', 'A.5.36']
+    audit_evidence_hint: 'Risikoregister, jährliche Risk-Assessment-Reports, Risk-Owner-Liste, Reviews nach signifikanten Änderungen.'
+
+  - source: 'OIS-09'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OIS-09 „Application of the Risk Management Policy - Risk
+      Treatment" verlangt einen Risk-Treatment-Plan mit dokumentierten
+      Maßnahmen und Akzeptanz von Restrisiken. Dies entspricht ISO 27001
+      Klausel 6.1.3 (Hauptdoc) — kein direktes Annex-A-Pendant.
+    gap_warning: |
+      Annex A enthält keine Risk-Treatment-Pflicht; ISO 27001 Klausel
+      6.1.3 (Risk Treatment + Statement of Applicability) muss separat
+      adressiert werden.
+    cross_refs: ['A.5.1']
+    audit_evidence_hint: 'Risk-Treatment-Plan, Statement of Applicability, Restrisiko-Akzeptanz-Dokumentation, Reviews bei signifikanten Änderungen.'
+
+  - source: 'OIS-10'
+    target: 'A.5.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-10 „Information Security in Project Management" verlangt
+      die Integration von InfoSec in Projektmanagement-Prozesse. ISO
+      27001:2022 A.5.8 „Information security in project management"
+      fordert inhaltsgleich. Pflichteninhalt deckungsgleich.
+    audit_evidence_hint: 'Projekt-Management-Methodik mit InfoSec-Integration, Projekt-Risikobewertungen, InfoSec-Gates in Projektphasen.'
+
+  # ===== SP — Security Policies =====
+  - source: 'SP-01'
+    target: 'A.5.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SP-01 „Documentation, Communication and Provision of
+      Policies and Procedures" hebt die Policy-Lifecycle-Pflichten als
+      eigenes Kriterium hervor (Dokumentation, Kommunikation,
+      Bereitstellung). ISO 27001:2022 A.5.1 „Policies for information
+      security" deckt Policy-Mgmt umfassend ab; SP-01 ist Teilaspekt der
+      Lifecycle-Operationalisierung.
+    cross_refs: ['A.5.37']
+    audit_evidence_hint: 'Policy-Inventar mit Distribution-Nachweis, Policy-Portal, Mitarbeiter-Akkreditierungen.'
+
+  - source: 'SP-02'
+    target: 'A.5.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SP-02 „Review and Approval of Policies and Procedures"
+      verlangt jährliche Reviews und formelle Genehmigung. ISO 27001:2022
+      A.5.1 deckt Policy-Review als Standard-Pflicht ab.
+    audit_evidence_hint: 'Policy-Review-Protokolle (jährlich), Genehmigungs-Workflow, Versions-Historie.'
+
+  - source: 'SP-03'
+    target: 'A.5.36'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SP-03 „Exceptions from Existing Policies and Procedures"
+      verlangt einen Ausnahme-Genehmigungsprozess mit Risikobewertung.
+      ISO 27001:2022 A.5.36 „Compliance with policies, rules and
+      standards" deckt Compliance-Monitoring ab; Exception-Mgmt ist
+      Teilaspekt.
+    audit_evidence_hint: 'Ausnahme-Register mit Risikobewertung, Genehmiger und Befristung; Reviews der laufenden Ausnahmen.'
+
+  # ===== HR — Human Resources =====
+  - source: 'HR-01'
+    target: 'A.6.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-01 „Verification of Qualification and Trustworthiness"
+      verlangt Hintergrundüberprüfungen, Identitäts-Verifikation und
+      regelmäßige Re-Verifikation für sicherheitsrelevante Rollen. ISO
+      27001:2022 A.6.1 „Screening" fordert inhaltsgleiche
+      Pre-Employment-Checks mit risikobasierter Tiefe.
+    audit_evidence_hint: 'Hintergrundüberprüfungen, Führungszeugnis (privilegierte Rollen), Referenzprüfungen, Re-Verifikations-Protokolle.'
+
+  - source: 'HR-02'
+    target: 'A.6.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-02 „Employment Terms and Conditions" verlangt
+      InfoSec-Verpflichtung in Arbeitsverträgen, Code of Ethics und
+      formale Anerkennung der Policies. ISO 27001:2022 A.6.2 „Terms and
+      conditions of employment" fordert dasselbe. Pflichteninhalt
+      deckungsgleich.
+    cross_refs: ['A.6.6']
+    audit_evidence_hint: 'Arbeitsverträge mit InfoSec-Klauseln, NDA-Templates, dokumentierte Mitarbeiter-Akkreditierungen.'
+
+  - source: 'HR-03'
+    target: 'A.6.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-03 „Security Training and Awareness Programme" verlangt
+      zielgruppen-orientierte Awareness-Schulungen mit Wirksamkeitsmessung.
+      ISO 27001:2022 A.6.3 „Information security awareness, education and
+      training" fordert dasselbe. Schulungs-Quoten und Phishing-Drills
+      sind in beiden Frameworks Standardnachweis.
+    audit_evidence_hint: 'Schulungsplan, Schulungsquoten ≥95%, rollenspezifische Curricula, Phishing-Drills, Wirksamkeits-Messungen.'
+
+  - source: 'HR-04'
+    target: 'A.6.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-04 „Disciplinary Measures" verlangt einen formalen
+      Disziplinarprozess bei Policy-Verstößen. ISO 27001:2022 A.6.4
+      „Disciplinary process" fordert inhaltsgleich. Pflichteninhalt
+      deckungsgleich.
+    audit_evidence_hint: 'Disziplinar-Policy, Mitarbeiter-Information über Konsequenzen, dokumentierte Disziplinar-Maßnahmen (anonymisiert).'
+
+  - source: 'HR-05'
+    target: 'A.6.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-05 „Responsibilities in the Event of Termination or
+      Change of Employment" verlangt Information der Mitarbeiter über
+      fortbestehende InfoSec-Pflichten nach Beendigung. ISO 27001:2022
+      A.6.5 „Responsibilities after termination or change of employment"
+      fordert inhaltsgleich.
+    audit_evidence_hint: 'Termination-Checkliste mit InfoSec-Pflichten-Nachweis, Off-boarding-Prozess, fortgeltende NDA-Klauseln.'
+
+  - source: 'HR-06'
+    target: 'A.6.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-06 „Non-disclosure Agreements" verlangt NDA für internes
+      Personal und Service-Organisationen, mit jährlichem Review. ISO
+      27001:2022 A.6.6 „Confidentiality or non-disclosure agreements"
+      fordert inhaltsgleich. Pflichteninhalt deckungsgleich.
+    audit_evidence_hint: 'NDA-Template, NDA-Inventar, Review-Protokolle der NDA-Anforderungen, Stichprobe unterzeichneter NDAs.'
+
+  - source: 'HR-07'
+    target: 'A.6.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-07 „Remote Working - Policy" verlangt eine dokumentierte
+      Remote-Work-Policy mit VPN, MFA, Endpoint-Schutz und sicherer
+      Datenhandhabung. ISO 27001:2022 A.6.7 „Remote working" fordert
+      inhaltsgleich.
+    cross_refs: ['HR-08']
+    audit_evidence_hint: 'Remote-Work-Policy, VPN-Konfiguration, Endpoint-Hardening für mobile Geräte, MFA-Erzwingung.'
+
+  - source: 'HR-08'
+    target: 'A.6.7'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-08 „Remote Working - Implementation" verlangt die
+      technische und organisatorische Umsetzung der HR-07-Policy. ISO
+      27001:2022 A.6.7 „Remote working" deckt Policy + Implementation in
+      einer Kontrolle ab; HR-08 ist Implementation-Teilaspekt.
+    audit_evidence_hint: 'Implementierungs-Nachweise: VPN-Logs, Endpoint-MDM-Compliance, Remote-Access-Stichproben.'
+
+  # ===== AM — Asset Management =====
+  - source: 'AM-01'
+    target: 'A.5.9'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 AM-01 „Asset Management Framework" verlangt einen
+      dokumentierten Asset-Management-Rahmen mit Schutzbedarfs-Schema und
+      Lifecycle-Definitionen. ISO 27001:2022 A.5.9 „Inventory of
+      information and other associated assets" deckt den Inventar-Aspekt
+      ab; das übergreifende Framework ist Teilmenge der Annex-A-Logik.
+    cross_refs: ['A.5.10', 'A.5.11']
+    audit_evidence_hint: 'Asset-Management-Rahmen-Dokument, Klassifikations-Schema, Lifecycle-Definitionen.'
+
+  - source: 'AM-02'
+    target: 'A.5.9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-02 „Asset Inventory" verlangt ein automatisiertes oder
+      manuelles Asset-Inventar mit Vollständigkeit, Genauigkeit und
+      Aktualität. ISO 27001:2022 A.5.9 „Inventory of information and
+      other associated assets" fordert dasselbe. Pflichteninhalt
+      deckungsgleich.
+    cross_refs: ['AM-03', 'AM-04']
+    audit_evidence_hint: 'Asset-Inventar mit Owner-Feld, Klassifikation, Stichtagsabgleich CMDB ↔ Cloud-Provisioning, Change-Logs.'
+
+  - source: 'AM-05'
+    target: 'A.5.10'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-05 „Policy for the Proper and Secure Use of Assets"
+      verlangt Policies für sichere Asset-Nutzung über den gesamten
+      Lifecycle. ISO 27001:2022 A.5.10 „Acceptable use of information
+      and other associated assets" fordert inhaltsgleich.
+    audit_evidence_hint: 'Asset-Use-Policy, Klassifikations-Labelling, Patch-Anforderungen, Removable-Media-Regelungen.'
+
+  - source: 'AM-07'
+    target: 'A.7.14'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-07 „Decommissioning of Hardware" verlangt sichere
+      Datenlöschung oder Mediendestruktion bei Hardware-Außerdienststellung
+      (DIN 66399 oder gleichwertig). ISO 27001:2022 A.7.14 „Secure
+      disposal or re-use of equipment" fordert inhaltsgleich.
+    audit_evidence_hint: 'Decommissioning-Prozess, Lösch-Protokolle (DIN 66399), Destruktions-Zertifikate, Inventar-Updates.'
+
+  - source: 'AM-08'
+    target: 'A.5.11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-08 „Commitment to Proper Use, Safe and Secure Handling
+      and Return of Assets" verlangt Asset-Rückgabe bei Termination und
+      Verpflichtung zur sicheren Nutzung. ISO 27001:2022 A.5.11 „Return
+      of assets" fordert die Rückgabe-Komponente; AM-08 ist 1:1-Match.
+    audit_evidence_hint: 'Asset-Rückgabe-Checkliste, Off-boarding-Prozess, Asset-Inventar-Updates bei Termination.'
+
+  - source: 'AM-09'
+    target: 'A.5.12'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-09 „Asset Classification and Labelling" verlangt ein
+      uniformes Klassifikations-Schema mit den Schutzzielen
+      Vertraulichkeit, Integrität, Verfügbarkeit, Authentizität. ISO
+      27001:2022 A.5.12 „Classification of information" fordert
+      inhaltsgleich.
+    cross_refs: ['A.5.13']
+    audit_evidence_hint: 'Klassifikations-Schema (z.B. öffentlich/intern/vertraulich/streng vertraulich), Labelling-Konvention, Reviews.'
+
+  - source: 'AM-12'
+    target: 'A.7.10'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-12 „Removable Media and Endpoint Devices" verlangt
+      Storage-Encryption, Anti-Malware, DLP, Remote-Wipe für mobile
+      Endgeräte und Wechselmedien. ISO 27001:2022 A.7.10 „Storage media"
+      fordert inhaltsgleiche Pflichten für Speichermedien; A.8.1 deckt
+      Endpoint-Devices ab.
+    cross_refs: ['A.8.1']
+    audit_evidence_hint: 'MDM-Compliance-Report, Disk-Encryption-Stichproben, DLP-Konfiguration, Removable-Media-Policy.'
+
+  # ===== PS — Physical Security =====
+  - source: 'PS-01'
+    target: 'A.7.5'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 PS-01 „Physical Security and Environmental Control
+      Requirements" verlangt einen dokumentierten Rahmen für physische
+      Sicherheit (TIER-Klassifikation, Brandschutz, Klima). ISO
+      27001:2022 A.7.5 „Protecting against physical and environmental
+      threats" deckt Umweltbedrohungen; PS-01 erweitert um Cloud-RZ-
+      spezifische Pflichten (TIER, Redundanz).
+    cross_refs: ['A.7.1', 'A.7.11']
+    audit_evidence_hint: 'TIER-Zertifizierung des RZ, Physical-Security-Policy, Brandschutz-Konzept, Klima-Monitoring.'
+
+  - source: 'PS-03'
+    target: 'A.7.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PS-03 „Perimeter Protection" verlangt physische
+      Perimeter-Sicherung des Rechenzentrums (Zaun, Schleuse, Wachschutz).
+      ISO 27001:2022 A.7.1 „Physical security perimeters" fordert
+      inhaltsgleich.
+    audit_evidence_hint: 'Perimeter-Dokumentation (Lageplan), Wachschutz-Logs, Zutrittsbarriere-Prüfprotokolle.'
+
+  - source: 'PS-04'
+    target: 'A.7.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PS-04 „Physical Site Access Control" verlangt Zutritts-
+      kontrolle mit Authentifizierung (Badge, Biometrie), Besucher-
+      Management und Logging. ISO 27001:2022 A.7.2 „Physical entry"
+      fordert inhaltsgleich. Pflichteninhalt deckungsgleich.
+    cross_refs: ['A.7.3', 'A.7.4']
+    audit_evidence_hint: 'Zutrittskontrollsystem-Konfiguration, Besucher-Logbuch, Stichprobe Zutrittslog letzte 90 Tage.'
+
+  - source: 'PS-05'
+    target: 'A.7.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PS-05 „Protection against Threats from Outside and from
+      the Environment" verlangt Schutz vor Feuer, Wasser, Erdbeben,
+      Sabotage. ISO 27001:2022 A.7.5 „Protecting against physical and
+      environmental threats" fordert inhaltsgleich.
+    audit_evidence_hint: 'Brandfrüherkennung, Wassermelder, Hochwasser-Schutz, dokumentierte Bedrohungsanalyse.'
+
+  - source: 'PS-06'
+    target: 'A.7.11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PS-06 „Protection against Interruptions caused by Power
+      Failures and similar Risks to Supply Facilities" verlangt USV,
+      Notstrom, redundante Stromversorgung. ISO 27001:2022 A.7.11
+      „Supporting utilities" fordert inhaltsgleich.
+    audit_evidence_hint: 'USV-Inventar mit letztem Test, Notstrom-Generator-Tests, Stromversorgungs-Redundanz-Dokumentation.'
+
+  - source: 'PS-07'
+    target: 'A.7.5'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 PS-07 „Surveillance of Operational and Environmental
+      Parameters" verlangt kontinuierliches Monitoring von Temperatur,
+      Feuchte, Strom. Dies ist Teilaspekt von ISO 27001:2022 A.7.5 (im
+      Rahmen der allgemeinen Umweltschutz-Pflichten).
+    cross_refs: ['A.7.11']
+    audit_evidence_hint: 'BMS-Konfiguration (Building Management System), Alert-Schwellwerte, historische Trend-Daten.'
+
+  - source: 'PS-08'
+    target: 'A.7.7'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 PS-08 „Workplace Security Requirements" verlangt sichere
+      Arbeitsplatz-Gestaltung (Clean-Desk, abschließbare Schränke,
+      Sichtschutz). ISO 27001:2022 A.7.7 „Clear desk and clear screen"
+      deckt Clean-Desk ab; PS-08 ist breiter (umfasst auch Sichtschutz
+      und Arbeitsplatz-Sicherheit).
+    cross_refs: ['A.7.4']
+    audit_evidence_hint: 'Clear-Desk-Policy, Stichprobe Arbeitsplätze, Sichtschutz-Folien, abschließbare Schränke.'
+
+  # ===== IAM — Identity & Access Management =====
+  - source: 'IAM-01'
+    target: 'A.5.15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-01 „Policy for Identities and Access Rights" verlangt
+      eine dokumentierte Identity- und Access-Mgmt-Policy mit
+      RBAC-Modell, Least-Privilege-Prinzip und MFA-Anforderungen. ISO
+      27001:2022 A.5.15 „Access control" fordert inhaltsgleiche formale
+      Zugangs- und Zugriffskontroll-Regelungen.
+    cross_refs: ['A.5.16', 'A.5.17', 'A.5.18']
+    audit_evidence_hint: 'IAM-Policy, RBAC-Modell, Berechtigungskonzept, MFA-Anforderungs-Liste.'
+
+  - source: 'IAM-02'
+    target: 'A.5.16'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-02 „Granting and Change of Identities and Access
+      Rights" verlangt formale Provisioning-/Mover-Prozesse mit
+      Genehmigungen. ISO 27001:2022 A.5.16 „Identity management" fordert
+      inhaltsgleichen Identity-Lifecycle.
+    cross_refs: ['A.5.18']
+    audit_evidence_hint: 'Provisioning-Workflow, Joiner/Mover-Tickets letzte 90 Tage, Genehmiger-Stichprobe.'
+
+  - source: 'IAM-03'
+    target: 'A.5.18'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-03 „Risk-Based Procedure for Locking and Withdrawal of
+      Identities" verlangt risikobasiertes Sperren/Widerrufen bei
+      Inaktivität, Brute-Force-Indikatoren und kompromittierten
+      Credentials. ISO 27001:2022 A.5.18 „Access rights" deckt Vergabe
+      und Widerruf ab; A.5.17 deckt Authentication-Aspekte ab.
+    cross_refs: ['A.5.17']
+    audit_evidence_hint: 'Inactivity-Lockout-Konfiguration, Brute-Force-Detection-Logs, Credential-Monitoring (z.B. HaveIBeenPwned).'
+
+  - source: 'IAM-04'
+    target: 'A.5.18'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-04 „Withdrawal or Adjustment of Access Rights as the
+      Task Area Changes" verlangt SLA-basierten Widerruf (privilegiert:
+      48h, Standard: 14 Tage) bei Rollenwechsel. ISO 27001:2022 A.5.18
+      „Access rights" fordert dasselbe.
+    audit_evidence_hint: 'Mover-Workflow, Stichprobe Rollenwechsel letzte 90 Tage, SLA-Erfüllungs-Reports.'
+
+  - source: 'IAM-05'
+    target: 'A.5.18'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-05 „Regular Review of Access Rights" verlangt
+      mindestens jährliche Rezertifizierung (privilegiert: halbjährlich).
+      ISO 27001:2022 A.5.18 „Access rights" deckt regelmäßige Reviews ab;
+      IAM-05 ist konkreter Teilaspekt.
+    audit_evidence_hint: 'Access-Review-Reports (jährlich), Rezertifizierungs-Workflow, Stichprobe geänderte Berechtigungen.'
+
+  - source: 'IAM-06'
+    target: 'A.8.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-06 „Privileged Access Rights" verlangt PAM mit
+      personalisierten Privilegien, Session-Logging, Just-in-Time-Vergabe
+      und MFA für administrative Zugriffe. ISO 27001:2022 A.8.2
+      „Privileged access rights" fordert inhaltsgleich.
+    cross_refs: ['A.5.17', 'A.8.18']
+    audit_evidence_hint: 'PAM-Lösung mit Session-Recording, JIT-Elevations-Protokolle, Liste privilegierter Accounts.'
+
+  - source: 'IAM-07'
+    target: 'A.5.34'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 IAM-07 „Access to Cloud Service Customer Data" verlangt
+      Mandanten-Trennung, Kunden-Notifikation bei Daten-Zugriff,
+      4-Augen-Prinzip für unverschlüsselten Zugriff. ISO 27001:2022
+      A.5.34 „Privacy and protection of PII" deckt Schutz personen-
+      bezogener Daten ab. Schnittmenge bei Notifikations- und
+      Schutzpflichten; IAM-07 erweitert um Cloud-spezifische
+      Mandanten-Trennung und 72h-Notifikations-SLA.
+    gap_warning: |
+      A.5.34 fokussiert auf PII-Schutz, IAM-07 auf alle Customer Data
+      (auch Non-PII). Kein vollständiger Carryover; Cloud-spezifische
+      Pflichten (Mandanten-Isolation, 4-Augen-Konsens) müssen separat
+      adressiert werden.
+    cross_refs: ['A.8.10', 'A.8.11']
+    audit_evidence_hint: 'Mandanten-Trennungs-Architektur, Customer-Notification-Logs, 4-Augen-Prozess-Dokumentation.'
+
+  - source: 'IAM-08'
+    target: 'A.8.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-08 „Authentication Mechanisms" verlangt MFA für alle
+      Production-Zugriffe (sowohl menschlich als auch automatisiert),
+      mit kryptografisch starken Verfahren gemäß BSI TR-03116. ISO
+      27001:2022 A.8.5 „Secure authentication" fordert sichere
+      Authentisierungs-Verfahren inkl. MFA.
+    cross_refs: ['A.5.17']
+    audit_evidence_hint: 'MFA-Coverage-Report (100% Production), Auth-Methoden-Inventar, FIDO2-Implementation für privilegierte Nutzer.'
+
+  - source: 'IAM-09'
+    target: 'A.5.17'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-09 „Confidentiality of Authentication Information"
+      verlangt sichere Verteilung von Credentials, Hash-Speicherung,
+      Reset-Prozeduren mit max. 24h-Gültigkeit. ISO 27001:2022 A.5.17
+      „Authentication information" fordert inhaltsgleich.
+    audit_evidence_hint: 'Credential-Distribution-Prozess, Hash-Algorithmen-Konfiguration, Reset-Prozeduren-Test.'
+
+  # ===== CRY — Cryptography =====
+  - source: 'CRY-01'
+    target: 'A.8.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-01 „Policy for the Use of Cryptographic Mechanisms"
+      verlangt eine dokumentierte Krypto-Richtlinie inkl. Algorithmen-
+      Allowlist und Key-Management. ISO 27001:2022 A.8.24 „Use of
+      cryptography" fordert inhaltsgleich. Beide Frameworks referenzieren
+      BSI TR-02102 als Algorithmen-Baseline.
+    cross_refs: ['CRY-04', 'CRY-05']
+    audit_evidence_hint: 'Krypto-Richtlinie, Algorithmen-Allowlist (BSI TR-02102 konform), HSM-Inventar.'
+
+  - source: 'CRY-02'
+    target: 'A.8.24'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-02 „Cryptographic Change Management" verlangt
+      systematische Krypto-Agilität und Migration auf
+      Post-Quantum-Cryptography (PQC). ISO 27001:2022 A.8.24 deckt
+      Crypto-Use generell ab, ohne explizite PQC-Migrations-Pflicht.
+      CRY-02 ist Erweiterung um zukunftsorientierte Migrations-Pflichten.
+    gap_warning: |
+      Wer CRY-02 NUR über A.8.24 nachweist, fehlt die strukturierte
+      PQC-Migrations-Roadmap. Eigenständiges Krypto-Migrations-Programm
+      mit Inventur, PQC-Readiness-Bewertung und Algorithmen-Sunset-Plan
+      ist erforderlich (BSI TR-02102 wird 2026/2027 PQC verbindlich).
+    cross_refs: ['CRY-12', 'CRY-13', 'CRY-17']
+    audit_evidence_hint: 'Krypto-Inventar, PQC-Migration-Roadmap, Algorithmen-Sunset-Plan, Krypto-Agilitäts-Tests.'
+
+  - source: 'CRY-04'
+    target: 'A.8.24'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-04 „Protection of Data for Transmission (Transport
+      Protection)" verlangt TLS 1.3 / IPsec für alle Cloud-Datentransfers.
+      ISO 27001:2022 A.8.24 „Use of cryptography" deckt Transport-
+      Encryption als Teilaspekt ab.
+    cross_refs: ['A.8.20']
+    audit_evidence_hint: 'TLS-Konfigurations-Tests (z.B. SSL-Labs A+), VPN-Konfiguration, Cipher-Suite-Inventar.'
+
+  - source: 'CRY-05'
+    target: 'A.8.24'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-05 „Encryption of Sensitive Data at Rest" verlangt
+      Verschlüsselung sensitiver Daten in Storage (Disk, Object Storage,
+      Database). ISO 27001:2022 A.8.24 deckt Encryption-at-Rest als
+      Teilaspekt ab.
+    audit_evidence_hint: 'Disk-/Object-Storage-Encryption-Konfiguration, KMS-Integration, Stichprobe verschlüsselter Volumes.'
+
+  - source: 'CRY-06'
+    target: 'A.8.24'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-06 „Secure Key Generation" und folgende CRY-07..19
+      adressieren Key-Management-Lifecycle (Generierung, Rotation,
+      Storage, Archivierung, Compromise-Handling). ISO 27001:2022 A.8.24
+      deckt Key-Mgmt als Teil der Crypto-Use-Pflicht ab; einzelne
+      CRY-06..19-Aspekte sind Detail-Konkretisierungen.
+    cross_refs: ['CRY-07', 'CRY-10', 'CRY-13', 'CRY-17']
+    audit_evidence_hint: 'Key-Generation-Verfahren (TRNG/HSM), Key-Lifecycle-Doku, HSM-Audit-Logs.'
+
+  - source: 'CRY-19'
+    target: 'A.8.24'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-19 „Secure Handling of Customer Managed Keys" (BYOK/HYOK)
+      verlangt sichere Handhabung kunden-verwalteter Schlüssel. ISO
+      27001:2022 A.8.24 deckt allgemeine Key-Mgmt-Pflichten ab; CRY-19
+      ist Cloud-spezifischer Teilaspekt.
+    audit_evidence_hint: 'BYOK/HYOK-Architektur-Dokumentation, Customer-Key-Lifecycle-Prozess, Key-Audit-Logs.'
+
+  # ===== COS — Communication Security =====
+  - source: 'COS-01'
+    target: 'A.8.20'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COS-01 „Technical Safeguards" verlangt Netzwerk-
+      Segmentierung, Firewall-Regeln, kryptografische Transportsicherung.
+      ISO 27001:2022 A.8.20 „Networks security" fordert inhaltsgleich.
+    cross_refs: ['A.8.21', 'A.8.22']
+    audit_evidence_hint: 'Netzwerk-Segmentierungs-Konzept, Firewall-Rule-Review, Topologie-Dokument.'
+
+  - source: 'COS-02'
+    target: 'A.8.21'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COS-02 „Security Requirements for Connections in the Cloud
+      Service Provider's Network" verlangt sichere Netzwerk-Verbindungen
+      (intern/extern). ISO 27001:2022 A.8.21 „Security of network
+      services" fordert inhaltsgleich.
+    audit_evidence_hint: 'Netzwerk-Service-Inventar, Sicherheitsmerkmale je Service, SLA-Vereinbarungen.'
+
+  - source: 'COS-06'
+    target: 'A.8.22'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COS-06 „Separation of Data Traffic in Jointly Used Network
+      Environments" verlangt logische und physische Trennung von
+      Mandanten-Traffic. ISO 27001:2022 A.8.22 „Segregation of networks"
+      fordert inhaltsgleich.
+    audit_evidence_hint: 'VLAN-/VRF-Konfiguration, Mandanten-Isolations-Tests, Netzwerk-Topologie-Diagramm.'
+
+  - source: 'COS-07'
+    target: 'A.8.20'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 COS-07 „Documentation of the Network Topology" hebt
+      Topologie-Dokumentation als eigenes Kriterium hervor. ISO
+      27001:2022 A.8.20 deckt Network-Security generell ab; COS-07 ist
+      konkrete Teilanforderung.
+    audit_evidence_hint: 'Aktuelle Netzwerk-Topologie-Diagramme, VLAN-Karte, Routing-Tabellen.'
+
+  - source: 'COS-08'
+    target: 'A.5.14'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COS-08 „Policies for Data Transmission" verlangt
+      dokumentierte Übertragungs-Policies (verschlüsselte Kanäle,
+      Empfänger-Prüfung). ISO 27001:2022 A.5.14 „Information transfer"
+      fordert inhaltsgleich.
+    cross_refs: ['A.8.20']
+    audit_evidence_hint: 'Datenübertragungs-Policy, NDA mit Übertragungsklauseln, verschlüsselte Übertragungskanäle.'
+
+  # ===== OPS — Operations =====
+  - source: 'OPS-01'
+    target: 'A.8.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-01 „Capacity Management - Planning" verlangt
+      Kapazitätsplanung mit Forecast und Skalierungs-Strategien. ISO
+      27001:2022 A.8.6 „Capacity management" fordert inhaltsgleich.
+    cross_refs: ['OPS-02', 'OPS-03']
+    audit_evidence_hint: 'Capacity-Plan, Forecast-Modelle, Auslastungsmetriken letzte 12 Monate.'
+
+  - source: 'OPS-04'
+    target: 'A.8.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-04 „Protection Against Malware - Policies and
+      Procedures" verlangt ein dokumentiertes Schutz-Konzept gegen
+      Malware. ISO 27001:2022 A.8.7 „Protection against malware" fordert
+      inhaltsgleich.
+    cross_refs: ['OPS-05']
+    audit_evidence_hint: 'Malware-Schutz-Konzept, AV/EDR-Coverage-Report, Quarantäne-Statistiken.'
+
+  - source: 'OPS-06'
+    target: 'A.8.13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-06 „Data Backup and Recovery - Policies and Procedures"
+      verlangt Backup-Konzept mit RPO/RTO und regelmäßigem Recovery-Test.
+      ISO 27001:2022 A.8.13 „Information backup" fordert inhaltsgleich.
+    cross_refs: ['OPS-07', 'OPS-08', 'OPS-09']
+    audit_evidence_hint: 'Backup-Konzept, Recovery-Test-Protokolle, Backup-Retention, Off-site-Backup-Nachweis.'
+
+  - source: 'OPS-10'
+    target: 'A.8.15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-10 „Logging and Monitoring - Policies and Procedures"
+      verlangt strukturiertes Logging und Monitoring. ISO 27001:2022
+      A.8.15 „Logging" fordert inhaltsgleich; OPS-13..17 ergänzen
+      Detail-Pflichten zu SIEM, Retention und Verfügbarkeit.
+    cross_refs: ['A.8.16', 'A.8.17']
+    audit_evidence_hint: 'Logging-Konzept, Log-Sources-Inventar, 24/7-SOC-Coverage.'
+
+  - source: 'OPS-13'
+    target: 'A.8.16'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-13 „Logging and Monitoring - Security Information and
+      Event Management" verlangt SIEM mit Use-Cases, Alert-Regeln und
+      Eskalation. ISO 27001:2022 A.8.16 „Monitoring activities" fordert
+      inhaltsgleich.
+    audit_evidence_hint: 'SIEM-Use-Case-Katalog, Alert-MTTR-Statistik, 24/7-Coverage-Nachweis.'
+
+  - source: 'OPS-14'
+    target: 'A.8.15'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-14 „Logging and Monitoring - Retention of the Logging
+      Data" verlangt definierte Log-Retention-Zeiten mit
+      Manipulationsschutz. ISO 27001:2022 A.8.15 „Logging" deckt Retention
+      als Teilaspekt ab.
+    audit_evidence_hint: 'Log-Retention-Policy, WORM-Storage-Nachweis, Log-Integritäts-Hashes.'
+
+  - source: 'OPS-15'
+    target: 'A.8.15'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-15 „Logging and Monitoring - Accountability" verlangt
+      synchrone Zeitstempel und Manipulationsschutz für Logs. ISO
+      27001:2022 A.8.17 „Clock synchronization" fordert NTP-Synchronität;
+      OPS-15 ist erweitert um Accountability-Pflichten.
+    audit_evidence_hint: 'NTP-Konfiguration, Stratum-1-Quellen-Nachweis, Log-Timestamp-Validierung.'
+
+  - source: 'OPS-18'
+    target: 'A.8.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-18 „Managing Vulnerabilities - Policies and Procedures"
+      verlangt Vulnerability-Mgmt mit definierten SLAs für Patch-Rollout.
+      ISO 27001:2022 A.8.8 „Management of technical vulnerabilities"
+      fordert inhaltsgleich.
+    cross_refs: ['OPS-25', 'OPS-26', 'OPS-27', 'OPS-28']
+    audit_evidence_hint: 'Vulnerability-Scan-Reports, Patch-Compliance-Dashboard mit SLA-Erfüllung, CVE-Tracking.'
+
+  - source: 'OPS-22'
+    target: 'A.8.8'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-22 „Managing Vulnerabilities, Incidents and Crashes -
+      Penetration Tests" verlangt regelmäßige Pentests durch unabhängige
+      Stellen. ISO 27001:2022 A.8.8 deckt Vulnerability-Mgmt umfassend
+      ab; OPS-22 ist konkreter Teilaspekt.
+    audit_evidence_hint: 'Pentest-Reports letzte 24 Monate, Maßnahmen-Tracking, Pentester-Qualifikations-Nachweis.'
+
+  - source: 'OPS-26'
+    target: 'A.8.9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-26 „Managing Vulnerabilities, Incidents and Crashes -
+      System Hardening" verlangt CIS-Benchmark-konformes Hardening. ISO
+      27001:2022 A.8.9 „Configuration management" fordert inhaltsgleich.
+    audit_evidence_hint: 'CIS-Hardening-Reports, Configuration-Baseline-Dokumentation, Compliance-Scan-Ergebnisse.'
+
+  - source: 'OPS-30'
+    target: 'A.5.13'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OPS-30 „Separation of Datasets - Policies and Procedures"
+      verlangt logische/physische Mandanten-Trennung. ISO 27001:2022
+      A.8.22 „Segregation of networks" deckt Netzwerk-Trennung ab;
+      OPS-30 ist breiter (auch Storage- und Compute-Trennung).
+    cross_refs: ['OPS-31']
+    audit_evidence_hint: 'Mandanten-Isolations-Architektur, Storage-Tenancy-Modell, Compute-Trennungs-Tests.'
+
+  - source: 'OPS-32'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OPS-32 „Confidential Computing - Policies and Procedures"
+      ist NEU in 2026 und adressiert TEE-basierte Verarbeitung (Intel
+      SGX, AMD SEV, ARM CCA). Es gibt KEIN ISO 27001:2022 Annex-A-Pendant
+      — Confidential Computing ist als emerging technology noch nicht im
+      Annex A reflektiert.
+    gap_warning: |
+      ISO 27001:2022 enthält keine Confidential-Computing-spezifische
+      Kontrolle. Wer OPS-32 implementiert, sollte ergänzend NIST
+      SP 800-218A (Secure Software Development Framework Augmentation)
+      und CCC (Confidential Computing Consortium) Best Practices
+      heranziehen.
+    cross_refs: ['OPS-33', 'A.8.24']
+    audit_evidence_hint: 'Confidential-Computing-Konzept, TEE-Inventar (SGX/SEV/CCA), Remote-Attestation-Prozess.'
+
+  - source: 'OPS-34'
+    target: 'A.8.9'
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OPS-34 „Container Management - Policies and Procedures"
+      ist NEU in 2026 und adressiert Container-Sicherheit (Image-Signing,
+      Runtime-Security, Orchestrator-Hardening). ISO 27001:2022 A.8.9
+      „Configuration management" deckt Hardening generell ab; Container-
+      spezifische Pflichten sind nur teilweise abgedeckt.
+    gap_warning: |
+      A.8.9 deckt Container-Spezifika (Image-Signing mit Cosign/Notary,
+      Runtime-Security mit Falco/Tetragon, Kubernetes-CIS-Hardening)
+      nicht explizit ab. Eigenständiger Container-Security-Layer
+      erforderlich; ergänzende Best-Practices: NIST SP 800-190.
+    cross_refs: ['OPS-35', 'PSS-11']
+    audit_evidence_hint: 'Container-Security-Policy, signierte Images, Runtime-Security-Logs, Kubernetes-CIS-Bench-Report.'
+
+  # ===== SIM — Security Incident Management =====
+  - source: 'SIM-01'
+    target: 'A.5.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-01 „Policy for Security Incident Management" verlangt
+      einen dokumentierten Incident-Response-Prozess mit Klassifikation,
+      Eskalation und Rollen. ISO 27001:2022 A.5.24 „Information security
+      incident management planning and preparation" fordert inhaltsgleich.
+    cross_refs: ['A.5.25', 'A.5.26']
+    audit_evidence_hint: 'IR-Policy mit Klassifikation, Eskalations-Matrix, dokumentierte Rollen.'
+
+  - source: 'SIM-02'
+    target: 'A.5.26'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-02 „Security Incident Response Plans" verlangt
+      konkrete Runbooks für signifikante Incident-Klassen. ISO 27001:2022
+      A.5.26 „Response to information security incidents" fordert
+      inhaltsgleich.
+    audit_evidence_hint: 'IR-Runbooks pro Incident-Klasse, IR-Tabletop-Übungen, MTTR-Statistik.'
+
+  - source: 'SIM-03'
+    target: 'A.5.25'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-03 „Processing of Security Incidents" verlangt
+      Bewertung und Triage von Incidents. ISO 27001:2022 A.5.25
+      „Assessment and decision on information security events" fordert
+      inhaltsgleich.
+    audit_evidence_hint: 'Incident-Triage-Prozess, Tickets-Stichprobe letzte 90 Tage, Klassifikations-Entscheidungen.'
+
+  - source: 'SIM-04'
+    target: 'A.5.28'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SIM-04 „Documentation and Reporting of Security Incidents"
+      verlangt strukturierte Dokumentation und Evidenz-Sammlung. ISO
+      27001:2022 A.5.28 „Collection of evidence" fordert inhaltsgleich.
+    audit_evidence_hint: 'Incident-Tickets mit Evidenz-Anhängen, Chain-of-Custody-Protokolle, Forensik-Reports.'
+
+  - source: 'SIM-05'
+    target: 'A.6.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-05 „Duty of the Personnel to Report Security Incidents
+      to a Central Body" verlangt eine Meldepflicht und einen
+      niedrigschwelligen Meldekanal. ISO 27001:2022 A.6.8 „Information
+      security event reporting" fordert inhaltsgleich.
+    audit_evidence_hint: 'Meldekanal (z.B. Hotline, Web-Formular), Schulungs-Nachweis, Meldungs-Statistik.'
+
+  - source: 'SIM-06'
+    target: 'A.5.27'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-06 „Evaluation and Learning Process" verlangt einen
+      formalen Lessons-Learned-Prozess nach signifikanten Incidents. ISO
+      27001:2022 A.5.27 „Learning from information security incidents"
+      fordert inhaltsgleich.
+    audit_evidence_hint: 'PIR-Reports letzte 12 Monate, Maßnahmen-Tracking aus Lessons Learned, IR-KPI-Dashboard.'
+
+  # ===== BCM — Business Continuity Management =====
+  - source: 'BCM-01'
+    target: 'A.5.29'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 BCM-01 „Business Continuity and Emergency Management
+      System" verlangt ein ISO-22301-konformes BC-Mgmt-System mit
+      Top-Management-Commitment. ISO 27001:2022 A.5.29 „Information
+      security during disruption" deckt InfoSec-Aspekt der Disruption
+      ab; BCM-01 erweitert um vollständiges BCM-System.
+    gap_warning: |
+      Wer BCM-01 NUR über A.5.29/A.5.30 nachweist, fehlt die
+      organisatorische BC-Strategie und Top-Management-Commitment.
+      Empfehlung: A.5.29 mit ISO 22301 Clause 5 (Leadership) bündeln.
+    cross_refs: ['A.5.30']
+    audit_evidence_hint: 'BC-Strategie, Top-Management-Freigabe, BIA, BC-Plans, Übungs-Reports.'
+
+  - source: 'BCM-02'
+    target: 'A.5.30'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 BCM-02 „Business Impact Analysis" verlangt BIA mit RTO/RPO-
+      Definition und Priorisierung. ISO 27001:2022 A.5.30 „ICT readiness
+      for business continuity" deckt ICT-Anteil; BIA als Methodik ist
+      Teil von ISO 22301 Clause 8.2.
+    audit_evidence_hint: 'BIA-Methodik, BIA-Ergebnisse je Geschäftsprozess, RTO/RPO-Definitionen.'
+
+  - source: 'BCM-03'
+    target: 'A.5.30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 BCM-03 „Business Continuity Plans" verlangt dokumentierte
+      BC-Pläne pro kritischem Prozess. ISO 27001:2022 A.5.30 „ICT
+      readiness for business continuity" fordert ICT-Continuity-Pläne.
+      Pflichteninhalt deckungsgleich für ICT-Anteil.
+    audit_evidence_hint: 'BC-Pläne pro Geschäftsprozess, RTO/RPO-Mapping, Aktualisierungs-Datum.'
+
+  - source: 'BCM-04'
+    target: 'A.5.30'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 BCM-04 „Testing Business Continuity" verlangt regelmäßige
+      BC-Tests/Übungen. ISO 27001:2022 A.5.30 deckt BC-Testing als
+      Teilaspekt der ICT-Readiness ab.
+    audit_evidence_hint: 'BC-Test-Protokolle letzte 12 Monate, Tabletop-Übungs-Reports, Maßnahmen-Tracking.'
+
+  # ===== DEV — Development =====
+  - source: 'DEV-01'
+    target: 'A.8.25'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-01 „Policies for the Development/Procurement of System
+      Components" verlangt eine Secure-SDLC-Richtlinie. ISO 27001:2022
+      A.8.25 „Secure development life cycle" fordert inhaltsgleich.
+    cross_refs: ['A.8.27', 'A.8.28']
+    audit_evidence_hint: 'Secure-SDLC-Richtlinie, Procurement-Policy, Coding-Standards (z.B. OWASP).'
+
+  - source: 'DEV-02'
+    target: 'A.8.30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-02 „Outsourcing of the Development" verlangt Steuerung
+      von Outsourcing-Entwicklung mit Verträgen und Code-Reviews. ISO
+      27001:2022 A.8.30 „Outsourced development" fordert inhaltsgleich.
+    cross_refs: ['SSO-01']
+    audit_evidence_hint: 'Verträge mit Outsourcing-Entwicklern, Code-Review-Protokolle, Quality-Gates.'
+
+  - source: 'DEV-03'
+    target: 'A.8.32'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-03 „Policies for Changes to System Components"
+      verlangt Change-Management mit Risikobewertung, Testing und
+      Approval. ISO 27001:2022 A.8.32 „Change management" fordert
+      inhaltsgleich.
+    cross_refs: ['DEV-06', 'DEV-07', 'DEV-15']
+    audit_evidence_hint: 'Change-Management-Richtlinie, CAB-Protokolle, Change-Tickets letzte 90 Tage.'
+
+  - source: 'DEV-05'
+    target: 'A.8.27'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-05 „Design Documentation for Security Features"
+      verlangt dokumentierte Architektur-Sicherheitsmerkmale. ISO
+      27001:2022 A.8.27 „Secure system architecture and engineering
+      principles" fordert inhaltsgleich.
+    audit_evidence_hint: 'Security-Architektur-Dokument, Threat-Model-Reviews, Architektur-Reviews.'
+
+  - source: 'DEV-07'
+    target: 'A.8.29'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-07 „Testing Changes" verlangt strukturiertes Testing
+      (Unit, Integration, Security) vor Production-Deployment. ISO
+      27001:2022 A.8.29 „Security testing in development and acceptance"
+      fordert inhaltsgleich.
+    audit_evidence_hint: 'Test-Strategien, SAST/DAST-Reports, Acceptance-Testing-Protokolle.'
+
+  - source: 'DEV-11'
+    target: 'A.8.31'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-11 „Protection of Development and Test Environments"
+      verlangt Härtung der Dev/Test-Umgebungen. ISO 27001:2022 A.8.31
+      „Separation of development, test and production environments"
+      fordert inhaltsgleich.
+    cross_refs: ['DEV-12']
+    audit_evidence_hint: 'Umgebungs-Trennungs-Architektur, Zugriffsbeschränkungen, Hardening-Baselines.'
+
+  - source: 'DEV-12'
+    target: 'A.8.31'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-12 „Separation of Environments" verlangt klare
+      Trennung Dev/Test/Production. ISO 27001:2022 A.8.31 fordert
+      inhaltsgleich.
+    audit_evidence_hint: 'Netzwerk-Trennung Dev/Test/Prod, Datenfluss-Beschränkungen, Account-Trennung.'
+
+  - source: 'DEV-13'
+    target: 'A.8.30'
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      C5:2026 DEV-13 „Transparency about Software Components" verlangt
+      SBOM-Pflege (CycloneDX/SPDX) und CVE-Mapping. ISO 27001:2022
+      A.8.30 „Outsourced development" deckt externe Komponenten teilweise
+      ab; SBOM-spezifische Pflichten sind NICHT explizit abgedeckt.
+    gap_warning: |
+      ISO 27001:2022 enthält keine SBOM-spezifische Kontrolle. EU-CRA
+      (Cyber Resilience Act) verlangt SBOM ab 2027 verbindlich;
+      Ergänzung mit eigenständigem SBOM-Programm erforderlich (NTIA
+      SBOM Minimum Elements als Baseline).
+    cross_refs: ['A.8.28', 'OPS-29']
+    audit_evidence_hint: 'SBOM pro Software-Release (CycloneDX/SPDX), CVE-Tracking gegen SBOM, SBOM-API-Endpoint.'
+
+  - source: 'DEV-14'
+    target: 'A.5.21'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 DEV-14 „Secure Use of Third Party Hardware and Software"
+      verlangt sichere Auswahl, Bewertung und Monitoring von
+      Drittkomponenten. ISO 27001:2022 A.5.21 „Managing information
+      security in the ICT supply chain" deckt Supply-Chain ab; DEV-14
+      ist Teilaspekt mit Fokus auf technische Komponenten.
+    cross_refs: ['A.5.22', 'A.8.30']
+    audit_evidence_hint: 'Third-Party-Component-Inventar, Risikobewertungen, Vulnerability-Monitoring (CVE-Subscriptions).'
+
+  # ===== SSO — Sub-Service Organisations =====
+  - source: 'SSO-01'
+    target: 'A.5.19'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-01 „Policies and Procedures for Controlling and
+      Monitoring Service Organisations" verlangt eine dokumentierte
+      Sub-Provider-Steuerungs-Policy. ISO 27001:2022 A.5.19 „Information
+      security in supplier relationships" fordert inhaltsgleich.
+    cross_refs: ['A.5.20']
+    audit_evidence_hint: 'Sub-Provider-Policy, Vertragstemplate mit InfoSec-Klauseln, Monitoring-Berichte.'
+
+  - source: 'SSO-02'
+    target: 'A.5.20'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-02 „Risk Assessment of Service Organisations" verlangt
+      formelle Risikobewertung von Sub-Dienstleistern. ISO 27001:2022
+      A.5.20 „Addressing information security within supplier
+      agreements" deckt Vertragsanforderungen ab; SSO-02 ergänzt
+      Risk-Assessment-Methodik.
+    audit_evidence_hint: 'Sub-Provider-Risikobewertungen, Sub-Provider-Verzeichnis, Risikoklassifikation.'
+
+  - source: 'SSO-03'
+    target: 'A.5.21'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-03 „Data Processing of Service Organisations" verlangt
+      Steuerung der Datenverarbeitung durch Sub-Auftragsverarbeiter
+      (AVV nach Art. 28 DSGVO). ISO 27001:2022 A.5.23 „Information
+      security for use of cloud services" deckt Cloud-Services-Nutzung
+      umfassend ab.
+    audit_evidence_hint: 'AVV-Verträge mit Sub-Providern, Datenverarbeitungs-Mapping, Genehmigungen.'
+
+  - source: 'SSO-05'
+    target: 'A.5.22'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-05 „Monitoring of Compliance with Requirements"
+      verlangt laufendes Monitoring der Sub-Provider-Compliance. ISO
+      27001:2022 A.5.22 „Monitoring, review and change management of
+      supplier services" fordert inhaltsgleich.
+    audit_evidence_hint: 'Sub-Provider-Audit-Reports, SOC-2/ISO-27001-Zertifikate, Compliance-Reviews.'
+
+  - source: 'SSO-06'
+    target: 'A.5.20'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SSO-06 „Contract Termination Strategy for Service
+      Organisations" verlangt Exit-Strategien pro kritischem
+      Sub-Provider. ISO 27001:2022 A.5.20 deckt Vertragsanforderungen
+      generell ab; Exit-Strategie ist konkreter Teilaspekt.
+    audit_evidence_hint: 'Exit-Strategie-Dokument pro kritischem Sub-Provider, Datenrücknahme-Plan, Migrations-Runbook.'
+
+  # ===== COM — Compliance =====
+  - source: 'COM-01'
+    target: 'A.5.31'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COM-01 „Identification of Applicable Legal, Regulatory,
+      Self-imposed or Contractual Requirements" verlangt ein
+      Compliance-Anforderungs-Register (GDPR, NIS2, DORA, etc.). ISO
+      27001:2022 A.5.31 „Legal, statutory, regulatory and contractual
+      requirements" fordert inhaltsgleich.
+    cross_refs: ['A.5.32']
+    audit_evidence_hint: 'Compliance-Anforderungs-Register, Reviews letzte 12 Monate, Maßnahmen-Mapping.'
+
+  - source: 'COM-02'
+    target: 'A.5.35'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COM-02 „Policy for Planning and Conducting Audits" verlangt
+      eine Audit-Planungs-Policy. ISO 27001:2022 A.5.35 „Independent
+      review of information security" fordert inhaltsgleich.
+    audit_evidence_hint: 'Audit-Plan, Audit-Charta, ISO-19011-Methodik.'
+
+  - source: 'COM-03'
+    target: 'A.5.35'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COM-03 „Internal Audits of the Information Security
+      Management System" verlangt interne Audits gemäß ISO 19011. ISO
+      27001:2022 A.5.35 deckt unabhängige Reviews ab; COM-03 ist
+      konkreter Teilaspekt (interne Audits sind Teilmenge der
+      independent reviews). ISO 27001 Klausel 9.2 (Hauptdoc) deckt
+      Internal Audit umfassend ab.
+    cross_refs: ['A.5.36']
+    audit_evidence_hint: 'Audit-Plan, Audit-Reports letzte 24 Monate, Maßnahmen-Tracking aus Audit-Findings.'
+
+  - source: 'COM-04'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 COM-04 „Information on Information Security Performance
+      and Management Assessment of the ISMS" verlangt
+      Management-Reviews mit InfoSec-KPIs. ISO 27001:2022 A.5.36
+      „Compliance with policies, rules and standards for information
+      security" deckt Compliance-Monitoring ab; ISO 27001 Klausel 9.3
+      (Hauptdoc) deckt Management-Review.
+    cross_refs: ['A.5.37']
+    audit_evidence_hint: 'Management-Review-Protokolle, InfoSec-KPI-Dashboard, Performance-Reports.'
+
+  # ===== PI — Portability & Interoperability (Cloud-spezifisch) =====
+  - source: 'PI-01'
+    target: 'A.5.14'
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PI-01 „Safety of Input and Output Interfaces" verlangt
+      sichere API-Schnittstellen mit Validierung und Authentifizierung.
+      ISO 27001:2022 A.5.14 „Information transfer" deckt
+      Übertragungs-Aspekt teilweise ab; PI-01 ist primär Cloud-spezifisch
+      (API-Sicherheit und Daten-Portabilität).
+    gap_warning: |
+      Cloud-API-spezifische Pflichten (OWASP API Top 10, Rate Limiting,
+      Schema Validation) sind in ISO 27001:2022 Annex A nicht explizit
+      adressiert. Ergänzende Standards: OWASP API Security, NIST SP
+      800-204A.
+    audit_evidence_hint: 'API-Dokumentation, Datenexport-Funktionalität, Input-Validation, OWASP-API-Tests.'
+
+  - source: 'PI-02'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PI-02 „Contractual Agreements for the Provision of Data"
+      verlangt vertragliche Regelungen für Daten-Bereitstellung und
+      -Portabilität. Kein direktes ISO 27001:2022 Annex-A-Pendant —
+      Daten-Portabilität ist Cloud-spezifisch und im EU Data Act / GDPR
+      Art. 20 geregelt.
+    gap_warning: |
+      Daten-Portabilität ist primär regulatorisch (GDPR Art. 20, EU Data
+      Act ab 2025) — kein ISO-Annex-A-Match.
+    audit_evidence_hint: 'Vertragsklauseln zu Daten-Portabilität, Daten-Export-Formate (offene Standards), SLA für Datenrückgabe.'
+
+  - source: 'PI-03'
+    target: 'A.8.10'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PI-03 „Secure Deletion of Data" verlangt sichere Lösch-
+      Verfahren für Customer Data (kryptografische Löschung,
+      Audit-Trail). ISO 27001:2022 A.8.10 „Information deletion" fordert
+      inhaltsgleich.
+    audit_evidence_hint: 'Daten-Lösch-Konzept, kryptografische Löschung von Encrypted Volumes, Lösch-Audit-Trail.'
+
+  # ===== PSS — Product Safety & Security (Cloud-Anbieter-spezifisch) =====
+  - source: 'PSS-01'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-01 „Guidelines and Recommendations for Cloud Service
+      Customers" verlangt Anbieter-seitige Bereitstellung von
+      Security-Empfehlungen für Kunden (Shared-Responsibility-Modell).
+      Kein direktes ISO 27001:2022 Annex-A-Pendant — Cloud-Anbieter-
+      spezifische Customer-Guidance ist nicht in Annex A reflektiert.
+    gap_warning: |
+      Customer-Guidance-Pflichten sind Cloud-Provider-spezifisch und im
+      Annex A nicht adressiert. ENISA Cloud Security Guide und CSA CCM
+      bieten ergänzende Best Practices.
+    audit_evidence_hint: 'Shared-Responsibility-Matrix, Customer-Hardening-Guides, Security-Bulletin-Archiv.'
+
+  - source: 'PSS-02'
+    target: 'A.8.8'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 PSS-02 „Identification of Vulnerabilities of the Cloud
+      Service" verlangt Vulnerability-Identifikation aus Anbieter-Sicht.
+      ISO 27001:2022 A.8.8 „Management of technical vulnerabilities"
+      deckt Vulnerability-Mgmt umfassend ab; PSS-02 ist Cloud-spezifischer
+      Teilaspekt (Service-Vulnerabilities).
+    audit_evidence_hint: 'Vulnerability-Identifikations-Prozess, CVE-Tracking, Bug-Bounty-Programm.'
+
+  - source: 'PSS-11'
+    target: 'A.8.9'
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-11 „Images for Virtual Machines and Containers"
+      verlangt gehärtete Golden-Images mit Signatur und Vulnerability-
+      Scan. ISO 27001:2022 A.8.9 „Configuration management" deckt
+      Hardening generell ab; Image-Signing und Image-Lifecycle-Mgmt sind
+      nicht explizit adressiert.
+    gap_warning: |
+      Image-spezifische Pflichten (Cosign/Notary-Signatur, Aging-Policy,
+      Pre-Promote-Scan) sind in A.8.9 nicht abgedeckt. NIST SP 800-190
+      und CIS Hardened Images bieten ergänzende Best Practices.
+    cross_refs: ['OPS-26', 'OPS-34']
+    audit_evidence_hint: 'Golden-Image-Policy, Image-Hardening-Berichte (CIS-Bench), Image-Signing-Nachweis (Cosign/Notary).'
+
+  - source: 'PSS-12'
+    target: 'A.5.34'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 PSS-12 „Region of Data Processing and Storage" verlangt
+      Transparenz und Steuerung der Datenresidenz (EU/Non-EU,
+      Schrems-II-konform). ISO 27001:2022 A.5.34 „Privacy and protection
+      of PII" deckt PII-Aspekt ab; Cloud-spezifische Datenresidenz-
+      Pflichten gehen darüber hinaus.
+    gap_warning: |
+      Datenresidenz-Pflichten sind primär regulatorisch (GDPR Schrems II,
+      EU-US DPF, EU Data Act). A.5.34 reicht für reine PII-Aspekte;
+      Cloud-Datenresidenz erfordert separate Steuerung.
+    audit_evidence_hint: 'Datenresidenz-Mapping pro Service, Schrems-II-Bewertungen, Region-Inventar.'
+
+  # ===== INQ — Investigative Requests (Cloud-spezifisch, kein ISO-Pendant) =====
+  - source: 'INQ-01'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 INQ-01 „Legal Assessment of Investigation Requests"
+      verlangt einen Legal-Review-Prozess für Behördenanfragen (CLOUD
+      Act, BfDI, MLAT). KEIN ISO 27001:2022 Annex-A-Pendant — Behörden-
+      anfragen sind Cloud-spezifisch und im Annex A nicht reflektiert.
+    gap_warning: |
+      Investigative-Requests-Pflichten sind Cloud-spezifisch und
+      regulatorisch (CLOUD Act, e-Evidence-VO, GDPR Art. 48).
+      Eigenständiger Prozess erforderlich; kein Annex-A-Carryover möglich.
+    cross_refs: ['INQ-02', 'INQ-03', 'INQ-04']
+    audit_evidence_hint: 'Behördenanfrage-Prozess-Dokumentation, Legal-Review-Protokolle, Transparenzbericht.'
+
+  - source: 'INQ-02'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 INQ-02 „Informing Cloud Service Customers about
+      Investigation Requests" verlangt Kunden-Notifikation bei
+      Behördenanfragen (sofern rechtlich zulässig). KEIN ISO 27001:2022
+      Annex-A-Pendant.
+    audit_evidence_hint: 'Kunden-Notifikations-Prozess, Notifikations-Templates, Stichprobe Notifikationen.'
+
