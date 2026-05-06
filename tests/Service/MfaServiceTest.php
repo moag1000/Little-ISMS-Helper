@@ -170,8 +170,12 @@ class MfaServiceTest extends TestCase
     {
         $user = $this->createUser(1, 'user@example.com');
 
-        // Create token with recent lastUsedAt to trigger rate limiting
-        $lastUsed = new \DateTimeImmutable('-1 second');
+        // Create token with lastUsedAt = now to deterministically trigger
+        // rate limiting (service requires diff < 2s). Using a relative offset
+        // like '-1 second' was flaky on slow CI runners where the gap between
+        // mock setup and service execution exceeded 2s, missing the rate-limit
+        // window.
+        $lastUsed = new \DateTimeImmutable();
         $token = $this->createMock(MfaToken::class);
         $token->method('getId')->willReturn(1);
         $token->method('getUser')->willReturn($user);
