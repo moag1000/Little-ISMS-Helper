@@ -19,7 +19,7 @@ library:
     publisher: 'Little ISMS Helper Maintainers'
 
   methodology:
-    type: 'regulatory_text_comparison_with_addressee_analysis'
+    type: 'text_comparison_with_expert_review'
     description: |
       KRITISCHER ADRESSATEN-HINWEIS: CRA (Verordnung 2024/2847) und NIS2-Richtlinie
       2022/2555 adressieren UNTERSCHIEDLICHE Akteure:

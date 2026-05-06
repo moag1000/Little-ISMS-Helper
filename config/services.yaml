@@ -135,6 +135,18 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    App\Command\EnsureMappingRequirementsCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    App\Command\LoadC52026FullCatalogueCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
+    App\Command\LoadNistCsf2FullCatalogueCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     App\Command\MappingLibraryImportCommand:
         arguments:
             $projectDir: '%kernel.project_dir%'

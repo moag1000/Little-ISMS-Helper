@@ -21,7 +21,7 @@ library:
     license_note: 'Mapping is original derivative work (AGPL-3.0). NIST CSF 2.0 IDs and titles are public domain (NIST works in U.S.). ISO 27001:2022 references for cross-reference use.'
 
   methodology:
-    type: 'catalogue_text_comparison_with_olir_alignment'
+    type: 'published_official_mapping'
     description: |
       Reverse-Mapping CSF 2.0 → ISO 27001:2022 Annex A. Jede der 106 CSF-
       Subcategories aus dem NIST-Inventory wurde gegen die 93 Annex-A-

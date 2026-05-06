@@ -19,7 +19,7 @@ library:
     license_note: 'Mapping is original derivative work (AGPL-3.0). C5:2026 IDs/titles © BSI 2026 (CC-BY-ND 4.0). ISO 27001:2022 references educational use.'
 
   methodology:
-    type: 'catalogue_text_comparison'
+    type: 'text_comparison_with_expert_review'
     description: |
       Bidirektionales Mapping zwischen BSI C5:2026-Kriterien (168 Kriterien
       in 18 Bereichen) und ISO/IEC 27001:2022 Annex A (93 Controls). Diese

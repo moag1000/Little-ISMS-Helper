@@ -118,9 +118,24 @@ class MappingValidatorService
                     $errors[] = "{$prefix} not an array.";
                     continue;
                 }
-                if (empty($entry['source']) || empty($entry['target'])) {
-                    $errors[] = "{$prefix}.source and .target required.";
+                if (empty($entry['source'])) {
+                    $errors[] = "{$prefix}.source required.";
                     continue;
+                }
+                $targetValue = $entry['target'] ?? null;
+                $targetIsNull = $targetValue === null;
+                if (!$targetIsNull && $targetValue === '') {
+                    $errors[] = "{$prefix}.target empty (use 'null' for explicit no-equivalent gap markers).";
+                    continue;
+                }
+                if ($targetIsNull) {
+                    $rel = $entry['relationship'] ?? null;
+                    if ($rel !== null && !in_array($rel, ['superset', 'related'], true)) {
+                        $errors[] = "{$prefix}.target=null only allowed with relationship 'superset' or 'related' (gap marker), got '{$rel}'.";
+                    }
+                    if (empty($entry['gap_warning'])) {
+                        $warnings[] = "{$prefix}.target=null without gap_warning — please document why no equivalent exists.";
+                    }
                 }
                 if (isset($entry['relationship']) && !in_array($entry['relationship'], self::ALLOWED_RELATIONSHIPS, true)) {
                     $errors[] = "{$prefix}.relationship '{$entry['relationship']}' invalid; allowed: " . implode(', ', self::ALLOWED_RELATIONSHIPS) . ".";
@@ -136,8 +151,8 @@ class MappingValidatorService
                 if ($sourceFw && !$this->requirementExists($sourceFw, (string) $entry['source'])) {
                     $errors[] = "{$prefix}.source '{$entry['source']}' not found in framework '{$sourceCode}'.";
                 }
-                if ($targetFw && !$this->requirementExists($targetFw, (string) $entry['target'])) {
-                    $errors[] = "{$prefix}.target '{$entry['target']}' not found in framework '{$targetCode}'.";
+                if (!$targetIsNull && $targetFw && !$this->requirementExists($targetFw, (string) $targetValue)) {
+                    $errors[] = "{$prefix}.target '{$targetValue}' not found in framework '{$targetCode}'.";
                 }
 
                 $coveredSourceIds[(string) $entry['source']] = true;

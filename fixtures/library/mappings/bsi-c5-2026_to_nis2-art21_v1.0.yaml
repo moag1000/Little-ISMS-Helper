@@ -20,7 +20,7 @@ library:
     license_note: 'Mapping is original derivative work (AGPL-3.0). C5:2026 source IDs and names © BSI 2026 used under CC-BY-ND 4.0 with attribution. NIS2 article references © Europäische Union, public-domain-equivalent (Amtliches Werk).'
 
   methodology:
-    type: 'catalogue_text_comparison_with_expert_review'
+    type: 'text_comparison_with_expert_review'
     description: |
       Jedes C5:2026-Kriterium wurde gegen die NIS2-Pflichten-Anker geprüft:
       Art. 20 (Governance, Mgmt-Verantwortung, Mgmt-Schulung), Art. 21(2)
