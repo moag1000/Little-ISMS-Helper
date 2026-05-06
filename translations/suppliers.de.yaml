@@ -42,6 +42,7 @@ supplier:
         security_assessment: Sicherheitsbewertung
         certifications_compliance: 'Zertifizierungen & Compliance'
         contract_info: Vertragsinformationen
+        lksg: 'Lieferkettensorgfalt (LkSG)'
         related_assets: 'Zugeordnete Assets'
         related_risks: 'Zugeordnete Risiken'
     field:

@@ -146,6 +146,57 @@
                     {% endif %}
                 {% endblock %}
             {% endembed %}
+
+            {% set sdm = dpia.sdmAssessment ?? {} %}
+            {% if sdm|length > 0 or dpia.sdmAssessmentSummary %}
+            <div class="mt-3">
+                {% embed '_components/_card.html.twig' %}
+                    {% block card_header %}
+                        <div class="card-header"><h2 class="h5 mb-0">
+                            <i class="fa-icon fa-icon--shield" aria-hidden="true"></i>
+                            {{ 'privacy.sdm.title'|trans({}, 'privacy') }}
+                        </h2></div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <p class="text-muted small mb-3">{{ 'privacy.sdm.description'|trans({}, 'privacy') }}</p>
+                        <p class="mb-2">
+                            <strong>{{ 'privacy.sdm.coverage'|trans({}, 'privacy') }}:</strong>
+                            {{ dpia.sdmCoveragePercent }}%
+                            {% if dpia.sdmHighestRiskLevel %}
+                                · <strong>{{ 'privacy.sdm.highest_risk'|trans({}, 'privacy') }}:</strong>
+                                {% set sdm_risk_class = {'low': 'success', 'medium': 'warning', 'high': 'danger'}[dpia.sdmHighestRiskLevel] %}
+                                {% include '_components/_badge.html.twig' with { variant: sdm_risk_class, content: ('privacy.sdm.risk_level.' ~ dpia.sdmHighestRiskLevel)|trans({}, 'privacy') } %}
+                            {% endif %}
+                        </p>
+                        <ul class="list-unstyled small mb-2">
+                            {% for goal in [
+                                'verfuegbarkeit', 'integritaet', 'vertraulichkeit', 'transparenz',
+                                'intervenierbarkeit', 'nichtverkettung', 'datenminimierung'
+                            ] %}
+                                {% set entry = sdm[goal] ?? null %}
+                                <li class="mb-1">
+                                    <strong>{{ ('privacy.sdm.goal.' ~ goal)|trans({}, 'privacy') }}:</strong>
+                                    {% if entry and entry.risk_level is defined and entry.risk_level %}
+                                        {% set goal_class = {'low': 'success', 'medium': 'warning', 'high': 'danger'}[entry.risk_level] ?? 'secondary' %}
+                                        {% include '_components/_badge.html.twig' with { variant: goal_class, content: ('privacy.sdm.risk_level.' ~ entry.risk_level)|trans({}, 'privacy') } %}
+                                        {% if entry.rationale is defined and entry.rationale %}
+                                            <span class="text-muted">— {{ entry.rationale }}</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {% if dpia.sdmAssessmentSummary %}
+                            <p class="mb-0"><strong>{{ 'privacy.sdm.summary'|trans({}, 'privacy') }}:</strong>
+                                {{ dpia.sdmAssessmentSummary|nl2br }}
+                            </p>
+                        {% endif %}
+                    {% endblock %}
+                {% endembed %}
+            </div>
+            {% endif %}
         </div>
 
         <div class="col-md-6">

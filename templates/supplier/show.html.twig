@@ -347,6 +347,52 @@
                             </div>
                         {% endif %}
                     </div>
+
+                    {% if supplier.lksgReportingObligation or supplier.lksgRiskCategory or supplier.lksgRiskAnalysisDate %}
+                    <div class="detail-section">
+                        <h3>{{ 'supplier.section.lksg'|trans({}, 'suppliers') }}</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.lksg_reporting_obligation'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.lksgReportingObligation ? ('common.yes'|trans({}, 'messages')) : ('common.no'|trans({}, 'messages')) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.lksg_risk_category'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">
+                                    {% if supplier.lksgRiskCategory %}
+                                        {{ ('supplier.lksg_risk.' ~ supplier.lksgRiskCategory)|trans({}, 'suppliers') }}
+                                    {% else %}
+                                        <span class="text-muted">{{ 'supplier.value.na'|trans({}, 'suppliers') }}</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.lksg_human_rights_risk_score'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.lksgHumanRightsRiskScore ?? ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.lksg_environmental_risk_score'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.lksgEnvironmentalRiskScore ?? ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">{{ 'supplier.field.lksg_risk_analysis_date'|trans({}, 'suppliers') }}:</span>
+                                <span class="value">{{ supplier.lksgRiskAnalysisDate ? supplier.lksgRiskAnalysisDate|date('Y-m-d') : ('supplier.value.na'|trans({}, 'suppliers')) }}</span>
+                            </div>
+                        </div>
+                        {% if supplier.lksgComplaintMechanism %}
+                        <div class="detail-item">
+                            <span class="label">{{ 'supplier.field.lksg_complaint_mechanism'|trans({}, 'suppliers') }}:</span>
+                            <span class="value">{{ supplier.lksgComplaintMechanism|nl2br }}</span>
+                        </div>
+                        {% endif %}
+                        {% if supplier.lksgPreventionMeasures %}
+                        <div class="detail-item">
+                            <span class="label">{{ 'supplier.field.lksg_prevention_measures'|trans({}, 'suppliers') }}:</span>
+                            <span class="value">{{ supplier.lksgPreventionMeasures|nl2br }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 </div>
 
                 {# ─────────────── Tab 3: DORA (conditional) ────────────── #}

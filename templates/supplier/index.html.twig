@@ -122,7 +122,7 @@
     {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
     {% embed '_components/_search_filter_form.html.twig' with {
         action: path('app_supplier_index'),
-        filter_keys: ['criticality', 'status', 'iso27001', 'view', 'tag'],
+        filter_keys: ['criticality', 'status', 'iso27001', 'lksg_risk', 'view', 'tag'],
         form_id: 'supplier-filter-form'
     } %}
         {% block filters %}
@@ -158,6 +158,17 @@
                     <option value="1" {{ app.request.query.get('iso27001') == '1' ? 'selected' : '' }}>{{ 'common.yes'|trans({}, 'messages') }}</option>
                     <option value="0" {{ app.request.query.get('iso27001') == '0' ? 'selected' : '' }}>{{ 'common.no'|trans({}, 'messages') }}</option>
                 </select>
+            </div>
+            <div class="col-md-4">
+                {{ _fa_filter_select.render({
+                    name: 'lksg_risk',
+                    label: 'supplier.field.lksg_risk_category'|trans({}, 'suppliers'),
+                    values: ['low', 'medium', 'high', 'critical'],
+                    prefix: 'supplier.lksg_risk.',
+                    domain: 'suppliers',
+                    selected: app.request.query.get('lksg_risk'),
+                    all_label: 'common.all'|trans({}, 'messages')
+                }) }}
             </div>
         {% endblock %}
     {% endembed %}
