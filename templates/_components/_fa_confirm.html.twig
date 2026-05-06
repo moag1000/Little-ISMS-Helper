@@ -1,0 +1,123 @@
+{#
+ # FairyAurora v4.0 — fa-confirm macro
+ #
+ # Modal confirmation dialog for irreversible / tenant-wide actions
+ # (Revoke, Delete-Tenant, Force-Logout, Hard-Reset). Three escalation
+ # tones based on blast radius:
+ #   warn    — confirmation alone is enough
+ #   danger  — type-to-confirm phrase required
+ #   nuclear — type-to-confirm + 5-second cooldown before submit
+ #
+ # The macro emits the markup; behaviour (cooldown, type-match) is
+ # driven by the `confirm-dialog` Stimulus controller.
+ #
+ # Usage:
+ #   {% import '_components/_fa_confirm.html.twig' as _fa_confirm %}
+ #   {{ _fa_confirm.render({
+ #       tone:        'danger',
+ #       icon:        'exclamation-triangle-fill',
+ #       title:       'API-Key dauerhaft widerrufen?',
+ #       sub:         'Der Key <code>lih_live_91de…</code> wird sofort ungültig.',
+ #       diff: [
+ #           { label: 'Aktive Verbindungen', value: '14 → 0' },
+ #           { label: 'Reporting-Service',   value: 'offline', tone: 'danger' }
+ #       ],
+ #       confirmPhrase:  'Reporting-Service',
+ #       confirmHint:    'Tippe <code>Reporting-Service</code> zum Bestätigen',
+ #       cancelLabel:    'Abbrechen',
+ #       submitLabel:    'Endgültig widerrufen',
+ #       submitIcon:     'shield-x',
+ #       cooldownSeconds: 5,
+ #       formAction:     path('admin_api_key_revoke', {id: key.id}),
+ #       formCsrfToken:  csrf_token('api_key_revoke')
+ #   }) }}
+ #
+ # Parameters:
+ #   tone            - warn | danger | nuclear (default 'warn')
+ #   icon            - bi-* icon (default 'exclamation-triangle-fill')
+ #   title           - dialog headline (required)
+ #   sub             - sub-text, raw HTML allowed (optional)
+ #   diff            - array of { label, value, tone? } before→after rows
+ #   confirmPhrase   - exact phrase the user must type (danger / nuclear)
+ #   confirmHint     - hint label above the input, raw HTML allowed
+ #   cancelLabel     - cancel button text (default 'Abbrechen')
+ #   submitLabel     - submit button text (required)
+ #   submitIcon      - bi-* icon for submit button (optional)
+ #   cooldownSeconds - delay before submit becomes clickable (default 0)
+ #   formAction      - POST endpoint (required for live use; omit for preview)
+ #   formCsrfToken   - CSRF token (required if formAction set)
+ #   id              - aria-labelledby anchor (default auto-id)
+ #}
+
+{% macro render(props = {}) %}
+    {% set tone = props.tone|default('warn') %}
+    {% set icon = props.icon|default('exclamation-triangle-fill') %}
+    {% set cancelLabel = props.cancelLabel|default('Abbrechen') %}
+    {% set cooldownSeconds = props.cooldownSeconds|default(0) %}
+    {% set id = props.id|default('fa-confirm-' ~ random()) %}
+
+    <div class="fa-confirm"
+         data-tone="{{ tone }}"
+         role="alertdialog"
+         aria-labelledby="{{ id }}-title"
+         data-controller="fa-confirm"
+         data-fa-confirm-cooldown-value="{{ cooldownSeconds }}"
+         {% if props.confirmPhrase is defined and props.confirmPhrase %}data-fa-confirm-phrase-value="{{ props.confirmPhrase }}"{% endif %}>
+
+        <header class="fa-confirm__header">
+            <span class="fa-confirm__icon"><i class="bi bi-{{ icon }}" aria-hidden="true"></i></span>
+            <div>
+                <div class="fa-confirm__title" id="{{ id }}-title">{{ props.title }}</div>
+                {% if props.sub is defined and props.sub %}
+                    <p class="fa-confirm__sub">{{ props.sub|raw }}</p>
+                {% endif %}
+            </div>
+        </header>
+
+        {% if props.diff is defined and props.diff|length > 0 %}
+            <div class="fa-confirm__diff">
+                {% for row in props.diff %}
+                    <div class="fa-confirm__diff-row">
+                        <span>{{ row.label }}</span>
+                        <strong{% if row.tone is defined and row.tone %} style="color: var(--{{ row.tone }}-strong);"{% endif %}>{{ row.value }}</strong>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post"
+              {% if props.formAction is defined and props.formAction %}action="{{ props.formAction }}"{% endif %}
+              data-fa-confirm-target="form">
+
+            {% if props.formCsrfToken is defined and props.formCsrfToken %}
+                <input type="hidden" name="_token" value="{{ props.formCsrfToken }}">
+            {% endif %}
+
+            {% if props.confirmPhrase is defined and props.confirmPhrase %}
+                <label class="fa-confirm__field">
+                    <span>{{ (props.confirmHint|default('Tippe <code>' ~ props.confirmPhrase ~ '</code> zum Bestätigen'))|raw }}</span>
+                    <input type="text"
+                           data-fa-confirm-target="phraseInput"
+                           data-action="input->fa-confirm#evaluate"
+                           autocomplete="off"
+                           spellcheck="false">
+                </label>
+            {% endif %}
+
+            <footer class="fa-confirm__footer">
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--ghost"
+                        data-action="fa-confirm#cancel">{{ cancelLabel }}</button>
+                <button type="submit"
+                        class="fa-cyber-btn fa-cyber-btn--{{ tone == 'warn' ? 'warning' : 'danger' }}"
+                        data-fa-confirm-target="submit"
+                        {% if props.confirmPhrase is defined and props.confirmPhrase or cooldownSeconds > 0 %}disabled{% endif %}>
+                    {% if props.submitIcon is defined and props.submitIcon %}
+                        <i class="bi bi-{{ props.submitIcon }}" aria-hidden="true"></i>
+                    {% endif %}
+                    <span data-fa-confirm-target="submitLabel">{{ props.submitLabel }}</span>
+                </button>
+            </footer>
+        </form>
+    </div>
+{% endmacro %}

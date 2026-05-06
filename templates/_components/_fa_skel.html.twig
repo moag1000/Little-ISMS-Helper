@@ -1,0 +1,27 @@
+{#
+ # FairyAurora v4.0 — fa-skel macro
+ #
+ # Quiet shimmer-bar placeholder for the first render only. Five shape
+ # variants: text, row, card, avatar, matrix. Per the design system,
+ # never show a skeleton longer than 600 ms — switch to an empty-state
+ # if the data is taking longer than expected.
+ #
+ # Usage:
+ #   {% import '_components/_fa_skel.html.twig' as _fa_skel %}
+ #   {{ _fa_skel.render({ variant: 'text' }) }}
+ #   {{ _fa_skel.render({ variant: 'row' }) }}
+ #   {{ _fa_skel.render({ variant: 'card' }) }}
+ #   {{ _fa_skel.render({ variant: 'avatar' }) }}
+ #   {{ _fa_skel.render({ variant: 'matrix' }) }}
+ #
+ # Parameters:
+ #   variant - text | row | card | avatar | matrix (default 'text')
+ #   class   - extra CSS classes on the placeholder (optional)
+ #}
+
+{% macro render(props = {}) %}
+    {% set variant = props.variant|default('text') %}
+    <div class="fa-skel fa-skel--{{ variant }}{{ props.class is defined ? ' ' ~ props.class : '' }}"
+         aria-hidden="true"
+         role="presentation"></div>
+{% endmacro %}

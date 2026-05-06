@@ -1,0 +1,69 @@
+{#
+ # FairyAurora v4.0 — fa-audit-row macro
+ #
+ # Single line in the tamper-evident audit log. Mono font for timestamp /
+ # action / hash; accent-colored severity dot with halo (info/warning/
+ # critical/danger); optional pill for sealed/failed lifecycle markers.
+ #
+ # Two structural modifiers:
+ #   sealed = true → row tinted with sealed-tone, immutable record
+ #   failed = true → row tinted with danger-tone, validation/replay error
+ #
+ # Usage:
+ #   {% import '_components/_fa_audit_row.html.twig' as _fa_audit_row %}
+ #   {{ _fa_audit_row.render({
+ #       ts:     '10:42:18.331',
+ #       sev:    'info',
+ #       actor:  'Maxi Schubert',
+ #       action: 'role.update',
+ #       target: 'role:auditor',
+ #       hash:   'a7c3…91e2'
+ #   }) }}
+ #
+ #   {{ _fa_audit_row.render({
+ #       ts: '10:38:02.118', sev: 'info', actor: 'system',
+ #       action: 'audit.seal', target: 'period:2025-W47',
+ #       pill: 'sealed', hash: '00f2…3d8a',
+ #       sealed: true
+ #   }) }}
+ #
+ # Parameters:
+ #   ts     - timestamp string (required, mono)
+ #   sev    - severity dot: info | warning | critical | danger (default 'info')
+ #   actor  - user / system identifier (required)
+ #   action - action code rendered as <code>, e.g. 'role.update' (required)
+ #   target - target identifier (optional)
+ #   hash   - tamper-evident hash, mono (optional)
+ #   pill   - pill label for sealed/failed lifecycle marker (optional)
+ #   sealed - tint row sealed (optional)
+ #   failed - tint row danger (optional)
+ #}
+
+{% macro render(props = {}) %}
+    {% set sev = props.sev|default('info') %}
+    {% set classes = ['fa-audit-row'] %}
+    {% if props.sealed|default(false) %}{% set classes = classes|merge(['fa-audit-row--sealed']) %}{% endif %}
+    {% if props.failed|default(false) %}{% set classes = classes|merge(['fa-audit-row--failed']) %}{% endif %}
+
+    <div class="{{ classes|join(' ') }}">
+        {% if props.ts is defined %}
+            <span class="fa-audit-row__ts">{{ props.ts }}</span>
+        {% endif %}
+        <span class="fa-audit-row__sev fa-audit-row__sev--{{ sev }}" aria-label="{{ sev }}"></span>
+        {% if props.actor is defined %}
+            <span class="fa-audit-row__actor">{{ props.actor }}</span>
+        {% endif %}
+        {% if props.action is defined %}
+            <code class="fa-audit-row__action">{{ props.action }}</code>
+        {% endif %}
+        {% if props.target is defined and props.target %}
+            <span class="fa-audit-row__target">{{ props.target }}</span>
+        {% endif %}
+        {% if props.pill is defined and props.pill %}
+            <span class="fa-audit-row__pill">{{ props.pill }}</span>
+        {% endif %}
+        {% if props.hash is defined and props.hash %}
+            <span class="fa-audit-row__hash">{{ props.hash }}</span>
+        {% endif %}
+    </div>
+{% endmacro %}
