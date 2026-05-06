@@ -899,7 +899,7 @@
 .floating-toolbar {
     position: sticky;
     top: 70px;
-    z-index: 10;
+    z-index: var(--z-sticky);
     background: var(--surface);
     border-radius: var(--r-md);
     box-shadow: var(--shadow-md);
@@ -1165,7 +1165,7 @@
     background: var(--bg);
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: var(--z-sticky);
 }
 
 .w-text-right {
@@ -1186,7 +1186,7 @@
     position: sticky;
     left: 0;
     background: var(--surface-2);
-    z-index: 10;
+    z-index: var(--z-sticky);
 }
 
 .th-center {
@@ -1210,7 +1210,7 @@
     position: sticky;
     left: 0;
     background: var(--surface);
-    z-index: 5;
+    z-index: 5; /* local stacking-context: sticky column within table */
 }
 
 /* Dark Mode - Sticky Table Cells */
@@ -1562,7 +1562,7 @@
     border: 1px solid var(--border);
     border-radius: 0.5rem;
     position: relative;
-    z-index: 10;
+    z-index: 10; /* local stacking-context */
 }
 
 .chart-legend-items {
@@ -1781,7 +1781,7 @@
     background: var(--bg);
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: var(--z-sticky);
 }
 
 /* Workflow Instance Show Utilities */
