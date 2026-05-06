@@ -368,6 +368,32 @@ processing_activity:
     dpia:
         required: 'Erforderlich'
         not_required: 'Nicht erforderlich'
+    sdm:
+        title: 'Standard-Datenschutzmodell (SDM 3.1)'
+        description: 'Bewertung der sieben Gewährleistungsziele der Datenschutzkonferenz (DSK) für diese Verarbeitung.'
+        coverage: 'Bewertete Ziele'
+        highest_risk: 'Höchstes Risiko'
+        summary: 'Bewertungszusammenfassung'
+        risk_level:
+            low: 'Niedrig'
+            medium: 'Mittel'
+            high: 'Hoch'
+        goal:
+            verfuegbarkeit: 'Verfügbarkeit'
+            integritaet: 'Integrität'
+            vertraulichkeit: 'Vertraulichkeit'
+            transparenz: 'Transparenz'
+            intervenierbarkeit: 'Intervenierbarkeit'
+            nichtverkettung: 'Nichtverkettung'
+            datenminimierung: 'Datenminimierung'
+        goal_help:
+            verfuegbarkeit: 'Personenbezogene Daten stehen den Berechtigten zeitgerecht zur Verfügung.'
+            integritaet: 'Daten und Verarbeitungsprozesse sind unversehrt, vollständig und aktuell.'
+            vertraulichkeit: 'Nur Befugte haben Zugriff auf personenbezogene Daten.'
+            transparenz: 'Verarbeitung ist für Betroffene, Aufsicht und Verantwortlichen nachvollziehbar.'
+            intervenierbarkeit: 'Betroffenenrechte (Auskunft, Berichtigung, Löschung) sind effektiv umsetzbar.'
+            nichtverkettung: 'Daten werden nicht über den ursprünglichen Zweck hinaus verknüpft.'
+            datenminimierung: 'Verarbeitung beschränkt sich auf das für den Zweck Erforderliche.'
     compliance:
         pass: 'Bestanden'
         fail: 'Nicht bestanden'
