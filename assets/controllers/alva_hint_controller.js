@@ -1,10 +1,12 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Hides the surrounding Alva-Fee hint card and persists the dismissal
- * server-side so the same user never sees it again, even on a different
- * device. The card stays in the DOM for accessibility, but `hidden` is
- * applied immediately so the action feels instant.
+ * Drives the Alva-Fee hint card:
+ * - on connect, broadcasts the card's mood to the global Alva bus so
+ *   the mascot can react (e.g. switch to "warning" when a tier-1
+ *   regulatory hint shows)
+ * - on dismiss, hides the card and persists the dismissal server-side
+ *   (cross-device) plus emits a "happy" mood pulse as feedback
  */
 export default class extends Controller {
     static values = {
@@ -14,6 +16,17 @@ export default class extends Controller {
         csrfToken: String,
         endpoint: String,
     };
+
+    connect() {
+        const mood = this.element.dataset.alvaMood;
+        if (mood && window.alvaBus && typeof window.alvaBus.emit === 'function') {
+            window.alvaBus.emit({
+                mood,
+                reason: `alva-hint:${this.hintKeyValue}`,
+                ttlMs: 8000,
+            });
+        }
+    }
 
     async dismiss(event) {
         event.preventDefault();
@@ -37,6 +50,14 @@ export default class extends Controller {
             if (!response.ok) {
                 // Bring the card back so the user can retry
                 card.hidden = false;
+                return;
+            }
+            if (window.alvaBus && typeof window.alvaBus.emit === 'function') {
+                window.alvaBus.emit({
+                    mood: 'happy',
+                    reason: `alva-hint:dismissed:${this.hintKeyValue}`,
+                    ttlMs: 3000,
+                });
             }
         } catch (err) {
             card.hidden = false;
