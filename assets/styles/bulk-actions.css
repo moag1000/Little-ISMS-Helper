@@ -73,7 +73,7 @@
 
 .bulk-action-btn {
     background: rgb(255, 255, 255, 0.2);
-    color: white;
+    color: var(--on-accent);
     border: none;
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--border-radius-sm);
@@ -118,7 +118,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    color: white;
+    color: var(--on-accent);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -182,7 +182,7 @@ input[type="checkbox"]:indeterminate {
 /* Badge for selected count in header */
 .bulk-selected-badge {
     background: var(--primary);
-    color: white;
+    color: var(--on-primary);
     font-size: 0.75rem;
     font-weight: 600;
     padding: 2px 8px;

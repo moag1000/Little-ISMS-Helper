@@ -2827,7 +2827,7 @@ small.text-muted,
 .text-warning   { color: var(--warning-text) !important; }
 .text-danger    { color: var(--danger)  !important; }
 .text-info      { color: var(--primary) !important; }
-.text-white     { color: white !important; }
+.text-white     { color: white !important; } /* design-spec: text-white utility class alias */
 
 /* Bootstrap-text-bg-* kombiniert BG + Text */
 .text-bg-primary   { background-color: var(--primary-strong) !important; color: var(--on-primary) !important; }

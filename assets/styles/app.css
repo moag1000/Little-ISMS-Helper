@@ -247,7 +247,7 @@ body {
     background: linear-gradient(135deg,
         var(--accent) 0%,
         var(--accent-glow) 100%);
-    color: white;
+    color: var(--on-accent);
     border-radius: 100px;
     padding: 0.25rem 0.75rem;
     font-size: 0.7rem;
@@ -707,7 +707,7 @@ body {
     gap: 0.375rem;
     padding: 0.5rem 1rem;
     background: var(--brand-gradient);
-    color: white;
+    color: var(--on-primary);
     border: none;
     border-radius: 100px;
     font-size: 0.8125rem;
@@ -1347,7 +1347,7 @@ body {
 }
 
 .app-sidebar nav:not(#main-navigation) a:hover {
-    color: white;
+    color: white; /* design-spec: text on primary-tint sidebar hover with dark text-shadow */
     background: var(--primary-tint);
     padding-left: calc(var(--spacing-md) + 4px);
     text-shadow: 0 0 10px var(--primary-glow);
@@ -1373,7 +1373,7 @@ body {
                 linear-gradient(rgb(0, 0, 0, 0.4), rgb(0, 0, 0, 0.4)); /* design-spec: sidebar active-link WCAG contrast multiply overlay */
 
     background-blend-mode: normal, multiply;
-    color: white;
+    color: white; /* design-spec: text on dark multiply-blend gradient active link */
     padding-left: calc(var(--spacing-md) + 4px);
     box-shadow: 0 2px 15px var(--primary-tint),
                 inset 0 1px 0 rgb(255, 255, 255, 0.1);
@@ -1419,7 +1419,7 @@ body {
 }
 
 [data-theme="dark"] .app-sidebar nav:not(#main-navigation) a:hover {
-    color: white;
+    color: white; /* design-spec: text on primary-tint dark-mode sidebar hover */
 }
 
 [data-theme="dark"] .app-sidebar nav:not(#main-navigation) a.active {
@@ -1430,7 +1430,7 @@ body {
                 linear-gradient(rgb(0, 0, 0, 0.3), rgb(0, 0, 0, 0.3)); /* design-spec: dark-mode sidebar active-link WCAG contrast multiply overlay */
 
     background-blend-mode: normal, multiply;
-    color: white;
+    color: white; /* design-spec: text on dark multiply-blend gradient dark-mode active link */
     text-shadow: 0 1px 3px rgb(0, 0, 0, 0.9), /* design-spec: text on dark gradient dark-mode active link */
                  0 0 15px rgb(34, 211, 238, 0.6);
 }
@@ -1522,7 +1522,7 @@ body {
 
 .app-sidebar .badge-mini.badge-danger {
     background: rgb(239, 68, 68, 0.8);
-    color: white;
+    color: var(--on-danger);
     box-shadow: 0 0 8px rgb(239, 68, 68, 0.5);
 }
 
