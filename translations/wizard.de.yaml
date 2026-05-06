@@ -624,6 +624,27 @@ wizard:
         bsi_gs_std_risk_analysis: 'Risikoanalyse fuer hohen Schutzbedarf'
         bsi_gs_std_realization: 'Realisierungsplan mit Massnahmen + Termine'
 
+        # PCI-DSS v4.0.1 checks
+        pci_dss_req_1: 'Req. 1: Netzwerk-Sicherheits-Controls'
+        pci_dss_req_2: 'Req. 2: Sichere Default-Configs'
+        pci_dss_req_3: 'Req. 3: Cardholder-Daten-Schutz'
+        pci_dss_req_4: 'Req. 4: TLS-Uebertragung'
+        pci_dss_req_5: 'Req. 5: Anti-Malware'
+        pci_dss_req_6: 'Req. 6: Secure SDLC'
+        pci_dss_req_7: 'Req. 7: Need-to-know Zugriff'
+        pci_dss_req_8: 'Req. 8: MFA + Eindeutige IDs'
+        pci_dss_req_9: 'Req. 9: Physische Zutrittskontrolle'
+        pci_dss_req_10: 'Req. 10: Audit-Logging'
+        pci_dss_req_11: 'Req. 11: Vuln-Scans + Pen-Tests'
+        pci_dss_req_12: 'Req. 12: Sicherheits-Policy'
+
+        # SOC 2 Type II checks
+        soc2_security: 'Common Criteria + Logischer Zugriff'
+        soc2_availability: 'Verfuegbarkeit + DR'
+        soc2_processing_integrity: 'Processing-Integrity'
+        soc2_confidentiality: 'Vertraulichkeit'
+        soc2_privacy: 'Privacy / Betroffenenrechte'
+
     # TISAX Categories
     tisax:
         description: "Bewerten Sie Ihre Informationssicherheit nach VDA ISA für die Automobilindustrie."
@@ -819,6 +840,48 @@ wizard:
         top_management_desc: 'Schulung + Aufsicht durch Geschaeftsleitung (NIS2 Art. 21).'
         supplier_due_diligence: 'Lieferketten-Sicherheit'
         supplier_due_diligence_desc: 'Risiken aus Lieferanten und Drittparteien (NIS2 Art. 21.2.d).'
+
+    # PCI-DSS v4.0.1 Categories
+    pci_dss:
+        description: 'Reife-Check nach PCI-DSS v4.0.1 — Sicherheits-Standards fuer Kreditkartendaten-Verarbeitung.'
+        req_1_network: 'Req. 1: Netzwerk-Sicherheit'
+        req_1_network_desc: 'Firewalls + Netzwerk-Segmentierung um Cardholder-Daten-Umgebung.'
+        req_2_secure_config: 'Req. 2: Sichere Konfigurationen'
+        req_2_secure_config_desc: 'Hardening + Default-Passwort-Wechsel auf allen Systemkomponenten.'
+        req_3_protect_data: 'Req. 3: Schutz gespeicherter Karten-Daten'
+        req_3_protect_data_desc: 'PAN-Maskierung, Hashing/Tokenisierung, Schluesselmanagement.'
+        req_4_transit: 'Req. 4: Verschluesselte Uebertragung'
+        req_4_transit_desc: 'TLS 1.2+ fuer alle Kartendaten-Uebertragungen ueber oeffentliche Netze.'
+        req_5_malware: 'Req. 5: Schadsoftware-Schutz'
+        req_5_malware_desc: 'Anti-Malware auf allen anfaelligen Systemen, regelmaessige Updates.'
+        req_6_secure_dev: 'Req. 6: Sichere Entwicklung'
+        req_6_secure_dev_desc: 'Secure-SDLC, Code-Reviews, Vulnerability-Mgmt, Patch-Mgmt.'
+        req_7_access: 'Req. 7: Zugriffsbeschraenkung'
+        req_7_access_desc: 'Need-to-know Prinzip, Rollen-basierte Berechtigungen.'
+        req_8_idauth: 'Req. 8: Identifikation + Authentifizierung'
+        req_8_idauth_desc: 'Eindeutige User-IDs, MFA fuer alle Cardholder-Daten-Zugriffe.'
+        req_9_physical: 'Req. 9: Physische Sicherheit'
+        req_9_physical_desc: 'Zutrittskontrolle Rechenzentren, Medien-Vernichtung, Besucher-Mgmt.'
+        req_10_logging: 'Req. 10: Logging + Monitoring'
+        req_10_logging_desc: 'Audit-Logs aller Cardholder-Daten-Zugriffe, taegliche Review.'
+        req_11_test: 'Req. 11: Sicherheits-Tests'
+        req_11_test_desc: 'Quartalsweise Vuln-Scans + jaehrliche Pen-Tests + Continuous Monitoring.'
+        req_12_policy: 'Req. 12: Sicherheits-Policy'
+        req_12_policy_desc: 'Dokumentierte InfoSec-Policy, Schulungen, Risikobewertungen, Lieferanten-Mgmt.'
+
+    # SOC 2 Type II Categories
+    soc2:
+        description: 'Reife-Check nach SOC 2 Type II (AICPA Trust Services Criteria — Cloud-/SaaS-Anbieter).'
+        security: 'Security (Common Criteria)'
+        security_desc: 'Logischer/physischer Zugriffsschutz, Aenderungsmanagement, Risk-Mgmt — Pflicht fuer alle SOC 2 Reports.'
+        availability: 'Availability'
+        availability_desc: 'Systemverfuegbarkeit per SLA, Disaster-Recovery, Kapazitaets-Mgmt.'
+        processing_integrity: 'Processing Integrity'
+        processing_integrity_desc: 'Verarbeitung vollstaendig, valid, akkurat, zeitig, autorisiert.'
+        confidentiality: 'Confidentiality'
+        confidentiality_desc: 'Schutz vertraulicher Daten (NDA-Material, IP, Geschaeftsgeheimnisse).'
+        privacy: 'Privacy'
+        privacy_desc: 'Schutz personenbezogener Daten gemaess Privacy Notice.'
 
     # NIST Cybersecurity Framework 2.0 Categories
     nist_csf:

@@ -329,4 +329,20 @@ class ComplianceWizardControllerTest extends WebTestCase
         $status = $this->client->getResponse()->getStatusCode();
         $this->assertContains($status, [200, 302]);
     }
+
+    #[Test]
+    public function testPciDssWizardStartReachable(): void
+    {
+        $this->client->request('GET', '/de/compliance-wizard/pci_dss');
+        $status = $this->client->getResponse()->getStatusCode();
+        $this->assertContains($status, [200, 302]);
+    }
+
+    #[Test]
+    public function testSoc2WizardStartReachable(): void
+    {
+        $this->client->request('GET', '/de/compliance-wizard/soc2');
+        $status = $this->client->getResponse()->getStatusCode();
+        $this->assertContains($status, [200, 302]);
+    }
 }
