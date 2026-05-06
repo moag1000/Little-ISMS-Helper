@@ -117,7 +117,7 @@
     overflow-y: auto;
     box-shadow: var(--shadow-lg), 0 0 30px var(--primary-glow);
     position: relative;
-    z-index: 1001; /* local stacking-context: above modal backdrop within modal layer */
+    z-index: var(--z-popover-modal); /* above modal backdrop within modal layer */
     transform: scale(0.9);
     opacity: 0;
     transition: all 0.3s ease;
