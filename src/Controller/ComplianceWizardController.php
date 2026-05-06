@@ -9,6 +9,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Service\AuditLogger;
 use App\Service\ComplianceWizardService;
+use App\Service\MappingLibraryLoader;
 use App\Service\GapEffortCalculator;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -48,6 +49,7 @@ class ComplianceWizardController extends AbstractController
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?EntityManagerInterface $entityManager = null,
         private readonly ?ComplianceMappingRepository $mappingRepository = null,
+        private readonly ?MappingLibraryLoader $mappingLibraryLoader = null,
     ) {
     }
 
@@ -100,11 +102,20 @@ class ComplianceWizardController extends AbstractController
         // can be inherited via existing mappings. The actual inheritance pass
         // runs only when the user clicks "Datenübernahme" on the start page.
         $sourceFrameworks = [];
+        $availableLibraries = [];
         if ($this->frameworkRepository !== null && $this->mappingRepository !== null) {
             $targetFramework = $this->frameworkRepository->findOneBy(['code' => $config['code']]);
             if ($targetFramework !== null) {
                 $sourceFrameworks = $this->mappingRepository->findSourceFrameworksMappingTo($targetFramework);
             }
+        }
+
+        // If no DB mappings exist yet, but YAML libraries are shipped for
+        // this target, surface them so the user can import them in one
+        // click (Alva-fairy hint: "Hier kannst du es dir einfacher machen").
+        // Restricted to ROLE_MANAGER+ since import touches shared mappings.
+        if ($sourceFrameworks === [] && $this->mappingLibraryLoader !== null && $this->isGranted('ROLE_MANAGER')) {
+            $availableLibraries = $this->mappingLibraryLoader->discoverFixturesForTarget($config['code']);
         }
 
         return $this->render('compliance_wizard/start.html.twig', [
@@ -113,6 +124,7 @@ class ComplianceWizardController extends AbstractController
             'active_modules' => $activeModules,
             'missing_recommended' => $missingRecommended,
             'inheritance_source_frameworks' => $sourceFrameworks,
+            'available_mapping_libraries' => $availableLibraries,
         ]);
     }
 
@@ -444,5 +456,75 @@ class ComplianceWizardController extends AbstractController
         ]);
 
         return new Response($html, Response::HTTP_OK, ['Content-Type' => 'text/html']);
+    }
+
+    /**
+     * Import a shipped YAML mapping library into the DB so the wizard's
+     * "Datenübernahme" banner appears on subsequent visits. Tied to the
+     * fixture discovery in start(): the user must select one of the
+     * fixtures the loader surfaced; the controller verifies the chosen
+     * file lives below fixtures/library/mappings/.
+     */
+    #[Route('/{wizard}/import-mapping-library', name: 'app_compliance_wizard_import_mapping_library', methods: ['POST'], requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function importMappingLibrary(string $wizard, Request $request): Response
+    {
+        if ($this->mappingLibraryLoader === null) {
+            $this->addFlash('error', $this->translator->trans('wizard.mapping_library.unavailable', [], 'wizard'));
+            return $this->redirectToRoute('app_compliance_wizard_start', ['wizard' => $wizard]);
+        }
+
+        $config = $this->wizardService->getWizardConfig($wizard);
+        if ($config === null) {
+            return $this->redirectToRoute('app_compliance_wizard_index');
+        }
+
+        $token = (string) $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('mapping-lib-' . $config['code'], $token)) {
+            $this->addFlash('error', $this->translator->trans('wizard.mapping_library.csrf_invalid', [], 'wizard'));
+            return $this->redirectToRoute('app_compliance_wizard_start', ['wizard' => $wizard]);
+        }
+
+        $requestedPath = (string) $request->request->get('path');
+        $available = $this->mappingLibraryLoader->discoverFixturesForTarget($config['code']);
+        $allowedPaths = array_column($available, 'path');
+        if (!in_array($requestedPath, $allowedPaths, true)) {
+            $this->addFlash('error', $this->translator->trans('wizard.mapping_library.invalid_path', [], 'wizard'));
+            return $this->redirectToRoute('app_compliance_wizard_start', ['wizard' => $wizard]);
+        }
+
+        $result = $this->mappingLibraryLoader->load($requestedPath);
+
+        if (!$result['success']) {
+            $this->addFlash('error', $this->translator->trans('wizard.mapping_library.load_failed', [
+                '%errors%' => implode('; ', $result['errors']),
+            ], 'wizard'));
+            return $this->redirectToRoute('app_compliance_wizard_start', ['wizard' => $wizard]);
+        }
+
+        if ($this->auditLogger !== null) {
+            $this->auditLogger->logCustom(
+                'compliance.mapping_library.imported',
+                'ComplianceMapping',
+                null,
+                null,
+                [
+                    'fixture' => basename($requestedPath),
+                    'target_framework' => $config['code'],
+                    'imported' => $result['imported'],
+                    'updated' => $result['updated'],
+                    'skipped' => $result['skipped'],
+                ],
+                sprintf('Imported mapping library %s into %s', basename($requestedPath), $config['code']),
+            );
+        }
+
+        $this->addFlash('success', $this->translator->trans('wizard.mapping_library.imported', [
+            '%imported%' => $result['imported'],
+            '%updated%' => $result['updated'],
+            '%skipped%' => $result['skipped'],
+        ], 'wizard'));
+
+        return $this->redirectToRoute('app_compliance_wizard_start', ['wizard' => $wizard]);
     }
 }
