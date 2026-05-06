@@ -1,96 +1,53 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 
 {% block title %}{{ 'admin.modules.title'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
-{% block admin_title %}<i class="bi bi-puzzle" aria-hidden="true"></i> {{ 'admin.modules.title'|trans({}, 'admin') }}{% endblock %}
+{% block admin_title %}{{ 'admin.modules.title'|trans({}, 'admin') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.modules.title'|trans({}, 'admin') }}</li>
+{% endblock %}
 
 {% block admin_content %}
-<div class="container-fluid">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
-            { label: 'admin.modules.title'|trans({}, 'admin') }
+    {{ _fa_page_header.render({
+        badge: { icon: 'puzzle', label: 'Modules' },
+        title: 'admin.modules.title'|trans({}, 'admin'),
+        actions: [
+            { label: 'admin.modules.dependency_graph'|trans({}, 'admin'), variant: 'ghost', icon: 'diagram-3', href: path('admin_modules_graph') }
         ]
-    } %}
-
-    <div class="d-flex justify-content-end align-items-center mb-4">
-        <a href="{{ path('admin_modules_graph') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'admin.modules.dependency_graph'|trans({}, 'admin') }}
-        </a>
-    </div>
+    }) }}
 
     {# Statistics #}
     <div class="row g-3 mb-4">
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with {borderColor: 'primary'} %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="small fw-semibold text-muted mb-1">{{ 'admin.modules.stats.total'|trans({}, 'admin') }}</div>
-                        <div class="fs-2 fw-bold mb-0">{{ statistics.total_modules }}</div>
-                        <i class="bi bi-box fs-3 text-primary opacity-25" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with {borderColor: 'success'} %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="small fw-semibold text-muted mb-1">{{ 'admin.modules.stats.active'|trans({}, 'admin') }}</div>
-                        <div class="fs-2 fw-bold mb-0 text-success">{{ statistics.active_modules }}</div>
-                        <i class="fa-icon fa-icon--status-ok fs-3 opacity-25" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with {borderColor: 'secondary'} %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="small fw-semibold text-muted mb-1">{{ 'admin.modules.stats.inactive'|trans({}, 'admin') }}</div>
-                        <div class="fs-2 fw-bold mb-0 text-secondary">{{ statistics.inactive_modules }}</div>
-                        <i class="fa-icon fa-icon--status-critical fs-3 opacity-25" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
-        <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with {borderColor: 'warning'} %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="small fw-semibold text-muted mb-1">{{ 'admin.modules.stats.required'|trans({}, 'admin') }}</div>
-                        <div class="fs-2 fw-bold mb-0 text-warning">{{ statistics.required_modules }}</div>
-                        <i class="fa-icon fa-icon--ui-star fs-3 text-warning opacity-25" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
-        </div>
+        <div class="col-md-3">{{ _fa_kpi_card.render({ value: statistics.total_modules, label: 'admin.modules.stats.total'|trans({}, 'admin') }) }}</div>
+        <div class="col-md-3">{{ _fa_kpi_card.render({ value: statistics.active_modules, label: 'admin.modules.stats.active'|trans({}, 'admin') }) }}</div>
+        <div class="col-md-3">{{ _fa_kpi_card.render({ value: statistics.inactive_modules, label: 'admin.modules.stats.inactive'|trans({}, 'admin') }) }}</div>
+        <div class="col-md-3">{{ _fa_kpi_card.render({ value: statistics.required_modules, label: 'admin.modules.stats.required'|trans({}, 'admin') }) }}</div>
     </div>
 
     {# Active Modules #}
-    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
-        {% block card_header %}
-            <div class="card-header bg-success text-white">
-                <h2 class="mb-0">
-                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.modules.active_modules'|trans({}, 'admin') }} ({{ active_modules|length }})
-                </h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
+    <section class="fa-section mb-4">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="fa-icon fa-icon--status-ok text-success" aria-hidden="true"></i>
+                {{ 'admin.modules.active_modules'|trans({}, 'admin') }} ({{ active_modules|length }})
+            </h2>
+        </div>
+        <div class="fa-section__body">
             {% if active_modules|length > 0 %}
                 <div class="row g-3">
                     {% for key, module in all_modules %}
                         {% if key in active_modules %}
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card fa-section h-100 border-success fa-rag-card fa-rag-card--green">
-                                <div class="card-body">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="fa-rag-card fa-rag-card--green h-100">
                                     <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <h3 class="mb-0">
-                                            {# TODO(aurora-migration): module.icon is PHP-driven — migrate in module config #}
+                                        <h3 class="h6 mb-0">
                                             <i class="bi bi-{{ module.icon }} text-{{ module.required ? 'warning' : 'success' }}" aria-hidden="true"></i>
                                             {{ module.name }}
                                         </h3>
-                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'admin.modules.status.active'|trans({}, 'admin') } %}
+                                        <span class="badge bg-success">{{ 'admin.modules.status.active'|trans({}, 'admin') }}</span>
                                     </div>
                                     <p class="text-muted small">{{ module.description }}</p>
 
@@ -101,7 +58,7 @@
                                                 <strong>{{ 'admin.modules.dependencies'|trans({}, 'admin') }}:</strong>
                                             </small><br>
                                             {% for dep in dependency_graph[key].dependencies %}
-                                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: all_modules[dep].name, class: 'me-1 mb-1' } %}
+                                                <span class="badge bg-warning text-dark me-1 mb-1">{{ all_modules[dep].name }}</span>
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -113,7 +70,7 @@
                                                 <strong>{{ 'admin.modules.required_by'|trans({}, 'admin') }}:</strong>
                                             </small><br>
                                             {% for dep in dependency_graph[key].dependents %}
-                                                {% include '_components/_badge.html.twig' with { variant: 'info', content: all_modules[dep].name, class: 'me-1 mb-1' } %}
+                                                <span class="badge bg-info me-1 mb-1">{{ all_modules[dep].name }}</span>
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -139,15 +96,14 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         {% endif %}
                     {% endfor %}
                 </div>
             {% else %}
                 <p class="text-muted text-center py-4">{{ 'admin.modules.no_active'|trans({}, 'admin') }}</p>
             {% endif %}
-        {% endblock %}
-    {% endembed %}
+        </div>
+    </section>
 
     {# Inactive Modules #}
     {% set inactive_modules = [] %}
@@ -158,60 +114,56 @@
     {% endfor %}
 
     {% if inactive_modules|length > 0 %}
-        {% embed '_components/_card.html.twig' %}
-            {% block card_header %}
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'admin.modules.inactive_modules'|trans({}, 'admin') }} ({{ inactive_modules|length }})
-                    </h2>
-                </div>
-            {% endblock %}
-            {% block card_body %}
+        <section class="fa-section">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">
+                    <i class="fa-icon fa-icon--status-critical text-secondary" aria-hidden="true"></i>
+                    {{ 'admin.modules.inactive_modules'|trans({}, 'admin') }} ({{ inactive_modules|length }})
+                </h2>
+            </div>
+            <div class="fa-section__body">
                 <div class="row g-3">
                     {% for item in inactive_modules %}
                         {% set key = item.key %}
                         {% set module = item.module %}
                         <div class="col-md-6 col-lg-4">
-                            <div class="card fa-section h-100 border-secondary">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <h3 class="mb-0 text-secondary">
-                                            <i class="bi bi-{{ module.icon }}" aria-hidden="true"></i>
-                                            {{ module.name }}
-                                        </h3>
-                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'admin.modules.status.inactive'|trans({}, 'admin') } %}
-                                    </div>
-                                    <p class="text-muted small">{{ module.description }}</p>
+                            <div class="fa-rag-card h-100" style="border-left-color: var(--border);">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h3 class="h6 mb-0 text-secondary">
+                                        <i class="bi bi-{{ module.icon }}" aria-hidden="true"></i>
+                                        {{ module.name }}
+                                    </h3>
+                                    <span class="badge bg-secondary">{{ 'admin.modules.status.inactive'|trans({}, 'admin') }}</span>
+                                </div>
+                                <p class="text-muted small">{{ module.description }}</p>
 
-                                    {% if dependency_graph[key].dependencies|length > 0 %}
-                                        <div class="mb-2">
-                                            <small class="text-warning">
-                                                <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
-                                                <strong>{{ 'admin.modules.dependencies'|trans({}, 'admin') }}:</strong>
-                                            </small><br>
-                                            {% for dep in dependency_graph[key].dependencies %}
-                                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: all_modules[dep].name, class: 'me-1 mb-1' } %}
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
-
-                                    <div class="d-grid gap-2 mt-3">
-                                        <a href="{{ path('admin_modules_details', {moduleKey: key}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                            <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'admin.modules.details'|trans({}, 'admin') }}
-                                        </a>
-                                        <form method="post" action="{{ path('admin_modules_activate', {moduleKey: key}) }}">
-                                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm w-100">
-                                                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.modules.activate'|trans({}, 'admin') }}
-                                            </button>
-                                        </form>
+                                {% if dependency_graph[key].dependencies|length > 0 %}
+                                    <div class="mb-2">
+                                        <small class="text-warning">
+                                            <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
+                                            <strong>{{ 'admin.modules.dependencies'|trans({}, 'admin') }}:</strong>
+                                        </small><br>
+                                        {% for dep in dependency_graph[key].dependencies %}
+                                            <span class="badge bg-warning text-dark me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                        {% endfor %}
                                     </div>
+                                {% endif %}
+
+                                <div class="d-grid gap-2 mt-3">
+                                    <a href="{{ path('admin_modules_details', {moduleKey: key}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'admin.modules.details'|trans({}, 'admin') }}
+                                    </a>
+                                    <form method="post" action="{{ path('admin_modules_activate', {moduleKey: key}) }}">
+                                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm w-100">
+                                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.modules.activate'|trans({}, 'admin') }}
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
-            {% endblock %}
-        {% endembed %}
+            </div>
+        </section>
     {% endif %}
-</div>
 {% endblock admin_content %}

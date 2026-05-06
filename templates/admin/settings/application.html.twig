@@ -1,5 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'admin'%}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% block admin_title %}{{ 'admin.settings.application.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block breadcrumb_items %}
@@ -8,18 +9,22 @@
 {% endblock %}
 
 {% block admin_content %}
-    <div class="row">
+    {{ _fa_page_header.render({
+        badge: { icon: 'sliders', label: 'Settings' },
+        title: 'admin.settings.application.title'|trans({}, 'admin'),
+        subtitle: 'admin.settings.application.help_text'|trans({}, 'admin'),
+    }) }}
+
+    <div class="row g-4">
         <div class="col-lg-8">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title mb-0">
-                            <i class="fa-icon fa-icon--ui-settings text-primary" aria-hidden="true"></i>
-                            {{ 'admin.settings.application.title'|trans({}, 'admin') }}
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--ui-settings text-primary" aria-hidden="true"></i>
+                        {{ 'admin.settings.application.title'|trans({}, 'admin') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     {{ form_start(form) }}
                         {% include '_components/_auto_form.html.twig' with {
                             'form': form,
@@ -53,21 +58,19 @@
                             </button>
                         </div>
                     {{ form_end(form) }}
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
 
         <div class="col-lg-4">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title mb-0">{{ 'admin.settings.help'|trans({}, 'admin') }}</h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    <p class="small">{{ 'admin.settings.application.help_text'|trans({}, 'admin') }}</p>
-                {% endblock %}
-            {% endembed %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">{{ 'admin.settings.help'|trans({}, 'admin') }}</h2>
+                </div>
+                <div class="fa-section__body">
+                    <p class="small mb-0">{{ 'admin.settings.application.help_text'|trans({}, 'admin') }}</p>
+                </div>
+            </section>
         </div>
     </div>
 {% endblock %}

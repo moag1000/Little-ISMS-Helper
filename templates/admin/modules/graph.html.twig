@@ -1,17 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'admin.modules.dependency_graph'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
-{% block admin_title %}
-    <i class="fa-icon fa-icon--nav-process me-2" aria-hidden="true"></i>
-    Modul-Abhängigkeiten
-{% endblock %}
-
-{% block admin_subtitle %}
-    <p class="lead text-muted">
-        Visualisierung der Modul-Abhängigkeiten
-    </p>
-{% endblock %}
+{% block admin_title %}{{ 'admin.modules.dependency_graph'|trans({}, 'admin') }}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{{ path('admin_modules_index') }}">{{ 'admin.nav.module_management'|trans({}, 'admin') }}</a></li>
@@ -19,40 +11,34 @@
 {% endblock %}
 
 {% block admin_content %}
-<div class="container-fluid mt-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <a href="{{ path('admin_modules_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost mb-3">
-                <i class="fa-icon fa-icon--util-arrow-left me-2" aria-hidden="true"></i>
-                {{ 'common.back_to_overview'|trans({}, 'messages') }}
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'diagram-3', label: 'Modules' },
+        title: 'Modul-Abhängigkeiten',
+        subtitle: 'Visualisierung der Modul-Abhängigkeiten',
+        actions: [
+            { label: 'common.back_to_overview'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('admin_modules_index') }
+        ]
+    }) }}
 
-    <div class="row">
+    <div class="row g-4">
         <div class="col-lg-8">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="mb-0">Abhängigkeits-Graph</h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    {% embed '_components/_table.html.twig' with {
-                        'class': 'table-hover',
-                        'noMargin': true,
-                        'responsive': true
-                    } %}
-                        {% block table_head %}
-                            <tr>
-                                <th scope="col">Modul</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Typ</th>
-                                <th scope="col">Benötigt</th>
-                                <th scope="col">Benötigt von</th>
-                            </tr>
-                        {% endblock %}
-                        {% block table_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">Abhängigkeits-Graph</h2>
+                </div>
+                <div class="fa-section__body">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Modul</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Typ</th>
+                                    <th scope="col">Benötigt</th>
+                                    <th scope="col">Benötigt von</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                             {% for key, graph in dependency_graph %}
                                 <tr class="{{ key in active_modules ? 'table-success' : '' }}">
                                     <td>
@@ -60,22 +46,22 @@
                                     </td>
                                     <td>
                                         {% if key in active_modules %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Aktiv' } %}
+                                            <span class="badge bg-success">Aktiv</span>
                                         {% else %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Inaktiv' } %}
+                                            <span class="badge bg-secondary">Inaktiv</span>
                                         {% endif %}
                                     </td>
                                     <td>
                                         {% if graph.required %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Erforderlich' } %}
+                                            <span class="badge bg-warning text-dark">Erforderlich</span>
                                         {% else %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'info', content: 'Optional' } %}
+                                            <span class="badge bg-info">Optional</span>
                                         {% endif %}
                                     </td>
                                     <td>
                                         {% if graph.dependencies|length > 0 %}
                                             {% for dep in graph.dependencies %}
-                                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: dependency_graph[dep].name, class: 'me-1' } %}
+                                                <span class="badge bg-warning text-dark me-1">{{ dependency_graph[dep].name }}</span>
                                             {% endfor %}
                                         {% else %}
                                             <span class="text-muted">-</span>
@@ -84,7 +70,7 @@
                                     <td>
                                         {% if graph.dependents|length > 0 %}
                                             {% for dep in graph.dependents %}
-                                                {% include '_components/_badge.html.twig' with { variant: 'info', content: dependency_graph[dep].name, class: 'me-1' } %}
+                                                <span class="badge bg-info me-1">{{ dependency_graph[dep].name }}</span>
                                             {% endfor %}
                                         {% else %}
                                             <span class="text-muted">-</span>
@@ -92,31 +78,30 @@
                                     </td>
                                 </tr>
                             {% endfor %}
-                        {% endblock %}
-                    {% endembed %}
-                {% endblock %}
-            {% endembed %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </div>
 
         <div class="col-lg-4">
-            {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}
-                {% block card_header %}
-                    <div class="card-header bg-primary text-white">
-                        <h2 class="mb-0">Legende</h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section mb-3">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">Legende</h2>
+                </div>
+                <div class="fa-section__body">
                     <dl class="mb-0">
-                        <dt>{% include '_components/_badge.html.twig' with { variant: 'success', content: 'Aktiv' } %}</dt>
+                        <dt><span class="badge bg-success">Aktiv</span></dt>
                         <dd>Modul ist derzeit aktiviert</dd>
 
-                        <dt>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Inaktiv' } %}</dt>
+                        <dt><span class="badge bg-secondary">Inaktiv</span></dt>
                         <dd>Modul ist derzeit deaktiviert</dd>
 
-                        <dt>{% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Erforderlich' } %}</dt>
+                        <dt><span class="badge bg-warning text-dark">Erforderlich</span></dt>
                         <dd>Modul ist Pflicht und kann nicht deaktiviert werden</dd>
 
-                        <dt>{% include '_components/_badge.html.twig' with { variant: 'info', content: 'Optional' } %}</dt>
+                        <dt><span class="badge bg-info">Optional</span></dt>
                         <dd>Modul kann aktiviert/deaktiviert werden</dd>
 
                         <dt>Benötigt</dt>
@@ -125,28 +110,25 @@
                         <dt>Benötigt von</dt>
                         <dd>Module, die dieses Modul benötigen</dd>
                     </dl>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
 
-            {% embed '_components/_card.html.twig' with { 'class': 'border-info' } %}
-                {% block card_header %}
-                    <div class="card-header bg-info text-white">
-                        <h2 class="mb-0">
-                            <i class="fa-icon fa-icon--ui-lightbulb me-2" aria-hidden="true"></i>
-                            Hinweise
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i>
+                        Hinweise
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     <ul class="mb-0 small">
                         <li>{{ 'admin.modules.hint.auto_dependencies'|trans({}, 'admin') }}</li>
                         <li>{{ 'admin.modules.hint.activate_required'|trans({}, 'admin') }}</li>
                         <li>{{ 'admin.modules.hint.deactivate_dependency'|trans({}, 'admin') }}</li>
                         <li>{{ 'admin.modules.hint.required_always_active'|trans({}, 'admin') }}</li>
                     </ul>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
     </div>
-</div>
 {% endblock admin_content %}
