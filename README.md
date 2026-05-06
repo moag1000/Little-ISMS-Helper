@@ -373,6 +373,63 @@ Wenn Ihnen der Little ISMS Helper weiterhilft, freue ich mich ueber Unterstuetzu
 
 ---
 
+## Honorable Mentions -- Open-Source ISMS- und Compliance-Landschaft
+
+Der Little ISMS Helper steht nicht allein. Andere Open-Source-Projekte haben
+das Feld mitgepraegt -- mit unterschiedlichen Schwerpunkten und Zielgruppen.
+Faires Acknowledgement, ohne diese Projekte direkt zu uebernehmen.
+
+### DACH-Raum
+
+- **Privater Vorlaeufer (2024)** -- Ein anonymer Maintainer aus dem
+  norddeutschen Raum hat ein verwandtes ISMS-Konzept als Excel-Sammlung +
+  Markdown-Dokumentation veroeffentlicht. Inspirationsquelle fuer einige
+  unserer fruehen Datenmodell-Entscheidungen.
+
+### EU und international
+
+- **[paolocarner/nis2-sme-toolkit](https://github.com/paolocarner/nis2-sme-toolkit)**
+  -- KMU-orientiertes NIS2-Toolkit (BE/NL-Fokus, EN), Excel + RTF.
+  Inspiration fuer Baseline-vs-Enhanced Maturity-Konzept in unserem
+  NIS2-Wizard. CC BY 4.0.
+- **[theopenlane/awesome-compliance](https://github.com/theopenlane/awesome-compliance)**
+  -- Kuratierte Liste mit ~200 Compliance-Resources. Nuetzlich als
+  Referenzkatalog, wenn auch stark US/SOC2-lastig.
+- **[Openlane](https://github.com/theopenlane)** -- SOC2/ISO-27001-Plattform
+  als Architektur-Inspiration. Apache 2.0.
+- **[strongdm/comply](https://github.com/strongdm/comply)** -- Markdown-basierte
+  SOC2-Policy-Templates und Document-Pipeline. Apache 2.0.
+- **[ComplianceAsCode/auditree-framework](https://github.com/ComplianceAsCode/auditree-framework)**
+  -- IBM-Framework fuer automatisierte Evidence-Sammlung als versionierter
+  Code. Apache 2.0.
+- **[getprobo/probo](https://github.com/getprobo/probo)** -- SOC2/ISO-27001
+  Compliance-Automation, Open-Source.
+- **[microsoft/data-protection-mapping-project](https://github.com/microsoft/data-protection-mapping-project)**
+  -- GDPR/CCPA Mapping-Daten von Microsoft.
+- **[coolstartnow/isms-builder](https://github.com/coolstartnow/isms-builder)**
+  -- ISMS-Strukturgenerator mit Markdown-Output.
+
+### Funktional verwandte Open-Source-Projekte (mit kommerzieller Variante)
+
+- **[CISO Assistant](https://github.com/intuitem/ciso-assistant-community)** --
+  Open-Source-GRC mit 40+ Frameworks. Direkt funktional vergleichbar im
+  Multi-Framework-Ansatz. Kommerzielle Enterprise-Variante verfuegbar
+  ([intuitem.com](https://intuitem.com/)). Faires Pendant fuer Anwender,
+  die ein groesseres Ecosystem oder Hersteller-Support brauchen.
+
+### Was Little ISMS Helper anders macht
+
+- **DACH-Fokus aus erster Hand** -- BSI-Grundschutz (Basis/Standard/Kern),
+  BSI C5, KRITIS, TISAX als First-Class-Citizens, nicht als nachtraeglich
+  gemappte ISO-Crosswalks
+- **Deutschsprachig zuerst, EN als Zweitsprache**
+- **18+ Compliance-Wizards** mit nativen DACH-Frameworks
+- **Single-Tenant-Selbsthostung** auf Pi/Cloud ohne Vendor-Lock-In
+- **AGPL-3.0** -- Quellcode-Offenlegung verpflichtend bei SaaS-Betrieb,
+  schuetzt Community vor Closed-Source-Forks
+
+---
+
 ## Lizenz
 
 **GNU Affero General Public License v3.0 (AGPL-3.0)**
