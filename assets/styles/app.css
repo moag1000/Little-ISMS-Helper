@@ -119,7 +119,7 @@ body {
     font-size: 0.95rem;
     border-radius: 0 0 8px;
     z-index: calc(var(--z-turbo-bar) + 10);
-    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.3); /* design-spec: singular strong shadow for badge/indicator */
     transition: top 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     opacity: 0;
     pointer-events: none;
@@ -335,7 +335,7 @@ body {
     visibility: hidden;
     transition: all 0.2s ease;
     box-shadow:
-        0 4px 12px rgb(0, 0, 0, 0.2),
+        0 4px 12px rgb(0, 0, 0, 0.2), /* design-spec: tooltip drop shadow composite */
         0 0 0 1px var(--accent-tint);
     z-index: var(--z-dropdown);
 }
@@ -383,7 +383,7 @@ body {
 [data-theme="dark"] .fairy-tooltip::after {
     background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
     box-shadow:
-        0 4px 16px rgb(0, 0, 0, 0.4),
+        0 4px 16px rgb(0, 0, 0, 0.4), /* design-spec: tooltip dark-mode elevated shadow composite */
         0 0 0 1px var(--accent-tint);
 }
 
@@ -785,7 +785,7 @@ body {
     font-weight: 500;
     border-radius: 100px;
     white-space: nowrap;
-    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.3); /* design-spec: singular strong shadow for badge/indicator */
 }
 
 .fairy-onboarding-step::before {
@@ -1113,7 +1113,7 @@ body {
     padding: var(--spacing-lg) 0;
     overflow-y: auto;
     overflow-x: hidden;
-    box-shadow: 0 1px 3px rgb(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
     align-self: flex-start;
@@ -1127,29 +1127,29 @@ body {
 }
 
 .app-sidebar::-webkit-scrollbar-track {
-    background: rgb(0, 0, 0, 0.05);
+    background: rgb(0, 0, 0, 0.05); /* design-spec: scrollbar track faint tint */
     border-radius: 4px;
     margin: var(--spacing-sm) 0;
 }
 
 .app-sidebar::-webkit-scrollbar-thumb {
-    background: rgb(0, 0, 0, 0.2);
+    background: rgb(0, 0, 0, 0.2); /* design-spec: scrollbar thumb / submenu overlay tint */
     border-radius: 4px;
     transition: all 0.3s ease;
 }
 
 .app-sidebar::-webkit-scrollbar-thumb:hover {
-    background: rgb(0, 0, 0, 0.3);
+    background: rgb(0, 0, 0, 0.3); /* design-spec: scrollbar thumb hover strong tint */
 }
 
 .app-sidebar::-webkit-scrollbar-thumb:active {
-    background: rgb(0, 0, 0, 0.4);
+    background: rgb(0, 0, 0, 0.4); /* design-spec: scrollbar thumb active tint */
 }
 
 /* Firefox Scrollbar */
 .app-sidebar {
     scrollbar-width: thin;
-    scrollbar-color: rgb(0, 0, 0, 0.2) rgb(0, 0, 0, 0.05);
+    scrollbar-color: rgb(0, 0, 0, 0.2) rgb(0, 0, 0, 0.05); /* design-spec: Firefox scrollbar thumb / track */
 }
 
 /* Dark Mode Sidebar */
@@ -1370,13 +1370,14 @@ body {
     background: linear-gradient(135deg,
                 var(--primary-tint) 0%,
                 var(--accent-tint) 100%),
-                linear-gradient(rgb(0, 0, 0, 0.4), rgb(0, 0, 0, 0.4));
+                linear-gradient(rgb(0, 0, 0, 0.4), rgb(0, 0, 0, 0.4)); /* design-spec: sidebar active-link WCAG contrast multiply overlay */
+
     background-blend-mode: normal, multiply;
     color: white;
     padding-left: calc(var(--spacing-md) + 4px);
     box-shadow: 0 2px 15px var(--primary-tint),
                 inset 0 1px 0 rgb(255, 255, 255, 0.1);
-    text-shadow: 0 1px 3px rgb(0, 0, 0, 0.8),
+    text-shadow: 0 1px 3px rgb(0, 0, 0, 0.8), /* design-spec: text on dark gradient active link */
                  0 0 15px var(--primary-glow);
     font-weight: 600;
     border: 1px solid var(--primary-tint);
@@ -1426,10 +1427,11 @@ body {
     background: linear-gradient(135deg,
                 var(--primary-tint) 0%,
                 var(--accent-tint) 100%),
-                linear-gradient(rgb(0, 0, 0, 0.3), rgb(0, 0, 0, 0.3));
+                linear-gradient(rgb(0, 0, 0, 0.3), rgb(0, 0, 0, 0.3)); /* design-spec: dark-mode sidebar active-link WCAG contrast multiply overlay */
+
     background-blend-mode: normal, multiply;
     color: white;
-    text-shadow: 0 1px 3px rgb(0, 0, 0, 0.9),
+    text-shadow: 0 1px 3px rgb(0, 0, 0, 0.9), /* design-spec: text on dark gradient dark-mode active link */
                  0 0 15px rgb(34, 211, 238, 0.6);
 }
 
@@ -1459,7 +1461,7 @@ body {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: rgb(0, 0, 0, 0.2);
+    background: rgb(0, 0, 0, 0.2); /* design-spec: scrollbar thumb / submenu overlay tint */
     margin: 0 var(--spacing-xs);
     border-radius: var(--r-sm);
 }
@@ -1551,7 +1553,7 @@ body {
     background: var(--surface);
     padding: var(--spacing-md);
     border-radius: var(--r-md);
-    box-shadow: 0 1px 3px rgb(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
     animation: fadeIn var(--t-slow) var(--ease-out);
 }
 
@@ -1599,7 +1601,7 @@ h3 {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-md);
-    box-shadow: 0 1px 3px rgb(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
     transition: all var(--t-base) var(--ease-out);
     position: relative;
     overflow: hidden;
@@ -1690,12 +1692,12 @@ h3 {
 }
 
 .card-hoverable:hover {
-    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-md);
     transform: translateY(-2px);
 }
 
 .card:hover {
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.08),
+    box-shadow: var(--shadow-lg),
                 0 0 25px var(--primary-glow),
                 0 0 15px var(--accent-tint),
                 0 0 10px var(--accent-tint);
@@ -1706,13 +1708,13 @@ h3 {
 
 @keyframes card-glow {
     0%, 100% {
-        box-shadow: 0 8px 24px rgb(0, 0, 0, 0.08),
+        box-shadow: var(--shadow-lg),
                     0 0 25px var(--primary-glow),
                     0 0 15px var(--accent-tint),
                     0 0 10px var(--accent-tint);
     }
     50% {
-        box-shadow: 0 8px 24px rgb(0, 0, 0, 0.08),
+        box-shadow: var(--shadow-lg),
                     0 0 30px var(--primary-glow),
                     0 0 20px var(--accent-glow),
                     0 0 15px var(--accent-tint);
@@ -1732,7 +1734,7 @@ h3 {
     border: 1px solid var(--border);
     border-radius: var(--r-md);
     padding: var(--spacing-lg);
-    box-shadow: 0 1px 3px rgb(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
     transition: all var(--t-base) var(--ease-out);
     position: relative;
     overflow: hidden;
@@ -1750,7 +1752,7 @@ h3 {
 }
 
 .kpi-card:hover {
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.08),
+    box-shadow: var(--shadow-lg),
                 0 0 20px var(--primary-glow),
                 0 0 10px var(--accent-tint);
     transform: translateY(-6px) scale(1.02);
@@ -1802,7 +1804,7 @@ h3 {
 }
 
 .module-card:hover {
-    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-md);
     transform: translateY(-4px);
     border-color: var(--primary);
 }
@@ -1827,7 +1829,7 @@ h3 {
 
 .btn-loading:hover {
     transform: none;
-    box-shadow: 0 1px 3px rgb(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
 }
 
 /* Spinner - Bootstrap-like */
@@ -1899,7 +1901,7 @@ h3 {
     overflow-x: auto;
     margin: var(--spacing-xl) 0;
     border-radius: var(--r-md);
-    box-shadow: 0 1px 3px rgb(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-sm);
 }
 
 table {
@@ -2046,7 +2048,7 @@ tbody td {
     padding: 0.5rem 1rem;
     font-size: 1rem;
     font-weight: 700;
-    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1); /* design-spec: badge-lg singular subtle shadow */
 }
 
 /* Badge spacing utilities */
@@ -2070,18 +2072,19 @@ tbody td {
     color: var(--on-danger);
     font-weight: 600;
     box-shadow: 0 2px 4px rgb(220, 38, 38, 0.3);
-    text-shadow: 0 1px 2px rgb(0, 0, 0, 0.6);
+    text-shadow: 0 1px 2px rgb(0, 0, 0, 0.6); /* design-spec: text on colored badge for WCAG AA contrast */
 }
 
 .badge-high {
     /* WCAG AA: Dark overlay improves contrast from 2.80:1 to 4.5:1 */
     background: linear-gradient(135deg, var(--warning-strong), var(--danger)),
-                linear-gradient(rgb(0, 0, 0, 0.25), rgb(0, 0, 0, 0.25));
+                linear-gradient(rgb(0, 0, 0, 0.25), rgb(0, 0, 0, 0.25)); /* design-spec: badge-high WCAG contrast multiply overlay */
+
     background-blend-mode: normal, multiply;
     color: var(--on-danger);
     font-weight: 600;
     box-shadow: 0 2px 4px var(--warning-glow);
-    text-shadow: 0 1px 2px rgb(0, 0, 0, 0.7);
+    text-shadow: 0 1px 2px rgb(0, 0, 0, 0.7); /* design-spec: text on badge-high for WCAG AA contrast */
 }
 
 .badge-medium {
@@ -2096,12 +2099,13 @@ tbody td {
 .badge-low {
     /* WCAG AA: Dark overlay improves contrast from 3.68:1 to 4.5:1 */
     background: linear-gradient(135deg, var(--primary), var(--primary-hover)),
-                linear-gradient(rgb(0, 0, 0, 0.2), rgb(0, 0, 0, 0.2));
+                linear-gradient(rgb(0, 0, 0, 0.2), rgb(0, 0, 0, 0.2)); /* design-spec: badge-low WCAG contrast multiply overlay */
+
     background-blend-mode: normal, multiply;
     color: var(--on-primary);
     font-weight: 600;
     box-shadow: 0 2px 4px var(--primary-glow);
-    text-shadow: 0 1px 2px rgb(0, 0, 0, 0.6);
+    text-shadow: 0 1px 2px rgb(0, 0, 0, 0.6); /* design-spec: text on colored badge for WCAG AA contrast */
 }
 
 /* SPECIAL BADGES */
@@ -2353,7 +2357,7 @@ textarea.form-control {
     background-color: var(--surface-3);
     border-radius: var(--r-sm);
     overflow: hidden;
-    box-shadow: inset 0 1px 3px rgb(0,0,0,0.3);
+    box-shadow: inset 0 1px 3px rgb(0,0,0,0.3); /* design-spec: progress bar inset depth */
     border: 1px solid var(--primary-tint);
 }
 
@@ -2859,7 +2863,7 @@ textarea.form-control {
         z-index: var(--z-fixed);
         transform: translateX(-100%);
         transition: transform var(--t-base) var(--ease-out);
-        box-shadow: 5px 0 30px rgb(0, 0, 0, 0.15);
+        box-shadow: 5px 0 30px rgb(0, 0, 0, 0.15); /* design-spec: mobile sidebar slide-in edge shadow */
         will-change: transform;
         contain: layout style paint;
         -webkit-overflow-scrolling: touch;
@@ -3528,7 +3532,7 @@ table.table-borderless td {
 /* Warning modal header */
 .modal-header.bg-warning {
     color: var(--on-warning);
-    border-bottom-color: rgb(0, 0, 0, 0.1);
+    border-bottom-color: rgb(0, 0, 0, 0.1); /* design-spec: modal warning header divider tint */
 }
 
 /* Dark mode modal adjustments */

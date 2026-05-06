@@ -19,7 +19,7 @@
     /* Sidebar geht off-canvas via bestehendem .app-sidebar + .open aus app.css.
        Wir erweitern nur Aurora-Shadow + off-canvas BG. */
     .app-sidebar {
-        box-shadow: 5px 0 30px rgb(0, 0, 0, 0.15);
+        box-shadow: 5px 0 30px rgb(0, 0, 0, 0.15); /* design-spec: mobile sidebar slide-in edge shadow */
     }
 
     .sidebar-backdrop {

@@ -121,7 +121,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    box-shadow: 0 4px 20px rgb(0, 0, 0, 0.08), 0 0 0 1px var(--primary-glow);
+    box-shadow: 0 4px 20px rgb(0, 0, 0, 0.08), 0 0 0 1px var(--primary-glow); /* design-spec: dropdown panel composite with glow ring */
     overflow: hidden;
     animation: fa-dropdown-pop var(--t-base) var(--ease-out);
 }
@@ -345,7 +345,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    box-shadow: 0 20px 60px rgb(0, 0, 0, 0.2);
+    box-shadow: 0 20px 60px rgb(0, 0, 0, 0.2); /* design-spec: confirm modal overlay lighter than --shadow-overlay */
 }
 .fa-confirm-modal__body {
     padding: 28px 28px 10px;
@@ -596,7 +596,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    box-shadow: 0 20px 60px rgb(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-overlay);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -705,7 +705,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     height: 16px;
     background: var(--surface);
     border-radius: 50%;
-    box-shadow: 0 1px 3px rgb(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgb(0, 0, 0, 0.2); /* design-spec: toggle knob subtle depth */
     transition: transform var(--t-fast) var(--ease-out);
 }
 .fa-prefs-toggle__input:checked + .fa-prefs-toggle__slider {

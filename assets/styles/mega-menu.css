@@ -129,7 +129,7 @@
     width: 600px;
     background: var(--surface);
     border-left: 1px solid var(--border);
-    box-shadow: -4px 0 20px rgb(0, 0, 0, 0.1);
+    box-shadow: -4px 0 20px rgb(0, 0, 0, 0.1); /* design-spec: mega-menu lateral drop shadow light-mode */
     z-index: var(--z-overlay);
     transform: translateX(0);
     transition: transform 0.3s ease, left 0s;
@@ -170,7 +170,7 @@
 [data-theme="dark"] .mega-menu-secondary {
     background: var(--surface);
     border-left-color: var(--border);
-    box-shadow: -4px 0 30px rgb(0, 0, 0, 0.5);
+    box-shadow: -4px 0 30px rgb(0, 0, 0, 0.5); /* design-spec: mega-menu lateral drop shadow dark-mode heavy */
 }
 
 /* ====================================

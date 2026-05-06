@@ -27,9 +27,9 @@
    Tokens compose via --primary-rgb (defined above).
    =============================== */
 [data-bs-theme="dark"] {
-    --shadow-sm: 0 2px 4px rgb(0, 0, 0, 0.4),  0 0 8px  rgb(var(--primary-rgb), 0.10);
-    --shadow-md: 0 4px 12px rgb(0, 0, 0, 0.5), 0 0 12px rgb(var(--primary-rgb), 0.15);
-    --shadow-lg: 0 8px 24px rgb(0, 0, 0, 0.6), 0 0 20px rgb(var(--primary-rgb), 0.20);
+    --shadow-sm: 0 2px 4px rgb(0, 0, 0, 0.4),  0 0 8px  rgb(var(--primary-rgb), 0.10); /* design-spec: dark-mode token definition with glow */
+    --shadow-md: 0 4px 12px rgb(0, 0, 0, 0.5), 0 0 12px rgb(var(--primary-rgb), 0.15); /* design-spec: dark-mode token definition with glow */
+    --shadow-lg: 0 8px 24px rgb(0, 0, 0, 0.6), 0 0 20px rgb(var(--primary-rgb), 0.20); /* design-spec: dark-mode token definition with glow */
 }
 
 /* ===============================
@@ -37,7 +37,7 @@
    =============================== */
 [data-theme="dark"] .kpi-card:hover,
 [data-bs-theme="dark"] .kpi-card:hover {
-    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.3), 0 0 20px rgb(var(--primary-rgb), 0.15);
+    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.3), 0 0 20px rgb(var(--primary-rgb), 0.15); /* design-spec: dark-mode premium glow composite */
 }
 
 [data-theme="dark"] .kpi-card::after,
@@ -371,5 +371,5 @@ html[data-bs-theme="dark"] .alert h6 {
    Light Mode — Stat Card Icon shadow
    =============================== */
 :root:not([data-theme="dark"], [data-bs-theme="dark"]) .stat-card-icon {
-    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.1) !important;
+    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.1) !important; /* design-spec: singular stat-card icon lift */
 }

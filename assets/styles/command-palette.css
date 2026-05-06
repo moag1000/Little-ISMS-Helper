@@ -10,7 +10,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgb(0, 0, 0, 0);
+    background: rgb(0, 0, 0, 0); /* design-spec: transparent reset for animation start state */
     display: none;
     align-items: flex-start;
     justify-content: center;
@@ -29,7 +29,7 @@
 .command-palette-container {
     background: var(--surface);
     border-radius: 12px;
-    box-shadow: 0 20px 60px rgb(0, 0, 0, 0.4), 0 0 40px var(--primary-glow);
+    box-shadow: 0 20px 60px rgb(0, 0, 0, 0.4), 0 0 40px var(--primary-glow); /* design-spec: command-palette premium overlay with glow */
     border: 2px solid var(--primary);
     width: 640px;
     max-width: 90vw;
