@@ -79,6 +79,7 @@ soa:
         reibung_warning_body: 'MRIS empfiehlt das Control umzugestalten oder durch flankierende Mythos-Härtungs-Controls (MHC) zu ergänzen. Allein-Nutzung als Mitigation ist Audit-Risiko unter Gen-AI-beschleunigter Offensive.'
         degradiert_hint_title: 'Teilweise degradiert — Wirksamkeit unter Mythos eingeschränkt.'
         degradiert_hint_body: 'Das Control bleibt nutzbar, sollte aber durch flankierende MHCs ergänzt werden:'
+        source_attribution: 'MRIS v1.5 nach Peddi (CC BY 4.0)'
     status:
         implemented: Implementiert
         in_progress: 'In Arbeit'

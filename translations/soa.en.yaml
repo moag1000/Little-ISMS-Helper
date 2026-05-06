@@ -79,6 +79,7 @@ soa:
         reibung_warning_body: 'MRIS recommends redesigning the control or supplementing it with flanking Mythos hardening controls (MHC). Standalone use as mitigation is an audit risk under Gen-AI-accelerated offence.'
         degradiert_hint_title: 'Partially degraded — effectiveness reduced under Mythos.'
         degradiert_hint_body: 'The control remains usable but should be supplemented with flanking MHCs:'
+        source_attribution: 'MRIS v1.5 by Peddi (CC BY 4.0)'
     status:
         implemented: Implemented
         in_progress: 'In progress'

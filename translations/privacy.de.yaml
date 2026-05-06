@@ -279,6 +279,12 @@ privacy:
         conductor_required_user_or_person: 'Durchführender: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
         approver_required_user_or_person: 'Genehmiger: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
         contact_person_required_user_or_person: 'Kontaktperson: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+    sdm:
+        title: 'Standard-Datenschutzmodell (SDM 3.1)'
+        description: 'Bewertung der sieben Gewährleistungsziele der Datenschutzkonferenz (DSK) für diese Verarbeitung.'
+        coverage: 'Bewertete Ziele'
+        highest_risk: 'Höchstes Risiko'
+        summary: 'Bewertungszusammenfassung'
 
 
 processing_activity:

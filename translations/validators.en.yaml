@@ -533,3 +533,10 @@ risk_approval_config:
         range: 'Value must be within the valid range'
 'Code must be lowercase alphanumeric/underscore only': 'Code must be lowercase alphanumeric/underscore only'
 'AI risk classification must be one of: prohibited, high_risk, limited_risk, minimal_risk': 'AI risk classification must be one of: prohibited, high_risk, limited_risk, minimal_risk'
+'LkSG human rights risk score must be between {{ min }} and {{ max }}': 'LkSG human rights risk score must be between {{ min }} and {{ max }}'
+'LkSG environmental risk score must be between {{ min }} and {{ max }}': 'LkSG environmental risk score must be between {{ min }} and {{ max }}'
+'LkSG risk category must be one of: low, medium, high, critical': 'LkSG risk category must be one of: low, medium, high, critical'
+'Slug must be lowercase alphanumeric (with dashes/underscores).': 'Slug must be lowercase alphanumeric (with dashes/underscores).'
+gstool_import:
+    upload:
+        file_type_error: 'Please upload an XML file.'

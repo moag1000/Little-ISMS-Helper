@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'report_builder' %}
 
-{% block title %}{{ 'designer.title'|trans({'%name%': report.name}) }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'designer.title'|trans({'%name%': report.name}, 'report_builder') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="report-designer" data-controller="report-designer" data-report-designer-report-id-value="{{ report.id }}" data-report-designer-save-url-value="{{ path('report_builder_save', {id: report.id}) }}">

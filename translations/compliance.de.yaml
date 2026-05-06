@@ -101,6 +101,7 @@ compliance:
         target_requirements: Zielanforderungen
         mapping_strength: Zuordnungsstärke
         mapped: Zugeordnet
+        fulfillment: 'Erfüllungsgrad'
     option:
         select_framework: 'Framework wählen…'
         all_frameworks: 'Alle Frameworks'

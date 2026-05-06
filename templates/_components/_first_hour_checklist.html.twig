@@ -42,7 +42,7 @@
                 </span>
                 <div class="flex-grow-1">
                     <div class="fw-semibold">{{ 'first_hour.step1_title'|trans }}</div>
-                    <small class="text-muted">{{ 'first_hour.step1_hint'|trans({'%count%': asset_count|default(0)}) }}</small>
+                    <small class="text-muted">{{ 'first_hour.step1_hint'|trans({'%count%': asset_count|default(0)}, 'journey') }}</small>
                 </div>
                 <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
             </a>
@@ -60,7 +60,7 @@
                 </span>
                 <div class="flex-grow-1">
                     <div class="fw-semibold">{{ 'first_hour.step2_title'|trans }}</div>
-                    <small class="text-muted">{{ 'first_hour.step2_hint'|trans({'%count%': risk_count|default(0)}) }}</small>
+                    <small class="text-muted">{{ 'first_hour.step2_hint'|trans({'%count%': risk_count|default(0)}, 'journey') }}</small>
                 </div>
                 <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
             </a>
@@ -78,7 +78,7 @@
                 </span>
                 <div class="flex-grow-1">
                     <div class="fw-semibold">{{ 'first_hour.step3_title'|trans }}</div>
-                    <small class="text-muted">{{ 'first_hour.step3_hint'|trans({'%count%': applicable_control_count|default(0)}) }}</small>
+                    <small class="text-muted">{{ 'first_hour.step3_hint'|trans({'%count%': applicable_control_count|default(0)}, 'journey') }}</small>
                 </div>
                 <i class="bi bi-chevron-right text-muted" aria-hidden="true"></i>
             </a>

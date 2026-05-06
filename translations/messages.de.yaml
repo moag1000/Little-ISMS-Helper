@@ -489,6 +489,20 @@ error:
         help: 'Bitte versuchen Sie es später erneut.'
         alva_line: 'Etwas ist schiefgelaufen.'
         alva_sub: 'Das ist nicht deine Schuld. Versuche es nochmal oder melde es dem Admin.'
+    code_label_unavailable: 'Wartungsmodus'
+    code_label_rate_limit: 'Rate-Limit'
+    503:
+        title: 'Dienst nicht verfügbar'
+        alva_line: 'Wir sind gleich wieder da.'
+        alva_sub: 'Der Dienst ist gerade vorübergehend nicht erreichbar — Wartung oder Last.'
+        heading: 'Dienst kurz nicht verfügbar'
+        message: 'Der Server ist gerade überlastet oder im Wartungsmodus. Bitte versuche es in wenigen Minuten erneut — deine Daten sind sicher.'
+    429:
+        title: 'Zu viele Anfragen'
+        alva_line: 'Kurze Pause.'
+        alva_sub: 'Du hast in kurzer Zeit zu viele Anfragen geschickt. Probier es gleich wieder.'
+        heading: 'Zu viele Anfragen in kurzer Zeit'
+        message: 'Aus Sicherheitsgründen begrenzen wir die Anzahl von Anfragen pro Minute. Bitte warte kurz und versuche es dann erneut.'
     action:
         homepage: 'Zur Startseite'
         back: Zurück
@@ -2046,3 +2060,31 @@ reuse:
         suppliers:
             heading: 'Lieferanten (%count%, Max %max% Requirements)'
         hint_monoculture: 'Wenige sehr-rote Kacheln sind ein Monokultur-Risiko: fällt ein einzelnes Artefakt weg, bricht die Abdeckung vieler Frameworks ein. Spread the load.'
+
+# data_breach index table/filter keys (used in data_breach/index.html.twig with messages domain)
+data_breach:
+    index:
+        kpi_affected_subjects: 'Betroffene Personen gesamt'
+        kpi_total_count: 'Vorfälle insgesamt'
+        filter_title: 'Nach Status filtern'
+        filter_all: 'Alle'
+        filter_overdue: 'Überfällig'
+        filter_pending_authority: 'Behörde ausstehend'
+        filter_pending_subjects: 'Betroffene ausstehend'
+        filter_draft: 'Entwurf'
+        filter_under_assessment: 'In Bewertung'
+        filter_authority_notified: 'Behörde informiert'
+        filter_closed: 'Geschlossen'
+        col_reference: 'Referenz'
+        col_title: 'Titel'
+        col_status: 'Status'
+        col_risk: 'Risiko'
+        col_affected_subjects: 'Betr. Personen'
+        col_deadline: 'Frist'
+        col_authority: 'Behörde'
+        col_subjects: 'Betroffene'
+        col_actions: 'Aktionen'
+        unknown: 'Unbekannt'
+        overdue: 'Überfällig'
+        hours_left: '%hours% Std. verbleibend'
+        table_title: 'Datenpannen'
