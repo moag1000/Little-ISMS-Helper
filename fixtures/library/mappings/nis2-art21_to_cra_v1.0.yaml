@@ -3,7 +3,7 @@ library:
   type: mapping
   id: 'nis2-art21_to_cra_v1.0'
   source_framework: 'NIS2'
-  target_framework: 'CRA'
+  target_framework: 'EU-CRA'
   version: 1
   effective_from: '2026-05-06'
   effective_until: null

@@ -3,7 +3,7 @@ library:
   type: mapping
   id: 'gdpr_to_iso27701-2025_v1.0'
   source_framework: 'GDPR'
-  target_framework: 'ISO27701-2025'
+  target_framework: 'ISO27701'
   version: 1
   effective_from: '2025-08-01'
   effective_until: null

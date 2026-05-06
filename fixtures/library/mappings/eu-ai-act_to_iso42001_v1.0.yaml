@@ -2,7 +2,7 @@ schema_version: '1.1'
 library:
   type: mapping
   id: 'eu-ai-act_to_iso42001_v1.0'
-  source_framework: 'EU-AI-Act'
+  source_framework: 'EU-AI-ACT'
   target_framework: 'ISO42001'
   version: 1
   effective_from: '2026-02-01'

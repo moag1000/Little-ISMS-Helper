@@ -3,7 +3,7 @@ library:
   type: mapping
   id: 'nis2-art21_to_bsi-it-grundschutz_v1.0'
   source_framework: 'NIS2'
-  target_framework: 'BSI-Grundschutz'
+  target_framework: 'BSI-GRUNDSCHUTZ'
   version: 1
   effective_from: '2025-01-15'
   effective_until: null

@@ -3,7 +3,7 @@ library:
   type: mapping
   id: 'bsi-c5-2020_to_bsi-it-grundschutz_v1.0'
   source_framework: 'BSI-C5'
-  target_framework: 'BSI-Grundschutz'
+  target_framework: 'BSI-GRUNDSCHUTZ'
   version: 1
   effective_from: '2024-02-01'
   effective_until: null

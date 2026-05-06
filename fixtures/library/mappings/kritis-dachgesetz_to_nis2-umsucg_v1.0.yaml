@@ -2,7 +2,7 @@ schema_version: '1.1'
 library:
   type: mapping
   id: 'kritis-dachgesetz_to_nis2-umsucg_v1.0'
-  source_framework: 'KRITIS-DachG'
+  source_framework: 'KRITIS-DE'
   target_framework: 'NIS2-UmsuCG'
   version: 1
   effective_from: '2025-02-01'

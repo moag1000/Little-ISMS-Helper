@@ -3,7 +3,7 @@ library:
   type: mapping
   id: 'nis2-umsucg_to_kritis-dachgesetz_v1.0'
   source_framework: 'NIS2-UmsuCG'
-  target_framework: 'KRITIS-DachG'
+  target_framework: 'KRITIS-DE'
   version: 1
   effective_from: '2025-02-01'
   effective_until: null

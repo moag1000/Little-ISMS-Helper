@@ -2,7 +2,7 @@ schema_version: '1.1'
 library:
   type: mapping
   id: 'cra_to_nis2-art21_v1.0'
-  source_framework: 'CRA'
+  source_framework: 'EU-CRA'
   target_framework: 'NIS2'
   version: 1
   effective_from: '2026-05-06'
