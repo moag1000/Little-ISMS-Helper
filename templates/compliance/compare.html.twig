@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
-{% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
 
 {% block title %}{{ 'compliance.title.compare'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
@@ -22,7 +21,7 @@
                 📄 {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
             </a>
             {% if selectedFramework1 and selectedFramework2 %}
-                {{ _pdf_switch.render('app_compliance_export_comparison_pdf', {framework1: selectedFramework1.id, framework2: selectedFramework2.id}) }}
+                {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_compliance_export_comparison_pdf', route_params: {framework1: selectedFramework1.id, framework2: selectedFramework2.id}} only %}
             {% endif %}
         </div>
         <a href="{{ path('app_compliance_export_comparison_excel', {framework1: selectedFramework1 ? selectedFramework1.id : '', framework2: selectedFramework2 ? selectedFramework2.id : ''}) }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false" {% if not selectedFramework1 or not selectedFramework2 %}disabled{% endif %}>

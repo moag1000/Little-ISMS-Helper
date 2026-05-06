@@ -5,7 +5,6 @@
 
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
-{% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -28,7 +27,7 @@
                     <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
                 </a>
             </div>
-            {{ _pdf_switch.render('app_management_reports_compliance_pdf') }}
+            {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_management_reports_compliance_pdf'} only %}
         </div>
     </div>
 

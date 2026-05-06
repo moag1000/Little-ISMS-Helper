@@ -4,7 +4,6 @@
 {% block title %}{{ 'management_reports.risk.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
-{% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -27,7 +26,7 @@
                     <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
                 </a>
             </div>
-            {{ _pdf_switch.render('app_management_reports_risk_pdf') }}
+            {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_management_reports_risk_pdf'} only %}
         </div>
     </div>
 
