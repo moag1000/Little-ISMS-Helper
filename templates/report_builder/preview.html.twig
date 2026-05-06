@@ -114,7 +114,7 @@
                 {# Line Chart #}
                 <canvas class="chart-canvas" data-chart-type="line" data-chart-labels="{{ data.labels|json_encode }}" data-chart-datasets="{{ data.datasets|json_encode }}" height="200"></canvas>
                 {% else %}
-                <div class="alert alert-secondary">{{ 'preview.chart_placeholder'|trans({'%type%': data.type}) }}</div>
+                <div class="alert alert-secondary">{{ 'preview.chart_placeholder'|trans({'%type%': data.type}, 'report_builder') }}</div>
                 {% endif %}
             </div>
 
@@ -177,7 +177,7 @@
             </div>
 
             {% else %}
-            <div class="alert alert-secondary">{{ 'preview.unknown_widget'|trans({'%type%': widgetType}) }}</div>
+            <div class="alert alert-secondary">{{ 'preview.unknown_widget'|trans({'%type%': widgetType}, 'report_builder') }}</div>
             {% endif %}
         </div>
         {% endfor %}

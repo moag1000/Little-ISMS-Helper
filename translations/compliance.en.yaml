@@ -101,6 +101,7 @@ compliance:
         target_requirements: __compliance.field.target_requirements
         mapping_strength: __compliance.field.mapping_strength
         mapped: __compliance.field.mapped
+        fulfillment: 'Fulfillment level'
     option:
         select_framework: 'Select framework…'
         all_frameworks: 'All frameworks'

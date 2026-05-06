@@ -41,7 +41,7 @@
                                     <code class="small text-muted mb-2">{{ f.code }}</code>
                                     <h2 class="h5">{{ ('framework_baseline.framework.' ~ f.code)|trans({}, 'framework_baseline')|default(f.code) }}</h2>
                                     <p class="small text-muted flex-grow-1">
-                                        {{ 'framework_baseline.baselines_count'|trans({'%count%': f.count}) }}
+                                        {{ 'framework_baseline.baselines_count'|trans({'%count%': f.count}, 'framework_baseline') }}
                                     </p>
                                     <a href="{{ path('admin_industry_baselines_show', {framework: f.code}) }}"
                                        class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary mt-2">

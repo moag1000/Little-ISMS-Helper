@@ -31,13 +31,13 @@
                     <div class="progress" style="height: 10px;" role="progressbar"
                          aria-valuenow="{{ progress.overallPercent }}"
                          aria-valuemin="0" aria-valuemax="100"
-                         aria-label="{{ 'journey.percent_complete'|trans({'%percent%': progress.overallPercent}) }}">
+                         aria-label="{{ 'journey.percent_complete'|trans({'%percent%': progress.overallPercent}, 'journey') }}">
                         <div class="progress-bar bg-primary"
                              style="width: {{ progress.overallPercent }}%;"></div>
                     </div>
                 </div>
                 <span class="isms-journey__percent fw-bold text-primary">
-                    {{ 'journey.percent_complete'|trans({'%percent%': progress.overallPercent}) }}
+                    {{ 'journey.percent_complete'|trans({'%percent%': progress.overallPercent}, 'journey') }}
                 </span>
             </div>
         </div>

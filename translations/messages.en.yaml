@@ -476,6 +476,20 @@ error:
         help: 'Please try again later.'
         alva_line: 'Something went wrong.'
         alva_sub: "Not your fault. Try again or report it to the admin."
+    code_label_unavailable: 'Maintenance mode'
+    code_label_rate_limit: 'Rate limit'
+    503:
+        title: 'Service Unavailable'
+        alva_line: 'We will be right back.'
+        alva_sub: 'The service is temporarily unavailable — maintenance or high load.'
+        heading: 'Service Briefly Unavailable'
+        message: 'The server is currently under maintenance or overloaded. Please try again in a few minutes — your data is safe.'
+    429:
+        title: 'Too Many Requests'
+        alva_line: 'Short break.'
+        alva_sub: 'You have sent too many requests in a short time. Please try again shortly.'
+        heading: 'Too Many Requests in a Short Time'
+        message: 'For security reasons we limit the number of requests per minute. Please wait a moment and try again.'
     action:
         homepage: 'Go to Homepage'
         back: 'Go Back'
@@ -1987,3 +2001,31 @@ reuse:
         suppliers:
             heading: 'Suppliers (%count%, max %max% requirements)'
         hint_monoculture: 'A few very-red tiles signal monoculture risk: if one artifact disappears, coverage across many frameworks collapses. Spread the load.'
+
+# data_breach index table/filter keys (used in data_breach/index.html.twig with messages domain)
+data_breach:
+    index:
+        kpi_affected_subjects: 'Total affected persons'
+        kpi_total_count: 'Total incidents'
+        filter_title: 'Filter by status'
+        filter_all: 'All'
+        filter_overdue: 'Overdue'
+        filter_pending_authority: 'Authority pending'
+        filter_pending_subjects: 'Subjects pending'
+        filter_draft: 'Draft'
+        filter_under_assessment: 'Under assessment'
+        filter_authority_notified: 'Authority notified'
+        filter_closed: 'Closed'
+        col_reference: 'Reference'
+        col_title: 'Title'
+        col_status: 'Status'
+        col_risk: 'Risk'
+        col_affected_subjects: 'Affected persons'
+        col_deadline: 'Deadline'
+        col_authority: 'Authority'
+        col_subjects: 'Subjects'
+        col_actions: 'Actions'
+        unknown: 'Unknown'
+        overdue: 'Overdue'
+        hours_left: '%hours% hrs remaining'
+        table_title: 'Data breaches'

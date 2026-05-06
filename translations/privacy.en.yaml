@@ -284,6 +284,12 @@ privacy:
         conductor_required_user_or_person: 'Conductor: User or master-data Person required (free-text alone is not sufficient).'
         approver_required_user_or_person: 'Approver: User or master-data Person required (free-text alone is not sufficient).'
         contact_person_required_user_or_person: 'Contact person: User or master-data Person required (free-text alone is not sufficient).'
+    sdm:
+        title: 'Standard Data Protection Model (SDM 3.1)'
+        description: 'Assessment of the seven protection goals defined by the German Data Protection Conference (DSK).'
+        coverage: 'Assessed goals'
+        highest_risk: 'Highest risk'
+        summary: 'Assessment summary'
 processing_activity:
     title: 'VVT - Record of Processing Activities'
     subtitle: 'Art. 30 GDPR - Record of Processing Activities'
