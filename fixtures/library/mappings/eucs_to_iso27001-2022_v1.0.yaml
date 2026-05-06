@@ -258,15 +258,16 @@ mappings:
 
   # === EUCS A16 Compliance and Information Security Reviews ===
   - source: 'EUCS-A16'
-    target: 'A.5.31'
+    target: 'A.5.35'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      EUCS A16 "Compliance and Information Security Reviews" wird primär
-      durch A.5.31 "Legal, statutory, regulatory and contractual
-      requirements" abgedeckt. Volle Abdeckung: A.5.32 (IPR),
-      A.5.33 (Records), A.5.34 (Privacy/PII), A.5.35 (Independent review),
-      A.5.36 (Compliance with policies), A.8.34 (Audit testing).
+      EUCS A16 "Compliance and Information Security Reviews" wird primaer
+      durch A.5.35 "Independent review of information security" abgedeckt:
+      regelmaessige unabhaengige Reviews der ISMS-Wirksamkeit + interne
+      Audits. Compliance-Anteil ergaenzend ueber A.5.36 (Compliance with
+      policies). Verwandte: A.5.31 (Legal/Regulatory), A.5.32 (IPR),
+      A.5.33 (Records), A.5.34 (Privacy/PII), A.8.34 (Audit testing).
     cross_refs: ['A.5.32', 'A.5.33', 'A.5.34', 'A.5.35', 'A.5.36', 'A.8.34']
     audit_evidence_hint: 'Compliance-Register, AVV-Verträge, externe Audit-Reports (C5, ISO, SOC2), DSFAs.'
 
