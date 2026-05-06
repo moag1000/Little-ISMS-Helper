@@ -137,6 +137,7 @@
     --shadow-sm:    0 1px 3px rgba(0, 0, 0, 0.05);
     --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.06);
     --shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.08);
+    --shadow-overlay: 0 20px 60px rgba(0, 0, 0, 0.3);
     /* Inverted shadows for bottom-anchored sheets / sticky-bottom toolbars */
     --shadow-up-sm: 0 -4px 12px rgba(0, 0, 0, 0.06);
     --shadow-up-md: 0 -4px 20px rgba(0, 0, 0, 0.10);
@@ -170,7 +171,21 @@
     /* — v4 Alva-Companion Dock — */
     --alva-dock-offset-x: 24px;
     --alva-dock-offset-y: 72px;  /* clears footer / status-bar / Symfony dev-toolbar */
-    --alva-z: 9500;
+    /* Z-Index-Stack — single source of truth (war app.css:4-11) */
+    --z-base:            0;
+    --z-popover:         50;
+    --z-dropdown:       100;
+    --z-sticky:         200;
+    --z-fixed:          500;
+    --z-overlay:        900;
+    --z-modal-backdrop: 1000;
+    --z-modal:          1001;
+    --z-popover-modal:  1100;
+    --z-toast:          1500;
+    --z-tour:           2000;
+    --z-command:        2500;
+    --z-turbo-bar:    999999;
+    --alva-z:           var(--z-overlay);
 
     /* — Typografie — */
     --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -185,6 +200,7 @@
     --r-xl: 12px;
     --r-2xl: 16px;
     --r-pill: 999px;
+    --r-icon: 8px;
 
     /* — Timing-Tokens (Motion-Policy § 14) — */
     --t-instant: 80ms;
@@ -274,6 +290,7 @@ html[data-theme="dark"] {
     --shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(var(--primary-rgb), 0.20);
     --shadow-up-sm: 0 -4px 12px rgba(0, 0, 0, 0.4);
     --shadow-up-md: 0 -4px 20px rgba(0, 0, 0, 0.5);
+    --shadow-overlay: 0 20px 60px rgba(0, 0, 0, 0.55);
 
     /* Translucent surface — dark variant uses fg as base */
     --surface-translucent: rgba(255, 255, 255, 0.06);
@@ -330,6 +347,7 @@ html[data-theme="dark"] {
         --shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(var(--primary-rgb), 0.20);
         --shadow-up-sm: 0 -4px 12px rgba(0, 0, 0, 0.4);
         --shadow-up-md: 0 -4px 20px rgba(0, 0, 0, 0.5);
+        --shadow-overlay: 0 20px 60px rgba(0, 0, 0, 0.55);
         --surface-translucent: rgba(255, 255, 255, 0.06);
         --fairy-primary: #38bdf8;
         --fairy-accent:  #a78bfa;
