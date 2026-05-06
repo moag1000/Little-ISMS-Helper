@@ -284,7 +284,7 @@
 .heat-map-cell .cell-count {
     font-size: 1.25rem;
     font-weight: 700;
-    color: white;
+    color: white; /* design-spec: text on JS-colored risk heat map cell */
     text-shadow: 0 1px 3px rgb(0,0,0,0.3); /* design-spec: analytics hero text readable shadow */
 }
 
@@ -381,7 +381,7 @@
     padding: 20px 40px;
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
     border-radius: 12px;
-    color: white;
+    color: var(--on-primary);
     margin-bottom: 20px;
     box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint), var(--shadow-lg);
     border: 2px solid var(--accent);
@@ -437,7 +437,7 @@
 
 .trend-tabs .nav-link.active {
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-    color: white;
+    color: var(--on-primary);
     box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 

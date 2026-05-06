@@ -16,12 +16,12 @@
 
 .risk-level-critical .risk-score {
     background-color: var(--danger);
-    color: white;
+    color: var(--on-danger);
 }
 
 .risk-level-high .risk-score {
     background-color: var(--warning);
-    color: white;
+    color: var(--on-warning);
 }
 
 .risk-level-medium .risk-score {
@@ -31,7 +31,7 @@
 
 .risk-level-low .risk-score {
     background-color: var(--success);  /* Semantic green for low risk */
-    color: white;
+    color: var(--on-success);
 }
 
 /* ====================
@@ -255,7 +255,7 @@
 
 .kpi-card-link:hover {
     background: var(--primary);
-    color: white;
+    color: var(--on-primary);
 }
 
 /* ====================
@@ -1372,7 +1372,7 @@
 }
 
 .fs-15-white-mb {
-    color: white;
+    color: white; /* design-spec: heading utility for use on colored gradient hero/banner */
     margin-bottom: 1rem;
     font-size: 1.5rem;
 }
@@ -1838,7 +1838,7 @@
 
 /* Colored headings with no top margin */
 .h-white-no-mt-mb-sm {
-    color: white;
+    color: white; /* design-spec: heading utility for use on colored gradient hero/banner */
     margin-top: 0;
     margin-bottom: 0.5rem;
 }
@@ -2190,7 +2190,7 @@
 /* Compliance Index Utilities - Cyberpunk Fairy Emerald Gradient */
 .alert-gradient-success {
     background: linear-gradient(135deg, var(--success) 0%, var(--success-strong) 100%);  /* Emerald fairy dust */
-    color: white;
+    color: var(--on-success);
     border: none;
     margin-bottom: var(--spacing-lg);
 }
@@ -2440,7 +2440,7 @@
    ==================== */
 .badge-create {
     background: var(--success);  /* Emerald fairy dust */
-    color: white;
+    color: var(--on-success);
 }
 
 .badge-update {
@@ -2450,22 +2450,22 @@
 
 .badge-delete {
     background: var(--danger);  /* Alert flames */
-    color: white;
+    color: var(--on-danger);
 }
 
 .badge-view {
     background: var(--primary);  /* Cyberpunk cyan glow */
-    color: white;
+    color: var(--on-primary);
 }
 
 .badge-export {
     background: var(--fg-2);  /* Slate secondary */
-    color: white;
+    color: white; /* design-spec: text on fg-2 slate badge, no --on-fg token */
 }
 
 .badge-import {
     background: var(--accent);  /* Mystical purple aura */
-    color: white;
+    color: var(--on-accent);
 }
 
 /* Dark Mode - Audit Log Badges */
@@ -2483,7 +2483,7 @@
 
 [data-theme="dark"] .badge-delete {
     background: var(--danger);
-    color: white;
+    color: var(--on-danger);
     box-shadow: 0 0 8px var(--danger-tint);
 }
 
@@ -2495,13 +2495,13 @@
 
 [data-theme="dark"] .badge-export {
     background: var(--fg-2);
-    color: white;
+    color: white; /* design-spec: text on fg-2 slate dark badge, no --on-fg token */
     box-shadow: 0 0 8px rgb(100, 116, 139, 0.3);
 }
 
 [data-theme="dark"] .badge-import {
     background: var(--accent);  /* Mystical purple aura */
-    color: white;
+    color: var(--on-accent);
     box-shadow: 0 0 8px var(--accent-tint);
 }
 

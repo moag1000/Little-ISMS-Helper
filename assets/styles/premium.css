@@ -7,7 +7,7 @@
    =============================== */
 .hero-section {
     background: linear-gradient(135deg, var(--fg) 0%, var(--fg-2) 50%, var(--primary) 100%);
-    color: white;
+    color: white; /* design-spec: text on dark fg-to-primary hero gradient */
     padding: 80px 0;
     margin-bottom: 40px;
     position: relative;
@@ -155,31 +155,31 @@
 
 .stat-card-icon.bg-primary {
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-    color: white;
+    color: var(--on-primary);
     box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .stat-card-icon.bg-success {
     background: linear-gradient(135deg, var(--success) 0%, var(--success-strong) 100%);
-    color: white;
+    color: var(--on-success);
     box-shadow: 0 0 10px var(--success-glow), 0 0 20px var(--success-glow);
 }
 
 .stat-card-icon.bg-warning {
     background: linear-gradient(135deg, var(--warning) 0%, var(--warning) 100%);
-    color: white;
+    color: var(--on-warning);
     box-shadow: 0 0 15px rgb(245, 158, 11, 0.4);
 }
 
 .stat-card-icon.bg-danger {
     background: linear-gradient(135deg, var(--danger) 0%, var(--danger) 100%);
-    color: white;
+    color: var(--on-danger);
     box-shadow: 0 0 15px rgb(239, 68, 68, 0.4);
 }
 
 .stat-card-icon.bg-info {
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-    color: white;
+    color: var(--on-primary);
     box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
@@ -1141,7 +1141,7 @@
 }
 
 .filter-preset-btn.active i {
-    color: white !important;
+    color: var(--on-primary) !important;
 }
 
 .filter-preset-clear {
@@ -1151,12 +1151,12 @@
 
 .filter-preset-clear:hover {
     background: var(--danger);
-    color: white;
+    color: var(--on-danger);
     border-color: var(--danger);
 }
 
 .filter-preset-clear:hover i {
-    color: white !important;
+    color: var(--on-danger) !important;
 }
 
 /* ===============================
@@ -1331,7 +1331,7 @@
     border-radius: 50%;
     background: rgb(255, 255, 255, 0.1);
     border: 1px solid rgb(255, 255, 255, 0.2);
-    color: white;
+    color: white; /* design-spec: glass button on dark nav header */
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1376,7 +1376,7 @@
     top: -5px;
     right: -5px;
     background: var(--danger);
-    color: white;
+    color: var(--on-danger);
     border-radius: 10px;
     padding: 2px 6px;
     font-size: 0.7rem;
@@ -1547,7 +1547,7 @@
 
 .notification-delete:hover {
     background: var(--bg-danger);
-    color: white;
+    color: var(--on-danger);
 }
 
 .notification-empty {

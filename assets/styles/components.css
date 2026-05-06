@@ -554,7 +554,7 @@
     visibility: hidden;
     opacity: 0;
     background-color: var(--fg);
-    color: white;
+    color: white; /* design-spec: text on fg-colored tooltip background, no --on-fg token */
     text-align: center;
     border-radius: var(--r-sm);
     padding: var(--spacing-xs) var(--spacing-sm);
@@ -830,12 +830,12 @@
 /* Badge styling for SLA status */
 .badge.badge-sla-on-track {
     background-color: var(--success);
-    color: white;
+    color: var(--on-success);
 }
 
 .badge.badge-sla-at-risk {
     background-color: var(--warning);
-    color: white;
+    color: var(--on-warning);
 }
 
 .badge.badge-sla-critical {
@@ -845,7 +845,7 @@
 
 .badge.badge-sla-overdue {
     background-color: var(--danger);
-    color: white;
+    color: var(--on-danger);
     animation: sla-pulse 2s ease-in-out infinite;
 }
 
