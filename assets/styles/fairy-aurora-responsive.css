@@ -19,13 +19,13 @@
     /* Sidebar geht off-canvas via bestehendem .app-sidebar + .open aus app.css.
        Wir erweitern nur Aurora-Shadow + off-canvas BG. */
     .app-sidebar {
-        box-shadow: 5px 0 30px rgba(0, 0, 0, 0.15);
+        box-shadow: 5px 0 30px rgb(0, 0, 0, 0.15);
     }
 
     .sidebar-backdrop {
-        background: rgba(10, 14, 26, 0.5);
+        background: rgb(10, 14, 26, 0.5);
         backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
     }
 
     /* Topbar Alva mini im Hamburger-Drawer-Header sichtbar (statt im Topbar) */

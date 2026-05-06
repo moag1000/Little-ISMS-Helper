@@ -1094,7 +1094,7 @@
 }
 
 .bg-audit-cancelled {
-    background: rgba(148, 163, 184, 0.1);  /* slate-400 */
+    background: rgb(148, 163, 184, 0.1);  /* slate-400 */
     border-radius: var(--r-md);
 }
 
@@ -1266,7 +1266,7 @@
 }
 
 .details-padding {
-    padding: 0 1.5rem 1.5rem 1.5rem;
+    padding: 0 1.5rem 1.5rem;
     border-top: 1px solid var(--border);
 }
 
@@ -1583,7 +1583,7 @@
 }
 
 .chart-legend-item:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgb(0, 0, 0, 0.05);
 }
 
 .chart-legend-item.legend-hidden {
@@ -1610,20 +1610,20 @@
 /* Dark mode - dark background with light text and glow */
 [data-theme="dark"] .chart-html-legend,
 [data-bs-theme="dark"] .chart-html-legend {
-    background: rgba(30, 41, 59, 0.95);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: rgb(30, 41, 59, 0.95);
+    border-color: rgb(255, 255, 255, 0.1);
     backdrop-filter: blur(8px);
 }
 
 [data-theme="dark"] .chart-legend-item:hover,
 [data-bs-theme="dark"] .chart-legend-item:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(255, 255, 255, 0.1);
 }
 
 [data-theme="dark"] .chart-legend-label,
 [data-bs-theme="dark"] .chart-legend-label {
     color: var(--fg);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 10px rgb(255, 255, 255, 0.3);
 }
 
 .w-h-100 {
@@ -1767,7 +1767,7 @@
 }
 
 .bg-other-light {
-    background: rgba(148, 163, 184, 0.1);  /* slate-400 */
+    background: rgb(148, 163, 184, 0.1);  /* slate-400 */
     border-radius: var(--r-md);
 }
 
@@ -2472,13 +2472,13 @@
 [data-theme="dark"] .badge-create {
     background: var(--success);
     color: var(--on-success);
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 8px rgb(16, 185, 129, 0.3);
 }
 
 [data-theme="dark"] .badge-update {
     background: var(--warning);
     color: var(--on-warning);
-    box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 8px rgb(245, 158, 11, 0.3);
 }
 
 [data-theme="dark"] .badge-delete {
@@ -2496,7 +2496,7 @@
 [data-theme="dark"] .badge-export {
     background: var(--fg-2);
     color: white;
-    box-shadow: 0 0 8px rgba(100, 116, 139, 0.3);
+    box-shadow: 0 0 8px rgb(100, 116, 139, 0.3);
 }
 
 [data-theme="dark"] .badge-import {

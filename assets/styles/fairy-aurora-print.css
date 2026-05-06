@@ -11,15 +11,15 @@
     :root,
     html[data-theme="dark"],
     html[data-theme="system"] {
-        --bg: #ffffff;
-        --surface: #ffffff;
+        --bg: #fff;
+        --surface: #fff;
         --surface-2: #f5f6fa;
         --border: #cbd5e0;
         --fg: #1a1a1a;
         --fg-2: #4c4a73;
         --fg-3: #6d6b92;
         --primary: #0369a1;
-        --primary-tint: rgba(3, 105, 161, 0.08);
+        --primary-tint: rgb(3, 105, 161, 0.08);
     }
 
     /* Alle Animationen stoppen */

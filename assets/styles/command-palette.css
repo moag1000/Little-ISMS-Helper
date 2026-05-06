@@ -10,7 +10,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0);
+    background: rgb(0, 0, 0, 0);
     display: none;
     align-items: flex-start;
     justify-content: center;
@@ -21,7 +21,7 @@
 
 .command-palette-modal.command-palette-open {
     display: flex;
-    background: rgba(15, 23, 42, 0.8);
+    background: rgb(15, 23, 42, 0.8);
     backdrop-filter: blur(8px);
 }
 
@@ -29,7 +29,7 @@
 .command-palette-container {
     background: var(--surface);
     border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px var(--primary-glow);
+    box-shadow: 0 20px 60px rgb(0, 0, 0, 0.4), 0 0 40px var(--primary-glow);
     border: 2px solid var(--primary);
     width: 640px;
     max-width: 90vw;
@@ -53,7 +53,7 @@
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0px); }
+    0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-8px); }
 }
 
