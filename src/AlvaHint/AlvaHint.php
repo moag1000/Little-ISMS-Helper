@@ -44,6 +44,13 @@ final readonly class AlvaHint
         /** @var array<int, string>  e.g. ['ROLE_MANAGER'] */
         public array $requiredRoles = [],
         public string $mood = 'thinking',
+        /**
+         * Logic version of the rule. Bump when the rule's threshold or
+         * condition changes; previously dismissed records use the old
+         * version and silently re-surface — no migration, no manual
+         * cleanup. Default 1 keeps existing rules untouched.
+         */
+        public int $version = 1,
     ) {
         if ($this->priorityTier < 1 || $this->priorityTier > 3) {
             throw new InvalidArgumentException('priorityTier must be 1, 2, or 3.');

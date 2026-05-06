@@ -25,10 +25,10 @@
          aria-live="polite"
          data-alva-mood="{{ hint.mood }}"
          data-controller="alva-hint"
-         data-alva-hint-hint-key-value="{{ hint.key }}"
+         data-alva-hint-hint-key-value="{{ alva_hint_token_key(hint) }}"
          data-alva-hint-entity-type-value="{{ hint.entityType }}"
          data-alva-hint-entity-id-value="{{ hint.entityId }}"
-         data-alva-hint-csrf-token-value="{{ csrf_token('alva-hint-' ~ hint.key) }}"
+         data-alva-hint-csrf-token-value="{{ csrf_token('alva-hint-' ~ alva_hint_token_key(hint)) }}"
          data-alva-hint-endpoint-value="{{ path('app_alva_hint_dismiss') }}">
         <i class="fa-icon fa-icon--ui-stars fa-alert__icon" aria-hidden="true"></i>
         <div class="fa-alert__body">

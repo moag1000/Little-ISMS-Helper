@@ -92,7 +92,7 @@ class AlvaHintService
                 continue;
             }
 
-            $token = $this->token($hint->key, $hint->entityType, $hint->entityId);
+            $token = $this->token($hint->key . '@' . $hint->version, $hint->entityType, $hint->entityId);
             if ($hint->dismissible && isset($dismissedSet[$token])) {
                 continue;
             }

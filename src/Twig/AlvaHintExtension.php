@@ -30,4 +30,15 @@ class AlvaHintExtension
     {
         return $this->alvaHintService->pickHintFor($entity);
     }
+
+    /**
+     * Versioned key used as the dismissal token. Convention:
+     * "<hint.key>@<hint.version>". Centralises the format so the
+     * macro / Stimulus controller / dismissal endpoint stay in sync.
+     */
+    #[AsTwigFunction('alva_hint_token_key')]
+    public function tokenKey(AlvaHint $hint): string
+    {
+        return $hint->key . '@' . $hint->version;
+    }
 }

@@ -72,7 +72,7 @@ class AlvaHintServiceTest extends TestCase
         $low = $this->dummyHint('asset.low', 3, entityType: 'Asset', entityId: 7);
 
         $service = $this->buildService(
-            dismissedTokens: ['asset.high|Asset|7'],
+            dismissedTokens: ['asset.high@1|Asset|7'],
             rules: [
                 $this->buildRule('asset.high', 2, true, [], $high),
                 $this->buildRule('asset.low', 3, true, [], $low),
@@ -88,7 +88,7 @@ class AlvaHintServiceTest extends TestCase
         $hint = $this->dummyHint('incident.gdpr_72h', 1, entityType: 'Incident', entityId: 9, dismissible: false);
 
         $service = $this->buildService(
-            dismissedTokens: ['incident.gdpr_72h|Incident|9'],
+            dismissedTokens: ['incident.gdpr_72h@1|Incident|9'],
             rules: [
                 $this->buildRule('incident.gdpr_72h', 1, true, [], $hint),
             ],
