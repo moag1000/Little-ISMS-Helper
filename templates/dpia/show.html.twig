@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
+{% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
 
 {% block title %}{{ 'dpia.show.page_title'|trans({'%ref%': dpia.referenceNumber}, 'privacy') }}{% endblock %}
 
@@ -26,6 +27,7 @@
             { label: 'common.back_to_list'|trans({}, 'messages'), url: path('app_dpia_index'), variant: 'secondary', icon: 'bi-arrow-left' }
         ]
     } %}
+    {{ _pdf_switch.render('app_dpia_export_pdf', {id: dpia.id}) }}
 
     {# Status & Workflow Actions #}
     {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}

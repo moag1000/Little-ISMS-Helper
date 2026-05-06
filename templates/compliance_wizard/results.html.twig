@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
 
 {% block title %}{{ 'wizard.results'|trans({}, 'wizard') }} - {{ result.framework_name }}{% endblock %}
 
@@ -58,6 +59,7 @@
                             <a href="{{ path('app_compliance_wizard_export_pdf', {wizard: wizard}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
                                 <i class="fa-icon fa-icon--nav-file-pdf me-2" aria-hidden="true"></i>{{ 'wizard.export_pdf'|trans({}, 'wizard') }}
                             </a>
+                            {{ _pdf_switch.render('app_compliance_wizard_export_pdf', {wizard: wizard}) }}
                             <a href="{{ path('app_compliance_wizard_start', {wizard: wizard}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                                 <i class="fa-icon fa-icon--ui-refresh me-2" aria-hidden="true"></i>{{ 'wizard.run_again'|trans({}, 'wizard') }}
                             </a>

@@ -4,6 +4,7 @@
 {% block title %}{{ 'management_reports.risk.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -17,13 +18,16 @@
         <h1 class="h2 mb-0">
             <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'management_reports.risk.title'|trans({}, 'management_reports') }}
         </h1>
-        <div class="btn-group">
-            <a href="{{ path('app_management_reports_risk_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger">
-                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
-            </a>
-            <a href="{{ path('app_management_reports_risk_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
-            </a>
+        <div>
+            <div class="btn-group">
+                <a href="{{ path('app_management_reports_risk_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger">
+                    <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
+                </a>
+                <a href="{{ path('app_management_reports_risk_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                    <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
+                </a>
+            </div>
+            {{ _pdf_switch.render('app_management_reports_risk_pdf') }}
         </div>
     </div>
 

@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
 
 {% block title %}{{ 'privacy.data_breach.show.page_title'|trans({'%ref%': breach.referenceNumber}, 'privacy') }}{% endblock %}
 
@@ -27,6 +28,7 @@
             { label: 'common.back_to_list'|trans({}, 'messages'), url: path('app_data_breach_index'), variant: 'secondary', icon: 'bi-arrow-left' }
         ]
     } %}
+    {{ _pdf_switch.render('app_data_breach_export_pdf', {id: breach.id}) }}
 
     {# CRITICAL: 72-Hour Deadline Alert #}
     {% if breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}

@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
 
 {% block title %}{{ 'compliance.title.gap_analysis'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
@@ -11,9 +12,12 @@
         <p class="text-muted">{{ 'compliance.description.gap_analysis'|trans({}, 'compliance') }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_compliance_export_gaps_pdf', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger" data-turbo="false">
-            <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
-        </a>
+        <div>
+            <a href="{{ path('app_compliance_export_gaps_pdf', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger" data-turbo="false">
+                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
+            </a>
+            {{ _pdf_switch.render('app_compliance_export_gaps_pdf', {id: framework.id}) }}
+        </div>
         <a href="{{ path('app_compliance_export_gaps_excel', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false">
             <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
         </a>

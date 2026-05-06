@@ -2088,3 +2088,6 @@ data_breach:
         overdue: 'Überfällig'
         hours_left: '%hours% Std. verbleibend'
         table_title: 'Datenpannen'
+
+pdf_switch:
+    also_available: 'Auch verfügbar in'

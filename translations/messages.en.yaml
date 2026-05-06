@@ -2029,3 +2029,6 @@ data_breach:
         overdue: 'Overdue'
         hours_left: '%hours% hrs remaining'
         table_title: 'Data breaches'
+
+pdf_switch:
+    also_available: 'Also available in'

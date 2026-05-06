@@ -3803,6 +3803,17 @@ html[data-theme="dark"] .fa-page-header__badge {
     border-radius: var(--r-xs);
 }
 
+/* fa-link-subtle — muted inline hyperlink for secondary actions (e.g. PDF locale switch) */
+.fa-link-subtle {
+    color: var(--primary);
+    text-decoration: underline;
+    text-decoration-color: var(--primary-tint, color-mix(in srgb, var(--primary) 40%, transparent));
+    font-weight: 500;
+}
+.fa-link-subtle:hover {
+    text-decoration-color: var(--primary);
+}
+
 /* ==========================================================================
    Aurora v4 Phase 2 — fa-feature-card
    ==========================================================================

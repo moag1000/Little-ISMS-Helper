@@ -1,0 +1,28 @@
+{#
+/**
+ * PDF Locale-Switch Sub-Link
+ *
+ * Renders a small "auch verfügbar in [EN/DE]" link below the main PDF
+ * download button. Forwards all route-params plus locale-override.
+ *
+ * @param string route       Route-name of the PDF download endpoint
+ * @param object route_params Hash of additional route params (optional)
+ *
+ * Usage:
+ *   {% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
+ *   <a href="{{ path('app_management_reports_executive_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger">PDF</a>
+ *   {{ _pdf_switch.render('app_management_reports_executive_pdf') }}
+ */
+#}
+{% macro render(route, route_params = {}) %}
+    {% set current = app.request.locale %}
+    {% set other = current == 'de' ? 'en' : 'de' %}
+    {% set other_label = current == 'de' ? 'EN' : 'DE' %}
+    {% set merged_params = route_params|merge({locale: other}) %}
+    <small class="text-muted d-block mt-1">
+        {{ 'pdf_switch.also_available'|trans({}, 'messages') }}
+        <a href="{{ path(route, merged_params) }}" class="fa-link-subtle" rel="alternate" hreflang="{{ other }}">
+            {{ other_label }}
+        </a>
+    </small>
+{% endmacro %}
