@@ -407,7 +407,9 @@ class SoAReportServiceTest extends TestCase
         $this->pdfExportService->method('generatePdf')
             ->willReturn('PDF');
 
-        $this->service->generateSoAReport();
+        $result = $this->service->generateSoAReport();
+
+        $this->assertNotEmpty($result);
     }
 
     #[Test]
