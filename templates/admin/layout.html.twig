@@ -224,7 +224,7 @@
     {% block breadcrumb %}
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb admin-breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ path('admin_dashboard') }}">{{ 'admin.breadcrumb.home'|trans({}, 'admin') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ path('admin_hub_index') }}">{{ 'admin.breadcrumb.home'|trans({}, 'admin') }}</a></li>
                         {% block breadcrumb_items %}{% endblock %}
                     </ol>
                 </nav>
