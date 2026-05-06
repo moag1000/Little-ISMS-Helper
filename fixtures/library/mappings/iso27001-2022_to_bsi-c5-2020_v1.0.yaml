@@ -53,15 +53,15 @@ mappings:
     audit_evidence_hint: 'Verabschiedete InfoSec-Leitlinie mit Management-Freigabe-Datum, jährliche Review-Protokolle, Veröffentlichung im Mitarbeiter-Intranet.'
 
   - source: 'A.5.7'
-    target: 'RB-04'
+    target: 'OIS-05'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       A.5.7 „Threat Intelligence" verlangt Sammeln, Auswerten und Verteilen
-      von Bedrohungsinformationen. BSI C5 RB-04 „Identifikation von
+      von Bedrohungsinformationen. BSI C5 OIS-05 „Identifikation von
       Schwachstellen, Bedrohungen und funktionalen Mängeln" deckt im
       Cloud-Kontext Threat-Intel-Sharing und Schwachstellen-Tracking ab.
-      C5 Anlage A führt RB-04 als Entsprechung; Schnittmenge bei
+      C5 Anlage A führt OIS-05 als Entsprechung; Schnittmenge bei
       Threat-Intel-Quellen (CERT-Bund, BSI-CERT) ist vollständig.
     audit_evidence_hint: 'Threat-Intel-Quellen-Liste, ausgewertete Bedrohungsmeldungen der letzten 12 Monate, dokumentierte Eskalation an Cloud-Operations.'
 
@@ -84,13 +84,13 @@ mappings:
     audit_evidence_hint: 'Asset-Inventar mit Owner-Feld, Klassifikation und Stichtagsabgleich CMDB ↔ Cloud-Provisioning.'
 
   - source: 'A.5.20'
-    target: 'BEI-01'
+    target: 'SSO-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       A.5.20 „Addressing information security in supplier agreements"
       verlangt vertragliche InfoSec-Anforderungen an Lieferanten. C5
-      BEI-01 „Richtlinien und Anweisungen für Beziehungen zu Dritten"
+      SSO-01 „Richtlinien und Anweisungen für Beziehungen zu Dritten"
       regelt vertragliche InfoSec-Pflichten gegenüber Sub-Dienstleistern
       und Sub-Auftragsverarbeitern. Anlage A bestätigt 1:1-Mapping.
     cross_refs: ['A.5.21', 'A.5.22']
@@ -152,7 +152,7 @@ mappings:
     gap_warning: |
       Wer A.8.1 NUR über C5 IDM-01 nachweist, fehlen Endpoint-Hardening,
       MDM-Policy und Disk-Encryption. Empfehlung: IDM-01 zusätzlich mit
-      C5 KRY-04 (Verschlüsselung at-rest) und einer separaten
+      C5 CRY-04 (Verschlüsselung at-rest) und einer separaten
       Endpoint-Hardening-Maßnahme bündeln.
     cross_refs: ['A.5.16', 'A.8.5']
     audit_evidence_hint: 'MDM-Compliance-Report, Disk-Encryption-Stichproben, Endpoint-Hardening-Baseline (CIS L1 oder strenger).'
@@ -212,16 +212,16 @@ mappings:
     audit_evidence_hint: 'SIEM-Use-Case-Katalog, Alert-MTTR-Statistik, 24/7-Coverage-Nachweis (SOC), Log-Retention-Konfiguration.'
 
   - source: 'A.8.24'
-    target: 'KRY-01'
+    target: 'CRY-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
       A.8.24 „Use of cryptography" verlangt eine Krypto-Richtlinie
-      inkl. Key-Management. C5 KRY-01 „Richtlinie zur Verwendung von
+      inkl. Key-Management. C5 CRY-01 „Richtlinie zur Verwendung von
       Verschlüsselungsverfahren und Schlüsselverwaltung" verlangt
       identische Inhalte. Anlage A bestätigt direkte Entsprechung;
       beide referenzieren BSI TR-02102 als Algorithmen-Baseline.
-    cross_refs: ['KRY-02', 'KRY-03', 'KRY-04']
+    cross_refs: ['CRY-02', 'CRY-03', 'CRY-04']
     audit_evidence_hint: 'Krypto-Richtlinie, Algorithmen-Allowlist (BSI TR-02102 konform), Key-Management-Verfahren (HSM oder gleichwertig).'
 
   - source: 'A.5.15'
@@ -238,18 +238,18 @@ mappings:
     audit_evidence_hint: 'Berechtigungskonzept, Provisioning-Workflow-Auszüge, Stichprobe Joiner/Mover/Leaver der letzten 90 Tage.'
 
   - source: 'A.5.23'
-    target: 'BEI-04'
+    target: 'SSO-04'
     relationship: 'subset'
     confidence: 'medium'
     rationale: |
       A.5.23 „Information security for use of cloud services" verlangt
-      Cloud-Nutzungs-Regelungen aus Kunden-Sicht. C5 BEI-04
+      Cloud-Nutzungs-Regelungen aus Kunden-Sicht. C5 SSO-04
       „Anforderungen an Lieferanten" deckt Sub-Dienstleister-
       Anforderungen aus Anbieter-Sicht ab. Schnittmenge nur bei
       Sub-Provider-Pflichten; A.5.23 ist breiter (Cloud-Strategie,
       Exit-Strategie, Datenresidenz).
     gap_warning: |
-      Wer A.5.23 NUR über C5 BEI-04 nachweist, fehlen Cloud-Nutzungs-
+      Wer A.5.23 NUR über C5 SSO-04 nachweist, fehlen Cloud-Nutzungs-
       Strategie, Exit-Klauseln und Datenresidenz-Bewertung. Empfehlung:
       separater Cloud-Governance-Prozess auf Kundenseite (NICHT durch
       C5 abgedeckt — C5 ist Anbieter-Kriterienkatalog).
