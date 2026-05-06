@@ -1,3 +1,4 @@
+{% trans_default_domain 'mris' %}
 {#
   MRIS-Audit-Report (PDF)
 
@@ -12,19 +13,19 @@
 <html lang="de">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>MRIS-Audit-Report — {{ tenant_name }}</title>
+    <title>{{ 'mris.audit_report.title'|trans({}, 'mris') }} — {{ tenant_name }}</title>
     <style>
         @page {
             size: A4 portrait;
             margin: 2.2cm 1.8cm 2.6cm 1.8cm;
             @bottom-left {
-                content: "MRIS-Audit-Report · {{ tenant_name }}";
+                content: "{{ 'mris.audit_report.title'|trans({}, 'mris') }} · {{ tenant_name }}";
                 font-family: DejaVu Sans, sans-serif;
                 font-size: 7pt;
                 color: #333333;
             }
             @bottom-center {
-                content: "Quelle: {{ source_label }}";
+                content: "{{ 'mris.audit_report.footer_source'|trans({}, 'mris') }}: {{ source_label }}";
                 font-family: DejaVu Sans, sans-serif;
                 font-size: 7pt;
                 color: #333333;
@@ -194,56 +195,56 @@
 <body>
 
 {# === Cover / Meta ============================================== #}
-<h1>MRIS-Audit-Report</h1>
+<h1>{{ 'mris.audit_report.title'|trans({}, 'mris') }}</h1>
 <p class="small muted">
-    Mythos-resistente Informationssicherheit · v1.5 — Auditor-Ansicht
+    {{ 'mris.audit_report.subtitle'|trans({}, 'mris') }}
 </p>
 
 <div class="meta">
     <div class="meta-row">
-        <div class="meta-cell meta-label">Mandant:</div>
+        <div class="meta-cell meta-label">{{ 'mris.audit_report.meta.tenant'|trans({}, 'mris') }}:</div>
         <div class="meta-cell">{{ tenant_name }}</div>
     </div>
     <div class="meta-row">
-        <div class="meta-cell meta-label">Erstellt am:</div>
-        <div class="meta-cell">{{ generated_at|date('d.m.Y H:i') }} (lokal)</div>
+        <div class="meta-cell meta-label">{{ 'mris.audit_report.meta.created_at'|trans({}, 'mris') }}:</div>
+        <div class="meta-cell">{{ generated_at|date('d.m.Y H:i') }} {{ 'mris.audit_report.meta.local'|trans({}, 'mris') }}</div>
     </div>
     <div class="meta-row">
-        <div class="meta-cell meta-label">Erstellt von:</div>
+        <div class="meta-cell meta-label">{{ 'mris.audit_report.meta.created_by'|trans({}, 'mris') }}:</div>
         <div class="meta-cell">{{ generated_by }}</div>
     </div>
     <div class="meta-row">
-        <div class="meta-cell meta-label">Berichtstyp:</div>
-        <div class="meta-cell">Audit-Bericht (intern)</div>
+        <div class="meta-cell meta-label">{{ 'mris.audit_report.meta.report_type'|trans({}, 'mris') }}:</div>
+        <div class="meta-cell">{{ 'mris.audit_report.meta.report_type_value'|trans({}, 'mris') }}</div>
     </div>
     <div class="meta-row">
-        <div class="meta-cell meta-label">Quelle (CC BY 4.0):</div>
+        <div class="meta-cell meta-label">{{ 'mris.audit_report.meta.source_cc'|trans({}, 'mris') }}:</div>
         <div class="meta-cell">{{ source_label }}</div>
     </div>
 </div>
 
 {# === Section 1: MRI Score + Decomposition ===================== #}
-<h2>1. Mythos-Resilience-Indikator (MRI)</h2>
+<h2>{{ 'mris.audit_report.section_1'|trans({}, 'mris') }}</h2>
 
 <div class="disclaimer">
-    <strong>Audit-Disclaimer:</strong>
+    <strong>{{ 'mris.audit_report.disclaimer_label'|trans({}, 'mris') }}:</strong>
     {{ score.disclaimer }}
 </div>
 
 <div class="score-row">
     <div class="score-cell-left">
         <div class="score-value">{{ score.score }}</div>
-        <div class="score-label">MRI · 0–100 (intern)</div>
+        <div class="score-label">{{ 'mris.audit_report.score_label'|trans({}, 'mris') }}</div>
     </div>
     <div class="score-cell-right">
         <table>
             <thead>
                 <tr>
-                    <th style="width: 26%;">Dimension</th>
-                    <th style="width: 32%;">Quelle</th>
-                    <th class="num" style="width: 14%;">Wert</th>
-                    <th class="num" style="width: 14%;">Gewicht</th>
-                    <th class="num" style="width: 14%;">Beitrag</th>
+                    <th style="width: 26%;">{{ 'mris.audit_report.breakdown_col.dimension'|trans({}, 'mris') }}</th>
+                    <th style="width: 32%;">{{ 'mris.audit_report.breakdown_col.source'|trans({}, 'mris') }}</th>
+                    <th class="num" style="width: 14%;">{{ 'mris.audit_report.breakdown_col.value'|trans({}, 'mris') }}</th>
+                    <th class="num" style="width: 14%;">{{ 'mris.audit_report.breakdown_col.weight'|trans({}, 'mris') }}</th>
+                    <th class="num" style="width: 14%;">{{ 'mris.audit_report.breakdown_col.contribution'|trans({}, 'mris') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -262,19 +263,17 @@
 </div>
 
 {# === Section 2: 4-Kategorien-Verteilung ======================= #}
-<h2>2. Klassifikation der Controls (4 Kategorien)</h2>
+<h2>{{ 'mris.audit_report.section_2'|trans({}, 'mris') }}</h2>
 <p class="small muted">
-    Verteilung der Annex-A-Controls nach MRIS v1.5 Anhang A
-    (Standfest / Teilweise degradiert / Reine Reibung / Nicht betroffen).
-    Audit-relevant: Reine-Reibung-Controls erfordern flankierende MHCs.
+    {{ 'mris.audit_report.section_2_intro'|trans({}, 'mris') }}
 </p>
 
 <table>
     <thead>
         <tr>
-            <th style="width: 50%;">Kategorie</th>
-            <th class="num" style="width: 25%;">Anzahl</th>
-            <th class="num" style="width: 25%;">Anteil</th>
+            <th style="width: 50%;">{{ 'mris.audit_report.section_col.category'|trans({}, 'mris') }}</th>
+            <th class="num" style="width: 25%;">{{ 'mris.audit_report.section_col.count'|trans({}, 'mris') }}</th>
+            <th class="num" style="width: 25%;">{{ 'mris.audit_report.section_col.share'|trans({}, 'mris') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -286,7 +285,7 @@
             </tr>
         {% endfor %}
         <tr>
-            <td><strong>Gesamt</strong></td>
+            <td><strong>{{ 'mris.audit_report.section_col.total'|trans({}, 'mris') }}</strong></td>
             <td class="num"><strong>{{ category_distribution.total }}</strong></td>
             <td class="num"><strong>100,0 %</strong></td>
         </tr>
@@ -294,24 +293,21 @@
 </table>
 
 {# === Section 3: Reine-Reibung-Controls ======================== #}
-<h2>3. „Reine Reibung"-Controls mit flankierenden MHCs</h2>
+<h2>{{ 'mris.audit_report.section_3'|trans({}, 'mris') }}</h2>
 <p class="small muted">
-    Die folgenden Controls sind nach MRIS v1.5 als Reibung klassifiziert,
-    leisten also keinen direkten Schutzbeitrag im Mythos-Modell. Sie müssen
-    durch flankierende Mythos-Härtungs-Controls (MHCs) substituiert werden.
-    Standard-Begleitung gem. MRIS v1.5: A.5.25, A.5.36, A.8.8, A.8.23.
+    {{ 'mris.audit_report.section_3_intro'|trans({}, 'mris') }}
 </p>
 
 {% if friction_controls is empty %}
-    <p class="small"><em>Keine Controls als „Reine Reibung" klassifiziert (oder MRIS-Klassifikation noch nicht geseedet).</em></p>
+    <p class="small"><em>{{ 'mris.audit_report.section_3_empty'|trans({}, 'mris') }}</em></p>
 {% else %}
     <table>
         <thead>
             <tr>
-                <th style="width: 14%;">Control-ID</th>
-                <th style="width: 38%;">Name</th>
-                <th style="width: 12%;">Kategorie</th>
-                <th style="width: 36%;">Flankierende MHCs</th>
+                <th style="width: 14%;">{{ 'mris.audit_report.friction_col.control_id'|trans({}, 'mris') }}</th>
+                <th style="width: 38%;">{{ 'mris.audit_report.friction_col.name'|trans({}, 'mris') }}</th>
+                <th style="width: 12%;">{{ 'mris.audit_report.friction_col.category'|trans({}, 'mris') }}</th>
+                <th style="width: 36%;">{{ 'mris.audit_report.friction_col.flanking_mhcs'|trans({}, 'mris') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -322,7 +318,7 @@
                     <td class="small">{{ fc.category }}</td>
                     <td class="small">
                         {% if fc.flanking is empty %}
-                            <em class="muted">— keine eingetragen —</em>
+                            <em class="muted">{{ 'mris.audit_report.friction_col.none'|trans({}, 'mris') }}</em>
                         {% else %}
                             {% for mhc in fc.flanking %}
                                 <span class="badge">{{ mhc }}</span>{% if not loop.last %} {% endif %}
@@ -336,24 +332,23 @@
 {% endif %}
 
 {# === Section 4: Reifegrad-Statusübersicht aller MHCs ========== #}
-<h2>4. Reifegrad-Statusübersicht der MHCs (Soll / Ist / Delta)</h2>
+<h2>{{ 'mris.audit_report.section_4'|trans({}, 'mris') }}</h2>
 <p class="small muted">
-    Reifegrad-Tracking gem. MRIS v1.5 Kap. 9.5. Stufen: initial (1), defined (2), managed (3).
-    Delta &gt; 0 = Lücke zum Soll. Delta = 0 = on target. Delta &lt; 0 = Soll übererfüllt.
+    {{ 'mris.audit_report.section_4_intro'|trans({}, 'mris') }}
 </p>
 
 {% if maturity_rows is empty %}
-    <p class="small"><em>Keine MRIS-Requirements gefunden. Framework MRIS-v1.5 ggf. noch nicht geladen.</em></p>
+    <p class="small"><em>{{ 'mris.audit_report.section_4_empty'|trans({}, 'mris') }}</em></p>
 {% else %}
     <table>
         <thead>
             <tr>
-                <th style="width: 10%;">MHC</th>
-                <th style="width: 46%;">Titel</th>
-                <th style="width: 14%;">Soll</th>
-                <th style="width: 14%;">Ist</th>
-                <th class="num" style="width: 8%;">Δ</th>
-                <th style="width: 8%;">Status</th>
+                <th style="width: 10%;">{{ 'mris.audit_report.maturity_col.mhc'|trans({}, 'mris') }}</th>
+                <th style="width: 46%;">{{ 'mris.audit_report.maturity_col.title'|trans({}, 'mris') }}</th>
+                <th style="width: 14%;">{{ 'mris.audit_report.maturity_col.target'|trans({}, 'mris') }}</th>
+                <th style="width: 14%;">{{ 'mris.audit_report.maturity_col.actual'|trans({}, 'mris') }}</th>
+                <th class="num" style="width: 8%;">{{ 'mris.audit_report.maturity_col.delta'|trans({}, 'mris') }}</th>
+                <th style="width: 8%;">{{ 'mris.audit_report.maturity_col.status'|trans({}, 'mris') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -372,13 +367,13 @@
                     </td>
                     <td class="small">
                         {% if row.gap_status == 'gap' %}
-                            <span class="badge badge-inv">Lücke</span>
+                            <span class="badge badge-inv">{{ 'mris.audit_report.maturity_col.gap'|trans({}, 'mris') }}</span>
                         {% elseif row.gap_status == 'on_target' %}
-                            <span class="badge">on target</span>
+                            <span class="badge">{{ 'mris.audit_report.maturity_col.on_target'|trans({}, 'mris') }}</span>
                         {% elseif row.gap_status == 'exceeded' %}
-                            <span class="badge">übererfüllt</span>
+                            <span class="badge">{{ 'mris.audit_report.maturity_col.exceeded'|trans({}, 'mris') }}</span>
                         {% else %}
-                            <span class="badge muted">unset</span>
+                            <span class="badge muted">{{ 'mris.audit_report.maturity_col.unset'|trans({}, 'mris') }}</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -388,70 +383,66 @@
 {% endif %}
 
 {# === Section 5: AI-Agent-Inventar ============================ #}
-<h2>5. AI-Agent-Inventar (MHC-13 / EU AI Act / ISO 42001)</h2>
+<h2>{{ 'mris.audit_report.section_5'|trans({}, 'mris') }}</h2>
 <p class="small muted">
-    Aggregat-Sicht über das AI-Agent-Inventar. Doku-Vollständigkeit referenziert
-    die 9 EU-AI-Act / ISO-42001 / MHC-13-Pflichtfelder pro Agent.
+    {{ 'mris.audit_report.section_5_intro'|trans({}, 'mris') }}
 </p>
 
 <table>
     <thead>
         <tr>
-            <th style="width: 60%;">Kennzahl</th>
-            <th class="num" style="width: 40%;">Wert</th>
+            <th style="width: 60%;">{{ 'mris.audit_report.ai_col.metric'|trans({}, 'mris') }}</th>
+            <th class="num" style="width: 40%;">{{ 'mris.audit_report.ai_col.value'|trans({}, 'mris') }}</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>AI-Agents gesamt</td>
+            <td>{{ 'mris.audit_report.ai_col.total'|trans({}, 'mris') }}</td>
             <td class="num">{{ ai_inventory.total }}</td>
         </tr>
         <tr>
-            <td>Davon prohibited (EU AI Act Art. 5)</td>
+            <td>{{ 'mris.audit_report.ai_col.prohibited'|trans({}, 'mris') }}</td>
             <td class="num">{{ ai_inventory.by_classification.prohibited|default(0) }}</td>
         </tr>
         <tr>
-            <td>Davon high_risk (EU AI Act Art. 6)</td>
+            <td>{{ 'mris.audit_report.ai_col.high_risk'|trans({}, 'mris') }}</td>
             <td class="num">{{ ai_inventory.by_classification.high_risk|default(0) }}</td>
         </tr>
         <tr>
-            <td>Davon limited_risk (EU AI Act Art. 50)</td>
+            <td>{{ 'mris.audit_report.ai_col.limited_risk'|trans({}, 'mris') }}</td>
             <td class="num">{{ ai_inventory.by_classification.limited_risk|default(0) }}</td>
         </tr>
         <tr>
-            <td>Davon minimal_risk</td>
+            <td>{{ 'mris.audit_report.ai_col.minimal_risk'|trans({}, 'mris') }}</td>
             <td class="num">{{ ai_inventory.by_classification.minimal_risk|default(0) }}</td>
         </tr>
         <tr>
-            <td>Unklassifiziert (Audit-Befund: Klassifikation fehlt)</td>
+            <td>{{ 'mris.audit_report.ai_col.unclassified'|trans({}, 'mris') }}</td>
             <td class="num">{{ ai_inventory.unclassified }}</td>
         </tr>
         <tr>
-            <td><strong>Doku-Vollständigkeit (Mittel über alle Agenten)</strong></td>
+            <td><strong>{{ 'mris.audit_report.ai_col.avg_completeness'|trans({}, 'mris') }}</strong></td>
             <td class="num"><strong>{{ ai_inventory.avg_completeness }} %</strong></td>
         </tr>
     </tbody>
 </table>
 
 {# === Section 6: 8 MRIS-KPIs ================================== #}
-<h2 class="pagebreak">6. Mythos-relevante Kennzahlen (MRIS Kap. 10.6)</h2>
+<h2 class="pagebreak">{{ 'mris.audit_report.section_6'|trans({}, 'mris') }}</h2>
 <p class="small muted">
-    Acht Kennzahlen gem. MRIS v1.5 Kap. 10.6. Drei sind aus Bestandsdaten
-    automatisch berechenbar (MTTC, Phishing-resistente MFA, Restore-Test-Erfolgsquote)
-    und enthalten — sofern vorhanden — eine Sparkline der letzten 90 Tage.
-    Fünf werden manuell gepflegt (CRA-, KEV-, CCM-, Krypto-Inventar-, TLPT-Bezug).
+    {{ 'mris.audit_report.section_6_intro'|trans({}, 'mris') }}
 </p>
 
 <table>
     <thead>
         <tr>
-            <th style="width: 8%;">MHC</th>
-            <th style="width: 30%;">Kennzahl</th>
-            <th class="num" style="width: 12%;">Wert</th>
-            <th style="width: 6%;">Einheit</th>
-            <th style="width: 8%;">Typ</th>
-            <th style="width: 16%;">Trend (90 d)</th>
-            <th style="width: 20%;">Quelle</th>
+            <th style="width: 8%;">{{ 'mris.audit_report.kpi_col.mhc'|trans({}, 'mris') }}</th>
+            <th style="width: 30%;">{{ 'mris.audit_report.kpi_col.metric'|trans({}, 'mris') }}</th>
+            <th class="num" style="width: 12%;">{{ 'mris.audit_report.kpi_col.value'|trans({}, 'mris') }}</th>
+            <th style="width: 6%;">{{ 'mris.audit_report.kpi_col.unit'|trans({}, 'mris') }}</th>
+            <th style="width: 8%;">{{ 'mris.audit_report.kpi_col.type'|trans({}, 'mris') }}</th>
+            <th style="width: 16%;">{{ 'mris.audit_report.kpi_col.trend'|trans({}, 'mris') }}</th>
+            <th style="width: 20%;">{{ 'mris.audit_report.kpi_col.source'|trans({}, 'mris') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -471,9 +462,9 @@
                 <td class="small">{{ kpi.unit }}</td>
                 <td class="small">
                     {% if kpi.computable %}
-                        <span class="badge badge-inv">auto</span>
+                        <span class="badge badge-inv">{{ 'mris.audit_report.kpi_col.auto'|trans({}, 'mris') }}</span>
                     {% else %}
-                        <span class="badge">manuell</span>
+                        <span class="badge">{{ 'mris.audit_report.kpi_col.manual'|trans({}, 'mris') }}</span>
                     {% endif %}
                 </td>
                 <td>
@@ -504,27 +495,25 @@
 
 {# === Section 7: Signature ==================================== #}
 <div class="signature">
-    <h3 style="margin-top: 0;">Erstellungs-Vermerk</h3>
+    <h3 style="margin-top: 0;">{{ 'mris.audit_report.signature.title'|trans({}, 'mris') }}</h3>
     <p class="small">
-        Dieser MRIS-Audit-Report wurde am
-        <strong>{{ generated_at|date('d.m.Y') }}</strong> um
-        <strong>{{ generated_at|date('H:i') }}</strong> Uhr durch
-        <strong>{{ generated_by }}</strong> für den Mandanten
-        <strong>{{ tenant_name }}</strong> erstellt.
+        {{ 'mris.audit_report.signature.text'|trans({
+            '%date%': generated_at|date('d.m.Y'),
+            '%time%': generated_at|date('H:i'),
+            '%user%': generated_by,
+            '%tenant%': tenant_name
+        }, 'mris') }}
     </p>
     <p class="small muted">
-        Die Inhalte entsprechen dem zum Erstellungszeitpunkt im System hinterlegten
-        Datenstand. Audit-relevant sind die Einzeldimensionen
-        (4-Kategorien-Klassifikation, MHC-Reifegrad, manuelle KPIs, AI-Agent-Doku),
-        nicht der aggregierte MRI-Score.
+        {{ 'mris.audit_report.signature.note'|trans({}, 'mris') }}
     </p>
     <div class="signature-line">
-        Unterschrift Erstellender / Auditor: ____________________________________________
+        {{ 'mris.audit_report.signature.signature_line'|trans({}, 'mris') }}
     </div>
 </div>
 
 <div class="footer-source">
-    Quelle: {{ source_label }}
+    {{ 'mris.audit_report.footer_source'|trans({}, 'mris') }}: {{ source_label }}
 </div>
 
 </body>
