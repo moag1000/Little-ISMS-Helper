@@ -64,7 +64,7 @@
     padding: 4px 10px 4px 8px;
     background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: var(--r-sm);
     color: var(--fg);
     font-size: 12px;
     line-height: 1;
@@ -88,7 +88,7 @@
 .fa-framework-lockup--lg {
     padding: 8px 14px 8px 12px;
     font-size: 14px;
-    border-radius: 8px;
+    border-radius: var(--r-lg);
 }
 .fa-framework-lockup--lg .fa-icon {
     font-size: 20px;

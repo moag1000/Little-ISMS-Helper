@@ -8,7 +8,7 @@
    ==================== */
 .risk-score {
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: var(--r-lg);
     text-align: center;
     font-size: 1.5rem;
     font-weight: bold;
@@ -1241,28 +1241,28 @@
 .mapping-card {
     text-align: center;
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: var(--r-lg);
 }
 
 .mapping-card-success {
     text-align: center;
     padding: 1rem;
     background: var(--success-glow);
-    border-radius: 8px;
+    border-radius: var(--r-lg);
 }
 
 .mapping-card-warning {
     text-align: center;
     padding: 1rem;
     background: var(--warning-glow);
-    border-radius: 8px;
+    border-radius: var(--r-lg);
 }
 
 .mapping-card-alt {
     text-align: center;
     padding: 1rem;
     background: var(--surface-2);
-    border-radius: 8px;
+    border-radius: var(--r-lg);
 }
 
 .details-padding {
@@ -1328,28 +1328,28 @@
 .legend-item {
     width: 30px;
     height: 20px;
-    border-radius: 4px;
+    border-radius: var(--r-sm);
 }
 
 .legend-success {
     width: 30px;
     height: 20px;
     background: var(--success);
-    border-radius: 4px;
+    border-radius: var(--r-sm);
 }
 
 .legend-warning {
     width: 30px;
     height: 20px;
     background: var(--warning);
-    border-radius: 4px;
+    border-radius: var(--r-sm);
 }
 
 .legend-danger {
     width: 30px;
     height: 20px;
     background: var(--danger);
-    border-radius: 4px;
+    border-radius: var(--r-sm);
 }
 
 .text-center-italic-margin {
@@ -1465,7 +1465,7 @@
 
 .progress-bar-bg {
     height: 10px;
-    border-radius: 5px;
+    border-radius: var(--r-sm);
     background: var(--surface-2);
 }
 
@@ -1597,7 +1597,7 @@
 .chart-legend-color {
     width: 14px;
     height: 14px;
-    border-radius: 3px;
+    border-radius: var(--r-sm);
     flex-shrink: 0;
 }
 
@@ -1949,7 +1949,7 @@
 .box-bg-alt-p-075-rounded-mb {
     background: var(--surface-2);
     padding: 0.75rem;
-    border-radius: 4px;
+    border-radius: var(--r-sm);
     margin-bottom: 1rem;
 }
 
@@ -1959,7 +1959,7 @@
     gap: 2rem;
     padding: 1rem;
     background: var(--surface-2);
-    border-radius: 8px;
+    border-radius: var(--r-lg);
 }
 
 /* Badge/Progress styles */
@@ -1970,7 +1970,7 @@
     font-weight: 700;
     background: var(--bg);
     color: var(--fg-3);
-    border-radius: 4px;
+    border-radius: var(--r-sm);
     border: 2px dashed var(--border);
 }
 
@@ -1979,7 +1979,7 @@
     max-width: 100px;
     height: 8px;
     background: var(--surface-2);
-    border-radius: 4px;
+    border-radius: var(--r-sm);
     overflow: hidden;
 }
 
@@ -2156,7 +2156,7 @@
     margin: 2rem 0;
     padding: 1rem;
     background: var(--bg);
-    border-radius: 4px;
+    border-radius: var(--r-sm);
 }
 
 /* Dark Mode - Filter Container */

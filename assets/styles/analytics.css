@@ -99,7 +99,7 @@
 .analytics-card {
     margin-bottom: 20px;
     border: 2px solid var(--primary-tint);
-    border-radius: 12px;
+    border-radius: var(--r-xl);
     box-shadow: var(--shadow-sm), 0 0 15px var(--primary-tint);
     background: var(--surface);
     overflow: hidden;
@@ -170,7 +170,7 @@
     margin-bottom: 20px;
     padding: 15px;
     background: var(--surface-2);
-    border-radius: 8px;
+    border-radius: var(--r-lg);
 }
 
 .legend-item {
@@ -180,7 +180,7 @@
     padding: 0.5rem 1rem;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: var(--r-sm);
     white-space: nowrap;
     box-shadow: 0 1px 2px rgb(0, 0, 0, 0.05); /* design-spec: analytics card/row ultra-faint shadow */
 }
@@ -188,7 +188,7 @@
 .legend-color {
     width: 20px;
     height: 20px;
-    border-radius: 3px;
+    border-radius: var(--r-sm);
     border: 1px solid rgb(0, 0, 0, 0.1); /* design-spec: analytics chart border hairline tint */
     flex-shrink: 0;
 }
@@ -269,7 +269,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: var(--r-lg);
     cursor: pointer;
     transition: all 0.2s;
     border: 2px solid transparent;
@@ -309,7 +309,7 @@
     width: 300px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--r-lg);
     box-shadow: var(--shadow-lg);
     z-index: var(--z-popover); /* local stacking-context (heat-map cell hover) */
 }
@@ -344,7 +344,7 @@
     padding: 10px;
     margin-bottom: 8px;
     background: var(--surface-2);
-    border-radius: 6px;
+    border-radius: var(--r-sm);
     transition: background 0.2s;
 }
 
@@ -380,7 +380,7 @@
     display: inline-block;
     padding: 20px 40px;
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-    border-radius: 12px;
+    border-radius: var(--r-xl);
     color: var(--on-primary);
     margin-bottom: 20px;
     box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint), var(--shadow-lg);
@@ -427,7 +427,7 @@
 
 .trend-tabs .nav-link {
     padding: 10px 20px;
-    border-radius: 8px;
+    border-radius: var(--r-lg);
     transition: all 0.2s;
 }
 
@@ -465,7 +465,7 @@
     justify-content: space-around;
     padding: 20px;
     background: var(--surface-2);
-    border-radius: 8px;
+    border-radius: var(--r-lg);
 }
 
 .stat-item {
@@ -566,7 +566,7 @@
     padding: 15px;
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--r-lg);
     width: 100%;
 }
 
@@ -578,7 +578,7 @@
     padding: 0.5rem 1rem;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: var(--r-sm);
     white-space: nowrap;
     position: relative;
     box-shadow: 0 1px 2px rgb(0, 0, 0, 0.05); /* design-spec: analytics card/row ultra-faint shadow */
@@ -593,7 +593,7 @@
     display: inline-block;
     flex-shrink: 0;
     flex-grow: 0;
-    border-radius: 3px;
+    border-radius: var(--r-sm);
     border: 1px solid rgb(0, 0, 0, 0.1); /* design-spec: analytics chart border hairline tint */
     position: static;
 }
@@ -676,7 +676,7 @@
     z-index: var(--z-popover);
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--r-lg);
     padding: 12px 16px;
     box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), /* design-spec: analytics animated KPI composite with glow */
                 0 0 20px var(--primary-tint);
@@ -718,7 +718,7 @@
 .heat-map-tooltip .badge {
     font-size: 0.75rem;
     padding: 2px 8px;
-    border-radius: 4px;
+    border-radius: var(--r-sm);
     font-weight: 600;
 }
 
@@ -957,7 +957,7 @@
 .heat-map-details .risk-item-enhanced {
     background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--r-lg);
     padding: 12px 15px;
     transition: all 0.2s ease;
 }

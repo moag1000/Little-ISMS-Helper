@@ -65,7 +65,7 @@ body:has(.fa-alva-dock--pos-bottom-left) .keyboard-shortcuts-trigger {
 /* Container - Cyberpunk Fairy */
 .keyboard-shortcuts-container {
     background: var(--surface);
-    border-radius: 12px;
+    border-radius: var(--r-xl);
     box-shadow: 0 20px 60px rgb(0, 0, 0, 0.4), 0 0 40px var(--primary-glow); /* design-spec: keyboard shortcuts overlay premium shadow with glow */
     border: 2px solid var(--primary);
     width: 900px;
@@ -112,7 +112,7 @@ body:has(.fa-alva-dock--pos-bottom-left) .keyboard-shortcuts-trigger {
     border: none;
     width: 32px;
     height: 32px;
-    border-radius: 6px;
+    border-radius: var(--r-sm);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -189,7 +189,7 @@ body:has(.fa-alva-dock--pos-bottom-left) .keyboard-shortcuts-trigger {
 kbd {
     background: linear-gradient(to bottom, var(--surface), var(--bg));
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: var(--r-sm);
     box-shadow: 0 2px 0 rgb(0, 0, 0, 0.1); /* design-spec: keycap underside press effect */
     padding: 4px 8px;
     font-size: 12px;
@@ -237,7 +237,7 @@ kbd {
 
 .keyboard-shortcuts-content::-webkit-scrollbar-thumb {
     background: var(--border);
-    border-radius: 4px;
+    border-radius: var(--r-sm);
 }
 
 .keyboard-shortcuts-content::-webkit-scrollbar-thumb:hover {
