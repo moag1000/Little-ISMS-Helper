@@ -7,10 +7,12 @@ namespace App\Tests\AlvaHint;
 use App\AlvaHint\AlvaHint;
 use App\AlvaHint\AlvaHintRuleInterface;
 use App\AlvaHint\AlvaHintService;
+use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\AlvaHintDismissalRepository;
 use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -39,7 +41,7 @@ class AlvaHintServiceTest extends TestCase
     #[Test]
     public function picksLowestTierHintAmongCandidates(): void
     {
-        $tier1 = $this->dummyHint('regulatory', 1);
+        $tier1 = $this->dummyHint('regulatory', 1, dismissible: false);
         $tier3 = $this->dummyHint('efficiency', 3);
         $service = $this->buildService(rules: [
             $this->buildRule('efficiency', 3, true, [], $tier3),
@@ -95,21 +97,81 @@ class AlvaHintServiceTest extends TestCase
         $this->assertSame('incident.gdpr_72h', $service->pickHintFor(new \stdClass())?->key);
     }
 
+    #[Test]
+    public function tier1HintMustNotBeDismissible(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        new AlvaHint(
+            key: 'incident.gdpr_72h',
+            titleTranslationKey: 'tests.title',
+            bodyTranslationKey: 'tests.body',
+            priorityTier: 1,
+            dismissible: true,
+        );
+    }
+
+    #[Test]
+    public function ruleIsSkippedWhenUserLacksRequiredRole(): void
+    {
+        $hint = $this->dummyHint(
+            'mapping.import',
+            3,
+            requiredRoles: ['ROLE_MANAGER'],
+        );
+
+        $security = $this->createMock(Security::class);
+        $security->method('getUser')->willReturn(new User());
+        $security->method('isGranted')->willReturnMap([
+            ['ROLE_MANAGER', null, false],
+        ]);
+
+        $repo = $this->createMock(AlvaHintDismissalRepository::class);
+        $repo->method('findActiveDismissedTokensForUser')->willReturn([]);
+        $modules = $this->createMock(ModuleConfigurationService::class);
+        $modules->method('getActiveModules')->willReturn([]);
+
+        $service = new AlvaHintService(
+            $security,
+            $repo,
+            $this->createMock(EntityManagerInterface::class),
+            $modules,
+            [$this->buildRule('mapping.import', 3, true, [], $hint)],
+        );
+
+        $this->assertNull($service->pickHintFor(new \stdClass()));
+    }
+
+    #[Test]
+    public function sameHintKeyIsEmittedOnlyOncePerRequest(): void
+    {
+        $hint = $this->dummyHint('asset.review', 3, entityType: 'Asset', entityId: 1);
+        $service = $this->buildService(rules: [
+            $this->buildRule('asset.review', 3, true, [], $hint),
+        ]);
+
+        $this->assertNotNull($service->pickHintFor(new \stdClass()));
+        $this->assertNull($service->pickHintFor(new \stdClass()));
+    }
+
     /**
      * @param list<AlvaHintRuleInterface> $rules
-     * @param list<string> $activeModules
-     * @param list<string> $dismissedTokens
+     * @param list<string>                $activeModules
+     * @param list<string>                $dismissedTokens
      */
     private function buildService(
         array $rules = [],
         array $activeModules = ['assets', 'risks', 'controls', 'incidents'],
         array $dismissedTokens = [],
     ): AlvaHintService {
+        $user = new User();
+        $user->setTenant(new Tenant());
+
         $security = $this->createMock(Security::class);
-        $security->method('getUser')->willReturn(new User());
+        $security->method('getUser')->willReturn($user);
+        $security->method('isGranted')->willReturn(true);
 
         $repo = $this->createMock(AlvaHintDismissalRepository::class);
-        $repo->method('findDismissedTokensForUser')->willReturn($dismissedTokens);
+        $repo->method('findActiveDismissedTokensForUser')->willReturn($dismissedTokens);
 
         $em = $this->createMock(EntityManagerInterface::class);
 
@@ -142,12 +204,16 @@ class AlvaHintServiceTest extends TestCase
         };
     }
 
+    /**
+     * @param list<string> $requiredRoles
+     */
     private function dummyHint(
         string $key,
         int $tier = 3,
         string $entityType = '',
         int $entityId = 0,
         bool $dismissible = true,
+        array $requiredRoles = [],
     ): AlvaHint {
         return new AlvaHint(
             key: $key,
@@ -157,6 +223,7 @@ class AlvaHintServiceTest extends TestCase
             dismissible: $dismissible,
             entityType: $entityType,
             entityId: $entityId,
+            requiredRoles: $requiredRoles,
         );
     }
 }
