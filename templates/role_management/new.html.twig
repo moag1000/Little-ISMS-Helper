@@ -1,59 +1,52 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'role_management' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'role_management.title.create'|trans({}, 'role_management')}} - Little ISMS Helper{% endblock %}
 
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('role_management_index') }}">{{ 'nav.roles'|trans({}, 'nav') }}</a></li>
+    <li class="breadcrumb-item active">{{ 'role_management.title.create'|trans({}, 'role_management') }}</li>
+{% endblock %}
+
 {% block admin_content %}
-<div class="container">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
-            { label: 'nav.roles'|trans({}, 'nav'), url: path('role_management_index') },
-            { label: 'role_management.title.create'|trans({}, 'role_management')}
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-lock', label: 'role_management.title.create'|trans({}, 'role_management') },
+        title: 'role_management.title.create'|trans({}, 'role_management'),
+        actions: [
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('role_management_index') }
         ]
-    } %}
-</div>
+    }) }}
 
-<div class="page-header">
-    <div>
-        <h1>{{ 'role_management.title.create'|trans({}, 'role_management')}}</h1>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('role_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
-        </a>
-    </div>
-</div>
+    <section class="fa-section">
+        <div class="fa-section__body">
+            {{ form_start(form, {'action': path('role_management_new')}) }}
 
-{% embed '_components/_card.html.twig' %}
-    {% block card_body %}
-        {{ form_start(form, {'action': path('role_management_new')}) }}
-
-            {% include '_components/_auto_form.html.twig' with {
-                'form': form,
-                'sections': {
-                    'basic_info': {
-                        'label': 'role_management.section.basic_info'|trans({}, 'role_management'),
-                        'fields': ['name', 'description', 'isSystemRole']
+                {% include '_components/_auto_form.html.twig' with {
+                    'form': form,
+                    'sections': {
+                        'basic_info': {
+                            'label': 'role_management.section.basic_info'|trans({}, 'role_management'),
+                            'fields': ['name', 'description', 'isSystemRole']
+                        },
+                        'permissions': {
+                            'label': 'role_management.section.permissions'|trans({}, 'role_management'),
+                            'fields': ['permissions']
+                        }
                     },
-                    'permissions': {
-                        'label': 'role_management.section.permissions'|trans({}, 'role_management'),
-                        'fields': ['permissions']
-                    }
-                },
-                'translation_domain': 'role_management'
-            } %}
+                    'translation_domain': 'role_management'
+                } %}
 
-            <div class="d-flex gap-2 mt-4">
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
-                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'common.create'|trans({}, 'messages') }}
-                </button>
-                <a href="{{ path('role_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
-                </a>
-            </div>
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
+                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'common.create'|trans({}, 'messages') }}
+                    </button>
+                    <a href="{{ path('role_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                        <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+                    </a>
+                </div>
 
-        {{ form_end(form) }}
-    {% endblock %}
-{% endembed %}
+            {{ form_end(form) }}
+        </div>
+    </section>
 {% endblock admin_content %}

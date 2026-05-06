@@ -1,16 +1,22 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'role.templates.title'|trans({}, 'role_management') }}{% endblock %}
 
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('role_management_index') }}">{{ 'nav.roles'|trans({}, 'nav') }}</a></li>
+    <li class="breadcrumb-item active">{{ 'role.templates.title'|trans({}, 'role_management') }}</li>
+{% endblock %}
+
 {% block admin_content %}
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="fa-icon fa-icon--policy" aria-hidden="true"></i> {{ 'role.templates.title'|trans({}, 'role_management') }}</h1>
-        <a href="{{ path('role_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'collection', label: 'role.templates.title'|trans({}, 'role_management') },
+        title: 'role.templates.title'|trans({}, 'role_management'),
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('role_management_index') }
+        ]
+    }) }}
 
     {# Description #}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-4' } } %}
@@ -27,31 +33,29 @@
     <div class="row">
         {% for key, template in templates %}
             <div class="col-md-6 col-lg-4 mb-4">
-                {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary' } %}
-                    {% block card_header %}
-                        <div class="card-header">
-                            <h2 class="mb-0 h3">
-                                {% if key == 'auditor' %}
-                                    <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
-                                {% elseif key == 'risk_manager' %}
-                                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                                {% elseif key == 'compliance_officer' %}
-                                    <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i>
-                                {% elseif key == 'incident_manager' %}
-                                    <i class="fa-icon fa-icon--nav-shield-alert" aria-hidden="true"></i>
-                                {% elseif key == 'asset_manager' %}
-                                    <i class="fa-icon fa-icon--nav-hdd" aria-hidden="true"></i>
-                                {% elseif key == 'readonly' %}
-                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                {% endif %}
-                                {{ template.name }}
-                            </h2>
-                        </div>
-                    {% endblock %}
-                    {% block card_body %}
-                        <p class="card-text">{{ template.description }}</p>
+                <section class="fa-section h-100">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">
+                            {% if key == 'auditor' %}
+                                <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
+                            {% elseif key == 'risk_manager' %}
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                            {% elseif key == 'compliance_officer' %}
+                                <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i>
+                            {% elseif key == 'incident_manager' %}
+                                <i class="fa-icon fa-icon--nav-shield-alert" aria-hidden="true"></i>
+                            {% elseif key == 'asset_manager' %}
+                                <i class="fa-icon fa-icon--nav-hdd" aria-hidden="true"></i>
+                            {% elseif key == 'readonly' %}
+                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                            {% endif %}
+                            {{ template.name }}
+                        </h2>
+                    </div>
+                    <div class="fa-section__body">
+                        <p>{{ template.description }}</p>
 
-                        <h3 class="mt-3 mb-2 h4">Berechtigungen:</h3>
+                        <h3 class="h6 mt-3 mb-2">Berechtigungen:</h3>
                         <div class="permissions-list" style="max-height: 200px; overflow-y: auto;">
                             {% for permission in template.permissions %}
                                 <div class="mb-1">
@@ -61,20 +65,18 @@
                         </div>
 
                         <div class="mt-3">
-                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: template.permissions|length ~ ' Berechtigungen' } %}
+                            <span class="badge bg-secondary">{{ template.permissions|length }} Berechtigungen</span>
                         </div>
-                    {% endblock %}
-                    {% block card_footer %}
-                        <div class="card-footer">
-                            <button type="button"
-                                    class="fa-cyber-btn fa-cyber-btn--primary w-100"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#templateModal{{ key }}">
-                                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> Vorlage verwenden
-                            </button>
-                        </div>
-                    {% endblock %}
-                {% endembed %}
+                    </div>
+                    <div class="fa-section__footer">
+                        <button type="button"
+                                class="fa-cyber-btn fa-cyber-btn--primary w-100"
+                                data-bs-toggle="modal"
+                                data-bs-target="#templateModal{{ key }}">
+                            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> Vorlage verwenden
+                        </button>
+                    </div>
+                </section>
             </div>
 
             {# Modal for template application #}
@@ -146,7 +148,6 @@
         </ul>
         {% endblock %}
     {% endembed %}
-</div>
 
 <style>
 .permissions-list {
