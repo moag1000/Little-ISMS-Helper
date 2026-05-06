@@ -2,12 +2,13 @@
 /**
  * Reusable Badge Component
  *
- * @param string variant - Badge color variant (primary|secondary|success|danger|warning|info|light|dark)
+ * @param string variant - Badge color variant (primary|secondary|success|danger|warning|info|light|dark|severity)
+ * @param string|null severity - When variant='severity', maps critical|high|medium|low → danger|warning|info|success
  * @param string|null size - Badge size (sm|lg|null for default)
  * @param string|null icon - Bootstrap icon class (optional, e.g., 'bi-check-circle')
  * @param string|null class - Additional CSS classes
  * @param string|null title - Tooltip text for accessibility
- * @param boolean pill - Whether to use pill shape (default: false)
+ * @param boolean pill - Whether to use pill shape (default: false, DEPRECATED — Aurora pills always pill-shaped)
  * @param string content - Badge text content (can be passed as block or parameter)
  */
 #}
@@ -17,6 +18,17 @@
 {% set additionalClass = class|default('') %}
 {% set title = title|default(null) %}
 {% set pill = pill|default(false) %}
+
+{# Severity-Mapping (per ROADMAP Phase 5):
+   critical → danger, high → warning, medium → info, low → success #}
+{% if variant == 'severity' and severity is defined and severity %}
+    {% set variant = {
+        'critical': 'danger',
+        'high':     'warning',
+        'medium':   'info',
+        'low':      'success'
+    }[severity]|default('secondary') %}
+{% endif %}
 
 {# Build CSS classes
    Aurora-bridge: emits both Bootstrap-compat (.badge.bg-*) and Aurora-native
