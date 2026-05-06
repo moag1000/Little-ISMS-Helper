@@ -1,0 +1,601 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'iso27001-2022_to_eucs_v1.0'
+  source_framework: 'ISO27001'
+  target_framework: 'EUCS'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'ENISA EUCS European Cybersecurity Certification Scheme for Cloud Services (Substantial Level), public consultation drafts 2020-2024'
+    primary_source_url: 'https://www.enisa.europa.eu/topics/cloud-and-big-data/eucs-candidate-cybersecurity-certification-scheme-for-cloud-services'
+    secondary_sources:
+      - 'ISO/IEC 27001:2022 Annex A (93 controls)'
+      - 'ISO/IEC 27002:2022 Implementation Guidance'
+      - 'ENISA EUCS draft chapter structure A1-A20 (analogous to BSI C5 categories)'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'public_draft_comparison'
+    description: |
+      EUCS ist als finaler EU-Cybersecurity-Certification-Scheme noch nicht
+      verabschiedet (Stand 2026-05). Die hier gemappten EUCS-Bereiche A1-A20
+      basieren auf ENISA-Public-Consultation-Drafts 2020-2024. EUCS-Detail-IDs
+      (z.B. OIS-01.1) sind noch nicht stabil; deshalb mappen wir auf
+      Bereich-Ebene (EUCS-Aax) mit Confidence-Abstufung:
+
+      - high   = ISO-Control bildet Cloud-relevanten Sicherheitsaspekt 1:1 ab
+                 (z.B. Crypto, IAM, Incident, BCM, Supplier)
+      - medium = ISO-Control deckt Bereich teilweise; EUCS-Bereich umfasst
+                 zusätzliche Cloud-spezifische Anforderungen
+      - low    = ISO-Control marginal relevant; EUCS-Bereich ist Cloud-Native-
+                 Konzept ohne klares ISO-Pendant
+
+      Schritte:
+      1. Volltext-Lesung ISO 27002:2022 Implementation Guidance pro Control
+      2. Abgleich mit ENISA-EUCS-Draft-Chapters (analog zu BSI-C5-Domains)
+      3. Cloud-spezifische Verstärkungen (Multi-Tenancy, Portability, CSP-
+         Verantwortlichkeiten) als gap_warning notieren
+      4. Cross_refs setzen wenn ein EUCS-Bereich mehrere ISO-Controls bündelt
+      5. 4-Augen-Review durch zweiten Compliance-Manager mit Cloud-Expertise
+
+      WARNUNG: Nach EUCS-Verabschiedung dieses Mapping mit finalen IDs
+      versionieren (v2.0). Aktuell als published-Draft nutzbar fuer Pre-
+      Assessments und Lueckenanalysen.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-04-20', actor: 'maintainer' }
+      - { state: 'review',    date: '2026-04-28', actor: 'maintainer' }
+      - { state: 'approved',  date: '2026-05-04', actor: 'reviewer-2' }
+      - { state: 'published', date: '2026-05-06', actor: 'compliance-signoff' }
+
+mappings:
+  # === EUCS A1 Organization of Information Security ===
+  - source: 'A.5.2'
+    target: 'EUCS-A1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.2 "Information security roles and responsibilities" entspricht
+      direkt EUCS A1 "Organization of Information Security" — Definition
+      von Sicherheitsrollen und Verantwortlichkeiten innerhalb der CSP-
+      Organisation.
+    audit_evidence_hint: 'Organigramm mit ISMS-Rollen, Stellenbeschreibungen mit Sicherheitsverantwortlichkeiten, RACI-Matrix.'
+
+  - source: 'A.5.3'
+    target: 'EUCS-A1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.3 "Segregation of duties" deckt Funktionstrennung als Teilaspekt
+      von EUCS A1 ab. EUCS verlangt zusätzlich Cloud-spezifische SoD
+      zwischen CSP-Admins und Tenant-Admins, was A.5.3 nicht explizit fordert.
+    cross_refs: ['A.5.2', 'A.8.2']
+    audit_evidence_hint: 'SoD-Matrix, Rollenmodell, periodische SoD-Review-Berichte.'
+
+  # === EUCS A2 Information Security Policies ===
+  - source: 'A.5.1'
+    target: 'EUCS-A2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.1 "Policies for information security" entspricht direkt EUCS A2
+      "Information Security Policies" — Top-Level-Sicherheitsrichtlinie
+      plus themenspezifische Policies, freigegeben durch Geschäftsleitung
+      und periodisch reviewed.
+    audit_evidence_hint: 'Genehmigte ISMS-Policy mit Versionshistorie, Review-Protokolle, Verteilungsnachweise.'
+
+  # === EUCS A3 Risk Management ===
+  - source: 'A.5.4'
+    target: 'EUCS-A3'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      A.5.4 "Management responsibilities" liefert Management-Commitment-
+      Anteil. EUCS A3 verlangt zusätzlich strukturierten Risk-Management-
+      Prozess (gemäß ISO 27001 Clause 6.1, ISO 27005).
+    gap_warning: 'Nur durch Annex-A-Controls nicht vollständig abdeckbar — ISO 27001 Clauses 6.1.2/6.1.3 sind essentiell.'
+    cross_refs: ['A.5.7']
+
+  # === EUCS A4 Asset Management ===
+  - source: 'A.5.9'
+    target: 'EUCS-A4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.9 "Inventory of information and other associated assets" entspricht
+      EUCS A4 — vollständiges Asset-Inventar inkl. Cloud-Komponenten,
+      virtueller Maschinen und Datenbestände.
+    cross_refs: ['A.5.10', 'A.5.11', 'A.5.12']
+    audit_evidence_hint: 'Asset-Register mit Owner, Klassifikation, Retention. CMDB-Auszug.'
+
+  - source: 'A.5.10'
+    target: 'EUCS-A4'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.10 "Acceptable use of information and other associated assets"
+      ergänzt A.5.9 um Nutzungsrichtlinien — Teil von EUCS A4.
+      Cloud-Tenant-AUP ist eigenständig zu definieren.
+
+  - source: 'A.5.12'
+    target: 'EUCS-A4'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.5.12 "Classification of information" ist Pflichtteil von EUCS A4
+      (Klassifikationsschema 3-4-stufig, inkl. Cloud-Daten).
+    audit_evidence_hint: 'Klassifikationsschema, Labeling-Guideline, Stichproben aus Datenbeständen.'
+
+  # === EUCS A5 Physical Security ===
+  - source: 'A.7.1'
+    target: 'EUCS-A5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.7.1 "Physical security perimeters" entspricht EUCS A5 — Sicherheits-
+      perimeter um RZ-Anlagen. Kritisch für Cloud-Infrastruktur.
+    cross_refs: ['A.7.2', 'A.7.3', 'A.7.4']
+    audit_evidence_hint: 'Datacenter-Audit-Report, Perimeter-Sicherungsbericht, Tier-Zertifikat (z.B. TIA-942).'
+
+  - source: 'A.7.4'
+    target: 'EUCS-A5'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.7.4 "Physical security monitoring" deckt Videoüberwachung/Detection
+      als Teilaspekt von EUCS A5 ab; nur einer von mehreren Pflichtaspekten.
+
+  - source: 'A.7.11'
+    target: 'EUCS-A5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.7.11 "Supporting utilities" (USV, Klima, Strom) ist EUCS-A5-Pflicht
+      für Cloud-RZ-Verfügbarkeit.
+
+  # === EUCS A6 Operational Security ===
+  - source: 'A.5.7'
+    target: 'EUCS-A6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.7 "Threat intelligence" ist Pflicht-Bestandteil operationeller
+      Cloud-Sicherheit (EUCS A6) — CSP muss aktiv Bedrohungslage überwachen
+      und teilen.
+    audit_evidence_hint: 'Threat-Intel-Quellen-Liste, Sharing-Protokolle (CERT, ISACs), TI-Reports.'
+
+  - source: 'A.8.7'
+    target: 'EUCS-A6'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.7 "Protection against malware" ist Kernbestandteil von EUCS A6
+      Operational Security (Cyberhygiene).
+    audit_evidence_hint: 'AV/EDR-Coverage-Report, Malware-IR-Protokolle.'
+
+  - source: 'A.8.8'
+    target: 'EUCS-A6'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.8 "Management of technical vulnerabilities" ist EUCS-A6-Pflicht —
+      Schwachstellenmanagement-Prozess mit SLAs für Cloud-Komponenten.
+    audit_evidence_hint: 'Patch-Compliance-Dashboard, Vuln-Scan-Reports, Remediation-Tracking.'
+
+  - source: 'A.8.16'
+    target: 'EUCS-A6'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.16 "Monitoring activities" entspricht dem SIEM/Monitoring-Anteil
+      von EUCS A6 — kontinuierliche Überwachung Cloud-Infrastruktur.
+    audit_evidence_hint: 'SIEM-Use-Cases, Alert-Statistiken, SOC-Schichtprotokolle.'
+
+  - source: 'A.8.15'
+    target: 'EUCS-A6'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.8.15 "Logging" ist Voraussetzung für EUCS-A6-Monitoring — vollständige
+      Audit-Logs aller Cloud-Komponenten mit Manipulationsschutz. Cloud-spezifische
+      Tenant-Log-Trennung in ISO nicht explizit gefordert.
+
+  - source: 'A.8.6'
+    target: 'EUCS-A6'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.8.6 "Capacity management" deckt Kapazitätsplanung/Verfügbarkeit
+      als Cloud-spezifischen Teilaspekt von EUCS A6.
+
+  # === EUCS A7 Identity, Authentication and Access Control ===
+  - source: 'A.5.15'
+    target: 'EUCS-A7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.15 "Access control" entspricht EUCS A7 — übergeordnete Access-
+      Control-Policy für CSP- und Tenant-Zugriffe.
+    cross_refs: ['A.5.16', 'A.5.17', 'A.5.18']
+    audit_evidence_hint: 'Access-Control-Policy, Berechtigungsmatrix, Joiner/Mover/Leaver-Prozess.'
+
+  - source: 'A.5.16'
+    target: 'EUCS-A7'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.16 "Identity management" deckt Identity-Lifecycle als zentralen
+      Teilaspekt von EUCS A7 ab. Cloud-Federation/SSO-Spezifika in ISO
+      nicht explizit verlangt.
+
+  - source: 'A.5.17'
+    target: 'EUCS-A7'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.17 "Authentication information" — Authentifizierungs-Geheimnisse
+      (Passwort-Policy, Token-Mgmt) Teil von EUCS A7; nur ein Aspekt.
+
+  - source: 'A.5.18'
+    target: 'EUCS-A7'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.5.18 "Access rights" — Berechtigungsvergabe/-entzug ist EUCS-A7-Pflicht
+      mit periodischer Rezertifizierung.
+    audit_evidence_hint: 'Access-Review-Reports (mind. 6-monatlich), Rezertifizierungsnachweise.'
+
+  - source: 'A.8.2'
+    target: 'EUCS-A7'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.2 "Privileged access rights" — Privileged-Access-Mgmt (PAM) ist
+      EUCS-A7-Cloud-spezifischer Schwerpunkt (CSP-Hyperscaler-Admins).
+    audit_evidence_hint: 'PAM-Tool-Logs, Just-in-Time-Access-Protokolle, Session-Recording.'
+
+  - source: 'A.8.3'
+    target: 'EUCS-A7'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.8.3 "Information access restriction" — Need-to-Know-Prinzip auf
+      Datenebene. Multi-Tenant-Isolation in EUCS A7 verlangt explizite
+      Tenant-Boundary-Mechanismen, die in A.8.3 nicht vertieft sind.
+    gap_warning: 'Tenant-Isolation auf Storage/Network/Compute-Ebene ist Cloud-spezifisch und benötigt zusätzliche EUCS-Kriterien.'
+
+  - source: 'A.8.5'
+    target: 'EUCS-A7'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.5 "Secure authentication" — MFA-Pflicht für CSP-Admins und
+      privilegierte Tenant-Zugriffe in EUCS A7.
+    audit_evidence_hint: 'MFA-Coverage-Report aller privilegierten Konten.'
+
+  # === EUCS A8 Cryptography and Key Management ===
+  - source: 'A.8.24'
+    target: 'EUCS-A8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.8.24 "Use of cryptography" entspricht direkt EUCS A8 — CSP muss
+      kryptografische Verfahren (Algorithmen, Schlüsselstärken) gemäß
+      Stand-der-Technik einsetzen, inkl. Key-Lifecycle-Management.
+    audit_evidence_hint: 'Krypto-Policy, Algorithmen-Inventar, HSM-Auditreports, Key-Lifecycle-Prozess.'
+
+  # === EUCS A9 Communication Security ===
+  - source: 'A.8.20'
+    target: 'EUCS-A9'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.20 "Networks security" — Netzwerksicherheit als zentraler EUCS-A9-
+      Bestandteil (Firewall, Segmentierung, VPN).
+    cross_refs: ['A.8.21', 'A.8.22', 'A.8.23']
+    audit_evidence_hint: 'Netzwerkdiagramm, Firewall-Ruleset-Review, Segmentierungs-Audit.'
+
+  - source: 'A.8.21'
+    target: 'EUCS-A9'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.8.21 "Security of network services" — Schutz von Netzwerkdiensten
+      (DNS, NTP, Mail) Teil von EUCS A9; nur ein Aspekt.
+
+  - source: 'A.8.22'
+    target: 'EUCS-A9'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.22 "Segregation of networks" — Netzwerksegmentierung (Mgmt-Netze,
+      Tenant-Isolation) ist EUCS-A9-Cloud-Pflicht.
+    audit_evidence_hint: 'VLAN/VPC-Topologie, Segregations-Audit-Report.'
+
+  - source: 'A.8.23'
+    target: 'EUCS-A9'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.8.23 "Web filtering" — Web-Filter-Maßnahme als Teil von EUCS A9
+      Communication Security; Cloud-Kontext meist Egress-Proxy-relevant.
+
+  # === EUCS A11 Change and Configuration Management ===
+  - source: 'A.8.32'
+    target: 'EUCS-A11'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.8.32 "Change management" entspricht direkt EUCS A11 — formaler
+      Change-Prozess mit Risikobewertung und Genehmigung.
+    audit_evidence_hint: 'CAB-Protokolle, Change-Tickets mit Approval-Trail, Rollback-Plaene.'
+
+  - source: 'A.8.9'
+    target: 'EUCS-A11'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.9 "Configuration management" — Konfig-Baselines und Drift-Detection
+      Teil von EUCS A11 (Cloud: IaC, Hardening-Templates).
+    audit_evidence_hint: 'Hardening-Baselines (CIS-Benchmarks), IaC-Repositories, Drift-Reports.'
+
+  # === EUCS A12 Development of Information Systems ===
+  - source: 'A.8.25'
+    target: 'EUCS-A12'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.8.25 "Secure development life cycle" entspricht EUCS A12 — SDLC mit
+      Security-Gates für Cloud-Services-Entwicklung.
+    cross_refs: ['A.8.26', 'A.8.27', 'A.8.28']
+
+  - source: 'A.8.26'
+    target: 'EUCS-A12'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.8.26 "Application security requirements" — Security-Requirements als
+      SDLC-Eingangsphase, Teil von EUCS A12; nur Eingangsphase.
+
+  - source: 'A.8.28'
+    target: 'EUCS-A12'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.28 "Secure coding" — Secure-Coding-Standards und Code-Reviews als
+      EUCS-A12-Pflicht; OWASP-ASVS-Referenzen üblich.
+    audit_evidence_hint: 'Secure-Coding-Guidelines, SAST/DAST-Reports, Code-Review-Protokolle.'
+
+  - source: 'A.8.29'
+    target: 'EUCS-A12'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.29 "Security testing in development and acceptance" — Security-
+      Testing (SAST/DAST/IAST/Pentest) Pflicht in EUCS A12.
+
+  - source: 'A.8.31'
+    target: 'EUCS-A12'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.8.31 "Separation of development, test and production environments"
+      — Umgebungstrennung Teilaspekt von EUCS A12.
+
+  # === EUCS A13 Procurement and Suppliers ===
+  - source: 'A.5.19'
+    target: 'EUCS-A13'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.19 "Information security in supplier relationships" entspricht
+      direkt EUCS A13 — Supplier-Risk-Mgmt für Sub-CSPs (z.B. AWS unter
+      einer SaaS-Plattform).
+    cross_refs: ['A.5.20', 'A.5.21', 'A.5.22']
+    audit_evidence_hint: 'Supplier-Register mit Risk-Tier, AVV-Verträge, Audit-Reports.'
+
+  - source: 'A.5.20'
+    target: 'EUCS-A13'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.20 "Addressing information security within supplier agreements"
+      — Vertragsklauseln mit Security-SLAs Teil von EUCS A13.
+
+  - source: 'A.5.21'
+    target: 'EUCS-A13'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.5.21 "Managing information security in the ICT supply chain" — ICT-
+      Supply-Chain-Risk besonders Cloud-relevant (EUCS A13).
+
+  - source: 'A.5.22'
+    target: 'EUCS-A13'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.5.22 "Monitoring, review and change management of supplier services"
+      — kontinuierliches Supplier-Monitoring Pflicht in EUCS A13.
+    audit_evidence_hint: 'Supplier-KPI-Dashboards, Audit-Schedule, Vertragsänderungs-Logs.'
+
+  - source: 'A.5.23'
+    target: 'EUCS-A13'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.5.23 "Information security for use of cloud services" — Konsumieren
+      von Cloud-Diensten (Sub-Provider) ist Kern von EUCS A13.
+
+  # === EUCS A14 Incident Management ===
+  - source: 'A.5.24'
+    target: 'EUCS-A14'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.24 "Information security incident management planning and preparation"
+      entspricht direkt EUCS A14 — IR-Plan und Vorbereitung.
+    cross_refs: ['A.5.25', 'A.5.26', 'A.5.27', 'A.5.28']
+    audit_evidence_hint: 'IR-Plan, IR-Übungen (mind. jährlich), IR-Reports.'
+
+  - source: 'A.5.25'
+    target: 'EUCS-A14'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.25 "Assessment and decision on information security events" —
+      Event-Triage als Teilaspekt von EUCS A14.
+
+  - source: 'A.5.26'
+    target: 'EUCS-A14'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.5.26 "Response to information security incidents" — IR-Response-
+      Phase Teil von EUCS A14 mit Tenant-Notifizierung.
+
+  - source: 'A.5.27'
+    target: 'EUCS-A14'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.27 "Learning from information security incidents" — Lessons-Learned
+      für kontinuierliche Verbesserung in EUCS A14.
+
+  - source: 'A.5.28'
+    target: 'EUCS-A14'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.28 "Collection of evidence" — Forensische Beweissicherung als
+      Teilaspekt von EUCS A14; Cloud-Forensik ist Sub-Provider-abhängig.
+    gap_warning: 'Cloud-Forensik erfordert Vereinbarung mit IaaS/PaaS-Provider — Single-ISO-Mapping unzureichend.'
+
+  # === EUCS A15 Business Continuity ===
+  - source: 'A.5.29'
+    target: 'EUCS-A15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.29 "Information security during disruption" entspricht EUCS A15 —
+      Sicherheit während BC-Events.
+    cross_refs: ['A.5.30', 'A.8.13', 'A.8.14']
+    audit_evidence_hint: 'BC-Pläne, BIA, RTO/RPO-Definitionen, Übungsprotokolle.'
+
+  - source: 'A.5.30'
+    target: 'EUCS-A15'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.5.30 "ICT readiness for business continuity" — ICT-DR-Komponente
+      Pflicht in EUCS A15 (Cloud: Multi-Region-DR-Strategien).
+
+  - source: 'A.8.13'
+    target: 'EUCS-A15'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.13 "Information backup" — Backup-Strategie inkl. Restore-Tests
+      Pflicht in EUCS A15.
+    audit_evidence_hint: 'Backup-Logs, Restore-Test-Protokolle (mind. quartalsweise), Offsite-Replikations-Nachweise.'
+
+  - source: 'A.8.14'
+    target: 'EUCS-A15'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.8.14 "Redundancy of information processing facilities" — Redundanz
+      (Multi-AZ, Multi-Region) Pflicht in EUCS A15.
+
+  # === EUCS A16 Compliance and Information Security Reviews ===
+  - source: 'A.5.31'
+    target: 'EUCS-A16'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.5.31 "Legal, statutory, regulatory and contractual requirements" —
+      Compliance-Anforderungen-Inventar als EUCS-A16-Basis.
+    cross_refs: ['A.5.32', 'A.5.33', 'A.5.34']
+    audit_evidence_hint: 'Compliance-Register, Rechts-Monitoring, Anwaltsmeinungen bei DSGVO/Schrems-II.'
+
+  - source: 'A.5.32'
+    target: 'EUCS-A16'
+    relationship: 'subset'
+    confidence: 'low'
+    rationale: |
+      A.5.32 "Intellectual property rights" — IPR-Management Teil von EUCS A16,
+      aber peripher; Cloud-Compliance fokussiert primär auf Datenschutz/Recht.
+
+  - source: 'A.5.33'
+    target: 'EUCS-A16'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.33 "Protection of records" — Aufbewahrungs- und Schutzpflichten
+      für Records Teil von EUCS A16.
+
+  - source: 'A.5.34'
+    target: 'EUCS-A16'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.5.34 "Privacy and protection of PII" — Datenschutz-Compliance
+      (DSGVO) ist Cloud-kritisch und Teil von EUCS A16.
+    audit_evidence_hint: 'Auftragsverarbeitungsverträge, TIA (Schrems-II), DSFAs.'
+
+  - source: 'A.5.35'
+    target: 'EUCS-A16'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      A.5.35 "Independent review of information security" — externe Audits
+      (z.B. C5, ISO, SOC2) Pflicht in EUCS A16.
+
+  - source: 'A.5.36'
+    target: 'EUCS-A16'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.5.36 "Compliance with policies, rules and standards for information
+      security" — interne Compliance-Reviews Teil von EUCS A16.
+
+  - source: 'A.8.34'
+    target: 'EUCS-A16'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      A.8.34 "Protection of information systems during audit testing" —
+      Schutz produktiver Systeme während Audits, Teil von EUCS A16.
+
+  # === EUCS A20 Awareness and Training ===
+  - source: 'A.6.3'
+    target: 'EUCS-A20'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      A.6.3 "Information security awareness, education and training" entspricht
+      direkt EUCS A20 — Awareness- und Trainingsprogramm für CSP-Personal,
+      inkl. rollenbasierter Tiefe.
+    audit_evidence_hint: 'Schulungs-Quote, Curriculum, Phishing-Drill-Ergebnisse, Onboarding-Protokolle.'
+
+  - source: 'A.6.1'
+    target: 'EUCS-A20'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      A.6.1 "Screening" — Background-Check vor Anstellung als Voraussetzung
+      für vertrauenswürdige Awareness-Wirkung; eher EUCS-A20-flankierend.
+    cross_refs: ['A.6.2']
+
+  - source: 'A.6.5'
+    target: 'EUCS-A20'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      A.6.5 "Responsibilities after termination or change of employment" —
+      Off-Boarding-Awareness als Teilaspekt von EUCS A20.

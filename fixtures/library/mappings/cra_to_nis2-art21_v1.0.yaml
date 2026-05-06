@@ -1,0 +1,395 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'cra_to_nis2-art21_v1.0'
+  source_framework: 'CRA'
+  target_framework: 'NIS2'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'EU Cyber Resilience Act (Verordnung 2024/2847) + EU NIS2-Richtlinie 2022/2555 (Art. 20-23)'
+    primary_source_url: 'https://eur-lex.europa.eu/eli/reg/2024/2847/oj'
+    secondary_sources:
+      - 'ENISA Implementation Guidance NIS2 Technical and Methodological Requirements 2024-09'
+      - 'BSI Mindestanforderungen NIS2-UmsuCG (Konsultationsentwurf 2024-12)'
+      - 'EU CRA Annex I + Annex VII (Wesentliche Cybersicherheitsanforderungen + Technische Dokumentation)'
+      - 'Eigene Volltext-Analyse durch Compliance-Team mit Adressaten-Differenzierung'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'regulatory_text_comparison_with_addressee_analysis'
+    description: |
+      KRITISCHER ADRESSATEN-HINWEIS: CRA (Verordnung 2024/2847) und NIS2-Richtlinie
+      2022/2555 adressieren UNTERSCHIEDLICHE Akteure:
+
+      - CRA → HERSTELLER von Produkten mit digitalen Elementen (Hardware + Software,
+        die in den Verkehr gebracht werden); Pflichten entlang Produkt-Lifecycle
+        (Design, Konformitaetsbewertung, Disclosure, Updates).
+      - NIS2 → BETREIBER wesentlicher und wichtiger Einrichtungen; Pflichten zum
+        organisatorischen Risikomanagement, Incident-Handling, Behoerden-Meldungen.
+
+      Schnittmengen entstehen, wenn ein Hersteller-Produkt im NIS2-Betreiber-Kontext
+      eingesetzt wird (z.B. Schwachstellenmeldung Hersteller → Patch-Bereitstellung
+      → Betreiber-Risikomanagement). Viele Pflichten haben jedoch KEIN Cross-Pendant:
+      - CRA-only: CE-Kennzeichnung (Art. 13), Konformitaetsbewertung,
+        Endnutzer-Handbuecher, technische Dokumentation Anhang VII
+      - NIS2-only: Mitarbeiter-Schulung (21.2.g), Krisenmanagement-Strukturen
+        (21.2.c), Behoerden-Meldewege NIS2-Art. 23, Mgmt-Verantwortung Art. 20
+
+      Methodik je CRA-Anforderung:
+      1. Volltext-Lesung CRA-Norm gegen NIS2 Art. 20-23
+      2. Adressaten-Pruefung: Hersteller-Pflicht vs. Betreiber-Pflicht
+      3. Wenn Adressaten-Verschiebung: relationship='partial_overlap' + gap_warning
+      4. Confidence (high fuer klare technische Schnittmengen, medium fuer
+         Hersteller-Betreiber-Verschiebungen, low fuer verwandte aber
+         unterschiedliche Akteurs-Pflichten)
+      5. Wenn KEIN NIS2-Pendant existiert: Mapping wird ausgelassen
+         (Sauberer Verzicht statt forcierter Mappings)
+      6. 4-Augen-Review durch zweiten Compliance-Manager
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-04-15', actor: 'maintainer' }
+      - { state: 'review',    date: '2026-04-25', actor: 'maintainer' }
+      - { state: 'approved',  date: '2026-05-02', actor: 'reviewer-2' }
+      - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
+
+mappings:
+  - source: 'CRA-Annex-I-1.1'
+    target: '21.2.e'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      CRA Anhang I Teil I Nr. 1.1 "Security-by-Design + Default-Secure-Configuration"
+      verlangt vom Hersteller, Produkte mit angemessenem Cybersicherheitsniveau
+      auszuliefern. NIS2 Art. 21(2)(e) "Sicherheit beim Erwerb, Entwicklung und
+      Wartung von Netz- und Informationssystemen" deckt die Betreiber-Sicht auf
+      sichere Entwicklung ab. Fuer Eigenentwicklungen des NIS2-Betreibers
+      (in-house Software) ist die Schnittmenge equivalent: gleiche technische
+      Anforderung, gleicher Akteur (Betreiber=Hersteller).
+    gap_warning: |
+      Bei Drittprodukten (Betreiber kauft Hersteller-Produkt) verschiebt sich
+      die Pflicht: CRA-Konformitaet liegt beim Hersteller, NIS2-Verantwortung
+      fuer sichere Beschaffung beim Betreiber. Mapping gilt voll nur bei
+      In-House-Entwicklung; bei Zukauf kombinieren mit 21.2.d (Lieferkette).
+    audit_evidence_hint: 'Secure-SDLC-Policy, Threat-Modelling-Reports, Default-Konfigurations-Hardening-Guides, Penetration-Test-Reports vor Release.'
+
+  - source: 'CRA-Annex-I-1.2'
+    target: '21.2.e'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CRA Anhang I Teil I Nr. 1.2 "Auslieferung ohne bekannte ausnutzbare
+      Schwachstellen" verpflichtet den Hersteller, Produkte vor Release auf
+      bekannte CVEs zu pruefen. NIS2 21(2)(e) erwartet vom Betreiber sichere
+      Beschaffung — Schnittmenge entsteht, wenn der Betreiber die CRA-Konformitaet
+      des Lieferanten als Beschaffungs-Kriterium prueft.
+    gap_warning: |
+      Adressaten-Mismatch: CRA-Pflicht ist Hersteller-seitig (vor Marktzugang),
+      NIS2-Pflicht ist Betreiber-seitig (vor Einkauf). Betreiber muss die
+      CRA-Konformitaetserklaerung (Art. 13) als Evidence in seinen
+      Beschaffungsprozess aufnehmen, um Schnittmenge nutzbar zu machen.
+    audit_evidence_hint: 'Vulnerability-Scan-Reports vor Release (Hersteller), CRA-Konformitaetserklaerung im Beschaffungsdossier (Betreiber).'
+
+  - source: 'CRA-Annex-I-1.3.a'
+    target: '21.2.i'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CRA Anhang I Teil I Nr. 1.3(a) "Schutz vor unautorisiertem Zugriff durch
+      angemessene Authentifizierung" adressiert Hersteller-Pflicht, Produkt mit
+      Identitaets-/Authentifizierungs-Mechanismen auszustatten. NIS2 21(2)(i)
+      verlangt vom Betreiber organisatorisches Zugangskontroll-Management
+      (Berechtigungen, Reviews, Onboarding/Offboarding).
+    gap_warning: |
+      Adressaten-Mismatch: CRA liefert die TECHNISCHEN Mittel (Produkt-seitige
+      AuthN), NIS2 fordert die ORGANISATORISCHE Umsetzung (Wer bekommt welchen
+      Zugriff, Review-Zyklus). Single-Mapping deckt NIS2 21.2.i nicht ab —
+      organisatorische IAM-Policy bleibt Betreiber-Pflicht.
+    audit_evidence_hint: 'Produkt-Spec mit AuthN-Mechanismen (Hersteller), IAM-Policy + Zugriffsreviews (Betreiber).'
+
+  - source: 'CRA-Annex-I-1.3.b'
+    target: '21.2.h'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      CRA Anhang I Teil I Nr. 1.3(b) "Schutz der Vertraulichkeit gespeicherter,
+      uebertragener oder anderweitig verarbeiteter Daten durch dem Stand der
+      Technik entsprechende Mechanismen wie Verschluesselung" entspricht direkt
+      NIS2 21(2)(h) "Konzepte fuer Kryptografie und Verschluesselung". Beide
+      verlangen state-of-the-art Crypto; CRA technisch im Produkt, NIS2
+      organisatorisch in der Betreiber-Policy.
+    audit_evidence_hint: 'Krypto-Algorithmen-Whitelist im Produkt, Krypto-Policy beim Betreiber, Key-Management-Verfahren auf beiden Seiten.'
+
+  - source: 'CRA-Annex-I-1.3.c'
+    target: '21.2.h'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      CRA Anhang I Teil I Nr. 1.3(c) "Schutz der Integritaet gespeicherter,
+      uebertragener oder verarbeiteter Daten durch Mechanismen wie Pruefsummen
+      oder digitale Signaturen" gehoert zum erweiterten Crypto-/Hygiene-
+      Spektrum von NIS2 21(2)(h). NIS2 ist breiter (auch Patching, Hardening,
+      Logging); CRA fokussiert auf Daten-Integritaet im Produkt.
+    cross_refs: ['CRA-Annex-I-1.3.b']
+
+  - source: 'CRA-Annex-I-1.3.d'
+    target: '21.2.h'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      CRA Anhang I Teil I Nr. 1.3(d) "Datenminimierung — nur Daten verarbeiten,
+      die fuer den Zweck adaequat, relevant und auf das Notwendige beschraenkt
+      sind" hat schwache Schnittmenge mit NIS2 21(2)(h) Cyber-Hygiene. Eigentlich
+      ist Datenminimierung GDPR-Kernprinzip (Art. 5(1)(c)). NIS2 erwaehnt
+      Datenminimierung nicht explizit.
+    gap_warning: |
+      Adressaten-Mismatch UND inhaltlicher Mismatch: CRA-Datenminimierung dient
+      Schadensbegrenzung (kleinere Angriffsflaeche), GDPR-Datenminimierung
+      Persoenlichkeitsrecht. NIS2 hat kein direktes Pendant; Mapping nur
+      indikativ. Empfehlung: Cross-Mapping zu GDPR Art. 5 statt NIS2.
+
+  - source: 'CRA-Annex-I-1.3.e'
+    target: '21.2.c'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CRA Anhang I Teil I Nr. 1.3(e) "Schutz der Verfuegbarkeit wesentlicher
+      Funktionen, einschliesslich Resilienz gegen DoS-Angriffe und Schadensbegrenzung"
+      ueberlappt mit NIS2 21(2)(c) "Aufrechterhaltung des Betriebs (BC/DR)". CRA
+      verlangt produktseitige Resilienz; NIS2 organisatorische BC-Plaene.
+    gap_warning: |
+      Adressaten-Mismatch: CRA-Resilienz im Produkt (DDoS-Schutz, Failover-
+      Mechanismen). NIS2-BC-Plan beim Betreiber inkl. Krisenkommunikation,
+      Backup-Tests, externe Behoerden-Meldewege. Single-Mapping unzureichend
+      fuer NIS2 21.2.c — Krisenmanagement-Teil bleibt Betreiber-Pflicht.
+    audit_evidence_hint: 'Produkt-Resilienz-Test-Reports (Hersteller), BC-Plan + Tabletop-Uebungen (Betreiber).'
+
+  - source: 'CRA-Annex-I-1.3.f'
+    target: '21.2.h'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CRA Anhang I Teil I Nr. 1.3(f) "Minimierung der Angriffsflaeche, einschliesslich
+      externer Schnittstellen" ist Hersteller-Designanforderung. NIS2 21(2)(h)
+      Cyber-Hygiene erwartet vom Betreiber Hardening-Massnahmen. Schnittmenge:
+      sicheres Default-Hardening reduziert Angriffsflaeche bei beiden.
+    gap_warning: |
+      CRA fordert Minimierung WERKSEITIG; NIS2-Hardening adressiert die laufende
+      BETRIEBSZEIT (Patches, Konfigurationsdrift, EOL-Tracking). Beide Aspekte
+      sind komplementaer, nicht aequivalent.
+
+  - source: 'CRA-Annex-I-1.3.g'
+    target: '21.2.b'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CRA Anhang I Teil I Nr. 1.3(g) "Schadensbegrenzung — Auswirkungen eines
+      Vorfalls reduzieren, einschliesslich Verfuegbarkeit anderer Dienste"
+      ueberlappt mit NIS2 21(2)(b) "Bewaeltigung von Sicherheitsvorfaellen".
+      CRA fordert produktseitige Containment-Mechanismen (Isolation, Sandbox);
+      NIS2 fordert Incident-Response-Prozess beim Betreiber.
+    gap_warning: |
+      Adressaten-Mismatch: Produkt-seitige Schadensbegrenzung (CRA) vs.
+      organisatorischer IR-Prozess (NIS2). NIS2 IR-Plan, IR-Uebungen,
+      Lessons-Learned bleiben unabhaengig vom Produkt nachzuweisen.
+
+  - source: 'CRA-Annex-I-1.3.h'
+    target: '21.2.f'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      CRA Anhang I Teil I Nr. 1.3(h) "Logging und Monitoring relevanter
+      sicherheitsrelevanter Aktivitaeten und Anomalien, die ueber einen
+      Opt-in-Mechanismus aktivierbar sind" entspricht NIS2 21(2)(f) "Konzepte
+      und Verfahren zur Bewertung der Wirksamkeit". Logging im Produkt liefert
+      die technische Grundlage fuer Wirksamkeits-Monitoring beim Betreiber.
+    audit_evidence_hint: 'Logging-Spec im Produkt, SIEM-Integration beim Betreiber, Log-Retention-Policy auf beiden Seiten.'
+
+  - source: 'CRA-Annex-I-1.3.i'
+    target: '21.2.e'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      CRA Anhang I Teil I Nr. 1.3(i) "Sichere Updates / Patch-Mechanismen,
+      einschliesslich automatischer Verteilung sicherheitsrelevanter Updates"
+      entspricht NIS2 21(2)(e) Wartungs-Anteil. Hersteller liefert Update-
+      Mechanismus, Betreiber nutzt diesen fuer regulaeren Patch-Zyklus.
+    audit_evidence_hint: 'Update-Mechanismus-Spec mit Signaturpruefung (Hersteller), Patch-Compliance-Dashboard (Betreiber).'
+
+  - source: 'CRA-Annex-II-1'
+    target: '21.2.e'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      CRA Anhang I Teil II Nr. 1 "Schwachstellen-Identifizierung im Produkt
+      durch regelmaessige Tests und Reviews der Sicherheit" entspricht NIS2
+      21(2)(e) Wartungs-Anteil fuer In-House-Entwicklung. Beide Seiten verlangen
+      systematische Schwachstellenpruefung im SDLC.
+    gap_warning: |
+      Bei Drittprodukten ist die Pflicht beim Hersteller; Betreiber-Verantwortung
+      reduziert sich auf Vendor-Vulnerability-Tracking + Patch-Anwendung.
+    audit_evidence_hint: 'SAST/DAST-Reports, Pentest-Reports, Vulnerability-Tracking-System.'
+
+  - source: 'CRA-Annex-II-2'
+    target: '21.2.e'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      CRA Anhang I Teil II Nr. 2 "Schwachstellen-Beseitigung ohne Verzug,
+      einschliesslich Bereitstellung von Sicherheitsupdates" entspricht NIS2
+      21(2)(e) Wartungs-Anteil. Hersteller patcht Produkt, Betreiber rollt Patch
+      aus — beide Aktionen sind komplementaer notwendig.
+    audit_evidence_hint: 'Patch-Release-Notes (Hersteller), Patch-Rollout-Statistik mit MTTR (Betreiber).'
+
+  - source: 'CRA-Annex-II-3'
+    target: '21.2.f'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CRA Anhang I Teil II Nr. 3 "Wirksame Disclosure-Politik fuer empfangene
+      Schwachstellen-Meldungen" ist Hersteller-seitige Coordinated Vulnerability
+      Disclosure. NIS2 21(2)(f) "Wirksamkeitspruefung" hat schwache Schnittmenge
+      ueber Threat-Intel-Loop (Disclosure liefert Input fuer Wirksamkeitsmetriken).
+    gap_warning: |
+      Adressaten-Mismatch: CRA-Disclosure-Policy adressiert Hersteller (security@-
+      Adresse, PSIRT-Prozess). NIS2-Wirksamkeit ist eigenstaendige Betreiber-
+      Pflicht (KPIs, Audits). Schwache Verbindung — Mapping nur indikativ.
+
+  - source: 'CRA-Annex-II-4'
+    target: '21.2.e'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      CRA Anhang I Teil II Nr. 4 "Regelmaessige Tests und Reviews der
+      Cybersicherheit des Produkts" entspricht NIS2 21(2)(e) "Wartung von
+      Netz- und Informationssystemen" fuer In-House-Entwicklung.
+    audit_evidence_hint: 'Pentest-Schedule, Vulnerability-Assessment-Reports, Code-Review-Prozessdokumentation.'
+
+  - source: 'CRA-Annex-II-5'
+    target: '21.2.e'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CRA Anhang I Teil II Nr. 5 "Bereitstellung von Schwachstellen-Informationen
+      einschliesslich CVE-Beschreibung, Schweregrad-Einstufung, betroffene
+      Versionen, ausgenutzte Schwachstellen" hilft Betreiber-seitig im NIS2
+      21(2)(e) Wartungs-Anteil (Patch-Triagierung).
+    gap_warning: |
+      Hersteller-Pflicht (Information bereitstellen) ist Voraussetzung fuer
+      Betreiber-Pflicht (Information verarbeiten). Direkte Mapping-Tiefe niedrig.
+
+  - source: 'CRA-Annex-II-6'
+    target: '21.2.d'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CRA Anhang I Teil II Nr. 6 "Software Bill of Materials (SBOM) — Inventar
+      verwendeter Top-Level-Komponenten in maschinenlesbarem Format" ist
+      Hersteller-Pflicht. NIS2 21(2)(d) "Sicherheit der Lieferkette" profitiert
+      bei Betreibern von SBOMs (Komponenten-Risiko-Tracking, schnelles Triaging
+      bei Library-CVEs wie Log4Shell).
+    gap_warning: |
+      Adressaten-Mismatch: SBOM-Erstellung beim Hersteller, SBOM-Konsumption
+      beim Betreiber. Betreiber muss SBOM-Verarbeitungs-Prozess aufbauen
+      (z.B. Dependency-Track, OSV-Scanner) — kein automatisches Mapping.
+    audit_evidence_hint: 'SBOM in CycloneDX/SPDX-Format (Hersteller), Dependency-Tracking-Tool mit CVE-Integration (Betreiber).'
+
+  - source: 'CRA-Annex-II-7'
+    target: '21.2.b'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CRA Anhang I Teil II Nr. 7 "Bereitstellung von Sicherheitsupdates
+      kostenlos waehrend der Support-Phase" hat Schnittmenge mit NIS2 21(2)(b)
+      Vorfallbewaeltigung — Patch-Verfuegbarkeit ist Voraussetzung fuer
+      Incident-Response.
+    gap_warning: |
+      Adressaten-Mismatch: Hersteller-Pflicht zur Patch-Bereitstellung vs.
+      Betreiber-Pflicht zum Incident-Response-Prozess. Schwache direkte
+      Schnittmenge.
+
+  - source: 'CRA-Art-11'
+    target: '21.2.d'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      CRA Art. 11 "Coordinated Vulnerability Disclosure (CVD) — Hersteller hat
+      Disclosure-Policy zu pflegen, security.txt oder vergleichbarer Mechanismus,
+      Kooperation mit ENISA-Single-Reporting-Plattform" ist Teilmenge der
+      breiteren NIS2 21(2)(d) "Sicherheit der Lieferkette". Lieferkettensicherheit
+      umfasst CVD als ein Element neben Vendor-Risk-Mgmt, Vertragsklauseln,
+      Audit-Rights.
+    gap_warning: |
+      NIS2 21.2.d ist deutlich breiter als CRA Art. 11. Wer NUR CRA Art. 11
+      hat, deckt nur Disclosure-Aspekt ab — Vendor-Onboarding, Subcontractor-
+      Mgmt, Exit-Strategien bleiben offen.
+    audit_evidence_hint: 'security.txt, CVD-Policy auf Webseite, ENISA-Plattform-Account, Disclosure-Statistik.'
+
+  - source: 'CRA-Art-14.1'
+    target: '23.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CRA Art. 14(1) "Hersteller meldet aktiv ausgenutzte Schwachstelle binnen
+      24h ENISA + nationale CSIRTs (Fruehwarnung)" und NIS2 Art. 23(1)
+      "Betreiber meldet erheblichen Sicherheitsvorfall binnen 24h Fruehwarnung"
+      teilen die 24h-Frist, aber Akteure und Trigger sind unterschiedlich:
+      Hersteller meldet PRODUKT-Schwachstelle, Betreiber meldet VORFALL-Auswirkung.
+    gap_warning: |
+      KRITISCH: Adressaten-Mismatch. Bei einem CRA Art. 14-Meldungs-Trigger
+      (z.B. Zero-Day im Hersteller-Produkt) kann GLEICHZEITIG eine NIS2 Art. 23
+      Meldepflicht beim Betreiber entstehen, der das Produkt einsetzt. Beide
+      Meldungen gehen an unterschiedliche Stellen (CRA → ENISA + nat. CSIRT,
+      NIS2 → BSI/zustaendige Behoerde). DOPPELMELDUNG-Risiko bei verbundenen
+      Unternehmen, die Hersteller UND Betreiber sind. Single-Reporting via
+      ENISA-Plattform ist im Aufbau, aber 2026 noch nicht final etabliert.
+    audit_evidence_hint: 'CRA-Meldeprotokolle ENISA + CSIRT (Hersteller), NIS2-Meldeprotokolle BSI (Betreiber), Eskalationsplan mit beiden Meldewegen.'
+
+  - source: 'CRA-Art-14.2'
+    target: '23.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CRA Art. 14(2) "72h-Folgemeldung mit Schweregrad, Auswirkungen,
+      ergriffenen Korrekturmassnahmen" und NIS2 Art. 23(2) "72h-Vorfallmeldung"
+      teilen die 72h-Frist und qualitativ aehnliche Inhalte (Schweregrad,
+      Auswirkung, Massnahmen). Adressaten und Bezugspunkt unterscheiden sich
+      jedoch: Hersteller-Schwachstelle vs. Betreiber-Vorfall.
+    gap_warning: |
+      DOPPELMELDUNG-Logik: NIS2 Art. 23(2) gilt fuer Betreiber unabhaengig
+      vom CRA-Status des betroffenen Produkts. Wer Hersteller UND Betreiber ist,
+      muss beide Meldungen separat unterhalten — Single-Reporting nur teilweise
+      moeglich.
+    audit_evidence_hint: 'CRA-Folgemeldungs-Templates (Hersteller), NIS2-Vorfallsmeldungs-Templates (Betreiber), beide mit Zeitstempel.'
+
+  - source: 'CRA-Art-14.3'
+    target: '23.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CRA Art. 14(3) "Endbericht binnen 14 Tagen nach Bereitstellung des
+      Sicherheitsupdates" und NIS2 Art. 23(3) "Abschlussbericht binnen 1 Monat
+      nach 72h-Meldung" teilen den Charakter "Endbericht", aber Fristen und
+      Trigger unterscheiden sich: CRA bindet Frist an Update-Bereitstellung,
+      NIS2 an 72h-Meldung.
+    gap_warning: |
+      Frist-Verschiebung: CRA 14d nach Update kann FRUEHER oder SPAETER liegen
+      als NIS2 1 Monat nach 72h. Reporting-Prozess muss beide Termine separat
+      tracken — automatische Single-Reporting-Loesung fehlt 2026 noch.
+
+  - source: 'CRA-Art-14.8'
+    target: '21.2.b'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      CRA Art. 14(8) "Hersteller informiert betroffene Nutzer ueber aktiv
+      ausgenutzte Schwachstelle und ergriffene/empfohlene Korrekturmassnahmen"
+      hat schwache Verbindung zu NIS2 21(2)(b) Vorfallbewaeltigung — Hersteller-
+      Information unterstuetzt Betreiber-Incident-Response.
+    gap_warning: |
+      Adressaten-Mismatch deutlich: Hersteller-Pflicht zur Endkunden-
+      Kommunikation; NIS2-IR-Prozess davon unabhaengig. Mapping nur indikativ.
