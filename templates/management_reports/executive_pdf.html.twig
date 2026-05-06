@@ -1,8 +1,9 @@
+{% trans_default_domain 'management_reports' %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Executive Summary Report</title>
+    <title>{{ 'management_reports.executive.title'|trans({}, 'management_reports') }}</title>
     <style>
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; margin: 0; padding: 20px; }
         .header {
@@ -73,42 +74,42 @@
 </head>
 <body>
     <div class="header">
-        <h1>Executive Summary Report</h1>
-        <div class="subtitle">ISMS Management Dashboard</div>
-        <div class="date">Generated: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
+        <h1>{{ 'management_reports.executive.title'|trans({}, 'management_reports') }}</h1>
+        <div class="subtitle">{{ 'management_reports.executive.subtitle'|trans({}, 'management_reports') }}</div>
+        <div class="date">{{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
     </div>
 
     {# Key Metrics #}
     <div class="stats-grid">
         <div class="stat-box">
             <div class="number">{{ summary.summary.total_assets }}</div>
-            <div class="label">Assets</div>
+            <div class="label">{{ 'management_reports.executive.assets'|trans({}, 'management_reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number">{{ summary.summary.total_risks }}</div>
-            <div class="label">Risks</div>
+            <div class="label">{{ 'management_reports.executive.risks'|trans({}, 'management_reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number success">{{ summary.summary.compliance_percentage }}%</div>
-            <div class="label">Compliance</div>
+            <div class="label">{{ 'management_reports.executive.compliance'|trans({}, 'management_reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number">{{ summary.summary.total_controls }}</div>
-            <div class="label">Controls</div>
+            <div class="label">{{ 'management_reports.executive.controls'|trans({}, 'management_reports') }}</div>
         </div>
     </div>
 
     {# Risk Distribution #}
     <div class="section">
-        <h2>Risk Distribution</h2>
+        <h2>{{ 'management_reports.executive.risk_distribution'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">Level</th>
-                <th scope="col">Count</th>
-                <th scope="col">Distribution</th>
+                <th scope="col">{{ 'management_reports.executive.header.level'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.executive.header.count'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.executive.header.distribution'|trans({}, 'management_reports') }}</th>
             </tr>
             <tr>
-                <td><span class="badge badge-danger">Critical (≥20)</span></td>
+                <td><span class="badge badge-danger">{{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }} (≥20)</span></td>
                 <td>{{ summary.risk_distribution.critical }}</td>
                 <td>
                     <div class="progress-bar">
@@ -117,7 +118,7 @@
                 </td>
             </tr>
             <tr>
-                <td><span class="badge badge-warning">High (12-19)</span></td>
+                <td><span class="badge badge-warning">{{ 'management_reports.risk_level.high'|trans({}, 'management_reports') }} (12-19)</span></td>
                 <td>{{ summary.risk_distribution.high }}</td>
                 <td>
                     <div class="progress-bar">
@@ -126,7 +127,7 @@
                 </td>
             </tr>
             <tr>
-                <td><span class="badge badge-info">Medium (6-11)</span></td>
+                <td><span class="badge badge-info">{{ 'management_reports.risk_level.medium'|trans({}, 'management_reports') }} (6-11)</span></td>
                 <td>{{ summary.risk_distribution.medium }}</td>
                 <td>
                     <div class="progress-bar">
@@ -135,7 +136,7 @@
                 </td>
             </tr>
             <tr>
-                <td><span class="badge badge-success">Low (&lt;6)</span></td>
+                <td><span class="badge badge-success">{{ 'management_reports.risk_level.low'|trans({}, 'management_reports') }} (&lt;6)</span></td>
                 <td>{{ summary.risk_distribution.low }}</td>
                 <td>
                     <div class="progress-bar">
@@ -148,15 +149,15 @@
 
     {# Control Implementation Status #}
     <div class="section">
-        <h2>Control Implementation Status</h2>
+        <h2>{{ 'management_reports.executive.control_status'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">Status</th>
-                <th scope="col">Count</th>
-                <th scope="col">Progress</th>
+                <th scope="col">{{ 'management_reports.executive.header.status'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.executive.header.count'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.executive.header.progress'|trans({}, 'management_reports') }}</th>
             </tr>
             <tr>
-                <td><span class="badge badge-success">Implemented</span></td>
+                <td><span class="badge badge-success">{{ 'management_reports.control_status.implemented'|trans({}, 'management_reports') }}</span></td>
                 <td>{{ summary.control_status.implemented }}</td>
                 <td>
                     <div class="progress-bar">
@@ -165,7 +166,7 @@
                 </td>
             </tr>
             <tr>
-                <td><span class="badge badge-warning">In Progress</span></td>
+                <td><span class="badge badge-warning">{{ 'management_reports.control_status.in_progress'|trans({}, 'management_reports') }}</span></td>
                 <td>{{ summary.control_status.in_progress }}</td>
                 <td>
                     <div class="progress-bar">
@@ -174,7 +175,7 @@
                 </td>
             </tr>
             <tr>
-                <td><span class="badge badge-info">Not Started</span></td>
+                <td><span class="badge badge-info">{{ 'management_reports.control_status.not_started'|trans({}, 'management_reports') }}</span></td>
                 <td>{{ summary.control_status.not_started }}</td>
                 <td>
                     <div class="progress-bar">
@@ -187,32 +188,32 @@
 
     {# Operational Metrics #}
     <div class="section">
-        <h2>Operational Metrics</h2>
+        <h2>{{ 'management_reports.executive.operational_metrics'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">Metric</th>
-                <th scope="col">Value</th>
-                <th scope="col">Status</th>
+                <th scope="col">{{ 'management_reports.executive.header.metric'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.executive.header.value'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.executive.header.status'|trans({}, 'management_reports') }}</th>
             </tr>
             <tr>
-                <td>Open Incidents (Last 12 Months)</td>
+                <td>{{ 'management_reports.executive.open_incidents_12m'|trans({}, 'management_reports') }}</td>
                 <td>{{ summary.incident_summary.open }}</td>
-                <td>{% if summary.incident_summary.open > 5 %}<span class="badge badge-warning">Attention</span>{% else %}<span class="badge badge-success">Normal</span>{% endif %}</td>
+                <td>{% if summary.incident_summary.open > 5 %}<span class="badge badge-warning">{{ 'management_reports.executive.status.attention'|trans({}, 'management_reports') }}</span>{% else %}<span class="badge badge-success">{{ 'management_reports.executive.status.normal'|trans({}, 'management_reports') }}</span>{% endif %}</td>
             </tr>
             <tr>
-                <td>Total Incidents (Last 12 Months)</td>
+                <td>{{ 'management_reports.executive.total_incidents_12m'|trans({}, 'management_reports') }}</td>
                 <td>{{ summary.incident_summary.total_12_months }}</td>
-                <td><span class="badge badge-info">Tracked</span></td>
+                <td><span class="badge badge-info">{{ 'management_reports.executive.status.tracked'|trans({}, 'management_reports') }}</span></td>
             </tr>
             <tr>
-                <td>Audits Completed This Year</td>
+                <td>{{ 'management_reports.executive.audits_completed'|trans({}, 'management_reports') }}</td>
                 <td>{{ summary.audit_summary.completed_this_year }}</td>
-                <td>{% if summary.audit_summary.completed_this_year >= 1 %}<span class="badge badge-success">Compliant</span>{% else %}<span class="badge badge-warning">Pending</span>{% endif %}</td>
+                <td>{% if summary.audit_summary.completed_this_year >= 1 %}<span class="badge badge-success">{{ 'management_reports.audit.compliant'|trans({}, 'management_reports') }}</span>{% else %}<span class="badge badge-warning">{{ 'management_reports.audit.pending'|trans({}, 'management_reports') }}</span>{% endif %}</td>
             </tr>
             <tr>
-                <td>Total Trainings Conducted</td>
+                <td>{{ 'management_reports.executive.total_trainings'|trans({}, 'management_reports') }}</td>
                 <td>{{ summary.training_summary.total_trainings }}</td>
-                <td><span class="badge badge-success">Active</span></td>
+                <td><span class="badge badge-success">{{ 'management_reports.executive.status.active'|trans({}, 'management_reports') }}</span></td>
             </tr>
         </table>
     </div>
@@ -220,13 +221,13 @@
     {# Trend Data #}
     {% if risk_trends|length > 0 %}
     <div class="section">
-        <h2>Risk Trends (Last 12 Months)</h2>
+        <h2>{{ 'management_reports.executive.risk_trends'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">Month</th>
-                <th scope="col">Total Risks</th>
-                <th scope="col">High/Critical</th>
-                <th scope="col">New</th>
+                <th scope="col">{{ 'management_reports.trend.month'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.trend.total_risks'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.trend.high_critical'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.trend.new_risks'|trans({}, 'management_reports') }}</th>
             </tr>
             {% for trend in risk_trends %}
             <tr>
@@ -241,7 +242,7 @@
     {% endif %}
 
     <div class="footer">
-        Confidential - Executive Summary Report | Little ISMS Helper | Page 1
+        {{ 'management_reports.executive.footer'|trans({}, 'management_reports') }}
     </div>
 </body>
 </html>
