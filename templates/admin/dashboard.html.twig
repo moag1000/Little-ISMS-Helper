@@ -1,4 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
 {% block admin_title %}{{ 'admin.dashboard.title'|trans({}, 'admin') }}{% endblock %}
 {% block admin_subtitle %}
@@ -30,7 +31,7 @@
                 </h2>
                 {% for alert in alerts %}
                     <div class="fa-alert fa-alert--{{ alert.type }}" role="alert">
-                        <i class="bi {{ alert.icon }}"></i>
+                        <i class="bi {{ alert.icon }}" aria-hidden="true"></i>
                         <strong>{{ alert.message|trans({}, 'admin') }}</strong>
                         {% if alert.count is defined %}
                             - {{ alert.count }}
@@ -48,7 +49,9 @@
                                 </button>
                             </form>
                         {% endif %}
-                        <button type="button" class="fa-alert__dismiss" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}">×</button>
+                        <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+                            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+                        </button>
                     </div>
                 {% endfor %}
             </div>
@@ -56,266 +59,189 @@
     {% endif %}
 
     {# Quick Stats Cards #}
+    {% set _fw_variant = stats.compliance.frameworks_loaded >= stats.compliance.frameworks_catalog ? 'success' : (stats.compliance.frameworks_loaded > 0 ? 'warning' : 'danger') %}
+    {% set _review_variant = stats.compliance.unreviewed_seed_mappings == 0 ? 'success' : (stats.compliance.unreviewed_seed_mappings < 10 ? 'warning' : 'danger') %}
     <div class="row g-3 mb-4">
-        {# Users Card #}
         <div class="col-md-6 col-lg-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'border-primary h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <div class="text-muted small fw-semibold mb-2">{{ 'admin.dashboard.stats.users'|trans({}, 'admin') }}</div>
-                            <div class="fs-2 fw-bold">{{ stats.users.total }}</div>
-                        </div>
-                        <div class="bg-primary bg-opacity-10 p-3 rounded">
-                            <i class="fa-icon fa-icon--group text-primary fs-3" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                    <div class="small text-muted">
-                        <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ stats.users.active }} {{ 'admin.dashboard.stats.active'|trans({}, 'admin') }}
-                        {% if stats.users.inactive > 0 %}
-                            <span class="ms-2">
-                                <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ stats.users.inactive }} {{ 'admin.dashboard.stats.inactive'|trans({}, 'admin') }}
-                            </span>
-                        {% endif %}
-                    </div>
-                {% endblock %}
-                {% block card_footer %}
-                    <div class="card-footer bg-transparent border-top-0">
-                        <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
-                            {{ 'admin.dashboard.stats.manage'|trans({}, 'admin') }} <i class="fa-icon fa-icon--util-arrow-right ms-1" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                variant: 'primary',
+                icon: 'people-fill',
+                label: 'admin.dashboard.stats.users'|trans({}, 'admin'),
+                value: stats.users.total,
+                hint: stats.users.active ~ ' ' ~ ('admin.dashboard.stats.active'|trans({}, 'admin')) ~ (stats.users.inactive > 0 ? ' · ' ~ stats.users.inactive ~ ' ' ~ ('admin.dashboard.stats.inactive'|trans({}, 'admin')) : ''),
+                href: path('user_management_index')
+            }) }}
         </div>
-
-        {# Active Sessions Card #}
         <div class="col-md-6 col-lg-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'border-success h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <div class="text-muted small fw-semibold mb-2">{{ 'admin.dashboard.stats.active_sessions'|trans({}, 'admin') }}</div>
-                            <div class="fs-2 fw-bold">{{ stats.sessions.active_24h }}</div>
-                        </div>
-                        <div class="bg-success bg-opacity-10 p-3 rounded">
-                            <i class="fa-icon fa-icon--nav-calendar-check text-success fs-3" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                    <div class="small text-muted">
-                        <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ 'admin.dashboard.stats.last_24h'|trans({}, 'admin') }}
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                variant: 'success',
+                icon: 'calendar-check-fill',
+                label: 'admin.dashboard.stats.active_sessions'|trans({}, 'admin'),
+                value: stats.sessions.active_24h,
+                hint: 'admin.dashboard.stats.last_24h'|trans({}, 'admin')
+            }) }}
         </div>
-
-        {# Framework-Ladezustand (Sprint 11) — ersetzt DB-Size. Semantische Färbung:
-         # grün wenn alle universal pflichtigen geladen, sonst warning. #}
-        {% set _fw_variant = stats.compliance.frameworks_loaded >= stats.compliance.frameworks_catalog ? 'success' : (stats.compliance.frameworks_loaded > 0 ? 'warning' : 'danger') %}
         <div class="col-md-6 col-lg-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ _fw_variant ~ ' h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <div class="text-muted small fw-semibold mb-2">{{ 'admin.dashboard.stats.frameworks'|trans({}, 'admin') }}</div>
-                            <div class="fs-2 fw-bold text-{{ _fw_variant }}">
-                                {{ stats.compliance.frameworks_loaded }}<small class="text-muted fs-6"> / {{ stats.compliance.frameworks_catalog }}</small>
-                            </div>
-                        </div>
-                        <div class="bg-{{ _fw_variant }} bg-opacity-10 p-3 rounded">
-                            <i class="fa-icon fa-icon--audit-internal text-{{ _fw_variant }} fs-3" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                    <div class="small text-muted">
-                        <i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i>
-                        {{ 'admin.dashboard.stats.mappings_count'|trans({'%count%': stats.compliance.mappings_total}, 'admin') }}
-                    </div>
-                {% endblock %}
-                {% block card_footer %}
-                    <div class="card-footer bg-transparent border-top-0">
-                        <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
-                            {{ 'admin.dashboard.stats.manage'|trans({}, 'admin') }} <i class="fa-icon fa-icon--util-arrow-right ms-1" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                variant: _fw_variant,
+                icon: 'shield-check',
+                label: 'admin.dashboard.stats.frameworks'|trans({}, 'admin'),
+                value: stats.compliance.frameworks_loaded ~ ' / ' ~ stats.compliance.frameworks_catalog,
+                hint: 'admin.dashboard.stats.mappings_count'|trans({'%count%': stats.compliance.mappings_total}, 'admin'),
+                href: path('admin_compliance_index')
+            }) }}
         </div>
-
-        {# Unreviewed Seed-Mappings (Sprint 11) — ersetzt Total-Records. Rot wenn > 0. #}
-        {% set _review_variant = stats.compliance.unreviewed_seed_mappings == 0 ? 'success' : (stats.compliance.unreviewed_seed_mappings < 10 ? 'warning' : 'danger') %}
         <div class="col-md-6 col-lg-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ _review_variant ~ ' h-100' } %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <div class="text-muted small fw-semibold mb-2">{{ 'admin.dashboard.stats.unreviewed_mappings'|trans({}, 'admin') }}</div>
-                            <div class="fs-2 fw-bold text-{{ _review_variant }}">
-                                {{ stats.compliance.unreviewed_seed_mappings }}
-                            </div>
-                        </div>
-                        <div class="bg-{{ _review_variant }} bg-opacity-10 p-3 rounded">
-                            <i class="fa-icon fa-icon--user text-{{ _review_variant }} fs-3" aria-hidden="true"></i>
-                        </div>
-                    </div>
-                    <div class="small text-muted">
-                        {% if stats.workflows.open > 0 %}
-                            <i class="bi bi-kanban" aria-hidden="true"></i>
-                            {{ 'admin.dashboard.stats.workflows_open'|trans({'%count%': stats.workflows.open}, 'admin') }}
-                        {% else %}
-                            <i class="fa-icon fa-icon--ui-check text-success" aria-hidden="true"></i>
-                            {{ 'admin.dashboard.stats.workflows_none'|trans({}, 'admin') }}
-                        {% endif %}
-                    </div>
-                {% endblock %}
-                {% block card_footer %}
-                    {% if stats.compliance.unreviewed_seed_mappings > 0 %}
-                        <div class="card-footer bg-transparent border-top-0">
-                            <a href="{{ path('app_compliance_mapping_seed_review') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
-                                {{ 'admin.dashboard.stats.review_now'|trans({}, 'admin') }} <i class="fa-icon fa-icon--util-arrow-right ms-1" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                    {% endif %}
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                variant: _review_variant,
+                icon: 'person-check-fill',
+                label: 'admin.dashboard.stats.unreviewed_mappings'|trans({}, 'admin'),
+                value: stats.compliance.unreviewed_seed_mappings,
+                hint: stats.workflows.open > 0
+                    ? ('admin.dashboard.stats.workflows_open'|trans({'%count%': stats.workflows.open}, 'admin'))
+                    : ('admin.dashboard.stats.workflows_none'|trans({}, 'admin')),
+                href: stats.compliance.unreviewed_seed_mappings > 0 ? path('app_compliance_mapping_seed_review') : null
+            }) }}
         </div>
     </div>
 
     <div class="row g-4">
         {# Module Statistics #}
         <div class="col-lg-8">
-            {% embed '_components/_card.html.twig' with {
-                'title': 'admin.dashboard.modules.title',
-                'titleDomain': 'admin',
-                'headerIcon': 'bi-bar-chart-fill text-primary'
-            } %}
-                {% block card_body %}
-                    {% embed '_components/_table.html.twig' with {
-                        'class': 'table-hover',
-                        'noMargin': true,
-                        'responsive': true
-                    } %}
-                        {% block table_head %}
-                            <tr>
-                                <th scope="col">{{ 'admin.dashboard.modules.module'|trans({}, 'admin') }}</th>
-                                {% if currentTenant %}
-                                    <th scope="col" class="text-end">{{ 'corporate.view.own_only'|trans({}, 'tenant') }}</th>
-                                    <th scope="col" class="text-end">{{ 'corporate.view.including_inherited'|trans({}, 'tenant') }}</th>
-                                    <th scope="col" class="text-end">{{ 'corporate.view.including_subsidiaries'|trans({}, 'tenant') }}</th>
-                                {% else %}
-                                    <th scope="col" class="text-end">{{ 'admin.dashboard.modules.records'|trans({}, 'admin') }}</th>
-                                {% endif %}
-                                <th scope="col" class="text-end">{{ 'admin.dashboard.modules.action'|trans({}, 'admin') }}</th>
-                            </tr>
-                        {% endblock %}
-                        {% block table_body %}
-                            <tr>
-                                <td><i class="fa-icon fa-icon--nav-cpu text-primary" aria-hidden="true"></i> {{ 'admin.dashboard.modules.assets'|trans({}, 'admin') }}</td>
-                                {% if currentTenant %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'primary', content: stats.modules.assets.own } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'primary', content: stats.modules.assets.own + stats.modules.assets.inherited } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'primary', content: stats.modules.assets.total } %}</td>
-                                {% else %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'primary', content: stats.modules.assets.total } %}</td>
-                                {% endif %}
-                                <td class="text-end">
-                                    <a href="{{ path('app_asset_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'admin.dashboard.modules.risks'|trans({}, 'admin') }}</td>
-                                {% if currentTenant %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'danger', content: stats.modules.risks.own } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'danger', content: stats.modules.risks.own + stats.modules.risks.inherited } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'danger', content: stats.modules.risks.total } %}</td>
-                                {% else %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'danger', content: stats.modules.risks.total } %}</td>
-                                {% endif %}
-                                <td class="text-end">
-                                    <a href="{{ path('app_risk_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'admin.dashboard.modules.controls'|trans({}, 'admin') }}</td>
-                                {% if currentTenant %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'success', content: stats.modules.controls.own } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'success', content: stats.modules.controls.own + stats.modules.controls.inherited } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'success', content: stats.modules.controls.total } %}</td>
-                                {% else %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'success', content: stats.modules.controls.total } %}</td>
-                                {% endif %}
-                                <td class="text-end">
-                                    <a href="{{ path('app_soa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa-icon fa-icon--vulnerability fa-icon--warning" aria-hidden="true"></i> {{ 'admin.dashboard.modules.incidents'|trans({}, 'admin') }}</td>
-                                {% if currentTenant %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'warning', content: stats.modules.incidents.own } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'warning', content: stats.modules.incidents.own + stats.modules.incidents.inherited } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'warning', content: stats.modules.incidents.total } %}</td>
-                                {% else %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'warning', content: stats.modules.incidents.total } %}</td>
-                                {% endif %}
-                                <td class="text-end">
-                                    <a href="{{ path('app_incident_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa-icon fa-icon--audit-internal" aria-hidden="true"></i> {{ 'admin.dashboard.modules.audits'|trans({}, 'admin') }}</td>
-                                {% if currentTenant %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'info', content: stats.modules.audits.own } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'info', content: stats.modules.audits.own + stats.modules.audits.inherited } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'info', content: stats.modules.audits.total } %}</td>
-                                {% else %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'info', content: stats.modules.audits.total } %}</td>
-                                {% endif %}
-                                <td class="text-end">
-                                    <a href="{{ path('app_audit_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.dashboard.modules.compliance'|trans({}, 'admin') }}</td>
-                                {% if currentTenant %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'secondary', content: stats.modules.compliance_requirements.own } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'secondary', content: stats.modules.compliance_requirements.own + stats.modules.compliance_requirements.inherited } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'secondary', content: stats.modules.compliance_requirements.total } %}</td>
-                                {% else %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'secondary', content: stats.modules.compliance_requirements.total } %}</td>
-                                {% endif %}
-                                <td class="text-end">
-                                    <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><i class="fa-icon fa-icon--training" aria-hidden="true"></i> {{ 'admin.dashboard.modules.trainings'|trans({}, 'admin') }}</td>
-                                {% if currentTenant %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'dark', content: stats.modules.trainings.own } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'dark', content: stats.modules.trainings.own + stats.modules.trainings.inherited } %}</td>
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'dark', content: stats.modules.trainings.total } %}</td>
-                                {% else %}
-                                    <td class="text-end">{% include '_components/_badge.html.twig' with { variant: 'dark', content: stats.modules.trainings.total } %}</td>
-                                {% endif %}
-                                <td class="text-end">
-                                    <a href="{{ path('app_training_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
-                                </td>
-                            </tr>
-                        {% endblock %}
-                    {% endembed %}
-                {% endblock %}
-            {% endembed %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="bi bi-bar-chart-fill text-primary" aria-hidden="true"></i>
+                        {{ 'admin.dashboard.modules.title'|trans({}, 'admin') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{{ 'admin.dashboard.modules.module'|trans({}, 'admin') }}</th>
+                                    {% if currentTenant %}
+                                        <th scope="col" class="text-end">{{ 'corporate.view.own_only'|trans({}, 'tenant') }}</th>
+                                        <th scope="col" class="text-end">{{ 'corporate.view.including_inherited'|trans({}, 'tenant') }}</th>
+                                        <th scope="col" class="text-end">{{ 'corporate.view.including_subsidiaries'|trans({}, 'tenant') }}</th>
+                                    {% else %}
+                                        <th scope="col" class="text-end">{{ 'admin.dashboard.modules.records'|trans({}, 'admin') }}</th>
+                                    {% endif %}
+                                    <th scope="col" class="text-end">{{ 'admin.dashboard.modules.action'|trans({}, 'admin') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><i class="fa-icon fa-icon--nav-cpu text-primary" aria-hidden="true"></i> {{ 'admin.dashboard.modules.assets'|trans({}, 'admin') }}</td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.own + stats.modules.assets.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.total }}</span></td>
+                                    {% endif %}
+                                    <td class="text-end">
+                                        <a href="{{ path('app_asset_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'admin.dashboard.modules.risks'|trans({}, 'admin') }}</td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.own + stats.modules.risks.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.total }}</span></td>
+                                    {% endif %}
+                                    <td class="text-end">
+                                        <a href="{{ path('app_risk_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'admin.dashboard.modules.controls'|trans({}, 'admin') }}</td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.own + stats.modules.controls.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.total }}</span></td>
+                                    {% endif %}
+                                    <td class="text-end">
+                                        <a href="{{ path('app_soa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-icon fa-icon--vulnerability fa-icon--warning" aria-hidden="true"></i> {{ 'admin.dashboard.modules.incidents'|trans({}, 'admin') }}</td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-warning text-dark">{{ stats.modules.incidents.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-warning text-dark">{{ stats.modules.incidents.own + stats.modules.incidents.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-warning text-dark">{{ stats.modules.incidents.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-warning text-dark">{{ stats.modules.incidents.total }}</span></td>
+                                    {% endif %}
+                                    <td class="text-end">
+                                        <a href="{{ path('app_incident_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-icon fa-icon--audit-internal" aria-hidden="true"></i> {{ 'admin.dashboard.modules.audits'|trans({}, 'admin') }}</td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.own + stats.modules.audits.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.total }}</span></td>
+                                    {% endif %}
+                                    <td class="text-end">
+                                        <a href="{{ path('app_audit_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.dashboard.modules.compliance'|trans({}, 'admin') }}</td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.own + stats.modules.compliance_requirements.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.total }}</span></td>
+                                    {% endif %}
+                                    <td class="text-end">
+                                        <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa-icon fa-icon--training" aria-hidden="true"></i> {{ 'admin.dashboard.modules.trainings'|trans({}, 'admin') }}</td>
+                                    {% if currentTenant %}
+                                        <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.own }}</span></td>
+                                        <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.own + stats.modules.trainings.inherited }}</span></td>
+                                        <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.total }}</span></td>
+                                    {% else %}
+                                        <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.total }}</span></td>
+                                    {% endif %}
+                                    <td class="text-end">
+                                        <a href="{{ path('app_training_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </div>
 
         {# Recent Activity & Quick Actions #}
         <div class="col-lg-4">
             {# Quick Actions (Sprint 11) — kontextabhängig: nur zeigen was gerade
              # relevant ist, plus immer-sinnvolle Power-User-Shortcuts. #}
-            {% embed '_components/_card.html.twig' with {
-                'title': 'admin.dashboard.quick_actions.title',
-                'titleDomain': 'admin',
-                'headerIcon': 'bi-lightning-fill text-warning',
-                'class': 'mb-4'
-            } %}
-                {% block card_body %}
+            <section class="fa-section mb-4">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="bi bi-lightning-fill text-warning" aria-hidden="true"></i>
+                        {{ 'admin.dashboard.quick_actions.title'|trans({}, 'admin') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     <div class="d-grid gap-2">
                         {# Kontext-Actions — nur bei Bedarf sichtbar #}
                         {% if stats.compliance.unreviewed_seed_mappings > 0 %}
@@ -366,17 +292,18 @@
                             <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'quick_fix.settings.title'|trans({}, 'quick_fix') }}
                         </a>
                     </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
 
             {# Recent Activity #}
-            {% embed '_components/_card.html.twig' with {
-                'title': 'admin.dashboard.activity.title',
-                'titleDomain': 'admin',
-                'headerIcon': 'bi-clock-history text-info',
-                'noPadding': true
-            } %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="bi bi-clock-history text-info" aria-hidden="true"></i>
+                        {{ 'admin.dashboard.activity.title'|trans({}, 'admin') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     {% if recentActivity is empty %}
                         <div class="p-3 text-center text-muted">
                             <i class="fa-icon fa-icon--ui-inbox fs-3" aria-hidden="true"></i>
@@ -392,7 +319,7 @@
                                             <p class="mb-1 small text-muted">
                                                 {{ log.entityType }} #{{ log.entityId }}
                                                 {% if log.username %}
-                                                    {% include '_components/_badge.html.twig' with { variant: 'light', content: log.username } %}
+                                                    <span class="badge bg-light text-dark border">{{ log.username }}</span>
                                                 {% endif %}
                                             </p>
                                         </div>
@@ -404,13 +331,13 @@
                             {% endfor %}
                         </div>
                     {% endif %}
-                    <div class="p-3 bg-transparent border-top">
-                        <a href="{{ path('app_audit_log_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
-                            {{ 'admin.dashboard.activity.view_all'|trans({}, 'admin') }} <i class="fa-icon fa-icon--util-arrow-right ms-1" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('app_audit_log_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm w-100">
+                        {{ 'admin.dashboard.activity.view_all'|trans({}, 'admin') }} <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </section>
         </div>
     </div>
 {% endblock %}

@@ -1,12 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ module.name }} - {{ 'admin.modules.details'|trans({}, 'admin') }}{% endblock %}
 
-{% block admin_title %}
-    {# TODO(aurora-migration): module.icon is PHP-driven dynamic icon string — migrate in module config #}
-    <i class="bi bi-{{ module.icon }} me-2" aria-hidden="true"></i>
-    {{ module.name }}
-{% endblock %}
+{% block admin_title %}{{ module.name }}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item"><a href="{{ path('admin_modules_index') }}">{{ 'admin.nav.module_management'|trans({}, 'admin') }}</a></li>
@@ -14,39 +11,33 @@
 {% endblock %}
 
 {% block admin_content %}
-<div class="container-fluid mt-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <a href="{{ path('admin_modules_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost mb-3">
-                <i class="fa-icon fa-icon--util-arrow-left me-2" aria-hidden="true"></i>
-                {{ 'common.back_to_overview'|trans({}, 'messages') }}
-            </a>
-
-            <div class="d-flex justify-content-end align-items-center">
-                <div>
-                    {% if is_active %}
-                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Aktiv', class: 'fs-5' } %}
-                    {% else %}
-                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Inaktiv', class: 'fs-5' } %}
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: module.icon, label: 'Module' },
+        title: module.name,
+        subtitle: module.description,
+        actions: [
+            { label: 'common.back_to_overview'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('admin_modules_index') }
+        ]
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">
             {# Module Info #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="mb-0">
-                            <i class="fa-icon fa-icon--ui-info me-2" aria-hidden="true"></i>
-                            Modul-Informationen
-                        </h2>
+            <section class="fa-section mb-4">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
+                        Modul-Informationen
+                    </h2>
+                    <div class="fa-section__tools">
+                        {% if is_active %}
+                            <span class="badge bg-success fs-6">Aktiv</span>
+                        {% else %}
+                            <span class="badge bg-secondary fs-6">Inaktiv</span>
+                        {% endif %}
                     </div>
-                {% endblock %}
-                {% block card_body %}
+                </div>
+                <div class="fa-section__body">
                     <dl class="row mb-0">
                         <dt class="col-sm-3">Beschreibung</dt>
                         <dd class="col-sm-9">{{ module.description }}</dd>
@@ -54,21 +45,21 @@
                         <dt class="col-sm-3">Status</dt>
                         <dd class="col-sm-9">
                             {% if module.required %}
-                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Erforderlich' } %}
+                                <span class="badge bg-warning text-dark me-1">Erforderlich</span>
                             {% else %}
-                                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'Optional' } %}
+                                <span class="badge bg-info me-1">Optional</span>
                             {% endif %}
                             {% if is_active %}
-                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Aktiv' } %}
+                                <span class="badge bg-success">Aktiv</span>
                             {% else %}
-                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Inaktiv' } %}
+                                <span class="badge bg-secondary">Inaktiv</span>
                             {% endif %}
                         </dd>
 
                         <dt class="col-sm-3">Entities</dt>
                         <dd class="col-sm-9">
                             {% for entity in module.entities %}
-                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: entity, class: 'me-1' } %}
+                                <span class="badge bg-secondary me-1">{{ entity }}</span>
                             {% endfor %}
                         </dd>
 
@@ -79,67 +70,56 @@
                             {% endfor %}
                         </dd>
                     </dl>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
 
             {# Dependencies #}
             {% if graph.dependencies|length > 0 or graph.dependents|length > 0 %}
-                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-                    {% block card_header %}
-                        <div class="card-header">
-                            <h2 class="mb-0">
-                                <i class="fa-icon fa-icon--nav-process me-2" aria-hidden="true"></i>
-                                Abhängigkeiten
-                            </h2>
-                        </div>
-                    {% endblock %}
-                    {% block card_body %}
+                <section class="fa-section mb-4">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">
+                            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
+                            Abhängigkeiten
+                        </h2>
+                    </div>
+                    <div class="fa-section__body">
                         {% if graph.dependencies|length > 0 %}
-                            <h3 class="mb-2">
-                                <i class="fa-icon fa-icon--ui-link text-warning me-2" aria-hidden="true"></i>
+                            <h3 class="h6 mb-2">
+                                <i class="fa-icon fa-icon--ui-link text-warning" aria-hidden="true"></i>
                                 Benötigt folgende Module:
                             </h3>
                             <div class="mb-4">
                                 {% for dep in graph.dependencies %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: dep, class: 'fs-6 me-2 mb-2' } %}
+                                    <span class="badge bg-warning text-dark fs-6 me-2 mb-2">{{ dep }}</span>
                                 {% endfor %}
                             </div>
                         {% endif %}
 
                         {% if graph.dependents|length > 0 %}
-                            <h3 class="mb-2">
-                                <i class="fa-icon fa-icon--util-arrow-right text-info me-2" aria-hidden="true"></i>
+                            <h3 class="h6 mb-2">
+                                <i class="fa-icon fa-icon--util-arrow-right text-info" aria-hidden="true"></i>
                                 Wird benötigt von:
                             </h3>
                             <div>
                                 {% for dep in graph.dependents %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: dep, class: 'fs-6 me-2 mb-2' } %}
+                                    <span class="badge bg-info fs-6 me-2 mb-2">{{ dep }}</span>
                                 {% endfor %}
                             </div>
                         {% endif %}
-
-                        {% if graph.dependencies|length == 0 and graph.dependents|length == 0 %}
-                            <p class="text-muted mb-0">
-                                <i class="fa-icon fa-icon--status-ok me-2" aria-hidden="true"></i>
-                                Dieses Modul hat keine Abhängigkeiten.
-                            </p>
-                        {% endif %}
-                    {% endblock %}
-                {% endembed %}
+                    </div>
+                </section>
             {% endif %}
 
             {# Sample Data #}
             {% if sample_data|length > 0 and is_active %}
-                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-                    {% block card_header %}
-                        <div class="card-header">
-                            <h2 class="mb-0">
-                                <i class="bi bi-file-earmark-code me-2" aria-hidden="true"></i>
-                                Verfügbare Beispiel-Daten
-                            </h2>
-                        </div>
-                    {% endblock %}
-                    {% block card_body %}
+                <section class="fa-section mb-4">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">
+                            <i class="bi bi-file-earmark-code" aria-hidden="true"></i>
+                            Verfügbare Beispiel-Daten
+                        </h2>
+                    </div>
+                    <div class="fa-section__body">
                         <form method="post" action="{{ path('admin_modules_import_data', {moduleKey: module_key}) }}">
                             {% for key, data in sample_data %}
                                 <div class="form-check mb-3">
@@ -152,27 +132,25 @@
                                 </div>
                             {% endfor %}
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary mt-3">
-                                <i class="fa-icon fa-icon--nav-download me-2" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                                 Ausgewählte Daten importieren
                             </button>
                         </form>
-                    {% endblock %}
-                {% endembed %}
+                    </div>
+                </section>
             {% endif %}
         </div>
 
         <div class="col-lg-4">
             {# Actions #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-primary' } %}
-                {% block card_header %}
-                    <div class="card-header bg-primary text-white">
-                        <h2 class="mb-0">
-                            <i class="bi bi-gears me-2" aria-hidden="true"></i>
-                            Aktionen
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section mb-4">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="bi bi-gears" aria-hidden="true"></i>
+                        Aktionen
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     <div class="d-grid gap-2">
                         {% if is_active %}
                             {% if not module.required %}
@@ -206,24 +184,22 @@
                         {% endif %}
 
                         <a href="{{ path('admin_modules_graph') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="fa-icon fa-icon--nav-process me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                             Dependency-Graph
                         </a>
                     </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
 
             {# Quick Info #}
-            {% embed '_components/_card.html.twig' with { 'class': 'border-info' } %}
-                {% block card_header %}
-                    <div class="card-header bg-info text-white">
-                        <h2 class="mb-0">
-                            <i class="fa-icon fa-icon--ui-lightbulb me-2" aria-hidden="true"></i>
-                            Hinweise
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i>
+                        Hinweise
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     <ul class="mb-0 small">
                         {% if module.required %}
                             <li>Dieses Modul ist erforderlich und kann nicht deaktiviert werden</li>
@@ -234,9 +210,8 @@
                         <li>Beim Deaktivieren werden keine Daten gelöscht</li>
                         <li>Sie können das Modul jederzeit wieder aktivieren</li>
                     </ul>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
     </div>
-</div>
 {% endblock admin_content %}
