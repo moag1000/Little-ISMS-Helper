@@ -73,15 +73,23 @@ mappings:
   # ===== Art. 20(1) — Governance =====
   - source: '20.1'
     target: 'OIS-02'
-    relationship: 'equivalent'
-    confidence: 'high'
+    relationship: 'subset'
+    confidence: 'medium'
     rationale: |
       NIS2 Art. 20(1) „Leitungsorgane billigen die Risikomanagement-
-      Maßnahmen und überwachen ihre Umsetzung" entspricht direkt
-      C5:2026 OIS-02 „Information Security Policy" mit Top-Management-
-      Verabschiedung der InfoSec-Policy.
-    cross_refs: ['COM-04']
-    audit_evidence_hint: 'Geschäftsführungs-/Vorstands-Beschluss zur InfoSec-Policy + zum Risikomanagement, Kommunikation, jährlicher Review.'
+      Maßnahmen UND überwachen ihre Umsetzung" geht über C5:2026 OIS-02
+      „Information Security Policy" hinaus. OIS-02 deckt die Top-
+      Management-Verabschiedung der Policy ab; die Supervision-Pflicht
+      erfordert zusätzlich COM-04 (ISMS-Performance-Reporting an
+      Mgmt) und Mgmt-Review-Routinen für alle 21(2)(a-j)-Maßnahmen.
+    gap_warning: |
+      Bestandsanwender mit OIS-02 alleine erfüllen 20(1) NICHT. Die
+      Supervision-Pflicht (kontinuierliche Überwachung der Umsetzung
+      ALLER 21(2)(a-j)-Maßnahmen durch Geschäftsleitung) muss separat
+      dokumentiert sein — z.B. quartalsweise Mgmt-Review mit Status zu
+      jeder 21(2)-Massnahme.
+    cross_refs: ['COM-04', 'OIS-01']
+    audit_evidence_hint: 'Geschäftsführungs-/Vorstands-Beschluss zur InfoSec-Policy + dokumentierte Mgmt-Review-Routine die alle 21(2)(a-j)-Bereiche abdeckt + Beschluss-Trail.'
 
   - source: '20.1'
     target: 'COM-04'
