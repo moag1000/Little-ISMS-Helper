@@ -817,3 +817,363 @@ mappings:
       bleibt ueber DORA Art. 9 abgedeckt.
     cross_refs: ['Art.28']
     audit_evidence_hint: 'TPP-Vertraege mit Wartungs-SLAs, Audit-Rights, Reporting-Klauseln.'
+
+  # ============================================================================
+  # LEVEL-2 RTS / ITS / CIR MAPPINGS — DORA Joint-Committee technical standards
+  # to NIS2 Art. 21 / 23. Source-IDs follow LoadDoraRtsItsFullCommand convention
+  # ('RTS-ICT-RMF-Art.X', 'RTS-INC-CLASS-Art.X', 'ITS-Register-RT.XX.YY' etc.).
+  # ============================================================================
+
+  # ----- RTS ICT-RMF Art.6/7 (Cryptography) -> NIS2 21.2.h -----
+  - source: 'RTS-ICT-RMF-Art.6'
+    target: 'Art.21.2.h'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      JC 2023 86 RTS Section II Art. 6 spezifiziert Krypto-Anforderungen
+      (Algorithmen-Whitelist, post-quantum-Readiness-Assessment) als
+      detaillierte Konkretisierung von DORA Art. 9. NIS2 Art. 21(2)(h)
+      "Konzepte und Verfahren fuer Kryptografie und Verschluesselung"
+      wird damit konkreter abgedeckt als in DORA-Level-1.
+    cross_refs: ['RTS-ICT-RMF-Art.7', 'Art.9']
+    audit_evidence_hint: 'Kryptografie-Policy mit Algorithmus-Whitelist, Post-Quantum-Readiness-Assessment, RTS-Compliance-Matrix.'
+
+  - source: 'RTS-ICT-RMF-Art.7'
+    target: 'Art.21.2.h'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      JC 2023 86 RTS Art. 7 verpflichtet zu Key-Management-Lifecycle
+      (Generation, Storage, Rotation, Revocation), inkl. HSM-Governance.
+      Granulare Erfuellung von NIS2 Art. 21(2)(h) Krypto-Anteil.
+    cross_refs: ['RTS-ICT-RMF-Art.6']
+    audit_evidence_hint: 'Key-Management-Policy, HSM-Inventar mit Rotations-Logs, Krypto-Lifecycle-Reviews.'
+
+  # ----- RTS ICT-RMF Art.10 (Vulnerability/Patch) -> NIS2 21.2.e -----
+  - source: 'RTS-ICT-RMF-Art.10'
+    target: 'Art.21.2.e'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      JC 2023 86 RTS Art. 10 verpflichtet zu Vulnerability-Discovery,
+      -Assessment, Prioritisierung und Remediation-Timelines.
+      Konkretere Erfuellung von NIS2 Art. 21(2)(e) "Sicherheit bei
+      Wartung von IT-Systemen" als DORA Level-1 Art. 9.
+    cross_refs: ['Art.9']
+    audit_evidence_hint: 'Vulnerability-Mgmt-Policy mit Remediation-SLAs (Critical 14d / High 30d), Scanning-Reports, Patch-Compliance-KPI.'
+
+  # ----- RTS ICT-RMF Art.12 (Logging) -> NIS2 21.2.b -----
+  - source: 'RTS-ICT-RMF-Art.12'
+    target: 'Art.21.2.b'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      JC 2023 86 RTS Art. 12 fordert zentralisierte Log-Retention,
+      Integritaetsschutz und Mindestaufbewahrung (typisch >= 1 Jahr).
+      Voraussetzung fuer Detection und Forensic-Bewaeltigung von
+      Sicherheitsvorfaellen gemaess NIS2 Art. 21(2)(b).
+    cross_refs: ['RTS-ICT-RMF-Art.22', 'Art.10']
+    audit_evidence_hint: 'Logging-Policy mit Retention-Pflicht, SIEM-Architektur, Tamper-Resistance-Nachweis.'
+
+  # ----- RTS ICT-RMF Art.13 (Network Security) -> NIS2 21.2.e -----
+  - source: 'RTS-ICT-RMF-Art.13'
+    target: 'Art.21.2.e'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      JC 2023 86 RTS Art. 13 verlangt Netzwerk-Segmentierung,
+      Mikro-Segmentierung und Allow-Listing. Konkretere Auspraegung
+      von NIS2 Art. 21(2)(e) (Sicherheit bei Erwerb / Wartung von
+      Netz- und Informationssystemen).
+    cross_refs: ['Art.9']
+    audit_evidence_hint: 'Netzwerk-Segmentierungs-Diagramm, Allow-Listing-Policy, Firewall-Regelwerk-Reviews.'
+
+  # ----- RTS ICT-RMF Art.20 (Access Control / PAM) -> NIS2 21.2.j -----
+  - source: 'RTS-ICT-RMF-Art.20'
+    target: 'Art.21.2.j'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      JC 2023 86 RTS Art. 20 spezifiziert Least-Privilege, Segregation
+      of Duties und Privileged-Access-Management (PAM). Konkretere
+      Erfuellung von NIS2 Art. 21(2)(j) Authentifizierungs-Anforderung
+      als DORA Level-1 Art. 9.
+    cross_refs: ['Art.9']
+    audit_evidence_hint: 'PAM-Tooling-Inventar, Just-in-time-Access-Logs, Session-Recording-Beispiele, MFA-Coverage privilegierte Konten.'
+
+  # ----- RTS ICT-RMF Art.22 (Detection) -> NIS2 21.2.b -----
+  - source: 'RTS-ICT-RMF-Art.22'
+    target: 'Art.21.2.b'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      JC 2023 86 RTS Art. 22 verlangt Detection-Mechanismen (SIEM, EDR,
+      UEBA, Anomaly-Detection, Alert-Thresholds). Konkretere Erfuellung
+      des Detection-Anteils von NIS2 Art. 21(2)(b) als DORA Art. 10.
+    cross_refs: ['Art.10']
+    audit_evidence_hint: 'SIEM/EDR-Coverage-Map, Alert-Threshold-Doku, UEBA-Use-Cases, MTTD-KPI.'
+
+  # ----- RTS ICT-RMF Art.23-26 (BC/Recovery) -> NIS2 21.2.c -----
+  - source: 'RTS-ICT-RMF-Art.23'
+    target: 'Art.21.2.c'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      JC 2023 86 RTS Art. 23 verlangt explizite BC-Policy mit RTO/RPO,
+      Alternate-Sites und Szenario-Coverage. Konkretere Erfuellung
+      von NIS2 Art. 21(2)(c) als DORA Level-1 Art. 11.
+    cross_refs: ['RTS-ICT-RMF-Art.24', 'RTS-ICT-RMF-Art.25', 'Art.11']
+    audit_evidence_hint: 'BC-Policy mit RTO/RPO-Tabelle, Alternate-Site-Inventar, Szenario-Katalog.'
+
+  - source: 'RTS-ICT-RMF-Art.25'
+    target: 'Art.21.2.c'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      JC 2023 86 RTS Art. 25 verpflichtet zu mindestens jaehrlichen
+      BC-Tests inkl. Severe-Scenario-Coverage. Aequivalenz zu NIS2
+      Art. 21(2)(c) Krisenmgmt + zusaetzliche Test-Frequenz-Pflicht.
+    cross_refs: ['Art.11']
+    audit_evidence_hint: 'BC-Test-Plan, Test-Berichte letzte 12 Monate, Severe-Scenario-Test-Protokolle.'
+
+  - source: 'RTS-ICT-RMF-Art.27'
+    target: 'Art.21.2.c'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      JC 2023 86 RTS Art. 27 spezifiziert Backup-Trennung von
+      Produktion, Immutability-Optionen und Restoration-Tests.
+      Konkretere Erfuellung des Backup-Anteils von NIS2 Art. 21(2)(c)
+      als DORA Level-1 Art. 12.
+    cross_refs: ['Art.12']
+    audit_evidence_hint: 'Backup-Architektur mit Immutable-Tier, Restoration-Test-Berichte, Air-Gap-Doku.'
+
+  # ----- RTS Inc-Class — quantitative thresholds vs NIS2 23.1 -----
+  - source: 'RTS-INC-CLASS-Art.2'
+    target: 'Art.23.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CDR 2024/1772 Art. 2 fixiert quantitative Schwellwerte fuer
+      betroffene Clients/Counterparts/Transactions als Major-Incident-
+      Trigger. NIS2 Art. 23(1) verlangt Meldung "erheblicher" Vorfaelle,
+      ohne explizite Schwellwerte. Aequivalenz nur konditional —
+      DORA-Schwellen sind ein Trigger-Set, NIS2 ein anderes.
+    gap_warning: |
+      WICHTIG: DORA-Klassifizierung als major incident und NIS2-
+      Klassifizierung als "erheblich" sind NICHT identisch. Ein
+      DORA-major-incident ist meist auch NIS2-significant, aber
+      umgekehrt nicht zwingend. Doppelmeldung-Pflicht (Art. 4(2) NIS2)
+      bleibt bestehen, jeweils mit der eigenen Klassifizierungs-Logik.
+    cross_refs: ['RTS-INC-CLASS-Art.9', 'Art.18']
+    audit_evidence_hint: 'Klassifizierungs-Matrix mit DORA- und NIS2-Schwellen separat, kombinierter Trigger-Test pro Incident.'
+
+  - source: 'RTS-INC-CLASS-Art.4'
+    target: 'Art.23.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CDR 2024/1772 Art. 4 (Duration / Service Downtime) erlaubt
+      Time-based Trigger (typisch >= 2h kritischer Service-Ausfall).
+      NIS2 Art. 23(1) hat keinen Time-Threshold; Aequivalenz konditional.
+    gap_warning: |
+      DORA 2h-Downtime-Trigger ist quantitativ; NIS2 nicht.
+      Bestandsanwender sollten beide Trigger-Sets im Incident-Mgmt
+      System parallel implementieren, um Doppelmeldungen rechtskonform
+      automatisch auszuloesen.
+    cross_refs: ['Art.18']
+    audit_evidence_hint: 'Service-Downtime-Tracking, automatisierte Trigger-Logik in IR-Tooling, Audit-Trail Klassifizierung.'
+
+  - source: 'RTS-INC-CLASS-Art.6'
+    target: 'Art.23.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      CDR 2024/1772 Art. 6 definiert Data-Loss-Kategorien (CIA),
+      Volumen, Sensitivitaet als Major-Incident-Trigger. NIS2 23(1)
+      adressiert Datenverlust qualitativ. Aequivalenz nur konditional.
+    cross_refs: ['Art.18']
+    audit_evidence_hint: 'Data-Loss-Klassifizierungs-Matrix, Sensitivitaets-Tagging, DLP-Integration.'
+
+  # ----- RTS Inc-Report — content templates vs NIS2 23.2/3/4 -----
+  - source: 'RTS-INC-REPORT-Art.1'
+    target: 'Art.23.2'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      CDR 2024 RTS Art. 1 spezifiziert Mindestfelder fuer die 4h-
+      Initialmeldung. NIS2 Art. 23(2) verlangt 24h-Fruehwarnung.
+      DORA-Frist und Inhalt sind strenger; Doppelmeldung an
+      BSI/CSIRT bleibt jedoch erforderlich (Art. 4(2) NIS2).
+    cross_refs: ['Art.19']
+    audit_evidence_hint: 'Initial-Meldungs-Template (RTS-konform) parallel zu CSIRT-Fruehwarnung, Zeitstempel-Audit.'
+
+  - source: 'RTS-INC-REPORT-Art.2'
+    target: 'Art.23.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      CDR 2024 RTS Art. 2 fixiert 72h-Intermediate-Report-Inhalt.
+      NIS2 Art. 23(3) hat dieselbe 72h-Frist und vergleichbaren Inhalt.
+      Inhaltlich nahezu deckungsgleich; DORA-RTS bietet detailliertere
+      Felder. Aequivalenz fuer Inhalt; Doppelmeldung Pflicht.
+    cross_refs: ['Art.19']
+    audit_evidence_hint: 'Intermediate-Report-Template (RTS-konform), parallele CSIRT-Meldung mit Field-Mapping.'
+
+  - source: 'RTS-INC-REPORT-Art.3'
+    target: 'Art.23.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      CDR 2024 RTS Art. 3 fixiert Final-Report-Inhalt (Root-Cause,
+      Remediation, Lessons Learned) binnen 1 Monat. NIS2 Art. 23(4)
+      hat dieselbe Frist; DORA-RTS bietet detailliertere Felder.
+      Aequivalenz; Doppelmeldung Pflicht.
+    cross_refs: ['Art.19']
+    audit_evidence_hint: 'Final-Report-Template (RTS-konform) mit Root-Cause-Analyse, parallel zu BSI-Final-Meldung.'
+
+  # ----- ITS Register of Information -> NIS2 21.2.d -----
+  - source: 'ITS-Register-RT.02.01'
+    target: 'Art.21.2.d'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      CIR 2024/2956 Template RT.02.01 verpflichtet zu vollstaendigem
+      Register saemtlicher ICT-TPP-Vertraege. NIS2 Art. 21(2)(d)
+      "Sicherheit der Lieferkette" wird durch granulares
+      Vertrags-/TPP-Inventar uebererfuellt.
+    cross_refs: ['Art.28']
+    audit_evidence_hint: 'Register of Information Snapshot, jaehrlicher Submission-Nachweis an Competent Authority.'
+
+  - source: 'ITS-Register-RT.05.02'
+    target: 'Art.21.2.d'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      CIR 2024/2956 Template RT.05.02 verpflichtet zur expliziten
+      Verknuepfung jedes ICT-Service mit den unterstuetzten kritischen
+      oder wichtigen Funktionen. NIS2 21(2)(d) erwartet Lieferketten-
+      Sicherheits-Bewertung; CIF-Linkage liefert die operative
+      Bewertungsgrundlage.
+    cross_refs: ['ITS-Register-RT.04.02', 'Art.28']
+    audit_evidence_hint: 'CIF-zu-ICT-Service-Mapping, Substitutability-Bewertung im RoI.'
+
+  - source: 'ITS-Register-RT.06.02'
+    target: 'Art.21.2.d'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      CIR 2024/2956 Template RT.06.02 verlangt Sub-Outsourcing-Tiefe
+      und materielle Sub-Contractor-Liste. NIS2 21(2)(d) erwartet
+      Lieferketten-Sicherheit, oft auf Tier-1 beschraenkt. DORA-RoI
+      geht ueber NIS2 hinaus, deckt mehrstufige Lieferketten ab.
+    cross_refs: ['Art.28', 'Art.30']
+    audit_evidence_hint: 'Sub-Contractor-Chain-Doku im RoI, Material-Sub-Contractor-Risk-Assessment.'
+
+  # ----- RTS Subcontracting -> NIS2 21.2.d -----
+  - source: 'RTS-Subcontracting-Art.2'
+    target: 'Art.21.2.d'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      CDR 2025/532 Art. 2 (Conditions for subcontracting) verpflichtet
+      zu Risk-Assessment, Due Diligence und Contract-Chain-Integrity.
+      Konkretere Erfuellung von NIS2 Art. 21(2)(d) Lieferketten-
+      Sicherheit als DORA Level-1 Art. 30.
+    cross_refs: ['Art.30']
+    audit_evidence_hint: 'Subcontractor-Due-Diligence-Reports, Chain-of-Custody-Doku, Contract-Inheritance-Klauseln.'
+
+  - source: 'RTS-Subcontracting-Art.5'
+    target: 'Art.21.2.d'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      CDR 2025/532 Art. 5 setzt Limits fuer Sub-Outsourcing-Chain-
+      Tiefe und -Geographie. NIS2 21(2)(d) hat keine expliziten
+      Limit-Vorgaben — DORA strenger.
+    gap_warning: |
+      DORA-Limit-Regeln sind fuer DORA-Scope-Entities verpflichtend;
+      NIS2-Entities ohne DORA-Pflicht haben hier keinen Aequivalent.
+    cross_refs: ['Art.30']
+    audit_evidence_hint: 'Sub-Outsourcing-Chain-Limits-Policy, Geo-Restrictions-Compliance-Reports.'
+
+  # ----- RTS TLPT -> NIS2 21.2.f (Wirksamkeit) -----
+  - source: 'RTS-TLPT-Art.4'
+    target: 'Art.21.2.f'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      JC 2024 RTS TLPT Art. 4 verlangt TIBER-EU-konforme Methodik
+      mit Phase-Trennung (Threat-Intel, Red-Team, Closure). NIS2
+      Art. 21(2)(f) Wirksamkeitsbewertung wird durch ehrgeizigste
+      Test-Methodik der Branche uebererfuellt.
+    cross_refs: ['Art.26']
+    audit_evidence_hint: 'TLPT-Test-Plan TIBER-EU, Threat-Intel-Provider-Vertrag, Red-Team-Closure-Workshop-Protokoll.'
+
+  - source: 'RTS-TLPT-Art.11'
+    target: 'Art.21.2.f'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      JC 2024 RTS TLPT Art. 11 verlangt Tester-Unabhaengigkeit,
+      Zertifizierung (z.B. CREST, OSCP-aequivalent) und Erfahrung.
+      NIS2 21(2)(f) hat KEINE Tester-Qualifikations-Vorgaben.
+      DORA strenger.
+    gap_warning: |
+      DORA-Tester-Anforderungen sind exklusiv fuer DORA-Scope.
+      Aus reiner NIS2-Sicht nicht erforderlich.
+    cross_refs: ['Art.27']
+    audit_evidence_hint: 'Tester-Zertifikate, Unabhaengigkeitserklaerungen, Track-Record-Doku.'
+
+  # ----- RTS Oversight -> NIS2 21.2.d (Lieferkette / kritische TPPs) -----
+  - source: 'RTS-Oversight-Art.3'
+    target: 'Art.21.2.d'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      JC 2024 RTS Oversight Art. 3 spezifiziert Kriterien zur
+      Critical-ICT-TPP-Designation (CTPP). NIS2 21(2)(d) erwartet
+      Lieferketten-Sicherheit; DORA-CTPP-Designation ist regulatorischer
+      Mehrwert ueber NIS2 hinaus.
+    gap_warning: |
+      RTS Oversight gilt fuer ESA-designierte CTPPs; KEIN NIS2-Pendant.
+      Nur fuer DORA-Scope-Entities relevant; NIS2-Compliance daraus
+      nicht ableitbar.
+    cross_refs: ['Art.31', 'Art.32']
+    audit_evidence_hint: 'CTPP-Liste der ESAs, Korrespondenz mit Lead-Overseer, Empfehlungs-Tracking.'
+
+  # ----- RTS TPP-Policy CDR 2024/1773 -> NIS2 21.2.d -----
+  - source: 'RTS-TPP-Policy-Art.4'
+    target: 'Art.21.2.d'
+    relationship: 'superset'
+    confidence: 'high'
+    rationale: |
+      CDR 2024/1773 Art. 4 fixiert Mindest-Vertragsklauseln fuer
+      ICT-TPP-Vertraege, die kritische Funktionen unterstuetzen.
+      Konkretere Erfuellung von NIS2 Art. 21(2)(d) als DORA Level-1
+      Art. 30, mit verbindlicher Klausel-Liste.
+    cross_refs: ['Art.30']
+    audit_evidence_hint: 'TPP-Vertrags-Template mit RTS-Mindestklauseln, Compliance-Mapping pro Vertrag.'
+
+  - source: 'RTS-TPP-Policy-Art.7'
+    target: 'Art.21.2.c'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      CDR 2024/1773 Art. 7 verpflichtet zu dokumentierter Exit-Strategy
+      mit Datenportabilitaet. Komplement zu NIS2 Art. 21(2)(c) BC-Anteil
+      bei TPP-Wechsel (Resilience-against-Vendor-Lock-in).
+    cross_refs: ['Art.30']
+    audit_evidence_hint: 'Exit-Plaene fuer kritische TPPs, Datenrueckgabe-Klauseln, Replatforming-Test-Doku.'
+
+  - source: 'RTS-TPP-Policy-Art.8'
+    target: 'Art.21.2.d'
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      CDR 2024/1773 Art. 8 verlangt quantitatives Konzentrations-Risk-
+      Monitoring mit Reporting an Mgmt-Body. Konkretere Erfuellung
+      von NIS2 Art. 21(2)(d) Lieferketten-Sicherheit als DORA Level-1
+      Art. 29.
+    cross_refs: ['Art.29']
+    audit_evidence_hint: 'Konzentrationsrisiko-Dashboard, Mgmt-Body-Reports, Diversifikations-Strategie.'
