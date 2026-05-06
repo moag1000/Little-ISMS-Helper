@@ -1,8 +1,9 @@
+{% trans_default_domain 'management_reports' %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Risk Management Report</title>
+    <title>{{ 'management_reports.risk.title'|trans({}, 'management_reports') }}</title>
     <style>
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 15px; }
         .header {
@@ -45,56 +46,56 @@
 </head>
 <body>
     <div class="header">
-        <h1>Risk Management Report</h1>
-        <div class="date">Generated: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
+        <h1>{{ 'management_reports.risk.title'|trans({}, 'management_reports') }}</h1>
+        <div class="date">{{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
     </div>
 
     {# Summary Statistics #}
     <div class="stats-grid">
         <div class="stat-box">
             <div class="number" style="color: #0ea5e9;">{{ report.total_risks }}</div>
-            <div class="label">Total Risks</div>
+            <div class="label">{{ 'management_reports.risk.total_risks'|trans({}, 'management_reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number" style="color: var(--danger);">{{ report.level_counts.critical }}</div>
-            <div class="label">Critical</div>
+            <div class="label">{{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number" style="color: #d97706;">{{ report.level_counts.high }}</div>
-            <div class="label">High</div>
+            <div class="label">{{ 'management_reports.risk_level.high'|trans({}, 'management_reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number" style="color: #0ea5e9;">{{ report.level_counts.medium }}</div>
-            <div class="label">Medium</div>
+            <div class="label">{{ 'management_reports.risk_level.medium'|trans({}, 'management_reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number" style="color: #16a34a;">{{ report.level_counts.low }}</div>
-            <div class="label">Low</div>
+            <div class="label">{{ 'management_reports.risk_level.low'|trans({}, 'management_reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number" style="color: #6366f1;">{{ report.average_risk_score }}</div>
-            <div class="label">Avg. Score</div>
+            <div class="label">{{ 'management_reports.risk.avg_score'|trans({}, 'management_reports') }}</div>
         </div>
     </div>
 
     {# Treatment Plan Summary #}
     <div class="section">
-        <h2>Treatment Plan Summary</h2>
+        <h2>{{ 'management_reports.risk.treatment_plan_summary'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">Metric</th>
-                <th scope="col">Count</th>
+                <th scope="col">{{ 'management_reports.risk.header.metric'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.count'|trans({}, 'management_reports') }}</th>
             </tr>
             <tr>
-                <td>Total Treatment Plans</td>
+                <td>{{ 'management_reports.treatment_status.total'|trans({}, 'management_reports') }}</td>
                 <td>{{ report.treatment_plans.total }}</td>
             </tr>
             <tr>
-                <td>Active Treatment Plans</td>
+                <td>{{ 'management_reports.treatment_status.active'|trans({}, 'management_reports') }}</td>
                 <td>{{ report.treatment_plans.active }}</td>
             </tr>
             <tr>
-                <td>Overdue Treatment Plans</td>
+                <td>{{ 'management_reports.treatment_status.overdue'|trans({}, 'management_reports') }}</td>
                 <td>{% if report.treatment_plans.overdue > 0 %}<span class="badge badge-critical">{{ report.treatment_plans.overdue }}</span>{% else %}0{% endif %}</td>
             </tr>
         </table>
@@ -104,16 +105,16 @@
     {% set critical_high = report.by_level.critical|merge(report.by_level.high) %}
     {% if critical_high|length > 0 %}
     <div class="section">
-        <h2>Critical & High Risks (Requires Immediate Attention)</h2>
+        <h2>{{ 'management_reports.risk.critical_high'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Title</th>
-                <th scope="col">Category</th>
-                <th scope="col">Score</th>
-                <th scope="col">Level</th>
-                <th scope="col">Treatment</th>
-                <th scope="col">Owner</th>
+                <th scope="col">{{ 'management_reports.risk.header.id'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.title'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.category'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.score'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.level'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.treatment'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.owner'|trans({}, 'management_reports') }}</th>
             </tr>
             {% for risk in critical_high %}
             <tr>
@@ -123,9 +124,9 @@
                 <td><strong>{{ risk.riskScore }}</strong></td>
                 <td>
                     {% if risk.riskScore >= 20 %}
-                    <span class="badge badge-critical">Critical</span>
+                    <span class="badge badge-critical">{{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }}</span>
                     {% else %}
-                    <span class="badge badge-high">High</span>
+                    <span class="badge badge-high">{{ 'management_reports.risk_level.high'|trans({}, 'management_reports') }}</span>
                     {% endif %}
                 </td>
                 <td>{{ (risk.treatmentStrategy ? risk.treatmentStrategy.value : '-')|slice(0, 20) }}</td>
@@ -138,11 +139,11 @@
 
     {# Risk by Category #}
     <div class="section">
-        <h2>Risks by Category</h2>
+        <h2>{{ 'management_reports.risk.by_category'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">Category</th>
-                <th scope="col">Count</th>
+                <th scope="col">{{ 'management_reports.risk.header.category'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.count'|trans({}, 'management_reports') }}</th>
             </tr>
             {% for category, risks in report.by_category %}
             <tr>
@@ -157,13 +158,13 @@
     {% if trends|length > 0 %}
     <div class="page-break"></div>
     <div class="section">
-        <h2>Risk Trends (Last 12 Months)</h2>
+        <h2>{{ 'management_reports.risk.trends_12m'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">Month</th>
-                <th scope="col">Total Risks</th>
-                <th scope="col">High/Critical</th>
-                <th scope="col">New</th>
+                <th scope="col">{{ 'management_reports.trend.month'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.trend.total_risks'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.trend.high_critical'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.trend.new_risks'|trans({}, 'management_reports') }}</th>
             </tr>
             {% for trend in trends %}
             <tr>
@@ -180,17 +181,17 @@
     {# Complete Risk Register #}
     {% if report.risks|length > 0 %}
     <div class="section">
-        <h2>Complete Risk Register</h2>
+        <h2>{{ 'management_reports.risk.complete_register'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Title</th>
-                <th scope="col">Category</th>
-                <th scope="col">L</th>
-                <th scope="col">I</th>
-                <th scope="col">Score</th>
-                <th scope="col">Level</th>
-                <th scope="col">Status</th>
+                <th scope="col">{{ 'management_reports.risk.header.id'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.title'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.category'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.likelihood'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.impact'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.score'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.level'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.risk.header.status'|trans({}, 'management_reports') }}</th>
             </tr>
             {% for risk in report.risks %}
             <tr>
@@ -203,13 +204,13 @@
                 <td>
                     {% set score = risk.riskScore %}
                     {% if score >= 20 %}
-                    <span class="badge badge-critical">Critical</span>
+                    <span class="badge badge-critical">{{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }}</span>
                     {% elseif score >= 12 %}
-                    <span class="badge badge-high">High</span>
+                    <span class="badge badge-high">{{ 'management_reports.risk_level.high'|trans({}, 'management_reports') }}</span>
                     {% elseif score >= 6 %}
-                    <span class="badge badge-medium">Medium</span>
+                    <span class="badge badge-medium">{{ 'management_reports.risk_level.medium'|trans({}, 'management_reports') }}</span>
                     {% else %}
-                    <span class="badge badge-low">Low</span>
+                    <span class="badge badge-low">{{ 'management_reports.risk_level.low'|trans({}, 'management_reports') }}</span>
                     {% endif %}
                 </td>
                 <td>{{ risk.status ? risk.status.value : '' }}</td>
@@ -220,7 +221,7 @@
     {% endif %}
 
     <div class="footer">
-        Confidential - Risk Management Report | Little ISMS Helper
+        {{ 'management_reports.risk.footer'|trans({}, 'management_reports') }}
     </div>
 </body>
 </html>

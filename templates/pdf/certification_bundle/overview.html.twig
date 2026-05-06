@@ -1,17 +1,18 @@
+{% trans_default_domain 'certification_bundle' %}
 {% extends 'pdf/_base_document.html.twig' %}
 
-{% block document_type %}ISMS Certification Readiness Overview{% endblock %}
+{% block document_type %}{{ 'certification_bundle.pdf.overview.title'|trans({}, 'certification_bundle') }}{% endblock %}
 {% block document_id %}DOC-CERT-OVW{% endblock %}
-{% block document_title %}ISMS Certification Readiness Overview{% endblock %}
+{% block document_title %}{{ 'certification_bundle.pdf.overview.title'|trans({}, 'certification_bundle') }}{% endblock %}
 {% block document_version %}{{ version }}{% endblock %}
 {% block document_status_class %}approved{% endblock %}
 {% block document_status %}GENERATED{% endblock %}
 {% block classification_class %}confidential{% endblock %}
-{% block document_classification %}CONFIDENTIAL{% endblock %}
+{% block document_classification %}{{ 'certification_bundle.pdf.confidential'|trans({}, 'certification_bundle') }}{% endblock %}
 {% block organization_name %}{{ tenant_name }}{% endblock %}
 {% block header_left %}{{ tenant_name }}{% endblock %}
-{% block header_center %}ISMS Certification Readiness{% endblock %}
-{% block header_right %}CONFIDENTIAL{% endblock %}
+{% block header_center %}{{ 'certification_bundle.pdf.overview.title'|trans({}, 'certification_bundle') }}{% endblock %}
+{% block header_right %}{{ 'certification_bundle.pdf.confidential'|trans({}, 'certification_bundle') }}{% endblock %}
 {% block footer_left %}DOC-CERT-OVW | Version {{ version }}{% endblock %}
 {% block footer_center %}{{ tenant_name }}{% endblock %}
 {% block footer_version %}{{ version }}{% endblock %}
@@ -19,97 +20,97 @@
 {% block modified_date %}{{ generated_at|date('d.m.Y H:i') }}{% endblock %}
 
 {% block document_content %}
-<h1>ISMS Certification Readiness Overview</h1>
-<p class="text-muted">Generated: {{ generated_at|date('d.m.Y H:i') }} | Organization: {{ tenant_name }}</p>
+<h1>{{ 'certification_bundle.pdf.overview.title'|trans({}, 'certification_bundle') }}</h1>
+<p class="text-muted">{{ 'certification_bundle.pdf.generated'|trans({}, 'certification_bundle') }}: {{ generated_at|date('d.m.Y H:i') }} | {{ 'certification_bundle.pdf.organization'|trans({}, 'certification_bundle') }}: {{ tenant_name }}</p>
 
-<h2>1. Control Implementation Status</h2>
+<h2>{{ 'certification_bundle.pdf.overview.section_1'|trans({}, 'certification_bundle') }}</h2>
 <table>
     <thead>
         <tr>
-            <th scope="col">Metric</th>
-            <th scope="col">Count</th>
-            <th scope="col">Percentage</th>
+            <th scope="col">{{ 'certification_bundle.pdf.overview.col.metric'|trans({}, 'certification_bundle') }}</th>
+            <th scope="col">{{ 'certification_bundle.pdf.overview.col.count'|trans({}, 'certification_bundle') }}</th>
+            <th scope="col">{{ 'certification_bundle.pdf.overview.col.percentage'|trans({}, 'certification_bundle') }}</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>Total Controls</td>
+            <td>{{ 'certification_bundle.pdf.overview.controls.total'|trans({}, 'certification_bundle') }}</td>
             <td>{{ control_stats.total }}</td>
             <td>100%</td>
         </tr>
         <tr>
-            <td><strong>Implemented</strong></td>
+            <td><strong>{{ 'certification_bundle.pdf.overview.controls.implemented'|trans({}, 'certification_bundle') }}</strong></td>
             <td><strong>{{ control_stats.implemented }}</strong></td>
             <td><strong>{{ control_percentage }}%</strong></td>
         </tr>
         <tr>
-            <td>In Progress</td>
+            <td>{{ 'certification_bundle.pdf.overview.controls.in_progress'|trans({}, 'certification_bundle') }}</td>
             <td>{{ control_stats.in_progress }}</td>
             <td>{{ control_stats.total > 0 ? ((control_stats.in_progress / control_stats.total) * 100)|round(1) : 0 }}%</td>
         </tr>
         <tr>
-            <td>Not Started</td>
+            <td>{{ 'certification_bundle.pdf.overview.controls.not_started'|trans({}, 'certification_bundle') }}</td>
             <td>{{ control_stats.not_started }}</td>
             <td>{{ control_stats.total > 0 ? ((control_stats.not_started / control_stats.total) * 100)|round(1) : 0 }}%</td>
         </tr>
         <tr>
-            <td>Not Applicable</td>
+            <td>{{ 'certification_bundle.pdf.overview.controls.not_applicable'|trans({}, 'certification_bundle') }}</td>
             <td>{{ control_stats.not_applicable }}</td>
             <td>{{ control_stats.total > 0 ? ((control_stats.not_applicable / control_stats.total) * 100)|round(1) : 0 }}%</td>
         </tr>
     </tbody>
 </table>
 
-<h2>2. Risk Overview</h2>
+<h2>{{ 'certification_bundle.pdf.overview.section_2'|trans({}, 'certification_bundle') }}</h2>
 <table>
     <thead>
         <tr>
-            <th scope="col">Risk Level</th>
-            <th scope="col">Count</th>
+            <th scope="col">{{ 'certification_bundle.pdf.overview.col.risk_level'|trans({}, 'certification_bundle') }}</th>
+            <th scope="col">{{ 'certification_bundle.pdf.overview.col.count'|trans({}, 'certification_bundle') }}</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td><span style="color: #dc2626;">Critical (>= 20)</span></td>
+            <td><span style="color: #dc2626;">{{ 'certification_bundle.pdf.overview.risk.critical'|trans({}, 'certification_bundle') }}</span></td>
             <td>{{ risks_by_level.critical }}</td>
         </tr>
         <tr>
-            <td><span style="color: #f97316;">High (>= 12)</span></td>
+            <td><span style="color: #f97316;">{{ 'certification_bundle.pdf.overview.risk.high'|trans({}, 'certification_bundle') }}</span></td>
             <td>{{ risks_by_level.high }}</td>
         </tr>
         <tr>
-            <td><span style="color: #eab308;">Medium (>= 6)</span></td>
+            <td><span style="color: #eab308;">{{ 'certification_bundle.pdf.overview.risk.medium'|trans({}, 'certification_bundle') }}</span></td>
             <td>{{ risks_by_level.medium }}</td>
         </tr>
         <tr>
-            <td><span style="color: #22c55e;">Low (< 6)</span></td>
+            <td><span style="color: #22c55e;">{{ 'certification_bundle.pdf.overview.risk.low'|trans({}, 'certification_bundle') }}</span></td>
             <td>{{ risks_by_level.low }}</td>
         </tr>
         <tr>
-            <td><strong>Total Risks</strong></td>
+            <td><strong>{{ 'certification_bundle.pdf.overview.risk.total'|trans({}, 'certification_bundle') }}</strong></td>
             <td><strong>{{ risks|length }}</strong></td>
         </tr>
     </tbody>
 </table>
 
-<h2>3. Asset Register Summary</h2>
-<p>Total assets registered: <strong>{{ assets|length }}</strong></p>
+<h2>{{ 'certification_bundle.pdf.overview.section_3'|trans({}, 'certification_bundle') }}</h2>
+<p>{{ 'certification_bundle.pdf.overview.total_assets_registered'|trans({}, 'certification_bundle') }}: <strong>{{ assets|length }}</strong></p>
 
-<h2>4. Documentation</h2>
-<p>Total documents in the ISMS: <strong>{{ documents|length }}</strong></p>
+<h2>{{ 'certification_bundle.pdf.overview.section_4'|trans({}, 'certification_bundle') }}</h2>
+<p>{{ 'certification_bundle.pdf.overview.total_documents'|trans({}, 'certification_bundle') }}: <strong>{{ documents|length }}</strong></p>
 
-<h2>5. Active Risk Treatment Plans</h2>
-<p>Active treatment plans: <strong>{{ treatment_plans|length }}</strong></p>
+<h2>{{ 'certification_bundle.pdf.overview.section_5'|trans({}, 'certification_bundle') }}</h2>
+<p>{{ 'certification_bundle.pdf.overview.active_treatment_plans'|trans({}, 'certification_bundle') }}: <strong>{{ treatment_plans|length }}</strong></p>
 
 {% if treatment_plans|length > 0 %}
 <table>
     <thead>
         <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Priority</th>
-            <th scope="col">Status</th>
-            <th scope="col">Completion</th>
-            <th scope="col">Target Date</th>
+            <th scope="col">{{ 'certification_bundle.pdf.overview.col.title'|trans({}, 'certification_bundle') }}</th>
+            <th scope="col">{{ 'certification_bundle.pdf.overview.col.priority'|trans({}, 'certification_bundle') }}</th>
+            <th scope="col">{{ 'certification_bundle.pdf.overview.col.status'|trans({}, 'certification_bundle') }}</th>
+            <th scope="col">{{ 'certification_bundle.pdf.overview.col.completion'|trans({}, 'certification_bundle') }}</th>
+            <th scope="col">{{ 'certification_bundle.pdf.overview.col.target_date'|trans({}, 'certification_bundle') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -130,42 +131,42 @@
 </table>
 {% endif %}
 
-<h2>6. Bundle Contents</h2>
+<h2>{{ 'certification_bundle.pdf.overview.section_6'|trans({}, 'certification_bundle') }}</h2>
 <table>
     <thead>
         <tr>
-            <th scope="col">Document</th>
-            <th scope="col">Description</th>
+            <th scope="col">{{ 'certification_bundle.pdf.overview.col.document'|trans({}, 'certification_bundle') }}</th>
+            <th scope="col">{{ 'certification_bundle.pdf.overview.col.description'|trans({}, 'certification_bundle') }}</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td>00_ISMS_OVERVIEW.pdf</td>
-            <td>This document - Certification readiness overview</td>
+            <td>{{ 'certification_bundle.pdf.overview.bundle.overview_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
         <tr>
             <td>01_STATEMENT_OF_APPLICABILITY.pdf</td>
-            <td>Statement of Applicability (SoA) with all 93 Annex A controls</td>
+            <td>{{ 'certification_bundle.pdf.overview.bundle.soa_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
         <tr>
             <td>02_RISK_TREATMENT_PLAN.pdf</td>
-            <td>Risk register with treatment strategies and residual risk</td>
+            <td>{{ 'certification_bundle.pdf.overview.bundle.rtp_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
         <tr>
             <td>03_ASSET_REGISTER.pdf</td>
-            <td>Asset inventory with CIA classification</td>
+            <td>{{ 'certification_bundle.pdf.overview.bundle.asset_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
         <tr>
             <td>04_EVIDENCE/</td>
-            <td>Evidence documents mapped to compliance requirements</td>
+            <td>{{ 'certification_bundle.pdf.overview.bundle.evidence_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
         <tr>
             <td>05_GAP_ANALYSIS.csv</td>
-            <td>Requirements with less than 100% fulfillment</td>
+            <td>{{ 'certification_bundle.pdf.overview.bundle.gap_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
         <tr>
             <td>METADATA.json</td>
-            <td>Export metadata with SHA-256 integrity hash</td>
+            <td>{{ 'certification_bundle.pdf.overview.bundle.metadata_desc'|trans({}, 'certification_bundle') }}</td>
         </tr>
     </tbody>
 </table>

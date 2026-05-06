@@ -1,8 +1,9 @@
+{% trans_default_domain 'management_reports' %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>BCM Report</title>
+    <title>{{ 'management_reports.bcm.title'|trans({}, 'management_reports') }}</title>
     <style>
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 15px; }
         .header {
@@ -48,79 +49,79 @@
 </head>
 <body>
     <div class="header">
-        <h1>Business Continuity Management Report</h1>
-        <div class="date">Generated: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
+        <h1>{{ 'management_reports.bcm.full_title'|trans({}, 'management_reports') }}</h1>
+        <div class="date">{{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
     </div>
 
     {# BC Plans Summary #}
     <div class="stats-grid">
         <div class="stat-box">
             <div class="number" style="color: #0ea5e9;">{{ report.bc_plans.total }}</div>
-            <div class="label">Total BC Plans</div>
+            <div class="label">{{ 'management_reports.bcm.total_plans'|trans({}, 'management_reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number" style="color: #16a34a;">{{ report.bc_plans.active }}</div>
-            <div class="label">Active Plans</div>
+            <div class="label">{{ 'management_reports.bcm.active_plans'|trans({}, 'management_reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number" style="color: #d97706;">{{ report.bc_plans.draft }}</div>
-            <div class="label">Draft Plans</div>
+            <div class="label">{{ 'management_reports.bcm.draft_plans'|trans({}, 'management_reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number" style="color: #0ea5e9;">{{ report.bc_plans.review }}</div>
-            <div class="label">Under Review</div>
+            <div class="label">{{ 'management_reports.bcm.review_plans'|trans({}, 'management_reports') }}</div>
         </div>
     </div>
 
     {# BC Exercises #}
     <div class="section">
-        <h2>BC Exercises</h2>
+        <h2>{{ 'management_reports.bcm.exercises'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">Metric</th>
-                <th scope="col">Value</th>
-                <th scope="col">Status</th>
+                <th scope="col">{{ 'management_reports.bcm.header.metric'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.bcm.header.value'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.bcm.header.status'|trans({}, 'management_reports') }}</th>
             </tr>
             <tr>
-                <td>Total Exercises</td>
+                <td>{{ 'management_reports.bcm.total_exercises'|trans({}, 'management_reports') }}</td>
                 <td>{{ report.exercises.total }}</td>
                 <td>-</td>
             </tr>
             <tr>
-                <td>Exercises (Last 12 Months)</td>
+                <td>{{ 'management_reports.bcm.exercises_12m'|trans({}, 'management_reports') }}</td>
                 <td>{{ report.exercises.last_12_months }}</td>
                 <td>
                     {% if report.exercises.last_12_months >= 2 %}
-                    <span class="badge badge-success">Compliant (ISO 22301)</span>
+                    <span class="badge badge-success">{{ 'management_reports.bcm.iso22301_compliant'|trans({}, 'management_reports') }}</span>
                     {% elseif report.exercises.last_12_months >= 1 %}
-                    <span class="badge badge-warning">Minimum Met</span>
+                    <span class="badge badge-warning">{{ 'management_reports.bcm.minimum_met'|trans({}, 'management_reports') }}</span>
                     {% else %}
-                    <span class="badge badge-danger">Non-Compliant</span>
+                    <span class="badge badge-danger">{{ 'management_reports.bcm.non_compliant'|trans({}, 'management_reports') }}</span>
                     {% endif %}
                 </td>
             </tr>
         </table>
         {% if report.exercises.last_12_months >= 2 %}
-        <div class="alert alert-success">ISO 22301 recommends at least 2 BC exercises per year. Current status: Compliant.</div>
+        <div class="alert alert-success">{{ 'management_reports.bcm.exercises_compliant'|trans({}, 'management_reports') }}</div>
         {% else %}
-        <div class="alert alert-warning">ISO 22301 recommends at least 2 BC exercises per year. Consider scheduling additional exercises.</div>
+        <div class="alert alert-warning">{{ 'management_reports.bcm.exercises_warning'|trans({}, 'management_reports') }}</div>
         {% endif %}
     </div>
 
     {# Business Processes #}
     <div class="section">
-        <h2>Business Processes</h2>
+        <h2>{{ 'management_reports.bcm.business_processes'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">Metric</th>
-                <th scope="col">Value</th>
+                <th scope="col">{{ 'management_reports.bcm.header.metric'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.bcm.header.value'|trans({}, 'management_reports') }}</th>
             </tr>
             <tr>
-                <td>Total Business Processes</td>
+                <td>{{ 'management_reports.bcm.total_processes'|trans({}, 'management_reports') }}</td>
                 <td>{{ report.business_processes.total }}</td>
             </tr>
             <tr>
-                <td>Critical/High Priority Processes</td>
+                <td>{{ 'management_reports.bcm.critical_processes'|trans({}, 'management_reports') }}</td>
                 <td><span class="badge badge-danger">{{ report.business_processes.critical }}</span></td>
             </tr>
         </table>
@@ -128,50 +129,50 @@
 
     {# BIA Summary #}
     <div class="section">
-        <h2>Business Impact Analysis (BIA)</h2>
+        <h2>{{ 'management_reports.bcm.bia_summary'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">Criticality</th>
-                <th scope="col">Count</th>
+                <th scope="col">{{ 'management_reports.bcm.header.criticality'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.bcm.header.count'|trans({}, 'management_reports') }}</th>
             </tr>
             <tr>
-                <td><span class="badge badge-danger">Critical</span></td>
+                <td><span class="badge badge-danger">{{ 'management_reports.criticality.critical'|trans({}, 'management_reports') }}</span></td>
                 <td>{{ bia.by_criticality.critical }}</td>
             </tr>
             <tr>
-                <td><span class="badge badge-warning">High</span></td>
+                <td><span class="badge badge-warning">{{ 'management_reports.criticality.high'|trans({}, 'management_reports') }}</span></td>
                 <td>{{ bia.by_criticality.high }}</td>
             </tr>
             <tr>
-                <td><span class="badge badge-info">Medium</span></td>
+                <td><span class="badge badge-info">{{ 'management_reports.criticality.medium'|trans({}, 'management_reports') }}</span></td>
                 <td>{{ bia.by_criticality.medium }}</td>
             </tr>
             <tr>
-                <td><span class="badge badge-success">Low</span></td>
+                <td><span class="badge badge-success">{{ 'management_reports.criticality.low'|trans({}, 'management_reports') }}</span></td>
                 <td>{{ bia.by_criticality.low }}</td>
             </tr>
         </table>
 
-        <h3 style="font-size: 9pt; margin: 10px 0 5px;">RTO/RPO Coverage</h3>
+        <h3 style="font-size: 9pt; margin: 10px 0 5px;">{{ 'management_reports.bcm.rto_rpo_coverage'|trans({}, 'management_reports') }}</h3>
         <table>
             <tr>
-                <th scope="col">Metric</th>
-                <th scope="col">Value</th>
+                <th scope="col">{{ 'management_reports.bcm.header.metric'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.bcm.header.value'|trans({}, 'management_reports') }}</th>
             </tr>
             <tr>
-                <td>Total Processes</td>
+                <td>{{ 'management_reports.bcm.total_processes'|trans({}, 'management_reports') }}</td>
                 <td>{{ bia.total_processes }}</td>
             </tr>
             <tr>
-                <td>Processes with RTO Defined</td>
+                <td>{{ 'management_reports.bcm.processes_with_rto'|trans({}, 'management_reports') }}</td>
                 <td>{{ bia.rto_defined }}</td>
             </tr>
             <tr>
-                <td>Processes with RPO Defined</td>
+                <td>{{ 'management_reports.bcm.processes_with_rpo'|trans({}, 'management_reports') }}</td>
                 <td>{{ bia.rpo_defined }}</td>
             </tr>
             <tr>
-                <td>Coverage Rate</td>
+                <td>{{ 'management_reports.bcm.coverage'|trans({}, 'management_reports') }}</td>
                 <td>
                     {% if bia.coverage >= 80 %}
                     <span class="badge badge-success">{{ bia.coverage }}%</span>
@@ -188,13 +189,13 @@
     {# BC Plans List #}
     {% if report.bc_plans.plans|length > 0 %}
     <div class="section">
-        <h2>BC Plans Overview</h2>
+        <h2>{{ 'management_reports.bcm.plans_overview'|trans({}, 'management_reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Status</th>
-                <th scope="col">Last Review</th>
-                <th scope="col">Next Review</th>
+                <th scope="col">{{ 'management_reports.bcm.header.name'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.bcm.header.status'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.bcm.header.last_review'|trans({}, 'management_reports') }}</th>
+                <th scope="col">{{ 'management_reports.bcm.header.next_review'|trans({}, 'management_reports') }}</th>
             </tr>
             {% for plan in report.bc_plans.plans %}
             <tr>
@@ -219,7 +220,7 @@
     {% endif %}
 
     <div class="footer">
-        Confidential - Business Continuity Management Report | Little ISMS Helper
+        {{ 'management_reports.bcm.footer'|trans({}, 'management_reports') }}
     </div>
 </body>
 </html>
