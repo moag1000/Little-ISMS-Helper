@@ -1,5 +1,10 @@
 twig:
     file_name_pattern: '*.twig'
+
+    # Aurora v4 Cyber-Input Form Theme — global default for all Symfony forms.
+    # Renders every form_row inside a .fa-cyber-input frame with tick-marks and
+    # focus-glow. CSS lives in assets/styles/fairy-aurora-components.css.
+    # OVERRIDE only with architect approval. See CONTRIBUTING.md § Form Standards.
     form_themes: ['form/fa_cyber_input.html.twig']
 
     # Security: Auto-escaping is enabled by default in Symfony to prevent XSS attacks
