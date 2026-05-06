@@ -30,7 +30,7 @@
                     <label for="filter_purpose" class="form-label">
                         {{ 'audit_freeze.filter.purpose'|trans({}, 'audit_freeze') }}
                     </label>
-                    <select name="purpose" id="filter_purpose" class="form-select" onchange="this.form.submit()">
+                    <select name="purpose" id="filter_purpose" class="form-select fa-cyber-input__field" onchange="this.form.submit()">
                         <option value="">{{ 'audit_freeze.filter.all'|trans({}, 'audit_freeze') }}</option>
                         {% for p in purposes %}
                             <option value="{{ p }}" {% if selected_purpose == p %}selected{% endif %}>
@@ -43,7 +43,7 @@
                     <label for="filter_year" class="form-label">
                         {{ 'audit_freeze.filter.year'|trans({}, 'audit_freeze') }}
                     </label>
-                    <select name="year" id="filter_year" class="form-select" onchange="this.form.submit()">
+                    <select name="year" id="filter_year" class="form-select fa-cyber-input__field" onchange="this.form.submit()">
                         <option value="">{{ 'audit_freeze.filter.all'|trans({}, 'audit_freeze') }}</option>
                         {% for y in years %}
                             <option value="{{ y }}" {% if selected_year == y %}selected{% endif %}>{{ y }}</option>

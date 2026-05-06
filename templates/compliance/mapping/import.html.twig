@@ -64,7 +64,7 @@ A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
                     <label for="source-framework-code" class="form-label">
                         {{ 'compliance.mapping.import.field.source'|trans({}, 'compliance') }}
                     </label>
-                    <select id="source-framework-code" name="source_framework_code" class="form-select" required>
+                    <select id="source-framework-code" name="source_framework_code" class="form-select fa-cyber-input__field" required>
                         <option value="">—</option>
                         {% for fw in frameworks %}
                             <option value="{{ fw.code }}" {% if fw.code == source_code %}selected{% endif %}>
@@ -77,7 +77,7 @@ A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
                     <label for="target-framework-code" class="form-label">
                         {{ 'compliance.mapping.import.field.target'|trans({}, 'compliance') }}
                     </label>
-                    <select id="target-framework-code" name="target_framework_code" class="form-select" required>
+                    <select id="target-framework-code" name="target_framework_code" class="form-select fa-cyber-input__field" required>
                         <option value="">—</option>
                         {% for fw in frameworks %}
                             <option value="{{ fw.code }}" {% if fw.code == target_code %}selected{% endif %}>
@@ -98,7 +98,7 @@ A.5.15,NIS2-21.2.h,full,100,high,true,"Access Control"</code></pre>
                     <label for="csv-file" class="form-label">
                         {{ 'compliance.mapping.import.field.file'|trans({}, 'compliance') }}
                     </label>
-                    <input type="file" id="csv-file" name="csv_file" class="form-control" accept=".csv,text/csv" required>
+                    <input type="file" id="csv-file" name="csv_file" class="form-control fa-cyber-input__field" accept=".csv,text/csv" required>
                     <div class="form-text">
                         {{ 'compliance.mapping.import.field.file_hint'|trans({}, 'compliance') }}
                     </div>

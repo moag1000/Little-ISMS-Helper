@@ -75,7 +75,7 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('data_backup_upload') }}">
                         <div class="mb-3">
                             <label for="backupFile" class="form-label">{{ 'data_management.backup.upload.select_file'|trans({}, 'admin') }}</label>
-                            <input type="file" class="form-control" id="backupFile" name="backup_file" accept=".json,.gz">
+                            <input type="file" class="form-control fa-cyber-input__field" id="backupFile" name="backup_file" accept=".json,.gz">
                             <div class="form-text">{{ 'data_management.backup.upload.allowed_formats'|trans({}, 'admin') }}</div>
                         </div>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost" id="uploadBackupBtn">
@@ -243,7 +243,7 @@
                             <label for="adminPassword" class="form-label">
                                 <strong>{{ 'data_management.backup.restore.admin_password'|trans({}, 'admin') }}</strong>
                             </label>
-                            <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="{{ 'data_management.backup.restore.admin_password_placeholder'|trans({}, 'admin') }}">
+                            <input type="password" class="form-control fa-cyber-input__field" id="adminPassword" name="admin_password" placeholder="{{ 'data_management.backup.restore.admin_password_placeholder'|trans({}, 'admin') }}">
                             <div class="form-text">
                                 <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
                                 {{ 'data_management.backup.restore.admin_password_help'|trans({}, 'admin') }}

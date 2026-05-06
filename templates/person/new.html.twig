@@ -33,7 +33,7 @@
         <form method="get" action="{{ path('app_person_new') }}" class="row g-2 align-items-end">
             <div class="col-sm-8">
                 <label for="from_user" class="form-label small mb-1">{{ 'person.from_user.label'|trans({}, 'people') }}</label>
-                <select id="from_user" name="from_user" class="form-select form-select-sm" required>
+                <select id="from_user" name="from_user" class="form-select form-select-sm fa-cyber-input__field" required>
                     <option value="">{{ 'person.from_user.placeholder'|trans({}, 'people') }}</option>
                     {% for u in available_users %}
                         <option value="{{ u.id }}">{{ u.fullName }} &lt;{{ u.email }}&gt;</option>

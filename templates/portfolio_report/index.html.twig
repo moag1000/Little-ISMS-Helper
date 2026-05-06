@@ -142,7 +142,7 @@
                         {{ 'portfolio_report.form.stichtag'|trans({}, 'portfolio_report') }}
                     </label>
                     <input type="date"
-                           class="form-control"
+                           class="form-control fa-cyber-input__field"
                            id="portfolio_stichtag"
                            name="stichtag"
                            value="{{ stichtag|date('Y-m-d') }}"
@@ -157,7 +157,7 @@
                         {{ 'portfolio_report.form.vorperiode'|trans({}, 'portfolio_report') }}
                     </label>
                     <input type="date"
-                           class="form-control"
+                           class="form-control fa-cyber-input__field"
                            id="portfolio_vorperiode"
                            name="vorperiode"
                            value="{{ vorperiode ? vorperiode|date('Y-m-d') : '' }}"

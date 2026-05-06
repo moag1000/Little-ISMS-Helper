@@ -56,12 +56,12 @@
         <div class="card-body p-3">
             <div class="row g-2">
                 <div class="col-md-5">
-                    <input type="search" name="q" class="form-control form-control-sm"
+                    <input type="search" name="q" class="form-control form-control-sm fa-cyber-input__field"
                            placeholder="{{ 'admin.tour_completion.filter.search_placeholder'|trans({}, 'admin') }}"
                            value="{{ search }}">
                 </div>
                 <div class="col-md-3">
-                    <select name="role" class="form-select form-select-sm">
+                    <select name="role" class="form-select form-select-sm fa-cyber-input__field">
                         <option value="">{{ 'admin.tour_completion.filter.role_all'|trans({}, 'admin') }}</option>
                         {% for t in tours %}
                             <option value="{{ t }}" {% if role_filter == t %}selected{% endif %}>

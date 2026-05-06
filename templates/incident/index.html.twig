@@ -34,7 +34,7 @@
             <label for="view-filter" class="mb-0 fw-bold">
                 <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
             </label>
-            <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+            <select class="form-select fa-cyber-input__field form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
                     {{ 'corporate.view.own_only'|trans({}, 'tenant') }}
                 </option>
@@ -187,7 +187,7 @@
         {% endif %}
         <div class="col-md-4">
             <label for="filter-status" class="form-label">{{ 'incident.field.status'|trans({}, 'incident') }}</label>
-            <select class="form-select" id="filter-status" name="status">
+            <select class="form-select fa-cyber-input__field" id="filter-status" name="status">
                 <option value="">{{ 'incident.filter.all_status'|trans({}, 'incident') }}</option>
                 <option value="reported" {{ app.request.query.get('status') == 'reported' ? 'selected' : '' }}>{{ 'incident.status.reported'|trans({}, 'incident') }}</option>
                 <option value="in_investigation" {{ app.request.query.get('status') == 'in_investigation' ? 'selected' : '' }}>{{ 'incident.status.in_investigation'|trans({}, 'incident') }}</option>
@@ -198,7 +198,7 @@
         </div>
         <div class="col-md-4">
             <label for="filter-severity" class="form-label">{{ 'incident.field.severity'|trans({}, 'incident') }}</label>
-            <select class="form-select" id="filter-severity" name="severity">
+            <select class="form-select fa-cyber-input__field" id="filter-severity" name="severity">
                 <option value="">{{ 'incident.filter.all_severity'|trans({}, 'incident') }}</option>
                 <option value="critical" {{ app.request.query.get('severity') == 'critical' ? 'selected' : '' }}>{{ 'incident.severity.critical'|trans({}, 'incident') }}</option>
                 <option value="high" {{ app.request.query.get('severity') == 'high' ? 'selected' : '' }}>{{ 'incident.severity.high'|trans({}, 'incident') }}</option>

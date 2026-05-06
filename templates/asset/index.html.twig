@@ -36,7 +36,7 @@
             <label for="view-filter" class="mb-0 fw-bold">
                 <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
             </label>
-            <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+            <select class="form-select fa-cyber-input__field form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
                     {{ 'corporate.view.own_only'|trans({}, 'tenant') }}
                 </option>
@@ -161,7 +161,7 @@
         {% endif %}
         <div class="col-md-3">
             <label for="filter-type" class="form-label">{{ 'asset.label.type'|trans({}, 'asset') }}</label>
-            <select class="form-select" id="filter-type" name="type">
+            <select class="form-select fa-cyber-input__field" id="filter-type" name="type">
                 <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                 {% if typeStats|length > 0 %}
                     {% for stat in typeStats %}
@@ -174,7 +174,7 @@
         </div>
         <div class="col-md-3">
             <label for="filter-classification" class="form-label">{{ 'asset.label.data_classification'|trans({}, 'asset') }}</label>
-            <select class="form-select" id="filter-classification" name="classification">
+            <select class="form-select fa-cyber-input__field" id="filter-classification" name="classification">
                 <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                 <option value="public" {{ app.request.query.get('classification') == 'public' ? 'selected' : '' }}>{{ 'asset.classification.public'|trans({}, 'asset') }}</option>
                 <option value="internal" {{ app.request.query.get('classification') == 'internal' ? 'selected' : '' }}>{{ 'asset.classification.internal'|trans({}, 'asset') }}</option>
@@ -184,7 +184,7 @@
         </div>
         <div class="col-md-3">
             <label for="filter-owner" class="form-label">{{ 'asset.label.owner'|trans({}, 'asset') }}</label>
-            <input type="text" class="form-control" id="filter-owner" name="owner"
+            <input type="text" class="form-control fa-cyber-input__field" id="filter-owner" name="owner"
                    value="{{ app.request.query.get('owner') }}"
                    placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
         </div>

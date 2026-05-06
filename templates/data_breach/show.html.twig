@@ -380,7 +380,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">{{ 'privacy.data_breach.field.authority'|trans({}, 'privacy') }} *</label>
-                        <select name="authority_name" class="form-select" required>
+                        <select name="authority_name" class="form-select fa-cyber-input__field" required>
                             <option value="">Select authority...</option>
                             <option value="BfDI">BfDI (Federal Commissioner)</option>
                             <option value="LfDI Baden-Württemberg">LfDI Baden-Württemberg</option>
@@ -400,7 +400,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">{{ 'privacy.data_breach.field.method'|trans({}, 'privacy') }} *</label>
-                        <select name="notification_method" class="form-select" required>
+                        <select name="notification_method" class="form-select fa-cyber-input__field" required>
                             <option value="email">Email</option>
                             <option value="web_portal">Web Portal</option>
                             <option value="phone">Phone</option>
@@ -409,12 +409,12 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">{{ 'privacy.data_breach.field.reference'|trans({}, 'privacy') }} (optional)</label>
-                        <input type="text" name="authority_reference" class="form-control" placeholder="{{ 'common.placeholder.case_number_from_authority'|trans({}, 'messages') }}">
+                        <input type="text" name="authority_reference" class="form-control fa-cyber-input__field" placeholder="{{ 'common.placeholder.case_number_from_authority'|trans({}, 'messages') }}">
                     </div>
                     {% if breach.hoursUntilAuthorityDeadline < 0 %}
                         <div class="mb-3">
                             <label class="form-label">{{ 'privacy.data_breach.field.delay_reason'|trans({}, 'privacy') }} * (required for overdue notifications)</label>
-                            <textarea name="delay_reason" class="form-control" rows="3" required
+                            <textarea name="delay_reason" class="form-control fa-cyber-input__field" rows="3" required
                                       placeholder="{{ 'common.placeholder.explain_deadline_exceeded'|trans({}, 'messages') }}"></textarea>
                             <small class="text-muted">Art. 33(1) GDPR requires justification for delays.</small>
                         </div>
@@ -442,7 +442,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">{{ 'privacy.data_breach.field.method'|trans({}, 'privacy') }} *</label>
-                        <select name="notification_method" class="form-select" required>
+                        <select name="notification_method" class="form-select fa-cyber-input__field" required>
                             <option value="email">Direct Email</option>
                             <option value="letter">Registered Letter</option>
                             <option value="website">Website Notice</option>
@@ -452,7 +452,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">{{ 'privacy.data_breach.field.subjects_notified'|trans({}, 'privacy') }} *</label>
-                        <input type="number" name="subjects_notified" class="form-control" min="1" required>
+                        <input type="number" name="subjects_notified" class="form-control fa-cyber-input__field" min="1" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -477,7 +477,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">{{ 'privacy.data_breach.field.exemption_reason'|trans({}, 'privacy') }} *</label>
-                        <select name="exemption_reason" class="form-select" required>
+                        <select name="exemption_reason" class="form-select fa-cyber-input__field" required>
                             <option value="">Select reason...</option>
                             <option value="art_34_3_a">Art. 34(3)(a) - Technical/organizational protection measures applied</option>
                             <option value="art_34_3_b">Art. 34(3)(b) - Subsequent measures ensure high risk no longer likely</option>
@@ -507,7 +507,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">{{ 'privacy.data_breach.reopen_reason'|trans({}, 'privacy') }} *</label>
-                        <textarea name="reopen_reason" class="form-control" rows="3" required
+                        <textarea name="reopen_reason" class="form-control fa-cyber-input__field" rows="3" required
                                   placeholder="{{ 'common.placeholder.explain_breach_reopened'|trans({}, 'messages') }}"></textarea>
                     </div>
                 </div>

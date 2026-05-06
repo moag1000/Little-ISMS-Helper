@@ -25,7 +25,7 @@
             <form method="get" class="row g-3">
                 <div class="col-md-4">
                     <label for="framework" class="form-label">{{ 'compliance.requirement.filter_by_framework'|trans({}, 'compliance') }}</label>
-                    <select name="framework" id="framework" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <select name="framework" id="framework" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                         <option value="">{{ 'compliance.requirement.all_frameworks'|trans({}, 'compliance') }}</option>
                         {% for framework in frameworks %}
                             <option value="{{ framework.id }}" {% if selected_framework == framework.id %}selected{% endif %}>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="col-md-3">
                     <label for="absicherungs_stufe" class="form-label">{{ 'compliance.requirement.filter_by_absicherungs_stufe'|trans({}, 'compliance') }}</label>
-                    <select name="absicherungs_stufe" id="absicherungs_stufe" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <select name="absicherungs_stufe" id="absicherungs_stufe" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                         <option value="">{{ 'compliance.requirement.all_stufen'|trans({}, 'compliance') }}</option>
                         <option value="basis" {% if selected_absicherungs_stufe == 'basis' %}selected{% endif %}>{{ 'compliance.requirement.absicherungs_stufe.basis'|trans({}, 'compliance') }}</option>
                         <option value="standard" {% if selected_absicherungs_stufe == 'standard' %}selected{% endif %}>{{ 'compliance.requirement.absicherungs_stufe.standard'|trans({}, 'compliance') }}</option>
@@ -45,7 +45,7 @@
                 </div>
                 <div class="col-md-3">
                     <label for="anforderungs_typ" class="form-label">{{ 'compliance.requirement.filter_by_anforderungs_typ'|trans({}, 'compliance') }}</label>
-                    <select name="anforderungs_typ" id="anforderungs_typ" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <select name="anforderungs_typ" id="anforderungs_typ" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                         <option value="">{{ 'compliance.requirement.all_typen'|trans({}, 'compliance') }}</option>
                         <option value="MUSS" {% if selected_anforderungs_typ == 'MUSS' %}selected{% endif %}>MUSS</option>
                         <option value="SOLLTE" {% if selected_anforderungs_typ == 'SOLLTE' %}selected{% endif %}>SOLLTE</option>

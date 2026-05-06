@@ -37,7 +37,7 @@
  *       {% block filters %}
  *           <div class="col-md-3">
  *               <label for="filter-level" class="form-label">Level</label>
- *               <select name="level" id="filter-level" class="form-select">...</select>
+ *               <select name="level" id="filter-level" class="form-select fa-cyber-input__field">...</select>
  *           </div>
  *       {% endblock %}
  *   {% endembed %}
@@ -81,7 +81,7 @@
                                 <i class="fa-icon fa-icon--ui-search"></i>
                             </span>
                             <input type="search"
-                                   class="form-control form-control-lg"
+                                   class="form-control form-control-lg fa-cyber-input__field"
                                    id="{{ form_id }}-q"
                                    name="{{ search_name }}"
                                    value="{{ app.request.query.get(search_name)|default('') }}"

@@ -42,7 +42,7 @@
                 <label class="filter-label" for="heat-map-status-filter">
                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'analytics.filter.status'|trans({}, 'analytics') }}
                 </label>
-                <select class="form-select form-select-sm"
+                <select class="form-select fa-cyber-input__field form-select-sm"
                         id="heat-map-status-filter"
                         data-action="change->heat-map#applyFilters"
                         data-heat-map-target="statusFilter">
@@ -57,7 +57,7 @@
                 <label class="filter-label" for="heat-map-category-filter">
                     <i class="fa-icon fa-icon--ui-tag" aria-hidden="true"></i> {{ 'analytics.filter.category'|trans({}, 'analytics') }}
                 </label>
-                <select class="form-select form-select-sm"
+                <select class="form-select fa-cyber-input__field form-select-sm"
                         id="heat-map-category-filter"
                         data-action="change->heat-map#applyFilters"
                         data-heat-map-target="categoryFilter">
@@ -72,7 +72,7 @@
                 <label class="filter-label" for="heat-map-time-filter">
                     <i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ 'analytics.filter.time'|trans({}, 'analytics') }}
                 </label>
-                <select class="form-select form-select-sm"
+                <select class="form-select fa-cyber-input__field form-select-sm"
                         id="heat-map-time-filter"
                         data-action="change->heat-map#applyFilters"
                         data-heat-map-target="timeFilter">

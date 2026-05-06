@@ -148,7 +148,7 @@
 
                 {# Filter Controls #}
                 <div class="d-flex gap-2">
-                    <select class="form-select form-select-sm" id="statusFilter" class="w-auto">
+                    <select class="form-select fa-cyber-input__field form-select-sm" id="statusFilter" class="w-auto">
                         <option value="">{{ 'audit.filter.all_status'|trans({}, 'audit')}}</option>
                         <option value="planned">{{ 'audit.status.planned'|trans({}, 'audit') }}</option>
                         <option value="in_progress">{{ 'audit.status.in_progress'|trans({}, 'audit') }}</option>
@@ -158,7 +158,7 @@
 
                     <label for="auditSearch" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
                     <input type="search"
-                           class="form-control form-control-sm w-250px"
+                           class="form-control form-control-sm w-250px fa-cyber-input__field"
                            id="auditSearch"
                            placeholder="{{ 'audit.filter.search_placeholder'|trans({}, 'audit')}}">
                 </div>

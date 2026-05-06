@@ -44,14 +44,14 @@
                             <i class="fa-icon fa-icon--ui-search" aria-hidden="true"></i>
                         </span>
                         <input type="text"
-                               class="form-control"
+                               class="form-control fa-cyber-input__field"
                                placeholder="{{ 'help.glossary.search_placeholder'|trans({}, 'help') }}"
                                data-filter-target="searchInput"
                                data-action="input->filter#filterRows">
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <select class="form-select" data-action="change->filter#filterByCategory">
+                    <select class="form-select fa-cyber-input__field" data-action="change->filter#filterByCategory">
                         <option value="">{{ 'help.glossary.all_categories'|trans({}, 'help') }}</option>
                         <option value="basics">{{ 'help.glossary.category.basics'|trans({}, 'help') }}</option>
                         <option value="risk">{{ 'help.glossary.category.risk'|trans({}, 'help') }}</option>

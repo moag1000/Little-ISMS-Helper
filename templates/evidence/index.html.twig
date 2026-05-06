@@ -76,7 +76,7 @@
             <div class="row g-3">
                 <div class="col-md-4">
                     <label for="entity_type" class="form-label">{{ 'evidence.field.entity_type'|trans({}, 'evidence') }}</label>
-                    <select name="entity_type" id="entity_type" class="form-select" required>
+                    <select name="entity_type" id="entity_type" class="form-select fa-cyber-input__field" required>
                         <option value="">-- {{ 'evidence.field.select_type'|trans({}, 'evidence') }} --</option>
                         <option value="control">{{ 'evidence.entity.control'|trans({}, 'evidence') }}</option>
                         <option value="requirement">{{ 'evidence.entity.requirement'|trans({}, 'evidence') }}</option>
@@ -85,11 +85,11 @@
                 </div>
                 <div class="col-md-3">
                     <label for="entity_id" class="form-label">{{ 'evidence.field.entity_id'|trans({}, 'evidence') }}</label>
-                    <input type="number" name="entity_id" id="entity_id" class="form-control" min="1" required>
+                    <input type="number" name="entity_id" id="entity_id" class="form-control fa-cyber-input__field" min="1" required>
                 </div>
                 <div class="col-md-5">
                     <label for="evidence_file" class="form-label">{{ 'evidence.field.file'|trans({}, 'evidence') }}</label>
-                    <input type="file" name="evidence_file" id="evidence_file" class="form-control" required
+                    <input type="file" name="evidence_file" id="evidence_file" class="form-control fa-cyber-input__field" required
                            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.jpg,.jpeg,.png,.gif,.webp,.zip,.7z">
                 </div>
             </div>

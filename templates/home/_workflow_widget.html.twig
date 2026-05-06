@@ -178,7 +178,7 @@
                                             <label for="comments{{ instance.id }}" class="form-label">
                                                 {{ 'workflow.widget.field.comments'|trans({}, 'workflows') }}
                                             </label>
-                                            <textarea class="form-control" id="comments{{ instance.id }}" name="comments" rows="3"></textarea>
+                                            <textarea class="form-control fa-cyber-input__field" id="comments{{ instance.id }}" name="comments" rows="3"></textarea>
                                         </div>
                                         <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ instance.id) }}">
                                     </div>
@@ -213,7 +213,7 @@
                                             <label for="reason{{ instance.id }}" class="form-label">
                                                 {{ 'workflow.widget.field.reason'|trans({}, 'workflows') }} <span class="text-danger">*</span>
                                             </label>
-                                            <textarea class="form-control" id="reason{{ instance.id }}" name="reason" rows="3" required></textarea>
+                                            <textarea class="form-control fa-cyber-input__field" id="reason{{ instance.id }}" name="reason" rows="3" required></textarea>
                                         </div>
                                         <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ instance.id) }}">
                                     </div>

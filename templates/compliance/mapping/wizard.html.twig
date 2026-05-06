@@ -56,7 +56,7 @@
                             {{ 'compliance.mapping.wizard.step1.source_label'|trans({}, 'compliance') }}
                         </label>
                         <select id="source-framework"
-                                class="form-select"
+                                class="form-select fa-cyber-input__field"
                                 data-mapping-wizard-target="sourceFramework"
                                 data-action="change->mapping-wizard#onFrameworkChange"
                                 data-side="source">
@@ -71,7 +71,7 @@
                             {{ 'compliance.mapping.wizard.step1.target_label'|trans({}, 'compliance') }}
                         </label>
                         <select id="target-framework"
-                                class="form-select"
+                                class="form-select fa-cyber-input__field"
                                 data-mapping-wizard-target="targetFramework"
                                 data-action="change->mapping-wizard#onFrameworkChange"
                                 data-side="target">
@@ -103,7 +103,7 @@
                         </label>
                         <select id="source-requirement"
                                 name="source_requirement_id"
-                                class="form-select"
+                                class="form-select fa-cyber-input__field"
                                 data-mapping-wizard-target="sourceRequirement"
                                 required>
                             <option value="">— {{ 'compliance.mapping.wizard.step2.placeholder'|trans({}, 'compliance') }}</option>
@@ -115,7 +115,7 @@
                         </label>
                         <select id="target-requirement"
                                 name="target_requirement_id"
-                                class="form-select"
+                                class="form-select fa-cyber-input__field"
                                 data-mapping-wizard-target="targetRequirement"
                                 required>
                             <option value="">— {{ 'compliance.mapping.wizard.step2.placeholder'|trans({}, 'compliance') }}</option>
@@ -168,7 +168,7 @@
                             {{ 'compliance.mapping.wizard.step3.percentage_label'|trans({}, 'compliance') }}
                         </label>
                         <input type="number" id="mapping-percentage" name="mapping_percentage"
-                               class="form-control"
+                               class="form-control fa-cyber-input__field"
                                data-mapping-wizard-target="percentage"
                                min="0" max="150" value="100">
                         <div class="form-text">
@@ -179,7 +179,7 @@
                         <label for="mapping-confidence" class="form-label">
                             {{ 'compliance.mapping.wizard.step3.confidence_label'|trans({}, 'compliance') }}
                         </label>
-                        <select id="mapping-confidence" name="confidence" class="form-select">
+                        <select id="mapping-confidence" name="confidence" class="form-select fa-cyber-input__field">
                             <option value="low">{{ 'compliance.mapping.wizard.step3.confidence.low'|trans({}, 'compliance') }}</option>
                             <option value="medium" selected>{{ 'compliance.mapping.wizard.step3.confidence.medium'|trans({}, 'compliance') }}</option>
                             <option value="high">{{ 'compliance.mapping.wizard.step3.confidence.high'|trans({}, 'compliance') }}</option>
@@ -207,7 +207,7 @@
                         {{ 'compliance.mapping.wizard.step4.rationale_label'|trans({}, 'compliance') }}
                     </label>
                     <textarea id="mapping-rationale" name="rationale" rows="3"
-                              class="form-control"
+                              class="form-control fa-cyber-input__field"
                               placeholder="{{ 'compliance.mapping.wizard.step4.rationale_placeholder'|trans({}, 'compliance') }}"></textarea>
                 </div>
                 <div class="form-check">

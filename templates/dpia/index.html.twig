@@ -103,7 +103,7 @@
         {% block filters %}
             <div class="col-md-4">
                 <label for="filter-status" class="form-label">{{ 'dpia.index.filter_dpias'|trans({}, 'privacy') }}</label>
-                <select class="form-select" id="filter-status" name="filter">
+                <select class="form-select fa-cyber-input__field" id="filter-status" name="filter">
                     <option value="">{{ 'dpia.index.all'|trans({}, 'privacy') }} ({{ statistics.total }})</option>
                     <option value="draft" {{ current_filter == 'draft' ? 'selected' : '' }}>{{ 'dpia.index.draft'|trans({}, 'privacy') }} ({{ statistics.draft }})</option>
                     <option value="in_review" {{ current_filter == 'in_review' ? 'selected' : '' }}>{{ 'dpia.index.in_review'|trans({}, 'privacy') }} ({{ statistics.in_review }})</option>

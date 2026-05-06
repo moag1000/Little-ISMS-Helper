@@ -26,7 +26,7 @@
             </label>
             <textarea id="ir-{{ log.id }}-comment"
                       name="comment"
-                      class="form-control"
+                      class="form-control fa-cyber-input__field"
                       rows="3"
                       minlength="20"
                       required
@@ -59,7 +59,7 @@
             </label>
             <select id="ir-{{ log.id }}-approver"
                     name="four_eyes_approver_id"
-                    class="form-select">
+                    class="form-select fa-cyber-input__field">
                 <option value="">{{ 'compliance_inheritance.panel.approver_placeholder'|trans({}, 'compliance_inheritance') }}</option>
                 {% for manager in managers %}
                     <option value="{{ manager.id }}">{{ manager.fullName|default(manager.email) }}</option>
@@ -117,7 +117,7 @@
                 <label for="reject-reason-{{ log.id }}" class="form-label">
                     {{ 'compliance_inheritance.reject.reason_label'|trans({}, 'compliance_inheritance') }}
                 </label>
-                <textarea id="reject-reason-{{ log.id }}" name="reason" class="form-control" rows="3" required minlength="20"></textarea>
+                <textarea id="reject-reason-{{ log.id }}" name="reason" class="form-control fa-cyber-input__field" rows="3" required minlength="20"></textarea>
                 <div class="form-text">{{ 'compliance_inheritance.panel.chars_hint'|trans({ '%min%': 20 }, 'compliance_inheritance') }}</div>
             </div>
             <div class="modal-footer">
@@ -150,20 +150,20 @@
                         {{ 'compliance_inheritance.override.value_label'|trans({}, 'compliance_inheritance') }}
                     </label>
                     <input id="override-value-{{ log.id }}" name="value" type="number"
-                           min="0" max="150" class="form-control" required
+                           min="0" max="150" class="form-control fa-cyber-input__field" required
                            value="{{ log.suggestedPercentage }}">
                 </div>
                 <div class="mb-3">
                     <label for="override-reason-{{ log.id }}" class="form-label">
                         {{ 'compliance_inheritance.override.reason_label'|trans({}, 'compliance_inheritance') }}
                     </label>
-                    <textarea id="override-reason-{{ log.id }}" name="reason" class="form-control" rows="3" required minlength="20"></textarea>
+                    <textarea id="override-reason-{{ log.id }}" name="reason" class="form-control fa-cyber-input__field" rows="3" required minlength="20"></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="override-approver-{{ log.id }}" class="form-label">
                         {{ 'compliance_inheritance.override.approver_label'|trans({}, 'compliance_inheritance') }}
                     </label>
-                    <select id="override-approver-{{ log.id }}" name="four_eyes_approver_id" class="form-select" required>
+                    <select id="override-approver-{{ log.id }}" name="four_eyes_approver_id" class="form-select fa-cyber-input__field" required>
                         <option value="">{{ 'compliance_inheritance.panel.approver_placeholder'|trans({}, 'compliance_inheritance') }}</option>
                         {% for manager in managers %}
                             <option value="{{ manager.id }}">{{ manager.fullName|default(manager.email) }}</option>

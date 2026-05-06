@@ -249,7 +249,7 @@
                     <form method="post" data-data-repair-target="form">
                         <input type="hidden" name="_token" value="{{ csrf_token('fix_all_orphans') }}">
                         <div class="input-group">
-                            <select name="tenant_id" class="form-select" required data-data-repair-target="tenantSelect">
+                            <select name="tenant_id" class="form-select fa-cyber-input__field" required data-data-repair-target="tenantSelect">
                                 <option value="">Select Tenant...</option>
                                 {% for tenant in tenants %}
                                     <option value="{{ tenant.id }}">{{ tenant.name }}</option>
@@ -279,7 +279,7 @@
                             <textarea
                                 id="fix_tenant_mismatches_reason"
                                 name="reason"
-                                class="form-control"
+                                class="form-control fa-cyber-input__field"
                                 rows="2"
                                 minlength="20"
                                 required
@@ -459,7 +459,7 @@
                     <div class="row align-items-end">
                         <div class="col-md-4">
                             <label for="tenant_id" class="form-label">{{ 'admin.data_repair.assign_to_tenant'|trans({}, 'admin') }}</label>
-                            <select name="tenant_id" id="tenant_id" class="form-select" required>
+                            <select name="tenant_id" id="tenant_id" class="form-select fa-cyber-input__field" required>
                                 <option value="">{{ 'admin.data_repair.select_tenant'|trans({}, 'admin') }}</option>
                                 {% for tenant in tenants %}
                                     <option value="{{ tenant.id }}">{{ tenant.name }}</option>
@@ -468,7 +468,7 @@
                         </div>
                         <div class="col-md-4">
                             <label for="entity_type" class="form-label">{{ 'admin.data_repair.entity_type'|trans({}, 'admin') }}</label>
-                            <select name="entity_type" id="entity_type" class="form-select" required>
+                            <select name="entity_type" id="entity_type" class="form-select fa-cyber-input__field" required>
                                 <option value="all">{{ 'admin.data_repair.all_orphans'|trans({}, 'admin') }} ({{ totalOrphans }})</option>
                                 {% for key, entities in orphanedEntities %}
                                     {% if entities|length > 0 %}
@@ -512,7 +512,7 @@
                                     <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'asset', id: asset.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ asset.id) }}">
                                         <div class="input-group input-group-sm">
-                                            <select name="tenant_id" class="form-select form-select-sm" required>
+                                            <select name="tenant_id" class="form-select form-select-sm fa-cyber-input__field" required>
                                                 {% for tenant in tenants %}
                                                     <option value="{{ tenant.id }}">{{ tenant.name }}</option>
                                                 {% endfor %}
@@ -556,7 +556,7 @@
                                     <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'risk', id: risk.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ risk.id) }}">
                                         <div class="input-group input-group-sm">
-                                            <select name="tenant_id" class="form-select form-select-sm" required>
+                                            <select name="tenant_id" class="form-select form-select-sm fa-cyber-input__field" required>
                                                 {% for tenant in tenants %}
                                                     <option value="{{ tenant.id }}">{{ tenant.name }}</option>
                                                 {% endfor %}
@@ -600,7 +600,7 @@
                                     <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'incident', id: incident.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ incident.id) }}">
                                         <div class="input-group input-group-sm">
-                                            <select name="tenant_id" class="form-select form-select-sm" required>
+                                            <select name="tenant_id" class="form-select form-select-sm fa-cyber-input__field" required>
                                                 {% for tenant in tenants %}
                                                     <option value="{{ tenant.id }}">{{ tenant.name }}</option>
                                                 {% endfor %}
@@ -721,7 +721,7 @@
                             <form method="post" action="{{ path('admin_data_repair_assign_asset', {type: 'risk', id: risk.id}) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ risk.id) }}">
                                 <div class="input-group input-group-sm">
-                                    <select name="asset_id" class="form-select form-select-sm" required>
+                                    <select name="asset_id" class="form-select form-select-sm fa-cyber-input__field" required>
                                         <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin') }}</option>
                                         {% for asset in allAssets %}
                                             <option value="{{ asset.id }}"{% if risk.asset and risk.asset.id == asset.id %} selected{% endif %}>
@@ -793,7 +793,7 @@
                             <form method="post" action="{{ path('admin_data_repair_assign_asset', {type: 'incident', id: incident.id}) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ incident.id) }}">
                                 <div class="input-group input-group-sm">
-                                    <select name="asset_id" class="form-select form-select-sm" required>
+                                    <select name="asset_id" class="form-select form-select-sm fa-cyber-input__field" required>
                                         <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin') }}</option>
                                         {% for asset in allAssets %}
                                             <option value="{{ asset.id }}">
@@ -856,7 +856,7 @@
                             <form method="post" action="{{ path('admin_data_repair_assign_risk', {id: control.id}) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_risk_' ~ control.id) }}">
                                 <div class="input-group input-group-sm">
-                                    <select name="risk_id" class="form-select form-select-sm" required>
+                                    <select name="risk_id" class="form-select form-select-sm fa-cyber-input__field" required>
                                         <option value="">{{ 'admin.data_repair.select_risk'|trans({}, 'admin') }}</option>
                                         {% for risk in allRisks %}
                                             <option value="{{ risk.id }}">
@@ -919,7 +919,7 @@
                             <form method="post" action="{{ path('admin_data_repair_assign_asset_to_control', {id: control.id}) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_to_control_' ~ control.id) }}">
                                 <div class="input-group input-group-sm">
-                                    <select name="asset_id" class="form-select form-select-sm" required>
+                                    <select name="asset_id" class="form-select form-select-sm fa-cyber-input__field" required>
                                         <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin') }}</option>
                                         {% for asset in allAssets %}
                                             <option value="{{ asset.id }}">

@@ -61,7 +61,7 @@
         <form method="get" class="d-flex gap-2 align-items-end flex-wrap">
             <div>
                 <label class="form-label small mb-1" for="state">{{ 'admin.mapping_quality.filter.state'|trans({}, 'admin') }}</label>
-                <select name="state" id="state" class="form-select form-select-sm">
+                <select name="state" id="state" class="form-select form-select-sm fa-cyber-input__field">
                     <option value="">{{ 'admin.mapping_quality.filter.all'|trans({}, 'admin') }}</option>
                     {% for s in lifecycleStates %}
                         <option value="{{ s }}" {% if filterState == s %}selected{% endif %}>{{ s }}</option>
@@ -70,7 +70,7 @@
             </div>
             <div>
                 <label class="form-label small mb-1" for="min_score">{{ 'admin.mapping_quality.filter.min_score'|trans({}, 'admin') }}</label>
-                <input type="number" name="min_score" id="min_score" min="0" max="100" value="{{ filterMinScore }}" class="form-control form-control-sm" style="width: 100px;">
+                <input type="number" name="min_score" id="min_score" min="0" max="100" value="{{ filterMinScore }}" class="form-control form-control-sm fa-cyber-input__field" style="width: 100px;">
             </div>
             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'common.filter'|trans({}, 'messages')|default('Filter') }}</button>
         </form>

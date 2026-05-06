@@ -99,7 +99,7 @@
                                                         <div class="row g-3 align-items-end">
                                                             <div class="col-md-8">
                                                                 <label for="targetTenant" class="form-label">{{ 'setup.step3.orphaned.repair.target_tenant'|trans({}, 'setup') }}</label>
-                                                                <select class="form-select" id="targetTenant" name="target_tenant_id" required>
+                                                                <select class="form-select fa-cyber-input__field" id="targetTenant" name="target_tenant_id" required>
                                                                     <option value="">{{ 'setup.step3.orphaned.repair.select_tenant'|trans({}, 'setup') }}</option>
                                                                     {% if backup_restore_result.tenants is defined %}
                                                                         {% for tenant in backup_restore_result.tenants %}
@@ -223,7 +223,7 @@
 
                                     <div class="mb-3">
                                         <label for="backupFile" class="form-label">{{ 'setup.step3.restore.file_label'|trans({}, 'setup') }}</label>
-                                        <input type="file" class="form-control" id="backupFile" name="backup_file" accept=".json,.gz" required>
+                                        <input type="file" class="form-control fa-cyber-input__field" id="backupFile" name="backup_file" accept=".json,.gz" required>
                                         <div class="form-text">{{ 'setup.step3.restore.file_formats'|trans({}, 'setup') }}</div>
                                     </div>
 
@@ -238,7 +238,7 @@
                                         <label for="adminPassword" class="form-label">
                                             <strong>{{ 'setup.restore.set_admin_password'|trans({}, 'setup') }}</strong>
                                         </label>
-                                        <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="{{ 'setup.restore.password_placeholder'|trans({}, 'setup') }}" required>
+                                        <input type="password" class="form-control fa-cyber-input__field" id="adminPassword" name="admin_password" placeholder="{{ 'setup.restore.password_placeholder'|trans({}, 'setup') }}" required>
                                         <div class="form-text">
                                             <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
                                             {{ 'setup.restore.password_hint'|trans({}, 'setup') }}

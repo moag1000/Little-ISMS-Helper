@@ -92,7 +92,7 @@
         {% block filters %}
             <div class="col-md-4">
                 <label for="filter-status" class="form-label">{{ 'processing_activity.filter.title'|trans({}, 'privacy') }}</label>
-                <select class="form-select" id="filter-status" name="filter">
+                <select class="form-select fa-cyber-input__field" id="filter-status" name="filter">
                     <option value="">{{ 'processing_activity.filter.all'|trans({}, 'privacy') }} ({{ statistics.total }})</option>
                     <option value="active" {{ current_filter == 'active' ? 'selected' : '' }}>{{ 'processing_activity.filter.active'|trans({}, 'privacy') }} ({{ statistics.active }})</option>
                     <option value="incomplete" {{ current_filter == 'incomplete' ? 'selected' : '' }}>{{ 'processing_activity.filter.incomplete'|trans({}, 'privacy') }}</option>

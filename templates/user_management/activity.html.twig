@@ -123,7 +123,7 @@
                     <label for="limit" class="col-form-label">{{ 'user.activity.filter.show_count'|trans({}, 'user') }}:</label>
                 </div>
                 <div class="col-auto">
-                    <select name="limit" id="limit" class="form-select"
+                    <select name="limit" id="limit" class="form-select fa-cyber-input__field"
                             data-action="change->ui-actions#autoSubmit"
                             aria-label="{{ 'user.activity.filter.show_count'|trans({}, 'user') }}">
                         <option value="50" {{ app.request.query.get('limit') == 50 ? 'selected' : '' }}>50</option>

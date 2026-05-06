@@ -354,7 +354,7 @@
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label class="form-label" for="ruleScope">{{ 'corporate.granular.field.scope'|trans({}, 'tenant') }}</label>
-                                            <select class="form-select" id="ruleScope" data-tenant-governance-target="ruleScope" required>
+                                            <select class="form-select fa-cyber-input__field" id="ruleScope" data-tenant-governance-target="ruleScope" required>
                                                 <option value="control">{{ 'corporate.granular.scope.control'|trans({}, 'tenant') }}</option>
                                                 <option value="isms_context">{{ 'corporate.granular.scope.isms_context'|trans({}, 'tenant') }}</option>
                                                 <option value="risk">{{ 'corporate.granular.scope.risk'|trans({}, 'tenant') }}</option>
@@ -364,12 +364,12 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="ruleScopeId">{{ 'corporate.granular.field.scope_id'|trans({}, 'tenant') }}</label>
-                                            <input type="text" class="form-control" id="ruleScopeId" data-tenant-governance-target="ruleScopeId" placeholder="z.B. A.5.1">
+                                            <input type="text" class="form-control fa-cyber-input__field" id="ruleScopeId" data-tenant-governance-target="ruleScopeId" placeholder="z.B. A.5.1">
                                             <small class="form-text text-muted">{{ 'corporate.granular.help.scope_id'|trans({}, 'tenant') }}</small>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label" for="ruleGovernance">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</label>
-                                            <select class="form-select" id="ruleGovernance" data-tenant-governance-target="ruleGovernance" required>
+                                            <select class="form-select fa-cyber-input__field" id="ruleGovernance" data-tenant-governance-target="ruleGovernance" required>
                                                 <option value="hierarchical">{{ 'governance.hierarchical'|trans({}, 'messages') }}</option>
                                                 <option value="shared">{{ 'governance.shared'|trans({}, 'messages') }}</option>
                                                 <option value="independent">{{ 'governance.independent'|trans({}, 'messages') }}</option>
@@ -529,7 +529,7 @@
                             <input type="hidden" name="_token" value="{{ csrf_token('add_user_' ~ tenant.id) }}">
                             <div class="input-group">
                                 <input type="email"
-                                       class="form-control"
+                                       class="form-control fa-cyber-input__field"
                                        name="user_email"
                                        placeholder="{{ 'tenant.users.enter_email'|trans({}, 'tenant') }}"
                                        required>

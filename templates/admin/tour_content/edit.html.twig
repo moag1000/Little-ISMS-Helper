@@ -65,7 +65,7 @@
                     <input type="text"
                            id="title-{{ row.step_id }}-{{ row.locale }}"
                            name="title[{{ row.step_id }}|{{ row.locale }}]"
-                           class="form-control form-control-sm"
+                           class="form-control form-control-sm fa-cyber-input__field"
                            placeholder="{{ row.default_title }}"
                            value="{{ row.override_title }}">
                     <div class="small text-muted mt-1">
@@ -79,7 +79,7 @@
                     </label>
                     <textarea id="body-{{ row.step_id }}-{{ row.locale }}"
                               name="body[{{ row.step_id }}|{{ row.locale }}]"
-                              class="form-control form-control-sm"
+                              class="form-control form-control-sm fa-cyber-input__field"
                               rows="3"
                               placeholder="{{ row.default_body }}">{{ row.override_body }}</textarea>
                     {% if row.updated_at %}

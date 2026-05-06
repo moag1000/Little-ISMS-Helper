@@ -271,14 +271,14 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="manualPercentage">{{ 'mapping_review.field.manual_percentage'|trans({}, 'compliance') }}</label>
-                            <input type="number" class="form-control" id="manualPercentage" min="0" max="150" value="{{ mapping.manualPercentage }}" placeholder="Optional">
+                            <input type="number" class="form-control fa-cyber-input__field" id="manualPercentage" min="0" max="150" value="{{ mapping.manualPercentage }}" placeholder="Optional">
                             <small class="form-text text-muted">{{ 'mapping_review.field.manual_percentage_help'|trans({}, 'compliance') }}</small>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="reviewStatus">{{ 'mapping_review.field.review_status'|trans({}, 'compliance') }}</label>
-                            <select class="form-control" id="reviewStatus">
+                            <select class="form-control fa-cyber-input__field" id="reviewStatus">
                                 <option value="unreviewed" {% if mapping.reviewStatus == 'unreviewed' %}selected{% endif %}>{{ 'mapping_review.status.unreviewed'|trans({}, 'compliance') }}</option>
                                 <option value="in_review" {% if mapping.reviewStatus == 'in_review' %}selected{% endif %}>{{ 'mapping_review.status.in_review'|trans({}, 'compliance') }}</option>
                                 <option value="approved" {% if mapping.reviewStatus == 'approved' %}selected{% endif %}>{{ 'mapping_review.status.approved'|trans({}, 'compliance') }}</option>
@@ -298,7 +298,7 @@
 
                 <div class="form-group">
                     <label for="reviewNotes">{{ 'mapping_review.field.review_notes'|trans({}, 'compliance') }}</label>
-                    <textarea class="form-control" id="reviewNotes" rows="3" placeholder="{{ 'mapping_review.field.review_notes_placeholder'|trans({}, 'compliance') }}">{{ mapping.reviewNotes }}</textarea>
+                    <textarea class="form-control fa-cyber-input__field" id="reviewNotes" rows="3" placeholder="{{ 'mapping_review.field.review_notes_placeholder'|trans({}, 'compliance') }}">{{ mapping.reviewNotes }}</textarea>
                 </div>
             </form>
 

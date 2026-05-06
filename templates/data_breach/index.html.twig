@@ -133,7 +133,7 @@
         {% block filters %}
             <div class="col-md-4">
                 <label for="filter-status" class="form-label">{{ 'data_breach.index.filter_title'|trans }}</label>
-                <select class="form-select" id="filter-status" name="filter">
+                <select class="form-select fa-cyber-input__field" id="filter-status" name="filter">
                     <option value="">{{ 'data_breach.index.filter_all'|trans }} ({{ statistics.total }})</option>
                     <option value="overdue" {{ current_filter == 'overdue' ? 'selected' : '' }}>{{ 'data_breach.index.filter_overdue'|trans }} ({{ compliance_score.overdue_notifications }})</option>
                     <option value="pending_authority" {{ current_filter == 'pending_authority' ? 'selected' : '' }}>{{ 'data_breach.index.filter_pending_authority'|trans }}</option>

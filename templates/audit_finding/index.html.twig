@@ -35,7 +35,7 @@
             <form method="get" class="row g-3">
                 <div class="col-md-4">
                     <label for="status" class="form-label">{{ 'audit_finding.field.status'|trans({}, 'audits') }}</label>
-                    <select name="status" id="status" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <select name="status" id="status" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                         <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                         <option value="open" {% if selected_status == 'open' %}selected{% endif %}>{{ 'audit_finding.status.open'|trans({}, 'audits') }}</option>
                         <option value="in_progress" {% if selected_status == 'in_progress' %}selected{% endif %}>{{ 'audit_finding.status.in_progress'|trans({}, 'audits') }}</option>
@@ -46,7 +46,7 @@
                 </div>
                 <div class="col-md-4">
                     <label for="severity" class="form-label">{{ 'audit_finding.field.severity'|trans({}, 'audits') }}</label>
-                    <select name="severity" id="severity" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <select name="severity" id="severity" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                         <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                         <option value="critical" {% if selected_severity == 'critical' %}selected{% endif %}>{{ 'audit_finding.severity.critical'|trans({}, 'audits') }}</option>
                         <option value="high" {% if selected_severity == 'high' %}selected{% endif %}>{{ 'audit_finding.severity.high'|trans({}, 'audits') }}</option>

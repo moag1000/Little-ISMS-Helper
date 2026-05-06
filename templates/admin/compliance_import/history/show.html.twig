@@ -91,7 +91,7 @@
                     <label for="filter-decision" class="form-label">
                         {{ 'compliance_import.history.filter.decision'|trans({}, 'compliance_import') }}
                     </label>
-                    <select id="filter-decision" name="decision" class="form-select form-select-sm">
+                    <select id="filter-decision" name="decision" class="form-select form-select-sm fa-cyber-input__field">
                         <option value="">{{ 'compliance_import.history.filter.all'|trans({}, 'compliance_import') }}</option>
                         {% for d in ['import', 'update', 'merge', 'skip', 'error'] %}
                             <option value="{{ d }}" {% if filter.decision == d %}selected{% endif %}>
@@ -106,7 +106,7 @@
                     </label>
                     <input id="filter-target-entity" type="text" name="target_entity_type"
                            value="{{ filter.target_entity_type }}"
-                           class="form-control form-control-sm"
+                           class="form-control form-control-sm fa-cyber-input__field"
                            placeholder="ComplianceMapping">
                 </div>
                 <div class="col-md-3">
@@ -115,7 +115,7 @@
                     </label>
                     <input id="filter-search-id" type="number" min="1" name="search_entity_id"
                            value="{{ filter.search_entity_id }}"
-                           class="form-control form-control-sm"
+                           class="form-control form-control-sm fa-cyber-input__field"
                            placeholder="123">
                 </div>
                 <div class="col-md-3 d-flex gap-2">

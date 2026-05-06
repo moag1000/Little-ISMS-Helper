@@ -39,7 +39,7 @@
         <form method="get" action="{{ path('app_compliance_compare') }}" class="mt-md">
             <div class="form-group">
                 <label for="framework1">{{ 'compliance.field.framework_1'|trans({}, 'compliance') }}</label>
-                <select name="framework1" id="framework1" class="form-select" required>
+                <select name="framework1" id="framework1" class="form-select fa-cyber-input__field" required>
                     <option value="">{{ 'compliance.option.select_framework'|trans({}, 'compliance') }}</option>
                     {% for framework in frameworks %}
                         <option value="{{ framework.id }}" {% if selectedFramework1 and selectedFramework1.id == framework.id %}selected{% endif %}>
@@ -51,7 +51,7 @@
 
             <div class="form-group">
                 <label for="framework2">{{ 'compliance.field.framework_2'|trans({}, 'compliance') }}</label>
-                <select name="framework2" id="framework2" class="form-select" required>
+                <select name="framework2" id="framework2" class="form-select fa-cyber-input__field" required>
                     <option value="">{{ 'compliance.option.select_framework'|trans({}, 'compliance') }}</option>
                     {% for framework in frameworks %}
                         <option value="{{ framework.id }}" {% if selectedFramework2 and selectedFramework2.id == framework.id %}selected{% endif %}>

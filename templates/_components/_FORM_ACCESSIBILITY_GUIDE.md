@@ -154,7 +154,7 @@ Our `_form_field.html.twig` component automatically adds:
     aria-invalid="false"
     aria-describedby="user_email_help"
     aria-required="true"
-    class="form-control"
+    class="form-control fa-cyber-input__field"
 />
 
 <!-- Help text -->
