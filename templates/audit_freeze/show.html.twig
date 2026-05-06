@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
 
 {% block title %}{{ freeze.freezeName }} · {{ 'audit_freeze.title'|trans({}, 'audit_freeze') }}{% endblock %}
 
@@ -31,7 +30,7 @@
                         <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                         {{ 'audit_freeze.action.download_pdf'|trans({}, 'audit_freeze') }}
                     </a>
-                    {{ _pdf_switch.render('app_audit_freeze_download_pdf', {id: freeze.id}) }}
+                    {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_audit_freeze_download_pdf', route_params: {id: freeze.id}} only %}
                 </div>
             {% else %}
                 <form method="post" action="{{ path('app_audit_freeze_generate_pdf', {id: freeze.id}) }}" class="d-inline">

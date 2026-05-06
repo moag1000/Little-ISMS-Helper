@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
 {% trans_default_domain 'audit' %}
 
 {% block title %}{{ audit.title }} - {{ parent() }}{% endblock %}
@@ -232,7 +231,7 @@
                                data-turbo="false">
                                 <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'audit.export_pdf'|trans({}, 'audit') }}
                             </a>
-                            {{ _pdf_switch.render('app_audit_export_pdf', {id: audit.id}) }}
+                            {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_audit_export_pdf', route_params: {id: audit.id}} only %}
                         </div>
 
                         {% if is_granted('ROLE_MANAGER') %}
