@@ -11,6 +11,7 @@ supplier:
         create: Create
         update: Update
         view_details: 'View Details'
+        lksg_export: 'LkSG annual report (CSV)'
     statistics:
         total: 'Total Suppliers'
         critical: 'Critical Suppliers'

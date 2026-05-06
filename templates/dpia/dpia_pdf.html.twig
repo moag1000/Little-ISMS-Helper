@@ -338,6 +338,51 @@
         {% endif %}
     </div>
 
+    {# Standard-Datenschutzmodell (SDM 3.1) — DSK Gewährleistungsziele #}
+    {% set sdm = dpia.sdmAssessment ?? {} %}
+    {% if sdm|length > 0 or dpia.sdmAssessmentSummary %}
+    <div class="section">
+        <h2>Standard-Datenschutzmodell (SDM 3.1)</h2>
+        <p>
+            <strong>Bewertete Ziele:</strong> {{ dpia.sdmCoveragePercent }}%
+            {% if dpia.sdmHighestRiskLevel %}
+                · <strong>Höchstes Risiko:</strong>
+                {% set sdm_risk_class = {'low': 'success', 'medium': 'warning', 'high': 'danger'}[dpia.sdmHighestRiskLevel] ?? 'secondary' %}
+                <span class="badge badge-{{ sdm_risk_class }}">{{ dpia.sdmHighestRiskLevel|upper }}</span>
+            {% endif %}
+        </p>
+        <table>
+            <tr>
+                <th scope="col" style="width: 25%;">Gewährleistungsziel</th>
+                <th scope="col" style="width: 12%;">Risiko</th>
+                <th scope="col">Begründung</th>
+            </tr>
+            {% for goal in [
+                'verfuegbarkeit', 'integritaet', 'vertraulichkeit', 'transparenz',
+                'intervenierbarkeit', 'nichtverkettung', 'datenminimierung'
+            ] %}
+                {% set entry = sdm[goal] ?? null %}
+                <tr>
+                    <td><strong>{{ ('privacy.sdm.goal.' ~ goal)|trans({}, 'privacy') }}</strong></td>
+                    <td>
+                        {% if entry and entry.risk_level is defined and entry.risk_level %}
+                            {% set goal_class = {'low': 'success', 'medium': 'warning', 'high': 'danger'}[entry.risk_level] ?? 'secondary' %}
+                            <span class="badge badge-{{ goal_class }}">{{ entry.risk_level|upper }}</span>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>{{ entry and entry.rationale is defined ? entry.rationale : '' }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% if dpia.sdmAssessmentSummary %}
+            <h3>Bewertungszusammenfassung</h3>
+            <p>{{ dpia.sdmAssessmentSummary|nl2br }}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
     {# Stakeholder Consultation #}
     <div class="section">
         <h2>Stakeholder Consultation</h2>

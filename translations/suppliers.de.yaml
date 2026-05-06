@@ -11,6 +11,7 @@ supplier:
         create: Anlegen
         update: Aktualisieren
         view_details: 'Details anzeigen'
+        lksg_export: 'LkSG-Jahresbericht (CSV)'
     statistics:
         total: Gesamt-Lieferanten
         critical: 'Kritische Lieferanten'
