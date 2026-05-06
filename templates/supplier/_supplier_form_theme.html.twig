@@ -1,13 +1,27 @@
-{# Supplier form theme — route subcontractorChain through the structured editor #}
+{# Supplier form theme — extends Aurora cyber-input theme; only overrides
+   the subcontractorChain field which needs a structured-editor sub-template. #}
+{% use "form/fa_cyber_input.html.twig" %}
 
 {%- block _supplier_subcontractorChain_row -%}
-    <div class="mb-3">
-        {{ form_label(form) }}
-        {% include 'supplier/_subcontractor_chain_editor.html.twig' with {
-            field_name: form.vars.full_name,
-            initial: form.vars.value
-        } %}
-        <small class="form-text text-muted">{{ form.vars.help|trans({}, form.vars.help_translation_domain|default('suppliers')) }}</small>
+    <div class="fa-cyber-input">
+        <div class="fa-cyber-input__header">
+            {{ form_label(form) }}
+        </div>
+        <div class="fa-cyber-input__frame">
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--tl" aria-hidden="true"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--tr" aria-hidden="true"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--bl" aria-hidden="true"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--br" aria-hidden="true"></span>
+            {% include 'supplier/_subcontractor_chain_editor.html.twig' with {
+                field_name: form.vars.full_name,
+                initial: form.vars.value
+            } %}
+        </div>
+        {% if form.vars.help %}
+            <small class="fa-cyber-input__hint">
+                {{ form.vars.help|trans({}, form.vars.help_translation_domain|default('suppliers')) }}
+            </small>
+        {% endif %}
         {{ form_errors(form) }}
     </div>
 {%- endblock -%}
