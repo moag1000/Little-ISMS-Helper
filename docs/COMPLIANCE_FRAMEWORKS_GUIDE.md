@@ -1,8 +1,12 @@
 # Compliance Frameworks - Ladenanleitung
 
+> Visuelle Sicht aus Compliance-Manager-Perspektive: [Sichtwechsel — Compliance-Manager](sichtwechsel/compliance-manager.md)
+
 ## 📋 Übersicht
 
 Little ISMS Helper unterstützt **20+ internationale Compliance-Frameworks**, die Sie je nach Bedarf laden können.
+
+![Compliance-Übersicht mit aktiven Frameworks](sichtwechsel/img/compliance-manager/compliance-overview.png)
 
 ## 🚀 Wie lade ich Compliance Frameworks?
 
@@ -118,6 +122,8 @@ php bin/console app:load-bsi-requirements
 | **CIS Controls v8** | CIS-CONTROLS | All Sectors | No | 153 Controls |
 
 ## 🔄 Cross-Framework Mapping
+
+![Cross-Framework-Matrix](sichtwechsel/img/compliance-manager/compliance-cross-framework.png)
 
 Nach dem Laden mehrerer Frameworks:
 

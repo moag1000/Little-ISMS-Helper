@@ -1,7 +1,11 @@
 # Compliance Workflow: Von ISO 27001 zu NIS2
 
+> Visuelle End-to-End-Sicht: [Sichtwechsel — Compliance-Manager](sichtwechsel/compliance-manager.md)
+
 ## Szenario
 Du hast ISO 27001 vollständig implementiert und möchtest jetzt auch NIS2 erfüllen.
+
+![Compliance-Wizard für Framework-Onboarding](sichtwechsel/img/compliance-manager/compliance-wizard.png)
 
 ## 🎯 Schritt-für-Schritt Anleitung
 
@@ -47,6 +51,8 @@ Du hast ISO 27001 vollständig implementiert und möchtest jetzt auch NIS2 erfü
 ### 3. Cross-Framework Mapping prüfen
 
 **Navigation:** Compliance → Mappings (`http://127.0.0.1:8000/de/compliance/mapping`)
+
+![Mapping-Hub](sichtwechsel/img/compliance-manager/mapping-hub.png)
 
 1. Filtere nach **Source Framework: ISO 27001**
 2. Filtere nach **Target Framework: NIS2**
