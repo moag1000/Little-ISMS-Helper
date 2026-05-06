@@ -1,0 +1,11 @@
+{% trans_default_domain 'threat' %}
+<form method="post" action="{{ path('app_threat_intelligence_delete', {id: threat.id}) }}"
+      data-controller="ui-actions"
+      data-action="submit->ui-actions#confirm"
+      data-ui-actions-message-param="{{ 'threat.confirm.delete'|trans({}, 'threat') }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ threat.id) }}">
+    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
+        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+        {{ 'common.delete'|trans({}, 'messages') }}
+    </button>
+</form>

@@ -1,5 +1,38 @@
 threat:
-    title: Bedrohungsinformationen
+    title:
+        index: Bedrohungsinformationen
+        new: Bedrohung erfassen
+        edit: Bedrohung bearbeiten
+        show: Details
+    subtitle:
+        index: 'Übersicht aller erkannten Bedrohungen und CVEs'
+    kpi:
+        total: Gesamt
+        critical: Kritisch
+        high: Hoch
+        open: Offen
+    label:
+        assignee: 'Verantwortlich'
+    action:
+        create: 'Bedrohung erfassen'
+        update: 'Änderungen speichern'
+        list: 'Zur Liste'
+        created_flash: 'Bedrohung wurde erfolgreich erfasst.'
+        updated_flash: 'Bedrohung wurde erfolgreich aktualisiert.'
+        deleted_flash: 'Bedrohung wurde gelöscht.'
+    section:
+        basic: 'Grunddaten'
+        details: 'Details & CVE'
+        impact: 'Auswirkungen & Maßnahmen'
+        assignment: 'Zuweisung'
+        resulting_incidents: 'Resultierenden Vorfälle'
+    empty:
+        title: 'Keine Bedrohungen gefunden'
+        description: 'Noch keine Bedrohungsinformationen erfasst. Erfassen Sie eine neue Bedrohung, um zu beginnen.'
+    confirm:
+        delete: 'Möchten Sie diese Bedrohung wirklich unwiderruflich löschen?'
+    warning:
+        delete_irreversible: 'Das Löschen dieser Bedrohung kann nicht rückgängig gemacht werden. Alle verknüpften Daten gehen verloren.'
     name: Bedrohung
     threat_type: Bedrohungstyp
     severity: Schweregrad

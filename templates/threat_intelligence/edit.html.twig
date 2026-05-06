@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'threat' %}
+
+{% block title %}{{ 'threat.title.edit'|trans({}, 'threat') }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'threat.title.index'|trans({}, 'threat'), url: path('app_threat_intelligence_index'), icon: 'bi-shield-exclamation' },
+        { label: threat.title, url: path('app_threat_intelligence_show', {id: threat.id}) },
+        { label: 'threat.title.edit'|trans({}, 'threat') }
+    ]
+} %}
+
+{% include '_components/_page_header.html.twig' with {
+    title: 'threat.title.edit'|trans({}, 'threat') ~ ': ' ~ threat.title,
+    icon: 'bi-pencil',
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), url: path('app_threat_intelligence_show', {id: threat.id}), variant: 'secondary', icon: 'bi-arrow-left' }
+    ]
+} %}
+
+{% embed '_components/_card.html.twig' %}
+    {% block card_body %}
+        {{ form_start(form) }}
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic': {
+                        'label': 'threat.section.basic'|trans({}, 'threat'),
+                        'fields': ['title', 'description', 'threatType', 'severity', 'status']
+                    },
+                    'details': {
+                        'label': 'threat.section.details'|trans({}, 'threat'),
+                        'fields': ['source', 'cveId', 'cvssScore', 'detectionDate', 'mitigationDate']
+                    },
+                    'impact': {
+                        'label': 'threat.section.impact'|trans({}, 'threat'),
+                        'fields': ['affectsOrganization', 'affectedAssets', 'mitigationRecommendations', 'actionsTaken', 'references']
+                    },
+                    'assignment': {
+                        'label': 'threat.section.assignment'|trans({}, 'threat'),
+                        'fields': ['assignedTo', 'assignedPerson', 'assignedDeputyPersons']
+                    }
+                },
+                'col_widths': {
+                    'title': 8,
+                    'threatType': 4,
+                    'description': 12,
+                    'severity': 4,
+                    'status': 4,
+                    'affectsOrganization': 4,
+                    'source': 6,
+                    'cveId': 3,
+                    'cvssScore': 3,
+                    'detectionDate': 6,
+                    'mitigationDate': 6,
+                    'affectedAssets': 12,
+                    'mitigationRecommendations': 12,
+                    'actionsTaken': 12,
+                    'references': 12,
+                    'assignedTo': 4,
+                    'assignedPerson': 4,
+                    'assignedDeputyPersons': 4
+                },
+                'translation_domain': 'threat'
+            } %}
+
+            <div class="form-actions d-flex gap-2 justify-content-end">
+                <a href="{{ path('app_threat_intelligence_show', {id: threat.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                    <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                    {{ 'threat.action.update'|trans({}, 'threat') }}
+                </button>
+            </div>
+        {{ form_end(form) }}
+    {% endblock %}
+{% endembed %}
+
+{# Delete Danger Zone #}
+{% if is_granted('ROLE_ADMIN') %}
+{% embed '_components/_card.html.twig' with {borderColor: 'danger', class: 'mt-4'} %}
+    {% block card_header %}
+        <div class="card-header bg-danger text-white">
+            <h2 class="h5 mb-0">
+                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                {{ 'common.danger_zone'|trans({}, 'messages') }}
+            </h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
+        <p class="text-muted">{{ 'threat.warning.delete_irreversible'|trans({}, 'threat') }}</p>
+        {{ include('threat_intelligence/_delete_form.html.twig') }}
+    {% endblock %}
+{% endembed %}
+{% endif %}
+{% endblock %}

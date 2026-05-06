@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'threat' %}
+
+{% block title %}{{ threat.title }} - {{ 'threat.title.index'|trans({}, 'threat') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'threat.title.index'|trans({}, 'threat'), url: path('app_threat_intelligence_index'), icon: 'bi-shield-exclamation' },
+            { label: threat.title }
+        ]
+    } %}
+
+    <div class="page-header">
+        <h1>{{ threat.title }}</h1>
+        <div class="actions">
+            {% if is_granted('ROLE_MANAGER') %}
+                <a href="{{ path('app_threat_intelligence_edit', {id: threat.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                    {{ 'common.edit'|trans({}, 'messages') }}
+                </a>
+            {% endif %}
+            <a href="{{ path('app_threat_intelligence_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                {{ 'common.back_to_list'|trans({}, 'messages') }}
+            </a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <form method="post" action="{{ path('app_threat_intelligence_delete', {id: threat.id}) }}" class="d-inline"
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'threat.confirm.delete'|trans({}, 'threat') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ threat.id) }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                        {{ 'common.delete'|trans({}, 'messages') }}
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2>{{ 'threat.title.show'|trans({}, 'threat') }}</h2>
+                <div class="d-flex gap-2">
+                    {# Severity badge #}
+                    {% set severityVariant = {
+                        'critical': 'danger',
+                        'high': 'warning',
+                        'medium': 'info',
+                        'low': 'secondary',
+                        'informational': 'light'
+                    }[threat.severity] ?? 'secondary' %}
+                    {% include '_components/_badge.html.twig' with { variant: severityVariant, content: ('severity.' ~ threat.severity)|trans({}, 'threat') } %}
+
+                    {# Status badge #}
+                    {% set statusVariant = {
+                        'new': 'primary',
+                        'analyzing': 'warning',
+                        'mitigated': 'success',
+                        'monitoring': 'info',
+                        'closed': 'secondary'
+                    }[threat.status] ?? 'secondary' %}
+                    {% include '_components/_badge.html.twig' with { variant: statusVariant, content: ('status_type.' ~ threat.status)|trans({}, 'threat') } %}
+                </div>
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            {% include '_components/_detail_group.html.twig' with {
+                items: [
+                    { label: 'threat.field.threat_type'|trans({}, 'threat'),   value: ('type.' ~ threat.threatType)|trans({}, 'threat') },
+                    { label: 'threat.field.severity'|trans({}, 'threat'),      value: ('severity.' ~ threat.severity)|trans({}, 'threat') },
+                    { label: 'threat.field.status'|trans({}, 'threat'),        value: ('status_type.' ~ threat.status)|trans({}, 'threat') },
+                    { label: 'threat.field.detection_date'|trans({}, 'threat'),value: threat.detectionDate ? threat.detectionDate|date('Y-m-d') : null },
+                    { label: 'threat.field.mitigation_date'|trans({}, 'threat'),value: threat.mitigationDate ? threat.mitigationDate|date('Y-m-d') : null },
+                    { label: 'threat.field.cvss_score'|trans({}, 'threat'),    value: threat.cvssScore },
+                    { label: 'threat.field.cve_id'|trans({}, 'threat'),        value: threat.cveId },
+                    { label: 'threat.field.source'|trans({}, 'threat'),        value: threat.source },
+                    { label: 'threat.field.affects_organization'|trans({}, 'threat'), value: threat.affectsOrganization ? 'choice.yes'|trans({}, 'threat') : 'choice.no'|trans({}, 'threat') }
+                ]
+            } only %}
+
+            {% if threat.description %}
+                <div class="detail-section">
+                    <h3>{{ 'common.description'|trans({}, 'messages') }}</h3>
+                    <p>{{ threat.description|nl2br }}</p>
+                </div>
+            {% endif %}
+
+            {# Assignment section #}
+            <div class="detail-section">
+                <h3>{{ 'threat.section.assignment'|trans({}, 'threat') }}</h3>
+                {% include '_components/_detail_group.html.twig' with {
+                    items: [
+                        { label: 'threat.field.assigned_to_user'|trans({}, 'threat'), value: threat.effectiveAssignedTo, dataReuse: true },
+                        { label: 'threat.field.assigned_deputy_persons'|trans({}, 'threat'), value: threat.allAssignedOwners|join(', ') ?: null }
+                    ]
+                } only %}
+            </div>
+
+            {% if threat.mitigationRecommendations %}
+                <div class="detail-section">
+                    <h3>{{ 'threat.field.mitigation_recommendations'|trans({}, 'threat') }}</h3>
+                    <div class="instruction-box">{{ threat.mitigationRecommendations|nl2br }}</div>
+                </div>
+            {% endif %}
+
+            {% if threat.actionsTaken %}
+                <div class="detail-section">
+                    <h3>{{ 'threat.field.actions_taken'|trans({}, 'threat') }}</h3>
+                    <div class="instruction-box">{{ threat.actionsTaken|nl2br }}</div>
+                </div>
+            {% endif %}
+
+            {% if threat.references %}
+                <div class="detail-section">
+                    <h3>{{ 'threat.field.references'|trans({}, 'threat') }}</h3>
+                    <div class="instruction-box">{{ threat.references|nl2br }}</div>
+                </div>
+            {% endif %}
+
+            {# Affected Assets #}
+            {% if threat.affectedAssets|length > 0 %}
+                <div class="detail-section">
+                    <h3>{{ 'threat.field.affected_assets'|trans({}, 'threat') }} ({{ threat.affectedAssets|length }})</h3>
+                    <ul class="list-unstyled">
+                        {% for asset in threat.affectedAssets %}
+                            <li>
+                                <a href="{{ path('app_asset_show', {id: asset.id}) }}">{{ asset.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            {# Resulting Incidents #}
+            {% if threat.resultingIncidents|length > 0 %}
+                <div class="detail-section">
+                    <h3>{{ 'threat.section.resulting_incidents'|trans({}, 'threat') }} ({{ threat.resultingIncidents|length }})</h3>
+                    <ul class="list-unstyled">
+                        {% for incident in threat.resultingIncidents %}
+                            <li>
+                                <a href="{{ path('app_incident_show', {id: incident.id}) }}">{{ incident.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="detail-section text-muted small">
+                {% if threat.createdAt %}
+                    {{ 'common.created_at'|trans({}, 'messages') }}: {{ threat.createdAt|date('Y-m-d H:i') }}
+                {% endif %}
+                {% if threat.updatedAt %}
+                    &mdash; {{ 'common.updated_at'|trans({}, 'messages') }}: {{ threat.updatedAt|date('Y-m-d H:i') }}
+                {% endif %}
+            </div>
+        {% endblock %}
+    {% endembed %}
+</div>
+
+<style>
+.instruction-box {
+    padding: 1rem;
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
+    border-left: 3px solid var(--primary);
+    border-radius: 4px;
+    white-space: pre-wrap;
+}
+</style>
+{% endblock %}

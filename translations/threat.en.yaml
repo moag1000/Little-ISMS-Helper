@@ -1,5 +1,38 @@
 threat:
-    title: 'Threat Intelligence'
+    title:
+        index: 'Threat Intelligence'
+        new: 'New Threat'
+        edit: 'Edit Threat'
+        show: Details
+    subtitle:
+        index: 'Overview of all detected threats and CVEs'
+    kpi:
+        total: Total
+        critical: Critical
+        high: High
+        open: Open
+    label:
+        assignee: 'Assignee'
+    action:
+        create: 'New Threat'
+        update: 'Save Changes'
+        list: 'Back to List'
+        created_flash: 'Threat has been created successfully.'
+        updated_flash: 'Threat has been updated successfully.'
+        deleted_flash: 'Threat has been deleted.'
+    section:
+        basic: 'Basic Information'
+        details: 'Details & CVE'
+        impact: 'Impact & Mitigations'
+        assignment: 'Assignment'
+        resulting_incidents: 'Resulting Incidents'
+    empty:
+        title: 'No threats found'
+        description: 'No threat intelligence records yet. Create a new threat to get started.'
+    confirm:
+        delete: 'Are you sure you want to permanently delete this threat?'
+    warning:
+        delete_irreversible: 'Deleting this threat is irreversible. All associated data will be lost.'
     name: Threat
     threat_type: 'Threat Type'
     severity: Severity
