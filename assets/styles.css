@@ -37,3 +37,6 @@
 
 /* FairyAurora Print-Styles — @media print Neutral-Fallback (Plan § 23) */
 @import './styles/fairy-aurora-print.css';
+
+/* Admin Panel — Hub-Card, Permission-Matrix, Audit-Row, API-Key, Service-Tile (DS § Admin Panel) */
+@import './styles/admin-panel.css';
