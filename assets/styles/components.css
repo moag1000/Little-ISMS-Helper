@@ -87,13 +87,13 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0);
+    background-color: rgb(0, 0, 0, 0);
     transition: background-color 0.3s ease;
     z-index: 999;
 }
 
 .modal-backdrop.modal-backdrop-show:not(.fade) {
-    background-color: rgba(15, 23, 42, 0.8);
+    background-color: rgb(15, 23, 42, 0.8);
     backdrop-filter: blur(4px);
 }
 
@@ -326,7 +326,7 @@
 .filter-control select:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    box-shadow: 0 0 0 3px rgb(52, 152, 219, 0.1);
 }
 
 /* Dark Mode - Filter Panel */
@@ -363,7 +363,7 @@
 .search-box input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    box-shadow: 0 0 0 3px rgb(52, 152, 219, 0.1);
 }
 
 .search-box::before {

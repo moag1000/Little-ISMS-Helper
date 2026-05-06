@@ -129,7 +129,7 @@
     width: 600px;
     background: var(--surface);
     border-left: 1px solid var(--border);
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+    box-shadow: -4px 0 20px rgb(0, 0, 0, 0.1);
     z-index: 99999 !important; /* Very high - above everything except turbo bar */
     transform: translateX(0);
     transition: transform 0.3s ease, left 0s;
@@ -170,7 +170,7 @@
 [data-theme="dark"] .mega-menu-secondary {
     background: var(--surface);
     border-left-color: var(--border);
-    box-shadow: -4px 0 30px rgba(0, 0, 0, 0.5);
+    box-shadow: -4px 0 30px rgb(0, 0, 0, 0.5);
 }
 
 /* ====================================
@@ -283,19 +283,19 @@
 }
 
 [data-bs-theme="dark"] .mega-menu-trigger:hover {
-    background: rgba(var(--bs-primary-rgb), 0.15);
+    background: rgb(var(--bs-primary-rgb), 0.15);
 }
 
 [data-bs-theme="dark"] .mega-menu-trigger.active {
-    background: rgba(var(--bs-primary-rgb), 0.2);
+    background: rgb(var(--bs-primary-rgb), 0.2);
 }
 
 [data-bs-theme="dark"] .mega-menu-links a:hover {
-    background: rgba(var(--bs-primary-rgb), 0.15);
+    background: rgb(var(--bs-primary-rgb), 0.15);
 }
 
 [data-bs-theme="dark"] .mega-menu-links a.active {
-    background: rgba(var(--bs-primary-rgb), 0.2);
+    background: rgb(var(--bs-primary-rgb), 0.2);
 }
 
 /* ====================================

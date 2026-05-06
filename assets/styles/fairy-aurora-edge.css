@@ -99,6 +99,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     0%, 100% { box-shadow: 0 0 0 4px var(--primary-glow); }
     50%      { box-shadow: 0 0 0 8px var(--primary-glow); }
 }
+
 @media (prefers-reduced-motion: reduce) {
     .fa-stepper__item--active .fa-stepper__dot { animation: none; }
 }
@@ -120,14 +121,16 @@ a.fa-stepper__link:hover { color: var(--primary); }
     background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--primary-glow);
+    box-shadow: 0 4px 20px rgb(0, 0, 0, 0.08), 0 0 0 1px var(--primary-glow);
     overflow: hidden;
     animation: fa-dropdown-pop var(--t-base) var(--ease-out);
 }
+
 @keyframes fa-dropdown-pop {
     from { opacity: 0; transform: scale(0.95); }
     to   { opacity: 1; transform: scale(1); }
 }
+
 @media (prefers-reduced-motion: reduce) {
     .fa-dropdown-panel { animation: none; }
 }
@@ -275,6 +278,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     border-bottom: 1px solid var(--border);
     animation: fa-banner-slide-in var(--t-slow) var(--ease-out);
 }
+
 @keyframes fa-banner-slide-in {
     from { opacity: 0; transform: translateY(-10px); max-height: 0; }
     to   { opacity: 1; transform: translateY(0);     max-height: 100px; }
@@ -282,9 +286,11 @@ a.fa-stepper__link:hover { color: var(--primary); }
 .fa-global-banner.is-dismissing {
     animation: fa-banner-slide-out var(--t-base) var(--ease-in-out) forwards;
 }
+
 @keyframes fa-banner-slide-out {
     to { opacity: 0; max-height: 0; padding: 0; overflow: hidden; }
 }
+
 @media (prefers-reduced-motion: reduce) {
     .fa-global-banner { animation: none; }
     .fa-global-banner.is-dismissing { animation: none; opacity: 0; max-height: 0; overflow: hidden; }
@@ -312,7 +318,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     text-decoration: none;
     transition: background-color var(--t-fast);
 }
-.fa-global-banner__cta:hover { background: rgba(255,255,255,0.15); }
+.fa-global-banner__cta:hover { background: rgb(255,255,255,0.15); }
 .fa-global-banner__close {
     background: transparent;
     border: none;
@@ -339,7 +345,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 20px 60px rgb(0, 0, 0, 0.2);
 }
 .fa-confirm-modal__body {
     padding: 28px 28px 10px;
@@ -355,7 +361,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     font-size: 18px;
     font-weight: 600;
     color: var(--fg);
-    margin: 4px 0 0 0;
+    margin: 4px 0 0;
 }
 .fa-confirm-modal__message {
     font-size: 13px;
@@ -566,9 +572,9 @@ a.fa-stepper__link:hover { color: var(--primary); }
 .fa-prefs-modal {
     position: fixed;
     inset: 0;
-    background: rgba(10, 14, 26, 0.5);
+    background: rgb(10, 14, 26, 0.5);
     backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -590,12 +596,13 @@ a.fa-stepper__link:hover { color: var(--primary); }
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgb(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     animation: fa-prefs-pop var(--t-base) var(--ease-out);
 }
+
 @keyframes fa-prefs-pop {
     from { transform: scale(0.95); opacity: 0; }
     to   { transform: scale(1);    opacity: 1; }
@@ -658,7 +665,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--primary);
-    margin: 0 0 4px 0;
+    margin: 0 0 4px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -698,7 +705,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     height: 16px;
     background: var(--surface);
     border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgb(0, 0, 0, 0.2);
     transition: transform var(--t-fast) var(--ease-out);
 }
 .fa-prefs-toggle__input:checked + .fa-prefs-toggle__slider {
