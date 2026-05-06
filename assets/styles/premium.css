@@ -39,7 +39,7 @@
 
 .hero-content {
     position: relative;
-    z-index: 1;
+    z-index: 1; /* local stacking-context */
 }
 
 .hero-title {
@@ -94,7 +94,7 @@
 
 .hero-image {
     position: relative;
-    z-index: 1;
+    z-index: 1; /* local stacking-context */
     animation: fadeIn 1s ease-out 0.4s both;
 }
 
@@ -707,7 +707,7 @@
     right: 0;
     bottom: 0;
     background: rgb(0, 0, 0, 0.5);
-    z-index: 9999;
+    z-index: var(--z-modal);
     display: flex;
     align-items: flex-start;
     padding-top: 10vh;
@@ -913,7 +913,7 @@
     right: 0;
     bottom: 0;
     background: rgb(0, 0, 0, 0.5);
-    z-index: 9998;
+    z-index: var(--z-modal);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1224,7 +1224,7 @@
     right: 0;
     bottom: 0;
     background: rgb(10, 14, 26, 0.5);
-    z-index: 9997;
+    z-index: var(--z-modal);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1321,7 +1321,7 @@
    =============================== */
 .notification-center-panel {
     position: relative;
-    z-index: 1001;
+    z-index: 1001; /* local stacking-context: above sibling backdrop */
 }
 
 /* Header version of notification bell button */
@@ -1392,7 +1392,7 @@
     bottom: 0;
     left: 0;
     background: rgb(10, 14, 26, 0.5);
-    z-index: 9996;
+    z-index: var(--z-modal-backdrop);
     backdrop-filter: blur(5px);
 }
 

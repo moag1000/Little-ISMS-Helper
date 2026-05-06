@@ -311,7 +311,7 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     box-shadow: 0 8px 24px rgb(0, 0, 0, 0.08);
-    z-index: 10;
+    z-index: 10; /* local stacking-context */
 }
 
 .details-header {
@@ -673,7 +673,7 @@
    =============================== */
 .heat-map-tooltip {
     position: absolute;
-    z-index: 10000;
+    z-index: var(--z-popover);
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -776,7 +776,7 @@
     transform: scale(1.15);
     box-shadow: 0 4px 12px rgb(0, 0, 0, 0.2),
                 0 0 20px var(--primary-glow);
-    z-index: 10;
+    z-index: 10; /* local stacking-context */
 }
 
 .heat-map-cell.has-risks:hover::before {
@@ -789,7 +789,7 @@
 
 .heat-map-cell .cell-count {
     position: relative;
-    z-index: 1;
+    z-index: 1; /* local stacking-context */
     font-weight: 700;
     font-size: 1.1rem;
     text-shadow: 0 1px 2px rgb(0, 0, 0, 0.2);

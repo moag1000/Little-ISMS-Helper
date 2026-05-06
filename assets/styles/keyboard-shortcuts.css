@@ -52,7 +52,7 @@ body:has(.fa-alva-dock--pos-bottom-left) .keyboard-shortcuts-trigger {
     align-items: center;
     justify-content: center;
     padding: 24px;
-    z-index: 9998;
+    z-index: var(--z-overlay);
     transition: background 0.2s ease;
 }
 

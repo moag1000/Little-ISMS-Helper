@@ -9,7 +9,7 @@
     bottom: 24px;
     left: 50%;
     transform: translateX(-50%) translateY(20px);
-    z-index: 1000;
+    z-index: var(--z-modal-backdrop);
     background: linear-gradient(135deg, var(--primary-strong) 0%, var(--accent-strong) 100%);
     color: var(--on-primary);
     border-radius: var(--border-radius-lg);

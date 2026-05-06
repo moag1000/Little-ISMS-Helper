@@ -67,7 +67,7 @@
 .mega-menu-trigger:focus {
     outline: 2px solid var(--primary);
     outline-offset: -2px;
-    z-index: 1;
+    z-index: 1; /* local stacking-context */
 }
 
 .mega-menu-trigger.active {
@@ -130,7 +130,7 @@
     background: var(--surface);
     border-left: 1px solid var(--border);
     box-shadow: -4px 0 20px rgb(0, 0, 0, 0.1);
-    z-index: 99999 !important; /* Very high - above everything except turbo bar */
+    z-index: var(--z-overlay);
     transform: translateX(0);
     transition: transform 0.3s ease, left 0s;
     overflow: hidden;
@@ -340,7 +340,7 @@
         border-bottom: 1px solid var(--border);
         font-weight: 600;
         color: var(--primary);
-        z-index: 1;
+        z-index: 1; /* local stacking-context */
     }
 
     .mega-menu-section-title {

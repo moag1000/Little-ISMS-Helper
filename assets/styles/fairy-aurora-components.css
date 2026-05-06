@@ -112,7 +112,7 @@ main > .container-fluid {
 .app-sidebar > *,
 .mega-menu-panel > * {
     position: relative;
-    z-index: 1;
+    z-index: 1; /* local stacking-context */
 }
 
 /* Subtile Corner-Tick-Marker oben-links (Login-Aesthetik) */
@@ -127,7 +127,7 @@ main > .container-fluid {
     border-left: 1px solid var(--primary);
     opacity: 0.4;
     pointer-events: none;
-    z-index: 0;
+    z-index: 0; /* local stacking-context */
 }
 
 /* Dark-Mode — intensiver Dot-Pattern + hellere Circuit-Farben für Kontrast */
@@ -1453,7 +1453,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 
 .fa-onboarding-fairy__character {
     position: relative;
-    z-index: 1;
+    z-index: 1; /* local stacking-context */
     transition: transform var(--t-magic) var(--ease-out);
 }
 .fa-onboarding-fairy--happy    .fa-onboarding-fairy__character { transform: rotate(4deg); }
@@ -1539,7 +1539,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     position: absolute;
     width: 12px;
     height: 12px;
-    z-index: 2;
+    z-index: 2; /* local stacking-context */
     pointer-events: none;
 }
 .fa-setup-left__tick--tl { top: 16px;    left: 16px;   border-top: 1px solid var(--primary);    border-left: 1px solid var(--primary); }
@@ -1547,7 +1547,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 .fa-setup-left__tick--bl { bottom: 16px; left: 16px;   border-bottom: 1px solid var(--primary); border-left: 1px solid var(--primary); }
 .fa-setup-left__tick--br { bottom: 16px; right: 16px;  border-bottom: 1px solid var(--primary); border-right: 1px solid var(--primary); }
 
-.fa-setup-left__brand { position: relative; z-index: 1; }
+.fa-setup-left__brand { position: relative; z-index: 1; /* local stacking-context */ }
 .fa-setup-left__middle {
     flex: 1;
     display: flex;
@@ -1555,7 +1555,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     align-items: center;
     justify-content: center;
     position: relative;
-    z-index: 1;
+    z-index: 1; /* local stacking-context */
     gap: 14px;
     text-align: center;
 }
@@ -1600,7 +1600,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 
 .fa-setup-left__phase {
     position: relative;
-    z-index: 1;
+    z-index: 1; /* local stacking-context */
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -1997,7 +1997,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     padding: 36px;
     overflow: hidden;
 }
-.fa-auth-left__brand { position: relative; z-index: 1; }
+.fa-auth-left__brand { position: relative; z-index: 1; /* local stacking-context */ }
 .fa-auth-left__middle {
     flex: 1;
     display: flex;
@@ -2005,7 +2005,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     align-items: center;
     justify-content: center;
     position: relative;
-    z-index: 1;
+    z-index: 1; /* local stacking-context */
     gap: 14px;
     text-align: center;
 }
@@ -2030,7 +2030,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 }
 .fa-auth-left__footer {
     position: relative;
-    z-index: 1;
+    z-index: 1; /* local stacking-context */
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.08em;
@@ -3386,7 +3386,7 @@ html[data-theme="dark"] .toast {
 }
 .input-group > .form-control:focus,
 .input-group > .form-select:focus {
-    z-index: 3;
+    z-index: 3; /* local stacking-context */
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -3507,7 +3507,7 @@ form.wizard-busy {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 50;
+    z-index: var(--z-popover);
     border-radius: inherit;
     pointer-events: all;
     cursor: wait;

@@ -15,7 +15,7 @@
     align-items: flex-start;
     justify-content: center;
     padding-top: 15vh;
-    z-index: 9999;
+    z-index: var(--z-command);
     transition: background 0.2s ease;
 }
 

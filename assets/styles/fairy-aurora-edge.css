@@ -579,7 +579,7 @@ a.fa-stepper__link:hover { color: var(--primary); }
     align-items: center;
     justify-content: center;
     padding: 20px;
-    z-index: 1050;
+    z-index: var(--z-modal);
     animation: fa-prefs-fade-in var(--t-base) var(--ease-out);
 }
 .fa-prefs-modal.d-none { display: none; }
