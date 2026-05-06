@@ -1,0 +1,159 @@
+# Persona-driven screenshot catalogue
+# Each persona has its own output directory (var/screenshots/<persona>/<theme>/).
+# Routes derived from the persona-* skills (.claude/skills/persona-*).
+# Paths verified against `php bin/console debug:router`.
+#
+# Field semantics:
+#   path           — URL path (locale-prefixed where applicable)
+#   wait           — CSS selector to wait for before screenshot (defaults to body)
+#   full_page      — true = capture full scroll height, false = viewport only (default true)
+
+config:
+  themes: [light, dark]
+  locale: de
+  viewport:
+    width: 1440
+    height: 900
+  default_wait: 'body'
+  default_full_page: true
+
+personas:
+
+  # ─────────────────────────────────────────────────────────────────
+  # ISB / Security Officer — operative ISO 27001 practice
+  # ─────────────────────────────────────────────────────────────────
+  isb-practitioner:
+    label: "ISB / Security Officer"
+    description: "Operative ISO-27001-Praxis, Audit-Trail, SoA, Risikoregister"
+    screens:
+      - { name: dashboard,             path: /de/dashboard }
+      - { name: soa,                   path: /de/soa/ }
+      - { name: risk-register,         path: /de/risk/ }
+      - { name: risk-treatment-plan,   path: /de/risk-treatment-plan/ }
+      - { name: risk-appetite,         path: /de/risk-appetite/ }
+      - { name: control-effectiveness, path: /de/analytics/controls/effectiveness }
+      - { name: assets,                path: /de/asset/ }
+      - { name: incidents,             path: /de/incident/ }
+      - { name: audits,                path: /de/audit/ }
+      - { name: audit-freeze,          path: /de/audit-freeze }
+      - { name: audit-log,             path: /de/admin/audit-log/ }
+      - { name: audit-log-statistics,  path: /de/admin/audit-log/statistics }
+      - { name: compliance-overview,   path: /de/compliance }
+      - { name: compliance-frameworks, path: /de/compliance/framework/ }
+      - { name: compliance-requirements, path: /de/compliance/requirement/ }
+      - { name: documents,             path: /de/document/ }
+      - { name: management-review,     path: /de/management-review/ }
+      - { name: kpi-dashboard,         path: /de/analytics }
+      - { name: workflows-inbox,       path: /de/workflow/ }
+
+  # ─────────────────────────────────────────────────────────────────
+  # CISO / Executive — heatmaps, trends, board reporting
+  # ─────────────────────────────────────────────────────────────────
+  ciso-executive:
+    label: "CISO / Executive"
+    description: "C-Level-Sicht, Heatmap, Reifegrad-Trend, NIS2-Geschäftsleiter-Nachweis"
+    screens:
+      - { name: dashboard-selector,    path: /de/dashboards }
+      - { name: ciso-dashboard,        path: /de/dashboards/ciso }
+      - { name: board-dashboard,       path: /de/dashboards/board }
+      - { name: analytics-dashboard,   path: /de/analytics }
+      - { name: analytics-advanced,    path: /de/analytics/advanced }
+      - { name: risk-forecast,         path: /de/analytics/risk/forecast }
+      - { name: control-effectiveness, path: /de/analytics/controls/effectiveness }
+      - { name: compliance-frameworks-radar, path: /de/analytics/compliance/frameworks }
+      - { name: management-review,     path: /de/management-review/ }
+      - { name: management-reports,    path: /de/reports/management/ }
+      - { name: portfolio-report,      path: /de/reports/management/portfolio }
+      - { name: executive-report,      path: /de/reports/management/executive }
+      - { name: scheduled-reports,     path: /de/reports/scheduled/ }
+      - { name: bcm-cockpit,           path: /de/bcm/ }
+      - { name: dora-dashboard,        path: /de/dora-compliance }
+
+  # ─────────────────────────────────────────────────────────────────
+  # Compliance-Manager / Head of GRC — framework portfolio + reuse
+  # ─────────────────────────────────────────────────────────────────
+  compliance-manager:
+    label: "Compliance-Manager / Head of GRC"
+    description: "Framework-Portfolio, Cross-Mapping, Gap-Heatmap, Library-Reuse"
+    screens:
+      - { name: compliance-overview,    path: /de/compliance }
+      - { name: framework-list,         path: /de/compliance/framework/ }
+      - { name: framework-manage,       path: /de/compliance/frameworks/manage }
+      - { name: compliance-wizard,      path: /de/compliance-wizard }
+      - { name: compliance-compare,     path: /de/compliance/compare }
+      - { name: compliance-cross-framework, path: /de/compliance/cross-framework }
+      - { name: compliance-transitive,  path: /de/compliance/transitive-compliance }
+      - { name: data-reuse-heatmap,     path: /de/reuse/heatmap }
+      - { name: mapping-hub,            path: /de/compliance/mapping/hub }
+      - { name: mapping-list,           path: /de/compliance/mapping/ }
+      - { name: mapping-wizard,         path: /de/compliance/mapping/wizard }
+      - { name: mapping-seeds,          path: /de/compliance/mappings/seeds }
+      - { name: requirements-list,      path: /de/compliance/requirement/ }
+      - { name: suppliers,              path: /de/supplier/ }
+      - { name: nis2-cockpit,           path: /de/dora-compliance }
+      - { name: modules-overview,       path: /de/admin/modules }
+
+  # ─────────────────────────────────────────────────────────────────
+  # Junior-Implementer — setup, onboarding, guided paths
+  # ─────────────────────────────────────────────────────────────────
+  implementer-junior:
+    label: "Junior-Implementer (neu in InfoSec)"
+    description: "Setup-Wizard, geführte Pfade, Empty-States mit CTA, Hilfe"
+    screens:
+      - { name: welcome,               path: /de/welcome }
+      - { name: dashboard,             path: /de/dashboard }
+      - { name: help-tour,             path: /de/help/tour }
+      - { name: asset-list,            path: /de/asset/ }
+      - { name: asset-new,             path: /de/asset/new }
+      - { name: risk-list,             path: /de/risk/ }
+      - { name: risk-new,              path: /de/risk/new }
+      - { name: incident-list,         path: /de/incident/ }
+      - { name: document-list,         path: /de/document/ }
+      - { name: setup-wizard,          path: /de/setup/ }
+      - { name: setup-step0-welcome,   path: /de/setup/step0-welcome }
+      - { name: setup-step1-requirements, path: /de/setup/step1-requirements }
+      - { name: setup-step6-organisation-info, path: /de/setup/step6-organisation-info }
+      - { name: setup-step7-modules,   path: /de/setup/step7-modules }
+      - { name: setup-step8-compliance-frameworks, path: /de/setup/step8-compliance-frameworks }
+      - { name: setup-step10-sample-data, path: /de/setup/step10-sample-data }
+      - { name: setup-step11-complete, path: /de/setup/step11-complete }
+      - { name: profile-mfa,           path: /de/profile/mfa }
+      - { name: change-requests,       path: /de/change-request/ }
+
+  # ─────────────────────────────────────────────────────────────────
+  # Risk-Owner / Business — mobile, simple approval flows
+  # ─────────────────────────────────────────────────────────────────
+  risk-owner-business:
+    label: "Risk-Owner / Fachbereichsleiter"
+    description: "Business-Sprache, Mobile, Ein-Klick-Freigaben, eigene Aufgaben"
+    screens:
+      - { name: dashboard,             path: /de/dashboard }
+      - { name: my-workflows,          path: /de/workflow/ }
+      - { name: business-processes,    path: /de/bcm/business-process/ }
+      - { name: bcm-overview,          path: /de/bcm/ }
+      - { name: my-risks,              path: /de/risk/ }
+      - { name: risk-treatment-plan,   path: /de/risk-treatment-plan/ }
+      - { name: data-subject-requests, path: /de/data-subject-request }
+      - { name: consent-list,          path: /de/consent/ }
+
+  # ─────────────────────────────────────────────────────────────────
+  # External Auditor (ISO 19011) — evidence-driven, point-in-time
+  # ─────────────────────────────────────────────────────────────────
+  auditor-external:
+    label: "Externer Auditor (ISO 19011)"
+    description: "Evidence-Pfade, Audit-Trail, NC, Management-Review, Stichtag"
+    screens:
+      - { name: auditor-dashboard,     path: /de/dashboards/auditor }
+      - { name: soa-snapshot,          path: /de/soa/ }
+      - { name: audit-program,         path: /de/audit/ }
+      - { name: audit-freeze,          path: /de/audit-freeze }
+      - { name: audit-log,             path: /de/admin/audit-log/ }
+      - { name: audit-log-statistics,  path: /de/admin/audit-log/statistics }
+      - { name: management-review,     path: /de/management-review/ }
+      - { name: control-effectiveness, path: /de/analytics/controls/effectiveness }
+      - { name: documents,             path: /de/document/ }
+      - { name: training-records,      path: /de/training/ }
+      - { name: context-scope,         path: /de/context/ }
+      - { name: interested-parties,    path: /de/interested-party/ }
+      - { name: objectives,            path: /de/objective/ }
+      - { name: dpia-list,             path: /de/dpia/ }

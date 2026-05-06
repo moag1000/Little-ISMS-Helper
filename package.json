@@ -2,10 +2,13 @@
     "name": "little-isms-helper",
     "private": true,
     "devDependencies": {
+        "js-yaml": "^4.1.1",
+        "playwright": "^1.59.1",
         "stylelint": "^17.10.0",
         "stylelint-config-standard": "^40.0.0"
     },
     "scripts": {
-        "stylelint": "stylelint 'assets/styles/**/*.css'"
+        "stylelint": "stylelint 'assets/styles/**/*.css'",
+        "screenshots": "node scripts/screenshots/capture.mjs"
     }
 }

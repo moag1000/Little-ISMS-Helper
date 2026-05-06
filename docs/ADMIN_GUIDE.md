@@ -80,6 +80,8 @@ The admin panel integrates seamlessly into the main application navigation:
 
 The Module Management interface allows administrators to activate/deactivate functional modules and manage their dependencies.
 
+![Module Management UI](sichtwechsel/img/admin/modules-overview.png)
+
 ### Module Statistics
 
 - **Total Modules**: All available modules in the system
