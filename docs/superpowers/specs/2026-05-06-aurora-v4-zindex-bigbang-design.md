@@ -1,6 +1,7 @@
 # Aurora v4 + Z-Index Layer-Stack — Big-Bang Refactor (Spec)
 
-**Status:** Draft v2 · awaiting user approval
+**Status:** Draft v3 (post Task-1 baseline) · approved
+**Note v3:** Discovery aus FAIRY_AURORA_MIGRATION.md + ROADMAP.md + Stylelint-Pre-Existing-Failure → C6 slate-overlay-exclusion, C13 Severity-Doppel-Mapping, neue C0.5 (Stylelint-Pre-Existing-Cleanup).
 **Datum:** 2026-05-06
 **Scope:** C — Audit-listed + Sweep-found extras (truly everything)
 **Branch:** kein, direkt auf `main`, atomic conventional commits
@@ -97,6 +98,17 @@ In `assets/styles/fairy-aurora.css` (neue Single-Source-of-Truth für Z-Stack �
 
 Reihenfolge zwingend wegen Token-Abhängigkeiten.
 
+### C0.5 — `chore(styles): stylelint --fix + suppress noisy rules`
+
+**Pre-existing Failure:** `npm run stylelint` exit=2 mit ~821 Fehlern aus stylelint-config-standard 40 (color-function-alias-notation `rgba`→`rgb`, no-duplicate-selectors, shorthand-property-no-redundant-values, property-no-deprecated etc.). Diese sind nicht durch Refactor-Tasks verursacht — der Lint-Gate war NIE grün (siehe ROADMAP.md Phase 5: "🟡 Stylelint-Regel nicht aktiv").
+
+Vorgehen:
+1. `npx stylelint "assets/styles/**/*.css" --fix` — auto-fixt 558 von 821 (rgba-Schreibweise, shorthand, leichte Duplicates).
+2. Verbleibende ~263 Fehler analysieren: wenn pre-existing legitim (Duplicate-Selectors als Aurora-Pattern, deprecated Properties als Cross-Browser-Fallback) → in `.stylelintrc.js` suppressen mit Begründung.
+3. Erst dann ist der Lint-Gate für nachfolgende Commits aussagekräftig.
+
+**Touch:** `assets/styles/` (auto-fix touches viele Files), `.stylelintrc.js` (suppression-list).
+
 ### C1 — `feat(tokens): consolidate z-index stack + add --r-icon + --shadow-overlay`
 - Move `--z-*` + `--alva-z` aus `app.css` → `fairy-aurora.css`.
 - Add `--z-popover, --z-overlay, --z-popover-modal, --z-tour, --z-command`.
@@ -168,6 +180,9 @@ Schritt 3 — Abweichende Stärken (Decision-Template aus §0):
 - `text-shadow: 0 1px 2px/3px rgba(0,0,0,0.6-0.9)` (app.css hero-Text auf Image-Bg): bewusst hoher Kontrast → **belassen mit `/* design-spec: text on hero image */`**.
 - Alle übrigen 0.3-0.8 Werte: case-by-case nach Decision-Template, jeder Belass-Fall braucht Kommentar.
 
+**Explicit no-touch (per FAIRY_AURORA_MIGRATION.md):**
+- `rgba(15, 23, 42, 0.8)` Modal-Backdrops in `components.css`, `command-palette.css`, `keyboard-shortcuts.css`, `guided-tour.css` = slate-900-Overlays, **kein Migrations-Item**. Belassen ohne Kommentar (Quelle: MIGRATION-Doc).
+
 **Touch:** alle 17 CSS-Files mit `rgba(0,0,0,…)` (siehe Sweep) + `assets/styles/fairy-aurora.css` (neuer `--shadow-overlay`).
 
 ### C7 — `refactor(styles): replace 'color: white' / '#000' with --on-* / --print-fg tokens`
@@ -237,13 +252,14 @@ Schritt 3 — Abweichende Stärken (Decision-Template aus §0):
 
 **Touch:** `templates/_components/_card.html.twig`, `templates/_components/_CARD_GUIDE.md`. **Nicht angefasst:** ~60 Consumer-Templates (BC-Layer macht weiter).
 
-### C13 — `feat(twig): migrate _badge macro to .fa-status-pill with BC-Aliases (Audit H2)`
+### C13 — `feat(twig): migrate _badge macro to .fa-status-pill + Severity-Mapping (Audit H2 + Roadmap-Phase-5)`
 `templates/_components/_badge.html.twig`:
 - Klassen-Map: `bg-X → fa-status-pill.fa-status-pill--X`.
 - Sizes: `sm → --sm`, `lg → --lg`.
 - `pill: true` deprecated (Aurora-Pills sind immer pill-shaped).
+- **NEU per ROADMAP Phase 5:** Severity-Doppel-Mapping in `_badge` einbauen — Aliases `critical→danger · high→warning · medium→info · low→success`. Wenn `variant: 'severity'` mit `severity: 'critical|high|medium|low'` gesetzt → mappt auf entsprechenden Aurora-Variant.
 - BC-Aliases.
-- `_BADGE_GUIDE.md` aktualisieren.
+- `_BADGE_GUIDE.md` aktualisieren mit Severity-Mapping-Tabelle.
 
 **Touch:** `templates/_components/_badge.html.twig`, `templates/_components/_BADGE_GUIDE.md`.
 
