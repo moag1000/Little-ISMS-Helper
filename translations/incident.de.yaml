@@ -36,6 +36,12 @@ incident:
     back_to_list: Zurück zur Liste
     delete: Löschen
     download_nis2_report: NIS2-Report herunterladen
+    mus_export: 'BSI-MUS-Export'
+    mus_export_group: 'BSI-MUS-Exportoptionen'
+    mus_early_warning: 'Frühwarnung (24h)'
+    mus_detailed_notification: 'Detailmeldung (72h)'
+    mus_final_report: 'Abschlussbericht (30 Tage)'
+    mus_bundle: 'Vollständiger Datensatz'
   confirm:
     delete: Möchten Sie diesen Vorfall wirklich löschen?
   section:

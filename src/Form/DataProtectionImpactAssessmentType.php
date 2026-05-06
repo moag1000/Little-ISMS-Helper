@@ -270,6 +270,15 @@ class DataProtectionImpactAssessmentType extends AbstractType
             ])
 
             // ============================================================================
+            // Standard-Datenschutzmodell (SDM 3.1) — DSK Gewährleistungsziele
+            // ============================================================================
+            ->add('sdmAssessmentSummary', TextareaType::class, [
+                'label' => 'privacy.sdm.summary',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
+
+            // ============================================================================
             // Stakeholder Consultation (Art. 35(4), 35(9))
             // ============================================================================
             ->add('dataProtectionOfficer', EntityType::class, [
@@ -433,6 +442,70 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'required' => false,
             ])
         ;
+
+        // SDM 3.1 per-goal selectors (unmapped). POST_SUBMIT serialises them
+        // back into the entity's sdmAssessment JSON column so the form stays
+        // ergonomic without an entity-level array-of-arrays property.
+        $entity = $builder->getData();
+        $existing = $entity instanceof DataProtectionImpactAssessment
+            ? ($entity->getSdmAssessment() ?? [])
+            : [];
+        $sdmRiskChoices = [
+            'privacy.sdm.risk_level.low' => 'low',
+            'privacy.sdm.risk_level.medium' => 'medium',
+            'privacy.sdm.risk_level.high' => 'high',
+        ];
+        foreach (DataProtectionImpactAssessment::SDM_PROTECTION_GOALS as $goal) {
+            $current = is_array($existing[$goal] ?? null) ? ($existing[$goal]['risk_level'] ?? null) : null;
+            $builder->add('sdm_' . $goal, ChoiceType::class, [
+                'label' => 'privacy.sdm.goal.' . $goal,
+                'help' => 'privacy.sdm.goal_help.' . $goal,
+                'choices' => $sdmRiskChoices,
+                'required' => false,
+                'placeholder' => '—',
+                'mapped' => false,
+                'data' => $current,
+                'choice_translation_domain' => 'privacy',
+            ]);
+            $rationaleCurrent = is_array($existing[$goal] ?? null) ? ($existing[$goal]['rationale'] ?? null) : null;
+            $builder->add('sdm_' . $goal . '_rationale', TextareaType::class, [
+                'label' => 'privacy.sdm.goal.' . $goal . ' — ' . 'common.notes',
+                'required' => false,
+                'mapped' => false,
+                'data' => $rationaleCurrent,
+                'attr' => ['rows' => 2],
+            ]);
+        }
+
+        $builder->addEventListener(
+            \Symfony\Component\Form\FormEvents::POST_SUBMIT,
+            static function (\Symfony\Component\Form\Event\PostSubmitEvent $event): void {
+                $form = $event->getForm();
+                $dpia = $form->getData();
+                if (!$dpia instanceof DataProtectionImpactAssessment) {
+                    return;
+                }
+                $assessment = [];
+                foreach (DataProtectionImpactAssessment::SDM_PROTECTION_GOALS as $goal) {
+                    $level = $form->has('sdm_' . $goal) ? $form->get('sdm_' . $goal)->getData() : null;
+                    $rationale = $form->has('sdm_' . $goal . '_rationale')
+                        ? trim((string) ($form->get('sdm_' . $goal . '_rationale')->getData() ?? ''))
+                        : '';
+                    if ($level === null && $rationale === '') {
+                        continue;
+                    }
+                    $entry = [];
+                    if (is_string($level) && $level !== '') {
+                        $entry['risk_level'] = $level;
+                    }
+                    if ($rationale !== '') {
+                        $entry['rationale'] = $rationale;
+                    }
+                    $assessment[$goal] = $entry;
+                }
+                $dpia->setSdmAssessment($assessment === [] ? null : $assessment);
+            },
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -22,6 +22,18 @@
                 <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false" title="{{ 'incident.action.download_nis2_report'|trans({}, 'incident') }}">
                     <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> {{ 'incident.action.download_nis2_report'|trans({}, 'incident') }}
                 </a>
+                <div class="btn-group" role="group" aria-label="{{ 'incident.action.mus_export_group'|trans({}, 'incident') }}">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-turbo="false">
+                        <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i> {{ 'incident.action.mus_export'|trans({}, 'incident') }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ path('app_nis2_mus_export_early_warning', {id: incident.id}) }}" data-turbo="false">{{ 'incident.action.mus_early_warning'|trans({}, 'incident') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_nis2_mus_export_detailed_notification', {id: incident.id}) }}" data-turbo="false">{{ 'incident.action.mus_detailed_notification'|trans({}, 'incident') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_nis2_mus_export_final_report', {id: incident.id}) }}" data-turbo="false">{{ 'incident.action.mus_final_report'|trans({}, 'incident') }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ path('app_nis2_mus_export_bundle', {id: incident.id}) }}" data-turbo="false">{{ 'incident.action.mus_bundle'|trans({}, 'incident') }}</a></li>
+                    </ul>
+                </div>
             {% endif %}
             <a href="{{ path('app_incident_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'incident.action.back_to_list'|trans({}, 'incident') }}</a>
             {% if is_granted('ROLE_ADMIN') %}

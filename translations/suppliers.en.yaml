@@ -42,6 +42,7 @@ supplier:
         security_assessment: 'Security Assessment'
         certifications_compliance: 'Certifications & Compliance'
         contract_info: 'Contract Information'
+        lksg: 'Supply-chain due diligence (LkSG)'
         related_assets: 'Related Assets'
         related_risks: 'Related Risks'
     field:

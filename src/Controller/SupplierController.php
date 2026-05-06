@@ -92,6 +92,15 @@ class SupplierController extends AbstractController
             $suppliers = $this->tagFilterService->filterByTagName($suppliers, Supplier::class, $tagFilter);
         }
 
+        // LkSG risk-category filter via ?lksg_risk=high
+        $lksgRiskFilter = $request->query->get('lksg_risk');
+        if (is_string($lksgRiskFilter) && in_array($lksgRiskFilter, ['low', 'medium', 'high', 'critical'], true)) {
+            $suppliers = array_values(array_filter(
+                $suppliers,
+                fn(Supplier $s): bool => $s->getLksgRiskCategory() === $lksgRiskFilter,
+            ));
+        }
+
         // MINOR-6: DORA Register-of-Information export only when framework is active.
         $doraFramework = $this->complianceFrameworkRepository->findOneBy(['code' => 'DORA']);
         $doraActive = $doraFramework !== null && $doraFramework->isActive();
