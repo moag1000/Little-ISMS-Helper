@@ -117,16 +117,18 @@ mappings:
   # ===== Business Continuity =====
   - source: 'BCM-01'
     target: 'BCM-01'
-    relationship: 'equivalent'
-    confidence: 'high'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
     rationale: |
-      C5:2020 BCM-01 „Top-Management-Verantwortung und BC-Strategie"
-      verlangt Top-Management-Commitment und eine BC-Strategie für den
-      Cloud-Anbieter. C5:2026 BCM-01 „Business Continuity and Emergency
-      Management System" übernimmt diesen Pflichteninhalt mit präziserer
-      Formulierung als BC- und Notfallmanagement-System (analog ISO 22301).
+      C5:2020 BCM-01 „Verantwortung durch die Unternehmensleitung" fokussiert
+      auf Top-Management-Commitment und Verantwortungs-Zuweisung fuer BCM.
+      C5:2026 BCM-01 „Business Continuity and Emergency Management System"
+      ist breiter und beschreibt das gesamte BCM-System (analog ISO 22301);
+      Leadership-Commitment ist ein Bestandteil, aber nicht alleiniger Inhalt.
+      partial_overlap, weil 2020-Pflicht eine Untermenge der 2026-System-
+      Pflicht ist.
     cross_refs: ['BCM-02', 'BCM-03', 'BCM-04']
-    audit_evidence_hint: 'BC-Strategie mit Top-Management-Freigabe, BIA-Ergebnisse, BC-Plans, jährliche BC-Übungs-Reports.'
+    audit_evidence_hint: 'BC-Policy mit Top-Management-Freigabe, dokumentierte BC-Verantwortlichkeiten, BCM-System-Beschreibung mit Scope/Prozessen.'
 
   # ===== Beziehungen zu Dritten / Sub-Service Organisations =====
   - source: 'SSO-01'
@@ -144,28 +146,31 @@ mappings:
     audit_evidence_hint: 'Lieferanten-Policy, Vertragstemplate mit InfoSec-Klauseln, Monitoring-Berichte zu Sub-Dienstleistern.'
 
   - source: 'SSO-04'
-    target: 'SSO-02'
+    target: 'SSO-05'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5:2020 SSO-04 „Anforderungen an Lieferanten" verlangt
-      Risikobewertung und Sicherheitsanforderungen an Sub-Dienstleister.
-      C5:2026 SSO-02 „Risk Assessment of Service Organisations"
-      übernimmt diesen Pflichteninhalt; ergänzend SSO-04 (Directory) und
+      C5:2020 SSO-04 „Ueberwachung der Einhaltung der Anforderungen"
+      verlangt regelmaessige Pruefung, ob Sub-Dienstleister die vertraglich
+      vereinbarten InfoSec-Anforderungen einhalten. C5:2026 SSO-05
+      „Monitoring of Compliance with Requirements" uebernimmt diesen
+      Pflichteninhalt direkt; ergaenzend SSO-04 (Directory of Service
+      Organisations) und
       SSO-05 (Compliance Monitoring) decken Tracking- und Audit-Aspekte ab.
     cross_refs: ['SSO-04', 'SSO-05', 'SSO-06']
     audit_evidence_hint: 'Sub-Provider-Risikobewertungen, Sub-Provider-Verzeichnis, Compliance-Monitoring-Berichte.'
 
   # ===== Berichtswesen / Beauftragten-Funktion (BFM 2020 → COM/OIS 2026) =====
   - source: 'COM-04'
-    target: 'COM-01'
-    relationship: 'partial_overlap'
-    confidence: 'low'
+    target: 'COM-04'
+    relationship: 'equivalent'
+    confidence: 'high'
     rationale: |
-      C5:2020 COM-04 (Beauftragten-/Berichtswesen-Funktion: Steuerung
-      regulatorischer und vertraglicher Anforderungen) findet in C5:2026
-      keine 1:1-Entsprechung. Inhalte verteilen sich auf COM-01
-      „Identification of Applicable Legal, Regulatory, Self-imposed or
+      C5:2020 COM-04 „Informationen ueber die Informationssicherheits-
+      leistung und Managementbewertung des ISMS" entspricht direkt
+      C5:2026 COM-04 „Information on Information Security Performance and
+      Management Assessment of the ISMS". Pflichteninhalt deckungsgleich:
+      KPI-Berichtswesen aus dem ISMS in die Geschaeftsleitung.
       Contractual Requirements" (regulatorische Anforderungen) und OIS-01
       (ISMS-Verantwortung).
     gap_warning: |
@@ -312,14 +317,15 @@ mappings:
     audit_evidence_hint: 'Logging-Konzept, SIEM-Use-Case-Katalog, 24/7-SOC-Coverage-Nachweis.'
 
   - source: 'OPS-15'
-    target: 'OPS-04'
+    target: 'OPS-15'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5:2020 OPS-15 „Schutz vor Schadprogrammen — Konzept" entspricht
-      direkt C5:2026 OPS-04 „Protection Against Malware - Policies and
-      Procedures". Numerische Verschiebung durch 2026-Restrukturierung
-      (Capacity Management 01-03 zuerst); Pflichteninhalt unverändert.
+      C5:2020 OPS-15 „Protokollierung und Ueberwachung – Zurechenbarkeit"
+      entspricht direkt C5:2026 OPS-15 „Logging and Monitoring -
+      Accountability". Pflichteninhalt unveraendert: jeder Log-Eintrag
+      muss einem authentifizierten Subjekt zurechenbar sein, mit klar
+      dokumentierten Verantwortlichkeiten fuer Audit-Trails.
     cross_refs: ['OPS-05']
     audit_evidence_hint: 'Malware-Schutz-Konzept, AV/EDR-Coverage-Report, Quarantäne-Statistiken.'
 
@@ -370,26 +376,16 @@ mappings:
 
   - source: 'OIS-05'
     target: 'OIS-05'
-    relationship: 'equivalent'
-    confidence: 'high'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
     rationale: |
-      C5:2020 OIS-05 „Identifikation von Schwachstellen, Bedrohungen und
-      funktionalen Mängeln" (Threat Intelligence) entspricht direkt
-      C5:2026 OIS-05 „Threat Intelligence". Pflichteninhalt deckungs-
-      gleich: Bezug, Auswertung und Verteilung von Bedrohungsmeldungen
-      (BSI-CERT, CERT-Bund).
+      C5:2020 OIS-05 „Kontakt zu relevanten Behoerden und Interessen-
+      verbaenden" hat einen engeren Scope (Mitgliedschaft in CERT-Bund,
+      ISACs, Branchenverbaenden) als C5:2026 OIS-05 „Threat Intelligence",
+      das den gesamten Threat-Intel-Lebenszyklus abdeckt (Quellen,
+      Auswertung, Verteilung an Cloud-Operations). 2020-Pflicht ist eine
+      Untermenge der 2026-Pflicht; Bestandsanwender mit OIS-05-Reife haben
+      die Quellen abgedeckt, muessen aber Auswertung/Verteilung ggf.
+      ergaenzen.
     cross_refs: ['OIS-06']
-    audit_evidence_hint: 'Threat-Intel-Quellen-Inventar, ausgewertete Bedrohungsmeldungen letzte 12 Monate, Eskalationsprotokolle.'
-
-  # ===== BEI-Restanteile (Logging-Pflichten 2020 BEI → OPS 2026) =====
-  # Achtung: BEI in 2020 hatte mehrere Beweissicherungs-Aspekte.
-  # SSO-01/04 sind oben Vertragspflichten (→ SSO). Logging-Anteile siehe OPS-10.
-
-  # ===== Sicherheitsvorfälle / Incident Management =====
-  # Der 2020-Bereich SIM (= ISMS) wurde in 2026 OIS-01 abgebildet (siehe oben).
-  # Ein 2020-„SIM" für Incident Management gibt es NICHT als eigenes Kürzel —
-  # entsprechende Pflichten lagen in OPS-19..24. In C5:2026 ist dieser
-  # Pflichtenkreis als eigener Bereich SIM (Security Incident Management)
-  # ausgegliedert. Da die 2020-Fixtures keine direkten Incident-IDs unter
-  # einem eigenen SIM-Präfix führen (außer dem oben behandelten SIM-01 = ISMS),
-  # erfolgt hier kein Pseudo-Mapping.
+    audit_evidence_hint: 'CERT-Bund-Membership, ISAC-Mitgliedschaften, Threat-Intel-Quellen-Inventar, ausgewertete Bedrohungsmeldungen letzte 12 Monate.'
