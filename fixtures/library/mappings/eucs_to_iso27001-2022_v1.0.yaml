@@ -18,7 +18,7 @@ library:
     publisher: 'Little ISMS Helper Maintainers'
 
   methodology:
-    type: 'public_draft_comparison'
+    type: 'text_comparison_with_expert_review'
     description: |
       EUCS ist als finaler EU-Cybersecurity-Certification-Scheme noch nicht
       verabschiedet (Stand 2026-05). Die hier gemappten EUCS-Bereiche A1-A20

@@ -21,7 +21,7 @@ library:
     license_note: 'Mapping is original derivative work (AGPL-3.0). C5:2026 target IDs and names © BSI 2026 used under CC-BY-ND 4.0 with attribution. NIS2 article references © Europäische Union, public-domain-equivalent (Amtliches Werk).'
 
   methodology:
-    type: 'catalogue_text_comparison_with_expert_review'
+    type: 'text_comparison_with_expert_review'
     description: |
       Reverse-Mapping ausgehend von NIS2 Art. 20-23 zurück auf BSI
       C5:2026-Kriterien. Zweck: NIS2-betroffene Cloud-Anbieter können

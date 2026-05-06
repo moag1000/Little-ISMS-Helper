@@ -19,7 +19,7 @@ library:
     license_note: 'Mapping is original derivative work (AGPL-3.0). C5:2026 source IDs and names © BSI 2026 used under CC-BY-ND 4.0 with attribution.'
 
   methodology:
-    type: 'catalogue_text_comparison'
+    type: 'text_comparison_with_expert_review'
     description: |
       Forward-Mapping vom älteren BSI C5:2020 Kriterienkatalog auf den seit
       2026-03-26 finalen BSI C5:2026 Kriterienkatalog. Vergleich erfolgte

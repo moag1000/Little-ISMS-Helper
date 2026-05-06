@@ -19,7 +19,7 @@ library:
     license_note: 'Mapping is original derivative work (AGPL-3.0). EUCS target IDs and area names © ENISA used under public consultation terms; BSI C5:2020 IDs © BSI used under reference-and-citation principles.'
 
   methodology:
-    type: 'public_draft_comparison'
+    type: 'text_comparison_with_expert_review'
     description: |
       Reverse-Mapping ausgehend vom BSI-C5:2020-Kriterium auf das
       ENISA-EUCS-Pendant (Substantial-Assurance-Level). Reziprok zu
