@@ -34,6 +34,53 @@ class MappingLibraryLoader
      *
      * @return array{success: bool, errors: list<string>, warnings: list<string>, imported: int, updated: int, skipped: int}
      */
+    /**
+     * List YAML library files (under fixtures/library/mappings/) whose
+     * `library.target_framework` matches the given target code. Returns
+     * absolute paths sorted alphabetically.
+     *
+     * @return list<array{path: string, source_framework: string, source_framework_name: string|null, mapping_count: int}>
+     */
+    public function discoverFixturesForTarget(string $targetFrameworkCode): array
+    {
+        $dir = $this->projectDir . '/fixtures/library/mappings';
+        if (!is_dir($dir)) {
+            return [];
+        }
+
+        $matches = [];
+        foreach (glob($dir . '/*.yaml') ?: [] as $absPath) {
+            try {
+                $payload = Yaml::parseFile($absPath);
+            } catch (\Throwable) {
+                continue;
+            }
+            $library = $payload['library'] ?? null;
+            if (!is_array($library)) {
+                continue;
+            }
+            if (($library['target_framework'] ?? null) !== $targetFrameworkCode) {
+                continue;
+            }
+            $sourceCode = (string) ($library['source_framework'] ?? '');
+            if ($sourceCode === '') {
+                continue;
+            }
+
+            $sourceFw = $this->frameworkRepository->findOneBy(['code' => $sourceCode]);
+            $matches[] = [
+                'path' => $absPath,
+                'source_framework' => $sourceCode,
+                'source_framework_name' => $sourceFw?->getName(),
+                'mapping_count' => is_array($payload['mappings'] ?? null) ? count($payload['mappings']) : 0,
+            ];
+        }
+
+        usort($matches, static fn(array $a, array $b): int => strcmp($a['path'], $b['path']));
+
+        return $matches;
+    }
+
     public function load(string $yamlPath): array
     {
         $absPath = str_starts_with($yamlPath, '/') ? $yamlPath : $this->projectDir . '/' . $yamlPath;

@@ -58,6 +58,17 @@ wizard:
         desc: 'Cross-framework mappings exist from %count% other frameworks onto %target%. Existing answers can be proposed as suggestions automatically — you just review them.'
         hint: 'The takeover adds proposals to the inheritance queue. Nothing lands in the final assessment without your confirmation.'
         activate: 'Check data takeover now'
+    mapping_library:
+        fairy_title: 'Alva tip: mapping library available'
+        fairy_desc: '%count% curated mapping libraries ship for %target%. Import one — afterwards you can pull existing answers from the source framework.'
+        fairy_hint: 'The import only adds cross-framework mappings, never assessments. Subsequent data takeover still requires review.'
+        mapping_count: '{0}no mappings|{1}1 mapping|]1,Inf[%count% mappings'
+        import: 'Import library'
+        imported: 'Mapping library imported: %imported% new, %updated% updated, %skipped% skipped.'
+        load_failed: 'Import failed: %errors%'
+        invalid_path: 'Invalid path. Please select again.'
+        csrf_invalid: 'CSRF token invalid. Reload the page and try again.'
+        unavailable: 'Mapping library loader not available.'
     active_modules: "Active Modules"
     data_sources_info: "The wizard analyzes data from the following active modules:"
     what_to_expect: "What to Expect"
@@ -241,6 +252,31 @@ wizard:
         mfa_desc: "MFA and secure communication"
         reporting: "Reporting Obligations (Art. 23)"
         reporting_desc: "Incident reporting: 24h early warning, 72h notification, final report"
+        # NIS2 Maturity (Baseline = SME-pragmatic / Enhanced = mature, audit-ready)
+        governance_baseline: "Management has accepted NIS2 accountability in writing; annual awareness training completed."
+        governance_enhanced: "Cybersecurity is a standing agenda item in board meetings with documented decisions, KPI reporting and external audit readiness."
+        risk_policies_baseline: "Initial risk assessment performed; security policy approved and communicated."
+        risk_policies_enhanced: "Continuous risk process with KPIs, annual policy review and integration with ISMS per ISO 27001."
+        incident_handling_baseline: "Defined incident response process with roles and escalation path; at least one exercise per year."
+        incident_handling_enhanced: "24/7 detection and response (SOC or external provider), regular tabletop and red-team exercises, forensic capability."
+        business_continuity_baseline: "Backup approach in place; basic BC plan with RTO/RPO for critical processes."
+        business_continuity_enhanced: "BCM system per ISO 22301 incl. BIA, tested DR sites, crisis-team routine and annual restart tests."
+        supply_chain_baseline: "List of critical suppliers; standard security clauses in contracts."
+        supply_chain_enhanced: "Risk-based supplier assessment, sub-processor audits, SBOM mandate and continuous threat-intelligence monitoring."
+        secure_development_baseline: "Basic system hardening; patch management with documented SLAs."
+        secure_development_enhanced: "Secure-by-design process, automated vulnerability scans, code reviews, SAST/DAST and bug-bounty programme."
+        effectiveness_assessment_baseline: "Annual effectiveness review of key measures with management review."
+        effectiveness_assessment_enhanced: "Continuous monitoring with KPIs, internal audits, penetration tests and independent external assessment."
+        cyber_hygiene_baseline: "Mandatory annual awareness training; phishing tests and password policy in place."
+        cyber_hygiene_enhanced: "Role-based learning paths, regular phishing campaigns with analytics, just-in-time training on incidents."
+        cryptography_baseline: "Encryption at-rest and in-transit for sensitive data; documented cryptographic procedures."
+        cryptography_enhanced: "Crypto inventory, key rotation, crypto agility and migration path to post-quantum algorithms."
+        access_and_assets_baseline: "Central asset inventory; role-based access control and joiner-mover-leaver process."
+        access_and_assets_enhanced: "Privileged-Access-Management with just-in-time rights, automated re-certification and asset lifecycle linked to CMDB."
+        mfa_baseline: "MFA for external access and privileged accounts; encrypted communication for standard traffic."
+        mfa_enhanced: "Phishing-resistant MFA (FIDO2/hardware token) across the board; zero-trust network access and end-to-end encryption incl. internal traffic."
+        reporting_baseline: "Reporting paths defined: early warning (24h), notification (72h), final report (1 month) to authority."
+        reporting_enhanced: "Fully automated reporting chain with templates, BSI-MUS integration, exercise routine incl. legal review and crisis-communication plan."
 
     # DORA Categories
     dora:
