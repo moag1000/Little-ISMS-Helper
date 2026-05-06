@@ -25,3 +25,34 @@ data_subject_request:
         title: 'Identity not yet verified'
         body: 'Verification method on file (%method%), but identity not confirmed. Releasing data before verification = breach under Art. 5(1)(f).'
         action: 'Run verification'
+
+asset:
+    protection_inheritance:
+        title: 'Higher protection level inherited from dependencies'
+        body: 'Dependent assets imply a higher protection need (BSI 3.6 maximum principle): C=%c%, I=%i%, A=%a%. Adopt the suggestion.'
+        action: 'Adopt protection'
+
+bc_plan:
+    test_overdue:
+        title: 'BC plan test overdue'
+        body_with_last: 'Last test was %months% months ago — ISO 22301 Cl. 8.6 requires at least annual exercises.'
+        body_never: 'No test documented yet. ISO 22301 Cl. 8.6 requires at least annual exercises.'
+        action: 'Schedule test'
+
+business_process:
+    no_bcp:
+        title: 'Critical process without BC plan'
+        body: 'Process is classified as %criticality% but has no Business Continuity Plan. ISO 22301 Cl. 8.4.'
+        action: 'Create BC plan'
+
+supplier:
+    exit_strategy:
+        title: 'DORA exit strategy missing'
+        body: 'ICT-critical supplier without a documented exit strategy. DORA Art. 28(8) requires a binding exit plan for critical services.'
+        action: 'Add exit strategy'
+
+audit_finding:
+    no_capa:
+        title: 'Critical finding without corrective action'
+        body: '%severity% finding without a CAPA. ISO 27001 Cl. 10.1 requires documented correction and effectiveness verification.'
+        action: 'Create CAPA'

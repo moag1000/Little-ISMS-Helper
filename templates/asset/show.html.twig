@@ -5,6 +5,7 @@
 {% block title %}{{ asset.name }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -12,6 +13,9 @@
             { label: asset.name }
         ]
     } %}
+
+    {% set hint = alva_hint(asset) %}
+    {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     <div class="page-header">
         <h1>

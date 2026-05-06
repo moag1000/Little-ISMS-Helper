@@ -25,3 +25,34 @@ data_subject_request:
         title: 'Identität noch nicht verifiziert'
         body: 'Verifikationsmethode hinterlegt (%method%), Identität jedoch nicht bestätigt. Vor Datenherausgabe prüfen — falsche Auskunft = Datenpanne nach Art. 5 Abs. 1 lit. f.'
         action: 'Verifikation durchführen'
+
+asset:
+    protection_inheritance:
+        title: 'Schutzbedarf aus Abhängigkeiten verfügbar'
+        body: 'Abhängige Assets ergeben höheren Schutzbedarf nach BSI 3.6 Maximumprinzip: C=%c%, I=%i%, A=%a%. Vorschlag übernehmen.'
+        action: 'Schutzbedarf übernehmen'
+
+bc_plan:
+    test_overdue:
+        title: 'BC-Plan-Test überfällig'
+        body_with_last: 'Letzter Test vor %months% Monaten — ISO 22301 Cl. 8.6 fordert mindestens jährlichen Test.'
+        body_never: 'Bisher kein Test dokumentiert. ISO 22301 Cl. 8.6 fordert mindestens jährlichen Test.'
+        action: 'Test einplanen'
+
+business_process:
+    no_bcp:
+        title: 'Kritischer Prozess ohne BC-Plan'
+        body: 'Prozess ist als %criticality% klassifiziert, aber ohne Business-Continuity-Plan. ISO 22301 Cl. 8.4.'
+        action: 'BC-Plan anlegen'
+
+supplier:
+    exit_strategy:
+        title: 'DORA Exit-Strategie fehlt'
+        body: 'ICT-kritischer Lieferant ohne dokumentierte Exit-Strategie. DORA Art. 28 Abs. 8 fordert verbindlichen Ausstiegsplan für kritische Dienste.'
+        action: 'Exit-Strategie ergänzen'
+
+audit_finding:
+    no_capa:
+        title: 'Critical Finding ohne Korrekturmaßnahme'
+        body: '%severity%-Finding ohne CAPA. ISO 27001 Cl. 10.1 fordert dokumentierte Korrektur und Wirksamkeitskontrolle.'
+        action: 'CAPA anlegen'
