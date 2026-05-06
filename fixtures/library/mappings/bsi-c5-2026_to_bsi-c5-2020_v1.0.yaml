@@ -76,8 +76,8 @@ mappings:
   # ===== BCM — Business Continuity Management =====
   - source: 'BCM-01'
     target: 'BCM-01'
-    relationship: 'equivalent'
-    confidence: 'high'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
     rationale: |
       C5:2026 BCM-01 „Business Continuity and Emergency Management
       System" entspricht direkt C5:2020 BCM-01 „Top-Management-
@@ -387,8 +387,8 @@ mappings:
 
   - source: 'OIS-05'
     target: 'OIS-05'
-    relationship: 'equivalent'
-    confidence: 'high'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
     rationale: |
       C5:2026 OIS-05 „Threat Intelligence" entspricht direkt C5:2020
       OIS-05 „Identifikation von Schwachstellen, Bedrohungen und
