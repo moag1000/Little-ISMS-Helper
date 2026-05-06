@@ -93,6 +93,11 @@ wizard:
         baseline: "Baseline"
         enhanced: "Enhanced"
 
+    # Catalogue Coverage KPI
+    catalogue_coverage:
+        title: "Catalogue-Abdeckung"
+        subtitle: "Anforderungen aus dem %framework%-Katalog erfuellt"
+
     # Status labels
     status:
         compliant: "Konform"
@@ -230,6 +235,27 @@ wizard:
         incident_management_desc: "Verwaltung von Sicherheitsvorfällen (A.5.24-A.5.28)"
         business_continuity: "Business Continuity"
         business_continuity_desc: "Geschäftskontinuität der Informationsverarbeitung (A.5.29-A.5.30)"
+        # iso27001 Maturity
+        context_baseline: 'Annex-A-Control nominell umgesetzt, in SoA dokumentiert, einmalige Wirksamkeitspruefung.'
+        context_enhanced: 'Continuous Monitoring + jaehrlicher externer Audit + KPI-Reporting an Mgmt.'
+        understanding_organization_baseline: 'Annex-A-Control nominell umgesetzt, in SoA dokumentiert, einmalige Wirksamkeitspruefung.'
+        understanding_organization_enhanced: 'Continuous Monitoring + jaehrlicher externer Audit + KPI-Reporting an Mgmt.'
+        interested_parties_baseline: 'Annex-A-Control nominell umgesetzt, in SoA dokumentiert, einmalige Wirksamkeitspruefung.'
+        interested_parties_enhanced: 'Continuous Monitoring + jaehrlicher externer Audit + KPI-Reporting an Mgmt.'
+        isms_scope_baseline: 'Annex-A-Control nominell umgesetzt, in SoA dokumentiert, einmalige Wirksamkeitspruefung.'
+        isms_scope_enhanced: 'Continuous Monitoring + jaehrlicher externer Audit + KPI-Reporting an Mgmt.'
+        isms_established_baseline: 'Annex-A-Control nominell umgesetzt, in SoA dokumentiert, einmalige Wirksamkeitspruefung.'
+        isms_established_enhanced: 'Continuous Monitoring + jaehrlicher externer Audit + KPI-Reporting an Mgmt.'
+        leadership_baseline: 'Annex-A-Control nominell umgesetzt, in SoA dokumentiert, einmalige Wirksamkeitspruefung.'
+        leadership_enhanced: 'Continuous Monitoring + jaehrlicher externer Audit + KPI-Reporting an Mgmt.'
+        leadership_commitment_baseline: 'Annex-A-Control nominell umgesetzt, in SoA dokumentiert, einmalige Wirksamkeitspruefung.'
+        leadership_commitment_enhanced: 'Continuous Monitoring + jaehrlicher externer Audit + KPI-Reporting an Mgmt.'
+        information_security_policy_baseline: 'Annex-A-Control nominell umgesetzt, in SoA dokumentiert, einmalige Wirksamkeitspruefung.'
+        information_security_policy_enhanced: 'Continuous Monitoring + jaehrlicher externer Audit + KPI-Reporting an Mgmt.'
+        roles_responsibilities_baseline: 'Annex-A-Control nominell umgesetzt, in SoA dokumentiert, einmalige Wirksamkeitspruefung.'
+        roles_responsibilities_enhanced: 'Continuous Monitoring + jaehrlicher externer Audit + KPI-Reporting an Mgmt.'
+        planning_baseline: 'Annex-A-Control nominell umgesetzt, in SoA dokumentiert, einmalige Wirksamkeitspruefung.'
+        planning_enhanced: 'Continuous Monitoring + jaehrlicher externer Audit + KPI-Reporting an Mgmt.'
 
     # NIS2 Categories
     nis2:
@@ -783,6 +809,11 @@ wizard:
         prototype_protection_desc: "Spezielle Anforderungen für den Schutz von Prototypen"
         data_protection: "Datenschutz"
         data_protection_desc: "Datenschutzanforderungen für die Automobilindustrie"
+        # tisax Maturity
+        information_security_baseline: 'VDA-ISA-Anforderung erfuellt, Self-Assessment-Score >= 2.'
+        information_security_enhanced: 'TISAX-Label gehalten, kontinuierliche Improvement-Pipeline + Re-Assessment-Drill jaehrlich.'
+        isms_controls_baseline: 'VDA-ISA-Anforderung erfuellt, Self-Assessment-Score >= 2.'
+        isms_controls_enhanced: 'TISAX-Label gehalten, kontinuierliche Improvement-Pipeline + Re-Assessment-Drill jaehrlich.'
 
     # GDPR Categories
     gdpr:
@@ -825,6 +856,15 @@ wizard:
         evaluation_desc: 'Überwachung, BCM-Audits, Management-Review.'
         improvement: 'Verbesserung (Klausel 10)'
         improvement_desc: 'Korrekturmaßnahmen aus Übungen und Reviews.'
+        # iso22301 Maturity
+        context_baseline: 'BCM-Element dokumentiert, RTO/RPO definiert, jaehrliche Uebung.'
+        context_enhanced: 'BCMS extern auditiert, Cross-Site Failover-Drills, Lieferketten-BC integriert.'
+        scope_definition_baseline: 'BCM-Element dokumentiert, RTO/RPO definiert, jaehrliche Uebung.'
+        scope_definition_enhanced: 'BCMS extern auditiert, Cross-Site Failover-Drills, Lieferketten-BC integriert.'
+        leadership_baseline: 'BCM-Element dokumentiert, RTO/RPO definiert, jaehrliche Uebung.'
+        leadership_enhanced: 'BCMS extern auditiert, Cross-Site Failover-Drills, Lieferketten-BC integriert.'
+        bcm_policy_baseline: 'BCM-Element dokumentiert, RTO/RPO definiert, jaehrliche Uebung.'
+        bcm_policy_enhanced: 'BCMS extern auditiert, Cross-Site Failover-Drills, Lieferketten-BC integriert.'
 
     # ISO 27701 PIMS Categories
     iso27701:
@@ -845,6 +885,17 @@ wizard:
         privacy_by_design_desc: 'Art. 25 — technische und organisatorische Maßnahmen.'
         third_party_processors: 'Auftragsverarbeiter'
         third_party_processors_desc: 'Art. 28 — AVV und Lieferanten-Assessments.'
+        # iso27701 Maturity
+        pims_context_baseline: 'PIMS-Anforderung umgesetzt, DPO/PII-Officer benannt, Records of Processing aktuell.'
+        pims_context_enhanced: 'PIMS extern zertifiziert, kontinuierliche Privacy-Reviews, Cross-Border-Transfer-Compliance automated.'
+        controller_processor_role_baseline: 'PIMS-Anforderung umgesetzt, DPO/PII-Officer benannt, Records of Processing aktuell.'
+        controller_processor_role_enhanced: 'PIMS extern zertifiziert, kontinuierliche Privacy-Reviews, Cross-Border-Transfer-Compliance automated.'
+        privacy_policy_baseline: 'PIMS-Anforderung umgesetzt, DPO/PII-Officer benannt, Records of Processing aktuell.'
+        privacy_policy_enhanced: 'PIMS extern zertifiziert, kontinuierliche Privacy-Reviews, Cross-Border-Transfer-Compliance automated.'
+        policy_doc_baseline: 'PIMS-Anforderung umgesetzt, DPO/PII-Officer benannt, Records of Processing aktuell.'
+        policy_doc_enhanced: 'PIMS extern zertifiziert, kontinuierliche Privacy-Reviews, Cross-Border-Transfer-Compliance automated.'
+        data_subject_rights_baseline: 'PIMS-Anforderung umgesetzt, DPO/PII-Officer benannt, Records of Processing aktuell.'
+        data_subject_rights_enhanced: 'PIMS extern zertifiziert, kontinuierliche Privacy-Reviews, Cross-Border-Transfer-Compliance automated.'
 
     # ISO 27017 Cloud Security Categories
     iso27017:
@@ -863,6 +914,13 @@ wizard:
         cloud_supplier_governance_desc: 'Regelmaessige Bewertung von Cloud-Anbietern (SLA, Zertifikate, Audits).'
         monitoring_logging: 'Monitoring & Logging'
         monitoring_logging_desc: 'Zentrale Sammlung sicherheitsrelevanter Cloud-Logs mit Aufbewahrungsfristen.'
+        # iso27017 Maturity
+        shared_responsibility_baseline: 'Cloud-spezifische Massnahme dokumentiert, Provider-Customer-Verantwortung geklaert.'
+        shared_responsibility_enhanced: 'Continuous Cloud-Posture-Monitoring + automated Tenant-Isolation-Tests.'
+        cloud_asset_inventory_baseline: 'Cloud-spezifische Massnahme dokumentiert, Provider-Customer-Verantwortung geklaert.'
+        cloud_asset_inventory_enhanced: 'Continuous Cloud-Posture-Monitoring + automated Tenant-Isolation-Tests.'
+        customer_separation_baseline: 'Cloud-spezifische Massnahme dokumentiert, Provider-Customer-Verantwortung geklaert.'
+        customer_separation_enhanced: 'Continuous Cloud-Posture-Monitoring + automated Tenant-Isolation-Tests.'
 
     # ISO 27018 Cloud Privacy (PII Processor) Categories
     iso27018:
@@ -879,6 +937,9 @@ wizard:
         breach_notification_desc: 'Meldeprozess fuer Datenpannen bei Cloud-PII (72h SLA).'
         subprocessor_governance: 'Subprozessor-Governance'
         subprocessor_governance_desc: 'Regelmaessige Bewertung und Kontrolle von Cloud-Subprozessoren.'
+        # iso27018 Maturity
+        pii_consent_processor_baseline: 'PII-Cloud-Massnahme implementiert, Data-Location-Transparency, Sub-Processor-Liste aktuell.'
+        pii_consent_processor_enhanced: 'Privacy-by-Design-Pipeline, automatisierte Privacy-Impact-Tests, Sub-Processor-Audits.'
 
     # ISO 42001 AI Management System Categories
     iso42001:
@@ -899,6 +960,15 @@ wizard:
         ai_transparency_desc: 'Nachvollziehbare Modellentscheidungen + Information an Betroffene.'
         ai_incident_response: 'AI-Vorfallsreaktion'
         ai_incident_response_desc: 'Reaktion auf AI-Modell-Fehlverhalten (Drift, Bias-Eskalation, Halluzinationen).'
+        # iso42001 Maturity
+        ai_context_baseline: 'AIMS-Anforderung umgesetzt, AI-Inventory + Risk-Mgmt-Prozess.'
+        ai_context_enhanced: 'AI-Governance extern auditiert, Continuous-Bias-Monitoring + Adversarial-Testing.'
+        ai_leadership_policy_baseline: 'AIMS-Anforderung umgesetzt, AI-Inventory + Risk-Mgmt-Prozess.'
+        ai_leadership_policy_enhanced: 'AI-Governance extern auditiert, Continuous-Bias-Monitoring + Adversarial-Testing.'
+        ai_inventory_baseline: 'AIMS-Anforderung umgesetzt, AI-Inventory + Risk-Mgmt-Prozess.'
+        ai_inventory_enhanced: 'AI-Governance extern auditiert, Continuous-Bias-Monitoring + Adversarial-Testing.'
+        ai_risk_baseline: 'AIMS-Anforderung umgesetzt, AI-Inventory + Risk-Mgmt-Prozess.'
+        ai_risk_enhanced: 'AI-Governance extern auditiert, Continuous-Bias-Monitoring + Adversarial-Testing.'
 
     # BSI IT-Grundschutz Basis-Absicherung Categories
     bsi_grundschutz:
@@ -923,6 +993,19 @@ wizard:
         net_desc: 'Netzwerksicherheit, WLAN, VPN, Firewalls.'
         inf: 'INF — Infrastruktur'
         inf_desc: 'Gebaeudesicherheit, Verkabelung, Schutzschraenke, Stromversorgung.'
+        # bsi_grundschutz Maturity
+        isms_baseline: 'Basis-Anforderungen pro Baustein erfuellt, Schutzbedarfsfeststellung durchgefuehrt.'
+        isms_enhanced: 'Vollstaendige Standard-Absicherung + Risikoanalyse fuer hohe Schutzbedarfe + jaehrliche BSI-Audits.'
+        bsi_grundschutz_isms_baseline: 'Basis-Anforderungen pro Baustein erfuellt, Schutzbedarfsfeststellung durchgefuehrt.'
+        bsi_grundschutz_isms_enhanced: 'Vollstaendige Standard-Absicherung + Risikoanalyse fuer hohe Schutzbedarfe + jaehrliche BSI-Audits.'
+        orp_baseline: 'Basis-Anforderungen pro Baustein erfuellt, Schutzbedarfsfeststellung durchgefuehrt.'
+        orp_enhanced: 'Vollstaendige Standard-Absicherung + Risikoanalyse fuer hohe Schutzbedarfe + jaehrliche BSI-Audits.'
+        bsi_grundschutz_orp_baseline: 'Basis-Anforderungen pro Baustein erfuellt, Schutzbedarfsfeststellung durchgefuehrt.'
+        bsi_grundschutz_orp_enhanced: 'Vollstaendige Standard-Absicherung + Risikoanalyse fuer hohe Schutzbedarfe + jaehrliche BSI-Audits.'
+        con_baseline: 'Basis-Anforderungen pro Baustein erfuellt, Schutzbedarfsfeststellung durchgefuehrt.'
+        con_enhanced: 'Vollstaendige Standard-Absicherung + Risikoanalyse fuer hohe Schutzbedarfe + jaehrliche BSI-Audits.'
+        bsi_grundschutz_con_baseline: 'Basis-Anforderungen pro Baustein erfuellt, Schutzbedarfsfeststellung durchgefuehrt.'
+        bsi_grundschutz_con_enhanced: 'Vollstaendige Standard-Absicherung + Risikoanalyse fuer hohe Schutzbedarfe + jaehrliche BSI-Audits.'
 
     # BSI C5:2020 Cloud Compliance Categories
     bsi_c5:
@@ -961,6 +1044,23 @@ wizard:
         pss_desc: 'Vertragliche Anforderungen, regelmaessige Bewertung.'
         bc: 'BC — Beauftragte und Berichtswesen'
         bc_desc: 'CISO-Rolle, Reporting, Management-Reviews.'
+        # bsi_c5 Maturity
+        ois_baseline: 'C5:2020-Kriterium erfuellt, Type-II-Audit-Vorbereitung laeuft.'
+        ois_enhanced: 'Type-II-Audit absolviert, Continuous-Monitoring + Sub-Service-Audit-Reports vollstaendig.'
+        sp_baseline: 'C5:2020-Kriterium erfuellt, Type-II-Audit-Vorbereitung laeuft.'
+        sp_enhanced: 'Type-II-Audit absolviert, Continuous-Monitoring + Sub-Service-Audit-Reports vollstaendig.'
+        hr_baseline: 'C5:2020-Kriterium erfuellt, Type-II-Audit-Vorbereitung laeuft.'
+        hr_enhanced: 'Type-II-Audit absolviert, Continuous-Monitoring + Sub-Service-Audit-Reports vollstaendig.'
+        am_baseline: 'C5:2020-Kriterium erfuellt, Type-II-Audit-Vorbereitung laeuft.'
+        am_enhanced: 'Type-II-Audit absolviert, Continuous-Monitoring + Sub-Service-Audit-Reports vollstaendig.'
+        ps_baseline: 'C5:2020-Kriterium erfuellt, Type-II-Audit-Vorbereitung laeuft.'
+        ps_enhanced: 'Type-II-Audit absolviert, Continuous-Monitoring + Sub-Service-Audit-Reports vollstaendig.'
+        rb_baseline: 'C5:2020-Kriterium erfuellt, Type-II-Audit-Vorbereitung laeuft.'
+        rb_enhanced: 'Type-II-Audit absolviert, Continuous-Monitoring + Sub-Service-Audit-Reports vollstaendig.'
+        idm_baseline: 'C5:2020-Kriterium erfuellt, Type-II-Audit-Vorbereitung laeuft.'
+        idm_enhanced: 'Type-II-Audit absolviert, Continuous-Monitoring + Sub-Service-Audit-Reports vollstaendig.'
+        co_baseline: 'C5:2020-Kriterium erfuellt, Type-II-Audit-Vorbereitung laeuft.'
+        co_enhanced: 'Type-II-Audit absolviert, Continuous-Monitoring + Sub-Service-Audit-Reports vollstaendig.'
 
     # BSI C5:2026 Cloud Compliance Criteria Catalogue Categories
     bsi_c5_2026:
@@ -987,6 +1087,17 @@ wizard:
         iso_27001_integration_desc: 'Mapping zu Annex-A-Controls, gemeinsame Audits, vorhandene SoA als Datenquelle nutzen.'
         csa_ccm_alignment: 'CSA CCM v4 Alignment'
         csa_ccm_alignment_desc: 'Cross-Mapping zu Cloud Controls Matrix v4, gemeinsame Belegfuehrung mit STAR-Self-Assessments.'
+        # bsi_c5_2026 Maturity
+        organisation_personnel_baseline: 'C5:2026-Basis-Kriterium erfuellt, Pre-Audit-Self-Assessment.'
+        organisation_personnel_enhanced: 'Type-II-Audit nach C5:2026 absolviert, PQC-Migration vorbereitet, EUCS-Cross-Coverage.'
+        container_management_baseline: 'C5:2026-Basis-Kriterium erfuellt, Pre-Audit-Self-Assessment.'
+        container_management_enhanced: 'Type-II-Audit nach C5:2026 absolviert, PQC-Migration vorbereitet, EUCS-Cross-Coverage.'
+        supply_chain_security_baseline: 'C5:2026-Basis-Kriterium erfuellt, Pre-Audit-Self-Assessment.'
+        supply_chain_security_enhanced: 'Type-II-Audit nach C5:2026 absolviert, PQC-Migration vorbereitet, EUCS-Cross-Coverage.'
+        post_quantum_cryptography_baseline: 'C5:2026-Basis-Kriterium erfuellt, Pre-Audit-Self-Assessment.'
+        post_quantum_cryptography_enhanced: 'Type-II-Audit nach C5:2026 absolviert, PQC-Migration vorbereitet, EUCS-Cross-Coverage.'
+        confidential_computing_baseline: 'C5:2026-Basis-Kriterium erfuellt, Pre-Audit-Self-Assessment.'
+        confidential_computing_enhanced: 'Type-II-Audit nach C5:2026 absolviert, PQC-Migration vorbereitet, EUCS-Cross-Coverage.'
 
     # KRITIS / NIS2-DE-Umsetzung Categories
     kritis:
@@ -1005,6 +1116,17 @@ wizard:
         top_management_desc: 'Schulung + Aufsicht durch Geschaeftsleitung (NIS2 Art. 21).'
         supplier_due_diligence: 'Lieferketten-Sicherheit'
         supplier_due_diligence_desc: 'Risiken aus Lieferanten und Drittparteien (NIS2 Art. 21.2.d).'
+        # kritis Maturity
+        scope_determination_baseline: 'B3S-Massnahmen umgesetzt, BSI-Nachweis erbracht, 24h-Meldepfad aktiv.'
+        scope_determination_enhanced: 'Stand-der-Technik kontinuierlich tracked, BSI-Audit ohne Findings, automated Reporting-Pipeline.'
+        kritis_scope_baseline: 'B3S-Massnahmen umgesetzt, BSI-Nachweis erbracht, 24h-Meldepfad aktiv.'
+        kritis_scope_enhanced: 'Stand-der-Technik kontinuierlich tracked, BSI-Audit ohne Findings, automated Reporting-Pipeline.'
+        state_of_the_art_baseline: 'B3S-Massnahmen umgesetzt, BSI-Nachweis erbracht, 24h-Meldepfad aktiv.'
+        state_of_the_art_enhanced: 'Stand-der-Technik kontinuierlich tracked, BSI-Audit ohne Findings, automated Reporting-Pipeline.'
+        kritis_state_of_art_baseline: 'B3S-Massnahmen umgesetzt, BSI-Nachweis erbracht, 24h-Meldepfad aktiv.'
+        kritis_state_of_art_enhanced: 'Stand-der-Technik kontinuierlich tracked, BSI-Audit ohne Findings, automated Reporting-Pipeline.'
+        incident_reporting_baseline: 'B3S-Massnahmen umgesetzt, BSI-Nachweis erbracht, 24h-Meldepfad aktiv.'
+        incident_reporting_enhanced: 'Stand-der-Technik kontinuierlich tracked, BSI-Audit ohne Findings, automated Reporting-Pipeline.'
 
     # PCI-DSS v4.0.1 Categories
     pci_dss:
@@ -1047,6 +1169,13 @@ wizard:
         confidentiality_desc: 'Schutz vertraulicher Daten (NDA-Material, IP, Geschaeftsgeheimnisse).'
         privacy: 'Privacy'
         privacy_desc: 'Schutz personenbezogener Daten gemaess Privacy Notice.'
+        # soc2 Maturity
+        security_baseline: 'TSC-Criteria adressiert, Type-I-Audit absolviert.'
+        security_enhanced: 'Type-II-Audit ohne Findings, Continuous Control-Monitoring, sub-Service-Org-Reviews.'
+        availability_baseline: 'TSC-Criteria adressiert, Type-I-Audit absolviert.'
+        availability_enhanced: 'Type-II-Audit ohne Findings, Continuous Control-Monitoring, sub-Service-Org-Reviews.'
+        processing_integrity_baseline: 'TSC-Criteria adressiert, Type-I-Audit absolviert.'
+        processing_integrity_enhanced: 'Type-II-Audit ohne Findings, Continuous Control-Monitoring, sub-Service-Org-Reviews.'
 
     # NIST Cybersecurity Framework 2.0 Categories
     nist_csf:
@@ -1063,6 +1192,13 @@ wizard:
         respond_desc: 'Incident-Management, Analysis, Mitigation, Reporting, Communication.'
         recover: 'RC — Recover'
         recover_desc: 'Recovery-Plan-Execution, Communications.'
+        # nist_csf Maturity
+        govern_baseline: 'CSF-Outcome erreicht (Tier 1-2: Risk-informed/Repeatable).'
+        govern_enhanced: 'Tier 3-4 (Adaptive/Continuous Improvement) mit metrik-basierter Steuerung erreicht.'
+        nist_csf_govern_baseline: 'CSF-Outcome erreicht (Tier 1-2: Risk-informed/Repeatable).'
+        nist_csf_govern_enhanced: 'Tier 3-4 (Adaptive/Continuous Improvement) mit metrik-basierter Steuerung erreicht.'
+        identify_baseline: 'CSF-Outcome erreicht (Tier 1-2: Risk-informed/Repeatable).'
+        identify_enhanced: 'Tier 3-4 (Adaptive/Continuous Improvement) mit metrik-basierter Steuerung erreicht.'
 
     # BSI IT-Grundschutz Kern-Absicherung Categories
     bsi_grundschutz_kern:
@@ -1077,6 +1213,13 @@ wizard:
         kern_check_desc: 'Anforderungserfuellung fuer Kronjuwelen pruefen.'
         kern_realization: 'Realisierung (Kern)'
         kern_realization_desc: 'Massnahmenumsetzung priorisiert fuer kritische Bereiche.'
+        # bsi_grundschutz_kern Maturity
+        crown_jewels_baseline: 'Kronjuwelen identifiziert, Basis-Schutz fuer kritische Bereiche erfuellt.'
+        crown_jewels_enhanced: 'Migrationspfad zu Standard-Absicherung definiert + jaehrliche Kronjuwelen-Re-Bewertung.'
+        bsi_gs_kern_crown_jewels_baseline: 'Kronjuwelen identifiziert, Basis-Schutz fuer kritische Bereiche erfuellt.'
+        bsi_gs_kern_crown_jewels_enhanced: 'Migrationspfad zu Standard-Absicherung definiert + jaehrliche Kronjuwelen-Re-Bewertung.'
+        accelerated_protection_needs_baseline: 'Kronjuwelen identifiziert, Basis-Schutz fuer kritische Bereiche erfuellt.'
+        accelerated_protection_needs_enhanced: 'Migrationspfad zu Standard-Absicherung definiert + jaehrliche Kronjuwelen-Re-Bewertung.'
 
     # BSI IT-Grundschutz Standard-Absicherung Categories
     bsi_grundschutz_standard:
@@ -1097,6 +1240,17 @@ wizard:
         risk_analysis_desc: 'Ergaenzende Risikoanalyse fuer Zielobjekte mit hohem/sehr hohem Schutzbedarf.'
         realization: 'Realisierungsplanung'
         realization_desc: 'Massnahmenpriorisierung, Umsetzungsplan, Verantwortliche, Termine.'
+        # bsi_grundschutz_standard Maturity
+        initiation_baseline: 'Vollstaendige Strukturanalyse + Schutzbedarfsfeststellung + Modellierung; Massnahmen priorisiert.'
+        initiation_enhanced: 'Konsolidierte Risikoanalyse, BSI-200-3-Methodik durchgaengig, externer ISO27001-auf-BSI-Audit absolviert.'
+        bsi_gs_std_initiation_baseline: 'Vollstaendige Strukturanalyse + Schutzbedarfsfeststellung + Modellierung; Massnahmen priorisiert.'
+        bsi_gs_std_initiation_enhanced: 'Konsolidierte Risikoanalyse, BSI-200-3-Methodik durchgaengig, externer ISO27001-auf-BSI-Audit absolviert.'
+        security_concept_baseline: 'Vollstaendige Strukturanalyse + Schutzbedarfsfeststellung + Modellierung; Massnahmen priorisiert.'
+        security_concept_enhanced: 'Konsolidierte Risikoanalyse, BSI-200-3-Methodik durchgaengig, externer ISO27001-auf-BSI-Audit absolviert.'
+        bsi_gs_std_concept_baseline: 'Vollstaendige Strukturanalyse + Schutzbedarfsfeststellung + Modellierung; Massnahmen priorisiert.'
+        bsi_gs_std_concept_enhanced: 'Konsolidierte Risikoanalyse, BSI-200-3-Methodik durchgaengig, externer ISO27001-auf-BSI-Audit absolviert.'
+        structure_analysis_baseline: 'Vollstaendige Strukturanalyse + Schutzbedarfsfeststellung + Modellierung; Massnahmen priorisiert.'
+        structure_analysis_enhanced: 'Konsolidierte Risikoanalyse, BSI-200-3-Methodik durchgaengig, externer ISO27001-auf-BSI-Audit absolviert.'
 
     # EU AI Act (Verordnung 2024/1689) Categories
     eu_ai_act:
@@ -1173,6 +1327,21 @@ wizard:
         supplier_management_desc: 'Auswahl, Bewertung und Steuerung von Sub-Auftragsverarbeitern und Drittanbietern.'
         compliance_audit: 'Compliance und Audits'
         compliance_audit_desc: 'Interne Reviews, externe Audits, Nachweispflichten und Auditorenrechte.'
+        # eucs Maturity
+        organization_security_baseline: 'EUCS-Sub-Bereich auf Substantial-Level umgesetzt.'
+        organization_security_enhanced: 'High-Assurance-Level-Vorbereitung, Continuous Audit-Trail, ENISA-Body-Audit absolviert.'
+        eucs_organization_baseline: 'EUCS-Sub-Bereich auf Substantial-Level umgesetzt.'
+        eucs_organization_enhanced: 'High-Assurance-Level-Vorbereitung, Continuous Audit-Trail, ENISA-Body-Audit absolviert.'
+        risk_management_baseline: 'EUCS-Sub-Bereich auf Substantial-Level umgesetzt.'
+        risk_management_enhanced: 'High-Assurance-Level-Vorbereitung, Continuous Audit-Trail, ENISA-Body-Audit absolviert.'
+        eucs_risk_baseline: 'EUCS-Sub-Bereich auf Substantial-Level umgesetzt.'
+        eucs_risk_enhanced: 'High-Assurance-Level-Vorbereitung, Continuous Audit-Trail, ENISA-Body-Audit absolviert.'
+        asset_management_baseline: 'EUCS-Sub-Bereich auf Substantial-Level umgesetzt.'
+        asset_management_enhanced: 'High-Assurance-Level-Vorbereitung, Continuous Audit-Trail, ENISA-Body-Audit absolviert.'
+        eucs_assets_baseline: 'EUCS-Sub-Bereich auf Substantial-Level umgesetzt.'
+        eucs_assets_enhanced: 'High-Assurance-Level-Vorbereitung, Continuous Audit-Trail, ENISA-Body-Audit absolviert.'
+        identity_access_baseline: 'EUCS-Sub-Bereich auf Substantial-Level umgesetzt.'
+        identity_access_enhanced: 'High-Assurance-Level-Vorbereitung, Continuous Audit-Trail, ENISA-Body-Audit absolviert.'
 
     # EU Cyber Resilience Act (Verordnung 2024/2847) Categories
     cra:
@@ -1193,3 +1362,14 @@ wizard:
         technical_documentation_desc: 'Anhang VII — vollstaendige technische Doku zu Sicherheitsanforderungen, Risikobewertung und Konformitaetsbewertung.'
         support_period: 'Support-Zeitraum'
         support_period_desc: 'Definierter und kommunizierter Support-Zeitraum fuer Sicherheitsupdates (Mindestempfehlung 5 Jahre, je nach Produktlebensdauer).'
+        # cra Maturity
+        security_by_design_baseline: 'CRA Anhang-I-Pflicht erfuellt, technische Dokumentation vorhanden.'
+        security_by_design_enhanced: 'Coordinated-Vulnerability-Disclosure aktiv, automated SBOM-Pflege, Conformity-Body-Audit.'
+        cra_security_by_design_baseline: 'CRA Anhang-I-Pflicht erfuellt, technische Dokumentation vorhanden.'
+        cra_security_by_design_enhanced: 'Coordinated-Vulnerability-Disclosure aktiv, automated SBOM-Pflege, Conformity-Body-Audit.'
+        vulnerability_handling_baseline: 'CRA Anhang-I-Pflicht erfuellt, technische Dokumentation vorhanden.'
+        vulnerability_handling_enhanced: 'Coordinated-Vulnerability-Disclosure aktiv, automated SBOM-Pflege, Conformity-Body-Audit.'
+        cra_vuln_handling_baseline: 'CRA Anhang-I-Pflicht erfuellt, technische Dokumentation vorhanden.'
+        cra_vuln_handling_enhanced: 'Coordinated-Vulnerability-Disclosure aktiv, automated SBOM-Pflege, Conformity-Body-Audit.'
+        sbom_supply_chain_baseline: 'CRA Anhang-I-Pflicht erfuellt, technische Dokumentation vorhanden.'
+        sbom_supply_chain_enhanced: 'Coordinated-Vulnerability-Disclosure aktiv, automated SBOM-Pflege, Conformity-Body-Audit.'

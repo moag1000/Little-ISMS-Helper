@@ -63,8 +63,38 @@ class ComplianceWizardService
         private readonly DataSubjectRequestRepository $dataSubjectRequestRepository,
         private readonly ProcessingActivityRepository $processingActivityRepository,
         private readonly TenantContext $tenantContext,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly ?\App\Repository\ComplianceRequirementRepository $requirementRepository = null,
     ) {
+    }
+
+    /**
+     * Catalogue coverage: how many ComplianceRequirements of the framework
+     * are fulfilled by the tenant (via ComplianceRequirementFulfillment).
+     *
+     * @return array{total: int, covered: int, percent: float}
+     */
+    private function getCatalogueCoverage(string $frameworkCode, ?Tenant $tenant): array
+    {
+        if ($this->requirementRepository === null) {
+            return ['total' => 0, 'covered' => 0, 'percent' => 0.0];
+        }
+        $framework = $this->frameworkRepository->findOneBy(['code' => $frameworkCode]);
+        if ($framework === null) {
+            return ['total' => 0, 'covered' => 0, 'percent' => 0.0];
+        }
+        $total = count($this->requirementRepository->findBy(['framework' => $framework]));
+        if ($total === 0 || $tenant === null) {
+            return ['total' => $total, 'covered' => 0, 'percent' => 0.0];
+        }
+        $covered = $this->fulfillmentRepository->count([
+            'tenant' => $tenant,
+            'fulfilled' => true,
+        ]);
+        // Constrain covered count to never exceed total (defensive).
+        $covered = min($covered, $total);
+        $percent = round(($covered / $total) * 100, 1);
+        return ['total' => $total, 'covered' => $covered, 'percent' => $percent];
     }
 
     /**
@@ -394,6 +424,7 @@ class ComplianceWizardService
                 $config['recommended_modules'],
                 $activeModules
             ),
+            'catalogue_coverage' => $this->getCatalogueCoverage($config['code'], $tenant),
             'assessed_at' => new \DateTimeImmutable(),
             'tenant_id' => $tenant?->getId(),
         ];
@@ -1372,6 +1403,8 @@ class ComplianceWizardService
             'context' => [
                 'name' => 'wizard.iso27001.context',
                 'description' => 'wizard.iso27001.context_desc',
+                'maturity_baseline' => 'wizard.iso27001.context_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.context_enhanced',
                 'icon' => 'bi-diagram-3',
                 'weight' => 1.5,
                 'clause' => '4',
@@ -1417,6 +1450,8 @@ class ComplianceWizardService
             'leadership' => [
                 'name' => 'wizard.iso27001.leadership',
                 'description' => 'wizard.iso27001.leadership_desc',
+                'maturity_baseline' => 'wizard.iso27001.leadership_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.leadership_enhanced',
                 'icon' => 'bi-people',
                 'weight' => 1.5,
                 'clause' => '5',
@@ -1455,6 +1490,8 @@ class ComplianceWizardService
             'planning' => [
                 'name' => 'wizard.iso27001.planning',
                 'description' => 'wizard.iso27001.planning_desc',
+                'maturity_baseline' => 'wizard.iso27001.planning_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.planning_enhanced',
                 'icon' => 'bi-calendar-check',
                 'weight' => 2,
                 'clause' => '6',
@@ -1509,6 +1546,8 @@ class ComplianceWizardService
             'support' => [
                 'name' => 'wizard.iso27001.support',
                 'description' => 'wizard.iso27001.support_desc',
+                'maturity_baseline' => 'wizard.iso27001.support_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.support_enhanced',
                 'icon' => 'bi-tools',
                 'weight' => 1.5,
                 'clause' => '7',
@@ -1560,6 +1599,8 @@ class ComplianceWizardService
             'operation' => [
                 'name' => 'wizard.iso27001.operation',
                 'description' => 'wizard.iso27001.operation_desc',
+                'maturity_baseline' => 'wizard.iso27001.operation_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.operation_enhanced',
                 'icon' => 'bi-gear',
                 'weight' => 2,
                 'clause' => '8',
@@ -1596,6 +1637,8 @@ class ComplianceWizardService
             'performance' => [
                 'name' => 'wizard.iso27001.performance',
                 'description' => 'wizard.iso27001.performance_desc',
+                'maturity_baseline' => 'wizard.iso27001.performance_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.performance_enhanced',
                 'icon' => 'bi-graph-up',
                 'weight' => 1.5,
                 'clause' => '9',
@@ -1632,6 +1675,8 @@ class ComplianceWizardService
             'improvement' => [
                 'name' => 'wizard.iso27001.improvement',
                 'description' => 'wizard.iso27001.improvement_desc',
+                'maturity_baseline' => 'wizard.iso27001.improvement_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.improvement_enhanced',
                 'icon' => 'bi-arrow-up-circle',
                 'weight' => 1,
                 'clause' => '10',
@@ -1659,6 +1704,8 @@ class ComplianceWizardService
             'annex_a_organizational' => [
                 'name' => 'wizard.iso27001.annex_a_organizational',
                 'description' => 'wizard.iso27001.annex_a_organizational_desc',
+                'maturity_baseline' => 'wizard.iso27001.annex_a_organizational_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.annex_a_organizational_enhanced',
                 'icon' => 'bi-building',
                 'weight' => 2,
                 'clause' => 'A.5',
@@ -1680,6 +1727,8 @@ class ComplianceWizardService
             'annex_a_people' => [
                 'name' => 'wizard.iso27001.annex_a_people',
                 'description' => 'wizard.iso27001.annex_a_people_desc',
+                'maturity_baseline' => 'wizard.iso27001.annex_a_people_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.annex_a_people_enhanced',
                 'icon' => 'bi-person-badge',
                 'weight' => 1.5,
                 'clause' => 'A.6',
@@ -1698,6 +1747,8 @@ class ComplianceWizardService
             'annex_a_physical' => [
                 'name' => 'wizard.iso27001.annex_a_physical',
                 'description' => 'wizard.iso27001.annex_a_physical_desc',
+                'maturity_baseline' => 'wizard.iso27001.annex_a_physical_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.annex_a_physical_enhanced',
                 'icon' => 'bi-building-lock',
                 'weight' => 1.5,
                 'clause' => 'A.7',
@@ -1717,6 +1768,8 @@ class ComplianceWizardService
             'annex_a_technological' => [
                 'name' => 'wizard.iso27001.annex_a_technological',
                 'description' => 'wizard.iso27001.annex_a_technological_desc',
+                'maturity_baseline' => 'wizard.iso27001.annex_a_technological_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.annex_a_technological_enhanced',
                 'icon' => 'bi-cpu',
                 'weight' => 2,
                 'clause' => 'A.8',
@@ -1740,6 +1793,8 @@ class ComplianceWizardService
             'asset_management' => [
                 'name' => 'wizard.iso27001.asset_management',
                 'description' => 'wizard.iso27001.asset_management_desc',
+                'maturity_baseline' => 'wizard.iso27001.asset_management_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.asset_management_enhanced',
                 'icon' => 'bi-hdd-stack',
                 'weight' => 1.5,
                 'checks' => [
@@ -1758,6 +1813,8 @@ class ComplianceWizardService
             'incident_management' => [
                 'name' => 'wizard.iso27001.incident_management',
                 'description' => 'wizard.iso27001.incident_management_desc',
+                'maturity_baseline' => 'wizard.iso27001.incident_management_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.incident_management_enhanced',
                 'icon' => 'bi-exclamation-circle',
                 'weight' => 1.5,
                 'checks' => [
@@ -1777,6 +1834,8 @@ class ComplianceWizardService
             'business_continuity' => [
                 'name' => 'wizard.iso27001.business_continuity',
                 'description' => 'wizard.iso27001.business_continuity_desc',
+                'maturity_baseline' => 'wizard.iso27001.business_continuity_baseline',
+                'maturity_enhanced' => 'wizard.iso27001.business_continuity_enhanced',
                 'icon' => 'bi-arrow-repeat',
                 'weight' => 1.5,
                 'checks' => [
@@ -2696,6 +2755,8 @@ class ComplianceWizardService
             'information_security' => [
                 'name' => 'wizard.tisax.information_security',
                 'description' => 'wizard.tisax.information_security_desc',
+                'maturity_baseline' => 'wizard.tisax.information_security_baseline',
+                'maturity_enhanced' => 'wizard.tisax.information_security_enhanced',
                 'icon' => 'bi-shield-lock',
                 'weight' => 2,
                 'checks' => [
@@ -2710,6 +2771,8 @@ class ComplianceWizardService
             'prototype_protection' => [
                 'name' => 'wizard.tisax.prototype_protection',
                 'description' => 'wizard.tisax.prototype_protection_desc',
+                'maturity_baseline' => 'wizard.tisax.prototype_protection_baseline',
+                'maturity_enhanced' => 'wizard.tisax.prototype_protection_enhanced',
                 'icon' => 'bi-car-front',
                 'weight' => 1.5,
                 'checks' => [
@@ -2724,6 +2787,8 @@ class ComplianceWizardService
             'data_protection' => [
                 'name' => 'wizard.tisax.data_protection',
                 'description' => 'wizard.tisax.data_protection_desc',
+                'maturity_baseline' => 'wizard.tisax.data_protection_baseline',
+                'maturity_enhanced' => 'wizard.tisax.data_protection_enhanced',
                 'icon' => 'bi-person-lock',
                 'weight' => 1.5,
                 'checks' => [
@@ -2838,6 +2903,8 @@ class ComplianceWizardService
             'context' => [
                 'name' => 'wizard.iso22301.context',
                 'description' => 'wizard.iso22301.context_desc',
+                'maturity_baseline' => 'wizard.iso22301.context_baseline',
+                'maturity_enhanced' => 'wizard.iso22301.context_enhanced',
                 'icon' => 'bi-globe',
                 'weight' => 1.5,
                 'checks' => [
@@ -2853,6 +2920,8 @@ class ComplianceWizardService
             'leadership' => [
                 'name' => 'wizard.iso22301.leadership',
                 'description' => 'wizard.iso22301.leadership_desc',
+                'maturity_baseline' => 'wizard.iso22301.leadership_baseline',
+                'maturity_enhanced' => 'wizard.iso22301.leadership_enhanced',
                 'icon' => 'bi-person-badge',
                 'weight' => 1.5,
                 'checks' => [
@@ -2868,6 +2937,8 @@ class ComplianceWizardService
             'planning' => [
                 'name' => 'wizard.iso22301.planning',
                 'description' => 'wizard.iso22301.planning_desc',
+                'maturity_baseline' => 'wizard.iso22301.planning_baseline',
+                'maturity_enhanced' => 'wizard.iso22301.planning_enhanced',
                 'icon' => 'bi-clipboard-data',
                 'weight' => 2,
                 'checks' => [
@@ -2882,6 +2953,8 @@ class ComplianceWizardService
             'support' => [
                 'name' => 'wizard.iso22301.support',
                 'description' => 'wizard.iso22301.support_desc',
+                'maturity_baseline' => 'wizard.iso22301.support_baseline',
+                'maturity_enhanced' => 'wizard.iso22301.support_enhanced',
                 'icon' => 'bi-people',
                 'weight' => 1,
                 'checks' => [
@@ -2896,6 +2969,8 @@ class ComplianceWizardService
             'operation' => [
                 'name' => 'wizard.iso22301.operation',
                 'description' => 'wizard.iso22301.operation_desc',
+                'maturity_baseline' => 'wizard.iso22301.operation_baseline',
+                'maturity_enhanced' => 'wizard.iso22301.operation_enhanced',
                 'icon' => 'bi-gear',
                 'weight' => 3,
                 'checks' => [
@@ -2910,6 +2985,8 @@ class ComplianceWizardService
             'evaluation' => [
                 'name' => 'wizard.iso22301.evaluation',
                 'description' => 'wizard.iso22301.evaluation_desc',
+                'maturity_baseline' => 'wizard.iso22301.evaluation_baseline',
+                'maturity_enhanced' => 'wizard.iso22301.evaluation_enhanced',
                 'icon' => 'bi-graph-up',
                 'weight' => 2,
                 'checks' => [
@@ -2924,6 +3001,8 @@ class ComplianceWizardService
             'improvement' => [
                 'name' => 'wizard.iso22301.improvement',
                 'description' => 'wizard.iso22301.improvement_desc',
+                'maturity_baseline' => 'wizard.iso22301.improvement_baseline',
+                'maturity_enhanced' => 'wizard.iso22301.improvement_enhanced',
                 'icon' => 'bi-arrow-up-circle',
                 'weight' => 1,
                 'checks' => [
@@ -2950,6 +3029,8 @@ class ComplianceWizardService
             'pims_context' => [
                 'name' => 'wizard.iso27701.pims_context',
                 'description' => 'wizard.iso27701.pims_context_desc',
+                'maturity_baseline' => 'wizard.iso27701.pims_context_baseline',
+                'maturity_enhanced' => 'wizard.iso27701.pims_context_enhanced',
                 'icon' => 'bi-diagram-3',
                 'weight' => 1.5,
                 'checks' => [
@@ -2965,6 +3046,8 @@ class ComplianceWizardService
             'privacy_policy' => [
                 'name' => 'wizard.iso27701.privacy_policy',
                 'description' => 'wizard.iso27701.privacy_policy_desc',
+                'maturity_baseline' => 'wizard.iso27701.privacy_policy_baseline',
+                'maturity_enhanced' => 'wizard.iso27701.privacy_policy_enhanced',
                 'icon' => 'bi-file-earmark-lock',
                 'weight' => 1.5,
                 'checks' => [
@@ -2980,6 +3063,8 @@ class ComplianceWizardService
             'data_subject_rights' => [
                 'name' => 'wizard.iso27701.data_subject_rights',
                 'description' => 'wizard.iso27701.data_subject_rights_desc',
+                'maturity_baseline' => 'wizard.iso27701.data_subject_rights_baseline',
+                'maturity_enhanced' => 'wizard.iso27701.data_subject_rights_enhanced',
                 'icon' => 'bi-person-check',
                 'weight' => 2,
                 'checks' => [
@@ -2994,6 +3079,8 @@ class ComplianceWizardService
             'privacy_risk' => [
                 'name' => 'wizard.iso27701.privacy_risk',
                 'description' => 'wizard.iso27701.privacy_risk_desc',
+                'maturity_baseline' => 'wizard.iso27701.privacy_risk_baseline',
+                'maturity_enhanced' => 'wizard.iso27701.privacy_risk_enhanced',
                 'icon' => 'bi-exclamation-octagon',
                 'weight' => 3,
                 'checks' => [
@@ -3008,6 +3095,8 @@ class ComplianceWizardService
             'records_of_processing' => [
                 'name' => 'wizard.iso27701.records_of_processing',
                 'description' => 'wizard.iso27701.records_of_processing_desc',
+                'maturity_baseline' => 'wizard.iso27701.records_of_processing_baseline',
+                'maturity_enhanced' => 'wizard.iso27701.records_of_processing_enhanced',
                 'icon' => 'bi-list-columns',
                 'weight' => 2,
                 'checks' => [
@@ -3022,6 +3111,8 @@ class ComplianceWizardService
             'breach_notification' => [
                 'name' => 'wizard.iso27701.breach_notification',
                 'description' => 'wizard.iso27701.breach_notification_desc',
+                'maturity_baseline' => 'wizard.iso27701.breach_notification_baseline',
+                'maturity_enhanced' => 'wizard.iso27701.breach_notification_enhanced',
                 'icon' => 'bi-exclamation-triangle',
                 'weight' => 1.5,
                 'checks' => [
@@ -3037,6 +3128,8 @@ class ComplianceWizardService
             'privacy_by_design' => [
                 'name' => 'wizard.iso27701.privacy_by_design',
                 'description' => 'wizard.iso27701.privacy_by_design_desc',
+                'maturity_baseline' => 'wizard.iso27701.privacy_by_design_baseline',
+                'maturity_enhanced' => 'wizard.iso27701.privacy_by_design_enhanced',
                 'icon' => 'bi-tools',
                 'weight' => 1.5,
                 'checks' => [
@@ -3051,6 +3144,8 @@ class ComplianceWizardService
             'third_party_processors' => [
                 'name' => 'wizard.iso27701.third_party_processors',
                 'description' => 'wizard.iso27701.third_party_processors_desc',
+                'maturity_baseline' => 'wizard.iso27701.third_party_processors_baseline',
+                'maturity_enhanced' => 'wizard.iso27701.third_party_processors_enhanced',
                 'icon' => 'bi-people-fill',
                 'weight' => 2,
                 'checks' => [
@@ -3076,6 +3171,8 @@ class ComplianceWizardService
             'shared_responsibility' => [
                 'name' => 'wizard.iso27017.shared_responsibility',
                 'description' => 'wizard.iso27017.shared_responsibility_desc',
+                'maturity_baseline' => 'wizard.iso27017.shared_responsibility_baseline',
+                'maturity_enhanced' => 'wizard.iso27017.shared_responsibility_enhanced',
                 'icon' => 'bi-people-fill',
                 'weight' => 2,
                 'checks' => [
@@ -3090,6 +3187,8 @@ class ComplianceWizardService
             'cloud_asset_inventory' => [
                 'name' => 'wizard.iso27017.cloud_asset_inventory',
                 'description' => 'wizard.iso27017.cloud_asset_inventory_desc',
+                'maturity_baseline' => 'wizard.iso27017.cloud_asset_inventory_baseline',
+                'maturity_enhanced' => 'wizard.iso27017.cloud_asset_inventory_enhanced',
                 'icon' => 'bi-cloud-arrow-down',
                 'weight' => 2,
                 'checks' => [
@@ -3103,6 +3202,8 @@ class ComplianceWizardService
             'customer_separation' => [
                 'name' => 'wizard.iso27017.customer_separation',
                 'description' => 'wizard.iso27017.customer_separation_desc',
+                'maturity_baseline' => 'wizard.iso27017.customer_separation_baseline',
+                'maturity_enhanced' => 'wizard.iso27017.customer_separation_enhanced',
                 'icon' => 'bi-diagram-3',
                 'weight' => 1.5,
                 'checks' => [
@@ -3129,6 +3230,8 @@ class ComplianceWizardService
             'admin_access' => [
                 'name' => 'wizard.iso27017.admin_access',
                 'description' => 'wizard.iso27017.admin_access_desc',
+                'maturity_baseline' => 'wizard.iso27017.admin_access_baseline',
+                'maturity_enhanced' => 'wizard.iso27017.admin_access_enhanced',
                 'icon' => 'bi-key',
                 'weight' => 2,
                 'checks' => [
@@ -3142,6 +3245,8 @@ class ComplianceWizardService
             'cloud_supplier_governance' => [
                 'name' => 'wizard.iso27017.cloud_supplier_governance',
                 'description' => 'wizard.iso27017.cloud_supplier_governance_desc',
+                'maturity_baseline' => 'wizard.iso27017.cloud_supplier_governance_baseline',
+                'maturity_enhanced' => 'wizard.iso27017.cloud_supplier_governance_enhanced',
                 'icon' => 'bi-building-check',
                 'weight' => 2,
                 'checks' => [
@@ -3180,6 +3285,8 @@ class ComplianceWizardService
             'pii_consent_processor' => [
                 'name' => 'wizard.iso27018.pii_consent_processor',
                 'description' => 'wizard.iso27018.pii_consent_processor_desc',
+                'maturity_baseline' => 'wizard.iso27018.pii_consent_processor_baseline',
+                'maturity_enhanced' => 'wizard.iso27018.pii_consent_processor_enhanced',
                 'icon' => 'bi-file-earmark-check',
                 'weight' => 2,
                 'checks' => [
@@ -3276,6 +3383,8 @@ class ComplianceWizardService
             'ai_context' => [
                 'name' => 'wizard.iso42001.ai_context',
                 'description' => 'wizard.iso42001.ai_context_desc',
+                'maturity_baseline' => 'wizard.iso42001.ai_context_baseline',
+                'maturity_enhanced' => 'wizard.iso42001.ai_context_enhanced',
                 'icon' => 'bi-globe-americas',
                 'weight' => 1.5,
                 'checks' => [
@@ -3290,6 +3399,8 @@ class ComplianceWizardService
             'ai_leadership_policy' => [
                 'name' => 'wizard.iso42001.ai_leadership_policy',
                 'description' => 'wizard.iso42001.ai_leadership_policy_desc',
+                'maturity_baseline' => 'wizard.iso42001.ai_leadership_policy_baseline',
+                'maturity_enhanced' => 'wizard.iso42001.ai_leadership_policy_enhanced',
                 'icon' => 'bi-megaphone',
                 'weight' => 1.5,
                 'checks' => [
@@ -3305,6 +3416,8 @@ class ComplianceWizardService
             'ai_inventory' => [
                 'name' => 'wizard.iso42001.ai_inventory',
                 'description' => 'wizard.iso42001.ai_inventory_desc',
+                'maturity_baseline' => 'wizard.iso42001.ai_inventory_baseline',
+                'maturity_enhanced' => 'wizard.iso42001.ai_inventory_enhanced',
                 'icon' => 'bi-list-columns-reverse',
                 'weight' => 3,
                 'checks' => [
@@ -3319,6 +3432,8 @@ class ComplianceWizardService
             'ai_risk' => [
                 'name' => 'wizard.iso42001.ai_risk',
                 'description' => 'wizard.iso42001.ai_risk_desc',
+                'maturity_baseline' => 'wizard.iso42001.ai_risk_baseline',
+                'maturity_enhanced' => 'wizard.iso42001.ai_risk_enhanced',
                 'icon' => 'bi-exclamation-octagon',
                 'weight' => 3,
                 'checks' => [
@@ -3333,6 +3448,8 @@ class ComplianceWizardService
             'ai_data_governance' => [
                 'name' => 'wizard.iso42001.ai_data_governance',
                 'description' => 'wizard.iso42001.ai_data_governance_desc',
+                'maturity_baseline' => 'wizard.iso42001.ai_data_governance_baseline',
+                'maturity_enhanced' => 'wizard.iso42001.ai_data_governance_enhanced',
                 'icon' => 'bi-database-lock',
                 'weight' => 2,
                 'checks' => [
@@ -3346,6 +3463,8 @@ class ComplianceWizardService
             'ai_human_oversight' => [
                 'name' => 'wizard.iso42001.ai_human_oversight',
                 'description' => 'wizard.iso42001.ai_human_oversight_desc',
+                'maturity_baseline' => 'wizard.iso42001.ai_human_oversight_baseline',
+                'maturity_enhanced' => 'wizard.iso42001.ai_human_oversight_enhanced',
                 'icon' => 'bi-eye-fill',
                 'weight' => 2,
                 'checks' => [
@@ -3360,6 +3479,8 @@ class ComplianceWizardService
             'ai_transparency' => [
                 'name' => 'wizard.iso42001.ai_transparency',
                 'description' => 'wizard.iso42001.ai_transparency_desc',
+                'maturity_baseline' => 'wizard.iso42001.ai_transparency_baseline',
+                'maturity_enhanced' => 'wizard.iso42001.ai_transparency_enhanced',
                 'icon' => 'bi-info-square',
                 'weight' => 1.5,
                 'checks' => [
@@ -3374,6 +3495,8 @@ class ComplianceWizardService
             'ai_incident_response' => [
                 'name' => 'wizard.iso42001.ai_incident_response',
                 'description' => 'wizard.iso42001.ai_incident_response_desc',
+                'maturity_baseline' => 'wizard.iso42001.ai_incident_response_baseline',
+                'maturity_enhanced' => 'wizard.iso42001.ai_incident_response_enhanced',
                 'icon' => 'bi-shield-exclamation',
                 'weight' => 1.5,
                 'checks' => [
@@ -3400,6 +3523,8 @@ class ComplianceWizardService
             'isms' => [
                 'name' => 'wizard.bsi_grundschutz.isms',
                 'description' => 'wizard.bsi_grundschutz.isms_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz.isms_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz.isms_enhanced',
                 'icon' => 'bi-shield-check',
                 'weight' => 2,
                 'checks' => [
@@ -3415,6 +3540,8 @@ class ComplianceWizardService
             'orp' => [
                 'name' => 'wizard.bsi_grundschutz.orp',
                 'description' => 'wizard.bsi_grundschutz.orp_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz.orp_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz.orp_enhanced',
                 'icon' => 'bi-people',
                 'weight' => 2,
                 'checks' => [
@@ -3430,6 +3557,8 @@ class ComplianceWizardService
             'con' => [
                 'name' => 'wizard.bsi_grundschutz.con',
                 'description' => 'wizard.bsi_grundschutz.con_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz.con_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz.con_enhanced',
                 'icon' => 'bi-file-earmark-text',
                 'weight' => 1.5,
                 'checks' => [
@@ -3445,6 +3574,8 @@ class ComplianceWizardService
             'ops' => [
                 'name' => 'wizard.bsi_grundschutz.ops',
                 'description' => 'wizard.bsi_grundschutz.ops_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz.ops_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz.ops_enhanced',
                 'icon' => 'bi-gear-wide-connected',
                 'weight' => 2,
                 'checks' => [
@@ -3458,6 +3589,8 @@ class ComplianceWizardService
             'det' => [
                 'name' => 'wizard.bsi_grundschutz.det',
                 'description' => 'wizard.bsi_grundschutz.det_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz.det_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz.det_enhanced',
                 'icon' => 'bi-search',
                 'weight' => 1.5,
                 'checks' => [
@@ -3472,6 +3605,8 @@ class ComplianceWizardService
             'app' => [
                 'name' => 'wizard.bsi_grundschutz.app',
                 'description' => 'wizard.bsi_grundschutz.app_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz.app_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz.app_enhanced',
                 'icon' => 'bi-app-indicator',
                 'weight' => 2,
                 'checks' => [
@@ -3485,6 +3620,8 @@ class ComplianceWizardService
             'sys' => [
                 'name' => 'wizard.bsi_grundschutz.sys',
                 'description' => 'wizard.bsi_grundschutz.sys_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz.sys_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz.sys_enhanced',
                 'icon' => 'bi-pc-display',
                 'weight' => 2,
                 'checks' => [
@@ -3498,6 +3635,8 @@ class ComplianceWizardService
             'ind' => [
                 'name' => 'wizard.bsi_grundschutz.ind',
                 'description' => 'wizard.bsi_grundschutz.ind_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz.ind_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz.ind_enhanced',
                 'icon' => 'bi-cpu-fill',
                 'weight' => 1,
                 'checks' => [
@@ -3513,6 +3652,8 @@ class ComplianceWizardService
             'net' => [
                 'name' => 'wizard.bsi_grundschutz.net',
                 'description' => 'wizard.bsi_grundschutz.net_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz.net_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz.net_enhanced',
                 'icon' => 'bi-router-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -3526,6 +3667,8 @@ class ComplianceWizardService
             'inf' => [
                 'name' => 'wizard.bsi_grundschutz.inf',
                 'description' => 'wizard.bsi_grundschutz.inf_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz.inf_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz.inf_enhanced',
                 'icon' => 'bi-building-fill-gear',
                 'weight' => 1.5,
                 'checks' => [
@@ -3552,6 +3695,8 @@ class ComplianceWizardService
             'ois' => [
                 'name' => 'wizard.bsi_c5.ois',
                 'description' => 'wizard.bsi_c5.ois_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.ois_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.ois_enhanced',
                 'icon' => 'bi-bookmark-check',
                 'weight' => 2,
                 'checks' => [
@@ -3567,6 +3712,8 @@ class ComplianceWizardService
             'sp' => [
                 'name' => 'wizard.bsi_c5.sp',
                 'description' => 'wizard.bsi_c5.sp_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.sp_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.sp_enhanced',
                 'icon' => 'bi-shield',
                 'weight' => 1.5,
                 'checks' => [
@@ -3582,6 +3729,8 @@ class ComplianceWizardService
             'hr' => [
                 'name' => 'wizard.bsi_c5.hr',
                 'description' => 'wizard.bsi_c5.hr_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.hr_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.hr_enhanced',
                 'icon' => 'bi-person-badge',
                 'weight' => 1.5,
                 'checks' => [
@@ -3596,6 +3745,8 @@ class ComplianceWizardService
             'am' => [
                 'name' => 'wizard.bsi_c5.am',
                 'description' => 'wizard.bsi_c5.am_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.am_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.am_enhanced',
                 'icon' => 'bi-server',
                 'weight' => 2,
                 'checks' => [
@@ -3609,6 +3760,8 @@ class ComplianceWizardService
             'ps' => [
                 'name' => 'wizard.bsi_c5.ps',
                 'description' => 'wizard.bsi_c5.ps_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.ps_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.ps_enhanced',
                 'icon' => 'bi-building-lock',
                 'weight' => 1.5,
                 'checks' => [
@@ -3624,6 +3777,8 @@ class ComplianceWizardService
             'rb' => [
                 'name' => 'wizard.bsi_c5.rb',
                 'description' => 'wizard.bsi_c5.rb_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.rb_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.rb_enhanced',
                 'icon' => 'bi-arrow-clockwise',
                 'weight' => 2,
                 'checks' => [
@@ -3638,6 +3793,8 @@ class ComplianceWizardService
             'idm' => [
                 'name' => 'wizard.bsi_c5.idm',
                 'description' => 'wizard.bsi_c5.idm_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.idm_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.idm_enhanced',
                 'icon' => 'bi-key',
                 'weight' => 2,
                 'checks' => [
@@ -3651,6 +3808,8 @@ class ComplianceWizardService
             'co' => [
                 'name' => 'wizard.bsi_c5.co',
                 'description' => 'wizard.bsi_c5.co_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.co_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.co_enhanced',
                 'icon' => 'bi-lock-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -3664,6 +3823,8 @@ class ComplianceWizardService
             'kos' => [
                 'name' => 'wizard.bsi_c5.kos',
                 'description' => 'wizard.bsi_c5.kos_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.kos_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.kos_enhanced',
                 'icon' => 'bi-diagram-3',
                 'weight' => 1.5,
                 'checks' => [
@@ -3677,6 +3838,8 @@ class ComplianceWizardService
             'bcm' => [
                 'name' => 'wizard.bsi_c5.bcm',
                 'description' => 'wizard.bsi_c5.bcm_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.bcm_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.bcm_enhanced',
                 'icon' => 'bi-life-preserver',
                 'weight' => 2,
                 'checks' => [
@@ -3691,6 +3854,8 @@ class ComplianceWizardService
             'im' => [
                 'name' => 'wizard.bsi_c5.im',
                 'description' => 'wizard.bsi_c5.im_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.im_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.im_enhanced',
                 'icon' => 'bi-exclamation-octagon',
                 'weight' => 2,
                 'checks' => [
@@ -3705,6 +3870,8 @@ class ComplianceWizardService
             'com' => [
                 'name' => 'wizard.bsi_c5.com',
                 'description' => 'wizard.bsi_c5.com_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.com_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.com_enhanced',
                 'icon' => 'bi-clipboard-check',
                 'weight' => 1.5,
                 'checks' => [
@@ -3719,6 +3886,8 @@ class ComplianceWizardService
             'inq' => [
                 'name' => 'wizard.bsi_c5.inq',
                 'description' => 'wizard.bsi_c5.inq_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.inq_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.inq_enhanced',
                 'icon' => 'bi-people-fill',
                 'weight' => 2,
                 'checks' => [
@@ -3733,6 +3902,8 @@ class ComplianceWizardService
             'pi' => [
                 'name' => 'wizard.bsi_c5.pi',
                 'description' => 'wizard.bsi_c5.pi_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.pi_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.pi_enhanced',
                 'icon' => 'bi-tools',
                 'weight' => 1.5,
                 'checks' => [
@@ -3746,6 +3917,8 @@ class ComplianceWizardService
             'bei' => [
                 'name' => 'wizard.bsi_c5.bei',
                 'description' => 'wizard.bsi_c5.bei_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.bei_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.bei_enhanced',
                 'icon' => 'bi-graph-up',
                 'weight' => 1.5,
                 'checks' => [
@@ -3761,6 +3934,8 @@ class ComplianceWizardService
             'pss' => [
                 'name' => 'wizard.bsi_c5.pss',
                 'description' => 'wizard.bsi_c5.pss_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.pss_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.pss_enhanced',
                 'icon' => 'bi-people-fill',
                 'weight' => 2,
                 'checks' => [
@@ -3775,6 +3950,8 @@ class ComplianceWizardService
             'bc' => [
                 'name' => 'wizard.bsi_c5.bc',
                 'description' => 'wizard.bsi_c5.bc_desc',
+                'maturity_baseline' => 'wizard.bsi_c5.bc_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5.bc_enhanced',
                 'icon' => 'bi-arrow-repeat',
                 'weight' => 1.5,
                 'checks' => [
@@ -3796,6 +3973,8 @@ class ComplianceWizardService
             'initiation' => [
                 'name' => 'wizard.bsi_grundschutz_standard.initiation',
                 'description' => 'wizard.bsi_grundschutz_standard.initiation_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_standard.initiation_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_standard.initiation_enhanced',
                 'icon' => 'bi-play-circle',
                 'weight' => 1.5,
                 'checks' => [
@@ -3810,6 +3989,8 @@ class ComplianceWizardService
             'security_concept' => [
                 'name' => 'wizard.bsi_grundschutz_standard.security_concept',
                 'description' => 'wizard.bsi_grundschutz_standard.security_concept_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_standard.security_concept_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_standard.security_concept_enhanced',
                 'icon' => 'bi-file-earmark-text',
                 'weight' => 2,
                 'checks' => [
@@ -3825,6 +4006,8 @@ class ComplianceWizardService
             'structure_analysis' => [
                 'name' => 'wizard.bsi_grundschutz_standard.structure_analysis',
                 'description' => 'wizard.bsi_grundschutz_standard.structure_analysis_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_standard.structure_analysis_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_standard.structure_analysis_enhanced',
                 'icon' => 'bi-diagram-3-fill',
                 'weight' => 2,
                 'checks' => [
@@ -3838,6 +4021,8 @@ class ComplianceWizardService
             'protection_needs' => [
                 'name' => 'wizard.bsi_grundschutz_standard.protection_needs',
                 'description' => 'wizard.bsi_grundschutz_standard.protection_needs_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_standard.protection_needs_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_standard.protection_needs_enhanced',
                 'icon' => 'bi-shield-exclamation',
                 'weight' => 2,
                 'checks' => [
@@ -3852,6 +4037,8 @@ class ComplianceWizardService
             'modeling' => [
                 'name' => 'wizard.bsi_grundschutz_standard.modeling',
                 'description' => 'wizard.bsi_grundschutz_standard.modeling_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_standard.modeling_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_standard.modeling_enhanced',
                 'icon' => 'bi-puzzle',
                 'weight' => 2,
                 'checks' => [
@@ -3866,6 +4053,8 @@ class ComplianceWizardService
             'grundschutz_check' => [
                 'name' => 'wizard.bsi_grundschutz_standard.grundschutz_check',
                 'description' => 'wizard.bsi_grundschutz_standard.grundschutz_check_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_standard.grundschutz_check_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_standard.grundschutz_check_enhanced',
                 'icon' => 'bi-check2-circle',
                 'weight' => 3,
                 'checks' => [
@@ -3879,6 +4068,8 @@ class ComplianceWizardService
             'risk_analysis' => [
                 'name' => 'wizard.bsi_grundschutz_standard.risk_analysis',
                 'description' => 'wizard.bsi_grundschutz_standard.risk_analysis_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_standard.risk_analysis_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_standard.risk_analysis_enhanced',
                 'icon' => 'bi-exclamation-triangle',
                 'weight' => 2,
                 'checks' => [
@@ -3892,6 +4083,8 @@ class ComplianceWizardService
             'realization' => [
                 'name' => 'wizard.bsi_grundschutz_standard.realization',
                 'description' => 'wizard.bsi_grundschutz_standard.realization_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_standard.realization_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_standard.realization_enhanced',
                 'icon' => 'bi-list-check',
                 'weight' => 2,
                 'checks' => [
@@ -3918,6 +4111,8 @@ class ComplianceWizardService
             'scope_determination' => [
                 'name' => 'wizard.kritis.scope_determination',
                 'description' => 'wizard.kritis.scope_determination_desc',
+                'maturity_baseline' => 'wizard.kritis.scope_determination_baseline',
+                'maturity_enhanced' => 'wizard.kritis.scope_determination_enhanced',
                 'icon' => 'bi-bullseye',
                 'weight' => 2,
                 'checks' => [
@@ -3932,6 +4127,8 @@ class ComplianceWizardService
             'state_of_the_art' => [
                 'name' => 'wizard.kritis.state_of_the_art',
                 'description' => 'wizard.kritis.state_of_the_art_desc',
+                'maturity_baseline' => 'wizard.kritis.state_of_the_art_baseline',
+                'maturity_enhanced' => 'wizard.kritis.state_of_the_art_enhanced',
                 'icon' => 'bi-stars',
                 'weight' => 3,
                 'checks' => [
@@ -3945,6 +4142,8 @@ class ComplianceWizardService
             'incident_reporting' => [
                 'name' => 'wizard.kritis.incident_reporting',
                 'description' => 'wizard.kritis.incident_reporting_desc',
+                'maturity_baseline' => 'wizard.kritis.incident_reporting_baseline',
+                'maturity_enhanced' => 'wizard.kritis.incident_reporting_enhanced',
                 'icon' => 'bi-megaphone-fill',
                 'weight' => 3,
                 'checks' => [
@@ -3959,6 +4158,8 @@ class ComplianceWizardService
             'bcm_kritis' => [
                 'name' => 'wizard.kritis.bcm_kritis',
                 'description' => 'wizard.kritis.bcm_kritis_desc',
+                'maturity_baseline' => 'wizard.kritis.bcm_kritis_baseline',
+                'maturity_enhanced' => 'wizard.kritis.bcm_kritis_enhanced',
                 'icon' => 'bi-life-preserver',
                 'weight' => 2,
                 'checks' => [
@@ -3972,6 +4173,8 @@ class ComplianceWizardService
             'audit_proof' => [
                 'name' => 'wizard.kritis.audit_proof',
                 'description' => 'wizard.kritis.audit_proof_desc',
+                'maturity_baseline' => 'wizard.kritis.audit_proof_baseline',
+                'maturity_enhanced' => 'wizard.kritis.audit_proof_enhanced',
                 'icon' => 'bi-clipboard-data',
                 'weight' => 2,
                 'checks' => [
@@ -3985,6 +4188,8 @@ class ComplianceWizardService
             'top_management' => [
                 'name' => 'wizard.kritis.top_management',
                 'description' => 'wizard.kritis.top_management_desc',
+                'maturity_baseline' => 'wizard.kritis.top_management_baseline',
+                'maturity_enhanced' => 'wizard.kritis.top_management_enhanced',
                 'icon' => 'bi-person-badge-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -3998,6 +4203,8 @@ class ComplianceWizardService
             'supplier_due_diligence' => [
                 'name' => 'wizard.kritis.supplier_due_diligence',
                 'description' => 'wizard.kritis.supplier_due_diligence_desc',
+                'maturity_baseline' => 'wizard.kritis.supplier_due_diligence_baseline',
+                'maturity_enhanced' => 'wizard.kritis.supplier_due_diligence_enhanced',
                 'icon' => 'bi-people-fill',
                 'weight' => 2,
                 'checks' => [
@@ -4192,6 +4399,8 @@ class ComplianceWizardService
             'security' => [
                 'name' => 'wizard.soc2.security',
                 'description' => 'wizard.soc2.security_desc',
+                'maturity_baseline' => 'wizard.soc2.security_baseline',
+                'maturity_enhanced' => 'wizard.soc2.security_enhanced',
                 'icon' => 'bi-shield-fill-check',
                 'weight' => 3,
                 'checks' => [
@@ -4205,6 +4414,8 @@ class ComplianceWizardService
             'availability' => [
                 'name' => 'wizard.soc2.availability',
                 'description' => 'wizard.soc2.availability_desc',
+                'maturity_baseline' => 'wizard.soc2.availability_baseline',
+                'maturity_enhanced' => 'wizard.soc2.availability_enhanced',
                 'icon' => 'bi-life-preserver',
                 'weight' => 2,
                 'checks' => [
@@ -4218,6 +4429,8 @@ class ComplianceWizardService
             'processing_integrity' => [
                 'name' => 'wizard.soc2.processing_integrity',
                 'description' => 'wizard.soc2.processing_integrity_desc',
+                'maturity_baseline' => 'wizard.soc2.processing_integrity_baseline',
+                'maturity_enhanced' => 'wizard.soc2.processing_integrity_enhanced',
                 'icon' => 'bi-check2-square',
                 'weight' => 2,
                 'checks' => [
@@ -4232,6 +4445,8 @@ class ComplianceWizardService
             'confidentiality' => [
                 'name' => 'wizard.soc2.confidentiality',
                 'description' => 'wizard.soc2.confidentiality_desc',
+                'maturity_baseline' => 'wizard.soc2.confidentiality_baseline',
+                'maturity_enhanced' => 'wizard.soc2.confidentiality_enhanced',
                 'icon' => 'bi-incognito',
                 'weight' => 2,
                 'checks' => [
@@ -4245,6 +4460,8 @@ class ComplianceWizardService
             'privacy' => [
                 'name' => 'wizard.soc2.privacy',
                 'description' => 'wizard.soc2.privacy_desc',
+                'maturity_baseline' => 'wizard.soc2.privacy_baseline',
+                'maturity_enhanced' => 'wizard.soc2.privacy_enhanced',
                 'icon' => 'bi-person-check-fill',
                 'weight' => 2,
                 'checks' => [
@@ -4270,6 +4487,8 @@ class ComplianceWizardService
             'crown_jewels' => [
                 'name' => 'wizard.bsi_grundschutz_kern.crown_jewels',
                 'description' => 'wizard.bsi_grundschutz_kern.crown_jewels_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_kern.crown_jewels_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_kern.crown_jewels_enhanced',
                 'icon' => 'bi-gem',
                 'weight' => 3,
                 'checks' => [
@@ -4284,6 +4503,8 @@ class ComplianceWizardService
             'accelerated_protection_needs' => [
                 'name' => 'wizard.bsi_grundschutz_kern.accelerated_protection_needs',
                 'description' => 'wizard.bsi_grundschutz_kern.accelerated_protection_needs_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_kern.accelerated_protection_needs_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_kern.accelerated_protection_needs_enhanced',
                 'icon' => 'bi-lightning',
                 'weight' => 2,
                 'checks' => [
@@ -4298,6 +4519,8 @@ class ComplianceWizardService
             'kern_modeling' => [
                 'name' => 'wizard.bsi_grundschutz_kern.kern_modeling',
                 'description' => 'wizard.bsi_grundschutz_kern.kern_modeling_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_kern.kern_modeling_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_kern.kern_modeling_enhanced',
                 'icon' => 'bi-puzzle',
                 'weight' => 2,
                 'checks' => [
@@ -4312,6 +4535,8 @@ class ComplianceWizardService
             'kern_check' => [
                 'name' => 'wizard.bsi_grundschutz_kern.kern_check',
                 'description' => 'wizard.bsi_grundschutz_kern.kern_check_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_kern.kern_check_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_kern.kern_check_enhanced',
                 'icon' => 'bi-check2-circle',
                 'weight' => 3,
                 'checks' => [
@@ -4325,6 +4550,8 @@ class ComplianceWizardService
             'kern_realization' => [
                 'name' => 'wizard.bsi_grundschutz_kern.kern_realization',
                 'description' => 'wizard.bsi_grundschutz_kern.kern_realization_desc',
+                'maturity_baseline' => 'wizard.bsi_grundschutz_kern.kern_realization_baseline',
+                'maturity_enhanced' => 'wizard.bsi_grundschutz_kern.kern_realization_enhanced',
                 'icon' => 'bi-list-check',
                 'weight' => 2,
                 'checks' => [
@@ -4349,6 +4576,8 @@ class ComplianceWizardService
             'govern' => [
                 'name' => 'wizard.nist_csf.govern',
                 'description' => 'wizard.nist_csf.govern_desc',
+                'maturity_baseline' => 'wizard.nist_csf.govern_baseline',
+                'maturity_enhanced' => 'wizard.nist_csf.govern_enhanced',
                 'icon' => 'bi-bookmark-check',
                 'weight' => 2,
                 'checks' => [
@@ -4363,6 +4592,8 @@ class ComplianceWizardService
             'identify' => [
                 'name' => 'wizard.nist_csf.identify',
                 'description' => 'wizard.nist_csf.identify_desc',
+                'maturity_baseline' => 'wizard.nist_csf.identify_baseline',
+                'maturity_enhanced' => 'wizard.nist_csf.identify_enhanced',
                 'icon' => 'bi-search',
                 'weight' => 2,
                 'checks' => [
@@ -4376,6 +4607,8 @@ class ComplianceWizardService
             'protect' => [
                 'name' => 'wizard.nist_csf.protect',
                 'description' => 'wizard.nist_csf.protect_desc',
+                'maturity_baseline' => 'wizard.nist_csf.protect_baseline',
+                'maturity_enhanced' => 'wizard.nist_csf.protect_enhanced',
                 'icon' => 'bi-shield-lock',
                 'weight' => 3,
                 'checks' => [
@@ -4389,6 +4622,8 @@ class ComplianceWizardService
             'detect' => [
                 'name' => 'wizard.nist_csf.detect',
                 'description' => 'wizard.nist_csf.detect_desc',
+                'maturity_baseline' => 'wizard.nist_csf.detect_baseline',
+                'maturity_enhanced' => 'wizard.nist_csf.detect_enhanced',
                 'icon' => 'bi-eye-fill',
                 'weight' => 2,
                 'checks' => [
@@ -4402,6 +4637,8 @@ class ComplianceWizardService
             'respond' => [
                 'name' => 'wizard.nist_csf.respond',
                 'description' => 'wizard.nist_csf.respond_desc',
+                'maturity_baseline' => 'wizard.nist_csf.respond_baseline',
+                'maturity_enhanced' => 'wizard.nist_csf.respond_enhanced',
                 'icon' => 'bi-exclamation-triangle',
                 'weight' => 2,
                 'checks' => [
@@ -4415,6 +4652,8 @@ class ComplianceWizardService
             'recover' => [
                 'name' => 'wizard.nist_csf.recover',
                 'description' => 'wizard.nist_csf.recover_desc',
+                'maturity_baseline' => 'wizard.nist_csf.recover_baseline',
+                'maturity_enhanced' => 'wizard.nist_csf.recover_enhanced',
                 'icon' => 'bi-arrow-repeat',
                 'weight' => 2,
                 'checks' => [
@@ -4538,6 +4777,8 @@ class ComplianceWizardService
             'organisation_personnel' => [
                 'name' => 'wizard.bsi_c5_2026.organisation_personnel',
                 'description' => 'wizard.bsi_c5_2026.organisation_personnel_desc',
+                'maturity_baseline' => 'wizard.bsi_c5_2026.organisation_personnel_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5_2026.organisation_personnel_enhanced',
                 'icon' => 'bi-people-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -4552,6 +4793,8 @@ class ComplianceWizardService
             'container_management' => [
                 'name' => 'wizard.bsi_c5_2026.container_management',
                 'description' => 'wizard.bsi_c5_2026.container_management_desc',
+                'maturity_baseline' => 'wizard.bsi_c5_2026.container_management_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5_2026.container_management_enhanced',
                 'icon' => 'bi-box-seam',
                 'weight' => 2,
                 'checks' => [
@@ -4565,6 +4808,8 @@ class ComplianceWizardService
             'supply_chain_security' => [
                 'name' => 'wizard.bsi_c5_2026.supply_chain_security',
                 'description' => 'wizard.bsi_c5_2026.supply_chain_security_desc',
+                'maturity_baseline' => 'wizard.bsi_c5_2026.supply_chain_security_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5_2026.supply_chain_security_enhanced',
                 'icon' => 'bi-link-45deg',
                 'weight' => 2.5,
                 'checks' => [
@@ -4580,6 +4825,8 @@ class ComplianceWizardService
             'post_quantum_cryptography' => [
                 'name' => 'wizard.bsi_c5_2026.post_quantum_cryptography',
                 'description' => 'wizard.bsi_c5_2026.post_quantum_cryptography_desc',
+                'maturity_baseline' => 'wizard.bsi_c5_2026.post_quantum_cryptography_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5_2026.post_quantum_cryptography_enhanced',
                 'icon' => 'bi-key-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -4595,6 +4842,8 @@ class ComplianceWizardService
             'confidential_computing' => [
                 'name' => 'wizard.bsi_c5_2026.confidential_computing',
                 'description' => 'wizard.bsi_c5_2026.confidential_computing_desc',
+                'maturity_baseline' => 'wizard.bsi_c5_2026.confidential_computing_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5_2026.confidential_computing_enhanced',
                 'icon' => 'bi-shield-lock-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -4608,6 +4857,8 @@ class ComplianceWizardService
             'ai_ml_security' => [
                 'name' => 'wizard.bsi_c5_2026.ai_ml_security',
                 'description' => 'wizard.bsi_c5_2026.ai_ml_security_desc',
+                'maturity_baseline' => 'wizard.bsi_c5_2026.ai_ml_security_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5_2026.ai_ml_security_enhanced',
                 'icon' => 'bi-cpu-fill',
                 'weight' => 2,
                 'checks' => [
@@ -4621,6 +4872,8 @@ class ComplianceWizardService
             'eucs_alignment' => [
                 'name' => 'wizard.bsi_c5_2026.eucs_alignment',
                 'description' => 'wizard.bsi_c5_2026.eucs_alignment_desc',
+                'maturity_baseline' => 'wizard.bsi_c5_2026.eucs_alignment_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5_2026.eucs_alignment_enhanced',
                 'icon' => 'bi-flag-fill',
                 'weight' => 2,
                 'checks' => [
@@ -4634,6 +4887,8 @@ class ComplianceWizardService
             'enhanced_client_separation' => [
                 'name' => 'wizard.bsi_c5_2026.enhanced_client_separation',
                 'description' => 'wizard.bsi_c5_2026.enhanced_client_separation_desc',
+                'maturity_baseline' => 'wizard.bsi_c5_2026.enhanced_client_separation_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5_2026.enhanced_client_separation_enhanced',
                 'icon' => 'bi-diagram-3-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -4674,6 +4929,8 @@ class ComplianceWizardService
             'csa_ccm_alignment' => [
                 'name' => 'wizard.bsi_c5_2026.csa_ccm_alignment',
                 'description' => 'wizard.bsi_c5_2026.csa_ccm_alignment_desc',
+                'maturity_baseline' => 'wizard.bsi_c5_2026.csa_ccm_alignment_baseline',
+                'maturity_enhanced' => 'wizard.bsi_c5_2026.csa_ccm_alignment_enhanced',
                 'icon' => 'bi-cloud-arrow-up-fill',
                 'weight' => 1,
                 'checks' => [
@@ -4883,6 +5140,8 @@ class ComplianceWizardService
             'organization_security' => [
                 'name' => 'wizard.eucs.organization_security',
                 'description' => 'wizard.eucs.organization_security_desc',
+                'maturity_baseline' => 'wizard.eucs.organization_security_baseline',
+                'maturity_enhanced' => 'wizard.eucs.organization_security_enhanced',
                 'icon' => 'bi-diagram-2-fill',
                 'weight' => 2,
                 'checks' => [
@@ -4898,6 +5157,8 @@ class ComplianceWizardService
             'risk_management' => [
                 'name' => 'wizard.eucs.risk_management',
                 'description' => 'wizard.eucs.risk_management_desc',
+                'maturity_baseline' => 'wizard.eucs.risk_management_baseline',
+                'maturity_enhanced' => 'wizard.eucs.risk_management_enhanced',
                 'icon' => 'bi-graph-up',
                 'weight' => 2.5,
                 'checks' => [
@@ -4912,6 +5173,8 @@ class ComplianceWizardService
             'asset_management' => [
                 'name' => 'wizard.eucs.asset_management',
                 'description' => 'wizard.eucs.asset_management_desc',
+                'maturity_baseline' => 'wizard.eucs.asset_management_baseline',
+                'maturity_enhanced' => 'wizard.eucs.asset_management_enhanced',
                 'icon' => 'bi-archive-fill',
                 'weight' => 2,
                 'checks' => [
@@ -4925,6 +5188,8 @@ class ComplianceWizardService
             'identity_access' => [
                 'name' => 'wizard.eucs.identity_access',
                 'description' => 'wizard.eucs.identity_access_desc',
+                'maturity_baseline' => 'wizard.eucs.identity_access_baseline',
+                'maturity_enhanced' => 'wizard.eucs.identity_access_enhanced',
                 'icon' => 'bi-person-badge-fill',
                 'weight' => 2,
                 'checks' => [
@@ -4938,6 +5203,8 @@ class ComplianceWizardService
             'cryptography' => [
                 'name' => 'wizard.eucs.cryptography',
                 'description' => 'wizard.eucs.cryptography_desc',
+                'maturity_baseline' => 'wizard.eucs.cryptography_baseline',
+                'maturity_enhanced' => 'wizard.eucs.cryptography_enhanced',
                 'icon' => 'bi-key-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -4951,6 +5218,8 @@ class ComplianceWizardService
             'operations_security' => [
                 'name' => 'wizard.eucs.operations_security',
                 'description' => 'wizard.eucs.operations_security_desc',
+                'maturity_baseline' => 'wizard.eucs.operations_security_baseline',
+                'maturity_enhanced' => 'wizard.eucs.operations_security_enhanced',
                 'icon' => 'bi-gear-fill',
                 'weight' => 2,
                 'checks' => [
@@ -4964,6 +5233,8 @@ class ComplianceWizardService
             'communication_security' => [
                 'name' => 'wizard.eucs.communication_security',
                 'description' => 'wizard.eucs.communication_security_desc',
+                'maturity_baseline' => 'wizard.eucs.communication_security_baseline',
+                'maturity_enhanced' => 'wizard.eucs.communication_security_enhanced',
                 'icon' => 'bi-broadcast-pin',
                 'weight' => 1.5,
                 'checks' => [
@@ -4977,6 +5248,8 @@ class ComplianceWizardService
             'portability_interoperability' => [
                 'name' => 'wizard.eucs.portability_interoperability',
                 'description' => 'wizard.eucs.portability_interoperability_desc',
+                'maturity_baseline' => 'wizard.eucs.portability_interoperability_baseline',
+                'maturity_enhanced' => 'wizard.eucs.portability_interoperability_enhanced',
                 'icon' => 'bi-arrow-left-right',
                 'weight' => 1,
                 'checks' => [
@@ -4991,6 +5264,8 @@ class ComplianceWizardService
             'incident_management' => [
                 'name' => 'wizard.eucs.incident_management',
                 'description' => 'wizard.eucs.incident_management_desc',
+                'maturity_baseline' => 'wizard.eucs.incident_management_baseline',
+                'maturity_enhanced' => 'wizard.eucs.incident_management_enhanced',
                 'icon' => 'bi-shield-exclamation',
                 'weight' => 2,
                 'checks' => [
@@ -5005,6 +5280,8 @@ class ComplianceWizardService
             'business_continuity' => [
                 'name' => 'wizard.eucs.business_continuity',
                 'description' => 'wizard.eucs.business_continuity_desc',
+                'maturity_baseline' => 'wizard.eucs.business_continuity_baseline',
+                'maturity_enhanced' => 'wizard.eucs.business_continuity_enhanced',
                 'icon' => 'bi-arrow-clockwise',
                 'weight' => 1.5,
                 'checks' => [
@@ -5020,6 +5297,8 @@ class ComplianceWizardService
             'supplier_management' => [
                 'name' => 'wizard.eucs.supplier_management',
                 'description' => 'wizard.eucs.supplier_management_desc',
+                'maturity_baseline' => 'wizard.eucs.supplier_management_baseline',
+                'maturity_enhanced' => 'wizard.eucs.supplier_management_enhanced',
                 'icon' => 'bi-building-add',
                 'weight' => 1.5,
                 'checks' => [
@@ -5035,6 +5314,8 @@ class ComplianceWizardService
             'compliance_audit' => [
                 'name' => 'wizard.eucs.compliance_audit',
                 'description' => 'wizard.eucs.compliance_audit_desc',
+                'maturity_baseline' => 'wizard.eucs.compliance_audit_baseline',
+                'maturity_enhanced' => 'wizard.eucs.compliance_audit_enhanced',
                 'icon' => 'bi-clipboard2-check-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -5061,6 +5342,8 @@ class ComplianceWizardService
             'security_by_design' => [
                 'name' => 'wizard.cra.security_by_design',
                 'description' => 'wizard.cra.security_by_design_desc',
+                'maturity_baseline' => 'wizard.cra.security_by_design_baseline',
+                'maturity_enhanced' => 'wizard.cra.security_by_design_enhanced',
                 'icon' => 'bi-shield-fill-plus',
                 'weight' => 3,
                 'checks' => [
@@ -5074,6 +5357,8 @@ class ComplianceWizardService
             'vulnerability_handling' => [
                 'name' => 'wizard.cra.vulnerability_handling',
                 'description' => 'wizard.cra.vulnerability_handling_desc',
+                'maturity_baseline' => 'wizard.cra.vulnerability_handling_baseline',
+                'maturity_enhanced' => 'wizard.cra.vulnerability_handling_enhanced',
                 'icon' => 'bi-bug',
                 'weight' => 3,
                 'checks' => [
@@ -5089,6 +5374,8 @@ class ComplianceWizardService
             'sbom_supply_chain' => [
                 'name' => 'wizard.cra.sbom_supply_chain',
                 'description' => 'wizard.cra.sbom_supply_chain_desc',
+                'maturity_baseline' => 'wizard.cra.sbom_supply_chain_baseline',
+                'maturity_enhanced' => 'wizard.cra.sbom_supply_chain_enhanced',
                 'icon' => 'bi-list-check',
                 'weight' => 2.5,
                 'checks' => [
@@ -5103,6 +5390,8 @@ class ComplianceWizardService
             'vulnerability_disclosure' => [
                 'name' => 'wizard.cra.vulnerability_disclosure',
                 'description' => 'wizard.cra.vulnerability_disclosure_desc',
+                'maturity_baseline' => 'wizard.cra.vulnerability_disclosure_baseline',
+                'maturity_enhanced' => 'wizard.cra.vulnerability_disclosure_enhanced',
                 'icon' => 'bi-megaphone-fill',
                 'weight' => 2,
                 'checks' => [
@@ -5118,6 +5407,8 @@ class ComplianceWizardService
             'incident_reporting' => [
                 'name' => 'wizard.cra.incident_reporting',
                 'description' => 'wizard.cra.incident_reporting_desc',
+                'maturity_baseline' => 'wizard.cra.incident_reporting_baseline',
+                'maturity_enhanced' => 'wizard.cra.incident_reporting_enhanced',
                 'icon' => 'bi-alarm-fill',
                 'weight' => 2.5,
                 'checks' => [
@@ -5132,6 +5423,8 @@ class ComplianceWizardService
             'ce_marking_conformity' => [
                 'name' => 'wizard.cra.ce_marking_conformity',
                 'description' => 'wizard.cra.ce_marking_conformity_desc',
+                'maturity_baseline' => 'wizard.cra.ce_marking_conformity_baseline',
+                'maturity_enhanced' => 'wizard.cra.ce_marking_conformity_enhanced',
                 'icon' => 'bi-patch-check',
                 'weight' => 1.5,
                 'checks' => [
@@ -5146,6 +5439,8 @@ class ComplianceWizardService
             'technical_documentation' => [
                 'name' => 'wizard.cra.technical_documentation',
                 'description' => 'wizard.cra.technical_documentation_desc',
+                'maturity_baseline' => 'wizard.cra.technical_documentation_baseline',
+                'maturity_enhanced' => 'wizard.cra.technical_documentation_enhanced',
                 'icon' => 'bi-file-earmark-ruled-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -5161,6 +5456,8 @@ class ComplianceWizardService
             'support_period' => [
                 'name' => 'wizard.cra.support_period',
                 'description' => 'wizard.cra.support_period_desc',
+                'maturity_baseline' => 'wizard.cra.support_period_baseline',
+                'maturity_enhanced' => 'wizard.cra.support_period_enhanced',
                 'icon' => 'bi-clock-history',
                 'weight' => 1,
                 'checks' => [
