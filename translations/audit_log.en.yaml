@@ -9,6 +9,7 @@ audit_log:
         entries: 'Log Entries'
         table: Table
         timeline: Timeline
+        compact: Compact
         quick_filters: 'Quick Filters'
     stats:
         total_logs: 'Total log entries'

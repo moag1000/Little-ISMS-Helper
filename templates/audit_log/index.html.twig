@@ -145,6 +145,8 @@
 <div class="mt-2">
     <h2>{{ 'audit_log.section.entries'|trans({}, 'audit_log') }}</h2>
 
+    {% import '_components/_fa_audit_row.html.twig' as _fa_audit_row %}
+
     {# Tab Navigation #}
     <ul class="nav nav-tabs mt-md" role="tablist">
         <li class="nav-item" role="presentation">
@@ -163,6 +165,15 @@
                     type="button"
                     role="tab">
                 <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ 'audit_log.section.timeline'|trans({}, 'audit_log') }}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#compact-view"
+                    type="button"
+                    role="tab">
+                <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'audit_log.section.compact'|trans({}, 'audit_log') }}
             </button>
         </li>
     </ul>
@@ -234,6 +245,24 @@
             {% include '_components/_audit_timeline.html.twig' with {
                 auditLogs: auditLogs
             } %}
+        </div>
+
+        {# Compact View — tamper-evident log line per entry, mono-typed #}
+        <div class="tab-pane fade" id="compact-view" role="tabpanel">
+            {% for log in auditLogs %}
+                {%- set sev = log.action in ['delete', 'force_delete'] ? 'danger'
+                    : (log.action in ['update', 'login_failed'] ? 'warning'
+                    : (log.action in ['create', 'login', 'export', 'import'] ? 'info'
+                    : 'info')) -%}
+                {{ _fa_audit_row.render({
+                    ts: log.createdAt|date('H:i:s.') ~ (log.createdAt|date('u')|slice(0, 3)),
+                    sev: sev,
+                    actor: log.userName|default('system'),
+                    action: log.action,
+                    target: log.entityType ~ (log.entityId ? '#' ~ log.entityId : ''),
+                    hash: log.id|default('')
+                }) }}
+            {% endfor %}
         </div>
     </div>
 
