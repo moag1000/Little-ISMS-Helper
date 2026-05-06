@@ -1,4 +1,6 @@
 mris:
+    license:
+        cc_by_40: "CC BY 4.0"
     baselines:
         explainer:
             summary: 'Was tut eine MRIS-Baseline?'
