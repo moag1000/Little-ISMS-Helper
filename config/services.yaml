@@ -147,6 +147,10 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    App\Command\LoadC52020FullCatalogueCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     App\Command\MappingLibraryImportCommand:
         arguments:
             $projectDir: '%kernel.project_dir%'
