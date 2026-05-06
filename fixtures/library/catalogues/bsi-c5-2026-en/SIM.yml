@@ -1,0 +1,161 @@
+-
+  identifier: &ID_Criterion_Policy_for_Security_Incident_Management '01'
+  name: 'Policy for Security Incident Management'
+  basic: 
+    -
+      identifier: &ID_Criterion_Policy_for_Security_Incident_Management_Subcriterion_Basic_1 '01B'
+      criterion: 'Policies, procedures and technical safeguards are documented, communicated and provided in accordance with SP-01 to ensure a fast, effective and proper response to all known security incidents.
+
+
+The cloud service provider defines guidelines for the classification, prioritisation, escalation and root cause analysis of security incidents and creates interfaces to the incident management and business continuity management.'
+    -
+      identifier: &ID_Criterion_Policy_for_Security_Incident_Management_Subcriterion_Basic_2 '02B'
+      criterion: 'The cloud service provider has set up a ''Computer Security Incident Response Team'' (CSIRT), which contributes to the coordinated resolution of occurring security incidents.'
+    -
+      identifier: &ID_Criterion_Policy_for_Security_Incident_Management_Subcriterion_Basic_3 '03B'
+      criterion: 'Communication channels with the cloud service customers are identified and defined and customers affected by security incidents are informed in a timely and appropriate manner.'
+    -
+      identifier: &ID_Criterion_Policy_for_Security_Incident_Management_Subcriterion_Basic_4 '04B'
+      criterion: 'There are procedures as to how the data of a suspicious system can be collected in a conclusive manner in the event of a security incident.' 
+  additional_sharpen:
+  additional_complement:
+  information:
+  corresponding: 'Cloud service customers ensure with suitable controls that they receive notifications from the cloud service provider about security incidents that affect them and that these notifications are forwarded in a timely manner to the responsible departments for handling so that an appropriate response can be triggered.'
+-
+  identifier: &ID_Criterion_Incident_Response_Plans '02'
+  name: 'Security Incident Response Plans'
+  basic: 
+    -
+      identifier: &ID_Criterion_Incident_Response_Plans_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider has documented, approved and communicated one or more security incident response plans. The plans address all stages of incident response, including identification, containment, eradication, recovery, and lessons learned. They are approved by subject matter experts of the cloud service provider and communicated to all relevant stakeholders.'
+    -
+      identifier: &ID_Criterion_Incident_Response_Plans_Subcriterion_Basic_2 '02B'
+      criterion: 'The plans are evaluated and updated at least annually or as necessary to reflect changes in the organisational structure or environment.'
+  additional_sharpen:
+  additional_complement: 
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Incident_Response_Plans_Subcriterion_Basic_1
+      information_text: 'Relevant stakeholders in the sense of this criterion are those that need to know the incident response plan, for example due to their involvement in its execution or due to contractual or regulatory agreements.'
+  corresponding: 
+-
+  identifier: &ID_Criterion_Processing_of_Security_Incidents '03'
+  name: 'Processing of Security Incidents'
+  basic: 
+    -
+      identifier: &ID_Criterion_Processing_of_Security_Incidents_Subcriterion_Basic_1 '01B'
+      criterion: 'Subject matter experts of the cloud service provider classify, prioritise and perform root-cause analyses for events that could constitute a security incident.'
+    -
+      identifier: &ID_Criterion_Processing_of_Security_Incidents_Subcriterion_Basic_2 '02B'
+      criterion: 'The results of these root-cause analyses are documented, shared with relevant stakeholders, and used as part of evaluation and learning processes.'
+    -
+      identifier: &ID_Criterion_Processing_of_Security_Incidents_Subcriterion_Basic_3 '03B'
+      criterion: 'If the cloud service provider determines that it requires external assistance for processing a security incident, it selects an incident response service based on their competence and trustworthiness or by following the recommendations of a national cybersecurity authority.'
+    -
+      identifier: &ID_Criterion_Processing_of_Security_Incidents_Subcriterion_Basic_4 '04B'
+      criterion: 'A catalogue providing clear identification of information security incidents affecting cloud service customer data is maintained and used for the classification of information security incidents.'
+    -
+      identifier: &ID_Criterion_Processing_of_Security_Incidents_Subcriterion_Basic_5 '05B'
+      criterion: 'The cloud service provider also uses the incident classification mechanism for the correlation of information security events, and assesses as well as classifies the correlated information security events according to their criticality.'
+    -
+      identifier: &ID_Criterion_Processing_of_Security_Incidents_Subcriterion_Basic_6 '06B'
+      criterion: 'All documents and evidence that provide details on security incidents related to the cloud service are archived in a secure and tamper-proof manner, in line with criticality and regulatory requirements.'
+    -
+      identifier: &ID_Criterion_Processing_of_Security_Incidents_Subcriterion_Basic_7 '07B'
+      criterion: 'The analysis process provides sufficient traceability to understand root causes and attack progression, appropriate to the risk and impact of the security incident.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Processing_of_Security_Incidents_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider simulates the identification, analysis and defence of security incidents and attacks at least once a year through appropriate tests and exercises (e.g. Red Team training).'
+    -
+      identifier: &ID_Criterion_Processing_of_Security_Incidents_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'An integrated team of forensic/incident responder personnel, specifically qualified to preserve evidence and manage a chain of custody, is established or contracted for their services.'
+    -
+      identifier: &ID_Criterion_Processing_of_Security_Incidents_Subcriterion_Additional_Complement_3 '03AC'
+      criterion: 'The cloud service provider verifies the application of incident management policies and procedures by monitoring the information security incident handling processes. Timely and appropriate remediation measures address any deviations identified during monitoring.'
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Processing_of_Security_Incidents_Subcriterion_Basic_6
+      information_text: 'Regulatory requirements may necessitate maintaining a chain of custody to ensure that documents can be relied upon in legal proceedings.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Documentation_and_Reporting_of_Security_Incidents '04'
+  name: 'Documentation and Reporting of Security Incidents'
+  basic: 
+    -
+      identifier: &ID_Criterion_Documentation_and_Reporting_of_Security_Incidents_Subcriterion_Basic_1 '01B'
+      criterion: 'After a security incident has been processed, the solution is documented in accordance with the contractual agreements and the documentation is sent to the affected customers for final acknowledgement or, if applicable, as confirmation.'
+    -
+      identifier: &ID_Criterion_Documentation_and_Reporting_of_Security_Incidents_Subcriterion_Basic_2 '02B'
+      criterion: 'Information on security incidents or confirmed security breaches is made available to all affected customers.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Documentation_and_Reporting_of_Security_Incidents_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The customer can either actively approve solutions or the solution is automatically approved after a certain period.'
+    -
+      identifier: &ID_Criterion_Documentation_and_Reporting_of_Security_Incidents_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'The contract between the cloud service provider and the cloud service customer regulates which data is made available to the cloud service customer for his own analysis in the event of security incidents.'
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Documentation_and_Reporting_of_Security_Incidents_Subcriterion_Basic_2
+      information_text: 'Security breaches in the sense of this criterion are security incidents caused by unauthorised access and compromise of cloud service customer data or service delivery as a result of violations of policies and procedures or applicable legal and regulatory requirements (cf. HR-04.02B)'
+  corresponding: 'Cloud service customers ensure with suitable controls that they receive notifications from the cloud service provider about security incidents that affect them and their resolution and that these notifications are timely forwarded to the entity responsible for handling them so that an appropriate response can be made.'
+-
+  identifier: &ID_Criterion_Duty_of_the_Users_to_Report_Security_Incidents_to_a_Central_Body '05'
+  name: 'Duty of the Personnel to Report Security Incidents to a Central Body'
+  basic: 
+    -
+      identifier: &ID_Criterion_Duty_of_the_Users_to_Report_Security_Incidents_to_a_Central_Body_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider informs personnel and external business partners of their obligations. If necessary, they agree to or are contractually obliged to timely report all security events that become known to them and are directly related to the cloud service provided by the cloud service provider to a previously designated central office of the cloud service provider.'
+    -
+      identifier: &ID_Criterion_Duty_of_the_Users_to_Report_Security_Incidents_to_a_Central_Body_Subcriterion_Basic_2 '02B'
+      criterion: 'The cloud service provider communicates that ''false reports'' of events that do not subsequently turn out to be incidents do not have any negative consequences.'
+    -
+      identifier: &ID_Criterion_Duty_of_the_Users_to_Report_Security_Incidents_to_a_Central_Body_Subcriterion_Basic_3 '03B'
+      criterion: 'The information security incident reporting mechanisms are communicated to personnel, cloud service customers and service organisations of the cloud service provider.'
+  additional_sharpen:
+  additional_complement:
+  information:
+  corresponding: 'Cloud service customers ensure with suitable controls that identified security events, which the cloud service provider is required to process, are communicated timely to previously designated, responsible personnel.
+
+
+The identification of such security events is supported by suitable controls (cf. complementary criterion for OPS-10).'
+-
+  identifier: &ID_Criterion_Evaluation_and_Learning_Process '06'
+  name: 'Evaluation and Learning Process'
+  basic: 
+    -
+      identifier: &ID_Criterion_Evaluation_and_Learning_Process_Subcriterion_Basic_1 '01B'
+      criterion: 'Mechanisms are in place to measure and monitor the type and scope of security incidents and to report them to supporting bodies.'
+    -
+      identifier: &ID_Criterion_Evaluation_and_Learning_Process_Subcriterion_Basic_3 '02B'
+      criterion: 'The cloud service provider defines, implements and maintains a knowledge repository containing:
+
+    
+- Security incidents;
+
+- Measures taken for the solution of these security incidents; and
+
+- Information about the assets affected by these security incidents. 
+
+
+This information is used to supplement the classification catalogue of incidents (cf. SIM-03).'
+    -
+      identifier: &ID_Criterion_Evaluation_and_Learning_Process_Subcriterion_Basic_3 '03B'
+      criterion: 'The information obtained from the security incident monitoring and the intelligence gathered in the knowledge repository is used to identify recurring security events or security incidents, or potential significant security incidents, to determine the need for advanced safeguards, and for implementing them.'
+    -
+      identifier: &ID_Criterion_Evaluation_and_Learning_Process_Subcriterion_Basic_4 '04B'
+      criterion: 'The evaluation and learning process includes the results of root-cause analyses conducted in accordance with SIM-03.'
+  additional_sharpen:
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Evaluation_and_Learning_Process_Subcriterion_Basic_1
+      information_text: 'Supporting bodies may be external service providers or government agencies such as the BSI.'
+  corresponding: 'Cloud service customers ensure with suitable controls that they include into their ISMS the findings and measures related to previous security incidents reported by the cloud service provider. The cloud service customers evaluate whether and which supporting measures they might take on their side.'

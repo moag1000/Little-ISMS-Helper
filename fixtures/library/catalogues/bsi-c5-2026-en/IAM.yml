@@ -1,0 +1,597 @@
+-
+  identifier: &ID_Criterion_Policy_for_Identities_and_Access_Rights '01'
+  name: 'Policy for Identities and Access Rights'
+  basic: 
+    -
+      identifier: &ID_Criterion_Policy_for_Identities_and_Access_Rights_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider documents, communicates and makes available according to SP-01:
+
+
+1. An authorisation framework based on role-based access control and the business and security requirements of the cloud service provider; and 
+
+2. A policy for managing identities and access rights for internal and external personnel of the cloud service provider and system components that have a role in automated authorisation processes of the cloud service provider.
+
+'
+    -
+      identifier: &ID_Criterion_Policy_for_Identities_and_Access_Rights_Subcriterion_Basic_2 '02B'
+      criterion: 'For the purpose of the business and security requirements these documents address at least the following aspects:
+
+
+1. Aspects that are relevant for making access control decisions;
+
+2. Assignment of unique usernames;
+
+3. Granting and modifying identities and access rights based on the ''least-privilege-principle'' and the ''need-to-know-principle'';
+
+4. Application of a role-based mechanism for assigning access rights;
+
+5. Definition of the supported identity and role-based access types, including an assignment of access control parameters and roles to be considered for each type;
+
+6. Segregation of duties between operational and monitoring functions (''Segregation of Duties'');
+
+7. Assigning and monitoring privileged access rights;
+
+8. Approval by authorised individual(s) or system(s) for granting or modifying identities and access rights before cloud service customer data, cloud service derived data and cloud service provider data can be accessed;
+
+9. Regular review of assigned identities and access rights;
+
+10. Blocking and removing identities or limiting access in the event of inactivity;
+
+11. Specific measures for managing identities whose use is restriced to emergency recovery and similar scenarios;
+
+12. Time-based or event-driven removal or adjustment of access rights in the event of changes to job responsibility;
+
+13. Multi-factor authentication for users with privileged access;
+
+14. Remote access and access across geographic boundaries;
+
+15. Requirements for approving and documenting the management of identities and access rights; and
+
+16. Measures to be taken upon the detection of a potential identity compromise, such as disabling and removing the affected identities.
+
+'
+    -
+      identifier: &ID_Criterion_Policy_for_Identities_and_Access_Rights_Subcriterion_Basic_3 '03B'
+      criterion: 'The cloud service provider is capable of producing a list of the currently granted cloud-based access rights for each identity under its responsibility.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Policy_for_Identities_and_Access_Rights_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'Access logs are reviewed at least every month in order to detect attempts of unauthorised access or suspicious access patterns.' 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policy_for_Identities_and_Access_Rights_Subcriterion_Basic_1
+      information_text: 'External personnel includes freelancers, temporary workers, suppliers and service providers with access to system components.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policy_for_Identities_and_Access_Rights_Subcriterion_Basic_2
+      information_text: 'System components in the sense of the criterion are defined in OPS-26. Automated authorisation processes in the sense of this basic criterion concern procedures for automated software provisioning (continuous delivery) as well as for automated provisioning and deprovisioning of identities and access rights based on approved requests.
+      
+
+For containers, identities and access rights should be managed according to a regulated process, especially for automated authorisation processes in container environments.
+
+
+If a cloud service provider uses alternative access methods for which it is not possible or feasible to block and remove identities (such as time-bounded access methods), limiting the access to an identity is an another solution for handling inactivity that fulfils this subcriterion.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policy_for_Identities_and_Access_Rights_Subcriterion_Basic_1
+        - *ID_Criterion_Policy_for_Identities_and_Access_Rights_Subcriterion_Basic_2
+      information_text: 'Requirements for physical access control in accordance with the policy for identities and access rights are specified in more detail in the physical access control policy (cf. PS-04).
+      
+
+If the cloud service provider offers federated identity services, in particular if the cloud service provider offers these services as a cloud service broker, the documents defined in these subcriteria should recognise the complexity of the particular cloud service architecture. This can include, but is not limited to, the following aspects:
+
+
+1. Management of the trust boundaries between the different parties involved in the authentication process of a federated identity;
+
+2. Propagation of identity management-related events across all parties involved in the authentication process of a federated identity;
+
+3. Logging of events related to the authentication process of a federated identity; and
+
+4. Notification of cloud service customers in case of a federation credential being compromised or a trust boundary being violated.
+
+'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policy_for_Identities_and_Access_Rights_Subcriterion_Basic_3
+      information_text: 'Based on this list, the cloud service provider is able to review the cloud-based access rights of the given identity.
+
+
+''Cloud-based'' in this case refers to all of the access rights that are within the scope of the cloud service provider''s system of internal control.' 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policy_for_Identities_and_Access_Rights_Subcriterion_Additional_Complement_1
+      information_text: 'A review can be carried out manually or via automated manners. In a monthly review, suspicious behaviours like e.g. access failures over a larger time frame (e.g. once a day) or consecutive logins from different countries may show up that a SIEM that only analyses real-time login attemps may overlook.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Granting_and_Change_of_Identities_and_Access_Rights '02'
+  name: 'Granting and Change of Identities and Access Rights'
+  basic: 
+    -
+      identifier: &ID_Criterion_Granting_and_Change_of_Identities_and_Access_Rights_Subcriterion_Basic_1 '01B'
+      criterion: 'Specified procedures for granting and modifying identities and access rights for internal and external personnel of the cloud service provider as well as for system components involved in automated authorisation processes of the cloud service provider ensure compliance with the role and rights policies and procedures as well as the policy for managing identities and access rights.'
+    -
+      identifier: &ID_Criterion_Granting_and_Change_of_Identities_and_Access_Rights_Subcriterion_Basic_2 '02B'
+      criterion: 'The aforementioned procedures include, but are not limited to:
+
+
+1. Processes and technical controls to restrict access to the cloud service provider''s data and system functions to authorised personnel; and
+
+2. Processes and technical controls to manage and verify access permissions within the cloud service provider''s systems.
+
+'
+    -
+      identifier: &ID_Criterion_Granting_and_Change_of_Identities_and_Access_Rights_Subcriterion_Basic_3 '03B'
+      criterion: 'If the cloud service provider defines break glass accounts for use in case of a non-availability of the main procedure for authentication, specific requirements and procedures for the secure usage of those accounts are defined and implemented.'
+  additional_sharpen:
+  additional_complement: 
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Granting_and_Change_of_Identities_and_Access_Rights_Subcriterion_Basic_1
+      information_text: 'This criterion applies to identities that refer to single, multiple or non-human entities.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities '03'
+  name: 'Risk-Based Procedure for Locking and Withdrawal of Identities'
+  basic: 
+    -
+      identifier: &ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider has a risk-based procedure in place for managing identities (cf. IAM-01), taking into account the types of data accessible via the identities of the internal and external personnel.' 
+    -
+      identifier: &ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Basic_2 '02B'
+      criterion: 'As part of this procedure, specific parameters for automatically locking and withdrawing access due to inactivity or indications of brute force attacks are defined, with exceptions for the identities whose use is restriced to emergency recovery and similar scenarios.'
+    -
+      identifier: &ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Basic_3 '03B'
+      criterion: 'The cloud service provider documents and implements a process for monitoring stolen and compromised credentials, which also includes disabling any identity for which an issue is identified. This process is implemented on all identities under the responsibility of the cloud service provider that have privileged access rights.'
+    -
+      identifier: &ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Basic_4 '04B'
+      criterion: 'The aforementioned process includes an exception mechanism to be applied if all identities needed to manage the situation are potentially compromised.'
+  additional_sharpen:
+    -
+      identifier: &ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Additional_Sharpen_3 '03AS'
+      sharpened_basic_criterion: *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Basic_3 
+      criterion: 'The cloud service provider documents and implements a process for monitoring stolen and compromised credentials, which also includes disabling any identity for which an issue is identified. This process is implemented on all identities under the responsibility of the cloud service provider.'
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The context of authentication attempts is monitored and suspicious events are, as relevant, flagged to authorised persons.'
+    -
+      identifier: &ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'The effectiveness of the procedures for locking and withdrawing identities is validated.'
+    -
+      identifier: &ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Additional_Complement_3 '03AC'
+      criterion: 'Timely and appropriate remediation measures address any deviations identified during validation.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Basic_1
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Basic_2
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Basic_3
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Basic_4
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Additional_Sharpen_3
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Additional_Complement_1
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Additional_Complement_2
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Additional_Complement_3
+      information_text: 'This criterion applies to identities that refer to single, multiple or non-human entities.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Basic_2
+      information_text: 'Locking can result from a longer absence of the personnel, for example, due to illness, parental leave, or sabbatical. Multiple failed login attempts can be indications of brute force attacks.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Basic_3
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Additional_Sharpen_3
+      information_text: 'This process can be performed automatically, or manually by authorised personnel.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Basic_4
+      information_text: 'This exception mechanism should be implemented as part of the business continuity and emergency management system (cf. BCM-01), as cases where all identities needed to manage the situation described in IAM-03.03B are potentially compromised constitute an emergency.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_based_Procedure_for_Locking_and_Withdrawal_of_Identities_Subcriterion_Additional_Complement_1
+      information_text: 'The context of an authentication attempt can, but does not have to, include IP addresses, the date and time, or the device used.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes '04'
+  name: 'Withdrawal or Adjustment of Access Rights as the Task Area Changes'
+  basic: 
+    -
+      identifier: &ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes_Subcriterion_Basic_1 '01B'
+      criterion: 'Access rights are timely adjusted or revoked if the job responsibilities of the cloud service provider''s internal or external personnel or the tasks of system components involved in the cloud service provider''s automated authorisation processes change.' 
+    -
+      identifier: &ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes_Subcriterion_Basic_2 '02B'
+      criterion: 'Privileged access rights are adjusted or revoked within 48 hours after the change taking effect.' 
+    -
+      identifier: &ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes_Subcriterion_Basic_3 '03B'
+      criterion: 'All other access rights are adjusted or revoked within 14 days.' 
+    -
+      identifier: &ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes_Subcriterion_Basic_4 '04B'
+      criterion: 'After revocation, the procedure for granting identities and access rights (cf. IAM-02) is repeated.'     
+    -
+      identifier: &ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes_Subcriterion_Basic_5 '05B'
+      criterion: 'In cases of role changes where temporary access may need to be granted, these access rights are approved, time-limited and documented.'
+  additional_sharpen:
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes_Subcriterion_Basic_1
+        - *ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes_Subcriterion_Basic_2
+        - *ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes_Subcriterion_Basic_3
+        - *ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes_Subcriterion_Basic_4
+        - *ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes_Subcriterion_Basic_5
+      information_text: 'This criterion applies to identities that refer to single, multiple or non-human entities.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes_Subcriterion_Basic_1
+      information_text: 'Changes in the task area of internal and external personnel can be triggered by changes in the employment relationship (e.g. termination, transfer) or in contracts and agreements.' 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Withdraw_or_Adjust_Access_Rights_as_Task_Area_Changes_Subcriterion_Basic_2
+      information_text: 'For privileged access rights the definition in IAM-06 applies.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Regular_Review_of_Access_Rights '05'
+  name: 'Regular Review of Access Rights'
+  basic: 
+    -
+      identifier: &ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Basic_1 '01B'
+      criterion: 'Identities and the associated access rights of internal and external personnel of the cloud service provider as well as of system components that play a role in automated authorisation processes of the cloud service provider are reviewed at least once a year and in case of significant changes to the cloud service to ensure that they still correspond to the actual area of use.' 
+    -
+      identifier: &ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Basic_2 '02B'
+      criterion: 'The review is carried out by authorised persons from the cloud service provider''s organisational units, who can assess the appropriateness of the assigned access rights based on their knowledge of the task areas of the personnel or system components.' 
+    -
+      identifier: &ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Basic_3 '03B'
+      criterion: 'Identified deviations are dealt with timely, but no later than seven days after their detection, through appropriate modification or withdrawal of the access rights.' 
+    -
+      identifier: &ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Basic_4 '04B'
+      criterion: 'When revoking identities, the system ensures that all production associated system components (e.g., virtual machines, storage, access rights) are identified, reassigned, or deleted to prevent the creation of orphaned resources. Clear processes and technical controls are established to identify and handle any orphaned resources that occur despite preventive measures, ensuring their timely reassignment or secure deletion.'
+    -
+      identifier: &ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Basic_5 '05B'
+      criterion: 'For system components that are not production associated, the cloud service provider designs, implements and maintains appropriate controls for the prevention of orphan resources based on a risk assessment (cf. OIS-07).'
+  additional_sharpen: 
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'Privileged access rights are reviewed at least every six months, and in case of significant changes to the cloud service.'
+  information:
+    -
+      applicable_criteria: 
+        - *ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Basic_1
+        - *ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Basic_2
+        - *ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Basic_3
+        - *ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Basic_4
+        - *ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Basic_5
+      information_text: 'This criterion applies to identities that refer to single, multiple or non-human entities.
+      
+As an alternative to the regular reviews of access rights, time-bound access rights that automatically expire may also be issued.'
+    -
+      applicable_criteria: 
+        - *ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Basic_1
+        - *ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Additional_Complement_1
+      information_text: 'If a review is caused by significant changes to the cloud service, only the identities and access rights affected by the change need to be included in the review.'
+    -
+      applicable_criteria: 
+        - *ID_Criterion_Regular_Review_of_Access_Rights_Subcriterion_Basic_5
+      information_text: 'The system components meant here are system components in development, test or any other non-productive environments. Orphan resources are system components that have no assigned owner.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Privileged_Access_Rights '06'
+  name: 'Privileged Access Rights'
+  basic: 
+    -
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_1 '01B'
+      criterion: 'Privileged access rights for internal and external personnel as well as technical users of the cloud service provider are assigned and changed in accordance with the policy for managing identities and access rights (cf. IAM-01) or a separate specific policy.'
+    -
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_2 '02B'
+      criterion: 'Privileged access rights are personalised, limited in time according to a risk assessment and assigned as necessary for the execution of tasks (''need-to-know-principle'').' 
+    -
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_3 '03B'
+      criterion: 'Anonymous technical users are only accessed through authentication with a personalised identitiy.'
+    -
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_4 '04B'
+      criterion: 'Activities of users with privileged access rights are logged in order to detect any misuse of privileged access in suspicious cases.' 
+    -
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_5 '05B'
+      criterion: 'The logged information is automatically monitored for defined events that may indicate misuse.' 
+    -
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_6 '06B'
+      criterion: 'When such an event is identified, the responsible personnel is automatically informed so that they can timely assess whether misuse has occurred and take corresponding action.'
+    -
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_7 '07B'
+      criterion: 'In the event of proven misuse of privileged access rights, disciplinary measures are taken in accordance with HR-04.'
+    -
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_8 '08B'
+      criterion: 'For containers and images, activities of users with privileged access are logged according to OPS-10.'
+    -
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_9 '09B'
+      criterion: 'Access to the cloud service provider''s administration interfaces requires the use of multi-factor authentication.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider maintains an inventory of the identities with privileged access rights under its responsibility. This inventory is kept up-to-date.'
+    -
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'The cloud service provider maintains a list of the personnel that is responsible for an identity assigned to a non-human entity within the cloud service provider''s scope of responsibility. This list is reviewed every six months and in case of significant changes to the cloud service.'
+    - 
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Additional_Complement_3 '03AC'
+      criterion: 'For privileged users, phishing-resistant multi-factor authentication such as FIDO2 security keys or comparable mechanisms using public key cryptography and domain binding are implemented.'
+    - 
+      identifier: &ID_Criterion_Privileged_Access_Rights_Subcriterion_Additional_Complement_4 '04AC'
+      criterion: 'Privileged access rights are enforced through a privileged access management (PAM) solution with support for ''just-in-time'' elevation and ''just-enough'' access.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_1
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_2
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_3
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_4
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_5
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_6
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_7
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_8
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_9
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Additional_Complement_1
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Additional_Complement_2
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Additional_Complement_3
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Additional_Complement_4
+      information_text: 'Privileged access rights in the sense of the criterion are those that enable personnel of the cloud service provider to perform any of the following activities:
+
+
+1. Read or write access to the cloud service customers data processed, stored or transmitted in the cloud service, unless such data is encrypted or the encryption can be deactivated for access by the cloud service provider; and
+
+2. Changes to the operational and/or security configuration of the system components in the production environment, in particular the starting, stopping, deleting or deactivating of system components, if this can affect the confidentiality, integrity or availability of the cloud service customers data (also indirectly, e.g. by deactivating the logging and monitoring of security-relevant events). 
+
+'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Basic_6
+      information_text: 'Responsible personnel for events that may indicate misuse can be e.g. the personnel of the cloud service provider''s security operations centre.
+
+
+Misused privileged access rights can be treated e.g. as a security incident, cf. SIM-01.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Privileged_Access_Rights_Subcriterion_Additional_Complement_2
+      information_text: 'If a review is caused by significant changes to the cloud service, only the parts of the list that are affected by the change need to be included in the review.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Access_to_Cloud_Customer_Data '07'
+  name: 'Access to Cloud Service Customer Data'
+  basic: 
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider implements partitioning measures that are:
+      
+      
+1. Sufficient for separating the system components for providing the cloud service from the system components of the cloud service provider''s other information systems; and
+
+2. Suitable for separating different cloud service customers from each other (cf. OPS-30 and OPS-31).
+
+'
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_2 '02B'
+      criterion: 'The partitioning measures of the cloud service provider ensure that security incidents, if they compromise the system components storing the cloud service customer data, do not also compromise the system components that manage the access to them.'
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_3 '03B'
+      criterion: 'Unless prohibited by applicable law, the cloud service customer is informed by the cloud service provider whenever internal or external personnel of the cloud service provider reads or writes to the cloud service customer data processed, stored or transmitted in the cloud service or has accessed it without the prior consent of the cloud service customer. The information is provided whenever cloud service customer data is/was accessed in unencrypted form or the contractual agreements with customers do not explicitly exclude informing the customer of such access.' 
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_4 '04B'
+      criterion: 'Unless contractually agreed otherwise, the information provided about the access contains the cause, time, duration, geographic location, type and scope of the access, as well as the retention time of other data generated during access, such as logs or copies containing cloud service customer data. The information is sufficiently detailed to enable subject matter experts of the cloud service customer to assess the risks of the access.'
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_5 '05B'
+      criterion: 'The information is provided in accordance with the contractual agreements, but no later than 72 hours from the initiation of the access.'
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_6 '06B'
+      criterion: 'The cloud service provider discloses, through contractual agreements and before offering its services, all instances where the cloud service provider may access cloud service customer data in unencrypted form while it is processed, stored or transmitted in the cloud service.'
+  additional_sharpen: 
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Sharpen_1 '03AS'
+      sharpened_basic_criterion: *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_3
+      criterion: 'Access to cloud service customer data and cloud service derived data by internal or external personnel of the cloud service provider requires the prior consent of an authorised department of the cloud service customer, provided that the cloud service customer''s data is accessible in unencrypted form or contractual agreements do not explicitly exclude such consent. Additionally, if encrypted data and its decryption key are stored separately within the same cloud environment, prior consent is required not only for accessing the decryption key but also for accessing the encrypted data itself (potentially together with the key).'
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Sharpen_4 '04AS'
+      sharpened_basic_criterion: *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_4
+      criterion: 'Unless contractually agreed otherwise, the information provided for the consent contains the cause, time, duration, geographic location, type and scope of the access, as well as the retention time of other data generated during access, such as logs or copies containing cloud service customer data. The information is sufficiently detailed to enable subject matter experts of the cloud service customer to assess the risks of the access. In addition to the provided information, the cloud service provider specifies a time frame within which the cloud service customer shall respond to the access request.'
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Sharpen_6 '06AS'
+      sharpened_basic_criterion: *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_6
+      criterion: 'The cloud service provider discloses, through contractual agreements and before offering its services, all instances where the cloud service provider may access cloud service customer data or cloud service derived data in unencrypted form while it is processed, stored or transmitted in the cloud service.'
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'If the cloud service provider might access the cloud service customer data transmitted, handled or stored in the cloud service in a non-encrypted way, the cloud service provider includes provisions through contractual agreements for cases in which seeking prior consent for such an access is not feasible.'
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'In order to be able to directly or indirectly access cloud service customer data, any internal or external personnel of the cloud service provider has to pass an appropriate assessment, or has to instead be supervised by personnel who has passed an appropriate assessment (cf. HR-01). The cloud service provider verifies that one of these conditions is met before the access is granted. This applies to support operations as well.'
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Complement_3 '03AC'
+      criterion: 'If the performed access is supervised, the cloud service provider ensures that:
+
+
+1. The mechanisms used to perform the supervised access allow the supervising personnel to authorise or deny individual actions of the supervisee and ask for explanations in real time;
+
+2. Any access rights that are granted as part of the supervised access are revoked at the end of the operation;
+
+3. All operations that are performed as part of the supervised access are logged as administration actions;
+
+4. The supervisee and the device used to perform the supervised access are authenticated by the supervision solution;
+
+5. The operations that the supervisee proposes and the actions of the supervising personnel are logged by the supervision solution, including operations that were denied; and
+
+6. Information flows towards the device of the supervisee are prevented by the supervision solution.
+
+'
+    -
+      identifier: &ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Complement_4 '04AC'
+      criterion: 'If the cloud service customer is given access to interfaces for administrators and for end users as part of the cloud service, the cloud service provider separates these interfaces from one another and ensures that access paths for customer administrators differ from those for end users.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Complement_1
+      information_text: 'This subcriterion is only applicable if subcriterion IAM-07.03S is also applied.
+      
+      
+Seeking prior consent might, for example, not be feasible where the cloud service needs to be troubleshot to preserve the confidentiality, integrity and availability of cloud service customer data.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_4
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Sharpen_4
+      information_text: 'Subject matter experts in the sense of this basic criterion are personnel from e.g. IT, Compliance or Internal Audit.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_3
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_4
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_5
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_6
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Sharpen_1
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Sharpen_4
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Complement_1
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Complement_2
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Complement_3
+      information_text: 'Access to cloud service customer data also entails disclosure of data as part of investigation requests according to INQ-03. These are to be communicated to cloud service customers as far as it is legally not forbidden.
+      
+
+The criterion aims at minimising the cloud service provider''s capability to access cloud service customer data. Minimisation of the cloud service provider''s possibility to access cloud service customer data is often a question related to the radius of the collusion circle. For example, if the four-eyes principle for access is applied and the access is being logged, then three people make up the collusion circle. In order to build trust into such access statements, the cloud service provider should describe in the system description the measures taken to enlargen the collusion circle.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Basic_4
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Sharpen_4
+      information_text: 'The geographic location of the access provided to the cloud service customer need not be a GPS location, but should at least be as precise as the country from which the access has been or is meant to be performed.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Complement_2
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Complement_3
+      information_text: 'The cloud service provider should make details about how the supervised access is performed accessible to cloud service customers.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Access_to_Cloud_Customer_Data_Subcriterion_Additional_Complement_4
+      information_text: 'The separation should be designed and implemented such that customer administrators can access the cloud service even when the end user interfaces are unavailable.'
+  corresponding: 'Cloud service customers ensure with suitable controls that their contracts with the cloud service provider include a comprehensive list of all instances where the provider might access customer data in an unencrypted form. Cloud service customers verify that these conditions are thoroughly documented before engaging the services, allowing them to make informed decisions about data security and compliance.
+
+
+Cloud service customers ensure with suitable controls that they provide a response to data access requests by the cloud service provider within a specified time frame as agreed upon in the contractual agreements.'
+-
+  identifier: &ID_Criterion_Authentication_Mechanisms '08'
+  name: 'Authentication Mechanisms'
+  basic: 
+    -
+      identifier: &ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_1 '01B'
+      criterion: 'System components in the cloud service provider''s area of responsibility that are used to provide the cloud service authenticate users of the cloud service provider''s internal and external personnel as well as system components that are involved in the cloud service provider''s automated authorisation processes.' 
+    -
+      identifier: &ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_2 '02B'
+      criterion: 'The cloud service provider enforces multi-factor authentication (MFA) for all access to the production environment. This requirement applies to both human users and automated processes, ensuring that only authorised entities can access systems and data in the production environment.' 
+    -
+      identifier: &ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_3 '03B'
+      criterion: 'Within the production environment, user authentication takes place through passwords, digitally signed certificates or procedures that achieve at least an equivalent level of security. If digitally signed certificates are used, administration is carried out in accordance with the policies and procedures for the use of cryptographic mechanisms (cf. CRY-01).' 
+    -
+      identifier: &ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_4 '04B'
+      criterion: 'The authentication requirements are derived from a risk assessment and documented, communicated and provided in an authentication policy according to SP-01. Compliance with the requirements is enforced by the configuration of the system components, as far as technically possible. The authentication policy describes at least the following aspects:
+
+
+1. The selection of appropriate mechanisms for every level of risk and each identity type;
+
+2. The protection of credentials that the authentication mechanisms use, including the confidentiality of personal or shared authentication information and non-sharing of credentials;
+
+3. The generation and distribution of credentials for any new identity;
+
+4. The non-reuse of credentials;
+
+5. Rules on the storage of credentials;
+
+6. Rules for renewing credentials, including periodic renewals and renewals in case a credential is lost or compromised; and
+
+7. Rules on the required strength of credentials, including trade-offs between entropy and ability to memorise where applicable, as well as mechanisms for communicating and enforcing these rules.
+
+'
+    -
+      identifier: &ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_5 '05B'
+      criterion: 'The cloud service provider determines by means of a risk assessment (cf. OIS-07) the risk that the authentication mechanisms integrated into the system components under its responsibility used to provide the cloud service become outdated. Based on the results of the risk assessment, the cloud service provider implements appropriate measures for exchanging outdated authentication mechanisms or the system components into which they are integrated.' 
+    -
+      identifier: &ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_6 '06B'
+      criterion: 'Any authentication mechanism integrated into the system components used to provide the cloud service has a mechanism for disabling an identity after a predefined number of unsuccessful authentication attempts.'
+    -
+      identifier: &ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_7 '07B'
+      criterion: 'The cloud service provider implements measures which require that users can only access non-personal identities assigned to multiple persons after they have already been authenticated with their identity assigned to a single person.'
+  additional_sharpen:
+    -
+      identifier: &ID_Criterion_Authentication_Mechanisms_Subcriterion_Additional_Sharpen_2 '02AS'
+      sharpened_basic_criterion: *ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_2
+      criterion: 'The cloud service provider enforces multi-factor authentication (MFA) for all access to any environment. This requirement applies to both human users and automated processes, ensuring that only authorised entities can access systems and data in all of the environments.' 
+    -
+      identifier: &ID_Criterion_Authentication_Mechanisms_Subcriterion_Additional_Sharpen_3 '03AS'
+      sharpened_basic_criterion: *ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_3
+      criterion: 'Within an environment, user authentication takes place through passwords, digitally signed certificates or procedures that achieve at least an equivalent level of security. If digitally signed certificates are used, administration is carried out in accordance with the policies and procedures for the use of cryptographic mechanisms (cf. CRY-01).'
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_2
+      information_text: 'Multi-factor authentication implies that different sources for identity verification are used. This applies both to human users and automated processes. Human users may use different factors like a password and a hardware token. Multi-factor authentication for automated processes implies using independent sources for identity verification like e.g. cryptographic keys and a short term token from another source.'
+    -
+      applicable_criteria:      
+        - *ID_Criterion_Authentication_Mechanisms_Subcriterion_Additional_Sharpen_2
+        - *ID_Criterion_Authentication_Mechanisms_Subcriterion_Additional_Sharpen_3
+      information_text: 'These environments include production, development, test and staging environments.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Confidentiality_of_Authentication_Information '09'
+  name: 'Confidentiality of Authentication Information'
+  basic: 
+    -
+      identifier: &ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_1 '01B'
+      criterion: 'The allocation of authentication information to access system components used to provide the cloud service to internal and external users of the cloud service provider and system components that are involved in automated authorisation processes of the cloud service provider is done in an orderly manner that ensures the confidentiality of the information.' 
+    -
+      identifier: &ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_2 '02B'
+      criterion: 'Authentication credentials are managed with a security level that matches or exceeds the classification of the system component they protect.' 
+    -
+      identifier: &ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_3 '03B'
+      criterion: 'If passwords are used as authentication information, their confidentiality is ensured by the following procedures, as far as technically possible:
+
+
+1. Users can initially create the password themselves or shall change an initial password when logging on to the system component for the first time. An initial password loses its validity after a maximum of 14 days;
+
+2. When creating passwords, compliance with the authentication policy (cf. IAM-08) is enforced as far as technically possible;
+
+3. The user is informed about changing or resetting the password; and
+
+4. The server-side storage takes place using state of the art cryptographic hash functions, with the exception of passwords that are stored in the plain text form for later use, for example in a password manager. In this case, state of the art cryptographic mechanisms are used to protect the passwords.
+
+'
+    -
+      identifier: &ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_4 '04B'
+      criterion: 'Deviations are evaluated by means of a risk assessment according to OIS-07 and mitigating measures derived from this are implemented.'
+    -
+      identifier: &ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_5 '05B'
+      criterion: 'Rules and recommendations for managing credentials in accordance with the authentication policy (cf. IAM-08) are documented, communicated and made available to all users under the responsibility of the cloud service provider. They include recommendations on password managers and recommendations to specifically address classical attacks such as phishing, social attacks, and whaling.'
+    -
+      identifier: &ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_6 '06B'
+      criterion: 'Used cryptographic mechanisms comply with the policies and instructions for cryptographic mechanisms (cf. CRY-01).'
+    -
+      identifier: &ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_7 '07B'
+      criterion: 'Password reset procedures are valid for at most 24 hours. After the reset procedure has been used, the password is to be changed by the user.'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The users sign a declaration in which they assure that they treat personal (or shared) authentication information confidentially and keep it exclusively for themselves (within the members of the group).'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_1
+        - *ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_2
+        - *ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_3
+        - *ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Additional_Complement_1
+      information_text: 'Authentication information as referred to in the basic criterion is cloud service provider data.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_7
+      information_text: 'This subcriterion is only applicable to password-based authentication schemes.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Additional_Complement_1
+      information_text: 'Insofar as this is legally binding, declarations can be signed using an electronic signature.'
+  corresponding:

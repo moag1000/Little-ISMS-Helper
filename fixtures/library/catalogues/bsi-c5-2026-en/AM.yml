@@ -1,0 +1,529 @@
+-
+  identifier: &ID_Criterion_Asset_Management_Framework '01'
+  name: 'Asset Management Framework'
+  basic: 
+    -
+      identifier: &ID_Criterion_Asset_Management_Framework_Subcriterion_Basic_1 '01B'
+      criterion: 'An asset management framework is documented, communicated and provided according to SP-01, in which the following aspects are described:
+
+
+1. Identification of assets which are used to provide the cloud service in the production environment;
+
+2. Definition of a scheme for identifying protection needs based on information processed, stored or transmitted on the asset;
+
+3. Definition of asset types, considering at a minimum the differentiation of hardware and software objects;
+
+4. Definition of asset lifecycles based on the asset type; and
+
+5. Definition of procedures for inventory of hardware and software assets.
+
+'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Asset_Management_Framework_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The information collected about assets is considered in logging and monitoring applications to:
+      
+      
+1. Identify the impact on cloud services and functions in case of events that could lead to a breach of protection objectives; and 
+
+2. Support information provided to affected cloud service customers in accordance with contractual agreements.
+
+'
+    -
+      identifier: &ID_Criterion_Asset_Management_Framework_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'The cloud service provider assures that the inventory of assets is up-to-date by implementing monitoring measures to the process that is maintaining it.'
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Asset_Management_Framework_Subcriterion_Basic_1
+        - *ID_Criterion_Asset_Management_Framework_Subcriterion_Additional_Complement_1
+        - *ID_Criterion_Asset_Management_Framework_Subcriterion_Additional_Complement_2
+      information_text: 'Assets within the meaning of this domain are the objects required for the information security of the cloud service during the creation, processing, storage, transmission, deletion or destruction of information in the cloud service provider''s area of responsibility, e.g. firewalls, load balancers, web servers, application servers and database servers.
+
+
+These objects consist of hardware and software objects. 
+
+
+Hardware objects include, but are not limited to:
+
+
+1. Physical and virtual infrastructure resources (e.g. servers, storage systems, network components); and
+
+2. End user devices if the cloud service provider has determined in a risk assessment that these could endanger the information security of the cloud service in the event of loss or unauthorised access (e.g. mobile devices used as security tokens for authentication).
+
+
+Software objects include, but are not limited to, hypervisors, containers, operating systems, databases, microservices and application programming interfaces (APIs).
+
+
+The lifecycle of an asset includes, depending on the asset type:
+
+
+1. Acquisition;
+
+2. Commissioning;
+
+3. Maintenance;
+
+4. Decommissioning; and
+
+5. Disposal.
+
+'
+  corresponding:
+-
+  identifier: &ID_Criterion_Asset_Inventory '02'
+  name: 'Asset Inventory'
+  basic: 
+    -
+      identifier: &ID_Criterion_Asset_Inventory_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider maintains an asset inventory of hardware and software assets in accordance with the asset management framework (cf. AM-01).'
+    -
+      identifier: &ID_Criterion_Asset_Inventory_Subcriterion_Basic_2 '02B'
+      criterion: 'The inventory is performed automatically and/or by the people or teams responsible for the assets to ensure complete, accurate, valid and consistent inventory throughout the asset lifecycle.'
+    -
+      identifier: &ID_Criterion_Asset_Inventory_Subcriterion_Basic_3 '03B'
+      criterion: 'Assets are recorded with the information needed to apply the risk management procedure (cf. OIS-07), including the measures taken to manage these risks throughout the asset lifecycle.'     
+    -
+      identifier: &ID_Criterion_Asset_Inventory_Subcriterion_Basic_4 '04B'
+      criterion: 'Changes to the recorded information of an asset are logged.'
+    -
+      identifier: &ID_Criterion_Asset_Inventory_Subcriterion_Basic_5 '05B'
+      criterion: 'The cloud service provider maintains lists of all users under its responsibility who have access to a specific resource, along with their respective access rights.'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Asset_Inventory_Subcriterion_Basic_1
+        - *ID_Criterion_Asset_Inventory_Subcriterion_Basic_2
+        - *ID_Criterion_Asset_Inventory_Subcriterion_Basic_3
+        - *ID_Criterion_Asset_Inventory_Subcriterion_Basic_4
+        - *ID_Criterion_Asset_Inventory_Subcriterion_Basic_5
+      information_text: 'Cloud service providers who procure their cloud infrastructure as virtual infrastructure from service organisation (e.g. virtual machines or containers) may use tools provided by the service organisation to inventory those assets, insofar as the cloud service provider deems these suitable based on their asset management framework.
+
+
+In practice, the implementation of the asset inventory can vary greatly depending on the number, size and complexity of provided cloud services.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Asset_Inventory_Subcriterion_Basic_5
+      information_text: 'These lists can be, but do not have to be, provided by the inventory system established through the criteria AM-02, AM-03 and AM-04.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Hardware_Asset_Inventory '03'
+  name: 'Hardware Asset Inventory'
+  basic: 
+    -
+      identifier: &ID_Criterion_Hardware_Asset_Inventory_Subcriterion_Basic_1 '01B'
+      criterion: 'The hardware asset inventory maintained by the cloud service provider (cf. AM-02) includes information for each entry that:
+
+
+1. Enables the identification of the hardware asset; 
+
+2. Provides visibility into the lifecycle of the hardware asset; and
+
+3. Enables the cloud service provider to control the hardware asset, perform a risk assessment and protect its information security.
+
+'
+  additional_sharpen:
+  additional_complement:
+  information: 
+    -
+      applicable_criteria: 
+        - *ID_Criterion_Hardware_Asset_Inventory_Subcriterion_Basic_1
+      information_text: 'This basic criterion can, but does not have to, be fulfilled by including the following details for each entry of the hardware asset inventory:
+
+
+1. Identification details (such as name, IP address, MAC address, etc.);
+
+2. The function of the asset;
+
+3. The model of the asset;
+
+4. The location of the asset;
+
+5. The owner of the asset; and
+
+6. Information security requirements for the asset.
+      
+      
+An ''asset owner'' is an individual or role assigned with the responsibility and accountability for managing and protecting an organisation''s asset and does not imply legal ownership of the assets.
+ 
+
+If cloud service customers operate virtual machines or containers with the cloud service, the cloud service provider inventories the containers and document their life cycle (cf. OPS-34).'
+  corresponding:
+-
+  identifier: &ID_Criterion_Software_Asset_Inventory '04'
+  name: 'Software Asset Inventory'
+  basic: 
+    -
+      identifier: &ID_Criterion_Software_Asset_Inventory_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider maintains a comprehensive inventory of all software assets, including used software (cf. AM-02). This inventory includes information for each entry that: 
+
+
+1. Enables the identification of the software asset;
+
+2. Provides visibility into which other assets use the software asset for the provision of the cloud service; and
+
+3. Enables the cloud service provider to control the software asset, perform a risk assessment and protect its information security.
+
+'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Software_Asset_Inventory_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The inventory also includes information for each entry that provides visibility into how long the software asset will receive security updates from its supplier, if such a time frame has been communicated by the supplier.'
+  information: 
+    -
+      applicable_criteria: 
+        - *ID_Criterion_Software_Asset_Inventory_Subcriterion_Basic_1
+      information_text: 'This basic criterion can, but does not have to, be fulfilled by including the following details for each entry of the software asset inventory:
+
+
+1. Identification details (such as name, IP address, MAC address, etc.);
+
+2. The version of the software; and
+
+3. The parent resource (hardware asset or software asset) on which the software is installed.
+
+'
+    -
+      applicable_criteria: 
+        - *ID_Criterion_Software_Asset_Inventory_Subcriterion_Additional_Complement_1
+      information_text: 'This additional criterion can, but does not have to, be fulfilled by including license information, including communicated end-of-support dates related to the licensed software, for each entry of the software asset inventory.'
+  corresponding: 
+-
+  identifier: &ID_Criterion_Policy_Use_and_Safe_Handling_of_Assets '05'
+  name: 'Policy for the Proper and Secure Use of Assets'
+  basic: 
+    -
+      identifier: &ID_Criterion_Policy_Use_and_Safe_Handling_of_Assets_Subcriterion_Basic_1 '01B'
+      criterion: 'Policies and procedures for the proper and secure use of assets are documented, communicated and provided in accordance with SP-01 and address the following aspects of the asset lifecycle as applicable to the asset:
+
+
+1. Approval procedures for acquisition, commissioning, maintenance, decommissioning, and disposal by authorised personnel or system components;
+
+2. Classification and labelling based on the protection need of the cloud service customer data, cloud service derived data, cloud service provider data and account data as well as measures for the level of protection identified;
+
+3. Secure configuration of mechanisms for error handling, logging, encryption, authentication and authorisation;
+
+4. Requirements for versions of software and images as well as application of patches;
+
+5. Handling of software for which support and security patches are not available anymore;
+
+6. Restriction of software installations or use of services;
+
+7. Protection against malware;
+
+8. Remote deactivation, deletion or blocking;
+
+9. Physical delivery and transport;
+
+10. Dealing with incidents and vulnerabilities;
+
+11. Deletion of cloud service customer data, cloud service derived data, cloud service provider data and account data; and
+
+12. Secure handling and usage of removable media, e.g. by specifying which devices are permitted to interact with removable media and what data can be stored on them or by banning the reuse of removable media.
+
+'
+    -
+      identifier: &ID_Criterion_Policy_Use_and_Safe_Handling_of_Assets_Subcriterion_Basic_2 '02B'
+      criterion: 'The applicability of these aspects is defined based on the cloud service provider''s asset management framework (cf. AM-01).'
+  additional_sharpen:
+  additional_complement:
+  information: 
+  corresponding:
+-
+  identifier: &ID_Criterion_Comissioning_of_Hardware '06'
+  name: 'Commissioning of Hardware'
+  basic: 
+    -
+      identifier: &ID_Criterion_Comissioning_of_Hardware_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider has implemented an approval process for commissioning hardware used to provide the cloud service in the production environment. This process involves identifying, analysing, and mitigating any risks (cf. OIS-07) associated with the commissioning.' 
+    -
+      identifier: &ID_Criterion_Comissioning_of_Hardware_Subcriterion_Basic_2 '02B'
+      criterion: 'Approval is granted after verification of the secure configuration of the mechanisms for error handling, logging, encryption, authentication and authorisation according to the intended use and based on the applicable policies.'
+  additional_sharpen:
+  additional_complement:
+  information: 
+    -
+      applicable_criteria: 
+        - *ID_Criterion_Comissioning_of_Hardware_Subcriterion_Basic_1
+        - *ID_Criterion_Comissioning_of_Hardware_Subcriterion_Basic_2
+      information_text: 'The criterion applies only to physical hardware objects, such as servers, storage systems, and network components.
+
+
+Virtual hardware and software objects are considered in the criteria areas (OPS) and (DEV).
+
+
+The approval process typically considers both the basic approval to use the hardware and the final approval of the configured assets.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Decomissioning_of_Hardware '07'
+  name: 'Decommissioning of Hardware'
+  basic: 
+    -
+      identifier: &ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider defines, documents and implements a procedure for the decommissioning of hardware used to operate system components supporting the cloud service production environment under the responsibility of the cloud service provider. As part of this procedure, approval by authorised personnel of the cloud service provider based on the applicable policies is required.'
+    -
+      identifier: &ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Basic_2 '02B'
+      criterion: 'The decommissioning includes either: 
+
+
+1. The complete and permanent deletion of all cloud service customer data, cloud service derived data, cloud service provider data and account data; or 
+
+2. The proper destruction of the media. 
+
+
+Account data needs to be deleted at least in cases where the data is located in the production environment for the operation of system components.'
+  additional_sharpen:
+    -
+      identifier: &ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Additional_Sharpen_1 '01AS'
+      sharpened_basic_criterion: *ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Basic_1
+      criterion: 'The cloud service provider defines, documents and implements a procedure for the decommissioning of hardware used to operate system components supporting the cloud service production, development, test or staging environment under the responsibility of the cloud service provider. As part of this procedure, approval by authorised personnel of the cloud service provider based on the applicable policies is required.' 
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The destruction of data on hardware components is carried out in such a manner that data recovery can be reasonably considered to be impossible.'
+  information:
+  corresponding:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Basic_1
+      information_text: 'The decommissioning procedure typically includes:
+
+
+1. Verification that the asset is no longer required for operational use;
+
+2. Assessment of associated risks and dependencies;
+
+3. Approval by authorised personnel based on internal policies;
+
+4. Execution of secure data deletion or sanitization processes;
+
+5. Updating the asset inventory to reflect decommissioning status; and
+        
+6. Disposal or repurposing of the hardware in accordance with environmental and security guidelines.
+
+'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Basic_2
+        - *ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Additional_Complement_1
+      information_text: 'The deletion of data or physical destruction of data mediums can take place, for example, according to DIN 66399 or BSI IT-Grundschutz module CON.6.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Additional_Complement_1
+      information_text: 'This approval process ensures that disposal activities conducted offsite adhere to the organisation''s security, compliance, and environmental policies. It typically includes:
+
+
+1. Verification of asset ownership and usage history;
+
+2. Assessment of data sanitisation requirements;
+
+3. Selection of approved disposal vendors or methods;
+
+4. Documentation of disposal actions and approvals; and
+
+5. Confirmation of secure data deletion or destruction.
+      
+'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Basic_1
+        - *ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Basic_2
+        - *ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Additional_Sharpen_1
+        - *ID_Criterion_Decomissioning_of_Hardware_Subcriterion_Additional_Complement_1
+      information_text: 'This criterion is not applicable for hardware components that do not store cloud service customer data, cloud service derived data, cloud service provider data or account data (e.g. monitors, routers or keyboards).'
+      
+      corresponding:
+-
+  identifier: &ID_Criterion_Commitment_to_Permissible_Use_Safe_Handling_Return_of_Assets '08'
+  name: 'Commitment to Proper Use, Safe and Secure Handling and Return of Assets'
+  basic: 
+    -
+      identifier: &ID_Criterion_Commitment_to_Permissible_Use_Safe_Handling_Return_of_Assets_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider determines in a risk assessment (cf. OIS-07) if loss of or unauthorised access to assets could compromise the information security of the cloud service. If so, the cloud service provider''s internal and external personnel is provably committed to the policies and procedures for proper use and safe and secure handling of assets before they can be used.'
+    -
+      identifier: &ID_Criterion_Commitment_to_Permissible_Use_Safe_Handling_Return_of_Assets_Subcriterion_Basic_2 '02B'
+      criterion: 'Any assets handed over are provably returned upon termination of employment.'
+    -
+      identifier: &ID_Criterion_Commitment_to_Permissible_Use_Safe_Handling_Return_of_Assets_Subcriterion_Basic_3 '03B'
+      criterion: 'If assets cannot be returned prior to or on the day of the termination, the cloud service provider removes the access rights of the personnel no later than the date of termination'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Commitment_to_Permissible_Use_Safe_Handling_Return_of_Assets_Subcriterion_Basic_1
+        - *ID_Criterion_Commitment_to_Permissible_Use_Safe_Handling_Return_of_Assets_Subcriterion_Basic_2
+        - *ID_Criterion_Commitment_to_Permissible_Use_Safe_Handling_Return_of_Assets_Subcriterion_Basic_3
+      information_text: 'The criterion essentially concerns mobile devices (e.g. notebooks, tablets, smartphones, FIDO2 security keys, etc.), especially if confidential information is stored on them that can be used, in the event of unauthorised access, to obtain privileged access to the cloud service (e.g. if these are used as security tokens for authentication).'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Commitment_to_Permissible_Use_Safe_Handling_Return_of_Assets_Subcriterion_Basic_3
+      information_text: 'The removal of access rights of terminated personnel can be implemented by e.g. disabling their identity on the device.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Asset_Classification_and_Labelling '09'
+  name: 'Asset Classification and Labelling'
+  basic: 
+    -
+      identifier: &ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Basic_1 '01B'
+      criterion: 'Assets are classified and, if possible, labelled. Classification and labelling of an asset reflect the protection needs of the category of cloud service customer data, cloud service derived data, cloud service provider data and account data it processes, stores, or transmits.' 
+    -
+      identifier: &ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Basic_2 '02B'
+      criterion: 'Classification levels are reviewed at least annually and in case of significant changes to the cloud service. Based on the review, the classification levels are updated where appropriate.'
+    -
+      identifier: &ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Basic_3 '03B'
+      criterion: 'The protection need is determined by the individuals or groups responsible for the assets of the cloud service provider according to a uniform and documented classification schema.'     
+    -
+      identifier: &ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Basic_4 '04B'
+      criterion: 'The classification schema provides levels of protection for the confidentiality, integrity, availability, and authenticity protection objectives. These protection objectives are aligned with delivery and recovery objectives set out in business and disaster recovery plans.'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The unique identification of physical devices serves as an additional method for connection authentication.' 
+    -
+      identifier: &ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'Device identification is integrated into the asset classification and labeling processes.'
+    -
+      identifier: &ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Additional_Complement_3 '03AC'
+      criterion: 'Logging and monitoring applications take the asset protection needs into account in order to inform the responsible stakeholder of events that could lead to a violation of the protection goals, so that the necessary measures are taken with an appropriate priority.'
+    -
+      identifier: &ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Additional_Complement_4 '04AC'
+      criterion: 'Actions for events on assets with a higher level of protection take precedence over events on assets with a lower protection need.'
+  information: 
+    -  
+      applicable_criteria:
+        - *ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Basic_1
+        - *ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Basic_2
+        - *ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Basic_3
+        - *ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Basic_4
+      information_text: 'If the cloud service provider does not categorise the assets specifically, then all assets may be treated as requiring the highest level of protection needs.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Basic_2
+      information_text: 'If a review is caused by significant changes to the cloud service, only the classification levels affected by the changes need to be included in the review.'
+    -  
+      applicable_criteria:
+        - *ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Additional_Complement_1
+      information_text: 'To ensure that all physical assets are uniquely identified, the cloud service provider may implement practices such as:
+
+
+1. Use of a centralised device management platform to monitor and control all devices;
+
+2. Assigning unique identifiers (e.g. MAC addresses, serial numbers) to all devices; and
+
+3. Use of automated mechanisms to register connecting devices.
+
+'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Asset_Classification_and_Labelling_Subcriterion_Additional_Complement_2
+      information_text: 'Integrating device identification ensures that each asset is uniquely recognised and appropriately classified based on its protection needs. This is particularly important for mobile and endpoint devices, which may carry sensitive data or serve as access points to cloud services. Proper labeling supports traceability, risk assessment, and enforcement of security controls throughout the asset lifecycle.'
+  corresponding: 'Cloud service customers ensure with suitable controls that the protection need of the information that can be processed or stored with the cloud service is adequately determined.
+
+
+Cloud service customers ensure with suitable controls that the information processed or stored with the cloud service is protected against tampering, copying, modifying, redirecting or deleting in accordance with its protection needs.'
+-
+  identifier: &ID_Criterion_Protection_of_Hardware_on_Hold '10'
+  name: 'Protection of Hardware on Hold'
+  basic: 
+    -
+      identifier: &ID_Criterion_Protection_of_Hardware_on_Hold_Subcriterion_Basic_1 '01B'
+      criterion: 'Based on a risk assessment (cf. OIS-07), the cloud service provider has documented and implemented a procedure for protecting hardware components of the cloud service''s production environment that are temporarily not in use. The procedure supports the secure storage and protection against unauthorised access or damage of inactive hardware until it is needed again.'
+  additional_sharpen: 
+    -
+      identifier: &ID_Criterion_Protection_of_Hardware_on_Hold_Subcriterion_Additional_Sharpen_1 '01AS'
+      criterion: 'Based on a risk assessment (cf. OIS-07), the cloud service provider has documented and implemented a procedure for protecting any hardware components that are temporarily not in use. The procedure supports the secure storage and protection against unauthorised access or damage of inactive hardware until it is needed again.'
+  additional_complement:
+  information: 
+  corresponding:
+-
+  identifier: &ID_Criterion_Transfer_of_Hardware '11'
+  name: 'Transfer of Hardware'
+  basic: 
+    -
+      identifier: &ID_Criterion_Transfer_of_Hardware_Subcriterion_Basic_1 '01B'
+      criterion: 'Based on a risk assessment (cf. OIS-07), the cloud service provider ensures the secure and controlled transfer of hardware objects used in the cloud service production environment to an offsite or alternate location.'
+    -
+      identifier: &ID_Criterion_Transfer_of_Hardware_Subcriterion_Basic_2 '02B'
+      criterion: 'The transfer of hardware is authorised by designated personnel.'
+    -
+      identifier: &ID_Criterion_Transfer_of_Hardware_Subcriterion_Basic_3 '03B'
+      criterion: 'The cloud service provider ensures that all transfers of hardware objects used in the cloud service production environment are conducted using secure, documented methods designed to prevent unauthorised access, tampering, data leakage, or loss during transit. These methods include physical protection, chain-of-custody tracking, and verification upon receipt.'
+  additional_sharpen:
+  additional_complement:
+  information:
+    - 
+      applicable_criteria:
+        - *ID_Criterion_Transfer_of_Hardware_Subcriterion_Basic_2
+      information_text: 'Authorisation ensures that hardware object transfers, whether internal or external, are controlled, traceable, and compliant with organisational policies. This is particularly important for assets containing sensitive data or used in production environments. The process typically includes:
+
+
+1. Verification of asset ownership and classification;
+
+2. Assessment of associated risks;
+
+3. Documentation of the transfer request and approval; and
+
+4. Confirmation of secure handling during transit.
+
+'
+  corresponding:
+-
+  identifier: &ID_Criterion_Removable_Media_and_Endpoint_Devices '12'
+  name: 'Removable Media and Endpoint Devices'
+  basic: 
+    -
+      identifier: &ID_Criterion_Removable_Media_and_Endpoint_Devices_Subcriterion_Basic_1 '01B'
+      criterion: 'Based on a risk assessment (cf. OIS-07), the cloud service provider designs, implements and maintains controls for endpoint devices and removable storage media regarding the following aspects:
+
+
+1. Except for system administrative tasks for which no other method is available, the use of removable media is forbidden;
+
+2. Removable media is used for dedicated, specific purposes only;
+
+3. Storage encryption is enabled on managed endpoints and removable storage media (except those used for unavoidable system administration actions) to protect information from unauthorised disclosure;
+
+4. Managed endpoints are configured with anti-malware detection and prevention technology and services;
+
+5. Self-execution from removable storage is disabled and storage media is scanned before use on the cloud service provider''s systems;
+
+6. Measures are to be taken by users to protect mobile endpoints and removable storage in transit and in storage;
+
+7. Protection in terms of confidentiality and integrity of any equipment containing cloud service customer data during the transfer off-site for disposal is equivalent to that on the site;
+
+8. Cloud service customer data and cloud service derived data stored on shareable equipment is encrypted in accordance with CRY-05 or destroyed using a secure deletion mechanism before the equipment is shared with a third party;
+
+9. Users are to use mobile endpoints and removable storage in a secure manner, this includes for example not leaving media openly accessible in public spaces, using screen locks and screen privacy films; and
+
+10. Measures for maintaining proper security of third party endpoints with access to organisational assets are to be defined.
+
+'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Removable_Media_and_Endpoint_Devices_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'Policies and procedures for endpoint devices and removable storage media furthermore contain the following aspects:
+
+
+1. Managed endpoints are configured with appropriate software firewalls;
+
+2. Managed endpoints are configured with Data Loss Prevention (DLP) technologies and rules in accordance with a risk assessment (cf. OIS-07);
+
+3. Remote geo-location capabilities are enabled for all managed mobile endpoints; and
+
+4. Define, implement and evaluate processes, procedures and technical safeguards to enable the deletion of company data remotely on managed endpoint devices.
+
+'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Removable_Media_and_Endpoint_Devices_Subcriterion_Basic_1
+        - *ID_Criterion_Removable_Media_and_Endpoint_Devices_Subcriterion_Additional_Complement_1
+      information_text: 'A removable medium is a portable data storage medium that can be added to or removed from a computing device or network. Examples include, but are not limited to, optical discs (e.g., CD, DVD, Blu-ray), external or removable hard drives or solid state disk drives, magnetic or optical tapes and flash memory devices (e.g., USB, eSATA, flash drive, thumb drive).'
+  corresponding:

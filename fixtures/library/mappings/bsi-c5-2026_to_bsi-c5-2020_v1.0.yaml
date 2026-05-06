@@ -9,312 +9,685 @@ library:
   effective_until: null
 
   provenance:
-    primary_source: 'BSI C5:2026 öffentliche Konsultation (Draft, 2025/2026) und Vergleich mit BSI C5:2020 Kriterienkatalog.'
-    primary_source_url: 'https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/CloudComputing/Kriterienkatalog/C5_2020.html'
+    primary_source: 'BSI Cloud Computing Compliance Criteria Catalogue (C5:2026), final version 2026-03-26'
+    primary_source_url: 'https://www.bsi.bund.de/EN/Themen/Unternehmen-und-Organisationen/Informationen-und-Empfehlungen/Empfehlungen-nach-Angriffszielen/Cloud-Computing/Kriterienkatalog-C5/C5_2025/C5_2025_node.html'
     secondary_sources:
-      - 'BSI C5:2020 Kriterienkatalog (offiziell)'
-      - 'Öffentliche Konsultations- und Workshop-Materialien zur C5:2026-Revision (BSI/Branchenverbände 2025)'
-      - 'EUCS-Draft (ENISA EU Cloud Services Scheme) als Referenz für Container/Supply-Chain-Erweiterungen'
-      - 'NIS2-Richtlinie (EU 2022/2555) Art. 21/23 — Reporting-SLAs und Supply-Chain-Pflichten'
-      - 'Existing fixture: bsi-c5-2020_to_bsi-c5-2026_v1.0.yaml (reziprokes Mapping)'
+      - 'BSI C5:2020 Kriterienkatalog (Anlage A: Vergleichstabelle ISO 27001 ↔ BSI C5)'
+      - 'fixtures/library/catalogues/bsi-c5-2026-en/ — 18 BSI YAML files (verbatim BSI publication, CC-BY-ND 4.0)'
+      - 'Inverse-Ableitung aus bsi-c5-2020_to_bsi-c5-2026_v1.0 (gleiche Pair-Logik, Source/Target getauscht; ergänzt um neue 2026-Themen ohne 2020-Equivalent)'
     publisher: 'Little ISMS Helper Maintainers'
+    license_note: 'Mapping is original derivative work (AGPL-3.0). C5:2026 source IDs and names © BSI 2026 used under CC-BY-ND 4.0 with attribution.'
 
   methodology:
-    type: 'expert_inference_pre_publication'
+    type: 'catalogue_text_comparison'
     description: |
-      Reverse-Mapping ausgehend von voraussichtlichen BSI C5:2026-Themenbereichen
-      hin zu C5:2020-Bestandskontrollen. Erstellt parallel zum Forward-Mapping
-      bsi-c5-2020_to_bsi-c5-2026_v1.0.
+      Reverse-Mapping ausgehend vom C5:2026-Kriterium zurück auf das
+      C5:2020-Pendant. Zweck: Bestandsanwender mit bestehender
+      C5:2020-Reife können erkennen, welche 2026-Kriterien sie bereits
+      erfüllen und welche neue Themen (PQC-Krypto-Agilität, SBOM,
+      Confidential Computing, Container Mgmt) zusätzlich aufgebaut
+      werden müssen.
 
-      Schwerpunkt dieses Reverse-Mappings sind die NEUEN Themen in C5:2026,
-      die in C5:2020 NICHT oder nur als Teil-Aspekt vorhanden sind:
-      Container/Kubernetes-Security, Supply-Chain-Security/SBOM, Post-Quantum-
-      Cryptography, Confidential Computing, AI/ML-Security, EUCS-Alignment,
-      enhanced Client-Separation, NIS2-Reporting-SLAs.
+      Relationship-Logik (invers zur Forward-Datei):
+      - equivalent ↔ equivalent
+      - superset (2026 erweitert 2020) ↔ subset (2020 ist Teilmenge)
+      - subset (2026 ist Teilmenge) ↔ superset (selten, da 2026 generell
+        breiter)
+      - partial_overlap ↔ partial_overlap
 
-      WICHTIG: BSI C5:2026 ist zum Zeitpunkt der Mapping-Erstellung noch nicht
-      final veröffentlicht (verbindlich erst ab 01.01.2027). Source-IDs werden
-      mit symbolischen Schlüsseln im Format 'C5-2026-<Bereich>-<Nr>' geführt;
-      nach Final-Veröffentlichung gegen offiziellen Catalogue zu validieren.
-      Mappings mit höherer Unsicherheit sind explizit mit confidence='low'
-      markiert.
+      Neue 2026-Themen ohne 2020-Pendant werden mit relationship='superset'
+      und confidence='low' erfasst, sodass Anwender sehen, dass kein
+      Carryover möglich ist und ein eigenständiger Maßnahmen-Aufbau nötig
+      ist.
+
+      Coverage: alle 18 C5:2026-Bereiche sind mindestens einmal abgedeckt.
 
   lifecycle:
-    state: 'draft'
+    state: 'published'
     state_history:
-      - { state: 'draft', date: '2026-05-06', actor: 'maintainer' }
+      - { state: 'draft',     date: '2026-05-06', actor: 'maintainer' }
+      - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
 
 mappings:
-  - source: 'C5-2026-OPS-01'
-    target: 'OPS-01'
-    relationship: 'equivalent'
-    confidence: 'high'
-    rationale: |
-      C5:2026 OPS-01 (Konfigurations- und Änderungsmanagement) entspricht
-      strukturell C5:2020 OPS-01. Konfigurationsmanagement bleibt unverändert
-      Kernpflicht.
-      Verbindlich ab 01.01.2027 — ID gegen Final-Catalogue zu validieren.
-    audit_evidence_hint: 'CMDB-Auszug, Change-Workflow-Dokumentation, Stichprobe genehmigter Changes.'
-
-  - source: 'C5-2026-OPS-10'
-    target: 'OPS-10'
-    relationship: 'equivalent'
-    confidence: 'high'
-    rationale: |
-      C5:2026 OPS-10 (Logging/Monitoring) führt C5:2020 OPS-10 fort. Die
-      voraussichtlichen NIS2-Verschärfungen (24/7-SOC) sind aus 2020-Perspektive
-      bereits Best Practice.
-      Verbindlich ab 01.01.2027 — ID gegen Final-Catalogue zu validieren.
-    audit_evidence_hint: 'SIEM-Use-Case-Katalog, 24/7-SOC-Coverage, Alert-MTTR, Log-Retention.'
-
-  - source: 'C5-2026-RB-04'
-    target: 'RB-04'
-    relationship: 'equivalent'
-    confidence: 'high'
-    rationale: |
-      C5:2026 RB-04 (Bedrohungs- und Schwachstellen-Identifikation) entspricht
-      strukturell C5:2020 RB-04. Threat-Intelligence-Quellen und CERT-Bezug
-      bleiben unverändert.
-      Verbindlich ab 01.01.2027 — ID gegen Final-Catalogue zu validieren.
-    audit_evidence_hint: 'Threat-Intel-Quellen-Liste, ausgewertete Bedrohungsmeldungen 12 Monate, Eskalations-Logs.'
-
-  - source: 'C5-2026-IDM-01'
-    target: 'IDM-01'
-    relationship: 'equivalent'
-    confidence: 'high'
-    rationale: |
-      C5:2026 IDM-01 (IDM-Richtlinie) entspricht strukturell C5:2020 IDM-01.
-      JIT-Access-Erwartungen sind voraussichtlich Schärfungen, kein neuer Bereich.
-      Verbindlich ab 01.01.2027 — ID gegen Final-Catalogue zu validieren.
-    audit_evidence_hint: 'IDM-Richtlinie, Berechtigungskonzept, Stichprobe Joiner/Mover/Leaver.'
-
-  - source: 'C5-2026-IDM-09'
-    target: 'IDM-09'
-    relationship: 'superset'
-    confidence: 'medium'
-    rationale: |
-      C5:2026 IDM-09 (Authentifizierung) wird voraussichtlich phishing-resistente
-      MFA (FIDO2/WebAuthn) zwingend vorschreiben. C5:2020 IDM-09 lässt
-      schwächere Verfahren (TOTP/SMS) noch zu — somit Übermenge.
-      Verbindlich ab 01.01.2027 — ID gegen Final-Catalogue zu validieren.
-    gap_warning: |
-      Wer C5:2026 IDM-09 NUR über C5:2020 IDM-09 nachweist, fehlt die
-      phishing-resistente MFA. Migration auf FIDO2/WebAuthn empfohlen,
-      mindestens für privilegierte Konten.
-    audit_evidence_hint: 'MFA-Coverage-Report Admin-Accounts, FIDO2/WebAuthn-Rollout-Plan, phishing-resistent verifizierte Verfahren.'
-
-  - source: 'C5-2026-KRY-01'
-    target: 'KRY-01'
-    relationship: 'superset'
-    confidence: 'medium'
-    rationale: |
-      C5:2026 KRY-01 (Kryptographie) wird voraussichtlich Krypto-Agilität,
-      PQC-Transitions-Pläne und hybride Verfahren explizit fordern. C5:2020
-      KRY-01 deckt nur klassische Algorithmen ab — somit Untermenge.
-      Verbindlich ab 01.01.2027 — ID gegen Final-Catalogue zu validieren.
-    gap_warning: |
-      Eine reine Bestands-Krypto-Richtlinie nach C5:2020 erfüllt 2026 die
-      voraussichtlichen Erwartungen an Krypto-Agilität und PQC-Transition
-      NICHT. Ergänzen: PQC-Inventar, Transition-Roadmap, hybride Verfahren.
-    cross_refs: ['C5-2026-PQC-01']
-    audit_evidence_hint: 'Krypto-Richtlinie inkl. PQC-Transitions-Plan, Algorithmen-Allowlist, Key-Management.'
-
-  - source: 'C5-2026-KOS-01'
-    target: 'KOS-01'
-    relationship: 'equivalent'
-    confidence: 'high'
-    rationale: |
-      C5:2026 KOS-01 (Kommunikationssicherheit) entspricht strukturell C5:2020
-      KOS-01. Network-Segmentation, Firewalling, TLS-Hardening bleiben
-      unverändert.
-      Verbindlich ab 01.01.2027 — ID gegen Final-Catalogue zu validieren.
-    audit_evidence_hint: 'Netzplan, Segmentierungsnachweise, TLS-Audit-Reports, Firewall-Regelwerk-Reviews.'
-
-  - source: 'C5-2026-AM-01'
+  # ===== AM — Asset Management =====
+  - source: 'AM-02'
     target: 'AM-01'
-    relationship: 'superset'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-02 „Asset Inventory" entspricht direkt C5:2020 AM-01
+      „Asset-Inventar". Pflichteninhalt deckungsgleich: vollständiges
+      Inventar aller Cloud-Service-relevanten Assets mit Owner,
+      Klassifikation und Stichtagsabgleich CMDB ↔ Cloud-Provisioning.
+    cross_refs: ['AM-03', 'AM-04']
+    audit_evidence_hint: 'Asset-Inventar, Owner-Feld, Klassifikation, Cloud-Provisioning-Stichtagsabgleich.'
+
+  - source: 'AM-09'
+    target: 'AM-01'
+    relationship: 'subset'
     confidence: 'medium'
     rationale: |
-      C5:2026 AM-01 (Asset-Inventar) wird voraussichtlich Container/Workload-
-      Inventar und SBOM-Verknüpfung verlangen. C5:2020 AM-01 deckt nur statische
-      Assets vollständig ab — somit Untermenge.
-      Verbindlich ab 01.01.2027 — ID gegen Final-Catalogue zu validieren.
-    gap_warning: |
-      Klassische statische CMDBs nach C5:2020 decken keine kurzlebigen
-      Container/Workloads ab. Für 2026 zusätzlich Kubernetes-/Container-
-      Inventar mit SBOM-Bezug erforderlich.
-    cross_refs: ['C5-2026-CON-01', 'C5-2026-SCS-01']
-    audit_evidence_hint: 'CMDB + Container-Workload-Inventar, SBOM je Service, Provisioning-Stichtagsabgleich.'
+      C5:2026 AM-09 „Asset Classification and Labelling" ist ein
+      Teilaspekt der breiteren 2020 AM-01 „Asset-Inventar"-Pflicht
+      (Klassifikation war dort bereits Bestandteil). 2026 hebt
+      Klassifikation als eigenes Kriterium hervor.
+    audit_evidence_hint: 'Klassifikations-Schema (z.B. öffentlich/intern/vertraulich/streng vertraulich), Labelling-Konvention.'
 
-  - source: 'C5-2026-SIM-01'
-    target: 'SIM-01'
-    relationship: 'superset'
-    confidence: 'medium'
-    rationale: |
-      C5:2026 SIM-01 (Incident-Management) wird voraussichtlich NIS2-Art.-23-
-      konforme Reporting-SLAs (24h Frühwarnung, 72h Notification, 30 Tage
-      Final-Report) zwingend vorschreiben. C5:2020 SIM-01 fordert dies nicht
-      explizit — somit Untermenge.
-      Verbindlich ab 01.01.2027 — ID gegen Final-Catalogue zu validieren.
-    gap_warning: |
-      Wer C5:2026 SIM-01 NUR über C5:2020 SIM-01 nachweist, fehlen die
-      NIS2-konformen 24h/72h-SLAs. IR-Plan und Eskalationskette anpassen.
-    audit_evidence_hint: 'IR-Plan mit NIS2-Reporting-SLAs, IR-Übungs-Reports, Incident-Tickets-Stichprobe.'
-
-  - source: 'C5-2026-BCM-01'
+  # ===== BCM — Business Continuity Management =====
+  - source: 'BCM-01'
     target: 'BCM-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5:2026 BCM-01 (BC-Strategie und Top-Management-Verantwortung) entspricht
-      strukturell C5:2020 BCM-01.
-      Verbindlich ab 01.01.2027 — ID gegen Final-Catalogue zu validieren.
-    audit_evidence_hint: 'BC-Strategie-Dokument, BIA-Ergebnisse, Management-Freigabe-Protokoll.'
+      C5:2026 BCM-01 „Business Continuity and Emergency Management
+      System" entspricht direkt C5:2020 BCM-01 „Top-Management-
+      Verantwortung und BC-Strategie". Pflichteninhalt deckungsgleich:
+      ISO-22301-konformes BC-Mgmt-System mit Top-Management-Commitment.
+    cross_refs: ['BCM-02']
+    audit_evidence_hint: 'BC-Strategie, Top-Management-Freigabe, BIA, BC-Plans, Übungs-Reports.'
 
-  - source: 'C5-2026-HR-03'
-    target: 'HR-03'
-    relationship: 'equivalent'
-    confidence: 'high'
+  - source: 'BCM-02'
+    target: 'BCM-01'
+    relationship: 'subset'
+    confidence: 'medium'
     rationale: |
-      C5:2026 HR-03 (Schulung und Sensibilisierung) entspricht strukturell
-      C5:2020 HR-03.
-      Verbindlich ab 01.01.2027 — ID gegen Final-Catalogue zu validieren.
-    audit_evidence_hint: 'Schulungs-Quote, Phishing-Drill-Ergebnisse, rollenspezifische Curricula.'
+      C5:2026 BCM-02 „Business Impact Analysis" ist ein in 2020 BCM-01
+      enthaltener Bestandteil (BIA war dort als Pflicht in der
+      BC-Strategie aufgeführt). 2026 hebt die BIA als eigenes Kriterium
+      hervor.
+    audit_evidence_hint: 'BIA-Methodik, BIA-Ergebnisse je Geschäftsprozess, RTO/RPO-Definitionen.'
 
-  - source: 'C5-2026-PSC-01'
-    target: 'PSC-01'
-    relationship: 'equivalent'
-    confidence: 'high'
-    rationale: |
-      C5:2026 PSC-01 (Personnel-Screening) entspricht strukturell C5:2020 PSC-01.
-      Verbindlich ab 01.01.2027 — ID gegen Final-Catalogue zu validieren.
-    audit_evidence_hint: 'Screening-Verfahrensbeschreibung, Stichprobe Pre-Employment-Checks, NDA-Nachweise.'
-
-  - source: 'C5-2026-SCS-01'
-    target: 'BEI-04'
-    relationship: 'superset'
-    confidence: 'low'
-    rationale: |
-      C5:2026 SCS-01 (Supply-Chain-Security, voraussichtlich neuer dedizierter
-      Bereich) erweitert klassische Lieferantenklauseln um SBOM-Lieferpflicht,
-      CVE-Notification-SLAs, signierte Container-Artefakte (Sigstore/cosign),
-      Provenance-Attestation (SLSA). C5:2020 BEI-04 deckt nur Teilaspekte ab.
-      Verbindlich ab 01.01.2027 — ID und Detail-Anforderungen gegen Final-
-      Catalogue zu validieren.
-    gap_warning: |
-      Neu in C5:2026, nicht vollständig in C5:2020 vorhanden. C5:2020 BEI-04
-      ist als Ausgangsbasis verwendbar, reicht aber NICHT aus. Zusätzlich
-      einzuführen: SBOM-Generierung und -Übergabe, Image-Signatur-Verifikation
-      in CI/CD, SLSA-Provenance-Attestations, CVE-Notification-Workflow mit SLA.
-    cross_refs: ['BEI-01']
-    audit_evidence_hint: 'SBOMs je Service, Image-Signatur-Verifikation, SLSA-Provenance-Attestations, CVE-Notification-Workflow.'
-
-  - source: 'C5-2026-CON-01'
-    target: 'OPS-01'
-    relationship: 'superset'
-    confidence: 'low'
-    rationale: |
-      C5:2026 CON-01 (Container/Kubernetes-Security, voraussichtlich neuer
-      dedizierter Bereich) verlangt Pod Security Standards, Admission-Control,
-      Image-Hardening und Runtime-Security. C5:2020 OPS-01 (Configuration
-      Management) ist die nächste verwandte Bestandskontrolle, deckt diese
-      Container-Spezifika aber NICHT ab.
-      Verbindlich ab 01.01.2027 — ID und Detail-Anforderungen gegen Final-
-      Catalogue zu validieren.
-    gap_warning: |
-      Neu in C5:2026, nicht in C5:2020 vorhanden. Vollständig zusätzlich
-      einzuführen: CIS Kubernetes Benchmark, Pod Security Standards,
-      Admission-Controller (OPA/Gatekeeper, Kyverno), Runtime-Detection
-      (Falco/Tetragon), Image-Hardening-Pipeline.
-    audit_evidence_hint: 'CIS-Kubernetes-Benchmark-Report, Pod-Security-Standard-Config, Admission-Controller-Policies, Runtime-Detection-Alerts.'
-
-  - source: 'C5-2026-PQC-01'
-    target: 'KRY-01'
-    relationship: 'superset'
-    confidence: 'low'
-    rationale: |
-      C5:2026 PQC-01 (Post-Quantum-Cryptography, voraussichtlich neuer
-      dedizierter Bereich) verlangt PQC-Transitions-Plan, Krypto-Inventar
-      und hybride/PQC-resistente Verfahren für Langzeit-vertrauliche Daten.
-      C5:2020 KRY-01 deckt nur klassische Algorithmen ab.
-      Verbindlich ab 01.01.2027 — ID und Detail-Anforderungen gegen Final-
-      Catalogue zu validieren.
-    gap_warning: |
-      Neu in C5:2026, nicht in C5:2020 vorhanden. Zusätzlich einzuführen:
-      Krypto-Inventar (Algorithmen je Service/Datenfluss), PQC-Transitions-
-      Roadmap, hybride Verfahren (klassisch + PQC) für Langzeit-Vertraulichkeit
-      (z. B. ML-KEM/Kyber, ML-DSA/Dilithium gemäß BSI/NIST).
-    audit_evidence_hint: 'Krypto-Inventar je Service, PQC-Transitions-Roadmap mit Meilensteinen, hybride-Krypto-Pilotnachweise.'
-
-  - source: 'C5-2026-CC-01'
-    target: 'KRY-01'
-    relationship: 'superset'
-    confidence: 'low'
-    rationale: |
-      C5:2026 CC-01 (Confidential Computing, voraussichtlich neuer dedizierter
-      Bereich) adressiert Schutz von Daten-in-Use durch Trusted Execution
-      Environments (Intel SGX/TDX, AMD SEV-SNP, ARM CCA). C5:2020 KRY-01
-      regelt nur Daten-at-Rest und Daten-in-Transit.
-      Verbindlich ab 01.01.2027 — ID und Detail-Anforderungen gegen Final-
-      Catalogue zu validieren.
-    gap_warning: |
-      Neu in C5:2026, nicht in C5:2020 vorhanden. Confidential-Computing-
-      Anforderungen sind kontroll-strukturell ein eigener Bereich. Pilotierung
-      und Bewertung der Anwendbarkeit pro Service notwendig (nicht für jeden
-      Service ökonomisch sinnvoll, aber Bewertung dokumentieren).
-    audit_evidence_hint: 'Confidential-Computing-Bewertung je Service, TEE-Attestation-Nachweise (SGX/TDX/SEV-SNP), Architektur-Entscheidungs-Dokumente.'
-
-  - source: 'C5-2026-AI-01'
-    target: 'OPS-15'
-    relationship: 'partial_overlap'
-    confidence: 'low'
-    rationale: |
-      C5:2026 AI-01 (AI/ML-Security, voraussichtlich neuer dedizierter Bereich)
-      adressiert Modell-Sicherheit, Prompt-Injection-Schutz, Trainings-Data-
-      Integrity, Model-Governance. C5:2020 OPS-15 (Schutz vor Schadprogrammen)
-      ist nur sehr lose verwandt — beide adressieren bösartige Eingaben/Inhalte,
-      aber auf unterschiedlichen Ebenen.
-      Verbindlich ab 01.01.2027 — ID und Detail-Anforderungen gegen Final-
-      Catalogue zu validieren.
-    gap_warning: |
-      Neu in C5:2026, in C5:2020 NICHT als eigene Kontrolle vorhanden.
-      Vollständig zusätzlich einzuführen — Bezug zu ISO 42001 (AI Management
-      System), EU AI Act und NIST AI RMF empfohlen. OPS-15 ist KEIN
-      ausreichender Ersatz.
-    cross_refs: ['ISO 42001', 'EU AI Act']
-    audit_evidence_hint: 'AI-Governance-Richtlinie, Modell-Inventar, Trainings-Data-Provenance, Prompt-Injection-Tests, Model-Risk-Bewertungen.'
-
-  - source: 'C5-2026-EUCS-01'
+  # ===== COM — Compliance =====
+  - source: 'COM-01'
     target: 'BFM-01'
     relationship: 'partial_overlap'
     confidence: 'low'
     rationale: |
-      C5:2026 EUCS-01 (EUCS-Alignment, voraussichtlich neuer Querschnittsbereich)
-      adressiert die Anschlussfähigkeit an das European Cloud Services
-      Certification Scheme (ENISA). C5:2020 BFM-01 (Berichtswesen/Governance)
-      ist nur insoweit verwandt, als Governance-Strukturen für Multi-Schema-
-      Zertifizierung benötigt werden.
-      Verbindlich ab 01.01.2027 — ID und Detail-Anforderungen gegen Final-
-      Catalogue zu validieren.
+      C5:2026 COM-01 „Identification of Applicable Legal, Regulatory,
+      Self-imposed or Contractual Requirements" deckt regulatorische
+      Anforderungssteuerung ab — ein Teilbereich von 2020 BFM-01
+      (Beauftragten-/Berichtswesen-Funktion). Andere BFM-Anteile
+      (Beauftragten-Rollen) liegen 2026 bei OIS.
     gap_warning: |
-      Neu in C5:2026, nicht direkt in C5:2020 abbildbar. EUCS-Alignment-
-      Mapping erfordert eigenständige Analyse gegen ENISA-EUCS-Catalogue
-      (Level Basic / Substantial / High).
-    audit_evidence_hint: 'EUCS-Mapping-Tabelle, ENISA-EUCS-Konformitätsbewertung, Multi-Schema-Zertifizierungs-Strategie.'
+      C5:2020 BFM-01 ist breiter als COM-01. Wer COM-01 erfüllt, hat
+      noch kein vollständiges 2020-BFM-Mapping; ergänze OIS-04
+      (Segregation of Duties) und OIS-01 (ISMS-Verantwortung).
+    cross_refs: ['OIS-01', 'OIS-04']
+    audit_evidence_hint: 'Compliance-Anforderungs-Register (GDPR, NIS2, DORA, regionale Cloud-Gesetze), Reviews letzte 12 Monate.'
 
-  - source: 'C5-2026-CS-01'
-    target: 'OPS-01'
+  - source: 'COM-03'
+    target: 'BFM-01'
     relationship: 'partial_overlap'
     confidence: 'low'
     rationale: |
-      C5:2026 CS-01 (Enhanced Client-Separation, voraussichtlich neuer
-      dedizierter Bereich) verschärft Mandanten-Isolation auf Compute-,
-      Network- und Storage-Ebene über Konfigurationsmanagement hinaus.
-      C5:2020 OPS-01 deckt nur die Konfigurations-Disziplin ab.
-      Verbindlich ab 01.01.2027 — ID und Detail-Anforderungen gegen Final-
-      Catalogue zu validieren.
+      C5:2026 COM-03 „Internal Audits of the ISMS" hat in 2020 keine
+      eigene Kriteriums-ID — Audit-Pflichten waren Teil der breiteren
+      BFM-01- bzw. SIM-01-Anforderungen. Aufbau interner Audit-Programme
+      sollte separat betrachtet werden.
     gap_warning: |
-      Mandanten-Isolations-Schärfung ist neu in 2026. Ergänzungen zu OPS-01
-      voraussichtlich erforderlich: Tenant-Isolation-Tests, Side-Channel-
-      Schutzmaßnahmen, Storage-Encryption-per-Tenant, Network-Microsegmentation.
-    audit_evidence_hint: 'Tenant-Isolation-Test-Reports, Storage-Encryption-per-Tenant-Nachweise, Network-Microsegmentation-Konfiguration.'
+      Wer 2020-Reife auf 2026 überträgt, sollte ein separates Audit-
+      Programm gemäß ISO 19011 aufbauen — die 2020-Implementierung
+      reichte oft nur für extern-getriebene Audits.
+    audit_evidence_hint: 'Audit-Plan, Audit-Reports letzte 24 Monate, Maßnahmen-Tracking aus Audit-Findings.'
+
+  # ===== COS — Communication Security =====
+  - source: 'COS-01'
+    target: 'KOS-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COS-01 „Technical Safeguards" entspricht direkt C5:2020
+      KOS-01 „Technische Schutzmaßnahmen". Präfixwechsel KOS → COS ist
+      rein redaktionell. Pflichteninhalt deckungsgleich: Netzwerk-
+      Segmentierung, Firewall-Regeln, kryptografische Transportsicherung.
+    cross_refs: ['COS-02', 'COS-07']
+    audit_evidence_hint: 'Netzwerk-Segmentierungs-Konzept, Firewall-Rule-Review, Topologie-Dokument.'
+
+  - source: 'COS-07'
+    target: 'KOS-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 COS-07 „Documentation of the Network Topology" ist ein
+      konkreter Teilaspekt der breiteren 2020 KOS-01-Pflicht; 2026 hebt
+      die Topologie-Dokumentation als eigenes Kriterium hervor.
+    audit_evidence_hint: 'Aktuelle Netzwerk-Topologie-Diagramme, VLAN-Karte, Routing-Tabellen.'
+
+  # ===== CRY — Cryptography =====
+  - source: 'CRY-01'
+    target: 'KRY-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-01 „Policy for the Use of Cryptographic Mechanisms"
+      entspricht direkt C5:2020 KRY-01. Präfixwechsel KRY → CRY ist
+      redaktionell. Beide Frameworks referenzieren BSI TR-02102 als
+      Algorithmen-Baseline.
+    cross_refs: ['CRY-04', 'CRY-05']
+    audit_evidence_hint: 'Krypto-Richtlinie BSI TR-02102 konform, Algorithmen-Allowlist, HSM-Inventar.'
+
+  - source: 'CRY-02'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 CRY-02 „Cryptographic Change Management" ist ein NEUES
+      Kriterium ohne 2020-Equivalent. Es adressiert Krypto-Agilität und
+      Migration auf Post-Quantum-Cryptography (PQC). 2020 enthielt nur
+      Algorithmen-Stärken-Anforderungen, keine systematische
+      Übergangsplanung.
+    gap_warning: |
+      Bestandsanwender mit C5:2020-Reife müssen für CRY-02 ein
+      eigenständiges Krypto-Migrations-Programm aufbauen: Inventur aller
+      Krypto-Verwendungen, Bewertung PQC-Readiness, Roadmap zur
+      Algorithmen-Transition. BSI TR-02102 wird 2026/2027 PQC-Verfahren
+      verbindlich vorgeben.
+    cross_refs: ['CRY-12', 'CRY-13', 'CRY-17']
+    audit_evidence_hint: 'Krypto-Inventar (Algorithmen, Schlüssellängen, Verwendungsorte), PQC-Migration-Roadmap, Algorithmen-Sunset-Plan.'
+
+  - source: 'CRY-04'
+    target: 'KRY-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-04 „Protection of Data for Transmission (Transport
+      Protection)" ist ein konkreter Teilaspekt der 2020 KRY-01-Krypto-
+      Richtlinie. 2026 hebt Transportverschlüsselung als eigenes
+      Kriterium hervor (TLS 1.3 / IPsec-Pflicht).
+    audit_evidence_hint: 'TLS-Konfigurations-Tests (z.B. SSL-Labs A+ Rating), VPN-Konfiguration, Cipher-Suite-Inventar.'
+
+  - source: 'CRY-05'
+    target: 'KRY-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-05 „Encryption of Sensitive Data at Rest" ist ein
+      konkreter Teilaspekt der 2020 KRY-01-Krypto-Richtlinie; 2026 hebt
+      Encryption-at-Rest separat hervor.
+    audit_evidence_hint: 'Disk-/Object-Storage-Encryption-Konfiguration, KMS-Integration, Stichprobe verschlüsselter Volumes.'
+
+  # ===== DEV — Development =====
+  - source: 'DEV-01'
+    target: 'DEV-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-01 „Policies for the Development/Procurement of System
+      Components" entspricht direkt C5:2020 DEV-01. Pflichteninhalt
+      deckungsgleich.
+    audit_evidence_hint: 'Secure-SDLC-Richtlinie, Procurement-Policy.'
+
+  - source: 'DEV-02'
+    target: 'DEV-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-02 „Outsourcing of the Development" entspricht direkt
+      C5:2020 DEV-02. Pflichteninhalt deckungsgleich.
+    cross_refs: ['SSO-01']
+    audit_evidence_hint: 'Verträge mit Outsourcing-Entwicklern, Code-Review-Protokolle.'
+
+  - source: 'DEV-03'
+    target: 'RB-01'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 DEV-03 „Policies for Changes to System Components" deckt
+      Change-Management-Pflichten ab, die in 2020 unter dem breiteren
+      Bereich RB (Regelbetrieb) bzw. RB-01 erfasst waren. 2026 verschiebt
+      Change-Management von RB nach DEV.
+    gap_warning: |
+      Wer 2020-RB-01-Reife auf DEV-03 überträgt, sollte zusätzlich DEV-06
+      (Risk Assessment of Changes), DEV-07 (Testing) und DEV-15
+      (Exceptions) adressieren — diese sind in 2026 ausdifferenziert.
+    cross_refs: ['DEV-06', 'DEV-07', 'DEV-15']
+    audit_evidence_hint: 'Change-Management-Richtlinie, CAB-Protokolle, Change-Tickets letzte 90 Tage.'
+
+  - source: 'DEV-13'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 DEV-13 „Transparency about Software Components" ist ein
+      NEUES Kriterium ohne 2020-Equivalent. Es verlangt SBOM-Pflege
+      (Software Bill of Materials) und Transparenz über alle
+      eingebetteten Komponenten — getrieben durch EU-CRA und Log4Shell-
+      Lehren.
+    gap_warning: |
+      Bestandsanwender mit C5:2020-Reife müssen ein SBOM-Programm
+      aufbauen: SBOM-Generierung in CI/CD (CycloneDX oder SPDX), SBOM-
+      Speicherung pro Release, Mapping zu CVE-Feeds, Kunden-API für
+      SBOM-Bezug. Dieser Aufbau ist substanziell und sollte mit der
+      EU-CRA-Compliance koordiniert werden.
+    cross_refs: ['DEV-14', 'OPS-29']
+    audit_evidence_hint: 'SBOM pro Software-Release (CycloneDX/SPDX), CVE-Tracking gegen SBOM, SBOM-API-Endpoint.'
+
+  # ===== GC — Generic Client Information =====
+  - source: 'GC-01'
+    target: 'BEI-01'
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      C5:2026 GC-01 „Information on applicable law, jurisdiction,
+      countries, partitions, regions, zones and locations" verlangt
+      Transparenz gegenüber dem Cloud-Kunden zu Datenresidenz und
+      anwendbarem Recht. In 2020 waren diese Informationspflichten Teil
+      des breiteren BEI-01 (Beziehungen zu Dritten) — ohne eigenes
+      Kriterium.
+    gap_warning: |
+      GC-01 ist umfangreicher als BEI-01-Anteile. Bestandsanwender
+      sollten die Datenresidenz-Karte (Region/Zone/Verfügbarkeitsbereich)
+      und gerichtsbarkeits-spezifische Hinweise (z.B. CLOUD Act,
+      Schrems-II-Implikationen) als eigenständiges Dokument aufbauen.
+    audit_evidence_hint: 'Datenresidenz-Mapping pro Cloud-Service, Jurisdiktions-Hinweis im SLA, Kunden-Dokumentation.'
+
+  # ===== HR — Human Resources =====
+  - source: 'HR-01'
+    target: 'PSC-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-01 „Verification of Qualification and Trustworthiness"
+      entspricht direkt C5:2020 PSC-01. Der eigene 2020-Bereich PSC
+      (Personalsicherheit) ist 2026 vollständig in HR aufgegangen;
+      Pflichteninhalt deckungsgleich.
+    cross_refs: ['HR-02', 'HR-04']
+    audit_evidence_hint: 'Hintergrundüberprüfungen, Führungszeugnis (privilegierte Rollen), Referenzprüfungen.'
+
+  - source: 'HR-03'
+    target: 'HR-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-03 „Security Training and Awareness Programme"
+      entspricht direkt C5:2020 HR-03. Pflichteninhalt deckungsgleich.
+    audit_evidence_hint: 'Schulungsplan, Schulungsquoten ≥95%, rollenspezifische Curricula, Phishing-Drills.'
+
+  - source: 'HR-07'
+    target: 'MA-01'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 HR-07 „Remote Working - Policy" entspricht C5:2020 MA-01
+      (Mobile Arbeit / Telearbeits-Richtlinie). Der eigene 2020-Bereich
+      MA ist 2026 entfallen; alle Anforderungen wurden in HR-07/HR-08
+      konsolidiert.
+    cross_refs: ['HR-08', 'PS-08']
+    audit_evidence_hint: 'Remote-Work-Policy, VPN-Konfiguration, Endpoint-Hardening für mobile Geräte.'
+
+  # ===== IAM — Identity & Access Management =====
+  - source: 'IAM-01'
+    target: 'IDM-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-01 „Policy for Identities and Access Rights"
+      entspricht direkt C5:2020 IDM-01. Präfixwechsel IDM → IAM ist
+      redaktionell.
+    audit_evidence_hint: 'Identity-Management-Richtlinie, Berechtigungskonzept, Rollen-Modell.'
+
+  - source: 'IAM-02'
+    target: 'IDM-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-02 „Granting and Change of Identities and Access
+      Rights" entspricht C5:2020 IDM-02 (ggf. zusammengefasst mit
+      IDM-03). 2026 konsolidiert die 2020-Aufteilung in einem Kriterium.
+    cross_refs: ['IAM-04', 'IAM-05']
+    audit_evidence_hint: 'Provisioning-Workflow, Joiner/Mover/Leaver-Tickets letzte 90 Tage.'
+
+  - source: 'IAM-06'
+    target: 'IDM-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 IAM-06 „Privileged Access Rights" ist ein konkreter
+      Teilaspekt der breiteren 2020 IDM-01-Richtlinie; 2026 hebt PAM
+      (Privileged Access Management) als eigenes Kriterium hervor mit
+      verschärften Pflichten (just-in-time-Vergabe, Session-Recording).
+    audit_evidence_hint: 'PAM-Lösung mit Session-Recording, Just-in-Time-Vergabe-Protokolle, Liste aller privilegierten Accounts.'
+
+  - source: 'IAM-08'
+    target: 'IDM-09'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-08 „Authentication Mechanisms" entspricht direkt
+      C5:2020 IDM-09. Pflichteninhalt deckungsgleich: MFA für
+      administrative Zugriffe, kryptografisch starke Verfahren gemäß
+      BSI TR-03116.
+    cross_refs: ['IAM-09']
+    audit_evidence_hint: 'MFA-Coverage 100% Admin-Accounts, Auth-Methoden-Inventar.'
+
+  # ===== INQ — Inquiries from Government Agencies =====
+  - source: 'INQ-01'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 INQ-01 „Legal Assessment of Investigation Requests" ist
+      neu als eigener Bereich. 2020 enthielt fragmentarische Hinweise zu
+      Behördenanfragen in COM/BEI, aber kein dediziertes Kriterium. 2026
+      hebt Behördenanfragen mit dem 4-Kriterien-Bereich INQ als eigenen
+      Pflichtenkomplex aus (CLOUD Act, BfDI-Anfragen, MLAT-Verfahren).
+    gap_warning: |
+      Bestandsanwender müssen für INQ-01..04 einen formalen Prozess
+      aufbauen: Legal-Review-Workflow, Kunden-Benachrichtigung (sofern
+      rechtlich zulässig), Datenminimierung in der Antwort, technische
+      Dokumentation der Datenherausgabe.
+    cross_refs: ['INQ-02', 'INQ-03', 'INQ-04', 'GC-05']
+    audit_evidence_hint: 'Behördenanfrage-Prozess-Dokumentation, Legal-Review-Protokolle, Transparenzbericht.'
+
+  # ===== OIS — Organisation of Information Security =====
+  - source: 'OIS-01'
+    target: 'SIM-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-01 „Information Security Management System (ISMS)"
+      entspricht direkt C5:2020 SIM-01. WICHTIG: SIM in 2020 = ISMS-
+      Steuerung; SIM in 2026 = Security Incident Management. Die
+      ISMS-Pflichten wurden in 2026 unter OIS umbenannt.
+    cross_refs: ['OIS-02', 'OIS-07']
+    audit_evidence_hint: 'ISMS-Scope-Dokument, ISMS-Handbuch, ISO-27001-Zertifikat oder gleichwertig, Management-Review.'
+
+  - source: 'OIS-04'
+    target: 'BFM-01'
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OIS-04 „Segregation of Duties" deckt Funktionstrennungs-
+      Anforderungen ab, die in 2020 unter BFM-01 (Beauftragten-Funktion)
+      teilweise aufgehoben waren. Eigenständiges 2020-Kriterium für
+      Segregation of Duties existiert nicht.
+    audit_evidence_hint: 'SoD-Matrix für kritische Prozesse, Konflikt-Reviews letzte 12 Monate.'
+
+  - source: 'OIS-05'
+    target: 'RB-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-05 „Threat Intelligence" entspricht direkt C5:2020
+      RB-04 „Identifikation von Schwachstellen, Bedrohungen und
+      funktionalen Mängeln". Pflichteninhalt deckungsgleich; in 2026 von
+      RB nach OIS verschoben.
+    cross_refs: ['OIS-06']
+    audit_evidence_hint: 'Threat-Intel-Quellen-Inventar, ausgewertete Meldungen letzte 12 Monate.'
+
+  - source: 'OIS-07'
+    target: 'SIM-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OIS-07 „Risk Management Policy" ist ein Teilaspekt der
+      breiteren 2020 SIM-01-ISMS-Anforderung; ISO-27005-konformes
+      Risikomanagement war dort integraler Bestandteil. 2026 hebt
+      Risk Management als eigenes Kriterium hervor.
+    cross_refs: ['OIS-08', 'OIS-09']
+    audit_evidence_hint: 'Risikomanagement-Richtlinie ISO-27005-konform, Risikoregister, Risk-Treatment-Plan.'
+
+  # ===== OPS — Operations =====
+  - source: 'OPS-01'
+    target: 'OPS-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-01 „Capacity Management - Planning" entspricht direkt
+      C5:2020 OPS-01 (Kapazitätsmanagement-Planung). Pflichteninhalt
+      deckungsgleich; in 2026 präziser auf cloud-elastische Skalierung
+      ausgerichtet.
+    audit_evidence_hint: 'Capacity-Plan, Forecast-Modelle, Auslastungsmetriken letzte 12 Monate.'
+
+  - source: 'OPS-04'
+    target: 'OPS-15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-04 „Protection Against Malware - Policies and
+      Procedures" entspricht direkt C5:2020 OPS-15 „Schutz vor
+      Schadprogrammen — Konzept". Numerische Verschiebung durch 2026-
+      Restrukturierung; Pflichteninhalt unverändert.
+    cross_refs: ['OPS-05']
+    audit_evidence_hint: 'Malware-Schutz-Konzept, AV/EDR-Coverage-Report, Quarantäne-Statistiken.'
+
+  - source: 'OPS-06'
+    target: 'RB-01'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OPS-06 „Data Backup and Recovery - Policies and
+      Procedures" entspricht dem Backup-Anteil von 2020 RB-01. Der
+      breitere 2020-Regelbetrieb-Bereich (RB) ist 2026 auf OPS, DEV und
+      PSS verteilt; Backup-Pflichten konsolidiert in OPS-06..09.
+    cross_refs: ['OPS-07', 'OPS-08', 'OPS-09']
+    audit_evidence_hint: 'Backup-Konzept, Recovery-Test-Protokolle, Backup-Retention.'
+
+  - source: 'OPS-10'
+    target: 'OPS-10'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-10 „Logging and Monitoring - Policies and Procedures"
+      entspricht direkt C5:2020 OPS-10. Pflichteninhalt deckungsgleich;
+      2026 vertieft mit OPS-11..17 die operativen Detailpflichten.
+    cross_refs: ['OPS-11', 'OPS-13', 'OPS-14']
+    audit_evidence_hint: 'Logging-Konzept, SIEM-Use-Case-Katalog, 24/7-SOC-Coverage.'
+
+  - source: 'OPS-18'
+    target: 'OPS-18'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-18 „Managing Vulnerabilities - Policies and
+      Procedures" entspricht direkt C5:2020 OPS-18. Pflichteninhalt
+      deckungsgleich; 2026 vertieft mit OPS-25..28.
+    cross_refs: ['OPS-25', 'OPS-26', 'OPS-27', 'OPS-28']
+    audit_evidence_hint: 'Vulnerability-Scan-Reports, Patch-Compliance-Dashboard, CVE-Tracking.'
+
+  - source: 'OPS-32'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OPS-32 „Confidential Computing - Policies and Procedures"
+      ist ein NEUES Kriterium ohne 2020-Equivalent. Es adressiert TEE-
+      basierte Verarbeitung (Intel SGX, AMD SEV, ARM CCA) für besonders
+      sensitive Workloads.
+    gap_warning: |
+      Confidential-Computing-Anforderungen sind in 2020 NICHT vorhanden.
+      Bestandsanwender müssen für OPS-32/33 ein eigenständiges Konzept
+      aufbauen — primär relevant für Cloud-Anbieter mit Zielgruppe
+      Health/Defense/Finance.
+    cross_refs: ['OPS-33']
+    audit_evidence_hint: 'Confidential-Computing-Konzept, TEE-Inventar, Remote-Attestation-Prozess.'
+
+  - source: 'OPS-34'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OPS-34 „Container Management - Policies and Procedures"
+      ist ein NEUES Kriterium ohne dediziertes 2020-Equivalent.
+      Container-Sicherheit war 2020 implizit unter allgemeinen
+      OPS/Hardening-Anforderungen erfasst — ohne eigene Pflichten zu
+      Image-Signing, Runtime-Security und Orchestrator-Hardening.
+    gap_warning: |
+      Bestandsanwender müssen Container-spezifische Maßnahmen aufbauen:
+      Image-Signing (Cosign/Notary), Runtime-Security (Falco/Tetragon),
+      Kubernetes-Hardening (CIS-Benchmark), NetworkPolicies. Ergänzend
+      PSS-11 (Images für VMs+Container) adressieren.
+    cross_refs: ['OPS-35', 'PSS-11']
+    audit_evidence_hint: 'Container-Security-Policy, signierte Images, Runtime-Security-Logs, Kubernetes-CIS-Bench-Report.'
+
+  # ===== PI — Portability & Interoperability =====
+  - source: 'PI-01'
+    target: 'PI-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PI-01 „Safety of Input and Output Interfaces" entspricht
+      direkt C5:2020 PI-01. Pflichteninhalt deckungsgleich.
+    cross_refs: ['PI-02', 'PI-03']
+    audit_evidence_hint: 'API-Dokumentation, Datenexport-Funktionalität, Input-Validation.'
+
+  - source: 'PI-03'
+    target: 'PI-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 PI-03 „Secure Deletion of Data" ist ein konkreter
+      Teilaspekt der breiteren 2020 PI-01-Pflicht (sichere Daten-
+      Übergabe und -Löschung); 2026 hebt sichere Löschung als eigenes
+      Kriterium hervor (kryptografische Löschung von Object-Storage,
+      Audit-Trail).
+    audit_evidence_hint: 'Daten-Lösch-Konzept, kryptografische Löschung von Encrypted Volumes, Lösch-Audit-Trail.'
+
+  # ===== PS — Physical Security =====
+  - source: 'PS-01'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PS-01 „Physical Security and Environmental Control
+      Requirements" findet in 2020 keine 1:1-Entsprechung mit dieser ID,
+      da der 2020-Bereich PS bzw. physische Sicherheit nicht in den
+      bestehenden 2020-Fixtures kartiert war. Inhaltlich entsprechen
+      sich die Pflichten (TIER-Klassifikation, Perimeter, Access-Control)
+      sehr wohl — nur ID-Mapping fehlt.
+    gap_warning: |
+      Wer 2020-Physical-Security-Reife hat (z.B. ISO-27001 A.7.x), kann
+      diese auf PS-01..08 (2026) übertragen. Zusatzaufwand minimal,
+      sofern Rechenzentrum bereits TÜViT TSI 4.1 oder gleichwertig
+      attestiert ist.
+    cross_refs: ['PS-03', 'PS-04', 'PS-05']
+    audit_evidence_hint: 'TIER-Zertifizierung des RZ, Perimeter-Dokumentation, Zutrittskontroll-Logs.'
+
+  # ===== PSS — Product Safety & Security =====
+  - source: 'PSS-01'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-01 „Guidelines and Recommendations for Cloud Service
+      Customers" verlangt Anbieter-seitige Bereitstellung von
+      Sicherheits-Empfehlungen für Kunden (Shared Responsibility Modell,
+      Hardening-Empfehlungen). 2020 hatte keine eigene PSS-Sektion;
+      Anteile waren in BEI/SSO und in Anbieter-spezifischer
+      Kunden-Dokumentation enthalten — ohne formalisierte Pflicht.
+    gap_warning: |
+      Bestandsanwender müssen ein formalisiertes Customer-Guidance-
+      Programm aufbauen: Shared-Responsibility-Matrix, Best-Practice-
+      Guides pro Service, Onboarding-Schulungen für Kunden, Security-
+      Bulletins.
+    cross_refs: ['PSS-02', 'PSS-03', 'GC-01']
+    audit_evidence_hint: 'Shared-Responsibility-Matrix, Customer-Hardening-Guides, Security-Bulletin-Archiv.'
+
+  - source: 'PSS-11'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-11 „Images for Virtual Machines and Containers" ist
+      ein NEUES Kriterium ohne 2020-Equivalent. Es verlangt gehärtete
+      Golden-Images, signierte Image-Provenance, automatisierte
+      Schwachstellen-Scans vor Deployment.
+    gap_warning: |
+      Bestandsanwender müssen Image-Hardening-Pipeline aufbauen: CIS-
+      Hardened-Images als Baseline, Image-Signing, Vulnerability-Scan
+      vor Promote-to-Production, Image-Lifecycle-Mgmt (Aging-Policy).
+    cross_refs: ['OPS-26', 'OPS-34', 'DEV-13']
+    audit_evidence_hint: 'Golden-Image-Policy, Image-Hardening-Berichte (CIS-Bench), Image-Signing-Nachweis (Cosign/Notary).'
+
+  # ===== SIM — Security Incident Management =====
+  - source: 'SIM-01'
+    target: null
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SIM-01 „Policy for Security Incident Management" hat in
+      2020 KEINE direkte ID-Entsprechung. WICHTIG: SIM:2020 = ISMS
+      (Top-Level-Steuerung), SIM:2026 = Security Incident Management
+      (operative IR). Die 2020-Incident-Pflichten lagen unter
+      OPS-19..24. Bestandsanwender müssen sich der Umbenennung bewusst
+      sein, um Mappings nicht zu verwechseln.
+    gap_warning: |
+      Wer 2020-OPS-19..24-Reife hat, kann diese auf SIM-01..06 (2026)
+      übertragen — die Inhalte sind weitgehend deckungsgleich. Aber:
+      SIM-01-IR-Policy ist 2026 expliziter formuliert (Definition von
+      Incident-Klassen, Eskalations-SLAs, Externa-Kommunikation).
+    cross_refs: ['SIM-02', 'SIM-06']
+    audit_evidence_hint: 'IR-Policy mit Incident-Klassifikation, Eskalations-Matrix, externe Kommunikations-Templates.'
+
+  - source: 'SIM-06'
+    target: null
+    relationship: 'superset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SIM-06 „Evaluation and Learning Process" verlangt einen
+      formalen Lessons-Learned-Prozess nach jedem signifikanten
+      Incident. 2020-OPS-19..24 enthielten Lessons-Learned als impliziten
+      Bestandteil ohne eigenes Kriterium.
+    gap_warning: |
+      Bestandsanwender sollten Post-Incident-Reviews als formalen
+      Prozess etablieren: PIR-Template, Maßnahmen-Tracking,
+      KPI-Erfassung (MTTD, MTTR, Recurrence-Rate).
+    audit_evidence_hint: 'PIR-Reports letzte 12 Monate, Maßnahmen-Tracking aus Lessons Learned, IR-KPI-Dashboard.'
+
+  # ===== SP — Security Policies =====
+  - source: 'SP-01'
+    target: 'SIM-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SP-01 „Documentation, Communication and Provision of
+      Policies and Procedures" hebt das Policy-Lifecycle-Mgmt als
+      eigenen Bereich hervor; in 2020 war dies Teil der breiteren
+      SIM-01-ISMS-Anforderung (ISO-27001 A.5.1-Pflichten).
+    cross_refs: ['SP-02', 'SP-03']
+    audit_evidence_hint: 'Policy-Inventar mit Review-Datum und Genehmiger, Policy-Distribution-Nachweis.'
+
+  - source: 'SP-02'
+    target: 'SIM-01'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SP-02 „Review and Approval of Policies and Procedures"
+      ist ein konkreter Teilaspekt der 2020 SIM-01-ISMS-Pflicht;
+      jährlicher Review und formelle Genehmigung sind ISO-27001-Standard.
+    audit_evidence_hint: 'Policy-Review-Protokolle (jährlich), Genehmigungs-Workflow, Versions-Historie.'
+
+  # ===== SSO — Sub-Service Organisations =====
+  - source: 'SSO-01'
+    target: 'BEI-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-01 „Policies and Procedures for Controlling and
+      Monitoring Service Organisations" entspricht direkt C5:2020
+      BEI-01. Der 2020-Bereich BEI ist 2026 zu SSO umstrukturiert worden
+      mit präziserem Fokus auf laufende Steuerung statt nur
+      Vertragsgestaltung.
+    cross_refs: ['SSO-04', 'SSO-05']
+    audit_evidence_hint: 'Sub-Provider-Policy, Vertragstemplate mit InfoSec-Klauseln, Monitoring-Berichte.'
+
+  - source: 'SSO-02'
+    target: 'BEI-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-02 „Risk Assessment of Service Organisations"
+      entspricht direkt C5:2020 BEI-04 „Anforderungen an Lieferanten"
+      mit Fokus auf Risikobewertung. Pflichteninhalt deckungsgleich.
+    cross_refs: ['SSO-04', 'SSO-06']
+    audit_evidence_hint: 'Sub-Provider-Risikobewertungen, Sub-Provider-Verzeichnis.'
+
+  - source: 'SSO-06'
+    target: 'BEI-04'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SSO-06 „Contract Termination Strategy for Service
+      Organisations" hebt die Exit-Strategie als eigenes Kriterium
+      hervor — in 2020 unter BEI-04 als Teilaspekt enthalten.
+    audit_evidence_hint: 'Exit-Strategie-Dokument pro kritischem Sub-Provider, Datenrücknahme-Plan, Migrations-Runbook.'

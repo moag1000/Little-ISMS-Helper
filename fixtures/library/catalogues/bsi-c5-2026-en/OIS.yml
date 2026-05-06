@@ -1,0 +1,491 @@
+-
+  identifier: &ID_Criterion_Information_Security_Management_System '01'
+  name: 'Information Security Management System (ISMS)'
+  basic: 
+    -
+      identifier: &ID_Criterion_Information_Security_Management_System_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider maintains an ISO/IEC 27001-compliant information security management system (ISMS). The scope of the ISMS covers the cloud service provider''s organisational units, locations, zones, regions and procedures relevant to the development and operation of the cloud service.'
+    -
+      identifier: &ID_Criterion_Information_Security_Management_System_Subcriterion_Basic_2 '02B'
+      criterion: 'The measures for setting up, implementing, maintaining and continuously improving the ISMS are documented. The documentation includes:
+
+
+1. Context of the cloud service provider;
+
+2. Scope of the ISMS (section 4.3 of ISO/IEC 27001);
+
+3. Statement of applicability (section 6.1.3 of ISO/IEC 27001); 
+
+4. Overview of how activities in the ISMS cover the cloud service;
+
+5. Description of how the cloud service provider maintains and improves the cloud service''s security; and
+
+6. Results of the last management review (section 9.3 of ISO/IEC 27001).
+
+'
+    -
+      identifier: &ID_Criterion_Information_Security_Management_System_Subcriterion_Basic_3 '03B'
+      criterion: 'Additionally, the cloud service provider documents the scope and boundaries of the cloud service under its operational control, including any exclusions or shared-responsibility areas.'
+  additional_sharpen:
+    -
+      identifier: &ID_Criterion_Information_Security_Management_System_Subcriterion_Additional_Sharpen_1 '01AS'
+      sharpened_basic_criterion: *ID_Criterion_Information_Security_Management_System_Subcriterion_Basic_1
+      criterion: 'The Information Security Management System (ISMS) has a valid certification according to ISO/IEC 27001 or ISO 27001 based on BSI IT-Grundschutz. The scope of the certification covers the cloud service provider''s organisational units, locations, zones, regions, and procedures relevant to the development and operation of the cloud service.'   
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Information_Security_Management_System_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'Existing valid certifications according to ISO/IEC 27001 are issued and recognised by an accredited certification body.'   
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Information_Security_Management_System_Subcriterion_Basic_1
+      information_text: 'The basic criterion can also be fulfilled without valid certification of the ISMS according to ISO/IEC 27001 or ISO 27001 based on BSI IT-Grundschutz, if the submitted documentation meets the requirements of ISO/IEC 27001. The auditor has to evaluate whether the documentation meets the referenced requirements of the ISO standard. This does not require a full certification audit of the management system in accordance with ISO 17021, but a focused inspection of the related documentation.
+
+
+Cross-sectional functions do not need to be integrated into a single ISMS. Instead, multiple ISMS can be established to cover both, cloud service-specific internal control systems and organisation-wide/central functions effectively.
+
+
+The scope of the ISMS may go beyond the scope of the cloud service provider''s system of internal control for the cloud service in scope of an assurance engagement with this criteria catalogue. If the scope of the ISMS is broader than the scope of the assurance engagement, evidence to be obtained about the design and operation of the ISMS can be limited to records that are applicable to the cloud service in scope of the assurance engagement.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Information_Security_Policy '02'
+  name: 'Information Security Policy'
+  basic: 
+    -
+      identifier: &ID_Criterion_Information_Security_Policy_Subcriterion_Basic_1 '01B'
+      criterion: 'Top management of the cloud service provider has adopted an information security policy.' 
+    -
+      identifier: &ID_Criterion_Information_Security_Policy_Subcriterion_Basic_2 '02B'
+      criterion: 'Top management of the cloud service provider has communicated the information security policy to internal and external personnel as well as cloud service customers.' 
+    -
+      identifier: &ID_Criterion_Information_Security_Policy_Subcriterion_Basic_3 '03B'
+      criterion: 'The information security policy describes:
+
+
+1. The importance of information security, based on the requirements of cloud service customers in relation to information security;
+
+2. The security objectives and the desired security level, based on the business goals and activities as well as compliance obligations of the cloud service provider;
+
+3. The cloud service provider''s commitment to implement the necessary security measures for fulfilling the established security objectives;
+
+4. The most important aspects of the security strategy to achieve the security objectives set; and
+
+5. The organisational structure for information security in the scope of the ISMS.
+
+'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Information_Security_Policy_Subcriterion_Basic_1
+        - *ID_Criterion_Information_Security_Policy_Subcriterion_Basic_2
+      information_text: 'The top management is a natural person or group of persons who make the final decision for the organisation and is responsible for that decision.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Interfaces_and_Dependencies '03'
+  name: 'Interfaces and Dependencies'
+  basic: 
+    -
+      identifier: &ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider establishes, documents, and communicates a Shared Security Responsibility Model (SSRM) to define and manage interfaces and dependencies between cloud service delivery activities performed by the cloud service provider and those performed by cloud service customers.'
+    -
+      identifier: &ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_2 '02B'
+      criterion: 'The SSRM documentation clearly defines the responsibilities between both parties for handling vulnerabilities, security incidents, and incidents. The type and scope of the documentation is geared towards the information requirements of the subject matter experts of the affected organisations in order to carry out the activities appropriately (e.g. definition of roles and responsibilities in guidelines, description of cooperation obligations in service descriptions and contracts).'
+    -
+      identifier: &ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_3 '03B'
+      criterion: 'The cloud service provider regularly reviews and validates the SSRM documentation in accordance with SP-02 to ensure its accuracy and relevance for all cloud service offerings.' 
+    -
+      identifier: &ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_4 '04B'
+      criterion: 'The cloud service provider implements, operates, and reviews the SSRM components for which it is responsible, ensuring adherence to the defined security measures.'
+    -
+      identifier: &ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_5 '05B'
+      criterion: 'The communication of changes to the SSRM, interfaces and dependencies takes place in a timely manner so that the affected organisations and third parties can react appropriately with organisational and technical measures before the changes take effect.'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_1
+      information_text: 'Third parties in the sense of this basic criterion are, e.g. cloud service customers and service organisations (including cloud service broker).
+      
+A SSRM provides a consolidated view of the key interfaces and dependencies between the cloud service provider and third parties. Detailed information on interfaces and dependencies can be defined in separate documents that are referenced in the SSRM, such as  guidelines and procedures. For example, cloud service customers'' obligations to cooperate should be described in service descriptions and contracts.
+
+The cloud service provider can present the underlying Shared Responsibility Model of their cloud service in the guidelines and procedures to help cloud service customers understand their roles and responsibilities in terms of security and operational management.
+
+
+If cloud services are delivered through a cloud service broker, the SSRM should clearly delineate responsibilities among the cloud service provider, the cloud service broker and the cloud service customer, in particular:
+
+
+1. Data ownership and processing boundaries;
+
+2. Security control implementation by each party;
+
+3. Incident notification and escalation paths; and
+
+4. Compliance attestation scope.
+
+'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_1
+        - *ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_2
+        - *ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_3
+        - *ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_4
+        - *ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_5
+      information_text: 'The cloud service provider can define and document the interfaces and dependencies described in the basic criterion in guidelines and procedures. For example, cloud service customers'' obligations to cooperate should be described in service descriptions and contracts (or appendices thereof).
+      
+
+The cloud service provider can leverage existing documentation, such as guidelines, contractual agreements or procedures to present the underlying Shared Responsibility Model of their cloud service, thereby clarifying cloud service customers'' security and operation responsibilities.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_3
+        - *ID_Criterion_Interfaces_and_Dependencies_Subcriterion_Basic_5
+      information_text: 'By maintaining an up-to-date and clearly communicated SSRM, the cloud service provider ensures a comprehensive understanding of security responsibilities, fostering a secure and reliable cloud environment for all stakeholders.'
+  corresponding: 'Cloud service customers ensure with suitable controls that the guidelines and requirements for compliance with the contractual agreements with the cloud service provider (i.e., responsibilities, cooperation obligations and interfaces for reporting security incidents) are adequately defined, documented and set up.'
+-
+  identifier: &ID_Criterion_Segregation_of_Duties '04'
+  name: 'Segregation of Duties'
+  basic: 
+    -
+      identifier: &ID_Criterion_Segregation_of_Duties_Subcriterion_Basic_1 '01B'
+      criterion: 'Conflicting tasks and responsibilities are segregated based on a risk assessment in accordance with OIS-07 to reduce the risk of unauthorised or unintended changes or misuse of cloud service customer data, cloud service derived data and cloud service provider data. The risk assessment covers the following areas, insofar as these are applicable to the provision of the cloud service and are in the area of responsibility of the cloud service provider:
+
+
+1. Administration of a role, rights and authorisation framework based on role-based access control and the business and security requirements of the cloud service provider (cf. IAM-01);
+
+2. Development, testing and release of changes (cf. DEV-01); 
+
+3. Risk management (cf. OIS-07); and
+
+4. Operation of the system components.
+
+'
+    -
+      identifier: &ID_Criterion_Segregation_of_Duties_Subcriterion_Basic_2 '02B'
+      criterion: 'Mitigating measures are outlined in the risk treatment plan (cf. OIS-09) and implemented by the cloud service provider in a way that prioritises the segregation of duties.'
+    -
+      identifier: &ID_Criterion_Segregation_of_Duties_Subcriterion_Basic_3 '03B'
+      criterion: 'If segregation of duties cannot be implemented due to organisational or technical constraints, the cloud service provider establishes and operates compensating controls to monitor relevant activities. These controls are designed to detect unauthorised or unintended changes, misuse of data, or violations of operational policies, and enable timely and appropriate response actions.'
+    -
+      identifier: &ID_Criterion_Segregation_of_Duties_Subcriterion_Basic_4 '04B'
+      criterion: 'An inventory consisting of conflicting tasks, responsibilities and resolving measures is established and maintained by the cloud service provider. For the assignment, change or revocation of roles, rights and authorities, the cloud service provider enforces the segregation of duties.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Segregation_of_Duties_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'To resolve conflicting roles, measures associated with the segregation of duties are monitored and enforced by the cloud service provider.' 
+    -
+      identifier: &ID_Criterion_Segregation_of_Duties_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'Timely and appropriate remediation measures address any deviations identified during monitoring.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Segregation_of_Duties_Subcriterion_Basic_1
+      information_text: 'Identified events that may constitute unauthorised or unintentional changes to or misuse of cloud service customer data, cloud service derived data and cloud service provider data may, for example, be treated as a security incident, cf. SIM-01.
+      
+The area of risk management in the context of segregation of duties refers to the so-called different lines of defense, i.e. roles that review risks (2nd line of defense) are different from roles that own risks (1st line of defense).'
+  corresponding:
+-
+  identifier: &ID_Criterion_Threat_Intelligence '05'
+  name: 'Threat Intelligence'
+  basic: 
+    -
+      identifier: &ID_Criterion_Threat_Intelligence_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider collects information from selected internal and external sources to gain a comprehensive view of the threat landscape that lead to cybersecurity risks.'
+    -
+      identifier: &ID_Criterion_Threat_Intelligence_Subcriterion_Basic_2 '02B'
+      criterion: 'The collected information is correlated and analysed to identify its potential impact on the cloud service provider''s organisation.' 
+    -
+      identifier: &ID_Criterion_Threat_Intelligence_Subcriterion_Basic_3 '03B'
+      criterion: 'The cloud service provider integrates threat intelligence insights into its risk management process (cf. OIS-07, OIS-08 and OIS-09).'
+  additional_sharpen:
+  additional_complement:
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Threat_Intelligence_Subcriterion_Basic_1
+      information_text: 'Internal sources that can be used to collect information include, for example, the cloud service provider''s internal security monitoring. External sources that can be used to collect information include, for example, threat intelligence feeds from government agencies, commercial threat intelligence providers or industry consortiums.
+      
+Threat intelligence generally includes different areas like cybersecurity risk intelligence gathering (e.g. monitoring relevant internal or external sources), threat modelling and risk management.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Threat_Intelligence_Subcriterion_Basic_2
+      information_text: 'This process can, for example, include correlating threat intelligence with organisational assets, vulnerabilities, and business processes to identify relevant and actionable threats. The results can be used to provide regular threat briefings to cloud service provider''s management and security teams.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Threat_Intelligence_Subcriterion_Basic_3
+      information_text: 'If a threat model is used for this process, the cloud service provider can, for example:
+
+
+1. Use structured methodologies (e.g., STRIDE, PASTA, LINDDUN) appropriate to the cloud service architecture;
+
+2. Map current threat landscape intelligence to specific system components, data flows, and trust boundaries;
+
+3. Incorporate real-time threat intelligence to update threat models dynamically rather than relying on static annual assessments;
+
+4. Consider emerging attack vectors, techniques, and procedures (TTPs) documented in frameworks such as MITRE ATT&CK; and
+
+5. Account for supply chain and third-party risks through extended threat modelling.
+
+
+The aim of threat modelling is to ensure that the current internal and external threats are reflected in risk handling measures.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Contact_with_Relevant_Government_Agencies_and_Interest_Groups '06'
+  name: 'Contact with Relevant Government Agencies and Interest Groups'
+  basic: 
+    -
+      identifier: &ID_Criterion_Contact_with_Relevant_Government_Agencies_and_Interest_Groups_Subcriterion_Basic_1 '01B'
+      criterion: 'If the cloud service is used by public sector organisations in Germany, the cloud service provider establishes and maintains contacts with the National IT Situation Centre and the CERT Association of the BSI as appropriate.'
+  additional_sharpen:
+  additional_complement: 
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Contact_with_Relevant_Government_Agencies_and_Interest_Groups_Subcriterion_Basic_1
+      information_text: 'Public sector organisations in Germany are e.g. ministries and authorities. If the cloud service provider does not have customers in the public sector, this criterion is not applicable.
+      
+
+As appropriate means that contacts are established when there is an actual need to do so. For instance, establishing contact with CERT typically involves the reporting of security incidents to CERT and following CERT''s communication channels to stay informed about current threats, vulnerabilities and security guidance. Maintaining contact in the sense of OIS-06.01B does in this instance not require the cloud service provider to proactively communicate with CERT unprompted.
+      
+
+For KRITIS (critical infrastructure), as defined in section 2(10) of the BSI Act (BSIG), similar requirements to maintain contact with government agencies and stakeholders may apply under German national law.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Risk_Management_Policy '07'
+  name: 'Risk Management Policy'
+  basic: 
+    -
+      identifier: &ID_Criterion_Risk_Management_Policy_Subcriterion_Basic_1 '01B'
+      criterion: 'Policies and procedures for risk management procedures are documented, communicated and provided in accordance with SP-01. Risk management procedures are based on a methodology for risk assessments. The methodology allows comparability and reproducibility for the following aspects:
+
+
+1. Identification of cybersecurity risks and other risks associated with the loss of confidentiality, integrity, availability and authenticity of information within the scope of the ISMS and assigning risk owners;
+
+2. Analysis of the probability and impact of occurrence and determination of the level of risk;
+
+3. Evaluation of the risk assessment based on defined criteria for risk acceptance and prioritisation of risk management;
+
+4. Treatment of risks through measures, including approval of authorisation and acceptance of residual risks by risk owners;
+
+5. Documentation of the activities implemented to enable consistent, valid and comparable results; and
+
+6. Evaluation of the risk assessment and the status of risk treatment plans by the level of management responsible for the security of the cloud service.
+
+'
+  additional_sharpen:
+  additional_complement: 
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_Management_Policy_Subcriterion_Basic_1
+      information_text: 'The risk level can be determined by qualitative, semiquantitative and quantitative methods (cf. ISO 31010) based on the likelihood and impact of the risks.
+
+
+For identifying, evaluating, and prioritising potential threats and vulnerabilities associated with processes, systems, and data flows, threat modelling can provide a structured methodology: The cloud service provider can systematically analyse attack vectors and possible impacts to support auditors and stakeholders in validating the suitability of the design of implemented controls, highlight gaps in existing security measures, and ensure alignment with best practices for proactive risk mitigation.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Risk_Assessment '08'
+  name: 'Application of the Risk Management Policy - Risk Assessment'
+  basic: 
+    -
+      identifier: &ID_Criterion_Risk_Assessment_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider performs the risk management process specified by OIS-07 as needed and at least annually.' 
+    -
+      identifier: &ID_Criterion_Risk_Assessment_Subcriterion_Basic_2 '02B'
+      criterion: 'The following aspects are taken into account when identifying risks, insofar as they are applicable to the cloud service provided and are within the area of responsibility of the cloud service provider:
+
+
+1. Processing, storage or transmission of cloud service customer data and cloud service derived data with different protection needs;
+
+2. Occurrence of vulnerabilities and incidents in technical protective measures for separating shared resources;
+
+3. Attacks via access points, including interfaces accessible from public networks and accidentally exposed interfaces;
+
+4. Dependencies on service organisations;
+
+5. An encryption and key management risk programme which addresses the risks of unauthorised disclosure, modification, destruction, or information loss of cryptographic keys; and
+
+6. Separation of cloud service customers and their data within systems, networks and storage.
+
+'
+    -
+      identifier: &ID_Criterion_Risk_Assessment_Subcriterion_Basic_3 '03B'
+      criterion: 'Policies and procedures covering risk assessments relevant for the delivery and operation of the cloud service are implemented by the cloud service provider.' 
+    -
+      identifier: &ID_Criterion_Risk_Assessment_Subcriterion_Basic_4 '04B'
+      criterion: 'The risk assessment''s results are provided to relevant internal parties.'
+    -
+      identifier: &ID_Criterion_Risk_Assessment_Subcriterion_Basic_5 '05B'
+      criterion: 'Relevant external parties are provided with information, specific to the parties'' purposes, resulting from the risk assessments.'
+    -
+      identifier: &ID_Criterion_Risk_Assessment_Subcriterion_Basic_6 '06B'
+      criterion: 'The analysis, evaluation and treatment of risks, including the approval of actions and acceptance of residual risks, is reviewed by the risk owners for adequacy at least annually. In addition, in case of significant changes to the cloud service, a review is carried out focusing on the parts of the risk assessment relevant to the change.'
+  additional_sharpen:
+    -
+      identifier: &ID_Criterion_Risk_Assessment_Subcriterion_Additional_Sharpen_1 '01AS'
+      sharpened_basic_criterion: *ID_Criterion_Risk_Assessment_Subcriterion_Basic_1 
+      criterion: 'The cloud service provider performs the risk management process as specified by OIS-07 as needed and at least annually. The evolution of the risks is monitored and the risk assessments are reviewed correspondingly.'
+  additional_complement:
+    - 
+      identifier: &ID_Criterion_Risk_Assessment_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider integrates information security risks into a documented Enterprise Risk Management (ERM) programme which addresses the following aspects:
+      
+
+1. Integration of information security risks at the enterprise level to promote information security risk-awareness across the entire organisation;
+
+2. Leadership awareness and support for identification, analysis and treatment of information security risks to foster continuous improvement; and
+
+3. Consideration of the cloud service provider''s strategic objectives when managing risks to align risk treatment with the organisation''s goals.
+
+'
+    - 
+      identifier: &ID_Criterion_Risk_Assessment_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'When identifying risks, the cloud service provider also takes into account the detection of unusual and harmful actions of internal threat actors, insofar as it is applicable to the cloud service provided and is within the area of responsibility of the cloud service provider.'
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Basic_1
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Basic_2
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Basic_3
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Basic_4
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Basic_5
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Basic_6
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Additional_Sharpen_1
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Additional_Complement_1
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Additional_Complement_2
+      information_text: 'This criterion applies only to risks that reside within the area of responsibility of the cloud service provider. Risks that arise for the cloud service customer when using the cloud service are not covered by this criterion. When outsourcing activities for the provision of cloud services to service organisations, the responsibility for these risks remains with the cloud service provider. Requirements for measures to manage these risks can be found in the criteria area ''Control and Monitoring of Service Providers and Suppliers (SSO)''.
+      
+      
+Cloud service providers may leverage established risk management standards, such as ISO 27005 or the ISO 31000 family of standards to address risks related to the cloud service. Risk management procedures already implemented at the cloud service provider may be leveraged for OIS-08 where possible to reduce redundancies. Documentation of risks, treatment plans and risk acceptance in the sense of this criterion does not require specific formal frameworks; lean forms of documentation can be leveraged wherever appropriate to address the OIS-08 subcriteria.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Basic_1
+      information_text: 'Examples of scenarios in which the risk management process may be executed ''as needed'' include, but are not limited to, the following:
+
+
+1. Changes to the threat landscape (cf. OIS-05);
+
+2. Security incidents or business disruptions;
+
+3. Changes to the cloud service provider''s legal, regulatory, self-imposed and contractual requirements relevant to the information security of the cloud service (cf. COM-01);
+
+4. Changes to the cloud service provider''s organisational structure with impact on roles, responsibilties or procedures for provisioning the cloud service;
+
+5. Changes to the achitecture of the cloud service (cf. OPS-31);
+
+6. Events related to the cloud service provider''s service organisations (cf. SSO-05);
+
+7. Exceptions to policies or procedures (cf. SP-03); and
+
+8. Identification of critical vulnerabilities (cf. OPS-22) or compliance deviations (cf. COM-03).
+
+'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Basic_2
+      information_text: 'Shared resources are e.g. networks, RAM or storage.
+      
+
+When determining protection needs of customer data, regulatory requirements applicable to customer data should be considered such as PCI-DSS, HIPAA, DORA (regulation on digital operational resilience for the financial sector and amending regulations), NIS 2 Directive and KRITIS.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Basic_4
+      information_text: 'Relevant internal parties can include the cloud service provider''s management and security teams.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_Assessment_Subcriterion_Basic_5
+      information_text: 'Relevant external parties can include cloud service customers, subservice organisations and regulatory agencies.
+
+
+Information that can be relevant in this context includes information about identified vulnerabilities, security incidents and threat intelligence.
+
+
+The cloud service provider can choose to make this information accessible through its SSRM (cf. OIS-03), its documentation and guidelines (cf. PSS-01) or its processes for informing cloud service customers about known vulnerabilities (cf. PSS-03).'
+-
+  identifier: &ID_Criterion_Risk_Treatment '09'
+  name: 'Application of the Risk Management Policy - Risk Treatment'
+  basic: 
+    -
+      identifier: &ID_Criterion_Risk_Treatment_Subcriterion_Basic_1 '01B'
+      criterion: 'The risk treatment is prioritised corresponding to the level of cybersecurity risks associated with the cloud service.' 
+    -
+      identifier: &ID_Criterion_Risk_Treatment_Subcriterion_Basic_2 '02B'
+      criterion: 'A risk treatment plan according to the risk assessment (cf. OIS-08) is documented and implemented.' 
+    -
+      identifier: &ID_Criterion_Risk_Treatment_Subcriterion_Basic_3 '03B'
+      criterion: 'Actions defined in the risk treatment plan reduce the risk level to a residual risk that risk owners are able to accept.'
+    -
+      identifier: &ID_Criterion_Risk_Treatment_Subcriterion_Basic_4 '04B'
+      criterion: 'The risk treatment plan, as well as suitably summarised and abstracted versions, is provided to relevant internal parties.' 
+    -
+      identifier: &ID_Criterion_Risk_Treatment_Subcriterion_Basic_5 '05B'
+      criterion: 'Based on contractual agreements and relevant legal and regulatory requirements, the cloud service provider determines which relevant external parties are provided with information, specific to the parties'' purposes, about the risk treatment plan. The cloud service provider also determines the extent to which this should happen.' 
+    -
+      identifier: &ID_Criterion_Risk_Treatment_Subcriterion_Basic_6 '06B'
+      criterion: 'The selected options for risk treatment are reviewed by the risk owners every time the risk assessment is modified. The review considers the criteria for risk acceptance and prioritisation of risk treatment.'
+    -
+      identifier: &ID_Criterion_Risk_Treatment_Subcriterion_Basic_7 '07B'
+      criterion: 'In case of the cloud service provider sharing risks with the cloud service customers, the cloud service provider maps shared risks to complementary customer controls and describes them in the user documentation (cf. PSS-01).'
+  additional_sharpen:
+  additional_complement:
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_Treatment_Subcriterion_Basic_1
+        - *ID_Criterion_Risk_Treatment_Subcriterion_Basic_2
+        - *ID_Criterion_Risk_Treatment_Subcriterion_Basic_3
+        - *ID_Criterion_Risk_Treatment_Subcriterion_Basic_4
+        - *ID_Criterion_Risk_Treatment_Subcriterion_Basic_5
+        - *ID_Criterion_Risk_Treatment_Subcriterion_Basic_6
+        - *ID_Criterion_Risk_Treatment_Subcriterion_Basic_7
+      information_text: 'This criterion applies only to risks that reside within the area of responsibility of the cloud service provider. Risks that arise for the cloud service customer when using the cloud service are not covered by this criterion. When outsourcing activities for the provision of cloud services to subservice organisations, the responsibility for these risks remains with the cloud service provider. Requirements for measures to manage these risks can be found in the criteria area ''Control and Monitoring of Service Providers and Suppliers (SSO)''.
+      
+      
+Cloud service providers may leverage established risk management standards, such as ISO 27005 or the ISO 31000 family of standards to address risks related to the cloud service. Risk management procedures already implemented at the cloud service provider may be leveraged for OIS-09 where possible to reduce redundancies. Documentation of risks, treatment plans and risk acceptance in the sense of this criterion does not require specific formal frameworks; lean forms of documentation can be leveraged wherever appropriate to address the OIS-09 subcriteria.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_Treatment_Subcriterion_Basic_1
+      information_text: 'The priorisation can, for example, be performed by setting appropriate time limits for the treatment of the risks.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_Treatment_Subcriterion_Basic_6
+      information_text: 'Options for risk treatment may involve one or more of the following:
+
+
+1. Avoiding the risk by deciding not to start or continue with the activity that gives rise to the risk;
+
+2. Taking or increasing the risk in order to pursue an opportunity;
+
+3. Removing the risk source;
+
+4. Changing the likelihood;
+
+5. Changing the consequences;
+
+6. Sharing the risk (e.g. through contracts, buying insurance); and
+
+7. Retaining the risk by informed decision.
+
+'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_Treatment_Subcriterion_Basic_7
+      information_text: 'Risks that the cloud service provider shares with the cloud service customer are described as part of the SSRM (cf. OIS-03).'
+  corresponding:
+-
+  identifier: &ID_Criterion_Information_Security_in_Project_Management '10'
+  name: 'Information Security in Project Management'
+  basic: 
+    -
+      identifier: &ID_Information_Security_in_Project_Management_Subcriterion_Basic_1 '01B'
+      criterion: 'Information security is integrated into project management. Risks are assessed by the cloud service provider according to OIS-07, and the risk treatment is performed if necessary. Risks are treated in all projects that may have a direct or significant impact on the provision, operation, or security of the cloud service.'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Information_Security_in_Project_Management_Subcriterion_Basic_1
+      information_text: 'Risks with a significant impact are those that, if they were to occur, would cause a damage of such a scale as to materially affect the information security of the cloud service, control effectiveness or service commitments of the cloud service provider.'
+  corresponding:

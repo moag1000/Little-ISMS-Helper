@@ -1,0 +1,463 @@
+-
+  identifier: &ID_Criterion_Policies_for_the_Development_Procurement_of_System_Components '01'
+  name: 'Policies for the Development/Procurement of System Components'
+  basic: 
+    -
+      identifier: &ID_Criterion_Policies_for_the_Development_Procurement_of_System_Components_Subcriterion_Basic_1 '01B'
+      criterion: 'Policies and procedures with technical and organisational measures for the secure development of system components of the cloud service are documented, communicated and provided in accordance with SP-01.
+
+
+The policies and procedures contain guidelines for the entire life cycle of the cloud service and are based on recognised standards and methods with regard to the following aspects:
+
+
+1. Security and quality in software development (requirements, design, implementation, testing and verification), including the existence of a security by design principle, enforcing the consideration of information security requirements in the software development phase;
+
+2. Security and quality in software deployment (including continuous delivery);
+
+3. Security and quality in operation (reaction to identified faults and vulnerabilities); and
+
+4. Secure coding standards and practices (reduction of vulnerabilities being introduced to the code).
+
+'
+    -
+      identifier: &ID_Criterion_Policies_for_the_Development_Procurement_of_System_Components_Subcriterion_Basic_2 '02B'
+      criterion: 'Guidelines for the secure development of the cloud service define principles to ensure the system architecture and software operated by the cloud service provider within the production environment are designed in such a way that access to cloud service customer data by the cloud service provider is minimised wherever possible.'
+    -
+      identifier: &ID_Criterion_Policies_for_the_Development_Procurement_of_System_Components_Subcriterion_Basic_3 '03B'
+      criterion: 'The cloud service provider defines measures to enforce the specified standards and guidelines as part of the policies and procedures for the secure development of system components of the cloud service.'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Policies_for_the_Development_Procurement_of_System_Components_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'In procurement, products are preferred which have been certified according to the ''Common Criteria for Information Technology Security Evaluation'' (short: Common Criteria - CC) Evaluation Assurance Level EAL 4. If non-certified products are to be procured instead of available certified products, a risk assessment is carried out in accordance with OIS-07.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policies_for_the_Development_Procurement_of_System_Components_Subcriterion_Basic_1
+        - *ID_Criterion_Policies_for_the_Development_Procurement_of_System_Components_Subcriterion_Additional_Complement_1
+      information_text: 'The software provision can be carried out e.g. with Continuous Delivery methods.
+
+
+Accepted standards and methods for secure development are, for example:
+
+
+1. ISO/IEC 27034; and
+
+2. OWASP Secure Software Development Lifecycle (S-SDLC).
+
+
+
+
+Minimisation of customer data access during operation can be supported by following robust security models, such as Zero Trust, during cloud architecture development. Furthermore, aspects such as limiting data interfaces, API calls and access as well as ensuring end-to-end-encryption from transit to storage are relevant considerations.
+
+
+For quality assurance in software development, the following can be considered to be relevant processes:
+
+
+1. Planning and definition of quality objectives: Definition of quality requirements based on customer needs and objectives, taking into account the requirements of the cloud system to be developed;
+
+2. Design phase: Carrying out design reviews and inspections of the cloud service to ensure that the design meets the quality requirements;
+
+3. Development phase: Use of code reviews and pair programming to ensure code quality. Use of static analysis tools to check the code for potential errors and violations of coding standards;
+
+4. Testing phase: Execution (automated where possible) of various types of tests (e.g. unit tests, integration tests, system tests, acceptance tests) to ensure the functionality and quality of the software;
+
+5. Integration and continuous integration (CI): Integration of the various software components and continuous checking of the integrations through automated builds and tests. Use of CI/CD pipelines to ensure that the code is regularly integrated and tested;
+
+6. Release and deployment: Preparation and implementation of the software release in accordance with defined quality standards; and
+
+7. Maintenance and continuous improvement: Monitoring the software in operation to ensure that it continues to meet the quality requirements. This includes post release activities such as bug fixing and performance optimisation processes. Additionally, post-mortem analyses should be performed to learn from incidents and optimise processes for future releases.
+
+
+An accepted standard and a method for quality in development processes is, for example, Google Site Reliability Engineering (SRE).
+
+
+The scope of the DEV criteria and the requirements within includes not only the development of software applications but also platforms, virtual infrastructure, and other system components.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Outsourcing_of_the_Development '02'
+  name: 'Outsourcing of the Development'
+  basic: 
+    -
+      identifier: &ID_Criterion_Outsourcing_of_the_Development_Subcriterion_Basic_1 '01B'
+      criterion: 'In the case of outsourced development of the cloud service (or individual system components), specifications regarding the following aspects are contractually agreed between the cloud service provider and the service organisation:
+
+
+1. Security in software development (requirements, design, implementation, tests and verifications) in accordance with recognised standards and methods, ensuring a security level equivalent to that of the cloud service provider''s internal development;
+
+2. Acceptance testing of the quality of the services provided in accordance with the agreed functional and non-functional requirements; and
+
+3. Providing evidence that sufficient verifications have been carried out to rule out the existence of known vulnerabilities.
+
+'
+    -
+      identifier: &ID_Criterion_Outsourcing_of_the_Development_Subcriterion_Basic_2 '02B'
+      criterion: 'Before outsourcing the development of the cloud service or components thereof, the cloud service provider conducts a risk assessment according to SSO-02 that takes into account at least the following aspects:
+
+
+1. Management of source code by the service organisation;
+
+2. Accessability of source code to the cloud service provider;
+
+3. Human resource procedures implemented by the service organisation;
+
+4. Required access to the development, test and preproduction environments of the cloud service provider; and
+
+5. Management of subcontractors engaged by the service organisation.
+
+'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Outsourcing_of_the_Development_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider documents and implements a procedure that enables the supervision and control of the outsourced development activity to ensure that it complies with the secure development policy of the cloud service provider, and that the security level achieved through it matches the security level achieved through internal development.'
+    -
+      identifier: &ID_Criterion_Outsourcing_of_the_Development_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'When a change contains work from outsourced development, the cloud service provider''s personnel runs the tests needed to decide whether the change can be deployed.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Outsourcing_of_the_Development_Subcriterion_Basic_1
+        - *ID_Criterion_Outsourcing_of_the_Development_Subcriterion_Basic_2
+      information_text: 'Outsourced development in the sense of the basic criterion refers to the development of system components used specifically for the cloud service, by a service organisation of the cloud service provider. The development takes place according to the processes of the service organisation.
+
+
+The risks that may arise and should be taken into account can, but do not have to, include:
+
+
+1. Risks that may result from the service organisation managing source code without adequate controls, including unauthorised modifications, insufficient version control, or inadequate protection against loss or theft of intellectual property;
+      
+2. Risks that may result from the service organisation granting access to source code to the cloud service provider or to third-party evaluators, including unauthorised disclosure, loss of confidentiality, or inadequate controls governing how such access is managed and restricted;
+      
+3. Risks that may result from inadequate personnel screening, insufficient background checks, lack of security awareness training, or high staff turnover within the service organisation, including insider threats or uncontrolled loss of sensitive knowledge;
+      
+4. Risks that may result from granting the service organisation access to internal development, test or preproduction environments, including excessive privileges, insufficient access controls, or inadequate logging and monitoring of such access; and
+      
+5. Risks that may result from the service organisation subcontracting parts of the service without adequate security controls in place, including insufficient contractual security requirements imposed on subcontractors or lack of transparency regarding the composition of the supply chain.
+
+
+The purchase of software available on the market as well as the integration of external personnel into the processes of the cloud service provider do not constitute outsourcing in the sense of this basic criterion.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Policies_for_Changes_to_System_Components '03'
+  name: 'Policies for Changes to System Components'
+  basic: 
+    -
+      identifier: &ID_Criterion_Policies_for_Changes_to_System_Components_Subcriterion_Basic_1 '01B'
+      criterion: 'Policies and procedures with procedures and technical safeguards for change management of system components of the cloud service are documented, communicated and provided according to SP-01 with regard to the following aspects:
+
+
+1. Criteria for risk assessment, categorisation and prioritisation of changes and related requirements for the type and scope of testing to be performed, and necessary approvals for the development/implementation of the change and releases for deployment in the production environment by authorised personnel or system components;
+
+2. Requirements for the performance and documentation of tests;
+
+3. Requirements for segregation of duties during development, testing and release of changes;
+
+4. Requirements for the proper information of cloud service customers about the type and scope of the change as well as the resulting obligations to cooperate in accordance with the contractual agreements;
+
+5. Requirements for the documentation of changes in system, operational and user documentation;
+
+6. Requirements for the implementation and documentation of emergency changes such that - as far as reasonably possible - they comply with the same level of security as normal changes;
+
+7. Requirements for the handling of unexpected effects of those changes, including corrective actions;
+
+8. Requirements for the increased testing for the development of security features that implement technical mechanisms and safeguards; and
+
+9. Requirements for managing exceptions, including emergency changes, to ensure related risks are appropriately mitigated.
+
+'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policies_for_Changes_to_System_Components_Subcriterion_Basic_1
+      information_text: 'Changes in the sense of the basic criterion are those that can lead to changes in the configuration, functionality or security of system components of the cloud service in the production environment. This includes changes to the infrastructure as well as to the source code.
+
+
+If individual changes are combined in a new release, update, patch or comparable software object for the purpose of software provisioning, this software object is deemed to be a change within the meaning of the basic criterion, but not the individual changes contained therein.
+
+
+Changes to the existing network configuration also fall under this criterion and should also undergo a specified procedure, as they are necessary for effective separation of cloud service customers.
+
+
+Changes to the container environments, including the management of container images and versions, should also go through a regulated process.
+
+
+Personnel and system components receive authorisation to approve changes in accordance with the requirements for access and access authorisations (cf. IAM-01) via a specified procedure (cf. IAM-02). Relevant information includes descriptions of e.g. new functions.
+
+
+The cloud service customer''s obligations to cooperate can define that, e.g. the cloud service customer has to carry out certain tests.
+
+
+A centralised change management process is not mandatory. The cloud service provider has the flexibility to adopt change management practices that best fit its operational needs, including agile methods, as long as they adhere to the procedures and technical safeguards.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Safety_Training_and_Awareness_Programme_regarding_Continuous_Software_Delivery '04'
+  name: 'Safety Training and Awareness Programme Regarding Continuous Software Delivery and Associated Systems, Components or Tools'
+  basic: 
+    -
+      identifier: &ID_Criterion_Safety_Training_and_Awareness_Programme_regarding_Continuous_Software_Delivery_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider provides a training programme for regular, role-based security training and awareness for internal and external personnel on standards and methods for:
+
+      
+1. Secure software development and provision as well as on how to use the tools used for this purpose; and
+      
+2. Risks linked to malicious code and best practices to reduce the impact of an infection.
+
+'
+    -
+      identifier: &ID_Criterion_Safety_Training_and_Awareness_Programme_regarding_Continuous_Software_Delivery_Subcriterion_Basic_2 '02B'
+      criterion: 'The programme is regularly reviewed and updated with regard to the applicable policies and procedures, the assigned roles and responsibilities and the tools used.'
+  additional_sharpen:
+  additional_complement: 
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Safety_Training_and_Awareness_Programme_regarding_Continuous_Software_Delivery_Subcriterion_Basic_1
+      information_text: 'This is a specialised criteria for safety training and awareness programmes for a particular target group. In HR-03, general properties of such trainings and programmes are defined.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Design_Documentation_for_Security_Features '05'
+  name: 'Design Documentation for Security Features'
+  basic: 
+    -
+      identifier: &ID_Criterion_Design_Documentation_for_Security_Features_Subcriterion_Basic_1 '01B'
+      criterion: 'Design documentation for security features is based on a security analysis of the adequacy and planned effectiveness of the features. A specification of expected inputs, outputs and possible errors is included in the documentation.'
+  additional_sharpen:
+  additional_complement:
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Design_Documentation_for_Security_Features_Subcriterion_Basic_1
+      information_text: 'Security features are typically features that control confidentiality (e.g. via integrating cryptography), integrity (e.g. via introducing check-sums or validating input data), availability (e.g. via redundancy or resiliency), authentication (e.g. via MFA or secure session management) and authorisation (e.g. via different roles). They usually follow from threat modelling and risk assessment. Ideally, security features are an integral part of the software development process and not additions made only after new software features have been created.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Risk_Assessment_Categorisation_and_Prioritisation_of_Changes '06'
+  name: 'Risk Assessment, Categorisation and Prioritisation of Changes'
+  basic: 
+    -
+      identifier: &ID_Criterion_Risk_Assessment_Categorisation_and_Prioritisation_of_Changes_Subcriterion_Basic_1 '01B'
+      criterion: 'In accordance with the applicable policies, changes are subject to a risk assessment evaluating its potential impact on the overall cloud service in scope. In addition, when multiple changes are implemented concurrently, their mutual interactions and cumulative effects are also subject to the risk assessment in order to identify potential conflicts or dependencies. All identified risks and dependencies are categorised and prioritised accordingly.'
+    -
+      identifier: &ID_Criterion_Risk_Assessment_Categorisation_and_Prioritisation_of_Changes_Subcriterion_Basic_2 '02B'
+      criterion: 'If the risk associated to a planned change is high, appropriate mitigation measures are taken before deploying the change in the cloud service''s production environment.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Risk_Assessment_Categorisation_and_Prioritisation_of_Changes_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'In accordance with the contractual agreements, meaningful information about the occasion, time, duration, type and scope of the change is submitted to authorised bodies of the cloud service customer so that they can carry out their own risk assessment before the change is made available in the production environment. Regardless of the contractual agreements, this is done for changes that have the highest risk category based on their risk assessment. This does not include changes without an effect on the service usage or security posture of the service.'
+  information:
+  corresponding:
+-
+  identifier: &ID_Criterion_Testing_Changes '07'
+  name: 'Testing Changes'
+  basic: 
+    -
+      identifier: &ID_Criterion_Testing_Changes_Subcriterion_Basic_1 '01B'
+      criterion: 'Changes to the cloud service are subject to appropriate testing according to documented test procedures during software development and deployment.'
+    -
+      identifier: &ID_Criterion_Testing_Changes_Subcriterion_Basic_2 '02B'
+      criterion: 'The type and scope of the tests correspond to the risk assessment. The tests are carried out by appropriately qualified personnel of the cloud service provider or by automated test procedures that comply with established rules of technology. Cloud service customers are involved into the tests in accordance with the contractual requirements.'
+    -
+      identifier: &ID_Criterion_Testing_Changes_Subcriterion_Basic_3 '03B'
+      criterion: 'Before using cloud service customer data for tests, the cloud service provider first obtains approval from that cloud service customer and anonymises the cloud service customer data. The cloud service provider ensures the confidentiality of the data during the whole process.'
+    -
+      identifier: &ID_Criterion_Testing_Changes_Subcriterion_Basic_4 '04B'
+      criterion: 'The security features of the cloud service are subject to tests that fully cover the security features'' specification (cf. DEV-05), including all specified error conditions. The documentation of these tests covers at least the following aspects:
+        
+
+1. A description of the test;
+
+2. The initial conditions;
+
+3. The expected outcome; and
+
+4. Procedures for running the test.
+
+'
+    -
+      identifier: &ID_Criterion_Testing_Changes_Subcriterion_Basic_5 '05B'
+      criterion: 'The severity of the errors and vulnerabilities identified in the tests, which are relevant for the deployment decision, is determined according to defined criteria and actions for timely remediation or mitigation are initiated.'
+  additional_sharpen: 
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Testing_Changes_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'Pre-launch penetration tests are carried out during the test phase of the cloud service in accordance with the penetration test framework (cf. OPS-22 additional criterion). The severity of identified vulnerabilities is assessed according to defined criteria and actions for timely remediation or mitigation are initiated.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Testing_Changes_Subcriterion_Basic_1
+        - *ID_Criterion_Testing_Changes_Subcriterion_Additional_Complement_1
+      information_text: 'Tests should be used that contribute to the quality assurance of the software development as well as to the security of the cloud service.      
+
+      
+The errors and vulnerabilities identified in tests can be assessed, for example, according to the Common Vulnerability Scoring System (CVSS).'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Testing_Changes_Subcriterion_Basic_1
+      information_text: 'Test procedures for software assets can be static (SAST), dynamic (DAST) or interactive (IAST).'
+  corresponding: 'Where changes are to be tested by the cloud service customers in accordance with the contractual agreements prior to deployment in the production environment, the cloud service customers ensure with suitable controls that the tests are performed appropriately to identify errors. In particular, this includes timely execution of the tests by qualified personnel in accordance with the conditions specified by the cloud service provider.'
+-
+  identifier: &ID_Criterion_Logging_of_Changes '08'
+  name: 'Logging of Changes'
+  basic: 
+    -
+      identifier: &ID_Criterion_Logging_of_Changes_Subcriterion_Basic_1 '01B'
+      criterion: 'System components for version control and software deployment that are used to manage changes to system components of the cloud service in the production environment are subject to a role and rights framework according to IAM-01 and authorisation mechanisms.'
+    - 
+      identifier: &ID_Criterion_Logging_of_Changes_Subcriterion_Basic_2 '02B'
+      criterion: 'The configuration of these system components ensures that all changes performed by the cloud service provider to system components in the production environment are recorded and can be traced back to the individuals or system components contributing to their development, deployment or implementation.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Logging_of_Changes_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider enforces the role and rights framework by monitoring the changes made to system components of the cloud service in the production environment. Timely and appropriate remediation measures address any deviations identified during monitoring.'
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Logging_of_Changes_Subcriterion_Basic_2
+      information_text: 'If the change has external contribution (e.g. use of third-party products, libraries), tracing back individual changes in the development is often not possible. In that case it is sufficient to record the external contribution in the software component list or Software Bill of Materials (SBOM, cf. DEV-13.01B). In addition to that, depending on the nature of the external contribution, the criterion for Outsourcing of the Development (cf. DEV-02) and the criteria for Control and Monitoring of Service Providers and Suppliers (SSO) may apply.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Version_Control '09'
+  name: 'Version Control'
+  basic: 
+    -
+      identifier: &ID_Criterion_Version_Control_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider uses a version control system that adequately ensures the confidentiality, integrity and authenticity of the source code during all development stages.'
+    -
+      identifier: &ID_Criterion_Version_Control_Subcriterion_Basic_2 '02B'
+      criterion: 'Version control procedures track dependencies of individual changes and attribute each change to individual contributors. The version control procedures are capable of restoring affected system components back to a previous state.'
+    -
+      identifier: &ID_Criterion_Version_Control_Subcriterion_Basic_3 '03B'
+      criterion: 'Version control covers all internally and externally developed software, configurations and third party commercial products under the responsibility of the cloud service provider.'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Version_Control_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'Version control procedures provide appropriate safeguards to ensure that the integrity and availability of cloud service customer data is not compromised when system components are restored back to their previous state.'
+    -
+      identifier: &ID_Criterion_Version_Control_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'The cloud service provider keeps a record of all deployed software versions and system configurations. This record enables the recreation of a previously implemented environment in a test environment.
+
+
+The retention time for this history is risk-based (cf. OIS-07), defined in the policy for version control and aligned to the support life cycle of the cloud service.'
+  information:
+  corresponding:
+-
+  identifier: &ID_Criterion_Approvals_for_Provision_in_the_Production_Environment '10'
+  name: 'Approvals for Provision in the Production Environment'
+  basic: 
+    -
+      identifier: &ID_Criterion_Approvals_for_Provision_in_the_Production_Environment_Subcriterion_Basic_1 '01B'
+      criterion: 'Authorised personnel or system components of the cloud service provider approve changes to the cloud service based on defined criteria (e.g. test results and required approvals) before these are made available to the cloud service customers in the production environment.'
+    -
+      identifier: &ID_Criterion_Approvals_for_Provision_in_the_Production_Environment_Subcriterion_Basic_2 '02B'
+      criterion: 'Cloud service customers are involved in the release according to contractual agreements.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Approvals_for_Provision_in_the_Production_Environment_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The approval process is monitored. Timely and appropriate remediation measures address any deviations identified during monitoring.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Approvals_for_Provision_in_the_Production_Environment_Subcriterion_Basic_1
+      information_text: 'The definitions for criterion DEV-03 apply.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Approvals_for_Provision_in_the_Production_Environment_Subcriterion_Basic_2
+      information_text: 'If the contractual agreements do not foresee customer involvement of the approval, this should be clearly stated in the contractual agreements in order to fulfil this criterion.'    
+  corresponding: 'Where changes are to be approved by the cloud service customers in accordance with the contractual agreements before they are made available in the production environment, the cloud service customers ensure with suitable controls that authorised and qualified personnel receives the information made available, assesses the impact on the ISMS framework and decides on the approval in accordance with the conditions specified by the cloud service provider.'
+-
+  identifier: &ID_Criterion_Protection_of_Development_and_Test_Environments '11'
+  name: 'Protection of Development and Test Environments'
+  basic: 
+    -
+      identifier: &ID_Criterion_Protection_of_Development_and_Test_Environments_Subcriterion_Basic_1 '01B'
+      criterion: 'Development and test environments under the responsibility of the cloud service provider undergo a risk assesssment (cf. OIS-07) and are protected with appropriate security measures against identified risks. This also includes extending the backup plan (cf. OPS-06) to the necessary parts of those environments.'
+  additional_sharpen:
+  additional_complement:
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Protection_of_Development_and_Test_Environments_Subcriterion_Basic_1
+      information_text: 'Note that the backup policies and procedures (cf. OPS-06) are preceded by a risk assessment and does not need to include all elements of those environments, but only the ones considered necessary based on the risk assessment. Some parts can be build from scatch more easily than backing them up.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Separation_of_Environments '12'
+  name: 'Separation of Environments'
+  basic: 
+    -
+      identifier: &ID_Criterion_Separation_of_Environments_Subcriterion_Basic_1 '01B'
+      criterion: 'Production environments are physically or logically separated from test or development environments to prevent unauthorised access to cloud service customer data, the spread of malware, or unintended changes to system components. Cloud service customer data contained in the production environments is not used in test or development environments, unless explicitly approved by cloud service customers, in order not to compromise their confidentiality.'
+    - 
+      identifier: &ID_Criterion_Separation_of_Environments_Subcriterion_Basic_2 '02B'
+      criterion: 'Unless unavoidable, the cloud service provider does not reuse the cryptographic secret and private keys and other secrets used in production environments in other, non-production environments. Any unavoidable reuse of the cryptographic secret and private keys between production and non-production environments is documented and justified in accordance with the process for handling exceptions (cf. SP-03) and the risk management procedures (cf. OIS-07).'
+  additional_sharpen:
+  additional_complement:
+  information: 
+  corresponding:
+-
+  identifier: &ID_Criterion_Transparency_about_Software_Components '13'
+  name: 'Transparency about Software Components'
+  basic: 
+    -
+      identifier: &ID_Criterion_Transparency_about_Software_Components_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider ensures that, as part of the software development process, a list of software components is created, maintained, and kept up-to-date for every developed or integrated software component.'
+    -
+      identifier: &ID_Criterion_Transparency_about_Software_Components_Subcriterion_Basic_2 '02B'
+      criterion: 'The cloud service provider maintains a list of software components for integrated software components as well, except where such information is not available and cannot be produced with reasonable effort. The risk from these exceptions is treated according to SP-03.'
+  additional_sharpen:
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Transparency_about_Software_Components_Subcriterion_Basic_1
+      information_text: 'This criteria can be fulfilled via a sufficiently detailed list of software components. Sufficient detail means that the list allows the cloud service provider to identify all cloud services affected by any given known vulnerability. This criteria can also be fulfilled via a Software Bill of Materials (SBOM). The established rules of technology regarding the creation, maintenance, and utilisation of SBOMs, including their components and formats, is described in the current version of the BSI Technical Guideline TR-03183-2. Automated tools for generating, maintaining, and validating software component lists or SBOMs are recommended to ensure accuracy and integration into security and vulnerability management processes. Please note that it may not be necessary to store every version of the SBOM - just like in the other development processes for components - as long as the cloud service provider is able to keep track of the changes.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Transparency_about_Software_Components_Subcriterion_Basic_2
+      information_text: 'This subcriterion only applies to integrated software components. If integrated software components are e.g. open-source and if this criterion is fulfilled via SBOMs, there may be cases where a SBOM is not available and cannot be produced with reasonable effort. Reasonable implies that changing this component to one that has a SBOM is economically not feasible. However, the risks from these exceptions are treated within the exception process (cf. SP-03).' 
+
+  corresponding:
+-
+  identifier: &ID_Criterion_Development_Secure_Use_Thirdparty_Hardware_Software '14'
+  name: 'Secure Use of Third Party Hardware and Software'
+  basic: 
+    -
+      identifier: &ID_Criterion_Development_Secure_Use_Thirdparty_Hardware_Software_Subcriterion_Basic_1 '01B'
+      criterion: 'Policies and procedures for the use of third party and open source software are documented, communicated and provided in accordance with SP-01.'
+    -
+      identifier: &ID_Criterion_Development_Secure_Use_Thirdparty_Hardware_Software_Subcriterion_Basic_2 '02B'
+      criterion: 'For the hardware and software products (cf. DEV-13) used in the development of the cloud service, a list of dependencies to those products is maintained.'
+    -
+      identifier: &ID_Criterion_Development_Secure_Use_Thirdparty_Hardware_Software_Subcriterion_Basic_3 '03B'
+      criterion: 'Only trusted sources are used to retrieve third party software. Whenever possible, the authenticity of the software is verified.'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Development_Secure_Use_Thirdparty_Hardware_Software_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'In procurement for the development of the cloud service, the cloud service provider performs a risk assessment in accordance with OIS-07 for every hardware and software product.'
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Development_Secure_Use_Thirdparty_Hardware_Software_Subcriterion_Basic_1
+      information_text: 'The policy should consider, where applicable, the same aspects as the policy for the proper and secure use of assets (cf. AM-05).'
+  corresponding:
+-
+  identifier: &ID_Criterion_Exceptions_to_the_Change_Management_Process '15'
+  name: 'Exceptions to the Change Management Process'
+  basic: 
+    -
+      identifier: &ID_Criterion_Exceptions_to_the_Change_Management_Process_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider''s change management process implements procedures for managing exceptions, including emergency changes, to ensure related risks are appropriately mitigated.'
+  additional_sharpen:
+  additional_complement:
+  information:
+  -
+      applicable_criteria:
+        - *ID_Criterion_Exceptions_to_the_Change_Management_Process_Subcriterion_Basic_1
+      information_text: 'This criteria refers mainly to the exception process demanded in SP-03, although all exceptions from the standard procedure for changes are meant here.' 
+  corresponding:

@@ -1,0 +1,242 @@
+-
+  identifier: &ID_Criterion_Technical_Safeguards '01'
+  name: 'Technical Safeguards'
+  basic: 
+    -
+      identifier: &ID_Criterion_Technical_Safeguards_Subcriterion_Basic_1 '01B'
+      criterion: 'Based on the results of a risk assessment carried out according to OIS-07, the cloud service provider has implemented technical safeguards which are suitable to timely detect and respond to attacks on the network of system components used for provisioning of the cloud service.'  
+    - 
+      identifier: &ID_Criterion_Technical_Safeguards_Subcriterion_Basic_2 '02B' 
+      criterion: 'For these technical safeguards, preventive and protective measures are implemented at multiple tiers (defence in depth) within the cloud service to mitigate the risk of breaching the deployed defensive system. This includes network-based cyber attacks such as:
+
+
+1. Attacks on the basis of irregular incoming or outgoing traffic patterns;
+
+2. Distributed Denial-of-Service (DDoS) attacks;
+
+3. Spoofing attacks;
+
+4. Code injection attacks;
+
+5. DNS tunneling; and
+
+6. IoT attacks targeting devices within a network.
+
+'
+    -
+      identifier: &ID_Criterion_Technical_Safeguards_Subcriterion_Basic_3 '03B'
+      criterion: 'Data from corresponding technical safeguards implemented (cloud service provider data) is fed into the organisation''s SIEM system (cf. OPS-13), so that (counter-) measures regarding correlating events can be initiated. The safeguards are documented, communicated and provided in accordance with SP-01.'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Technical_Safeguards_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'Technical safeguards ensure that no unknown (physical or virtual) devices join the cloud service provider''s (physical or virtual) network.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Technical_Safeguards_Subcriterion_Basic_2
+        - *ID_Criterion_Technical_Safeguards_Subcriterion_Additional_Complement_1
+      information_text: 'Technical safeguards that provide protection and prevention at multiple tiers are e.g. a special separation in Identity and Access Management, separate logging for protective systems and Web Application Firewalls (WAFs) for accessing protective systems.
+
+
+Network-based attacks can be conducted e.g. with MAC spoofing and ARP poisoning attacks. Technical safeguards to prevent unknown physical or virtual devices from joining a physical or virtual network can be based on e.g. MACSec according to IEEE 802.1X:2010.'
+  corresponding: 'Cloud service customers ensure with suitable controls for parts of the cloud service under their responsibility (e.g. virtual machines within an IaaS solution) that they detect and respond to network-based attacks, based on anomalous inbound and outbound traffic patterns (e.g. MAC spoofing and ARP poisoning attacks) and/or Distributed Denial of Service (DDoS), in a timely manner.'
+-
+  identifier: &ID_Criterion_Security_Requirements_for_Connections_in_the_CSP_Network '02'
+  name: 'Security Requirements for Connections in the Cloud Service Provider''s Network'
+  basic: 
+    -
+      identifier: &ID_Criterion_Security_Requirements_for_Connections_in_the_CSP_Network_Subcriterion_Basic_1 '01B'
+      criterion: 'Specific security requirements are designed, documented and provided for establishing connections within the cloud service provider''s network. The security requirements define for the cloud service provider''s area of responsibility:
+
+
+1. In which cases the security zones are to be separated and in which cases cloud service customers are to be logically or physically separated;
+
+2. Which communication relationships and which network and application protocols are permitted in each case;
+
+3. How the data traffic for administration and monitoring is separated from each on network level;
+
+4. How office networks are secured with firewalls and secure WIFI configurations as well as VPN for remote access;
+
+5. Which internal, cross-partition communication is permitted; and
+
+6. Which cross-network communication is allowed.
+
+'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Security_Requirements_for_Connections_in_the_CSP_Network_Subcriterion_Basic_1
+      information_text: 'Cross-partition communication can be realised for e.g. individual regions or locations via e.g. WAN, LAN, VPN, RAS.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Monitoring_of_Connections_in_the_CSP_Network '03'
+  name: 'Monitoring of Connections in the Cloud Service Provider''s Network'
+  basic: 
+    -
+      identifier: &ID_Criterion_Monitoring_of_Connections_in_the_CSP_Network_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider distinguishes between trusted and untrusted networks. Based on a risk assessment according to OIS-07, these are separated into different security zones for internal and external network areas (and DMZ, if applicable).'
+    -
+      identifier: &ID_Criterion_Monitoring_of_Connections_in_the_CSP_Network_Subcriterion_Basic_2 '02B'
+      criterion: 'Physical and virtualised network environments are designed and configured to restrict and monitor the established connection to trusted or untrusted networks according to the defined security requirements (cf. COS-02).'
+    -
+      identifier: &ID_Criterion_Monitoring_of_Connections_in_the_CSP_Network_Subcriterion_Basic_3 '03B'
+      criterion: 'The cloud service provider ensures that the configuration of networks matches the security requirements (cf. COS-02). The cloud service provider reviews at least annually and in case of significant changes to the cloud service the design and implementation of the configuration of the connections with regard to the defined security requirements.'
+    -
+      identifier: &ID_Criterion_Monitoring_of_Connections_in_the_CSP_Network_Subcriterion_Basic_4 '04B'
+      criterion: 'Identified vulnerabilities and deviations are subject to risk assessment in accordance with the risk management procedure (cf. OIS-07) and follow-up measures are defined and tracked (cf. OPS-18).'
+    -
+      identifier: &ID_Criterion_Monitoring_of_Connections_in_the_CSP_Network_Subcriterion_Basic_5 '05B'
+      criterion: 'At specified intervals, the business justification for using all services, protocols, and ports is reviewed. The review also includes the justifications for compensatory measures for the use of protocols that are considered insecure.'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Monitoring_of_Connections_in_the_CSP_Network_Subcriterion_Basic_3
+        - *ID_Criterion_Monitoring_of_Connections_in_the_CSP_Network_Subcriterion_Basic_4
+        - *ID_Criterion_Monitoring_of_Connections_in_the_CSP_Network_Subcriterion_Basic_5
+      information_text: 'The review of the security requirements depends on the measures implemented to design the networks, e.g. monitoring and reviewing firewall rules or log files for abnormalities as well as visual inspections of physical network components for changes.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Monitoring_of_Connections_in_the_CSP_Network_Subcriterion_Basic_3
+      information_text: 'If the review is caused by significant changes to the cloud service, only the design and implementation of configuration of the connections affected by these changes need to be included in the review.'
+  corresponding: 'Cloud service customers ensure with suitable controls that the virtual networks within the cloud service for which they are responsible are designed, configured and documented in accordance with their network security requirements (e.g. logical segmentation of the cloud service customer''s organisational units).'
+-
+  identifier: &ID_Criterion_Cross_Network_Access '04'
+  name: 'Cross-Network Access'
+  basic: 
+    -
+      identifier: &ID_Criterion_Cross_Network_Access_Subcriterion_Basic_1 '01B'
+      criterion: 'Each network perimeter is controlled by security gateways.'
+    -
+      identifier: &ID_Criterion_Cross_Network_Access_Subcriterion_Basic_2 '02B'
+      criterion: 'The system access authorisation for cross-network access is based on a security assessment based on the requirements of the cloud service customers.'
+  additional_sharpen: 
+    -
+      identifier: &ID_Criterion_Cross_Network_Access_Subcriterion_Additional_Sharpen_1 '01AS'
+      sharpened_basic_criterion: *ID_Criterion_Cross_Network_Access_Subcriterion_Basic_1
+      criterion: 'Each network perimeter is controlled by redundant and highly available security gateways.'
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Cross_Network_Access_Subcriterion_Basic_2
+      information_text: 'A security gateway is a stack of chained filtering and firewall components that restrict communication to explicitly permitted traffic. Security gateways can, for example, employ a P-A-P structure, consisting of an outer packet filter, an application-level gateway acting as a deep-inspection proxy, and an inner packet filter. The stack may be further enriched with an intrusion detection system, intrusion prevention system, or antivirus scanner. However, this structure is not mandatory. It serves to keep filtering and inspection functionally independent of each other, so that a failure of one does not automatically lead to a failure of the other.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Cross_Network_Access_Subcriterion_Basic_2
+      information_text: 'Cross-network access is access from one network to another network via a defined network perimeter.'
+  corresponding: 'Cloud service customers ensure with suitable controls that access is controlled according to their protection needs by security gateways on the perimeters of the virtual networks within the cloud service for which they are responsible.'
+-
+  identifier: &ID_Criterion_Networks_for_Administration '05'
+  name: 'Networks for Administration'
+  basic: 
+    -
+      identifier: &ID_Criterion_Networks_for_Administration_Subcriterion_Basic_1 '01B'
+      criterion: 'There are separate networks for the administrative management of the infrastructure and for the operation of management consoles. These networks are logically or physically separated from the cloud service customer''s network and protected from unauthorised access by multi-factor authentication (cf. IAM-08).'
+    -
+      identifier: &ID_Criterion_Networks_for_Administration_Subcriterion_Basic_2 '02B'
+      criterion: 'Networks used by the cloud service provider to create, migrate or orchestrate compute workloads (e.g. virtual machines, containers, functions) are physically or logically separated from tenant networks.'  
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Networks_for_Administration_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'If there is no physical separation between the administration networks and other networks, the administration network traffic uses state of the art encryption (cf. CRY-01).'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Networks_for_Administration_Subcriterion_Basic_1
+      information_text: 'The separation can be physical or logical (e.g. VLAN, SDN, VRF).'  
+  corresponding:
+-
+  identifier: &ID_Criterion_Separation_of_Data_Traffic_in_Jointly_Used_Network_Environments '06'
+  name: 'Separation of Data Traffic in Jointly Used Network Environments'
+  basic: 
+    -
+      identifier: &ID_Criterion_Separation_of_Data_Traffic_in_Jointly_Used_Network_Environments_Subcriterion_Basic_1 '01B'
+      criterion: 'Cloud service customer data traffic in jointly used network environments is separated on network level according to a documented framework to ensure the confidentiality and integrity of the data transmitted.'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Separation_of_Data_Traffic_in_Jointly_Used_Network_Environments_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'In the case of IaaS/PaaS, the secure separation is ensured by physically separated networks or by means of state of the art encryption in combination with logical network separation or encapsulation.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Separation_of_Data_Traffic_in_Jointly_Used_Network_Environments_Subcriterion_Basic_1
+        - *ID_Criterion_Separation_of_Data_Traffic_in_Jointly_Used_Network_Environments_Subcriterion_Additional_Complement_1
+      information_text: 'If the cloud service provider does not use shared network environments for cloud service customers and instead uses a physical separation, the basic criterion is not applicable.
+
+      
+If the suitability and effectiveness of the logical segmentation cannot be assessed with sufficient certainty (e.g. due to a complex implementation), evidence can also be provided based on audit results of expert third parties (e.g. security audits to validate the framework). The separation of stored and processed data is subject of the criteria OPS-30 and OPS-31. After successful authentication via an insecure communication channel (HTTP), a secure communication channel (HTTPS) is to be used.
+
+
+With IaaS/PaaS, secure separation is ensured by physically separated networks or encryption of the networks that corresponds to the state of the art. For the definition of state of the art encryption, the BSI Technical Guideline TR-02102 should be considered (cf. CRY-01).'
+  corresponding: 'Cloud service customers ensure with suitable controls for those parts of the cloud service under their responsibility that virtual networks are designed, configured and documented in accordance with their network security requirements (e.g. logical segmentation of organisational units).'
+-
+  identifier: &ID_Criterion_Documentation_of_the_Network_Topology '07'
+  name: 'Documentation of the Network Topology'
+  basic: 
+    -
+      identifier: &ID_Criterion_Documentation_of_the_Network_Topology_Subcriterion_Basic_1 '01B'
+      criterion: 'The documentation of the logical structure of the network used to provide or operate the cloud service is traceable and up-to-date, in order to avoid administrative errors during live operation and to ensure timely recovery in the event of incidents in accordance with contractual obligations. The documentation shows:
+        
+
+1. How the subnets are allocated; 
+
+2. How the network is zoned and segmented;
+
+3. How the network connects with third party and public networks; and
+
+4. How the data flows between different subnets and system components within the network to support the management, monitoring and analysis of the network.
+
+' 
+    -
+      identifier: &ID_Criterion_Documentation_of_the_Network_Topology_Subcriterion_Basic_2 '02B'
+      criterion: 'The partitions, regions, zones or location in which the cloud service customer data is stored are indicated.'
+    -
+      identifier: &ID_Criterion_Documentation_of_the_Network_Topology_Subcriterion_Basic_3 '03B'
+      criterion: 'The cloud service provider establishes and maintains an accurate representation of the technical and logical structure of the cloud service provider''s systems based on the network topology documentation and the asset inventory (cf. AM-02). The documentation includes the system components that provide security functions and the system components that host the corresponding cloud service customer data and cloud service derived data, or provide sensitive functions.'
+    -
+      identifier: &ID_Criterion_Documentation_of_the_Network_Topology_Subcriterion_Basic_4 '04B'
+      criterion: 'The network topology documentation is reviewed at least once a year. Timely and appropriate remediation measures address any deviations identified during the review.'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Documentation_of_the_Network_Topology_Subcriterion_Basic_1
+        - *ID_Criterion_Documentation_of_the_Network_Topology_Subcriterion_Basic_2
+        - *ID_Criterion_Documentation_of_the_Network_Topology_Subcriterion_Basic_3
+      information_text: 'The network documentation can follow a hierarchical or grouped approach based on the scale of operations.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Documentation_of_the_Network_Topology_Subcriterion_Basic_1
+      information_text: 'Zoning is a segmentation of the subnets with a firewall implemented at the network perimeters.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Policies_for_Data_Transmission '08'
+  name: 'Policies for Data Transmission'
+  basic: 
+    -
+      identifier: &ID_Criterion_Policies_for_Data_Transmission_Subcriterion_Basic_1 '01B'
+      criterion: 'Policies and procedures with technical and organisational safeguards in order to protect the transmission of cloud service customer data, cloud service derived data, cloud service provider data and account data against unauthorised interception, manipulation, copying, modification, redirection, destruction or malware intrusion are documented, communicated and provided according to SP-01. The policies and procedures establish a reference to the asset classification and labelling (cf. AM-09) and cryptographic mechanisms (cf. CRY-01).'
+    -
+      identifier: &ID_Criterion_Policies_for_Data_Transmission_Subcriterion_Basic_2 '02B'
+      criterion: 'Technical safeguards outlined in the documented policies and procedures to protect the transmission of data are implemented and reviewed regularly, as well as in case of significant changes to the cloud service.'
+  additional_sharpen:
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policies_for_Data_Transmission_Subcriterion_Basic_1
+        - *ID_Criterion_Policies_for_Data_Transmission_Subcriterion_Basic_2
+      information_text: 'A safeguard against unauthorised interception, manipulation, copying, modification, redirection or destruction of data during transmission is e.g. the use of transport encryption according to CRY-04.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policies_for_Data_Transmission_Subcriterion_Basic_2
+      information_text: 'If a review is caused by significant changes to the cloud service, only the technical safeguards affected by these changes need to be included in the review.'
+  corresponding: 'Cloud service customers ensure with suitable controls that the data transmitted to the cloud service is protected against tampering, copying, modifying, redirecting or deleting in accordance with their protection needs.'

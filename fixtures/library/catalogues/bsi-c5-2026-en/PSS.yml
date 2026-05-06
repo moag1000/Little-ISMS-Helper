@@ -1,0 +1,524 @@
+-
+  identifier: &ID_Criterion_Guidelines_and_Recommendations_for_Cloud_Customers '01'
+  name: 'Guidelines and Recommendations for Cloud Service Customers'
+  basic: 
+    -
+      identifier: &ID_Criterion_Guidelines_and_Recommendations_for_Cloud_Customers_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider publishes guidelines and recommendations for cloud service customers regarding the secure use of the cloud service provided. The information contained therein is intended to assist the cloud service customer in the secure configuration and use of the cloud service, as well as the implementation of complementary customer controls, to the extent applicable to the cloud service and the responsibility of the cloud service customer.'
+    -
+      identifier: &ID_Criterion_Guidelines_and_Recommendations_for_Cloud_Customers_Subcriterion_Basic_2 '02B'
+      criterion: 'The type and scope of the information in the guidelines and recommendations for the secure use of the cloud service provided will be based on the needs of subject matter experts of the cloud service customers who set information security requirements, implement them or verify the implementation (e.g. IT, Compliance, Internal Audit). The information in the guidelines and recommendations for the secure use of the cloud service address the following aspects, where applicable to the cloud service:
+
+
+1. Procedures for secure configuration;
+
+2. Information sources on known vulnerabilities and update mechanisms;
+
+3. Malware protection for containers or virtual machines;
+
+4. Error handling and logging mechanisms;
+
+5. Authentication mechanisms;
+
+6. Roles and rights framework including combinations that result in an elevated risk;
+
+7. Services and functions for administration of the cloud service by privileged users;
+
+8. Complementary user entity controls;
+
+9. Encryption mechanisms and services;
+
+10. Data leakage prevention;
+
+11. Secure application development and operation on the cloud service;
+
+12. Instructions for using and configuring defensive mechanisms;
+
+13. Instructions for using and configuring wide-area distributed architecture mechanisms; 
+
+14. Methods used for client data separation (cf. OPS-30 and OPS-31);
+
+15. How information security risks related to the use of the cloud service can be addressed through proper logging and monitoring mechanisms; and
+
+16. Inbound and outbound interfaces through which the cloud service can be accessed by other cloud services or IT systems of cloud service customers (cf. PI-01).
+
+'
+    -
+      identifier: &ID_Criterion_Guidelines_and_Recommendations_for_Cloud_Customers_Subcriterion_Basic_3 '03B'
+      criterion: 'The cloud service provider describes in the user documentation all necessary complementary user entity controls (CUECs) and corresponding explanations of them, so that the cloud service customer has sufficient information for appropriate risk management on its side.'
+    -
+      identifier: &ID_Criterion_Guidelines_and_Recommendations_for_Cloud_Customers_Subcriterion_Basic_4 '04B'
+      criterion: 'The above-mentioned information is maintained so that it is applicable to the cloud service provided in the version intended for productive use.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Guidelines_and_Recommendations_for_Cloud_Customers_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider notifies cloud service customers in a timely manner about any planned modifications to the cloud service so that the affected cloud service customers can react appropriately with organisational and technical measures before the changes take effect.'
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Guidelines_and_Recommendations_for_Cloud_Customers_Subcriterion_Basic_1
+      information_text: 'In a cloud environment, security responsibilities are shared between the cloud service provider and the customer, varying by service type — Infrastructure as a Service (IaaS), Platform as a Service (PaaS), or Software as a Service (SaaS). Guidance on the complementary customer controls helps cloud service customers understand their roles and responsibilities within the Shared Responsibility Model, also in terms of security and operational management (cf. OIS-03). By offering detailed guidance, cloud service customers are equipped to understand and implement the necessary controls that fall under their responsibility. The level of detail and length can vary according to the type of cloud service provided.
+ 
+   
+Examples for defensive mechanisms include payload filtering, traffic shaping, load balancing, load shedding and DDoS defences.
+
+
+Examples for wide-area distributed architecture mechanisms include fault tolerance through replication, avoidance of localised outages and disasters through the use of multiple cloud regions, as well as the reduction of user-facing latency through the geo-dispersion of service endpoints.'
+  corresponding: 'Cloud service customers ensure with suitable controls that the cloud service provider''s information is used to derive policies, frameworks and measures for the secure configuration and use (according to their own risk assessment) of the cloud service. Compliance with these policies, frameworks and measures is checked. Changes to the information are timely assessed for their impact on these documents and any necessary changes are implemented.'
+-
+  identifier: &ID_Criterion_Identification_of_Vulnerabilities_of_the_Cloud_Service '02'
+  name: 'Identification of Vulnerabilities of the Cloud Service'
+  basic: 
+    -
+      identifier: &ID_Criterion_Identification_of_Vulnerabilities_of_the_Cloud_Service_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider applies appropriate measures to check the cloud service for vulnerabilities which might have been integrated into the cloud service during the software development process.'
+    -
+      identifier: &ID_Criterion_Identification_of_Vulnerabilities_of_the_Cloud_Service_Subcriterion_Basic_2 '02B'
+      criterion: 'The procedures for identifying such vulnerabilities are part of the software development process and, depending on a risk assessment, include the following activities:
+
+
+1. Static Application Security Testing;
+
+2. Dynamic Application Security Testing;
+
+3. Code reviews by the cloud service provider''s subject matter experts;
+
+4. Conducting security checks based on a list of software components or Software Bill of Materials (SBOM); and
+
+5. Obtaining information about confirmed vulnerabilities in software libraries provided by third parties and used in their own cloud service.
+
+'
+    -
+      identifier: &ID_Criterion_Identification_of_Vulnerabilities_of_the_Cloud_Service_Subcriterion_Basic_3 '03B'
+      criterion: 'The severity of identified vulnerabilities is assessed according to defined criteria and measures are taken to immediately eliminate or mitigate them.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Identification_of_Vulnerabilities_of_the_Cloud_Service_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The procedures for identifying such vulnerabilities also include annual code reviews or security penetration tests by qualified external third parties.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Identification_of_Vulnerabilities_of_the_Cloud_Service_Subcriterion_Basic_1
+        - *ID_Criterion_Identification_of_Vulnerabilities_of_the_Cloud_Service_Subcriterion_Basic_2
+        - *ID_Criterion_Identification_of_Vulnerabilities_of_the_Cloud_Service_Subcriterion_Basic_3
+        - *ID_Criterion_Identification_of_Vulnerabilities_of_the_Cloud_Service_Subcriterion_Additional_Complement_1
+      information_text: 'Known vulnerabilities in externally related system components (e.g. operating systems) used for the development and provision of the cloud service but not going through the cloud service provider''s software development process are the subject of criterion OPS-25 (Managing Vulnerabilities, Incidents and Errors - Vulnerability Scans).'
+  corresponding:
+-
+  identifier: &ID_Criterion_Informing_Customers_about_Known_Vulnerabilities '03'
+  name: 'Informing Customers about Known Vulnerabilities'
+  basic: 
+    -
+      identifier: &ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider ensures through a coordinated process that cloud service customers have access to regularly updated information about known vulnerabilities associated with the cloud service that may impact the information security of the customer. This includes:
+
+
+1. Known-exploited vulnerabilities;
+
+2. Known vulnerabilities for which a patch and/or mitigating measures are provided by the cloud service provider (N-Day vulnerabilities), with appropriate references to the patch/measure; and
+
+3. Known vulnerabilities for which a patch and/or mitigating measures are unlikely to be provided by the cloud service provider (Forever-Day vulnerabilities), along with a justification for why they are not provided.
+
+
+These pertain to the provided cloud service and assets provided by the cloud service provider that the cloud service customers have to install, provide or operate within their own responsibility.'
+    -
+      identifier: &ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Basic_2 '02B'
+      criterion: 'The information provided to the cloud service customers includes, where available, a description of applicable and planned remediation or mitigation measures for the identified vulnerabilities.'
+    -
+      identifier: &ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Basic_3 '03B'
+      criterion: 'These vulnerabilities are also identified based on data from a list of software components or Software Bill of Materials (SBOM) data.'
+    -
+      identifier: &ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Basic_4 '04B'
+      criterion: 'The vulnerabilities are presented with references to the Common Vulnerabilities and Exposures (CVE) and assessments are based on:
+
+
+1. The Common Vulnerability Scoring System (CVSS); and
+
+2. The Exploit Prediction Scoring System (EPSS), the Stakeholder-Specific Vulnerability Categorization (SSVC) or other similar scoring metrics
+
+
+in the latest version valid at the time of the assessment.
+
+
+This information is accessible to all cloud customers and supports their risk assessment and follow-up actions, with references to vulnerability-specific measures where applicable.'
+    -
+      identifier: &ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Basic_5 '05B'
+      criterion: 'The cloud service provider consults the vulnerability information of its suppliers and service organisations at least daily. The published vulnerabilities are analysed in regards to their potential impact on the cloud service, and handled in accordance with the vulnerability handling process (cf. OPS-18). If the supplier or service organisation does not provide daily information, the related risk is managed according to OIS-07.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'Assets provided by the cloud service provider, which must be installed, provided or operated by cloud service customers within their area of responsibility, are equipped with automatic update mechanisms. After approval by the respective cloud service customer, software updates are rolled out by the cloud service provider.'
+    -
+      identifier: &ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'Vulnerabilities are disclosed in accordance with the Common Security Advisory Framework Version 2.0 or higher, and as specified in BSI''s Technical Guideline TR-03191.'
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Basic_1
+      information_text: 'This criterion supports transparency in vulnerability management. It requires the cloud service provider to proactively inform customers about vulnerabilities that may pose a residual risk due to the absence of remediation options. Such disclosures help customers assess their exposure and implement compensating controls where necessary.
+      
+
+Information about known-exploited vulnerabilities and known vulnerabilities can include, for example, the information about vulnerabilities in authorisation mechanisms obtained from the validation process carried out as part of PSS-09.'   
+    -
+      applicable_criteria:
+        - *ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Basic_3
+      information_text: 'Although the cloud service provider has to identify the vulnerabilities based on SBOM data to fulfil this criterion, this SBOM data need not be handed over to the customer to fulfil the criterion.'  
+    -
+      applicable_criteria:
+        - *ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Basic_4
+      information_text: 'Vulnerability-specific measures can for instance be found in the ''Vulnerability, Exploitability eXchange'' (VEX) or the ''Common Security Advisory Frameworks'' (CSAF).
+      
+      
+The Common Vulnerability Scoring System (CVSS) assesses the severity of identified vulnerabilities (cf. OPS-18). The Exploit Prediction Scoring System (EPSS), the Stakeholder-Specific Vulnerability Categorization (SSVC) and other similar scoring metrics prioritise measures to be implemented for remediating or mitigating identified vulnerabilities. Both kinds of systems should be used in tandem.'    
+    -
+      applicable_criteria:
+        - *ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Basic_5
+      information_text: 'There can be various ways to obtain information about vulnerabilities from suppliers and service organisations. The criteria does not demand a particular way for obtaining this information but that the information is obtained at least daily.'  
+    -
+      applicable_criteria:
+        - *ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Additional_Complement_1
+        - *ID_Criterion_Informing_Customers_about_Known_Vulnerabilities_Subcriterion_Additional_Complement_2
+      information_text: 'Assets provided by the cloud service provider that cloud service customers have to install, deploy or operate themselves in their area of responsibility are for example local software clients and apps as well as tools for integrating the cloud service.
+
+
+If the cloud service relies on other cloud services, this information should incorporate or refer to the vulnerabilities of those other cloud services in order for this criterion to be met.'
+  corresponding: 'Cloud service customers ensure with suitable controls that the obtained vulnerability information is incorporated timely into their own risk management, evaluated and, if necessary, taken into account in their own area of responsibility.'
+-
+  identifier: &ID_Criterion_Error_Handling_and_Logging_Mechanisms '04'
+  name: 'Error handling and Logging Mechanisms'
+  basic: 
+    -
+      identifier: &ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provided is equipped with error handling and logging mechanisms for system components under the responsibility of the cloud service customer. These enable cloud service customers to obtain security-related information about the security status of the cloud service as well as the data, services or functions it provides.'
+    -
+      identifier: &ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_2 '02B'
+      criterion: 'These mechanisms are designed to address identified security risks related to the use of the cloud service. The cloud service provider identifies and documents these risks in advance, ensuring that the implemented logging mechanisms capture relevant events and activities.'
+    -
+      identifier: &ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_3 '03B'
+      criterion: 'The information is detailed enough to allow cloud service customers to check the following aspects, insofar as they are applicable to the cloud service:
+
+
+1. Which cloud service customer data and cloud service derived data, services or functions available to the cloud service customer within the cloud service, have been accessed by whom, when and from where (Audit Logs);
+
+2. Malfunctions during processing of automatic or manual actions; and
+
+3. Changes to security-relevant configuration parameters, error handling and logging mechanisms, user authentication, action authorisation, cryptography, and communication security.
+
+'
+    -
+      identifier: &ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_4 '04B'
+      criterion: 'The logged information is protected from unauthorised access and modification and can be deleted by the cloud service customer.'
+    -
+      identifier: &ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_5 '05B'
+      criterion: 'Where applicable, the cloud service customer can activate or de-activate the logging and can control the scope and verbosity of the logging the cloud service provides.'
+    -
+      identifier: &ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_6 '06B'
+      criterion: 'The logging of management plane actions by the cloud service customers covers all relevant systems and system components.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'Cloud service customers can retrieve security-related information via documented interfaces which are suitable for further processing this information as part of their Security Information and Event Management (SIEM).'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_1
+        - *ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_2
+        - *ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_3
+        - *ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_4
+        - *ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_5
+        - *ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_6
+        - *ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Additional_Complement_1
+      information_text: 'Unlike the additional criterion OPS-15, which covers both, system components under the responsibility of the cloud service provider, as well as system components under the responsibility of the cloud service customer, the scope of this criterion is limited strictly to system components under the responsibility of the cloud service customer only. 
+
+      The extent of the logging depends on the cloud service. There may therefore be cloud services, such as SaaS services for which the amount of system components under the responsibility of the cloud service customer is very limited, to which this criterion is not applicable.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Error_Handling_and_Logging_Mechanisms_Subcriterion_Basic_4
+      information_text: 'The deletion of the logged information by the cloud service customer can, for example, be implemented by providing the cloud service customer with a process to request this deletion.'
+  corresponding: 'If the cloud service is equipped with error handling and logging mechanisms, cloud service customers must activate these and configure them according to defined requirements. The cloud service customer must incorporate his own information security management for this purpose.'
+-
+  identifier: &ID_Criterion_Authentication_Mechanisms '05'
+  name: 'Authentication Mechanisms'
+  basic: 
+    -
+      identifier: &ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provided is equipped with authentication mechanisms that can force multi-factor authentication for users, IT components or applications within the cloud service customers'' area of responsibility. These authentication mechanisms are set up at all access points that allow users, IT components or applications to interact with the cloud service.'
+    -
+      identifier: &ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_2 '02B'
+      criterion: 'For privileged users, IT components or applications under the responsibility of the cloud service customer, these authentication mechanisms can be enforced by the cloud service customer.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Authentication_Mechanisms_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service offers out-of-band (OOB) authentication, in which the factors are transmitted via different channels (e.g. Internet and mobile network).' 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_1
+        - *ID_Criterion_Authentication_Mechanisms_Subcriterion_Basic_2
+        - *ID_Criterion_Authentication_Mechanisms_Subcriterion_Additional_Complement_1
+      information_text: 'IT components in the sense of this criterion are independently usable objects with external interfaces that can be connected with other IT components.
+
+
+Access points in the sense of this criterion are those that can be accessed by users, IT components or applications via networks (for users, for example, the login screen on the publicly accessible website of the cloud service provider).
+
+
+Multi-factor authentication should be enforced and can e.g. be performed with cryptographic certificates, smart cards or tokens.'
+  corresponding: 'Cloud service customers ensure with suitable controls that the authentication mechanisms offered by the cloud service are used in accordance with the customer''s identity and authorisation management requirements. If cloud service customers operate virtual machines or containers with the cloud service, they ensure with suitable controls that the authentication mechanisms cover container-specific scenarios, such as multi-factor authentication for container hosts and registry access.'
+-
+  identifier: &ID_Criterion_Session_Management '06'
+  name: 'Session Management'
+  basic: 
+    -
+      identifier: &ID_Criterion_Session_Management_Subcriterion_Basic_1 '01B'
+      criterion: 'To protect confidentiality, availability, integrity and authenticity during interactions with the cloud service, a suitable session management system is used that corresponds to the established rules of technology and is protected against known attacks.'
+    -
+      identifier: &ID_Criterion_Session_Management_Subcriterion_Basic_2 '02B'
+      criterion: 'Mechanisms are implemented that invalidate a session after it has been detected as inactive. The inactivity can be detected by time measurement. In this case, the time interval can be configured by the cloud service provider or - if technically possible - by the cloud service customer.'
+  additional_sharpen:
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Session_Management_Subcriterion_Basic_1
+      information_text: 'Known attacks include manipulation, forgery, session takeover, Denial of Service attacks, enveloping, replay and null cipher attacks.'
+  corresponding: 'Cloud service customers can use appropriate controls to ensure that they are using the session management protection features of the cloud service in accordance with their own ISMS. They also set the time period after which a session becomes invalid according to their own ISMS specifications.'
+-
+  identifier: &ID_Criterion_Confidentiality_of_Authentication_Information '07'
+  name: 'Confidentiality of Authentication Information'
+  basic: 
+    -
+      identifier: &ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_1 '01B'
+      criterion: 'If passwords are used as authentication information for the cloud service, the cloud service provider provides the cloud service customers with the following procedures to protect the confidentiality of the passwords:
+
+
+1. Users can initially create the password themselves or must change an initial password when logging in to the cloud service for the first time. An initial password loses its validity after a maximum of 14 days;
+
+2. When creating passwords, compliance with the length and complexity requirements of the cloud service provider (cf. IAM-08) or the cloud service customer is technically enforced;
+
+3. The user is informed about changing or resetting the password. Password reset procedures are valid for at most 48 hours. After the reset procedure has been used, the password is to be changed by the user; and
+
+4. The server-side storage uses hash functions in combination with salt values, both corresponding to the state of the art.
+
+'
+    -
+      identifier: &ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_2 '02B'
+      criterion: 'Rules and recommendations are shared with the cloud service customers as applicable to the users under their responsibility. The cloud service provider offers the cloud service customers tools for the management and enforcement of these rules.'
+    -
+      identifier: &ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_3 '03B' 
+      criterion: 'When distributing credentials, the cloud service provider verifies the recipient''s identity, validates the request and protects the credentials by using additional security mechanisms such as multi-factor authentication.'
+  additional_sharpen:
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Confidentiality_of_Authentication_Information_Subcriterion_Basic_1
+      information_text: 'The state of the art regarding cryptographic hash functions is described in the current version of the BSI Technical Guideline TR-02102-1 ''Cryptographic Mechanisms: Recommendations and Key Lengths''. '
+  corresponding: 'Cloud service customers ensure with suitable controls that they use sufficiently secure passwords (cf. IAM-08) and employ the procedures provided by the cloud service provider to protect the confidentiality of the passwords according to their own assessment, and that the risks of unauthorised access associated with their own choice are borne. If cloud service customers operate virtual machines or containers with the cloud service, they ensure with suitable controls that the confidentiality of the information is also ensured for the allocation of authentication information of the virtual machines or containers.'
+-
+  identifier: &ID_Criterion_Roles_and_Rights_Framework '08'
+  name: 'Roles and Rights Framework'
+  basic: 
+    -
+      identifier: &ID_Criterion_Roles_and_Rights_Framework_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provided comprises a roles and rights framework for users of the cloud service customer. This framework allows users to manage their own access rights. It describes access rights and roles for the functions provided by the cloud service. Cloud service customers can configure relevant access control parameters themselves.'
+    -
+      identifier: &ID_Criterion_Roles_and_Rights_Framework_Subcriterion_Basic_2 '02B'
+      criterion: 'The access rights and roles are suitable for enabling users of the cloud service customer to manage access authorisations and permissions in accordance with the principle of least-privilege and how it is necessary for the performance of tasks (''need-to-know-principle'') and to implement the principle of functional separation between operational and controlling functions (''segregation of duties'').'
+    -
+      identifier: &ID_Criterion_Roles_and_Rights_Framework_Subcriterion_Basic_3 '03B'
+      criterion: 'The cloud service provided is equipped with a functionality to help cloud service customers review user access rights under their responsibility.'
+    -
+      identifier: &ID_Criterion_Roles_and_Rights_Framework_Subcriterion_Basic_4 '04B'
+      criterion: 'In case the cloud service includes the management of customer identities, for a given customer identity, the cloud service provided is equipped with a functionality to provide the list of access rights currently granted to that identity according to the contractual terms.'
+  additional_sharpen:
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Roles_and_Rights_Framework_Subcriterion_Basic_1
+      information_text: 'In IaaS, a role and rights framework would describe, among other things, the access rights and roles for the following functions of the cloud service:
+
+
+1. Administration of the states of virtual machines (start, pause, stop) as well as for their migration or monitoring;
+
+2. Management of available images that can be used to create virtual machines; and
+
+3. Management of virtual networks (e.g. configuration of virtual routers and switches).
+
+'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Roles_and_Rights_Framework_Subcriterion_Basic_3
+      information_text: 'This functionality can e.g. include gaining a list of all roles and accesses the cloud service customer has activated and when they were changed the last time.'  
+  corresponding: 'Cloud service customers ensure with suitable controls that:
+
+
+1. They actively utilise the roles and rights framework and accompanying functionalities offered by the cloud service provider;
+
+2. The granting of permissions to users in their area of responsibility is subject to authorisation; and
+
+3. The appropriateness of the assigned authorisations is regularly reviewed and authorisations are adjusted or withdrawn in a timely manner in the event of necessary changes (e.g. personnel resignation).
+
+'
+-
+  identifier: &ID_Criterion_Authorisation_Mechanisms '09'
+  name: 'Authorisation Mechanisms'
+  basic: 
+    -
+      identifier: &ID_Criterion_Authorisation_Mechanisms_Subcriterion_Basic_1 '01B'
+      criterion: 'Access to the functions provided by the cloud service is restricted by access controls (authorisation mechanisms) that verify whether users, IT components, or applications are authorised to perform certain actions.'
+    -
+      identifier: &ID_Criterion_Authorisation_Mechanisms_Subcriterion_Basic_2 '02B'
+      criterion: 'The cloud service provider validates the functionality of the authorisation mechanisms before new functions are made available to cloud service customers and in the event of changes to the authorisation mechanisms of existing functions (cf. DEV-07).'
+    -
+      identifier: &ID_Criterion_Authorisation_Mechanisms_Subcriterion_Basic_3 '03B'
+      criterion: 'If validation activities reveal vulnerabilities, the procedures for identifying vulnerabilities (cf. PSS-02) are applied and measures for timely remediation or mitigation are initiated.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Authorisation_Mechanisms_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'Access controls are attribute-based to enable granular and contextual checks against multiple attributes of a user, IT component, or application (e.g., role, location, authentication method).'
+  information:  
+  corresponding: 'Cloud service customers ensure with suitable controls that system components under their responsibility are regularly checked for vulnerabilities and to mitigate these by appropriate measures.'
+-
+  identifier: &ID_Criterion_Software_Defined_Networking '10'
+  name: 'Software Defined Networking'
+  basic: 
+    -
+      identifier: &ID_Criterion_Software_Defined_Networking_Subcriterion_Basic_1 '01B'
+      criterion: 'If the cloud service offers functions for software-defined networking (SDN), the confidentiality of cloud service customer data is ensured by suitable SDN procedures.'
+    -
+      identifier: &ID_Criterion_Software_Defined_Networking_Subcriterion_Basic_2 '02B'
+      criterion: 'The cloud service provider validates the functionality of the SDN functions before providing new SDN features to cloud service customers or modifying existing SDN features. Identified defects are assessed and corrected in a risk-oriented manner.'
+  additional_sharpen:
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Software_Defined_Networking_Subcriterion_Basic_1
+        - *ID_Criterion_Software_Defined_Networking_Subcriterion_Basic_2
+      information_text: 'This criterion is typically not applicable to the SaaS service model.
+
+
+Suitable SDN methods for increasing confidentiality are, for example, L2 overlay networking (tagging) or tunnelling/encapsulation.'
+  corresponding: 'Cloud service customers ensure with suitable controls that they validate the functionality of SDN features for their individual use cases before using newly introduced capabilities or modifed existing ones.'
+-
+  identifier: &ID_Criterion_Images_for_Virtual_Machines_and_Containers '11'
+  name: 'Images for Virtual Machines and Containers'
+  basic: 
+    -
+      identifier: &ID_Criterion_Images_for_Virtual_Machines_and_Containers_Subcriterion_Basic_1 '01B'
+      criterion: 'If cloud service customers operate virtual machines or containers with the cloud service, the cloud service provided is equipped with functionalities that ensure the following aspects:
+
+
+1. Cloud service customers can restrict the selection of images of virtual machines or containers according to their specifications, so that users of the cloud service customer can only launch the images or containers released according to these restrictions;
+
+2. If the cloud service provider provides images of virtual machines or containers to the cloud service customer, the cloud service provider appropriately informs the cloud service customer of the changes made to the previous version;
+
+3. Images provided by the cloud service provider are labelled with information regarding their origin; and
+
+4. Images provided by the cloud service provider are hardened according to generally accepted industry standards.
+
+'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Images_for_Virtual_Machines_and_Containers_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider checks the integrity and authenticity of virtual machines or container images at startup and informs the cloud service customer accordingly about the results of those checks.'
+    -
+      identifier: &ID_Criterion_Images_for_Virtual_Machines_and_Containers_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'During runtime, the cloud service provider protects the virtual machines or container images against tampering and informs the cloud service customer accordingly about the status during runtime.'  
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Images_for_Virtual_Machines_and_Containers_Subcriterion_Basic_1
+      information_text: 'This criterion is typically not applicable to the SaaS service model.
+
+
+Generally accepted industry standards are, for example, the Security Configuration Benchmark of the Centre for Internet Security (CIS) or the corresponding modules in the BSI IT-Grundschutz-Compendium.'
+    -
+      applicable_criteria:    
+        - *ID_Criterion_Images_for_Virtual_Machines_and_Containers_Subcriterion_Additional_Complement_1
+      information_text: 'Typical measures for checking virtual machines or container images against integrity and authenticity include cryptographical signing.'
+  corresponding: 'Cloud service customers ensure with suitable controls that the images of virtual machines or containers they operate with the cloud service comply with their information security management requirements and that the results of the integrity checks at startup and at runtime are processed according to these requirements.'
+-
+  identifier: &ID_Criterion_Region_of_Data_Processing_and_Storage '12'
+  name: 'Region of Data Processing and Storage'
+  basic: 
+    -
+      identifier: &ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Basic_1 '01B'
+      criterion: 'The architecture of the cloud service, including the technical design of its infrastructure, ensures that cloud service customer data and eventual data backups thereof are processed and stored only in the region specified in the contractual agreements with the cloud service provider. If the cloud service customer is able to select from multiple regions, processing and storage of the aforementioned data is limited to the selected regions.'
+    -
+      identifier: &ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Basic_2 '02B'
+      criterion: 'Processing and storage of cloud service customer data within the service organisations of the cloud service provider also adheres to the regions selected by the cloud service customer.'
+    -
+      identifier: &ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Basic_3 '03B'
+      criterion: 'The contractual agreements specify the regions in which processing and storage of cloud service customer data, cloud service derived data and account data occurs and the circumstances under which changes may be applied.'
+    -
+      identifier: &ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Basic_4 '04B'
+      criterion: 'Customers are notified beforehand in case of any changes to the regions in which the aforementioned data is processed or stored. If the cloud service provider has not been granted prior general authorisation by the cloud service customer to do so, such authorisations are obtained in accordance with the requirements specified in the contractual agreements or let the cloud service customer exercise termination rights.'
+  additional_sharpen:
+    -
+      identifier: &ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Additional_Sharpen_1 '01AS'
+      sharpened_basic_criterion: *ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Basic_1
+      criterion: 'The architecture of the cloud service, including the technical design of its infrastructure, ensures that the cloud service customer data, cloud service derived data and eventual data backups thereof are processed and stored only in the region specified in the contractual agreements with the cloud service provider. If the cloud service customer is able to select from multiple regions, processing and storage of the aforementioned data is limited to the selected regions.'
+    -
+      identifier: &ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Additional_Sharpen_2 '02AS'
+      sharpened_basic_criterion: *ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Basic_2
+      criterion: 'Processing and storage of cloud service customer data and cloud service derived data within the service organisations of the cloud service provider also adheres to the regions selected by the cloud service customer.'    
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Partitions_of_Data_Processing_and_Storage_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider offers partitions selectable by the cloud service customer where partition-specific identity management is enforced for both cloud service customers and all cloud service provider personnel. Identity verification and identity storage are confined to the geographical boundaries of the selected partition.'
+    -
+      identifier: &ID_Criterion_Partitions_of_Data_Processing_and_Storage_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'Within these partitions, the following operations by the cloud service provider are restricted to occur only within the geographical boundaries of the customer-selected partitions: 
+
+
+1. Privileged access to the production environment by the cloud service provider, including potential access to cloud service customer data and cloud service derived data; 
+
+2. System logging and event monitoring by the cloud service provider, except for processing event logs specifically for threat intelligence and handling IP addresses for routing purposes; and
+
+3. Cryptographic key management and storage practices to ensure keys are handled and stored within limits of the partition. 
+
+
+These restrictions considering partitions also apply to any service organisations involved in the operation of the cloud service.'
+  information:  
+    -
+      applicable_criteria:
+        - *ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Basic_3
+      information_text: 'This criterion refers to the architecture of the cloud service and does not put any constraints on the architecture the cloud service customer designs. 
+      
+      
+If a cloud service provider has several regions that provide the same service, the cloud service customer is free to use the service in different regions (e.g. for more resilience). 
+
+
+This subcriterion refers to contractual agreements which include the pledge for cloud service customer data, cloud service derived data, cloud service provider data and account data to reside in the chosen region. It also covers how contractual agreements are updated, ensuring transparent communication and continued residency for all four types of data in the agreed region(s).' 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Basic_1
+        - *ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Basic_2
+        - *ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Basic_3
+        - *ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Basic_4
+        - *ID_Criterion_Regions_of_Data_Processing_and_Storage_Subcriterion_Additional_Sharpen_1
+        - *ID_Criterion_Partitions_of_Data_Processing_and_Storage_Subcriterion_Additional_Complement_1
+        - *ID_Criterion_Partitions_of_Data_Processing_and_Storage_Subcriterion_Additional_Complement_2
+      information_text: 'This criterion supplements the General Condition GC-01. It does not require the cloud service provider to offer multiple regions or partitions. If the cloud service provider offers only one partition for the cloud service(s) in scope, this does not comprise a deviation from the criterion.
+
+
+If the additional complemental criterion is only applicable for selected partitions in scope of an assurance engagement in accordance with this catalogue, this should be presented in the cloud service provider''s description of its system of internal control for the cloud service.
+
+
+This criterion is a prerequisite for technical service sovereignty.
+
+
+Monitoring of threat intelligence data, which excludes any cloud service customer data and account data, and logging of required routing information such as IP addresses are not required to be geographically limited to a single partition.'
+  corresponding: 'Cloud service customers ensure with suitable controls that, when selecting service providers and configuring the cloud service, they are informed about the available data processing and storage partitions and, if there is a choice between different partitions, that they select those that meet their own requirements.
+
+
+Depending on the use case and especially when using services of a cloud service provider which is based in another country, cloud service customers take the laws of their own jurisdiction applicable to them into account when making their selection (e.g. when processing personal data; compliance with legal retention obligations for business documents, etc.).'
