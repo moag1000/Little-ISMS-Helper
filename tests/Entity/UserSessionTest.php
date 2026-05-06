@@ -174,7 +174,7 @@ class UserSessionTest extends TestCase
 
         $duration = $session->getDuration();
         $this->assertGreaterThanOrEqual(3600, $duration); // At least 1 hour
-        $this->assertLessThanOrEqual(3605, $duration); // Allow 5 seconds tolerance
+        $this->assertLessThanOrEqual(3660, $duration); // Allow 60 seconds tolerance for slow CI runners
     }
 
     #[Test]

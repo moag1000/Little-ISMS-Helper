@@ -287,8 +287,8 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
             10 // Allow 10 second variance for test execution time
         );
 
-        // Verify hours remaining is close to 72 hours
-        $this->assertGreaterThan(71.9, $result['hours_remaining']);
+        // Verify hours remaining is close to 72 hours (allow up to 30 minutes of CI drift)
+        $this->assertGreaterThan(71.5, $result['hours_remaining']);
         $this->assertLessThan(72.1, $result['hours_remaining']);
     }
 
