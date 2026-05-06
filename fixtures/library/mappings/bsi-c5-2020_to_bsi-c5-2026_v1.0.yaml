@@ -59,20 +59,33 @@ library:
       - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
 
 mappings:
-  # ===== Organisation der Informationssicherheit (2020 SIM → 2026 OIS) =====
-  - source: 'SIM-01'
+  # ===== Organisation der Informationssicherheit (OIS bleibt OIS) =====
+  - source: 'OIS-01'
     target: 'OIS-01'
     relationship: 'equivalent'
     confidence: 'high'
     rationale: |
-      C5:2020 SIM-01 „Sicherheitsmanagement-System / ISMS" verlangt vom
-      Cloud-Anbieter ein dokumentiertes ISMS gemäß ISO 27001 oder
-      vergleichbarem Standard. C5:2026 OIS-01 „Information Security
-      Management System (ISMS)" übernimmt diesen Pflichteninhalt
-      wortgleich; die Umbenennung des Bereichs (SIM → OIS) reflektiert nur,
-      dass in 2026 SIM für „Security Incident Management" reserviert ist.
-      Carryover ohne Inhaltsänderung.
+      C5:2020 OIS-01 „Informationssicherheits-Managementsystem (ISMS)"
+      und C5:2026 OIS-01 „Information Security Management System (ISMS)"
+      sind direkter Carryover. Pflicht zum dokumentierten ISMS gemäß
+      ISO/IEC 27001 oder gleichwertig bleibt unverändert. Die OIS-Area
+      existiert in beiden Versionen und behält ihren Namen.
     audit_evidence_hint: 'ISMS-Scope-Dokument, ISMS-Handbuch, ISO-27001-Zertifikat oder gleichwertiger Nachweis, Management-Review-Protokolle.'
+
+  # ===== Security Incident Management (SIM bleibt SIM) =====
+  - source: 'SIM-01'
+    target: 'SIM-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2020 SIM-01 „Richtlinie für den Umgang mit Sicherheitsvorfällen"
+      und C5:2026 SIM-01 „Policy for Security Incident Management" sind
+      direkter Carryover. Beide verlangen eine dokumentierte IR-Policy
+      mit Rollen, Eskalationswegen und Klassifizierung. SIM-Area in
+      beiden Versionen identisch im Scope (Security Incident Management).
+      Die 2026-Fassung ist marginal expliziter zu Externa-Kommunikation.
+    cross_refs: ['SIM-02', 'SIM-03']
+    audit_evidence_hint: 'IR-Policy mit Incident-Klassifikation, Eskalations-Matrix, dokumentierte Rollen, externe Kommunikations-Templates.'
 
   # ===== Sicherheitsleitlinie / Policies =====
   - source: 'OPS-01'

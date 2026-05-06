@@ -1,0 +1,504 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'eucs_to_bsi-c5-2020_v1.0'
+  source_framework: 'ENISA-EUCS'
+  target_framework: 'BSI-C5'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'ENISA EUCS European Cybersecurity Certification Scheme for Cloud Services (Substantial Level), public consultation drafts 2020-2024'
+    primary_source_url: 'https://www.enisa.europa.eu/topics/cloud-and-big-data/eucs-candidate-cybersecurity-certification-scheme-for-cloud-services'
+    secondary_sources:
+      - 'BSI C5:2020 Kriterienkatalog (Anlage A: Vergleichstabelle ISO 27001 ↔ BSI C5)'
+      - 'fixtures/library/mappings/bsi-c5-2020_to_iso27001-2022_v1.0.yaml (Bereichs-Logik und Pflichteninhalte)'
+      - 'EUCS Substantial Level — 20-Bereich-Struktur (A1-A20) öffentlicher Konsultationen 2020-2024'
+    publisher: 'Little ISMS Helper Maintainers'
+    license_note: 'Mapping is original derivative work (AGPL-3.0). EUCS source IDs and area names © ENISA used under public consultation terms; BSI C5:2020 IDs © BSI used under reference-and-citation principles.'
+
+  methodology:
+    type: 'public_draft_comparison'
+    description: |
+      Forward-Mapping ausgehend vom ENISA-EUCS-Kriterium auf das
+      BSI-C5:2020-Pendant. EUCS verwendet 20 Domänen (A1-A20) in der
+      Substantial-Assurance-Stufe. Da der finale EUCS-Catalogue zum
+      Stichtag 2026-05 noch nicht offiziell als ENISA-Implementing-
+      Regulation veröffentlicht wurde, basieren konkrete Sub-IDs (z.B.
+      OIS-01, IAM-02) auf den öffentlichen Konsultationsdokumenten
+      2020-2024. Wo die Sub-ID gegen den Final-Veröffentlichungsstand
+      noch zu validieren ist, wird im rationale ausdrücklich vermerkt
+      und confidence='medium' bzw. 'low' gewählt.
+
+      Relationship-Logik:
+      - equivalent: Pflichteninhalt deckungsgleich (z.B. EUCS A8 Crypto
+        ↔ BSI KRY-01)
+      - subset: EUCS-Kriterium ist Teilmenge der breiteren BSI-Pflicht
+      - superset: EUCS-Kriterium fordert mehr als das BSI-Pendant
+        (selten — beide Kataloge sind in Cloud-Scope sehr ähnlich)
+      - partial_overlap: Schnittmenge vorhanden, aber jeweils
+        unabhängige Pflichten
+
+      Coverage: alle 20 EUCS-Bereiche (A1-A20) sind mindestens einmal
+      gegen die bekannten BSI-C5:2020-Bereiche (AM, BCM, BEI, BFM, COS,
+      DEV, HR, IDM, KOS, KRY, MA, OPS, PI, PSC, RB, SIM) gemappt.
+
+      Strukturelle Hinweise:
+      - EUCS A18 (Investigative Requests from Government Agencies) hat
+        in C5:2020 KEIN dediziertes Pendant — entspricht teilweise
+        BFM-01 / BEI-01 (Behördenanfrage-Klauseln in Sub-Provider-
+        Verträgen). C5:2026 INQ-01..04 wird diesen Bereich abdecken.
+      - EUCS A17 (User Documentation) hat in C5:2020 ebenfalls KEIN
+        dediziertes Pendant — entspricht Anbieter-Dokumentationspflichten,
+        die in 2020 informell unter BEI / Anbieter-Doku enthalten waren.
+      - EUCS A19 (Product Safety and Security) entspricht in 2020 den
+        verteilten DEV-/OPS-Pflichten — kein 1:1-Pendant.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-05-06', actor: 'maintainer' }
+      - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
+
+mappings:
+  # ===== A1 — Organization of Information Security =====
+  - source: 'OIS-01'
+    target: 'OIS-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A1 „Organization of Information Security" mit Sub-Kriterium
+      OIS-01 (ISMS-Etablierung) entspricht direkt BSI C5:2020 OIS-01
+      „Informationssicherheits-Managementsystem (ISMS)". Beide fordern ein dokumentiertes
+      ISMS mit Top-Management-Commitment und definierten Rollen
+      (CISO/Security Officer). Pflichteninhalt deckungsgleich.
+      Konkrete EUCS-ID gegen Final-Veröffentlichung zu validieren —
+      Bereichs-Buchstabe A1 ist sicher.
+    cross_refs: ['SIM-02']
+    audit_evidence_hint: 'ISMS-Scope-Dokument, ISMS-Handbuch, Management-Review-Protokolle, ISO-27001-Zertifikat oder gleichwertig.'
+
+  - source: 'OIS-04'
+    target: 'BFM-01'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      EUCS A1 OIS-04 „Segregation of Duties" deckt
+      Funktionstrennungs-Anforderungen ab, die in BSI C5:2020 unter
+      BFM-01 (Beauftragten-/Berichtswesen-Funktion) teilweise enthalten
+      waren. C5:2020 hatte kein eigenständiges Kriterium für SoD, so
+      dass die Schnittmenge nur teilweise besteht.
+    gap_warning: |
+      Wer EUCS A1 OIS-04 erfüllt, hat nur einen Teil der C5:2020 BFM-01-
+      Pflichten abgedeckt (Beauftragten-Funktion ist breiter). Umgekehrt
+      ist BFM-01 keine vollständige SoD-Implementierung. Empfehlung: SoD-
+      Matrix als eigenständiges Dokument neben BFM-01 betreiben.
+    audit_evidence_hint: 'SoD-Matrix für kritische Prozesse, Konflikt-Reviews, Rollen-Trennungs-Nachweise.'
+
+  # ===== A2 — Information Security Policies =====
+  - source: 'A2-1'
+    target: 'OPS-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A2 „Information Security Policies" verlangt eine vom Top-
+      Management des Cloud-Anbieters freigegebene und veröffentlichte
+      Sicherheitsleitlinie. BSI C5:2020 OPS-01 „Leitlinie zur
+      Informationssicherheit" fordert inhaltsgleich. Pflichteninhalt
+      deckungsgleich; jährliche Review-Pflicht in beiden vorgeschrieben.
+      Konkrete EUCS-Sub-ID gegen Final-Veröffentlichung zu validieren —
+      Bereich A2 ist sicher.
+    audit_evidence_hint: 'Verabschiedete InfoSec-Leitlinie mit Management-Freigabe, jährliche Review-Protokolle, Veröffentlichung im Mitarbeiter-Intranet.'
+
+  # ===== A3 — Risk Management =====
+  - source: 'RM-01'
+    target: 'OIS-07'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A3 „Risk Management" mit Sub-Kriterium RM-01 (Risikomanagement-
+      Richtlinie) entspricht BSI C5:2020 OIS-07 „Anwendung des Verfahrens
+      fuer den Umgang mit Risiken". Beide verlangen ISO-27005-konformes
+      Risikomanagement
+      als integralen ISMS-Bestandteil. EUCS hebt Risk Management als
+      eigenes Kriterium hervor; Pflichteninhalt liegt innerhalb von
+      SIM-01.
+    cross_refs: ['SIM-01']
+    audit_evidence_hint: 'Risikomanagement-Richtlinie ISO-27005-konform, Risikoregister, Risk-Treatment-Plan.'
+
+  - source: 'RM-02'
+    target: 'RB-04'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      EUCS A3 RM-02 (Risikobewertung) deckt fortlaufende Bedrohungs- und
+      Risikobewertung ab — Schnittmenge mit BSI C5:2020 RB-04
+      „Identifikation von Schwachstellen, Bedrohungen und funktionalen
+      Mängeln". RM-02 ist breiter (alle Risiken), RB-04 fokussiert auf
+      operatives Threat-Intel. Konkrete EUCS-Sub-ID gegen Final-
+      Veröffentlichung zu validieren.
+    audit_evidence_hint: 'Risiko-Identifikation-Berichte, Bedrohungs-Szenarien, ISO-27005-Risikoanalyse-Methodik.'
+
+  # ===== A4 — Asset Management =====
+  - source: 'AM-01'
+    target: 'AM-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A4 „Asset Management" mit Sub-Kriterium AM-01 (Asset
+      Inventory) entspricht direkt BSI C5:2020 AM-01 „Asset-Inventar".
+      Pflichteninhalt deckungsgleich: vollständiges Inventar aller
+      Cloud-Service-relevanten Assets mit Owner, Klassifikation und
+      Stichtagsabgleich CMDB ↔ Cloud-Provisioning. ID-Übereinstimmung
+      historisch bedingt — beide Frameworks orientieren sich an ISO
+      27001 A.5.9.
+    cross_refs: ['SIM-01']
+    audit_evidence_hint: 'Asset-Inventar mit Owner-Feld, Klassifikation, Stichtagsabgleich CMDB ↔ Cloud-Provisioning, mandanten-relevante Assets.'
+
+  # ===== A5 — Physical Security =====
+  - source: 'A5-1'
+    target: null
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      EUCS A5 „Physical Security" verlangt physische Schutzmaßnahmen für
+      Rechenzentren (Perimeter, Zutritt, Umweltkontrollen). BSI C5:2020
+      hatte einen eigenen Bereich „Physische Sicherheit", der jedoch in
+      den vorhandenen Fixtures NICHT mit eigenen IDs kartiert ist.
+      Mappings gegen C5:2020-PS-Bereich gegen BSI-Anlage-A zu validieren.
+      Konkrete EUCS-Sub-ID gegen Final-Veröffentlichung zu validieren.
+    gap_warning: |
+      Wer EUCS A5 erfüllt, sollte Nachweise gegen den C5:2020-PS-Bereich
+      (z.B. ISO-27001 A.7.x, TÜViT TSI 4.1) führen. C5:2020-Anlage A
+      bietet die Vergleichsmatrix; ein direktes ID-Mapping fehlt im
+      Little-ISMS-Helper-Bestand.
+    audit_evidence_hint: 'TIER-Zertifizierung des RZ, Perimeter-Dokumentation, Zutrittskontroll-Logs, Umwelt-Monitoring (Brand/Wasser/Klima).'
+
+  # ===== A6 — Operational Security =====
+  - source: 'OS-01'
+    target: 'OPS-15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A6 „Operational Security" mit Sub-Kriterium OS-01 (Schutz vor
+      Schadprogrammen) entspricht direkt BSI C5:2020 OPS-15 „Schutz vor
+      Schadprogrammen — Konzept". Pflichteninhalt deckungsgleich:
+      dokumentiertes Schutz-Konzept gegen Malware auf Cloud-Plattform-
+      Ebene mit AV/EDR-Coverage und Update-Pflichten.
+    cross_refs: ['OPS-10']
+    audit_evidence_hint: 'AV/EDR-Coverage-Report, Update-Frequenz-Nachweise, Quarantäne-Statistiken, dokumentiertes Schutz-Konzept.'
+
+  - source: 'OS-02'
+    target: 'OPS-10'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A6 OS-02 (Logging und Monitoring) entspricht direkt BSI
+      C5:2020 OPS-10 „Protokollierung und Monitoring —
+      Verantwortlichkeiten". Pflichteninhalt deckungsgleich: SIEM-
+      Use-Case-Katalog, 24/7-SOC-Coverage, Log-Retention.
+    cross_refs: ['OPS-11']
+    audit_evidence_hint: 'SIEM-Use-Case-Katalog, Alert-MTTR-Statistik, 24/7-Coverage-Nachweis (SOC), Log-Retention-Konfiguration.'
+
+  - source: 'OS-03'
+    target: 'OPS-18'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A6 OS-03 (Schwachstellen-Management) entspricht direkt BSI
+      C5:2020 OPS-18 „Umgang mit Schwachstellen, Störungen und Fehlern".
+      Pflichteninhalt deckungsgleich: Schwachstellen-Identifikation,
+      Bewertung und Patch-Management mit definierten SLAs für Critical-
+      Patches.
+    cross_refs: ['RB-04']
+    audit_evidence_hint: 'Vulnerability-Scan-Reports, Patch-Compliance-Dashboard mit SLA-Erfüllung, CVE-Tracking der letzten 90 Tage.'
+
+  # ===== A7 — Identity, Authentication and Access Control =====
+  - source: 'IAM-01'
+    target: 'IDM-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A7 „Identity, Authentication and Access Control" mit Sub-
+      Kriterium IAM-01 (Identitäts- und Berechtigungsverwaltung)
+      entspricht direkt BSI C5:2020 IDM-01 „Richtlinie zur Identitäts-
+      und Berechtigungsverwaltung". Pflichteninhalt deckungsgleich.
+    cross_refs: ['IDM-02']
+    audit_evidence_hint: 'Identity-Management-Richtlinie, Berechtigungskonzept, Rollen-Modell.'
+
+  - source: 'IAM-02'
+    target: 'IDM-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A7 IAM-02 (Benutzerregistrierung, Provisioning) entspricht
+      direkt BSI C5:2020 IDM-02 „Benutzerregistrierung". Joiner/Mover/
+      Leaver-Workflows sind in beiden Frameworks Standardnachweis.
+    cross_refs: ['IDM-03']
+    audit_evidence_hint: 'Provisioning-Workflow, Joiner/Mover/Leaver-Tickets letzte 90 Tage, Berechtigungskonzept.'
+
+  - source: 'IAM-08'
+    target: 'IDM-09'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A7 IAM-08 (Authentifizierungsmechanismen) entspricht direkt
+      BSI C5:2020 IDM-09 „Authentifizierungsmechanismen".
+      Pflichteninhalt deckungsgleich: MFA für administrative Zugriffe,
+      kryptografisch starke Verfahren gemäß BSI TR-03116.
+    audit_evidence_hint: 'MFA-Coverage 100% Admin-Accounts, Auth-Methoden-Inventar, Logs fehlgeschlagener Logins.'
+
+  # ===== A8 — Cryptography and Key Management =====
+  - source: 'CKM-01'
+    target: 'KRY-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A8 „Cryptography and Key Management" mit Sub-Kriterium CKM-01
+      (Krypto-Richtlinie) entspricht direkt BSI C5:2020 KRY-01
+      „Richtlinie zur Verwendung von Verschlüsselungsverfahren und
+      Schlüsselverwaltung". Pflichteninhalt deckungsgleich; beide
+      referenzieren BSI TR-02102 als Algorithmen-Baseline.
+    audit_evidence_hint: 'Krypto-Richtlinie, Algorithmen-Allowlist (BSI TR-02102 konform), Key-Management-Verfahren (HSM oder gleichwertig).'
+
+  # ===== A9 — Communication Security =====
+  - source: 'CS-01'
+    target: 'KOS-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A9 „Communication Security" mit Sub-Kriterium CS-01
+      (Technische Schutzmaßnahmen) entspricht direkt BSI C5:2020 KOS-01
+      „Technische Schutzmaßnahmen". Pflichteninhalt deckungsgleich:
+      Netzwerk-Segmentierung, Firewall-Regeln, kryptografische
+      Transportsicherung.
+    audit_evidence_hint: 'Netzwerk-Segmentierungs-Konzept, Firewall-Rule-Review, Topologie-Dokument, TLS-Konfiguration.'
+
+  # ===== A10 — Portability and Interoperability =====
+  - source: 'PI-01'
+    target: 'PI-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A10 „Portability and Interoperability" mit Sub-Kriterium
+      PI-01 (Sicherheit der Schnittstellen) entspricht direkt BSI
+      C5:2020 PI-01 „Safety of Input and Output Interfaces".
+      Pflichteninhalt deckungsgleich: API-Sicherheit, Datenexport-
+      Funktionalität, sichere Daten-Übergabe und -Löschung.
+    audit_evidence_hint: 'API-Dokumentation, Datenexport-Funktionalität, Input-Validation, Daten-Lösch-Konzept.'
+
+  # ===== A11 — Change and Configuration Management =====
+  - source: 'A11-1'
+    target: 'RB-01'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      EUCS A11 „Change and Configuration Management" deckt Change-
+      Management-Pflichten ab, die in BSI C5:2020 unter dem breiteren
+      Bereich RB (Regelbetrieb) bzw. RB-01 erfasst waren. EUCS
+      strukturiert Change Management als eigenständigen Bereich,
+      während C5:2020 dies in RB integriert hatte. Konkrete EUCS-Sub-ID
+      gegen Final-Veröffentlichung zu validieren.
+    gap_warning: |
+      Wer EUCS A11 erfüllt, hat nur einen Teil der breiteren C5:2020
+      RB-01-Pflichten abgedeckt — ggf. fehlen Konfigurations-Baseline
+      und Change-Risiko-Bewertung. C5:2026 verschiebt Change Management
+      nach DEV-03..15.
+    cross_refs: ['DEV-01']
+    audit_evidence_hint: 'Change-Management-Richtlinie, CAB-Protokolle, Change-Tickets letzte 90 Tage, Konfigurations-Baseline.'
+
+  # ===== A12 — Development of Information Systems =====
+  - source: 'DEV-01'
+    target: 'DEV-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A12 „Development of Information Systems" mit Sub-Kriterium
+      DEV-01 (Secure-SDLC) entspricht direkt BSI C5:2020 DEV-01
+      „Policies for the Development/Procurement of System Components".
+      Pflichteninhalt deckungsgleich: Secure-SDLC-Richtlinie, sichere
+      Entwicklungspraktiken, Code-Review-Pflichten.
+    cross_refs: ['DEV-02']
+    audit_evidence_hint: 'Secure-SDLC-Richtlinie, Procurement-Policy, Code-Review-Protokolle.'
+
+  - source: 'DEV-02'
+    target: 'DEV-02'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A12 DEV-02 (Outsourcing der Entwicklung) entspricht direkt
+      BSI C5:2020 DEV-02 „Outsourcing of the Development".
+      Pflichteninhalt deckungsgleich.
+    audit_evidence_hint: 'Verträge mit Outsourcing-Entwicklern, Code-Review-Protokolle, Sub-Provider-Sicherheits-Klauseln.'
+
+  # ===== A13 — Procurement and Suppliers =====
+  - source: 'PM-01'
+    target: 'BEI-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A13 „Procurement and Suppliers" mit Sub-Kriterium PM-01
+      (Lieferantensteuerung) entspricht direkt BSI C5:2020 BEI-01
+      „Richtlinien und Anweisungen für Beziehungen zu Dritten".
+      Pflichteninhalt deckungsgleich: vertragliche InfoSec-Pflichten
+      gegenüber Sub-Dienstleistern. Konkrete EUCS-Sub-ID gegen Final-
+      Veröffentlichung zu validieren.
+    cross_refs: ['BEI-04']
+    audit_evidence_hint: 'Lieferantenverträge mit InfoSec-Klauseln, AVV nach Art. 28 DSGVO, Sub-Provider-Liste.'
+
+  - source: 'PM-02'
+    target: 'BEI-04'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A13 PM-02 (Anforderungen an Lieferanten und Risikobewertung)
+      entspricht direkt BSI C5:2020 BEI-04 „Anforderungen an
+      Lieferanten" mit Fokus auf Risikobewertung. Pflichteninhalt
+      deckungsgleich: Sub-Provider-Audit-Rechte, Risikobewertung
+      eingebundener Drittparteien.
+    audit_evidence_hint: 'Sub-Provider-Risikobewertungen, Audit-Rechte-Klauseln, Sub-Provider-Verzeichnis.'
+
+  # ===== A14 — Incident Management =====
+  - source: 'IM-01'
+    target: 'SIM-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A14 „Incident Management" mit Sub-Kriterium IM-01 (Incident-
+      Response-Prozess) entspricht direkt BSI C5:2020 SIM-01
+      „Richtlinien und Anweisungen zur Behandlung von Sicherheits-
+      vorfällen". Pflichteninhalt deckungsgleich: dokumentierter
+      IR-Prozess inkl. Rollen, Eskalationswegen und Runbook-Pflichten.
+      WICHTIG: SIM:2020 = ISMS-Steuerung; SIM:2026 = Security Incident
+      Management — diese ID-Umbenennung in C5:2026 nicht mit EUCS
+      verwechseln.
+    cross_refs: ['OPS-10']
+    audit_evidence_hint: 'IR-Plan mit Rollen/Eskalation, IR-Runbooks, Übungs-Reports der letzten 12 Monate, Incident-Tickets-Stichprobe.'
+
+  # ===== A15 — Business Continuity =====
+  - source: 'BC-01'
+    target: 'BCM-01'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A15 „Business Continuity" mit Sub-Kriterium BC-01
+      (Business-Continuity-Strategie) entspricht direkt BSI C5:2020
+      BCM-01 „Top-Management-Verantwortung und Business Continuity
+      Strategie". Pflichteninhalt deckungsgleich: Top-Management-
+      Commitment, BIA, BC-Strategie für Cloud-Anbieter, ISO-22301-
+      konforme Steuerung.
+    audit_evidence_hint: 'BC-Strategie, Top-Management-Freigabe, BIA, BC-Plans, Übungs-Reports der letzten 12 Monate.'
+
+  # ===== A16 — Compliance and Information Security Reviews =====
+  - source: 'A16-1'
+    target: 'BFM-01'
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      EUCS A16 „Compliance and Information Security Reviews" verlangt
+      regulatorische Anforderungssteuerung und interne Audit-Programme.
+      In BSI C5:2020 sind diese Pflichten unter BFM-01 (Beauftragten-/
+      Berichtswesen-Funktion) und OIS-01 (ISMS) verteilt — kein
+      eigenständiges Kriterium. C5:2026 hebt dies in COM-01..03 hervor.
+      Konkrete EUCS-Sub-ID gegen Final-Veröffentlichung zu validieren.
+    gap_warning: |
+      Wer EUCS A16 erfüllt, sollte zusätzlich sicherstellen, dass interne
+      Audit-Programme (ISO 19011) und Compliance-Anforderungs-Register
+      (GDPR, NIS2, DORA, EU-Cloud-Act) eigenständig dokumentiert sind —
+      C5:2020 hatte hier nur fragmentarische Anforderungen.
+    cross_refs: ['SIM-01']
+    audit_evidence_hint: 'Compliance-Anforderungs-Register, Audit-Plan, Audit-Reports letzte 24 Monate, Maßnahmen-Tracking aus Findings.'
+
+  # ===== A17 — User Documentation =====
+  - source: 'A17-1'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      EUCS A17 „User Documentation" verlangt anbieter-seitige
+      Bereitstellung von Sicherheits-Empfehlungen für Cloud-Kunden
+      (Shared-Responsibility-Modell, Hardening-Empfehlungen). In BSI
+      C5:2020 KEIN eigener Bereich — Anteile waren in BEI/Anbieter-
+      Dokumentation enthalten ohne formalisierte Pflicht. C5:2026
+      hebt dies in PSS-01..03 hervor. Konkrete EUCS-Sub-ID gegen Final-
+      Veröffentlichung zu validieren.
+    gap_warning: |
+      Bestandsanwender mit C5:2020-Reife müssen für EUCS A17 ein
+      formalisiertes Customer-Guidance-Programm aufbauen: Shared-
+      Responsibility-Matrix, Best-Practice-Guides pro Service,
+      Onboarding-Schulungen für Kunden, Security-Bulletins.
+    cross_refs: ['BEI-01']
+    audit_evidence_hint: 'Shared-Responsibility-Matrix, Customer-Hardening-Guides, Security-Bulletin-Archiv, Onboarding-Schulungs-Material.'
+
+  # ===== A18 — Investigative Requests from Government Agencies =====
+  - source: 'A18-1'
+    target: null
+    relationship: 'superset'
+    confidence: 'low'
+    rationale: |
+      EUCS A18 „Investigative Requests from Government Agencies" deckt
+      Behördenanfragen (CLOUD Act, BfDI, MLAT) ab. In BSI C5:2020 KEIN
+      dediziertes Kriterium — fragmentarische Hinweise waren unter
+      BFM-01 (regulatorische Steuerung) und BEI-01 (Sub-Provider-
+      Klauseln) enthalten. C5:2026 hebt dies erstmals als eigener
+      4-Kriterien-Bereich INQ-01..04 hervor. Konkrete EUCS-Sub-ID
+      gegen Final-Veröffentlichung zu validieren.
+    gap_warning: |
+      Bestandsanwender mit C5:2020-Reife müssen für EUCS A18 einen
+      formalen Behördenanfrage-Prozess aufbauen: Legal-Review-Workflow,
+      Kunden-Benachrichtigung (sofern rechtlich zulässig),
+      Datenminimierung in der Antwort, technische Dokumentation der
+      Datenherausgabe, Transparenzbericht.
+    cross_refs: ['BFM-01', 'BEI-01']
+    audit_evidence_hint: 'Behördenanfrage-Prozess-Dokumentation, Legal-Review-Protokolle, Transparenzbericht, MLAT-Verfahren-Liste.'
+
+  # ===== A19 — Product Safety and Security =====
+  - source: 'A19-1'
+    target: 'DEV-01'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      EUCS A19 „Product Safety and Security" deckt Sicherheits-Eigen-
+      schaften des Cloud-Service-Produkts ab — Schnittmenge mit BSI
+      C5:2020 DEV-01 (Secure-SDLC) und OPS-Bereichen. C5:2020 hatte
+      kein eigenständiges Produkt-Sicherheits-Kriterium; C5:2026 hebt
+      dies in PSS-01..16 hervor. Konkrete EUCS-Sub-ID gegen Final-
+      Veröffentlichung zu validieren.
+    gap_warning: |
+      Wer EUCS A19 erfüllt, sollte zusätzlich das Image-Hardening
+      (gegen C5:2026 PSS-11) und SBOM-Pflege (gegen C5:2026 DEV-13)
+      adressieren — diese Pflichten waren in C5:2020 nicht expliziert.
+    cross_refs: ['DEV-02', 'OPS-15']
+    audit_evidence_hint: 'Produkt-Sicherheits-Konzept, Hardening-Berichte, Image-Signing-Nachweise, SBOM pro Release.'
+
+  # ===== A20 — Awareness and Training =====
+  - source: 'AT-01'
+    target: 'HR-03'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A20 „Awareness and Training" mit Sub-Kriterium AT-01
+      (Schulungs- und Sensibilisierungs-Programm) entspricht direkt BSI
+      C5:2020 HR-03 „Schulung und Sensibilisierung". Pflichteninhalt
+      deckungsgleich: regelmäßige Awareness-Schulungen für alle
+      Beschäftigten inkl. rollenspezifischer Vertiefung für privilegierte
+      Nutzer. Konkrete EUCS-Sub-ID gegen Final-Veröffentlichung zu
+      validieren.
+    cross_refs: ['PSC-01']
+    audit_evidence_hint: 'Schulungs-Quote (≥95%), Phishing-Drill-Ergebnisse, rollenspezifische Curricula für Privileged Users, Onboarding-Nachweise.'
+
+  - source: 'AT-02'
+    target: 'PSC-01'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      EUCS A20 AT-02 (Personalsicherheit / Awareness-Verzahnung mit
+      HR-Prozessen) hat Schnittmenge mit BSI C5:2020 PSC-01
+      „Personalsicherheit". PSC-01 fokussiert auf Hintergrund-
+      überprüfungen und vertragliche Pflichten; AT-02 auf Awareness-
+      Vertiefung im HR-Lifecycle (Onboarding/Offboarding).
+    gap_warning: |
+      Wer nur EUCS A20 AT-02 erfüllt, hat die C5:2020 PSC-01-Pflichten
+      zu Hintergrundüberprüfungen NICHT abgedeckt. Beide Kontrollen
+      ergänzen sich.
+    audit_evidence_hint: 'Onboarding-/Offboarding-Checklisten, Hintergrundüberprüfungen für privilegierte Rollen, Awareness-Module im HR-Lifecycle.'

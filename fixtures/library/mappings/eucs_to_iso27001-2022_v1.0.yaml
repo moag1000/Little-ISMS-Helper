@@ -1,0 +1,327 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'eucs_to_iso27001-2022_v1.0'
+  source_framework: 'EUCS'
+  target_framework: 'ISO27001'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'ENISA EUCS European Cybersecurity Certification Scheme for Cloud Services (Substantial Level), public consultation drafts 2020-2024'
+    primary_source_url: 'https://www.enisa.europa.eu/topics/cloud-and-big-data/eucs-candidate-cybersecurity-certification-scheme-for-cloud-services'
+    secondary_sources:
+      - 'ISO/IEC 27001:2022 Annex A (93 controls)'
+      - 'ISO/IEC 27002:2022 Implementation Guidance'
+      - 'ENISA EUCS draft chapter structure A1-A20'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'public_draft_comparison'
+    description: |
+      EUCS ist als finaler EU-Cybersecurity-Certification-Scheme noch nicht
+      verabschiedet (Stand 2026-05). Die hier gemappten EUCS-Bereiche A1-A20
+      basieren auf ENISA-Public-Consultation-Drafts 2020-2024.
+
+      Da EUCS-Detail-IDs noch nicht stabil sind, mappen wir EUCS-Bereiche
+      (A1-A20) auf primär abdeckende ISO 27001:2022 Annex-A-Controls.
+      Cross_refs nennen weitere ISO-Controls, die zur vollständigen
+      Bereichsabdeckung benötigt werden.
+
+      Schritte:
+      1. Pro EUCS-Bereich Volltext-Lesung der ENISA-Draft-Beschreibung
+      2. Identifikation des "Ankerpunkt-ISO-Controls" mit höchster Deckung
+      3. Bündelung weiterer ISO-Controls als cross_refs
+      4. Cloud-spezifische Lücken (Multi-Tenancy, Portability) via gap_warning
+      5. 4-Augen-Review durch zweiten Compliance-Manager mit Cloud-Expertise
+
+      Confidence-Skala:
+      - high   = ein ISO-Control deckt den EUCS-Bereich-Kern direkt ab
+      - medium = mehrere ISO-Controls nötig, Lücken bei Cloud-Spezifika
+      - low    = EUCS-Bereich ist Cloud-Native ohne klares ISO-Pendant
+                 (z.B. A10 Portability, A18 Government Requests)
+
+      WARNUNG: Nach EUCS-Verabschiedung dieses Mapping mit finalen IDs
+      versionieren (v2.0).
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-04-20', actor: 'maintainer' }
+      - { state: 'review',    date: '2026-04-28', actor: 'maintainer' }
+      - { state: 'approved',  date: '2026-05-04', actor: 'reviewer-2' }
+      - { state: 'published', date: '2026-05-06', actor: 'compliance-signoff' }
+
+mappings:
+  # === EUCS A1 Organization of Information Security ===
+  - source: 'EUCS-A1'
+    target: 'A.5.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A1 "Organization of Information Security" verlangt definierte
+      Sicherheitsrollen, Verantwortlichkeiten und SoD innerhalb der CSP-
+      Organisation. Wird primär durch A.5.2 "Information security roles
+      and responsibilities" abgedeckt; ergänzend A.5.3 (SoD) und A.5.4
+      (Management).
+    cross_refs: ['A.5.3', 'A.5.4']
+    audit_evidence_hint: 'Organigramm mit ISMS-Rollen, RACI-Matrix, SoD-Matrix.'
+
+  # === EUCS A2 Information Security Policies ===
+  - source: 'EUCS-A2'
+    target: 'A.5.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A2 "Information Security Policies" entspricht direkt A.5.1
+      "Policies for information security" — Top-Level-Policy plus
+      themenspezifische Policies, freigegeben durch Geschäftsleitung.
+    audit_evidence_hint: 'Genehmigte ISMS-Policy mit Versionshistorie, Review-Protokolle.'
+
+  # === EUCS A3 Risk Management ===
+  - source: 'EUCS-A3'
+    target: 'A.5.4'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      EUCS A3 "Risk Management" verlangt strukturierten Cloud-Risk-Mgmt-
+      Prozess. A.5.4 deckt nur Management-Verantwortung ab — der eigentliche
+      Risk-Prozess kommt aus ISO 27001 Clauses 6.1.2/6.1.3 und ISO 27005.
+    gap_warning: |
+      Annex-A-Controls allein decken EUCS A3 nicht vollständig ab.
+      Pflicht: ISO 27001 Clause 6.1 + dokumentierte Risk-Methodik
+      (z.B. ISO 27005 oder NIST 800-30).
+    cross_refs: ['A.5.7']
+
+  # === EUCS A4 Asset Management ===
+  - source: 'EUCS-A4'
+    target: 'A.5.9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A4 "Asset Management" wird primär durch A.5.9 "Inventory of
+      information and other associated assets" abgedeckt. Ergänzt durch
+      A.5.10 (Acceptable Use), A.5.11 (Return) und A.5.12 (Classification).
+    cross_refs: ['A.5.10', 'A.5.11', 'A.5.12', 'A.5.13']
+    audit_evidence_hint: 'Asset-Register, Klassifikationsschema, CMDB-Auszug.'
+
+  # === EUCS A5 Physical Security ===
+  - source: 'EUCS-A5'
+    target: 'A.7.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A5 "Physical Security" wird primär durch A.7.1 "Physical security
+      perimeters" abgedeckt. Volle Abdeckung erfordert A.7.2 (Entry),
+      A.7.3 (Securing offices), A.7.4 (Monitoring), A.7.5 (Threats),
+      A.7.11 (Utilities), A.7.12 (Cabling).
+    cross_refs: ['A.7.2', 'A.7.3', 'A.7.4', 'A.7.5', 'A.7.11', 'A.7.12']
+    audit_evidence_hint: 'Datacenter-Audit-Report, Tier-Zertifikat (TIA-942), USV/Klima-Wartungsprotokolle.'
+
+  # === EUCS A6 Operational Security ===
+  - source: 'EUCS-A6'
+    target: 'A.8.16'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      EUCS A6 "Operational Security" ist breit aufgestellt: Monitoring,
+      Logging, Malware, Vuln-Mgmt, Capacity, Threat-Intel. Ankerpunkt
+      A.8.16 "Monitoring activities" deckt nur Teilaspekt ab. Volle
+      Abdeckung verlangt mehrere ISO-Controls.
+    gap_warning: |
+      Single-Mapping unzureichend — bündele A.5.7 (Threat Intel),
+      A.8.6 (Capacity), A.8.7 (Malware), A.8.8 (Vuln-Mgmt),
+      A.8.15 (Logging), A.8.16 (Monitoring) für volle EUCS-A6-Abdeckung.
+    cross_refs: ['A.5.7', 'A.8.6', 'A.8.7', 'A.8.8', 'A.8.15']
+    audit_evidence_hint: 'SIEM-Alerts, Patch-Compliance, AV/EDR-Coverage, Threat-Intel-Reports.'
+
+  # === EUCS A7 Identity, Authentication and Access Control ===
+  - source: 'EUCS-A7'
+    target: 'A.5.15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A7 "Identity, Authentication and Access Control" wird primär durch
+      A.5.15 "Access control" als Top-Level-Policy abgedeckt. Volle
+      Abdeckung: A.5.16 (Identity), A.5.17 (Authentication info),
+      A.5.18 (Access rights), A.8.2 (Privileged Access), A.8.3 (Info
+      access restriction), A.8.5 (Secure auth).
+    cross_refs: ['A.5.16', 'A.5.17', 'A.5.18', 'A.8.2', 'A.8.3', 'A.8.5']
+    audit_evidence_hint: 'Berechtigungsmatrix, Access-Reviews, MFA-Coverage, PAM-Logs.'
+
+  # === EUCS A8 Cryptography and Key Management ===
+  - source: 'EUCS-A8'
+    target: 'A.8.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A8 "Cryptography and Key Management" entspricht direkt A.8.24
+      "Use of cryptography" mit zugehöriger Krypto-Policy. Cloud-spezifisch:
+      Hold-Your-Own-Key (HYOK), Bring-Your-Own-Key (BYOK), HSM-Integration.
+    gap_warning: 'Cloud-spezifische BYOK/HYOK-Anforderungen sind durch ISO A.8.24 nicht explizit abgedeckt — Implementation-Guidance ergänzen.'
+    audit_evidence_hint: 'Krypto-Policy mit Algorithmen-Liste, HSM-Audit-Reports, BYOK-Verfahren.'
+
+  # === EUCS A9 Communication Security ===
+  - source: 'EUCS-A9'
+    target: 'A.8.20'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A9 "Communication Security" wird primär durch A.8.20 "Networks
+      security" abgedeckt. Volle Abdeckung erfordert A.8.21 (Network
+      services), A.8.22 (Segregation), A.8.23 (Web filtering).
+    cross_refs: ['A.8.21', 'A.8.22', 'A.8.23']
+    audit_evidence_hint: 'Netzwerktopologie, Firewall-Audit, Segregations-Report (Tenant-Isolation).'
+
+  # === EUCS A10 Portability and Interoperability ===
+  - source: 'EUCS-A10'
+    target: 'A.5.23'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      EUCS A10 "Portability and Interoperability" ist ein Cloud-Native-
+      Konzept: Daten-Export, Vendor-Lock-in-Vermeidung, Interop-Standards.
+      A.5.23 "Information security for use of cloud services" deckt nur
+      die ISMS-Sicht auf Cloud-Konsum ab — Portability hat in ISO 27001
+      kein direktes Pendant.
+    gap_warning: |
+      EUCS A10 ist NICHT durch ISO 27001 Annex A abdeckbar. Erforderlich:
+      Eigenständige Cloud-Exit-Policy + Daten-Portabilität-Verfahren
+      (siehe ISO 27017/27018 oder DORA Art. 28(7)).
+    cross_refs: ['A.5.10']
+
+  # === EUCS A11 Change and Configuration Management ===
+  - source: 'EUCS-A11'
+    target: 'A.8.32'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A11 "Change and Configuration Management" wird primär durch
+      A.8.32 "Change management" abgedeckt. Konfig-Mgmt-Aspekt durch
+      A.8.9 "Configuration management" (Hardening-Baselines, IaC).
+    cross_refs: ['A.8.9']
+    audit_evidence_hint: 'CAB-Protokolle, Change-Tickets, Hardening-Baselines (CIS), IaC-Repositories.'
+
+  # === EUCS A12 Development of Information Systems ===
+  - source: 'EUCS-A12'
+    target: 'A.8.25'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A12 "Development of Information Systems" wird primär durch
+      A.8.25 "Secure development life cycle" abgedeckt. Volle Abdeckung
+      erfordert A.8.26 (Application security), A.8.27 (Architecture),
+      A.8.28 (Secure coding), A.8.29 (Security testing), A.8.30
+      (Outsourced dev), A.8.31 (Environment separation), A.8.33 (Test
+      info), A.8.27 (Architecture principles).
+    cross_refs: ['A.8.26', 'A.8.27', 'A.8.28', 'A.8.29', 'A.8.30', 'A.8.31', 'A.8.33']
+    audit_evidence_hint: 'SDLC-Doc, Secure-Coding-Guidelines, SAST/DAST-Reports, Pentest-Berichte.'
+
+  # === EUCS A13 Procurement and Suppliers ===
+  - source: 'EUCS-A13'
+    target: 'A.5.19'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A13 "Procurement and Suppliers" wird primär durch A.5.19
+      "Information security in supplier relationships" abgedeckt. Volle
+      Abdeckung: A.5.20 (Agreements), A.5.21 (ICT supply chain),
+      A.5.22 (Monitoring), A.5.23 (Cloud services).
+    cross_refs: ['A.5.20', 'A.5.21', 'A.5.22', 'A.5.23']
+    audit_evidence_hint: 'Supplier-Register mit Risk-Tier, AVV-Verträge, Audit-Reports der Sub-CSPs.'
+
+  # === EUCS A14 Incident Management ===
+  - source: 'EUCS-A14'
+    target: 'A.5.24'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A14 "Incident Management" wird primär durch A.5.24 "Information
+      security incident management planning and preparation" abgedeckt.
+      Volle Abdeckung: A.5.25 (Assessment), A.5.26 (Response),
+      A.5.27 (Lessons), A.5.28 (Evidence), A.6.8 (Reporting).
+    cross_refs: ['A.5.25', 'A.5.26', 'A.5.27', 'A.5.28', 'A.6.8']
+    audit_evidence_hint: 'IR-Plan, IR-Übungen (jährlich), IR-Reports, Tenant-Notifizierungs-Templates.'
+
+  # === EUCS A15 Business Continuity ===
+  - source: 'EUCS-A15'
+    target: 'A.5.29'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A15 "Business Continuity" wird primär durch A.5.29 "Information
+      security during disruption" abgedeckt. Volle Abdeckung: A.5.30 (ICT
+      readiness), A.8.13 (Backup), A.8.14 (Redundancy).
+    cross_refs: ['A.5.30', 'A.8.13', 'A.8.14']
+    audit_evidence_hint: 'BC-Pläne mit BIA, RTO/RPO, Restore-Tests, Multi-Region-DR-Nachweise.'
+
+  # === EUCS A16 Compliance and Information Security Reviews ===
+  - source: 'EUCS-A16'
+    target: 'A.5.31'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A16 "Compliance and Information Security Reviews" wird primär
+      durch A.5.31 "Legal, statutory, regulatory and contractual
+      requirements" abgedeckt. Volle Abdeckung: A.5.32 (IPR),
+      A.5.33 (Records), A.5.34 (Privacy/PII), A.5.35 (Independent review),
+      A.5.36 (Compliance with policies), A.8.34 (Audit testing).
+    cross_refs: ['A.5.32', 'A.5.33', 'A.5.34', 'A.5.35', 'A.5.36', 'A.8.34']
+    audit_evidence_hint: 'Compliance-Register, AVV-Verträge, externe Audit-Reports (C5, ISO, SOC2), DSFAs.'
+
+  # === EUCS A17 User Documentation ===
+  - source: 'EUCS-A17'
+    target: 'A.5.37'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      EUCS A17 "User Documentation" verlangt CSP-Dokumentation für Tenants:
+      Sicherheits-Konfigurationsleitfäden, Shared-Responsibility-Modell,
+      API-Doku. A.5.37 "Documented operating procedures" deckt interne
+      Betriebsverfahren ab — externe Tenant-Doku ist Cloud-spezifisch
+      und wird ergänzend benötigt.
+    gap_warning: 'Tenant-orientierte Dokumentation (Shared-Responsibility-Matrix, Hardening-Guides für Kunden) ist Cloud-spezifisch und nicht direkt in ISO 27001 verankert.'
+    cross_refs: ['A.5.10', 'A.5.23']
+
+  # === EUCS A18 Investigative Requests from Government Agencies ===
+  - source: 'EUCS-A18'
+    target: 'A.5.34'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      EUCS A18 "Investigative Requests from Government Agencies" ist Cloud-
+      spezifischer EU-Souveränitäts-Aspekt (Schrems-II, US-CLOUD-Act-
+      Konfliktbehandlung, Tenant-Notifizierung bei Behördenanfragen).
+      A.5.34 "Privacy and protection of PII" deckt nur Datenschutz-Basis ab.
+    gap_warning: |
+      EUCS A18 ist Cloud-Souveränitäts-Pflicht ohne direktes ISO-Pendant.
+      Erforderlich: eigenständige Government-Request-Policy + Schrems-II-
+      Transfer-Impact-Assessment + Lawful-Access-Notification-Verfahren.
+    cross_refs: ['A.5.31', 'A.5.33']
+
+  # === EUCS A19 Product Safety and Security ===
+  - source: 'EUCS-A19'
+    target: 'A.8.25'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      EUCS A19 "Product Safety and Security" verlangt Security-by-Design
+      und Vulnerability-Disclosure-Programme. A.8.25 (Secure SDLC) und
+      A.8.8 (Vuln-Mgmt) decken Teilaspekte ab; CVD-Policy (Coordinated
+      Vulnerability Disclosure) ist nicht explizit in ISO 27001:2022.
+    gap_warning: 'CVD/Bug-Bounty-Programme sind in ISO 27001 nicht explizit gefordert — eigenständige CVD-Policy nach ISO 29147/30111 erforderlich.'
+    cross_refs: ['A.8.8', 'A.8.26', 'A.8.29']
+
+  # === EUCS A20 Awareness and Training ===
+  - source: 'EUCS-A20'
+    target: 'A.6.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      EUCS A20 "Awareness and Training" entspricht direkt A.6.3 "Information
+      security awareness, education and training" — Curriculum, Phishing-
+      Drills, rollenbasierte Tiefe. Ergänzt durch A.6.1 (Screening),
+      A.6.2 (T&Cs), A.6.5 (Termination).
+    cross_refs: ['A.6.1', 'A.6.2', 'A.6.5']
+    audit_evidence_hint: 'Schulungs-Quote, Phishing-Drill-Ergebnisse, Onboarding-Curriculum, Background-Check-Prozess.'
