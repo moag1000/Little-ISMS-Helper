@@ -1,66 +1,58 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'role_management' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'role_management.title.edit'|trans({}, 'role_management')}} - {{ role.name }} - Little ISMS Helper{% endblock %}
 
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('role_management_index') }}">{{ 'nav.roles'|trans({}, 'nav') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('role_management_show', {id: role.id}) }}">{{ role.name }}</a></li>
+    <li class="breadcrumb-item active">{{ 'role_management.title.edit'|trans({}, 'role_management') }}</li>
+{% endblock %}
+
 {% block admin_content %}
-<div class="container">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
-            { label: 'nav.roles'|trans({}, 'nav'), url: path('role_management_index') },
-            { label: role.name, url: path('role_management_show', {id: role.id}) },
-            { label: 'role_management.title.edit'|trans({}, 'role_management')}
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-lock', label: 'role_management.title.edit'|trans({}, 'role_management') },
+        title: ('role_management.title.edit'|trans({}, 'role_management')) ~ ': ' ~ role.name,
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('role_management_show', {id: role.id}) }
         ]
-    } %}
-</div>
+    }) }}
 
-<div class="page-header">
-    <div>
-        <h1>{{ 'role_management.title.edit'|trans({}, 'role_management')}}: {{ role.name }}</h1>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('role_management_show', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
-</div>
+    <section class="fa-section">
+        <div class="fa-section__body">
+            {{ form_start(form, {'action': path('role_management_edit', {id: role.id})}) }}
 
-{% embed '_components/_card.html.twig' %}
-    {% block card_body %}
-        {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-        {{ form_start(form, {'action': path('role_management_edit', {id: role.id})}) }}
+                {% if role.systemRole %}
+                    {{ _fa_alert.render({ variant: 'warning', class: 'mb-4', title: 'role_management.warning.system_role'|trans({}, 'role_management'), body: 'role_management.warning.system_role_desc'|trans({}, 'role_management') }) }}
+                {% endif %}
 
-            {% if role.systemRole %}
-            {{ _fa_alert.render({ variant: 'warning', class: 'mb-4', title: 'role_management.warning.system_role'|trans({}, 'role_management'), body: 'role_management.warning.system_role_desc'|trans({}, 'role_management') }) }}
-            {% endif %}
-
-            {% include '_components/_auto_form.html.twig' with {
-                'form': form,
-                'sections': {
-                    'basic_info': {
-                        'label': 'role_management.section.basic_info'|trans({}, 'role_management'),
-                        'fields': ['name', 'description']|merge(not role.systemRole ? ['isSystemRole'] : [])
+                {% include '_components/_auto_form.html.twig' with {
+                    'form': form,
+                    'sections': {
+                        'basic_info': {
+                            'label': 'role_management.section.basic_info'|trans({}, 'role_management'),
+                            'fields': ['name', 'description']|merge(not role.systemRole ? ['isSystemRole'] : [])
+                        },
+                        'permissions': {
+                            'label': 'role_management.section.permissions'|trans({}, 'role_management'),
+                            'fields': ['permissions']
+                        }
                     },
-                    'permissions': {
-                        'label': 'role_management.section.permissions'|trans({}, 'role_management'),
-                        'fields': ['permissions']
-                    }
-                },
-                'translation_domain': 'role_management'
-            } %}
+                    'translation_domain': 'role_management'
+                } %}
 
-            <div class="d-flex gap-2 mt-4">
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
-                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
-                </button>
-                <a href="{{ path('role_management_show', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
-                </a>
-            </div>
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
+                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+                    </button>
+                    <a href="{{ path('role_management_show', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                        <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+                    </a>
+                </div>
 
-        {{ form_end(form) }}
-    {% endblock %}
-{% endembed %}
+            {{ form_end(form) }}
+        </div>
+    </section>
 {% endblock admin_content %}
