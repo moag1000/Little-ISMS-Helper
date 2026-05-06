@@ -1562,7 +1562,7 @@
     border: 1px solid var(--border);
     border-radius: 0.5rem;
     position: relative;
-    z-index: 10; /* local stacking-context */
+    z-index: var(--z-sticky); /* local stacking-context */
 }
 
 .chart-legend-items {

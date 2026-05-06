@@ -311,7 +311,7 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     box-shadow: 0 8px 24px rgb(0, 0, 0, 0.08);
-    z-index: 10; /* local stacking-context */
+    z-index: var(--z-popover); /* local stacking-context (heat-map cell hover) */
 }
 
 .details-header {
@@ -776,7 +776,7 @@
     transform: scale(1.15);
     box-shadow: 0 4px 12px rgb(0, 0, 0, 0.2),
                 0 0 20px var(--primary-glow);
-    z-index: 10; /* local stacking-context */
+    z-index: var(--z-popover); /* local stacking-context (heat-map glow) */
 }
 
 .heat-map-cell.has-risks:hover::before {

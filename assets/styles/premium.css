@@ -1321,7 +1321,7 @@
    =============================== */
 .notification-center-panel {
     position: relative;
-    z-index: 1001; /* local stacking-context: above sibling backdrop */
+    z-index: var(--z-popover-modal); /* above sibling backdrop */
 }
 
 /* Header version of notification bell button */

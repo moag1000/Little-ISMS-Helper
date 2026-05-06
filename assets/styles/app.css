@@ -753,7 +753,7 @@ body {
 /* 5. Onboarding - Guided highlights */
 .fairy-onboarding-highlight {
     position: relative;
-    z-index: 10; /* local stacking-context */
+    z-index: var(--z-overlay); /* local stacking-context (onboarding highlight) */
     animation: fairy-onboarding-glow 2s ease-in-out infinite;
 }
 
@@ -3142,7 +3142,7 @@ input.is-valid:focus {
 .unique-check-spinner {
     display: none;
     color: var(--primary);
-    z-index: 10; /* local stacking-context */
+    z-index: var(--z-popover); /* local stacking-context */
 }
 
 .unique-check-spinner .spinner-icon {

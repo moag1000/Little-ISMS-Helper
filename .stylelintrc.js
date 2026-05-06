@@ -17,6 +17,12 @@ module.exports = {
         'declaration-property-value-disallowed-list': {
             '/^(color|background|background-color|border|border-color|border-top|border-right|border-bottom|border-left|box-shadow|outline|outline-color|text-shadow|fill|stroke|caret-color)$/': [
                 '/#[0-9a-fA-F]{3,8}\\b/'
+            ],
+            // Z-Index muss var(--z-*) Token nutzen. Lokale stacking-context Werte 0-5
+            // sind erlaubt (sollten /* local stacking-context */ Inline-Kommentar haben,
+            // wird aber von Stylelint nicht enforce-bar). Werte ≥6 sind tabu — immer Token.
+            '/^z-index$/': [
+                '/^([6-9]|[0-9]{2,})$/'
             ]
         },
         // Suppress noisy standard rules that would cause churn without value
