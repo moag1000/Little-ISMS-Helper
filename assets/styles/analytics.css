@@ -100,7 +100,7 @@
     margin-bottom: 20px;
     border: 2px solid var(--primary-tint);
     border-radius: 12px;
-    box-shadow: 0 1px 3px rgb(0, 0, 0, 0.05), 0 0 15px var(--primary-tint);
+    box-shadow: var(--shadow-sm), 0 0 15px var(--primary-tint);
     background: var(--surface);
     overflow: hidden;
     transition: all 0.3s ease;
@@ -108,7 +108,7 @@
 
 .analytics-card:hover {
     border-color: var(--primary);
-    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.06), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
+    box-shadow: var(--shadow-md), 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint);
 }
 
 .analytics-card .card-header {
@@ -182,14 +182,14 @@
     border: 1px solid var(--border);
     border-radius: 6px;
     white-space: nowrap;
-    box-shadow: 0 1px 2px rgb(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgb(0, 0, 0, 0.05); /* design-spec: analytics card/row ultra-faint shadow */
 }
 
 .legend-color {
     width: 20px;
     height: 20px;
     border-radius: 3px;
-    border: 1px solid rgb(0, 0, 0, 0.1);
+    border: 1px solid rgb(0, 0, 0, 0.1); /* design-spec: analytics chart border hairline tint */
     flex-shrink: 0;
 }
 
@@ -278,14 +278,14 @@
 .heat-map-cell:hover {
     transform: scale(1.1);
     border-color: var(--fg);
-    box-shadow: 0 4px 12px rgb(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgb(0,0,0,0.2); /* design-spec: analytics hero KPI elevated shadow */
 }
 
 .heat-map-cell .cell-count {
     font-size: 1.25rem;
     font-weight: 700;
     color: white;
-    text-shadow: 0 1px 3px rgb(0,0,0,0.3);
+    text-shadow: 0 1px 3px rgb(0,0,0,0.3); /* design-spec: analytics hero text readable shadow */
 }
 
 .heat-map-x-labels {
@@ -310,7 +310,7 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-lg);
     z-index: var(--z-popover); /* local stacking-context (heat-map cell hover) */
 }
 
@@ -383,7 +383,7 @@
     border-radius: 12px;
     color: white;
     margin-bottom: 20px;
-    box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint), 0 8px 24px rgb(0, 0, 0, 0.08);
+    box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-tint), var(--shadow-lg);
     border: 2px solid var(--accent);
 }
 
@@ -581,7 +581,7 @@
     border-radius: 6px;
     white-space: nowrap;
     position: relative;
-    box-shadow: 0 1px 2px rgb(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgb(0, 0, 0, 0.05); /* design-spec: analytics card/row ultra-faint shadow */
     margin: 0;
     flex: 0 0 auto;
     min-width: fit-content;
@@ -594,7 +594,7 @@
     flex-shrink: 0;
     flex-grow: 0;
     border-radius: 3px;
-    border: 1px solid rgb(0, 0, 0, 0.1);
+    border: 1px solid rgb(0, 0, 0, 0.1); /* design-spec: analytics chart border hairline tint */
     position: static;
 }
 
@@ -649,7 +649,7 @@
 }
 
 [data-theme="dark"] .overall-compliance {
-    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.4);
+    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.4); /* design-spec: analytics dark chart card heavy shadow */
 }
 
 [data-theme="dark"] .chart-stats {
@@ -657,11 +657,11 @@
 }
 
 [data-theme="dark"] .heat-map-legend {
-    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.3); /* design-spec: analytics dark element shadow */
 }
 
 [data-theme="dark"] .heat-map-legend .legend-item {
-    box-shadow: 0 1px 3px rgb(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgb(0, 0, 0, 0.2); /* design-spec: analytics chart legend singular shadow */
 }
 
 [data-theme="dark"] .heat-map-legend .legend-color {
@@ -678,7 +678,7 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 12px 16px;
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15),
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), /* design-spec: analytics animated KPI composite with glow */
                 0 0 20px var(--primary-tint);
     max-width: 300px;
     pointer-events: none;
@@ -744,7 +744,7 @@
 [data-theme="dark"] .heat-map-tooltip {
     background: var(--bg);
     border-color: var(--border);
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.4),
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.4), /* design-spec: analytics dark featured card heavy composite */
                 0 0 20px var(--primary-tint);
 }
 
@@ -774,7 +774,7 @@
 
 .heat-map-cell:hover {
     transform: scale(1.15);
-    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.2),
+    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.2), /* design-spec: analytics hover card composite */
                 0 0 20px var(--primary-glow);
     z-index: var(--z-popover); /* local stacking-context (heat-map glow) */
 }
@@ -792,7 +792,7 @@
     z-index: 1; /* local stacking-context */
     font-weight: 700;
     font-size: 1.1rem;
-    text-shadow: 0 1px 2px rgb(0, 0, 0, 0.2);
+    text-shadow: 0 1px 2px rgb(0, 0, 0, 0.2); /* design-spec: analytics stat text subtle depth */
     transition: font-size 0.2s ease;
 }
 
@@ -805,7 +805,7 @@
     outline: 3px solid var(--primary);
     outline-offset: 2px;
     transform: scale(1.15);
-    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.2),
+    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.2), /* design-spec: analytics hover card composite */
                 0 0 20px var(--primary-glow);
 }
 
@@ -964,7 +964,7 @@
 
 .heat-map-details .risk-item-enhanced:hover {
     background: var(--surface);
-    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.1); /* design-spec: analytics chart tooltip singular shadow */
     border-color: var(--primary);
     transform: translateX(3px);
 }
@@ -1024,7 +1024,7 @@
 
 [data-theme="dark"] .heat-map-details .risk-item-enhanced:hover {
     background: var(--bg);
-    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.3); /* design-spec: analytics dark element shadow */
 }
 
 @media (prefers-reduced-motion: reduce) {

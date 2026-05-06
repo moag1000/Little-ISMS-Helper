@@ -121,7 +121,7 @@
     box-shadow:
         0 0 0 1px var(--accent-tint),
         0 12px 40px var(--primary-glow),
-        0 24px 72px rgb(0, 0, 0, 0.55);
+        0 24px 72px rgb(0, 0, 0, 0.55); /* design-spec: tour popover deep-shadow for focus isolation */
 }
 
 .guided-tour-popover-header {

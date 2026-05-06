@@ -14,7 +14,7 @@
     background: var(--surface);
     color: var(--primary-strong);
     border: 1px solid var(--border);
-    box-shadow: 0 2px 6px rgb(0, 0, 0, 0.08);
+    box-shadow: 0 2px 6px rgb(0, 0, 0, 0.08); /* design-spec: singular kbd key subtle lift */
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -29,7 +29,7 @@
 .keyboard-shortcuts-trigger:focus-visible {
     color: var(--primary);
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-tint), 0 2px 8px rgb(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 3px var(--primary-tint), 0 2px 8px rgb(0, 0, 0, 0.1); /* design-spec: kbd focus ring composite */
     outline: none;
 }
 
@@ -47,7 +47,7 @@ body:has(.fa-alva-dock--pos-bottom-left) .keyboard-shortcuts-trigger {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgb(0, 0, 0, 0);
+    background: rgb(0, 0, 0, 0); /* design-spec: transparent reset for keyboard overlay start state */
     display: none;
     align-items: center;
     justify-content: center;
@@ -66,7 +66,7 @@ body:has(.fa-alva-dock--pos-bottom-left) .keyboard-shortcuts-trigger {
 .keyboard-shortcuts-container {
     background: var(--surface);
     border-radius: 12px;
-    box-shadow: 0 20px 60px rgb(0, 0, 0, 0.4), 0 0 40px var(--primary-glow);
+    box-shadow: 0 20px 60px rgb(0, 0, 0, 0.4), 0 0 40px var(--primary-glow); /* design-spec: keyboard shortcuts overlay premium shadow with glow */
     border: 2px solid var(--primary);
     width: 900px;
     max-width: 90vw;
@@ -190,7 +190,7 @@ kbd {
     background: linear-gradient(to bottom, var(--surface), var(--bg));
     border: 1px solid var(--border);
     border-radius: 4px;
-    box-shadow: 0 2px 0 rgb(0, 0, 0, 0.1);
+    box-shadow: 0 2px 0 rgb(0, 0, 0, 0.1); /* design-spec: keycap underside press effect */
     padding: 4px 8px;
     font-size: 12px;
     font-weight: 600;

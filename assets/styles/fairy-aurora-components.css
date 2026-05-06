@@ -55,7 +55,7 @@ html[data-theme="dark"] .fa-brand-mark {
     font-size: 0.55em;
     line-height: 1;
     font-weight: 700;
-    text-shadow: 0 1px 2px rgb(0, 0, 0, 0.25);
+    text-shadow: 0 1px 2px rgb(0, 0, 0, 0.25); /* design-spec: brand sparkle text lift on colored bg */
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -155,7 +155,8 @@ html[data-theme="dark"] .mega-menu-panel {
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
     box-shadow: 0 0 0 1px var(--primary-glow),
-                0 8px 24px rgb(0, 0, 0, 0.06);
+                0 8px 24px rgb(0, 0, 0, 0.06); /* design-spec: premium card dark-mode composite with glow */
+
     overflow: hidden;
     transition: box-shadow var(--t-fast) var(--ease-out),
                 transform var(--t-fast) var(--ease-out);
@@ -174,7 +175,7 @@ html[data-theme="dark"] .mega-menu-panel {
 }
 html[data-theme="dark"] .fa-card--premium {
     box-shadow: 0 0 0 1px var(--primary-glow),
-                0 8px 24px rgb(0, 0, 0, 0.3);
+                0 8px 24px rgb(0, 0, 0, 0.3); /* design-spec: premium card dark-mode deep shadow */
 }
 
 .fa-brand-text { display: flex; flex-direction: column; min-width: 0; }
@@ -733,7 +734,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 .fa-entity-card:hover {
     border-color: var(--primary);
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px -8px rgb(0, 0, 0, 0.3);
+    box-shadow: 0 4px 16px -8px rgb(0, 0, 0, 0.3); /* design-spec: entity card hover clipped shadow */
 }
 
 /* Linke Akzent-Leiste optional (für Entity-Type) */
@@ -1103,7 +1104,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 .fa-alert--toast {
     min-width: 320px;
     max-width: 420px;
-    box-shadow: 0 4px 18px rgb(0, 0, 0, 0.15);
+    box-shadow: 0 4px 18px rgb(0, 0, 0, 0.15); /* design-spec: alert toast elevation singular */
     position: relative;
     padding-bottom: 14px;
 }
@@ -2356,7 +2357,7 @@ kbd,
     font-weight: 600;
     letter-spacing: 0.02em;
     line-height: 1.4;
-    box-shadow: 0 1px 0 rgb(0, 0, 0, 0.06);
+    box-shadow: 0 1px 0 rgb(0, 0, 0, 0.06); /* design-spec: kbd key underside hairline */
     white-space: nowrap;
 }
 /* Dark-Mode: deutlicher Kontrast durch helleren BG + subtile primary-glow */
@@ -2366,7 +2367,7 @@ html[data-theme="dark"] .keyboard-key {
     background: var(--surface-3);
     color: var(--fg);
     border-color: var(--border-strong);
-    box-shadow: 0 1px 0 rgb(0, 0, 0, 0.4), inset 0 0 0 1px rgb(56, 189, 248, 0.1);
+    box-shadow: 0 1px 0 rgb(0, 0, 0, 0.4), inset 0 0 0 1px rgb(56, 189, 248, 0.1); /* design-spec: kbd dark-mode underside + sky glow composite */
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -2397,13 +2398,13 @@ html[data-theme="dark"] .keyboard-key {
     --bs-card-subtitle-color: var(--fg-2);
 
     border-radius: var(--r-lg);
-    box-shadow: 0 1px 2px rgb(0, 0, 0, 0.04);
+    box-shadow: 0 1px 2px rgb(0, 0, 0, 0.04); /* design-spec: card default ultra-faint elevation */
     transition: border-color var(--t-fast) var(--ease-out),
                 box-shadow var(--t-fast) var(--ease-out);
 }
 .card:hover {
     border-color: var(--border-strong);
-    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.06); /* design-spec: card hover singular mid-lift */
 }
 /* Preserve colored left-accent on hover — otherwise .card:hover (0,2,0)
    overrides the colored border-left from .card.border-<color> (0,2,0) and
@@ -3204,10 +3205,10 @@ html[data-theme="dark"] .list-group {
     --bs-popover-body-color:   var(--fg);
 
     border-radius: var(--r-lg);
-    box-shadow: 0 4px 16px rgb(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px rgb(0, 0, 0, 0.12); /* design-spec: popover/toast light-mode elevation */
 }
 html[data-theme="dark"] .popover {
-    box-shadow: 0 4px 20px rgb(0, 0, 0, 0.5);
+    box-shadow: 0 4px 20px rgb(0, 0, 0, 0.5); /* design-spec: popover/toast dark-mode heavy elevation */
 }
 .popover-header {
     border-radius: var(--r-lg) var(--r-lg) 0 0;
@@ -3286,10 +3287,10 @@ html[data-theme="dark"] .bs-tooltip-end .tooltip-arrow::before { border-right-co
     --bs-toast-header-border-color: var(--border);
 
     border-radius: var(--r-md);
-    box-shadow: 0 4px 16px rgb(0, 0, 0, 0.12);
+    box-shadow: 0 4px 16px rgb(0, 0, 0, 0.12); /* design-spec: popover/toast light-mode elevation */
 }
 html[data-theme="dark"] .toast {
-    box-shadow: 0 4px 20px rgb(0, 0, 0, 0.5);
+    box-shadow: 0 4px 20px rgb(0, 0, 0, 0.5); /* design-spec: popover/toast dark-mode heavy elevation */
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -3521,7 +3522,7 @@ form.wizard-busy {
     color: var(--fg, var(--bs-body-color));
     border: 1px solid var(--border, var(--bs-border-color));
     border-radius: var(--r-md, 8px);
-    box-shadow: 0 4px 20px rgb(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgb(0, 0, 0, 0.1); /* design-spec: wizard-busy overlay singular */
     font-weight: 500;
 }
 .wizard-busy-overlay__text {
@@ -4121,7 +4122,7 @@ button.fa-filter-chip.fa-filter-chip--active {
     border: 1px solid var(--border) !important;
     border-radius: var(--r-md) !important;
     color: var(--fg) !important;
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.12) !important;
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.12) !important; /* design-spec: TomSelect dropdown singular override */
     margin-top: 4px;
 }
 .ts-dropdown .option { color: var(--fg) !important; padding: 8px 12px; }
@@ -4154,7 +4155,7 @@ button.fa-filter-chip.fa-filter-chip--active {
     border-left-color: var(--primary) !important;
 }
 .ts-wrapper.plugin-remove_button .item .remove:hover {
-    background: rgb(0, 0, 0, 0.05) !important;
+    background: rgb(0, 0, 0, 0.05) !important; /* design-spec: TomSelect tag remove hover faint tint */
 }
 /* Inside our cyber-input frame: flatten Tom-Select's own border — frame owns it */
 .fa-cyber-input__frame .ts-wrapper .ts-control,
@@ -4661,7 +4662,7 @@ button.fa-filter-chip.fa-filter-chip--active {
     --bs-dropdown-header-color:        var(--fg-3);
 
     border-radius: var(--r-md);
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.12);
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.12); /* design-spec: dropdown/framework singular elevation */
     padding: 4px;
 }
 .dropdown-item {
@@ -4719,14 +4720,14 @@ textarea[readonly].wizard-busy-locked {
     color: var(--fg);
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
-    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.05); /* design-spec: framework card light-mode faint shadow */
     overflow: hidden;
     transition: transform var(--t-fast) var(--ease-out),
                 box-shadow var(--t-fast) var(--ease-out);
 }
 
 html[data-theme="dark"] .framework-card {
-    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.3); /* design-spec: framework card dark-mode heavy shadow */
 }
 
 .framework-card:hover {

@@ -21,7 +21,7 @@
     background: var(--surface);
     color: var(--fg);
     border-radius: 8px;
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--primary-tint);
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--primary-tint); /* design-spec: toast composite with tint glow */
     padding: 16px;
     display: flex;
     align-items: flex-start;
@@ -60,7 +60,7 @@
     border-color: var(--success);
     background: var(--surface);
     border-left: 4px solid var(--success);
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--success-tint);
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--success-tint); /* design-spec: toast composite with tint glow */
 }
 
 .toast-success .toast-icon {
@@ -71,7 +71,7 @@
     border-color: var(--danger);
     background: var(--surface);
     border-left: 4px solid var(--danger);
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--danger-tint);
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--danger-tint); /* design-spec: toast composite with tint glow */
 }
 
 .toast-error .toast-icon {
@@ -82,7 +82,7 @@
     border-color: var(--warning);
     background: var(--surface);
     border-left: 4px solid var(--warning);
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--warning-tint);
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--warning-tint); /* design-spec: toast composite with tint glow */
 }
 
 .toast-warning .toast-icon {
@@ -93,7 +93,7 @@
     border-color: var(--primary);
     background: var(--surface);
     border-left: 4px solid var(--primary);
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--primary-tint);
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--primary-tint); /* design-spec: toast composite with tint glow */
 }
 
 .toast-info .toast-icon {
@@ -135,7 +135,7 @@
 
 .toast-close:hover {
     color: var(--fg);
-    background: rgb(0, 0, 0, 0.05);
+    background: rgb(0, 0, 0, 0.05); /* design-spec: faint tint on toast close button hover */
 }
 
 .toast-close i {

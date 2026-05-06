@@ -1583,7 +1583,7 @@
 }
 
 .chart-legend-item:hover {
-    background: rgb(0, 0, 0, 0.05);
+    background: rgb(0, 0, 0, 0.05); /* design-spec: faint hover tint on chart legend item */
 }
 
 .chart-legend-item.legend-hidden {
