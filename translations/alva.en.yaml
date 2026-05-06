@@ -7,9 +7,11 @@ alva:
         empty: 'No hint dismissals recorded yet.'
         col:
             hint_key: 'Hint key'
-            total: 'Total'
+            rendered: 'Renders'
+            total: 'Dismissals'
             snoozed: 'Snooze'
             distinct_users: 'Users'
+            dismiss_rate: 'Dismiss rate'
 
 data_breach:
     gdpr_72h:

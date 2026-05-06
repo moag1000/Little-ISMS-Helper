@@ -8,6 +8,7 @@ use App\Entity\AlvaHintDismissal;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\AlvaHintDismissalRepository;
+use App\Repository\AlvaHintRenderCountRepository;
 use App\Service\ModuleConfigurationService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,6 +45,7 @@ class AlvaHintService
         private readonly EntityManagerInterface $entityManager,
         private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly iterable $rules = [],
+        private readonly ?AlvaHintRenderCountRepository $renderCountRepository = null,
     ) {
     }
 
@@ -103,6 +105,14 @@ class AlvaHintService
             }
 
             $this->shownHintKeys[$hint->key] = true;
+
+            if ($this->renderCountRepository !== null) {
+                try {
+                    $this->renderCountRepository->increment($this->resolveTenant($user), $hint->key);
+                } catch (\Throwable) {
+                    // Telemetry failure must never break the hint flow.
+                }
+            }
 
             return $hint;
         }
