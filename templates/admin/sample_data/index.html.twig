@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'admin' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'admin.sample_data.title'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -19,19 +20,21 @@
         ]
     } %}
 
-    <p class="text-muted mb-4">{{ 'admin.sample_data.description'|trans({}, 'admin') }}</p>
+    {{ _fa_page_header.render({
+        badge: { icon: 'box', label: 'Sample Data' },
+        title: 'admin.sample_data.title'|trans({}, 'admin'),
+        subtitle: 'admin.sample_data.description'|trans({}, 'admin'),
+    }) }}
 
     {{ _fa_alert.render({ variant: 'info', body: '<strong>' ~ 'admin.sample_data.tenant_label'|trans({}, 'admin') ~ ':</strong> ' ~ tenant.name ~ ' — ' ~ 'admin.sample_data.total_imported'|trans({'%count%': totalImported}, 'admin') }) }}
 
-    {% embed '_components/_card.html.twig' with { class: 'mb-4' } %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="h5 mb-0">
-                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'admin.sample_data.import_section'|trans({}, 'admin') }}
-                </h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
+    <section class="fa-section mb-4">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'admin.sample_data.import_section'|trans({}, 'admin') }}
+            </h2>
+        </div>
+        <div class="fa-section__body">
             <form method="post" action="{{ path('admin_sample_data_import') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('sample_data_import') }}">
 
@@ -73,18 +76,18 @@
                                     <td class="text-muted small">{{ sample.description }}</td>
                                     <td>
                                         {% for m in sample.required_modules %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: m } %}
+                                            <span class="badge bg-secondary">{{ m }}</span>
                                         {% else %}
                                             <span class="text-muted small">—</span>
                                         {% endfor %}
                                     </td>
                                     <td class="text-end">
                                         {% if sample.imported %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'admin.sample_data.imported_count'|trans({'%count%': sample.count}, 'admin') } %}
+                                            <span class="badge bg-success">{{ 'admin.sample_data.imported_count'|trans({'%count%': sample.count}, 'admin') }}</span>
                                         {% elseif not sample.modules_ok %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'admin.sample_data.modules_missing'|trans({}, 'admin') } %}
+                                            <span class="badge bg-warning">{{ 'admin.sample_data.modules_missing'|trans({}, 'admin') }}</span>
                                         {% else %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'admin.sample_data.not_imported'|trans({}, 'admin') } %}
+                                            <span class="badge bg-secondary">{{ 'admin.sample_data.not_imported'|trans({}, 'admin') }}</span>
                                         {% endif %}
                                     </td>
                                     <td class="text-end">
@@ -120,8 +123,8 @@
                     </button>
                 </div>
             </form>
-        {% endblock %}
-    {% endembed %}
+        </div>
+    </section>
 
     {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'admin.sample_data.note_title'|trans({}, 'admin') ~ ':</strong> ' ~ 'admin.sample_data.note_message'|trans({}, 'admin') }) }}
 </div>

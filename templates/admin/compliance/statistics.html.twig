@@ -1,7 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 
-{% block admin_title %}<i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'admin.compliance.statistics'|trans({}, 'admin') }}{% endblock %}
+{% block admin_title %}{{ 'admin.compliance.statistics'|trans({}, 'admin') }}{% endblock %}
 
 {% block title %}{{ 'admin.compliance.statistics'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -11,128 +13,105 @@
 {% endblock %}
 
 {% block admin_content %}
-<div class="container-fluid">
-    <div class="d-flex justify-content-end mb-4">
-        <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'graph-up', label: 'Statistics' },
+        title: 'admin.compliance.statistics'|trans({}, 'admin'),
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('admin_compliance_index') }
+        ]
+    }) }}
 
     {# Overall Statistics #}
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'border-primary' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="small fw-semibold text-muted mb-1">{{ 'admin.compliance.total_available'|trans({}, 'admin') }}</div>
-                        <p class="mb-0 h2">{{ statistics.total_available }}</p>
-                        <i class="bi bi-box fs-3 text-primary opacity-25" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({
+                value: statistics.total_available,
+                label: 'admin.compliance.total_available'|trans({}, 'admin')
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'border-success' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="small fw-semibold text-muted mb-1">{{ 'admin.compliance.loaded'|trans({}, 'admin') }}</div>
-                        <p class="mb-0 text-success h2">{{ statistics.total_loaded }}</p>
-                        <i class="fa-icon fa-icon--status-ok fs-3 text-success opacity-25" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({
+                value: statistics.total_loaded,
+                label: 'admin.compliance.loaded'|trans({}, 'admin')
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'border-secondary' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="small fw-semibold text-muted mb-1">{{ 'admin.compliance.not_loaded'|trans({}, 'admin') }}</div>
-                        <p class="mb-0 text-secondary h2">{{ statistics.total_not_loaded }}</p>
-                        <i class="fa-icon fa-icon--status-critical fs-3 text-secondary opacity-25" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({
+                value: statistics.total_not_loaded,
+                label: 'admin.compliance.not_loaded'|trans({}, 'admin')
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
-                {% block card_body %}
-                    <div class="text-center">
-                        <div class="small fw-semibold text-muted mb-1">{{ 'admin.compliance.mandatory_missing'|trans({}, 'admin') }}</div>
-                        <p class="mb-0 text-danger h2">{{ statistics.mandatory_not_loaded }}</p>
-                        <i class="fa-icon fa-icon--status-warning fs-3 text-danger opacity-25" aria-hidden="true"></i>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({
+                value: statistics.mandatory_not_loaded,
+                label: 'admin.compliance.mandatory_missing'|trans({}, 'admin'),
+                valueDanger: statistics.mandatory_not_loaded > 0
+            }) }}
         </div>
     </div>
 
     {# Compliance per Framework #}
     {% if compliance_data|length > 0 %}
-        {% embed '_components/_card.html.twig' %}
-            {% block card_header %}
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'admin.compliance.compliance_overview'|trans({}, 'admin') }}
-                    </h2>
-                </div>
-            {% endblock %}
-            {% block card_body %}
-                {% embed '_components/_table.html.twig' with {
-                    'class': 'table-hover',
-                    'noMargin': true,
-                    'responsive': true
-                } %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col">{{ 'admin.compliance.framework'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="text-center">{{ 'admin.compliance.total_requirements'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="text-center">{{ 'admin.compliance.assessed'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="text-center">{{ 'admin.compliance.compliant'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="text-center">{{ 'admin.compliance.compliance_rate'|trans({}, 'admin') }}</th>
-                            <th scope="col" class="text-center">{{ 'admin.compliance.progress'|trans({}, 'admin') }}</th>
-                        </tr>
-                    {% endblock %}
-                    {% block table_body %}
-                        {% for data in compliance_data %}
+        <section class="fa-section">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">
+                    <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> {{ 'admin.compliance.compliance_overview'|trans({}, 'admin') }}
+                </h2>
+            </div>
+            <div class="fa-section__body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
                             <tr>
-                                <td>
-                                    <strong>{{ data.framework.name }}</strong><br>
-                                    <small class="text-muted">{{ data.framework.code }}</small>
-                                </td>
-                                <td class="text-center">
-                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: data.total_requirements } %}
-                                </td>
-                                <td class="text-center">
-                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: data.assessed_requirements } %}
-                                </td>
-                                <td class="text-center">
-                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: data.compliant_requirements } %}
-                                </td>
-                                <td class="text-center">
-                                    <strong class="{% if data.compliance_percentage >= 75 %}text-success{% elseif data.compliance_percentage >= 50 %}text-warning{% else %}text-danger{% endif %}">
-                                        {{ data.compliance_percentage }}%
-                                    </strong>
-                                </td>
-                                <td>
-                                    <div class="progress progress-h-25">
-                                        <div class="progress-bar {% if data.compliance_percentage >= 75 %}bg-success{% elseif data.compliance_percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
-                                             role="progressbar"
-                                             style="width: {{ data.compliance_percentage }}%"
-                                             aria-valuenow="{{ data.compliance_percentage }}"
-                                             aria-valuemin="0"
-                                             aria-valuemax="100">
-                                            {{ data.compliance_percentage }}%
-                                        </div>
-                                    </div>
-                                </td>
+                                <th scope="col">{{ 'admin.compliance.framework'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="text-center">{{ 'admin.compliance.total_requirements'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="text-center">{{ 'admin.compliance.assessed'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="text-center">{{ 'admin.compliance.compliant'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="text-center">{{ 'admin.compliance.compliance_rate'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="text-center">{{ 'admin.compliance.progress'|trans({}, 'admin') }}</th>
                             </tr>
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-            {% endblock %}
-        {% endembed %}
+                        </thead>
+                        <tbody>
+                            {% for data in compliance_data %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ data.framework.name }}</strong><br>
+                                        <small class="text-muted">{{ data.framework.code }}</small>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-secondary">{{ data.total_requirements }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info">{{ data.assessed_requirements }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success">{{ data.compliant_requirements }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <strong class="{% if data.compliance_percentage >= 75 %}text-success{% elseif data.compliance_percentage >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                                            {{ data.compliance_percentage }}%
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <div class="progress progress-h-25">
+                                            <div class="progress-bar {% if data.compliance_percentage >= 75 %}bg-success{% elseif data.compliance_percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                                                 role="progressbar"
+                                                 style="width: {{ data.compliance_percentage }}%"
+                                                 aria-valuenow="{{ data.compliance_percentage }}"
+                                                 aria-valuemin="0"
+                                                 aria-valuemax="100">
+                                                {{ data.compliance_percentage }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
     {% else %}
         {{ _fa_alert.render({ variant: 'info', body: 'admin.compliance.no_frameworks_loaded'|trans({}, 'admin') }) }}
     {% endif %}
-</div>
 {% endblock admin_content %}

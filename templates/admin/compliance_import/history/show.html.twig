@@ -1,35 +1,35 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'compliance_import.history.detail.title'|trans({ '%filename%': session.originalFilename }, 'compliance_import') }}{% endblock %}
 
 {% block admin_title %}{{ 'compliance_import.history.title'|trans({}, 'compliance_import') }}{% endblock %}
 
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_import_history_index') }}">{{ 'compliance_import.history.title'|trans({}, 'compliance_import') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ session.originalFilename }}</li>
+{% endblock %}
+
 {% block admin_content %}
-<div class="container">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
-            { label: 'compliance_import.history.title'|trans({}, 'compliance_import'), url: path('admin_import_history_index') },
-            { label: session.originalFilename }
+    {{ _fa_page_header.render({
+        badge: { icon: 'clock-history', label: 'History' },
+        title: session.originalFilename,
+        subtitle: 'compliance_import.history.title'|trans({}, 'compliance_import'),
+        actions: [
+            { label: 'compliance_import.history.back_to_list'|trans({}, 'compliance_import'), variant: 'ghost', icon: 'arrow-left', href: path('admin_import_history_index') }
         ]
-    } only %}
+    }) }}
 
     {# Session meta #}
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-3', session: session } only %}
-        {% block card_header %}
-            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <h2 class="h5 mb-0">
-                    <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
-                    {{ session.originalFilename }}
-                </h2>
-                <a href="{{ path('admin_import_history_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                    <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
-                    {{ 'compliance_import.history.back_to_list'|trans({}, 'compliance_import') }}
-                </a>
-            </div>
-        {% endblock %}
-        {% block card_body %}
+    <section class="fa-section mb-3">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="fa-icon fa-icon--policy" aria-hidden="true"></i>
+                {{ session.originalFilename }}
+            </h2>
+        </div>
+        <div class="fa-section__body">
             <dl class="row mb-0">
                 <dt class="col-sm-3">{{ 'compliance_import.history.col_hash'|trans({}, 'compliance_import') }}</dt>
                 <dd class="col-sm-9"><code>{{ session.fileSha256 }}</code></dd>
@@ -68,24 +68,22 @@
                 <dd class="col-sm-9">
                     <span class="badge bg-success fa-status-pill fa-status-pill--success">{{ 'compliance_import.history.col_imported'|trans({}, 'compliance_import') }}: {{ session.rowCountImported }}</span>
                     <span class="badge bg-primary fa-status-pill fa-status-pill--primary">{{ 'compliance_import.history.col_superseded'|trans({}, 'compliance_import') }}: {{ session.rowCountSuperseded }}</span>
-                    <span class="badge bg-warning fa-status-pill fa-status-pill--warning">{{ 'compliance_import.history.col_skipped'|trans({}, 'compliance_import') }}: {{ session.rowCountSkipped }}</span>
+                    <span class="badge bg-warning text-dark fa-status-pill fa-status-pill--warning">{{ 'compliance_import.history.col_skipped'|trans({}, 'compliance_import') }}: {{ session.rowCountSkipped }}</span>
                     <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">{{ 'compliance_import.history.col_total'|trans({}, 'compliance_import') }}: {{ session.rowCountTotal }}</span>
                 </dd>
             </dl>
-        {% endblock %}
-    {% endembed %}
+        </div>
+    </section>
 
     {# Filter / search #}
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-3', session: session, filter: filter, is_search: is_search } only %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="h6 mb-0">
-                    <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i>
-                    {{ 'compliance_import.history.filter.title'|trans({}, 'compliance_import') }}
-                </h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
+    <section class="fa-section mb-3">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i>
+                {{ 'compliance_import.history.filter.title'|trans({}, 'compliance_import') }}
+            </h2>
+        </div>
+        <div class="fa-section__body">
             <form method="get" class="row g-2 align-items-end">
                 <div class="col-md-3">
                     <label for="filter-decision" class="form-label">
@@ -134,27 +132,25 @@
                     {% block alert_body %}{{ 'compliance_import.history.filter.search_active'|trans({ '%type%': filter.target_entity_type, '%id%': filter.search_entity_id }, 'compliance_import') }}{% endblock %}
                 {% endembed %}
             {% endif %}
-        {% endblock %}
-    {% endembed %}
+        </div>
+    </section>
 
     {# Events table #}
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-3', session: session, events: events, total: total, page: page, page_count: page_count, filter: filter, is_search: is_search } only %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="h6 mb-0">
-                    <i class="fa-icon fa-icon--nav-list-ordered" aria-hidden="true"></i>
-                    {{ 'compliance_import.history.detail.events_title'|trans({ '%count%': total }, 'compliance_import') }}
-                </h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
+    <section class="fa-section mb-3">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="fa-icon fa-icon--nav-list-ordered" aria-hidden="true"></i>
+                {{ 'compliance_import.history.detail.events_title'|trans({ '%count%': total }, 'compliance_import') }}
+            </h2>
+        </div>
+        <div class="fa-section__body">
             {% if events is empty %}
                 <p class="text-muted mb-0">
                     {{ 'compliance_import.history.detail.events_empty'|trans({}, 'compliance_import') }}
                 </p>
             {% else %}
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle"
+                    <table class="table table-hover align-middle"
                            aria-label="{{ 'compliance_import.history.detail.events_aria'|trans({}, 'compliance_import') }}">
                         <thead>
                             <tr>
@@ -178,7 +174,7 @@
                                     <td>{{ event.lineNumber }}</td>
                                     <td>
                                         {% set _dvpill = variant in ['info'] ? 'primary' : (variant in ['secondary','light','dark'] ? 'neutral' : variant) %}
-                                        <span class="badge bg-{{ variant }} fa-status-pill fa-status-pill--{{ _dvpill }}">
+                                        <span class="badge bg-{{ variant }}{% if variant == 'warning' %} text-dark{% endif %} fa-status-pill fa-status-pill--{{ _dvpill }}">
                                             {{ ('compliance_import.history.decision.' ~ event.decision)|trans({}, 'compliance_import') }}
                                         </span>
                                         {% if event.errorMessage %}
@@ -239,7 +235,6 @@
                     </nav>
                 {% endif %}
             {% endif %}
-        {% endblock %}
-    {% endembed %}
-</div>
+        </div>
+    </section>
 {% endblock %}

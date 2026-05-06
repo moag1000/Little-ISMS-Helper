@@ -1,5 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block admin_title %}{{ tenant.name }}{% endblock %}
 
@@ -8,10 +11,18 @@
     <li class="breadcrumb-item active">{{ tenant.code }}</li>
 {% endblock %}
 
-{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-
 {% block admin_content %}
-    {# Tenant Header #}
+    {{ _fa_page_header.render({
+        badge: { icon: 'building', label: tenant.code },
+        title: tenant.name,
+        subtitle: tenant.description|default(''),
+        actions: [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('tenant_management_edit', {id: tenant.id}) },
+            { label: 'tenant.organisation_context.title'|trans({}, 'tenant'), variant: 'ghost', icon: 'building', href: path('tenant_management_organisation_context', {id: tenant.id}) }
+        ]
+    }) }}
+
+    {# Tenant Header (logo + status) #}
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div class="d-flex align-items-start">
             {% if tenant.logoPath %}
@@ -29,9 +40,9 @@
                 <p class="text-muted mb-2">
                     <code class="text-primary">{{ tenant.code }}</code>
                     {% if tenant.isActive %}
-                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', class: 'ms-2', content: 'tenant.status.active'|trans({}, 'tenant') } %}
+                        <span class="badge bg-success ms-2"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
                     {% else %}
-                        {% include '_components/_badge.html.twig' with { variant: 'secondary', icon: 'bi-x-circle', class: 'ms-2', content: 'tenant.status.inactive'|trans({}, 'tenant') } %}
+                        <span class="badge bg-secondary ms-2"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
                     {% endif %}
                 </p>
                 {% if tenant.description %}
@@ -40,18 +51,12 @@
             </div>
         </div>
         <div class="btn-group" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-            <a href="{{ path('tenant_management_edit', {id: tenant.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-            </a>
-            <a href="{{ path('tenant_management_organisation_context', {id: tenant.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'tenant.organisation_context.title'|trans({}, 'tenant') }}
-            </a>
             <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
                   data-controller="ui-actions"
                   data-action="submit->ui-actions#confirm"
                   data-ui-actions-message-param="{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}">
                 <button type="submit"
-                        class="btn btn-{% if tenant.isActive %}warning{% else %}success{% endif %}">
+                        class="fa-cyber-btn fa-cyber-btn--{% if tenant.isActive %}warning{% else %}primary{% endif %}">
                     <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle" aria-hidden="true"></i>
                     {{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans({}, 'tenant') }}
                 </button>
@@ -62,49 +67,13 @@
     {# Statistics Cards #}
     <div class="row g-3 mb-4">
         <div class="col-md-4">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="d-flex align-items-center">
-                        <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
-                            <i class="fa-icon fa-icon--nav-people text-primary fs-3" aria-hidden="true"></i>
-                        </div>
-                        <div>
-                            <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.total_users'|trans({}, 'tenant') }}</div>
-                            <div class="fs-2 fw-bold">{{ userCount }}</div>
-                        </div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({ value: userCount, label: 'tenant.stats.total_users'|trans({}, 'tenant') }) }}
         </div>
         <div class="col-md-4">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="d-flex align-items-center">
-                        <div class="bg-success bg-opacity-10 p-3 rounded me-3">
-                            <i class="fa-icon fa-icon--ui-person text-success fs-3" aria-hidden="true"></i>
-                        </div>
-                        <div>
-                            <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.active_users'|trans({}, 'tenant') }}</div>
-                            <div class="fs-2 fw-bold">{{ activeUsers }}</div>
-                        </div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({ value: activeUsers, label: 'tenant.stats.active_users'|trans({}, 'tenant') }) }}
         </div>
         <div class="col-md-4">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="d-flex align-items-center">
-                        <div class="bg-secondary bg-opacity-10 p-3 rounded me-3">
-                            <i class="fa-icon fa-icon--ui-person text-secondary fs-3" aria-hidden="true"></i>
-                        </div>
-                        <div>
-                            <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.inactive_users'|trans({}, 'tenant') }}</div>
-                            <div class="fs-2 fw-bold">{{ inactiveUsers }}</div>
-                        </div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({ value: inactiveUsers, label: 'tenant.stats.inactive_users'|trans({}, 'tenant') }) }}
         </div>
     </div>
 
@@ -139,7 +108,7 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
                 <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i> {{ 'tenant.tabs.users'|trans({}, 'tenant') }}
-                {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-1', content: userCount } %}
+                <span class="badge bg-primary ms-1">{{ userCount }}</span>
             </button>
         </li>
     </ul>
@@ -148,255 +117,255 @@
     <div class="tab-content" id="tenantTabsContent">
         {# Details Tab #}
         <div class="tab-pane fade show active" id="details" role="tabpanel">
-    <div class="row">
-        {# Tenant Information #}
-        <div class="col-lg-6 mb-4">
-            {% embed '_components/_card.html.twig' with {class: 'h-100'} %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title mb-0 h5">
-                            <i class="fa-icon fa-icon--ui-info text-primary" aria-hidden="true"></i>
-                            {{ 'tenant.section.information'|trans({}, 'tenant') }}
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    {% embed '_components/_table.html.twig' with {
-                        'class': 'table-sm',
-                        'noMargin': true
-                    } %}
-                        {% block table_body %}
-                            <tr>
-                                <th scope="row" style="width: 40%;">{{ 'tenant.field.logo'|trans({}, 'tenant') }}</th>
-                                <td>
-                                    {% if tenant.logoPath %}
-                                        <img src="{{ asset(tenant.logoPath) }}"
-                                             alt="{{ tenant.name }}"
-                                             class="rounded"
-                                             style="width: 60px; height: 60px; object-fit: contain;">
-                                    {% else %}
-                                        <span class="text-muted">{{ 'tenant.no_logo'|trans({}, 'tenant') }}</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row" style="width: 40%;">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
-                                <td><code class="text-primary">{{ tenant.code }}</code></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
-                                <td>{{ tenant.name }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ 'tenant.field.azure_tenant_id'|trans({}, 'tenant') }}</th>
-                                <td>
-                                    {% if tenant.azureTenantId %}
-                                        <code class="text-muted small">{{ tenant.azureTenantId }}</code>
-                                    {% else %}
-                                        <span class="text-muted">—</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ 'tenant.field.status'|trans({}, 'tenant') }}</th>
-                                <td>
-                                    {% if tenant.isActive %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'tenant.status.active'|trans({}, 'tenant') } %}
-                                    {% else %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'tenant.status.inactive'|trans({}, 'tenant') } %}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ 'tenant.field.created'|trans({}, 'tenant') }}</th>
-                                <td>{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
-                            </tr>
-                            {% if tenant.updatedAt %}
-                                <tr>
-                                    <th scope="row">{{ 'tenant.field.updated'|trans({}, 'tenant') }}</th>
-                                    <td>{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
-                                </tr>
-                            {% endif %}
-                        {% endblock %}
-                    {% endembed %}
-                </div>
-
-                    {# Corporate Structure Information #}
-                    {% if tenant.isPartOfCorporateStructure %}
-                        <hr>
-                        <h3 class="mb-3 h6">
-                            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.section.structure'|trans({}, 'tenant') }}
-                        </h3>
-                        {% embed '_components/_table.html.twig' with {
-                            'class': 'table-sm',
-                            'noMargin': true
-                        } %}
-                            {% block table_body %}
-                                {% if tenant.parent %}
-                                    <tr>
-                                        <th scope="row" style="width: 40%;">{{ 'corporate.field.parent'|trans({}, 'tenant') }}</th>
-                                        <td>
-                                            <a href="{{ path('tenant_management_show', {id: tenant.parent.id}) }}">
-                                                {{ tenant.parent.name }}
-                                            </a>
-                                            <code class="text-muted ms-2">{{ tenant.parent.code }}</code>
-                                        </td>
-                                    </tr>
-                                    {% if defaultGovernance %}
+            <div class="row">
+                {# Tenant Information #}
+                <div class="col-lg-6 mb-4">
+                    <section class="fa-section h-100">
+                        <div class="fa-section__header">
+                            <h2 class="fa-section__title">
+                                <i class="fa-icon fa-icon--ui-info text-primary" aria-hidden="true"></i>
+                                {{ 'tenant.section.information'|trans({}, 'tenant') }}
+                            </h2>
+                        </div>
+                        <div class="fa-section__body">
+                            <div class="table-responsive">
+                                <table class="table table-sm mb-0">
+                                    <tbody>
                                         <tr>
-                                            <th scope="row">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</th>
+                                            <th scope="row" style="width: 40%;">{{ 'tenant.field.logo'|trans({}, 'tenant') }}</th>
                                             <td>
-                                                {% set governance_variant = {'hierarchical': 'primary', 'shared': 'warning'}[defaultGovernance.governanceModel.value]|default('secondary') %}
-                                                {% include '_components/_badge.html.twig' with { variant: governance_variant, content: defaultGovernance.governanceModel.label } %}
-                                                <br><small class="text-muted">{{ defaultGovernance.governanceModel.description }}</small>
+                                                {% if tenant.logoPath %}
+                                                    <img src="{{ asset(tenant.logoPath) }}"
+                                                         alt="{{ tenant.name }}"
+                                                         class="rounded"
+                                                         style="width: 60px; height: 60px; object-fit: contain;">
+                                                {% else %}
+                                                    <span class="text-muted">{{ 'tenant.no_logo'|trans({}, 'tenant') }}</span>
+                                                {% endif %}
                                             </td>
                                         </tr>
-                                    {% endif %}
-                                    <tr>
-                                        <th scope="row">{{ 'corporate.field.hierarchy_depth'|trans({}, 'tenant') }}</th>
-                                        <td>{{ 'corporate.level'|trans({'%level%': tenant.hierarchyDepth}, 'tenant') }}</td>
-                                    </tr>
-                                {% endif %}
-                                {% if tenant.isCorporateParent %}
-                                    <tr>
-                                        <th scope="row">{{ 'corporate.field.subsidiaries'|trans({}, 'tenant') }}</th>
-                                        <td>
-                                            {% include '_components/_badge.html.twig' with { variant: 'info', content: tenant.subsidiaries|length } %}
-                                            {% if tenant.subsidiaries|length > 0 %}
-                                                <ul class="mt-2 mb-0">
-                                                    {% for subsidiary in tenant.subsidiaries %}
-                                                        <li>
-                                                            <a href="{{ path('tenant_management_show', {id: subsidiary.id}) }}">
-                                                                {{ subsidiary.name }}
-                                                            </a>
-                                                            <code class="text-muted">{{ subsidiary.code }}</code>
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endblock %}
-                        {% endembed %}</div>
-                        <div class="d-grid">
-                            <a href="{{ path('tenant_management_corporate_structure') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.action.view_structure'|trans({}, 'tenant') }}
-                            </a>
-                        </div>
+                                        <tr>
+                                            <th scope="row" style="width: 40%;">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
+                                            <td><code class="text-primary">{{ tenant.code }}</code></td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
+                                            <td>{{ tenant.name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">{{ 'tenant.field.azure_tenant_id'|trans({}, 'tenant') }}</th>
+                                            <td>
+                                                {% if tenant.azureTenantId %}
+                                                    <code class="text-muted small">{{ tenant.azureTenantId }}</code>
+                                                {% else %}
+                                                    <span class="text-muted">—</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">{{ 'tenant.field.status'|trans({}, 'tenant') }}</th>
+                                            <td>
+                                                {% if tenant.isActive %}
+                                                    <span class="badge bg-success">{{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">{{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">{{ 'tenant.field.created'|trans({}, 'tenant') }}</th>
+                                            <td>{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
+                                        </tr>
+                                        {% if tenant.updatedAt %}
+                                            <tr>
+                                                <th scope="row">{{ 'tenant.field.updated'|trans({}, 'tenant') }}</th>
+                                                <td>{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
 
-                        {# ISMS Context Inheritance #}
-                        <hr>
-                        <div data-controller="tenant-governance"
-                             data-tenant-governance-tenant-id-value="{{ tenant.id }}"
-                             data-tenant-governance-has-parent-value="{{ tenant.parent ? 'true' : 'false' }}"
-                             data-tenant-governance-no-context-text-value="{{ 'corporate.inheritance.no_context'|trans({}, 'tenant') }}"
-                             data-tenant-governance-inherited-from-text-value="{{ 'corporate.inheritance.inherited_from'|trans({}, 'tenant') }}"
-                             data-tenant-governance-own-context-text-value="{{ 'corporate.inheritance.own_context'|trans({}, 'tenant') }}"
-                             data-tenant-governance-load-error-text-value="{{ 'corporate.inheritance.load_error'|trans({}, 'tenant') }}"
-                             data-tenant-governance-confirm-propagate-text-value="{{ 'corporate.inheritance.confirm_propagate'|trans({}, 'tenant') }}"
-                             data-tenant-governance-propagate-error-text-value="{{ 'corporate.inheritance.propagate_error'|trans({}, 'tenant') }}"
-                             data-tenant-governance-no-rules-text-value="{{ 'corporate.granular.no_rules'|trans({}, 'tenant') }}"
-                             data-tenant-governance-save-error-text-value="{{ 'corporate.granular.flash.error'|trans({}, 'tenant') }}"
-                             data-tenant-governance-confirm-delete-text-value="{{ 'corporate.granular.confirm.delete'|trans({}, 'tenant') }}"
-                             data-tenant-governance-delete-error-text-value="{{ 'corporate.granular.flash.error'|trans({}, 'tenant') }}"
-                             data-tenant-governance-organization-label-value="{{ 'corporate.inheritance.organization'|trans({}, 'tenant') }}">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 class="mb-0 h6">
-                                <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'corporate.inheritance.title'|trans({}, 'tenant') }}
-                            </h3>
-                            {% if tenant.isCorporateParent %}
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
-                                        data-action="click->tenant-governance#propagateContext">
-                                    <i class="fa-icon fa-icon--util-arrow-down" aria-hidden="true"></i> {{ 'corporate.inheritance.propagate'|trans({}, 'tenant') }}
-                                </button>
+                            {# Corporate Structure Information #}
+                            {% if tenant.isPartOfCorporateStructure %}
+                                <hr>
+                                <h3 class="mb-3 h6">
+                                    <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.section.structure'|trans({}, 'tenant') }}
+                                </h3>
+                                <div class="table-responsive">
+                                    <table class="table table-sm mb-0">
+                                        <tbody>
+                                            {% if tenant.parent %}
+                                                <tr>
+                                                    <th scope="row" style="width: 40%;">{{ 'corporate.field.parent'|trans({}, 'tenant') }}</th>
+                                                    <td>
+                                                        <a href="{{ path('tenant_management_show', {id: tenant.parent.id}) }}">
+                                                            {{ tenant.parent.name }}
+                                                        </a>
+                                                        <code class="text-muted ms-2">{{ tenant.parent.code }}</code>
+                                                    </td>
+                                                </tr>
+                                                {% if defaultGovernance %}
+                                                    <tr>
+                                                        <th scope="row">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</th>
+                                                        <td>
+                                                            {% set governance_variant = {'hierarchical': 'primary', 'shared': 'warning'}[defaultGovernance.governanceModel.value]|default('secondary') %}
+                                                            {% if governance_variant == 'warning' %}
+                                                                <span class="badge bg-warning text-dark">{{ defaultGovernance.governanceModel.label }}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-{{ governance_variant }}">{{ defaultGovernance.governanceModel.label }}</span>
+                                                            {% endif %}
+                                                            <br><small class="text-muted">{{ defaultGovernance.governanceModel.description }}</small>
+                                                        </td>
+                                                    </tr>
+                                                {% endif %}
+                                                <tr>
+                                                    <th scope="row">{{ 'corporate.field.hierarchy_depth'|trans({}, 'tenant') }}</th>
+                                                    <td>{{ 'corporate.level'|trans({'%level%': tenant.hierarchyDepth}, 'tenant') }}</td>
+                                                </tr>
+                                            {% endif %}
+                                            {% if tenant.isCorporateParent %}
+                                                <tr>
+                                                    <th scope="row">{{ 'corporate.field.subsidiaries'|trans({}, 'tenant') }}</th>
+                                                    <td>
+                                                        <span class="badge bg-info">{{ tenant.subsidiaries|length }}</span>
+                                                        {% if tenant.subsidiaries|length > 0 %}
+                                                            <ul class="mt-2 mb-0">
+                                                                {% for subsidiary in tenant.subsidiaries %}
+                                                                    <li>
+                                                                        <a href="{{ path('tenant_management_show', {id: subsidiary.id}) }}">
+                                                                            {{ subsidiary.name }}
+                                                                        </a>
+                                                                        <code class="text-muted">{{ subsidiary.code }}</code>
+                                                                    </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-grid">
+                                    <a href="{{ path('tenant_management_corporate_structure') }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                        <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.action.view_structure'|trans({}, 'tenant') }}
+                                    </a>
+                                </div>
+
+                                {# ISMS Context Inheritance #}
+                                <hr>
+                                <div data-controller="tenant-governance"
+                                     data-tenant-governance-tenant-id-value="{{ tenant.id }}"
+                                     data-tenant-governance-has-parent-value="{{ tenant.parent ? 'true' : 'false' }}"
+                                     data-tenant-governance-no-context-text-value="{{ 'corporate.inheritance.no_context'|trans({}, 'tenant') }}"
+                                     data-tenant-governance-inherited-from-text-value="{{ 'corporate.inheritance.inherited_from'|trans({}, 'tenant') }}"
+                                     data-tenant-governance-own-context-text-value="{{ 'corporate.inheritance.own_context'|trans({}, 'tenant') }}"
+                                     data-tenant-governance-load-error-text-value="{{ 'corporate.inheritance.load_error'|trans({}, 'tenant') }}"
+                                     data-tenant-governance-confirm-propagate-text-value="{{ 'corporate.inheritance.confirm_propagate'|trans({}, 'tenant') }}"
+                                     data-tenant-governance-propagate-error-text-value="{{ 'corporate.inheritance.propagate_error'|trans({}, 'tenant') }}"
+                                     data-tenant-governance-no-rules-text-value="{{ 'corporate.granular.no_rules'|trans({}, 'tenant') }}"
+                                     data-tenant-governance-save-error-text-value="{{ 'corporate.granular.flash.error'|trans({}, 'tenant') }}"
+                                     data-tenant-governance-confirm-delete-text-value="{{ 'corporate.granular.confirm.delete'|trans({}, 'tenant') }}"
+                                     data-tenant-governance-delete-error-text-value="{{ 'corporate.granular.flash.error'|trans({}, 'tenant') }}"
+                                     data-tenant-governance-organization-label-value="{{ 'corporate.inheritance.organization'|trans({}, 'tenant') }}">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h3 class="mb-0 h6">
+                                            <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i> {{ 'corporate.inheritance.title'|trans({}, 'tenant') }}
+                                        </h3>
+                                        {% if tenant.isCorporateParent %}
+                                            <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
+                                                    data-action="click->tenant-governance#propagateContext">
+                                                <i class="fa-icon fa-icon--util-arrow-down" aria-hidden="true"></i> {{ 'corporate.inheritance.propagate'|trans({}, 'tenant') }}
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                    <div id="effectiveContextContainer" data-tenant-governance-target="effectiveContextContainer">
+                                        <div class="text-center text-muted py-3">
+                                            <div class="spinner-border spinner-border-sm" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            {{ 'common.loading'|trans({}, 'messages') }}
+                                        </div>
+                                    </div>
+
+                                    {# Granular Governance Rules - only for subsidiaries #}
+                                    {% if tenant.parent %}
+                                        <hr>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h3 class="mb-0 h6">
+                                                <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i> {{ 'corporate.granular.title'|trans({}, 'tenant') }}
+                                            </h3>
+                                            <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
+                                                    data-action="click->tenant-governance#showAddRuleModal">
+                                                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'corporate.granular.add_rule'|trans({}, 'tenant') }}
+                                            </button>
+                                        </div>
+                                        <div id="governanceRulesContainer" data-tenant-governance-target="governanceRulesContainer">
+                                            <div class="text-center text-muted py-3">
+                                                <div class="spinner-border spinner-border-sm" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                {{ 'common.loading'|trans({}, 'messages') }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {# Governance Rule Modal - inside controller for Stimulus access #}
+                                    {% if tenant.parent %}
+                                    <div class="modal fade" id="governanceRuleModal" tabindex="-1" data-tenant-governance-target="ruleModal">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h2 class="modal-title h5">{{ 'corporate.granular.modal.title'|trans({}, 'tenant') }}</h2>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="ruleScope">{{ 'corporate.granular.field.scope'|trans({}, 'tenant') }}</label>
+                                                        <select class="form-select fa-cyber-input__field" id="ruleScope" data-tenant-governance-target="ruleScope" required>
+                                                            <option value="control">{{ 'corporate.granular.scope.control'|trans({}, 'tenant') }}</option>
+                                                            <option value="isms_context">{{ 'corporate.granular.scope.isms_context'|trans({}, 'tenant') }}</option>
+                                                            <option value="risk">{{ 'corporate.granular.scope.risk'|trans({}, 'tenant') }}</option>
+                                                            <option value="asset">{{ 'corporate.granular.scope.asset'|trans({}, 'tenant') }}</option>
+                                                            <option value="process">{{ 'corporate.granular.scope.process'|trans({}, 'tenant') }}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="ruleScopeId">{{ 'corporate.granular.field.scope_id'|trans({}, 'tenant') }}</label>
+                                                        <input type="text" class="form-control fa-cyber-input__field" id="ruleScopeId" data-tenant-governance-target="ruleScopeId" placeholder="z.B. A.5.1">
+                                                        <small class="form-text text-muted">{{ 'corporate.granular.help.scope_id'|trans({}, 'tenant') }}</small>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label" for="ruleGovernance">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</label>
+                                                        <select class="form-select fa-cyber-input__field" id="ruleGovernance" data-tenant-governance-target="ruleGovernance" required>
+                                                            <option value="hierarchical">{{ 'governance.hierarchical'|trans({}, 'messages') }}</option>
+                                                            <option value="shared">{{ 'governance.shared'|trans({}, 'messages') }}</option>
+                                                            <option value="independent">{{ 'governance.independent'|trans({}, 'messages') }}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                                                    <button type="button" class="fa-cyber-btn fa-cyber-btn--primary"
+                                                            data-action="click->tenant-governance#saveGovernanceRule">{{ 'common.save'|trans({}, 'messages') }}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>{# End tenant-governance controller #}
+                            {% endif %}
+
+                            {% if tenant.settings %}
+                                <hr>
+                                <h3 class="mb-2 h6">{{ 'tenant.field.settings'|trans({}, 'tenant') }}</h3>
+                                <pre class="bg-body-secondary p-3 rounded small"><code>{{ tenant.settings|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</code></pre>
                             {% endif %}
                         </div>
-                        <div id="effectiveContextContainer" data-tenant-governance-target="effectiveContextContainer">
-                            <div class="text-center text-muted py-3">
-                                <div class="spinner-border spinner-border-sm" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                {{ 'common.loading'|trans({}, 'messages') }}
-                            </div>
-                        </div>
-
-                        {# Granular Governance Rules - only for subsidiaries #}
-                        {% if tenant.parent %}
-                            <hr>
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h3 class="mb-0 h6">
-                                    <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i> {{ 'corporate.granular.title'|trans({}, 'tenant') }}
-                                </h3>
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success"
-                                        data-action="click->tenant-governance#showAddRuleModal">
-                                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'corporate.granular.add_rule'|trans({}, 'tenant') }}
-                                </button>
-                            </div>
-                            <div id="governanceRulesContainer" data-tenant-governance-target="governanceRulesContainer">
-                                <div class="text-center text-muted py-3">
-                                    <div class="spinner-border spinner-border-sm" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    {{ 'common.loading'|trans({}, 'messages') }}
-                                </div>
-                            </div>
-                        {% endif %}
-                        {# Governance Rule Modal - inside controller for Stimulus access #}
-                        {% if tenant.parent %}
-                        <div class="modal fade" id="governanceRuleModal" tabindex="-1" data-tenant-governance-target="ruleModal">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h2 class="modal-title h5">{{ 'corporate.granular.modal.title'|trans({}, 'tenant') }}</h2>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label class="form-label" for="ruleScope">{{ 'corporate.granular.field.scope'|trans({}, 'tenant') }}</label>
-                                            <select class="form-select fa-cyber-input__field" id="ruleScope" data-tenant-governance-target="ruleScope" required>
-                                                <option value="control">{{ 'corporate.granular.scope.control'|trans({}, 'tenant') }}</option>
-                                                <option value="isms_context">{{ 'corporate.granular.scope.isms_context'|trans({}, 'tenant') }}</option>
-                                                <option value="risk">{{ 'corporate.granular.scope.risk'|trans({}, 'tenant') }}</option>
-                                                <option value="asset">{{ 'corporate.granular.scope.asset'|trans({}, 'tenant') }}</option>
-                                                <option value="process">{{ 'corporate.granular.scope.process'|trans({}, 'tenant') }}</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label" for="ruleScopeId">{{ 'corporate.granular.field.scope_id'|trans({}, 'tenant') }}</label>
-                                            <input type="text" class="form-control fa-cyber-input__field" id="ruleScopeId" data-tenant-governance-target="ruleScopeId" placeholder="z.B. A.5.1">
-                                            <small class="form-text text-muted">{{ 'corporate.granular.help.scope_id'|trans({}, 'tenant') }}</small>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label" for="ruleGovernance">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</label>
-                                            <select class="form-select fa-cyber-input__field" id="ruleGovernance" data-tenant-governance-target="ruleGovernance" required>
-                                                <option value="hierarchical">{{ 'governance.hierarchical'|trans({}, 'messages') }}</option>
-                                                <option value="shared">{{ 'governance.shared'|trans({}, 'messages') }}</option>
-                                                <option value="independent">{{ 'governance.independent'|trans({}, 'messages') }}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                                        <button type="button" class="fa-cyber-btn fa-cyber-btn--primary"
-                                                data-action="click->tenant-governance#saveGovernanceRule">{{ 'common.save'|trans({}, 'messages') }}</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-                        </div>{# End tenant-governance controller #}
-                    {% endif %}
-
-                    {% if tenant.settings %}
-                        <hr>
-                        <h3 class="mb-2 h6">{{ 'tenant.field.settings'|trans({}, 'tenant') }}</h3>
-                        <pre class="bg-body-secondary p-3 rounded small"><code>{{ tenant.settings|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</code></pre>
-                    {% endif %}
-                {% endblock %}
-            {% endembed %}
+                    </section>
+                </div>
+            </div>
         </div>
-    </div>
         {# End Details Tab #}
 
         {# ISMS Context Tab #}
@@ -414,82 +383,78 @@
 
         {# Users Tab #}
         <div class="tab-pane fade" id="users" role="tabpanel">
-    <div class="row">
-        {# Users List #}
-        <div class="col-lg-12 mb-4">
-            {% embed '_components/_card.html.twig' with {class: 'h-100'} %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h2 class="card-title mb-0 h5">
-                                <i class="fa-icon fa-icon--nav-people text-primary" aria-hidden="true"></i>
-                                {{ 'tenant.section.users'|trans({}, 'tenant') }}
-                                {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-2', content: userCount } %}
-                            </h2>
-                            <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
-                                <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
-                            </button>
-                        </div>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-                    {% if userCount == 0 %}
-                        {{ _fa_empty_state.render({
-                            mood: 'sleeping',
-                            title: 'tenant.users.empty'|trans({}, 'tenant')
-                        }) }}
-                    {% else %}
-                        <div class="list-group list-group-flush">
-                            {% for user in tenant.users|slice(0, 10) %}
-                                <div class="list-group-item px-0">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>{{ user.email }}</strong>
-                                            {% if user.firstName or user.lastName %}
-                                                <br><small class="text-muted">{{ user.firstName }} {{ user.lastName }}</small>
-                                            {% endif %}
-                                        </div>
-                                        <div>
-                                            {% if user.isActive %}
-                                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.active'|trans({}, 'messages') } %}
-                                            {% else %}
-                                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.inactive'|trans({}, 'messages') } %}
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-
-                        {% if userCount > 10 %}
-                            <div class="text-center mt-3">
-                                <small class="text-muted">
-                                    {{ 'tenant.users.showing'|trans({'%count%': 10, '%total%': userCount}, 'tenant') }}
-                                </small>
+            <div class="row">
+                {# Users List #}
+                <div class="col-lg-12 mb-4">
+                    <section class="fa-section h-100">
+                        <div class="fa-section__header">
+                            <div class="d-flex justify-content-between align-items-center w-100">
+                                <h2 class="fa-section__title">
+                                    <i class="fa-icon fa-icon--nav-people text-primary" aria-hidden="true"></i>
+                                    {{ 'tenant.section.users'|trans({}, 'tenant') }}
+                                    <span class="badge bg-primary ms-2">{{ userCount }}</span>
+                                </h2>
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
+                                    <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
+                                </button>
                             </div>
-                        {% endif %}
-                    {% endif %}
-                {% endblock %}
-            {% endembed %}
-        </div>
-    </div>
+                        </div>
+                        <div class="fa-section__body">
+                            {% if userCount == 0 %}
+                                {{ _fa_empty_state.render({
+                                    mood: 'sleeping',
+                                    title: 'tenant.users.empty'|trans({}, 'tenant')
+                                }) }}
+                            {% else %}
+                                <div class="list-group list-group-flush">
+                                    {% for user in tenant.users|slice(0, 10) %}
+                                        <div class="list-group-item px-0">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>{{ user.email }}</strong>
+                                                    {% if user.firstName or user.lastName %}
+                                                        <br><small class="text-muted">{{ user.firstName }} {{ user.lastName }}</small>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    {% if user.isActive %}
+                                                        <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                {% if userCount > 10 %}
+                                    <div class="text-center mt-3">
+                                        <small class="text-muted">
+                                            {{ 'tenant.users.showing'|trans({'%count%': 10, '%total%': userCount}, 'tenant') }}
+                                        </small>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </section>
+                </div>
+            </div>
         </div>
         {# End Users Tab #}
+    </div>
     {# End Tab Content #}
 
     {# Danger Zone - Outside tabs, always visible #}
     {% if userCount == 0 %}
-        {% embed '_components/_card.html.twig' with {borderColor: 'danger', class: 'mt-4'} %}
-            {% block card_header %}
-                <div class="card-header bg-danger text-white">
-                    <h2 class="card-title mb-0 h5">
-                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                        {{ 'tenant.section.danger_zone'|trans({}, 'tenant') }}
-                    </h2>
-                </div>
-            {% endblock %}
-            {% block card_body %}
+        <section class="fa-section mt-4">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">
+                    <i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i>
+                    {{ 'tenant.section.danger_zone'|trans({}, 'tenant') }}
+                </h2>
+            </div>
+            <div class="fa-section__body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h3 class="mb-1 h6">{{ 'tenant.action.delete'|trans({}, 'tenant') }}</h3>
@@ -505,8 +470,8 @@
                         </button>
                     </form>
                 </div>
-            {% endblock %}
-        {% endembed %}
+            </div>
+        </section>
     {% endif %}
 
     {# Manage Users Modal #}
@@ -577,9 +542,9 @@
                                             </div>
                                             <div class="d-flex align-items-center gap-2">
                                                 {% if user.isActive %}
-                                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.active'|trans({}, 'messages') } %}
+                                                    <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
                                                 {% else %}
-                                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.inactive'|trans({}, 'messages') } %}
+                                                    <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                                                 {% endif %}
                                                 <form method="post" action="{{ path('tenant_management_remove_user', {id: tenant.id, userId: user.id}) }}" class="d-inline"
                                                       data-controller="ui-actions"

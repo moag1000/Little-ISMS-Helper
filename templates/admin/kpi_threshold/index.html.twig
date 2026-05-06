@@ -1,10 +1,11 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'kpi_threshold.page.title'|trans({}, 'admin') }}{% endblock %}
 
-{% block body %}
-<div class="container-fluid py-4">
+{% block admin_content %}
+<div class="container-fluid">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'admin.title'|trans({}, 'admin'), url: path('admin_dashboard') },
@@ -12,23 +13,19 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-1">{{ 'kpi_threshold.page.title'|trans({}, 'admin') }}</h1>
-            <p class="text-muted mb-0">{{ 'kpi_threshold.page.subtitle'|trans({}, 'admin') }}</p>
-        </div>
-        <a href="{{ path('admin_kpi_threshold_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
-            {{ 'kpi_threshold.action.new'|trans({}, 'admin') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'speedometer2', label: 'KPI' },
+        title: 'kpi_threshold.page.title'|trans({}, 'admin'),
+        subtitle: 'kpi_threshold.page.subtitle'|trans({}, 'admin'),
+        actions: [
+            { label: 'kpi_threshold.action.new'|trans({}, 'admin'), variant: 'primary', icon: 'plus-lg', href: path('admin_kpi_threshold_new') }
+        ]
+    }) }}
 
-    {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
-        {% block card_body %}
+    <section class="fa-section">
+        <div class="fa-section__body p-0">
             {% if configs is empty %}
-                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'm-3' } } %}
-                    {% block alert_body %}{{ 'kpi_threshold.message.no_configs'|trans({}, 'admin') }}{% endblock %}
-                {% endembed %}
+                {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'm-3', body: 'kpi_threshold.message.no_configs'|trans({}, 'admin') }) }}
             {% else %}
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
@@ -68,7 +65,7 @@
                     </table>
                 </div>
             {% endif %}
-        {% endblock %}
-    {% endembed %}
+        </div>
+    </section>
 </div>
 {% endblock %}

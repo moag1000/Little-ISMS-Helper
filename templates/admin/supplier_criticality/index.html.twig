@@ -1,26 +1,23 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block title %}{{ 'supplier_criticality.title'|trans({}, 'supplier_criticality') }}{% endblock %}
+{% block admin_title %}{{ 'supplier_criticality.title'|trans({}, 'supplier_criticality') }}{% endblock %}
 
-{% block body %}
-<div class="container mt-4">
-    <div class="row mb-3">
-        <div class="col">
-            <h1>
-                <i class="bi bi-layers" aria-hidden="true"></i>
-                {{ 'supplier_criticality.title'|trans({}, 'supplier_criticality') }}
-            </h1>
-            <p class="lead">{{ 'supplier_criticality.subtitle'|trans({}, 'supplier_criticality') }}</p>
-        </div>
-        <div class="col-auto d-flex align-items-start">
-            <a href="{{ path('app_admin_supplier_criticality_new') }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
-                {{ 'supplier_criticality.action.new'|trans({}, 'supplier_criticality') }}
-            </a>
-        </div>
-    </div>
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'supplier_criticality.title'|trans({}, 'supplier_criticality') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'building', label: 'Suppliers' },
+        title: 'supplier_criticality.title'|trans({}, 'supplier_criticality'),
+        subtitle: 'supplier_criticality.subtitle'|trans({}, 'supplier_criticality'),
+        actions: [
+            { label: 'supplier_criticality.action.new'|trans({}, 'supplier_criticality'), variant: 'primary', icon: 'plus-lg', href: path('app_admin_supplier_criticality_new') }
+        ]
+    }) }}
 
     {% for flash_type, messages in app.flashes %}
         {% for message in messages %}
@@ -29,15 +26,14 @@
         {% endfor %}
     {% endfor %}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
-            {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
-            {% if levels is empty %}
-                {{ _fa_empty_state.render({
-                    mood: 'sleeping',
-                    title: 'supplier_criticality.empty'|trans({}, 'supplier_criticality')
-                }) }}
-            {% else %}
+    {% if levels is empty %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'supplier_criticality.empty'|trans({}, 'supplier_criticality')
+        }) }}
+    {% else %}
+        <section class="fa-section">
+            <div class="fa-section__body">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
@@ -99,8 +95,7 @@
                         </tbody>
                     </table>
                 </div>
-            {% endif %}
-        {% endblock %}
-    {% endembed %}
-</div>
+            </div>
+        </section>
+    {% endif %}
 {% endblock %}

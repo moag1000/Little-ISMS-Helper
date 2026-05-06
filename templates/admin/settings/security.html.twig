@@ -1,6 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'admin'%}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% block admin_title %}{{ 'admin.settings.security.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -10,18 +10,21 @@
 {% endblock %}
 
 {% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-lock', label: 'Security' },
+        title: 'admin.settings.security.title'|trans({}, 'admin'),
+    }) }}
+
     <div class="row">
         <div class="col-lg-8">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title mb-0">
-                            <i class="fa-icon fa-icon--mfa text-danger" aria-hidden="true"></i>
-                            {{ 'admin.settings.security.title'|trans({}, 'admin') }}
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--mfa text-danger" aria-hidden="true"></i>
+                        {{ 'admin.settings.security.title'|trans({}, 'admin') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     {{ form_start(form) }}
                         {% include '_components/_auto_form.html.twig' with {
                             'form': form,
@@ -63,8 +66,8 @@
                             </button>
                         </div>
                     {{ form_end(form) }}
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
 
         <div class="col-lg-4">

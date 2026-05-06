@@ -1,22 +1,25 @@
 {% extends 'admin/layout.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'admin'%}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% block admin_title %}{{ 'admin.settings.title'|trans({}, 'admin') }}{% endblock %}
-{% block admin_subtitle %}
-    <p class="text-muted">{{ 'admin.settings.subtitle'|trans({}, 'admin') }}</p>
-{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item active">{{ 'admin.settings.title'|trans({}, 'admin') }}</li>
 {% endblock %}
 
 {% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'sliders', label: 'Settings' },
+        title: 'admin.settings.title'|trans({}, 'admin'),
+        subtitle: 'admin.settings.subtitle'|trans({}, 'admin'),
+    }) }}
+
     <div class="row g-4">
         {# Application Settings Card #}
         <div class="col-md-6 col-lg-4">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
-                {% block card_body %}
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
                     <div class="d-flex align-items-start mb-3">
                         <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
                             <i class="fa-icon fa-icon--ui-settings text-primary fs-2" aria-hidden="true"></i>
@@ -35,21 +38,19 @@
                             <li><strong>{{ 'admin.settings.application.items_per_page'|trans({}, 'admin') }}:</strong> {{ settings.application.items_per_page ?? 25 }}</li>
                         </ul>
                     {% endif %}
-                {% endblock %}
-                {% block card_footer %}
-                    <div class="card-footer bg-transparent">
-                        <a href="{{ path('admin_settings_application') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
-                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
-                        </a>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_settings_application') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
         </div>
 
         {# Security Settings Card #}
         <div class="col-md-6 col-lg-4">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
-                {% block card_body %}
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
                     <div class="d-flex align-items-start mb-3">
                         <div class="bg-danger bg-opacity-10 p-3 rounded me-3">
                             <i class="fa-icon fa-icon--mfa text-danger fs-2" aria-hidden="true"></i>
@@ -68,21 +69,19 @@
                             <li><strong>{{ 'admin.settings.security.require_2fa'|trans({}, 'admin') }}:</strong> {{ settings.security.require_2fa ? 'Yes' : 'No' }}</li>
                         </ul>
                     {% endif %}
-                {% endblock %}
-                {% block card_footer %}
-                    <div class="card-footer bg-transparent">
-                        <a href="{{ path('admin_settings_security') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
-                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
-                        </a>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_settings_security') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
         </div>
 
         {# Feature Flags Card #}
         <div class="col-md-6 col-lg-4">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
-                {% block card_body %}
+            <section class="fa-section h-100">
+                <div class="fa-section__body">
                     <div class="d-flex align-items-start mb-3">
                         <div class="bg-success bg-opacity-10 p-3 rounded me-3">
                             <i class="bi bi-toggles2 text-success fs-2" aria-hidden="true"></i>
@@ -122,15 +121,13 @@
                             </li>
                         </ul>
                     {% endif %}
-                {% endblock %}
-                {% block card_footer %}
-                    <div class="card-footer bg-transparent">
-                        <a href="{{ path('admin_settings_features') }}" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm w-100">
-                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
-                        </a>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+                <div class="fa-section__footer">
+                    <a href="{{ path('admin_settings_features') }}" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm w-100">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                    </a>
+                </div>
+            </section>
         </div>
     </div>
 
