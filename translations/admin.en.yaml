@@ -2,6 +2,60 @@ admin:
     title: Administration
     breadcrumb:
         home: 'Admin Dashboard'
+    hub:
+        title: 'Admin Panel'
+        subtitle: '%count% modules in 7 areas — filtered via search, opened as focused detail pages.'
+        search_placeholder: 'Search modules… (e.g. tenants, audit log, SSO)'
+        search_label: 'Search modules'
+        no_results: 'No modules found — adjust the search term.'
+        coming_soon: 'coming soon'
+        group:
+            organisation: { label: 'Organisation', desc: 'Tenants, group structure, locations' }
+            identity: { label: 'Access & Identity', desc: 'Users, roles, permissions, SSO, sessions, MFA' }
+            isms_data: { label: 'ISMS data', desc: 'Frameworks, mappings, industry baselines, tags' }
+            audit_compliance: { label: 'Audit & Compliance', desc: 'Audit log, retention, compliance policy, risk-approval thresholds' }
+            integrations: { label: 'Integrations', desc: 'Compliance imports, GSTool, sample data, import history' }
+            system: { label: 'System', desc: 'Health, modules, quick-fix settings, KPI thresholds, licensing' }
+            branding_ux: { label: 'Branding & UX', desc: 'Supplier criticality, tour content, Alva-hint statistics' }
+        module:
+            tenants: { label: 'Tenants', desc: 'Manage customer organisations' }
+            corporate_structure: { label: 'Corporate structure', desc: 'Parent / subsidiary hierarchy' }
+            locations: { label: 'Locations', desc: 'Physical sites for asset assignment' }
+            tenant_branding: { label: 'Tenant branding', desc: 'Per-tenant email logos and senders' }
+            users: { label: 'Users', desc: 'Accounts, status, lockouts' }
+            roles: { label: 'Roles', desc: 'Tenant roles and templates' }
+            permissions: { label: 'Permissions', desc: 'Module × role permission matrix' }
+            sso: { label: 'SSO', desc: 'OIDC providers, approvals, domain bindings' }
+            sessions: { label: 'Sessions', desc: 'Active sessions, force logout' }
+            mfa: { label: 'MFA tokens', desc: 'Manage TOTP / backup codes' }
+            frameworks: { label: 'Compliance frameworks', desc: 'Activate / load ISO, BSI, NIS2, DORA' }
+            mappings: { label: 'Cross-framework mappings', desc: 'Requirement links between frameworks' }
+            mapping_quality: { label: 'Mapping quality score', desc: 'Review pipeline for mapping suggestions' }
+            industry_baselines: { label: 'Industry baselines', desc: 'Pre-filled risk/asset/control sets per NACE' }
+            tags: { label: 'Tags', desc: 'Framework tags + bulk-apply actions' }
+            audit_log: { label: 'Audit log', desc: 'Tamper-evident activity trail' }
+            audit_retention: { label: 'Retention policy', desc: 'Audit-log retention windows' }
+            compliance_policy: { label: 'Compliance policy', desc: 'Inheritance rules, review obligations' }
+            risk_approval_config: { label: 'Risk approval thresholds', desc: 'Escalation tiers for risk acceptance' }
+            incident_sla: { label: 'Incident SLAs', desc: 'Response times per severity' }
+            audit_log_monitoring: { label: 'Audit-log monitoring', desc: 'Live stream + anomaly filter' }
+            compliance_import: { label: 'Compliance import', desc: 'CSV/YAML bulk import of requirements' }
+            gstool_import: { label: 'GSTool import', desc: 'BSI IT-Grundschutz from GSTool export' }
+            sample_data: { label: 'Sample data', desc: 'Load / remove demo records' }
+            import_history: { label: 'Import history', desc: 'Recent imports + rollback' }
+            system_health: { label: 'System health', desc: 'Service status, disk, cache, logs' }
+            modules: { label: 'Modules', desc: 'Manage active ISMS modules' }
+            data_repair: { label: 'Data repair', desc: 'Orphans, tenant mismatches, schema reconcile' }
+            quick_fix_settings: { label: 'Quick-fix settings', desc: 'Auto-fallback UI configuration' }
+            kpi_threshold: { label: 'KPI thresholds', desc: 'Traffic-light limits for dashboard KPIs' }
+            loader_fixer: { label: 'Loader fixer', desc: 'Compliance-loader diff repair' }
+            monitoring_performance: { label: 'Performance monitor', desc: 'Request times, slow query log' }
+            licensing: { label: 'Licensing', desc: 'Plan, limits, license report' }
+            application_settings: { label: 'Application settings', desc: 'Application, security, features' }
+            supplier_criticality: { label: 'Supplier criticalities', desc: 'Custom levels for supplier classification' }
+            tour_content: { label: 'Guided-tour content', desc: 'Edit step texts and order' }
+            tour_completion: { label: 'Tour completion', desc: 'Completion rates + reset tools' }
+            alva_hint_stats: { label: 'Alva-hint statistics', desc: 'Render / dismiss / dismiss rate per hint' }
     section:
         overview: Overview
         user_access: 'Users & Access'

@@ -1,0 +1,63 @@
+{#
+  Admin-Hub-Card (FairyAurora v4 Komponente)
+
+  Eintrag im Hub-Card-Grid: linker Akzent-Bar in der Tone-Farbe
+  (cyan/pink/purple), Icon-Chip oben, Titel + Beschreibung, optional
+  Count- oder Coming-Soon-Badge unten.
+
+  Usage:
+    {% import '_components/_fa_admin_hub_card.html.twig' as _fa_admin_hub_card %}
+    {{ _fa_admin_hub_card.render({
+        tone: 'cyan',
+        icon: 'buildings',
+        title: 'Mandanten',
+        description: 'Kunden-Organisationen verwalten',
+        href: path('tenant_management_index'),
+        count: 12,
+        coming_soon: false
+    }) }}
+
+  Felder:
+    - tone:        'cyan' | 'pink' | 'purple' (default: 'cyan')
+    - icon:        Bootstrap-Icon-Name ohne 'bi-' Prefix
+    - title:       Headline (bereits übersetzt)
+    - description: Subline (bereits übersetzt)
+    - href:        URL — entfällt wenn coming_soon
+    - count:       optional Integer
+    - badge:       optional String (statt count)
+    - coming_soon: bool — rendert als disabled card mit Pill
+#}
+{% macro render(opts) %}
+    {% set tone = opts.tone|default('cyan') %}
+    {% set comingSoon = opts.coming_soon|default(false) %}
+    {% set tag = comingSoon ? 'div' : 'a' %}
+    <{{ tag }}
+        class="fa-admin-hub-card{{ comingSoon ? ' fa-admin-hub-card--coming-soon' : '' }}"
+        data-tone="{{ tone }}"
+        {% if not comingSoon %}href="{{ opts.href }}"{% endif %}
+        data-hub-card-search="{{ (opts.title ~ ' ' ~ opts.description)|lower|escape('html_attr') }}">
+        <span class="fa-admin-hub-card__chip" aria-hidden="true">
+            <i class="bi bi-{{ opts.icon|default('square') }}"></i>
+        </span>
+        <div class="fa-admin-hub-card__title">{{ opts.title }}</div>
+        <p class="fa-admin-hub-card__desc">{{ opts.description }}</p>
+        <div class="fa-admin-hub-card__foot">
+            {% if comingSoon %}
+                <span class="fa-admin-hub-card__badge fa-admin-hub-card__badge--soon">
+                    {{ 'admin.hub.coming_soon'|trans({}, 'admin') }}
+                </span>
+            {% elseif opts.count is defined and opts.count is not null %}
+                <span class="fa-admin-hub-card__count">{{ opts.count }}</span>
+            {% elseif opts.badge is defined and opts.badge %}
+                <span class="fa-admin-hub-card__badge fa-admin-hub-card__badge--{{ tone }}">{{ opts.badge }}</span>
+            {% else %}
+                <span></span>
+            {% endif %}
+            {% if not comingSoon %}
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            {% else %}
+                <i class="bi bi-clock-history" aria-hidden="true"></i>
+            {% endif %}
+        </div>
+    </{{ tag }}>
+{% endmacro %}
