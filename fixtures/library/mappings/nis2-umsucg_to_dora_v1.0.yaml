@@ -1,0 +1,632 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'nis2-umsucg_to_dora_v1.0'
+  source_framework: 'NIS2-UmsuCG'
+  target_framework: 'DORA'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'NIS2UmsuCG BGBl. 2025 I Nr. 301 + DORA Verordnung (EU) 2022/2554 + EU Commission Guidelines Art.4(1) NIS2'
+    primary_source_url: 'https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52023XC0918(01)'
+    secondary_sources:
+      - 'NIS2UmsuCG (NIS2-Umsetzungs- und Cybersicherheitsstaerkungsgesetz), BGBl. 2025 I Nr. 301'
+      - 'Verordnung (EU) 2022/2554 (DORA), Amtliches Werk der EU'
+      - 'EU Commission Communication 2023/C 328/02 (Guidelines on the application of Art. 4(1) NIS2 Directive)'
+      - 'BSI-Stellungnahme zur DORA/NIS2-Abgrenzung im Finanzsektor (Stand 2025-Q3)'
+      - 'BaFin-Rundschreiben 03/2025 zur DORA-Anwendung im DE-Finanzsektor'
+      - 'EBA Single Rule Book Q&A 2024_7060: Lex Specialis NIS2 Directive'
+      - 'ENISA Technical Implementation Guidance on Cybersecurity Risk-Management Measures v1.0 (June 2025)'
+    publisher: 'Little ISMS Helper Maintainers'
+    license_note: |
+      Mapping is original derivative work (AGPL-3.0). NIS2UmsuCG ist Amtliches Werk der
+      Bundesrepublik Deutschland (gemeinfrei nach § 5 UrhG). DORA-Article-Referenzen
+      © Europaeische Union, public-domain-equivalent (Amtliches Werk). Aequivalenz-
+      Bewertung abgeleitet aus EU Commission Communication 2023/C 328/02
+      (Lex-Specialis-Erklaerung) und ENISA TIG v1.0 (June 2025).
+
+  methodology:
+    type: 'published_official_mapping'
+    description: |
+      Lex-Specialis-Mapping: NIS2-UmsuCG (deutsche NIS2-Umsetzung) zu DORA
+      (Verordnung 2022/2554) fuer DE-Finanzdienstleister. Die EU-Commission
+      Communication 2023/C 328/02 erklaert DORA explizit als lex specialis
+      gemaess Art. 4(1) NIS2 fuer Finanzunternehmen — Finanzdienstleister
+      im DORA-Scope erfuellen die korrespondierenden NIS2-UmsuCG-Pflichten
+      ueber DORA. Die deutsche Umsetzung in NIS2-UmsuCG § 48 verweist
+      explizit auf DORA-Vorrang.
+
+      Lex-Specialis-Phrase fuer Rationale: "Fuer DE-Finanzdienstleister im
+      DORA-Scope ist DORA-Anforderung X funktional aequivalent oder strenger
+      als NIS2-UmsuCG §Y; doppelte BSI-Meldung bleibt nach §32 + DORA-
+      Reporting bestehen (Art. 4(2) NIS2)."
+
+      Vorgehen pro NIS2-UmsuCG-Paragraph:
+      1. Volltext-Lesung des NIS2-UmsuCG-Paragraphen (BGBl. 2025 I Nr. 301)
+      2. Identifikation der DORA-Aequivalenz gemaess EU Commission
+         Communication 2023/C 328/02 + ENISA TIG v1.0
+      3. Bewertung der Schnittmenge:
+         - 'equivalent' (selten, fast deckungsgleich)
+         - 'subset' (NIS2-UmsuCG ist breiter als DORA, z.B. nicht-finanz-
+           bezogene Aspekte)
+         - 'related' (funktional aehnlich, aber unterschiedliche Ausgestaltung)
+      4. Confidence:
+         - high: Direkte EU-Commission/ENISA-Aequivalenz, expliziter §48-Verweis
+         - medium: Ableitung aus RTS/ITS, Bedingte Aequivalenz
+         - low: Interpretative Aequivalenz, gap_warning Pflicht
+      5. gap_warning bei Themen, die NIS2-UmsuCG verlangt, aber DORA nicht
+         oder nur teilweise abdeckt
+      6. WICHTIG: Doppelmeldung bleibt nach Art. 4(2) NIS2 bestehen — bei
+         Vorfaellen muessen DE-Finanzdienstleister BEIDE Meldewege bedienen
+         (BSI/BSI-CERT nach §32 NIS2-UmsuCG + Bundesbank/BaFin nach DORA Art. 19)
+      7. 4-Augen-Review durch Compliance-Manager mit Finanzsektor-Erfahrung
+
+      NIS2-UmsuCG-Paragraphen-Strukturuebersicht:
+      - §1-3: Allgemeine Bestimmungen, Anwendungsbereich, Begriffe
+      - §28-29: Registrierung wesentlicher und wichtiger Einrichtungen
+      - §30: Risikomanagementmassnahmen
+      - §31: Pflichten des Top-Managements
+      - §32: Meldepflichten
+      - §33: Nachweispflicht
+      - §34: Schulungspflicht des Top-Managements
+      - §35: Zertifizierung
+      - §39-47: Aufsicht, Pruefungen, Anordnungen
+      - §48: Sektor-Hinweis (Banken, Versicherungen, Finanzdienstleister)
+      - §49-50: Sanktionen, Bussgelder
+      - §60-70: Kritische Anlagen, KRITIS-spezifische Bestimmungen
+
+      DORA-Source-IDs (granular pro Article gemaess Verordnung 2022/2554):
+      - Chapter II (Art. 5-16): ICT-Risk-Management-Framework
+      - Chapter III (Art. 17-23): Incident-Management und Reporting
+      - Chapter IV (Art. 24-27): Digital Operational Resilience Testing
+      - Chapter V (Art. 28-44): ICT-Third-Party-Risk + Critical-TPP-Oversight
+      - Chapter VI (Art. 45): Information Sharing
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-04-20', actor: 'maintainer' }
+      - { state: 'review',    date: '2026-04-30', actor: 'maintainer' }
+      - { state: 'approved',  date: '2026-05-05', actor: 'reviewer-2' }
+      - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
+
+mappings:
+  # ============================================================================
+  # §1-3 — Allgemeine Bestimmungen / Scope
+  # ============================================================================
+
+  - source: '§1'
+    target: 'Art.1'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 1 definiert den Zweck des Gesetzes (Umsetzung der
+      NIS2-Richtlinie und Staerkung der Cybersicherheit). DORA Art. 1
+      definiert den Zweck der Verordnung (digitale operationale Resilienz
+      im Finanzsektor). Funktional verwandte Zweck-Bestimmungen mit
+      ueberlappendem Cybersicherheits-Schwerpunkt; DORA ist sektoral
+      enger gefasst.
+    cross_refs: ['§48', 'Art.2']
+    audit_evidence_hint: 'Anwendbarkeits-Analyse mit Verweis auf NIS2-UmsuCG §1 + DORA Art. 1, dokumentierte Sektor-Klassifikation, Zustaendigkeits-Matrix BSI/BaFin.'
+
+  - source: '§28'
+    target: 'Art.2'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 28 regelt Registrierung wesentlicher und wichtiger
+      Einrichtungen beim BSI. DORA Art. 2 definiert Anwendungsbereich
+      (20 Kategorien von Finanzunternehmen). Fuer DE-Finanzdienstleister
+      im DORA-Scope ist DORA-Registrierung ueber Bundesbank/BaFin lex
+      specialis — NIS2-UmsuCG §28-Registrierung beim BSI bleibt jedoch
+      nach §48 NIS2-UmsuCG bestehen (Doppel-Registrierung). Die
+      Anwendungsbereichs-Definition von DORA ist enger und sektoral
+      praeziser.
+    gap_warning: |
+      DE-Finanzdienstleister muessen sich nach §28 BEIM BSI registrieren
+      UND nach DORA bei BaFin/Bundesbank — beide Registrierungs-Pflichten
+      bestehen kumulativ. Die Lex-Specialis-Wirkung beschraenkt sich auf
+      MATERIELLE Pflichten (Risk-Mgmt, Reporting), nicht auf formale
+      Registrierungs-Pflichten.
+    cross_refs: ['§29', '§48', 'Art.1']
+    audit_evidence_hint: 'BSI-Registrierungs-Bestaetigung gemaess §28, BaFin/Bundesbank-DORA-Registrierung, dokumentierte Doppel-Registrierungs-Analyse.'
+
+  - source: '§29'
+    target: 'Art.2'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 29 regelt Aktualisierung und Pflege der Registrierungs-
+      Daten beim BSI. DORA Art. 2 definiert sektorale Anwendung mit
+      laufenden Aktualisierungs-Pflichten ueber das DORA-Reporting an
+      BaFin/Bundesbank. Lex-Specialis-Wirkung gilt fuer DORA-spezifische
+      Aktualisierungen; BSI-Registrierungs-Pflege bleibt parallel.
+    cross_refs: ['§28', '§48']
+    audit_evidence_hint: 'Aktualisierungs-Logs der BSI-Registrierung, parallele DORA-Aktualisierungs-Records, Trigger-Events fuer Aktualisierung.'
+
+  # ============================================================================
+  # §30 — Risikomanagementmassnahmen (KERN-LEX-SPECIALIS)
+  # ============================================================================
+
+  - source: '§30'
+    target: 'Art.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 30 verlangt von wesentlichen und wichtigen Einrichtungen
+      Risikomanagementmassnahmen fuer Netz- und Informationssysteme
+      (10 Pflichtbereiche analog Art. 21 NIS2-Richtlinie). Fuer
+      DE-Finanzdienstleister im DORA-Scope ist DORA Art. 5 (Governance
+      und Organisation) funktional aequivalent oder strenger als NIS2-UmsuCG
+      §30-Governance-Anteil; doppelte BSI-Meldung bleibt nach §32 + DORA-
+      Reporting bestehen. DORA Art. 5(1)-(2) verpflichtet das Leitungsorgan
+      zur letztverantwortlichen Steuerung des ICT-Risk-Management-Frameworks
+      mit jaehrlicher Review-Frequenz und dokumentierten Verantwortlich-
+      keiten — NIS2-UmsuCG §30 ist breiter (umfasst alle 10 Pflichtbereiche),
+      DORA Art. 5 ist im Governance-Anteil tiefer.
+    cross_refs: ['§31', '§48', 'Art.6', 'Art.4']
+    audit_evidence_hint: 'NIS2-UmsuCG §30-Risk-Mgmt-Dokumentation; ergaenzend DORA Art. 5-Governance-Akte mit jaehrlicher Mgmt-Review.'
+
+  - source: '§30'
+    target: 'Art.6'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 30 verlangt All-Hazards-Risikomanagement fuer Netz-
+      und Informationssysteme. Fuer DE-Finanzdienstleister im DORA-Scope
+      ist DORA Art. 6 (ICT Risk Management Framework) funktional
+      aequivalent oder strenger als NIS2-UmsuCG §30-ICT-Risk-Anteil;
+      doppelte BSI-Meldung bleibt nach §32 + DORA-Reporting bestehen.
+      DORA Art. 6 ist deutlich praeskriptiver mit RTS-Konkretisierungen
+      (JC 2023 86 ICT Risk Management Framework). Das gesamte ICT-Risk-
+      Management-Framework gemaess DORA Art. 5-16 ist als lex specialis zu
+      §30 zu verstehen — Substitution gemaess Art. 4(1) NIS2.
+    cross_refs: ['§41', 'Art.5', 'Art.7', 'Art.8', 'Art.9']
+    audit_evidence_hint: 'NIS2-UmsuCG §30-Compliance-Matrix; ergaenzend DORA-ICT-Risk-Framework-Dokumentation, RTS-JC-2023-86-Konformitaet.'
+
+  - source: '§30'
+    target: 'Art.7'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 30 Abs. 2 Nr. 7 verlangt Asset-Management und
+      sichere Konfiguration. DORA Art. 7 (ICT Systems, Protocols and
+      Tools) konkretisiert dies fuer Finanzunternehmen mit Stand-der-
+      Technik-Anforderungen — funktional aequivalent oder strenger.
+    cross_refs: ['Art.8', 'Art.9']
+    audit_evidence_hint: 'Asset-Inventar mit DORA-Tools-Konformitaets-Bewertung, Konfigurations-Standards.'
+
+  - source: '§30'
+    target: 'Art.8'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 30 Abs. 2 Nr. 7 verlangt Asset-Identifikation. DORA
+      Art. 8 (Identification) konkretisiert dies mit detaillierten ICT-
+      Asset-Inventar-Pflichten und Information-Asset-Klassifikation —
+      strenger als NIS2-UmsuCG.
+    cross_refs: ['Art.7', 'Art.9']
+    audit_evidence_hint: 'ICT-Asset-Inventar gemaess DORA Art. 8, Information-Asset-Klassifikation, jaehrliche Aktualisierung.'
+
+  - source: '§30'
+    target: 'Art.9'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 30 Abs. 2 Nr. 1+2 verlangt Sicherheits-Konzepte und
+      Vorfallsbehandlung. DORA Art. 9 (Protection and Prevention) deckt
+      Schutz und Praevention sektoral ab — funktional aequivalent oder
+      strenger.
+    cross_refs: ['Art.10', 'Art.11']
+    audit_evidence_hint: 'Schutz-Konzepte gemaess DORA Art. 9, Praeventions-Massnahmen, jaehrliche Wirksamkeits-Review.'
+
+  - source: '§30'
+    target: 'Art.10'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 30 Abs. 2 Nr. 2 verlangt Bewaeltigung von Sicherheits-
+      vorfaellen mit Erkennung. DORA Art. 10 (Detection) konkretisiert
+      Detection-Mechanismen sektoral — funktional aequivalent oder strenger.
+    cross_refs: ['Art.11']
+    audit_evidence_hint: 'Detection-Konzept gemaess DORA Art. 10, SOC/CSIRT-Anbindung, MTTD-Metriken.'
+
+  - source: '§30'
+    target: 'Art.11'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 30 Abs. 2 Nr. 2 verlangt Bewaeltigung von Sicherheits-
+      vorfaellen mit Response/Recovery. DORA Art. 11 (Response and Recovery)
+      konkretisiert sektoral mit Recovery-Time-Objectives und Recovery-
+      Point-Objectives.
+    cross_refs: ['Art.12']
+    audit_evidence_hint: 'Response- und Recovery-Plaene gemaess DORA Art. 11, RTO/RPO-Definitionen, MTTR-Metriken.'
+
+  - source: '§30'
+    target: 'Art.12'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 30 Abs. 2 Nr. 3 verlangt Aufrechterhaltung des Betriebs,
+      Backup-Management, Krisenmgmt. DORA Art. 12 (Backup Policies, Restoration
+      and Recovery Procedures) konkretisiert Backup- und Restore-Anforderungen
+      sektoral — funktional aequivalent oder strenger.
+    cross_refs: ['Art.11']
+    audit_evidence_hint: 'Backup-Policy gemaess DORA Art. 12, Restore-Tests, Aufbewahrung der Backups gemaess Sektor-Vorgabe.'
+
+  - source: '§30'
+    target: 'Art.13'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2-UmsuCG § 30 Abs. 2 Nr. 6 verlangt Konzepte und Verfahren zur
+      Bewertung der Wirksamkeit. DORA Art. 13 (Learning and Evolving)
+      konkretisiert Lessons-Learned und kontinuierliche Verbesserung — bedingt
+      aequivalent (DORA fokussiert auf ICT-Lernschleifen, NIS2 ist
+      breiter auf Wirksamkeit).
+    cross_refs: ['Art.5']
+    audit_evidence_hint: 'Lessons-Learned-Process gemaess DORA Art. 13, Wirksamkeitsbewertungs-Reports gemaess §30.'
+
+  - source: '§30'
+    target: 'Art.14'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2-UmsuCG § 30 Abs. 2 Nr. 4 verlangt Sicherheit der Lieferkette
+      einschliesslich Anbieter-Beziehungen. DORA Art. 14 (Communication)
+      adressiert Stakeholder-Communication — Schnittmenge in der
+      Stakeholder-Kommunikation. Direkte Lieferketten-Sicherheit ist
+      eher in DORA Chapter V (Art. 28-44) abgedeckt.
+    cross_refs: ['Art.28', 'Art.30']
+    audit_evidence_hint: 'Stakeholder-Communication-Plan gemaess DORA Art. 14, ergaenzt um TPP-Mgmt nach Chapter V.'
+
+  - source: '§30'
+    target: 'Art.28'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 30 Abs. 2 Nr. 4 verlangt Sicherheit der Lieferkette mit
+      sicherheitsbezogenen Aspekten der Beziehungen zu Anbietern und
+      Dienstleistern. DORA Art. 28 (General Principles) deckt ICT-Third-
+      Party-Risk-Mgmt sektoral umfassend ab — funktional aequivalent oder
+      strenger mit detaillierten RTS/ITS-Konkretisierungen.
+    cross_refs: ['Art.29', 'Art.30']
+    audit_evidence_hint: 'TPP-Risk-Mgmt-Framework gemaess DORA Art. 28, Lieferanten-Inventar, Kritikalitaets-Klassifikation.'
+
+  - source: '§30'
+    target: 'Art.30'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 30 Abs. 2 Nr. 4 verlangt vertragliche Sicherheits-
+      anforderungen an Lieferanten. DORA Art. 30 (Contractual Provisions)
+      konkretisiert verpflichtende Vertragsinhalte fuer ICT-Vertraege im
+      Finanzsektor — wesentlich strenger und praeskriptiver.
+    cross_refs: ['Art.28', 'Art.29']
+    audit_evidence_hint: 'ICT-Vertrags-Templates mit DORA-Art.-30-Pflichtklauseln, Vertragsregister, jaehrliche Vertragsreviews.'
+
+  # ============================================================================
+  # §31 — Top-Management-Pflichten
+  # ============================================================================
+
+  - source: '§31'
+    target: 'Art.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 31 verpflichtet das Top-Management wesentlicher und
+      wichtiger Einrichtungen zur Genehmigung und Supervision der Risk-
+      Mgmt-Massnahmen sowie zur persoenlichen Haftung. DORA Art. 5
+      (Governance and Organisation) ist funktional deckungsgleich mit
+      Pflicht zur Mgmt-Body-Genehmigung des ICT-Risk-Frameworks und
+      jaehrlicher Review. EU-Commission-Communication 2023/C 328/02
+      bestaetigt Lex-Specialis-Wirkung; fuer DE-Finanzdienstleister im
+      DORA-Scope erfuellt DORA Art. 5 die §31-Pflichten.
+    cross_refs: ['§34', '§48', 'Art.5.4']
+    audit_evidence_hint: 'Top-Mgmt-Genehmigungs-Beschluesse gemaess DORA Art. 5, jaehrliche Review-Protokolle, Haftungs-Dokumentation.'
+
+  # ============================================================================
+  # §32 — Meldepflichten (DOPPEL-MELDUNG!)
+  # ============================================================================
+
+  - source: '§32'
+    target: 'Art.17'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 32 verlangt Meldung erheblicher Sicherheitsvorfaelle:
+      Fruehwarnung 24h, Erstmeldung 72h, Abschlussbericht 1 Monat. Fuer
+      DE-Finanzdienstleister im DORA-Scope ist DORA Art. 17 (ICT-Related
+      Incident Management Process) lex specialis. WICHTIG: DORA-Reporting-
+      Fristen sind teilweise STRENGER als NIS2 (DORA Art. 19: Erstmeldung
+      4h nach Klassifikation als major incident; 72h Update; 1M
+      Abschluss). DOPPELMELDUNG bleibt nach Art. 4(2) NIS2 bestehen —
+      DE-Finanzdienstleister muessen BEIDE Meldewege bedienen
+      (BSI/BSI-CERT nach §32 + Bundesbank/BaFin nach DORA Art. 19).
+    gap_warning: |
+      KRITISCH: §32-NIS2-Meldung an BSI ist NICHT durch DORA Art. 19-Meldung
+      an BaFin/Bundesbank ersetzbar. Beide Meldungen sind kumulativ. Die
+      Single-Reporting-Hub-Funktion (DORA Art. 22) wird ggf. mittelfristig
+      eine Konsolidierung ermoeglichen, ist aber 2026-Q2 nicht produktiv.
+      Empfehlung: Single-Point-of-Contact-Prozess mit automatischem Routing
+      an BSI + BaFin/Bundesbank.
+    cross_refs: ['Art.18', 'Art.19']
+    audit_evidence_hint: 'Doppelmeldungs-Prozess BSI + BaFin/Bundesbank, Meldungs-Logs der letzten 12 Monate, automatische Routing-Konfiguration.'
+
+  - source: '§32'
+    target: 'Art.18'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 32 setzt erheblichen Sicherheitsvorfall voraus. DORA
+      Art. 18 (Classification of ICT-Related Incidents) konkretisiert
+      Klassifikations-Kriterien fuer "major ICT-related incidents" mit
+      detaillierten RTS-Schwellwerten — Klassifikation ist streng-praeziser.
+      Fuer DE-Finanzdienstleister im DORA-Scope ist DORA Art. 18
+      Klassifikations-Standard, der die §32-Erheblichkeitsschwelle
+      konkretisiert.
+    cross_refs: ['Art.17', 'Art.19']
+    audit_evidence_hint: 'Incident-Klassifikations-Matrix mit DORA Art. 18-RTS-Schwellwerten, Mapping zu §32-Erheblichkeit, dokumentierte Klassifikations-Entscheidungen.'
+
+  - source: '§32'
+    target: 'Art.19'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 32 fordert 24h-Fruehwarnung, 72h-Erstmeldung, 1M-Abschluss.
+      DORA Art. 19 (Reporting of major ICT-related incidents) verlangt
+      4h-Initial-Notification (nach Klassifikation), 72h-Intermediate-Report,
+      1M-Final-Report — STRENGER als NIS2-UmsuCG. Fuer DE-Finanzdienstleister
+      im DORA-Scope ist DORA Art. 19 funktional aequivalent oder strenger;
+      doppelte BSI-Meldung bleibt nach §32 + DORA-Reporting bestehen.
+    gap_warning: |
+      DORA-4h-Frist beginnt nach Klassifikation als major incident; NIS2-
+      24h-Frist beginnt mit Bekanntwerden des Vorfalls. Klassifikations-
+      Latenz muss in beiden Prozessen separat abgebildet werden. Empfehlung:
+      Single-Trigger-Workflow mit parallelen Eskalationspfaden BSI + BaFin.
+    cross_refs: ['Art.17', 'Art.18', 'Art.19.4']
+    audit_evidence_hint: 'Reporting-Workflow mit Klassifikations-Trigger gemaess DORA Art. 18-19, parallele BSI-Meldung gemaess §32, Frist-Tracking-Dashboard.'
+
+  - source: '§32'
+    target: 'Art.19.4'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NIS2-UmsuCG § 32 fordert Final-Report binnen 1 Monat. DORA Art. 19(4)
+      konkretisiert Pflichtinhalte des Final-Reports und der Zwischenberichte
+      mit RTS-Templates (RTS on content of notifications). Schnittmenge
+      methodisch hoch, DORA strenger bei Pflichtinhalten.
+    cross_refs: ['Art.19']
+    audit_evidence_hint: 'Final-Report-Templates gemaess DORA RTS, Zwischenbericht-Records, Pflichtinhalt-Mapping zu §32.'
+
+  # ============================================================================
+  # §33 — Nachweispflicht
+  # ============================================================================
+
+  - source: '§33'
+    target: 'Art.6.5'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2-UmsuCG § 33 verpflichtet wesentliche Einrichtungen zur Nachweis-
+      fuehrung gegenueber dem BSI bei Anforderung. DORA Art. 6(5)
+      (Internal Audit Function on ICT Risk Mgmt Framework) verlangt regelmaessige
+      Internal-Audits des ICT-Risk-Frameworks. Fuer DE-Finanzdienstleister
+      im DORA-Scope ist DORA Art. 6(5) funktional aequivalent als
+      Nachweis-Mechanismus, jedoch fokussiert auf Internal-Audit, waehrend
+      §33 auch externe Nachweise umfasst.
+    gap_warning: |
+      §33-Nachweise an BSI bleiben separat — DORA Art. 6(5)-Internal-Audit-
+      Reports werden BaFin/Bundesbank vorgelegt und sind nicht automatisch
+      BSI-Nachweis-faehig. Doppel-Nachweis-Pflicht.
+    cross_refs: ['§35', 'Art.6']
+    audit_evidence_hint: 'Internal-Audit-Reports gemaess DORA Art. 6(5), parallele BSI-Nachweis-Doku gemaess §33, Audit-Trail.'
+
+  # ============================================================================
+  # §34 — Schulungspflicht des Top-Managements
+  # ============================================================================
+
+  - source: '§34'
+    target: 'Art.5.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 34 verpflichtet das Top-Management zur regelmaessigen
+      Schulung im Bereich Cybersicherheit und Risk-Mgmt. DORA Art. 5(4)
+      (Knowledge and skills) ist funktional deckungsgleich mit Pflicht
+      zur regelmaessigen Mgmt-Schulung im ICT-Risk-Bereich. Fuer
+      DE-Finanzdienstleister im DORA-Scope erfuellt DORA Art. 5(4) die
+      §34-Pflichten; Lex-Specialis-Wirkung gemaess EU-Commission-
+      Communication 2023/C 328/02.
+    cross_refs: ['§31', 'Art.5']
+    audit_evidence_hint: 'Top-Mgmt-Schulungs-Records gemaess DORA Art. 5(4), Curriculum, Teilnahme-Nachweise, jaehrliche Frequenz.'
+
+  # ============================================================================
+  # §35 — Zertifizierung
+  # ============================================================================
+
+  - source: '§35'
+    target: 'Art.24'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NIS2-UmsuCG § 35 ermoeglicht Zertifizierungen als Nachweis. DORA Art. 24
+      (Digital Operational Resilience Testing) verlangt regelmaessige
+      Resilience-Tests fuer Finanzunternehmen. Funktional verwandt aber
+      methodisch unterschiedlich — Zertifizierung (Drittvertrauen) vs.
+      Resilience-Testing (Selbst-Pruefung).
+    gap_warning: |
+      DORA-Resilience-Tests sind kein Ersatz fuer NIS2-Zertifizierungen
+      und umgekehrt. Beide Mechanismen erfuellen unterschiedliche
+      Aufsichts-Funktionen.
+    cross_refs: ['Art.25', 'Art.26']
+    audit_evidence_hint: 'Zertifizierungs-Status gemaess §35; ergaenzend DORA-Resilience-Test-Reports nach Art. 24-26.'
+
+  # ============================================================================
+  # §41 — Stand der Technik
+  # ============================================================================
+
+  - source: '§41'
+    target: 'Art.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 41 verlangt Stand-der-Technik-konforme Sicherheits-
+      massnahmen. DORA Art. 6 (ICT Risk Management Framework) verlangt
+      Stand-der-Technik-konformes ICT-Risk-Mgmt mit RTS-Konkretisierungen
+      (JC 2023 86) — funktional deckungsgleich. Fuer DE-Finanzdienstleister
+      im DORA-Scope erfuellt DORA Art. 6 die §41-Pflichten.
+    cross_refs: ['§30', 'Art.5', 'Art.7']
+    audit_evidence_hint: 'Stand-der-Technik-Bewertung gemaess BSI-Empfehlungen + DORA-RTS, jaehrliche Aktualisierung, dokumentierte Abweichungs-Begruendungen.'
+
+  # ============================================================================
+  # §42 — Audits
+  # ============================================================================
+
+  - source: '§42'
+    target: 'Art.6.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 42 verlangt regelmaessige Audits (alle 2 Jahre) bei
+      wesentlichen Einrichtungen. DORA Art. 6(5) (Internal Audit Function
+      on ICT Risk Mgmt Framework) fordert regelmaessige Internal-Audits
+      mit risikobasierter Frequenz — funktional aequivalent oder strenger.
+      Fuer DE-Finanzdienstleister im DORA-Scope erfuellt DORA Art. 6(5)
+      die §42-Pflichten; doppelte Nachweisfuehrung an BSI bleibt jedoch
+      bestehen.
+    gap_warning: |
+      DORA-Internal-Audit ist intern; §42-Audits koennen vom BSI angeordnet
+      werden (extern). Externe BSI-Audit-Anordnungen muessen separat
+      bedient werden.
+    cross_refs: ['§33', 'Art.6']
+    audit_evidence_hint: 'Internal-Audit-Plan gemaess DORA Art. 6(5), Audit-Reports der letzten 2 Jahre, ggf. BSI-Audit-Records.'
+
+  # ============================================================================
+  # §43-47 — Aufsicht und Pruefungen
+  # ============================================================================
+
+  - source: '§43'
+    target: 'Art.6'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NIS2-UmsuCG § 43 regelt allgemeine BSI-Aufsicht. DORA Art. 6 ist
+      Material-Pflicht-Norm fuer das ICT-Risk-Framework. Fuer DE-Finanz-
+      dienstleister im DORA-Scope ist die BaFin/Bundesbank-Aufsicht ueber
+      DORA-Compliance lex specialis fuer ICT-Themen; BSI-Aufsicht nach §43
+      bleibt jedoch fuer NIS2-Compliance bestehen.
+    cross_refs: ['§48']
+    audit_evidence_hint: 'Aufsichts-Korrespondenz BSI + BaFin/Bundesbank, dokumentierte Zustaendigkeits-Abgrenzung.'
+
+  - source: '§44'
+    target: 'Art.32'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NIS2-UmsuCG § 44 regelt BSI-Befugnisse fuer Pruefungen. DORA Art. 32
+      (Joint Examinations of Critical TPP) konkretisiert sektorale Joint-
+      Examinations durch BaFin/EBA bei kritischen TPP. Funktional verwandt
+      aber unterschiedliche Auspraegung.
+    cross_refs: ['§48']
+    audit_evidence_hint: 'Pruefungs-Records BSI nach §44, parallele DORA-Joint-Examinations-Records nach Art. 32.'
+
+  # ============================================================================
+  # §48 — SEKTOR-HINWEIS FINANZ (LEX-SPECIALIS-VERWEIS)
+  # ============================================================================
+
+  - source: '§48'
+    target: 'Art.1'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 48 enthaelt expliziten Sektor-Hinweis fuer Banken,
+      Versicherungen und sonstige Finanzdienstleister mit Verweis auf
+      DORA-Vorrang gemaess Art. 4(1) NIS2. Dies ist die zentrale
+      Lex-Specialis-Verankerung in der deutschen Umsetzung. DORA Art. 1
+      definiert Zweck und Anwendungsbereich der Verordnung. Fuer
+      DE-Finanzdienstleister im DORA-Scope sind DORA-Pflichten Material-
+      Norm; NIS2-UmsuCG-Pflichten sind formal-strukturell (Registrierung,
+      Doppel-Reporting, BSI-Aufsicht) ergaenzend.
+    cross_refs: ['§28', '§32', 'Art.2']
+    audit_evidence_hint: 'Sektor-Klassifikations-Analyse mit Verweis auf §48 + Art. 1 DORA, dokumentierte Lex-Specialis-Anwendung.'
+
+  - source: '§48'
+    target: 'Art.2'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      NIS2-UmsuCG § 48 stellt klar, dass Finanzdienstleister im DORA-Scope
+      DORA-Pflichten erfuellen. DORA Art. 2 listet 20 Kategorien von
+      Finanzunternehmen mit DORA-Anwendung — die Sektor-Klassifikation
+      ist Material-Voraussetzung fuer §48-Lex-Specialis-Wirkung.
+    cross_refs: ['§28', '§1']
+    audit_evidence_hint: 'DORA-Anwendbarkeits-Pruefung gemaess Art. 2-Kategorien, dokumentierte Sektor-Klassifikation, ggf. Multi-Entity-Mapping.'
+
+  # ============================================================================
+  # §49-50 — Sanktionen
+  # ============================================================================
+
+  - source: '§49'
+    target: 'Art.50'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NIS2-UmsuCG § 49 regelt Bussgelder fuer Verstoesse (bis 10 Mio. EUR
+      bzw. 2% Jahresumsatz). DORA Art. 50 (Administrative Penalties)
+      regelt sektorspezifische Sanktionen fuer Finanzunternehmen mit
+      anderer Berechnungs-Methodik. Beide Sanktions-Regime sind kumulativ
+      fuer DE-Finanzdienstleister anwendbar (NIS2-UmsuCG fuer NIS2-Verstoesse,
+      DORA-Sanktionen fuer DORA-Verstoesse).
+    cross_refs: ['§50']
+    audit_evidence_hint: 'Sanktions-Risiko-Analyse fuer NIS2 + DORA, dokumentierte Compliance-Lueckenbewertung.'
+
+  # ============================================================================
+  # §60-70 — Kritische Anlagen / KRITIS-spezifische Bestimmungen
+  # ============================================================================
+
+  - source: '§60'
+    target: 'Art.2'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NIS2-UmsuCG § 60 regelt KRITIS-spezifische Bestimmungen fuer
+      kritische Anlagen. DORA Art. 2 listet Finanzunternehmen — KRITIS-
+      Status und DORA-Status koennen sich ueberlappen (z.B. systemrelevante
+      Banken). Bei Doppel-Status gelten beide Regime kumulativ.
+    cross_refs: ['§48', '§61']
+    audit_evidence_hint: 'KRITIS-Schwellwert-Berechnung, DORA-Anwendbarkeits-Pruefung, dokumentierte Doppel-Anwendbarkeits-Analyse.'
+
+  - source: '§61'
+    target: 'Art.6'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2-UmsuCG § 61 verlangt zusaetzliche Schutzmassnahmen fuer KRITIS-
+      Betreiber. DORA Art. 6 (ICT Risk Management Framework) deckt ICT-
+      Aspekte ab — fuer DE-Finanzdienstleister mit KRITIS-Status ist
+      DORA Art. 6 funktional aequivalent fuer ICT-Schutz; nicht-ICT-
+      Aspekte (physische Resilienz) bleiben separat nach §61.
+    gap_warning: |
+      Physische Schutzmassnahmen nach §61 sind nicht durch DORA abgedeckt.
+      Empfehlung: B3S oder BSI-200-4 als ergaenzendes Framework fuer
+      physische Resilienz.
+    cross_refs: ['§60']
+    audit_evidence_hint: 'KRITIS-Schutzkonzept gemaess §61, ICT-Anteil ueber DORA Art. 6, physische Resilienz separat.'
+
+  - source: '§65'
+    target: 'Art.12'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      NIS2-UmsuCG § 65 verlangt fuer KRITIS-Betreiber erweiterte Backup-
+      und Wiederherstellungs-Massnahmen. DORA Art. 12 (Backup Policies)
+      konkretisiert Backup-Anforderungen fuer Finanzunternehmen — fuer
+      DE-Finanzdienstleister mit KRITIS-Status funktional aequivalent
+      fuer ICT-Backup; physische Backup-Aspekte (Off-Site-Lagerung)
+      koennen jenseits DORA liegen.
+    cross_refs: ['§61']
+    audit_evidence_hint: 'Backup-Konzept gemaess DORA Art. 12 + §65 KRITIS-Erweiterung, Off-Site-Lagerungs-Doku.'

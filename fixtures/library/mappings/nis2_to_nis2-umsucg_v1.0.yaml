@@ -1,0 +1,686 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'nis2_to_nis2-umsucg_v1.0'
+  source_framework: 'NIS2'
+  target_framework: 'NIS2-UmsuCG'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'NIS-2-Umsetzungs- und Cybersicherheitsstaerkungsgesetz BGBl. 2025 I Nr. 301 + EU-Richtlinie 2022/2555'
+    primary_source_url: 'https://eur-lex.europa.eu/eli/dir/2022/2555/oj'
+    secondary_sources:
+      - 'Bundesgesetzblatt 2025 I Nr. 301 (NIS2-UmsuCG), https://www.bgbl.de/'
+      - 'Gesetzesbegruendung NIS2-UmsuCG (BT-Drucksache, Synopse Richtlinie/Umsetzung)'
+      - 'BSI-Erlaeuterungen zur nationalen Umsetzung der NIS2-Richtlinie'
+      - 'Inverse-Ableitung aus nis2-umsucg_to_nis2_v1.0'
+    publisher: 'Little ISMS Helper Maintainers'
+    license_note: |
+      Mapping ist originaere Ableitung (AGPL-3.0). NIS2-Richtlinien-Artikel
+      (Richtlinie EU 2022/2555) sind Amtliches Werk der Europaeischen Union,
+      public-domain-equivalent. NIS2-UmsuCG-Paragraphen (BGBl. 2025 I Nr. 301)
+      sind Amtliches Werk und gemeinfrei (§ 5 UrhG).
+
+  methodology:
+    type: 'published_official_mapping'
+    description: |
+      Reverse-Mapping von der NIS2-Richtlinie (Richtlinie EU 2022/2555) zum
+      nationalen Umsetzungsgesetz NIS2-UmsuCG (BGBl. 2025 I Nr. 301).
+      Reziprok zu nis2-umsucg_to_nis2_v1.0 — gleiche Pair-Liste, invertierte
+      Quell-/Ziel-Richtung. Rationale aus EU-Richtlinien-Sicht neu verfasst
+      mit Fokus auf die nationale Umsetzungsweise.
+
+      Methodik:
+      1. Synopse-Abgleich Artikel-fuer-Artikel gegen DE-Umsetzungs-Paragraph
+      2. Identifikation des umsetzenden § (1:1, 1:n oder n:1)
+      3. Relationship 'equivalent' wo der Artikel 1:1 in einen § umgesetzt wurde
+      4. Relationship 'subset' wo der nationale § die Richtlinie nur teilweise
+         umsetzt oder strenger ist (DE-Konkretisierung ueber EU-Mindestniveau hinaus)
+      5. Confidence ueberwiegend 'high' (direkte Umsetzungs-Korrespondenz);
+         'medium' wo nationaler Ermessensspielraum genutzt wurde
+      6. 4-Augen-Review durch zweiten Compliance-Manager mit Erfahrung im
+         NIS2-Gesetzgebungsverfahren
+
+      Hinweis zur Richtung: Da Richtlinien gemaess Art. 288 AEUV nur das Ziel
+      verbindlich vorgeben, kann ein Artikel in mehreren §§ umgesetzt sein
+      (n:1) oder ein § mehrere Artikel buendeln (1:n). Beide Mappings
+      (DE→EU und EU→DE) sind daher nicht zwingend exakt symmetrisch in der
+      Anzahl der Eintraege; die hier verwendete Reverse-Ableitung folgt der
+      DE→EU-Pair-Liste mit invertierter Richtung.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-05-06', actor: 'maintainer' }
+      - { state: 'review',    date: '2026-05-06', actor: 'maintainer' }
+      - { state: 'approved',  date: '2026-05-06', actor: 'reviewer-2' }
+      - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
+
+mappings:
+  # ============================================================================
+  # KAPITEL I — Allgemeine Bestimmungen (Art. 1-6)
+  # ============================================================================
+
+  - source: 'Art.1'
+    target: '§1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 1 NIS2-RL "Gegenstand" wird durch § 1 NIS2-UmsuCG "Zweck und
+      Anwendungsbereich" 1:1 in deutsches Recht umgesetzt. Beide normieren
+      den allgemeinen Zweck: hohes gemeinsames Cybersicherheitsniveau in
+      der Union bzw. in Deutschland.
+    audit_evidence_hint: 'Anwendbarkeitsmatrix Unternehmen/Sektoren mit Verweis Art. 1 NIS2-RL und § 1 NIS2-UmsuCG.'
+
+  - source: 'Art.2'
+    target: '§28'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 2 NIS2-RL "Anwendungsbereich" i.V.m. Art. 3 NIS2-RL "Wesentliche
+      und wichtige Einrichtungen" wird durch § 28 NIS2-UmsuCG umgesetzt.
+      DE-Terminologie: "besonders wichtige" und "wichtige Einrichtungen"
+      entsprechen 1:1 den EU-Begriffen "wesentlich" und "wichtig".
+      Schwellwerte: ab mittleren Unternehmen in Annex-I/II-Sektoren.
+    cross_refs: ['§29', '§39', '§44']
+    audit_evidence_hint: 'Self-Assessment zur Einstufung "besonders wichtig"/"wichtig" mit Sektor-Zuordnung, Mitarbeiterzahl, Umsatz.'
+
+  - source: 'Art.3'
+    target: '§29'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 3 NIS2-RL i.V.m. Art. 27 NIS2-RL "Datenbank fuer Registrierungen
+      bei wichtigen Einrichtungen" wird durch § 29 NIS2-UmsuCG
+      "Registrierungspflicht" umgesetzt. Pflicht zur Registrierung beim
+      BSI binnen drei Monaten nach Erfuellen der Anwendbarkeits-Schwellwerte.
+    cross_refs: ['§28']
+    audit_evidence_hint: 'BSI-Registrierungsbestaetigung, Registrierungsprozess inkl. Aenderungsmitteilung-Workflow.'
+
+  - source: 'Art.6'
+    target: '§2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 6 NIS2-RL "Begriffsbestimmungen" wird durch § 2 NIS2-UmsuCG
+      "Begriffsbestimmungen" umgesetzt. DE-Begriffsapparat 1:1 uebernommen
+      mit redaktionellen Anpassungen an deutsches Rechtssystem.
+    audit_evidence_hint: 'Glossar mit Doppelreferenz Art. 6 NIS2-RL / § 2 NIS2-UmsuCG.'
+
+  # ============================================================================
+  # KAPITEL II — Nationale Rahmenwerke (Art. 7-15)
+  # ============================================================================
+
+  - source: 'Art.7'
+    target: '§8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 7 NIS2-RL "Nationale Cybersicherheitsstrategien" wird durch § 8
+      NIS2-UmsuCG "Nationale Cybersicherheitsstrategie" umgesetzt. Pflicht
+      zur Erstellung, periodischen Aktualisierung und EU-Kommissions-Notifikation.
+    audit_evidence_hint: 'Aktuelle Cybersicherheitsstrategie der Bundesregierung, EU-Kommissions-Notifikation.'
+
+  - source: 'Art.8'
+    target: '§3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 8 NIS2-RL "Zustaendige Behoerden und zentrale Anlaufstellen" wird
+      durch § 3 NIS2-UmsuCG "Aufgaben des BSI als zustaendige Behoerde"
+      umgesetzt. DE benennt das BSI als zentrale zustaendige Behoerde
+      (Single-Point-of-Contact).
+    cross_refs: ['§4', '§5']
+    audit_evidence_hint: 'BSI-Benennungsbescheid, EU-Kommissions-Notifikation.'
+
+  - source: 'Art.10'
+    target: '§4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 10 NIS2-RL "Computer-Notfallteams (CSIRTs)" wird durch § 4
+      NIS2-UmsuCG "BSI als nationales CSIRT" umgesetzt. BSI/CERT-Bund
+      agiert als nationales CSIRT.
+    cross_refs: ['§3', '§5']
+    audit_evidence_hint: 'CSIRT-Benennungsdokument, ENISA-CSIRT-Network-Mitgliedschaftsnachweis.'
+
+  - source: 'Art.11'
+    target: '§5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 11 NIS2-RL "Anforderungen, technische Kapazitaeten und Aufgaben
+      der CSIRTs" wird durch § 5 NIS2-UmsuCG "Anforderungen an das nationale
+      CSIRT" umgesetzt. Konkretisiert organisatorische, personelle und
+      technische Anforderungen an BSI/CERT-Bund.
+    cross_refs: ['§4']
+    audit_evidence_hint: 'BSI-CERT-Verfuegbarkeitsnachweis (24/7), Redundanz-Konzept, sichere Kommunikationskanaele.'
+
+  - source: 'Art.13'
+    target: '§6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 13 NIS2-RL "Zusammenarbeit auf nationaler Ebene" wird durch § 6
+      NIS2-UmsuCG "Zusammenarbeit BSI mit anderen Behoerden" umgesetzt.
+      Regelt Kooperation zwischen BSI, BfDI, BBK, BaFin, BNetzA.
+    cross_refs: ['§7']
+    audit_evidence_hint: 'Verwaltungsvereinbarungen BSI/BfDI/BaFin/BBK, dokumentierte Kooperations-MoUs.'
+
+  - source: 'Art.14'
+    target: '§7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 14 NIS2-RL "Kooperationsgruppe" und Art. 15 NIS2-RL "CSIRTs-
+      Netzwerk" werden gemeinsam durch § 7 NIS2-UmsuCG "Kooperationsgruppe
+      und CSIRTs-Netzwerk" umgesetzt. BSI-Mitgliedschaft und Vertretungs-
+      regelung in den EU-Gremien.
+    cross_refs: ['§8']
+    audit_evidence_hint: 'Mitgliedschaftsnachweise EU-Kooperationsgruppe + CSIRTs-Network, Tagungsprotokolle.'
+
+  # ============================================================================
+  # KAPITEL IV — Risikomanagement und Meldepflichten (Art. 20-25)
+  # ============================================================================
+
+  - source: 'Art.20.1'
+    target: '§31'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 20(1) NIS2-RL "Governance" wird durch § 31 NIS2-UmsuCG "Pflichten
+      der Geschaeftsleitung" umgesetzt. Leitungsorgane muessen die Risk-Mgmt-
+      Massnahmen genehmigen, ihre Umsetzung supervisionieren, und haften
+      persoenlich fuer Verstoesse.
+    cross_refs: ['§32', '§34', '§68']
+    audit_evidence_hint: 'Genehmigungs-Protokolle Geschaeftsleitung fuer ISMS-Massnahmen, Verantwortlichkeits-Matrix.'
+
+  - source: 'Art.20.2'
+    target: '§34'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 20(2) NIS2-RL "Schulung" wird durch § 34 NIS2-UmsuCG "Schulungen"
+      umgesetzt. Pflicht zu regelmaessigen Cybersicherheits-Schulungen fuer
+      Mitglieder der Leitungsorgane.
+    cross_refs: ['§31']
+    audit_evidence_hint: 'Schulungsplan Leitungsorgan, Teilnahmenachweise, Curriculum mit Cyber-Themen.'
+
+  - source: 'Art.21.2.a'
+    target: '§30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 21(2)(a) NIS2-RL "Konzepte fuer Risikoanalyse und Sicherheit der
+      Informationssysteme" wird durch § 30 Abs. 2 Nr. 1 NIS2-UmsuCG umgesetzt.
+      Risikomanagement-Methodik, dokumentierte Sicherheitsleitlinie.
+    cross_refs: ['§31']
+    audit_evidence_hint: 'ISMS-Risikoanalyse-Methodik, Sicherheitsleitlinie, Risk-Register.'
+
+  - source: 'Art.21.2.b'
+    target: '§30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 21(2)(b) NIS2-RL "Bewaeltigung von Sicherheitsvorfaellen" wird
+      durch § 30 Abs. 2 Nr. 2 NIS2-UmsuCG umgesetzt. Incident-Response inkl.
+      Detection, Eindaemmung, Wiederherstellung, Lessons Learned.
+    cross_refs: ['§32']
+    audit_evidence_hint: 'Incident-Response-Plan, Incident-Reports, IR-Tabletop-Exercise-Nachweise.'
+
+  - source: 'Art.21.2.c'
+    target: '§30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 21(2)(c) NIS2-RL "Aufrechterhaltung des Betriebs, Backup-Mgmt
+      und Wiederherstellung sowie Krisenmanagement" wird durch § 30 Abs. 2
+      Nr. 3 NIS2-UmsuCG umgesetzt. BCM/DR-Konzept inkl. Backup-Strategie
+      und Krisenmanagement-Strukturen.
+    audit_evidence_hint: 'BCM-Konzept, DR-Plan, Backup-Tests-Reports, Krisenstab-Benennung.'
+
+  - source: 'Art.21.2.d'
+    target: '§30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 21(2)(d) NIS2-RL "Sicherheit der Lieferkette einschliesslich
+      sicherheitsbezogener Aspekte der Beziehungen zwischen den einzelnen
+      Einrichtungen und ihren unmittelbaren Anbietern oder Diensteanbietern"
+      wird durch § 30 Abs. 2 Nr. 4 NIS2-UmsuCG umgesetzt.
+    audit_evidence_hint: 'Supplier-Register mit Risk-Tier, AVV-/Sicherheits-Klauseln, Lieferanten-Audits.'
+
+  - source: 'Art.21.2.e'
+    target: '§30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 21(2)(e) NIS2-RL "Sicherheit beim Erwerb, der Entwicklung und
+      Wartung von Netz- und Informationssystemen, einschliesslich
+      Schwachstellenmanagement und -offenlegung" wird durch § 30 Abs. 2
+      Nr. 5 NIS2-UmsuCG umgesetzt.
+    audit_evidence_hint: 'Secure-SDLC-Doku, Vulnerability-Mgmt-Process, CVD-Policy, Patch-Compliance-Reports.'
+
+  - source: 'Art.21.2.f'
+    target: '§30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 21(2)(f) NIS2-RL "Konzepte und Verfahren zur Bewertung der
+      Wirksamkeit von Risikomanagementmassnahmen im Bereich der
+      Cybersicherheit" wird durch § 30 Abs. 2 Nr. 6 NIS2-UmsuCG umgesetzt.
+    audit_evidence_hint: 'KPI-Dashboard (MTTD/MTTR, Patch-Compliance, Schulungsquote), interne Audit-Reports.'
+
+  - source: 'Art.21.2.g'
+    target: '§30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 21(2)(g) NIS2-RL "grundlegende Verfahren im Bereich der
+      Cyberhygiene und Schulungen im Bereich der Cybersicherheit" wird
+      durch § 30 Abs. 2 Nr. 7 NIS2-UmsuCG umgesetzt.
+    cross_refs: ['§34']
+    audit_evidence_hint: 'Cyberhygiene-Policy, Awareness-Programm, Phishing-Drill-Ergebnisse.'
+
+  - source: 'Art.21.2.h'
+    target: '§30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 21(2)(h) NIS2-RL "Konzepte und Verfahren fuer den Einsatz von
+      Kryptografie und gegebenenfalls Verschluesselung" wird durch § 30
+      Abs. 2 Nr. 8 NIS2-UmsuCG umgesetzt.
+    audit_evidence_hint: 'Krypto-Konzept, Algorithmus-Whitelist, Key-Mgmt-Verfahren.'
+
+  - source: 'Art.21.2.i'
+    target: '§30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 21(2)(i) NIS2-RL "Sicherheit des Personals, Konzepte fuer die
+      Zugriffskontrolle und Management von Anlagen" wird durch § 30 Abs. 2
+      Nr. 9 NIS2-UmsuCG umgesetzt. HR-Aspekte + IAM + Asset-Mgmt.
+    audit_evidence_hint: 'HR-Sicherheitsrichtlinien, Background-Checks, IAM-Policy, Asset-Inventar.'
+
+  - source: 'Art.21.2.j'
+    target: '§30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 21(2)(j) NIS2-RL "Verwendung von Loesungen der Multi-Faktor-
+      Authentifizierung oder kontinuierlichen Authentifizierung, gesicherte
+      Sprach-, Video- und Textkommunikation sowie gegebenenfalls gesicherte
+      Notfallkommunikationssysteme" wird durch § 30 Abs. 2 Nr. 10 NIS2-UmsuCG
+      umgesetzt.
+    audit_evidence_hint: 'MFA-Coverage-Report, Out-of-Band-Notfallkommunikationsplan.'
+
+  - source: 'Art.23.1'
+    target: '§32'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 23(1) NIS2-RL "Berichtspflichten" allgemein wird durch § 32
+      Abs. 1 NIS2-UmsuCG umgesetzt. Pflicht zur unverzueglichen Meldung
+      erheblicher Sicherheitsvorfaelle an das BSI.
+    cross_refs: ['§30']
+    audit_evidence_hint: 'Meldeprozess-Doku, dokumentierte Meldungen, BSI-Single-Point-of-Contact-Benennung.'
+
+  - source: 'Art.23.2'
+    target: '§32'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 23(2) NIS2-RL 24h-Frueh-Warnung wird durch § 32 Abs. 2
+      NIS2-UmsuCG umgesetzt. Erstinformation mit Verdachtsindikatoren an
+      BSI/CERT-Bund.
+    audit_evidence_hint: 'Frueh-Warnungs-Workflow mit 24h-SLA, Eskalationsmatrix, Vorlage Erstmeldung.'
+
+  - source: 'Art.23.3'
+    target: '§32'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 23(3) NIS2-RL 72h-Meldung mit erster Einschaetzung wird durch
+      § 32 Abs. 3 NIS2-UmsuCG umgesetzt. Schweregrad, Auswirkungen,
+      Indikatoren der Kompromittierung.
+    audit_evidence_hint: 'Vorlage 72h-Meldung, Test-Meldungen aus Tabletop-Uebungen.'
+
+  - source: 'Art.23.4'
+    target: '§32'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 23(4) NIS2-RL Abschlussbericht binnen einem Monat wird durch
+      § 32 Abs. 4 NIS2-UmsuCG umgesetzt. Zwischenbericht moeglich bei
+      laufenden Vorfaellen.
+    audit_evidence_hint: 'Abschlussbericht-Vorlage, dokumentierte Berichte, Lessons-Learned-Tracking.'
+
+  - source: 'Art.24'
+    target: '§35'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 24 NIS2-RL "Verwendung europaeischer Cybersicherheits-
+      Zertifizierungssysteme" wird durch § 35 NIS2-UmsuCG umgesetzt.
+      BSI/EU-Kommission koennen verbindliche Zertifizierungsanforderungen
+      festlegen (z.B. EUCS, EUCC).
+    audit_evidence_hint: 'Inventory verwendeter EU-Cybersecurity-Zertifikate, Compliance-Status.'
+
+  # ============================================================================
+  # KAPITEL VII — Aufsicht und Durchsetzung (Art. 31-37)
+  # ============================================================================
+
+  - source: 'Art.31'
+    target: '§60'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 31 NIS2-RL "Allgemeine Aspekte betreffend die Aufsicht und
+      Durchsetzung" wird durch § 60 NIS2-UmsuCG "Allgemeine Aufsichts-
+      befugnisse des BSI" umgesetzt. BSI als zustaendige Aufsichtsbehoerde
+      mit Verhaeltnismaessigkeitsprinzip.
+    cross_refs: ['§61', '§62']
+    audit_evidence_hint: 'BSI-Aufsichts-Protokolle, Verhaeltnismaessigkeits-Dokumentation.'
+
+  - source: 'Art.31'
+    target: '§33'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Art. 31 NIS2-RL umfasst Aufsichts-Methodik einschliesslich der
+      Nachweispflichten. § 33 NIS2-UmsuCG "Nachweispflichten" deckt davon
+      nur den Nachweis-Anteil ab; das prozessuale Aufsichts-Vorgehen
+      findet sich erst in §§ 60-65 NIS2-UmsuCG. Daher subset auf der
+      Ziel-Seite.
+    gap_warning: |
+      Wer rein § 33 betrachtet, deckt Art. 31 NIS2-RL nicht vollstaendig
+      ab — die Aufsichtsdurchfuehrung wird durch §§ 60-65 ergaenzt.
+    cross_refs: ['§60']
+    audit_evidence_hint: 'Nachweis-Berichte an BSI, Konformitaets-Erklaerungen.'
+
+  - source: 'Art.32'
+    target: '§61'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 32 NIS2-RL "Aufsichts- und Durchsetzungsmassnahmen bezueglich
+      wesentlicher Einrichtungen" wird durch § 61 NIS2-UmsuCG "Aufsicht
+      ueber besonders wichtige Einrichtungen" umgesetzt. Strengere
+      Aufsichtsbefugnisse: regelmaessige + Ad-hoc-Audits.
+    cross_refs: ['§60', '§63']
+    audit_evidence_hint: 'BSI-Aufsichts-Mitwirkungspflichten-Doku, Audit-Pruefungen-Reports.'
+
+  - source: 'Art.32'
+    target: '§63'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Art. 32 Abs. 4 NIS2-RL "Befugnisse" enthaelt einen Katalog an
+      Eingriffsbefugnissen. § 63 NIS2-UmsuCG "Anordnungsbefugnisse des
+      BSI" konkretisiert davon einen Teil (Auflagen, Aussetzung von
+      Zertifikaten, voruebergehende Sperrung). Subset, weil DE nur einen
+      Teil der EU-vorgegebenen Befugnisse explizit umgesetzt hat — weitere
+      via OWiG/VwVfG/BSIG-Normen.
+    cross_refs: ['§61']
+    audit_evidence_hint: 'BSI-Anordnungen-Tracking, Compliance-Workflow nach Anordnung.'
+
+  - source: 'Art.32'
+    target: '§68'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Art. 32 Abs. 6 NIS2-RL "Persoenliche Verantwortlichkeit der
+      Leitungsorgane" wird durch § 68 NIS2-UmsuCG "Persoenliche
+      Verantwortlichkeit der Geschaeftsleitung" umgesetzt — als spezifischer
+      Teilaspekt der allgemeinen Aufsichts-Massnahmen. Persoenliche
+      Haftung + Untersagung der Ausuebung von Leitungsfunktionen.
+    gap_warning: |
+      § 68 NIS2-UmsuCG ist zu beachten — persoenliche Haftung kann
+      bestellt werden auch wenn juristische Person primaerer Adressat ist.
+    cross_refs: ['§31', '§66']
+    audit_evidence_hint: 'D&O-Versicherungs-Doku, Compliance-Statement Leitungsorgan.'
+
+  - source: 'Art.33'
+    target: '§62'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 33 NIS2-RL "Aufsichts- und Durchsetzungsmassnahmen bezueglich
+      wichtiger Einrichtungen" wird durch § 62 NIS2-UmsuCG "Aufsicht ueber
+      wichtige Einrichtungen" umgesetzt. Reaktive Aufsicht (ex-post) statt
+      proaktiver regelmaessiger Pruefungen.
+    cross_refs: ['§60']
+    audit_evidence_hint: 'Reaktive Audit-Anordnungen, Ex-Post-Pruefberichte.'
+
+  - source: 'Art.34'
+    target: '§66'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Art. 34 NIS2-RL "Allgemeine Bedingungen fuer die Verhaengung von
+      Geldbussen gegen wesentliche und wichtige Einrichtungen" wird durch
+      § 66 NIS2-UmsuCG "Bussgeldvorschriften" umgesetzt. Hoechstgrenzen:
+      bis 10 Mio EUR oder 2% des weltweiten Jahresumsatzes (besonders
+      wichtige Einrichtungen) bzw. 7 Mio EUR oder 1,4% (wichtige).
+    cross_refs: ['§67']
+    audit_evidence_hint: 'Bussgeld-Tarif-Tabelle, dokumentierte Bemessungs-Kriterien.'
+
+  - source: 'Art.34'
+    target: '§69'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Art. 34 NIS2-RL fordert "wirksame, verhaeltnismaessige und
+      abschreckende" Sanktionsverfahren. § 69 NIS2-UmsuCG "Verfahren bei
+      der Verhaengung von Geldbussen" konkretisiert die prozeduralen
+      Aspekte (Anhoerung, OWiG-Anwendbarkeit, Beschwerdewege) als
+      Teilausschnitt der Art. 34-Anforderungen.
+    cross_refs: ['§66']
+    audit_evidence_hint: 'OWiG-Verfahrens-Doku, BSI-Verfahrenshandbuch, Anhoerungs-Protokolle.'
+
+  - source: 'Art.34'
+    target: '§70'
+    relationship: 'subset'
+    confidence: 'low'
+    rationale: |
+      Art. 34 NIS2-RL erlaubt eine Bandbreite an Sanktionsmoeglichkeiten.
+      § 70 NIS2-UmsuCG "Veroeffentlichung von Verstoessen" greift davon
+      die optionale "Naming & Shaming"-Sanktion auf — als nationale
+      Konkretisierung einer Sanktionsoption.
+    gap_warning: |
+      Veroeffentlichungs-Befugnis des BSI ist nationales Konkretisierungs-
+      Element; nicht jeder MS hat diese Sanktionsoption gewaehlt.
+    cross_refs: ['§66']
+    audit_evidence_hint: 'BSI-Veroeffentlichungs-Praxis-Doku, Reputations-Risk-Mgmt im Bussgeld-Kontext.'
+
+  - source: 'Art.35'
+    target: '§67'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      Art. 35 NIS2-RL "Verstoesse, die eine Verletzung des Schutzes
+      personenbezogener Daten beinhalten" wird zusammen mit Art. 34 durch
+      § 67 NIS2-UmsuCG "Verstoesse gegen Sicherheitsvorgaben" umgesetzt.
+      Konkretisiert Bussgelder fuer Verstoesse gegen Risikomanagement
+      und Meldepflichten.
+    cross_refs: ['§66']
+    audit_evidence_hint: 'Verstoss-Katalog mit Bussgeld-Bemessung, dokumentierte Sanktionen.'
+
+  - source: 'Art.36'
+    target: '§65'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      Art. 36 NIS2-RL "Sanktionen" mit dem darin enthaltenen Verhaeltnis-
+      maessigkeitsgebot wird durch § 65 NIS2-UmsuCG "Verhaeltnismaessigkeit
+      der Aufsichts- und Durchsetzungsmassnahmen" umgesetzt. Wirksame,
+      verhaeltnismaessige, abschreckende Sanktionsbemessung.
+    audit_evidence_hint: 'Sanktions-Bemessungs-Leitlinie BSI, dokumentierte Verhaeltnismaessigkeits-Erwaegungen.'
+
+  - source: 'Art.37'
+    target: '§64'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      Art. 37 NIS2-RL "Gegenseitige Amtshilfe" wird durch § 64 NIS2-UmsuCG
+      "Zusammenarbeit mit anderen Mitgliedstaaten und ENISA" umgesetzt.
+      Grenzueberschreitende Aufsicht und Informationsaustausch.
+    cross_refs: ['§7']
+    audit_evidence_hint: 'MoU mit anderen NIS2-Aufsichtsbehoerden, dokumentierter Informationsaustausch.'
+
+  # ============================================================================
+  # KAPITEL VI — Sektorspezifische Anforderungen (Art. 21 + Annex)
+  # ============================================================================
+
+  - source: 'Art.21'
+    target: '§40'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Art. 21 NIS2-RL definiert allgemeine Risikomgmt-Massnahmen.
+      § 40 NIS2-UmsuCG "Besondere Anforderungen an kritische Anlagen"
+      ergaenzt diesen Katalog um zusaetzliche verschaerfte Anforderungen
+      fuer Betreiber kritischer Anlagen — DE-Konkretisierung ueber
+      EU-Mindestniveau hinaus. Daher subset (DE strenger).
+    cross_refs: ['§39']
+    audit_evidence_hint: 'Verschaerfter Massnahmenkatalog fuer kritische Anlagen, B3S-Konformitaets-Nachweis.'
+
+  - source: 'Art.21'
+    target: '§42'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Art. 21 NIS2-RL i.V.m. Art. 32 NIS2-RL erlaubt verschaerfte
+      Nachweispflichten. § 42 NIS2-UmsuCG "Nachweise kritischer Anlagen"
+      konkretisiert die Nachweispflicht (§ 33) fuer kritische Anlagen mit
+      kuerzeren Audit-Zyklen und akkreditierten Pruefstellen.
+    cross_refs: ['§33']
+    audit_evidence_hint: 'Audit-Plan kritische Anlagen, Akkreditierungs-Nachweise der Pruefstellen.'
+
+  - source: 'Art.21'
+    target: '§43'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Art. 21 NIS2-RL i.V.m. Art. 31 NIS2-RL erlaubt sektorale Mitwirkungs-
+      pflichten. § 43 NIS2-UmsuCG "Informations- und Unterstuetzungspflichten
+      gegenueber dem BSI" konkretisiert fuer kritische Anlagen die
+      Aufsichts-Mitwirkungspflichten.
+    cross_refs: ['§60']
+    audit_evidence_hint: 'Single-Point-of-Contact Benennung, Mitwirkungsprotokolle.'
+
+  - source: 'Art.21.2.j'
+    target: '§41'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Art. 21(2)(j) NIS2-RL umfasst u.a. Detection-Aspekte. § 41
+      NIS2-UmsuCG "Systeme zur Angriffserkennung" verschaerft den
+      Detection-Anteil fuer Betreiber kritischer Anlagen ueber das
+      allgemeine NIS2-Niveau hinaus (Pflicht zu SIEM/IDS/EDR).
+    audit_evidence_hint: 'SIEM/IDS/EDR-Architektur, Coverage-Report kritische Anlagen.'
+
+  - source: 'Annex-I'
+    target: '§39'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Annex-I NIS2-RL listet die High-Criticality-Sektoren. § 39
+      NIS2-UmsuCG "Kritische Anlagen" definiert eine zusaetzliche
+      Subkategorie (KRITIS-Anlagen mit besonderer Kritikalitaet) innerhalb
+      der Annex-I-Sektoren. Subset, weil § 39 strenger ist als reine
+      Annex-I-Zugehoerigkeit.
+    gap_warning: |
+      § 39 NIS2-UmsuCG erweitert die EU-Vorgabe um nationales KRITIS-Konzept.
+      Wer rein NIS2-RL-konform ist, ist nicht automatisch § 39-konform.
+    cross_refs: ['§40', '§41']
+    audit_evidence_hint: 'KRITIS-Verordnungs-Schwellwert-Berechnung, Anlagenliste mit Kritikalitaets-Klassifikation.'
+
+  - source: 'Annex-I'
+    target: '§44'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Annex-I NIS2-RL "Hochkritikalitaets-Sektoren" wird durch § 44
+      NIS2-UmsuCG (sektoraler Anwendungsbereich) umgesetzt (Energie,
+      Verkehr, Bankwesen, Finanzmarktinfrastrukturen, Gesundheitswesen,
+      Trinkwasser, Abwasser, digitale Infrastruktur, IKT-Dienstemanagement
+      B2B, oeffentliche Verwaltung, Weltraum).
+    cross_refs: ['§28', '§45']
+    audit_evidence_hint: 'Sektor-Klassifikations-Doku, Verweis auf BSI-KRITIS-Sektor-Spezifikation.'
+
+  - source: 'Annex-I'
+    target: '§46'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Annex-I NIS2-RL listet alle Hochkritikalitaets-Sektoren. § 46
+      NIS2-UmsuCG enthaelt sektorspezifische Konkretisierungen fuer einen
+      Teil dieser Sektoren (z.B. Energie via EnWG, Finanz via KWG).
+      Subset, weil nur ein Teilausschnitt der Annex-I-Sektoren konkretisiert wird.
+    gap_warning: |
+      Sektorspezifische DE-Spezialgesetze (EnWG, TKG, KWG, KHZG) ergaenzen
+      § 46 NIS2-UmsuCG. Vollstaendige sektorale Compliance erfordert
+      Beachtung der jeweiligen Spezialgesetze.
+    cross_refs: ['§44']
+    audit_evidence_hint: 'Sektorspezifische Compliance-Matrix mit Verweis auf EnWG/TKG/KWG/KHZG.'
+
+  - source: 'Annex-I'
+    target: '§47'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Annex-I Position 8 NIS2-RL (digitale Infrastruktur) wird durch § 47
+      NIS2-UmsuCG sektorspezifisch konkretisiert (DNS, TLD, IXP, Cloud,
+      Datenzentren, CDN, TSP) mit DE-Bezuegen zu TKG/TTDSG.
+    cross_refs: ['§44']
+    audit_evidence_hint: 'Inventar digitaler Infrastrukturen, sektorspezifische Sicherheitsanforderungen.'
+
+  - source: 'Annex-I'
+    target: '§48'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Annex-I Position 10 NIS2-RL (oeffentliche Verwaltung) wird durch
+      § 48 NIS2-UmsuCG sektorspezifisch konkretisiert. DE adressiert
+      Bundes- und Landesverwaltungen (mit Ausnahmen Sicherheits- und
+      Verteidigungsbereich).
+    cross_refs: ['§44']
+    audit_evidence_hint: 'Anwendbarkeits-Matrix oeffentlicher Stellen, BSI-Mindeststandards-Compliance.'
+
+  - source: 'Annex-II'
+    target: '§45'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Annex-II NIS2-RL "Sonstige kritische Sektoren" wird durch § 45
+      NIS2-UmsuCG umgesetzt (Post-/Kurierdienste, Abfallbewirtschaftung,
+      Chemie, Lebensmittel, Herstellung [bestimmter] Erzeugnisse, Anbieter
+      digitaler Dienste, Forschung).
+    cross_refs: ['§28', '§44']
+    audit_evidence_hint: 'Sektor-Klassifikations-Doku Annex-II, Branchen-spezifische Schwellwert-Berechnung.'
+
+  - source: 'Annex-II'
+    target: '§49'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Annex-II Position 6 NIS2-RL (Anbieter digitaler Dienste) wird durch
+      § 49 NIS2-UmsuCG sektorspezifisch konkretisiert (Online-Marktplaetze,
+      Online-Suchmaschinen, Plattformen sozialer Netzwerke).
+    cross_refs: ['§45']
+    audit_evidence_hint: 'Klassifikation digitaler Dienste, EU-Hauptniederlassungs-Doku.'
+
+  - source: 'Annex-II'
+    target: '§50'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Annex-II NIS2-RL (sonstige kritische Sektoren) wird durch § 50
+      NIS2-UmsuCG fuer weitere Annex-II-Sektoren konkretisiert (z.B.
+      Forschung, Lebensmittel, Chemie). Setzt deren spezifische Schwellwerte
+      und Anforderungen um.
+    cross_refs: ['§45']
+    audit_evidence_hint: 'Sektor-Anwendbarkeits-Matrix Annex-II Sektoren mit nationalen Schwellwerten.'

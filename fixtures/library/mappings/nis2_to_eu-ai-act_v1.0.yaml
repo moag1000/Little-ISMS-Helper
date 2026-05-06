@@ -1,0 +1,467 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'nis2_to_eu-ai-act_v1.0'
+  source_framework: 'NIS2'
+  target_framework: 'EU-AI-ACT'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'EU AI Act (Verordnung 2024/1689) + NIS2-Richtlinie (2022/2555)'
+    primary_source_url: 'https://eur-lex.europa.eu/eli/reg/2024/1689/oj'
+    secondary_sources:
+      - 'NIS2-Richtlinie 2022/2555 (Art. 20, 21, 23) — https://eur-lex.europa.eu/eli/dir/2022/2555/oj'
+      - 'ENISA Implementation Guidance NIS2 Technical and Methodological Requirements 2024-09'
+      - 'AI Office Guidelines on General-Purpose AI Models (Draft 2025-Q3)'
+      - 'CEN-CENELEC JTC 21 Harmonised Standards Roadmap 2025-Q1'
+      - 'Eigene Volltext-Analyse durch GRC-Team mit AI-Governance- und NIS2-Fokus'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'text_comparison_with_expert_review'
+    description: |
+      KRITISCHER ADRESSATEN-HINWEIS: NIS2-Richtlinie 2022/2555 und EU AI Act
+      (Verordnung 2024/1689) adressieren UNTERSCHIEDLICHE Akteure:
+
+      - NIS2 → BETREIBER WESENTLICHER und WICHTIGER EINRICHTUNGEN; Pflichten
+        zum organisatorischen Cyber-Risikomanagement, Incident-Handling,
+        Behoerden-Meldungen.
+      - EU AI Act → PROVIDER (Hersteller) und DEPLOYER (Betreiber) von
+        KI-Systemen, mit produktbezogenen Pflichten entlang AI-Lifecycle.
+
+      Schnittmengen entstehen, wenn ein NIS2-Betreiber KI-Systeme einsetzt
+      (z.B. ML-Fraud-Detection, KI-Triage, Predictive Maintenance). Viele
+      NIS2-Pflichten haben jedoch KEIN AI-Act-Pendant:
+      - NIS2-only: Mitarbeiter-Schulung Cyber (21.2.g), Krisenmanagement
+        (21.2.c), Lieferkette breit (21.2.d), Mgmt-Verantwortung (Art. 20),
+        Behoerden-Meldewege (Art. 23.1-4 24h/72h/1M), MFA/IAM (21.2.j)
+      - AI-Act-only: Verbotene Praktiken (Art. 5), Konformitaetsbewertung
+        (Art. 43), CE-Kennzeichnung (Art. 48), EU-Datenbank-Registrierung
+        (Art. 49, 71), GPAI (Art. 51-55), Grundrechte-Folgenabschaetzung
+        (Art. 27)
+
+      Methodik je NIS2-Anforderung:
+      1. Volltext-Lesung NIS2-Norm gegen AI-Act-Artikel (Art. 9-15
+         Hochrisiko-Pflichten, Art. 16-22 Provider, Art. 26 Deployer,
+         Art. 50 Transparenz, Art. 55 GPAI, Art. 72 PMM, Art. 73 Reporting)
+      2. Adressaten-Pruefung: NIS2-Betreiber-Pflicht vs. Provider/Deployer
+      3. Wenn Adressaten-Verschiebung: relationship='partial_overlap' + gap_warning
+      4. Confidence ueberwiegend medium
+      5. gap_warning, wenn AI-Act-Norm nur Sub-Aspekt der NIS2-Pflicht abdeckt
+      6. Mappings nur dort, wo semantische Schnittmenge besteht
+      7. 4-Augen-Review durch zweiten GRC-Experten
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-04-20', actor: 'maintainer' }
+      - { state: 'review',    date: '2026-04-30', actor: 'maintainer' }
+      - { state: 'approved',  date: '2026-05-04', actor: 'reviewer-2' }
+      - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
+
+mappings:
+  - source: '21.2.a'
+    target: 'Art.9'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(a) "Konzepte fuer Risikoanalyse und Sicherheit der
+      Informationssysteme" verlangt vom Betreiber organisatorisches
+      Cyber-Risikomanagement. AI Act Art. 9 "Risikomanagementsystem fuer
+      Hochrisiko-KI-Systeme" deckt den AI-Anteil dieses Risikomgmts
+      konkret und praeskriptiver ab (Lifecycle, Identifikation, Schaetzung,
+      Bewertung, Mitigation, Restrisiko-Kommunikation). Schnittmenge:
+      AI-Risk-Mgmt nach Art. 9 als Sub-Domain des NIS2-Risikomgmts.
+    gap_warning: |
+      Adressaten-Mismatch: Art. 9 ist primaer PROVIDER-Pflicht. NIS2-
+      Betreiber als Deployer ist nur indirekt betroffen (Art. 26
+      Deployer-Pflichten + Eigen-Risikomgmt). Single-Mapping deckt
+      NIS2 21.2.a nicht vollstaendig ab — gilt nur fuer den AI-Anteil
+      der IT-Landschaft, allgemeines Cyber-Risikomgmt bleibt offen.
+    cross_refs: ['Art.26']
+    audit_evidence_hint: 'Cyber-Risk-Register Gesamt-IT (Betreiber NIS2), AI-Risk-Register je System (zusaetzlich falls Provider).'
+
+  - source: '21.2.a'
+    target: 'Art.13'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      NIS2 Art. 21(2)(a) Sicherheitsrichtlinien-Anteil (Policy-Charakter
+      mit Information an Stakeholder) hat schwache Verbindung zu AI Act
+      Art. 13 "Transparenz und Nutzeranleitung". Schnittmenge nur ueber
+      den allgemeinen Disclosure-Aspekt.
+    gap_warning: |
+      Schwacher Mismatch: AI-Act-Transparenz adressiert PROVIDER-Pflicht
+      (Funktionsweise, Genauigkeit, Risiken in Nutzeranleitung).
+      NIS2 21.2.a ist betriebliche Sicherheits-Policy. Nur indikativ.
+
+  - source: '21.2.a'
+    target: 'Art.50'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      NIS2 Art. 21(2)(a) Sicherheitsrichtlinien hat schwache Schnittmenge
+      mit AI Act Art. 50 "Transparenzpflichten bestimmter KI-Systeme"
+      (Chatbots, Deepfakes, Emotionserkennung) ueber den Disclosure-Aspekt.
+    gap_warning: |
+      KEIN substantielles Pendant: Art. 50 adressiert Endnutzer-Schutz
+      (Wissen, dass KI involviert ist). NIS2 schuetzt Cyber-Resilienz.
+      Mapping nur indikativ.
+
+  - source: '21.2.a'
+    target: 'Art.55'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(a) Risikoanalyse hat Schnittmenge mit AI Act Art. 55
+      "GPAI mit systemischem Risiko" — Modell-Evaluation, Adversarial-
+      Testing, Cybersicherheits-Massnahmen sind Risikoanalyse-Output.
+    gap_warning: |
+      Adressaten-Mismatch: Art. 55 adressiert ausschliesslich GPAI-
+      Provider mit Modellen >= 10^25 FLOPs (sehr enger Akteurskreis).
+      NIS2-Betreiber ist nur in seltenen Faellen GPAI-Provider.
+
+  - source: '21.2.a'
+    target: 'Art.26'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(a) "Risikoanalyse + Sicherheitsrichtlinien" hat
+      WICHTIGSTE Schnittmenge mit AI Act Art. 26 "Pflichten der Deployer",
+      weil hier Adressat identisch ist (Deployer ≈ NIS2-Betreiber). Wer
+      KI einsetzt, muss diese in Risikomgmt + Sicherheits-Policy integrieren
+      (Anomalie-Beobachtung, menschliche Aufsicht, Logs, ggf. Meldungen).
+    audit_evidence_hint: 'Risikoregister mit AI-Sub-Domain, Sicherheits-Policy mit AI-Klausel, Schnittstelle NIS2-IR ↔ AI-Anomalie-Mgmt.'
+
+  - source: '21.2.a'
+    target: 'Art.27'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      NIS2 Art. 21(2)(a) Risikomgmt-Methodik kann fuer AI Act Art. 27
+      "Grundrechte-Folgenabschaetzung (FRIA)" wiederverwendet werden
+      (Risiko-Schaetzung, Mitigation, Dokumentation).
+    gap_warning: |
+      Inhaltlicher Mismatch: FRIA fokussiert auf GRUNDRECHTSCHUTZ
+      (Diskriminierung, Privatsphaere, Wuerde) — kein NIS2-Schutzziel.
+      Methodik-Reuse moeglich, Inhalts-Reuse nicht.
+
+  - source: '21.2.b'
+    target: 'Art.14'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(b) "Bewaeltigung von Sicherheitsvorfaellen" verlangt
+      strukturierten Incident-Response. AI Act Art. 14 "Menschliche
+      Aufsicht" stellt menschliche Eingriffsmoeglichkeit als erste
+      Verteidigungslinie bei AI-Vorfaellen sicher (Stop, Override,
+      Eskalation). Schnittmenge: Aufsicht ist Trigger fuer NIS2-IR.
+    cross_refs: ['Art.20']
+    audit_evidence_hint: 'IR-Playbook (NIS2-Betreiber) mit Override-Spec aus KI-System (Provider) verlinkt.'
+
+  - source: '21.2.b'
+    target: 'Art.15'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(b) Vorfallbewaeltigung umfasst Reaktion auf Fehl-
+      funktionen + Containment. AI Act Art. 15 "Genauigkeit, Robustheit,
+      Cybersicherheit" verlangt Robustheit gegen Fehlfunktionen +
+      Resilience-Mechanismen — reduziert IR-Last praeventiv.
+    gap_warning: |
+      Komplementaer, nicht aequivalent: AI-Act-Robustheit ist
+      Provider-Designanforderung VOR Marktzugang; NIS2-IR ist Betreiber-
+      Operations.
+
+  - source: '21.2.b'
+    target: 'Art.20'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(b) Vorfallbewaeltigung hat Schnittmenge mit AI Act
+      Art. 20 "Korrekturmassnahmen und Informationspflicht" ueber die
+      Reaktions-Mechanik (Erkennen, Reagieren, Kommunizieren). AI-Act-
+      Korrekturmassnahmen sind produktbezogen (Recall, Patch, Marktinfo).
+    gap_warning: |
+      Adressaten-Mismatch: Art. 20 ist Provider-Pflicht; NIS2-IR ist
+      Betreiber-Pflicht. Schnittmenge nur in Reaktions-Logik.
+
+  - source: '21.2.b'
+    target: 'Art.73'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(b) Vorfallbewaeltigung verlangt strukturierten
+      IR-Prozess. AI Act Art. 73 "Meldung schwerwiegender Vorfaelle"
+      (Provider) hat Schnittmenge ueber den Incident-Reporting-Aspekt;
+      NIS2-IR-Prozess kann AI-Act-Meldungs-Trigger detektieren.
+    gap_warning: |
+      Provider-Pflicht nach Art. 73 ist AI-Act-only. NIS2-Betreiber, der
+      AUCH Provider ist (Eigen-Entwicklung KI), muss Art. 73-Meldung
+      separat abwickeln (an Markt-Behoerde, nicht an BSI).
+
+  - source: '21.2.c'
+    target: 'Art.15'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      NIS2 Art. 21(2)(c) "Aufrechterhaltung des Betriebs (BC/DR) +
+      Krisenmanagement" hat schwache Verbindung zu AI Act Art. 15
+      Robustheit ueber den Resilience-Aspekt im Produkt.
+    gap_warning: |
+      KRITISCH: Krisenmanagement-Strukturen, externe Kommunikation,
+      Behoerden-Meldewege haben KEIN AI-Act-Pendant. Art. 15
+      Produkt-Resilienz deckt nur Sub-Aspekt der NIS2-BC-Anforderung ab.
+
+  - source: '21.2.d'
+    target: 'Art.16'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      NIS2 Art. 21(2)(d) "Sicherheit der Lieferkette" hat schwache
+      Schnittmenge mit AI Act Art. 16 "Provider-Pflichten" — ein NIS2-
+      Betreiber kauft KI-Produkt von AI-Act-konformem Provider, dessen
+      Provider-Pflichten Lieferketten-Sicherheits-Element sind.
+    gap_warning: |
+      Inhaltlicher Mismatch: NIS2 21.2.d adressiert Vendor-Risk-Mgmt,
+      Subcontractor-Klauseln, Audit-Rights, Exit-Strategien. AI-Act-
+      Provider-Pflichten decken nur AI-Produkt-Konformitaet ab. Mapping
+      indikativ — Vendor-Mgmt-Prozess bleibt NIS2-only.
+
+  - source: '21.2.e'
+    target: 'Art.11'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(e) "Sicherheit beim Erwerb, der Entwicklung und
+      Wartung von Netz- und Informationssystemen" hat Secure-SDLC-
+      Schnittmenge mit AI Act Art. 11 "Technische Dokumentation".
+      Tech-Doku nach Annex IV liefert dokumentierte sichere Entwicklung
+      des KI-Systems.
+    gap_warning: |
+      Adressaten-Mismatch: Art. 11 ist Provider-Pflicht VOR Marktzugang;
+      NIS2 21.2.e ist Betreiber-Pflicht entlang Lebenszyklus. Wer
+      NIS2-Betreiber UND Provider ist (Eigen-KI), kann Synergien heben.
+    cross_refs: ['Annex-IV', 'Art.16']
+    audit_evidence_hint: 'Tech-Doku Annex IV (Provider), Secure-SDLC-Policy (Betreiber).'
+
+  - source: '21.2.e'
+    target: 'Annex-IV'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(e) wird von AI Act Annex IV partiell befuellt
+      (Pflichtinhalte Tech-Doku: Systembeschreibung, Architektur,
+      Daten, Tests, Cybersicherheits-Massnahmen).
+    gap_warning: |
+      Annex IV ist AI-spezifisch (Bias, Robustheit, Genauigkeit) und
+      detaillierter als NIS2 21.2.e fuer den AI-Anteil; nicht
+      erschoepfend fuer die uebrige IT-Landschaft.
+
+  - source: '21.2.e'
+    target: 'Art.16'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(e) hat Schnittmenge mit AI Act Art. 16 "Provider-
+      Pflichten" im Secure-SDLC-Anteil (Konformitaet sicherstellen,
+      QM-System, Tech-Doku). Provider, der NIS2-Betreiber ist
+      (Eigen-KI), bedient beide Pflichten.
+    gap_warning: |
+      Massiver Mismatch: Konformitaetsbewertung Modul A/B+C, CE-Kenn-
+      zeichnung, EU-Datenbank-Registrierung sind AI-Act-spezifisch
+      OHNE NIS2-Pendant.
+
+  - source: '21.2.e'
+    target: 'Art.10'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      NIS2 Art. 21(2)(e) deckt Wartungs-Anteil ab; AI Act Art. 10
+      "Daten und Daten-Governance" hat schwache Schnittmenge ueber
+      Datenmanagement im Lifecycle (Versionierung Trainingsdaten,
+      Re-Training).
+    gap_warning: |
+      Inhaltlicher Mismatch: Art. 10 fokussiert auf Daten-Qualitaet,
+      Bias, Repraesentativitaet — kein NIS2-Schutzziel. Mapping
+      indikativ.
+
+  - source: '21.2.f'
+    target: 'Art.17'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(f) "Konzepte und Verfahren zur Bewertung der
+      Wirksamkeit von Risikomanagementmassnahmen" hat Schnittmenge mit
+      AI Act Art. 17 "Qualitaetsmanagementsystem" ueber kontinuierliche
+      Wirksamkeits-/Konformitaets-Pruefung. QMS-Bausteine wieder-
+      verwendbar fuer NIS2-Wirksamkeitspruefung.
+    gap_warning: |
+      Adressaten-Mismatch: QMS ist Provider-Pflicht (organisatorisch,
+      inkl. Konformitaets-Spezifika). NIS2-Wirksamkeitspruefung ist
+      Betreiber-Pflicht.
+
+  - source: '21.2.f'
+    target: 'Art.72'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(f) "Wirksamkeitsbewertung" entspricht methodisch
+      AI Act Art. 72 "Beobachtung nach Inverkehrbringen (PMM)": beide
+      verlangen kontinuierliches Monitoring mit messbaren KPIs ueber
+      Zeit, dokumentierter Plan, Output-Integration in Risikomgmt.
+      Synergien hoch — NIS2-KPI-Dashboard kann AI-PMM aufnehmen.
+    audit_evidence_hint: 'Wirksamkeits-KPI-Reports (Betreiber NIS2), PMM-Plan + AI-KPIs (Provider), gemeinsames Dashboard bei integriertem Akteur.'
+
+  - source: '21.2.f'
+    target: 'Art.12'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(f) Wirksamkeitsbewertung wird durch AI Act Art. 12
+      "Aufzeichnungen / Logs" technisch fundiert: automatische Logs
+      liefern messbare Wirksamkeits-Daten fuer das KI-System.
+    audit_evidence_hint: 'Logging-Spec im KI-System, SIEM-Integration, Wirksamkeits-KPI-Dashboard.'
+
+  - source: '21.2.f'
+    target: 'Art.15'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(f) Wirksamkeitspruefung kann auf AI Act Art. 15
+      Genauigkeits-Metriken und Performance-Monitoring zugreifen.
+    cross_refs: ['Art.72']
+
+  - source: '21.2.f'
+    target: 'Art.43'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      NIS2 Art. 21(2)(f) Wirksamkeitspruefung hat schwache Schnittmenge
+      mit AI Act Art. 43 "Konformitaetsbewertung" ueber den Audit-/
+      Assessment-Charakter beider Konzepte.
+    gap_warning: |
+      KRITISCH: Konformitaetsbewertung ist AI-Act-spezifisch ohne
+      NIS2-Pendant. Wer NIS2-konform ist, hat KEINE AI-Act-Konformitaet.
+
+  - source: '21.2.h'
+    target: 'Art.10'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(h) "Konzepte fuer Kryptografie und Verschluesselung"
+      hat Schnittmenge mit AI Act Art. 10 "Daten und Daten-Governance"
+      ueber den Datenschutz-Aspekt (Verschluesselung Trainings-/Test-/
+      Inference-Daten).
+    gap_warning: |
+      Inhaltlicher Mismatch: Art. 10 zielt primaer auf Daten-QUALITAET,
+      BIAS, REPRAESENTATIVITAET ab — kein NIS2-Pendant. Schnittmenge
+      gilt nur fuer Daten-Schutz waehrend Training/Inference.
+    audit_evidence_hint: 'Krypto-Policy fuer Trainings-Daten-Storage, Verschluesselung in-transit/at-rest, Daten-Governance-Policy.'
+
+  - source: '21.2.h'
+    target: 'Art.15'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      NIS2 Art. 21(2)(h) "Crypto + Cyber-Hygiene" entspricht direkt
+      AI Act Art. 15 "Genauigkeit, Robustheit, Cybersicherheit" im
+      Cybersicherheits-Anteil (Schutz vor Manipulation, Adversarial
+      Examples, Data Poisoning, Model Inversion). KI-Cybersicherheit
+      ist Sub-Domain der Betreiber-Cyber-Hygiene.
+    audit_evidence_hint: 'Adversarial-Robustness-Tests, Model-Hardening, Crypto-Schutz fuer Modelle.'
+
+  - source: '21.2.h'
+    target: 'Art.55'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 21(2)(h) Cyber-Hygiene + Crypto hat hohe Schnittmenge
+      mit AI Act Art. 55(1)(d) "GPAI-Cybersicherheits-Massnahmen fuer
+      Modell + physische Infrastruktur" bei Verschluesselung von Modell-
+      Gewichten + Hardening Training-Infra.
+    gap_warning: |
+      Provider-only (GPAI). Schnittmenge nur bei integrierten Akteuren
+      (z.B. NIS2-digitale-Infra-Betreiber, der GPAI hostet/trainiert).
+
+  - source: '21.2.i'
+    target: 'Art.26'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      NIS2 Art. 21(2)(i) "Konzepte fuer Personalsicherheit, Zugangskontrolle
+      und Asset-Mgmt" hat schwache Schnittmenge mit AI Act Art. 26(2)
+      Deployer-Pflicht zur Datenkontrolle + Zugaengigkeit zu KI-Systemen.
+    gap_warning: |
+      Schwache Verbindung: Deployer-Datenkontrolle ist primaer Daten-
+      Qualitaet (Repraesentativitaet, Vollstaendigkeit). NIS2 21.2.i
+      ist Berechtigungs-Mgmt. Mapping indikativ.
+
+  - source: '23.1'
+    target: 'Art.73'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 23(1) "Fruehwarnung erheblicher Sicherheitsvorfall binnen
+      24h" und AI Act Art. 73(1)+(2) "Meldung schwerwiegender Vorfaelle
+      durch Provider" teilen konzeptionell den Reporting-Trigger, aber
+      Akteure, Empfaenger und Fristen unterscheiden sich:
+      - NIS2 → Betreiber meldet an BSI/CSIRT, 24h Fruehwarnung
+      - AI Act → Provider meldet an Markt-Behoerde + ggf. AI Office,
+        unverzueglich (max 15 Tage; 2 Tage bei kritischer Infra-Stoerung,
+        10 Tage bei Tod)
+    gap_warning: |
+      KRITISCH: Adressaten-Mismatch + Doppelmeldung-Risiko. Bei AI-
+      bedingtem Cyber-Vorfall (Adversarial-Attack auf KRITIS-Betreiber,
+      KI-Fehlverhalten in NIS2-Sektor) koennen GLEICHZEITIG Art. 23
+      (Betreiber an BSI) UND Art. 73 (Provider an Markt-Behoerde)
+      ausgeloest werden. Reporting-Prozesse separat tracken; Single-
+      Reporting-Loesung 2026 noch im Aufbau.
+    audit_evidence_hint: 'NIS2-Vorfallmeldungs-Templates (Betreiber, BSI), AI-Incident-Templates (Provider, Markt-Behoerde), Eskalationsplan beide Pfade.'
+
+  - source: '23.2'
+    target: 'Art.73'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      NIS2 Art. 23(2) "72h-Vorfallmeldung" und AI Act Art. 73 strukturierter
+      Vorfallbericht teilen qualitativ aehnliche Inhalte (Schweregrad,
+      Auswirkung, Korrekturmassnahmen). Akteure und Bezugspunkte
+      unterscheiden sich (Betreiber-Vorfall vs. Produkt-Vorfall).
+    gap_warning: |
+      Doppelmeldung-Logik: NIS2 Art. 23(2) gilt fuer Betreiber unabhaengig
+      vom AI-Act-Status. Wer Betreiber UND Provider ist, muss beide
+      Meldungen separat unterhalten.
+
+  - source: '23.3'
+    target: 'Art.73'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      NIS2 Art. 23(3) "Abschlussbericht binnen 1 Monat nach 72h-Meldung"
+      hat schwache Schnittmenge mit AI Act Art. 73 Endbericht-Pflichten
+      (nach Update-Bereitstellung, mit Massnahmen + Lessons Learned).
+    gap_warning: |
+      Frist-Unterschiede + Adressaten-Mismatch. Reporting-Prozess separat
+      tracken.
+
+  - source: 'Annex-I'
+    target: 'Annex-III'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      NIS2 Annex I listet Sektoren wesentlicher Einrichtungen (Energie,
+      Verkehr, Banken, Finanzmarkt-Infra, Gesundheit, Wasser, digitale
+      Infra, oeffentliche Verwaltung, Weltraum). AI Act Annex III listet
+      Hochrisiko-KI-Anwendungsbereiche. Schnittmenge ueber kritische
+      Infrastruktur (NIS2 Annex I Energie/Verkehr/Wasser/digitale Infra
+      ↔ Annex III Pkt. 2 kritische Infra) — KI-Einsatz in NIS2-Sektoren
+      ist haeufig Annex-III-Hochrisiko.
+    gap_warning: |
+      Konzeptioneller Mismatch: NIS2 Annex I kategorisiert SEKTOREN nach
+      Kritikalitaet; AI-Act Annex III kategorisiert KI-ANWENDUNGEN nach
+      Risiko fuer Grundrechte/Sicherheit. Mapping indikativ — Betreiber
+      muss BEIDE Klassifikationen separat pruefen.
+    audit_evidence_hint: 'NIS2-Sektor-Einordnung, KI-Inventar mit Annex-III-Klassifikation, Cross-Mapping in GRC-Tool.'

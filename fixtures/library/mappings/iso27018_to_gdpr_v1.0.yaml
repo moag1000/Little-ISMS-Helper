@@ -1,0 +1,618 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'iso27018_to_gdpr_v1.0'
+  source_framework: 'ISO27018'
+  target_framework: 'GDPR'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'ISO/IEC 27018:2019 + Verordnung (EU) 2016/679 (GDPR)'
+    primary_source_url: 'https://www.iso.org/standard/76559.html'
+    secondary_sources:
+      - 'ISO/IEC 27018:2019 — Code of practice for protection of PII in public clouds acting as PII processors'
+      - 'Verordnung (EU) 2016/679 (GDPR) — Datenschutz-Grundverordnung, vollstaendiger Verordnungstext'
+      - 'EDPB Guidelines 07/2020 (Concepts of controller and processor)'
+      - 'EDPB Guidelines 9/2022 (Personal data breach notification under GDPR)'
+      - 'ISO/IEC 27002:2013 (legacy reference catalogue used by ISO 27018)'
+    publisher: 'Little ISMS Helper Maintainers'
+    license_note: 'Mapping is original derivative work (AGPL-3.0). ISO 27018:2019 IDs/titles © ISO. GDPR-Artikel sind EU-Recht (Public Domain).'
+
+  methodology:
+    type: 'text_comparison_with_expert_review'
+    description: |
+      Bidirektionales Mapping zwischen ISO/IEC 27018:2019 (Code of Practice
+      for Protection of PII in Public Clouds) und EU-DSGVO/GDPR (Verordnung
+      (EU) 2016/679, Art.1..99). Diese Datei adressiert die Forward-Richtung
+      ISO 27018 -> GDPR.
+
+      ISO 27018 besteht aus zwei Anteilen:
+      - 29 PII-spezifische Annex-A-Controls (A.1.1 bis A.11.2) — die
+        Cloud-Processor-Erweiterungen
+      - alle 114 Controls aus ISO 27002:2013 als Code-of-Practice-Basis
+
+      Methodisches Vorgehen:
+      1. Annex-A-Anchors zuerst: PII-spezifische 27018-Kriterien werden auf
+         GDPR-Artikel gemappt mit Confidence high.
+      2. ISO-27002:2013-Carryover: General-IT-Controls werden auf GDPR-
+         Art.32 (Sicherheit der Verarbeitung) und Art.5 (Grundsaetze)
+         gemappt; bei direkter Schutz-Pflicht-Aequivalenz -> high.
+      3. GDPR-Artikel ohne ISO-27018-Pendant (Art.51..99 — Aufsichtsbehoerden,
+         Rechtsbehelfe, Sanktionen, Schlussbestimmungen) werden im Backward-
+         Mapping als out-of-scope markiert.
+
+      Relationship-Logik:
+      - equivalent: Pflichteninhalt deckungsgleich
+      - subset: 27018-Control ist Teilmenge eines breiteren GDPR-Artikels
+      - superset: 27018-Control erweitert GDPR um Cloud-Processor-Pflichten
+      - partial_overlap: gemeinsamer Kern, aber jeweils nicht abgedeckte
+        Anteile auf beiden Seiten
+      - related: thematisch verwandt, kein direkter Substituts-Pfad
+
+      Confidence-Verteilung: ~55% high (Annex-A + Schluesselthemen),
+      ~30% medium (general 27002 mit GDPR-Adaption), ~15% low.
+
+      Schluessel-Anker:
+      - 27018 A.1.1 (Co-operate w/ PII principal rights) <-> GDPR Art.12-22
+      - 27018 A.3.1 (Contract measures) <-> GDPR Art.28
+      - 27018 A.4.1 + A.5.1 (Records + Disclosures to LE) <-> GDPR Art.30
+      - 27018 A.5.2 (Data Return/Disposal) <-> GDPR Art.17
+      - 27018 A.6.2 (Processing Restrictions) <-> GDPR Art.18
+      - 27018 A.7.1, A.7.2, A.11.1 (Geographic location) <-> GDPR Art.44-49
+      - 27018 A.8.1 (Breach Notification) <-> GDPR Art.33, Art.34
+      - 27018 A.9.1, A.9.2 (Sub-Processor Disclosure) <-> GDPR Art.28
+      - 27018 A.10.6 (Encryption transmission) <-> GDPR Art.32
+      - 27018 18.1.4 (PII protection 27002 ref) <-> GDPR Art.5/6
+      - 27018 18.1.1 (Identify legislation) <-> GDPR Art.45 Adequacy
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-05-06', actor: 'maintainer' }
+      - { state: 'published', date: '2026-05-06', actor: 'dpo-signoff' }
+
+mappings:
+  # ===== ISO 27018:2019 Annex A — PII-spezifische Controls =====
+
+  # --- A.1 Consent and choice ---
+  - source: 'A.1.1'
+    target: 'Art.12'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.1.1 "Obligation to co-operate regarding PII principals'
+      rights" verpflichtet den Cloud-Processor, dem Controller bei der
+      Erfuellung der Betroffenenrechte aktiv zu unterstuetzen. GDPR Art.12-22
+      regeln Betroffenenrechte; Art.28(3)(e) GDPR verpflichtet Auftrags-
+      verarbeiter zur Unterstuetzung. A.1.1 ist die operative Umsetzung.
+    cross_refs: ['Art.15', 'Art.16', 'Art.17', 'Art.18', 'Art.20', 'Art.21', 'Art.28']
+    audit_evidence_hint: 'AVV mit Unterstuetzungspflichten, Subject-Request-Workflow zwischen Processor und Controller, SLA-Reporting.'
+
+  # --- A.2 Purpose legitimacy and specification ---
+  - source: 'A.2.1'
+    target: 'Art.28'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.2.1 "Public cloud PII processor's purpose" verlangt, dass
+      der Processor PII nur zu vom Controller dokumentierten Zwecken
+      verarbeitet. GDPR Art.28(3)(a) "auf dokumentierte Weisung des
+      Verantwortlichen" entspricht inhaltsgleich.
+    cross_refs: ['Art.5']
+    audit_evidence_hint: 'AVV mit Zweckbeschraenkung, Weisungsdokumentation, Logs ueber Processor-Verarbeitungs-Aktivitaeten.'
+
+  - source: 'A.2.2'
+    target: 'Art.6'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      ISO 27018 A.2.2 "Public cloud PII processor's commercial use" verbietet
+      Marketingnutzung von PII. GDPR Art.6(1) verlangt Rechtsgrundlage fuer
+      jede Verarbeitung; kommerzielle Sekundaernutzung ohne Einwilligung
+      regelmaessig unzulaessig.
+    cross_refs: ['Art.7']
+
+  # --- A.3 Collection limitation ---
+  - source: 'A.3.1'
+    target: 'Art.28'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.3.1 "Contract measures" verlangt vertragliche Pflichten
+      zwischen Cloud-Provider und Cloud-Customer, inkl. Vertraulichkeit,
+      Kontrollen, Sub-Processor-Mgmt. GDPR Art.28(3) regelt verpflichtende
+      AVV-Inhalte (Auftragsverarbeitungsvertrag) deckungsgleich.
+    audit_evidence_hint: 'AVV/DPA mit Art.28(3)-konformen Klauseln, Subprozessoren-Liste, Audit-Rechte.'
+
+  # --- A.4 Data minimization ---
+  - source: 'A.4.1'
+    target: 'Art.30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.4.1 "Secure erasure of temporary files" verlangt Loeschung
+      temporaerer PII; ergaenzend zu A.4.* Records-of-Processing. GDPR Art.30
+      "Verzeichnis von Verarbeitungstaetigkeiten" verlangt vom Processor
+      Records ueber alle Verarbeitungs-Kategorien.
+    cross_refs: ['Art.5', 'Art.17']
+    audit_evidence_hint: 'Verzeichnis von Verarbeitungstaetigkeiten Art.30(2), Loeschkonzept fuer Tempdaten/Cache/Logs.'
+
+  # --- A.5 Use, retention and disclosure limitation ---
+  - source: 'A.5.1'
+    target: 'Art.30'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.5.1 "PII disclosure notification" verlangt, dass Disclosures
+      an Strafverfolgungsbehoerden dokumentiert und (soweit rechtlich zulaessig)
+      dem Controller mitgeteilt werden. GDPR Art.30(2) "Verzeichnis von
+      Verarbeitungstaetigkeiten" + Art.28(3)(h) (Audit-Rechte) decken den
+      Records-Anteil; Art.48 GDPR regelt Drittland-Disclosures.
+    cross_refs: ['Art.48']
+    audit_evidence_hint: 'Disclosure-Register, Government-Request-Logs, Customer-Notification-Templates.'
+
+  - source: 'A.5.2'
+    target: 'Art.17'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.5.2 "Recording of PII disclosures" verlangt Records ueber
+      jede PII-Offenlegung und sicheres Loeschen / Rueckgabe nach Vertragsende.
+      GDPR Art.17 "Recht auf Loeschung" plus Art.28(3)(g) (Loeschen oder
+      Rueckgabe nach Vertragsende) decken den Loesch-Anteil; Art.30 deckt
+      Records.
+    cross_refs: ['Art.28', 'Art.30']
+    audit_evidence_hint: 'Loeschprotokolle bei Offboarding, Datenrueckgabe-Bestaetigungen, Disclosure-Records.'
+
+  # --- A.6 Accuracy and quality ---
+  - source: 'A.6.1'
+    target: 'Art.28'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      ISO 27018 A.6.1 (Personnel Confidentiality) verpflichtet Processor-
+      Personal zur Vertraulichkeit. GDPR Art.28(3)(b) verlangt ebenfalls
+      Vertraulichkeitsverpflichtung des Processor-Personals.
+    cross_refs: ['Art.32']
+
+  - source: 'A.6.2'
+    target: 'Art.18'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.6.2 "Restriction of the creation of hardcopy material" plus
+      Processing-Restriction-Aspekte entspricht GDPR Art.18 "Recht auf
+      Einschraenkung der Verarbeitung" — Cloud-Processor muss
+      Restriction-Flag technisch unterstuetzen.
+    cross_refs: ['Art.28']
+    audit_evidence_hint: 'Technische Implementierung von Restriction-Flags, Hardcopy-Policy.'
+
+  # --- A.7 Openness, transparency and notice ---
+  - source: 'A.7.1'
+    target: 'Art.44'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.7.1 "Geographic location of PII" verlangt Transparenz
+      ueber PII-Speicher- und Verarbeitungsorte. GDPR Art.44 "Allgemeine
+      Grundsaetze fuer Datenuebermittlungen" plus Art.13/14
+      (Informationspflichten) verlangen ebenfalls geografische Transparenz.
+    cross_refs: ['Art.45', 'Art.46', 'Art.13']
+    audit_evidence_hint: 'Datacenter-Standorte-Liste, Sub-Processor-Standorte, Datenfluss-Diagramme.'
+
+  - source: 'A.7.2'
+    target: 'Art.46'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.7.2 (Intended destination of PII) verlangt Information
+      ueber Drittlandtransfers. GDPR Art.46 "Datenuebermittlung
+      vorbehaltlich geeigneter Garantien" entspricht — SCC, BCR oder
+      andere Transfertools muessen offen gelegt werden.
+    cross_refs: ['Art.45', 'Art.47']
+
+  # --- A.8 Individual participation and access ---
+  - source: 'A.8.1'
+    target: 'Art.33'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.8.1 "Notification of a data breach involving PII" verlangt,
+      dass der Cloud-Processor den Controller unverzueglich ueber PII-
+      Verletzungen informiert. GDPR Art.33(2) verpflichtet Auftragsverarbeiter
+      ebenfalls zur unverzueglichen Meldung an den Controller; Art.34 regelt
+      Benachrichtigung der betroffenen Personen.
+    cross_refs: ['Art.34', 'Art.28']
+    audit_evidence_hint: 'Breach-Notification-Workflow, SLA-Definition (z.B. 24h), Breach-Register, Notification-Templates.'
+
+  # --- A.9 Accountability ---
+  - source: 'A.9.1'
+    target: 'Art.28'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.9.1 "PII return, transfer and disposal" verlangt vertragliche
+      Sub-Processor-Pflichten und Disclosure. GDPR Art.28(2) verlangt
+      Genehmigung des Controllers fuer Sub-Processor; Art.28(4) verlangt
+      Weitergabe identischer Pflichten an Sub-Processoren.
+    cross_refs: ['Art.28']
+    audit_evidence_hint: 'Subprozessoren-Liste, Sub-AVV-Vertragskaskade, Genehmigungs-Workflow bei Sub-Wechsel.'
+
+  - source: 'A.9.2'
+    target: 'Art.28'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.9.2 "Sub-contracted PII processing" verlangt Disclosure
+      aller Sub-Processoren an den Controller plus Veto-Recht. GDPR Art.28(2)
+      regelt explizite Genehmigungs- bzw. Widerspruchsrechte.
+    cross_refs: ['Art.46']
+
+  # --- A.10 Information security ---
+  - source: 'A.10.1'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.1 (Confidentiality undertaking) verpflichtet Processor-
+      Personal zu schriftlicher Vertraulichkeit. GDPR Art.32 "Sicherheit
+      der Verarbeitung" plus Art.28(3)(b) decken die Pflicht.
+
+  - source: 'A.10.2'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.2 (Restriction of creation of hardcopy material) Teil
+      der TOMs nach GDPR Art.32.
+
+  - source: 'A.10.3'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.3 (Control and logging of data restoration) Teil der
+      TOMs nach GDPR Art.32 (Wiederherstellbarkeit).
+
+  - source: 'A.10.4'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.4 (Protecting data on storage media leaving the premises)
+      Teil der TOMs nach GDPR Art.32.
+
+  - source: 'A.10.5'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.5 (Use of unencrypted portable storage media and devices)
+      verbietet PII auf unverschluesselten mobilen Datentraegern. GDPR Art.32
+      verlangt Verschluesselung als TOM.
+
+  - source: 'A.10.6'
+    target: 'Art.32'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.6 "Encryption of PII transmitted over public data-
+      transmission networks" entspricht direkt GDPR Art.32(1)(a)
+      "Verschluesselung personenbezogener Daten".
+    audit_evidence_hint: 'TLS-Konfig (mindestens TLS 1.2), Kryptokonzept, Algorithmen-Inventar.'
+
+  - source: 'A.10.7'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.7 (Secure disposal of hardcopy materials) Teil der TOMs
+      nach GDPR Art.32 plus Art.5(1)(f).
+
+  - source: 'A.10.8'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.8 (Unique use of user IDs) Teil der TOMs nach Art.32.
+
+  - source: 'A.10.9'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.9 (Records of authorized users) Teil der TOMs nach
+      Art.32 plus Art.30.
+
+  - source: 'A.10.10'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.10 (User ID management) Teil der TOMs nach Art.32.
+
+  - source: 'A.10.11'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.11 (Contract measures w/ subcontractors) Teil von Art.32
+      plus Art.28.
+    cross_refs: ['Art.28']
+
+  - source: 'A.10.12'
+    target: 'Art.30'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.12 (Sub-contracted PII processing) Teil von GDPR Art.30
+      (Records) plus Art.28 (Subprozessoren).
+    cross_refs: ['Art.28']
+
+  - source: 'A.10.13'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.10.13 (Access to data on pre-used data storage space) Teil
+      der TOMs nach Art.32.
+
+  # --- A.11 Privacy compliance ---
+  - source: 'A.11.1'
+    target: 'Art.45'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      ISO 27018 A.11.1 "Geographical location of PII" verlangt vertragliche
+      Beschraenkung von PII auf vereinbarte Laender bzw. Adaequatheits-
+      Regionen. GDPR Art.45 "Datenuebermittlung auf der Grundlage eines
+      Angemessenheitsbeschlusses" entspricht — Drittland nur bei
+      Adequacy-Decision oder Schutzgarantien (Art.46).
+    cross_refs: ['Art.44', 'Art.46', 'Art.47', 'Art.48', 'Art.49']
+    audit_evidence_hint: 'TIA (Transfer Impact Assessment) post-Schrems-II, SCC-Vertraege, BCR-Genehmigungen, Adaequatheits-Liste.'
+
+  - source: 'A.11.2'
+    target: 'Art.13'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      ISO 27018 A.11.2 (Intended destination of PII) Teil von GDPR Art.13/14
+      (Informationspflichten) plus Art.46.
+    cross_refs: ['Art.14', 'Art.46']
+
+  # ===== ISO 27002:2013 Carryover (PII-relevante Controls) =====
+
+  - source: '5.1.1'
+    target: 'Art.24'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      27002:2013 5.1.1 "Policies for information security" Teil von GDPR
+      Art.24 "Verantwortung des fuer die Verarbeitung Verantwortlichen"
+      (Datenschutz-Policies als TOM).
+
+  - source: '6.1.1'
+    target: 'Art.37'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      27002:2013 6.1.1 (Roles and Responsibilities) thematisch zu GDPR Art.37
+      (DSB-Pflicht) plus Art.39 (Aufgaben des DSB).
+    cross_refs: ['Art.39']
+
+  - source: '7.1.1'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      27002:2013 7.1.1 (Screening) Teil der TOMs nach GDPR Art.32.
+
+  - source: '7.2.2'
+    target: 'Art.39'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      27002:2013 7.2.2 (Awareness, Education, Training) Teil von GDPR Art.39
+      (DSB-Aufgabe Schulung) plus Art.32.
+    cross_refs: ['Art.32']
+
+  - source: '8.2.1'
+    target: 'Art.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 8.2.1 (Classification of information) Teil von GDPR Art.5
+      (Datenminimierung, Speicherbegrenzung) plus Art.32 (TOMs).
+
+  - source: '8.3.2'
+    target: 'Art.17'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 8.3.2 (Disposal of media) Teil von GDPR Art.17 (Loeschung)
+      plus Art.32.
+    cross_refs: ['Art.32']
+
+  - source: '9.1.1'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 9.1.1 (Access control policy) Teil der TOMs nach GDPR
+      Art.32(1)(b) "Vertraulichkeit, Integritaet, Verfuegbarkeit".
+
+  - source: '9.2.3'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 9.2.3 (Privileged access rights) Teil der TOMs nach Art.32.
+
+  - source: '9.4.1'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 9.4.1 (Information access restriction) Teil der TOMs nach
+      Art.32 (Need-to-Know-Prinzip).
+
+  - source: '10.1.1'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 10.1.1 (Cryptographic controls policy) Teil der TOMs nach
+      GDPR Art.32(1)(a) (Verschluesselung).
+
+  - source: '10.1.2'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 10.1.2 (Key management) Teil der TOMs nach Art.32.
+
+  - source: '11.1.1'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      27002:2013 11.1.1 (Physical security perimeter) Teil der TOMs nach
+      Art.32 (physische Sicherheit).
+
+  - source: '11.2.7'
+    target: 'Art.17'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 11.2.7 (Secure disposal of equipment) Teil von GDPR Art.17
+      plus Art.32.
+
+  - source: '12.1.2'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      27002:2013 12.1.2 (Change management) Teil der TOMs (Resilienz).
+
+  - source: '12.3.1'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 12.3.1 (Information backup) Teil von GDPR Art.32(1)(c)
+      "Wiederherstellbarkeit" plus (1)(b) "Verfuegbarkeit".
+
+  - source: '12.4.1'
+    target: 'Art.30'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 12.4.1 (Event logging) Teil von GDPR Art.30 (Records) plus
+      Art.32 (Logging als TOM).
+    cross_refs: ['Art.32']
+
+  - source: '12.4.2'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 12.4.2 (Protection of log information) Teil der TOMs.
+
+  - source: '12.6.1'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 12.6.1 (Vulnerability management) Teil der TOMs (Resilienz).
+
+  - source: '13.1.1'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 13.1.1 (Network controls) Teil der TOMs nach Art.32.
+
+  - source: '13.2.1'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 13.2.1 (Information transfer policies and procedures) Teil
+      der TOMs (Transport-Verschluesselung).
+
+  - source: '15.1.1'
+    target: 'Art.28'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 15.1.1 (InfoSec policy for supplier relationships) Teil
+      von GDPR Art.28 (Auftragsverarbeitungs-Pflichten).
+
+  - source: '15.1.2'
+    target: 'Art.28'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 15.1.2 (Supplier agreements) Teil von Art.28 (AVV-Pflichten).
+
+  - source: '16.1.1'
+    target: 'Art.33'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 16.1.1 (Incident-Mgmt Responsibilities and procedures) Teil
+      von GDPR Art.33 (Breach-Notification-Prozess).
+    cross_refs: ['Art.34']
+
+  - source: '16.1.2'
+    target: 'Art.33'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 16.1.2 (Reporting events) Teil von Art.33.
+
+  - source: '16.1.7'
+    target: 'Art.33'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      27002:2013 16.1.7 (Collection of evidence) Teil von Art.33 (Breach-
+      Dokumentation) plus forensische Anforderungen.
+
+  - source: '17.1.1'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      27002:2013 17.1.1 (Planning information security continuity) Teil von
+      GDPR Art.32(1)(c) "Wiederherstellbarkeit".
+
+  - source: '18.1.1'
+    target: 'Art.45'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      27002:2013 18.1.1 "Identification of applicable legislation" entspricht
+      GDPR Art.45 (Adequacy-Decisions) plus Art.46 — Cloud-Processor muss
+      anwendbares Recht inkl. Drittland-Transfer-Regime kennen.
+    cross_refs: ['Art.46']
+
+  - source: '18.1.4'
+    target: 'Art.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      27002:2013 18.1.4 "Privacy and protection of PII" entspricht direkt
+      GDPR Art.5 (Grundsaetze der Verarbeitung) plus Art.6 (Rechtmaessigkeit).
+    cross_refs: ['Art.6', 'Art.32']
+    audit_evidence_hint: 'Datenschutz-Policy, RoPA, TIA, AVV.'
+
+  - source: '18.2.1'
+    target: 'Art.32'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      27002:2013 18.2.1 (Independent review of information security)
+      thematisch zu GDPR Art.32(1)(d) "regelmaessige Ueberpruefung".

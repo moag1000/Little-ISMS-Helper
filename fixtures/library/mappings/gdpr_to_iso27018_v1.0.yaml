@@ -1,0 +1,574 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'gdpr_to_iso27018_v1.0'
+  source_framework: 'GDPR'
+  target_framework: 'ISO27018'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'ISO/IEC 27018:2019 + Verordnung (EU) 2016/679 (GDPR)'
+    primary_source_url: 'https://eur-lex.europa.eu/eli/reg/2016/679/oj'
+    secondary_sources:
+      - 'Verordnung (EU) 2016/679 (GDPR) — Datenschutz-Grundverordnung'
+      - 'ISO/IEC 27018:2019 — Code of practice for protection of PII in public clouds'
+      - 'ISO/IEC 27002:2013 (legacy reference catalogue used by ISO 27018)'
+      - 'EDPB Guidelines 07/2020 (Concepts of controller and processor)'
+      - 'fixtures/library/mappings/iso27018_to_gdpr_v1.0.yaml (Reverse-Mapping)'
+    publisher: 'Little ISMS Helper Maintainers'
+    license_note: 'Mapping is original derivative work (AGPL-3.0). GDPR-Artikel sind EU-Recht (Public Domain). ISO 27018:2019 IDs/titles © ISO.'
+
+  methodology:
+    type: 'text_comparison_with_expert_review'
+    description: |
+      Backward-Mapping GDPR -> ISO/IEC 27018:2019. Diese Datei adressiert die
+      Richtung GDPR-Artikel -> passende ISO 27018-Control (Cloud-Processor-CoP).
+
+      ISO 27018 ist ein Code of Practice fuer Cloud-Processoren und kombiniert:
+      - 29 PII-spezifische Annex-A-Controls (A.1.1 .. A.11.2)
+      - alle 114 Controls aus ISO 27002:2013
+
+      Methodisches Vorgehen:
+      1. GDPR-Kapitel I-IV (Art.1-50) werden auf ISO 27018-Controls gemappt
+         soweit Pflichteninhalt operationalisiert wird.
+      2. GDPR-Kapitel V-XI (Art.51-99) — Aufsichtsbehoerden, Rechtsbehelfe,
+         Sanktionen, Schlussbestimmungen — sind out-of-scope fuer ISO 27018
+         (target=null mit gap_warning).
+      3. Verarbeitungs-Prinzipien Art.5/6/7 werden auf 27002:2013-18.1.4
+         (Privacy and protection of PII) gemappt.
+      4. Betroffenenrechte (Art.12-22) werden gebuendelt auf 27018 A.1.1
+         (Co-operation with PII principal rights) gemappt.
+      5. Auftragsverarbeitung (Art.28) auf 27018 A.3.1, A.9.1, A.9.2.
+      6. Sicherheit der Verarbeitung (Art.32) auf 27018 A.10.* + 27002-9-13.
+      7. Breach-Notification (Art.33-34) auf 27018 A.8.1.
+      8. Drittland-Transfers (Art.44-49) auf 27018 A.7.1, A.7.2, A.11.1.
+
+      Confidence-Verteilung: ~50% high (Art.5, 6, 7, 12-22, 28, 30, 32-34,
+      44-46), ~30% medium, ~20% null (out-of-scope).
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-05-06', actor: 'maintainer' }
+      - { state: 'published', date: '2026-05-06', actor: 'dpo-signoff' }
+
+mappings:
+  # ===== Chapter I — General provisions (Art.1-4) =====
+  - source: 'Art.1'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.1 "Gegenstand und Ziele" ist deklaratorisch, kein direkter
+      ISO 27018-Control-Pfad.
+    gap_warning: 'Deklaratorischer Artikel ohne ISO-Operationalisierung.'
+
+  - source: 'Art.2'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.2 "Sachlicher Anwendungsbereich" ist Scope-Definition.
+    gap_warning: 'Anwendungsbereich, kein Control-Pfad.'
+
+  - source: 'Art.3'
+    target: 'A.7.1'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      GDPR Art.3 "Raeumlicher Anwendungsbereich" thematisch zu ISO 27018
+      A.7.1 (Geographic location of PII) — Cloud-Provider muss bei
+      Drittlands-Niederlassungen GDPR beruecksichtigen.
+
+  - source: 'Art.4'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.4 "Begriffsbestimmungen" ist Definitions-Artikel.
+    gap_warning: 'Definitionen, kein Control-Pfad.'
+
+  # ===== Chapter II — Principles (Art.5-11) =====
+  - source: 'Art.5'
+    target: '18.1.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.5 "Grundsaetze der Verarbeitung" entspricht ISO 27018 /
+      27002:2013 18.1.4 "Privacy and protection of PII" plus A.2.1 (Purpose
+      Limitation) und A.4.1 (Data Minimization-Aspekt).
+    cross_refs: ['A.2.1', 'A.4.1']
+    audit_evidence_hint: 'Datenschutz-Policy mit Grundsaetzen, RoPA mit Zwecken, Loeschkonzept.'
+
+  - source: 'Art.6'
+    target: '18.1.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.6 "Rechtmaessigkeit der Verarbeitung" entspricht 27018
+      18.1.4 plus A.2.1 (Verarbeitungszweck) und A.2.2.
+    cross_refs: ['A.2.1', 'A.2.2']
+
+  - source: 'Art.7'
+    target: 'A.2.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      GDPR Art.7 "Bedingungen fuer die Einwilligung" Cloud-Processor-Aspekt
+      bei A.2.1 (Verarbeitungszweck-Doku); operative Einwilligungs-Verwaltung
+      ist Controller-Pflicht.
+    gap_warning: 'Consent-Mgmt ist Controller-Pflicht; Cloud-Processor unterstuetzt nur. Vollstaendige Abdeckung erfordert ISO 27701.'
+
+  - source: 'Art.8'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.8 "Bedingungen fuer Einwilligung Kind" ist Controller-Pflicht;
+      kein direktes 27018-Pendant.
+    gap_warning: 'Kinder-Consent ist Controller-Pflicht.'
+
+  - source: 'Art.9'
+    target: 'A.10.6'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      GDPR Art.9 "Verarbeitung besonderer Kategorien personenbezogener
+      Daten" verlangt erhoehte Schutzmassnahmen; ISO 27018 A.10.6
+      (Encryption) plus 18.1.4 als TOM-Anteile.
+    cross_refs: ['18.1.4']
+
+  - source: 'Art.10'
+    target: 'A.10.6'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.10 (Verurteilungen / Straftaten) verlangt erhoehten Schutz;
+      operationelle Umsetzung im 27018-A.10.*-Block.
+
+  - source: 'Art.11'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.11 (Verarbeitung ohne Identifizierung) ohne direktes
+      27018-Pendant.
+
+  # ===== Chapter III — Data subject rights (Art.12-23) =====
+  - source: 'Art.12'
+    target: 'A.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.12 "Transparente Information, Kommunikation und Modalitaeten"
+      entspricht ISO 27018 A.1.1 "Obligation to co-operate regarding PII
+      principals' rights" — Processor unterstuetzt Controller bei der
+      Erfuellung der Modalitaeten.
+    audit_evidence_hint: 'Workflow zur Subject-Request-Bearbeitung mit Processor-Unterstuetzung.'
+
+  - source: 'Art.13'
+    target: 'A.7.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      GDPR Art.13 "Informationspflicht bei Erhebung beim Betroffenen" Teil
+      von 27018 A.7.1 (Geographic location als Informationspflicht-Anteil)
+      und A.11.2.
+    cross_refs: ['A.11.2']
+
+  - source: 'Art.14'
+    target: 'A.7.2'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      GDPR Art.14 (Informationspflicht ohne Erhebung beim Betroffenen) Teil
+      von 27018 A.7.2 plus A.11.2.
+
+  - source: 'Art.15'
+    target: 'A.1.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.15 "Auskunftsrecht" Teil der Cloud-Processor-Co-Operation-
+      Pflicht in A.1.1.
+
+  - source: 'Art.16'
+    target: 'A.1.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.16 "Recht auf Berichtigung" Teil von A.1.1 — Processor muss
+      technische Korrektur-Funktion bereitstellen.
+
+  - source: 'Art.17'
+    target: 'A.5.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.17 "Recht auf Loeschung (Recht auf Vergessenwerden)" entspricht
+      ISO 27018 A.5.2 (Recording of PII disclosures + Loeschung) plus A.4.1
+      (Secure erasure of temp files) und 27002:2013 8.3.2.
+    cross_refs: ['A.4.1', '8.3.2']
+    audit_evidence_hint: 'Loeschkonzept, Loeschprotokolle, Tempdaten/Cache-Cleanup.'
+
+  - source: 'Art.18'
+    target: 'A.6.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.18 "Recht auf Einschraenkung der Verarbeitung" entspricht
+      ISO 27018 A.6.2 (Restriction-Aspekt im Cloud-Processor-Kontext).
+    audit_evidence_hint: 'Technische Implementierung von Restriction-Flags pro PII-Datensatz.'
+
+  - source: 'Art.19'
+    target: 'A.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      GDPR Art.19 "Mitteilungspflicht bei Berichtigung/Loeschung/Einschraenkung"
+      Teil von A.1.1 (Co-operation Pflicht).
+
+  - source: 'Art.20'
+    target: 'A.1.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.20 "Recht auf Datenuebertragbarkeit" Teil von A.1.1 — Cloud-
+      Processor muss Export-Format/API bereitstellen.
+    audit_evidence_hint: 'Datenexport-API, strukturiertes maschinenlesbares Format.'
+
+  - source: 'Art.21'
+    target: 'A.1.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.21 "Widerspruchsrecht" Teil der Co-Operation-Pflicht in A.1.1.
+
+  - source: 'Art.22'
+    target: 'A.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      GDPR Art.22 "Automatisierte Entscheidungen im Einzelfall einschliesslich
+      Profiling" Teil von A.1.1; primaer Controller-Pflicht.
+    gap_warning: 'Primaer Controller-Pflicht; Cloud-Processor liefert nur Verarbeitungs-Plattform.'
+
+  - source: 'Art.23'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.23 "Beschraenkungen" ist mitgliedstaatliche Spezialregelung;
+      kein direktes 27018-Pendant.
+
+  # ===== Chapter IV — Controller and processor (Art.24-43) =====
+  - source: 'Art.24'
+    target: '5.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      GDPR Art.24 "Verantwortung des Verantwortlichen" thematisch zu
+      27002:2013 5.1.1 (Policies) — Controller-Pflicht; Cloud-Processor
+      liefert AVV-konforme Vertragsgrundlage.
+
+  - source: 'Art.25'
+    target: '14.1.1'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      GDPR Art.25 "Datenschutz durch Technikgestaltung und durch
+      datenschutzfreundliche Voreinstellungen" thematisch zu 27002:2013
+      14.1.1 (Security Requirements Analysis) plus A.10.* (TOMs).
+    cross_refs: ['14.2.5']
+    gap_warning: 'PbD/PbDef ist primaer Controller-Pflicht; Processor liefert technische Bausteine.'
+
+  - source: 'Art.26'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.26 "Gemeinsam Verantwortliche" ist Controller-Konstellation
+      ohne direktes Cloud-Processor-Pendant.
+
+  - source: 'Art.27'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.27 "Vertreter von nicht in der Union niedergelassenen
+      Verantwortlichen" ohne Cloud-Processor-Pendant.
+
+  - source: 'Art.28'
+    target: 'A.3.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.28 "Auftragsverarbeiter" entspricht direkt ISO 27018 A.3.1
+      "Contract measures" plus A.9.1 / A.9.2 (Sub-Processoren) plus
+      27002:2013 15.1.2 (Supplier Agreements).
+    cross_refs: ['A.9.1', 'A.9.2', '15.1.2']
+    audit_evidence_hint: 'AVV/DPA mit Art.28(3)-Klauseln, Subprozessoren-Liste, Audit-Rechte, Weisungsdokumentation.'
+
+  - source: 'Art.29'
+    target: '7.2.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.29 "Verarbeitung unter der Aufsicht des Verantwortlichen" Teil
+      von 27002:2013 7.2.2 (Awareness/Training) — Processor-Personal nur auf
+      Weisung verarbeiten.
+    cross_refs: ['A.10.1']
+
+  - source: 'Art.30'
+    target: 'A.4.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.30 "Verzeichnis von Verarbeitungstaetigkeiten" entspricht
+      ISO 27018 A.4.1 (Records-Anteil) plus A.5.1 (Disclosure Records) plus
+      27002:2013 12.4.1 (Event Logging).
+    cross_refs: ['A.5.1', '12.4.1']
+    audit_evidence_hint: 'Art.30(2)-Verzeichnis, Disclosure-Register.'
+
+  - source: 'Art.31'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.31 "Zusammenarbeit mit der Aufsichtsbehoerde" Teil von 27018
+      A.5.1 (Government Disclosures); ueberwiegend prozessual.
+    cross_refs: ['A.5.1']
+
+  - source: 'Art.32'
+    target: 'A.10.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.32 "Sicherheit der Verarbeitung" entspricht ISO 27018 A.10.*
+      (TOMs-Block) — Verschluesselung, Pseudonymisierung, Vertraulichkeit,
+      Verfuegbarkeit, Wiederherstellbarkeit. Anker A.10.6 (Encryption in
+      Transit) plus 27002:2013 9-13 (Access Control, Crypto, Network).
+    cross_refs: ['A.10.1', 'A.10.2', 'A.10.3', 'A.10.4', 'A.10.5', 'A.10.7', 'A.10.8', 'A.10.9', 'A.10.10', 'A.10.11', 'A.10.12', 'A.10.13', '9.1.1', '10.1.1', '12.3.1', '13.1.1']
+    audit_evidence_hint: 'Kryptokonzept, TOMs-Beschreibung, Pentest-Reports, Backup/Restore-Tests.'
+
+  - source: 'Art.33'
+    target: 'A.8.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.33 "Meldung von Verletzungen des Schutzes personenbezogener
+      Daten an die Aufsichtsbehoerde" entspricht ISO 27018 A.8.1
+      "Notification of a data breach involving PII" — Processor meldet an
+      Controller (Art.33(2)), Controller meldet an Aufsichtsbehoerde
+      (Art.33(1)).
+    cross_refs: ['16.1.1', '16.1.2']
+    audit_evidence_hint: 'Breach-Notification-Workflow mit 24h-SLA, Breach-Register, Mustertexte.'
+
+  - source: 'Art.34'
+    target: 'A.8.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.34 "Benachrichtigung der von einer Verletzung des Schutzes
+      personenbezogener Daten betroffenen Person" entspricht 27018 A.8.1
+      operativ; Processor unterstuetzt Controller mit den noetigen
+      Informationen.
+
+  - source: 'Art.35'
+    target: null
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      GDPR Art.35 "Datenschutz-Folgenabschaetzung (DPIA)" ist primaer
+      Controller-Pflicht; Cloud-Processor liefert Input. Kein direktes
+      ISO 27018-Pendant; ISO 27701 deckt PIA explizit.
+    gap_warning: 'DPIA ist Controller-Pflicht. Vollstaendige Abdeckung erfordert ISO 27701 oder ISO 29134.'
+
+  - source: 'Art.36'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.36 "Vorherige Konsultation" ist Controller-Pflicht; kein
+      direktes 27018-Pendant.
+
+  - source: 'Art.37'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.37 "Benennung eines Datenschutzbeauftragten" ist Controller/
+      Processor-Pflicht; kein direktes 27018-Annex-A-Pendant. ISO 27001
+      Klausel 5 (Leadership) plus 27002:2013 6.1.1 als TOM-Anteil.
+    cross_refs: ['6.1.1']
+
+  - source: 'Art.38'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.38 "Stellung des Datenschutzbeauftragten" ohne 27018-Pendant.
+
+  - source: 'Art.39'
+    target: '7.2.2'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      GDPR Art.39 "Aufgaben des Datenschutzbeauftragten" thematisch zu
+      27002:2013 7.2.2 (Schulung) und 6.1.1 (Roles).
+
+  - source: 'Art.40'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.40 "Verhaltensregeln" ohne 27018-Pendant — Code-of-Conduct
+      ist EDPB-Mechanismus.
+
+  - source: 'Art.41'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.41 (Ueberwachung genehmigter Verhaltensregeln) ohne
+      27018-Pendant.
+
+  - source: 'Art.42'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.42 "Zertifizierung" — Cloud-Processor kann ISO 27018 als
+      Bestandteil eines genehmigten Zertifizierungsmechanismus nutzen,
+      kein direkter Control-Pfad.
+
+  - source: 'Art.43'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.43 (Zertifizierungsstellen) ohne direkten 27018-Control-Pfad.
+
+  # ===== Chapter V — Transfers to third countries (Art.44-50) =====
+  - source: 'Art.44'
+    target: 'A.7.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.44 "Allgemeine Grundsaetze fuer Datenuebermittlungen"
+      entspricht ISO 27018 A.7.1 "Geographic location of PII" — geografische
+      Transparenz und Schutzgarantien.
+    cross_refs: ['A.7.2', 'A.11.1']
+
+  - source: 'Art.45'
+    target: 'A.11.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.45 "Datenuebermittlung auf der Grundlage eines
+      Angemessenheitsbeschlusses" entspricht ISO 27018 A.11.1 plus
+      27002:2013 18.1.1 (Identification of Legislation).
+    cross_refs: ['A.7.1', '18.1.1']
+    audit_evidence_hint: 'Adequacy-Liste, TIA-Reports.'
+
+  - source: 'Art.46'
+    target: 'A.7.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.46 "Datenuebermittlung vorbehaltlich geeigneter Garantien"
+      entspricht ISO 27018 A.7.2 (Intended Destination of PII) plus A.11.1
+      (Geographical Location).
+    cross_refs: ['A.11.1']
+    audit_evidence_hint: 'SCC, BCR, andere Transfertools.'
+
+  - source: 'Art.47'
+    target: 'A.7.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.47 "Verbindliche interne Datenschutzvorschriften (BCR)" Teil
+      von A.7.2 — Konzern-Cloud-Provider mit BCR-Genehmigung.
+
+  - source: 'Art.48'
+    target: 'A.5.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      GDPR Art.48 "Nach dem Unionsrecht nicht zulaessige Uebermittlung oder
+      Offenlegung" entspricht direkt ISO 27018 A.5.1 (PII disclosure
+      notification + Government Request Handling).
+    audit_evidence_hint: 'Government-Request-Workflow, Disclosure-Logs, Refusal-Templates fuer rechtswidrige Anordnungen.'
+
+  - source: 'Art.49'
+    target: 'A.7.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      GDPR Art.49 "Ausnahmen fuer bestimmte Faelle" Teil von A.7.1 — sehr
+      enge Ausnahmetatbestaende (Einwilligung, Vertragserfuellung, etc.).
+
+  - source: 'Art.50'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      GDPR Art.50 "Internationale Zusammenarbeit zum Schutz personenbezogener
+      Daten" ohne 27018-Control-Pfad — Aufsichtsbehoerden-Kooperation.
+
+  # ===== Chapter VI-VIII — Supervisory authorities, cooperation,
+  #       remedies, liability and penalties (Art.51-84) — out of scope =====
+  - source: 'Art.51'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: 'GDPR Kapitel VI Aufsichtsbehoerden — Out-of-Scope fuer ISO 27018.'
+    gap_warning: 'GDPR Art.51-76 (Aufsichtsbehoerden, Kooperation) operationalisieren keine ISO-Controls.'
+
+  - source: 'Art.77'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: 'GDPR Art.77 (Beschwerderecht) — Out-of-Scope.'
+    gap_warning: 'Rechtsbehelfe operationalisieren keine ISO-Controls.'
+
+  - source: 'Art.82'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: 'GDPR Art.82 (Schadenersatz) — Out-of-Scope.'
+
+  - source: 'Art.83'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: 'GDPR Art.83 (Bussgelder) — Out-of-Scope; AVV-Klauseln zu Haftung in A.3.1.'
+    cross_refs: ['A.3.1']
+
+  - source: 'Art.84'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: 'GDPR Art.84 (Sanktionen) — Out-of-Scope.'
+
+  # ===== Chapter IX-XI — Specific situations, delegated acts,
+  #       final provisions (Art.85-99) — out of scope =====
+  - source: 'Art.85'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: 'GDPR Art.85-91 (Specific processing situations) — Out-of-Scope.'
+
+  - source: 'Art.92'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: 'GDPR Art.92-93 (Delegated acts) — Out-of-Scope.'
+
+  - source: 'Art.94'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: 'GDPR Art.94-99 (Final provisions) — Out-of-Scope.'
