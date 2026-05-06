@@ -830,6 +830,80 @@ class Supplier
     #[ORM\Column(length: 2, nullable: true)]
     private ?string $countryOfHeadOffice = null;  // ISO-3166 alpha-2
 
+    // ── LkSG (Lieferkettensorgfaltspflichtengesetz) ──────────────────────────
+    // Mandatory due-diligence tracking for human-rights and environmental
+    // risks across own business and direct + indirect suppliers. Pflicht ab
+    // 1000 MA seit 2024; Ausweitung auf 250+ MA absehbar.
+
+    /** Aggregierter LkSG-Risiko-Score 0-100 (höher = mehr Risiko). */
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Assert\Range(min: 0, max: 100, notInRangeMessage: 'LkSG human rights risk score must be between {{ min }} and {{ max }}')]
+    private ?int $lksgHumanRightsRiskScore = null;
+
+    /** Umweltbezogener Risiko-Score 0-100. */
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Assert\Range(min: 0, max: 100, notInRangeMessage: 'LkSG environmental risk score must be between {{ min }} and {{ max }}')]
+    private ?int $lksgEnvironmentalRiskScore = null;
+
+    /** Klassifikation der LkSG-Gesamtrisikolage. */
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Choice(
+        choices: [null, 'low', 'medium', 'high', 'critical'],
+        message: 'LkSG risk category must be one of: low, medium, high, critical',
+    )]
+    private ?string $lksgRiskCategory = null;
+
+    /** Datum der letzten LkSG-Risikoanalyse. */
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lksgRiskAnalysisDate = null;
+
+    /** Beschwerdekanal-Beschreibung oder URL. */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $lksgComplaintMechanism = null;
+
+    /** Präventions- und Abhilfemaßnahmen (Freitext, ISO 27001-Belege via Documents-Collection). */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $lksgPreventionMeasures = null;
+
+    /** Berichtspflichtig nach LkSG (Tenant-Pflicht ≥1000 MA, Lieferant innerhalb der Sorgfaltspflicht). */
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $lksgReportingObligation = false;
+
+    public function getLksgHumanRightsRiskScore(): ?int { return $this->lksgHumanRightsRiskScore; }
+    public function setLksgHumanRightsRiskScore(?int $v): self { $this->lksgHumanRightsRiskScore = $v; return $this; }
+
+    public function getLksgEnvironmentalRiskScore(): ?int { return $this->lksgEnvironmentalRiskScore; }
+    public function setLksgEnvironmentalRiskScore(?int $v): self { $this->lksgEnvironmentalRiskScore = $v; return $this; }
+
+    public function getLksgRiskCategory(): ?string { return $this->lksgRiskCategory; }
+    public function setLksgRiskCategory(?string $v): self { $this->lksgRiskCategory = $v; return $this; }
+
+    public function getLksgRiskAnalysisDate(): ?\DateTimeInterface { return $this->lksgRiskAnalysisDate; }
+    public function setLksgRiskAnalysisDate(?\DateTimeInterface $v): self { $this->lksgRiskAnalysisDate = $v; return $this; }
+
+    public function getLksgComplaintMechanism(): ?string { return $this->lksgComplaintMechanism; }
+    public function setLksgComplaintMechanism(?string $v): self { $this->lksgComplaintMechanism = $v; return $this; }
+
+    public function getLksgPreventionMeasures(): ?string { return $this->lksgPreventionMeasures; }
+    public function setLksgPreventionMeasures(?string $v): self { $this->lksgPreventionMeasures = $v; return $this; }
+
+    public function isLksgReportingObligation(): bool { return $this->lksgReportingObligation; }
+    public function setLksgReportingObligation(bool $v): self { $this->lksgReportingObligation = $v; return $this; }
+
+    /**
+     * Aggregated LkSG severity. Highest of the two component scores when both
+     * exist, otherwise the available one. null when neither score is set.
+     */
+    public function getLksgAggregateRiskScore(): ?int
+    {
+        $scores = array_filter(
+            [$this->lksgHumanRightsRiskScore, $this->lksgEnvironmentalRiskScore],
+            static fn(?int $score): bool => $score !== null,
+        );
+
+        return $scores === [] ? null : max($scores);
+    }
+
     public function getNaceCode(): ?string { return $this->naceCode; }
     public function setNaceCode(?string $v): self { $this->naceCode = $v; return $this; }
 

@@ -94,6 +94,18 @@ supplier:
         gdpr_av_contract_signed: 'AVV unterzeichnet (DSGVO Art. 28)'
         gdpr_av_contract_date: 'AVV unterzeichnet am'
         gdpr_transfer_mechanism: 'Datenübermittlungs-Mechanismus (Drittland)'
+        lksg_reporting_obligation: 'LkSG-pflichtig'
+        lksg_risk_category: 'LkSG-Risikoklasse'
+        lksg_human_rights_risk_score: 'Menschenrechts-Risiko-Score (0–100)'
+        lksg_environmental_risk_score: 'Umwelt-Risiko-Score (0–100)'
+        lksg_risk_analysis_date: 'Datum der LkSG-Risikoanalyse'
+        lksg_complaint_mechanism: 'Beschwerdemechanismus'
+        lksg_prevention_measures: 'Präventions- und Abhilfemaßnahmen'
+    lksg_risk:
+        low: 'Niedrig'
+        medium: 'Mittel'
+        high: 'Hoch'
+        critical: 'Kritisch'
     # Enum-Werte für DORA/DSGVO-Felder (FormType choice_translation_domain => 'suppliers')
     ict_criticality:
         critical: 'Kritisch (DORA Art. 28.2)'
@@ -149,6 +161,13 @@ supplier:
         gdpr_transfer_mechanism: 'Rechtlicher Mechanismus für Datentransfer in Drittland (SCC, Angemessenheitsbeschluss, BCR).'
         gdpr_av_contract_signed: 'Ist ein Auftragsverarbeitungsvertrag nach DSGVO Art. 28.3 unterzeichnet?'
         gdpr_av_contract_date: 'Datum der Unterzeichnung des Auftragsverarbeitungsvertrags.'
+        lksg_reporting_obligation: 'Lieferant fällt in Sorgfaltspflicht des LkSG (Tenant ≥ 1000 MA, ab 2024 ≥ 250 MA absehbar).'
+        lksg_risk_category: 'Aggregierte LkSG-Risikoklasse (low/medium/high/critical) — Ergebnis der Risikoanalyse.'
+        lksg_human_rights_risk_score: 'Menschenrechtsbezogener Risiko-Score 0–100 (höher = mehr Risiko).'
+        lksg_environmental_risk_score: 'Umweltbezogener Risiko-Score 0–100 (höher = mehr Risiko).'
+        lksg_risk_analysis_date: 'Datum der letzten dokumentierten LkSG-Risikoanalyse für diesen Lieferanten.'
+        lksg_complaint_mechanism: 'Beschwerdekanal (Beschreibung oder URL) gemäß § 8 LkSG.'
+        lksg_prevention_measures: 'Beschreibung der Präventions- und Abhilfemaßnahmen (§ 6/7 LkSG); ergänzende Belege als Documents verlinken.'
     placeholder:
         name: 'z.B. Acme IT Services GmbH'
         description: 'Beschreiben Sie den Lieferanten und seine Dienste...'
@@ -162,6 +181,7 @@ supplier:
         non_conformities: 'Auflistung festgestellter Nichtkonformitäten...'
         security_requirements: 'Definieren Sie die Sicherheitsanforderungen an den Lieferanten...'
         certifications: 'z.B. SOC 2 Type II, TISAX, etc.'
+        lksg_risk_category: '— bitte wählen —'
     criticality:
         critical: Kritisch
         high: Hoch

@@ -94,6 +94,18 @@ supplier:
         gdpr_av_contract_signed: 'DPA signed (GDPR Art. 28)'
         gdpr_av_contract_date: 'DPA signed on'
         gdpr_transfer_mechanism: 'Third-country transfer mechanism'
+        lksg_reporting_obligation: 'LkSG due-diligence obligation'
+        lksg_risk_category: 'LkSG risk category'
+        lksg_human_rights_risk_score: 'Human-rights risk score (0–100)'
+        lksg_environmental_risk_score: 'Environmental risk score (0–100)'
+        lksg_risk_analysis_date: 'LkSG risk-analysis date'
+        lksg_complaint_mechanism: 'Complaint mechanism'
+        lksg_prevention_measures: 'Prevention and remediation measures'
+    lksg_risk:
+        low: 'Low'
+        medium: 'Medium'
+        high: 'High'
+        critical: 'Critical'
     ict_criticality:
         critical: 'Critical (DORA Art. 28.2)'
         important: 'Important (DORA)'
@@ -148,6 +160,13 @@ supplier:
         gdpr_transfer_mechanism: 'Legal mechanism for third-country data transfer (SCC, Adequacy Decision, BCR).'
         gdpr_av_contract_signed: 'Is a Data Processing Agreement signed per GDPR Art. 28.3?'
         gdpr_av_contract_date: 'Date the Data Processing Agreement was signed.'
+        lksg_reporting_obligation: 'Supplier falls under the LkSG due-diligence scope (tenant ≥ 1000 employees; expansion to ≥ 250 expected).'
+        lksg_risk_category: 'Aggregated LkSG risk category (low/medium/high/critical) — outcome of the risk analysis.'
+        lksg_human_rights_risk_score: 'Human-rights related risk score 0–100 (higher = more risk).'
+        lksg_environmental_risk_score: 'Environment-related risk score 0–100 (higher = more risk).'
+        lksg_risk_analysis_date: 'Date of the most recent documented LkSG risk analysis for this supplier.'
+        lksg_complaint_mechanism: 'Complaint channel description or URL per LkSG § 8.'
+        lksg_prevention_measures: 'Prevention and remediation measures (LkSG § 6/7); attach evidence as Documents.'
     placeholder:
         name: 'e.g. Acme IT Services Inc.'
         description: 'Describe the supplier and their services...'
@@ -161,6 +180,7 @@ supplier:
         non_conformities: 'List identified non-conformities...'
         security_requirements: 'Define security requirements for the supplier...'
         certifications: 'e.g. SOC 2 Type II, TISAX, etc.'
+        lksg_risk_category: '— please select —'
     criticality:
         critical: Critical
         high: High
