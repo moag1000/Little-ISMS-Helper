@@ -1,3 +1,27 @@
 alva:
     title_prefix: 'Alva tip:'
     dismiss: 'Not now'
+
+data_breach:
+    gdpr_72h:
+        title: 'GDPR Art. 33 72h deadline running'
+        body: 'High-severity breach not yet notified to the supervisory authority. Remaining: %hours% h %minutes% min. Missing the deadline = up to €10M / 2% group turnover (Art. 83(4)).'
+        action: 'Record notification'
+
+processing_activity:
+    third_country:
+        title: 'Third-country transfer without safeguards'
+        body: 'Personal data is transferred to %countries% but no Art. 46 safeguard is recorded (SCC, BCR, adequacy decision). Schrems-II exposure.'
+        action: 'Add safeguards'
+
+vulnerability:
+    critical_unpatched:
+        title: 'Critical CVE without patch record'
+        body: 'CVSS %score% (%cve%) — no linked patch activity. NIS2 Art. 21(2)(e) and ISO 27001 A.8.8 require documented remediation.'
+        action: 'Create patch'
+
+data_subject_request:
+    identity:
+        title: 'Identity not yet verified'
+        body: 'Verification method on file (%method%), but identity not confirmed. Releasing data before verification = breach under Art. 5(1)(f).'
+        action: 'Run verification'
