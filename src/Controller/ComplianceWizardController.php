@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\ComplianceRequirementFulfillment;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ComplianceMappingRepository;
 use App\Service\AuditLogger;
 use App\Service\ComplianceWizardService;
 use App\Service\GapEffortCalculator;
@@ -46,6 +47,7 @@ class ComplianceWizardController extends AbstractController
         private readonly ?ComplianceFrameworkRepository $frameworkRepository = null,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?EntityManagerInterface $entityManager = null,
+        private readonly ?ComplianceMappingRepository $mappingRepository = null,
     ) {
     }
 
@@ -73,7 +75,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * Start a specific wizard
      */
-    #[Route('/{wizard}', name: 'app_compliance_wizard_start', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2'])]
+    #[Route('/{wizard}', name: 'app_compliance_wizard_start', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
     public function start(string $wizard): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -94,18 +96,30 @@ class ComplianceWizardController extends AbstractController
             $activeModules
         );
 
+        // On-demand data takeover hint: list other frameworks whose answers
+        // can be inherited via existing mappings. The actual inheritance pass
+        // runs only when the user clicks "Datenübernahme" on the start page.
+        $sourceFrameworks = [];
+        if ($this->frameworkRepository !== null && $this->mappingRepository !== null) {
+            $targetFramework = $this->frameworkRepository->findOneBy(['code' => $config['code']]);
+            if ($targetFramework !== null) {
+                $sourceFrameworks = $this->mappingRepository->findSourceFrameworksMappingTo($targetFramework);
+            }
+        }
+
         return $this->render('compliance_wizard/start.html.twig', [
             'wizard' => $wizard,
             'config' => $config,
             'active_modules' => $activeModules,
             'missing_recommended' => $missingRecommended,
+            'inheritance_source_frameworks' => $sourceFrameworks,
         ]);
     }
 
     /**
      * Run the assessment and show results
      */
-    #[Route('/{wizard}/assess', name: 'app_compliance_wizard_assess', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2'])]
+    #[Route('/{wizard}/assess', name: 'app_compliance_wizard_assess', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
     public function assess(string $wizard): Response
     {
         if (!$this->wizardService->isWizardAvailable($wizard)) {
@@ -306,7 +320,7 @@ class ComplianceWizardController extends AbstractController
     /**
      * WS-6: Gap-Report with FTE estimates (`sort=effort|quick-wins`).
      */
-    #[Route('/{wizard}/gap-report', name: 'app_compliance_wizard_gap_report', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2'])]
+    #[Route('/{wizard}/gap-report', name: 'app_compliance_wizard_gap_report', requirements: ['wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra'])]
     public function gapReport(string $wizard, Request $request): Response
     {
         if ($this->gapEffortCalculator === null || $this->frameworkRepository === null) {

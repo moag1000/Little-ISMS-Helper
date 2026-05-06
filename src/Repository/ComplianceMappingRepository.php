@@ -85,6 +85,57 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      * @param ComplianceFramework $targetFramework Target framework (e.g., SOC 2, GDPR)
      * @return ComplianceMapping[] Array of mappings sorted by strength (strongest first)
      */
+    /**
+     * List source frameworks that have at least one mapping pointing into the
+     * given target framework. Used by the wizard-start UI to surface an
+     * "import existing answers" hint without running a full inheritance pass.
+     *
+     * @return ComplianceFramework[] sorted by mapping count (most → least)
+     */
+    public function findSourceFrameworksMappingTo(ComplianceFramework $targetFramework): array
+    {
+        $rows = $this->createQueryBuilder('cm')
+            ->select('IDENTITY(sr.framework) AS framework_id, COUNT(cm.id) AS mapping_count')
+            ->join('cm.sourceRequirement', 'sr')
+            ->join('cm.targetRequirement', 'tr')
+            ->where('tr.framework = :target')
+            ->andWhere('sr.framework != :target')
+            ->setParameter('target', $targetFramework)
+            ->groupBy('sr.framework')
+            ->orderBy('mapping_count', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        if ($rows === []) {
+            return [];
+        }
+
+        $frameworkIds = array_map(static fn(array $r): int => (int) $r['framework_id'], $rows);
+        $frameworks = $this->getEntityManager()
+            ->getRepository(ComplianceFramework::class)
+            ->createQueryBuilder('f')
+            ->where('f.id IN (:ids)')
+            ->andWhere('f.active = :active')
+            ->setParameter('ids', $frameworkIds)
+            ->setParameter('active', true)
+            ->getQuery()
+            ->getResult();
+
+        $byId = [];
+        foreach ($frameworks as $framework) {
+            $byId[$framework->getId()] = $framework;
+        }
+
+        $ordered = [];
+        foreach ($frameworkIds as $id) {
+            if (isset($byId[$id])) {
+                $ordered[] = $byId[$id];
+            }
+        }
+
+        return $ordered;
+    }
+
     public function findCrossFrameworkMappings(
         ComplianceFramework $sourceFramework,
         ComplianceFramework $targetFramework
