@@ -1809,6 +1809,8 @@ class ComplianceWizardService
             'governance' => [
                 'name' => 'wizard.nis2.governance',
                 'description' => 'wizard.nis2.governance_desc',
+                'maturity_baseline' => 'wizard.nis2.governance_baseline',
+                'maturity_enhanced' => 'wizard.nis2.governance_enhanced',
                 'icon' => 'bi-building',
                 'weight' => 1.5,
                 'article' => '20',
@@ -1836,6 +1838,8 @@ class ComplianceWizardService
             'risk_policies' => [
                 'name' => 'wizard.nis2.risk_policies',
                 'description' => 'wizard.nis2.risk_policies_desc',
+                'maturity_baseline' => 'wizard.nis2.risk_policies_baseline',
+                'maturity_enhanced' => 'wizard.nis2.risk_policies_enhanced',
                 'icon' => 'bi-file-earmark-text',
                 'weight' => 2,
                 'article' => '21(2)(a)',
@@ -1864,6 +1868,8 @@ class ComplianceWizardService
             'incident_handling' => [
                 'name' => 'wizard.nis2.incident_handling',
                 'description' => 'wizard.nis2.incident_handling_desc',
+                'maturity_baseline' => 'wizard.nis2.incident_handling_baseline',
+                'maturity_enhanced' => 'wizard.nis2.incident_handling_enhanced',
                 'icon' => 'bi-exclamation-triangle',
                 'weight' => 2,
                 'article' => '21(2)(b)',
@@ -1893,6 +1899,8 @@ class ComplianceWizardService
             'business_continuity' => [
                 'name' => 'wizard.nis2.business_continuity',
                 'description' => 'wizard.nis2.business_continuity_desc',
+                'maturity_baseline' => 'wizard.nis2.business_continuity_baseline',
+                'maturity_enhanced' => 'wizard.nis2.business_continuity_enhanced',
                 'icon' => 'bi-arrow-repeat',
                 'weight' => 2,
                 'article' => '21(2)(c)',
@@ -1930,6 +1938,8 @@ class ComplianceWizardService
             'supply_chain' => [
                 'name' => 'wizard.nis2.supply_chain',
                 'description' => 'wizard.nis2.supply_chain_desc',
+                'maturity_baseline' => 'wizard.nis2.supply_chain_baseline',
+                'maturity_enhanced' => 'wizard.nis2.supply_chain_enhanced',
                 'icon' => 'bi-truck',
                 'weight' => 1.5,
                 'article' => '21(2)(d)',
@@ -1958,6 +1968,8 @@ class ComplianceWizardService
             'secure_development' => [
                 'name' => 'wizard.nis2.secure_development',
                 'description' => 'wizard.nis2.secure_development_desc',
+                'maturity_baseline' => 'wizard.nis2.secure_development_baseline',
+                'maturity_enhanced' => 'wizard.nis2.secure_development_enhanced',
                 'icon' => 'bi-code-slash',
                 'weight' => 1.5,
                 'article' => '21(2)(e)',
@@ -1987,6 +1999,8 @@ class ComplianceWizardService
             'effectiveness_assessment' => [
                 'name' => 'wizard.nis2.effectiveness_assessment',
                 'description' => 'wizard.nis2.effectiveness_assessment_desc',
+                'maturity_baseline' => 'wizard.nis2.effectiveness_assessment_baseline',
+                'maturity_enhanced' => 'wizard.nis2.effectiveness_assessment_enhanced',
                 'icon' => 'bi-clipboard-check',
                 'weight' => 1.5,
                 'article' => '21(2)(f)',
@@ -2006,6 +2020,8 @@ class ComplianceWizardService
             'cyber_hygiene' => [
                 'name' => 'wizard.nis2.cyber_hygiene',
                 'description' => 'wizard.nis2.cyber_hygiene_desc',
+                'maturity_baseline' => 'wizard.nis2.cyber_hygiene_baseline',
+                'maturity_enhanced' => 'wizard.nis2.cyber_hygiene_enhanced',
                 'icon' => 'bi-mortarboard',
                 'weight' => 1.5,
                 'article' => '21(2)(g)',
@@ -2034,6 +2050,8 @@ class ComplianceWizardService
             'cryptography' => [
                 'name' => 'wizard.nis2.cryptography',
                 'description' => 'wizard.nis2.cryptography_desc',
+                'maturity_baseline' => 'wizard.nis2.cryptography_baseline',
+                'maturity_enhanced' => 'wizard.nis2.cryptography_enhanced',
                 'icon' => 'bi-lock',
                 'weight' => 1.5,
                 'article' => '21(2)(h)',
@@ -2054,6 +2072,8 @@ class ComplianceWizardService
             'access_and_assets' => [
                 'name' => 'wizard.nis2.access_and_assets',
                 'description' => 'wizard.nis2.access_and_assets_desc',
+                'maturity_baseline' => 'wizard.nis2.access_and_assets_baseline',
+                'maturity_enhanced' => 'wizard.nis2.access_and_assets_enhanced',
                 'icon' => 'bi-key',
                 'weight' => 2,
                 'article' => '21(2)(i)',
@@ -2091,6 +2111,8 @@ class ComplianceWizardService
             'mfa' => [
                 'name' => 'wizard.nis2.mfa',
                 'description' => 'wizard.nis2.mfa_desc',
+                'maturity_baseline' => 'wizard.nis2.mfa_baseline',
+                'maturity_enhanced' => 'wizard.nis2.mfa_enhanced',
                 'icon' => 'bi-shield-lock',
                 'weight' => 1.5,
                 'article' => '21(2)(j)',
@@ -2120,6 +2142,8 @@ class ComplianceWizardService
             'reporting' => [
                 'name' => 'wizard.nis2.reporting',
                 'description' => 'wizard.nis2.reporting_desc',
+                'maturity_baseline' => 'wizard.nis2.reporting_baseline',
+                'maturity_enhanced' => 'wizard.nis2.reporting_enhanced',
                 'icon' => 'bi-megaphone',
                 'weight' => 2,
                 'article' => '23',

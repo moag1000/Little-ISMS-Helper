@@ -87,6 +87,12 @@ wizard:
     improve_coverage: "Improve Coverage"
     activate_for_better: "Activate the following modules for a more complete assessment:"
 
+    # Maturity (Baseline / Enhanced) Toggles
+    maturity:
+        toggle: "Show maturity levels (Baseline / Enhanced)"
+        baseline: "Baseline"
+        enhanced: "Enhanced"
+
     # Status labels
     status:
         compliant: "Compliant"
