@@ -23,6 +23,9 @@
 {% if doraActive ?? false %}
     {% set supplierActions = [{ label: 'dora.register_export.button'|trans({}, 'dora'), variant: 'ghost', icon: 'download', href: path('app_dora_register_export_csv') }] | merge(supplierActions) %}
 {% endif %}
+{% if is_granted('ROLE_MANAGER') %}
+    {% set supplierActions = [{ label: 'supplier.action.lksg_export'|trans({}, 'suppliers'), variant: 'ghost', icon: 'download', href: path('app_supplier_lksg_annual_report_csv') }] | merge(supplierActions) %}
+{% endif %}
 {{ _fa_page_header.render({
     badge: { icon: 'truck', label: 'nav.suppliers'|trans({}, 'nav') },
     title: 'supplier.page.title'|trans({}, 'suppliers'),
