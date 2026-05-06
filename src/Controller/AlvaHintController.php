@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\AlvaHint\AlvaHintService;
 use App\Entity\User;
 use App\Repository\AlvaHintDismissalRepository;
+use App\Repository\AlvaHintRenderCountRepository;
 use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -29,6 +30,7 @@ class AlvaHintController extends AbstractController
         private readonly AuditLogger $auditLogger,
         private readonly ?AlvaHintDismissalRepository $dismissalRepository = null,
         private readonly ?TenantContext $tenantContext = null,
+        private readonly ?AlvaHintRenderCountRepository $renderCountRepository = null,
     ) {
     }
 
@@ -92,10 +94,44 @@ class AlvaHintController extends AbstractController
 
         $tenant = $this->tenantContext->getCurrentTenant();
         $stats = $this->dismissalRepository->statisticsByTenant($tenant);
+        $renderTotals = $this->renderCountRepository?->totalsByTenant($tenant) ?? [];
+
+        // Merge render counts onto each row + add rows for hints that
+        // were rendered but never dismissed (otherwise they would not
+        // appear at all in the dashboard).
+        $rendered = $renderTotals;
+        $merged = [];
+        foreach ($stats as $row) {
+            $hintKey = $row['hintKey'];
+            $renders = $rendered[$hintKey] ?? 0;
+            unset($rendered[$hintKey]);
+            $merged[] = $this->buildStatsRow($hintKey, $renders, $row['total'], $row['snoozed'], $row['distinctUsers']);
+        }
+        foreach ($rendered as $hintKey => $renders) {
+            $merged[] = $this->buildStatsRow($hintKey, $renders, 0, 0, 0);
+        }
+        usort($merged, static fn(array $a, array $b): int => $b['rendered'] <=> $a['rendered']);
 
         return $this->render('admin/alva_hint_stats.html.twig', [
-            'stats' => $stats,
+            'stats' => $merged,
             'tenant' => $tenant,
         ]);
+    }
+
+    /**
+     * @return array{hintKey: string, rendered: int, total: int, snoozed: int, distinctUsers: int, dismissRate: int}
+     */
+    private function buildStatsRow(string $hintKey, int $rendered, int $total, int $snoozed, int $distinctUsers): array
+    {
+        $rate = $rendered > 0 ? (int) round(($total / $rendered) * 100) : 0;
+
+        return [
+            'hintKey' => $hintKey,
+            'rendered' => $rendered,
+            'total' => $total,
+            'snoozed' => $snoozed,
+            'distinctUsers' => $distinctUsers,
+            'dismissRate' => $rate,
+        ];
     }
 }
