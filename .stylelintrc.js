@@ -2,6 +2,7 @@ module.exports = {
     extends: ['stylelint-config-standard'],
     ignoreFiles: [
         'assets/styles/fairy-aurora.css',        // Token SoT — defines hex
+        'assets/styles/admin-panel.css',         // WIP — user iterating, not in refactor scope
         'assets/styles/alva.css',                // SVG brand fills legitimate
         'assets/styles/bootstrap*.css',          // Vendor
         'assets/Little ISMS Helper Design System/**', // Spec/design assets

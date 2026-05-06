@@ -3,6 +3,49 @@
 ## Overview
 Standardized badge system with 4 categories, full dark mode support, and consistent styling.
 
+## BC-Bridge Status (2026-05-06)
+
+`_badge` emittiert sowohl Bootstrap- (`.badge.bg-X`) als auch Aurora-
+Klassen (`.fa-status-pill.fa-status-pill--X`). Cleanup-Trigger gemäß
+Spec `docs/superpowers/specs/2026-05-06-aurora-v4-zindex-bigbang-design.md`
+§0 BC-Alias-Cleanup.
+
+| Bootstrap-Variant | Aurora-Variant | Notes |
+|---|---|---|
+| `primary` | `--primary` | |
+| `success` | `--success` | |
+| `warning` | `--warning` | |
+| `danger` | `--danger` | |
+| `info` | `--primary` | (info → primary mapping) |
+| `secondary`/`light`/`dark` | `--neutral` | (collapsed) |
+| `pill: true` | (always pill-shaped) | DEPRECATED — Aurora pills always pill |
+| `size: sm` | `--sm` | |
+| `size: lg` | `--lg` | |
+
+## Severity-Mapping (NEU per ROADMAP Phase 5)
+
+Wenn `variant='severity'` mit `severity='critical|high|medium|low'`:
+
+| severity | mapped variant | Aurora-Klasse |
+|---|---|---|
+| `critical` | `danger` | `.fa-status-pill--danger` |
+| `high` | `warning` | `.fa-status-pill--warning` |
+| `medium` | `info` | `.fa-status-pill--primary` (info → primary) |
+| `low` | `success` | `.fa-status-pill--success` |
+
+Usage:
+```twig
+{% include '_components/_badge.html.twig' with {
+    variant: 'severity',
+    severity: incident.severity,
+    content: incident.severity|trans({}, 'incident')
+} %}
+```
+
+Cleanup-Trigger: alle Consumer-Templates direkt `.fa-status-pill`-Pattern
+nutzen ODER 3 Monate nach 2026-05-06 (= 2026-08-06). Severity-Mapping
+bleibt permanent (nicht BC-Layer, sondern semantischer Helper).
+
 ## Badge Categories
 
 ### 1. STATUS BADGES (Bootstrap 5)
