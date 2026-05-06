@@ -2,6 +2,7 @@
 {% trans_default_domain 'patches' %}
 {% block title %}{{ patch.title }} - {{ parent() }}{% endblock %}
 {% block body %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -9,6 +10,9 @@
             { label: patch.title }
         ]
     } only %}
+
+    {% set hint = alva_hint(patch) %}
+    {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>
