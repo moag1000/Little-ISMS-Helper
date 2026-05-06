@@ -1,7 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'admin' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 
 {% block title %}{{ 'admin.mapping_quality.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -18,41 +19,39 @@
         ]
     } %}
 
-    <p class="text-muted mb-4">{{ 'admin.mapping_quality.description'|trans({}, 'admin') }}</p>
+    {{ _fa_page_header.render({
+        badge: { icon: 'diagram-3', label: 'Mapping' },
+        title: 'admin.mapping_quality.title'|trans({}, 'admin'),
+        subtitle: 'admin.mapping_quality.description'|trans({}, 'admin'),
+    }) }}
 
     {# Aggregate-Statistiken #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { class: 'text-center h-100' } %}
-                {% block card_body %}
-                    <h2 class="mb-1">{{ stats.total }}</h2>
-                    <p class="mb-0 text-muted small">{{ 'admin.mapping_quality.stats.total'|trans({}, 'admin') }}</p>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({
+                value: stats.total,
+                label: 'admin.mapping_quality.stats.total'|trans({}, 'admin'),
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { class: 'text-center h-100' } %}
-                {% block card_body %}
-                    <h2 class="mb-1 text-{{ stats.avg_mqs >= 80 ? 'success' : (stats.avg_mqs >= 60 ? 'warning' : 'danger') }}">{{ stats.avg_mqs }}</h2>
-                    <p class="mb-0 text-muted small">{{ 'admin.mapping_quality.stats.avg_mqs'|trans({}, 'admin') }}</p>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({
+                value: stats.avg_mqs,
+                label: 'admin.mapping_quality.stats.avg_mqs'|trans({}, 'admin'),
+                valueDanger: stats.avg_mqs < 60,
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { class: 'text-center h-100' } %}
-                {% block card_body %}
-                    <h2 class="mb-1 text-success">{{ stats.by_state.published|default(0) }}</h2>
-                    <p class="mb-0 text-muted small">{{ 'admin.mapping_quality.stats.published'|trans({}, 'admin') }}</p>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({
+                value: stats.by_state.published|default(0),
+                label: 'admin.mapping_quality.stats.published'|trans({}, 'admin'),
+            }) }}
         </div>
         <div class="col-md-3">
-            {% embed '_components/_card.html.twig' with { class: 'text-center h-100' } %}
-                {% block card_body %}
-                    <h2 class="mb-1 text-{{ stats.low_score_published > 0 ? 'danger' : 'success' }}">{{ stats.low_score_published }}</h2>
-                    <p class="mb-0 text-muted small">{{ 'admin.mapping_quality.stats.low_score_published'|trans({}, 'admin') }}</p>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({
+                value: stats.low_score_published,
+                label: 'admin.mapping_quality.stats.low_score_published'|trans({}, 'admin'),
+                valueDanger: stats.low_score_published > 0,
+            }) }}
         </div>
     </div>
 
@@ -91,9 +90,8 @@
     </div>
 
     {# Liste #}
-    {% embed '_components/_card.html.twig' %}
-        {% block card_body %}
-            {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+    <section class="fa-section">
+        <div class="fa-section__body">
             {% if mappings|length == 0 %}
                 {{ _fa_alert.render({ variant: 'info', class: 'mb-0', body: 'admin.mapping_quality.no_results'|trans({}, 'admin') }) }}
             {% else %}
@@ -118,9 +116,9 @@
                                     <code class="small">{{ m.targetRequirement.requirementId }}</code>
                                     <div class="small text-muted">{{ m.sourceRequirement.framework.name }} → {{ m.targetRequirement.framework.name }}</div>
                                 </td>
-                                <td>{% if m.relationship %}{% include '_components/_badge.html.twig' with { variant: 'secondary', content: m.relationship|replace({'_': ' '}) } %}{% else %}—{% endif %}</td>
-                                <td>{% include '_components/_badge.html.twig' with { variant: m.confidence == 'high' ? 'success' : (m.confidence == 'medium' ? 'warning' : 'secondary'), content: m.confidence } %}</td>
-                                <td>{% include '_components/_badge.html.twig' with { variant: m.lifecycleBadgeClass, content: m.lifecycleState } %}</td>
+                                <td>{% if m.relationship %}<span class="badge bg-secondary">{{ m.relationship|replace({'_': ' '}) }}</span>{% else %}—{% endif %}</td>
+                                <td><span class="badge bg-{{ m.confidence == 'high' ? 'success' : (m.confidence == 'medium' ? 'warning' : 'secondary') }}">{{ m.confidence }}</span></td>
+                                <td><span class="badge bg-{{ m.lifecycleBadgeClass }}">{{ m.lifecycleState }}</span></td>
                                 <td class="text-end">
                                     {% set scoreClass = m.qualityScore >= 80 ? 'success' : (m.qualityScore >= 60 ? 'warning' : 'danger') %}
                                     <span class="fw-bold text-{{ scoreClass }}">{{ m.qualityScore ?? '–' }}</span>
@@ -136,7 +134,7 @@
                     </table>
                 </div>
             {% endif %}
-        {% endblock %}
-    {% endembed %}
+        </div>
+    </section>
 </div>
 {% endblock %}

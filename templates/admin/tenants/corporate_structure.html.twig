@@ -1,5 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 
 {% block admin_title %}{{ 'corporate.title'|trans({}, 'tenant') }}{% endblock %}
 {% block admin_subtitle %}
@@ -12,6 +14,12 @@
 {% endblock %}
 
 {% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'diagram-3', label: 'corporate.title'|trans({}, 'tenant') },
+        title: 'corporate.title'|trans({}, 'tenant'),
+        subtitle: 'corporate.subtitle'|trans({}, 'tenant')
+    }) }}
+
     {# Info message when only one tenant exists #}
     {% if not isMultiTenant %}
         {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'corporate.single_tenant.title'|trans({}, 'tenant'), body: 'corporate.single_tenant.message'|trans({'%count%': activeTenantCount}, 'tenant') ~ ' ' ~ 'corporate.single_tenant.hint'|trans({}, 'tenant') }) }}
@@ -20,85 +28,45 @@
     {# Statistics Cards #}
     <div class="row g-3 mb-4">
         <div class="col-md-4">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="d-flex align-items-center">
-                        <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
-                            <i class="fa-icon fa-icon--nav-process text-primary fs-3" aria-hidden="true"></i>
-                        </div>
-                        <div>
-                            <div class="text-muted mb-1 small fw-semibold">{{ 'corporate.stats.groups'|trans({}, 'tenant') }}</div>
-                            <h2 class="mb-0 h3">{{ corporateGroups|length }}</h2>
-                        </div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({ value: corporateGroups|length, label: 'corporate.stats.groups'|trans({}, 'tenant') }) }}
         </div>
         <div class="col-md-4">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="d-flex align-items-center">
-                        <div class="bg-success bg-opacity-10 p-3 rounded me-3">
-                            <i class="fa-icon fa-icon--nav-building text-success fs-3" aria-hidden="true"></i>
-                        </div>
-                        <div>
-                            <div class="text-muted mb-1 small fw-semibold">{{ 'corporate.stats.standalone'|trans({}, 'tenant') }}</div>
-                            <h2 class="mb-0 h3">{{ standaloneTenants|length }}</h2>
-                        </div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({ value: standaloneTenants|length, label: 'corporate.stats.standalone'|trans({}, 'tenant') }) }}
         </div>
         <div class="col-md-4">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_body %}
-                    <div class="d-flex align-items-center">
-                        <div class="bg-info bg-opacity-10 p-3 rounded me-3">
-                            <i class="fa-icon fa-icon--ui-list text-info fs-3" aria-hidden="true"></i>
-                        </div>
-                        <div>
-                            <div class="text-muted mb-1 small fw-semibold">{{ 'corporate.stats.total'|trans({}, 'tenant') }}</div>
-                            <h2 class="mb-0 h3">{{ allTenants|length }}</h2>
-                        </div>
-                    </div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_kpi_card.render({ value: allTenants|length, label: 'corporate.stats.total'|trans({}, 'tenant') }) }}
         </div>
     </div>
 
     {# Corporate Groups #}
     {% if corporateGroups is not empty %}
-        {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-            {% block card_header %}
-                <div class="card-header">
-                    <h2 class="card-title mb-0 h3">
-                        <i class="fa-icon fa-icon--nav-process text-primary" aria-hidden="true"></i>
-                        {{ 'corporate.section.groups'|trans({}, 'tenant') }}
-                    </h2>
-                </div>
-            {% endblock %}
-            {% block card_body %}
+        <section class="fa-section mb-4">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">
+                    <i class="fa-icon fa-icon--nav-process text-primary" aria-hidden="true"></i>
+                    {{ 'corporate.section.groups'|trans({}, 'tenant') }}
+                </h2>
+            </div>
+            <div class="fa-section__body">
                 {% for group in corporateGroups %}
-                    {% embed '_components/_card.html.twig' with { 'class': 'border-primary mb-3' } %}
-                        {% block card_header %}
-                            <div class="card-header bg-primary bg-opacity-10">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h3 class="mb-0 h6">
-                                            <i class="fa-icon fa-icon--nav-building text-primary" aria-hidden="true"></i>
-                                            <strong>{{ group.name }}</strong>
-                                            <code class="text-muted ms-2">{{ group.code }}</code>
-                                        </h3>
-                                        <small class="text-muted">{{ 'corporate.role.parent'|trans({}, 'tenant') }}</small>
-                                    </div>
-                                    <a href="{{ path('tenant_management_show', {id: group.id}) }}"
-                                       class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
-                                    </a>
+                    <section class="fa-section mb-3">
+                        <div class="fa-section__header">
+                            <div class="d-flex justify-content-between align-items-center w-100">
+                                <div>
+                                    <h3 class="fa-section__title h6 mb-0">
+                                        <i class="fa-icon fa-icon--nav-building text-primary" aria-hidden="true"></i>
+                                        <strong>{{ group.name }}</strong>
+                                        <code class="text-muted ms-2">{{ group.code }}</code>
+                                    </h3>
+                                    <small class="text-muted">{{ 'corporate.role.parent'|trans({}, 'tenant') }}</small>
                                 </div>
+                                <a href="{{ path('tenant_management_show', {id: group.id}) }}"
+                                   class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                    <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
+                                </a>
                             </div>
-                        {% endblock %}
-                        {% block card_body %}
+                        </div>
+                        <div class="fa-section__body">
                             {% if group.children is not empty %}
                                 <div class="list-group list-group-flush">
                                     {% for subsidiary in group.children %}
@@ -106,63 +74,59 @@
                                     {% endfor %}
                                 </div>
                             {% endif %}
-                        {% endblock %}
-                    {% endembed %}
+                        </div>
+                    </section>
                 {% endfor %}
-            {% endblock %}
-        {% endembed %}
+            </div>
+        </section>
     {% endif %}
 
     {# Standalone Tenants #}
     {% if standaloneTenants is not empty %}
-        {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-            {% block card_header %}
-                <div class="card-header">
-                    <h2 class="card-title mb-0 h3">
-                        <i class="fa-icon fa-icon--nav-building text-success" aria-hidden="true"></i>
-                        {{ 'corporate.section.standalone'|trans({}, 'tenant') }}
-                    </h2>
-                </div>
-            {% endblock %}
-            {% block card_body %}
-                {% embed '_components/_table.html.twig' with {
-                    'class': 'table-hover align-middle',
-                    'noMargin': true,
-                    'responsive': true
-                } %}
-                    {% block table_head %}
-                        <tr>
-                            <th scope="col">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
-                            <th scope="col">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
-                            <th scope="col">{{ 'corporate.field.actions'|trans({}, 'tenant') }}</th>
-                        </tr>
-                    {% endblock %}
-                    {% block table_body %}
-                        {% for tenant in standaloneTenants %}
+        <section class="fa-section mb-4">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">
+                    <i class="fa-icon fa-icon--nav-building text-success" aria-hidden="true"></i>
+                    {{ 'corporate.section.standalone'|trans({}, 'tenant') }}
+                </h2>
+            </div>
+            <div class="fa-section__body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
                             <tr>
-                                <td><code class="text-primary">{{ tenant.code }}</code></td>
-                                <td>{{ tenant.name }}</td>
-                                <td>
-                                    <button type="button"
-                                            class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
-                                            data-controller="corporate-modals"
-                                            data-corporate-modals-tenant-id-value="{{ tenant.id }}"
-                                            data-corporate-modals-tenant-name-value="{{ tenant.name }}"
-                                            data-action="corporate-modals#showSetParent"
-                                            aria-label="{{ 'corporate.action.set_parent'|trans({}, 'tenant') }}">
-                                        <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.action.set_parent'|trans({}, 'tenant') }}
-                                    </button>
-                                    <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
-                                       class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                    </a>
-                                </td>
+                                <th scope="col">{{ 'tenant.field.code'|trans({}, 'tenant') }}</th>
+                                <th scope="col">{{ 'tenant.field.name'|trans({}, 'tenant') }}</th>
+                                <th scope="col">{{ 'corporate.field.actions'|trans({}, 'tenant') }}</th>
                             </tr>
-                        {% endfor %}
-                    {% endblock %}
-                {% endembed %}
-            {% endblock %}
-        {% endembed %}
+                        </thead>
+                        <tbody>
+                            {% for tenant in standaloneTenants %}
+                                <tr>
+                                    <td><code class="text-primary">{{ tenant.code }}</code></td>
+                                    <td>{{ tenant.name }}</td>
+                                    <td>
+                                        <button type="button"
+                                                class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
+                                                data-controller="corporate-modals"
+                                                data-corporate-modals-tenant-id-value="{{ tenant.id }}"
+                                                data-corporate-modals-tenant-name-value="{{ tenant.name }}"
+                                                data-action="corporate-modals#showSetParent"
+                                                aria-label="{{ 'corporate.action.set_parent'|trans({}, 'tenant') }}">
+                                            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'corporate.action.set_parent'|trans({}, 'tenant') }}
+                                        </button>
+                                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
+                                           class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
     {% endif %}
 
     {# Info Box #}
@@ -309,7 +273,11 @@
                 <code class="text-muted ms-2">{{ subsidiary.code }}</code>
                 {% if subsidiary.governanceLabel %}
                     {% set governance_variant = {'hierarchical': 'primary', 'shared': 'warning'}[subsidiary.governanceModel]|default('secondary') %}
-                    {% include '_components/_badge.html.twig' with { variant: governance_variant, class: 'ms-2', content: subsidiary.governanceLabel } %}
+                    {% if governance_variant == 'warning' %}
+                        <span class="badge bg-warning text-dark ms-2">{{ subsidiary.governanceLabel }}</span>
+                    {% else %}
+                        <span class="badge bg-{{ governance_variant }} ms-2">{{ subsidiary.governanceLabel }}</span>
+                    {% endif %}
                 {% endif %}
             </div>
             <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">

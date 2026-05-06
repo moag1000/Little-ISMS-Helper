@@ -1,7 +1,14 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'compliance_policy.page.title'|trans({}, 'compliance_policy') }}{% endblock %}
+
+{% block admin_title %}{{ 'compliance_policy.page.title'|trans({}, 'compliance_policy') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.nav.compliance_policy'|trans({}, 'admin') }}</li>
+{% endblock %}
 
 {% set groups = {
     'inheritance': 'compliance_policy.group.inheritance',
@@ -13,21 +20,12 @@
     'gap_report': 'compliance_policy.group.gap_report'
 } %}
 
-{% block body %}
-<div class="container-fluid">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'admin.title'|trans({}, 'admin'), url: path('admin_dashboard') },
-            { label: 'admin.nav.compliance_policy'|trans({}, 'admin') }
-        ]
-    } %}
-
-    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
-        <div>
-            <h1 class="h3">{{ 'compliance_policy.page.title'|trans({}, 'compliance_policy') }}</h1>
-            <p class="text-muted mb-0">{{ 'compliance_policy.page.lead'|trans({}, 'compliance_policy') }}</p>
-        </div>
-    </div>
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'file-text', label: 'Policy' },
+        title: 'compliance_policy.page.title'|trans({}, 'compliance_policy'),
+        subtitle: 'compliance_policy.page.lead'|trans({}, 'compliance_policy')
+    }) }}
 
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
         {% block alert_body %}<div> <strong>{{ 'compliance_policy.hint.heading'|trans({}, 'compliance_policy') }}</strong> <div class="small">{{ 'compliance_policy.hint.body'|trans({}, 'compliance_policy') }}</div> </div>{% endblock %}
@@ -39,13 +37,11 @@
         {% for groupKey, groupLabel in groups %}
             {% set groupDefs = defs|filter(def => def.group == groupKey) %}
             {% if groupDefs|length > 0 %}
-                {% embed '_components/_card.html.twig' with {'class': 'mb-3', 'groupDefs': groupDefs, 'groupLabel': groupLabel, 'current': current, 'defaults': defaults} %}
-                    {% block card_header %}
-                        <div class="card-header">
-                            <h2 class="h6 mb-0">{{ groupLabel|trans({}, 'compliance_policy') }}</h2>
-                        </div>
-                    {% endblock %}
-                    {% block card_body %}
+                <section class="fa-section mb-3">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">{{ groupLabel|trans({}, 'compliance_policy') }}</h2>
+                    </div>
+                    <div class="fa-section__body">
                         {% for key, def in groupDefs %}
                             {% set fieldId = 'field_' ~ key|replace({'.': '_'}) %}
                             {% set fieldName = key|replace({'.': '_'}) %}
@@ -99,8 +95,8 @@
                                 </div>
                             </div>
                         {% endfor %}
-                    {% endblock %}
-                {% endembed %}
+                    </div>
+                </section>
             {% endif %}
         {% endfor %}
 
@@ -115,13 +111,11 @@
         </div>
     </form>
 
-    {% embed '_components/_card.html.twig' with {'class': 'mt-4', 'defs': defs} %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="h6 mb-0">{{ 'compliance_policy.reset.heading'|trans({}, 'compliance_policy') }}</h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
+    <section class="fa-section mt-4">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'compliance_policy.reset.heading'|trans({}, 'compliance_policy') }}</h2>
+        </div>
+        <div class="fa-section__body">
             <p class="small text-muted">{{ 'compliance_policy.reset.lead'|trans({}, 'compliance_policy') }}</p>
             <div class="row g-2">
                 {% for key, def in defs %}
@@ -141,7 +135,6 @@
                     </div>
                 {% endfor %}
             </div>
-        {% endblock %}
-    {% endembed %}
-</div>
+        </div>
+    </section>
 {% endblock %}

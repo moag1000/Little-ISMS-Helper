@@ -1,5 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block admin_title %}
     {{ 'tenant.organisation_context.title'|trans({}, 'tenant') }}
@@ -12,19 +13,22 @@
 {% endblock %}
 
 {% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'globe', label: 'tenant.organisation_context.title'|trans({}, 'tenant') },
+        title: 'tenant.organisation_context.title'|trans({}, 'tenant'),
+        subtitle: tenant.name
+    }) }}
+
     <div class="row">
         <div class="col-lg-8">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title mb-0 h3">
-                            <i class="fa-icon fa-icon--nav-building text-primary" aria-hidden="true"></i>
-                            {{ 'tenant.organisation_context.header'|trans({}, 'tenant') }}
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-building text-primary" aria-hidden="true"></i>
+                        {{ 'tenant.organisation_context.header'|trans({}, 'tenant') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     <p class="text-muted mb-4">
                         {{ 'tenant.organisation_context.description'|trans({}, 'tenant') }}
                     </p>
@@ -124,22 +128,20 @@
                     </div>
 
                     {{ form_end(form) }}
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
 
         {# Sidebar Info #}
         <div class="col-lg-4">
-            {% embed '_components/_card.html.twig' with { 'class': 'border-info' } %}
-                {% block card_header %}
-                    <div class="card-header bg-info bg-opacity-10">
-                        <h2 class="card-title mb-0 h5">
-                            <i class="fa-icon fa-icon--ui-lightbulb text-info me-2" aria-hidden="true"></i>
-                            {{ 'tenant.organisation_context.info.title'|trans({}, 'tenant') }}
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--ui-lightbulb text-info me-2" aria-hidden="true"></i>
+                        {{ 'tenant.organisation_context.info.title'|trans({}, 'tenant') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     <p class="small text-muted">
                         {{ 'tenant.organisation_context.info.description'|trans({}, 'tenant') }}
                     </p>
@@ -149,8 +151,8 @@
                         <li>{{ 'tenant.organisation_context.info.country'|trans({}, 'tenant') }}</li>
                         <li>{{ 'tenant.organisation_context.info.corporate'|trans({}, 'tenant') }}</li>
                     </ul>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
     </div>
 {% endblock %}

@@ -1,5 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 
 {% block title %}Lizenz-Zusammenfassung{% endblock %}
 
@@ -15,24 +17,22 @@
     } %}
 
     {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
+        badge: { icon: 'patch-check', label: 'Licensing' },
         title: 'Lizenz-Compliance Zusammenfassung',
         subtitle: 'Schnellübersicht über die Lizenz-Compliance',
-        icon: 'bi-bar-chart'
-    } %}
+    }) }}
 
     <div class="row">
         <div class="col-lg-3 mb-4">
             {# Navigation Sidebar #}
-            {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title mb-0">
-                            <i class="fa-icon fa-icon--ui-list me-2" aria-hidden="true"></i>Navigation
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--ui-list me-2" aria-hidden="true"></i>Navigation
+                    </h2>
+                </div>
+                <div class="fa-section__body p-0">
                     <div class="list-group list-group-flush">
                         <a href="{{ path('admin_licensing_index') }}" class="list-group-item list-group-item-action">
                             <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>NOTICE
@@ -44,8 +44,8 @@
                             <i class="fa-icon fa-icon--nav-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
                         </a>
                     </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
 
         <div class="col-lg-9">
@@ -112,161 +112,136 @@
                 {# Statistics Cards #}
                 <div class="row mb-4">
                     <div class="col-md-4 mb-3">
-                        {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
-                            {% block card_body %}
-                                <div class="text-center">
-                                    <div class="display-4 mb-2 text-primary">{{ stats.total }}</div>
-                                    <p class="fw-semibold text-muted mb-0">Pakete Gesamt</p>
-                                    <small class="text-muted">
-                                        {% if stats.generated_at %}
-                                            Stand: {{ stats.generated_at }}
-                                        {% endif %}
-                                    </small>
-                                </div>
-                            {% endblock %}
-                        {% endembed %}
+                        {{ _fa_kpi_card.render({
+                            value: stats.total,
+                            label: 'Pakete Gesamt',
+                            sublabel: stats.generated_at ? 'Stand: ' ~ stats.generated_at : null,
+                        }) }}
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-success' } %}
-                            {% block card_body %}
-                                <div class="text-center">
-                                    <div class="display-4 mb-2 text-success">{{ stats.allowed }}</div>
-                                    <p class="fw-semibold text-muted mb-0">Erlaubt</p>
-                                    <small class="text-muted">{{ (stats.allowed / stats.total * 100)|round(1) }}%</small>
-                                </div>
-                            {% endblock %}
-                        {% endembed %}
+                        {{ _fa_kpi_card.render({
+                            value: stats.allowed,
+                            label: 'Erlaubt',
+                            sublabel: (stats.allowed / stats.total * 100)|round(1) ~ '%',
+                        }) }}
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        {% embed '_components/_card.html.twig' with { 'class': 'h-100' ~ ((stats.unknown > 0 or stats.not_allowed > 0) ? ' border-warning' : '') } %}
-                            {% block card_body %}
-                                <div class="text-center">
-                                    <div class="display-4 mb-2 {% if stats.unknown > 0 or stats.not_allowed > 0 %}text-warning{% else %}text-muted{% endif %}">
-                                        {{ stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown }}
-                                    </div>
-                                    <p class="fw-semibold text-muted mb-0">Prüfung erforderlich</p>
-                                    <small class="text-muted">
-                                        {{ ((stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown) / stats.total * 100)|round(1) }}%
-                                    </small>
-                                </div>
-                            {% endblock %}
-                        {% endembed %}
+                        {{ _fa_kpi_card.render({
+                            value: stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown,
+                            label: 'Prüfung erforderlich',
+                            sublabel: ((stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown) / stats.total * 100)|round(1) ~ '%',
+                            valueDanger: stats.unknown > 0 or stats.not_allowed > 0,
+                        }) }}
                     </div>
                 </div>
 
                 {# Detailed Breakdown #}
-                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-                    {% block card_header %}
-                        <div class="card-header">
-                            <h2 class="card-title mb-0">
-                                <i class="fa-icon fa-icon--nav-pie-chart me-2" aria-hidden="true"></i>Lizenzverteilung
-                            </h2>
+                <section class="fa-section mb-4">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">
+                            <i class="fa-icon fa-icon--nav-pie-chart me-2" aria-hidden="true"></i>Lizenzverteilung
+                        </h2>
+                    </div>
+                    <div class="fa-section__body">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Beschreibung</th>
+                                        <th scope="col" class="text-end">Anzahl</th>
+                                        <th scope="col" class="text-end">Anteil</th>
+                                        <th scope="col" style="width: 200px;">Verteilung</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge bg-success"><i class="bi bi-check-circle" aria-hidden="true"></i> Erlaubt</span></td>
+                                        <td><small>Permissive Lizenzen (MIT, BSD, Apache)</small></td>
+                                        <td class="text-end"><strong>{{ stats.allowed }}</strong></td>
+                                        <td class="text-end">{{ (stats.allowed / stats.total * 100)|round(1) }}%</td>
+                                        <td>
+                                            <div class="progress progress-h-20">
+                                                <div class="progress-bar bg-success" role="progressbar"
+                                                     style="width: {{ (stats.allowed / stats.total * 100)|round(1) }}%"
+                                                     aria-valuenow="{{ stats.allowed }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Eingeschränkt</span></td>
+                                        <td><small>Weak copyleft (MPL, EPL, CC-BY)</small></td>
+                                        <td class="text-end"><strong>{{ stats.restricted }}</strong></td>
+                                        <td class="text-end">{{ (stats.restricted / stats.total * 100)|round(1) }}%</td>
+                                        <td>
+                                            <div class="progress progress-h-20">
+                                                <div class="progress-bar bg-warning" role="progressbar"
+                                                     style="width: {{ (stats.restricted / stats.total * 100)|round(1) }}%"
+                                                     aria-valuenow="{{ stats.restricted }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-info"><i class="bi bi-arrow-repeat" aria-hidden="true"></i> Copyleft</span></td>
+                                        <td><small>Strong copyleft (GPL, LGPL, AGPL)</small></td>
+                                        <td class="text-end"><strong>{{ stats.copyleft }}</strong></td>
+                                        <td class="text-end">{{ (stats.copyleft / stats.total * 100)|round(1) }}%</td>
+                                        <td>
+                                            <div class="progress progress-h-20">
+                                                <div class="progress-bar bg-info" role="progressbar"
+                                                     style="width: {{ (stats.copyleft / stats.total * 100)|round(1) }}%"
+                                                     aria-valuenow="{{ stats.copyleft }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> Nicht erlaubt</span></td>
+                                        <td><small>Non-commercial Lizenzen</small></td>
+                                        <td class="text-end"><strong>{{ stats.not_allowed }}</strong></td>
+                                        <td class="text-end">{{ (stats.not_allowed / stats.total * 100)|round(1) }}%</td>
+                                        <td>
+                                            <div class="progress progress-h-20">
+                                                <div class="progress-bar bg-danger" role="progressbar"
+                                                     style="width: {{ (stats.not_allowed / stats.total * 100)|round(1) }}%"
+                                                     aria-valuenow="{{ stats.not_allowed }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-secondary">❓ Unbekannt</span></td>
+                                        <td><small>Manuelle Prüfung erforderlich</small></td>
+                                        <td class="text-end"><strong>{{ stats.unknown }}</strong></td>
+                                        <td class="text-end">{{ (stats.unknown / stats.total * 100)|round(1) }}%</td>
+                                        <td>
+                                            <div class="progress progress-h-20">
+                                                <div class="progress-bar bg-secondary" role="progressbar"
+                                                     style="width: {{ (stats.unknown / stats.total * 100)|round(1) }}%"
+                                                     aria-valuenow="{{ stats.unknown }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                    {% endblock %}
-                    {% block card_body %}
-                        {% embed '_components/_table.html.twig' with {
-                            'class': 'table-sm',
-                            'noMargin': true,
-                            'responsive': true
-                        } %}
-                            {% block table_head %}
-                                <tr>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Beschreibung</th>
-                                    <th scope="col" class="text-end">Anzahl</th>
-                                    <th scope="col" class="text-end">Anteil</th>
-                                    <th scope="col" style="width: 200px;">Verteilung</th>
-                                </tr>
-                            {% endblock %}
-                            {% block table_body %}
-                                <tr>
-                                    <td>{% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Erlaubt' } %}</td>
-                                    <td><small>Permissive Lizenzen (MIT, BSD, Apache)</small></td>
-                                    <td class="text-end"><strong>{{ stats.allowed }}</strong></td>
-                                    <td class="text-end">{{ (stats.allowed / stats.total * 100)|round(1) }}%</td>
-                                    <td>
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-success" role="progressbar"
-                                                 style="width: {{ (stats.allowed / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.allowed }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'Eingeschränkt' } %}</td>
-                                    <td><small>Weak copyleft (MPL, EPL, CC-BY)</small></td>
-                                    <td class="text-end"><strong>{{ stats.restricted }}</strong></td>
-                                    <td class="text-end">{{ (stats.restricted / stats.total * 100)|round(1) }}%</td>
-                                    <td>
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-warning" role="progressbar"
-                                                 style="width: {{ (stats.restricted / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.restricted }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-arrow-repeat', content: 'Copyleft' } %}</td>
-                                    <td><small>Strong copyleft (GPL, LGPL, AGPL)</small></td>
-                                    <td class="text-end"><strong>{{ stats.copyleft }}</strong></td>
-                                    <td class="text-end">{{ (stats.copyleft / stats.total * 100)|round(1) }}%</td>
-                                    <td>
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-info" role="progressbar"
-                                                 style="width: {{ (stats.copyleft / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.copyleft }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'Nicht erlaubt' } %}</td>
-                                    <td><small>Non-commercial Lizenzen</small></td>
-                                    <td class="text-end"><strong>{{ stats.not_allowed }}</strong></td>
-                                    <td class="text-end">{{ (stats.not_allowed / stats.total * 100)|round(1) }}%</td>
-                                    <td>
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-danger" role="progressbar"
-                                                 style="width: {{ (stats.not_allowed / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.not_allowed }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: '❓ Unbekannt' } %}</td>
-                                    <td><small>Manuelle Prüfung erforderlich</small></td>
-                                    <td class="text-end"><strong>{{ stats.unknown }}</strong></td>
-                                    <td class="text-end">{{ (stats.unknown / stats.total * 100)|round(1) }}%</td>
-                                    <td>
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-secondary" role="progressbar"
-                                                 style="width: {{ (stats.unknown / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.unknown }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endblock %}
-                        {% endembed %}
-                    {% endblock %}
-                {% endembed %}
+                    </div>
+                </section>
 
                 {# Actions Required #}
                 {% if stats.unknown > 0 or stats.not_allowed > 0 %}
-                    {% embed '_components/_card.html.twig' with { 'class': 'border-warning mb-4' } %}
-                        {% block card_header %}
-                            <div class="card-header bg-warning-subtle text-warning">
-                                <h2 class="card-title mb-0">
-                                    <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>Handlungsbedarf
-                                </h2>
-                            </div>
-                        {% endblock %}
-                        {% block card_body %}
+                    <section class="fa-section mb-4">
+                        <div class="fa-section__header">
+                            <h2 class="fa-section__title text-warning">
+                                <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>Handlungsbedarf
+                            </h2>
+                        </div>
+                        <div class="fa-section__body">
                             <ul class="mb-0">
                                 {% if stats.unknown > 0 %}
                                     <li><strong>{{ stats.unknown }}</strong> Pakete mit unbekannter Lizenz müssen manuell geprüft werden</li>
@@ -283,20 +258,18 @@
                                     <i class="fa-icon fa-icon--nav-reports" aria-hidden="true"></i>Detailbericht anzeigen
                                 </a>
                             </div>
-                        {% endblock %}
-                    {% endembed %}
+                        </div>
+                    </section>
                 {% endif %}
 
                 {# Next Steps #}
-                {% embed '_components/_card.html.twig' %}
-                    {% block card_header %}
-                        <div class="card-header">
-                            <h2 class="card-title mb-0">
-                                <i class="fa-icon fa-icon--nav-list-check me-2" aria-hidden="true"></i>Nächste Schritte
-                            </h2>
-                        </div>
-                    {% endblock %}
-                    {% block card_body %}
+                <section class="fa-section">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">
+                            <i class="fa-icon fa-icon--nav-list-check me-2" aria-hidden="true"></i>Nächste Schritte
+                        </h2>
+                    </div>
+                    <div class="fa-section__body">
                         <ol class="mb-0">
                             <li>Vollständigen Bericht prüfen: <a href="{{ path('admin_licensing_report') }}">Detailbericht öffnen</a></li>
                             <li>Problematische Lizenzen identifizieren und dokumentieren</li>
@@ -304,8 +277,8 @@
                             <li>{{ 'admin.licensing.attributions_provided'|trans({}, 'admin') }}</li>
                             <li>Regelmäßig aktualisieren: <code>./license-report.sh</code> ausführen</li>
                         </ol>
-                    {% endblock %}
-                {% endembed %}
+                    </div>
+                </section>
 
             {% else %}
                 {# No Report Found #}

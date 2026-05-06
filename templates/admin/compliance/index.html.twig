@@ -1,62 +1,60 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 
 {% block title %}{{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}{% endblock %}
 
-{% block admin_title %}📦 {{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}{% endblock %}
+{% block admin_title %}{{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}</li>
+{% endblock %}
 
 {% block admin_content %}
-<div class="container">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
-            { label: 'compliance.manage_frameworks'|trans({}, 'compliance') }
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-check', label: 'Compliance' },
+        title: 'compliance.manage_frameworks'|trans({}, 'compliance'),
+        subtitle: 'compliance.manage_frameworks_subtitle'|trans({}, 'compliance'),
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('admin_compliance_index') }
         ]
-    } %}
+    }) }}
 
-    <div class="page-header">
-        <div>
-            <p class="text-muted">{{ 'compliance.manage_frameworks_subtitle'|trans({}, 'compliance') }}</p>
+    {# Statistics #}
+    <section class="fa-section mb-4">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">{{ 'compliance.framework_statistics'|trans({}, 'compliance') }}</h2>
         </div>
-        <div class="button-group">
-            <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <span class="icon">←</span> {{ 'common.back'|trans({}, 'messages') }}
-            </a>
-        </div>
-    </div>
-
-    {# Statistics Card #}
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2>📊 {{ 'compliance.framework_statistics'|trans({}, 'compliance') }}</h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-icon">📦</div>
-                    <div class="stat-number">{{ statistics.total_available }}</div>
-                    <div class="stat-text">{{ 'compliance.total_available'|trans({}, 'compliance') }}</div>
+        <div class="fa-section__body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    {{ _fa_kpi_card.render({
+                        value: statistics.total_available,
+                        label: 'compliance.total_available'|trans({}, 'compliance')
+                    }) }}
                 </div>
-                <div class="stat-box">
-                    <div class="stat-icon"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></div>
-                    <div class="stat-number">{{ statistics.total_loaded }}</div>
-                    <div class="stat-text">{{ 'compliance.loaded'|trans({}, 'compliance') }}</div>
+                <div class="col-md-3">
+                    {{ _fa_kpi_card.render({
+                        value: statistics.total_loaded,
+                        label: 'compliance.loaded'|trans({}, 'compliance')
+                    }) }}
                 </div>
-                <div class="stat-box">
-                    <div class="stat-icon"><i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i></div>
-                    <div class="stat-number">{{ statistics.total_not_loaded }}</div>
-                    <div class="stat-text">{{ 'compliance.not_loaded'|trans({}, 'compliance') }}</div>
+                <div class="col-md-3">
+                    {{ _fa_kpi_card.render({
+                        value: statistics.total_not_loaded,
+                        label: 'compliance.not_loaded'|trans({}, 'compliance')
+                    }) }}
                 </div>
-                <div class="stat-box">
-                    <div class="stat-icon"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i></div>
-                    <div class="stat-number">{{ statistics.mandatory_not_loaded }}</div>
-                    <div class="stat-text">{{ 'compliance.mandatory_missing'|trans({}, 'compliance') }}</div>
+                <div class="col-md-3">
+                    {{ _fa_kpi_card.render({
+                        value: statistics.mandatory_not_loaded,
+                        label: 'compliance.mandatory_missing'|trans({}, 'compliance')
+                    }) }}
                 </div>
             </div>
-        {% endblock %}
-    {% endembed %}
+        </div>
+    </section>
 
     {# Available Frameworks #}
     <div class="frameworks-container">
@@ -73,9 +71,9 @@
                             <p>{{ framework.name }}</p>
                         </div>
                         {% if framework.loaded %}
-                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'compliance.loaded'|trans({}, 'compliance') } %}
+                            <span class="badge bg-success">{{ 'compliance.loaded'|trans({}, 'compliance') }}</span>
                         {% else %}
-                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'compliance.not_loaded'|trans({}, 'compliance') } %}
+                            <span class="badge bg-warning text-dark">{{ 'compliance.not_loaded'|trans({}, 'compliance') }}</span>
                         {% endif %}
                     </div>
 
@@ -97,11 +95,11 @@
                                 <span class="label">{{ 'admin.compliance.applicability.label'|trans({}, 'compliance') }}:</span>
                                 <span class="value">
                                     {% if _applicability == 'universal' %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'admin.compliance.applicability.universal'|trans({}, 'compliance') } %}
+                                        <span class="badge bg-danger">{{ 'admin.compliance.applicability.universal'|trans({}, 'compliance') }}</span>
                                     {% elseif _applicability == 'conditional' %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'admin.compliance.applicability.conditional'|trans({}, 'compliance') } %}
+                                        <span class="badge bg-warning text-dark">{{ 'admin.compliance.applicability.conditional'|trans({}, 'compliance') }}</span>
                                     {% else %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'admin.compliance.applicability.voluntary'|trans({}, 'compliance') } %}
+                                        <span class="badge bg-secondary">{{ 'admin.compliance.applicability.voluntary'|trans({}, 'compliance') }}</span>
                                     {% endif %}
                                 </span>
                             </div>
@@ -164,7 +162,6 @@
             {% endfor %}
         </div>
     </div>
-</div>
 
 {# framework-card styles live in assets/styles/fairy-aurora-components.css #}
 

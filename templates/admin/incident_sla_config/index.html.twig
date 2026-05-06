@@ -1,32 +1,27 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'incident_sla.title'|trans({}, 'incident_sla') }}{% endblock %}
 
-{% block body %}
-<div class="container mt-4">
-    <div class="row mb-3">
-        <div class="col">
-            <h1>
-                <i class="bi bi-stopwatch" aria-hidden="true"></i>
-                {{ 'incident_sla.title'|trans({}, 'incident_sla') }}
-            </h1>
-            <p class="lead">{{ 'incident_sla.subtitle'|trans({}, 'incident_sla') }}</p>
-        </div>
-    </div>
+{% block admin_content %}
+<div class="container-fluid">
+    {{ _fa_page_header.render({
+        badge: { icon: 'stopwatch', label: 'SLA' },
+        title: 'incident_sla.title'|trans({}, 'incident_sla'),
+        subtitle: 'incident_sla.subtitle'|trans({}, 'incident_sla'),
+    }) }}
 
     <div class="row">
         <div class="col-lg-10">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h3 class="h5 mb-0">
-                            <i class="fa-icon fa-icon--nav-list-ordered" aria-hidden="true"></i>
-                            {{ 'incident_sla.section.list'|trans({}, 'incident_sla') }}
-                        </h3>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-list-ordered" aria-hidden="true"></i>
+                        {{ 'incident_sla.section.list'|trans({}, 'incident_sla') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead>
@@ -45,7 +40,7 @@
                                     <tr>
                                         <td>
                                             {% set _svpill = variant in ['info'] ? 'primary' : (variant in ['secondary','light','dark'] ? 'neutral' : variant) %}
-                                        <span class="badge bg-{{ variant }} fa-status-pill fa-status-pill--{{ _svpill }}">
+                                            <span class="badge bg-{{ variant }} fa-status-pill fa-status-pill--{{ _svpill }}">
                                                 {{ ('incident_sla.severity.' ~ config.severity)|trans({}, 'incident_sla') }}
                                             </span>
                                         </td>
@@ -67,11 +62,9 @@
                             </tbody>
                         </table>
                     </div>
-                    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'small mb-0 mt-3' } } %}
-                        {% block alert_body %}{{ 'incident_sla.hint.regulatory'|trans({}, 'incident_sla') }}{% endblock %}
-                    {% endembed %}
-                {% endblock %}
-            {% endembed %}
+                    {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'small mb-0 mt-3', body: 'incident_sla.hint.regulatory'|trans({}, 'incident_sla') }) }}
+                </div>
+            </section>
         </div>
     </div>
 </div>

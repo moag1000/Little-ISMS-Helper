@@ -1,31 +1,29 @@
 {% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block admin_title %}
-    <i class="fa-icon fa-icon--nav-stars fairy-icon-sparkle" aria-hidden="true"></i>
-    {{ 'admin.tour_content.title'|trans({}, 'admin') }}
-{% endblock %}
+{% block admin_title %}{{ 'admin.tour_content.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block breadcrumb_items %}
     <li class="breadcrumb-item active" aria-current="page">{{ 'admin.tour_content.title'|trans({}, 'admin') }}</li>
 {% endblock %}
 
 {% block admin_content %}
-<div class="container-fluid">
-    <p class="text-muted mb-3">
-        {{ 'admin.tour_content.description'|trans({}, 'admin')|raw }}
-    </p>
+    {{ _fa_page_header.render({
+        badge: { icon: 'compass', label: 'Tour Content' },
+        title: 'admin.tour_content.title'|trans({}, 'admin'),
+        subtitle: 'admin.tour_content.description'|trans({}, 'admin'),
+    }) }}
 
     {% if scope_tenant %}
-        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'small' } } %}
-            {% block alert_body %}
+        {% set _scopeBody %}
             {{ 'admin.tour_content.scope_tenant_hint'|trans({'%tenant%': scope_tenant.name}, 'admin') }}
             {% if can_set_global %}
                 <br>
                 <span class="small">{{ 'admin.tour_content.global_hint'|trans({}, 'admin') }}</span>
             {% endif %}
-            {% endblock %}
-        {% endembed %}
+        {% endset %}
+        {{ _fa_alert.render({ variant: 'info', class: 'small', body: _scopeBody }) }}
     {% endif %}
 
     <div class="row g-3">
@@ -34,8 +32,8 @@
             <div class="col-md-6 col-lg-4">
                 <a href="{{ path('admin_tour_content_edit', {tourId: tour.id}) }}"
                    class="text-decoration-none">
-                    {% embed '_components/_card.html.twig' with { class: 'h-100 shadow-sm' ~ (count > 0 ? ' border-primary' : '') } %}
-                        {% block card_body %}
+                    <section class="fa-section h-100{{ count > 0 ? ' border-primary' : '' }}">
+                        <div class="fa-section__body">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <h3 class="h6 mb-1">
@@ -54,11 +52,10 @@
                             <p class="small text-body mt-2 mb-0">
                                 {{ ('guided_tour.' ~ tour.id ~ '.meta.description')|trans({}, 'guided_tour') }}
                             </p>
-                        {% endblock %}
-                    {% endembed %}
+                        </div>
+                    </section>
                 </a>
             </div>
         {% endfor %}
     </div>
-</div>
 {% endblock %}

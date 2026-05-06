@@ -1,33 +1,30 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block title %}{{ 'risk_approval_config.title'|trans({}, 'risk_approval_config') }}{% endblock %}
+{% block admin_title %}{{ 'risk_approval_config.title'|trans({}, 'risk_approval_config') }}{% endblock %}
 
-{% block body %}
-<div class="container mt-4">
-    <div class="row mb-3">
-        <div class="col">
-            <h1>
-                <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i>
-                {{ 'risk_approval_config.title'|trans({}, 'risk_approval_config') }}
-            </h1>
-            <p class="lead">{{ 'risk_approval_config.subtitle'|trans({}, 'risk_approval_config') }}</p>
-        </div>
-    </div>
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'risk_approval_config.title'|trans({}, 'risk_approval_config') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'check2-circle', label: 'Risk Approval' },
+        title: 'risk_approval_config.title'|trans({}, 'risk_approval_config'),
+        subtitle: 'risk_approval_config.subtitle'|trans({}, 'risk_approval_config'),
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">
-            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h3 class="h5 mb-0">
-                            <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
-                            {{ 'risk_approval_config.section.thresholds'|trans({}, 'risk_approval_config') }}
-                        </h3>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+            <section class="fa-section mb-4">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
+                        {{ 'risk_approval_config.section.thresholds'|trans({}, 'risk_approval_config') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     {{ form_start(form) }}
                         <div class="mb-3">
                             {{ form_label(form.thresholdAutomatic) }}
@@ -61,20 +58,18 @@
                             </button>
                         </div>
                     {{ form_end(form) }}
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
 
             {% if config.updatedAt %}
-                {% embed '_components/_card.html.twig' %}
-                    {% block card_header %}
-                        <div class="card-header">
-                            <h3 class="h6 mb-0">
-                                <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
-                                {{ 'risk_approval_config.section.last_change'|trans({}, 'risk_approval_config') }}
-                            </h3>
-                        </div>
-                    {% endblock %}
-                    {% block card_body %}
+                <section class="fa-section">
+                    <div class="fa-section__header">
+                        <h2 class="fa-section__title">
+                            <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
+                            {{ 'risk_approval_config.section.last_change'|trans({}, 'risk_approval_config') }}
+                        </h2>
+                    </div>
+                    <div class="fa-section__body">
                         <dl class="row mb-0">
                             <dt class="col-sm-3">{{ 'risk_approval_config.updated_at'|trans({}, 'risk_approval_config') }}</dt>
                             <dd class="col-sm-9">{{ config.updatedAt|date('d.m.Y H:i') }}</dd>
@@ -87,10 +82,9 @@
                                 <dd class="col-sm-9">{{ config.note }}</dd>
                             {% endif %}
                         </dl>
-                    {% endblock %}
-                {% endembed %}
+                    </div>
+                </section>
             {% endif %}
         </div>
     </div>
-</div>
 {% endblock %}

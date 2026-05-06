@@ -1,5 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}Lizenzinformationen{% endblock %}
 
@@ -14,24 +15,22 @@
     } %}
 
     {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
+        badge: { icon: 'patch-check', label: 'Licensing' },
         title: 'Lizenzinformationen',
         subtitle: 'Third-Party Software Attributions & Compliance',
-        icon: 'bi-file-text'
-    } %}
+    }) }}
 
     <div class="row">
         <div class="col-lg-3 mb-4">
             {# Navigation Sidebar #}
-            {% embed '_components/_card.html.twig' %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title mb-0">
-                            <i class="fa-icon fa-icon--ui-list me-2" aria-hidden="true"></i>Navigation
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--ui-list me-2" aria-hidden="true"></i>Navigation
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     <div class="list-group list-group-flush mx-n3 mt-n3">
                         <a href="{{ path('admin_licensing_index') }}" class="list-group-item list-group-item-action active">
                             <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>NOTICE
@@ -48,19 +47,17 @@
                         <p class="small mb-2"><strong>{{ project_name }}</strong></p>
                         <p class="small text-muted mb-0">Lizenz: {{ project_license }}</p>
                     </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
 
             {# Quick Actions #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mt-3' } %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title mb-0">
-                            <i class="fa-icon fa-icon--nav-tools me-2" aria-hidden="true"></i>Aktionen
-                        </h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section mt-3">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="fa-icon fa-icon--nav-tools me-2" aria-hidden="true"></i>Aktionen
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     <div class="d-grid gap-2">
                         <button data-controller="ui-actions" data-action="ui-actions#print" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                             <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i>Drucken
@@ -69,8 +66,8 @@
                             <i class="fa-icon fa-icon--nav-download me-1" aria-hidden="true"></i>NOTICE.md
                         </a>
                     </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
 
         <div class="col-lg-9">
@@ -78,30 +75,28 @@
             {{ _fa_alert.render({ variant: 'success', class: 'mb-4', title: 'Lizenzkonform für kommerzielle Nutzung', body: 'Alle verwendeten Third-Party-Komponenten sind für kommerzielle Nutzung freigegeben. Bitte beachten Sie die Attributions- und Lizenzvorgaben.' }) }}
 
             {# NOTICE Content #}
-            {% embed '_components/_card.html.twig' %}
-                {% block card_header %}
-                    <div class="card-header bg-body-secondary">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h2 class="card-title mb-0">
-                                <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>NOTICE - Third-Party Software Attributions
-                            </h2>
-                            <div class="btn-group btn-group-sm" role="group" data-controller="ui-actions">
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#license-content">
-                                    <i class="fa-icon fa-icon--util-zoom-out" aria-hidden="true"></i>
-                                </button>
-                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-action="ui-actions#setFontSize" data-ui-actions-size-param="16px" data-ui-actions-target-param="#license-content">
-                                    <i class="fa-icon fa-icon--util-zoom-in" aria-hidden="true"></i>
-                                </button>
-                            </div>
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <h2 class="fa-section__title">
+                            <i class="fa-icon fa-icon--policy me-2" aria-hidden="true"></i>NOTICE - Third-Party Software Attributions
+                        </h2>
+                        <div class="btn-group btn-group-sm" role="group" data-controller="ui-actions">
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#license-content">
+                                <i class="fa-icon fa-icon--util-zoom-out" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-action="ui-actions#setFontSize" data-ui-actions-size-param="16px" data-ui-actions-target-param="#license-content">
+                                <i class="fa-icon fa-icon--util-zoom-in" aria-hidden="true"></i>
+                            </button>
                         </div>
                     </div>
-                {% endblock %}
-                {% block card_body %}
+                </div>
+                <div class="fa-section__body">
                     <div id="license-content" class="markdown-content" style="font-size: 14px;">
                         {{ notice_content|raw|nl2br }}
                     </div>
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
     </div>
 </div>

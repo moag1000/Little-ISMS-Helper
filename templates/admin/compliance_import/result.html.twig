@@ -1,33 +1,34 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'compliance_import.result.title'|trans({}, 'compliance_import') }}{% endblock %}
 
 {% block admin_title %}{{ 'compliance_import.wizard.title'|trans({}, 'compliance_import') }}{% endblock %}
 
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_compliance_index') }}">{{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('admin_compliance_import_upload') }}">{{ 'compliance_import.wizard.title'|trans({}, 'compliance_import') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'compliance_import.result.breadcrumb'|trans({}, 'compliance_import') }}</li>
+{% endblock %}
+
 {% block admin_content %}
-<div class="container">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
-            { label: 'compliance.manage_frameworks'|trans({}, 'compliance'), url: path('admin_compliance_index') },
-            { label: 'compliance_import.wizard.title'|trans({}, 'compliance_import'), url: path('admin_compliance_import_upload') },
-            { label: 'compliance_import.result.breadcrumb'|trans({}, 'compliance_import') }
-        ]
-    } only %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'cloud-arrow-up', label: 'Import' },
+        title: 'compliance_import.wizard.title'|trans({}, 'compliance_import'),
+        subtitle: 'compliance_import.result.breadcrumb'|trans({}, 'compliance_import')
+    }) }}
 
     {% include 'admin/compliance_import/_stepper.html.twig' with { active_step: active_step } only %}
 
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } only %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="h5 mb-0">
-                    <i class="fa-icon fa-icon--approve" aria-hidden="true"></i>
-                    {{ 'compliance_import.result.summary_title'|trans({}, 'compliance_import') }}
-                </h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
+    <section class="fa-section mb-3">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="fa-icon fa-icon--approve" aria-hidden="true"></i>
+                {{ 'compliance_import.result.summary_title'|trans({}, 'compliance_import') }}
+            </h2>
+        </div>
+        <div class="fa-section__body">
             <div class="row g-3" role="list" aria-label="{{ 'compliance_import.result.summary_aria'|trans({}, 'compliance_import') }}">
                 <div class="col-md-4" role="listitem">
                     <div class="border rounded p-3 text-center">
@@ -78,8 +79,8 @@
                     {% endblock %}
                 {% endembed %}
             {% endif %}
-        {% endblock %}
-    {% endembed %}
+        </div>
+    </section>
 
     <div class="d-flex gap-2 justify-content-end">
         <a href="{{ path('admin_compliance_import_upload') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
@@ -91,5 +92,4 @@
             {{ 'compliance_import.result.back_to_admin'|trans({}, 'compliance_import') }}
         </a>
     </div>
-</div>
 {% endblock %}
