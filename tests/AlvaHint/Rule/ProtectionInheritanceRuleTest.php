@@ -46,7 +46,10 @@ class ProtectionInheritanceRuleTest extends TestCase
 
         $service = $this->createMock(AssetDependencyService::class);
         $service->method('calculateInheritedProtectionNeed')->willReturn([
-            'inherited' => ['confidentiality' => 4, 'integrity' => 2, 'availability' => 3],
+            'confidentiality' => 4,
+            'integrity' => 2,
+            'availability' => 3,
+            'drivenBy' => ['confidentiality' => null, 'integrity' => null, 'availability' => null],
         ]);
         $rule = new ProtectionInheritanceRule($service);
 
@@ -65,7 +68,10 @@ class ProtectionInheritanceRuleTest extends TestCase
 
         $service = $this->createMock(AssetDependencyService::class);
         $service->method('calculateInheritedProtectionNeed')->willReturn([
-            'inherited' => ['confidentiality' => 3, 'integrity' => 3, 'availability' => 3],
+            'confidentiality' => 3,
+            'integrity' => 3,
+            'availability' => 3,
+            'drivenBy' => ['confidentiality' => null, 'integrity' => null, 'availability' => null],
         ]);
         $rule = new ProtectionInheritanceRule($service);
 
