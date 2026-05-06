@@ -618,6 +618,86 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     box-shadow: none;
 }
 
+/* ───────────────────────────────────────────────────────────────────────────
+   Aurora v4 — Field-Type Modifiers (file/range/date/time)
+   Added in form-audit Sprint to bring file/range/date/time widgets under the
+   Aurora cyber-input frame instead of bare Bootstrap fallback.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* File-Upload Button (browser-native + Aurora-tinted) */
+.fa-cyber-input__field--file {
+    padding: 6px 0;
+    cursor: pointer;
+}
+.fa-cyber-input__field--file::file-selector-button {
+    background: var(--primary-tint);
+    color: var(--primary-strong);
+    border: 1px solid var(--primary);
+    border-radius: var(--r-sm);
+    padding: 4px 12px;
+    margin-right: 12px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+.fa-cyber-input__field--file::file-selector-button:hover {
+    background: var(--primary);
+    color: var(--on-primary);
+}
+
+/* Range-Slider (track + thumb in Aurora colors) */
+.fa-cyber-input__field--range {
+    width: 100%;
+    height: 32px;
+    background: transparent;
+    appearance: none;
+    cursor: pointer;
+}
+.fa-cyber-input__field--range::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--surface-2);
+    border-radius: var(--r-pill);
+}
+.fa-cyber-input__field--range::-moz-range-track {
+    height: 4px;
+    background: var(--surface-2);
+    border-radius: var(--r-pill);
+}
+.fa-cyber-input__field--range::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px; height: 16px;
+    margin-top: -6px;
+    background: var(--primary);
+    border: 2px solid var(--surface);
+    border-radius: var(--r-pill);
+    box-shadow: 0 0 8px var(--primary-glow);
+    cursor: grab;
+}
+.fa-cyber-input__field--range::-moz-range-thumb {
+    width: 16px; height: 16px;
+    background: var(--primary);
+    border: 2px solid var(--surface);
+    border-radius: var(--r-pill);
+    box-shadow: 0 0 8px var(--primary-glow);
+    cursor: grab;
+}
+
+/* Date / Time / DateTime — single-input widget gets standard frame; only group-version needs flex */
+.fa-cyber-input__date-group,
+.fa-cyber-input__time-group,
+.fa-cyber-input__datetime-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.fa-cyber-input__date-group .form-select,
+.fa-cyber-input__time-group .form-select {
+    padding-right: 28px; /* tighter chevron-pad for compact triple-select */
+    background-position: right 8px center;
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    Status-Pill
    ═══════════════════════════════════════════════════════════════════ */

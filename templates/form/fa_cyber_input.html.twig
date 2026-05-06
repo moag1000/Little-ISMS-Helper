@@ -153,6 +153,60 @@
     {%- endif -%}
 {% endblock %}
 
+{# ─── File-Upload (Aurora frame) ──────────────────────────────────────────── #}
+{% block file_widget %}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__field fa-cyber-input__field--file')|trim}) -%}
+    {{- parent() -}}
+{% endblock %}
+
+{# ─── Range-Slider (Aurora track) ─────────────────────────────────────────── #}
+{% block range_widget %}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__field fa-cyber-input__field--range')|trim}) -%}
+    {{- block('form_widget_simple') -}}
+{% endblock %}
+
+{# ─── Date-Widget (single-input default; Aurora-class on each select if 3-select) ─── #}
+{% block date_widget %}
+    {%- if widget == 'single_text' -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__field fa-cyber-input__field--date')|trim}) -%}
+        {{- block('form_widget_simple') -}}
+    {%- else -%}
+        {# Symfony's default 3-select date widget (day/month/year) — propagate cyber-class via choice_widget #}
+        <div class="fa-cyber-input__date-group" role="group">
+            {{- date_pattern|replace({
+                '{{ year }}':  form_widget(form.year),
+                '{{ month }}': form_widget(form.month),
+                '{{ day }}':   form_widget(form.day)
+            })|raw -}}
+        </div>
+    {%- endif -%}
+{% endblock %}
+
+{# ─── Time-Widget (Aurora frame) ──────────────────────────────────────────── #}
+{% block time_widget %}
+    {%- if widget == 'single_text' -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__field fa-cyber-input__field--time')|trim}) -%}
+        {{- block('form_widget_simple') -}}
+    {%- else -%}
+        <div class="fa-cyber-input__time-group" role="group">
+            {{- form_widget(form.hour) -}}{% if with_minutes %}:{{ form_widget(form.minute) }}{% endif %}
+            {%- if with_seconds %}:{{ form_widget(form.second) }}{% endif -%}
+        </div>
+    {%- endif -%}
+{% endblock %}
+
+{# ─── DateTime-Widget (combine date + time blocks) ────────────────────────── #}
+{% block datetime_widget %}
+    {%- if widget == 'single_text' -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__field fa-cyber-input__field--datetime')|trim}) -%}
+        {{- block('form_widget_simple') -}}
+    {%- else -%}
+        <div class="fa-cyber-input__datetime-group" role="group">
+            {{- form_widget(form.date) -}} {{- form_widget(form.time) -}}
+        </div>
+    {%- endif -%}
+{% endblock %}
+
 {# ─── Buttons: skip cyber-input frame, render plain ──────────────────────── #}
 {% block button_row %}
     <div class="mb-3">
