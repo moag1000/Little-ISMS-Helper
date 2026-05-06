@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
 {% trans_default_domain 'management_review' %}
 
 {% block title %}{{ review.title }} - {{ parent() }}{% endblock %}
@@ -205,12 +206,15 @@
                         {% endif %}
 
                         {% if is_granted('ROLE_MANAGER') %}
-                        <a href="{{ path('app_management_review_pdf', {id: review.id}) }}"
-                           class="fa-cyber-btn fa-cyber-btn--ghost"
-                           data-turbo="false">
-                            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
-                            {{ 'management_review.action.pdf'|trans({}, 'management_review') }}
-                        </a>
+                        <div>
+                            <a href="{{ path('app_management_review_pdf', {id: review.id}) }}"
+                               class="fa-cyber-btn fa-cyber-btn--ghost"
+                               data-turbo="false">
+                                <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                                {{ 'management_review.action.pdf'|trans({}, 'management_review') }}
+                            </a>
+                            {{ _pdf_switch.render('app_management_review_pdf', {id: review.id}) }}
+                        </div>
                         {% endif %}
 
                         <a href="{{ path('app_management_review_index') }}"

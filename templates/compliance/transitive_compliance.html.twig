@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'compliance' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_pdf_locale_switch.html.twig' as _pdf_switch %}
 
 {% block title %}{{ 'compliance.title.transitive'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
@@ -17,9 +18,12 @@
         <button id="createAllMappingsBtn" class="fa-cyber-btn fa-cyber-btn--primary">
             🔗 {{ 'compliance.action.create_missing_mappings'|trans({}, 'compliance') }}
         </button>
-        <a href="{{ path('app_compliance_export_transitive_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger" data-turbo="false">
-            📄 {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
-        </a>
+        <div>
+            <a href="{{ path('app_compliance_export_transitive_pdf') }}" class="fa-cyber-btn fa-cyber-btn--danger" data-turbo="false">
+                📄 {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
+            </a>
+            {{ _pdf_switch.render('app_compliance_export_transitive_pdf') }}
+        </div>
         <a href="{{ path('app_compliance_export_transitive_excel') }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false">
             📊 {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
         </a>
