@@ -12,7 +12,7 @@
     {# Warning Banner #}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', class: 'mb-4' } } %}
         {% block alert_body %}
-        <div class="fa-alert__title">Critical Warning</div>
+        <div class="fa-alert__title">{{ 'data.import.warning_title'|trans({}, 'data_management') }}</div>
         <p class="mb-0">
             <strong>Data import can overwrite existing data!</strong>
             Always create a backup before importing data. This feature is currently in preview mode
@@ -53,7 +53,7 @@
 
                 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
                     {% block alert_body %}
-                    <div class="fa-alert__title">Import Process</div>
+                    <div class="fa-alert__title">{{ 'data.import.process_title'|trans({}, 'data_management') }}</div>
                     <ol class="mb-0">
                         <li>{{ 'data_management.import.step_upload'|trans({}, 'messages')}}</li>
                         <li>{{ 'data_management.import.step_preview'|trans({}, 'messages')}}</li>

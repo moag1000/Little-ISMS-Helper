@@ -8,6 +8,9 @@ data:
             export: "Alva is exporting the data — this may take a while for large datasets."
             import_preview: "Alva is analysing the import file — please wait."
             import_execute: "Alva is executing the import — please do not close this window."
+    import:
+        warning_title: "Critical Warning"
+        process_title: "Import Process"
     backup:
         restore_dry_run: "Dry-run (no changes applied)"
         best_effort_restore: "Best-effort mode (skip errors, accept partial restore)"
