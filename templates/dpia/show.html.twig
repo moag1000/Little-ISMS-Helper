@@ -4,6 +4,7 @@
 {% block title %}{{ 'dpia.show.page_title'|trans({'%ref%': dpia.referenceNumber}, 'privacy') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -12,6 +13,9 @@
             { label: dpia.referenceNumber }
         ]
     } %}
+
+    {% set hint = alva_hint(dpia) %}
+    {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {% include '_components/_page_header.html.twig' with {
         title: dpia.title,
