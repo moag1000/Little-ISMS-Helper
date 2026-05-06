@@ -56,3 +56,34 @@ audit_finding:
         title: 'Critical finding without corrective action'
         body: '%severity% finding without a CAPA. ISO 27001 Cl. 10.1 requires documented correction and effectiveness verification.'
         action: 'Create CAPA'
+
+consent:
+    expiring_soon:
+        title: 'Consent expiring soon'
+        body: 'Expires in %days% days. Without renewal the legal basis collapses (GDPR Art. 6(1)(a)).'
+        action: 'Trigger re-consent'
+
+patch:
+    downtime_cr:
+        title: 'Patch needs change request'
+        body: 'Critical patch with downtime but no linked change request. ISO 27001 A.8.32 requires formal change control.'
+        action: 'Create change request'
+
+crisis_team:
+    training:
+        title: 'Crisis-team training overdue'
+        body_with_last: 'Last training was %months% months ago. BSI 200-4 §4.2 / ISO 22301 Cl. 7.2 require recurring exercises.'
+        body_never: 'No training documented yet. BSI 200-4 §4.2 / ISO 22301 Cl. 7.2 require recurring exercises.'
+        action: 'Schedule tabletop'
+
+risk:
+    no_treatment:
+        title: 'High risk without treatment plan'
+        body: 'Inherent risk level %level% — ISO 27001 Cl. 6.1.3 requires a documented treatment decision.'
+        action: 'Create treatment plan'
+
+control:
+    orphan:
+        title: 'Applicable control without links'
+        body: 'Control marked applicable but linked to neither risks nor compliance requirements. SoA gap per ISO 27001 Cl. 6.1.3 b/c.'
+        action: 'Review links'

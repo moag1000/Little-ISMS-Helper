@@ -5,6 +5,7 @@
 {% block title %}{{ consent.dataSubjectIdentifier }} - {{ 'consent.header.title'|trans({}, 'consent') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -12,6 +13,9 @@
             { label: consent.dataSubjectIdentifier }
         ]
     } %}
+
+    {% set hint = alva_hint(consent) %}
+    {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     <div class="page-header">
         <h1>

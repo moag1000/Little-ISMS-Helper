@@ -56,3 +56,34 @@ audit_finding:
         title: 'Critical Finding ohne Korrekturmaßnahme'
         body: '%severity%-Finding ohne CAPA. ISO 27001 Cl. 10.1 fordert dokumentierte Korrektur und Wirksamkeitskontrolle.'
         action: 'CAPA anlegen'
+
+consent:
+    expiring_soon:
+        title: 'Einwilligung läuft bald ab'
+        body: 'Ablauf in %days% Tagen. Ohne erneute Einwilligung entfällt die Rechtsgrundlage (Art. 6 Abs. 1 lit. a DSGVO).'
+        action: 'Re-Consent anstoßen'
+
+patch:
+    downtime_cr:
+        title: 'Patch braucht Change-Request'
+        body: 'Kritischer Patch mit Downtime ohne verlinkten Change-Request. ISO 27001 A.8.32 fordert formale Change-Steuerung.'
+        action: 'Change-Request anlegen'
+
+crisis_team:
+    training:
+        title: 'Krisenstab-Training überfällig'
+        body_with_last: 'Letztes Training vor %months% Monaten. BSI 200-4 Kap. 4.2 / ISO 22301 Cl. 7.2 fordern regelmäßige Übungen.'
+        body_never: 'Bisher kein Training dokumentiert. BSI 200-4 Kap. 4.2 / ISO 22301 Cl. 7.2 fordern regelmäßige Übungen.'
+        action: 'Tabletop-Übung planen'
+
+risk:
+    no_treatment:
+        title: 'Hohes Risiko ohne Treatment-Plan'
+        body: 'Inherentes Risiko-Niveau %level% — ISO 27001 Cl. 6.1.3 fordert dokumentierte Behandlungsentscheidung.'
+        action: 'Treatment-Plan anlegen'
+
+control:
+    orphan:
+        title: 'Anwendbares Control ohne Verknüpfung'
+        body: 'Control ist als anwendbar markiert, aber weder Risiken noch Compliance-Anforderungen sind verknüpft. SoA-Lücke nach ISO 27001 Cl. 6.1.3 b/c.'
+        action: 'Verknüpfungen prüfen'
