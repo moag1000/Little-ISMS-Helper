@@ -115,6 +115,16 @@ services:
     App\Twig\SetupFlowExtension:
         tags: ['twig.extension']
 
+    # Alva-Fee proactive hint rules — every implementation of
+    # AlvaHintRuleInterface auto-registers and lands in AlvaHintService.
+    _instanceof:
+        App\AlvaHint\AlvaHintRuleInterface:
+            tags: ['alva.hint_rule']
+
+    App\AlvaHint\AlvaHintService:
+        arguments:
+            $rules: !tagged_iterator alva.hint_rule
+
     # Configure Data Import Service
     App\Service\DataImportService:
         arguments:
