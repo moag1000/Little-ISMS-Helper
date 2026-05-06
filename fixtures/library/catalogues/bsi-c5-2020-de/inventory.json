@@ -1,0 +1,486 @@
+{
+  "OIS-01": {
+    "area": "Organisation der Informationssicherheit (OIS)",
+    "title": "Informationssicherheits-managementsystem (ISMS)"
+  },
+  "OIS-02": {
+    "area": "Organisation der Informationssicherheit (OIS)",
+    "title": "Leitlinie zur Informationssicherheit"
+  },
+  "OIS-03": {
+    "area": "Organisation der Informationssicherheit (OIS)",
+    "title": "Schnittstellen und Abhängigkeiten"
+  },
+  "OIS-04": {
+    "area": "Organisation der Informationssicherheit (OIS)",
+    "title": "Aufgabentrennung"
+  },
+  "OIS-05": {
+    "area": "Organisation der Informationssicherheit (OIS)",
+    "title": "Kontakt zu relevanten Behörden und Interessenverbänden"
+  },
+  "OIS-06": {
+    "area": "Organisation der Informationssicherheit (OIS)",
+    "title": "Richtlinie für den Umgang mit Risiken"
+  },
+  "OIS-07": {
+    "area": "Organisation der Informationssicherheit (OIS)",
+    "title": "Anwendung des Verfahrens für den Umgang mit Risiken"
+  },
+  "SP-01": {
+    "area": "Sicherheitsrichtlinien und Arbeitsanweisungen (SP)",
+    "title": "Dokumentation, Kommunikation und Bereitstellung von Richtlinien und Anweisungen"
+  },
+  "SP-02": {
+    "area": "Sicherheitsrichtlinien und Arbeitsanweisungen (SP)",
+    "title": "Überprüfung und Freigabe von Richtlinien und Anweisungen"
+  },
+  "SP-03": {
+    "area": "Sicherheitsrichtlinien und Arbeitsanweisungen (SP)",
+    "title": "Abweichungen von bestehenden Richtlinien und Anweisungen"
+  },
+  "HR-01": {
+    "area": "Personal (HR)",
+    "title": "Überprüfung der Qualifikation und Vertrauenswürdigkeit"
+  },
+  "HR-02": {
+    "area": "Personal (HR)",
+    "title": "Beschäftigungs- und Vertragsbedingungen"
+  },
+  "HR-03": {
+    "area": "Personal (HR)",
+    "title": "Programm zur Sicherheitsausbildung und Sensibilisierung"
+  },
+  "HR-04": {
+    "area": "Personal (HR)",
+    "title": "Maßregelungsprozess"
+  },
+  "HR-05": {
+    "area": "Personal (HR)",
+    "title": "Verantwortlichkeiten bei Beendigung oder Änderung der Beschäftigung"
+  },
+  "HR-06": {
+    "area": "Personal (HR)",
+    "title": "Vertraulichkeitsvereinbarungen"
+  },
+  "AM-01": {
+    "area": "Asset Management (AM)",
+    "title": "Inventarisierung der Assets"
+  },
+  "AM-02": {
+    "area": "Asset Management (AM)",
+    "title": "Richtlinie für den zulässigen Gebrauch und sicheren Umgang mit Assets"
+  },
+  "AM-03": {
+    "area": "Asset Management (AM)",
+    "title": "Inbetriebnahme von Hardware"
+  },
+  "AM-04": {
+    "area": "Asset Management (AM)",
+    "title": "Außerbetriebnahme von Hardware"
+  },
+  "AM-05": {
+    "area": "Asset Management (AM)",
+    "title": "Verpflichtung auf zulässigen Gebrauch und sicheren Umgang mit ausgehändigten Assets sowie Rückgabe"
+  },
+  "AM-06": {
+    "area": "Asset Management (AM)",
+    "title": "Klassifizierung und Kennzeichnung von Assets"
+  },
+  "PS-01": {
+    "area": "Physische Sicherheit (PS)",
+    "title": "Sicherheitsanforderungen für Räumlichkeiten und Gebäude"
+  },
+  "PS-02": {
+    "area": "Physische Sicherheit (PS)",
+    "title": "Redundanzmodell"
+  },
+  "PS-03": {
+    "area": "Physische Sicherheit (PS)",
+    "title": "Perimeterschutz"
+  },
+  "PS-04": {
+    "area": "Physische Sicherheit (PS)",
+    "title": "Zutrittskontrolle"
+  },
+  "PS-05": {
+    "area": "Physische Sicherheit (PS)",
+    "title": "Schutz vor Feuer und Rauch"
+  },
+  "PS-06": {
+    "area": "Physische Sicherheit (PS)",
+    "title": "Schutz vor Ausfall der Versorgungseinrichtungen"
+  },
+  "PS-07": {
+    "area": "Physische Sicherheit (PS)",
+    "title": "Überwachung der Betriebs- und Umgebungsparameter"
+  },
+  "OPS-01": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Kapazitätsmanagement – Planung"
+  },
+  "OPS-02": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Kapazitätsmanagement – Überwachung"
+  },
+  "OPS-03": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Kapazitätsmanagement – Steuerung von Ressourcen"
+  },
+  "OPS-04": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Schutz vor Schadprogrammen - Konzept"
+  },
+  "OPS-05": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Schutz vor Schadprogrammen - Umsetzung"
+  },
+  "OPS-06": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Vorgaben zur Datensicherung und Wiederherstellung – Konzept"
+  },
+  "OPS-07": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Datensicherung und Wiederherstellung – Überwachung"
+  },
+  "OPS-08": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Datensicherung und Wiederherstellung – Regelmäßige Tests"
+  },
+  "OPS-09": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Datensicherung und Wiederherstellung – Aufbewahrung"
+  },
+  "OPS-10": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Protokollierung und Überwachung – Konzept"
+  },
+  "OPS-11": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Protokollierung und Überwachung – Konzept zum Umgang mit Metadaten"
+  },
+  "OPS-12": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Protokollierung und Überwachung – Zugriff, Speicherung und Löschung"
+  },
+  "OPS-13": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Protokollierung und Überwachung – Erkennung von Ereignissen"
+  },
+  "OPS-14": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Protokollierung und Überwachung – Aufbewahrung der Protokollierungsdaten"
+  },
+  "OPS-15": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Protokollierung und Überwachung – Zurechenbarkeit"
+  },
+  "OPS-16": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Protokollierung und Überwachung – Konfiguration"
+  },
+  "OPS-17": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Protokollierung und Überwachung – Verfügbarkeit der Überwachungs-Software"
+  },
+  "OPS-18": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Umgang mit Schwachstellen, Störungen und Fehlern – Konzept"
+  },
+  "OPS-19": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Umgang mit Schwachstellen, Störungen und Fehlern – Penetrationstests"
+  },
+  "OPS-20": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Umgang mit Schwachstellen, Störungen und Fehlern – Messungen, Analysen und Bewertungen der Verfahren"
+  },
+  "OPS-21": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Einbindung des Cloud-Kunden bei Störungen (Incidents)"
+  },
+  "OPS-22": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Prüfung und Dokumentation offener Schwachstellen"
+  },
+  "OPS-23": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Umgang mit Schwachstellen, Störungen und Fehlern – System-Härtung"
+  },
+  "OPS-24": {
+    "area": "Regelbetrieb (OPS)",
+    "title": "Separierung der Datenbestände in der Cloud-Infrastruktur"
+  },
+  "IDM-01": {
+    "area": "Identitäts- und Berechtigungsmanagement (IDM)",
+    "title": "Richtlinie für Zugangs- und Zugriffsberechtigungen"
+  },
+  "IDM-02": {
+    "area": "Identitäts- und Berechtigungsmanagement (IDM)",
+    "title": "Vergabe und Änderung von Zugangs- und Zugriffsberechtigungen"
+  },
+  "IDM-03": {
+    "area": "Identitäts- und Berechtigungsmanagement (IDM)",
+    "title": "Sperrung und Entzug von Zugangsberechtigungen bei Inaktivität oder mehrfach fehlgeschlagenen Anmeldungen"
+  },
+  "IDM-04": {
+    "area": "Identitäts- und Berechtigungsmanagement (IDM)",
+    "title": "Entzug oder Anpassung von Zugriffsberechtigungen bei Veränderungen des Aufgabengebiets"
+  },
+  "IDM-05": {
+    "area": "Identitäts- und Berechtigungsmanagement (IDM)",
+    "title": "Regelmäßige Überprüfung der Zugriffsberechtigungen"
+  },
+  "IDM-06": {
+    "area": "Identitäts- und Berechtigungsmanagement (IDM)",
+    "title": "Privilegierte Zugriffsberechtigungen"
+  },
+  "IDM-07": {
+    "area": "Identitäts- und Berechtigungsmanagement (IDM)",
+    "title": "Zugriff auf Daten der Cloud-Kunden"
+  },
+  "IDM-08": {
+    "area": "Identitäts- und Berechtigungsmanagement (IDM)",
+    "title": "Vertraulichkeit von Authentisierungsinformationen"
+  },
+  "IDM-09": {
+    "area": "Identitäts- und Berechtigungsmanagement (IDM)",
+    "title": "Authentisierungsmechanismen"
+  },
+  "CRY-01": {
+    "area": "Kryptographie und Schlüsselmanagement (CRY)",
+    "title": "Richtlinie zur Nutzung von Verschlüsselungsverfahren und Schlüsselverwaltung"
+  },
+  "CRY-02": {
+    "area": "Kryptographie und Schlüsselmanagement (CRY)",
+    "title": "Verschlüsselung von Daten bei der Übertragung (Transportverschlüsselung)"
+  },
+  "CRY-03": {
+    "area": "Kryptographie und Schlüsselmanagement (CRY)",
+    "title": "Verschlüsselung von sensiblen Daten bei der Speicherung"
+  },
+  "CRY-04": {
+    "area": "Kryptographie und Schlüsselmanagement (CRY)",
+    "title": "Sichere Schlüsselverwaltung"
+  },
+  "COS-01": {
+    "area": "Kommunikations-sicherheit (COS)",
+    "title": "Technische Schutzmaßnahmen"
+  },
+  "COS-02": {
+    "area": "Kommunikations-sicherheit (COS)",
+    "title": "Sicherheitsanforderungen an Verbindungen im Netz des Cloud-Anbieters"
+  },
+  "COS-03": {
+    "area": "Kommunikations-sicherheit (COS)",
+    "title": "Überwachung von Verbindungen im Netz des Cloud-Anbieters"
+  },
+  "COS-04": {
+    "area": "Kommunikations-sicherheit (COS)",
+    "title": "Netzübergreifende Zugriffe"
+  },
+  "COS-05": {
+    "area": "Kommunikations-sicherheit (COS)",
+    "title": "Netze zur Administration"
+  },
+  "COS-06": {
+    "area": "Kommunikations-sicherheit (COS)",
+    "title": "Segregation des Datenverkehrs in gemeinsam genutzten Netzumgebungen"
+  },
+  "COS-07": {
+    "area": "Kommunikations-sicherheit (COS)",
+    "title": "Dokumentation des Netzes"
+  },
+  "COS-08": {
+    "area": "Kommunikations-sicherheit (COS)",
+    "title": "Richtlinien zur Datenübertragung"
+  },
+  "PI-01": {
+    "area": "Portabilität und ­Interoperabilität (PI)",
+    "title": "Dokumentation und Sicherheit der Eingangs- und Ausgangs-Schnittstellen"
+  },
+  "PI-02": {
+    "area": "Portabilität und ­Interoperabilität (PI)",
+    "title": "Vertragliche Vereinbarungen zur Bereitstellung von Daten"
+  },
+  "PI-03": {
+    "area": "Portabilität und ­Interoperabilität (PI)",
+    "title": "Sichere Datenlöschung"
+  },
+  "DEV-01": {
+    "area": "Beschaffung, Entwicklung und Änderung von ­Informationssystemen (DEV)",
+    "title": "Richtlinien zur Entwicklung/Beschaffung von Informationssystemen"
+  },
+  "DEV-02": {
+    "area": "Beschaffung, Entwicklung und Änderung von ­Informationssystemen (DEV)",
+    "title": "Auslagerung der Entwicklung"
+  },
+  "DEV-03": {
+    "area": "Beschaffung, Entwicklung und Änderung von ­Informationssystemen (DEV)",
+    "title": "Richtlinien zur Änderung von Informationssystemen"
+  },
+  "DEV-04": {
+    "area": "Beschaffung, Entwicklung und Änderung von ­Informationssystemen (DEV)",
+    "title": "Programm zur Sicherheitsausbildung und Sensibilisierung bezüglich kontinuierlicher Software-Bereitstellung und zugehöriger Systeme, Komponenten oder Werkzeuge"
+  },
+  "DEV-05": {
+    "area": "Beschaffung, Entwicklung und Änderung von ­Informationssystemen (DEV)",
+    "title": "Risikobewertung, Kategorisierung und Priorisierung von Änderungen"
+  },
+  "DEV-06": {
+    "area": "Beschaffung, Entwicklung und Änderung von ­Informationssystemen (DEV)",
+    "title": "Testen der Änderungen"
+  },
+  "DEV-07": {
+    "area": "Beschaffung, Entwicklung und Änderung von ­Informationssystemen (DEV)",
+    "title": "Protokollierung von Änderungen"
+  },
+  "DEV-08": {
+    "area": "Beschaffung, Entwicklung und Änderung von ­Informationssystemen (DEV)",
+    "title": "Versionskontrolle"
+  },
+  "DEV-09": {
+    "area": "Beschaffung, Entwicklung und Änderung von ­Informationssystemen (DEV)",
+    "title": "Freigaben zur Bereitstellung in der Produktionsumgebung"
+  },
+  "DEV-10": {
+    "area": "Beschaffung, Entwicklung und Änderung von ­Informationssystemen (DEV)",
+    "title": "Trennung der Umgebungen"
+  },
+  "SSO-01": {
+    "area": "Steuerung und Überwachung von Dienstleistern und Lieferanten (SSO)",
+    "title": "Richtlinien und Anweisungen zur Steuerung und Überwachung Dritter"
+  },
+  "SSO-02": {
+    "area": "Steuerung und Überwachung von Dienstleistern und Lieferanten (SSO)",
+    "title": "Risikobeurteilung der Dienstleister und Lieferanten"
+  },
+  "SSO-03": {
+    "area": "Steuerung und Überwachung von Dienstleistern und Lieferanten (SSO)",
+    "title": "Verzeichnis der Dienstleister und Lieferanten"
+  },
+  "SSO-04": {
+    "area": "Steuerung und Überwachung von Dienstleistern und Lieferanten (SSO)",
+    "title": "Überwachung der Einhaltung der Anforderungen"
+  },
+  "SSO-05": {
+    "area": "Steuerung und Überwachung von Dienstleistern und Lieferanten (SSO)",
+    "title": "Ausstiegsstrategie für den Bezug von Leistungen"
+  },
+  "SIM-01": {
+    "area": "Umgang mit Sicherheitsvorfällen (SIM)",
+    "title": "Richtlinie für den Umgang mit Sicherheitsvorfällen"
+  },
+  "SIM-02": {
+    "area": "Umgang mit Sicherheitsvorfällen (SIM)",
+    "title": "Bearbeitung von Sicherheitsvorfällen"
+  },
+  "SIM-03": {
+    "area": "Umgang mit Sicherheitsvorfällen (SIM)",
+    "title": "Dokumentation und Berichterstattung über Sicherheitsvorfälle"
+  },
+  "SIM-04": {
+    "area": "Umgang mit Sicherheitsvorfällen (SIM)",
+    "title": "Verpflichtung der Nutzer zur Meldung von Sicherheitsvorfällen an eine zentrale Stelle"
+  },
+  "SIM-05": {
+    "area": "Umgang mit Sicherheitsvorfällen (SIM)",
+    "title": "Auswertung und Lernprozess"
+  },
+  "BCM-01": {
+    "area": "Kontinuität des Geschäftsbetriebs und Notfallmanagement (BCM)",
+    "title": "Verantwortung durch die Unternehmensleitung"
+  },
+  "BCM-02": {
+    "area": "Kontinuität des Geschäftsbetriebs und Notfallmanagement (BCM)",
+    "title": "Richtlinien und Verfahren zur Business Impact Analyse"
+  },
+  "BCM-03": {
+    "area": "Kontinuität des Geschäftsbetriebs und Notfallmanagement (BCM)",
+    "title": "Planung der Betriebskontinuität"
+  },
+  "BCM-04": {
+    "area": "Kontinuität des Geschäftsbetriebs und Notfallmanagement (BCM)",
+    "title": "Verifizierung, Aktualisierung und Test der Betriebskontinuität"
+  },
+  "COM-01": {
+    "area": "Compliance (COM)",
+    "title": "Identifizierung anwendbarer gesetzlicher, regulatorischer, selbstauferlegter oder vertraglicher Anforderungen"
+  },
+  "COM-02": {
+    "area": "Compliance (COM)",
+    "title": "Richtlinie für die Planung und Durchführung von Audits"
+  },
+  "COM-03": {
+    "area": "Compliance (COM)",
+    "title": "Interne Audits des Informationssicherheitsmanagementsystems"
+  },
+  "COM-04": {
+    "area": "Compliance (COM)",
+    "title": "Informationen über die Informationssicherheitsleistung und Managementbewertung des ISMS"
+  },
+  "INQ-01": {
+    "area": "Umgang mit Ermittlungsanfragen staatlicher Stellen (INQ)",
+    "title": "Juristische Beurteilung von Ermittlungsanfragen"
+  },
+  "INQ-02": {
+    "area": "Umgang mit Ermittlungsanfragen staatlicher Stellen (INQ)",
+    "title": "Information der Cloud-Kunden über Ermittlungsanfragen"
+  },
+  "INQ-03": {
+    "area": "Umgang mit Ermittlungsanfragen staatlicher Stellen (INQ)",
+    "title": "Voraussetzungen für den Zugriff auf oder der Offenlegung von Daten bei Ermittlungsanfragen"
+  },
+  "INQ-04": {
+    "area": "Umgang mit Ermittlungsanfragen staatlicher Stellen (INQ)",
+    "title": "Begrenzung des Zugriffs auf oder der Offenlegung von Daten bei Ermittlungsanfragen"
+  },
+  "PSS-01": {
+    "area": "Produktsicherheit (PSS)",
+    "title": "Leitlinien und Empfehlungen für Cloud-Kunden"
+  },
+  "PSS-02": {
+    "area": "Produktsicherheit (PSS)",
+    "title": "Identifikation von Schwachstellen des Cloud-Dienstes"
+  },
+  "PSS-03": {
+    "area": "Produktsicherheit (PSS)",
+    "title": "Online-Register bekannter Schwachstellen"
+  },
+  "PSS-04": {
+    "area": "Produktsicherheit (PSS)",
+    "title": "Fehlerbehandlungs- und Protokollierungsmechanismen"
+  },
+  "PSS-05": {
+    "area": "Produktsicherheit (PSS)",
+    "title": "Authentisierungsmechanismen"
+  },
+  "PSS-06": {
+    "area": "Produktsicherheit (PSS)",
+    "title": "Session Management"
+  },
+  "PSS-07": {
+    "area": "Produktsicherheit (PSS)",
+    "title": "Vertraulichkeit von Authentisierungsinformationen"
+  },
+  "PSS-08": {
+    "area": "Produktsicherheit (PSS)",
+    "title": "Rollen- und Rechtekonzept"
+  },
+  "PSS-09": {
+    "area": "Produktsicherheit (PSS)",
+    "title": "Autorisierungsmechanismen"
+  },
+  "PSS-10": {
+    "area": "Produktsicherheit (PSS)",
+    "title": "Software-defined Networking"
+  },
+  "PSS-11": {
+    "area": "Produktsicherheit (PSS)",
+    "title": "Images für virtuelle Maschinen und Container"
+  },
+  "PSS-12": {
+    "area": "Produktsicherheit (PSS)",
+    "title": "Lokationen der Datenverarbeitung und -speicherung"
+  }
+}
