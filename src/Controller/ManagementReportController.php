@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use DateTime;
 use DateTimeImmutable;
+use App\Controller\Trait\PdfLocaleTrait;
 use App\Repository\ControlRepository;
 use App\Repository\KpiSnapshotRepository;
 use App\Repository\RiskRepository;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Translation\LocaleSwitcher;
 
 /**
  * Management Report Controller
@@ -35,6 +37,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_AUDITOR')]
 class ManagementReportController extends AbstractController
 {
+    use PdfLocaleTrait;
+
     public function __construct(
         private readonly ManagementReportService $reportService,
         private readonly PdfExportService $pdfExportService,
@@ -47,6 +51,7 @@ class ManagementReportController extends AbstractController
         private readonly ComplianceWizardService $complianceWizardService,
         private readonly ControlRepository $controlRepository,
         private readonly KpiSnapshotRepository $kpiSnapshotRepository,
+        private readonly LocaleSwitcher $localeSwitcher,
     ) {
     }
 
@@ -91,17 +96,21 @@ class ManagementReportController extends AbstractController
 
         $request->getSession()->save();
 
-        $pdf = $this->pdfExportService->generatePdf('management_reports/executive_pdf.html.twig', [
-            'summary' => $summary,
-            'risk_trends' => $riskTrends,
-            'incident_trends' => $incidentTrends,
-            'generated_at' => new DateTime(),
-            'version' => (new DateTime())->format('Y.m.d'),
-        ]);
+        $locale = $this->resolvePdfLocale($request);
+        $pdf = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->pdfExportService->generatePdf('management_reports/executive_pdf.html.twig', [
+                'summary' => $summary,
+                'risk_trends' => $riskTrends,
+                'incident_trends' => $incidentTrends,
+                'generated_at' => new DateTime(),
+                'version' => (new DateTime())->format('Y.m.d'),
+            ])
+        );
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="executive_summary_' . date('Y-m-d') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="executive_summary_' . $locale . '_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
@@ -129,16 +138,20 @@ class ManagementReportController extends AbstractController
 
         $request->getSession()->save();
 
-        $pdf = $this->pdfExportService->generatePdf('management_reports/risk_pdf.html.twig', [
-            'report' => $riskReport,
-            'trends' => $trends,
-            'generated_at' => new DateTime(),
-            'version' => (new DateTime())->format('Y.m.d'),
-        ]);
+        $locale = $this->resolvePdfLocale($request);
+        $pdf = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->pdfExportService->generatePdf('management_reports/risk_pdf.html.twig', [
+                'report' => $riskReport,
+                'trends' => $trends,
+                'generated_at' => new DateTime(),
+                'version' => (new DateTime())->format('Y.m.d'),
+            ])
+        );
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="risk_management_report_' . date('Y-m-d') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="risk_management_report_' . $locale . '_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
@@ -228,16 +241,20 @@ class ManagementReportController extends AbstractController
 
         $request->getSession()->save();
 
-        $pdf = $this->pdfExportService->generatePdf('management_reports/bcm_pdf.html.twig', [
-            'report' => $bcmReport,
-            'bia' => $biaSummary,
-            'generated_at' => new DateTime(),
-            'version' => (new DateTime())->format('Y.m.d'),
-        ]);
+        $locale = $this->resolvePdfLocale($request);
+        $pdf = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->pdfExportService->generatePdf('management_reports/bcm_pdf.html.twig', [
+                'report' => $bcmReport,
+                'bia' => $biaSummary,
+                'generated_at' => new DateTime(),
+                'version' => (new DateTime())->format('Y.m.d'),
+            ])
+        );
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="bcm_report_' . date('Y-m-d') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="bcm_report_' . $locale . '_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
@@ -262,15 +279,19 @@ class ManagementReportController extends AbstractController
 
         $request->getSession()->save();
 
-        $pdf = $this->pdfExportService->generatePdf('management_reports/compliance_pdf.html.twig', [
-            'report' => $complianceReport,
-            'generated_at' => new DateTime(),
-            'version' => (new DateTime())->format('Y.m.d'),
-        ]);
+        $locale = $this->resolvePdfLocale($request);
+        $pdf = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->pdfExportService->generatePdf('management_reports/compliance_pdf.html.twig', [
+                'report' => $complianceReport,
+                'generated_at' => new DateTime(),
+                'version' => (new DateTime())->format('Y.m.d'),
+            ])
+        );
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="compliance_status_' . date('Y-m-d') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="compliance_status_' . $locale . '_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
@@ -293,15 +314,19 @@ class ManagementReportController extends AbstractController
 
         $request->getSession()->save();
 
-        $pdf = $this->pdfExportService->generatePdf('management_reports/audit_pdf.html.twig', [
-            'report' => $auditReport,
-            'generated_at' => new DateTime(),
-            'version' => (new DateTime())->format('Y.m.d'),
-        ]);
+        $locale = $this->resolvePdfLocale($request);
+        $pdf = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->pdfExportService->generatePdf('management_reports/audit_pdf.html.twig', [
+                'report' => $auditReport,
+                'generated_at' => new DateTime(),
+                'version' => (new DateTime())->format('Y.m.d'),
+            ])
+        );
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="audit_report_' . date('Y-m-d') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="audit_report_' . $locale . '_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
@@ -324,15 +349,19 @@ class ManagementReportController extends AbstractController
 
         $request->getSession()->save();
 
-        $pdf = $this->pdfExportService->generatePdf('management_reports/assets_pdf.html.twig', [
-            'report' => $assetReport,
-            'generated_at' => new DateTime(),
-            'version' => (new DateTime())->format('Y.m.d'),
-        ]);
+        $locale = $this->resolvePdfLocale($request);
+        $pdf = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->pdfExportService->generatePdf('management_reports/assets_pdf.html.twig', [
+                'report' => $assetReport,
+                'generated_at' => new DateTime(),
+                'version' => (new DateTime())->format('Y.m.d'),
+            ])
+        );
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="asset_inventory_' . date('Y-m-d') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="asset_inventory_' . $locale . '_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
@@ -386,15 +415,19 @@ class ManagementReportController extends AbstractController
 
         $request->getSession()->save();
 
-        $pdf = $this->pdfExportService->generatePdf('management_reports/gdpr_pdf.html.twig', [
-            'report' => $dataBreachReport,
-            'generated_at' => new DateTime(),
-            'version' => (new DateTime())->format('Y.m.d'),
-        ]);
+        $locale = $this->resolvePdfLocale($request);
+        $pdf = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->pdfExportService->generatePdf('management_reports/gdpr_pdf.html.twig', [
+                'report' => $dataBreachReport,
+                'generated_at' => new DateTime(),
+                'version' => (new DateTime())->format('Y.m.d'),
+            ])
+        );
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="data_breach_report_' . date('Y-m-d') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="data_breach_report_' . $locale . '_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
@@ -444,21 +477,25 @@ class ManagementReportController extends AbstractController
         $request->getSession()->save();
 
         $generatedAt = new DateTime();
+        $locale = $this->resolvePdfLocale($request);
 
-        $pdf = $this->pdfExportService->generatePdf('reports/board_one_pager.html.twig', [
-            'board_data' => $boardData,
-            'kpis' => $kpis,
-            'top_risks' => $topRisks,
-            'framework_compliance' => $frameworkCompliance,
-            'prepared_by' => $this->security->getUser()?->getFullName() ?? 'System',
-            'generated_at' => $generatedAt,
-        ], [
-            'classification' => 'CONFIDENTIAL',
-        ]);
+        $pdf = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->pdfExportService->generatePdf('reports/board_one_pager.html.twig', [
+                'board_data' => $boardData,
+                'kpis' => $kpis,
+                'top_risks' => $topRisks,
+                'framework_compliance' => $frameworkCompliance,
+                'prepared_by' => $this->security->getUser()?->getFullName() ?? 'System',
+                'generated_at' => $generatedAt,
+            ], [
+                'classification' => 'CONFIDENTIAL',
+            ])
+        );
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="board-one-pager_' . date('Y-m-d') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="board-one-pager_' . $locale . '_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
@@ -483,15 +520,19 @@ class ManagementReportController extends AbstractController
 
         $request->getSession()->save();
 
-        $pdf = $this->pdfExportService->generatePdf(
-            'management_reports/certification_readiness_pdf.html.twig',
-            $data,
-            ['classification' => 'CONFIDENTIAL']
+        $locale = $this->resolvePdfLocale($request);
+        $pdf = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->pdfExportService->generatePdf(
+                'management_reports/certification_readiness_pdf.html.twig',
+                $data,
+                ['classification' => 'CONFIDENTIAL']
+            )
         );
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="certification_readiness_' . date('Y-m-d') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="certification_readiness_' . $locale . '_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
@@ -833,26 +874,29 @@ class ManagementReportController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function reviewOutputPdf(Request $request): Response
     {
-        $locale = $request->getLocale();
+        $locale = $this->resolvePdfLocale($request);
         $reviewData = $this->reportService->getManagementReviewReport($locale);
 
         $request->getSession()->save();
 
         $generatedAt = new DateTime();
 
-        $pdf = $this->pdfExportService->generatePdf('management_reports/review_output_pdf.html.twig', [
-            'generated_at' => $generatedAt,
-            'executive_data' => $reviewData['executive_data'],
-            'risk_data' => $reviewData['risk_data'],
-            'audit_data' => $reviewData['audit_data'],
-            'compliance_data' => $reviewData['compliance_data'],
-            'kpi_summary' => $reviewData['kpi_summary'],
-            'treatment_data' => $reviewData['treatment_data'],
-        ]);
+        $pdf = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->pdfExportService->generatePdf('management_reports/review_output_pdf.html.twig', [
+                'generated_at' => $generatedAt,
+                'executive_data' => $reviewData['executive_data'],
+                'risk_data' => $reviewData['risk_data'],
+                'audit_data' => $reviewData['audit_data'],
+                'compliance_data' => $reviewData['compliance_data'],
+                'kpi_summary' => $reviewData['kpi_summary'],
+                'treatment_data' => $reviewData['treatment_data'],
+            ])
+        );
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="management_review_output_' . date('Y-m-d') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="management_review_output_' . $locale . '_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
@@ -888,16 +932,20 @@ class ManagementReportController extends AbstractController
         $request->getSession()->save();
 
         $generatedAt = new DateTime();
+        $locale = $this->resolvePdfLocale($request);
 
-        $pdf = $this->pdfExportService->generatePdf('management_reports/quarterly_trend_pdf.html.twig', [
-            'metrics' => $metrics['metrics'],
-            'has_historical_data' => $metrics['has_historical_data'],
-            'generated_at' => $generatedAt,
-        ]);
+        $pdf = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->pdfExportService->generatePdf('management_reports/quarterly_trend_pdf.html.twig', [
+                'metrics' => $metrics['metrics'],
+                'has_historical_data' => $metrics['has_historical_data'],
+                'generated_at' => $generatedAt,
+            ])
+        );
 
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="quarterly_trend_' . date('Y-m-d') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="quarterly_trend_' . $locale . '_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 

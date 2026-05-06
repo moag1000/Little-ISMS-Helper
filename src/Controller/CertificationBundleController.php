@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\PdfLocaleTrait;
 use App\Service\Export\CertificationBundleExporter;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Translation\LocaleSwitcher;
 
 /**
  * Certification Bundle Controller
@@ -26,10 +28,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_MANAGER')]
 class CertificationBundleController extends AbstractController
 {
+    use PdfLocaleTrait;
+
     public function __construct(
         private readonly CertificationBundleExporter $exporter,
         private readonly TenantContext $tenantContext,
         private readonly Security $security,
+        private readonly LocaleSwitcher $localeSwitcher,
     ) {
     }
 
@@ -68,7 +73,11 @@ class CertificationBundleController extends AbstractController
             throw $this->createAccessDeniedException('No tenant context available.');
         }
 
-        $result = $this->exporter->export($tenant);
+        $locale = $this->resolvePdfLocale($request);
+        $result = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->exporter->export($tenant)
+        );
 
         $response = new BinaryFileResponse($result['path']);
         $response->setContentDisposition(
