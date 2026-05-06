@@ -22,7 +22,7 @@
             {% set all_frameworks = get_compliance_frameworks_quick() %}
             {% if all_frameworks|length > 1 %}
             <div class="framework-switcher">
-                <select id="framework-switcher" class="form-select form-select-sm"
+                <select id="framework-switcher" class="form-select form-select-sm fa-cyber-input__field"
                         data-controller="ui-actions"
                         data-action="change->ui-actions#navigateTo"
                         aria-label="{{ 'compliance.switch_framework'|trans({}, 'compliance') }}">

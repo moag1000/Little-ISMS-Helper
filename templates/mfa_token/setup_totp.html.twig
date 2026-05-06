@@ -37,7 +37,7 @@
                         <label for="secret-key" class="form-label">{{ 'mfa.setup.secret_key'|trans({}, 'mfa') }}</label>
                         <div class="input-group">
                             <input type="text"
-                                   class="form-control font-monospace"
+                                   class="form-control font-monospace fa-cyber-input__field"
                                    value="{{ secret }}"
                                    id="secret-key"
                                    readonly
@@ -84,7 +84,7 @@
                                 {{ 'mfa_token.field.verification_code'|trans({}, 'mfa') }}
                             </label>
                             <input type="text"
-                                   class="form-control form-control-lg text-center font-monospace"
+                                   class="form-control form-control-lg text-center font-monospace fa-cyber-input__field"
                                    id="verification-code"
                                    name="code"
                                    maxlength="6"

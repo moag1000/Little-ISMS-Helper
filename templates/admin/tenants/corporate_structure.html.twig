@@ -180,13 +180,13 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label" for="subsidiaryName">{{ 'corporate.field.subsidiary'|trans({}, 'tenant') }}</label>
-                            <input type="text" class="form-control" id="subsidiaryName" readonly>
+                            <input type="text" class="form-control fa-cyber-input__field" id="subsidiaryName" readonly>
                             <input type="hidden" id="subsidiaryId">
                         </div>
 
                         <div class="mb-3">
                             <label for="parentId" class="form-label">{{ 'corporate.field.parent'|trans({}, 'tenant') }}</label>
-                            <select class="form-select" name="parent_id" id="parentId" required>
+                            <select class="form-select fa-cyber-input__field" name="parent_id" id="parentId" required>
                                 <option value="">{{ 'corporate.select.parent'|trans({}, 'tenant') }}</option>
                                 {% for tenant in allTenants %}
                                     <option value="{{ tenant.id }}">{{ tenant.name }} ({{ tenant.code }})</option>
@@ -196,7 +196,7 @@
 
                         <div class="mb-3">
                             <label for="governanceModel" class="form-label">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</label>
-                            <select class="form-select" name="governance_model" id="governanceModel" required>
+                            <select class="form-select fa-cyber-input__field" name="governance_model" id="governanceModel" required>
                                 <option value="">{{ 'corporate.select.governance'|trans({}, 'tenant') }}</option>
                                 {% for model in governanceModels %}
                                     <option value="{{ model.value }}">{{ model.label }}</option>
@@ -230,13 +230,13 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label" for="governanceTenantName">{{ 'tenant.field.name'|trans({}, 'tenant') }}</label>
-                            <input type="text" class="form-control" id="governanceTenantName" readonly>
+                            <input type="text" class="form-control fa-cyber-input__field" id="governanceTenantName" readonly>
                             <input type="hidden" id="governanceTenantId">
                         </div>
 
                         <div class="mb-3">
                             <label for="updateGovernanceModel" class="form-label">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</label>
-                            <select class="form-select" name="governance_model" id="updateGovernanceModel" required>
+                            <select class="form-select fa-cyber-input__field" name="governance_model" id="updateGovernanceModel" required>
                                 <option value="">{{ 'corporate.select.governance'|trans({}, 'tenant') }}</option>
                                 {% for model in governanceModels %}
                                     <option value="{{ model.value }}">{{ model.label }}</option>

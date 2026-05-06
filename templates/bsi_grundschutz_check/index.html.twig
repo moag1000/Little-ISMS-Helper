@@ -52,7 +52,7 @@
                     <label for="absicherungs_stufe" class="form-label small mb-1">
                         {{ 'bsi_check.filter.absicherungs_stufe'|trans({}, 'messages') }}
                     </label>
-                    <select id="absicherungs_stufe" name="absicherungs_stufe" class="form-select form-select-sm"
+                    <select id="absicherungs_stufe" name="absicherungs_stufe" class="form-select form-select-sm fa-cyber-input__field"
                             onchange="this.form.submit()">
                         <option value="">{{ 'bsi_check.filter.all'|trans({}, 'messages') }}</option>
                         {% for option in stufe_options %}

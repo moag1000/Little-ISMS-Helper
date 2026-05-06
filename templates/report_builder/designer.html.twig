@@ -12,7 +12,7 @@
                 <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
             </a>
             <div>
-                <input type="text" class="form-control form-control-sm bg-body-secondary border-secondary"
+                <input type="text" class="form-control form-control-sm bg-body-secondary border-secondary fa-cyber-input__field"
                        value="{{ report.name }}" data-report-designer-target="nameInput" style="max-width: 300px;">
             </div>
             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'v' ~ report.version } %}
@@ -128,7 +128,7 @@
 
                     <div class="mb-3">
                         <label class="form-label small">{{ 'form.category'|trans({}, 'report_builder') }}</label>
-                        <select class="form-select form-select-sm" data-report-designer-target="categorySelect">
+                        <select class="form-select fa-cyber-input__field form-select-sm" data-report-designer-target="categorySelect">
                             {% for key, label in categories %}
                             <option value="{{ key }}" {% if report.category == key %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
@@ -137,7 +137,7 @@
 
                     <div class="mb-3">
                         <label class="form-label small">{{ 'form.layout'|trans({}, 'report_builder') }}</label>
-                        <select class="form-select form-select-sm" data-report-designer-target="layoutSelect" data-action="change->report-designer#changeLayout">
+                        <select class="form-select fa-cyber-input__field form-select-sm" data-report-designer-target="layoutSelect" data-action="change->report-designer#changeLayout">
                             {% for key, label in layouts %}
                             <option value="{{ key }}" {% if report.layout == key %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
@@ -151,7 +151,7 @@
 
                     <div class="mb-3">
                         <label class="form-label small">{{ 'filter.date_range'|trans({}, 'report_builder') }}</label>
-                        <select class="form-select form-select-sm" data-report-designer-target="dateRangeSelect">
+                        <select class="form-select fa-cyber-input__field form-select-sm" data-report-designer-target="dateRangeSelect">
                             <option value="last_30_days">{{ 'filter.last_30_days'|trans({}, 'report_builder') }}</option>
                             <option value="last_quarter">{{ 'filter.last_quarter'|trans({}, 'report_builder') }}</option>
                             <option value="last_year">{{ 'filter.last_year'|trans({}, 'report_builder') }}</option>
@@ -166,7 +166,7 @@
 
                     <div class="mb-3">
                         <label class="form-label small">{{ 'style.primary_color'|trans({}, 'report_builder') }}</label>
-                        <input type="color" class="form-control form-control-sm form-control-color"
+                        <input type="color" class="form-control form-control-sm form-control-color fa-cyber-input__field"
                                value="{{ report.styles.primaryColor|default('#0d6efd') }}"
                                data-report-designer-target="primaryColor">
                     </div>
@@ -187,7 +187,7 @@
 
                     <div class="mb-3">
                         <label class="form-label small">{{ 'style.orientation'|trans({}, 'report_builder') }}</label>
-                        <select class="form-select form-select-sm" data-report-designer-target="orientation">
+                        <select class="form-select fa-cyber-input__field form-select-sm" data-report-designer-target="orientation">
                             <option value="portrait" {% if report.styles.pageOrientation|default('portrait') == 'portrait' %}selected{% endif %}>{{ 'style.portrait'|trans({}, 'report_builder') }}</option>
                             <option value="landscape" {% if report.styles.pageOrientation|default('portrait') == 'landscape' %}selected{% endif %}>{{ 'style.landscape'|trans({}, 'report_builder') }}</option>
                         </select>

@@ -64,7 +64,7 @@
                         <label for="limit" class="col-form-label">{{ 'monitoring.show_entries'|trans({}, 'monitoring')}}</label>
                     </div>
                     <div class="col-auto">
-                        <select name="limit" id="limit" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                        <select name="limit" id="limit" class="form-select fa-cyber-input__field" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                             <option value="50" {{ app.request.query.get('limit') == 50 ? 'selected' : '' }}>50</option>
                             <option value="100" {{ app.request.query.get('limit') == 100 or not app.request.query.get('limit') ? 'selected' : '' }}>100</option>
                             <option value="200" {{ app.request.query.get('limit') == 200 ? 'selected' : '' }}>200</option>

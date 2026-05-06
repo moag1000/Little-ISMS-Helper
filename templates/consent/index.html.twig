@@ -121,7 +121,7 @@
         </div>
         <div class="col-md-4">
             <label for="filter-verified" class="form-label">{{ 'consent.filter.all_verified'|trans({}, 'consent') }}</label>
-            <select class="form-select" id="filter-verified" name="verified">
+            <select class="form-select fa-cyber-input__field" id="filter-verified" name="verified">
                 <option value="">{{ 'consent.filter.all_verified'|trans({}, 'consent') }}</option>
                 <option value="verified" {{ app.request.query.get('verified') == 'verified' ? 'selected' : '' }}>{{ 'consent.filter.verified'|trans({}, 'consent') }}</option>
                 <option value="unverified" {{ app.request.query.get('verified') == 'unverified' ? 'selected' : '' }}>{{ 'consent.filter.unverified'|trans({}, 'consent') }}</option>

@@ -144,7 +144,7 @@
                             <input type="hidden" name="_token" value="{{ csrf_token('mris_maturity_' ~ requirement.id) }}">
                             <div class="col-md-5">
                                 <label for="maturity_current" class="form-label small">{{ 'compliance.requirement.mris.set_current'|trans({}, 'compliance') }}</label>
-                                <select id="maturity_current" name="maturity_current" class="form-select form-select-sm">
+                                <select id="maturity_current" name="maturity_current" class="form-select form-select-sm fa-cyber-input__field">
                                     <option value="">—</option>
                                     {% for stage in mris.stages %}
                                         <option value="{{ stage }}" {{ mris.current == stage ? 'selected' : '' }}>{{ stage }}</option>
@@ -153,7 +153,7 @@
                             </div>
                             <div class="col-md-5">
                                 <label for="maturity_target" class="form-label small">{{ 'compliance.requirement.mris.set_target'|trans({}, 'compliance') }}</label>
-                                <select id="maturity_target" name="maturity_target" class="form-select form-select-sm">
+                                <select id="maturity_target" name="maturity_target" class="form-select form-select-sm fa-cyber-input__field">
                                     <option value="">—</option>
                                     {% for stage in mris.stages %}
                                         <option value="{{ stage }}" {{ mris.target == stage ? 'selected' : '' }}>{{ stage }}</option>
@@ -369,7 +369,7 @@
                                 <label for="responsiblePersonUserId" class="form-label small fw-semibold">
                                     {{ 'fulfillment.field.responsible_person_user'|trans({}, 'compliance') }}
                                 </label>
-                                <select id="responsiblePersonUserId" name="responsiblePersonUserId" class="form-select form-select-sm">
+                                <select id="responsiblePersonUserId" name="responsiblePersonUserId" class="form-select form-select-sm fa-cyber-input__field">
                                     <option value="">{{ 'fulfillment.placeholder.responsible_person_user'|trans({}, 'compliance') }}</option>
                                     {% for user in available_users %}
                                         <option value="{{ user.id }}"{% if fulfillment.responsiblePersonUser and fulfillment.responsiblePersonUser.id == user.id %} selected{% endif %}>
@@ -384,7 +384,7 @@
                                 <label for="responsiblePersonId" class="form-label small fw-semibold">
                                     {{ 'fulfillment.field.responsible_person'|trans({}, 'compliance') }}
                                 </label>
-                                <select id="responsiblePersonId" name="responsiblePersonId" class="form-select form-select-sm">
+                                <select id="responsiblePersonId" name="responsiblePersonId" class="form-select form-select-sm fa-cyber-input__field">
                                     <option value="">{{ 'fulfillment.placeholder.responsible_person'|trans({}, 'compliance') }}</option>
                                     {% for person in available_persons %}
                                         <option value="{{ person.id }}"{% if fulfillment.responsiblePerson and fulfillment.responsiblePerson.id == person.id %} selected{% endif %}>
@@ -399,7 +399,7 @@
                                 <label for="responsibleDeputyPersonIds" class="form-label small fw-semibold">
                                     {{ 'fulfillment.field.responsible_deputy_persons'|trans({}, 'compliance') }}
                                 </label>
-                                <select id="responsibleDeputyPersonIds" name="responsibleDeputyPersonIds[]" class="form-select form-select-sm"
+                                <select id="responsibleDeputyPersonIds" name="responsibleDeputyPersonIds[]" class="form-select form-select-sm fa-cyber-input__field"
                                         multiple data-controller="tom-select">
                                     {% for person in available_persons %}
                                         <option value="{{ person.id }}"{% if fulfillment.responsibleDeputyPersons.contains(person) %} selected{% endif %}>

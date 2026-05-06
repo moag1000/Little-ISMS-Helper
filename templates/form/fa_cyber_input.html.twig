@@ -63,7 +63,7 @@
       attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__field')|trim})
     which correctly appends without dropping any caller-supplied classes. ✓
 
-    AD-HOC <input class="form-control"> BYPASS: 74 occurrences in templates use
+    AD-HOC <input class="form-control fa-cyber-input__field fa-cyber-input__field"> BYPASS: 74 occurrences in templates use
     raw form-control outside Symfony's form system (search bars, filter chips, admin
     quick-edits). These are handled by the Aurora CSS bridge (:3751) — no markup
     change needed for Aurora visual parity.

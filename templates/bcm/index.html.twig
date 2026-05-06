@@ -54,7 +54,7 @@
         {% block filters %}
             <div class="col-md-4">
                 <label for="filter-criticality" class="form-label">{{ 'bcm.filter.all_criticality'|trans({}, 'bcm') }}</label>
-                <select class="form-select" id="filter-criticality" name="criticality">
+                <select class="form-select fa-cyber-input__field" id="filter-criticality" name="criticality">
                     <option value="">{{ 'bcm.filter.all_criticality'|trans({}, 'bcm') }}</option>
                     <option value="critical" {{ current_criticality == 'critical' ? 'selected' : '' }}>{{ 'bcm.criticality.critical'|trans({}, 'bcm') }}</option>
                     <option value="high" {{ current_criticality == 'high' ? 'selected' : '' }}>{{ 'bcm.criticality.high'|trans({}, 'bcm') }}</option>

@@ -61,7 +61,7 @@
     {% block filters %}
         <div class="col-md-3">
             <label for="filter-severity" class="form-label">{{ 'threat.field.severity'|trans({}, 'threat') }}</label>
-            <select class="form-select" id="filter-severity" name="severity">
+            <select class="form-select fa-cyber-input__field" id="filter-severity" name="severity">
                 <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                 <option value="critical" {{ app.request.query.get('severity') == 'critical' ? 'selected' : '' }}>{{ 'severity.critical'|trans({}, 'threat') }}</option>
                 <option value="high"     {{ app.request.query.get('severity') == 'high'     ? 'selected' : '' }}>{{ 'severity.high'|trans({}, 'threat') }}</option>
@@ -72,7 +72,7 @@
         </div>
         <div class="col-md-3">
             <label for="filter-type" class="form-label">{{ 'threat.field.threat_type'|trans({}, 'threat') }}</label>
-            <select class="form-select" id="filter-type" name="threatType">
+            <select class="form-select fa-cyber-input__field" id="filter-type" name="threatType">
                 <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                 <option value="malware"            {{ app.request.query.get('threatType') == 'malware'            ? 'selected' : '' }}>{{ 'type.malware'|trans({}, 'threat') }}</option>
                 <option value="phishing"           {{ app.request.query.get('threatType') == 'phishing'           ? 'selected' : '' }}>{{ 'type.phishing'|trans({}, 'threat') }}</option>
@@ -89,7 +89,7 @@
         </div>
         <div class="col-md-3">
             <label for="filter-status" class="form-label">{{ 'threat.field.status'|trans({}, 'threat') }}</label>
-            <select class="form-select" id="filter-status" name="status">
+            <select class="form-select fa-cyber-input__field" id="filter-status" name="status">
                 <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                 <option value="new"       {{ app.request.query.get('status') == 'new'       ? 'selected' : '' }}>{{ 'status_type.new'|trans({}, 'threat') }}</option>
                 <option value="analyzing" {{ app.request.query.get('status') == 'analyzing' ? 'selected' : '' }}>{{ 'status_type.analyzing'|trans({}, 'threat') }}</option>

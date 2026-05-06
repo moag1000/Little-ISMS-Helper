@@ -27,7 +27,7 @@
                 <div class="row g-3">
                     <div class="col-md-10">
                         <label class="form-label" for="role-select">{{ 'role.compare.select_label'|trans }}</label>
-                        <select name="roles[]" id="role-select" class="form-select" multiple size="8" required>
+                        <select name="roles[]" id="role-select" class="form-select fa-cyber-input__field" multiple size="8" required>
                             {% for role in all_roles %}
                                 <option value="{{ role.id }}"
                                         {{ role.id in selected_role_ids ? 'selected' : '' }}>

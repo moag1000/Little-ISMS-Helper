@@ -32,11 +32,11 @@
     <form class="d-flex gap-2 mb-3 align-items-end" method="get">
         <div>
             <label for="filter-from" class="form-label small mb-0">{{ 'management_reports.filter.from'|trans({}, 'management_reports') }}</label>
-            <input type="date" id="filter-from" name="from" value="{{ app.request.query.get('from') }}" class="form-control form-control-sm">
+            <input type="date" id="filter-from" name="from" value="{{ app.request.query.get('from') }}" class="form-control form-control-sm fa-cyber-input__field">
         </div>
         <div>
             <label for="filter-to" class="form-label small mb-0">{{ 'management_reports.filter.to'|trans({}, 'management_reports') }}</label>
-            <input type="date" id="filter-to" name="to" value="{{ app.request.query.get('to') }}" class="form-control form-control-sm">
+            <input type="date" id="filter-to" name="to" value="{{ app.request.query.get('to') }}" class="form-control form-control-sm fa-cyber-input__field">
         </div>
         <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
             <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i> {{ 'management_reports.filter.apply'|trans({}, 'management_reports') }}

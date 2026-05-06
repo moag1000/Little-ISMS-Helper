@@ -43,7 +43,7 @@
                     <label for="view-filter" class="mb-0 fw-bold">
                         <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                     </label>
-                    <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                    <select class="form-select fa-cyber-input__field form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                         <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
                             {{ 'corporate.view.own_only'|trans({}, 'messages') }}
                         </option>
@@ -135,7 +135,7 @@
             {% endif %}
             <div class="col-md-4">
                 <label for="filter-criticality" class="form-label">{{ 'supplier.table.criticality'|trans({}, 'suppliers') }}</label>
-                <select class="form-select" id="filter-criticality" name="criticality">
+                <select class="form-select fa-cyber-input__field" id="filter-criticality" name="criticality">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="critical" {{ app.request.query.get('criticality') == 'critical' ? 'selected' : '' }}>{{ 'supplier.criticality.critical'|trans({}, 'suppliers') }}</option>
                     <option value="high" {{ app.request.query.get('criticality') == 'high' ? 'selected' : '' }}>{{ 'supplier.criticality.high'|trans({}, 'suppliers') }}</option>
@@ -156,7 +156,7 @@
             </div>
             <div class="col-md-4">
                 <label for="filter-iso27001" class="form-label">{{ 'supplier.table.iso27001'|trans({}, 'suppliers') }}</label>
-                <select class="form-select" id="filter-iso27001" name="iso27001">
+                <select class="form-select fa-cyber-input__field" id="filter-iso27001" name="iso27001">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="1" {{ app.request.query.get('iso27001') == '1' ? 'selected' : '' }}>{{ 'common.yes'|trans({}, 'messages') }}</option>
                     <option value="0" {{ app.request.query.get('iso27001') == '0' ? 'selected' : '' }}>{{ 'common.no'|trans({}, 'messages') }}</option>

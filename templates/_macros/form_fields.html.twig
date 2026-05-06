@@ -55,7 +55,7 @@
             {% endif %}
         </label>
         <input type="{{ type }}"
-               class="form-control {{ error ? 'is-invalid' : '' }} {{ css_class }}"
+               class="form-control fa-cyber-input__field {{ error ? 'is-invalid' : '' }} {{ css_class }}"
                id="{{ name }}"
                name="{{ name }}"
                value="{{ value }}"
@@ -109,7 +109,7 @@
                 <span class="required" aria-label="required">*</span>
             {% endif %}
         </label>
-        <textarea class="form-control {{ error ? 'is-invalid' : '' }} {{ css_class }}"
+        <textarea class="form-control fa-cyber-input__field {{ error ? 'is-invalid' : '' }} {{ css_class }}"
                   id="{{ name }}"
                   name="{{ name }}"
                   rows="{{ rows }}"
@@ -158,7 +158,7 @@
                 <span class="required" aria-label="required">*</span>
             {% endif %}
         </label>
-        <select class="form-select {{ error ? 'is-invalid' : '' }} {{ css_class }}"
+        <select class="form-select fa-cyber-input__field {{ error ? 'is-invalid' : '' }} {{ css_class }}"
                 id="{{ name }}"
                 name="{{ name }}"
                 {% if required %}required aria-required="true"{% endif %}
@@ -212,7 +212,7 @@
             {% endif %}
         </label>
         <input type="password"
-               class="form-control {{ error ? 'is-invalid' : '' }}"
+               class="form-control fa-cyber-input__field {{ error ? 'is-invalid' : '' }}"
                id="{{ name }}"
                name="{{ name }}"
                {% if required %}required aria-required="true"{% endif %}

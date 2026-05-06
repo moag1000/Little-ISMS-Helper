@@ -213,7 +213,7 @@
                         <form method="post" action="{{ path('app_data_subject_request_complete', {id: dsr.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ dsr.id) }}">
                             <div class="mb-2">
-                                <textarea name="response_description" class="form-control" rows="3"
+                                <textarea name="response_description" class="form-control fa-cyber-input__field" rows="3"
                                     placeholder="{{ 'dsr.form.placeholder.response_description'|trans({}, 'data_subject_request') }}"
                                     required></textarea>
                             </div>
@@ -228,7 +228,7 @@
                         <form method="post" action="{{ path('app_data_subject_request_reject', {id: dsr.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ dsr.id) }}">
                             <div class="mb-2">
-                                <textarea name="rejection_reason" class="form-control" rows="3"
+                                <textarea name="rejection_reason" class="form-control fa-cyber-input__field" rows="3"
                                     placeholder="{{ 'dsr.form.placeholder.rejection_reason'|trans({}, 'data_subject_request') }}"
                                     required></textarea>
                             </div>
@@ -245,7 +245,7 @@
                             <form method="post" action="{{ path('app_data_subject_request_extend', {id: dsr.id}) }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('extend' ~ dsr.id) }}">
                                 <div class="mb-2">
-                                    <textarea name="extension_reason" class="form-control" rows="3"
+                                    <textarea name="extension_reason" class="form-control fa-cyber-input__field" rows="3"
                                         placeholder="{{ 'dsr.form.placeholder.extension_reason'|trans({}, 'data_subject_request') }}"
                                         required></textarea>
                                 </div>

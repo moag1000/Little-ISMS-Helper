@@ -44,7 +44,7 @@
             <form method="get" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
                 <div class="col-md-3">
                     <label class="form-label" for="filter-active">{{ 'compliance.framework.field.active'|trans({}, 'compliance') }}</label>
-                    <select name="active" id="filter-active" class="form-select">
+                    <select name="active" id="filter-active" class="form-select fa-cyber-input__field">
                         <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                         <option value="1" {{ filters.active == '1' ? 'selected' }}>{{ 'common.yes'|trans({}, 'messages') }}</option>
                         <option value="0" {{ filters.active == '0' ? 'selected' }}>{{ 'common.no'|trans({}, 'messages') }}</option>
@@ -52,7 +52,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label" for="filter-mandatory">{{ 'compliance.framework.field.mandatory'|trans({}, 'compliance') }}</label>
-                    <select name="mandatory" id="filter-mandatory" class="form-select">
+                    <select name="mandatory" id="filter-mandatory" class="form-select fa-cyber-input__field">
                         <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                         <option value="1" {{ filters.mandatory == '1' ? 'selected' }}>{{ 'common.yes'|trans({}, 'messages') }}</option>
                         <option value="0" {{ filters.mandatory == '0' ? 'selected' }}>{{ 'common.no'|trans({}, 'messages') }}</option>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label" for="filter-industry">{{ 'compliance.framework.field.industry'|trans({}, 'compliance') }}</label>
-                    <select name="industry" id="filter-industry" class="form-select">
+                    <select name="industry" id="filter-industry" class="form-select fa-cyber-input__field">
                         <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                         {% for industry in industries %}
                             <option value="{{ industry }}" {{ filters.industry == industry ? 'selected' }}>{{ industry }}</option>

@@ -119,11 +119,11 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="stepName" class="form-label">{{ 'workflow.step.name'|trans({}, 'workflows') }} *</label>
-                                    <input type="text" class="form-control" id="stepName" name="name" required maxlength="255">
+                                    <input type="text" class="form-control fa-cyber-input__field" id="stepName" name="name" required maxlength="255">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="stepType" class="form-label">{{ 'workflow.step.type'|trans({}, 'workflows') }} *</label>
-                                    <select class="form-select" id="stepType" name="stepType" required>
+                                    <select class="form-select fa-cyber-input__field" id="stepType" name="stepType" required>
                                         <option value="approval">{{ 'workflow.step.type.approval'|trans({}, 'workflows') }}</option>
                                         <option value="notification">{{ 'workflow.step.type.notification'|trans({}, 'workflows') }}</option>
                                         <option value="auto_action">{{ 'workflow.step.type.auto_action'|trans({}, 'workflows') }}</option>
@@ -133,13 +133,13 @@
 
                             <div class="mb-3">
                                 <label for="stepDescription" class="form-label">{{ 'workflow.step.description'|trans({}, 'workflows') }}</label>
-                                <textarea class="form-control" id="stepDescription" name="description" rows="2"></textarea>
+                                <textarea class="form-control fa-cyber-input__field" id="stepDescription" name="description" rows="2"></textarea>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="approverRole" class="form-label">{{ 'workflow.step.approver_role'|trans({}, 'workflows') }}</label>
-                                    <select class="form-select" id="approverRole" name="approverRole">
+                                    <select class="form-select fa-cyber-input__field" id="approverRole" name="approverRole">
                                         <option value="">{{ 'common.select'|trans({}, 'messages') }}</option>
                                         <option value="ROLE_USER">{{ 'role.user'|trans({}, 'role_management') }}</option>
                                         <option value="ROLE_MANAGER">{{ 'role.manager'|trans({}, 'role_management') }}</option>
@@ -151,7 +151,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="daysToComplete" class="form-label">{{ 'workflow.step.days_to_complete'|trans({}, 'workflows') }}</label>
-                                    <input type="number" class="form-control" id="daysToComplete" name="daysToComplete" min="1" max="365">
+                                    <input type="number" class="form-control fa-cyber-input__field" id="daysToComplete" name="daysToComplete" min="1" max="365">
                                     <div class="form-text">{{ 'workflow.step.days_help'|trans({}, 'workflows') }}</div>
                                 </div>
                             </div>

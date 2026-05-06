@@ -89,7 +89,7 @@
         <div class="d-grid grid-responsive-200 gap-1 mb-md">
             <div>
                 <label for="entityType">{{ 'audit_log.filter.entity_type'|trans({}, 'audit_log') }}:</label>
-                <select name="entityType" id="entityType" class="form-control">
+                <select name="entityType" id="entityType" class="form-control fa-cyber-input__field">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     {% for entityType in entityTypes %}
                     <option value="{{ entityType }}" {% if filters.entityType|default('') == entityType %}selected{% endif %}>
@@ -101,7 +101,7 @@
 
             <div>
                 <label for="action">{{ 'audit_log.filter.action'|trans({}, 'audit_log') }}:</label>
-                <select name="action" id="action" class="form-control">
+                <select name="action" id="action" class="form-control fa-cyber-input__field">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     {% for action in actions %}
                     <option value="{{ action }}" {% if filters.action|default('') == action %}selected{% endif %}>
@@ -113,17 +113,17 @@
 
             <div>
                 <label for="userName">{{ 'audit_log.filter.user'|trans({}, 'audit_log') }}:</label>
-                <input type="text" name="userName" id="userName" value="{{ filters.userName ?? '' }}" class="form-control">
+                <input type="text" name="userName" id="userName" value="{{ filters.userName ?? '' }}" class="form-control fa-cyber-input__field">
             </div>
 
             <div>
                 <label for="dateFrom">{{ 'audit_log.filter.date_from'|trans({}, 'audit_log') }}:</label>
-                <input type="date" name="dateFrom" id="dateFrom" value="{{ filters.dateFrom ?? '' }}" class="form-control">
+                <input type="date" name="dateFrom" id="dateFrom" value="{{ filters.dateFrom ?? '' }}" class="form-control fa-cyber-input__field">
             </div>
 
             <div>
                 <label for="dateTo">{{ 'audit_log.filter.date_to'|trans({}, 'audit_log') }}:</label>
-                <input type="date" name="dateTo" id="dateTo" value="{{ filters.dateTo ?? '' }}" class="form-control">
+                <input type="date" name="dateTo" id="dateTo" value="{{ filters.dateTo ?? '' }}" class="form-control fa-cyber-input__field">
             </div>
         </div>
 

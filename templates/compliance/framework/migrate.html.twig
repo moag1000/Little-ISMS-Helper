@@ -45,13 +45,13 @@
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">{{ 'compliance.framework.migrate.field.old'|trans({}, 'compliance') }}</label>
-                    <input type="text" class="form-control" value="{{ old_framework.code }} — {{ old_framework.name }} ({{ old_framework.version|default('—') }})" disabled>
+                    <input type="text" class="form-control fa-cyber-input__field" value="{{ old_framework.code }} — {{ old_framework.name }} ({{ old_framework.version|default('—') }})" disabled>
                 </div>
                 <div class="col-md-6">
                     <label for="target-framework-id" class="form-label">
                         {{ 'compliance.framework.migrate.field.target'|trans({}, 'compliance') }}
                     </label>
-                    <select id="target-framework-id" name="target_framework_id" class="form-select" required>
+                    <select id="target-framework-id" name="target_framework_id" class="form-select fa-cyber-input__field" required>
                         <option value="">—</option>
                         {% for fw in candidates %}
                             <option value="{{ fw.id }}" {% if fw.id == target_id %}selected{% endif %}>

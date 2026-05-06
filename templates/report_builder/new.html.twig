@@ -29,20 +29,20 @@
                     <form method="post" action="{{ path('report_builder_new') }}">
                         <div class="mb-3">
                             <label for="name" class="form-label">{{ 'form.name'|trans({}, 'report_builder') }} <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="name" name="name" required
+                            <input type="text" class="form-control fa-cyber-input__field" id="name" name="name" required
                                    placeholder="{{ 'form.name_placeholder'|trans({}, 'report_builder') }}">
                         </div>
 
                         <div class="mb-3">
                             <label for="description" class="form-label">{{ 'form.description'|trans({}, 'report_builder') }}</label>
-                            <textarea class="form-control" id="description" name="description" rows="3"
+                            <textarea class="form-control fa-cyber-input__field" id="description" name="description" rows="3"
                                       placeholder="{{ 'form.description_placeholder'|trans({}, 'report_builder') }}"></textarea>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="category" class="form-label">{{ 'form.category'|trans({}, 'report_builder') }}</label>
-                                <select class="form-select" id="category" name="category">
+                                <select class="form-select fa-cyber-input__field" id="category" name="category">
                                     {% for key, label in categories %}
                                     <option value="{{ key }}">{{ label }}</option>
                                     {% endfor %}
@@ -51,7 +51,7 @@
 
                             <div class="col-md-6 mb-3">
                                 <label for="layout" class="form-label">{{ 'form.layout'|trans({}, 'report_builder') }}</label>
-                                <select class="form-select" id="layout" name="layout">
+                                <select class="form-select fa-cyber-input__field" id="layout" name="layout">
                                     {% for key, label in layouts %}
                                     <option value="{{ key }}" {% if key == 'dashboard' %}selected{% endif %}>{{ label }}</option>
                                     {% endfor %}

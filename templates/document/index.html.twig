@@ -35,7 +35,7 @@
                 <label for="view-filter" class="mb-0 fw-bold">
                     <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                 </label>
-                <select class="form-select form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                <select class="form-select fa-cyber-input__field form-select-sm w-auto" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
                         {{ 'corporate.view.own_only'|trans({}, 'messages') }}
                     </option>
@@ -181,7 +181,7 @@
 
             {# Filter Controls #}
             <div class="d-flex gap-2">
-                <select class="form-select form-select-sm" id="categoryFilter"
+                <select class="form-select fa-cyber-input__field form-select-sm" id="categoryFilter"
                         data-document-filter-target="categoryFilter"
                         data-action="change->document-filter#filter">
                     <option value="">{{ 'document.filter.all_categories'|trans({}, 'document') }}</option>
@@ -198,7 +198,7 @@
 
                 <label for="documentSearch" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
                 <input type="search"
-                       class="form-control form-control-sm w-250px"
+                       class="form-control form-control-sm w-250px fa-cyber-input__field"
                        id="documentSearch"
                        placeholder="{{ 'document.filter.search_placeholder'|trans({}, 'document') }}"
                        data-document-filter-target="searchInput"
