@@ -20,6 +20,15 @@
             <div class="fa-alert__body">{{ 'alva.stats.empty'|trans({}, 'alva') }}</div>
         </div>
     {% else %}
+        {% set chart_labels = stats|map(r => r.hintKey) %}
+        {% set chart_total = stats|map(r => r.total) %}
+        {% set chart_users = stats|map(r => r.distinctUsers) %}
+        <div class="chart-container mb-4" style="max-height:360px;">
+            <canvas data-controller="chart"
+                    data-chart-type-value="bar"
+                    data-chart-data-value='{"labels":{{ chart_labels|json_encode|raw }},"datasets":[{"label":"{{ 'alva.stats.col.total'|trans({}, 'alva')|escape('js') }}","data":{{ chart_total|json_encode|raw }},"backgroundColor":"#7c3aed"},{"label":"{{ 'alva.stats.col.distinct_users'|trans({}, 'alva')|escape('js') }}","data":{{ chart_users|json_encode|raw }},"backgroundColor":"#059669"}]}'
+                    data-chart-options-value='{"indexAxis":"y","scales":{"x":{"beginAtZero":true,"ticks":{"precision":0}}},"plugins":{"legend":{"position":"bottom"}}}'></canvas>
+        </div>
         <table class="table table-striped">
             <thead>
                 <tr>
