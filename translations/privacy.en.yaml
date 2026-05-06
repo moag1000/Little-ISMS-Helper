@@ -371,6 +371,32 @@ processing_activity:
     dpia:
         required: 'Required'
         not_required: 'Not Required'
+    sdm:
+        title: 'Standard Data Protection Model (SDM 3.1)'
+        description: 'Assessment of the seven protection goals defined by the German Data Protection Conference (DSK).'
+        coverage: 'Assessed goals'
+        highest_risk: 'Highest risk'
+        summary: 'Assessment summary'
+        risk_level:
+            low: 'Low'
+            medium: 'Medium'
+            high: 'High'
+        goal:
+            verfuegbarkeit: 'Availability'
+            integritaet: 'Integrity'
+            vertraulichkeit: 'Confidentiality'
+            transparenz: 'Transparency'
+            intervenierbarkeit: 'Intervenability'
+            nichtverkettung: 'Unlinkability'
+            datenminimierung: 'Data minimisation'
+        goal_help:
+            verfuegbarkeit: 'Personal data is available to authorised parties in a timely manner.'
+            integritaet: 'Data and processing operations remain intact, complete, and current.'
+            vertraulichkeit: 'Only authorised parties access personal data.'
+            transparenz: 'Processing is intelligible to data subjects, supervisors, and the controller.'
+            intervenierbarkeit: 'Data-subject rights (access, rectification, erasure) can be exercised effectively.'
+            nichtverkettung: 'Data is not linked beyond the original processing purpose.'
+            datenminimierung: 'Processing is limited to what is necessary for the stated purpose.'
     compliance:
         pass: 'Pass'
         fail: 'Fail'
