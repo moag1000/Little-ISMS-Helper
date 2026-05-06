@@ -5,6 +5,7 @@
 {% block title %}{{ 'dsr.page.show_title'|trans({'%id%': dsr.id}, 'data_subject_request') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -13,6 +14,9 @@
             { label: '#' ~ dsr.id }
         ]
     } only %}
+
+    {% set hint = alva_hint(dsr) %}
+    {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {% include '_components/_page_header.html.twig' with {
         title: dsr.dataSubjectName,

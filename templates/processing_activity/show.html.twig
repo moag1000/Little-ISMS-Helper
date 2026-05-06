@@ -4,6 +4,7 @@
 {% block title %}{{ processing_activity.name }} - Processing Activity{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 <div class="container-fluid mt-4">
     {# Breadcrumb #}
     {% include '_components/_breadcrumb.html.twig' with {
@@ -13,6 +14,9 @@
             { label: processing_activity.name }
         ]
     } %}
+
+    {% set hint = alva_hint(processing_activity) %}
+    {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {# Page Header #}
     {% include '_components/_page_header.html.twig' with {
