@@ -1,0 +1,59 @@
+{#
+  Alva-Fee proactive hint card.
+
+  Wraps `_fa_alert` with the conventional "Alva-Tipp:"-Title prefix, an
+  optional inline action button (CSRF-protected POST), and a dismiss
+  button that talks to /alva-hint/dismiss via the alva-hint Stimulus
+  controller. Dismissal lives in the DB → cross-device.
+
+  Usage:
+    {% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
+    {% set hint = alva_hint(asset) %}  {# AlvaHintExtension Twig fn #}
+    {% if hint %}
+        {{ _fa_alva_hint.render(hint) }}
+    {% endif %}
+
+  The hint argument is an App\AlvaHint\AlvaHint DTO; the macro reads
+  fields directly. Translation keys are resolved with the DTO's domain.
+#}
+{% macro render(hint) %}
+    {% set domain = hint.translationDomain %}
+    {% set title = ('alva.title_prefix'|trans({}, 'alva')) ~ ' ' ~ (hint.titleTranslationKey|trans({}, domain)) %}
+    {% set body = hint.bodyTranslationKey|trans(hint.bodyTranslationParams, domain) %}
+    <div class="fa-alert fa-alert--{{ hint.variant }} mb-3"
+         role="status"
+         aria-live="polite"
+         data-controller="alva-hint"
+         data-alva-hint-hint-key-value="{{ hint.key }}"
+         data-alva-hint-entity-type-value="{{ hint.entityType }}"
+         data-alva-hint-entity-id-value="{{ hint.entityId }}"
+         data-alva-hint-csrf-token-value="{{ csrf_token('alva-hint-' ~ hint.key) }}"
+         data-alva-hint-endpoint-value="{{ path('app_alva_hint_dismiss') }}">
+        <i class="fa-icon fa-icon--ui-stars fa-alert__icon" aria-hidden="true"></i>
+        <div class="fa-alert__body">
+            <div class="fa-alert__title">{{ title }}</div>
+            <p class="fa-alert__message mb-2">{{ body|raw }}</p>
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                {% if hint.actionRoute is not null and hint.actionLabelTranslationKey is not null %}
+                    <form method="post" action="{{ path(hint.actionRoute, hint.actionRouteParams) }}" class="d-inline">
+                        {% if hint.actionCsrfIntent is not null %}
+                            <input type="hidden" name="_token" value="{{ csrf_token(hint.actionCsrfIntent) }}">
+                        {% endif %}
+                        <input type="hidden" name="alva_hint_key" value="{{ hint.key }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ hint.variant }} fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                            {{ hint.actionLabelTranslationKey|trans({}, domain) }}
+                        </button>
+                    </form>
+                {% endif %}
+                {% if hint.dismissible %}
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                            data-action="alva-hint#dismiss">
+                        {{ 'alva.dismiss'|trans({}, 'alva') }}
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
