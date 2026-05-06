@@ -182,6 +182,27 @@ class RiskIntelligenceService
 </div>
 ```
 
+### Form Standards (Aurora v4)
+
+The application uses a **single global form-theme** — `templates/form/fa_cyber_input.html.twig` — set in `config/packages/twig.yaml`. All Symfony forms render through this theme automatically.
+
+**MUST do:**
+- All `FormType` classes extend `AbstractType` and set `data_class` + `translation_domain` in `configureOptions()`.
+- Render forms via `{{ form_start(form) }}` + `{{ form_widget(form) }}` (or `{{ form_row(form.field) }}` for custom layouts) + `{{ form_end(form) }}`. `form_end` auto-renders CSRF.
+- For new field types (e.g. `file`, `range`, `date`, `time`, `datetime`), the theme adds `.fa-cyber-input__field--<type>` modifiers — no custom markup needed.
+
+**MUST NOT do:**
+- Override `getBlockPrefix()` in a `FormType` — this breaks global theming.
+- Use `{% form_theme form '...' %}` to switch to `bootstrap_5_layout.html.twig`. If you need to override one specific field, write a custom theme that `{% use "form/fa_cyber_input.html.twig" %}` and only overrides the specific block (see `templates/supplier/_supplier_form_theme.html.twig` for an example).
+- Hand-roll `<input class="form-control">` instead of `form_widget()` inside Symfony forms. Filter forms (GET, stateless) may use raw inputs — they're styled via the Aurora CSS bridge in `fairy-aurora-components.css`.
+
+**Validation + accessibility:**
+- The theme renders errors as `.fa-cyber-input__errors[role="alert"]` automatically.
+- All inputs receive an associated `<label for="...">` via `form_label`.
+- Required fields show `<span class="fa-cyber-input__req" aria-label="form.required">*</span>`.
+
+**CSS bridge:** Raw Bootstrap classes (`.form-control`, `.form-select`) inside `<form method="get">` filter bars are styled with Aurora tokens via `fairy-aurora-components.css` (~line 3751). This is intentional — filter forms don't go through Symfony's form system.
+
 ### JavaScript/Stimulus
 
 - **Use modern ES6+ syntax**
