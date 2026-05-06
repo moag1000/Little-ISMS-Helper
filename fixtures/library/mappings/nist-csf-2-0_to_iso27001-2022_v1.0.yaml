@@ -2,7 +2,7 @@ schema_version: '1.1'
 library:
   type: mapping
   id: 'nist-csf-2-0_to_iso27001-2022_v1.0'
-  source_framework: 'NIST-CSF-2-0'
+  source_framework: 'NIST-CSF-2.0'
   target_framework: 'ISO27001'
   version: 1
   effective_from: '2026-05-06'

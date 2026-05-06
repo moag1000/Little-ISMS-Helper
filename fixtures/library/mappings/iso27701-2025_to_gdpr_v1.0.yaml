@@ -2,7 +2,7 @@ schema_version: '1.1'
 library:
   type: mapping
   id: 'iso27701-2025_to_gdpr_v1.0'
-  source_framework: 'ISO27701-2025'
+  source_framework: 'ISO27701'
   target_framework: 'GDPR'
   version: 1
   effective_from: '2025-08-01'

@@ -3,7 +3,7 @@ library:
   type: mapping
   id: 'iso42001_to_eu-ai-act_v1.0'
   source_framework: 'ISO42001'
-  target_framework: 'EU-AI-Act'
+  target_framework: 'EU-AI-ACT'
   version: 1
   effective_from: '2026-02-01'
   effective_until: null

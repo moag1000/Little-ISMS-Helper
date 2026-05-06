@@ -3,7 +3,7 @@ library:
   type: mapping
   id: 'iso27001-2022_to_eucs_v1.0'
   source_framework: 'ISO27001'
-  target_framework: 'EUCS'
+  target_framework: 'ENISA-EUCS'
   version: 1
   effective_from: '2026-05-06'
   effective_until: null

@@ -2,7 +2,7 @@ schema_version: '1.1'
 library:
   type: mapping
   id: 'bsi-it-grundschutz_to_iso27001-2022_v1.0'
-  source_framework: 'BSI-Grundschutz'
+  source_framework: 'BSI-GRUNDSCHUTZ'
   target_framework: 'ISO27001'
   version: 1
   effective_from: '2024-09-01'
