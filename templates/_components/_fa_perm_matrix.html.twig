@@ -1,0 +1,79 @@
+{#
+ # FairyAurora v4.0 — fa-perm-matrix macro
+ #
+ # Sticky-header table for RBAC role × module × action matrix. Roles get
+ # individual accent colors so a column can be scanned at a glance. Each
+ # cell renders the granted action letters (default V E A D = View · Edit
+ # · Approve · Delete) or an em dash if nothing is granted.
+ #
+ # Usage:
+ #   {% import '_components/_fa_perm_matrix.html.twig' as _fa_perm_matrix %}
+ #   {{ _fa_perm_matrix.render({
+ #       roles: [
+ #           { key: 'admin',   label: 'Admin',   color: '#06b6d4' },
+ #           { key: 'auditor', label: 'Auditor', color: '#8b5cf6' },
+ #       ],
+ #       rows: [
+ #           {
+ #               module: 'Risiken',
+ #               cells: {
+ #                   admin:   { view: true, edit: true, approve: true, delete: true },
+ #                   auditor: { view: true, edit: false, approve: false, delete: false },
+ #               }
+ #           },
+ #       ],
+ #       actions: ['view', 'edit', 'approve', 'delete']
+ #   }) }}
+ #
+ # Parameters:
+ #   roles         - array of { key, label, color } (required)
+ #   rows          - array of { module, cells: { <roleKey>: { <action>: bool } } } (required)
+ #   actions       - list of action keys; default: ['view', 'edit', 'approve', 'delete']
+ #   actionLabels  - per-action letter override; default {view:'V',edit:'E',approve:'A',delete:'D'}
+ #   moduleHeader  - header label for the first column (default 'Modul')
+ #}
+
+{% macro render(props = {}) %}
+    {% set roles = props.roles|default([]) %}
+    {% set rows = props.rows|default([]) %}
+    {% set actions = props.actions|default(['view', 'edit', 'approve', 'delete']) %}
+    {% set actionLabels = props.actionLabels|default({
+        view: 'V', edit: 'E', approve: 'A', delete: 'D'
+    }) %}
+
+    <table class="fa-perm-matrix">
+        <thead>
+            <tr>
+                <th>{{ props.moduleHeader|default('Modul') }}</th>
+                {% for role in roles %}
+                    <th>
+                        <span class="role-tag" style="--c: {{ role.color }};">{{ role.label }}</span>
+                    </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    <td>{{ row.module }}</td>
+                    {% for role in roles %}
+                        {% set cell = row.cells[role.key]|default({}) %}
+                        {% set granted = [] %}
+                        {% for action in actions %}
+                            {% if cell[action]|default(false) %}
+                                {% set granted = granted|merge([actionLabels[action]|default(action|first|upper)]) %}
+                            {% endif %}
+                        {% endfor %}
+                        <td>
+                            {% if granted|length > 0 %}
+                                <span class="perm" style="--c: {{ role.color }};">{{ granted|join('&nbsp;')|raw }}</span>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}

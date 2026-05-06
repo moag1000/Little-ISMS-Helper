@@ -1,0 +1,83 @@
+{#
+ # FairyAurora v4.0 — fa-api-key macro
+ #
+ # Renders an API-key entry with token masking, scope/last-use/rotation
+ # metadata, lifecycle pill, and optional reveal + revoke actions. The
+ # token is never displayed in full — only `<prefix><masked-rest>`.
+ # Reveal is wired via the `api-key-reveal` Stimulus controller (toggles
+ # visibility, copy-to-clipboard, auto-hide after 30 s).
+ #
+ # Usage:
+ #   {% import '_components/_fa_api_key.html.twig' as _fa_api_key %}
+ #   {{ _fa_api_key.render({
+ #       name:       'CI · Build-Pipeline',
+ #       prefix:     'lih_live_8a4f',
+ #       masked:     '•••••••••••••••••',
+ #       full:       null,                {# pass full token only when authorised reveal #}
+ #       state:      'ok',                {# ok | warn | err #}
+ #       stateLabel: 'aktiv',
+ #       meta: [
+ #           { icon: 'shield-check',    label: 'controls:read · evidence:write' },
+ #           { icon: 'clock',           label: 'zuletzt: vor 4 Min' },
+ #           { icon: 'arrow-clockwise', label: 'Rotation: in 47 Tagen' },
+ #       ],
+ #       revokeUrl:  path('admin_api_key_revoke', {id: key.id}),
+ #       revokeCsrf: csrf_token('api_key_revoke')
+ #   }) }}
+ #
+ # Parameters:
+ #   name        - human-readable key name (required)
+ #   prefix      - visible token prefix, e.g. 'lih_live_8a4f' (required)
+ #   masked      - masked tail string (default '•••••••••••••••••')
+ #   full        - full token; if set, the reveal-button can swap masked
+ #                 for full. Server should only emit this when authorised.
+ #   state       - ok | warn | err (default 'ok')
+ #   stateLabel  - pill label (default uses state)
+ #   meta        - list of { icon, label } rows (optional)
+ #   revokeUrl   - POST endpoint that revokes the key (optional)
+ #   revokeCsrf  - CSRF token for revoke (required if revokeUrl set)
+ #}
+
+{% macro render(props = {}) %}
+    {% set state = props.state|default('ok') %}
+    {% set stateLabel = props.stateLabel|default(state) %}
+    {% set masked = props.masked|default('•••••••••••••••••') %}
+
+    <div class="fa-api-key"
+         data-controller="api-key-reveal"
+         {% if props.full is defined and props.full %}data-api-key-reveal-full-value="{{ props.full }}"{% endif %}
+         data-api-key-reveal-masked-value="{{ masked }}">
+        <div class="fa-api-key__main">
+            <div class="fa-api-key__name">{{ props.name }}</div>
+            <code class="fa-api-key__token">{{ props.prefix }}<span data-api-key-reveal-target="rest">{{ masked }}</span></code>
+            {% if props.meta is defined and props.meta|length > 0 %}
+                <div class="fa-api-key__meta">
+                    {% for item in props.meta %}
+                        <span><i class="bi bi-{{ item.icon }}" aria-hidden="true"></i> {{ item.label }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <span class="fa-api-key__state fa-api-key__state--{{ state }}">{{ stateLabel }}</span>
+
+        {% if props.full is defined and props.full %}
+            <button type="button"
+                    class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                    data-action="api-key-reveal#toggle"
+                    data-api-key-reveal-target="toggle"
+                    aria-label="Reveal token">
+                <i class="bi bi-eye" aria-hidden="true" data-api-key-reveal-target="icon"></i>
+            </button>
+        {% endif %}
+
+        {% if props.revokeUrl is defined and props.revokeUrl %}
+            <form method="post" action="{{ props.revokeUrl }}" class="d-inline">
+                <input type="hidden" name="_token" value="{{ props.revokeCsrf }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
+                    <i class="bi bi-shield-x" aria-hidden="true"></i> Revoke
+                </button>
+            </form>
+        {% endif %}
+    </div>
+{% endmacro %}

@@ -1,0 +1,42 @@
+{#
+ # FairyAurora v4.0 — fa-svc-tile macro
+ #
+ # Status tile for a backend service. Halo-dot indicator + latency +
+ # uptime metrics in mono, optional detail line. Three states drive the
+ # accent color: ok (green), warn (amber), err (red). Use 'off' for
+ # services in maintenance mode (the CSS draws a hatch pattern).
+ #
+ # Usage:
+ #   {% import '_components/_fa_svc_tile.html.twig' as _fa_svc_tile %}
+ #   {{ _fa_svc_tile.render({
+ #       name:    'API-Gateway',
+ #       state:   'ok',
+ #       latency: '42 ms',
+ #       uptime:  '99.99%',
+ #       detail:  '200 ok · p95 78 ms'
+ #   }) }}
+ #
+ # Parameters:
+ #   name    - service name (required)
+ #   state   - ok | warn | err | off (default 'ok')
+ #   latency - latency string, mono (optional)
+ #   uptime  - uptime string, mono (optional)
+ #   detail  - secondary text line (optional)
+ #}
+
+{% macro render(props = {}) %}
+    {% set state = props.state|default('ok') %}
+
+    <div class="fa-svc-tile" data-state="{{ state }}">
+        <header><span class="dot" aria-hidden="true"></span> {{ props.name }}</header>
+        {% if props.latency is defined or props.uptime is defined %}
+            <div class="metrics">
+                {% if props.latency is defined and props.latency %}<span>{{ props.latency }}</span>{% endif %}
+                {% if props.uptime is defined and props.uptime %}<span>{{ props.uptime }}</span>{% endif %}
+            </div>
+        {% endif %}
+        {% if props.detail is defined and props.detail %}
+            <div class="detail">{{ props.detail }}</div>
+        {% endif %}
+    </div>
+{% endmacro %}
