@@ -5,6 +5,7 @@
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+{% import '_components/_fa_rag_card.html.twig' as _fa_rag_card %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block body %}
@@ -51,16 +52,11 @@
         }) }}</div>
         <div class="col-md-4">
             {% set isCompliant = dashboard.summary.appetite_status == 'compliant' %}
-            <article class="fa-rag-card fa-rag-card--{{ isCompliant ? 'green' : 'red' }}">
-                <h3 class="mb-0">
-                    {% if isCompliant %}
-                        <span class="text-success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'status.compliant'|trans({}, 'dashboards') }}</span>
-                    {% else %}
-                        <span class="text-danger"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'status.breach'|trans({}, 'dashboards') }}</span>
-                    {% endif %}
-                </h3>
-                <small class="fa-rag-card__detail">{{ 'risk_manager.kpi.appetite_status'|trans({}, 'dashboards') }}</small>
-            </article>
+            {{ _fa_rag_card.render({
+                status: isCompliant ? 'green' : 'red',
+                title: isCompliant ? 'status.compliant'|trans({}, 'dashboards') : 'status.breach'|trans({}, 'dashboards'),
+                detail: 'risk_manager.kpi.appetite_status'|trans({}, 'dashboards')
+            }) }}
         </div>
     </div>
 
