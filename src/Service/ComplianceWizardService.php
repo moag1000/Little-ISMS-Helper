@@ -197,6 +197,16 @@ class ComplianceWizardService
                 'recommended_modules' => ['suppliers', 'assets', 'incidents'],
                 'categories' => $this->getBsiC5Categories(),
             ],
+            'bsi_c5_2026' => [
+                'code' => 'BSI-C5-2026',
+                'name' => 'BSI C5:2026 Cloud Compliance Criteria Catalogue',
+                'description' => 'wizard.bsi_c5_2026.description',
+                'icon' => 'bi-cloud-check-fill',
+                'color' => 'primary',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['suppliers', 'assets', 'incidents', 'crypto', 'training'],
+                'categories' => $this->getBsiC52026Categories(),
+            ],
             'bsi_grundschutz_standard' => [
                 'code' => 'BSI-GRUNDSCHUTZ-STANDARD',
                 'name' => 'BSI IT-Grundschutz (Standard-Absicherung)',
@@ -4416,6 +4426,170 @@ class ComplianceWizardService
             'critical_gaps_total' => $criticalGaps,
             'frameworks' => $quickStatus,
             'status_breakdown' => $statusCounts,
+        ];
+    }
+
+    /**
+     * BSI C5:2026 Cloud Computing Compliance Criteria Catalogue Categories
+     *
+     * Reflects the 11 thematic clusters of the C5:2026 final release:
+     * organisational, container, supply chain, post-quantum readiness,
+     * confidential computing, AI/ML security, EUCS Substantial alignment,
+     * enhanced client separation, NIS2 alignment, ISO 27001:2022 integration,
+     * CSA CCM v4 alignment.
+     */
+    private function getBsiC52026Categories(): array
+    {
+        return [
+            'organisation_personnel' => [
+                'name' => 'wizard.bsi_c5_2026.organisation_personnel',
+                'description' => 'wizard.bsi_c5_2026.organisation_personnel_desc',
+                'icon' => 'bi-people-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_2026_organisation_personnel' => [
+                        'name' => 'wizard.check.bsi_c5_2026_organisation_personnel',
+                        'type' => 'training_coverage',
+                        'module' => 'training',
+                        'route' => 'app_training_index',
+                    ],
+                ],
+            ],
+            'container_management' => [
+                'name' => 'wizard.bsi_c5_2026.container_management',
+                'description' => 'wizard.bsi_c5_2026.container_management_desc',
+                'icon' => 'bi-box-seam',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_2026_container_management' => [
+                        'name' => 'wizard.check.bsi_c5_2026_container_management',
+                        'type' => 'asset_coverage',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'supply_chain_security' => [
+                'name' => 'wizard.bsi_c5_2026.supply_chain_security',
+                'description' => 'wizard.bsi_c5_2026.supply_chain_security_desc',
+                'icon' => 'bi-link-45deg',
+                'weight' => 2.5,
+                'checks' => [
+                    'bsi_c5_2026_supply_chain_security' => [
+                        'name' => 'wizard.check.bsi_c5_2026_supply_chain_security',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'description' => 'wizard.check.bsi_c5_2026_supply_chain_security_desc',
+                        'route' => 'app_supplier_index',
+                    ],
+                ],
+            ],
+            'post_quantum_cryptography' => [
+                'name' => 'wizard.bsi_c5_2026.post_quantum_cryptography',
+                'description' => 'wizard.bsi_c5_2026.post_quantum_cryptography_desc',
+                'icon' => 'bi-key-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_2026_post_quantum_cryptography' => [
+                        'name' => 'wizard.check.bsi_c5_2026_post_quantum_cryptography',
+                        'type' => 'manual',
+                        'priority' => 'medium',
+                        'description' => 'wizard.check.bsi_c5_2026_post_quantum_cryptography_desc',
+                        'route' => 'app_crypto_index',
+                    ],
+                ],
+            ],
+            'confidential_computing' => [
+                'name' => 'wizard.bsi_c5_2026.confidential_computing',
+                'description' => 'wizard.bsi_c5_2026.confidential_computing_desc',
+                'icon' => 'bi-shield-lock-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_2026_confidential_computing' => [
+                        'name' => 'wizard.check.bsi_c5_2026_confidential_computing',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'ai_ml_security' => [
+                'name' => 'wizard.bsi_c5_2026.ai_ml_security',
+                'description' => 'wizard.bsi_c5_2026.ai_ml_security_desc',
+                'icon' => 'bi-cpu-fill',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_2026_ai_ml_security' => [
+                        'name' => 'wizard.check.bsi_c5_2026_ai_ml_security',
+                        'type' => 'asset_coverage',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'eucs_alignment' => [
+                'name' => 'wizard.bsi_c5_2026.eucs_alignment',
+                'description' => 'wizard.bsi_c5_2026.eucs_alignment_desc',
+                'icon' => 'bi-flag-fill',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_2026_eucs_alignment' => [
+                        'name' => 'wizard.check.bsi_c5_2026_eucs_alignment',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'enhanced_client_separation' => [
+                'name' => 'wizard.bsi_c5_2026.enhanced_client_separation',
+                'description' => 'wizard.bsi_c5_2026.enhanced_client_separation_desc',
+                'icon' => 'bi-diagram-3-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'bsi_c5_2026_enhanced_client_separation' => [
+                        'name' => 'wizard.check.bsi_c5_2026_enhanced_client_separation',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'nis2_alignment' => [
+                'name' => 'wizard.bsi_c5_2026.nis2_alignment',
+                'description' => 'wizard.bsi_c5_2026.nis2_alignment_desc',
+                'icon' => 'bi-shield-check',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_2026_nis2_alignment' => [
+                        'name' => 'wizard.check.bsi_c5_2026_nis2_alignment',
+                        'type' => 'incident_coverage',
+                        'module' => 'incidents',
+                        'route' => 'app_incident_index',
+                    ],
+                ],
+            ],
+            'iso_27001_integration' => [
+                'name' => 'wizard.bsi_c5_2026.iso_27001_integration',
+                'description' => 'wizard.bsi_c5_2026.iso_27001_integration_desc',
+                'icon' => 'bi-stars',
+                'weight' => 2,
+                'checks' => [
+                    'bsi_c5_2026_iso_27001_integration' => [
+                        'name' => 'wizard.check.bsi_c5_2026_iso_27001_integration',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'csa_ccm_alignment' => [
+                'name' => 'wizard.bsi_c5_2026.csa_ccm_alignment',
+                'description' => 'wizard.bsi_c5_2026.csa_ccm_alignment_desc',
+                'icon' => 'bi-cloud-arrow-up-fill',
+                'weight' => 1,
+                'checks' => [
+                    'bsi_c5_2026_csa_ccm_alignment' => [
+                        'name' => 'wizard.check.bsi_c5_2026_csa_ccm_alignment',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
         ];
     }
 }
