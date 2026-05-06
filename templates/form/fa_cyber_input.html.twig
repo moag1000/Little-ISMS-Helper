@@ -142,9 +142,12 @@
 {% endblock %}
 
 {# ─── File-Upload (Aurora frame) ──────────────────────────────────────────── #}
+{# NB: Twig 'use' (horizontal reuse) does NOT support parent() — use form_widget_simple
+   block which routes through the standard simple-input renderer. #}
 {% block file_widget %}
+    {%- set type = type|default('file') -%}
     {%- set attr = attr|merge({class: (attr.class|default('') ~ ' fa-cyber-input__field fa-cyber-input__field--file')|trim}) -%}
-    {{- parent() -}}
+    {{- block('form_widget_simple') -}}
 {% endblock %}
 
 {# ─── Range-Slider (Aurora track) ─────────────────────────────────────────── #}
