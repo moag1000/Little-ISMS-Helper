@@ -20,7 +20,7 @@
 .toast {
     background: var(--surface);
     color: var(--fg);
-    border-radius: 8px;
+    border-radius: var(--r-lg);
     box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15), 0 0 20px var(--primary-tint); /* design-spec: toast composite with tint glow */
     padding: 16px;
     display: flex;
@@ -130,7 +130,7 @@
     color: var(--fg-3);
     transition: color 0.2s ease;
     flex-shrink: 0;
-    border-radius: 4px;
+    border-radius: var(--r-sm);
 }
 
 .toast-close:hover {

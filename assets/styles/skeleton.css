@@ -29,7 +29,7 @@
 .skeleton-text {
     height: 16px;
     margin-bottom: 8px;
-    border-radius: 4px;
+    border-radius: var(--r-sm);
 }
 
 .skeleton-text-sm {
@@ -46,7 +46,7 @@
     height: 28px;
     width: 60%;
     margin-bottom: 16px;
-    border-radius: 6px;
+    border-radius: var(--r-sm);
 }
 
 .skeleton-avatar {
@@ -63,7 +63,7 @@
 .skeleton-button {
     height: 38px;
     width: 100px;
-    border-radius: 6px;
+    border-radius: var(--r-sm);
 }
 
 .skeleton-card {
@@ -76,7 +76,7 @@
 .skeleton-badge {
     height: 24px;
     width: 60px;
-    border-radius: 12px;
+    border-radius: var(--r-xl);
     display: inline-block;
 }
 

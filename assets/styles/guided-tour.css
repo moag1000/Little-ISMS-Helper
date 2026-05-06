@@ -25,7 +25,7 @@
 .guided-tour-highlight {
     position: absolute;
     border: 2px solid var(--primary-glow);
-    border-radius: 8px;
+    border-radius: var(--r-lg);
     box-shadow:
         0 0 0 9999px rgb(2, 6, 23, 0.55),
         0 0 24px var(--primary-glow),
@@ -66,7 +66,7 @@
     z-index: calc(var(--z-tour) + 2);
     background: var(--surface);
     color: var(--fg);
-    border-radius: 14px;
+    border-radius: var(--r-xl);
     padding: 1.25rem 1.5rem;
     max-width: 440px;
     min-width: 340px;
@@ -87,7 +87,7 @@
     content: "";
     position: absolute;
     inset: -2px;
-    border-radius: 16px;
+    border-radius: var(--r-2xl);
     padding: 2px;
     background: linear-gradient(
         135deg,
@@ -233,7 +233,7 @@
         var(--accent-tint) 50%,
         var(--accent-tint) 100%
     );
-    border-radius: 10px;
+    border-radius: var(--r-xl);
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -245,7 +245,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 10px;
+    border-radius: var(--r-xl);
     padding: 1px;
     background: linear-gradient(
         135deg,

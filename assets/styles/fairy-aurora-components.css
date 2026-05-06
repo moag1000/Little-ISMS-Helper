@@ -670,7 +670,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     align-items: center;
     gap: 8px;
     padding: 6px 12px;
-    border-radius: 999px;
+    border-radius: var(--r-pill);
     font-family: var(--font-ui);
     font-size: 11px;
     font-weight: 600;
@@ -727,7 +727,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     padding: 14px 18px;
     background: var(--surface-1);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: var(--r-xl);
     transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
     position: relative;
 }
@@ -749,7 +749,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 .fa-entity-card__icon {
     width: 44px;
     height: 44px;
-    border-radius: 10px;
+    border-radius: var(--r-xl);
     background: var(--surface-2);
     border: 1px solid var(--border);
     display: flex;
@@ -817,7 +817,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     gap: 12px;
 }
 .fa-entity-card--compact .fa-entity-card__icon {
-    width: 32px; height: 32px; border-radius: 8px;
+    width: 32px; height: 32px; border-radius: var(--r-icon);
 }
 .fa-entity-card--compact .fa-entity-card__icon .fa-icon {
     width: 16px; height: 16px;
@@ -1334,7 +1334,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
 }
 .fa-toggle-card__box {
     width: 14px; height: 14px;
-    border-radius: 2px;
+    border-radius: var(--r-sm);
     border: 1px solid var(--border-strong);
     background: transparent;
     display: inline-flex;
@@ -1378,7 +1378,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     color: var(--accent);
     padding: 1px 4px;
     background: var(--accent-tint);
-    border-radius: 2px;
+    border-radius: var(--r-sm);
 }
 .fa-toggle-card__sub {
     color: var(--fg-3);
@@ -1624,7 +1624,7 @@ select.fa-cyber-input__field, select.fa-cyber-input__input {
     flex: 1;
     height: 3px;
     background: var(--surface-3);
-    border-radius: 1px;
+    border-radius: 1px; /* design-spec: hairline mini-radius */
 }
 .fa-setup-phase__bar.is-done   { background: var(--primary); opacity: 0.7; }
 .fa-setup-phase__bar.is-active { background: var(--primary); box-shadow: 0 0 8px var(--primary-glow); }

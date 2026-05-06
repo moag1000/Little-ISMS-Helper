@@ -629,7 +629,7 @@
 .sla-progress-track {
     height: 24px;
     background: var(--surface-2);
-    border-radius: 12px;
+    border-radius: var(--r-xl);
     overflow: hidden;
     position: relative;
     border: 1px solid var(--border);
@@ -642,7 +642,7 @@
 
 .sla-progress-bar {
     height: 100%;
-    border-radius: 12px;
+    border-radius: var(--r-xl);
     transition: width 0.6s ease, background-color 0.3s ease;
     position: relative;
     background: linear-gradient(90deg, var(--success) 0%, var(--success-strong) 100%);
@@ -757,7 +757,7 @@
     flex: 1;
     height: 6px;
     background: var(--bg);
-    border-radius: 3px;
+    border-radius: var(--r-sm);
     overflow: hidden;
     min-width: 60px;
 }
@@ -768,7 +768,7 @@
 
 .sla-progress-bar-mini {
     height: 100%;
-    border-radius: 3px;
+    border-radius: var(--r-sm);
     transition: width 0.4s ease;
 }
 
