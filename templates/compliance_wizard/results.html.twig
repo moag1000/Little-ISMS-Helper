@@ -68,6 +68,47 @@
         </div>
     </div>
 
+    {# Catalogue-Coverage KPI #}
+    {% if result.catalogue_coverage is defined and result.catalogue_coverage.total > 0 %}
+    <div class="row mb-4">
+        <div class="col-12">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-0 shadow-sm' } %}
+                {% block card_body %}
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div>
+                            <h2 class="h6 text-muted mb-1">
+                                <i class="bi bi-list-check me-1" aria-hidden="true"></i>
+                                {{ 'wizard.catalogue_coverage.title'|trans({}, 'wizard') }}
+                            </h2>
+                            <div class="h4 fw-bold mb-0">
+                                {{ result.catalogue_coverage.covered }} / {{ result.catalogue_coverage.total }}
+                                <span class="text-muted small fw-normal ms-2">
+                                    {{ 'wizard.catalogue_coverage.subtitle'|trans({'%framework%': result.framework_name}, 'wizard') }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-end" style="min-width: 200px;">
+                            <div class="progress" style="height: 24px;">
+                                <div class="progress-bar
+                                    {% if result.catalogue_coverage.percent >= 80 %}bg-success
+                                    {% elseif result.catalogue_coverage.percent >= 50 %}bg-warning
+                                    {% else %}bg-danger{% endif %}"
+                                     role="progressbar"
+                                     style="width: {{ result.catalogue_coverage.percent }}%;"
+                                     aria-valuenow="{{ result.catalogue_coverage.percent }}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                    {{ result.catalogue_coverage.percent }}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+    {% endif %}
+
     {# Critical Gaps Alert #}
     {% if result.critical_gap_count > 0 %}
     {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'danger', icon: 'bi-exclamation-octagon', class: 'mb-4' } } %}
