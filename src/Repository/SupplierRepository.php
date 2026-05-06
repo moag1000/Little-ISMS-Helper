@@ -409,4 +409,38 @@ class SupplierRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Suppliers in scope of the LkSG due-diligence (reportingObligation = true).
+     * Optionally filtered by aggregated risk category for annual report exports.
+     *
+     * @return Supplier[]
+     */
+    public function findLksgRelevantSuppliers(?Tenant $tenant = null, ?string $minimumRiskCategory = null): array
+    {
+        $qb = $this->createQueryBuilder('s')
+            ->where('s.lksgReportingObligation = :flag')
+            ->setParameter('flag', true);
+
+        if ($tenant instanceof Tenant) {
+            $qb->andWhere('s.tenant = :tenant OR s.tenant IS NULL')
+                ->setParameter('tenant', $tenant);
+        }
+
+        if ($minimumRiskCategory !== null) {
+            $order = ['low', 'medium', 'high', 'critical'];
+            $threshold = array_search($minimumRiskCategory, $order, true);
+            if ($threshold !== false) {
+                $allowed = array_slice($order, $threshold);
+                $qb->andWhere('s.lksgRiskCategory IN (:allowed)')
+                    ->setParameter('allowed', $allowed);
+            }
+        }
+
+        return $qb
+            ->orderBy('s.lksgRiskCategory', 'DESC')
+            ->addOrderBy('s.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

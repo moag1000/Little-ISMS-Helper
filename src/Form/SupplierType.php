@@ -318,6 +318,54 @@ class SupplierType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
             ])
+            ->add('lksgReportingObligation', CheckboxType::class, [
+                'label' => 'supplier.field.lksg_reporting_obligation',
+                'help' => 'supplier.help.lksg_reporting_obligation',
+                'required' => false,
+            ])
+            ->add('lksgRiskCategory', ChoiceType::class, [
+                'label' => 'supplier.field.lksg_risk_category',
+                'help' => 'supplier.help.lksg_risk_category',
+                'required' => false,
+                'placeholder' => 'supplier.placeholder.lksg_risk_category',
+                'choices' => [
+                    'supplier.lksg_risk.low' => 'low',
+                    'supplier.lksg_risk.medium' => 'medium',
+                    'supplier.lksg_risk.high' => 'high',
+                    'supplier.lksg_risk.critical' => 'critical',
+                ],
+                'choice_translation_domain' => 'suppliers',
+            ])
+            ->add('lksgHumanRightsRiskScore', IntegerType::class, [
+                'label' => 'supplier.field.lksg_human_rights_risk_score',
+                'help' => 'supplier.help.lksg_human_rights_risk_score',
+                'required' => false,
+                'attr' => ['min' => 0, 'max' => 100],
+            ])
+            ->add('lksgEnvironmentalRiskScore', IntegerType::class, [
+                'label' => 'supplier.field.lksg_environmental_risk_score',
+                'help' => 'supplier.help.lksg_environmental_risk_score',
+                'required' => false,
+                'attr' => ['min' => 0, 'max' => 100],
+            ])
+            ->add('lksgRiskAnalysisDate', DateType::class, [
+                'label' => 'supplier.field.lksg_risk_analysis_date',
+                'help' => 'supplier.help.lksg_risk_analysis_date',
+                'widget' => 'single_text',
+                'required' => false,
+            ])
+            ->add('lksgComplaintMechanism', TextareaType::class, [
+                'label' => 'supplier.field.lksg_complaint_mechanism',
+                'help' => 'supplier.help.lksg_complaint_mechanism',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
+            ->add('lksgPreventionMeasures', TextareaType::class, [
+                'label' => 'supplier.field.lksg_prevention_measures',
+                'help' => 'supplier.help.lksg_prevention_measures',
+                'required' => false,
+                'attr' => ['rows' => 3],
+            ])
         ;
 
         // Sync unmapped textareas back to JSON entity properties
