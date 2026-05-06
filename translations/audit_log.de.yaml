@@ -9,6 +9,7 @@ audit_log:
         entries: Protokolleinträge
         table: Tabelle
         timeline: Timeline
+        compact: Kompakt
         quick_filters: Schnellfilter
     stats:
         total_logs: 'Gesamt Protokolleinträge'

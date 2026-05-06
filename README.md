@@ -12,9 +12,10 @@
 [![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
 
 ![Entities](https://img.shields.io/badge/Entities-80-informational)
-![Frameworks](https://img.shields.io/badge/Frameworks-25-informational)
+![Frameworks](https://img.shields.io/badge/Frameworks-25_komplett-informational)
 ![Controls](https://img.shields.io/badge/ISO%2027001%20Controls-93-informational)
-![Tests](https://img.shields.io/badge/Tests-2%2C850%2B-informational)
+![Tests](https://img.shields.io/badge/Tests-4%2C300%2B-informational)
+![Mappings](https://img.shields.io/badge/Cross--Framework--Mappings-3%2C500%2B-informational)
 
 [Funktionen](#funktionen) |
 [Quick Start](#quick-start) |
@@ -94,8 +95,10 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 ### Compliance und Frameworks
 
 - **ISO 27001:2022** -- Alle 93 Annex-A-Controls und Clauses 4-10 vollstaendig abgedeckt
-- **25 Compliance-Frameworks** -- ISO 27001, ISO 22301, ISO 27005, ISO 27701 (2019+2025), NIS2, NIS2UmsuCG, DORA, TISAX, BSI IT-Grundschutz, BSI C5 (2020+2026), SOC 2, NIST CSF 2.0, CIS Controls v8.1, GDPR, BDSG, EU AI Act, GxP, DiGAV, TKG, KRITIS, KRITIS-Health, MRIS v1.5
-- **Cross-Framework-Mapping** -- 8 kuratierte Seed-Kataloge mit transitiver Compliance-Ableitung; ein Nachweis bedient mehrere Frameworks gleichzeitig (Data-Reuse-Prinzip)
+- **25 Compliance-Frameworks (vollstaendige Kataloge in der DB)** -- ISO 27001:2022 (93 Annex A), BSI IT-Grundschutz (221), BSI C5:2020 (121), BSI C5:2026 (168, BSI YAML verbatim), NIS2 (85, alle 46 Articles + Art. 21(2) Sub-Letters + Art. 23 Timeline), NIS2-UmsuCG (47, BGBl. 2025 I Nr. 301), DORA (315, Level-1 Articles + Level-2 RTS/ITS/CIR), TISAX (114), GDPR (alle 99 Articles), EU AI Act (alle 113 Articles + 13 Annexe), EU CRA (Annex I + Operative Articles), NIST CSF 2.0 (alle 106 Subcategories), SOC 2 (50), PCI-DSS 4.0.1 (75), ISO 27701:2025 (Annex A + B + Klauseln), ISO 22301 (25), ISO 42001 (Annex A + Klauseln), ISO 27017 (CLD-Erweiterungen + 27002 Cloud-Guidance, 121), ISO 27018 (Annex A + 27002 PII-Guidance, 143), KRITIS, ENISA-EUCS (Mapping-derived bis ENISA Final), MRIS v1.5, BAIT (legacy via DORA obsolet)
+- **Cross-Framework-Mapping** -- 56 kuratierte Mapping-Fixtures (~3.500 persistente Mappings), Lex-Specialis-Markierung wo zutreffend (DORA <-> NIS2, NIS2-UmsuCG <-> DORA fuer DE-Finanzdienstleister), 4-stufiger Lifecycle (draft -> review -> approved -> published) mit Provenance-Block je Mapping. Transitive Compliance-Ableitung -- ein Nachweis bedient mehrere Frameworks gleichzeitig (Data-Reuse-Prinzip)
+- **Maturity-Reife je Wizard** -- Baseline (KMU-pragmatisch) und Enhanced (audit-ready) als ausklappbare Narrative pro Kategorie in NIS2, DORA, GDPR, EU AI Act
+- **Catalogue-Coverage-KPI** -- Wizard-Result zeigt zusaetzlich zur Score `X / Y Anforderungen aus dem Framework-Katalog erfuellt` als Fortschrittsbalken
 - **Branchen-Baselines** -- 9 vorkonfigurierte Starter-Pakete (Generic, Production, Finance, KRITIS-Health, Automotive, Cloud, MSP, IT-Service, Hosting) fuer sofortigen Einstieg
 - **Framework-Reife-Baselines** -- 35 Reife-Soll-Pakete (7 Frameworks x 5 Branchen: ISO 27001, BSI IT-Grundschutz, BSI C5, NIS2, DORA, TISAX, GDPR x KRITIS/Finance/SaaS/Manufacturing/Healthcare)
 - **MRIS v1.5** -- 19 zusaetzliche Branchen-Reife-Baselines mit DE/EN-i18n
@@ -223,7 +226,7 @@ symfony serve
 
 Oeffnen: `http://localhost:8000/setup`
 
-Der Setup-Wizard fuehrt durch Tenant-Erstellung, Framework-Auswahl und Branchen-Baseline.
+Der Setup-Wizard fuehrt durch Tenant-Erstellung, Framework-Auswahl und Branchen-Baseline. Detaillierte Schritt-fuer-Schritt-Anleitung mit Screenshots: [**Quickstart-Guide**](docs/QUICKSTART.md).
 
 ---
 
@@ -317,6 +320,14 @@ php bin/console isms:load-annex-a-controls --env=test
 
 ## Dokumentation
 
+### Einstieg
+
+| Dokument | Thema |
+|---|---|
+| [Quickstart](docs/QUICKSTART.md) | Vom Klon zum laufenden ISMS in 30 Min — Setup-Wizard 11 Schritte mit Screenshots |
+| [Sichtwechsel](docs/sichtwechsel/README.md) | Sechs Persona-Perspektiven aufs Tool — ISB, CISO, Compliance-Manager, Junior, Risk-Owner, Auditor |
+| [Junior-Walkthrough](docs/JUNIOR_IMPLEMENTER_WALKTHROUGH.md) | Detail-Walkthrough aus 9001-Quereinsteiger-Sicht |
+
 ### Setup und Deployment
 
 | Dokument | Thema |
@@ -362,6 +373,23 @@ php bin/console isms:load-annex-a-controls --env=test
 | [Security Architecture](docs/security/SECURITY.md) | Sicherheitsarchitektur |
 | [OWASP Audit](docs/reports/security-audit-owasp-2025-rc1.md) | Security Audit Report |
 | [License Report](docs/reports/license-report.md) | Third-Party-Lizenz-Compliance |
+
+### Sichtwechsel — Sechs Perspektiven auf dasselbe ISMS
+
+Das Tool sieht für jede Rolle anders aus. CISO will Heatmap, Auditor will Stichtag-Snapshot, Junior-Implementer will Wizard. **Sichtwechsel** zeigt das Tool aus sechs Persona-Blickwinkeln mit echten Screenshots — getriggert über die [Persona-Skills](.claude/skills/) im Projekt.
+
+[![Sichtwechsel — CISO-Dashboard](docs/sichtwechsel/img/ciso-executive/ciso-dashboard.png)](docs/sichtwechsel/README.md)
+
+| Perspektive | Walkthrough |
+|---|---|
+| **ISB / Security Officer** — Operative ISO-27001-Praxis, Audit-Trail, SoA, Risikoregister | [→ Sichtwechsel ISB](docs/sichtwechsel/isb-practitioner.md) |
+| **CISO / Executive** — Heatmap, Reifegrad-Trend, Vorstandsvorlage in 30 Sekunden | [→ Sichtwechsel CISO](docs/sichtwechsel/ciso-executive.md) |
+| **Compliance-Manager / Head of GRC** — Framework-Reuse, Cross-Mapping, Library | [→ Sichtwechsel CM](docs/sichtwechsel/compliance-manager.md) |
+| **Junior-Implementer (neu in InfoSec)** — Setup-Wizard, Empty-States, Hilfe-Tour | [→ Sichtwechsel Junior](docs/sichtwechsel/implementer-junior.md) |
+| **Risk-Owner / Fachbereichsleiter** — Eine-Aufgabe-eine-Entscheidung, Business-Sprache | [→ Sichtwechsel Risk-Owner](docs/sichtwechsel/risk-owner-business.md) |
+| **Externer Auditor (ISO 19011)** — Stichtag-Snapshot, Audit-Log, NC-Detail | [→ Sichtwechsel Auditor](docs/sichtwechsel/auditor-external.md) |
+
+Screenshots automatisch via Playwright erzeugt: `npm run screenshots` — voller Workflow in [docs/sichtwechsel/README.md](docs/sichtwechsel/README.md).
 
 ---
 
