@@ -3,6 +3,23 @@
 ## Overview
 Standardized card system with 5 variants, full dark mode support, and consistent styling across the application.
 
+## BC-Bridge Status (2026-05-06)
+
+`_card` emittiert sowohl Bootstrap- als auch `.fa-*`-Klassen. Cleanup-Trigger
+(reine `.fa-*`-Klassen) gemäß Spec
+`docs/superpowers/specs/2026-05-06-aurora-v4-zindex-bigbang-design.md` §0
+BC-Alias-Cleanup: alle Consumer-Templates migriert ODER 3 Monate nach
+2026-05-06 (= 2026-08-06).
+
+| Variant | Bootstrap-Klasse | Aurora-Pendant | Cleanup-Plan |
+|---|---|---|---|
+| `default` | `.card` | `.fa-section` | Bootstrap-Klasse drop |
+| `kpi` | `.card.kpi-card.kpi-card-X` | `.fa-kpi-card.fa-kpi-card--X` | Bootstrap-Klassen drop |
+| `widget` | `.card.widget-card` | `.fa-widget-card` | Bootstrap-Klassen drop |
+| `feature` | `.card.feature-card` | `.fa-feature-card` | Bootstrap-Klassen drop |
+| `stat` | `.card.stat-card` (DEPRECATED) | `.fa-kpi-card` | Variant entfernen, Consumer auf `kpi` migrieren |
+| `bordered` | `.card.card-border-left-X` | — | Open: Aurora-Pendant designen |
+
 ## Card Component Usage
 
 The `_card.html.twig` component provides a flexible, reusable card system based on UI/UX Audit Issue 3.1.
