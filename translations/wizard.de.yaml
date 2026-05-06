@@ -53,6 +53,11 @@ wizard:
     checks: "Prüfpunkte"
     missing_recommended_title: "Empfohlene Module fehlen"
     missing_recommended_desc: "Für eine vollständige Bewertung werden folgende Module empfohlen:"
+    inheritance:
+        title: 'Datenübernahme aus bereits gepflegten Frameworks'
+        desc: 'Es liegen Cross-Framework-Mappings aus %count% anderen Frameworks auf %target% vor. Vorhandene Antworten können automatisch als Vorschlag übernommen werden — Sie prüfen nur noch.'
+        hint: 'Die Übernahme legt Vorschläge in der Inheritance-Queue an. Nichts wird ohne Bestätigung in der finalen Bewertung gesetzt.'
+        activate: 'Datenübernahme jetzt prüfen'
     active_modules: "Aktive Module"
     data_sources_info: "Der Wizard analysiert Daten aus folgenden aktiven Modulen:"
     what_to_expect: "Was Sie erwartet"
@@ -660,6 +665,43 @@ wizard:
         soc2_confidentiality: 'Vertraulichkeit'
         soc2_privacy: 'Privacy / Betroffenenrechte'
 
+        # EU AI Act (Verordnung 2024/1689) checks
+        eu_ai_act_prohibited: 'Keine verbotenen KI-Praktiken (Art. 5)'
+        eu_ai_act_classification: 'Hochrisiko-Klassifikation der KI-Systeme (Art. 6, Anhang III)'
+        eu_ai_act_rms: 'Risikomanagementsystem fuer KI etabliert (Art. 9)'
+        eu_ai_act_data_governance: 'Daten-Governance fuer Training/Validierung (Art. 10)'
+        eu_ai_act_tech_doc: 'Technische Dokumentation vorhanden (Art. 11, Anhang IV)'
+        eu_ai_act_oversight: 'Menschliche Aufsicht implementiert (Art. 14)'
+        eu_ai_act_accuracy: 'Genauigkeit, Robustheit und Cybersicherheit (Art. 15)'
+        eu_ai_act_transparency: 'Transparenzpflichten gegenueber Nutzern (Art. 50)'
+        eu_ai_act_gpai: 'GPAI-Modell-Pflichten erfuellt (Art. 51-55)'
+        eu_ai_act_conformity: 'Konformitaetsbewertung durchgefuehrt (Art. 43)'
+        eu_ai_act_pmm: 'Post-Market-Monitoring etabliert (Art. 72)'
+
+        # ENISA EUCS (European Cybersecurity Certification Scheme) checks
+        eucs_organization: 'Sicherheitsorganisation und ISMS-Policy'
+        eucs_risk: 'Risikomanagement nach EUCS-Substantial'
+        eucs_assets: 'Asset-Inventar mit Cloud-Service-Bezug'
+        eucs_iam: 'Identity-, Authentication-, Access-Management'
+        eucs_crypto: 'Kryptographie und Schluesselmanagement'
+        eucs_operations: 'Operative Sicherheit (Hardening, Patching, Monitoring)'
+        eucs_communication: 'Sichere Kommunikation und Netztrennung'
+        eucs_portability: 'Portabilitaet und Interoperabilitaet'
+        eucs_incidents: 'Incident-Management nach EUCS'
+        eucs_bcm: 'Business-Continuity und Disaster-Recovery'
+        eucs_suppliers: 'Lieferanten-Steuerung und Sub-Auftragsverarbeiter'
+        eucs_compliance: 'Compliance-Reviews und interne Audits'
+
+        # EU Cyber Resilience Act (Verordnung 2024/2847) checks
+        cra_security_by_design: 'Security-by-Design und Default-Sicherheit (Anhang I, Teil I)'
+        cra_vuln_handling: 'Schwachstellenbehandlungs-Prozess (Anhang I, Teil II)'
+        cra_sbom: 'SBOM gepflegt und kritische Komponenten dokumentiert'
+        cra_disclosure: 'Coordinated Vulnerability Disclosure Policy (Art. 11)'
+        cra_incident_reporting: '24h-Meldung aktiv ausgenutzter Schwachstellen an ENISA (Art. 14)'
+        cra_ce_marking: 'CE-Kennzeichnung und Konformitaetserklaerung (Art. 13)'
+        cra_tech_doc: 'Technische Dokumentation (Anhang VII)'
+        cra_support_period: 'Support-Zeitraum festgelegt und kommuniziert (mind. 5 Jahre)'
+
     # TISAX Categories
     tisax:
         description: "Bewerten Sie Ihre Informationssicherheit nach VDA ISA für die Automobilindustrie."
@@ -973,3 +1015,77 @@ wizard:
         risk_analysis_desc: 'Ergaenzende Risikoanalyse fuer Zielobjekte mit hohem/sehr hohem Schutzbedarf.'
         realization: 'Realisierungsplanung'
         realization_desc: 'Massnahmenpriorisierung, Umsetzungsplan, Verantwortliche, Termine.'
+
+    # EU AI Act (Verordnung 2024/1689) Categories
+    eu_ai_act:
+        description: 'Reife-Check nach EU AI Act (Verordnung 2024/1689) — risikobasierter Ansatz fuer KI-Systeme. Verbotene Praktiken (Art. 5) ab 02.02.2025, GPAI (Art. 51-55) ab 02.08.2025, Hochrisiko-KI (Art. 6 ff.) ab 02.08.2026.'
+        prohibited_practices: 'Verbotene Praktiken (Art. 5)'
+        prohibited_practices_desc: 'Manipulative Techniken, Sozialbewertung, Echtzeit-Fernidentifizierung, biometrische Kategorisierung — Verbotsliste pruefen.'
+        high_risk_classification: 'Hochrisiko-Klassifikation (Art. 6, Anhang III)'
+        high_risk_classification_desc: 'Bewertung, ob ein KI-System in eine der 8 Hochrisiko-Bereiche faellt (Biometrie, kritische Infrastruktur, Bildung, HR, Strafverfolgung etc.).'
+        risk_management_system: 'Risikomanagementsystem (Art. 9)'
+        risk_management_system_desc: 'Iterativer Prozess zur Identifikation, Analyse und Minderung der bekannten und vorhersehbaren Risiken eines Hochrisiko-KI-Systems.'
+        data_governance: 'Daten-Governance (Art. 10)'
+        data_governance_desc: 'Trainings-, Validierungs- und Testdatensaetze: Relevanz, Repraesentativitaet, Pruefung auf Bias und Datenqualitaet.'
+        technical_documentation: 'Technische Dokumentation (Art. 11, Anhang IV)'
+        technical_documentation_desc: 'Vollstaendige technische Dokumentation des KI-Systems inklusive Trainingsmethodik, Performance-Metriken und Architektur.'
+        human_oversight: 'Menschliche Aufsicht (Art. 14)'
+        human_oversight_desc: 'Menschen koennen das System verstehen, ueberwachen, eingreifen und bei Fehlfunktionen abschalten.'
+        accuracy_robustness: 'Genauigkeit, Robustheit, Cybersicherheit (Art. 15)'
+        accuracy_robustness_desc: 'Angemessene Genauigkeit, Robustheit gegen Fehler/Stoerungen und Schutz vor Adversarial-Angriffen.'
+        transparency_obligations: 'Transparenzpflichten (Art. 50)'
+        transparency_obligations_desc: 'Kennzeichnung KI-generierter Inhalte (Deepfakes, Chatbots, synthetische Audio/Video/Text).'
+        gpai_obligations: 'GPAI-Modell-Pflichten (Art. 51-55)'
+        gpai_obligations_desc: 'Pflichten fuer General-Purpose-AI-Modelle: Dokumentation, Urheberrecht, Trainingsdaten-Zusammenfassung. Verschaerft fuer systemische Modelle.'
+        conformity_assessment: 'Konformitaetsbewertung (Art. 43)'
+        conformity_assessment_desc: 'Interne oder externe Konformitaetsbewertung vor Inverkehrbringen eines Hochrisiko-KI-Systems.'
+        post_market_monitoring: 'Post-Market-Monitoring (Art. 72)'
+        post_market_monitoring_desc: 'Systematische Beobachtung des KI-Systems nach Inverkehrbringen, Meldung schwerer Vorfaelle an Marktueberwachungsbehoerden.'
+
+    # ENISA EUCS (European Cybersecurity Certification Scheme for Cloud Services) Categories
+    eucs:
+        description: 'Reife-Check nach ENISA EUCS — europaeisches Cybersicherheitszertifizierungsschema fuer Cloud-Dienste. Ausgerichtet auf Substantial-Assurance-Level.'
+        organization_security: 'Organisation der Informationssicherheit'
+        organization_security_desc: 'Sicherheitsorganisation, Rollen und Verantwortlichkeiten, Steuerung des ISMS.'
+        risk_management: 'Risikomanagement'
+        risk_management_desc: 'Systematischer Prozess zur Risikoidentifikation, -bewertung und -behandlung im Cloud-Kontext.'
+        asset_management: 'Asset-Management'
+        asset_management_desc: 'Inventar der Cloud-Service-Komponenten, Klassifizierung und Verantwortlichkeiten.'
+        identity_access: 'Identitaets- und Zugriffsmanagement'
+        identity_access_desc: 'Authentifizierung, Autorisierung, MFA, privilegierte Zugaenge.'
+        cryptography: 'Kryptographie'
+        cryptography_desc: 'Verschluesselung at-rest und in-transit, Schluesselmanagement, Verfahren nach Stand der Technik.'
+        operations_security: 'Operative Sicherheit'
+        operations_security_desc: 'Hardening, Patch-Management, Vulnerability-Management, Logging, Monitoring.'
+        communication_security: 'Kommunikationssicherheit'
+        communication_security_desc: 'Netzsegmentierung, Schutz der Datenuebertragung, sichere Kommunikationsprotokolle.'
+        portability_interoperability: 'Portabilitaet und Interoperabilitaet'
+        portability_interoperability_desc: 'Datenexport-Faehigkeit, standardisierte Schnittstellen, Vermeidung von Vendor-Lock-In.'
+        incident_management: 'Incident-Management'
+        incident_management_desc: 'Erkennung, Reaktion, Eskalation, Lessons Learned bei Sicherheitsvorfaellen.'
+        business_continuity: 'Business Continuity'
+        business_continuity_desc: 'Notfallplaene, Disaster Recovery, Wiederanlaufzeiten, regelmaessige Tests.'
+        supplier_management: 'Lieferanten-Management'
+        supplier_management_desc: 'Auswahl, Bewertung und Steuerung von Sub-Auftragsverarbeitern und Drittanbietern.'
+        compliance_audit: 'Compliance und Audits'
+        compliance_audit_desc: 'Interne Reviews, externe Audits, Nachweispflichten und Auditorenrechte.'
+
+    # EU Cyber Resilience Act (Verordnung 2024/2847) Categories
+    cra:
+        description: 'Reife-Check nach EU Cyber Resilience Act (Verordnung 2024/2847) — Cybersicherheitsanforderungen fuer Produkte mit digitalen Elementen. Verbindlich ab 11.12.2027.'
+        security_by_design: 'Security-by-Design und Default-Sicherheit'
+        security_by_design_desc: 'Anhang I, Teil I — wesentliche Cybersicherheitsanforderungen, sichere Standardkonfiguration, Schutz vor unautorisiertem Zugriff.'
+        vulnerability_handling: 'Schwachstellenbehandlung'
+        vulnerability_handling_desc: 'Anhang I, Teil II — strukturierter Prozess zur Erkennung, Behebung und Veroeffentlichung von Schwachstellen waehrend des Support-Zeitraums.'
+        sbom_supply_chain: 'SBOM und Lieferkettensicherheit'
+        sbom_supply_chain_desc: 'Software Bill of Materials gepflegt, kritische Komponenten dokumentiert, Drittanbieter-Komponenten bewertet.'
+        vulnerability_disclosure: 'Coordinated Vulnerability Disclosure'
+        vulnerability_disclosure_desc: 'Art. 11 — dokumentierte Disclosure-Policy, Kontaktstelle fuer Sicherheitsforscher, koordinierte Veroeffentlichung.'
+        incident_reporting: '24h-Meldepflicht an ENISA'
+        incident_reporting_desc: 'Art. 14 — aktiv ausgenutzte Schwachstellen und schwere Vorfaelle innerhalb von 24h an ENISA und nationale CSIRT melden.'
+        ce_marking_conformity: 'CE-Kennzeichnung und Konformitaetserklaerung'
+        ce_marking_conformity_desc: 'Art. 13 — EU-Konformitaetserklaerung erstellt, CE-Kennzeichen angebracht, Konformitaetsbewertungsverfahren durchlaufen.'
+        technical_documentation: 'Technische Dokumentation'
+        technical_documentation_desc: 'Anhang VII — vollstaendige technische Doku zu Sicherheitsanforderungen, Risikobewertung und Konformitaetsbewertung.'
+        support_period: 'Support-Zeitraum'
+        support_period_desc: 'Definierter und kommunizierter Support-Zeitraum fuer Sicherheitsupdates (Mindestempfehlung 5 Jahre, je nach Produktlebensdauer).'

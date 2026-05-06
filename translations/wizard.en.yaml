@@ -53,6 +53,11 @@ wizard:
     checks: "Checks"
     missing_recommended_title: "Recommended Modules Missing"
     missing_recommended_desc: "For a complete assessment, the following modules are recommended:"
+    inheritance:
+        title: 'Reuse answers from already-mapped frameworks'
+        desc: 'Cross-framework mappings exist from %count% other frameworks onto %target%. Existing answers can be proposed as suggestions automatically — you just review them.'
+        hint: 'The takeover adds proposals to the inheritance queue. Nothing lands in the final assessment without your confirmation.'
+        activate: 'Check data takeover now'
     active_modules: "Active Modules"
     data_sources_info: "The wizard analyzes data from the following active modules:"
     what_to_expect: "What to Expect"

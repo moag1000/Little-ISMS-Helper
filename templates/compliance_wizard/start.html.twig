@@ -62,6 +62,34 @@
                 {% endblock %}
             {% endembed %}
 
+            {# On-demand data takeover from already-mapped frameworks (Data-Reuse) #}
+            {% if inheritance_source_frameworks|default([])|length > 0 %}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
+                {% block alert_body %}
+                    <div class="fa-alert__title">{{ 'wizard.inheritance.title'|trans({}, 'wizard') }}</div>
+                    <p class="mb-2">
+                        {{ 'wizard.inheritance.desc'|trans({
+                            '%count%': inheritance_source_frameworks|length,
+                            '%target%': config.name
+                        }, 'wizard') }}
+                    </p>
+                    <ul class="mb-2">
+                        {% for source_framework in inheritance_source_frameworks %}
+                            <li><strong>{{ source_framework.name }}</strong></li>
+                        {% endfor %}
+                    </ul>
+                    <p class="small text-muted mb-2">{{ 'wizard.inheritance.hint'|trans({}, 'wizard') }}</p>
+                    <form method="post" action="{{ path('app_compliance_inheritance_activate', {frameworkCode: config.code}) }}" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('inherit-' ~ config.code) }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--info fa-cyber-btn--sm">
+                            <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
+                            {{ 'wizard.inheritance.activate'|trans({}, 'wizard') }}
+                        </button>
+                    </form>
+                {% endblock %}
+            {% endembed %}
+            {% endif %}
+
             {# Missing Recommended Modules Warning #}
             {% if missing_recommended|length > 0 %}
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning' } } %}
