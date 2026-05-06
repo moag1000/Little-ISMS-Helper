@@ -1,0 +1,481 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'eu-ai-act_to_gdpr_v1.0'
+  source_framework: 'EU-AI-ACT'
+  target_framework: 'GDPR'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'EU AI Act (Verordnung (EU) 2024/1689) + GDPR (Verordnung (EU) 2016/679)'
+    primary_source_url: 'https://eur-lex.europa.eu/eli/reg/2024/1689/oj'
+    secondary_sources:
+      - 'EDPS-EDPB Joint Opinion 5/2021 on the proposal for a Regulation laying down harmonised rules on AI (AI Act)'
+      - 'EDPB Statement 03/2024 on data protection authorities role in the AI Act framework'
+      - 'EU AI Act Recital 10 (Verhältnis zur DSGVO — komplementäre Geltung)'
+      - 'AI Office Guidelines on General-Purpose AI Models (Draft 2025-Q3)'
+      - 'Eigene Volltext-Analyse durch GRC-/DPO-Team mit AI-Privacy-Schnittmengen-Fokus'
+    publisher: 'Little ISMS Helper Maintainers'
+
+  methodology:
+    type: 'text_comparison_with_expert_review'
+    description: |
+      KOMPLEMENTAERE GELTUNG — KEINE LEX-SPECIALIS-BEZIEHUNG:
+      Der EU AI Act (Verordnung 2024/1689) und die DSGVO (Verordnung 2016/679)
+      adressieren unterschiedliche Schutzgüter und gelten parallel:
+
+      - AI Act = PRODUKT-SICHERHEITS-Regulierung (CE-Logik, harmonisierte Normen,
+        Konformitätsbewertung, Marktaufsicht). Schützt Grundrechte UND
+        Produktsicherheit beim Einsatz von KI-Systemen.
+      - DSGVO = DATENSCHUTZ-Regulierung (Rechte betroffener Personen,
+        Rechenschaftspflicht, Aufsichtsbehörden). Schützt das Recht auf
+        informationelle Selbstbestimmung.
+
+      AI Act Recital 10 stellt explizit klar, dass der AI Act die Anwendung
+      der DSGVO unberührt lässt. Wer ein KI-System mit personenbezogenen
+      Daten betreibt, MUSS BEIDE Regelwerke parallel erfüllen — es gibt keine
+      lex-specialis-Verdrängung. Der AI Act KANN aber zusätzliche
+      Datenschutz-relevante Pflichten begründen (z.B. Bias-Detection auf
+      Special-Category-Data nach Art. 10(5) AI Act erfordert eigene
+      Rechtsgrundlage nach Art. 9 DSGVO).
+
+      Schnittmengen entstehen typischerweise an folgenden Punkten:
+      1. Daten-Governance (AI Act Art. 10 ↔ DSGVO Art. 5/6/9): Trainingsdaten-
+         Qualität, Bias-Detection, Rechtsgrundlagen für Special Categories
+      2. Transparenz (AI Act Art. 13/50 ↔ DSGVO Art. 13/14): Informationspflichten
+      3. Automatisierte Entscheidungen (AI Act Art. 14/86 ↔ DSGVO Art. 22):
+         Recht auf menschliche Aufsicht und Erklärung
+      4. Sicherheit (AI Act Art. 15 ↔ DSGVO Art. 32): Cybersecurity-Maßnahmen
+      5. Folgenabschätzung (AI Act Art. 27 FRIA ↔ DSGVO Art. 35 DPIA):
+         FRIA und DPIA sind methodisch verwandt, aber NICHT identisch (FRIA =
+         Grundrechte-Bewertung breiter; DPIA = Datenschutz-spezifisch). Beide
+         sind regelmäßig parallel durchzuführen.
+      6. Behörden-Meldungen (AI Act Art. 73 ↔ DSGVO Art. 33/34): Schwere
+         Vorfälle vs. Datenschutzverletzungen — Pflichten überlappen bei
+         AI-Sicherheitsvorfällen mit PII-Komponente
+      7. Beschwerderecht (AI Act Art. 85 ↔ DSGVO Art. 77): Marktaufsicht vs.
+         Datenschutzaufsicht — unterschiedliche Behörden, ähnliche Logik
+      8. Sandboxes (AI Act Art. 59 ↔ DSGVO Art. 6/89): PII-Verarbeitung in
+         regulatorischen Sandboxes braucht eigene Rechtsgrundlage
+
+      Methodik je AI-Act-Artikel:
+      1. Volltext-Lesung der AI-Act-Norm (Art. 1-113 + Anhänge I-XIII)
+      2. Identifikation DSGVO-Pendant über Schutzzweck-Analogie
+      3. Bewertung Adressaten-Kongruenz (Anbieter/Betreiber AI Act vs.
+         Verantwortlicher/Auftragsverarbeiter DSGVO — oft unterschiedlich)
+      4. relationship-Klassifikation:
+         - 'related' = parallele Geltung mit Schutzzweck-Überlappung (häufigster Fall)
+         - 'partial_overlap' = inhaltliche Schnittmenge mit Lücken
+         - 'subset' = AI-Act-Pflicht ist innerhalb der DSGVO-Pflicht abgedeckt
+         - 'equivalent' = nur bei methodisch gleichwertigen Pflichten
+      5. Confidence: high für klare gesetzliche Querverweise, medium für
+         interpretierbare Schnittmengen, low für indirekte Verbindungen
+      6. Gap-Warnings dokumentieren KOMPLEMENTÄRE Pflichten, die NICHT durch
+         das Mapping abgedeckt sind (z.B. CE-Kennzeichnung, EU-Datenbank,
+         Konformitätsbewertung haben kein DSGVO-Pendant)
+      7. 4-Augen-Review durch DPO und AI-Governance-Lead
+
+      Reife-Stand: Der AI Act ist seit August 2024 in Kraft mit gestaffelter
+      Anwendbarkeit (verbotene Praktiken Feb 2025, GPAI Aug 2025, Hochrisiko
+      Aug 2026/2027). EDPB- und EDPS-Guidelines zur Schnittstelle DSGVO/AI Act
+      werden quartalsweise erweitert. Mapping-Pflege erfolgt quartalsweise.
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-04-15', actor: 'maintainer' }
+      - { state: 'review',    date: '2026-04-25', actor: 'maintainer' }
+      - { state: 'approved',  date: '2026-05-02', actor: 'reviewer-2' }
+      - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
+
+mappings:
+  - source: 'Art.10'
+    target: 'Art.5'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 10 (Daten und Daten-Governance für Hochrisiko-KI) verlangt
+      Trainingsdaten-Qualität, Repräsentativität, Vollständigkeit und
+      Fehlerfreiheit. DSGVO Art. 5 (Grundsätze der Verarbeitung) verlangt
+      u.a. Datenrichtigkeit (Abs. 1 lit. d) und Datenminimierung (Abs. 1
+      lit. c). Schnittmenge: Datenqualität und Zweckbindung beim
+      Training-Datensatz. Komplementäre Geltung — beide Pflichten parallel
+      anwendbar.
+    gap_warning: |
+      AI Act Art. 10 fordert REPRAESENTATIVITAET und BIAS-Pruefung — DSGVO
+      kennt diese Pflichten nicht direkt. DSGVO-Datenminimierung kann
+      umgekehrt mit AI-Act-Vollständigkeit in Spannung stehen (mehr Daten
+      für besseres Modell vs. minimal notwendige Daten).
+    cross_refs: ['Art.6', 'Art.9']
+    audit_evidence_hint: 'Trainingsdaten-Dokumentation mit Repräsentativitäts-Analyse, RoPA-Eintrag mit Rechtsgrundlage und Datenminimierungs-Begründung.'
+
+  - source: 'Art.10'
+    target: 'Art.6'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 10 setzt voraus, dass die Verarbeitung personenbezogener
+      Trainingsdaten DSGVO-konform erfolgt. Jeder Trainings-Datensatz mit
+      PII benötigt eine Rechtsgrundlage nach DSGVO Art. 6 (Einwilligung,
+      Vertrag, rechtliche Verpflichtung, lebenswichtige Interessen,
+      öffentliches Interesse, berechtigtes Interesse).
+    gap_warning: |
+      AI-Act-Konformität ersetzt KEINE DSGVO-Rechtsgrundlage. Der häufig
+      genutzte Art. 6(1)(f) DSGVO (berechtigtes Interesse) erfordert eine
+      Interessenabwägung, die KI-Training-spezifische Risiken (Bias,
+      Re-Identifikation, Modell-Memorization) berücksichtigt.
+    cross_refs: ['Art.5', 'Art.9']
+    audit_evidence_hint: 'Pro Trainings-Datensatz: dokumentierte DSGVO-Rechtsgrundlage, ggf. LIA (Legitimate Interest Assessment).'
+
+  - source: 'Art.10'
+    target: 'Art.9'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 10(5) erlaubt ausnahmsweise die Verarbeitung von
+      Special-Category-Data zur Bias-Erkennung und -Korrektur, sofern
+      Schutzmaßnahmen ergriffen werden (Pseudonymisierung, Zweckbindung,
+      Löschpflichten). DSGVO Art. 9 verbietet grundsätzlich die Verarbeitung
+      besonderer Kategorien personenbezogener Daten (Gesundheit, Ethnie,
+      politische Meinung etc.) und nennt enumerative Ausnahmen.
+    gap_warning: |
+      KRITISCH: AI Act Art. 10(5) ist KEINE eigenständige DSGVO-Rechtsgrundlage
+      nach Art. 9(2) DSGVO. Die Bias-Detection auf Special-Category-Data
+      braucht zusätzlich eine DSGVO-Art.-9(2)-Erlaubnis (z.B. ausdrückliche
+      Einwilligung lit. a, oder erhebliches öffentliches Interesse lit. g
+      mit nationaler Rechtsgrundlage). EDPB-Guidance hierzu noch unklar
+      (Stand 2026-Q2).
+    cross_refs: ['Art.5', 'Art.6']
+    audit_evidence_hint: 'DSGVO-Art.-9(2)-Rechtsgrundlage für Bias-Detection-Datensätze, technisch-organisatorische Schutzmaßnahmen-Dokumentation.'
+
+  - source: 'Art.10'
+    target: 'Art.22'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      AI Act Art. 10(5) (Bias-Detection und -Mitigation in Trainingsdaten)
+      ist Voraussetzung dafür, dass automatisierte Entscheidungen nach
+      DSGVO Art. 22 keine diskriminierenden Wirkungen entfalten. Bias-freies
+      Training senkt das Risiko unzulässiger automatisierter
+      Einzelentscheidungen.
+    gap_warning: |
+      Selbst bias-freies Training befreit nicht von der Art.-22-DSGVO-Pflicht
+      (menschliche Aufsicht, Anfechtungsrecht). Bias-Detection ist
+      Voraussetzung, aber nicht hinreichend.
+    cross_refs: ['Art.5', 'Art.9']
+
+  - source: 'Art.13'
+    target: 'Art.13'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 13 (Transparenz und Informationsbereitstellung für
+      Hochrisiko-KI-Systeme an die Betreiber/Deployer) verlangt
+      Gebrauchsanweisungen mit Eigenschaften, Fähigkeiten und Grenzen des
+      Systems. DSGVO Art. 13 (Informationspflichten beim Erheben
+      personenbezogener Daten direkt bei betroffener Person) verlangt
+      Informationen zu Verantwortlichem, Zwecken, Rechtsgrundlagen,
+      Empfängern, Speicherdauer.
+    gap_warning: |
+      Adressaten-Mismatch: AI Act Art. 13 informiert den BETREIBER (B2B),
+      DSGVO Art. 13 informiert die BETROFFENE PERSON (B2C/Endnutzer).
+      Beide Pflichten sind kumulativ — der KI-Anbieter muss den Betreiber
+      informieren, der Betreiber muss seine betroffenen Personen informieren.
+    cross_refs: ['Art.14']
+    audit_evidence_hint: 'Gebrauchsanweisung KI-System (AI Act Art. 13), Datenschutzerklärung (DSGVO Art. 13), KI-Hinweis in Datenschutzerklärung.'
+
+  - source: 'Art.13'
+    target: 'Art.14'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 13 Transparenzpflicht ergänzt DSGVO Art. 14
+      (Informationspflicht bei indirekter Datenerhebung — z.B. wenn
+      Trainingsdaten aus Drittquellen stammen). Wer KI mit gescraped Daten
+      trainiert, muss DSGVO Art. 14 erfüllen, soweit kein Art.-14(5)-
+      Ausnahmetatbestand greift.
+    gap_warning: |
+      Art.-14(5)(b)-DSGVO-Ausnahme (unverhältnismäßiger Aufwand) wird beim
+      Training von Foundation Models häufig in Anspruch genommen — EDPB-
+      Guidance zur Anwendbarkeit auf KI-Training noch nicht final
+      (Stand 2026-Q2).
+    cross_refs: ['Art.13']
+
+  - source: 'Art.14'
+    target: 'Art.22'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 14 (Menschliche Aufsicht über Hochrisiko-KI) verlangt
+      Maßnahmen, die natürlichen Personen ermöglichen, KI-Outputs zu
+      verstehen, zu überwachen und zu übersteuern (Stop-Button-Pflicht).
+      DSGVO Art. 22 gewährt das Recht, NICHT einer ausschließlich
+      automatisierten Entscheidung mit rechtlicher Wirkung unterworfen zu
+      werden (impliziert menschliche Letztentscheidung). Beide Pflichten
+      ergänzen sich technisch und organisatorisch.
+    gap_warning: |
+      AI Act Art. 14 ist Anbieterpflicht (Design-time), DSGVO Art. 22 ist
+      Verantwortlichen-Pflicht (Run-time). Wer KI nur einsetzt, hat keine
+      Art.-14-AI-Act-Pflicht direkt, aber Art.-22-DSGVO-Pflicht. AI-Act-
+      konforme Aufsichtsmechanismen sind notwendig, aber nicht hinreichend
+      für Art.-22-Compliance (Anfechtungsrecht muss zusätzlich umgesetzt
+      werden).
+    cross_refs: ['Art.86']
+    audit_evidence_hint: 'Aufsichts-Konzept mit Eskalationspfaden, Schulungsnachweise für Aufsichtspersonen, Anfechtungsprozess für betroffene Personen.'
+
+  - source: 'Art.15'
+    target: 'Art.32'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 15 (Genauigkeit, Robustheit und Cybersicherheit) verlangt
+      für Hochrisiko-KI angemessene Genauigkeitslevel, Robustheit gegen
+      Fehler/Inkonsistenzen und Cybersecurity-Maßnahmen einschließlich
+      Schutz vor adversarial attacks, Data Poisoning und Model Evasion.
+      DSGVO Art. 32 (Sicherheit der Verarbeitung) verlangt risikoangemessene
+      technisch-organisatorische Maßnahmen. Schnittmenge breit, aber AI Act
+      verlangt KI-spezifische Schutzmaßnahmen, die DSGVO Art. 32 nicht
+      explizit nennt.
+    gap_warning: |
+      AI-Act-spezifische Bedrohungen (adversarial examples, prompt injection,
+      training data poisoning, model extraction) sind im klassischen
+      DSGVO-Art.-32-TOM-Katalog nicht enthalten. ENISA "Securing Machine
+      Learning Algorithms" 2021 als Referenz heranziehen.
+    cross_refs: ['Art.5']
+    audit_evidence_hint: 'Adversarial-Testing-Reports, Model-Robustness-Tests, KI-spezifische TOM-Liste, Pen-Test-Reports mit ML-Attack-Vektoren.'
+
+  - source: 'Art.26'
+    target: 'Art.5'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      AI Act Art. 26 (Pflichten der Betreiber von Hochrisiko-KI) verlangt
+      bestimmungsgemäße Verwendung gemäß Gebrauchsanweisung und Aufsicht
+      über Eingabedaten-Relevanz. DSGVO Art. 5 (Zweckbindung, Richtigkeit)
+      hat methodisch verwandte Pflichten beim Verantwortlichen.
+    gap_warning: |
+      AI-Act-Betreiberpflichten umfassen auch nicht-personenbezogene
+      Aspekte (Logging, Monitoring), die DSGVO nicht berührt.
+    cross_refs: ['Art.6']
+
+  - source: 'Art.27'
+    target: 'Art.35'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 27 (Fundamental Rights Impact Assessment — FRIA) verpflichtet
+      bestimmte Betreiber von Hochrisiko-KI (öffentliche Stellen sowie
+      Privatakteure in spezifischen Bereichen wie Bonitätsprüfung,
+      Lebens-/Krankenversicherung), eine Grundrechte-Folgenabschätzung
+      durchzuführen. DSGVO Art. 35 (DPIA) verpflichtet bei voraussichtlich
+      hohem Risiko für Rechte und Freiheiten zur Datenschutz-Folgenabschätzung.
+      FRIA und DPIA sind methodisch verwandt, aber NICHT identisch.
+    gap_warning: |
+      KRITISCH: FRIA und DPIA sind KOMPLEMENTAER, nicht ersetzend. Wer
+      Hochrisiko-KI mit PII einsetzt, muss BEIDE durchführen. AI Act
+      Art. 27(4) erlaubt Synergie: Wenn DPIA bereits existiert, kann FRIA
+      diese ergänzen statt verdoppeln. Praxis: integrierter FRIA+DPIA-
+      Bericht mit klarer Kennzeichnung der jeweiligen Pflichtteile.
+    cross_refs: ['Art.36']
+    audit_evidence_hint: 'Integrierter FRIA+DPIA-Bericht, Konsultation Datenschutzaufsicht (Art. 36 DSGVO) bei hohem Restrisiko, FRIA-Notifikation Marktaufsichtsbehörde (Art. 27(3) AI Act).'
+
+  - source: 'Art.49'
+    target: 'Art.30'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      AI Act Art. 49 (Registrierung von Hochrisiko-KI-Systemen in der
+      EU-Datenbank) verlangt von Anbietern Eintragung in eine öffentliche
+      EU-Datenbank vor Marktzugang. DSGVO Art. 30 (Verzeichnis von
+      Verarbeitungstätigkeiten — RoPA) verlangt internes Verzeichnis aller
+      Verarbeitungen. Beide sind Transparenz-/Rechenschaftsinstrumente,
+      aber unterschiedliche Adressaten und Inhalte.
+    gap_warning: |
+      EU-Datenbank ist ÖFFENTLICH (gestufter Zugang), RoPA ist INTERN
+      (Aufsichtsbehörde auf Anforderung). Doppelpflege erforderlich. EU-
+      Datenbank-Eintrag ist KEINE RoPA-Befreiung.
+    audit_evidence_hint: 'EU-Datenbank-Registrierungsbestätigung, RoPA-Eintrag mit Verweis auf KI-System.'
+
+  - source: 'Art.50'
+    target: 'Art.13'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 50 (Transparenzpflichten für bestimmte KI-Systeme:
+      Mensch-Maschine-Interaktion, Emotion-Recognition, Deepfakes,
+      KI-generierter Content) verlangt Kennzeichnung gegenüber natürlichen
+      Personen. DSGVO Art. 13/14 verlangt Informationspflicht bei
+      personenbezogener Verarbeitung. Schnittmenge bei Chatbots,
+      KI-Avatare, Deepfake-Detection auf PII.
+    gap_warning: |
+      AI Act Art. 50 gilt UNABHAENGIG von PII-Verarbeitung (auch bei
+      anonymen Deepfakes). DSGVO Art. 13 nur bei personenbezogenen Daten.
+      Beide Pflichten kumulativ wenn beide Tatbestände erfüllt.
+    cross_refs: ['Art.14']
+    audit_evidence_hint: 'KI-Kennzeichnung in UI ("Sie chatten mit einer KI"), Deepfake-Wasserzeichen, Datenschutzerklärung mit KI-Hinweis.'
+
+  - source: 'Art.59'
+    target: 'Art.6'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      AI Act Art. 59 (Verarbeitung personenbezogener Daten in
+      KI-Reallaboren — regulatory sandboxes) erlaubt Verarbeitung von PII
+      zu Sandbox-Zwecken unter speziellen Schutzmaßnahmen. DSGVO Art. 6
+      bleibt anwendbar — Art. 59 AI Act KONKRETISIERT eine
+      Rechtsgrundlage, ersetzt sie aber nicht vollständig.
+    gap_warning: |
+      Art.-59-AI-Act-Verarbeitung erfordert: (a) ursprüngliche Erhebung im
+      öffentlichen Interesse, (b) keine Beeinträchtigung Betroffener,
+      (c) Pseudonymisierung, (d) Vor-Begutachtung. Die DSGVO-Rechtsgrundlage
+      muss separat dokumentiert werden (typischerweise Art. 6(1)(e) i.V.m.
+      Art. 89 DSGVO für Forschungs-/wissenschaftliche Zwecke).
+    cross_refs: ['Art.89']
+    audit_evidence_hint: 'Sandbox-Antrag mit DSGVO-Rechtsgrundlage-Dokumentation, Pseudonymisierungs-Konzept, Sandbox-Plan-Genehmigung.'
+
+  - source: 'Art.59'
+    target: 'Art.89'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      AI Act Art. 59 (Sandbox-Verarbeitung) korrespondiert häufig mit
+      DSGVO Art. 89 (Garantien bei Verarbeitung für im öffentlichen
+      Interesse liegende Archivzwecke, wissenschaftliche oder historische
+      Forschung, statistische Zwecke). Pseudonymisierung und
+      Datenminimierung sind in beiden Normen zentrale Schutzmaßnahmen.
+    cross_refs: ['Art.6']
+
+  - source: 'Art.73'
+    target: 'Art.33'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      AI Act Art. 73 (Meldung schwerwiegender Vorfälle bei Hochrisiko-KI an
+      Marktaufsichtsbehörden) verlangt Anbieter-Meldung binnen 15 Tagen
+      (verkürzt auf 2 Tage bei Tod/Großschaden, 10 Tage bei kritischer
+      Infrastruktur). DSGVO Art. 33 (Meldung von Datenschutzverletzungen
+      an Aufsichtsbehörde) verlangt 72-h-Meldung.
+    gap_warning: |
+      KRITISCH: Bei AI-Sicherheitsvorfall MIT PII-Komponente entstehen ZWEI
+      parallele Meldepflichten an UNTERSCHIEDLICHE Behörden (Marktaufsicht
+      AI Act vs. Datenschutzaufsicht DSGVO) mit UNTERSCHIEDLICHEN Fristen
+      (15/10/2 Tage vs. 72h). Single-Reporting nicht möglich. Incident-
+      Response-Plan muss beide Meldewege parallel triggern.
+    cross_refs: ['Art.34']
+    audit_evidence_hint: 'AI-Act-Meldeprotokoll Marktaufsicht, DSGVO-Meldeprotokoll Datenschutzaufsicht, Incident-Response-Plan mit Doppelmelde-Logik.'
+
+  - source: 'Art.73'
+    target: 'Art.34'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      AI Act Art. 73 bezieht sich auf Vorfälle mit Auswirkungen auf
+      Grundrechte/Gesundheit/Sicherheit. DSGVO Art. 34 verlangt
+      Benachrichtigung BETROFFENER PERSONEN bei voraussichtlich hohem
+      Risiko. Bei AI-Vorfall mit Datenschutz-Implikation (z.B. Bias-Schaden,
+      Re-Identifikation) entstehen häufig beide Pflichten parallel.
+    gap_warning: |
+      Adressaten-Unterschied: AI Act Art. 73 → Behörde, DSGVO Art. 34 →
+      Betroffene Person. Kommunikation nicht austauschbar.
+    cross_refs: ['Art.33']
+
+  - source: 'Art.85'
+    target: 'Art.77'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 85 (Recht auf Beschwerde bei der Marktaufsichtsbehörde
+      über Verstöße gegen den AI Act) und DSGVO Art. 77 (Recht auf
+      Beschwerde bei der Datenschutzaufsicht) sind strukturell parallel:
+      Beide gewähren betroffenen natürlichen Personen Behörden-
+      Beschwerderecht ohne Vorbedingung des Rechtswegs.
+    gap_warning: |
+      Adressaten-Mismatch: Marktaufsicht (AI Act) und Datenschutzaufsicht
+      (DSGVO) sind in den meisten EU-Mitgliedstaaten unterschiedliche
+      Behörden. Praktische Durchsetzung erfordert Koordination — EDPB-EDPS-
+      AI-Office-Kooperationsvereinbarungen im Aufbau (Stand 2026-Q2).
+    audit_evidence_hint: 'Beschwerdemanagement-Prozess mit beiden Eskalationswegen, Hinweis in Datenschutzerklärung auf beide Beschwerderechte.'
+
+  - source: 'Art.86'
+    target: 'Art.22'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 86 (Recht auf Erläuterung individueller
+      Entscheidungsfindung — wenn ein Hochrisiko-KI-System eine Entscheidung
+      mit rechtlicher Wirkung oder erheblicher Auswirkung trifft) ergänzt
+      DSGVO Art. 22(3) (Recht auf Anfechtung und auf Erlangung des
+      Eingreifens einer Person). Art. 86 AI Act ist gegenüber DSGVO Art. 22
+      LEX SPECIALIS in Bezug auf das Erklärungsrecht — präzisiert, was
+      "aussagekräftige Information" iSd Art. 13(2)(f)/14(2)(g)/15(1)(h)
+      DSGVO bei KI-Entscheidungen bedeutet.
+    gap_warning: |
+      Anwendungsbereich Art. 86 AI Act ist enger (nur Hochrisiko-KI nach
+      Anhang III), DSGVO Art. 22 gilt für JEDE automatisierte Entscheidung
+      mit rechtlicher/erheblicher Wirkung. Außerhalb Hochrisiko bleibt
+      DSGVO-Erklärungsrecht (Art. 15(1)(h)) eigenständige Pflicht.
+    cross_refs: ['Art.13', 'Art.14', 'Art.15']
+    audit_evidence_hint: 'Erklärungs-Template für KI-Entscheidungen, Schulung Customer-Service zur Erklärungspflicht, Logging der Anfragen.'
+
+  - source: 'Art.86'
+    target: 'Art.15'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      AI Act Art. 86 (Erklärungsrecht bei KI-Entscheidung) und DSGVO Art. 15
+      (Auskunftsrecht — insbesondere Abs. 1 lit. h: aussagekräftige
+      Informationen über Logik bei automatisierter Entscheidungsfindung)
+      adressieren denselben Schutzzweck Erklärbarkeit.
+    cross_refs: ['Art.22']
+
+  - source: 'Art.4'
+    target: 'Art.39'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      AI Act Art. 4 (KI-Kompetenz — AI Literacy) verpflichtet Anbieter und
+      Betreiber, Personal mit KI-Berührung kompetent zu schulen. DSGVO
+      Art. 39 (Aufgaben des DSB) umfasst Sensibilisierung und Schulung
+      des Personals zu Datenschutz. Schnittmenge: Schulung von Personen,
+      die KI mit PII einsetzen.
+    gap_warning: |
+      AI-Literacy ist breiter (technische, ethische, rechtliche Aspekte)
+      als Datenschutz-Schulung. DSB ist nicht zwingend AI-Lead — separate
+      Rolle empfohlen.
+
+  - source: 'Art.5'
+    target: 'Art.22'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      AI Act Art. 5 (Verbotene KI-Praktiken: Social Scoring, manipulative
+      Techniken, biometrische Kategorisierung sensibler Merkmale,
+      ungezielte Gesichtsbild-Erfassung etc.) flankiert DSGVO Art. 22
+      bei automatisierten Entscheidungen mit Diskriminierungspotenzial.
+      Verbotene Praktiken nach Art. 5 AI Act würden i.d.R. auch DSGVO-
+      Verstöße darstellen.
+    gap_warning: |
+      Art. 5 AI Act ist absolutes VERBOT (keine Rechtfertigung möglich),
+      DSGVO Art. 22 erlaubt Ausnahmen mit Schutzgarantien. Wer Art. 5 AI
+      Act verletzt, hat zusätzlich DSGVO-Konformitätsprobleme.
+    cross_refs: ['Art.9']
+
+  - source: 'Annex-III'
+    target: 'Art.35'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      AI Act Annex III (Liste der Hochrisiko-Anwendungsbereiche:
+      Biometrie, kritische Infrastruktur, Bildung, Beschäftigung, wesentliche
+      Dienstleistungen, Strafverfolgung, Migration, Justiz, demokratische
+      Prozesse) korrespondiert weitgehend mit den DSGVO-Aufsichtslisten
+      "DPIA-pflichtige Verarbeitungen" (Art. 35(4) DSGVO mit nationalen
+      Listen der Aufsichtsbehörden).
+    gap_warning: |
+      Annex-III-KI ist nicht automatisch DPIA-pflichtig (nur bei PII-
+      Verarbeitung) und umgekehrt. Praxis: Annex-III-Bereiche regelmäßig
+      mit DPIA-Listen abgleichen, FRIA+DPIA häufig parallel notwendig.
+    cross_refs: ['Art.27']
+    audit_evidence_hint: 'Annex-III-Klassifikation mit FRIA-Trigger, Abgleich mit DPIA-Pflichtliste der zuständigen Aufsichtsbehörde.'

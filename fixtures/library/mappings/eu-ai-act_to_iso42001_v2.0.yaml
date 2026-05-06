@@ -1,0 +1,776 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'eu-ai-act_to_iso42001_v2.0'
+  source_framework: 'EU-AI-ACT'
+  target_framework: 'ISO42001'
+  version: 2
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'EU AI Act (2024/1689) + ISO/IEC 42001:2023'
+    primary_source_url: 'https://www.iso.org/standard/81230.html'
+    secondary_sources:
+      - 'EU Verordnung (EU) 2024/1689 (AI Act, ABl. L vom 12.07.2024) — Volltext Art. 1-113 + Annex I-XIII'
+      - 'ISO/IEC 42001:2023 Annex A (38 Controls), Annex B (Implementation Guidance), Annex C (initiales AI-Act-Mapping)'
+      - 'CEN-CENELEC JTC 21 Harmonised Standards Roadmap 2025-Q4'
+      - 'AI Office Guidelines on General-Purpose AI Models (Final 2026-Q1)'
+      - 'AI Office FAQ on FRIA (Fundamental Rights Impact Assessment) Art. 27'
+      - 'Eigene Volltext-Analyse durch GRC-Team mit AI-Governance-Fokus (v2-Granularexpansion)'
+    publisher: 'Little ISMS Helper Maintainers'
+    license_note: |
+      Mapping is original derivative work (AGPL-3.0). EU AI Act article references © Europäische Union,
+      public-domain-equivalent (Amtliches Werk). ISO/IEC 42001:2023 Annex-A-Control-IDs sind
+      Normenzitate; Volltexte unter ISO-Lizenz. Kein Volltext-Reprint, nur Identifier + eigene Rationale.
+
+  methodology:
+    type: 'text_comparison_with_expert_review'
+    description: |
+      Granulare v2-Expansion gegenueber v1.0 (10 Mappings → 38 Mappings).
+      Reife-Stand 2026-Q2: ISO/IEC 42001:2023 ist Dezember 2023 erschienen,
+      EU AI Act August 2024 in Kraft mit gestaffelter Anwendbarkeit (verbotene
+      Praktiken Feb 2025, GPAI Aug 2025, Hochrisiko-Systeme Aug 2026/2027).
+      Harmonisierte Normen via CEN-CENELEC JTC 21 sind 2026-Q2 finalisiert
+      und veroeffentlicht — daher Lifecycle-State 'published' (vs. v1.0
+      'review').
+
+      v2-Granularitaet pro AI-Act-Artikel:
+      1. Volltext-Lesung der AI-Act-Anforderung (jetzt auch Art. 16, 25, 26,
+         27, 50, 55, 73 abgedeckt — nicht nur Hochrisiko-Pflichten)
+      2. Identifikation ALLER korrespondierenden ISO-42001-Klauseln und/oder
+         Annex-A-Controls (Annex A: 38 Controls in A.2-A.10 + Klauseln 4-10)
+      3. Bewertung der Schnittmenge: AI Act ist gesetzlich verbindlich und
+         produktbezogen, ISO 42001 ist managementsystem-orientiert und
+         freiwillig — strukturelle Asymmetrie fuehrt selten zu "equivalent",
+         meist "subset" oder "related"
+      4. Granulare Annex-A-Sub-IDs (A.2.2, A.5.4, A.6.2.7, A.8.4 etc.) statt
+         Cluster-IDs ("Annex A.6", "Annex A.7")
+      5. Confidence-Verteilung Soll: ~60% high (ISO 42001 als
+         AI-Act-Implementierungs-Framework gestaltet), ~30% medium,
+         ~10% low (FRIA, GPAI Systemic Risk, EU Database Registration)
+      6. Gap-Warnings bei Konformitaetsbewertung (Art. 43 Modul A/B+C),
+         CE-Kennzeichnung (Art. 48), EU-Datenbank-Registrierung (Art. 49,
+         71), FRIA (Art. 27) und GPAI-Systemic-Pflichten (Art. 55)
+      7. 4-Augen-Review durch zweiten Experten mit AI-Governance-Background
+
+      ISO-42001-Annex-A-Control-Struktur (38 Controls):
+      - A.2 (AI Policy): A.2.2, A.2.3, A.2.4
+      - A.3 (Internal Organization): A.3.2, A.3.3
+      - A.4 (Resources): A.4.2, A.4.3, A.4.4, A.4.5, A.4.6
+      - A.5 (Impact Assessment): A.5.2, A.5.3, A.5.4, A.5.5
+      - A.6 (AI System Lifecycle): A.6.1.2, A.6.1.3, A.6.1.4, A.6.2.2,
+        A.6.2.3, A.6.2.4, A.6.2.5, A.6.2.6, A.6.2.7, A.6.2.8
+      - A.7 (Data for AI Systems): A.7.2, A.7.3, A.7.4, A.7.5, A.7.6
+      - A.8 (Info for Stakeholders): A.8.2, A.8.3, A.8.4, A.8.5
+      - A.9 (Use of AI Systems): A.9.2, A.9.3, A.9.4
+      - A.10 (Third Party + Customer Relationships): A.10.2, A.10.3, A.10.4
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-04-15', actor: 'maintainer' }
+      - { state: 'review',    date: '2026-04-28', actor: 'maintainer' }
+      - { state: 'approved',  date: '2026-05-05', actor: 'reviewer-2' }
+      - { state: 'published', date: '2026-05-06', actor: 'ciso-signoff' }
+
+mappings:
+  # ============================================================================
+  # CHAPTER I — Allgemeine Bestimmungen + CHAPTER II — Verbotene Praktiken
+  # ============================================================================
+
+  - source: 'Art.5'
+    target: 'A.2.2'
+    relationship: 'related'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 5 verbietet bestimmte KI-Praktiken absolut (Social Scoring,
+      Manipulation vulnerabler Gruppen, Echtzeit-Remote-Biometrie im
+      oeffentlichen Raum mit Ausnahmen, Emotion-Recognition am Arbeitsplatz).
+      ISO 42001 A.2.2 (AI Policy) verlangt eine dokumentierte AI-Policy, die
+      Werte, Prinzipien und Akzeptanzgrenzen festlegt — strukturell der Ort,
+      wo verbotene Praktiken gemaess Art. 5 als organisatorische Red-Lines
+      verankert werden. Confidence high, weil A.2.2 explizit Policy-Inhalte
+      zu "ethical considerations" und "compliance with applicable law"
+      verlangt; Art. 5 liefert die rechtliche Mindestschwelle.
+    gap_warning: |
+      A.2.2 ist policy-orientiert; das tatsaechliche Verbot wirkt unmittelbar
+      aus Art. 5, unabhaengig von Policy-Umsetzung. Empfehlung: Pre-Deployment-
+      Checkliste mit Art.-5-Verboten als Gate vor jedem AI-Use-Case-Approval.
+    cross_refs: ['A.2.3', 'A.2.4', 'A.5.4']
+    audit_evidence_hint: 'AI-Use-Policy mit explizitem Art.-5-Verbots-Katalog, Use-Case-Approval-Gate-Records, Schulungsnachweise zu Verbotstatbestaenden, juristische Bewertung von Edge-Cases (Emotion-Recognition, Predictive Policing).'
+
+  - source: 'Art.5'
+    target: 'A.5.4'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 5 verbietet u.a. Praktiken, die "Schwaechen vulnerabler
+      Personen ausnutzen" (Art. 5(1)(b)) und die "auf besonderen Eigenschaften
+      basierende Klassifikation natuerlicher Personen" (Art. 5(1)(c)).
+      ISO 42001 A.5.4 (AI System Impact Assessment Process — Impact on
+      Individuals) verlangt eine systematische Bewertung der Auswirkungen
+      eines AI-Systems auf Individuen einschliesslich vulnerabler Gruppen.
+      Art. 5 definiert die absolute Untergrenze (Verbot), A.5.4 fordert
+      die Bewertungsmechanik — daher subset (Art. 5 ist Pflichtteil der
+      Impact-Bewertung).
+    cross_refs: ['A.5.3', 'A.5.5']
+    audit_evidence_hint: 'Impact Assessment je AI-System mit Vulnerability-Population-Analyse, dokumentierte Ausschluss-Begruendung fuer Art.-5-Verbote, ggf. Stop-Decision-Log bei Use-Cases an der Verbotsgrenze.'
+
+  # ============================================================================
+  # CHAPTER III — Hochrisiko-KI-Systeme (Art. 6-49)
+  # ============================================================================
+
+  # ----- Art. 9 — Risikomanagement-System -----
+  - source: 'Art.9'
+    target: 'A.5.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 9 verlangt fuer Hochrisiko-KI-Systeme ein durchgaengiges
+      Risikomanagement ueber den gesamten Lebenszyklus mit Identifikation
+      bekannter und vorhersehbarer Risiken, Risikoabschaetzung bei
+      bestimmungsgemaesser Verwendung und vorhersehbarem Missbrauch.
+      ISO 42001 A.5.2 (AI System Impact Assessment Process) verlangt einen
+      etablierten Prozess fuer Impact Assessments und ist methodischer
+      Grundbaustein des produktbezogenen Risk-Management-Lifecycle gemaess
+      Art. 9. Art. 9 ist konkrete Auspraegung des A.5.2-Prozesses.
+    cross_refs: ['A.5.3', 'A.5.4', 'A.5.5']
+    audit_evidence_hint: 'Etablierter Impact-Assessment-Prozess gemaess A.5.2, AI-Risk-Register je Hochrisiko-System, Lifecycle-Risk-Reviews mit dokumentierten Akzeptanzkriterien gemaess Art. 9(5).'
+
+  - source: 'Art.9'
+    target: 'A.5.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 9(2)-(4) definiert die Schritte der Risikobewertung
+      (Identifikation, Abschaetzung, Bewertung, Mitigation). ISO 42001 A.5.3
+      (Documentation of AI System Impact Assessments) verlangt die formale
+      Dokumentation jeder Impact-Bewertung mit Methodik, Annahmen und
+      Ergebnissen. Art. 9 spezifiziert produktbezogene Pflichtinhalte;
+      A.5.3 liefert die Dokumentations-Struktur.
+    cross_refs: ['A.5.2', 'A.6.2.4']
+    audit_evidence_hint: 'Dokumentierte Risk-Assessment-Reports je Hochrisiko-System mit Art.-9-Pflichtinhalten, Risk-Reduction-Roadmap, Restrisiko-Akzeptanz-Records mit Management-Sign-off.'
+
+  - source: 'Art.9'
+    target: '6.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 Klausel 6.1 (Actions to address risks and opportunities)
+      verlangt im AIMS einen integrierten Risk-Approach (sowohl
+      organisatorisch als auch AI-spezifisch). AI Act Art. 9 ist die
+      produktbezogene Konkretisierung dieses Klausel-6.1-Risk-Approach
+      fuer Hochrisiko-KI-Systeme — mit praeskriptiven Akzeptanzkriterien,
+      Restrisiko-Kommunikation (Art. 9(5)) und Beruecksichtigung
+      vulnerabler Gruppen (Art. 9(9)).
+    gap_warning: |
+      Klausel 6.1 ist organisations-zentriert; Art. 9 ist system-zentriert.
+      Empfehlung: AIMS-Risk-Process auf Klausel-6.1-Ebene plus
+      System-Level-Risk-Files je Hochrisiko-System fuehren.
+    cross_refs: ['8.2', '8.3']
+    audit_evidence_hint: 'AIMS-Risk-Methodik gemaess 6.1, System-Level-Risk-Files je Hochrisiko-System mit Art.-9-Pflichtinhalten, Risk-Treatment-Plan-Reviews.'
+
+  - source: 'Art.9'
+    target: '8.2'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 Klausel 8.2 (AI Risk Assessment) ist die operative
+      Durchfuehrungsklausel der AI-Risk-Bewertung im AIMS-Betrieb. AI Act
+      Art. 9 fordert die kontinuierliche Durchfuehrung dieser Bewertung
+      ueber den gesamten Lebenszyklus eines Hochrisiko-Systems.
+      Schnittmenge in der operativen Durchfuehrung hoch.
+    cross_refs: ['8.3']
+    audit_evidence_hint: 'Lifecycle-Risk-Assessment-Logs gemaess 8.2, Trigger-Events fuer Re-Assessment, Versionsstand der Risk-Files je System-Release.'
+
+  - source: 'Art.9'
+    target: '8.3'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 Klausel 8.3 (AI Risk Treatment) deckt die Risk-Treatment-
+      Mechanik ab. AI Act Art. 9(4) fordert priorisierte Risk-Mitigation-
+      Massnahmen mit Beruecksichtigung von Stand der Technik und
+      Verhaeltnismaessigkeit — direkter Pflicht-Anteil der A.8.3-Mechanik.
+    cross_refs: ['8.2', 'A.6.2.4']
+    audit_evidence_hint: 'Risk-Treatment-Plan je Hochrisiko-System, dokumentierte Stand-der-Technik-Begruendung, Restrisiko-Akzeptanz mit Top-Mgmt-Sign-off.'
+
+  # ----- Art. 10 — Daten und Daten-Governance -----
+  - source: 'Art.10'
+    target: 'A.7.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 10 verlangt fuer Trainings-, Validierungs- und Testdaten
+      strenge Data-Governance: Repraesentativitaet, Fehlerfreiheit,
+      Vollstaendigkeit, Bias-Vermeidung. ISO 42001 A.7.2 (Data for development
+      and enhancement of AI Systems) verlangt Data-Quality-Management als
+      Management-Praktik. Art. 10 ist konkreter Pflichtenkatalog mit
+      pruefbaren Akzeptanzkriterien gemaess Stand der Technik.
+    gap_warning: |
+      Art. 10(5) erlaubt Verarbeitung besonderer Datenkategorien
+      (DSGVO Art. 9) zur Bias-Erkennung — ISO 42001 nicht abgedeckt.
+      Separate DPIA + Rechtsgrundlagen-Analyse durch DPO erforderlich.
+    cross_refs: ['A.7.3', 'A.7.4']
+    audit_evidence_hint: 'Data-Governance-Policy, Datenherkunfts-Dokumentation, Bias-Test-Reports je Trainingslauf, DPIA fuer Bias-Daten gemaess Art. 10(5).'
+
+  - source: 'Art.10'
+    target: 'A.7.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.7.3 (Acquisition of data) verlangt dokumentierte
+      Data-Acquisition-Prozesse mit Quellen-Bewertung. AI Act Art. 10(2)(a)-(b)
+      fordert Datenherkunfts-Dokumentation und Bewertung der Verfuegbarkeit,
+      Quantitaet und Eignung der Datensaetze — direkte produktbezogene
+      Konkretisierung von A.7.3.
+    cross_refs: ['A.7.2', 'A.7.6']
+    audit_evidence_hint: 'Data-Acquisition-SOP, Datensatz-Lineage-Dokumentation mit Quellangabe, Lizenz-/Nutzungsrechte-Nachweise, Sample-Datensatz-Karten.'
+
+  - source: 'Art.10'
+    target: 'A.7.4'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.7.4 (Quality of data for AI Systems) deckt
+      Daten-Qualitaets-Kontrollen ab. AI Act Art. 10(3) fordert
+      Repraesentativitaet, Fehlerfreiheit und Vollstaendigkeit der
+      Datensaetze — direkte Schnittmenge.
+    cross_refs: ['A.7.2', 'A.7.5']
+    audit_evidence_hint: 'Data-Quality-KPIs, Validierungs-Reports je Datenset, Drift-Detection-Mechanismen, Quality-Gate-Records vor Trainings-Start.'
+
+  - source: 'Art.10'
+    target: 'A.7.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.7.5 (Data provenance) verlangt dokumentierte
+      Daten-Provenance ueber den gesamten Data-Lifecycle. AI Act Art. 10(2)(b)
+      fordert "data origin and selection methods" als pruefbare Annex-IV-
+      Pflichtdokumentation.
+    cross_refs: ['A.7.3', 'A.6.2.7']
+    audit_evidence_hint: 'Provenance-Tracking-System, Data-Lineage-Diagramme, Hash-/Signatur-basierte Integritaets-Nachweise, Aufbewahrung gemaess Annex-IV-Anforderungen.'
+
+  - source: 'Art.10'
+    target: 'A.7.6'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.7.6 (Data preparation) deckt Pre-Processing-Kontrollen
+      ab. AI Act Art. 10(3) fordert Datenpraeparation mit Bias-Mitigation,
+      Annotations-Qualitaet und Labeling-Verfahren — direkte Schnittmenge.
+    cross_refs: ['A.7.2', 'A.7.4']
+    audit_evidence_hint: 'Data-Preparation-SOP, Annotations-Quality-Reviews (Inter-Rater-Agreement), Labeling-Guidelines, Bias-Mitigation-Steps in Pre-Processing-Pipeline.'
+
+  # ----- Art. 11 — Technische Dokumentation -----
+  - source: 'Art.11'
+    target: 'A.6.2.7'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 11 + Annex IV verlangt umfangreiche technische
+      Dokumentation fuer Hochrisiko-Systeme inklusive Systembeschreibung,
+      Designentscheidungen, Trainingsmethoden, Performance-Metriken,
+      Risk-Management-Doku und Post-Market-Monitoring-Plan.
+      ISO 42001 A.6.2.7 (AI System technical documentation) verlangt
+      vergleichbare Dokumentation. Annex-IV-Pflichtinhalte sind direkter
+      Pflichtanteil dieser Control.
+    gap_warning: |
+      Annex IV enthaelt 9 Pflichtbereiche mit detaillierten Unterpunkten.
+      Empfehlung: Annex-IV-Konformitaets-Checkliste pro Hochrisiko-System.
+    cross_refs: ['7.5']
+    audit_evidence_hint: 'Annex-IV-konforme Tech-Doku je Hochrisiko-System, Versionskontrolle, Konformitaetsbewertungs-Akte, Aufbewahrung 10 Jahre nach Inverkehrbringen.'
+
+  - source: 'Art.11'
+    target: '7.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 Klausel 7.5 (Documented Information) regelt das
+      Dokumenten-Lenkungs-Framework des AIMS (Erstellung, Aktualisierung,
+      Kontrolle, Aufbewahrung). AI Act Art. 11 ist die produktbezogene
+      Konkretisierung dieser Klausel fuer Hochrisiko-System-Dokumentation
+      mit gesetzlichen Aufbewahrungsfristen.
+    cross_refs: ['A.6.2.7']
+    audit_evidence_hint: 'Dokumenten-Lenkungs-SOP, Versionsstand der Tech-Doku je System, Aufbewahrungs-/Loesch-Konzept gemaess Art. 18 (10 Jahre).'
+
+  # ----- Art. 12 — Aufzeichnungspflichten / Logs -----
+  - source: 'Art.12'
+    target: 'A.6.2.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 12 fordert automatische Ereignis-Aufzeichnungen ("Logs")
+      ueber die gesamte Lebensdauer von Hochrisiko-Systemen mit Mindest-
+      inhalten gemaess Art. 12(2). ISO 42001 A.6.2.8 (Event logs of AI System)
+      verlangt analoge Logging-Kontrollen mit Aufbewahrungsdauer und
+      Integritaetsschutz. Schnittmenge inhaltlich hoch und methodisch
+      vergleichbar.
+    cross_refs: ['A.8.4']
+    audit_evidence_hint: 'Logging-Konzept mit Pflichtfeld-Mapping zu Art. 12(2), Aufbewahrungsregeln (mind. 6 Monate), WORM-Storage-Nachweis, Sample-Log-Auszug.'
+
+  # ----- Art. 13 — Transparenz und Bereitstellung von Informationen -----
+  - source: 'Art.13'
+    target: 'A.8.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 13 verlangt Transparenz gegenueber Betreibern: Hochrisiko-
+      Systeme muessen so gestaltet sein, dass Output interpretierbar ist,
+      und Betreiber-Anweisungen muessen Funktionsweise, Genauigkeit,
+      Robustheit und Wartungspflichten erlaeutern. ISO 42001 A.8.2 (System
+      documentation and information for users) deckt User-Information ab,
+      Art. 13 ist konkreter Pflichtinhalt.
+    cross_refs: ['A.8.3', 'A.8.5']
+    audit_evidence_hint: 'Betreiber-Anweisung gemaess Art. 13(3) Pflichtinhalten, Sprachfassungen je Markt, Usability-Test mit Betreibern.'
+
+  - source: 'Art.13'
+    target: 'A.8.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.8.5 (External reporting) deckt strukturierte Externe-
+      Kommunikation ab. AI Act Art. 13(3) konkretisiert dies als
+      Pflichtinhalte der Betreiber-Anweisung (Identitaet des Anbieters,
+      Eigenschaften, Limitations, Human-Oversight-Massnahmen).
+    cross_refs: ['A.8.2']
+    audit_evidence_hint: 'Externe Kommunikations-Templates fuer Betreiber-Anweisung, Genehmigungs-Workflow, mehrsprachige Versionen.'
+
+  # ----- Art. 14 — Menschliche Aufsicht -----
+  - source: 'Art.14'
+    target: 'A.9.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 14 verlangt menschliche Aufsicht ueber Hochrisiko-Systeme
+      mit Stop-Button-Funktionalitaet, Verstaendnis der Systemfaehigkeiten,
+      Awareness fuer Automation-Bias und Override-Moeglichkeiten.
+      ISO 42001 A.9.2 (Processes for responsible use of AI Systems) verlangt
+      analoge Kontrollen fuer menschliche Steuerung. Schnittmenge methodisch
+      und inhaltlich hoch.
+    cross_refs: ['A.9.3', 'A.9.4']
+    audit_evidence_hint: 'Human-Oversight-Konzept je System, Override-Funktionalitaets-Tests, Bediener-Schulungsnachweise.'
+
+  - source: 'Art.14'
+    target: 'A.9.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.9.3 (Objectives for responsible use of AI System) verlangt
+      definierte Ziele fuer verantwortungsvollen AI-Einsatz. AI Act Art. 14(2)
+      konkretisiert dies fuer Hochrisiko-Systeme mit verpflichtender Human-
+      Oversight-Definition pro System.
+    cross_refs: ['A.9.2']
+    audit_evidence_hint: 'Use-Case-Ziele mit Human-Oversight-Anforderungen, Akzeptanzkriterien fuer Human-in-the-Loop, Eskalations-Schwellwerte.'
+
+  - source: 'Art.14'
+    target: 'A.9.4'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.9.4 (Intended use of the AI System) verlangt Dokumentation
+      des bestimmungsgemaessen Gebrauchs. AI Act Art. 14(4)(a)-(e) konkretisiert
+      Human-Oversight-Pflichten innerhalb des bestimmungsgemaessen Gebrauchs
+      (Verstehen der Limits, Automation-Bias-Awareness, Override, Stop).
+      Art. 14(5) fordert zusaetzlich Vier-Augen-Prinzip bei biometrischer
+      Identifikation.
+    cross_refs: ['A.9.2']
+    audit_evidence_hint: 'Intended-Use-Statement je System, Vier-Augen-Genehmigung bei biometrischer Identifikation, Bediener-Qualifikations-Nachweise.'
+
+  # ----- Art. 15 — Genauigkeit, Robustheit und Cybersicherheit -----
+  - source: 'Art.15'
+    target: 'A.6.2.4'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 15 verlangt fuer Hochrisiko-Systeme angemessene
+      Genauigkeit, Robustheit und Cybersicherheit ueber den gesamten
+      Lebenszyklus mit deklarierten Genauigkeitsmetriken und Resilienz
+      gegen Daten-Vergiftung, Modell-Manipulation und Adversarial Examples.
+      ISO 42001 A.6.2.4 (Verification and validation measures) verlangt
+      systematische V&V-Prozesse fuer AI-Systeme — direkte Pflicht-
+      Implementierung der Art.-15-Anforderungen.
+    cross_refs: ['A.6.2.5', 'A.6.2.6']
+    audit_evidence_hint: 'V&V-Plan je System, Performance-Metriken-Doku, Adversarial-Robustness-Test-Reports, Cybersecurity-Threat-Modeling.'
+
+  - source: 'Art.15'
+    target: 'A.6.2.6'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.6.2.6 (AI System operation and monitoring) verlangt
+      kontinuierliche Operations- und Monitoring-Kontrollen. AI Act
+      Art. 15(4) fordert Robustheit ueber den gesamten Lebenszyklus
+      einschliesslich Drift-Detection und Modell-Refresh-Mechanismen
+      bei Performance-Degradierung — operative Konkretisierung von A.6.2.6.
+    gap_warning: |
+      Adversarial-Robustness-Tests (Art. 15(5)) erfordern spezialisierte
+      Testverfahren (ART, CleverHans). Empfehlung: Robustness-Test-
+      Framework dokumentieren und Mindest-Robustheits-Score je System.
+    cross_refs: ['A.6.2.4']
+    audit_evidence_hint: 'Operations-SOP mit Drift-Detection, Model-Refresh-Trigger, Adversarial-Robustness-Test-Reports.'
+
+  # ----- Art. 16 — Anbieterpflichten -----
+  - source: 'Art.16'
+    target: 'A.6.1.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 16 listet Anbieter-Kernpflichten (Konformitaetserklaerung,
+      QMS, Tech-Doku, Logs, Konformitaetsbewertung, Registrierung,
+      Korrekturmassnahmen, Kooperation mit Behoerden). ISO 42001 A.6.1.2
+      (AI System impact and consequences) verlangt strukturelle
+      Anbieter-Verantwortung fuer Auswirkungen — Art. 16 ist die
+      gesetzliche Konkretisierung dieser Verantwortlichkeit.
+    cross_refs: ['A.6.1.3', 'A.6.1.4']
+    audit_evidence_hint: 'Anbieter-Pflichtenkatalog gemaess Art. 16, RACI-Matrix, Konformitaetserklaerung-Akte, Sign-off-Records.'
+
+  - source: 'Art.16'
+    target: 'A.6.1.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.6.1.3 (Objectives for the development of AI Systems)
+      verlangt definierte Entwicklungsziele. AI Act Art. 16(a)-(j)
+      konkretisiert Anbieter-Pflichten fuer Konformitaet vor Inverkehr-
+      bringen — direkte Pflicht-Konkretisierung.
+    cross_refs: ['A.6.1.2', 'A.6.1.4']
+    audit_evidence_hint: 'Entwicklungs-Ziele-Doku mit Compliance-Anforderungen, Konformitaetspruefung-Records, Stage-Gate-Reviews.'
+
+  - source: 'Art.16'
+    target: 'A.6.1.4'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 A.6.1.4 (Processes for responsible design and development of
+      AI Systems) deckt Lifecycle-Prozesse ab. AI Act Art. 16 ergaenzt
+      gesetzliche Anbieter-Pflichten (Registrierung in EU-Datenbank Art. 49,
+      CE-Kennzeichnung Art. 48, Korrekturmassnahmen Art. 20) — Bereiche
+      teilweise ausserhalb klassischer A.6.1.4-Scope.
+    gap_warning: |
+      EU-Datenbank-Registrierung (Art. 49) und CE-Kennzeichnung (Art. 48)
+      sind in ISO 42001 nicht behandelt. Separate Konformitaetsbewertung
+      und Registrierungs-Workflow erforderlich.
+    cross_refs: ['A.6.1.2', 'A.6.1.3']
+    audit_evidence_hint: 'Lifecycle-Prozess-Doku, EU-Datenbank-Registrierungs-Records, CE-Kennzeichnungs-Akte, Korrekturmassnahmen-Logs.'
+
+  # ----- Art. 17 — Qualitaetsmanagementsystem -----
+  - source: 'Art.17'
+    target: '4.4'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 17 verlangt fuer Hochrisiko-Anbieter ein dokumentiertes QMS
+      mit 13 Pflichtelementen. ISO 42001 Klausel 4.4 (AI Management System)
+      ist die strukturelle Hauptanforderung fuer das AIMS — mit Etablierung,
+      Implementierung, Aufrechterhaltung und Verbesserung. Art. 17 ist
+      die produktbezogene Auspraegung dieser AIMS-Hauptanforderung.
+    cross_refs: ['5.1', '7.5', '9.3', '10.1']
+    audit_evidence_hint: 'AIMS-Etablierungs-Beschluss, AIMS-Scope-Definition, 13-Element-Mapping zu Art. 17, jaehrliche Mgmt-Reviews.'
+
+  - source: 'Art.17'
+    target: '5.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 Klausel 5.1 (Leadership and commitment) verlangt
+      Top-Mgmt-Verantwortung. AI Act Art. 17(1)(a)-(b) verpflichtet
+      Anbieter zu Compliance-Strategie und Designkontroll-Verantwortung
+      auf Top-Mgmt-Ebene — direkte Konkretisierung.
+    cross_refs: ['4.4', '9.3']
+    audit_evidence_hint: 'Top-Mgmt-Commitment-Statement, AIMS-Verantwortlichkeiten, Mgmt-Review-Protokolle.'
+
+  - source: 'Art.17'
+    target: '9.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 Klausel 9.3 (Management review) fordert periodische
+      Top-Mgmt-Reviews. AI Act Art. 17(1)(g)+(j) verlangt fuer Hochrisiko-
+      Anbieter Berichterstattung an Top-Mgmt sowie Communication-Konzepte
+      mit zustaendigen Behoerden.
+    cross_refs: ['5.1']
+    audit_evidence_hint: 'Mgmt-Review-Protokolle mit Art.-17-Pflichtthemen, Behoerdenkommunikations-Plan, Eskalations-Records.'
+
+  - source: 'Art.17'
+    target: '10.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 Klausel 10.1 (Continual improvement) verlangt fortlaufende
+      Verbesserung. AI Act Art. 17(1)(k) fordert "system for record keeping"
+      und Art. 17(1)(j) Kommunikation mit Behoerden ueber Korrekturmassnahmen
+      — direkte CI-Konkretisierung.
+    cross_refs: ['10.2']
+    audit_evidence_hint: 'CI-Plan, Audit-Findings-Tracking, Korrekturmassnahmen-Records, Trend-Analysen aus Post-Market-Monitoring.'
+
+  # ----- Art. 20 — Korrekturmassnahmen -----
+  - source: 'Art.20'
+    target: '10.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 20 verpflichtet Anbieter zu unverzueglichen
+      Korrekturmassnahmen (Rueckruf, Rueckziehen, Deaktivierung) bei
+      Erkennen von Konformitaetsabweichungen sowie zur Behoerden-Information.
+      ISO 42001 Klausel 10.2 (Nonconformity and corrective action) deckt
+      die NC/CA-Mechanik vollstaendig ab — Art. 20 ist die rechtliche
+      Trigger-Spezifikation dieses Klausel-10.2-Prozesses.
+    cross_refs: ['A.10.4']
+    audit_evidence_hint: 'NC/CA-Prozess-Doku, Korrekturmassnahmen-Trigger-Liste, Rueckruf-/Deaktivierungs-Records, Behoerden-Information-Templates.'
+
+  # ----- Art. 25 — Pflichten in der Wertschoepfungskette -----
+  - source: 'Art.25'
+    target: 'A.10.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 25 regelt Verantwortlichkeiten in der Wertschoepfungskette:
+      Wer ein Hochrisiko-System wesentlich modifiziert oder unter eigenem
+      Namen vermarktet, uebernimmt Anbieter-Pflichten. ISO 42001 A.10.2
+      (Allocating responsibilities) verlangt klare Zuweisung von
+      Verantwortlichkeiten zwischen Lieferanten/Partnern — Art. 25
+      konkretisiert die rechtliche Verantwortlichkeits-Schwelle.
+    cross_refs: ['A.10.3', 'A.10.4']
+    audit_evidence_hint: 'RACI-Matrix Lieferanten/Partner, Vertraege mit Anbieter-Pflicht-Klauseln, Modifikations-Logs zur Bewertung der Anbieter-Schwelle.'
+
+  - source: 'Art.25'
+    target: 'A.10.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.10.3 (Suppliers) verlangt Lieferanten-Management mit
+      Anforderungen, Bewertung und Monitoring. AI Act Art. 25(4) fordert
+      schriftliche Vereinbarungen zwischen GPAI-Anbietern und nachgelagerten
+      Anbietern ueber Tech-Doku-Bereitstellung — direkte Lieferanten-
+      Vertrags-Anforderung.
+    cross_refs: ['A.10.2', 'A.10.4']
+    audit_evidence_hint: 'Lieferantenvertrags-Templates mit Art.-25-Klauseln, Lieferanten-Onboarding-SOP, Lieferanten-Audit-Reports.'
+
+  - source: 'Art.25'
+    target: 'A.10.4'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 A.10.4 (Customers) verlangt Customer-Management mit
+      Informations- und Support-Pflichten. AI Act Art. 25(2) fordert
+      vom Anbieter Informationsbereitstellung an Distributoren, Importeure,
+      Deployer und sonstige Dritte — direkte Customer-Communication-
+      Konkretisierung.
+    cross_refs: ['A.10.2', 'A.10.3']
+    audit_evidence_hint: 'Customer-Information-SOP, Distribution-Channel-Liste, Provisioning-Records, Customer-Support-Logs.'
+
+  # ----- Art. 26 — Pflichten der Betreiber -----
+  - source: 'Art.26'
+    target: 'A.9.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 26 verpflichtet Betreiber von Hochrisiko-Systemen zu
+      bestimmungsgemaesser Verwendung, Human-Oversight, Eingabedaten-
+      Verantwortung, Monitoring und Behoerden-Kommunikation. ISO 42001
+      A.9.2 (Processes for responsible use) deckt den Betreiber-Prozess-
+      Rahmen ab — Art. 26 ist die rechtliche Auspraegung.
+    cross_refs: ['A.9.3', 'A.9.4']
+    audit_evidence_hint: 'Betreiber-SOP, Bediener-Schulungsnachweise, Monitoring-Logs, FRIA-Records (siehe Art. 27).'
+
+  - source: 'Art.26'
+    target: 'A.9.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.9.3 (Objectives for responsible use) verlangt Ziele-
+      Definition fuer den verantwortungsvollen AI-Einsatz. AI Act Art. 26(1)
+      verpflichtet Betreiber zur Verwendung gemaess Anbieter-Anweisungen —
+      direkte Use-Objective-Konkretisierung.
+    cross_refs: ['A.9.2']
+    audit_evidence_hint: 'Use-Case-Ziele mit Anbieter-Anweisung-Bezug, Akzeptanzkriterien, Compliance-Sign-off vor Inbetriebnahme.'
+
+  - source: 'Art.26'
+    target: 'A.9.4'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.9.4 (Intended use of the AI System) verlangt Doku des
+      bestimmungsgemaessen Gebrauchs. AI Act Art. 26(1)+(3) verpflichtet
+      Betreiber, das System nur gemaess Anbieter-Intended-Use einzusetzen
+      und Eingabedaten-Repraesentativitaet sicherzustellen.
+    cross_refs: ['A.9.2']
+    audit_evidence_hint: 'Intended-Use-Statement je Deployment, Eingabedaten-Validierungs-Logs, Out-of-Scope-Eskalations-Logs.'
+
+  # ----- Art. 27 — Fundamental Rights Impact Assessment (FRIA) -----
+  - source: 'Art.27'
+    target: 'A.5.2'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      AI Act Art. 27 verpflichtet bestimmte Betreiber (oeffentliche Stellen,
+      private Akteure mit oeffentlicher Aufgabe, Banken/Versicherungen bei
+      Kreditwuerdigkeitspruefung und Lebensversicherung) zur Durchfuehrung
+      einer Fundamental Rights Impact Assessment (FRIA) vor Erst-Einsatz
+      eines Hochrisiko-Systems. ISO 42001 A.5.2 (AI System Impact Assessment
+      Process) liefert das Assessment-Framework — FRIA ist ein konkreter
+      Pflicht-Anwendungsfall mit grundrechtlichem Fokus.
+    gap_warning: |
+      FRIA-spezifische Pflichtinhalte (Affected Persons, Risk Categories,
+      Human Oversight Plan, Mitigation Plan) sind in A.5.2 nicht
+      praeskriptiv. Empfehlung: FRIA-Template gemaess AI-Office-Guidelines
+      separat pflegen und in A.5.2-Prozess einbetten.
+    cross_refs: ['A.5.3', 'A.5.4', 'A.5.5']
+    audit_evidence_hint: 'FRIA-Template mit Art.-27-Pflichtinhalten, FRIA-Records je Pflicht-Use-Case, Notifikation an Marktueberwachungsbehoerde gemaess Art. 27(3).'
+
+  - source: 'Art.27'
+    target: 'A.5.4'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 A.5.4 (Assessment of AI System impact on individuals or
+      groups of individuals) deckt grundrechtliche Auswirkungs-Bewertung
+      auf Individuen ab. AI Act Art. 27(1)(c)-(d) fordert FRIA-Inhalte zu
+      betroffenen Personenkategorien und spezifischen Schadensrisiken —
+      direkte Schnittmenge mit A.5.4.
+    cross_refs: ['A.5.2', 'A.5.5']
+    audit_evidence_hint: 'Assessment-Reports mit Personenkategorien-Analyse, Vulnerable-Group-Identifikation, Schadensszenarien.'
+
+  - source: 'Art.27'
+    target: 'A.5.5'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 A.5.5 (Assessment of AI System impact on societies) deckt
+      gesellschaftliche Auswirkungs-Bewertung ab. AI Act Art. 27 fordert
+      FRIA-Inhalte teilweise auf gesellschaftlicher Ebene (kollektive
+      Grundrechte, oeffentliche Aufgabe) — Schnittmenge moderate.
+    cross_refs: ['A.5.2', 'A.5.4']
+    audit_evidence_hint: 'Societal-Impact-Reports, Public-Consultation-Records (sofern erforderlich), Impact-Mitigation-Plan.'
+
+  # ============================================================================
+  # CHAPTER IV — Transparenz-Pflichten fuer bestimmte AI-Systeme (Art. 50)
+  # ============================================================================
+
+  - source: 'Art.50'
+    target: 'A.8.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 50 verlangt Transparenz-Pflichten fuer bestimmte AI-Systeme
+      (Chatbots, Emotion-Recognition, Biometrische Kategorisierung,
+      Synthetic Content/Deepfakes): Endnutzer muessen ueber AI-Interaktion
+      informiert werden. ISO 42001 A.8.2 (System documentation and information
+      for users) deckt User-Information ab — Art. 50 ist die rechtliche
+      Konkretisierung fuer interaktive AI-Systeme.
+    cross_refs: ['A.8.3', 'A.8.4', 'A.8.5']
+    audit_evidence_hint: 'AI-Interaktions-Disclosure-Patterns, Watermarking-Mechanismen fuer Synthetic Content, UX-Reviews.'
+
+  - source: 'Art.50'
+    target: 'A.8.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.8.3 (External reporting) regelt Externe-Reporting-
+      Mechanismen. AI Act Art. 50(2) fordert maschinenlesbare Markierung
+      synthetischer Inhalte (z.B. C2PA-Provenance) — direkter Reporting-
+      Mechanismus an externe Stakeholder.
+    cross_refs: ['A.8.2']
+    audit_evidence_hint: 'C2PA-Provenance-Implementierungs-Records, Watermark-Test-Reports, Tooling-Doku.'
+
+  - source: 'Art.50'
+    target: 'A.8.4'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      ISO 42001 A.8.4 (Communication of incidents) regelt Incident-
+      Kommunikation. AI Act Art. 50(4) fordert bei Veroeffentlichung
+      synthetischer/manipulierter Inhalte explizite Kennzeichnung —
+      kommunikative Transparenz-Pflicht mit Incident-Bezug bei
+      Manipulationsverdacht.
+    cross_refs: ['A.8.2', 'A.8.3']
+    audit_evidence_hint: 'Disclosure-Templates fuer Deepfakes/Synthetic Media, Incident-Response-Plan bei Manipulationsverdacht.'
+
+  - source: 'Art.50'
+    target: 'A.8.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 A.8.5 (External reporting) verlangt strukturierte Externe-
+      Kommunikation. AI Act Art. 50(1)+(3) verpflichtet Anbieter und Betreiber
+      zu klaren Disclosure-Statements an Endnutzer und betroffene Personen.
+    cross_refs: ['A.8.2']
+    audit_evidence_hint: 'Disclosure-Statement-Templates, Mehrsprachige Versionen, UX-Validierungs-Records.'
+
+  # ============================================================================
+  # CHAPTER V — General-Purpose AI Models (Art. 51-56)
+  # ============================================================================
+
+  - source: 'Art.55'
+    target: 'A.5.5'
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      AI Act Art. 55 verpflichtet Anbieter von GPAI-Modellen mit systemischem
+      Risiko (FLOPs-Schwelle Annex XIII oder AI-Office-Designation) zu
+      Modell-Evaluierung, Adversarial-Testing, Incident-Reporting an AI Office,
+      Cybersecurity-Massnahmen und Stromverbrauchs-Doku. ISO 42001 A.5.5
+      (Assessment of AI System impact on societies) deckt nur den
+      gesellschaftlichen Impact-Aspekt ab — GPAI-Systemic-Risk geht
+      methodisch weit darueber hinaus.
+    gap_warning: |
+      GPAI-Systemic-Pflichten (Adversarial Testing State-of-the-Art,
+      Incident-Reporting an AI Office, Cybersecurity gegen Modell-Diebstahl
+      und -Manipulation, Stromverbrauchs-Doku) sind in ISO 42001 nicht
+      abgebildet. Empfehlung: GPAI-Compliance-Programm gemaess
+      Code of Practice (CoP) fuer GPAI separat aufsetzen.
+    cross_refs: ['A.5.2', 'A.6.2.4']
+    audit_evidence_hint: 'GPAI-Systemic-Designation-Status, Code-of-Practice-Konformitaet, Adversarial-Testing-Reports State-of-the-Art, AI-Office-Incident-Notifications, Energy-Consumption-Reports.'
+
+  # ============================================================================
+  # CHAPTER VI/VII — Marktueberwachung und Post-Market-Monitoring
+  # ============================================================================
+
+  - source: 'Art.72'
+    target: 'A.6.2.6'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 72 verlangt Post-Market-Monitoring-System fuer
+      Hochrisiko-Anbieter mit aktiver, systematischer Datensammlung ueber
+      Performance waehrend der Lebensdauer und Plan gemaess
+      Durchfuehrungsrechtsakt. ISO 42001 A.6.2.6 (AI System operation and
+      monitoring) deckt operatives Monitoring ab — Art. 72 ist die
+      rechtliche Pflicht-Auspraegung mit konkreten Pflichtinhalten.
+    cross_refs: ['9.1']
+    audit_evidence_hint: 'Post-Market-Monitoring-Plan, Monitoring-KPI-Dashboard, Quartals-Reviews je Hochrisiko-System, Eskalations-Logs.'
+
+  - source: 'Art.72'
+    target: '9.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      ISO 42001 Klausel 9.1 (Monitoring, measurement, analysis and evaluation)
+      verlangt Monitoring-Framework auf AIMS-Ebene. AI Act Art. 72
+      konkretisiert dies fuer Hochrisiko-Systeme mit gesetzlich vorgegebenem
+      Post-Market-Monitoring-Plan und Berichterstattung.
+    cross_refs: ['A.6.2.6']
+    audit_evidence_hint: 'Monitoring-Plan auf AIMS-Ebene, Post-Market-spezifische Dashboards, Trend-Analysen, jaehrlicher Monitoring-Report.'
+
+  # ----- Art. 73 — Reporting of serious incidents -----
+  - source: 'Art.73'
+    target: 'A.8.4'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      AI Act Art. 73 verlangt Meldung schwerwiegender Vorfaelle ("serious
+      incident") an Marktueberwachungsbehoerden innerhalb 15 Tagen
+      (Tod/Personenschaden: 10 Tage; weitverbreiteter Verstoss: 2 Tage).
+      ISO 42001 A.8.4 (Communication of incidents) deckt strukturierte
+      Incident-Kommunikation ab — Art. 73 ist die rechtliche Konkretisierung
+      mit Pflichtfristen und Behoerden-Empfaenger.
+    gap_warning: |
+      Meldefristen (2/10/15 Tage) und Definition "serious incident" gemaess
+      Art. 3(49) sind nicht in A.8.4 abgebildet. Separate Incident-
+      Klassifizierungs-Matrix und Meldewege zu Marktueberwachungsbehoerden
+      + AI Office einrichten. Cross-Reporting mit DSGVO Art. 33/34 und
+      NIS2 Art. 23 pruefen.
+    cross_refs: ['10.2', 'A.10.4']
+    audit_evidence_hint: 'Incident-Klassifizierungs-Matrix mit AI-Act-Schwellwerten, Meldewege-Doku Marktueberwachungsbehoerde + AI Office, Sample-Vorfallsmeldung, Cross-Reporting-Matrix DSGVO/NIS2/AI Act.'

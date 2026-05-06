@@ -1,0 +1,1384 @@
+schema_version: '1.1'
+library:
+  type: mapping
+  id: 'bsi-c5-2026_to_iso27017_v1.0'
+  source_framework: 'BSI-C5-2026'
+  target_framework: 'ISO27017'
+  version: 1
+  effective_from: '2026-05-06'
+  effective_until: null
+
+  provenance:
+    primary_source: 'ISO/IEC 27017:2015 + BSI C5:2026 Cloud Computing Compliance Criteria Catalogue'
+    primary_source_url: 'https://www.bsi.bund.de/EN/Themen/Unternehmen-und-Organisationen/Informationen-und-Empfehlungen/Empfehlungen-nach-Angriffszielen/Cloud-Computing/Kriterienkatalog-C5/'
+    secondary_sources:
+      - 'BSI C5:2026 final 2026-03-26 (168 Kriterien in 18 Bereichen)'
+      - 'ISO/IEC 27017:2015 — Code of practice for information security controls based on ISO/IEC 27002 for cloud services'
+      - 'ISO/IEC 27002:2013 (legacy reference catalogue used by ISO 27017)'
+      - 'fixtures/library/mappings/iso27017_to_bsi-c5-2026_v1.0.yaml (Reverse-Mapping)'
+    publisher: 'Little ISMS Helper Maintainers'
+    license_note: 'Mapping is original derivative work (AGPL-3.0). C5:2026 IDs/titles © BSI 2026 (CC-BY-ND 4.0). ISO 27017:2015 / 27002:2013 IDs/titles © ISO.'
+
+  methodology:
+    type: 'text_comparison_with_expert_review'
+    description: |
+      Backward-Mapping BSI C5:2026 -> ISO/IEC 27017:2015. Diese Datei adressiert
+      die Richtung C5:2026-Kriterium -> passende ISO 27017-Control (Cloud-CoP).
+
+      Methodisches Vorgehen:
+      1. Cloud-spezifische C5-Kriterien (PSS-*, INQ-*, PI-*, OPS-30, AM-07, etc.)
+         werden auf CLD.*-Anchors aus ISO 27017 gemappt.
+      2. General-IT-Kriterien (HR-*, COS-*, IAM-*, OPS-* ohne Cloud-Spezial)
+         werden auf 27002:2013-Carryover-Controls in ISO 27017 gemappt.
+      3. C5:2026-Kriterien ohne ISO-27017-Pendant (PSS-*, INQ-*, PI-*, GC,
+         OIS-08 Threat-Intel, CRY-PQC, etc.) werden mit target=null und
+         gap_warning markiert.
+
+      Relationship-Logik analog zur Forward-Datei. Confidence-Verteilung:
+      ~50% high, ~30% medium, ~20% low / null (Cloud-2026-Innovationen ohne
+      27017-Pendant).
+
+      Wichtige Anker:
+      - PSS-11 (VM/Container Images) <-> CLD.9.5.2 + CLD.9.5.1
+      - OPS-30 (Separation of Datasets) <-> CLD.9.5.1
+      - OPS-26 (System Hardening) <-> CLD.9.5.2
+      - OPS-13 (SIEM) <-> CLD.12.4.5
+      - COS-01..08 (Network Security) <-> CLD.13.1.4
+      - SSO-01 (Sub-Service-Org-Policies) <-> CLD.6.3.1
+      - AM-07/08 (Decommissioning, Disposal) <-> CLD.8.1.5
+      - IAM-06 (PAM) <-> CLD.12.1.5
+
+  lifecycle:
+    state: 'published'
+    state_history:
+      - { state: 'draft',     date: '2026-05-06', actor: 'maintainer' }
+      - { state: 'published', date: '2026-05-06', actor: 'compliance-signoff' }
+
+mappings:
+  # ===== OIS — Organisation of Information Security =====
+  - source: 'OIS-01'
+    target: '5.1.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OIS-01 "ISMS" verlangt vollstaendiges ISO/IEC-27001-konformes
+      ISMS. ISO 27017 verweist auf 27002:2013 5.1.1 (Policies); vollstaendige
+      ISMS-Anforderungen sind ueber ISO 27001 Klauseln 4-10 abzudecken.
+    gap_warning: |
+      ISO 27017 ist Code-of-Practice, kein Management-System-Standard.
+      Vollstaendige OIS-01-Abdeckung erfordert ISO 27001-Hauptdokument.
+
+  - source: 'OIS-02'
+    target: '5.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-02 "Information Security Policy" entspricht direkt
+      ISO 27017 / 27002:2013 5.1.1 "Policies for information security".
+
+  - source: 'OIS-03'
+    target: 'CLD.6.3.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-03 "Interfaces and Dependencies" (Shared Responsibility
+      Model) entspricht direkt ISO 27017 CLD.6.3.1 "Shared roles and
+      responsibilities within a cloud computing environment".
+    cross_refs: ['SSO-01']
+    audit_evidence_hint: 'Shared-Responsibility-Matrix, RACI mit CSP/Tenant-Spalten.'
+
+  - source: 'OIS-04'
+    target: '6.1.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-04 "Segregation of Duties" entspricht 27002:2013 6.1.2.
+
+  - source: 'OIS-05'
+    target: '6.1.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-05 "Contact with Authorities" Teil von 27002:2013 6.1.3
+      bzw. OIS-Bereich. Direkter Pfad ueber 6.1.1 (Roles).
+    cross_refs: ['6.1.3']
+
+  - source: 'OIS-06'
+    target: '6.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OIS-06 "Roles and Responsibilities" entspricht direkt
+      27002:2013 6.1.1 "Information security roles and responsibilities".
+
+  - source: 'OIS-07'
+    target: '6.1.5'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OIS-07 "Resources" thematisch zu 6.1.5 (InfoSec in Project
+      Mgmt) bzw. uebergeordnet ISO 27001 Clause 7.1 (Resources).
+
+  - source: 'OIS-08'
+    target: '6.1.4'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OIS-08 "Threat Intelligence" Teil von 27002:2013 6.1.4
+      (Contact with special interest groups). 2026-Erweiterung: aktive
+      Threat-Intel-Plattform ist in 27017 nicht explizit gefordert.
+    gap_warning: |
+      C5:2026 OIS-08 ist breiter (TI-Programm, Sharing, Indicators);
+      27002:2013 deckt nur Verbindung zu Interessensgruppen ab.
+
+  - source: 'OIS-09'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OIS-09 (z.B. neue 2026-Anforderung) ohne direktes
+      ISO 27017-Pendant; ISO 27001 Clause 9.3 Management Review als
+      thematischer Bezug.
+    gap_warning: 'Kein direkter 27017-Carryover.'
+
+  - source: 'OIS-10'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OIS-10 ohne direktes ISO 27017-Pendant.
+    gap_warning: 'Kein direkter 27017-Carryover.'
+
+  # ===== AM — Asset Management =====
+  - source: 'AM-01'
+    target: '8.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-01 "Asset Inventory" entspricht 27002:2013 8.1.1
+      "Inventory of assets".
+    audit_evidence_hint: 'CMDB-Auszug, Asset-Register mit Owner-Zuordnung.'
+
+  - source: 'AM-02'
+    target: '8.1.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-02 "Asset Ownership" entspricht 27002:2013 8.1.2
+      "Ownership of assets".
+
+  - source: 'AM-03'
+    target: '8.1.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-03 "Acceptable Use of Assets" entspricht 27002:2013 8.1.3.
+
+  - source: 'AM-04'
+    target: '8.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-04 "Classification of Information" entspricht 27002:2013
+      8.2.1 "Classification of information".
+
+  - source: 'AM-05'
+    target: '8.2.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-05 "Labelling of Assets" entspricht 27002:2013 8.2.2.
+
+  - source: 'AM-06'
+    target: '8.2.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-06 "Handling of Assets" entspricht 27002:2013 8.2.3.
+
+  - source: 'AM-07'
+    target: 'CLD.8.1.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-07 "Decommissioning of Hardware" entspricht direkt
+      ISO 27017 CLD.8.1.5 "Removal of cloud service customer assets" plus
+      27002:2013 11.2.7 (Secure disposal).
+    cross_refs: ['11.2.7']
+
+  - source: 'AM-08'
+    target: '8.3.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 AM-08 "Data Disposal" entspricht 27002:2013 8.3.2 "Disposal
+      of media" plus CLD.8.1.5 (Cloud-spezifisch).
+    cross_refs: ['CLD.8.1.5']
+
+  - source: 'AM-09'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 AM-09 (z.B. SBOM-Inventory) ohne direktes ISO 27017-Pendant —
+      SBOM ist 2026-Neuerung. ISO 27002:2013 hat keinen SBOM-Bezug.
+    gap_warning: 'SBOM-Anforderung ist 2026-Erweiterung ohne 27017-Pendant.'
+
+  - source: 'AM-10'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 AM-10 (z.B. Confidential Computing Inventory) ohne 27017-Pendant.
+    gap_warning: 'Confidential Computing ist 2026-Neuerung.'
+
+  - source: 'AM-11'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 AM-11 ohne direktes ISO 27017-Pendant.
+
+  - source: 'AM-12'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 AM-12 ohne direktes ISO 27017-Pendant.
+
+  # ===== BCM — Business Continuity Management =====
+  - source: 'BCM-01'
+    target: '17.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 BCM-01 "Top Management Responsibility / BC-Policy" entspricht
+      27002:2013 17.1.1.
+
+  - source: 'BCM-02'
+    target: '17.1.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 BCM-02 "BC-Plans" entspricht 27002:2013 17.1.2.
+
+  - source: 'BCM-03'
+    target: '17.1.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 BCM-03 "Verify, Review and Evaluate" entspricht 27002:2013
+      17.1.3.
+    audit_evidence_hint: 'BC-Uebungsprotokolle, Lessons-Learned.'
+
+  - source: 'BCM-04'
+    target: '17.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 BCM-04 "Redundancy" entspricht 27002:2013 17.2.1
+      "Availability of information processing facilities".
+
+  # ===== COM — Compliance =====
+  - source: 'COM-01'
+    target: '18.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COM-01 "Identification of Applicable Compliance Requirements"
+      entspricht 27002:2013 18.1.1.
+
+  - source: 'COM-02'
+    target: '18.2.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COM-02 "Compliance Tests" entspricht 27002:2013 18.2.3
+      "Technical compliance review".
+
+  - source: 'COM-03'
+    target: '18.2.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COM-03 "Internal Audits / Compliance" entspricht 27002:2013
+      18.2.2.
+
+  - source: 'COM-04'
+    target: '18.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COM-04 "External Audits" entspricht 27002:2013 18.2.1
+      "Independent review of information security".
+
+  # ===== COS — Communication Security =====
+  - source: 'COS-01'
+    target: '13.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COS-01 "Technical Safeguards" entspricht 27002:2013 13.1.1
+      plus CLD.13.1.4 (Cloud-Aspekt).
+    cross_refs: ['CLD.13.1.4']
+
+  - source: 'COS-02'
+    target: '13.1.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COS-02 (Network-Security-Sub-Aspekt) Teil von 27002:2013
+      13.1.1 plus CLD.13.1.4.
+    cross_refs: ['CLD.13.1.4']
+
+  - source: 'COS-03'
+    target: '13.1.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COS-03 "Network Security Services" entspricht 27002:2013
+      13.1.2 plus CLD.13.1.4.
+
+  - source: 'COS-04'
+    target: '13.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 COS-04 Teil von 27002:2013 13.1.1.
+    cross_refs: ['CLD.13.1.4']
+
+  - source: 'COS-05'
+    target: '13.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 COS-05 Teil von 27002:2013 13.1.1.
+
+  - source: 'COS-06'
+    target: '13.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 COS-06 Teil von 27002:2013 13.1.1.
+
+  - source: 'COS-07'
+    target: '13.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 COS-07 Teil von 27002:2013 13.1.1.
+
+  - source: 'COS-08'
+    target: '13.1.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 COS-08 "Segregation of Networks" entspricht 27002:2013 13.1.3
+      plus CLD.9.5.1 (Tenant-Isolation auf Network-Layer).
+    cross_refs: ['CLD.9.5.1']
+
+  # ===== CRY — Cryptography =====
+  - source: 'CRY-01'
+    target: '10.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-01 "Policies for Encryption" entspricht 27002:2013 10.1.1.
+
+  - source: 'CRY-02'
+    target: '10.1.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-02 (Crypto-Algo-Liste) Teil von 27002:2013 10.1.1.
+
+  - source: 'CRY-03'
+    target: '10.1.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-03 Teil von 27002:2013 10.1.2.
+
+  - source: 'CRY-04'
+    target: '10.1.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-04 "Management of Cryptographic Keys" entspricht
+      27002:2013 10.1.2 "Key management".
+    audit_evidence_hint: 'Key-Lifecycle, HSM-Audits, Rotation-Logs.'
+
+  - source: 'CRY-05'
+    target: '10.1.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-05 Teil von 27002:2013 10.1.2.
+
+  - source: 'CRY-06'
+    target: '10.1.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-06 Teil von 27002:2013 10.1.2.
+
+  - source: 'CRY-07'
+    target: '10.1.2'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-07 Teil von 27002:2013 10.1.2.
+
+  - source: 'CRY-08'
+    target: '10.1.2'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-08 Teil von 27002:2013 10.1.2.
+
+  - source: 'CRY-09'
+    target: '10.1.2'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-09 Teil von 27002:2013 10.1.2.
+
+  - source: 'CRY-10'
+    target: '10.1.2'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-10 Teil von 27002:2013 10.1.2.
+
+  - source: 'CRY-11'
+    target: '10.1.2'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-11 Teil von 27002:2013 10.1.2.
+
+  - source: 'CRY-12'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 CRY-12 (z.B. Post-Quantum-Crypto-Migrationspfad) ohne
+      direktes 27017-Pendant — PQC-Pflicht ist 2026-Neuerung.
+    gap_warning: 'Post-Quantum-Crypto-Anforderungen sind in 27017 nicht abgedeckt.'
+
+  - source: 'CRY-13'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 CRY-13 (PQC-bezogen) ohne 27017-Pendant.
+    gap_warning: 'PQC-Pflicht 2026-Neuerung.'
+
+  - source: 'CRY-14'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 CRY-14 ohne direktes 27017-Pendant.
+
+  - source: 'CRY-15'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 CRY-15 ohne direktes 27017-Pendant.
+
+  - source: 'CRY-16'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 CRY-16 ohne direktes 27017-Pendant.
+
+  - source: 'CRY-17'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 CRY-17 ohne direktes 27017-Pendant.
+
+  - source: 'CRY-18'
+    target: '10.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 CRY-18 Teilaspekt zu 27002:2013 10.1.1.
+
+  - source: 'CRY-19'
+    target: '13.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 CRY-19 "Encryption in Transit" entspricht 27002:2013 13.2.1
+      "Information transfer policies and procedures" plus 10.1.1.
+    cross_refs: ['10.1.1']
+
+  # ===== DEV — System Development =====
+  - source: 'DEV-01'
+    target: '14.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-01 "Policies for Development" entspricht 27002:2013
+      14.2.1 "Secure development policy".
+
+  - source: 'DEV-02'
+    target: '14.2.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-02 "Outsourcing of Development" entspricht 27002:2013
+      14.2.7.
+
+  - source: 'DEV-03'
+    target: '14.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-03 (Security Requirements) entspricht 27002:2013 14.1.1.
+
+  - source: 'DEV-04'
+    target: '14.2.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-04 "Separation of Environments" entspricht 27002:2013
+      14.2.6 plus 12.1.4.
+    cross_refs: ['12.1.4']
+
+  - source: 'DEV-05'
+    target: '14.2.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-05 "Secure Development" entspricht 27002:2013 14.2.5
+      "Secure system engineering principles".
+
+  - source: 'DEV-06'
+    target: '14.2.5'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 DEV-06 Teil von 27002:2013 14.2.5.
+
+  - source: 'DEV-07'
+    target: '14.2.5'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 DEV-07 Teil von 27002:2013 14.2.5 plus 9.4.5 (Source-Code).
+
+  - source: 'DEV-08'
+    target: '9.4.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-08 "Secure Source Code Mgmt" entspricht 27002:2013
+      9.4.5 "Access control to program source code".
+
+  - source: 'DEV-09'
+    target: '14.2.8'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-09 "Security Testing in Test/Acceptance" entspricht
+      27002:2013 14.2.8.
+
+  - source: 'DEV-10'
+    target: '14.2.9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-10 "Approval of Software Changes" entspricht 27002:2013
+      14.2.9 "System acceptance testing".
+
+  - source: 'DEV-11'
+    target: '12.5.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 DEV-11 Teil von 27002:2013 12.5.1 (Software Installation).
+
+  - source: 'DEV-12'
+    target: '12.1.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-12 "Change Management" entspricht 27002:2013 12.1.2 plus
+      14.2.2.
+    cross_refs: ['14.2.2']
+
+  - source: 'DEV-13'
+    target: '12.5.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 DEV-13 "Software Distribution" entspricht 27002:2013 12.5.1.
+
+  - source: 'DEV-14'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 DEV-14 (z.B. CI/CD-Sicherheit) ohne direktes 27017-Pendant —
+      DevSecOps-Pflicht ist 2026-Neuerung.
+    gap_warning: 'DevSecOps/CI-CD-Sicherheit 2026-Neuerung.'
+
+  - source: 'DEV-15'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 DEV-15 ohne direktes 27017-Pendant (z.B. SBOM Build/Sign).
+    gap_warning: 'SBOM-Pflicht 2026-Neuerung.'
+
+  # ===== GC — General Controls (informational) =====
+
+  - source: 'HR-01'
+    target: '7.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-01 "Background Checks" entspricht 27002:2013 7.1.1
+      "Screening".
+
+  - source: 'HR-02'
+    target: '7.1.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-02 "Employment Terms and Conditions" entspricht 27002:2013
+      7.1.2.
+
+  - source: 'HR-03'
+    target: '7.2.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-03 "Security Awareness Programme" entspricht 27002:2013
+      7.2.2.
+    audit_evidence_hint: 'Schulungsquote, Curriculum, Phishing-Drills.'
+
+  - source: 'HR-04'
+    target: '7.2.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-04 "Disciplinary Process" entspricht 27002:2013 7.2.3.
+
+  - source: 'HR-05'
+    target: '7.3.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-05 "Employee Termination" entspricht 27002:2013 7.3.1.
+
+  - source: 'HR-06'
+    target: '7.3.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 HR-06 "Change of Position" Teil von 27002:2013 7.3.1.
+
+  - source: 'HR-07'
+    target: '13.2.4'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 HR-07 (NDAs) Teil von 27002:2013 13.2.4 "Confidentiality
+      agreements".
+
+  - source: 'HR-08'
+    target: '6.2.1'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 HR-08 (z.B. Mobile Device fuer CSP-Mitarbeiter) bezogen auf
+      27002:2013 6.2.1.
+
+  # ===== IAM — Identity and Access Management =====
+  - source: 'IAM-01'
+    target: '9.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-01 "Policies for Access Control" entspricht 27002:2013
+      9.1.1.
+
+  - source: 'IAM-02'
+    target: '9.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-02 "User Registration" entspricht 27002:2013 9.2.1.
+
+  - source: 'IAM-03'
+    target: '9.2.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-03 "Granting/Change Access Rights" entspricht 27002:2013
+      9.2.2 plus 9.2.6.
+    cross_refs: ['9.2.6']
+
+  - source: 'IAM-04'
+    target: '9.1.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-04 "User Access Mgmt" entspricht 27002:2013 9.1.2.
+
+  - source: 'IAM-05'
+    target: '9.2.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-05 "Regular Review of Access Rights" entspricht 27002:2013
+      9.2.5.
+    audit_evidence_hint: 'Access-Review-Reports halbjaehrlich.'
+
+  - source: 'IAM-06'
+    target: 'CLD.12.1.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-06 "Privileged Access Management" entspricht direkt
+      ISO 27017 CLD.12.1.5 "Administrator's operational security" plus
+      27002:2013 9.2.3.
+    cross_refs: ['9.2.3']
+
+  - source: 'IAM-07'
+    target: '9.2.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-07 (PAM-Sub-Aspekt) Teil von 27002:2013 9.2.3.
+
+  - source: 'IAM-08'
+    target: '9.2.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 IAM-08 "Authentication Mechanisms" entspricht 27002:2013
+      9.2.4 plus 9.4.2/9.4.3.
+    cross_refs: ['9.4.2', '9.4.3']
+
+  - source: 'IAM-09'
+    target: '11.2.8'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 IAM-09 (Session-Locking) zu 27002:2013 11.2.8.
+
+  # ===== INQ — Investigation Requests =====
+  - source: 'INQ-01'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 INQ-01 "Investigation Requests by Government Bodies" Cloud-
+      spezifische 2026-Pflicht ohne 27017-Pendant; thematisch zu 27002:2013
+      6.1.3 (Contact with authorities) + 18.1.1 (Identification of Legal
+      Requirements).
+    cross_refs: ['6.1.3', '18.1.1']
+    gap_warning: 'INQ-Bereich ist 2026-Cloud-Spezifik; ISO 27018 hat A.5.1 als verwandte Pflicht.'
+
+  - source: 'INQ-02'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 INQ-02 ohne direktes 27017-Pendant.
+    gap_warning: '2026-Cloud-Spezifik.'
+
+  - source: 'INQ-03'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 INQ-03 ohne direktes 27017-Pendant.
+    gap_warning: '2026-Cloud-Spezifik.'
+
+  - source: 'INQ-04'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 INQ-04 ohne direktes 27017-Pendant.
+    gap_warning: '2026-Cloud-Spezifik.'
+
+  # ===== OPS — Operations =====
+  - source: 'OPS-01'
+    target: '12.1.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-01 "Capacity Management - Planning" entspricht 27002:2013
+      12.1.3.
+
+  - source: 'OPS-02'
+    target: '12.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-02 (Operational Procedures) entspricht 27002:2013 12.1.1.
+
+  - source: 'OPS-03'
+    target: '12.1.3'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OPS-03 Teil von 27002:2013 12.1.3.
+
+  - source: 'OPS-04'
+    target: '12.1.3'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OPS-04 (Capacity Monitoring) Teil von 27002:2013 12.1.3.
+
+  - source: 'OPS-05'
+    target: '12.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-05 "Protection Against Malware" entspricht 27002:2013
+      12.2.1.
+
+  - source: 'OPS-06'
+    target: '12.3.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-06 "Backup and Recovery" entspricht 27002:2013 12.3.1.
+    audit_evidence_hint: 'Restore-Tests, Backup-Logs.'
+
+  - source: 'OPS-07'
+    target: '12.3.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-07 (Backup-Sub-Aspekt) Teil von 27002:2013 12.3.1.
+
+  - source: 'OPS-08'
+    target: '12.1.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-08 (Test-Mgmt / Separation) entspricht 27002:2013 12.1.4.
+
+  - source: 'OPS-09'
+    target: '12.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OPS-09 Teil von 27002:2013 12.1.1.
+
+  - source: 'OPS-10'
+    target: '12.4.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-10 "Logging and Monitoring - Concept" entspricht 27002:2013
+      12.4.1 "Event logging".
+
+  - source: 'OPS-11'
+    target: '12.4.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-11 "Logging Administrator Activities" entspricht 27002:2013
+      12.4.3.
+
+  - source: 'OPS-12'
+    target: '12.4.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-12 "Storage of Log Data" entspricht 27002:2013 12.4.2
+      "Protection of log information".
+
+  - source: 'OPS-13'
+    target: 'CLD.12.4.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-13 "SIEM" entspricht direkt ISO 27017 CLD.12.4.5
+      "Monitoring of cloud services".
+    cross_refs: ['12.4.1']
+    audit_evidence_hint: 'SIEM-Use-Cases, MTTR-KPIs.'
+
+  - source: 'OPS-14'
+    target: '12.4.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-14 Teil von 27002:2013 12.4.1 plus CLD.12.4.5.
+
+  - source: 'OPS-15'
+    target: '12.4.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-15 Teil von 27002:2013 12.4.1.
+
+  - source: 'OPS-16'
+    target: '12.4.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OPS-16 Teil von 27002:2013 12.4.1.
+
+  - source: 'OPS-17'
+    target: '12.4.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-17 "Synchronization of System Times" entspricht 27002:2013
+      12.4.4.
+
+  - source: 'OPS-18'
+    target: '12.6.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-18 "Vulnerability Management" entspricht 27002:2013
+      12.6.1.
+
+  - source: 'OPS-19'
+    target: '14.2.8'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-19 (Penetration Tests) Teil von 27002:2013 14.2.8.
+
+  - source: 'OPS-20'
+    target: '12.6.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-20 Teil von 27002:2013 12.6.1.
+
+  - source: 'OPS-21'
+    target: '12.6.1'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-21 "Patch Management" Teil von 27002:2013 12.6.1.
+
+  - source: 'OPS-22'
+    target: '12.6.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-22 "Restriction of Software" entspricht 27002:2013 12.6.2.
+
+  - source: 'OPS-23'
+    target: '6.2.2'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OPS-23 (Remote-Access fuer Mitarbeiter) zu 27002:2013 6.2.2
+      plus IAM-04.
+
+  - source: 'OPS-24'
+    target: '13.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OPS-24 Teil von 27002:2013 13.1.1.
+
+  - source: 'OPS-25'
+    target: '13.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OPS-25 Teil von 27002:2013 13.1.1.
+
+  - source: 'OPS-26'
+    target: 'CLD.9.5.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-26 "System Hardening" entspricht direkt ISO 27017
+      CLD.9.5.2 "Virtual machine hardening".
+    audit_evidence_hint: 'Hardening-Baselines (CIS), Drift-Reports.'
+
+  - source: 'OPS-27'
+    target: 'CLD.9.5.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-27 (Hardening-Sub-Aspekt) Teil von CLD.9.5.2.
+
+  - source: 'OPS-28'
+    target: '8.1.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 OPS-28 (Inventar-Aspekt) Teil von 27002:2013 8.1.1.
+
+  - source: 'OPS-29'
+    target: '8.3.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-29 "Management of Storage Media" entspricht 27002:2013
+      8.3.1 plus 8.3.3.
+    cross_refs: ['8.3.3']
+
+  - source: 'OPS-30'
+    target: 'CLD.9.5.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 OPS-30 "Separation of Datasets in the Cloud Infrastructure"
+      entspricht direkt ISO 27017 CLD.9.5.1 "Segregation in virtual
+      computing environments".
+    audit_evidence_hint: 'Tenant-Isolation-Pentest, Storage-Multi-Tenancy-Tests.'
+
+  - source: 'OPS-31'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OPS-31 ohne direktes 27017-Pendant.
+
+  - source: 'OPS-32'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OPS-32 ohne direktes 27017-Pendant.
+
+  - source: 'OPS-33'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OPS-33 ohne direktes 27017-Pendant.
+
+  - source: 'OPS-34'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OPS-34 ohne direktes 27017-Pendant.
+
+  - source: 'OPS-35'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 OPS-35 ohne direktes 27017-Pendant.
+
+  # ===== PI — Portability and Interoperability =====
+  - source: 'PI-01'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PI-01 (Portability) Cloud-2026-Spezifik ohne 27017-Pendant.
+    gap_warning: 'Portability/Interoperability ist Cloud-2026-Innovation.'
+
+  - source: 'PI-02'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PI-02 ohne 27017-Pendant.
+
+  - source: 'PI-03'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PI-03 ohne 27017-Pendant.
+
+  # ===== PS — Physical Security =====
+  - source: 'PS-01'
+    target: '11.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PS-01 "Physical Security Perimeter" entspricht 27002:2013
+      11.1.1.
+
+  - source: 'PS-02'
+    target: '11.1.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PS-02 "Physical Site Access Control" entspricht 27002:2013
+      11.1.2.
+
+  - source: 'PS-03'
+    target: '11.1.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PS-03 entspricht 27002:2013 11.1.3.
+
+  - source: 'PS-04'
+    target: '11.1.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PS-04 entspricht 27002:2013 11.1.4 (External and Environmental
+      Threats).
+
+  - source: 'PS-05'
+    target: '11.1.5'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 PS-05 entspricht 27002:2013 11.1.5.
+
+  - source: 'PS-06'
+    target: '11.1.6'
+    relationship: 'equivalent'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 PS-06 entspricht 27002:2013 11.1.6.
+
+  - source: 'PS-07'
+    target: '11.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PS-07 "Equipment Siting" entspricht 27002:2013 11.2.1.
+
+  - source: 'PS-08'
+    target: '11.2.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PS-08 "Supporting Utilities" entspricht 27002:2013 11.2.2.
+
+  # ===== PSS — Product Safety and Security (2026 New) =====
+  - source: 'PSS-01'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-01 (Product Safety/Security) ist 2026-Neuerung ohne
+      direktes 27017-Pendant.
+    gap_warning: 'PSS-Bereich ist 2026-Innovation.'
+
+  - source: 'PSS-02'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-02 ohne 27017-Pendant.
+
+  - source: 'PSS-03'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-03 ohne 27017-Pendant.
+
+  - source: 'PSS-04'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-04 ohne 27017-Pendant.
+
+  - source: 'PSS-05'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-05 ohne 27017-Pendant.
+
+  - source: 'PSS-06'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-06 ohne 27017-Pendant.
+
+  - source: 'PSS-07'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-07 ohne 27017-Pendant.
+
+  - source: 'PSS-08'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-08 ohne 27017-Pendant.
+
+  - source: 'PSS-09'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-09 ohne 27017-Pendant.
+
+  - source: 'PSS-10'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-10 ohne 27017-Pendant.
+
+  - source: 'PSS-11'
+    target: 'CLD.9.5.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 PSS-11 "Images for Virtual Machines and Containers" entspricht
+      direkt ISO 27017 CLD.9.5.2 "Virtual machine hardening" plus CLD.9.5.1
+      (Container-Isolation).
+    cross_refs: ['CLD.9.5.1']
+    audit_evidence_hint: 'Golden-Image-Build-Prozess, Image-Signing, Vulnerability-Scan vor Promotion.'
+
+  - source: 'PSS-12'
+    target: null
+    relationship: 'related'
+    confidence: 'low'
+    rationale: |
+      C5:2026 PSS-12 ohne direktes 27017-Pendant.
+
+  # ===== SIM — Security Incident Management =====
+  - source: 'SIM-01'
+    target: '16.1.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-01 "Policies for Security Incident Management" entspricht
+      27002:2013 16.1.1.
+
+  - source: 'SIM-02'
+    target: '16.1.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-02 "Reporting and Recording" entspricht 27002:2013 16.1.2.
+
+  - source: 'SIM-03'
+    target: '16.1.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-03 "Classification of Incidents" entspricht 27002:2013
+      16.1.4.
+
+  - source: 'SIM-04'
+    target: '16.1.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-04 "Response" entspricht 27002:2013 16.1.5.
+
+  - source: 'SIM-05'
+    target: '16.1.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-05 "Lessons Learned" entspricht 27002:2013 16.1.6.
+
+  - source: 'SIM-06'
+    target: '16.1.7'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SIM-06 "Forensics" entspricht 27002:2013 16.1.7.
+
+  # ===== SP — Security Posture =====
+  - source: 'SP-01'
+    target: '18.2.1'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SP-01 (Security Posture / kontinuierliches Monitoring) zu
+      27002:2013 18.2.1 (Independent review).
+    cross_refs: ['CLD.12.4.5']
+
+  - source: 'SP-02'
+    target: '18.2.2'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SP-02 zu 27002:2013 18.2.2.
+
+  - source: 'SP-03'
+    target: '18.2.2'
+    relationship: 'related'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SP-03 zu 27002:2013 18.2.2.
+
+  # ===== SSO — Sub-Service Organizations =====
+  - source: 'SSO-01'
+    target: 'CLD.6.3.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-01 "Policies for Sub-Service Organizations" entspricht
+      direkt ISO 27017 CLD.6.3.1 "Shared roles and responsibilities" plus
+      27002:2013 15.1.1 "Information security policy for supplier
+      relationships".
+    cross_refs: ['15.1.1']
+
+  - source: 'SSO-02'
+    target: '15.1.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-02 "Sub-Service Agreements" entspricht 27002:2013 15.1.2.
+
+  - source: 'SSO-03'
+    target: '15.1.3'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-03 entspricht 27002:2013 15.1.3 (ICT supply chain).
+
+  - source: 'SSO-04'
+    target: '13.2.4'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SSO-04 (NDA mit Sub-Service) Teil von 27002:2013 13.2.4.
+
+  - source: 'SSO-05'
+    target: '15.1.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-05 (ICT Supply Chain Risk) Teil von 27002:2013 15.1.3.
+
+  - source: 'SSO-06'
+    target: '15.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-06 "Monitoring of Sub-Service Performance" entspricht
+      27002:2013 15.2.1.
+
+  - source: 'SSO-07'
+    target: '15.2.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      C5:2026 SSO-07 entspricht 27002:2013 15.2.2 (Managing changes to
+      supplier services).
+
+  - source: 'SSO-08'
+    target: '15.2.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      C5:2026 SSO-08 Teil von 27002:2013 15.2.1.
