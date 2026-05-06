@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\PdfLocaleTrait;
 use App\Entity\ComplianceFramework;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
@@ -18,9 +19,11 @@ use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Translation\LocaleSwitcher;
 
 /**
  * Dedizierter MRIS-Audit-Report (PDF) für Auditoren / interne Reviews.
@@ -36,6 +39,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_AUDITOR')]
 final class MrisAuditReportController extends AbstractController
 {
+    use PdfLocaleTrait;
+
     private const KPI_SPARK_IDS = [
         'mttc' => 'mris_mttc',
         'phishing_resistant_mfa_share' => 'mris_phishing_resistant_mfa_share',
@@ -53,11 +58,12 @@ final class MrisAuditReportController extends AbstractController
         private readonly ComplianceRequirementRepository $requirementRepository,
         private readonly KpiSnapshotRepository $kpiSnapshotRepository,
         private readonly PdfExportService $pdfExportService,
+        private readonly LocaleSwitcher $localeSwitcher,
     ) {
     }
 
     #[Route('/mris/audit-report', name: 'app_mris_audit_report', methods: ['GET'])]
-    public function generate(): Response
+    public function generate(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant instanceof Tenant) {
@@ -96,12 +102,16 @@ final class MrisAuditReportController extends AbstractController
             'source_label' => 'Peddi, R. (2026). MRIS — Mythos-resistente Informationssicherheit, v1.5. CC BY 4.0.',
         ];
 
-        $filename = sprintf('MRIS_Audit_Report_%s.pdf', $generatedAt->format('Y-m-d_His'));
+        $locale = $this->resolvePdfLocale($request);
+        $filename = sprintf('MRIS_Audit_Report_%s_%s.pdf', $locale, $generatedAt->format('Y-m-d_His'));
 
-        $pdf = $this->pdfExportService->generatePdf(
-            'mris/audit_report_pdf.html.twig',
-            $data,
-            ['orientation' => 'portrait', 'paper' => 'A4']
+        $pdf = $this->localeSwitcher->runWithLocale(
+            $locale,
+            fn() => $this->pdfExportService->generatePdf(
+                'mris/audit_report_pdf.html.twig',
+                $data,
+                ['orientation' => 'portrait', 'paper' => 'A4']
+            )
         );
 
         $safeFilename = preg_replace('/[^\w\s\.\-]/', '', $filename);
