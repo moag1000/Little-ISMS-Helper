@@ -80,14 +80,23 @@ mappings:
 
   - source: 'OIS-02'
     target: '20.1'
-    relationship: 'equivalent'
-    confidence: 'high'
+    relationship: 'subset'
+    confidence: 'medium'
     rationale: |
       C5:2026 OIS-02 „Information Security Policy" verlangt Top-Management-
       Verabschiedung der InfoSec-Policy. NIS2 Art. 20(1) verpflichtet die
-      Leitungsorgane, die Risikomanagement-Maßnahmen zu billigen und ihre
-      Umsetzung zu überwachen. Direkter Overlap auf Governance-Ebene.
-    audit_evidence_hint: 'Geschäftsführungs-/Vorstands-Beschluss zur InfoSec-Policy, Kommunikation an interne und externe Stakeholder, jährlicher Review.'
+      Leitungsorgane darüber hinaus, ALLE Risikomanagement-Maßnahmen zu
+      billigen UND ihre Umsetzung zu überwachen. OIS-02 deckt nur den
+      Policy-Verabschiedungs-Anteil ab; Supervision-Pflicht und Approval
+      jeder Maßnahme erfordern zusätzlich COM-04 (ISMS-Performance-
+      Reporting an Mgmt) und ggf. eigene Mgmt-Review-Routinen.
+    gap_warning: |
+      OIS-02 alleine erfüllt 20.1 nicht. Bestandsanwender brauchen
+      zusätzlich eine dokumentierte Mgmt-Review-Routine, die nicht nur
+      die Policy bestätigt, sondern alle 21(2)(a-j)-Maßnahmen kontinu-
+      ierlich approved und supervisioniert.
+    cross_refs: ['COM-04', 'OIS-01']
+    audit_evidence_hint: 'Geschäftsführungs-/Vorstands-Beschluss zur InfoSec-Policy + Mgmt-Review-Protokolle die alle 21(2)(a-j)-Bereiche abdecken (nicht nur Policy).'
 
   - source: 'OIS-04'
     target: '21.2.i'
@@ -122,8 +131,15 @@ mappings:
       Voraussetzung für Erfüllung der NIS2-Meldepflicht (24h-Frühwarnung
       an CSIRT/zuständige Behörde) — Meldekanäle müssen vor Vorfall
       etabliert sein.
+    gap_warning: |
+      C5:2026 hat KEINE eigenständige 24h-SLA-Pflicht. NIS2 23(1) fordert
+      konkret „unverzüglich, in jedem Fall innerhalb von 24 Stunden"
+      Frühwarnung an die zuständige Behörde. Bestandsanwender mit OIS-06-
+      Kontakten müssen die SLA prozessual über SIM-04 (Doc/Reporting)
+      verankern: 24h-Eskalations-Trigger, On-Call-Rotation, Templates für
+      die Frühwarnung. Nur OIS-06 zu haben reicht NICHT.
     cross_refs: ['SIM-04', '23.2', '23.3']
-    audit_evidence_hint: 'Kontaktverzeichnis BSI/CERT-Bund/zuständige NIS2-Behörde, Eskalations-Matrix mit Telefon/E-Mail-Routing, Test der Meldekette letzte 12 Monate.'
+    audit_evidence_hint: 'Kontaktverzeichnis BSI/CERT-Bund/zuständige NIS2-Behörde, Eskalations-Matrix mit Telefon/E-Mail-Routing, dokumentierte 24h-Eskalations-SLA, Test der Meldekette letzte 12 Monate.'
 
   - source: 'OIS-07'
     target: '21.2.a'
@@ -739,14 +755,21 @@ mappings:
 
   - source: 'OPS-10'
     target: '21.2.f'
-    relationship: 'subset'
-    confidence: 'high'
+    relationship: 'related'
+    confidence: 'low'
     rationale: |
       C5:2026 OPS-10 „Logging and Monitoring - Policies and Procedures"
-      ist Wirksamkeits-Bewertungs-Maßnahme — direkter Beitrag zu 21(2)(f)
-      über Sicherheits-Monitoring.
-    cross_refs: ['OPS-13', 'OPS-14']
-    audit_evidence_hint: 'Logging-Konzept, SIEM-Use-Case-Katalog, 24/7-SOC-Coverage.'
+      liefert die Datenbasis für Wirksamkeitsmessungen, ist aber selbst
+      KEINE Wirksamkeitsprüfung. NIS2 21(2)(f) verlangt eine Bewertung
+      der Risikomanagement-Maßnahmen — Logging ist Voraussetzung, nicht
+      Bewertung. Daher 'related' statt 'subset'.
+    gap_warning: |
+      Wer 21(2)(f) nur über OPS-10 nachweist, fehlt die eigentliche
+      Wirksamkeitsbewertung. Pflicht-Pendants sind COM-03 (Internal
+      Audits), OPS-23 (Measurement/Analysis), SIM-06 (Lessons Learned)
+      und SP-02 (Policy Review).
+    cross_refs: ['COM-03', 'OPS-23', 'SIM-06']
+    audit_evidence_hint: 'Logging-Konzept, SIEM-Use-Case-Katalog, 24/7-SOC-Coverage — als Input für Wirksamkeitsmessung in COM-03/OPS-23.'
 
   - source: 'OPS-13'
     target: '21.2.b'
