@@ -1,26 +1,30 @@
 {% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'gstool_import' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'gstool_import.title'|trans({}, 'gstool_import') }}{% endblock %}
 
 {% block admin_title %}{{ 'gstool_import.title'|trans({}, 'gstool_import') }}{% endblock %}
 
-{% block admin_content %}
-<div class="container">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
-            { label: 'gstool_import.title'|trans({}, 'gstool_import') }
-        ]
-    } only %}
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active" aria-current="page">{{ 'gstool_import.title'|trans({}, 'gstool_import') }}</li>
+{% endblock %}
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="h5 mb-0">
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'cloud-arrow-up', label: 'Import' },
+        title: 'gstool_import.title'|trans({}, 'gstool_import'),
+        subtitle: 'gstool_import.intro'|trans({}, 'gstool_import'),
+    }) }}
+
+    <section class="fa-section mb-4">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
                 <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
                 {{ 'gstool_import.upload.card_title'|trans({}, 'gstool_import') }}
             </h2>
         </div>
-        <div class="card-body">
+        <div class="fa-section__body">
             <p class="text-muted">{{ 'gstool_import.intro'|trans({}, 'gstool_import') }}</p>
 
             {{ form_start(form) }}
@@ -53,12 +57,12 @@
 &lt;/gstool-export&gt;</code></pre>
             </div>
         </div>
-    </div>
+    </section>
 
     {% if result is not null %}
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h2 class="h5 mb-0">
+        <section class="fa-section">
+            <div class="fa-section__header d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h2 class="fa-section__title">
                     {% if isDryRun %}
                         <i class="fa-icon fa-icon--status-pending text-warning" aria-hidden="true"></i>
                         {{ 'gstool_import.result.preview_title'|trans({}, 'gstool_import') }}
@@ -78,7 +82,7 @@
                     }, 'gstool_import') }}
                 </span>
             </div>
-            <div class="card-body p-0">
+            <div class="fa-section__body p-0">
                 {% if result.header_error is not null %}
                     <div class="p-3">
                         <div class="alert alert-danger mb-0">{{ result.header_error }}</div>
@@ -304,7 +308,6 @@
                     </div>{# /.tab-content #}
                 {% endif %}
             </div>
-        </div>
+        </section>
     {% endif %}
-</div>
 {% endblock %}

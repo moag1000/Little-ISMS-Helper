@@ -1,48 +1,42 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'loader_fixer' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'loader_fixer.result.title'|trans({}, 'loader_fixer') }}{% endblock %}
+{% block admin_title %}{{ 'loader_fixer.result.title'|trans({}, 'loader_fixer') }}{% endblock %}
 
-{% block body %}
-<div class="container-fluid">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'admin.title'|trans({}, 'admin'), url: path('admin_dashboard') },
-            { label: 'admin.nav.loader_fixer'|trans({}, 'admin'), url: path('admin_loader_fixer_index') },
-            { label: 'loader_fixer.result.title'|trans({}, 'loader_fixer') }
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_loader_fixer_index') }}">{{ 'admin.nav.loader_fixer'|trans({}, 'admin') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'loader_fixer.result.title'|trans({}, 'loader_fixer') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'tools', label: 'Loader Fixer' },
+        title: 'loader_fixer.result.title'|trans({}, 'loader_fixer'),
+        subtitle: 'loader_fixer.result.total_added'|trans({ '%total%': total_added }, 'loader_fixer'),
+        actions: [
+            { label: 'loader_fixer.action.back'|trans({}, 'loader_fixer'), variant: 'ghost', icon: 'arrow-left', href: path('admin_loader_fixer_index') }
         ]
-    } %}
-
-    <div class="d-flex justify-content-between align-items-start mb-3">
-        <div>
-            <h1 class="h3">{{ 'loader_fixer.result.title'|trans({}, 'loader_fixer') }}</h1>
-            <p class="text-muted mb-0">
-                {{ 'loader_fixer.result.total_added'|trans({ '%total%': total_added }, 'loader_fixer') }}
-            </p>
-        </div>
-        <a href="{{ path('admin_loader_fixer_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
-            {{ 'loader_fixer.action.back'|trans({}, 'loader_fixer') }}
-        </a>
-    </div>
+    }) }}
 
     {% for code, r in results %}
-        <div class="card fa-section mb-3">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <div>
+        <section class="fa-section mb-3">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">
                     <code>{{ code }}</code>
                     {% if r.success %}
-                        <span class="badge bg-success fa-status-pill fa-status-pill--success ms-2">
-                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                        <span class="badge bg-success ms-2">
+                            <i class="bi bi-check-circle" aria-hidden="true"></i>
                             {{ 'loader_fixer.result.ok'|trans({}, 'loader_fixer') }}
                         </span>
                     {% else %}
-                        <span class="badge bg-danger fa-status-pill fa-status-pill--danger ms-2">
-                            <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
+                        <span class="badge bg-danger ms-2">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             {{ 'loader_fixer.result.failed'|trans({}, 'loader_fixer') }}
                         </span>
                     {% endif %}
-                </div>
-                <div class="small text-muted">
+                </h2>
+                <div class="fa-section__tools small text-muted">
                     {{ 'loader_fixer.result.before'|trans({}, 'loader_fixer') }}: <strong>{{ r.before }}</strong>
                     &middot;
                     {{ 'loader_fixer.result.after'|trans({}, 'loader_fixer') }}: <strong>{{ r.after }}</strong>
@@ -52,12 +46,11 @@
                 </div>
             </div>
             {% if r.output|trim is not empty %}
-                <div class="card-body p-2">
+                <div class="fa-section__body p-2">
                     <pre class="small bg-body-secondary p-2 mb-0"
                          style="max-height: 200px; overflow: auto;">{{ r.output }}</pre>
                 </div>
             {% endif %}
-        </div>
+        </section>
     {% endfor %}
-</div>
 {% endblock %}

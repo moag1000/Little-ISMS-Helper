@@ -1,35 +1,34 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'incident_sla' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-{% block title %}{{ 'incident_sla.edit.title'|trans({'%severity%': ('incident_sla.severity.' ~ config.severity)|trans({}, 'incident_sla')}, 'incident_sla') }}{% endblock %}
+{% block admin_title %}{{ 'incident_sla.edit.title'|trans({'%severity%': ('incident_sla.severity.' ~ config.severity)|trans({}, 'incident_sla')}, 'incident_sla') }}{% endblock %}
 
-{% block body %}
-<div class="container mt-4">
-    <div class="row mb-3">
-        <div class="col">
-            <h1>
-                <i class="bi bi-stopwatch" aria-hidden="true"></i>
-                {{ 'incident_sla.edit.title'|trans({'%severity%': ('incident_sla.severity.' ~ config.severity)|trans({}, 'incident_sla')}, 'incident_sla') }}
-            </h1>
-            <p class="lead">
-                <a href="{{ path('app_admin_incident_sla_config') }}" class="text-decoration-none">
-                    <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'incident_sla.back_to_list'|trans({}, 'incident_sla') }}
-                </a>
-            </p>
-        </div>
-    </div>
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('app_admin_incident_sla_config') }}">{{ 'incident_sla.back_to_list'|trans({}, 'incident_sla') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'incident_sla.edit.title'|trans({'%severity%': ('incident_sla.severity.' ~ config.severity)|trans({}, 'incident_sla')}, 'incident_sla') }}</li>
+{% endblock %}
+
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'stopwatch', label: 'SLA' },
+        title: 'incident_sla.edit.title'|trans({'%severity%': ('incident_sla.severity.' ~ config.severity)|trans({}, 'incident_sla')}, 'incident_sla'),
+        subtitle: 'incident_sla.section.edit'|trans({}, 'incident_sla'),
+        actions: [
+            { label: 'incident_sla.back_to_list'|trans({}, 'incident_sla'), variant: 'ghost', icon: 'arrow-left', href: path('app_admin_incident_sla_config') }
+        ]
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">
-            {% embed '_components/_card.html.twig' %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h3 class="h5 mb-0">
-                            <i class="fa-icon fa-icon--ui-settings" aria-hidden="true"></i>
-                            {{ 'incident_sla.section.edit'|trans({}, 'incident_sla') }}
-                        </h3>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
+            <section class="fa-section">
+                <div class="fa-section__header">
+                    <h2 class="fa-section__title">
+                        <i class="bi bi-sliders" aria-hidden="true"></i>
+                        {{ 'incident_sla.section.edit'|trans({}, 'incident_sla') }}
+                    </h2>
+                </div>
+                <div class="fa-section__body">
                     {{ form_start(form) }}
                         <div class="mb-3">{{ form_row(form.responseHours, { attr: { class: 'form-control' } }) }}</div>
                         <div class="mb-3">{{ form_row(form.escalationHours, { attr: { class: 'form-control' } }) }}</div>
@@ -45,9 +44,8 @@
                             </a>
                         </div>
                     {{ form_end(form) }}
-                {% endblock %}
-            {% endembed %}
+                </div>
+            </section>
         </div>
     </div>
-</div>
 {% endblock %}

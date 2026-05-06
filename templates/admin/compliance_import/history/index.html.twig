@@ -1,38 +1,43 @@
 {% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'compliance_import' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
 {% block title %}{{ 'compliance_import.history.title'|trans({}, 'compliance_import') }}{% endblock %}
 
 {% block admin_title %}{{ 'compliance_import.history.title'|trans({}, 'compliance_import') }}{% endblock %}
 
-{% block admin_content %}
-<div class="container">
-    {% include '_components/_breadcrumb.html.twig' with {
-        breadcrumbs: [
-            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
-            { label: 'compliance.manage_frameworks'|trans({}, 'compliance'), url: path('admin_compliance_index') },
-            { label: 'compliance_import.history.title'|trans({}, 'compliance_import') }
-        ]
-    } only %}
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item"><a href="{{ path('admin_compliance_index') }}">{{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'compliance_import.history.title'|trans({}, 'compliance_import') }}</li>
+{% endblock %}
 
-    {% embed '_components/_card.html.twig' with { 'class': 'mb-3', sessions: sessions, total: total, page: page, page_count: page_count } only %}
-        {% block card_header %}
-            <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <h2 class="h5 mb-0">
+{% block admin_content %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'cloud-arrow-up', label: 'Import' },
+        title: 'compliance_import.history.title'|trans({}, 'compliance_import'),
+        actions: [
+            { label: 'compliance_import.wizard.title'|trans({}, 'compliance_import'), variant: 'primary', icon: 'cloud-arrow-up', href: path('admin_compliance_import_upload') }
+        ]
+    }) }}
+
+    {% if sessions is empty %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'compliance_import.history.empty'|trans({}, 'compliance_import'),
+            actions: [
+                { label: 'compliance_import.wizard.title'|trans({}, 'compliance_import'), variant: 'primary', icon: 'cloud-arrow-up', href: path('admin_compliance_import_upload') }
+            ]
+        }) }}
+    {% else %}
+        <section class="fa-section">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">
                     <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i>
                     {{ 'compliance_import.history.title'|trans({}, 'compliance_import') }}
                 </h2>
-                <a href="{{ path('admin_compliance_import_upload') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                    <i class="fa-icon fa-icon--nav-upload" aria-hidden="true"></i>
-                    {{ 'compliance_import.wizard.title'|trans({}, 'compliance_import') }}
-                </a>
             </div>
-        {% endblock %}
-        {% block card_body %}
-            {% if sessions is empty %}
-                <p class="text-muted mb-0">
-                    {{ 'compliance_import.history.empty'|trans({}, 'compliance_import') }}
-                </p>
-            {% else %}
+            <div class="fa-section__body">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover align-middle"
                            aria-label="{{ 'compliance_import.history.table_aria'|trans({}, 'compliance_import') }}">
@@ -115,8 +120,7 @@
                         </ul>
                     </nav>
                 {% endif %}
-            {% endif %}
-        {% endblock %}
-    {% endembed %}
-</div>
+            </div>
+        </section>
+    {% endif %}
 {% endblock %}
