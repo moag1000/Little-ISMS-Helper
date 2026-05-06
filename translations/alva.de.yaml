@@ -1,6 +1,15 @@
 alva:
     title_prefix: 'Alva-Tipp:'
     dismiss: 'Nicht jetzt'
+    stats:
+        title: 'Alva-Hint-Statistik'
+        description: 'Aggregation der Hint-Dismissals pro Schlüssel — hilft zu sehen welche Hinweise als Lärm empfunden werden und welche tatsächlich Aktion ausgelöst haben.'
+        empty: 'Bisher keine Hint-Dismissals erfasst.'
+        col:
+            hint_key: 'Hint-Key'
+            total: 'Gesamt'
+            snoozed: 'Snooze'
+            distinct_users: 'Nutzer'
 
 data_breach:
     gdpr_72h:

@@ -6,24 +6,29 @@ namespace App\Controller;
 
 use App\AlvaHint\AlvaHintService;
 use App\Entity\User;
+use App\Repository\AlvaHintDismissalRepository;
 use App\Service\AuditLogger;
+use App\Service\TenantContext;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * AJAX endpoint for dismissing a proactive Alva-Fee hint. Persists the
- * dismissal in the DB so the same user does not see the hint again,
- * regardless of which device they log in from.
+ * AJAX endpoint for dismissing a proactive Alva-Fee hint plus admin
+ * telemetry view. Dismissals persist in the DB so the same user does
+ * not see the hint again regardless of which device they log in from.
  */
 class AlvaHintController extends AbstractController
 {
     public function __construct(
         private readonly AlvaHintService $alvaHintService,
         private readonly AuditLogger $auditLogger,
+        private readonly ?AlvaHintDismissalRepository $dismissalRepository = null,
+        private readonly ?TenantContext $tenantContext = null,
     ) {
     }
 
@@ -75,5 +80,22 @@ class AlvaHintController extends AbstractController
         );
 
         return new JsonResponse(['ok' => true]);
+    }
+
+    #[Route('/admin/alva-hint/stats', name: 'app_alva_hint_stats', methods: ['GET'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function stats(): Response
+    {
+        if ($this->dismissalRepository === null || $this->tenantContext === null) {
+            throw $this->createNotFoundException('Dismissal repository unavailable.');
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $stats = $this->dismissalRepository->statisticsByTenant($tenant);
+
+        return $this->render('admin/alva_hint_stats.html.twig', [
+            'stats' => $stats,
+            'tenant' => $tenant,
+        ]);
     }
 }

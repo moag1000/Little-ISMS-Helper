@@ -65,4 +65,39 @@ class AlvaHintDismissalRepository extends ServiceEntityRepository
             'entityId' => $entityId,
         ]);
     }
+
+    /**
+     * Aggregate dismissal counts per hint key for telemetry / "which
+     * hints get nuked the most" dashboards. Tenant-scoped to keep
+     * cross-tenant leakage impossible.
+     *
+     * @return array<int, array{hintKey: string, total: int, snoozed: int, distinctUsers: int}>
+     */
+    public function statisticsByTenant(?Tenant $tenant): array
+    {
+        $qb = $this->createQueryBuilder('d')
+            ->select('d.hintKey AS hintKey')
+            ->addSelect('COUNT(d.id) AS total')
+            ->addSelect('SUM(CASE WHEN d.dismissedUntil IS NULL THEN 0 ELSE 1 END) AS snoozed')
+            ->addSelect('COUNT(DISTINCT d.user) AS distinctUsers')
+            ->groupBy('d.hintKey')
+            ->orderBy('total', 'DESC');
+
+        if ($tenant instanceof Tenant) {
+            $qb->where('d.tenant = :tenant')
+                ->setParameter('tenant', $tenant);
+        }
+
+        $rows = $qb->getQuery()->getArrayResult();
+
+        return array_map(
+            static fn(array $row): array => [
+                'hintKey' => (string) $row['hintKey'],
+                'total' => (int) $row['total'],
+                'snoozed' => (int) $row['snoozed'],
+                'distinctUsers' => (int) $row['distinctUsers'],
+            ],
+            $rows,
+        );
+    }
 }

@@ -1,6 +1,15 @@
 alva:
     title_prefix: 'Alva tip:'
     dismiss: 'Not now'
+    stats:
+        title: 'Alva hint statistics'
+        description: 'Aggregated hint dismissals per key — helps see which hints feel like noise and which ones actually drove action.'
+        empty: 'No hint dismissals recorded yet.'
+        col:
+            hint_key: 'Hint key'
+            total: 'Total'
+            snoozed: 'Snooze'
+            distinct_users: 'Users'
 
 data_breach:
     gdpr_72h:
