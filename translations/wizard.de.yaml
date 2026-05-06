@@ -590,6 +590,21 @@ wizard:
         bsi_c5_bc: 'BC: CISO-Rolle, Reporting und Management-Reviews'
         bsi_c5_bc_desc: 'Beauftragte, Berichtswesen und Management-Review dokumentiert.'
 
+        # BSI C5:2026 checks
+        bsi_c5_2026_organisation_personnel: 'Organisation und Personal: Awareness und Background-Checks'
+        bsi_c5_2026_container_management: 'Container-Workloads inventarisiert und gehaertet'
+        bsi_c5_2026_supply_chain_security: 'Lieferketten-Risiken bewertet (SBOM, kritische Komponenten)'
+        bsi_c5_2026_supply_chain_security_desc: 'Manuell bestaetigen: SBOM-Pflege, Sub-Auftragsverarbeiter-Audits, Bedrohungsmodellierung der Lieferkette nach C5:2026 SC.'
+        bsi_c5_2026_post_quantum_cryptography: 'PQC-Bereitschaft und Krypto-Agilitaet'
+        bsi_c5_2026_post_quantum_cryptography_desc: 'Manuell bestaetigen: PQC-Migrationspfad, Krypto-Inventar, hybride Schluesselverfahren laut C5:2026 PQC.'
+        bsi_c5_2026_confidential_computing: 'Confidential-Computing-Controls definiert'
+        bsi_c5_2026_ai_ml_security: 'KI-/ML-Workloads klassifiziert und geschuetzt'
+        bsi_c5_2026_eucs_alignment: 'EUCS-Substantial-Lueckenanalyse durchgefuehrt'
+        bsi_c5_2026_enhanced_client_separation: 'Erweiterte Mandantentrennung umgesetzt'
+        bsi_c5_2026_nis2_alignment: 'NIS2-Risikomanagement und Meldewege abgedeckt'
+        bsi_c5_2026_iso_27001_integration: 'ISO 27001:2022 SoA als Quelle herangezogen'
+        bsi_c5_2026_csa_ccm_alignment: 'CSA CCM v4 Cross-Mapping gepflegt'
+
         # KRITIS checks
         kritis_scope: 'KRITIS-Schwellwert + Sektor geprueft'
         kritis_state_of_art: 'Stand der Technik (B3S) implementiert'
@@ -822,6 +837,32 @@ wizard:
         pss_desc: 'Vertragliche Anforderungen, regelmaessige Bewertung.'
         bc: 'BC — Beauftragte und Berichtswesen'
         bc_desc: 'CISO-Rolle, Reporting, Management-Reviews.'
+
+    # BSI C5:2026 Cloud Compliance Criteria Catalogue Categories
+    bsi_c5_2026:
+        description: 'Reife-Check nach BSI C5:2026 — finale Fassung des Cloud Computing Compliance Criteria Catalogue. Verbindlich ab 01.01.2027, ausgerichtet auf EUCS Substantial, ISO 27001:2022, NIS2 und CSA CCM v4.'
+        organisation_personnel: 'Organisation und Personal'
+        organisation_personnel_desc: 'Sicherheitsorganisation, Awareness-Schulungen, Vertraulichkeitsvereinbarungen, Hintergrundpruefungen.'
+        container_management: 'Container-Management'
+        container_management_desc: 'Image-Hardening, Registry-Sicherheit, Runtime-Schutz, Lifecycle-Management von Container-Workloads.'
+        supply_chain_security: 'Lieferkettensicherheit'
+        supply_chain_security_desc: 'SBOM, Sub-Auftragsverarbeiter-Audits, kritische Komponenten-Bewertung, Lieferketten-Bedrohungsmodellierung.'
+        post_quantum_cryptography: 'Post-Quantum-Kryptographie'
+        post_quantum_cryptography_desc: 'PQC-Bereitschaft, Krypto-Agilitaets-Strategie, Migrationspfade fuer asymmetrische Verfahren.'
+        confidential_computing: 'Confidential Computing'
+        confidential_computing_desc: 'Trusted-Execution-Environments, Memory-Encryption, Attestation-Mechanismen.'
+        ai_ml_security: 'KI- und ML-Sicherheit'
+        ai_ml_security_desc: 'Schutz von ML-Modellen, Trainingsdaten-Integritaet, Adversarial-Robustheit, ai_agent-Inventarisierung.'
+        eucs_alignment: 'EUCS-Substantial-Alignment'
+        eucs_alignment_desc: 'Abdeckung der EU Cloud Services Scheme Substantial-Anforderungen, Vorbereitung Konformitaetserklaerung.'
+        enhanced_client_separation: 'Erweiterte Mandantentrennung'
+        enhanced_client_separation_desc: 'Multi-Tenancy-Isolation auf Compute-, Speicher- und Netzwerkebene, Cross-Tenant-Leak-Praevention.'
+        nis2_alignment: 'NIS2-Ausrichtung'
+        nis2_alignment_desc: 'Abdeckung der NIS2-Risikomanagement- und Meldepflichten fuer wesentliche und wichtige Einrichtungen.'
+        iso_27001_integration: 'ISO 27001:2022 Integration'
+        iso_27001_integration_desc: 'Mapping zu Annex-A-Controls, gemeinsame Audits, vorhandene SoA als Datenquelle nutzen.'
+        csa_ccm_alignment: 'CSA CCM v4 Alignment'
+        csa_ccm_alignment_desc: 'Cross-Mapping zu Cloud Controls Matrix v4, gemeinsame Belegfuehrung mit STAR-Self-Assessments.'
 
     # KRITIS / NIS2-DE-Umsetzung Categories
     kritis:

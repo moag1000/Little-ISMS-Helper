@@ -590,6 +590,21 @@ wizard:
         bsi_c5_bc: 'BC: CISO role, reporting and management reviews'
         bsi_c5_bc_desc: 'Officers, reporting and management review documented.'
 
+        # BSI C5:2026 checks
+        bsi_c5_2026_organisation_personnel: 'Organisation and Personnel: awareness and background checks'
+        bsi_c5_2026_container_management: 'Container workloads inventoried and hardened'
+        bsi_c5_2026_supply_chain_security: 'Supply-chain risks assessed (SBOM, critical components)'
+        bsi_c5_2026_supply_chain_security_desc: 'Manually confirm: SBOM upkeep, sub-processor audits, supply-chain threat modelling per C5:2026 SC.'
+        bsi_c5_2026_post_quantum_cryptography: 'PQC readiness and crypto agility'
+        bsi_c5_2026_post_quantum_cryptography_desc: 'Manually confirm: PQC migration path, crypto inventory, hybrid key schemes per C5:2026 PQC.'
+        bsi_c5_2026_confidential_computing: 'Confidential-computing controls defined'
+        bsi_c5_2026_ai_ml_security: 'AI/ML workloads classified and protected'
+        bsi_c5_2026_eucs_alignment: 'EUCS Substantial gap analysis performed'
+        bsi_c5_2026_enhanced_client_separation: 'Enhanced client separation in place'
+        bsi_c5_2026_nis2_alignment: 'NIS2 risk management and reporting paths covered'
+        bsi_c5_2026_iso_27001_integration: 'ISO 27001:2022 SoA used as source of truth'
+        bsi_c5_2026_csa_ccm_alignment: 'CSA CCM v4 cross-mapping maintained'
+
         # KRITIS checks
         kritis_scope: 'KRITIS threshold + sector verified'
         kritis_state_of_art: 'State of the art (B3S) implemented'
@@ -822,6 +837,32 @@ wizard:
         pss_desc: 'Contractual requirements and regular supplier assessments.'
         bc: 'BC — Officers and Reporting'
         bc_desc: 'CISO role, reporting and management reviews.'
+
+    # BSI C5:2026 Cloud Compliance Criteria Catalogue Categories
+    bsi_c5_2026:
+        description: 'Maturity check per BSI C5:2026 — final release of the Cloud Computing Compliance Criteria Catalogue. Mandatory from 2027-01-01, aligned with EUCS Substantial, ISO 27001:2022, NIS2 and CSA CCM v4.'
+        organisation_personnel: 'Organisation and Personnel'
+        organisation_personnel_desc: 'Security organisation, awareness training, NDAs, background checks.'
+        container_management: 'Container Management'
+        container_management_desc: 'Image hardening, registry security, runtime protection, lifecycle management of container workloads.'
+        supply_chain_security: 'Supply-Chain Security'
+        supply_chain_security_desc: 'SBOM, sub-processor audits, critical-component assessment, supply-chain threat modelling.'
+        post_quantum_cryptography: 'Post-Quantum Cryptography'
+        post_quantum_cryptography_desc: 'PQC readiness, crypto-agility strategy, migration paths for asymmetric primitives.'
+        confidential_computing: 'Confidential Computing'
+        confidential_computing_desc: 'Trusted-execution environments, memory encryption, attestation mechanisms.'
+        ai_ml_security: 'AI and ML Security'
+        ai_ml_security_desc: 'Protection of ML models, training-data integrity, adversarial robustness, ai_agent inventory.'
+        eucs_alignment: 'EUCS Substantial Alignment'
+        eucs_alignment_desc: 'Coverage of EU Cloud Services Scheme Substantial requirements, preparation for conformity declaration.'
+        enhanced_client_separation: 'Enhanced Client Separation'
+        enhanced_client_separation_desc: 'Multi-tenancy isolation across compute, storage and network, cross-tenant leak prevention.'
+        nis2_alignment: 'NIS2 Alignment'
+        nis2_alignment_desc: 'Coverage of NIS2 risk-management and reporting obligations for essential and important entities.'
+        iso_27001_integration: 'ISO 27001:2022 Integration'
+        iso_27001_integration_desc: 'Mapping to Annex A controls, joint audits, leveraging existing SoA as data source.'
+        csa_ccm_alignment: 'CSA CCM v4 Alignment'
+        csa_ccm_alignment_desc: 'Cross-mapping to Cloud Controls Matrix v4, shared evidence with STAR self-assessments.'
 
     # KRITIS / NIS2-DE-Umsetzung Categories
     kritis:
