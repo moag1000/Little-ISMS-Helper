@@ -13,6 +13,10 @@ processing_activity:
         title: 'Drittlandtransfer ohne Garantien'
         body: 'Personenbezogene Daten werden in %countries% übermittelt, aber kein Mechanismus nach DSGVO Art. 46 ist hinterlegt (SCC, BCR, Angemessenheitsbeschluss). Schrems-II-Risiko.'
         action: 'Garantien ergänzen'
+    dpia_required:
+        title: 'DPIA erforderlich (Art. 35 DSGVO)'
+        body: 'Verarbeitung deutet auf Pflicht-DPIA: automatisierte Entscheidungsfindung, besondere Kategorien im großen Umfang oder selbstklassifiziert als hohes Risiko. Bisher keine DPIA dokumentiert.'
+        action: 'DPIA anlegen'
 
 vulnerability:
     critical_unpatched:
@@ -87,3 +91,15 @@ control:
         title: 'Anwendbares Control ohne Verknüpfung'
         body: 'Control ist als anwendbar markiert, aber weder Risiken noch Compliance-Anforderungen sind verknüpft. SoA-Lücke nach ISO 27001 Cl. 6.1.3 b/c.'
         action: 'Verknüpfungen prüfen'
+
+dpia:
+    sdm_incomplete:
+        title: 'SDM-Coverage unvollständig'
+        body: 'Standard-Datenschutzmodell-Coverage liegt bei %coverage% %. Aufsichtsbehörden erwarten alle 7 Gewährleistungsziele bewertet.'
+        action: 'Ziele ergänzen'
+
+incident:
+    needs_treatment:
+        title: 'Vorfall ohne Risk-Treatment-Plan'
+        body: 'Hochkritischer Vorfall mit betroffenem hochsensiblen Asset, aber kein Treatment-Plan dokumentiert. ISO 27001 A.5.27 — Lessons Learned.'
+        action: 'Treatment-Plan anlegen'

@@ -13,6 +13,10 @@ processing_activity:
         title: 'Third-country transfer without safeguards'
         body: 'Personal data is transferred to %countries% but no Art. 46 safeguard is recorded (SCC, BCR, adequacy decision). Schrems-II exposure.'
         action: 'Add safeguards'
+    dpia_required:
+        title: 'DPIA required (GDPR Art. 35)'
+        body: 'Activity indicates a mandatory DPIA: automated decision-making, large-scale special categories, or self-flagged high risk. No DPIA on file yet.'
+        action: 'Create DPIA'
 
 vulnerability:
     critical_unpatched:
@@ -87,3 +91,15 @@ control:
         title: 'Applicable control without links'
         body: 'Control marked applicable but linked to neither risks nor compliance requirements. SoA gap per ISO 27001 Cl. 6.1.3 b/c.'
         action: 'Review links'
+
+dpia:
+    sdm_incomplete:
+        title: 'SDM coverage incomplete'
+        body: 'Standard-Datenschutzmodell coverage at %coverage% %. Authorities expect all seven protection goals assessed.'
+        action: 'Complete goals'
+
+incident:
+    needs_treatment:
+        title: 'Incident without risk-treatment plan'
+        body: 'High-severity incident on a high-CIA asset without a documented treatment plan. ISO 27001 A.5.27 — lessons learned.'
+        action: 'Create treatment plan'
