@@ -57,7 +57,7 @@ final class ProtectionInheritanceRule extends AbstractAlvaHintRule
         ];
 
         foreach (['confidentiality', 'integrity', 'availability'] as $dim) {
-            $inheritedValue = $inherited['inherited'][$dim] ?? $current[$dim];
+            $inheritedValue = $inherited[$dim] ?? $current[$dim];
             if ($inheritedValue > $current[$dim]) {
                 return true;
             }
@@ -76,9 +76,9 @@ final class ProtectionInheritanceRule extends AbstractAlvaHintRule
             titleTranslationKey: 'asset.protection_inheritance.title',
             bodyTranslationKey: 'asset.protection_inheritance.body',
             bodyTranslationParams: [
-                '%c%' => (string) ($inherited['inherited']['confidentiality'] ?? '?'),
-                '%i%' => (string) ($inherited['inherited']['integrity'] ?? '?'),
-                '%a%' => (string) ($inherited['inherited']['availability'] ?? '?'),
+                '%c%' => (string) ($inherited['confidentiality'] ?? '?'),
+                '%i%' => (string) ($inherited['integrity'] ?? '?'),
+                '%a%' => (string) ($inherited['availability'] ?? '?'),
             ],
             translationDomain: 'alva',
             variant: 'info',

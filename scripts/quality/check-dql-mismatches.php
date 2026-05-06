@@ -6,8 +6,10 @@ declare(strict_types=1);
 /**
  * DQL Field Mismatch Scanner
  *
- * Checks that all DQL field references in Repository QueryBuilder queries
- * actually exist as properties on the corresponding Entity.
+ * Checks that DQL field references in Repository QueryBuilder queries
+ * actually exist as properties on the corresponding Entity. Aliases bound
+ * to a different entity via `getRepository(Other::class)->createQueryBuilder('a')`
+ * are validated against that entity, not the repo's primary entity.
  *
  * Usage: php scripts/quality/check-dql-mismatches.php
  * Exit code: 0 = no mismatches, 1 = mismatches found
@@ -17,38 +19,74 @@ $repoDir = __DIR__ . '/../../src/Repository/';
 $entityDir = __DIR__ . '/../../src/Entity/';
 $mismatches = [];
 
+/**
+ * @return list<string>
+ */
+$loadEntityProps = static function (string $entityFile): array {
+    if (!file_exists($entityFile)) {
+        return [];
+    }
+    $entityContent = file_get_contents($entityFile);
+    preg_match_all('/(?:private|protected|public)\s+(?:\??\w+[\s|&\w]*\s+)?\$(\w+)/', $entityContent, $props);
+
+    return array_values(array_unique($props[1]));
+};
+
 foreach (glob($repoDir . '*.php') as $repoFile) {
     $repoContent = file_get_contents($repoFile);
     $repoName = basename($repoFile, '.php');
 
-    // Find QueryBuilder aliases: createQueryBuilder('x')
-    preg_match_all("/createQueryBuilder\(['\"]([a-z])['\"]\)/", $repoContent, $aliases);
+    // Determine the repo's primary entity from its name.
+    $primaryEntity = str_replace('Repository', '', $repoName);
+    $primaryProps = $loadEntityProps($entityDir . $primaryEntity . '.php');
+    if ($primaryProps === []) {
+        continue;
+    }
 
-    foreach (array_unique($aliases[1]) as $alias) {
-        // Find all field references: x.fieldName (word boundary after dot)
-        preg_match_all("/\\b{$alias}\\.([a-zA-Z_]+)\\b/", $repoContent, $fields);
+    // Build a per-alias entity map. Default: every alias maps to the primary
+    // entity. Override entries where the QueryBuilder is created against a
+    // different entity via getRepository(SomeEntity::class)->createQueryBuilder('a').
+    $aliasEntity = [];
+
+    // Find every createQueryBuilder('alias') and walk back ~80 chars to detect
+    // a getRepository(EntityClass::class) call on the same chain.
+    preg_match_all('/createQueryBuilder\(["\']([a-z]+)["\']\)/', $repoContent, $cqMatches, PREG_OFFSET_CAPTURE);
+    for ($i = 0, $n = count($cqMatches[0]); $i < $n; $i++) {
+        $alias = $cqMatches[1][$i][0];
+        $offset = (int) $cqMatches[0][$i][1];
+        $back = substr($repoContent, max(0, $offset - 200), min(200, $offset));
+        if (preg_match('/getRepository\(([A-Z]\w+)::class\)\s*->\s*createQueryBuilder\(["\']' . preg_quote($alias, '/') . '["\']\)/', $back . substr($repoContent, $offset, 80), $depMatch)) {
+            $aliasEntity[$alias] = $depMatch[1];
+        } else {
+            $aliasEntity[$alias] = $primaryEntity;
+        }
+    }
+
+    if ($aliasEntity === []) {
+        continue;
+    }
+
+    $entityPropsCache = [$primaryEntity => $primaryProps];
+
+    foreach ($aliasEntity as $alias => $entityName) {
+        // Find every field reference like alias.fieldName.
+        preg_match_all('/\b' . preg_quote($alias, '/') . '\.([a-zA-Z_]+)\b/', $repoContent, $fields);
         $dqlFields = array_unique($fields[1]);
 
-        // Determine entity name from repo name
-        $entityName = str_replace('Repository', '', $repoName);
-        $entityFile = $entityDir . $entityName . '.php';
-
-        if (!file_exists($entityFile)) {
+        if (!isset($entityPropsCache[$entityName])) {
+            $entityPropsCache[$entityName] = $loadEntityProps($entityDir . $entityName . '.php');
+        }
+        $entityProps = $entityPropsCache[$entityName];
+        if ($entityProps === []) {
+            // Entity outside src/Entity/ (e.g. third-party) — skip.
             continue;
         }
 
-        $entityContent = file_get_contents($entityFile);
-        // Extract all property names (private/protected/public $name)
-        preg_match_all('/(?:private|protected|public)\s+(?:\??\w+[\s|&\w]*\s+)?\$(\w+)/', $entityContent, $props);
-        $entityProps = array_unique($props[1]);
-
         foreach ($dqlFields as $field) {
-            // Skip meta-fields
             if (in_array($field, ['id', 'class', 'php', 'qb'], true)) {
                 continue;
             }
             if (!in_array($field, $entityProps, true)) {
-                // Find line number for context
                 $lines = explode("\n", $repoContent);
                 $lineNum = 0;
                 foreach ($lines as $i => $line) {
