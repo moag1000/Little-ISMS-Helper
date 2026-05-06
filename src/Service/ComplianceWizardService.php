@@ -267,6 +267,36 @@ class ComplianceWizardService
                 'recommended_modules' => ['incidents', 'bcm', 'risks', 'audits', 'suppliers'],
                 'categories' => $this->getSoc2Categories(),
             ],
+            'eu_ai_act' => [
+                'code' => 'EU-AI-ACT',
+                'name' => 'EU AI Act (Verordnung 2024/1689)',
+                'description' => 'wizard.eu_ai_act.description',
+                'icon' => 'bi-cpu-fill',
+                'color' => 'warning',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['risks', 'assets', 'incidents', 'documents'],
+                'categories' => $this->getEuAiActCategories(),
+            ],
+            'eucs' => [
+                'code' => 'ENISA-EUCS',
+                'name' => 'ENISA EUCS (European Cybersecurity Certification Scheme for Cloud Services)',
+                'description' => 'wizard.eucs.description',
+                'icon' => 'bi-shield-shaded',
+                'color' => 'info',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['suppliers', 'assets', 'incidents', 'crypto', 'bcm'],
+                'categories' => $this->getEucsCategories(),
+            ],
+            'cra' => [
+                'code' => 'EU-CRA',
+                'name' => 'EU Cyber Resilience Act (Verordnung 2024/2847)',
+                'description' => 'wizard.cra.description',
+                'icon' => 'bi-bug-fill',
+                'color' => 'danger',
+                'required_modules' => ['controls'],
+                'recommended_modules' => ['vulnerabilities', 'incidents', 'assets', 'documents'],
+                'categories' => $this->getCraCategories(),
+            ],
         ];
 
         // Filter wizards by required modules
@@ -4587,6 +4617,472 @@ class ComplianceWizardService
                         'name' => 'wizard.check.bsi_c5_2026_csa_ccm_alignment',
                         'type' => 'control_coverage',
                         'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * EU AI Act (Verordnung 2024/1689) Categories.
+     * Articles 5-50 + 51-55 (GPAI) + 72 (Post-Market Monitoring).
+     * Risk-based: prohibited (Art 5) + high-risk (Art 6, Annex III) + transparency (Art 50).
+     */
+    private function getEuAiActCategories(): array
+    {
+        return [
+            'prohibited_practices' => [
+                'name' => 'wizard.eu_ai_act.prohibited_practices',
+                'description' => 'wizard.eu_ai_act.prohibited_practices_desc',
+                'icon' => 'bi-slash-circle-fill',
+                'weight' => 3,
+                'checks' => [
+                    'eu_ai_act_prohibited' => [
+                        'name' => 'wizard.check.eu_ai_act_prohibited',
+                        'type' => 'manual',
+                        'priority' => 'critical',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'high_risk_classification' => [
+                'name' => 'wizard.eu_ai_act.high_risk_classification',
+                'description' => 'wizard.eu_ai_act.high_risk_classification_desc',
+                'icon' => 'bi-exclamation-triangle-fill',
+                'weight' => 3,
+                'checks' => [
+                    'eu_ai_act_classification' => [
+                        'name' => 'wizard.check.eu_ai_act_classification',
+                        'type' => 'asset_coverage',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'risk_management_system' => [
+                'name' => 'wizard.eu_ai_act.risk_management_system',
+                'description' => 'wizard.eu_ai_act.risk_management_system_desc',
+                'icon' => 'bi-graph-up-arrow',
+                'weight' => 2.5,
+                'checks' => [
+                    'eu_ai_act_rms' => [
+                        'name' => 'wizard.check.eu_ai_act_rms',
+                        'type' => 'risk_coverage',
+                        'module' => 'risks',
+                        'route' => 'app_risk_index',
+                    ],
+                ],
+            ],
+            'data_governance' => [
+                'name' => 'wizard.eu_ai_act.data_governance',
+                'description' => 'wizard.eu_ai_act.data_governance_desc',
+                'icon' => 'bi-database-check',
+                'weight' => 2,
+                'checks' => [
+                    'eu_ai_act_data_governance' => [
+                        'name' => 'wizard.check.eu_ai_act_data_governance',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'technical_documentation' => [
+                'name' => 'wizard.eu_ai_act.technical_documentation',
+                'description' => 'wizard.eu_ai_act.technical_documentation_desc',
+                'icon' => 'bi-file-earmark-text-fill',
+                'weight' => 2,
+                'checks' => [
+                    'eu_ai_act_tech_doc' => [
+                        'name' => 'wizard.check.eu_ai_act_tech_doc',
+                        'type' => 'document_review',
+                        'document_categories' => ['technical', 'manual'],
+                        'module' => 'documents',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'human_oversight' => [
+                'name' => 'wizard.eu_ai_act.human_oversight',
+                'description' => 'wizard.eu_ai_act.human_oversight_desc',
+                'icon' => 'bi-eye-fill',
+                'weight' => 2,
+                'checks' => [
+                    'eu_ai_act_oversight' => [
+                        'name' => 'wizard.check.eu_ai_act_oversight',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'accuracy_robustness' => [
+                'name' => 'wizard.eu_ai_act.accuracy_robustness',
+                'description' => 'wizard.eu_ai_act.accuracy_robustness_desc',
+                'icon' => 'bi-shield-fill-check',
+                'weight' => 2,
+                'checks' => [
+                    'eu_ai_act_accuracy' => [
+                        'name' => 'wizard.check.eu_ai_act_accuracy',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'transparency_obligations' => [
+                'name' => 'wizard.eu_ai_act.transparency_obligations',
+                'description' => 'wizard.eu_ai_act.transparency_obligations_desc',
+                'icon' => 'bi-info-square-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'eu_ai_act_transparency' => [
+                        'name' => 'wizard.check.eu_ai_act_transparency',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'gpai_obligations' => [
+                'name' => 'wizard.eu_ai_act.gpai_obligations',
+                'description' => 'wizard.eu_ai_act.gpai_obligations_desc',
+                'icon' => 'bi-diagram-3-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'eu_ai_act_gpai' => [
+                        'name' => 'wizard.check.eu_ai_act_gpai',
+                        'type' => 'manual',
+                        'priority' => 'medium',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'conformity_assessment' => [
+                'name' => 'wizard.eu_ai_act.conformity_assessment',
+                'description' => 'wizard.eu_ai_act.conformity_assessment_desc',
+                'icon' => 'bi-clipboard-check-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'eu_ai_act_conformity' => [
+                        'name' => 'wizard.check.eu_ai_act_conformity',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_audit_index',
+                    ],
+                ],
+            ],
+            'post_market_monitoring' => [
+                'name' => 'wizard.eu_ai_act.post_market_monitoring',
+                'description' => 'wizard.eu_ai_act.post_market_monitoring_desc',
+                'icon' => 'bi-activity',
+                'weight' => 1.5,
+                'checks' => [
+                    'eu_ai_act_pmm' => [
+                        'name' => 'wizard.check.eu_ai_act_pmm',
+                        'type' => 'incident_process',
+                        'module' => 'incidents',
+                        'route' => 'app_incident_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * ENISA EUCS Categories (European Cybersecurity Certification Scheme for Cloud Services).
+     * Aligned to Substantial assurance level. ENISA Draft published 2020, ongoing work.
+     */
+    private function getEucsCategories(): array
+    {
+        return [
+            'organization_security' => [
+                'name' => 'wizard.eucs.organization_security',
+                'description' => 'wizard.eucs.organization_security_desc',
+                'icon' => 'bi-diagram-2-fill',
+                'weight' => 2,
+                'checks' => [
+                    'eucs_organization' => [
+                        'name' => 'wizard.check.eucs_organization',
+                        'type' => 'document_review',
+                        'document_categories' => ['policy'],
+                        'module' => 'documents',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'risk_management' => [
+                'name' => 'wizard.eucs.risk_management',
+                'description' => 'wizard.eucs.risk_management_desc',
+                'icon' => 'bi-graph-up',
+                'weight' => 2.5,
+                'checks' => [
+                    'eucs_risk' => [
+                        'name' => 'wizard.check.eucs_risk',
+                        'type' => 'risk_coverage',
+                        'module' => 'risks',
+                        'route' => 'app_risk_index',
+                    ],
+                ],
+            ],
+            'asset_management' => [
+                'name' => 'wizard.eucs.asset_management',
+                'description' => 'wizard.eucs.asset_management_desc',
+                'icon' => 'bi-archive-fill',
+                'weight' => 2,
+                'checks' => [
+                    'eucs_assets' => [
+                        'name' => 'wizard.check.eucs_assets',
+                        'type' => 'asset_coverage',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'identity_access' => [
+                'name' => 'wizard.eucs.identity_access',
+                'description' => 'wizard.eucs.identity_access_desc',
+                'icon' => 'bi-person-badge-fill',
+                'weight' => 2,
+                'checks' => [
+                    'eucs_iam' => [
+                        'name' => 'wizard.check.eucs_iam',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'cryptography' => [
+                'name' => 'wizard.eucs.cryptography',
+                'description' => 'wizard.eucs.cryptography_desc',
+                'icon' => 'bi-key-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'eucs_crypto' => [
+                        'name' => 'wizard.check.eucs_crypto',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'operations_security' => [
+                'name' => 'wizard.eucs.operations_security',
+                'description' => 'wizard.eucs.operations_security_desc',
+                'icon' => 'bi-gear-fill',
+                'weight' => 2,
+                'checks' => [
+                    'eucs_operations' => [
+                        'name' => 'wizard.check.eucs_operations',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'communication_security' => [
+                'name' => 'wizard.eucs.communication_security',
+                'description' => 'wizard.eucs.communication_security_desc',
+                'icon' => 'bi-broadcast-pin',
+                'weight' => 1.5,
+                'checks' => [
+                    'eucs_communication' => [
+                        'name' => 'wizard.check.eucs_communication',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'portability_interoperability' => [
+                'name' => 'wizard.eucs.portability_interoperability',
+                'description' => 'wizard.eucs.portability_interoperability_desc',
+                'icon' => 'bi-arrow-left-right',
+                'weight' => 1,
+                'checks' => [
+                    'eucs_portability' => [
+                        'name' => 'wizard.check.eucs_portability',
+                        'type' => 'manual',
+                        'priority' => 'medium',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'incident_management' => [
+                'name' => 'wizard.eucs.incident_management',
+                'description' => 'wizard.eucs.incident_management_desc',
+                'icon' => 'bi-shield-exclamation',
+                'weight' => 2,
+                'checks' => [
+                    'eucs_incidents' => [
+                        'name' => 'wizard.check.eucs_incidents',
+                        'type' => 'incident_process',
+                        'module' => 'incidents',
+                        'route' => 'app_incident_index',
+                    ],
+                ],
+            ],
+            'business_continuity' => [
+                'name' => 'wizard.eucs.business_continuity',
+                'description' => 'wizard.eucs.business_continuity_desc',
+                'icon' => 'bi-arrow-clockwise',
+                'weight' => 1.5,
+                'checks' => [
+                    'eucs_bcm' => [
+                        'name' => 'wizard.check.eucs_bcm',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'module' => 'bcm',
+                        'route' => 'app_business_continuity_plan_index',
+                    ],
+                ],
+            ],
+            'supplier_management' => [
+                'name' => 'wizard.eucs.supplier_management',
+                'description' => 'wizard.eucs.supplier_management_desc',
+                'icon' => 'bi-building-add',
+                'weight' => 1.5,
+                'checks' => [
+                    'eucs_suppliers' => [
+                        'name' => 'wizard.check.eucs_suppliers',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'module' => 'suppliers',
+                        'route' => 'app_supplier_index',
+                    ],
+                ],
+            ],
+            'compliance_audit' => [
+                'name' => 'wizard.eucs.compliance_audit',
+                'description' => 'wizard.eucs.compliance_audit_desc',
+                'icon' => 'bi-clipboard2-check-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'eucs_compliance' => [
+                        'name' => 'wizard.check.eucs_compliance',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_audit_index',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * EU Cyber Resilience Act Categories (Verordnung 2024/2847).
+     * Annex I Part I (Security) + Part II (Vulnerability handling) + Art. 11 (Disclosure) +
+     * Art. 13 (CE marking) + Art. 14 (24h vulnerability reporting to ENISA).
+     * Verbindlich ab 11.12.2027 fuer Produkte mit digitalen Elementen.
+     */
+    private function getCraCategories(): array
+    {
+        return [
+            'security_by_design' => [
+                'name' => 'wizard.cra.security_by_design',
+                'description' => 'wizard.cra.security_by_design_desc',
+                'icon' => 'bi-shield-fill-plus',
+                'weight' => 3,
+                'checks' => [
+                    'cra_security_by_design' => [
+                        'name' => 'wizard.check.cra_security_by_design',
+                        'type' => 'control_coverage',
+                        'route' => 'app_soa_index',
+                    ],
+                ],
+            ],
+            'vulnerability_handling' => [
+                'name' => 'wizard.cra.vulnerability_handling',
+                'description' => 'wizard.cra.vulnerability_handling_desc',
+                'icon' => 'bi-bug',
+                'weight' => 3,
+                'checks' => [
+                    'cra_vuln_handling' => [
+                        'name' => 'wizard.check.cra_vuln_handling',
+                        'type' => 'manual',
+                        'priority' => 'critical',
+                        'module' => 'vulnerabilities',
+                        'route' => 'app_vulnerability_index',
+                    ],
+                ],
+            ],
+            'sbom_supply_chain' => [
+                'name' => 'wizard.cra.sbom_supply_chain',
+                'description' => 'wizard.cra.sbom_supply_chain_desc',
+                'icon' => 'bi-list-check',
+                'weight' => 2.5,
+                'checks' => [
+                    'cra_sbom' => [
+                        'name' => 'wizard.check.cra_sbom',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_asset_index',
+                    ],
+                ],
+            ],
+            'vulnerability_disclosure' => [
+                'name' => 'wizard.cra.vulnerability_disclosure',
+                'description' => 'wizard.cra.vulnerability_disclosure_desc',
+                'icon' => 'bi-megaphone-fill',
+                'weight' => 2,
+                'checks' => [
+                    'cra_disclosure' => [
+                        'name' => 'wizard.check.cra_disclosure',
+                        'type' => 'document_review',
+                        'document_categories' => ['policy'],
+                        'module' => 'documents',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'incident_reporting' => [
+                'name' => 'wizard.cra.incident_reporting',
+                'description' => 'wizard.cra.incident_reporting_desc',
+                'icon' => 'bi-alarm-fill',
+                'weight' => 2.5,
+                'checks' => [
+                    'cra_incident_reporting' => [
+                        'name' => 'wizard.check.cra_incident_reporting',
+                        'type' => 'incident_process',
+                        'module' => 'incidents',
+                        'route' => 'app_incident_index',
+                    ],
+                ],
+            ],
+            'ce_marking_conformity' => [
+                'name' => 'wizard.cra.ce_marking_conformity',
+                'description' => 'wizard.cra.ce_marking_conformity_desc',
+                'icon' => 'bi-patch-check',
+                'weight' => 1.5,
+                'checks' => [
+                    'cra_ce_marking' => [
+                        'name' => 'wizard.check.cra_ce_marking',
+                        'type' => 'manual',
+                        'priority' => 'high',
+                        'route' => 'app_audit_index',
+                    ],
+                ],
+            ],
+            'technical_documentation' => [
+                'name' => 'wizard.cra.technical_documentation',
+                'description' => 'wizard.cra.technical_documentation_desc',
+                'icon' => 'bi-file-earmark-ruled-fill',
+                'weight' => 1.5,
+                'checks' => [
+                    'cra_tech_doc' => [
+                        'name' => 'wizard.check.cra_tech_doc',
+                        'type' => 'document_review',
+                        'document_categories' => ['technical', 'manual'],
+                        'module' => 'documents',
+                        'route' => 'app_document_index',
+                    ],
+                ],
+            ],
+            'support_period' => [
+                'name' => 'wizard.cra.support_period',
+                'description' => 'wizard.cra.support_period_desc',
+                'icon' => 'bi-clock-history',
+                'weight' => 1,
+                'checks' => [
+                    'cra_support_period' => [
+                        'name' => 'wizard.check.cra_support_period',
+                        'type' => 'manual',
+                        'priority' => 'medium',
+                        'route' => 'app_document_index',
                     ],
                 ],
             ],
