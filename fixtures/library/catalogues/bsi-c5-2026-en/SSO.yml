@@ -1,0 +1,387 @@
+-
+  identifier: &ID_Criterion_Policies_and_Procedures_for_Controlling_and_Monitoring_Service_Organisations '01'
+  name: 'Policies and Procedures for Controlling and Monitoring Service Organisations'
+  basic: 
+    -
+      identifier: &ID_Criterion_Policies_and_Procedures_for_Controlling_and_Monitoring_Service_Organisations_Subcriterion_Basic_1 '01B'
+      criterion: 'Policies and procedures for controlling and monitoring service organisations whose services contribute to the development or operation of the cloud service are documented, communicated and provided in accordance with SP-01 with respect to the following aspects:
+
+
+1. Requirements for the assessment of risks resulting from the procurement of third-party services;
+
+2. Requirements for the classification of service organisations based on the risk assessment by the cloud service provider and the determination of whether the service organisation is a subservice organisation;
+
+3. Information security requirements for the processing, storage or transmission of information by service organisations based on the established rules of technology, and under consideration of the criteria in this catalogue;
+
+4. Information security awareness and training requirements for personnel;
+
+5. Applicable legal and regulatory requirements;
+
+6. Requirements for dealing with vulnerabilities, security incidents and incidents;
+
+7. Specifications for the contractual agreement of these requirements;
+
+8. Specifications for the monitoring of these requirements; and
+
+9. Specifications for applying these requirements also to subservice organisations used by the service organisations, insofar as the services provided by these subservice organisations also contribute to the development or operation of the cloud service.
+
+'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Policies_and_Procedures_for_Controlling_and_Monitoring_Service_Organisations_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'Subservice organisations of the cloud service provider are contractually obliged to provide regular reports by independent auditors on the suitability of the design and operating effectiveness of their service-related system of internal control system that allow the cloud service provider to determine whether the subservice organisation designed and operated controls that are commensurate with the expected complementary subservice organisation controls (CSOC).'
+    -
+      identifier: &ID_Criterion_Policies_and_Procedures_for_Controlling_and_Monitoring_Service_Organisations_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'In case no such reports can be provided, the cloud service provider agrees appropriate information and audit rights to assess the design and operations of the service-related system of internal control regarding the expected CSOC.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policies_and_Procedures_for_Controlling_and_Monitoring_Service_Organisations_Subcriterion_Basic_1
+        - *ID_Criterion_Policies_and_Procedures_for_Controlling_and_Monitoring_Service_Organisations_Subcriterion_Additional_Complement_1
+      information_text: 'The basic criterion applies to all service organisations of the cloud service provider, regardless of applying the ''inclusive'' or ''carve-out method''. The additional criterion applies only to those of the service organisations that are considered to be subservice organisations. See section ''Consideration of Subservice Organisations''.
+
+
+Reports by independent auditors on the suitability of the design and operating effectiveness of their service-related system of internal control are, for example, attestation reports in accordance with ISAE 3402, IDW PS 951, SOC 2 or BSI C5.
+
+
+Applicable legal and regulatory requirements may exist, for example, in the areas of data protection, intellectual property rights or copyright.
+
+
+If legal or regulatory requirements provide for a regulation deviating from these criteria for the control of subservice organisations, these regulations remain unaffected by the C5 criteria.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Risk_Assessment_of_Service_Organisations '02'
+  name: 'Risk Assessment of Service Organisations'
+  basic: 
+    -
+      identifier: &ID_Criterion_Risk_Assessment_of_Service_Organisations_Subcriterion_Basic_1 '01B'
+      criterion: 'Service organisations of the cloud service provider undergo a risk assessment in accordance with the policies and procedures for the control and monitoring of service organisations prior to contributing to the development or operation of the cloud service.
+
+
+The risk assessment includes the identification, analysis, evaluation, treatment and documentation of risks with regard to the following aspects:
+
+
+1. Protection needs regarding the confidentiality, integrity, availability and authenticity of cloud service customer data, cloud service derived data, cloud service provider data and account data processed, stored or transmitted by the service organisation;
+
+2. Impact of a protection breach on the provision of the cloud service;
+
+3. The cloud service provider''s dependence on the service organisation for the scope, complexity and uniqueness of the provided service, including the consideration of possible alternatives;
+
+4. Complementary subservice organisation controls (CSOCs) assumed in the design of cloud service provider''s controls to meet the applicable C5 criteria;
+
+5. Deviations regarding the design and operation of CSOCs assumed at service organisations considered as subservice organisations and mitigating measures by the cloud service provider to address such deviations; 
+
+6. The ability of the cloud service provider to diversify sources of supply and limit vendor lock-in;
+
+7. Whether service organisations used by the cloud service provider themselves use subcontracted service organisations (subcontractors) that contribute to the development and operation of the cloud service; and
+
+8. If service organisations used by the cloud service provider themselves use subcontractors, the types of data processed by the subcontractors.
+      
+'
+    -
+      identifier: &ID_Criterion_Risk_Assessment_of_Service_Organisations_Subcriterion_Basic_2 '02B'
+      criterion: 'The adequacy of the risk assessment is reviewed regularly, at least annually, by qualified personnel of the cloud service provider during service usage.'
+  additional_sharpen:
+  additional_complement:
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Risk_Assessment_of_Service_Organisations_Subcriterion_Basic_1
+      information_text: 'For assessing risks with service organisations, the cloud service provider can perform coordinated security risk assessments of specific critical ICT services, ICT systems or ICT products provided by service organisations. Apart from the aspects listed in this subcriterion, such a risk assessment should take into account technical and, where relevant, non-technical risk factors.
+      
+
+Information on CSOC has to be obtained for subservice organisations only. Not every service organisation is a subservice organisation, cf. section ''Consideration of Subservice Organisations'').'
+  corresponding:
+-
+  identifier: &ID_Criterion_Data_Processing_of_Service_Organizations '03'
+  name: 'Data Processing of Service Organisations'
+  basic: 
+    -
+      identifier: &ID_Criterion_Data_Processing_of_Service_Organizations_Subcriterion_Basic_1 '01B'
+      criterion: 'If the cloud service provider relies on assets from a supplier or on services from subservice organisations for the operation of the cloud service, it does not allow those suppliers or service organisations to access any cloud service customer data, cloud service derived data or account data. Exceptions are made only if the cloud service provider has performed a risk assessment according to OIS-07 on the possibility of cloud service customer data, cloud service derived data or account data being exposed.'
+    -
+      identifier: &ID_Criterion_Data_Processing_of_Service_Organizations_Subcriterion_Basic_2 '02B'
+      criterion: 'The cloud service provider obtains written authorisation of the customer prior to the processing of cloud service customer data, cloud service derived data or account data when engaging service organisations. This can be achieved by authorisation of the customer, per service organisation, or by way of a general pre-authorisation between the cloud service provider and the customer.'
+  additional_sharpen:
+    -
+      identifier: &ID_Criterion_Data_Processing_of_Service_Organizations_Subcriterion_Additional_Sharpen_1 '01AS'
+      sharpened_basic_criterion: *ID_Criterion_Data_Processing_of_Service_Organizations_Subcriterion_Basic_1
+      criterion: 'If the cloud service provider relies on assets from a supplier or on services from subservice organisations for the operation of the cloud service, it does not allow those suppliers or service organisations to access any cloud service customer data, cloud service derived data or account data. Exceptions are made only if the cloud service provider has performed a risk assessment according to OIS-07 on the possibility of cloud service customer data, cloud service derived data or account data being exposed, and it is ensured that all operations requiring access to those data types are performed or supervised by authorised personnel (cf. HR-01).'
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Data_Processing_of_Service_Organizations_Subcriterion_Basic_2
+      information_text: 'This subcriterion does not apply to cloud service derived data that does not contain any customer-owned data. Examples for such cloud service derived data include operational metrics or technical telemetry data.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Directory_of_Service_Organisations '04'
+  name: 'Directory of Service Organisations'
+  basic: 
+    -
+      identifier: &ID_Criterion_Directory_of_Service_Organisations_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider maintains a directory for controlling and monitoring the service organisations that contribute services to the delivery of the cloud service. The following information is maintained in the directory:
+
+
+1. Company name;
+
+2. Address of the head office;
+
+3. Applicable legal jurisdiction;
+
+4. Locations where cloud service customer data, cloud service derived data, cloud service provider data and account data is processed and stored;
+
+5. Responsible contact group/person at the service organisation;
+
+6. Responsible contact group/person at the cloud service provider;
+
+7. Description of the service;
+
+8. Classification based on the risk assessment;
+
+9. Beginning of service usage; and
+
+10. Proof of compliance with contractually agreed requirements.
+
+'
+    -
+      identifier: &ID_Criterion_Directory_of_Service_Organisations_Subcriterion_Basic_2 '02B'
+      criterion: 'The inventory is reviewed at least annually for completeness, accuracy and validity of the information.'
+  additional_sharpen:
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Directory_of_Service_Organisations_Subcriterion_Basic_1
+      information_text: 'It is not necessary to maintain a single central register in order to fulfil the basic criterion.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Monitoring_of_Compliance_with_Requirements '05'
+  name: 'Monitoring of Compliance with Requirements'
+  basic: 
+    -
+      identifier: &ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider monitors compliance with information security requirements and applicable legal and regulatory requirements in accordance with policies and procedures concerning controlling and monitoring of service organisation.'
+    -
+      identifier: &ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_2 '02B'
+      criterion: 'Monitoring includes a regular review of the following information to the extent that such information is to be provided by service organisations in accordance with the contractual agreements:
+
+
+1. Reports on the quality of the service provided;
+
+2. Certificates of the management systems'' compliance with international standards;
+
+3. Records of the service organisations on the handling of vulnerabilities, security incidents and incidents;
+
+4. Independent third party reports on the design and operation of their service-related system of internal control; and
+
+5. If service organisations used by the cloud service provider themselves use subcontractors, the compliance of their subcontractors with relevant contractual, legal and regulatory requirements.
+
+'
+    -
+      identifier: &ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_3 '03B'
+      criterion: 'The frequency of the monitoring corresponds to the classification of the service organisation based on the risk assessment conducted by the cloud service provider (cf. SSO-02).'
+    -
+      identifier: &ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_4 '04B'
+      criterion: 'If a service organisation is considered to be a subservice organisation, the cloud service provider assesses this relationship and carries out appropriate procedures to ensure that the applicable C5 criteria are met. Appropriate procedures provide reasonable assurance: 
+
+
+1. That the subservice organisation has designed and operated relevant controls; and
+
+2. That the subservice organisation''s controls correspond to the expected complementary subservice organisation controls (CSOCs) assumed in the design of the cloud service providers controls.
+
+'
+    -
+      identifier: &ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_5 '05B'
+      criterion: 'Identified deviations are subjected to analysis, evaluation and treatment in accordance with the risk assessment of service organisations (cf. SSO-02).'
+    -
+      identifier: &ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_6 '06B'
+      criterion: 'If a service organisation contributing to the provision of the cloud service undergoes a change that has a significant adverse effect on the cloud service provider''s level of security, the cloud service provider communicates this to all of its cloud service customers without undue delay.'
+    -
+      identifier: &ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_7 '07B'
+      criterion: 'The cloud service provider establishes and documents a procedure to regularly review non-disclosure or confidentiality requirements for all service organisations involved in providing the cloud service. This procedure is implemented in practice, and the review is conducted at least once per year.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The procedures for monitoring compliance with the requirements are supplemented by automatic procedures relating to the following aspects:
+
+
+1. Configuration of system components;
+
+2. Performance and availability of system components;
+
+3. Response time to incidents and security incidents; and
+
+4. Recovery time (time until completion of error handling).
+
+'
+    -
+      identifier: &ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'Identified violations and discrepancies are automatically reported to the responsible personnel or system components of the cloud service provider for prompt assessment and action.'
+    -
+      identifier: &ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Additional_Complement_3 '03AC'
+      criterion: 'The cloud service provider defines and implements a process for conducting periodic security assessments for all service organisations. The nature and scope of these security assessments correspond to the risk associated with each service organisation. These risk-based security assessments ensure that service organisations meet the required security standards and that any potential risks are identified and mitigated appropriately.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_1
+        - *ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_2
+        - *ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_3
+        - *ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_4
+        - *ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_5
+        - *ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_6
+        - *ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_7
+        - *ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Additional_Complement_1
+        - *ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Additional_Complement_2
+        - *ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Additional_Complement_3
+      information_text: 'Information obtained for monitoring of the design and operations of the service-related system of internal control typically includes reports in accordance with ISAE 3402, IDW PS 951, SOC 2 or BSI C5, ANSSI SecNumCloud or CSA CCM. Second party audits based on such frameworks may be useful here. For analysing BSI C5 reports in a structured manner, BSI has published an Excel-based evaluation guideline.
+
+
+If such reports are provided by the service organisations, the cloud service provider reviews, for example, the following aspects and, if necessary, incorporates the findings into the risk assessment in order to derive and initiate mitigating actions:
+
+
+1. The scope and the validity respectively the period covered by the report;
+
+2. Modifications of the opinion, deviations/exceptions noted and management''s response thereon;
+
+3. Complementary User Entity Controls (CUEC) to be designed and operated by the cloud service provider;
+
+4. Disclosed subservice organisations incl. any changes among those (e.g. additional subservice organisations); and
+
+5. Stated security incidents.
+
+
+Information on CSOC has to be obtained for subservice organisations only. Not every service organisation is a subservice organisation, cf. section ''Consideration of Subservice Organisations''). Appropriate procedures may comprise the review of independent third party reports, or audit procedures performed by the cloud service provider at the subservice organisation.
+
+
+The automated monitoring procedures outlined in the additional criterion are only applicable to service organisations for which monitoring automation is feasible based on the nature of the services provided to the cloud service provider.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Monitoring_of_Compliance_with_Requirements_Subcriterion_Basic_2
+      information_text: 'When reviewing the information provided by the service organisation, the cloud service provider should distinguish between flawed information that was produced in good faith (such as reports about perceived security concerns that eventually turned out to be ill-founded), and deliberately false or malicious information.
+      
+      
+Monitoring of subcontractors can occur via audits, certifications and third party reports (cf. SSO-05) and may be performed by the service organisations of the cloud service provider. The cloud service provider remains responsible for reviewing the results of compliance monitoring and assessing the risk.'
+  corresponding: 'Cloud service customers ensure with suitable controls that they stay informed about subservice organisations of their cloud service provider (e.g. on the basis of the information in the C5 attestation report) and decide on the basis of their protection need of their data processed and stored in the cloud service whether further action should be taken to monitor and check these subservice organisations.'
+-
+  identifier: &ID_Criterion_Contract_Termination_Strategy_for_Service_Organisations '06'
+  name: 'Contract Termination Strategy for Service Organisations'
+  basic: 
+    -
+      identifier: &ID_Criterion_Contract_Termination_Strategy_for_Service_Organisations_Subcriterion_Basic_1 '01B'
+      criterion:  'The cloud service provider has defined and documented contract termination or exit strategies for the purchase of services where the risk assessment of the service organisations regarding the scope, complexity and uniqueness of the service provided resulted in a very high dependency (cf. Supplementary Information).'
+    -
+      identifier: &ID_Criterion_Contract_Termination_Strategy_for_Service_Organisations_Subcriterion_Basic_2 '02B'
+      criterion: 'Exit strategies are aligned with operational continuity plans and include the following aspects:
+
+
+1. Analysis of the potential costs, impacts, resources and timing of the transition of a purchased service to an alternative service organisation;
+
+2. Definition and allocation of roles, responsibilities and sufficient resources to perform the activities for a transition;
+
+3. Definition of success criteria for the transition; and
+
+4. Definition of indicators for monitoring the performance of services, which should initiate the withdrawal from the service if the results are unacceptable.
+
+'
+  additional_sharpen:
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Contract_Termination_Strategy_for_Service_Organisations_Subcriterion_Basic_1
+        - *ID_Criterion_Contract_Termination_Strategy_for_Service_Organisations_Subcriterion_Basic_2
+      information_text: 'A very high dependency can be assumed in particular if the purchased service is indispensable for the provision of the cloud service. This situation is the case if the cloud service provider:
+
+
+1. Provides the cloud service from data centres operated by service organisations; or
+
+2. Provides a SaaS service and uses the IaaS or PaaS of another cloud service provider.
+
+
+A very high dependency can also be assumed if the service cannot be obtained within one month from an alternative service organisation, as:
+
+
+1. It is unique on the market and no other service organisation can deliver it;
+
+2. It is strongly individualised by the service organisation and/or the cloud service provider;
+
+3. It cannot be supplied by any other service organisation in the required quality of service; or
+
+4. It requires specific knowledge that is only/mainly available to the current service organisation and not to the cloud service provider.
+	
+
+Exit strategies may vary in complexity based on the nature and degree of dependency of the cloud service on third party services and service organisations. Using a cloud service broker is an example of a complex scenario. Aspects listed in SSO-06.02B should be considered based on the results of the cloud service provider''s risk assessment. Where a lower degree of dependency has been identified, exit strategies or individual aspects thereof are not mandatory in the sense of this criterion.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Ensuring_Transparency_within_Service_Organisations '07'
+  name: 'Ensuring Transparency within Service Organisations'
+  basic: 
+    -
+      identifier: &ID_Criterion_Ensuring_Transparency_within_Service_Organisations_Subcriterion_Basic_1 '01B'
+      criterion:  'The cloud service provider designs, implements and maintains controls to ensure transparency within its service organisations with respect to the following aspects: 
+
+
+1. Data flow and interfaces between the cloud service provider and service organisations used by the cloud service provider are documented, including measures regarding the secure transmission and access control for data shared with service organisations; and 
+
+2. Cloud service customers are informed of service organisations used by the cloud service provider for development and operation of the cloud service and what type of data these service organisations and their subcontractors are processing.
+
+
+Cloud service customers are informed which of the service organisations themselves use subcontractors to process cloud service customer data.'
+    -
+      identifier: &ID_Criterion_Ensuring_Transparency_within_Service_Organisations_Subcriterion_Basic_2 '02B'
+      criterion: 'The cloud service provider documents this information and reviews its completeness, accuracy and validity at least annually.'
+  additional_sharpen:
+    -
+      identifier: &ID_Criterion_Ensuring_Transparency_within_Service_Organisations_Additional_Sharpen_1 '01AS'
+      sharpened_basic_criterion: *ID_Criterion_Ensuring_Transparency_within_Service_Organisations_Subcriterion_Basic_1
+      criterion: 'The cloud service provider designs, implements and maintains controls to ensure transparency within its service organisations with respect to the following aspects: 
+
+
+1. Data flow and interfaces between the cloud service provider and service organisations used by the cloud service provider are documented, including measures regarding the secure transmission and access control for data shared with service organisations; and 
+
+2. Cloud service customers are informed of service organisations and their subcontractors used by the cloud service provider for development and operation of the cloud service and what type of data these service organisations and their subcontractors are processing.
+
+
+Cloud service customers are informed which of the service organisations themselves use subcontractors to process cloud service customer data.'
+  additional_complement:
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Ensuring_Transparency_within_Service_Organisations_Subcriterion_Basic_1
+      information_text: 'This criterion addresses the need for managing supply chain risks (e.g. service organisation vulnerabilities, data handling practices, compliance gaps or operational disruptions) and for those risks to be communicated to cloud service customers, enabling them to monitor and manage their own supply chain risks effectively.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Controlling_Exchanges_with_Suppliers_of_Functional_Components '08'
+  name: 'Controlling Exchanges with Suppliers of Functional Components'
+  basic: 
+    -
+      identifier: &ID_Criterion_Controlling_Exchanges_with_Suppliers_of_Functional_Components_Subcriterion_Basic_1 '01B'
+      criterion: 'When functional components used for the provision of the cloud service may directly or indirectly access cloud service customer data, the cloud service provider defines and implements a policy according to SP-01 that does not allow a direct exchange between such components and their suppliers.'
+    -
+      identifier: &ID_Criterion_Controlling_Exchanges_with_Suppliers_of_Functional_Components_Subcriterion_Basic_2 '02B'
+      criterion: 'In addition, procedures are defined and implemented according to SP-01 that require the cloud service provider to authorise any content provided by a supplier for its functional components or to be sent from a functional component to its supplier. The authorisation takes place before the content is transferred and for each transfer.'
+    -
+      identifier: &ID_Criterion_Controlling_Exchanges_with_Suppliers_of_Functional_Components_Subcriterion_Basic_3 '03B'
+      criterion: 'When a procedure for authorising content before its transfer is automated, the cloud service provider implements it using a solution that maintains traces of: 
+
+
+1. The operations that are proposed by the functional component''s supplier;
+
+2. The verification that is performed to authorise the content before its transfer; and
+
+3. The transfers, both incoming and outgoing, that are effectively performed.
+    
+'
+  additional_sharpen:
+  additional_complement:
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Controlling_Exchanges_with_Suppliers_of_Functional_Components_Subcriterion_Basic_1
+        - *ID_Criterion_Controlling_Exchanges_with_Suppliers_of_Functional_Components_Subcriterion_Basic_2
+        - *ID_Criterion_Controlling_Exchanges_with_Suppliers_of_Functional_Components_Subcriterion_Basic_3
+      information_text: 'A supplier of a functional component is typically a service organisation of the cloud service provider. The authorisation for the transfer may be automated. Content provided by the supplier refers to updates of the functional components.' 
+  corresponding:

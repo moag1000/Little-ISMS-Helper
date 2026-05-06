@@ -1,0 +1,112 @@
+-
+  identifier: &ID_Criterion_Legal_Assessment_of_Investigation_Requests '01'
+  name: 'Legal Assessment of Investigation Requests'
+  basic: 
+    -
+      identifier: &ID_Criterion_Legal_Assessment_of_Investigation_Requests_Subcriterion_Basic_1 '01B'
+      criterion: 'Investigation requests from government agencies for cloud service customer data, cloud service derived data and account data are subject to a documented legal assessment by subject matter experts of the cloud service provider. The assessment determines whether the government agency has an applicable and legally valid legal basis and what further steps need to be taken for the given request.'
+    -
+      identifier: &ID_Criterion_Legal_Assessment_of_Investigation_Requests_Subcriterion_Basic_2 '02B'
+      criterion: 'Access to or disclosure of cloud service customer data, cloud service derived data or account data in response to government investigation requests is only permitted if the cloud service provider has performed a legal assessment. This assessment has to confirm that there is an applicable and valid legal basis and that the request must be granted according to this basis.'
+  additional_sharpen:
+  additional_complement: 
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Legal_Assessment_of_Investigation_Requests_Subcriterion_Basic_1
+      information_text: 'For evidence purposes, all requests that were completely processed during the specified period shall form the population for testing the operating effectiveness of controls to meet the criteria in this domain. All requests are to be included in the population, irrespective of whether they resulted in cloud service customer data or cloud service derived data being disclosed.'  
+    -
+      applicable_criteria:
+        - *ID_Criterion_Legal_Assessment_of_Investigation_Requests_Subcriterion_Basic_2
+      information_text: 'Disclosure of cloud service customer data to government agencies may include handing over encryption keys. The disclosure of keys should also be scrutinised in accordance with the INQ criteria. In particular, with reference to INQ-03, care should be taken to ensure that no other cloud service customer data is compromised by handing over a key.'
+  corresponding: 'Cloud service customers ensure with suitable controls that the type and scope of government agencies'' investigation requests and the associated disclosure of their own data has been dealt with in their own risk management and that the use of the cloud service is only taken up or continued when this risk has been deemed acceptable.'
+-
+  identifier: &ID_Criterion_Informing_Cloud_Customers_about_Investigation_Requests '02'
+  name: 'Informing Cloud Service Customers about Investigation Requests'
+  basic: 
+    -
+      identifier: &ID_Criterion_Informing_Cloud_Customers_about_Investigation_Requests_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider informs the affected cloud service customer(s) without undue delay, unless the applicable legal basis, on which the government agency''s request is based, prohibits this or there are clear indications of illegal actions in connection with the use of the cloud service.'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Informing_Cloud_Customers_about_Investigation_Requests_Subcriterion_Basic_1
+      information_text: 'This does not affect other legal or regulatory requirements that requires earlier information for cloud service customers.'
+  corresponding: 'Cloud service customers ensure with suitable controls that such notifications are received and assessed from a legal perspective according to their own specifications and possibilities.'
+-
+  identifier: &ID_Criterion_Limiting_Access_to_or_Disclosure_of_Data_in_Investigation_Requests '03'
+  name: 'Limiting Access to or Disclosure of Data in Investigation Requests'
+  basic: 
+    -
+      identifier: &ID_Criterion_Limiting_Access_to_or_Disclosure_of_Data_in_Investigation_Requests_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider''s procedures for granting access to or disclosing cloud service customer data and cloud service derived data in the context of investigation requests from government agencies ensure that the agencies only gain access to or insight into the data that is the subject of the investigation request.'
+    -
+      identifier: &ID_Criterion_Limiting_Access_to_or_Disclosure_of_Data_in_Investigation_Requests_Subcriterion_Basic_2 '02B'
+      criterion: 'If no clear limitation of the cloud service customer data and cloud service derived data is possible, the cloud service provider anonymises or pseudonymises this data so that government agencies can only assign it to those cloud service customers who are subject of the investigation request.'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Limiting_Access_to_or_Disclosure_of_Data_in_Investigation_Requests_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The access and activities performed by or on behalf of investigators are monitored by the cloud service provider as determined by the process described in INQ-01.'
+    -
+      identifier: &ID_Criterion_Limiting_Access_to_or_Disclosure_of_Data_in_Investigation_Requests_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'Timely and appropriate remediation measures address any deviations identified during the monitoring of the activities performed by or on behalf of investigators.'
+  information:
+  corresponding:
+-
+  identifier: &ID_Criterion_Communication_of_Technical_Procedures_for_Data_Disclosure_in_Investigation_Requests '04'
+  name: 'Communication of Technical Procedures for Data Disclosure in Investigation Requests'
+  basic: 
+    -
+      identifier: &ID_Criterion_Communication_of_Technical_Procedures_for_Data_Disclosure_in_Investigation_Requests_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider documents the technical procedures per service and other technical information regarding the provision or disclosure of cloud service customer data in response to valid investigation requests and provides it to cloud service customers.'
+    -
+      identifier: &ID_Criterion_Communication_of_Technical_Procedures_for_Data_Disclosure_in_Investigation_Requests_Subcriterion_Basic_2 '02B'
+      criterion: 'The type and scope of the information provided to the cloud service customers is based on the needs of their expert personnel to assess risks to the cloud service customer''s data confidentiality. At a minimum, the following aspects are addressed:
+
+
+1. The process for the provision and disclosure of cloud service customer data in response to legitimate investigation requests;
+
+2. The technical capabilities and limitations of the cloud service provider regarding disclosure of cloud service customer data;
+
+3. Logging mechanisms implemented to records access for disclosure of cloud service customer data;
+
+4. Access possibilities for cloud service customers to review such logs;
+
+5. Methods and technical procedures per service for accessing and disclosing cloud service customer data; and
+
+6. Laws, regulations, or other legal means and their applicability concerning the cloud service provider''s ability to inform its customers about the provision and disclosure of cloud service customer data.
+  
+'
+    -
+      identifier: &ID_Criterion_Communication_of_Technical_Procedures_for_Data_Disclosure_in_Investigation_Requests_Subcriterion_Basic_3 '03B'
+      criterion: 'The aforementioned document is maintained in accordance with SP-01 and aligned with the cloud service provider''s guidelines on minimising access to cloud service customer data (cf. DEV-01) to ensure its relevance and accuracy for cloud service customers.'
+  additional_sharpen:
+  additional_complement: 
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Communication_of_Technical_Procedures_for_Data_Disclosure_in_Investigation_Requests_Subcriterion_Basic_1
+        - *ID_Criterion_Communication_of_Technical_Procedures_for_Data_Disclosure_in_Investigation_Requests_Subcriterion_Basic_2
+        - *ID_Criterion_Communication_of_Technical_Procedures_for_Data_Disclosure_in_Investigation_Requests_Subcriterion_Basic_3
+      information_text: 'The criterion is limited to cloud service customer data. The cloud service provider typically has access to other data types such as cloud service derived data and account data such that extending the criterion to those other data types, may not lead to useful information for customers'' risk management. Technical capabilities and limitations to access cloud service customer data include aspects such as:
+ 
+ 
+1. If the cloud service customers store their cloud service customer data in unencrypted form;
+
+2. If the cloud service provider encrypts cloud service customer data in storage and transit;
+
+3. Whether the cloud service provider has the ability to decrypt cloud service customer data in case of such requests and how this ability for access or disclosure is used;
+
+4. Retention periods for cloud service derived data relating to the cloud service customer and whether such data is stored in encrypted form;
+
+5. Possibilities for decrypting cloud service customer data or for extracting cloud service customer data during the decryption process;
+
+6. Disclosure of user identities and credentials; and
+
+7. Further measures that have been created or can be used for disclosing cloud service customer data.
+  
+'
+  corresponding: 'Cloud service customers ensure with suitable controls that they minimise potential disclosure of their customer data. According to the protection need of the cloud service customer data, the cloud service customers take the decision if the particular cloud service can be used or if the risk of disclosure is too high.'

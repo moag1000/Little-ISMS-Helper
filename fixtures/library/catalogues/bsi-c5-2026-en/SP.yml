@@ -1,0 +1,231 @@
+-
+  identifier: &ID_Criterion_Documentation_Communication_and_Provision_of_Policies_and_Procedures '01'
+  name: 'Documentation, Communication and Provision of Policies and Procedures'
+  basic: 
+    -
+      identifier: &ID_Criterion_Documentation_Communication_and_Provision_of_Policies_and_Procedures_Subcriterion_Basic_1 '01B'
+      criterion: 'Policies and procedures (incl. frameworks and guidelines) are derived from the information security policy and are documented according to a uniform structure. The policies and procedures describe at least the following aspects:
+
+
+1. Objectives;
+
+2. Scope;
+
+3. Roles and responsibilities, including personnel qualification requirements and the establishment of substitution rules;
+
+4. Roles and dependencies on other organisations (especially cloud service customers and subservice organisations);
+
+5. Steps for the execution of the security strategy; and
+
+6. Applicable legal and regulatory requirements.
+
+'
+    -
+      identifier: &ID_Criterion_Documentation_Communication_and_Provision_of_Policies_and_Procedures_Subcriterion_Basic_2 '02B'
+      criterion: 'The policies and procedures are communicated and made available to all relevant internal and external personnel of the cloud service provider in an appropriate manner.'
+    -
+      identifier: &ID_Criterion_Documentation_Communication_and_Provision_of_Policies_and_Procedures_Subcriterion_Basic_3 '03B'
+      criterion: 'The policies and procedures are subject to version control.'
+    -
+      identifier: &ID_Criterion_Documentation_Communication_and_Provision_of_Policies_and_Procedures_Subcriterion_Basic_4 '04B'
+      criterion: 'The policies and procedures are approved by the top management of the cloud service provider or an authorised body.'    
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Documentation_Communication_and_Provision_of_Policies_and_Procedures_Subcriterion_Basic_1
+      information_text: 'Policies and procedures are required for the following basic criteria in which the content is specified in more detail:
+
+
+1. Information Security Policy (OIS-02)
+
+2. Risk Management Policy (OIS-07);
+
+3. Remote Working - Policy (HR-07);
+
+4. Asset Management Framework (AM-01);
+
+5. Policy for the Proper and Secure Use of Assets (AM-05);
+
+6. Physical Security and Environmental Control Requirements (PS-01);
+
+7. Physical Site Access Control (PS-04);
+
+8. Workplace Security Requirements (PS-08);
+
+9. Protection Against Malware - Policies and Procedures (OPS-04);
+
+10. Data Backup and Recovery - Policies and Procedures (OPS-06);
+
+11. Logging and Monitoring - Policies and Procedures (OPS-10);
+
+12. Logging and Monitoring - Policies and Procedures for Handling Cloud Service Derived Data and Account Data (OPS-11);
+
+13. Managing Vulnerabilities - Policies and Procedures (OPS-18);
+
+14. Managing Incidents and Crashes - Policies and Procedures (OPS-19);
+
+15. Managing Vulnerabilities - Patch Management Policies and Procedures (OPS-27);
+
+16. Separation of Datasets - Policies and Procedures (OPS-30);
+
+17. Confidential Computing - Policies and Procedures (OPS-32);
+
+18. Container Management - Policies and Procedures (OPS-34);
+
+19. Policy for Identities and Access Rights (IAM-01);
+
+20. Authentication Mechanisms (authentication policy) (IAM-08);
+
+21. Policy for the Use of Cryptographic Mechanisms (CRY-01);
+
+22. Technical Safeguards (COS-01);
+
+23. Policies for Data Transmission (COS-08);
+
+24. Policies for the Development/Procurement of System Components (DEV-01);
+
+25. Policies for Changes to System Components (DEV-03);
+
+26. Secure Use of Third Party Hardware and Software (policies and procedures for the use of third party and open source software) (DEV-14);
+
+27. Policies and Procedures for Controlling and Monitoring Service Organisations (SSO-01);
+
+28. Controlling Exchanges with Suppliers of Functional Components (SSO-08);
+
+29. Policy for Security Incident Management (SIM-01);
+
+30. Business Continuity and Emergency Management System (BCM-01);
+
+31. Policy for Planning and Conducting Audits (COM-02); and
+
+32. Communication of Technical Procedures for Data Disclosure in Investigation Requests (INQ-04).
+
+'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Documentation_Communication_and_Provision_of_Policies_and_Procedures_Subcriterion_Basic_2
+      information_text: 'The appropriateness of the demand-oriented communication and provision should be assessed against the size and complexity of the cloud service provider''s organisation and the type of cloud service offered. Possible criteria are:
+
+
+1. Integration of guidelines and procedures in the onboarding of new personnel;
+
+2. Training and information campaigns when adopting new or revising existing policies and procedures; and
+
+3. Form of provision.
+
+'
+  corresponding:
+-
+  identifier: &ID_Criterion_Review_and_Approval_of_Policies_and_Procedures '02'
+  name: 'Review and Approval of Policies and Procedures'
+  basic: 
+    -
+      identifier: &ID_Criterion_Review_and_Approval_of_Policies_and_Procedures_Subcriterion_Basic_1 '01B'
+      criterion: 'Information security policies and procedures are reviewed for adequacy by the cloud service provider''s subject matter experts at least annually, and in case of significant changes to the cloud service. The review shall consider at least the following aspects:
+
+
+1. Organisational and technical changes in the procedures for providing the cloud service; and
+
+2. Legal and regulatory changes in the cloud service provider''s environment.
+
+'
+    -
+      identifier: &ID_Criterion_Review_and_Approval_of_Policies_and_Procedures_Subcriterion_Basic_2 '02B'
+      criterion: 'Revised policies and procedures are approved by the appropriate level of management before they become effective and are communicated and made available to internal and external personnel.'
+  additional_sharpen:
+  additional_complement: 
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Review_and_Approval_of_Policies_and_Procedures_Subcriterion_Basic_1
+      information_text: 'During an ISO 27001 certification audit, the controls to this criteria are most likely also tested. If it is a joint audit (C5 and ISO), efficiency of audit-once-certify-many may be gained here. If it is a separate audit, the auditor of the C5 attestation engagement can choose to inspect the ISO report instead of testing the control again, if the provided evidence is conclusive enough.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Review_and_Approval_of_Policies_and_Procedures_Subcriterion_Basic_2
+      information_text:  'Significant changes include, but are not limited to, any circumstances or events that materially affect the scope, effectiveness, or objectives of the information security policy. Specifically, significant changes are e.g.:
+
+
+1. Major technical or architectural changes to the cloud platform (e.g., adoption of new infrastructure services, cloud migration, introduction of a new service offering);
+
+2. Substantial updates to national or international laws, regulations, or sector-specific standards (e.g., NIS2, DORA, GDPR) that impact information security obligations;
+
+3. Reorganisation or merger/acquisition of organisational units that affect leadership, decision-making, or key responsibilities related to security;
+
+4. Significant changes in contractual requirements, risk assessments, operational processes, or threat landscape (e.g., new threat intelligence indicating emerging risks, supply chain incidents);
+
+5. Major security incidents or breaches requiring incident response revision;
+
+6. Launch or decommissioning of service components impacting customer data or trust boundaries; and
+
+7. Changes in the composition or responsibilities of top management or the information security steering committee.
+
+
+For an efficient review the cloud service provider can document the nature of each significant change, the rationale for review, and the result of policy adjustments. Automated tracking of policy changes and manual verification of content can also be integrated into the review workflow.
+
+
+The top level management is an appropriate level of management for approving the information security policy.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures '03'
+  name: 'Exceptions from Existing Policies and Procedures'
+  basic: 
+    -
+      identifier: &ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Basic_1 '01B'
+      criterion: 'All exceptions to policies and procedures for information security are maintained in a list, including also the controls associated with the exceptions.'
+    -
+      identifier: &ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Basic_2 '02B'
+      criterion: 'Exceptions to the policies and procedures for information security as well as respective controls go through risk management procedures in accordance with OIS-07, including approval of these exceptions and acceptance of the associated risks by the risk owners.'
+    -
+      identifier: &ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Basic_3 '03B'
+      criterion: 'The risk management procedures in accordance with OIS-07, also take into account the aggregated risk from a combination of single exceptions.'   
+    -
+      identifier: &ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Basic_4 '04B'
+      criterion: 'The approvals of exceptions are documented, with a defined validity and reviewed for appropriateness at least annually by the risk owners or by the top management. This review also takes into account the aggregated risk from a combination of single exceptions.'
+    -
+      identifier: &ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Basic_5 '05B'
+      criterion: 'Exceptions in information security policies and procedures that would result in a deviation (cf. 3.4.12) from any applicable C5 criterion within the scope of an assurance engagement (cf. 3.4.1) are not permitted.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The exceptions to policies or procedures are approved by the appropriate level of management.'
+    -
+      identifier: &ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'The cloud service provider monitors the list of exceptions to prevent the expiration of approved exceptions and ensure the up-to-dateness of all reviews and approvals.' 
+    -
+      identifier: &ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Additional_Complement_3 '03AC'
+      criterion: 'Any exceptions for which deviations were identified during monitoring are addressed through timely and appropriate remediation measures.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Basic_1
+      information_text: 'During an ISO 27001 certification audit, the controls to this criteria are most likely also tested. If it is a joint audit (C5 and ISO), efficiency of audit-once-certify-many may be gained here. If it is a separate audit, the auditor of the C5 attestation engagement can choose to inspect the ISO report instead of testing the control again, if the provided evidence is conclusive enough.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Basic_5
+      information_text: 'This criterion addresses policies and procedures and demands that on this level, no codified deviations from applicable C5 criteria are permitted.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Basic_1
+        - *ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Basic_2
+        - *ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Basic_3
+        - *ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Basic_4
+        - *ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Basic_5
+        - *ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Additional_Complement_1
+        - *ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Additional_Complement_2
+        - *ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Additional_Complement_3
+      information_text: 'Exceptions in the sense of the criterion can have organisational or technical causes, such as:
+
+
+1. An organisational unit should deviate from the intended processes and procedures in order to meet the requirements of a cloud service customer; and
+
+2. A system component lacks technical properties to configure it according to the applicable requirements.
+
+'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Exceptions_from_Existing_Policies_and_Procedures_Subcriterion_Additional_Complement_1
+      information_text: 'Appropriate level of management for approval are in most cases either the level of management that approved the policies or procedures or the level of management to whom this task is delegated.'  
+  corresponding: 'Cloud service customers ensure with suitable controls that they obtain information from the cloud service provider about exceptions to information security policies and procedures in order to assess and appropriately manage the associated risks to their own information security.'

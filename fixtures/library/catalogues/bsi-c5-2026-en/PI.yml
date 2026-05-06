@@ -1,0 +1,146 @@
+-
+  identifier: &ID_Criterion_Safety_of_Input_and_Output_Interfaces '01'
+  name: 'Safety of Input and Output Interfaces'
+  basic: 
+    -
+      identifier: &ID_Criterion_Safety_of_Input_and_Output_Interfaces_Subcriterion_Basic_1 '01B'
+      criterion: 'For inbound and outbound interfaces through which the cloud service can be accessed by other cloud services or IT systems of cloud service customers, the cloud service provider designs, implements and maintains controls regarding the following aspects:
+
+
+1. The use of standardised communication protocols for interactions between different application interfaces to ensure the confidentiality and integrity of the transmitted information according to its protection needs, and the adequate authentication of the user;
+
+2. The use of encryption according to CRY-02 in case of communication over untrusted networks;
+
+3. The use of standardised data formats and common data processing standards to facilitate information processing interoperability;
+
+4. The implementation of mechanisms to validate data integrity and establish backup and recovery processes to ensure data security and reliability during exchange, usage and transfer; and
+
+5. The provision of up-to-date information about the available communication protocols, as well as applicable data formats and data processing standards.
+
+'
+    -
+      identifier: &ID_Criterion_Safety_of_Input_and_Output_Interfaces_Subcriterion_Basic_2 '02B'
+      criterion: 'The cloud service provider provides suitable technical means for extracting cloud service customer data in accordance with the aforementioned policies and procedures to the cloud service customer. Where data volume, format, or architecture make a customer-driven extraction infeasible, the cloud service provider provides appropriate extraction services to the cloud service customer.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Safety_of_Input_and_Output_Interfaces_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider sets up an application firewall to protect the administration interfaces for cloud service customers that are accessible over public networks.'
+    - 
+      identifier: &ID_Criterion_Safety_of_Input_and_Output_Interfaces_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'The cloud service provides cloud service customers with interfaces for custom identity providers to manage the authentication information of users under the responsibility of the cloud service customer. These interfaces are accompanied by a standardised protocol to facilitate communication between the cloud service and the external identity provider.' 
+    -
+      identifier: &ID_Criterion_Safety_of_Input_and_Output_Interfaces_Subcriterion_Additional_Complement_3 '03AC'
+      criterion: 'The interfaces are clearly documented to enable subject matter experts of the cloud service customer to integrate their identity provider with the cloud service.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Safety_of_Input_and_Output_Interfaces_Subcriterion_Basic_1
+        - *ID_Criterion_Safety_of_Input_and_Output_Interfaces_Subcriterion_Basic_2
+        - *ID_Criterion_Safety_of_Input_and_Output_Interfaces_Subcriterion_Additional_Complement_1
+        - *ID_Criterion_Safety_of_Input_and_Output_Interfaces_Subcriterion_Additional_Complement_2
+        - *ID_Criterion_Safety_of_Input_and_Output_Interfaces_Subcriterion_Additional_Complement_3
+      information_text: 'In this context, an interface is a system access point or library function with a well-defined syntax. It comprises documented methods that allow cloud service customers to securely access and interact with the cloud service, enabling the exchange of data.
+
+
+Those interfaces and their documentation should include sufficient information on the cloud service to enable the development of software to communicate with it for the purposes of data portability and interoperability. However, the cloud service provider is not required to develop new technologies to this purpose or share information that is protected by intellectual property rights or that constitutes a trade secret.
+
+
+While these interfaces provide the means for communication with the cloud service, they do not imply that cloud service customers can directly connect their custom systems as if they are natively integrated. Instead, cloud service customers can configure their systems by using methods, such as API calls, and adhering to the specified protocols and data formats provided by the cloud service provider.
+
+
+To ensure seamless and secure communication between interfaces, the cloud service provider uses industry-standard API protocols and implements state of the art transport layer security. The cloud service provider supports cross-platform information processing by employing containerisation technologies and cloud-neutral development frameworks. Infrastructre as Code practices are adopted to standardise infrastructre provisioning. Common data usage policies are defined and enforced to ensure consistent and secure access, utilisation and sharing of data. Upon contract termination, the cloud service provider assists customers in exporting and transferring their data, e.g. by providing technical documentation and data export tools.'
+  corresponding: 'Cloud service customers ensure with suitable controls that the interfaces provided (and their security) are adequate for its protection needs by means of appropriate checks before the start of use of the cloud service and each time the interfaces are changed.'
+-
+  identifier: &ID_Criterion_Contractual_Agreements_for_the_Provision_of_Data '02'
+  name: 'Contractual Agreements for the Provision of Data'
+  basic: 
+    -
+      identifier: &ID_Criterion_Contractual_Agreements_for_the_Provision_of_Data_Subcriterion_Basic_1 '01B'
+      criterion: 'In contractual agreements, the following aspects are defined for provisioning of cloud service customer data following termination of the contractual relationship, insofar as these are applicable to the cloud service:
+
+
+1. Type, scope and format of the cloud service customer data the cloud service provider provides to the cloud service customer;
+
+2. Methods for delivering the data to the cloud service customer;
+
+3. Conditions and time frames for cloud service customer data provisioning throughout the duration of the contractual relationship;
+
+4. Right of termination of the contract and definition of the time frame within which the cloud service provider makes the cloud service customer data available to the cloud service customer after termination of the contract;
+
+5. Definition of the point in time as of which the cloud service provider makes the cloud service customer data inaccessible to the cloud service customer and deletes these after termination of the contract;
+
+6. The cloud service customers'' responsibilities and obligations to cooperate for the provision of the cloud service customer data; and
+
+7. Cloud service customer data remains the property of the cloud service customer throughout the entire contractual relationship. After its termination, the data is once again the sole property and possession of the cloud service customer.
+
+
+The definitions are based on the needs of subject matter experts of potential customers who assess the suitability of the cloud service with regard to a dependency on the cloud service provider as well as legal and regulatory requirements.'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Contractual_Agreements_for_the_Provision_of_Data_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The design of the aspects is based on legal and regulatory requirements in the environment of the cloud service provider. The cloud service provider identifies the requirements regularly, at least once a year, and checks these for actuality and adjusts the contractual agreements accordingly.'
+    -
+      identifier: &ID_Criterion_Contractual_Agreements_for_the_Provision_of_Data_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'The cloud service provider also provides cloud service derived data to the cloud service customer upon termination of the contractual relationship. The provision of this data is also defined in the contractual agreements and includes the aspects specified in the basic criterion.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Contractual_Agreements_for_the_Provision_of_Data_Subcriterion_Basic_1
+        - *ID_Criterion_Contractual_Agreements_for_the_Provision_of_Data_Subcriterion_Additional_Complement_1
+        - *ID_Criterion_Contractual_Agreements_for_the_Provision_of_Data_Subcriterion_Additional_Complement_2
+      information_text: 'The type and scope of the data and the responsibilities for its provision depend on the service model of the cloud service or the services and functions provided:
+
+
+In the case of IaaS- and PaaS-like services, the cloud service customer is generally responsible for extracting and backing up the data which is stored in the cloud service before termination of the contractual relationship (cf. complementary requirement).
+
+
+The cloud service provider''s responsibility is typically limited to the provision of data for the configuration of the infrastructure or platform that the cloud service customer has set up within its environment (e.g. configuration of networks, images of virtual machines and containers).
+
+
+With SaaS, the cloud service customer typically relies on export functions provided by the cloud service provider. Data created by the cloud service customer should be available in the same format as stored in the cloud service. Other data, including relevant log files and metadata, should be available in an applicable standard format, such as CSV, JSON or XML.
+
+
+Legal requirements can, for example, include the EU Data Act. In Germany, legal requirements for retention in particular can be found, for example, in the German Tax Code (§147 AO) and the German Commercial Code (§257 HGB). These provide for a retention obligation of six or ten years.
+
+
+If contractual agreements do not include the aspects listed in the basic criterion, and these are applicable due to the service model, the criterion is not met and a deviation is to be noted by the auditor.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Contractual_Agreements_for_the_Provision_of_Data_Subcriterion_Basic_1
+      information_text: 'If the cloud service provider acts as a cloud service broker, special consideration should be given to contractual data-portability clauses that recognise the complexity of the particular cloud service broker scenario. This can include, but is not limited to, the definition of:
+        
+
+1. Responsibility for the export of cloud service customer data; 
+
+2. If there are multiple underlying cloud service providers, the export scope, the consolidated format, any completeness limits, and how cloud service broker generated artifacts such as aggregated logs are handled; 
+
+3. Whether cloud service customers can access the cloud services of underlying cloud service providers directly via APIs or have to rely on the cloud service broker''s export interface, and whether there are any timing or usage restrictions; and
+
+4. Time frames for the delivery of cloud service customer data exports to the cloud service customer.
+
+'
+  corresponding: 'Cloud service customers ensure with suitable controls that the data to which they are contractually entitled is requested from the cloud service provider at the end of the contract or accessed via defined interfaces (the type and scope of the data correspond to the contractual agreements that were concluded prior to the use of the cloud service) and that it is stored in accordance with the legal requirements applicable to this data.'
+-
+  identifier: &ID_Criterion_Secure_Deletion_of_Data '03'
+  name: 'Secure Deletion of Data'
+  basic: 
+    -
+      identifier: &ID_Criterion_Secure_Deletion_of_Data_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider''s procedures for deleting cloud service customer data, cloud service derived data and account data upon termination of the contractual relationship ensure compliance with the contractual agreements (cf. PI-02). Exceptions are only made if they are required by a valid court order or needed for the fulfilment of known future financial and legal obligations.'
+    -
+      identifier: &ID_Criterion_Secure_Deletion_of_Data_Subcriterion_Basic_2 '02B'
+      criterion: 'The deletion procedures prevent recovery by forensic means that comply with the established rules of technology.'
+    -
+      identifier: &ID_Criterion_Secure_Deletion_of_Data_Subcriterion_Basic_3 '03B'
+      criterion: 'The deletion of the cloud service customer data, cloud service derived data and account data is documented in a manner that enables the cloud service customer to obtain proof of the deletion of its data.'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Secure_Deletion_of_Data_Subcriterion_Basic_1
+        - *ID_Criterion_Secure_Deletion_of_Data_Subcriterion_Basic_2
+      information_text: 'Suitable methods for data deletion are e.g. multiple overwriting or deletion of the encryption key.'
+  corresponding: 'Cloud service customers ensure with suitable controls that the legal and regulatory framework (e.g. legal requirements for storage and deletion) is identified and that the deletion of their data is initiated accordingly.'

@@ -1,0 +1,171 @@
+-
+  identifier: &ID_Criterion_Identification_of_Requirements '01'
+  name: 'Identification of Applicable Legal, Regulatory, Self-imposed or Contractual Requirements'
+  basic: 
+    -
+      identifier: &ID_Criterion_Identification_of_Requirements_Subcriterion_Basic_1 '01B'
+      criterion: 'The legal, regulatory, self-imposed and contractual requirements relevant to the information security of the cloud service as well as the cloud service provider''s procedures for complying with these requirements are explicitly defined and documented.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Identification_of_Requirements_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider provides an overview of the procedures described in the basic criterion upon request by the cloud service customer.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Identification_of_Requirements_Subcriterion_Basic_1
+      information_text: 'The cloud service provider''s documentation may refer to the following requirements, among others:
+
+
+1. Requirements for the protection of personal data (e.g. EU General Data Protection Regulation);
+
+2. Requirements regarding the information security posture of the cloud service provider (e.g. NIS 2 Directive, BSIG as applicable to KRITIS);
+
+3. Compliance requirements based on contractual obligations with cloud service customers (e.g. ISO/IEC 27001, SOC 2, PCI-DSS); and
+
+4. Requirements regarding exchange and use of data (e.g. EU Data Act).
+
+
+The documentation of the identified requirements and the procedures for complying with these requirements may be spread across several documents and does not necessarily have to be recorded in a single register or directory.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Policy_for_Planning_and_Conducting_Audits '02'
+  name: 'Policy for Planning and Conducting Audits'
+  basic: 
+    -
+      identifier: &ID_Criterion_Policy_for_Planning_and_Conducting_Audits_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider documents and implements an audit programme over multiple years that defines the scope and the frequency of the audits. The audit programme takes into consideration the management of change, policies, and the results of the risk assessment (cf. OIS-07).'
+    -
+      identifier: &ID_Criterion_Policy_for_Planning_and_Conducting_Audits_Subcriterion_Basic_2 '02B'
+      criterion: 'Risk-based policies and procedures for planning and conducting audits are documented, communicated and made available in accordance with SP-01 and address the following aspects in order to prevent adversal effects on the operation of the cloud service from the audit:
+
+
+1. Restriction to read-only access to system components in accordance with the agreed audit plan and as necessary to perform the activities;
+
+2. Activities that may result in outages, degradations of the cloud service or breaches of contractual requirements are performed during scheduled maintenance windows or outside peak periods;
+
+3. Logging and monitoring of activities;
+
+4. Review of server and network equipment configurations under the responsibility of the cloud service provider;
+
+5. Intrusion testing for external access points; and
+
+6. Source code reviews of internally developed security features.
+
+'
+  additional_sharpen:
+    -
+      identifier: &ID_Criterion_Policy_for_Planning_and_Conducting_Audits_Subcriterion_Additional_Sharpen_1 '01AS'
+      sharpened_basic_criterion: *ID_Criterion_Policy_for_Planning_and_Conducting_Audits_Subcriterion_Basic_1
+      criterion: 'The cloud service provider documents and implements an audit programme over three years that defines the scope and the frequency of the audits. The audit programme takes into consideration the management of change, policies, and the results of the risk assessment (cf. OIS-07).'
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Policy_for_Planning_and_Conducting_Audits_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider grants its cloud service customers contractually agreed information and audit rights. These rights may be exercised individually or as part of group audits.'
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policy_for_Planning_and_Conducting_Audits_Subcriterion_Basic_1
+        - *ID_Criterion_Policy_for_Planning_and_Conducting_Audits_Subcriterion_Additional_Sharpen_1 
+      information_text: 'An audit is a systematic, independent and documented process for obtaining objective evidence and evaluating it objectively to determine the extent to which the audit criteria are fulfilled. Audits may be performed as internal audits, sometimes called first party audits, that are conducted by, or on behalf of, the organisation itself. They may also be performed as external audits, generally called second and third party audits. Second party audits are conducted by parties having an interest in the organisation, such as customers, or by other individuals on their behalf. Third party audits are conducted by independent auditing organisations.
+
+
+An audit programme comprises arrangements for a set of one or more audits planned for a specific time frame and directed towards a specific purpose. The audit programme may, for example, comprise a time frame of three years, and may comprise internal and external audits.
+
+
+COM-02 is fully applicable to virtual infrastructure and infrastructure as code. Audit activities might still impact operations in a virtual environment. Reviews of configurations might for example be performed as part of code reviews.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policy_for_Planning_and_Conducting_Audits_Subcriterion_Basic_2
+      information_text: 'See DEV-05 for further explanation on security features.'
+  corresponding: 'Cloud service customers ensure with suitable controls that appropriate responses are made to outages or degradations of the cloud service through such audits.
+
+
+To the extent that contractually agreed information and audit rights exist, the cloud service customers ensure with suitable controls that these rights are designed and executed in accordance with their own requirements.'
+-
+  identifier: &ID_Criterion_Internal_Audits_of_the_ISMS '03'
+  name: 'Internal Audits of the Information Security Management System'
+  basic: 
+    -
+      identifier: &ID_Criterion_Internal_Audits_of_the_ISMS_Subcriterion_Basic_1 '01B'
+      criterion: 'Subject matter experts check the compliance of the information security management system at regular intervals, at least annually, with the relevant and applicable legal, regulatory, self-imposed or contractual requirements (cf. COM-01) through internal audits. This includes checks regarding:
+
+
+1. Compliance with the policies and procedures (cf. SP-01) within their scope of responsibility (cf. OIS-01); and
+
+2. Effectiveness of organisational and operational measures to manage the risks posed to the security of network and information systems (cf. OIS-07).
+
+'
+    -
+      identifier: &ID_Criterion_Internal_Audits_of_the_ISMS_Subcriterion_Basic_2 '02B'
+      criterion: 'Subject matter experts conducting internal audits are not in the line of authority of the personnel of the area under review. If the size of the cloud service provider does not allow such separation of line of authority, alternative measures to guarantee the impartiality of compliance checks are put in place.'
+    -
+      identifier: &ID_Criterion_Internal_Audits_of_the_ISMS_Subcriterion_Basic_3 '03B'
+      criterion: 'Identified vulnerabilities and deviations as well as non-conformities from the applicable legal, regulatory, self-imposed and contractual requirements relevant to the information security of the cloud service, are subjected to a risk assessment in accordance with the risk management procedure (cf. OIS-07). Follow-up measures are defined and tracked (cf. OPS-18).'
+    
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Internal_Audits_of_the_ISMS_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'Based on a risk assessment (cf. OIS-07) and technical feasibility, the cloud service provider decides to which extent internal audits are supplemented by procedures to automatically monitor applicable requirements of policies and procedures with regard to the following aspects:
+
+
+1. Configuration of system components to provide the cloud service within the cloud service provider''s area of responsibility;
+
+2. Performance and availability of these system components;
+
+3. Response time to incidents and security incidents; and
+
+4. Recovery time (time to completion of error handling).
+
+'
+    -
+      identifier: &ID_Criterion_Internal_Audits_of_the_ISMS_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'Identified vulnerabilities and deviations are automatically reported to the appropriate cloud service provider''s subject matter experts for immediate assessment and action.'
+    -
+      identifier: &ID_Criterion_Internal_Audits_of_the_ISMS_Subcriterion_Additional_Complement_3 '03AC'
+      criterion: 'The cloud service provider provides interfaces to cloud service customers so that they can check compliance with selected contractual agreements in real time.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Internal_Audits_of_the_ISMS_Subcriterion_Basic_1
+      information_text: 'Subject matter experts operate, e.g., in the cloud service provider''s internal revision department or expert third parties commissioned by the cloud service provider, such as auditing companies, and may hold relevant certifications such as ''Certified Internal Auditor (CIA)''.
+
+
+With regard to ISMS compliance, cf. section 9.2 of ISO/IEC 27001, which outlines the requirements for conducting internal audits of an Information Security Management System (ISMS) and for establishing an internal audit programme. When establishing the internal audit programme(s), the cloud service provider should define the scope and criteria by considering the importance of the processes concerned and the results of previous audits. This approach allows cloud service providers to define the audit scope based on the criticality of complying with relevant legal, regulatory, or contractual requirements (cf. COM-01) and internal policies and procedures (cf. SP-01), without requiring a comprehensive review of all requirements during each audit cycle.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Information_on_IS_Performance_and_Management_Assessment_of_the_ISMS '04'
+  name: 'Information on Information Security Performance and Management Assessment of the ISMS'
+  basic: 
+    -
+      identifier: &ID_Criterion_Information_on_IS_Performance_and_Management_Assessment_of_the_ISMS_Subcriterion_Basic_1 '01B'
+      criterion: 'The top management of the cloud service provider is regularly informed about the information security performance within the scope of the ISMS in order to ensure its continued suitability, adequacy and effectiveness. The information is included in the management review of the ISMS. This management review is performed at least once a year.'
+  additional_sharpen:
+  additional_complement:
+    -
+      identifier: &ID_Criterion_Information_on_IS_Performance_and_Management_Assessment_of_the_ISMS_Subcriterion_Additional_1 '01AC' 
+      criterion: 'The cloud service provider defines and implements technical and operational metrics that align with the organisation''s business objectives, security requirements, and compliance obligations. These metrics are documented and included in the management review of the ISMS to ensure their continued suitability, adequacy, and effectiveness.'
+    -
+      identifier: &ID_Criterion_Information_on_IS_Performance_and_Management_Assessment_of_the_ISMS_Subcriterion_Additional_2 '02AC' 
+      criterion: 'The responsible business units of the cloud service provider report at least annually to the top management on the the status and effectiveness of the policies and procedures that are relevant to the top management review of the information security management system. This reporting includes at least:
+
+
+1. Implemented changes to address cybersecurity risks for the topic addressed in the policy or procedure;
+
+2. Information security incidents for the topic addressed in the policy or procedure and the follow-up;
+
+3. Performance of the internal controls regarding information security for the topic addressed in the policy or procedure; and
+
+4. Planned changes for the topic addressed in the policy or procedure to address cybersecurity risks and information security and cybersecurity.
+
+'  
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Information_on_IS_Performance_and_Management_Assessment_of_the_ISMS_Subcriterion_Basic_1
+      information_text: 'The top management is a natural person or group of people who take final decisions for the institution and are accountable for these.
+
+
+The aspects to be dealt with in the management review of the ISMS are listed in section 9.3 of ISO / IEC 27001.'
+  corresponding:

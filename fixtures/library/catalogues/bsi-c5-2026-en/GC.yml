@@ -1,0 +1,185 @@
+-
+  id: 'GC-01'
+  name: 'Information on applicable law, jurisdiction, countries, partitions, regions, zones and locations'
+  condition: 'In the description of the cloud service provider''s system of internal control relevant to the development and operation of the cloud service and the contractual agreements (e.g. service level agreements), the cloud service provider clearly provides comprehensible and transparent information on:
+
+
+              1. Its applicable law;
+              
+              2. Its jurisdiction (courts that will hear disputes); 
+
+              3. The country in which the cloud service provider''s entity or entities that prepared the description is/are registered as a legal entity;
+              
+              4. The country in which the cloud service provider''s headquarters (ultimate parent) is registered as a legal entity;
+              
+              5. The partitions, regions, zones and locations that are provided to cloud service customers for the operation of the cloud service, where the cloud service customer data, cloud service derived data and account data is processed, stored and backed up, based on service offering type (SaaS, PaaS, IaaS); and
+ 
+              6. If certain of these partitions, regions, zones and locations are not in scope of the assurance engagement, an indication for their exclusion. 
+
+
+               The information is prepared to meet the common needs of a broad range of subject matter experts of the cloud service customers who define or implement information security requirements, validate their effectiveness or assess the suitability of the cloud service from a legal and regulatory perspective (e.g. IT, compliance, internal audit).'
+  hint: 'For definitions of the terms partitions, regions, zones, locations and the data types cf. section 1.2. If the processing, backup and storage of customer data take place in different partitions, regions, zones and locations, this has to be described comprehensibly and transparently in the system description.'
+-
+  id: 'GC-02'
+  name: 'Information on availability and incident handling during regular operation'
+  condition: 'In contractual agreements (e.g. service level agreements), the cloud service provider presents comprehensible, binding and transparent information on:
+
+
+              1. Availability of the cloud service;
+
+              2. Categorisation and prioritisation of incidents;
+
+              3. Response times for disruptions of regular operation according to the categorisation (time elapsed between the reporting of the disruption and the first response by the cloud service provider);
+
+              4. Recovery time (time elapsed until the incident has been resolved); and
+
+              5. Contractual consequences of non-compliance.
+
+
+              The information is based on definitions that allow subject matter experts of the cloud service customers to assess the cloud service against their business requirements.
+
+              Contractual agreements may refer to operational documentation (e.g. service documentation, technical specifications, or other publicly accessible resources) that can be regularly updated.
+
+              The description of the cloud service provider''s system of internal control relevant to the development and operation of the cloud service indicates where this information can be found. References relate precisely to the individual aspects specified above, allowing readers who are not familiar with the contractual agreement or the operational documentation to find the information in a timely manner. 
+
+
+              If information on availability and remediation of disruptions represent average values that are not binding in individual cases, this is highlighted separately.'
+  hint: 'In addition to the reference in the description of the cloud service provider, the information itself may also be an optional part of the report, e.g. in a section ''Other information provided by the Cloud Service Provider''. Only in the latter case, this information is not subject to the auditor''s procedures, and, accordingly, the auditor does not issue an opinion on it.'
+
+-
+  id: 'GC-03'
+  name: 'Information on recovery parameters in emergency operation'
+  condition: 'Upon request by subject matter experts of the cloud service customers, the cloud service provider shares comprehensible and transparent information about the following recovery parameters of the cloud service:
+
+
+              1. Maximum tolerable period of downtime (MTPD) and Recovery Time Objective (RTO);
+
+              2. Maximum allowable data loss / Recovery Point Objective (RPO);
+
+              3. Recovery time to start emergency operation;
+
+              4. Minimum business continuity objective (MBCO) (capacity related to regular operation); and
+
+              5. Restore time until normal operation.
+
+
+              The information enables cloud service customers to evaluate the cloud service as part of their own business impact analysis.
+              
+              
+              The description of the cloud service provider''s system of internal control relevant to the development and operation of the cloud service indicates where this information can be found. References relate precisely to the individual aspects specified above, allowing these subject matter experts to find the information in a timely manner. 
+
+
+              If information on availability and remediation of disruptions represent average values that are not binding in individual cases, this is highlighted separately.'
+  hint: 'In addition to the reference in the description of the cloud service provider, the information itself may also be an optional part of the report, e.g. in a section ''Other information provided by the Cloud Service Provider''. Only in the latter case, this information is not subject to the auditor''s procedures, and, accordingly, the auditor does not issue an opinion on it.'
+
+-
+  id: 'GC-04'
+  name: 'Information on the approach to ensuring service availability'
+  condition: 'The cloud service provider shares comprehensible and transparent information subject matter experts of cloud service customers with on its approach to ensuring service availability, including relevant availability metrics and architecture design principles for both, datacentre-infrastructure and cloud services. This information addresses both, physical infrastructure resilience and logical service resilience, enabling cloud service customers to perform their business impact analysis effectively and understand how the cloud service provider''s multi-layered resilience approach aligns with their own business continuity requirements at both, the infrastructure and service levels.'
+  hint: 'The information may outline resilience capabilities, such as regional deployment strategies, datacentre redundancy configurations, service-level commitments, historical performance data, or architectural resilience patterns.
+        
+        
+        The Uptime Institute''s Tier classification system is a classification customary in the industry for the availability of data centres. It defines the following levels (Tiers) for availability and downtime in relation to one year:
+
+
+         1. Tier I: 99.671 %; up to 28.8 hours cumulative downtime per year;
+
+         2. Tier II: 99.741 %; up to 22.7 hours cumulative downtime per year;
+
+         3. Tier III: 99.982 %; up to 1.6 hours cumulative downtime per year; and
+
+         4. Tier IV: 99.995 %; up to 25 minutes cumulative downtime per year.
+
+
+         An alternative definition of availability classes (AC) is provided by the BSI in the ''HV-Benchmark kompakt'' (German for: ''High Availability Benchmark Compact'', document only available in German):
+
+
+         1. AC 0: without availability requirements (~95%); up to 438 hours cumulative downtime per year;
+
+         2. AC 1: normal availability (99%); up to 88 hours cumulative downtime per year;
+
+         3. AC 2: high availability (99.9%); up to 9 hours cumulative downtime per year;
+
+         4. AC 3: very high availability (99.99%); up to 53 minutes cumulative downtime per year;
+
+         5. AC 4: highest availability (99.999%); up to 6 minutes cumulative downtime per year; and
+
+         6. AC 5: Disaster-tolerant.
+         
+
+         The description of the cloud service provider''s system of internal control relevant to the development and operation of the cloud service indicates where this information can be found. In addition to the reference in the description of the cloud service provider, the information itself may also be an optional part of the report, e.g. in a section ''Other information provided by the Cloud Service Provider''. Only in the latter case, this information is not subject to the auditor''s procedures, and, accordingly, the auditor does not issue an opinion on it.'
+-
+  id: 'GC-05'
+  name: 'Information on how investigation requests from government agencies are handled'
+  condition: 'In the description of the cloud service provider''s system of internal control relevant to the development and operation of the cloud service, the cloud service provider presents comprehensible and transparent information on how investigation requests by government agencies for access to or disclosure of cloud service customer data are handled. The information includes the following aspects:
+  
+
+  1. Procedures to verify the legal basis of such requests;
+
+  2. Procedures for informing and involving the affected cloud service customers upon receipt of such requests;
+
+  3. The ability of the affected cloud service customers to object;
+
+  4. Whether the cloud service provider stores cloud service customer data or cloud service derived data in unencrypted form;
+
+  5. Whether the cloud service provider has the ability to decrypt cloud service customer data or cloud service derived data in case of such requests and how this ability for access or disclosure is used;
+
+  5. The number of investigation requests for cloud service customer data or cloud service derived data and the countries from which these requests originate; and
+
+  6. How often those requests resulted in the cloud service provider sharing cloud service customer data or cloud service derived data with the government agency.
+
+
+  The scope of the information corresponds to the needs of the subject matter experts of the cloud service customers who define specifications on information security, implement these or validate their implementation and assess the suitability of the cloud service from a legal and regulatory point of view (e.g. IT, compliance, internal audit).
+  
+  
+  Additional information on the technical procedures for data disclosure is to be communicated with cloud service customers according to INQ-04. In case the description of the cloud service provider''s system of internal control addresses multiple cloud services, differences in technical procedures between each service are to be detailed within the provided information.'
+  hint: 'The legal foundation on which these governmental services are based (e.g. law enforcement agencies, intelligence services) may vary from country to country. In particular, the applicable jurisdiction at the locations where cloud service customer data and cloud service derived data is processed, stored and backed up must be considered.
+
+
+         In Germany, such powers are governed by the laws of the German Federal Criminal Police Office (or the laws of the respective state offices), various procedural codes for courts and the laws for intelligence services (BNDG, BVerfSchG, respective laws on the constitutional protection offices of the federal states, MADG) and the G10 Act.
+
+
+        Further regulation applicable within the EU are, e.g., the Budapest Convention on Cybercrime (ETS No. 185) as well as the EU directives 2023/1543 and 2023/1544 to establish a legal framework for obtaining and securing electronic evidence in criminal proceedings across EU Member States.
+
+
+         In other countries, other laws are relevant, and the cloud service customer may only occasionally be aware of them from the media, e.g. the CLOUD Act (''Clarifying Lawful Overseas Use of Data Act'') from the United States of America or the Cyber Security Law of the People''s Republic of China. In conjunction with the other information on the cloud service, the cloud service customer should be able to use this information to carry out a risk assessment assessing if and how these are relevant.'
+-
+  id: 'GC-06'
+  name: 'Information on certifications or attestations'
+  condition: 'In the description of the cloud service provider''s system of internal control relevant to the development and operation of the cloud service, the cloud service provider presents comprehensible and transparent information on existing and valid certifications or attestations by independent third parties relating to the following aspects of the cloud service:
+
+
+              1. Compliance of the management systems for information security, business continuity and quality with applicable international standards;
+
+              2. Compliance with the European General Data Protection Regulation (GDPR);
+
+              3. Suitability of the design and operating effectiveness of the internal control system in relation to the applicable criteria;
+
+              4. Certifications or attestations (assurance reports) according to industry specific requirements of cloud service customers; and
+
+              5. Certifications or attestations (assurance reports) related to environmental, social and governance standards (ESG). 
+
+
+              To the extent applicable for the certification or attestation, the following information are provided:
+
+
+              1. Date of issuance;
+
+              2. Issuing organisation; 
+              
+              3. Applicable scope; and
+
+              4. Date or period of validity or coverage.
+
+
+              The scope of the information corresponds to the needs of the subject matter experts of the cloud service customers who define specifications on information security, implement these or validate their implementation and assess the suitability of the cloud service from a legal and regulatory point of view (e.g. IT, compliance, internal audit).'
+  hint: 'Transparency can be additionally increased by disclosing SLAs based on ISO/IEC 19086 or comparable standards. 
+
+
+         Compliance of the management systems for information security, business continuity and quality may be demonstrated, for example, with certificates in accordance with ISO/IEC 27001, ISO 22301 and ISO 9001.
+
+
+         Examples for ESG reporting include reporting according to the EU Corporate Sustainability Reporting Directive (CSRD) and certifications such as ISO 50001, ISO 14001 and the German ecolabel Blue Angel.
+
+         
+         Fulfilment of the General Condition does not require the cloud service provider to hold a certification or attestation for all listed aspects.'

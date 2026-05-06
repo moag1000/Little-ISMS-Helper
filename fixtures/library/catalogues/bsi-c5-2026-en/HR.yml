@@ -1,0 +1,339 @@
+-
+  identifier: &ID_Criterion_Verification_of_Qualification_and_Trustworthiness '01'
+  name: 'Verification of Qualification and Trustworthiness'
+  basic: 
+    -
+      identifier: &ID_Criterion_Verification_of_Qualification_and_Trustworthiness_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider identifies for the production environment which roles within the organisation can access cloud service customer data, cloud service derived data, cloud service provider data, account data or system components under the cloud service provider''s responsibility.'
+    -
+      identifier: &ID_Criterion_Verification_of_Qualification_and_Trustworthiness_Subcriterion_Basic_2 '02B'
+      criterion: 'The competency and integrity of all internal and external personnel to which these roles are assigned is verified prior to employment. The verification considers the following measures, to the extent permitted by local legislation and regulation and as considered appropriate by the cloud service provider to mitigate risks related to inappropriate access to the respective data type:
+
+
+1. Verification of the person''s identity via identity card or passport;
+
+2. Verification of professional experience through the CV;
+
+3. Verification of academic titles and degrees;
+
+4. Request for a certificate of good conduct, police clearance or other national equivalents; and
+
+5. Evaluation of susceptibility to blackmail.
+
+'
+    -
+      identifier: &ID_Criterion_Verification_of_Qualification_and_Trustworthiness_Subcriterion_Basic_3 '03B'
+      criterion: 'The cloud service provider considers changes in personnel roles or employment status that may impact access rights, responsibilities, or risk exposure, and identifies and mitigates related risks.'
+    -
+      identifier: &ID_Criterion_Verification_of_Qualification_and_Trustworthiness_Subcriterion_Basic_4 '04B'
+      criterion: 'The cloud service provider classifies security-sensitive positions according to their level of risk, including IT administration roles and any positions with access to cloud service customer data or to system components used to provide the cloud service in the production environment.'
+    -
+      identifier: &ID_Criterion_Verification_of_Qualification_and_Trustworthiness_Subcriterion_Basic_5 '05B'
+      criterion: 'The cloud service provider assesses the competence and integrity of its personnel before transfer or promotion into a role with a higher risk classification.'
+    -
+      identifier: &ID_Criterion_Verification_of_Qualification_and_Trustworthiness_Subcriterion_Basic_6 '06B'
+      criterion: 'The intensity of the assessment defined in this criterion is in proportion to the business context, the sensitivity of the information that the personnel will access, and the associated risks.'
+  additional_sharpen:
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Verification_of_Qualification_and_Trustworthiness_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider defines in the human resource policy positions with levels and risk classification that require regular assessment of competence and integrity. The cloud service provider annually reviews their assessment of competence and integrity for personnel belonging to the defined positions.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Verification_of_Qualification_and_Trustworthiness_Subcriterion_Basic_1
+      information_text: 'This criterion applies to both existing and newly hired personnel. Roles with access to these data types or system components can, depending on their access rights, include, but are not limited to:
+
+
+1. Cloud software engineers and developers;
+
+2. Cloud architects and cloud infrastructure engineers;
+
+3. Cloud platform engineers and DevOps engineers;
+
+4. System operations engineers and managers;
+
+5. Cloud operations engineers and managers;
+
+6. Cloud network engineers and architecture leads;
+
+7. Cloud security engineers, administrators and security architects;
+
+8. Cloud security operations specialists and analysts;
+
+9. Storage and database engineers;
+
+10. Technical account managers and customer account managers;
+
+11. Customer support engineers;
+
+12. IAM administrators and access management specialists;
+
+13. Cloud compliance managers and risk and compliance analysts; and
+
+14. Information security officers and data protection officers.
+
+
+Personnel refers to both internal and external personnel.
+
+'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Verification_of_Qualification_and_Trustworthiness_Subcriterion_Basic_2
+      information_text: 'This criterion applies to both existing and newly hired personnel. External personnel in the sense of the criterion is that which performs activities in accordance with the processes and procedures of the cloud service provider and that has potential access to cloud service customer data or cloud service derived data. Personnel of service organisations that performs activities according to the service organisation''s own processes and procedures is not covered by this criterion.
+
+
+Permissible verifications of competency and integrity are governed by applicable local laws and the roles of the personnel. In some jurisdictions, the collection, processing, or disclosure of such information is fundamentally restricted or even prohibited, meaning they may be unable to be obtained at all or only in a very limited form. Where permitted, explicit consent by the personnel may be required depending on the nature and scope of the checks. These legal constraints also apply to any analyses concerning blackmailing.
+     
+
+The verification of qualification and trustworthiness can be supported by specialised service providers or be based on voluntary self-disclosure of the personnel. Depending on national legislation, national equivalents of the German certificate of good conduct (''Führungszeugnis'') may also be permitted. Assessing the vulnerability of potential personnel to blackmail can involve evaluating their creditworthiness. However, this assessment may only be legally permissible for positions with significant financial responsibility, depending on local regulations.
+      
+
+Risks related to inappropriate access to cloud service customer data may be mitigated by the use of encryption or monitoring system access for suspicious events. Although such measures are not supposed to completely substitute the above-mentioned verification measures, the extent of such measures may be reduced.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Verification_of_Qualification_and_Trustworthiness_Subcriterion_Additional_Complement_1
+      information_text: 'Cloud service providers can implement various methods to assess competence and integrity of personnel in high risk positions, such as:
+
+
+1. Self-disclosure of significant financial interests to determine conflicts of interest and susceptibility to blackmail;
+
+2. Regular checking of certificates of good conduct, police clearance or other national equivalents;
+
+3. Regular self-declaration of commitment with applicable policies and obligations;
+
+4. Enforcing regular ethics and compliance trainings, including certification and testing of the personnel''s understanding of applicable requirements and policies;
+
+5. Enforcing regular participation in assessment centers to evaluate personnel''s competence and integrity; and
+
+6. Regular checks of personnel against national and international sanctions lists.
+
+'   
+  corresponding:
+-
+  identifier: &ID_Criterion_Employment_Terms_and_Conditions '02'
+  name: 'Employment Terms and Conditions'
+  basic: 
+    -
+      identifier: &ID_Criterion_Employment_Terms_and_Conditions_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider ensures that the employment terms and conditions reflect applicable legal and regulatory requirements in accordance with SP-01.'
+    -
+      identifier: &ID_Criterion_Employment_Terms_and_Conditions_Subcriterion_Basic_2 '02B'
+      criterion: 'The cloud service provider''s internal and external personnel are required by employment terms and conditions to comply with the code of ethics and the information security policy, as well as the policies, procedures and instructions based on it.'
+    -
+      identifier: &ID_Criterion_Employment_Terms_and_Conditions_Subcriterion_Basic_3 '03B'
+      criterion: 'The cloud service provider ensures that a non-disclosure provision is included in the terms for all internal and external personnel. The non-disclosure provision covers any information, including anonymised and decontextualised information, that the personnel obtains or generates as part of the cloud service.'
+    -
+      identifier: &ID_Criterion_Employment_Terms_and_Conditions_Subcriterion_Basic_4 '04B'
+      criterion: 'The cloud service provider instructs its personnel on the code of ethics and the information security policy, as well as the policies, procedures and instructions based on it, before access is granted to any cloud service customer data, cloud service derived data, cloud service provider data and account data or system components under the responsibility of the cloud service provider used to provide the cloud service in the production environment.'
+    -
+      identifier: &ID_Criterion_Employment_Terms_and_Conditions_Subcriterion_Basic_5 '05B'
+      criterion: 'Additionally, the cloud service provider requires the code of ethics and the information security policy, as well as the policies, procedures and instructions based on it, to be acknowledged by the internal and external personnel in a documented form before access is granted to any of the aforementioned data or system components.'
+  additional_sharpen:
+  additional_complement: 
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Employment_Terms_and_Conditions_Subcriterion_Basic_3
+      information_text: 'These agreements are prescribed in more detail in HR-06.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Security_Training_and_Awareness_Programme '03'
+  name: 'Security Training and Awareness Programme'
+  basic: 
+    -
+      identifier: &ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider operates a target group-oriented security awareness and training programme.'
+    -
+      identifier: &ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Basic_2 '02B'
+      criterion: 'All internal and external personnel of the cloud service provider undergoes a role-based training programme regularly and when changing job function, taking into consideration at least the risk classification and technical responsibilities of their position.' 
+    -
+      identifier: &ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Basic_3 '03B'
+      criterion: 'The programme is regularly updated based on changes to policies and procedures and the current threat situation and includes the following aspects insofar as they are applicable to each personnel''s role:
+
+
+1. Handling system components used to provide the cloud service in the production environment in accordance with applicable policies and procedures;
+
+2. Handling cloud service customer data, cloud service derived data, cloud service provider data and account data in accordance with applicable policies and procedures and applicable legal and regulatory requirements;
+
+3. Information about the current threat situation;
+
+4. Correct behaviour in the event of security incidents;
+
+5. Security best practices; and
+
+6. Secure development.
+
+'
+    -
+      identifier: &ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Basic_4 '04B'
+      criterion: 'The learning outcomes achieved through the awareness and training programme are measured and evaluated.'
+  additional_sharpen:
+    -  
+      identifier: &ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Additional_Sharpen_2 '02AS'
+      sharpened_basic_criterion: *ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Basic_2
+      criterion: 'All internal and external personnel of the cloud service provider undergoes a role-based training programme at least annually and when changing job function, taking into consideration at least the risk classification and technical responsibilities of their position.'
+  additional_complement: 
+    -
+      identifier: &ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Additional_Complement_1 '01AC'
+      criterion: 'The cloud service provider monitors the completion of the security awareness and training programme.' 
+    -
+      identifier: &ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Additional_Complement_2 '02AC'
+      criterion: 'Timely and appropriate remediation measures address any deviations identified during monitoring.'
+    -
+      identifier: &ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Additional_Complement_3 '03AC'
+      criterion: 'The learning outcomes achieved through the awareness and training programme are measured and evaluated in a target group-oriented manner.' 
+    -
+      identifier: &ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Additional_Complement_4 '04AC'
+      criterion: 'The measurements cover quantitative and qualitative aspects.' 
+    -
+      identifier: &ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Additional_Complement_5 '05AC'
+      criterion: 'The results are used to improve the awareness and training programme.'
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Basic_1
+      information_text: 'The target groups may be defined considering job function, job position and the associated risk classification. Target groups serve to simplify and systematise the security training and awareness programme.'  
+    -
+      applicable_criteria:
+        - *ID_Criterion_Security_Training_and_Awareness_Programme_Subcriterion_Additional_Complement_3
+      information_text: 'The measurement and evaluation of learning outcomes in a target group-oriented manner, as specified by the additional criterion, do not require assessing each member of the personnel individually. Instead, evaluations can be performed at an aggregated level, focusing on the overall effectiveness of the training program for specific target groups. This approach allows for the identification of trends and areas for improvement within the program while respecting the personnel''s privacy requirements.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Disciplinary_Measures '04'
+  name: 'Disciplinary Measures'
+  basic: 
+    -
+      identifier: &ID_Criterion_Disciplinary_Measures_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider ensures that the policies and procedures concerning disciplinary measures reflect applicable legal and regulatory requirements in accordance with SP-01.'
+    -
+      identifier: &ID_Criterion_Disciplinary_Measures_Subcriterion_Basic_2 '02B'
+      criterion: 'In the event of violations of policies and procedures or applicable legal and regulatory requirements, actions are taken in accordance with a defined policy that includes the following aspects:
+
+
+1. Verifying whether a violation has occurred; and
+
+2. Consideration of the nature and severity of the violation and its impact.
+
+'
+    -
+      identifier: &ID_Criterion_Disciplinary_Measures_Subcriterion_Basic_3 '03B'
+      criterion: 'The internal and external personnel of the cloud service provider is informed about possible disciplinary measures.'
+    -
+      identifier: &ID_Criterion_Disciplinary_Measures_Subcriterion_Basic_4 '04B'
+      criterion: 'The use of disciplinary measures is appropriately documented.'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Disciplinary_Measures_Subcriterion_Basic_4
+      information_text: 'With regards to the use of disciplinary measures, the submission of anonymised evidence is acceptable and does not imply that the basic criterion is not fully fulfilled.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Responsibilities_in_the_Event_of_Termination_or_Change_of_Employment '05'
+  name: 'Responsibilities in the Event of Termination or Change of Employment'
+  basic: 
+    -
+      identifier: &ID_Criterion_Responsibilities_in_the_Event_of_Termination_or_Change_of_Employment_Subcriterion_Basic_1 '01B'
+      criterion: 'Internal and external personnel has been informed about which responsibilities, arising from employment terms and conditions relating to information security, will remain in place when the employment is terminated or changed and for how long.'
+  additional_sharpen:
+  additional_complement:
+  information: 
+  corresponding:
+-
+  identifier: &ID_Criterion_Confidentiality_Agreements '06'
+  name: 'Non-disclosure Agreements'
+  basic: 
+    -
+      identifier: &ID_Criterion_Confidentiality_Agreements_Subcriterion_Basic_1 '01B'
+      criterion: 'The non-disclosure or confidentiality agreements to be agreed with internal personnel and service organisations of the cloud service provider are based on the requirements identified by the cloud service provider for the protection of confidential information and operational details.'
+    -
+      identifier: &ID_Criterion_Confidentiality_Agreements_Subcriterion_Basic_2 '02B'
+      criterion: 'The agreements are to be accepted by service organisations when the contract is agreed.' 
+    -
+      identifier: &ID_Criterion_Confidentiality_Agreements_Subcriterion_Basic_3 '03B'
+      criterion: 'The agreements are to be accepted by internal personnel of the cloud service provider before authorisation to access cloud service customer data, cloud service derived data, cloud service provider data and account data is granted.'
+    -
+      identifier: &ID_Criterion_Confidentiality_Agreements_Subcriterion_Basic_4 '04B'
+      criterion: 'The requirements are documented and reviewed at regular intervals (at least annually), as well as in case of significant changes to the cloud service. If the review shows that the requirements need to be adapted, the non-disclosure or confidentiality agreements are updated.'
+    -
+      identifier: &ID_Criterion_Confidentiality_Agreements_Subcriterion_Basic_5 '05B'
+      criterion: 'The cloud service provider informs the internal personnel and service organisations and obtains confirmation of the updated confidentiality or non-disclosure agreement.' 
+    -
+      identifier: &ID_Criterion_Confidentiality_Agreements_Subcriterion_Basic_6 '06B'
+      criterion: 'In instances where an agreement on the updates cannot be reached, the cloud service provider assesses the resulting risks to information security according to OIS-07.'
+  additional_sharpen:
+  additional_complement: 
+  information: 
+    -
+      applicable_criteria:
+        - *ID_Criterion_Confidentiality_Agreements_Subcriterion_Basic_1
+      information_text: 'A non-disclosure agreement (NDA) is a legal document and has content required by both parties to protect confidential information. Processes and procedures around media handling can be managed separately outside of the NDA. An NDA should cover:
+
+
+1. Which information or data types must be kept confidential;
+
+2. The period for which this confidentiality agreement applies;
+
+3. What actions must be taken upon termination of this agreement, e.g. destruction or return of data medium;
+
+4. How the ownership of information is regulated;
+
+5. What rules apply to the use and disclosure of confidential information to other partners, if necessary; and
+
+6. The consequences of a breach of the agreement.
+
+
+These agreements are described in general in HR-02.'
+    -
+      applicable_criteria:
+        - *ID_Criterion_Confidentiality_Agreements_Subcriterion_Basic_2
+        - *ID_Criterion_Confidentiality_Agreements_Subcriterion_Basic_3
+        - *ID_Criterion_Confidentiality_Agreements_Subcriterion_Basic_5
+      information_text: 'Confidentiality or non-disclosure agreements should be signed by means of an electronic signature, insofar as this is legally binding.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Policy_for_Remote_Working '07'
+  name: 'Remote Working - Policy'
+  basic: 
+    -
+      identifier: &ID_Criterion_Policy_for_Remote_Working_Subcriterion_Basic_1 '01B'
+      criterion: 'Policies and procedures for the protection of information when personnel works remotely are documented, communicated and provided in accordance with SP-01 and address the following aspects:
+
+
+1. Establishing guidelines for the personnel for the safe handling and storage of sensitive information and data types;
+
+2. Definition of remote access security requirements;
+
+3. Utilisation of secure communication methods and enforcement of secure network use (e.g., VPN usage, endpoint protection, multi-factor authentication, secure communication channels); and
+
+4. Provision of organisation-approved equipment and prohibition of unregulated personal devices.
+
+'
+  additional_sharpen:
+  additional_complement:
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Policy_for_Remote_Working_Subcriterion_Basic_1
+      information_text: 'Please note that this criterion refers to off-site working places whereas PS-08.01B addresses security requirements for on-site office workplaces.
+      
+      
+The guidelines for the personnel for safe handling and storage of sensitive information and data types refer to organisational measures the personnel is obligated to follow. Remote access security requirements refer to technical measures like e.g. MFA and VPN and also rules for the particular work place that follow from general considerations about working e.g. in public places where the screen can be spied on.'
+  corresponding:
+-
+  identifier: &ID_Criterion_Implementation_Remote_Working '08'
+  name: 'Remote Working - Implementation'
+  basic: 
+    -
+      identifier: &ID_Criterion_Implementation_Remote_Working_Subcriterion_Basic_1 '01B'
+      criterion: 'The cloud service provider designs, implements and maintains the technical and organisational measures required to enable its personnel to comply with the policies and procedures for remote work (cf. HR-07).'
+  additional_sharpen:
+  additional_complement:
+  information:
+    -
+      applicable_criteria:
+        - *ID_Criterion_Implementation_Remote_Working_Subcriterion_Basic_1
+      information_text: 'Please note that this criterion refers to off-site working places whereas PS-08.01B addresses security requirements for on-site office workplaces.'
+  corresponding:
