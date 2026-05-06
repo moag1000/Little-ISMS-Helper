@@ -2194,6 +2194,8 @@ class ComplianceWizardService
             'governance' => [
                 'name' => 'wizard.dora.governance',
                 'description' => 'wizard.dora.governance_desc',
+                'maturity_baseline' => 'wizard.dora.governance_baseline',
+                'maturity_enhanced' => 'wizard.dora.governance_enhanced',
                 'icon' => 'bi-building',
                 'weight' => 2,
                 'article' => '5-6',
@@ -2226,6 +2228,8 @@ class ComplianceWizardService
             'ict_systems' => [
                 'name' => 'wizard.dora.ict_systems',
                 'description' => 'wizard.dora.ict_systems_desc',
+                'maturity_baseline' => 'wizard.dora.ict_systems_baseline',
+                'maturity_enhanced' => 'wizard.dora.ict_systems_enhanced',
                 'icon' => 'bi-hdd-network',
                 'weight' => 2,
                 'article' => '7',
@@ -2256,6 +2260,8 @@ class ComplianceWizardService
             'identification' => [
                 'name' => 'wizard.dora.identification',
                 'description' => 'wizard.dora.identification_desc',
+                'maturity_baseline' => 'wizard.dora.identification_baseline',
+                'maturity_enhanced' => 'wizard.dora.identification_enhanced',
                 'icon' => 'bi-search',
                 'weight' => 2,
                 'article' => '8',
@@ -2294,6 +2300,8 @@ class ComplianceWizardService
             'protection' => [
                 'name' => 'wizard.dora.protection',
                 'description' => 'wizard.dora.protection_desc',
+                'maturity_baseline' => 'wizard.dora.protection_baseline',
+                'maturity_enhanced' => 'wizard.dora.protection_enhanced',
                 'icon' => 'bi-shield-check',
                 'weight' => 2,
                 'article' => '9',
@@ -2335,6 +2343,8 @@ class ComplianceWizardService
             'detection' => [
                 'name' => 'wizard.dora.detection',
                 'description' => 'wizard.dora.detection_desc',
+                'maturity_baseline' => 'wizard.dora.detection_baseline',
+                'maturity_enhanced' => 'wizard.dora.detection_enhanced',
                 'icon' => 'bi-eye',
                 'weight' => 1.5,
                 'article' => '10',
@@ -2366,6 +2376,8 @@ class ComplianceWizardService
             'response_recovery' => [
                 'name' => 'wizard.dora.response_recovery',
                 'description' => 'wizard.dora.response_recovery_desc',
+                'maturity_baseline' => 'wizard.dora.response_recovery_baseline',
+                'maturity_enhanced' => 'wizard.dora.response_recovery_enhanced',
                 'icon' => 'bi-arrow-repeat',
                 'weight' => 2,
                 'article' => '11',
@@ -2415,6 +2427,8 @@ class ComplianceWizardService
             'learning' => [
                 'name' => 'wizard.dora.learning',
                 'description' => 'wizard.dora.learning_desc',
+                'maturity_baseline' => 'wizard.dora.learning_baseline',
+                'maturity_enhanced' => 'wizard.dora.learning_enhanced',
                 'icon' => 'bi-lightbulb',
                 'weight' => 1.5,
                 'article' => '13',
@@ -2445,6 +2459,8 @@ class ComplianceWizardService
             'communication' => [
                 'name' => 'wizard.dora.communication',
                 'description' => 'wizard.dora.communication_desc',
+                'maturity_baseline' => 'wizard.dora.communication_baseline',
+                'maturity_enhanced' => 'wizard.dora.communication_enhanced',
                 'icon' => 'bi-megaphone',
                 'weight' => 1,
                 'article' => '14',
@@ -2463,6 +2479,8 @@ class ComplianceWizardService
             'incident_management' => [
                 'name' => 'wizard.dora.incident_management',
                 'description' => 'wizard.dora.incident_management_desc',
+                'maturity_baseline' => 'wizard.dora.incident_management_baseline',
+                'maturity_enhanced' => 'wizard.dora.incident_management_enhanced',
                 'icon' => 'bi-exclamation-triangle',
                 'weight' => 2,
                 'article' => '17',
@@ -2491,6 +2509,8 @@ class ComplianceWizardService
             'incident_classification' => [
                 'name' => 'wizard.dora.incident_classification',
                 'description' => 'wizard.dora.incident_classification_desc',
+                'maturity_baseline' => 'wizard.dora.incident_classification_baseline',
+                'maturity_enhanced' => 'wizard.dora.incident_classification_enhanced',
                 'icon' => 'bi-tags',
                 'weight' => 1.5,
                 'article' => '18',
@@ -2509,6 +2529,8 @@ class ComplianceWizardService
             'incident_reporting' => [
                 'name' => 'wizard.dora.incident_reporting',
                 'description' => 'wizard.dora.incident_reporting_desc',
+                'maturity_baseline' => 'wizard.dora.incident_reporting_baseline',
+                'maturity_enhanced' => 'wizard.dora.incident_reporting_enhanced',
                 'icon' => 'bi-clipboard-data',
                 'weight' => 2,
                 'article' => '19',
@@ -2544,6 +2566,8 @@ class ComplianceWizardService
             'resilience_testing' => [
                 'name' => 'wizard.dora.resilience_testing',
                 'description' => 'wizard.dora.resilience_testing_desc',
+                'maturity_baseline' => 'wizard.dora.resilience_testing_baseline',
+                'maturity_enhanced' => 'wizard.dora.resilience_testing_enhanced',
                 'icon' => 'bi-bug',
                 'weight' => 2,
                 'article' => '24-25',
@@ -2583,6 +2607,8 @@ class ComplianceWizardService
             'tlpt' => [
                 'name' => 'wizard.dora.tlpt',
                 'description' => 'wizard.dora.tlpt_desc',
+                'maturity_baseline' => 'wizard.dora.tlpt_baseline',
+                'maturity_enhanced' => 'wizard.dora.tlpt_enhanced',
                 'icon' => 'bi-shield-exclamation',
                 'weight' => 1.5,
                 'article' => '26-27',
@@ -2601,6 +2627,8 @@ class ComplianceWizardService
             'third_party_risk' => [
                 'name' => 'wizard.dora.third_party_risk',
                 'description' => 'wizard.dora.third_party_risk_desc',
+                'maturity_baseline' => 'wizard.dora.third_party_risk_baseline',
+                'maturity_enhanced' => 'wizard.dora.third_party_risk_enhanced',
                 'icon' => 'bi-people',
                 'weight' => 2,
                 'article' => '28-30',
@@ -2637,6 +2665,8 @@ class ComplianceWizardService
             'contractual' => [
                 'name' => 'wizard.dora.contractual',
                 'description' => 'wizard.dora.contractual_desc',
+                'maturity_baseline' => 'wizard.dora.contractual_baseline',
+                'maturity_enhanced' => 'wizard.dora.contractual_enhanced',
                 'icon' => 'bi-file-earmark-text',
                 'weight' => 1.5,
                 'article' => '30',
@@ -2715,6 +2745,8 @@ class ComplianceWizardService
             'lawfulness' => [
                 'name' => 'wizard.gdpr.lawfulness',
                 'description' => 'wizard.gdpr.lawfulness_desc',
+                'maturity_baseline' => 'wizard.gdpr.lawfulness_baseline',
+                'maturity_enhanced' => 'wizard.gdpr.lawfulness_enhanced',
                 'icon' => 'bi-file-earmark-text',
                 'weight' => 2,
                 'checks' => [
@@ -2729,6 +2761,8 @@ class ComplianceWizardService
             'data_subject_rights' => [
                 'name' => 'wizard.gdpr.data_subject_rights',
                 'description' => 'wizard.gdpr.data_subject_rights_desc',
+                'maturity_baseline' => 'wizard.gdpr.data_subject_rights_baseline',
+                'maturity_enhanced' => 'wizard.gdpr.data_subject_rights_enhanced',
                 'icon' => 'bi-person-check',
                 'weight' => 1.5,
                 'checks' => [
@@ -2742,6 +2776,8 @@ class ComplianceWizardService
             'security_measures' => [
                 'name' => 'wizard.gdpr.security_measures',
                 'description' => 'wizard.gdpr.security_measures_desc',
+                'maturity_baseline' => 'wizard.gdpr.security_measures_baseline',
+                'maturity_enhanced' => 'wizard.gdpr.security_measures_enhanced',
                 'icon' => 'bi-shield-lock',
                 'weight' => 2,
                 'checks' => [
@@ -2756,6 +2792,8 @@ class ComplianceWizardService
             'breach_notification' => [
                 'name' => 'wizard.gdpr.breach_notification',
                 'description' => 'wizard.gdpr.breach_notification_desc',
+                'maturity_baseline' => 'wizard.gdpr.breach_notification_baseline',
+                'maturity_enhanced' => 'wizard.gdpr.breach_notification_enhanced',
                 'icon' => 'bi-exclamation-triangle',
                 'weight' => 1.5,
                 'checks' => [
@@ -2771,6 +2809,8 @@ class ComplianceWizardService
             'awareness' => [
                 'name' => 'wizard.gdpr.awareness',
                 'description' => 'wizard.gdpr.awareness_desc',
+                'maturity_baseline' => 'wizard.gdpr.awareness_baseline',
+                'maturity_enhanced' => 'wizard.gdpr.awareness_enhanced',
                 'icon' => 'bi-mortarboard',
                 'weight' => 1,
                 'checks' => [
@@ -4658,6 +4698,8 @@ class ComplianceWizardService
             'prohibited_practices' => [
                 'name' => 'wizard.eu_ai_act.prohibited_practices',
                 'description' => 'wizard.eu_ai_act.prohibited_practices_desc',
+                'maturity_baseline' => 'wizard.eu_ai_act.prohibited_practices_baseline',
+                'maturity_enhanced' => 'wizard.eu_ai_act.prohibited_practices_enhanced',
                 'icon' => 'bi-slash-circle-fill',
                 'weight' => 3,
                 'checks' => [
@@ -4672,6 +4714,8 @@ class ComplianceWizardService
             'high_risk_classification' => [
                 'name' => 'wizard.eu_ai_act.high_risk_classification',
                 'description' => 'wizard.eu_ai_act.high_risk_classification_desc',
+                'maturity_baseline' => 'wizard.eu_ai_act.high_risk_classification_baseline',
+                'maturity_enhanced' => 'wizard.eu_ai_act.high_risk_classification_enhanced',
                 'icon' => 'bi-exclamation-triangle-fill',
                 'weight' => 3,
                 'checks' => [
@@ -4685,6 +4729,8 @@ class ComplianceWizardService
             'risk_management_system' => [
                 'name' => 'wizard.eu_ai_act.risk_management_system',
                 'description' => 'wizard.eu_ai_act.risk_management_system_desc',
+                'maturity_baseline' => 'wizard.eu_ai_act.risk_management_system_baseline',
+                'maturity_enhanced' => 'wizard.eu_ai_act.risk_management_system_enhanced',
                 'icon' => 'bi-graph-up-arrow',
                 'weight' => 2.5,
                 'checks' => [
@@ -4699,6 +4745,8 @@ class ComplianceWizardService
             'data_governance' => [
                 'name' => 'wizard.eu_ai_act.data_governance',
                 'description' => 'wizard.eu_ai_act.data_governance_desc',
+                'maturity_baseline' => 'wizard.eu_ai_act.data_governance_baseline',
+                'maturity_enhanced' => 'wizard.eu_ai_act.data_governance_enhanced',
                 'icon' => 'bi-database-check',
                 'weight' => 2,
                 'checks' => [
@@ -4713,6 +4761,8 @@ class ComplianceWizardService
             'technical_documentation' => [
                 'name' => 'wizard.eu_ai_act.technical_documentation',
                 'description' => 'wizard.eu_ai_act.technical_documentation_desc',
+                'maturity_baseline' => 'wizard.eu_ai_act.technical_documentation_baseline',
+                'maturity_enhanced' => 'wizard.eu_ai_act.technical_documentation_enhanced',
                 'icon' => 'bi-file-earmark-text-fill',
                 'weight' => 2,
                 'checks' => [
@@ -4728,6 +4778,8 @@ class ComplianceWizardService
             'human_oversight' => [
                 'name' => 'wizard.eu_ai_act.human_oversight',
                 'description' => 'wizard.eu_ai_act.human_oversight_desc',
+                'maturity_baseline' => 'wizard.eu_ai_act.human_oversight_baseline',
+                'maturity_enhanced' => 'wizard.eu_ai_act.human_oversight_enhanced',
                 'icon' => 'bi-eye-fill',
                 'weight' => 2,
                 'checks' => [
@@ -4742,6 +4794,8 @@ class ComplianceWizardService
             'accuracy_robustness' => [
                 'name' => 'wizard.eu_ai_act.accuracy_robustness',
                 'description' => 'wizard.eu_ai_act.accuracy_robustness_desc',
+                'maturity_baseline' => 'wizard.eu_ai_act.accuracy_robustness_baseline',
+                'maturity_enhanced' => 'wizard.eu_ai_act.accuracy_robustness_enhanced',
                 'icon' => 'bi-shield-fill-check',
                 'weight' => 2,
                 'checks' => [
@@ -4755,6 +4809,8 @@ class ComplianceWizardService
             'transparency_obligations' => [
                 'name' => 'wizard.eu_ai_act.transparency_obligations',
                 'description' => 'wizard.eu_ai_act.transparency_obligations_desc',
+                'maturity_baseline' => 'wizard.eu_ai_act.transparency_obligations_baseline',
+                'maturity_enhanced' => 'wizard.eu_ai_act.transparency_obligations_enhanced',
                 'icon' => 'bi-info-square-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -4769,6 +4825,8 @@ class ComplianceWizardService
             'gpai_obligations' => [
                 'name' => 'wizard.eu_ai_act.gpai_obligations',
                 'description' => 'wizard.eu_ai_act.gpai_obligations_desc',
+                'maturity_baseline' => 'wizard.eu_ai_act.gpai_obligations_baseline',
+                'maturity_enhanced' => 'wizard.eu_ai_act.gpai_obligations_enhanced',
                 'icon' => 'bi-diagram-3-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -4783,6 +4841,8 @@ class ComplianceWizardService
             'conformity_assessment' => [
                 'name' => 'wizard.eu_ai_act.conformity_assessment',
                 'description' => 'wizard.eu_ai_act.conformity_assessment_desc',
+                'maturity_baseline' => 'wizard.eu_ai_act.conformity_assessment_baseline',
+                'maturity_enhanced' => 'wizard.eu_ai_act.conformity_assessment_enhanced',
                 'icon' => 'bi-clipboard-check-fill',
                 'weight' => 1.5,
                 'checks' => [
@@ -4797,6 +4857,8 @@ class ComplianceWizardService
             'post_market_monitoring' => [
                 'name' => 'wizard.eu_ai_act.post_market_monitoring',
                 'description' => 'wizard.eu_ai_act.post_market_monitoring_desc',
+                'maturity_baseline' => 'wizard.eu_ai_act.post_market_monitoring_baseline',
+                'maturity_enhanced' => 'wizard.eu_ai_act.post_market_monitoring_enhanced',
                 'icon' => 'bi-activity',
                 'weight' => 1.5,
                 'checks' => [

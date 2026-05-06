@@ -317,6 +317,36 @@ wizard:
         third_party_risk_desc: "Third-Party-Strategie, Konzentrationsrisiko, Informationsregister"
         contractual: "Vertragliche Regelungen (Art. 30)"
         contractual_desc: "Vertragsanforderungen und Exit-Strategien"
+        governance_baseline: 'Geschaeftsleitung hat ICT-Verantwortung schriftlich uebernommen; jaehrliche Risk-Strategy-Updates.'
+        governance_enhanced: 'ICT-Risk = stehender TOP der Vorstandssitzungen, KPI-Reporting an BaFin/EZB, Drei-Linien-Modell durchgaengig.'
+        ict_systems_baseline: 'Standardisierte ICT-Tools dokumentiert, Lifecycle-Mgmt etabliert.'
+        ict_systems_enhanced: 'ICT-System-Inventar mit Criticality-Tagging, 24/7-Monitoring, Multi-Region-Redundanz.'
+        identification_baseline: 'Asset-Inventar + Risk-Register laufen; jaehrliche Aktualisierung.'
+        identification_enhanced: 'Continuous Discovery via CMDB, Threat-Modelling pro Critical-Process, Concentration-Risk-Matrix.'
+        protection_baseline: 'Defense-in-Depth-Massnahmen umgesetzt, Crypto/MFA/Network-Seg vorhanden.'
+        protection_enhanced: 'Zero-Trust-Architektur, Phishing-resistant MFA (FIDO2), Crypto-Agility, Hardware-Backed Keys.'
+        detection_baseline: 'Logging zentral; SIEM mit Standard-Use-Cases; Alarmierung definiert.'
+        detection_enhanced: '24/7 SOC, MITRE-ATT&CK-Coverage, automatisierte Threat-Hunting-Routinen.'
+        response_recovery_baseline: 'IR-Plan dokumentiert, jaehrliche Tabletop-Uebung, dokumentierte Eskalation.'
+        response_recovery_enhanced: 'Red-Team-Exercises mit Recovery-Time-Validation, automatisierte Failover-Routinen, Post-Incident-Reviews mit Mgmt-Eskalation.'
+        learning_baseline: 'Lessons-Learned nach jedem Major-Incident; jaehrliche Framework-Reviews.'
+        learning_enhanced: 'Threat-Intel-Driven-Updates, externe Red-Team-Reviews, Branchenuebergreifende Erfahrungs-Austausche (FS-ISAC).'
+        communication_baseline: 'Interne IR-Kommunikation; Behoerden-Kontakte etabliert.'
+        communication_enhanced: 'Krisenkommunikations-Plan mit Pre-approved Templates, regelmaessige Stakeholder-Drills, Public-Relations-Playbook.'
+        incident_management_baseline: 'IR-Prozess mit Klassifikation + Eskalation; mindestens 1 Uebung pro Jahr.'
+        incident_management_enhanced: '24/7 IR-Team, automatisierte Forensik, Coordinated-Threat-Intel-Sharing.'
+        incident_classification_baseline: 'CDR 2024/1772 Schwellwerte angewandt; Major-Incident-Definition dokumentiert.'
+        incident_classification_enhanced: 'Automated Classification via SIEM-Rules, kontinuierliche Schwellwert-Kalibrierung.'
+        incident_reporting_baseline: '4h-Initial / 72h-Intermediate / 1M-Final Templates vorbereitet; Test der Meldekette jaehrlich.'
+        incident_reporting_enhanced: 'Automatisierte Reporting-Pipeline an Behoerde, Cross-Border-Coordination via JST, Post-Incident-Audit-Trail.'
+        resilience_testing_baseline: 'Jaehrliche Vulnerability-Scans; Pen-Tests alle 3 Jahre.'
+        resilience_testing_enhanced: 'Continuous Red-Teaming, Chaos-Engineering, Branchenuebergreifende Cyber-Stress-Tests.'
+        tlpt_baseline: 'TLPT alle 3 Jahre nach TIBER-EU-Methodik fuer kritische Funktionen.'
+        tlpt_enhanced: 'Pooled-TLPT mit anderen Finanz-Instituten, jaehrliche Threat-Intel-Driven Red-Team-Operationen.'
+        third_party_risk_baseline: 'Lieferanten-Register; Standard-Sicherheitsklauseln; jaehrliche Audits kritischer ICT-TPPs.'
+        third_party_risk_enhanced: 'Continuous TPP-Monitoring, automated SBOM-Vulnerability-Tracking, Multi-Vendor-Strategy fuer Single-Point-of-Failure-Analysen.'
+        contractual_baseline: 'CDR 2024/1773 Klauseln in allen TPP-Vertraegen; jaehrliche Vertrags-Reviews.'
+        contractual_enhanced: 'Pre-Contract Risk-Assessment, automated Contract-Compliance-Monitoring, Mutual-Audit-Rights mit Pooled-Audits.'
 
     # Check names (generic)
     check:
@@ -767,6 +797,16 @@ wizard:
         breach_notification_desc: "Meldepflichten bei Datenpannen (Art. 33-34)"
         awareness: "Sensibilisierung"
         awareness_desc: "Schulung und Sensibilisierung der Mitarbeiter"
+        lawfulness_baseline: 'Rechtsgrundlagen pro Verarbeitung dokumentiert (Art. 6); Einwilligungen formgerecht eingeholt.'
+        lawfulness_enhanced: 'Privacy-by-Design im Produkt-Lifecycle, Joint-Controller-Vereinbarungen vorhanden, Lawful-Basis-Audit jaehrlich.'
+        data_subject_rights_baseline: 'Rechte-Anfragen-Prozess (Auskunft, Loeschung, Berichtigung) mit 1-Monats-SLA.'
+        data_subject_rights_enhanced: 'Self-Service-Portal fuer Betroffenenrechte, automatisierte Identitaets-Verifikation, Cross-System-Erasure-Coordination.'
+        security_measures_baseline: 'Verschluesselung at-rest + in-transit; Zugriffskonzept; jaehrliche TOM-Reviews (Art. 32).'
+        security_measures_enhanced: 'Pseudonymisierung als Default, kontinuierliche Pen-Tests, Privacy-Engineering-Review pro Release.'
+        breach_notification_baseline: 'Breach-Response-Team etabliert, 72h-Meldepfad an Aufsichtsbehoerde dokumentiert.'
+        breach_notification_enhanced: 'Automatisierte Breach-Detection, vorqualifizierte Meldetexte, Cross-Border-DPA-Coordination.'
+        awareness_baseline: 'Jaehrliche Datenschutz-Schulung pflichtmaessig; Phishing-Tests durchgefuehrt.'
+        awareness_enhanced: 'Rollenbasierte Datenschutz-Curricula, Just-in-Time-Schulungen bei Auffaelligkeiten, externe Data-Protection-Audits.'
 
     # ISO 22301 BCM Categories
     iso22301:
@@ -1083,6 +1123,28 @@ wizard:
         conformity_assessment_desc: 'Interne oder externe Konformitaetsbewertung vor Inverkehrbringen eines Hochrisiko-KI-Systems.'
         post_market_monitoring: 'Post-Market-Monitoring (Art. 72)'
         post_market_monitoring_desc: 'Systematische Beobachtung des KI-Systems nach Inverkehrbringen, Meldung schwerer Vorfaelle an Marktueberwachungsbehoerden.'
+        prohibited_practices_baseline: 'Verbotsliste Art. 5 in Procurement-/Dev-Checklist; jaehrliche Re-Verifikation.'
+        prohibited_practices_enhanced: 'Continuous Monitoring auf Prohibited-Use, Ethics-Review-Board, Auto-Detection im AI-Lifecycle.'
+        high_risk_classification_baseline: 'Annex-III-Klassifikation pro AI-System dokumentiert.'
+        high_risk_classification_enhanced: 'Automated Classification mit Conformity-Assessment-Trigger, jaehrliche Re-Klassifikation bei System-Aenderungen.'
+        risk_management_system_baseline: 'Iterativer Risk-Mgmt-Prozess pro High-Risk-System; Dokumentation aktualisiert.'
+        risk_management_system_enhanced: 'AI-Risk-Engine mit kontinuierlicher Threat-Modelling, Adversarial-Robustness-Testing, Modell-Karte je Release.'
+        data_governance_baseline: 'Trainingsdaten-Quellen dokumentiert, Bias-Tests durchgefuehrt.'
+        data_governance_enhanced: 'Data-Lineage end-to-end, automated Bias-Detection, Diversitaets-KPIs in Trainings-Pipelines.'
+        technical_documentation_baseline: 'Annex-IV-Doku vollstaendig pro System.'
+        technical_documentation_enhanced: 'Auto-Generated Tech-Docs aus MLOps-Pipeline, kontinuierliche Doku-Updates bei jedem Modell-Release.'
+        human_oversight_baseline: 'Human-in-the-Loop-Prozesse fuer kritische Entscheidungen; Override-Faehigkeit dokumentiert.'
+        human_oversight_enhanced: 'Real-Time-Decision-Audit, AI-Confidence-Thresholds mit Eskalations-Triggers, Human-Override-Logs analysiert.'
+        accuracy_robustness_baseline: 'Accuracy-Metriken in Production-Monitoring; Robustness-Tests pre-Deployment.'
+        accuracy_robustness_enhanced: 'Continuous Adversarial-Testing, Drift-Detection mit Auto-Retraining, Cyber-Resilience-Audits durch Notified Body.'
+        transparency_obligations_baseline: 'AI-generated-Content kennzeichnung; User-Information Art. 50 implementiert.'
+        transparency_obligations_enhanced: 'Standardisierte Disclosure-UX, Watermarking fuer AI-Content, Transparenz-Reporting pro Release.'
+        gpai_obligations_baseline: 'GPAI-Modell-Doku Art. 53 vorhanden; Trainingsdaten-Zusammenfassung publiziert.'
+        gpai_obligations_enhanced: 'Systemic-Risk-Monitoring fuer Tier-1-GPAI, externe Audits, EU-Register-Eintragung kontinuierlich aktuell.'
+        conformity_assessment_baseline: 'Internal Conformity Assessment vor Inverkehrbringen.'
+        conformity_assessment_enhanced: 'External Notified-Body-Assessment fuer kritische Systeme, kontinuierliche Re-Assessment bei System-Updates.'
+        post_market_monitoring_baseline: 'Post-Market-Plan dokumentiert; Serious-Incidents an Behoerde gemeldet.'
+        post_market_monitoring_enhanced: 'Continuous AI-Performance-Telemetry, Anomaly-Detection mit Auto-Reporting, EU-Database-Updates kontinuierlich.'
 
     # ENISA EUCS (European Cybersecurity Certification Scheme for Cloud Services) Categories
     eucs:
