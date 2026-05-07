@@ -49,10 +49,17 @@ binding for Phase 3 (persona review) and the eventual code work.
 | ISO + BSI dual | 1 (Cl. 5.2 EN + ISMS.1.A4 DE) | 24 ISO + 8 BSI-only deltas | 1 | — |
 | ISO + DORA addon | 1 (Cl. 5.2) | 24 ISO + 6 DORA-NEW + 18 DORA-EXTENDS-ISO | 0 | DORA validity_from = 2025-01-17 |
 | BSI + DORA addon | 1 + DORA mappings | 28 BSI + 6 DORA-NEW | 1 | DORA tagging |
+| ISO + GDPR-scope | 1 | 24 (with 10 privacy-sections injected) | 0 | +5 standalone privacy docs (DPO Charter, RoPA, DPIA, DSR, Retention Schedule) |
+| ISO + DORA + GDPR | 1 | 24 + 6 DORA-NEW + 18 DORA-EXTENDS + 10 privacy-sections | 0 | +5 standalone privacy docs |
+| Any + ISO 27701 PIMS | (no extra top) | (no change) | 0 | +2-4 PIMS-clause docs (parallel addon) |
 | Any + BCM | + BCM Policy | + 12 BCM docs (ISO) or 13 (BSI) | + (incl. Notfallhandbuch for BSI) | Auto BCExercise records |
 
-Total document count range: **25** (ISO solo) → **47** (Quad ISO + BSI
-+ DORA + BCM). v1 caps at this maximum; bigger sets are unlikely.
+Total document count range: **25** (ISO solo) → **52** (Quintuple ISO
++ BSI + DORA + GDPR + BCM). The privacy-as-sections pattern (Phase
+1-E rework, see `06-dpo-input.md` §0) drops the previous upper bound
+of 63 to 52 by collapsing 10 of the original 16 privacy documents
+into sections of existing ISO/DORA topic policies. ISO 27701 PIMS
+remains a separate addon (parallel to DORA, +2-4 docs).
 
 ## 4. Domain Model
 
