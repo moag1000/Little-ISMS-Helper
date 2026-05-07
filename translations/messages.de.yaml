@@ -137,6 +137,8 @@ common:
     next: Weiter
     yes: 'Ja'
     no: 'Nein'
+    section:
+        other: 'Weitere Felder'
     link_matrix:
         title_vulnerability: 'Verknüpfte Entities (Schwachstelle)'
         title_risk: 'Verknüpfte Entities (Risiko)'

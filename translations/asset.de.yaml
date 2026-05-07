@@ -24,6 +24,8 @@ asset:
     classification: Klassifizierung & Status
     cia_values: CIA‑Bewertung (Schutzbedarf)
     policies: Richtlinien & Anweisungen
+    ai_agent: 'AI-Agent (EU AI Act)'
+    other: 'Weitere Felder'
     valuation: Bewertung
     compliance: Compliance
     cia_triad: CIA‑Triade
