@@ -36,6 +36,7 @@ admin:
             corporate_structure: { label: 'Konzernstruktur', desc: 'Hierarchie aus Mutter- und Tochtergesellschaften' }
             locations: { label: 'Standorte', desc: 'Physische Locations für Asset-Zuordnung' }
             tenant_branding: { label: 'Mandanten-Branding', desc: 'E-Mail-Logos und Absender pro Mandant' }
+            tenant_compliance_settings: { label: 'Compliance-Einstellungen', desc: 'Locale, TLP, DPO, Risk-Methodik, Eskalation, JSON-Defaults' }
             users: { label: 'Benutzer', desc: 'Konten, Status, Sperrungen' }
             roles: { label: 'Rollen', desc: 'Tenant-Rollen und Vorlagen' }
             permissions: { label: 'Berechtigungen', desc: 'Permission-Matrix Modul × Rolle' }
@@ -807,6 +808,7 @@ kpi_threshold:
     tenant_settings:
         title: 'Compliance-Einstellungen'
         subtitle: 'Tier-1 Compliance Settings — Locale, Audit-Window, DPO-Kontakt, TLP, Aufsichtsbehoerden, Aufbewahrungsfristen'
+        no_tenant_in_context: 'Kein Mandanten-Kontext aktiv — bitte zuerst Mandant in der Liste waehlen.'
         section_tenant: 'Tenant-spezifisch'
         section_global: 'System-Default (alle Tenants)'
         global_help: 'Globale Sicherheits-Defaults — Aenderung via System-Settings.'

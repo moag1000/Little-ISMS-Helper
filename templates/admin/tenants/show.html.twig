@@ -18,6 +18,7 @@
         subtitle: tenant.description|default(''),
         actions: [
             { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('tenant_management_edit', {id: tenant.id}) },
+            { label: 'admin.tenant_settings.title'|trans({}, 'admin'), variant: 'ghost', icon: 'sliders', href: path('admin_tenant_compliance_settings_edit', {tenantId: tenant.id}) },
             { label: 'tenant.organisation_context.title'|trans({}, 'tenant'), variant: 'ghost', icon: 'building', href: path('tenant_management_organisation_context', {id: tenant.id}) }
         ]
     }) }}

@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\Tenant;
 use App\Form\Admin\TenantComplianceSettingsType;
 use App\Repository\SystemSettingsRepository;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,17 +20,43 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * (locale, TZ, financial year, DPO contact, TLP) and global security
  * defaults (MFA, password, session) on a single admin page.
  */
-#[Route('/admin/tenant/{tenantId}/compliance-settings', name: 'admin_tenant_compliance_settings_', requirements: ['tenantId' => '\d+'])]
 #[IsGranted('ROLE_ADMIN')]
 final class TenantComplianceSettingsController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly SystemSettingsRepository $systemSettings,
+        private readonly TenantContext $tenantContext,
     ) {
     }
 
-    #[Route('', name: 'edit', methods: ['GET', 'POST'])]
+    /**
+     * Redirect-Route ohne tenantId — picks current user's tenant.
+     * Used by Admin-Hub-Card (no id available there).
+     */
+    #[Route(
+        path: '/admin/tenant-compliance-settings',
+        name: 'admin_tenant_compliance_settings_current',
+        methods: ['GET'],
+    )]
+    public function currentTenant(): Response
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant instanceof Tenant) {
+            $this->addFlash('warning', 'admin.tenant_settings.no_tenant_in_context');
+            return $this->redirectToRoute('tenant_management_index');
+        }
+        return $this->redirectToRoute('admin_tenant_compliance_settings_edit', [
+            'tenantId' => $tenant->getId(),
+        ]);
+    }
+
+    #[Route(
+        path: '/admin/tenant/{tenantId}/compliance-settings',
+        name: 'admin_tenant_compliance_settings_edit',
+        requirements: ['tenantId' => '\d+'],
+        methods: ['GET', 'POST'],
+    )]
     public function edit(int $tenantId, Request $request): Response
     {
         $tenant = $this->em->getRepository(Tenant::class)->find($tenantId);
