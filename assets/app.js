@@ -2,6 +2,10 @@ import './stimulus_bootstrap.js';
 
 // FairyAurora v4.0 — Alva Companion Event Bus (singleton, exposes window.alvaBus)
 import './js/alva-bus.js';
+
+// FairyAurora v4.0 — Aurora-styled toast (window.faToast) + confirm dialog
+// (window.faConfirm) replacing native alert()/confirm() across templates.
+import './js/fa-alerts.js';
 /*
  * Welcome to your app's main JavaScript file!
  *

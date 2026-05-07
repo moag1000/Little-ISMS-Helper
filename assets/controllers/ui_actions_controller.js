@@ -30,30 +30,69 @@ export default class extends Controller {
     }
 
     /**
-     * Show confirmation dialog before proceeding
+     * Show Aurora confirmation dialog before proceeding.
      * Use with: data-action="click->ui-actions#confirm" data-ui-actions-message-param="Custom message"
      * For forms: data-action="submit->ui-actions#confirm" data-ui-actions-message-param="Custom message"
-     * Returns false to cancel form submission if user cancels
+     *
+     * Cancels the original event synchronously, then opens an Aurora
+     * fa-confirm modal asynchronously. On confirm, re-fires the
+     * underlying intent (submit the form / follow the link).
      */
     confirm(event) {
+        const target = event.target;
+        // Bypass when this submission was already confirmed via #proceed.
+        if (target instanceof HTMLFormElement && target.dataset.faConfirmBypass === '1') {
+            delete target.dataset.faConfirmBypass;
+            return true;
+        }
+        event.preventDefault();
+        event.stopPropagation();
         const message = event.params?.message || this.confirmMessageValue;
-        if (!window.confirm(message)) {
-            event.preventDefault();
-            event.stopPropagation();
+        const tone = event.params?.tone || 'warn';
+
+        if (typeof window.faConfirm !== 'function') {
+            // Fallback if helper hasn't loaded yet
+            if (window.confirm(message)) {
+                this.#proceed(event, target);
+            }
             return false;
         }
-        return true;
+
+        window.faConfirm(message, { tone, confirmLabel: event.params?.confirmLabel })
+            .then((ok) => {
+                if (ok) {
+                    this.#proceed(event, target);
+                }
+            });
+        return false;
     }
 
     /**
-     * Confirm before following a link (for buttons/links)
+     * Confirm before following a link (for buttons/links).
      * Use with: data-action="click->ui-actions#confirmLink" data-ui-actions-message-param="Are you sure?"
      */
     confirmLink(event) {
-        const message = event.params?.message || this.confirmMessageValue;
-        if (!window.confirm(message)) {
-            event.preventDefault();
-            event.stopPropagation();
+        return this.confirm(event);
+    }
+
+    #proceed(event, target) {
+        if (target instanceof HTMLFormElement) {
+            // Re-submit the form bypassing the controller's confirm hook.
+            target.dataset.faConfirmBypass = '1';
+            if (typeof target.requestSubmit === 'function') {
+                target.requestSubmit(event.submitter ?? null);
+            } else {
+                target.submit();
+            }
+        } else if (target instanceof HTMLAnchorElement && target.href) {
+            window.location.href = target.href;
+        } else if (target instanceof HTMLButtonElement && target.form) {
+            target.form.dataset.faConfirmBypass = '1';
+            if (typeof target.form.requestSubmit === 'function') {
+                target.form.requestSubmit(target);
+            } else {
+                target.form.submit();
+            }
         }
     }
 
@@ -251,14 +290,23 @@ export default class extends Controller {
                     setTimeout(() => window.location.reload(), 1000);
                 }
             } else {
-                alert('Error: ' + (result.error || result.message || 'Unknown error'));
+                this.#notifyError(result.error || result.message || 'Unknown error');
                 button.disabled = false;
                 button.innerHTML = originalHtml;
             }
         } catch (error) {
-            alert('Network error: ' + error.message);
+            this.#notifyError('Network error: ' + error.message);
             button.disabled = false;
             button.innerHTML = originalHtml;
+        }
+    }
+
+    #notifyError(message) {
+        if (typeof window.faToast === 'function') {
+            window.faToast(message, 'danger');
+        } else {
+            // Last-resort fallback in case the helper bundle is not ready yet.
+            console.error(message);
         }
     }
 
