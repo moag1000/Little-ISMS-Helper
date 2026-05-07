@@ -11,6 +11,9 @@ use Doctrine\Migrations\AbstractMigration;
  * Per-tenant render counter for proactive Alva hints. Pairs with the
  * dismissal table so the stats dashboard can show "rendered N times,
  * dismissed M times" for every hint key.
+ *
+ * Idempotent: tolerates an existing alva_hint_render_count table for
+ * upgrades that already ran schema:update.
  */
 final class Version20260506235000_alva_hint_render_count extends AbstractMigration
 {
@@ -27,7 +30,7 @@ final class Version20260506235000_alva_hint_render_count extends AbstractMigrati
     public function up(Schema $schema): void
     {
         $this->addSql(<<<'SQL'
-            CREATE TABLE alva_hint_render_count (
+            CREATE TABLE IF NOT EXISTS alva_hint_render_count (
                 id INT AUTO_INCREMENT NOT NULL,
                 tenant_id INT DEFAULT NULL,
                 hint_key VARCHAR(100) NOT NULL,
@@ -37,16 +40,33 @@ final class Version20260506235000_alva_hint_render_count extends AbstractMigrati
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE=InnoDB
         SQL);
-        $this->addSql(<<<'SQL'
-            ALTER TABLE alva_hint_render_count
-                ADD CONSTRAINT FK_alva_hint_render_tenant
-                FOREIGN KEY (tenant_id) REFERENCES tenant (id) ON DELETE CASCADE
-        SQL);
+
+        if (!$this->foreignKeyExists('alva_hint_render_count', 'FK_alva_hint_render_tenant')) {
+            $this->addSql(<<<'SQL'
+                ALTER TABLE alva_hint_render_count
+                    ADD CONSTRAINT FK_alva_hint_render_tenant
+                    FOREIGN KEY (tenant_id) REFERENCES tenant (id) ON DELETE CASCADE
+            SQL);
+        }
     }
 
     public function down(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE alva_hint_render_count DROP FOREIGN KEY FK_alva_hint_render_tenant');
-        $this->addSql('DROP TABLE alva_hint_render_count');
+        if ($this->foreignKeyExists('alva_hint_render_count', 'FK_alva_hint_render_tenant')) {
+            $this->addSql('ALTER TABLE alva_hint_render_count DROP FOREIGN KEY FK_alva_hint_render_tenant');
+        }
+        $this->addSql('DROP TABLE IF EXISTS alva_hint_render_count');
+    }
+
+    private function foreignKeyExists(string $table, string $constraintName): bool
+    {
+        return (int) $this->connection->fetchOne(
+            'SELECT COUNT(*) FROM information_schema.TABLE_CONSTRAINTS
+             WHERE CONSTRAINT_SCHEMA = DATABASE()
+               AND TABLE_NAME = ?
+               AND CONSTRAINT_NAME = ?
+               AND CONSTRAINT_TYPE = ?',
+            [$table, $constraintName, 'FOREIGN KEY'],
+        ) > 0;
     }
 }
