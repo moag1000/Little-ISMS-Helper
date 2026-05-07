@@ -1537,6 +1537,9 @@ security:
         saml_login_error: SAML-Anmeldefehler
         saml_logout_error: SAML-Abmeldefehler
     csrf_token_invalid: 'Ungültiges CSRF-Token - bitte laden Sie die Seite neu'
+    url:
+        no_internal_ip: 'Interne IP-Adressen sind aus Sicherheitsgründen nicht erlaubt (SSRF-Schutz). Verwenden Sie eine öffentliche URL.'
+        dns_resolution_failed: 'Hostname konnte nicht aufgelöst werden (potentieller DNS-Pinning-Angriff blockiert).'
 location:
     success:
         created: 'Standort erfolgreich erstellt'

@@ -1402,6 +1402,9 @@ security:
         saml_login_error: ''
         saml_logout_error: ''
     csrf_token_invalid: ''
+    url:
+        no_internal_ip: 'Internal IP addresses are not permitted for security reasons (SSRF protection). Please use a public URL.'
+        dns_resolution_failed: 'Hostname could not be resolved (potential DNS-pinning attack blocked).'
 location:
     success:
         created: ''

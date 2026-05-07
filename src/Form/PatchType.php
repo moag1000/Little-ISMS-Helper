@@ -224,12 +224,20 @@ class PatchType extends AbstractType
                 'attr' => [
                     'placeholder' => 'https://vendor.com/patches/...',
                 ],
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \App\Validator\Constraint\NoInternalIp(),
+                ],
             ])
             ->add('documentationUrl', UrlType::class, [
                 'label' => 'patch.field.documentation_url',
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'https://vendor.com/docs/...',
+                ],
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \App\Validator\Constraint\NoInternalIp(),
                 ],
             ])
         ;
