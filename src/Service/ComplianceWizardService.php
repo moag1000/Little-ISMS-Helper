@@ -89,7 +89,7 @@ class ComplianceWizardService
         }
         $covered = $this->fulfillmentRepository->count([
             'tenant' => $tenant,
-            'fulfilled' => true,
+            'status' => ['implemented', 'verified'],
         ]);
         // Constrain covered count to never exceed total (defensive).
         $covered = min($covered, $total);
