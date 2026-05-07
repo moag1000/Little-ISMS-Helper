@@ -2035,5 +2035,10 @@ data_breach:
         hours_left: '%hours% hrs remaining'
         table_title: 'Data breaches'
 
+file_upload:
+    validation:
+        mime_type_invalid: 'File type not permitted. Allowed types: %types%'
+        max_size_exceeded: 'File too large (max %limit%).'
+
 pdf_switch:
     also_available: 'Also available in'
