@@ -95,6 +95,15 @@ async function captureOne(browser, persona, theme, screen, viewport) {
         await page.waitForSelector(screen.wait || 'body', { timeout: 10_000 }).catch(() => {});
         // give async charts/turbo a moment
         await page.waitForTimeout(800);
+        // Hide Symfony Web Debug Toolbar + any dev-overlay before screenshot.
+        await page.addStyleTag({
+            content: `
+                .sf-toolbar, .sf-minitoolbar,
+                [id^="sfwdt"], [id^="sfMiniToolbar"], [id^="sfToolbarMainContent"],
+                #sfwdt, #sfMiniToolbar, #sfToolbarMainContent,
+                .sf-display-none { display: none !important; }
+            `,
+        }).catch(() => {});
         await page.screenshot({
             path: outFile,
             fullPage: screen.full_page !== false,
