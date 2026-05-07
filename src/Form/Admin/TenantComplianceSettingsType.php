@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use App\Form\DataTransformer\JsonArrayTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -116,7 +118,33 @@ final class TenantComplianceSettingsType extends AbstractType
                 'required' => true,
                 'translation_domain' => 'admin',
             ])
+            ->add('apiRateLimitPerMinute', IntegerType::class, [
+                'label' => 'admin.tenant_settings.api_rate_limit',
+                'help' => 'admin.tenant_settings.api_rate_limit_help',
+                'required' => false,
+                'translation_domain' => 'admin',
+                'attr' => ['min' => 0, 'max' => 100000],
+            ])
         ;
+
+        // JSON-fields with prettty-print transformer.
+        $jsonFields = [
+            'supervisoryAuthorities' => 'admin.tenant_settings.supervisory_authorities',
+            'dataRetentionPolicies'  => 'admin.tenant_settings.data_retention_policies',
+            'notificationPreferences' => 'admin.tenant_settings.notification_preferences',
+            'csirtEndpoints'         => 'admin.tenant_settings.csirt_endpoints',
+            'crisisTeamOnCall'       => 'admin.tenant_settings.crisis_team_on_call',
+        ];
+        foreach ($jsonFields as $name => $label) {
+            $builder->add($name, TextareaType::class, [
+                'label' => $label,
+                'help' => $label . '_help',
+                'required' => false,
+                'translation_domain' => 'admin',
+                'attr' => ['rows' => 8, 'class' => 'fa-form-control font-monospace small', 'spellcheck' => 'false'],
+            ]);
+            $builder->get($name)->addModelTransformer(new JsonArrayTransformer());
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
