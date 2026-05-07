@@ -682,7 +682,7 @@
                         cell.innerHTML = message;
 
                     } catch (error) {
-                        alert('{{ 'data_management.backup.message.validation_error'|trans({}, 'admin') }}: ' + error.message);
+                        window.faToast('{{ 'data_management.backup.message.validation_error'|trans({}, 'admin') }}: ' + error.message, 'danger');
                     } finally {
                         this.disabled = false;
                         this.innerHTML = '<i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}';
@@ -698,7 +698,7 @@
             function showModal(modalId) {
                 const modalEl = document.getElementById(modalId);
                 if (!modalEl) {
-                    alert('{{ 'data_management.backup.message.modal_not_found'|trans({}, 'admin') }}: ' + modalId);
+                    window.faToast('{{ 'data_management.backup.message.modal_not_found'|trans({}, 'admin') }}: ' + modalId, 'danger');
                     return false;
                 }
 
@@ -926,7 +926,7 @@
                     const filename = this.getAttribute('data-filename');
                     const csrfToken = this.getAttribute('data-token');
 
-                    if (!confirm('{{ 'data_management.backup.confirm_delete'|trans({'%filename%': ''}, 'admin') }}' + filename + '?')) {
+                    if (!await window.faConfirm('{{ 'data_management.backup.confirm_delete'|trans({'%filename%': ''}, 'admin') }}' + filename + '?', { tone: 'danger' })) {
                         return;
                     }
 
@@ -944,10 +944,10 @@
                         if (result.success) {
                             this.closest('tr').remove();
                         } else {
-                            alert('{{ 'data_management.backup.message.delete_error'|trans({}, 'admin') }}: ' + result.message);
+                            window.faToast('{{ 'data_management.backup.message.delete_error'|trans({}, 'admin') }}: ' + result.message, 'danger');
                         }
                     } catch (error) {
-                        alert('{{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ' + error.message);
+                        window.faToast('{{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ' + error.message, 'danger');
                     }
                 });
             });

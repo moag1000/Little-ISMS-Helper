@@ -203,7 +203,11 @@
                         <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-toggle="modal" data-bs-target="#shareModal">
                             <i class="fa-icon fa-icon--delegate" aria-hidden="true"></i> {{ 'action.share'|trans({}, 'report_builder') }}
                         </button>
-                        <form method="post" action="{{ path('report_builder_delete', {id: report.id}) }}" onsubmit="return confirm('{{ 'confirm.delete'|trans({}, 'report_builder')|e('js') }}');">
+                        <form method="post" action="{{ path('report_builder_delete', {id: report.id}) }}"
+                              data-controller="ui-actions"
+                              data-action="submit->ui-actions#confirm"
+                              data-ui-actions-message-param="{{ 'confirm.delete'|trans({}, 'report_builder') }}"
+                              data-ui-actions-tone-param="danger">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ report.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
                                 <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'action.delete'|trans({}, 'report_builder') }}

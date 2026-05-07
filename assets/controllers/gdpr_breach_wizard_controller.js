@@ -263,7 +263,7 @@ export default class extends Controller {
      * Show "Not a GDPR Breach" message and exit
      */
     showNotGdprBreach() {
-        alert(window.translations?.gdpr?.not_a_breach || 'This is NOT a GDPR breach. Personal data is not involved.');
+        window.faToast(window.translations?.gdpr?.not_a_breach || 'This is NOT a GDPR breach. Personal data is not involved.', 'info');
         this.clearLocalStorage();
         this.close();
     }
@@ -294,7 +294,7 @@ export default class extends Controller {
 
             this.displayResults(assessment);
         } catch (error) {
-            alert(window.translations?.gdpr?.error_calculating || 'Error calculating risk assessment. Please try again.');
+            window.faToast(window.translations?.gdpr?.error_calculating || 'Error calculating risk assessment. Please try again.', 'danger');
         }
     }
 

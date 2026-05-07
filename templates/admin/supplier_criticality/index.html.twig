@@ -82,7 +82,10 @@
                                     </a>
                                     <form action="{{ path('app_admin_supplier_criticality_delete', {id: level.id}) }}"
                                           method="post" class="d-inline"
-                                          onsubmit="return confirm('{{ 'supplier_criticality.confirm_delete'|trans({}, 'supplier_criticality') }}')">
+                                          data-controller="ui-actions"
+                                          data-action="submit->ui-actions#confirm"
+                                          data-ui-actions-message-param="{{ 'supplier_criticality.confirm_delete'|trans({}, 'supplier_criticality') }}"
+                                          data-ui-actions-tone-param="danger">
                                         <input type="hidden" name="_token"
                                                value="{{ csrf_token('delete_supplier_criticality_' ~ level.id) }}">
                                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">

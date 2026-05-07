@@ -135,7 +135,10 @@
                                             <form method="post"
                                                   action="{{ path('admin_tour_completion_reset', {id: row.user.id, role: 'all'}) }}"
                                                   class="d-inline"
-                                                  onsubmit="return confirm('{{ 'admin.tour_completion.confirm_reset'|trans({'%user%': row.user.email}, 'admin')|e('js') }}');">
+                                                  data-controller="ui-actions"
+                                                  data-action="submit->ui-actions#confirm"
+                                                  data-ui-actions-message-param="{{ 'admin.tour_completion.confirm_reset'|trans({'%user%': row.user.email}, 'admin') }}"
+                                                  data-ui-actions-tone-param="danger">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('admin_tour_reset_' ~ row.user.id) }}">
                                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost"
                                                         title="{{ 'admin.tour_completion.reset_all'|trans({}, 'admin') }}">

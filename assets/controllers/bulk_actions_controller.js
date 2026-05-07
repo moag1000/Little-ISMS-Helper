@@ -124,7 +124,7 @@ export default class extends Controller {
         if (!confirmModal) {
             // Fallback to simple confirm if modal not available
             const confirmText = window.translations?.bulk_delete?.confirm_count || 'Do you really want to delete %count% %entity%?';
-            const confirmed = confirm(confirmText.replace('%count%', ids.length).replace('%entity%', entityLabel));
+            const confirmed = await window.faConfirm(confirmText.replace('%count%', ids.length).replace('%entity%', entityLabel), { tone: 'danger' });
             if (!confirmed) {
                 return;
             }

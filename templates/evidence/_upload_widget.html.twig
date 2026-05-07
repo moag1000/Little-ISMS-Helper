@@ -88,8 +88,8 @@
 {% endembed %}
 
 <script>
-function unlinkEvidence(documentId, entityType, entityId) {
-    if (!confirm('{{ 'evidence.unlink_confirm'|trans({}, 'evidence') }}')) {
+async function unlinkEvidence(documentId, entityType, entityId) {
+    if (!await window.faConfirm('{{ 'evidence.unlink_confirm'|trans({}, 'evidence') }}', { tone: 'danger' })) {
         return;
     }
 
@@ -108,11 +108,11 @@ function unlinkEvidence(documentId, entityType, entityId) {
         if (data.success) {
             window.location.reload();
         } else {
-            alert(data.error || 'Error unlinking evidence');
+            window.faToast(data.error || 'Error unlinking evidence', 'danger');
         }
     })
     .catch(error => {
-        alert('Network error: ' + error.message);
+        window.faToast('Network error: ' + error.message, 'danger');
     });
 }
 </script>

@@ -64,7 +64,10 @@
                                             <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                         </a>
                                         <form method="post" action="{{ path('admin_tag_delete', {id: tag.id}) }}" class="d-inline"
-                                              onsubmit="return confirm('{{ 'tags.admin.confirm.delete'|trans({}, 'tags')|e('js') }}');">
+                                              data-controller="ui-actions"
+                                              data-action="submit->ui-actions#confirm"
+                                              data-ui-actions-message-param="{{ 'tags.admin.confirm.delete'|trans({}, 'tags') }}"
+                                              data-ui-actions-tone-param="danger">
                                             <input type="hidden" name="_token" value="{{ csrf_token('tag_delete_' ~ tag.id) }}">
                                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm"
                                                     aria-label="{{ 'tags.admin.aria.delete'|trans({'%name%': tag.name}, 'tags') }}">

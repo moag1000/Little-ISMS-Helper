@@ -256,7 +256,11 @@ export default class extends Controller {
         event.preventDefault();
 
         const message = event.params?.confirm || this.confirmMessageValue;
-        if (!window.confirm(message)) {
+        const tone = event.params?.tone || 'danger';
+        const ok = typeof window.faConfirm === 'function'
+            ? await window.faConfirm(message, { tone })
+            : window.confirm(message);
+        if (!ok) {
             return;
         }
 

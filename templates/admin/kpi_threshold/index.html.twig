@@ -52,7 +52,11 @@
                                     <a href="{{ path('admin_kpi_threshold_edit', {id: c.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                     </a>
-                                    <form method="post" action="{{ path('admin_kpi_threshold_delete', {id: c.id}) }}" class="d-inline" onsubmit="return confirm('{{ 'kpi_threshold.confirm.delete'|trans({}, 'admin') }}');">
+                                    <form method="post" action="{{ path('admin_kpi_threshold_delete', {id: c.id}) }}" class="d-inline"
+                                          data-controller="ui-actions"
+                                          data-action="submit->ui-actions#confirm"
+                                          data-ui-actions-message-param="{{ 'kpi_threshold.confirm.delete'|trans({}, 'admin') }}"
+                                          data-ui-actions-tone-param="danger">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete_kth_' ~ c.id) }}">
                                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                                             <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>

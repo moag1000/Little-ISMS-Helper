@@ -265,7 +265,10 @@
                     {% if is_granted('ROLE_MANAGER') %}
                         <hr>
                         <form method="post" action="{{ path('app_data_subject_request_delete', {id: dsr.id}) }}"
-                              onsubmit="return confirm('{{ 'dsr.confirm.delete'|trans({}, 'data_subject_request')|e('js') }}');">
+                              data-controller="ui-actions"
+                              data-action="submit->ui-actions#confirm"
+                              data-ui-actions-message-param="{{ 'dsr.confirm.delete'|trans({}, 'data_subject_request') }}"
+                              data-ui-actions-tone-param="danger">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ dsr.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
                                 <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'dsr.action.delete'|trans({}, 'data_subject_request') }}

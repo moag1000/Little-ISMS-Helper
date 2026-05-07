@@ -89,7 +89,10 @@
                                     {% endfor %}
                                     <td class="text-end">
                                         <form method="post" action="{{ path('app_group_report_audit_program_derive', {id: program.id}) }}" class="d-inline"
-                                              onsubmit="return confirm('{{ 'group_report.audit_program.confirm_derive'|trans({'%count%': subsidiaries|length}, 'group_report')|e('js') }}');">
+                                              data-controller="ui-actions"
+                                              data-action="submit->ui-actions#confirm"
+                                              data-ui-actions-message-param="{{ 'group_report.audit_program.confirm_derive'|trans({'%count%': subsidiaries|length}, 'group_report') }}"
+                                              data-ui-actions-tone-param="danger">
                                             <input type="hidden" name="_token" value="{{ csrf_token('audit_program_derive_' ~ program.id) }}">
                                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                                 <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>

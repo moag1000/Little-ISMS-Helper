@@ -97,7 +97,11 @@
         {% endblock %}
     {% endembed %}
 
-    <form method="post" action="{{ path('app_audit_finding_delete', {id: finding.id}) }}" class="mt-4" onsubmit="return confirm('{{ 'audit_finding.confirm.delete'|trans({}, 'audits') }}');">
+    <form method="post" action="{{ path('app_audit_finding_delete', {id: finding.id}) }}" class="mt-4"
+          data-controller="ui-actions"
+          data-action="submit->ui-actions#confirm"
+          data-ui-actions-message-param="{{ 'audit_finding.confirm.delete'|trans({}, 'audits') }}"
+          data-ui-actions-tone-param="danger">
         <input type="hidden" name="_token" value="{{ csrf_token('delete_af_' ~ finding.id) }}">
         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
             <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}

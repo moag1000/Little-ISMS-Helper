@@ -212,8 +212,8 @@ export default class extends Controller {
         window.location.reload();
     }
 
-    resetToDefaults() {
-        if (confirm(window.translations?.preferences?.confirm_reset || 'Do you want to reset all settings?')) {
+    async resetToDefaults() {
+        if (await window.faConfirm(window.translations?.preferences?.confirm_reset || 'Do you want to reset all settings?', { tone: 'warn' })) {
             this.preferences = this.getDefaultPreferences();
             this.savePreferences();
             this.applyPreferences();
@@ -276,7 +276,7 @@ export default class extends Controller {
                 this.updateFormFields();
                 this.showSuccessMessage(window.translations?.preferences?.imported || 'Settings successfully imported');
             } catch (err) {
-                alert(window.translations?.preferences?.import_failed || 'Error importing settings');
+                window.faToast(window.translations?.preferences?.import_failed || 'Error importing settings', 'danger');
             }
         };
         reader.readAsText(file);

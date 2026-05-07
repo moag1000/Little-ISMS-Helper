@@ -446,7 +446,7 @@ function initializeMappingButton() {
         e.preventDefault();
 
         // Confirm action
-        if (!confirm('{{ 'compliance.confirm.create_mappings'|trans({}, 'compliance') }}')) {
+        if (!await window.faConfirm('{{ 'compliance.confirm.create_mappings'|trans({}, 'compliance') }}')) {
             return;
         }
 
@@ -546,7 +546,7 @@ function initializeHeaderMappingButton() {
         const originalText = this.textContent;
 
         // Confirm action
-        if (!confirm('{{ 'compliance.confirm.add_missing_mappings'|trans({}, 'compliance') }}')) {
+        if (!await window.faConfirm('{{ 'compliance.confirm.add_missing_mappings'|trans({}, 'compliance') }}')) {
             return;
         }
 
@@ -612,7 +612,7 @@ function initializeHeaderMappingButton() {
                     }, 2000);
                 }
             } catch (error) {
-                alert('{{ 'compliance.mapping_error.creating'|trans({}, 'compliance') }}: ' + error.message);
+                window.faToast('{{ 'compliance.mapping_error.creating'|trans({}, 'compliance') }}: ' + error.message, 'danger');
                 createAllMappingsBtn.disabled = false;
                 createAllMappingsBtn.textContent = originalText;
                 createAllMappingsBtn.style.opacity = '1';

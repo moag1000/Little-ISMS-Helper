@@ -83,10 +83,10 @@ export default class extends Controller {
     /**
      * Propagate context changes to subsidiaries
      */
-    propagateContext(event) {
+    async propagateContext(event) {
         event.preventDefault();
 
-        if (!confirm(this.confirmPropagateTextValue)) {
+        if (!await window.faConfirm(this.confirmPropagateTextValue, { tone: 'warn' })) {
             return;
         }
 
@@ -96,14 +96,14 @@ export default class extends Controller {
         .then(r => r.json())
         .then(data => {
             if (data.success) {
-                alert(data.message);
+                window.faToast(data.message, 'success');
                 this.loadEffectiveContext();
             } else {
-                alert(this.propagateErrorTextValue);
+                window.faToast(this.propagateErrorTextValue, 'danger');
             }
         })
         .catch(err => {
-            alert(this.propagateErrorTextValue);
+            window.faToast(this.propagateErrorTextValue, 'danger');
         });
     }
 
@@ -193,21 +193,21 @@ export default class extends Controller {
                 if (modalInstance) modalInstance.hide();
                 this.loadGovernanceRules();
             } else {
-                alert(this.saveErrorTextValue);
+                window.faToast(this.saveErrorTextValue, 'danger');
             }
         })
         .catch(err => {
-            alert(this.saveErrorTextValue);
+            window.faToast(this.saveErrorTextValue, 'danger');
         });
     }
 
     /**
      * Delete a governance rule
      */
-    deleteRule(event) {
+    async deleteRule(event) {
         event.preventDefault();
 
-        if (!confirm(this.confirmDeleteTextValue)) {
+        if (!await window.faConfirm(this.confirmDeleteTextValue, { tone: 'danger' })) {
             return;
         }
 
@@ -223,11 +223,11 @@ export default class extends Controller {
                 if (data.success) {
                     this.loadGovernanceRules();
                 } else {
-                    alert(this.deleteErrorTextValue);
+                    window.faToast(this.deleteErrorTextValue, 'danger');
                 }
             })
             .catch(err => {
-                alert(this.deleteErrorTextValue);
+                window.faToast(this.deleteErrorTextValue, 'danger');
             });
     }
 

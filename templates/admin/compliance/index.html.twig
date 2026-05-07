@@ -182,7 +182,7 @@ function initializeFrameworkButtons() {
             const code = this.dataset.frameworkCode;
             const name = this.dataset.frameworkName;
 
-            if (!confirm('{{ 'compliance.confirm_load'|trans({}, 'compliance') }}' + '\n\n' + name)) {
+            if (!await window.faConfirm('{{ 'compliance.confirm_load'|trans({}, 'compliance') }}' + '\n\n' + name, { tone: 'warn' })) {
                 return;
             }
 
@@ -245,7 +245,7 @@ function initializeFrameworkButtons() {
                     this.innerHTML = '<span class="icon"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i></span> {{ 'compliance.load_failed'|trans({}, 'compliance') }}';
                     this.classList.add('fa-cyber-btn--danger');
 
-                    alert('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + result.message);
+                    window.faToast('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + result.message, 'danger');
 
                     // Re-enable after 3 seconds
                     setTimeout(() => {
@@ -260,7 +260,7 @@ function initializeFrameworkButtons() {
                 this.innerHTML = '<span class="icon"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i></span> {{ 'compliance.load_failed'|trans({}, 'compliance') }}';
                 this.classList.add('fa-cyber-btn--danger');
 
-                alert('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + error.message);
+                window.faToast('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + error.message, 'danger');
 
                 setTimeout(() => {
                     this.disabled = false;
@@ -298,12 +298,12 @@ function initializeDeleteButtons() {
                 `{{ 'compliance.confirm_delete.cannot_undo'|trans({}, 'compliance') }}\n\n` +
                 `{{ 'compliance.confirm_delete.confirm_question'|trans({}, 'compliance') }}`;
 
-            if (!confirm(confirmMessage)) {
+            if (!await window.faConfirm(confirmMessage, { tone: 'danger' })) {
                 return;
             }
 
             // Second confirmation for safety
-            if (!confirm(`{{ 'compliance.confirm_delete.second_confirm'|trans({}, 'compliance') }}`)) {
+            if (!await window.faConfirm(`{{ 'compliance.confirm_delete.second_confirm'|trans({}, 'compliance') }}`, { tone: 'danger' })) {
                 return;
             }
 
@@ -343,7 +343,7 @@ function initializeDeleteButtons() {
                 } else {
                     this.innerHTML = '<span class="icon"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i></span> {{ 'compliance.delete_failed'|trans({}, 'compliance') }}';
 
-                    alert('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + result.message);
+                    window.faToast('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + result.message, 'danger');
 
                     // Re-enable after 3 seconds
                     setTimeout(() => {
@@ -355,7 +355,7 @@ function initializeDeleteButtons() {
                 console.error('Error deleting framework:', error);
                 this.innerHTML = '<span class="icon"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i></span> {{ 'compliance.delete_failed'|trans({}, 'compliance') }}';
 
-                alert('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + error.message);
+                window.faToast('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + error.message, 'danger');
 
                 setTimeout(() => {
                     this.disabled = false;
