@@ -1,0 +1,160 @@
+# BSI IT-Grundschutz-Kompendium 2023 — Schicht CON (Konzeption und Vorgehensweisen)
+# Quelle: BSI Bundesamt fuer Sicherheit in der Informationstechnik
+# https://www.bsi.bund.de/IT-Grundschutz-Kompendium
+
+layer: CON
+title: 'Konzeption und Vorgehensweisen'
+description: 'Schicht fuer uebergeordnete Sicherheitskonzepte wie Krypto, Datenschutz, Datensicherung, Loeschen, Software-Entwicklung und Geheimschutz.'
+bausteine:
+  - id: CON.1
+    title: 'Kryptokonzept'
+    description: 'Anforderungen an Erstellung und Pflege eines uebergreifenden Kryptokonzepts der Institution.'
+    anforderungen:
+      basis:
+        - id: CON.1.A1
+          title: 'Erstellung eines Kryptokonzepts'
+          requirement_text: 'Es MUSS ein Kryptokonzept erstellt werden.'
+        - id: CON.1.A2
+          title: 'Auswahl geeigneter kryptographischer Verfahren'
+          requirement_text: 'Es MUESSEN geeignete kryptographische Verfahren nach dem Stand der Technik ausgewaehlt werden. Siehe BSI Kompendium 2023 Baustein CON.1 Anforderung A2.'
+        - id: CON.1.A3
+          title: 'Sichere Schluesselerzeugung und -verwaltung'
+          requirement_text: 'Kryptographische Schluessel MUESSEN ueber den gesamten Lebenszyklus sicher erzeugt, gespeichert und verwaltet werden. Siehe BSI Kompendium 2023 Baustein CON.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: CON.2
+    title: 'Datenschutz'
+    description: 'Anforderungen an die Umsetzung des Datenschutzes und die Festlegung der Verantwortlichkeiten.'
+    anforderungen:
+      basis:
+        - id: CON.2.A1
+          title: 'Festlegung von Verantwortlichkeiten fuer den Datenschutz'
+          requirement_text: 'Die Verantwortlichkeiten fuer den Datenschutz MUESSEN festgelegt werden.'
+        - id: CON.2.A2
+          title: 'Erstellung eines Datenschutzkonzepts'
+          requirement_text: 'Ein Datenschutzkonzept gemaess DSGVO/BDSG MUSS erstellt und gepflegt werden. Siehe BSI Kompendium 2023 Baustein CON.2 Anforderung A2.'
+        - id: CON.2.A3
+          title: 'Verzeichnis der Verarbeitungstaetigkeiten'
+          requirement_text: 'Ein Verzeichnis der Verarbeitungstaetigkeiten MUSS gefuehrt werden. Siehe BSI Kompendium 2023 Baustein CON.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: CON.3
+    title: 'Datensicherungskonzept'
+    description: 'Anforderungen an Erstellung, Umsetzung und Pruefung eines umfassenden Datensicherungskonzepts.'
+    anforderungen:
+      basis:
+        - id: CON.3.A1
+          title: 'Erhebung der Einflussfaktoren der Datensicherung'
+          requirement_text: 'Es MUESSEN die Einflussfaktoren fuer die Datensicherung erhoben werden.'
+        - id: CON.3.A2
+          title: 'Festlegung der Verfahrensweise fuer die Datensicherung'
+          requirement_text: 'Es MUSS ein Verfahren fuer die Datensicherung festgelegt werden.'
+        - id: CON.3.A3
+          title: 'Regelmaessige Pruefung der Datensicherung'
+          requirement_text: 'Datensicherungen MUESSEN regelmaessig auf Wiederherstellbarkeit geprueft werden. Siehe BSI Kompendium 2023 Baustein CON.3 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: CON.6
+    title: 'Loeschen und Vernichten'
+    description: 'Anforderungen an das geregelte Loeschen und Vernichten von Informationen und Datentraegern.'
+    anforderungen:
+      basis:
+        - id: CON.6.A1
+          title: 'Regelung der Vorgehensweise fuer das Loeschen und Vernichten'
+          requirement_text: 'Es MUSS eine Vorgehensweise fuer das Loeschen und Vernichten von Informationen und Datentraegern festgelegt werden.'
+        - id: CON.6.A2
+          title: 'Ordnungsgemaesses Loeschen und Vernichten von Informationen'
+          requirement_text: 'Alle Informationen MUESSEN so geloescht werden, dass keine Rueckschluesse auf die Inhalte moeglich sind.'
+        - id: CON.6.A3
+          title: 'Beauftragung Dritter mit der Datentraegervernichtung'
+          requirement_text: 'Werden Dritte mit der Datentraegervernichtung beauftragt, MUSS dies vertraglich geregelt sein. Siehe BSI Kompendium 2023 Baustein CON.6 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: CON.7
+    title: 'Informationssicherheit auf Auslandsreisen'
+    description: 'Anforderungen an den Schutz von Informationen und Endgeraeten bei Reisen ins Ausland.'
+    anforderungen:
+      basis:
+        - id: CON.7.A1
+          title: 'Sicherheitsrichtlinie fuer Auslandsreisen'
+          requirement_text: 'Fuer Auslandsreisen MUSS eine Sicherheitsrichtlinie erstellt werden.'
+        - id: CON.7.A2
+          title: 'Sensibilisierung der Mitarbeiter fuer Auslandsreisen'
+          requirement_text: 'Mitarbeiter MUESSEN vor Auslandsreisen ueber Risiken und Verhaltensregeln sensibilisiert werden. Siehe BSI Kompendium 2023 Baustein CON.7 Anforderung A2.'
+        - id: CON.7.A3
+          title: 'Schutz mitgefuehrter IT-Geraete'
+          requirement_text: 'Mitgefuehrte IT-Geraete MUESSEN gegen Verlust, Diebstahl und unbefugten Zugriff geschuetzt werden. Siehe BSI Kompendium 2023 Baustein CON.7 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: CON.8
+    title: 'Software-Entwicklung'
+    description: 'Anforderungen an die sichere Entwicklung von Eigen- und Auftragssoftware.'
+    anforderungen:
+      basis:
+        - id: CON.8.A1
+          title: 'Planung und Dokumentation der Software-Entwicklung'
+          requirement_text: 'Software-Entwicklungsprojekte MUESSEN geplant und dokumentiert werden.'
+        - id: CON.8.A2
+          title: 'Auswahl und Verwendung von Programmiersprachen und Entwicklungsumgebungen'
+          requirement_text: 'Die eingesetzten Programmiersprachen und Entwicklungsumgebungen MUESSEN auf ihre Eignung geprueft werden.'
+        - id: CON.8.A3
+          title: 'Sicherheitsanforderungen an die Software-Entwicklung'
+          requirement_text: 'Sicherheitsanforderungen an die zu entwickelnde Software MUESSEN festgelegt sein. Siehe BSI Kompendium 2023 Baustein CON.8 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: CON.9
+    title: 'Informationsaustausch'
+    description: 'Anforderungen an den Austausch von Informationen mit externen Partnern.'
+    anforderungen:
+      basis:
+        - id: CON.9.A1
+          title: 'Regelungen zum Informationsaustausch'
+          requirement_text: 'Es MUESSEN Regelungen fuer den Informationsaustausch mit externen Partnern erstellt werden.'
+        - id: CON.9.A2
+          title: 'Vereinbarungen zum Informationsaustausch'
+          requirement_text: 'Mit externen Partnern MUESSEN Vereinbarungen ueber den sicheren Informationsaustausch geschlossen werden. Siehe BSI Kompendium 2023 Baustein CON.9 Anforderung A2.'
+        - id: CON.9.A3
+          title: 'Schutz beim Informationsaustausch'
+          requirement_text: 'Beim Informationsaustausch MUESSEN angemessene Schutzmassnahmen (z. B. Verschluesselung) angewendet werden. Siehe BSI Kompendium 2023 Baustein CON.9 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: CON.10
+    title: 'Entwicklung von Webanwendungen'
+    description: 'Anforderungen an die sichere Entwicklung von Webanwendungen und Web-APIs.'
+    anforderungen:
+      basis:
+        - id: CON.10.A1
+          title: 'Sichere Entwicklung von Webanwendungen'
+          requirement_text: 'Webanwendungen MUESSEN nach dem Prinzip der sicheren Software-Entwicklung erstellt werden.'
+        - id: CON.10.A2
+          title: 'Authentisierung in Webanwendungen'
+          requirement_text: 'Webanwendungen MUESSEN starke Authentisierungsverfahren und Session-Management implementieren. Siehe BSI Kompendium 2023 Baustein CON.10 Anforderung A2.'
+        - id: CON.10.A3
+          title: 'Schutz vor typischen Angriffen'
+          requirement_text: 'Webanwendungen MUESSEN gegen typische Angriffe (z. B. OWASP Top 10) abgesichert werden. Siehe BSI Kompendium 2023 Baustein CON.10 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: CON.11
+    title: 'Geheimschutz'
+    description: 'Anforderungen an den Schutz von Verschlusssachen und besonders sensiblen Informationen.'
+    anforderungen:
+      basis:
+        - id: CON.11.A1
+          title: 'Regelung der Kommunikation'
+          requirement_text: 'Fuer die Kommunikation MUESSEN Regelungen festgelegt werden, einschliesslich zulaessiger Kanaele, Verschluesselungsanforderungen und Klassifizierungsstufen.'
+        - id: CON.11.A2
+          title: 'Sichere Uebertragung vertraulicher Informationen'
+          requirement_text: 'Vertrauliche Informationen MUESSEN bei der Uebertragung durch kryptographische Verfahren geschuetzt werden.'
+        - id: CON.11.A3
+          title: 'Klassifizierung und Kennzeichnung'
+          requirement_text: 'Verschlusssachen MUESSEN klassifiziert und entsprechend gekennzeichnet werden. Siehe BSI Kompendium 2023 Baustein CON.11 Anforderung A3.'
+      standard: []
+      hoch: []

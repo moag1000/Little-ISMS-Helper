@@ -1,0 +1,30 @@
+# BSI IT-Grundschutz-Kompendium 2023 — Schicht ISMS (Sicherheitsmanagement)
+# Quelle: BSI Bundesamt fuer Sicherheit in der Informationstechnik
+# https://www.bsi.bund.de/IT-Grundschutz-Kompendium
+
+layer: ISMS
+title: 'Sicherheitsmanagement'
+description: 'Schicht fuer den uebergeordneten Aufbau und Betrieb eines Informationssicherheits-Managementsystems (ISMS).'
+bausteine:
+  - id: ISMS.1
+    title: 'Sicherheitsmanagement'
+    description: 'Anforderungen an Aufbau, Betrieb und kontinuierliche Verbesserung eines ISMS in der Institution.'
+    anforderungen:
+      basis:
+        - id: ISMS.1.A1
+          title: 'Uebernahme der Gesamtverantwortung fuer Informationssicherheit durch die Leitungsebene'
+          requirement_text: 'Die Leitungsebene MUSS die Gesamtverantwortung fuer Informationssicherheit in der Institution uebernehmen.'
+        - id: ISMS.1.A2
+          title: 'Festlegung der Sicherheitsziele und -strategie'
+          requirement_text: 'Es MUESSEN angemessene Sicherheitsziele und eine Sicherheitsstrategie fuer die Institution festgelegt werden.'
+        - id: ISMS.1.A3
+          title: 'Erstellung einer Leitlinie zur Informationssicherheit'
+          requirement_text: 'Eine Leitlinie zur Informationssicherheit MUSS von der Leitungsebene verabschiedet werden.'
+        - id: ISMS.1.A4
+          title: 'Benennung eines Informationssicherheitsbeauftragten'
+          requirement_text: 'Die Leitungsebene MUSS einen Informationssicherheitsbeauftragten benennen.'
+        - id: ISMS.1.A5
+          title: 'Vertragsgestaltung bei Bestellung eines externen Informationssicherheitsbeauftragten'
+          requirement_text: 'Bei der Bestellung eines externen Informationssicherheitsbeauftragten MUESSEN bestimmte Punkte schriftlich vereinbart werden.'
+      standard: []
+      hoch: []

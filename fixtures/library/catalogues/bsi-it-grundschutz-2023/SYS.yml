@@ -1,0 +1,418 @@
+# BSI IT-Grundschutz-Kompendium 2023 — Schicht SYS (IT-Systeme)
+# Quelle: BSI Bundesamt fuer Sicherheit in der Informationstechnik
+# https://www.bsi.bund.de/IT-Grundschutz-Kompendium
+
+layer: SYS
+title: 'IT-Systeme'
+description: 'Schicht fuer Bausteine zu Servern, Clients, mobilen Geraeten, Speicherloesungen, Druckern und sonstigen Endgeraeten.'
+bausteine:
+  - id: SYS.1.1
+    title: 'Allgemeiner Server'
+    description: 'Anforderungen an allgemeine Serversysteme unabhaengig vom Betriebssystem.'
+    anforderungen:
+      basis:
+        - id: SYS.1.1.A1
+          title: 'Geeignete Aufstellung von Servern'
+          requirement_text: 'Server MUESSEN an einem geeigneten Ort aufgestellt werden.'
+        - id: SYS.1.1.A2
+          title: 'Benutzerauthentisierung an Servern'
+          requirement_text: 'Die Authentisierung von Benutzern an Servern MUSS nach dem Stand der Technik erfolgen.'
+        - id: SYS.1.1.A3
+          title: 'Schutz von Schnittstellen'
+          requirement_text: 'Nicht genutzte Schnittstellen von Servern MUESSEN deaktiviert werden.'
+      standard: []
+      hoch: []
+
+  - id: SYS.1.2.2
+    title: 'Windows Server 2012'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von Microsoft Windows Server 2012 (legacy).'
+    anforderungen:
+      basis:
+        - id: SYS.1.2.2.A1
+          title: 'Planung eines Windows Servers'
+          requirement_text: 'Vor dem Einsatz eines Windows Servers MUSS geplant werden, welche Rollen auf dem Server betrieben werden und welche Haertungsmassnahmen zu treffen sind.'
+        - id: SYS.1.2.2.A2
+          title: 'Sichere Grundkonfiguration eines Windows Servers'
+          requirement_text: 'Ein Windows Server MUSS sicher grundkonfiguriert werden; nicht benoetigte Dienste und Benutzerkonten MUESSEN deaktiviert sein.'
+        - id: SYS.1.2.2.A3
+          title: 'Patchmanagement fuer Windows Server'
+          requirement_text: 'Sicherheitsupdates fuer Windows Server MUESSEN zeitnah eingespielt werden. Siehe BSI Kompendium 2023 Baustein SYS.1.2.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.1.2.3
+    title: 'Windows Server'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb aktueller Microsoft Windows Server-Versionen.'
+    anforderungen:
+      basis:
+        - id: SYS.1.2.3.A1
+          title: 'Planung eines Windows Server 2022'
+          requirement_text: 'Vor dem Einsatz eines Windows Server 2022 MUSS geplant werden, welche Rollen betrieben werden und welche Haertungsmassnahmen umzusetzen sind.'
+        - id: SYS.1.2.3.A2
+          title: 'Sichere Grundkonfiguration eines Windows Server 2022'
+          requirement_text: 'Ein Windows Server 2022 MUSS sicher grundkonfiguriert werden. Nicht benoetigte Dienste und Rollen MUESSEN deaktiviert sein. Administrative Freigaben MUESSEN beschraenkt sein.'
+        - id: SYS.1.2.3.A5
+          title: 'Schutz des lokalen Administrator-Kontos'
+          requirement_text: 'Das lokale Administrator-Konto MUSS mit einem starken, einzigartigen Passwort geschuetzt und die Anmeldung MUSS auf das Notwendige begrenzt sein.'
+      standard: []
+      hoch: []
+
+  - id: SYS.1.3
+    title: 'Server unter Linux und Unix'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von Linux- und Unix-Servern.'
+    anforderungen:
+      basis:
+        - id: SYS.1.3.A1
+          title: 'Sichere Installation eines Unix-Servers'
+          requirement_text: 'Ein Unix-Server MUSS mit einer minimal notwendigen Komponentenauswahl installiert werden.'
+        - id: SYS.1.3.A5
+          title: 'Sichere Authentisierung am Unix-Server'
+          requirement_text: 'Fuer den administrativen Zugriff auf den Unix-Server MUESSEN sichere Authentisierungsverfahren eingesetzt werden.'
+        - id: SYS.1.3.A11
+          title: 'Protokollierung auf Unix-Servern'
+          requirement_text: 'Auf einem Unix-Server MUESSEN sicherheitsrelevante Ereignisse (Login, Sudo, Fehler) protokolliert und die Protokolle zentral gesichert werden.'
+      standard:
+        - id: SYS.1.3.A10
+          title: 'Mandantentrennung auf Unix-Servern'
+          requirement_text: 'Ist ein Unix-Server von mehreren Nutzergruppen benutzbar, MUSS die Mandantentrennung durch geeignete Mechanismen (z. B. Container, getrennte Benutzergruppen) umgesetzt werden.'
+      hoch: []
+
+  - id: SYS.1.5
+    title: 'Virtualisierung'
+    description: 'Anforderungen an Auswahl, Konfiguration und Betrieb von Virtualisierungsloesungen.'
+    anforderungen:
+      basis:
+        - id: SYS.1.5.A1
+          title: 'Geeignete Auswahl von Virtualisierungsprodukten'
+          requirement_text: 'Die eingesetzten Virtualisierungsprodukte MUESSEN sorgfaeltig ausgewaehlt werden.'
+        - id: SYS.1.5.A2
+          title: 'Sicherer Einsatz virtueller Infrastruktur'
+          requirement_text: 'Die virtuelle Infrastruktur MUSS sicher betrieben werden.'
+        - id: SYS.1.5.A3
+          title: 'Absicherung der Hypervisor-Verwaltungsschnittstellen'
+          requirement_text: 'Hypervisor-Verwaltungsschnittstellen MUESSEN restriktiv abgesichert sein. Siehe BSI Kompendium 2023 Baustein SYS.1.5 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.1.6
+    title: 'Containerisierung'
+    description: 'Anforderungen an die sichere Planung und den Betrieb von Container-Plattformen.'
+    anforderungen:
+      basis:
+        - id: SYS.1.6.A1
+          title: 'Planung des Container-Einsatzes'
+          requirement_text: 'Vor dem Einsatz von Containern MUSS geplant werden, welche Workloads containerisiert werden und wie die Container-Plattform abgesichert ist.'
+        - id: SYS.1.6.A3
+          title: 'Nur vertrauenswuerdige Images verwenden'
+          requirement_text: 'Nur vertrauenswuerdige, signierte Container-Images MUESSEN eingesetzt werden; Images MUESSEN regelmaessig auf Schwachstellen gescannt werden.'
+        - id: SYS.1.6.A4
+          title: 'Trennung von Containern'
+          requirement_text: 'Container unterschiedlicher Schutzklassen MUESSEN sicher voneinander getrennt sein. Siehe BSI Kompendium 2023 Baustein SYS.1.6 Anforderung A4.'
+      standard: []
+      hoch: []
+
+  - id: SYS.1.7
+    title: 'IBM Z'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von IBM-Z-Mainframe-Systemen.'
+    anforderungen:
+      basis:
+        - id: SYS.1.7.A1
+          title: 'Planung des IBM-Z-Einsatzes'
+          requirement_text: 'Der Einsatz von IBM Z MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein SYS.1.7 Anforderung A1.'
+        - id: SYS.1.7.A2
+          title: 'Sichere Grundkonfiguration von IBM Z'
+          requirement_text: 'IBM-Z-Systeme MUESSEN sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein SYS.1.7 Anforderung A2.'
+        - id: SYS.1.7.A3
+          title: 'Berechtigungs- und Sicherheitsverwaltung (RACF)'
+          requirement_text: 'Die Sicherheitsverwaltung (z. B. RACF) MUSS nach dem Prinzip der geringsten Rechte konfiguriert sein. Siehe BSI Kompendium 2023 Baustein SYS.1.7 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.1.8
+    title: 'Speicherloesungen'
+    description: 'Anforderungen an Auswahl, Konfiguration und Betrieb zentraler Speicherloesungen (SAN/NAS/Object Storage).'
+    anforderungen:
+      basis:
+        - id: SYS.1.8.A1
+          title: 'Anforderungsanalyse fuer Storage'
+          requirement_text: 'Vor der Beschaffung einer Storage-Loesung MUESSEN die Anforderungen an Kapazitaet, Verfuegbarkeit, Redundanz und Sicherheit erhoben und dokumentiert werden.'
+        - id: SYS.1.8.A2
+          title: 'Sichere Konfiguration von Storage-Loesungen'
+          requirement_text: 'Storage-Loesungen MUESSEN sicher konfiguriert werden. Administrative Schnittstellen DUERFEN NUR aus vertrauenswuerdigen Netzen erreichbar sein.'
+        - id: SYS.1.8.A3
+          title: 'Verschluesselung und Zugriffskontrolle'
+          requirement_text: 'Vertrauliche Daten auf Storage-Loesungen MUESSEN verschluesselt und der Zugriff streng kontrolliert sein. Siehe BSI Kompendium 2023 Baustein SYS.1.8 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.1.9
+    title: 'Terminalserver'
+    description: 'Anforderungen an Auswahl, Konfiguration und Betrieb von Terminalservern.'
+    anforderungen:
+      basis:
+        - id: SYS.1.9.A1
+          title: 'Planung des Terminalserver-Einsatzes'
+          requirement_text: 'Der Einsatz von Terminalservern MUSS geplant werden: unterstuetzte Clients, verwendete Protokolle (RDP, ICA), Lastverteilung und Lizenzierung.'
+        - id: SYS.1.9.A2
+          title: 'Sichere Grundkonfiguration des Terminalservers'
+          requirement_text: 'Terminalserver MUESSEN sicher grundkonfiguriert sein. Siehe BSI Kompendium 2023 Baustein SYS.1.9 Anforderung A2.'
+        - id: SYS.1.9.A3
+          title: 'Absicherung der Terminalserver-Kommunikation'
+          requirement_text: 'Die Kommunikation zwischen Terminalclient und -server MUSS verschluesselt erfolgen. Die Integritaet der Sitzung MUSS sichergestellt werden.'
+      standard: []
+      hoch: []
+
+  - id: SYS.2.1
+    title: 'Allgemeiner Client'
+    description: 'Anforderungen an allgemeine Clientsysteme unabhaengig vom Betriebssystem.'
+    anforderungen:
+      basis:
+        - id: SYS.2.1.A1
+          title: 'Geeignete Aufstellung von Clients'
+          requirement_text: 'Clients MUESSEN so aufgestellt werden, dass ein unberechtigter Zugriff verhindert wird.'
+        - id: SYS.2.1.A2
+          title: 'Rollentrennung bei Clients'
+          requirement_text: 'Die Rollen von Benutzern und Administratoren MUESSEN getrennt werden.'
+        - id: SYS.2.1.A3
+          title: 'Authentisierung an Clients'
+          requirement_text: 'Die Authentisierung an Clients MUSS nach dem Stand der Technik erfolgen. Siehe BSI Kompendium 2023 Baustein SYS.2.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.2.2.3
+    title: 'Clients unter Windows'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb aktueller Microsoft-Windows-Clients.'
+    anforderungen:
+      basis:
+        - id: SYS.2.2.3.A1
+          title: 'Planung des Einsatzes von Clients'
+          requirement_text: 'Vor dem Einsatz von Windows-Clients MUSS geplant werden, welche Anwendungsfaelle abgedeckt werden und welche Schutzbeduerfnisse bestehen.'
+        - id: SYS.2.2.3.A3
+          title: 'Absicherung der Administratoren-Zugaenge am Client'
+          requirement_text: 'Administrative Zugriffe auf Clients MUESSEN getrennt von der taeglichen Arbeit erfolgen.'
+        - id: SYS.2.2.3.A4
+          title: 'Sichere Grundkonfiguration eines Windows-Clients'
+          requirement_text: 'Ein Windows-Client MUSS sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein SYS.2.2.3 Anforderung A4.'
+      standard: []
+      hoch: []
+
+  - id: SYS.2.3
+    title: 'Clients unter Linux und Unix'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von Linux- und Unix-Clients.'
+    anforderungen:
+      basis:
+        - id: SYS.2.3.A1
+          title: 'Planung des Einsatzes von Linux-/Unix-Clients'
+          requirement_text: 'Der Einsatz von Linux-/Unix-Clients MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein SYS.2.3 Anforderung A1.'
+        - id: SYS.2.3.A2
+          title: 'Sichere Grundkonfiguration des Linux-/Unix-Clients'
+          requirement_text: 'Linux-/Unix-Clients MUESSEN sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein SYS.2.3 Anforderung A2.'
+        - id: SYS.2.3.A3
+          title: 'Patchmanagement und Aktualitaet'
+          requirement_text: 'Linux-/Unix-Clients MUESSEN regelmaessig mit sicherheitsrelevanten Updates versorgt werden. Siehe BSI Kompendium 2023 Baustein SYS.2.3 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.2.4
+    title: 'Clients unter macOS'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von macOS-Clients.'
+    anforderungen:
+      basis:
+        - id: SYS.2.4.A1
+          title: 'Planung des Einsatzes von macOS-Clients'
+          requirement_text: 'Vor dem Einsatz von macOS-Clients MUSS geplant werden, welche Anwendungsfaelle unterstuetzt werden, welche MDM-Loesung eingesetzt wird und welche Sicherheitsmassnahmen Pflicht sind.'
+        - id: SYS.2.4.A2
+          title: 'Sichere Grundkonfiguration von macOS-Clients'
+          requirement_text: 'macOS-Clients MUESSEN ueber eine Verwaltungsloesung (MDM) sicher grundkonfiguriert werden. FileVault-Verschluesselung, Gatekeeper und Firewall MUESSEN aktiviert sein.'
+        - id: SYS.2.4.A4
+          title: 'Nutzung der Apple-ID'
+          requirement_text: 'Die Nutzung privater Apple-IDs auf Firmengeraeten MUSS geregelt sein. Synchronisation von Firmendaten mit privaten iCloud-Konten DARF NICHT erfolgen.'
+      standard: []
+      hoch: []
+
+  - id: SYS.2.5
+    title: 'Client-Virtualisierung'
+    description: 'Anforderungen an den sicheren Einsatz von Client-Virtualisierungsloesungen.'
+    anforderungen:
+      basis:
+        - id: SYS.2.5.A1
+          title: 'Planung der Client-Virtualisierung'
+          requirement_text: 'Der Einsatz der Client-Virtualisierung MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein SYS.2.5 Anforderung A1.'
+        - id: SYS.2.5.A2
+          title: 'Sichere Grundkonfiguration der Virtualisierung'
+          requirement_text: 'Die Client-Virtualisierungsumgebung MUSS sicher grundkonfiguriert sein. Siehe BSI Kompendium 2023 Baustein SYS.2.5 Anforderung A2.'
+        - id: SYS.2.5.A3
+          title: 'Trennung virtueller Clients'
+          requirement_text: 'Virtuelle Clients unterschiedlicher Schutzklassen MUESSEN voneinander getrennt sein. Siehe BSI Kompendium 2023 Baustein SYS.2.5 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.2.6
+    title: 'Virtual Desktop Infrastructure'
+    description: 'Anforderungen an Aufbau und Betrieb einer Virtual Desktop Infrastructure (VDI).'
+    anforderungen:
+      basis:
+        - id: SYS.2.6.A1
+          title: 'Planung der VDI'
+          requirement_text: 'Der Einsatz einer VDI MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein SYS.2.6 Anforderung A1.'
+        - id: SYS.2.6.A2
+          title: 'Sichere Grundkonfiguration der VDI-Plattform'
+          requirement_text: 'Die VDI-Plattform MUSS sicher grundkonfiguriert sein. Siehe BSI Kompendium 2023 Baustein SYS.2.6 Anforderung A2.'
+        - id: SYS.2.6.A3
+          title: 'Absicherung der VDI-Zugriffsprotokolle'
+          requirement_text: 'Die fuer den VDI-Zugriff genutzten Protokolle MUESSEN verschluesselt sein. Siehe BSI Kompendium 2023 Baustein SYS.2.6 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.3.1
+    title: 'Laptops'
+    description: 'Anforderungen an die sichere Beschaffung, Konfiguration und Nutzung von Laptops.'
+    anforderungen:
+      basis:
+        - id: SYS.3.1.A1
+          title: 'Regelungen zur Nutzung von Laptops'
+          requirement_text: 'Es MUESSEN Regelungen zur Nutzung von Laptops erstellt werden.'
+        - id: SYS.3.1.A2
+          title: 'Sichere Grundkonfiguration von Laptops'
+          requirement_text: 'Laptops MUESSEN sicher grundkonfiguriert werden. Die Festplatte MUSS verschluesselt sein, die Firmware MUSS mit einem Kennwort geschuetzt sein.'
+        - id: SYS.3.1.A3
+          title: 'Verhalten bei Verlust oder Diebstahl'
+          requirement_text: 'Fuer den Fall von Verlust oder Diebstahl eines Laptops MUSS ein Prozess festgelegt sein. Der Zugriff auf Unternehmensdaten MUSS aus der Ferne gesperrt werden koennen.'
+      standard: []
+      hoch: []
+
+  - id: SYS.3.2.1
+    title: 'Allgemeine Smartphones und Tablets'
+    description: 'Anforderungen an die sichere Beschaffung, Konfiguration und Nutzung von Smartphones und Tablets.'
+    anforderungen:
+      basis:
+        - id: SYS.3.2.1.A1
+          title: 'Planung des Einsatzes von Smartphones und Tablets'
+          requirement_text: 'Der Einsatz von Smartphones und Tablets MUSS sorgfaeltig geplant werden.'
+        - id: SYS.3.2.1.A2
+          title: 'Mobile Device Management (MDM)'
+          requirement_text: 'Die mobilen Endgeraete SOLLTEN ueber ein MDM verwaltet werden.'
+        - id: SYS.3.2.1.A3
+          title: 'Sichere Grundkonfiguration mobiler Endgeraete'
+          requirement_text: 'Smartphones und Tablets MUESSEN sicher grundkonfiguriert sein, einschliesslich Geraeteverschluesselung und PIN-Schutz. Siehe BSI Kompendium 2023 Baustein SYS.3.2.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.3.2.2
+    title: 'Mobile Device Management (MDM)'
+    description: 'Anforderungen an Auswahl und Betrieb einer MDM-Loesung fuer mobile Endgeraete.'
+    anforderungen:
+      basis:
+        - id: SYS.3.2.2.A1
+          title: 'Auswahl einer MDM-Loesung'
+          requirement_text: 'Vor dem Einsatz mobiler Endgeraete MUSS eine Mobile-Device-Management-Loesung ausgewaehlt werden, die Richtlinien zentral ausrollt und Compliance-Status ueberwacht.'
+        - id: SYS.3.2.2.A2
+          title: 'Durchsetzung von Sicherheitsrichtlinien via MDM'
+          requirement_text: 'Sicherheitsrichtlinien (Passwort-Laenge, Verschluesselung, Jailbreak-Erkennung, Remote-Wipe) MUESSEN zentral via MDM durchgesetzt werden.'
+      standard:
+        - id: SYS.3.2.2.A5
+          title: 'Trennung privater und dienstlicher Daten'
+          requirement_text: 'Bei BYOD-Szenarien MUSS die Trennung privater und dienstlicher Daten durch Container-Loesungen oder getrennte Profile sichergestellt sein.'
+      hoch: []
+
+  - id: SYS.3.2.3
+    title: 'iOS (for Enterprise)'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von iOS-Geraeten im Unternehmenseinsatz.'
+    anforderungen:
+      basis:
+        - id: SYS.3.2.3.A1
+          title: 'Planung des Einsatzes von iOS-Geraeten'
+          requirement_text: 'Der Einsatz von iOS-Geraeten MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein SYS.3.2.3 Anforderung A1.'
+        - id: SYS.3.2.3.A2
+          title: 'Sichere Grundkonfiguration von iOS-Geraeten'
+          requirement_text: 'iOS-Geraete MUESSEN ueber MDM sicher grundkonfiguriert sein. Siehe BSI Kompendium 2023 Baustein SYS.3.2.3 Anforderung A2.'
+        - id: SYS.3.2.3.A3
+          title: 'Aktualitaet von iOS'
+          requirement_text: 'Auf iOS-Geraeten MUESSEN ausschliesslich vom Hersteller unterstuetzte und aktuell gepatchte Versionen eingesetzt werden. Siehe BSI Kompendium 2023 Baustein SYS.3.2.3 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.3.2.4
+    title: 'Android'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von Android-Geraeten im Unternehmenseinsatz.'
+    anforderungen:
+      basis:
+        - id: SYS.3.2.4.A1
+          title: 'Planung des Einsatzes von Android-Geraeten'
+          requirement_text: 'Der Einsatz von Android-Geraeten MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein SYS.3.2.4 Anforderung A1.'
+        - id: SYS.3.2.4.A2
+          title: 'Sichere Grundkonfiguration von Android-Geraeten'
+          requirement_text: 'Android-Geraete MUESSEN ueber MDM sicher grundkonfiguriert sein. Siehe BSI Kompendium 2023 Baustein SYS.3.2.4 Anforderung A2.'
+        - id: SYS.3.2.4.A3
+          title: 'Aktualitaet von Android'
+          requirement_text: 'Auf Android-Geraeten MUESSEN ausschliesslich vom Hersteller unterstuetzte und aktuell gepatchte Versionen eingesetzt werden. Siehe BSI Kompendium 2023 Baustein SYS.3.2.4 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.4.1
+    title: 'Drucker, Kopierer, Multifunktionsgeraete'
+    description: 'Anforderungen an die sichere Konfiguration und Nutzung von Druckern, Kopierern und Multifunktionsgeraeten.'
+    anforderungen:
+      basis:
+        - id: SYS.4.1.A1
+          title: 'Planung des Einsatzes von Druckern und Multifunktionsgeraeten'
+          requirement_text: 'Vor dem Einsatz von Druckern, Kopierern oder Multifunktionsgeraeten MUSS geplant werden, welche Funktionen (Drucken, Scannen, Fax, Archivieren) genutzt werden und welche Sicherheitsmassnahmen erforderlich sind.'
+        - id: SYS.4.1.A2
+          title: 'Sichere Konfiguration von Druckern'
+          requirement_text: 'Drucker und Multifunktionsgeraete MUESSEN sicher konfiguriert werden. Nicht benoetigte Dienste MUESSEN deaktiviert sein. Administrative Zugaenge MUESSEN mit Passwoertern geschuetzt sein.'
+        - id: SYS.4.1.A3
+          title: 'Schutz gespeicherter Druckdaten'
+          requirement_text: 'Auf dem Geraet gespeicherte Druckauftraege und gescannte Dokumente MUESSEN vor unberechtigtem Zugriff geschuetzt werden. Daten MUESSEN vor Entsorgung sicher geloescht werden.'
+      standard: []
+      hoch: []
+
+  - id: SYS.4.3
+    title: 'Eingebettete Systeme'
+    description: 'Anforderungen an die sichere Beschaffung, Konfiguration und Wartung eingebetteter Systeme.'
+    anforderungen:
+      basis:
+        - id: SYS.4.3.A1
+          title: 'Planung des Einsatzes eingebetteter Systeme'
+          requirement_text: 'Der Einsatz eingebetteter Systeme MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein SYS.4.3 Anforderung A1.'
+        - id: SYS.4.3.A2
+          title: 'Sichere Grundkonfiguration eingebetteter Systeme'
+          requirement_text: 'Eingebettete Systeme MUESSEN sicher grundkonfiguriert werden, einschliesslich Aenderung von Default-Passwoertern. Siehe BSI Kompendium 2023 Baustein SYS.4.3 Anforderung A2.'
+        - id: SYS.4.3.A3
+          title: 'Patchmanagement fuer eingebettete Systeme'
+          requirement_text: 'Eingebettete Systeme MUESSEN soweit moeglich mit sicherheitsrelevanten Updates versorgt werden. Siehe BSI Kompendium 2023 Baustein SYS.4.3 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.4.4
+    title: 'Allgemeines IoT-Geraet'
+    description: 'Anforderungen an die sichere Beschaffung, Konfiguration und Nutzung allgemeiner IoT-Geraete.'
+    anforderungen:
+      basis:
+        - id: SYS.4.4.A1
+          title: 'Planung des Einsatzes von IoT-Geraeten'
+          requirement_text: 'Der Einsatz von IoT-Geraeten MUSS sorgfaeltig geplant werden.'
+        - id: SYS.4.4.A2
+          title: 'Sichere Grundkonfiguration von IoT-Geraeten'
+          requirement_text: 'IoT-Geraete MUESSEN sicher grundkonfiguriert sein, einschliesslich Aenderung von Default-Passwoertern. Siehe BSI Kompendium 2023 Baustein SYS.4.4 Anforderung A2.'
+        - id: SYS.4.4.A3
+          title: 'Netztrennung fuer IoT-Geraete'
+          requirement_text: 'IoT-Geraete MUESSEN in einem eigenen, segmentierten Netzbereich betrieben werden. Siehe BSI Kompendium 2023 Baustein SYS.4.4 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: SYS.4.5
+    title: 'Wechseldatentraeger'
+    description: 'Anforderungen an die geregelte und sichere Nutzung von Wechseldatentraegern.'
+    anforderungen:
+      basis:
+        - id: SYS.4.5.A1
+          title: 'Regelung zur Nutzung von Wechseldatentraegern'
+          requirement_text: 'Fuer den Einsatz von Wechseldatentraegern (USB-Sticks, externe Festplatten, CD/DVD) MUSS eine Richtlinie festgelegt werden, die zulaessige Geraete, Ein-/Ausgangs-Prozesse und Schutzanforderungen regelt.'
+        - id: SYS.4.5.A2
+          title: 'Sichere Verwendung von Wechseldatentraegern'
+          requirement_text: 'Auf Wechseldatentraegern gespeicherte vertrauliche Daten MUESSEN verschluesselt sein. Nur freigegebene Datentraeger DUERFEN an Firmen-Clients angeschlossen werden.'
+        - id: SYS.4.5.A3
+          title: 'Sicheres Loeschen und Vernichten von Wechseldatentraegern'
+          requirement_text: 'Vor der Wiederverwendung oder Entsorgung MUESSEN Wechseldatentraeger sicher geloescht oder physisch zerstoert werden. Siehe BSI Kompendium 2023 Baustein SYS.4.5 Anforderung A3.'
+      standard: []
+      hoch: []
