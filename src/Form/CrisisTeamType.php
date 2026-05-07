@@ -167,6 +167,10 @@ class CrisisTeamType extends AbstractType
                     'placeholder' => 'crisis_team.placeholder.virtual_meeting_url',
                 ],
                 'help' => 'crisis_team.help.virtual_meeting_url',
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \App\Validator\Constraint\NoInternalIp(),
+                ],
             ])
             ->add('alertProcedures', TextareaType::class, [
                 'label' => 'crisis_team.field.alert_procedures',

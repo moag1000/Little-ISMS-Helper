@@ -36,6 +36,10 @@ class TenantEmailBrandingType extends AbstractType
                 'required' => false,
                 'attr' => ['maxlength' => 500, 'placeholder' => 'https://...'],
                 'default_protocol' => 'https',
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \App\Validator\Constraint\NoInternalIp(),
+                ],
             ])
             ->add('emailFooterText', TextareaType::class, [
                 'label' => 'tenant.email.field.footer_text',

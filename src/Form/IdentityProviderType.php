@@ -58,12 +58,51 @@ final class IdentityProviderType extends AbstractType
                 'label' => 'sso.field.discovery_url',
                 'required' => false,
                 'help' => 'sso.help.discovery_url',
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \App\Validator\Constraint\NoInternalIp(),
+                ],
             ])
-            ->add('issuer', UrlType::class, ['label' => 'sso.field.issuer', 'required' => false])
-            ->add('authorizationEndpoint', UrlType::class, ['label' => 'sso.field.auth_endpoint', 'required' => false])
-            ->add('tokenEndpoint', UrlType::class, ['label' => 'sso.field.token_endpoint', 'required' => false])
-            ->add('userinfoEndpoint', UrlType::class, ['label' => 'sso.field.userinfo_endpoint', 'required' => false])
-            ->add('jwksUri', UrlType::class, ['label' => 'sso.field.jwks_uri', 'required' => false])
+            ->add('issuer', UrlType::class, [
+                'label' => 'sso.field.issuer',
+                'required' => false,
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \App\Validator\Constraint\NoInternalIp(),
+                ],
+            ])
+            ->add('authorizationEndpoint', UrlType::class, [
+                'label' => 'sso.field.auth_endpoint',
+                'required' => false,
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \App\Validator\Constraint\NoInternalIp(),
+                ],
+            ])
+            ->add('tokenEndpoint', UrlType::class, [
+                'label' => 'sso.field.token_endpoint',
+                'required' => false,
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \App\Validator\Constraint\NoInternalIp(),
+                ],
+            ])
+            ->add('userinfoEndpoint', UrlType::class, [
+                'label' => 'sso.field.userinfo_endpoint',
+                'required' => false,
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \App\Validator\Constraint\NoInternalIp(),
+                ],
+            ])
+            ->add('jwksUri', UrlType::class, [
+                'label' => 'sso.field.jwks_uri',
+                'required' => false,
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \App\Validator\Constraint\NoInternalIp(),
+                ],
+            ])
             ->add('scopesCsv', TextType::class, [
                 'label' => 'sso.field.scopes',
                 'mapped' => false,
