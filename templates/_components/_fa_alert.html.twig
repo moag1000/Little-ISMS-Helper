@@ -40,6 +40,48 @@
  #   danger  → status-critical
  #}
 
+{# ─── Top-level rendering for {% embed %} pattern ──────────────────────
+ # The embed-form passes its props in via `with { props: {...} }` and
+ # supplies extra HTML through the `alert_body` block. Without this
+ # top-level body the macro file would render nothing under {% embed %}
+ # because Twig's template inheritance cannot reach blocks defined
+ # inside macros. Both code paths (embed + macro.render) emit identical
+ # markup. #}
+{% if props is defined %}
+    {%- set _variant = props.variant|default('info') -%}
+    {%- set _defaultIcons = {
+        'info':    'status-info',
+        'success': 'status-ok',
+        'warning': 'status-warning',
+        'danger':  'status-critical'
+    } -%}
+    {%- set _icon = props.icon|default(_defaultIcons[_variant]|default('status-info')) -%}
+
+    <div class="fa-alert fa-alert--{{ _variant }}{% if props.class is defined and props.class %} {{ props.class }}{% endif %}" role="alert">
+        {%- if _icon -%}
+            {%- if _icon starts with 'bi-' -%}
+                <i class="bi {{ _icon }} fa-alert__icon" aria-hidden="true"></i>
+            {%- else -%}
+                <i class="fa-icon fa-icon--{{ _icon }} fa-alert__icon" aria-hidden="true"></i>
+            {%- endif -%}
+        {%- endif -%}
+        <div class="fa-alert__body">
+            {%- if props.title is defined and props.title -%}
+                <div class="fa-alert__title">{{ props.title }}</div>
+            {%- endif -%}
+            {%- if props.body is defined and props.body -%}
+                <p class="fa-alert__message">{{ props.body|raw }}</p>
+            {%- endif -%}
+            {% block alert_body %}{% endblock %}
+        </div>
+        {%- if props.dismissible is defined and props.dismissible -%}
+            <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
+                <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
+            </button>
+        {%- endif -%}
+    </div>
+{% endif %}
+
 {% macro render(props = {}) %}
     {%- set variant = props.variant|default('info') -%}
     {%- set _defaultIcons = {
@@ -65,7 +107,6 @@
             {%- if props.body is defined and props.body -%}
                 <p class="fa-alert__message">{{ props.body|raw }}</p>
             {%- endif -%}
-            {% block alert_body %}{% endblock %}
         </div>
         {%- if props.dismissible is defined and props.dismissible -%}
             <button type="button" class="fa-alert__close" data-bs-dismiss="alert" aria-label="Close">
