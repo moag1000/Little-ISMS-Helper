@@ -285,6 +285,45 @@ class Risk
     private bool $formallyAccepted = false;
 
     /**
+     * Likelihood / probability justification (ISO 27001:2022 6.1.2.d — audit-required)
+     * Score without textual justification is not audit-proof.
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $likelihoodJustification = null;
+
+    /**
+     * Impact justification (ISO 27001:2022 6.1.2.d — audit-required)
+     * Score without textual justification is not audit-proof.
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $impactJustification = null;
+
+    /**
+     * Decision rationale for risk treatment (ISO 31000 §6.5.4)
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $decisionRationale = null;
+
+    /**
+     * User who approved the risk treatment decision (replaces plain-text PT-F01 vector)
+     * CVSS 9.1 fix: EntityType instead of free-text field.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'decision_approved_by_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?User $decisionApprovedByUser = null;
+
+    /**
+     * Date when the risk treatment decision was approved.
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?\DateTimeImmutable $decisionApprovalDate = null;
+
+    /**
      * Custom review interval in days (overrides default from RiskReviewService).
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
@@ -1149,6 +1188,65 @@ class Risk
             null,
             $this->riskOwnerDeputyPersons,
         );
+    }
+
+    // -------------------------------------------------------------------------
+    // Justification & Decision fields (T31.1.2)
+    // -------------------------------------------------------------------------
+
+    public function getLikelihoodJustification(): ?string
+    {
+        return $this->likelihoodJustification;
+    }
+
+    public function setLikelihoodJustification(?string $likelihoodJustification): static
+    {
+        $this->likelihoodJustification = $likelihoodJustification;
+        return $this;
+    }
+
+    public function getImpactJustification(): ?string
+    {
+        return $this->impactJustification;
+    }
+
+    public function setImpactJustification(?string $impactJustification): static
+    {
+        $this->impactJustification = $impactJustification;
+        return $this;
+    }
+
+    public function getDecisionRationale(): ?string
+    {
+        return $this->decisionRationale;
+    }
+
+    public function setDecisionRationale(?string $decisionRationale): static
+    {
+        $this->decisionRationale = $decisionRationale;
+        return $this;
+    }
+
+    public function getDecisionApprovedByUser(): ?User
+    {
+        return $this->decisionApprovedByUser;
+    }
+
+    public function setDecisionApprovedByUser(?User $decisionApprovedByUser): static
+    {
+        $this->decisionApprovedByUser = $decisionApprovedByUser;
+        return $this;
+    }
+
+    public function getDecisionApprovalDate(): ?\DateTimeImmutable
+    {
+        return $this->decisionApprovalDate;
+    }
+
+    public function setDecisionApprovalDate(?\DateTimeImmutable $decisionApprovalDate): static
+    {
+        $this->decisionApprovalDate = $decisionApprovalDate;
+        return $this;
     }
 
 }

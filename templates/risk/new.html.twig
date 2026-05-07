@@ -39,7 +39,7 @@
                 },
                 'inherent_risk': {
                     'label': 'risk.section.inherent_risk'|trans({}, 'risk'),
-                    'fields': ['probability', 'impact']
+                    'fields': ['probability', 'likelihoodJustification', 'impact', 'impactJustification']
                 },
                 'residual_risk': {
                     'label': 'risk.section.residual_risk'|trans({}, 'risk'),
@@ -51,7 +51,7 @@
                 },
                 'acceptance': {
                     'label': 'risk.section.acceptance'|trans({}, 'risk'),
-                    'fields': ['acceptanceApprovedBy', 'acceptanceApprovedAt', 'acceptanceJustification', 'status', 'reviewDate']
+                    'fields': ['decisionApprovedByUser', 'decisionApprovalDate', 'decisionRationale', 'acceptanceApprovedByUser', 'acceptanceApprovedAt', 'acceptanceJustification', 'status', 'reviewDate']
                 }
             },
             'col_widths': {
@@ -71,7 +71,9 @@
                 'requiresDPIA': 6,
                 'dataSubjectImpact': 12,
                 'probability': 6,
+                'likelihoodJustification': 6,
                 'impact': 6,
+                'impactJustification': 6,
                 'residualProbability': 6,
                 'residualImpact': 6,
                 'treatmentStrategy': 6,
@@ -79,7 +81,10 @@
                 'riskOwnerPerson': 6,
                 'riskOwnerDeputyPersons': 12,
                 'treatmentDescription': 12,
-                'acceptanceApprovedBy': 6,
+                'decisionApprovedByUser': 6,
+                'decisionApprovalDate': 6,
+                'decisionRationale': 12,
+                'acceptanceApprovedByUser': 6,
                 'acceptanceApprovedAt': 6,
                 'acceptanceJustification': 12,
                 'status': 6,

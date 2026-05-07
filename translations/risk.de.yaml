@@ -143,6 +143,11 @@ risk:
     location: Betroffener Standort
     supplier: Betroffener Lieferant
     acceptance_approved_by_legacy: Risiko-Akzeptanz genehmigt durch (freitext, veraltet)
+    likelihood_justification: Begründung Eintrittswahrscheinlichkeit
+    impact_justification: Begründung Schadensauswirkung
+    decision_approved_by_user: Entscheidung genehmigt durch
+    decision_approval_date: Datum der Entscheidungsgenehmigung
+    decision_rationale: Entscheidungsbegründung
   confirm:
     delete: Risiko wirklich löschen?
   edit: Risiko bearbeiten
@@ -255,6 +260,11 @@ risk:
     acceptance_justification: Begründung, warum das Restrisiko akzeptiert wird
     review_date: Datum der nächsten geplanten Risikoüberprüfung
     acceptance_approved_by_user: Person die die Risikoakzeptanz genehmigt hat.
+    likelihood_justification: 'ISO 27001:2022 Kl. 6.1.2.d — Begründen Sie, warum diese Eintrittswahrscheinlichkeit vergeben wurde (auditpflichtiger Nachweis).'
+    impact_justification: 'ISO 27001:2022 Kl. 6.1.2.d — Begründen Sie, warum dieses Schadensausmaß bewertet wurde (auditpflichtiger Nachweis).'
+    decision_rationale: 'ISO 31000 §6.5.4 — Begründung für die getroffene Risikobehandlungsentscheidung (Mitigieren / Akzeptieren / Übertragen / Vermeiden).'
+    decision_approved_by_user: 'Person, die die Risikobehandlungsentscheidung formal genehmigt hat (ROLE_MANAGER oder höher erforderlich).'
+    decision_approval_date: Datum der formalen Genehmigung der Risikobehandlungsentscheidung.
   tooltip:
     probability: '<strong>🎲 Wie wahrscheinlich ist der Eintritt?</strong><br><em>Frage:
       Wie oft könnte dieses Risiko eintreten?</em><br><br><strong>1</strong> = Sehr
@@ -441,6 +451,10 @@ risk:
     acceptance_approved_by: Name der genehmigenden Person
     acceptance_justification: Begründung für die Akzeptanz des Restrisikos...
     acceptance_approved_by_user: -- Genehmigende Person --
+    likelihood_justification: 'z.B. Basierend auf historischen Vorfällen und aktuellen Bedrohungslagen...'
+    impact_justification: 'z.B. Bei Eintritt wären Kundendaten, Verfügbarkeit und Reputation betroffen...'
+    decision_approved_by_user: '-- Genehmigende Person auswählen --'
+    decision_rationale: 'Begründung für die gewählte Behandlungsstrategie...'
   probability:
     rare: Selten
     unlikely: Unwahrscheinlich
@@ -469,6 +483,9 @@ risk:
     zu setzen
   error:
     owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+  validation:
+    likelihood_justification_required: 'Begründung der Eintrittswahrscheinlichkeit ist erforderlich (ISO 27001:2022 Kl. 6.1.2.d).'
+    impact_justification_required: 'Begründung der Schadensauswirkung ist erforderlich (ISO 27001:2022 Kl. 6.1.2.d).'
 risk_management:
   title: Titel
   description: Beschreibung
