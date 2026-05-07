@@ -19,18 +19,42 @@ library:
   methodology:
     type: 'published_official_mapping'
     description: |
-      Forward-Mapping ISO 27001:2022 Annex A → BSI IT-Grundschutz-Bausteine
-      auf Grundlage der BSI-Kreuzreferenztabelle:
-      1. Identifikation der ISO-Annex-A-Kontrolle als Ankerpunkt
-      2. Identifikation des primären Grundschutz-Bausteins (Schwerpunkt:
-         ISMS.1, ORP, OPS, CON, DER, INF, NET — gemäß Modellierungslogik)
-      3. Relationship-Bestimmung: meist "subset" (ISO ⊆ Baustein bündelt mehr),
-         bei identischem Anforderungs-Niveau "equivalent"
-      4. Confidence-Einstufung gemäß Übereinstimmungsgrad und BSI-Crosswalk
-      5. Rationale aus ISO-Sicht (Welcher Baustein deckt die Annex-A-Kontrolle ab?)
-      6. Audit-Evidence-Hinweise mit konkreten Bausteinanforderungs-Codes
-         (z. B. ORP.4.A1) und ISO-Annex-A-Referenz
-      7. 4-Augen-Review durch zweiten BSI-Spezialisten
+      v2 — Coverage erweitert von 15 auf alle 106 Bausteine via BSI-Layer-Heuristik.
+
+      Phase 1 (ursprüngliche 15 Pairs):
+        Forward-Mapping ISO 27001:2022 Annex A → BSI IT-Grundschutz-Bausteine
+        auf Grundlage der BSI-Kreuzreferenztabelle:
+        1. Identifikation der ISO-Annex-A-Kontrolle als Ankerpunkt
+        2. Identifikation des primären Grundschutz-Bausteins (Schwerpunkt:
+           ISMS.1, ORP, OPS, CON, DER, INF, NET — gemäß Modellierungslogik)
+        3. Relationship-Bestimmung: meist "subset" (ISO ⊆ Baustein bündelt mehr),
+           bei identischem Anforderungs-Niveau "equivalent"
+        4. Confidence-Einstufung gemäß Übereinstimmungsgrad und BSI-Crosswalk
+        5. Rationale aus ISO-Sicht (Welcher Baustein deckt die Annex-A-Kontrolle ab?)
+        6. Audit-Evidence-Hinweise mit konkreten Bausteinanforderungs-Codes
+           (z. B. ORP.4.A1) und ISO-Annex-A-Referenz
+        7. 4-Augen-Review durch zweiten BSI-Spezialisten
+
+      Phase 2 (v2 — Vollabdeckung 106 Bausteine):
+        Heuristische Erweiterung als Inverse von bsi-it-grundschutz_to_iso27001-
+        2022_v1.0. Pro neuem Baustein-Pair wird das ISO-Annex-A-zentrische Pair
+        durch Inversion (source/target getauscht, relationship invertiert nach
+        Schema equivalent↔equivalent, subset↔superset, partial_overlap↔partial_
+        overlap, related↔related) erzeugt. Layer-Heuristik:
+          ISMS  → A.5.1-3
+          ORP.x → A.5.* (Organisation, Personal, Awareness)
+          CON.x → A.5.10/A.5.14, A.5.31-34, A.8.10/A.8.24
+          OPS.x → A.5.30, A.8.15-17, A.8.32
+          DER.x → A.5.24-28, A.5.35
+          APP.x → A.5.10, A.8.25-28
+          SYS.x → A.5.9, A.8.1/6/8/9
+          IND.x → A.5.1, A.7.*, A.8.20-22
+          NET.x → A.8.20-22
+          INF.x → A.7.1-14
+        Relationship-Default 'partial_overlap', 'equivalent' bei direkter
+        Entsprechung, 'subset' bei ISO ⊆ umfangreicher Baustein.
+        Confidence-Default 'medium', 'high' bei BSI-Crosswalk-Entsprechung.
+
       Hinweis: Reziprok zum Reverse-Mapping
       bsi-it-grundschutz_to_iso27001-2022_v1.0 — gleiche Pair-Liste,
       invertierte Relationships, identische Provenance/Confidence.
@@ -235,3 +259,1172 @@ mappings:
       (A.8.21) — A.8.20 ist Teilmenge.
     cross_refs: ['A.8.21', 'A.8.22']
     audit_evidence_hint: 'A.8.20: Netzarchitektur-Diagramm. NET.1.1.A1 Sicherheitsrichtlinie für Netzarchitektur, Segmentierungs-Konzept.'
+  - source: 'A.6.1'
+    target: 'ORP.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'ORP.2' → 'A.6.1': ISO-Annex-A-Kontrolle 'A.6.1' korrespondiert mit IT-Grundschutz-Baustein 'ORP.2' (Personal). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.6.1: ISO-Annex-A-Nachweis. ORP.2: Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte.'
+  - source: 'A.6.2'
+    target: 'ORP.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'ORP.2' → 'A.6.2': ISO-Annex-A-Kontrolle 'A.6.2' korrespondiert mit IT-Grundschutz-Baustein 'ORP.2' (Personal). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.6.2: ISO-Annex-A-Nachweis. ORP.2: Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte.'
+  - source: 'A.6.5'
+    target: 'ORP.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'ORP.2' → 'A.6.5': ISO-Annex-A-Kontrolle 'A.6.5' korrespondiert mit IT-Grundschutz-Baustein 'ORP.2' (Personal). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.6.5: ISO-Annex-A-Nachweis. ORP.2: Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte.'
+  - source: 'A.5.31'
+    target: 'ORP.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'ORP.5' → 'A.5.31': ISO-Annex-A-Kontrolle 'A.5.31' korrespondiert mit IT-Grundschutz-Baustein 'ORP.5' (Compliance Management). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.5.31: ISO-Annex-A-Nachweis. ORP.5: Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte.'
+  - source: 'A.5.32'
+    target: 'ORP.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'ORP.5' → 'A.5.32': ISO-Annex-A-Kontrolle 'A.5.32' korrespondiert mit IT-Grundschutz-Baustein 'ORP.5' (Compliance Management). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.5.32: ISO-Annex-A-Nachweis. ORP.5: Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte.'
+  - source: 'A.5.33'
+    target: 'ORP.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'ORP.5' → 'A.5.33': ISO-Annex-A-Kontrolle 'A.5.33' korrespondiert mit IT-Grundschutz-Baustein 'ORP.5' (Compliance Management). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.5.33: ISO-Annex-A-Nachweis. ORP.5: Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte.'
+  - source: 'A.5.34'
+    target: 'ORP.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'ORP.5' → 'A.5.34': ISO-Annex-A-Kontrolle 'A.5.34' korrespondiert mit IT-Grundschutz-Baustein 'ORP.5' (Compliance Management). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.5.34: ISO-Annex-A-Nachweis. ORP.5: Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte.'
+  - source: 'A.5.36'
+    target: 'ORP.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'ORP.5' → 'A.5.36': ISO-Annex-A-Kontrolle 'A.5.36' korrespondiert mit IT-Grundschutz-Baustein 'ORP.5' (Compliance Management). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.5.36: ISO-Annex-A-Nachweis. ORP.5: Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte.'
+  - source: 'A.8.24'
+    target: 'CON.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.1' → 'A.8.24': ISO-Annex-A-Kontrolle 'A.8.24' korrespondiert mit IT-Grundschutz-Baustein 'CON.1' (Kryptokonzept). Relationship invertiert: 'equivalent' → 'equivalent'.
+    audit_evidence_hint: 'A.8.24: ISO-Annex-A-Nachweis. CON.1: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.8.10'
+    target: 'CON.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.6' → 'A.8.10': ISO-Annex-A-Kontrolle 'A.8.10' korrespondiert mit IT-Grundschutz-Baustein 'CON.6' (Loeschen und Vernichten). Relationship invertiert: 'equivalent' → 'equivalent'.
+    audit_evidence_hint: 'A.8.10: ISO-Annex-A-Nachweis. CON.6: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.7.9'
+    target: 'CON.7'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.7' → 'A.7.9': ISO-Annex-A-Kontrolle 'A.7.9' korrespondiert mit IT-Grundschutz-Baustein 'CON.7' (Informationssicherheit auf Auslandsreisen). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.9: ISO-Annex-A-Nachweis. CON.7: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.6.7'
+    target: 'CON.7'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.7' → 'A.6.7': ISO-Annex-A-Kontrolle 'A.6.7' korrespondiert mit IT-Grundschutz-Baustein 'CON.7' (Informationssicherheit auf Auslandsreisen). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.6.7: ISO-Annex-A-Nachweis. CON.7: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.8.25'
+    target: 'CON.8'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.8' → 'A.8.25': ISO-Annex-A-Kontrolle 'A.8.25' korrespondiert mit IT-Grundschutz-Baustein 'CON.8' (Software-Entwicklung). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.25: ISO-Annex-A-Nachweis. CON.8: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.8.27'
+    target: 'CON.8'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.8' → 'A.8.27': ISO-Annex-A-Kontrolle 'A.8.27' korrespondiert mit IT-Grundschutz-Baustein 'CON.8' (Software-Entwicklung). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.27: ISO-Annex-A-Nachweis. CON.8: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.8.28'
+    target: 'CON.8'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.8' → 'A.8.28': ISO-Annex-A-Kontrolle 'A.8.28' korrespondiert mit IT-Grundschutz-Baustein 'CON.8' (Software-Entwicklung). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.28: ISO-Annex-A-Nachweis. CON.8: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.8.30'
+    target: 'CON.8'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.8' → 'A.8.30': ISO-Annex-A-Kontrolle 'A.8.30' korrespondiert mit IT-Grundschutz-Baustein 'CON.8' (Software-Entwicklung). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.30: ISO-Annex-A-Nachweis. CON.8: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.5.14'
+    target: 'CON.9'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.9' → 'A.5.14': ISO-Annex-A-Kontrolle 'A.5.14' korrespondiert mit IT-Grundschutz-Baustein 'CON.9' (Informationsaustausch). Relationship invertiert: 'equivalent' → 'equivalent'.
+    audit_evidence_hint: 'A.5.14: ISO-Annex-A-Nachweis. CON.9: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.8.26'
+    target: 'CON.10'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.10' → 'A.8.26': ISO-Annex-A-Kontrolle 'A.8.26' korrespondiert mit IT-Grundschutz-Baustein 'CON.10' (Entwicklung von Webanwendungen). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.26: ISO-Annex-A-Nachweis. CON.10: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.8.28'
+    target: 'CON.10'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.10' → 'A.8.28': ISO-Annex-A-Kontrolle 'A.8.28' korrespondiert mit IT-Grundschutz-Baustein 'CON.10' (Entwicklung von Webanwendungen). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.28: ISO-Annex-A-Nachweis. CON.10: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.5.12'
+    target: 'CON.11'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.11' → 'A.5.12': ISO-Annex-A-Kontrolle 'A.5.12' korrespondiert mit IT-Grundschutz-Baustein 'CON.11' (Geheimschutz). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.12: ISO-Annex-A-Nachweis. CON.11: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.5.13'
+    target: 'CON.11'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'CON.11' → 'A.5.13': ISO-Annex-A-Kontrolle 'A.5.13' korrespondiert mit IT-Grundschutz-Baustein 'CON.11' (Geheimschutz). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.13: ISO-Annex-A-Nachweis. CON.11: Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien.'
+  - source: 'A.5.37'
+    target: 'OPS.1.1.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.1.1' → 'A.5.37': ISO-Annex-A-Kontrolle 'A.5.37' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.1.1' (Allgemeiner IT-Betrieb). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.37: ISO-Annex-A-Nachweis. OPS.1.1.1: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.8.2'
+    target: 'OPS.1.1.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.1.2' → 'A.8.2': ISO-Annex-A-Kontrolle 'A.8.2' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.1.2' (Ordnungsgemaesse IT-Administration). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.2: ISO-Annex-A-Nachweis. OPS.1.1.2: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.8.5'
+    target: 'OPS.1.1.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.1.2' → 'A.8.5': ISO-Annex-A-Kontrolle 'A.8.5' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.1.2' (Ordnungsgemaesse IT-Administration). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.5: ISO-Annex-A-Nachweis. OPS.1.1.2: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.8.15'
+    target: 'OPS.1.1.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.1.5' → 'A.8.15': ISO-Annex-A-Kontrolle 'A.8.15' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.1.5' (Protokollierung). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.15: ISO-Annex-A-Nachweis. OPS.1.1.5: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.8.17'
+    target: 'OPS.1.1.5'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.1.5' → 'A.8.17': ISO-Annex-A-Kontrolle 'A.8.17' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.1.5' (Protokollierung). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.17: ISO-Annex-A-Nachweis. OPS.1.1.5: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.8.29'
+    target: 'OPS.1.1.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.1.6' → 'A.8.29': ISO-Annex-A-Kontrolle 'A.8.29' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.1.6' (Software-Tests und -Freigaben). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.29: ISO-Annex-A-Nachweis. OPS.1.1.6: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.8.31'
+    target: 'OPS.1.1.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.1.6' → 'A.8.31': ISO-Annex-A-Kontrolle 'A.8.31' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.1.6' (Software-Tests und -Freigaben). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.31: ISO-Annex-A-Nachweis. OPS.1.1.6: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.5.33'
+    target: 'OPS.1.2.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.2.2' → 'A.5.33': ISO-Annex-A-Kontrolle 'A.5.33' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.2.2' (Archivierung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.33: ISO-Annex-A-Nachweis. OPS.1.2.2: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.8.10'
+    target: 'OPS.1.2.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.2.2' → 'A.8.10': ISO-Annex-A-Kontrolle 'A.8.10' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.2.2' (Archivierung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.10: ISO-Annex-A-Nachweis. OPS.1.2.2: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.6.7'
+    target: 'OPS.1.2.4'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.2.4' → 'A.6.7': ISO-Annex-A-Kontrolle 'A.6.7' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.2.4' (Telearbeit). Relationship invertiert: 'equivalent' → 'equivalent'.
+    audit_evidence_hint: 'A.6.7: ISO-Annex-A-Nachweis. OPS.1.2.4: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.8.21'
+    target: 'OPS.1.2.5'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.2.5' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.2.5' (Fernwartung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. OPS.1.2.5: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.8.2'
+    target: 'OPS.1.2.5'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.2.5' → 'A.8.2': ISO-Annex-A-Kontrolle 'A.8.2' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.2.5' (Fernwartung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.2: ISO-Annex-A-Nachweis. OPS.1.2.5: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.8.17'
+    target: 'OPS.1.2.6'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.1.2.6' → 'A.8.17': ISO-Annex-A-Kontrolle 'A.8.17' korrespondiert mit IT-Grundschutz-Baustein 'OPS.1.2.6' (NTP-Zeitsynchronisation). Relationship invertiert: 'equivalent' → 'equivalent'.
+    audit_evidence_hint: 'A.8.17: ISO-Annex-A-Nachweis. OPS.1.2.6: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.5.19'
+    target: 'OPS.2.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.2.3' → 'A.5.19': ISO-Annex-A-Kontrolle 'A.5.19' korrespondiert mit IT-Grundschutz-Baustein 'OPS.2.3' (Nutzung von Outsourcing). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.5.19: ISO-Annex-A-Nachweis. OPS.2.3: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.5.20'
+    target: 'OPS.2.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.2.3' → 'A.5.20': ISO-Annex-A-Kontrolle 'A.5.20' korrespondiert mit IT-Grundschutz-Baustein 'OPS.2.3' (Nutzung von Outsourcing). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.5.20: ISO-Annex-A-Nachweis. OPS.2.3: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.5.21'
+    target: 'OPS.2.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.2.3' → 'A.5.21': ISO-Annex-A-Kontrolle 'A.5.21' korrespondiert mit IT-Grundschutz-Baustein 'OPS.2.3' (Nutzung von Outsourcing). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.5.21: ISO-Annex-A-Nachweis. OPS.2.3: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.5.22'
+    target: 'OPS.2.3'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'OPS.2.3' → 'A.5.22': ISO-Annex-A-Kontrolle 'A.5.22' korrespondiert mit IT-Grundschutz-Baustein 'OPS.2.3' (Nutzung von Outsourcing). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.5.22: ISO-Annex-A-Nachweis. OPS.2.3: Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge.'
+  - source: 'A.5.28'
+    target: 'DER.2.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'DER.2.2' → 'A.5.28': ISO-Annex-A-Kontrolle 'A.5.28' korrespondiert mit IT-Grundschutz-Baustein 'DER.2.2' (Vorsorge fuer die IT-Forensik). Relationship invertiert: 'equivalent' → 'equivalent'.
+    audit_evidence_hint: 'A.5.28: ISO-Annex-A-Nachweis. DER.2.2: Detektions-Logs, Incident-Reports, Notfallhandbuch, Audit-Programm.'
+  - source: 'A.5.35'
+    target: 'DER.3.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'DER.3.1' → 'A.5.35': ISO-Annex-A-Kontrolle 'A.5.35' korrespondiert mit IT-Grundschutz-Baustein 'DER.3.1' (Audits und Revisionen). Relationship invertiert: 'equivalent' → 'equivalent'.
+    audit_evidence_hint: 'A.5.35: ISO-Annex-A-Nachweis. DER.3.1: Detektions-Logs, Incident-Reports, Notfallhandbuch, Audit-Programm.'
+  - source: 'A.5.35'
+    target: 'DER.3.2'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'DER.3.2' → 'A.5.35': ISO-Annex-A-Kontrolle 'A.5.35' korrespondiert mit IT-Grundschutz-Baustein 'DER.3.2' (Revisionen auf Basis des Leitfadens IS-Revision). Relationship invertiert: 'equivalent' → 'equivalent'.
+    audit_evidence_hint: 'A.5.35: ISO-Annex-A-Nachweis. DER.3.2: Detektions-Logs, Incident-Reports, Notfallhandbuch, Audit-Programm.'
+  - source: 'A.8.19'
+    target: 'APP.1.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.1.1' → 'A.8.19': ISO-Annex-A-Kontrolle 'A.8.19' korrespondiert mit IT-Grundschutz-Baustein 'APP.1.1' (Office-Produkte). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.19: ISO-Annex-A-Nachweis. APP.1.1: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.19'
+    target: 'APP.1.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.1.2' → 'A.8.19': ISO-Annex-A-Kontrolle 'A.8.19' korrespondiert mit IT-Grundschutz-Baustein 'APP.1.2' (Webbrowser). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.19: ISO-Annex-A-Nachweis. APP.1.2: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.23'
+    target: 'APP.1.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.1.2' → 'A.8.23': ISO-Annex-A-Kontrolle 'A.8.23' korrespondiert mit IT-Grundschutz-Baustein 'APP.1.2' (Webbrowser). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.23: ISO-Annex-A-Nachweis. APP.1.2: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.1'
+    target: 'APP.1.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.1.4' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'APP.1.4' (Mobile Anwendungen). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. APP.1.4: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.19'
+    target: 'APP.1.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.1.4' → 'A.8.19': ISO-Annex-A-Kontrolle 'A.8.19' korrespondiert mit IT-Grundschutz-Baustein 'APP.1.4' (Mobile Anwendungen). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.19: ISO-Annex-A-Nachweis. APP.1.4: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.5.16'
+    target: 'APP.2.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.2.1' → 'A.5.16': ISO-Annex-A-Kontrolle 'A.5.16' korrespondiert mit IT-Grundschutz-Baustein 'APP.2.1' (Allgemeiner Verzeichnisdienst). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.16: ISO-Annex-A-Nachweis. APP.2.1: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.5.17'
+    target: 'APP.2.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.2.1' → 'A.5.17': ISO-Annex-A-Kontrolle 'A.5.17' korrespondiert mit IT-Grundschutz-Baustein 'APP.2.1' (Allgemeiner Verzeichnisdienst). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.17: ISO-Annex-A-Nachweis. APP.2.1: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.5.16'
+    target: 'APP.2.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.2.2' → 'A.5.16': ISO-Annex-A-Kontrolle 'A.5.16' korrespondiert mit IT-Grundschutz-Baustein 'APP.2.2' (Active Directory Domain Services). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.16: ISO-Annex-A-Nachweis. APP.2.2: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.5.17'
+    target: 'APP.2.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.2.2' → 'A.5.17': ISO-Annex-A-Kontrolle 'A.5.17' korrespondiert mit IT-Grundschutz-Baustein 'APP.2.2' (Active Directory Domain Services). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.17: ISO-Annex-A-Nachweis. APP.2.2: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.5'
+    target: 'APP.2.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.2.2' → 'A.8.5': ISO-Annex-A-Kontrolle 'A.8.5' korrespondiert mit IT-Grundschutz-Baustein 'APP.2.2' (Active Directory Domain Services). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.5: ISO-Annex-A-Nachweis. APP.2.2: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.5.16'
+    target: 'APP.2.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.2.3' → 'A.5.16': ISO-Annex-A-Kontrolle 'A.5.16' korrespondiert mit IT-Grundschutz-Baustein 'APP.2.3' (OpenLDAP). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.16: ISO-Annex-A-Nachweis. APP.2.3: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.5.17'
+    target: 'APP.2.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.2.3' → 'A.5.17': ISO-Annex-A-Kontrolle 'A.5.17' korrespondiert mit IT-Grundschutz-Baustein 'APP.2.3' (OpenLDAP). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.17: ISO-Annex-A-Nachweis. APP.2.3: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.26'
+    target: 'APP.3.1'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.3.1' → 'A.8.26': ISO-Annex-A-Kontrolle 'A.8.26' korrespondiert mit IT-Grundschutz-Baustein 'APP.3.1' (Webanwendungen und Webservices). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.26: ISO-Annex-A-Nachweis. APP.3.1: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.28'
+    target: 'APP.3.1'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.3.1' → 'A.8.28': ISO-Annex-A-Kontrolle 'A.8.28' korrespondiert mit IT-Grundschutz-Baustein 'APP.3.1' (Webanwendungen und Webservices). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.28: ISO-Annex-A-Nachweis. APP.3.1: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.21'
+    target: 'APP.3.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.3.2' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'APP.3.2' (Webserver). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. APP.3.2: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.23'
+    target: 'APP.3.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.3.2' → 'A.8.23': ISO-Annex-A-Kontrolle 'A.8.23' korrespondiert mit IT-Grundschutz-Baustein 'APP.3.2' (Webserver). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.23: ISO-Annex-A-Nachweis. APP.3.2: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.21'
+    target: 'APP.3.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.3.4' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'APP.3.4' (Samba). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. APP.3.4: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.21'
+    target: 'APP.3.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.3.6' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'APP.3.6' (DNS-Server). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. APP.3.6: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.4'
+    target: 'APP.4.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.4.2' → 'A.8.4': ISO-Annex-A-Kontrolle 'A.8.4' korrespondiert mit IT-Grundschutz-Baustein 'APP.4.2' (SAP-ERP-System). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.4: ISO-Annex-A-Nachweis. APP.4.2: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.26'
+    target: 'APP.4.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.4.2' → 'A.8.26': ISO-Annex-A-Kontrolle 'A.8.26' korrespondiert mit IT-Grundschutz-Baustein 'APP.4.2' (SAP-ERP-System). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.26: ISO-Annex-A-Nachweis. APP.4.2: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.3'
+    target: 'APP.4.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.4.3' → 'A.8.3': ISO-Annex-A-Kontrolle 'A.8.3' korrespondiert mit IT-Grundschutz-Baustein 'APP.4.3' (Relationale Datenbanksysteme). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.3: ISO-Annex-A-Nachweis. APP.4.3: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.21'
+    target: 'APP.4.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.4.3' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'APP.4.3' (Relationale Datenbanksysteme). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. APP.4.3: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.21'
+    target: 'APP.4.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.4.4' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'APP.4.4' (Kubernetes). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. APP.4.4: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.22'
+    target: 'APP.4.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.4.4' → 'A.8.22': ISO-Annex-A-Kontrolle 'A.8.22' korrespondiert mit IT-Grundschutz-Baustein 'APP.4.4' (Kubernetes). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.22: ISO-Annex-A-Nachweis. APP.4.4: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.28'
+    target: 'APP.4.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.4.6' → 'A.8.28': ISO-Annex-A-Kontrolle 'A.8.28' korrespondiert mit IT-Grundschutz-Baustein 'APP.4.6' (SAP ABAP-Programmierung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.28: ISO-Annex-A-Nachweis. APP.4.6: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.4'
+    target: 'APP.4.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.4.6' → 'A.8.4': ISO-Annex-A-Kontrolle 'A.8.4' korrespondiert mit IT-Grundschutz-Baustein 'APP.4.6' (SAP ABAP-Programmierung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.4: ISO-Annex-A-Nachweis. APP.4.6: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.21'
+    target: 'APP.5.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.5.2' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'APP.5.2' (Microsoft Exchange/Outlook). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. APP.5.2: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.21'
+    target: 'APP.5.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.5.3' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'APP.5.3' (Allgemeiner E-Mail-Client/-Server). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. APP.5.3: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.5.14'
+    target: 'APP.5.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.5.3' → 'A.5.14': ISO-Annex-A-Kontrolle 'A.5.14' korrespondiert mit IT-Grundschutz-Baustein 'APP.5.3' (Allgemeiner E-Mail-Client/-Server). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.14: ISO-Annex-A-Nachweis. APP.5.3: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.5.14'
+    target: 'APP.5.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.5.4' → 'A.5.14': ISO-Annex-A-Kontrolle 'A.5.14' korrespondiert mit IT-Grundschutz-Baustein 'APP.5.4' (Unified Communications und Collaboration). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.14: ISO-Annex-A-Nachweis. APP.5.4: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.21'
+    target: 'APP.5.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.5.4' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'APP.5.4' (Unified Communications und Collaboration). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. APP.5.4: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.19'
+    target: 'APP.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.6' → 'A.8.19': ISO-Annex-A-Kontrolle 'A.8.19' korrespondiert mit IT-Grundschutz-Baustein 'APP.6' (Allgemeine Software). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.19: ISO-Annex-A-Nachweis. APP.6: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.5.37'
+    target: 'APP.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.6' → 'A.5.37': ISO-Annex-A-Kontrolle 'A.5.37' korrespondiert mit IT-Grundschutz-Baustein 'APP.6' (Allgemeine Software). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.37: ISO-Annex-A-Nachweis. APP.6: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.25'
+    target: 'APP.7'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.7' → 'A.8.25': ISO-Annex-A-Kontrolle 'A.8.25' korrespondiert mit IT-Grundschutz-Baustein 'APP.7' (Entwicklung von Individualsoftware). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.25: ISO-Annex-A-Nachweis. APP.7: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.27'
+    target: 'APP.7'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.7' → 'A.8.27': ISO-Annex-A-Kontrolle 'A.8.27' korrespondiert mit IT-Grundschutz-Baustein 'APP.7' (Entwicklung von Individualsoftware). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.27: ISO-Annex-A-Nachweis. APP.7: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.28'
+    target: 'APP.7'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.7' → 'A.8.28': ISO-Annex-A-Kontrolle 'A.8.28' korrespondiert mit IT-Grundschutz-Baustein 'APP.7' (Entwicklung von Individualsoftware). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.28: ISO-Annex-A-Nachweis. APP.7: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.30'
+    target: 'APP.7'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'APP.7' → 'A.8.30': ISO-Annex-A-Kontrolle 'A.8.30' korrespondiert mit IT-Grundschutz-Baustein 'APP.7' (Entwicklung von Individualsoftware). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.30: ISO-Annex-A-Nachweis. APP.7: Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews.'
+  - source: 'A.8.1'
+    target: 'SYS.1.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.1' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.1' (Allgemeiner Server). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.1.1: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.9'
+    target: 'SYS.1.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.1' → 'A.8.9': ISO-Annex-A-Kontrolle 'A.8.9' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.1' (Allgemeiner Server). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.9: ISO-Annex-A-Nachweis. SYS.1.1: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.9'
+    target: 'SYS.1.2.2'
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.2.2' → 'A.8.9': ISO-Annex-A-Kontrolle 'A.8.9' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.2.2' (Windows Server 2012). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.9: ISO-Annex-A-Nachweis. SYS.1.2.2: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.19'
+    target: 'SYS.1.2.2'
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.2.2' → 'A.8.19': ISO-Annex-A-Kontrolle 'A.8.19' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.2.2' (Windows Server 2012). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.19: ISO-Annex-A-Nachweis. SYS.1.2.2: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.9'
+    target: 'SYS.1.2.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.2.3' → 'A.8.9': ISO-Annex-A-Kontrolle 'A.8.9' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.2.3' (Windows Server). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.9: ISO-Annex-A-Nachweis. SYS.1.2.3: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.9'
+    target: 'SYS.1.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.3' → 'A.8.9': ISO-Annex-A-Kontrolle 'A.8.9' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.3' (Server unter Linux und Unix). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.9: ISO-Annex-A-Nachweis. SYS.1.3: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.22'
+    target: 'SYS.1.5'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.5' → 'A.8.22': ISO-Annex-A-Kontrolle 'A.8.22' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.5' (Virtualisierung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.22: ISO-Annex-A-Nachweis. SYS.1.5: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.32'
+    target: 'SYS.1.5'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.5' → 'A.8.32': ISO-Annex-A-Kontrolle 'A.8.32' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.5' (Virtualisierung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.32: ISO-Annex-A-Nachweis. SYS.1.5: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.22'
+    target: 'SYS.1.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.6' → 'A.8.22': ISO-Annex-A-Kontrolle 'A.8.22' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.6' (Containerisierung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.22: ISO-Annex-A-Nachweis. SYS.1.6: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.9'
+    target: 'SYS.1.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.6' → 'A.8.9': ISO-Annex-A-Kontrolle 'A.8.9' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.6' (Containerisierung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.9: ISO-Annex-A-Nachweis. SYS.1.6: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.9'
+    target: 'SYS.1.7'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.7' → 'A.8.9': ISO-Annex-A-Kontrolle 'A.8.9' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.7' (IBM Z). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.9: ISO-Annex-A-Nachweis. SYS.1.7: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.6'
+    target: 'SYS.1.8'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.8' → 'A.8.6': ISO-Annex-A-Kontrolle 'A.8.6' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.8' (Speicherloesungen). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.6: ISO-Annex-A-Nachweis. SYS.1.8: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.13'
+    target: 'SYS.1.8'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.8' → 'A.8.13': ISO-Annex-A-Kontrolle 'A.8.13' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.8' (Speicherloesungen). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.13: ISO-Annex-A-Nachweis. SYS.1.8: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.1.9'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.1.9' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.1.9' (Terminalserver). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.1.9: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.2.1'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.2.1' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.2.1' (Allgemeiner Client). Relationship invertiert: 'equivalent' → 'equivalent'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.2.1: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.2.2.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.2.2.3' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.2.2.3' (Clients unter Windows). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.2.2.3: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.9'
+    target: 'SYS.2.2.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.2.2.3' → 'A.8.9': ISO-Annex-A-Kontrolle 'A.8.9' korrespondiert mit IT-Grundschutz-Baustein 'SYS.2.2.3' (Clients unter Windows). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.9: ISO-Annex-A-Nachweis. SYS.2.2.3: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.2.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.2.3' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.2.3' (Clients unter Linux und Unix). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.2.3: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.9'
+    target: 'SYS.2.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.2.3' → 'A.8.9': ISO-Annex-A-Kontrolle 'A.8.9' korrespondiert mit IT-Grundschutz-Baustein 'SYS.2.3' (Clients unter Linux und Unix). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.9: ISO-Annex-A-Nachweis. SYS.2.3: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.2.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.2.4' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.2.4' (Clients unter macOS). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.2.4: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.9'
+    target: 'SYS.2.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.2.4' → 'A.8.9': ISO-Annex-A-Kontrolle 'A.8.9' korrespondiert mit IT-Grundschutz-Baustein 'SYS.2.4' (Clients unter macOS). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.9: ISO-Annex-A-Nachweis. SYS.2.4: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.2.5'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.2.5' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.2.5' (Client-Virtualisierung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.2.5: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.22'
+    target: 'SYS.2.5'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.2.5' → 'A.8.22': ISO-Annex-A-Kontrolle 'A.8.22' korrespondiert mit IT-Grundschutz-Baustein 'SYS.2.5' (Client-Virtualisierung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.22: ISO-Annex-A-Nachweis. SYS.2.5: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.2.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.2.6' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.2.6' (Virtual Desktop Infrastructure). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.2.6: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.22'
+    target: 'SYS.2.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.2.6' → 'A.8.22': ISO-Annex-A-Kontrolle 'A.8.22' korrespondiert mit IT-Grundschutz-Baustein 'SYS.2.6' (Virtual Desktop Infrastructure). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.22: ISO-Annex-A-Nachweis. SYS.2.6: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.3.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.3.1' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.3.1' (Laptops). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.3.1: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.7.9'
+    target: 'SYS.3.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.3.1' → 'A.7.9': ISO-Annex-A-Kontrolle 'A.7.9' korrespondiert mit IT-Grundschutz-Baustein 'SYS.3.1' (Laptops). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.9: ISO-Annex-A-Nachweis. SYS.3.1: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.3.2.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.3.2.1' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.3.2.1' (Allgemeine Smartphones und Tablets). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.3.2.1: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.7.9'
+    target: 'SYS.3.2.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.3.2.1' → 'A.7.9': ISO-Annex-A-Kontrolle 'A.7.9' korrespondiert mit IT-Grundschutz-Baustein 'SYS.3.2.1' (Allgemeine Smartphones und Tablets). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.9: ISO-Annex-A-Nachweis. SYS.3.2.1: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.3.2.2'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.3.2.2' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.3.2.2' (Mobile Device Management (MDM)). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.3.2.2: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.3.2.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.3.2.3' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.3.2.3' (iOS (for Enterprise)). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.3.2.3: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.3.2.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.3.2.4' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.3.2.4' (Android). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.3.2.4: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.4.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.4.1' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.4.1' (Drucker, Kopierer, Multifunktionsgeraete). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.4.1: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.7.10'
+    target: 'SYS.4.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.4.1' → 'A.7.10': ISO-Annex-A-Kontrolle 'A.7.10' korrespondiert mit IT-Grundschutz-Baustein 'SYS.4.1' (Drucker, Kopierer, Multifunktionsgeraete). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.10: ISO-Annex-A-Nachweis. SYS.4.1: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.4.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.4.3' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.4.3' (Eingebettete Systeme). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.4.3: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.1'
+    target: 'SYS.4.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.4.4' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'SYS.4.4' (Allgemeines IoT-Geraet). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. SYS.4.4: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.22'
+    target: 'SYS.4.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.4.4' → 'A.8.22': ISO-Annex-A-Kontrolle 'A.8.22' korrespondiert mit IT-Grundschutz-Baustein 'SYS.4.4' (Allgemeines IoT-Geraet). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.22: ISO-Annex-A-Nachweis. SYS.4.4: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.7.10'
+    target: 'SYS.4.5'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'SYS.4.5' → 'A.7.10': ISO-Annex-A-Kontrolle 'A.7.10' korrespondiert mit IT-Grundschutz-Baustein 'SYS.4.5' (Wechseldatentraeger). Relationship invertiert: 'equivalent' → 'equivalent'.
+    audit_evidence_hint: 'A.7.10: ISO-Annex-A-Nachweis. SYS.4.5: System-Härtungs-Baseline, Konfigurations-Inventory, Patch-Compliance-Reports.'
+  - source: 'A.8.22'
+    target: 'IND.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'IND.1' → 'A.8.22': ISO-Annex-A-Kontrolle 'A.8.22' korrespondiert mit IT-Grundschutz-Baustein 'IND.1' (Prozessleit- und Automatisierungstechnik). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.22: ISO-Annex-A-Nachweis. IND.1: OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle.'
+  - source: 'A.8.20'
+    target: 'IND.1'
+    relationship: 'subset'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'IND.1' → 'A.8.20': ISO-Annex-A-Kontrolle 'A.8.20' korrespondiert mit IT-Grundschutz-Baustein 'IND.1' (Prozessleit- und Automatisierungstechnik). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.20: ISO-Annex-A-Nachweis. IND.1: OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle.'
+  - source: 'A.8.9'
+    target: 'IND.2.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'IND.2.1' → 'A.8.9': ISO-Annex-A-Kontrolle 'A.8.9' korrespondiert mit IT-Grundschutz-Baustein 'IND.2.1' (Allgemeine ICS-Komponente). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.9: ISO-Annex-A-Nachweis. IND.2.1: OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle.'
+  - source: 'A.8.22'
+    target: 'IND.2.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'IND.2.1' → 'A.8.22': ISO-Annex-A-Kontrolle 'A.8.22' korrespondiert mit IT-Grundschutz-Baustein 'IND.2.1' (Allgemeine ICS-Komponente). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.22: ISO-Annex-A-Nachweis. IND.2.1: OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle.'
+  - source: 'A.8.9'
+    target: 'IND.2.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'IND.2.2' → 'A.8.9': ISO-Annex-A-Kontrolle 'A.8.9' korrespondiert mit IT-Grundschutz-Baustein 'IND.2.2' (Speicherprogrammierbare Steuerung (SPS)). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.9: ISO-Annex-A-Nachweis. IND.2.2: OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle.'
+  - source: 'A.8.9'
+    target: 'IND.2.3'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'IND.2.3' → 'A.8.9': ISO-Annex-A-Kontrolle 'A.8.9' korrespondiert mit IT-Grundschutz-Baustein 'IND.2.3' (Sensoren und Aktoren). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.9: ISO-Annex-A-Nachweis. IND.2.3: OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle.'
+  - source: 'A.7.4'
+    target: 'IND.2.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'IND.2.4' → 'A.7.4': ISO-Annex-A-Kontrolle 'A.7.4' korrespondiert mit IT-Grundschutz-Baustein 'IND.2.4' (Maschine). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.4: ISO-Annex-A-Nachweis. IND.2.4: OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle.'
+  - source: 'A.8.22'
+    target: 'IND.2.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'IND.2.4' → 'A.8.22': ISO-Annex-A-Kontrolle 'A.8.22' korrespondiert mit IT-Grundschutz-Baustein 'IND.2.4' (Maschine). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.22: ISO-Annex-A-Nachweis. IND.2.4: OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle.'
+  - source: 'A.8.22'
+    target: 'IND.2.7'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'IND.2.7' → 'A.8.22': ISO-Annex-A-Kontrolle 'A.8.22' korrespondiert mit IT-Grundschutz-Baustein 'IND.2.7' (Safety-Instrumented Systems). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.22: ISO-Annex-A-Nachweis. IND.2.7: OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle.'
+  - source: 'A.8.21'
+    target: 'IND.3.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'IND.3.2' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'IND.3.2' (Fernwartung im industriellen Umfeld). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. IND.3.2: OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle.'
+  - source: 'A.8.2'
+    target: 'IND.3.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'IND.3.2' → 'A.8.2': ISO-Annex-A-Kontrolle 'A.8.2' korrespondiert mit IT-Grundschutz-Baustein 'IND.3.2' (Fernwartung im industriellen Umfeld). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.2: ISO-Annex-A-Nachweis. IND.3.2: OT/ICS-Architekturdiagramme, Netzwerk-Segmentierungs-Konzepte, Wartungsprotokolle.'
+  - source: 'A.8.20'
+    target: 'NET.1.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.1.2' → 'A.8.20': ISO-Annex-A-Kontrolle 'A.8.20' korrespondiert mit IT-Grundschutz-Baustein 'NET.1.2' (Netzmanagement). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.20: ISO-Annex-A-Nachweis. NET.1.2: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.21'
+    target: 'NET.1.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.1.2' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'NET.1.2' (Netzmanagement). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. NET.1.2: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.20'
+    target: 'NET.2.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.2.1' → 'A.8.20': ISO-Annex-A-Kontrolle 'A.8.20' korrespondiert mit IT-Grundschutz-Baustein 'NET.2.1' (WLAN-Betrieb). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.20: ISO-Annex-A-Nachweis. NET.2.1: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.21'
+    target: 'NET.2.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.2.1' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'NET.2.1' (WLAN-Betrieb). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. NET.2.1: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.1'
+    target: 'NET.2.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.2.2' → 'A.8.1': ISO-Annex-A-Kontrolle 'A.8.1' korrespondiert mit IT-Grundschutz-Baustein 'NET.2.2' (WLAN-Nutzung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.1: ISO-Annex-A-Nachweis. NET.2.2: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.20'
+    target: 'NET.2.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.2.2' → 'A.8.20': ISO-Annex-A-Kontrolle 'A.8.20' korrespondiert mit IT-Grundschutz-Baustein 'NET.2.2' (WLAN-Nutzung). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.20: ISO-Annex-A-Nachweis. NET.2.2: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.20'
+    target: 'NET.3.1'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.3.1' → 'A.8.20': ISO-Annex-A-Kontrolle 'A.8.20' korrespondiert mit IT-Grundschutz-Baustein 'NET.3.1' (Router und Switches). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.20: ISO-Annex-A-Nachweis. NET.3.1: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.21'
+    target: 'NET.3.1'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.3.1' → 'A.8.21': ISO-Annex-A-Kontrolle 'A.8.21' korrespondiert mit IT-Grundschutz-Baustein 'NET.3.1' (Router und Switches). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.21: ISO-Annex-A-Nachweis. NET.3.1: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.20'
+    target: 'NET.3.2'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.3.2' → 'A.8.20': ISO-Annex-A-Kontrolle 'A.8.20' korrespondiert mit IT-Grundschutz-Baustein 'NET.3.2' (Firewall). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.20: ISO-Annex-A-Nachweis. NET.3.2: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.22'
+    target: 'NET.3.2'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.3.2' → 'A.8.22': ISO-Annex-A-Kontrolle 'A.8.22' korrespondiert mit IT-Grundschutz-Baustein 'NET.3.2' (Firewall). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.22: ISO-Annex-A-Nachweis. NET.3.2: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.20'
+    target: 'NET.3.3'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.3.3' → 'A.8.20': ISO-Annex-A-Kontrolle 'A.8.20' korrespondiert mit IT-Grundschutz-Baustein 'NET.3.3' (VPN). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.20: ISO-Annex-A-Nachweis. NET.3.3: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.5.14'
+    target: 'NET.3.3'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.3.3' → 'A.5.14': ISO-Annex-A-Kontrolle 'A.5.14' korrespondiert mit IT-Grundschutz-Baustein 'NET.3.3' (VPN). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.14: ISO-Annex-A-Nachweis. NET.3.3: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.5.15'
+    target: 'NET.3.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.3.4' → 'A.5.15': ISO-Annex-A-Kontrolle 'A.5.15' korrespondiert mit IT-Grundschutz-Baustein 'NET.3.4' (Network Access Control). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.15: ISO-Annex-A-Nachweis. NET.3.4: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.20'
+    target: 'NET.3.4'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.3.4' → 'A.8.20': ISO-Annex-A-Kontrolle 'A.8.20' korrespondiert mit IT-Grundschutz-Baustein 'NET.3.4' (Network Access Control). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.20: ISO-Annex-A-Nachweis. NET.3.4: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.5.14'
+    target: 'NET.4.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.4.1' → 'A.5.14': ISO-Annex-A-Kontrolle 'A.5.14' korrespondiert mit IT-Grundschutz-Baustein 'NET.4.1' (TK-Anlagen). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.14: ISO-Annex-A-Nachweis. NET.4.1: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.20'
+    target: 'NET.4.1'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.4.1' → 'A.8.20': ISO-Annex-A-Kontrolle 'A.8.20' korrespondiert mit IT-Grundschutz-Baustein 'NET.4.1' (TK-Anlagen). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.20: ISO-Annex-A-Nachweis. NET.4.1: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.5.14'
+    target: 'NET.4.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.4.2' → 'A.5.14': ISO-Annex-A-Kontrolle 'A.5.14' korrespondiert mit IT-Grundschutz-Baustein 'NET.4.2' (VoIP). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.14: ISO-Annex-A-Nachweis. NET.4.2: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.8.20'
+    target: 'NET.4.2'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.4.2' → 'A.8.20': ISO-Annex-A-Kontrolle 'A.8.20' korrespondiert mit IT-Grundschutz-Baustein 'NET.4.2' (VoIP). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.20: ISO-Annex-A-Nachweis. NET.4.2: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.5.14'
+    target: 'NET.4.3'
+    relationship: 'partial_overlap'
+    confidence: 'low'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'NET.4.3' → 'A.5.14': ISO-Annex-A-Kontrolle 'A.5.14' korrespondiert mit IT-Grundschutz-Baustein 'NET.4.3' (Faxgeraete und Faxserver). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.14: ISO-Annex-A-Nachweis. NET.4.3: Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte.'
+  - source: 'A.7.5'
+    target: 'INF.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.2' → 'A.7.5': ISO-Annex-A-Kontrolle 'A.7.5' korrespondiert mit IT-Grundschutz-Baustein 'INF.2' (Rechenzentrum sowie Serverraum). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.7.5: ISO-Annex-A-Nachweis. INF.2: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.8'
+    target: 'INF.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.2' → 'A.7.8': ISO-Annex-A-Kontrolle 'A.7.8' korrespondiert mit IT-Grundschutz-Baustein 'INF.2' (Rechenzentrum sowie Serverraum). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.7.8: ISO-Annex-A-Nachweis. INF.2: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.11'
+    target: 'INF.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.2' → 'A.7.11': ISO-Annex-A-Kontrolle 'A.7.11' korrespondiert mit IT-Grundschutz-Baustein 'INF.2' (Rechenzentrum sowie Serverraum). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.7.11: ISO-Annex-A-Nachweis. INF.2: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.12'
+    target: 'INF.2'
+    relationship: 'subset'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.2' → 'A.7.12': ISO-Annex-A-Kontrolle 'A.7.12' korrespondiert mit IT-Grundschutz-Baustein 'INF.2' (Rechenzentrum sowie Serverraum). Relationship invertiert: 'superset' → 'subset'.
+    audit_evidence_hint: 'A.7.12: ISO-Annex-A-Nachweis. INF.2: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.8'
+    target: 'INF.5'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.5' → 'A.7.8': ISO-Annex-A-Kontrolle 'A.7.8' korrespondiert mit IT-Grundschutz-Baustein 'INF.5' (Raum sowie Schrank fuer technische Infrastruktur). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.8: ISO-Annex-A-Nachweis. INF.5: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.12'
+    target: 'INF.5'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.5' → 'A.7.12': ISO-Annex-A-Kontrolle 'A.7.12' korrespondiert mit IT-Grundschutz-Baustein 'INF.5' (Raum sowie Schrank fuer technische Infrastruktur). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.12: ISO-Annex-A-Nachweis. INF.5: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.10'
+    target: 'INF.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.6' → 'A.7.10': ISO-Annex-A-Kontrolle 'A.7.10' korrespondiert mit IT-Grundschutz-Baustein 'INF.6' (Datentraegerarchiv). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.10: ISO-Annex-A-Nachweis. INF.6: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.5.33'
+    target: 'INF.6'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.6' → 'A.5.33': ISO-Annex-A-Kontrolle 'A.5.33' korrespondiert mit IT-Grundschutz-Baustein 'INF.6' (Datentraegerarchiv). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.5.33: ISO-Annex-A-Nachweis. INF.6: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.7'
+    target: 'INF.7'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.7' → 'A.7.7': ISO-Annex-A-Kontrolle 'A.7.7' korrespondiert mit IT-Grundschutz-Baustein 'INF.7' (Bueroarbeitsplatz). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.7: ISO-Annex-A-Nachweis. INF.7: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.8'
+    target: 'INF.7'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.7' → 'A.7.8': ISO-Annex-A-Kontrolle 'A.7.8' korrespondiert mit IT-Grundschutz-Baustein 'INF.7' (Bueroarbeitsplatz). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.8: ISO-Annex-A-Nachweis. INF.7: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.6.7'
+    target: 'INF.8'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.8' → 'A.6.7': ISO-Annex-A-Kontrolle 'A.6.7' korrespondiert mit IT-Grundschutz-Baustein 'INF.8' (Haeuslicher Arbeitsplatz). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.6.7: ISO-Annex-A-Nachweis. INF.8: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.9'
+    target: 'INF.8'
+    relationship: 'partial_overlap'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.8' → 'A.7.9': ISO-Annex-A-Kontrolle 'A.7.9' korrespondiert mit IT-Grundschutz-Baustein 'INF.8' (Haeuslicher Arbeitsplatz). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.9: ISO-Annex-A-Nachweis. INF.8: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.6.7'
+    target: 'INF.9'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.9' → 'A.6.7': ISO-Annex-A-Kontrolle 'A.6.7' korrespondiert mit IT-Grundschutz-Baustein 'INF.9' (Mobiler Arbeitsplatz). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.6.7: ISO-Annex-A-Nachweis. INF.9: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.9'
+    target: 'INF.9'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.9' → 'A.7.9': ISO-Annex-A-Kontrolle 'A.7.9' korrespondiert mit IT-Grundschutz-Baustein 'INF.9' (Mobiler Arbeitsplatz). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.9: ISO-Annex-A-Nachweis. INF.9: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.4'
+    target: 'INF.10'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.10' → 'A.7.4': ISO-Annex-A-Kontrolle 'A.7.4' korrespondiert mit IT-Grundschutz-Baustein 'INF.10' (Besprechungs-, Veranstaltungs-, Schulungsraeume). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.4: ISO-Annex-A-Nachweis. INF.10: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.6'
+    target: 'INF.10'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.10' → 'A.7.6': ISO-Annex-A-Kontrolle 'A.7.6' korrespondiert mit IT-Grundschutz-Baustein 'INF.10' (Besprechungs-, Veranstaltungs-, Schulungsraeume). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.6: ISO-Annex-A-Nachweis. INF.10: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.12'
+    target: 'INF.12'
+    relationship: 'equivalent'
+    confidence: 'high'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.12' → 'A.7.12': ISO-Annex-A-Kontrolle 'A.7.12' korrespondiert mit IT-Grundschutz-Baustein 'INF.12' (Verkabelung). Relationship invertiert: 'equivalent' → 'equivalent'.
+    audit_evidence_hint: 'A.7.12: ISO-Annex-A-Nachweis. INF.12: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.11'
+    target: 'INF.13'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.13' → 'A.7.11': ISO-Annex-A-Kontrolle 'A.7.11' korrespondiert mit IT-Grundschutz-Baustein 'INF.13' (Technisches Gebaeudemanagement). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.11: ISO-Annex-A-Nachweis. INF.13: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.4'
+    target: 'INF.13'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.13' → 'A.7.4': ISO-Annex-A-Kontrolle 'A.7.4' korrespondiert mit IT-Grundschutz-Baustein 'INF.13' (Technisches Gebaeudemanagement). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.4: ISO-Annex-A-Nachweis. INF.13: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.7.11'
+    target: 'INF.14'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.14' → 'A.7.11': ISO-Annex-A-Kontrolle 'A.7.11' korrespondiert mit IT-Grundschutz-Baustein 'INF.14' (Gebaeudeautomation). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.7.11: ISO-Annex-A-Nachweis. INF.14: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
+  - source: 'A.8.22'
+    target: 'INF.14'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Inverse Sicht zum Forward-Mapping 'INF.14' → 'A.8.22': ISO-Annex-A-Kontrolle 'A.8.22' korrespondiert mit IT-Grundschutz-Baustein 'INF.14' (Gebaeudeautomation). Relationship invertiert: 'partial_overlap' → 'partial_overlap'.
+    audit_evidence_hint: 'A.8.22: ISO-Annex-A-Nachweis. INF.14: Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung.'
