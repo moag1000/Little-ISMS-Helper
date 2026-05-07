@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use DateTimeImmutable;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\BCExercise;
 use App\Form\BCExerciseType;
 use App\Repository\BCExerciseRepository;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,16 +21,21 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BCExerciseController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly BCExerciseRepository $bcExerciseRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly ModuleConfigurationService $moduleService,
     ) {}
     #[Route('/bc-exercise/', name: 'app_bc_exercise_index')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $currentTenant = $this->tenantContext->getCurrentTenant();
         $bcExercises = $currentTenant !== null
             ? $this->bcExerciseRepository->findBy(['tenant' => $currentTenant])
@@ -48,6 +55,8 @@ class BCExerciseController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $bcExercise = new BCExercise();
         $bcExercise->setTenant($this->tenantContext->getCurrentTenant());
 
@@ -71,6 +80,8 @@ class BCExerciseController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(BCExercise $bcExercise): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         return $this->render('bc_exercise/show.html.twig', [
             'bc_exercise' => $bcExercise,
         ]);
@@ -79,6 +90,8 @@ class BCExerciseController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, BCExercise $bcExercise): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $form = $this->createForm(BCExerciseType::class, $bcExercise);
         $form->handleRequest($request);
 
@@ -99,6 +112,8 @@ class BCExerciseController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, BCExercise $bcExercise): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         if ($this->isCsrfTokenValid('delete'.$bcExercise->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($bcExercise);
             $this->entityManager->flush();
