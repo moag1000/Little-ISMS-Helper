@@ -225,7 +225,8 @@ final class CertificationBundleExporter
         return [
             'assets' => count($this->assetRepository->findByTenant($tenant)),
             'risks' => count($this->riskRepository->findByTenant($tenant)),
-            'controls_applicable' => $controlStats['total'] - ($controlStats['not_applicable'] ?? 0),
+            // getImplementationStats() filters applicable=true, so 'total' IS the applicable count.
+            'controls_applicable' => $controlStats['total'],
             'controls_implemented' => $controlStats['implemented'],
             'evidence_documents' => $evidenceCount,
             'gaps' => $gapCount,
