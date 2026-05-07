@@ -1,0 +1,194 @@
+# BSI IT-Grundschutz-Kompendium 2023 — Schicht INF (Infrastruktur)
+# Quelle: BSI Bundesamt fuer Sicherheit in der Informationstechnik
+# https://www.bsi.bund.de/IT-Grundschutz-Kompendium
+
+layer: INF
+title: 'Infrastruktur'
+description: 'Schicht fuer infrastrukturelle Sicherheit: Gebaeude, Rechenzentrum, technische Raeume, Bueroarbeitsplaetze, Telearbeitsplaetze, Verkabelung und Gebaeudeautomation.'
+bausteine:
+  - id: INF.1
+    title: 'Allgemeines Gebaeude'
+    description: 'Anforderungen an die infrastrukturelle Absicherung allgemeiner Gebaeude.'
+    anforderungen:
+      basis:
+        - id: INF.1.A1
+          title: 'Planung der Gebaeudeabsicherung'
+          requirement_text: 'Die Absicherung von Gebaeuden MUSS geplant werden.'
+        - id: INF.1.A2
+          title: 'Angemessene Zutrittskontrolle und Zugangskontrolle'
+          requirement_text: 'Es MUSS eine angemessene Zutritts- und Zugangskontrolle eingerichtet werden.'
+        - id: INF.1.A3
+          title: 'Brand- und Wasserschutz'
+          requirement_text: 'Es MUESSEN angemessene Massnahmen zum Brand- und Wasserschutz umgesetzt werden. Siehe BSI Kompendium 2023 Baustein INF.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: INF.2
+    title: 'Rechenzentrum sowie Serverraum'
+    description: 'Anforderungen an Planung, Aufbau und Betrieb von Rechenzentren und Serverraeumen.'
+    anforderungen:
+      basis:
+        - id: INF.2.A1
+          title: 'Planung von Rechenzentrum und Serverraum'
+          requirement_text: 'Rechenzentren und Serverraeume MUESSEN angemessen geplant werden.'
+        - id: INF.2.A2
+          title: 'Bildung von Brandabschnitten'
+          requirement_text: 'Es MUESSEN Brandabschnitte gebildet werden.'
+        - id: INF.2.A3
+          title: 'Zutrittskontrolle und Ueberwachung'
+          requirement_text: 'Der Zutritt zu Rechenzentren und Serverraeumen MUSS streng kontrolliert und ueberwacht werden. Siehe BSI Kompendium 2023 Baustein INF.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: INF.5
+    title: 'Raum sowie Schrank fuer technische Infrastruktur'
+    description: 'Anforderungen an Raeume und Schraenke fuer technische Infrastruktur (z. B. Patch-Schraenke, USV-Raeume).'
+    anforderungen:
+      basis:
+        - id: INF.5.A1
+          title: 'Planung der Raumnutzung fuer technische Infrastruktur'
+          requirement_text: 'Die Raumnutzung fuer technische Infrastruktur MUSS geplant werden.'
+        - id: INF.5.A2
+          title: 'Zutrittskontrolle zu Raeumen und Schraenken'
+          requirement_text: 'Raeume und Schraenke fuer technische Infrastruktur MUESSEN gegen unbefugten Zutritt gesichert sein. Siehe BSI Kompendium 2023 Baustein INF.5 Anforderung A2.'
+        - id: INF.5.A3
+          title: 'Schutz vor Umweltgefahren'
+          requirement_text: 'Raeume und Schraenke fuer technische Infrastruktur MUESSEN gegen Umweltgefahren (Brand, Wasser, Temperatur, Staub) geschuetzt sein. Siehe BSI Kompendium 2023 Baustein INF.5 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: INF.6
+    title: 'Datentraegerarchiv'
+    description: 'Anforderungen an Aufbau und Betrieb eines Datentraegerarchivs.'
+    anforderungen:
+      basis:
+        - id: INF.6.A1
+          title: 'Planung des Datentraegerarchivs'
+          requirement_text: 'Das Datentraegerarchiv MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein INF.6 Anforderung A1.'
+        - id: INF.6.A2
+          title: 'Zutrittskontrolle zum Datentraegerarchiv'
+          requirement_text: 'Der Zutritt zum Datentraegerarchiv MUSS streng kontrolliert sein. Siehe BSI Kompendium 2023 Baustein INF.6 Anforderung A2.'
+        - id: INF.6.A3
+          title: 'Schutz vor Umweltgefahren'
+          requirement_text: 'Das Datentraegerarchiv MUSS gegen Brand, Wasser und Temperatur geschuetzt sein. Siehe BSI Kompendium 2023 Baustein INF.6 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: INF.7
+    title: 'Bueroarbeitsplatz'
+    description: 'Anforderungen an die infrastrukturelle Absicherung von Bueroarbeitsplaetzen.'
+    anforderungen:
+      basis:
+        - id: INF.7.A1
+          title: 'Geeignete Auswahl und Nutzung eines Bueroraums'
+          requirement_text: 'Bueroraeume MUESSEN sicher ausgewaehlt und genutzt werden.'
+        - id: INF.7.A2
+          title: 'Geschlossene Fenster und abgeschlossene Tueren'
+          requirement_text: 'Bei Verlassen des Bueros MUESSEN Fenster geschlossen und Tueren abgeschlossen werden. Siehe BSI Kompendium 2023 Baustein INF.7 Anforderung A2.'
+        - id: INF.7.A3
+          title: 'Clear Desk und Clear Screen'
+          requirement_text: 'Es MUESSEN Regelungen zu Clear Desk und Clear Screen umgesetzt sein. Siehe BSI Kompendium 2023 Baustein INF.7 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: INF.8
+    title: 'Haeuslicher Arbeitsplatz'
+    description: 'Anforderungen an die infrastrukturelle Absicherung haeuslicher Arbeitsplaetze (Home Office).'
+    anforderungen:
+      basis:
+        - id: INF.8.A1
+          title: 'Planung des haeuslichen Arbeitsplatzes'
+          requirement_text: 'Die Einrichtung eines haeuslichen Arbeitsplatzes MUSS geplant werden.'
+        - id: INF.8.A2
+          title: 'Schutz vor Einsicht und Zugriff Dritter'
+          requirement_text: 'Am haeuslichen Arbeitsplatz MUESSEN Massnahmen gegen Einsicht und Zugriff Dritter (z. B. Familienangehoerige) umgesetzt sein. Siehe BSI Kompendium 2023 Baustein INF.8 Anforderung A2.'
+        - id: INF.8.A3
+          title: 'Sichere Aufbewahrung von Geraeten und Unterlagen'
+          requirement_text: 'Dienstliche Geraete und Unterlagen MUESSEN am haeuslichen Arbeitsplatz sicher aufbewahrt werden. Siehe BSI Kompendium 2023 Baustein INF.8 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: INF.9
+    title: 'Mobiler Arbeitsplatz'
+    description: 'Anforderungen an die infrastrukturelle Absicherung mobiler Arbeitsplaetze (z. B. Reisesituationen).'
+    anforderungen:
+      basis:
+        - id: INF.9.A1
+          title: 'Geeignete Auswahl und Nutzung mobiler Arbeitsplaetze'
+          requirement_text: 'Mobile Arbeitsplaetze MUESSEN sicher ausgewaehlt und genutzt werden.'
+        - id: INF.9.A2
+          title: 'Schutz vor Einsicht und Diebstahl'
+          requirement_text: 'An mobilen Arbeitsplaetzen MUESSEN Massnahmen gegen Einsicht und Diebstahl umgesetzt sein (z. B. Sichtschutzfolien, Kabelschloesser). Siehe BSI Kompendium 2023 Baustein INF.9 Anforderung A2.'
+        - id: INF.9.A3
+          title: 'Schutz vor unsicheren Netzen'
+          requirement_text: 'An mobilen Arbeitsplaetzen MUESSEN Verbindungen ins Unternehmensnetz nur ueber abgesicherte Kanaele (z. B. VPN) erfolgen. Siehe BSI Kompendium 2023 Baustein INF.9 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: INF.10
+    title: 'Besprechungs-, Veranstaltungs-, Schulungsraeume'
+    description: 'Anforderungen an die infrastrukturelle Absicherung von Besprechungs-, Veranstaltungs- und Schulungsraeumen.'
+    anforderungen:
+      basis:
+        - id: INF.10.A1
+          title: 'Planung der Nutzung von Besprechungs-, Veranstaltungs- und Schulungsraeumen'
+          requirement_text: 'Fuer die Nutzung von Besprechungs-, Veranstaltungs- und Schulungsraeumen MUSS festgelegt werden, welche Informationen dort verarbeitet werden duerfen.'
+        - id: INF.10.A3
+          title: 'Beaufsichtigung von externen Personen'
+          requirement_text: 'Externe Personen in Besprechungs-, Veranstaltungs- und Schulungsraeumen MUESSEN beaufsichtigt werden.'
+        - id: INF.10.A4
+          title: 'Sichere Nutzung von Praesentations- und Konferenztechnik'
+          requirement_text: 'Praesentations- und Konferenztechnik MUSS sicher konfiguriert sein und zwischen Sitzungen zurueckgesetzt werden. Siehe BSI Kompendium 2023 Baustein INF.10 Anforderung A4.'
+      standard: []
+      hoch: []
+
+  - id: INF.12
+    title: 'Verkabelung'
+    description: 'Anforderungen an Auswahl, Verlegung und Schutz der IT-Verkabelung.'
+    anforderungen:
+      basis:
+        - id: INF.12.A1
+          title: 'Auswahl geeigneter Kabeltypen'
+          requirement_text: 'Es MUESSEN geeignete Kabeltypen ausgewaehlt werden.'
+        - id: INF.12.A2
+          title: 'Schutz der Verkabelung'
+          requirement_text: 'Die Verkabelung MUSS gegen Beschaedigung und unbefugten Zugriff geschuetzt verlegt werden. Siehe BSI Kompendium 2023 Baustein INF.12 Anforderung A2.'
+        - id: INF.12.A3
+          title: 'Dokumentation der Verkabelung'
+          requirement_text: 'Die Verkabelung MUSS dokumentiert sein. Siehe BSI Kompendium 2023 Baustein INF.12 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: INF.13
+    title: 'Technisches Gebaeudemanagement'
+    description: 'Anforderungen an Sicherheit von Technischem Gebaeudemanagement (TGM) und zugehoerigen Steuerungssystemen.'
+    anforderungen:
+      basis:
+        - id: INF.13.A1
+          title: 'Planung technischer Raeume'
+          requirement_text: 'Technische Raeume (z. B. fuer Netzwerkverteiler, USV, Klimatechnik) MUESSEN von Beginn an unter Beruecksichtigung ihrer Schutzbeduerfnisse geplant werden.'
+        - id: INF.13.A2
+          title: 'Zutrittskontrolle zu technischen Raeumen'
+          requirement_text: 'Technische Raeume MUESSEN durch Zutrittskontrolle gegen unbefugten Zugang gesichert sein. Der Zutritt MUSS protokolliert werden.'
+        - id: INF.13.A3
+          title: 'Ueberwachung technischer Raeume'
+          requirement_text: 'Technische Raeume MUESSEN auf Umweltbedingungen (Temperatur, Feuchtigkeit, Rauch, Wassereinbruch) ueberwacht werden. Alarme MUESSEN an eine besetzte Stelle gemeldet werden.'
+      standard: []
+      hoch: []
+
+  - id: INF.14
+    title: 'Gebaeudeautomation'
+    description: 'Anforderungen an Sicherheit von Gebaeudeautomations-Systemen (BAS), die in OT-IT-Konvergenz stehen.'
+    anforderungen:
+      basis:
+        - id: INF.14.A1
+          title: 'Planung der Gebaeudeautomation'
+          requirement_text: 'Der Einsatz und die Vernetzung von Gebaeudeautomation MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein INF.14 Anforderung A1.'
+        - id: INF.14.A2
+          title: 'Netztrennung der Gebaeudeautomation'
+          requirement_text: 'Systeme der Gebaeudeautomation MUESSEN von der Office-IT segmentiert sein. Siehe BSI Kompendium 2023 Baustein INF.14 Anforderung A2.'
+        - id: INF.14.A3
+          title: 'Sichere Grundkonfiguration der Gebaeudeautomation'
+          requirement_text: 'Komponenten der Gebaeudeautomation MUESSEN sicher grundkonfiguriert sein, einschliesslich Aenderung von Default-Passwoertern. Siehe BSI Kompendium 2023 Baustein INF.14 Anforderung A3.'
+      standard: []
+      hoch: []

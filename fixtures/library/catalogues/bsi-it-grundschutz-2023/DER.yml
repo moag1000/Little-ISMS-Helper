@@ -1,0 +1,109 @@
+# BSI IT-Grundschutz-Kompendium 2023 — Schicht DER (Detektion und Reaktion)
+# Quelle: BSI Bundesamt fuer Sicherheit in der Informationstechnik
+# https://www.bsi.bund.de/IT-Grundschutz-Kompendium
+
+layer: DER
+title: 'Detektion und Reaktion'
+description: 'Schicht fuer Detektion sicherheitsrelevanter Ereignisse, Behandlung von Sicherheitsvorfaellen, IT-Forensik, Audits und Notfallmanagement.'
+bausteine:
+  - id: DER.1
+    title: 'Detektion von sicherheitsrelevanten Ereignissen'
+    description: 'Anforderungen an Konzept und Umsetzung der Detektion sicherheitsrelevanter Ereignisse.'
+    anforderungen:
+      basis:
+        - id: DER.1.A1
+          title: 'Erstellung eines Notfallkonzepts'
+          requirement_text: 'Es MUSS ein Notfallkonzept erstellt werden.'
+        - id: DER.1.A2
+          title: 'Festlegung von Meldewegen fuer Sicherheitsvorfaelle'
+          requirement_text: 'Es MUESSEN klare Meldewege fuer Sicherheitsvorfaelle festgelegt werden.'
+        - id: DER.1.A3
+          title: 'Auswahl geeigneter Detektionsmechanismen'
+          requirement_text: 'Es MUESSEN geeignete Mechanismen zur Detektion sicherheitsrelevanter Ereignisse ausgewaehlt werden. Siehe BSI Kompendium 2023 Baustein DER.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: DER.2.1
+    title: 'Behandlung von Sicherheitsvorfaellen'
+    description: 'Anforderungen an die strukturierte Behandlung von Sicherheitsvorfaellen.'
+    anforderungen:
+      basis:
+        - id: DER.2.1.A1
+          title: 'Erstellung einer Richtlinie zur Behandlung von Sicherheitsvorfaellen'
+          requirement_text: 'Es MUSS eine Richtlinie zur Behandlung von Sicherheitsvorfaellen erstellt werden.'
+        - id: DER.2.1.A2
+          title: 'Einrichtung eines Incident-Response-Teams'
+          requirement_text: 'Es MUSS ein Incident-Response-Team eingerichtet werden.'
+        - id: DER.2.1.A3
+          title: 'Festlegung von Verantwortlichkeiten bei Sicherheitsvorfaellen'
+          requirement_text: 'Es MUESSEN Verantwortlichkeiten bei Sicherheitsvorfaellen festgelegt werden.'
+      standard: []
+      hoch: []
+
+  - id: DER.2.2
+    title: 'Vorsorge fuer die IT-Forensik'
+    description: 'Anforderungen an organisatorische und technische Vorsorge fuer forensische Ermittlungen nach Sicherheitsvorfaellen.'
+    anforderungen:
+      basis:
+        - id: DER.2.2.A1
+          title: 'Erstellung eines Auswertungskonzepts fuer Protokolldaten'
+          requirement_text: 'Es MUSS ein Auswertungskonzept fuer Protokolldaten erstellt werden.'
+        - id: DER.2.2.A2
+          title: 'Festlegung von Verfahren zur forensischen Sicherung'
+          requirement_text: 'Es MUESSEN Verfahren zur forensischen Sicherung von Spuren festgelegt werden.'
+        - id: DER.2.2.A3
+          title: 'Schulung der Verantwortlichen fuer IT-Forensik'
+          requirement_text: 'Die Verantwortlichen fuer IT-Forensik MUESSEN angemessen geschult werden. Siehe BSI Kompendium 2023 Baustein DER.2.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: DER.3.1
+    title: 'Audits und Revisionen'
+    description: 'Anforderungen an Planung und Durchfuehrung interner Audits und Revisionen der Informationssicherheit.'
+    anforderungen:
+      basis:
+        - id: DER.3.1.A1
+          title: 'Festlegung eines Audit-Programms'
+          requirement_text: 'Ein Audit-Programm MUSS festgelegt werden.'
+        - id: DER.3.1.A2
+          title: 'Definition von Audit-Zielen'
+          requirement_text: 'Die Audit-Ziele MUESSEN definiert werden.'
+        - id: DER.3.1.A3
+          title: 'Auswahl geeigneter Auditoren'
+          requirement_text: 'Auditoren MUESSEN unabhaengig und fachlich geeignet sein. Siehe BSI Kompendium 2023 Baustein DER.3.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: DER.3.2
+    title: 'Revisionen auf Basis des Leitfadens IS-Revision'
+    description: 'Anforderungen an die Durchfuehrung von IS-Revisionen nach BSI-Leitfaden.'
+    anforderungen:
+      basis:
+        - id: DER.3.2.A1
+          title: 'Planung der IS-Revision'
+          requirement_text: 'Die IS-Revision MUSS gemaess BSI-Leitfaden geplant werden. Siehe BSI Kompendium 2023 Baustein DER.3.2 Anforderung A1.'
+        - id: DER.3.2.A2
+          title: 'Durchfuehrung der IS-Revision'
+          requirement_text: 'Die IS-Revision MUSS gemaess Leitfaden durchgefuehrt werden. Siehe BSI Kompendium 2023 Baustein DER.3.2 Anforderung A2.'
+        - id: DER.3.2.A3
+          title: 'Berichterstattung der IS-Revision'
+          requirement_text: 'Ergebnisse der IS-Revision MUESSEN dokumentiert und an die Leitungsebene berichtet werden. Siehe BSI Kompendium 2023 Baustein DER.3.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: DER.4
+    title: 'Notfallmanagement'
+    description: 'Anforderungen an Aufbau und Betrieb eines Notfallmanagements (BCM) gemaess BSI-Standard 200-4.'
+    anforderungen:
+      basis:
+        - id: DER.4.A1
+          title: 'Erstellung eines Notfallhandbuchs'
+          requirement_text: 'Es MUSS ein Notfallhandbuch erstellt werden.'
+        - id: DER.4.A2
+          title: 'Integration in das Sicherheitskonzept'
+          requirement_text: 'Das Notfallmanagement MUSS in das Sicherheitskonzept integriert werden.'
+        - id: DER.4.A3
+          title: 'Sensibilisierung und Schulung zum Notfallmanagement'
+          requirement_text: 'Mitarbeiter mit Notfallaufgaben MUESSEN sensibilisiert und geschult werden. Siehe BSI Kompendium 2023 Baustein DER.4 Anforderung A3.'
+      standard: []
+      hoch: []
