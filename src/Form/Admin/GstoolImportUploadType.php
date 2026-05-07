@@ -23,7 +23,7 @@ final class GstoolImportUploadType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $maxSizeMb = (int) ($options['max_size_mb'] ?? 10);
+        $maxSizeMb = (int) ($options['max_size_mb'] ?? 50);
         $builder
             ->add('file', FileType::class, [
                 'label' => 'gstool_import.upload.file_label',
@@ -44,7 +44,8 @@ final class GstoolImportUploadType extends AbstractType
                             'text/xml',
                             'text/plain',
                         ],
-                        mimeTypesMessage: 'gstool_import.upload.file_type_error',
+                        mimeTypesMessage: 'file_upload.validation.mime_type_invalid',
+                        maxSizeMessage: 'file_upload.validation.max_size_exceeded',
                     ),
                 ],
             ])
@@ -72,7 +73,7 @@ final class GstoolImportUploadType extends AbstractType
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'gstool_import_upload',
             'translation_domain' => 'gstool_import',
-            'max_size_mb' => 10,
+            'max_size_mb' => 50,
         ]);
         $resolver->setAllowedTypes('max_size_mb', 'int');
     }

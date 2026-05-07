@@ -97,12 +97,17 @@ class UserType extends AbstractType
                     'accept' => 'image/jpeg,image/png,image/gif,image/webp',
                 ],
                 'constraints' => [
-                    new Assert\File(maxSize: '2M', mimeTypes: [
-                        'image/jpeg',
-                        'image/png',
-                        'image/gif',
-                        'image/webp',
-                    ], mimeTypesMessage: 'user.validation.avatar_format'),
+                    new Assert\File(
+                        maxSize: '1M',
+                        mimeTypes: [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                            'image/webp',
+                        ],
+                        mimeTypesMessage: 'file_upload.validation.mime_type_invalid',
+                        maxSizeMessage: 'file_upload.validation.max_size_exceeded',
+                    ),
                 ],
             ])
 

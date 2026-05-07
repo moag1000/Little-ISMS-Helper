@@ -16,6 +16,7 @@ use App\Repository\ComplianceMappingRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ImportSessionRepository;
 use App\Service\CompliancePolicyService;
+use App\Service\FileUploadSecurityService;
 use App\Service\Import\BsiProfileXmlImporter;
 use App\Service\Import\ImportSessionRecorder;
 use App\Service\TenantContext;
@@ -81,6 +82,7 @@ final class ComplianceImportController extends AbstractController
         private readonly ImportSessionRecorder $importSessionRecorder,
         private readonly ImportSessionRepository $importSessionRepository,
         private readonly TenantContext $tenantContext,
+        private readonly FileUploadSecurityService $fileUploadSecurityService,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -146,6 +148,14 @@ final class ComplianceImportController extends AbstractController
                     'compliance_import'
                 ));
 
+                return $this->redirectToRoute('admin_compliance_import_upload');
+            }
+
+            // Security: deep validation beyond Symfony form constraints (magic bytes, extension whitelist)
+            try {
+                $this->fileUploadSecurityService->validateUploadedFile($file);
+            } catch (FileException $secException) {
+                $this->addFlash('error', $secException->getMessage());
                 return $this->redirectToRoute('admin_compliance_import_upload');
             }
 
