@@ -20,7 +20,7 @@ certification_bundle:
         desc_rtp: 'Risk register with treatment strategies and residual risk'
         desc_assets: 'Asset inventory with CIA classification'
         desc_evidence: 'Evidence documents (%count% files) mapped to compliance requirements'
-        desc_gaps: 'Requirements with less than 100%% fulfillment (%count% gaps)'
+        desc_gaps: 'Requirements with less than 100 % fulfillment (%count% gaps)'
         desc_metadata: 'Export metadata with SHA-256 integrity hash'
         note_generation: 'Generation may take a few seconds depending on data volume.'
     warning_gaps: 'There are still %count% open gaps — the bundle will be generated anyway.'
