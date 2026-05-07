@@ -39,6 +39,8 @@ admin:
             risk_approval_config: { label: 'Risk approval thresholds', desc: 'Escalation tiers for risk acceptance' }
             incident_sla: { label: 'Incident SLAs', desc: 'Response times per severity' }
             audit_log_monitoring: { label: 'Audit-log monitoring', desc: 'Live stream + anomaly filter' }
+            workflow_definitions: { label: 'Workflow definitions', desc: 'Design and activate approval workflows' }
+            scheduled_reports: { label: 'Scheduled reports', desc: 'Manage recurring report delivery' }
             compliance_import: { label: 'Compliance import', desc: 'CSV/YAML bulk import of requirements' }
             gstool_import: { label: 'GSTool import', desc: 'BSI IT-Grundschutz from GSTool export' }
             sample_data: { label: 'Sample data', desc: 'Load / remove demo records' }
@@ -52,6 +54,10 @@ admin:
             monitoring_performance: { label: 'Performance monitor', desc: 'Request times, slow query log' }
             licensing: { label: 'Licensing', desc: 'Plan, limits, license report' }
             application_settings: { label: 'Application settings', desc: 'Application, security, features' }
+            data_backup: { label: 'Backup & Restore', desc: 'Create, validate, and restore data backups' }
+            monitoring_errors: { label: 'Error monitoring', desc: 'Application errors, stack traces, frequencies' }
+            api_doc: { label: 'API documentation', desc: 'OpenAPI / Swagger UI for integrations' }
+            setup_wizard: { label: 'Setup wizard', desc: 'Re-run initial configuration' }
             supplier_criticality: { label: 'Supplier criticalities', desc: 'Custom levels for supplier classification' }
             tour_content: { label: 'Guided-tour content', desc: 'Edit step texts and order' }
             tour_completion: { label: 'Tour completion', desc: 'Completion rates + reset tools' }

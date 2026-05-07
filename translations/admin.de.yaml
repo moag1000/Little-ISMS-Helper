@@ -53,6 +53,8 @@ admin:
             risk_approval_config: { label: 'Risk-Approval-Schwellen', desc: 'Eskalationsstufen für Risiko-Akzeptanz' }
             incident_sla: { label: 'Incident-SLAs', desc: 'Reaktionszeiten pro Severity' }
             audit_log_monitoring: { label: 'Audit-Log-Monitoring', desc: 'Live-Stream + Anomalie-Filter' }
+            workflow_definitions: { label: 'Workflow-Definitionen', desc: 'Genehmigungs-Workflows entwerfen und aktivieren' }
+            scheduled_reports: { label: 'Geplante Reports', desc: 'Wiederkehrende Report-Versendung verwalten' }
             compliance_import: { label: 'Compliance-Import', desc: 'CSV/YAML-Bulk-Import von Anforderungen' }
             gstool_import: { label: 'GSTool-Import', desc: 'BSI-IT-Grundschutz aus GSTool-Export' }
             sample_data: { label: 'Sample-Data', desc: 'Demo-Datensätze laden / entfernen' }
@@ -66,6 +68,10 @@ admin:
             monitoring_performance: { label: 'Performance-Monitor', desc: 'Request-Times, Slow-Query-Log' }
             licensing: { label: 'Lizenz', desc: 'Plan, Limits, Lizenz-Report' }
             application_settings: { label: 'Application-Settings', desc: 'Application, Security, Features' }
+            data_backup: { label: 'Backup & Restore', desc: 'Datensicherungen erstellen, validieren, wiederherstellen' }
+            monitoring_errors: { label: 'Fehler-Monitoring', desc: 'Application-Errors, Stacktraces, Häufigkeiten' }
+            api_doc: { label: 'API-Dokumentation', desc: 'OpenAPI / Swagger-UI für integrationen' }
+            setup_wizard: { label: 'Setup-Wizard', desc: 'Erst-Einrichtung erneut durchlaufen' }
             supplier_criticality: { label: 'Lieferanten-Kritikalitäten', desc: 'Eigene Levels für Supplier-Klassifikation' }
             tour_content: { label: 'Guided-Tour-Inhalte', desc: 'Schritt-Texte und Reihenfolge bearbeiten' }
             tour_completion: { label: 'Tour-Completion', desc: 'Abschluss-Quoten + Reset-Werkzeuge' }
