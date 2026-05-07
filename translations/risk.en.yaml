@@ -146,6 +146,11 @@ risk:
     location: Affected Location
     supplier: Affected Supplier
     acceptance_approved_by_legacy: Acceptance approved by (free text, legacy)
+    likelihood_justification: Likelihood Justification
+    impact_justification: Impact Justification
+    decision_approved_by_user: Decision Approved By
+    decision_approval_date: Decision Approval Date
+    decision_rationale: Decision Rationale
   confirm:
     delete: Delete
   edit: Edit
@@ -250,6 +255,11 @@ risk:
     acceptance_justification: Justification for why the residual risk is accepted
     review_date: Date of the next planned risk review
     acceptance_approved_by_user: Person who approved risk acceptance.
+    likelihood_justification: 'ISO 27001:2022 Cl. 6.1.2.d — Justify why this likelihood score was assigned (audit-required evidence).'
+    impact_justification: 'ISO 27001:2022 Cl. 6.1.2.d — Justify why this impact score was assigned (audit-required evidence).'
+    decision_rationale: 'ISO 31000 §6.5.4 — Rationale for the chosen risk treatment decision (Mitigate / Accept / Transfer / Avoid).'
+    decision_approved_by_user: 'Person who formally approved the risk treatment decision (ROLE_MANAGER or higher required).'
+    decision_approval_date: Date of formal approval of the risk treatment decision.
   tooltip:
     probability: '<strong>🎲 How likely is this to happen?</strong><br><em>Question:
       How often could this risk occur?</em><br><br><strong>1</strong> = Very rare
@@ -429,6 +439,10 @@ risk:
     acceptance_approved_by: Name of approving person
     acceptance_justification: Justification for accepting the residual risk...
     acceptance_approved_by_user: -- Select approver --
+    likelihood_justification: 'e.g. Based on historical incidents and current threat landscape...'
+    impact_justification: 'e.g. In case of occurrence, customer data, availability and reputation would be affected...'
+    decision_approved_by_user: '-- Select approving person --'
+    decision_rationale: 'Rationale for the chosen treatment strategy...'
   probability:
     rare: Rare
     unlikely: Unlikely
@@ -456,6 +470,9 @@ risk:
   matrix_help: Click on a cell to set probability and impact directly
   error:
     owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
+  validation:
+    likelihood_justification_required: 'Likelihood justification is required (ISO 27001:2022 Cl. 6.1.2.d).'
+    impact_justification_required: 'Impact justification is required (ISO 27001:2022 Cl. 6.1.2.d).'
 risk_management:
   title: Title
   description: Description
