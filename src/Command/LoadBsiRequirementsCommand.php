@@ -12,9 +12,14 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated since 3.5.0 — superseded by app:load-bsi-grundschutz-catalogue
+ * which reads the canonical YAML tree at fixtures/library/catalogues/
+ * bsi-it-grundschutz-2023/. Kept as Compat-Layer.
+ */
 #[AsCommand(
     name: 'app:load-bsi-requirements',
-    description: 'Load BSI IT-Grundschutz requirements including core building blocks and BCM with ISO mappings'
+    description: '[DEPRECATED — use app:load-bsi-grundschutz-catalogue] Legacy BSI IT-Grundschutz loader (Compat-Layer).'
 )]
 class LoadBsiRequirementsCommand
 {
