@@ -33,6 +33,7 @@ document:
         compliance: Compliance
         training: Schulung
         general: Allgemein
+        communication_plan: Kommunikationsplan
     section:
         type_overview: Typ‑Übersicht
         all_documents: 'Alle Dokumente'

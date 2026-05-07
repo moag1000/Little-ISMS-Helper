@@ -74,6 +74,7 @@ training:
     attendee_count: Attendee Count
     completion_date: Completion Date
     trainer_legacy: Trainer (free text, legacy)
+    program_type: Programme Classification (§7.3)
   new_help: Plan a new training and inform the target audience in time.
   edit_help: Edit details, schedule or target audience of this training.
   participants_count: Participants
@@ -91,6 +92,7 @@ training:
     location: e.g. Conference Room A or Zoom link
     trainer_user: -- Select trainer --
     trainer_person: '-- Person from master data --'
+    program_type: '-- Select programme type --'
   help:
     duration: Duration in minutes (15-480)
     participants: Hold CTRL to select multiple participants
@@ -102,6 +104,15 @@ training:
     trainer_user: Trainer from user management. Use legacy field for external trainers.
     trainer_person: 'Person without system login as trainer. Order: User > Person > legacy text.'
     trainer_deputy_persons: 'Additional persons with deputy role for the training.'
+    program_type: 'Programme classification per ISO 27001 §7.3 Awareness – used for reporting and analysis.'
+  program_type:
+    awareness: General Awareness
+    role_specific: Role-Specific
+    management: Management Training
+    onboarding: Onboarding
+    compliance_specific: Compliance-Specific
+    technical: Technical
+    regulatory_required: Regulatory Required
   validation:
     title_required: Please enter a title
     date_required: Please select a date
