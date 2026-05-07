@@ -146,6 +146,119 @@ modules:
     dependencies:
       - authentication
 
+  # ─── FormType-Norm-Gating Module-Keys (T31, 2026-05-07) ───────────────────
+  # Konsolidiert nach Compliance-Manager-Review (8 statt 17 vorgeschlagene).
+  # Aktiviert FormType-Subsections + Whole-Form-Gating für Norm-Compliance.
+
+  privacy:
+    name: 'Privacy & Datenschutz (GDPR + ISO 27701)'
+    description: 'EU DSGVO + BDSG + ISO 27701 PIMS — DPO-Workflows, DSR (Art. 12-23), Data Breach 72h (Art. 33/34), DPIA (Art. 35), Consent (Art. 7)'
+    required: false
+    icon: 'shield-lock'
+    entities:
+      - Consent
+      - ProcessingActivity
+      - DataBreach
+      - DataSubjectRequest
+      - DataProtectionImpactAssessment
+    routes:
+      - /consent
+      - /processing-activity
+      - /data-breach
+      - /data-subject-request
+      - /dpia
+    dependencies:
+      - assets
+
+  nis2_dora:
+    name: 'NIS2 & DORA Compliance'
+    description: 'EU Cyber-Resilience: NIS2 24h/72h/1mo Reporting (Art. 23) + DORA ICT-Risk-Management (Art. 6-44) + 4h-Initial-Report'
+    required: false
+    icon: 'building-shield'
+    entities:
+      - Incident
+      - Risk
+      - Supplier
+    routes: []
+    dependencies:
+      - incidents
+      - risks
+      - controls
+
+  ai_governance:
+    name: 'AI Governance (EU AI Act + ISO 42001)'
+    description: 'KI-System-Klassifikation per EU AI Act Art. 6+Annex III, Risk-Management Art. 9-29 für High-Risk-AI, ISO 42001 AIMS-Controls'
+    required: false
+    icon: 'cpu'
+    entities:
+      - Asset
+    routes: []
+    dependencies:
+      - assets
+
+  cloud_security:
+    name: 'Cloud Security (ISO 27017/18, BSI C5/AIC4)'
+    description: 'Cloud-Provider + Cloud-User Controls + Shared-Responsibility-Mapping. ISO 27017 Cloud-Sicherheit, ISO 27018 PII-in-Cloud, BSI C5:2026, BSI AIC4 für AI-Cloud'
+    required: false
+    icon: 'cloud'
+    entities:
+      - Control
+      - Asset
+    routes: []
+    dependencies:
+      - controls
+      - assets
+
+  vulnerability_intel:
+    name: 'Vulnerability & Threat Intelligence'
+    description: 'CVE/CVSS-Tracking + EPSS + KEV-Liste + Threat-Intel + MITRE ATT&CK Tactics/Techniques + STIX 2.1 IoCs'
+    required: false
+    icon: 'bug'
+    entities:
+      - Vulnerability
+      - ThreatIntelligence
+    routes:
+      - /vulnerability
+      - /threat-intelligence
+    dependencies:
+      - risks
+
+  marisk:
+    name: 'MaRisk (DACH-Banken/Versicherer)'
+    description: 'Mindestanforderungen Risikomanagement BaFin (parallel zu DORA bestehend) — Outsourcing AT 9, Risk-Bearing-Capacity AT 4, Compliance-Funktion AT 4.4'
+    required: false
+    icon: 'building-columns'
+    entities:
+      - Supplier
+      - Risk
+    routes: []
+    dependencies:
+      - risks
+      - compliance
+
+  tisax:
+    name: 'TISAX (Auto-Industrie)'
+    description: 'TISAX VDA-ISA Information Security Assessment + Prototype Protection für Tier-1/Tier-2 Auto-Industrie-Lieferanten'
+    required: false
+    icon: 'car-front'
+    entities:
+      - PrototypeProtectionAssessment
+    routes:
+      - /prototype-protection
+    dependencies:
+      - controls
+
+  quantitative_risk:
+    name: 'Quantitative Risk (FAIR/CRQ)'
+    description: 'FAIR-Methodologie mit Monte-Carlo-Simulation, Loss Event Frequency, ALE/SLE — für Board-Reporting + DORA Art. 6(2) Risk-Tolerance-Statement'
+    required: false
+    icon: 'chart-line'
+    entities:
+      - Risk
+    routes: []
+    dependencies:
+      - risks
+
 # Basis-Daten die immer importiert werden
 base_data:
   - name: 'ISO 27001 Annex A Controls'
