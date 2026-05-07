@@ -819,4 +819,11 @@ kpi_threshold:
         disabled: 'Disabled'
         no_rotation: 'No rotation (NIST 800-63B)'
         edit_globals: 'Edit global settings'
+        section_operational: 'Operational — risk methodology + wizard default'
+        risk_methodology: 'Risk methodology'
+        risk_methodology_help: 'Standard for risk analysis — drives default fields + reports.'
+        risk_matrix_size: 'Risk matrix size'
+        risk_matrix_size_help: '3x3 quick + SME-friendly; 5x5 is the ISO 27005 standard.'
+        wizard_maturity_target: 'Default wizard maturity target'
+        wizard_maturity_target_help: 'Shown as target maturity in every wizard result.'
     cancel: "Cancel"
