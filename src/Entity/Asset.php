@@ -25,6 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: AssetRepository::class)]
 #[ORM\Index(name: 'idx_asset_type', columns: ['asset_type'])]
@@ -360,6 +361,21 @@ class Asset
     public function isAiAgent(): bool
     {
         return $this->assetType === 'ai_agent';
+    }
+
+    /**
+     * EU AI Act Art. 5: Prohibited AI systems must not be in active operational use.
+     * Inactive/retired/disposed status is allowed for Audit-Trail / Archive purposes.
+     * Status values: active | inactive | in_use | returned | retired | disposed
+     */
+    #[Assert\Callback]
+    public function validateAiAgentProhibitedStatus(ExecutionContextInterface $context): void
+    {
+        if ($this->aiAgentClassification === 'prohibited' && $this->status === 'active') {
+            $context->buildViolation('asset.validation.ai_prohibited_must_be_inactive')
+                ->atPath('status')
+                ->addViolation();
+        }
     }
 
     public function getAiAgentClassification(): ?string { return $this->aiAgentClassification; }
