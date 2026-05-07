@@ -62,6 +62,10 @@ bc_plans:
     plan_owner_legacy: Verantwortlich (freitext, veraltet)
     plan_owner_person: Verantwortlich (Person aus Stammdaten)
     plan_owner_deputies: Vertretungen (Personen)
+    response_team_members: 'Reaktionsteam-Mitglieder (strukturiert)'
+    required_resources: 'Erforderliche Ressourcen (strukturiert)'
+    escalation_levels: 'Eskalationsstufen'
+    crisis_teams: 'Krisenstäbe'
   status:
     draft: Entwurf
     under_review: In Überprüfung
@@ -112,9 +116,14 @@ bc_plans:
     plan_owner_user: Verantwortliche Person aus der Benutzerverwaltung.
     plan_owner_person: 'Person ohne System-Login als Planverantwortliche wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
     plan_owner_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
+    response_team_members_json: 'JSON-Array mit Reaktionsteam-Rollen gemäß ISO 22301 §8.5.3. Rollen: incident_commander, comms_lead, recovery_lead, technical_lead.'
+    required_resources_json: 'JSON-Objekt mit Ressourcenbedarf: {"personnel": [], "equipment": [], "supplies": []}. ISO 22301 §8.1.'
+    escalation_levels_json: 'JSON-Array mit Eskalationsstufen gemäß BSI 200-4 §6.2: [{"level":1,"trigger":"...","responder":"...","escalateAfter":"15min"}].'
+    crisis_teams: 'Krisenstäbe, die für diesen Plan zuständig sind (ISO 22301 §8.4.2). Mehrfachauswahl möglich.'
   placeholder:
     plan_owner_user: -- Verantwortliche Person --
     plan_owner_person: -- Person aus Stammdaten --
+    response_team_members: '[{"role":"incident_commander","userId":null,"name":"Max Mustermann","contact":"+49 123 456789","responsibilities":"Gesamtverantwortung"}]'
   tooltip:
     activation_criteria: 'Vordefinierte Bedingungen, bei deren Eintreten der Plan aktiviert wird (z. B. Serverausfall > 4h, Gebäudeevakuierung). Messbare Schwellenwerte erleichtern die Entscheidung im Krisenfall.'
     recovery_procedures: 'Schritt-für-Schritt-Anleitung zur Wiederherstellung des Geschäftsbetriebs. Jeder Schritt sollte Verantwortliche, Zeitvorgaben und Prüfkriterien enthalten (ISO 22301 Kl. 8.4).'

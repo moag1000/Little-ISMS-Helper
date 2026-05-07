@@ -6,8 +6,12 @@ namespace App\Form;
 
 use App\Entity\BusinessContinuityPlan;
 use App\Entity\BusinessProcess;
+use App\Entity\CrisisTeam;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\DataTransformer\JsonArrayTransformer;
+use App\Repository\CrisisTeamRepository;
+use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -21,6 +25,10 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class BusinessContinuityPlanType extends AbstractType
 {
+    public function __construct(private readonly TenantContext $tenantContext)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -200,7 +208,51 @@ class BusinessContinuityPlanType extends AbstractType
                 'attr' => ['rows' => 3],
                 'help' => 'bc_plans.help.review_notes',
             ])
+            ->add('responseTeamMembers', TextareaType::class, [
+                'label' => 'bc_plans.field.response_team_members',
+                'required' => false,
+                'attr' => [
+                    'rows' => 6,
+                    'placeholder' => 'bc_plans.placeholder.response_team_members',
+                ],
+                'help' => 'bc_plans.help.response_team_members_json',
+            ])
+            ->add('requiredResources', TextareaType::class, [
+                'label' => 'bc_plans.field.required_resources',
+                'required' => false,
+                'attr' => ['rows' => 4],
+                'help' => 'bc_plans.help.required_resources_json',
+            ])
+            ->add('escalationLevels', TextareaType::class, [
+                'label' => 'bc_plans.field.escalation_levels',
+                'required' => false,
+                'attr' => ['rows' => 5],
+                'help' => 'bc_plans.help.escalation_levels_json',
+            ])
+            ->add('crisisTeams', EntityType::class, [
+                'class' => CrisisTeam::class,
+                'choice_label' => 'teamName',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'label' => 'bc_plans.field.crisis_teams',
+                'help' => 'bc_plans.help.crisis_teams',
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'query_builder' => function (CrisisTeamRepository $r) {
+                    return $r->createQueryBuilder('ct')
+                        ->where('ct.tenant = :tenant')
+                        ->setParameter('tenant', $this->tenantContext->getCurrentTenant())
+                        ->orderBy('ct.teamName', 'ASC');
+                },
+            ])
         ;
+
+        $builder->get('responseTeamMembers')->addModelTransformer(new JsonArrayTransformer());
+        $builder->get('requiredResources')->addModelTransformer(new JsonArrayTransformer());
+        $builder->get('escalationLevels')->addModelTransformer(new JsonArrayTransformer());
     }
 
     public function configureOptions(OptionsResolver $resolver): void

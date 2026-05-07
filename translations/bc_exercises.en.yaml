@@ -55,6 +55,11 @@ bc_exercises:
         success_rating: 'Overall Success Rating (1-5)'
         report_completed: 'Report Completed'
         report_date: 'Report Date'
+        success_criteria: 'Success Criteria (structured)'
+        actual_rto_achieved: 'Actual RTO Achieved (hours)'
+        actual_rpo_achieved: 'Actual RPO Achieved (hours)'
+        bc_plans_tested: 'BC Plans Tested'
+        evidence_artifacts: 'Evidence & Artifacts'
     badge:
         'yes': 'Yes'
         'no': 'No'
@@ -88,6 +93,11 @@ bc_exercises:
         success_rating: 'Overall rating of the exercise on a scale of 1-5'
         report_completed: 'Has the exercise report been completed?'
         report_date: 'Date the exercise report was created'
+        success_criteria_json: 'JSON object with success criteria per ISO 22301 §8.6 c: {"rtoMet":true,"rpoMet":true,"communicationEffective":true,"teamPrepared":true}.'
+        actual_rto_achieved: 'Actual measured recovery time in hours (ISO 22301 §8.6 d). Compare with target RTO.'
+        actual_rpo_achieved: 'Actual measured data loss period in hours (ISO 22301 §8.6 d). Compare with target RPO.'
+        bc_plans_tested: 'BC plans tested in this exercise (ISO 22301 §8.6 a). Multiple selection possible.'
+        evidence_artifacts_json: 'JSON array of audit evidence: [{"type":"photo|log|report|screenshot","reference":"filename/URL","description":"Description"}].'
     exercise_type:
         tabletop: 'Tabletop Exercise'
         walkthrough: 'Walkthrough Exercise'

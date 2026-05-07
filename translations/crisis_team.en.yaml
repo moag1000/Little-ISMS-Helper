@@ -37,6 +37,9 @@ crisis_team:
         next_training_at: 'Next Training'
         business_continuity_plans: 'Business Continuity Plans'
         notes: Notes
+        escalation_matrix: 'Escalation Matrix (External Partners)'
+        activation_count: 'Activation Count'
+        last_activated_at: 'Last Activated At'
     type:
         operational: 'Operational Crisis Team'
         strategic: 'Strategic Crisis Team'
@@ -58,6 +61,7 @@ crisis_team:
         decision_authority: 'Who can make which decisions?'
         communication_protocols: 'How does the crisis team communicate internally and externally?'
         training_schedule: 'When do trainings and exercises take place?'
+        escalation_matrix: '[{"trigger":"Cyberattack","externalPartner":"CERT-Bund","contactInfo":"https://www.bsi.bund.de","escalateAfter":"1h"}]'
     help:
         team_name: 'Name of the crisis team'
         team_type: 'Type of crisis team according to BSI 200-4'
@@ -76,6 +80,9 @@ crisis_team:
         next_training_at: 'When is the next training?'
         business_continuity_plans: 'Assigned BCPs'
         meeting_location: 'Physical meeting point during crises'
+        escalation_matrix_json: 'JSON array with external escalation partners per BSI 200-4 §6.2 and NIS2 Art. 23. Partners: BSI, Police, CERT-Bund, etc.'
+        activation_count: 'Total number of real activations of this crisis team (BSI 200-4 §7.2). Typically auto-incremented on activation.'
+        last_activated_at: 'Date and time of last real activation (BSI 200-4 §7.2 deployment tracking).'
     success:
         created: 'Crisis team created successfully.'
         updated: 'Crisis team updated successfully.'
