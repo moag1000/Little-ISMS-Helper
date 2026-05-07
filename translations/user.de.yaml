@@ -118,8 +118,11 @@ user:
         tenant_help: 'Leer lassen für Super-Admin-Benutzer ohne Mandantenbindung'
         password_edit: 'Leer lassen, um das aktuelle Passwort beizubehalten'
         password: 'Mindestens 8 Zeichen, sollte Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen enthalten'
+        password_change: 'Mindestens %min% Zeichen. Alle Zeichen erlaubt — Buchstaben, Zahlen, Sonderzeichen, Umlaute, Leerzeichen, Emoji. Leer lassen, um das aktuelle Passwort zu behalten.'
+        password_create: 'Mindestens %min% Zeichen. Alle Zeichen erlaubt — Buchstaben, Zahlen, Sonderzeichen, Umlaute, Leerzeichen, Emoji. Optional bei Azure-Authentifizierung.'
     validation:
         avatar_format: 'Bitte laden Sie ein gültiges Bild hoch (JPEG, PNG, GIF oder WebP)'
+        password_min_length: 'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.'
     auth_provider:
         local: 'Lokale Authentifizierung'
     auth:
