@@ -21,10 +21,35 @@ library:
   methodology:
     type: 'published_official_mapping'
     description: |
-      Reverse-Mapping vom BSI-IT-Grundschutz-Baustein zur NIS2-Art.-21-
-      Mindestanforderung. Reziprok zu nis2-art21_to_bsi-it-grundschutz_v1.0 —
-      gleiche Pair-Liste, invertierte Relationships. Rationale aus BSI-
-      Grundschutz-Sicht (Baustein-bündelnde Perspektive) neu verfasst.
+      v2 — Coverage erweitert von 11 auf 52 Pairs via NIS2-Relevanz-Filter.
+
+      Phase 1 (ursprüngliche 11 Pairs):
+        Reverse-Mapping vom BSI-IT-Grundschutz-Baustein zur NIS2-Art.-21-
+        Mindestanforderung. Reziprok zu nis2-art21_to_bsi-it-grundschutz_v1.0 —
+        gleiche Pair-Liste, invertierte Relationships. Rationale aus BSI-
+        Grundschutz-Sicht (Baustein-bündelnde Perspektive) neu verfasst.
+
+      Phase 2 (v2 — NIS2-Relevanz-Vollabdeckung):
+        Auswahl aus 106 Bausteinen nach NIS2-Art.-21(2)-Bezug:
+          21.2.a Risiko/InfoSec-Policy → ORP.5, CON.7, CON.11, ORP.1
+          21.2.b Incident → DER.2.2, OPS.1.1.5, OPS.1.1.4, DER.1
+          21.2.c BCM → CON.3
+          21.2.d Lieferkette → APP.6, OPS.2.1, OPS.2.2
+          21.2.e SDLC/Acquisition → CON.8, CON.10, APP.3.1, APP.4.6, APP.7,
+                  OPS.1.1.6, APP.6, OPS.1.1.3, OPS.2.2
+          21.2.f Wirksamkeit → DER.3.1, DER.3.2, OPS.1.1.5, ORP.5, OPS.1.1.3,
+                  DER.1
+          21.2.g Cyber-Hygiene → CON.6, OPS.1.1.4
+          21.2.h Krypto → CON.1, NET.3.3
+          21.2.i Personal/Access → ORP.2, OPS.1.1.2, APP.2.1, APP.2.2, INF.1
+          21.2.j MFA/Comms → NET.3.3, NET.4.1, NET.4.2, APP.5.4, APP.5.2,
+                  APP.5.3, NET.1.1
+        Skeleton-Bausteine ohne klare NIS2-Relevanz (z. B. INF.5/6/12-14,
+        SYS-Layer-Hardening) bewusst nicht gemappt — Hardening fließt indirekt
+        über 21.2.e/i ein.
+        Relationship-Default 'partial_overlap' (Bausteine adressieren NIS2-
+        Anforderungen nicht 1:1, sondern als Beitrag zum Gesamt-Maßnahmen-Set).
+        Confidence-Default 'medium'.
 
   lifecycle:
     state: 'published'
@@ -191,3 +216,290 @@ mappings:
       für Risikoanalyse" wird davon nur am Rand berührt — der Kern wird durch
       ISMS.1.4 erfüllt. CON.7 ist nur ergänzend für NIS2 21.2.a relevant.
     audit_evidence_hint: 'Reiserichtlinie nach CON.7 für sensible Geschäftsreisen, mobile Geräte-Härtung, Verhaltensregeln im Ausland; ergänzend NIS2-Art.-21(2)(a)-Risikoanalyse-Nachweis.'
+  - source: 'ORP.2'
+    target: '21.2.i'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein ORP.2 'Personal' adressiert die NIS2-Anforderung Art. 21(2)(i) über Personalsicherheit, Zugriffskontrolle, Asset-Management. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte; ergänzend NIS2-Art.-21(2)(i)-Compliance-Nachweis.'
+  - source: 'ORP.5'
+    target: '21.2.a'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein ORP.5 'Compliance Management' adressiert die NIS2-Anforderung Art. 21(2)(a) über Risiko-/Sicherheits-Konzept-Beiträge. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte; ergänzend NIS2-Art.-21(2)(a)-Compliance-Nachweis.'
+  - source: 'ORP.5'
+    target: '21.2.f'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein ORP.5 'Compliance Management' adressiert die NIS2-Anforderung Art. 21(2)(f) über Wirksamkeitsbewertung der Sicherheitsmaßnahmen. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte; ergänzend NIS2-Art.-21(2)(f)-Compliance-Nachweis.'
+  - source: 'CON.6'
+    target: '21.2.g'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein CON.6 'Loeschen und Vernichten' adressiert die NIS2-Anforderung Art. 21(2)(g) über Cyber-Hygiene und Awareness/Schulung. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; ergänzend NIS2-Art.-21(2)(g)-Compliance-Nachweis.'
+  - source: 'CON.8'
+    target: '21.2.e'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein CON.8 'Software-Entwicklung' adressiert die NIS2-Anforderung Art. 21(2)(e) über Sicherheit beim Erwerb, Entwicklung und Wartung. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; ergänzend NIS2-Art.-21(2)(e)-Compliance-Nachweis.'
+  - source: 'CON.10'
+    target: '21.2.e'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein CON.10 'Entwicklung von Webanwendungen' adressiert die NIS2-Anforderung Art. 21(2)(e) über Sicherheit beim Erwerb, Entwicklung und Wartung. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; ergänzend NIS2-Art.-21(2)(e)-Compliance-Nachweis.'
+  - source: 'CON.11'
+    target: '21.2.a'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein CON.11 'Geheimschutz' adressiert die NIS2-Anforderung Art. 21(2)(a) über Risiko-/Sicherheits-Konzept-Beiträge. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; ergänzend NIS2-Art.-21(2)(a)-Compliance-Nachweis.'
+  - source: 'OPS.1.1.2'
+    target: '21.2.i'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein OPS.1.1.2 'Ordnungsgemaesse IT-Administration' adressiert die NIS2-Anforderung Art. 21(2)(i) über Personalsicherheit, Zugriffskontrolle, Asset-Management. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; ergänzend NIS2-Art.-21(2)(i)-Compliance-Nachweis.'
+  - source: 'OPS.1.1.5'
+    target: '21.2.f'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein OPS.1.1.5 'Protokollierung' adressiert die NIS2-Anforderung Art. 21(2)(f) über Wirksamkeitsbewertung der Sicherheitsmaßnahmen. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; ergänzend NIS2-Art.-21(2)(f)-Compliance-Nachweis.'
+  - source: 'OPS.1.1.5'
+    target: '21.2.b'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein OPS.1.1.5 'Protokollierung' adressiert die NIS2-Anforderung Art. 21(2)(b) über Vorfall-Behandlung und forensische Vorsorge. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; ergänzend NIS2-Art.-21(2)(b)-Compliance-Nachweis.'
+  - source: 'OPS.1.1.6'
+    target: '21.2.e'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein OPS.1.1.6 'Software-Tests und -Freigaben' adressiert die NIS2-Anforderung Art. 21(2)(e) über Sicherheit beim Erwerb, Entwicklung und Wartung. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; ergänzend NIS2-Art.-21(2)(e)-Compliance-Nachweis.'
+  - source: 'DER.2.2'
+    target: '21.2.b'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein DER.2.2 'Vorsorge fuer die IT-Forensik' adressiert die NIS2-Anforderung Art. 21(2)(b) über Vorfall-Behandlung und forensische Vorsorge. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Detektions-Logs, Incident-Reports, Notfallhandbuch, Audit-Programm; ergänzend NIS2-Art.-21(2)(b)-Compliance-Nachweis.'
+  - source: 'DER.3.1'
+    target: '21.2.f'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein DER.3.1 'Audits und Revisionen' adressiert die NIS2-Anforderung Art. 21(2)(f) über Wirksamkeitsbewertung der Sicherheitsmaßnahmen. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Detektions-Logs, Incident-Reports, Notfallhandbuch, Audit-Programm; ergänzend NIS2-Art.-21(2)(f)-Compliance-Nachweis.'
+  - source: 'DER.3.2'
+    target: '21.2.f'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein DER.3.2 'Revisionen auf Basis des Leitfadens IS-Revision' adressiert die NIS2-Anforderung Art. 21(2)(f) über Wirksamkeitsbewertung der Sicherheitsmaßnahmen. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Detektions-Logs, Incident-Reports, Notfallhandbuch, Audit-Programm; ergänzend NIS2-Art.-21(2)(f)-Compliance-Nachweis.'
+  - source: 'APP.2.1'
+    target: '21.2.i'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein APP.2.1 'Allgemeiner Verzeichnisdienst' adressiert die NIS2-Anforderung Art. 21(2)(i) über Personalsicherheit, Zugriffskontrolle, Asset-Management. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; ergänzend NIS2-Art.-21(2)(i)-Compliance-Nachweis.'
+  - source: 'APP.2.2'
+    target: '21.2.i'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein APP.2.2 'Active Directory Domain Services' adressiert die NIS2-Anforderung Art. 21(2)(i) über Personalsicherheit, Zugriffskontrolle, Asset-Management. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; ergänzend NIS2-Art.-21(2)(i)-Compliance-Nachweis.'
+  - source: 'APP.3.1'
+    target: '21.2.e'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein APP.3.1 'Webanwendungen und Webservices' adressiert die NIS2-Anforderung Art. 21(2)(e) über Sicherheit beim Erwerb, Entwicklung und Wartung. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; ergänzend NIS2-Art.-21(2)(e)-Compliance-Nachweis.'
+  - source: 'APP.4.6'
+    target: '21.2.e'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein APP.4.6 'SAP ABAP-Programmierung' adressiert die NIS2-Anforderung Art. 21(2)(e) über Sicherheit beim Erwerb, Entwicklung und Wartung. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; ergänzend NIS2-Art.-21(2)(e)-Compliance-Nachweis.'
+  - source: 'APP.5.2'
+    target: '21.2.j'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein APP.5.2 'Microsoft Exchange/Outlook' adressiert die NIS2-Anforderung Art. 21(2)(j) über MFA und gesicherte Kommunikation. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; ergänzend NIS2-Art.-21(2)(j)-Compliance-Nachweis.'
+  - source: 'APP.5.3'
+    target: '21.2.j'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein APP.5.3 'Allgemeiner E-Mail-Client/-Server' adressiert die NIS2-Anforderung Art. 21(2)(j) über MFA und gesicherte Kommunikation. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; ergänzend NIS2-Art.-21(2)(j)-Compliance-Nachweis.'
+  - source: 'APP.5.4'
+    target: '21.2.j'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein APP.5.4 'Unified Communications und Collaboration' adressiert die NIS2-Anforderung Art. 21(2)(j) über MFA und gesicherte Kommunikation. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; ergänzend NIS2-Art.-21(2)(j)-Compliance-Nachweis.'
+  - source: 'APP.6'
+    target: '21.2.d'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein APP.6 'Allgemeine Software' adressiert die NIS2-Anforderung Art. 21(2)(d) über Lieferketten-/Outsourcing-Sicherheit. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; ergänzend NIS2-Art.-21(2)(d)-Compliance-Nachweis.'
+  - source: 'APP.6'
+    target: '21.2.e'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein APP.6 'Allgemeine Software' adressiert die NIS2-Anforderung Art. 21(2)(e) über Sicherheit beim Erwerb, Entwicklung und Wartung. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; ergänzend NIS2-Art.-21(2)(e)-Compliance-Nachweis.'
+  - source: 'APP.7'
+    target: '21.2.e'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein APP.7 'Entwicklung von Individualsoftware' adressiert die NIS2-Anforderung Art. 21(2)(e) über Sicherheit beim Erwerb, Entwicklung und Wartung. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Applikations-Härtungs-Konfigurationen, Schwachstellenscans, Coding-Reviews; ergänzend NIS2-Art.-21(2)(e)-Compliance-Nachweis.'
+  - source: 'NET.3.3'
+    target: '21.2.j'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein NET.3.3 'VPN' adressiert die NIS2-Anforderung Art. 21(2)(j) über MFA und gesicherte Kommunikation. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; ergänzend NIS2-Art.-21(2)(j)-Compliance-Nachweis.'
+  - source: 'NET.3.3'
+    target: '21.2.h'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein NET.3.3 'VPN' adressiert die NIS2-Anforderung Art. 21(2)(h) über Kryptographie und Verschlüsselung. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; ergänzend NIS2-Art.-21(2)(h)-Compliance-Nachweis.'
+  - source: 'NET.4.1'
+    target: '21.2.j'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein NET.4.1 'TK-Anlagen' adressiert die NIS2-Anforderung Art. 21(2)(j) über MFA und gesicherte Kommunikation. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; ergänzend NIS2-Art.-21(2)(j)-Compliance-Nachweis.'
+  - source: 'NET.4.2'
+    target: '21.2.j'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein NET.4.2 'VoIP' adressiert die NIS2-Anforderung Art. 21(2)(j) über MFA und gesicherte Kommunikation. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; ergänzend NIS2-Art.-21(2)(j)-Compliance-Nachweis.'
+  - source: 'CON.3'
+    target: '21.2.c'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein CON.3 'Datensicherungskonzept' adressiert die NIS2-Anforderung Art. 21(2)(c) über Notfall- und Wiederherstellungsmaßnahmen. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Konzept-Dokumente (Krypto/Datensicherung/Datenschutz), Software-Entwicklungs-Richtlinien; ergänzend NIS2-Art.-21(2)(c)-Compliance-Nachweis.'
+  - source: 'OPS.1.1.4'
+    target: '21.2.g'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein OPS.1.1.4 'Schutz vor Schadprogrammen' adressiert die NIS2-Anforderung Art. 21(2)(g) über Cyber-Hygiene und Awareness/Schulung. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; ergänzend NIS2-Art.-21(2)(g)-Compliance-Nachweis.'
+  - source: 'OPS.1.1.4'
+    target: '21.2.b'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein OPS.1.1.4 'Schutz vor Schadprogrammen' adressiert die NIS2-Anforderung Art. 21(2)(b) über Vorfall-Behandlung und forensische Vorsorge. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; ergänzend NIS2-Art.-21(2)(b)-Compliance-Nachweis.'
+  - source: 'OPS.1.1.3'
+    target: '21.2.e'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein OPS.1.1.3 'Patch- und Aenderungsmanagement' adressiert die NIS2-Anforderung Art. 21(2)(e) über Sicherheit beim Erwerb, Entwicklung und Wartung. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; ergänzend NIS2-Art.-21(2)(e)-Compliance-Nachweis.'
+  - source: 'OPS.1.1.3'
+    target: '21.2.f'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein OPS.1.1.3 'Patch- und Aenderungsmanagement' adressiert die NIS2-Anforderung Art. 21(2)(f) über Wirksamkeitsbewertung der Sicherheitsmaßnahmen. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; ergänzend NIS2-Art.-21(2)(f)-Compliance-Nachweis.'
+  - source: 'OPS.2.1'
+    target: '21.2.d'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein OPS.2.1 'Outsourcing fuer Kunden' adressiert die NIS2-Anforderung Art. 21(2)(d) über Lieferketten-/Outsourcing-Sicherheit. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; ergänzend NIS2-Art.-21(2)(d)-Compliance-Nachweis.'
+  - source: 'OPS.2.2'
+    target: '21.2.d'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein OPS.2.2 'Cloud-Nutzung' adressiert die NIS2-Anforderung Art. 21(2)(d) über Lieferketten-/Outsourcing-Sicherheit. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; ergänzend NIS2-Art.-21(2)(d)-Compliance-Nachweis.'
+  - source: 'OPS.2.2'
+    target: '21.2.e'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein OPS.2.2 'Cloud-Nutzung' adressiert die NIS2-Anforderung Art. 21(2)(e) über Sicherheit beim Erwerb, Entwicklung und Wartung. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Betriebsverfahren, Patch-/Change-Records, Logging-Reports, Outsourcing-Verträge; ergänzend NIS2-Art.-21(2)(e)-Compliance-Nachweis.'
+  - source: 'DER.1'
+    target: '21.2.b'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein DER.1 'Detektion von sicherheitsrelevanten Ereignissen' adressiert die NIS2-Anforderung Art. 21(2)(b) über Vorfall-Behandlung und forensische Vorsorge. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Detektions-Logs, Incident-Reports, Notfallhandbuch, Audit-Programm; ergänzend NIS2-Art.-21(2)(b)-Compliance-Nachweis.'
+  - source: 'DER.1'
+    target: '21.2.f'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein DER.1 'Detektion von sicherheitsrelevanten Ereignissen' adressiert die NIS2-Anforderung Art. 21(2)(f) über Wirksamkeitsbewertung der Sicherheitsmaßnahmen. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Detektions-Logs, Incident-Reports, Notfallhandbuch, Audit-Programm; ergänzend NIS2-Art.-21(2)(f)-Compliance-Nachweis.'
+  - source: 'NET.1.1'
+    target: '21.2.j'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein NET.1.1 'Netzarchitektur und -design' adressiert die NIS2-Anforderung Art. 21(2)(j) über MFA und gesicherte Kommunikation. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Netzarchitektur-Diagramme, Firewall-Regelwerke, Segmentierungs-Konzepte; ergänzend NIS2-Art.-21(2)(j)-Compliance-Nachweis.'
+  - source: 'INF.1'
+    target: '21.2.i'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein INF.1 'Allgemeines Gebaeude' adressiert die NIS2-Anforderung Art. 21(2)(i) über Personalsicherheit, Zugriffskontrolle, Asset-Management. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Sicherheitsbereichs-Konzept, Zutrittsprotokolle, Brand-/Klimatechnik-Wartung; ergänzend NIS2-Art.-21(2)(i)-Compliance-Nachweis.'
+  - source: 'ORP.1'
+    target: '21.2.a'
+    relationship: 'partial_overlap'
+    confidence: 'medium'
+    rationale: |
+      Baustein ORP.1 'Organisation' adressiert die NIS2-Anforderung Art. 21(2)(a) über Risiko-/Sicherheits-Konzept-Beiträge. Schnittmenge: relevante Teilabdeckung.
+    audit_evidence_hint: 'Organigramm, Stellenbeschreibungen, Schulungspläne, IAM-/Compliance-Konzepte; ergänzend NIS2-Art.-21(2)(a)-Compliance-Nachweis.'
