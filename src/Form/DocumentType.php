@@ -66,6 +66,7 @@ class DocumentType extends AbstractType
                     'document.type.compliance' => 'compliance',
                     'document.type.training' => 'training',
                     'document.type.general' => 'general',
+                    'document.type.communication_plan' => 'communication_plan',
                 ],
                 'required' => true,
                     'choice_translation_domain' => 'document',

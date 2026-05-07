@@ -238,6 +238,23 @@ class TrainingType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
+            ])
+            ->add('programType', ChoiceType::class, [
+                'label' => 'training.field.program_type',
+                'required' => false,
+                'placeholder' => 'training.placeholder.program_type',
+                'choices' => [
+                    'training.program_type.awareness' => 'awareness',
+                    'training.program_type.role_specific' => 'role_specific',
+                    'training.program_type.management' => 'management',
+                    'training.program_type.onboarding' => 'onboarding',
+                    'training.program_type.compliance_specific' => 'compliance_specific',
+                    'training.program_type.technical' => 'technical',
+                    'training.program_type.regulatory_required' => 'regulatory_required',
+                ],
+                'choice_translation_domain' => 'training',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'training.help.program_type',
             ]);
     }
 

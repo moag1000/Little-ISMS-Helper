@@ -25,6 +25,15 @@ document:
         tables: Tables
         excel: Excel
         other: Other
+        asset: Asset
+        risk: Risk
+        incident: Incident
+        control: Control
+        audit: Audit
+        compliance: Compliance
+        training: Training
+        general: General
+        communication_plan: Communication Plan
     section:
         type_overview: 'Type overview'
         all_documents: 'All documents'
