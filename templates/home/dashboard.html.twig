@@ -319,7 +319,11 @@
                         {{ 'dashboard.chart.risk_distribution'|trans({}, 'dashboard') }}
                     </h3>
                     <div class="widget-actions">
-                        <button class="widget-action" title="{{ 'common.refresh'|trans({}, 'messages') }}" aria-label="{{ 'common.refresh'|trans({}, 'messages') }}">
+                        <button type="button" class="widget-action"
+                                data-controller="ui-actions"
+                                data-action="click->ui-actions#reload"
+                                title="{{ 'common.refresh'|trans({}, 'messages') }}"
+                                aria-label="{{ 'common.refresh'|trans({}, 'messages') }}">
                             <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
                         </button>
                     </div>
@@ -640,9 +644,9 @@
                         {{ 'dashboard.activity_feed.title'|trans({}, 'dashboard') }}
                     </h3>
                     <div class="widget-actions">
-                        <button class="widget-action" title="{{ 'common.view_all'|trans({}, 'messages') }}" aria-label="{{ 'common.view_all'|trans({}, 'messages') }}">
+                        <a href="{{ path('app_audit_log_index') }}" class="widget-action" title="{{ 'common.view_all'|trans({}, 'messages') }}" aria-label="{{ 'common.view_all'|trans({}, 'messages') }}">
                             <i class="bi bi-arrows-fullscreen" aria-hidden="true"></i>
-                        </button>
+                        </a>
                     </div>
                 </div>
                 {% include '_components/_activity_feed.html.twig' with {

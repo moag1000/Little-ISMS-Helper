@@ -195,7 +195,10 @@ checklist:
     compliance_score: 'Konformitätsgrad'
     detailed_requirements: 'Detaillierte Anforderungen'
     save_progress: 'Fortschritt speichern'
+    saving: 'Speichere…'
     progress: 'Fortschritt'
+    flash:
+        saved: '%count% Items gespeichert'
 
 pdf:
     title: 'Auditbericht'

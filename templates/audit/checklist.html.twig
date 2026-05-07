@@ -4,7 +4,10 @@
 {% block title %}{{ 'checklist.title'|trans({}, 'audit') }} - {{ audit.title }}{% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container"
+     data-controller="audit-checklist-save"
+     data-audit-checklist-save-url-value="{{ path('app_audit_checklist_save', {id: audit.id}) }}"
+     data-audit-checklist-save-csrf-token-value="{{ csrf_token('audit_checklist_save_' ~ audit.id) }}">
     <div class="page-header">
         <div>
             <h1>{{ 'checklist.title'|trans({}, 'audit') }}</h1>
@@ -14,7 +17,12 @@
             <a href="{{ path('app_audit_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                 ← {{ 'common.back'|trans({}, 'messages') }}
             </a>
-            <button class="fa-cyber-btn fa-cyber-btn--success" id="saveProgress">
+            <button class="fa-cyber-btn fa-cyber-btn--success"
+                    type="button"
+                    id="saveProgress"
+                    data-audit-checklist-save-target="button"
+                    data-action="click->audit-checklist-save#save"
+                    data-saving-text="{{ 'checklist.saving'|trans({}, 'audit') }}">
                 {{ 'checklist.save_progress'|trans({}, 'audit') }}
             </button>
         </div>

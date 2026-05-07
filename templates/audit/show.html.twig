@@ -223,6 +223,12 @@
                            data-turbo-action="advance">
                             <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                         </a>
+                        {% if audit.isComplianceAudit() %}
+                        <a href="{{ path('app_audit_checklist', {id: audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="fa-icon fa-icon--ui-checklist" aria-hidden="true"></i>
+                            {{ 'checklist.title'|trans({}, 'audit') }}
+                        </a>
+                        {% endif %}
                         {% endif %}
 
                         <div>
