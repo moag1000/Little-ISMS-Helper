@@ -157,7 +157,7 @@ class ComplianceRequirementController extends AbstractController
         }
 
         // MRIS: Reifegrad-Stufen (nur für MHC-Requirements gefüllt)
-        $isMris = $complianceRequirement->getComplianceFramework()?->getCode() === 'MRIS-v1.5';
+        $isMris = $complianceRequirement->getFramework()?->getCode() === 'MRIS-v1.5';
         $mrisData = null;
         if ($isMris) {
             $mrisData = [
@@ -198,7 +198,7 @@ class ComplianceRequirementController extends AbstractController
             $this->addFlash('error', 'Invalid CSRF token.');
             return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
         }
-        if ($complianceRequirement->getComplianceFramework()?->getCode() !== 'MRIS-v1.5') {
+        if ($complianceRequirement->getFramework()?->getCode() !== 'MRIS-v1.5') {
             $this->addFlash('error', 'Reifegrad ist nur für MRIS-MHC-Requirements verfügbar.');
             return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
         }
