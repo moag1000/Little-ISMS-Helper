@@ -31,49 +31,19 @@
                 </div>
                 <div class="fa-section__body">
                     {{ form_start(form) }}
-                        <div class="mb-3">
-                            {{ form_label(form.code) }}
-                            {{ form_widget(form.code) }}
-                            <div class="form-text text-muted">
-                                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
-                                {{ 'supplier_criticality.help.code_immutable'|trans({}, 'supplier_criticality') }}
-                            </div>
-                            {{ form_errors(form.code) }}
+                        {{ form_row(form.code, {
+                            'help': 'supplier_criticality.help.code_immutable'|trans({}, 'supplier_criticality')
+                        }) }}
+                        <div class="row">
+                            <div class="col-md-6">{{ form_row(form.labelDe) }}</div>
+                            <div class="col-md-6">{{ form_row(form.labelEn) }}</div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_label(form.labelDe) }}
-                                {{ form_widget(form.labelDe) }}
-                                {{ form_errors(form.labelDe) }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form_label(form.labelEn) }}
-                                {{ form_widget(form.labelEn) }}
-                                {{ form_errors(form.labelEn) }}
-                            </div>
+                            <div class="col-md-6">{{ form_row(form.sortOrder) }}</div>
+                            <div class="col-md-6">{{ form_row(form.color) }}</div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                {{ form_label(form.sortOrder) }}
-                                {{ form_widget(form.sortOrder) }}
-                                {{ form_help(form.sortOrder) }}
-                                {{ form_errors(form.sortOrder) }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form_label(form.color) }}
-                                {{ form_widget(form.color) }}
-                                {{ form_errors(form.color) }}
-                            </div>
-                        </div>
-                        <div class="mb-3 form-check">
-                            {{ form_widget(form.isDefault) }}
-                            {{ form_label(form.isDefault) }}
-                            {{ form_help(form.isDefault) }}
-                        </div>
-                        <div class="mb-3 form-check">
-                            {{ form_widget(form.isActive) }}
-                            {{ form_label(form.isActive) }}
-                        </div>
+                        {{ form_row(form.isDefault) }}
+                        {{ form_row(form.isActive) }}
                         <div class="d-flex gap-2">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                                 <i class="fa-icon fa-icon--ui-save" aria-hidden="true"></i>

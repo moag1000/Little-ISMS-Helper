@@ -37,7 +37,6 @@ final class ComplianceImportUploadType extends AbstractType
                 'help' => 'compliance_import.upload.format_help',
                 'attr' => [
                     'id' => 'compliance_import_format',
-                    'aria-describedby' => 'compliance_import_format_help',
                 ],
                 'constraints' => [
                     new NotBlank(),
@@ -46,12 +45,12 @@ final class ComplianceImportUploadType extends AbstractType
             ->add('file', FileType::class, [
                 'label' => 'compliance_import.upload.file_label',
                 'translation_domain' => 'compliance_import',
+                'help' => 'compliance_import.upload.file_help',
                 'mapped' => false,
                 'required' => true,
                 'attr' => [
                     'accept' => '.csv,text/csv,.xml,application/xml,text/xml',
                     'id' => 'compliance_import_file',
-                    'aria-describedby' => 'compliance_import_file_help',
                 ],
                 'constraints' => [
                     new NotBlank(),

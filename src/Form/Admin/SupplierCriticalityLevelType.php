@@ -28,7 +28,6 @@ class SupplierCriticalityLevelType extends AbstractType
                 'label' => 'supplier_criticality.field.code',
                 'disabled' => $isEdit, // Code is immutable after creation
                 'attr' => [
-                    'class' => 'form-control',
                     'maxlength' => 50,
                     'placeholder' => 'supplier_criticality.placeholder.code',
                 ],
@@ -42,7 +41,6 @@ class SupplierCriticalityLevelType extends AbstractType
             ->add('labelDe', TextType::class, [
                 'label' => 'supplier_criticality.field.label_de',
                 'attr' => [
-                    'class' => 'form-control',
                     'maxlength' => 100,
                 ],
                 'constraints' => [
@@ -53,7 +51,6 @@ class SupplierCriticalityLevelType extends AbstractType
             ->add('labelEn', TextType::class, [
                 'label' => 'supplier_criticality.field.label_en',
                 'attr' => [
-                    'class' => 'form-control',
                     'maxlength' => 100,
                 ],
                 'constraints' => [
@@ -64,7 +61,6 @@ class SupplierCriticalityLevelType extends AbstractType
             ->add('sortOrder', IntegerType::class, [
                 'label' => 'supplier_criticality.field.sort_order',
                 'attr' => [
-                    'class' => 'form-control',
                     'min' => 0,
                     'max' => 999,
                 ],
@@ -87,7 +83,7 @@ class SupplierCriticalityLevelType extends AbstractType
                     'supplier_criticality.color.dark' => 'dark',
                 ],
                 'choice_translation_domain' => 'supplier_criticality',
-                'attr' => ['class' => 'form-select'],
+                'attr' => [],
             ])
             ->add('isDefault', CheckboxType::class, [
                 'label' => 'supplier_criticality.field.is_default',

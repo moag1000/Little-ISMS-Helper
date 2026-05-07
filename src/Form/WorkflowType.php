@@ -21,23 +21,23 @@ class WorkflowType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'workflow.field.name',
+                'help' => 'workflow.help.name',
                 'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => 'workflow.placeholder.name'
+                    'placeholder' => 'workflow.placeholder.name',
                 ],
                 'constraints' => [
                     new Assert\NotBlank(message: 'workflow.validation.name_required'),
-                    new Assert\Length(max: 255, maxMessage: 'workflow.validation.name_max_length')
-                ]
+                    new Assert\Length(max: 255, maxMessage: 'workflow.validation.name_max_length'),
+                ],
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'workflow.field.description',
+                'help' => 'workflow.help.description',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
-                    'placeholder' => 'workflow.placeholder.description'
-                ]
+                    'placeholder' => 'workflow.placeholder.description',
+                ],
             ])
             ->add('entityType', ChoiceType::class, [
                 'label' => 'workflow.field.entity_type',
@@ -50,11 +50,8 @@ class WorkflowType extends AbstractType
                     'workflow.entity_type.document' => 'Document',
                     'workflow.entity_type.audit' => 'InternalAudit',
                 ],
-                'attr' => [
-                    'class' => 'form-select'
-                ],
                 'constraints' => [
-                    new Assert\NotBlank(message: 'workflow.validation.entity_type_required')
+                    new Assert\NotBlank(message: 'workflow.validation.entity_type_required'),
                 ],
                 'help' => 'workflow.help.entity_type',
                 'choice_translation_domain' => 'workflows',
@@ -62,13 +59,7 @@ class WorkflowType extends AbstractType
             ->add('isActive', CheckboxType::class, [
                 'label' => 'workflow.field.is_active',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-check-input'
-                ],
-                'label_attr' => [
-                    'class' => 'form-check-label'
-                ],
-                'help' => 'workflow.help.is_active'
+                'help' => 'workflow.help.is_active',
             ])
         ;
     }
