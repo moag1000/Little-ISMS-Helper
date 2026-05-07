@@ -30,6 +30,10 @@ class CorrectiveAction
     public const STATUS_VERIFIED_EFFECTIVE = 'verified_effective';
     public const STATUS_VERIFIED_INEFFECTIVE = 'verified_ineffective';
 
+    public const ACTION_TYPE_CORRECTIVE = 'corrective';
+    public const ACTION_TYPE_PREVENTIVE = 'preventive';
+    public const ACTION_TYPE_IMPROVEMENT = 'improvement';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -54,6 +58,13 @@ class CorrectiveAction
 
     #[ORM\Column(length: 30)]
     private string $status = self::STATUS_PLANNED;
+
+    /**
+     * Action type — ISO 27001 §10.1+§10.2.
+     * Values: corrective | preventive | improvement (proactive variant)
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $actionType = null;
 
     /**
      * Responsible person (legacy User slot).
@@ -170,6 +181,17 @@ class CorrectiveAction
     public function setStatus(string $status): static
     {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getActionType(): ?string
+    {
+        return $this->actionType;
+    }
+
+    public function setActionType(?string $actionType): static
+    {
+        $this->actionType = $actionType;
         return $this;
     }
 

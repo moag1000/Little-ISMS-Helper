@@ -63,6 +63,19 @@ class CorrectiveActionType extends AbstractType
                 'required' => true,
                 'attr' => ['class' => 'form-select'],
             ])
+            ->add('actionType', ChoiceType::class, [
+                'label' => 'audits.field.action_type',
+                'required' => false,
+                'placeholder' => 'audits.placeholder.action_type',
+                'choices' => [
+                    'audits.action_type.corrective' => CorrectiveAction::ACTION_TYPE_CORRECTIVE,
+                    'audits.action_type.preventive' => CorrectiveAction::ACTION_TYPE_PREVENTIVE,
+                    'audits.action_type.improvement' => CorrectiveAction::ACTION_TYPE_IMPROVEMENT,
+                ],
+                'choice_translation_domain' => 'audits',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'audits.help.action_type',
+            ])
             ->add('responsiblePersonUser', EntityType::class, [
                 'label' => 'corrective_action.field.responsible_person_user',
                 'class' => User::class,

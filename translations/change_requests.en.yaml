@@ -88,6 +88,11 @@ change_request:
         notes: Notes
         verification_date: 'Verification Date'
         results: Results
+        clause_reference: 'Clause Reference'
+    placeholder:
+        clause_reference: 'e.g. ISO 27001 §6.3, DORA Art. 6'
+    help:
+        clause_reference: 'Optional ISO 27001 / DORA / NIS2 clause tag for §6.3 planned changes or §8.1 operational control differentiation'
     edit: Edit
     confirm:
         delete: Delete

@@ -3,6 +3,26 @@ audits:
         title: Audits
     error:
         owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+    field:
+        finding_source: 'Feststellungsquelle'
+        action_type: 'Maßnahmentyp'
+    placeholder:
+        finding_source: '-- Quelle auswählen --'
+        action_type: '-- Maßnahmentyp auswählen --'
+    help:
+        finding_source: 'Ursprung der Feststellung — ISO 27001 §10.1: Abweichungen können aus jeder Quelle stammen'
+        action_type: 'Korrektiv: Abweichung beheben. Präventiv: Wiederholung verhindern. Verbesserung: proaktive Chance (§10.2).'
+    finding_source:
+        internal_audit: 'Internes Audit'
+        external_audit: 'Externes Audit'
+        incident: 'Sicherheitsvorfall'
+        review: 'Management-/Dokumentenprüfung'
+        customer_complaint: 'Kundenreklamation'
+        management_review: 'Management-Review'
+    action_type:
+        corrective: 'Korrekturmaßnahme'
+        preventive: 'Vorbeugungsmaßnahme'
+        improvement: 'Kontinuierliche Verbesserung'
 
 audit:
     new: 'Neues Audit'
