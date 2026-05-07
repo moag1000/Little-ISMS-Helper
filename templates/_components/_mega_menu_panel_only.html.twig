@@ -213,6 +213,7 @@
         {% endif %}
 
         {# Privacy/GDPR Panel #}
+        {% if is_module_active('privacy') %}
         <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="privacy" role="menu" aria-label="{{ 'nav.mega.category.privacy'|trans({}, 'nav') }}">
             <div class="mega-menu-panel-content">
                 <div class="mega-menu-section">
@@ -243,6 +244,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
 
         {# Operations Panel #}
         {% if is_module_active('core') or is_module_active('incidents') %}

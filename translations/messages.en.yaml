@@ -133,6 +133,7 @@ confirm:
     typing_hint: 'Type "%keyword%" to confirm:'
 back: Back
 common:
+    module_not_active: 'Module "%module%" is not active. Please activate via Setup → Modules.'
     please_select: 'Please select...'
     next: Next
     yes: 'Yes'

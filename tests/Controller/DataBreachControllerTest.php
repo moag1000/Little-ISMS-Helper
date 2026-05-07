@@ -7,6 +7,7 @@ namespace App\Tests\Controller;
 use App\Entity\DataBreach;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Service\ModuleConfigurationService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -38,8 +39,14 @@ class DataBreachControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
+        $this->client->disableReboot();
         $container = static::getContainer();
         $this->entityManager = $container->get(EntityManagerInterface::class);
+
+        // Ensure 'privacy' module is reported as active during tests
+        $moduleService = $this->createMock(ModuleConfigurationService::class);
+        $moduleService->method('isModuleActive')->willReturn(true);
+        $container->set(ModuleConfigurationService::class, $moduleService);
 
         $this->createTestData();
     }

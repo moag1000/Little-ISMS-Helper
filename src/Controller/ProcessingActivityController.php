@@ -7,8 +7,10 @@ namespace App\Controller;
 use RuntimeException;
 use DateTime;
 use Exception;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\ProcessingActivity;
 use App\Form\ProcessingActivityType;
+use App\Service\ModuleConfigurationService;
 use App\Service\ProcessingActivityService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
@@ -23,12 +25,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class ProcessingActivityController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly ProcessingActivityService $processingActivityService,
         private readonly PdfExportService $pdfExportService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly ModuleConfigurationService $moduleService,
     ) {}
 
     /**
@@ -37,6 +42,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/', name: 'app_processing_activity_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         // Get filter parameters
         $filter = $request->query->get('filter', 'all');
 
@@ -68,6 +75,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/new', name: 'app_processing_activity_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $processingActivity = new ProcessingActivity();
         $processingActivity->setTenant($this->tenantContext->getCurrentTenant());
 
@@ -93,6 +102,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/edit', name: 'app_processing_activity_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, ProcessingActivity $processingActivity): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $form = $this->createForm(ProcessingActivityType::class, $processingActivity);
         $form->handleRequest($request);
 
@@ -116,6 +127,8 @@ class ProcessingActivityController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, ProcessingActivity $processingActivity): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if ($this->isCsrfTokenValid('delete' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->processingActivityService->delete($processingActivity);
 
@@ -131,6 +144,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/activate', name: 'app_processing_activity_activate', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function activate(Request $request, ProcessingActivity $processingActivity): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('activate' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token');
             return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
@@ -152,6 +167,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/archive', name: 'app_processing_activity_archive', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function archive(Request $request, ProcessingActivity $processingActivity): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if ($this->isCsrfTokenValid('archive' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->processingActivityService->archive($processingActivity);
 
@@ -167,6 +184,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/mark-for-review', name: 'app_processing_activity_mark_for_review', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function markForReview(Request $request, ProcessingActivity $processingActivity): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if ($this->isCsrfTokenValid('review' . $processingActivity->getId(), $request->request->get('_token'))) {
             $reviewDateStr = $request->request->get('review_date');
             $reviewDate = $reviewDateStr ? new DateTime($reviewDateStr) : null;
@@ -185,6 +204,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/complete-review', name: 'app_processing_activity_complete_review', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function completeReview(Request $request, ProcessingActivity $processingActivity): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if ($this->isCsrfTokenValid('complete-review' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->processingActivityService->completeReview($processingActivity);
 
@@ -200,6 +221,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/clone', name: 'app_processing_activity_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function clone(Request $request, ProcessingActivity $processingActivity): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('clone' . $processingActivity->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token');
             return $this->redirectToRoute('app_processing_activity_show', ['id' => $processingActivity->getId()]);
@@ -218,6 +241,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/dashboard', name: 'app_processing_activity_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $statistics = $this->processingActivityService->getDashboardStatistics();
         $complianceScore = $this->processingActivityService->calculateComplianceScore();
 
@@ -240,6 +265,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/export/pdf', name: 'app_processing_activity_export_pdf', methods: ['GET'])]
     public function exportPdf(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $exportData = $this->processingActivityService->generateVVTExport();
 
         // Close session to prevent blocking
@@ -271,6 +298,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/export/csv', name: 'app_processing_activity_export_csv', methods: ['GET'])]
     public function exportCsv(): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $exportData = $this->processingActivityService->generateVVTExport();
 
         $csv = [];
@@ -340,6 +369,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/search', name: 'app_processing_activity_search', methods: ['GET'])]
     public function search(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $query = $request->query->get('q', '');
 
         if (strlen($query) < 2) {
@@ -366,6 +397,8 @@ class ProcessingActivityController extends AbstractController
     #[IsGranted('ROLE_MANAGER')]
     public function bulkDelete(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $data = json_decode($request->getContent(), true);
         $ids = $data['ids'] ?? [];
 
@@ -413,6 +446,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}', name: 'app_processing_activity_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(ProcessingActivity $processingActivity): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $complianceReport = $this->processingActivityService->generateComplianceReport($processingActivity);
 
         return $this->render('processing_activity/show.html.twig', [
@@ -427,6 +462,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/compliance-report', name: 'app_processing_activity_compliance_report', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function complianceReport(ProcessingActivity $processingActivity): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $report = $this->processingActivityService->generateComplianceReport($processingActivity);
 
         return $this->json($report);
@@ -438,6 +475,8 @@ class ProcessingActivityController extends AbstractController
     #[Route('/processing-activity/{id}/validate', name: 'app_processing_activity_validate', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function validate(ProcessingActivity $processingActivity): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $errors = $this->processingActivityService->validate($processingActivity);
         $isCompliant = $errors === [];
 

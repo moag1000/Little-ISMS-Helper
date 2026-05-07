@@ -6,9 +6,11 @@ namespace App\Controller;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use DateTimeImmutable;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\CrisisTeam;
 use App\Form\CrisisTeamType;
 use App\Repository\CrisisTeamRepository;
+use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -21,16 +23,21 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[IsGranted('ROLE_USER')]
 class CrisisTeamController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly CrisisTeamRepository $crisisTeamRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly ModuleConfigurationService $moduleService,
     ) {}
 
     #[Route('/crisis-team/', name: 'app_crisis_team_index')]
     public function index(): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $user = $this->security->getUser();
         $tenant = $user instanceof UserInterface ? $user->getTenant() : null;
         $crisisTeams = $tenant !== null
@@ -53,6 +60,8 @@ class CrisisTeamController extends AbstractController
     #[Route('/crisis-team/new', name: 'app_crisis_team_new')]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $crisisTeam = new CrisisTeam();
 
         // Set tenant from current user
@@ -81,6 +90,8 @@ class CrisisTeamController extends AbstractController
     #[Route('/crisis-team/{id}', name: 'app_crisis_team_show', requirements: ['id' => '\d+'])]
     public function show(CrisisTeam $crisisTeam): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         return $this->render('crisis_team/show.html.twig', [
             'crisis_team' => $crisisTeam,
         ]);
@@ -89,6 +100,8 @@ class CrisisTeamController extends AbstractController
     #[Route('/crisis-team/{id}/edit', name: 'app_crisis_team_edit', requirements: ['id' => '\d+'])]
     public function edit(Request $request, CrisisTeam $crisisTeam): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $form = $this->createForm(CrisisTeamType::class, $crisisTeam);
         $form->handleRequest($request);
 
@@ -108,6 +121,8 @@ class CrisisTeamController extends AbstractController
     #[Route('/crisis-team/{id}/delete', name: 'app_crisis_team_delete', methods: ['POST'])]
     public function delete(Request $request, CrisisTeam $crisisTeam): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         if ($this->isCsrfTokenValid('delete'.$crisisTeam->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($crisisTeam);
             $this->entityManager->flush();
@@ -121,6 +136,8 @@ class CrisisTeamController extends AbstractController
     #[Route('/crisis-team/{id}/activate', name: 'app_crisis_team_activate', methods: ['POST'])]
     public function activate(Request $request, CrisisTeam $crisisTeam): Response
     {
+        if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         if ($this->isCsrfTokenValid('activate'.$crisisTeam->getId(), $request->request->get('_token'))) {
             $crisisTeam->setLastActivatedAt(new DateTimeImmutable());
             $this->entityManager->flush();

@@ -8,6 +8,7 @@ use App\Entity\Consent;
 use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Service\ModuleConfigurationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -34,8 +35,14 @@ class ConsentControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
+        $this->client->disableReboot();
         $container = static::getContainer();
         $this->entityManager = $container->get(EntityManagerInterface::class);
+
+        // Ensure 'privacy' module is reported as active during tests
+        $moduleService = $this->createMock(ModuleConfigurationService::class);
+        $moduleService->method('isModuleActive')->willReturn(true);
+        $container->set(ModuleConfigurationService::class, $moduleService);
 
         $this->createTestData();
     }
