@@ -63,10 +63,23 @@
                         </div>
                     </div>
                     {% if settings.security is defined %}
+                        {% set _session_min = (settings.security.session_timeout_minutes is defined)
+                            ? settings.security.session_timeout_minutes
+                            : ((settings.security.session_lifetime ?? 3600) / 60) %}
+                        {% set _pw_len = settings.security.password_min_length ?? 12 %}
+                        {% set _mfa = settings.security.mfa_required_roles is defined
+                            ? settings.security.mfa_required_roles
+                            : (settings.security.require_2fa ?? false) %}
                         <ul class="list-unstyled small">
-                            <li><strong>{{ 'admin.settings.security.session_lifetime'|trans({}, 'admin') }}:</strong> {{ (settings.security.session_lifetime ?? 3600) / 60 }} min</li>
-                            <li><strong>{{ 'admin.settings.security.max_login_attempts'|trans({}, 'admin') }}:</strong> {{ settings.security.max_login_attempts ?? 5 }}</li>
-                            <li><strong>{{ 'admin.settings.security.require_2fa'|trans({}, 'admin') }}:</strong> {{ settings.security.require_2fa ? 'Yes' : 'No' }}</li>
+                            <li><strong>{{ 'admin.settings.security.session_lifetime'|trans({}, 'admin') }}:</strong> {{ _session_min }} min</li>
+                            <li><strong>{{ 'admin.settings.security.password_min_length'|trans({}, 'admin') }}:</strong> {{ _pw_len }}</li>
+                            <li><strong>{{ 'admin.settings.security.require_2fa'|trans({}, 'admin') }}:</strong>
+                                {% if _mfa is iterable %}
+                                    {{ _mfa|length > 0 ? _mfa|join(', ') : ('common.no'|trans({}, 'messages')) }}
+                                {% else %}
+                                    {{ _mfa ? 'Yes' : 'No' }}
+                                {% endif %}
+                            </li>
                         </ul>
                     {% endif %}
                 </div>
