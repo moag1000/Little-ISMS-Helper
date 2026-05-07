@@ -43,6 +43,13 @@ dsr:
         account_login: "Konto-Anmeldung"
         other: "Sonstige"
 
+    # Antwortkanaele (Art. 12(3))
+    response_method:
+        email: "E-Mail"
+        letter: "Briefpost"
+        portal: "Selbstbedienungsportal"
+        in_person: "Persoenlich"
+
     # Formularfelder
     form:
         title: "Betroffenenanfrage-Formular"
@@ -59,6 +66,12 @@ dsr:
         assigned_deputy_persons: "Vertretungen (Personen)"
         processing_activity: "Zugehoerige Verarbeitungstaetigkeit (VVT)"
         notes: "Interne Notizen"
+        response_at: "Antwort gesendet am"
+        extended_deadline: "Verlaengerte Frist (Art. 12(3))"
+        extension_reason: "Begruendung Fristverlaengerung"
+        response_document: "Antwort-Artefakt (Dateipfad / UUID)"
+        response_method: "Antwortkanal"
+        rejection_reason: "Ablehnungsbegruendung (Art. 12(5)(b))"
         placeholder:
             request_type: "-- Antragsart waehlen --"
             description: "Beschreiben Sie, was die betroffene Person anfragt..."
@@ -73,6 +86,8 @@ dsr:
             response_description: "Beschreiben Sie, was zur Erfuellung der Anfrage unternommen wurde..."
             rejection_reason: "Grund der Ablehnung (Art. 12(5))..."
             extension_reason: "Grund fuer Fristverlaengerung (Komplexitaet, Anzahl der Anfragen)..."
+            response_document: "z.B. /antworten/dsr-2024-001.pdf oder UUID"
+            response_method: "-- Antwortkanal waehlen --"
         help:
             request_type: "Art. 15 Auskunft, Art. 16 Berichtigung, Art. 17 Loeschung, Art. 18 Einschraenkung, Art. 20 Datenuebertragbarkeit, Art. 21 Widerspruch, Art. 22 Automatisierte Entscheidung"
             received_at: "Datum und Uhrzeit des Eingangs der Anfrage"
@@ -81,6 +96,12 @@ dsr:
             notes: "Interne Notizen werden nicht mit der betroffenen Person geteilt"
             assigned_person: "Person ohne System-Login als Verantwortliche. Reihenfolge: User > Person > leer."
             assigned_deputy_persons: "Weitere Personen mit Vertretungs- oder Mitverantwortung."
+            response_at: "Datum und Uhrzeit der Antwortsendung an die betroffene Person (Art. 12(3) — Nachweis der Frist-Einhaltung)."
+            extended_deadline: "Verlaengerte Frist gemaess Art. 12(3): max. 90 Tage ab Eingang bei komplexen Anfragen."
+            extension_reason: "Pflichtangabe bei Fristverlaengerung — Begruendung (Komplexitaet, hohes Anfragevolumen)."
+            response_document: "Pfad oder UUID des gespeicherten Antwortschreibens / E-Mail-Archivs als Beweisstueck."
+            response_method: "Art. 12(1): Antwort moeglicherweise in gleicher Form wie die Anfrage."
+            rejection_reason: "Nur bei Ablehnung (Art. 12(5)(b)): offensichtlich unbegruedet oder exzessiv."
 
     # Abschnittueberschriften
     section:
@@ -90,6 +111,7 @@ dsr:
         assignment: "Zuweisung & Verknuepfungen"
         internal_notes: "Interne Notizen"
         response: "Antwortdetails"
+        response_tracking: "Frist-Tracking & Antwortnachweis (Art. 12(3))"
         actions: "Aktionen"
         processing_activity: "Verarbeitungstaetigkeit"
         metadata: "Metadaten"
@@ -112,8 +134,12 @@ dsr:
         verification_method: "Verifizierungsmethode"
         verified_at: "Verifiziert am"
         response_description: "Antwort"
-        rejection_reason: "Ablehnungsgrund"
+        response_at: "Antwort gesendet am"
+        extended_deadline: "Verlaengerte Frist"
         extension_reason: "Verlaengerungsgrund"
+        response_document: "Antwort-Artefakt"
+        response_method: "Antwortkanal"
+        rejection_reason: "Ablehnungsgrund"
         created_at: "Erstellt"
         updated_at: "Zuletzt aktualisiert"
 
@@ -227,3 +253,6 @@ dsr:
         verification_text: "Vor der Erfuellung einer Anfrage muessen Sie die Identitaet der anfragenden Person pruefen, um unberechtigte Offenbarungen zu verhindern. Die Methode muss verhaeltnismaessig sein – fordern Sie keine uebertriebenen Angaben an."
     error:
         owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+        extension_reason_required_when_extended: 'Bei Fristverlaengerung ist eine Begruendung Pflicht (Art. 12(3) DSGVO).'
+        response_method_required_when_responded: 'Wenn eine Antwort gesendet wurde, muss der Antwortkanal angegeben werden.'
+        response_at_required_when_rejected: 'Eine Ablehnung ist eine Antwort — bitte auch das Datum der Antwortsendung eintragen.'

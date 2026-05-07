@@ -153,11 +153,11 @@
             {% endembed %}
 
             {# Response / Rejection / Extension Details #}
-            {% if dsr.responseDescription or dsr.rejectionReason or dsr.extensionReason %}
+            {% if dsr.responseDescription or dsr.rejectionReason or dsr.extensionReason or dsr.responseAt or dsr.responseMethod or dsr.responseDocument %}
                 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                     {% block card_header %}
                         <div class="card-header">
-                            <h2 class="mb-0"><i class="bi bi-reply" aria-hidden="true"></i> {{ 'dsr.section.response'|trans({}, 'data_subject_request') }}</h2>
+                            <h2 class="mb-0"><i class="bi bi-reply-all" aria-hidden="true"></i> {{ 'dsr.section.response_tracking'|trans({}, 'data_subject_request') }}</h2>
                         </div>
                     {% endblock %}
                     {% block card_body %}
@@ -165,6 +165,29 @@
                             <p><strong>{{ 'dsr.field.response_description'|trans({}, 'data_subject_request') }}:</strong></p>
                             <p>{{ dsr.responseDescription|nl2br }}</p>
                         {% endif %}
+                        <div class="row">
+                            {% if dsr.responseAt %}
+                                <div class="col-md-6">
+                                    <p><strong>{{ 'dsr.field.response_at'|trans({}, 'data_subject_request') }}:</strong><br>
+                                        <span class="text-success fw-semibold">{{ dsr.responseAt|date('Y-m-d H:i') }}</span>
+                                    </p>
+                                </div>
+                            {% endif %}
+                            {% if dsr.responseMethod %}
+                                <div class="col-md-6">
+                                    <p><strong>{{ 'dsr.field.response_method'|trans({}, 'data_subject_request') }}:</strong><br>
+                                        {{ ('dsr.response_method.' ~ dsr.responseMethod)|trans({}, 'data_subject_request') }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                            {% if dsr.responseDocument %}
+                                <div class="col-12">
+                                    <p><strong>{{ 'dsr.field.response_document'|trans({}, 'data_subject_request') }}:</strong><br>
+                                        <code class="small">{{ dsr.responseDocument }}</code>
+                                    </p>
+                                </div>
+                            {% endif %}
+                        </div>
                         {% if dsr.rejectionReason %}
                             <p><strong>{{ 'dsr.field.rejection_reason'|trans({}, 'data_subject_request') }}:</strong></p>
                             <p class="text-danger">{{ dsr.rejectionReason|nl2br }}</p>
