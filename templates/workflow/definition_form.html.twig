@@ -41,35 +41,10 @@
                     {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                     {{ form_start(form) }}
 
-                    <div class="mb-3">
-                        {{ form_label(form.name) }}
-                        {{ form_widget(form.name) }}
-                        {{ form_errors(form.name) }}
-                        <small class="form-text text-muted">{{ 'workflow.help.name'|trans({}, 'workflows') }}</small>
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_label(form.description) }}
-                        {{ form_widget(form.description) }}
-                        {{ form_errors(form.description) }}
-                        <small class="form-text text-muted">{{ 'workflow.help.description'|trans({}, 'workflows') }}</small>
-                    </div>
-
-                    <div class="mb-3">
-                        {{ form_label(form.entityType) }}
-                        {{ form_widget(form.entityType) }}
-                        {{ form_errors(form.entityType) }}
-                        {{ form_help(form.entityType) }}
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="form-check">
-                            {{ form_widget(form.isActive) }}
-                            {{ form_label(form.isActive) }}
-                        </div>
-                        {{ form_errors(form.isActive) }}
-                        {{ form_help(form.isActive) }}
-                    </div>
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.description) }}
+                    {{ form_row(form.entityType) }}
+                    {{ form_row(form.isActive) }}
 
                     {{ form_rest(form) }}
 

@@ -26,30 +26,10 @@
                 </div>
                 <div class="fa-section__body">
                     {{ form_start(form) }}
-                        <div class="mb-3">
-                            {{ form_label(form.thresholdAutomatic) }}
-                            {{ form_widget(form.thresholdAutomatic, { attr: { class: 'form-control' } }) }}
-                            {{ form_help(form.thresholdAutomatic) }}
-                            {{ form_errors(form.thresholdAutomatic) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.thresholdManager) }}
-                            {{ form_widget(form.thresholdManager, { attr: { class: 'form-control' } }) }}
-                            {{ form_help(form.thresholdManager) }}
-                            {{ form_errors(form.thresholdManager) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.thresholdExecutive) }}
-                            {{ form_widget(form.thresholdExecutive, { attr: { class: 'form-control' } }) }}
-                            {{ form_help(form.thresholdExecutive) }}
-                            {{ form_errors(form.thresholdExecutive) }}
-                        </div>
-                        <div class="mb-3">
-                            {{ form_label(form.note) }}
-                            {{ form_widget(form.note, { attr: { class: 'form-control' } }) }}
-                            {{ form_help(form.note) }}
-                            {{ form_errors(form.note) }}
-                        </div>
+                        {{ form_row(form.thresholdAutomatic) }}
+                        {{ form_row(form.thresholdManager) }}
+                        {{ form_row(form.thresholdExecutive) }}
+                        {{ form_row(form.note) }}
                         {{ _fa_alert.render({ variant: 'info', class: 'small mb-3', body: 'risk_approval_config.hint.order'|trans({}, 'risk_approval_config') }) }}
                         <div class="d-flex gap-2">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
