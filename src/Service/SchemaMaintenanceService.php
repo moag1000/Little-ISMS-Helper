@@ -127,15 +127,25 @@ class SchemaMaintenanceService
                 ->setNoMigrationException(true);
             $df->getMigrator()->migrate($plan, $config);
         } catch (\Throwable $e) {
+            $diagnosis = $this->diagnoseMigrationFailure($e->getMessage(), $plan);
             $this->auditLogger->logCustom(
                 'admin.schema.migrate.failed',
                 'Doctrine',
                 null,
                 null,
-                ['error' => $e->getMessage(), 'planned' => count($plan->getItems())],
+                [
+                    'error' => $e->getMessage(),
+                    'planned' => count($plan->getItems()),
+                    'diagnosis' => $diagnosis['category'],
+                ],
                 sprintf('Schema migrate failed for %s: %s', $actor, $e->getMessage()),
             );
-            return ['success' => false, 'executed' => 0, 'error' => $e->getMessage()];
+            return [
+                'success' => false,
+                'executed' => 0,
+                'error' => $e->getMessage(),
+                'diagnosis' => $diagnosis,
+            ];
         }
 
         $executed = count($plan->getItems());
@@ -179,9 +189,108 @@ class SchemaMaintenanceService
 
     /**
      * Returns pending migration class names sorted by version. Tolerates a
-     * missing `doctrine_migration_versions` table (fresh install) by falling
-     * back to "every available migration".
+     * Categorise a Doctrine-Migrations error and emit a human-readable
+     * suggestion the operator can act on. Patterns observed in production:
+     * phantom diff-migrations (duplicate column/table), missing default
+     * values on NOT NULL columns inserted in data migrations, SAVEPOINT
+     * collapse when DDL inside a transactional migration commits implicitly.
      *
+     * @param MigrationPlanList $plan The plan that was executing when the
+     *                                error fired (used to identify the
+     *                                offending version).
+     * @return array{
+     *     category: string,
+     *     message: string,
+     *     suggested_action: string,
+     *     auto_repairable: bool,
+     *     offending_version: ?string,
+     * }
+     */
+    private function diagnoseMigrationFailure(string $errorMessage, MigrationPlanList $plan): array
+    {
+        $offending = null;
+        $items = $plan->getItems();
+        if ($items !== []) {
+            $offending = (string) end($items)->getVersion();
+        }
+
+        // Pattern 1: phantom diff-migration retries DDL that's already there
+        if (
+            preg_match('/Duplicate column name/i', $errorMessage)
+            || preg_match("/Table '[^']+' already exists/i", $errorMessage)
+            || preg_match('/SQLSTATE\[42S01\]/', $errorMessage)
+            || preg_match('/SQLSTATE\[42S21\]/', $errorMessage)
+        ) {
+            return [
+                'category' => 'phantom_diff_migration',
+                'message' => 'Migration tries to add a column or table that already exists in the database.',
+                'suggested_action' => $offending !== null
+                    ? sprintf('Likely a stale `doctrine:migrations:diff` output. Verify the offending migration (%s) — if a previous migration already applied the change, mark the offending migration as executed without running it: `php bin/console doctrine:migrations:execute --up --no-interaction "%s"` (only after confirming the schema already has the column/table).', $offending, $offending)
+                    : 'Likely a stale diff-migration. Compare the offending migration\'s DDL with the live schema and either delete the redundant migration or mark it executed.',
+                'auto_repairable' => false,
+                'offending_version' => $offending,
+            ];
+        }
+
+        // Pattern 2: SAVEPOINT collapse / no active transaction
+        if (
+            preg_match('/SAVEPOINT [A-Z_0-9]+ does not exist/', $errorMessage)
+            || preg_match('/There is no active transaction/i', $errorMessage)
+        ) {
+            return [
+                'category' => 'savepoint_collapse',
+                'message' => 'A migration ran DDL (CREATE/ALTER/DROP TABLE) inside a transactional migration. MySQL implicitly commits DDL, so the SAVEPOINT Doctrine tracks per migration is gone before the next one starts.',
+                'suggested_action' => $offending !== null
+                    ? sprintf('Add `public function isTransactional(): bool { return false; }` to migration %s (and any later DDL migration in the same run). See CLAUDE.md Pitfall #6.', $offending)
+                    : 'Add `public function isTransactional(): bool { return false; }` to every migration containing DDL.',
+                'auto_repairable' => false,
+                'offending_version' => $offending,
+            ];
+        }
+
+        // Pattern 3: NOT NULL column without default value on INSERT
+        if (preg_match("/Field '([^']+)' doesn't have a default value/i", $errorMessage, $m)) {
+            return [
+                'category' => 'missing_default_value',
+                'message' => sprintf('Migration INSERT omits a NOT NULL column without default: `%s`.', $m[1]),
+                'suggested_action' => sprintf('Either widen the INSERT to set %s explicitly, or add a default to the column via `ALTER TABLE ... MODIFY %s ... DEFAULT ...` in an earlier migration.', $m[1], $m[1]),
+                'auto_repairable' => false,
+                'offending_version' => $offending,
+            ];
+        }
+
+        // Pattern 4: foreign-key violation
+        if (preg_match('/SQLSTATE\[23000\].*foreign key/i', $errorMessage)) {
+            return [
+                'category' => 'foreign_key_constraint',
+                'message' => 'Migration tries to insert/delete a row that violates a foreign-key constraint.',
+                'suggested_action' => 'Run dependent rows first (parent before child for INSERT, child before parent for DELETE). Consider `SET FOREIGN_KEY_CHECKS=0` only for data-migrations that legitimately need it.',
+                'auto_repairable' => false,
+                'offending_version' => $offending,
+            ];
+        }
+
+        // Pattern 5: unknown column referenced
+        if (preg_match("/Unknown column '([^']+)'/i", $errorMessage, $m)) {
+            return [
+                'category' => 'unknown_column',
+                'message' => sprintf('Migration references column `%s` which is not in the schema.', $m[1]),
+                'suggested_action' => 'Run `php bin/console app:schema:reconcile --dry-run` to see what entity-vs-DB drift looks like; the column may need a prior ALTER TABLE migration before this one runs.',
+                'auto_repairable' => false,
+                'offending_version' => $offending,
+            ];
+        }
+
+        return [
+            'category' => 'unknown',
+            'message' => 'Migration failed without matching a known pattern.',
+            'suggested_action' => 'Read the full Doctrine error above. Common follow-ups: `app:schema:reconcile --dry-run`, `doctrine:migrations:list`, `doctrine:migrations:status`.',
+            'auto_repairable' => false,
+            'offending_version' => $offending,
+        ];
+    }
+
+    /**
      * @return list<string>
      */
     private function collectPendingMigrationNames(): array
