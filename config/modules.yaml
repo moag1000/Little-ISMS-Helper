@@ -297,6 +297,26 @@ sample_data:
     required_modules:
       - risks
 
+  - name: 'Beispiel-Schwachstellen (CVE)'
+    description: '6 reale CVEs (XZ Backdoor, Outlook RCE, ScreenConnect, Apache Struts) — NIS2/DORA Vulnerability-Mgmt'
+    file: 'fixtures/sample_vulnerabilities.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-Patches'
+    description: '6 Patches zu CVEs + Routine-Updates — Patch-Mgmt-Demo (NIS2 Art.21.2.e)'
+    file: 'fixtures/sample_patches.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-Change-Requests'
+    description: '6 typische Aenderungen (Cloud-Migration, AD-Refresh, MFA-Pflicht, Notfall-Patch) — ISO A.8.32'
+    file: 'fixtures/sample_change_requests.yaml'
+    required_modules: []
+
+  - name: 'Beispiel-Corrective-Actions'
+    description: '7 Audit-Findings-Closures mit Root-Cause + Wirksamkeitspruefung — ISO 27001 Clause 10.2'
+    file: 'fixtures/sample_corrective_actions.yaml'
+    required_modules: []
+
 # System-Anforderungen
 requirements:
   php:
