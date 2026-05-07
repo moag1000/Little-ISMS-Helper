@@ -92,6 +92,12 @@ class ChangeRequestType extends AbstractType
                 'required' => true,
                     'choice_translation_domain' => 'change_requests',
             ])
+            ->add('clauseReference', TextType::class, [
+                'label' => 'change_request.field.clause_reference',
+                'required' => false,
+                'attr' => ['maxlength' => 100, 'placeholder' => 'change_request.placeholder.clause_reference'],
+                'help' => 'change_request.help.clause_reference',
+            ])
             ->add('ismsImpact', TextareaType::class, [
                 'label' => 'change_request.field.isms_impact',
                 'required' => false,

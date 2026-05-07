@@ -127,6 +127,14 @@ class ChangeRequest
     private ?string $status = 'draft';
 
     /**
+     * Optional ISO 27001 / DORA / NIS2 clause tag for §6.3/§8.1 differentiation.
+     * Examples: "ISO 27001 §6.3", "ISO 27001 §8.1", "DORA Art. 6"
+     */
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['change_request:read', 'change_request:write'])]
+    private ?string $clauseReference = null;
+
+    /**
      * Impact on ISMS
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -408,6 +416,17 @@ class ChangeRequest
     public function setStatus(string $status): static
     {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getClauseReference(): ?string
+    {
+        return $this->clauseReference;
+    }
+
+    public function setClauseReference(?string $clauseReference): static
+    {
+        $this->clauseReference = $clauseReference;
         return $this;
     }
 
