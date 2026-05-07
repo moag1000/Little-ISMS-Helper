@@ -832,4 +832,11 @@ kpi_threshold:
         disabled: 'Deaktiviert'
         no_rotation: 'Keine Rotation (NIST 800-63B)'
         edit_globals: 'Globale Settings bearbeiten'
+        section_operational: 'Operativ — Risk-Methodik + Wizard-Default'
+        risk_methodology: 'Risk-Methodologie'
+        risk_methodology_help: 'Standard fuer Risikoanalyse — beeinflusst Default-Felder + Reports.'
+        risk_matrix_size: 'Risk-Matrix-Groesse'
+        risk_matrix_size_help: '3x3 schnell + KMU-tauglich; 5x5 ist ISO-27005-Standard.'
+        wizard_maturity_target: 'Default Wizard-Reife-Ziel'
+        wizard_maturity_target_help: 'Wird in jedem Wizard-Result als Soll-Reife angezeigt.'
     cancel: "Cancel"

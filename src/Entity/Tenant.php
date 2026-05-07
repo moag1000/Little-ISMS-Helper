@@ -172,6 +172,28 @@ class Tenant
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'GDPR retention policies keyed by data category (e.g. crm, contracts, audit_evidence)'])]
     private ?array $dataRetentionPolicies = null;
 
+    // Tier-2 Operational Settings (risk methodology, matrix size, notifications, wizard maturity target, CSIRT endpoints, on-call rotation).
+    #[ORM\Column(length: 32, nullable: true, options: ['default' => 'iso_27005', 'comment' => 'iso_27005|nist_800_30|fair|custom'])]
+    private ?string $riskMethodology = 'iso_27005';
+
+    #[ORM\Column(type: Types::SMALLINT, nullable: true, options: ['default' => 5, 'comment' => 'Risk matrix size 3, 4, 5'])]
+    private ?int $riskMatrixSize = 5;
+
+    #[ORM\Column(length: 32, nullable: true, options: ['default' => 'baseline', 'comment' => 'Default maturity target across wizards: baseline|enhanced'])]
+    private ?string $wizardMaturityTarget = 'baseline';
+
+    /** @var array<string, array{email?: bool, slack?: bool, teams?: bool}>|null */
+    #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'Notification preferences keyed by event type (incident, breach, audit_finding, training_overdue)'])]
+    private ?array $notificationPreferences = null;
+
+    /** @var array<string, array{url?: string, contact?: string, auth_type?: string}>|null */
+    #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'CSIRT endpoints for automated incident reporting (BSI, sectoral CSIRT, ENISA)'])]
+    private ?array $csirtEndpoints = null;
+
+    /** @var array<int, array{date: string, primary?: string, deputy?: string}>|null */
+    #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'Crisis team on-call rotation entries (each: date, primary, deputy)'])]
+    private ?array $crisisTeamOnCall = null;
+
     public function getBsiPhase(): ?string
     {
         return $this->bsiPhase;
@@ -611,4 +633,31 @@ class Tenant
 
     /** @param array<string, array{years: int, basis?: string}>|null $policies */
     public function setDataRetentionPolicies(?array $policies): static { $this->dataRetentionPolicies = $policies; return $this; }
+
+    public function getRiskMethodology(): ?string { return $this->riskMethodology; }
+    public function setRiskMethodology(?string $m): static { $this->riskMethodology = $m; return $this; }
+
+    public function getRiskMatrixSize(): ?int { return $this->riskMatrixSize; }
+    public function setRiskMatrixSize(?int $size): static { $this->riskMatrixSize = $size; return $this; }
+
+    public function getWizardMaturityTarget(): ?string { return $this->wizardMaturityTarget; }
+    public function setWizardMaturityTarget(?string $target): static { $this->wizardMaturityTarget = $target; return $this; }
+
+    /** @return array<string, array{email?: bool, slack?: bool, teams?: bool}>|null */
+    public function getNotificationPreferences(): ?array { return $this->notificationPreferences; }
+
+    /** @param array<string, array{email?: bool, slack?: bool, teams?: bool}>|null $prefs */
+    public function setNotificationPreferences(?array $prefs): static { $this->notificationPreferences = $prefs; return $this; }
+
+    /** @return array<string, array{url?: string, contact?: string, auth_type?: string}>|null */
+    public function getCsirtEndpoints(): ?array { return $this->csirtEndpoints; }
+
+    /** @param array<string, array{url?: string, contact?: string, auth_type?: string}>|null $endpoints */
+    public function setCsirtEndpoints(?array $endpoints): static { $this->csirtEndpoints = $endpoints; return $this; }
+
+    /** @return array<int, array{date: string, primary?: string, deputy?: string}>|null */
+    public function getCrisisTeamOnCall(): ?array { return $this->crisisTeamOnCall; }
+
+    /** @param array<int, array{date: string, primary?: string, deputy?: string}>|null $rotation */
+    public function setCrisisTeamOnCall(?array $rotation): static { $this->crisisTeamOnCall = $rotation; return $this; }
 }

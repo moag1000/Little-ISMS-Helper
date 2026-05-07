@@ -83,6 +83,39 @@ final class TenantComplianceSettingsType extends AbstractType
                 'translation_domain' => 'admin',
                 'constraints' => [new Assert\Email(), new Assert\Length(['max' => 255])],
             ])
+            ->add('riskMethodology', ChoiceType::class, [
+                'label' => 'admin.tenant_settings.risk_methodology',
+                'help' => 'admin.tenant_settings.risk_methodology_help',
+                'choices' => [
+                    'ISO/IEC 27005 (Risk-Mgmt nach ISO)' => 'iso_27005',
+                    'NIST SP 800-30 (Risk-Assessment-Guide)' => 'nist_800_30',
+                    'FAIR (Factor Analysis of Information Risk)' => 'fair',
+                    'Custom (eigene Methodik)' => 'custom',
+                ],
+                'required' => true,
+                'translation_domain' => 'admin',
+            ])
+            ->add('riskMatrixSize', ChoiceType::class, [
+                'label' => 'admin.tenant_settings.risk_matrix_size',
+                'help' => 'admin.tenant_settings.risk_matrix_size_help',
+                'choices' => [
+                    '3 × 3 (KMU-pragmatisch)' => 3,
+                    '4 × 4 (mittelstaendisch)' => 4,
+                    '5 × 5 (Standard nach ISO 27005)' => 5,
+                ],
+                'required' => true,
+                'translation_domain' => 'admin',
+            ])
+            ->add('wizardMaturityTarget', ChoiceType::class, [
+                'label' => 'admin.tenant_settings.wizard_maturity_target',
+                'help' => 'admin.tenant_settings.wizard_maturity_target_help',
+                'choices' => [
+                    'Baseline (KMU-Reife / Pragmatisch)' => 'baseline',
+                    'Enhanced (Audit-ready / Continuous-Improvement)' => 'enhanced',
+                ],
+                'required' => true,
+                'translation_domain' => 'admin',
+            ])
         ;
     }
 
