@@ -8,6 +8,7 @@ use DateTime;
 use Exception;
 use App\Entity\InternalAudit;
 use App\Form\InternalAuditType;
+use App\Repository\AuditChecklistRepository;
 use App\Repository\AuditLogRepository;
 use App\Repository\InternalAuditRepository;
 use App\Service\ExcelExportService;
@@ -32,6 +33,7 @@ class AuditController extends AbstractController
         private readonly ExcelExportService $excelExportService,
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
+        private readonly AuditChecklistRepository $auditChecklistRepository,
         private readonly ?InternalAuditCloner $internalAuditCloner = null,
     ) {}
     #[Route('/audit/', name: 'app_audit_index')]
@@ -252,6 +254,97 @@ class AuditController extends AbstractController
         ], 'audits'));
 
         return $this->redirectToRoute('app_audit_show', ['id' => $clone->getId()]);
+    }
+
+    #[Route('/audit/{id}/checklist', name: 'app_audit_checklist', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function checklist(InternalAudit $internalAudit): Response
+    {
+        $items = $this->auditChecklistRepository->findByAudit($internalAudit);
+
+        // Group items by framework (for non-compliance audits with multiple frameworks)
+        $grouped = [];
+        foreach ($items as $item) {
+            $frameworkName = $item->getRequirement()?->getFramework()?->getName() ?? 'general';
+            $grouped[$frameworkName] ??= [];
+            $grouped[$frameworkName][] = $item;
+        }
+
+        // Compute stats
+        $stats = [
+            'total' => count($items),
+            'verified' => 0,
+            'compliant' => 0,
+            'partial' => 0,
+            'non_compliant' => 0,
+            'not_applicable' => 0,
+        ];
+        foreach ($items as $item) {
+            $status = $item->getVerificationStatus();
+            if ($status !== 'not_checked') {
+                $stats['verified']++;
+            }
+            if (isset($stats[$status])) {
+                $stats[$status]++;
+            }
+        }
+
+        return $this->render('audit/checklist.html.twig', [
+            'audit' => $internalAudit,
+            'checklist_items' => $items,
+            'grouped_items' => $grouped,
+            'stats' => $stats,
+        ]);
+    }
+
+    #[Route('/audit/{id}/checklist/save', name: 'app_audit_checklist_save', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function checklistSave(Request $request, InternalAudit $internalAudit): Response
+    {
+        $data = json_decode($request->getContent(), true) ?? [];
+        if (!isset($data['_token']) || !$this->isCsrfTokenValid('audit_checklist_save_' . $internalAudit->getId(), (string) $data['_token'])) {
+            return new Response(json_encode(['error' => 'Invalid CSRF token']), Response::HTTP_FORBIDDEN, ['Content-Type' => 'application/json']);
+        }
+
+        $items = $data['items'] ?? [];
+        $updated = 0;
+        foreach ($items as $itemData) {
+            $itemId = (int) ($itemData['id'] ?? 0);
+            if ($itemId <= 0) {
+                continue;
+            }
+            $item = $this->auditChecklistRepository->find($itemId);
+            if ($item === null || $item->getAudit()?->getId() !== $internalAudit->getId()) {
+                continue;
+            }
+            if (isset($itemData['verificationStatus'])) {
+                $item->setVerificationStatus((string) $itemData['verificationStatus']);
+            }
+            if (isset($itemData['auditNotes'])) {
+                $item->setAuditNotes((string) $itemData['auditNotes']);
+            }
+            if (isset($itemData['evidenceFound'])) {
+                $item->setEvidenceFound((string) $itemData['evidenceFound']);
+            }
+            if (isset($itemData['findings'])) {
+                $item->setFindings((string) $itemData['findings']);
+            }
+            if (isset($itemData['recommendations'])) {
+                $item->setRecommendations((string) $itemData['recommendations']);
+            }
+            if (isset($itemData['complianceScore'])) {
+                $item->setComplianceScore((int) $itemData['complianceScore']);
+            }
+            $item->setUpdatedAt(new \DateTimeImmutable());
+            $updated++;
+        }
+        $this->entityManager->flush();
+
+        return new Response(
+            json_encode(['saved' => $updated, 'message' => $this->translator->trans('checklist.flash.saved', ['%count%' => $updated], 'audit')]),
+            Response::HTTP_OK,
+            ['Content-Type' => 'application/json']
+        );
     }
 
     #[Route('/audit/{id}/delete', name: 'app_audit_delete', requirements: ['id' => '\d+'], methods: ['POST'])]

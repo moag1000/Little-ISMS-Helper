@@ -274,7 +274,10 @@ checklist:
     compliance_score: 'Compliance Score'
     detailed_requirements: 'Detailed Requirements'
     save_progress: 'Save Progress'
+    saving: 'Saving…'
     progress: 'Progress'
+    flash:
+        saved: '%count% items saved'
 
 pdf:
     title: 'Audit Report'
