@@ -25,7 +25,10 @@ use App\Entity\Document;
 use App\Entity\InterestedParty;
 use App\Entity\ISMSObjective;
 use App\Entity\Location;
+use App\Entity\ChangeRequest;
+use App\Entity\CorrectiveAction;
 use App\Entity\ManagementReview;
+use App\Entity\Patch;
 use App\Entity\Person;
 use App\Entity\ProcessingActivity;
 use App\Entity\RiskAppetite;
@@ -33,6 +36,7 @@ use App\Entity\SampleDataImport;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Entity\Vulnerability;
 use App\Repository\SampleDataImportRepository;
 use App\Repository\TenantRepository;
 use DateTime;
@@ -821,6 +825,15 @@ class DataImportService
             'business_continuity_plan' => BusinessContinuityPlan::class,
             'bc_exercise' => BCExercise::class,
             'crisis_team' => CrisisTeam::class,
+            // Sample-data extensions (Vulnerability/Patch/ChangeRequest/CorrectiveAction)
+            'vulnerabilities' => Vulnerability::class,
+            'vulnerability' => Vulnerability::class,
+            'patches' => Patch::class,
+            'patch' => Patch::class,
+            'change_requests' => ChangeRequest::class,
+            'change_request' => ChangeRequest::class,
+            'corrective_actions' => CorrectiveAction::class,
+            'corrective_action' => CorrectiveAction::class,
             'supplier' => Supplier::class,
             'location' => Location::class,
             'person' => Person::class,

@@ -1,0 +1,110 @@
+# Sample Patches — Patch-Mgmt-Demo (NIS2 Art.21.2.e Sichere Wartung)
+
+patches:
+  - patch_id: 'KB5034441'
+    title: 'Windows 11 Cumulative Update February 2024'
+    description: 'Microsoft Februar 2024 Patchday — kumulative Sicherheitsupdates fuer Windows 11 22H2 und 23H2.'
+    vendor: 'Microsoft'
+    product: 'Windows 11'
+    version: '22H2 / 23H2'
+    patch_type: 'security'
+    priority: 'critical'
+    status: 'deployed'
+    release_date: '2024-02-13'
+    deployment_deadline: '2024-02-27'
+    deployed_date: '2024-02-22'
+    responsible_person: 'IT-Operations'
+    testing_notes: '7 Tage Pilot-Ring (50 Endpoints) ohne Faelle, Rollout via WSUS.'
+    deployment_notes: 'Compliance 99.2% nach 14 Tagen, 8 Endpoints nachgepatcht.'
+    requires_downtime: true
+    estimated_downtime_minutes: 30
+    requires_reboot: true
+
+  - patch_id: 'OpenSSH-9.6p1'
+    title: 'OpenSSH 9.6p1 Upgrade (Terrapin-Mitigation)'
+    description: 'OpenSSH-Upgrade zur Mitigation des Terrapin-Angriffs (CVE-2023-48795).'
+    vendor: 'OpenBSD'
+    product: 'OpenSSH'
+    version: '9.6p1'
+    patch_type: 'security'
+    priority: 'high'
+    status: 'deployed'
+    release_date: '2023-12-18'
+    deployment_deadline: '2024-01-15'
+    deployed_date: '2024-01-10'
+    responsible_person: 'Linux-Team'
+    testing_notes: 'Lab-Test gegen automated SSH-Probes erfolgreich.'
+    deployment_notes: 'Ansible-Playbook fuer alle Linux-Server, kein Service-Outage.'
+    requires_downtime: false
+    requires_reboot: false
+
+  - patch_id: 'XZ-5.6.2'
+    title: 'XZ Utils Downgrade auf saubere Version (Backdoor-Mitigation)'
+    description: 'Mitigation fuer CVE-2024-3094: Downgrade auf XZ Utils 5.4.6 oder Upgrade auf 5.6.2 mit verifizierter Code-Base.'
+    vendor: 'XZ Utils Project'
+    product: 'XZ Utils / liblzma'
+    version: '5.6.2'
+    patch_type: 'security'
+    priority: 'critical'
+    status: 'deployed'
+    release_date: '2024-04-01'
+    deployment_deadline: '2024-04-05'
+    deployed_date: '2024-04-02'
+    responsible_person: 'Security-Team'
+    testing_notes: 'SHA256-Verifikation aller Builds gegen Reference-Hashes.'
+    deployment_notes: 'Notfall-Rollout, alle Linux-Server innerhalb 24h.'
+    requires_downtime: false
+    requires_reboot: false
+
+  - patch_id: 'Apache-Struts-6.3.0.2'
+    title: 'Apache Struts Update (Path-Traversal-Fix)'
+    description: 'Struts-Upgrade auf 6.3.0.2 zur Mitigation von CVE-2023-50164.'
+    vendor: 'Apache Software Foundation'
+    product: 'Apache Struts'
+    version: '6.3.0.2'
+    patch_type: 'security'
+    priority: 'critical'
+    status: 'deployed'
+    release_date: '2023-12-07'
+    deployment_deadline: '2023-12-21'
+    deployed_date: '2023-12-12'
+    responsible_person: 'Application-Security'
+    testing_notes: 'Regression-Tests fuer alle 4 betroffenen Web-Apps.'
+    deployment_notes: 'Web-Apps redeployed waehrend Wartungsfenster Sa-Nacht.'
+    requires_downtime: true
+    estimated_downtime_minutes: 120
+    requires_reboot: false
+
+  - patch_id: 'Defender-1.405.0'
+    title: 'Microsoft Defender Antimalware Platform Update'
+    description: 'Microsoft Defender Antimalware Platform und Engine-Update.'
+    vendor: 'Microsoft'
+    product: 'Microsoft Defender'
+    version: '1.405.0'
+    patch_type: 'security'
+    priority: 'medium'
+    status: 'deployed'
+    release_date: '2024-03-15'
+    deployed_date: '2024-03-16'
+    responsible_person: 'IT-Operations'
+    deployment_notes: 'Auto-Update via Defender Cloud-Mgmt; Compliance 100% nach 24h.'
+    requires_downtime: false
+    requires_reboot: false
+
+  - patch_id: 'Linux-Kernel-6.8.7'
+    title: 'Linux Kernel 6.8.7 Security Update'
+    description: 'Kernel-Update mit gesammelten Security-Fixes fuer Q1/2024.'
+    vendor: 'Linux Foundation'
+    product: 'Linux Kernel'
+    version: '6.8.7'
+    patch_type: 'security'
+    priority: 'high'
+    status: 'pending'
+    release_date: '2024-04-15'
+    deployment_deadline: '2024-04-30'
+    responsible_person: 'Linux-Team'
+    testing_notes: 'Lab-Test laeuft.'
+    requires_downtime: true
+    estimated_downtime_minutes: 15
+    requires_reboot: true
+    rollback_plan: 'GRUB-Eintrag fuer 6.8.6 erhalten, Auto-Boot-Fallback bei 3 fehlerhaften Boots.'
