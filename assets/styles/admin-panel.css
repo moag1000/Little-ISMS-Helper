@@ -61,6 +61,114 @@
 }
 
 /* ══════════════════════════════════════════════════════════════
+   Hub-Layout — .fa-admin-hub / __search / -group / -grid / __empty
+   ══════════════════════════════════════════════════════════════ */
+.fa-admin-hub {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+}
+
+.fa-admin-hub__search {
+    position: relative;
+    max-width: 520px;
+}
+.fa-admin-hub__search > .bi {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--fg-3);
+    font-size: 16px;
+    pointer-events: none;
+}
+.fa-admin-hub__search-input {
+    width: 100%;
+    padding: 10px 16px 10px 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--fg);
+    font-size: 14px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+.fa-admin-hub__search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, .15);
+}
+
+.fa-admin-hub-group {
+    --grp: var(--primary);
+}
+.fa-admin-hub-group[data-tone="cyan"]   { --grp: #06b6d4; }
+.fa-admin-hub-group[data-tone="pink"]   { --grp: #ec4899; }
+.fa-admin-hub-group[data-tone="purple"] { --grp: #8b5cf6; }
+
+.fa-admin-hub-group__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+.fa-admin-hub-group__icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in oklab, var(--grp) 12%, transparent);
+    color: var(--grp);
+    border: 1px solid color-mix(in oklab, var(--grp) 22%, transparent);
+    border-radius: var(--r-md);
+    font-size: 18px;
+}
+.fa-admin-hub-group__title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--fg);
+    margin: 0 0 2px 0;
+    letter-spacing: -0.01em;
+}
+.fa-admin-hub-group__desc {
+    font-size: 13px;
+    color: var(--fg-3);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.fa-admin-hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.fa-admin-hub__empty {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 48px 16px;
+    color: var(--fg-3);
+    text-align: center;
+}
+.fa-admin-hub__empty:not([hidden]) {
+    display: flex;
+}
+.fa-admin-hub__empty .bi {
+    font-size: 28px;
+    color: var(--fg-3);
+    opacity: .55;
+}
+.fa-admin-hub__empty p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* ══════════════════════════════════════════════════════════════
    Hub-Card — .fa-admin-hub-card
    ══════════════════════════════════════════════════════════════ */
 .ds-admin-hub-row {
