@@ -48,6 +48,14 @@
 {% set automatic_fields = automatic_fields|default([]) %}
 {% set default_col_width = 12 %}
 {% set passed_translation_domain = translation_domain|default(null) %}
+{% set other_section_label = other_section_label|default('common.section.other'|trans({}, 'messages')) %}
+{% set skip_other = skip_other|default(false) %}
+
+{# Collect all field names listed in sections — for catch-all detection #}
+{% set listed_fields = [] %}
+{% for section in sections %}
+    {% set listed_fields = listed_fields|merge(section.fields) %}
+{% endfor %}
 
 {% for section_key, section in sections %}
     <fieldset class="mb-4">
@@ -133,3 +141,84 @@
         {% endif %}
     </fieldset>
 {% endfor %}
+
+{# ─── Catch-all: render any form-field NOT listed in sections ──────────────
+   Symfony's form_end() auto-renders unrendered fields via form_rest, which
+   would land them AFTER the submit-button. Render them here under a final
+   "Weitere Felder" fieldset so the form stays single-block.
+
+   Skip via {skip_other: true} param if caller intentionally manages all
+   fields (e.g. has its own form_widget calls outside this component).
+#}
+{% if not skip_other %}
+    {% set other_fields = [] %}
+    {% for child in form %}
+        {% set child_name = child.vars.name %}
+        {% if child_name not in listed_fields and child_name not in exclude_fields and child.vars.block_prefixes[1]|default('') != 'hidden' %}
+            {% set other_fields = other_fields|merge([child_name]) %}
+        {% endif %}
+    {% endfor %}
+
+    {% if other_fields|length > 0 %}
+        <fieldset class="mb-4">
+            <legend class="h5 mb-3">{{ other_section_label }}</legend>
+            {% set current_row_fields = [] %}
+            {% set current_row_width = 0 %}
+            {% for field_name in other_fields %}
+                {% set field = form[field_name] %}
+                {% set field_type = field.vars.block_prefixes[1]|default('text') %}
+                {% set col_width = col_widths[field_name]|default(default_col_width) %}
+
+                {% if field_type == 'checkbox' %}
+                    {% if current_row_fields|length > 0 %}
+                        <div class="row">
+                            {% for row_field in current_row_fields %}{{ row_field|raw }}{% endfor %}
+                        </div>
+                        {% set current_row_fields = [] %}
+                        {% set current_row_width = 0 %}
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-check mb-3">
+                                {{ form_widget(field, {'attr': {'class': 'form-check-input'}}) }}
+                                {{ form_label(field, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                {{ form_errors(field) }}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    {% if current_row_width + col_width > 12 %}
+                        <div class="row">
+                            {% for row_field in current_row_fields %}{{ row_field|raw }}{% endfor %}
+                        </div>
+                        {% set current_row_fields = [] %}
+                        {% set current_row_width = 0 %}
+                    {% endif %}
+                    {% set field_html %}
+                        <div class="col-md-{{ col_width }}">
+                            {% set help_key = help_texts[field_name]|default(null) %}
+                            {% set tooltip_key = tooltips[field_name]|default(null) %}
+                            {% set trans_domain = passed_translation_domain ? passed_translation_domain : field.vars.translation_domain|default('messages') %}
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': field,
+                                'label_key': field.vars.label,
+                                'help_key': help_key,
+                                'tooltip_key': tooltip_key,
+                                'translation_domain': trans_domain,
+                                'required': field.vars.required,
+                                'automatic': field_name in automatic_fields
+                            } %}
+                        </div>
+                    {% endset %}
+                    {% set current_row_fields = current_row_fields|merge([field_html]) %}
+                    {% set current_row_width = current_row_width + col_width %}
+                {% endif %}
+            {% endfor %}
+            {% if current_row_fields|length > 0 %}
+                <div class="row">
+                    {% for row_field in current_row_fields %}{{ row_field|raw }}{% endfor %}
+                </div>
+            {% endif %}
+        </fieldset>
+    {% endif %}
+{% endif %}
