@@ -341,6 +341,7 @@ class Incident
         $this->affectedBusinessProcesses = new ArrayCollection();
         $this->relatedVulnerabilities = new ArrayCollection();
         $this->reportedByDeputyPersons = new ArrayCollection();
+        $this->criticalServicesAffected = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->detectedAt = new DateTimeImmutable();
     }
@@ -1339,6 +1340,357 @@ class Incident
             $this->reportedBy,
             $this->reportedByDeputyPersons,
         );
+    }
+
+    // -------------------------------------------------------------------------
+    // ISO 27001 A.5.24-A.5.28 — always-active fields (T31.2.2)
+    // -------------------------------------------------------------------------
+
+    /**
+     * ISO 27001 A.5.24 — Event vs. Incident classification for workflow routing.
+     * Allowed values: 'event' | 'incident'
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?string $incidentClassification = null;
+
+    /**
+     * ISO 27001 A.5.26 — Short-term containment vs. long-term remediation actions.
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?string $containmentActions = null;
+
+    /**
+     * ISO 27001 A.5.28 — Confirm that digital evidence has been preserved.
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['incident:read', 'incident:write'])]
+    private bool $evidencePreserved = false;
+
+    /**
+     * ISO 27001 A.5.28 — Evidence artifacts as JSON array (document refs / URLs).
+     * Stored as JSON to avoid an extra join table; formal M:N to Document
+     * can be added in a later sprint.
+     *
+     * @var list<string>|null
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?array $evidenceArtifactsJson = null;
+
+    // -------------------------------------------------------------------------
+    // DORA Art. 17-19 — module-gated fields (nis2_dora) (T31.2.2)
+    // -------------------------------------------------------------------------
+
+    /**
+     * DORA Art. 18 — Art. 3 RTS classification outcome.
+     * Allowed values: 'major_ict_incident' | 'significant_cyber_threat'
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?string $ictIncidentClassification = null;
+
+    /**
+     * DORA Art. 19(1)(a) — Data loss occurred during the incident.
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['incident:read', 'incident:write'])]
+    private bool $dataLossOccurred = false;
+
+    /**
+     * DORA Art. 19(1)(d) — Data leakage (exfiltration) occurred.
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['incident:read', 'incident:write'])]
+    private bool $dataLeakageOccurred = false;
+
+    /**
+     * DORA Art. 19(1)(b) — Economic impact in EUR (DECIMAL stored as string per Doctrine convention).
+     */
+    #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?string $economicImpact = null;
+
+    /**
+     * DORA Art. 19(1)(c) — Reputational impact on scale 1-5.
+     */
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\Range(min: 1, max: 5)]
+    private ?int $reputationalImpact = null;
+
+    /**
+     * DORA Art. 19(1)(e) — Critical services affected (links to BCM BIA).
+     *
+     * @var Collection<int, BusinessProcess>
+     */
+    #[ORM\ManyToMany(targetEntity: BusinessProcess::class)]
+    #[ORM\JoinTable(name: 'incident_critical_services')]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[MaxDepth(1)]
+    private Collection $criticalServicesAffected;
+
+    /**
+     * DORA Art. 19(1)(f) — Recurring incident flag.
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['incident:read', 'incident:write'])]
+    private bool $recurringIncident = false;
+
+    /**
+     * DORA Art. 19 — Number of clients/counterparties affected.
+     */
+    #[ORM\Column(nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    #[Assert\PositiveOrZero]
+    private ?int $clientsAffected = null;
+
+    /**
+     * DORA Art. 19 — Financial volume of clients affected (EUR, DECIMAL as string).
+     */
+    #[ORM\Column(type: Types::DECIMAL, precision: 15, scale: 2, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?string $clientsAffectedFinancialVolume = null;
+
+    /**
+     * DORA Art. 19 — Service replicate / failover activated to contain impact.
+     */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['incident:read', 'incident:write'])]
+    private bool $replicationOfImpact = false;
+
+    /**
+     * DORA Art. 19(4)(a) — Initial report submitted (4-hour deadline, distinct from NIS2 24h).
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?\DateTimeImmutable $initialReportSubmittedAt = null;
+
+    /**
+     * DORA Art. 19(4)(b) — Intermediate report submitted (72-hour deadline).
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?\DateTimeImmutable $intermediateReportSubmittedAt = null;
+
+    /**
+     * DORA Art. 11(2) — Data recovery strategy / cross-ref to BCM continuity plan.
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?string $dataRecoveryStrategy = null;
+
+    // -------------------------------------------------------------------------
+    // Getters/Setters: ISO 27001 A.5.24-A.5.28 fields (T31.2.2)
+    // -------------------------------------------------------------------------
+
+    public function getIncidentClassification(): ?string
+    {
+        return $this->incidentClassification;
+    }
+
+    public function setIncidentClassification(?string $incidentClassification): static
+    {
+        $this->incidentClassification = $incidentClassification;
+        return $this;
+    }
+
+    public function getContainmentActions(): ?string
+    {
+        return $this->containmentActions;
+    }
+
+    public function setContainmentActions(?string $containmentActions): static
+    {
+        $this->containmentActions = $containmentActions;
+        return $this;
+    }
+
+    public function isEvidencePreserved(): bool
+    {
+        return $this->evidencePreserved;
+    }
+
+    public function setEvidencePreserved(bool $evidencePreserved): static
+    {
+        $this->evidencePreserved = $evidencePreserved;
+        return $this;
+    }
+
+    /**
+     * @return list<string>|null
+     */
+    public function getEvidenceArtifactsJson(): ?array
+    {
+        return $this->evidenceArtifactsJson;
+    }
+
+    /**
+     * @param list<string>|null $evidenceArtifactsJson
+     */
+    public function setEvidenceArtifactsJson(?array $evidenceArtifactsJson): static
+    {
+        $this->evidenceArtifactsJson = $evidenceArtifactsJson;
+        return $this;
+    }
+
+    // -------------------------------------------------------------------------
+    // Getters/Setters: DORA Art. 17-19 fields (T31.2.2)
+    // -------------------------------------------------------------------------
+
+    public function getIctIncidentClassification(): ?string
+    {
+        return $this->ictIncidentClassification;
+    }
+
+    public function setIctIncidentClassification(?string $ictIncidentClassification): static
+    {
+        $this->ictIncidentClassification = $ictIncidentClassification;
+        return $this;
+    }
+
+    public function isDataLossOccurred(): bool
+    {
+        return $this->dataLossOccurred;
+    }
+
+    public function setDataLossOccurred(bool $dataLossOccurred): static
+    {
+        $this->dataLossOccurred = $dataLossOccurred;
+        return $this;
+    }
+
+    public function isDataLeakageOccurred(): bool
+    {
+        return $this->dataLeakageOccurred;
+    }
+
+    public function setDataLeakageOccurred(bool $dataLeakageOccurred): static
+    {
+        $this->dataLeakageOccurred = $dataLeakageOccurred;
+        return $this;
+    }
+
+    public function getEconomicImpact(): ?string
+    {
+        return $this->economicImpact;
+    }
+
+    public function setEconomicImpact(?string $economicImpact): static
+    {
+        $this->economicImpact = $economicImpact;
+        return $this;
+    }
+
+    public function getReputationalImpact(): ?int
+    {
+        return $this->reputationalImpact;
+    }
+
+    public function setReputationalImpact(?int $reputationalImpact): static
+    {
+        $this->reputationalImpact = $reputationalImpact;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BusinessProcess>
+     */
+    public function getCriticalServicesAffected(): Collection
+    {
+        return $this->criticalServicesAffected;
+    }
+
+    public function addCriticalServicesAffected(BusinessProcess $businessProcess): static
+    {
+        if (!$this->criticalServicesAffected->contains($businessProcess)) {
+            $this->criticalServicesAffected->add($businessProcess);
+        }
+        return $this;
+    }
+
+    public function removeCriticalServicesAffected(BusinessProcess $businessProcess): static
+    {
+        $this->criticalServicesAffected->removeElement($businessProcess);
+        return $this;
+    }
+
+    public function isRecurringIncident(): bool
+    {
+        return $this->recurringIncident;
+    }
+
+    public function setRecurringIncident(bool $recurringIncident): static
+    {
+        $this->recurringIncident = $recurringIncident;
+        return $this;
+    }
+
+    public function getClientsAffected(): ?int
+    {
+        return $this->clientsAffected;
+    }
+
+    public function setClientsAffected(?int $clientsAffected): static
+    {
+        $this->clientsAffected = $clientsAffected;
+        return $this;
+    }
+
+    public function getClientsAffectedFinancialVolume(): ?string
+    {
+        return $this->clientsAffectedFinancialVolume;
+    }
+
+    public function setClientsAffectedFinancialVolume(?string $clientsAffectedFinancialVolume): static
+    {
+        $this->clientsAffectedFinancialVolume = $clientsAffectedFinancialVolume;
+        return $this;
+    }
+
+    public function isReplicationOfImpact(): bool
+    {
+        return $this->replicationOfImpact;
+    }
+
+    public function setReplicationOfImpact(bool $replicationOfImpact): static
+    {
+        $this->replicationOfImpact = $replicationOfImpact;
+        return $this;
+    }
+
+    public function getInitialReportSubmittedAt(): ?\DateTimeImmutable
+    {
+        return $this->initialReportSubmittedAt;
+    }
+
+    public function setInitialReportSubmittedAt(?\DateTimeImmutable $initialReportSubmittedAt): static
+    {
+        $this->initialReportSubmittedAt = $initialReportSubmittedAt;
+        return $this;
+    }
+
+    public function getIntermediateReportSubmittedAt(): ?\DateTimeImmutable
+    {
+        return $this->intermediateReportSubmittedAt;
+    }
+
+    public function setIntermediateReportSubmittedAt(?\DateTimeImmutable $intermediateReportSubmittedAt): static
+    {
+        $this->intermediateReportSubmittedAt = $intermediateReportSubmittedAt;
+        return $this;
+    }
+
+    public function getDataRecoveryStrategy(): ?string
+    {
+        return $this->dataRecoveryStrategy;
+    }
+
+    public function setDataRecoveryStrategy(?string $dataRecoveryStrategy): static
+    {
+        $this->dataRecoveryStrategy = $dataRecoveryStrategy;
+        return $this;
     }
 
     /*
