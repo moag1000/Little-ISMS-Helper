@@ -111,14 +111,29 @@ class UserType extends AbstractType
                 'label' => 'user.field.password',
                 'mapped' => false,
                 'required' => !$isEdit,
-                'attr' => ['class' => 'form-control'],
-                'help' => $isEdit
-                    ? 'Leer lassen, um Passwort unverändert zu lassen'
-                    : 'Optional für lokale Authentifizierung. Leer lassen für Azure-Authentifizierung.',
-                'constraints' => $isEdit ? [] : [
-                    new Assert\Length(
-                        min: $this->resolvePasswordMinLength(),
-                        minMessage: 'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.'
+                'attr' => [
+                    'class' => 'form-control',
+                    'autocomplete' => 'new-password',
+                    'spellcheck' => 'false',
+                ],
+                'help' => $this->translator->trans(
+                    $isEdit ? 'user.help.password_change' : 'user.help.password_create',
+                    ['%min%' => $this->resolvePasswordMinLength()],
+                    'user',
+                ),
+                'constraints' => [
+                    new Assert\When(
+                        expression: 'value !== null and value !== ""',
+                        constraints: [
+                            new Assert\Length(
+                                min: $this->resolvePasswordMinLength(),
+                                minMessage: $this->translator->trans(
+                                    'user.validation.password_min_length',
+                                    [],
+                                    'user',
+                                ),
+                            ),
+                        ],
                     ),
                 ],
             ])

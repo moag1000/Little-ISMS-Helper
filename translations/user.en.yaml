@@ -118,8 +118,11 @@ user:
         tenant_help: 'Leave empty for Super Admin users without tenant binding'
         password_edit: 'Leave empty to keep current password'
         password: 'Minimum 8 characters, should contain uppercase and lowercase letters, numbers and special characters'
+        password_change: 'Minimum %min% characters. All characters allowed — letters, digits, symbols, umlauts, spaces, emoji. Leave empty to keep the current password.'
+        password_create: 'Minimum %min% characters. All characters allowed — letters, digits, symbols, umlauts, spaces, emoji. Optional with Azure authentication.'
     validation:
         avatar_format: 'Please upload a valid image (JPEG, PNG, GIF or WebP)'
+        password_min_length: 'The password must be at least {{ limit }} characters long.'
     auth_provider:
         local: 'Local Authentication'
     auth:
