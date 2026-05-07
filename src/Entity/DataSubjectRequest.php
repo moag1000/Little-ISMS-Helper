@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * GDPR Data Subject Request (Betroffenenantrag)
@@ -36,6 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_dsr_request_type', columns: ['request_type'])]
 #[ORM\Index(name: 'idx_dsr_deadline', columns: ['deadline_at'])]
 #[ORM\HasLifecycleCallbacks]
+#[Assert\Callback([self::class, 'validateResponseTracking'])]
 class DataSubjectRequest
 {
     public const array REQUEST_TYPES = [
@@ -189,22 +191,42 @@ class DataSubjectRequest
     private ?string $responseDescription = null;
 
     /**
-     * Reason for rejection (Art. 12(5): manifestly unfounded or excessive)
+     * Actual date/time the response was sent to the data subject (Art. 12(3))
      */
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $rejectionReason = null;
-
-    /**
-     * Reason for extending deadline (Art. 12(3): complexity, number of requests)
-     */
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $extensionReason = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $responseAt = null;
 
     /**
      * Extended deadline (Art. 12(3): receivedAt + 90 days max)
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $extendedDeadlineAt = null;
+
+    /**
+     * Reason for extending deadline (Art. 12(3): complexity, number of requests)
+     * Required when extendedDeadlineAt is set.
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $extensionReason = null;
+
+    /**
+     * File path or UUID of the response artefact (letter, email archive, portal export)
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $responseDocument = null;
+
+    /**
+     * Channel used to deliver the response (Art. 12(1): same format as request where possible)
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $responseMethod = null;
+
+    /**
+     * Reason for rejection (Art. 12(5): manifestly unfounded or excessive)
+     * Required when status = 'rejected'. Implies responseAt must also be set.
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $rejectionReason = null;
 
     // ============================================================================
     // Assignments & Relations
@@ -337,6 +359,62 @@ class DataSubjectRequest
     public function getDisplayName(): string
     {
         return sprintf('DSR-%d: %s', $this->id ?? 0, $this->dataSubjectName ?? 'Unknown');
+    }
+
+    /**
+     * Whether the response has been sent (responseAt is set).
+     */
+    public function isResponded(): bool
+    {
+        return $this->responseAt !== null;
+    }
+
+    /**
+     * Whether the deadline has been extended (extendedDeadlineAt is set).
+     */
+    public function isExtended(): bool
+    {
+        return $this->extendedDeadlineAt !== null;
+    }
+
+    /**
+     * Number of days since receivedAt; null if receivedAt is not set.
+     */
+    public function getDaysSinceReceived(): ?int
+    {
+        if (!$this->receivedAt instanceof \DateTimeImmutable) {
+            return null;
+        }
+        $diff = $this->receivedAt->diff(new \DateTimeImmutable());
+        return $diff->days;
+    }
+
+    /**
+     * Cross-field constraint: Art. 12(3) response tracking rules.
+     *
+     * - extendedDeadlineAt set → extensionReason required
+     * - responseAt set         → responseMethod required
+     * - rejectionReason set    → responseAt required (rejection is itself a response)
+     */
+    public static function validateResponseTracking(self $entity, ExecutionContextInterface $context): void
+    {
+        if ($entity->getExtendedDeadlineAt() !== null && empty($entity->getExtensionReason())) {
+            $context->buildViolation('dsr.error.extension_reason_required_when_extended')
+                ->atPath('extensionReason')
+                ->addViolation();
+        }
+
+        if ($entity->getResponseAt() !== null && empty($entity->getResponseMethod())) {
+            $context->buildViolation('dsr.error.response_method_required_when_responded')
+                ->atPath('responseMethod')
+                ->addViolation();
+        }
+
+        if (!empty($entity->getRejectionReason()) && $entity->getResponseAt() === null) {
+            $context->buildViolation('dsr.error.response_at_required_when_rejected')
+                ->atPath('responseAt')
+                ->addViolation();
+        }
     }
 
     // ============================================================================
@@ -499,6 +577,39 @@ class DataSubjectRequest
     public function setResponseDescription(?string $responseDescription): static
     {
         $this->responseDescription = $responseDescription;
+        return $this;
+    }
+
+    public function getResponseAt(): ?\DateTimeImmutable
+    {
+        return $this->responseAt;
+    }
+
+    public function setResponseAt(?\DateTimeImmutable $responseAt): static
+    {
+        $this->responseAt = $responseAt;
+        return $this;
+    }
+
+    public function getResponseDocument(): ?string
+    {
+        return $this->responseDocument;
+    }
+
+    public function setResponseDocument(?string $responseDocument): static
+    {
+        $this->responseDocument = $responseDocument;
+        return $this;
+    }
+
+    public function getResponseMethod(): ?string
+    {
+        return $this->responseMethod;
+    }
+
+    public function setResponseMethod(?string $responseMethod): static
+    {
+        $this->responseMethod = $responseMethod;
         return $this;
     }
 
