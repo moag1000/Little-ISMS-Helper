@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Asset;
+use App\Entity\BusinessProcess;
 use App\Entity\Incident;
 use App\Entity\Person;
 use App\Entity\User;
 use App\Enum\IncidentSeverity;
 use App\Enum\IncidentStatus;
+use App\Form\Trait\ModuleAwareFormTrait;
+use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -18,6 +21,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,6 +31,13 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class IncidentType extends AbstractType
 {
+    use ModuleAwareFormTrait;
+
+    public function __construct(
+        private readonly ModuleConfigurationService $moduleConfiguration,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -278,7 +289,127 @@ class IncidentType extends AbstractType
                     'data-controller' => 'tom-select',
                 ],
             ])
+
+            // ISO 27001 A.5.24-A.5.28 — always-active fields (T31.2.2)
+            ->add('incidentClassification', ChoiceType::class, [
+                'label' => 'incident.field.incident_classification',
+                'choices' => [
+                    'incident.classification.event' => 'event',
+                    'incident.classification.incident' => 'incident',
+                ],
+                'required' => false,
+                'placeholder' => 'incident.placeholder.classification',
+                'help' => 'incident.help.incident_classification',
+                'choice_translation_domain' => 'incident',
+            ])
+            ->add('containmentActions', TextareaType::class, [
+                'label' => 'incident.field.containment_actions',
+                'required' => false,
+                'attr' => ['rows' => 3, 'placeholder' => 'incident.placeholder.containment_actions'],
+                'help' => 'incident.help.containment_actions',
+            ])
+            ->add('evidencePreserved', CheckboxType::class, [
+                'label' => 'incident.field.evidence_preserved',
+                'required' => false,
+                'help' => 'incident.help.evidence_preserved',
+            ])
         ;
+
+        // DORA Art. 17-19 — gated on nis2_dora module (T31.2.2)
+        if ($this->isModuleActive('nis2_dora')) {
+            $builder
+                ->add('ictIncidentClassification', ChoiceType::class, [
+                    'label' => 'incident.field.ict_incident_classification',
+                    'choices' => [
+                        'incident.dora_classification.major' => 'major_ict_incident',
+                        'incident.dora_classification.significant' => 'significant_cyber_threat',
+                    ],
+                    'required' => false,
+                    'placeholder' => 'incident.placeholder.ict_classification',
+                    'help' => 'incident.help.ict_incident_classification',
+                    'choice_translation_domain' => 'incident',
+                ])
+                ->add('dataLossOccurred', CheckboxType::class, [
+                    'label' => 'incident.field.data_loss_occurred',
+                    'required' => false,
+                ])
+                ->add('dataLeakageOccurred', CheckboxType::class, [
+                    'label' => 'incident.field.data_leakage_occurred',
+                    'required' => false,
+                ])
+                ->add('economicImpact', NumberType::class, [
+                    'label' => 'incident.field.economic_impact',
+                    'required' => false,
+                    'scale' => 2,
+                    'attr' => ['placeholder' => 'incident.placeholder.economic_impact', 'min' => 0, 'step' => '0.01'],
+                    'help' => 'incident.help.economic_impact',
+                ])
+                ->add('reputationalImpact', ChoiceType::class, [
+                    'label' => 'incident.field.reputational_impact',
+                    'choices' => [
+                        'incident.impact.minimal' => 1,
+                        'incident.impact.minor' => 2,
+                        'incident.impact.moderate' => 3,
+                        'incident.impact.major' => 4,
+                        'incident.impact.severe' => 5,
+                    ],
+                    'required' => false,
+                    'placeholder' => 'incident.placeholder.reputational_impact',
+                    'choice_translation_domain' => 'incident',
+                ])
+                ->add('criticalServicesAffected', EntityType::class, [
+                    'label' => 'incident.field.critical_services_affected',
+                    'class' => BusinessProcess::class,
+                    'choice_label' => 'name',
+                    'multiple' => true,
+                    'required' => false,
+                    'help' => 'incident.help.critical_services_affected',
+                    'attr' => [
+                        'class' => 'form-select',
+                        'data-controller' => 'tom-select',
+                    ],
+                ])
+                ->add('recurringIncident', CheckboxType::class, [
+                    'label' => 'incident.field.recurring_incident',
+                    'required' => false,
+                ])
+                ->add('clientsAffected', IntegerType::class, [
+                    'label' => 'incident.field.clients_affected',
+                    'required' => false,
+                    'attr' => ['min' => 0],
+                ])
+                ->add('clientsAffectedFinancialVolume', NumberType::class, [
+                    'label' => 'incident.field.clients_affected_financial_volume',
+                    'required' => false,
+                    'scale' => 2,
+                    'attr' => ['min' => 0, 'step' => '0.01'],
+                    'help' => 'incident.help.clients_affected_financial_volume',
+                ])
+                ->add('replicationOfImpact', CheckboxType::class, [
+                    'label' => 'incident.field.replication_of_impact',
+                    'required' => false,
+                    'help' => 'incident.help.replication_of_impact',
+                ])
+                ->add('initialReportSubmittedAt', DateTimeType::class, [
+                    'widget' => 'single_text',
+                    'input' => 'datetime_immutable',
+                    'label' => 'incident.field.initial_report_submitted_at',
+                    'required' => false,
+                    'help' => 'incident.help.initial_report_submitted_at_dora',
+                ])
+                ->add('intermediateReportSubmittedAt', DateTimeType::class, [
+                    'widget' => 'single_text',
+                    'input' => 'datetime_immutable',
+                    'label' => 'incident.field.intermediate_report_submitted_at',
+                    'required' => false,
+                ])
+                ->add('dataRecoveryStrategy', TextareaType::class, [
+                    'label' => 'incident.field.data_recovery_strategy',
+                    'required' => false,
+                    'attr' => ['rows' => 3],
+                    'help' => 'incident.help.data_recovery_strategy',
+                ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
