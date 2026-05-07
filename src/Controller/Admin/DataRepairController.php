@@ -767,11 +767,24 @@ class DataRepairController extends AbstractController
                 'admin',
             ));
         } else {
-            $this->addFlash('error', $this->translator->trans(
-                'admin.data_repair.schema.migrations_failed',
-                ['%error%' => (string) $result['error']],
-                'admin',
-            ));
+            $diagnosis = $result['diagnosis'] ?? null;
+            if (is_array($diagnosis) && ($diagnosis['category'] ?? 'unknown') !== 'unknown') {
+                $this->addFlash('error', sprintf(
+                    '[%s] %s — %s%s',
+                    $diagnosis['category'],
+                    $diagnosis['message'] ?? '',
+                    $diagnosis['suggested_action'] ?? '',
+                    isset($diagnosis['offending_version']) && $diagnosis['offending_version'] !== null
+                        ? sprintf(' (offending: %s)', $diagnosis['offending_version'])
+                        : '',
+                ));
+            } else {
+                $this->addFlash('error', $this->translator->trans(
+                    'admin.data_repair.schema.migrations_failed',
+                    ['%error%' => (string) $result['error']],
+                    'admin',
+                ));
+            }
         }
 
         return $this->redirectToRoute('admin_data_repair_index');

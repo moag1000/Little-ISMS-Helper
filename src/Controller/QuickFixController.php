@@ -94,7 +94,17 @@ class QuickFixController extends AbstractController
         $result = $maintenance->executePendingMigrations('quick-fix');
 
         if (!$result['success']) {
-            $this->addFlash('error', sprintf('Migration failed: %s', $result['error'] ?? 'unknown error'));
+            $diagnosis = $result['diagnosis'] ?? null;
+            if (is_array($diagnosis) && ($diagnosis['category'] ?? 'unknown') !== 'unknown') {
+                $this->addFlash('error', sprintf(
+                    'Migration failed [%s]: %s — %s',
+                    $diagnosis['category'],
+                    $diagnosis['message'] ?? '',
+                    $diagnosis['suggested_action'] ?? '',
+                ));
+            } else {
+                $this->addFlash('error', sprintf('Migration failed: %s', $result['error'] ?? 'unknown error'));
+            }
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
