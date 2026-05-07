@@ -52,6 +52,9 @@ consent:
         status: 'Status'
         verified: 'Verified'
         revocation_reason: 'Revocation Reason'
+        withdrawn_at: 'Withdrawn At'
+        withdrawal_reason: 'Withdrawal Reason'
+        withdrawal_channel: 'Withdrawal Channel'
         created_at: 'Created At'
         updated_at: 'Updated At'
 
@@ -153,6 +156,22 @@ consent:
     warning:
         already_verified: 'This consent is already verified.'
         already_revoked: 'This consent is already revoked.'
+
+    # Withdrawal — GDPR Art. 7(3)
+    help:
+        withdrawn_at: 'Timestamp when consent was withdrawn by the data subject (GDPR Art. 7(3))'
+    placeholder:
+        withdrawal_reason: 'Optional: reason for withdrawal'
+        withdrawal_channel: 'Please select…'
+    withdrawal_channel:
+        web: 'Web Form'
+        email: 'Email'
+        phone: 'Phone'
+        letter: 'Letter'
+        in_person: 'In Person'
+    validation:
+        withdrawal_reason_required_when_withdrawn: 'Withdrawal requires a reason to be recorded.'
+        withdrawal_channel_required_when_withdrawn: 'Withdrawal requires the channel to be recorded.'
 
     # Sidebar contextual help
     sidebar:

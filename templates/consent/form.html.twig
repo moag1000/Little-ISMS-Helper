@@ -179,6 +179,31 @@
                         {% endblock %}
                     {% endembed %}
 
+                    {# Section 7: Withdrawal — GDPR Art. 7(3) #}
+                    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                        {% block card_header %}
+                            <div class="card-header bg-body-secondary">
+                                <h3 class="mb-0">
+                                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                    {{ 'consent.section.revocation'|trans({}, 'consent') }}
+                                </h3>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
+                            <div class="row">
+                                <div class="col-md-4">
+                                    {{ form_row(form.withdrawnAt) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_row(form.withdrawalChannel) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_row(form.withdrawalReason) }}
+                                </div>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
+
                     {# Form Actions #}
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
                         <a href="{{ form.vars.data.id ? path('app_consent_show', {id: form.vars.data.id}) : path('app_consent_index') }}"
