@@ -309,17 +309,17 @@ function initializeComparisonMappingButton() {
 
             if (result.success) {
                 // Show success message
-                alert(result.message);
+                window.faToast(result.message, 'success');
                 // Reload page to show updated mappings
                 window.location.reload();
             } else {
-                alert('{{ 'compliance.mapping_error.prefix'|trans({}, 'compliance') }}: ' + result.message);
+                window.faToast('{{ 'compliance.mapping_error.prefix'|trans({}, 'compliance') }}: ' + result.message, 'danger');
                 createMappingsBtn.disabled = false;
                 createMappingsBtn.textContent = '{{ 'compliance.mapping_status.button_text'|trans({}, 'compliance') }}';
             }
         } catch (error) {
             console.error('Error creating mappings:', error);
-            alert('{{ 'compliance.mapping_error.creating'|trans({}, 'compliance') }}: ' + error.message);
+            window.faToast('{{ 'compliance.mapping_error.creating'|trans({}, 'compliance') }}: ' + error.message, 'danger');
             createMappingsBtn.disabled = false;
             createMappingsBtn.textContent = '{{ 'compliance.mapping_status.button_text'|trans({}, 'compliance') }}';
         }

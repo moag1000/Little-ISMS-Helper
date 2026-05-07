@@ -131,7 +131,7 @@
                 btn.classList.add('btn-primary');
             }, 2000);
         }).catch(err => {
-            alert('{{ 'common.copy_failed'|trans({}, 'messages') }}: ' + err);
+            window.faToast('{{ 'common.copy_failed'|trans({}, 'messages') }}: ' + err, 'danger');
         });
     }
 

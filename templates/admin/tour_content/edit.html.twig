@@ -98,7 +98,10 @@
             <form method="post"
                   action="{{ path('admin_tour_content_reset', {tourId: tour_id}) }}"
                   class="d-inline"
-                  onsubmit="return confirm('{{ 'admin.tour_content.confirm_reset'|trans({}, 'admin')|e('js') }}');">
+                  data-controller="ui-actions"
+                  data-action="submit->ui-actions#confirm"
+                  data-ui-actions-message-param="{{ 'admin.tour_content.confirm_reset'|trans({}, 'admin') }}"
+                  data-ui-actions-tone-param="danger">
                 <input type="hidden" name="_token" value="{{ csrf_token('admin_tour_content_reset_' ~ tour_id) }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
                     <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>

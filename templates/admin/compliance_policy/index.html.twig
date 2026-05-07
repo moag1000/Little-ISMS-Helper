@@ -122,7 +122,10 @@
                     <div class="col-md-6">
                         <form method="post" action="{{ path('admin_compliance_policy_reset', {key: key}) }}"
                               class="d-flex gap-2 align-items-center"
-                              onsubmit="return confirm('{{ 'compliance_policy.reset.confirm'|trans({}, 'compliance_policy')|e('js') }}');">
+                              data-controller="ui-actions"
+                              data-action="submit->ui-actions#confirm"
+                              data-ui-actions-message-param="{{ 'compliance_policy.reset.confirm'|trans({}, 'compliance_policy') }}"
+                              data-ui-actions-tone-param="danger">
                             <input type="hidden" name="_token" value="{{ csrf_token('compliance_policy_reset_' ~ key) }}">
                             <span class="small text-truncate flex-grow-1" title="{{ key }}">
                                 <code>{{ key }}</code>

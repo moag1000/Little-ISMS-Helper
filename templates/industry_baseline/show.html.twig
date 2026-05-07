@@ -37,7 +37,10 @@
                     {{ 'industry_baseline.status.inherited'|trans({'%tenant%': inherited_record.tenant.name}, 'industry_baseline') }}
                 </span>
                 <form method="post" action="{{ path('app_industry_baseline_apply', {code: baseline.code}) }}"
-                      onsubmit="return confirm('{{ 'industry_baseline.confirm_apply_over_inherited'|trans({}, 'industry_baseline')|e('js') }}');">
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'industry_baseline.confirm_apply_over_inherited'|trans({}, 'industry_baseline') }}"
+                      data-ui-actions-tone-param="danger">
                     <input type="hidden" name="_token" value="{{ csrf_token('apply_baseline_' ~ baseline.code) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                         <i class="bi bi-rocket-takeoff" aria-hidden="true"></i>
@@ -46,7 +49,10 @@
                 </form>
             {% else %}
                 <form method="post" action="{{ path('app_industry_baseline_apply', {code: baseline.code}) }}"
-                      onsubmit="return confirm('{{ 'industry_baseline.confirm_apply'|trans({}, 'industry_baseline')|e('js') }}');">
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'industry_baseline.confirm_apply'|trans({}, 'industry_baseline') }}"
+                      data-ui-actions-tone-param="danger">
                     <input type="hidden" name="_token" value="{{ csrf_token('apply_baseline_' ~ baseline.code) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="bi bi-rocket-takeoff" aria-hidden="true"></i>
@@ -57,7 +63,10 @@
 
             {% if app.user and app.user.tenant and app.user.tenant.allSubsidiaries|length > 0 %}
                 <form method="post" action="{{ path('app_industry_baseline_apply_recursive', {code: baseline.code}) }}"
-                      onsubmit="return confirm('{{ 'industry_baseline.confirm_apply_recursive'|trans({'%count%': app.user.tenant.allSubsidiaries|length + 1}, 'industry_baseline')|e('js') }}');">
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'industry_baseline.confirm_apply_recursive'|trans({'%count%': app.user.tenant.allSubsidiaries|length + 1}, 'industry_baseline') }}"
+                      data-ui-actions-tone-param="danger">
                     <input type="hidden" name="_token" value="{{ csrf_token('apply_baseline_recursive_' ~ baseline.code) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                         <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>

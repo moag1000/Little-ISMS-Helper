@@ -33,14 +33,14 @@ export default class extends Controller {
         const tenantId = this.tenantSelectTarget.value;
 
         if (!tenantId) {
-            alert(this.selectTenantTextValue);
+            window.faToast(this.selectTenantTextValue, 'warning');
             return;
         }
 
         const tenantName = this.tenantSelectTarget.options[this.tenantSelectTarget.selectedIndex].text;
         const confirmMessage = `${this.confirmTextValue} "${tenantName}"?`;
 
-        if (!confirm(confirmMessage)) {
+        if (!await window.faConfirm(confirmMessage, { tone: 'danger' })) {
             return;
         }
 

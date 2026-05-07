@@ -18,7 +18,10 @@
             <p class="text-muted mb-0">{{ 'loader_fixer.page.lead'|trans({}, 'loader_fixer') }}</p>
         </div>
         <form method="post" action="{{ path('admin_loader_fixer_run_all') }}"
-              onsubmit="return confirm('{{ 'loader_fixer.confirm.all'|trans({}, 'loader_fixer')|e('js') }}');">
+              data-controller="ui-actions"
+              data-action="submit->ui-actions#confirm"
+              data-ui-actions-message-param="{{ 'loader_fixer.confirm.all'|trans({}, 'loader_fixer') }}"
+              data-ui-actions-tone-param="danger">
             <input type="hidden" name="_token" value="{{ csrf_token('loader_fixer_run_all') }}">
             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                 <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>

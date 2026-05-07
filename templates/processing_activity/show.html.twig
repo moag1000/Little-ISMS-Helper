@@ -281,9 +281,9 @@
     </form>
 
 <script>
-document.querySelector('[data-action="clone"]')?.addEventListener('click', (e) => {
+document.querySelector('[data-action="clone"]')?.addEventListener('click', async (e) => {
     e.preventDefault();
-    if (confirm('{{ 'processing_activity.confirm.clone'|trans({}, 'privacy') }}')) {
+    if (await window.faConfirm('{{ 'processing_activity.confirm.clone'|trans({}, 'privacy') }}')) {
         document.getElementById('cloneForm').submit();
     }
 });

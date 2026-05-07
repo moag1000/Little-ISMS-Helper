@@ -70,7 +70,7 @@ export default class extends Controller {
 
         const printWindow = window.open('', '', 'width=600,height=800');
         if (!printWindow) {
-            alert(window.translations?.mfa?.allow_popups || 'Please allow popups to print backup codes');
+            window.faToast(window.translations?.mfa?.allow_popups || 'Please allow popups to print backup codes', 'warning');
             return;
         }
 
@@ -266,7 +266,7 @@ export default class extends Controller {
             document.execCommand('copy');
             this.showFeedback(button, 'success', this.copiedTextValue);
         } catch (err) {
-            alert(this.copyFailedTextValue);
+            window.faToast(this.copyFailedTextValue, 'danger');
         }
 
         document.body.removeChild(textarea);

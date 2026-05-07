@@ -371,8 +371,8 @@ export default class extends Controller {
     }
 
     // Reset to defaults
-    resetToDefaults() {
-        if (confirm(window.translations?.dashboard?.confirm_reset || 'Do you want to reset the dashboard to default settings?')) {
+    async resetToDefaults() {
+        if (await window.faConfirm(window.translations?.dashboard?.confirm_reset || 'Do you want to reset the dashboard to default settings?', { tone: 'warn' })) {
             this.preferences = this.getDefaultPreferences();
             this.savePreferences();
             this.applyPreferences();
@@ -414,9 +414,9 @@ export default class extends Controller {
                 this.savePreferences();
                 this.applyPreferences();
 
-                alert(window.translations?.dashboard?.settings_imported || 'Dashboard settings successfully imported!');
+                window.faToast(window.translations?.dashboard?.settings_imported || 'Dashboard settings successfully imported!', 'success');
             } catch (error) {
-                alert(window.translations?.dashboard?.import_failed || 'Error importing settings. Please check the file.');
+                window.faToast(window.translations?.dashboard?.import_failed || 'Error importing settings. Please check the file.', 'danger');
             }
         };
         reader.readAsText(file);

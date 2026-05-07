@@ -244,8 +244,8 @@ export default class extends Controller {
         this.updateBadge();
     }
 
-    clearAll() {
-        if (confirm(window.translations?.notifications?.confirm_clear_all || 'Do you really want to delete all notifications?')) {
+    async clearAll() {
+        if (await window.faConfirm(window.translations?.notifications?.confirm_clear_all || 'Do you really want to delete all notifications?', { tone: 'danger' })) {
             this.notifications = [];
             this.saveNotifications();
             this.render();
