@@ -1,122 +1,57 @@
-{# Form Field Component - Bootstrap 5.3 Floating Labels with WCAG 2.1 AA compliance #}
+{# Form Field Component - Aurora v4 cyber-input via global form_theme
+
+   Delegates rendering to {{ form_row(field) }}, which routes through the
+   global form-theme `form/fa_cyber_input.html.twig` and produces the proper
+   Aurora frame (header + corner-ticks + glow). Tooltip icons render as
+   sidecar UI to keep the cyber-input frame clean.
+
+   Backward-compat: legacy params `label_key`, `help_key`, `tooltip_key`,
+   `translation_domain`, `required`, `automatic` are still accepted; their
+   semantics are preserved via attr-merging on the underlying form-row.
+#}
 
 {% set field_id = field.vars.id %}
-{% set field_name = field.vars.full_name %}
 {% set has_errors = field.vars.errors|length > 0 %}
 {% set is_required = required|default(field.vars.required) %}
-{% set field_type = field.vars.block_prefixes[1]|default('text') %}
 
-{# Support both new (label_key) and old (label) parameters for backward compatibility #}
 {% set trans_domain = translation_domain|default('messages') %}
-{% set label_text = label_key is defined ? (label_key|trans({}, trans_domain)) : (label|default('')) %}
 {% set help_text = help_key is defined ? (help_key|trans({}, trans_domain)) : (help|default(null)) %}
 {% set explicit_tooltip = tooltip_key is defined ? (tooltip_key|trans({}, trans_domain)) : (tooltip|default(null)) %}
-{# Use explicit tooltip if defined, otherwise fall back to help text as tooltip #}
 {% set is_automatic = automatic|default(false) %}
 {% set tooltip_text = explicit_tooltip ? explicit_tooltip : help_text %}
 {% if is_automatic and not explicit_tooltip %}
     {% set tooltip_text = 'form.automatic_value'|trans({}, 'messages') %}
 {% endif %}
 
-{# Build aria-describedby: combine help text ID and error ID when applicable #}
-{% set describedby_parts = [] %}
-{% if help_text %}
-    {% set describedby_parts = describedby_parts|merge([field_id ~ '_help']) %}
+{# Inject is-automatic class + aria-required + caller-supplied help into the
+   field's render-vars. The form-theme already handles base styling; we just
+   enrich the attrs and forward help-text into field.vars.help so the theme's
+   hint-line picks it up. #}
+{% set merged_attr = field.vars.attr|merge({
+    'class': (field.vars.attr.class|default('') ~ (is_automatic ? ' fairy-field-automatic' : ''))|trim,
+    'aria-required': is_required ? 'true' : 'false'
+}) %}
+{% set field_vars = {attr: merged_attr} %}
+{% if help_text and not (field.vars.help|default(null)) %}
+    {% set field_vars = field_vars|merge({help: help_text}) %}
 {% endif %}
-{% if has_errors %}
-    {% set describedby_parts = describedby_parts|merge([field_id ~ '_error']) %}
+
+{% if tooltip_text or is_automatic %}
+    {# Field with sidecar tooltip icon (Aurora cyber-frame + tooltip outside) #}
+    <div class="fa-cyber-input-row d-flex align-items-start gap-2">
+        <div class="flex-grow-1">
+            {{ form_row(field, field_vars) }}
+        </div>
+        <i class="bi {{ is_automatic ? 'bi-stars fairy-icon-sparkle' : 'bi-question-circle-fill text-primary' }} mt-2"
+           data-bs-toggle="tooltip"
+           data-bs-placement="right"
+           data-bs-html="true"
+           data-bs-title="{{ tooltip_text }}"
+           role="button"
+           tabindex="0"
+           aria-label="{{ is_automatic ? 'form.automatic_value'|trans({}, 'messages') : 'common.help'|trans({}, 'messages') }}"
+           style="cursor: help; font-size: 1.1em;"></i>
+    </div>
+{% else %}
+    {{ form_row(field, field_vars) }}
 {% endif %}
-{% set aria_describedby = describedby_parts|length > 0 ? describedby_parts|join(' ') : null %}
-
-{# Floating labels work for: text, email, password, number, textarea, select #}
-{# BUT NOT for expanded choice fields (radio/checkbox) #}
-{% set is_expanded = field.vars.expanded|default(false) %}
-{% set supports_floating = field_type in ['text', 'email', 'password', 'number', 'tel', 'url', 'search', 'textarea', 'choice'] and not is_expanded %}
-
-<div class="mb-3">
-    {% if supports_floating %}
-        {# Bootstrap Floating Label wrapper with tooltip outside #}
-        <div class="d-flex align-items-start gap-2">
-            <div class="form-floating flex-grow-1">
-                {# Input MUST come before label for floating effect #}
-                {# Use label_text (translated) as placeholder, override any existing placeholder #}
-                {% set placeholder_text = label_text %}
-                {% set merged_attrs = field.vars.attr|merge({
-                    'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : '') ~ (is_automatic ? ' fairy-field-automatic' : ''))|trim,
-                    'placeholder': placeholder_text,
-                    'aria-invalid': has_errors ? 'true' : 'false',
-                    'aria-describedby': aria_describedby,
-                    'aria-required': is_required ? 'true' : 'false'
-                }) %}
-                {{ form_widget(field, {
-                    'attr': merged_attrs
-                }) }}
-
-                {# Label comes AFTER input for floating labels #}
-                <label for="{{ field_id }}">
-                    {{ label_text }}
-                    {% if is_required %}
-                        <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
-                    {% endif %}
-                </label>
-            </div>
-            {# Tooltip icon OUTSIDE floating label for better accessibility #}
-            {% if tooltip_text or is_automatic %}
-                <i class="bi {{ is_automatic ? 'bi-stars fairy-icon-sparkle' : 'bi-question-circle-fill text-primary' }} mt-3"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="right"
-                   data-bs-html="true"
-                   data-bs-title="{{ tooltip_text }}"
-                   role="button"
-                   tabindex="0"
-                   aria-label="{{ is_automatic ? 'Automatisch ausgefüllt' : 'common.help'|trans({}, 'messages') }}"
-                   style="cursor: help; font-size: 1.1em;"></i>
-            {% endif %}
-        </div>
-    {% else %}
-        {# Fallback for non-floating fields (checkbox, radio, file, hidden) #}
-        <label for="{{ field_id }}" class="form-label">
-            {{ label_text }}
-            {% if is_required %}
-                <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
-            {% endif %}
-            {% if tooltip_text or is_automatic %}
-                <i class="bi {{ is_automatic ? 'bi-stars fairy-icon-sparkle' : 'bi-question-circle-fill text-muted' }} ms-1"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   data-bs-html="true"
-                   data-bs-title="{{ tooltip_text }}"
-                   role="button"
-                   tabindex="0"
-                   aria-label="{{ is_automatic ? 'Automatisch ausgefüllt' : 'common.help'|trans({}, 'messages') }}"
-                   style="cursor: help; font-size: 0.85em;"></i>
-            {% endif %}
-        </label>
-
-        {{ form_widget(field, {
-            'attr': {
-                'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
-                'aria-invalid': has_errors ? 'true' : 'false',
-                'aria-describedby': aria_describedby,
-                'aria-required': is_required ? 'true' : 'false'
-            }
-        }) }}
-    {% endif %}
-
-    {# Help text for screen readers (visually hidden, referenced by aria-describedby) #}
-    {% if help_text %}
-        <div id="{{ field_id }}_help" class="form-text visually-hidden">
-            {{ help_text }}
-        </div>
-    {% endif %}
-
-    {# Error messages with ARIA live region #}
-    {% if has_errors %}
-        <div id="{{ field_id }}_error" class="invalid-feedback d-block" role="alert" aria-live="assertive">
-            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-            {% for error in field.vars.errors %}
-                {{ error.message }}{% if not loop.last %}<br>{% endif %}
-            {% endfor %}
-        </div>
-    {% endif %}
-</div>
