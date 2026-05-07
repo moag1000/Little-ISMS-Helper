@@ -319,12 +319,15 @@ class DashboardStatisticsService
             ], true));
             $openIncidentCount = count($openIncidents);
         } else {
-            // Fallback for users without tenant (admin view)
-            // Super admin fallback: no tenant context, return empty/zero
+            // Fallback for users without tenant (admin view).
+            // Super admin: no tenant context, no scoped data. Return zeros
+            // consistently — the previous mix (assets=0, risks=findAll(),
+            // incidents=0) leaked cross-tenant counts into the risk KPI
+            // and made the dashboard inconsistent.
             $activeAssets = [];
             $assetCount = 0;
-            $allAccessibleRisks = $this->riskRepository->findAll();
-            $riskCount = count($allAccessibleRisks);
+            $allAccessibleRisks = [];
+            $riskCount = 0;
             $openIncidentCount = 0;
         }
 
@@ -365,13 +368,17 @@ class DashboardStatisticsService
     }
 
     /**
-     * Count critical assets (confidentiality value >= 4)
+     * Count critical assets (confidentiality value >= 4) across all tenants.
+     * Tenant-less fallback for super-admin view; pairs with countHighRisks().
      *
      * @return int Number of critical assets
      */
     private function countCriticalAssets(): int
     {
-        $activeAssets = [];
+        $activeAssets = array_filter(
+            $this->assetRepository->findAll(),
+            fn(Asset $asset): bool => $asset->isOperational()
+        );
 
         return count(array_filter(
             $activeAssets,
@@ -380,7 +387,8 @@ class DashboardStatisticsService
     }
 
     /**
-     * Count high-risk items (inherent risk level >= 12)
+     * Count high-risk items (inherent risk level >= 12) across all tenants.
+     * Tenant-less fallback for super-admin view; pairs with countCriticalAssets().
      *
      * @return int Number of high risks
      */
