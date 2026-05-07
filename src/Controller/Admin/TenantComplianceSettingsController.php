@@ -56,6 +56,11 @@ final class TenantComplianceSettingsController extends AbstractController
             'password_require_complexity' => $this->systemSettings->getSetting('security', 'password_require_complexity', 'true') === 'true',
             'password_rotation_days' => (int) $this->systemSettings->getSetting('security', 'password_rotation_days', 0),
             'session_timeout_minutes' => (int) $this->systemSettings->getSetting('security', 'session_timeout_minutes', 60),
+            // Tier-3 globals
+            'backup_schedule' => trim((string) $this->systemSettings->getSetting('backup', 'schedule_cron', '0 2 * * *'), '"'),
+            'backup_retention_days' => (int) $this->systemSettings->getSetting('backup', 'retention_days', 90),
+            'environment_label' => trim((string) $this->systemSettings->getSetting('deployment', 'environment_label', 'production'), '"'),
+            'telemetry_opt_in' => $this->systemSettings->getSetting('telemetry', 'opt_in', 'false') === 'true',
         ];
 
         return $this->render('admin/tenant_compliance_settings/edit.html.twig', [

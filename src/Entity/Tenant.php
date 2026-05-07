@@ -194,6 +194,9 @@ class Tenant
     #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'Crisis team on-call rotation entries (each: date, primary, deputy)'])]
     private ?array $crisisTeamOnCall = null;
 
+    #[ORM\Column(type: Types::INTEGER, nullable: true, options: ['default' => 600, 'comment' => 'API requests/minute per tenant (default 600 = 10/sec)'])]
+    private ?int $apiRateLimitPerMinute = 600;
+
     public function getBsiPhase(): ?string
     {
         return $this->bsiPhase;
@@ -660,4 +663,7 @@ class Tenant
 
     /** @param array<int, array{date: string, primary?: string, deputy?: string}>|null $rotation */
     public function setCrisisTeamOnCall(?array $rotation): static { $this->crisisTeamOnCall = $rotation; return $this; }
+
+    public function getApiRateLimitPerMinute(): ?int { return $this->apiRateLimitPerMinute; }
+    public function setApiRateLimitPerMinute(?int $limit): static { $this->apiRateLimitPerMinute = $limit; return $this; }
 }
