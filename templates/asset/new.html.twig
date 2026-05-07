@@ -33,7 +33,7 @@
                     },
                     'assignment': {
                         'label': 'asset.section.assignment'|trans({}, 'asset'),
-                        'fields': ['owner', 'location']
+                        'fields': ['ownerUser', 'ownerPerson', 'ownerDeputyPersons', 'owner', 'physicalLocation', 'dependsOn']
                     },
                     'financial': {
                         'label': 'asset.section.financial'|trans({}, 'asset'),
@@ -50,14 +50,22 @@
                     'policies': {
                         'label': 'asset.section.policies'|trans({}, 'asset'),
                         'fields': ['acceptableUsePolicy', 'handlingInstructions']
+                    },
+                    'ai_agent': {
+                        'label': 'asset.section.ai_agent'|trans({}, 'asset'),
+                        'fields': ['aiAgentClassification', 'aiAgentPurpose', 'aiAgentDataSources', 'aiAgentOversightMechanism', 'aiAgentProvider', 'aiAgentModelVersion', 'aiAgentCapabilityScope', 'aiAgentThreatModelDocId', 'aiAgentExtensionAllowlist']
                     }
                 },
                 'col_widths': {
                     'name': 6,
                     'assetType': 6,
                     'description': 12,
+                    'ownerUser': 6,
+                    'ownerPerson': 6,
+                    'ownerDeputyPersons': 12,
                     'owner': 6,
-                    'location': 6,
+                    'physicalLocation': 6,
+                    'dependsOn': 12,
                     'acquisitionValue': 6,
                     'currentValue': 6,
                     'dataClassification': 4,
@@ -67,7 +75,16 @@
                     'integrityValue': 4,
                     'availabilityValue': 4,
                     'acceptableUsePolicy': 12,
-                    'handlingInstructions': 12
+                    'handlingInstructions': 12,
+                    'aiAgentClassification': 6,
+                    'aiAgentProvider': 6,
+                    'aiAgentModelVersion': 6,
+                    'aiAgentOversightMechanism': 6,
+                    'aiAgentPurpose': 12,
+                    'aiAgentDataSources': 12,
+                    'aiAgentCapabilityScope': 12,
+                    'aiAgentExtensionAllowlist': 12,
+                    'aiAgentThreatModelDocId': 6
                 },
                 'tooltips': {
                     'acquisitionValue': 'asset.tooltip.acquisition_value',
