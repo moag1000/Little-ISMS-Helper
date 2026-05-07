@@ -145,6 +145,33 @@ class Tenant
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $nis2RegisteredAt = null;
 
+    // Tier-1 Compliance Settings (locale + audit-window + DPO + TLP + supervisory authorities + retention policies).
+    #[ORM\Column(length: 10, nullable: true, options: ['default' => 'de_DE'])]
+    private ?string $locale = 'de_DE';
+
+    #[ORM\Column(length: 50, nullable: true, options: ['default' => 'Europe/Berlin'])]
+    private ?string $timezone = 'Europe/Berlin';
+
+    #[ORM\Column(type: Types::SMALLINT, nullable: true, options: ['default' => 1, 'comment' => 'Financial year start month 1-12'])]
+    private ?int $financialYearStartMonth = 1;
+
+    #[ORM\Column(length: 16, nullable: true, options: ['default' => 'amber', 'comment' => 'TLP default for incident sharing: clear|green|amber|red'])]
+    private ?string $tlpDefault = 'amber';
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $dpoContactName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $dpoContactEmail = null;
+
+    /** @var array<string, array{name: string, email: string, phone?: string, scope?: string}>|null */
+    #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'Supervisory authorities map keyed by jurisdiction/role (BSI, BaFin, LDA, CSIRT-bund etc.)'])]
+    private ?array $supervisoryAuthorities = null;
+
+    /** @var array<string, array{years: int, basis?: string}>|null */
+    #[ORM\Column(type: Types::JSON, nullable: true, options: ['comment' => 'GDPR retention policies keyed by data category (e.g. crm, contracts, audit_evidence)'])]
+    private ?array $dataRetentionPolicies = null;
+
     public function getBsiPhase(): ?string
     {
         return $this->bsiPhase;
@@ -552,4 +579,36 @@ class Tenant
 
         return $ancestors;
     }
+
+    // Tier-1 Compliance Settings — getters/setters
+
+    public function getLocale(): ?string { return $this->locale; }
+    public function setLocale(?string $locale): static { $this->locale = $locale; return $this; }
+
+    public function getTimezone(): ?string { return $this->timezone; }
+    public function setTimezone(?string $timezone): static { $this->timezone = $timezone; return $this; }
+
+    public function getFinancialYearStartMonth(): ?int { return $this->financialYearStartMonth; }
+    public function setFinancialYearStartMonth(?int $month): static { $this->financialYearStartMonth = $month; return $this; }
+
+    public function getTlpDefault(): ?string { return $this->tlpDefault; }
+    public function setTlpDefault(?string $tlp): static { $this->tlpDefault = $tlp; return $this; }
+
+    public function getDpoContactName(): ?string { return $this->dpoContactName; }
+    public function setDpoContactName(?string $name): static { $this->dpoContactName = $name; return $this; }
+
+    public function getDpoContactEmail(): ?string { return $this->dpoContactEmail; }
+    public function setDpoContactEmail(?string $email): static { $this->dpoContactEmail = $email; return $this; }
+
+    /** @return array<string, array{name: string, email: string, phone?: string, scope?: string}>|null */
+    public function getSupervisoryAuthorities(): ?array { return $this->supervisoryAuthorities; }
+
+    /** @param array<string, array{name: string, email: string, phone?: string, scope?: string}>|null $authorities */
+    public function setSupervisoryAuthorities(?array $authorities): static { $this->supervisoryAuthorities = $authorities; return $this; }
+
+    /** @return array<string, array{years: int, basis?: string}>|null */
+    public function getDataRetentionPolicies(): ?array { return $this->dataRetentionPolicies; }
+
+    /** @param array<string, array{years: int, basis?: string}>|null $policies */
+    public function setDataRetentionPolicies(?array $policies): static { $this->dataRetentionPolicies = $policies; return $this; }
 }

@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'admin' %}
+
+{% block title %}{{ 'admin.tenant_settings.title'|trans }} — {{ tenant.name }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('admin_dashboard') }}">{{ 'admin.dashboard'|trans }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('admin_tenant_management_index') }}">{{ 'admin.tenants'|trans }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ 'admin.tenant_settings.title'|trans }}</li>
+        </ol>
+    </nav>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-1">{{ 'admin.tenant_settings.title'|trans }}</h1>
+            <p class="text-muted">{{ tenant.name }} — {{ 'admin.tenant_settings.subtitle'|trans }}</p>
+        </div>
+    </div>
+
+    {% for label, msgs in app.flashes %}
+        {% for msg in msgs %}
+            <div class="alert alert-{{ label }} mb-3">{{ msg|trans }}</div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            {% embed '_components/_card.html.twig' with {'class': 'border-0 shadow-sm'} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="card-title h5 mb-0">{{ 'admin.tenant_settings.section_tenant'|trans }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    {{ form_start(form) }}
+                    <div class="row g-3">
+                        <div class="col-md-6">{{ form_row(form.locale) }}</div>
+                        <div class="col-md-6">{{ form_row(form.timezone) }}</div>
+                        <div class="col-md-6">{{ form_row(form.financialYearStartMonth) }}</div>
+                        <div class="col-md-6">{{ form_row(form.tlpDefault) }}</div>
+                        <div class="col-md-6">{{ form_row(form.dpoContactName) }}</div>
+                        <div class="col-md-6">{{ form_row(form.dpoContactEmail) }}</div>
+                    </div>
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="bi bi-check2 me-1"></i>{{ 'admin.tenant_settings.save'|trans }}
+                        </button>
+                        <a href="{{ path('admin_tenant_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                            {{ 'admin.cancel'|trans }}
+                        </a>
+                    </div>
+                    {{ form_end(form) }}
+                {% endblock %}
+            {% endembed %}
+        </div>
+
+        <div class="col-lg-5 mb-4">
+            {% embed '_components/_card.html.twig' with {'class': 'border-0 shadow-sm'} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="card-title h5 mb-0">{{ 'admin.tenant_settings.section_global'|trans }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <p class="text-muted small">{{ 'admin.tenant_settings.global_help'|trans }}</p>
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th>{{ 'admin.tenant_settings.mfa_roles'|trans }}</th>
+                                <td><code>{{ globals.mfa_required_roles }}</code></td>
+                            </tr>
+                            <tr>
+                                <th>{{ 'admin.tenant_settings.password_min_length'|trans }}</th>
+                                <td>{{ globals.password_min_length }} {{ 'admin.tenant_settings.chars'|trans }}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ 'admin.tenant_settings.password_complexity'|trans }}</th>
+                                <td>
+                                    {% if globals.password_require_complexity %}
+                                        <span class="badge bg-success">{{ 'admin.tenant_settings.enforced'|trans }}</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">{{ 'admin.tenant_settings.disabled'|trans }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{{ 'admin.tenant_settings.password_rotation'|trans }}</th>
+                                <td>
+                                    {% if globals.password_rotation_days == 0 %}
+                                        <span class="text-muted">{{ 'admin.tenant_settings.no_rotation'|trans }}</span>
+                                    {% else %}
+                                        {{ globals.password_rotation_days }} {{ 'admin.tenant_settings.days'|trans }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>{{ 'admin.tenant_settings.session_timeout'|trans }}</th>
+                                <td>{{ globals.session_timeout_minutes }} {{ 'admin.tenant_settings.minutes'|trans }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a href="{{ path('app_system_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost btn-sm">
+                        <i class="bi bi-gear me-1"></i>{{ 'admin.tenant_settings.edit_globals'|trans }}
+                    </a>
+                {% endblock %}
+            {% endembed %}
+        </div>
+    </div>
+</div>
+{% endblock %}
