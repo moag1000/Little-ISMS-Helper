@@ -22,6 +22,7 @@ admin:
             corporate_structure: { label: 'Corporate structure', desc: 'Parent / subsidiary hierarchy' }
             locations: { label: 'Locations', desc: 'Physical sites for asset assignment' }
             tenant_branding: { label: 'Tenant branding', desc: 'Per-tenant email logos and senders' }
+            tenant_compliance_settings: { label: 'Compliance settings', desc: 'Locale, TLP, DPO, risk methodology, escalation, JSON defaults' }
             users: { label: 'Users', desc: 'Accounts, status, lockouts' }
             roles: { label: 'Roles', desc: 'Tenant roles and templates' }
             permissions: { label: 'Permissions', desc: 'Module × role permission matrix' }
@@ -794,6 +795,7 @@ kpi_threshold:
     tenant_settings:
         title: 'Compliance Settings'
         subtitle: 'Tier-1 compliance settings — locale, audit window, DPO contact, TLP, supervisory authorities, retention policies'
+        no_tenant_in_context: 'No tenant context active — please pick a tenant from the list first.'
         section_tenant: 'Tenant-specific'
         section_global: 'System defaults (all tenants)'
         global_help: 'Global security defaults — change via System Settings page.'
