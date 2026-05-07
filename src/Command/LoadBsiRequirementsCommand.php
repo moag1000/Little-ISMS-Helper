@@ -27,12 +27,12 @@ class LoadBsiRequirementsCommand
     {
         // Create or get BSI framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
-            ->findOneBy(['code' => 'BSI-Grundschutz']);
+            ->findOneBy(['code' => 'BSI_GRUNDSCHUTZ']);
         $isNew = !$framework instanceof ComplianceFramework;
         if ($isNew) {
             $framework = new ComplianceFramework();
         }
-        $framework->setCode('BSI-Grundschutz')
+        $framework->setCode('BSI_GRUNDSCHUTZ')
             ->setName('BSI IT-Grundschutz')
             ->setDescription('BSI IT-Grundschutz: Comprehensive IT security standard with building blocks (Bausteine) for organization, infrastructure, systems, and applications')
             ->setVersion('2023')
