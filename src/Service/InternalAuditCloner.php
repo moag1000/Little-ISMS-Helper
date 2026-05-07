@@ -95,7 +95,7 @@ final class InternalAuditCloner
 
         // Primary compliance framework relation — method name is
         // `setScopedFramework` in the current entity.
-        $primaryFramework = $source->getComplianceFramework();
+        $primaryFramework = $source->getScopedFramework();
         if ($primaryFramework instanceof ComplianceFramework
             && method_exists($clone, 'setScopedFramework')
         ) {
