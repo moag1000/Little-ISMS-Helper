@@ -16,76 +16,269 @@
 
 ---
 
-## 0. Decision Matrix — Section vs Standalone (post-rework)
+## 0. Decision Matrix v2 — Section vs Standalone (post-self-review)
 
 User feedback (2026-05-07): the DPO contribution must MERGE into the
 existing ISO 27001 / BSI / DORA / BCM policies wherever possible to
 avoid duplicate-document sprawl. Only the genuinely standalone
 privacy documents that have no ISMS twin remain on their own.
 
-The 16 documents enumerated in §2 are reclassified accordingly:
+This v2 matrix supersedes the v1 table after the self-review in
+`persona-reviews/09-dpo-self-review.md`. v1 mis-routed three rows
+(Lawful-Basis, Consent, Children's, Special-Category) into ISO host
+policies that don't fit either by audience or by self-contradiction
+with §8.1's A.5.34-suppression rule. v2 reverses those rows, adds
+five new rows (Cookie/ePrivacy, AI Act, Sectoral DPO mandate, DPO
+section-veto mechanic, Lead-DPA logic), and replaces "A.5.34
+suppressed" with "A.5.34 thin cross-reference host kept" so the ISO
+"shall maintain a topic-specific policy" wording (Cl. 5.2 +
+A.5.1) is satisfied without content duplication.
 
-| § | Privacy concern | Becomes | ISMS template touched |
-|---|---|---|---|
-| 2.1 | Privacy / Data-Protection Policy (top-level) | **section** in ISO Top-Level Policy (Cl. 5.2) — fallback to standalone if Konzern-CISO insists | Cl. 5.2 / ISMS.1.A4 |
-| 2.2 | RoPA Methodology | **STANDALONE** | — (governs how `ProcessingActivity` register is maintained) |
-| 2.3 | DPIA Methodology | **STANDALONE** | — (governs how `DPIA` module is used) |
-| 2.4 | Data-Subject-Rights Procedure | **STANDALONE** | — (governs `DataSubjectRequest` SLA) |
-| 2.5 | Data Breach Notification Procedure | **section** in ISO Incident Mgmt Policy + DORA Art. 19 procedure (already unified per §2.5 of original DPO doc) | A.5.24-A.5.28 / DORA Art. 19 |
-| 2.6 | Lawful-Basis Determination Methodology | **section** in ISO Acceptable Use + Information Classification | A.5.10, A.5.12 |
-| 2.7 | Consent Management Policy | **section** in ISO Information Classification (Consent records via existing module) | A.5.12 |
-| 2.8 | Joint-Controller Agreements Methodology | **section** in ISO Supplier Relationships Policy | A.5.19-A.5.22 |
-| 2.9 | DPA Template | **OUT-OF-SCOPE** — contract template, not a policy. Ship separately as a Document-Library entry. | A.5.20 (cross-ref only) |
-| 2.10 | International Transfers | **section** in ISO Information Transfer Policy | A.5.14 |
-| 2.11 | Retention & Deletion | **section** in ISO Backup + ISO Logging + lightweight standalone Retention-Schedule appendix | A.8.13, A.8.15 |
-| 2.12 | Privacy-by-Design Methodology | **section** in ISO Information Security in Project Management + ISO Secure Development | A.5.8, A.8.27 |
-| 2.13 | DPO Charter / Appointment | **STANDALONE** | — (role-charter, not topic-policy; Art. 38(3) independence) |
-| 2.14 | Privacy Training & Awareness | **section** in ISO HR Security Policy (training appendix) | A.6.3 |
-| 2.15 | Children's Data Policy *(conditional)* | **section** in ISO Privacy/PII Handling Policy + Special-Category Annex | A.5.34 |
-| 2.16 | Special-Category-Data Handling *(conditional)* | **section** in ISO Privacy/PII Handling Policy | A.5.34 |
+The 16 documents enumerated in §2 plus 5 newly surfaced concerns are
+classified accordingly:
 
-### Implementation impact
+| # | Privacy concern | v1 verdict | v2 verdict | Host / target |
+|---|---|---|---|---|
+| 1 (§2.1) | Privacy / Data-Protection Policy (top-level) | section in ISO Cl. 5.2 | **section in ISO Top-Level Policy (Cl. 5.2)** — kept | Cl. 5.2 / ISMS.1.A4. Auto-fallback to standalone when `dpo.is_group_dpo = true` OR `lead_supervisory_authority` crosses ≥ 2 jurisdictions (per self-review item 1) |
+| 2 (§2.5) | Data Breach Notification Procedure | section in ISO Incident Mgmt + DORA Art. 19 | **section in ISO Incident Mgmt + DORA Art. 19** — kept | A.5.24-A.5.28 / DORA Art. 19 (Reg. 2022/2554) / NIS2 Art. 23. Three notification-tracks as sub-sections under one host. Per-section ownership tag mandatory (CISO / DPO / DORA-officer) |
+| 3 (§2.6) | Lawful-Basis Determination Methodology | section in A.5.10 + A.5.12 | **STANDALONE — sub-procedure of RoPA Methodology** (REVERSED) | None. Lawful-basis attaches to processing activities (GDPR Art. 6/9/10), not to acceptable-use or classification. Bundled with §2.2 RoPA so the artefact authors (product owners, marketing, HR) read it where they decide on a new processing activity, not in an asset-classification policy |
+| 4 (§2.7) | Consent Management Policy | section in A.5.12 | **STANDALONE — sub-procedure of RoPA Methodology** (REVERSED) | None. Consent (GDPR Art. 7 + EDPB Guidelines 05/2020) is recorded against `ProcessingActivity` and against the existing `Consent` entity, not against information-classification labels. Co-located with §2.6 in the RoPA Methodology so authors see lawful-basis + consent decision-tree as one chapter |
+| 5 (§2.8) | Joint-Controller Agreements Methodology | section in A.5.19-A.5.22 | **section in ISO Supplier Relationships Policy** — kept | A.5.19-A.5.22. Art. 26 GDPR joint-controllership is structurally identical to A.5.19. Sub-section header must disambiguate "joint-controller (Art. 26)" vs. "processor (Art. 28)" |
+| 6 (§2.9) | DPA Template | OUT-OF-SCOPE | **OUT-OF-SCOPE** — kept | A.5.20 (cross-ref only). Ships as Document-Library file (RTF/DOCX), not as a generated policy. Phase 2 candidate for live-generator with `Supplier`-reuse |
+| 7 (§2.10) | International Transfers | section in A.5.14 | **section in ISO Information Transfer Policy** — kept (with scope-flag header) | A.5.14. Section pre-pended with header "Applies only when personal data crosses non-adequate jurisdictions" so non-EU auditors (US SOC 2, SG PDPA) can skip cleanly. Rendered conditionally on `privacy.international_transfers = true` |
+| 8 (§2.11 schedule) | Retention Schedule (matrix) | standalone appendix | **STANDALONE — Retention Schedule** kept | None. Operational matrix per data category. `retention_authority: 'schedule'` template flag enforces single-source-of-truth: A.8.13 + A.8.15 sections may *reference* the schedule but MUST NOT restate retention durations (CI lint gate per self-review concern 6) |
+| 9 (§2.11 mechanics) | Retention & Deletion mechanics | section in A.8.13 + A.8.15 | **section in A.8.13 (Backup) + A.8.15 (Logging) + A.8.10 (Deletion)** — kept | A.8.10, A.8.13, A.8.15. Sections describe mechanics (logical/physical/anonymisation). Durations live in §8 above. BSI `CON.6 Löschen und Vernichten` cross-references this row |
+| 10 (§2.12) | Privacy-by-Design Methodology | section in A.5.8 + A.8.27 | **section in ISO PM/SDLC** — kept | A.5.8, A.8.27, A.8.28. Project gate-entry + secure design-pattern selection. Most elegant fit in v1; no reversal needed |
+| 11 (§2.14) | Privacy Training & Awareness | appendix to A.6.3 | **appendix to A.6.3 ISO Awareness Programme** — kept (with bloat-watch) | A.6.3. Privacy-specific audience segments (HR, marketing, sub-processor-managers) appended to the parent. Phase 5 W6 polish: if appendix exceeds ~30% of parent length, promote to standalone per self-review item 9 |
+| 12 (§2.13) | DPO Charter / Appointment | STANDALONE | **STANDALONE** — kept | None (role-charter, GDPR Art. 37/38/39). Self-approval prohibition at §9.5 stays |
+| 13 (§2.2 + §2.6 + §2.7) | RoPA Methodology (now bundles Lawful-Basis + Consent) | STANDALONE | **STANDALONE — expanded to host §2.6 + §2.7 as sub-procedures** | None (governs `ProcessingActivity` + `Consent` modules). Document layout: §1 RoPA core (Art. 30) / §2 Lawful-Basis Determination (Art. 6/9/10 decision tree, BDSG §22/§24/§26 overlays) / §3 Consent Management (Art. 7 + 8, EDPB 05/2020, withdrawal procedure) |
+| 14 (§2.3) | DPIA Methodology | STANDALONE | **STANDALONE** — kept | None (governs `DataProtectionImpactAssessment` module). §1 introduction must explicitly delimit "DPIA = privacy-risk *to data subjects*; ISO 27005 = security risk *to organisation*" so it doesn't read as a duplicate-method per self-review item-2 critique |
+| 15 (§2.4) | Data-Subject-Rights Procedure | STANDALONE | **STANDALONE** — kept | None (governs `DataSubjectRequest` SLA, Art. 12(3) 1-month clock). No ISO equivalent |
+| 16 (§2.15) | Children's Data Policy *(conditional)* | section in A.5.34 | **APPENDIX to §2.1 Privacy Policy** (REVERSED) | Inside §2.1, which is itself a section in ISO Cl. 5.2. Resolves the v1 self-contradiction: §8.1 said A.5.34 is suppressed, so a "section in A.5.34" had no host. Conditional on `tenant.children_data = true`. Cross-tagged `iso27701:7.2.4`, `gdpr-art:8`, `bdsg-§:8` |
+| 17 (§2.16) | Special-Category-Data Handling *(conditional)* | section in A.5.34 | **APPENDIX to §2.1 Privacy Policy** (REVERSED) | Inside §2.1. Same fix as row 16. Conditional on `tenant.special_category_data = true` OR `tenant.criminal_data = true`. Cross-tagged `iso27701:7.2.2`, `gdpr-art:9,10`, `bdsg-§:22,24,26` |
+| 18 (host) | A.5.34 Privacy/PII Policy | suppressed entirely | **THIN 1-2 page cross-reference document** (REVERSED) | ISO 27001 A.5.34. ISO "shall maintain a topic-specific policy" wording demands a document at A.5.34. v2 keeps a thin host that lists where each privacy aspect lives (in Cl. 5.2 sections + 5 standalones). Resolves Conflict 1 in self-review (ISMS-Specialist wins on "policy must exist"; DPO wins on "content lives elsewhere via cross-reference"). BSI 200-2 "Verweis auf andere Dokumente" pattern legitimises this for BSI tenants too |
+| 19 (NEW) | Cookie / ePrivacy / TTDSG | not addressed | **OUT-OF-SCOPE — explicit row** | None. ePrivacy (Dir. 2002/58/EC, DE-TTDSG §§ 25-26) is a SEPARATE regulator (BNetzA in DE, not the DPA) with a SEPARATE consent model (cookie consent ≠ Art. 7 GDPR consent in scope). Wizard does NOT generate cookie-banner content, cookie-consent flows, or tracking-technology policy. Privacy Policy §2.1 carries a single disclaimer paragraph pointing to the tenant's separate cookie module |
+| 20 (NEW) | EU AI Act overlap | single paragraph in §2.12 PbD | **OUT-OF-SCOPE for v1 — defer to Phase 1-F separate addon** | None. EU AI Act (Reg. 2024/1689) Art. 26+27 deployer obligations + FRIA for high-risk systems have non-trivial documentary requirements. v1 keeps the §2.12 PbD cross-reference paragraph; Phase 1-F ships a parallel "AI Act Addon" wizard mirroring DORA's pattern. Decision matches self-review Phase-4 item 4 |
+| 21 (NEW) | Sectoral DPO mandate (Healthcare § 22 BDSG, FinServ DORA Art. 6.4 ICT-Risk-Mgmt-Function, Public-sector BDSG § 5/§ 6) | not addressed | **section in ISO HR Security A.6.3 + sectoral appendix in §2.13 DPO Charter** | A.6.3 (HR security) for the role-mandate; appendix in §2.13 Charter for the sector-specific tasks (§ 203 StGB medical-confidentiality extension; MaRisk AT 7.2 + DORA Art. 6(4) ICT-risk-management-function for FS; § 6(4) BDSG dismissal-protection for DE public bodies). Conditional on `tenant.sector ∈ {healthcare, financial, public_sector}`. Sectoral templates ship in Phase 5 sprint W6 polish |
+| 22 (NEW) | DPO independence carve-out at SECTION level | only at workflow level (§9) | **NEW MECHANIC — `dpo_section_required: true` flag** | All hosts that carry privacy-sections. See new §0.A below. Closes the self-review item-4 gap: when a privacy-section sits inside a CISO-owned host policy, Art. 38(3) is breached at the document level if the CISO can edit the section without DPO consent. v2 introduces a per-section approval gate so DPO can REJECT a privacy-section without forcing the entire host doc back to draft |
+| 23 (NEW) | Lead Supervisory Authority logic for multi-EU-state Konzern | implicit (one-stop-shop assumed) | **section in §2.13 DPO Charter (standalone) + tenant-setting `tenant.lead_supervisory_authority`** | None (charter section). Konzern with main establishment in DE (Art. 4(16)(a)) → BfDI or competent state-DPA as lead per Art. 56. Subsidiaries with independent decision-making in IE / FR / etc. carry their own leads; one-stop-shop applies per main-establishment, not per Konzern. `HierarchyOverrideValidator` resolves via `stricter_only`: subsidiary may register a SECOND lead DPA; cannot REMOVE the inherited one. Closes self-review missing-item 5 |
 
-The 16 privacy documents collapse into:
+### §0 Implementation Impact (v2)
 
-- **5 STANDALONE** documents (RoPA Methodology, DPIA Methodology, DSR
-  Procedure, DPO Charter, lightweight Retention-Schedule appendix).
-- **10 SECTIONS** added to existing ISO/DORA templates as
-  `{ section: 'privacy_addendum_<topic>' }` slots that the wizard
-  pre-populates ONLY when GDPR-scope is enabled in tenant settings.
-- **1 OUT-OF-SCOPE** (DPA Template — contract, ships via the
-  Document-Library, not the wizard).
+The 21 privacy concerns (16 from §2 + 5 new) collapse into:
+
+- **5 STANDALONE documents** (effective):
+  1. **DPO Charter** (§2.13) — standalone, with Lead-DPA logic section + sectoral mandate appendix
+  2. **RoPA Methodology** (§2.2) — standalone, hosting Lawful-Basis (§2.6) and Consent (§2.7) as sub-procedures (NEW: methodology now carries 2 extra sub-procedures vs. v1)
+  3. **DPIA Methodology** (§2.3) — standalone
+  4. **DSR Procedure** (§2.4) — standalone
+  5. **Retention Schedule** (§2.11 matrix) — standalone with `retention_authority: 'schedule'` SoT-flag
+  6. **Privacy Policy** (§2.1) — standalone-fallback when `dpo.is_group_dpo = true` OR multi-jurisdiction; otherwise section in ISO Cl. 5.2. Carries Children's (§2.15) and Special-Category (§2.16) as conditional appendices (NEW: 2 extra appendices vs. v1)
+
+  *Net standalone count: still 5 effective in single-jurisdiction case;
+  6 in multi-jurisdiction Konzern case (Privacy Policy promotes from
+  section to standalone). v1 was a flat 5; v2 is 5-or-6 depending on
+  tenant geometry. The "+1 sub-procedure-pair embedded in RoPA" + "+2
+  appendices in Privacy Policy" stay inside the existing 5 hosts —
+  they do NOT create new top-level documents.*
+
+- **8 SECTIONS** added to existing ISO/DORA hosts (was 10 in v1; -2 because Lawful-Basis + Consent moved out to RoPA standalone; -2 because Children's + Special-Category moved out to Privacy-Policy appendices; +2 because Sectoral DPO mandate added a section to A.6.3 + Lead-DPA section in DPO Charter is *internal* to a standalone, not a section in an ISO host):
+  - Privacy section in ISO Top-Level Policy (Cl. 5.2) — §2.1 (when not standalone)
+  - Breach-notification track in ISO Incident Mgmt Policy — §2.5
+  - Joint-Controllership in ISO Supplier Relationships Policy — §2.8
+  - International Transfers in ISO Information Transfer Policy — §2.10
+  - Retention mechanics in ISO Backup Policy (A.8.13) — §2.11
+  - Retention mechanics in ISO Logging Policy (A.8.15) — §2.11
+  - Privacy-by-Design in ISO PM/SDLC (A.5.8 + A.8.27) — §2.12
+  - Sectoral DPO mandate in ISO HR Security (A.6.3) — row 21
+
+- **1 APPENDIX** to ISO Awareness Programme — §2.14 Privacy Training (with promote-to-standalone trigger if appendix exceeds 30% of parent)
+- **1 THIN HOST** kept for ISO A.5.34 — 1-2 page cross-reference document (NEW vs. v1 which suppressed it entirely)
+- **2 OUT-OF-SCOPE rows** — §2.9 DPA Template (Document-Library file) + row 19 Cookie/ePrivacy (BNetzA-regulated)
+- **1 DEFERRED row** — row 20 AI Act overlap (Phase 1-F separate addon)
 
 The PolicyTemplate's `requiredVariables` list gets a
 `dpo_section_required: true` flag for any template that has a
 privacy-section. Body translation keys carry a
 `policy.<standard>.<topic>.v<n>.section.privacy_addendum` slot that
-the generator activates conditionally.
+the generator activates conditionally. NEW: any host with this flag
+gets a per-section approval state — see §0.A below.
 
 ISO 27701 PIMS (§3 below) remains a SEPARATE opt-in addon (parallel
-to DORA), generating PIMS-specific clause-coverage. PIMS adds 2-4
-standalone documents on top, NOT on top of GDPR-section integration.
+to DORA), generating PIMS-specific clause-coverage. PIMS adds 0
+additional Documents (clause-mapping metadata only); v2 keeps that
+unchanged.
 
-### Document-count revision (replaces §13 estimate)
+---
 
-With this collapse, the architecture's standards-coverage matrix
-(§3 of `05-architecture.md`) changes:
+## 0.A DPO Veto Mechanic — section-level approval gate
 
-| Tenant choice | Before (this rework) | After |
-|---|---|---|
-| ISO + GDPR-scope | ISO 24 + Privacy 16 = **40** | ISO 24 (with 10 sections) + Privacy 5 standalone = **29** |
-| ISO + DORA + GDPR | 40 + DORA 6 NEW = **46** | 29 + DORA 6 NEW = **35** |
-| ISO + BSI + DORA + GDPR + BCM | 47 + Privacy 16 = **63** | 47 + Privacy 5 standalone = **52** |
+> NEW in v2 to close self-review item 4 ("DPO independence carve-out at
+> the policy approval level"). Closes the regulatory gap where a
+> CISO-owned host policy could publish a privacy-section without DPO
+> consent, breaching Art. 38(3) GDPR at the document level.
+
+### 0.A.1 Template flag
+
+PolicyTemplate metadata gains a per-section flag:
+
+```yaml
+sections:
+  - key: privacy_addendum_<topic>
+    dpo_section_required: true     # NEW
+    owner_role: ROLE_DPO           # NEW (overrides host's owner_role for this section only)
+    approval_gate: dpo_sign_off    # NEW (sub-state in DocumentApprovalWorkflow)
+```
+
+A host PolicyTemplate may carry 0..n sections with the flag. If 0 →
+host workflow is unchanged. If ≥ 1 → host enters split-state mode.
+
+### 0.A.2 DocumentApprovalWorkflow split-state
+
+The existing `DocumentApprovalWorkflow` (per arch §9.1) gains a
+**per-section sub-state machine** when any section in the host
+carries `dpo_section_required: true`:
+
+```
+host states:    draft → ciso_review → privacy_section_gate → top_mgmt_signoff → published
+section states (per gated section):  draft → dpo_sign_off → approved
+```
+
+Transitions:
+
+1. `draft → ciso_review`: host prepared; CISO reviews non-privacy
+   content. Privacy-sections remain editable by their `owner_role`
+   (DPO) in parallel; CISO MAY NOT edit them.
+2. `ciso_review → privacy_section_gate`: CISO completes review.
+   Workflow waits for ALL gated sections to reach `approved`. If any
+   gated section is still in `draft`, host blocks at this state and
+   surfaces "awaiting DPO sign-off on §<key>" in the inbox.
+3. Per-section `draft → dpo_sign_off`: DPO opens the section editor;
+   sub-state advances on save. NO bulk button (per §9.3 carve-out).
+4. Per-section `dpo_sign_off → approved`: DPO signs off the section
+   individually. Other gated sections stay independent.
+5. `privacy_section_gate → top_mgmt_signoff`: triggered when ALL
+   gated sections in the host are `approved`. Top-Mgmt may then
+   bulk-approve from the inbox (§9.2 OK at host level).
+6. `top_mgmt_signoff → published`: as today.
+
+### 0.A.3 DPO rejection behaviour
+
+If DPO rejects a gated section at step 4:
+
+- **The privacy-section reverts to `draft`** (section sub-state only).
+- **The host document is marked `approved with privacy-section pending`** —
+  CISO-reviewed content stays approved, but host CANNOT reach
+  `published` until ALL gated sections re-reach `approved`.
+- **Other approved sections in the host are NOT invalidated.** If
+  the same host has 2 gated sections and DPO rejects only section A,
+  section B (already `approved`) stays `approved`.
+- **Top-Mgmt UI hides the host from the bulk-approve inbox** until
+  all gated sections re-reach `approved`. Surfaces in a separate
+  "Blocked by DPO" panel with rationale text.
+- **Audit trail:** `policy-approval` workflow gets a sub-workflow
+  `privacy-section-approval` per gated section. Each section
+  transition emits a `WorkflowStepCompletedEvent` with
+  `section_key` payload, so the audit-log shows per-section history
+  separate from host-level history.
+
+### 0.A.4 CISO edit-protection on gated sections
+
+CISO (and Top-Mgmt) accounts have **read-only access** to any section
+where `owner_role: ROLE_DPO`. Implementation: `DocumentSectionVoter`
+checks the section's `owner_role` against the user's roles at edit
+time. Even Top-Mgmt cannot bypass this — it's enforced at the
+authorization layer, not the workflow layer. Closes self-review
+concern 5 ("DPO veto travels with sections, or only with standalone?").
+
+### 0.A.5 Self-approval prohibition (preserves §9.5)
+
+The DPO Charter (§2.13, standalone) is the ONLY privacy doc where DPO
+is NOT in the approval chain. The Lead-DPA section + sectoral mandate
+appendix inside the Charter inherit this rule (sub-sections cannot
+self-approve their own role-charter). Pipeline stays:
+`prepared → top_mgmt_signoff → published`, with DPO listed only as
+the SUBJECT of the document. Art. 38(3) + 38(6) preserved.
+
+### 0.A.6 Migration & version-bump safety
+
+Per self-review concern 2 ("privacy section deletion on ISO template
+version bump"):
+
+- Migration script enforces `v(n).requiredVariables ⊇ v(n-1).requiredVariables`
+  for any flag ending in `_required` (including `dpo_section_required`).
+- Translation-key parity check at deploy: every
+  `policy.<standard>.<topic>.v<n>.section.privacy_addendum` key in
+  v(n-1) must exist in v(n) for both DE and EN locales.
+- CI gate: `php bin/console app:check-template-section-keys` runs
+  before any template version-bump migration. Fails if a
+  `dpo_section_required: true` flag is dropped or its translation
+  key vanishes.
+
+### 0.A.7 BSI tenant graceful degradation
+
+Per self-review concern 3 ("BSI-pure tenant — silent section vanish"):
+when `tenant.bsi_enabled = true` but `tenant.gdpr_scope = false`, all
+gated sections are suppressed AND the BSI CON.2 cross-reference page
+gracefully degrades to a "Datenschutz nicht im aktuellen
+Geltungsbereich" notice instead of broken links. The thin A.5.34 host
+(row 18) is still rendered but reads "GDPR-Anwendungsbereich nicht
+gesetzt — Aspekte werden bei Aktivierung ergaenzt" in BSI-pure
+tenants. Validation lives in `BsiPrivacyCrossReferenceValidator`.
+
+---
+
+### Document-count revision (replaces v1 estimate; informs `05-architecture.md` §3)
+
+> NOTE TO ORCHESTRATOR: this section describes the change for
+> `05-architecture.md` §3 but DOES NOT EDIT that file directly. The
+> Architect-Specialist applies the math during Phase 2-extension.
+
+v2 per-tenant doc-count formula:
+
+```
+total_docs = iso_topics
+           + bsi_deltas
+           + dora_new
+           + privacy_standalone(5 effective; +1 if Privacy Policy promotes)
+           + privacy_thin_host(1 if iso_enabled)
+           + bcm_governance
+           + methode_doc(1 if bsi_enabled)
+```
+
+Privacy contribution stays size-neutral vs. v1: -1 section (Lawful +
+Consent moved to standalone-RoPA-sub) -2 sections (Children + Special
+moved to Privacy-Policy appendices) +1 section (Sectoral DPO mandate
+in A.6.3) +1 section (Lead-DPA logic, but inside standalone Charter
+so doesn't count as ISO-host section) = -1 section. +1 thin host
+(A.5.34 was suppressed → now 1-2 page cross-reference). NET ZERO at
+the document-count level.
+
+| Tenant choice | v1 estimate | v2 estimate | Delta |
+|---|---|---|---|
+| ISO + GDPR-scope | 29 (24 ISO + 5 standalone) | 30 (24 ISO + 5 standalone + 1 thin A.5.34 host) | +1 |
+| ISO + DORA + GDPR | 35 (29 + 6 DORA-NEW) | 36 (30 + 6 DORA-NEW) | +1 |
+| ISO + BSI + DORA + GDPR + BCM | 52 (quintuple ceiling) | 51-52 (one less section embedded in ISO host vs v1; one new thin A.5.34 host = net zero or -1; ±1 tolerance per self-review math note that quintuple is "approximately right, off by ±2-4") | ~0 |
+
+The self-review's note that "v1 said 29, architecture said 30 — I
+forgot to count the top-level Cl. 5.2 policy" is now resolved: v2
+explicitly adds the thin-host row to the count.
 
 Translation-key authoring effort drops by ~30-35% for GDPR-scope
-tenants. Auditor experience improves (no separate "Privacy Policy"
-document floating next to the ISO Top-Level Policy — privacy is
-embedded where it belongs).
+tenants (unchanged from v1). Auditor experience improves: privacy is
+embedded in security where the relationships are structural;
+GDPR-distinct artefacts (RoPA, DPIA, DSR, Charter, Retention
+Schedule) stay standalone where regulators expect them; A.5.34 is
+satisfied by a thin cross-reference document instead of a phantom
+suppression.
 
 The rest of this report (§§ 1-15 below) is the original DPO
-specialist enumeration. Sections marked "[SECTION]" in the per-doc
-detail tables refer to the table above; sections marked "[STANDALONE]"
-keep their full per-document spec.
+specialist enumeration. Sections marked "[SECTION]" or "[STANDALONE]"
+in the per-doc detail tables refer to the v2 matrix above. Where v2
+reverses a v1 verdict (rows 3, 4, 16, 17, 18), the §2.x detail table
+should be read with the v2 routing in mind; the body content stays
+unchanged because the cross-mapping tags translate identically into
+either host.
 
 ---
 
@@ -996,3 +1189,10 @@ update, then Phase 3 persona reviews.*
   + 1 out-of-scope. Document-count drops 35-40% for GDPR-scope
   tenants. Architecture §3 + §13 to be updated accordingly in
   Phase 2-extension.
+- 2026-05-07 21:50 — Decision Matrix v2 per self-review (`09-dpo-self-review.md`).
+  Lawful-basis + Consent reversed to RoPA-Methodology sub-procedures (standalone).
+  Children's + Special-category reversed to Privacy-Policy appendices.
+  A.5.34 kept as thin cross-reference host (was suppressed).
+  Added: Cookie/ePrivacy out-of-scope, AI Act deferred to Phase 1-F,
+  Sectoral DPO mandate, DPO independence carve-out at section level,
+  Lead-DPA logic. New §0.A DPO Veto Mechanic specified.
