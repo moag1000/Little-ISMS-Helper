@@ -66,12 +66,31 @@ remains a separate addon (parallel to DORA, +2-4 docs).
 ### 4.1 Entities (new)
 
 ```
+PolicyAcknowledgement                    [P1 — Auditor: A.6.3 evidence]
+- id (PK)
+- tenant_id                 (FK Tenant, NOT NULL)
+- document_id               (FK Document, NOT NULL)
+- user_id                   (FK User, NOT NULL)
+- acknowledgedAt            (datetime_immutable)
+- acknowledgementMethod     (enum: 'web_click'|'email_token'|'training_pass'|'signed_pdf')
+- documentVersion           (string — captured at acknowledgement time so re-versions don't void)
+- ipAddress                 (string, nullable — audit trail)
+- UNIQUE (tenant_id, document_id, user_id, documentVersion)
+
+# Closes the auditor's predicted A.6.3 NC ("policy must be communicated
+# and acknowledged"). Wizard generates a CRON to push acknowledgement
+# requests for any Document with status=published whose required-
+# audience users haven't yet acknowledged.
+
 PolicyTemplate
 - id (PK)
 - key                       (string, unique, e.g. 'iso27001.access_control')
 - standard                  (enum: 'iso27001'|'bsi'|'dora'|'bcm22301'|'bsi200-4')
 - topic                     (string, e.g. 'access_control')
 - documentType              (enum: 'policy'|'programme'|'plan'|'procedure'|'methodology')
+- affectedFunctions         (json list — P1 Risk-Owner)
+                              # e.g. ['IT_OPERATIONS','HR'] for HR-Security policy.
+                              # drives Heads-of-Function review-batch step in §9.
 - normRef                   (string, e.g. 'A.5.15' / 'OPS.1.1.3' / 'Art. 9.4')
 - titleTranslationKey       (string)
 - bodyTranslationKey        (string, points at versioned key
@@ -91,13 +110,20 @@ WizardRun
 - id (PK)
 - tenant_id                 (FK Tenant, NOT NULL)
 - standardsAdopted          (json: ['iso27001','dora'] etc — drives template selection)
+- mode                      (enum: 'full'|'targeted'|'sandbox' — P1 ISB+UX)
+                              # 'targeted' = re-run subset; 'sandbox' = preview only, no persistence
+- targetedTopics            (json list, e.g. ['access_control','backup'] — P1 ISB)
+                              # null on full / sandbox runs
+- findingReference          (string, nullable — P1 ISB: link to Audit-Finding that triggered this run)
+- affectedFunctions         (json list of business-functions touched — P1 Risk-Owner)
+                              # populated from PolicyTemplate.affectedFunctions on every emitted doc
 - startedAt                 (datetime_immutable)
 - completedAt               (datetime_immutable, nullable)
 - startedByUser_id          (FK User)
 - step                      (string — current step key, e.g. 'organisation_scope')
 - inputs                    (json — full settings snapshot)
-- status                    (enum: 'in_progress'|'completed'|'cancelled'|'failed')
-- generatedDocumentIds      (json list of Document IDs created)
+- status                    (enum: 'in_progress'|'completed'|'cancelled'|'failed'|'sandbox')
+- generatedDocumentIds      (json list of Document IDs created — empty on sandbox)
 - errorMessage              (text, nullable)
 
 TenantPolicySetting
@@ -159,40 +185,72 @@ plus a kernel test exercising the public entry point.
 
 ## 6. Wizard Flow
 
-7 steps. UX-Specialist will validate ordering in Phase 3.
+7 steps in default mode plus targeted-re-run + sandbox modes (per
+Phase 3 ISB / UX feedback).
+
+### 6.1 Mode selector (gate before step 1)
+
+```
+Mode 1 · Full wizard          — first-time setup or major standards-change
+Mode 2 · Targeted re-run      — pick specific topics (e.g. 3 policies after
+                                a mid-year audit finding); skips most steps
+Mode 3 · Sandbox preview      — render generated docs without persisting, for
+                                CISO walkthrough or pre-audit dry-run.
+                                WizardRun.status='sandbox', no Documents created.
+```
+
+### 6.2 Default 7-step flow (Mode 1)
 
 ```
 Step 1 · Welcome + Standards
-        - Pick: ISO27001 / BSI / DORA-addon / BCM-coverage (checkboxes)
+        - Pick: ISO27001 / BSI / DORA-addon / GDPR-scope / BCM-coverage
         - Show preview: "this run will generate N documents"
         - Inheritance preview: "Konzern enforces these N values; you can tighten 5."
+        - Targeted re-run jump-off: "fix only specific policies?"
 
 Step 2 · Organisation & Scope
         - Legal name, scope statement, address(es)
         - Sites in scope (multi-pick from existing Location entity)
-        - Climate-change wording toggle (default ON for iso27001 from 2026)
+        - Climate-change wording — HARDCODED ON for ISO 27001 selection
+          (Amd. 1:2024 in force since Feb 2024). NOT a toggle. P1 — Auditor.
 
 Step 3 · Roles & Responsibilities
         - CISO / ISB, DPO, BCM-Officer, IT-Operations-Lead
         - Crisis-Team composition (only if BCM selected) — 5-7 roles
+        - Function-Owner designation per business-function (P1 Risk-Owner)
+          # Heads of Sales / Operations / R&D / HR with sign-off path
+          # in §9. PolicyTemplate.affectedFunctions drives the matrix.
         - Approval chain: top-management designation
+        - Self-approval guard: wizard refuses author and approver to be
+          the same user (P1 Junior — guard rail).
 
 Step 4 · Risk & Classification
-        - Risk appetite tier (1-5 scale)
+        - Risk appetite tier with EXPLICIT direction:
+          1 = very conservative (lowest tolerated risk),
+          5 = aggressive (highest tolerated risk).
+          Default 2 for KRITIS / regulated; 3 for Mittelstand-default.
+          P1 Junior — eliminates the "is 1 or 5 the safe end?" confusion.
         - Data classification scheme (3 vs 4 levels)
         - Schutzbedarf scheme (BSI-default 3 levels — only if BSI selected)
-        - Annex A applicability (re-uses existing SoA; pre-fills from baselines if loaded)
+        - Annex A applicability (re-uses existing SoA; pre-fills from
+          baselines if loaded). Industry-preset bundles surface here as
+          one-click defaults (Phase 4-C output IndustryPresetBundle).
+        - Review-interval HARD CAP at 24 months. Wizard refuses higher.
+          P1 Junior — guard rail.
 
 Step 5 · Operational Baselines
         - Crypto policy: allowed algorithms + key strengths
         - Backup: RPO target tier
         - Patch / vulnerability cadence (critical / high / medium SLA-h)
         - Continuity RTO targets per criticality tier (only if BCM)
-        - DORA-specific (only if DORA): entity type, significance,
-          competent authority, ICT-third-party concentration thresholds
+        - DORA-specific block (only if DORA): entity type, significance,
+          competent authority, ICT-third-party concentration thresholds.
+          UX recommendation: split as Step 5a (general) + Step 5b (DORA)
+          when DORA is enabled to avoid the "wizard within a wizard"
+          feel.
 
 Step 6 · Lifecycle & Cadence
-        - Default review interval (12 mo recommended)
+        - Default review interval (12 mo recommended; max 24 mo)
         - Per-policy override (advanced, collapsible)
         - Approver designation per document
         - Auto-publish: NEVER (forced false)
@@ -200,11 +258,40 @@ Step 6 · Lifecycle & Cadence
 
 Step 7 · Review & Generate
         - Read-only summary of all settings
-        - Hierarchy-conflict warnings (if any) blocking
+        - Hierarchy-conflict warnings (if any) blocking, with
+          jump-to-conflict anchor + "request override from
+          Konzern-CISO" escape valve (P1 UX)
         - Generate button — atomic transaction, all-or-nothing
         - Result page with document list, "Open Document" links, and
           ApprovalKickoff dispatch confirmation
+        - Sandbox mode: render preview docs, list at top "this run
+          was a sandbox; nothing was saved"
 ```
+
+### 6.3 Targeted-re-run flow (Mode 2 — P1 ISB)
+
+```
+Step 1 · Pick topics                 — checklist of existing PolicyTemplate
+                                       topics for this tenant. Up to 10.
+Step 2 · Optional finding reference  — paste Audit-Finding ID; surfaces in
+                                       audit log (P1 ISB: who triggered).
+Step 3 · Diff preview                — show what changes vs current approved
+                                       documents.
+Step 4 · Generate                    — only the picked topics regenerate.
+
+Skips Steps 2-6 of the default flow because settings are unchanged.
+Only the picked subset of documents is touched. Approval cascade
+applies only to changed sections.
+```
+
+### 6.4 Sandbox preview (Mode 3 — P1 UX)
+
+Same UI as full wizard but `WizardRun.status='sandbox'`. The
+DocumentGenerator runs in dry-mode: emits the rendered Markdown
+into the WizardRun's `inputs.preview` JSON field, NEVER persists
+Documents, NEVER updates SoA. Result page shows the would-be docs
+with a banner "Sandbox preview — nothing saved. Re-run in Full mode
+to commit." Sandbox runs are auto-purged after 7 days.
 
 **State persistence:** every step writes to `WizardRun.inputs` so a
 user can close the browser and resume. Cancel deletes the WizardRun
@@ -251,24 +338,57 @@ This means: load ISO 27001 at Konzern, every subsidiary gets the 24
 topic policies offered in their wizard. Konzern can pre-set 5 of
 them via Konzern-Defaults; the remaining 19 are tochter-specific.
 
-### 7.3 Override-mode matrix per setting key (sample — full list in code):
+### 7.3 Override-mode matrix per setting key (sample — full list in code)
+
+Mode names per ISB-Practitioner review (clearer than v1):
+
+- `forbidden_to_change` — child cannot modify in any direction
+- `forbidden_to_relax` — child can tighten, never loosen (most settings)
+- `floor_only` — child value must be ≥ parent (e.g. crypto-key-length)
+- `ceiling_only` — child value must be ≤ parent (e.g. review-interval-months)
+- `free` — child fully autonomous
 
 | Setting | Konzern level | Subsidiary override |
 |---|---|---|
-| Risk appetite tier | parent_max | stricter_only (lower number = more conservative) |
-| Backup RPO | parent_min | stricter_only (smaller = stricter) |
-| Review interval months | parent_max | stricter_only (smaller = more frequent) |
-| Cryptography minimum-key | parent_min | broader_only (longer key OK) |
-| Crisis-team size | — | free (subsidiary may differ from parent) |
-| Approval-chain top-mgmt | parent_value | forbidden_to_override (one source of truth) |
+| Risk appetite tier | parent_max | ceiling_only (numerically lower = more conservative) |
+| Backup RPO (hours) | parent_min | ceiling_only (smaller = stricter) |
+| Review interval months | parent_max | ceiling_only (smaller = more frequent) |
+| Cryptography minimum-key | parent_min | floor_only (longer key OK) |
+| Crisis-team size | — | free (subsidiary may differ) |
+| Approval-chain top-mgmt | parent_value | forbidden_to_change (one source of truth) |
+| GDPR-scope flag | parent_value | forbidden_to_relax (child must keep, may extend) |
 
 `HierarchyOverrideValidator` runs at every settings save and on
 wizard's Step 7 review pass. Conflicts surface as blocking errors
 with a copy-pasteable "ask Konzern-CISO to relax X" message.
 
+### 7.4 Konzern-Defaults wizard variant + push-down trigger (P1 ISB+CISO)
+
 Konzern-CISO has a separate "Konzern-Defaults" wizard variant that
-sets baseline values; reads existing tenant-tree, prompts which
-subsidiaries to push the baseline down to.
+sets baseline values; reads the existing tenant-tree and prompts
+which subsidiaries to push the baseline down to.
+
+**New: push-down trigger.** When the Konzern-Defaults wizard updates
+a `TenantPolicySetting` value at parent level:
+
+1. Resolver walks the descendant tenants.
+2. For each descendant whose own setting is now ineffective per the
+   override-mode matrix (e.g. parent raised crypto floor from 128 to
+   256 — descendant's 192 violates `floor_only`), emit:
+   - A blocking-state badge `settings_drift_detected` on that
+     subsidiary's wizard landing page.
+   - An Alva-Hint Tier-1 in the descendant's CISO inbox: "Konzern-
+     CISO raised the crypto floor from 128 to 256 bit on
+     <date>. Affected policies: 3. Re-run wizard now?"
+   - A `KonzernPushDown` event in the audit log.
+3. Descendant tenant runs Wizard Mode 2 (targeted re-run) on the
+   affected policies; the Alva-Hint click pre-selects the affected
+   topic list.
+
+This closes the ISB-Practitioner gap "CISO raised crypto from
+128→256 bit, propagate to 4 subsidiaries". Without push-down,
+Konzern-Defaults is just a settings UI; with it, the cascade
+becomes operational.
 
 ## 8. SoA + Control Integration — bidirectional
 
@@ -441,10 +561,15 @@ can demand different approval chains than a small subsidiary.
   1. `prepared` (auto, by wizard)
   2. `ciso_review` (CISO / ISB)
   3. `dpo_cross_check` (only for Privacy / Personal-Data policies)
-  4. `top_mgmt_signoff` (ISO Cl. 5.2 mandatory for the top-level
+  4. `function_owner_review` (only when `PolicyTemplate.affectedFunctions`
+     is non-empty — P1 Risk-Owner)
+     # Heads-of-Function review-batch step. Each named function-owner
+     # gets the policies in their domain queued in their own inbox.
+     # They can ack, raise objection (sends back to CISO), or delegate.
+  5. `top_mgmt_signoff` (ISO Cl. 5.2 mandatory for the top-level
      Information Security Policy; configurable for topic-specific
      policies — see §9.3)
-  5. `published` (sets Document.status, isImmutable=true)
+  6. `published` (sets Document.status, isImmutable=true)
 
 - Auto-progression triggers exist via the existing
   `WorkflowAutoProgressionService` — when an approver clicks "Approve"
@@ -469,16 +594,45 @@ wizard run produces the full ISO+BSI+BCM+DORA bundle. Solution: a
   - `wizard_run` (so the GF sees "the 25 docs from the
     Q3-2026 ISO-update wizard run")
   - or `standard` (so the GF sees "all 12 BCM docs together")
+  - or `affected_function` (P1 Risk-Owner — so a Function-Owner can
+    filter the inbox to "policies that touch HR")
 - Per-row checkbox + "Approve selected" + "Reject selected" + a
   shared "rationale" textarea.
-- Single workflow-instance transition per Document but ONE
-  audit-log group entry per batch ("Top-management approved 25
-  policies in bulk on 2026-09-30; rationale: …"). Drives auditor-
-  legible evidence trail.
+- Workflow-instance transition fires PER document but ONE audit-log
+  group entry per batch ("Top-management approved 25 policies in
+  bulk on 2026-09-30; rationale: …") AND per-document log entries
+  guaranteed in addition to the batch reference (P1 Auditor + ISB
+  granularity guarantee).
 - Detail-view link per row for cases where the GF wants to dive in.
-- 4-eye-principle option: tenant-setting `bulk_approval_dual_signoff`
-  forces a SECOND top-management role to bulk-confirm before
-  publish. Default OFF.
+
+### 9.2.1 Audit-defangs (P1 Auditor — hardcoded defaults)
+
+Four mandatory bulk-approval restrictions (cannot be turned off via
+TenantApprovalConfig — they are hardcoded floor):
+
+1. **Top-level Information Security Policy is EXCLUDED from bulk
+   batches.** ISO Cl. 5.1 leadership-commitment evidence demands
+   ceremonial individual sign-off. The Cl. 5.2 top-level policy
+   always lands in its own approval flow.
+2. **Dual-signoff DEFAULT-ON for regulated scope.** Tenants whose
+   `tenant.regulated_scope` includes any of {DORA, NIS2, KRITIS,
+   BaFin-supervised} get `bulk_approval_dual_signoff=true` enforced.
+   Override requires SUPER_ADMIN + audit-log entry.
+3. **Batch cap ≤10 documents.** Larger wizard-runs split into
+   multiple batches, each individually approved. Prevents auditor
+   challenge "GF rubber-stamped 47 docs in 3 minutes".
+4. **Mandatory rationale ≥200 characters.** Empty / trivial rationales
+   block submit. Encourages real engagement.
+
+### 9.2.2 Function-Owner ack before bulk-approval (P1 Risk-Owner)
+
+When the bulk batch contains policies whose `affectedFunctions` lists
+business-functions, the affected Function-Owners must complete their
+`function_owner_review` step BEFORE the batch can advance to
+`top_mgmt_signoff`. The bulk inbox shows "5 of 25 policies await
+Function-Owner sign-off — Sales / Operations / HR" as a blocking
+warning. GF cannot batch-approve those 5 until the Function-Owners
+have weighed in.
 
 ### 9.3 Configurability per tenant
 
@@ -570,15 +724,36 @@ Every specialist flagged the same risk: auto-generated policies feel
 1. **3 mandatory tailoring fields** per topic policy (BSI requirement,
    ISO best practice). Wizard refuses to mark `status=ready_for_review`
    until each field has tenant-specific text.
-2. **Variable-substitution markers** stay visible in the rendered
-   document: `{{ tenant.legal_name }}` becomes `MyCompany GmbH` but the
-   original variable name appears in a footer comment for transparency.
+2. **Variable-substitution markers HIDDEN by default** (P1 Auditor
+   override of v1): `{{ tenant.legal_name }}` substitutes to
+   `MyCompany GmbH` and the original variable name does NOT appear in
+   the rendered document. Auditors read leftover `{{ }}` markers as
+   amateurish; visible variable names suggest "this came from a
+   template machine". A separate machine-readable manifest
+   (`document.substitutionVariables` JSON) records the source of each
+   substitution for the audit trail. Optionally, an admin-only
+   "show variable map" view annotates the rendered policy in-place
+   for internal QA — but this view never reaches the auditor.
 3. **No silent template updates**: when PolicyTemplate.version
    increments, all draft documents flagged for re-review explicitly.
 4. **Exercise / evidence prompts**: BCM-Wizard auto-creates 12 months
    of `BCExercise` records (closes ISO 22301 Cl. 8.6 audit-trap).
    ISMS-Wizard auto-creates an Internal-Audit-Programme schedule.
 5. **No auto-publish, ever.** Hard-coded.
+6. **Generation-to-approval minimum elapsed time** (P1 Auditor): the
+   earliest a Document can transition to `top_mgmt_signoff` is
+   `generated_at + 24 hours` (configurable per tenant; default 24h
+   for regulated scope, 4h otherwise). Prevents the "approved within
+   seconds of generation" tell.
+7. **Random sampling on render** (P1 Auditor): 1-in-10 generated
+   documents get a post-substitution validator pass that checks for
+   any leftover `{{ }}` markers. Validator failure blocks publish
+   and emits an Alva-Hint to the wizard-initiator.
+8. **PolicyAcknowledgement-coverage Alva-Hint** (P1 Auditor — closes
+   A.6.3 NC): for every published policy with a non-empty
+   `requiredAudience` list, an Alva-Hint surfaces when the
+   acknowledgement-coverage drops below configurable threshold
+   (default 95%).
 
 ## 12. Sector-Overlay & Edge Cases
 
