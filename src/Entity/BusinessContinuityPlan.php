@@ -212,6 +212,32 @@ class BusinessContinuityPlan
     private ?array $requiredResources = null;
 
     /**
+     * Response team members — structured list per ISO 22301 §8.5.3
+     * [{role: 'incident_commander|comms_lead|recovery_lead|technical_lead', userId: int|null, name: string, contact: string, responsibilities: string}, ...]
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
+    private ?array $responseTeamMembers = null;
+
+    /**
+     * Escalation levels — BSI 200-4 §6.2
+     * [{level: 1|2|3, trigger: string, responder: string, escalateAfter: '15min'|'1h'|...}, ...]
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['bc_plan:read', 'bc_plan:write'])]
+    private ?array $escalationLevels = null;
+
+    /**
+     * Crisis teams assigned to this plan — bidirectional ISO 22301 §8.4.2
+     *
+     * @var Collection<int, CrisisTeam>
+     */
+    #[ORM\ManyToMany(targetEntity: CrisisTeam::class, inversedBy: 'bcPlans')]
+    #[ORM\JoinTable(name: 'bc_plan_crisis_team')]
+    #[Groups(['bc_plan:read'])]
+    private Collection $crisisTeams;
+
+    /**
      * Critical suppliers for this plan
      */
     #[ORM\ManyToMany(targetEntity: Supplier::class)]
@@ -282,6 +308,7 @@ class BusinessContinuityPlan
         $this->criticalAssets = new ArrayCollection();
         $this->documents = new ArrayCollection();
         $this->planOwnerDeputyPersons = new ArrayCollection();
+        $this->crisisTeams = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -708,6 +735,53 @@ class BusinessContinuityPlan
         }
 
         return $this->nextReviewDate < new DateTime();
+    }
+
+    public function getResponseTeamMembers(): ?array
+    {
+        return $this->responseTeamMembers;
+    }
+
+    public function setResponseTeamMembers(?array $responseTeamMembers): static
+    {
+        $this->responseTeamMembers = $responseTeamMembers;
+        return $this;
+    }
+
+    public function getEscalationLevels(): ?array
+    {
+        return $this->escalationLevels;
+    }
+
+    public function setEscalationLevels(?array $escalationLevels): static
+    {
+        $this->escalationLevels = $escalationLevels;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CrisisTeam>
+     */
+    public function getCrisisTeams(): Collection
+    {
+        return $this->crisisTeams;
+    }
+
+    public function addCrisisTeam(CrisisTeam $crisisTeam): static
+    {
+        if (!$this->crisisTeams->contains($crisisTeam)) {
+            $this->crisisTeams->add($crisisTeam);
+            $crisisTeam->addBcPlan($this);
+        }
+        return $this;
+    }
+
+    public function removeCrisisTeam(CrisisTeam $crisisTeam): static
+    {
+        if ($this->crisisTeams->removeElement($crisisTeam)) {
+            $crisisTeam->removeBcPlan($this);
+        }
+        return $this;
     }
 
     /**
