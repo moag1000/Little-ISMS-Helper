@@ -424,14 +424,19 @@ uses `v2`-prefixed keys. Documents already approved keep referencing
 ## 9. Approval Workflow
 
 Reuses the existing `Workflow` + `WorkflowInstance` machinery (no new
-state machine).
+state machine). The flow is **per-tenant configurable** so a Konzern
+can demand different approval chains than a small subsidiary.
 
-- New workflow type: `policy-approval`
-- Steps:
+### 9.1 Default pipeline
+
+- Workflow type: `policy-approval`
+- Steps (override-able per tenant):
   1. `prepared` (auto, by wizard)
-  2. `cisos-review` (CISO / ISB)
-  3. `dpo-cross-check` (only for Privacy / Personal-Data policies)
-  4. `top-management-signoff` (Cl. 5.2 mandatory)
+  2. `ciso_review` (CISO / ISB)
+  3. `dpo_cross_check` (only for Privacy / Personal-Data policies)
+  4. `top_mgmt_signoff` (ISO Cl. 5.2 mandatory for the top-level
+     Information Security Policy; configurable for topic-specific
+     policies — see §9.3)
   5. `published` (sets Document.status, isImmutable=true)
 
 - Auto-progression triggers exist via the existing
@@ -442,8 +447,98 @@ state machine).
   initiator user.
 
 - DE-specific: works-council consultation gate for HR / Logging /
-  Physical-Security policies before `top-management-signoff` can
-  fire. Configurable per tenant; default ON in DE locale.
+  Physical-Security policies before `top_mgmt_signoff` can fire.
+  Configurable per tenant; default ON in DE locale.
+
+### 9.2 Bulk-Approval for top-management
+
+Top-management does NOT want to click "Approve" 25 times when a fresh
+wizard run produces the full ISO+BSI+BCM+DORA bundle. Solution: a
+**Bulk-Approval-Inbox** view filtered by `pending: top_mgmt_signoff`.
+
+- Route: `/admin/policy-approval-inbox` (admin/manager-scoped).
+- Lists every Document currently in step `top_mgmt_signoff` for the
+  tenant, grouped by:
+  - `wizard_run` (so the GF sees "the 25 docs from the
+    Q3-2026 ISO-update wizard run")
+  - or `standard` (so the GF sees "all 12 BCM docs together")
+- Per-row checkbox + "Approve selected" + "Reject selected" + a
+  shared "rationale" textarea.
+- Single workflow-instance transition per Document but ONE
+  audit-log group entry per batch ("Top-management approved 25
+  policies in bulk on 2026-09-30; rationale: …"). Drives auditor-
+  legible evidence trail.
+- Detail-view link per row for cases where the GF wants to dive in.
+- 4-eye-principle option: tenant-setting `bulk_approval_dual_signoff`
+  forces a SECOND top-management role to bulk-confirm before
+  publish. Default OFF.
+
+### 9.3 Configurability per tenant
+
+A new `TenantApprovalConfig` (single row per tenant or stored as a
+TenantPolicySetting under `policy.approval_config` key) carries:
+
+| Setting | Default | Meaning |
+|---|---|---|
+| `topLevelPolicyApprovers` | `['ROLE_TOP_MGMT']` | ISO Cl. 5.2 mandates top-mgmt; override only via SUPER_ADMIN |
+| `topicPolicyApprovers` | `['ROLE_CISO']` | most tenants: CISO sign-off enough for topic-policies |
+| `topicPolicyEscalationToTopMgmt` | `false` | bigger Konzerne flip this to `true` |
+| `dpoCrossCheckRequired` | `auto` (`true` for Privacy/PII templates) | force-on for healthcare etc. |
+| `worksCouncilGate` | `auto` (DE locale) | DE-specific |
+| `reviewWithoutChangesAutoCompletes` | `true` | see §9.4 |
+| `bulkApprovalDualSignoff` | `false` | 4-eye for bulk |
+
+Konzern-CISO can pre-set these at parent-level; subsidiaries inherit
+and can only TIGHTEN (e.g. parent says CISO-only, subsidiary may
+escalate to Top-Mgmt; subsidiary may NOT relax to "auto-publish").
+
+### 9.4 Review without changes — fast-path
+
+Annual-review CRON marks each Document as `review_due` 30d before the
+next-review-date. The reviewer (default: CISO) opens the Document and
+either:
+
+- **No change needed** → click "Confirm review — no change required".
+  System:
+  1. Increments `Document.lastReviewedAt`.
+  2. Recomputes `nextReviewDate` from cadence.
+  3. Records a `review_no_change` log entry (signed by CISO).
+  4. **Does NOT trigger the full approval pipeline.** GF stays out
+     of the loop. Document remains `approved` and `isImmutable=true`.
+  This matches §9.3 setting `reviewWithoutChangesAutoCompletes=true`.
+
+- **Changes needed** → click "Edit". Document is cloned to a new
+  draft (existing supersedes-link), the original stays approved and
+  read-only, and the new draft enters the FULL approval pipeline
+  (CISO → DPO-cross-check if applicable → Top-Mgmt → published).
+
+If a tenant flips `reviewWithoutChangesAutoCompletes=false`, even
+no-change reviews force a top-mgmt re-acknowledgement (some
+heavily regulated sectors may want this).
+
+### 9.5 Multi-document review batch
+
+If 10 documents come due in the same week, the reviewer sees a
+batched "Review-Inbox" mirroring the Bulk-Approval-Inbox: tick boxes,
+"Confirm review — no change for selected" or "Mark as needs-update".
+Audit-log entry batched but per-document state advances individually.
+
+### 9.6 Approval-history surface
+
+Document edit-view shows a vertical "Approval-Trail" widget:
+
+```
+2026-09-30 14:22  Wizard-Run #42 prepared draft v3
+2026-09-30 14:30  CISO Anna L. approved
+2026-09-30 15:01  DPO Bernd K. approved (Privacy cross-check)
+2026-10-01 09:11  Top-Mgmt batch-approval (25 docs) — Carla G., signed
+2026-10-01 09:11  Published v3 — supersedes v2
+2027-09-15 06:00  Annual-review reminder fired (Alva-Hint)
+2027-09-22 11:08  CISO Anna L. confirmed review — no change required
+```
+
+Reuses the existing `AuditLogger` infrastructure; just a templated
+view over the existing log rows tagged `policy-approval`.
 
 ## 10. Versioning + Immutability
 
