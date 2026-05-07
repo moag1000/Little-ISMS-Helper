@@ -51,9 +51,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * außerhalb dieser Seed-Command-Kaskade. BSI publiziert das XML als
  * Teil des Kompendium-Download-Pakets.
  */
+/**
+ * @deprecated since 3.5.0 — superseded by app:load-bsi-grundschutz-catalogue
+ * which reads the canonical YAML tree at fixtures/library/catalogues/
+ * bsi-it-grundschutz-2023/. Kept as Compat-Layer.
+ */
 #[AsCommand(
     name: 'app:load-bsi-kompendium-extended',
-    description: 'Erweitert BSI IT-Grundschutz um ~80 zusätzliche Anforderungen aus 20 Bausteinen (Kompendium 2023)'
+    description: '[DEPRECATED — use app:load-bsi-grundschutz-catalogue] Legacy BSI Extended-Loader (Compat-Layer).'
 )]
 class LoadBsiKompendium2023ExtendedCommand
 {

@@ -34,9 +34,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @see https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/IT-Grundschutz/IT-Grundschutz-Kompendium/it-grundschutz-kompendium_node.html
  */
+/**
+ * @deprecated since 3.5.0 — superseded by app:load-bsi-grundschutz-catalogue
+ * which reads the canonical YAML tree at fixtures/library/catalogues/
+ * bsi-it-grundschutz-2023/. Kept as Compat-Layer.
+ */
 #[AsCommand(
     name: 'app:supplement-bsi-grundschutz-requirements',
-    description: 'Supplement BSI IT-Grundschutz with additional Bausteine from Kompendium Edition 2023/2024'
+    description: '[DEPRECATED — use app:load-bsi-grundschutz-catalogue] Legacy BSI supplement loader (Compat-Layer).'
 )]
 class SupplementBsiGrundschutzRequirementsCommand
 {
