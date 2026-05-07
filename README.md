@@ -178,7 +178,48 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 
 ## Screenshots
 
-> Screenshots werden hier ergaenzt. Die Anwendung verfuegt ueber ein Dashboard, Risikomatrix, Compliance-Uebersicht, Workflow-Editor und Management-Reports.
+Sechs Persona-Perspektiven auf dasselbe ISMS — vollautomatisch via Playwright erzeugt. Komplette Walkthroughs unter [**Sichtwechsel**](docs/sichtwechsel/README.md).
+
+<table>
+<tr>
+<td width="50%" align="center">
+<a href="docs/sichtwechsel/isb-practitioner.md"><img src="docs/sichtwechsel/img/isb-practitioner/dashboard.png" alt="ISB-Dashboard" /></a><br/>
+<b>ISB / Security Officer</b><br/>
+<sub>Dashboard mit offenen Maßnahmen, Reviews, Audit-Trail</sub>
+</td>
+<td width="50%" align="center">
+<a href="docs/sichtwechsel/ciso-executive.md"><img src="docs/sichtwechsel/img/ciso-executive/ciso-dashboard.png" alt="CISO-Dashboard" /></a><br/>
+<b>CISO / Executive</b><br/>
+<sub>Heatmap, Reifegrad-Trend, Vorstands-One-Pager</sub>
+</td>
+</tr>
+<tr>
+<td align="center">
+<a href="docs/sichtwechsel/compliance-manager.md"><img src="docs/sichtwechsel/img/compliance-manager/compliance-overview.png" alt="Compliance-Übersicht" /></a><br/>
+<b>Compliance-Manager / Head of GRC</b><br/>
+<sub>25 Frameworks, Cross-Mapping, Data-Reuse</sub>
+</td>
+<td align="center">
+<a href="docs/sichtwechsel/implementer-junior.md"><img src="docs/sichtwechsel/img/implementer-junior/welcome.png" alt="Welcome-Screen" /></a><br/>
+<b>Junior-Implementer (neu in InfoSec)</b><br/>
+<sub>Setup-Wizard, geführte Pfade, Empty-States mit CTA</sub>
+</td>
+</tr>
+<tr>
+<td align="center">
+<a href="docs/sichtwechsel/risk-owner-business.md"><img src="docs/sichtwechsel/img/risk-owner-business/my-workflows.png" alt="Risk-Owner-Inbox" /></a><br/>
+<b>Risk-Owner / Fachbereichsleiter</b><br/>
+<sub>Aufgaben-Inbox, Ein-Klick-Freigaben, Business-Sprache</sub>
+</td>
+<td align="center">
+<a href="docs/sichtwechsel/auditor-external.md"><img src="docs/sichtwechsel/img/auditor-external/auditor-dashboard.png" alt="Auditor-Dashboard" /></a><br/>
+<b>Externer Auditor (ISO 19011)</b><br/>
+<sub>Stichtag-Snapshot, Audit-Log, NC-Detail</sub>
+</td>
+</tr>
+</table>
+
+Bonus: [**Quickstart-Guide mit 11-Schritte-Setup-Wizard**](docs/QUICKSTART.md) · [Junior-Walkthrough textuell](docs/JUNIOR_IMPLEMENTER_WALKTHROUGH.md)
 
 ---
 
@@ -373,23 +414,6 @@ php bin/console isms:load-annex-a-controls --env=test
 | [Security Architecture](docs/security/SECURITY.md) | Sicherheitsarchitektur |
 | [OWASP Audit](docs/reports/security-audit-owasp-2025-rc1.md) | Security Audit Report |
 | [License Report](docs/reports/license-report.md) | Third-Party-Lizenz-Compliance |
-
-### Sichtwechsel — Sechs Perspektiven auf dasselbe ISMS
-
-Das Tool sieht für jede Rolle anders aus. CISO will Heatmap, Auditor will Stichtag-Snapshot, Junior-Implementer will Wizard. **Sichtwechsel** zeigt das Tool aus sechs Persona-Blickwinkeln mit echten Screenshots — getriggert über die [Persona-Skills](.claude/skills/) im Projekt.
-
-[![Sichtwechsel — CISO-Dashboard](docs/sichtwechsel/img/ciso-executive/ciso-dashboard.png)](docs/sichtwechsel/README.md)
-
-| Perspektive | Walkthrough |
-|---|---|
-| **ISB / Security Officer** — Operative ISO-27001-Praxis, Audit-Trail, SoA, Risikoregister | [→ Sichtwechsel ISB](docs/sichtwechsel/isb-practitioner.md) |
-| **CISO / Executive** — Heatmap, Reifegrad-Trend, Vorstandsvorlage in 30 Sekunden | [→ Sichtwechsel CISO](docs/sichtwechsel/ciso-executive.md) |
-| **Compliance-Manager / Head of GRC** — Framework-Reuse, Cross-Mapping, Library | [→ Sichtwechsel CM](docs/sichtwechsel/compliance-manager.md) |
-| **Junior-Implementer (neu in InfoSec)** — Setup-Wizard, Empty-States, Hilfe-Tour | [→ Sichtwechsel Junior](docs/sichtwechsel/implementer-junior.md) |
-| **Risk-Owner / Fachbereichsleiter** — Eine-Aufgabe-eine-Entscheidung, Business-Sprache | [→ Sichtwechsel Risk-Owner](docs/sichtwechsel/risk-owner-business.md) |
-| **Externer Auditor (ISO 19011)** — Stichtag-Snapshot, Audit-Log, NC-Detail | [→ Sichtwechsel Auditor](docs/sichtwechsel/auditor-external.md) |
-
-Screenshots automatisch via Playwright erzeugt: `npm run screenshots` — voller Workflow in [docs/sichtwechsel/README.md](docs/sichtwechsel/README.md).
 
 ---
 
