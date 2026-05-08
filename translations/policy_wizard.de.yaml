@@ -532,6 +532,63 @@ compliance_check:
         description: 'Bestätigt ein veröffentlichtes Management-Review-Verfahren für das BCMS gemäß ISO 22301 Cl. 9.3.'
         pass_message: 'BCMS-Management-Review-Verfahren ist veröffentlicht.'
         fail_message: 'BCMS-Management-Review-Verfahren fehlt — Policy-Wizard mit BCM-Topic „management_review_bcm" starten.'
+    # W6-D — GDPR / Privacy Compliance-Checks (DSGVO Art. 5/24/30/33-39 + ISO 27001 A.5.34)
+    privacy_policy_present:
+        title: 'Datenschutz-Leitlinie freigegeben (DSGVO Art. 5/24)'
+        description: 'Bestätigt eine durch die Leitungsebene genehmigte (status=approved) Datenschutz-Leitlinie aus dem Policy-Wizard, gemäß DSGVO Art. 5/24 + ISO 27701 Cl. 5.1/5.2.'
+        pass_message: 'Datenschutz-Leitlinie ist durch die Leitungsebene freigegeben.'
+        fail_message: 'Datenschutz-Leitlinie fehlt — Policy-Wizard mit GDPR-Topic „privacy_policy" starten und DPO-/CISO-/Top-Mgmt-Approval einholen.'
+    ropa_methodology_present:
+        title: 'RoPA-Methodik veröffentlicht (DSGVO Art. 30)'
+        description: 'Bestätigt eine veröffentlichte Records-of-Processing-Methodik gemäß DSGVO Art. 30 + ISO 27701 Cl. 7.2.8.'
+        pass_message: 'RoPA-Methodik ist veröffentlicht.'
+        fail_message: 'RoPA-Methodik fehlt — Policy-Wizard mit GDPR-Topic „ropa_methodology" starten.'
+    dpia_methodology_present:
+        title: 'DSFA-Methodik veröffentlicht (DSGVO Art. 35/36)'
+        description: 'Bestätigt eine veröffentlichte Datenschutz-Folgenabschätzungs-Methodik gemäß DSGVO Art. 35/36 + ISO 27701 Cl. 6.2/7.2.5.'
+        pass_message: 'DSFA-Methodik ist veröffentlicht.'
+        fail_message: 'DSFA-Methodik fehlt — Policy-Wizard mit GDPR-Topic „dpia_methodology" starten.'
+    dsr_procedure_present:
+        title: 'Betroffenenrechte-Verfahren veröffentlicht (DSGVO Art. 12-22)'
+        description: 'Bestätigt ein veröffentlichtes Verfahren zur Bearbeitung von Betroffenenrechten gemäß DSGVO Art. 12-22 + ISO 27701 Cl. 7.3.'
+        pass_message: 'Betroffenenrechte-Verfahren ist veröffentlicht.'
+        fail_message: 'Betroffenenrechte-Verfahren fehlt — Policy-Wizard mit GDPR-Topic „dsr_procedure" starten.'
+    data_breach_notification_72h:
+        title: '72-h-Meldepfad bei Datenpanne dokumentiert (DSGVO Art. 33)'
+        description: 'Bestätigt ein veröffentlichtes Data-Breach-Notification-Verfahren UND eine Incident-SLA für Severity „breach" mit Reaktionszeit ≤ 72 h gemäß DSGVO Art. 33.'
+        pass_message: 'Datenpannen-Meldeverfahren ist veröffentlicht und 72-h-SLA ist konfiguriert.'
+        fail_message: 'Datenpannen-Meldeverfahren oder 72-h-SLA fehlt — Policy-Wizard für „data_breach_notification_procedure" starten und Incident-SLA-Admin öffnen, um Severity „breach" auf ≤ 72 h zu setzen.'
+    dpo_charter_appointed:
+        title: 'Datenschutzbeauftragter benannt und Charter dokumentiert (DSGVO Art. 37-39)'
+        description: 'Bestätigt mindestens einen Tenant-Nutzer mit ROLE_DPO sowie eine veröffentlichte DPO-Charter (Dokument oder Sektion „gdpr_dpo_mandate").'
+        pass_message: 'DSB ist benannt und Charter ist dokumentiert.'
+        fail_message: 'DSB-Benennung oder Charter fehlt — Rolle ROLE_DPO einem Nutzer zuweisen und Policy-Wizard für „dpo_charter" oder ISO-Host „awareness_training" starten.'
+    gdpr_section_coverage:
+        title: 'GDPR-Sektionen auf jedem ISO-Host generiert'
+        description: 'Bestätigt, dass jeder Eintrag aus dem GdprSectionCatalogue (10 Sektionen pro §0 Decision Matrix v2) eine generierte DocumentSection auf dem zugehörigen ISO-Topic-Document hat.'
+        pass_message: 'Alle 10 GDPR-Sektionen sind auf den ISO-Hosts angelegt.'
+        fail_message: 'Mindestens eine GDPR-Sektion fehlt auf dem ISO-Host — Policy-Wizard mit GDPR-Scope erneut durchlaufen, betroffene ISO-Topics nachgenerieren.'
+    a534_thin_host_present:
+        title: 'A.5.34-Cross-Reference-Host vorhanden (ISO 27001 A.5.34 + GDPR)'
+        description: 'Bei aktivem ISO 27001 + GDPR Scope: Bestätigt einen veröffentlichten Thin-Host für A.5.34 (Privacy & PII Protection), der die 5 standalone Privacy-Dokumente verlinkt.'
+        pass_message: 'A.5.34-Thin-Host ist vorhanden — Privacy-Artefakte sind ISO-SoA-konform verlinkt.'
+        fail_message: 'A.5.34-Thin-Host fehlt — Policy-Wizard für „iso_a534_thin_host" starten, damit das ISO-SoA-Mapping einen Verweisanker auf die Privacy-Dokumente bekommt.'
+    # W6-D — ISO 27701 PIMS Compliance-Checks (ISO 27701:2025/2019)
+    iso27701_version_configured:
+        title: 'ISO 27701-Edition deklariert (ISO 27701 §3)'
+        description: 'Bei aktiviertem PIMS-Addon (iso27701.enabled=true): Bestätigt, dass die Tenant-Einstellung „iso27701.version" auf „2019" oder „2025" gesetzt ist.'
+        pass_message: 'ISO 27701-Edition ist deklariert.'
+        fail_message: 'ISO 27701-Edition ist nicht deklariert — Policy-Wizard öffnen und „iso27701.version" auf „2019" oder „2025" setzen (Default 2025 ab 2025-09).'
+    iso27701_clause_tags_applied:
+        title: 'ISO 27701-Klausel-Tags auf jedem PIMS-Dokument (Cl. 5.1/7.2.8/...)'
+        description: 'Bei aktiviertem PIMS-Addon: Bestätigt, dass jedes veröffentlichte Document mit ISO 27701-Klausel-Mapping (z. B. 5.1, 7.2.8) den Tag „iso27701:<klausel>" trägt.'
+        pass_message: 'Alle PIMS-relevanten Dokumente tragen den Klausel-Tag.'
+        fail_message: 'Mindestens ein PIMS-Dokument trägt keinen ISO 27701-Klausel-Tag — Policy-Wizard mit PIMS-Scope erneut durchlaufen oder Tag manuell setzen.'
+    iso27701_schrems_ii_clause_in_transfers:
+        title: 'Schrems-II-Klausel in International-Transfers-Policy (ISO 27701:2025 Cl. 7.5)'
+        description: 'Bei aktiviertem PIMS-Addon mit Edition 2025: Bestätigt, dass die International-Transfers-Policy (ISO-Host „information_transfer") die Begriffe „Schrems II" und „supplementary measures / zusätzliche Maßnahmen" enthält.'
+        pass_message: 'Schrems-II- und Supplementary-Measures-Wording ist in der International-Transfers-Policy dokumentiert.'
+        fail_message: 'Schrems-II- oder Supplementary-Measures-Wording fehlt — Policy-Wizard mit GDPR-Scope erneut durchlaufen und Sektion „gdpr_international_transfers" um Schrems-II + TIA / TOMs ergänzen.'
 
     # W5-B — BCM exercise programme auto-seeding.
     bcm:
@@ -542,3 +599,81 @@ compliance_check:
             quarterly: 'Quartalsweise (alle 3 Monate)'
             semi_annual: 'Halbjährlich (alle 6 Monate)'
             annual: 'Jährlich (alle 12 Monate)'
+
+    # W6-B — Privacy / DPO PolicyTemplate seeds (06-dpo-input.md §0 Decision Matrix v2).
+    template:
+        privacy_policy:
+            title: 'Datenschutz-Leitlinie'
+            description: 'Top-Level-Datenschutzrichtlinie (GDPR Art. 5/24, ISO 27701 Cl. 5.1/5.2). Verankert die sieben Grundsätze, Rechte der Betroffenen und die Rechenschaftspflicht.'
+        ropa_methodology:
+            title: 'Verfahrensverzeichnis-Methodik (RoPA)'
+            description: 'Methodik zur Pflege des Verfahrensverzeichnisses gemäß GDPR Art. 30 / ISO 27701 Cl. 7.2.8. Steuert das bestehende ProcessingActivity-Modul.'
+        dpia_methodology:
+            title: 'DSFA-Methodik'
+            description: 'Datenschutz-Folgenabschätzung gemäß GDPR Art. 35/36 / ISO 27701 Cl. 6.2 + 7.2.5. Trigger-Kriterien, Schwellwert-Assessment und Konsultationsregeln.'
+        dsr_procedure:
+            title: 'Verfahren Betroffenenrechte (DSR)'
+            description: 'Verfahren für Auskunfts-, Berichtigungs-, Lösch- und Übertragungsanfragen gemäß GDPR Art. 12-22 / ISO 27701 Cl. 7.3.1-7.3.10. Steuert das DataSubjectRequest-Modul.'
+        data_breach_notification_procedure:
+            title: 'Verfahren zur Meldung von Datenschutzverletzungen'
+            description: '72h-Meldeverfahren gemäß GDPR Art. 33/34, ISO 27701 Cl. 6.13 (2025) bzw. Cl. 6.13.1.5 (2019). Multi-Track-Matrix für GDPR / DORA Art. 19 / NIS2.'
+        iso_a534_thin_host:
+            title: 'A.5.34 Datenschutz-Querverweis'
+            description: 'Schlanker Querverweis-Stub für ISO 27001 A.5.34. Verlinkt auf die fünf eigenständigen Datenschutzdokumente — kein eigener Inhalt, erfüllt nur die Norm-Forderung "shall maintain a topic-specific policy".'
+
+    # W6-B — ISO 27701 PIMS settings labels (06-dpo-input.md §3.3).
+    iso27701:
+        enabled:
+            label: 'ISO 27701 (PIMS) aktivieren'
+            help: 'Fügt Klausel-Mapping-Tags (iso27701:5.1, iso27701:7.2.8 …) zu den Datenschutz-Dokumenten hinzu. Optional — paralleler Addon analog zu DORA.'
+        version_2019:
+            label: 'ISO 27701:2019 (Legacy)'
+            help: 'Für laufende Audit-Zyklen mit der älteren Klausel-Nummerierung (z.B. 6.13.1.5 statt 6.13).'
+        version_2025:
+            label: 'ISO 27701:2025 (Standard)'
+            help: 'Aktuelle Edition (veröffentlicht 2025-09). An ISO 27002:2022 ausgerichtet, mit expliziten Schrems-II-Begleitmaßnahmen.'
+
+    # W6-B — Sectoral privacy overlays (06-dpo-input.md §7).
+    privacy_overlay:
+        healthcare_bdsg22:
+            label: 'Gesundheitswesen (§ 22 BDSG)'
+            description: 'Aktiviert die § 22 BDSG (besondere Kategorien) und § 203 StGB (ärztliche Schweigepflicht) Overlays für RoPA, DPIA und §2.16 Special-Category-Templates.'
+        public_sector_bbg:
+            label: 'Öffentlicher Sektor (BDSG § 70 ff.)'
+            description: 'Aktiviert die Overlays für öffentliche Stellen — BDSG § 70 ff., Landes-DSGs, BArchG § 5 — auf RoPA und Datenschutz-Leitlinie.'
+
+    # W6-C — GDPR section injector titles + descriptions. Skeleton only;
+    # full prose ships with W6-F. Sections are injected into ISO host
+    # policies when the tenant adopts GDPR scope (per `06-dpo-input.md`
+    # §0 Decision Matrix v2 — 10 sections total).
+    gdpr_section:
+        gdpr_lawful_basis_workplace:
+            title: 'Rechtsgrundlage für Arbeitsplatzdaten (DSGVO Art. 6, 9)'
+            description: 'Eingebettet in die Acceptable-Use-Policy. Dokumentiert die Rechtsgrundlage für die Verarbeitung von Beschäftigtendaten am Arbeitsplatz inkl. § 26 BDSG.'
+        gdpr_dpo_mandate:
+            title: 'DSB-Mandat und Aufgaben (DSGVO Art. 37-39)'
+            description: 'Eingebettet in das Awareness-Trainings-Programm. Beschreibt Bestellung, Aufgaben und Unabhängigkeit des Datenschutzbeauftragten.'
+        gdpr_special_categories:
+            title: 'Besondere Kategorien personenbezogener Daten (DSGVO Art. 9)'
+            description: 'Eingebettet in die Informationsklassifizierungs-Policy. Klassifizierungs- und Schutzregeln für besondere Kategorien (Gesundheit, Religion, Gewerkschaftszugehörigkeit etc.).'
+        gdpr_privacy_by_design:
+            title: 'Privacy by Design / by Default (DSGVO Art. 25)'
+            description: 'Eingebettet in die Secure-Development-Policy. Privacy-by-Design-Gates im SDLC und Default-Einstellungen für neue Verarbeitungen.'
+        gdpr_ai_systems:
+            title: 'KI-Systeme und automatisierte Entscheidungen (DSGVO Art. 22 + EU AI Act)'
+            description: 'Eingebettet in die Secure-Development-Policy. Sonderregeln für KI-gestützte Profilbildung und automatisierte Einzelentscheidungen.'
+        gdpr_joint_controllers:
+            title: 'Gemeinsame Verantwortlichkeit (DSGVO Art. 26)'
+            description: 'Eingebettet in die Lieferanten-Sicherheits-Policy. Abgrenzung zu Auftragsverarbeitung (Art. 28) und Pflichten gemeinsamer Verantwortlicher.'
+        gdpr_international_transfers:
+            title: 'Internationale Datentransfers (DSGVO Art. 44-49 / Schrems II)'
+            description: 'Eingebettet in die Information-Transfer-Policy. Angemessenheitsbeschlüsse, Standardvertragsklauseln, Transfer-Impact-Assessments.'
+        gdpr_retention_minimisation:
+            title: 'Speicherbegrenzung und Datenminimierung (DSGVO Art. 5(1)(c)+(e))'
+            description: 'Eingebettet in die Asset-Management-Policy. Verweise auf den verbindlichen Retention Schedule als Single-Source-of-Truth.'
+        gdpr_breach_72h:
+            title: 'Meldepflichten bei Datenschutzverletzungen (DSGVO Art. 33)'
+            description: 'Eingebettet in die Incident-Management-Policy. 72-Stunden-Meldepflicht an die Aufsichtsbehörde, Betroffenenbenachrichtigung.'
+        gdpr_premises_processing:
+            title: 'Datenschutz in physischen Sicherheitsbereichen (DSGVO Art. 32)'
+            description: 'Eingebettet in die Physical-Security-Policy. Schutz personenbezogener Daten in Räumlichkeiten und Zutrittskontrollen.'

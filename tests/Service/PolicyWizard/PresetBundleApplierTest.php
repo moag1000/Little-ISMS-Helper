@@ -146,4 +146,60 @@ class PresetBundleApplierTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->applier->applyTo($run, $bundle);
     }
+
+    #[Test]
+    public function testHealthcareBundleSetsBdsg22PrivacyOverlay(): void
+    {
+        // W6-B / spec §7.1 — healthcare bundle wires the § 22 BDSG +
+        // § 203 StGB overlay so RoPA / DPIA / §2.16 templates pick up
+        // the medical-confidentiality additions downstream.
+        $run = new WizardRun();
+        $bundle = $this->makeBundle(key: IndustryPresetBundle::KEY_HEALTHCARE);
+
+        $this->applier->applyTo($run, $bundle);
+
+        $bag = $run->getInputs() ?? [];
+        self::assertSame(
+            [PresetBundleApplier::PRIVACY_OVERLAY_HEALTHCARE_BDSG22],
+            $bag['_preset_flags']['privacy_overlays'] ?? null,
+        );
+    }
+
+    #[Test]
+    public function testPublicSectorBundleSetsBbgPrivacyOverlay(): void
+    {
+        // W6-B / spec §7.6 — public_sector bundle wires the BDSG § 70 ff. /
+        // BBG overlay for public-body RoPA / Privacy-Policy variants.
+        $run = new WizardRun();
+        $bundle = $this->makeBundle(key: IndustryPresetBundle::KEY_PUBLIC_SECTOR);
+
+        $this->applier->applyTo($run, $bundle);
+
+        $bag = $run->getInputs() ?? [];
+        self::assertSame(
+            [PresetBundleApplier::PRIVACY_OVERLAY_PUBLIC_SECTOR_BBG],
+            $bag['_preset_flags']['privacy_overlays'] ?? null,
+        );
+    }
+
+    #[Test]
+    public function testB2cSaasAndOtBundlesAddNoPrivacyOverlay(): void
+    {
+        // W6-B / spec §7 — B2C-SaaS keeps the default GDPR baseline
+        // (no overlay row); OT/IEC 62443 has no privacy concern by
+        // definition (operational technology, no personal data flow).
+        foreach ([IndustryPresetBundle::KEY_B2C_SAAS, IndustryPresetBundle::KEY_OT_IEC62443] as $key) {
+            $run = new WizardRun();
+            $bundle = $this->makeBundle(key: $key);
+
+            $this->applier->applyTo($run, $bundle);
+
+            $bag = $run->getInputs() ?? [];
+            self::assertArrayNotHasKey(
+                'privacy_overlays',
+                $bag['_preset_flags'] ?? [],
+                sprintf('bundle %s must NOT add a privacy overlay', $key),
+            );
+        }
+    }
 }

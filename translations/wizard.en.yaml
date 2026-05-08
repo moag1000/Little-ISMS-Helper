@@ -840,6 +840,9 @@ wizard:
         breach_notification_enhanced: 'Automatisierte Breach-Detection, vorqualifizierte Meldetexte, Cross-Border-DPA-Coordination.'
         awareness_baseline: 'Jaehrliche Datenschutz-Schulung pflichtmaessig; Phishing-Tests durchgefuehrt.'
         awareness_enhanced: 'Rollenbasierte Datenschutz-Curricula, Just-in-Time-Schulungen bei Auffaelligkeiten, externe Data-Protection-Audits.'
+        # W6-D — GDPR Policy-Wizard outputs category
+        gdpr_policies: 'GDPR Policy-Wizard outputs'
+        gdpr_policies_desc: 'Generated GDPR mandatory policies per GDPR Art. 5/24/30/33-39 and ISO 27001 A.5.34: Privacy / Data-Protection Policy, RoPA / DPIA methodologies, DSR procedure, 72-h breach notification path, DPO charter, GDPR section coverage and A.5.34 thin host.'
 
     # ISO 22301 BCM Categories
     iso22301:
@@ -898,6 +901,9 @@ wizard:
         policy_doc_enhanced: 'PIMS extern zertifiziert, kontinuierliche Privacy-Reviews, Cross-Border-Transfer-Compliance automated.'
         data_subject_rights_baseline: 'PIMS-Anforderung umgesetzt, DPO/PII-Officer benannt, Records of Processing aktuell.'
         data_subject_rights_enhanced: 'PIMS extern zertifiziert, kontinuierliche Privacy-Reviews, Cross-Border-Transfer-Compliance automated.'
+        # W6-D — ISO 27701 PIMS Policy-Wizard outputs category
+        iso27701_pims: 'ISO 27701 PIMS Policy-Wizard outputs'
+        iso27701_pims_desc: 'Generated ISO 27701 PIMS checks when the addon is enabled: edition (2019/2025) declared, clause tags applied to documents, Schrems II clause in international-transfers policy.'
 
     # ISO 27017 Cloud Security Categories
     iso27017:

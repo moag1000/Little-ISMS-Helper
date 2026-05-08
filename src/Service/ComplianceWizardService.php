@@ -41,8 +41,20 @@ use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraIncidentReportingDe
 use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraThirdPartyRegisterMaintainedCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraTlptCadenceCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraValidityFromCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Iso27701\Iso27701ClauseTagsAppliedCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Iso27701\Iso27701SchremsIIClauseInTransfersCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Iso27701\Iso27701VersionConfiguredCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardTopicCatalogue;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\A534ThinHostPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\DataBreachNotification72hCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\DpiaMethodologyPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\DpoCharterAppointedCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\DsrProcedurePresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\GdprSectionCoverageCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\PrivacyPolicyPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\RopaMethodologyPresentCheck;
+use App\Service\TenantSettingResolver\PolicySettingProvider;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -89,6 +101,7 @@ class ComplianceWizardService
         private readonly PolicyWizardCheckRegistry $policyWizardCheckRegistry,
         private readonly ?\App\Repository\ComplianceRequirementRepository $requirementRepository = null,
         private readonly ?\App\Repository\TenantPolicySettingRepository $tenantPolicySettingRepository = null,
+        private readonly ?PolicySettingProvider $policySettingProvider = null,
     ) {
     }
 
@@ -3047,7 +3060,7 @@ class ComplianceWizardService
 
     private function getGdprCategories(): array
     {
-        return [
+        $categories = [
             'lawfulness' => [
                 'name' => 'wizard.gdpr.lawfulness',
                 'description' => 'wizard.gdpr.lawfulness_desc',
@@ -3128,7 +3141,89 @@ class ComplianceWizardService
                     ],
                 ],
             ],
+
+            // Policy-Wizard outputs — GDPR-specific policies, sections, DPO
+            // appointment + breach SLA. Gated on GDPR scope being active
+            // (ComplianceFramework code 'GDPR' active OR tenant policy setting
+            // 'org.is_gdpr_subject' true). Returns null when out-of-scope;
+            // array_filter() drops the row.
+            'gdpr_policies' => $this->buildGdprPolicyWizardCategory(),
         ];
+
+        return array_filter($categories, static fn ($cat): bool => $cat !== null);
+    }
+
+    /**
+     * Build the "GDPR Policy-Wizard outputs" category. Returns null when GDPR
+     * scope is not declared for the tenant.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function buildGdprPolicyWizardCategory(): ?array
+    {
+        if (!$this->isGdprInScope($this->tenantContext->getCurrentTenant())) {
+            return null;
+        }
+
+        $checks = [];
+        foreach ([
+            PrivacyPolicyPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            RopaMethodologyPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            DpiaMethodologyPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            DsrProcedurePresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            DataBreachNotification72hCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_admin_incident_sla_index'],
+            DpoCharterAppointedCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            GdprSectionCoverageCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+            A534ThinHostPresentCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+        ] as $checkId => $meta) {
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => $meta['priority'],
+                'route' => $meta['route'],
+            ];
+        }
+
+        return [
+            'name' => 'wizard.gdpr.gdpr_policies',
+            'description' => 'wizard.gdpr.gdpr_policies_desc',
+            'icon' => 'bi-person-lock',
+            'weight' => 2,
+            'article' => 'GDPR Art. 5/24/30/33-34/35/37-39 + ISO 27001 A.5.34',
+            'checks' => $checks,
+        ];
+    }
+
+    /**
+     * Detects whether GDPR is in scope for the tenant. Signals:
+     * - ComplianceFramework with `code='GDPR'` and `isActive=true`, OR
+     * - Tenant policy setting `org.is_gdpr_subject` set to true.
+     *
+     * Returns false when neither signal is present (keeps the GDPR category
+     * out of generic admin previews).
+     */
+    private function isGdprInScope(?Tenant $tenant): bool
+    {
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'GDPR']);
+        if ($framework instanceof ComplianceFramework && $framework->isActive() === true) {
+            return true;
+        }
+
+        if ($tenant === null || $this->tenantPolicySettingRepository === null) {
+            return false;
+        }
+        $setting = $this->tenantPolicySettingRepository->findOneByTenantAndKey(
+            $tenant,
+            'org.is_gdpr_subject',
+        );
+        if ($setting === null) {
+            return false;
+        }
+        $value = $setting->getValue();
+        return $value === true || $value === 'true' || $value === 1 || $value === '1';
     }
 
     /**
@@ -3343,7 +3438,7 @@ class ComplianceWizardService
      */
     private function getIso27701Categories(): array
     {
-        return [
+        $categories = [
             'pims_context' => [
                 'name' => 'wizard.iso27701.pims_context',
                 'description' => 'wizard.iso27701.pims_context_desc',
@@ -3475,7 +3570,68 @@ class ComplianceWizardService
                     ],
                 ],
             ],
+
+            // Policy-Wizard outputs — ISO 27701 PIMS-specific checks (version
+            // declaration, clause-level mapping tags, Schrems II + supplementary
+            // measures wording on transfers). Gated on `iso27701.enabled` tenant
+            // policy setting being true. Returns null when out-of-scope.
+            'iso27701_pims' => $this->buildIso27701PolicyWizardCategory(),
         ];
+
+        return array_filter($categories, static fn ($cat): bool => $cat !== null);
+    }
+
+    /**
+     * Build the "ISO 27701 PIMS Policy-Wizard outputs" category. Returns null
+     * when the PIMS addon is not opted in for the tenant.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function buildIso27701PolicyWizardCategory(): ?array
+    {
+        if (!$this->isIso27701InScope($this->tenantContext->getCurrentTenant())) {
+            return null;
+        }
+
+        $checks = [];
+        foreach ([
+            Iso27701VersionConfiguredCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+            Iso27701ClauseTagsAppliedCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_document_index'],
+            Iso27701SchremsIIClauseInTransfersCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+        ] as $checkId => $meta) {
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => $meta['priority'],
+                'route' => $meta['route'],
+            ];
+        }
+
+        return [
+            'name' => 'wizard.iso27701.iso27701_pims',
+            'description' => 'wizard.iso27701.iso27701_pims_desc',
+            'icon' => 'bi-shield-fill-check',
+            'weight' => 1.5,
+            'article' => 'ISO 27701:2025 Cl. 5.1/7.2.8/7.5 + GDPR Art. 44-49',
+            'checks' => $checks,
+        ];
+    }
+
+    /**
+     * Detects whether the ISO 27701 PIMS addon is opted in for the tenant.
+     * Signal: `iso27701.enabled` tenant policy setting set to true (resolved
+     * via {@see PolicySettingProvider}). When the provider is not wired in
+     * (legacy DI compositions in tests) the category stays hidden.
+     */
+    private function isIso27701InScope(?Tenant $tenant): bool
+    {
+        if ($this->policySettingProvider === null) {
+            return false;
+        }
+        return $this->policySettingProvider->isIso27701Enabled($tenant);
     }
 
     /**

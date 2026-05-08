@@ -32,6 +32,38 @@ use App\Entity\WizardRun;
 final class PresetBundleApplier
 {
     /**
+     * Privacy-overlay flag for the German healthcare sector — adds the
+     * § 22 BDSG (special-category exception) overlay to RoPA / DPIA /
+     * §2.16 templates per `06-dpo-input.md` §7.1.
+     */
+    public const string PRIVACY_OVERLAY_HEALTHCARE_BDSG22 = 'healthcare_bdsg22';
+
+    /**
+     * Privacy-overlay flag for the German public sector — adds the
+     * BBG / state-DSG overlay (BDSG § 70 ff., BArchG § 5) per
+     * `06-dpo-input.md` §7.6.
+     */
+    public const string PRIVACY_OVERLAY_PUBLIC_SECTOR_BBG = 'public_sector_bbg';
+
+    /**
+     * Per-bundle privacy-overlay map. Bundles without a privacy overlay
+     * (B2C-SaaS = default GDPR; OT/IEC 62443 = no privacy concern) are
+     * intentionally omitted — the absence is the signal.
+     *
+     * Spec: `docs/plans/policy-wizard/06-dpo-input.md` §7 sectoral
+     * overlays. Healthcare → § 22 BDSG; Public-Sector → BBG / state-DSG;
+     * B2C-SaaS → default GDPR (no overlay row); OT → no privacy overlay
+     * (operational-technology, no personal data flow by definition).
+     *
+     * @var array<string, string>
+     */
+    private const array PRIVACY_OVERLAY_PER_BUNDLE = [
+        IndustryPresetBundle::KEY_HEALTHCARE => self::PRIVACY_OVERLAY_HEALTHCARE_BDSG22,
+        IndustryPresetBundle::KEY_PUBLIC_SECTOR => self::PRIVACY_OVERLAY_PUBLIC_SECTOR_BBG,
+        // KEY_B2C_SAAS, KEY_OT_IEC62443 → no overlay (default GDPR / no privacy).
+    ];
+
+    /**
      * Pre-fill the run's `inputs` JSON with the bundle's defaults.
      * Returns the run for fluent chaining; the caller is responsible
      * for flushing the EntityManager.
@@ -111,6 +143,24 @@ final class PresetBundleApplier
         if ($bundle->isDpoSectionsAutoEnabled()) {
             $bag['_preset_flags'] = is_array($bag['_preset_flags'] ?? null) ? $bag['_preset_flags'] : [];
             $bag['_preset_flags']['dpo_sections_auto_enabled'] = true;
+        }
+
+        // ── W6-B Sectoral privacy overlays ─────────────────────────────
+        // Spec: `06-dpo-input.md` §7. The overlay flag drives subsequent
+        // template generation (e.g. §2.16 Special-Category-Data adds
+        // § 22 BDSG section for healthcare; §2.2 RoPA adds public-body
+        // variant for public_sector). Stored on the run's _preset_flags
+        // bag (idempotent — same key wins on re-apply, last bundle wins).
+        $overlay = self::PRIVACY_OVERLAY_PER_BUNDLE[$bundle->getKey()] ?? null;
+        if ($overlay !== null) {
+            $bag['_preset_flags'] = is_array($bag['_preset_flags'] ?? null) ? $bag['_preset_flags'] : [];
+            $existing = is_array($bag['_preset_flags']['privacy_overlays'] ?? null)
+                ? $bag['_preset_flags']['privacy_overlays']
+                : [];
+            if (!in_array($overlay, $existing, true)) {
+                $existing[] = $overlay;
+            }
+            $bag['_preset_flags']['privacy_overlays'] = array_values($existing);
         }
 
         $run->setInputs($bag);

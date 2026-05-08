@@ -138,6 +138,36 @@ class PolicyTemplate
     private ?string $bsiTier = null;
 
     /**
+     * ISO/IEC 27701:2025 clause references covered by this template
+     * (e.g. ['5.1','7.2.8']). Drives the W6-B PIMS-readiness mapping —
+     * see `docs/plans/policy-wizard/06-dpo-input.md` §3.1 for the
+     * canonical clause-by-document table and
+     * {@see \App\Service\TenantSettingResolver\PolicySettingProvider}
+     * for the tag-emission helper.
+     *
+     * Null = template carries no PIMS clause coverage (e.g. ISO-only
+     * generic templates).
+     *
+     * @var array<int, string>|null
+     */
+    #[ORM\Column(name: 'iso27701_clauses_2025', type: Types::JSON, nullable: true)]
+    private ?array $iso27701Clauses2025 = null;
+
+    /**
+     * ISO/IEC 27701:2019 clause references covered by this template
+     * (e.g. ['5.1','7.2.8']). Stored alongside the 2025 mapping so
+     * tenants on legacy audit cycles (`iso27701.version=2019`) still
+     * get correct tag emission. See `06-dpo-input.md` §3.2 for the
+     * 2019 → 2025 deltas.
+     *
+     * Null = template carries no PIMS clause coverage.
+     *
+     * @var array<int, string>|null
+     */
+    #[ORM\Column(name: 'iso27701_clauses_2019', type: Types::JSON, nullable: true)]
+    private ?array $iso27701Clauses2019 = null;
+
+    /**
      * DORA articles covered, e.g. ['Art. 9.4'].
      *
      * @var array<int, string>|null
@@ -174,6 +204,24 @@ class PolicyTemplate
      */
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
     private bool $dpoSectionRequired = false;
+
+    /**
+     * W6-A §0.A.1 — explicit list of section keys that need DPO sign-off
+     * for this host template. Each key matches the `sectionKey` of a
+     * {@see DocumentSection} created at generation time. Null = use the
+     * default `privacy_addendum` single-key behaviour from W3-I when
+     * {@see $dpoSectionRequired} is true. When non-empty, every entry
+     * creates a `DocumentSection` row at generation time and the host
+     * workflow blocks at `privacy_section_gate` until ALL listed sections
+     * reach `approved`.
+     *
+     * Example: `['privacy_addendum', 'privacy_addendum_breach',
+     * 'privacy_addendum_int_transfers']`.
+     *
+     * @var array<int, string>|null
+     */
+    #[ORM\Column(name: 'dpo_gated_section_keys', type: Types::JSON, nullable: true)]
+    private ?array $dpoGatedSectionKeys = null;
 
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'superseded_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
@@ -353,6 +401,32 @@ class PolicyTemplate
     }
 
     /** @return array<int, string>|null */
+    public function getIso27701Clauses2025(): ?array
+    {
+        return $this->iso27701Clauses2025;
+    }
+
+    /** @param array<int, string>|null $iso27701Clauses2025 */
+    public function setIso27701Clauses2025(?array $iso27701Clauses2025): static
+    {
+        $this->iso27701Clauses2025 = $iso27701Clauses2025;
+        return $this;
+    }
+
+    /** @return array<int, string>|null */
+    public function getIso27701Clauses2019(): ?array
+    {
+        return $this->iso27701Clauses2019;
+    }
+
+    /** @param array<int, string>|null $iso27701Clauses2019 */
+    public function setIso27701Clauses2019(?array $iso27701Clauses2019): static
+    {
+        $this->iso27701Clauses2019 = $iso27701Clauses2019;
+        return $this;
+    }
+
+    /** @return array<int, string>|null */
     public function getLinkedDoraArticles(): ?array
     {
         return $this->linkedDoraArticles;
@@ -421,6 +495,37 @@ class PolicyTemplate
     public function setDpoSectionRequired(bool $dpoSectionRequired): static
     {
         $this->dpoSectionRequired = $dpoSectionRequired;
+        return $this;
+    }
+
+    /** @return array<int, string>|null */
+    public function getDpoGatedSectionKeys(): ?array
+    {
+        return $this->dpoGatedSectionKeys;
+    }
+
+    /**
+     * @param array<int, string>|null $dpoGatedSectionKeys
+     */
+    public function setDpoGatedSectionKeys(?array $dpoGatedSectionKeys): static
+    {
+        if ($dpoGatedSectionKeys !== null) {
+            // De-dupe + reindex so the JSON column stays clean across
+            // re-saves; reject empty/non-string entries to keep the
+            // contract tight (callers may pass a freshly-built array).
+            $clean = [];
+            foreach ($dpoGatedSectionKeys as $k) {
+                if (!is_string($k) || $k === '') {
+                    continue;
+                }
+                $clean[$k] = true;
+            }
+            $dpoGatedSectionKeys = array_values(array_keys($clean));
+            if ($dpoGatedSectionKeys === []) {
+                $dpoGatedSectionKeys = null;
+            }
+        }
+        $this->dpoGatedSectionKeys = $dpoGatedSectionKeys;
         return $this;
     }
 
