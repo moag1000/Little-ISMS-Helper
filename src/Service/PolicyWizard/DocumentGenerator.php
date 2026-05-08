@@ -115,6 +115,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         private readonly LoggerInterface $logger = new NullLogger(),
         private readonly ?DoraExtensionCatalogue $doraExtensionCatalogue = null,
         private readonly ?PolicySettingProvider $policySettingProvider = null,
+        private readonly ?GdprSectionCatalogue $gdprSectionCatalogue = null,
     ) {
     }
 
@@ -261,6 +262,14 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             // to the old Document for audit-trail integrity).
             $this->ensurePrivacyAddendumSection($document, $template);
 
+            // W6-C — GDPR section injector. After DORA extension append
+            // (body-level) we run the GDPR catalogue (section-level) so
+            // ISO host policies grow per-§0-v2 privacy sections when the
+            // tenant adopted GDPR scope. Each section carries an
+            // `approval_role` per W6-A so the DPO can sign off / reject
+            // independently of the host CISO content.
+            $this->appendGdprSectionsIfApplicable($document, $run);
+
             // W4-C — action='merge_into_topic': append the legacy
             // document's content as a `legacy_merge` section.
             if ($bestandsDecision !== null && $bestandsDecision['action'] === 'merge_into_topic') {
@@ -280,6 +289,17 @@ final class DocumentGenerator implements DocumentGeneratorInterface
 
             $this->entityManager->flush();
             $documentIds[] = (int) $document->getId();
+        }
+
+        // W6-C — emit the thin A.5.34 cross-reference host when the
+        // tenant adopted both ISO 27001 and GDPR. Per §0 Decision Matrix
+        // v2 row 18, ISO "shall maintain a topic-specific policy"
+        // demands a document at A.5.34 even when content is satisfied
+        // by §2.1 + 5 standalone privacy docs; v2 keeps a thin 1-2 page
+        // cross-reference host instead of suppressing A.5.34 entirely.
+        $thinHostId = $this->emitThinA534HostIfApplicable($run, $tenant, $tagCache);
+        if ($thinHostId !== null) {
+            $documentIds[] = $thinHostId;
         }
 
         return $documentIds;
@@ -986,11 +1006,21 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     }
 
     /**
-     * W3-I Task 2 — when the PolicyTemplate flags `dpoSectionRequired=true`
-     * we auto-create one DocumentSection row keyed `privacy_addendum`
-     * (status=draft). Idempotent on re-runs against the same Document.
-     * A NEW Document version (supersedes path) gets its own fresh
-     * section; the old section stays bound to the old Document.
+     * W3-I Task 2 + W6-A §0.A.1 — when the PolicyTemplate flags
+     * `dpoSectionRequired=true` we auto-create one DocumentSection row
+     * per gated key (`privacy_addendum` by default; or every entry of
+     * {@see PolicyTemplate::getDpoGatedSectionKeys()} when set).
+     * Idempotent on re-runs against the same Document. A NEW Document
+     * version (supersedes path) gets its own fresh section; the old
+     * section stays bound to the old Document.
+     *
+     * W6-A §0.A.2 — every gated section is created with `approvalRole`
+     * pre-set (default `dpo`). The role MAY be overridden per-key via
+     * the template's `requiredVariables` block under the
+     * `dpo_section_role_overrides` namespace; the resolver in
+     * {@see PolicySectionApprovalService::resolveApprovalRole} can
+     * additionally degrade `dpo` → `ciso` for BSI-pure tenants at
+     * approval time.
      */
     private function ensurePrivacyAddendumSection(Document $document, PolicyTemplate $template): void
     {
@@ -1002,10 +1032,91 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             return;
         }
 
+        // W6-A §0.A.1 — explicit gated-key list wins over the legacy
+        // single-key default. Empty / null → fall back to the W3-I
+        // single-key behaviour for backwards compatibility.
+        $gatedKeys = $template->getDpoGatedSectionKeys();
+        if (!is_array($gatedKeys) || $gatedKeys === []) {
+            $gatedKeys = ['privacy_addendum'];
+        }
+
+        // W6-A §0.A.2 — per-key approval-role override map authored on
+        // the template. Default per spec is `dpo` so the
+        // privacy_section_gate fires; tests/seeds may set role=`joint`
+        // or `ciso` per section.
+        $roleOverrides = $this->resolveSectionRoleOverrides($template);
+
+        foreach ($gatedKeys as $sectionKey) {
+            if (!is_string($sectionKey) || $sectionKey === '') {
+                continue;
+            }
+            $this->ensureGatedSection(
+                $document,
+                $tenant,
+                $sectionKey,
+                $roleOverrides[$sectionKey] ?? DocumentSection::APPROVAL_ROLE_DPO,
+            );
+        }
+    }
+
+    /**
+     * W6-A §0.A.2 — pull per-key approvalRole overrides out of the
+     * template's `requiredVariables` block (when authored). Authors can
+     * declare e.g.
+     *   {"key": "dpo_section_role_overrides",
+     *    "type": "map",
+     *    "value": {"privacy_addendum": "joint"}}
+     * to mark a single host section as a joint CISO+DPO sign-off
+     * without changing the global default.
+     *
+     * @return array<string, string>
+     */
+    private function resolveSectionRoleOverrides(PolicyTemplate $template): array
+    {
+        $required = $template->getRequiredVariables() ?? [];
+        foreach ($required as $entry) {
+            if (!is_array($entry)) {
+                continue;
+            }
+            if (($entry['key'] ?? null) !== 'dpo_section_role_overrides') {
+                continue;
+            }
+            $value = $entry['value'] ?? null;
+            if (!is_array($value)) {
+                continue;
+            }
+            $clean = [];
+            foreach ($value as $sectionKey => $role) {
+                if (!is_string($sectionKey) || !is_string($role)) {
+                    continue;
+                }
+                if (!in_array($role, DocumentSection::ALLOWED_APPROVAL_ROLES, true)) {
+                    continue;
+                }
+                $clean[$sectionKey] = $role;
+            }
+            return $clean;
+        }
+        return [];
+    }
+
+    /**
+     * W6-A §0.A.2 + §0.A.6 — create one gated section row for the host
+     * Document. Idempotent: when a row with the same (document, key)
+     * already exists we skip and leave the existing approval state as
+     * is. Defaults to `approval_role=dpo` so the privacy_section_gate
+     * fires; legacy ROLE_CISO sections may set role=`ciso` explicitly.
+     */
+    private function ensureGatedSection(
+        Document $document,
+        Tenant $tenant,
+        string $sectionKey,
+        string $approvalRole,
+    ): void {
         if ($this->documentSectionRepository !== null) {
             $existing = $this->documentSectionRepository->findOneByDocumentAndKey(
                 $document,
-                'privacy_addendum',
+                $sectionKey,
             );
             if ($existing instanceof DocumentSection) {
                 return;
@@ -1014,9 +1125,358 @@ final class DocumentGenerator implements DocumentGeneratorInterface
 
         $section = new DocumentSection();
         $section->setDocument($document);
-        $section->setSectionKey('privacy_addendum');
+        $section->setSectionKey($sectionKey);
         $section->setStatus(DocumentSection::STATUS_DRAFT);
         $section->setTenant($tenant);
+        $section->setApprovalRole($approvalRole);
         $this->entityManager->persist($section);
+    }
+
+    /**
+     * W6-C — GDPR section injector.
+     *
+     * Per `06-dpo-input.md` §0 Decision Matrix v2, the DPO addon
+     * contributes 10 privacy sections that MERGE into existing ISO 27001
+     * host policies (rather than spawning standalone docs). When the
+     * tenant adopted GDPR scope (`gdpr` in `Run.standardsAdopted`) we
+     * walk the {@see GdprSectionCatalogue} and emit one DocumentSection
+     * row per matching ISO topic.
+     *
+     * Each row carries the catalogue's `approval_role` so the W6-A
+     * split-state approval gate fires correctly:
+     *  - `dpo`   → DPO-only sign-off (CISO locked out at edit time)
+     *  - `joint` → both DPO + CISO must approve
+     *  - `ciso`  → CISO-only (no DPO involvement, e.g. premises security)
+     *
+     * Idempotent on re-generation: if a section with the same key
+     * already exists for the Document we skip. Superseding Documents
+     * get fresh sections; the old ones stay bound to the old Document
+     * for audit-trail integrity (mirrors the §10 immutability contract).
+     *
+     * Skip rules:
+     *  - catalogue not wired (legacy DI graphs / unit tests).
+     *  - Document has no parent template / template is not ISO 27001.
+     *  - Run.standardsAdopted does NOT include 'gdpr'.
+     *  - Catalogue has no entry for the template's topic.
+     *
+     * Side effects:
+     *  - One {@see DocumentSection} row per matching catalogue entry.
+     *  - One `gdpr-section:<key>:applied` {@see EntityTag} row per
+     *    section so the audit-export view can pivot on which GDPR
+     *    sections were injected on a given host Document.
+     */
+    public function appendGdprSectionsIfApplicable(Document $document, WizardRun $run): void
+    {
+        if ($this->gdprSectionCatalogue === null) {
+            return;
+        }
+        if (!$this->isGdprScopeActive($run)) {
+            return;
+        }
+
+        $template = $document->getGeneratedFromTemplate();
+        if (!$template instanceof PolicyTemplate) {
+            return;
+        }
+        if ($template->getStandard() !== 'iso27001') {
+            return;
+        }
+        $topic = $template->getTopic();
+        if (!is_string($topic) || $topic === '') {
+            return;
+        }
+
+        $sections = $this->gdprSectionCatalogue->getSectionsFor($topic);
+        if ($sections === []) {
+            return;
+        }
+
+        $tenant = $document->getTenant();
+        if ($tenant === null) {
+            return;
+        }
+
+        foreach ($sections as $row) {
+            $this->ensureGdprSection($document, $tenant, $row, $run);
+        }
+    }
+
+    /**
+     * Persist (idempotently) one GDPR section per catalogue row + emit
+     * the matching `gdpr-section:<key>:applied` tag on the host Document.
+     *
+     * @param array{
+     *   iso_topic: string,
+     *   section_key: string,
+     *   gdpr_articles: list<string>,
+     *   approval_role: string,
+     * } $row
+     */
+    private function ensureGdprSection(
+        Document $document,
+        Tenant $tenant,
+        array $row,
+        WizardRun $run,
+    ): void {
+        $sectionKey = $row['section_key'];
+
+        if ($this->documentSectionRepository !== null) {
+            $existing = $this->documentSectionRepository->findOneByDocumentAndKey(
+                $document,
+                $sectionKey,
+            );
+            if ($existing instanceof DocumentSection) {
+                // Idempotent: re-runs on the same Document do not
+                // duplicate the section. The existing approval_role
+                // stays untouched so a DPO sign-off in flight is not
+                // accidentally reset.
+                return;
+            }
+        }
+
+        $section = new DocumentSection();
+        $section->setDocument($document);
+        $section->setSectionKey($sectionKey);
+        $section->setStatus(DocumentSection::STATUS_DRAFT);
+        $section->setTenant($tenant);
+        $section->setApprovalRole($row['approval_role']);
+
+        // Capture a stub content snapshot pointing at the translation
+        // key so a draft export render shows "[GDPR Section: <key>
+        // (Art. X / Y)]" rather than an empty body. The full prose
+        // ships from W6-F (translations) — until then the snapshot
+        // labels the section so DPO reviewers can locate it.
+        $articles = implode(', ', $row['gdpr_articles']);
+        $section->setContentSnapshot(sprintf(
+            "[GDPR Section: %s — %s]\n\n_(Authoring pending: policy_wizard.gdpr_section.%s.body)_",
+            $sectionKey,
+            $articles,
+            $sectionKey,
+        ));
+
+        $this->entityManager->persist($section);
+
+        // §8.5 — emit one `gdpr-section:<key>:applied` tag per injected
+        // section so the audit-export view can pivot on which GDPR
+        // sections grew from which run. Mirrors the W4-A
+        // `dora-extension:applied` pattern.
+        $this->tagGdprSectionApplied($document, $sectionKey, $run);
+    }
+
+    /**
+     * Resolve-or-create the `gdpr-section:<key>:applied` tag and link
+     * it to the Document via {@see EntityTag}. No-op when the Document
+     * has no id (defensive — runPersistent always flushes before this
+     * point).
+     */
+    private function tagGdprSectionApplied(Document $document, string $sectionKey, WizardRun $run): void
+    {
+        $documentId = $document->getId();
+        if ($documentId === null) {
+            return;
+        }
+        $tenant = $document->getTenant();
+        $tagName = sprintf('gdpr-section:%s:applied', $sectionKey);
+
+        $tag = $this->tagRepository->findOneByName($tenant, $tagName);
+        if ($tag === null) {
+            $tag = new Tag();
+            $tag->setName($tagName);
+            $tag->setType(Tag::TYPE_CUSTOM);
+            $tag->setTenant($tenant);
+            $this->entityManager->persist($tag);
+        }
+
+        $link = new EntityTag();
+        $link->setTag($tag);
+        $link->setEntityClass(Document::class);
+        $link->setEntityId($documentId);
+        $link->setTaggedFrom(new DateTimeImmutable());
+        $link->setTaggedBy($run->getStartedByUser());
+        $this->entityManager->persist($link);
+    }
+
+    /**
+     * W6-C — thin A.5.34 cross-reference host emission.
+     *
+     * Per §0 Decision Matrix v2 row 18, ISO 27001 A.5.34 demands a
+     * topic-specific policy at A.5.34 even when the privacy content
+     * itself is satisfied by §2.1 (Cl. 5.2 section) plus the 5
+     * standalone privacy artefacts. The v2 compromise is to keep a
+     * THIN 1-2 page cross-reference document at A.5.34 that lists
+     * where every privacy concern lives instead of either suppressing
+     * the row or duplicating content.
+     *
+     * Emission rules:
+     *  - tenant must have BOTH `iso27001` AND `gdpr` in `standardsAdopted`.
+     *  - sandbox runs do NOT emit (handled upstream — runPersistent is
+     *    only entered from the persistent path).
+     *  - re-generation is idempotent: a single thin host per tenant.
+     *  - Document is tagged `iso27001:A.5.34` + `policy-wizard:thin-host`
+     *    + `wizard-run:<id>` so the audit-export view can pivot on it.
+     *
+     * Body comes from the `policy.iso.iso_a534_thin_host.v1.body`
+     * translation key (W6-F authors the full text). Until then the
+     * translator returns the key verbatim and we wrap it in a
+     * "_(authoring pending)_" stub so the generated docs stay
+     * auditor-presentable.
+     *
+     * @param array<string, Tag> $tagCache
+     * @return int|null id of the emitted Document, or null when the
+     *                  emission was skipped (no GDPR scope) or reused
+     *                  an existing host.
+     */
+    private function emitThinA534HostIfApplicable(
+        WizardRun $run,
+        Tenant $tenant,
+        array &$tagCache,
+    ): ?int {
+        if (!$this->isGdprScopeActive($run)) {
+            return null;
+        }
+        $standards = $run->getStandardsAdopted() ?? [];
+        if (!in_array('iso27001', $standards, true)) {
+            return null;
+        }
+
+        // Idempotent: one thin host per tenant. We pivot on entityType
+        // so a re-run finds the existing one and skips emission. The
+        // re-emission case is rare in practice (GDPR scope rarely
+        // toggles on/off) but the safety check costs us nothing.
+        $existing = $this->documentRepository->findOneBy([
+            'tenant' => $tenant,
+            'entityType' => 'iso_a534_thin_host',
+            'isArchived' => false,
+        ]);
+        if ($existing instanceof Document) {
+            return $existing->getId();
+        }
+
+        $bodyKey = 'policy.iso.iso_a534_thin_host.v1.body';
+        $body = $this->translator->trans($bodyKey);
+        if ($body === $bodyKey) {
+            // Translation not yet authored (W6-F deliverable). Emit a
+            // stub body listing the 5 standalone privacy docs as
+            // cross-references so the host is still meaningful.
+            $body = $this->buildThinA534HostStub($bodyKey);
+        }
+
+        $now = new DateTimeImmutable();
+        $hash = $this->hashSubstitution([], $body);
+        $filename = sprintf('policy-iso-a534-thin-host-run%d.md', $run->getId() ?? 0);
+
+        $doc = new Document();
+        $doc->setTenant($tenant);
+        $doc->setFilename($filename);
+        $doc->setOriginalFilename($filename);
+        $doc->setMimeType('text/markdown');
+        $doc->setFileSize(strlen($body));
+        $doc->setFilePath('virtual:policy-wizard/' . $filename);
+        $doc->setCategory('policy');
+        $doc->setDescription($this->firstParagraph($body));
+        $doc->setStatus('draft');
+        $doc->setUploadedAt($now);
+        $doc->setUploadedBy($run->getStartedByUser());
+        $doc->setSha256Hash($hash);
+        $doc->setEntityType('iso_a534_thin_host');
+        $doc->setEntityId($run->getId());
+        $doc->setGeneratedFromWizardRun($run);
+        $doc->setSubstitutionVariables([
+            '_hash' => $hash,
+            '_thin_host' => true,
+            '_iso_control' => 'A.5.34',
+            '_cross_references' => [
+                'dpo_charter',
+                'ropa_methodology',
+                'dpia_methodology',
+                'dsr_procedure',
+                'retention_schedule',
+            ],
+        ]);
+        $doc->setIsImmutable(false);
+
+        $this->entityManager->persist($doc);
+        $this->entityManager->flush();
+
+        $documentId = (int) $doc->getId();
+
+        // §8.5-style tagging — emit ISO + thin-host markers so the
+        // audit-export view can pivot on the A.5.34 row.
+        $tags = [
+            'policy-wizard-generated',
+            'policy-wizard:thin-host',
+            'iso27001:A.5.34',
+            'standard:iso27001',
+            'topic:iso_a534_thin_host',
+            'version:1',
+            'wizard-run:' . ($run->getId() ?? 0),
+        ];
+
+        foreach ($tags as $tagName) {
+            $tag = $this->resolveOrCreateTag($tagName, $tenant, $tagCache);
+            $link = new EntityTag();
+            $link->setTag($tag);
+            $link->setEntityClass(Document::class);
+            $link->setEntityId($documentId);
+            $link->setTaggedFrom(new DateTimeImmutable());
+            $link->setTaggedBy($run->getStartedByUser());
+            $this->entityManager->persist($link);
+        }
+
+        $this->entityManager->flush();
+
+        $this->logger->info('PolicyWizard W6-C: emitted thin A.5.34 host', [
+            'wizard_run_id' => $run->getId(),
+            'tenant_id' => $tenant->getId(),
+            'document_id' => $documentId,
+        ]);
+
+        return $documentId;
+    }
+
+    /**
+     * Stub body for the thin A.5.34 host when the translation key is
+     * not yet authored. Lists the 5 standalone privacy artefacts as
+     * cross-references plus a header tagging the document as a thin
+     * host (1-2 page only) per §0 v2 row 18.
+     */
+    private function buildThinA534HostStub(string $bodyKey): string
+    {
+        return <<<MARKDOWN
+            # ISO 27001 A.5.34 — Privacy / PII Handling
+
+            > Thin host (1-2 page cross-reference). Per ISO 27001 A.5.34
+            > "the organization shall maintain a topic-specific policy".
+            > This document satisfies that requirement by referencing the
+            > full set of standalone privacy artefacts maintained under
+            > the GDPR addon.
+
+            ## Cross-references
+
+            The privacy aspects of the ISMS are documented in:
+
+            1. **DPO Charter** (§2.13) — Data Protection Officer mandate, independence and tasks per GDPR Art. 37-39.
+            2. **RoPA Methodology** (§2.2) — Records of Processing Activities + Lawful-Basis + Consent Management per GDPR Art. 30 / 6 / 7.
+            3. **DPIA Methodology** (§2.3) — Data Protection Impact Assessment process per GDPR Art. 35-36.
+            4. **DSR Procedure** (§2.4) — Data Subject Rights handling per GDPR Art. 12-22 (1-month SLA).
+            5. **Retention Schedule** (§2.11) — Retention durations per data category, single-source-of-truth.
+
+            Operational privacy controls additionally live as embedded sections inside the ISO host policies (Cl. 5.2, A.5.24-28, A.5.19-22, A.5.14, A.8.13/15, A.5.8/A.8.27/28, A.6.3) — see the GDPR section catalogue for the per-topic injection map.
+
+            _(Authoring pending: $bodyKey — the W6-F translation deliverable replaces this stub with the full cross-reference matrix.)_
+            MARKDOWN;
+    }
+
+    /**
+     * Whether the wizard run has GDPR scope active. Accepts both
+     * `gdpr` and `iso27701` in `standardsAdopted` because PIMS is the
+     * formal GDPR overlay and tenants commonly adopt it as the GDPR
+     * marker in ISO-aligned shops.
+     */
+    private function isGdprScopeActive(WizardRun $run): bool
+    {
+        $standards = $run->getStandardsAdopted() ?? [];
+        return in_array('gdpr', $standards, true)
+            || in_array('iso27701', $standards, true);
     }
 }

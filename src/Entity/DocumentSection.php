@@ -51,6 +51,27 @@ class DocumentSection
         self::STATUS_REJECTED,
     ];
 
+    /**
+     * W6-A §0.A.2 — split-state approval role for the section.
+     *
+     *  - `ciso`  : standard CISO-owned approval (default for legacy rows
+     *              created before W6-A — preserves existing behaviour).
+     *  - `dpo`   : DPO-only sign-off; CISO is locked out via
+     *              {@see PolicySectionApprovalService::assertSectionEditable}.
+     *  - `joint` : both CISO and DPO must sign — the host workflow waits
+     *              until BOTH have approved.
+     */
+    public const string APPROVAL_ROLE_CISO  = 'ciso';
+    public const string APPROVAL_ROLE_DPO   = 'dpo';
+    public const string APPROVAL_ROLE_JOINT = 'joint';
+
+    /** @var list<string> */
+    public const array ALLOWED_APPROVAL_ROLES = [
+        self::APPROVAL_ROLE_CISO,
+        self::APPROVAL_ROLE_DPO,
+        self::APPROVAL_ROLE_JOINT,
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -95,6 +116,34 @@ class DocumentSection
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $rejectionReason = null;
+
+    /**
+     * W6-A §0.A.2 — split-state approval role. Null on legacy rows; the
+     * W6-A migration backfills NULL → `ciso` so existing behaviour
+     * (CISO-only approval) is preserved. New rows must set this
+     * explicitly via {@see setApprovalRole}.
+     */
+    #[ORM\Column(name: 'approval_role', type: Types::STRING, length: 16, nullable: true)]
+    private ?string $approvalRole = null;
+
+    /**
+     * W6-A §0.A.4 — once the DPO approves a `dpo`-roled section, this
+     * flag is set so {@see PolicySectionApprovalService::assertSectionEditable}
+     * blocks any further CISO edits. The DPO can always re-edit (which
+     * re-opens the section back to `pending_dpo` and clears the lock).
+     */
+    #[ORM\Column(name: 'edit_locked', type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $editLocked = false;
+
+    /**
+     * W6-A §0.A.5 — author of the section content, used to enforce the
+     * self-approval prohibition (Art. 38(3) — DPO independence carve-out).
+     * Set when content is first authored / edited; checked at approve()
+     * + reject() time against the acting user.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'authored_by_user_id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $authoredByUser = null;
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(name: 'tenant_id', nullable: false, onDelete: 'CASCADE')]
@@ -247,6 +296,51 @@ class DocumentSection
     public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public function getApprovalRole(): ?string
+    {
+        return $this->approvalRole;
+    }
+
+    /**
+     * @throws \InvalidArgumentException when $approvalRole is non-null and
+     *                                   not one of the APPROVAL_ROLE_*
+     *                                   constants.
+     */
+    public function setApprovalRole(?string $approvalRole): static
+    {
+        if ($approvalRole !== null && !in_array($approvalRole, self::ALLOWED_APPROVAL_ROLES, true)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Invalid DocumentSection approval role "%s". Allowed: %s, or null.',
+                $approvalRole,
+                implode(', ', self::ALLOWED_APPROVAL_ROLES),
+            ));
+        }
+        $this->approvalRole = $approvalRole;
+        return $this;
+    }
+
+    public function isEditLocked(): bool
+    {
+        return $this->editLocked;
+    }
+
+    public function setEditLocked(bool $editLocked): static
+    {
+        $this->editLocked = $editLocked;
+        return $this;
+    }
+
+    public function getAuthoredByUser(): ?User
+    {
+        return $this->authoredByUser;
+    }
+
+    public function setAuthoredByUser(?User $authoredByUser): static
+    {
+        $this->authoredByUser = $authoredByUser;
+        return $this;
     }
 
     /**

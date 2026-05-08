@@ -1,0 +1,366 @@
+policy:
+    iso27001:
+        acceptable_use:
+            v1:
+                gdpr_section:
+                    gdpr_lawful_basis_workplace:
+                        title: 'Datenschutzrechtliche Aspekte der Nutzung am Arbeitsplatz'
+                        body: |-
+                            ## Datenschutzrechtliche Grundlagen der Nutzung von IT- und Kommunikationsmitteln am Arbeitsplatz
+
+                            *Abschnittsklasse: GDPR-Sektion zur Acceptable-Use-Richtlinie | Norm-Anker: Art. 6, Art. 9, Art. 88 DSGVO; § 26 BDSG-neu; § 87 BetrVG | Cross-Reference ISO/IEC 27001:2022 Annex A.5.10, A.6.3, A.8.1*
+
+                            ### 1. Zweck
+                            Die Nutzung der von der {{ tenant.legal_name }} bereitgestellten IT- und Kommunikationsmittel beruehrt regelmaessig die Verarbeitung personenbezogener Daten von Mitarbeitenden, Kunden, Geschaeftspartnern und Dritten. Dieser Abschnitt erlaeutert die Rechtsgrundlagen, Schranken und Mitbestimmungstatbestaende zusaetzlich zur allgemeinen Acceptable-Use-Richtlinie. Er gilt fuer alle Beschaeftigten im Sinne von § 26 Abs. 8 BDSG, einschliesslich Auszubildender, Praktikantinnen und Praktikanten, Werkstudentinnen und Werkstudenten sowie Leiharbeitskraeften.
+
+                            ### 2. Rechtsgrundlagen der Beschaeftigtendatenverarbeitung
+                            Die Verarbeitung personenbezogener Daten von Beschaeftigten zur Begruendung, Durchfuehrung oder Beendigung des Beschaeftigungsverhaeltnisses sowie zur Erfuellung von Rechten und Pflichten aus Gesetz, Tarifvertrag oder Betriebs- bzw. Dienstvereinbarung erfolgt auf Grundlage von § 26 Abs. 1 BDSG-neu in Verbindung mit Art. 88 Abs. 1 DSGVO. Bei nicht beschaeftigungsbezogenen Verarbeitungen ist die Rechtsgrundlage gesondert nach Art. 6 Abs. 1 DSGVO zu bestimmen ({{ gdpr.legal_basis_default }}). Besondere Kategorien unterliegen Art. 9 DSGVO und § 26 Abs. 3 BDSG.
+
+                            ### 3. Mitbestimmung des Betriebs- bzw. Personalrats
+                            Nach § 87 Abs. 1 Nr. 6 BetrVG unterliegt die Einfuehrung und Anwendung technischer Einrichtungen, die zur Ueberwachung von Verhalten oder Leistung der Beschaeftigten bestimmt oder geeignet sind, der erzwingbaren Mitbestimmung. Hierzu zaehlen E-Mail- und Internet-Logging, Endpoint-Detection-and-Response, Mobile-Device-Management, Web-Proxies, Data-Loss-Prevention sowie zentrale Single-Sign-On- und Identity-Provider-Loesungen. Vor Einfuehrung oder wesentlicher Aenderung wird eine Betriebs- bzw. Dienstvereinbarung abgeschlossen. {{ roles.dpo.fullName }} wirkt beratend mit; Verhandlung und Abschluss obliegen der Geschaeftsleitung.
+
+                            ### 4. Private Nutzung und Trennungsgebot
+                            Private Nutzung dienstlicher Kommunikationsmittel ist nur im in der Acceptable-Use-Richtlinie ausdruecklich freigegebenen Umfang zulaessig. Bei Verbot gelten Inhaltsdaten als dienstliche Daten unter regulaerem Beschaeftigtendatenschutz. Bei Erlaubnis oder Duldung kann nach herrschender Aufsichtsbehoerden-Auffassung eine TKG-Anbieterstellung entstehen mit strengeren Vertraulichkeits- und Auswertungs-Anforderungen. Die {{ tenant.legal_name }} folgt deshalb dem Trennungsgebot: private Nutzung nur ueber explizit gekennzeichnete Kanaele oder gar nicht.
+
+                            ### 5. Zulaessige Kontrolle und Auswertung
+                            Eine Auswertung von Log- und Inhaltsdaten zur Aufdeckung von Straftaten im Beschaeftigungsverhaeltnis ist nur unter den engen Voraussetzungen von § 26 Abs. 1 Satz 2 BDSG zulaessig (dokumentierte tatsaechliche Anhaltspunkte, Verhaeltnismaessigkeit, kein milderes Mittel). Anlasslose Vollauswertungen sind unzulaessig. Stichprobenartige technische Pruefungen zu Sicherheits- und Verfuegbarkeitszwecken sind pseudonymisiert oder aggregiert nach Art. 6 Abs. 1 lit. f DSGVO zulaessig, sofern die Interessenabwaegung im Verzeichnis dokumentiert ist.
+
+                            ### 6. Transparenz und Betroffenenrechte
+                            Beschaeftigte werden bei Eintritt sowie bei Einfuehrung neuer Systeme nach Art. 13 DSGVO ueber Zwecke, Rechtsgrundlagen, Speicherdauern und Empfaenger informiert. Betroffenenrechte aus Art. 15 bis 22 DSGVO werden ueber die in der Verfahrensbeschreibung definierten Kanaele wahrgenommen; eine Ausuebung darf nicht zu Nachteilen fuehren.
+
+                            ### 7. Verstoesse und Sanktionen
+                            Verstoesse werden im arbeitsrechtlichen Sanktionssystem der {{ tenant.legal_name }} verfolgt. {{ roles.dpo.fullName }} kann Auswertungen untersagen, die nicht den Voraussetzungen aus § 26 BDSG und der jeweiligen Betriebsvereinbarung genuegen.
+
+                            ---
+
+                            *Genehmigung: CISO + DPO (joint)*
+                            *Genehmigungskette: {{ approval.chain }}*
+        awareness_training:
+            v1:
+                gdpr_section:
+                    gdpr_dpo_mandate:
+                        title: 'Mandat und Stellung des Datenschutzbeauftragten'
+                        body: |-
+                            ## Mandat, Aufgaben und Stellung der oder des Datenschutzbeauftragten
+
+                            *Abschnittsklasse: GDPR-Sektion zur Awareness- und Trainings-Richtlinie | Norm-Anker: Art. 37 bis 39 DSGVO; § 38 BDSG-neu | Cross-Reference ISO/IEC 27001:2022 Annex A.6.3, A.5.2; ISO/IEC 27701:2025 Cl. 5.3, 6.4.2*
+
+                            ### 1. Bestellung
+                            Die {{ tenant.legal_name }} hat {{ roles.dpo.fullName }} gemaess Art. 37 Abs. 1 DSGVO und § 38 BDSG-neu zur oder zum Datenschutzbeauftragten bestellt. In Deutschland besteht die Bestellungspflicht insbesondere bei mindestens 20 Personen, die staendig mit automatisierter Verarbeitung beschaeftigt sind, bei DSFA-pflichtigen Verarbeitungen oder bei geschaeftsmaessiger Verarbeitung zum Zweck der Uebermittlung, anonymisierten Uebermittlung oder Markt- bzw. Meinungsforschung. Kontaktdaten sind nach Art. 37 Abs. 7 DSGVO veroeffentlicht und der Aufsichtsbehoerde mitgeteilt.
+
+                            ### 2. Aufgaben nach Art. 39 DSGVO
+                            {{ roles.dpo.fullName }} nimmt mindestens wahr: Unterrichtung und Beratung des Verantwortlichen sowie der Beschaeftigten; Ueberwachung der Einhaltung der Datenschutzvorschriften und der Strategien einschliesslich Zustaendigkeitszuweisung, Sensibilisierung und Schulung; Beratung und Ueberwachung der DSFA nach Art. 35 DSGVO; Zusammenarbeit mit der Aufsichtsbehoerde und Taetigkeit als Anlaufstelle nach Art. 36 DSGVO. Diese Aufgaben sind im Awareness- und Trainings-Programm als wiederkehrende Pflichtinhalte verankert.
+
+                            ### 3. Stellung und Unabhaengigkeit
+                            {{ roles.dpo.fullName }} berichtet unmittelbar der obersten Leitungsebene (Art. 38 Abs. 3 Satz 3 DSGVO). Weisungen werden nicht erteilt; Abberufung oder Benachteiligung wegen der Aufgabenerfuellung ist unzulaessig (Art. 38 Abs. 3 Satz 2 DSGVO, § 6 Abs. 4 BDSG-neu mit § 38 Abs. 2 BDSG). {{ roles.dpo.fullName }} ist zur Verschwiegenheit verpflichtet (Art. 38 Abs. 5 DSGVO) und hat in Beratungssituationen ein gesetzliches Zeugnisverweigerungsrecht.
+
+                            ### 4. Ressourcen und Zugang
+                            Die {{ tenant.legal_name }} stellt {{ roles.dpo.fullName }} die erforderlichen Ressourcen bereit, insbesondere Zugang zu personenbezogenen Daten und Verarbeitungsvorgaengen sowie Mittel zur Erhaltung des Fachwissens (Art. 38 Abs. 2 DSGVO). Hierzu zaehlen Lese-Zugriff auf das Verzeichnis von Verarbeitungstaetigkeiten, DSFAs, Asset-Inventar, Vorfallmeldungen und Lieferantenregister.
+
+                            ### 5. Konfliktfreiheit
+                            {{ roles.dpo.fullName }} darf keine Aufgaben mit Interessenkonflikt wahrnehmen (Art. 38 Abs. 6 DSGVO). Insbesondere darf die Funktion nicht in einer Person mit Geschaeftsfuehrung, Leitung Personal, Leitung IT oder ISB- bzw. CISO-Rolle vereinigt werden. Die Konfliktfreiheit ist dokumentiert; Aktualisierung jaehrlich und bei jedem Rollenwechsel.
+
+                            ### 6. Awareness- und Trainingsbeitrag
+                            Im Rahmen des Programms gemaess A.6.3 fuehrt {{ roles.dpo.fullName }} mindestens jaehrlich rollenspezifische Datenschutz-Schulungen fuer alle Beschaeftigten sowie vertiefende Module fuer HR, Marketing, Vertrieb, IT-Betrieb und Software-Entwicklung durch. Onboarding erhaelt einen Datenschutz-Einstiegsbaustein in den ersten 30 Tagen. Wirksamkeit wird ueber Test-Bestehensquoten und gezielte Phishing-artige Datenschutz-Quizze gemessen.
+
+                            ### 7. Anlaufstelle
+                            Beschaeftigte und Betroffene erreichen {{ roles.dpo.fullName }} ueber die im Datenschutzhinweis veroeffentlichten Kanaele. Anfragen werden vertraulich behandelt; eine Weitergabe an Vorgesetzte erfolgt nicht ohne Zustimmung der Betroffenen, soweit rechtlich zulaessig.
+
+                            ---
+
+                            *Genehmigung: DPO*
+                            *Genehmigungskette: {{ approval.chain }}*
+        information_classification:
+            v1:
+                gdpr_section:
+                    gdpr_special_categories:
+                        title: 'Besondere Kategorien personenbezogener Daten und Berufsgeheimnisse'
+                        body: |-
+                            ## Klassifizierung und Schutz besonderer Kategorien personenbezogener Daten
+
+                            *Abschnittsklasse: GDPR-Sektion zur Klassifizierungs-Richtlinie | Norm-Anker: Art. 9, Art. 10 DSGVO; § 22 BDSG-neu; § 203 StGB | Cross-Reference ISO/IEC 27001:2022 Annex A.5.12, A.5.13, A.8.11, A.8.12; ISO/IEC 27701:2025 Cl. 7.2.2*
+
+                            ### 1. Anwendungsbereich
+                            Dieser Abschnitt erweitert die Klassifizierungs-Richtlinie um Vorgaben fuer besondere Kategorien personenbezogener Daten im Sinne von Art. 9 Abs. 1 DSGVO sowie fuer personenbezogene Daten ueber strafrechtliche Verurteilungen und Straftaten (Art. 10 DSGVO). Erfasst sind insbesondere Daten, aus denen rassische oder ethnische Herkunft, politische Meinungen, religioese oder weltanschauliche Ueberzeugungen oder Gewerkschaftszugehoerigkeit hervorgehen, sowie genetische Daten, biometrische Daten zur eindeutigen Identifizierung, Gesundheitsdaten und Daten zum Sexualleben oder zur sexuellen Orientierung.
+
+                            ### 2. Klassifizierungsregel
+                            Daten nach Art. 9 und Art. 10 DSGVO werden mindestens als *vertraulich* eingestuft; in regulierten Sektoren (Healthcare, Sozialdaten, Strafverfolgung) als *streng vertraulich*. Eine niedrigere Einstufung ist unabhaengig vom Schutzbedarf in Verfuegbarkeit oder Integritaet ausgeschlossen. Pseudonymisierte oder aggregierte Datensaetze duerfen nur nach dokumentierter Risikobewertung niedriger eingestuft werden; die Verbindbarkeit zur natuerlichen Person nach Art. 4 Nr. 5 DSGVO muss mit angemessenem Aufwand ausgeschlossen sein.
+
+                            ### 3. Rechtsgrundlagen und Erlaubnistatbestaende
+                            Die Verarbeitung besonderer Kategorien ist nach Art. 9 Abs. 1 DSGVO grundsaetzlich untersagt, ausser ein Tatbestand des Art. 9 Abs. 2 lit. a bis j DSGVO greift. Im Beschaeftigungskontext gilt § 26 Abs. 3 BDSG-neu, im Gesundheitssektor zusaetzlich § 22 Abs. 1 BDSG-neu. Die Rechtsgrundlage ist je Verarbeitung im Verzeichnis zu dokumentieren ({{ gdpr.legal_basis_default }} ist nicht ausreichend).
+
+                            ### 4. Berufliche Schweigepflichten (§ 203 StGB)
+                            Soweit die {{ tenant.legal_name }} Daten verarbeitet, die einer Schweigepflicht nach § 203 Abs. 1 StGB unterliegen (aerztlich, zahnaerztlich, anwaltlich, steuerberatend, sozialarbeiterisch oder vergleichbar), gelten zusaetzliche Pflichten nach § 203 Abs. 3 StGB: schriftliche Geheimhaltungs-Verpflichtung mitwirkender Personen, sorgfaeltige Auswahl und Ueberwachung externer Dienstleister und ergaenzende Vertraulichkeitszusagen in Auftragsverarbeitungs- und Dienstleisterregelungen. Die Verletzung ist strafbewehrt. Schulungsinhalte fuer betroffene Rollen sind im Awareness-Programm separat ausgewiesen.
+
+                            ### 5. Technische und organisatorische Massnahmen
+                            Mindestmassnahmen: Verschluesselung im Ruhezustand und in der Uebertragung (A.8.24), attribut- oder rollenbasierte Zugriffskontrolle nach Need-to-know (A.5.15, A.5.18), Datenminimierung in Test- und Entwicklungssystemen mit Maskierung oder synthetischen Daten (A.8.11, A.8.33), Data-Loss-Prevention an Egress-Wegen (A.8.12) und verstaerkte Protokollierung (A.8.15) mit zeitnaher Auswertung. Mobile Endgeraete duerfen solche Daten nur in zertifizierten Containern oder ueber genehmigte Remote-Loesungen verarbeiten.
+
+                            ### 6. Pflicht zur DSFA
+                            Eine DSFA nach Art. 35 DSGVO ist obligatorisch bei Verarbeitung in groesserem Umfang, biometrischer Identifizierung oder umfangreicher systematischer Beobachtung. {{ roles.dpo.fullName }} ist zwingend einzubinden.
+
+                            ### 7. Drittlandtransfer
+                            Uebermittlungen in Drittlaender ohne Angemessenheitsbeschluss beduerfen zwingender ergaenzender Massnahmen nach EDSA-Empfehlungen 01/2020 und einer TIA. Eine Stuetzung auf Art. 49 Abs. 1 lit. a DSGVO (ausdrueckliche Einwilligung) ist nur als Einzelfall-Ausnahme zulaessig.
+
+                            ---
+
+                            *Genehmigung: CISO + DPO (joint)*
+                            *Genehmigungskette: {{ approval.chain }}*
+        secure_development:
+            v1:
+                gdpr_section:
+                    gdpr_privacy_by_design:
+                        title: 'Privacy by Design und Privacy by Default in der Entwicklung'
+                        body: |-
+                            ## Privacy by Design und Privacy by Default
+
+                            *Abschnittsklasse: GDPR-Sektion zur Secure-Development-Richtlinie | Norm-Anker: Art. 25 DSGVO; ENISA *Privacy and Data Protection by Design* (2014) und Folge-Leitlinien | Cross-Reference ISO/IEC 27001:2022 Annex A.8.25, A.8.27, A.8.28; ISO/IEC 27701:2025 Cl. 7.4.2; ISO/IEC 31700-1:2023*
+
+                            ### 1. Geltungsbereich und Auftrag
+                            Dieser Abschnitt regelt, wie die {{ tenant.legal_name }} die Pflichten aus Art. 25 Abs. 1 DSGVO (Datenschutz durch Technikgestaltung) und Art. 25 Abs. 2 DSGVO (datenschutzfreundliche Voreinstellungen) in den Software-Entwicklungs-Lebenszyklus integriert. Er gilt fuer alle Projekte mit Verarbeitung personenbezogener Daten, intern wie extern beauftragt.
+
+                            ### 2. Sieben Grundprinzipien
+                            Die Entwicklung folgt den durch ENISA aufgegriffenen sieben Grundprinzipien (Cavoukian, 1995): proaktiv statt reaktiv, Datenschutz als Standardeinstellung, Datenschutz eingebettet in den Entwurf, volle Funktionalitaet ohne Trade-offs, Schutz ueber den gesamten Lebenszyklus, Sichtbarkeit und Transparenz, Achtung der Privatsphaere. Diese Prinzipien werden je Architekturentscheidung dokumentiert und sind verpflichtend in Architektur-Reviews.
+
+                            ### 3. Pflichtgates im Entwicklungslebenszyklus
+                            In jedem Projekt mit personenbezogenen Daten werden durchlaufen: Datenschutz-Pre-Check (DSFA-Schwellwert) zu Projektbeginn, PbD-Architektur-Review vor Festlegung der Zielarchitektur, PbD-Code-Review-Profil mit Pruefpunkten (Eingabevalidierung, Mindestberechtigungen, Verschluesselungsdefaults, Logging-Granularitaet), Pre-Production-Gate (Pen-Test plus DSFA-Abschluss), Post-Launch-Review nach 90 Tagen.
+
+                            ### 4. Datenschutzfreundliche Voreinstellungen
+                            Voreinstellungen verarbeiten nur die fuer den festgelegten Zweck erforderlichen personenbezogenen Daten. Zusatzfunktionen sind ausdruecklich opt-in. Tracking, Profiling, Sharing und Werbeschaltungen sind in der Voreinstellung deaktiviert; Aktivierung erfordert eine Rechtsgrundlage nach Art. 6 oder Art. 9 DSGVO. Speicherdauern werden technisch ueber automatisierte Loesch- bzw. Anonymisierungsroutinen durchgesetzt.
+
+                            ### 5. Mindest-Sicherheits-Patterns
+                            Verbindlich: Verschluesselung im Ruhezustand und in der Uebertragung mit aktuellem Algorithmus-Inventar (A.8.24); Pseudonymisierung von Identifikatoren in Non-Prod-Umgebungen (A.8.11, A.8.33); rollenbasierte Berechtigungen nach Mindest-Rechte-Prinzip (A.5.15, A.5.18); Eingabevalidierung gegen OWASP-ASVS-Stufe 2 als Mindestmass; revisionssichere Protokollierung relevanter Datenschutzereignisse; sichere Default-Konfigurationen aller Schnittstellen.
+
+                            ### 6. Lieferanten- und Fremdkomponenten-Steuerung
+                            Bibliotheken, SaaS-Komponenten und KI-Modelle werden vor Aufnahme einer datenschutzrechtlichen Eignungspruefung unterzogen. Die {{ tenant.legal_name }} dokumentiert je Komponente Hersteller, Version, Verarbeitungsort, Datenfluesse, Rechtsgrundlage und etwaige Drittlandtransferpfade. Komponenten ohne dokumentierte Pruefung sind nicht produktivfaehig.
+
+                            ### 7. Nachweisfuehrung und Audit
+                            Die Erfuellung von Art. 25 DSGVO ist nach Art. 24 DSGVO nachzuweisen. Nachweise umfassen Architekturentscheidungs-Records, Bedrohungs- und Risikomodelle, DSFAs, Test- und Audit-Berichte. Sie werden im Document-Management-Modul mit Tag iso27001:A.8.27 und iso27701:7.4.2 abgelegt und auf Anfrage gegenueber Aufsichtsbehoerden vorgelegt. {{ roles.dpo.fullName }} und {{ roles.ciso.fullName }} bestaetigen die Wirksamkeit gemeinsam.
+
+                            ---
+
+                            *Genehmigung: CISO + DPO (joint)*
+                            *Genehmigungskette: {{ approval.chain }}*
+                    gdpr_ai_systems:
+                        title: 'KI-Systeme, automatisierte Entscheidungen und EU-AI-Act-Schnittstelle'
+                        body: |-
+                            ## Datenschutz und KI-Systeme
+
+                            *Abschnittsklasse: GDPR-Sektion zur Secure-Development-Richtlinie | Norm-Anker: Art. 22 DSGVO; EU-Verordnung 2024/1689 (KI-Verordnung), insbesondere Art. 6 und Anhang III (Hochrisiko-Klassifizierung) sowie Art. 26 und Art. 27 (Pflichten der Betreiber) | Cross-Reference ISO/IEC 27001:2022 Annex A.5.8, A.8.27, A.8.28; ISO/IEC 27701:2025 Cl. 7.4.2; ISO/IEC 42001:2023*
+
+                            ### 1. Aktivierung
+                            Dieser Abschnitt findet Anwendung, sobald die Tenant-Einstellung `ai_system=true` aktiviert ist oder die {{ tenant.legal_name }} ein KI-System im Sinne von Art. 3 Nr. 1 der EU-Verordnung 2024/1689 entwickelt, betreibt oder einsetzt. Bei deaktivierter Einstellung gelten nur die allgemeinen Anforderungen aus Art. 25 DSGVO. Die Aktivierung loest die KI-bezogenen Pruefpfade in der DPIA-Methodik und im Lieferantenmanagement aus.
+
+                            ### 2. KI-Verordnung und Hochrisiko-Klassifizierung
+                            Die EU-KI-Verordnung unterscheidet verbotene Praktiken (Art. 5), Hochrisiko-KI-Systeme (Art. 6 in Verbindung mit Anhang III), KI-Systeme mit besonderen Transparenzpflichten (Art. 50) sowie KI-Systeme mit allgemeinem Zweck. Die {{ tenant.legal_name }} fuehrt ein KI-Systeminventar mit Klassifizierung je System. Anhang III umfasst insbesondere biometrische Identifizierung, kritische Infrastrukturen, allgemeine und berufliche Bildung, Beschaeftigung und Personalmanagement, Zugang zu privaten und oeffentlichen Dienstleistungen, Strafverfolgung, Migration und Justiz.
+
+                            ### 3. Betreiberpflichten nach Art. 26 KI-VO
+                            Als Betreiberin im Sinne von Art. 3 Nr. 4 KI-VO beachtet die {{ tenant.legal_name }}: Einsatz nach Anbieter-Anweisungen, kompetente menschliche Aufsicht, Eingangsdatenkontrolle, Logging und Aufbewahrung automatisch generierter Protokolle, Information der betroffenen Beschaeftigten und ihrer Vertretungen vor Inbetriebnahme am Arbeitsplatz sowie Mitwirkung bei der Marktueberwachung. Hochrisiko-Systeme am Arbeitsplatz sind zusaetzlich nach § 87 Abs. 1 Nr. 6 BetrVG mitbestimmungspflichtig.
+
+                            ### 4. Grundrechte-Folgenabschaetzung (Art. 27 KI-VO)
+                            Vor Inbetriebnahme eines Hochrisiko-Systems nach Anhang III fuehrt die {{ tenant.legal_name }} eine Grundrechte-Folgenabschaetzung nach Art. 27 KI-VO durch, wo angemessen mit der DSFA nach Art. 35 DSGVO konsolidiert; DSGVO-Anforderungen bleiben vollstaendig erhalten. Ergebnisse werden der zustaendigen Marktueberwachungsbehoerde mitgeteilt, soweit vorgesehen.
+
+                            ### 5. Automatisierte Einzelfallentscheidung (Art. 22 DSGVO)
+                            Eine ausschliesslich automatisierte Entscheidung, die rechtliche Wirkung entfaltet oder aehnlich erheblich beeintraechtigt, ist nur unter Art. 22 Abs. 2 DSGVO zulaessig. Die {{ tenant.legal_name }} stellt sicher, dass Betroffene ueber das Bestehen informiert werden, die Logik verstaendlich erlaeutert wird (Art. 13 Abs. 2 lit. f, Art. 15 Abs. 1 lit. h DSGVO) und ein Recht auf menschliches Eingreifen sowie Anfechtung besteht.
+
+                            ### 6. Trainings- und Eingabedaten
+                            Trainings-, Validierungs- und Testdaten werden hinsichtlich Repraesentativitaet, Fehlerfreiheit und Vollstaendigkeit gepflegt (Art. 10 KI-VO). Personenbezogene Trainingsdaten unterliegen Art. 5 und Art. 9 DSGVO; Verarbeitung besonderer Kategorien zu Trainingszwecken bedarf einer ausdruecklichen Rechtsgrundlage. Generative Systeme erhalten Output-Filter und Halluzinations-Pruefungen.
+
+                            ### 7. Lieferanten- und Modellsteuerung
+                            Drittanbieter, einschliesslich Anbieter von KI-Systemen mit allgemeinem Zweck, werden vertraglich auf DSGVO- und KI-VO-Anforderungen verpflichtet, gemeinsam mit der Auftragsverarbeitungs- und Drittlandsbewertung. Modelle ohne nachweisbare Daten-Provenienz und Sicherheits-Patches werden nicht eingesetzt.
+
+                            ### 8. Genehmigung und Eskalation
+                            {{ roles.dpo.fullName }} und {{ roles.ciso.fullName }} genehmigen neue KI-Systeme im Rahmen der Architektur-Reviews. Praktiken nach Art. 5 KI-VO werden ausnahmslos abgelehnt; Verstoesse fuehren zur sofortigen Stilllegung.
+
+                            ---
+
+                            *Genehmigung: CISO + DPO (joint)*
+                            *Genehmigungskette: {{ approval.chain }}*
+        supplier_security:
+            v1:
+                gdpr_section:
+                    gdpr_joint_controllers:
+                        title: 'Gemeinsame Verantwortlichkeit nach Art. 26 DSGVO'
+                        body: |-
+                            ## Gemeinsame Verantwortlichkeit und Abgrenzung zur Auftragsverarbeitung
+
+                            *Abschnittsklasse: GDPR-Sektion zur Lieferanten-Sicherheits-Richtlinie | Norm-Anker: Art. 26 DSGVO; EuGH C-210/16 *Wirtschaftsakademie Schleswig-Holstein* (5. Juni 2018); EDSA-Leitlinien 07/2020 zu den Begriffen Verantwortlicher und Auftragsverarbeiter | Cross-Reference ISO/IEC 27001:2022 Annex A.5.19, A.5.20, A.5.21, A.5.22; ISO/IEC 27701:2025 Cl. 7.2.7*
+
+                            ### 1. Anwendungsfall
+                            Dieser Abschnitt regelt die datenschutzrechtliche Behandlung von Lieferantenbeziehungen, in denen die {{ tenant.legal_name }} gemeinsam mit weiteren Stellen Zwecke und Mittel einer Verarbeitung festlegt. Er ergaenzt Art. 28 DSGVO (Auftragsverarbeitung) und gilt fuer jede Beziehung mit materieller gemeinsamer Zweckbestimmung, unabhaengig von der vertraglichen Bezeichnung.
+
+                            ### 2. Abgrenzung
+                            Verantwortlicher nach Art. 4 Nr. 7 DSGVO ist, wer allein oder gemeinsam mit anderen ueber Zwecke und Mittel der Verarbeitung entscheidet. Auftragsverarbeitung nach Art. 28 DSGVO setzt voraus, dass der Auftragsverarbeiter ausschliesslich auf Weisung taetig wird und keine eigenen Zwecke verfolgt. Bei gemeinsamer Festlegung von Zwecken oder wesentlichen Mitteln liegt gemeinsame Verantwortlichkeit nach Art. 26 DSGVO vor. EDSA-Leitlinien 07/2020 liefern die Pruefkriterien; {{ tenant.legal_name }} dokumentiert die Einstufung je Beziehung im Lieferantenregister.
+
+                            ### 3. Wirtschaftsakademie-Schleswig-Holstein-Massstab
+                            Der EuGH hat in der Rechtssache C-210/16 (Urteil vom 5. Juni 2018) entschieden, dass der Betreiber einer Facebook-Fanpage gemeinsam mit der Plattformbetreiberin fuer die Verarbeitung der Besucherdaten verantwortlich ist. Tragende Erwaegungen: bereits die Mitwirkung an Verarbeitungsparametern (z. B. Auswahl bestimmter Statistik- oder Zielgruppenfunktionen) begruendet gemeinsame Verantwortlichkeit; der Umfang muss nicht gleichgewichtig sein; eine Stufe der Verarbeitungskette kann verantwortlich sein, ohne selbst auf die Daten zuzugreifen. Die {{ tenant.legal_name }} wendet diesen Massstab analog auf Plattform-Integrationen, Co-Branding-Kampagnen, Affiliate-Konstellationen und gemeinsam betriebene Plattformen an. Die Aktivierung von Tracking- oder Insight-Funktionen Dritter ohne Vereinbarung nach Art. 26 DSGVO ist daher unzulaessig.
+
+                            ### 4. Pflichtinhalt der Vereinbarung nach Art. 26 DSGVO
+                            Die Vereinbarung legt transparent die Pflichtenverteilung fest: Informationspflichten (Art. 13, Art. 14 DSGVO), Betroffenenrechte (Art. 15 bis 22 DSGVO), Anlaufstelle fuer Betroffene, Datenpannen-Meldungen (Art. 33, Art. 34 DSGVO), DSFAs sowie Auftrags- und Sub-Auftragsverarbeiter. Das Wesentliche wird den Betroffenen nach Art. 26 Abs. 2 Satz 2 DSGVO zur Verfuegung gestellt.
+
+                            ### 5. Haftung
+                            Nach Art. 26 Abs. 3 DSGVO koennen Betroffene ihre Rechte gegenueber jedem der gemeinsam Verantwortlichen geltend machen, unabhaengig von der internen Verteilung. Innenausgleich nach vereinbarter Quote.
+
+                            ### 6. Vertragliche Umsetzung
+                            Die {{ tenant.legal_name }} ergaenzt jede betroffene Lieferantenvereinbarung um eine Anlage *Joint-Controller-Vereinbarung*. Identifikation vor Vertragsabschluss durch Fachseite mit {{ roles.dpo.fullName }}; die Klassifizierung wird im Lieferantenregister mit Status `joint_controller` erfasst und jaehrlich ueberprueft.
+
+                            ### 7. Beendigung
+                            Endet die gemeinsame Verarbeitung, wird die Vereinbarung kontrolliert beendet: Datenrueckgabe oder -loeschung nach Art. 17 DSGVO, Schliessung der Anlaufstellen, Information der Betroffenen soweit erforderlich, Aktualisierung von Verzeichnis und Lieferantenregister.
+
+                            ---
+
+                            *Genehmigung: CISO + DPO (joint)*
+                            *Genehmigungskette: {{ approval.chain }}*
+        information_transfer:
+            v1:
+                gdpr_section:
+                    gdpr_international_transfers:
+                        title: 'Internationale Datenuebermittlungen, Schrems II und Standardvertragsklauseln'
+                        body: |-
+                            ## Uebermittlung personenbezogener Daten in Drittlaender
+
+                            *Abschnittsklasse: GDPR-Sektion zur Information-Transfer-Richtlinie | Norm-Anker: Art. 44 bis 49 DSGVO; EuGH C-311/18 *Schrems II* (16. Juli 2020); Durchfuehrungsbeschluss (EU) 2021/914 der Kommission vom 4. Juni 2021 (Standardvertragsklauseln); EDSA-Empfehlungen 01/2020 zu ergaenzenden Massnahmen | Cross-Reference ISO/IEC 27001:2022 Annex A.5.14, A.5.31, A.5.20; ISO/IEC 27701:2025 Cl. 7.5.1 bis 7.5.4*
+
+                            ### 1. Geltungsbereich
+                            Dieser Abschnitt gilt fuer jede Uebermittlung personenbezogener Daten aus dem EWR in ein Drittland im Sinne von Art. 44 DSGVO sowie fuer den Importerland-Zugriff aus einem Drittland auf im EWR gespeicherte Daten (EDSA-Leitlinien 05/2021). Er wird nur ausgeloest, wenn die Tenant-Einstellung `privacy.international_transfers=true` aktiv ist.
+
+                            ### 2. Stufenmodell der Uebermittlungsgrundlagen
+                            Die Reihenfolge ist verbindlich: erstens ein Angemessenheitsbeschluss der Europaeischen Kommission nach Art. 45 DSGVO (z. B. Vereinigtes Koenigreich, Schweiz, Japan, Suedkorea sowie das EU-US Data Privacy Framework fuer zertifizierte US-Empfaenger). Zweitens geeignete Garantien nach Art. 46 DSGVO, insbesondere Standardvertragsklauseln nach Durchfuehrungsbeschluss (EU) 2021/914 oder verbindliche interne Datenschutzvorschriften nach Art. 47 DSGVO. Drittens, nur in eng begrenzten Ausnahmefaellen, Ausnahmen nach Art. 49 DSGVO; eine Routine-Verwendung ist unzulaessig.
+
+                            ### 3. Schrems-II-Massstab
+                            In der Rechtssache C-311/18 (Urteil vom 16. Juli 2020) hat der EuGH den Privacy-Shield fuer ungueltig erklaert und festgestellt, dass Standardvertragsklauseln zwar grundsaetzlich gueltig bleiben, ihre Wirksamkeit jedoch von der Rechtslage und den behoerdlichen Zugriffsbefugnissen im Drittland abhaengt. Tragend war, dass das US-Recht (insbesondere FISA Section 702 und Executive Order 12333) Massenzugriffe ohne EU-aequivalentes Schutzniveau und ohne wirksamen Rechtsbehelf ermoeglicht. Datenexporteure im EWR muessen daher im Einzelfall pruefen, ob das Uebermittlungsinstrument durch ergaenzende Massnahmen so abzusichern ist, dass im Wesentlichen ein gleichwertiges Schutzniveau erreicht wird.
+
+                            ### 4. Standardvertragsklauseln (SCCs)
+                            Die {{ tenant.legal_name }} verwendet die Standardvertragsklauseln nach Durchfuehrungsbeschluss (EU) 2021/914 in der jeweils einschlaegigen Modul-Variante: Modul 1 (Verantwortlicher zu Verantwortlicher), Modul 2 (Verantwortlicher zu Auftragsverarbeiter), Modul 3 (Auftragsverarbeiter zu Auftragsverarbeiter), Modul 4 (Auftragsverarbeiter zu Verantwortlicher). Anlagen werden vollstaendig ausgefuellt; Beschreibung der Verarbeitung, TOMs, Sub-Auftragsverarbeiter-Liste und Streitbeilegung sind verbindlich. Zusaetze, die das Schutzniveau senken, sind unzulaessig.
+
+                            ### 5. Transfer Impact Assessment (TIA)
+                            Vor jeder neuen Drittland-Uebermittlung fuehrt die {{ tenant.legal_name }} eine TIA nach EDSA-Empfehlungen 01/2020 durch (Datencharakter, Zweck und Dauer, Empfaengerlandschaft, anwendbares Recht und Zugriffspraxis, vorhandene Garantien und ergaenzende Massnahmen). Die TIA wird dokumentiert und mindestens alle 24 Monate sowie bei wesentlicher Aenderung neu bewertet. {{ roles.dpo.fullName }} bestaetigt das Ergebnis.
+
+                            ### 6. Ergaenzende Massnahmen
+                            Geeignete ergaenzende Massnahmen umfassen Ende-zu-Ende-Verschluesselung mit Schluesselverwahrung im EWR, Pseudonymisierung, geteilte Verarbeitung mit getrennten Schluesselbruchstuecken, Transparenzbericht-Vereinbarungen, Anfechtungsrechte gegen behoerdliche Zugriffsanordnungen, Empfaengerwahl in Sektoren mit eingeschraenktem Zugriffsrisiko und vertragliche Nutzungsbeschraenkungen. Reichen sie nicht aus, ist die Uebermittlung zu unterlassen oder zu beenden.
+
+                            ### 7. Ausnahmen nach Art. 49 DSGVO
+                            Ausnahmen sind eng auszulegen, je Einzelfall zu dokumentieren und beduerfen einer ausdruecklichen Genehmigung von {{ roles.dpo.fullName }}. Ausdrueckliche Einwilligung nach Art. 49 Abs. 1 lit. a DSGVO setzt vorherige Information ueber die spezifischen Risiken voraus; eine Routine-Stuetzung ist unzulaessig.
+
+                            ### 8. Lieferantensteuerung und Sub-Auftragsverarbeiter
+                            Sub-Auftragsverarbeiter in Drittlaendern werden im Lieferantenregister mit Verarbeitungsort, Uebermittlungsinstrument und TIA-Status erfasst. Wechsel werden gemaess Modul 2 bzw. 3 der SCCs kontrolliert.
+
+                            ---
+
+                            *Genehmigung: CISO + DPO (joint)*
+                            *Genehmigungskette: {{ approval.chain }}*
+        asset_management:
+            v1:
+                gdpr_section:
+                    gdpr_retention_minimisation:
+                        title: 'Datenminimierung, Speicherbegrenzung und Loeschung'
+                        body: |-
+                            ## Datenminimierung und Loeschpflichten im Asset-Lebenszyklus
+
+                            *Abschnittsklasse: GDPR-Sektion zur Asset-Management-Richtlinie | Norm-Anker: Art. 5 Abs. 1 lit. c und lit. e DSGVO; § 35 BDSG-neu; BSI-Standard 200-2 sowie BSI-Baustein CON.6 *Loeschen und Vernichten* | Cross-Reference ISO/IEC 27001:2022 Annex A.5.9, A.5.10, A.8.10, A.8.13; ISO/IEC 27701:2025 Cl. 7.4.7*
+
+                            ### 1. Geltungsbereich
+                            Dieser Abschnitt erweitert die Asset-Management-Richtlinie um Anforderungen an Datenminimierung (Art. 5 Abs. 1 lit. c DSGVO) und Speicherbegrenzung (Art. 5 Abs. 1 lit. e DSGVO). Erfasst sind alle Informations-Assets mit personenbezogenen Daten, einschliesslich Datenbanken, Dateiablagen, Backups, Archive, Logs, Reports und Endgeraete.
+
+                            ### 2. Grundsatz der Datenminimierung
+                            Bei Spezifikation und Betrieb eines Assets werden nur die fuer den Verarbeitungszweck angemessenen, erheblichen und auf das notwendige Mass beschraenkten personenbezogenen Daten erhoben und verarbeitet. Felder ohne dokumentierten Zweck werden weder erhoben noch gespeichert. Asset-Owner dokumentieren je Asset Datenkategorien und Felder im Inventar; Aenderungen werden im Change-Verfahren mit datenschutzrechtlicher Pruefung von {{ roles.dpo.fullName }} begleitet.
+
+                            ### 3. Speicherbegrenzung und Aufbewahrungsmatrix
+                            Die zentrale Aufbewahrungs- und Loeschmatrix der {{ tenant.legal_name }} (Single Source of Truth gemaess Aufbewahrungs-Schedule) ordnet jeder Datenkategorie eine maximale Aufbewahrungsdauer zu. Asset-Owner verknuepfen Assets mit Datenkategorien; Loeschfristen werden technisch durch automatisierte Loeschjobs, Storage-Lifecycle-Regeln oder dokumentierte manuelle Routinen durchgesetzt. Anwendungen mit personenbezogenen Daten ohne dokumentierte Loeschloesung sind nicht produktivfaehig.
+
+                            ### 4. Loeschung, Anonymisierung und Pseudonymisierung
+                            Loeschung nach Art. 17 DSGVO setzt voraus, dass die Daten ohne unverhaeltnismaessigen Aufwand nicht wieder herstellbar sind. Anonymisierung aendert die Datenqualitaet nach Art. 4 Nr. 1 DSGVO und entzieht die Daten dem Anwendungsbereich der DSGVO; sie ist zulaessig, sofern unumkehrbar nach ErwGr. 26 DSGVO. Pseudonymisierung nach Art. 4 Nr. 5 DSGVO entzieht die Daten nicht dem Anwendungsbereich und ist daher ergaenzende Sicherheitsmassnahme, kein Ersatz fuer Loeschung. Verfahren werden je Asset im Loeschkonzept dokumentiert.
+
+                            ### 5. BSI CON.6 *Loeschen und Vernichten*
+                            Fuer physische und logische Loeschverfahren gilt BSI CON.6 als Mindestmassstab. Datentraeger werden vor Wiederverwendung oder Aussonderung nach CON.6.A2 sicher geloescht; Vernichtung defekter Traeger erfolgt zertifiziert nach DIN 66399 in der je Datenkategorie erforderlichen Schutzklasse; Verantwortung ist im Asset-Inventar einer Rolle zugeordnet. Die CON.6-Querverweisung ist in der Loeschmatrix dokumentiert.
+
+                            ### 6. Backup, Wiederherstellung, Archivierung
+                            Backups gelten als Verarbeitung. Der Loeschanspruch wirkt grundsaetzlich auf Backup-Bestaende; aufgrund technischer Realitaeten wird ein Loesch- bzw. Maskierungsverfahren mit dokumentierter Karenzfrist verwendet, die im Loeschkonzept transparent ist und Betroffenen auf Anfrage erlaeutert wird. Archive sind zweckgebundene Sonderbestaende mit eigener Rechtsgrundlage (z. B. HGB/AO-Aufbewahrung); sie unterliegen separater Zugriffskontrolle und werden bei Wegfall des Aufbewahrungsgrundes geloescht.
+
+                            ### 7. Erfolgsnachweis
+                            Loeschvorgaenge werden revisionssicher protokolliert (A.8.15). Asset-Owner und {{ roles.dpo.fullName }} pruefen Stichproben der Loeschwirksamkeit mindestens jaehrlich; die Ergebnisse fliessen in den Datenschutz-Jahresbericht ein.
+
+                            ---
+
+                            *Genehmigung: CISO + DPO (joint)*
+                            *Genehmigungskette: {{ approval.chain }}*
+        incident_management:
+            v1:
+                gdpr_section:
+                    gdpr_breach_72h:
+                        title: 'Meldung von Datenschutzverletzungen innerhalb von 72 Stunden'
+                        body: |-
+                            ## Meldung und Kommunikation von Datenschutzverletzungen
+
+                            *Abschnittsklasse: GDPR-Sektion zur Incident-Management-Richtlinie | Norm-Anker: Art. 33 DSGVO (Meldepflicht 72 Stunden); Art. 34 DSGVO (Benachrichtigung der Betroffenen); EDSA-Leitlinien 9/2022 zur Meldung von Datenschutzverletzungen | Cross-Reference ISO/IEC 27001:2022 Annex A.5.24, A.5.25, A.5.26; ISO/IEC 27701:2025 Cl. 6.13; DORA-VO (EU) 2022/2554 Art. 19*
+
+                            ### 1. Geltungsbereich und Definition
+                            Eine Datenschutzverletzung ist jede Verletzung der Sicherheit, die zur Vernichtung, zum Verlust, zur Veraenderung, zur unbefugten Offenlegung von oder zum unbefugten Zugang zu personenbezogenen Daten fuehrt, die uebermittelt, gespeichert oder sonst verarbeitet werden (Art. 4 Nr. 12 DSGVO). Datenschutzverletzungen und rein technische Sicherheitsereignisse werden im selben Incident-Management-Prozess aufgenommen, jedoch in getrennten Bewertungs- und Meldeketten gefuehrt.
+
+                            ### 2. Zustandsmaschine und Fristen
+                            Die {{ tenant.legal_name }} bewirtschaftet folgende Stufen:
+
+                            1. **Erkennung (T0)** — Meldung durch Mitarbeitende, Monitoring, Auftragsverarbeiter oder Dritte. Die Frist nach Art. 33 DSGVO laeuft ab Kenntniserlangung durch den Verantwortlichen im Sinne der EDSA-Leitlinien 9/2022.
+                            2. **Erstklassifizierung (T0 + 4 Stunden)** — Bei DORA-pflichtigen Tenants wird die Pflicht zur Erstmeldung nach Art. 19 Abs. 4 DORA-VO innerhalb von 4 Stunden nach Klassifizierung als major incident ausgeloest.
+                            3. **Risikobewertung (T0 + 24 Stunden)** — Bewertung des Risikos fuer die Rechte und Freiheiten natuerlicher Personen anhand der EDSA-Leitlinien 9/2022 (Art und Vertraulichkeit der Daten, Anzahl Betroffener, Identifizierbarkeit, Schwere).
+                            4. **Aufsichtsbehoerden-Meldung nach Art. 33 DSGVO (T0 + 72 Stunden)** — Bei voraussichtlichem Risiko erfolgt die Meldung mit den Mindestangaben nach Art. 33 Abs. 3 DSGVO. Verspaetete Meldungen sind nach Art. 33 Abs. 1 Satz 2 DSGVO zu begruenden.
+                            5. **DORA-Zwischenmeldung (T0 + 72 Stunden)** — Fuer DORA-pflichtige Tenants nach Art. 19 DORA-VO innerhalb von 72 Stunden ab Klassifizierung.
+                            6. **Benachrichtigung Betroffener nach Art. 34 DSGVO** — Bei voraussichtlich hohem Risiko unverzueglich in klarer und einfacher Sprache. Art. 34 Abs. 3 DSGVO kann die Pflicht entfallen lassen.
+                            7. **DORA-Abschlussmeldung (T0 + 1 Monat)** — Fuer DORA-pflichtige Tenants mit Ursachenanalyse und Lessons-Learned spaetestens einen Monat nach Klassifizierung.
+
+                            ### 3. Mindestinhalte der Meldung
+                            Eine Meldung nach Art. 33 Abs. 3 DSGVO enthaelt mindestens: Art der Verletzung einschliesslich Kategorien und ungefaehrer Anzahl Betroffener und Datensaetze; Name und Kontaktdaten von {{ roles.dpo.fullName }}; wahrscheinliche Folgen; ergriffene oder vorgeschlagene Abhilfe- und Eindaemmungsmassnahmen.
+
+                            ### 4. Doppelmeldungen und Querverweise
+                            Bei Tenants im Anwendungsbereich von DORA, NIS2 oder sektoralem Recht (KritisV, Telekommunikationsrecht) werden Meldungen parallel erstattet. Eine Konsolidierungsmatrix ordnet je Vorfallklasse die Meldepflichten und Empfaenger zu; Doppelmeldungen werden im selben Vorfallakt verwiesen gefuehrt.
+
+                            ### 5. Auftragsverarbeiter und gemeinsam Verantwortliche
+                            Auftragsverarbeiter melden unverzueglich nach Bekanntwerden (Art. 33 Abs. 2 DSGVO); die Soll-Frist im Auftragsverarbeitungsvertrag betraegt 24 Stunden. Bei gemeinsam Verantwortlichen erfolgt die Meldekette nach Art. 26 DSGVO.
+
+                            ### 6. Dokumentation auch bei Nicht-Meldepflicht
+                            Nach Art. 33 Abs. 5 DSGVO dokumentiert die {{ tenant.legal_name }} jede Datenschutzverletzung einschliesslich Fakten, Auswirkungen und Abhilfemassnahmen auch ohne Meldepflicht. Die Dokumentation wird im DataBreach-Modul gefuehrt und auf Anfrage der Aufsichtsbehoerde vorgelegt.
+
+                            ### 7. Kommunikation und Eskalation
+                            Externe Kommunikation erfolgt nur mit Freigabe der obersten Leitung; Krisenkommunikation gemaess Krisenmanagement-Plan. {{ roles.dpo.fullName }} und {{ roles.ciso.fullName }} bestaetigen die Meldung gemeinsam vor Versand.
+
+                            ---
+
+                            *Genehmigung: CISO + DPO (joint)*
+                            *Genehmigungskette: {{ approval.chain }}*
+        physical_security:
+            v1:
+                gdpr_section:
+                    gdpr_premises_processing:
+                        title: 'Verarbeitung personenbezogener Daten in Liegenschaften'
+                        body: |-
+                            ## Datenschutz an physischen Standorten
+
+                            *Abschnittsklasse: GDPR-Sektion zur Physical-Security-Richtlinie | Norm-Anker: Art. 32 DSGVO; § 5 BDSG-neu (Datenschutzbeauftragte oeffentlicher Stellen) sowie ergaenzend § 26 BDSG-neu fuer Beschaeftigte | Cross-Reference ISO/IEC 27001:2022 Annex A.7.1 bis A.7.10, A.8.1; ISO/IEC 27701:2025 Cl. 7.4.6*
+
+                            ### 1. Geltungsbereich
+                            Dieser Abschnitt regelt datenschutzspezifische Anforderungen an die Verarbeitung personenbezogener Daten in Liegenschaften: Bueros, Konferenzraeume, Server- und Technikraeume, Empfang, Druckerstandorte, Akten- und Lagerarchive, Aussenstandorte und Homeoffice. Er ergaenzt die Physical-Security-Richtlinie um Anforderungen aus Art. 32 DSGVO und nationalem Recht.
+
+                            ### 2. Vertraulichkeit raeumlicher Sphaeren
+                            Personenbezogene Daten werden so verarbeitet, dass eine unbefugte Kenntnisnahme Dritter ausgeschlossen ist. Hierzu zaehlen Arbeitsplatzwahl ausserhalb der Sichtwinkel aus oeffentlich zugaenglichen Bereichen, Sichtschutzfolien an Bildschirmen mit besonderen Kategorien, akustische Trennung in Telefon- und Videoraumen, Pull-Print fuer Druckerausgaben. Aktenmaterial wird ausserhalb der unmittelbaren Bearbeitung in verschlossenen Schraenken aufbewahrt (Clean-Desk gemaess A.7.7).
+
+                            ### 3. Zutrittskontrolle und Besucher
+                            Nach A.7.2 wird Zutritt nur autorisierten Personen gewaehrt. Besucher werden registriert und begleitet; Besuchsaufzeichnungen sind zweckgebunden mit definierter Speicherdauer und Loeschroutine. Dienstleister und Handwerker, die personenbezogene Daten wahrnehmen koennen, werden vor Zutritt vertraglich auf Vertraulichkeit verpflichtet (Art. 28 DSGVO oder § 5 BDSG fuer oeffentliche Stellen).
+
+                            ### 4. Videoueberwachung
+                            Videoueberwachung ist nur zulaessig bei berechtigten Interessen (Art. 6 Abs. 1 lit. f DSGVO) oder spezifischer Rechtsgrundlage (z. B. § 4 BDSG-neu fuer oeffentlich zugaengliche Bereiche), wenn eine DSFA Erforderlichkeit dokumentiert, kuerzeste Speicherfristen, Hinweisbeschilderung nach Art. 13 DSGVO und Mitbestimmung nach § 87 Abs. 1 Nr. 6 BetrVG sicherstellen. Aufzeichnungen sind streng zugriffsbeschraenkt; Auswertung erfolgt nur anlassbezogen im Vier-Augen-Prinzip.
+
+                            ### 5. Server- und Technikraeume
+                            Server- und Technikraeume sind nach A.7.4 mehrstufig physisch geschuetzt. Zugriffsprotokolle (Eintritts- und Aktivitaetslogs) sind revisionssicher gespeichert; Zugriff fuer Datenschutzauswertungen nur mit dokumentiertem Anlass. § 26 BDSG-neu gilt auch in technischen Bereichen.
+
+                            ### 6. Mobile Verarbeitung und Homeoffice
+                            Mobile Endgeraete und Homeoffice-Arbeitsplaetze sind mit gleichwertigem Schutz wie ortsfeste Arbeitsplaetze zu behandeln: physisch verschlossene Aufbewahrung dienstlicher Datentraeger, Verschluesselung im Ruhezustand (A.8.24), VPN-Pflicht, Trennung dienstlich/privat. In Wohnraeumen gelten ergaenzend Vertraulichkeitsanforderungen gegenueber Dritten der Wohngemeinschaft.
+
+                            ### 7. Entsorgung physischer Datentraeger und Akten
+                            Vernichtung erfolgt nach DIN 66399 in der je Datenkategorie erforderlichen Schutzklasse. Sammelbehaelter werden verschlossen aufgestellt und durch zertifizierte Dienstleister mit AV-Vertrag geleert; Vernichtungsnachweise werden archiviert. Die Verkettung mit dem Asset-Lebenszyklus ergibt sich aus Loeschkonzept und CON.6.
+
+                            ### 8. Notfallszenarien
+                            Bei Liegenschafts-Stoerungen (Brand, Wasser, Stromausfall, unbefugter Zutritt) erfolgt der Datenschutz-Erstcheck als Teil der Schadensbewertung; bei Anhaltspunkten fuer eine Datenschutzverletzung erfolgt Eskalation an {{ roles.dpo.fullName }} und Einstieg in den 72-Stunden-Prozess der Incident-Management-Richtlinie.
+
+                            ---
+
+                            *Genehmigung: CISO + DPO (joint)*
+                            *Genehmigungskette: {{ approval.chain }}*

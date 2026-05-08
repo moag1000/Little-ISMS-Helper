@@ -1,0 +1,922 @@
+policy:
+    gdpr:
+        privacy_policy:
+            v1:
+                title: 'Data Protection Policy'
+                body: |-
+                    # Data Protection Policy of {{ tenant.legal_name }}
+
+                    *Document class: Top-level Privacy Policy | Standards anchor: GDPR Art. 5 / Art. 24 / ISO 27701:2025 Cl. 5.1 and 5.2 / BDSG-neu § 1 | Language: English (formal British/EU register) | Review cycle: 12 months | Approval: {{ approval.chain }}*
+
+                    ## 1. Purpose and Commitment (ISO 27701 Cl. 5.2)
+
+                    This Data Protection Policy is the highest-level normative statement of {{ tenant.legal_name }} (hereinafter "the Organisation") regarding the protection of personal data and is the privacy-layer counterpart to the Information Security Policy. It is issued by top management and commits the Organisation, in accordance with Article 24(1) GDPR, to implementing appropriate technical and organisational measures so that the conformity of all processing activities with Regulation (EU) 2016/679 (GDPR), the German Federal Data Protection Act (BDSG-neu), and ISO 27701:2025 can be demonstrated ("accountability").
+
+                    Top management acknowledges that the protection of personal data is a fundamental right of data subjects (Art. 8 Charter of Fundamental Rights of the European Union; Art. 16 TFEU) and that infringements may result in significant administrative fines (Art. 83 GDPR up to EUR 20 million or 4 % of total worldwide annual turnover), reputational damage, civil claims (Art. 82 GDPR), and supervisory orders (Art. 58 GDPR). This policy is appropriate to the purpose of the Organisation and provides the framework for setting privacy objectives (ISO 27701:2025 Cl. 5.2 a + b).
+
+                    ## 2. Scope
+
+                    This policy applies to all processing activities of the Organisation in its role as controller within the meaning of Art. 4(7) GDPR, as well as in its role as processor under Art. 4(8) GDPR. It covers all employees (permanent, fixed-term, on probation), working students, interns, contractors, joint controllers (Art. 26 GDPR), processors and sub-processors (Art. 28 GDPR).
+
+                    Substantively, the policy covers all lifecycle phases of personal data: collection, recording, organisation, structuring, storage, adaptation, retrieval, querying, use, disclosure by transmission, dissemination, making available, alignment, combination, restriction, erasure, and destruction (Art. 4(2) GDPR).
+
+                    ## 3. The Seven Principles of Art. 5 GDPR (verbatim)
+
+                    The Organisation processes personal data exclusively in accordance with the following principles, which are binding for all processing activities:
+
+                    1. **Lawfulness, fairness and transparency** (Art. 5(1)(a)) — every processing activity is based on one of the six lawful bases set out in Art. 6(1) GDPR; default lawful basis in the Organisation: {{ gdpr.legal_basis_default }}. Special categories (Art. 9) additionally require a basis under Art. 9(2) GDPR or § 22 BDSG-neu. Criminal-conviction data is processed only under Art. 10 GDPR in conjunction with § 24 BDSG-neu.
+                    2. **Purpose limitation** (Art. 5(1)(b)) — explicit, specified and legitimate purposes determined prior to each processing activity.
+                    3. **Data minimisation** (Art. 5(1)(c)) — limited to what is necessary in relation to the purposes.
+                    4. **Accuracy** (Art. 5(1)(d)) — proactive correction of inaccurate data.
+                    5. **Storage limitation** (Art. 5(1)(e)) — erasure or anonymisation upon fulfilment of the purpose, in accordance with the Data Retention and Deletion Policy.
+                    6. **Integrity and confidentiality** (Art. 5(1)(f)) — secured by the ISMS and the technical and organisational measures pursuant to Art. 32 GDPR.
+                    7. **Accountability** (Art. 5(2)) — demonstrated through the entire Privacy Information Management System (PIMS) under ISO 27701:2025.
+
+                    ## 4. Commitment to Data-Subject Rights (Art. 12-22 GDPR)
+
+                    The Organisation guarantees the exercise of all rights of data subjects: access (Art. 15), rectification (Art. 16), erasure / "right to be forgotten" (Art. 17), restriction (Art. 18), notification obligation regarding rectification or erasure (Art. 19), data portability (Art. 20), objection (Art. 21), and the right not to be subject to a decision based solely on automated processing, including profiling (Art. 22). Requests are responded to within {{ gdpr.dsr_response_deadline_days }} calendar days under Art. 12(3) GDPR; an extension of two further months for complex requests is permissible and shall be communicated to the data subject with reasons. The procedure is set out in the separate document *Data Subject Rights Procedure* (see cross-reference below).
+
+                    ## 5. Lawful-Basis Discipline
+
+                    Prior to commencing any processing activity, the lawful basis is documented (methodology: Lawful Basis Determination Methodology). Processing without a documented lawful basis is prohibited. Where consent is selected as the lawful basis, the conditions of Art. 7 GDPR and the Consent Management Policy apply; the Organisation deploys the consent-management tool {{ gdpr.consent_management_tool }}. Legitimate interests under Art. 6(1)(f) require a documented Legitimate Interest Assessment (LIA) pursuant to Recital 47.
+
+                    ## 6. Accountability Framework
+
+                    This policy refers to the binding downstream methodologies and procedures of the Organisation's Privacy Information Management System:
+
+                    - **Records of Processing Activities** (RoPA, Art. 30 GDPR) — maintained in the `ProcessingActivity` module under the RoPA Methodology.
+                    - **Data Protection Impact Assessment (DPIA)** — methodology pursuant to Art. 35 GDPR; threshold score: {{ gdpr.dpia_threshold_score }}; prior consultation with the lead supervisory authority under Art. 36 in case of residual high risk.
+                    - **Data Subject Rights Procedure** (Art. 12-22 GDPR).
+                    - **Personal Data Breach Notification Procedure** (Art. 33 / 34 GDPR).
+                    - **Lawful Basis Determination Methodology** (Art. 6, 9, 10 GDPR; § 22 BDSG-neu).
+                    - **Consent Management Policy** (Art. 7, 8 GDPR).
+                    - **Joint Controllership Methodology** (Art. 26 GDPR).
+                    - **International Data Transfers Policy** (Chapter V GDPR; Schrems II-compliant with supplementary measures).
+                    - **Data Retention and Deletion Policy** (Art. 5(1)(e) GDPR; § 35 BDSG-neu; HGB § 257; AO § 147).
+                    - **Privacy by Design and by Default Methodology** (Art. 25 GDPR; ISO 27701 Cl. 7.4.x).
+
+                    ## 7. Designation of the Data Protection Officer (Art. 37-39 GDPR; ISO 27701 Cl. 5.3)
+
+                    The Organisation has designated the Data Protection Officer (DPO) {{ roles.dpo.fullName }}, whose appointment letter and duties are set out in the separate document *Data Protection Officer Charter*. The DPO reports directly to the highest level of management (Art. 38(3) GDPR), is not subject to instructions in privacy matters, and is free of any conflict of interest (Art. 38(6) GDPR). The DPO must be **strictly separated** from the role of Information Security Officer (CISO) {{ roles.ciso.fullName }} (BSI guidance "DPO is not the CISO"); a personal union constitutes a conflict of interest.
+
+                    The DPO's contact details are communicated to the supervisory authority under Art. 37(7) GDPR and published on the Organisation's website (postal address, email, telephone).
+
+                    ## 8. Lead Supervisory Authority (Art. 56 GDPR)
+
+                    The Organisation's lead supervisory authority is determined via the concept of main establishment (Art. 4(16) GDPR). For cross-border processing, the One-Stop-Shop mechanism applies. Secondary supervisory authorities in affected Member States are involved under Art. 60 GDPR. The competent lead authority is recorded in the setup wizard and is contacted via the controller representative {{ roles.controller_repr.fullName }}.
+
+                    ## 9. Commitment to Personal Data Breach Response
+
+                    The Organisation undertakes to notify personal data breaches within the meaning of Art. 4(12) GDPR to the lead supervisory authority without undue delay and, where feasible, no later than 72 hours after becoming aware of them (Art. 33(1) GDPR). Where the breach is likely to result in a high risk to the rights and freedoms of natural persons, data subjects are additionally informed pursuant to Art. 34 GDPR. All personal data breaches are documented internally regardless of notification obligations under Art. 33(5) GDPR (`DataBreach` module). For financial-services entities, the DORA Art. 19 ICT major-incident notification with 4-hour initial / 72-hour intermediate report timeline is triggered in parallel.
+
+                    ## 10. Review and Change Cycle
+
+                    This policy is reviewed at least every 12 months and on the following triggers: a new processing activity flagged as "high risk", a new processor in a third country without an adequacy decision, changes to sectoral regulation (e.g. AI Act, EHDS), new guidance from the lead supervisory authority or the European Data Protection Board (EDPB), or a material organisational change. Changes are subject to the approval chain {{ approval.chain }} with the mandatory separate sign-off by the DPO (DPO veto under ISO 27701:2025 Cl. 5.1).
+
+                    ## 11. Appendix A — Children as Data Subjects (Art. 8 GDPR)
+
+                    Where the Organisation offers information-society services directly to children, the additional requirements of Art. 8 GDPR in conjunction with § 8 BDSG-neu apply (DE default: 16 years as the threshold for parental consent). Marketing addressed to minors is prohibited. A DPIA pursuant to the EDPB criterion of "vulnerable subjects" is mandatory. Details: Children's Personal Data Policy.
+
+                    ## 12. Appendix B — Special Categories of Personal Data (Art. 9 + 10 GDPR; § 22 BDSG-neu)
+
+                    Processing of special categories (racial or ethnic origin, political opinions, religious or philosophical beliefs, trade-union membership, genetic data, biometric data for unique identification, health data, data concerning sex life, sexual orientation) and criminal-conviction data require a documented lawful basis under Art. 9(2)(a)-(j) or Art. 10 in conjunction with § 22 / § 24 BDSG-neu. In the employment context, § 26(3) BDSG-neu additionally applies (works-council involvement). A DPIA is mandatory. Details: Special Categories and Criminal Data Policy.
+
+                    ## 13. Cross-References to ISO 27001:2022 and Other Frameworks
+
+                    - **A.5.34** (Privacy and protection of PII) — this policy constitutes the substantive content of the A.5.34 control; the cross-reference document *Privacy and Protection of PII (A.5.34)* points back to this policy.
+                    - **A.5.31** (Legal, statutory, regulatory requirements) — GDPR as the central legal requirement.
+                    - **A.5.24-A.5.30** (Incident management) — personal data breach response interlocked with ISO 27001 incident management.
+                    - **A.6.3** (Information security awareness, education and training) — extended by the Privacy Training and Awareness Programme.
+                    - **ISO 27701:2025 Cl. 5.1, 5.2** — leadership commitment, PIMS declaration.
+                    - **ISO 27701:2025 Cl. 6.13** — personal data breach response (formerly 6.13.1.5 in :2019).
+                    - **EU-DORA Art. 19** — ICT incident reporting (where the Organisation is a financial entity).
+                    - **NIS2 Art. 23** — cybersecurity incident reporting (where the Organisation is an essential or important entity).
+
+                    ---
+
+                    *Approved by DPO {{ roles.dpo.fullName }} on [date] — the DPO sign-off is independent of the CISO sign-off pursuant to Art. 38(3) GDPR and ISO 27701:2025 Cl. 5.1 and cannot be overridden by CISO bulk-approval.*
+
+                    *Approval chain: {{ approval.chain }}*
+                section:
+                    purpose:
+                        title: 'Purpose and Commitment'
+                        body: |-
+                            This policy establishes the Privacy Information Management System (PIMS) of {{ tenant.legal_name }} pursuant to ISO 27701:2025 Cl. 5.2 and commits the Organisation to accountability under Art. 24(1) GDPR. It is the privacy-layer counterpart to the ISO 27001 Information Security Policy.
+                    scope:
+                        title: 'Scope'
+                        body: |-
+                            All processing activities of the Organisation as controller (Art. 4(7) GDPR) and as processor (Art. 4(8) GDPR), and all employees and third parties.
+                    principles:
+                        title: 'Principles under Art. 5 GDPR'
+                        body: |-
+                            The seven principles are binding: lawfulness, purpose limitation, data minimisation, accuracy, storage limitation, integrity and confidentiality, accountability.
+                    data_subject_rights:
+                        title: 'Commitment to Data-Subject Rights'
+                        body: |-
+                            Rights under Art. 12-22 GDPR are honoured within {{ gdpr.dsr_response_deadline_days }} calendar days; the procedure is documented separately.
+                    lawful_basis:
+                        title: 'Lawful-Basis Discipline'
+                        body: |-
+                            Default lawful basis: {{ gdpr.legal_basis_default }}. Consent is managed via {{ gdpr.consent_management_tool }}. Legitimate interests require a documented LIA.
+                    accountability:
+                        title: 'Accountability Framework'
+                        body: |-
+                            This policy refers to RoPA, DPIA, DSR Procedure, Breach Procedure, Lawful Basis Methodology, Consent Policy, Joint Controllership Methodology, International Transfers Policy, Retention Policy and PbD Methodology.
+                    dpo_designation:
+                        title: 'Designation of the DPO'
+                        body: |-
+                            The DPO {{ roles.dpo.fullName }} is designated under Art. 37-39 GDPR, reports to top management, is independent and is not in personal union with the CISO {{ roles.ciso.fullName }} (BSI separation rule).
+                    supervisory_authority:
+                        title: 'Lead Supervisory Authority'
+                        body: |-
+                            Determined under Art. 56 GDPR via main establishment; One-Stop-Shop mechanism with secondary authorities under Art. 60.
+                    breach_commitment:
+                        title: 'Personal Data Breach Response'
+                        body: |-
+                            Notification to the supervisory authority within 72 hours (Art. 33), notification of data subjects in case of high risk (Art. 34), and internal documentation of all breaches (Art. 33(5)).
+                    review_cadence:
+                        title: 'Review and Change Cycle'
+                        body: |-
+                            Review cycle 12 months; out-of-cycle on triggers (new high-risk processing, new processor in a third country, EDPB guidance, sectoral changes).
+                    children_appendix:
+                        title: 'Children Appendix'
+                        body: |-
+                            Where information-society services are offered directly to children, Art. 8 GDPR in conjunction with § 8 BDSG-neu applies (DE: 16-year threshold).
+                    special_categories_appendix:
+                        title: 'Special Categories Appendix'
+                        body: |-
+                            Art. 9 + 10 GDPR in conjunction with §§ 22, 24, 26(3) BDSG-neu; DPIA mandatory.
+                tailoring_field:
+                    organisation_data_protection_objectives:
+                        label: 'Organisation-specific data-protection objectives'
+                        placeholder: 'Example: "We aim annually for a DSR rate of 100 % requests answered within 14 days instead of the statutory 30 days, a year-on-year reduction of notifiable personal data breaches by 25 %, and a 100 % training completion rate in privacy by the end of Q3."'
+                    sector_specific_privacy_threats:
+                        label: 'Sector-specific privacy risks'
+                        placeholder: 'Example: "As a healthcare provider we process health data within the meaning of Art. 9(1) GDPR and are subject to medical confidentiality (§ 203 StGB) and, as applicable, KHZG / EHDS. Resulting priorities: pseudonymisation of patient research data, strict role-and-rights segregation in the hospital information system, annual DPIA refresh for healthcare-IT processes."'
+                    public_facing_privacy_notice_url:
+                        label: 'URL of the public-facing privacy notice'
+                        placeholder: 'Example: "https://www.example-organisation.com/privacy and on the corporate-login intranet https://intranet.example-organisation.com/privacy; accessible variant under /privacy-easy-language compliant with WCAG 2.2 AA."'
+        ropa_methodology:
+            v1:
+                title: 'Records of Processing Activities Methodology'
+                body: |-
+                    # RoPA Methodology of {{ tenant.legal_name }}
+
+                    *Document class: Methodology | Standards anchor: GDPR Art. 30 / ISO 27701:2025 Cl. 7.2.8 and 8.2.6 / BDSG-neu § 70 | Language: English (formal British/EU register) | Review cycle: 24 months*
+
+                    ## 1. Purpose
+
+                    This methodology binds how {{ tenant.legal_name }} establishes, maintains, updates, reviews, and discloses to the supervisory authority on request the Records of Processing Activities (RoPA) under Art. 30(4) GDPR. The actual RoPA register is held in the existing `ProcessingActivity` module; this methodology defines the maintenance discipline and is the implementation of ISO 27701:2025 Cl. 7.2.8 (controller) and Cl. 8.2.6 (processor) within the Organisation.
+
+                    ## 2. Scope
+
+                    Both GDPR roles are covered:
+
+                    - **Controller (Art. 30(1) GDPR)** — mandatory contents (a) to (g): name and contact details of the controller, joint controllers, and the data protection officer; processing purposes; description of categories of data subjects and categories of personal data; categories of recipients; transfers to third countries with safeguards; envisaged time limits for erasure; general description of the technical and organisational measures pursuant to Art. 32(1) GDPR.
+                    - **Processor (Art. 30(2) GDPR)** — mandatory contents (a) to (d): name and contact details of the processors, of each controller and, where applicable, the representatives; categories of processing carried out on behalf of each controller; transfers to third countries; general description of the technical and organisational measures.
+
+                    The exemption in Art. 30(5) GDPR (< 250 employees) is **not invoked** by the Organisation, as processing involving risks to the rights and freedoms of data subjects, regular processing or special categories takes place — the exemption is in practice never available.
+
+                    ## 3. Triggers for a New RoPA Entry
+
+                    A new RoPA entry is mandatory upon the occurrence of any of the following events:
+
+                    1. introduction of a new IT system, application, or cloud service involving personal data;
+                    2. onboarding of a new processor or sub-processor (Art. 28 GDPR);
+                    3. change of purpose or lawful basis of an existing processing activity;
+                    4. extension of the data categories or categories of data subjects;
+                    5. introduction of a new marketing campaign, HR process, or customer-loyalty programme;
+                    6. introduction of a data transfer to a third country (Chapter V GDPR);
+                    7. change of the processor or sub-processor;
+                    8. deployment of new AI / automated decision-making procedures (Art. 22 GDPR; AI Act interface).
+
+                    ## 4. Lawful-Basis Sub-Section (Art. 6, 9, 10 GDPR)
+
+                    Each RoPA entry shall record at least one documented lawful basis. The determination follows the Lawful Basis Determination Methodology. The following expressions are permitted:
+
+                    - **Art. 6(1)(a) — Consent**: only where no other lawful basis applies; see Consent sub-section. Default lawful basis in the Organisation: {{ gdpr.legal_basis_default }} (default for new processing activities unless specifically justified).
+                    - **Art. 6(1)(b) — Contract performance / pre-contractual measures**.
+                    - **Art. 6(1)(c) — Legal obligation** (HGB, AO, GWG, SGB, BetrVG, etc.); the specific provision shall be cited in the entry.
+                    - **Art. 6(1)(d) — Vital interests**: narrow construction.
+                    - **Art. 6(1)(e) — Public interest / official authority**.
+                    - **Art. 6(1)(f) — Legitimate interest**: only with a documented LIA in line with Recital 47.
+
+                    For special categories (Art. 9) and criminal-conviction data (Art. 10), an additional basis under Art. 9(2)(a)-(j) or § 22 BDSG-neu shall be documented. In the employment context, § 26 BDSG-neu applies, with specific provisions for the works council (§ 26(3)).
+
+                    ## 5. Consent Sub-Section (Art. 7 GDPR)
+
+                    Where processing is based on consent, stricter requirements apply, the compliance with which is documented in the RoPA entry by reference to the consent-management tool {{ gdpr.consent_management_tool }}:
+
+                    1. **Freely given** (Art. 7(4)) — no tying of contract performance to non-essential consent.
+                    2. **Specific** — consent per processing purpose; granular bundling prohibited.
+                    3. **Informed** — full mandatory information under Art. 13 / 14 GDPR prior to consent.
+                    4. **Unambiguous affirmative action** (Recital 32) — opt-in, no pre-ticked boxes.
+                    5. **Demonstrable** (Art. 7(1) + Recital 42) — proof through logging in the {{ gdpr.consent_management_tool }} tool.
+                    6. **Withdrawable** (Art. 7(3)) — "as easy to withdraw as to give"; the withdrawal channel is documented explicitly.
+
+                    ## 6. Mandatory Fields per RoPA Entry (Mapping to Art. 30)
+
+                    | Field | Art. 30 reference | Example |
+                    |---|---|---|
+                    | Processing name | (1)(b) purpose | "Recruitment management" |
+                    | Controller / DPO | (1)(a) | {{ tenant.legal_name }} / {{ roles.dpo.fullName }} |
+                    | Purpose | (1)(b) | "Review of incoming applications" |
+                    | Lawful basis | NEW (best practice) | Art. 6(1)(b) + § 26(1) BDSG |
+                    | Categories of data subjects | (1)(c) | "Job applicants" |
+                    | Categories of data | (1)(c) | "Master data, CV, references" |
+                    | Categories of recipients | (1)(d) | "HR team, IT admin (cloud ATS)" |
+                    | Third-country transfer | (1)(e) | "yes, US, SCCs + supplementary measures" |
+                    | Erasure period | (1)(f) | "6 months after rejection; talent pool 24 months on consent" |
+                    | TOM | (1)(g) | "Reference to the ISMS TOM declaration" |
+                    | Categorical risk (DPIA indicator) | NEW | high / medium / low |
+
+                    ## 7. Roles and Responsibilities
+
+                    | Role | Responsibility |
+                    |---|---|
+                    | Business Unit Lead (Risk Owner) | Initial RoPA draft on trigger; annual update |
+                    | DPO {{ roles.dpo.fullName }} | Lawful-basis review; sign-off; methodology stewardship |
+                    | CISO {{ roles.ciso.fullName }} | Cross-validation of the TOM description against the ISMS |
+                    | Controller representative {{ roles.controller_repr.fullName }} | Supervisory-authority disclosure on request under Art. 30(4) |
+                    | Processor | Maintenance of own Art. 30(2) record; provision to controller on demand |
+
+                    ## 8. Review Interval and Re-Assessment Triggers
+
+                    Each entry is reviewed at least every 12 months by the Risk Owner and the DPO. An out-of-cycle review is mandatory upon: change of processor; change of lawful basis; change of data categories; supervisory-authority request; personal data breach related to the activity; new EDPB guidelines on the processing category.
+
+                    ## 9. Retention of Historical Entries
+
+                    Deleted or superseded RoPA entries are retained in an audit-proof manner for 7 years (audit log under ISO 27001 Cl. 7.5; evidence preservation vis-a-vis the supervisory authority under Art. 30(4) GDPR). Erasure occurs only after expiry of limitation periods and audit confirmation.
+
+                    ## 10. Format and Supervisory-Authority Disclosure (Art. 30(4))
+
+                    The register is maintained electronically (`ProcessingActivity` module); a PDF or CSV export in German and, on request, in English is provided within 72 hours of receipt of a formal supervisory-authority request. Transmission is encrypted via the channel prescribed by the relevant supervisory-authority portal.
+
+                    ## 11. Cross-References
+
+                    - **ISO 27001:2022** A.5.34 (host control superseded by this methodology) and A.5.31 (legal requirements).
+                    - **ISO 27701:2025** Cl. 7.2.8 (controller), Cl. 8.2.6 (processor).
+                    - **GDPR** Art. 30 (mandatory contents), Art. 28 (processor), Art. 26 (joint controllers), Art. 32 (TOM), Art. 35 (DPIA trigger from RoPA), Chapter V (third-country transfer documentation).
+                    - **BDSG-neu** § 70 (public bodies), § 22 (special categories), § 26 (employees).
+
+                    ---
+
+                    *Approved by DPO {{ roles.dpo.fullName }} on [date] — DPO sign-off is independent of the CISO sign-off under Art. 38(3) GDPR.*
+
+                    *Approval chain: {{ approval.chain }}*
+                section:
+                    purpose:
+                        title: 'Purpose of the methodology'
+                        body: |-
+                            Binding maintenance discipline for the `ProcessingActivity` module as RoPA within the meaning of Art. 30 GDPR and ISO 27701:2025 Cl. 7.2.8 / 8.2.6.
+                    scope:
+                        title: 'Scope'
+                        body: |-
+                            Controller and processor roles; the exemption in Art. 30(5) is not invoked.
+                    triggers:
+                        title: 'Trigger events'
+                        body: |-
+                            New cloud service, new processor, change of purpose / lawful basis, third-country transfer, AI deployment.
+                    lawful_basis:
+                        title: 'Lawful-basis sub-section'
+                        body: |-
+                            Art. 6 / 9 / 10 GDPR and § 22 BDSG-neu; default lawful basis: {{ gdpr.legal_basis_default }}; LIA required for Art. 6(1)(f).
+                    consent:
+                        title: 'Consent sub-section'
+                        body: |-
+                            Art. 7 GDPR with the {{ gdpr.consent_management_tool }} tool; demonstrability, withdrawability, granularity.
+                    mandatory_fields:
+                        title: 'Mandatory fields per entry'
+                        body: |-
+                            Complete mapping to Art. 30(1)(a)-(g) + Art. 30(2)(a)-(d).
+                    roles:
+                        title: 'Roles and responsibilities'
+                        body: |-
+                            Risk Owner creates and updates; DPO signs off; CISO validates TOM; {{ roles.controller_repr.fullName }} discloses to the supervisory authority.
+                    review:
+                        title: 'Review interval'
+                        body: |-
+                            12 months per entry; out-of-cycle on triggers.
+                    retention:
+                        title: 'Retention of historical entries'
+                        body: |-
+                            7 years audit-proof in `audit_log`.
+                    authority_disclosure:
+                        title: 'Supervisory-authority disclosure'
+                        body: |-
+                            Art. 30(4) GDPR; provision within 72 hours of request.
+                tailoring_field:
+                    sector_specific_processing_categories:
+                        label: 'Sector-specific processing categories'
+                        placeholder: 'Example: "As a hospital operator, we maintain in addition to the standard set: patient files within the meaning of § 630f BGB, research data under § 27 BDSG-neu, telemedicine procedures with mandatory DPIA, and cancer-registry notifications under KRG."'
+                    ropa_review_interval_months:
+                        label: 'RoPA review interval (months)'
+                        placeholder: 'Example: "12" (best-practice minimum); shortened to 6 months for high-risk processing and to 3 months for third-country transfers without an adequacy decision.'
+                    authority_disclosure_sla_hours:
+                        label: 'Disclosure SLA towards supervisory authority'
+                        placeholder: 'Example: "72 hours from electronic receipt of a formal request under Art. 30(4) GDPR; escalation to the controller representative {{ roles.controller_repr.fullName }} under deadline pressure."'
+        dpia_methodology:
+            v1:
+                title: 'Data Protection Impact Assessment Methodology'
+                body: |-
+                    # DPIA Methodology of {{ tenant.legal_name }}
+
+                    *Document class: Methodology | Standards anchor: GDPR Art. 35 + Art. 36 / ISO 27701:2025 Cl. 7.2.5 and 8.2.1 / EDPB WP248 rev.01 / BfDI Black-List | Language: English (formal British/EU register) | Review cycle: 24 months*
+
+                    ## 1. Purpose
+
+                    This methodology governs the conduct of Data Protection Impact Assessments (DPIA) within the meaning of Art. 35 GDPR and the prior consultation of the lead supervisory authority within the meaning of Art. 36 GDPR. It is the application framework of ISO 27701:2025 Cl. 7.2.5 (controller) and Cl. 8.2.1 (processor) and uses the existing `DataProtectionImpactAssessment` module as data-holding structure.
+
+                    ## 2. Scope
+
+                    A DPIA is mandatory where a processing activity is "likely to result in a high risk to the rights and freedoms of natural persons" (Art. 35(1) GDPR). The obligation rests on the Organisation in its controller role; processors assist the controller under Art. 28(3)(f) GDPR.
+
+                    ## 3. Threshold Assessment
+
+                    A two-stage procedure is run prior to each new processing activity:
+
+                    ### 3.1 Mandatory triggers under Art. 35(3) GDPR
+
+                    A DPIA is always mandatory for:
+
+                    1. systematic and extensive evaluation of personal aspects of natural persons, including profiling, with legal or similarly significant effect;
+                    2. processing on a large scale of special categories of personal data (Art. 9) or criminal-conviction data (Art. 10);
+                    3. systematic large-scale monitoring of publicly accessible areas.
+
+                    ### 3.2 EDPB WP248 rev.01 nine criteria
+
+                    Where a processing activity meets **two or more** of the following criteria, a DPIA is mandatory:
+
+                    1. evaluation or scoring (profiling, scoring);
+                    2. automated decision-making with legal or similarly significant effect;
+                    3. systematic monitoring;
+                    4. special-category data or data of a highly personal nature;
+                    5. data processing on a large scale;
+                    6. matching or combining datasets;
+                    7. data of vulnerable data subjects (children, employees, patients);
+                    8. innovative use or application of new technological or organisational solutions (e.g. AI, IoT, biometrics);
+                    9. processing prevents data subjects from exercising a right or using a service / contract.
+
+                    ### 3.3 BfDI Black-List
+
+                    A DPIA is additionally mandatory for all processing activities listed in the BfDI's "List of processing operations subject to a DPIA" (e.g. large-scale processing of biometric data for unique identification, research with special categories without explicit consent).
+
+                    ### 3.4 Threshold score
+
+                    The Organisation's internal threshold score is {{ gdpr.dpia_threshold_score }}. Where a processing activity reaches this score in pre-screening, the DPIA shall be performed even where no mandatory trigger is necessarily applicable ("precautionary DPIA" as best practice).
+
+                    ## 4. DPIA Methodology (Content under Art. 35(7))
+
+                    A DPIA documents at minimum:
+
+                    1. **Systematic description** of the envisaged processing operations and the purposes of the processing, including, where applicable, the legitimate interests pursued by the controller (Art. 35(7)(a)).
+                    2. **Assessment of the necessity and proportionality** of the processing operations in relation to the purposes (Art. 35(7)(b)).
+                    3. **Assessment of the risks** to the rights and freedoms of data subjects (Art. 35(7)(c)) — qualitative scale (low / medium / high / very high) over the axes of likelihood and severity; alignment with the ISO 27005 risk methodology of the ISMS but in a separate evaluation space (rights-and-freedoms perspective rather than CIA perspective).
+                    4. **Measures** envisaged to address the risks, including safeguards, security measures, and mechanisms to ensure the protection of personal data and to demonstrate compliance with the GDPR (Art. 35(7)(d)).
+
+                    ## 5. Stakeholder Consultation (Art. 35(9) GDPR)
+
+                    The controller seeks "where appropriate" the views of data subjects or their representatives. Specific applications in the Organisation:
+
+                    - In the employment context (Art. 88 GDPR + § 26(3) BDSG-neu): mandatory involvement of the works council / staff council.
+                    - For consumer products: anonymised user survey or stakeholder workshop.
+                    - For research with patients: ethics-committee involvement under GCP / EU Regulation 536/2014.
+                    - Documentation of all consultation outcomes in the DPIA file (`DataProtectionImpactAssessment` module).
+
+                    ## 6. Prior Consultation (Art. 36 GDPR)
+
+                    Where the DPIA identifies a "high residual risk" notwithstanding mitigation measures (high or very-high after-treatment), the lead supervisory authority **must be consulted** prior to commencement of processing under Art. 36(1) GDPR. Consultation is in writing with the contents required by Art. 36(3)(a)-(f). The supervisory authority has 8 weeks to provide a written opinion, extendable by 6 weeks. Processing shall not be commenced during this period.
+
+                    ## 7. Risk-Treatment Escalation
+
+                    Risks are escalated according to the following matrix:
+
+                    | Residual risk | Escalation | Sign-off |
+                    |---|---|---|
+                    | low | Standard measures, documentation in DPIA | DPO |
+                    | medium | Additional measures (pseudonymisation, access restriction); 12-month re-assessment | DPO + CISO |
+                    | high | Comprehensive measures + mandatory prior-consultation check (Art. 36) | DPO + CISO + top management |
+                    | very high | Mandatory Art. 36 prior consultation; processing only after authority opinion | top management + supervisory authority |
+
+                    ## 8. Stakeholder Workshops and ISO-27005 Alignment
+
+                    The DPIA risk assessment **methodologically reuses** the ISO 27005-compliant evaluation axes of the ISMS (likelihood / severity), but in the separate evaluation space "rights and freedoms". Duplication is avoided through the module: technical risks from the ISMS risk register are referenced, not duplicated.
+
+                    ## 9. Review Interval and Re-Assessment Triggers
+
+                    Each DPIA is fully reviewed every 24 months. An out-of-cycle review is mandatory upon: change of the processing purpose; extension of data categories or data-subject groups; occurrence of a personal data breach related to the activity; new technological components (e.g. AI module update); supervisory-authority guidance or sectoral guidelines.
+
+                    ## 10. Retention as Evidence
+
+                    DPIAs are retained in an audit-proof manner for the entire life of the processing activity plus 3 years after termination; in case of Art. 36 prior consultation: 7 years after the most recent supervisory-authority opinion.
+
+                    ## 11. Cross-References
+
+                    - **ISO 27001:2022** A.5.34, A.8.27 (secure system architecture).
+                    - **ISO 27701:2025** Cl. 7.2.5, 8.2.1.
+                    - **GDPR** Art. 24 (controller), Art. 25 (PbD), Art. 32 (TOM).
+                    - **BDSG-neu** § 67 (public bodies).
+                    - **EDPB WP248 rev.01**, **BfDI Black-List**.
+                    - **AI Act** (Regulation (EU) 2024/1689) — high-risk AI systems require, in parallel to the DPIA, a Fundamental Rights Impact Assessment (FRIA).
+
+                    ---
+
+                    *Approved by DPO {{ roles.dpo.fullName }} on [date] — DPO sign-off is independent of the CISO sign-off (ISO 27701:2025 Cl. 5.1).*
+
+                    *Approval chain: {{ approval.chain }}*
+                section:
+                    purpose:
+                        title: 'Purpose of the methodology'
+                        body: |-
+                            Binding methodology for the conduct of DPIAs under Art. 35 GDPR and prior consultations under Art. 36; application framework ISO 27701:2025 Cl. 7.2.5 / 8.2.1.
+                    scope:
+                        title: 'Scope'
+                        body: |-
+                            Controller role; processors assist under Art. 28(3)(f).
+                    threshold_assessment:
+                        title: 'Threshold assessment'
+                        body: |-
+                            Mandatory triggers Art. 35(3), EDPB nine-criteria list, BfDI Black-List, internal threshold score {{ gdpr.dpia_threshold_score }}.
+                    methodology:
+                        title: 'DPIA content'
+                        body: |-
+                            Description, necessity / proportionality, risk assessment, mitigation measures (Art. 35(7)(a)-(d)).
+                    stakeholder_consultation:
+                        title: 'Stakeholder consultation'
+                        body: |-
+                            Art. 35(9) GDPR; works council in the employment context, ethics committee in research.
+                    prior_consultation:
+                        title: 'Prior consultation'
+                        body: |-
+                            Art. 36 GDPR for high residual risk; 8-week deadline + 6-week extension.
+                    risk_treatment_escalation:
+                        title: 'Risk-treatment escalation'
+                        body: |-
+                            Tier matrix low / medium / high / very high with corresponding sign-off up to the supervisory authority.
+                    iso27005_alignment:
+                        title: 'Alignment with ISO 27005'
+                        body: |-
+                            Methodological reuse of ISMS risk axes, separate rights-and-freedoms evaluation space.
+                    review_cadence:
+                        title: 'Review interval'
+                        body: |-
+                            24 months, out-of-cycle on change, breach, new technology.
+                    retention:
+                        title: 'Retention'
+                        body: |-
+                            Lifetime + 3 years; in Art. 36 cases 7 years after authority opinion.
+                tailoring_field:
+                    organisation_specific_dpia_triggers:
+                        label: 'Organisation-specific DPIA triggers'
+                        placeholder: 'Example: "In addition to the EDPB nine criteria we conduct DPIAs for: deployment of new AI modules with personal data, telemedicine procedures with patient data, new marketing-tracking solutions through third parties, and any procedure with more than 100,000 data subjects irrespective of the data category."'
+                    dpia_review_cadence_months:
+                        label: 'Per-DPIA review interval (months)'
+                        placeholder: 'Example: "24" (default) or "12" for processing of special categories under Art. 9 GDPR and for residual high-risk processing after mitigation.'
+                    fria_alignment:
+                        label: 'AI Act FRIA alignment (where high-risk AI)'
+                        placeholder: 'Example: "For high-risk AI systems within the meaning of Art. 6 AI Act, we run DPIA and FRIA jointly in one file; joint workshop, joint risk matrix with two evaluation axes (data protection / fundamental rights more broadly); approval by DPO + AI Officer."'
+        dsr_procedure:
+            v1:
+                title: 'Data Subject Rights Procedure'
+                body: |-
+                    # Data Subject Rights Procedure of {{ tenant.legal_name }}
+
+                    *Document class: Procedure | Standards anchor: GDPR Art. 12-22 / ISO 27701:2025 Cl. 7.3.1-7.3.10 and 8.3 / BDSG-neu §§ 32-37 | Language: English (formal British/EU register) | Review cycle: 24 months*
+
+                    ## 1. Purpose
+
+                    This procedure binds the intake, verification, processing, and response to requests from data subjects (Data Subject Requests, DSR) under Art. 12 to 22 GDPR. Requests are documented in the existing `DataSubjectRequest` module.
+
+                    ## 2. Scope
+
+                    All rights of natural persons under Art. 15 to 22 GDPR and the related obligations of the Organisation under Art. 12 GDPR are covered. The procedure also applies to requests received via processors that, under Art. 28(3)(e) GDPR, must be forwarded to the Organisation as controller.
+
+                    ## 3. Rights Covered
+
+                    | Right | Substance | Deadline |
+                    |---|---|---|
+                    | Art. 15 — Access | Confirmation of processing Y/N + copy of data + mandatory information | {{ gdpr.dsr_response_deadline_days }} days |
+                    | Art. 16 — Rectification | Correction of inaccurate / completion of incomplete data | {{ gdpr.dsr_response_deadline_days }} days |
+                    | Art. 17 — Erasure | "Right to be forgotten" with the exceptions of paragraph 3 (freedom of expression, legal obligation, public interest, archiving / research / statistics, legal claims) | {{ gdpr.dsr_response_deadline_days }} days |
+                    | Art. 18 — Restriction | "Marker" status with limited processability, except for storage | {{ gdpr.dsr_response_deadline_days }} days |
+                    | Art. 19 — Notification obligation | Information to all recipients of rectification / erasure / restriction | without undue delay |
+                    | Art. 20 — Portability | Structured, commonly used, machine-readable format (CSV, JSON); direct transmission where technically feasible | {{ gdpr.dsr_response_deadline_days }} days |
+                    | Art. 21 — Objection | Against processing on the basis of Art. 6(1)(e) or (f), and always against direct marketing | without undue delay, max. {{ gdpr.dsr_response_deadline_days }} days |
+                    | Art. 22 — Automated decision | Right not to be subject; human intervention; the right to express a view and to contest | {{ gdpr.dsr_response_deadline_days }} days |
+
+                    ## 4. Intake Channels
+
+                    Requests are accepted via the following channels:
+
+                    1. dedicated web form on the tenant website (accessible per WCAG 2.2 AA);
+                    2. dedicated email address `privacy@<tenant-domain>` (DPO mailbox of {{ roles.dpo.fullName }});
+                    3. postal address per the privacy notice (Art. 37(7) GDPR);
+                    4. telephone first contact with written follow-up;
+                    5. forwarding from processors (Art. 28(3)(e)).
+
+                    Receipt acknowledgement is sent automatically within 48 hours with a case number.
+
+                    ## 5. Identity Verification (Art. 12(6) GDPR)
+
+                    Where there are reasonable doubts as to the identity of the requester, additional information is requested. Procedure:
+
+                    1. **Low threshold (default)** — match against the registered email address / customer number / insurance number.
+                    2. **Medium threshold** — request for a two-sided copy of an official ID with non-essential fields redacted (photo, serial number); alternatively video-ident.
+                    3. **High threshold (special categories / erasure request)** — qualified electronic signature within the meaning of eIDAS or in-person identification with ID document.
+
+                    Excessive requirements are not permitted (EDPB Guideline 01/2022); identity verification must not effectively defeat the request.
+
+                    ## 6. SLA and Deadlines (Art. 12(3) + (4) GDPR)
+
+                    The statutory standard deadline is one month from receipt ({{ gdpr.dsr_response_deadline_days }} calendar days as the Organisation's expression). For complex or numerous requests, the deadline may be extended by two further months; the extension is communicated to the requester within the first month with reasons. Where a request is not complied with, this is communicated within one month with reasons and an indication of the right to lodge a complaint with the supervisory authority and a judicial remedy.
+
+                    ## 7. Refusal Grounds
+
+                    Refusal is only permissible in the following cases:
+
+                    - **Manifestly unfounded or excessive** (Art. 12(5)) — e.g. repeated requests without new facts; the burden of proof rests with the Organisation.
+                    - **Restrictions under BDSG-neu §§ 32-37** — e.g. § 34(1)(2) (right of access disapplied where disproportionate effort and for data-security purposes); § 35(1) (erasure replaced by restriction where retention obligations apply).
+                    - **Confidentiality obligations** — e.g. § 203 StGB medical confidentiality; banking secrecy.
+                    - **Rights of third parties** — third-party data is redacted in Art. 15 copies.
+
+                    Each refusal is documented with reasons in the `DataSubjectRequest` module; the DPO formally reviews the refusal decision.
+
+                    ## 8. Coordination with Operative Teams
+
+                    Requests are received centrally by the DPO {{ roles.dpo.fullName }} and routed to the relevant owners:
+
+                    | Data category | Owner |
+                    |---|---|
+                    | HR data | HR Lead |
+                    | Customer / CRM data | Customer Service Lead |
+                    | Marketing data | Marketing Lead |
+                    | IT logs / authentication | IT Operations / CISO {{ roles.ciso.fullName }} |
+                    | Research data | Research Lead / Ethics Committee |
+
+                    The owners deliver the data to the DPO within 14 calendar days; the DPO consolidates and responds.
+
+                    ## 9. Processor Assistance (Art. 28(3)(e))
+
+                    Processors are obliged in the DPA "to assist the controller by appropriate technical and organisational measures, insofar as this is possible, for the fulfilment of the controller's obligation to respond to requests for exercising the data subject's rights". SLA towards processors: 14 calendar days internal response duty; breaches lead to contractual consequences under the Supplier Security Policy.
+
+                    ## 10. Logging and Evidence
+
+                    Each request is fully documented in the `DataSubjectRequest` module: receipt, identity verification, owner assignment, processing status, response, refusal grounds with right-of-complaint notice. Retention: 3 years after response, as evidence vis-a-vis supervisory authority and data subjects.
+
+                    ## 11. Cross-References
+
+                    - **ISO 27001:2022** A.5.34.
+                    - **ISO 27701:2025** Cl. 7.3.1-7.3.10 (controller), Cl. 8.3 (processor).
+                    - **GDPR** Art. 12-22, Art. 23 (restrictions), Art. 28(3)(e).
+                    - **BDSG-neu** §§ 32-37 (German modifications, in particular § 34 access, § 35 erasure).
+                    - **EDPB Guideline 01/2022** on data-subject rights / right of access.
+
+                    ---
+
+                    *Approved by DPO {{ roles.dpo.fullName }} on [date] — DPO sign-off is independent of the CISO sign-off.*
+
+                    *Approval chain: {{ approval.chain }}*
+                section:
+                    purpose:
+                        title: 'Purpose of the procedure'
+                        body: |-
+                            Binding procedure for the handling of all data-subject rights under Art. 12-22 GDPR and ISO 27701:2025 Cl. 7.3.1-7.3.10.
+                    scope:
+                        title: 'Scope'
+                        body: |-
+                            All rights of natural persons + obligations of Art. 12; also requests via processors.
+                    rights_covered:
+                        title: 'Rights covered'
+                        body: |-
+                            Art. 15 (access), 16 (rectification), 17 (erasure), 18 (restriction), 19 (notification), 20 (portability), 21 (objection), 22 (automated decision).
+                    intake_channels:
+                        title: 'Intake channels'
+                        body: |-
+                            Web form, DPO email, postal address, telephone with written follow-up, processor forwarding.
+                    identity_verification:
+                        title: 'Identity verification'
+                        body: |-
+                            Three-tier scheme (low / medium / high) under Art. 12(6) GDPR; excessive requirements impermissible.
+                    sla:
+                        title: 'SLA and deadlines'
+                        body: |-
+                            {{ gdpr.dsr_response_deadline_days }} calendar days as default, +2 months extension for complex requests (Art. 12(3)).
+                    refusal_grounds:
+                        title: 'Refusal grounds'
+                        body: |-
+                            Art. 12(5) (manifestly unfounded / excessive), BDSG-neu §§ 34, 35; redaction of third-party data.
+                    operative_coordination:
+                        title: 'Coordination with operative teams'
+                        body: |-
+                            DPO centrally; HR / Customer Service / Marketing / IT / Research as owners with 14-day delivery duty.
+                    processor_assistance:
+                        title: 'Processor assistance'
+                        body: |-
+                            Art. 28(3)(e); contractual duty in the DPA with 14-day SLA.
+                    logging:
+                        title: 'Logging and evidence'
+                        body: |-
+                            Complete documentation in `DataSubjectRequest`; 3-year retention.
+                tailoring_field:
+                    response_language_set:
+                        label: 'Response languages'
+                        placeholder: 'Example: "Default English (formal British/EU register); German for German requesters; additional Turkish and Russian for selected sites under Art. 12(1) (clear and plain language)."'
+                    identity_verification_default:
+                        label: 'Default identity-verification method'
+                        placeholder: 'Example: "Low threshold: email verification against registered customer ID. Medium threshold for sensitive requests: video-ident. High threshold for erasure requests with special categories: qualified electronic signature (eIDAS)."'
+                    automated_decision_used:
+                        label: 'Automated decision-making used Y/N'
+                        placeholder: 'Example: "Yes: credit-scoring in the online ordering process (Art. 22(2)(a) GDPR + contract); anti-fraud scoring (Art. 22(2)(b) + Member-State law); employee performance scoring NOT deployed."'
+        data_breach_notification_procedure:
+            v1:
+                title: 'Personal Data Breach Notification Procedure'
+                body: |-
+                    # Personal Data Breach Notification Procedure of {{ tenant.legal_name }}
+
+                    *Document class: Procedure | Standards anchor: GDPR Art. 33 (72h supervisory authority) + Art. 34 (notification of data subjects) + Art. 4(12) / ISO 27701:2025 Cl. 6.13 and 7.2.7 / BDSG-neu § 65 / DORA Art. 19 | Language: English (formal British/EU register) | Review cycle: 12 months*
+
+                    ## 1. Purpose
+
+                    This procedure binds the identification, assessment, notification, and documentation of personal data breaches under Art. 33 and 34 GDPR. It is closely interlocked with the security incident management procedure (ISO 27001 A.5.24-A.5.30) and, where applicable, the DORA major-incident procedure (Art. 19 Regulation (EU) 2022/2554); data is held in the existing `DataBreach` module.
+
+                    ## 2. Definition (Art. 4(12) GDPR)
+
+                    A personal data breach is "a breach of security leading to the accidental or unlawful destruction, loss, alteration, unauthorised disclosure of, or access to, personal data transmitted, stored or otherwise processed". All three classical CIA breaches are covered:
+
+                    1. **Confidentiality breach** — unauthorised disclosure or access;
+                    2. **Integrity breach** — unauthorised alteration;
+                    3. **Availability breach** — loss or destruction (including accidental).
+
+                    ## 3. Detection Channels and Internal Notification
+
+                    Personal data breaches are detected via:
+
+                    - SIEM alerts and monitoring tools (CISO area);
+                    - reports from employees through the documented reporting channel under A.6.8;
+                    - reports from processors (Art. 33(2) GDPR);
+                    - reports from data subjects via the DSR channel;
+                    - external reports (security researchers, law enforcement, media).
+
+                    Internal reporting channel: `breach@<tenant-domain>` (joint mailbox of DPO {{ roles.dpo.fullName }} and CISO {{ roles.ciso.fullName }}). Internal SLA: every suspected breach is reported to the DPO within 24 hours of awareness so that the 72-hour clock under Art. 33 GDPR can start running.
+
+                    ## 4. Assessment of Risk to Rights and Freedoms
+
+                    The assessment follows EDPB Guideline 9/2022 ("Notification of personal data breach under Regulation 2016/679"). Assessment axes:
+
+                    1. **Type of breach** (confidentiality / integrity / availability);
+                    2. **Nature and sensitivity of the data** (special categories under Art. 9 / 10 — automatically high);
+                    3. **Volume** (number of data subjects);
+                    4. **Identifiability** of the data subjects from the disclosed data;
+                    5. **Severity of consequences** (identity theft, financial harm, discrimination, reputational harm, reversal of pseudonymisation);
+                    6. **Characteristics of the data subjects** (vulnerable: children, patients, employees);
+                    7. **Number of data subjects** and **duration of exposure**.
+
+                    The assessment is supported by `GdprBreachAssessmentService` as a tooling aid; the final assessment is made by the DPO. Outcome: no notification obligation / Art. 33 notification only / Art. 33 + Art. 34 notification.
+
+                    ## 5. The 72-Hour Clock (Art. 33(1) GDPR)
+
+                    The clock starts upon "becoming aware" — the point at which the Organisation has reasonable certainty about the breach, not the first moment of suspicion (EDPB Guideline 9/2022 paras 20-23). Concrete milestones:
+
+                    | Hour | Action |
+                    |---|---|
+                    | T + 0h | "Becoming aware" — DPO trigger; workflow start in the `DataBreach` module |
+                    | T + 4h | Initial fact-securing; containment measures active |
+                    | T + 24h | First risk-assessment outcome; CISO technical assessment |
+                    | T + 48h | Decision on notification obligation Y/N; preparation of notification text |
+                    | T + 72h | Submission of notification to the lead supervisory authority (Art. 33(1)) |
+
+                    The deadline may be exceeded with reasoning where "delay is justified" (Art. 33(1) sentence 2); any delay is documented with reasons in the `DataBreach` module. "Stop-the-clock" conditions under Art. 33 are construed narrowly.
+
+                    ## 6. Content of the Notification to the Supervisory Authority (Art. 33(3))
+
+                    The notification contains at minimum:
+
+                    1. description of the nature of the breach, where possible the categories and approximate number of data subjects, and the categories and approximate number of records concerned (lit. (a));
+                    2. name and contact details of the data protection officer or another contact point (lit. (b)) — {{ roles.dpo.fullName }};
+                    3. description of the likely consequences (lit. (c));
+                    4. description of measures taken or proposed to address the breach and to mitigate any adverse effects (lit. (d)).
+
+                    Where not all information is available, an **initial notification** is made with the available data and a **subsequent submission** is provided without undue further delay (Art. 33(4)).
+
+                    Transmission channel: the relevant online portal of the lead supervisory authority (e.g. BfDI online form, or competent state DPA), with encrypted email to the official notification address as backup.
+
+                    ## 7. Notification of Data Subjects (Art. 34 GDPR)
+
+                    Where a breach is "likely to result in a high risk to the rights and freedoms" of data subjects, additional notification is required without undue delay. Content per Art. 34(2):
+
+                    - clear and plain language (no legalese);
+                    - at minimum the information from Art. 33(3) lit. (b), (c), (d);
+                    - practical recommendations for self-protection (e.g. password change, credit-monitoring).
+
+                    Waiver of individual notification is only permitted in the narrow cases of Art. 34(3) (effective technical protection such as encryption pre-incident; subsequent measures reduce risk; disproportionate effort -> public communication as alternative).
+
+                    ## 8. Documentation Duty for All Breaches (Art. 33(5))
+
+                    **Non-notifiable personal data breaches are also documented** — Art. 33(5) requires complete internal documentation enabling the supervisory authority to verify compliance with Art. 33. Retention in the `DataBreach` module: at least 7 years.
+
+                    ## 9. Cross-Regulatory Notification Matrix
+
+                    | Regulation | Deadline | Recipient |
+                    |---|---|---|
+                    | GDPR Art. 33 | 72h from becoming-aware | Lead DPA |
+                    | GDPR Art. 34 | Without undue delay (where required) | Data subjects |
+                    | DORA Art. 19 (financial sector) | 4h initial / 72h intermediate / 1 month final | National FI authority + ESA |
+                    | NIS2 Art. 23 (essential / important entities) | 24h early warning / 72h notification / 1 month final | National CSIRT |
+                    | TKG § 169 (telco service providers) | Without undue delay | BNetzA + data subjects |
+                    | sectoral (KRITIS, BaFin, AMG, etc.) | Sector-specific | Sectoral authority |
+
+                    Parallel notifications are drafted from the single `DataBreach` file with reuse of central fields; duplicate maintenance is prohibited. **DORA Art. 19 cross-reference**: For financial-services entities the DORA ICT major-incident workflow is triggered concurrently; see ICT Incident Procedure.
+
+                    ## 10. Joint-Controller Coordination (Art. 26)
+
+                    In joint-controllership constellations (Art. 26 GDPR) the joint-controllership arrangement determines who submits the notification to the supervisory authority and who undertakes the data-subject notification. Default: lead role rests with the joint controller in whose sphere the breach primarily occurred. Cross-reference: Joint Controllership Methodology.
+
+                    ## 11. Processor Notification Chain (Art. 33(2))
+
+                    Processors notify any breach "without undue delay after becoming aware" to the controller. SLA towards processors in the DPA: 24 hours from detection. Sub-processors notify via the processor on the same SLA. Breaches of the SLA result in contractual consequences (see Supplier Security Policy).
+
+                    ## 12. Interface to A.5.24-A.5.30 ISMS Incident Management
+
+                    Each personal data breach is concurrently a security incident within the meaning of ISO 27001:2022 A.5.24-A.5.30. The `DataBreach` file is linked to the `Incident` file (module level); lessons learned are derived in the post-incident review (A.5.27) jointly.
+
+                    ## 13. Cross-References
+
+                    - **ISO 27001:2022** A.5.34, A.5.24 (incident planning), A.5.25 (assessment), A.5.26 (response), A.5.27 (lessons learned), A.5.28 (evidence collection), A.5.29 (business continuity), A.5.30 (ICT readiness), A.6.8 (reporting channel).
+                    - **ISO 27701:2025** Cl. 6.13 (Personal Data Breach Response), Cl. 7.2.7.
+                    - **GDPR** Art. 33, Art. 34, Art. 4(12), Art. 26 (joint), Art. 28(3)(f) (processor assistance).
+                    - **BDSG-neu** § 65 (public bodies).
+                    - **DORA Art. 19** (Regulation (EU) 2022/2554) — ICT major-incident reporting (4h / 72h / 1 month).
+                    - **NIS2 Art. 23** (Directive (EU) 2022/2555).
+                    - **EDPB Guideline 9/2022** on personal data breach notification.
+
+                    ---
+
+                    *Approved by DPO {{ roles.dpo.fullName }} on [date] — DPO sign-off is independent of the CISO sign-off; top-management sign-off is mandatory.*
+
+                    *Approval chain: {{ approval.chain }}*
+                section:
+                    purpose:
+                        title: 'Purpose of the procedure'
+                        body: |-
+                            Binding handling of personal data breaches under Art. 33-34 GDPR and ISO 27701:2025 Cl. 6.13.
+                    definition:
+                        title: 'Definition'
+                        body: |-
+                            Art. 4(12) GDPR; confidentiality, integrity and availability breaches.
+                    detection:
+                        title: 'Detection and internal notification'
+                        body: |-
+                            SIEM, reports from employees / processors / data subjects / external; SLA: 24h internal DPO notification after awareness.
+                    risk_assessment:
+                        title: 'Risk assessment'
+                        body: |-
+                            EDPB Guideline 9/2022 with seven axes; final assessment by DPO via `GdprBreachAssessmentService`.
+                    seventy_two_hour_clock:
+                        title: '72h clock'
+                        body: |-
+                            Starts upon "becoming aware" — milestone sequence T+0/4/24/48/72h; delay only with reasoning (Art. 33(1) sentence 2).
+                    authority_notification_content:
+                        title: 'Content of the supervisory-authority notification'
+                        body: |-
+                            Art. 33(3)(a)-(d); initial notification + subsequent submission permitted (Art. 33(4)).
+                    subject_notification:
+                        title: 'Notification of data subjects'
+                        body: |-
+                            Art. 34 GDPR for high risk; clear language; waiver exceptions in Art. 34(3) narrow.
+                    documentation_duty:
+                        title: 'Documentation duty for all breaches'
+                        body: |-
+                            Art. 33(5) — also for non-notifiable incidents; 7-year retention.
+                    cross_regulatory_matrix:
+                        title: 'Cross-regulatory matrix'
+                        body: |-
+                            GDPR 72h / DORA Art. 19 4h-72h-1m / NIS2 24h-72h-1m / sectoral; reuse from single file; see ICT Incident Procedure (DORA Art. 19).
+                    joint_controller:
+                        title: 'Joint-controller coordination'
+                        body: |-
+                            Art. 26 GDPR; lead rests with the sphere of occurrence.
+                    processor_chain:
+                        title: 'Processor notification chain'
+                        body: |-
+                            Art. 33(2); DPA SLA 24h; sub-processors via processor.
+                    isms_incident_link:
+                        title: 'Interface to ISMS incident management'
+                        body: |-
+                            A.5.24-A.5.30; linkage between `DataBreach` and `Incident`; joint lessons learned.
+                tailoring_field:
+                    lead_supervisory_authority:
+                        label: 'Lead supervisory authority'
+                        placeholder: 'Example: "Bavarian State Office for Data Protection Supervision (BayLDA), Promenade 18, 91522 Ansbach. Online portal: www.lda.bayern.de/de/datenpannen.html. Contact: poststelle@lda.bayern.de."'
+                    secondary_authority_portals:
+                        label: 'Secondary supervisory authorities for cross-border processing'
+                        placeholder: 'Example: "Berlin Commissioner for Data Protection (Berlin site), Hessian Commissioner (Frankfurt site), CNIL France (Paris establishment) — One-Stop-Shop lead BayLDA under Art. 56."'
+                    public_communications_approver:
+                        label: 'Public-communications approver for Art. 34'
+                        placeholder: 'Example: "Joint approval by DPO {{ roles.dpo.fullName }}, CISO {{ roles.ciso.fullName }} and Chief Communications Officer; for group-level breaches additionally the Group DPO. Press release only after the supervisory-authority initial notification."'
+        iso_a534_thin_host:
+            v1:
+                title: 'Privacy and Protection of PII (A.5.34)'
+                body: |-
+                    # Privacy and Protection of PII (A.5.34) of {{ tenant.legal_name }}
+
+                    *Document class: Cross-reference document | Standards anchor: ISO/IEC 27001:2022 Annex A.5.34 / ISO/IEC 27002:2022 § 5.34 | Language: English (formal British/EU register) | Review cycle: 24 months*
+
+                    ## 1. Purpose
+
+                    This cross-reference document addresses the ISO/IEC 27001:2022 control A.5.34 ("Privacy and protection of PII"). As privacy is run as an autonomous programme at {{ tenant.legal_name }} (Privacy Information Management System, PIMS, under ISO 27701:2025), this document deliberately contains **no** standalone privacy substance — it points to the substantively responsible privacy documents.
+
+                    ## 2. Scope
+
+                    This document serves only as the ISO 27001 A.5.34 fulfilment pointer and as a cross-reference for auditors. Substantive privacy provisions are found in the downstream documents in section 4.
+
+                    ## 3. Rationale of the Cross-Reference Architecture
+
+                    ISO/IEC 27002:2022 § 5.34 reads: "The organization shall identify and meet the requirements regarding the preservation of privacy and protection of PII according to applicable laws and regulations and contractual requirements". This is fulfilled by the Organisation's autonomous privacy programme, which is grounded on the following pillars:
+
+                    - GDPR (Regulation (EU) 2016/679) as the central legal requirement;
+                    - BDSG-neu as the German specification;
+                    - ISO 27701:2025 as the PIMS standard extending the ISMS clauses with privacy-specific requirements;
+                    - sectoral specifications (e.g. § 22 BDSG-neu for special categories, AI Act, EHDS).
+
+                    The DPO {{ roles.dpo.fullName }} is designated under Art. 37-39 GDPR and **must be strictly separated** from the CISO {{ roles.ciso.fullName }} (BSI guidance "DPO is not the CISO"). Approval of this cross-reference document rests with the DPO; CISO bulk-approval cannot override the DPO sign-off (DPO veto mechanism per ISO 27701:2025 Cl. 5.1).
+
+                    ## 4. Binding References
+
+                    The A.5.34 requirements are met by the following documents — please consult these for substance and obligations:
+
+                    1. **Data Protection Policy** (top-level privacy norm, ISO 27701:2025 Cl. 5.2; GDPR Art. 24).
+                    2. **RoPA Methodology** (Records of Processing Activities, GDPR Art. 30; ISO 27701:2025 Cl. 7.2.8 / 8.2.6).
+                    3. **DPIA Methodology** (Data Protection Impact Assessment, GDPR Art. 35-36; ISO 27701:2025 Cl. 7.2.5).
+                    4. **Data Subject Rights Procedure** (GDPR Art. 12-22; ISO 27701:2025 Cl. 7.3.x).
+                    5. **Personal Data Breach Notification Procedure** (GDPR Art. 33-34; ISO 27701:2025 Cl. 6.13; DORA Art. 19 for the financial sector).
+                    6. **Lawful Basis Determination Methodology** (GDPR Art. 6, 9, 10; § 22 BDSG-neu).
+                    7. **Consent Management Policy** (GDPR Art. 7, 8).
+                    8. **Joint Controllership Methodology** (GDPR Art. 26).
+                    9. **International Data Transfers Policy** (GDPR Chapter V).
+                    10. **Data Retention and Deletion Policy** (GDPR Art. 5(1)(e), Art. 17).
+                    11. **Privacy by Design and by Default Methodology** (GDPR Art. 25).
+                    12. **Data Protection Officer Charter** (GDPR Art. 37-39).
+                    13. **Privacy Training and Awareness Programme** (Art. 39(1)(b) GDPR; ISO 27701:2025 Cl. 6.4.2; extends A.6.3).
+                    14. (conditional) **Children's Personal Data Policy** (GDPR Art. 8).
+                    15. (conditional) **Special Categories and Criminal Data Policy** (GDPR Art. 9, 10; § 22 BDSG-neu).
+
+                    ## 5. Cross-References to Other ISO 27001 Controls
+
+                    Privacy interlocks with numerous other Annex A controls:
+
+                    - **A.5.31** Legal, statutory, regulatory requirements — GDPR is a central requirement.
+                    - **A.5.20** Supplier agreements — DPA obligation (GDPR Art. 28).
+                    - **A.5.24-A.5.30** Incident management — interlocked with the breach procedure.
+                    - **A.5.33** Protection of records — retention discipline.
+                    - **A.6.3** Awareness, education and training — extended by the Privacy Awareness Programme.
+                    - **A.8.10** Information deletion — implementation of storage limitation.
+                    - **A.8.11** Data masking — pseudonymisation as TOM under Art. 32.
+                    - **A.8.12** Data leakage prevention — TOM under Art. 32.
+                    - **A.8.13** Information backup — also applicable to privacy data.
+                    - **A.8.27** Secure system architecture — Privacy by Design (Art. 25).
+                    - **A.8.28** Secure coding — Privacy by Design.
+
+                    ## 6. Review and Change Cycle
+
+                    This cross-reference document is reviewed every 24 months; changes occur exclusively where new privacy documents are added to or existing documents removed from the programme. Substantive privacy changes are made in the respective target documents, not here.
+
+                    ---
+
+                    *Approved by DPO {{ roles.dpo.fullName }} on [date] — DPO sign-off is independent of the CISO sign-off (ISO 27701:2025 Cl. 5.1; GDPR Art. 38(3)).*
+
+                    *Approval chain: {{ approval.chain }}*
+                section:
+                    purpose:
+                        title: 'Purpose of the cross-reference document'
+                        body: |-
+                            Fulfilment of the ISO/IEC 27001:2022 A.5.34 control by reference to the autonomous privacy programme.
+                    scope:
+                        title: 'Scope'
+                        body: |-
+                            Pure cross-reference document; substance lives in the downstream privacy documents.
+                    rationale:
+                        title: 'Rationale of the architecture'
+                        body: |-
+                            GDPR / BDSG-neu / ISO 27701:2025 fulfil A.5.34; DPO independent from CISO (BSI separation; Art. 38(3) GDPR).
+                    references:
+                        title: 'Binding references'
+                        body: |-
+                            15 privacy documents: Policy, RoPA, DPIA, DSR, Breach, Lawful Basis, Consent, Joint Controller, Transfer, Retention, PbD, DPO Charter, Awareness, Children, Special Categories.
+                    cross_references:
+                        title: 'ISO 27001 cross-references'
+                        body: |-
+                            A.5.31, A.5.20, A.5.24-A.5.30, A.5.33, A.6.3, A.8.10-A.8.13, A.8.27-A.8.28.
+                    review:
+                        title: 'Review interval'
+                        body: |-
+                            24 months; substantive changes only via target documents.
+                tailoring_field:
+                    standalone_documents_listed:
+                        label: 'List of downstream privacy documents'
+                        placeholder: 'Example: "The full list per section 4 is generated automatically during the wizard run from the activated privacy programme of the Organisation; conditional documents (Children / Special Categories) appear only where the relevant tenant settings are set."'
+                    iso27701_version_used:
+                        label: 'ISO 27701 version applied'
+                        placeholder: 'Example: "ISO/IEC 27701:2025 (default); the tenant may switch to :2019 where an active audit cycle requires it; clause mapping is automatically switched in the document tag-set."'
+                    a534_audit_evidence_pointer:
+                        label: 'Audit-evidence pointer for A.5.34'
+                        placeholder: 'Example: "In the SoA entry for A.5.34 this cross-reference document is named as the central audit-evidence artefact; in addition, the documents linked in section 4 and the DPO sign-off log from the `audit_log` module are presented during audit."'

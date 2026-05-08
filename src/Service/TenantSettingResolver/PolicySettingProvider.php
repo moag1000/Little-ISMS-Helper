@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\TenantSettingResolver;
 
+use App\Entity\PolicyTemplate;
 use App\Entity\Tenant;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -19,6 +20,9 @@ use Throwable;
  * instead of stringly-typed lookups.
  *
  * W5-A: introduces `bsi.tier_filter` — see {@see SETTING_BSI_TIER_FILTER}.
+ * W6-B: introduces `iso27701.enabled` + `iso27701.version` — see
+ *       {@see SETTING_ISO27701_ENABLED} and
+ *       {@see SETTING_ISO27701_VERSION}.
  */
 final class PolicySettingProvider
 {
@@ -46,6 +50,39 @@ final class PolicySettingProvider
     ];
 
     public const string TIER_FILTER_DEFAULT = self::TIER_FILTER_BASIS_ONLY;
+
+    /**
+     * ISO 27701 PIMS opt-in flag — when true, the document generator
+     * emits clause-level mapping tags (`iso27701:5.1`, `iso27701:7.2.8`,
+     * etc.) for every policy template that carries a clause mapping.
+     *
+     * Default: false (PIMS is a parallel addon, opt-in like DORA per
+     * `06-dpo-input.md` §3.3).
+     */
+    public const string SETTING_ISO27701_ENABLED = 'iso27701.enabled';
+
+    /**
+     * ISO 27701 edition driving the clause set. ISO/IEC 27701:2025
+     * superseded :2019 in 2025-09 and renumbered several clauses
+     * (notably 6.13 was a sub-clause `6.13.1.5` in 2019). Tenants on
+     * legacy audit cycles can keep the 2019 numbering active until
+     * their next surveillance audit.
+     *
+     * Allowed values: see {@see ISO27701_VERSIONS}.
+     * Default: {@see ISO27701_VERSION_DEFAULT} (= 2025).
+     */
+    public const string SETTING_ISO27701_VERSION = 'iso27701.version';
+
+    public const string ISO27701_VERSION_2019 = '2019';
+    public const string ISO27701_VERSION_2025 = '2025';
+
+    /** @var list<string> */
+    public const array ISO27701_VERSIONS = [
+        self::ISO27701_VERSION_2019,
+        self::ISO27701_VERSION_2025,
+    ];
+
+    public const string ISO27701_VERSION_DEFAULT = self::ISO27701_VERSION_2025;
 
     public function __construct(
         private readonly TenantSettingResolver $resolver,
@@ -116,5 +153,130 @@ final class PolicySettingProvider
             // basis_only — anything not 'basis' is gated
             default => $bsiTier === 'basis',
         };
+    }
+
+    /**
+     * Resolve `iso27701.enabled` for the tenant. Returns the default
+     * (false) on any error. Never throws.
+     */
+    public function isIso27701Enabled(?Tenant $tenant): bool
+    {
+        if (!$tenant instanceof Tenant) {
+            return false;
+        }
+        try {
+            $resolution = $this->resolver->resolveFor(
+                $tenant,
+                self::SETTING_ISO27701_ENABLED,
+                false,
+            );
+            $value = $resolution->getValue();
+            return $value === true || $value === 1 || $value === '1' || $value === 'true';
+        } catch (Throwable $error) {
+            $this->logger->warning(
+                'PolicySettingProvider: iso27701.enabled resolution failed; using default',
+                [
+                    'tenant_id' => $tenant->getId(),
+                    'default' => false,
+                    'error' => $error->getMessage(),
+                ],
+            );
+            return false;
+        }
+    }
+
+    /**
+     * Resolve `iso27701.version` for the tenant, falling back to
+     * {@see ISO27701_VERSION_DEFAULT} (= 2025) on any error or unknown
+     * stored value. Never throws.
+     */
+    public function resolveIso27701Version(?Tenant $tenant): string
+    {
+        if (!$tenant instanceof Tenant) {
+            return self::ISO27701_VERSION_DEFAULT;
+        }
+        try {
+            $resolution = $this->resolver->resolveFor(
+                $tenant,
+                self::SETTING_ISO27701_VERSION,
+                self::ISO27701_VERSION_DEFAULT,
+            );
+            $value = $resolution->getValue();
+            if (is_string($value) && in_array($value, self::ISO27701_VERSIONS, true)) {
+                return $value;
+            }
+            return self::ISO27701_VERSION_DEFAULT;
+        } catch (Throwable $error) {
+            $this->logger->warning(
+                'PolicySettingProvider: iso27701.version resolution failed; using default',
+                [
+                    'tenant_id' => $tenant->getId(),
+                    'default' => self::ISO27701_VERSION_DEFAULT,
+                    'error' => $error->getMessage(),
+                ],
+            );
+            return self::ISO27701_VERSION_DEFAULT;
+        }
+    }
+
+    /**
+     * Build the list of `iso27701:<clause>` tags that should be
+     * appended to a document generated from the given template, given
+     * the tenant's PIMS opt-in state.
+     *
+     * Returns an empty list when:
+     *   • the tenant has not enabled `iso27701.enabled`, OR
+     *   • the template carries no clause mapping for the resolved version.
+     *
+     * The version-fallback rule is asymmetric per `06-dpo-input.md`
+     * §3.2: when the resolved version is 2025 but the template only
+     * declares 2019 clauses (legacy seed), we fall back to the 2019
+     * list rather than emit nothing — and vice-versa. This keeps the
+     * tag pipeline working through partial migrations.
+     *
+     * Pure function over (template, tenant) — safe to call from any
+     * code path, no side effects on the entity.
+     *
+     * @return list<string> e.g. `['iso27701:5.1','iso27701:7.2.8']`
+     */
+    public function tagDocumentWithIso27701(PolicyTemplate $template, ?Tenant $tenant): array
+    {
+        if (!$this->isIso27701Enabled($tenant)) {
+            return [];
+        }
+        $clauses = $this->resolveClausesForTemplate($template, $this->resolveIso27701Version($tenant));
+        if ($clauses === []) {
+            return [];
+        }
+        $tags = [];
+        foreach ($clauses as $clause) {
+            $tags[] = 'iso27701:' . $clause;
+        }
+        return $tags;
+    }
+
+    /**
+     * Pick the right clause list given the resolved `iso27701.version`
+     * with asymmetric fallback when the template only declares one
+     * version (legacy / partial seed).
+     *
+     * @return list<string>
+     */
+    private function resolveClausesForTemplate(PolicyTemplate $template, string $version): array
+    {
+        $primary = $version === self::ISO27701_VERSION_2019
+            ? $template->getIso27701Clauses2019()
+            : $template->getIso27701Clauses2025();
+        if (is_array($primary) && $primary !== []) {
+            return array_values($primary);
+        }
+        // Fallback: opposite-version mapping if primary is empty/null.
+        $fallback = $version === self::ISO27701_VERSION_2019
+            ? $template->getIso27701Clauses2025()
+            : $template->getIso27701Clauses2019();
+        if (is_array($fallback) && $fallback !== []) {
+            return array_values($fallback);
+        }
+        return [];
     }
 }
