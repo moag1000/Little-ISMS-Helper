@@ -617,7 +617,7 @@ policy:
                     3. Notfall-Wiederherstellungs-Codes werden im Tresor verwahrt und nur bei MFA-Verlust verwendet.
 
                     ## 7. Zertifikate
-                    Zertifikate (X.509) werden ueber die Public-Key-Infrastruktur (PKI) der Organisation oder ueber freigegebene oeffentliche CA ausgestellt. Lebenszyklus: Antrag -> Validierung -> Ausstellung -> Verteilung -> Erneuerung -> Sperrung -> Archivierung. Maximale Gueltigkeitsdauer: 12 Monate fuer Server-Zertifikate (CA/Browser Forum); 24 Monate fuer Code-Signing.
+                    Zertifikate (X.509) werden ueber die Public-Key-Infrastruktur (PKI) der Organisation oder ueber freigegebene oeffentliche CA ausgestellt. Lebenszyklus: Antrag -> Validierung -> Ausstellung -> Verteilung -> Erneuerung -> Sperrung -> Archivierung. Maximale Gueltigkeitsdauer: 12 Monate fuer Server-Zertifikate (CA/Browser Forum); 24 Monate fuer Code-Signing. Die rechtzeitige Erneuerung wird durch ein zentrales Zertifikatsmanagement-System ueberwacht; ablaufende Zertifikate loesen Alarme an die zustaendigen Asset Owner und an den CISO {{ roles.ciso.fullName }} aus.
 
                     ## 8. Geheimnisse, API-Schluessel, Tokens
                     Geheimnisse werden ausschliesslich im genehmigten Secrets-Management-Werkzeug verwaltet. Hardcoded-Secrets in Quellcode oder Konfigurationsdateien sind untersagt; pre-commit-Hooks und SAST-Scans pruefen darauf gemaess Richtlinie fuer sichere Entwicklung. Rotation: API-Schluessel mind. alle 90 Tage; Service-Konto-Geheimnisse mind. alle 180 Tage; Notfall-Rotation bei Verdacht auf Kompromittierung.

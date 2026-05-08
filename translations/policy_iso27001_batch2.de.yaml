@@ -297,6 +297,8 @@ policy:
                             Diese Richtlinie stellt sicher, dass {{ tenant.legal_name }} Schwachstellen in IT-Systemen rechtzeitig erkennt, bewertet und behebt, bevor sie ausgenutzt werden koennen. Sie definiert verbindliche Service-Level-Agreements (SLAs) fuer die Behebung von Schwachstellen entsprechend ihrer Kritikalitaet und etabliert ein durchgehend dokumentiertes Vulnerability-Management.
 
                             Grundsaetze: Risiko-basierte Priorisierung (CVSS 4.0 + EPSS + Exploit-Verfuegbarkeit), Asset-Inventar als Voraussetzung (Bezug zu A.5.9), klare Verantwortlichkeiten je Asset-Typ, Trennung von Erkennung und Behebung (Vier-Augen-Prinzip).
+
+                            Das Vulnerability-Management ist in das uebergeordnete Risiko-Management eingebunden: jede unbehandelte Schwachstelle oberhalb der Schwellwerte fuer „High" stellt ein technisches Risiko dar, das im Risikoregister gefuehrt wird. Die Entscheidung ueber Behebung versus dokumentierte Risikoakzeptanz erfolgt nach den Eskalationsstufen der Risk-Treatment-Plan-Richtlinie.
                     2:
                         title: 'Schwachstellen-Quellen und kontinuierliche Erfassung'
                         body: |
@@ -355,6 +357,18 @@ policy:
 
                             Die KPIs fliessen in die Bewertung der Wirksamkeit des ISMS gemaess ISO 27001 Klausel 9.1 ein und werden in der Management-Bewertung (Klausel 9.3) erlaeutert.
                     8:
+                        title: 'Rollen und Verantwortlichkeiten'
+                        body: |
+                            **{{ roles.ciso.fullName }} (CISO):** Policy-Owner, Genehmigung von Risikoakzeptanzen, Eskalationspunkt bei kritischen Schwachstellen.
+
+                            **Vulnerability Management Lead:** Operative Verantwortung fuer die Scanning-Pipeline, Vulnerability-Triage, Reporting.
+
+                            **Asset-Owner:** Verantwortlich fuer die SLA-konforme Behebung der Schwachstellen in den eigenen Systemen, Mitwirkung an Risikobewertungen.
+
+                            **IT-Operations:** Operative Durchfuehrung des Patchings, Pflege der Patch-Test-Umgebung, Rollout in Produktion.
+
+                            **Change-Advisory-Board (CAB):** Genehmigung von regulaeren Patch-Changes, Bewertung von Notfall-Patches im Nachgang.
+                    9:
                         title: 'Ueberpruefung'
                         body: |
                             Diese Richtlinie wird mindestens alle {{ review.interval_months }} Monate ueberprueft, sowie ad-hoc bei wesentlichen Aenderungen der Bedrohungslage oder Tooling-Aenderungen.
@@ -385,6 +399,8 @@ policy:
                             Schadsoftware (Viren, Wuermer, Trojaner, Ransomware, Spyware, Cryptominer) zaehlt zu den groessten Risiken fuer die Vertraulichkeit, Integritaet und Verfuegbarkeit der Informationen von {{ tenant.legal_name }}. Diese Richtlinie etabliert ein mehrschichtiges Schutzkonzept (Defense in Depth), das technische Kontrollen mit organisatorischen Massnahmen und Mitarbeitenden-Sensibilisierung verbindet.
 
                             Sie adressiert insbesondere die in den letzten Jahren dominanten Bedrohungs-Szenarien: Phishing-induzierter Initial-Access, Ransomware-as-a-Service, Living-off-the-Land-Techniken und Supply-Chain-Kompromittierungen.
+
+                            Die Bedrohungslage wird kontinuierlich aktualisiert und mit Bezug auf die Threat-Intelligence-Richtlinie ueberprueft. Bei Veroeffentlichung neuer einschlaegiger Bedrohungsberichte (BSI Lagebericht, ENISA Threat Landscape, branchenspezifische ISAC-Reports) erfolgt eine Pruefung, ob die Schutzmassnahmen anzupassen sind. Bei akuter Bedrohung mit hoher Branchenrelevanz erfolgt eine ad-hoc-Eskalation.
                     2:
                         title: 'Technische Schutzmassnahmen'
                         body: |
@@ -468,6 +484,8 @@ policy:
                             Eine sichere Grundkonfiguration (Hardening Baseline) reduziert die Angriffsflaeche, deaktiviert nicht benoetigte Funktionen, setzt sichere Standardwerte und verhindert die Ausnutzung unsicherer Default-Konfigurationen. Diese Richtlinie etabliert verbindliche Konfigurations-Baselines und einen kontinuierlichen Konfigurations-Management-Prozess.
 
                             Grundsaetze: „Secure by Default" (sichere Voreinstellungen), „Least Functionality" (nur benoetigte Dienste aktiviert), „Configuration as Code" (versionierte, reproduzierbare Konfigurationen), „Drift Detection" (kontinuierliche Pruefung gegen die Soll-Baseline).
+
+                            Die Konfigurations-Sicherheit ist eng verzahnt mit dem Schwachstellen-Management (A.8.8) und dem Aenderungsmanagement (A.8.32). Eine fehlerhafte Konfiguration ist eine technische Schwachstelle und wird ueber den Vulnerability-Management-Prozess behandelt; jede genehmigte Konfigurationsaenderung folgt dem Change-Management-Prozess. Die drei Prozesse werden gemeinsam in der jaehrlichen Wirksamkeitspruefung des ISMS bewertet.
                     2:
                         title: 'Konfigurations-Baselines'
                         body: |
@@ -500,6 +518,8 @@ policy:
                             - **Geringfuegig:** Reporting im monatlichen Konfigurations-Report.
 
                             Persistente Drifts ohne nachvollziehbaren Grund werden als Anomalie behandelt und im SIEM korreliert.
+
+                            Beispiele kritischer Drifts: Deaktivierung lokaler Firewall, Aenderung von SSH-Konfigurationen (Erlauben von Passwort-Auth, Erlauben von Root-Login), Aenderungen am Audit-Logging, Aenderung von Berechtigungen auf sicherheitsrelevanten Dateien, Aenderung von TLS-Konfigurationen unterhalb der Mindeststandards. Bei diesen Drifts wird zusaetzlich ein Sicherheitsereignis erfasst und gemaess Incident-Management-Prozess behandelt.
                     5:
                         title: 'Ausnahmen'
                         body: |
@@ -561,6 +581,8 @@ policy:
                             Diese Richtlinie schuetzt die Vertraulichkeit, Integritaet und Verfuegbarkeit der ueber das Netzwerk uebertragenen Informationen und stellt sicher, dass Netzwerke und Netzwerk-Services kontrolliert betrieben werden. Sie folgt einer „Defense in Depth"-Architektur mit klar definierten Sicherheitszonen und einer schrittweisen Migration in Richtung Zero-Trust-Networking.
 
                             Grundsaetze: „Default Deny" (alles verboten, was nicht explizit erlaubt ist), Segmentierung nach Schutzbedarf und Funktion, Verschluesselung in Transit fuer alle Daten ausserhalb derselben Sicherheitszone, Ueberwachung der Netzwerk-Aktivitaet (siehe Logging-Richtlinie), regelmaessige Ueberpruefung der Firewall-Regeln.
+
+                            Die Netzwerk-Sicherheit ist eng mit der Informations-Klassifizierung verzahnt: die zulaessigen Verarbeitungs- und Uebertragungsorte je Klassifikationsstufe ergeben sich aus der Klassifikationsrichtlinie und sind im Zonen-Modell technisch umgesetzt. Streng vertrauliche Daten werden ausschliesslich in der Restricted-Zone verarbeitet; Uebertragungen zwischen Zonen erfordern explizite Verschluesselung und Auditierung.
                     2:
                         title: 'Zonen-Modell und Segmentierung'
                         body: |
