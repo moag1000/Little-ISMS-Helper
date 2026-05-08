@@ -84,6 +84,19 @@ security:
         #   alle Subsidiaries prüfen müssen, ohne Schreibrechte zu haben.
         #   Einsatz: Konzerninterne Audits, Regulierungs-Reviews, Portfolio-Berichte.
         ROLE_KONZERN_AUDITOR:   ROLE_AUDITOR
+        # Phase 4-C / Policy-Wizard Sprint W1 — Konzern-BCM-Officer.
+        #   Steuert konzernweite BCM-Standards (W5 BCM-Auto-Create-Flow), kann
+        #   Konzern-Defaults für Policies setzen (policy_wizard.konzern_defaults)
+        #   und BCM-Auto-Create-Vorgaben pflegen. Inherits ROLE_MANAGER, weil
+        #   der Group-BCM-Officer auch operativ in Tochter-Tenants Policies
+        #   reviewt — auf Manager-Level-Scope, nicht Admin.
+        ROLE_GROUP_BCM_OFFICER: ROLE_MANAGER
+        # Phase 4-C / Policy-Wizard Sprint W1 — Function-Owner / Fachbereichsleiter.
+        #   Per-Tenant Business-Function-Head (Risk-Owner P1, W2 wizard Step 3).
+        #   Darf für Policies, deren affectedFunctions die eigene Funktion
+        #   abdecken, einen Function-Owner-Review zeichnen. Erbt nur ROLE_USER:
+        #   funktionale Sign-Off-Befugnis, keine Admin-/Konfig-Rechte.
+        ROLE_FUNCTION_OWNER:    ROLE_USER
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

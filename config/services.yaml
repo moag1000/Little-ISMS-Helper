@@ -203,6 +203,15 @@ services:
         arguments:
             $inheritanceEnabled: '%app.compliance.mapping_inheritance.enabled%'
 
+    # Policy-Wizard W1-C — generic tenant-setting resolver. SettingProviderInterface
+    # is satisfied by SystemSettingsBackedProvider until W1-A's TenantPolicySetting
+    # repository lands; ChangeAttemptLoggerInterface defaults to a null logger
+    # for the same reason.
+    App\Service\TenantSettingResolver\SettingProviderInterface:
+        alias: App\Service\TenantSettingResolver\SystemSettingsBackedProvider
+    App\Service\TenantSettingResolver\ChangeAttemptLoggerInterface:
+        alias: App\Service\TenantSettingResolver\NullChangeAttemptLogger
+
     # WS-1 inheritance service + four-eyes: now read thresholds at runtime via
     # CompliancePolicyService (admin-configurable). Autowiring covers the rest.
 
