@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+title: Little ISMS Helper
+message: >-
+  If you use this software in academic, audit, or compliance work,
+  please cite it using the metadata below.
+type: software
+authors:
+  - alias: moag1000 / moag2000
+    website: https://github.com/moag1000
+repository-code: https://github.com/moag1000/Little-ISMS-Helper
+url: https://github.com/moag1000/Little-ISMS-Helper
+abstract: >-
+  Open-source multi-tenant Information Security Management System (ISMS)
+  with multi-framework compliance support for ISO 27001:2022,
+  BSI IT-Grundschutz, NIS-2 (EU 2022/2555), DORA (EU 2022/2554),
+  GDPR/DSGVO, and TISAX. Implements all 93 ISO 27001 Annex A controls,
+  a quantitative risk engine (5x5 matrix with risk-appetite gating),
+  cross-framework mapping, GDPR data-subject-request workflows,
+  data-breach notification (Art. 33 / 72h), DPIA, and a
+  tamper-evident audit trail with HMAC-SHA256 chaining.
+keywords:
+  - isms
+  - iso-27001
+  - bsi-grundschutz
+  - nis2
+  - dora
+  - gdpr
+  - dsgvo
+  - tisax
+  - compliance
+  - grc
+  - information-security
+  - risk-management
+  - audit-trail
+  - multi-tenant
+  - symfony
+license: AGPL-3.0-or-later
