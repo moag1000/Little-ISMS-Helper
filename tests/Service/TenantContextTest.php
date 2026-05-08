@@ -19,12 +19,15 @@ class TenantContextTest extends TestCase
     private TenantContext $tenantContext;
     private Security $security;
     private TenantRepository $tenantRepository;
+    private \Doctrine\ORM\EntityManagerInterface $entityManager;
 
     protected function setUp(): void
     {
         $this->security = $this->createMock(Security::class);
         $this->tenantRepository = $this->createMock(TenantRepository::class);
-        $this->tenantContext = new TenantContext($this->security, $this->tenantRepository);
+        $this->entityManager = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
+        $this->entityManager->method('contains')->willReturn(true);
+        $this->tenantContext = new TenantContext($this->security, $this->tenantRepository, $this->entityManager);
     }
 
     #[Test]

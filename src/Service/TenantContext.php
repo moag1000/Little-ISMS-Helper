@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Repository\TenantRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
 /**
@@ -22,7 +23,8 @@ class TenantContext
 
     public function __construct(
         private readonly Security $security,
-        private readonly TenantRepository $tenantRepository
+        private readonly TenantRepository $tenantRepository,
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -33,6 +35,16 @@ class TenantContext
     {
         if (!$this->initialized) {
             $this->initialize();
+        }
+
+        // Re-fetch if cached tenant became detached from EM (e.g. after EM clear
+        // between requests in long-running processes / tests with disableReboot).
+        if ($this->currentTenant !== null
+            && $this->currentTenant->getId() !== null
+            && !$this->entityManager->contains($this->currentTenant)
+        ) {
+            $this->currentTenant = $this->tenantRepository->find($this->currentTenant->getId())
+                ?? $this->currentTenant;
         }
 
         return $this->currentTenant;
@@ -97,8 +109,15 @@ class TenantContext
             return;
         }
 
-        // Use user's tenant if available
-        $this->currentTenant = $user->getTenant();
+        // Use user's tenant if available — re-fetch via repository so we always
+        // hold a managed entity (User session-deserialization yields a detached
+        // tenant association, which would cascade-persist-fail on flush).
+        $userTenant = $user->getTenant();
+        if ($userTenant !== null && $userTenant->getId() !== null) {
+            $this->currentTenant = $this->tenantRepository->find($userTenant->getId()) ?? $userTenant;
+        } else {
+            $this->currentTenant = $userTenant;
+        }
 
         // Fallback if user has no tenant assigned
         if ($this->currentTenant === null) {
