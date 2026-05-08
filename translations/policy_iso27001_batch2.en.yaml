@@ -533,6 +533,24 @@ policy:
 
                             On publication of a new CIS-Benchmark version, a gap analysis must be performed within 90 days and an update plan produced.
                     7:
+                        title: 'Audit and Evidence'
+                        body: |
+                            Configuration-compliance reports are produced monthly and contain the compliance rate per technology family, the top-10 drift categories and the status of exception requests. The reports feed the reporting line to executive management and the internal-audit programme.
+
+                            During internal and external audits, samples of configuration compliance are evidenced. Each auditor has read access to the configuration-compliance tool. Audit findings are tracked in the actions tracker and handled per ISO 27001 clause 10.
+                    8:
+                        title: 'Roles and Responsibilities'
+                        body: |
+                            **{{ roles.ciso.fullName }} (CISO):** Policy owner, approval of exceptions, escalation point on drift findings.
+
+                            **Platform owners per technology family:** Maintenance of baseline definitions, evaluation of new CIS-Benchmark versions, implementation of baseline updates.
+
+                            **Asset owners:** Responsible for applying the baseline on their own systems, contributing to drift remediation.
+
+                            **DevOps / platform engineering:** Provision and maintenance of the configuration-management and drift-detection tooling pipelines.
+
+                            **Internal Audit:** Sample-based review of baseline compliance, evaluation of audit trails of configuration changes.
+                    9:
                         title: 'Review'
                         body: |
                             This policy is reviewed at least every {{ review.interval_months }} months, and on publication of new baseline sources or material changes in the tooling landscape.
@@ -563,6 +581,8 @@ policy:
                             This policy protects the confidentiality, integrity and availability of information transmitted across the network and ensures that networks and network services are operated under control. It follows a defence-in-depth architecture with clearly defined security zones and a phased migration towards zero-trust networking.
 
                             Principles: "default deny" (everything is forbidden unless explicitly allowed), segmentation by protection requirement and function, encryption in transit for all data leaving the same security zone, monitoring of network activity (refer to the Logging Policy), regular review of firewall rules.
+
+                            Network security is closely interlinked with information classification: the permissible processing and transmission locations per classification level derive from the Classification Policy and are technically reflected in the zone model. Strictly confidential data is processed only in the Restricted zone; transfers between zones require explicit encryption and auditing.
                     2:
                         title: 'Zone Model and Segmentation'
                         body: |
@@ -606,6 +626,10 @@ policy:
                         title: 'Detection and Response'
                         body: |
                             Intrusion-Detection/Prevention Systems (IDS/IPS) are active at zone transitions. Network Detection & Response (NDR) monitors lateral movement within zones. Suspicious activities are correlated automatically in the SIEM (refer to the Logging Policy). Upon critical indicators (e.g. C2 communication, beaconing patterns) automatic isolation of the affected endpoint is performed.
+
+                            Detection coverage is continuously aligned with the MITRE ATT&CK framework and relevant threat-modelling outputs. At least half-yearly a purple-team exercise is performed with defined scenarios (e.g. initial access via a phishing payload, lateral movement, data staging) during which detection and response capability is measured and documented. Lessons-learned feed the detection-engineering and network-security architecture backlog.
+
+                            Encrypted traffic (TLS) is inspected at strategically relevant points using TLS decryption (inspection proxy). Privacy-sensitive areas (e.g. communication with banking portals, healthcare providers, internal HR systems) are excluded via decryption-bypass lists; bypass lists are agreed with the Data Protection Officer and the works council.
                     7:
                         title: 'Zero-Trust Roadmap'
                         body: |
@@ -614,7 +638,21 @@ policy:
                         title: 'Service Agreements with Third Parties'
                         body: |
                             Network services from third parties (internet carriers, MPLS providers, SaaS connectivity) are covered by service-level agreements that include at minimum: availability, encryption requirements, response times for security events, audit rights, data localisation.
+
+                            For business-critical network services (internet connectivity, MPLS, SD-WAN) a multi-carrier strategy must be evaluated to avoid single points of failure. Where DORA applies, additionally: registration as an ICT third-party provider in the Register of Information, contractual inclusion of mandatory DORA clauses (Art. 30), exit strategy and concentration-risk assessment.
                     9:
+                        title: 'Roles and Responsibilities'
+                        body: |
+                            **Network Security Lead:** Operational responsibility for the implementation of this policy, maintenance of the firewall rule base, oversight of half-yearly recertifications.
+
+                            **{{ roles.ciso.fullName }} (CISO):** Approval of exceptions and critical firewall rules, escalation point, reporting line to executive management.
+
+                            **Cloud platform owners:** Responsibility for implementing the zone-model requirements in cloud VPCs, configuration of cloud-native security groups.
+
+                            **Asset owners:** Requesting new connectivity, responsibility for the ongoing need of firewall rules in their own systems, contribution to recertifications.
+
+                            **Internal Audit:** Sample-based review of the firewall rule base and zone separation, reporting to the audit committee.
+                    10:
                         title: 'Review'
                         body: |
                             This policy is reviewed at least every {{ review.interval_months }} months, and ad hoc upon material changes to the network architecture, cloud migrations or new regulatory requirements.

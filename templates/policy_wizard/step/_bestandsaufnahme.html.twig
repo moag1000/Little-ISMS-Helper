@@ -1,0 +1,156 @@
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{# W4-C — Step 0 "Bestandsaufnahme" for brownfield tenants.
+
+   The controller passes:
+     - `inventory_rows` : list of inventory rows from
+        ExistingDocumentInventoryService::inventoryFor()
+     - `topic_suggestions_by_doc` : { document_id: [{ topic, confidence }, …] }
+     - `available_topics` : list of canonical topic keys (for the merge / split dropdowns)
+
+   When `inventory_rows` is empty we fall through to the empty-state include
+   so the user gets a clear "you are greenfield" signal. #}
+
+{% set rows = inventory_rows|default([]) %}
+{% set suggestions = topic_suggestions_by_doc|default({}) %}
+{% set topics = available_topics|default([]) %}
+{% set persisted_decisions = defaults.decisions|default({}) %}
+
+{% if rows is empty %}
+    {% include 'policy_wizard/step/_bestandsaufnahme_empty.html.twig' %}
+{% else %}
+    {{ _fa_alert.render({
+        variant: 'info',
+        title: 'policy_wizard.step.bestandsaufnahme.title'|trans,
+        body: 'policy_wizard.step.bestandsaufnahme.intro'|trans
+    }) }}
+
+    <div class="table-responsive mt-3">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'policy_wizard.step.bestandsaufnahme.column.title'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.bestandsaufnahme.column.type'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.bestandsaufnahme.column.last_approved'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.bestandsaufnahme.column.owner'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.bestandsaufnahme.column.action'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    {% set doc_id = row.id %}
+                    {% set persisted = persisted_decisions[doc_id]|default({}) %}
+                    {% set chosen_action = persisted.action|default('') %}
+                    {% set chosen_target_topic = persisted.target_topic|default('') %}
+                    {% set chosen_target_topics = persisted.target_topics|default([]) %}
+                    {% set chosen_rationale = persisted.rationale|default('') %}
+                    {% set suggested_topic_list = suggestions[doc_id]|default([]) %}
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">{{ row.title }}</div>
+                            {% if suggested_topic_list|length > 0 %}
+                                <small class="text-muted d-block">
+                                    {{ 'policy_wizard.step.bestandsaufnahme.suggested_topic'|trans }}:
+                                    {% for sug in suggested_topic_list|slice(0, 3) %}
+                                        <span class="badge bg-secondary-subtle text-body">
+                                            {{ sug.topic }} ({{ (sug.confidence * 100)|round }}%)
+                                        </span>
+                                    {% endfor %}
+                                </small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-body">{{ row.documentType }}</span>
+                        </td>
+                        <td>
+                            {% if row.lastApprovedAt %}
+                                <small>{{ row.lastApprovedAt|date('Y-m-d') }}</small>
+                            {% else %}
+                                <small class="text-muted">—</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <small>{{ row.ownerName|default('—') }}</small>
+                        </td>
+                        <td>
+                            {% set suggestion_key = 'policy_wizard.step.bestandsaufnahme.suggestion.' ~ row.suggestedAction %}
+                            <span class="badge bg-info-subtle text-body mb-2 d-inline-block">
+                                <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                                {{ suggestion_key|trans|default(row.suggestedAction) }}
+                            </span>
+
+                            <label class="visually-hidden" for="action-{{ doc_id }}">
+                                {{ 'policy_wizard.step.bestandsaufnahme.column.action'|trans }}
+                            </label>
+                            <select class="form-select form-select-sm mb-2"
+                                    id="action-{{ doc_id }}"
+                                    name="decisions[{{ doc_id }}][action]"
+                                    required>
+                                <option value="" {% if chosen_action == '' %}selected{% endif %}>
+                                    — {{ 'policy_wizard.action.cancel'|trans }} —
+                                </option>
+                                {% for act in ['replace', 'keep', 'merge_into_topic', 'split_to_topics'] %}
+                                    <option value="{{ act }}" {% if chosen_action == act %}selected{% endif %}>
+                                        {{ ('policy_wizard.step.bestandsaufnahme.action.' ~ act)|trans }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                            {# merge_into_topic — single dropdown, pre-filled with the strongest suggestion. #}
+                            <label class="visually-hidden" for="merge-{{ doc_id }}">
+                                {{ 'policy_wizard.step.bestandsaufnahme.action.merge_into_topic'|trans }}
+                            </label>
+                            <select class="form-select form-select-sm mb-2"
+                                    id="merge-{{ doc_id }}"
+                                    name="decisions[{{ doc_id }}][target_topic]">
+                                <option value="">—</option>
+                                {% for topic_key in topics %}
+                                    <option value="{{ topic_key }}"
+                                        {% if chosen_target_topic == topic_key
+                                              or (chosen_target_topic == '' and suggested_topic_list|length > 0
+                                                  and suggested_topic_list[0].topic == topic_key) %}
+                                            selected
+                                        {% endif %}>
+                                        {{ topic_key }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                            {# split_to_topics — multi-select. #}
+                            <label class="visually-hidden" for="split-{{ doc_id }}">
+                                {{ 'policy_wizard.step.bestandsaufnahme.action.split_to_topics'|trans }}
+                            </label>
+                            <select class="form-select form-select-sm mb-2"
+                                    id="split-{{ doc_id }}"
+                                    name="decisions[{{ doc_id }}][target_topics][]"
+                                    multiple>
+                                {% for topic_key in topics %}
+                                    <option value="{{ topic_key }}"
+                                        {% if topic_key in chosen_target_topics %}selected{% endif %}>
+                                        {{ topic_key }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                            <label class="visually-hidden" for="rationale-{{ doc_id }}">
+                                {{ 'policy_wizard.step.bestandsaufnahme.rationale_label'|trans }}
+                            </label>
+                            <textarea class="form-control form-control-sm"
+                                      id="rationale-{{ doc_id }}"
+                                      name="decisions[{{ doc_id }}][rationale]"
+                                      rows="2"
+                                      maxlength="1000"
+                                      placeholder="{{ 'policy_wizard.step.bestandsaufnahme.rationale_placeholder'|trans }}">{{ chosen_rationale }}</textarea>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <p class="small text-muted mt-2 mb-0">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.bestandsaufnahme.continue_hint'|trans }}
+    </p>
+{% endif %}

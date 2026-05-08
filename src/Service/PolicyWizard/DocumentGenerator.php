@@ -112,8 +112,18 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         private readonly TranslatorInterface $translator,
         private readonly ?DocumentSectionRepository $documentSectionRepository = null,
         private readonly LoggerInterface $logger = new NullLogger(),
+        private readonly ?DoraExtensionCatalogue $doraExtensionCatalogue = null,
     ) {
     }
+
+    /**
+     * Per-template flag indicating the DORA extension was appended for
+     * this run. Drives §8.5 tag emission (`dora-extension:applied`,
+     * `dora-validity:2025-01-17` on the underlying ISO Document).
+     *
+     * @var array<int, bool> keyed on `spl_object_id($template)`
+     */
+    private array $doraExtensionApplied = [];
 
     /**
      * @return array{document_ids: list<int>, sandbox_preview: array<string, mixed>|null}
@@ -176,8 +186,32 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $documentIds = [];
         $tagCache = [];
 
+        // W4-C — Step-0 Bestandsaufnahme decisions. Map every legacy
+        // document to a topic-scoped action so we can branch per template
+        // (replace = supersedes link; keep = skip topic; merge = append
+        // section; split = warn).
+        $bestandsaufnahmeByTopic = $this->buildBestandsaufnahmeIndex($run);
+
         foreach ($templates as $template) {
+            $topic = $template->getTopic();
+            $bestandsDecision = $topic !== null && isset($bestandsaufnahmeByTopic[$topic])
+                ? $bestandsaufnahmeByTopic[$topic]
+                : null;
+
+            // W4-C — action='keep': user wants the legacy document to
+            // remain authoritative; the wizard does NOT generate a
+            // replacement for this topic.
+            if ($bestandsDecision !== null && $bestandsDecision['action'] === 'keep') {
+                $this->logger->info('PolicyWizard W4-C: skipping template (keep)', [
+                    'wizard_run_id' => $run->getId(),
+                    'topic' => $topic,
+                    'legacy_document_id' => $bestandsDecision['document_id'],
+                ]);
+                continue;
+            }
+
             $body = $this->renderBody($template, $variables);
+            $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
             $hash = $this->hashSubstitution($variables, $body);
 
             $existing = $this->findExistingForTemplate($tenant, $template);
@@ -190,6 +224,16 @@ final class DocumentGenerator implements DocumentGeneratorInterface
                 $hash,
                 $existing,
             );
+
+            // W4-C — action='replace': new wizard output supersedes the
+            // legacy Document the user explicitly marked for replacement.
+            if ($bestandsDecision !== null && $bestandsDecision['action'] === 'replace') {
+                $legacy = $this->documentRepository->find($bestandsDecision['document_id']);
+                if ($legacy instanceof Document) {
+                    $document->setSupersedes($legacy);
+                    $legacy->setIsArchived(true);
+                }
+            }
 
             // Persist + flush the Document FIRST so its auto-generated
             // id is available for the EntityTag.entityId / DocumentControlLink
@@ -215,11 +259,127 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             // to the old Document for audit-trail integrity).
             $this->ensurePrivacyAddendumSection($document, $template);
 
+            // W4-C — action='merge_into_topic': append the legacy
+            // document's content as a `legacy_merge` section.
+            if ($bestandsDecision !== null && $bestandsDecision['action'] === 'merge_into_topic') {
+                $this->mergeLegacySection($document, $bestandsDecision['document_id'], $tenant);
+            }
+
+            // W4-C — action='split_to_topics': not auto-handled; emit a
+            // warning so an Alva-Hint can pick up the manual-split TODO.
+            if ($bestandsDecision !== null && $bestandsDecision['action'] === 'split_to_topics') {
+                $this->logger->warning('PolicyWizard W4-C: split_to_topics requires manual handling', [
+                    'wizard_run_id' => $run->getId(),
+                    'topic' => $topic,
+                    'legacy_document_id' => $bestandsDecision['document_id'],
+                    'target_topics' => $bestandsDecision['target_topics'],
+                ]);
+            }
+
             $this->entityManager->flush();
             $documentIds[] = (int) $document->getId();
         }
 
         return $documentIds;
+    }
+
+    /**
+     * W4-C — flatten Step-0 decisions into a topic-keyed lookup. Decisions
+     * carrying an explicit `target_topic` win; replace/keep decisions fall
+     * back to a category-based topic (top_level / continuity / etc.) so
+     * the most common case (replace ISMS-Leitlinie → top_level) just works.
+     *
+     * @return array<string, array{action: string, document_id: int, target_topics: list<string>|null}>
+     */
+    private function buildBestandsaufnahmeIndex(WizardRun $run): array
+    {
+        $inputs = $run->getInputs() ?? [];
+        $slot = $inputs['bestandsaufnahme'] ?? [];
+        if (!is_array($slot)) {
+            return [];
+        }
+        $decisions = $slot['decisions'] ?? [];
+        if (!is_array($decisions) || $decisions === []) {
+            return [];
+        }
+
+        $byTopic = [];
+        foreach ($decisions as $documentIdRaw => $payload) {
+            if (!is_array($payload)) {
+                continue;
+            }
+            $documentId = (int) $documentIdRaw;
+            $action = is_string($payload['action'] ?? null) ? $payload['action'] : '';
+            if ($action === '' || $documentId <= 0) {
+                continue;
+            }
+            $targetTopic = is_string($payload['target_topic'] ?? null) && $payload['target_topic'] !== ''
+                ? $payload['target_topic']
+                : null;
+            $targetTopics = is_array($payload['target_topics'] ?? null) ? $payload['target_topics'] : null;
+
+            if ($targetTopic !== null) {
+                $byTopic[$targetTopic] = [
+                    'action' => $action,
+                    'document_id' => $documentId,
+                    'target_topics' => $targetTopics,
+                ];
+                continue;
+            }
+            $legacy = $this->documentRepository->find($documentId);
+            if (!$legacy instanceof Document) {
+                continue;
+            }
+            $fallbackTopic = match ($legacy->getCategory()) {
+                'policy', 'programme' => 'top_level',
+                'plan' => 'continuity',
+                'methodology' => 'risk_classification',
+                default => null,
+            };
+            if ($fallbackTopic !== null) {
+                $byTopic[$fallbackTopic] = [
+                    'action' => $action,
+                    'document_id' => $documentId,
+                    'target_topics' => $targetTopics,
+                ];
+            }
+        }
+
+        return $byTopic;
+    }
+
+    /**
+     * W4-C — append the legacy document's content as a `legacy_merge`
+     * DocumentSection on the new wizard output. Idempotent on re-runs.
+     */
+    private function mergeLegacySection(Document $document, int $legacyDocumentId, Tenant $tenant): void
+    {
+        if ($this->documentSectionRepository === null) {
+            return;
+        }
+        $existing = $this->documentSectionRepository->findOneByDocumentAndKey($document, 'legacy_merge');
+        if ($existing instanceof DocumentSection) {
+            return;
+        }
+        $legacy = $this->documentRepository->find($legacyDocumentId);
+        if (!$legacy instanceof Document) {
+            return;
+        }
+
+        $snapshot = sprintf(
+            "Merged from legacy document #%d (%s).\n\n%s",
+            $legacyDocumentId,
+            (string) ($legacy->getOriginalFilename() ?? 'unknown'),
+            (string) ($legacy->getDescription() ?? ''),
+        );
+
+        $section = new DocumentSection();
+        $section->setDocument($document);
+        $section->setSectionKey('legacy_merge');
+        $section->setStatus(DocumentSection::STATUS_DRAFT);
+        $section->setTenant($tenant);
+        $section->setContentSnapshot($snapshot);
+        $this->entityManager->persist($section);
     }
 
     /**
@@ -231,6 +391,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $previews = [];
         foreach ($templates as $template) {
             $body = $this->renderBody($template, $variables);
+            $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
             $previews[] = [
                 'template_key' => $template->getKey(),
                 'standard' => $template->getStandard(),
@@ -303,6 +464,80 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $this->assertClimateWordingPresent($template, $body);
 
         return $body;
+    }
+
+    /**
+     * W4-A Task 2 — append the DORA-Erweiterung section to ISO 27001
+     * topic policies when the tenant adopted DORA scope.
+     *
+     * Per architecture §3 the DORA addon contributes 18 EXTENDS
+     * mappings + 1 REPLACES (network_security) on top of the ISO
+     * baseline (see {@see DoraExtensionCatalogue}). For every ISO
+     * topic with a DORA extension defined the rendered body grows a
+     * `## DORA-Erweiterung (Art. X)` section, translated via the
+     * `policy.iso27001.<topic>.v1.dora_extension.body` key (authored
+     * in W4-E). DORA-only templates (`standard='dora'`) are NOT
+     * extended — those are emitted as standalone Documents by the
+     * 6 NEW seed and the catalogue does not target them.
+     *
+     * Skip rules:
+     *  - catalogue not wired (legacy tests / dev environments).
+     *  - Run.standardsAdopted does NOT include 'dora'.
+     *  - Template standard is not 'iso27001'.
+     *  - Catalogue has no entry for the template's topic.
+     *
+     * Side effects:
+     *  - Marks {@see $doraExtensionApplied} so {@see applyTags} can
+     *    emit `dora-extension:applied` + `dora-validity:2025-01-17`
+     *    on the underlying ISO Document.
+     */
+    public function appendDoraExtensionIfApplicable(
+        PolicyTemplate $template,
+        string $body,
+        WizardRun $run,
+    ): string {
+        if ($this->doraExtensionCatalogue === null) {
+            return $body;
+        }
+        if ($template->getStandard() !== 'iso27001') {
+            return $body;
+        }
+        $standards = $run->getStandardsAdopted() ?? [];
+        if (!in_array('dora', $standards, true)) {
+            return $body;
+        }
+        $topic = $template->getTopic();
+        if (!is_string($topic) || $topic === '') {
+            return $body;
+        }
+        $articles = $this->doraExtensionCatalogue->getExtensionFor($topic);
+        if ($articles === null || $articles === []) {
+            return $body;
+        }
+
+        $extensionKey = sprintf(
+            'policy.iso27001.%s.v%d.dora_extension.body',
+            $topic,
+            $template->getVersion(),
+        );
+        $extensionBody = $this->translator->trans($extensionKey);
+        // Translator returns the key verbatim when no translation is
+        // registered; in that case we still mark the extension applied
+        // so the audit-trail tag fires, but emit a stub heading rather
+        // than the raw key (keeps generated docs auditor-presentable).
+        if ($extensionBody === $extensionKey) {
+            $extensionBody = '_(translation pending: ' . $extensionKey . ')_';
+        }
+
+        $heading = sprintf(
+            '## DORA-Erweiterung (%s)',
+            implode(' / ', $articles),
+        );
+
+        // Mark for tag emission downstream.
+        $this->doraExtensionApplied[spl_object_id($template)] = true;
+
+        return rtrim($body) . "\n\n" . $heading . "\n\n" . $extensionBody . "\n\n";
     }
 
     /**
@@ -646,6 +881,17 @@ final class DocumentGenerator implements DocumentGeneratorInterface
 
         if (($template->getStandard()) === 'dora') {
             $tagsToApply[] = 'dora-validity:2025-01-17';
+        }
+
+        // W4-A Task 2 — when the DORA extension has been appended to
+        // an ISO body, mirror the DORA validity tag on the underlying
+        // ISO Document plus an explicit `dora-extension:applied`
+        // marker so the audit-export view can pivot on it.
+        if (($this->doraExtensionApplied[spl_object_id($template)] ?? false) === true) {
+            $tagsToApply[] = 'dora-extension:applied';
+            if (!in_array('dora-validity:2025-01-17', $tagsToApply, true)) {
+                $tagsToApply[] = 'dora-validity:2025-01-17';
+            }
         }
 
         $documentId = $document->getId();

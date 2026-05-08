@@ -2,8 +2,39 @@
 {% set selected_standards = defaults.standards|default(standards|default([])) %}
 {% set finding_default = defaults.finding_reference|default(run.findingReference) %}
 {% set selected_mode = defaults.mode|default(run.mode) %}
+{% set bundles = industry_preset_bundles|default([]) %}
+{% set selected_bundle_key = defaults.industry_preset_bundle_key|default(inputs_so_far.welcome.industry_preset_bundle_key|default('')) %}
 
-<div class="row g-3">
+<div class="row g-3"
+     data-controller="policy-wizard-preset-picker"
+     data-policy-wizard-preset-picker-preview-url-value="{{ path('app_policy_wizard_preset_preview', { key: '__KEY__' }) }}">
+    {% if bundles|length > 0 %}
+        <div class="col-12">
+            <div class="mb-3">
+                <label class="form-label" for="industry-preset-bundle-key">
+                    {{ 'policy_wizard.preset.label'|trans }}
+                </label>
+                <select class="form-select"
+                        id="industry-preset-bundle-key"
+                        name="industry_preset_bundle_key"
+                        data-policy-wizard-preset-picker-target="select"
+                        data-action="change->policy-wizard-preset-picker#onChange">
+                    <option value="">{{ 'policy_wizard.preset.placeholder'|trans }}</option>
+                    {% for bundle in bundles %}
+                        <option value="{{ bundle.key }}"{% if bundle.key == selected_bundle_key %} selected{% endif %}>
+                            {{ ('policy_wizard.preset.' ~ bundle.key ~ '.label')|trans({}, 'policy_wizard') }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <div class="form-text">{{ 'policy_wizard.preset.help'|trans }}</div>
+                <div class="form-text mt-2 d-none"
+                     data-policy-wizard-preset-picker-target="preview"
+                     role="status"
+                     aria-live="polite"></div>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="col-md-8">
         <fieldset class="mb-3">
             <legend class="h6">{{ 'policy_wizard.step.welcome.subtitle'|trans }}</legend>
@@ -18,6 +49,7 @@
                            id="standard-{{ code }}"
                            name="standards[]"
                            value="{{ code }}"
+                           data-policy-wizard-preset-picker-target="standard"
                            {% if code in selected_standards %}checked{% endif %}>
                     <label class="form-check-label" for="standard-{{ code }}">
                         {{ ('policy_wizard.step.welcome.standard.' ~ code)|trans }}

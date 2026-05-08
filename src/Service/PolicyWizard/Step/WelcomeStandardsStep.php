@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service\PolicyWizard\Step;
 
+use App\Entity\IndustryPresetBundle;
 use App\Entity\WizardRun;
+use App\Repository\IndustryPresetBundleRepository;
+use App\Service\PolicyWizard\PresetBundleApplier;
 use App\Service\PolicyWizard\WizardStepKeys;
 
 /**
@@ -34,6 +37,18 @@ final class WelcomeStandardsStep extends AbstractStep
         WizardStepKeys::MODE_SANDBOX,
     ];
 
+    /**
+     * Optional collaborators — the W4-B IndustryPresetBundle picker
+     * uses them when the user picks a sector preset. Wired via
+     * service-container autowiring; nullable so legacy callers (and
+     * older tests that instantiate the step directly) keep working.
+     */
+    public function __construct(
+        private readonly ?IndustryPresetBundleRepository $presetBundleRepository = null,
+        private readonly ?PresetBundleApplier $presetBundleApplier = null,
+    ) {
+    }
+
     public function key(): string
     {
         return WizardStepKeys::STEP_WELCOME;
@@ -51,6 +66,37 @@ final class WelcomeStandardsStep extends AbstractStep
     public function validate(WizardRun $run, array $input): array
     {
         $errors = [];
+
+        // Industry-Preset bundle (W4-B) — apply BEFORE other validation
+        // so the bundle's preselectedStandards becomes the default for
+        // an empty `standards` submission. The applier is no-op when
+        // the user already picked their own standards.
+        $bundleKeyRaw = $input['industry_preset_bundle_key'] ?? null;
+        $bundleKey = is_string($bundleKeyRaw) ? trim($bundleKeyRaw) : null;
+        if ($bundleKey === '') {
+            $bundleKey = null;
+        }
+        $appliedBundle = null;
+        if ($bundleKey !== null
+            && $this->presetBundleRepository !== null
+            && $this->presetBundleApplier !== null
+        ) {
+            $bundle = $this->presetBundleRepository->findByKey($bundleKey);
+            if ($bundle instanceof IndustryPresetBundle && $bundle->isActive()) {
+                $this->presetBundleApplier->applyTo($run, $bundle);
+                $appliedBundle = $bundle;
+                // If the user did not submit any standards, inherit the
+                // bundle's preselectedStandards so validation does not
+                // bounce them with `standards_required`.
+                $rawStandards = $input['standards'] ?? [];
+                if (!is_array($rawStandards) || $rawStandards === []) {
+                    $input['standards'] = $bundle->getPreselectedStandards();
+                }
+            } else {
+                $errors['industry_preset_bundle_key'][] = 'policy_wizard.error.preset_bundle_unknown';
+                $bundleKey = null;
+            }
+        }
 
         $standards = $input['standards'] ?? [];
         if (!is_array($standards) || $standards === []) {
@@ -101,6 +147,9 @@ final class WelcomeStandardsStep extends AbstractStep
             'standards' => $standards,
             'mode' => $mode,
             'finding_reference' => $findingRef,
+            'industry_preset_bundle_key' => $appliedBundle instanceof IndustryPresetBundle
+                ? $appliedBundle->getKey()
+                : null,
         ];
 
         return [

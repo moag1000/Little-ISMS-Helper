@@ -95,7 +95,11 @@ final class WizardOrchestrator
             $run->setFindingReference($findingRef);
         }
 
-        // First applicable step in the chosen flow.
+        // First applicable step in the chosen flow. W4-C: when the
+        // tenant is brownfield (existing governance documents not yet
+        // wizard-managed) BestandsaufnahmeStep::isApplicable() returns
+        // true and the user lands on STEP_BESTANDSAUFNAHME first.
+        // Greenfield tenants skip Step 0 and start at STEP_WELCOME.
         $first = $this->stepEvaluator->firstStepFor($run) ?? WizardStepKeys::STEP_WELCOME;
         $run->setStep($first);
         $run->setInputs([]);
