@@ -109,7 +109,7 @@
                     {% if settings.features is defined %}
                         <ul class="list-unstyled small">
                             <li>
-                                {% if settings.features.enable_dark_mode %}
+                                {% if settings.features.enable_dark_mode|default(false) %}
                                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                 {% else %}
                                     <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
@@ -117,7 +117,7 @@
                                 {{ 'admin.settings.features.dark_mode'|trans({}, 'admin') }}
                             </li>
                             <li>
-                                {% if settings.features.enable_global_search %}
+                                {% if settings.features.enable_global_search|default(false) %}
                                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                 {% else %}
                                     <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
@@ -125,7 +125,7 @@
                                 {{ 'admin.settings.features.global_search'|trans({}, 'admin') }}
                             </li>
                             <li>
-                                {% if settings.features.enable_audit_log %}
+                                {% if settings.features.enable_audit_log|default(false) %}
                                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                 {% else %}
                                     <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
