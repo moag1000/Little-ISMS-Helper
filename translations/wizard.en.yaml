@@ -373,6 +373,8 @@ wizard:
         third_party_risk_enhanced: 'Continuous TPP-Monitoring, automated SBOM-Vulnerability-Tracking, Multi-Vendor-Strategy fuer Single-Point-of-Failure-Analysen.'
         contractual_baseline: 'CDR 2024/1773 Klauseln in allen TPP-Vertraegen; jaehrliche Vertrags-Reviews.'
         contractual_enhanced: 'Pre-Contract Risk-Assessment, automated Contract-Compliance-Monitoring, Mutual-Audit-Rights mit Pooled-Audits.'
+        dora_policies: 'DORA Policy-Wizard outputs'
+        dora_policies_desc: 'Generated DORA policies, reporting deadlines, Register of Information, TLPT cadence, exit strategies, validity tags, and ISO extension coverage.'
 
     # Check names (generic)
     check:

@@ -21,6 +21,13 @@ use App\Repository\DataSubjectRequestRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraExitStrategyDocumentedCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraExtensionCoverageCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraIctRiskFrameworkPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraIncidentReportingDeadlinesCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraThirdPartyRegisterMaintainedCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraTlptCadenceCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraValidityFromCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry;
 use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardTopicCatalogue;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -2392,7 +2399,7 @@ class ComplianceWizardService
      */
     private function getDoraCategories(): array
     {
-        return [
+        $categories = [
             // Chapter II, Section I: ICT Risk Management Framework (Art. 5-6)
             'governance' => [
                 'name' => 'wizard.dora.governance',
@@ -2890,7 +2897,83 @@ class ComplianceWizardService
                     ],
                 ],
             ],
+
+            // Policy-Wizard outputs — DORA-specific policies, deadlines + tags
+            // Gated on DORA scope being active (ComplianceFramework with code
+            // 'DORA' present + active OR tenant policy setting 'dora.in_scope').
+            // Returns null when out-of-scope; array_filter() drops the row.
+            'dora_policies' => $this->buildDoraPolicyWizardCategory(),
         ];
+
+        // Drop categories that opted out (returned null) when DORA is not in
+        // scope for the current tenant — keeps the assessment surface clean.
+        return array_filter($categories, static fn ($cat): bool => $cat !== null);
+    }
+
+    /**
+     * Build the "DORA Policy-Wizard outputs" category. Returns null when DORA
+     * is not in scope for the tenant — see scope detection below.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function buildDoraPolicyWizardCategory(): ?array
+    {
+        if (!$this->isDoraInScope($this->tenantContext->getCurrentTenant())) {
+            return null;
+        }
+
+        $checks = [];
+        foreach ([
+            DoraIctRiskFrameworkPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            DoraIncidentReportingDeadlinesCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_admin_incident_sla_index'],
+            DoraThirdPartyRegisterMaintainedCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_supplier_index'],
+            DoraTlptCadenceCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_bc_exercise_index'],
+            DoraExitStrategyDocumentedCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_supplier_index'],
+            DoraValidityFromCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_document_index'],
+            DoraExtensionCoverageCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+        ] as $checkId => $meta) {
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => $meta['priority'],
+                'route' => $meta['route'],
+            ];
+        }
+
+        return [
+            'name' => 'wizard.dora.dora_policies',
+            'description' => 'wizard.dora.dora_policies_desc',
+            'icon' => 'bi-bank2',
+            'weight' => 2,
+            'article' => '6/19/26-27/28',
+            'checks' => $checks,
+        ];
+    }
+
+    /**
+     * Detects whether DORA is in scope for the tenant. The signal is the
+     * presence of an active {@see ComplianceFramework} with `code='DORA'`.
+     *
+     * Returns false for null tenants when the framework is not active
+     * either — keeping the DORA category out of generic admin previews.
+     * The tenant-policy-setting alternative (`dora.in_scope`) is intentionally
+     * not consulted here to avoid forcing a DB lookup on every category-map
+     * build; the DORA wizard is the authoritative entry-point.
+     */
+    private function isDoraInScope(?Tenant $tenant): bool
+    {
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'DORA']);
+        if ($framework instanceof ComplianceFramework && $framework->isActive() === true) {
+            return true;
+        }
+
+        // No active framework → DORA is not in scope. Tenant-specific
+        // settings remain a future extension hook.
+        unset($tenant); // intentional — see method PHPDoc
+        return false;
     }
 
     private function getTisaxCategories(): array

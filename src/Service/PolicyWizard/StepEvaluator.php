@@ -14,7 +14,12 @@ use App\Service\PolicyWizard\Step\StepInterface;
  * 1. The run's `mode` (full / targeted / sandbox).
  * 2. The current `step`.
  * 3. Each step's `isApplicable($run)` rule (so e.g. targeted runs
- *    skip the default Steps 2-6).
+ *    skip the default Steps 2-6, and W4-C Step 0 Bestandsaufnahme
+ *    only applies for brownfield tenants — greenfield tenants flow
+ *    straight to STEP_WELCOME).
+ *
+ * Default-flow transition contract (W4-C):
+ *   STEP_BESTANDSAUFNAHME → STEP_WELCOME → STEP_ORG_SCOPE → … → STEP_REVIEW_GENERATE
  *
  * The evaluator does NOT mutate the run — it only computes which
  * step the orchestrator should advance to next. Returns null when

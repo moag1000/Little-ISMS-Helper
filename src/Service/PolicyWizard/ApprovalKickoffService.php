@@ -6,11 +6,13 @@ namespace App\Service\PolicyWizard;
 
 use App\Command\SeedPolicyApprovalWorkflowCommand;
 use App\Entity\Document;
+use App\Entity\Tag;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
+use App\Repository\EntityTagRepository;
 use App\Repository\WorkflowRepository;
 use App\Service\AuditLogger;
 use App\Service\TenantSettingResolver\TenantSettingResolver;
@@ -41,8 +43,13 @@ use Throwable;
  *    explode the wizard pipeline. The Document is still emitted; the
  *    operator simply has to re-fire approvals manually until the seed
  *    command runs.
- *  - DORA-supervised tenants get the WorkflowInstance metadata tagged
- *    `bulk_approval_dual_signoff=true` per §9.2.1 defang #2.
+ *  - DORA-supervised tenants get the WorkflowInstance approval-history
+ *    annotated with `bulk_approval_dual_signoff=true` plus
+ *    `dora_dual_signoff_enforced=true` per §9.2.1 defang #2 (W4-A
+ *    Task 4). DORA scope is detected by EntityTag rows
+ *    (`standard:dora` / `dora-extension:applied`) emitted by
+ *    {@see DocumentGenerator}; the override fires regardless of the
+ *    `bulk_approval_dual_signoff` TenantSettingResolver result.
  *
  * Audit-trail: every kickoff writes a `policy-approval` tagged audit
  * entry via {@see PerDocumentAuditLogger::logPerDocApproval} so the
@@ -59,6 +66,7 @@ final class ApprovalKickoffService
         private readonly AuditLogger $auditLogger,
         private readonly ?TenantSettingResolver $tenantSettingResolver = null,
         private readonly LoggerInterface $logger = new NullLogger(),
+        private readonly ?EntityTagRepository $entityTagRepository = null,
     ) {
     }
 
@@ -128,12 +136,21 @@ final class ApprovalKickoffService
         ]);
 
         // §9.2.1 defang #2: regulated tenants force dual sign-off ON.
-        $dualSignoff = $this->resolveDualSignoff($document->getTenant());
+        // W4-A Task 4: DORA-supervised tenants override the resolver
+        // result. Detection scans for any persisted Document carrying
+        // a `standard:dora` or `dora-extension:applied` tag — both
+        // signals are emitted by DocumentGenerator when DORA scope is
+        // active. The resolver-based path remains for non-DORA cases.
+        $doraScope = $this->tenantHasDoraScope($document->getTenant());
+        $dualSignoff = $doraScope || $this->resolveDualSignoff($document->getTenant());
         if ($dualSignoff) {
             $instance->addApprovalHistoryEntry([
                 'event'                       => 'dual_signoff_enforced',
                 'bulk_approval_dual_signoff'  => true,
-                'reason'                      => 'tenant.regulated_scope',
+                'dora_dual_signoff_enforced'  => $doraScope,
+                'reason'                      => $doraScope
+                    ? 'tenant.dora_scope'
+                    : 'tenant.regulated_scope',
                 'tag'                         => self::AUDIT_TAG,
             ]);
         }
@@ -147,14 +164,15 @@ final class ApprovalKickoffService
             entityId: $document->getId(),
             oldValues: null,
             newValues: [
-                'workflow_id'            => $workflow->getId(),
-                'workflow_instance_id'   => $instance->getId(),
-                'initial_step'           => 'prepared',
-                'current_step'           => 'ciso_review',
-                'wizard_run_id'          => $run?->getId(),
-                'initiator_id'           => $initiator->getId(),
-                'dual_signoff_required'  => $dualSignoff,
-                'tag'                    => self::AUDIT_TAG,
+                'workflow_id'                 => $workflow->getId(),
+                'workflow_instance_id'        => $instance->getId(),
+                'initial_step'                => 'prepared',
+                'current_step'                => 'ciso_review',
+                'wizard_run_id'               => $run?->getId(),
+                'initiator_id'                => $initiator->getId(),
+                'dual_signoff_required'       => $dualSignoff,
+                'dora_dual_signoff_enforced'  => $doraScope,
+                'tag'                         => self::AUDIT_TAG,
             ],
             description: sprintf(
                 '[%s] Workflow instance #%d dispatched for Document #%d (prepared → ciso_review)',
@@ -175,6 +193,64 @@ final class ApprovalKickoffService
             }
         }
         return null;
+    }
+
+    /**
+     * W4-A Task 4 — does the tenant carry any DORA-tagged Document?
+     *
+     * Scans EntityTag rows for the canonical DORA markers emitted by
+     * {@see DocumentGenerator::applyTags}: `standard:dora` (any of the
+     * 6 NEW DORA standalone Documents seeded by
+     * {@see \App\Command\SeedDoraPolicyTemplatesCommand}) and
+     * `dora-extension:applied` (any ISO body that grew a DORA-Erweiterung
+     * section per the {@see DoraExtensionCatalogue}).
+     *
+     * Falls back to `false` when:
+     *  - tenant is null
+     *  - EntityTagRepository is not wired (legacy tests)
+     *  - no Tag rows match (tenant has not run the wizard with DORA
+     *    standard adopted, or has run it but not yet hit DocumentGenerator)
+     *
+     * Performance: one repository call per kickoff (a single SELECT
+     * over EntityTag joined on Tag) — kickoff is rare enough that
+     * this is acceptable. Result is NOT cached because the kickoff
+     * is short-lived; subsequent kickoffs in the same request would
+     * re-read but only when multiple Documents land in the same run.
+     */
+    private function tenantHasDoraScope(?Tenant $tenant): bool
+    {
+        if (!$tenant instanceof Tenant || $this->entityTagRepository === null) {
+            return false;
+        }
+
+        try {
+            $rows = $this->entityManager->getRepository(Tag::class)->findBy([
+                'tenant' => $tenant,
+            ]);
+        } catch (Throwable $error) {
+            $this->logger->warning(
+                'PolicyWizard ApprovalKickoff: DORA scope detection failed; defaulting to false',
+                [
+                    'tenant_id' => $tenant->getId(),
+                    'error'     => $error->getMessage(),
+                ],
+            );
+            return false;
+        }
+
+        foreach ($rows as $tag) {
+            if (!$tag instanceof Tag) {
+                continue;
+            }
+            $name = $tag->getName();
+            if ($name === 'standard:dora' || $name === 'dora-extension:applied') {
+                $entityIds = $this->entityTagRepository->findEntityIdsWithTag($tag, Document::class);
+                if ($entityIds !== []) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

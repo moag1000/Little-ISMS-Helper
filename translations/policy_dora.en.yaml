@@ -1,0 +1,875 @@
+policy:
+    dora:
+        ict_risk_management_framework:
+            v1:
+                title: 'ICT Risk Management Framework (DORA Art. 6)'
+                body: |-
+                    # ICT Risk Management Framework of {{ tenant.legal_name }}
+
+                    *Document class: framework policy | Regulatory basis: Regulation (EU) 2022/2554 (DORA) Art. 5 in conjunction with Art. 6 and Art. 6.8; Tier 2 basis: Commission Delegated Regulation (EU) 2024/1773 Art. 1 to 3 | Effective from: {{ dora.validity_from }} | Language: formal English (EU style) | Review cadence: annually and ad hoc upon material change pursuant to Art. 6.5 DORA*
+
+                    ## 1. Purpose and binding force
+                    This policy establishes the ICT Risk Management Framework ("ICT-RMF") of {{ tenant.legal_name }} pursuant to Art. 6 of Regulation (EU) 2022/2554 ("DORA"). It is the highest normative statement on digital operational resilience and complements the information security policy under ISO/IEC 27001:2022 Clause 5.2 with the specific requirements of EU financial supervisory law. The framework is approved by the management body pursuant to Art. 5.2 DORA; ultimate responsibility cannot be delegated (Art. 5.2 sentence 2 DORA).
+
+                    ## 2. Scope
+                    This policy applies to all ICT systems, ICT networks, ICT services and ICT third-party service providers within the perimeter of {{ tenant.legal_name }} as a financial entity within the meaning of Art. 2 DORA. It covers all business processes, ICT functions, critical or important functions ("CIF") and the supporting ICT assets and ICT third-party providers.
+
+                    Classification as financial entity: {{ dora.entity_type }}; status "significant" pursuant to Art. 26.2 DORA: {{ dora.significance }}; competent authority: {{ dora.competent_authority }}.
+
+                    ## 3. Governance and accountability
+                    Pursuant to Art. 5.2 DORA, the management body sets the ICT risk strategy, approves the ICT-RMF, allocates the necessary resources and reviews the effectiveness of the framework at least annually.
+
+                    Responsibilities:
+
+                    - **Management body** – ultimate responsibility under Art. 5.2 DORA; annual approval of the ICT-RMF; mandatory participation in ICT security training pursuant to Art. 5.4 DORA.
+                    - **Chief Information Security Officer (CISO)** – {{ roles.ciso.fullName }}: operational stewardship of the ICT-RMF; periodic reporting to the management body pursuant to Art. 5.3 DORA.
+                    - **Data Protection Officer** – {{ roles.dpo.fullName }}: review of data-protection-relevant aspects pursuant to Art. 39 GDPR and Art. 14 DORA (communication with data subjects in case of incidents).
+                    - **Internal Audit** – independent review of the ICT-RMF pursuant to Art. 6.6 DORA.
+
+                    ## 4. Risk identification, classification and prioritisation
+                    {{ tenant.legal_name }} maintains an inventory of all ICT assets and continuously identifies ICT risks pursuant to Art. 8 DORA in conjunction with Commission Delegated Regulation (EU) 2024/1773 Art. 4 and 5. Risks are classified by their impact on critical or important functions. Prioritisation uses quantitative criteria (RTO, RPO, financial impact) and qualitative criteria (reputational impact, regulatory consequences).
+
+                    ## 5. Risk treatment and tolerance
+                    Risk treatment is performed in accordance with the separate *ICT Risk Tolerance Statement* pursuant to Art. 6.8(b) DORA. Treatment options are: avoid, mitigate (by appropriate ICT security measures), transfer (e.g. to insurers or qualified third-party providers under Art. 28 DORA) or accept. Acceptance above the defined tolerance threshold requires four-eyes approval by the management body.
+
+                    ## 6. Protection and prevention
+                    Pursuant to Art. 9 DORA, {{ tenant.legal_name }} implements appropriate ICT security policies and measures, in particular: identity and access management (Art. 9.4(c)), cryptography (Art. 9.4(b)), network security (Art. 9.4), security management throughout the ICT systems lifecycle (Art. 9.4(f) and (g)), physical and environmental security (Art. 9.4(b)) and security management for mobile devices and teleworking (Art. 9.4(h)).
+
+                    ## 7. Detection
+                    {{ tenant.legal_name }} operates mechanisms for the detection of anomalous activities and ICT incidents pursuant to Art. 10 DORA and the separate *Detection Policy*. Detection capabilities are available 24/7 for critical or important functions.
+
+                    ## 8. Response and recovery
+                    Response to ICT incidents and recovery follow the separate *Response and Recovery Policy* pursuant to Art. 11 DORA. The ICT business continuity policy (Art. 11.1 DORA) and the associated response and recovery plans are tested at least annually and after material changes (Art. 11.6 DORA).
+
+                    ## 9. Learning and evolving
+                    Pursuant to Art. 13 DORA, {{ tenant.legal_name }} operates a process for lessons learned, threat intelligence and continuous improvement. Findings feed into the annual review of the ICT-RMF.
+
+                    ## 10. Communication
+                    Crisis and incident communication follows the separate *Communication Policy on ICT-related Incidents* (Art. 14 DORA), including internal escalation, communication with clients, counterparties, authorities and the public.
+
+                    ## 11. Third-party ICT risk
+                    Third-party ICT risk is governed pursuant to Art. 28 to 30 DORA. {{ tenant.legal_name }} maintains the Register of Information pursuant to Art. 28.3 DORA in conjunction with Commission Implementing Regulation (EU) 2024/2956. Concentration risk, exit strategy and subcontracting governance are addressed in separate policies.
+
+                    ## 12. Resilience testing
+                    Digital operational resilience is tested annually pursuant to Art. 24 to 27 DORA. Significant financial entities are additionally subject to Threat-Led Penetration Tests ("TLPT") at least every three years pursuant to Art. 26 DORA in conjunction with the final draft RTS JC 2024 29 on TLPT (TIBER-EU aligned).
+
+                    ## 13. Internal Audit
+                    The ICT-RMF is audited by an independent internal audit function with appropriate frequency, but at least annually, pursuant to Art. 6.6 DORA. Findings are reported to the management body and tracked through the documented action plan.
+
+                    ## 14. Review and change cycle
+                    This policy is reviewed at least annually and ad hoc upon material change pursuant to Art. 6.5 DORA. Material changes include: scope changes, new regulatory requirements (in particular newly adopted RTS or ITS), material ICT incidents, organisational restructurings and changes to the threat landscape.
+
+                    ## 15. Breaches and sanctions
+                    The competent authority {{ dora.competent_authority }} may impose administrative penalties pursuant to Art. 50 DORA, including periodic penalty payments of up to 1 per cent of the average daily worldwide turnover of the preceding business year per day. This consequence environment underlines the necessity of evidentiary depth.
+
+                    ---
+                    *This policy is binding from {{ dora.validity_from }} pursuant to Regulation (EU) 2022/2554. Approval by the management body: {{ approval.chain }}.*
+                section:
+                    governance:
+                        title: 'Governance and ultimate responsibility of the management body'
+                        body: |-
+                            The management body of {{ tenant.legal_name }} bears the non-delegable ultimate responsibility for the ICT-RMF pursuant to Art. 5.2 DORA. It approves the strategy, allocates resources and reviews the effectiveness of the framework annually. Members of the management body participate in mandatory ICT security training pursuant to Art. 5.4 DORA.
+                    scope:
+                        title: 'Scope and classification'
+                        body: |-
+                            This policy covers all ICT systems, ICT services and ICT third-party providers of {{ tenant.legal_name }}. Classification: {{ dora.entity_type }}; significant: {{ dora.significance }}; competent authority: {{ dora.competent_authority }}.
+                    risk_identification:
+                        title: 'Risk identification and classification'
+                        body: |-
+                            ICT risks are identified and classified pursuant to Art. 8 DORA and Commission Delegated Regulation (EU) 2024/1773 Art. 4 and 5. Mapping between critical or important functions, supporting ICT assets and third-party providers is maintained in the Register of Information pursuant to Commission Implementing Regulation (EU) 2024/2956.
+                    protection:
+                        title: 'Protection and prevention'
+                        body: |-
+                            Protective measures follow Art. 9 DORA: access management, cryptography, network security, secure development, patch and vulnerability management and physical security. The associated topic policies are referenced in the annex.
+                    detection_response:
+                        title: 'Detection, response and recovery'
+                        body: |-
+                            Detection follows Art. 10 DORA. Response and recovery follow Art. 11 DORA. At least annual tests and tests after material changes are mandatory pursuant to Art. 11.6 DORA.
+                    learning:
+                        title: 'Learning and evolving'
+                        body: |-
+                            Lessons learned, threat intelligence and training pursuant to Art. 13 DORA feed into the annual review. Training obligation extends to the management body pursuant to Art. 5.4 DORA.
+                    third_party:
+                        title: 'Third-party ICT risk'
+                        body: |-
+                            Third-party ICT risk is managed pursuant to Art. 28 to 30 DORA. Concentration thresholds: {{ dora.concentration_thresholds }}. The Register of Information is maintained pursuant to Commission Implementing Regulation (EU) 2024/2956 and submitted to the competent authority at least annually or upon request.
+                    testing:
+                        title: 'Resilience testing and TLPT'
+                        body: |-
+                            Tests pursuant to Art. 24 and 25 DORA annually; TLPT pursuant to Art. 26 DORA at least every three years if significant. Methodology is aligned with TIBER-EU and final draft RTS JC 2024 29.
+                    audit:
+                        title: 'Internal Audit'
+                        body: |-
+                            Independent review pursuant to Art. 6.6 DORA. Risk-based frequency, at least annual. Reporting to the management body, action tracking via the CAPA process.
+                    review:
+                        title: 'Review and change cycle'
+                        body: |-
+                            At least annually and ad hoc upon material change pursuant to Art. 6.5 DORA. Versioning and tamper-resistant retention for at least seven years.
+                tailoring_field:
+                    entity_classification:
+                        label: 'Detailed classification as financial entity'
+                        placeholder: 'Example: "We are a payment institution under Directive (EU) 2015/2366, supervised by BaFin. We are not classified as significant under Art. 26.2 DORA. Microenterprise status: no. Group affiliation: yes, German subsidiary of an EU parent undertaking."'
+                    rmf_governance_chain:
+                        label: 'Approval chain and reporting cadence'
+                        placeholder: 'Example: "Annual approval of the ICT-RMF by the entire management board in February. Quarterly CISO report to the supervisory board risk committee. Semi-annual CISO report to the management board. Ad-hoc escalation to the management body for major incidents within 4 hours of classification."'
+                    interaction_with_existing_isms:
+                        label: 'Integration with existing ISMS'
+                        placeholder: 'Example: "The ICT-RMF complements the ISMS under ISO/IEC 27001:2022 as a Tier 2 layer. Shared risk inventory and asset management. Separate KPIs for DORA-specific obligations (TLPT cycle, register submission, major incident reporting)."'
+        ict_risk_tolerance:
+            v1:
+                title: 'ICT Risk Tolerance Statement (DORA Art. 6.8)'
+                body: |-
+                    # ICT Risk Tolerance Statement of {{ tenant.legal_name }}
+
+                    *Document class: management body statement | Regulatory basis: Regulation (EU) 2022/2554 (DORA) Art. 6.8(b); Tier 2 basis: Commission Delegated Regulation (EU) 2024/1773 Art. 3.2 | Effective from: {{ dora.validity_from }} | Review cadence: annually*
+
+                    ## 1. Purpose
+                    This statement formally sets out the ICT risk appetite and ICT risk tolerance of {{ tenant.legal_name }} pursuant to Art. 6.8(b) DORA in conjunction with Commission Delegated Regulation (EU) 2024/1773 Art. 3.2. It refines the entity-wide risk appetite statement by adding the specific ICT dimensions of digital operational resilience and forms the steering basis for risk-acceptance decisions.
+
+                    ## 2. Scope
+                    This statement covers all ICT risks of {{ tenant.legal_name }} within the meaning of Art. 3(5) DORA, including risks from ICT third-party arrangements pursuant to Art. 28 to 30 DORA. Function classification is performed under the separate *Identification and Classification Policy*.
+
+                    ## 3. Quantitative tolerance thresholds
+                    Quantitative thresholds are set per function-criticality tier:
+
+                    | Function tier | RTO | RPO | maximum tolerable downtime |
+                    |---|---|---|---|
+                    | Critical or important (CIF) | 4 hours | 1 hour | 4 hours |
+                    | Important (non-CIF) | 24 hours | 4 hours | 24 hours |
+                    | Standard | 72 hours | 24 hours | 72 hours |
+
+                    The values are tenant-configurable and verified in the annual ICT resilience test pursuant to Art. 11.6 DORA.
+
+                    ## 4. Financial tolerance
+                    Maximum tolerated direct and indirect loss per single incident: per the thresholds of the entity-wide risk appetite statement. When the upper threshold is reached, immediate escalation to the management body occurs. Gross direct losses of EUR 100,000 or more are evaluated as an indicator for "major incident" pursuant to Commission Delegated Regulation (EU) 2024/1772 Art. 6.
+
+                    ## 5. Reputational tolerance
+                    Reputational impacts are classified into three bands: low (internal awareness only), considerable (coverage in trade media) and severe (general media coverage, customer complaints, complaints to the competent authority {{ dora.competent_authority }}). Severe reputational impacts qualify as a threshold trigger pursuant to Commission Delegated Regulation (EU) 2024/1772 Art. 7.
+
+                    ## 6. Regulatory tolerance
+                    Tolerance for regulatory consequences: none. Any regulatory finding qualifies as escalation trigger to the management body and to Internal Audit.
+
+                    ## 7. Concentration tolerance
+                    Concentration tolerance for ICT third-party providers is set pursuant to Art. 29.1 DORA in conjunction with the separate *Concentration Risk Policy*. Current thresholds: {{ dora.concentration_thresholds }}.
+
+                    ## 8. Acceptance and escalation
+                    Risks above the defined tolerance thresholds require explicit four-eyes approval by the management body with participation of the CISO {{ roles.ciso.fullName }}. Risks above the upper threshold are reported to the competent authority {{ dora.competent_authority }} without delay where regulatory reporting obligations require this.
+
+                    ## 9. Linkage to response and recovery
+                    The values in section 3 are binding for the design of ICT response and recovery plans pursuant to Art. 11 DORA. Deviations require management body approval and are validated in the annual test.
+
+                    ## 10. Review cadence
+                    This statement is reviewed annually and after material changes (e.g. new business lines, M and A, changes to the threat landscape, changes to regulatory requirements).
+
+                    ---
+                    *This statement is binding from {{ dora.validity_from }}. Approval by the management body: {{ approval.chain }}.*
+                section:
+                    quantitative:
+                        title: 'Quantitative tolerance'
+                        body: |-
+                            RTO, RPO and maximum tolerable downtime per function tier. Values are verified in the annual test pursuant to Art. 11.6 DORA.
+                    qualitative:
+                        title: 'Qualitative tolerance'
+                        body: |-
+                            Reputational, regulatory and financial bands. Thresholds for "major incident" pursuant to Commission Delegated Regulation (EU) 2024/1772 Art. 6 and 7.
+                    concentration:
+                        title: 'Concentration tolerance'
+                        body: |-
+                            Thresholds per separate Concentration Risk Policy and Art. 29 DORA. Current values: {{ dora.concentration_thresholds }}.
+                    escalation:
+                        title: 'Escalation and acceptance'
+                        body: |-
+                            Four-eyes principle by management body and CISO for acceptance above tolerance. Escalation to {{ dora.competent_authority }} when regulatory thresholds are reached.
+                    review:
+                        title: 'Review cadence'
+                        body: |-
+                            Annually and after material changes. Last approval recorded in the audit log.
+                tailoring_field:
+                    rto_rpo_per_function_tier:
+                        label: 'RTO and RPO per function tier'
+                        placeholder: 'Example: "CIF: RTO 4h, RPO 1h. Important: RTO 24h, RPO 4h. Standard: RTO 72h, RPO 24h. Rationale: customer SLAs, supervisory expectations, BCM analysis 2025."'
+                    reputational_bands:
+                        label: 'Reputational tolerance bands'
+                        placeholder: 'Example: "Low: internal awareness only, no supervisory exposure. Considerable: coverage in trade media (e.g. Financial Times sector pieces). Severe: general daily press, customer complaints, supervisory enquiry. Severe band qualifies as escalation trigger."'
+                    financial_acceptance_threshold:
+                        label: 'Financial acceptance threshold'
+                        placeholder: 'Example: "Gross direct loss up to EUR 100,000 per incident: CISO approval; up to EUR 500,000: management board; above EUR 500,000: supervisory board plus regulatory notification where required."'
+        detection_anomalous_activities:
+            v1:
+                title: 'Detection of Anomalous Activities Policy (DORA Art. 10)'
+                body: |-
+                    # Detection of Anomalous Activities Policy of {{ tenant.legal_name }}
+
+                    *Document class: topic policy | Regulatory basis: Regulation (EU) 2022/2554 (DORA) Art. 10.1 to 10.3; Tier 2 basis: Commission Delegated Regulation (EU) 2024/1773 Art. 23 | Effective from: {{ dora.validity_from }} | Review cadence: annually and after every major incident*
+
+                    ## 1. Purpose
+                    This policy establishes mechanisms for the detection of anomalous activities pursuant to Art. 10 DORA. It refines the ISO logging and monitoring policy by adding the requirements for layered defence, automated thresholds and 24/7 availability for critical or important functions.
+
+                    ## 2. Scope
+                    This policy applies to all ICT systems, ICT services and ICT third-party providers within the perimeter of {{ tenant.legal_name }}. Detection mechanisms are dimensioned in particular for critical or important functions ("CIF") pursuant to Art. 8 DORA.
+
+                    ## 3. Layered defence
+                    Pursuant to Art. 10.1 DORA, {{ tenant.legal_name }} implements detection mechanisms across multiple layers:
+
+                    - **Network** – IDS and IPS, NetFlow analysis, DNS telemetry, TLS inspection at perimeter and intra-segment nodes;
+                    - **Host** – EDR telemetry, integrity verification, configuration monitoring, process anomaly detection;
+                    - **Application** – web application firewall, application logs, authentication anomalies, privileged access monitoring;
+                    - **Data** – DLP, data exfiltration indicators, database-level movement patterns;
+                    - **Identity** – UEBA, login anomalies, MFA failure clusters, service account anomalies.
+
+                    ## 4. SOC operating model
+                    {{ tenant.legal_name }} operates a Security Operations Centre with defined L1/L2/L3 escalation tiers. Operating mode: in-house, hybrid or MSSP — the specific configuration is documented in the annex. For critical or important functions 24/7 availability applies pursuant to Art. 10.3 DORA.
+
+                    ## 5. Thresholds and triage
+                    Alerting thresholds are set risk-based per asset class. Evaluations are continuous. On exceedance, triage proceeds as follows:
+
+                    1. L1 triage: false-positive review within 15 minutes;
+                    2. L2 escalation: deeper analysis within 1 hour for critical-class alerts;
+                    3. L3 incident response: activation of response and recovery plans pursuant to Art. 11 DORA.
+
+                    ## 6. Linkage to threat intelligence
+                    Detection mechanisms are fed by threat intelligence feeds pursuant to Art. 13.3 DORA (internal, sectoral, governmental). IoCs from sector CERTs and FS-ISAC are integrated into the detection logic within 24 hours of release.
+
+                    ## 7. Recording and retention
+                    Alerts and triage decisions are tamper-resistantly retained pursuant to A.5.33 ISO/IEC 27002:2022. Retention periods: security logs at least 12 months; major-incident investigation reports at least 7 years pursuant to regulatory retention requirements.
+
+                    ## 8. Detection testing
+                    The effectiveness of detection is tested annually as part of the resilience testing programme pursuant to Art. 24 DORA, including purple-team exercises and, where applicable, Threat-Led Penetration Tests pursuant to Art. 26 DORA.
+
+                    ## 9. Review cadence
+                    This policy is reviewed at least annually and after every major incident. Material changes in the threat landscape or new RTS or ITS provisions trigger ad-hoc review.
+
+                    ---
+                    *This policy is binding from {{ dora.validity_from }}. Approval: CISO {{ roles.ciso.fullName }}.*
+                section:
+                    layered_defence:
+                        title: 'Layered defence'
+                        body: |-
+                            Detection across network, host, application, data and identity layers pursuant to Art. 10.1 DORA. Detail in tooling annex.
+                    soc_model:
+                        title: 'SOC operating model'
+                        body: |-
+                            L1/L2/L3 with defined SLAs. 24/7 for critical or important functions pursuant to Art. 10.3 DORA.
+                    triage:
+                        title: 'Triage and escalation'
+                        body: |-
+                            L1 within 15 minutes, L2 within 1 hour, L3 activates response and recovery plans pursuant to Art. 11 DORA.
+                    threat_intel:
+                        title: 'Threat intelligence'
+                        body: |-
+                            Integration with internal, sectoral and governmental feeds pursuant to Art. 13.3 DORA. IoCs integrated within 24 hours.
+                    review:
+                        title: 'Review and testing'
+                        body: |-
+                            Annual effectiveness tests under Art. 24 DORA, purple-team exercises, adjustment after every major incident.
+                tailoring_field:
+                    soc_model:
+                        label: 'SOC operating model'
+                        placeholder: 'Example: "Hybrid SOC: L1 via MSSP (24/7), L2 and L3 in-house through security engineering team. Escalation hotline at MSSP. Quarterly governance meeting with MSSP."'
+                    siem_tooling:
+                        label: 'SIEM and EDR tooling'
+                        placeholder: 'Example: "SIEM: central platform with ML anomaly detection. EDR: agent-based endpoint protection with cloud back-end. Network analysis: NDR solution at perimeter segment. Logs of all critical systems integrated into SIEM."'
+                    threat_intel_feeds:
+                        label: 'Threat intelligence feeds'
+                        placeholder: 'Example: "FS-ISAC membership, BSI CERT-Bund feed, Europol EC3 bulletins, premium commercial feed from a recognised provider. Daily ingest, critical IoCs within 24 hours."'
+        response_recovery:
+            v1:
+                title: 'Response and Recovery Policy (DORA Art. 11)'
+                body: |-
+                    # Response and Recovery Policy of {{ tenant.legal_name }}
+
+                    *Document class: topic policy | Regulatory basis: Regulation (EU) 2022/2554 (DORA) Art. 11; Tier 2 basis: Commission Delegated Regulation (EU) 2024/1773 Art. 24 to 26 | Effective from: {{ dora.validity_from }} | Review cadence: annually and after every test*
+
+                    ## 1. Purpose
+                    This policy establishes the ICT business continuity policy pursuant to Art. 11.1 DORA and sets the requirements for ICT response and recovery plans. It refines the ISO business continuity policy by adding the DORA-specific requirements for annual tests, switch-over capability and crisis communication.
+
+                    ## 2. Scope
+                    This policy covers all critical or important functions ("CIF") and supporting ICT systems of {{ tenant.legal_name }}. Response and recovery plans are produced per CIF and linked to the Register of Information pursuant to Commission Implementing Regulation (EU) 2024/2956.
+
+                    ## 3. ICT business continuity policy
+                    Pursuant to Art. 11.1 DORA, {{ tenant.legal_name }} commits to maintaining critical or important functions under disruption. The policy sets protection objectives, recovery sequencing and accountabilities.
+
+                    ## 4. Response and recovery plans
+                    A plan is produced per CIF, containing as a minimum:
+
+                    - triggers and activation criteria;
+                    - composition and reachability of the crisis management team;
+                    - RTO and RPO per separate ICT Risk Tolerance Statement;
+                    - recovery procedures including switch-over steps to the secondary site;
+                    - roles, responsibilities, escalation paths;
+                    - communication steps with clients, counterparties, authorities and the public per separate Communication Policy on ICT-related Incidents;
+                    - linkage to the detection policy and to the incident reporting process pursuant to Art. 17 to 23 DORA.
+
+                    ## 5. Annual tests
+                    Pursuant to Art. 11.6 DORA, response and recovery plans are tested at least annually, including switch-over to the secondary site for critical or important functions. Test types: tabletop, functional, full-failover. At least one functional or full-failover test per CIF per year.
+
+                    ## 6. Tests after material changes
+                    Material changes (e.g. new secondary site, new cloud provider, new CIF) trigger ad-hoc tests before productive dependencies are created.
+
+                    ## 7. Crisis communication
+                    Crisis communication follows the separate *Communication Policy on ICT-related Incidents* (Art. 14 DORA). The designated crisis spokesperson is named in the annex.
+
+                    ## 8. Lessons learned
+                    After every test and every actual incident, a lessons-learned review is conducted pursuant to Art. 13 DORA. Findings feed into the next plan version.
+
+                    ## 9. Integration with BCM
+                    This policy refines the BCM under ISO 22301:2019 as an ICT-specific Tier 2 layer. Shared BIA, separate ICT plans.
+
+                    ## 10. Review cadence
+                    This policy is reviewed annually and after every test and every actual incident. Updates are presented to the management body during the management review pursuant to Art. 6.5 DORA.
+
+                    ---
+                    *This policy is binding from {{ dora.validity_from }}. Approval: management body plus CISO {{ roles.ciso.fullName }} plus BCM lead.*
+                section:
+                    plans:
+                        title: 'Response and recovery plans'
+                        body: |-
+                            Documented per CIF. Connected to detection and incident reporting process pursuant to Art. 10 and Art. 17 to 23 DORA.
+                    testing:
+                        title: 'Annual tests'
+                        body: |-
+                            At least annually, including switch-over to the secondary site pursuant to Art. 11.6(b) DORA.
+                    crisis_comms:
+                        title: 'Crisis communication'
+                        body: |-
+                            Communication pursuant to Art. 14 DORA with clients, counterparties, authorities and the public.
+                    lessons_learned:
+                        title: 'Lessons learned'
+                        body: |-
+                            After every test and every actual incident pursuant to Art. 13 DORA.
+                    review:
+                        title: 'Review cadence'
+                        body: |-
+                            Annually and after every test or incident.
+                tailoring_field:
+                    crisis_team_roster:
+                        label: 'Crisis management team roster'
+                        placeholder: 'Example: "Crisis lead: CEO. Deputy: COO. CISO: {{ roles.ciso.fullName }}. CIO: name. Press officer: Head of Communications. Data Protection Officer: {{ roles.dpo.fullName }}. Counsel: General Counsel. 24/7 reachability via crisis hotline."'
+                    test_calendar:
+                        label: 'Test calendar'
+                        placeholder: 'Example: "Q1: tabletop on major cyber incident. Q2: functional test of backup-restore including restore test. Q3: full-failover test to secondary site. Q4: TLPT preparation if significant."'
+                    secondary_site_geography:
+                        label: 'Secondary site geography and distance'
+                        placeholder: 'Example: "Primary: Frankfurt am Main. Secondary: Berlin. Distance: approx. 545 km. Synchronous replication for CIF, asynchronous replication for standard systems. Failover time: 15 minutes."'
+        learning_evolving:
+            v1:
+                title: 'Learning and Evolving Policy (DORA Art. 13)'
+                body: |-
+                    # Learning and Evolving Policy of {{ tenant.legal_name }}
+
+                    *Document class: topic policy | Regulatory basis: Regulation (EU) 2022/2554 (DORA) Art. 13; Tier 2 basis: Commission Delegated Regulation (EU) 2024/1773 Art. 29 | Effective from: {{ dora.validity_from }} | Review cadence: annually*
+
+                    ## 1. Purpose
+                    This policy establishes the lessons-learned process, threat intelligence consumption and the ICT security awareness and training programme pursuant to Art. 13 DORA.
+
+                    ## 2. Scope
+                    This policy covers all employees, the management body, contractors and relevant third parties of {{ tenant.legal_name }}. The training obligation for the management body arises from Art. 5.4 DORA.
+
+                    ## 3. Lessons-learned process
+                    After every classified incident, after every test pursuant to Art. 11.6 and Art. 24 DORA and after Threat-Led Penetration Tests pursuant to Art. 26 DORA, a structured lessons-learned review is performed:
+
+                    - fact reconstruction and timeline;
+                    - root-cause analysis;
+                    - identification of weaknesses in people, processes, technology and third parties;
+                    - action plan with owners, deadlines and KPIs;
+                    - follow-up in the CAPA register;
+                    - communication of findings within the organisation and, where appropriate, in trust circles per separate Information Sharing Policy and Art. 45 DORA.
+
+                    ## 4. Threat intelligence
+                    {{ tenant.legal_name }} operates continuous threat intelligence pursuant to Art. 13.3 DORA. Sources: internal telemetry, sectoral trust circles (FS-ISAC), governmental feeds (BSI CERT-Bund, Europol), premium commercial feeds. IoCs are integrated into detection mechanisms within 24 hours.
+
+                    ## 5. Training programme
+                    Pursuant to Art. 13.6 DORA, a mandatory ICT security awareness programme is operated:
+
+                    - onboarding training for new employees;
+                    - annual mandatory training for all employees;
+                    - role-specific deep training (e.g. development, administration, HR, legal);
+                    - phishing simulations at least every six months;
+                    - management-body training pursuant to Art. 5.4 DORA at least annually, including current threat landscape and regulatory obligations.
+
+                    ## 6. Continuous improvement
+                    KPIs for effectiveness include: phishing click-through rate, training completion rate, mean time to detect, mean time to respond, incident recurrence rates. KPIs are reported quarterly to the management body.
+
+                    ## 7. Training for third parties
+                    Contractually committed third parties for critical or important functions participate in appropriate training pursuant to Art. 30.2(i) DORA.
+
+                    ## 8. Review cadence
+                    This policy is reviewed annually and after every major incident. Training contents are adjusted immediately upon material changes to the threat landscape or new regulatory requirements.
+
+                    ---
+                    *This policy is binding from {{ dora.validity_from }}. Approval: CISO {{ roles.ciso.fullName }} plus head of HR.*
+                section:
+                    lessons_learned:
+                        title: 'Lessons-learned process'
+                        body: |-
+                            After every incident and every test. Follow-up in the CAPA register. Communication pursuant to Art. 45 DORA in trust circles where released.
+                    threat_intel:
+                        title: 'Threat intelligence'
+                        body: |-
+                            Sources: internal, sectoral, governmental, commercial. Integration within 24 hours pursuant to Art. 13.3 DORA.
+                    awareness:
+                        title: 'Awareness and training'
+                        body: |-
+                            Onboarding, annual mandatory training, role-specific deep training, phishing simulations every six months.
+                    board_training:
+                        title: 'Management body training'
+                        body: |-
+                            Mandatory training pursuant to Art. 5.4 DORA at least annually, including threat landscape and regulatory obligations.
+                    kpis:
+                        title: 'KPIs and reporting'
+                        body: |-
+                            Phishing click-through rate, completion rate, MTTD, MTTR, incident recurrence. Quarterly to the management body.
+                tailoring_field:
+                    training_cadence:
+                        label: 'Training cadence per role'
+                        placeholder: 'Example: "All employees: annual mandatory training plus semi-annual phishing simulation. Developers: additional quarterly secure-coding session. Administrators: semi-annual hardening training. Management body: annual awareness plus threat-landscape briefing."'
+                    threat_intel_sources:
+                        label: 'Threat intelligence sources'
+                        placeholder: 'Example: "FS-ISAC, BSI CERT-Bund, Europol EC3 bulletins, premium commercial feed from a sector specialist, in-house threat-hunting team, peering with two non-competing financial institutions."'
+                    board_training_format:
+                        label: 'Format of management body training'
+                        placeholder: 'Example: "On-site workshop once a year, half-day. Content: current threat landscape, regulatory obligations under DORA Art. 5.4, tabletop exercise with a fictitious major incident. External speaker for industry benchmarking."'
+        communication_ict_incidents:
+            v1:
+                title: 'Communication Policy on ICT-related Incidents (DORA Art. 14)'
+                body: |-
+                    # Communication Policy on ICT-related Incidents of {{ tenant.legal_name }}
+
+                    *Document class: topic policy | Regulatory basis: Regulation (EU) 2022/2554 (DORA) Art. 14.1 to 14.3 | Effective from: {{ dora.validity_from }} | Review cadence: annually*
+
+                    ## 1. Purpose
+                    This policy governs internal and external communication during ICT-related incidents pursuant to Art. 14 DORA. It refines the ISO requirements from A.5.5 (contact with authorities) and A.5.6 (contact with special interest groups) by adding the DORA-specific obligations for client and counterparty communication.
+
+                    ## 2. Scope
+                    This policy covers all ICT incidents of {{ tenant.legal_name }} that are internally or externally communication-relevant, including major incidents within the meaning of Art. 18 DORA and Commission Delegated Regulation (EU) 2024/1772.
+
+                    ## 3. Internal communication and escalation
+                    Escalation follows the predefined chain:
+
+                    1. detection at SOC or by employees;
+                    2. L2 triage and classification;
+                    3. CISO {{ roles.ciso.fullName }} for high or critical;
+                    4. management body for major incident within 4 hours of classification;
+                    5. Data Protection Officer {{ roles.dpo.fullName }} where the incident is data-protection relevant (Art. 33 GDPR).
+
+                    ## 4. External communication
+                    External communication addresses the following stakeholders:
+
+                    - **competent authority** {{ dora.competent_authority }} – pursuant to incident-reporting policy (Art. 19 DORA);
+                    - **clients** – pursuant to Art. 14.2 DORA where financial interests are affected;
+                    - **counterparties** – where material contractual exposure exists;
+                    - **public and media** – pursuant to media governance;
+                    - **data protection supervisory authorities** – on Art. 33 GDPR triggers;
+                    - **trust circles** – on release pursuant to separate Information Sharing Policy and Art. 45 DORA.
+
+                    ## 5. Single point of contact
+                    The crisis spokesperson of {{ tenant.legal_name }} is named in the annex. 24/7 deputisation is ensured. All external statements are made exclusively through the crisis spokesperson or persons explicitly authorised by him or her.
+
+                    ## 6. Templates and approval
+                    Pre-approved communication templates for clients, counterparties and press releases are documented in the annex. Changes to templates require approval by CISO, legal counsel and the communications department.
+
+                    ## 7. Coordination with incident reporting
+                    External communication is synchronised with NCA notifications pursuant to Art. 19 DORA and, where applicable, Art. 33 GDPR. Content and wording are aligned before dispatch.
+
+                    ## 8. Confidentiality
+                    Until release by the crisis spokesperson, all involved persons are bound to confidentiality, in particular vis-a-vis media, social networks and private contacts. Breaches are sanctioned pursuant to the personnel security policy.
+
+                    ## 9. Review cadence
+                    This policy is reviewed annually and after every major incident. Templates are tested in the annual crisis communication exercise.
+
+                    ---
+                    *This policy is binding from {{ dora.validity_from }}. Approval: management body.*
+                section:
+                    internal:
+                        title: 'Internal communication'
+                        body: |-
+                            Escalation chain SOC to management body within 4 hours for major incident. DPO on data-protection-relevant incidents.
+                    external:
+                        title: 'External communication'
+                        body: |-
+                            Competent authority {{ dora.competent_authority }}, clients, counterparties, public. Data protection supervisory authority on Art. 33 GDPR trigger.
+                    spoc:
+                        title: 'Single point of contact'
+                        body: |-
+                            Crisis spokesperson with deputisation 24/7. External statements only via the crisis spokesperson.
+                    templates:
+                        title: 'Templates and approval'
+                        body: |-
+                            Pre-approved templates in the annex. Changes approved by CISO, legal counsel and communications.
+                    coordination:
+                        title: 'Coordination with incident reporting'
+                        body: |-
+                            Synchronisation with Art. 19 DORA and Art. 33 GDPR.
+                tailoring_field:
+                    crisis_spokesperson:
+                        label: 'Crisis spokesperson and deputisation'
+                        placeholder: 'Example: "Crisis spokesperson: Head of Communications. Deputy: CFO. 24/7 reachability via crisis hotline. All press releases pre-approved by CEO, CISO and legal counsel."'
+                    customer_notification_channels:
+                        label: 'Channels for client communication'
+                        placeholder: 'Example: "Primary: online-banking banner and SMS for critical accounts. Secondary: email to all affected clients within 24 hours of classification. Tertiary: letter to premium clients within 5 business days."'
+                    media_policy:
+                        label: 'Media policy'
+                        placeholder: 'Example: "Reactive media engagement: statements only on concrete enquiries. Proactive media engagement: only for major incidents with industry-wide relevance, approved by management board. Social media: no independent posting until release."'
+    iso27001:
+        asset_management:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: ICT asset management (DORA Art. 8)'
+                    body: |-
+                        This extension complements the asset management policy under A.5.9 ISO/IEC 27002:2022 with the requirements of Art. 8 of Regulation (EU) 2022/2554 (DORA) in conjunction with Commission Delegated Regulation (EU) 2024/1773 Art. 4.
+
+                        **Extended inventory scope.** The asset inventory of {{ tenant.legal_name }} additionally captures all ICT services, virtual and cloud assets and ICT third-party providers in addition to hardware, software and information. For each asset, the supported critical or important functions ("CIF") are recorded; dependencies between ICT assets and dependencies on ICT third-party providers are documented.
+
+                        **Classification pursuant to Art. 8.1 DORA.** Functions are classified as CIF or standard, based on sectoral definitions (e.g. MiFID II Art. 16.5, CRR Art. 312). The classification of functions is separate from the data classification of the ISO baseline and is documented in the separate *Identification and Classification extension*.
+
+                        **Lifecycle.** Acquisition, onboarding, operation, change and decommissioning are linked to security and data protection gates. Pre-decommission checks for CIF assets require switch-over documentation and a hand-over to the successor or to the secondary site.
+
+                        **Linkage to the Register of Information.** For each CIF asset, a link is maintained to the Register of Information pursuant to Commission Implementing Regulation (EU) 2024/2956 (tables B_03 ICT services, B_04 contracts, B_05 third-party providers). Changes to the asset inventory automatically trigger an update of the corresponding register tables.
+
+                        **Responsibilities.** CISO {{ roles.ciso.fullName }} stewards the CIF asset inventory; asset owners report changes within 5 business days. Third-party provider asset data are supplied by the vendor management team.
+
+                        **Review cadence.** Full inventory annually and ad hoc upon material changes pursuant to Art. 6.5 DORA. Effective from: {{ dora.validity_from }}.
+        cryptography:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: crypto-agility and post-quantum (DORA Art. 9.4(b))'
+                    body: |-
+                        This extension complements the cryptography policy under A.8.24 ISO/IEC 27002:2022 with the requirements of Art. 9.4(b) of Regulation (EU) 2022/2554 (DORA) in conjunction with Commission Delegated Regulation (EU) 2024/1773 Art. 6 to 8.
+
+                        **Crypto-agility.** {{ tenant.legal_name }} maintains a crypto inventory of all cryptographic mechanisms, keys and associated components pursuant to Commission Delegated Regulation (EU) 2024/1773 Art. 7.2. Mechanisms are recorded with algorithm, key length, purpose and owner. Upon algorithm deprecation by NIST or BSI, an impact analysis is produced within 30 days and a migration plan is presented.
+
+                        **Post-quantum readiness.** Pursuant to Commission Delegated Regulation (EU) 2024/1773 Art. 7.4, {{ tenant.legal_name }} establishes a post-quantum migration roadmap. Contents: identification of long-lived sensitive data ("harvest now, decrypt later"), assessment of quantum-resistant algorithms (NIST PQC suite: ML-KEM, ML-DSA, SLH-DSA), pilot implementation in non-CIF systems, roadmap for CIF migration with target horizon, tests of hybrid mechanisms in TLS and VPN stacks. The current target horizon for PQC migration is documented tenant-specifically in the annex.
+
+                        **Key management.** Lifecycle requirements pursuant to Commission Delegated Regulation (EU) 2024/1773 Art. 8: generation in HSM or equivalent KMS, storage separated from encrypted data, regular rotation, secure destruction. For CIF assets, HSM-based key custody is mandatory.
+
+                        **Algorithm selection.** Preferred: AES-256-GCM, ChaCha20-Poly1305 for symmetric; Ed25519, ECDSA P-384, RSA-3072 for signatures; X25519, ECDH P-384 for key exchange. Hash: SHA-384 or SHA-512. Selection aligned with NIST SP 800-131A and BSI TR-02102. Prohibited: MD5, SHA-1, RC4, DES, 3DES, RSA-1024, ECDSA P-192.
+
+                        **Review cadence.** Annually and ad hoc upon NIST or BSI algorithm deprecation or release of new PQC standards. Effective from: {{ dora.validity_from }}.
+        network_security:
+            v1:
+                dora_extension:
+                    title: 'DORA replacement: network security (DORA Art. 9.4)'
+                    body: |-
+                        **Note: REPLACES.** Pursuant to Commission Delegated Regulation (EU) 2024/1773 Art. 13, the requirements of Art. 9.4 of Regulation (EU) 2022/2554 (DORA) are stricter than A.8.20 to A.8.23 ISO/IEC 27002:2022. This DORA extension replaces the ISO baseline for financial entities within the DORA scope; the ISO section is marked as archived in the document and remains available for audit purposes.
+
+                        **Segregation of critical or important functions.** CIF-bearing ICT systems are operated in dedicated network segments separated from standard workloads. Cross-segment connections are controlled via central gateway firewalls with default-deny rule sets and full logging. Lateral movement between segments is impeded by microsegmentation.
+
+                        **Filtering and inspection.** Perimeter and intra-segment filtering via next-generation firewall, IDS and IPS. TLS inspection of outbound traffic where labour and data protection law permit (with the involvement of the Data Protection Officer {{ roles.dpo.fullName }} and works council).
+
+                        **Encryption of data in transit.** All traffic over uncontrolled networks is encrypted pursuant to the cryptography policy; TLS 1.2 minimum, TLS 1.3 preferred. Internal CIF network: end-to-end encryption mandatory.
+
+                        **Wireless networks.** Wireless access to CIF systems is in principle prohibited. Guest networks are logically and physically separated from production networks.
+
+                        **Remote access.** VPN or ZTNA mandatory. MFA for all remote access. Privileged remote access only via privileged-access workstations and with session recording.
+
+                        **Linkage to detection.** Network telemetry is integrated into SOC and SIEM pursuant to the separate detection policy.
+
+                        **Review cadence.** Annually and ad hoc upon material network topology changes. Effective from: {{ dora.validity_from }}.
+        physical_security:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: physical security and geographic separation (DORA Art. 9.4)'
+                    body: |-
+                        This extension complements the physical security policy under A.7.1 to A.7.14 ISO/IEC 27002:2022 with the requirements of Art. 9.4 of Regulation (EU) 2022/2554 (DORA) in conjunction with Commission Delegated Regulation (EU) 2024/1773 Art. 18.
+
+                        **Geographic separation.** CIF-bearing data centres are operated at two geographically separated sites; the minimum distance is informed by the risk analysis on collective failures (natural events, power-grid outages, geopolitical events). Recommended: at least 200 km distance, separated power-supply regions, separated telecom-provider regions.
+
+                        **Site certification.** Primary and secondary sites meet at least Tier 3 requirements (parallel power path, redundant cooling, redundant connectivity). Certificates (e.g. Uptime Institute Tier 3, EN 50600 class 3) are available and evidenced in the audit log.
+
+                        **Environmental controls.** Fire, water, climate and power-supply protection pursuant to Commission Delegated Regulation (EU) 2024/1773 Art. 18.2. Backup generators with defined autonomy. Early fire detection and automatic suppression. Watercourse and flood risk reflected in site selection.
+
+                        **Physical access.** Multi-stage access protection (perimeter, building, security area, high-security area). Four-eyes principle in high-security areas for CIF hardware. Visitor regime with prior registration, escort and logging.
+
+                        **Third-party providers at physical sites.** Maintenance activities by third-party providers are performed pursuant to the supplier security extension with documented order, identity verification and escort.
+
+                        **Review cadence.** Annually and after site changes or material conversions. Effective from: {{ dora.validity_from }}.
+        project_management:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: ICT project management (DORA Art. 9.4(f))'
+                    body: |-
+                        This extension complements the project management policy under A.5.8 ISO/IEC 27002:2022 with the requirements of Art. 9.4(f) of Regulation (EU) 2022/2554 (DORA) in conjunction with Commission Delegated Regulation (EU) 2024/1773 Art. 15.
+
+                        **CIF identification at project initiation.** For every ICT project, the initiation phase determines whether the project builds, replaces or affects a CIF. Where a CIF connection exists, stricter project governance applies: additional stage gates, mandatory involvement of the CISO {{ roles.ciso.fullName }} and, where applicable, the Data Protection Officer {{ roles.dpo.fullName }}.
+
+                        **Stage-gate model.** Stage gates: initiation, concept, realisation, testing, go-live, stabilisation. At each stage gate an ICT risk assessment is performed with a documented decision to continue, pause or stop. For CIF projects, approval at the go-live stage gate by the management body is mandatory.
+
+                        **Security-by-design checkpoints.** Per stage gate, mandatory security requirements are met: threat modeling, privacy by design, incident response concept, backup concept, recovery concept, resilience test plan.
+
+                        **Linkage to resilience tests.** Projects with CIF involvement are tested at least once before go-live pursuant to Art. 24 DORA; for material CIF changes, an additional test pursuant to Art. 11.6 DORA is performed.
+
+                        **Post-implementation review.** A PIR is performed 90 days after go-live. Content: objective achievement, ICT risk posture, identified weaknesses, lessons learned. Findings feed into the annual ICT-RMF review.
+
+                        **Review cadence.** Annually and after every CIF project go-live. Effective from: {{ dora.validity_from }}.
+        secure_development:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: secure development and EOL (DORA Art. 9.4(g))'
+                    body: |-
+                        This extension complements the secure development policy under A.8.25 to A.8.30 ISO/IEC 27002:2022 with the requirements of Art. 9.4(g) of Regulation (EU) 2022/2554 (DORA) in conjunction with Commission Delegated Regulation (EU) 2024/1773 Art. 16.
+
+                        **SDLC for CIF software.** Software supporting CIF passes through a stricter Secure Development Lifecycle (e.g. NIST SSDF, OWASP SAMM maturity level 2 plus). Mandatory phases: requirements management, design, implementation, testing, release, operation, EOL.
+
+                        **Code review and code signing.** Four-eyes code review for every change to CIF components. SAST and SCA in the CI pipeline; high or critical findings block merges until remediated or formally accepted as a documented risk. Releases are code-signed; signatures are verified in the deployment chain.
+
+                        **Environment separation.** Development, test and production environments are logically and network-wise separated. CIF production data are processed only in the production environment; anonymisation or synthetic data in non-production environments.
+
+                        **Acceptance tests.** Before go-live: unit, integration, system, performance and security tests. For CIF components: additionally, end-to-end resilience test pursuant to Art. 24 DORA.
+
+                        **Outsourced development.** External development per supplier security extension. Minimum requirements for provider SDLC are anchored in the contract (DORA annex).
+
+                        **End-of-life management.** Software EOL is planned at least 12 months before its occurrence. The successor solution must be tested before EOL. Residual risks of an extension are approved by the management body. No operation of out-of-support software for CIF.
+
+                        **Review cadence.** Annually and ad hoc upon material methodology changes (e.g. new SDLC standard). Effective from: {{ dora.validity_from }}.
+        backup:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: backup and restoration evidence (DORA Art. 12)'
+                    body: |-
+                        This extension complements the backup policy under A.8.13 ISO/IEC 27002:2022 with the requirements of Art. 12 of Regulation (EU) 2022/2554 (DORA) in conjunction with Commission Delegated Regulation (EU) 2024/1773 Art. 26 to 28.
+
+                        **Physical and logical segregation.** Pursuant to Art. 12.3 DORA, backups for CIF data are kept at a site that is physically and logically segregated from the primary site. Segregation requirements: separated power supply, separated network domain, separated identity domain, separated encryption keys.
+
+                        **Restoration testing.** Pursuant to Art. 12.2 DORA, {{ tenant.legal_name }} performs documented restoration tests. Minimum cadence per data class:
+
+                        - CIF data: monthly sample restore per quarter plus annual full-restore test as part of Art. 11.6 DORA;
+                        - important non-CIF data: quarterly sample restore;
+                        - standard data: semi-annual sample restore.
+
+                        Test results are tamper-resistantly retained pursuant to A.5.33 ISO/IEC 27002:2022 and are evidenceable in audit.
+
+                        **Integrity verification.** Backups are sealed at creation with cryptographic integrity protection (HMAC or digital signature). Integrity is verified before restore.
+
+                        **Immutability.** For CIF data, WORM storage or object-lock is mandatory for the minimum retention period. Protection against ransomware and insider threats.
+
+                        **Encryption.** Backups are encrypted per the cryptography extension; keys are stored separately from the backup.
+
+                        **Review cadence.** Annually and after every failed restore test. Effective from: {{ dora.validity_from }}.
+        incident_management:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: incident management and reporting (DORA Art. 17-23)'
+                    body: |-
+                        This extension complements the incident management policy under A.5.24 to A.5.28 ISO/IEC 27002:2022 with the requirements of Art. 17 to 23 of Regulation (EU) 2022/2554 (DORA) in conjunction with Commission Delegated Regulation (EU) 2024/1772 (classification criteria) and Commission Delegated Regulation (EU) 2024/1774 (classification of incidents and cyber threats).
+
+                        **Classification as major incident.** An ICT incident is classified as major where the criteria pursuant to Commission Delegated Regulation (EU) 2024/1772 are met:
+
+                        - affected clients, counterparties, transactions (relative and absolute);
+                        - reputational impact (media coverage, complaints);
+                        - duration and downtime (greater than or equal to 24h or CIF unavailable);
+                        - geographic spread (greater than or equal to two EU member states);
+                        - data losses (confidentiality, integrity, availability);
+                        - economic impact (gross direct plus indirect greater than or equal to EUR 100,000);
+                        - critical services affected (auto-major if yes).
+
+                        The auto-classification logic in the incident module evaluates these criteria automatically.
+
+                        **Reporting chain and deadlines.** Pursuant to the ITS on incident reporting (JC 2024 33):
+
+                        - **initial notification:** as soon as possible, at the latest 4 hours after classification as major and 24 hours after awareness;
+                        - **intermediate report:** within 72 hours of initial notification, then weekly until normal activity;
+                        - **final report:** within 1 month of initial notification with full root-cause analysis, lessons learned and cost.
+
+                        **Significant cyber threat.** Voluntary reporting pursuant to Art. 23 DORA and Commission Delegated Regulation (EU) 2024/1774 Art. 11.
+
+                        **Recipients and channel.** Competent authority: {{ dora.competent_authority }}. Channel: per tenant-specific configuration. On a data-protection-relevant trigger: additional notification to the data protection supervisory authority pursuant to Art. 33 GDPR by {{ roles.dpo.fullName }}.
+
+                        **Review cadence.** Annually and after every major incident and after publication of new RTS or ITS. Effective from: {{ dora.validity_from }}.
+        supplier_security:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: ICT third-party risk (DORA Art. 28-30)'
+                    body: |-
+                        This extension complements the supplier security policy under A.5.19 to A.5.22 ISO/IEC 27002:2022 with the requirements of Art. 28 to 30 of Regulation (EU) 2022/2554 (DORA) in conjunction with Commission Delegated Regulation (EU) 2024/1773 Art. 30, Commission Implementing Regulation (EU) 2024/2956 (Register of Information), Commission Delegated Regulation (EU) 2024/1505 (CTPP designation) and the final draft RTS JC 2024 53 (subcontracting, adoption pending).
+
+                        **Strategy and approval.** The ICT third-party strategy is approved by the management body pursuant to Art. 28.2 DORA. Multi-vendor approach for critical or important functions.
+
+                        **Pre-contractual due diligence.** Before contract conclusion, the provider's financial soundness, security maturity, incident history and full sub-processor map are assessed. For CIF contracts: additionally on-site audit right, resilience evidence, BCM evidence.
+
+                        **Fourteen mandatory contractual clauses.** All ICT third-party contracts contain pursuant to Art. 30.2 DORA nine minimum clauses (description of services, processing locations, availability/authenticity/integrity/confidentiality, return and deletion, SLA including updates, cooperation duty in case of ICT incidents, authority cooperation, termination rights, training participation). For CIF contracts five additional clauses apply pursuant to Art. 30.3 DORA (full SLA description, reporting and change-notification duties, BCM and security duties, participation in TLPT pursuant to Art. 26.3 DORA, audit and on-site rights). A DORA annex template is centrally maintained.
+
+                        **Register of Information.** Pursuant to Art. 28.3 DORA and Commission Implementing Regulation (EU) 2024/2956, {{ tenant.legal_name }} maintains a Register of Information with the fifteen standardised tables (entity, contracts, providers, ICT services, sub-providers, classification, etc.). Submission to {{ dora.competent_authority }} at least annually or upon request.
+
+                        **Concentration risk.** Thresholds: {{ dora.concentration_thresholds }}. Upon exceedance: mitigation measures (multi-vendor, escrow, second source). Aggregation at provider, group, region and cloud-region level.
+
+                        **Exit strategy.** Per CIF provider: documented transition plan, annual tabletop test pursuant to Art. 28.8 DORA, data extraction and re-insertion procedures.
+
+                        **Subcontracting.** Notification and approval of new sub-providers in the CIF chain. Fully transparent sub-processor map.
+
+                        **CTPP designation.** Providers designated as Critical ICT Third-Party Provider pursuant to Commission Delegated Regulation (EU) 2024/1505 are subject to direct ESA oversight. Contractual cooperation clause ensures readiness.
+
+                        **Review cadence.** Annually and ad hoc upon provider changes or new RTS or ITS. Effective from: {{ dora.validity_from }}.
+        continuity:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: ICT business continuity and resilience testing (DORA Art. 11)'
+                    body: |-
+                        This extension complements the business continuity policy under A.5.29 and A.5.30 ISO/IEC 27002:2022 with the requirements of Art. 11 of Regulation (EU) 2022/2554 (DORA) in conjunction with Commission Delegated Regulation (EU) 2024/1773 Art. 24 to 26.
+
+                        **ICT business continuity policy.** {{ tenant.legal_name }} has adopted an ICT-specific business continuity policy pursuant to Art. 11.1 DORA. This refines the BCM under ISO 22301:2019 as a Tier 2 layer.
+
+                        **Response and recovery plans per CIF.** A plan is documented per critical or important function. Contents per separate Response and Recovery Policy.
+
+                        **Annual resilience testing.** Pursuant to Art. 11.6 DORA, plans are tested at least annually, including switch-over to the secondary site for critical or important functions (Art. 11.6(b) DORA).
+
+                        **Linkage to resilience testing programme.** Resilience tests pursuant to Art. 24 and 25 DORA include vulnerability assessments, scenario-based tests, compatibility tests, performance tests, end-to-end tests and penetration tests. Significant financial entities are additionally subject to Threat-Led Penetration Tests pursuant to Art. 26 DORA at least every three years, performed using TIBER-EU compliant methodology pursuant to final draft RTS JC 2024 29.
+
+                        **Tester independence.** Pursuant to Art. 24.5 DORA, separation of functions or external test execution applies. For TLPT: external execution mandatory in the first round, internal in subsequent rounds only under strict RTS independence.
+
+                        **Findings tracking.** All findings are tracked in the risk module with owners, deadlines and KPIs. Reporting to the management body as part of Art. 6.5 DORA.
+
+                        **Review cadence.** Annually and after every test and every incident. Effective from: {{ dora.validity_from }}.
+        threat_intelligence:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: information sharing in trust circles (DORA Art. 45)'
+                    body: |-
+                        This extension complements the threat intelligence policy under A.5.7 ISO/IEC 27002:2022 with the voluntary information sharing pursuant to Art. 45 of Regulation (EU) 2022/2554 (DORA).
+
+                        **Approved trust circles.** {{ tenant.legal_name }} is a member of the following trust circles for threat intelligence: FS-ISAC (sectoral trust circle), national sector CERTs, governmental CERTs (e.g. BSI CERT-Bund), where applicable Bundesbank Operational Resilience Forum for DE banks. Specific memberships in the annex.
+
+                        **Classification before sharing.** Before each share, content is classified (TLP: WHITE, GREEN, AMBER, RED per Traffic Light Protocol). Personal data are evaluated pursuant to Art. 45.2 DORA and GDPR; sharing only where data protection prerequisites are met. Data Protection Officer {{ roles.dpo.fullName }} involved.
+
+                        **Reciprocity.** Sharing arrangements are reciprocal: membership presumes that {{ tenant.legal_name }} contributes its own findings, where internally released.
+
+                        **Approval process.** All external sharing occurs upon approval by CISO {{ roles.ciso.fullName }} and, where applicable, {{ roles.dpo.fullName }}. Sensitive internal data (e.g. specific vulnerabilities, target systems) are anonymised before sharing.
+
+                        **Ingest and assessment.** External findings are integrated into detection mechanisms within 24 hours per separate Learning and Evolving Policy.
+
+                        **Review cadence.** Annually. Effective from: {{ dora.validity_from }}.
+        logging:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: operational data preservation (DORA Art. 9.4(a))'
+                    body: |-
+                        This extension complements the logging and monitoring policy under A.8.15 ISO/IEC 27002:2022 with the requirements of Art. 9.4(a) of Regulation (EU) 2022/2554 (DORA) in conjunction with Commission Delegated Regulation (EU) 2024/1773 Art. 12.
+
+                        **Operational data preservation.** {{ tenant.legal_name }} preserves operational data of critical or important functions for as long as is required to meet regulatory requirements, support incident investigations and audit needs.
+
+                        **Minimum retention periods.**
+
+                        - security logs (SIEM ingest): 12 months online, 5 years archive;
+                        - authentication logs: 12 months online, 7 years archive;
+                        - privileged-access logs: 12 months online, 10 years archive;
+                        - incident investigations: 7 years after closure;
+                        - major-incident reports pursuant to Art. 19 DORA: 7 years.
+
+                        **Integrity protection.** Logs are protected against subsequent alteration via hash-chain or write-once storage. Access to log stores is via privileged accounts with MFA only.
+
+                        **Correlation and retrievability.** Logs are centrally aggregated and retrievable via defined queries within 4 hours for incident investigations, audits and supervisory enquiries.
+
+                        **Data protection.** Personal logs are handled pursuant to GDPR; access only by authorised persons with documented purpose and four-eyes principle for behaviour-related analysis.
+
+                        **Review cadence.** Annually. Effective from: {{ dora.validity_from }}.
+        identity_management:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: accountability for ICT operations (DORA Art. 9.4(c))'
+                    body: |-
+                        This extension complements the identity management policy under A.5.16 ISO/IEC 27002:2022 with the requirements of Art. 9.4(c) of Regulation (EU) 2022/2554 (DORA).
+
+                        **Unique identity.** All human and machine actors performing ICT operations have a unique, traceable identity. Shared accounts are prohibited in CIF environments; technical service accounts are assigned to named owners and recorded in the configuration inventory.
+
+                        **Accountability for ICT operations.** Every action performed in CIF environments is traceable to a unique identity. Audit trails connect the action to the executing person or service account and to the task context (change ticket, incident ticket, maintenance window).
+
+                        **Lifecycle.** Identities are created on entry, adjusted on role change and disabled without delay on departure. Privileged identities are returned and re-applied at role change; no automatic carry-over of rights.
+
+                        **Machine identities.** Service accounts and API keys are managed in the secrets-management system; regular rotation; manual interim caching prohibited.
+
+                        **Federation.** Federation to external identity providers occurs only via qualified mechanisms (e.g. SAML 2.0, OIDC) with examination of the trust chain.
+
+                        **Review cadence.** Annually and after every identity incident. Effective from: {{ dora.validity_from }}.
+        access_control:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: least privilege for ICT (DORA Art. 9.4(c))'
+                    body: |-
+                        This extension complements the access control policy under A.5.15 ISO/IEC 27002:2022 with the requirements of Art. 9.4(c) of Regulation (EU) 2022/2554 (DORA).
+
+                        **Least privilege for CIF.** All ICT entitlements are granted on the principle of least privilege. Privileged entitlements for CIF systems are granted exclusively just-in-time and with the four-eyes principle; standing privileged access is prohibited.
+
+                        **Privileged access workstations.** Administrative access to CIF systems is performed exclusively from hardened PAWs with MFA, session recording and network isolation.
+
+                        **Multi-factor authentication.** MFA mandatory for all access to CIF systems, all remote access and all privileged actions. Phishing-resistant mechanisms preferred (FIDO2, WebAuthn, smartcard).
+
+                        **Reviews.** Periodic entitlement reviews at least every six months for CIF, annually for standard systems. Event-based reviews on role change.
+
+                        **Third-party access.** External access to CIF systems is provided exclusively via Privileged Access Management with prior approval and session recording. No standing access for external persons.
+
+                        **Review cadence.** Annually and after every access incident. Effective from: {{ dora.validity_from }}.
+        acceptable_use:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: operational rules (DORA Art. 9.4)'
+                    body: |-
+                        This extension complements the acceptable use policy under A.5.10 ISO/IEC 27002:2022 with the requirements of Art. 9.4 of Regulation (EU) 2022/2554 (DORA).
+
+                        **Use in CIF environments.** Employees with access to CIF systems are required to use them solely in a task-related manner and within approved change or incident tickets. Exploratory or investigative activities in CIF production environments are prohibited; corresponding investigations are performed in dedicated test environments.
+
+                        **AI tools and CIF data.** Submission of CIF data to non-approved AI tools is prohibited. Approved AI tools for the CIF context are listed in the annex; requirements include: contractually secured EU data processing, no use of inputs for model training, documented sub-processor chain, compliance with DORA third-party requirements pursuant to Art. 28 to 30.
+
+                        **Mobile devices.** Access to CIF systems from mobile devices is permitted only with MDM, MFA and secure tunnelling per the mobile-teleworking extension.
+
+                        **Removable media.** Removable media are in principle prohibited in CIF environments; exceptions require CISO approval and the use of approved hardware-encrypted devices.
+
+                        **Breaches.** Breaches in the CIF context are evaluated pursuant to the personnel security policy and four-eyes principle by CISO and HR; where applicable, employment-law consequences and notification to {{ dora.competent_authority }} where regulatory relevance exists.
+
+                        **Review cadence.** Annually. Effective from: {{ dora.validity_from }}.
+        information_classification:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: identification and classification (DORA Art. 8.1)'
+                    body: |-
+                        This extension complements the classification and handling policy under A.5.12 ISO/IEC 27002:2022 with the requirements of Art. 8.1 of Regulation (EU) 2022/2554 (DORA) in conjunction with Commission Delegated Regulation (EU) 2024/1773 Art. 5.
+
+                        **Classification of functions.** While the ISO baseline governs the classification of information, DORA additionally requires the classification of business functions as critical or important ("CIF") or standard. Basis: sectoral definitions (e.g. MiFID II Art. 16.5, CRR Art. 312, Solvency II).
+
+                        **Mapping.** Per function a mapping is produced:
+
+                        - function to supporting ICT assets (see asset management extension);
+                        - function to supporting ICT third-party providers (see supplier security extension);
+                        - function to data classification of the ISO baseline.
+
+                        **Approval path.** Classification of a function as CIF requires confirmation by the BCM lead plus CISO {{ roles.ciso.fullName }}. Auto-classification without human confirmation is prohibited.
+
+                        **Review cadence.** Annually and on every new product or service launch pursuant to Art. 8.4 DORA.
+
+                        **Linkage to Register of Information.** Classifications feed into tables B_01 (entity) and B_02 (functions) of the Register of Information pursuant to Commission Implementing Regulation (EU) 2024/2956.
+
+                        **Review cadence.** Annually. Effective from: {{ dora.validity_from }}.
+        information_transfer:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: encryption of data in transit (DORA Art. 9.4(b))'
+                    body: |-
+                        This extension complements the information transfer policy under A.5.14 ISO/IEC 27002:2022 with the requirements of Art. 9.4(b) of Regulation (EU) 2022/2554 (DORA).
+
+                        **Mandatory encryption.** All data transfers touching critical or important functions or protected information are end-to-end encrypted. Minimum: TLS 1.2; preferred: TLS 1.3 with forward secrecy. Cipher suites are selected per the cryptography extension; prohibited algorithms MD5, SHA-1, RC4, DES, 3DES are explicitly excluded in configurations.
+
+                        **Removable media and physical media.** Data transfer via removable media is in principle prohibited in CIF contexts. In exceptional cases with CISO approval: hardware-encrypted media, documented hand-over under four-eyes principle.
+
+                        **Email and messaging.** Confidential information is transferred only via qualified encryption services (S/MIME, PGP, secure mail gateways). Consumer messaging without end-to-end encryption is prohibited for business correspondence.
+
+                        **API traffic.** API calls between ICT systems are TLS encrypted; mutual authentication (mTLS) mandatory for CIF-relevant interfaces.
+
+                        **Third-country transfer.** Data transfer to third countries observes GDPR requirements (standard contractual clauses, adequacy decisions, BCRs) and DORA third-party requirements pursuant to Art. 28 to 30 DORA. Data Protection Officer {{ roles.dpo.fullName }} is involved.
+
+                        **Review cadence.** Annually and after algorithm deprecation. Effective from: {{ dora.validity_from }}.
+        mobile_teleworking:
+            v1:
+                dora_extension:
+                    title: 'DORA extension: ICT operations beyond office boundaries (DORA Art. 9.4(h))'
+                    body: |-
+                        This extension complements the mobile devices and teleworking policy under A.6.7, A.7.9 and A.8.1 ISO/IEC 27002:2022 with the requirements of Art. 9.4(h) of Regulation (EU) 2022/2554 (DORA).
+
+                        **CIF access from outside.** Access to CIF systems from outside the office locations is performed exclusively via hardened, MDM-managed devices with full-disk encryption, MFA and ZTNA or VPN tunnel. No access from consumer devices or from devices without MDM.
+
+                        **Privileged actions.** Privileged actions on CIF systems are performed exclusively from privileged-access workstations within dedicated network segments; mobile privileged actions are prohibited.
+
+                        **Home workplaces.** Home workplaces for CIF employees meet minimum requirements: physical separation from private devices, screen privacy, secure storage of business documents, prohibition of open Wi-Fi connections.
+
+                        **Travel.** On business travel to high-risk countries, devices are checked before and after travel; sensitive content is removed before travel; burner devices on demand.
+
+                        **Loss.** Device loss triggers the incident reporting chain per incident extension; remote wipe within 1 hour where possible.
+
+                        **Review cadence.** Annually. Effective from: {{ dora.validity_from }}.

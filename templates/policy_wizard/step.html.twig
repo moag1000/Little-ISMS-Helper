@@ -54,6 +54,7 @@
         {# Step-key → template-filename mapping. Default 7-step flow plus
            Mode 2 (targeted re-run) sub-flow templates wired in W3-J. #}
         {% set template_map = {
+            'bestandsaufnahme': 'policy_wizard/step/_bestandsaufnahme.html.twig',
             'welcome': 'policy_wizard/step/_welcome_standards.html.twig',
             'organisation_scope': 'policy_wizard/step/_organisation_scope.html.twig',
             'roles': 'policy_wizard/step/_roles.html.twig',
@@ -85,7 +86,10 @@
                 'hierarchy_conflicts': hierarchy_conflicts,
                 'existing_topics_by_key': existing_topics_by_key|default({}),
                 'diff': diff|default([]),
-                'sandbox_preview': sandbox_preview|default(null)
+                'sandbox_preview': sandbox_preview|default(null),
+                'inventory_rows': inventory_rows|default([]),
+                'topic_suggestions_by_doc': topic_suggestions_by_doc|default({}),
+                'available_topics': available_topics|default([])
             } %}
         {% endif %}
 
