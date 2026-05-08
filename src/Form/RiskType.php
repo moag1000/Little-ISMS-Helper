@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Asset;
+use App\Entity\Incident;
 use App\Entity\Location;
 use App\Entity\Person;
 use App\Entity\Risk;
@@ -420,6 +421,97 @@ class RiskType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
                 'help' => 'risk.help.review_date',
+            ])
+        ;
+
+        // ── DORA ICT-Risk subset — only shown when 'nis2_dora' module is active ─
+        if ($this->isModuleActive('nis2_dora')) {
+            $this->addDoraIctRiskFields($builder, $currentTenant);
+        }
+    }
+
+    private function addDoraIctRiskFields(FormBuilderInterface $builder, mixed $currentTenant): void
+    {
+        $builder
+            ->add('ictRiskCategory', ChoiceType::class, [
+                'choices' => [
+                    'risk.dora.ict_category.cyber' => 'cyber',
+                    'risk.dora.ict_category.operations' => 'operations',
+                    'risk.dora.ict_category.third_party_ict' => 'third_party_ict',
+                    'risk.dora.ict_category.concentration' => 'concentration',
+                    'risk.dora.ict_category.data_integrity' => 'data_integrity',
+                ],
+                'choice_translation_domain' => 'risk',
+                'label' => 'risk.dora.field.ict_risk_category',
+                'required' => false,
+                'placeholder' => 'risk.dora.placeholder.ict_risk_category',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'risk.dora.help.ict_risk_category',
+            ])
+            ->add('criticalOrImportantFunction', CheckboxType::class, [
+                'label' => 'risk.dora.field.critical_or_important_function',
+                'required' => false,
+                'help' => 'risk.dora.help.critical_or_important_function',
+            ])
+            ->add('ictThirdPartyConcentration', CheckboxType::class, [
+                'label' => 'risk.dora.field.ict_third_party_concentration',
+                'required' => false,
+                'help' => 'risk.dora.help.ict_third_party_concentration',
+            ])
+            ->add('ictAssetDependency', EntityType::class, [
+                'class' => Asset::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'label' => 'risk.dora.field.ict_asset_dependency',
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'risk.dora.help.ict_asset_dependency',
+            ])
+            ->add('ictIncidentHistory', EntityType::class, [
+                'class' => Incident::class,
+                'choice_label' => 'title',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'label' => 'risk.dora.field.ict_incident_history',
+                'attr' => [
+                    'class' => 'form-select',
+                    'data-controller' => 'tom-select',
+                ],
+                'help' => 'risk.dora.help.ict_incident_history',
+            ])
+            ->add('dataResilienceRequirement', TextareaType::class, [
+                'label' => 'risk.dora.field.data_resilience_requirement',
+                'required' => false,
+                'attr' => [
+                    'rows' => 4,
+                    'placeholder' => 'risk.dora.placeholder.data_resilience_requirement',
+                ],
+                'help' => 'risk.dora.help.data_resilience_requirement',
+            ])
+            ->add('tlptScope', CheckboxType::class, [
+                'label' => 'risk.dora.field.tlpt_scope',
+                'required' => false,
+                'help' => 'risk.dora.help.tlpt_scope',
+            ])
+            ->add('regulatoryReportingRequired', CheckboxType::class, [
+                'label' => 'risk.dora.field.regulatory_reporting_required',
+                'required' => false,
+                'help' => 'risk.dora.help.regulatory_reporting_required',
+            ])
+            ->add('boardEscalationRequired', CheckboxType::class, [
+                'label' => 'risk.dora.field.board_escalation_required',
+                'required' => false,
+                'help' => 'risk.dora.help.board_escalation_required',
+            ])
+            ->add('lessonsLearnedDocumented', CheckboxType::class, [
+                'label' => 'risk.dora.field.lessons_learned_documented',
+                'required' => false,
+                'help' => 'risk.dora.help.lessons_learned_documented',
             ])
         ;
     }

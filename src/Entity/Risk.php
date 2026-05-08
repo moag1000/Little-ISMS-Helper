@@ -377,6 +377,8 @@ class Risk
         $this->controls = new ArrayCollection();
         $this->incidents = new ArrayCollection();
         $this->riskOwnerDeputyPersons = new ArrayCollection();
+        $this->ictAssetDependency = new ArrayCollection();
+        $this->ictIncidentHistory = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -1246,6 +1248,220 @@ class Risk
     public function setDecisionApprovalDate(?\DateTimeImmutable $decisionApprovalDate): static
     {
         $this->decisionApprovalDate = $decisionApprovalDate;
+        return $this;
+    }
+
+    // ── Sprint 7-A: DORA ICT-Risk fields (gated 'nis2_dora' module) ──────────
+
+    /**
+     * ICT risk category (DORA Art. 6(8)).
+     * Values: cyber | operations | third_party_ict | concentration | data_integrity
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $ictRiskCategory = null;
+
+    /**
+     * Whether the risk concerns a critical or important function (DORA Art. 6(2)+Annex).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['risk:read', 'risk:write'])]
+    private bool $criticalOrImportantFunction = false;
+
+    /**
+     * ICT third-party concentration risk flag (DORA Art. 28+29).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['risk:read', 'risk:write'])]
+    private bool $ictThirdPartyConcentration = false;
+
+    /**
+     * ICT asset dependency M2M.
+     * NOTE: Risk already has $asset (ManyToOne). This collection covers multi-asset ICT dependencies.
+     *
+     * @var Collection<int, Asset>
+     */
+    #[ORM\ManyToMany(targetEntity: Asset::class)]
+    #[ORM\JoinTable(name: 'risk_ict_asset_dependency')]
+    #[ORM\JoinColumn(name: 'risk_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'asset_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Groups(['risk:read', 'risk:write'])]
+    private Collection $ictAssetDependency;
+
+    /**
+     * ICT incident history M2M (DORA Art. 17-19).
+     * NOTE: Risk already has $incidents (ManyToMany, mappedBy). This separate collection
+     * tracks ICT-specific incident references for DORA reporting.
+     *
+     * @var Collection<int, Incident>
+     */
+    #[ORM\ManyToMany(targetEntity: Incident::class)]
+    #[ORM\JoinTable(name: 'risk_ict_incident_history')]
+    #[ORM\JoinColumn(name: 'risk_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'incident_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Groups(['risk:read', 'risk:write'])]
+    private Collection $ictIncidentHistory;
+
+    /**
+     * Data resilience requirement (RTO/RPO, Art. 11(2)(c)).
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $dataResilienceRequirement = null;
+
+    /**
+     * Threat-Led Penetration Test scope flag (DORA Art. 26-27).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['risk:read', 'risk:write'])]
+    private bool $tlptScope = false;
+
+    /**
+     * Whether regulatory reporting is required (DORA Art. 19 + NIS2 Art. 23).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['risk:read', 'risk:write'])]
+    private bool $regulatoryReportingRequired = false;
+
+    /**
+     * Whether board escalation is required (DORA Art. 5(2)).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['risk:read', 'risk:write'])]
+    private bool $boardEscalationRequired = false;
+
+    /**
+     * Whether lessons learned have been documented (DORA Art. 13).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['risk:read', 'risk:write'])]
+    private bool $lessonsLearnedDocumented = false;
+
+    public function getIctRiskCategory(): ?string
+    {
+        return $this->ictRiskCategory;
+    }
+
+    public function setIctRiskCategory(?string $ictRiskCategory): static
+    {
+        $this->ictRiskCategory = $ictRiskCategory;
+        return $this;
+    }
+
+    public function isCriticalOrImportantFunction(): bool
+    {
+        return $this->criticalOrImportantFunction;
+    }
+
+    public function setCriticalOrImportantFunction(bool $criticalOrImportantFunction): static
+    {
+        $this->criticalOrImportantFunction = $criticalOrImportantFunction;
+        return $this;
+    }
+
+    public function isIctThirdPartyConcentration(): bool
+    {
+        return $this->ictThirdPartyConcentration;
+    }
+
+    public function setIctThirdPartyConcentration(bool $ictThirdPartyConcentration): static
+    {
+        $this->ictThirdPartyConcentration = $ictThirdPartyConcentration;
+        return $this;
+    }
+
+    /** @return Collection<int, Asset> */
+    public function getIctAssetDependency(): Collection
+    {
+        return $this->ictAssetDependency;
+    }
+
+    public function addIctAssetDependency(Asset $asset): static
+    {
+        if (!$this->ictAssetDependency->contains($asset)) {
+            $this->ictAssetDependency->add($asset);
+        }
+        return $this;
+    }
+
+    public function removeIctAssetDependency(Asset $asset): static
+    {
+        $this->ictAssetDependency->removeElement($asset);
+        return $this;
+    }
+
+    /** @return Collection<int, Incident> */
+    public function getIctIncidentHistory(): Collection
+    {
+        return $this->ictIncidentHistory;
+    }
+
+    public function addIctIncidentHistory(Incident $incident): static
+    {
+        if (!$this->ictIncidentHistory->contains($incident)) {
+            $this->ictIncidentHistory->add($incident);
+        }
+        return $this;
+    }
+
+    public function removeIctIncidentHistory(Incident $incident): static
+    {
+        $this->ictIncidentHistory->removeElement($incident);
+        return $this;
+    }
+
+    public function getDataResilienceRequirement(): ?string
+    {
+        return $this->dataResilienceRequirement;
+    }
+
+    public function setDataResilienceRequirement(?string $dataResilienceRequirement): static
+    {
+        $this->dataResilienceRequirement = $dataResilienceRequirement;
+        return $this;
+    }
+
+    public function isTlptScope(): bool
+    {
+        return $this->tlptScope;
+    }
+
+    public function setTlptScope(bool $tlptScope): static
+    {
+        $this->tlptScope = $tlptScope;
+        return $this;
+    }
+
+    public function isRegulatoryReportingRequired(): bool
+    {
+        return $this->regulatoryReportingRequired;
+    }
+
+    public function setRegulatoryReportingRequired(bool $regulatoryReportingRequired): static
+    {
+        $this->regulatoryReportingRequired = $regulatoryReportingRequired;
+        return $this;
+    }
+
+    public function isBoardEscalationRequired(): bool
+    {
+        return $this->boardEscalationRequired;
+    }
+
+    public function setBoardEscalationRequired(bool $boardEscalationRequired): static
+    {
+        $this->boardEscalationRequired = $boardEscalationRequired;
+        return $this;
+    }
+
+    public function isLessonsLearnedDocumented(): bool
+    {
+        return $this->lessonsLearnedDocumented;
+    }
+
+    public function setLessonsLearnedDocumented(bool $lessonsLearnedDocumented): static
+    {
+        $this->lessonsLearnedDocumented = $lessonsLearnedDocumented;
         return $this;
     }
 

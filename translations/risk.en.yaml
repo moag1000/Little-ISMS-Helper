@@ -473,6 +473,38 @@ risk:
   validation:
     likelihood_justification_required: 'Likelihood justification is required (ISO 27001:2022 Cl. 6.1.2.d).'
     impact_justification_required: 'Impact justification is required (ISO 27001:2022 Cl. 6.1.2.d).'
+dora:
+  field:
+    ict_risk_category: ICT Risk Category (DORA Art. 6(8))
+    critical_or_important_function: Critical or Important Function (DORA Art. 6(2))
+    ict_third_party_concentration: ICT Third-Party Concentration Risk (DORA Art. 28+29)
+    ict_asset_dependency: ICT Asset Dependencies
+    ict_incident_history: ICT Incident History (DORA Art. 17-19)
+    data_resilience_requirement: Data Resilience Requirements (RTO/RPO, Art. 11)
+    tlpt_scope: TLPT Scope (DORA Art. 26-27)
+    regulatory_reporting_required: Regulatory Reporting Required (DORA Art. 19 + NIS2 Art. 23)
+    board_escalation_required: Board Escalation Required (DORA Art. 5(2))
+    lessons_learned_documented: Lessons Learned Documented (DORA Art. 13)
+  placeholder:
+    ict_risk_category: '-- Select ICT category --'
+    data_resilience_requirement: 'RTO: 4h, RPO: 1h — restore test every 12 months'
+  help:
+    ict_risk_category: Classification per DORA Art. 6(8) ICT risk categories
+    critical_or_important_function: Does this risk concern a critical or important function under DORA Art. 6(2) and Annex?
+    ict_third_party_concentration: Concentration risk from ICT third-party service provider dependency (DORA Art. 28+29)
+    ict_asset_dependency: ICT assets this risk depends on (multiple selection)
+    ict_incident_history: Prior ICT incidents related to this risk (DORA Art. 17-19)
+    data_resilience_requirement: Recovery Time Objective (RTO) and Recovery Point Objective (RPO) per DORA Art. 11(2)(c)
+    tlpt_scope: Scope for Threat-Led Penetration Tests per DORA Art. 26-27
+    regulatory_reporting_required: Reporting obligation to regulators per DORA Art. 19 and NIS2 Art. 23
+    board_escalation_required: Escalation to management board required per DORA Art. 5(2)
+    lessons_learned_documented: Lessons-learned report documented per DORA Art. 13
+  ict_category:
+    cyber: Cyber Risk
+    operations: Operational Risk
+    third_party_ict: ICT Third-Party Risk
+    concentration: Concentration Risk
+    data_integrity: Data Integrity Risk
 risk_management:
   title: Title
   description: Description

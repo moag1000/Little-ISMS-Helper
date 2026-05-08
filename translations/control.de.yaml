@@ -28,6 +28,18 @@ control:
     protected_assets: Geschützte Assets
     responsible_person_legacy: Verantwortliche Person (freitext, veraltet)
     essential_for_small_business: Wesentlich für KMU
+    effectiveness: Wirksamkeit
+    control_type: Maßnahmentyp (NIST)
+    automation_level: Automatisierungsgrad
+    control_maturity: Reifegrad (ISO 33001)
+    last_effectiveness_test: Letzter Wirksamkeitstest
+    next_effectiveness_test: Nächster Wirksamkeitstest
+    framework_references: Framework-Referenzen (JSON)
+    related_risks: Verknüpfte Risiken
+    cloud_control_reference: Cloud-Control-Referenz (ISO 27017)
+    cloud_privacy_reference: Cloud-Privacy-Referenz (ISO 27018)
+    pims_reference: PIMS-Referenz (ISO 27701)
+    customer_or_provider_responsibility: Verantwortlichkeit (Shared-Model)
   help:
     control_id: ISO 27001:2022 Annex A Maßnahmen-ID
     applicable_explained: "Anwendbarkeit (ISO 27001 6.1.3 d): 'Anwendbar' = diese Massnahme ist fuer Ihre Organisation relevant und MUSS umgesetzt werden. 'Nicht anwendbar' = diese Massnahme ist fuer Ihren ISMS-Scope nicht relevant — Begruendung im Feld 'Justification' PFLICHT. Beispiel: A.7.4 (Physische Ueberwachung) kann fuer ein reines Cloud-Unternehmen 'nicht anwendbar' sein."
@@ -41,6 +53,11 @@ control:
     responsible_person_user: Verantwortliche Person aus der Benutzerverwaltung.
     responsible_person_contact: 'Person ohne System-Login als Verantwortliche wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
     responsible_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
+    framework_references_json: 'JSON-Format: {"iso27001":["A.5.1"],"bsi":["ORP.1.A1"],"nist":["AC-1"],"dora":["Art. 6"]}'
+    iso_27017: ISO 27017 Cloud-Control-Referenz (z. B. CLD.9.5.1)
+    iso_27018: ISO 27018 Cloud-Privacy-Referenz (z. B. CLD.6.3.1)
+    iso_27701: ISO 27701 PIMS-Referenz (z. B. 6.4.1.2)
+    shared_responsibility: Wer trägt die Verantwortung für dieses Control? (ISO 27017 §5.1.1)
   placeholder:
     control_id: z.B. A.5.1
     name: z.B. Policies for information security
@@ -48,6 +65,11 @@ control:
     responsible_person: Name der verantwortlichen Person
     responsible_person_user: -- Verantwortliche Person --
     responsible_person_contact: -- Person aus Stammdaten --
+    effectiveness: -- Wirksamkeit wählen --
+    control_type: -- Maßnahmentyp wählen --
+    automation_level: -- Automatisierungsgrad wählen --
+    control_maturity: -- Reifegrad wählen --
+    responsibility: -- Verantwortlichkeit wählen --
   status:
     implemented: Implementiert
     in_progress: In Bearbeitung
@@ -67,6 +89,32 @@ control:
     in_progress: In Umsetzung
     implemented: Implementiert
     verified: Verifiziert
+  effectiveness:
+    not_assessed: Nicht bewertet
+    ineffective: Unwirksam
+    partially_effective: Teilweise wirksam
+    effective: Wirksam
+    highly_effective: Hochwirksam
+  type:
+    preventive: Präventiv
+    detective: Detektiv
+    corrective: Korrektiv
+    deterrent: Abschreckend
+    recovery: Wiederherstellend
+  automation:
+    manual: Manuell
+    semi_automated: Teilautomatisiert
+    fully_automated: Vollautomatisiert
+  maturity:
+    1_initial: '1 – Initial'
+    2_managed: '2 – Verwaltet'
+    3_defined: '3 – Definiert'
+    4_quantitatively_managed: '4 – Quantitativ verwaltet'
+    5_optimizing: '5 – Optimierend'
+  responsibility:
+    customer: Kunde
+    provider: Anbieter
+    shared: Geteilt
   success:
     updated: Maßnahme erfolgreich aktualisiert
   flash:
