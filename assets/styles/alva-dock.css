@@ -14,7 +14,7 @@
 
 .fa-alva-dock {
     position: fixed;
-    z-index: var(--alva-z, 9500);
+    z-index: var(--alva-z);
 
     /* Prevent the dock from swallowing pointer events across the viewport;
        individual child elements restore pointer-events. */

@@ -23,7 +23,7 @@
     transition: border-color var(--t-fast, 0.15s) var(--ease-out, ease-out),
                 box-shadow var(--t-fast, 0.15s) var(--ease-out, ease-out),
                 color var(--t-fast, 0.15s) var(--ease-out, ease-out);
-    z-index: calc(var(--alva-z, 9500) - 10);
+    z-index: calc(var(--alva-z) - 10);
 }
 .keyboard-shortcuts-trigger:hover,
 .keyboard-shortcuts-trigger:focus-visible {
