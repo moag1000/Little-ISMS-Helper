@@ -114,3 +114,9 @@ incident:
         title: 'Vorfall ohne Risk-Treatment-Plan'
         body: 'Hochkritischer Vorfall mit betroffenem hochsensiblen Asset, aber kein Treatment-Plan dokumentiert. ISO 27001 A.5.27 — Lessons Learned.'
         action: 'Treatment-Plan anlegen'
+
+policy_wizard:
+    settings_drift:
+        title: 'Konzern-Vorgabe verschärft — Re-Run nötig'
+        body: 'Konzern-CISO von %konzern_name% hat Setting "%setting_key%" von %old_value% auf %new_value% angehoben. Betroffene Einstellungen in deinem Tenant: %affected_count%. Wizard im Targeted-Modus erneut ausführen, um die Policies anzugleichen.'
+        action: 'Wizard neu starten'

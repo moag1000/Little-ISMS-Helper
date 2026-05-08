@@ -101,6 +101,53 @@ class Document
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private bool $overrideAllowed = true;
 
+    /**
+     * Policy-Wizard W3 — provenance link to the PolicyTemplate that
+     * produced this document. Null when the document was uploaded
+     * manually or imported from another flow.
+     */
+    #[ORM\ManyToOne(targetEntity: PolicyTemplate::class)]
+    #[ORM\JoinColumn(name: 'generated_from_template_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?PolicyTemplate $generatedFromTemplate = null;
+
+    /**
+     * Policy-Wizard W3 — provenance link to the WizardRun that
+     * produced this document. Null when the document was not produced
+     * by a Policy-Wizard run.
+     */
+    #[ORM\ManyToOne(targetEntity: WizardRun::class)]
+    #[ORM\JoinColumn(name: 'generated_from_wizard_run_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?WizardRun $generatedFromWizardRun = null;
+
+    /**
+     * Policy-Wizard W3 — snapshot of the variable substitution map at
+     * generation time. Drives §10 re-generation diffing (compute
+     * stable hash for change detection) and serves as audit-trail
+     * manifest for §11.2 (hidden-marker rendering).
+     *
+     * @var array<string, mixed>|null
+     */
+    #[ORM\Column(name: 'substitution_variables', type: Types::JSON, nullable: true)]
+    private ?array $substitutionVariables = null;
+
+    /**
+     * Policy-Wizard W3 / §10 — once a generated policy reaches
+     * `status='approved'`, the document is locked: the UI hides the
+     * edit button and force-edit requires SUPER_ADMIN + audit entry.
+     */
+    #[ORM\Column(name: 'is_immutable', type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $isImmutable = false;
+
+    /**
+     * Policy-Wizard W3 / §10 — version chain. When a re-run produces
+     * a changed policy, the new Document is created and points back
+     * to the prior approved one via `supersedes`. The old document
+     * stays approved + read-only as historical evidence.
+     */
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\JoinColumn(name: 'supersedes_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?self $supersedes = null;
+
     public function __construct()
     {
         $this->uploadedAt = new DateTimeImmutable();
@@ -204,5 +251,62 @@ class Document
     public function isPdf(): bool
     {
         return $this->mimeType === 'application/pdf';
+    }
+
+    public function getGeneratedFromTemplate(): ?PolicyTemplate
+    {
+        return $this->generatedFromTemplate;
+    }
+
+    public function setGeneratedFromTemplate(?PolicyTemplate $template): static
+    {
+        $this->generatedFromTemplate = $template;
+        return $this;
+    }
+
+    public function getGeneratedFromWizardRun(): ?WizardRun
+    {
+        return $this->generatedFromWizardRun;
+    }
+
+    public function setGeneratedFromWizardRun(?WizardRun $run): static
+    {
+        $this->generatedFromWizardRun = $run;
+        return $this;
+    }
+
+    /** @return array<string, mixed>|null */
+    public function getSubstitutionVariables(): ?array
+    {
+        return $this->substitutionVariables;
+    }
+
+    /** @param array<string, mixed>|null $variables */
+    public function setSubstitutionVariables(?array $variables): static
+    {
+        $this->substitutionVariables = $variables;
+        return $this;
+    }
+
+    public function isImmutable(): bool
+    {
+        return $this->isImmutable;
+    }
+
+    public function setIsImmutable(bool $isImmutable): static
+    {
+        $this->isImmutable = $isImmutable;
+        return $this;
+    }
+
+    public function getSupersedes(): ?self
+    {
+        return $this->supersedes;
+    }
+
+    public function setSupersedes(?self $supersedes): static
+    {
+        $this->supersedes = $supersedes;
+        return $this;
     }
 }
