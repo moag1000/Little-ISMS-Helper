@@ -1487,3 +1487,282 @@ Grobe Hochrechnung Sprints (1 Sprint ≈ 1 Woche Solo-Dev):
   braucht `isTransactional()=false`.
 - **Memory `feedback_release_workflow`** — Releases via release-please
   weekly. Plan-Features fließen via `feat(scope):` Commits in CHANGELOG.
+
+---
+
+# v4-Erweiterung: EU/DACH-Wettbewerbs-Scan (2026-05-09)
+
+Zweite Wettbewerbs-Runde mit Fokus auf EU/DACH-Open-Source-ISMS — Deming
+(BE), Mercator (BE), verinice/-veo (DE), open-datenschutzcenter (DE),
+Unicis (EE), NTT-DE Grundschutz++, anssi-nis2 (FR), nis2-sme-toolkit
+(IT), kopexa kspec (DE) u.a. Fundamental neue Themes ergänzen F1-F11.
+
+## Neue Feature-Inventory F12-F37
+
+### DACH-Killer (Top-Priorität neu — Markt-Differenziator)
+
+| # | Feature | Demand | Quelle | Fit |
+|---|---|---|---|---|
+| **F25** | **VVT-BfDI-Export** (Verfahrensverzeichnis im Behörden-Muster CSV+PDF) + LfDI-Bundesländer-Varianten | hoch | DACH-DSGVO-Tools | FIT |
+| **F26** | **EU-Behörden-Notification-Templates** (BSI/BfDI/NIS-2-Meldestelle/DSB-AT/EDÖB-CH/BaFin) — Pre-Filling aus Incident/Breach-Daten | hoch | NIS2-Toolkits, BSI-Portal-Aktivierung 2026-01 | FIT |
+| **F27** | **BSI-200-4-Übungs-Logbuch** (Übungs-Templates, Lessons-Learned, Übungsplan-Kalender) | mittel-hoch | BCM-Module-Tools | FIT |
+| **F28** | **TISAX-ISA-Self-Assessment-Workflow** (Q&A → Reifegrad → Gap-Plan) | mittel-hoch (Auto-Industrie DACH) | TISAX-Tools | FIT |
+| **F29** | **NIS-2-BSI-Portal-Datensatz** (Pflicht-Daten für BSI-Re-Registrierung jährlich, JSON-Export) | hoch | BSI Portal seit 2026-01 aktiv | FIT |
+| **F30** | **DORA-RoI-XBRL-Export** (Register-of-Information für ESAs) | hoch (FinSec) | DORA-Compliance-Tools | PARTIAL (Plan v3 deckt DORA-Basics, kein RoI-XBRL) |
+| **F36** | **EU-Behörden-Reporting-Hub** (Klammer-Modul über F25/F26/F29/F30) — zentrales Modul: pro Behörde Datenfelder-Mapping + Export-Format + Hilfetexte + jährlicher Update-Mechanismus | hoch | Synthese aus C1-C5 | FIT |
+
+### EU-DSGVO/Compliance-Spezial (P2)
+
+| # | Feature | Demand | Fit |
+|---|---|---|---|
+| **F13** | **TIA — Transfer Impact Assessment** (Drittland-DSGVO Art. 46 + Schrems-II) | mittel | FIT |
+| **F31** | **DPIA-National-Templates** (BfDI/CNIL/Garante/IMY u.a. nationale Varianten) | mittel | FIT (DPIA-Workflow exists) |
+| **F32** | **DPA-Generator** (Auftragsverarbeiter-Vertrag Art. 28 DSGVO) mit Vorlagen | mittel | FIT |
+| **F33** | **EU-AI-Act-Klassifizierungs-Modul** (Art. 6/9 — Hochrisiko-KI-Inventar) | mittel-rising | FIT (kompakt halten, kein Mega-Modul) |
+| **F34** | **CRA-SBOM-Inventar** (EU Cyber-Resilience-Act, Pflicht ab 2027) + Vuln-Mapping | mittel-rising | PARTIAL |
+| **F35** | **EUCS-Cloud-Audit-Workflow** (EU Cloud Cert Scheme — sobald final) | mittel-low | PARTIAL (Mappings da) |
+
+### Cross-Cutting Funktional (verteilt P2/P3)
+
+| # | Feature | Demand | Fit | Notiz |
+|---|---|---|---|---|
+| **F12** | **OSCAL-Profile-Roundtrip** (erweitert F5 — Profile-Generator + Blueprints) | mittel | FIT | F5+F12 kombinierbar |
+| **F14** | **Audit-Findings-Inline-Capture** (Findings direkt im Audit-Modul erfassen statt separater CRUD) | mittel | PARTIAL (Audit-Modul existiert) | UX-Verbesserung |
+| **F15** | **Nonconformity-Linking + Auto-Task-Creation** (NC ↔ Requirement, Owner-Tasks automatisch) | hoch (3 separate Issues quer durch Markt) | FIT | wichtiger als gedacht |
+| **F16** | **Risk ↔ Incident Bidirectional-Link** (Risiko zu konkretem Incident verknüpfen) | mittel | FIT | klein |
+| **F17** | **Procedures-Authoring-Modul** (Verfahrens-Editor neben Policies) | mittel | FIT | erweitert Document-Modul |
+| **F18** | **No-Code-Framework-Builder GUI** | mittel | PARTIAL ⚠️ | Wir haben CSV/YAML-Loader. Library-Custom-Editor mit GUI = Konzept-Anpassung möglich falls strikt sandboxed |
+| **F19** | **Filter-Aware Export** (gefilterte Listen-Views direkt exportieren) | mittel | FIT | klein, hohe UX-Wirkung |
+| **F20** | **Multi-Format-Document-Export** (MD/DOCX/PDF/HTML) | mittel | FIT | erweitert Report-Builder |
+| **F23** | **Supplier-Questionnaire-Distribution** (Fragebogen versenden, Supplier antwortet via Link) | mittel | PARTIAL (Suppliers existiert) | TPRM-Erweiterung |
+| **F24** | **EBIOS-RM-Methodik** (FR-Risiko-Methode neben ISO 27005) | mittel | FIT | Methode pluggable, FR-Markt-Erschluss |
+
+### KI / Modern-Tech (forward-looking P3)
+
+| # | Feature | Demand | Fit | Notiz |
+|---|---|---|---|---|
+| **F21** | **MCP-Server-Endpoint** für LLM-Compliance-Catalog-Queries | mittel-rising | FIT | sauber kapselbar, NTT-Grundschutz++ macht's auch |
+| **F22** | **Local-LLM-Binding für Alva-Hints** (Ollama/local-Server-Compute) | mittel | PARTIAL | passt zu Alva-Hint-Foundation, datensicher |
+
+### Quality-Hardening
+
+| # | Feature | Demand | Fit |
+|---|---|---|---|
+| **F37** | **One-Command-Setup** (`docker compose up` → fully working) — DX-Hardening | implizit hoch | FIT |
+
+### Notification-Erweiterungen (in F3 integriert, kein eigenes F)
+
+- Mention-Notifications (`@user` in Comments) → F3-Extension
+- Bulk-Mark-Read im In-App-Center → F3-Extension
+
+---
+
+## Konzept-Bruch-Liste erweitert (NICHT umsetzen)
+
+- ❌ **Cloud-Continuous-Monitoring** (AWS Sec-Hub / Azure / GCP Auto-Evidence-Pull)
+  — macht uns zur "Vanta-Klone-EU-Edition", erfordert Cloud-Account-Zugriff,
+  Enterprise-Sales-Modell. **GENERIC Cloud-Findings-Ingest via F6 API
+  reicht**, kein dedizierter Provider-Adapter.
+- ❌ **MDM/EDR-Integration** (FleetDM, Jamf) — gleicher Konzept-Bruch.
+- ❌ **Knowledge-Base RAG / interner Document-Search-LLM** als Mega-Modul —
+  lenkt von ISMS ab. Alva-Hint + F22 reicht.
+- ❌ **CRQ / FAIR-Monetisierung** — Daten-Qualität in KMU blockiert. Future-
+  Premium-Modul.
+- ❌ **GraphQL Subscriptions / Real-Time Live-Updates** — REST+Webhooks
+  reicht. Stack-Aufwand zu hoch.
+- ❌ **GxP / Pharma-Validation** (Annex 11, 21 CFR Part 11) — ganz anderer
+  Markt, weicht Tenant-Modell auf.
+- ❌ **EAM-Cartographie** (Netzwerk-Topology-Editor wie Mercator-Style) —
+  eigenes Tool. Asset-Dependency-Graph reicht.
+- ❌ **Form-Rules-Engine / Smartsheet-Live-Bridge** — Konzept-Bruch mit
+  Symfony-Form-Stack.
+
+---
+
+## DACH-Behörden-Integrations-Inventar (F26 / F36 Detail)
+
+Pro Behörde geplante Integration (Pre-Filling + Export, KEIN direktes
+Submission-API solange Behörden keine offenen APIs anbieten):
+
+| Behörde | Land | Modul | Format | Stand |
+|---|---|---|---|---|
+| **BSI Meldestelle** (NIS-2) | DE | Incident, NIS-2 | strukturiertes JSON / Print-PDF | Portal seit 2026-01-06 aktiv |
+| **BfDI Meldeportal** (Art. 33 DSGVO) | DE-Bund | DataBreach | Print-PDF + Browser-Bookmarklet zum Auto-Fill | Online-Formular, kein API |
+| **LfDI Bundesländer** (16 Stück: BY, BW, NRW, HE, ...) | DE-Länder | DataBreach | Templates pro Bundesland | Online-Formulare |
+| **DSB-AT** | AT | DataBreach | nationales Formular | analog BfDI |
+| **EDÖB-CH** | CH | DataBreach | DSG-Meldung | analog BfDI |
+| **BaFin MVP-Portal** (DORA Incident) | DE-FinSec | Incident, DORA | standardisierte Templates seit 2025 | strukturiert |
+| **ESAs** (EBA/EIOPA/ESMA) | EU-FinSec | DORA RoI | XBRL-Export | F30 |
+| **ANSSI / CERT-FR** | FR | Incident | wenn FR-Markt | analog |
+| **NCSC.ch** | CH | Incident | CH-CSIRT | analog |
+| **ENISA CSIRT-Network** | EU | Threat-Intel-Aufnahme | Feed-Subscriber, kein Reporting | low priority |
+
+---
+
+## Sequenzierung-Update (Plan v4 final)
+
+Insertions in bestehende Sequenz:
+
+| Sprint | Bestehend (v2) | Neu hinzu (v4) |
+|---|---|---|
+| 0 | CC1-CC4 | + Translation-Domains: `eu_authorities`, `tia`, `tisax_isa`, `ai_act` |
+| 1 | F1 W1 + F2 W1 | unverändert |
+| 2 | F1 W2 + F2 W2 | unverändert |
+| 3 | F4 + F11 | + **F19 Filter-Aware Export** (klein, parallelisierbar) |
+| 4 | F3 W1 | + **F15 NC-Linking + Auto-Task-Creation** (parallelisierbar) |
+| 5 | F3 W2 + F5b | + **F16 Risk-Incident-Link** (klein) |
+| 6 | F10 | + **F25 VVT-BfDI-Export** (DACH-Killer Sprint-1-Demo) |
+| 7 | F5+F7+F6+F8+F9 | + **F26 EU-Behörden-Templates** (DACH-Killer Wave 1) |
+| 8 | — | **F36 EU-Behörden-Reporting-Hub** (Klammer-Modul) + **F29 NIS-2-BSI-Portal-Datensatz** |
+| 9 | — | **F30 DORA-RoI-XBRL-Export** + **F27 BSI-200-4-Übung** + **F28 TISAX-ISA** |
+| 10 | — | **F13 TIA** + **F31 DPIA-National** + **F32 DPA-Generator** |
+| 11+ | — | **F12 OSCAL-Roundtrip** + **F33 EU-AI-Act** + **F34 CRA-SBOM** + **F14 Audit-Findings-Inline** + **F17 Procedures** + **F20 Multi-Format-Doc-Export** + **F23 Supplier-Questionnaire** |
+| 12+ | — | **F21 MCP-Server** + **F22 Local-LLM** + **F24 EBIOS-RM** + **F18 Framework-Builder-GUI** + **F37 One-Command-Setup** + **F35 EUCS** |
+
+**Aufwand-Update Total:** ~17-19 Sprints (v3) + ~12-15 weitere Sprints für
+F12-F37 = **~30-35 Sprints Solo-Dev** (~7-9 Monate). Mit
+Subagent-Driven-Dev parallelisiert: **~5-6 Monate Wall-Time**.
+
+---
+
+## DACH-Killer Integration-Skizze (F25/F26/F29/F30/F36)
+
+### F25 VVT-BfDI-Export
+
+- **Bestehend:** `ProcessingActivity` Entity (VVT) ✓
+- **Neu:** `src/Service/Export/VvtBfdiExporter.php` — JSON+CSV+PDF im
+  BfDI-Muster (https://bfdi.bund.de/...)
+- **Templates:** `templates/processing_activity/_export_vvt_bfdi.html.twig`
+- **Translation:** `eu_authorities.{de,en}.yaml` (NEU)
+- **Test:** `tests/Service/Export/VvtBfdiExporterTest.php` mit Sample-VVT
+- **Variants:** pro LfDI (16 Bundesländer-DSB) als Sub-Template
+
+### F26 EU-Behörden-Notification-Templates
+
+- **Bestehend:** `DataBreach` + `Incident` Entities ✓
+- **Neu:** `src/Entity/AuthorityTemplate.php` — pro Behörde Datenfeld-Mapping
+- **Service:** `src/Service/Authority/AuthorityNotificationGenerator.php`
+- **Pre-Filling:** auto-mapped Incident/Breach-Felder → Behörden-Form-Felder
+- **Output:** Print-ready PDF + Strukturierter JSON-Export für Submission
+- **Translation:** `eu_authorities.{de,en}.yaml`
+- **Templates:** `templates/data_breach/_authority_export/{bsi,bfdi,lfdi_bw,...}.html.twig`
+
+### F29 NIS-2-BSI-Portal-Datensatz
+
+- **Bestehend:** Tenant-Daten + Incident-Liste ✓
+- **Neu:** `src/Entity/Nis2RegistrationProfile.php` — BSI-Portal-Pflicht-Felder
+- **Service:** `src/Service/Authority/Nis2BsiRegistrationService.php`
+- **Cron:** jährliches Re-Registration-Reminder via `app:process-timed-workflows`
+- **Audit-Event:** `nis2.registration.exported` + `nis2.registration.updated`
+
+### F30 DORA-RoI-XBRL-Export
+
+- **Bestehend:** Supplier (DORA-Drittdienstleister-Register) + Asset
+  (ICT-Inventar) ✓
+- **Neu:** `src/Service/Authority/DoraRoiXbrlExporter.php`
+- **Dependency:** XBRL-PHP-Library (z.B. `mongodb/php-xbrl` oder
+  PHP-XBRL-Generator)
+- **Validation:** XBRL-Schema-Validation gegen ESA-Taxonomy
+- **Audit:** Submission-Hash + Submitter-User in HMAC-Chain
+
+### F36 EU-Behörden-Reporting-Hub (Klammer)
+
+- **Neu:** `src/Controller/Authority/AuthorityHubController.php`
+  - Liste aller relevanten Behörden für aktuellen Tenant
+  - "Ist Reporting fällig?" Status pro Behörde
+  - Direkter Link zu jeweiligem Export
+- **Templates:** `templates/authority/{index,show}.html.twig`
+- **Aurora:** `_fa_feature_card` pro Behörde, `_fa_filter_chip` für
+  Land-Filter, `_fa_entity_card` für Pending-Reports
+- **Module-Gate:** `eu_authority_reporting` (NEU)
+- **Navigation:** Compliance-Section "EU Authorities" Eintrag
+
+---
+
+## Translation-Domain Updates (v4)
+
+NEU anzulegen:
+- `eu_authorities.{de,en}.yaml` — F25/F26/F29/F30/F36 (Behörden-Namen, Felder-Bezeichnungen, Hilfetexte)
+- `tia.{de,en}.yaml` — F13 TIA (Transfer Impact Assessment)
+- `tisax_isa.{de,en}.yaml` — F28 TISAX-Self-Assessment
+- `ai_act.{de,en}.yaml` — F33 EU-AI-Act-Klassifizierung
+- `cra_sbom.{de,en}.yaml` — F34 CRA-SBOM
+- `bsi_200_4_exercise.{de,en}.yaml` — F27 BSI-Übungs-Logbuch
+- `dpa_template.{de,en}.yaml` — F32 DPA-Generator
+- `procedures.{de,en}.yaml` — F17 Procedures-Authoring
+- `mcp_server.{de,en}.yaml` — F21 MCP-Server (mostly english)
+- `ebios_rm.{de,en,fr}.yaml` — F24 EBIOS-RM (FR-Markt + DACH-Übersetzung)
+
+Total Translation-Domains nach v4: **~100 Domains × 2 Sprachen** (FR/IT/ES/NL/PT-BR
+in F9 separat).
+
+---
+
+## Module-Keys Updates (v4)
+
+In `config/modules.yaml` zu ergänzen:
+
+| Key | Feature | Notiz |
+|---|---|---|
+| `notifications` | F3 | bereits in v3 identifiziert |
+| `eu_authority_reporting` | F25/F26/F29/F30/F36 | DACH-Killer-Modul |
+| `tisax_isa` | F28 | TISAX-Industrie-Vertical |
+| `ai_act` | F33 | EU-KI-Verordnung |
+| `cra_sbom` | F34 | EU-CRA-Vertical |
+| `eucs` | F35 | falls Standard final |
+| `mcp_server` | F21 | technisch optional |
+| `ebios_rm` | F24 | FR-Methodik |
+| `procedures` | F17 | erweitert documents |
+
+Total Module-Keys nach v4: **~28** (statt 20 nach T31).
+
+---
+
+## Empfehlung Roadmap-Cluster
+
+**Cluster 1 (sofort, laut Plan v3 unverändert):** F1+F2+F4+F11+F3+F5b+F10
+— bleibt P1+P2.
+
+**Cluster 2 (DACH-Killer, neu eingeschoben Sprint 6-9):** F19+F15+F16+F25+F26+
+F36+F29+F30+F27+F28. Diese Reihenfolge optimiert Markt-Reife: zuerst kleine
+UX-Wins (F19+F15+F16), dann DACH-Differenziatoren.
+
+**Cluster 3 (EU-Compliance-Vertikalen, Sprint 10-11):** F13+F31+F32+F33+F34+F35.
+
+**Cluster 4 (Forward-Looking, Sprint 12+):** F21+F22+F24+F18+F37+F12+F14+F17+
+F20+F23+F5+F6+F7+F8+F9.
+
+---
+
+## Open-Source-Projekt-Inventar (für laufende Marktbeobachtung)
+
+DACH-fokussierte aktive OSS-ISMS-Tools zum Watching:
+
+| Repo | Stars | Beobachtungs-Anlass |
+|---|---|---|
+| `dbarzin/deming` | 349 | nahester EU-Konzeptverwandter, Laravel-Stack |
+| `dbarzin/mercator` | 522 | EAM-Cartographie-Vorbild |
+| `H2-invent/open-datenschutzcenter` | 48 | DE-DSGVO-Symfony-Konkurrent — direktes Benchmark-Ziel |
+| `UnicisTech/unicis-platform-ce` | 77 | EU-GRC-Vanta-Alternative |
+| `NTT-Data-Deutschland-SE/Grundschutz-Plus-Plus-Tools` | 7 | offizielles NTT-DE BSI-Tool, OSCAL-Blueprints |
+| `kopexa-grc/kspec` | 52 | Policy-as-Code DE |
+| `betagouv/anssi-nis2` | 24 | FR-Behörden-NIS2-Helper |
+| `LetzCodeLuxembourg/k8s-eu-audit` | 11 | NIS2/DORA-K8s-Auditor LU |
+
+Empfehlung: **monatlicher GitHub-Issue-Scan** dieser Repos via Subagent
+für proaktives Feature-Tracking.
+
+---
+
+## v4-Specialist-Reviews ausstehend
+
+Plan-v4-Erweiterung wurde NICHT durch Spezialisten-Loop validiert (wäre
+30+ neue Features × 3 Reviewer = Overkill). Bei Sprint-Planung **pro
+Cluster** Review:
+
+- DACH-Killer-Cluster vor Sprint 6: Compliance-Manager + DPO-Specialist
+  + ISMS-Specialist
+- EU-Compliance-Vertikalen vor Sprint 10: DPO + ISMS + (EU-AI-Act-spezifisch:
+  Risk-Mgmt-Specialist)
+- Forward-Looking-Cluster vor Sprint 12: UX + Pentester (für MCP-Server-
+  Sicherheit) + ISMS
