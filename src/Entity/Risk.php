@@ -1337,6 +1337,73 @@ class Risk
     #[Groups(['risk:read', 'risk:write'])]
     private bool $lessonsLearnedDocumented = false;
 
+    // ── FAIR Quantitative Risk fields (gated: quantitative_risk module) ───
+
+    /** FAIR Loss Event Frequency — minimum (annualised). */
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $lossEventFrequencyMin = null;
+
+    /** FAIR Loss Event Frequency — maximum (annualised). */
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $lossEventFrequencyMax = null;
+
+    /** FAIR Loss Event Frequency — most likely (mode). */
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $lossEventFrequencyMode = null;
+
+    /** FAIR Threat Event Frequency — minimum (annualised). */
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $threatEventFrequencyMin = null;
+
+    /** FAIR Threat Event Frequency — maximum (annualised). */
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $threatEventFrequencyMax = null;
+
+    /** FAIR Threat Event Frequency — most likely (mode). */
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 4, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $threatEventFrequencyMode = null;
+
+    /** FAIR Vulnerability probability (0.0000–1.0000): how likely a threat event leads to loss. */
+    #[ORM\Column(type: 'decimal', precision: 5, scale: 4, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $vulnerabilityProbability = null;
+
+    /** FAIR Primary Loss Magnitude — minimum (€). */
+    #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $primaryLossMagnitudeMin = null;
+
+    /** FAIR Primary Loss Magnitude — maximum (€). */
+    #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $primaryLossMagnitudeMax = null;
+
+    /** FAIR Primary Loss Magnitude — most likely (mode, €). */
+    #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $primaryLossMagnitudeMode = null;
+
+    /** FAIR Secondary Loss Magnitude — minimum (€, includes reputation/fines). */
+    #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $secondaryLossMagnitudeMin = null;
+
+    /** FAIR Secondary Loss Magnitude — maximum (€). */
+    #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $secondaryLossMagnitudeMax = null;
+
+    /** FAIR Secondary Loss Magnitude — most likely (mode, €). */
+    #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?string $secondaryLossMagnitudeMode = null;
+
     public function getIctRiskCategory(): ?string
     {
         return $this->ictRiskCategory;
@@ -1462,6 +1529,151 @@ class Risk
     public function setLessonsLearnedDocumented(bool $lessonsLearnedDocumented): static
     {
         $this->lessonsLearnedDocumented = $lessonsLearnedDocumented;
+        return $this;
+    }
+
+    // ── FAIR getters / setters ─────────────────────────────────────────────
+
+    public function getLossEventFrequencyMin(): ?string
+    {
+        return $this->lossEventFrequencyMin;
+    }
+
+    public function setLossEventFrequencyMin(?string $lossEventFrequencyMin): static
+    {
+        $this->lossEventFrequencyMin = $lossEventFrequencyMin;
+        return $this;
+    }
+
+    public function getLossEventFrequencyMax(): ?string
+    {
+        return $this->lossEventFrequencyMax;
+    }
+
+    public function setLossEventFrequencyMax(?string $lossEventFrequencyMax): static
+    {
+        $this->lossEventFrequencyMax = $lossEventFrequencyMax;
+        return $this;
+    }
+
+    public function getLossEventFrequencyMode(): ?string
+    {
+        return $this->lossEventFrequencyMode;
+    }
+
+    public function setLossEventFrequencyMode(?string $lossEventFrequencyMode): static
+    {
+        $this->lossEventFrequencyMode = $lossEventFrequencyMode;
+        return $this;
+    }
+
+    public function getThreatEventFrequencyMin(): ?string
+    {
+        return $this->threatEventFrequencyMin;
+    }
+
+    public function setThreatEventFrequencyMin(?string $threatEventFrequencyMin): static
+    {
+        $this->threatEventFrequencyMin = $threatEventFrequencyMin;
+        return $this;
+    }
+
+    public function getThreatEventFrequencyMax(): ?string
+    {
+        return $this->threatEventFrequencyMax;
+    }
+
+    public function setThreatEventFrequencyMax(?string $threatEventFrequencyMax): static
+    {
+        $this->threatEventFrequencyMax = $threatEventFrequencyMax;
+        return $this;
+    }
+
+    public function getThreatEventFrequencyMode(): ?string
+    {
+        return $this->threatEventFrequencyMode;
+    }
+
+    public function setThreatEventFrequencyMode(?string $threatEventFrequencyMode): static
+    {
+        $this->threatEventFrequencyMode = $threatEventFrequencyMode;
+        return $this;
+    }
+
+    public function getVulnerabilityProbability(): ?string
+    {
+        return $this->vulnerabilityProbability;
+    }
+
+    public function setVulnerabilityProbability(?string $vulnerabilityProbability): static
+    {
+        $this->vulnerabilityProbability = $vulnerabilityProbability;
+        return $this;
+    }
+
+    public function getPrimaryLossMagnitudeMin(): ?string
+    {
+        return $this->primaryLossMagnitudeMin;
+    }
+
+    public function setPrimaryLossMagnitudeMin(?string $primaryLossMagnitudeMin): static
+    {
+        $this->primaryLossMagnitudeMin = $primaryLossMagnitudeMin;
+        return $this;
+    }
+
+    public function getPrimaryLossMagnitudeMax(): ?string
+    {
+        return $this->primaryLossMagnitudeMax;
+    }
+
+    public function setPrimaryLossMagnitudeMax(?string $primaryLossMagnitudeMax): static
+    {
+        $this->primaryLossMagnitudeMax = $primaryLossMagnitudeMax;
+        return $this;
+    }
+
+    public function getPrimaryLossMagnitudeMode(): ?string
+    {
+        return $this->primaryLossMagnitudeMode;
+    }
+
+    public function setPrimaryLossMagnitudeMode(?string $primaryLossMagnitudeMode): static
+    {
+        $this->primaryLossMagnitudeMode = $primaryLossMagnitudeMode;
+        return $this;
+    }
+
+    public function getSecondaryLossMagnitudeMin(): ?string
+    {
+        return $this->secondaryLossMagnitudeMin;
+    }
+
+    public function setSecondaryLossMagnitudeMin(?string $secondaryLossMagnitudeMin): static
+    {
+        $this->secondaryLossMagnitudeMin = $secondaryLossMagnitudeMin;
+        return $this;
+    }
+
+    public function getSecondaryLossMagnitudeMax(): ?string
+    {
+        return $this->secondaryLossMagnitudeMax;
+    }
+
+    public function setSecondaryLossMagnitudeMax(?string $secondaryLossMagnitudeMax): static
+    {
+        $this->secondaryLossMagnitudeMax = $secondaryLossMagnitudeMax;
+        return $this;
+    }
+
+    public function getSecondaryLossMagnitudeMode(): ?string
+    {
+        return $this->secondaryLossMagnitudeMode;
+    }
+
+    public function setSecondaryLossMagnitudeMode(?string $secondaryLossMagnitudeMode): static
+    {
+        $this->secondaryLossMagnitudeMode = $secondaryLossMagnitudeMode;
         return $this;
     }
 

@@ -8,8 +8,12 @@ use App\Entity\Asset;
 use App\Entity\Person;
 use App\Entity\ThreatIntelligence;
 use App\Entity\User;
+use App\Form\DataTransformer\JsonArrayTransformer;
+use App\Form\Trait\ModuleAwareFormTrait;
+use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -29,6 +33,13 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  */
 class ThreatIntelligenceType extends AbstractType
 {
+    use ModuleAwareFormTrait;
+
+    public function __construct(
+        private readonly ModuleConfigurationService $moduleConfiguration,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -200,6 +211,79 @@ class ThreatIntelligenceType extends AbstractType
                 'help' => 'help.assigned_deputy_persons',
             ])
         ;
+
+        // ── vulnerability_intel module: TLP / MITRE / IOCs / Confidence ───────
+        if ($this->isModuleActive('vulnerability_intel')) {
+            $builder
+                ->add('tlpClassification', ChoiceType::class, [
+                    'label' => 'threat_intelligence.field.tlp_classification',
+                    'required' => false,
+                    'placeholder' => 'threat_intelligence.placeholder.tlp_classification',
+                    'choices' => [
+                        'threat_intelligence.tlp.red' => 'red',
+                        'threat_intelligence.tlp.amber' => 'amber',
+                        'threat_intelligence.tlp.green' => 'green',
+                        'threat_intelligence.tlp.white' => 'white',
+                    ],
+                    'help' => 'threat_intelligence.help.tlp_classification',
+                    'attr' => ['class' => 'form-select'],
+                ])
+                ->add('threatActorAttribution', TextType::class, [
+                    'label' => 'threat_intelligence.field.threat_actor_attribution',
+                    'required' => false,
+                    'attr' => [
+                        'maxlength' => 255,
+                        'placeholder' => 'threat_intelligence.placeholder.threat_actor_attribution',
+                    ],
+                    'help' => 'threat_intelligence.help.threat_actor_attribution',
+                ])
+                ->add('mitreAttackTactics', TextareaType::class, [
+                    'label' => 'threat_intelligence.field.mitre_attack_tactics',
+                    'required' => false,
+                    'attr' => [
+                        'rows' => 2,
+                        'placeholder' => 'threat_intelligence.placeholder.mitre_attack_tactics',
+                    ],
+                    'help' => 'threat_intelligence.help.mitre_attack_tactics',
+                ])
+                ->add('mitreAttackTechniques', TextareaType::class, [
+                    'label' => 'threat_intelligence.field.mitre_attack_techniques',
+                    'required' => false,
+                    'attr' => [
+                        'rows' => 2,
+                        'placeholder' => 'threat_intelligence.placeholder.mitre_attack_techniques',
+                    ],
+                    'help' => 'threat_intelligence.help.mitre_attack_techniques',
+                ])
+                ->add('iocsList', TextareaType::class, [
+                    'label' => 'threat_intelligence.field.iocs_list',
+                    'required' => false,
+                    'attr' => ['rows' => 5],
+                    'help' => 'threat_intelligence.help.iocs_list_json',
+                ])
+                ->add('confidenceLevel', ChoiceType::class, [
+                    'label' => 'threat_intelligence.field.confidence_level',
+                    'required' => false,
+                    'placeholder' => 'threat_intelligence.placeholder.confidence_level',
+                    'choices' => [
+                        'threat_intelligence.confidence.low' => 'low',
+                        'threat_intelligence.confidence.medium' => 'medium',
+                        'threat_intelligence.confidence.high' => 'high',
+                    ],
+                    'attr' => ['class' => 'form-select'],
+                ])
+                ->add('sharedExternally', CheckboxType::class, [
+                    'label' => 'threat_intelligence.field.shared_externally',
+                    'required' => false,
+                    'help' => 'threat_intelligence.help.shared_externally',
+                ])
+            ;
+
+            // JSON array transformers for MITRE / IOC fields
+            foreach (['mitreAttackTactics', 'mitreAttackTechniques', 'iocsList'] as $jsonField) {
+                $builder->get($jsonField)->addModelTransformer(new JsonArrayTransformer());
+            }
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
