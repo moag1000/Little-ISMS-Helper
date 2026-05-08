@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Crisis Team Entity for BSI IT-Grundschutz 200-4 Compliance (Kapitel 4.3)
@@ -134,6 +135,7 @@ class CrisisTeam
      * Virtual meeting URL (e.g., Teams, Zoom)
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Url(requireTld: false)]
     private ?string $virtualMeetingUrl = null;
 
     /**
