@@ -183,6 +183,39 @@ class SchemaExceptionSubscriberTest extends TestCase
     }
 
     #[Test]
+    public function autoFixesAdditiveDriftEvenOnQuickFixPath(): void
+    {
+        $maintenance = $this->createMock(SchemaMaintenanceService::class);
+        $maintenance->method('getMaintenanceStatus')->willReturn([
+            'migration_status' => ['pending' => 0, 'names' => []],
+            'schema_drift' => [
+                'count' => 1,
+                'statements' => ['ALTER TABLE users ADD competencies JSON DEFAULT NULL'],
+                'destructive' => [],
+            ],
+        ]);
+        $maintenance->expects($this->once())
+            ->method('reconcileSchema')
+            ->with('auto-fix-on-error')
+            ->willReturn(['success' => true, 'executed' => 1, 'error' => null, 'blocked' => null]);
+        $subscriber = new SchemaExceptionSubscriber($this->guard, $this->urlGenerator, $maintenance);
+
+        $this->guard->method('fallbackUiEnabled')->willReturn(true);
+
+        $event = $this->makeEvent('/quick-fix', new TableNotFoundException(
+            $this->driverException("Unknown column 't0.competencies' in 'SELECT'"),
+            null,
+        ));
+
+        $subscriber->onKernelException($event);
+
+        $response = $event->getResponse();
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertStringEndsWith('_schema_autofixed=1', $response->getTargetUrl());
+        $this->assertStringContainsString('/quick-fix', $response->getTargetUrl());
+    }
+
+    #[Test]
     public function autoFixesAdditiveDriftAndRetriesRequest(): void
     {
         $maintenance = $this->createMock(SchemaMaintenanceService::class);

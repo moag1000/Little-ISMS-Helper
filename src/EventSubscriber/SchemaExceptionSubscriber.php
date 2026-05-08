@@ -92,7 +92,7 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
         // doesn't loop.
         $alreadyTried = $request->query->getBoolean('_schema_autofixed');
         $additiveOnly = $destructive === [];
-        if ($additiveOnly && !$alreadyTried && !str_starts_with($path, '/quick-fix')) {
+        if ($additiveOnly && !$alreadyTried) {
             try {
                 $result = $this->maintenance->reconcileSchema('auto-fix-on-error');
                 if (($result['success'] ?? false) && (int) ($result['executed'] ?? 0) > 0) {
@@ -106,7 +106,10 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
             }
         }
 
-        // Avoid recursion if Quick-Fix itself blew up — bubble the exception.
+        // Auto-fix exhausted (destructive drift, already retried, or reconcile
+        // failed). Bubble the exception when we're already on /quick-fix so
+        // Symfony renders the standard error page instead of redirecting in
+        // a loop. Otherwise hand off to the Quick-Fix UI for manual review.
         if (str_starts_with($path, '/quick-fix')) {
             return;
         }
