@@ -8,7 +8,7 @@ The Workflow Auto-Progression System enables **event-driven workflows** where wo
 
 **Key Principle**: Instead of users having to explicitly approve workflow steps, completing relevant fields in entities (like DataBreach, Incident, Risk) automatically advances the workflow.
 
-![Workflows-Inbox](sichtwechsel/img/risk-owner-business/my-workflows.png)
+![Workflows-Inbox](sichtwechsel/img/risk-owner-business/workflows-inbox.png)
 
 ## Architecture
 

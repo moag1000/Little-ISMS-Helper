@@ -10,81 +10,57 @@
 
 ---
 
-## Dashboard
+## Workflows-Inbox
 
-Eigene KPIs gefiltert auf Bereich. Offene Tasks, eigene Top-Risiken, anstehende Freigaben.
+"Das musst DU jetzt tun." Mit Frist, Direktlink, Business-Kontext. Workflow-System löst Approvals event-driven aus (siehe [Workflow-Auto-Progression](../WORKFLOW_AUTO_PROGRESSION.md)).
 
-![Risk-Owner-Dashboard](img/risk-owner-business/dashboard.png)
+![Workflows-Inbox](img/risk-owner-business/workflows-inbox.png)
 
 > *"Ich hab 5 Minuten — was muss ich wissen?"*
-
-Kein Klausel-Wortlaut. Kein Field-Level-Detail. Eine Aufgabe, eine Entscheidung pro Karte.
-
----
-
-## Aufgaben-Inbox
-
-"Das musst DU jetzt tun." Mit Frist, Direktlink, Business-Kontext.
-
-![Workflows-Inbox](img/risk-owner-business/my-workflows.png)
-
-Workflow-System löst Approvals event-driven aus — sobald die ISB die Daten ausgefüllt hat, landet die Risk-Owner-Freigabe automatisch hier (siehe [Workflow-Auto-Progression](../WORKFLOW_AUTO_PROGRESSION.md)).
-
----
-
-## Eigene Risiken
-
-Filterbar auf "meine Risiken" — Risiken im eigenen Geschäftsbereich, ich als Risk-Owner zugewiesen.
-
-![Eigene Risiken](img/risk-owner-business/my-risks.png)
-
-> *"Was passiert wenn ich 'ablehne'? Mein ISB kümmert sich drum, warum bin ich hier?"*
-
-Detail-View pro Risiko: Was bedeutet das für den Geschäftsprozess? Welcher Schaden in € pro Tag bei Ausfall? Welche Optionen — akzeptieren / behandeln / eskalieren?
 
 ---
 
 ## Geschäftsprozesse
 
-Eigener Bereich aus Prozess-Sicht statt aus Asset/Control-Sicht.
+Eigener Bereich aus Prozess-Sicht statt aus Asset/Control-Sicht. BIA mit RTO, RPO, kritische Abhängigkeiten — in Stunden und €, nicht in CIA-Triade-Buchstaben.
 
 ![Geschäftsprozesse](img/risk-owner-business/business-processes.png)
-
-BIA (Business Impact Analysis) zugeordnet: RTO, RPO, kritische Abhängigkeiten — in Stunden und €, nicht in CIA-Triade-Buchstaben.
 
 ---
 
 ## BCM-Übersicht
 
-BC-Pläne, BC-Übungen, Krisenteam — falls der Risk-Owner als Crisis-Leader nominiert ist.
+BC-Pläne, BC-Übungen, Krisenteam — falls der Risk-Owner als Crisis-Leader nominiert ist. Eigener Notfallplan abrufbar mit einem Klick.
 
 ![BCM-Übersicht](img/risk-owner-business/bcm-overview.png)
 
-Eigener Notfallplan abrufbar mit einem Klick. Wenn ich Bereitschaft habe und um 3 Uhr morgens das Telefon klingelt — der Plan ist hier.
+---
+
+## Einwilligungen (Consent)
+
+DSGVO Art. 7 Einwilligungs-Tracking — relevant für Marketing-Bereiche, HR, Vertrieb mit personenbezogenen Verarbeitungen.
+
+![Consent-Liste](img/risk-owner-business/consent-list.png)
 
 ---
 
-## Risikobehandlungsplan
+## Querverweise
 
-Was ist mit den Risiken aus meinem Bereich entschieden worden? Welche Massnahmen laufen, wer verantwortet, bis wann?
-
-![Risikobehandlungsplan](img/risk-owner-business/risk-treatment-plan.png)
-
-Verfolgung als Risk-Owner: keine paralleles Excel mit Fristen, sondern direkt im Tool mit Ampel-Status und Owner.
+- **Eigene Risiken** (Filter "meine"): [Risikoregister in ISB-Sicht](isb-practitioner.md#risikoregister)
+- **Risikobehandlungsplan-Status**: [Risikobehandlungsplan in ISB-Sicht](isb-practitioner.md#risikobehandlungsplan)
+- **Datenschutz-Anfragen** (DSAR): [Auditor-Sicht](auditor-external.md) (DPIA-Liste)
 
 ---
 
-## Was der Risk-Owner hier nicht findet (und vermisst)
+## Was der Risk-Owner vermisst
 
-Aus der [Persona-Definition](../../.claude/skills/persona-risk-owner-business/SKILL.md):
+Aus der [Persona-Definition](../../.claude/skills/persona-risk-owner-business/):
 
-- **Mobile-First-Bedienung** — heute Desktop-optimiert; Tablet-Sicht OK, Smartphone-Approval-Flow noch nicht.
-- **E-Mail-Direkt-Approval** — Ein-Klick-Akzeptanz aus dem Inbox-Mail (signed token).
-- **Business-Sprache pro Risiko** durchgängig — heute teils noch CIA-Triade-Wording in Risiko-Details.
-- **One-Pager-Audit-Spur** ("Was hab ich freigegeben in den letzten 12 Monaten?") für persönliche Haftungsdoku.
-
-→ Roadmap-Items aus Risk-Owner-Sicht.
+- **Mobile-First-Bedienung** — heute Desktop-optimiert, Tablet OK, Smartphone-Approval-Flow noch nicht
+- **E-Mail-Direkt-Approval** — Ein-Klick-Akzeptanz aus dem Inbox-Mail (signed token)
+- **Business-Sprache pro Risiko** durchgängig — heute teils noch CIA-Triade-Wording im Detail
+- **One-Pager-Audit-Spur** ("Was hab ich freigegeben in den letzten 12 Monaten?") für persönliche Haftungsdoku
 
 ---
 
-[← Junior-Implementer](implementer-junior.md) · [Übersicht](README.md) · [Nächste Persona: Externer Auditor →](auditor-external.md)
+[← Junior-Implementer](implementer-junior.md) · [Übersicht](README.md) · [Nächste: Externer Auditor →](auditor-external.md)

@@ -104,6 +104,25 @@ async function captureOne(browser, persona, theme, screen, viewport) {
                 .sf-display-none { display: none !important; }
             `,
         }).catch(() => {});
+        // Redact local-environment leaks before screenshot:
+        //   - DB-username / -host fields in the deployment wizard show whatever
+        //     was parsed from .env.local (typical: developer's mac username).
+        //   - Override common sensitive inputs with neutral placeholders.
+        await page.evaluate(() => {
+            const REDACT = [
+                ['input[name*="[user]"], input[name="setup_db_user"], input[name="DATABASE_USER"]', 'isms_user'],
+                ['input[name*="[host]"], input[name="setup_db_host"], input[name="DATABASE_HOST"]', '127.0.0.1'],
+                ['input[name*="[password]"], input[name="setup_db_password"]', ''],
+                ['input[name*="[database]"], input[name="setup_db_name"]', 'little_isms_helper'],
+            ];
+            for (const [sel, val] of REDACT) {
+                document.querySelectorAll(sel).forEach((el) => {
+                    if (!el || el.type === 'hidden') return;
+                    el.value = val;
+                    el.setAttribute('value', val);
+                });
+            }
+        }).catch(() => {});
         await page.screenshot({
             path: outFile,
             fullPage: screen.full_page !== false,

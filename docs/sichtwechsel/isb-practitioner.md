@@ -10,81 +10,85 @@
 
 ---
 
-## Erster Anlauf: Dashboard
+## Hauptdashboard
 
-Die ISB landet nach Login auf dem **Hauptdashboard**. Erwartung: "Was muss ich heute anschauen?" — überfällige Reviews, offene Maßnahmen, Risikoakzeptanzen ohne Ablaufdatum, Audit-Findings-Status.
+Die ISB landet hier nach Login. Erwartung: "Was muss ich heute anschauen?" — überfällige Reviews, offene Maßnahmen, Risikoakzeptanzen, Audit-Findings.
 
 ![ISB-Dashboard](img/isb-practitioner/dashboard.png)
 
-> *"KPIs offen-überfällig direkt sichtbar. Drilldown auf Top-Risiken. Wenn das Audit-Log auch oben ist, bin ich froh."*
+> *"KPIs offen-überfällig direkt sichtbar. Drilldown auf Top-Risiken."*
 
 ---
 
 ## SoA — Statement of Applicability
 
-Das Herzstück für die ISB. 93 ISO-27001-Annex-A-Controls, anwendbar/nicht-anwendbar, Begründung, Mapping zu Risiken und Nachweisen.
+Das Herzstück. 93 ISO-27001-Annex-A-Controls mit Anwendbarkeit, Begründung, Mapping zu Risiken und Nachweisen. Freeze für Stichtag-Audit unter [Auditor → Audit-Freeze](auditor-external.md#audit-freeze).
 
-![Statement of Applicability](img/isb-practitioner/soa.png)
+![SoA](img/isb-practitioner/soa.png)
 
-> *"Wo sehe ich die letzte Wirksamkeitsprüfung zu A.8.16? Kann ich den SoA-Stand zum Audit-Stichtag einfrieren?"*
-
-Der Freeze-Mechanismus liegt unter `Audits → Audit-Freeze` und erlaubt einen Point-in-Time-Snapshot inklusive PDF-Export — Stichtags-belastbar für externe Audits.
+> *"Wo sehe ich die letzte Wirksamkeitsprüfung zu A.8.16?"*
 
 ---
 
 ## Risikoregister
 
-Liste mit Treatment-Status, Restrisiko, Owner und Behandlungsplänen. Filterbar nach Schutzziel, Asset, Bereich.
+Filterbar, exportierbar. Treatment-Status, Restrisiko, Owner, Behandlungsplan-Verlinkung.
 
 ![Risikoregister](img/isb-practitioner/risk-register.png)
 
-Verknüpfung Risiko↔Asset↔Control↔Nachweis ist die operative Pflicht der ISB. Jedes Risiko zeigt im Detail Bedrohung, Schwachstelle, getroffene und geplante Maßnahmen.
+---
+
+## Risikobehandlungsplan
+
+Maßnahmen-Tracking pro Risiko. Owner, Frist, Status, Wirksamkeitstest.
+
+![Risikobehandlungsplan](img/isb-practitioner/risk-treatment-plan.png)
 
 ---
 
-## Audit-Log
+## Asset-Register
 
-Manipulationssicher, gefiltert nach Wer/Wann/Was. Pflicht für ISO 27001 Klausel 9.1 (Überwachung) und 7.5 (dokumentierte Information).
+Schutzobjekte mit CIA-Werten, Schutzbedarf, Abhängigkeiten. Verknüpfung zu Risiken und Controls.
 
-![Audit-Log](img/isb-practitioner/audit-log.png)
+![Asset-Register](img/isb-practitioner/assets.png)
 
-> *"Ist das Audit-Log manipulationssicher? Wer hat das freigegeben und wann?"*
+---
 
-Statistik-Sub-View aggregiert Aktivität nach User/Entity/Aktion — Datenpunkt für Management-Review.
+## Control-Effektivität
+
+Wirksamkeitsmessung pro Control über Zeit. ISO-27001-Klausel 9.1.
+
+![Control-Effektivität](img/isb-practitioner/control-effectiveness.png)
+
+> *"Wie messen Sie die Wirksamkeit dieses Controls?"* — Antwort hier, mit Trend.
 
 ---
 
 ## Management-Review
 
-Eingangs-/Ausgangsgrößen strukturiert nach ISO-27001-Klausel 9.3.
+Eingangs- und Ausgangsgrößen strukturiert nach Klausel 9.3.
 
 ![Management-Review](img/isb-practitioner/management-review.png)
 
-Vorbereitung des regelmäßigen Reviews mit Vorstand: Performance-Indikatoren, Audit-Ergebnisse, Risikoänderungen, Verbesserungsvorschläge — alles aus dem ISMS direkt verknüpft, kein paralleles Excel.
+---
+
+## Querverweise
+
+- **Compliance-Frameworks** (Cross-Mapping): [Compliance-Manager-Sicht](compliance-manager.md)
+- **Audit-Log + Findings**: [Auditor-Sicht](auditor-external.md)
+- **Risk-Owner-Freigaben**: [Risk-Owner-Sicht](risk-owner-business.md)
 
 ---
 
-## Compliance-Übersicht
+## Was die ISB hier vermisst
 
-Multi-Framework-Sicht. Aktive Frameworks (ISO 27001, NIS2, DORA, GDPR, BSI-Grundschutz, …) mit Abdeckungsgrad und offenen Anforderungen.
+Aus der [Persona-Definition](../../.claude/skills/persona-isb-practitioner/):
 
-![Compliance-Übersicht](img/isb-practitioner/compliance-overview.png)
-
-Cross-Mapping zwischen Frameworks (z.B. ISO 27001 ↔ NIS2 Art. 21) bedeutet: ein Control deckt mehrere Anforderungen ab. Aufwand spart die ISB damit für die nächste Zertifizierung.
-
----
-
-## Was die ISB hier nicht findet (und vermisst)
-
-Aus der [Persona-Definition](../../.claude/skills/persona-isb-practitioner/SKILL.md):
-
-- **Bulk-Operationen** über alle 50+ Risiken (Quartalsreassessment in einem Flow).
-- **Reviewzyklen-Reminder** automatisiert (heute manuell anstoßen).
-- **Soll/Ist-Trennung** bei Controls (Reife-Roadmap pro Control, nicht nur Status).
-- **Restrisiko-Begründungs-Feld** mit Pflicht-Versionierung.
-
-→ Roadmap-Items, getriggert über die ISB-Persona im laufenden Tool-Review.
+- **Bulk-Operationen** über alle Risiken (Quartalsreassessment in einem Flow)
+- **Reviewzyklen-Reminder** automatisiert (heute manuell)
+- **Soll/Ist-Trennung** bei Controls (Reife-Roadmap pro Control)
+- **Restrisiko-Begründungs-Feld** mit Pflicht-Versionierung
 
 ---
 
-[← Zurück zur Sichtwechsel-Übersicht](README.md) · [Nächste Persona: CISO →](ciso-executive.md)
+[← Übersicht](README.md) · [Nächste Persona: CISO →](ciso-executive.md)

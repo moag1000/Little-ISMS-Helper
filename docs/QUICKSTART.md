@@ -116,8 +116,6 @@ SMTP-Daten falls das Tool Notifications versenden soll (Workflow-Approvals, Sche
 
 ### Schritt 6 — Organisation
 
-![Setup Step 6 — Organisation](sichtwechsel/img/setup/setup-step6-organisation-info.png)
-
 Compliance-relevante Stammdaten der Organisation:
 
 - Firmenname, Branche (NACE-Code), Mitarbeiterzahl, Standorte
