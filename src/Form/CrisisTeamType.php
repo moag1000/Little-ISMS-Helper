@@ -22,6 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\Url;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class CrisisTeamType extends AbstractType
@@ -165,6 +166,8 @@ class CrisisTeamType extends AbstractType
             ->add('virtualMeetingUrl', UrlType::class, [
                 'label' => 'crisis_team.field.virtual_meeting_url',
                 'required' => false,
+                'default_protocol' => null,
+                'constraints' => [new Url(requireTld: false)],
                 'attr' => [
                     'placeholder' => 'crisis_team.placeholder.virtual_meeting_url',
                 ],
