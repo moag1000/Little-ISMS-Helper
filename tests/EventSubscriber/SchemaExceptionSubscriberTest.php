@@ -182,6 +182,97 @@ class SchemaExceptionSubscriberTest extends TestCase
         $this->assertSame('/quick-fix', $event->getResponse()->getTargetUrl());
     }
 
+    #[Test]
+    public function autoFixesAdditiveDriftAndRetriesRequest(): void
+    {
+        $maintenance = $this->createMock(SchemaMaintenanceService::class);
+        $maintenance->method('getMaintenanceStatus')->willReturn([
+            'migration_status' => ['pending' => 0, 'names' => []],
+            'schema_drift' => [
+                'count' => 1,
+                'statements' => ['ALTER TABLE users ADD competencies JSON DEFAULT NULL'],
+                'destructive' => [],
+            ],
+        ]);
+        $maintenance->expects($this->once())
+            ->method('reconcileSchema')
+            ->with('auto-fix-on-error')
+            ->willReturn(['success' => true, 'executed' => 1, 'error' => null, 'blocked' => null]);
+        $subscriber = new SchemaExceptionSubscriber($this->guard, $this->urlGenerator, $maintenance);
+
+        $this->guard->method('fallbackUiEnabled')->willReturn(true);
+
+        $event = $this->makeEvent('/people', new TableNotFoundException(
+            $this->driverException("Unknown column 't0.competencies' in 'SELECT'"),
+            null,
+        ));
+
+        $subscriber->onKernelException($event);
+
+        $response = $event->getResponse();
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertStringEndsWith('_schema_autofixed=1', $response->getTargetUrl());
+        $this->assertStringContainsString('/people', $response->getTargetUrl());
+    }
+
+    #[Test]
+    public function skipsAutoFixOnSecondAttemptViaRecursionFlag(): void
+    {
+        $maintenance = $this->createMock(SchemaMaintenanceService::class);
+        $maintenance->method('getMaintenanceStatus')->willReturn([
+            'migration_status' => ['pending' => 0, 'names' => []],
+            'schema_drift' => [
+                'count' => 1,
+                'statements' => ['ALTER TABLE x'],
+                'destructive' => [],
+            ],
+        ]);
+        $maintenance->expects($this->never())->method('reconcileSchema');
+        $subscriber = new SchemaExceptionSubscriber($this->guard, $this->urlGenerator, $maintenance);
+
+        $this->guard->method('fallbackUiEnabled')->willReturn(true);
+
+        $event = $this->makeEvent('/people?_schema_autofixed=1', new TableNotFoundException(
+            $this->driverException('Unknown column'),
+            null,
+        ));
+
+        $subscriber->onKernelException($event);
+
+        $response = $event->getResponse();
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('/quick-fix', $response->getTargetUrl());
+    }
+
+    #[Test]
+    public function skipsAutoFixWhenDestructiveDriftPresent(): void
+    {
+        $maintenance = $this->createMock(SchemaMaintenanceService::class);
+        $maintenance->method('getMaintenanceStatus')->willReturn([
+            'migration_status' => ['pending' => 0, 'names' => []],
+            'schema_drift' => [
+                'count' => 2,
+                'statements' => ['ALTER TABLE users ADD x', 'DROP TABLE legacy'],
+                'destructive' => ['DROP TABLE legacy'],
+            ],
+        ]);
+        $maintenance->expects($this->never())->method('reconcileSchema');
+        $subscriber = new SchemaExceptionSubscriber($this->guard, $this->urlGenerator, $maintenance);
+
+        $this->guard->method('fallbackUiEnabled')->willReturn(true);
+
+        $event = $this->makeEvent('/dashboard', new TableNotFoundException(
+            $this->driverException('Unknown column'),
+            null,
+        ));
+
+        $subscriber->onKernelException($event);
+
+        $response = $event->getResponse();
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertSame('/quick-fix', $response->getTargetUrl());
+    }
+
     private function makeEvent(string $path, \Throwable $throwable): ExceptionEvent
     {
         $request = Request::create($path);
