@@ -36,7 +36,7 @@ NIS2-Geschäftsleiter-Verantwortung (§ 38 BSIG-neu) und DORA Art. 5 verlangen, 
 
 Tieferer Einblick — Reifegrad-Trend, Control-Effektivität, Compliance-Coverage über Frameworks.
 
-![Analytics-Dashboard](img/ciso-executive/analytics-dashboard.png)
+![Analytics-Dashboard](img/ciso-executive/analytics-advanced.png)
 
 > *"Was kostet uns Nicht-Umsetzung von Control X?"*
 

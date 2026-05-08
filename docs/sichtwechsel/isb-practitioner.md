@@ -46,7 +46,7 @@ Verknüpfung Risiko↔Asset↔Control↔Nachweis ist die operative Pflicht der I
 
 Manipulationssicher, gefiltert nach Wer/Wann/Was. Pflicht für ISO 27001 Klausel 9.1 (Überwachung) und 7.5 (dokumentierte Information).
 
-![Audit-Log](img/isb-practitioner/audit-log.png)
+![Audit-Log](img/auditor-external/audit-log.png)
 
 > *"Ist das Audit-Log manipulationssicher? Wer hat das freigegeben und wann?"*
 
@@ -68,7 +68,7 @@ Vorbereitung des regelmäßigen Reviews mit Vorstand: Performance-Indikatoren, A
 
 Multi-Framework-Sicht. Aktive Frameworks (ISO 27001, NIS2, DORA, GDPR, BSI-Grundschutz, …) mit Abdeckungsgrad und offenen Anforderungen.
 
-![Compliance-Übersicht](img/isb-practitioner/compliance-overview.png)
+![Compliance-Übersicht](img/compliance-manager/compliance-overview.png)
 
 Cross-Mapping zwischen Frameworks (z.B. ISO 27001 ↔ NIS2 Art. 21) bedeutet: ein Control deckt mehrere Anforderungen ab. Aufwand spart die ISB damit für die nächste Zertifizierung.
 

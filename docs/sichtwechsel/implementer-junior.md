@@ -24,7 +24,7 @@ Statt direkt ins leere Dashboard kippen: Einstiegspfad mit Module-Übersicht und
 
 Geführtes Onboarding für die Erstkonfiguration. Schritt-für-Schritt durch Tenant-Daten, Branche, Frameworks.
 
-![Setup-Wizard](img/implementer-junior/setup-wizard.png)
+![Setup-Wizard](img/setup/setup-wizard.png)
 
 Branchen-Preset (z.B. "Mittelstand-NIS2", "BaFin-Financial", "KRITIS-Energie") lädt vorgeschlagene Frameworks, Mappings und initiale Controls — der Junior muss nicht entscheiden, was 27001 ist.
 
@@ -58,7 +58,7 @@ Das geführte Wizard-Variante (mehrere Schritte, je 2-3 Felder pro Step) ist als
 
 Nach erstem Setup. Zeigt Aufgaben, Pending-Reviews, Dringend-zu-tun.
 
-![Dashboard](img/implementer-junior/dashboard.png)
+![Dashboard](img/isb-practitioner/dashboard.png)
 
 Junior sieht: "Was muss ich heute machen?" — nicht: "Hier sind 47 Klausel-Status-Indikatoren, viel Spaß."
 
