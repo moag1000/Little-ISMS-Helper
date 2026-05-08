@@ -56,11 +56,6 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $path = $request->getPathInfo();
 
-        // Avoid recursion if Quick-Fix itself blew up.
-        if (str_starts_with($path, '/quick-fix')) {
-            return;
-        }
-
         if (!$this->guard->fallbackUiEnabled()) {
             return;
         }
@@ -69,23 +64,50 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // Guard against false-positives: only redirect to Quick-Fix when there
-        // are actually pending Doctrine migrations OR a schema drift between
-        // entity metadata and the live DB. A "table not found" error can also
-        // come from a typo in raw SQL, which has nothing to do with an
-        // out-of-date schema — those should bubble up as a normal 500 with the
-        // original stack trace, not a misleading "apply migrations" page.
+        // Guard against false-positives: only act when there are actually
+        // pending Doctrine migrations OR a schema drift between entity
+        // metadata and the live DB. A "table not found" error can also come
+        // from a typo in raw SQL, which has nothing to do with an out-of-date
+        // schema — those should bubble up as a normal 500 with the original
+        // stack trace, not a misleading "apply migrations" page.
         try {
             $status = $this->maintenance->getMaintenanceStatus();
             $pending = (int) ($status['migration_status']['pending'] ?? 0);
             $drift = (int) ($status['schema_drift']['count'] ?? 0);
+            $destructive = $status['schema_drift']['destructive'] ?? [];
         } catch (\Throwable) {
             // If even reading status fails, the schema is presumably very
             // broken — keep the redirect to give the user a recovery path.
             $pending = 1;
             $drift = 0;
+            $destructive = [];
         }
         if ($pending === 0 && $drift === 0) {
+            return;
+        }
+
+        // Auto-fix additive-only drift transparently when the failing request
+        // hits a schema-mismatch (e.g. ALTER TABLE ADD COLUMN never ran on
+        // this deployment). Recursion guard via query-flag so a second hit
+        // doesn't loop.
+        $alreadyTried = $request->query->getBoolean('_schema_autofixed');
+        $additiveOnly = $destructive === [];
+        if ($additiveOnly && !$alreadyTried && !str_starts_with($path, '/quick-fix')) {
+            try {
+                $result = $this->maintenance->reconcileSchema('auto-fix-on-error');
+                if (($result['success'] ?? false) && (int) ($result['executed'] ?? 0) > 0) {
+                    $retry = $request->getRequestUri();
+                    $sep = str_contains($retry, '?') ? '&' : '?';
+                    $event->setResponse(new RedirectResponse($retry . $sep . '_schema_autofixed=1'));
+                    return;
+                }
+            } catch (\Throwable) {
+                // fall through to /quick-fix redirect
+            }
+        }
+
+        // Avoid recursion if Quick-Fix itself blew up — bubble the exception.
+        if (str_starts_with($path, '/quick-fix')) {
             return;
         }
 

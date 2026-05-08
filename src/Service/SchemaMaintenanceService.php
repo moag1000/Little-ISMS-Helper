@@ -275,8 +275,8 @@ class SchemaMaintenanceService
             return [
                 'category' => 'unknown_column',
                 'message' => sprintf('Migration references column `%s` which is not in the schema.', $m[1]),
-                'suggested_action' => 'Run `php bin/console app:schema:reconcile --dry-run` to see what entity-vs-DB drift looks like; the column may need a prior ALTER TABLE migration before this one runs.',
-                'auto_repairable' => false,
+                'suggested_action' => 'Additive drift — run `php bin/console app:schema:reconcile` (or trigger via Quick-Fix UI). The runtime SchemaExceptionSubscriber auto-applies additive-only diffs.',
+                'auto_repairable' => true,
                 'offending_version' => $offending,
             ];
         }
