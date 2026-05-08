@@ -75,6 +75,31 @@ class ISMSObjective
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
     private ?string $unit = null;
 
+    /**
+     * ISO 27001 §6.2.b — wer fuer Messung verantwortlich ist.
+     * Often overlaps with responsiblePerson but kept separate to allow
+     * "objective owner" vs "data steward" split (audit findings W3).
+     */
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    private ?string $responsibleForMeasurement = null;
+
+    /**
+     * ISO 27001 §6.2.b — wann gemessen wird.
+     */
+    #[ORM\Column(length: 32, nullable: true)]
+    #[Assert\Choice(choices: ['daily', 'weekly', 'monthly', 'quarterly', 'biannually', 'annually', 'on_event'])]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    private ?string $measurementFrequency = null;
+
+    /**
+     * ISO 27001 §6.2.b — wie gemessen wird (z.B. "Auswertung Audit-Logs",
+     * "KPI aus Dashboard", "Manuelles Review im Quartals-Meeting").
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['isms_objective:read', 'isms_objective:write'])]
+    private ?string $measurementMethod = null;
+
     #[ORM\Column(length: 100)]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
     #[Assert\NotBlank]
@@ -292,6 +317,39 @@ public function __construct()
     public function setTenant(?Tenant $tenant): static
     {
         $this->tenant = $tenant;
+        return $this;
+    }
+
+    public function getResponsibleForMeasurement(): ?string
+    {
+        return $this->responsibleForMeasurement;
+    }
+
+    public function setResponsibleForMeasurement(?string $responsibleForMeasurement): static
+    {
+        $this->responsibleForMeasurement = $responsibleForMeasurement;
+        return $this;
+    }
+
+    public function getMeasurementFrequency(): ?string
+    {
+        return $this->measurementFrequency;
+    }
+
+    public function setMeasurementFrequency(?string $measurementFrequency): static
+    {
+        $this->measurementFrequency = $measurementFrequency;
+        return $this;
+    }
+
+    public function getMeasurementMethod(): ?string
+    {
+        return $this->measurementMethod;
+    }
+
+    public function setMeasurementMethod(?string $measurementMethod): static
+    {
+        $this->measurementMethod = $measurementMethod;
         return $this;
     }
 }
