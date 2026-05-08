@@ -10,6 +10,8 @@ use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\ORM\Mapping\MappingException as ORMMappingException;
 use Doctrine\Persistence\Mapping\MappingException as PersistenceMappingException;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -33,6 +35,7 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
         private readonly QuickFixGuard $guard,
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly SchemaMaintenanceService $maintenance,
+        private readonly LoggerInterface $logger = new NullLogger(),
     ) {
     }
 
@@ -64,6 +67,12 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $this->logger->warning('SchemaExceptionSubscriber: schema exception caught', [
+            'path' => $path,
+            'exception' => $event->getThrowable()::class,
+            'message' => $event->getThrowable()->getMessage(),
+        ]);
+
         // Guard against false-positives: only act when there are actually
         // pending Doctrine migrations OR a schema drift between entity
         // metadata and the live DB. A "table not found" error can also come
@@ -92,19 +101,28 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
         // doesn't loop.
         $alreadyTried = $request->query->getBoolean('_schema_autofixed');
         $additiveOnly = $destructive === [];
+        $this->logger->warning('SchemaExceptionSubscriber: maintenance status', [
+            'pending' => $pending,
+            'drift' => $drift,
+            'destructive' => count($destructive),
+            'already_tried' => $alreadyTried,
+        ]);
+
         if (!$alreadyTried) {
             try {
                 $totalApplied = 0;
+                $migResult = null;
+                $recResult = null;
 
                 // Step 1: run pending Doctrine migrations first. reconcileSchema
                 // gates itself when pending migrations exist, so we MUST drain
                 // them before reconcile can patch any residual entity-vs-DB
-                // drift.
-                if ($pending > 0) {
-                    $migResult = $this->maintenance->executePendingMigrations('auto-fix-on-error');
-                    if ($migResult['success'] ?? false) {
-                        $totalApplied += (int) ($migResult['executed'] ?? 0);
-                    }
+                // drift. Always attempt — even when pending=0 — because the
+                // migrations table may be marked-executed while the actual DDL
+                // never ran (Pitfall #6 in CLAUDE.md).
+                $migResult = $this->maintenance->executePendingMigrations('auto-fix-on-error');
+                if ($migResult['success'] ?? false) {
+                    $totalApplied += (int) ($migResult['executed'] ?? 0);
                 }
 
                 // Step 2: reconcile additive-only drift (ALTER TABLE ADD …).
@@ -117,13 +135,23 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
                     }
                 }
 
+                $this->logger->warning('SchemaExceptionSubscriber: auto-fix attempted', [
+                    'total_applied' => $totalApplied,
+                    'migrations_result' => $migResult,
+                    'reconcile_result' => $recResult,
+                ]);
+
                 if ($totalApplied > 0) {
                     $retry = $request->getRequestUri();
                     $sep = str_contains($retry, '?') ? '&' : '?';
                     $event->setResponse(new RedirectResponse($retry . $sep . '_schema_autofixed=1'));
                     return;
                 }
-            } catch (\Throwable) {
+            } catch (\Throwable $e) {
+                $this->logger->error('SchemaExceptionSubscriber: auto-fix threw', [
+                    'exception' => $e::class,
+                    'message' => $e->getMessage(),
+                ]);
                 // fall through to /quick-fix redirect
             }
         }
