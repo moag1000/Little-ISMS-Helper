@@ -896,6 +896,16 @@ wizard:
         policy_doc_enhanced: 'PIMS extern zertifiziert, kontinuierliche Privacy-Reviews, Cross-Border-Transfer-Compliance automated.'
         data_subject_rights_baseline: 'PIMS-Anforderung umgesetzt, DPO/PII-Officer benannt, Records of Processing aktuell.'
         data_subject_rights_enhanced: 'PIMS extern zertifiziert, kontinuierliche Privacy-Reviews, Cross-Border-Transfer-Compliance automated.'
+        privacy_risk_baseline: 'DPIA methodology established, high-risk processing activities identified and assessed (Art. 35).'
+        privacy_risk_enhanced: 'Continuous DPIA lifecycle management with re-assessment after data flow changes, AI-driven privacy impact scoring.'
+        records_of_processing_baseline: 'Records of Processing per Art. 30 fully documented, updates per new processing activity.'
+        records_of_processing_enhanced: 'Auto-discovered data flows via asset inventory sync, version history, cross-tenant group reporting.'
+        breach_notification_baseline: 'Breach response team in place, 72h notification path to supervisory authority documented (Art. 33/34).'
+        breach_notification_enhanced: 'Automated breach detection, pre-qualified notification templates, cross-border DPA coordination.'
+        privacy_by_design_baseline: 'TOM catalogue per Art. 25 documented, data minimisation and purpose limitation embedded in processes.'
+        privacy_by_design_enhanced: 'Privacy engineering in SDLC, audit-ready default settings, continuous TOM effectiveness assessment.'
+        third_party_processors_baseline: 'Vendor processing agreements (Art. 28) complete, third-country evaluation established.'
+        third_party_processors_enhanced: 'Continuous vendor risk assessments, automated SCC refresh post Schrems-II, sub-processor notification SLA.'
 
     # ISO 27017 Cloud Security Categories
     iso27017:
