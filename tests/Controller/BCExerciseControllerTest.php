@@ -28,7 +28,22 @@ class BCExerciseControllerTest extends WebTestCase
     protected function setUp(): void
     {
         $this->client = static::createClient();
+        $this->client->disableReboot();
+
         $container = static::getContainer();
+
+        $moduleService = $this->createMock(\App\Service\ModuleConfigurationService::class);
+        $moduleService->method('isModuleActive')->willReturnCallback(
+            fn(string $key) => in_array($key, [
+                'core', 'authentication', 'assets', 'risks', 'controls',
+                'incidents', 'audits', 'training', 'reviews', 'bcm',
+                'compliance', 'audit_logging', 'privacy', 'nis2_dora',
+                'ai_governance', 'cloud_security', 'vulnerability_intel',
+                'marisk', 'tisax', 'quantitative_risk',
+            ], true)
+        );
+        $container->set(\App\Service\ModuleConfigurationService::class, $moduleService);
+
         $this->entityManager = $container->get(EntityManagerInterface::class);
 
         $this->createTestData();
