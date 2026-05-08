@@ -486,6 +486,38 @@ risk:
   validation:
     likelihood_justification_required: 'Begründung der Eintrittswahrscheinlichkeit ist erforderlich (ISO 27001:2022 Kl. 6.1.2.d).'
     impact_justification_required: 'Begründung der Schadensauswirkung ist erforderlich (ISO 27001:2022 Kl. 6.1.2.d).'
+dora:
+  field:
+    ict_risk_category: ICT-Risikokategorie (DORA Art. 6(8))
+    critical_or_important_function: Kritische oder wichtige Funktion (DORA Art. 6(2))
+    ict_third_party_concentration: ICT-Drittparteien-Konzentrationsrisiko (DORA Art. 28+29)
+    ict_asset_dependency: ICT-Asset-Abhängigkeiten
+    ict_incident_history: ICT-Vorfallhistorie (DORA Art. 17-19)
+    data_resilience_requirement: Datenresilienzanforderungen (RTO/RPO, Art. 11)
+    tlpt_scope: TLPT-Scope (DORA Art. 26-27)
+    regulatory_reporting_required: Meldepflicht (DORA Art. 19 + NIS2 Art. 23)
+    board_escalation_required: Vorstandseskalation erforderlich (DORA Art. 5(2))
+    lessons_learned_documented: Lessons Learned dokumentiert (DORA Art. 13)
+  placeholder:
+    ict_risk_category: '-- ICT-Kategorie wählen --'
+    data_resilience_requirement: 'RTO: 4h, RPO: 1h — Restore-Test alle 12 Monate'
+  help:
+    ict_risk_category: Einordnung gemäß DORA Art. 6(8) ICT-Risikokategorien
+    critical_or_important_function: Betrifft das Risiko eine kritische oder wichtige Funktion gemäß DORA Art. 6(2) und Anhang?
+    ict_third_party_concentration: Konzentrationsrisiko durch Abhängigkeit von ICT-Drittdienstleistern (DORA Art. 28+29)
+    ict_asset_dependency: ICT-Assets, von denen dieses Risiko abhängt (Mehrfachauswahl)
+    ict_incident_history: Frühere ICT-Vorfälle, die mit diesem Risiko in Verbindung stehen (DORA Art. 17-19)
+    data_resilience_requirement: Wiederherstellungszeitziel (RTO) und Wiederherstellungspunktziel (RPO) gemäß DORA Art. 11(2)(c)
+    tlpt_scope: Umfang für Threat-Led Penetration Tests gemäß DORA Art. 26-27
+    regulatory_reporting_required: Meldefrist an Regulatoren gemäß DORA Art. 19 und NIS2 Art. 23
+    board_escalation_required: Eskalation an die Geschäftsleitung erforderlich gemäß DORA Art. 5(2)
+    lessons_learned_documented: Lessons-Learned-Bericht dokumentiert gemäß DORA Art. 13
+  ict_category:
+    cyber: Cyberrisiko
+    operations: Betriebsrisiko
+    third_party_ict: ICT-Drittparteienrisiko
+    concentration: Konzentrationsrisiko
+    data_integrity: Datenintegritätsrisiko
 risk_management:
   title: Titel
   description: Beschreibung

@@ -7,7 +7,9 @@ namespace App\Form;
 use App\Entity\Supplier;
 use App\Entity\SupplierCriticalityLevel;
 use App\Entity\Tenant;
+use App\Form\Trait\ModuleAwareFormTrait;
 use App\Repository\SupplierCriticalityLevelRepository;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -22,9 +24,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SupplierType extends AbstractType
 {
+    use ModuleAwareFormTrait;
+
     public function __construct(
         private readonly SupplierCriticalityLevelRepository $criticalityRepo,
         private readonly TenantContext $tenantContext,
+        private readonly ModuleConfigurationService $moduleConfiguration,
     ) {
     }
 
@@ -368,6 +373,11 @@ class SupplierType extends AbstractType
             ])
         ;
 
+        // ── MaRisk outsourcing fields — only shown when 'marisk' module is active ─
+        if ($this->isModuleActive('marisk')) {
+            $this->addMariskFields($builder);
+        }
+
         // Sync unmapped textareas back to JSON entity properties
         $builder->addEventListener(
             \Symfony\Component\Form\FormEvents::POST_SUBMIT,
@@ -459,6 +469,73 @@ class SupplierType extends AbstractType
                 $view['processingLocations']->vars['value'] = implode(', ', array_map('strval', $flat));
             }
         }
+    }
+
+    private function addMariskFields(FormBuilderInterface $builder): void
+    {
+        $builder
+            ->add('outsourcingClassification', ChoiceType::class, [
+                'choices' => [
+                    'supplier.marisk.outsourcing_classification.substantial' => 'substantial',
+                    'supplier.marisk.outsourcing_classification.non_substantial' => 'non_substantial',
+                ],
+                'choice_translation_domain' => 'suppliers',
+                'label' => 'supplier.marisk.field.outsourcing_classification',
+                'required' => false,
+                'placeholder' => 'supplier.marisk.placeholder.outsourcing_classification',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'supplier.marisk.help.outsourcing_classification',
+            ])
+            ->add('outsourcingDueDiligenceCompleted', CheckboxType::class, [
+                'label' => 'supplier.marisk.field.outsourcing_due_diligence_completed',
+                'required' => false,
+                'help' => 'supplier.marisk.help.outsourcing_due_diligence_completed',
+            ])
+            ->add('outsourcingDueDiligenceDate', DateType::class, [
+                'label' => 'supplier.marisk.field.outsourcing_due_diligence_date',
+                'widget' => 'single_text',
+                'required' => false,
+                'help' => 'supplier.marisk.help.outsourcing_due_diligence_date',
+            ])
+            ->add('outsourcingExitStrategy', TextareaType::class, [
+                'label' => 'supplier.marisk.field.outsourcing_exit_strategy',
+                'required' => false,
+                'attr' => ['rows' => 4],
+                'help' => 'supplier.marisk.help.outsourcing_exit_strategy',
+            ])
+            ->add('bafinNotificationRequired', CheckboxType::class, [
+                'label' => 'supplier.marisk.field.bafin_notification_required',
+                'required' => false,
+                'help' => 'supplier.marisk.help.bafin_notification_required',
+            ])
+            ->add('bafinNotificationDate', DateType::class, [
+                'label' => 'supplier.marisk.field.bafin_notification_date',
+                'widget' => 'single_text',
+                'required' => false,
+                'help' => 'supplier.marisk.help.bafin_notification_date',
+            ])
+            ->add('riskBearingCapacityImpact', TextareaType::class, [
+                'label' => 'supplier.marisk.field.risk_bearing_capacity_impact',
+                'required' => false,
+                'attr' => ['rows' => 3],
+                'help' => 'supplier.marisk.help.risk_bearing_capacity_impact',
+            ])
+            ->add('boardLevelRiskAcceptance', CheckboxType::class, [
+                'label' => 'supplier.marisk.field.board_level_risk_acceptance',
+                'required' => false,
+                'help' => 'supplier.marisk.help.board_level_risk_acceptance',
+            ])
+            ->add('complianceFunctionInvolvement', CheckboxType::class, [
+                'label' => 'supplier.marisk.field.compliance_function_involvement',
+                'required' => false,
+                'help' => 'supplier.marisk.help.compliance_function_involvement',
+            ])
+            ->add('internalAuditFunctionInvolvement', CheckboxType::class, [
+                'label' => 'supplier.marisk.field.internal_audit_function_involvement',
+                'required' => false,
+                'help' => 'supplier.marisk.help.internal_audit_function_involvement',
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
