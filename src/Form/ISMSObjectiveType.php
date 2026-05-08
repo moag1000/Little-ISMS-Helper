@@ -123,6 +123,43 @@ class ISMSObjectiveType extends AbstractType
                     new Assert\Length(max: 100, maxMessage: 'objective.validation.name_max_length')
                 ]
             ])
+            ->add('responsibleForMeasurement', TextType::class, [
+                'label' => 'objective.field.responsible_for_measurement',
+                'required' => false,
+                'help' => 'objective.help.responsible_for_measurement',
+                'attr' => [
+                    'class' => 'form-control',
+                ],
+                'constraints' => [
+                    new Assert\Length(max: 100, maxMessage: 'objective.validation.name_max_length')
+                ],
+            ])
+            ->add('measurementFrequency', ChoiceType::class, [
+                'label' => 'objective.field.measurement_frequency',
+                'required' => false,
+                'placeholder' => 'objective.placeholder.measurement_frequency',
+                'help' => 'objective.help.measurement_frequency',
+                'choices' => [
+                    'objective.frequency.daily' => 'daily',
+                    'objective.frequency.weekly' => 'weekly',
+                    'objective.frequency.monthly' => 'monthly',
+                    'objective.frequency.quarterly' => 'quarterly',
+                    'objective.frequency.biannually' => 'biannually',
+                    'objective.frequency.annually' => 'annually',
+                    'objective.frequency.on_event' => 'on_event',
+                ],
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('measurementMethod', TextareaType::class, [
+                'label' => 'objective.field.measurement_method',
+                'required' => false,
+                'help' => 'objective.help.measurement_method',
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'objective.placeholder.measurement_method',
+                ],
+            ])
             ->add('targetDate', DateType::class, [
                 'label' => 'objective.field.target_date',
                 'widget' => 'single_text',
