@@ -54,12 +54,15 @@ binding for Phase 3 (persona review) and the eventual code work.
 | Any + ISO 27701 PIMS | (no extra top) | (no change) | 0 | +2-4 PIMS-clause docs (parallel addon) |
 | Any + BCM | + BCM Policy | + 12 BCM docs (ISO) or 13 (BSI) | + (incl. Notfallhandbuch for BSI) | Auto BCExercise records |
 
-Total document count range: **25** (ISO solo) → **52** (Quintuple ISO
+Total document count range: **25** (ISO solo) → **≤56** (Quintuple ISO
 + BSI + DORA + GDPR + BCM). The privacy-as-sections pattern (Phase
 1-E rework, see `06-dpo-input.md` §0) drops the previous upper bound
-of 63 to 52 by collapsing 10 of the original 16 privacy documents
+of 63 to 56 by collapsing 10 of the original 16 privacy documents
 into sections of existing ISO/DORA topic policies. ISO 27701 PIMS
 remains a separate addon (parallel to DORA, +2-4 docs).
+
+**Cross-walk reference:** see `07-phase4-sprint-reconciliation.md` §9
+for the per-tenant-geometry breakdown (Phase 4-D doc-count gate).
 
 ## 4. Domain Model
 
