@@ -28,6 +28,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -428,6 +429,11 @@ class RiskType extends AbstractType
         if ($this->isModuleActive('nis2_dora')) {
             $this->addDoraIctRiskFields($builder, $currentTenant);
         }
+
+        // ── FAIR Quantitative Risk — only shown when 'quantitative_risk' module is active ─
+        if ($this->isModuleActive('quantitative_risk')) {
+            $this->addFairFields($builder);
+        }
     }
 
     private function addDoraIctRiskFields(FormBuilderInterface $builder, mixed $currentTenant): void
@@ -512,6 +518,95 @@ class RiskType extends AbstractType
                 'label' => 'risk.dora.field.lessons_learned_documented',
                 'required' => false,
                 'help' => 'risk.dora.help.lessons_learned_documented',
+            ])
+        ;
+    }
+
+    private function addFairFields(FormBuilderInterface $builder): void
+    {
+        $builder
+            ->add('lossEventFrequencyMin', NumberType::class, [
+                'label' => 'risk.fair.field.lef_min',
+                'scale' => 4,
+                'required' => false,
+                'help' => 'risk.fair.help.lef',
+                'attr' => ['placeholder' => '0.0000'],
+            ])
+            ->add('lossEventFrequencyMax', NumberType::class, [
+                'label' => 'risk.fair.field.lef_max',
+                'scale' => 4,
+                'required' => false,
+                'attr' => ['placeholder' => '0.0000'],
+            ])
+            ->add('lossEventFrequencyMode', NumberType::class, [
+                'label' => 'risk.fair.field.lef_mode',
+                'scale' => 4,
+                'required' => false,
+                'attr' => ['placeholder' => '0.0000'],
+            ])
+            ->add('threatEventFrequencyMin', NumberType::class, [
+                'label' => 'risk.fair.field.tef_min',
+                'scale' => 4,
+                'required' => false,
+                'help' => 'risk.fair.help.tef',
+                'attr' => ['placeholder' => '0.0000'],
+            ])
+            ->add('threatEventFrequencyMax', NumberType::class, [
+                'label' => 'risk.fair.field.tef_max',
+                'scale' => 4,
+                'required' => false,
+                'attr' => ['placeholder' => '0.0000'],
+            ])
+            ->add('threatEventFrequencyMode', NumberType::class, [
+                'label' => 'risk.fair.field.tef_mode',
+                'scale' => 4,
+                'required' => false,
+                'attr' => ['placeholder' => '0.0000'],
+            ])
+            ->add('vulnerabilityProbability', NumberType::class, [
+                'label' => 'risk.fair.field.vulnerability_probability',
+                'scale' => 4,
+                'required' => false,
+                'help' => 'risk.fair.help.vulnerability_probability',
+                'attr' => ['placeholder' => '0.0000', 'min' => 0, 'max' => 1, 'step' => '0.0001'],
+            ])
+            ->add('primaryLossMagnitudeMin', NumberType::class, [
+                'label' => 'risk.fair.field.plm_min',
+                'scale' => 2,
+                'required' => false,
+                'help' => 'risk.fair.help.plm',
+                'attr' => ['placeholder' => '0.00'],
+            ])
+            ->add('primaryLossMagnitudeMax', NumberType::class, [
+                'label' => 'risk.fair.field.plm_max',
+                'scale' => 2,
+                'required' => false,
+                'attr' => ['placeholder' => '0.00'],
+            ])
+            ->add('primaryLossMagnitudeMode', NumberType::class, [
+                'label' => 'risk.fair.field.plm_mode',
+                'scale' => 2,
+                'required' => false,
+                'attr' => ['placeholder' => '0.00'],
+            ])
+            ->add('secondaryLossMagnitudeMin', NumberType::class, [
+                'label' => 'risk.fair.field.slm_min',
+                'scale' => 2,
+                'required' => false,
+                'help' => 'risk.fair.help.slm',
+                'attr' => ['placeholder' => '0.00'],
+            ])
+            ->add('secondaryLossMagnitudeMax', NumberType::class, [
+                'label' => 'risk.fair.field.slm_max',
+                'scale' => 2,
+                'required' => false,
+                'attr' => ['placeholder' => '0.00'],
+            ])
+            ->add('secondaryLossMagnitudeMode', NumberType::class, [
+                'label' => 'risk.fair.field.slm_mode',
+                'scale' => 2,
+                'required' => false,
+                'attr' => ['placeholder' => '0.00'],
             ])
         ;
     }

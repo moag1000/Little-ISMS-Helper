@@ -183,3 +183,36 @@ status_type:
     mitigated: Mitigated
     monitoring: Monitoring
     closed: Closed
+
+# ── vulnerability_intel module fields (gated) ─────────────────────────────
+threat_intelligence:
+    field:
+        tlp_classification: 'TLP Classification'
+        threat_actor_attribution: 'Threat Actor Attribution'
+        mitre_attack_tactics: 'MITRE ATT&CK Tactics'
+        mitre_attack_techniques: 'MITRE ATT&CK Techniques'
+        iocs_list: 'Indicators of Compromise (IOCs)'
+        confidence_level: 'Confidence Level'
+        shared_externally: 'Shared Externally (NIS2 Art. 30)'
+    placeholder:
+        tlp_classification: '-- Select TLP level --'
+        threat_actor_attribution: 'e.g. APT28, Lazarus Group'
+        mitre_attack_tactics: 'e.g. TA0001, TA0002 (one per line or comma-separated)'
+        mitre_attack_techniques: 'e.g. T1059, T1566 (one per line or comma-separated)'
+        confidence_level: '-- Select confidence level --'
+    tlp:
+        red: 'RED — Not for disclosure'
+        amber: 'AMBER — Limited sharing'
+        green: 'GREEN — Community sharing'
+        white: 'WHITE — Unlimited sharing'
+    confidence:
+        low: 'Low'
+        medium: 'Medium'
+        high: 'High'
+    help:
+        tlp_classification: 'FIRST.org Traffic Light Protocol — controls information sharing scope (NIS2 Art. 30).'
+        threat_actor_attribution: 'APT group or crime group responsible (MITRE ATT&CK threat actors).'
+        mitre_attack_tactics: 'MITRE ATT&CK Tactic IDs (TA0001–TA0043). Enter JSON array or comma-separated.'
+        mitre_attack_techniques: 'MITRE ATT&CK Technique IDs (T1xxx). Enter JSON array or comma-separated.'
+        iocs_list_json: 'STIX 2.1 format: [{type: ip|domain|hash|url|email, value: "...", context: "..."}]'
+        shared_externally: 'Check if this intelligence was shared with a CERT/CSIRT (NIS2 Art. 30 obligation).'

@@ -518,6 +518,28 @@ dora:
     third_party_ict: ICT-Drittparteienrisiko
     concentration: Konzentrationsrisiko
     data_integrity: Datenintegritätsrisiko
+# ── FAIR Quantitative Risk-Modul-Felder (gegatete Felder: quantitative_risk) ─
+fair:
+  field:
+    lef_min: 'Schadensereignishäufigkeit — Min (LEF)'
+    lef_max: 'Schadensereignishäufigkeit — Max (LEF)'
+    lef_mode: 'Schadensereignishäufigkeit — Modus (LEF)'
+    tef_min: 'Bedrohungsereignishäufigkeit — Min (TEF)'
+    tef_max: 'Bedrohungsereignishäufigkeit — Max (TEF)'
+    tef_mode: 'Bedrohungsereignishäufigkeit — Modus (TEF)'
+    vulnerability_probability: 'Schwachstellenwahrscheinlichkeit (%)'
+    plm_min: 'Primärer Schadensbetrag — Min (€)'
+    plm_max: 'Primärer Schadensbetrag — Max (€)'
+    plm_mode: 'Primärer Schadensbetrag — Modus (€)'
+    slm_min: 'Sekundärer Schadensbetrag — Min (€)'
+    slm_max: 'Sekundärer Schadensbetrag — Max (€)'
+    slm_mode: 'Sekundärer Schadensbetrag — Modus (€)'
+  help:
+    lef: 'FAIR: Loss Event Frequency — erwartete Häufigkeit eines Schadenseignisses pro Jahr (Min/Max/Modus).'
+    tef: 'FAIR: Threat Event Frequency — wie oft ein Bedrohungsakteur pro Jahr gegen ein Asset vorgeht (Min/Max/Modus).'
+    vulnerability_probability: 'FAIR: Wahrscheinlichkeit (0,0–1,0), dass ein Bedrohungsereignis zu einem Schadensereignis führt.'
+    plm: 'FAIR: Primärer Schadensbetrag — direkter finanzieller Schaden in € (Min/Max/Modus).'
+    slm: 'FAIR: Sekundärer Schadensbetrag — indirekter Schaden in € inkl. Reputationsschaden und Bußgelder (Min/Max/Modus).'
 risk_management:
   title: Titel
   description: Beschreibung

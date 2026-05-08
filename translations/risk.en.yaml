@@ -505,6 +505,28 @@ dora:
     third_party_ict: ICT Third-Party Risk
     concentration: Concentration Risk
     data_integrity: Data Integrity Risk
+# ── FAIR Quantitative Risk module fields (gated: quantitative_risk) ────────
+fair:
+  field:
+    lef_min: 'Loss Event Frequency — Min (LEF)'
+    lef_max: 'Loss Event Frequency — Max (LEF)'
+    lef_mode: 'Loss Event Frequency — Mode (LEF)'
+    tef_min: 'Threat Event Frequency — Min (TEF)'
+    tef_max: 'Threat Event Frequency — Max (TEF)'
+    tef_mode: 'Threat Event Frequency — Mode (TEF)'
+    vulnerability_probability: 'Vulnerability Probability (%)'
+    plm_min: 'Primary Loss Magnitude — Min (€)'
+    plm_max: 'Primary Loss Magnitude — Max (€)'
+    plm_mode: 'Primary Loss Magnitude — Mode (€)'
+    slm_min: 'Secondary Loss Magnitude — Min (€)'
+    slm_max: 'Secondary Loss Magnitude — Max (€)'
+    slm_mode: 'Secondary Loss Magnitude — Mode (€)'
+  help:
+    lef: 'FAIR: Loss Event Frequency — how many times per year a loss event is expected to occur (min/max/mode).'
+    tef: 'FAIR: Threat Event Frequency — how many times per year a threat agent acts against an asset (min/max/mode).'
+    vulnerability_probability: 'FAIR: Probability (0.0–1.0) that a threat event results in a loss event.'
+    plm: 'FAIR: Primary Loss Magnitude — direct financial impact in € (min/max/mode).'
+    slm: 'FAIR: Secondary Loss Magnitude — indirect impact in € including reputational damage and regulatory fines (min/max/mode).'
 risk_management:
   title: Title
   description: Description
