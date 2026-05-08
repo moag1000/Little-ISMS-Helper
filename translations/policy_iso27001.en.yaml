@@ -580,7 +580,7 @@ policy:
                     *Normative anchor: ISO/IEC 27001:2022 Annex A.5.17, ISO/IEC 27002:2022 § 5.17 | Review interval: {{ review.interval_months }} months*
 
                     ## 1. Purpose
-                    This policy governs the allocation and management of authentication information pursuant to ISO/IEC 27002:2022 § 5.17: *"Allocation and management of authentication information shall be controlled by a management process …"* It replaces the earlier Password Policy and covers all factors of knowledge, possession and inherence.
+                    This policy governs the allocation and management of authentication information pursuant to ISO/IEC 27002:2022 § 5.17: *"Allocation and management of authentication information shall be controlled by a management process …"* It replaces the earlier Password Policy and covers all factors of knowledge, possession and inherence. The objective is to ensure that authentication information is protected against theft, phishing and reuse across its full lifecycle (allocation, distribution, use, rotation, revocation).
 
                     ## 2. Scope
                     The policy covers all authentication information for all identity types per the Identity Management Policy: passwords, PINs, hardware tokens, software tokens, certificates, cryptographic keys, biometric templates, API keys and other secrets.
@@ -617,13 +617,13 @@ policy:
                     3. Emergency recovery codes are kept in the vault and used only on MFA loss.
 
                     ## 7. Certificates
-                    Certificates (X.509) are issued through the public-key infrastructure (PKI) of the organisation or through approved public CAs. Lifecycle: request → validation → issuance → distribution → renewal → revocation → archiving. Maximum validity: 12 months for server certificates (per CA/Browser Forum); 24 months for code-signing certificates.
+                    Certificates (X.509) are issued through the public-key infrastructure (PKI) of the organisation or through approved public CAs. Lifecycle: request → validation → issuance → distribution → renewal → revocation → archiving. Maximum validity: 12 months for server certificates (per CA/Browser Forum); 24 months for code-signing certificates. Timely renewal is monitored by a central certificate management system; expiring certificates trigger alerts to the responsible asset owners and to the CISO {{ roles.ciso.fullName }}.
 
                     ## 8. Secrets, API Keys, Tokens
                     Secrets are managed exclusively in the approved secrets-management tool. Hard-coded secrets in source code or configuration files are prohibited; pre-commit hooks and SAST scans check for them under the Secure Development Policy. Rotation: API keys at least every 90 days; service-account secrets at least every 180 days; emergency rotation on suspected compromise.
 
                     ## 9. Biometrics
-                    Biometrics are used solely as a second factor (for example fingerprint to unlock the MDM-managed endpoint). Biometric templates remain on the device; no central biometrics database is maintained. Article 9 GDPR (special categories of personal data) is observed.
+                    Biometrics are used solely as a second factor (for example fingerprint to unlock the MDM-managed endpoint). Biometric templates remain on the device; no central biometrics database is maintained. Article 9 GDPR (special categories of personal data) is observed; a Data Protection Impact Assessment is performed in consultation with the Data Protection Officer {{ roles.dpo.fullName }} before any new biometric mechanism is introduced.
 
                     ## 10. Protection in Transport and at Rest
                     Authentication information is transmitted only through encrypted channels (TLS 1.2+, preferred 1.3). Storage is exclusively in hashed/salted form (passwords), in HSM/KMS (private keys) or in the approved secrets manager (secrets).

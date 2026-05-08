@@ -61,6 +61,24 @@ policy:
                         body: |
                             Deviations from this policy require formal risk acceptance by {{ roles.ciso.fullName }} with explicit reference to the risk matrix, valid for a maximum of 12 months. The risk acceptance is captured in the risk register and reviewed annually.
                     7:
+                        title: 'Roles and Responsibilities'
+                        body: |
+                            **{{ roles.ciso.fullName }} (CISO):** Policy owner, approval of exceptions, reporting line to executive management on cryptographic compliance.
+
+                            **Cryptography Lead / PKI Lead:** Operational owner of the key inventory, coordination of key rotations and lifecycle activities.
+
+                            **Platform owners and application owners:** Implementation of the procedures on their own systems, ensuring correct key storage in secrets management.
+
+                            **Data Protection Officer:** Advice on cryptographic measures in the context of GDPR (Art. 32, pseudonymisation, encryption as an appropriate measure).
+
+                            **Internal Audit:** Sample-based review of cryptographic compliance, in particular the key inventory and rotation history.
+                    8:
+                        title: 'Training and Awareness'
+                        body: |
+                            Developers, platform engineers and administrators who use cryptographic mechanisms receive at least annual role-specific training covering: correct use of cryptographic libraries, avoidance of common implementation errors (e.g. static IVs, padding-oracle issues, mis-pairing of encryption and authentication), secure key handling and recognition of compromised keys.
+
+                            Training content is aligned with the OWASP Cryptographic Storage cheat sheet and applicable BSI recommendations.
+                    9:
                         title: 'Review and Update'
                         body: |
                             This policy is reviewed at least every {{ review.interval_months }} months, and ad hoc upon: (a) publication of new algorithm-deprecation notices from BSI, NIST or ENISA; (b) material changes to regulatory requirements (DORA RTS updates, NIS2 implementing acts); (c) introduction of new cryptographic platforms.
@@ -115,6 +133,10 @@ policy:
                             All backup media are encrypted at rest using AES-256. Keys used for backup encryption are stored separately from the backup payload; refer to the Cryptography Policy. For cloud-based backups the customer-managed-key principle applies — the cloud provider must not have access to plaintext data.
 
                             Backup integrity is verified by cryptographic checksums (SHA-256 or higher) at creation and prior to every restore. Damaged backups are treated as non-existent and re-created without delay.
+
+                            Backup data owners retain control over their data throughout the backup lifecycle. When external backup providers are engaged a data-processing agreement per Art. 28 GDPR is concluded that mandates encryption, data locations and post-contract deletion duties.
+
+                            Backup keys follow the lifecycle of the Cryptography Policy. On a key rotation existing backups are not re-encrypted — instead old keys are archived for restore purposes only and cryptographically erased once their retention horizon ends.
                     4:
                         title: 'Restore Tests'
                         body: |
@@ -131,7 +153,23 @@ policy:
                         title: 'Retention and Deletion'
                         body: |
                             The retention periods defined in section 2 are minimum values. Statutory or contractual retention obligations (e.g. UK Companies Act, GDPR Art. 5(1)(e), German HGB §257, AO §147, GoBD) may require longer periods and take precedence in case of doubt. Personal data within backups is subject to the same deletion obligations as production data; for GDPR erasure requests the operational deletion at end of backup lifecycle must be documented and justified.
+
+                            Generation-based deletion of older backups is performed automatically by the backup system once the configured retention horizon elapses. Manual deletions (e.g. responding to data-subject erasure requests) follow the four-eyes principle and are recorded in the audit trail with reason, requester and executor.
+
+                            On retirement of backup storage media (tape drives, decommissioned disks) media destruction follows BSI guidance (e.g. for magnetic media, security level H-3 or higher per DIN 66399). External destruction service providers are contractually bound and issue a destruction certificate.
                     7:
+                        title: 'Roles and Responsibilities'
+                        body: |
+                            **Backup owner ({{ roles.ciso.fullName }}):** Overall responsibility for this policy, approval of exceptions, escalation point for critical findings.
+
+                            **IT Operations / backup team:** Operational execution of backup operations, restore tests, availability monitoring.
+
+                            **Asset owners / business-process owners:** Classification of protection needs, definition of RPO/RTO requirements, sign-off on restore tests for their systems.
+
+                            **Internal Audit:** Sample-based compliance review, evaluation of restore-test results, reporting line to the audit committee.
+
+                            **Data Protection Officer:** Advice on deletion duties and the handling of personal data within backups.
+                    8:
                         title: 'Review'
                         body: |
                             This policy is reviewed at least every {{ review.interval_months }} months, and ad hoc upon material changes to the IT infrastructure, introduction of new backup tooling or regulatory changes.
@@ -197,6 +235,10 @@ policy:
                         title: 'SIEM and Correlation'
                         body: |
                             Security-relevant logs are ingested into a central SIEM. Correlation use-cases are maintained by the security-operations team and reviewed for effectiveness at least half-yearly. The following use-cases are active by default: brute-force detection, anomalous logon times/locations, privilege escalation, data exfiltration, lateral movement, service-account anomalies.
+
+                            Use-case lifecycle: every use-case follows the phases concept (with a data-protection impact assessment if personal data is in scope), pilot operation (with tuning against false positives), production operation, and retirement. The detection-engineering pipeline is versioned as code; rule changes require four-eyes approval. KPIs measuring detection quality (mean time to detect, false-positive rate, coverage against MITRE ATT&CK) are collected monthly and reflected in CISO reporting.
+
+                            On suspicion of a security incident raw logs are protected against alteration via the audit-freeze mechanism. Correlation incorporates threat-intelligence sources (refer to the Threat Intelligence Policy); IOC feeds are ingested automatically and trigger custom alerts.
                     5:
                         title: 'Data Protection and Co-Determination'
                         body: |
@@ -208,7 +250,23 @@ policy:
                             - protected against unauthorised modification (append-only or WORM storage, or cryptographic hashing);
                             - protected against unauthorised deletion (separate permissions for logging admins, four-eyes principle for deletion operations);
                             - protected against unauthorised access (need-to-know, separate SIEM RBAC).
+
+                            Confidentiality of log data is enforced through role-based access controls. Read access to person-related audit trails is limited to the security-operations team and the internal-audit function; every access is meta-logged. Exports from the SIEM require approval by {{ roles.ciso.fullName }} and are handled at the appropriate classification level.
+
+                            Where log data is shared with external service providers (e.g. managed-SOC providers), a data-processing agreement per Art. 28 GDPR is mandatory. Third-country transfers outside the EU/EEA are admissible only with appropriate safeguards (standard contractual clauses, data-protection impact assessment, technical and organisational measures).
                     7:
+                        title: 'Roles and Responsibilities'
+                        body: |
+                            **{{ roles.ciso.fullName }} (CISO):** Policy owner; responsible for the effectiveness of detection and correlation, escalation point for suspected incidents.
+
+                            **Security-operations team:** Operational maintenance of SIEM use-cases, triage and response on alerts, reporting line to the CISO.
+
+                            **Log-source owners (asset owners):** Ensuring that the systems deliver the required event types with the required fields into the SIEM, contributing to use-case definitions.
+
+                            **Data Protection Officer:** Review of new person-related use-cases, co-signature of person-related evaluations, contribution to the data-protection impact assessment.
+
+                            **Works council (Germany):** Co-determination per BetrVG; consent to logging configuration and use-cases; annual reporting on person-related evaluations carried out.
+                    8:
                         title: 'Review'
                         body: |
                             This policy is reviewed at least every {{ review.interval_months }} months, and upon changes in the tooling landscape, new use-cases involving personal data, or regulatory changes.
@@ -239,6 +297,8 @@ policy:
                             This policy ensures that {{ tenant.legal_name }} detects, evaluates and remediates vulnerabilities in its IT systems before they can be exploited. It defines mandatory service-level agreements (SLAs) for vulnerability remediation according to severity and establishes a fully documented vulnerability-management process.
 
                             Principles: risk-based prioritisation (CVSS 4.0 + EPSS + exploit availability), asset inventory as a precondition (reference to A.5.9), clear responsibilities per asset type, separation of detection and remediation (four-eyes principle).
+
+                            Vulnerability management is integrated with the wider risk-management framework: every untreated vulnerability above the High threshold represents a technical risk recorded in the risk register. The decision between remediation and documented risk acceptance follows the escalation tiers of the Risk Treatment Plan policy.
                     2:
                         title: 'Vulnerability Sources and Continuous Discovery'
                         body: |
@@ -278,6 +338,10 @@ policy:
                         title: 'Emergency Patching and Change Management'
                         body: |
                             Regular patches follow the standard change-management process (A.8.32). Emergency patches for Critical vulnerabilities may be rolled out via the emergency change procedure with a shortened approval chain: approval by the on-call CISO or a designated deputy, retrospective documentation within 5 working days.
+
+                            For risk reduction, patch testing in a separate test or staging environment is mandatory. Exceptions for time-critical reasons (e.g. actively exploited vulnerabilities, zero-days) require documented risk-balancing. For business-critical production systems rollouts are phased (canary deployments) with defined rollback criteria.
+
+                            Patches are sourced exclusively from authentic channels (vendor channel, signed repositories). Integrity of every patch is verified prior to use through hash checks or signatures. Patches from non-authentic sources are forbidden.
                     6:
                         title: 'Exceptions and Risk Acceptance'
                         body: |
@@ -288,7 +352,23 @@ policy:
                         title: 'Reporting and KPIs'
                         body: |
                             Vulnerability-management status is reported monthly to executive management with the following KPIs: open vulnerabilities by severity, average time-to-remediate, number of SLA breaches, top 10 unpatched systems, trend analysis.
+
+                            On a quarterly basis an extended report is produced that additionally covers: asset-inventory coverage rate, effectiveness of the scanning tools (false-positive rate, detection rate against known benchmarks), changes in the threat landscape, vulnerability-management process maturity measured against the CMMI model. At strategic level the target architecture is annually mapped against the NIST Cybersecurity Framework "Identify" and "Detect" functions.
+
+                            The KPIs feed into the assessment of ISMS effectiveness per ISO 27001 clause 9.1 and are explained in the management review (clause 9.3).
                     8:
+                        title: 'Roles and Responsibilities'
+                        body: |
+                            **{{ roles.ciso.fullName }} (CISO):** Policy owner, approval of risk acceptances, escalation point for critical vulnerabilities.
+
+                            **Vulnerability Management Lead:** Operational responsibility for the scanning pipeline, vulnerability triage, reporting.
+
+                            **Asset owners:** Responsible for SLA-conformant remediation of vulnerabilities on their own systems, contribution to risk assessments.
+
+                            **IT Operations:** Operational execution of patching, maintenance of the patch-test environment, rollout to production.
+
+                            **Change Advisory Board (CAB):** Approval of regular patch changes, post-hoc evaluation of emergency patches.
+                    9:
                         title: 'Review'
                         body: |
                             This policy is reviewed at least every {{ review.interval_months }} months, and ad hoc upon material changes in the threat landscape or tooling.
@@ -319,6 +399,8 @@ policy:
                             Malware (viruses, worms, trojans, ransomware, spyware, cryptominers) ranks among the principal risks to the confidentiality, integrity and availability of {{ tenant.legal_name }}''s information. This policy establishes a layered protection concept (defence in depth) combining technical controls with organisational measures and staff awareness.
 
                             It addresses in particular the threat scenarios that have dominated recent years: phishing-induced initial access, ransomware-as-a-service, living-off-the-land techniques and supply-chain compromises.
+
+                            The threat landscape is updated continuously and reviewed against the Threat Intelligence Policy. On publication of relevant new threat reports (BSI Lagebericht, ENISA Threat Landscape, sector-specific ISAC reports) a check is performed to confirm whether protective measures need adjustment. In case of an acute threat with high sectoral relevance an ad-hoc escalation occurs.
                     2:
                         title: 'Technical Protective Measures'
                         body: |
@@ -336,6 +418,8 @@ policy:
                             EDR/AV signatures and behavioural models are updated at least every 4 hours, ideally continuously. Engine updates follow the regular patch-management process. EDR configuration follows the principle "block by default, alert always" — detections are auto-isolated and reported to the SIEM simultaneously.
 
                             Scan modes: on-access (real-time), weekly full system scan, daily scan of newly added data. Scans of external media run automatically upon attachment.
+
+                            Telemetry from the EDR platform is ingested into the central SIEM (refer to the Logging Policy). Evaluations are conducted exclusively for security purposes; person-related evaluations are permitted only under the four-eyes conditions defined in the Logging Policy.
                     4:
                         title: 'User Awareness and Training'
                         body: |
@@ -345,17 +429,31 @@ policy:
                             - **Annual refresher training:** With updated content on current threats.
                             - **Phishing simulations:** Conducted at least quarterly; results feed targeted follow-up training.
                             - **Reporting obligation:** Suspicious emails, pop-ups or system behaviour must be reported immediately to the central reporting channel.
+
+                            Audience-specific training supplements the standard programme for high-risk functions: executive management and assistants (CEO fraud, spear phishing), finance (business email compromise, fake invoice), IT administrators (supply-chain attacks, targeted software manipulation), HR (CV phishing, malicious applications). Training success is verified by knowledge quizzes; failed quizzes trigger a refresher within 14 days.
+
+                            Awareness communication runs not only through formal training but also via regular security updates (quarterly newsletter, intranet alerts on current phishing waves) and just-in-time prompts (e.g. banners on suspicious external mails, "external sender" markers).
                     5:
                         title: 'Incident Handling'
                         body: |
                             Malware detected and auto-isolated by EDR/AV is recorded as a security event. Escalation to a security incident per the Incident Management Policy occurs upon: successfully executed malware with persistence, lateral movement, encryption indicators (ransomware), data-exfiltration indicators or involvement of critical systems.
 
-                            In the case of suspected ransomware: no ransom payment without explicit executive approval; immediate activation of the crisis-response team; forensic preservation prior to recovery.
+                            In the case of suspected ransomware: no ransom payment without explicit executive approval; immediate activation of the crisis-response team; forensic preservation prior to recovery. Forensic preservation follows evidence-handling requirements (A.5.28) and is performed by trained personnel or by a contracted forensic provider; a complete chain of custody is maintained.
+
+                            In case of data compromise via malware, the GDPR notification duty (Art. 33, 72-hour notification to the supervisory authority) and, where applicable, NIS2 early notification (24h initial) and DORA ICT-incident reporting must be assessed. The assessment is performed by the Data Protection Officer in coordination with {{ roles.ciso.fullName }}.
                     6:
                         title: 'Exceptions'
                         body: |
                             Exceptions from mandatory EDR (e.g. specialised hardware, OT systems, legacy applications incompatible with EDR) are permitted only with compensating controls (network segmentation, restricted connectivity, intensified monitoring) and require written approval by {{ roles.ciso.fullName }}.
+
+                            Exceptions are tracked in the exceptions register with a fixed term (max. 12 months), compensating controls, the next review date and the justification. Once the underlying reason no longer applies the exception must be revoked without delay.
                     7:
+                        title: 'KPIs and Reporting'
+                        body: |
+                            The effectiveness of malware protection is measured against the following KPIs and reported monthly to executive management: EDR coverage (percentage of endpoints covered), detections by severity, mean time to respond, number of confirmed incidents, phishing click-through rate from simulations, awareness-training quiz pass rate.
+
+                            On a quarterly basis a trend report is produced that maps the evolution of the threat landscape against the organisation''s detection coverage. Upon significant changes (e.g. a new ransomware campaign with sectoral focus) an ad-hoc escalation is raised to {{ roles.ciso.fullName }} with recommendations for adjustments.
+                    8:
                         title: 'Review'
                         body: |
                             This policy is reviewed at least every {{ review.interval_months }} months, and upon material changes in the threat landscape, tooling changes or after major incidents.
@@ -386,6 +484,8 @@ policy:
                             A secure baseline configuration (hardening baseline) reduces the attack surface, disables unnecessary functionality, sets safe defaults and prevents the exploitation of insecure default configurations. This policy establishes mandatory configuration baselines and a continuous configuration-management process.
 
                             Principles: "secure by default" (safe pre-set values), "least functionality" (only required services enabled), "configuration as code" (versioned, reproducible configurations), "drift detection" (continuous comparison against the desired baseline).
+
+                            Configuration security is closely interlinked with vulnerability management (A.8.8) and change management (A.8.32). A misconfiguration is a technical vulnerability handled via the vulnerability-management process; every approved configuration change follows the change-management process. The three processes are evaluated together in the annual ISMS effectiveness review.
                     2:
                         title: 'Configuration Baselines'
                         body: |
@@ -404,6 +504,10 @@ policy:
                             New systems are taken into production only with the active baseline configuration applied. Baseline application is automated via configuration-management tools. Manual configuration of production systems is forbidden and constitutes a security event.
 
                             Prior to commissioning, a configuration-compliance check is performed and recorded. A successful check forms part of the service-acceptance criteria.
+
+                            Versioning follows the single-source-of-truth principle: every configuration is versioned in a Git repository with signed commits, pull-request reviews and a logged deployment pipeline. Configuration artefacts are linked to the corresponding asset inventory (A.5.9) so that it is always traceable which baseline is active on which system and who was responsible for the most recent change.
+
+                            Sensitive configuration items (secrets, crypto keys, API tokens) are sourced from the central secrets-management system and never stored in plaintext in the configuration repository. Secrets injection occurs at deploy time via approved mechanisms (e.g. Kubernetes secrets via External Secrets Operator, cloud-native secret stores).
                     4:
                         title: 'Drift Detection and Remediation'
                         body: |
@@ -414,6 +518,8 @@ policy:
                             - **Minor:** reported in the monthly configuration report.
 
                             Persistent drifts without a documented reason are treated as anomalies and correlated within the SIEM.
+
+                            Examples of critical drifts: deactivation of a local firewall, changes to SSH configuration (allowing password auth, allowing root login), changes to audit logging, permission changes on security-relevant files, changes to TLS configuration below the minimum standards. For these drifts a security event is recorded and handled per the incident-management process.
                     5:
                         title: 'Exceptions'
                         body: |
