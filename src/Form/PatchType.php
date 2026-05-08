@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Url;
 
 class PatchType extends AbstractType
 {
@@ -221,6 +222,8 @@ class PatchType extends AbstractType
             ->add('downloadUrl', UrlType::class, [
                 'label' => 'patch.field.download_url',
                 'required' => false,
+                'default_protocol' => null,
+                'constraints' => [new Url(requireTld: false)],
                 'attr' => [
                     'placeholder' => 'https://vendor.com/patches/...',
                 ],
@@ -232,6 +235,8 @@ class PatchType extends AbstractType
             ->add('documentationUrl', UrlType::class, [
                 'label' => 'patch.field.documentation_url',
                 'required' => false,
+                'default_protocol' => null,
+                'constraints' => [new Url(requireTld: false)],
                 'attr' => [
                     'placeholder' => 'https://vendor.com/docs/...',
                 ],
