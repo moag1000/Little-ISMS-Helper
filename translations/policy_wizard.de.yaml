@@ -465,3 +465,80 @@ compliance_check:
         description: 'Bestätigt, dass jede ISO-Policy, für die der DoraExtensionCatalogue eine Erweiterung vorsieht, den Tag „dora-extension:applied" trägt.'
         pass_message: 'Alle anwendbaren ISO-Policies tragen die DORA-Erweiterung.'
         fail_message: 'Mindestens ein ISO-Topic-Dokument hat die DORA-Erweiterung nicht angewendet — Policy-Wizard mit DORA-Scope erneut durchlaufen.'
+    # W5-C — BSI Grundschutz Compliance-Checks (BSI 200-1 / 200-2 / 200-3 / 200-4)
+    bsi_top_level_leitlinie_present:
+        title: 'IT-Sicherheitsleitlinie freigegeben (BSI 200-1 Kap. 6.2)'
+        description: 'Bestätigt eine durch die Leitungsebene genehmigte (status=approved) IT-Sicherheitsleitlinie aus dem Policy-Wizard, gemäß BSI 200-1 Kap. 6.2 + ISMS.1.A4.'
+        pass_message: 'IT-Sicherheitsleitlinie ist durch die Leitungsebene freigegeben.'
+        fail_message: 'IT-Sicherheitsleitlinie ist nicht durch die Leitungsebene freigegeben — Policy-Wizard mit BSI-Topic „it_security_policy" starten und Approval-Workflow durchlaufen.'
+    bsi_isms_concept_present:
+        title: 'ISMS-Konzept (Sicherheitskonzept) veröffentlicht (BSI 200-2 Kap. 5–9)'
+        description: 'Bestätigt ein veröffentlichtes ISMS-Konzept gemäß BSI 200-2 Kap. 5–9 + ISMS.1.A6.'
+        pass_message: 'ISMS-Konzept ist veröffentlicht.'
+        fail_message: 'ISMS-Konzept fehlt — Policy-Wizard mit BSI-Topic „isms_concept" starten.'
+    bsi_baseline_coverage:
+        title: 'Basis-Pflicht-Set vollständig generiert (BSI 200-2 Basis)'
+        description: 'Bestätigt, dass für jedes BSI Basis-Tier-Template ein veröffentlichtes Tenant-Document existiert (28 Pflicht-Richtlinien-Dokumente).'
+        pass_message: 'Alle Basis-Pflicht-Richtlinien sind veröffentlicht.'
+        fail_message: 'Mindestens ein Basis-Pflicht-Topic hat kein generiertes Document — Policy-Wizard erneut durchlaufen und fehlende Topics nachgenerieren.'
+    bsi_schutzbedarf_method_present:
+        title: 'Schutzbedarfsfeststellungs-Methodik veröffentlicht (BSI 200-2 Kap. 6)'
+        description: 'Bestätigt ein veröffentlichtes Methode-Dokument zur Schutzbedarfsfeststellung gemäß BSI 200-2 Kap. 6.'
+        pass_message: 'Schutzbedarfsfeststellungs-Methodik ist veröffentlicht.'
+        fail_message: 'Schutzbedarfsfeststellungs-Methodik fehlt — Policy-Wizard mit BSI-Topic „protection_needs_methodology" starten.'
+    bsi_tier_consistency:
+        title: 'Tier-Filter mit generierten Documents konsistent (BSI 200-2 Kap. 3)'
+        description: 'Bestätigt, dass die Tenant-Einstellung „bsi.tier_filter" mit dem bsi_tier der generierten Documents konsistent ist (z. B. keine Kern-Documents bei basis_only).'
+        pass_message: 'Tier-Filter und generierte Documents sind konsistent.'
+        fail_message: 'Mindestens ein Document liegt außerhalb des deklarierten Tier-Filters — bsi.tier_filter prüfen oder Documents archivieren.'
+    bsi_kritis_flag_documented:
+        title: 'KRITIS-Anwendbarkeit dokumentiert (BSIG §8a / KRITIS-DachG)'
+        description: 'Für KRITIS-Operatoren: Bestätigt, dass die IT-Sicherheitsleitlinie einen KRITIS-Hinweis (KRITIS-DachG / BSIG §8a) enthält oder die Substitution-Variable den Marker führt.'
+        pass_message: 'KRITIS-Sektion ist in der IT-Sicherheitsleitlinie dokumentiert.'
+        fail_message: 'KRITIS-Sektion fehlt in der IT-Sicherheitsleitlinie — Policy-Wizard erneut durchlaufen und legal_basis = „KRITIS-DachG / BSIG §8a" setzen.'
+    # W5-C — BCM Compliance-Checks (ISO 22301:2019)
+    bcm_top_level_policy_present:
+        title: 'BCM-Top-Level-Policy freigegeben (ISO 22301 Cl. 5.2)'
+        description: 'Bestätigt eine durch das Top-Management genehmigte (status=approved) BCM-Notfallleitlinie aus dem Policy-Wizard.'
+        pass_message: 'BCM-Notfallleitlinie ist durch das Top-Management freigegeben.'
+        fail_message: 'BCM-Notfallleitlinie ist nicht freigegeben — Policy-Wizard mit BCM-Topic „bcms_top_level" starten und Top-Management-Approval einholen.'
+    bcms_scope_statement_present:
+        title: 'BCMS-Geltungsbereich veröffentlicht (ISO 22301 Cl. 4.3)'
+        description: 'Bestätigt eine veröffentlichte BCMS Scope-Statement gemäß ISO 22301 Cl. 4.3.'
+        pass_message: 'BCMS-Geltungsbereich ist veröffentlicht.'
+        fail_message: 'BCMS-Geltungsbereich fehlt — Policy-Wizard mit BCM-Topic „bcms_scope_statement" starten.'
+    bcm_bia_methodology_present:
+        title: 'BIA-Methodik veröffentlicht (ISO 22301 Cl. 8.2.2)'
+        description: 'Bestätigt eine veröffentlichte Business-Impact-Analysis-Methodik gemäß ISO 22301 Cl. 8.2.2.'
+        pass_message: 'BIA-Methodik ist veröffentlicht.'
+        fail_message: 'BIA-Methodik fehlt — Policy-Wizard mit BCM-Topic „bia_methodology" starten.'
+    bcm_exercise_programme_active:
+        title: 'BCM-Übungsprogramm aktiv (ISO 22301 Cl. 8.6)'
+        description: 'Bestätigt eine durchgeführte oder geplante BCExercise innerhalb der letzten oder nächsten 12 Monate gemäß ISO 22301 Cl. 8.6.'
+        pass_message: 'BCM-Übungsprogramm ist aktiv (mindestens eine Übung im 12-Monats-Fenster).'
+        fail_message: 'Keine BCExercise im 12-Monats-Fenster — BC-Exercise-Modul öffnen und Übung planen oder dokumentieren (Major-Nonconformity-Risiko).'
+    bcm_crisis_management_plan_present:
+        title: 'Krisenstabsordnung veröffentlicht (ISO 22301 Cl. 8.4.4)'
+        description: 'Bestätigt einen veröffentlichten Crisis-Management-Plan / Krisenstabsordnung gemäß ISO 22301 Cl. 8.4.4 + BSI 200-4 Kap. 5.4.'
+        pass_message: 'Krisenstabsordnung ist veröffentlicht.'
+        fail_message: 'Krisenstabsordnung fehlt — Policy-Wizard mit BCM-Topic „crisis_management_plan" starten.'
+    bcm_recovery_plans_present:
+        title: 'Recovery-Pläne für Crown-Jewels vorhanden (ISO 22301 Cl. 8.4.5)'
+        description: 'Bestätigt mindestens einen veröffentlichten Recovery-Plan, sofern Crown-Jewel-Assets (max(C,I,A) ≥ 4) im Tenant-Scope existieren.'
+        pass_message: 'Recovery-Pläne sind für Crown-Jewel-Assets vorhanden.'
+        fail_message: 'Crown-Jewels ohne Recovery-Plan — Policy-Wizard mit BCM-Topic „recovery_plans" starten.'
+    bcm_management_review_bcm:
+        title: 'BCMS-Management-Review-Verfahren veröffentlicht (ISO 22301 Cl. 9.3)'
+        description: 'Bestätigt ein veröffentlichtes Management-Review-Verfahren für das BCMS gemäß ISO 22301 Cl. 9.3.'
+        pass_message: 'BCMS-Management-Review-Verfahren ist veröffentlicht.'
+        fail_message: 'BCMS-Management-Review-Verfahren fehlt — Policy-Wizard mit BCM-Topic „management_review_bcm" starten.'
+
+    # W5-B — BCM exercise programme auto-seeding.
+    bcm:
+        exercise_seeded:
+            title: 'BCM-Übungsprogramm automatisch eingerichtet'
+            body: 'Vier BCExercise-Platzhalter wurden für die nächsten 12 Monate angelegt (tabletop, walkthrough, simulation, full_test). Bitte verfeinern Sie Scope, Szenario und Teilnehmer vor der Durchführung.'
+        exercise_frequency:
+            quarterly: 'Quartalsweise (alle 3 Monate)'
+            semi_annual: 'Halbjährlich (alle 6 Monate)'
+            annual: 'Jährlich (alle 12 Monate)'

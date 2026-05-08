@@ -1375,3 +1375,19 @@ wizard:
         cra_vuln_handling_enhanced: 'Coordinated-Vulnerability-Disclosure aktiv, automated SBOM-Pflege, Conformity-Body-Audit.'
         sbom_supply_chain_baseline: 'CRA Anhang-I-Pflicht erfuellt, technische Dokumentation vorhanden.'
         sbom_supply_chain_enhanced: 'Coordinated-Vulnerability-Disclosure aktiv, automated SBOM-Pflege, Conformity-Body-Audit.'
+
+    # Policy-Wizard W5-A: BSI IT-Grundschutz Vorgehensweise (Tier-Filter)
+    bsi_tier_filter:
+        basis_only: 'Basis-Absicherung (Pflicht-Set, schnellster Einstieg)'
+        up_to_standard: 'Standard-Absicherung (Basis + Standard-Bausteine)'
+        kern_full: 'Kern-Absicherung (vollstaendig, hoechster Schutzbedarf)'
+
+    # Policy-Wizard W5-C: BSI Policy-Wizard category labels (Compliance-Wizard)
+    bsi:
+        bsi_policies: 'BSI-Policy-Wizard-Outputs'
+        bsi_policies_desc: 'Generierte BSI-Pflicht-Richtlinien gemäß BSI 200-1/200-2/200-3/200-4: IT-Sicherheitsleitlinie, ISMS-Konzept, 28 Basis-Pflicht-Richtlinien, Schutzbedarfsfeststellungs-Methodik, Tier-Konsistenz und KRITIS-Anwendbarkeit.'
+
+    # Policy-Wizard W5-C: BCM Policy-Wizard category labels (Compliance-Wizard)
+    bcm:
+        bcm_policies: 'BCM-Policy-Wizard-Outputs'
+        bcm_policies_desc: 'Generierte BCM-Pflicht-Richtlinien gemäß ISO 22301:2019: BCM-Top-Level-Policy, BCMS-Geltungsbereich, BIA-Methodik, Übungsprogramm, Krisenstabsordnung, Recovery-Pläne und Management-Review.'

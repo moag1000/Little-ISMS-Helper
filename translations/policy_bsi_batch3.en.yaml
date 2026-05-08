@@ -1,0 +1,987 @@
+policy:
+    bsi:
+        teleworking_directive:
+            v1:
+                title: 'Teleworking / Home-Office Directive'
+                body: |-
+                    # Teleworking Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: OPS.1.2.4.A1 (teleworking rules), A2 (security requirements), A3 (awareness) | Edition: {{ bsi.kompendium_edition }} | Review: 24 months*
+
+                    ## 1. Purpose
+                    This directive governs the security-relevant aspects of teleworking (home office, mobile work outside business premises) at {{ tenant.legal_name }}. It implements the requirements from OPS.1.2.4 and observes co-determination of employee representation.
+
+                    ## 2. Scope
+                    Covers all employees who work in part or predominantly outside the premises of the organisation, and external personnel where permitted.
+
+                    ## 3. Eligible Persons and Activities
+                    Teleworking is permitted in principle subject to manager approval. Excluded are activities involving particularly protection-needy data (e.g. VS-NfD) unless the home environment is correspondingly certified.
+
+                    ## 4. Home-Workplace Requirements (OPS.1.2.4.A2)
+                    - lockable room or at minimum lockable container;
+                    - visual screening from unauthorised view (family, visitors);
+                    - suitable storage of business documents;
+                    - no recording of business conversations by private devices (e.g. smart speakers).
+
+                    ## 5. Permissible Devices
+                    Standard is the use of company notebooks and smartphones. BYOD is permissible at normal protection-needs level, but only with a container solution (separation of business/private). At high protection needs BYOD is not permitted.
+
+                    ## 6. Connection Security
+                    - VPN mandatory for all business connections;
+                    - MFA mandatory (cross-reference ORP.4);
+                    - no use of public Wi-Fi without VPN;
+                    - home Wi-Fi with WPA3 (minimum WPA2) and a strong password.
+
+                    ## 7. Print and Storage Rules
+                    - business data are printed centrally; home printing only exceptionally;
+                    - paper documents are disposed of on business premises (cross-reference CON.6);
+                    - no external data carriers without encryption.
+
+                    ## 8. Loss / Theft
+                    On loss or theft, immediately notify service desk / ISB {{ roles.isb.fullName }}; remote wipe is triggered (cross-reference DER.2.1).
+
+                    ## 9. Data Protection and Co-Determination
+                    GDPR requirements apply unchanged in home office. Co-determination of employee representation is observed (e.g. works agreement on teleworking).
+
+                    ## 10. Inspection Rights
+                    Employer inspection rights are governed in the works agreement; encroachments on privacy are avoided.
+
+                    ## 11. Awareness (OPS.1.2.4.A3)
+                    Teleworkers receive an awareness briefing prior to first teleworking; annual refresher within the awareness directive (cross-reference ORP.3).
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 6.7, 7.1. Approval per: {{ approval.chain }}.*
+                section:
+                    eligibility:
+                        title: 'Eligibility'
+                        body: |-
+                            Manager approval; excluded are particularly protection-needy activities (e.g. VS-NfD).
+                    workplace_requirements:
+                        title: 'Home Workplace'
+                        body: |-
+                            Lockable, visual screening, storage, no smart speakers (OPS.1.2.4.A2).
+                    devices:
+                        title: 'Permissible Devices'
+                        body: |-
+                            Company devices standard; BYOD only with container and not at high protection needs.
+                    connection:
+                        title: 'Connection Security'
+                        body: |-
+                            VPN + MFA mandatory; no public Wi-Fi without VPN; home Wi-Fi WPA3.
+                    print_storage:
+                        title: 'Print / Storage'
+                        body: |-
+                            Central printing preferred; disposal on premises; no external carriers without encryption.
+                    loss:
+                        title: 'Loss / Theft'
+                        body: |-
+                            Immediate notification to ISB; remote wipe (cross-reference DER.2.1).
+                    works_council:
+                        title: 'Data Protection / Co-Determination'
+                        body: |-
+                            GDPR; works agreement on teleworking; privacy protected.
+                    awareness:
+                        title: 'Awareness'
+                        body: |-
+                            Prior to first teleworking + annual refresher (OPS.1.2.4.A3 + cross-reference ORP.3).
+                tailoring_field:
+                    home_office_quota:
+                        label: 'Home-Office Quota'
+                        placeholder: 'Example: "Up to 60 percent of weekly work in home office; on-site days Mon and Wed mandatory; exceptions approved by line managers."'
+                    byod_policy:
+                        label: 'BYOD Policy'
+                        placeholder: 'Example: "BYOD only with MDM container and MFA; not permitted for users at high protection needs; annual self-declaration of home environment."'
+                    works_agreement:
+                        label: 'Works Agreement on Teleworking'
+                        placeholder: 'Example: "Teleworking works agreement of 1 July 2025 with works council; inspection rights limited to audit logs in business systems; no privacy intrusion."'
+
+        remote_maintenance_directive:
+            v1:
+                title: 'Remote Maintenance Directive'
+                body: |-
+                    # Remote Maintenance Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: OPS.1.2.5.A1 (planning), A2 (safeguards), A3 (authentication), A4 (logging) | Edition: {{ bsi.kompendium_edition }} | Review: annual*
+
+                    ## 1. Purpose
+                    This directive governs secure remote maintenance of internal and outsourced IT systems at {{ tenant.legal_name }}, including in-house and external maintenance and ICS/OT specifics.
+
+                    ## 2. Scope
+                    Covers all remote access from external sources (Internet, vendor networks) and between organisationally or network-separated areas.
+
+                    ## 3. Permitted Maintenance Tools
+                    A central list of approved remote-maintenance tools is maintained. Unapproved tools are not permitted. Ad-hoc tools (e.g. private TeamViewer) are prohibited.
+
+                    ## 4. Authentication (OPS.1.2.5.A3)
+                    - personal accounts (no shared);
+                    - MFA mandatory (cross-reference ORP.4);
+                    - no default/vendor passwords;
+                    - vendor maintenance accounts only enabled during active maintenance need.
+
+                    ## 5. Session Recording
+                    For external service providers, sessions are recorded (audio + video / keyboard). Recording in compliance with co-determination and GDPR (cross-reference OPS.1.1.5).
+
+                    ## 6. Just-in-Time Approval
+                    Remote maintenance is performed only for a specific maintenance slot; approval per session by responsible owner or via PAM workflow.
+
+                    ## 7. Network Segmentation
+                    Remote-maintenance access terminates in a separate maintenance zone (bastion); direct access from the Internet to production systems is not permitted.
+
+                    ## 8. Contractual Requirements External (OPS.2.3)
+                    NDA, SLA, audit rights, sub-contractor approval; termination clauses for security incidents.
+
+                    ## 9. Emergency Cut-Off (Kill-Switch)
+                    Remote-maintenance connections can be centrally terminated at any time (kill-switch). On suspicion of misuse the connection is immediately cut and the incident reported to the ISB {{ roles.isb.fullName }} (cross-reference DER.2.1).
+
+                    ## 10. ICS/OT Specifics
+                    For ICS/OT remote maintenance the following additionally applies: only via industrial security gateway; only during maintenance windows; vendor authentication mapped to internal IAM.
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 8.21 (network services security), § 5.7 (threat intel). Approval per: {{ approval.chain }}.*
+                section:
+                    tools:
+                        title: 'Permitted Tools'
+                        body: |-
+                            Central list of approved tools; ad-hoc tools prohibited.
+                    authentication:
+                        title: 'Authentication'
+                        body: |-
+                            Personal accounts; MFA mandatory; no default passwords; just-in-time vendor activation (OPS.1.2.5.A3).
+                    recording:
+                        title: 'Session Recording'
+                        body: |-
+                            External providers: recording; co-determination + GDPR (cross-reference OPS.1.1.5).
+                    jit:
+                        title: 'Just-in-Time'
+                        body: |-
+                            Approval per session; PAM workflow.
+                    segmentation:
+                        title: 'Network Segmentation'
+                        body: |-
+                            Maintenance zone (bastion); no direct Internet access to production.
+                    contracts:
+                        title: 'Contractual Requirements'
+                        body: |-
+                            NDA, SLA, audit, sub-contractor approval (cross-reference OPS.2.3).
+                    kill_switch:
+                        title: 'Emergency Cut-Off'
+                        body: |-
+                            Central termination at any time; incident notification to ISB (cross-reference DER.2.1).
+                    ics_ot:
+                        title: 'ICS/OT Specifics'
+                        body: |-
+                            Industrial security gateway; maintenance window; vendor auth mapped to internal IAM.
+                tailoring_field:
+                    approved_tools:
+                        label: 'Approved Tools'
+                        placeholder: 'Example: "BeyondTrust Privileged Remote Access for internal admins; supplier bastion via PAM with just-in-time; notebook support via Microsoft Intune Remote Help."'
+                    bastion_setup:
+                        label: 'Bastion / Maintenance Zone'
+                        placeholder: 'Example: "Bastion cluster in DMZ-Maintenance; inbound only via central reverse proxy with MFA; outbound only to approved targets."'
+                    ot_gateway:
+                        label: 'ICS/OT Maintenance Gateway'
+                        placeholder: 'Example: "Industrial DMZ with hardware gateway Tofino; vendor sessions via dedicated IAM; maintenance window Wed 02:00-04:00."'
+
+        cloud_usage_directive:
+            v1:
+                title: 'Cloud Usage Directive'
+                body: |-
+                    # Cloud Usage Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 + BSI C5 | Building blocks: OPS.2.2.A1 (cloud-usage strategy), A2 (cloud security policy), A3 (service definition), A4 (responsibility), A5 (transition planning) | C5: 2020 / 2026 (in preparation) | Edition: {{ bsi.kompendium_edition }} | Review: annual*
+
+                    ## 1. Purpose
+                    This directive governs the selection, procurement and secure usage of cloud services at {{ tenant.legal_name }}. It integrates the BSI Cloud Computing Compliance Criteria Catalogue (C5) and Schrems-II requirements for third-country transfers (cross-reference CON.2).
+
+                    ## 2. Scope
+                    Covers all cloud services (public, private, hybrid) and multi-cloud constellations regardless of service model (IaaS, PaaS, SaaS, FaaS).
+
+                    ## 3. Cloud Strategy (OPS.2.2.A1)
+                    {{ tenant.legal_name }} pursues a cloud-smart strategy (cloud choice per use case, with priority for EU-sovereign solutions for sensitive data); concretised in the tailoring field.
+
+                    ## 4. Data Classification → Cloud Suitability
+                    | Protection needs | Cloud permitted? |
+                    |---|---|
+                    | normal (internal, public) | EU public cloud, SaaS in EU; sectoral check |
+                    | high | EU public cloud with C5 attestation or ISO 27001 + ISO 27017/27018; Schrems-II-conforming |
+                    | very high | private cloud, own infrastructure or C5-Plus with sovereign options; review by BfDI / BSI |
+
+                    Strictly confidential / VS-NfD data are not processed in public clouds unless a BSI approval exists.
+
+                    ## 5. Provider Requirements
+                    - C5 attestation (status 2026 with C5:2026 in preparation) mandatory for critical-infrastructure / very high protection needs;
+                    - ISO/IEC 27001 + 27017 (cloud) + 27018 (PII) minimum requirement;
+                    - SOC 2 Type II as additional evidence;
+                    - EU data location preferred; third-country transfer only Schrems-II-conforming.
+
+                    ## 6. Responsibility Matrix (OPS.2.2.A4)
+                    Per cloud service model the shared-responsibility matrix is documented (provider vs. tenant). Examples:
+
+                    - **IaaS:** provider = hardware, hypervisor; tenant = OS, application, data;
+                    - **PaaS:** provider = hardware, OS, platform; tenant = application, data;
+                    - **SaaS:** provider = platform + application; tenant = configuration, identities, data.
+
+                    Important: SaaS providers do not back up application data by default in many cases — own backups required (cross-reference CON.3).
+
+                    ## 7. Data Location and Third-Country Transfer (Schrems-II)
+                    Data location is contractually defined; sub-processors are disclosed; for US providers a TIA (Transfer Impact Assessment) is performed; CLOUD Act risk is assessed.
+
+                    ## 8. Encryption
+                    - customer-managed keys preferred (cross-reference CON.1);
+                    - encryption in transit (TLS 1.2+) and at rest mandatory;
+                    - bring-your-own-key (BYOK) and hold-your-own-key (HYOK) for very high protection needs.
+
+                    ## 9. Identity Federation
+                    Cloud identities are federated with the central identity provider (SAML/OIDC); MFA mandatory (cross-reference ORP.4); conditional access (geo, device, risk) where supported.
+
+                    ## 10. Logging / Monitoring
+                    Provider logs are integrated centrally into the SIEM (cross-reference OPS.1.1.5); additional own audit mechanisms per service model.
+
+                    ## 11. Backup Responsibility
+                    Cloud providers do not back up application data by default in many cases. Tenant-side backup per CON.3 is mandatory.
+
+                    ## 12. Exit Strategy
+                    Contractually defined: data return format, deadline, deletion confirmation, crypto-erase. Reversibility test at least every two years.
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 5.23. C5 is a BSI standard; ISO 27017/27018 are cloud security and PII extensions. Approval per: {{ approval.chain }}.*
+                section:
+                    strategy:
+                        title: 'Cloud Strategy'
+                        body: |-
+                            Cloud-smart with EU-sovereign priority for sensitive data (OPS.2.2.A1).
+                    classification:
+                        title: 'Cloud Suitability by Class'
+                        body: |-
+                            Normal: EU public cloud; high: C5 attestation / ISO 27001+27017+27018; very high: private/sovereign.
+                    provider_requirements:
+                        title: 'Provider Requirements'
+                        body: |-
+                            C5 + ISO 27001/27017/27018 + where applicable SOC 2 Type II; EU data location preferred.
+                    responsibility:
+                        title: 'Responsibility Matrix'
+                        body: |-
+                            Shared responsibility per IaaS / PaaS / SaaS documented (OPS.2.2.A4).
+                    data_location:
+                        title: 'Data Location / Third Country'
+                        body: |-
+                            Contractual definition; TIA for US providers; CLOUD Act risk assessed.
+                    encryption:
+                        title: 'Encryption'
+                        body: |-
+                            Customer-managed keys preferred; BYOK/HYOK for very high protection needs (cross-reference CON.1).
+                    federation:
+                        title: 'Identity Federation'
+                        body: |-
+                            SAML/OIDC with MFA and conditional access.
+                    logging:
+                        title: 'Logging / Monitoring'
+                        body: |-
+                            Provider logs in SIEM; additional audit mechanisms.
+                    backup:
+                        title: 'Backup Responsibility'
+                        body: |-
+                            SaaS does NOT back up application data by default — tenant backup mandatory (cross-reference CON.3).
+                    exit:
+                        title: 'Exit Strategy'
+                        body: |-
+                            Data return, deadline, deletion confirmation, crypto-erase; reversibility test every two years.
+                tailoring_field:
+                    cloud_geo:
+                        label: 'Cloud Geo Strategy'
+                        placeholder: 'Example: "Data with high protection needs only in EU regions; sovereign cloud (e.g. German Cloud) at very high; US SaaS only for public documents."'
+                    c5_requirement:
+                        label: 'C5 Attestation Requirement'
+                        placeholder: 'Example: "All SaaS providers with high or sensitive data access must hold a current C5 attestation (Type 2); annual review by compliance."'
+                    exit_test:
+                        label: 'Exit Test'
+                        placeholder: 'Example: "Reversibility test every 18 months for the largest SaaS provider; data return format CSV + JSON; data integrity verification."'
+
+        outsourcing_supplier_directive:
+            v1:
+                title: 'Outsourcing / Supplier Directive'
+                body: |-
+                    # Outsourcing Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: OPS.2.3.A1-A5 (security requirements, selection, contract, multi-tenancy, joint security concept) | EU-DORA Art. 28-30 (ICT third-party risk for financial services) | Edition: {{ bsi.kompendium_edition }} | Review: annual + on contract change*
+
+                    ## 1. Purpose
+                    This directive governs security requirements for suppliers and outsourced service providers of {{ tenant.legal_name }}. It integrates DORA third-party risk management for financial-services entities (cross-reference EU-DORA Art. 28-30).
+
+                    ## 2. Scope
+                    Covers all outsourcing relationships, including IT service providers, cloud providers, processors, cleaning service, security service and all suppliers with access to information assets.
+
+                    ## 3. Supplier Classification
+                    Suppliers are classified by risk level:
+
+                    - **Critical:** access to confidential data, availability-critical or under DORA obligation;
+                    - **Standard:** medium data access or availability needs;
+                    - **Low:** no significant data access, easily replaceable.
+
+                    ## 4. Onboarding Process
+                    Prior to contract signing due diligence is performed:
+
+                    - financial-stability check;
+                    - security certificates (ISO 27001, C5, SOC 2 Type II) per classification;
+                    - security questionnaire (e.g. CAIQ);
+                    - sub-processor concept review;
+                    - DPO review for personal-data processing.
+
+                    ## 5. Minimum Contract Clauses (OPS.2.3.A3)
+                    - **NDA / non-disclosure agreement;**
+                    - **DPA** per GDPR Art. 28 (for personal data);
+                    - **SLA** with availability, response time, recovery time;
+                    - **audit rights** (including by supervisory authorities under DORA);
+                    - **sub-contractor approval** with approval requirement;
+                    - **incident-notification duties** with deadlines;
+                    - **exit / reversibility clauses** (data-return format, deletion confirmation);
+                    - **sanctions** for security violations;
+                    - **DORA clauses** (Art. 30) for financial services.
+
+                    ## 6. Multi-Tenancy (OPS.2.3.A4)
+                    For multi-tenant services the clean separation between tenants is documented and audited; for very high protection needs single tenancy is preferred.
+
+                    ## 7. Ongoing Monitoring
+                    - KPI-based monitoring (availability, incidents);
+                    - incident-notification channel integrated with the DER.2.1 workflow;
+                    - annual security reviews;
+                    - acceptance audits for critical suppliers every 1-3 years.
+
+                    ## 8. Audit Cadence
+                    - critical suppliers: annual (on-site or remote);
+                    - standard: every 2-3 years;
+                    - low: on event.
+
+                    ## 9. Exit and Reversibility Strategy
+                    Contractually defined: data return, deletion confirmation, migration support, exit-process testing (in particular DORA requirement).
+
+                    ## 10. Supply-Chain Mapping
+                    Sub-processors and their sub-processors are mapped where possible; in particular for DORA-eligible providers.
+
+                    ## 11. Concentration Risk
+                    Concentration risk (dependency on few providers) is assessed; back-up providers or multi-sourcing for critical services.
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 5.19-5.23 (supplier relationships); EU-DORA Art. 28-30 for financial services. Approval per: {{ approval.chain }}.*
+                section:
+                    classification:
+                        title: 'Supplier Classification'
+                        body: |-
+                            Critical / standard / low based on data access, availability and DORA obligation.
+                    onboarding:
+                        title: 'Onboarding'
+                        body: |-
+                            Due diligence, certificates, questionnaire, sub-processor concept, DPO review.
+                    contract_clauses:
+                        title: 'Contract Clauses'
+                        body: |-
+                            NDA, DPA, SLA, audit, sub-contractor approval, notification, exit, DORA clauses (OPS.2.3.A3).
+                    multi_tenancy:
+                        title: 'Multi-Tenancy'
+                        body: |-
+                            Separation documented; single tenancy at very high protection needs (OPS.2.3.A4).
+                    monitoring:
+                        title: 'Ongoing Monitoring'
+                        body: |-
+                            KPIs, incident channel, annual reviews, audits.
+                    audit_cadence:
+                        title: 'Audit Cadence'
+                        body: |-
+                            Critical annual; standard every 2-3 years; low on event.
+                    exit:
+                        title: 'Exit Strategy'
+                        body: |-
+                            Data return, deletion confirmation, migration, exit test (DORA-relevant).
+                    supply_chain:
+                        title: 'Supply-Chain Mapping'
+                        body: |-
+                            Sub-processors documented.
+                    concentration:
+                        title: 'Concentration Risk'
+                        body: |-
+                            Assessment, multi-sourcing for critical services.
+                tailoring_field:
+                    critical_suppliers:
+                        label: 'Critical Suppliers'
+                        placeholder: 'Example: "Microsoft (M365), AWS (hosting), Datacom (DC maintenance), DSL-Telekom (connectivity); annual on-site audit; DORA-conforming contracts from Q2 2026."'
+                    contract_template:
+                        label: 'Contract Template'
+                        placeholder: 'Example: "Standard outsourcing contract version 4.0 with DORA annex; audit rights with 30-day notice; sub-contractor approval within 14 days."'
+                    incident_notification:
+                        label: 'Incident Notification Duty'
+                        placeholder: 'Example: "Suppliers report security incidents within 4 h initial + 24 h detail report; activation of crisis team for severity high or critical."'
+
+        detection_directive:
+            v1:
+                title: 'Detection Directive'
+                body: |-
+                    # Detection Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: DER.1.A1 (detection security policy), A2 (legal conditions), A3 (responsibilities), A4 (log messages) | Standard: A5-A11 (correlation, alerting) | Edition: {{ bsi.kompendium_edition }} | Review: annual*
+
+                    ## 1. Purpose
+                    This directive establishes detection of security incidents, anomalies and threat indicators in the IT systems of {{ tenant.legal_name }}. It integrates SIEM, EDR, NDR and where applicable UEBA into a coherent detection strategy.
+
+                    ## 2. Scope
+                    Covers all IT systems in the information network including cloud services, ICS/OT (with special provisions) and external service-provider systems where audit rights exist.
+
+                    ## 3. Detection Strategy
+                    - **SIEM:** central collection and correlation (cross-reference OPS.1.1.5);
+                    - **EDR:** endpoint detection and response (cross-reference OPS.1.1.4);
+                    - **NDR:** network detection and response;
+                    - **UEBA:** user and entity behaviour analytics (with DPIA);
+                    - **Cloud-native detection:** cloud-provider security centres (e.g. AWS GuardDuty, Azure Defender).
+
+                    ## 4. Use Cases / Detection Rules
+                    Use cases are based on:
+
+                    - MITRE ATT&CK framework;
+                    - BSI threat advisory and warnings;
+                    - own threat analyses (cross-reference risk analysis BSI 200-3);
+                    - sectoral threat-intelligence feeds.
+
+                    Use cases are reviewed at least annually and extended for new threats.
+
+                    ## 5. False-Positive Management
+                    The SOC team maintains a tuning list; false-positive rate is tracked as KPI; high FP rates trigger use-case logic adjustments.
+
+                    ## 6. Alerting and Escalation
+                    Classification P1-P4 with response times:
+
+                    | Tier | Response |
+                    |---|---|
+                    | P1 (critical) | immediate, 24/7 |
+                    | P2 (high) | 1 hour |
+                    | P3 (medium) | 4 hours |
+                    | P4 (low) | 1 working day |
+
+                    ## 7. SOC Model
+                    The SOC model is concretised in the tailoring (in-house, external, hybrid). For external SOC outsourcing requirements apply (cross-reference OPS.2.3).
+
+                    ## 8. Data Protection (DER.1.A2)
+                    - works/personnel-council co-determination;
+                    - DPIA for UEBA with personal-data evaluation;
+                    - personal data minimised; pseudonymisation where possible;
+                    - access rights to evaluations restrictive.
+
+                    ## 9. Threat-Intelligence Feeds
+                    - commercial feeds (to be specified in tailoring);
+                    - BSI threat advisory and warnings;
+                    - MISP communities;
+                    - sectoral CERTs (e.g. CERT-Bund, sectoral CSIRTs).
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 8.16 (monitoring activities). Approval per: {{ approval.chain }}.*
+                section:
+                    strategy:
+                        title: 'Detection Strategy'
+                        body: |-
+                            SIEM, EDR, NDR, UEBA, cloud-native; integrated correlation.
+                    use_cases:
+                        title: 'Use Cases / Rules'
+                        body: |-
+                            MITRE ATT&CK + BSI advisory + own analyses + sectoral feeds.
+                    fp_management:
+                        title: 'False-Positive Management'
+                        body: |-
+                            SOC tuning; FP rate KPI; use-case adjustment.
+                    alerting:
+                        title: 'Alerting'
+                        body: |-
+                            P1-P4 with response times 24/7 / 1 h / 4 h / 1 WD.
+                    soc_model:
+                        title: 'SOC Model'
+                        body: |-
+                            In-house / external / hybrid; for external cross-reference OPS.2.3.
+                    privacy:
+                        title: 'Data Protection'
+                        body: |-
+                            Co-determination, DPIA for UEBA, pseudonymisation, restrictive access (DER.1.A2).
+                    threat_intel:
+                        title: 'Threat Intelligence'
+                        body: |-
+                            Commercial + BSI advisory + MISP + sectoral CERTs.
+                tailoring_field:
+                    soc_setup:
+                        label: 'SOC Setup'
+                        placeholder: 'Example: "Hybrid: in-house SOC 8x5 + external 24/7 provider (contract with Z-CERT GmbH); escalation to internal ISB on-call pool at P1."'
+                    threat_feeds:
+                        label: 'Threat-Intel Feeds'
+                        placeholder: 'Example: "BSI-CERT-Bund (mandatory), MISP community sector X, commercial feed (Mandiant); evaluation in SIEM with IOC matching."'
+                    ueba_status:
+                        label: 'UEBA Status'
+                        placeholder: 'Example: "UEBA not yet active; pilot Q3 2026 with works-council co-determination and DPIA; use cases: anomalous login behaviour, data exfiltration."'
+
+        incident_response_directive:
+            v1:
+                title: 'Incident Response Directive'
+                body: |-
+                    # Incident Response Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: DER.2.1.A1 (definition), A2 (handling policy), A3 (notification paths), A4 (containment), A5 (recovery), A6 (post-incident) | Standard: A7-A14 (specialised teams, external support) | Regulatory: NIS2 Art. 23 (24h/72h/1m), GDPR Art. 33 (72h), DORA Art. 17-23, BSIG §8b (critical-infrastructure) | Edition: {{ bsi.kompendium_edition }} | Review: annual + after each major incident*
+
+                    ## 1. Purpose
+                    This directive governs the handling of security incidents at {{ tenant.legal_name }}. It defines notification paths, response phases, escalations and external notification duties.
+
+                    ## 2. Scope
+                    Covers all security incidents, including cyber attacks, data-protection breaches, physical security incidents and insider threats.
+
+                    ## 3. Definition: Security Incident vs. Disturbance (DER.2.1.A1)
+                    - **Security incident:** event that impairs or could impair confidentiality, integrity, availability or authenticity;
+                    - **Disturbance:** technical impairment without security relevance (e.g. performance issue without manipulation suspicion).
+
+                    ## 4. Classification Matrix (Severity)
+                    | Tier | Example | Response |
+                    |---|---|---|
+                    | low | individual failed logins | standard handling |
+                    | medium | confirmed phishing victim | SOC + ISB escalation |
+                    | high | malware infection of single systems | ISB + IT lead + crisis-team preparation |
+                    | critical | ransomware attack, mass data leak | crisis team + external CERTs + authorities |
+
+                    ## 5. Notification Paths (DER.2.1.A3)
+                    - **Internal:** employees → service desk → SOC/ISB → top management;
+                    - **External (statutory):**
+                      - **GDPR Art. 33:** within 72 hours to supervisory authority (BfDI);
+                      - **NIS2 Art. 23:** early warning 24 h, detail report 72 h, final report 1 month;
+                      - **DORA Art. 19:** initial notification to supervisory authority (BaFin/ECB);
+                      - **BSIG §8b (critical-infrastructure):** without delay to BSI;
+                      - **Law enforcement:** ZAC or LKA where criminal offences exist.
+
+                    ## 6. Response Phases
+                    1. **Detect** — via SOC, EDR, employee report;
+                    2. **Assess** — severity classification;
+                    3. **Contain** — isolation, account block;
+                    4. **Eradicate** — malware removal, vulnerability patching;
+                    5. **Recover** — restore from verified backup, verification;
+                    6. **Lessons Learned** — post-incident review, derive measures.
+
+                    ## 7. CSIRT/CERT
+                    For medium and higher classification the internal CSIRT is activated; for critical classification additionally an external incident-response partner and CERT-Bund.
+
+                    ## 8. Escalation Tiers
+                    - **Level 1:** SOC + ISB;
+                    - **Level 2:** ISB + IT lead + emergency officer where applicable;
+                    - **Level 3:** crisis team + top management + external authorities where applicable;
+                    - **Level 4:** external crisis communication (press office, customers).
+
+                    ## 9. Forensics Interface
+                    For incidents requiring forensics the IT-Forensics Directive applies (cross-reference DER.2.2). Evidence collection begins immediately, without powering off the system.
+
+                    ## 10. External Communication
+                    Press office, customer communication and supervisory communication are coordinated centrally by the press office; content is pre-cleared by the ISB and legal.
+
+                    ## 11. Exercise Obligation
+                    At least annually a tabletop exercise with the crisis team; for critical-infrastructure additionally a simulation exercise. Cross-reference BCM exercises DER.4.
+
+                    ## 12. Specific Notification Duties
+                    Wizard / ISB maintains a **notification-duties matrix** with concrete recipients, deadlines, templates, escalation. The matrix is updated at least annually.
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 5.24-5.28 (incident management); EU-NIS2 Art. 23; GDPR Art. 33/34; EU-DORA Art. 17-23; BSIG §8b. Approval per: {{ approval.chain }}.*
+                section:
+                    definition:
+                        title: 'Definition'
+                        body: |-
+                            Security incident vs. disturbance; CIA impairment as criterion (DER.2.1.A1).
+                    classification:
+                        title: 'Classification'
+                        body: |-
+                            Low / medium / high / critical with differentiated response.
+                    reporting:
+                        title: 'Notification Paths'
+                        body: |-
+                            Internal: service desk → SOC/ISB → top management; external: BfDI 72 h, NIS2 24 h/72 h/1 m, BSI without delay, DORA initial notification.
+                    phases:
+                        title: 'Response Phases'
+                        body: |-
+                            Detect, assess, contain, eradicate, recover, lessons learned.
+                    csirt:
+                        title: 'CSIRT/CERT'
+                        body: |-
+                            Internal CSIRT + external partner + CERT-Bund for critical incidents.
+                    escalation:
+                        title: 'Escalation Tiers'
+                        body: |-
+                            Levels 1-4 with owners per tier.
+                    forensics:
+                        title: 'Forensics Interface'
+                        body: |-
+                            DER.2.2 IT forensics; evidence collection immediate; do not power off.
+                    communication:
+                        title: 'External Communication'
+                        body: |-
+                            Press office coordinates; content cleared by ISB / legal.
+                    exercise:
+                        title: 'Exercise Obligation'
+                        body: |-
+                            At least annual tabletop; critical-infrastructure additional simulation.
+                    obligations_matrix:
+                        title: 'Notification-Duties Matrix'
+                        body: |-
+                            Maintained matrix with recipients, deadlines, templates; annual update.
+                tailoring_field:
+                    notification_recipients:
+                        label: 'Notification Recipients'
+                        placeholder: 'Example: "BSI (critical-infrastructure §8b), BfDI (GDPR 72 h), BaFin (DORA for financial services), sectoral CERT; matrix maintained by ISB."'
+                    csirt_provider:
+                        label: 'CSIRT Provider'
+                        placeholder: 'Example: "Internal CSIRT 8x5 with external retainer Z-CERT GmbH 24/7; activation at severity high or critical; annual rehearsal."'
+                    exercise_program:
+                        label: 'Exercise Programme'
+                        placeholder: 'Example: "Tabletop quarterly with crisis team + ISMS team; annual simulation with external moderator; lessons learned in measures plan."'
+
+        it_forensics_directive:
+            v1:
+                title: 'IT Forensics Directive'
+                body: |-
+                    # IT Forensics Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: DER.2.2.A1 (legal conditions), A2 (evidence-collection guideline), A3 (training) | Edition: {{ bsi.kompendium_edition }} | Review: 24 months*
+
+                    ## 1. Purpose
+                    This directive governs forensic evidence collection and analysis in the case of security incidents, internal investigations and where applicable criminal complaints.
+
+                    ## 2. Scope
+                    Covers all IT systems in the information network, including cloud services and external systems where audit rights exist.
+
+                    ## 3. Preparation
+                    - forensics toolkit (hardware: write blocker, image drive; software: forensic suites);
+                    - trained personnel (cross-reference ORP.3 awareness; specialised forensic training);
+                    - sufficient storage for images (buffer storage);
+                    - agreement with external forensics provider for escalation cases.
+
+                    ## 4. Evidence Collection (DER.2.2.A2)
+                    - **Chain of custody:** continuous documentation from acquisition to analysis;
+                    - **Hashing:** SHA-256 before and after acquisition;
+                    - **Write blocker:** hardware or software-based;
+                    - **Order:** from most volatile (RAM, network sessions) to most stable (data carriers);
+                    - **Documentation:** date, time, person, source, tool, hash.
+
+                    ## 5. In-House vs. External Forensics
+                    In-house forensics for standard cases; external for:
+
+                    - legal proceedings (court admissibility);
+                    - very complex or long-term investigations;
+                    - cross-border cases;
+                    - cases with conflict of interest (e.g. insider suspicion).
+
+                    ## 6. Legal Aspects (DER.2.2.A1)
+                    - works/personnel-council co-determination for employee forensics;
+                    - criminal-complaint decision by legal/ISB;
+                    - GDPR compliance (Art. 6(1)(f), Art. 10 for criminal data);
+                    - confidentiality obligations during investigations.
+
+                    ## 7. Data Protection in Forensics
+                    - minimise personal data;
+                    - analyse only to the necessary extent;
+                    - limit retention of forensic artefacts;
+                    - consult DPO for GDPR relevance.
+
+                    ## 8. Cooperation with Authorities
+                    For criminal complaints or engagement of authorities (BSI, LKA, BKA, public prosecutor): contact via defined single point of contact (SPOC); evidence handed over with receipt where applicable.
+
+                    ## 9. Training (DER.2.2.A3)
+                    Forensic officers receive regular training (e.g. SANS Forensics, BSI forensics courses).
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 5.28 (collection of evidence). Approval per: {{ approval.chain }}.*
+                section:
+                    preparation:
+                        title: 'Preparation'
+                        body: |-
+                            Forensics toolkit, trained personnel, storage, external partner.
+                    evidence_collection:
+                        title: 'Evidence Collection'
+                        body: |-
+                            Chain of custody, SHA-256, write blocker, order volatile→stable (DER.2.2.A2).
+                    in_or_out:
+                        title: 'In-House vs. External'
+                        body: |-
+                            In-house standard; external for legal proceedings, complexity, cross-border, conflict of interest.
+                    legal:
+                        title: 'Legal Aspects'
+                        body: |-
+                            Co-determination, criminal complaint, GDPR Art. 6/10, confidentiality (DER.2.2.A1).
+                    privacy:
+                        title: 'Data Protection'
+                        body: |-
+                            Minimise personal data, limit retention, consult DPO.
+                    authorities:
+                        title: 'Cooperation with Authorities'
+                        body: |-
+                            SPOC for BSI / LKA / BKA / prosecutor; evidence with receipt.
+                    training:
+                        title: 'Training'
+                        body: |-
+                            SANS Forensics / BSI courses regularly (DER.2.2.A3).
+                tailoring_field:
+                    forensics_team:
+                        label: 'Forensics Team'
+                        placeholder: 'Example: "Internal forensics team of two with GIAC GCFE certification; external retainer Forensics GmbH activatable within 4 hours."'
+                    toolkit:
+                        label: 'Forensics Toolkit'
+                        placeholder: 'Example: "Write blocker Tableau T8u, Magnet AXIOM, X-Ways Forensics; buffer storage 30 TB in DC-A."'
+                    external_partner:
+                        label: 'External Partner'
+                        placeholder: 'Example: "Framework agreement with Forensics GmbH; response time 4 h; on-site 24 h; court-admissible forensics with expert opinion optional."'
+
+        emergency_management_directive:
+            v1:
+                title: 'Emergency Management Directive'
+                body: |-
+                    # Emergency Management Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-4 (BCM Final 2023) | Building blocks: DER.4.A1 (emergency-management policy), A2 (objectives/responsibilities), A3 (emergency concept), A4 (emergency organisation) | ISO mapping: ISO 22301:2019 (BCMS) + ISO 27001 Annex A 5.29-5.30 (ICT readiness for business continuity) | Edition: {{ bsi.kompendium_edition }} | Review: annual + after each activated emergency*
+
+                    ## 1. Purpose
+                    This directive governs emergency management at {{ tenant.legal_name }} in accordance with BSI Standard 200-4 and integrates ISO 22301:2019 for business continuity management. It establishes the organisational, procedural and technical foundations for resilience and recovery after disruptions.
+
+                    ## 2. Scope
+                    Covers all business processes, IT processes, sites and supplier relationships of {{ tenant.legal_name }} identified as critical in the BIA.
+
+                    ## 3. Emergency Policy (DER.4.A1)
+                    Top management commits to establishing and maintaining a BCMS in accordance with BSI 200-4 and ISO 22301:2019. Emergency management is a strategic obligation; resources are provided; the emergency officer {{ roles.notfallbeauftragter.fullName }} is appointed.
+
+                    ## 4. Emergency Organisation (DER.4.A4)
+                    - **Crisis team:** strategic steering in emergencies; chaired by top management or designated representative;
+                    - **Emergency officer:** {{ roles.notfallbeauftragter.fullName }} – operational steering of the BCMS;
+                    - **Recovery teams:** per critical business process; technically and functionally composed;
+                    - **Crisis-communication team:** internal + external (press office, customers, authorities).
+
+                    ## 5. BCM Methodology
+                    The methodology follows BSI 200-4 and uses one of the tiers:
+
+                    - **Reactive BCMS** (entry);
+                    - **Build-up BCMS** (full scope);
+                    - **Standard BCMS** (certifiable per ISO 22301).
+
+                    ## 6. BIA (Business Impact Analysis)
+                    The BIA is maintained in the BCM module; cross-reference BCM module. It identifies critical business processes, dependencies, RTO/RPO requirements and maximum tolerable period of disruption (MTPD).
+
+                    ## 7. Emergency Preparedness (DER.4.A3)
+                    - redundancies (data centres, sites, personnel);
+                    - cross-site concepts;
+                    - supplier agreements with availability SLA (cross-reference OPS.2.3);
+                    - recovery procedures and sequences.
+
+                    ## 8. Emergency Plans
+                    Emergency plans cover:
+
+                    - business-continuity plans (provisional emergency-operation solutions);
+                    - recovery plans (technical);
+                    - IT emergency plan / DR plan;
+                    - crisis-communication plan;
+                    - site-loss plan / personnel-loss plan.
+
+                    ## 9. Crisis Communication
+                    - internal: employees via alternative channels;
+                    - external: customers / suppliers / supervisory authorities / press;
+                    - contact lists maintained; alternative communication channels established.
+
+                    ## 10. Exercise and Test Concept
+                    At least annually:
+
+                    - tabletop exercise with crisis team;
+                    - technical DR tests (recovery of a critical system);
+                    - training of recovery teams;
+                    - for standard BCMS additionally live operational tests.
+
+                    ## 11. Activation Triggers
+                    Clearly defined triggers for BCMS activation (e.g. site loss, critical cyber attack, pandemic, critical supplier failure).
+
+                    ## 12. Incident-Response Interface
+                    For cyber attacks the incident response is performed first (cross-reference DER.2.1); upon massive impact the BCMS is activated.
+
+                    ---
+                    *Cross-reference ISO 22301:2019 (BCMS); ISO 27001 Annex A 5.29 (ICT readiness for business continuity), 5.30 (ICT readiness in business continuity tests). Approval per: {{ approval.chain }}.*
+                section:
+                    leadership:
+                        title: 'Emergency Policy'
+                        body: |-
+                            Top-management commitment; emergency officer {{ roles.notfallbeauftragter.fullName }} (DER.4.A1).
+                    organisation:
+                        title: 'Emergency Organisation'
+                        body: |-
+                            Crisis team, emergency officer, recovery teams, crisis communication (DER.4.A4).
+                    methodology:
+                        title: 'BCM Methodology'
+                        body: |-
+                            BSI 200-4 reactive / build-up / standard; ISO 22301 compatibility.
+                    bia:
+                        title: 'BIA'
+                        body: |-
+                            BIA in BCM module; critical processes, dependencies, RTO/RPO/MTPD.
+                    preparedness:
+                        title: 'Emergency Preparedness'
+                        body: |-
+                            Redundancies, cross-site, supplier SLA, recovery procedures (DER.4.A3).
+                    plans:
+                        title: 'Emergency Plans'
+                        body: |-
+                            Business continuity, recovery, IT-DR, crisis communication, site/personnel-loss.
+                    communication:
+                        title: 'Crisis Communication'
+                        body: |-
+                            Internal + external; alternative channels; current contact lists.
+                    exercise:
+                        title: 'Exercise / Test'
+                        body: |-
+                            Annual tabletop + technical DR tests; standard BCMS additional live tests.
+                    triggers:
+                        title: 'Activation Triggers'
+                        body: |-
+                            Site loss, cyber attack, pandemic, critical supplier failure.
+                    incident_interface:
+                        title: 'IR Interface'
+                        body: |-
+                            Cyber attacks: IR first (DER.2.1); upon massive impact BCMS activation.
+                tailoring_field:
+                    bcm_tier:
+                        label: 'BCM Tier'
+                        placeholder: 'Example: "Currently build-up BCMS per BSI 200-4; roadmap to standard BCMS / ISO 22301 certification Q4 2027; annual maturity assessment."'
+                    crisis_team_members:
+                        label: 'Crisis-Team Members'
+                        placeholder: 'Example: "Chair CFO; deputy chair CISO {{ roles.ciso.fullName }}; members: COO, ISB {{ roles.isb.fullName }}, head of IT, press office, legal; deputies named."'
+                    exercise_calendar:
+                        label: 'Exercise Calendar'
+                        placeholder: 'Example: "Tabletop Q1, technical DR test Q2 (core system A), pandemic exercise Q3, site-loss Q4; lessons learned in measures plan."'
+
+        schutzbedarfsfeststellung_method:
+            v1:
+                title: 'Protection-Needs Assessment – Method'
+                body: |-
+                    # Method: Protection-Needs Assessment of {{ tenant.legal_name }}
+
+                    *Document type: **Method** (not a behaviour/rule document) | Normative anchor: BSI Standard 200-2 chapter 6 | Cross-reference: ISO/IEC 27005 (risk management), ISO/IEC 27001 clause 6.1.2 | Edition: {{ bsi.kompendium_edition }} | Review: 24 months*
+
+                    ## 1. Purpose
+                    This method document describes the procedure for **protection-needs assessment** at {{ tenant.legal_name }} in accordance with BSI Standard 200-2 chapter 6. It is the methodological foundation for classifying the target objects (applications, IT systems, rooms, communication links) of the information network. It is NOT a directive in the sense of a behaviour/rule provision, but a **methodological description**.
+
+                    ## 2. Scope
+                    This method applies to all target objects of the information network per the structure analysis (cross-reference ISMS Concept ISMS.1.A6).
+
+                    ## 3. Protection Goals
+                    Protection-needs assessment is performed for the protection goals:
+
+                    - **Confidentiality (C)** — protection against unauthorised disclosure;
+                    - **Integrity (I)** — protection against unauthorised or unintended modification;
+                    - **Availability (A)** — protection against unplanned outage.
+
+                    Optionally extended by:
+
+                    - **Authenticity** — verification of the identity of actors and data;
+                    - **Non-repudiation** — verifiable attribution of actions.
+
+                    ## 4. Protection-Needs Categories (BSI standard 3-tier)
+                    Three protection-needs categories are used by default:
+
+                    | Category | Meaning |
+                    |---|---|
+                    | **normal** | damage impact is limited and manageable |
+                    | **high** | damage impact may be considerable |
+                    | **very high** | damage impact may reach existence-threatening, catastrophic dimension |
+
+                    Tenant-specific extension to a 4-tier scheme is possible but only with justification recommended (mapping issues with other frameworks).
+
+                    ## 5. Definition per Tier and Goal (Tailoring)
+                    {{ tenant.legal_name }} defines damage levels and damage scenarios per tier and protection goal. By way of example (to be concretised in the tailoring):
+
+                    | Tier | Confidentiality | Integrity | Availability |
+                    |---|---|---|---|
+                    | normal | limited internal effect; minor revenue impact | correctable data error | outage <24 h tolerable |
+                    | high | substantial reputational or contractual breach | non-correctable data error with downstream effect | outage 4-24 h harmful |
+                    | very high | existence-threatening; breach of statutory duty | data loss with downstream effect | outage <1 h existence-threatening |
+
+                    ## 6. Damage-Scenarios Catalogue (BSI 200-2 ch. 6)
+                    The following damage scenarios are evaluated:
+
+                    1. **Violations of laws, regulations, contracts** (e.g. GDPR fines, BSIG sanctions, contractual penalties);
+                    2. **Impairment of the right to informational self-determination** (data-subject rights);
+                    3. **Impairment of physical integrity** (relevant in medical / industrial IT);
+                    4. **Impairment of task fulfilment** (business / public-administration tasks);
+                    5. **Negative internal or external impact** (reputation, trust, politics);
+                    6. **Financial impact** (direct and indirect damage).
+
+                    ## 7. Inheritance Rules (BSI 200-2 ch. 6.2)
+                    Protection needs propagate along dependencies between target objects according to the following rules:
+
+                    - **Maximum principle:** the protection needs of a dependent target object are at least as high as the highest protection needs of the applications/data it processes. Standard rule.
+                    - **Distribution effect** (optional): protection needs may decrease if data are processed in a distributed way such that individual records are less protection-needy than the aggregate. Apply with justification.
+                    - **Cumulation effect** (optional): protection needs may increase if many normal-protection-needs records are aggregated in one target object such that cumulatively a higher protection need arises. Apply with justification.
+
+                    > **Memory cross-reference note:** The existing `AssetDependencyService` from the protection-needs inheritance project implements the maximum principle technically. This method documents the procedure; the service is the operational implementation.
+
+                    ## 8. Documentation Templates
+                    For each target object the protection needs per goal are determined and justified:
+
+                    - **Applications:** owner, category + justification per CIA;
+                    - **IT systems:** derived from the applications under the maximum principle;
+                    - **Rooms:** derived from IT systems / data carriers;
+                    - **Communication links:** derived from the data transmitted.
+
+                    ## 9. Acceptance Procedure
+                    The protection-needs assessment is performed by the application/system owner and validated by the ISB {{ roles.isb.fullName }}. For protection-needs categories *high* or *very high* the top management or its delegate additionally approves.
+
+                    ## 10. Updates
+                    The protection-needs assessment is:
+
+                    - updated upon structural changes (new / changed target objects);
+                    - reviewed at least annually;
+                    - revised event-driven for material incidents.
+
+                    ## 11. Interface to Risk Analysis (BSI 200-3)
+                    For protection-needs category *high* or *very high* and for core protection a supplementary risk analysis per BSI 200-3 is performed (cross-reference ISMS Concept ISMS.1.A6).
+
+                    ---
+                    *Cross-reference ISO/IEC 27005 (IT risk management), ISO/IEC 27001 clause 6.1.2; BSI Standard 200-3 for supplementary risk analysis. Approval per: {{ approval.chain }}.*
+                section:
+                    purpose:
+                        title: 'Purpose'
+                        body: |-
+                            Methodological foundation for classifying target objects per BSI 200-2 ch. 6. NOT a directive.
+                    protection_goals:
+                        title: 'Protection Goals'
+                        body: |-
+                            Confidentiality, integrity, availability + optional authenticity and non-repudiation.
+                    categories:
+                        title: 'Protection-Needs Categories'
+                        body: |-
+                            BSI standard 3-tier (normal / high / very high); 4-tier only with justification.
+                    levels_definition:
+                        title: 'Definition per Tier'
+                        body: |-
+                            Damage levels and scenarios per tier and goal; concretised in tailoring.
+                    damage_scenarios:
+                        title: 'Damage Scenarios'
+                        body: |-
+                            Laws/contracts, self-determination, physical integrity, task fulfilment, internal/external impact, financial.
+                    inheritance:
+                        title: 'Inheritance Rules'
+                        body: |-
+                            Maximum principle (default); distribution + cumulation effect with justification (BSI 200-2 ch. 6.2).
+                    documentation:
+                        title: 'Documentation Templates'
+                        body: |-
+                            Applications, IT systems, rooms, communication; per CIA category + justification.
+                    acceptance:
+                        title: 'Acceptance'
+                        body: |-
+                            Application owner; ISB validation; top-management acceptance for high / very high.
+                    update:
+                        title: 'Updates'
+                        body: |-
+                            Structural change, annual review, event-driven.
+                    risk_interface:
+                        title: 'Risk-Analysis Interface'
+                        body: |-
+                            For high / very high or core protection supplementary BSI 200-3.
+                tailoring_field:
+                    levels_definitions:
+                        label: 'Tier Definitions per Goal'
+                        placeholder: 'Example: "high confidentiality: disclosure leads to fine 100 k - 1 M EUR and reputational damage with press release; very high availability: 1 h outage threatens existence."'
+                    inheritance_choice:
+                        label: 'Inheritance Rule Choice'
+                        placeholder: 'Example: "Default: maximum principle; distribution effect only exceptionally with justification; cumulation effect active for mass-data processing."'
+                    sample_object:
+                        label: 'Sample Target Object with Rating'
+                        placeholder: 'Example: "Application Salesforce CRM: C=high (customer personal data), I=high (order data), A=high (8 h outage causes contractual breach); justification documented in CMDB."'

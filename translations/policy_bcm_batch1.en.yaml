@@ -1,0 +1,1075 @@
+policy:
+    bcm:
+        bcms_top_level:
+            v1:
+                title: 'Business Continuity Policy (Notfallleitlinie)'
+                body: |-
+                    # Business Continuity Policy of {{ tenant.legal_name }}
+
+                    *Document class: Top-level Policy | Standards: ISO 22301:2019 Clauses 5.1 + 5.2 a-f, BSI 200-4:2023 Section 4.1 + 4.4 | ISO/IEC 27001:2022 A.5.29 + A.5.30 | EU-DORA Article 11 | Language: English (formal British/EU) | Review interval: every {{ bcm.review_interval_months }} months*
+
+                    ## 1. Purpose and preamble
+                    This Business Continuity Policy is issued by the top management of {{ tenant.legal_name }} and constitutes the highest normative statement of the Business Continuity Management System (BCMS). It satisfies the requirements of ISO 22301:2019 Clause 5.2 a-f and BSI 200-4 (2023) Section 4.1 ("Notfallleitlinie"). The executive board of {{ tenant.legal_name }} hereby commits to maintaining the continuity of business operations during disruptive events, emergencies and crises, and to providing the resources necessary for that purpose. This commitment is non-delegable (ISO 22301 Clause 5.1 "Leadership and commitment"). This policy stands alongside the Information Security Policy and shall be coherent with the Data Protection Policy and the wider management system framework.
+
+                    ## 2. Scope
+                    The scope of the BCMS is bindingly defined in the separate document *BCMS Scope Statement* in accordance with ISO 22301 Clause 4.3. This Business Continuity Policy applies to all employees (irrespective of contractual status), contractors, working students, interns, and any service providers and third parties supporting critical business processes of {{ tenant.legal_name }}. It covers all legal entities, sites and business processes flagged "in scope" in the scope statement. Exclusions are justified in the scope document and shall not impair the organisation's ability to meet its continuity objectives (ISO 22301 Clause 4.3 c).
+
+                    ## 3. BCMS objectives (Cl. 5.2 b + Cl. 6.2)
+                    {{ tenant.legal_name }} pursues the following overarching BCMS objectives, derived from the organisational context (Clause 4.1), the requirements of interested parties (Clause 4.2) and applicable regulatory obligations:
+
+                    1. **Protection of life and health** — paramount priority across all emergency and crisis scenarios.
+                    2. **Maintenance of critical business processes** — within the recovery time objectives (RTO) defined by the BIA methodology.
+                    3. **Minimisation of financial, regulatory and reputational damage** through orderly resumption and restoration procedures.
+                    4. **Fulfilment of applicable regulatory obligations** (in particular {{ standards_adopted_list }}, EU-DORA, NIS2, sector-specific requirements such as KRITIS where applicable).
+                    5. **Preservation of trust** vis-a-vis customers, employees, supervisory authorities and business partners.
+                    6. **Continual improvement** of the BCMS through exercises, audits and management review in accordance with Clauses 9.2, 9.3 and 10.1.
+
+                    Specific, measurable annual objectives are documented separately in the document *BCMS Annual Objectives* in accordance with ISO 22301 Clause 6.2.
+
+                    ## 4. Top-management commitment (Cl. 5.1)
+                    The executive board of {{ tenant.legal_name }} ({{ approval.chain }}) hereby commits, in accordance with ISO 22301 Clause 5.1, to:
+
+                    - providing the human, financial and infrastructural resources required for the BCMS;
+                    - ensuring that BCMS requirements are integrated into the business processes of the organisation;
+                    - promoting the importance of effective business continuity management and conformity with this policy;
+                    - ensuring that the BCMS achieves its intended outcomes;
+                    - actively guiding and supporting the BCM Officer (Notfallbeauftragte/r) {{ roles.bcm_officer.fullName }} and the Crisis Team Lead {{ roles.crisis_team_lead.fullName }};
+                    - promoting continual improvement of the BCMS;
+                    - participating personally in crisis-team activations and management reviews.
+
+                    Overall accountability is non-delegable and remains with top management. Operational responsibility is delegated to the BCM Officer {{ roles.bcm_officer.fullName }}, who reports directly to the executive board.
+
+                    ## 5. Roles and responsibilities (Cl. 5.3, BSI 200-4 Section 4.4)
+                    Pursuant to ISO 22301 Clause 5.3 and BSI 200-4 Section 4.4 the following roles are bindingly assigned:
+
+                    - **Top management** ({{ approval.chain }}) — approval of the policy, provision of resources, conduct of management review under Clause 9.3, ultimate escalation authority during a crisis.
+                    - **BCM Officer (Notfallbeauftragte/r)** — {{ roles.bcm_officer.fullName }}: stewardship of the BCMS, reporting to top management, coordination of the BIA, maintenance of the policy, oversight of escalation and notification chains. BSI 200-4 Section 4.4 explicitly requires the appointment of a deputy.
+                    - **Crisis Team Chair / Crisis Team Lead** — {{ roles.crisis_team_lead.fullName }}: convocation of the Crisis Team, binding crisis decisions, activation of BCM plans.
+                    - **Information Security Officer (ISB)** — {{ roles.isb.fullName }}: interface with the ISMS, assessment of security incidents with continuity impact (A.5.29 + A.5.30).
+                    - **Process Owners** — accountable for maintenance and currency of business continuation, recovery and restoration plans for their respective processes.
+                    - **BC Plan Owners** — maintenance of individual BC plans, participation in exercises, contribution to lessons-learned.
+                    - **Employees and contractors** — awareness of this policy, compliance with emergency instructions, reporting of disruptions through the defined channels.
+
+                    The full approval chain for this policy is: {{ approval.chain }}.
+
+                    ## 6. Compliance commitment (Cl. 5.2 c)
+                    {{ tenant.legal_name }} commits to compliance with applicable legal, regulatory and contractual requirements, in particular:
+
+                    - **ISO 22301:2019** "Security and resilience — Business continuity management systems — Requirements" — primary BCMS framework.
+                    - **ISO 22313:2020** — Application guidance to ISO 22301 (informative).
+                    - **BSI 200-4 (2023)** "Business Continuity Management" — where BSI IT-Grundschutz has been adopted (see scope document).
+                    - **ISO/IEC 27001:2022 A.5.29** ("Information security during disruption") and **A.5.30** ("ICT readiness for business continuity").
+                    - **EU-DORA Regulation (EU) 2022/2554 Articles 11 + 12** — Response and recovery, ICT business continuity policy (where applicable as a financial entity).
+                    - **NIS2 Directive (EU) 2022/2555** — risk-management measures including backup and crisis management.
+                    - **KRITIS regulation** and sector-specific requirements (BSI-KritisV, IT-SiG 2.0, sectoral minimum standards).
+                    - **GDPR Article 32(1)(b) and (c)** — ability to restore the availability and access to personal data in a timely manner in the event of a physical or technical incident.
+
+                    The list of applicable requirements is reviewed at least annually by the BCM Officer in coordination with Compliance and Legal.
+
+                    ## 7. Continual improvement (Cl. 10.1, BSI 200-4 Section 9)
+                    The BCMS is continually improved. The organisation commits to:
+
+                    - conducting internal BCMS audits in accordance with Clause 9.2;
+                    - conducting exercises and tests in accordance with the separate Exercise & Testing Programme (frequency: {{ bcm.exercise_frequency }});
+                    - evaluating real-world activations through lessons-learned procedures;
+                    - handling nonconformities and corrective actions in accordance with Clause 10.1;
+                    - conducting an annual management review of the BCMS in accordance with Clause 9.3;
+                    - regular effectiveness review of the chosen BCM strategies (per the BC Strategy document);
+                    - evaluation of external sources (BSI advisories, ENISA Threat Landscape, sector CSIRT warnings) to refine threat understanding;
+                    - regular maintenance of the Crisis Team composition and ongoing training of Crisis Team members.
+
+                    BCMS effectiveness is measured by quantitative indicators (e.g. RTO attainment rate, number of completed and failed exercises, average activation duration, number of open corrective actions) and qualitative assessments (e.g. maturity self-assessment per BSI 200-4 Section 9.2). Indicators are reported quarterly to the executive board and form the basis for improvement decisions.
+
+                    ## 7a. BCMS maturity model
+                    {{ tenant.legal_name }} assesses BCMS maturity annually using a stage model (aligned with BSI 200-4 Section 9.2):
+
+                    - **Stage 1 (Initial)** — BCMS activities exist but are unstructured and reactive;
+                    - **Stage 2 (Repeatable)** — defined procedures but without consistent documentation;
+                    - **Stage 3 (Defined)** — fully documented BCMS, regular exercises, validated BC plans;
+                    - **Stage 4 (Measured)** — data-driven evaluation, KPI-led steering, continual improvement;
+                    - **Stage 5 (Optimising)** — proactive adaptation to threat landscape, sector benchmarking, innovation.
+
+                    Target maturity is at least Stage 3 across all in-scope areas, Stage 4 for regulatorily sensitive areas (DORA CIF, KRITIS functions). The annual maturity assessment is part of management review and drives investment prioritisation.
+
+                    ## 8. Review, approval and communication (Cl. 5.2 d-g)
+                    This policy is reviewed at least every {{ bcm.review_interval_months }} months (BSI 200-4 Section 4.1: at least annually) and additionally upon material changes. Material changes include in particular: organisational changes (M&A, new sites, divestitures), serious incidents involving BCM activation, regulatory changes (e.g. new DORA RTS, NIS2 transposition acts), and failed exercises with strategic impact.
+
+                    Approval is granted by top management in accordance with the approval chain {{ approval.chain }}. In group structures (holding) the parent-level Notfallleitlinie is formally adopted by the executive board of each subsidiary (adoption record, not re-issuance).
+
+                    The policy is **actively communicated** (BSI 200-4 Section 4.1 explicitly demands `aktive Kommunikation`): publication on the intranet, integration into onboarding, mandatory annual training in line with A.6.3 of ISO 27001, and communication to third parties via contracts (A.5.20). Read-receipts are recorded centrally; for employees in regulated functions (e.g. Crisis Team members, Process Owners of critical processes) annual refresher training is mandatorily evidenced.
+
+                    ## 9. Violations, sanctions and incentives
+                    Violations of this policy or of subordinate BC plans may result in disciplinary measures pursuant to the Personnel Security Policy (A.6.4 of ISO 27001), civil consequences and criminal prosecution where criminal conduct exists. For third parties, contractual consequences pursuant to A.5.20 take effect (warning, contractual penalty, special termination right). Incentives for active participation in exercises and crisis-team work are reinforced positively (e.g. documented consideration in personnel-development reviews, support for BCM certifications such as ISO 22301 Lead Implementer/Auditor).
+
+                    ## 10. Relationship with subordinate BCMS documents
+                    This policy is the apex of the BCMS document set. Subordinate documents that are mandatory under this policy: BCMS Scope Statement (Cl. 4.3), BIA Methodology (Cl. 8.2.2), BCM Risk Assessment Methodology (Cl. 8.2.3), BC Strategy (Cl. 8.3), BC Plan Template (Cl. 8.4.4), Incident Response & Communication Procedure (Cl. 8.4.3), Crisis Management Plan (Cl. 8.4.4), Recovery / Restoration Plans (Cl. 8.4.5), Exercise & Testing Programme (Cl. 8.6), BCMS Internal Audit Programme (Cl. 9.2), BCMS Management Review Procedure (Cl. 9.3), Nonconformity & Corrective Action Procedure (Cl. 10.1), and - where BSI 200-4 has been adopted - the Notfallhandbuch (BSI 200-4 Section 7). Each subordinate document references this policy in its header and consistently uses the terms and roles defined here.
+
+                    ---
+                    *This Business Continuity Policy commits the organisation to maintaining business continuity and to continually improving the BCMS. Approved by top management.*
+                section:
+                    purpose:
+                        title: 'Purpose and preamble'
+                        body: |-
+                            This policy establishes the BCMS of {{ tenant.legal_name }} pursuant to ISO 22301:2019 Clauses 5.1 and 5.2. It is the highest normative statement on continuity and stands alongside the Information Security Policy. BSI 200-4 (2023) Section 4.1 requires the Notfallleitlinie as a binding top-management commitment.
+                    scope:
+                        title: 'Scope'
+                        body: |-
+                            The scope is bindingly defined in the separate *BCMS Scope Statement* (Clause 4.3). This policy applies to all employees, contractors and third parties within the documented scope. Exclusions are justified and shall not impair the achievement of continuity objectives (Cl. 4.3 c).
+                    objectives:
+                        title: 'BCMS objectives'
+                        body: |-
+                            The overarching objectives of life-safety, process preservation, damage minimisation, compliance, trust preservation and continual improvement form the framework for measurable annual objectives under Clause 6.2. Current objectives are documented in *BCMS Annual Objectives*.
+                    commitment:
+                        title: 'Top-management commitment'
+                        body: |-
+                            The executive board of {{ tenant.legal_name }} ({{ approval.chain }}) commits, pursuant to Clause 5.1, to providing resources, integrating the BCMS into business processes, and continually improving it. Overall accountability is non-delegable.
+                    roles:
+                        title: 'Roles and responsibilities'
+                        body: |-
+                            BCM Officer {{ roles.bcm_officer.fullName }} stewards the BCMS operationally; Crisis Team Chair {{ roles.crisis_team_lead.fullName }} owns crisis decisions; the ISB {{ roles.isb.fullName }} provides the interface with the ISMS pursuant to A.5.29/A.5.30. BSI 200-4 Section 4.4 explicitly requires deputies.
+                    compliance:
+                        title: 'Compliance commitment'
+                        body: |-
+                            Applicable frameworks: ISO 22301:2019, ISO/IEC 27001:2022 A.5.29/A.5.30, EU-DORA Articles 11/12 (where applicable as a financial entity), NIS2, BSI 200-4, KRITIS regulation, GDPR Article 32. The list of applicable requirements is reviewed at least annually.
+                    improvement:
+                        title: 'Continual improvement'
+                        body: |-
+                            The BCMS is continually improved through internal audits (Cl. 9.2), exercises (Cl. 8.6, frequency: {{ bcm.exercise_frequency }}), lessons-learned, corrective actions (Cl. 10.1) and management review (Cl. 9.3).
+                    review:
+                        title: 'Review and communication'
+                        body: |-
+                            Reviewed at least every {{ bcm.review_interval_months }} months (BSI 200-4: at least annually) and additionally upon material changes. Active communication via intranet, onboarding, training and third-party contracts (BSI 200-4 Section 4.1).
+                tailoring_field:
+                    bcms_objectives:
+                        label: 'Organisation-specific BCMS annual objectives'
+                        placeholder: 'Example: "1) Recover all critical customer-facing processes within 4 hours during 2026; 2) annual full-scale exercise with regulator participation; 3) reduce unplanned downtime by 25 % year-on-year; 4) achieve 100 % BC-Plan coverage for Tier-1 processes by Q3."'
+                    bcm_governance_structure:
+                        label: 'BCM governance and escalation structure'
+                        placeholder: 'Example: "BCM Officer reports quarterly to the executive board; monthly BCMS steering committee with ISB, Compliance and IT leadership; once activated the Crisis Team meets at least twice daily until stand-down. Escalation to the supervisory board upon red-level crisis."'
+                    sector_specific_continuity_drivers:
+                        label: 'Sector-specific continuity drivers and supervisory requirements'
+                        placeholder: 'Example: "As a regulated financial entity we are subject to EU-DORA Article 11 with binding recovery requirements for critical or important functions. Supervised by BaFin/Bundesbank with reporting deadlines under DORA RTS at 4h/24h/1mo. Critical-third-party register submitted quarterly to the supervisor."'
+        bcms_scope_statement:
+            v1:
+                title: 'BCMS Scope Statement'
+                body: |-
+                    # BCMS Scope Statement of {{ tenant.legal_name }}
+
+                    *Document class: Policy (governance — defines applicability) | Standards: ISO 22301:2019 Clause 4.3, BSI 200-4 Section 3.2 | Review interval: every {{ bcm.review_interval_months }} months*
+
+                    ## 1. Purpose of this document
+                    This document establishes the scope of the Business Continuity Management System of {{ tenant.legal_name }} pursuant to ISO 22301:2019 Clause 4.3 ("The organization shall determine the boundaries and applicability of the business continuity management system to establish its scope"). It is the foundation document for the Business Continuity Policy, the BIA, the BCM Risk Assessment, the BC Strategy and all BC Plans. The scope statement is binding; every downstream BCMS activity references this scope.
+
+                    ## 2. Organisational scope
+                    The scope covers the following legal entities of {{ tenant.legal_name }}:
+
+                    - **Parent entity**: {{ tenant.legal_name }}, represented by the executive board {{ approval.chain }}.
+                    - **Subsidiaries** (where the holding feature is enabled): see Annex 1 (list of consolidated entities with BCMS inclusion).
+                    - **Branches and operating sites**: per the separate site list (see Section 3).
+
+                    Excluded are exclusively those legally separate entities that operate their own BCM programmes and have provided evidence supporting mutual recognition.
+
+                    ## 3. Geographic scope (sites)
+                    The geographic scope comprises all sites flagged "BCMS-relevant" in the asset and location register. The list is maintained by the BCM Officer {{ roles.bcm_officer.fullName }} and reconciled with the asset register at least annually. Each newly added site undergoes an initial assessment (criticality, RTO assignment, BC-plan need) within 90 days of commissioning. Sites in foreign jurisdictions are addressed in the *Geographic Annex* together with their local regulatory expectations (e.g. country-specific BCM requirements, local supervisory authorities).
+
+                    ## 4. Process scope (in-scope business processes)
+                    The scope covers all business processes of {{ tenant.legal_name }} with a criticality rating of **medium or higher** in the business-process register. The BCMS explicitly addresses the following process categories:
+
+                    - critical core processes (Tier 1, RTO ≤ 4 hours);
+                    - important supporting processes (Tier 2, RTO ≤ 24 hours);
+                    - standard processes with BCM relevance (Tier 3, RTO ≤ 72 hours);
+                    - deferrable processes with documented acceptance (Tier 4, RTO > 72 hours).
+
+                    The assigned process owners are the binding Process Owners under this document and are accountable for maintenance and exercising of the related BC plans.
+
+                    ## 5. Product and service scope
+                    The scope covers all products and services for which continuity commitments are given to external stakeholders (customers, contract partners, supervisory authorities). These include in particular:
+
+                    - availability and recovery commitments in service-level agreements (SLAs);
+                    - regulatorily required minimum availability levels (e.g. EU-DORA Article 11 for critical or important functions);
+                    - contractual delivery commitments with penalty exposure;
+                    - publicly communicated service levels (website availability, hotline hours).
+
+                    ## 6. ICT-service dependencies in scope
+                    The BCMS addresses the ICT services and systems required by in-scope processes per the asset register (with confidentiality / integrity / availability classification). Covered are in particular: core applications, databases, identity providers, network infrastructure, data backups, cloud services and critical third parties (per the supplier register). The interface with the ISMS is established via A.5.30 of ISO 27001 (ICT readiness for business continuity).
+
+                    ## 7. Exclusions with justification (Cl. 4.3 c)
+                    ISO 22301 Clause 4.3 c requires that exclusions shall not impair the organisation's ability to meet its continuity objectives. The following categories may be excluded with justification:
+
+                    - processes with criticality "low" AND no external contractual commitments;
+                    - sites without critical business activity (e.g. pure representative offices);
+                    - subsidiaries with their own recognised BCM programme.
+
+                    Each exclusion is documented in Annex 2 (Exclusion Register) with justification, risk assessment and top-management approval. Exclusions are reassessed during the annual scope review.
+
+                    ## 8. Interfaces with other management systems
+                    The BCMS operates in an integrated manner with the following management systems of {{ tenant.legal_name }}:
+
+                    - **ISMS pursuant to ISO/IEC 27001:2022** — shared asset register, common incident classification (A.5.24-A.5.28), interface via A.5.29 + A.5.30, optional shared internal-audit programme and management review.
+                    - **Privacy management system (PIMS)** under GDPR and ISO/IEC 27701 — interface via GDPR Article 32 (availability and restorability of personal data) and Article 33 (notification duties when BC activation has a privacy nexus).
+                    - **Quality management (QMS)** under ISO 9001 — interface via process ownership and supplier management.
+                    - **IT service management (ITSM)** under ISO/IEC 20000 — interface via incident, change and capacity management.
+
+                    Combined audits across multiple management systems are explicitly anticipated (BSI 200-4 Section 9.1.4 recommends audit consolidation).
+
+                    ## 8a. Applicable regulatory scopes
+                    The BCMS scope bindingly addresses the following regulatory expectations to the extent they are relevant to {{ tenant.legal_name }}:
+
+                    - **EU-DORA Articles 11 + 12** (financial entities) — response and recovery, ICT business continuity policy with recovery requirements for critical or important functions (CIF);
+                    - **EU-DORA Article 28** — third-party risk management with mandatory exit strategies for critical ICT third parties;
+                    - **NIS2 Directive (EU) 2022/2555** — risk-management measures including backup concept and crisis management;
+                    - **BSI-KritisV** and **IT Security Act 2.0** — minimum continuity standards for KRITIS operators;
+                    - **ISO/IEC 27001:2022 A.5.29** and **A.5.30** — interface ISMS / BCMS;
+                    - **GDPR Article 32(1)(b) and (c)** — restorability of personal data;
+                    - **MaRisk AT 7.3** and supervisor-notification duties under EU-DORA;
+                    - **TKG / TR 03182** and sectoral minimum standards (e.g. energy, healthcare, transportation).
+
+                    The BCM Officer {{ roles.bcm_officer.fullName }} maintains a consolidated regulator matrix that maps each requirement to the covering BCMS document node.
+
+                    ## 9. Maintenance, review intervals and change triggers
+                    This scope statement is updated at least annually (review interval {{ bcm.review_interval_months }} months) and upon every material organisational event. Change triggers include in particular:
+
+                    - commissioning or closure of a BCMS-relevant site;
+                    - material reorganisations of business units or subsidiaries (M&A, carve-out, rebranding);
+                    - launch or discontinuation of critical products / services with external continuity commitment;
+                    - material change to the ICT architecture (cloud migration, data-centre consolidation, new outsourcing relationship);
+                    - changes to applicable regulatory requirements (e.g. new DORA RTS versions, NIS2 transposition acts, sector supervisory directions);
+                    - findings from internal audits or management review with a scope nexus.
+
+                    Maintenance is owned by the BCM Officer {{ roles.bcm_officer.fullName }}; updates are approved by {{ approval.chain }}. Changes are recorded in audit-proof form in the audit trail.
+
+                    ## 9a. Scope validation
+                    Scope validity is reviewed annually against the following criteria:
+
+                    - **Completeness** — are all business processes with criticality ≥ medium represented in scope? Reconciled against the business-process register.
+                    - **Consistency** — do the sites listed in scope match the asset/site register? Do the Process Owners match the persons recorded in the HR system?
+                    - **Currency** — are all change triggers of the past 12 months recorded and is the scope adjusted accordingly?
+                    - **Justification of exclusions** — are all exclusions currently justified and approved by top management?
+                    - **Audit suitability** — can the scope be explained understandably to external auditors in a 30-minute briefing? (Practical test per BSI 200-4 audit preparation).
+
+                    Validation results feed into the annual BCMS status report to the executive board.
+
+                    ## 10. Group and holding aspects
+                    Where the holding feature is enabled for {{ tenant.legal_name }} the following additionally applies:
+
+                    - the group-level scope is bindingly defined in the group-level BCMS scope document; the present document concretises the subsidiary scope and shall not fall short of the group-level scope;
+                    - local sites and processes that go beyond the group minimum (e.g. local regulatory duties) are added explicitly;
+                    - interfaces to group-level crisis-team coordination are documented in the Crisis Management Plan;
+                    - reporting duties towards group-level BCM coordination are documented in Annex 3.
+
+                    ---
+                    *This scope statement forms part of the BCMS document set and is updated annually as well as upon material organisational change.*
+                section:
+                    purpose:
+                        title: 'Purpose and applicability'
+                        body: |-
+                            Establishes BCMS scope per ISO 22301 Clause 4.3. Binding foundation for the Business Continuity Policy, BIA, BCM-RA, BC Strategy and all BC Plans. BSI 200-4 Section 3.2 corresponds materially.
+                    organisational:
+                        title: 'Organisational scope'
+                        body: |-
+                            Covers {{ tenant.legal_name }} and all BCMS-relevant subsidiaries per Annex 1. Holding structures are also reflected via the parent-level Notfallleitlinie.
+                    geographic:
+                        title: 'Geographic scope'
+                        body: |-
+                            All sites flagged BCMS-relevant. Maintained by BCM Officer {{ roles.bcm_officer.fullName }}. New sites: 90-day initial assessment. Foreign sites with local regulatory annex.
+                    process:
+                        title: 'Process scope'
+                        body: |-
+                            All business processes with criticality ≥ medium. Four tiers (Tier 1: RTO ≤ 4h, Tier 2: ≤ 24h, Tier 3: ≤ 72h, Tier 4: > 72h). Process Owners accountable for BC plan upkeep.
+                    services:
+                        title: 'Product/service scope'
+                        body: |-
+                            All products and services with external continuity commitments (SLAs, regulatorily required minimum availability such as EU-DORA Article 11, contract-penalty exposures).
+                    exclusions:
+                        title: 'Exclusions with justification'
+                        body: |-
+                            Exclusions under Clause 4.3 c only where the achievement of continuity objectives is not impaired. Documented in the Exclusion Register (Annex 2) with justification, risk assessment and top-management approval.
+                    interfaces:
+                        title: 'Interfaces with other management systems'
+                        body: |-
+                            ISMS (ISO 27001:2022 A.5.29/A.5.30), PIMS (GDPR Articles 32/33), QMS (ISO 9001), ITSM (ISO/IEC 20000). Integrated audits anticipated per BSI 200-4 Section 9.1.4.
+                tailoring_field:
+                    in_scope_processes:
+                        label: 'In-scope business processes with criticality'
+                        placeholder: 'Example: "Tier 1 (RTO ≤ 4h): online banking, card-payment authorisation, SEPA payment processing. Tier 2 (RTO ≤ 24h): account opening, branch operations, customer hotline. Tier 3 (RTO ≤ 72h): reporting, marketing, internal HR. Tier 4: non-time-critical back-office activities."'
+                    excluded_units_with_justification:
+                        label: 'Excluded units/processes with justification'
+                        placeholder: 'Example: "Subsidiary XY GmbH (research-only site, no customer interaction, no payment processing) — operates its own BCM programme to the same standard with annual recognition. Brussels representative office (purely liaison, no operational activity). Justification: no contribution to critical customer-facing processes, no DORA Article 11 nexus."'
+                    external_continuity_commitments:
+                        label: 'External continuity commitments (SLAs, regulatory, contractual)'
+                        placeholder: 'Example: "Online banking 99.9 % availability per annum (contractual); ATM network 99.5 % (regulatory expectation); DORA Article 11 for critical or important functions; SLAs with top-10 corporate customers committing to 4-hour recovery; public hotline 24/7 with maximum 30 minutes outage tolerance."'
+        bia_methodology:
+            v1:
+                title: 'Business Impact Analysis Methodology'
+                body: |-
+                    # BIA Methodology of {{ tenant.legal_name }}
+
+                    *Document class: Methodology (defines HOW, not the analysis itself) | Standards: ISO 22301:2019 Clause 8.2.2, BSI 200-4 Section 5.2.1 | Review interval: every 24 months*
+
+                    ## 1. Purpose and scope
+                    This methodology bindingly governs the conduct of the Business Impact Analysis (BIA) pursuant to ISO 22301:2019 Clause 8.2.2 ("The organization shall implement and maintain a systematic process for analysing the business impact"). It is owned by the BCM Officer {{ roles.bcm_officer.fullName }} and is the methodological foundation for determining criticality ratings, recovery objectives and dependencies of in-scope business processes. BSI 200-4 Section 5.2.1 corresponds materially.
+
+                    ## 2. Glossary of binding key terms
+                    The following terms are bindingly defined within this methodology:
+
+                    - **MTPD (Maximum Tolerable Period of Disruption)** — the maximum period during which a process may remain disrupted before existence-threatening consequences materialise. Reference: business survival. Non-negotiable.
+                    - **RTO (Recovery Time Objective)** — the target time for resuming a process after disruption. RTO < MTPD always applies.
+                    - **RPO (Recovery Point Objective)** — the maximum acceptable data loss measured as a time interval prior to the disruption.
+                    - **MBCO (Minimum Business Continuity Objective)** — the minimum acceptable activity level of a process during disruption (e.g. "50 % of normal transaction volume").
+                    - **RTC (Recovery Time Capability)** — the recovery capability actually achieved, measured against RTO.
+
+                    These definitions are mandatory across all BCMS documentation.
+
+                    ## 3. Impact categories (defined before BIA execution)
+                    Impact assessment uses the following pre-defined categories:
+
+                    1. **Financial impact** — revenue loss, contractual penalties, additional cost, liquidity exposure;
+                    2. **Regulatory impact** — breach of supervisory law (BaFin, BSI-KritisV, DORA, NIS2), enforcement risk, fines;
+                    3. **Reputational impact** — media coverage, customer attrition, brand damage;
+                    4. **Life-safety / health and safety** — endangerment of employees, customers, neighbouring residents (top priority);
+                    5. **Operational impact** — internal process disruptions, employee productivity, supply-chain effects.
+
+                    ## 4. Impact rating scale
+                    Impacts are rated on a 5-step scale (1 = negligible, 5 = existence-threatening) with at least the Financial and Regulatory categories anchored to monetary or quantitative thresholds (e.g. level 4 = > 1 m EUR damage / fine exposure > 500 k EUR / supervisory enforcement). Concrete anchors are tenant-specific and documented in the BIA annex. The highest rated category determines the overall process rating (maximum principle, in line with BSI 200-4 Section 5.2.1).
+
+                    ## 5. Time windows for impact assessment
+                    Impact is rated along the following time horizons after disruption start: 1 hour, 4 hours, 24 hours, 72 hours, 1 week, 1 month. Each window receives an expected impact rating. From the impact-over-time curve, MTPD and RTO are derived (RTO = the first window in which the impact is rated "no longer acceptable").
+
+                    ## 6. Dependency analysis
+                    For every in-scope process the following dependency categories shall be captured:
+
+                    - **Upstream dependencies** — inputs, suppliers, ICT services, systems;
+                    - **Downstream dependencies** — receiving processes, customers, outputs;
+                    - **Lateral dependencies** — peer processes with mutual influence;
+                    - **Resource dependencies** — people (key roles, minimum staffing), infrastructure (site, power, climate control), ICT systems (asset register reference), third parties (supplier register).
+
+                    Dependencies are maintained as a directed graph in the BIA database and feed the recovery sequence in recovery plans.
+
+                    ## 7. Data-collection method
+                    The BIA is primarily conducted through **facilitated workshops** with process owners and key stakeholders (default approach). Alternative methods: structured interviews or validated questionnaires. Method selection is decided by the BIA Lead in coordination with the BCM Officer; workshops are preferred for Tier 1 and Tier 2 processes, questionnaires for Tier 3 and Tier 4. Collection must include at minimum: process description, inputs/outputs, key roles, ICT dependencies, seasonality, impact rating per time window, proposed MBCO.
+
+                    ## 8. Roles
+                    - **BIA Lead** — owns conduct, facilitation and consolidation; typically the BCM Officer or a designated deputy.
+                    - **Process Owner** — provides data on their process, validates results, approves the final BIA rating for their process.
+                    - **Reviewer** — independent reviewer (e.g. ISB {{ roles.isb.fullName }}, Compliance, Internal Audit), verifies plausibility and consistency with other BIA results.
+                    - **Top-management sponsor** — final approval of consolidated BIA results.
+
+                    ## 9. Review, approval and re-execution triggers
+                    BIA results are consolidated, reviewed by the BIA Lead, cross-checked by an independent reviewer, and approved by top management. Re-execution triggers:
+
+                    - regular re-execution every 24 months (default);
+                    - after material organisational change (reorganisation, M&A, new site);
+                    - upon launch of new products or services;
+                    - after a real BC activation as part of lessons-learned;
+                    - after a full-scale exercise with significant lessons-learned impact;
+                    - upon change of the impact-rating scale.
+
+                    ## 10. Relationship with other BCMS documents
+                    BIA results are a binding input for:
+
+                    - **BCM Risk Assessment Methodology** (§2.3) — impact scale is reused;
+                    - **BC Strategy** (§2.4) — tier assignment drives strategy choice;
+                    - **BC Plans** (§2.5) — RTO/RPO/MBCO are inherited;
+                    - **Recovery and Restoration Plans** (§2.8) — sequence and target times;
+                    - **Exercise & Testing Programme** (§2.9) — most critical processes are exercised first.
+
+                    ## 10a. Tooling and data management
+                    The BIA is captured in a central BCMS tool that bindingly provides:
+
+                    - structured capture per business process with mandatory fields for impact rating per time window, MTPD, RTO, RPO, MBCO, dependencies;
+                    - version control with predecessor tracking and justification for every change;
+                    - interfaces to the asset register (reconciliation of ICT dependencies), the supplier register (third-party dependencies), the HR system (key roles) and the risk register (linkage of BIA rating to risk entries);
+                    - reporting functions for the BIA consolidation report (tier distribution, top-N processes by impact, dependency hotspots);
+                    - audit trail with audit-proof logging of all changes.
+
+                    BIA capture outside the central tool (e.g. in local spreadsheets) is acceptable only as a temporary workshop intermediate; consolidation must occur in the central tool.
+
+                    ## 10b. BIA participant training and competence
+                    All BIA Leads and Reviewers complete a documented BIA training of at least 4 hours covering: methodology of this document, terminology MTPD/RTO/RPO/MBCO/RTC, workshop facilitation techniques, plausibility verification, conflict resolution where ratings diverge. Process Owners receive a short briefing of at least 1 hour before participating in a BIA workshop. Training attendance is recorded in the HR development system; without recorded training a person may not act as BIA Lead or Reviewer.
+
+                    ## 11. Data quality and plausibility checks
+                    BIA results must be plausible and consistent. Verification criteria:
+
+                    - **MTPD-RTO consistency** — for every process RTO < MTPD must hold; reviewer corrects violations.
+                    - **Resource consistency** — ICT dependencies reported in the BIA must reconcile with the asset register.
+                    - **Impact consistency** — processes of similar function and significance should receive similar ratings; outliers must be justified.
+                    - **Seasonality** — processes with seasonally varying significance (e.g. year-end close, peak season) receive seasonal rating annexes.
+
+                    Prior to release a consolidated BIA report is produced summarising key findings, unusual ratings, gap findings (e.g. missing deputies, monolithic ICT dependencies without failover) and recommendations for the BC Strategy.
+
+                    ## 11a. Sample consolidation report (minimum content)
+                    The consolidated BIA report contains at minimum:
+
+                    - tier distribution (number of processes per Tier 1-4) with trend comparison against last year's BIA;
+                    - top-10 processes by financial impact at 24-hour disruption;
+                    - top-5 ICT dependency hotspots (systems on which several Tier-1 processes depend);
+                    - top-5 supplier-concentration risks (third parties on which several Tier-1 processes depend);
+                    - key-role hotspots (persons on whom several Tier-1 processes depend);
+                    - target-actual comparison of RTC against RTO from the most recent exercise;
+                    - recommended investment priorities for the following year;
+                    - open methodological questions and proposals for the next methodology update.
+
+                    The report is presented to the executive board as part of management review under Clause 9.3.
+
+                    ## 12. Confidentiality and retention of BIA results
+                    BIA results regularly contain sensitive information about business strategy, customer concentrations, key persons and weaknesses. Default classification: `Internal-Confidential` per BSI 200-4 Section 6. Distribution on a need-to-know basis. Retention: current version plus three predecessor versions in audit-proof form; older versions archived. Access rights are reconciled quarterly with the HR system (personnel-change trigger).
+
+                    ---
+                    *This methodology is reviewed every 24 months and additionally upon material change.*
+                section:
+                    purpose:
+                        title: 'Purpose of the methodology'
+                        body: |-
+                            Binding methodology for BIA execution under ISO 22301 Cl. 8.2.2 and BSI 200-4 Section 5.2.1. Owned by BCM Officer {{ roles.bcm_officer.fullName }}.
+                    glossary:
+                        title: 'Glossary (MTPD/RTO/RPO/MBCO/RTC)'
+                        body: |-
+                            MTPD = maximum tolerable period of disruption (existence question); RTO = recovery time objective (must be < MTPD); RPO = max. data loss; MBCO = minimum activity level during disruption; RTC = actually achieved capability (target vs. actual).
+                    impact_categories:
+                        title: 'Impact categories'
+                        body: |-
+                            Five categories (Financial, Regulatory, Reputational, Life-safety, Operational) on a 5-step scale with monetary/quantitative anchors. Maximum principle determines overall rating.
+                    time_windows:
+                        title: 'Time windows of assessment'
+                        body: |-
+                            Standard horizons: 1h / 4h / 24h / 72h / 1 week / 1 month. Per window an impact rating. Derives MTPD and RTO.
+                    dependencies:
+                        title: 'Dependency analysis'
+                        body: |-
+                            Upstream / Downstream / Lateral / Resource dependencies as a directed graph. Feeds recovery sequence.
+                    method:
+                        title: 'Data collection and roles'
+                        body: |-
+                            Workshops (default for Tier 1/2), interviews, questionnaires (Tier 3/4). Roles: BIA Lead, Process Owner, Reviewer (ISB {{ roles.isb.fullName }} / Compliance), top-management sponsor.
+                    review:
+                        title: 'Re-execution triggers'
+                        body: |-
+                            Default 24 months; additionally upon reorganisation, M&A, new products, real activation, full-scale exercise, scale change.
+                tailoring_field:
+                    impact_scale_anchors:
+                        label: 'Monetary/quantitative anchors of the impact scale'
+                        placeholder: 'Example: "Level 5 (existence-threatening) = > 10 m EUR damage OR licence revocation OR > 5 % market-share loss. Level 4 (critical) = 1-10 m EUR OR supervisory enforcement. Level 3 (significant) = 100 k - 1 m EUR OR mandatory regulator notification. Level 2 (minor) = 10-100 k EUR. Level 1 (negligible) = < 10 k EUR."'
+                    bia_collection_method:
+                        label: 'Preferred data-collection method'
+                        placeholder: 'Example: "Tier 1 + 2: full-day facilitated workshops with process owner + 2 deputies + IT owner + risk liaison. Tier 3: 2-hour interviews. Tier 4: validated online questionnaire with mandatory plausibility review by BIA Lead. All workshops minuted and audio-recorded (GDPR-compliant, 90-day retention)."'
+                    bia_review_cycle:
+                        label: 'Tenant-specific BIA review cycle and triggers'
+                        placeholder: 'Example: "Default re-BIA every 24 months, but every 12 months for Tier-1 processes. Triggers: every newly integrated subsidiary, every newly-classified critical or important function (e.g. new DORA CIF), every serious BC activation (yellow or higher), every full-scale exercise with target-actual deviation > 30 %."'
+        risk_assessment_methodology_bcm:
+            v1:
+                title: 'BCM Risk Assessment Methodology'
+                body: |-
+                    # BCM Risk Assessment Methodology of {{ tenant.legal_name }}
+
+                    *Document class: Methodology | Standards: ISO 22301:2019 Clause 8.2.3, BSI 200-4 Section 5.3 | Linked to ISO/IEC 27005:2022 (ISMS-RA) | Review interval: every 24 months*
+
+                    ## 1. Purpose and demarcation
+                    This methodology describes the process for risk assessment in the BCM context pursuant to ISO 22301:2019 Clause 8.2.3 ("The organization shall implement and maintain a systematic risk assessment process") and BSI 200-4 (2023) Section 5.3. The BCM-RA focuses on **risks to availability and business continuity** and complements the ISMS Risk Assessment under ISO/IEC 27005:2022. It is not identical with the ISMS-RA but may reference its methodology (see Section 9).
+
+                    ## 2. Relationship with the ISMS Risk Assessment
+                    The BCM-RA and the ISMS-RA may share risk entries but with different focus:
+
+                    - **ISMS-RA** assesses all security objectives (confidentiality, integrity, availability) — pursuant to ISO 27001 Clause 6.1.2.
+                    - **BCM-RA** focuses on **availability** and severe disruption scenarios.
+
+                    Where the ISMS-RA methodology is suitable for the BCM context it is referenced. Deviations are documented in Section 9 ("Delta declaration").
+
+                    ## 3. BCM-specific risk sources (categories)
+                    The following risk sources shall be considered in the BCM context (BSI 200-4 Annex C / ISO 22301 Annex A informative):
+
+                    - **Natural disasters** — flood, storm, earthquake, fire, extreme weather (including climate-change-related risks);
+                    - **Pandemics and public-health crises** — wide-scale staff unavailability;
+                    - **Cyber attacks with availability impact** — ransomware, DDoS, wiper attacks, supply-chain compromise;
+                    - **Supplier / third-party failure** — insolvency, outage of critical cloud providers;
+                    - **Key-person loss** — unavailability, resignation, loss of critical specialists;
+                    - **Prolonged power or energy outage**;
+                    - **Fuel and supply shortages**;
+                    - **Civil unrest, terrorism, geopolitical crises**;
+                    - **Regulatory intervention** (e.g. supervisory order, site closure);
+                    - **Infrastructure outages** — network, telecommunications, climate control / cooling in the data centre.
+
+                    The list is reconciled annually against current threat catalogues (BSI 200-4 Annex C, ENISA Threat Landscape, CISA threat briefings).
+
+                    ## 4. Likelihood scale (BCM lens)
+                    The BCM-RA uses a scale that adequately addresses rare-but-severe events (in contrast to the frequency-oriented ISMS-RA scale):
+
+                    - **5 Very likely** — occurred within the past 2 years or expected within 12 months;
+                    - **4 Likely** — expected within 5 years;
+                    - **3 Possible** — expected within 10 years;
+                    - **2 Unlikely** — expected within 25 years;
+                    - **1 Very unlikely** — rare century-scale events but not excluded.
+
+                    For extreme risks (e.g. pandemic, climate-amplified flooding) the scale is explicitly open-ended at the upper end — level 1 must not be used to trivialise.
+
+                    ## 5. Impact mapping to BIA time windows
+                    Impact rating is performed via the BIA time windows defined in §2.2 (1h / 4h / 24h / 72h / 1w / 1mo). Risks are rated as: "Which processes are disrupted, for what duration, and how does the impact evolve over time?" This linkage is binding; a BCM-RA without a BIA reference is methodologically inadmissible.
+
+                    ## 6. Risk evaluation criteria
+                    A BCM risk is **unacceptable** where
+
+                    - the expected disruption duration without treatment exceeds the MTPD of a Tier-1 or Tier-2 process, OR
+                    - the combined financial impact reaches level 4 or above (existence-threatening band), OR
+                    - regulatory consequences are enforcement-relevant, OR
+                    - life safety is implicated (always level 5).
+
+                    ## 7. Treatment options (BCM-specific)
+                    Pursuant to ISO 22301 Clause 8.2.3 and BSI 200-4 Section 5.3:
+
+                    - **Avoid** — eliminate the process or risk source (e.g. relocate from a flood zone);
+                    - **Accept** — only at low ratings with documented executive-board approval;
+                    - **Treat** — through strategy choice per the BC Strategy (hot/warm/cold standby, cloud failover, mutual aid);
+                    - **Transfer** — through insurance (business-interruption, cyber-insurance, property);
+                    - **Strategic alternative** — alternate business models, reduced-scope operations (MBCO).
+
+                    ## 8. Documentation and risk register
+                    BCM risks are kept in the central risk register with filter `bcm = true`. Mandatory fields: title, source, affected processes, likelihood, impact per time window, derived disruption duration, treatment option, accountable Risk Owner, next-review date. Workflow integration auto-escalates risks at level 4/5.
+
+                    ## 9. Reuse of the ISMS methodology (delta declaration)
+                    Where the ISMS-RA methodology under ISO 27005:2022 is reused for the BCM context the following deltas are binding:
+
+                    - the likelihood scale is adjusted to the BCM lens (Section 4);
+                    - impact assessment follows the BIA time windows rather than ISMS damage thresholds;
+                    - the catalogue of risk sources is extended by the BCM-specific sources (Section 3);
+                    - treatment options explicitly include "strategic alternative" and "transfer via insurance".
+
+                    The combined methodology document counts as both ISMS and BCM methodology, provided all of the above deltas are documented.
+
+                    ## 9a. Linkage with DORA Articles 8 + 9 (financial entities)
+                    Where {{ tenant.legal_name }} is a financial entity within the scope of EU-DORA the BCM-RA aligns with the DORA ICT risk framework as follows:
+
+                    - **Article 6 (ICT Risk Management Framework)** — the framework includes BCM aspects; BCM-RA results feed into ICT-risk-framework reporting to the management body;
+                    - **Article 8 (Identification)** — identification of critical or important functions (CIF) must be consistent with BIA tier assignment;
+                    - **Article 9 (Protection and Prevention)** — BCM-RA findings drive preventive measures (hot/warm-standby, replication) anchored in the BC Strategy;
+                    - **Article 11 (Response and Recovery)** — the BC Strategy and BC Plans operationalise BCM-RA findings;
+                    - **Articles 24-27 (Digital Operational Resilience Testing)** — tests verify the validity of BCM-RA assumptions;
+                    - **Article 28 (Third-Party Risk Management)** — critical-third-party concentration risks are addressed in the BCM-RA explicitly.
+
+                    The linkage is documented in the annual DORA RAG (risk assessment governance) self-assessment.
+
+                    ## 10. Risk-assessment workshops
+                    The BCM-RA is conducted at least once a year in a dedicated workshop including the BCM Officer {{ roles.bcm_officer.fullName }}, the ISB {{ roles.isb.fullName }}, the Crisis Team Lead {{ roles.crisis_team_lead.fullName }}, selected Process Owners of critical processes and Compliance. The workshop uses structured techniques (bow-tie analysis, scenario analysis, what-if) and works both top-down (from the threat catalogue to affected processes) and bottom-up (from the process to plausible disruption scenarios). Results are recorded in the risk register; significant new risks trigger strategy reviews.
+
+                    ## 11. Consideration of climate-related risks
+                    In line with ISO/IEC 27001:2022/Amd. 1:2024 and ISO 22301 practitioner guidance, climate-related risks are explicitly considered as a BCM-risk category. They include increasing frequency and intensity of extreme weather (heatwaves, flooding, storm), longer-term influences on site suitability (sea-level rise, change of precipitation patterns), regulatory consequences (e.g. climate stress tests imposed by supervisors) and reputational risks where preparedness is lacking. Assessment uses a time-horizon approach: physical risks (short-term 0-5 years, medium-term 5-15 years, long-term > 15 years) and transition risks (regulatory, technological).
+
+                    ## 12. Reporting and escalation
+                    BCM risks are reported quarterly in the BCMS steering committee. Risks at level 4 or 5 are escalated immediately to the executive board ({{ approval.chain }}). Acceptance decisions for level-4 risks require documented executive-board approval with expiry and re-assessment date (max. 12 months). Level-5 risks are by default not acceptable and require immediate treatment.
+
+                    ---
+                    *This methodology is owned by the BCM Officer {{ roles.bcm_officer.fullName }} and reviewed every 24 months and upon material change.*
+                section:
+                    purpose:
+                        title: 'Purpose and demarcation'
+                        body: |-
+                            BCM-RA pursuant to ISO 22301 Cl. 8.2.3 and BSI 200-4 Section 5.3 — focused on availability risks; complements but does not replace the ISMS-RA under ISO 27005:2022.
+                    relation_isms:
+                        title: 'Relationship with ISMS-RA'
+                        body: |-
+                            ISMS-RA assesses C/I/A; BCM-RA focuses on availability and disruption scenarios. Reuse model permitted with documented delta declaration.
+                    risk_sources:
+                        title: 'BCM-specific risk sources'
+                        body: |-
+                            Natural disasters, pandemic, cyber with A-impact, third-party failure, key-person loss, power outage, supply shortages, civil unrest/terrorism, regulatory intervention, infrastructure outage. Annual reconciliation with BSI 200-4 Annex C and ENISA Threat Landscape.
+                    likelihood:
+                        title: 'Likelihood scale (BCM lens)'
+                        body: |-
+                            5-step scale with reference horizons of 2 / 5 / 10 / 25 / 100 years. Open-ended at the upper end; level 1 must not trivialise (black-swan awareness).
+                    impact:
+                        title: 'Impact mapping to BIA time windows'
+                        body: |-
+                            Rating along BIA time windows (1h/4h/24h/72h/1w/1mo) is binding. A BCM-RA without BIA reference is methodologically inadmissible.
+                    treatment:
+                        title: 'Treatment options'
+                        body: |-
+                            Avoid / accept / treat / transfer-via-insurance / strategic alternative. Acceptance only with executive-board approval ({{ approval.chain }}).
+                    register:
+                        title: 'Risk register and reuse'
+                        body: |-
+                            BCM risks kept in central register with filter `bcm=true`. ISMS methodology may be reused if delta is documented.
+                tailoring_field:
+                    bcm_threat_catalogue:
+                        label: 'Tenant-specific BCM threat catalogue'
+                        placeholder: 'Example: "Extension by (a) financial-market stress scenarios (bank run, liquidity crisis) per BaFin stress-test methodology; (b) FX-shock scenarios for international subsidiaries; (c) DORA-relevant critical-third-party concentration; (d) sector-specific cyber threats from threat-intelligence feeds."'
+                    bcm_likelihood_calibration:
+                        label: 'Tenant-specific likelihood calibration'
+                        placeholder: 'Example: "Level 4 (Likely, 5y) is calibrated to 3 years for cyber risks based on industry incident rates. Level 3 (Possible, 10y) is shortened to 7 years for flooding following the 2026 climate-risk reassessment. Key-person risk uses a separate scale aligned with bench-strength analysis."'
+                    isms_reuse_decision:
+                        label: 'Decision to reuse ISMS methodology (yes/no) including delta'
+                        placeholder: 'Example: "Reuse: yes. Delta against ISMS-RA per ISO 27005: BCM likelihood scale instead of ISMS frequency model; BIA time windows instead of damage-amount scale; extended treatment option insurance transfer; shared risk register with BCM tag, joint quarterly maintenance by BCM Officer and ISB {{ roles.isb.fullName }}."'
+        bc_strategy:
+            v1:
+                title: 'Business Continuity Strategy and Solutions'
+                body: |-
+                    # Business Continuity Strategy and Solutions of {{ tenant.legal_name }}
+
+                    *Document class: Programme document (BCMS-wide) | Standards: ISO 22301:2019 Clause 8.3 incl. 8.3.2 + 8.3.3, BSI 200-4 Section 5.4 | Review interval: every {{ bcm.review_interval_months }} months; ad hoc upon BIA update*
+
+                    ## 1. Purpose of the strategy
+                    This document describes the strategic options and the chosen solutions through which {{ tenant.legal_name }} ensures business continuity for in-scope processes. It satisfies ISO 22301:2019 Clause 8.3 ("The organization shall determine and select business continuity strategies and solutions") and is grounded in the results of the BIA (§2.2) and the BCM-RA (§2.3). The strategy is approved by top management; operational implementation is owned by Process Owners and the IT leadership in coordination with the BCM Officer {{ roles.bcm_officer.fullName }}.
+
+                    ## 2. Strategic options per criticality tier
+                    {{ tenant.legal_name }} uses a tier-based strategy:
+
+                    - **Tier 1 — critical processes (RTO ≤ 4 hours)** — hot-standby / dual-site / active cloud-failover architecture. Synchronous or near-synchronous data replication. RPO ≤ 15 minutes. Continuous availability monitoring with automatic failover.
+                    - **Tier 2 — important processes (RTO ≤ 24 hours)** — warm-standby (pre-installed systems, regular data refresh) OR contracted recovery service. RPO ≤ 4 hours. Manual failover activation acceptable.
+                    - **Tier 3 — standard processes (RTO ≤ 72 hours)** — cold-standby (hardware available, manual restoration) and/or defined manual workarounds (paper procedures, alternative tools). RPO ≤ 24 hours.
+                    - **Tier 4 — deferrable processes (RTO > 72 hours)** — documented and accepted; restoration via routine recovery procedures.
+
+                    ## 3. RTO vs. RTC (critical distinction)
+                    **RTO** (Recovery Time Objective) is the required recovery time. **RTC** (Recovery Time Capability) is the recovery capability actually achievable, measured through exercises and real activations. **Strategy is measured against RTC, not RTO.** Where RTC > RTO a strategy gap exists, to be closed through investment, re-architecture or tier reclassification. The gap is documented in the annual strategy review and brought into management review under Clause 9.3.
+
+                    ## 4. Resource categories (ISO 22301 Cl. 8.3.3 a-g)
+                    The strategy bindingly addresses all resource categories:
+
+                    ### 4.1 People
+                    Key roles are protected by deputisation plans, cross-training and documented knowledge transfer. Minimum staffing requirements per process are captured in the BIA. Evacuation, alternate-workspace and remote-work concepts are established.
+
+                    ### 4.2 Information
+                    Data is backed up under the Backup Policy (A.5.30, A.8.13); RPO targets per tier are binding. Classification per A.5.12; retention per the Retention Policy and GDPR Article 5(1)(e).
+
+                    ### 4.3 Buildings, work environment and utilities
+                    Primary sites are rated by criticality; secondary workplaces are secured via remote-work arrangements, coworking contracts or the alternate-site concept. UPS and emergency power cover critical infrastructure. Climate control and fire safety per the site-security plan.
+
+                    ### 4.4 Facilities, equipment and consumables
+                    Notebooks, telephony and critical equipment held in adequate reserve. Consumables (special forms, secure printers) at minimum stock levels.
+
+                    ### 4.5 ICT systems
+                    Detailed handling in the recovery / restoration plans (§2.8). Integration of the Backup-Service and Restore-Service components per the asset register. Interface with A.5.30 of ISO 27001 is binding.
+
+                    ### 4.6 Transportation and logistics
+                    Where relevant: alternative transport routes, emergency stockpile, escalation procedures upon logistics disruption.
+
+                    ### 4.7 Finance
+                    Liquidity reserve per the Treasury Policy; emergency-payments procedures; insurance benefits (business-interruption insurance) as supplementary protection.
+
+                    ### 4.8 Partners and suppliers
+                    Supplier diversification for Tier-1 dependencies; contractual continuity clauses per A.5.20 of ISO 27001; exit strategies for critical third parties (in particular DORA Article 28 for financial entities).
+
+                    ## 5. Cost-benefit assessment per option
+                    Each strategy option is assessed in terms of cost (investment, running cost, insurance premiums) and benefit (avoided damages, regulatory compliance, reputation protection). Assessment is presented to management review under Clause 9.3; investment decisions are taken by top management ({{ approval.chain }}). Acceptance threshold: investments to close RTC gaps for Tier-1 risks are approved on a regular basis.
+
+                    ## 6. Strategy selection per process
+                    For every in-scope business process the chosen strategy is documented in a strategy register. Mandatory entries: process name, tier, chosen strategy option, planned MBCO, estimated RTO/RTC, sites and ICT systems involved, accountable Process Owner. The strategy is referenced in the corresponding BC Plan (§2.5).
+
+                    ## 7. Linkage with risk treatment
+                    The chosen strategies are the principal measures mitigating the risks identified in the BCM-RA. The link is captured in the risk register: every risk entry references the related strategy measure and the related BC Plans. Where unacceptable residual risks remain, additional measures (insurance, strategic alternative) are evaluated.
+
+                    ## 8. Strategy review and change
+                    The strategy is reviewed at least annually, additionally upon any BIA update, upon material architectural changes (e.g. cloud-migration phases), and upon material RTC target-actual deviations from exercises. Review is owned by the BCM Officer {{ roles.bcm_officer.fullName }}; approval by {{ approval.chain }}.
+
+                    ## 8a. Strategic assumptions and prerequisites
+                    The strategy documented here rests on a set of explicit assumptions whose validity is reviewed annually:
+
+                    - **Assumption 1**: BIA results (in particular RTO/MTPD per process) are current and valid; if the BIA has expired, the strategy operates on a provisional basis only.
+                    - **Assumption 2**: Identified critical third parties (in particular cloud providers) remain available; DORA Article 28 exit strategies are documented and rehearsed at least once per contract term.
+                    - **Assumption 3**: Key-person availability (in particular the Crisis Team Lead {{ roles.crisis_team_lead.fullName }} and deputy) is secured by cross-training.
+                    - **Assumption 4**: The alternate site {{ secondary_site_label }} is reachable via a geographically independent power and communications feed.
+                    - **Assumption 5**: Insurance coverage (business interruption, cyber) is current and addresses the identified loss scenarios.
+
+                    Where assumptions are found invalid in the annual review, the related strategy component is adjusted and the investment roadmap is reviewed.
+
+                    ## 9. Group and third-party considerations
+                    In group structures the strategy aligns with group-level BCM directives; local strategies shall not undercut group minimum standards but may exceed them (e.g. tighter RTO targets for regulatorily sensitive subsidiaries). Third-party considerations: critical suppliers and service providers are kept in a dedicated third-party continuity register; strategies address supplier-concentration risks (in particular for cloud providers and outsourced ICT functions). DORA Article 28 (for financial entities) requires explicit exit strategies for critical ICT third-party arrangements with a documented exit path and periodically rehearsed migration capability.
+
+                    ## 10. Investment and budget integration
+                    Strategy investments are integrated with business planning: BCM investment needs are identified during the annual budget cycle, consolidated by the BCM Officer, screened by Compliance for regulatory obligations and brought into the next-year investment budget. Multi-year roadmaps (e.g. data-centre consolidation, cloud-failover build-out) are documented in the 3-year BCMS plan. The executive board receives an annual "BCMS investment outlook" report supporting prioritised investment decisions.
+
+                    ## 10a. Interface with ISMS risk treatment (ISO 27001 Cl. 6.1.3)
+                    The BC Strategy is the principal collection of treatments addressing ISMS risks affecting the availability objective. The interface is:
+
+                    - every ISMS-RA measure with availability nexus is linked to a strategy component (e.g. ISMS measure "redundant WAN link" → strategy component "Tier-1 hot-standby network");
+                    - cost and effectiveness of strategy components feed into the ISMS Statement of Applicability (SoA) justification;
+                    - upon strategy change the related ISMS-RA measure is reviewed and updated as needed;
+                    - the ISMS risk-treatment plans and the BC Strategy register are reconciled quarterly.
+
+                    ## 10b. Strategy effectiveness measurement (KPIs)
+                    Strategy effectiveness is measured by quantitative indicators reported quarterly to the executive board:
+
+                    - **RTO attainment rate** — share of Tier-1/Tier-2 processes that met their RTO in exercises or real activations (target: ≥ 95 % per tier);
+                    - **RPO attainment rate** — share of processes whose RPO was met in exercises or real activations (target: ≥ 98 % per tier);
+                    - **Strategy test coverage** — share of strategy components verified by test/exercise within the past 12 months (target: 100 % for Tier 1, ≥ 75 % for Tier 2);
+                    - **DORA CIF recovery readiness** (where applicable) — number of critical or important functions with documented and rehearsed recovery capability;
+                    - **Third-party exit readiness** (DORA Article 28) — share of critical ICT third parties with current and recently rehearsed exit strategies.
+
+                    Adverse trends trigger immediate action plans.
+
+                    ## 11. Test integration with the strategy
+                    Every strategic decision is validated through the Exercise & Testing Programme: hot-standby architectures are validated by real failover tests at least annually (no "simulation only"); warm-standby by an annual switch-over exercise; cold-standby by a documented walkthrough at least every 24 months. Test outcomes feed directly into the annual strategy review.
+
+                    ---
+                    *This strategy is approved by top management and forms part of the BCMS document set.*
+                section:
+                    purpose:
+                        title: 'Purpose of the strategy'
+                        body: |-
+                            Satisfies ISO 22301 Cl. 8.3 and BSI 200-4 Section 5.4. Grounded in BIA and BCM-RA. Approved by top management ({{ approval.chain }}); operational ownership with BCM Officer {{ roles.bcm_officer.fullName }}.
+                    tier_options:
+                        title: 'Strategic options per tier'
+                        body: |-
+                            Tier 1 (RTO ≤ 4h): hot-standby / dual-site / cloud-failover; Tier 2 (≤ 24h): warm-standby; Tier 3 (≤ 72h): cold-standby + workaround; Tier 4 (> 72h): documented and accepted.
+                    rto_vs_rtc:
+                        title: 'RTO vs. RTC'
+                        body: |-
+                            RTO = required; RTC = actually achievable. Strategy is measured against RTC. RTC > RTO is a strategy gap; the annual review feeds gaps into management review (Cl. 9.3).
+                    resources:
+                        title: 'Resource categories (Cl. 8.3.3 a-g)'
+                        body: |-
+                            People, information, buildings/utilities, facilities, ICT, transport, finance, partners/suppliers. Supplier diversification for Tier 1; DORA Article 28 exit strategies for critical financial-ICT third parties.
+                    cost_benefit:
+                        title: 'Cost-benefit assessment'
+                        body: |-
+                            Each option assessed by cost (investment, running cost, insurance) versus benefit (avoided damages, compliance, reputation). Investment decisions by {{ approval.chain }}.
+                    process_mapping:
+                        title: 'Strategy selection per process'
+                        body: |-
+                            Strategy register per process: tier, option, MBCO, RTO/RTC, sites, ICT, Process Owner. Reference in the BC Plan.
+                    risk_link:
+                        title: 'Risk-treatment link'
+                        body: |-
+                            Strategies as principal mitigation measure. Risk register links each risk to strategy and BC Plans. Residual risks covered by additional measures (insurance, strategic alternative).
+                    review:
+                        title: 'Strategy review'
+                        body: |-
+                            Annual; ad hoc on BIA update, architectural change, RTC deviation. Owned by {{ roles.bcm_officer.fullName }}; approved by {{ approval.chain }}.
+                tailoring_field:
+                    tier_strategy_assignment:
+                        label: 'Tier-strategy assignment (tenant-specific)'
+                        placeholder: 'Example: "Tier 1: online banking → active-active cloud (regions eu-central-1 + eu-west-1) with RPO 0; Tier 1: card authorisation → on-premise hot-standby + DR site (synchronous replication, RPO ≤ 5 min); Tier 2: branch operations → warm-standby (coworking site secured by contract); Tier 3: reporting → cold-standby + Excel workaround with documented templates."'
+                    rtc_gap_status:
+                        label: 'Current RTC target-actual assessment and investment roadmap'
+                        placeholder: 'Example: "Tier-1 online banking: RTO 4h vs. last-exercise RTC 6h → gap 2h, active-active investment in 2026 (1.5 m EUR approved). Tier-2 branch operations: RTO 24h vs. RTC 30h → coworking contract being extended to 6 additional sites (Q3/2026). All Tier-3 processes within RTC tolerance."'
+                    secondary_site_concept:
+                        label: 'Alternate-site concept'
+                        placeholder: 'Example: "Primary main site: Frankfurt; alternate site: Eschborn (15 km distance, separate power grid, separate telecom feed). Mutual-aid arrangement with sister subsidiary in Hamburg for extreme scenarios (e.g. regional Rhine-Main power outage). Cloud failover via {{ secondary_site_label }} for customer-critical digital services."'
+        bc_plans:
+            v1:
+                title: 'BC Plan Template Standard'
+                body: |-
+                    # BC Plan Template Standard of {{ tenant.legal_name }}
+
+                    *Document class: Procedure (defines the structure of individual BC plans; individual BC plans are separate records per process) | Standards: ISO 22301:2019 Clause 8.4.4, BSI 200-4 Section 6 | Review interval: every {{ bcm.review_interval_months }} months*
+
+                    ## 1. Purpose of this document
+                    This document bindingly defines the structure, content and quality requirements of all Business Continuity Plans (BC Plans) of {{ tenant.legal_name }} pursuant to ISO 22301:2019 Clause 8.4.4 and BSI 200-4 Section 6. Individual BC Plans are authored per in-scope business process by Process Owners and use this template bindingly. One record is created per BC Plan; maintenance and approval flow through the BC-Plan workflow.
+
+                    ## 2. Relationship with the BSI 200-4 plan types
+                    BSI 200-4 distinguishes three plan types whereas ISO 22301 collapses them into "BC Plans". For tenants who have adopted BSI 200-4 **all three plan types** are binding:
+
+                    - **Geschaeftsfortfuehrungsplan (Business Continuation Plan)** — focused on maintaining operations through workarounds and reduced procedures during disruption;
+                    - **Wiederanlaufplan (Recovery / Resumption Plan)** — brings resources back to a (possibly degraded) operating state;
+                    - **Wiederherstellungsplan (Restoration Plan)** — restores the full pre-incident state on a longer-term basis.
+
+                    For tenants without BSI adoption an **integrated BC plan** is maintained covering all three aspects in a single template.
+
+                    ## 3. Mandatory content sections (every BC Plan)
+                    ### 3.1 Plan identification
+                    Unique plan ID, affected business process, Process Owner, BC-Plan Owner, version, approval status, creation date, next review date, classification (default: Internal-Confidential per BSI 200-4).
+
+                    ### 3.2 Activation conditions
+                    Clear conditions under which the plan is activated (trigger list). Reference to the Incident Response Procedure (§2.6) — the activation decision is taken by the role identified there (typically the Crisis Team Lead {{ roles.crisis_team_lead.fullName }} or the executive board {{ approval.chain }}).
+
+                    ### 3.3 Roles and contact list
+                    Binding list of all roles required for plan execution with name, position, telephone (office, mobile, emergency), email, deputisation. Reference to the Crisis Team (§2.7). Update obligation: review at least semi-annually, ad hoc on personnel changes.
+
+                    ### 3.4 Sequence of recovery actions
+                    Detailed step-by-step instructions for restoring process capability within the RTO. Format: step number, description, accountable person, estimated duration, preconditions, success criterion. Sequence follows the dependency analysis from the BIA (critical dependencies first).
+
+                    ### 3.5 Resource requirements
+                    People (numbers, qualifications), ICT systems (asset-register reference), infrastructure (site, power, climate), consumables, external service providers, emergency budget.
+
+                    ### 3.6 Internal and external dependencies
+                    List of all internal upstream and downstream processes, external suppliers and service providers along with their continuity arrangements. Reference to the supplier register and SLAs.
+
+                    ### 3.7 Communication templates
+                    Pre-prepared text for internal communication (employees, executive board), customers, supervisory authorities and media. Reference to the Incident Response Procedure (§2.6). Languages: at minimum German and English for customer- and regulator-facing texts.
+
+                    ### 3.8 Stand-down criteria
+                    Clear conditions for plan deactivation and return to BAU. Accountable decision role, documentation duty (BC-Plan activation log), lessons-learned trigger.
+
+                    ### 3.9 Reference to recovery / restoration plans
+                    Reference to the related recovery and restoration plans pursuant to §2.8 (in particular for ICT components).
+
+                    ## 4. Classification and retention
+                    BC Plans are confidential by default (default classification: Internal-Confidential per BSI 200-4 Section 6). Distribution on a need-to-know basis; retention per the Retention Policy. Versioning is mandatory; previous versions are retained in audit-proof form for at least 3 years.
+
+                    ## 5. Authoring, review and approval
+                    - **Authoring**: by the BC-Plan Owner in coordination with the Process Owner and the BCM Officer {{ roles.bcm_officer.fullName }}.
+                    - **Review**: by an independent reviewer (typically a peer Process Owner or Compliance) for completeness, realism and consistency with the BIA and the strategy.
+                    - **Approval**: by the Process Owner and the BCM Officer; for Tier-1 processes additionally by the Crisis Team Lead {{ roles.crisis_team_lead.fullName }}.
+                    - **Review interval**: annually; ad hoc upon process change, reorganisation, change of dependencies.
+
+                    ## 6. Linkage with exercises
+                    Every Tier-1 BC Plan is exercised at least annually (tabletop or functional). Tier 2 every 18-24 months; Tier 3 at least every 36 months. Exercise frequency: {{ bcm.exercise_frequency }}. Lessons-learned from exercises feed back into the BC Plan; significant deviations are processed via the Corrective Action Procedure (§2.12).
+
+                    ## 7. Auto-creation of BC-Plan records
+                    On completion of the Policy Wizard, one BC-Plan record in status `draft` is automatically created per in-scope business process and assigned to the Process Owner. The BCMS tool reminds owners to finalise; an escalation to the BCM Officer is configured at 90 days.
+
+                    ## 8. Quality minimum requirements per BC plan
+                    Before a BC plan transitions from `draft` to `approved` the following quality criteria must be met:
+
+                    - **Completeness**: all mandatory sections of §3 are filled in;
+                    - **Currency**: all contact details have been verified within the past 12 months;
+                    - **Realism**: the recovery sequence has been exercised at least once in a tabletop;
+                    - **Consistency**: RTO/RPO/MBCO match the BIA results, deviations are justified;
+                    - **Unambiguity**: every action has a unique accountable role (no "Team XY" without a lead);
+                    - **Feasibility**: all required resources (people, ICT, infrastructure) are evidenced as available or flagged as to be procured.
+
+                    ## 8a. Maintenance ownership and annual calendar
+                    Every BC plan has a binding annual maintenance calendar owned by the BC-Plan Owner and overseen by the BCM Officer {{ roles.bcm_officer.fullName }}:
+
+                    - **Q1**: review of contact details (employees, suppliers, authorities), refresh contact lists;
+                    - **Q2**: tabletop exercise of the plan per the Exercise Programme;
+                    - **Q3**: review of recovery sequence against the current asset register and BIA;
+                    - **Q4**: plan review, lessons-learned incorporation, version uplift, approval for the following year.
+
+                    Quarterly tasks are created in the BCMS tool; overdue tasks are escalated to the BCM Officer after 14 days; after 60 days of overdue, escalation goes to the executive board ({{ approval.chain }}).
+
+                    ## 9. Plan-activation interfaces
+                    Activation of a BC plan triggers the following workflows:
+
+                    - automatic notification of the Crisis Team Lead {{ roles.crisis_team_lead.fullName }} (even where not a crisis);
+                    - entry in the activation log with timestamp and occasion;
+                    - activation of communication templates per §3.7;
+                    - deputy notification via out-of-band channels (cf. §2.6 Incident Response Procedure);
+                    - upon Tier-1 activation additionally immediate notification of the executive board ({{ approval.chain }}).
+
+                    ## 9a. BC-Plan Owner training and competence
+                    Every BC-Plan Owner completes a training of at least 2 hours before first taking over plan responsibility, covering: BCMS fundamentals, plan structure per this template, activation procedure, interface with the Crisis Team Lead, documentation duties. Refresher training takes place annually (at least 1 hour) and upon material changes to the template. Training is delivered by the BCM Officer {{ roles.bcm_officer.fullName }} or a designated deputy; attendance is recorded in the HR development system.
+
+                    ## 9b. Workflow interfaces and auto-escalations
+                    The BCMS tool links the BC-plan lifecycle with the workflow system of {{ tenant.legal_name }}:
+
+                    - on creation of a plan an approval-workflow instance is created (reviewer, then Process Owner, then BCM Officer, plus the Crisis Team Lead for Tier 1);
+                    - upon annual review a review task is auto-generated; on completion re-approval follows;
+                    - on plan activation the system automatically creates an activation-workflow item with timeline log;
+                    - on stand-down a lessons-learned workflow instance is created with a target date within 30 days.
+
+                    Workflow delays are surfaced via the escalation scheme: 7 days delay → reminder to the owner; 14 days → BCM Officer informed; 30 days → escalated to the executive board.
+
+                    ## 10. Confidentiality and distribution
+                    BC plans regularly contain sensitive information about critical dependencies and weaknesses. They are distributed strictly on a need-to-know basis; a complete plan set is held redundantly at the primary site and at the alternate site {{ secondary_site_label }} (paper plus encrypted electronic store with separate key custody) so the plan remains available even during a complete IT outage.
+
+                    ---
+                    *This template is binding; any deviation requires approval by the BCM Officer {{ roles.bcm_officer.fullName }}.*
+                section:
+                    purpose:
+                        title: 'Purpose and scope'
+                        body: |-
+                            Binding structure for all BC Plans pursuant to ISO 22301 Cl. 8.4.4 and BSI 200-4 Section 6. One plan per process; the template is the minimum standard.
+                    plan_types:
+                        title: 'BSI three-plan model vs. ISO single plan'
+                        body: |-
+                            BSI 200-4: separate Geschaeftsfortfuehrungs-, Wiederanlauf- and Wiederherstellungsplan. Non-BSI tenants: integrated BC plan covering all three aspects.
+                    identification:
+                        title: 'Plan identification'
+                        body: |-
+                            Plan ID, process, owner, BC-Plan Owner, version, status, classification Internal-Confidential (BSI 200-4 Section 6).
+                    activation:
+                        title: 'Activation conditions'
+                        body: |-
+                            Trigger list; activation decision by Crisis Team Lead {{ roles.crisis_team_lead.fullName }} or executive board {{ approval.chain }} per §2.6.
+                    actions:
+                        title: 'Action sequence and resources'
+                        body: |-
+                            Step-by-step instructions with accountable persons, durations, preconditions, success criteria. Sequence follows the BIA dependency analysis.
+                    communication:
+                        title: 'Communication templates'
+                        body: |-
+                            Pre-prepared text for employees, customers, regulators and media. At least DE/EN. Reference to procedure §2.6.
+                    standdown:
+                        title: 'Stand-down and references'
+                        body: |-
+                            Stand-down criteria, activation log, lessons-learned trigger. Reference to recovery / restoration plans (§2.8).
+                    review:
+                        title: 'Review and exercises'
+                        body: |-
+                            Annual review; Tier-1 plans exercised annually, Tier 2 every 18-24 months, Tier 3 every 36 months. Frequency: {{ bcm.exercise_frequency }}.
+                tailoring_field:
+                    plan_classification:
+                        label: 'Classification and distribution rule'
+                        placeholder: 'Example: "BC Plans for Tier 1: classification `Confidential` per the Classification Policy; distribution only to Process Owner, deputy, BCM Officer, IT lead. Tier 2/3: `Internal-Confidential`. Distributed via paper plus encrypted PDF store; annual receipt acknowledgement."'
+                    bcplan_creation_trigger:
+                        label: 'Trigger for BC-plan creation per process'
+                        placeholder: 'Example: "Auto-creation upon Policy-Wizard completion for all processes with criticality ≥ medium; manual creation additionally for (a) new critical business processes from M&A, (b) regulatorily required processes (e.g. new DORA CIF), (c) Process-Owner request approved by the BCM Officer."'
+                    review_cadence_per_tier:
+                        label: 'Review and exercise cadence per tier'
+                        placeholder: 'Example: "Tier 1: review semi-annually (May/November), exercise annually (full-scale every 24 months), additional tabletop tests in Q1; Tier 2: annual review, tabletop every 18 months; Tier 3: review every 24 months, documented walkthrough every 36 months; Tier 4: review every 36 months, no exercise duty."'
+        incident_response_communication:
+            v1:
+                title: 'BCM Incident Response & Communication Procedure'
+                body: |-
+                    # BCM Incident Response & Communication Procedure of {{ tenant.legal_name }}
+
+                    *Document class: Procedure | Standards: ISO 22301:2019 Clause 8.4.3 (in particular 8.4.3.2), BSI 200-4 Section 5.5 | Cross-reference ISO/IEC 27001:2022 A.5.24-A.5.28 | Review interval: every {{ bcm.review_interval_months }} months; trigger upon every activation*
+
+                    ## 1. Purpose and scope
+                    This procedure bindingly governs how {{ tenant.legal_name }} responds to disruptions, emergencies and crises and how affected internal and external stakeholders are informed. It satisfies the requirements of ISO 22301:2019 Clause 8.4.3.2 ("The organization shall establish, implement and maintain procedures for ... communications") and BSI 200-4 (2023) Section 5.5. It applies to all employees, contractors and critical third parties.
+
+                    ## 2. Detection and alerting
+                    Disruptions are detected through the following channels:
+
+                    - **24/7 NOC** and SIEM platform for technical disruptions;
+                    - **Employees** via the central hotline (with documented number) and an emergency mailbox;
+                    - **External monitoring** (e.g. synthetic checks, web-performance monitoring);
+                    - **Customer and third-party reports** via service desk and account management;
+                    - **Authority/regulator advisories** (e.g. CSIRT-Bund warnings, BSI advisories).
+
+                    All channels are reachable 24/7; receipt confirmation is issued immediately (≤ 15 minutes), with first triage performed by the on-duty NOC or on-call responder.
+
+                    ## 3. Initial assessment and classification
+                    Each report undergoes initial triage in three tiers:
+
+                    - **Incident** — disruption within normal operations, resolvable through the standard procedure without BCM activation. Handled per the Incident Management Procedure (A.5.24-A.5.27 of ISO 27001).
+                    - **Emergency** — disruption with imminent or actualised RTO breach of a Tier-2 or higher process. Activation of at least one BC Plan is required.
+                    - **Crisis** — severe event with existence- or reputation-threatening impact, regulatory notification duty or life-safety nexus. Crisis Team activation.
+
+                    Classification is performed by the on-duty BCM Coordinator in coordination with the BCM Officer {{ roles.bcm_officer.fullName }}. In case of doubt the higher classification applies.
+
+                    ## 4. Escalation thresholds and decision authority
+                    Escalation follows defined thresholds:
+
+                    - Incident → Emergency: imminent RTO breach Tier 1 / Tier 2 (decision: NOC Lead in coordination with the Process Owner);
+                    - Emergency → Crisis: notifiable incident, life-safety nexus, severe reputational risk (decision: BCM Officer {{ roles.bcm_officer.fullName }} or Crisis Team Lead {{ roles.crisis_team_lead.fullName }});
+                    - Crisis activation: exclusively by the Crisis Team Lead {{ roles.crisis_team_lead.fullName }} or the executive board {{ approval.chain }} (deputisation case).
+
+                    Each escalation is recorded in the central activation log (timestamp, decision-maker, classification, processes affected).
+
+                    ## 5. Invocation procedure (BC activation)
+                    Formal activation of a BC Plan is taken by:
+
+                    - **Crisis Team Lead** ({{ roles.crisis_team_lead.fullName }}) — for crisis or emergency;
+                    - **Executive board** ({{ approval.chain }}) — in the deputisation case or in special situations;
+                    - **BCM Officer** ({{ roles.bcm_officer.fullName }}) — for emergencies without crisis-team activation.
+
+                    The activation decision is recorded in an audit-proof manner (time, occasion, BC plans affected, decision-maker).
+
+                    ## 6. Notification cascade
+                    The following stakeholders are informed in defined order:
+
+                    - **Employees** of the affected unit — immediately by the line manager; via alternative channels (SMS broadcast, telephone cascade) where the primary channels are unavailable.
+                    - **Executive board** ({{ approval.chain }}) — by the BCM Officer or Crisis Team Lead, no later than 30 minutes after initial classification as emergency or crisis.
+                    - **Customers** — by Account Management against template; for critical services additionally via status page and hotline.
+                    - **Supervisory authorities** — pursuant to regulatory notification duties (see Section 7).
+                    - **Public authorities** — police, fire brigade, emergency services in physical emergencies or where life is at risk.
+                    - **Media** — exclusively via the designated press office; no external statements without their clearance.
+                    - **Suppliers and service providers** — to the extent their cooperation is required for restoration.
+
+                    Communication templates are pre-positioned per stakeholder group (minimum languages DE/EN; further languages depending on tenant footprint).
+
+                    ## 7. Regulatory notification duties
+                    The following duties apply where applicable:
+
+                    - **EU-DORA Article 19 + RTS** (for financial entities): major-ICT-incident notification with stages Initial (within 4 hours of classification), Intermediate (within 24-72 hours), Final (within 1 month). Recipient: competent supervisor (BaFin / Bundesbank for Germany).
+                    - **NIS2** (Article 23 of Directive (EU) 2022/2555 / national transposition): early warning within 24 hours, incident notification within 72 hours, final report within 1 month. Recipient: national CSIRT.
+                    - **BSI-KritisV** (for KRITIS operators): immediate notification of significant disruptions to BSI.
+                    - **GDPR Article 33** (where personal-data nexus): notification within 72 hours to the competent supervisory authority.
+                    - **GDPR Article 34** (where high risk to data subjects): without undue delay to data subjects.
+                    - **Sector-specific** — e.g. TKG telecoms reports, BaFin MaRisk filings, EU-DORA obligations (Art. 17-23 incident reporting, Art. 28-30 ICT third-party register).
+
+                    The concrete notification matrix is tenant-specific and maintained in the supervisor annex.
+
+                    ## 8. Out-of-band communication channels
+                    Where primary IT communication has failed the following alternative channels are available:
+
+                    - **Telephone cascade** with printed distribution list (refreshed annually, kept at the safety site);
+                    - **SMS broadcast service** (separate provider, tested in regular drills);
+                    - **Satellite phone** for the Crisis Team Lead (at least two devices, monthly functional test);
+                    - **Two-way radios** for site-internal communication;
+                    - **Physical assembly point** with notice board at the primary site (post-evacuation rendezvous).
+
+                    Out-of-band channels are tested at least semi-annually (frequency: {{ bcm.exercise_frequency }}).
+
+                    ## 9. Spokesperson rule
+                    External statements are made exclusively by designated spokespeople (press office / crisis-communications lead). Tenant rule: the only authorised spokespeople are the executive board ({{ approval.chain }}) and the designated press officer. No Crisis Team member issues unauthorised statements; any media contact is escalated immediately to the press office.
+
+                    ## 10. Documentation and evidence preservation
+                    During an activation a binding timeline log is maintained: timestamp, decision, decision-maker, action, outcome. Accountability: Crisis-Team Records Keeper. The documentation serves regulatory traceability, lessons-learned and, where applicable, civil/criminal evidence preservation. Retention per the Retention Policy, in any event at least 7 years.
+
+                    ## 10a. Interface with ISMS incident management (A.5.24-A.5.28)
+                    Security incidents per A.5.24-A.5.28 of ISO 27001 with availability impact automatically trigger a BCM triage. The interface is:
+
+                    - every security incident with severity `high` or `critical` (per the severity matrix) is reported simultaneously to the BCM Coordinator;
+                    - the BCM Coordinator immediately checks whether the disruption threatens the RTO of a Tier-1 or Tier-2 process;
+                    - on a positive finding escalation occurs (emergency or crisis classification);
+                    - on a negative finding the incident remains in the standard incident procedure with a BCM observer role;
+                    - cyber incidents involving encryption or wiper components are by default classified as emergency (BSI 200-4 Section 5.5 recommends caution).
+
+                    ## 10b. Escalation matrix with target times
+                    Escalation follows a matrix with binding target times from initial classification:
+
+                    - within 15 min — confirmation of initial classification, NOC Lead informed;
+                    - within 30 min — BCM Officer {{ roles.bcm_officer.fullName }} notified for an emergency, Crisis Team Lead {{ roles.crisis_team_lead.fullName }} for a crisis;
+                    - within 60 min — BC Plan and/or Crisis Team activated by the authorised role;
+                    - within 4 h — DORA initial notification (where applicable);
+                    - within 24 h — NIS2 early warning (where applicable), GDPR prepare-notification (where personal-data nexus);
+                    - within 72 h — DORA intermediate report, NIS2 incident notification, GDPR Article 33 notification;
+                    - 1 month — DORA final report, NIS2 final report, where applicable corrective-action reporting.
+
+                    Delays are recorded in the activation log with justification; they form part of lessons-learned and may be subject to regulatory follow-up.
+
+                    ## 11. Stand-down and return to BAU
+                    The stand-down decision is taken by the role that issued the activation (Crisis Team Lead {{ roles.crisis_team_lead.fullName }}, executive board {{ approval.chain }}, or BCM Officer {{ roles.bcm_officer.fullName }}). Pre-conditions for stand-down:
+
+                    - the triggering disruption is resolved or under control;
+                    - critical processes operate at least at MBCO level;
+                    - affected stakeholders have been informed;
+                    - a hot-wash lessons-learned meeting has been scheduled within 7 days;
+                    - all interim measures have been documented and transferred to the corrective-action procedure (§2.12).
+
+                    Stand-down is logged in the activation log; a formal stand-down notice is issued to all stakeholders previously informed via the notification cascade.
+
+                    ## 12. Lessons-learned and improvement
+                    Within 7 days of stand-down a hot-wash workshop is held with all Crisis Team members and key roles. Within 30 days a consolidated lessons-learned report is produced; within 90 days all derived corrective actions are recorded with target date and accountability in the corrective-action system. Actions are tracked through to effectiveness verification; open items are reported quarterly to the executive board.
+
+                    ## 13. Data protection during activation
+                    Processing of personal data during a BCMS activation (e.g. employee location data, emergency contacts, media content) takes place with involvement of the Data Protection Officer and within established GDPR lawful bases (in particular Article 6(1)(b) and (f), Article 9 where health data is concerned). Out-of-band channels are operated in a privacy-compliant manner (e.g. SMS provider with Article 28 GDPR processor agreement, defined retention for telephone lists).
+
+                    ---
+                    *This procedure forms part of the BCMS document set and is reviewed annually as well as following each activation.*
+                section:
+                    purpose:
+                        title: 'Purpose and scope'
+                        body: |-
+                            Procedure for incident response and communication pursuant to ISO 22301 Cl. 8.4.3.2 and BSI 200-4 Section 5.5. Cross-reference A.5.24-A.5.28 of ISO 27001 (incident management).
+                    detection:
+                        title: 'Detection and alerting'
+                        body: |-
+                            24/7 channels: NOC, SIEM, hotline, emergency mailbox, external monitoring, customer/regulator reports. Initial confirmation ≤ 15 min.
+                    classification:
+                        title: 'Classification incident/emergency/crisis'
+                        body: |-
+                            Three tiers: incident (standard procedure) / emergency (BC activation) / crisis (Crisis Team). In case of doubt the higher tier applies.
+                    escalation:
+                        title: 'Escalation thresholds'
+                        body: |-
+                            Escalation tiers with named decision-makers. Crisis activation only by Crisis Team Lead {{ roles.crisis_team_lead.fullName }} or executive board {{ approval.chain }}.
+                    invocation:
+                        title: 'Invocation procedure'
+                        body: |-
+                            BC activation by Crisis Team Lead, executive board or BCM Officer {{ roles.bcm_officer.fullName }}. Audit-proof recording.
+                    notification:
+                        title: 'Notification cascade'
+                        body: |-
+                            Stage order: employees → executive board → customers → supervisor → authorities → media (press office only) → suppliers. Templates in DE/EN at minimum.
+                    regulators:
+                        title: 'Regulatory notification duties'
+                        body: |-
+                            DORA Article 19 (4h/24-72h/1mo), NIS2 Article 23 (24h/72h/1mo), BSI-KritisV without undue delay, GDPR Articles 33/34. Tenant list {{ regulators_list }}.
+                    out_of_band:
+                        title: 'Out-of-band channels'
+                        body: |-
+                            Telephone cascade, SMS service, satellite phone, two-way radios, assembly point. Test frequency: {{ bcm.exercise_frequency }}.
+                    documentation:
+                        title: 'Documentation and spokespeople'
+                        body: |-
+                            Timeline log by Records Keeper; retention min. 7 years. External statements exclusively via press office / executive board.
+                tailoring_field:
+                    detection_channels:
+                        label: 'Tenant-specific detection and alerting channels'
+                        placeholder: 'Example: "24/7 NOC with SIEM (Splunk Cloud) and SOC outsourcing partner; internal hotline +49-69-XXXX-911 (24/7); emergency mailbox bcm@example.com with PagerDuty escalation; synthetic monitoring (Datadog) for Tier-1 services; CSIRT-Bund threat feed via STIX/TAXII; customer service desk (Zendesk) auto-escalates P1."'
+                    regulator_notification_matrix:
+                        label: 'Tenant-specific regulator notification matrix'
+                        placeholder: 'Example: "As a German BaFin-regulated financial entity: DORA Article 19 (Major ICT Incident, 4h Initial, 72h Intermediate, 1mo Final, to BaFin/Bundesbank); BSI-KritisV (KRITIS-relevant disruption, without undue delay); GDPR Article 33 (72h, BfDI/state DPA); MaRisk AT 7.3 (supervisor notification on material disruptions). Consolidated matrix in compliance annex."'
+                    out_of_band_channels:
+                        label: 'Out-of-band channels and test frequency'
+                        placeholder: 'Example: "Telephone cascade (paper distribution list at the crisis room {{ secondary_site_label }}); SMS broadcast via separate provider with own backbone; 4 Iridium satellite phones (Crisis Team Lead + deputy + 2 reserves); DECT two-way radios for site-internal communication; physical assembly point in basement parking level -2. Semi-annual functional tests; annual full-scale exercise."'

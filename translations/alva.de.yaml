@@ -120,3 +120,10 @@ policy_wizard:
         title: 'Konzern-Vorgabe verschärft — Re-Run nötig'
         body: 'Konzern-CISO von %konzern_name% hat Setting "%setting_key%" von %old_value% auf %new_value% angehoben. Betroffene Einstellungen in deinem Tenant: %affected_count%. Wizard im Targeted-Modus erneut ausführen, um die Policies anzugleichen.'
         action: 'Wizard neu starten'
+
+alva_hint:
+    kritis_operator_readiness:
+        title: 'KRITIS-Pflicht: IT-Sicherheitsleitlinie fehlt'
+        body: '%tenant_name% ist als KRITIS-Betreiber markiert, hat aber keine genehmigte IT-Sicherheitsleitlinie nach BSI-Vorlage. BSIG § 8a und KRITIS-Dachgesetz fordern eine dokumentierte, vom Top-Management freigegebene Leitlinie als Mindestnachweis. Ohne sie droht eine Audit-Feststellung beim nächsten BSI-Nachweis.'
+        cta_label: 'BSI-Wizard starten'
+        dismiss_label: 'Nicht jetzt'

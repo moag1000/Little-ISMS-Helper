@@ -52,6 +52,7 @@ final class WizardOrchestrator
         private readonly ?ApprovalKickoffService $approvalKickoffService = null,
         private readonly ?DocumentRepository $documentRepository = null,
         private readonly LoggerInterface $logger = new NullLogger(),
+        private readonly ?BcExerciseAutoSeeder $bcExerciseAutoSeeder = null,
     ) {
     }
 
@@ -262,6 +263,14 @@ final class WizardOrchestrator
             $this->kickoffApprovalsFor($documentIds, $run);
         }
 
+        // W5-B: BCM exercise programme — auto-seed BCExercise placeholder
+        // records when this run included BCM scope AND emitted (or would
+        // have emitted) the `exercise_testing_programme` topic. Skipped
+        // for sandbox runs (§6.4) and when the seeder is not wired.
+        if (!$isSandbox && $this->bcExerciseAutoSeeder !== null && $this->shouldSeedBcExercises($run)) {
+            $this->seedBcExercisesFor($run);
+        }
+
         return [
             'document_ids' => $documentIds,
             'wizard_run' => $run,
@@ -325,5 +334,61 @@ final class WizardOrchestrator
     public function hierarchyConflicts(WizardRun $run): array
     {
         return $this->hierarchyValidator->validate($run);
+    }
+
+    /**
+     * W5-B: should we run the BCExercise auto-seeder for this run?
+     *
+     * Conditions:
+     *  - `bcm` standard is in `WizardRun.standardsAdopted`
+     *  - The wizard would have generated the
+     *    `exercise_testing_programme` topic. For full runs this is
+     *    always true (every BCM template is emitted). For targeted
+     *    re-runs the topic must be in `WizardRun.targetedTopics`.
+     */
+    private function shouldSeedBcExercises(WizardRun $run): bool
+    {
+        $standards = $run->getStandardsAdopted() ?? [];
+        if (!in_array('bcm', $standards, true)) {
+            return false;
+        }
+
+        $targeted = $run->getTargetedTopics();
+        if ($targeted === null || $targeted === []) {
+            // Full run — every BCM template is emitted, including
+            // exercise_testing_programme.
+            return true;
+        }
+
+        return in_array('exercise_testing_programme', $targeted, true);
+    }
+
+    /**
+     * W5-B: invoke the BCExercise auto-seeder. Failures are logged but
+     * never propagate — the wizard run already produced Documents and
+     * dispatched approvals; a missing exercise placeholder must not
+     * roll those back.
+     */
+    private function seedBcExercisesFor(WizardRun $run): void
+    {
+        if ($this->bcExerciseAutoSeeder === null) {
+            return;
+        }
+        $tenant = $run->getTenant();
+        if ($tenant === null) {
+            $this->logger->warning('PolicyWizard BcExerciseAutoSeeder: tenant missing on run', [
+                'wizard_run_id' => $run->getId(),
+            ]);
+            return;
+        }
+        try {
+            $this->bcExerciseAutoSeeder->seedExerciseProgramme($tenant, $run);
+        } catch (\Throwable $error) {
+            $this->logger->warning('PolicyWizard BcExerciseAutoSeeder: seed failed; documents kept', [
+                'wizard_run_id' => $run->getId(),
+                'tenant_id' => $tenant->getId(),
+                'error' => $error->getMessage(),
+            ]);
+        }
     }
 }
