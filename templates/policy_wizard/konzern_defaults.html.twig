@@ -1,0 +1,160 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'policy_wizard.konzern_defaults.title'|trans }} — {{ 'policy_wizard.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4 fa-aurora-surface">
+    {{ _fa_page_header.render({
+        badge: { icon: 'building', label: 'policy_wizard.konzern_defaults.badge'|trans },
+        title: 'policy_wizard.konzern_defaults.title'|trans,
+        subtitle: 'policy_wizard.konzern_defaults.subtitle'|trans,
+        actions: [
+            { label: 'policy_wizard.action.back'|trans,
+              variant: 'ghost',
+              icon: 'arrow-left',
+              href: path('app_policy_wizard_index') }
+        ]
+    }) }}
+
+    {{ _fa_alert.render({
+        variant: 'info',
+        body: 'policy_wizard.konzern_defaults.intro'|trans
+    }) }}
+
+    {# Current parent-level TenantPolicySetting rows. Controller passes
+       `current_settings` as a list of TenantPolicySetting; template falls
+       through to empty state when not yet wired. #}
+    {% set parent_settings = current_settings|default([]) %}
+
+    <div class="mt-4">
+        {% set settings_body %}
+            {% if parent_settings|length == 0 %}
+                {{ _fa_empty_state.render({
+                    mood: 'idle',
+                    title: 'policy_wizard.konzern_defaults.no_settings'|trans,
+                    text: 'policy_wizard.konzern_defaults.no_settings_hint'|trans
+                }) }}
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'policy_wizard.konzern_defaults.column.key'|trans }}</th>
+                                <th scope="col">{{ 'policy_wizard.konzern_defaults.column.value'|trans }}</th>
+                                <th scope="col">{{ 'policy_wizard.konzern_defaults.column.updated_at'|trans }}</th>
+                                <th scope="col" class="text-end">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for setting in parent_settings %}
+                                <tr>
+                                    <td>
+                                        <code class="small">{{ setting.key }}</code>
+                                    </td>
+                                    <td>
+                                        <small>{{ setting.value is null ? '—' : (setting.value is iterable ? setting.value|json_encode : setting.value) }}</small>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            {% if setting.updatedAt %}
+                                                {{ setting.updatedAt|date('Y-m-d H:i') }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </small>
+                                    </td>
+                                    <td class="text-end">
+                                        {# Edit-CTA stub — wired up in W3-B follow-up #}
+                                        <span class="text-muted small">
+                                            {{ 'policy_wizard.konzern_defaults.action.edit'|trans }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endset %}
+
+        {{ _fa_section.render({
+            title: 'policy_wizard.konzern_defaults.current_settings_heading'|trans,
+            body: settings_body
+        }) }}
+    </div>
+
+    {# Active Konzern-Defaults runs (re-uses landing-page open_runs list) #}
+    {% set open_konzern_runs = open_runs|default([]) %}
+    {% if open_konzern_runs|length > 0 %}
+        <div class="mt-4">
+            {% set runs_body %}
+                <ul class="list-group list-group-flush">
+                    {% for run in open_konzern_runs %}
+                        <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-3 px-0">
+                            <div>
+                                <div class="fw-semibold">
+                                    {{ ('policy_wizard.mode.' ~ run.mode ~ '.label')|trans }}
+                                    <span class="badge bg-secondary ms-2">{{ ('policy_wizard.status.' ~ run.status)|trans }}</span>
+                                </div>
+                                <small class="text-muted">
+                                    {{ run.startedAt ? run.startedAt|date('Y-m-d H:i') : '' }} —
+                                    {{ ('policy_wizard.step.' ~ run.step ~ '.title')|trans|default(run.step) }}
+                                </small>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="{{ path('app_policy_wizard_step_show', { runId: run.id, step: run.step }) }}"
+                                   class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                                    <i class="bi bi-play-fill" aria-hidden="true"></i>
+                                    <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.resume'|trans }}</span>
+                                </a>
+                                <form method="post"
+                                      action="{{ path('app_policy_wizard_cancel', { runId: run.id }) }}"
+                                      data-controller="ui-actions"
+                                      data-action="submit->ui-actions#confirm"
+                                      data-ui-actions-message-value="{{ 'policy_wizard.action.cancel_confirm'|trans }}"
+                                      data-ui-actions-tone-param="warn"
+                                      class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_cancel') }}">
+                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                        <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.cancel'|trans }}</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endset %}
+
+            {{ _fa_section.render({
+                title: 'policy_wizard.landing.in_progress_title'|trans,
+                body: runs_body
+            }) }}
+        </div>
+    {% endif %}
+
+    {# Start Konzern-Defaults wizard CTA #}
+    <div class="mt-4">
+        {% set start_body %}
+            <p class="text-muted mb-3">{{ 'policy_wizard.konzern_defaults.start_hint'|trans }}</p>
+            <form method="post" action="{{ path('app_policy_wizard_konzern_defaults_start') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_konzern_defaults_start') }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="bi bi-magic" aria-hidden="true"></i>
+                    <span class="fa-cyber-btn__label">{{ 'policy_wizard.konzern_defaults.action.start'|trans }}</span>
+                </button>
+            </form>
+        {% endset %}
+
+        {{ _fa_section.render({
+            title: 'policy_wizard.konzern_defaults.start_heading'|trans,
+            body: start_body
+        }) }}
+    </div>
+</div>
+{% endblock %}

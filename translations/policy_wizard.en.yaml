@@ -85,6 +85,59 @@ policy_wizard:
             conflicts_heading: 'Hierarchy conflicts'
             conflicts_empty: 'No conflicts detected.'
             generate_hint: 'Pressing Generate will persist the documents. Sandbox mode produces no documents.'
+        targeted_pick_topics:
+            title: 'Pick topics'
+            subtitle: 'Mark up to ten existing topic policies for re-generation.'
+        targeted_finding_reference:
+            title: 'Audit-finding reference'
+            subtitle: 'Optional — link this re-run to an audit finding for evidence.'
+        targeted_diff_preview:
+            title: 'Diff preview'
+            subtitle: 'Comparison between current effective values and the last approved baseline.'
+        targeted_generate:
+            title: 'Confirm re-generation'
+            subtitle: 'Final confirmation: the picked topics will be regenerated.'
+        targeted:
+            pick:
+                title: 'Pick topics'
+                subtitle: 'Mark up to ten existing topic policies for re-generation.'
+                hint_max_ten: 'A targeted re-run accepts at most %count% topics. Keep the selection small to keep the diff reviewable.'
+                more_documents: '… and %count% more documents'
+                column:
+                    topic: 'Topic'
+                    last_approved: 'Last approved'
+                    next_review: 'Next review'
+                action:
+                    continue: 'Continue to audit finding'
+            finding:
+                title: 'Audit-finding ID (optional)'
+                subtitle: 'If you got here via an audit-finding alert, paste the finding ID for evidence.'
+                placeholder: 'e.g. NCR-2026-04'
+                help: 'Stored in the audit log of this wizard run and copied into the approval-inbox entry.'
+                action:
+                    skip: 'Continue without reference'
+                    continue: 'Continue to diff preview'
+            diff:
+                title: 'Diff preview'
+                subtitle: 'Read-only comparison. Changed rows are highlighted in yellow; confirm below to continue.'
+                no_changes_title: 'No drift detected'
+                no_changes_body: 'The selected topics currently carry the same value as the last approved baseline. Re-generation still runs (e.g. after a template change).'
+                column:
+                    topic: 'Topic'
+                    setting: 'Setting key'
+                    current: 'Current value'
+                    approved: 'Approved baseline'
+                    changed: 'Changed?'
+                confirm_label: 'I have reviewed the differences and confirm regeneration of the selected topics.'
+                action:
+                    regenerate: 'Start regeneration'
+            generate:
+                title: 'Confirm re-generation'
+                subtitle: 'Final step: the selected topics will be regenerated. Sandbox mode persists nothing.'
+                topics_heading: 'Selected topics'
+                preview_heading: 'Sandbox preview'
+                action:
+                    confirm: 'I confirm regeneration of the topics listed above.'
 
     action:
         start_full: 'Start full run'
@@ -110,6 +163,26 @@ policy_wizard:
         run_cancelled: 'Wizard run was cancelled.'
         run_completed: 'Wizard run completed successfully.'
         sandbox_no_persistence: 'Sandbox mode active — no documents will be persisted.'
+        changed_yes: 'Changed'
+        changed_no: 'Unchanged'
+
+    konzern_defaults:
+        title: 'Group defaults'
+        subtitle: 'Set group-wide policy defaults and propagate them to subsidiaries.'
+        badge: 'Group'
+        intro: 'These defaults are inherited by all subsidiary tenants. For floor-only / ceiling-only settings, subsidiaries can only become stricter.'
+        current_settings_heading: 'Current group-wide settings'
+        start_heading: 'Start a new defaults run'
+        start_hint: 'Starts the policy wizard in group-defaults mode. Inputs are stored as TenantPolicySetting rows on the holding tenant and automatically pushed down to subsidiaries.'
+        no_settings: 'No group-wide settings stored yet.'
+        no_settings_hint: 'Start a group-defaults run below to define risk appetite, backup RPO, crypto minimum-key-length and other defaults for the whole holding.'
+        column:
+            key: 'Key'
+            value: 'Value'
+            updated_at: 'Last updated'
+        action:
+            start: 'Start group-defaults wizard'
+            edit: 'Edit'
 
     result:
         title: 'Policy framework generated'
@@ -130,6 +203,27 @@ policy_wizard:
 
     csrf:
         invalid: 'Invalid CSRF token. Please reload the page.'
+
+# W3-L — Per-user policy acknowledgement collection.
+# Closes auditor's predicted ISO 27001 A.6.3 NC ("policy must be communicated and acknowledged").
+policy_ack:
+    inbox:
+        title: 'Pending policy acknowledgements'
+        subtitle: 'Please acknowledge the following published policies.'
+        pending_count: '%count% policy/policies waiting for your acknowledgement.'
+        no_pending: 'All policies acknowledged — thank you!'
+    view:
+        title: 'View and acknowledge policy'
+        subtitle: 'Read the policy and confirm acknowledgement at the bottom of the page.'
+        action:
+            acknowledge: 'Acknowledge policy'
+        button_disabled_already_acked: 'You have already acknowledged this version.'
+    message:
+        acknowledged_success: 'Acknowledgement recorded — thank you!'
+    widget:
+        title: 'Policy acknowledgements pending'
+        action:
+            go_to_inbox: 'Go to acknowledgement inbox'
 
 # W3-D — Compliance-Wizard check-types covering Policy-Wizard outputs.
 # Keys are addressed as `compliance_check.<check_id>.{title,description,pass_message,fail_message}`

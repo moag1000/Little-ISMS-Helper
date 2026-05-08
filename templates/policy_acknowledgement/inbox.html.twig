@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'policy_ack.inbox.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4 fa-aurora-surface">
+    {{ _fa_page_header.render({
+        badge: { icon: 'check2-square', label: 'policy_wizard.badge'|trans },
+        title: 'policy_ack.inbox.title'|trans,
+        subtitle: 'policy_ack.inbox.subtitle'|trans
+    }) }}
+
+    {% if pending_count == 0 %}
+        <div class="mt-4">
+            {{ _fa_empty_state.render({
+                mood: 'happy',
+                title: 'policy_ack.inbox.no_pending'|trans,
+                text: 'policy_ack.inbox.subtitle'|trans
+            }) }}
+        </div>
+    {% else %}
+        <div class="mt-4">
+            {{ _fa_alert.render({
+                variant: 'info',
+                body: 'policy_ack.inbox.pending_count'|trans({ '%count%': pending_count })
+            }) }}
+        </div>
+
+        {% set inbox_body %}
+            <ul class="list-group list-group-flush">
+                {% for document in pending_documents %}
+                    <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-3 px-0">
+                        <div>
+                            <div class="fw-semibold">
+                                {{ document.originalFilename ?? document.filename }}
+                            </div>
+                            {% if document.description %}
+                                <small class="text-muted d-block mt-1">
+                                    {{ document.description|slice(0, 200) }}
+                                </small>
+                            {% endif %}
+                            <small class="text-muted">
+                                <i class="bi bi-tag" aria-hidden="true"></i>
+                                {{ document.category }}
+                                {% if document.uploadedAt %}
+                                    &middot; {{ document.uploadedAt|date('Y-m-d') }}
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="{{ path('app_policy_ack_view', { documentId: document.id }) }}"
+                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                <span class="fa-cyber-btn__label">{{ 'policy_ack.view.title'|trans }}</span>
+                            </a>
+                            <form method="post"
+                                  action="{{ path('app_policy_ack_acknowledge', { documentId: document.id }) }}"
+                                  class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('policy_ack') }}">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                                    <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                                    <span class="fa-cyber-btn__label">{{ 'policy_ack.view.action.acknowledge'|trans }}</span>
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endset %}
+
+        <div class="mt-4">
+            {{ _fa_section.render({
+                title: 'policy_ack.inbox.title'|trans,
+                body: inbox_body
+            }) }}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -85,6 +85,59 @@ policy_wizard:
             conflicts_heading: 'Hierarchie-Konflikte'
             conflicts_empty: 'Keine Konflikte erkannt.'
             generate_hint: 'Mit „Erzeugen" werden die Dokumente persistiert. Sandbox-Modus erzeugt keine Dokumente.'
+        targeted_pick_topics:
+            title: 'Themen auswählen'
+            subtitle: 'Bis zu zehn bestehende Topic-Policies für die Re-Generierung markieren.'
+        targeted_finding_reference:
+            title: 'Audit-Finding-Referenz'
+            subtitle: 'Optional: Verlinken Sie diesen Re-Run mit einem Audit-Finding für die Beweiskette.'
+        targeted_diff_preview:
+            title: 'Diff-Vorschau'
+            subtitle: 'Vergleich zwischen aktuell wirksamen Werten und der zuletzt freigegebenen Baseline.'
+        targeted_generate:
+            title: 'Re-Generierung bestätigen'
+            subtitle: 'Letzte Bestätigung: ausgewählte Themen werden neu erzeugt.'
+        targeted:
+            pick:
+                title: 'Themen auswählen'
+                subtitle: 'Bis zu zehn bestehende Topic-Policies für die Re-Generierung markieren.'
+                hint_max_ten: 'Maximal %count% Themen pro Re-Run. Halten Sie die Auswahl möglichst klein, damit der Diff überschaubar bleibt.'
+                more_documents: '… und %count% weitere Dokumente'
+                column:
+                    topic: 'Thema'
+                    last_approved: 'Zuletzt freigegeben'
+                    next_review: 'Nächstes Review'
+                action:
+                    continue: 'Weiter zu Audit-Finding'
+            finding:
+                title: 'Audit-Finding-ID (optional)'
+                subtitle: 'Falls Sie über einen Audit-Finding-Alarm hier gelandet sind, fügen Sie die Finding-ID als Beweisanker ein.'
+                placeholder: 'z. B. NCR-2026-04'
+                help: 'Wird im Audit-Log dieses Wizard-Laufs gespeichert und in den Approval-Inbox-Eintrag übernommen.'
+                action:
+                    skip: 'Weiter ohne Referenz'
+                    continue: 'Weiter zur Diff-Vorschau'
+            diff:
+                title: 'Diff-Vorschau'
+                subtitle: 'Read-only-Vergleich. Geänderte Zeilen sind gelb markiert; bestätigen Sie unten, um fortzufahren.'
+                no_changes_title: 'Keine Drift erkannt'
+                no_changes_body: 'Die ausgewählten Themen tragen aktuell denselben Wert wie die zuletzt freigegebene Baseline. Die Re-Generierung läuft trotzdem (z. B. nach Template-Änderung).'
+                column:
+                    topic: 'Thema'
+                    setting: 'Setting-Schlüssel'
+                    current: 'Aktueller Wert'
+                    approved: 'Freigegebene Baseline'
+                    changed: 'Geändert?'
+                confirm_label: 'Ich habe die Abweichungen geprüft und bestätige die Re-Generierung der ausgewählten Themen.'
+                action:
+                    regenerate: 'Re-Generierung starten'
+            generate:
+                title: 'Re-Generierung bestätigen'
+                subtitle: 'Letzter Schritt: die ausgewählten Themen werden neu erzeugt. Sandbox-Modus persistiert nichts.'
+                topics_heading: 'Ausgewählte Themen'
+                preview_heading: 'Sandbox-Vorschau'
+                action:
+                    confirm: 'Ich bestätige die Re-Generierung der oben aufgeführten Themen.'
 
     action:
         start_full: 'Vollständigen Lauf starten'
@@ -110,6 +163,26 @@ policy_wizard:
         run_cancelled: 'Wizard-Lauf wurde abgebrochen.'
         run_completed: 'Wizard-Lauf wurde erfolgreich abgeschlossen.'
         sandbox_no_persistence: 'Sandbox-Modus aktiv — es werden keine Dokumente persistiert.'
+        changed_yes: 'Geändert'
+        changed_no: 'Unverändert'
+
+    konzern_defaults:
+        title: 'Konzern-Defaults'
+        subtitle: 'Konzernweite Vorgaben für Tochtergesellschaften setzen und propagieren.'
+        badge: 'Konzern'
+        intro: 'Diese Vorgaben werden an alle Tochter-Tenants weitergegeben. Tochtergesellschaften können bei FloorOnly/CeilingOnly-Settings nur strenger werden.'
+        current_settings_heading: 'Aktuelle konzernweite Settings'
+        start_heading: 'Neuen Defaults-Lauf starten'
+        start_hint: 'Startet den Policy-Wizard im Konzern-Defaults-Modus. Eingaben werden als TenantPolicySetting auf der Holding gespeichert und automatisch in die Tochter-Tenants gepusht.'
+        no_settings: 'Noch keine konzernweiten Settings hinterlegt.'
+        no_settings_hint: 'Starten Sie unten einen Konzern-Defaults-Lauf, um Risk-Appetit, Backup-RPO, Crypto-Mindestschlüssel und weitere Vorgaben für die gesamte Holding zu definieren.'
+        column:
+            key: 'Schlüssel'
+            value: 'Wert'
+            updated_at: 'Zuletzt geändert'
+        action:
+            start: 'Konzern-Defaults-Wizard starten'
+            edit: 'Bearbeiten'
 
     result:
         title: 'Regelwerk erzeugt'
@@ -130,6 +203,27 @@ policy_wizard:
 
     csrf:
         invalid: 'Ungültiges CSRF-Token. Bitte laden Sie die Seite neu.'
+
+# W3-L — Per-user policy acknowledgement collection.
+# Closes auditor's predicted ISO 27001 A.6.3 NC ("policy must be communicated and acknowledged").
+policy_ack:
+    inbox:
+        title: 'Offene Richtlinien-Quittierungen'
+        subtitle: 'Bitte bestätigen Sie die folgenden veröffentlichten Richtlinien.'
+        pending_count: '%count% Richtlinie(n) warten auf Ihre Quittierung.'
+        no_pending: 'Alle Richtlinien sind quittiert — vielen Dank!'
+    view:
+        title: 'Richtlinie ansehen und quittieren'
+        subtitle: 'Lesen Sie die Richtlinie und bestätigen Sie die Kenntnisnahme am Seitenende.'
+        action:
+            acknowledge: 'Kenntnisnahme bestätigen'
+        button_disabled_already_acked: 'Sie haben diese Version bereits quittiert.'
+    message:
+        acknowledged_success: 'Quittierung erfasst — danke!'
+    widget:
+        title: 'Richtlinien-Quittierungen ausstehend'
+        action:
+            go_to_inbox: 'Zur Quittierungs-Inbox'
 
 # W3-D — Compliance-Wizard check-types covering Policy-Wizard outputs.
 # Keys are addressed as `compliance_check.<check_id>.{title,description,pass_message,fail_message}`
