@@ -1,0 +1,580 @@
+policy:
+    iso27001:
+        # =====================================================================
+        # 1) ICT Continuity Policy (A.5.29 + A.5.30)
+        #    InfoSec slice ONLY — full BCMS lives in BCM addon (W5).
+        # =====================================================================
+        continuity:
+            v1:
+                title: 'ICT Continuity Policy'
+                body: |
+                    This ICT Continuity Policy governs how {{ tenant.legal_name }} manages the
+                    information-security aspects of recovery for information and communication
+                    technology (ICT) during and after a business disruption. It implements the
+                    requirements of ISO/IEC 27002:2022 §5.29 (Information security during
+                    disruption) and §5.30 (ICT readiness for business continuity), ensuring that
+                    confidentiality, integrity and availability of information-processing systems
+                    are preserved even under stress conditions.
+
+                    Important scope statement: this policy covers **only** ICT readiness
+                    (disaster recovery, IT redundancy, technical failover). The full Business
+                    Continuity Management System (BCMS) according to ISO 22301 — including
+                    business impact analysis (BIA), crisis-team activation, non-IT recovery plans
+                    and external communications — is governed by the separate **BCM Policy**.
+                    Where ICT and BCM provisions conflict, the BCM Policy takes precedence
+                    because it represents the strategic business view.
+
+                    {{ roles.ciso.fullName }} is accountable for maintaining this policy in
+                    coordination with the BCM Officer. All ICT continuity measures are planned
+                    consistent with the criticality classification of the relevant business
+                    processes from the BIA — an isolated IT view without a business anchor is
+                    explicitly not permitted.
+
+                section:
+                    1:
+                        title: 'Scope and Interface to the BCMS'
+                        body: |
+                            This policy applies to all production ICT systems, cloud services,
+                            network infrastructure and supporting services required to deliver
+                            the in-scope business processes of {{ tenant.legal_name }}. This
+                            includes own data centres, co-location sites, IaaS / PaaS / SaaS
+                            services, and critical third-party dependencies.
+
+                            The interface to the BCMS is unidirectional: the BCMS provides
+                            **recovery time objective (RTO)**, **recovery point objective (RPO)**
+                            and **maximum tolerable period of disruption (MTPD)** per business
+                            process, from which ICT continuity derives technical targets per
+                            system tier. The information-security-during-disruption clause (§5.29)
+                            ensures that security controls — access control, logging, encryption —
+                            remain effective in fail-over operation as well.
+                    2:
+                        title: 'RTO / RPO per System Tier'
+                        body: |
+                            Systems are classified into four tiers. Default targets are:
+                            **Tier 1 (mission-critical): RTO {{ continuity.rto_hours }} h, RPO 1 h**;
+                            Tier 2 (important): RTO 24 h, RPO 8 h; Tier 3 (standard): RTO 72 h,
+                            RPO 24 h; Tier 4 (low priority): RTO 7 days, RPO 24 h. Deviations
+                            require a documented risk-acceptance signed by the risk owner and
+                            approved by {{ roles.ciso.fullName }}. The actual tier assignment of
+                            every system is recorded as an attribute in the asset inventory and
+                            re-validated at least annually.
+                    3:
+                        title: 'DR-Site Strategy and Redundancy'
+                        body: |
+                            For Tier 1 and Tier 2 systems, a geographically separate secondary
+                            site (hot / warm / cold / cloud-region) with a documented fail-over
+                            procedure is mandatory. Single-region cloud deployments for Tier 1
+                            workloads are not permitted — the minimum requirement is multi-AZ
+                            with a documented region-failover runbook. §A.8.14 (redundancy of
+                            information-processing facilities) is implemented by automatic
+                            failover, load distribution and data replication. Each Tier 1 system
+                            has a runbook with step-by-step instructions, named responsibilities
+                            and the expected recovery time.
+                    4:
+                        title: 'Failover Tests, Exercises and Lessons Learned'
+                        body: |
+                            Tier 1 systems undergo a full exercise at least annually (real
+                            failover or tabletop with technical verification); Tier 2 systems run
+                            half-yearly tabletops and an annual technical verification. Backups
+                            (§A.8.13) are restore-tested quarterly — a backup that has not been
+                            restored is not a backup. Each test produces a report covering result,
+                            deviation from target RTO / RPO, and corrective actions. Lessons
+                            learned feed back into runbooks and the next risk assessment within
+                            30 days. Skipping the annual test is treated as a major nonconformity.
+                    5:
+                        title: 'Dependency Mapping and Third-Party Continuity'
+                        body: |
+                            For every Tier 1 and Tier 2 system, a dependency chain (upstream and
+                            downstream systems, external providers, communication links) is
+                            documented. Where services are outsourced (IaaS, SaaS, MSP), the
+                            provider's continuity performance is contractually secured: SLA with
+                            measurable RTO / RPO, annual provision of the SOC 2 Type II or
+                            ISO 22301 attestation, and the right to inspect failover-test reports.
+                            For critical third parties an exit strategy is also prepared
+                            (§A.5.30 — sub-requirement on supplier resilience).
+
+                tailoring_field:
+                    1:
+                        label: 'Default RTO for Tier 1 systems (hours)'
+                        placeholder: 'e.g. 4 — typical for Tier 1 SaaS, banking systems, DORA-critical ICT'
+                    2:
+                        label: 'Primary DR-site type'
+                        placeholder: 'hot standby / warm standby / cold standby / cloud multi-region'
+                    3:
+                        label: 'Failover-test cadence for Tier 1 systems'
+                        placeholder: 'e.g. annual full failover plus half-yearly tabletop'
+
+        # =====================================================================
+        # 2) Threat Intelligence Policy (A.5.7) — NEW in 2022
+        # =====================================================================
+        threat_intelligence:
+            v1:
+                title: 'Threat Intelligence Policy'
+                body: |
+                    This policy defines how {{ tenant.legal_name }} systematically collects,
+                    evaluates, processes and disseminates information-security threat
+                    information ("threat intelligence"). It implements ISO/IEC 27002:2022 §5.7,
+                    newly introduced in the 2022 revision: "Information relating to information
+                    security threats shall be collected and analysed to produce threat
+                    intelligence."
+
+                    The objective is to underpin decisions in vulnerability management, incident
+                    response, SOC detection, architecture reviews and supplier oversight with
+                    current and organisation-relevant threat knowledge — enabling the shift from
+                    a purely reactive to a more predictive security posture. Accountability sits
+                    with {{ roles.ciso.fullName }} or the threat-intelligence function reporting
+                    to the CISO (in smaller organisations frequently a hat worn by the SOC lead
+                    or the security officer).
+
+                section:
+                    1:
+                        title: 'Sources and Classification (Strategic / Tactical / Operational)'
+                        body: |
+                            {{ tenant.legal_name }} consumes a mix of governmental, collaborative
+                            and commercial feeds. Mandatory governmental sources include the
+                            national CSIRT (e.g. CERT-EU and the relevant national authority);
+                            sectoral sources include ISAC memberships appropriate to the industry
+                            (e.g. FS-ISAC for financial services, Auto-ISAC, Health-ISAC). Open
+                            source intelligence (MITRE ATT&CK, MISP communities, NVD) complements
+                            commercial threat feeds. Threat intelligence is classified at three
+                            levels: **strategic** (geopolitics, actor profiles, long-term trends —
+                            audience: executive management), **tactical** (TTPs per MITRE ATT&CK,
+                            campaigns — audience: architecture, security officer), and
+                            **operational** (IoCs: hashes, domains, IPs — audience: SOC,
+                            vulnerability management).
+                    2:
+                        title: 'Processing and Evaluation Cadence'
+                        body: |
+                            Operational IoCs are processed daily and pushed automatically into
+                            SIEM, EDR and firewall block-lists. Tactical reports are reviewed and
+                            evaluated weekly (relevance to the asset landscape, mapping to
+                            existing controls). Strategic reports are consolidated monthly and
+                            feed quarterly into management review as input on "changes in the
+                            external threat environment" (Cl. 9.3.2 c). False positives are logged;
+                            sources with persistently low precision are re-evaluated.
+                    3:
+                        title: 'Dissemination to Operational Functions'
+                        body: |
+                            Threat intelligence is only valuable when consumed. The policy
+                            defines clear distribution channels: the SOC receives operational
+                            feeds in real-time via automated interfaces; vulnerability management
+                            receives weekly prioritised vulnerability assessments factoring in
+                            active exploitation (CISA KEV, EPSS); incident response receives
+                            case-related analyst support during active investigations; architecture
+                            and secure development receive quarterly TTP briefings with
+                            recommendations for hardening or design changes. Linkage to §A.5.6
+                            (special interest groups) and §A.5.5 (authorities) is established.
+                    4:
+                        title: 'Cooperation with Authorities and Communities'
+                        body: |
+                            For reportable threat situations (critical infrastructure,
+                            NIS2, DORA), communication with supervisory authorities is conducted
+                            by {{ roles.ciso.fullName }} or the designated reporting officer.
+                            Bidirectional exchange in trust communities (ISACs, sector working
+                            groups) is encouraged; before any onward sharing, the Traffic Light
+                            Protocol (TLP:CLEAR / GREEN / AMBER / RED) must be observed.
+                            TLP:RED material does not leave the original recipient group.
+                    5:
+                        title: 'Quality Assurance and Review'
+                        body: |
+                            Sources are reviewed annually for relevance and precision. Key
+                            metrics: number of consumed IoCs, SIEM hit-rate, share of incidents
+                            that were prevented or detected early thanks to threat intelligence.
+                            The policy itself is reviewed annually or upon any material change in
+                            the threat landscape (e.g. new geopolitical situation, sector-specific
+                            actor shift) by {{ roles.ciso.fullName }} and re-approved.
+
+                tailoring_field:
+                    1:
+                        label: 'Mandatory governmental and sectoral sources'
+                        placeholder: 'e.g. CERT-EU, national CSIRT, FS-ISAC (for financial services)'
+                    2:
+                        label: 'Commercial threat-intelligence platform / feed'
+                        placeholder: 'e.g. licensed premium feed from an established vendor'
+                    3:
+                        label: 'Primary distribution channel to SOC / operations'
+                        placeholder: 'e.g. SIEM integration via STIX/TAXII or a MISP instance'
+
+        # =====================================================================
+        # 3) Mobile Device + Teleworking Policy (A.6.7 + A.7.9 + A.8.1)
+        # =====================================================================
+        mobile_teleworking:
+            v1:
+                title: 'Mobile Device and Remote Working Policy'
+                body: |
+                    This policy governs at {{ tenant.legal_name }} the conditions and restrictions
+                    for using mobile end-user devices (laptops, smartphones, tablets) and for
+                    location-independent work (home office, telework, mobile work, workation). It
+                    implements ISO/IEC 27002:2022 §6.7 (Remote working — explicitly required as a
+                    "topic-specific policy"), §7.9 (Security of off-premises assets) and §8.1
+                    (User endpoint devices).
+
+                    Background: mobile work has established itself as a permanent operating model.
+                    It extends the classical organisational perimeter to private homes, public
+                    spaces and changing network environments, significantly increasing the attack
+                    surface. Compensating technical, organisational and behavioural controls are
+                    therefore required. Where employee-monitoring concerns arise (device telemetry,
+                    location data), employee-representation co-determination requirements apply
+                    in jurisdictions that grant such rights (in Germany: § 87 BetrVG).
+
+                section:
+                    1:
+                        title: 'Approved Working Modes and Locations'
+                        body: |
+                            {{ tenant.legal_name }} distinguishes three working modes: **office**
+                            (standard workplace within secured sites), **home office** (from a
+                            permanent residence with a defined working area), and **mobile work**
+                            (changing locations, including travel). Data residency: processing of
+                            personal data outside the EU/EEA is only permitted under a valid
+                            transfer mechanism per GDPR Chapter V. Working from high-risk
+                            countries (sanctions lists, espionage risk) requires prior approval
+                            by {{ roles.ciso.fullName }} and, where appropriate,
+                            {{ roles.dpo.fullName }}. Workations must be registered in advance.
+                    2:
+                        title: 'Endpoint Hardening and Mobile Device Management'
+                        body: |
+                            All endpoint devices used for business purposes are subject to MDM or
+                            MAM management. Minimum baseline: full-disk encryption (BitLocker,
+                            FileVault, LUKS — industry-standard equivalent), automatic screen
+                            lock after no more than 5 minutes, biometric or PIN/password
+                            authentication of at least 8 characters, automatic updates enabled,
+                            endpoint protection / EDR active, remote-wipe capability. Jailbreak /
+                            root is prohibited and triggers immediate device quarantine. Loss or
+                            theft must be reported within 4 hours via the service hotline — at
+                            the latest by the next business day.
+                    3:
+                        title: 'BYOD Provision'
+                        body: |
+                            BYOD (Bring Your Own Device) is at {{ tenant.legal_name }}
+                            **{{ mobile.byod_allowed }}**. Where permitted, the following
+                            additional rules apply: complete separation of business and private
+                            data via container solution (e.g. Work Profile on Android, app
+                            container on iOS), minimum OS version, no access to data classified
+                            "{{ asset.classification_levels }} — strictly confidential or higher",
+                            organisation's right to selectively wipe the container at termination
+                            of the employment relationship. BYOD use requires a separate written
+                            agreement; works-council co-determination on the implementation of
+                            MDM features is observed where applicable.
+                    4:
+                        title: 'Network, VPN and Public-Wi-Fi Requirements'
+                        body: |
+                            Access to corporate systems from outside secured sites is exclusively
+                            performed via VPN or Zero Trust Network Access (ZTNA) with multi-factor
+                            authentication (MFA, §A.8.5). Direct connections to internal services
+                            without VPN/ZTNA are not permitted. Public Wi-Fi (hotel, café, airport)
+                            is treated as untrusted by default; use is permitted only with the
+                            VPN tunnel active. Hotspot tethering via the user's own mobile device
+                            is preferred over public Wi-Fi where available. Sensitive phone calls
+                            or screen-sharing in public spaces is to be avoided; privacy filters
+                            are mandatory for users handling Tier 1 and Tier 2 data.
+                    5:
+                        title: 'Loss, Return and Secure Disposal'
+                        body: |
+                            On loss, theft or suspicion of compromise the device is wiped
+                            remotely from the MDM without delay. Upon termination of employment,
+                            all business devices are returned by the last day of work at the
+                            latest (§A.5.11 — return of assets). Secure disposal or refurbishment
+                            follows §A.7.14 (Secure disposal or re-use of equipment) — storage
+                            media are sanitised in accordance with NIST SP 800-88 or an equivalent
+                            method, or physically destroyed.
+
+                tailoring_field:
+                    1:
+                        label: 'Selected MDM/MAM product (generic description)'
+                        placeholder: 'e.g. industry-standard unified endpoint management with container capability'
+                    2:
+                        label: 'BYOD strategy'
+                        placeholder: 'BYOD prohibited / travel-only / fully permitted with container'
+                    3:
+                        label: 'VPN / ZTNA solution and MFA requirement'
+                        placeholder: 'e.g. always-on VPN with FIDO2 MFA for all remote access'
+
+        # =====================================================================
+        # 4) Asset Management Policy (A.5.9 + A.5.10 + A.5.11)
+        # =====================================================================
+        asset_management:
+            v1:
+                title: 'Asset Management Policy'
+                body: |
+                    This policy governs at {{ tenant.legal_name }} the identification,
+                    inventorying, ownership assignment, classification, acceptable use and
+                    orderly retirement of information and IT assets. It implements
+                    ISO/IEC 27002:2022 §5.9 (Inventory of information and other associated
+                    assets), §5.10 (Acceptable use of information and other associated assets)
+                    and §5.11 (Return of assets).
+
+                    Asset management is the foundation of the entire ISMS: without a complete
+                    and current inventory, no risk assessment, no classification and no
+                    protection-needs analysis is possible. The presence of a named asset owner
+                    for every asset is one of the most frequent audit checkpoints — missing
+                    owners are routinely raised as major nonconformity.
+
+                section:
+                    1:
+                        title: 'Asset Categories and Inventory Scope'
+                        body: |
+                            The inventory captures at minimum: **information / data** (databases,
+                            document stores, source code), **hardware** (servers, end-user
+                            devices, network components, mobile devices, storage media),
+                            **software** (applications, operating systems, licences),
+                            **cloud services** (IaaS / PaaS / SaaS instances), **supporting
+                            services** (power, cooling, connectivity), and **personnel roles**
+                            (critical key roles where relevant for information security). The
+                            authoritative data source is the central CMDB / inventory system —
+                            shadow inventories in spreadsheets or department-specific tools are
+                            not permitted.
+                    2:
+                        title: 'Ownership Assignment and Responsibilities'
+                        body: |
+                            Every asset has **exactly one** named asset owner. The owner is
+                            responsible for: classification per protection-needs scale
+                            ({{ asset.classification_levels }}), access-rights reviews (at least
+                            annually, §A.5.18), lifecycle decisions (procurement, change,
+                            retirement) and ensuring compliance with acceptable use. Ownership
+                            assignment occurs no later than the onboarding of a new asset into
+                            the inventory; assets without owners must not be operated in
+                            production. The asset-owner list is reviewed for personnel currency
+                            at least every six months.
+                    3:
+                        title: 'Classification Levels and Labelling'
+                        body: |
+                            The organisation-wide classification scheme uses the levels
+                            {{ asset.classification_levels }} (typically: public / internal /
+                            confidential / strictly confidential). Each asset is classified
+                            according to protection needs (confidentiality, integrity,
+                            availability — CIA). Inheritance: composite assets inherit the
+                            highest classification of their components (maximum principle).
+                            Labelling is applied electronically (metadata, watermarks) and/or
+                            physically (label, asset tag) per the separate Classification Policy.
+                    4:
+                        title: 'Acceptable Use'
+                        body: |
+                            Acceptable use (§5.10) complements this policy and addresses in
+                            particular: permissible private use, prohibition of storing business
+                            data in unapproved cloud services ("shadow IT"), prohibition of
+                            sharing authentication information, mandatory locking of unattended
+                            screens (clear screen — §A.7.7), tidying obligation for classified
+                            documents (clear desk). Violations are addressed through the
+                            disciplinary process (§A.6.4).
+                    5:
+                        title: 'Lifecycle, Return and Secure Disposal'
+                        body: |
+                            Every asset traverses a defined lifecycle: procurement →
+                            commissioning → productive use → change → decommissioning → secure
+                            disposal or re-use. On termination of employment or change of role
+                            all assets are returned (§5.11). Secure disposal follows §7.14
+                            (storage media sanitisation per NIST SP 800-88 or physical
+                            destruction). Inventory reviews are performed at least every
+                            **{{ asset.review_cadence_months }}** months; on material change
+                            (CMDB change, M&A, divestiture) an unscheduled review is performed.
+
+                tailoring_field:
+                    1:
+                        label: 'CMDB / inventory system (authoritative data source)'
+                        placeholder: 'e.g. central CMDB tool or ERP-integrated inventory'
+                    2:
+                        label: 'Classification scale'
+                        placeholder: 'public / internal / confidential / strictly confidential'
+                    3:
+                        label: 'Inventory review cadence (months)'
+                        placeholder: 'e.g. 12 — standard annual review; 6 for DORA-critical assets'
+
+        # =====================================================================
+        # 5) HR Security Policy (A.6.1–A.6.6)
+        #    DE: § 26 BDSG-neu, § 87 BetrVG, Art. 88 GDPR
+        # =====================================================================
+        hr_security:
+            v1:
+                title: 'Human Resources Security Policy'
+                body: |
+                    This policy governs at {{ tenant.legal_name }} all information-security
+                    relevant aspects of human resources across the employment lifecycle: pre-
+                    employment, during employment and at termination or change of role. It
+                    implements ISO/IEC 27002:2022 §6.1 (Screening), §6.2 (Terms and conditions
+                    of employment), §6.3 (Information-security awareness, education and
+                    training), §6.4 (Disciplinary process), §6.5 (Responsibilities after
+                    termination or change of employment) and §6.6 (Confidentiality or
+                    non-disclosure agreements).
+
+                    Legal basis: processing of employee personal data is governed by the
+                    applicable data-protection regime — in Germany specifically by **§ 26 BDSG
+                    (Federal Data Protection Act)** in conjunction with **Art. 88 GDPR** (which
+                    enables national specifications in the employment context). Where employee-
+                    representation co-determination applies — particularly for the introduction
+                    and use of technical means capable of monitoring behaviour or performance —
+                    co-determination must be observed (in Germany: **§ 87 (1) no. 6 BetrVG**).
+                    This includes awareness platforms with tracking, phishing simulations with
+                    person-level reporting and endpoint monitoring. Accountability sits with
+                    {{ roles.ciso.fullName }} in close coordination with HR leadership,
+                    {{ roles.dpo.fullName }} and, where applicable, the works council.
+
+                section:
+                    1:
+                        title: 'Pre-Employment: Screening and Security Clauses'
+                        body: |
+                            Before employment commences, a risk-based screening is conducted.
+                            Depth and scope follow the role, data access and legal requirements.
+                            Standard scope: identity verification, CV plausibility check,
+                            references. For security-critical roles (e.g. administrators, persons
+                            accessing Tier 1 data) a criminal-records check (in Germany:
+                            certificate per § 30 BZRG) and, where applicable, an extended
+                            screening is added. **Important (DE):** § 26 (1) BDSG only permits
+                            this data collection where strictly necessary for establishing the
+                            employment relationship; a blanket "full screening of all
+                            applicants" is not permissible. Candidates are informed transparently;
+                            consent is collected only where it can be given freely.
+
+                            Security clauses become part of the employment contract upon
+                            signature: confidentiality obligation (§6.6), acknowledgement of the
+                            ISMS policies, disciplinary clause for violations, data-protection
+                            commitments per Art. 28/29 GDPR where processor-/joint-controller
+                            relationships apply.
+                    2:
+                        title: 'Awareness, Education and Role-Based Training'
+                        body: |
+                            §6.3 requires that "personnel … shall receive appropriate information
+                            security awareness, education and training and regular updates of the
+                            organization's topic-specific policies." {{ tenant.legal_name }}
+                            implements this through a tiered programme: **mandatory onboarding
+                            training** within the first two weeks (content: ISMS overview,
+                            phishing, data classification, reporting channels, AUP, data
+                            protection per GDPR / national law); **annual refresher training**
+                            for all personnel — default cadence every
+                            **{{ hr.training_cadence_months }}** months; **role-based deep-dive
+                            training** for special roles (administrators: secure operations;
+                            developers: secure coding, OWASP Top 10; managers: risk ownership;
+                            HR: employee-data protection). Attendance is evidenced per individual
+                            in the training module (Cl. 7.2 evidence). Where co-determination
+                            applies, person-level evaluations are governed accordingly
+                            (in Germany: § 87 (1) no. 6 BetrVG).
+                    3:
+                        title: 'Disciplinary Process for Violations'
+                        body: |
+                            §6.4 requires a formal disciplinary process. {{ tenant.legal_name }}
+                            applies a graduated approach: minor breaches lead to a verbal warning
+                            and targeted re-training; repeated or wilful breaches to a written
+                            reprimand; serious breaches or wilful / grossly negligent acts with
+                            material damage to termination and, where appropriate, civil and
+                            criminal action. Evidence is collected lawfully respecting employee
+                            rights (in Germany, § 26 (1) sentence 2 BDSG permits incident-based
+                            data processing only on the basis of a concrete suspicion of a crime
+                            in the employment context). Where co-determination applies, the
+                            works council is consulted before any termination notice (in Germany:
+                            § 102 BetrVG).
+                    4:
+                        title: 'Confidentiality and Non-Disclosure Agreements'
+                        body: |
+                            §6.6 requires the use of confidentiality / NDA agreements with all
+                            persons who can access confidential information. {{ tenant.legal_name }}
+                            implements this through: a confidentiality clause as a standard part
+                            of the employment contract; supplementary individual NDAs for access
+                            to particularly sensitive projects (M&A, research, Tier 1 customer
+                            data); separate NDAs for external parties (contractors, consultants,
+                            agency staff) prior to commencement of work. NDAs define duration
+                            (typically 5 years post-termination, or unlimited for trade secrets
+                            within the meaning of the relevant trade-secrets act), the
+                            information categories covered and the sanctioning mechanism.
+                    5:
+                        title: 'Off-Boarding and Post-Employment Obligations'
+                        body: |
+                            §6.5 requires defined responsibilities after termination or change
+                            of role. Off-boarding SLA: for **involuntary termination** all access
+                            rights are revoked on the last working day (same-day); for
+                            **voluntary termination** at the latest by the last working day.
+                            Required steps: disabling of all accounts and federated identities,
+                            recovery of all assets (§A.5.11 return of assets), handover of
+                            documents and tooling, reminder of the surviving confidentiality
+                            obligation and post-contractual non-compete clauses where applicable.
+                            An off-boarding checklist is mandatory and is countersigned by HR and
+                            the responsible line manager.
+
+                tailoring_field:
+                    1:
+                        label: 'Background-check tier per role category'
+                        placeholder: 'e.g. standard / extended (incl. criminal-records check) / national-security clearance where required'
+                    2:
+                        label: 'Awareness training cadence'
+                        placeholder: 'e.g. 12 — annual mandatory training plus ad-hoc on incidents or policy changes'
+                    3:
+                        label: 'Off-boarding SLA (access-rights revocation)'
+                        placeholder: 'same-day for involuntary termination; by last working day for voluntary'
+
+        # =====================================================================
+        # 6) Physical Security Policy (A.7.1-A.7.14) — BONUS short version
+        # =====================================================================
+        physical_security:
+            v1:
+                title: 'Physical and Environmental Security Policy'
+                body: |
+                    This policy governs at {{ tenant.legal_name }} the protection of people,
+                    rooms and information-processing facilities against unauthorised physical
+                    access and against environmental threats (fire, water, power outage, extreme
+                    temperatures). It implements ISO/IEC 27002:2022 §7.1 to §7.14. For fully
+                    remote organisations on cloud-only infrastructure, the policy is leaner but
+                    not waivable — the home office is also a workplace and a protection object.
+
+                section:
+                    1:
+                        title: 'Security Zones and Entry Control'
+                        body: |
+                            Sites are divided into zones: **public** (perimeter), **reception**
+                            (controlled entry point), **office** (employee-restricted),
+                            **restricted** (e.g. server room, archive) and **data centre**
+                            (high-security area with multi-factor entry control and logging).
+                            Entry mechanisms per zone are risk-based: card readers, biometric
+                            verification or mechanical lock systems. Visitors are registered,
+                            identified, issued visitor badges and escorted in non-public zones
+                            (§7.2 physical entry).
+                    2:
+                        title: 'Physical Monitoring and Data Protection (CCTV)'
+                        body: |
+                            §7.4 requires monitoring of physical access areas; in jurisdictions
+                            with strong data-protection regimes (e.g. Germany), CCTV is heavily
+                            regulated. Use is permissible only where it can be based on
+                            Art. 6 (1) f GDPR in conjunction with national CCTV provisions
+                            (in Germany: § 4 BDSG for publicly accessible areas, § 26 BDSG for
+                            employee areas); where works-council co-determination applies it
+                            must be observed (in Germany: § 87 (1) no. 6 BetrVG). Retention is
+                            limited to what is necessary (typically 72 hours, max. 10 working
+                            days), and signage is mandatory.
+                    3:
+                        title: 'Environmental Protection, Power and Utilities'
+                        body: |
+                            Server and technical rooms are protected against environmental
+                            threats (§7.5 / §7.11 / §7.12): early fire detection, gas-based fire
+                            suppression or suitable alternatives, water-leak detection beneath
+                            raised floors, redundant cooling, UPS with sufficient runtime for
+                            orderly shutdown, and emergency generators for Tier 1 sites. Power
+                            and data cabling are routed separately; access to distribution
+                            cabinets is access-controlled.
+                    4:
+                        title: 'Clear Desk / Clear Screen, Off-Premise and Home Workplace'
+                        body: |
+                            §7.7 (clear desk and clear screen) is enforced as a mandatory
+                            behavioural rule: classified documents are locked away when the
+                            workspace is left unattended; screens are locked when away. §7.9
+                            (off-premise assets) obliges all personnel to handle devices outside
+                            the sites with due care (privacy filter, anti-theft measures, secure
+                            storage). The same principles apply to the home office: a separate
+                            lockable working area or at least physical separation from family
+                            members, avoidance of overlooking by third parties, secure storage
+                            of business documents.
+                    5:
+                        title: 'Maintenance, Disposal and Secure Re-Use'
+                        body: |
+                            Maintenance work (§7.13) is carried out by authorised personnel under
+                            documented work order; vendor technicians are escorted. Disposal
+                            and re-use (§7.14) only follow certified storage-media sanitisation
+                            (NIST SP 800-88) or physical destruction per DIN 66399 protection
+                            class 3 or higher. Disposal evidence is retained for at least 3 years.
+
+                tailoring_field:
+                    1:
+                        label: 'Site model'
+                        placeholder: 'own premises / co-working / fully remote (cloud-only)'
+                    2:
+                        label: 'Entry-control mechanism for restricted zones'
+                        placeholder: 'e.g. card + PIN; biometric + card for Tier 1 data centre'
+                    3:
+                        label: 'CCTV scope and retention'
+                        placeholder: 'e.g. entrance + server room; 72-hour retention; works-council agreement dated YYYY-MM-DD'

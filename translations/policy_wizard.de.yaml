@@ -130,3 +130,153 @@ policy_wizard:
 
     csrf:
         invalid: 'Ungültiges CSRF-Token. Bitte laden Sie die Seite neu.'
+
+# W3-D — Compliance-Wizard check-types covering Policy-Wizard outputs.
+# Keys are addressed as `compliance_check.<check_id>.{title,description,pass_message,fail_message}`
+# from Twig (`{{ 'compliance_check.policy_top_level_present.title'|trans({}, 'policy_wizard') }}`).
+compliance_check:
+    policy_top_level_present:
+        title: 'Top-Level-ISMS-Leitlinie veröffentlicht'
+        description: 'Bestätigt, dass für den Tenant eine veröffentlichte ISMS-Leitlinie (ISO 27001 Cl. 5.2) aus dem Policy-Wizard vorliegt.'
+        pass_message: 'Top-Level-ISMS-Leitlinie ist veröffentlicht.'
+        fail_message: 'Es ist keine veröffentlichte Top-Level-ISMS-Leitlinie vorhanden — Policy-Wizard ausführen oder Dokument freigeben.'
+    policy_topic_acceptable_use_present:
+        title: 'Topic-Policy „Acceptable Use" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.10 Acceptable Use.'
+        pass_message: 'Acceptable-Use-Richtlinie ist veröffentlicht.'
+        fail_message: 'Acceptable-Use-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_access_control_present:
+        title: 'Topic-Policy „Access Control" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.15 Access Control.'
+        pass_message: 'Access-Control-Richtlinie ist veröffentlicht.'
+        fail_message: 'Access-Control-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_information_classification_present:
+        title: 'Topic-Policy „Information Classification" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.12/A.5.13 Klassifizierung & Kennzeichnung.'
+        pass_message: 'Information-Classification-Richtlinie ist veröffentlicht.'
+        fail_message: 'Information-Classification-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_information_transfer_present:
+        title: 'Topic-Policy „Information Transfer" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.14 Information Transfer.'
+        pass_message: 'Information-Transfer-Richtlinie ist veröffentlicht.'
+        fail_message: 'Information-Transfer-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_identity_management_present:
+        title: 'Topic-Policy „Identity Management" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.16 Identity Management.'
+        pass_message: 'Identity-Management-Richtlinie ist veröffentlicht.'
+        fail_message: 'Identity-Management-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_authentication_information_present:
+        title: 'Topic-Policy „Authentication Information" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.17 Authentication Information.'
+        pass_message: 'Authentication-Information-Richtlinie ist veröffentlicht.'
+        fail_message: 'Authentication-Information-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_cryptography_present:
+        title: 'Topic-Policy „Cryptography" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.8.24 Use of Cryptography.'
+        pass_message: 'Kryptographie-Richtlinie ist veröffentlicht.'
+        fail_message: 'Kryptographie-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_backup_present:
+        title: 'Topic-Policy „Backup" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.8.13 Information Backup.'
+        pass_message: 'Backup-Richtlinie ist veröffentlicht.'
+        fail_message: 'Backup-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_logging_present:
+        title: 'Topic-Policy „Logging & Monitoring" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.8.15/A.8.16 Logging & Monitoring.'
+        pass_message: 'Logging-Richtlinie ist veröffentlicht.'
+        fail_message: 'Logging-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_patch_management_present:
+        title: 'Topic-Policy „Patch & Vulnerability Management" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.8.8 Vulnerability Management.'
+        pass_message: 'Patch-Management-Richtlinie ist veröffentlicht.'
+        fail_message: 'Patch-Management-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_malware_present:
+        title: 'Topic-Policy „Malware Protection" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.8.7 Malware Protection.'
+        pass_message: 'Malware-Schutz-Richtlinie ist veröffentlicht.'
+        fail_message: 'Malware-Schutz-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_secure_configuration_present:
+        title: 'Topic-Policy „Secure Configuration" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.8.9 Configuration Management.'
+        pass_message: 'Secure-Configuration-Richtlinie ist veröffentlicht.'
+        fail_message: 'Secure-Configuration-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_network_security_present:
+        title: 'Topic-Policy „Network Security" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.8.20–A.8.23 Networks Security.'
+        pass_message: 'Network-Security-Richtlinie ist veröffentlicht.'
+        fail_message: 'Network-Security-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_secure_development_present:
+        title: 'Topic-Policy „Secure Development" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.8.25–A.8.30 Secure Development Life Cycle.'
+        pass_message: 'Secure-Development-Richtlinie ist veröffentlicht.'
+        fail_message: 'Secure-Development-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_supplier_relationships_present:
+        title: 'Topic-Policy „Supplier Relationships" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.19–A.5.22 Lieferantenbeziehungen.'
+        pass_message: 'Lieferanten-Sicherheits-Richtlinie ist veröffentlicht.'
+        fail_message: 'Lieferanten-Sicherheits-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_project_management_present:
+        title: 'Topic-Policy „Information Security in Project Management" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.8 Information Security in Project Management.'
+        pass_message: 'Projekt-Sicherheits-Richtlinie ist veröffentlicht.'
+        fail_message: 'Projekt-Sicherheits-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_privacy_pii_present:
+        title: 'Topic-Policy „Privacy & PII Protection" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.34 Privacy & PII Protection.'
+        pass_message: 'Datenschutz- und PII-Schutz-Richtlinie ist veröffentlicht.'
+        fail_message: 'Datenschutz- und PII-Schutz-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_incident_management_present:
+        title: 'Topic-Policy „Incident Management" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.24–A.5.28 Incident Management.'
+        pass_message: 'Incident-Management-Richtlinie ist veröffentlicht.'
+        fail_message: 'Incident-Management-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_continuity_present:
+        title: 'Topic-Policy „ICT Continuity" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.29/A.5.30 ICT Readiness for Business Continuity.'
+        pass_message: 'IKT-Kontinuitäts-Richtlinie ist veröffentlicht.'
+        fail_message: 'IKT-Kontinuitäts-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_threat_intelligence_present:
+        title: 'Topic-Policy „Threat Intelligence" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.7 Threat Intelligence.'
+        pass_message: 'Threat-Intelligence-Richtlinie ist veröffentlicht.'
+        fail_message: 'Threat-Intelligence-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_mobile_device_present:
+        title: 'Topic-Policy „Mobile Device & Remote Working" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.6.7/A.7.9/A.8.1 Mobile & Remote Working.'
+        pass_message: 'Mobile-Device-Richtlinie ist veröffentlicht.'
+        fail_message: 'Mobile-Device-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_asset_management_present:
+        title: 'Topic-Policy „Asset Management" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.5.9–A.5.11 Asset Management.'
+        pass_message: 'Asset-Management-Richtlinie ist veröffentlicht.'
+        fail_message: 'Asset-Management-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_hr_security_present:
+        title: 'Topic-Policy „HR Security" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.6.1–A.6.6 Personalsicherheit.'
+        pass_message: 'Personalsicherheits-Richtlinie ist veröffentlicht.'
+        fail_message: 'Personalsicherheits-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_topic_physical_security_present:
+        title: 'Topic-Policy „Physical Security" veröffentlicht'
+        description: 'Bestätigt eine veröffentlichte topic-spezifische Richtlinie für A.7.1–A.7.14 Physische Sicherheit.'
+        pass_message: 'Physische-Sicherheits-Richtlinie ist veröffentlicht.'
+        fail_message: 'Physische-Sicherheits-Richtlinie fehlt — Policy-Wizard für dieses Thema starten.'
+    policy_approval_chain_completed:
+        title: 'Approval-Chain (CISO + Top-Management) für jede Policy abgeschlossen'
+        description: 'Bestätigt, dass jede veröffentlichte Policy-Wizard-Richtlinie eine ROLE_CISO- und eine ROLE_TOP_MGMT-Freigabe in der Workflow-Approval-History trägt.'
+        pass_message: 'Alle veröffentlichten Richtlinien wurden ordnungsgemäß freigegeben.'
+        fail_message: 'Mindestens eine veröffentlichte Richtlinie hat keine vollständige Approval-Chain — Approval-Inbox prüfen.'
+    policy_acknowledgement_coverage:
+        title: 'Acknowledgement-Quote ≥ 95 % je veröffentlichter Policy'
+        description: 'Bestätigt, dass mindestens 95 % der aktiven Tenant-Nutzer jede veröffentlichte Richtlinie quittiert haben (PolicyAcknowledgement-Entity).'
+        pass_message: 'Acknowledgement-Quote für alle Richtlinien erfüllt den 95 %-Schwellwert.'
+        fail_message: 'Mindestens eine Richtlinie liegt unter 95 % Acknowledgement-Quote — Awareness-Reminder anstoßen.'
+    policy_review_cadence:
+        title: 'Review-Kadenz eingehalten (kein Overdue)'
+        description: 'Bestätigt, dass jede veröffentlichte Richtlinie ein berechnetes nextReviewDate hat (uploadedAt + reviewIntervalMonths) und nicht überfällig ist.'
+        pass_message: 'Alle Richtlinien sind innerhalb des Review-Intervalls.'
+        fail_message: 'Mindestens eine Richtlinie ist Review-überfällig — Targeted-Re-Run im Policy-Wizard starten.'
+    policy_tailoring_fields:
+        title: 'Tailoring-Pflichtfelder gefüllt'
+        description: 'Bestätigt, dass jede veröffentlichte Richtlinie alle vom PolicyTemplate als required markierten Substitution-Variablen einen nicht-leeren Wert trägt.'
+        pass_message: 'Alle Pflicht-Tailoring-Felder sind in jeder veröffentlichten Richtlinie gefüllt.'
+        fail_message: 'Mindestens eine Richtlinie hat ein leeres Pflicht-Tailoring-Feld — Wizard erneut durchlaufen.'

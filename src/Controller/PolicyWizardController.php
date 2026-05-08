@@ -8,6 +8,7 @@ use App\Entity\WizardRun;
 use App\Repository\WizardRunRepository;
 use App\Security\Voter\PolicyWizardVoter;
 use App\Service\PolicyWizard\HierarchyConflictException;
+use App\Service\PolicyWizard\KonzernDefaultsWizardVariant;
 use App\Service\PolicyWizard\StepEvaluator;
 use App\Service\PolicyWizard\StepValidationException;
 use App\Service\PolicyWizard\WizardOrchestrator;
@@ -33,7 +34,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Spec: `docs/plans/policy-wizard/05-architecture.md` §6 + §7.
  */
 #[Route('/policy-wizard', name: 'app_policy_wizard_')]
-#[IsGranted('POLICY_WIZARD_RUN_FULL')]
 final class PolicyWizardController extends AbstractController
 {
     public function __construct(
@@ -42,6 +42,7 @@ final class PolicyWizardController extends AbstractController
         private readonly WizardRunRepository $wizardRunRepository,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
+        private readonly KonzernDefaultsWizardVariant $konzernDefaultsVariant,
     ) {
     }
 
@@ -49,6 +50,7 @@ final class PolicyWizardController extends AbstractController
      * Landing page — shows in-progress runs and the three start modes.
      */
     #[Route('', name: 'index', methods: ['GET'])]
+    #[IsGranted('POLICY_WIZARD_RUN_FULL')]
     public function index(): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -67,6 +69,7 @@ final class PolicyWizardController extends AbstractController
      * against {@see WizardStepKeys}.
      */
     #[Route('/start', name: 'start', methods: ['POST'])]
+    #[IsGranted('POLICY_WIZARD_RUN_FULL')]
     #[IsCsrfTokenValid('policy_wizard_start', tokenKey: '_token')]
     public function start(Request $request): Response
     {
@@ -129,6 +132,7 @@ final class PolicyWizardController extends AbstractController
      * Render the form for a single wizard step.
      */
     #[Route('/run/{runId}/step/{step}', name: 'step_show', methods: ['GET'], requirements: ['runId' => '\d+', 'step' => '[a-z_]+'])]
+    #[IsGranted('POLICY_WIZARD_RUN_FULL')]
     public function stepShow(int $runId, string $step): Response
     {
         $run = $this->loadAuthorisedRun($runId);
@@ -172,6 +176,7 @@ final class PolicyWizardController extends AbstractController
      * on success; re-renders with errors otherwise.
      */
     #[Route('/run/{runId}/step/{step}', name: 'step_submit', methods: ['POST'], requirements: ['runId' => '\d+', 'step' => '[a-z_]+'])]
+    #[IsGranted('POLICY_WIZARD_RUN_FULL')]
     #[IsCsrfTokenValid('policy_wizard_step', tokenKey: '_token')]
     public function stepSubmit(int $runId, string $step, Request $request): Response
     {
@@ -231,6 +236,7 @@ final class PolicyWizardController extends AbstractController
      * Cancel an in-progress run.
      */
     #[Route('/run/{runId}/cancel', name: 'cancel', methods: ['POST'], requirements: ['runId' => '\d+'])]
+    #[IsGranted('POLICY_WIZARD_RUN_FULL')]
     #[IsCsrfTokenValid('policy_wizard_cancel', tokenKey: '_token')]
     public function cancel(int $runId): Response
     {
@@ -250,6 +256,7 @@ final class PolicyWizardController extends AbstractController
      * renders the result page.
      */
     #[Route('/run/{runId}/complete', name: 'complete', methods: ['POST'], requirements: ['runId' => '\d+'])]
+    #[IsGranted('POLICY_WIZARD_RUN_FULL')]
     #[IsCsrfTokenValid('policy_wizard_complete', tokenKey: '_token')]
     public function complete(int $runId): Response
     {
@@ -286,6 +293,75 @@ final class PolicyWizardController extends AbstractController
             'run' => $run,
             'document_ids' => $result['document_ids'] ?? [],
             'sandbox_preview' => $result['sandbox_preview'] ?? null,
+        ]);
+    }
+
+    /**
+     * Konzern-Defaults landing — Konzern-CISO entry point. Lists open
+     * Konzern-Defaults runs (if any) and offers a "Start defaults wizard"
+     * button. The voter ensures only ROLE_GROUP_CISO / ROLE_GROUP_BCM_OFFICER
+     * with holding-tree access reach this surface.
+     */
+    #[Route('/konzern-defaults', name: 'konzern_defaults', methods: ['GET'])]
+    public function konzernDefaults(): Response
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$this->isGranted(PolicyWizardVoter::KONZERN_DEFAULTS, $tenant)) {
+            $this->addFlash('warning', $this->translator->trans('policy_wizard.error.access_denied', [], 'policy_wizard'));
+            return $this->redirectToRoute('app_policy_wizard_index');
+        }
+
+        $openRuns = $tenant !== null
+            ? $this->wizardRunRepository->findOpenForTenant($tenant)
+            : [];
+
+        return $this->render('policy_wizard/konzern_defaults.html.twig', [
+            'open_runs' => $openRuns,
+            'tenant' => $tenant,
+        ]);
+    }
+
+    /**
+     * Start a Konzern-Defaults run — POST endpoint that bootstraps a
+     * WizardRun flagged with `inputs.konzern_defaults=true` and routes
+     * the user into the standard step flow.
+     */
+    #[Route('/konzern-defaults/start', name: 'konzern_defaults_start', methods: ['POST'])]
+    #[IsCsrfTokenValid('policy_wizard_konzern_defaults_start', tokenKey: '_token')]
+    public function konzernDefaultsStart(Request $request): Response
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null) {
+            $this->addFlash('warning', $this->translator->trans('policy_wizard.error.no_tenant', [], 'policy_wizard'));
+            return $this->redirectToRoute('app_policy_wizard_konzern_defaults');
+        }
+
+        if (!$this->isGranted(PolicyWizardVoter::KONZERN_DEFAULTS, $tenant)) {
+            $this->addFlash('warning', $this->translator->trans('policy_wizard.error.access_denied', [], 'policy_wizard'));
+            return $this->redirectToRoute('app_policy_wizard_index');
+        }
+
+        $user = $this->getUser();
+        if (!$user instanceof \App\Entity\User) {
+            $this->addFlash('warning', $this->translator->trans('policy_wizard.error.access_denied', [], 'policy_wizard'));
+            return $this->redirectToRoute('app_policy_wizard_konzern_defaults');
+        }
+
+        $standardsRaw = $request->request->all('standards');
+        $standards = is_array($standardsRaw) && $standardsRaw !== []
+            ? array_values(array_filter(array_map(
+                static fn ($v): string => is_string($v) ? strtolower(trim($v)) : '',
+                $standardsRaw,
+            ), static fn (string $v): bool => $v !== ''))
+            : null;
+
+        $run = $this->konzernDefaultsVariant->start($tenant, $user, $standards);
+
+        $this->addFlash('success', $this->translator->trans('policy_wizard.message.run_started', [], 'policy_wizard'));
+
+        return $this->redirectToRoute('app_policy_wizard_step_show', [
+            'runId' => $run->getId(),
+            'step' => $run->getStep(),
         ]);
     }
 

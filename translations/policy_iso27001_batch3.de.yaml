@@ -1,0 +1,420 @@
+policy:
+    iso27001:
+        # =====================================================================
+        # 1. Secure Development Policy (A.8.25-A.8.30)
+        # =====================================================================
+        secure_development:
+            v1:
+                title: 'Richtlinie für sichere Entwicklung'
+                body: |
+                    # Richtlinie für sichere Entwicklung — {{ tenant.legal_name }}
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie legt verbindliche Regeln für die sichere Entwicklung von Software und Systemen bei {{ tenant.legal_name }} fest. Sie setzt ISO/IEC 27002:2022 §8.25 um, das fordert: *"Rules for the secure development of software and systems shall be established and applied."* Sie deckt zusätzlich die Annex-A-Controls A.8.26 (Application security requirements), A.8.27 (Secure system architecture and engineering principles), A.8.28 (Secure coding), A.8.29 (Security testing in development and acceptance), A.8.30 (Outsourced development) sowie A.8.31 (Trennung von Entwicklungs-, Test- und Produktionsumgebungen) ab.
+
+                    Die Richtlinie gilt für alle eigenen, gemeinsam mit Partnern erstellten und ausgelagerten Entwicklungsaktivitäten — von Initial-Idee bis Außerbetriebnahme. Adressaten sind Entwicklerinnen, Architekten, Produkt-Owner, Auftraggeber-Fachbereiche, externe Entwicklungsdienstleister sowie das CISO-Office unter Verantwortung von {{ roles.ciso.fullName }}.
+
+                    ## 2. Sichere Entwicklungs-Lebenszyklus (SDLC)
+                    Der gesamte Lebenszyklus folgt definierten Stage-Gates mit verpflichtenden Sicherheitsprüfungen. Jedes Vorhaben durchläuft mindestens die Phasen Anforderung, Design, Implementierung, Test, Freigabe, Betrieb und Außerbetriebnahme. Eine Phase darf nur abgeschlossen werden, wenn die zugewiesenen Sicherheits-Quality-Gates erfüllt sind. Vorhaben oberhalb der Schwelle {{ project.security_review_threshold }} unterliegen einer formalen Architektur- und Sicherheitsprüfung.
+
+                    ## 3. Threat Modeling und Sicherheitsanforderungen
+                    Für jedes neue System sowie für wesentliche Änderungen ist ein Threat Modeling auf Basis einer anerkannten Methode (STRIDE, LINDDUN, PASTA) durchzuführen. Sicherheitsanforderungen werden gemeinsam mit funktionalen Anforderungen erhoben, dokumentiert und nachverfolgt. Anwendbare regulatorische Anforderungen (EU-DSGVO, EU-DORA, NIS2, branchenspezifische Vorgaben) sind zu berücksichtigen und der Risikobewertung zuzuführen.
+
+                    ## 4. Sichere Architektur und Engineering-Prinzipien
+                    Architekturen folgen den Prinzipien Defense in Depth, Least Privilege, Zero Trust, Fail Secure, Separation of Concerns sowie Privacy and Security by Design and by Default. Drittanbieter- und Open-Source-Komponenten werden vor Einsatz auf Lizenz, Reifegrad und Sicherheits-Track-Record bewertet.
+
+                    ## 5. Sichere Codierung
+                    Verbindlich sind die OWASP ASVS Level 2 als Mindestbasis sowie sprach- und framework-spezifische Codierrichtlinien (CERT, OWASP Cheat Sheets, Linter-Konfigurationen). Hardcoded Secrets sind verboten; Secrets werden über das zentrale Secrets-Management bezogen. Kryptographische Verfahren entsprechen der Krypto-Richtlinie. Code-Reviews durch eine zweite Person sind für jede Änderung in produktionsrelevanten Branches Pflicht (Vier-Augen-Prinzip).
+
+                    ## 6. Sicherheitstests
+                    Verpflichtend sind Static Application Security Testing (SAST), Software Composition Analysis (SCA) für Dependencies, sowie Dynamic Application Security Testing (DAST) für extern erreichbare Anwendungen. Penetrationstests durch unabhängige Stellen erfolgen für kritische Anwendungen mindestens jährlich sowie nach wesentlichen Änderungen. Alle Findings ab Schweregrad Hoch müssen vor Produktivsetzung behoben oder durch dokumentierte Risikoakzeptanz mit Gegenmaßnahmen freigegeben sein.
+
+                    ## 7. Trennung der Umgebungen (A.8.31)
+                    Entwicklungs-, Test-, Staging- und Produktionsumgebungen sind logisch und (wo angemessen) physisch getrennt. Echtdaten dürfen Produktionsumgebungen nicht verlassen; in Nicht-Produktion werden anonymisierte oder synthetische Daten verwendet. Zugriffsrechte sind je Umgebung minimal vergeben und werden gemäß Access-Control-Richtlinie regelmäßig überprüft.
+
+                    ## 8. Ausgelagerte Entwicklung (A.8.30)
+                    Externe Entwicklungspartner werden gemäß Lieferanten-Sicherheits-Richtlinie qualifiziert. Verträge enthalten verbindliche Sicherheitsanforderungen, Audit- und Inspektionsrechte, Vorgaben zur Quellcode-Hinterlegung wo angemessen, sowie definierte Übergabe- und Abnahmeprozesse. Geliefertes Werk durchläuft die gleichen Sicherheitstests wie interne Entwicklung.
+
+                    ## 9. Change-Management und Freigabe
+                    Produktivsetzungen erfolgen ausschließlich über den dokumentierten Change-Prozess mit Freigabe durch den Change-Advisory-Board oder eine delegierte Stelle. Ein Notfall-Change-Pfad ist definiert; nachgelagerte Reviews innerhalb von fünf Werktagen sind verpflichtend. Rollback-Strategien sind je System dokumentiert; eine Rückfall-Option ist Voraussetzung für jede Produktivsetzung in kritischen Systemen.
+
+                    ## 10. Schwachstellen- und Patchmanagement im Entwicklungskontext
+                    Bekannt gewordene Schwachstellen in eigenen Komponenten und in Abhängigkeiten werden gemäß Schwachstellen- und Patchmanagement-Richtlinie behandelt. Für Komponenten mit Kontakt zu schutzbedürftigen Daten sind Patch-SLAs nach CVSS-Schweregrad bindend (kritisch innerhalb von 7 Tagen, hoch innerhalb von 30 Tagen). Eine Software Bill of Materials (SBOM) wird je Release erzeugt und archiviert; sie unterstützt die Reaktion auf Drittanbieter-Schwachstellen.
+
+                    ## 11. Sicherheits-Schulung
+                    Entwicklerinnen und Entwickler erhalten mindestens jährlich eine rollenbasierte Sicherheits-Schulung mit Schwerpunkten OWASP Top 10, sichere Authentifizierung, Kryptographie, Secrets-Management und sichere API-Gestaltung. Neue Mitarbeitende erhalten innerhalb der ersten 30 Tage eine Einstiegs-Schulung. Schulungen werden dokumentiert und sind Bestandteil der Compliance-Nachweise.
+
+                    ## 12. Rollen und Verantwortlichkeiten
+                    {{ roles.ciso.fullName }} (CISO) verantwortet diese Richtlinie. Entwicklungsleitungen verantworten die Umsetzung in ihren Bereichen. Product-Owner verantworten Sicherheitsanforderungen je Produkt. Das Sicherheitsteam stellt Tooling, Schulung und Beratung bereit. Application Security Champions in den Entwicklungsteams unterstützen die operative Umsetzung.
+
+                    ## 13. Messung und Kennzahlen
+                    Die Wirksamkeit der Richtlinie wird über Kennzahlen gemessen, unter anderem: Anteil Releases mit erfolgreichem SAST-Lauf, Mean Time to Remediate (MTTR) je Schweregrad, Abdeckung kritischer Anwendungen mit Pentests, Zahl der Sicherheitsfindings je 1000 Lines of Code, Quote der Komponenten mit aktueller SBOM, Quote der Sprints mit erfüllter Sicherheits-Definition-of-Done. Die Kennzahlen werden quartalsweise an die Geschäftsleitung berichtet und sind Bestandteil des Management-Reviews nach ISO 27001 Klausel 9.3.
+
+                    ## 13a. Schnittstellen zu anderen Richtlinien
+                    Diese Richtlinie verzahnt sich mit der Krypto-Richtlinie (Algorithmen, Schlüsselverwaltung), der Lieferanten-Sicherheits-Richtlinie (ausgelagerte Entwicklung), der Schwachstellen- und Patch-Richtlinie (Behandlung von CVEs in Abhängigkeiten), der Klassifizierungs-Richtlinie (Datenbehandlung in Test- und Entwicklungsumgebungen) sowie der Datenschutz-Richtlinie (Privacy by Design, Testdaten ohne Personenbezug). Konflikte zwischen den Richtlinien werden vom CISO-Office aufgelöst.
+
+                    ## 13b. Sichere Test-Daten (A.8.33)
+                    Echte personenbezogene oder schutzbedürftige Geschäftsdaten werden in Nicht-Produktionsumgebungen ausschließlich in zwingend begründeten Ausnahmen, mit ausdrücklicher Genehmigung von {{ roles.dpo.fullName }} und CISO-Office, sowie unter erweiterten Schutzmaßnahmen verwendet. Standardweg ist die Erzeugung anonymisierter, pseudonymisierter oder synthetischer Testdaten.
+
+                    ## 14. Geltung, Review und Sanktionen
+                    Verstöße werden gemäß Disziplinarprozess (A.6.4) behandelt. Diese Richtlinie wird mindestens jährlich sowie bei wesentlichen Änderungen am Entwicklungsmodell überprüft. Abweichungen sind formal über den Risikoakzeptanzprozess zu beantragen und vom CISO-Office zu genehmigen.
+                section:
+                    1:
+                        title: 'Zweck und Geltungsbereich'
+                        body: 'Verbindliche Regeln zur Umsetzung von ISO 27002:2022 §8.25 sowie A.8.26-A.8.31 bei {{ tenant.legal_name }}.'
+                    2:
+                        title: 'Sicherer SDLC und Stage-Gates'
+                        body: 'Definierte Phasen, Sicherheits-Quality-Gates, Threat Modeling und formale Reviews ab Schwelle {{ project.security_review_threshold }}.'
+                    3:
+                        title: 'Sichere Codierung und Tests'
+                        body: 'OWASP ASVS Level 2, Code Reviews im Vier-Augen-Prinzip, SAST, SCA, DAST, jährliche Pentests für kritische Anwendungen.'
+                    4:
+                        title: 'Umgebungstrennung und ausgelagerte Entwicklung'
+                        body: 'Trennung Dev/Test/Stage/Prod gemäß A.8.31, anonymisierte Testdaten, vertragliche Sicherheitsanforderungen für externe Entwickler nach A.8.30.'
+                    5:
+                        title: 'Rollen, Review und Geltung'
+                        body: 'CISO {{ roles.ciso.fullName }} verantwortet die Richtlinie. Jährliche Überprüfung, Abweichungen über Risikoakzeptanzprozess.'
+                tailoring_field:
+                    1:
+                        label: 'Eingesetzte SAST/DAST/SCA-Werkzeuge'
+                        placeholder: 'z. B. SonarQube, OWASP ZAP, Dependency-Track'
+                    2:
+                        label: 'Pentest-Kadenz für kritische Anwendungen'
+                        placeholder: 'z. B. jährlich + nach Major-Release'
+                    3:
+                        label: 'Schwelle für formales Architektur-Review'
+                        placeholder: 'z. B. ab 50 Personentagen Aufwand oder Schutzbedarf hoch'
+
+        # =====================================================================
+        # 2. Supplier Security Policy (A.5.19-A.5.22)
+        # =====================================================================
+        supplier_security:
+            v1:
+                title: 'Lieferanten-Sicherheits-Richtlinie'
+                body: |
+                    # Lieferanten-Sicherheits-Richtlinie — {{ tenant.legal_name }}
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt den Umgang mit Informationssicherheitsrisiken aus der Nutzung von Lieferanten-Produkten und -Dienstleistungen bei {{ tenant.legal_name }}. Sie setzt ISO/IEC 27002:2022 §5.19 um, das fordert: *"Processes and procedures shall be defined and implemented to manage the information security risks associated with the use of suppliers' products or services."* Sie deckt A.5.19 bis A.5.22 sowie A.5.23 (Cloud Services) ab und integriert die Anforderungen aus DSGVO Art. 28 (Auftragsverarbeitung) sowie aus EU-DORA Art. 28-30 (IKT-Drittanbieter-Risikomanagement).
+
+                    Die Richtlinie gilt für alle Lieferanten und Dienstleister, die Informationswerte oder IKT-Dienste für {{ tenant.legal_name }} bereitstellen, verarbeiten oder unterstützen — einschließlich Cloud-, SaaS-, Outsourcing- und Beratungsdienstleister sowie deren Subunternehmer (Nth-party).
+
+                    ## 2. Lieferantenklassifizierung
+                    Alle Lieferanten werden in Kritikalitätsstufen eingeteilt: {{ supplier.criticality_levels }}. Die Einstufung erfolgt anhand des Schutzbedarfs der bereitgestellten Daten/Dienste, der Substituierbarkeit, der Abhängigkeit kritischer Geschäftsprozesse sowie der regulatorischen Klassifizierung (z. B. "kritischer IKT-Drittanbieter" gemäß DORA Art. 31). Die Einstufung wird mindestens jährlich sowie bei wesentlichen Änderungen überprüft.
+
+                    ## 3. Onboarding und Due Diligence
+                    Vor Vertragsschluss durchlaufen Lieferanten ein abgestuftes Due-Diligence-Verfahren. Anhand der Kritikalität sind erforderlich: standardisierter Sicherheitsfragebogen, Prüfung von Zertifikaten (ISO 27001, SOC 2 Type II, C5, branchenspezifische Nachweise), bei kritischen Lieferanten zusätzlich Vor-Ort-Audit oder unabhängiger Prüfbericht. Negative Ergebnisse erfordern dokumentierte Risikobehandlung vor Beauftragung.
+
+                    ## 4. Vertragliche Anforderungen (A.5.20)
+                    Verträge mit Lieferanten enthalten als Mindeststandard: Vertraulichkeits- und Geheimhaltungspflichten, Vorgaben zur Informationssicherheit gemäß Schutzbedarf, Audit- und Inspektionsrechte, Subunternehmer-Genehmigungspflicht, Meldepflichten bei Sicherheitsvorfällen einschließlich Fristen, Datenrückgabe- und Löschpflichten bei Vertragsende, Haftungs- und Eskalationsregelungen.
+
+                    Werden personenbezogene Daten verarbeitet, ist ein Auftragsverarbeitungsvertrag gemäß DSGVO Art. 28 verbindlich abzuschließen, der unter anderem Verarbeitungszweck, Datenkategorien, technisch-organisatorische Maßnahmen und Subunternehmer-Regelungen umfasst. {{ roles.dpo.fullName }} (Datenschutzbeauftragter) prüft AV-Verträge vor Unterzeichnung.
+
+                    ## 5. DORA-spezifische Anforderungen
+                    Sofern {{ tenant.legal_name }} unter den Anwendungsbereich der EU-DORA-Verordnung (EU) 2022/2554 fällt, gelten zusätzlich: vollständige Erfassung aller IKT-Drittanbieter im Informationsregister gemäß DORA Art. 28 Abs. 3 inklusive Konzentrationsrisiko-Analyse, vertragliche Mindestklauseln nach DORA Art. 30, dokumentierte Exit-Strategien für kritische Dienste, Subunternehmer-Transparenz bis zur Nth-Party. Vorhaben mit kritischen IKT-Drittanbietern sind der zuständigen Aufsichtsbehörde rechtzeitig anzuzeigen.
+
+                    ## 6. Lieferkette und Sub-Lieferanten (A.5.21)
+                    Sub-Lieferanten dürfen nur mit vorheriger schriftlicher Genehmigung eingesetzt werden. Lieferanten verpflichten sich, ihre eigene Lieferkette nach gleichwertigen Standards zu steuern. Bei kritischen Diensten ist die Lieferkette mindestens zwei Stufen tief zu erfassen.
+
+                    ## 7. Laufendes Monitoring (A.5.22)
+                    Während der Geschäftsbeziehung erfolgt ein kontinuierliches Monitoring abhängig von der Kritikalität: Auswertung von Service-Berichten und SLAs, jährliche Re-Assessments, anlassbezogene Reviews bei Vorfällen, Vertragsänderungen oder regulatorischen Änderungen. Wesentliche Mängel werden formal eskaliert und in das Risikoregister überführt.
+
+                    ## 8. Sicherheitsvorfälle bei Lieferanten
+                    Lieferanten melden Sicherheitsvorfälle, die {{ tenant.legal_name }} betreffen können, unverzüglich — bei kritischen Vorfällen innerhalb der vertraglich vereinbarten Frist. Eingehende Meldungen werden gemäß Incident-Management-Richtlinie behandelt; Datenschutzvorfälle werden zusätzlich an {{ roles.dpo.fullName }} eskaliert.
+
+                    ## 9. Exit und Beendigung
+                    Für kritische Lieferanten existieren dokumentierte Exit-Strategien mit Migrationsplan, Datenrückgabe- und Löschvereinbarungen, Wissensübergabe und Notfall-Rückzugsoptionen. Exit-Strategien werden mindestens jährlich getestet oder plausibilisiert. Bei DORA-pflichtigen Diensten ist die Exit-Strategie so zu gestalten, dass eine geordnete Migration ohne Unterbrechung kritischer Geschäftsfunktionen möglich ist (DORA Art. 28 Abs. 8).
+
+                    ## 10. Cloud-Dienste (A.5.23)
+                    Cloud-Dienste werden zusätzlich nach Bereitstellungsmodell (IaaS, PaaS, SaaS) und Verantwortungsmodell (Shared-Responsibility) bewertet. Konfigurationssicherheit, Mandantentrennung, Verschlüsselung im Ruhezustand und im Transit, Schlüssel-Verwaltung sowie Datenstandorte sind dokumentiert. Bei Verarbeitung personenbezogener Daten in Drittländern werden geeignete Garantien gemäß DSGVO Kapitel V (insbesondere Standardvertragsklauseln, Transfer Impact Assessment) sichergestellt.
+
+                    ## 11. Rollen und Verantwortlichkeiten
+                    {{ roles.ciso.fullName }} (CISO) verantwortet die Sicherheitsaspekte der Richtlinie. Der Einkauf verantwortet den vertraglichen Prozess. Vertragsverantwortliche pro Lieferant verantworten das laufende Monitoring. {{ roles.dpo.fullName }} verantwortet datenschutzrechtliche Aspekte. Bei Verstößen entscheidet das Compliance-Komitee über Maßnahmen bis hin zur Vertragskündigung. Eine zentrale Lieferantendatenbank dient als Single Source of Truth.
+
+                    ## 12. Schulung und Awareness
+                    Vertragsverantwortliche und Beschaffungs-Mitarbeitende werden mindestens jährlich zu Sicherheitsanforderungen, AV-Vertrag und DORA-Pflichten geschult. Die Schulungen sind dokumentiert und Voraussetzung für die operative Verantwortung. Inhalte umfassen unter anderem: Klassifizierung von Lieferanten, Bewertung von Sicherheitsfragebögen, Lesen und Bewerten von SOC-2- und ISO-27001-Berichten, Erkennen von Konzentrationsrisiken, Auslegung von Auftragsverarbeitungsverträgen.
+
+                    ## 12a. Konzentrationsrisiko-Steuerung
+                    Bei {{ tenant.legal_name }} wird das Konzentrationsrisiko aus IKT-Drittanbietern systematisch erhoben und gesteuert. Konzentration entsteht etwa, wenn mehrere kritische Funktionen vom selben Anbieter abhängen, oder wenn ein Anbieter selbst stark abhängig von einer einzelnen Sub-Lieferkette ist. Risiken oberhalb der Akzeptanzschwelle werden ins Risikoregister überführt und vom Risk-Owner behandelt.
+
+                    ## 12b. Schnittstellen zu anderen Richtlinien
+                    Diese Richtlinie verzahnt sich mit der Datenschutz-Richtlinie (AV-Verträge, Drittlandtransfer), der Incident-Management-Richtlinie (Vorfall-Meldepflichten von Lieferanten), der Sicheren-Entwicklungs-Richtlinie (ausgelagerte Entwicklung) und der Krypto-Richtlinie (Schlüsselverwaltung in Cloud-Diensten). Bei Konflikten entscheidet das CISO-Office.
+
+                    ## 13. Review
+                    Diese Richtlinie wird mindestens jährlich sowie bei Veränderungen am Lieferantenportfolio oder regulatorischen Änderungen überprüft. Auslöser für anlassbezogene Überprüfung sind unter anderem: kritischer Sicherheitsvorfall bei einem Lieferanten, neue regulatorische Anforderung, wesentliche Vertragsanpassung mit kritischem Lieferanten, ausgelöste Eskalation aus dem Konzentrationsrisiko-Monitoring.
+
+                    ## 14. Kennzahlen
+                    Wirksamkeit und Reife der Lieferanten-Steuerung werden über Kennzahlen gemessen, unter anderem: Quote der mit aktueller Risikobewertung versehenen kritischen Lieferanten, Quote rechtzeitig durchgeführter Re-Assessments, durchschnittliche Reaktionszeit von Lieferanten auf Sicherheitsanfragen, Quote der Lieferanten mit gültigem AV-Vertrag (sofern personenbezogene Daten betroffen sind), Quote der DORA-pflichtigen Verträge mit vollständigen Mindestklauseln nach DORA Art. 30. Die Kennzahlen werden quartalsweise an die Geschäftsleitung berichtet und fließen in das Management-Review nach ISO 27001 Klausel 9.3 ein.
+                section:
+                    1:
+                        title: 'Zweck, Geltungsbereich und Klassifizierung'
+                        body: 'Umsetzung von ISO 27002:2022 §5.19, DSGVO Art. 28 und DORA Art. 28-30. Klassifizierung in {{ supplier.criticality_levels }}.'
+                    2:
+                        title: 'Onboarding, Due Diligence und Verträge'
+                        body: 'Abgestufte Prüfung, Sicherheitsfragebögen, Zertifikatsnachweise. Vertragliche Mindestklauseln einschließlich AV-Vertrag bei personenbezogenen Daten.'
+                    3:
+                        title: 'DORA-Register und Subunternehmer'
+                        body: 'IKT-Drittanbieter-Register, Konzentrationsrisiko, vertragliche Mindestanforderungen DORA Art. 30, Subunternehmer-Genehmigungspflicht.'
+                    4:
+                        title: 'Monitoring, Vorfälle und Exit'
+                        body: 'Laufendes Monitoring nach Kritikalität, definierte Meldepflichten, dokumentierte Exit-Strategien für kritische Dienste.'
+                    5:
+                        title: 'Rollen und Review'
+                        body: 'CISO {{ roles.ciso.fullName }} und DPO {{ roles.dpo.fullName }} steuern die Richtlinie. Jährliche Überprüfung.'
+                tailoring_field:
+                    1:
+                        label: 'Verwendete Kritikalitätsstufen für Lieferanten'
+                        placeholder: 'z. B. kritisch / wesentlich / standard'
+                    2:
+                        label: 'Maximale Meldefrist für Lieferanten-Sicherheitsvorfälle'
+                        placeholder: 'z. B. 24 Stunden für kritische Lieferanten'
+                    3:
+                        label: 'Exit-Test-Kadenz für kritische IKT-Drittanbieter'
+                        placeholder: 'z. B. jährlich Tabletop, alle 3 Jahre voller Test'
+
+        # =====================================================================
+        # 3. Information Security in Project Management (A.5.8)
+        # =====================================================================
+        project_management:
+            v1:
+                title: 'Informationssicherheit im Projektmanagement'
+                body: |
+                    # Informationssicherheit im Projektmanagement — {{ tenant.legal_name }}
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie integriert Informationssicherheit verbindlich in alle Projekttypen bei {{ tenant.legal_name }}. Sie setzt ISO/IEC 27002:2022 §5.8 um, das fordert: *"Information security shall be integrated into project management."* Sie gilt für alle Projekte unabhängig vom Vorgehensmodell (klassisch, agil, hybrid), unabhängig vom Geschäftsbereich und unabhängig davon, ob das Projekt intern, extern oder gemischt durchgeführt wird.
+
+                    Erfasst sind sowohl IT- und Software-Projekte als auch Geschäfts- und Organisationsprojekte, sofern sie Auswirkungen auf Informationswerte, Verarbeitungstätigkeiten oder die ISMS-Schutzziele haben können.
+
+                    ## 2. Sicherheits-Stage-Gate-Modell
+                    Jedes Projekt durchläuft definierte Sicherheits-Stage-Gates, deren Tiefe sich nach Projektgröße und Risiko richtet. Vorhaben oberhalb der Schwelle {{ project.security_review_threshold }} unterliegen einer formalen Sicherheitsprüfung; Vorhaben darunter folgen einem schlanken Self-Assessment-Pfad.
+
+                    Stage-Gates sind:
+                    - Initiierung: Schutzbedarfs-Voreinstufung, Identifikation regulatorischer Treiber (DSGVO, DORA, NIS2, branchenspezifisch).
+                    - Konzeption: Detaillierte Schutzbedarfsanalyse, Risikoeinschätzung, Definition Sicherheitsanforderungen, Klärung Auftragsverarbeitung und Drittlandtransfer.
+                    - Realisierung: Umsetzung Sicherheitsanforderungen, Einbindung Sicherheitsteam bei Architekturentscheidungen.
+                    - Test/Abnahme: Sicherheitstests gemäß Secure-Development-Richtlinie, Pentests bei kritischen Vorhaben.
+                    - Go-Live: Formale Sicherheitsfreigabe durch CISO-Office vor Inbetriebnahme.
+                    - Hypercare/Übergabe: Übergabe an Linienbetrieb mit Sicherheits-Run-Books.
+
+                    ## 3. Sicherheitsanforderungen je Projekt
+                    Bei Projektinitiierung erstellt der Projektleiter zusammen mit dem Sicherheitsverantwortlichen eine strukturierte Sicherheitsanforderungs-Liste auf Basis: Schutzbedarf der betroffenen Informationen (Vertraulichkeit/Integrität/Verfügbarkeit), regulatorischer Anforderungen, Bedrohungslage, betroffener Annex-A-Controls. Diese Liste ist Bestandteil der Projektdokumentation und wird nachverfolgt.
+
+                    ## 4. Datenschutz im Projekt
+                    Werden personenbezogene Daten verarbeitet, ist {{ roles.dpo.fullName }} (DPO) frühzeitig einzubeziehen. Der DPO entscheidet über die Notwendigkeit einer Datenschutz-Folgenabschätzung gemäß DSGVO Art. 35. Eine DSFA muss vor Inbetriebnahme abgeschlossen sein.
+
+                    ## 5. Risikobewertung und Eskalation
+                    Identifizierte Risiken oberhalb der Risikoakzeptanzschwelle werden ins zentrale Risikoregister überführt und dem zuständigen Risk Owner zugewiesen. Risiken mit Stufe Hoch oder Sehr Hoch erfordern eine explizite Akzeptanz durch die Geschäftsleitung vor Go-Live.
+
+                    ## 6. Externe Projektmitarbeit und Lieferanten
+                    Externe Projektmitarbeiter und Lieferanten werden gemäß Lieferanten-Sicherheits-Richtlinie qualifiziert und vertraglich verpflichtet. Vertraulichkeitserklärungen sind vor Projektzugang verpflichtend.
+
+                    ## 7. Projektdokumentation und Übergabe
+                    Sicherheitsrelevante Entscheidungen, Risikoakzeptanzen, getroffene Maßnahmen und offene Punkte sind in der Projektdokumentation nachvollziehbar festzuhalten. Bei Übergabe in den Betrieb werden Asset-Inventar, Berechtigungsmodell, Run-Books und offene Risiken vollständig übergeben.
+
+                    ## 8. Rollen und Verantwortlichkeiten
+                    Der Projektleiter ist für die Einhaltung dieser Richtlinie im Projekt verantwortlich. Das CISO-Office unter {{ roles.ciso.fullName }} stellt Beratung, Templates und Freigabeentscheidungen bereit. Der Projektsponsor verantwortet wesentliche Risikoakzeptanzen. Der DPO {{ roles.dpo.fullName }} verantwortet datenschutzrechtliche Aspekte.
+
+                    ## 9. Schutzbedarfsanalyse
+                    Die Schutzbedarfsanalyse erfolgt für die Schutzziele Vertraulichkeit, Integrität und Verfügbarkeit jeweils in den Stufen normal, hoch und sehr hoch. Bei sehr hohem Schutzbedarf in einem der Schutzziele ist eine Risikoanalyse nach ISO 27005 verpflichtend. Die Ergebnisse fließen in die Auswahl der erforderlichen Annex-A-Controls und die Definition der technisch-organisatorischen Maßnahmen.
+
+                    ## 10. Agile Projekte
+                    In agilen Vorhaben werden Sicherheits-Quality-Gates auf Sprint-, Increment- und Release-Ebene heruntergebrochen. Sicherheits-Anforderungen entstehen als Backlog-Items mit klaren Akzeptanzkriterien. Bei jeder Sprint-Review wird der Erfüllungsstand sichtbar gemacht. Definition of Done enthält ausdrücklich die Sicherheits-Akzeptanzkriterien für betroffene User Stories.
+
+                    ## 11. Abweichungen und Eskalation
+                    Abweichungen von dieser Richtlinie sind formal über den Risikoakzeptanzprozess zu beantragen und vom CISO-Office zu genehmigen. Nicht freigegebene Abweichungen sind Verstöße im Sinne der Top-Level-Sicherheitsrichtlinie. Eskalationswege sind definiert; für jedes Vorhaben existiert ein klar benannter Sicherheits-Verantwortlicher.
+
+                    ## 12. Berichtswesen und Kennzahlen
+                    Der Erfüllungsstand der Sicherheits-Quality-Gates wird im Standard-Projektberichtswesen mitgeführt. Trend-Kennzahlen — etwa Anzahl Vorhaben mit kritischen Findings vor Go-Live, Quote pünktlicher DSFA-Abschlüsse, Quote rechtzeitig erteilter Sicherheitsfreigaben, Anteil Vorhaben mit vollständiger Sicherheits-Anforderungs-Liste bei Konzept-Abschluss — werden quartalsweise an die Geschäftsleitung berichtet und sind Bestandteil des Management-Reviews nach ISO 27001 Klausel 9.3.
+
+                    ## 12a. Schnittstellen zu anderen Richtlinien
+                    Diese Richtlinie verzahnt sich mit der Sicheren-Entwicklungs-Richtlinie (Implementierungsphase), der Lieferanten-Sicherheits-Richtlinie (externe Projektmitarbeit), der Datenschutz-Richtlinie (DSFA, Auftragsverarbeitung), der Klassifizierungs-Richtlinie (Schutzbedarfsfeststellung) und der Risikomanagement-Methodik (Risikoeskalation). Bei Konflikten entscheidet das CISO-Office.
+
+                    ## 12b. Übergreifende Programme und Portfolios
+                    Werden mehrere Vorhaben in Programmen oder Portfolios zusammengefasst, gelten die Anforderungen sinngemäß auf Programm-/Portfolio-Ebene: ein zentraler Sicherheits-Überblick, koordinierte Stage-Gates, gemeinsame Schutzbedarfslogik bei geteilten Komponenten. Programmleitungen verantworten die Konsistenz der Sicherheits-Steuerung über die enthaltenen Vorhaben hinweg.
+
+                    ## 13. Sicherheitsfreigabe und Go-Live-Kriterien
+                    Eine Sicherheitsfreigabe vor Go-Live wird erteilt, wenn: alle anwendbaren Sicherheits-Quality-Gates dokumentiert erfüllt sind, eine ggf. erforderliche DSFA durch {{ roles.dpo.fullName }} formal abgeschlossen ist, identifizierte Risiken oberhalb der Akzeptanzschwelle entweder behandelt oder durch befugte Stellen formal akzeptiert sind, alle kritischen und hohen Sicherheitsfindings beseitigt oder durch Kompensationsmaßnahmen verbindlich abgedeckt sind, Run-Books und Sicherheits-Übergabe-Dokumentation für den Linienbetrieb vorliegen. Ein Go-Live ohne Sicherheitsfreigabe ist eine Verletzung dieser Richtlinie.
+
+                    ## 14. Geltung und Review
+                    Diese Richtlinie wird mindestens jährlich sowie bei Wechsel des Projektmanagement-Frameworks überprüft. Bei wesentlichen regulatorischen Änderungen, die Projektarbeit betreffen (z. B. EU AI Act, EU Cyber Resilience Act), erfolgt eine anlassbezogene Anpassung. Erfahrungen aus dem Lessons-Learned-Prozess der Sicherheitsorganisation fließen in jede Überarbeitung ein.
+                section:
+                    1:
+                        title: 'Zweck und Geltungsbereich'
+                        body: 'Verbindliche Integration der Informationssicherheit in alle Projekttypen gemäß ISO 27002:2022 §5.8.'
+                    2:
+                        title: 'Stage-Gate-Modell und Schwellen'
+                        body: 'Definierte Sicherheits-Quality-Gates von Initiierung bis Go-Live. Formale Reviews ab Schwelle {{ project.security_review_threshold }}.'
+                    3:
+                        title: 'Sicherheits- und Datenschutzanforderungen'
+                        body: 'Strukturierte Anforderungserhebung. Frühzeitige DPO-Einbindung {{ roles.dpo.fullName }}, DSFA-Pflichtprüfung gemäß DSGVO Art. 35.'
+                    4:
+                        title: 'Risiko, Externe und Übergabe'
+                        body: 'Risikoeskalation an Risikoregister, Lieferantenpflichten, vollständige Übergabe an Betrieb.'
+                    5:
+                        title: 'Rollen, Abweichungen und Review'
+                        body: 'Projektleitung verantwortet Umsetzung, CISO {{ roles.ciso.fullName }} verantwortet Freigabe. Jährliche Überprüfung.'
+                tailoring_field:
+                    1:
+                        label: 'Projektmanagement-Framework'
+                        placeholder: 'z. B. Scrum, PRINCE2, hybride Vorgehensweise'
+                    2:
+                        label: 'Schwelle für formale Sicherheitsprüfung'
+                        placeholder: 'z. B. ab 100 Personentagen oder Schutzbedarf hoch'
+                    3:
+                        label: 'Freigabe-Instanz für Go-Live'
+                        placeholder: 'z. B. CISO-Office im Vier-Augen mit Fachbereichsleitung'
+
+        # =====================================================================
+        # 4. Privacy / PII Handling Policy (A.5.34) — short host policy
+        # =====================================================================
+        privacy:
+            v1:
+                title: 'Datenschutz- und PII-Schutz-Richtlinie'
+                body: |
+                    # Datenschutz- und PII-Schutz-Richtlinie — {{ tenant.legal_name }}
+
+                    ## 1. Zweck und Anker
+                    Diese Richtlinie setzt ISO/IEC 27002:2022 §5.34 um, das fordert: *"The organization shall identify and meet the requirements regarding the preservation of privacy and protection of PII according to applicable laws and regulations and contractual requirements."* Sie verpflichtet {{ tenant.legal_name }} zur Einhaltung der DSGVO (Verordnung (EU) 2016/679), des Bundesdatenschutzgesetzes (BDSG) sowie aller weiteren anwendbaren Datenschutzvorschriften.
+
+                    ## 2. Hinweis zur Dokumentenstruktur
+                    Diese Richtlinie ist als knappe Übersichts- und Verweis-Richtlinie konzipiert (Host Policy). Die operativen Datenschutz-Regelwerke werden in dedizierten Dokumenten geführt, auf die hier verwiesen wird. Sofern die Module ISO 27701 (PIMS) oder die DSGVO-Erweiterung aktiv sind, gelten deren Inhalte als verbindlich; diese Richtlinie tritt subsidiär zurück.
+
+                    ## 3. Geltungsbereich und Rollen
+                    Die Richtlinie gilt für alle Verarbeitungen personenbezogener Daten in der Verantwortung von {{ tenant.legal_name }} — als Verantwortlicher oder Auftragsverarbeiter. {{ roles.dpo.fullName }} (Datenschutzbeauftragter) ist die zentrale Anlaufstelle und überwacht die Einhaltung. {{ roles.ciso.fullName }} (CISO) verantwortet die technisch-organisatorischen Maßnahmen.
+
+                    ## 4. Verweis auf operative Regelwerke
+                    Die folgenden Regelwerke konkretisieren diese Richtlinie:
+                    - **Datenschutzrichtlinie (Privacy Policy)** — Detailregeln zu Zwecken, Rechtsgrundlagen, Betroffenenrechten und internationalen Datentransfers. *(TODO: Verlinkung sobald Modul aktiv.)*
+                    - **RoPA-Methodik** — Verfahren zur Führung des Verzeichnisses von Verarbeitungstätigkeiten gemäß DSGVO Art. 30. *(TODO: Verlinkung sobald Modul aktiv.)*
+                    - **DSFA-Methodik** — Verfahren zur Datenschutz-Folgenabschätzung gemäß DSGVO Art. 35/36. *(TODO: Verlinkung sobald Modul aktiv.)*
+                    - **Auftragsverarbeitungs-Vorlagen** — Standardklauseln und Prüfprozess für AV-Verträge gemäß DSGVO Art. 28.
+
+                    ## 5. Mindestanforderungen unabhängig von Modul-Status
+                    Auch ohne aktivierte ISO-27701- oder DSGVO-Module gelten verbindlich:
+                    - Verarbeitung personenbezogener Daten nur auf gültiger Rechtsgrundlage (DSGVO Art. 6, ggf. Art. 9).
+                    - Wahrung der Betroffenenrechte (DSGVO Art. 12-22), Bearbeitungsfrist gemäß DSGVO Art. 12 grundsätzlich einen Monat.
+                    - Sicherheit der Verarbeitung gemäß DSGVO Art. 32 entsprechend dem Schutzbedarf.
+                    - Meldung von Datenschutzverletzungen an die Aufsichtsbehörde innerhalb von 72 Stunden gemäß DSGVO Art. 33; Benachrichtigung Betroffener gemäß Art. 34 bei hohem Risiko.
+                    - Auftragsverarbeiter werden gemäß Lieferanten-Sicherheits-Richtlinie qualifiziert; AV-Verträge gemäß DSGVO Art. 28 sind verpflichtend.
+                    - Datenschutz durch Technikgestaltung und durch datenschutzfreundliche Voreinstellungen gemäß DSGVO Art. 25.
+
+                    ## 6. Schnittstellen zur Informationssicherheit
+                    Datenschutzvorfälle sind Sicherheitsvorfälle und werden gemäß Incident-Management-Richtlinie behandelt. Datenkategorisierung folgt der Klassifizierungs-Richtlinie. Zugriffsrechte folgen der Access-Control-Richtlinie. Diese Richtlinie ist eine logische Klammer, kein Ersatz.
+
+                    ## 7. Review
+                    Diese Richtlinie wird mindestens jährlich sowie bei wesentlichen regulatorischen Änderungen (z. B. EU AI Act, ePrivacy-Reform) durch {{ roles.dpo.fullName }} überprüft.
+                section:
+                    1:
+                        title: 'Zweck und Verweis-Charakter'
+                        body: 'Host Policy zu ISO 27002:2022 §5.34. Operative Regeln in dedizierten Datenschutz-, RoPA- und DSFA-Dokumenten.'
+                    2:
+                        title: 'Rollen'
+                        body: 'DPO {{ roles.dpo.fullName }} und CISO {{ roles.ciso.fullName }} steuern Datenschutz und technisch-organisatorische Maßnahmen.'
+                    3:
+                        title: 'Mindestanforderungen'
+                        body: 'Rechtsgrundlage, Betroffenenrechte, 72-Stunden-Meldepflicht DSGVO Art. 33, AV-Verträge DSGVO Art. 28, Privacy by Design DSGVO Art. 25.'
+                    4:
+                        title: 'Schnittstellen und Review'
+                        body: 'Verzahnung mit Incident-, Klassifizierungs- und Access-Control-Richtlinie. Jährliche Überprüfung durch DPO.'
+                tailoring_field:
+                    1:
+                        label: 'Status DSGVO-/ISO 27701-Modul'
+                        placeholder: 'z. B. ISO 27701 aktiv; Detailregeln im PIMS'
+                    2:
+                        label: 'Verweis auf zentrale Datenschutz-Dokumentation'
+                        placeholder: 'z. B. Datenschutz-Handbuch v2.1, Pfad im DMS'
+                    3:
+                        label: 'Zuständige Datenschutz-Aufsichtsbehörde'
+                        placeholder: 'z. B. LfDI Baden-Württemberg'
+
+        # =====================================================================
+        # 5. Information Security Incident Management Policy (A.5.24-A.5.28)
+        # =====================================================================
+        incident_management:
+            v1:
+                title: 'Richtlinie zum Sicherheitsvorfallsmanagement'
+                body: |
+                    # Richtlinie zum Sicherheitsvorfallsmanagement — {{ tenant.legal_name }}
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie setzt ISO/IEC 27002:2022 §5.24 um, das fordert: *"The organization shall plan and prepare for managing information security incidents by defining, establishing and communicating information security incident management processes, roles and responsibilities."* Sie deckt A.5.24 bis A.5.28 sowie A.6.8 (Reporting), A.5.5 (Behördenkontakt) und A.5.6 (Special Interest Groups) ab und integriert die Anforderungen aus DSGVO Art. 33 und 34, EU-DORA Art. 17-23 sowie NIS2 (Richtlinie (EU) 2022/2555).
+
+                    Sie gilt für alle Sicherheitsereignisse und Sicherheitsvorfälle, die Informationswerte oder IKT-Dienste von {{ tenant.legal_name }} betreffen, einschließlich Vorfällen bei Lieferanten und Cloud-Diensten, sofern sie Auswirkungen auf {{ tenant.legal_name }} haben.
+
+                    ## 2. Begriffe und Klassifizierung
+                    Ein **Sicherheitsereignis** ist ein erkennbarer Vorgang, der die Schutzziele Vertraulichkeit, Integrität, Verfügbarkeit oder Authentizität betreffen könnte. Ein **Sicherheitsvorfall** ist ein bestätigtes Ereignis mit tatsächlicher oder potenzieller negativer Auswirkung. Vorfälle werden klassifiziert in die Stufen niedrig, mittel, hoch und kritisch — Kriterien sind Auswirkung auf Geschäftsprozesse, betroffene Daten/Systeme, Anzahl betroffener Personen und regulatorische Relevanz.
+
+                    ## 3. Vorbereitung (A.5.24)
+                    {{ tenant.legal_name }} unterhält ein eingespieltes Incident-Response-Team unter Leitung von {{ roles.ciso.fullName }} (CISO). Das Team besteht aus Vertretern Sicherheit, IT-Betrieb, Recht/Compliance, Datenschutz, Kommunikation und Geschäftsführung. Run-Books für relevante Vorfallsmuster (Ransomware, Datenabfluss, DDoS, Phishing-Welle, Cloud-Konto-Übernahme, Zero-Day) sind dokumentiert und werden regelmäßig geübt. 24/7-Erreichbarkeit ist über eine On-Call-Rota sichergestellt.
+
+                    ## 4. Erkennung und Meldung (A.6.8)
+                    Mitarbeitende sind verpflichtet, vermutete Sicherheitsereignisse unverzüglich über die etablierten Kanäle (Helpdesk, Sicherheits-Hotline, Meldeformular) zu melden. Anonymes Melden ist möglich. Auch externe Meldungen (Lieferanten, Kunden, Behörden, Sicherheitsforscher) werden angenommen und bearbeitet. SIEM- und Monitoring-Systeme erzeugen automatisierte Alarme.
+
+                    ## 5. Bewertung und Entscheidung (A.5.25)
+                    Eingehende Ereignisse werden vom Sicherheitsteam triagiert, klassifiziert und entweder als Vorfall eskaliert oder als Falschalarm dokumentiert. Bewertungskriterien sind dokumentiert; die Triage erfolgt nach festgelegten Reaktions-Service-Levels. Kritische Vorfälle werden innerhalb von {{ incident.sla_critical_hours }} Stunden nach Erkennung initial bewertet.
+
+                    ## 6. Reaktion (A.5.26)
+                    Die Reaktion folgt den Phasen Eindämmung, Beweissicherung, Beseitigung, Wiederherstellung und Nachsorge. Maßnahmen werden in einem Vorfalls-Tagebuch lückenlos dokumentiert. Bei kritischen Vorfällen wird ein War Room aktiviert; die Geschäftsleitung wird unverzüglich informiert. Externe Spezialisten (Forensik, Recht, Krisenkommunikation) werden bei Bedarf hinzugezogen.
+
+                    ## 7. Regulatorische Meldepflichten
+                    Folgende Meldepflichten sind verbindlich zu prüfen und einzuhalten:
+                    - **DSGVO Art. 33**: Meldung von Datenschutzverletzungen an die Aufsichtsbehörde innerhalb von 72 Stunden ab Kenntnis. Bei hohem Risiko zusätzliche Benachrichtigung der Betroffenen gemäß Art. 34. Federführung: {{ roles.dpo.fullName }}.
+                    - **EU-DORA Art. 17-23**: Bei DORA-pflichtigen Finanzunternehmen — initiale Meldung schwerwiegender IKT-Vorfälle binnen 4 Stunden ab Klassifizierung, Zwischenmeldung binnen 72 Stunden, Abschlussmeldung binnen eines Monats. Federführung: CISO-Office.
+                    - **NIS2 (Richtlinie (EU) 2022/2555)**: Bei NIS2-pflichtigen Einrichtungen — Frühwarnung binnen 24 Stunden, Vorfallmeldung binnen 72 Stunden, Abschlussbericht binnen eines Monats.
+                    - **Branchenspezifische Meldepflichten** (z. B. BaFin, BNetzA, BSI) sind je nach Geschäftsmodell zu prüfen.
+
+                    Die Verantwortung für die korrekte und fristgerechte Meldung liegt beim CISO-Office in Abstimmung mit Recht/Compliance und {{ roles.dpo.fullName }}.
+
+                    ## 8. Beweissicherung (A.5.28)
+                    Beweise werden nach forensischen Grundsätzen gesichert: Wahrung der Integrität (Hash-Werte), lückenlose Chain of Custody, schreibgeschützte Speicherung, Zeitstempel auf synchronisierter Zeitquelle. Die Beweissicherung erfolgt so, dass die Verwertbarkeit in zivil-, straf- und arbeitsrechtlichen Verfahren erhalten bleibt.
+
+                    ## 9. Lessons Learned (A.5.27)
+                    Nach jedem Vorfall mittlerer Stufe oder höher erfolgt ein formales Post-Incident-Review. Ergebnisse fließen in Run-Books, Schulungen, Risikoregister und ggf. in Maßnahmen zur Anpassung von Controls ein. Trends werden im Quartalsbericht an die Geschäftsleitung adressiert.
+
+                    ## 10. Externe Kommunikation
+                    Öffentliche Kommunikation zu Vorfällen erfolgt ausschließlich über die Unternehmenskommunikation in Abstimmung mit Geschäftsleitung, Recht und CISO-Office. Mitarbeitende sind zur Verschwiegenheit gegenüber Externen verpflichtet.
+
+                    ## 11. Übungen und Tests
+                    Das Incident-Response-Team führt mindestens jährlich Tabletop-Übungen durch, die typische Szenarien (Ransomware, Datenabfluss, Cloud-Account-Übernahme) abdecken. Mindestens alle zwei Jahre erfolgt eine vollumfängliche Krisenstabsübung mit Geschäftsleitung. Ergebnisse fließen in Run-Books, Schulungen und Risikoregister.
+
+                    ## 12. Schnittstellen zu BCM und Krisenmanagement
+                    Bei Vorfällen mit Auswirkungen auf kritische Geschäftsprozesse wird die BCM-Krisenstabsstruktur aktiviert. Die Übergabe von Incident-Management an BCM/Krisenstab erfolgt nach dokumentierten Eskalationskriterien. Verantwortlichkeiten und Schnittstellen sind in den jeweiligen Run-Books klar geregelt.
+
+                    ## 13. Schutz von Whistleblowern und anonymes Melden
+                    Hinweisgeber sind vor Repressalien geschützt. Anonyme Meldewege werden bereitgestellt und sind allen Mitarbeitenden bekannt. Die Bearbeitung anonymer Hinweise folgt denselben Triage- und Reaktionsstandards wie nicht-anonyme.
+
+                    ## 14. Rollen und Verantwortlichkeiten
+                    {{ roles.ciso.fullName }} (CISO) verantwortet diese Richtlinie und leitet das Incident-Response-Team. {{ roles.dpo.fullName }} (DPO) verantwortet datenschutzrechtliche Meldepflichten. Die Geschäftsleitung verantwortet strategische Entscheidungen und externe Kommunikation bei kritischen Vorfällen. Recht/Compliance verantwortet die Bewertung regulatorischer Meldepflichten. IT-Betrieb verantwortet die operative Eindämmung und Wiederherstellung.
+
+                    ## 15. Kennzahlen
+                    Wirksamkeit und Reife des Incident-Managements werden über Kennzahlen gemessen, unter anderem: Mean Time to Detect (MTTD), Mean Time to Respond (MTTR), Anteil fristgerecht erfolgter regulatorischer Meldungen, Quote der Vorfälle mit abgeschlossenem Lessons-Learned, Wiederholungsrate vergleichbarer Vorfälle. Die Kennzahlen werden quartalsweise an die Geschäftsleitung berichtet.
+
+                    ## 16. Geltung und Review
+                    Diese Richtlinie wird mindestens jährlich sowie nach jedem kritischen Vorfall überprüft. Bei wesentlichen regulatorischen Änderungen (z. B. neue Auslegungshinweise zur DORA, NIS2-Implementierungsrechtsakte) erfolgt eine anlassbezogene Anpassung.
+                section:
+                    1:
+                        title: 'Zweck und Klassifizierung'
+                        body: 'Umsetzung von ISO 27002:2022 §5.24-§5.28 sowie DSGVO Art. 33/34, DORA Art. 17-23 und NIS2.'
+                    2:
+                        title: 'Vorbereitung und Erkennung'
+                        body: 'Eingespieltes IRT unter CISO {{ roles.ciso.fullName }}, 24/7-Rota, Run-Books, Meldeverpflichtung A.6.8.'
+                    3:
+                        title: 'Bewertung und Reaktion'
+                        body: 'Triage gemäß SLA, Reaktion in Phasen Eindämmung-Beseitigung-Wiederherstellung. Initialbewertung kritischer Vorfälle binnen {{ incident.sla_critical_hours }} Stunden.'
+                    4:
+                        title: 'Regulatorische Meldungen und Beweissicherung'
+                        body: 'DSGVO 72 h, DORA 4/72 h/1 Monat, NIS2 24/72 h/1 Monat. Forensische Beweissicherung mit Chain of Custody.'
+                    5:
+                        title: 'Lessons Learned und Review'
+                        body: 'Post-Incident-Review verpflichtend ab Stufe Mittel, jährliche Überprüfung der Richtlinie und nach kritischen Vorfällen.'
+                tailoring_field:
+                    1:
+                        label: 'SLA für initiale Bewertung kritischer Vorfälle'
+                        placeholder: 'z. B. 1 Stunde'
+                    2:
+                        label: 'Anwendbare regulatorische Meldepflichten'
+                        placeholder: 'z. B. DSGVO + DORA + BaFin MaRisk AT 7.2'
+                    3:
+                        label: 'Aktivierungsschwelle für War Room'
+                        placeholder: 'z. B. ab Stufe Hoch oder >100 Betroffene'
