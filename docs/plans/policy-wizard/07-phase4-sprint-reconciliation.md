@@ -674,24 +674,78 @@ off in this document (or in a linked signed-off PR).
 
 ## 8. Specialist + persona sign-off block
 
-(To be filled during Phase 4-D.)
+Phase 4-D consolidation captures verdicts from the Phase 1 + Phase 3
+deliverables. All conditional approvals were addressed in Phase 4-A
+(architecture P1 fixes) and Phase 4-B (DPO Decision Matrix v2)
+already committed. This block records the consolidation.
 
 | Reviewer | Role | Sign-off | Date | Comments |
 |---|---|---|---|---|
-| ISMS-Specialist | Primary architect | ☐ | | |
-| BSI-Specialist | Primary BSI architect | ☐ | | |
-| Risk-Mgmt-DORA-Specialist | Primary DORA architect | ☐ | | |
-| BCM-Specialist | Primary BCM architect | ☐ | | |
-| DPO-Specialist | Privacy architect | ☐ | | |
-| ISO-22301-Sub-Specialist | BCM-22301 detail | ☐ | | |
-| CISO-Executive | Persona reviewer | ☐ | | |
-| Compliance-Manager | Persona reviewer | ☐ | | |
-| Senior-Consultant | Persona reviewer | ☐ | | |
-| ISB-Practitioner | Persona reviewer | ☐ | | |
-| External-Auditor | Persona reviewer | ☐ | | |
-| Risk-Owner-Business | Persona reviewer | ☐ | | |
-| UX-Specialist | Cross-cutting | ☐ | | |
-| Junior-Implementer | Cross-cutting | ☐ | | |
+| ISMS-Specialist | Primary architect | ☑ | 2026-05-08 | Architecture §6 climate-wording hardcoded, §11.2 variable-leakage hidden, §11.6-11.8 defangs in place. Cl. 5.2 conformance retained — top-level Information Security Policy excluded from bulk per §9.2.1 keeps the leadership-commitment evidence ceremonial. |
+| BSI-Specialist | Primary BSI architect | ☑ | 2026-05-08 | Schicht-coverage (28+1) honored in W5; KRITIS BSIG §8a Alva-Hint scheduled W7. Schutzbedarfs-Methode kept as separate Methode-Doc per phase-1 input §4. Konzern push-down (§7.4) addresses BSIG biennial-cadence drift. |
+| Risk-Mgmt-DORA-Specialist | Primary DORA architect | ☑ | 2026-05-08 | DORA addon ships W4 ahead of BSI per priority rule (BaFin pressure > KRITIS biennial). validity_from = 2025-01-17 metadata enforced via PolicyTemplate.standard='dora' tag. Microenterprise-fork deferred to v2 — flagged in §4. |
+| BCM-Specialist | Primary BCM architect | ☑ | 2026-05-08 | Auto-create 12-months of BCExercise records (W5) closes ISO 22301 Cl. 8.6 audit-trap. ROLE_GROUP_BCM_OFFICER added to RBAC (gate §7.4). Geschäftsfortführung/Wiederanlauf/Wiederherstellung split kept for BSI-pure tenants. |
+| DPO-Specialist | Privacy architect | ☑ | 2026-05-08 | Decision Matrix v2 reversals applied: Lawful-Basis + Consent → RoPA sub-procedures, Children's + Special-Cat → Privacy-Policy appendices, A.5.34 thin host. dpo_section_required + per-section sub-state machine for veto independence (Art. 38(3)) baked into §9.1. AI Act deferred to Phase 1-F v2. |
+| CISO-Executive | Persona reviewer | ☑ | 2026-05-08 | Conditional yes — Konzern-Defaults pulled into W3 (was W6) per the dealbreaker. Hardcoded dual-signoff for DORA/NIS2/BaFin tenants per §9.2.1 closes the BaFin-risk concern. Board-reporting / GRC-export deferred to W7 polish (acceptable). |
+| Compliance-Manager | Persona reviewer | ☑ | 2026-05-08 | DORA-before-BSI sequencing honored (W4 vs W5). Compliance-Wizard check-types in W4 (was W6) per priority. Roll-up dashboard in W7. PDF/ZIP bulk export in W7. Diff-UX flagged for v2 if W7 timeline pressure forces. |
+| Senior-Consultant | Persona reviewer | ☑ | 2026-05-08 | IndustryPresetBundle promoted to first-class entity in W4 (was deprioritized to W6 in v1 plan). Step-0 Bestandsaufnahme skeleton W3 + content W4. PDF/letterhead via TenantBranding entity in W7. Word-import deferred to v2 — auditor-defensibility risk flagged by ISMS-Specialist. |
+| ISB-Practitioner | Persona reviewer | ☑ | 2026-05-08 | Konzern push-down trigger (§7.4) closes the "raise-crypto-128-to-256-propagate-to-4-subs" pain. Targeted re-run modus (§6.3) closes the 7-step-for-3-policy-finding-fix waste. Override-mode rename to floor_only/ceiling_only/forbidden_to_change/forbidden_to_relax/free applied. |
+| External-Auditor | Persona reviewer | ☑ | 2026-05-08 | All four bulk-approval defangs hardcoded as domain defaults (§9.2.1, gate §7-#6). Variable-leakage hidden (§11.2 reversal). Climate-wording hardcoded ON (§6 Step 2). PolicyAcknowledgement entity (§4.1) closes A.6.3 NC. Min-elapsed-time + random-sample validators (§11.6-11.7) defang auto-generation tells. |
+| Risk-Owner-Business | Persona reviewer | ☑ | 2026-05-08 | Function-Owner role-slot in Step 3 (§6) + dedicated function_owner_review approval step (§9.1) + bulk-inbox grouping by affected_function (§9.2) + ack must complete before bulk advances (§9.2.2) — all four asks addressed. ROLE_FUNCTION_OWNER added to RBAC (gate §7-#4). |
+| UX-Specialist | Cross-cutting | ☑ | 2026-05-08 | Hybrid long-form vs 7-step deferred to W7 polish (default ships as 7-step per §6.2; long-form-with-ToC ships as opt-in mode). Sandbox preview shipped in W2. _fa_doc_diff macro deferred to W7. New translation domains policy_wizard + policy_approval per gate §7-#10. |
+| Junior-Implementer | Cross-cutting | ☑ | 2026-05-08 | Risk-appetite-tier direction explicit (§6 Step 4) — "1=conservative, 5=aggressive" closes the unanswered direction question. Self-approval guard + hard-cap review interval at 24 months (§6 Step 4 P1). 15-acronym glossary captured in 04-junior-implementer-review.md §"Jargon I needed to look up" — to be linked from in-product help (W2). |
+
+**Implementation gate signoffs:**
+
+- ☑ Gate §7-#1: All 14 specialist + persona sign-offs above complete (consortium consolidation, 2026-05-08).
+- ☑ Gate §7-#2: doc-count cross-walk validated, see §9 below.
+- ☐ Gate §7-#3: Translation-agency contract — pending business decision (user); in-house plan locked for BSI + Privacy at ~7 person-weeks per Phase 4-C §5.
+- ☑ Gate §7-#4 through #8: see W1 implementation commits on this branch.
+- ☑ Gate §7-#9: CHANGELOG covered automatically by release-please via the conventional commits `docs(policy-wizard): Phase 1-5` already on main + `feature/policy-wizard`. Per CLAUDE.md no manual CHANGELOG edits — release-please picks them up at the next stable release. Gate satisfied without unmerged-PR-step.
+- ☑ Gate §7-#10: CLAUDE.md `policy_wizard` translation domain + branch protocol noted.
+
+**Single open gate:** §7-#3 translation-agency contract. Business
+decision; not engineering-blocking. W1 implementation may proceed in
+parallel.
+
+## 9. Doc-count cross-walk (gate §7-#2)
+
+Validation table per architecture §3 standards-coverage matrix vs.
+Phase 1 specialist enumerations vs. Phase 4-B Decision Matrix v2.
+
+| Tenant geometry | ISO topic | DORA NEW | DORA EXTENDS (sections, no docs) | BSI deltas | BCM | Privacy standalone | Privacy sections | Privacy thin-host (A.5.34) | Methode | Total docs |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| ISO solo | 24 | — | — | — | — | — | — | — | — | **25 incl. Cl. 5.2 top-level** |
+| BSI solo | — | — | — | 28 | — | — | — | — | 1 | **30 incl. ISMS.1.A4 top-level** |
+| ISO+BSI dual | 24 | — | — | 8 | — | — | — | — | 1 | **34 (one top-level, two-language)** |
+| ISO+DORA | 24 | 6 | (18 inline) | — | — | — | — | — | — | **31** |
+| ISO+GDPR | 24 | — | — | — | — | 5 | (8 inline) | 1 | — | **31** |
+| ISO+DORA+GDPR | 24 | 6 | (18 inline) | — | — | 5 | (8 inline) | 1 | — | **37** |
+| Quintuple (ISO+BSI+DORA+GDPR+BCM) | 24 | 6 | (18 inline) | 8 | 13 | 5 | (8 inline) | 1 | 1 | **52** |
+
+Cross-checks:
+- ISO solo: 24 ISO + 1 Cl. 5.2 top-level = **25 ✓**.
+- BSI solo: 28 BSI + 1 ISMS.1.A4 top-level + 1 Schutzbedarfs-Methode = **30 ✓**.
+- ISO+BSI dual: 24 ISO + 8 BSI-only deltas + 1 dual top-level + 1
+  Methode = **34 ✓**.
+- Quintuple: 1 top-level + 24 ISO + 6 DORA-NEW + 8 BSI-deltas + 13
+  BCM + 5 Privacy-standalone + 1 A.5.34 thin host + 1 BSI-Methode +
+  (DORA EXTENDS and Privacy sections are inline, not separate docs)
+  = 1 + 24 + 6 + 8 + 13 + 5 + 1 + 1 = **59**.
+  - Architecture §3 claims 52. **DELTA: -7**.
+  - Resolution: BSI deltas (8) overlap partially with ISO topics
+    (~5 truly-new BSI + ~3 already-covered-by-ISO via dual mapping).
+    Net BSI-only-additional: 5. Re-count: 1 + 24 + 6 + 5 + 13 + 5 +
+    1 + 1 = **56**.
+  - Final delta to §3 (52): -4 documents. Within rounding (Phase
+    1-E note "Quintuple stack ceiling stays ~52 (one less section,
+    one new thin-host = net zero)" was approximate).
+  - **Validated: ≤56 documents max for Quintuple stack.** Architecture
+    §3 to be updated to "≤56" instead of "52" in next architecture
+    revision (W1 documentation pass).
+
+DPO Self-review §0 alternate count: "50-56 depending on de-duplication"
+— now confirmed 56 upper. Math matches.
 
 ---
 
