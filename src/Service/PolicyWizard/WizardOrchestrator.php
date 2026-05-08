@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Service\PolicyWizard;
 
+use App\Entity\Document;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\WizardRun;
+use App\Repository\DocumentRepository;
 use App\Repository\WizardRunRepository;
 use BadMethodCallException;
 use DateTimeImmutable;
@@ -47,6 +49,8 @@ final class WizardOrchestrator
         private readonly StepEvaluator $stepEvaluator,
         private readonly DocumentGeneratorInterface $documentGenerator,
         private readonly HierarchyOverrideValidator $hierarchyValidator,
+        private readonly ?ApprovalKickoffService $approvalKickoffService = null,
+        private readonly ?DocumentRepository $documentRepository = null,
         private readonly LoggerInterface $logger = new NullLogger(),
     ) {
     }
@@ -247,11 +251,40 @@ final class WizardOrchestrator
 
         $this->entityManager->flush();
 
+        // W3-I §9.1: dispatch one `policy-approval` WorkflowInstance
+        // per generated Document. Sandbox runs and missing kickoff
+        // service are handled inside ApprovalKickoffService.
+        if (!$isSandbox && $documentIds !== [] && $this->approvalKickoffService !== null) {
+            $this->kickoffApprovalsFor($documentIds, $run);
+        }
+
         return [
             'document_ids' => $documentIds,
             'wizard_run' => $run,
             'sandbox_preview' => $sandboxPreview,
         ];
+    }
+
+    /**
+     * @param list<int> $documentIds
+     */
+    private function kickoffApprovalsFor(array $documentIds, WizardRun $run): void
+    {
+        $initiator = $run->getStartedByUser();
+        if ($initiator === null || $this->documentRepository === null) {
+            return;
+        }
+        foreach ($documentIds as $documentId) {
+            $document = $this->documentRepository->find($documentId);
+            if (!$document instanceof Document) {
+                $this->logger->warning('PolicyWizard ApprovalKickoff: document vanished post-generate', [
+                    'document_id' => $documentId,
+                    'wizard_run_id' => $run->getId(),
+                ]);
+                continue;
+            }
+            $this->approvalKickoffService?->kickoff($document, $initiator);
+        }
     }
 
     /**

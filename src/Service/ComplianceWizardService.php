@@ -21,6 +21,8 @@ use App\Repository\DataSubjectRequestRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
+use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry;
+use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardTopicCatalogue;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -64,6 +66,7 @@ class ComplianceWizardService
         private readonly ProcessingActivityRepository $processingActivityRepository,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
+        private readonly PolicyWizardCheckRegistry $policyWizardCheckRegistry,
         private readonly ?\App\Repository\ComplianceRequirementRepository $requirementRepository = null,
     ) {
     }
@@ -540,6 +543,10 @@ class ComplianceWizardService
 
             case 'dpia_coverage':
                 $result = $this->checkDpiaCoverage($check, $tenant);
+                break;
+
+            case 'policy_wizard':
+                $result = $this->dispatchPolicyWizardCheck($check, $tenant);
                 break;
 
             default:
@@ -1366,6 +1373,60 @@ class ComplianceWizardService
     }
 
     /**
+     * Dispatch a `policy_wizard` check-type entry through the
+     * {@see PolicyWizardCheckRegistry}.
+     *
+     * Reads the `check_id` (e.g. `policy_top_level_present`,
+     * `policy_topic_access_control_present`) from the category-row, resolves
+     * the matching {@see PolicyWizardCheckInterface} implementation and
+     * adapts the {@see PolicyWizardCheckResult} into the legacy
+     * `runCheck()` array shape (`score`, `details`, `gap`).
+     *
+     * Unknown / missing check ids fail closed (score=0, gap surfaced) so
+     * mis-wired category rows degrade gracefully rather than raising.
+     *
+     * @param array<string, mixed> $check
+     * @return array{score: float|int, details: array<string, mixed>, gap: array<string, mixed>|null}
+     */
+    private function dispatchPolicyWizardCheck(array $check, ?Tenant $tenant): array
+    {
+        $checkId = (string) ($check['check_id'] ?? '');
+        if ($checkId === '') {
+            return [
+                'score' => 0,
+                'details' => ['error' => 'missing_check_id'],
+                'gap' => [
+                    'title' => $check['name'] ?? 'Policy-Wizard check misconfigured',
+                    'description' => 'check_id missing in category row',
+                    'priority' => 'high',
+                ],
+            ];
+        }
+
+        $impl = $this->policyWizardCheckRegistry->get($checkId);
+        if ($impl === null) {
+            return [
+                'score' => 0,
+                'details' => ['error' => 'unknown_check_id', 'check_id' => $checkId],
+                'gap' => [
+                    'title' => $check['name'] ?? sprintf('Unknown Policy-Wizard check: %s', $checkId),
+                    'description' => sprintf('No PolicyWizardCheckInterface implementation registered for "%s".', $checkId),
+                    'priority' => $check['priority'] ?? 'high',
+                    'route' => $check['route'] ?? null,
+                ],
+            ];
+        }
+
+        $result = $impl->run($tenant);
+
+        return [
+            'score' => $result->score,
+            'details' => $result->details,
+            'gap' => $result->gap,
+        ];
+    }
+
+    /**
      * Get status label from score
      */
     private function getStatusFromScore(float $score): string
@@ -1849,6 +1910,89 @@ class ComplianceWizardService
                     ],
                 ],
             ],
+
+            // Policy-Wizard outputs — Top-Level (ISO 27001 Cl. 5.2)
+            'policies_top_level' => [
+                'name' => 'wizard.iso27001.policies_top_level',
+                'description' => 'wizard.iso27001.policies_top_level_desc',
+                'icon' => 'bi-file-earmark-text',
+                'weight' => 1.5,
+                'clause' => '5.2',
+                'checks' => [
+                    'policy_top_level_present' => [
+                        'name' => 'compliance_check.policy_top_level_present.title',
+                        'description' => 'compliance_check.policy_top_level_present.description',
+                        'translation_domain' => 'policy_wizard',
+                        'type' => 'policy_wizard',
+                        'check_id' => 'policy_top_level_present',
+                        'priority' => 'critical',
+                        'clause' => '5.2',
+                        'route' => 'app_policy_wizard_index',
+                    ],
+                ],
+            ],
+
+            // Policy-Wizard outputs — 24 ISO 27002 topic policies + 4 cross-cutting
+            'policies_topic_coverage' => $this->buildPolicyWizardTopicCategory(),
+        ];
+    }
+
+    /**
+     * Build the "Policies / Topic Coverage" category for the ISO 27001 wizard.
+     *
+     * Aggregates the 24 ISO 27002:2022 topic policies (one row per topic from
+     * {@see PolicyWizardTopicCatalogue::ISO27001_TOPICS}) plus the 4
+     * cross-cutting Policy-Wizard checks (approval-chain, acknowledgement,
+     * review-cadence, tailoring-fields). Each row is a `policy_wizard`
+     * type and resolves through {@see dispatchPolicyWizardCheck()} into the
+     * registry.
+     *
+     * @return array<string, mixed>
+     */
+    private function buildPolicyWizardTopicCategory(): array
+    {
+        $checks = [];
+
+        foreach (PolicyWizardTopicCatalogue::iso27001Topics() as $topic) {
+            $checkId = sprintf('policy_topic_%s_present', $topic);
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => 'high',
+                'route' => 'app_policy_wizard_index',
+            ];
+        }
+
+        // Cross-cutting Policy-Wizard checks (approval-chain, acknowledgement,
+        // review-cadence, tailoring-fields) — apply across all generated
+        // policies, not per-topic.
+        foreach ([
+            'policy_approval_chain_completed' => 'critical',
+            'policy_acknowledgement_coverage' => 'high',
+            'policy_review_cadence' => 'high',
+            'policy_tailoring_fields' => 'medium',
+        ] as $checkId => $priority) {
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => $priority,
+                'route' => 'app_policy_wizard_index',
+            ];
+        }
+
+        return [
+            'name' => 'wizard.iso27001.policies_topic_coverage',
+            'description' => 'wizard.iso27001.policies_topic_coverage_desc',
+            'icon' => 'bi-files',
+            'weight' => 2,
+            'clause' => 'A.5/A.6/A.7/A.8',
+            'checks' => $checks,
         ];
     }
 

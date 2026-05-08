@@ -7,6 +7,7 @@ namespace App\Service\PolicyWizard;
 use App\Entity\Control;
 use App\Entity\Document;
 use App\Entity\DocumentControlLink;
+use App\Entity\DocumentSection;
 use App\Entity\EntityTag;
 use App\Entity\PolicyTemplate;
 use App\Entity\Tag;
@@ -15,6 +16,7 @@ use App\Entity\WizardRun;
 use App\Repository\ControlRepository;
 use App\Repository\DocumentControlLinkRepository;
 use App\Repository\DocumentRepository;
+use App\Repository\DocumentSectionRepository;
 use App\Repository\PolicyTemplateRepository;
 use App\Repository\TagRepository;
 use DateTimeImmutable;
@@ -46,6 +48,15 @@ use Throwable;
  *      `standard:<code>`, `topic:<key>`, `version:<n>`,
  *      `wizard-run:<id>`, plus `dora-validity:2025-01-17` for DORA
  *      templates only.
+ *   8. W3-I Task 2: when the template carries `dpoSectionRequired=true`,
+ *      auto-create a `privacy_addendum` DocumentSection (status=draft)
+ *      so the §0.A privacy-section-gate can fire without a manual seed.
+ *
+ * Defensive checks:
+ *  - W3-I Task 3 (architecture §6 Step 2): ISO 27001 top-level body
+ *    renders MUST contain the climate-change wording (Amd. 1:2024).
+ *    Missing wording aborts the run with RuntimeException so the
+ *    omission surfaces in tests and never ships to production.
  *
  * Atomic transaction: every persist runs inside a single
  * {@see EntityManagerInterface::wrapInTransaction} block. On any
@@ -99,6 +110,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         private readonly TagRepository $tagRepository,
         private readonly VariableCollector $variableCollector,
         private readonly TranslatorInterface $translator,
+        private readonly ?DocumentSectionRepository $documentSectionRepository = null,
         private readonly LoggerInterface $logger = new NullLogger(),
     ) {
     }
@@ -196,6 +208,13 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             // §8.5 — tags.
             $this->applyTags($document, $template, $run, $tagCache);
 
+            // W3-I Task 2 — DPO privacy section auto-creation.
+            // Idempotent: if a privacy_addendum section already exists
+            // for this Document we skip; superseding documents get a
+            // fresh section bound to the new row (the old stays linked
+            // to the old Document for audit-trail integrity).
+            $this->ensurePrivacyAddendumSection($document, $template);
+
             $this->entityManager->flush();
             $documentIds[] = (int) $document->getId();
         }
@@ -274,7 +293,58 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             return '';
         }
         $rawBody = $this->translator->trans($bodyKey);
-        return $this->substitute($rawBody, $variables);
+        $body = $this->substitute($rawBody, $variables);
+
+        // W3-I Task 3 — defensive ISO 27001 climate-change wording check.
+        // Architecture §6 Step 2 hardcodes climate-wording ON for ISO
+        // (Amd. 1:2024 in force since Feb 2024). If the rendered body
+        // is missing the phrase we throw early so the omission is loud
+        // in tests / pre-prod and does not silently ship to auditors.
+        $this->assertClimateWordingPresent($template, $body);
+
+        return $body;
+    }
+
+    /**
+     * W3-I Task 3 — climate-change wording assertion for ISO 27001
+     * top-level Information Security Policy renders.
+     *
+     * Skipped (silently) for:
+     *  - non-iso27001 standards (BSI / DORA / BCM / etc.)
+     *  - non-top-level topics (climate is a Cl. 5.2 top-level concern)
+     *  - templates with `climateChangeWording=false` (template still
+     *    has the hard-coded ON default but tests can opt-out)
+     *  - emergency override via env `ISO_27001_CLIMATE_ASSERT_DISABLED=1`
+     *
+     * Phrase rules (per §6 Step 2):
+     *  - DE: at least one literal "Klimawandel" occurrence
+     *  - EN: at least one case-insensitive "climate change" occurrence
+     */
+    private function assertClimateWordingPresent(PolicyTemplate $template, string $body): void
+    {
+        if ($template->getStandard() !== 'iso27001') {
+            return;
+        }
+        if ($template->getTopic() !== 'top_level') {
+            return;
+        }
+        if (!$template->isClimateChangeWording()) {
+            return;
+        }
+        if (($_ENV['ISO_27001_CLIMATE_ASSERT_DISABLED'] ?? '') === '1') {
+            return;
+        }
+
+        $hasDe = str_contains($body, 'Klimawandel');
+        $hasEn = stripos($body, 'climate change') !== false;
+        if ($hasDe || $hasEn) {
+            return;
+        }
+
+        throw new RuntimeException(
+            'iso27001 body must contain climate-change wording per Amd. 1:2024 '
+            . '(template "' . ($template->getKey() ?? 'unknown') . '")',
+        );
     }
 
     /**
@@ -617,5 +687,40 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         }
         $tagCache[$cacheKey] = $tag;
         return $tag;
+    }
+
+    /**
+     * W3-I Task 2 — when the PolicyTemplate flags `dpoSectionRequired=true`
+     * we auto-create one DocumentSection row keyed `privacy_addendum`
+     * (status=draft). Idempotent on re-runs against the same Document.
+     * A NEW Document version (supersedes path) gets its own fresh
+     * section; the old section stays bound to the old Document.
+     */
+    private function ensurePrivacyAddendumSection(Document $document, PolicyTemplate $template): void
+    {
+        if (!$template->isDpoSectionRequired()) {
+            return;
+        }
+        $tenant = $document->getTenant();
+        if ($tenant === null) {
+            return;
+        }
+
+        if ($this->documentSectionRepository !== null) {
+            $existing = $this->documentSectionRepository->findOneByDocumentAndKey(
+                $document,
+                'privacy_addendum',
+            );
+            if ($existing instanceof DocumentSection) {
+                return;
+            }
+        }
+
+        $section = new DocumentSection();
+        $section->setDocument($document);
+        $section->setSectionKey('privacy_addendum');
+        $section->setStatus(DocumentSection::STATUS_DRAFT);
+        $section->setTenant($tenant);
+        $this->entityManager->persist($section);
     }
 }

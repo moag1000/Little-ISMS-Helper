@@ -1,0 +1,33 @@
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{# Mode 2 (Targeted re-run) Step 2 — optional Audit-Finding ID. Surfaces in
+   the audit log so future auditors can see "this 3-policy fix was triggered
+   by Finding NCR-2026-04". #}
+
+{% set finding_value = defaults.finding_reference|default(run.findingReference|default('')) %}
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        {{ _fa_alert.render({
+            variant: 'info',
+            body: 'policy_wizard.step.targeted.finding.subtitle'|trans
+        }) }}
+
+        <div class="mb-3 mt-3">
+            <label class="form-label" for="finding-reference">
+                {{ 'policy_wizard.step.targeted.finding.title'|trans }}
+            </label>
+            <input type="text"
+                   class="form-control"
+                   id="finding-reference"
+                   name="finding_reference"
+                   maxlength="100"
+                   placeholder="{{ 'policy_wizard.step.targeted.finding.placeholder'|trans }}"
+                   value="{{ finding_value }}">
+            <div class="form-text">
+                {{ 'policy_wizard.step.targeted.finding.help'|trans }}
+            </div>
+        </div>
+    </div>
+</div>

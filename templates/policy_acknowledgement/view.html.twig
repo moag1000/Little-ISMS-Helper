@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block title %}{{ 'policy_ack.view.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4 fa-aurora-surface">
+    {{ _fa_page_header.render({
+        badge: { icon: 'file-earmark-text', label: 'policy_wizard.badge'|trans },
+        title: document.originalFilename ?? document.filename,
+        subtitle: 'policy_ack.view.subtitle'|trans,
+        actions: [
+            { label: 'policy_ack.widget.action.go_to_inbox'|trans,
+              variant: 'ghost',
+              icon: 'arrow-left',
+              href: path('app_policy_ack_inbox') }
+        ]
+    }) }}
+
+    {% if already_acknowledged %}
+        <div class="mt-4">
+            {{ _fa_alert.render({
+                variant: 'success',
+                title: 'policy_ack.view.button_disabled_already_acked'|trans
+            }) }}
+        </div>
+    {% endif %}
+
+    {% set body_html %}
+        <article class="policy-ack-body">
+            <header class="mb-3">
+                <h2 class="h4 mb-1">{{ document.originalFilename ?? document.filename }}</h2>
+                <small class="text-muted">
+                    <i class="bi bi-tag" aria-hidden="true"></i>
+                    {{ document.category }}
+                    {% if document.uploadedAt %}
+                        &middot; {{ document.uploadedAt|date('Y-m-d') }}
+                    {% endif %}
+                    {% if coverage.percent is defined %}
+                        &middot; {{ coverage.acknowledged }} / {{ coverage.audience_user_ids|length }}
+                        ({{ coverage.percent }}%)
+                    {% endif %}
+                </small>
+            </header>
+
+            {% if document.description %}
+                <div class="policy-ack-description">
+                    {{ document.description|nl2br }}
+                </div>
+            {% else %}
+                <p class="text-muted">
+                    <em>{{ 'policy_ack.view.subtitle'|trans }}</em>
+                </p>
+            {% endif %}
+        </article>
+    {% endset %}
+
+    <div class="mt-4">
+        {{ _fa_section.render({
+            title: 'policy_ack.view.title'|trans,
+            body: body_html
+        }) }}
+    </div>
+
+    {% if not already_acknowledged %}
+        <div class="mt-4 d-flex justify-content-end">
+            <form method="post"
+                  action="{{ path('app_policy_ack_acknowledge', { documentId: document.id }) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('policy_ack') }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                    <span class="fa-cyber-btn__label">{{ 'policy_ack.view.action.acknowledge'|trans }}</span>
+                </button>
+            </form>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
