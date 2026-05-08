@@ -120,3 +120,10 @@ policy_wizard:
         title: 'Konzern baseline raised — re-run wizard'
         body: 'Konzern CISO of %konzern_name% raised setting "%setting_key%" from %old_value% to %new_value%. Affected settings in your tenant: %affected_count%. Re-run the wizard in targeted mode to realign the policies.'
         action: 'Re-run wizard'
+
+alva_hint:
+    kritis_operator_readiness:
+        title: 'KRITIS readiness gap: IT security policy missing'
+        body: '%tenant_name% is flagged as a KRITIS operator but has no approved IT security policy generated from a BSI template. BSIG § 8a and the KRITIS-Dachgesetz require a documented, leadership-approved top-level policy as the minimum evidence baseline. Without it, the next BSI assessment will record this as a finding.'
+        cta_label: 'Open BSI wizard'
+        dismiss_label: 'Not now'

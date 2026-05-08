@@ -21,6 +21,19 @@ use App\Repository\DataSubjectRequestRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmBiaMethodologyPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmCrisisManagementPlanPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmExerciseProgrammeActiveCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmManagementReviewBcmCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmRecoveryPlansPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmsScopeStatementPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmTopLevelPolicyPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiBaselineCoverageCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiIsmsConceptPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiKritisFlagDocumentedCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiSchutzbedarfMethodPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiTierConsistencyCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiTopLevelLeitliniePresentCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraExitStrategyDocumentedCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraExtensionCoverageCheck;
 use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraIctRiskFrameworkPresentCheck;
@@ -75,6 +88,7 @@ class ComplianceWizardService
         private readonly TranslatorInterface $translator,
         private readonly PolicyWizardCheckRegistry $policyWizardCheckRegistry,
         private readonly ?\App\Repository\ComplianceRequirementRepository $requirementRepository = null,
+        private readonly ?\App\Repository\TenantPolicySettingRepository $tenantPolicySettingRepository = null,
     ) {
     }
 
@@ -3126,7 +3140,7 @@ class ComplianceWizardService
      */
     private function getIso22301Categories(): array
     {
-        return [
+        $categories = [
             'context' => [
                 'name' => 'wizard.iso22301.context',
                 'description' => 'wizard.iso22301.context_desc',
@@ -3241,7 +3255,84 @@ class ComplianceWizardService
                     ],
                 ],
             ],
+            // Policy-Wizard outputs — BCM-specific policies (top-level, scope,
+            // BIA methodology, exercise programme, crisis plan, recovery plans,
+            // management review). Gated on BCM scope being active
+            // (`bcm.enabled` tenant setting OR ComplianceFramework code
+            // 'ISO_22301' active). Returns null when out-of-scope.
+            'bcm_policies' => $this->buildBcmPolicyWizardCategory(),
         ];
+
+        return array_filter($categories, static fn ($cat): bool => $cat !== null);
+    }
+
+    /**
+     * Build the "BCM Policy-Wizard outputs" category. Returns null when BCM
+     * scope is not declared for the tenant.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function buildBcmPolicyWizardCategory(): ?array
+    {
+        if (!$this->isBcmInScope($this->tenantContext->getCurrentTenant())) {
+            return null;
+        }
+
+        $checks = [];
+        foreach ([
+            BcmTopLevelPolicyPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BcmsScopeStatementPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BcmBiaMethodologyPresentCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+            BcmExerciseProgrammeActiveCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_bc_exercise_index'],
+            BcmCrisisManagementPlanPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BcmRecoveryPlansPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BcmManagementReviewBcmCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+        ] as $checkId => $meta) {
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => $meta['priority'],
+                'route' => $meta['route'],
+            ];
+        }
+
+        return [
+            'name' => 'wizard.bcm.bcm_policies',
+            'description' => 'wizard.bcm.bcm_policies_desc',
+            'icon' => 'bi-life-preserver',
+            'weight' => 2,
+            'article' => 'ISO 22301 Cl. 5.2/4.3/8.2.2/8.4.4/8.4.5/8.6/9.3',
+            'checks' => $checks,
+        ];
+    }
+
+    /**
+     * Detects whether BCM is in scope for the tenant. Signals:
+     * - ComplianceFramework with `code='ISO_22301'` and `isActive=true`, OR
+     * - Tenant policy setting `bcm.enabled` set to true.
+     */
+    private function isBcmInScope(?Tenant $tenant): bool
+    {
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'ISO_22301']);
+        if ($framework instanceof ComplianceFramework && $framework->isActive() === true) {
+            return true;
+        }
+
+        if ($tenant === null || $this->tenantPolicySettingRepository === null) {
+            return false;
+        }
+        $setting = $this->tenantPolicySettingRepository->findOneByTenantAndKey(
+            $tenant,
+            'bcm.enabled',
+        );
+        if ($setting === null) {
+            return false;
+        }
+        $value = $setting->getValue();
+        return $value === true || $value === 'true' || $value === 1 || $value === '1';
     }
 
     /**
@@ -3746,7 +3837,7 @@ class ComplianceWizardService
      */
     private function getBsiGrundschutzCategories(): array
     {
-        return [
+        $categories = [
             'isms' => [
                 'name' => 'wizard.bsi_grundschutz.isms',
                 'description' => 'wizard.bsi_grundschutz.isms_desc',
@@ -3908,7 +3999,89 @@ class ComplianceWizardService
                     ],
                 ],
             ],
+            // Policy-Wizard outputs — BSI 200-1/2/3/4 policies, baseline coverage,
+            // tier-consistency, KRITIS-applicability. Gated on BSI scope being
+            // active (ComplianceFramework code 'BSI_GRUNDSCHUTZ' active OR
+            // tenant policy setting 'org.targets_bsi_certification' true).
+            // Returns null when out-of-scope; array_filter() drops the row.
+            'bsi_policies' => $this->buildBsiPolicyWizardCategory(),
         ];
+
+        // Drop categories that opted out (returned null) when BSI scope is
+        // not declared for the current tenant — keeps the surface clean.
+        return array_filter($categories, static fn ($cat): bool => $cat !== null);
+    }
+
+    /**
+     * Build the "BSI Policy-Wizard outputs" category. Returns null when BSI
+     * scope is not declared for the tenant.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function buildBsiPolicyWizardCategory(): ?array
+    {
+        if (!$this->isBsiInScope($this->tenantContext->getCurrentTenant())) {
+            return null;
+        }
+
+        $checks = [];
+        foreach ([
+            BsiTopLevelLeitliniePresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BsiIsmsConceptPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BsiBaselineCoverageCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BsiSchutzbedarfMethodPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BsiTierConsistencyCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+            BsiKritisFlagDocumentedCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+        ] as $checkId => $meta) {
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => $meta['priority'],
+                'route' => $meta['route'],
+            ];
+        }
+
+        return [
+            'name' => 'wizard.bsi.bsi_policies',
+            'description' => 'wizard.bsi.bsi_policies_desc',
+            'icon' => 'bi-flag-fill',
+            'weight' => 2,
+            'article' => '200-1/200-2/200-3/200-4',
+            'checks' => $checks,
+        ];
+    }
+
+    /**
+     * Detects whether BSI Grundschutz is in scope for the tenant. Signals:
+     * - ComplianceFramework with `code='BSI_GRUNDSCHUTZ'` and `isActive=true`,
+     *   OR
+     * - Tenant policy setting `org.targets_bsi_certification` set to true.
+     *
+     * Returns false when neither signal is present (keeps the BSI category
+     * out of generic admin previews).
+     */
+    private function isBsiInScope(?Tenant $tenant): bool
+    {
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'BSI_GRUNDSCHUTZ']);
+        if ($framework instanceof ComplianceFramework && $framework->isActive() === true) {
+            return true;
+        }
+
+        if ($tenant === null || $this->tenantPolicySettingRepository === null) {
+            return false;
+        }
+        $setting = $this->tenantPolicySettingRepository->findOneByTenantAndKey(
+            $tenant,
+            'org.targets_bsi_certification',
+        );
+        if ($setting === null) {
+            return false;
+        }
+        $value = $setting->getValue();
+        return $value === true || $value === 'true' || $value === 1 || $value === '1';
     }
 
     /**

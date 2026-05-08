@@ -27,8 +27,29 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_policy_template_standard', columns: ['standard'])]
 #[ORM\Index(name: 'idx_policy_template_topic', columns: ['topic'])]
 #[ORM\Index(name: 'idx_policy_template_active', columns: ['is_active'])]
+#[ORM\Index(name: 'idx_policy_template_bsi_tier', columns: ['bsi_tier'])]
 class PolicyTemplate
 {
+    /**
+     * BSI IT-Grundschutz Vorgehensweise (200-2 Kap. 2). Drives the
+     * Policy-Wizard W5-A tier filter — `basis_only` ships only Basis-
+     * Pflicht-Set, `up_to_standard` adds Standard-Absicherung-Bausteine,
+     * `kern_full` ships everything including high-effort Kern-Absicherung.
+     *
+     * Null = applies to every tier (e.g. ISO / DORA / BCM templates that
+     * carry no BSI tier semantics).
+     */
+    public const string BSI_TIER_BASIS = 'basis';
+    public const string BSI_TIER_STANDARD = 'standard';
+    public const string BSI_TIER_KERN = 'kern';
+
+    /** @var list<string> */
+    public const array BSI_TIERS = [
+        self::BSI_TIER_BASIS,
+        self::BSI_TIER_STANDARD,
+        self::BSI_TIER_KERN,
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -96,6 +117,25 @@ class PolicyTemplate
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $linkedBausteine = null;
+
+    /**
+     * Specific BSI Baustein anchor IDs (incl. Anforderung suffix), e.g.
+     * `ISMS.1.A4`, `ORP.4.A1` etc. Distinct from {@see $linkedBausteine}
+     * which only carries Baustein-level IDs (`ORP.4`). Used by the W5-A
+     * BSI seed to record the Anhang A "Mandatiert von" anchors and to
+     * drive the BSI-specific gap report. Null = no BSI anchor.
+     *
+     * @var array<int, string>|null
+     */
+    #[ORM\Column(name: 'linked_bsi_bausteine', type: Types::JSON, nullable: true)]
+    private ?array $linkedBsiBausteine = null;
+
+    /**
+     * BSI Vorgehensweise (Basis / Standard / Kern). Null = template
+     * applies regardless of tier (e.g. ISO/DORA/BCM templates).
+     */
+    #[ORM\Column(name: 'bsi_tier', type: Types::STRING, length: 16, nullable: true)]
+    private ?string $bsiTier = null;
 
     /**
      * DORA articles covered, e.g. ['Art. 9.4'].
@@ -274,6 +314,41 @@ class PolicyTemplate
     public function setLinkedBausteine(?array $linkedBausteine): static
     {
         $this->linkedBausteine = $linkedBausteine;
+        return $this;
+    }
+
+    /** @return array<int, string>|null */
+    public function getLinkedBsiBausteine(): ?array
+    {
+        return $this->linkedBsiBausteine;
+    }
+
+    /** @param array<int, string>|null $linkedBsiBausteine */
+    public function setLinkedBsiBausteine(?array $linkedBsiBausteine): static
+    {
+        $this->linkedBsiBausteine = $linkedBsiBausteine;
+        return $this;
+    }
+
+    public function getBsiTier(): ?string
+    {
+        return $this->bsiTier;
+    }
+
+    /**
+     * @throws \InvalidArgumentException when $bsiTier is non-null and not
+     *                                   one of the BSI_TIER_* constants.
+     */
+    public function setBsiTier(?string $bsiTier): static
+    {
+        if ($bsiTier !== null && !in_array($bsiTier, self::BSI_TIERS, true)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Unknown BSI tier "%s". Allowed: %s, or null.',
+                $bsiTier,
+                implode(', ', self::BSI_TIERS),
+            ));
+        }
+        $this->bsiTier = $bsiTier;
         return $this;
     }
 

@@ -1,0 +1,974 @@
+policy:
+    bsi:
+        it_security_policy:
+            v1:
+                title: 'Information Security Policy'
+                body: |-
+                    # Information Security Policy of {{ tenant.legal_name }}
+
+                    *Document class: Top-level policy | Normative anchor: BSI Standard 200-1 chapter 6.2 + BSI 200-2 chapter 4 | Building block: ISMS.1.A4 (basic requirement) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: formal English | Review interval: 24 months (BSI mandatory maximum)*
+
+                    ## 1. Significance of Information Security
+                    Maintaining the confidentiality, integrity and availability of the information, IT processes and IT systems of {{ tenant.legal_name }} is a fundamental prerequisite for fulfilling business or public-administration tasks. Top management acknowledges that information security is a strategic cross-cutting concern that permeates all business processes and operational procedures. Security incidents may result in significant financial, legal, regulatory and reputational consequences, including breaches of statutory duties under the German BSIG (BSI Act), KRITIS-DachG, NIS2-UmsuG and the GDPR. Top management therefore commits unreservedly to establishing, maintaining and continually improving an Information Security Management System (ISMS) in accordance with BSI IT-Grundschutz, edition {{ bsi.kompendium_edition }}.
+
+                    ## 2. Security Objectives
+                    This policy pursues the following overarching security objectives, derived from business goals, stakeholder requirements and regulatory obligations:
+
+                    1. **Confidentiality** – Information is made accessible only to authorised parties. Classification follows the Organisation Directive (building block ORP.1).
+                    2. **Integrity** – Information and processing methods remain unaltered and complete. Manipulation and unintended modification are prevented or reliably detected.
+                    3. **Availability** – Information, IT processes and IT systems are available to authorised parties at the required time. Business continuity and recovery are ensured through emergency management in accordance with building block DER.4 and BSI Standard 200-4.
+                    4. **Authenticity and Non-Repudiation** – Identities of users, systems and data are verified; actions are attributable in an evidentiary manner (cross-reference ORP.4, OPS.1.1.5).
+                    5. **Compliance** – All legal, regulatory and contractual requirements applicable to {{ tenant.legal_name }} are observed.
+
+                    ## 3. Link Between Business and Security Objectives
+                    Top management acknowledges that achievement of business or task objectives depends directly on the reliability of information processing. The security objectives above are linked to business goals as follows: availability of critical processes underpins delivery of contractually committed services; integrity ensures sound decision-making bases; confidentiality protects competitive position, business and trade secrets, personal data of data subjects and, where applicable, classified information.
+
+                    ## 4. Reference to Legal and Regulatory Obligations
+                    This policy is issued taking into account the following legal frameworks, where applicable to {{ tenant.legal_name }}: BSIG (in particular Section 8a critical-infrastructure obligations and Section 8b notification duties), KRITIS-DachG, NIS2-UmsuG, GDPR (Regulation (EU) 2016/679) and BDSG, sector-specific supervisory requirements (e.g. BaFin, BNetzA, BfDI), as well as the German Security Clearance Act (SUEG) and the classified-information handling rules where applicable. Identification of relevant requirements is continually maintained by the Information Security Officer (ISB) {{ roles.isb.fullName }}.
+
+                    ## 5. Scope
+                    The scope of this policy is defined organisationally, geographically and technically:
+
+                    - **Organisational:** All organisational units, employees (regardless of employment type), contractors, interns and any other parties processing information or accessing IT processes on behalf of {{ tenant.legal_name }}.
+                    - **Geographical:** All sites of {{ tenant.legal_name }} and, where applicable, externally operated data centres and cloud locations as governed by the Cloud Usage Directive (building block OPS.2.2).
+                    - **Technical:** All applications, IT systems, ICS/OT systems, rooms and communication links recorded under the structure analysis pursuant to BSI 200-2 chapter 5.
+
+                    Areas excluded from scope are documented and justified in the ISMS Concept. Where contracted processing or outsourcing arrangements exist, the requirements of this policy apply analogously to the respective service provider (cross-reference OPS.2.3).
+
+                    ## 6. Choice of Approach
+                    {{ tenant.legal_name }} implements its ISMS using the **{{ bsi.tier }} protection** approach in accordance with BSI Standard 200-2. This choice reflects the protection-needs profile, business criticality and regulatory landscape. The methodology for protection-needs assessment is governed by a separate method document; modelling follows the IT-Grundschutz Compendium edition {{ bsi.kompendium_edition }}.
+
+                    ## 7. Security Organisation
+                    Responsibilities for information security are clearly assigned (building block ISMS.1.A1, A3):
+
+                    - **Top management:** Overall responsibility pursuant to ISMS.1.A1, provision of resources, approval of this policy and subordinate directives, performance of the annual management review.
+                    - **Information Security Officer (ISB):** {{ roles.isb.fullName }} – the steering function of the ISMS, reporting directly to top management (not to the IT manager), equipped with the necessary powers and resources pursuant to ISMS.1.A3.
+                    - **IS Management Team:** {{ roles.is_management_team }} – advises the ISB, coordinates cross-layer security measures, meets at least quarterly.
+                    - **Data Protection Officer (DPO):** {{ roles.dpo.fullName }} – aligns with the ISB; consistent with BSI guidance and GDPR Art. 38, the ISB and DPO must not be the same person.
+                    - **Emergency Officer:** {{ roles.notfallbeauftragter.fullName }} – responsible for emergency management pursuant to DER.4 and BSI 200-4.
+                    - **Application and System Owners:** Functionally and operationally responsible for the security of their assigned target objects.
+
+                    Escalation paths, reporting duties and meeting frequencies are governed by the separate Security Organisation Directive.
+
+                    ## 8. Bindingness
+                    This policy is binding on all employees and authorised representatives of {{ tenant.legal_name }}. Violations are sanctioned in accordance with the Personnel Directive (building block ORP.2) and may result in disciplinary, employment, civil or criminal consequences. Contractors and external service providers are bound contractually as governed by the Outsourcing Directive (building block OPS.2.3).
+
+                    ## 9. Commitment to Continual Improvement
+                    Top management commits, in accordance with BSI 200-1 chapter 9, to the continual maintenance and improvement of the ISMS. This includes, in particular: regular effectiveness reviews, evaluation of security incidents and audit findings (cross-reference DER.2.1), internal audits, external assessments (e.g. BSIG Section 8a in case of critical-infrastructure duty), management review (at least annually) and derivation of corrective and preventive actions.
+
+                    ## 10. Approval
+                    This policy enters into force upon signature by top management and supersedes all prior versions. It is reviewed at least every 24 months and on an event-driven basis (e.g. change of scope, severe incidents, regulatory changes, change of top management). Approval chain: {{ approval.chain }}.
+
+                    Approved by [Top Management] on [Date] – Signature: ____________________
+
+                    ---
+                    *This policy is the highest normative statement of the ISMS of {{ tenant.legal_name }}. Subordinate directives (ORP, CON, OPS, DER) and the security concept (ISMS.1.A6) elaborate on the requirements herein. Cross-reference ISO/IEC 27001:2022 clause 5.2 and Annex A 5.1.*
+                section:
+                    importance:
+                        title: 'Significance of Information Security'
+                        body: |-
+                            Information security is a strategic cross-cutting concern. Top management commits to establishing, maintaining and continually improving the ISMS in accordance with BSI IT-Grundschutz edition {{ bsi.kompendium_edition }} (building block ISMS.1.A4).
+                    objectives:
+                        title: 'Security Objectives'
+                        body: |-
+                            Confidentiality, integrity, availability, authenticity and non-repudiation form the protection canon. These are operationalised through specific, measurable objectives in the ISMS Concept (ISMS.1.A6).
+                    business_alignment:
+                        title: 'Linking Business and Security Objectives'
+                        body: |-
+                            Availability of critical processes underpins service delivery. Integrity ensures sound decisions. Confidentiality protects competitive position and personal data.
+                    legal_basis:
+                        title: 'Legal and Regulatory Obligations'
+                        body: |-
+                            Applicable legal bases include BSIG (Section 8a, 8b), KRITIS-DachG, NIS2-UmsuG, GDPR/BDSG and sector-specific supervisory requirements.
+                    scope:
+                        title: 'Scope'
+                        body: |-
+                            Organisational (all employees, contractors, third parties), geographical (all sites and external data centres / cloud) and technical (all applications, IT systems, ICS/OT, rooms, communication links from BSI 200-2 structure analysis).
+                    methodology:
+                        title: 'Approach'
+                        body: |-
+                            {{ tenant.legal_name }} pursues the {{ bsi.tier }} protection approach as per BSI Standard 200-2.
+                    organisation:
+                        title: 'Security Organisation'
+                        body: |-
+                            Top management (overall responsibility), ISB {{ roles.isb.fullName }} (direct report), IS Management Team {{ roles.is_management_team }}, DPO {{ roles.dpo.fullName }}, Emergency Officer {{ roles.notfallbeauftragter.fullName }} and application/system owners.
+                    obligation:
+                        title: 'Bindingness'
+                        body: |-
+                            This policy is binding on all employees. Violations may have disciplinary, employment, civil or criminal consequences.
+                    improvement:
+                        title: 'Continual Improvement'
+                        body: |-
+                            Commitment under BSI 200-1 chapter 9 through regular effectiveness reviews, internal audits, management review and corrective actions.
+                    approval:
+                        title: 'Approval'
+                        body: |-
+                            Effective upon top-management signature; review at least every 24 months and event-driven. Approval chain: {{ approval.chain }}.
+                tailoring_field:
+                    scope_concretisation:
+                        label: 'Scope – Concretisation'
+                        placeholder: 'Example: "All IT processes of {{ tenant.legal_name }} at sites Bonn (HQ), Berlin (branch) and the Frankfurt data-centre cluster; the joint venture XY with separate ISMS authority is excluded."'
+                    leadership_signatory:
+                        label: 'Approving Top Management Signatory'
+                        placeholder: 'Example: "CEO Dr Erika Mustermann; for public administration: head of authority / president."'
+                    tenant_specific_threats:
+                        label: 'Tenant-specific Threats / Context'
+                        placeholder: 'Example: "As a critical-infrastructure operator in the energy sector we are particularly exposed to ransomware and supply-chain attacks; resulting focus areas: rigorous network segmentation per NET, detection per DER.1 with 24/7 SOC, emergency exercises per DER.4."'
+
+        isms_concept:
+            v1:
+                title: 'ISMS Concept (Security Concept)'
+                body: |-
+                    # ISMS Concept of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI Standard 200-2 chapters 5–9 | Building blocks: ISMS.1.A6 (basic), ISMS.1.A7, ISMS.1.A11 | Edition: {{ bsi.kompendium_edition }} | Review interval: annual + on structural change*
+
+                    ## 1. Purpose and Scope
+                    This security concept documents the ISMS implementation of {{ tenant.legal_name }} per BSI IT-Grundschutz and concretises the IT Security Policy (ISMS.1.A4) for the **{{ bsi.tier }} protection** approach. It follows the methodology of BSI 200-2 chapters 5 to 9 and integrates structure analysis, protection-needs assessment, modelling, basic-protection check, risk analysis, consolidation of measures and the implementation plan into a coherent system.
+
+                    ## 2. Structure Analysis (BSI 200-2 ch. 5)
+                    The structure analysis records the target objects of the information network:
+
+                    - **Business processes and applications** – derived from business objectives with reference to functional ownership;
+                    - **IT systems** – servers, clients, mobile devices, network components, ICS/OT components;
+                    - **Rooms and premises** – data centres, office sites, distribution rooms;
+                    - **Communication links** – LAN, WAN, VPN, wireless, external connectivity;
+                    - **Persons and roles** – within the security organisation.
+
+                    Recording is maintained in the ISMS asset inventory and is updated at least annually and on event.
+
+                    ## 3. Protection-Needs Assessment (BSI 200-2 ch. 6)
+                    Protection-needs assessment follows the separate method document **Protection-Needs Assessment**. It categorises each target object in the protection goals confidentiality, integrity and availability across the BSI levels *normal*, *high* and *very high*. Inheritance rules (maximum principle, where applicable distribution and cumulation effects) are applied per BSI 200-2 chapter 6.2.
+
+                    ## 4. Modelling (BSI 200-2 ch. 7)
+                    Modelling assigns each target object the applicable building blocks of the IT-Grundschutz Compendium edition {{ bsi.kompendium_edition }}. Under {{ bsi.tier }} protection, basic requirements are mandatory; standard requirements are generally implemented at normal protection-needs level; high-protection requirements and a risk analysis per BSI 200-3 are added for high or very high protection needs.
+
+                    ## 5. IT-Grundschutz Check (BSI 200-2 ch. 8)
+                    The basic-protection check determines, for each modelled building block and requirement, the implementation status: *not applicable*, *yes*, *partial* or *no*. It produces the gap analysis and feeds the prioritisation of measures.
+
+                    ## 6. Risk Analysis (BSI 200-3)
+                    A supplementary risk analysis is performed for target objects with high or very high protection needs, target objects with individually elevated risk (e.g. ICS/OT, critical-infrastructure components) and mandatorily under core protection per BSI 200-2 ch. 8.2. The methodology follows BSI 200-3 and uses the elementary-threats catalogue of the Compendium.
+
+                    ## 7. Consolidation of Security Measures
+                    Measures from the basic-protection check and risk analysis are consolidated into a measures catalogue. Duplicates are eliminated, dependencies and sequence are determined, and efficiency effects are realised through central solutions where appropriate.
+
+                    ## 8. Implementation Plan (BSI 200-2 ch. 9)
+                    The implementation plan covers, for each measure: ownership, resources, deadlines, prioritisation by risk and economic considerations, residual-risk estimation and milestones. The plan is updated at least quarterly in the IS Management Team.
+
+                    ## 9. Maintenance and Improvement (ISMS.1.A7, A11)
+                    The ISMS concept is maintained through regular effectiveness reviews, event-driven updates (e.g. new business process, new IT systems, regulatory change), the annual management review and analysis of security incidents.
+
+                    ---
+                    *Cross-reference ISO/IEC 27001:2022 clauses 4.3, 6, Annex A 5.1. Approved by ISB {{ roles.isb.fullName }} and top management per: {{ approval.chain }}.*
+                section:
+                    structure_analysis:
+                        title: 'Structure Analysis'
+                        body: |-
+                            Recording target objects: business processes, applications, IT systems, rooms, communication links, persons (BSI 200-2 ch. 5).
+                    protection_needs:
+                        title: 'Protection-Needs Assessment'
+                        body: |-
+                            Categorisation as normal / high / very high per protection goal; inheritance rules per BSI 200-2 ch. 6.2.
+                    modelling:
+                        title: 'Modelling'
+                        body: |-
+                            Assignment of Compendium edition {{ bsi.kompendium_edition }} building blocks to target objects.
+                    grundschutz_check:
+                        title: 'IT-Grundschutz Check'
+                        body: |-
+                            Gap analysis per requirement (not applicable / yes / partial / no) per BSI 200-2 ch. 8.
+                    risk_analysis:
+                        title: 'Risk Analysis'
+                        body: |-
+                            Supplementary per BSI 200-3 for high/very high protection needs or core protection.
+                    consolidation:
+                        title: 'Consolidation'
+                        body: |-
+                            Measures consolidation, duplicates eliminated, central efficiency effects.
+                    realisation_plan:
+                        title: 'Implementation Plan'
+                        body: |-
+                            Owners, deadlines, resources, prioritisation, residual risks (BSI 200-2 ch. 9).
+                    maintenance:
+                        title: 'Maintenance'
+                        body: |-
+                            Regular review, event-driven update, annual management review (ISMS.1.A7, A11).
+                tailoring_field:
+                    scope_perimeter:
+                        label: 'Information Network – Boundary'
+                        placeholder: 'Example: "The information network covers IT processes A through G of {{ tenant.legal_name }} at sites Bonn and Berlin; ICS/OT in production constitutes a separate IND information network."'
+                    risk_methodology:
+                        label: 'Risk-Analysis Methodology'
+                        placeholder: 'Example: "We use the Compendium elementary-threats list and complement with scenario-based analysis; qualitative 3-level rating; escalation to top management at risk class high."'
+                    realisation_owner:
+                        label: 'Implementation Plan Owner'
+                        placeholder: 'Example: "ISB {{ roles.isb.fullName }} coordinates; an operational owner is named per measure in the measures table; quarterly status reporting in the ISMS team."'
+
+        security_organisation:
+            v1:
+                title: 'Security Organisation / ISMS Roles'
+                body: |-
+                    # Security Organisation of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-1 ch. 7 | Building blocks: ISMS.1.A1 (overall responsibility), A3 (security organisation), A8 (integration into operations), A10 (security concept) | Edition: {{ bsi.kompendium_edition }} | Review: annual + on personnel change*
+
+                    ## 1. Purpose
+                    This directive governs the structural and procedural organisation of information security at {{ tenant.legal_name }}. It defines roles, responsibilities, powers and reporting paths and ensures that the ISMS is integrated into all business processes (ISMS.1.A8).
+
+                    ## 2. Scope
+                    Applies to all employees, authorised representatives and contractors of {{ tenant.legal_name }} in their participation in the ISMS.
+
+                    ## 3. Roles and Responsibilities
+                    ### 3.1 Top Management (ISMS.1.A1)
+                    Top management bears non-delegable overall responsibility for information security. It approves this directive and the IT Security Policy, provides necessary resources, performs the annual management review and integrates information security into strategic steering.
+
+                    ### 3.2 Information Security Officer (ISB)
+                    The ISB {{ roles.isb.fullName }} steers the ISMS operationally. In line with BSI guidance the ISB reports directly to top management (not to the IT manager). Tasks include:
+
+                    - design, implementation and maintenance of the ISMS per BSI 200-1/200-2;
+                    - preparation and maintenance of the security concept (ISMS.1.A10);
+                    - advice to top management and business units;
+                    - coordination of the IS Management Team;
+                    - reporting to top management at least quarterly and event-driven;
+                    - external interface to supervisory authorities (BSI, BfDI), auditors, external service providers.
+
+                    The ISB may not be the same individual as the DPO (BSI guidance + GDPR Art. 38(6)).
+
+                    ### 3.3 IS Management Team
+                    The IS Management Team {{ roles.is_management_team }} supports the ISB. It comprises representatives of relevant functional and cross-cutting units (IT operations, application owners, DPO, emergency officer where applicable, compliance/legal where applicable). Meeting frequency: at least quarterly with documented decisions.
+
+                    ### 3.4 Area and Project ISBs
+                    Under standard or core protection, area or project ISBs may be appointed who implement security measures in their area or project and report to the ISB.
+
+                    ### 3.5 Application and System Owners
+                    Each target object (application, IT system, room) has a designated owner. The owner decides on protection needs, implements assigned measures and reports to the ISB.
+
+                    ### 3.6 Data Protection Officer (DPO)
+                    The DPO {{ roles.dpo.fullName }} works closely with the ISB, in particular for DPIAs, the record of processing activities, breach notifications under Art. 33/34 GDPR and training with data-protection content.
+
+                    ### 3.7 Emergency Officer
+                    The emergency officer {{ roles.notfallbeauftragter.fullName }} owns emergency management per building block DER.4 and BSI 200-4. Reporting goes to top management and the ISB; in emergencies to the crisis team.
+
+                    ## 4. Escalation Paths
+                    Security events are reported per the Incident Response Directive (DER.2.1). Escalation tiers:
+
+                    1. First detector / employees → service desk / ISB;
+                    2. ISB → top management at medium and higher criticality;
+                    3. ISB / top management → external authorities (BSI, BfDI, where applicable BaFin/BNetzA, law enforcement) per statutory notification duties.
+
+                    ## 5. Cooperation with Further Functions
+                    The ISB liaises regularly with the DPO, risk management, compliance/legal, internal audit, HR and works/personnel council where applicable.
+
+                    ## 6. Maintenance
+                    This directive is reviewed at least annually and on each personnel change in the named roles. Approval by top management per: {{ approval.chain }}.
+
+                    ---
+                    *Cross-reference ISO/IEC 27001:2022 clause 5.3 + Annex A 5.2, 5.3.*
+                section:
+                    leadership:
+                        title: 'Top Management'
+                        body: |-
+                            Non-delegable overall responsibility per ISMS.1.A1; approval, resources, management review.
+                    isb:
+                        title: 'Information Security Officer'
+                        body: |-
+                            ISB {{ roles.isb.fullName }} steers the ISMS, reports directly to top management; not the same person as DPO.
+                    isms_team:
+                        title: 'IS Management Team'
+                        body: |-
+                            Advises ISB, cross-layer coordination; quarterly meetings.
+                    bereichs_isbs:
+                        title: 'Area / Project ISBs'
+                        body: |-
+                            Appointed under standard or core protection for areas / projects.
+                    asset_owners:
+                        title: 'Application / System Owners'
+                        body: |-
+                            Functional/operational responsibility for target objects; protection-needs decision; measures implementation.
+                    dpo_interface:
+                        title: 'Data Protection Officer'
+                        body: |-
+                            DPO {{ roles.dpo.fullName }} – close alignment with ISB; GDPR Art. 38(6).
+                    bcm_officer:
+                        title: 'Emergency Officer'
+                        body: |-
+                            Emergency officer {{ roles.notfallbeauftragter.fullName }} – emergency management per DER.4 and BSI 200-4.
+                    escalation:
+                        title: 'Escalation Paths'
+                        body: |-
+                            Employees → ISB → top management → external authorities (BSI, BfDI, where applicable BaFin/BNetzA).
+                tailoring_field:
+                    isb_reporting_line:
+                        label: 'ISB Reporting Line'
+                        placeholder: 'Example: "ISB reports directly to CEO Dr Mustermann; quarterly written CISO report; ad-hoc escalation from incident class high upwards."'
+                    isms_team_composition:
+                        label: 'IS Management Team Composition'
+                        placeholder: 'Example: "ISB (chair), Head of IT, owner of core system A, DPO, emergency officer, compliance manager; meets first Thursday of every quarter."'
+                    escalation_to_authorities:
+                        label: 'External Escalation – Concretised'
+                        placeholder: 'Example: "Critical-infrastructure incidents are notified to BSI under BSIG Section 8b without delay; GDPR breaches to BfDI within 72 hours; sector-specific to BaFin in addition."'
+
+        organisation_directive:
+            v1:
+                title: 'Organisation Directive'
+                body: |-
+                    # Organisation Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: ORP.1.A1 (responsibilities), A2 (tasks), A3 (employee duties), A4 (deputisation) | Edition: {{ bsi.kompendium_edition }} | Review: 24 months*
+
+                    ## 1. Purpose
+                    This directive concretises the organisational security rules at workplaces and for the handling of information set out in the IT Security Policy. It establishes the basis for consistent, traceable behaviour by all staff in the spirit of building blocks ORP.1, ORP.2 and ORP.3, with cross-reference to ISO/IEC 27002:2022 § 5.4.
+
+                    ## 2. Scope
+                    Applies to all employees, contractors, interns and any further persons present on the premises of {{ tenant.legal_name }} or using information assets of the organisation.
+
+                    ## 3. General Workplace Rules
+                    1. **Clean desk:** When leaving the workplace – even briefly – confidential documents are to be locked away, screens locked and portable devices (laptops, smartphones) secured against unauthorised access.
+                    2. **Screen lock:** Screens lock automatically after a maximum of 10 minutes of inactivity; manual locking before leaving is mandatory.
+                    3. **Key management:** Keys and authorisation tokens are kept securely; loss is to be reported to the service desk without delay.
+
+                    ## 4. Deputisation (ORP.1.A4)
+                    Each security-relevant function has a designated deputy. Deputies are documented in role descriptions and equipped with the necessary authorisations (cross-reference ORP.4). Deputisation is exercised at least annually.
+
+                    ## 5. Handling Information of Different Confidentiality Levels
+                    {{ tenant.legal_name }} uses the following classification scheme (to be concretised in the tailoring field):
+
+                    - **public** – cleared for publication;
+                    - **internal** – not public, but freely available within the organisation;
+                    - **confidential** – authorised parties only on a need-to-know basis;
+                    - **strictly confidential** – particularly sensitive; additional safeguards (encryption, separate storage).
+
+                    Public administrations may use the classified-information scheme (VS-NfD, VS-V, secret, top secret) per the German classified-information handling rules.
+
+                    ## 6. Reporting Duties
+                    Security events, suspected incidents and data-protection incidents must be reported without delay to the ISB {{ roles.isb.fullName }} or via the documented reporting channel (cross-reference DER.2.1, GDPR Art. 33). Reporting must not be omitted or delayed for fear of consequences.
+
+                    ## 7. Sanctions
+                    Violations of this directive are sanctioned per the Personnel Directive (ORP.2). Sanctions range from instruction via formal warning to termination; intentional acts may have civil or criminal consequences. Co-determination rights of the works/personnel council are preserved.
+
+                    ## 8. Visitor Management
+                    External visitors are received, registered (name, organisation, host, time) and informed about security rules. Visitors receive a visitor pass where applicable and are escorted in sensitive areas (cross-reference building block INF.1.A5).
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 5.4 (Management responsibilities), § 6.2 (Terms and conditions). Approval per: {{ approval.chain }}.*
+                section:
+                    workplace_rules:
+                        title: 'Workplace Rules'
+                        body: |-
+                            Clean desk, screen lock after 10 minutes maximum, secure key handling.
+                    deputisation:
+                        title: 'Deputisation'
+                        body: |-
+                            Deputy designated per security-relevant function, documented in role descriptions (ORP.1.A4).
+                    classification:
+                        title: 'Information Classification'
+                        body: |-
+                            public / internal / confidential / strictly confidential; public administrations may use VS-NfD/VS-V/secret/top secret.
+                    reporting:
+                        title: 'Reporting Duties'
+                        body: |-
+                            Immediate reporting to ISB {{ roles.isb.fullName }} via documented channel (cross-reference DER.2.1, GDPR Art. 33).
+                    sanctions:
+                        title: 'Sanctions'
+                        body: |-
+                            Sanctions per Personnel Directive (ORP.2); co-determination rights preserved.
+                    visitors:
+                        title: 'Visitor Management'
+                        body: |-
+                            Reception, registration, escort in sensitive areas (cross-reference INF.1.A5).
+                tailoring_field:
+                    classification_scheme:
+                        label: 'Classification Scheme – Concretisation'
+                        placeholder: 'Example: "We use the four-level scheme public/internal/confidential/strictly confidential; for classified work additionally VS-NfD per the classified-information handling rules."'
+                    deputy_named:
+                        label: 'Deputisation – Designated Persons'
+                        placeholder: 'Example: "Deputy of ISB {{ roles.isb.fullName }} is Ms Mueller (Senior Security Engineer); annual deputy training."'
+                    visitor_zones:
+                        label: 'Visitor Rules – Sensitive Areas'
+                        placeholder: 'Example: "Data-centre zone and executive floor require escort; production sites require additional safety briefing prior to entry."'
+
+        personnel_directive:
+            v1:
+                title: 'Personnel Directive'
+                body: |-
+                    # Personnel Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: ORP.2.A1 (controlled hiring), A2 (tasks), A3 (controlled departure), A4 (deputisation), A5 (prevention of personnel loss) | Edition: {{ bsi.kompendium_edition }} | Review: 24 months*
+
+                    ## 1. Purpose
+                    This directive governs personnel-related security across the employment lifecycle: onboarding, role change, departure, deputisation and prevention of personnel loss.
+
+                    ## 2. Scope
+                    Applies to all employees (permanent, fixed-term, probation), contractors, working students, interns and other externally engaged persons with access to information assets of {{ tenant.legal_name }}.
+
+                    ## 3. Onboarding (ORP.2.A1)
+                    Prior to commencing duty:
+
+                    - contractual obligation on data protection and confidentiality;
+                    - briefing per Section 5 BDSG / GDPR Art. 32(4) and where applicable obligation of confidentiality under Section 203 of the German Criminal Code or other professional/official secrecy;
+                    - background check for security-sensitive positions, where applicable security clearance under SUEG (public administration);
+                    - issuance and confirmed reading of the IT Security Policy and applicable subordinate directives;
+                    - granting of authorisations via the defined IAM process (cross-reference ORP.4);
+                    - first training per the Awareness Directive (ORP.3) within 30 days.
+
+                    ## 4. Tasks and Responsibilities (ORP.2.A2)
+                    Tasks, responsibilities and deputisation are bindingly specified in the role description. They are updated upon any change. Segregation of duties is observed (cross-reference ORP.4).
+
+                    ## 5. Role and Function Change (ORP.2.A14)
+                    On internal moves:
+
+                    - existing authorisations are reviewed and revoked where appropriate (joiner/mover/leaver);
+                    - necessary new authorisations are requested and approved;
+                    - confidentiality obligations from the prior role remain in force.
+
+                    ## 6. Deputisation (ORP.2.A4)
+                    Each security-relevant function has a qualified deputy. Deputisation is exercised at least annually; authorisations are reviewed prior to the deputy event (cross-reference ORP.4.A4).
+
+                    ## 7. Prevention of Personnel Loss (ORP.2.A5)
+                    Key positions are identified and single points of failure avoided. Measures include knowledge documentation, cross-training, external deputisation arrangements and emergency-staffing concepts where appropriate (cross-reference DER.4).
+
+                    ## 8. Offboarding (ORP.2.A3)
+                    On termination of duties:
+
+                    - return of all devices, keys, passes and other assets with receipt;
+                    - revocation of all logical and physical access on the documented effective date;
+                    - exit conversation including reminder of continuing confidentiality obligations;
+                    - deletion of personal data per the Deletion Directive (cross-reference CON.6);
+                    - non-compete / restraint clauses per the employment contract.
+
+                    ## 9. External Personnel
+                    Contractors, working students, interns and similar are subject to analogous requirements. Confidentiality, data protection, audit and inspection rights and where applicable subcontractor approvals are governed contractually (cross-reference OPS.2.3).
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 6.1 (Screening), § 6.2 (Terms and conditions), § 6.5 (Termination), § 6.6 (NDA). Approval per: {{ approval.chain }}.*
+                section:
+                    onboarding:
+                        title: 'Onboarding'
+                        body: |-
+                            Confidentiality / data-protection obligation, background check, first training within 30 days (ORP.2.A1).
+                    duties:
+                        title: 'Tasks and Responsibilities'
+                        body: |-
+                            Bindingly defined in role description; segregation of duties (ORP.2.A2).
+                    role_change:
+                        title: 'Role Change'
+                        body: |-
+                            Authorisation review/adjustment, prior-role confidentiality continues (ORP.2.A14).
+                    deputies:
+                        title: 'Deputisation'
+                        body: |-
+                            Qualified deputy named; annual exercise (ORP.2.A4).
+                    failure_prevention:
+                        title: 'Personnel-Loss Prevention'
+                        body: |-
+                            Identify key positions, knowledge documentation, cross-training (ORP.2.A5).
+                    offboarding:
+                        title: 'Offboarding'
+                        body: |-
+                            Asset return, access revocation, exit conversation, continuing confidentiality (ORP.2.A3).
+                    external_staff:
+                        title: 'External Personnel'
+                        body: |-
+                            Analogous requirements, contractual obligations (cross-reference OPS.2.3).
+                tailoring_field:
+                    background_check_scope:
+                        label: 'Background Check – Scope'
+                        placeholder: 'Example: "Criminal-record certificate for all positions with access to critical systems; SUEG-Ue1 for VS-NfD area; credit check for treasury functions."'
+                    offboarding_grace:
+                        label: 'Offboarding – Effective Times'
+                        placeholder: 'Example: "Access revoked at 17:00 on the last working day; data-carrier wipe within 30 days; non-compete 12 months."'
+                    deputy_training:
+                        label: 'Deputisation Exercise'
+                        placeholder: 'Example: "Annual two-day deputy shadowing for key roles; documented in the training matrix."'
+
+        awareness_directive:
+            v1:
+                title: 'Awareness and Training Directive'
+                body: |-
+                    # Awareness and Training Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: ORP.3.A1 (training-needs assessment), A2 (training and awareness programme), A3 (top-management awareness), A4 (awareness design) | Edition: {{ bsi.kompendium_edition }} | Review: training plan annual; content every 24 months*
+
+                    ## 1. Purpose
+                    This directive establishes a consistent training and awareness programme for information security. The objective is for all staff to understand their role in the ISMS, apply secure work practices and report incidents reliably (ORP.3, ISO/IEC 27002:2022 § 6.3, ISO/IEC 27001:2022 clauses 7.2 + 7.3).
+
+                    ## 2. Training-Needs Assessment (ORP.3.A1)
+                    Target-group-specific demand is assessed at least annually:
+
+                    - general users;
+                    - administrators and privileged users (cross-reference OPS.1.1.2);
+                    - executives and top management;
+                    - special roles (DPO, emergency officer, ISB, forensics, development);
+                    - external personnel.
+
+                    ## 3. Training Programme (ORP.3.A2)
+                    The training programme covers:
+
+                    - **Initial training** on entry (within 30 days);
+                    - **Refresher training** at least annually;
+                    - **Special training** for administrators (patch management, hardening, logging) and sensitive areas;
+                    - **Awareness measures** such as phishing simulations, posters, newsletters, e-learning;
+                    - **On-demand training** event-driven (e.g. after incident, new technology, regulatory change).
+
+                    ## 4. Top-Management Awareness (ORP.3.A3)
+                    Top management receives a briefing at least annually on the threat landscape, ISMS maturity, KPIs and investment needs. The objective is informed decision-making in strategic security matters.
+
+                    ## 5. Effectiveness Measurement
+                    Training effectiveness is measured through tests/quizzes, phishing simulation click rates, audit observations and incident-reporting discipline. Findings are discussed in the IS Management Team and feed the next training plan.
+
+                    ## 6. Documentation
+                    Training is documented (participants, date, content, outcome). Documentation is audit-relevant evidence; retention as required by law.
+
+                    ## 7. Training Roadmap
+                    A rolling 12-month roadmap is maintained by the ISB {{ roles.isb.fullName }} and approved in the IS Management Team. It contains topics, frequency, owners, target groups and success criteria.
+
+                    ---
+                    *Cross-reference ISO/IEC 27001:2022 clauses 7.2, 7.3 + ISO/IEC 27002:2022 § 6.3. Approval per: {{ approval.chain }}.*
+                section:
+                    needs_assessment:
+                        title: 'Training-Needs Assessment'
+                        body: |-
+                            Target groups: users, admins, executives, special roles, externals (ORP.3.A1).
+                    program:
+                        title: 'Training Programme'
+                        body: |-
+                            Initial training in 30 days, annual refresher, special training, awareness measures (ORP.3.A2).
+                    leadership:
+                        title: 'Top Management'
+                        body: |-
+                            Annual briefing on threat landscape and ISMS maturity (ORP.3.A3).
+                    effectiveness:
+                        title: 'Effectiveness'
+                        body: |-
+                            Tests, phishing click rates, audit observations, reporting discipline.
+                    documentation:
+                        title: 'Documentation'
+                        body: |-
+                            Audit-relevant evidence; retention as required.
+                    roadmap:
+                        title: 'Training Roadmap'
+                        body: |-
+                            12-month roadmap maintained by ISB {{ roles.isb.fullName }}; approved in IS Management Team.
+                tailoring_field:
+                    target_groups:
+                        label: 'Target Groups – Concretisation'
+                        placeholder: 'Example: "We distinguish five target groups: general staff, admins, developers, DPO office, executives; each group has its own LMS curriculum."'
+                    phishing_program:
+                        label: 'Phishing Simulation'
+                        placeholder: 'Example: "Quarterly phishing campaign with escalating difficulty; click-rate KPI <5 percent; affected users receive just-in-time microlearning."'
+                    delivery_channels:
+                        label: 'Training Channels'
+                        placeholder: 'Example: "E-learning via LMS XY (mandatory), in-person admin training every six months, monthly awareness newsletter, posters in break rooms."'
+
+        iam_directive:
+            v1:
+                title: 'Identity and Access Management Directive'
+                body: |-
+                    # IAM Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: ORP.4.A1 (account creation/deletion), A2 (authorisations), A3 (documentation), A4 (authorisation review), A5 (physical-access authorisation), A8 (password use), A9 (identification/authentication), A22 (multi-factor authentication) | Edition: {{ bsi.kompendium_edition }} | Review: authorisation review annual; concept every 24 months*
+
+                    ## 1. Purpose
+                    This directive governs the management of identities and authorisations for access to information assets, IT systems and premises of {{ tenant.legal_name }}. The objective is to enforce need-to-know and least privilege with full traceability (ORP.4 + ISO/IEC 27002:2022 § 5.15–5.18, 8.2, 8.3, 8.5).
+
+                    ## 2. Scope
+                    Applies to all employees, external personnel, service and emergency accounts and technical accounts (service accounts, machine identities).
+
+                    ## 3. Request, Approval and Revocation Process (ORP.4.A1, A2)
+                    Accounts and authorisations are granted exclusively via the documented IAM process:
+
+                    - request by line manager or authorised representative with functional justification;
+                    - approval by the application/system owner (additionally by the ISB for privileged authorisations);
+                    - implementation by IT operations with documentation;
+                    - revocation on role change or departure (cross-reference ORP.2).
+
+                    ## 4. Role-/Rights Concept (ORP.4.A2)
+                    Authorisations are granted via roles (RBAC). The following principles apply:
+
+                    - **Need-to-know:** access only to information required for task fulfilment;
+                    - **Least privilege:** the minimum rights necessary;
+                    - **Segregation of duties:** critical operations (e.g. creation and approval) are separated organisationally;
+                    - **Approver not equal to requester** for privileged authorisations.
+
+                    ## 5. Password Policy (ORP.4.A8)
+                    The password policy follows current BSI guidance:
+
+                    - minimum length 12 characters (20+ for very high protection needs);
+                    - complexity via mixture of at least three character classes OR via passphrase ≥ 16 characters;
+                    - no mandatory periodic change without cause (BSI guidance from 2020 onward);
+                    - mandatory change on suspected compromise;
+                    - prohibition of known-weak or breached passwords (blacklist check).
+
+                    ## 6. Multi-Factor Authentication (ORP.4.A22)
+                    MFA is mandatory for:
+
+                    - administrative and privileged accounts;
+                    - external access (VPN, remote access);
+                    - cloud services with access to confidential data;
+                    - accounts with access to particularly protection-needy data (high / very high protection needs).
+
+                    Permissible factors follow BSI TR-03107 and exclude weak SMS-OTPs where possible.
+
+                    ## 7. Privileged Access Management
+                    Administrative accounts are kept separate from personal accounts. Privileged-access workflows (request, approval, just-in-time, audit) are implemented via a PAM solution; all administrative actions are logged (cross-reference OPS.1.1.5).
+
+                    ## 8. Account Lifecycle (Joiner / Mover / Leaver)
+                    Joiner: grant per role description. Mover: review and adjust rights. Leaver: revoke as of the effective date; deletion per retention rules.
+
+                    ## 9. Authorisation Re-Certification (ORP.4.A4)
+                    At least annually, authorisations are re-certified by owners; for high protection needs every six months. Unconfirmed authorisations are revoked.
+
+                    ## 10. Emergency / Service Accounts
+                    Emergency and service accounts are documented; credentials are stored in sealed envelope or PAM vault; each use is logged and post-reviewed (break-glass).
+
+                    ## 11. Single Sign-On / Federation
+                    Where used, SSO is based on established protocols (SAML 2.0, OIDC). Identity providers are particularly hardened; federation with external parties requires contractual and technical review.
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 5.15–5.18, 8.2, 8.3, 8.5. Approval per: {{ approval.chain }}.*
+                section:
+                    request_process:
+                        title: 'Request / Approval Process'
+                        body: |-
+                            Request, approval, implementation, documentation, revocation (ORP.4.A1, A2).
+                    rbac:
+                        title: 'Roles / Rights Concept'
+                        body: |-
+                            Need-to-know, least privilege, segregation of duties, approver not equal to requester.
+                    passwords:
+                        title: 'Password Policy'
+                        body: |-
+                            Minimum 12 characters; no periodic forced rotation; blacklist check (BSI guidance 2020+).
+                    mfa:
+                        title: 'Multi-Factor Authentication'
+                        body: |-
+                            Mandatory for admins, external access, cloud, high protection-needs accounts (ORP.4.A22).
+                    pam:
+                        title: 'Privileged Access Management'
+                        body: |-
+                            Separation of administrative/personal accounts; PAM workflows; logging.
+                    lifecycle:
+                        title: 'Account Lifecycle'
+                        body: |-
+                            Joiner/mover/leaver with cross-reference ORP.2.
+                    recertification:
+                        title: 'Re-Certification'
+                        body: |-
+                            Annual (semi-annual for high protection needs); unconfirmed revoked (ORP.4.A4).
+                    emergency_accounts:
+                        title: 'Emergency / Service Accounts'
+                        body: |-
+                            Sealed envelope / PAM vault; each use logged and post-reviewed.
+                    sso:
+                        title: 'SSO / Federation'
+                        body: |-
+                            SAML 2.0 / OIDC; identity providers hardened.
+                tailoring_field:
+                    privileged_definition:
+                        label: 'Privileged Accounts – Definition'
+                        placeholder: 'Example: "Privileged: domain admin, data-centre admin, database DBA, cloud-owner account, all service accounts with write rights to production storage."'
+                    mfa_factors:
+                        label: 'MFA – Permissible Factors'
+                        placeholder: 'Example: "FIDO2 hardware token (preferred), TOTP app, smartcard with PIN; SMS-OTP only as transitional measure until Q4."'
+                    recertification_cadence:
+                        label: 'Re-Certification – Cadence'
+                        placeholder: 'Example: "General accounts annually (Q1); privileged semi-annually; critical-infrastructure components quarterly; unconfirmed authorisations revoked within 14 days."'
+
+        crypto_concept:
+            v1:
+                title: 'Cryptography Concept'
+                body: |-
+                    # Cryptography Concept of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 + BSI TR-02102 (all parts) | Building blocks: CON.1.A1 (algorithm selection), A2 (data backup), A3 (transport encryption), A4 (key management), A6 (cryptography concept) | Edition: {{ bsi.kompendium_edition }} | Review: 24 months + on each TR-02102 update*
+
+                    ## 1. Purpose
+                    This cryptography concept governs the use of cryptographic methods to protect the confidentiality, integrity and authenticity of information of {{ tenant.legal_name }}. Authoritative are the current versions of BSI Technical Guideline 02102 (TR-02102-1 for algorithms and key lengths, -2 for TLS, -3 for IPsec, -4 for SSH).
+
+                    ## 2. Scope
+                    Applies to all applications, IT systems, data carriers, backups and communication links in which cryptographic methods are or are to be used.
+
+                    ## 3. Classification of Data to be Protected (CON.1.A1)
+                    Algorithm choice is determined by protection needs. Data with high or very high protection needs receive strengthened methods (longer keys, additional key separation, hardware security modules where appropriate).
+
+                    ## 4. Use Cases
+                    The following use cases are mandatorily protected by cryptography:
+
+                    - **Transport:** TLS 1.2 or higher (TLS 1.3 default from 2027); e-mail confidentiality via S/MIME or OpenPGP per use case;
+                    - **Data at rest:** disk encryption (e.g. BitLocker, LUKS), database encryption for sensitive tables, file encryption for special cases;
+                    - **Backups:** encrypted storage per CON.3 (cross-reference Backup Concept);
+                    - **Mobile data carriers:** encryption is mandatory for USB sticks, external drives, mobile devices;
+                    - **Databases:** field-level encryption of sensitive attributes in addition to transport and storage encryption;
+                    - **Authentication:** hashing with modern, salted methods (e.g. Argon2id, scrypt, bcrypt).
+
+                    ## 5. Permissible Algorithms and Minimum Key Lengths
+                    BSI TR-02102-1 in its current version is binding. Examples (state at the time of approval):
+
+                    - symmetric: AES-128 / AES-256;
+                    - asymmetric: RSA ≥ 3000 bits or ECC ≥ 256 bits (e.g. NIST P-256 / brainpoolP256r1);
+                    - hashing: SHA-256 or higher;
+                    - signatures: RSA-PSS, ECDSA, EdDSA;
+                    - key establishment: ECDH (Curve25519, P-256) or DH ≥ 3000 bits;
+                    - post-quantum: for data with confidentiality horizon >10 years, evaluate migration to post-quantum methods per BSI guidance.
+
+                    ## 6. Key Management (CON.1.A4)
+                    Key management covers the full lifecycle:
+
+                    - **generation** with certified random sources, preferably in HSM;
+                    - **distribution** via secure channels;
+                    - **storage** in HSM, PAM vault or at minimum protected key stores;
+                    - **use** with separation of encryption and signature keys;
+                    - **rotation** per risk and TR-02102 guidance;
+                    - **revocation / destruction** secure and documented (cross-reference CON.6);
+                    - **recovery / escrow** only where operationally or legally required (in particular public administration).
+
+                    ## 7. PKI Architecture
+                    Where PKI is in use:
+
+                    - multi-tier CA hierarchy with offline root;
+                    - RA processes with documented roles;
+                    - validation via OCSP / CRL;
+                    - certificate inventory with expiry monitoring (preventing outage by expiration).
+
+                    ## 8. Responsibilities
+                    Crypto officer: responsible for the cryptography concept, HSM administration and key register. Backup owner: responsible for cryptographic backup protection. Endpoint owners: responsible for endpoint disk encryption.
+
+                    ## 9. Incident Handling
+                    On compromise or suspicion of compromise of key material: immediate revocation, re-issue, audit of affected data and notification of the ISB {{ roles.isb.fullName }}; if applicable incident handling per DER.2.1.
+
+                    ## 10. Cross-Border Aspects
+                    For foreign cloud providers, key sovereignty is to be verified (customer-managed keys vs. provider-managed). Crypto-export rules and third-country legal-access risks (e.g. CLOUD Act risks) are addressed in the Cloud Usage Directive (OPS.2.2).
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 8.24. BSI TR-02102 is binding; deviations require a documented risk decision. Approval per: {{ approval.chain }}.*
+                section:
+                    classification:
+                        title: 'Data Classification'
+                        body: |-
+                            Algorithm choice driven by protection needs; high/very high receive strengthened methods.
+                    use_cases:
+                        title: 'Use Cases'
+                        body: |-
+                            Transport (TLS), data at rest, backups, mobile data carriers, databases, authentication.
+                    algorithms:
+                        title: 'Permissible Algorithms'
+                        body: |-
+                            AES-128/256, RSA ≥ 3000 bits, ECC ≥ 256 bits, SHA-256+, per BSI TR-02102-1.
+                    key_management:
+                        title: 'Key Management'
+                        body: |-
+                            Generation, distribution, storage, rotation, revocation, destruction; HSM/PAM vault.
+                    pki:
+                        title: 'PKI Architecture'
+                        body: |-
+                            Multi-tier CA hierarchy, offline root, OCSP/CRL, certificate inventory.
+                    responsibilities:
+                        title: 'Responsibilities'
+                        body: |-
+                            Crypto officer, backup owner, endpoint owners.
+                    incident:
+                        title: 'Incident Handling'
+                        body: |-
+                            On compromise: immediate revocation, re-issue, audit, ISB notification (cross-reference DER.2.1).
+                    cross_border:
+                        title: 'Cross-Border Aspects'
+                        body: |-
+                            Verify key sovereignty (customer-managed vs. provider-managed); CLOUD Act risks (cross-reference OPS.2.2).
+                tailoring_field:
+                    hsm_usage:
+                        label: 'HSM Usage'
+                        placeholder: 'Example: "HSM nCipher nShield active-active across two data centres; all CA keys and PII encryption keys reside exclusively in HSM."'
+                    tls_config:
+                        label: 'TLS Configuration'
+                        placeholder: 'Example: "Inbound traffic at minimum TLS 1.2, TLS 1.3 from 2027; outbound TLS 1.2; cipher suites per TR-02102-2 reviewed annually."'
+                    quantum_safe_plan:
+                        label: 'Post-Quantum Migration Plan'
+                        placeholder: 'Example: "Data with confidentiality horizon >10 years (e.g. patient records) receive hybrid PQC encryption from 2027 per BSI guidance; pilot in 2026."'
+
+        data_protection_directive:
+            v1:
+                title: 'Data Protection Directive (BSI x GDPR/BDSG)'
+                body: |-
+                    # Data Protection Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 + GDPR + BDSG | Building blocks: CON.2.A1 (Standard Data Protection Model implementation), A2 (awareness) | Methodology: Standard Data Protection Model (SDM) V3.0 of the German Data Protection Conference | Edition: {{ bsi.kompendium_edition }} | Review: annual*
+
+                    ## 1. Purpose
+                    This directive integrates data-protection requirements from the GDPR (Regulation (EU) 2016/679) and the German BDSG (in particular Section 22 BDSG for special categories) into the ISMS per BSI IT-Grundschutz. It concretises building block CON.2 and uses the Standard Data Protection Model of the German Data Protection Conference as a methodological bracket.
+
+                    > **Note:** Where a DPO wizard / PIMS module per ISO/IEC 27701:2025 is already active at {{ tenant.legal_name }}, the data-protection policy established there governs; this directive then operates as a supplement with reference to the BSI methodology, avoiding duplication.
+
+                    ## 2. Controllership
+                    The controller per GDPR Art. 4(7) is {{ tenant.legal_name }}. Processors are bound contractually per Art. 28 GDPR. The Data Protection Officer is {{ roles.dpo.fullName }}; the DPO reports directly to top management and is not the same person as the ISB.
+
+                    ## 3. Records of Processing Activities (Art. 30 GDPR)
+                    The records of processing activities are maintained in the DPO module and reconciled with the ISMS asset inventory. Each processing entry includes purpose, legal basis, data categories, recipients, third-country transfers, retention and technical and organisational measures.
+
+                    ## 4. Legal Bases
+                    Primary legal bases are Art. 6(1)(a) (consent), (b) (contract), (c) (legal obligation), (e) (public interest), (f) (legitimate interest). Special categories (Art. 9) require additional permissive grounds; Section 22 BDSG complements the German context (in particular employment context and prevention of occupational illness).
+
+                    ## 5. Data-Subject Rights
+                    Procedures for handling data-subject rights (access, rectification, erasure, restriction, portability, objection) are implemented in the DSR module. Reaction time: typically one month (Art. 12(3)).
+
+                    ## 6. Data Protection Impact Assessment (Art. 35 GDPR)
+                    DPIA-eligible processing operations are identified and performed in the DPIA module. The DPO is consulted (Art. 35(2)). For residual high risk, prior consultation of the supervisory authority is performed (Art. 36).
+
+                    ## 7. Notification of Data Breaches (Art. 33/34 GDPR)
+                    Personal-data breaches are notified to the competent supervisory authority within 72 hours (Art. 33), and to data subjects in case of high risk (Art. 34). The corresponding workflow is implemented in the DataBreach module (cross-reference DER.2.1).
+
+                    ## 8. Processor Engagement
+                    Processors are selected with due care (cross-reference OPS.2.3); a processing agreement per Art. 28 is mandatory. Sub-processors require prior approval; audit rights are secured contractually.
+
+                    ## 9. Third-Country Transfers
+                    Third-country transfers (Art. 44–49) are performed only on the basis of robust safeguards (adequacy decision, standard contractual clauses plus transfer impact assessment, binding corporate rules). Schrems-II-conforming reviews are documented.
+
+                    ## 10. Standard Data Protection Model
+                    The SDM goals confidentiality, integrity, availability, data minimisation, transparency, intervenability and unlinkability are applied to each processing operation. Cross-reference BSI protection goals (confidentiality, integrity, availability) plus additional data-protection-specific goals.
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 5.34 + ISO/IEC 27701:2025 (PIMS). Approval per: {{ approval.chain }}.*
+                section:
+                    responsibility:
+                        title: 'Controllership'
+                        body: |-
+                            Controller per Art. 4(7); DPO {{ roles.dpo.fullName }} reports directly to top management.
+                    record:
+                        title: 'Records of Processing Activities'
+                        body: |-
+                            RoPA in the DPO module, reconciled with the asset inventory (Art. 30 GDPR).
+                    legal_basis:
+                        title: 'Legal Bases'
+                        body: |-
+                            Art. 6(1) + Art. 9 + Section 22 BDSG for special categories.
+                    rights:
+                        title: 'Data-Subject Rights'
+                        body: |-
+                            Access / rectification / erasure / restriction / portability / objection in the DSR module.
+                    dpia:
+                        title: 'Data Protection Impact Assessment'
+                        body: |-
+                            DPIA module; DPO consulted; if applicable prior consultation of supervisory authority (Art. 35/36).
+                    breach:
+                        title: 'Breach Notification'
+                        body: |-
+                            72-hour notification to supervisory authority (Art. 33); subjects in high-risk cases (Art. 34).
+                    processor:
+                        title: 'Processor Engagement'
+                        body: |-
+                            DPA per Art. 28; sub-processor approval; audit rights (cross-reference OPS.2.3).
+                    transfer:
+                        title: 'Third-Country Transfers'
+                        body: |-
+                            Adequacy / SCCs + TIA / BCR; Schrems-II-conforming.
+                    sdm:
+                        title: 'Standard Data Protection Model'
+                        body: |-
+                            SDM V3.0 goals additional to BSI CIA (data minimisation, transparency, intervenability, unlinkability).
+                tailoring_field:
+                    dpo_module_status:
+                        label: 'DPO Module / PIMS Status'
+                        placeholder: 'Example: "DPO wizard is active; ISO/IEC 27701:2025 PIMS programme being built; this BSI directive operates as a supplement with cross-reference."'
+                    sectoral_basis:
+                        label: 'Sectoral Legal Bases'
+                        placeholder: 'Example: "Beyond GDPR/BDSG, SGB V (social health data) and Section 203 of the German Criminal Code apply; affected processing operations are justified separately."'
+                    transfer_examples:
+                        label: 'Third-Country Transfer – Concrete Cases'
+                        placeholder: 'Example: "Transfer to US cloud provider via the new EU-US Data Privacy Framework + SCCs + TIA; annual re-review."'
+
+        backup_concept:
+            v1:
+                title: 'Backup Concept'
+                body: |-
+                    # Backup Concept of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: CON.3.A1–A6 (basic), A8–A10 (standard), A11–A15 (high) | Edition: {{ bsi.kompendium_edition }} | Review: annual + on architectural change*
+
+                    ## 1. Purpose
+                    This concept governs data backup at {{ tenant.legal_name }} to protect against loss, modification and unavailability. It concretises building block CON.3 and additionally fulfils ISO/IEC 27002:2022 § 8.13 (Information backup).
+
+                    ## 2. Scope
+                    Covers all production IT systems, applications and databases in the information network, including virtual, physical and cloud-based components.
+
+                    ## 3. Determination of Influencing Factors (CON.3.A1)
+                    For each system the following are determined: protection needs, RPO (Recovery Point Objective), RTO (Recovery Time Objective), data volume, change rate, statutory retention, dependencies on other systems.
+
+                    ## 4. Backup Strategy (3-2-1)
+                    The BSI-recommended 3-2-1 strategy applies: 3 data copies, on 2 different media, with 1 copy offsite. For high or very high protection needs the 3-2-1-1-0 strategy applies, additionally with one immutable copy and zero recovery errors in tests.
+
+                    ## 5. Backup Procedure (CON.3.A2)
+                    Per system the procedure is set:
+
+                    - full backup at defined intervals;
+                    - differential or incremental between full backups;
+                    - databases with transaction-log backup for point-in-time recovery;
+                    - image backups for critical servers.
+
+                    ## 6. Retention
+                    Retention follows statutory requirements (e.g. tax/commercial law), contractual obligations and business needs. Retention is documented per system.
+
+                    ## 7. Backup Protection (CON.3.A4)
+                    Backups are protected by encryption (cross-reference CON.1), access control, physical separation and where applicable air gap and immutability (against ransomware). Backup servers / storage reside in a separate security zone.
+
+                    ## 8. Recovery Test (CON.3.A8)
+                    Recovery tests are performed at least annually; for high protection needs at least every six months. Results are documented; deviations lead to corrective actions.
+
+                    ## 9. Responsibilities
+                    Each system has a designated backup owner. IT operations executes the backups and is responsible for monitoring, logs and alerting (cross-reference OPS.1.1.5).
+
+                    ## 10. Special Cases
+                    - **Cloud backups:** cloud providers do not back up application data by default in many SaaS offerings; tenant-side backup is required (cross-reference OPS.2.2);
+                    - **Mobile devices:** business-relevant data are backed up via MDM or central storage;
+                    - **Databases:** hot/warm/cold standby per RTO.
+
+                    ## 11. Documentation
+                    Backup plan, errors, restores and tests are documented; deviations escalate to the ISB {{ roles.isb.fullName }}.
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 8.13. Approval per: {{ approval.chain }}.*
+                section:
+                    inputs:
+                        title: 'Influencing Factors'
+                        body: |-
+                            Protection needs, RPO/RTO, volume, dependencies per system (CON.3.A1).
+                    strategy:
+                        title: 'Backup Strategy'
+                        body: |-
+                            3-2-1 (basic), 3-2-1-1-0 with immutability for high/very high.
+                    procedure:
+                        title: 'Backup Procedure'
+                        body: |-
+                            Full/differential/incremental, transaction logs, image backups (CON.3.A2).
+                    retention:
+                        title: 'Retention'
+                        body: |-
+                            Statutory + contractual + business; documented per system.
+                    protection:
+                        title: 'Backup Protection'
+                        body: |-
+                            Encryption, access control, air gap / immutability against ransomware (CON.3.A4).
+                    restore_test:
+                        title: 'Recovery Test'
+                        body: |-
+                            At least annually, every six months for high protection needs (CON.3.A8).
+                    responsibilities:
+                        title: 'Responsibilities'
+                        body: |-
+                            Backup owner per system; IT operations for execution, monitoring, alerting.
+                    cloud_special:
+                        title: 'Special Cases'
+                        body: |-
+                            Cloud backup is tenant responsibility; MDM for mobile; DB standby per RTO.
+                    documentation:
+                        title: 'Documentation'
+                        body: |-
+                            Backup plan, errors, restores, tests documented; ISB escalation.
+                tailoring_field:
+                    rpo_rto_matrix:
+                        label: 'RPO/RTO Matrix'
+                        placeholder: 'Example: "Core system A: RPO 15 minutes, RTO 4 hours; CRM: RPO 4 hours, RTO 24 hours; archive: RPO 7 days, RTO 7 days."'
+                    immutable_storage:
+                        label: 'Immutable Storage'
+                        placeholder: 'Example: "Object Lock on S3-compatible storage with 30 days compliance mode; offsite replication to second data centre; annual ransomware-recovery test."'
+                    cloud_backup_owner:
+                        label: 'Cloud Backup Owner'
+                        placeholder: 'Example: "M365 data are additionally backed up via Veeam for M365; owner: M365-owner Ms Mueller."'

@@ -19,6 +19,7 @@ use App\Repository\DocumentRepository;
 use App\Repository\DocumentSectionRepository;
 use App\Repository\PolicyTemplateRepository;
 use App\Repository\TagRepository;
+use App\Service\TenantSettingResolver\PolicySettingProvider;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -113,6 +114,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         private readonly ?DocumentSectionRepository $documentSectionRepository = null,
         private readonly LoggerInterface $logger = new NullLogger(),
         private readonly ?DoraExtensionCatalogue $doraExtensionCatalogue = null,
+        private readonly ?PolicySettingProvider $policySettingProvider = null,
     ) {
     }
 
@@ -418,12 +420,20 @@ final class DocumentGenerator implements DocumentGeneratorInterface
      * Topic + standard resolution. Honours Mode 2 (targeted re-run)
      * by intersecting `WizardRun.targetedTopics` against the catalogue.
      *
+     * W5-A — also applies the `bsi.tier_filter` tenant-setting:
+     *   • basis_only      → drop every template with bsi_tier in {standard, kern}
+     *   • up_to_standard  → drop every template with bsi_tier=kern
+     *   • kern_full       → no drops
+     * Templates with bsi_tier=NULL (non-BSI standards) are always kept.
+     *
      * @return list<PolicyTemplate>
      */
     private function collectTemplatesFor(WizardRun $run): array
     {
         $standards = $run->getStandardsAdopted() ?? [];
         $targeted = $run->getTargetedTopics();
+
+        $tierFilter = $this->resolveBsiTierFilter($run);
 
         $hits = [];
         foreach ($standards as $standard) {
@@ -435,10 +445,50 @@ final class DocumentGenerator implements DocumentGeneratorInterface
                 if ($targeted !== null && $targeted !== [] && !in_array($row->getTopic(), $targeted, true)) {
                     continue;
                 }
+                if (!$this->isTemplateAllowedUnderTierFilter($row, $tierFilter)) {
+                    $this->logger->info('PolicyWizard W5-A: skipping template due to bsi.tier_filter', [
+                        'wizard_run_id' => $run->getId(),
+                        'template_key' => $row->getKey(),
+                        'bsi_tier' => $row->getBsiTier(),
+                        'filter' => $tierFilter,
+                    ]);
+                    continue;
+                }
                 $hits[] = $row;
             }
         }
         return $hits;
+    }
+
+    /**
+     * Resolve the tenant's `bsi.tier_filter` value. Defensive: returns
+     * the safe `basis_only` default whenever the provider is missing
+     * (legacy DI graphs / unit tests) or the resolution fails.
+     */
+    private function resolveBsiTierFilter(WizardRun $run): string
+    {
+        if ($this->policySettingProvider === null) {
+            return PolicySettingProvider::TIER_FILTER_DEFAULT;
+        }
+        return $this->policySettingProvider->resolveBsiTierFilter($run->getTenant());
+    }
+
+    /**
+     * Whether a template's `bsi_tier` is allowed under the resolved
+     * filter. NULL-tiered templates ship in every mode.
+     */
+    private function isTemplateAllowedUnderTierFilter(PolicyTemplate $template, string $tierFilter): bool
+    {
+        if ($this->policySettingProvider === null) {
+            // Conservative: when the provider is not wired we keep the
+            // legacy behaviour (everything ships) rather than silently
+            // dropping rows downstream.
+            return true;
+        }
+        return $this->policySettingProvider->tierAllowedUnderFilter(
+            $template->getBsiTier(),
+            $tierFilter,
+        );
     }
 
     /**

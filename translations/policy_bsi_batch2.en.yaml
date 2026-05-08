@@ -1,0 +1,947 @@
+policy:
+    bsi:
+        deletion_destruction_directive:
+            v1:
+                title: 'Deletion and Destruction Directive'
+                body: |-
+                    # Deletion and Destruction Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 + DIN 66399 | Building blocks: CON.6.A1 (deletion/destruction rules), A2 (proper deletion/destruction), A3 (especially protection-needy assets) | Edition: {{ bsi.kompendium_edition }} | Review: 24 months*
+
+                    ## 1. Purpose
+                    This directive governs the traceable deletion of electronic data and the secure destruction of data carriers and paper records of {{ tenant.legal_name }}. It concretises building block CON.6 and the GDPR erasure obligations (Art. 17) and follows the security levels of DIN 66399.
+
+                    ## 2. Scope
+                    Covers all data carriers (electronic, magnetic, optical), paper records, mobile devices and cloud data of {{ tenant.legal_name }}.
+
+                    ## 3. Classification of Data Carriers (DIN 66399)
+                    Data carriers are classified per DIN 66399:
+
+                    - Protection class 1 (normal protection needs) → at minimum security level P-3 (paper), T-3 (magnetic), E-3 (electronic), O-3 (optical);
+                    - Protection class 2 (high protection needs) → minimum P-4, T-5, E-4, O-4;
+                    - Protection class 3 (very high protection needs) → minimum P-5, T-6, E-5, O-5; for VS-NfD and comparable, P-7 / E-7.
+
+                    ## 4. Procedures per Class (CON.6.A2)
+                    Per data-carrier type and class:
+
+                    - **Paper:** shredder with DIN 66399 security level or certified external service provider;
+                    - **Magnetic data carriers (HDDs):** secure overwrite (at least 1 pass via ATA Secure Erase or NIST SP 800-88), with degaussing or physical destruction additionally for protection class 2/3;
+                    - **SSDs:** crypto-erase with subsequent physical destruction; overwriting alone is not deemed sufficient;
+                    - **Optical data carriers:** physical destruction (shredding);
+                    - **Cloud data:** provider deletion confirmation; for very high protection class crypto-erase via key destruction.
+
+                    ## 5. Responsibilities
+                    Asset owner: initiates deletion/destruction. IT operations: executes electronic-media erasure. External service provider: certified destruction per DIN 66399 with audit rights for {{ tenant.legal_name }}.
+
+                    ## 6. Evidence
+                    Destruction and deletion events are documented with date, responsible person, asset reference, procedure and security level. External service providers supply destruction certificates which are linked in the asset inventory.
+
+                    ## 7. Cloud Data
+                    Upon termination of cloud contracts, provider deletion confirmation is obtained; for high protection class the crypto-erase mechanism is also activated. Corresponding clauses are included in the cloud-contract standard (cross-reference OPS.2.2).
+
+                    ## 8. Mobile Devices
+                    On loss, theft or device exchange a remote wipe is triggered via MDM. For BYOD, selective erasure of business data is regulated (container wipe).
+
+                    ## 9. Retention Before Deletion
+                    Statutory and contractual retention obligations are checked prior to deletion (e.g. AO §147, HGB §257; GDPR Art. 17(3) exceptions).
+
+                    ## 10. Emergency Destruction
+                    On loss or theft the incident is reported to the ISB {{ roles.isb.fullName }} without delay (cross-reference DER.2.1); where applicable additional notification to the supervisory authority (cross-reference CON.2 data protection, Art. 33 GDPR).
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 7.10, 7.14, 8.10. Approval per: {{ approval.chain }}.*
+                section:
+                    classification:
+                        title: 'Data-Carrier Classification'
+                        body: |-
+                            DIN 66399 protection classes 1/2/3 with security levels P/T/E/O.
+                    procedures:
+                        title: 'Procedures per Class'
+                        body: |-
+                            Paper: shredding; HDDs: overwrite + degaussing/destruction; SSDs: crypto-erase + destruction; optical: destruction; cloud: provider deletion confirmation.
+                    responsibilities:
+                        title: 'Responsibilities'
+                        body: |-
+                            Asset owner initiates; IT operations executes; external provider DIN-66399 certified.
+                    evidence:
+                        title: 'Evidence'
+                        body: |-
+                            Date, person, asset, procedure, security level; external destruction certificates linked.
+                    cloud:
+                        title: 'Cloud Data'
+                        body: |-
+                            Provider deletion confirmation; crypto-erase via key destruction at high protection class.
+                    mobile:
+                        title: 'Mobile Devices'
+                        body: |-
+                            Remote wipe via MDM; selective container wipe for BYOD.
+                    retention:
+                        title: 'Retention'
+                        body: |-
+                            Check statutory periods (AO §147, HGB §257, GDPR Art. 17(3)) before deletion.
+                    incident:
+                        title: 'Emergency Destruction'
+                        body: |-
+                            Loss/theft: notify ISB; if applicable supervisory authority per GDPR Art. 33.
+                tailoring_field:
+                    disposal_provider:
+                        label: 'External Disposal Provider'
+                        placeholder: 'Example: "Reisswolf GmbH (DIN 66399 certified) for paper P-4; SecData GmbH for HDDs T-5; annual audit."'
+                    security_levels:
+                        label: 'Mandatory Security Levels'
+                        placeholder: 'Example: "Paper minimum P-4 for everything except public; HDDs protection class 2 → T-5; HR records and patient data T-6."'
+                    cloud_termination:
+                        label: 'Cloud Termination Procedure'
+                        placeholder: 'Example: "On AWS contract end: key destruction via KMS DeleteKey + provider deletion confirmation; deadline 30 days."'
+
+        business_travel_directive:
+            v1:
+                title: 'Business-Travel / Mobile-Work Directive'
+                body: |-
+                    # Business-Travel Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: CON.7.A1 (travel security policy), A2 (awareness), A3 (regulations), A4 (encryption), A5 (public Wi-Fi), A6 (visual/eavesdropping protection) | Edition: {{ bsi.kompendium_edition }} | Review: 24 months*
+
+                    ## 1. Purpose
+                    This directive governs security-relevant aspects of business travel, in particular international travel, for all employees of {{ tenant.legal_name }}.
+
+                    ## 2. Scope
+                    All business travel (national and international), in particular when carrying devices, data carriers or confidential records.
+
+                    ## 3. Permissible Devices
+                    For travel abroad **travel notebooks** and **travel phones** without persistent data storage are preferred. Personal devices (BYOD) are not permitted for travel to high-risk countries.
+
+                    ## 4. Data Classification for Travel
+                    Prior to travel a determination is made which data may be carried. Strictly confidential data and VS-NfD (public administration) are not to be carried abroad unless absolutely necessary and with compensating measures.
+
+                    ## 5. Encryption (CON.7.A4)
+                    Disks and external data carriers are mandatorily encrypted (cross-reference CON.1). Mobile devices use device encryption with strong PIN/password lock and biometrics as a second factor.
+
+                    ## 6. Connection Security (CON.7.A5)
+                    VPN is mandatory for all business connections; public Wi-Fi is not used without VPN. Hotspot via business smartphone is preferred.
+
+                    ## 7. Border Inspections
+                    At border inspections in high-risk countries, travel devices are preferred; devices may be handed over if legally required. After return, the device undergoes forensic inspection before being reconnected to the corporate network.
+
+                    ## 8. Loss / Theft
+                    Loss or theft is reported to the ISB {{ roles.isb.fullName }} without delay (cross-reference DER.2.1). Remote wipe is triggered; check for data-protection notification duty (Art. 33 GDPR).
+
+                    ## 9. Visual / Eavesdropping Protection (CON.7.A6)
+                    Privacy filters are mandatory for travel. Confidential phone calls are to be avoided in public areas; notebook camera and microphone are deactivated outside conferences.
+
+                    ## 10. Awareness (CON.7.A2)
+                    Prior to each trip to a high-risk country a briefing is conducted; this applies in particular for trips to PR China, Russia, Iran, North Korea and other countries identified by BfV / Federal Foreign Office.
+
+                    ## 11. Country-Specific Notes
+                    Current advisories of BfV (commercial protection) and the Federal Foreign Office are consulted prior to travel. For US travel, CLOUD Act risk assessment is observed (cross-reference OPS.2.2).
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 6.7, 7.9, 8.1. Approval per: {{ approval.chain }}.*
+                section:
+                    devices:
+                        title: 'Permissible Devices'
+                        body: |-
+                            Travel notebooks/phones preferred; BYOD not permitted to high-risk countries.
+                    classification_travel:
+                        title: 'Travel Data Classification'
+                        body: |-
+                            Strictly confidential / VS-NfD not abroad without compensating measures.
+                    encryption:
+                        title: 'Encryption'
+                        body: |-
+                            Disks, data carriers, mobile mandatorily encrypted (cross-reference CON.1).
+                    connection:
+                        title: 'Connection Security'
+                        body: |-
+                            VPN mandatory; no public Wi-Fi without VPN; hotspot preferred.
+                    border:
+                        title: 'Border Inspections'
+                        body: |-
+                            Travel devices; handover where required; forensic check on return.
+                    loss:
+                        title: 'Loss / Theft'
+                        body: |-
+                            Immediate notification to ISB; remote wipe; GDPR Art. 33 review.
+                    privacy:
+                        title: 'Visual / Eavesdropping Protection'
+                        body: |-
+                            Privacy filter mandatory; mic/camera off outside conferences.
+                    awareness:
+                        title: 'Awareness'
+                        body: |-
+                            Briefing prior to high-risk travel (CN, RU, IR, KP, others).
+                    countries:
+                        title: 'Country Notes'
+                        body: |-
+                            BfV and Foreign-Office advisories consulted; CLOUD Act risk for US travel.
+                tailoring_field:
+                    high_risk_list:
+                        label: 'High-Risk Country List'
+                        placeholder: 'Example: "PR China, Russia, Iran, North Korea, Belarus; updated quarterly per BfV advisories; travel only with ISB approval."'
+                    travel_devices_pool:
+                        label: 'Travel Device Pool'
+                        placeholder: 'Example: "We operate a pool of 20 travel notebooks (Lenovo X1 with BitLocker) and 10 travel phones; forensic check after each return."'
+                    vpn_solution:
+                        label: 'VPN Solution'
+                        placeholder: 'Example: "Central VPN hub via FortiClient with MFA; split-tunneling disabled; mandatory for every international connection."'
+
+        software_development_directive:
+            v1:
+                title: 'Software Development Directive'
+                body: |-
+                    # Software Development Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: CON.8.A1–A6 (basic), A7–A12 (standard), A19–A22 (high) | Edition: {{ bsi.kompendium_edition }} | Review: annual*
+
+                    ## 1. Purpose
+                    This directive governs the secure development of software at {{ tenant.legal_name }}, both for in-house development and customisation of standard products or contracted development. It covers the full software lifecycle and integrates cross-references to OWASP practices and ISO/IEC 27002:2022 § 8.25–8.31.
+
+                    ## 2. Scope
+                    Covers all in-house development, customisation, configuration measures and contracted development under supplier relationships (cross-reference OPS.2.3).
+
+                    ## 3. Approach (CON.8.A1)
+                    {{ tenant.legal_name }} pursues a structured software lifecycle with defined phases: requirement, design, implementation, test, release, operation, decommissioning. Security requirements are addressed in every phase (security-by-design / DevSecOps).
+
+                    ## 4. Phase-Specific Security Requirements
+                    - **Requirement:** protection goals (CIA), data classification, regulatory requirements;
+                    - **Design:** threat modelling for high-protection-needs applications (cross-reference CON.8.A19); architecture reviews;
+                    - **Implementation:** secure coding guidelines (e.g. OWASP cheat sheets, CERT-C); four-eyes for code reviews;
+                    - **Test:** unit, integration, SAST (CON.8.A20), DAST (CON.8.A21), where applicable pentest and fuzzing (CON.8.A22);
+                    - **Release:** release process per Software Test and Release Directive (cross-reference OPS.1.1.6);
+                    - **Operation:** logging, monitoring (cross-reference OPS.1.1.5, DER.1), patch management (cross-reference OPS.1.1.3);
+                    - **Decommissioning:** data migration, secure deletion (cross-reference CON.6).
+
+                    ## 5. Development Environment (CON.8.A2)
+                    Development, test and production environments are separated. Real data in development is permissible only exceptionally and with anonymisation / pseudonymisation.
+
+                    ## 6. Tooling (CON.8.A3)
+                    Only approved and trustworthy tools are used. Open-source tools are reviewed for licensing, maintenance status and known vulnerabilities. SAST/DAST tools per tailoring.
+
+                    ## 7. Training (CON.8.A4)
+                    Developers receive regular training on secure development (secure coding, threat models, secure frameworks). Cross-reference Awareness Directive ORP.3.
+
+                    ## 8. Code-Review Obligation
+                    Every change is reviewed by a second person (four-eyes). Security-relevant changes additionally undergo security review by an ISB-trusted person or external party.
+
+                    ## 9. Version Control (CON.8.A6)
+                    Source code is managed in a central, access-controlled version-control system (Git). Branching strategy, tagging and release process are documented. Secrets (passwords, keys, tokens) are NEVER stored in the repository; secrets management via vault / KMS.
+
+                    ## 10. Supply Chain
+                    Dependencies (open-source libraries, container images) are documented via SBOM; dependency scanning regularly checks for known vulnerabilities (cross-reference OPS.1.1.3).
+
+                    ## 11. Contracted Development
+                    External developers are bound to this directive contractually. Audit rights, sub-contractor approval and security requirements are governed in the contract (cross-reference OPS.2.3).
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 8.25–8.31; OWASP ASVS / OWASP Top 10. Approval per: {{ approval.chain }}.*
+                section:
+                    sdlc:
+                        title: 'Approach'
+                        body: |-
+                            Structured software lifecycle with security-by-design / DevSecOps (CON.8.A1).
+                    phase_requirements:
+                        title: 'Phase-Specific Security'
+                        body: |-
+                            CIA goals, threat modelling, secure coding, SAST/DAST, pentest, logging, patch management, secure decommissioning.
+                    environments:
+                        title: 'Development Environment'
+                        body: |-
+                            Separation of dev/test/prod; real data in dev only with anonymisation (CON.8.A2).
+                    tools:
+                        title: 'Tooling'
+                        body: |-
+                            Approved tools; OSS review; SAST/DAST per tailoring (CON.8.A3).
+                    training:
+                        title: 'Training'
+                        body: |-
+                            Regular secure-coding training (CON.8.A4 + cross-reference ORP.3).
+                    code_review:
+                        title: 'Code Review'
+                        body: |-
+                            Four-eyes; security-relevant changes with additional security review.
+                    version_control:
+                        title: 'Version Control'
+                        body: |-
+                            Git, branching, tagging, release; NO secrets in repo (CON.8.A6).
+                    supply_chain:
+                        title: 'Supply Chain'
+                        body: |-
+                            SBOM, dependency scanning, regular vulnerability checks.
+                    external_dev:
+                        title: 'Contracted Development'
+                        body: |-
+                            Contractual binding, audit rights, sub-contractor approval (cross-reference OPS.2.3).
+                tailoring_field:
+                    sast_dast:
+                        label: 'SAST/DAST Tools'
+                        placeholder: 'Example: "SAST with Sonar, DAST with OWASP ZAP; annual pentests by external party; container scan via Trivy in CI/CD."'
+                    threat_modeling:
+                        label: 'Threat Modelling'
+                        placeholder: 'Example: "STRIDE for all new high-protection applications; quarterly workshop format; results in architecture repository."'
+                    secrets_management:
+                        label: 'Secrets Management'
+                        placeholder: 'Example: "HashiCorp Vault as central secrets store; pre-commit hook against hard-coded secrets; annual repo audit."'
+
+        information_exchange_directive:
+            v1:
+                title: 'Information Exchange Directive'
+                body: |-
+                    # Information Exchange Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: CON.9.A1 (permitted recipients), A2 (agreement), A3 (instruction) | Edition: {{ bsi.kompendium_edition }} | Review: 24 months*
+
+                    ## 1. Purpose
+                    This directive governs the exchange of information with external parties and internal recipients while preserving confidentiality, integrity and authenticity. It concretises building block CON.9 and ISO/IEC 27002:2022 § 5.14.
+
+                    ## 2. Scope
+                    Covers all paths of information exchange: e-mail, cloud sharing, data-carrier dispatch, courier services, messengers, telephone and fax (where still in use).
+
+                    ## 3. Information Classification
+                    Prior to dispatch the classification per the Organisation Directive (ORP.1) is checked. Different requirements apply per class.
+
+                    ## 4. Permitted Transfer Channels per Class
+                    | Class | Permitted Channels |
+                    |---|---|
+                    | public | any |
+                    | internal | unencrypted e-mail, cloud share with authentication |
+                    | confidential | e-mail with S/MIME or OpenPGP; encrypted cloud share; courier with receipt |
+                    | strictly confidential | only S/MIME / OpenPGP or certified encrypted dispatch; courier with special authentication |
+
+                    Public administration: VS-NfD only via approved crypto hardware (e.g. SINA components); VS-V only on protected dispatch paths.
+
+                    ## 5. Recipient Verification
+                    Prior to dispatch the identity of the recipient is verified (address check, callback where applicable). For external recipients the existence of a non-disclosure agreement (NDA) is checked (cross-reference OPS.2.3).
+
+                    ## 6. NDA Obligations
+                    A written NDA is mandatory prior to exchanging confidential or stricter data. NDA template wording is centrally maintained; changes require legal/DPO review.
+
+                    ## 7. Dispatch Logs
+                    Dispatch of confidential data is logged (recipient, time, classification, channel).
+
+                    ## 8. Inbound Processing
+                    Incoming traffic is checked for plausibility and signature (S/MIME, OpenPGP). Suspicious items are reported to the ISB {{ roles.isb.fullName }}.
+
+                    ## 9. Special Cases
+                    Bulk data and transfers exceeding 100 MB are not sent by e-mail but through dedicated secure-file-transfer solutions. Bulk data to third parties require a DPA (GDPR Art. 28) and data-protection review (cross-reference CON.2).
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 5.14. Approval per: {{ approval.chain }}.*
+                section:
+                    classification:
+                        title: 'Classification'
+                        body: |-
+                            Classification check prior to dispatch per ORP.1.
+                    transfer_paths:
+                        title: 'Transfer Channels'
+                        body: |-
+                            Permitted channels per class: e-mail, S/MIME/PGP, cloud share, courier; public administration VS-NfD via SINA.
+                    recipient_check:
+                        title: 'Recipient Verification'
+                        body: |-
+                            Identity verification; NDA check for external recipients.
+                    nda:
+                        title: 'NDA Obligations'
+                        body: |-
+                            Written NDA mandatory before exchanging confidential data.
+                    logs:
+                        title: 'Dispatch Logs'
+                        body: |-
+                            Recipient, time, classification, channel logged.
+                    inbound:
+                        title: 'Inbound Processing'
+                        body: |-
+                            Plausibility and signature checks; suspicious items reported to ISB.
+                    bulk:
+                        title: 'Bulk Data'
+                        body: |-
+                            Secure file transfer above 100 MB; DPA and GDPR review for third-party dispatch.
+                tailoring_field:
+                    sftp_solution:
+                        label: 'Secure File Transfer'
+                        placeholder: 'Example: "We use Cryptshare for secure file transfer above 25 MB; retention 14 days; AES-256 with user-managed password."'
+                    nda_template:
+                        label: 'NDA Template'
+                        placeholder: 'Example: "Standard NDA template version 3.2 (DE/EN); maintained by legal/DPO; signature in DocuSign with audit trail."'
+                    classified_logistics:
+                        label: 'Classified-Material Logistics'
+                        placeholder: 'Example: "VS-NfD dispatch only via SINA Box; physical media via certified BSI courier; ingress/egress in classified-material register."'
+
+        web_application_directive:
+            v1:
+                title: 'Web-Application Directive'
+                body: |-
+                    # Web-Application Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: CON.10.A1 (authentication), A2 (access control), A3 (secure configuration), A4 (confidentiality), A5 (logging) | OWASP: Top 10, ASVS L2/L3 | Edition: {{ bsi.kompendium_edition }} | Review: annual*
+
+                    ## 1. Purpose
+                    This directive complements the Software Development Directive with specific requirements for web applications developed or operated by {{ tenant.legal_name }}. It is binding for applications with web frontends, REST/GraphQL APIs and web services.
+
+                    ## 2. Scope
+                    Covers all web applications (internal and external) and REST/GraphQL interfaces, web services and web components in mobile applications.
+
+                    ## 3. Authentication (CON.10.A1)
+                    - secure session management with sufficiently random tokens, HttpOnly and Secure flags;
+                    - MFA for privileged and protection-needy applications (cross-reference ORP.4.A22);
+                    - brute-force protection with rate-limiting and account-lockout logic (with abuse safeguards);
+                    - secure password storage via Argon2id / bcrypt (cross-reference CON.1).
+
+                    ## 4. Access Control (CON.10.A2)
+                    - function-level authorisation: each function checks authorisation;
+                    - object-level authorisation: each data-object affiliation is verified (in particular for tenant separation);
+                    - server-side validation of all authorisation decisions;
+                    - protection against IDOR (Insecure Direct Object References).
+
+                    ## 5. Input Validation
+                    - input sanitisation against XSS, SQLi, command injection, XXE, SSRF;
+                    - server-side validation is mandatory; client-side is supplementary;
+                    - CSRF protection via CSRF token or SameSite cookies;
+                    - context-dependent output encoding (HTML, JS, URL).
+
+                    ## 6. Encryption (CON.10.A4)
+                    All connections via TLS 1.2+ (preferably 1.3); session cookies with Secure flag; sensitive fields additionally encrypted; HSTS mandatory (cross-reference CON.1).
+
+                    ## 7. Logging (CON.10.A5)
+                    Security-relevant events are logged: authentication attempts (success/failure), privilege escalations, access to confidential data, anomalies (cross-reference OPS.1.1.5).
+
+                    ## 8. Hardening (CON.10.A3)
+                    - security headers: Content-Security-Policy, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy;
+                    - no stack traces or internal paths in production error messages;
+                    - up-to-date frameworks and libraries (cross-reference patch management OPS.1.1.3);
+                    - default accounts and sample data removed.
+
+                    ## 9. Vulnerability Management
+                    Regular vulnerability scanning, annual pentest for critical applications (cross-reference OPS.1.1.3); CVE monitoring for libraries in use; patch SLA per the Patch Directive.
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 8.26 + OWASP Top 10 + ASVS L2/L3. Approval per: {{ approval.chain }}.*
+                section:
+                    authentication:
+                        title: 'Authentication'
+                        body: |-
+                            Secure session management; MFA for privileged; brute-force protection; Argon2id/bcrypt (CON.10.A1).
+                    authorization:
+                        title: 'Access Control'
+                        body: |-
+                            Function- and object-level authorisation; protection against IDOR (CON.10.A2).
+                    input_validation:
+                        title: 'Input Validation'
+                        body: |-
+                            Protection against XSS, SQLi, injection, XXE, SSRF; CSRF token; context-dependent output encoding.
+                    encryption:
+                        title: 'Encryption'
+                        body: |-
+                            TLS 1.2+, Secure flag, HSTS, sensitive fields encrypted (CON.10.A4 + CON.1).
+                    logging:
+                        title: 'Logging'
+                        body: |-
+                            Auth events, privilege escalation, confidential-data access, anomalies (CON.10.A5).
+                    hardening:
+                        title: 'Hardening'
+                        body: |-
+                            Security headers, no stack traces, up-to-date frameworks, default accounts removed (CON.10.A3).
+                    vulnerability:
+                        title: 'Vulnerability Management'
+                        body: |-
+                            Scanning, annual pentest, CVE monitoring, patch SLA (cross-reference OPS.1.1.3).
+                tailoring_field:
+                    waf_solution:
+                        label: 'Web Application Firewall'
+                        placeholder: 'Example: "Cloud WAF Cloudflare in front of all external applications; OWASP Core Rule Set; custom rules for internal API schemas."'
+                    pentest_cadence:
+                        label: 'Pentest Cadence'
+                        placeholder: 'Example: "Annual blackbox pentest of all externally exposed applications; semi-annual whitebox for critical apps; findings into risk register."'
+                    csp_policy:
+                        label: 'Content Security Policy'
+                        placeholder: 'Example: "Strict CSP with nonce-based scripts; no inline scripts; reporting to csp-violations.example.com with SIEM correlation."'
+
+        it_administration_directive:
+            v1:
+                title: 'IT Administration Directive'
+                body: |-
+                    # IT Administration Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: OPS.1.1.2.A1 (responsibilities), A4 (deputisation), A5 (traceability), A6 (admin protection), A21 (PAM) | Standard: A11 (role change), A14 (training), A15 (no default accounts) | Edition: {{ bsi.kompendium_edition }} | Review: annual*
+
+                    ## 1. Purpose
+                    This directive governs secure administration of IT systems at {{ tenant.legal_name }}. It minimises misuse and error risks from privileged accounts and provides traceability.
+
+                    ## 2. Scope
+                    Covers all administrative actions on servers, databases, network components, cloud services, ICS/OT systems and applications.
+
+                    ## 3. Separation of Administrative and Personal Accounts (OPS.1.1.2.A15)
+                    Administration is performed exclusively via separate admin accounts; personal accounts are NOT used for administration. Default accounts (root, administrator, sa) are disabled or kept with complex, regularly rotated passwords and are used only in emergencies with documented justification.
+
+                    ## 4. Privileged-Access Workflows (OPS.1.1.2.A21)
+                    Privileged access is managed via a PAM solution:
+
+                    - request with justification;
+                    - approval by system owner or ISB-delegated party;
+                    - just-in-time activation with time limit;
+                    - session recording and auditing.
+
+                    ## 5. Jump Hosts / Bastion Hosts
+                    Administrative access is performed via hardened jump hosts in a separate security zone. Direct SSH/RDP from end-user subnets is not permitted.
+
+                    ## 6. Out-of-Band Management
+                    Management interfaces (iLO, iDRAC, IPMI) reside in a separate management network not connected to production networks.
+
+                    ## 7. Four-Eyes Principle
+                    Critical administrative operations (e.g. domain-admin actions, database deletion, backup-system changes) require four-eyes or explicit prior approval in PAM.
+
+                    ## 8. Logging and Evaluation (OPS.1.1.2.A5)
+                    All administrative actions are logged (cross-reference OPS.1.1.5). Evaluation is automated via the SIEM and periodic manual sampling.
+
+                    ## 9. Emergency Admin Access
+                    Emergency admin access (break-glass) is stored in sealed envelope or PAM vault. Each use is logged, reported to the ISB {{ roles.isb.fullName }} and post-reviewed.
+
+                    ## 10. Outsourced Administration
+                    For outsourced administration the Outsourcing Directive applies (cross-reference OPS.2.3). External admins receive personal accounts, MFA, session recording and audit rights.
+
+                    ## 11. Deputisation (OPS.1.1.2.A4)
+                    A deputy is named for each administrative function; annual deputy exercise with authorisation review.
+
+                    ## 12. Training (OPS.1.1.2.A14)
+                    Administrators receive regular technical training (in particular on new threats, patch management, hardening, log analysis).
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 8.2, 8.18. Approval per: {{ approval.chain }}.*
+                section:
+                    account_separation:
+                        title: 'Account Separation'
+                        body: |-
+                            Separation of administrative and personal accounts; default accounts disabled (OPS.1.1.2.A15).
+                    pam_workflow:
+                        title: 'PAM Workflow'
+                        body: |-
+                            Request, approval, just-in-time, session recording (OPS.1.1.2.A21).
+                    jump_hosts:
+                        title: 'Jump Hosts'
+                        body: |-
+                            Admin access only via hardened jump hosts in separate zone.
+                    out_of_band:
+                        title: 'Out-of-Band Management'
+                        body: |-
+                            iLO/iDRAC/IPMI in separate management network.
+                    four_eyes:
+                        title: 'Four-Eyes'
+                        body: |-
+                            Mandatory for critical operations (domain admin, DB deletion, backup changes).
+                    logging:
+                        title: 'Logging'
+                        body: |-
+                            Full logging; SIEM evaluation automated + manual sampling (OPS.1.1.2.A5).
+                    break_glass:
+                        title: 'Break Glass'
+                        body: |-
+                            Sealed envelope / PAM vault; use logged + reported to ISB.
+                    outsourcing:
+                        title: 'Outsourced Admin'
+                        body: |-
+                            Cross-reference OPS.2.3; personal accounts + MFA + session recording + audit.
+                    deputies_training:
+                        title: 'Deputisation and Training'
+                        body: |-
+                            Deputy named + annual exercise; regular admin training (OPS.1.1.2.A4, A14).
+                tailoring_field:
+                    pam_solution:
+                        label: 'PAM Solution'
+                        placeholder: 'Example: "CyberArk PAM with session recording, JIT activation 2 h default; all domain admins exclusively via PAM."'
+                    jump_host_setup:
+                        label: 'Jump Host Setup'
+                        placeholder: 'Example: "Two jump hosts (hardened Linux) in DMZ-Admin; access via VPN + MFA + PAM token; session recording 90 days."'
+                    break_glass_process:
+                        label: 'Break-Glass Process'
+                        placeholder: 'Example: "Sealed envelope in data-centre safe at sites A and B; use requires ISB approval; post-audit within 72 hours."'
+
+        patch_change_management_directive:
+            v1:
+                title: 'Patch and Change Management Directive'
+                body: |-
+                    # Patch and Change Management Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: OPS.1.1.3.A1 (concept), A2 (responsibilities), A3 (configuration management), A4 (inventory), A5 (synchronisation), A6 (safeguards) | Standard: A8–A14 (test, escalation, backout) | Edition: {{ bsi.kompendium_edition }} | Review: annual*
+
+                    ## 1. Purpose
+                    This directive governs patch management (remediation of known vulnerabilities) and change management (planned changes) at {{ tenant.legal_name }}. It protects against known attack vectors and ensures orderly, traceable changes.
+
+                    ## 2. Scope
+                    Covers all IT systems in the information network, including servers, clients, network components, cloud services, ICS/OT (with special provisions), applications and libraries.
+
+                    ## 3. Inventory and Configuration Management (OPS.1.1.3.A3, A4)
+                    All IT systems are inventoried in a CMDB; configuration baseline and patch status are documented per system.
+
+                    ## 4. Patch SLAs by Criticality
+                    BSI-recommended SLAs (CVSS / BSI warning levels):
+
+                    | Criticality | SLA |
+                    |---|---|
+                    | Critical (CVSS 9-10 or BSI warning level 4) | 24-72 hours |
+                    | High (CVSS 7-8.9) | 7 days |
+                    | Medium (CVSS 4-6.9) | 30 days |
+                    | Low (CVSS 0-3.9) | 90 days |
+
+                    For actively exploited vulnerabilities (zero-day, BSI threat advisory) shortened SLAs apply.
+
+                    ## 5. Test Environment
+                    Patches and changes are verified in a dedicated test environment before production rollout. For critical emergency patches, after risk assessment direct production patching may be performed; corresponding logging and a backout plan are mandatory.
+
+                    ## 6. Change Advisory Board (CAB)
+                    Changes are classified:
+
+                    - **Standard change** (pre-approved, low risk): direct implementation with documentation;
+                    - **Normal change** (regular): CAB approval with risk analysis and backout plan;
+                    - **Emergency change** (avoid critical impact): expedited procedure with post-approval.
+
+                    ## 7. Backout Plan
+                    Each change includes a documented backout plan; backout is verified in test.
+
+                    ## 8. Out-of-Cycle Patches
+                    For actively exploited vulnerabilities out-of-cycle patching is performed in shortened time. Escalation to the ISB {{ roles.isb.fullName }} and the IS Management Team.
+
+                    ## 9. End-of-Life Management
+                    Systems approaching EoL are identified early (12-month lead time), migration plans are prepared; systems operated beyond EoL receive compensating measures (network segmentation, restrictive firewall, monitoring) and are entered in the risk register.
+
+                    ## 10. Reporting
+                    The ISB receives a monthly patch-status report; critical findings are reported ad hoc. Cross-reference management review.
+
+                    ## 11. ICS/OT Special Cases
+                    For ICS/OT systems (cross-reference IND layer), patches are applied during operationally tolerable maintenance windows; virtual patches (IDS/IPS rules) are used where direct patching is not possible.
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 8.8 (vulnerability mgmt), § 8.32 (change mgmt), § 8.9 (configuration mgmt). Approval per: {{ approval.chain }}.*
+                section:
+                    inventory:
+                        title: 'Inventory / Configuration'
+                        body: |-
+                            CMDB with configuration baseline and patch status (OPS.1.1.3.A3, A4).
+                    patch_slas:
+                        title: 'Patch SLAs'
+                        body: |-
+                            Critical 24-72 h, high 7 d, medium 30 d, low 90 d (BSI guidance).
+                    test_env:
+                        title: 'Test Environment'
+                        body: |-
+                            Before production rollout; emergency direct-patch only with logging and backout.
+                    cab:
+                        title: 'Change Advisory Board'
+                        body: |-
+                            Standard / normal / emergency change.
+                    backout:
+                        title: 'Backout Plan'
+                        body: |-
+                            Mandatory per change, verified in test.
+                    emergency:
+                        title: 'Out-of-Cycle Patches'
+                        body: |-
+                            For active exploitation, shortened SLA + escalation to ISB.
+                    eol:
+                        title: 'EoL Management'
+                        body: |-
+                            12-month lead time, migration, compensating measures beyond EoL.
+                    reporting:
+                        title: 'Reporting'
+                        body: |-
+                            Monthly patch report to ISB; critical findings ad hoc.
+                    ics_ot:
+                        title: 'ICS/OT'
+                        body: |-
+                            Maintenance windows + virtual patches (IDS/IPS) where direct not possible.
+                tailoring_field:
+                    cab_composition:
+                        label: 'CAB Composition'
+                        placeholder: 'Example: "CAB meets Wednesdays 14:00; members: Head of IT (chair), ISB, application owner, network architect; quorum 3."'
+                    test_environment:
+                        label: 'Test Environment Setup'
+                        placeholder: 'Example: "Mirror of production at 70 percent scale; data pseudonymised via tool XY; restore from snapshot within 30 minutes."'
+                    eol_systems:
+                        label: 'EoL Systems'
+                        placeholder: 'Example: "Win 2012 R2 residual on 8 servers migrated by Q3 2026; interim measures: separate VLAN, restrictive firewall, NDR monitoring."'
+
+        malware_protection_directive:
+            v1:
+                title: 'Malware Protection Directive'
+                body: |-
+                    # Malware Protection Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: OPS.1.1.4.A1 (malware concept), A2 (selection), A3 (product), A4 (updates), A5 (system-specific mechanisms), A6 (awareness), A7 (notification) | Edition: {{ bsi.kompendium_edition }} | Review: annual*
+
+                    ## 1. Purpose
+                    This directive governs protection of IT systems of {{ tenant.legal_name }} against malware (ransomware, spyware, cryptominers). It integrates technical, organisational and personnel measures.
+
+                    ## 2. Scope
+                    Covers all endpoints, servers, mobile devices, e-mail gateways and web proxies. ICS/OT receive special provisions (cross-reference IND layer).
+
+                    ## 3. Coverage on All Endpoints and Servers (OPS.1.1.4.A2, A3)
+                    Mandatory:
+
+                    - anti-malware solution with signature- and behaviour-based detection (EDR);
+                    - real-time protection active;
+                    - mail gateway filtering (attachments, links, SPF/DKIM/DMARC);
+                    - web proxy with URL filtering and SSL inspection (data-protection-compliant).
+
+                    ## 4. Signature Update Frequency (OPS.1.1.4.A4)
+                    - signature updates at least daily, preferably multiple times daily;
+                    - engine updates monthly or per vendor recommendation;
+                    - cloud-reputation lookup activated.
+
+                    ## 5. Employee Conduct (OPS.1.1.4.A6)
+                    On suspected infection:
+
+                    - do **NOT** power off the device (memory forensics);
+                    - disconnect from the network (unplug cable or disable Wi-Fi);
+                    - immediate notification of service desk / ISB {{ roles.isb.fullName }};
+                    - no self-administered recovery attempts.
+
+                    ## 6. Central Reporting / SIEM Integration
+                    All anti-malware events are centrally collected and ingested into the SIEM (cross-reference OPS.1.1.5, DER.1).
+
+                    ## 7. Restoration After Infection
+                    Affected systems are isolated; forensics per DER.2.2; recovery from verified backup; lessons learned documented.
+
+                    ## 8. Special Cases
+                    - **Air-gapped systems:** USB sticks scanned by sluice PC before connection; whitelisting preferred;
+                    - **ICS/OT:** whitelisting instead of traditional AV; patching strategy aligned with maintenance windows (cross-reference OPS.1.1.3);
+                    - **Ransomware resilience:** immutable backups, network segmentation, privileged-access management (cross-reference CON.3, ORP.4).
+
+                    ## 9. Ransomware Emergency Plan
+                    In a ransomware case the incident-response plan applies (cross-reference DER.2.1) with special provisions: isolation of affected subnets, activation of the crisis team (cross-reference DER.4), check for data exfiltration, communication with BSI-CERT.
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 8.7. Approval per: {{ approval.chain }}.*
+                section:
+                    coverage:
+                        title: 'Coverage'
+                        body: |-
+                            All endpoints, servers, mobile, mail gateway, web proxy (OPS.1.1.4.A2, A3).
+                    updates:
+                        title: 'Updates'
+                        body: |-
+                            Signatures at least daily; cloud reputation active (OPS.1.1.4.A4).
+                    user_behaviour:
+                        title: 'Employee Conduct'
+                        body: |-
+                            Do not power off, disconnect network, notify service desk, no self-recovery (OPS.1.1.4.A6).
+                    siem:
+                        title: 'Reporting / SIEM'
+                        body: |-
+                            Central collection; SIEM integration (cross-reference OPS.1.1.5, DER.1).
+                    restore:
+                        title: 'Restoration'
+                        body: |-
+                            Isolation, forensics, restore from backup, lessons learned.
+                    special_cases:
+                        title: 'Special Cases'
+                        body: |-
+                            Air-gapped (USB scan), ICS/OT (whitelisting), ransomware resilience (immutable backups).
+                    ransomware:
+                        title: 'Ransomware Emergency'
+                        body: |-
+                            Incident response (DER.2.1) + crisis team (DER.4) + BSI-CERT.
+                tailoring_field:
+                    edr_solution:
+                        label: 'EDR Solution'
+                        placeholder: 'Example: "CrowdStrike Falcon on 100 percent of endpoints; SOC 24/7 alert handling; annual external threat hunt."'
+                    mail_gateway:
+                        label: 'Mail Gateway Setup'
+                        placeholder: 'Example: "Microsoft Defender for O365 with Safe Attachments and Safe Links; SPF, DKIM, DMARC reject; quarterly phishing test."'
+                    ot_strategy:
+                        label: 'ICS/OT Strategy'
+                        placeholder: 'Example: "Whitelisting via tool XY on SCADA HMIs; AV disabled; semi-annual maintenance window; segregated industrial network."'
+
+        logging_directive:
+            v1:
+                title: 'Logging Directive'
+                body: |-
+                    # Logging Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: OPS.1.1.5.A1 (concept), A2 (configuration), A3 (retention), A4 (data protection) | Standard: A5–A10 (evaluation, alerting, archiving) | Edition: {{ bsi.kompendium_edition }} | Review: annual*
+
+                    ## 1. Purpose
+                    This directive governs the logging of security-relevant events in IT systems of {{ tenant.legal_name }}. It provides traceability, enables detection and supports forensic analysis.
+
+                    ## 2. Scope
+                    Covers all IT systems in the information network, including servers, applications, databases, network components, cloud services, security systems (firewall, IDS, EDR) and identity providers.
+
+                    ## 3. Logging Scope (OPS.1.1.5.A1)
+                    At minimum the following are logged:
+
+                    - authentication attempts (success/failure);
+                    - privilege escalations (sudo, run-as, role activation);
+                    - access to confidential data;
+                    - security violations (policy violations, anti-malware detections);
+                    - administrative actions (cross-reference OPS.1.1.2);
+                    - changes to configurations, authorisations, systems;
+                    - anomalies (e.g. unexpected connections, data exfiltration).
+
+                    ## 4. Log Format (OPS.1.1.5.A2)
+                    Structured formats are preferred: CEF, Syslog (RFC 5424), JSON. Cross-platform consistency is ensured through field-name and severity-level conventions.
+
+                    ## 5. Central Collection (SIEM)
+                    All logs are ingested into the central SIEM (cross-reference DER.1). The SIEM correlates events, generates alerts and supports forensic analysis.
+
+                    ## 6. Retention Periods (OPS.1.1.5.A3)
+                    Retention follows statutory, contractual and operational requirements:
+
+                    - at least 30 days for routine logs;
+                    - 12 months for critical-infrastructure components per BSIG practice;
+                    - longer periods for forensics-relevant logs (regulatory up to 10 years).
+
+                    ## 7. Log Protection
+                    - integrity through cryptographic hash chaining or WORM storage;
+                    - access protection: ISB / SOC team only;
+                    - separation of logs from source systems (write-once, append-only);
+                    - encryption in transit (TLS) and at rest.
+
+                    ## 8. Evaluation (OPS.1.1.5.A5–A8)
+                    - automated evaluation in the SIEM (use cases per Detection Directive DER.1);
+                    - manual sampling by ISB / SOC team;
+                    - special reviews after incidents (cross-reference DER.2.1).
+
+                    ## 9. Data-Protection Compliance (OPS.1.1.5.A4)
+                    - works/personnel-council co-determination;
+                    - DPIA for behaviour analytics / UEBA;
+                    - documented purpose limitation; minimised access; pseudonymisation where possible.
+
+                    ## 10. Alerting
+                    SIEM alerts are classified (P1–P4) and forwarded to the responsible function (SOC, ISB, IT operations). Escalation to crisis team at P1.
+
+                    ## 11. Time Synchronisation (NTP)
+                    All IT systems synchronise their clocks via authorised NTP sources (BSI guidance: NTP server PTB.de or comparable). Correct timestamps are a prerequisite for forensic analysis.
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 8.15 (logging), § 8.16 (monitoring), § 8.17 (clock synchronisation). Approval per: {{ approval.chain }}.*
+                section:
+                    scope_logs:
+                        title: 'Logging Scope'
+                        body: |-
+                            Auth, privilege escalation, confidential-data access, security violations, admin, config changes, anomalies.
+                    format:
+                        title: 'Log Format'
+                        body: |-
+                            CEF / Syslog (RFC 5424) / JSON; cross-platform consistency.
+                    central_siem:
+                        title: 'SIEM'
+                        body: |-
+                            Central collection; correlation; alerting (cross-reference DER.1).
+                    retention:
+                        title: 'Retention Periods'
+                        body: |-
+                            Min. 30 days, 12 months for critical-infrastructure, forensics up to 10 years.
+                    protection:
+                        title: 'Log Protection'
+                        body: |-
+                            Integrity (hash chain / WORM); access protection; encryption.
+                    evaluation:
+                        title: 'Evaluation'
+                        body: |-
+                            Automated SIEM use cases + manual sampling + post-incident reviews.
+                    privacy:
+                        title: 'Data Protection'
+                        body: |-
+                            Co-determination, DPIA for UEBA, purpose limitation, pseudonymisation (OPS.1.1.5.A4).
+                    alerting:
+                        title: 'Alerting'
+                        body: |-
+                            SIEM alerts P1–P4; escalation to crisis team at P1.
+                    ntp:
+                        title: 'Time Synchronisation'
+                        body: |-
+                            NTP sources (PTB.de or comparable) on all systems.
+                tailoring_field:
+                    siem_solution:
+                        label: 'SIEM Solution'
+                        placeholder: 'Example: "Splunk Enterprise Security with 12 months hot storage and 36 months cold; volume approx. 800 GB/day; correlation use cases per DER.1."'
+                    works_council:
+                        label: 'Co-Determination'
+                        placeholder: 'Example: "Logging works agreement of 15 March 2025 with works council; UEBA not active; personal data only at incident forensics with DPO release."'
+                    ntp_sources:
+                        label: 'NTP Sources'
+                        placeholder: 'Example: "Primary ptbtime1.ptb.de (PTB Braunschweig), backup ptbtime2.ptb.de; internal stratum-2 servers in both data centres; max time deviation 100 ms."'
+
+        software_test_release_directive:
+            v1:
+                title: 'Software Test and Release Directive'
+                body: |-
+                    # Software Test and Release Directive of {{ tenant.legal_name }}
+
+                    *Normative anchor: BSI 200-2 | Building blocks: OPS.1.1.6.A1 (test concept), A2 (functional-change tests), A3 (evaluation), A4 (release procedure) | Edition: {{ bsi.kompendium_edition }} | Review: annual*
+
+                    ## 1. Purpose
+                    This directive governs the testing and release of software prior to production deployment at {{ tenant.legal_name }}. It complements the Software Development Directive (cross-reference CON.8) with quality-assurance and release requirements.
+
+                    ## 2. Scope
+                    Covers all software changes (in-house development, patches, customisation) and the procurement of third-party products before production deployment.
+
+                    ## 3. Test Obligation Before Production (OPS.1.1.6.A2)
+                    Every functional change requires test verification. Tests include:
+
+                    - functional tests (against requirements specification);
+                    - regression tests (existing functionality remains intact);
+                    - security tests (SAST/DAST per CON.8);
+                    - load tests (for performance-relevant changes);
+                    - acceptance tests by functional owners.
+
+                    ## 4. Test Environment
+                    Test environments are separated from production; data are anonymised / synthetic (cross-reference CON.2 data protection). For data-protection-relevant changes a data-protection review is performed.
+
+                    ## 5. Test Data
+                    Real data in tests are permissible only exceptionally and with documented justification and additional safeguards. Standard is pseudonymisation or synthetic data.
+
+                    ## 6. Evaluation of Test Results (OPS.1.1.6.A3)
+                    Test results are evaluated:
+
+                    - pass / fail per test case;
+                    - known defects with risk categorisation;
+                    - accepted / not accepted with justification;
+                    - residual risks recorded in the risk register.
+
+                    ## 7. Release Procedure (OPS.1.1.6.A4)
+                    Release is granted by:
+
+                    - functional owner (functional acceptance);
+                    - IT operations (operational acceptance);
+                    - ISB representative for security-relevant changes.
+
+                    Releases are documented (date, person, version, change scope).
+
+                    ## 8. Documentation
+                    Test cases, results and residual risks are stored. Cross-reference audit requirements (cross-reference OPS.1.1.5 logging).
+
+                    ---
+                    *Cross-reference ISO/IEC 27002:2022 § 8.29 (security testing), § 8.31 (separation of dev/test/prod). Approval per: {{ approval.chain }}.*
+                section:
+                    test_obligation:
+                        title: 'Test Obligation'
+                        body: |-
+                            Functional / regression / security / load / acceptance (OPS.1.1.6.A2).
+                    test_environment:
+                        title: 'Test Environment'
+                        body: |-
+                            Separation of dev/test/prod; anonymised / synthetic data.
+                    test_data:
+                        title: 'Test Data'
+                        body: |-
+                            Pseudonymisation / synthetic data as standard; real data only with justification and additional safeguards.
+                    evaluation:
+                        title: 'Evaluation'
+                        body: |-
+                            Pass/fail, defect risk, acceptance, residual risk recording (OPS.1.1.6.A3).
+                    release:
+                        title: 'Release Procedure'
+                        body: |-
+                            Functional owner + IT operations + ISB for security-relevant changes (OPS.1.1.6.A4).
+                    documentation:
+                        title: 'Documentation'
+                        body: |-
+                            Test cases, results, residual risks stored; audit trail.
+                tailoring_field:
+                    test_levels:
+                        label: 'Test Levels per Change Type'
+                        placeholder: 'Example: "Standard patches: functional + regression; major release: additionally load + pentest; data-protection-relevant changes with light DPIA."'
+                    release_workflow:
+                        label: 'Release Workflow'
+                        placeholder: 'Example: "Release PR with four approvers: product owner, IT operations, ISB, where applicable DPO; release in Confluence page with electronic signature."'
+                    test_data_management:
+                        label: 'Test-Data Management'
+                        placeholder: 'Example: "Pseudonymisation via tool XY with consistent key mapping; refresh quarterly; access to test data with MFA."'
