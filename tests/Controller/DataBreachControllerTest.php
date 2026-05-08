@@ -7,7 +7,6 @@ namespace App\Tests\Controller;
 use App\Entity\DataBreach;
 use App\Entity\Tenant;
 use App\Entity\User;
-use App\Service\ModuleConfigurationService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -40,13 +39,22 @@ class DataBreachControllerTest extends WebTestCase
     {
         $this->client = static::createClient();
         $this->client->disableReboot();
-        $container = static::getContainer();
-        $this->entityManager = $container->get(EntityManagerInterface::class);
 
-        // Ensure 'privacy' module is reported as active during tests
-        $moduleService = $this->createMock(ModuleConfigurationService::class);
-        $moduleService->method('isModuleActive')->willReturn(true);
-        $container->set(ModuleConfigurationService::class, $moduleService);
+        $container = static::getContainer();
+
+        $moduleService = $this->createMock(\App\Service\ModuleConfigurationService::class);
+        $moduleService->method('isModuleActive')->willReturnCallback(
+            fn(string $key) => in_array($key, [
+                'core', 'authentication', 'assets', 'risks', 'controls',
+                'incidents', 'audits', 'training', 'reviews', 'bcm',
+                'compliance', 'audit_logging', 'privacy', 'nis2_dora',
+                'ai_governance', 'cloud_security', 'vulnerability_intel',
+                'marisk', 'tisax', 'quantitative_risk',
+            ], true)
+        );
+        $container->set(\App\Service\ModuleConfigurationService::class, $moduleService);
+
+        $this->entityManager = $container->get(EntityManagerInterface::class);
 
         $this->createTestData();
     }
