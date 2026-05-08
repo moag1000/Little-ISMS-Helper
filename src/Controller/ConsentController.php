@@ -7,7 +7,9 @@ namespace App\Controller;
 use App\Entity\Consent;
 use App\Entity\User;
 use App\Form\ConsentType;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Repository\ConsentRepository;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,18 +24,22 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route('/consent', requirements: ['_locale' => 'de|en'])]
 class ConsentController extends AbstractController
 {
+    use ModuleGatedControllerTrait;
+
     public function __construct(
         private readonly ConsentRepository $consentRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
         private readonly Security $security,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly ModuleConfigurationService $moduleService,
     ) {}
 
     #[Route('/', name: 'app_consent_index')]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
         $tenant = $this->tenantContext->getCurrentTenant();
 
         // Get filter parameters
@@ -86,6 +92,7 @@ class ConsentController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
         $consent = new Consent();
         $tenant = $this->tenantContext->getCurrentTenant();
 
@@ -133,6 +140,7 @@ class ConsentController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function show(Consent $consent): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
         return $this->render('consent/show.html.twig', [
             'consent' => $consent,
         ]);
@@ -142,6 +150,7 @@ class ConsentController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Consent $consent): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
         // Only allow editing if pending or active
         if (!in_array($consent->getStatus(), ['pending_verification', 'active'], true)) {
             $this->addFlash('error', $this->translator->trans('consent.error.cannot_edit_status', [], 'consent'));
@@ -170,6 +179,7 @@ class ConsentController extends AbstractController
     #[IsGranted('ROLE_DPO')]
     public function verify(Request $request, Consent $consent): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
         if (!$this->isCsrfTokenValid('verify' . $consent->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('consent.error.invalid_token', [], 'consent'));
             return $this->redirectToRoute('app_consent_show', ['id' => $consent->getId()]);
@@ -201,6 +211,7 @@ class ConsentController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function revoke(Request $request, Consent $consent): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
         if (!$this->isCsrfTokenValid('revoke' . $consent->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('consent.error.invalid_token', [], 'consent'));
             return $this->redirectToRoute('app_consent_show', ['id' => $consent->getId()]);
@@ -251,6 +262,7 @@ class ConsentController extends AbstractController
     #[IsGranted('ROLE_DPO')]
     public function delete(Request $request, Consent $consent): Response
     {
+        if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
         if (!$this->isCsrfTokenValid('delete' . $consent->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('consent.error.invalid_token', [], 'consent'));
             return $this->redirectToRoute('app_consent_show', ['id' => $consent->getId()]);
