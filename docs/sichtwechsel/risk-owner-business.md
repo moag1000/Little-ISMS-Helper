@@ -14,7 +14,7 @@
 
 Eigene KPIs gefiltert auf Bereich. Offene Tasks, eigene Top-Risiken, anstehende Freigaben.
 
-![Risk-Owner-Dashboard](img/risk-owner-business/dashboard.png)
+![Risk-Owner-Dashboard](img/isb-practitioner/dashboard.png)
 
 > *"Ich hab 5 Minuten — was muss ich wissen?"*
 
@@ -26,7 +26,7 @@ Kein Klausel-Wortlaut. Kein Field-Level-Detail. Eine Aufgabe, eine Entscheidung 
 
 "Das musst DU jetzt tun." Mit Frist, Direktlink, Business-Kontext.
 
-![Workflows-Inbox](img/risk-owner-business/my-workflows.png)
+![Workflows-Inbox](img/risk-owner-business/workflows-inbox.png)
 
 Workflow-System löst Approvals event-driven aus — sobald die ISB die Daten ausgefüllt hat, landet die Risk-Owner-Freigabe automatisch hier (siehe [Workflow-Auto-Progression](../WORKFLOW_AUTO_PROGRESSION.md)).
 
@@ -36,7 +36,7 @@ Workflow-System löst Approvals event-driven aus — sobald die ISB die Daten au
 
 Filterbar auf "meine Risiken" — Risiken im eigenen Geschäftsbereich, ich als Risk-Owner zugewiesen.
 
-![Eigene Risiken](img/risk-owner-business/my-risks.png)
+![Eigene Risiken](img/isb-practitioner/risk-register.png)
 
 > *"Was passiert wenn ich 'ablehne'? Mein ISB kümmert sich drum, warum bin ich hier?"*
 
@@ -68,7 +68,7 @@ Eigener Notfallplan abrufbar mit einem Klick. Wenn ich Bereitschaft habe und um 
 
 Was ist mit den Risiken aus meinem Bereich entschieden worden? Welche Massnahmen laufen, wer verantwortet, bis wann?
 
-![Risikobehandlungsplan](img/risk-owner-business/risk-treatment-plan.png)
+![Risikobehandlungsplan](img/isb-practitioner/risk-treatment-plan.png)
 
 Verfolgung als Risk-Owner: keine paralleles Excel mit Fristen, sondern direkt im Tool mit Ampel-Status und Owner.
 

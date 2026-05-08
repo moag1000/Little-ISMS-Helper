@@ -24,7 +24,7 @@ Zugang über `ROLE_AUDITOR` — ein dedizierter Read-Only-Modus mit Audit-Freeze
 
 Statement of Applicability zum Audit-Stichtag eingefroren. PDF-Export mit Versionsstand und SHA256-Prüfsumme.
 
-![SoA-Snapshot](img/auditor-external/soa-snapshot.png)
+![SoA-Snapshot](img/isb-practitioner/soa.png)
 
 > *"Bitte zeigen Sie mir Evidence zu Control A.5.1 für den Zeitraum Q1–Q3."*
 
@@ -58,7 +58,7 @@ Stichprobenfähig, exportierbar als PDF mit Audit-Trail-Signatur.
 
 Inputs/Outputs strukturiert nach ISO-27001-Klausel 9.3 — Performance-Indikatoren, Audit-Ergebnisse, Risikoänderungen, Verbesserungsvorschläge, Beschlüsse.
 
-![Management-Review](img/auditor-external/management-review.png)
+![Management-Review](img/isb-practitioner/management-review.png)
 
 > *"Wo ist der Nachweis, dass die Managementbewertung gemäß 9.3 stattfand?"*
 
@@ -70,7 +70,7 @@ Verknüpfung mit Beschlüssen-Tracking — wenn ein Beschluss "Maßnahme bis Q3"
 
 Wirksamkeitsmessung pro Control über Zeit. Klausel 9.1 (Überwachung, Messung, Analyse, Bewertung).
 
-![Control-Effectiveness](img/auditor-external/control-effectiveness.png)
+![Control-Effectiveness](img/isb-practitioner/control-effectiveness.png)
 
 > *"Wie messen Sie die Wirksamkeit dieses Controls?"*
 
