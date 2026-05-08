@@ -222,6 +222,10 @@ class TenantSettingResolver
 
     private function mergeFloor(mixed $chainValue, mixed $childValue): mixed
     {
+        // No parent enforcement → child wins.
+        if ($chainValue === null) {
+            return $childValue;
+        }
         if (is_bool($chainValue) || is_bool($childValue)) {
             $chainBool = (bool) $chainValue;
             $childBool = (bool) $childValue;
@@ -235,6 +239,10 @@ class TenantSettingResolver
 
     private function mergeCeiling(mixed $chainValue, mixed $childValue): mixed
     {
+        // No parent enforcement → child wins.
+        if ($chainValue === null) {
+            return $childValue;
+        }
         if (is_bool($chainValue) || is_bool($childValue)) {
             $chainBool = (bool) $chainValue;
             $childBool = (bool) $childValue;

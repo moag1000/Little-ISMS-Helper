@@ -1,0 +1,31 @@
+{% trans_default_domain 'policy_wizard' %}
+{% set review_default = defaults.default_review_interval_months|default(12) %}
+{% set approver_default = defaults.designated_approver|default('') %}
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label" for="lifecycle-review-interval">{{ 'policy_wizard.step.lifecycle.review_interval_label'|trans }}</label>
+        <input type="number"
+               class="form-control"
+               id="lifecycle-review-interval"
+               name="default_review_interval_months"
+               min="1"
+               max="24"
+               value="{{ review_default }}"
+               required>
+        <div class="form-text">{{ 'policy_wizard.step.lifecycle.review_interval_help'|trans }}</div>
+        {% if review_default > 24 %}
+            <div class="invalid-feedback d-block">{{ 'policy_wizard.error.review_interval_max'|trans }}</div>
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="lifecycle-approver">{{ 'policy_wizard.step.lifecycle.approver_label'|trans }}</label>
+        <select class="form-select" id="lifecycle-approver" name="designated_approver">
+            <option value="">—</option>
+            {% for role in ['ROLE_CISO', 'ROLE_TOP_MGMT', 'ROLE_ADMIN'] %}
+                <option value="{{ role }}" {% if approver_default == role %}selected{% endif %}>{{ role }}</option>
+            {% endfor %}
+        </select>
+        <div class="form-text">{{ 'policy_wizard.step.lifecycle.approver_help'|trans }}</div>
+    </div>
+</div>

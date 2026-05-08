@@ -1,0 +1,44 @@
+{% trans_default_domain 'policy_wizard' %}
+{% set patch_default = defaults.patch_cadence_days|default(30) %}
+{% set log_default = defaults.log_retention_days|default(90) %}
+{% set backup_default = defaults.backup_frequency|default('daily') %}
+{% set awareness_default = defaults.awareness_frequency|default('annual') %}
+
+<div class="row g-3">
+    <div class="col-md-3">
+        <label class="form-label" for="patch-cadence">{{ 'policy_wizard.step.operational_baselines.patch_cadence_label'|trans }}</label>
+        <input type="number"
+               class="form-control"
+               id="patch-cadence"
+               name="patch_cadence_days"
+               min="1"
+               max="365"
+               value="{{ patch_default }}">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="log-retention">{{ 'policy_wizard.step.operational_baselines.log_retention_label'|trans }}</label>
+        <input type="number"
+               class="form-control"
+               id="log-retention"
+               name="log_retention_days"
+               min="1"
+               max="3650"
+               value="{{ log_default }}">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="backup-frequency">{{ 'policy_wizard.step.operational_baselines.backup_frequency_label'|trans }}</label>
+        <select class="form-select" id="backup-frequency" name="backup_frequency">
+            {% for opt in ['hourly', 'daily', 'weekly', 'monthly'] %}
+                <option value="{{ opt }}" {% if backup_default == opt %}selected{% endif %}>{{ opt|capitalize }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="awareness-frequency">{{ 'policy_wizard.step.operational_baselines.awareness_frequency_label'|trans }}</label>
+        <select class="form-select" id="awareness-frequency" name="awareness_frequency">
+            {% for opt in ['quarterly', 'semi_annual', 'annual'] %}
+                <option value="{{ opt }}" {% if awareness_default == opt %}selected{% endif %}>{{ opt|replace({'_': ' '})|capitalize }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>

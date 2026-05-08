@@ -1,0 +1,45 @@
+{% trans_default_domain 'policy_wizard' %}
+{% set selected_standards = defaults.standards|default(standards|default([])) %}
+{% set finding_default = defaults.finding_reference|default(run.findingReference) %}
+{% set selected_mode = defaults.mode|default(run.mode) %}
+
+<div class="row g-3">
+    <div class="col-md-8">
+        <fieldset class="mb-3">
+            <legend class="h6">{{ 'policy_wizard.step.welcome.subtitle'|trans }}</legend>
+            <div class="form-text mb-2">
+                {{ 'policy_wizard.message.generate_preview'|trans({'%count%': (selected_standards|length * 4)}) }}
+            </div>
+
+            {% for code in ['iso27001', 'bsi', 'dora', 'gdpr', 'bcm', 'iso27701'] %}
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="standard-{{ code }}"
+                           name="standards[]"
+                           value="{{ code }}"
+                           {% if code in selected_standards %}checked{% endif %}>
+                    <label class="form-check-label" for="standard-{{ code }}">
+                        {{ ('policy_wizard.step.welcome.standard.' ~ code)|trans }}
+                    </label>
+                </div>
+            {% endfor %}
+        </fieldset>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label class="form-label" for="finding-reference">
+                {{ 'policy_wizard.step.welcome.finding_reference_label'|trans }}
+            </label>
+            <input type="text"
+                   class="form-control"
+                   id="finding-reference"
+                   name="finding_reference"
+                   maxlength="100"
+                   value="{{ finding_default|default('') }}">
+            <div class="form-text">{{ 'policy_wizard.step.welcome.finding_reference_help'|trans }}</div>
+        </div>
+
+        <input type="hidden" name="mode" value="{{ selected_mode }}">
+    </div>
+</div>

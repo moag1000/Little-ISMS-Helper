@@ -1,0 +1,55 @@
+{% trans_default_domain 'policy_wizard' %}
+{% set legal_default = defaults.legal_name|default('') %}
+{% set scope_default = defaults.scope_statement|default('') %}
+{% set address_default = defaults.primary_address|default('') %}
+{% set sites_default = defaults.site_ids|default([]) %}
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label class="form-label" for="legal-name">{{ 'policy_wizard.step.organisation_scope.legal_name_label'|trans }}</label>
+        <input type="text"
+               class="form-control"
+               id="legal-name"
+               name="legal_name"
+               maxlength="191"
+               value="{{ legal_default }}"
+               required>
+        <div class="form-text">{{ 'policy_wizard.step.organisation_scope.legal_name_help'|trans }}</div>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="primary-address">{{ 'policy_wizard.step.organisation_scope.primary_address_label'|trans }}</label>
+        <input type="text"
+               class="form-control"
+               id="primary-address"
+               name="primary_address"
+               value="{{ address_default }}">
+    </div>
+    <div class="col-12">
+        <label class="form-label" for="scope-statement">{{ 'policy_wizard.step.organisation_scope.scope_statement_label'|trans }}</label>
+        <textarea class="form-control"
+                  id="scope-statement"
+                  name="scope_statement"
+                  rows="4"
+                  minlength="30"
+                  required>{{ scope_default }}</textarea>
+        <div class="form-text">{{ 'policy_wizard.step.organisation_scope.scope_statement_help'|trans }}</div>
+    </div>
+    <div class="col-12">
+        <label class="form-label" for="site-ids">{{ 'policy_wizard.step.organisation_scope.sites_label'|trans }}</label>
+        <input type="text"
+               class="form-control"
+               id="site-ids"
+               name="site_ids_csv"
+               value="{{ sites_default|join(',') }}">
+        <div class="form-text">{{ 'policy_wizard.step.organisation_scope.sites_help'|trans }}</div>
+        {# Repeat hidden array fields for each parsed id so the controller receives the array form #}
+        {% for sid in sites_default %}
+            <input type="hidden" name="site_ids[]" value="{{ sid }}">
+        {% endfor %}
+    </div>
+    <div class="col-12">
+        <p class="small text-muted mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i>
+            {{ 'policy_wizard.step.organisation_scope.climate_note'|trans }}
+        </p>
+    </div>
+</div>
