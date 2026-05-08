@@ -92,10 +92,32 @@ class SchemaExceptionSubscriber implements EventSubscriberInterface
         // doesn't loop.
         $alreadyTried = $request->query->getBoolean('_schema_autofixed');
         $additiveOnly = $destructive === [];
-        if ($additiveOnly && !$alreadyTried) {
+        if (!$alreadyTried) {
             try {
-                $result = $this->maintenance->reconcileSchema('auto-fix-on-error');
-                if (($result['success'] ?? false) && (int) ($result['executed'] ?? 0) > 0) {
+                $totalApplied = 0;
+
+                // Step 1: run pending Doctrine migrations first. reconcileSchema
+                // gates itself when pending migrations exist, so we MUST drain
+                // them before reconcile can patch any residual entity-vs-DB
+                // drift.
+                if ($pending > 0) {
+                    $migResult = $this->maintenance->executePendingMigrations('auto-fix-on-error');
+                    if ($migResult['success'] ?? false) {
+                        $totalApplied += (int) ($migResult['executed'] ?? 0);
+                    }
+                }
+
+                // Step 2: reconcile additive-only drift (ALTER TABLE ADD …).
+                // Skipped when destructive drift exists — those need manual
+                // review via Quick-Fix UI.
+                if ($additiveOnly) {
+                    $recResult = $this->maintenance->reconcileSchema('auto-fix-on-error');
+                    if ($recResult['success'] ?? false) {
+                        $totalApplied += (int) ($recResult['executed'] ?? 0);
+                    }
+                }
+
+                if ($totalApplied > 0) {
                     $retry = $request->getRequestUri();
                     $sep = str_contains($retry, '?') ? '&' : '?';
                     $event->setResponse(new RedirectResponse($retry . $sep . '_schema_autofixed=1'));
