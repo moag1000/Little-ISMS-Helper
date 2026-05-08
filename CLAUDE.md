@@ -70,6 +70,7 @@ php bin/console lint:twig templates/  # validate all templates
 - `TenantContext` - Multi-tenant scoping
 - `WorkflowService` - Workflow instance management
 - `WorkflowAutoProgressionService` - Event-driven workflow progression
+- `ModuleConfigurationService` - Module activation check (per tenant)
 
 **Core Entities:** Asset, Risk, Control (93 ISO 27001 controls), Incident, Document, ComplianceFramework, User, Tenant, Role, Permission, Workflow, WorkflowInstance, WorkflowStep, DataBreach
 
@@ -211,6 +212,57 @@ $dataBreach->setNotificationRequired(true);
 **Documentation:**
 - `docs/WORKFLOW_REQUIREMENTS.md` - Regulatory requirements and SLAs
 - `docs/WORKFLOW_AUTO_PROGRESSION.md` - Complete auto-progression guide
+
+## Module-Awareness
+
+**Every feature that relates to an optional compliance framework MUST be module-gated.**
+Do not add DORA fields to forms without `nis2_dora` gate, do not add GDPR fields without
+`privacy` gate, etc.
+
+Full reference: [`docs/MODULE_GATING_GUIDE.md`](docs/MODULE_GATING_GUIDE.md)
+
+**Key artifacts:**
+- `config/modules.yaml` — 21 module keys + metadata
+- `config/active_modules.yaml` — per-tenant activation overrides
+- `src/Form/Trait/ModuleAwareFormTrait.php` — FormType helper (`isModuleActive()`)
+- `src/Controller/Trait/ModuleGatedControllerTrait.php` — Controller helper (`checkModuleActive()`)
+- `is_module_active('key')` — Twig global function
+
+**Quick pattern (FormType):**
+```php
+use App\Form\Trait\ModuleAwareFormTrait;
+
+class MyType extends AbstractType {
+    use ModuleAwareFormTrait;
+    public function __construct(
+        private readonly ModuleConfigurationService $moduleConfiguration,
+    ) {}
+
+    public function buildForm(FormBuilderInterface $builder, array $options): void {
+        // Always-visible fields...
+        if ($this->isModuleActive('privacy')) {
+            $builder->add('gdprField', ...); // GDPR Art. X — add norm ref here
+        }
+    }
+}
+```
+
+**Quick pattern (Controller):**
+```php
+use App\Controller\Trait\ModuleGatedControllerTrait;
+// ...
+if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+```
+
+**Quick pattern (Twig):**
+```twig
+{% if is_module_active('nis2_dora') %} ... {% endif %}
+```
+
+User-facing guide: [`docs/user-guide/MODULE_AKTIVIERUNG.md`](docs/user-guide/MODULE_AKTIVIERUNG.md)  
+Compliance audit trail: [`docs/FORM_AUDIT_2026-05.md`](docs/FORM_AUDIT_2026-05.md)
+
+---
 
 ## Coding Standards
 
