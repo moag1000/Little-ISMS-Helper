@@ -183,6 +183,41 @@ class SchemaExceptionSubscriberTest extends TestCase
     }
 
     #[Test]
+    public function autoFixRunsPendingMigrationsBeforeReconcile(): void
+    {
+        $maintenance = $this->createMock(SchemaMaintenanceService::class);
+        $maintenance->method('getMaintenanceStatus')->willReturn([
+            'migration_status' => ['pending' => 1, 'names' => ['Version20260507235217']],
+            'schema_drift' => [
+                'count' => 0,
+                'statements' => [],
+                'destructive' => [],
+            ],
+        ]);
+        $maintenance->expects($this->once())
+            ->method('executePendingMigrations')
+            ->with('auto-fix-on-error')
+            ->willReturn(['success' => true, 'executed' => 1, 'error' => null]);
+        // reconcileSchema may run additionally for any residual additive drift.
+        $maintenance->method('reconcileSchema')
+            ->willReturn(['success' => true, 'executed' => 0, 'error' => null, 'blocked' => null]);
+        $subscriber = new SchemaExceptionSubscriber($this->guard, $this->urlGenerator, $maintenance);
+
+        $this->guard->method('fallbackUiEnabled')->willReturn(true);
+
+        $event = $this->makeEvent('/dashboard', new TableNotFoundException(
+            $this->driverException("Unknown column 't0.competencies' in 'SELECT'"),
+            null,
+        ));
+
+        $subscriber->onKernelException($event);
+
+        $response = $event->getResponse();
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertStringEndsWith('_schema_autofixed=1', $response->getTargetUrl());
+    }
+
+    #[Test]
     public function autoFixesAdditiveDriftEvenOnQuickFixPath(): void
     {
         $maintenance = $this->createMock(SchemaMaintenanceService::class);
