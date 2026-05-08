@@ -1,0 +1,52 @@
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+<h3 class="h6 mb-3">{{ 'policy_wizard.step.review_generate.summary_heading'|trans }}</h3>
+
+<dl class="row mb-4">
+    <dt class="col-sm-3">{{ ('policy_wizard.mode.' ~ run.mode ~ '.label')|trans }}</dt>
+    <dd class="col-sm-9">{{ ('policy_wizard.mode.' ~ run.mode ~ '.description')|trans }}</dd>
+
+    <dt class="col-sm-3">Standards</dt>
+    <dd class="col-sm-9">
+        {% for s in run.standardsAdopted|default([]) %}
+            <span class="badge bg-secondary me-1">{{ s }}</span>
+        {% else %}
+            <span class="text-muted">—</span>
+        {% endfor %}
+    </dd>
+
+    {% for step_key, slot in inputs_so_far|default({}) %}
+        <dt class="col-sm-3">{{ ('policy_wizard.step.' ~ step_key ~ '.title')|trans|default(step_key) }}</dt>
+        <dd class="col-sm-9">
+            <pre class="small mb-0 bg-body-tertiary p-2 rounded">{{ slot|json_encode(constant('JSON_PRETTY_PRINT'))|default('—') }}</pre>
+        </dd>
+    {% endfor %}
+</dl>
+
+<h3 class="h6 mb-3">{{ 'policy_wizard.step.review_generate.conflicts_heading'|trans }}</h3>
+{% if hierarchy_conflicts|default([])|length == 0 %}
+    {{ _fa_alert.render({
+        variant: 'success',
+        body: 'policy_wizard.step.review_generate.conflicts_empty'|trans
+    }) }}
+{% else %}
+    {% set conflicts_body %}
+        <ul class="mb-0">
+            {% for conflict in hierarchy_conflicts %}
+                <li>
+                    <strong>{{ conflict.key }}</strong>:
+                    {{ conflict.message|trans }}
+                    <small class="text-muted">(parent={{ conflict.parent_value|default('—') }}, child={{ conflict.child_value|default('—') }})</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endset %}
+    {{ _fa_alert.render({
+        variant: 'warning',
+        title: 'policy_wizard.step.review_generate.conflicts_heading'|trans,
+        body: conflicts_body
+    }) }}
+{% endif %}
+
+<p class="text-muted small mt-3">{{ 'policy_wizard.step.review_generate.generate_hint'|trans }}</p>

@@ -1,0 +1,56 @@
+{% trans_default_domain 'policy_wizard' %}
+{% set roles_default = defaults.roles|default({}) %}
+{% set function_owners_default = defaults.function_owners|default({}) %}
+{% set approval_chain_default = defaults.approval_chain|default([]) %}
+
+<div class="row g-3">
+    {% for role_key, label_key in {
+        'ciso': 'policy_wizard.step.roles.ciso_label',
+        'isb': 'policy_wizard.step.roles.isb_label',
+        'dpo': 'policy_wizard.step.roles.dpo_label',
+        'bcm_officer': 'policy_wizard.step.roles.bcm_officer_label'
+    } %}
+        <div class="col-md-6">
+            <label class="form-label" for="role-{{ role_key }}">{{ label_key|trans }}</label>
+            <input type="number"
+                   class="form-control"
+                   id="role-{{ role_key }}"
+                   name="roles[{{ role_key }}]"
+                   min="1"
+                   step="1"
+                   value="{{ roles_default[role_key]|default('') }}">
+        </div>
+    {% endfor %}
+
+    <div class="col-12 mt-2">
+        <h3 class="h6 mb-2">{{ 'policy_wizard.step.roles.function_owners_label'|trans }}</h3>
+        <p class="text-muted small mb-3">{{ 'policy_wizard.step.roles.function_owners_help'|trans }}</p>
+        <div class="row g-2">
+            {% for fn_key in ['sales', 'operations', 'rnd', 'hr', 'it_operations', 'finance'] %}
+                <div class="col-md-4">
+                    <label class="form-label small text-muted" for="fn-{{ fn_key }}">
+                        {{ fn_key|replace({'_': ' '})|capitalize }}
+                    </label>
+                    <input type="number"
+                           class="form-control"
+                           id="fn-{{ fn_key }}"
+                           name="function_owners[{{ fn_key }}]"
+                           min="0"
+                           step="1"
+                           value="{{ function_owners_default[fn_key]|default('') }}">
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-12">
+        <label class="form-label" for="approval-chain">Approval chain (User-IDs, comma-separated)</label>
+        <input type="text"
+               class="form-control"
+               id="approval-chain-csv"
+               value="{{ approval_chain_default|join(',') }}">
+        {% for uid in approval_chain_default %}
+            <input type="hidden" name="approval_chain[]" value="{{ uid }}">
+        {% endfor %}
+    </div>
+</div>

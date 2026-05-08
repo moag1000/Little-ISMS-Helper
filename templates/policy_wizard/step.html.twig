@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% set step_title_key = 'policy_wizard.step.' ~ step ~ '.title' %}
+{% set step_subtitle_key = 'policy_wizard.step.' ~ step ~ '.subtitle' %}
+
+{% block title %}{{ step_title_key|trans }} — {{ 'policy_wizard.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4 fa-aurora-surface">
+    {{ _fa_page_header.render({
+        badge: { icon: 'magic', label: ('policy_wizard.mode.' ~ run.mode ~ '.label')|trans },
+        title: step_title_key|trans,
+        subtitle: step_subtitle_key|trans,
+        actions: [
+            { label: 'policy_wizard.action.cancel'|trans,
+              variant: 'ghost',
+              icon: 'x-lg',
+              href: path('app_policy_wizard_index') }
+        ]
+    }) }}
+
+    {% if run.mode == 'sandbox' %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            body: 'policy_wizard.message.sandbox_no_persistence'|trans
+        }) }}
+    {% endif %}
+
+    {% if errors|default([])|length > 0 %}
+        {% set error_lines %}
+            <ul class="mb-0">
+                {% for field, fieldErrors in errors %}
+                    {% for errKey in fieldErrors %}
+                        <li><strong>{{ field }}</strong>: {{ errKey|trans }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        {% endset %}
+        {{ _fa_alert.render({
+            variant: 'danger',
+            body: error_lines
+        }) }}
+    {% endif %}
+
+    <form method="post"
+          action="{{ path('app_policy_wizard_step_submit', { runId: run.id, step: step }) }}"
+          class="mt-3">
+        <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_step') }}">
+
+        {# Step-key → template-filename mapping. Targeted-flow steps fall
+           through to the placeholder alert (W2-B implements the default
+           7-step flow; targeted-flow rendering is W3 scope). #}
+        {% set template_map = {
+            'welcome': 'policy_wizard/step/_welcome_standards.html.twig',
+            'organisation_scope': 'policy_wizard/step/_organisation_scope.html.twig',
+            'roles': 'policy_wizard/step/_roles.html.twig',
+            'risk_classification': 'policy_wizard/step/_risk_classification.html.twig',
+            'operational_baselines': 'policy_wizard/step/_operational_baselines.html.twig',
+            'lifecycle': 'policy_wizard/step/_lifecycle.html.twig',
+            'review_generate': 'policy_wizard/step/_review_generate.html.twig'
+        } %}
+        {% set step_template = template_map[step]|default(null) %}
+        {% if step_template is null %}
+            {{ _fa_alert.render({
+                variant: 'info',
+                title: ('policy_wizard.step.' ~ step ~ '.title')|trans|default(step),
+                body: ('policy_wizard.step.' ~ step ~ '.subtitle')|trans|default('')
+            }) }}
+        {% else %}
+            {% include step_template ignore missing with {
+                'run': run,
+                'step': step,
+                'defaults': defaults,
+                'inputs_so_far': inputs_so_far,
+                'standards': standards,
+                'errors': errors,
+                'is_terminal': is_terminal,
+                'hierarchy_conflicts': hierarchy_conflicts
+            } %}
+        {% endif %}
+
+        <div class="mt-4 d-flex flex-wrap gap-2 align-items-center">
+            <a href="{{ path('app_policy_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.back'|trans }}</span>
+            </a>
+            {% if is_terminal %}
+                {# Submit handled by separate complete-form on review_generate template #}
+            {% else %}
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.continue'|trans }}</span>
+                </button>
+            {% endif %}
+        </div>
+    </form>
+
+    {% if is_terminal %}
+        <form method="post"
+              action="{{ path('app_policy_wizard_complete', { runId: run.id }) }}"
+              class="mt-3">
+            <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_complete') }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary"{{ hierarchy_conflicts|default([])|length > 0 ? ' disabled' : '' }}>
+                <i class="bi bi-magic" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.generate'|trans }}</span>
+            </button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}
