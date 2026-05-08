@@ -86,7 +86,7 @@ class PolicyTemplate
      *
      * @var array<int, string>|null
      */
-    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[ORM\Column(name: 'linked_annex_a_controls', type: Types::JSON, nullable: true)]
     private ?array $linkedAnnexAControls = null;
 
     /**
