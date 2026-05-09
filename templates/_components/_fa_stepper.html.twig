@@ -1,0 +1,90 @@
+{#
+ # FairyAurora v4.0 — fa-stepper macro
+ #
+ # Three-step (or N-step) wizard chrome. Used by:
+ #   F1 SSO Setup-Wizard (Preset → Discovery → Test)
+ #   F2 Bulk-Import-Wizard (Upload → Map → Preview → Commit)
+ #   F5 OSCAL-Import (Upload → Conflicts → Commit)
+ #
+ # Macros:
+ #   1. render(steps, currentIndex, props)  — full stepper bar
+ #   2. step_indicator(index, label, status) — single step (rarely used standalone)
+ #
+ # Step status values: 'pending' | 'active' | 'completed' | 'error'
+ #
+ # Usage:
+ #   {% import '_components/_fa_stepper.html.twig' as _fa_stepper %}
+ #
+ #   {{ _fa_stepper.render([
+ #       { label: 'Preset wählen', href: path('app_sso_wizard_step', {step: 1}) },
+ #       { label: 'Discovery & Secret', href: path('app_sso_wizard_step', {step: 2}) },
+ #       { label: 'Test-Connection' }
+ #   ], currentIndex = 0, { ariaLabel: 'SSO-Setup-Wizard' }) }}
+ #
+ # Parameters (render):
+ #   steps       - array of {label, href|null, status|null, icon|null} (required)
+ #   currentIndex - 0-based index of currently-active step (default 0)
+ #   props.ariaLabel - aria-label for nav-element (default 'Wizard')
+ #   props.class - extra CSS classes (optional)
+ #
+ # A11y:
+ #   - <nav role="navigation" aria-label="...">
+ #   - aria-current="step" on the active step
+ #   - completed steps get aria-label "Schritt N: ... — abgeschlossen"
+ #   - keyboard tab-order natural (links + buttons in DOM-order)
+ #
+ # Status auto-derivation if not explicitly set:
+ #   index < currentIndex → 'completed'
+ #   index == currentIndex → 'active'
+ #   index > currentIndex → 'pending'
+ #}
+
+{% macro render(steps, currentIndex = 0, props = {}) %}
+    <nav class="fa-stepper{{ props.class is defined ? ' ' ~ props.class : '' }}"
+         role="navigation"
+         aria-label="{{ props.ariaLabel|default('Wizard') }}">
+        <ol class="fa-stepper__list">
+            {% for idx, step in steps %}
+                {% set status = step.status|default(
+                    idx < currentIndex ? 'completed' :
+                    (idx == currentIndex ? 'active' : 'pending')
+                ) %}
+                {% set isActive = (status == 'active') %}
+                {% set itemClass = 'fa-stepper__item fa-stepper__item--' ~ status %}
+
+                <li class="{{ itemClass }}"
+                    {% if isActive %}aria-current="step"{% endif %}>
+                    {% if step.href is defined and step.href and not isActive %}
+                        <a href="{{ step.href }}" class="fa-stepper__link"
+                           aria-label="Schritt {{ idx + 1 }}: {{ step.label }}{% if status == 'completed' %} — abgeschlossen{% endif %}">
+                            {{ _self.step_indicator(idx, step.label, status, step.icon|default(null)) }}
+                        </a>
+                    {% else %}
+                        <span class="fa-stepper__link fa-stepper__link--static"
+                              aria-label="Schritt {{ idx + 1 }}: {{ step.label }}{% if status == 'completed' %} — abgeschlossen{% endif %}">
+                            {{ _self.step_indicator(idx, step.label, status, step.icon|default(null)) }}
+                        </span>
+                    {% endif %}
+                    {% if not loop.last %}
+                        <span class="fa-stepper__separator" aria-hidden="true"></span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ol>
+    </nav>
+{% endmacro %}
+
+{% macro step_indicator(index, label, status = 'pending', icon = null) %}
+    <span class="fa-stepper__indicator fa-stepper__indicator--{{ status }}" aria-hidden="true">
+        {% if status == 'completed' %}
+            <i class="fa-icon fa-icon--status-ok"></i>
+        {% elseif status == 'error' %}
+            <i class="fa-icon fa-icon--status-critical"></i>
+        {% elseif icon %}
+            <i class="fa-icon fa-icon--{{ icon }}"></i>
+        {% else %}
+            {{ index + 1 }}
+        {% endif %}
+    </span>
+    <span class="fa-stepper__label">{{ label }}</span>
+{% endmacro %}
