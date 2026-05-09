@@ -193,6 +193,25 @@ policy_wizard:
         changed_yes: 'Geändert'
         changed_no: 'Unverändert'
 
+    konzern_rollup:
+        title: 'Konzern Roll-Up'
+        subtitle: 'Compliance-Übersicht über alle Tochtergesellschaften der Holding.'
+        alva_tipp: 'Tipp: Wechseln Sie über die Tabs zwischen Coverage, Aktionen, Compliance, Drift und Acknowledgement. Die Drift-Spalte zeigt sofort, wo eine Tochter strenger oder lascher als die Konzern-Vorgabe arbeitet.'
+        tab:
+            coverage: 'Coverage'
+            actions: 'Offene Aktionen'
+            compliance: 'Compliance-Score'
+            drift: 'Settings-Drift'
+            acknowledgement: 'Acknowledgement'
+        empty:
+            not_konzern: 'Diese Mandantenebene ist keine Holding.'
+            no_subsidiaries: 'Es sind keine Tochtergesellschaften unterhalb dieses Tenants vorhanden.'
+
+    witness:
+        label: 'Zeuge / Co-Signatur'
+        signed_at: 'Mitgezeichnet am'
+        optional: 'Optional — DSB/CISO-Co-Signatur'
+
     konzern_defaults:
         title: 'Konzern-Defaults'
         subtitle: 'Konzernweite Vorgaben für Tochtergesellschaften setzen und propagieren.'
@@ -277,6 +296,27 @@ policy_wizard:
     csrf:
         invalid: 'Ungültiges CSRF-Token. Bitte laden Sie die Seite neu.'
 
+    # W7-A — PDF + ZIP Export (TenantBranding-Briefkopf, Audit-Pack).
+    export:
+        pdf:
+            title: 'Als PDF herunterladen'
+            download_button: 'PDF herunterladen'
+        zip:
+            title: 'Audit-Pack (ZIP)'
+            download_button: 'Audit-Pack herunterladen'
+            confirm: 'Audit-Pack-ZIP für alle gewählten Standards jetzt generieren?'
+        cover:
+            title: 'Titel'
+            standard: 'Standard'
+            version: 'Version'
+            valid_from: 'Gültig ab'
+            approved_by: 'Freigegeben von'
+            generated_on: 'Erstellt am'
+        footer:
+            page_of: 'Seite'
+            system_attribution: 'Erstellt mit Little ISMS Helper'
+            batch_id_label: 'Batch-ID'
+
     # W2 Gap-A — Krisen-Team RACI hint card on Step 3 (RolesStep).
     roles:
         raci_hint:
@@ -298,6 +338,38 @@ policy_wizard:
         title: 'GDPR-Bereinigung nach Toggle-Off'
         success: 'GDPR-Dokumente archiviert und Sektionen gesperrt. Inventar im Audit-Log.'
         confirm: 'Tenant ist nicht mehr GDPR-Subjekt. Sollen alle GDPR-Dokumente archiviert und GDPR-Sektionen gesperrt werden? Diese Aktion ist im Audit-Log nachvollziehbar.'
+
+    # ────────────────────────────────────────────────────────────────────
+    # W7-E — Dashboard widgets, drift badge on Document index, mobile
+    # bulk acknowledgement inbox. CISO board-reporting consolidates KPIs
+    # from the wizard (policies generated, pending approvals, finding
+    # cross-refs, acknowledgement coverage, DPO veto count).
+    # ────────────────────────────────────────────────────────────────────
+    widget:
+        policies_you_own:
+            title: 'Richtlinien in deiner Verantwortung'
+            empty_state: 'Du hast aktuell keine Richtlinien als Owner oder Funktions-Owner zugewiesen.'
+            see_all: 'Alle Dokumente ansehen'
+        board_reporting:
+            title: 'Board-Reporting Policy-Programm'
+            kpi_total_policies: 'Generierte Richtlinien'
+            kpi_pending_approvals: 'Offene Freigaben'
+            kpi_open_findings: 'Offene Audit-Feststellungen'
+            kpi_ack_coverage: 'Quittierungsabdeckung'
+            kpi_dpo_veto_count: 'DSB-Vetos (Quartal)'
+            period_label: 'Aktuelles Quartal'
+
+    bulk_inbox_mobile:
+        swipe_right_to_approve: 'Nach rechts wischen zum Bestätigen'
+        swipe_left_to_reject: 'Nach links wischen zum Zurückweisen'
+        tap_to_confirm: 'Tippen zur Bestätigung'
+
+    # Drift-Badge auf Dokumenten-Index. W7-C liefert SettingsDriftDetector
+    # — die Anzeige-Strings landen hier, damit W7-E den Badge wiren kann.
+    drift_badge:
+        label: 'Konzern-Drift'
+        title: 'Diese Richtlinie wurde nach einer Konzern-Settings-Verschärfung nicht erneut generiert.'
+        aria_label: 'Konzern-Settings-Drift erkannt'
 
 # W3-L — Per-user policy acknowledgement collection.
 # Closes auditor's predicted ISO 27001 A.6.3 NC ("policy must be communicated and acknowledged").
@@ -723,3 +795,56 @@ compliance_check:
         gdpr_premises_processing:
             title: 'Datenschutz in physischen Sicherheitsbereichen (DSGVO Art. 32)'
             description: 'Eingebettet in die Physical-Security-Policy. Schutz personenbezogener Daten in Räumlichkeiten und Zutrittskontrollen.'
+
+# ────────────────────────────────────────────────────────────────────────
+# W7-C — Top-level widget block reserved for the Re-Generation Diff,
+# Settings-Drift Badge and History-Toggle UI. W7-E adds its own widget
+# keys nested under `policy_wizard.widget.*` (see line ~348) so the two
+# code paths do not collide in the trans-lookup.
+# ────────────────────────────────────────────────────────────────────────
+widget:
+    # W7-C — Re-generation diff UX (doc-level + variable-level only).
+    # Bewusst KEIN Zeichen-Diff — Section-Hash + Variablen-Key reichen
+    # fuer ISB-/CISO-Approval-Diskussion (Persona-Review 05 Z.198-204).
+    diff:
+        title: 'Re-Generierungs-Diff'
+        subtitle: '%total% Aenderungen erkannt — Schweregrad: %severity%'
+        severity_minor: 'gering'
+        severity_moderate: 'mittel'
+        severity_major: 'hoch'
+        previous_version: 'Vorgaenger-Version'
+        current_version: 'Aktuelle Version'
+        previous_value: 'Alter Wert'
+        current_value: 'Neuer Wert'
+        field_label: 'Feld'
+        variable_key: 'Variable'
+        added: 'hinzugefuegt'
+        removed: 'entfernt'
+        modified: 'geaendert'
+        no_changes: 'Keine Aenderungen in diesem Bereich.'
+        hash_changed: 'Inhalts-Hash geaendert'
+        restore_previous_button: 'Vorgaenger-Version wiederherstellen'
+        restore_confirm: 'Aktuelle Version archivieren und die Vorgaenger-Version reaktivieren?'
+        restore_success: 'Vorgaenger-Version wiederhergestellt; aktuelle Version archiviert.'
+        tab:
+            metadata: 'Metadaten'
+            variables: 'Variablen'
+            sections: 'Sektionen'
+
+    # W7-C — Settings-Drift Badge auf der Dokumenten-Liste. Sichtbar
+    # wenn die Tenant-Settings sich seit Generierung der Policy geaendert
+    # haben — Klick fuehrt in den Targeted-Re-Run (Persona-Review 05 Z.184).
+    badge:
+        settings_drift:
+            label: 'Settings-Drift'
+            tooltip: 'Settings, die diese Richtlinie steuern, haben sich seit der Erzeugung geaendert. Re-Run empfohlen.'
+
+    # W7-C — History-Toggle auf der Dokumenten-Liste. Default: nur die
+    # aktuelle Version je Policy zeigen; Toggle blendet Historie ein
+    # (Persona-Review 05 Z.243-244 — sonst wird die Liste nach 3 Jahren
+    # unbrauchbar).
+    history_toggle:
+        label: 'Versionen anzeigen'
+        current_only: 'Nur aktuelle Versionen'
+        with_history: 'Inklusive Historie'
+

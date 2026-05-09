@@ -1,0 +1,273 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block title %}{{ 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'common.dashboard'|trans({}, 'messages'), url: path('app_dashboard') },
+            { label: 'document.title'|trans({}, 'document'), url: path('app_document_index') },
+            { label: 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }
+        ]
+    } %}
+
+    {% set severity = diff.severity() %}
+    {% set severityLabel = ('policy_wizard.diff.severity_' ~ severity)|trans({}, 'policy_wizard') %}
+    {% set severityVariant = severity == 'major' ? 'danger' : (severity == 'moderate' ? 'warning' : 'info') %}
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'arrow-left-right', label: 'policy_wizard.diff.title'|trans({}, 'policy_wizard') },
+        title: 'policy_wizard.diff.title'|trans({}, 'policy_wizard'),
+        subtitle: 'policy_wizard.diff.subtitle'|trans({
+            '%total%': diff.totalChanges(),
+            '%severity%': severityLabel
+        }, 'policy_wizard')
+    }) }}
+
+    <main class="fa-aurora-surface">
+
+    {# Severity + summary banner #}
+    {% embed '_components/_card.html.twig' with {class: 'mb-3'} %}
+        {% block card_body %}
+            <div class="d-flex flex-wrap align-items-center gap-3">
+                {% include '_components/_badge.html.twig' with {
+                    variant: severityVariant,
+                    content: severityLabel
+                } %}
+                <div>
+                    <strong>{{ 'policy_wizard.diff.previous_version'|trans({}, 'policy_wizard') }}:</strong>
+                    {{ previous.originalFilename }}
+                    <small class="text-muted">(#{{ previous.id }})</small>
+                </div>
+                <div>
+                    <strong>{{ 'policy_wizard.diff.current_version'|trans({}, 'policy_wizard') }}:</strong>
+                    {{ current.originalFilename }}
+                    <small class="text-muted">(#{{ current.id }})</small>
+                </div>
+                <div class="ms-auto">
+                    <form method="post"
+                          action="{{ path('app_policy_wizard_diff_restore', {currentDocId: current.id}) }}"
+                          onsubmit="return confirm('{{ 'policy_wizard.diff.restore_confirm'|trans({}, 'policy_wizard')|e('js') }}');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_diff_restore') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                            <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                            {{ 'policy_wizard.diff.restore_previous_button'|trans({}, 'policy_wizard') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% endblock %}
+    {% endembed %}
+
+    {% if not diff.hasChanges() %}
+        {% include '_components/_alert.html.twig' with {
+            variant: 'info',
+            message: 'policy_wizard.diff.no_changes'|trans({}, 'policy_wizard')
+        } %}
+    {% else %}
+
+    {# Tab nav: Metadata / Variables / Sections #}
+    <ul class="nav nav-tabs mb-0" role="tablist" id="policy-diff-tabs">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active"
+                    id="diff-tab-metadata"
+                    data-bs-toggle="tab"
+                    data-bs-target="#diff-pane-metadata"
+                    type="button"
+                    role="tab"
+                    aria-controls="diff-pane-metadata"
+                    aria-selected="true">
+                {{ 'policy_wizard.diff.tab.metadata'|trans({}, 'policy_wizard') }}
+                <span class="badge bg-secondary ms-1">{{ diff.metadataDelta|length }}</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    id="diff-tab-variables"
+                    data-bs-toggle="tab"
+                    data-bs-target="#diff-pane-variables"
+                    type="button"
+                    role="tab"
+                    aria-controls="diff-pane-variables"
+                    aria-selected="false">
+                {{ 'policy_wizard.diff.tab.variables'|trans({}, 'policy_wizard') }}
+                <span class="badge bg-secondary ms-1">{{ diff.variableChanges|length }}</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    id="diff-tab-sections"
+                    data-bs-toggle="tab"
+                    data-bs-target="#diff-pane-sections"
+                    type="button"
+                    role="tab"
+                    aria-controls="diff-pane-sections"
+                    aria-selected="false">
+                {{ 'policy_wizard.diff.tab.sections'|trans({}, 'policy_wizard') }}
+                <span class="badge bg-secondary ms-1">{{ (diff.sectionsAdded|length) + (diff.sectionsRemoved|length) + (diff.sectionsModified|length) }}</span>
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 p-3 mb-4">
+        {# === Metadata pane === #}
+        <div class="tab-pane fade show active"
+             id="diff-pane-metadata"
+             role="tabpanel"
+             aria-labelledby="diff-tab-metadata">
+            {% if diff.metadataDelta is empty %}
+                <p class="text-muted mb-0">{{ 'policy_wizard.diff.no_changes'|trans({}, 'policy_wizard') }}</p>
+            {% else %}
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-hover mb-0',
+                    'noMargin': true,
+                    'responsive': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="w-200px">{{ 'policy_wizard.diff.field_label'|trans({}, 'policy_wizard') }}</th>
+                            <th scope="col">{{ 'policy_wizard.diff.previous_value'|trans({}, 'policy_wizard') }}</th>
+                            <th scope="col">{{ 'policy_wizard.diff.current_value'|trans({}, 'policy_wizard') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for row in diff.metadataDelta %}
+                        <tr>
+                            <td><code>{{ row.field }}</code></td>
+                            <td class="text-muted">
+                                {% if row.oldValue is null or row.oldValue == '' %}
+                                    <em class="text-muted">{{ 'common.none'|trans({}, 'messages') }}</em>
+                                {% else %}
+                                    {{ row.oldValue is iterable ? row.oldValue|json_encode : row.oldValue|default('-') }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if row.newValue is null or row.newValue == '' %}
+                                    <em class="text-muted">{{ 'common.none'|trans({}, 'messages') }}</em>
+                                {% else %}
+                                    <strong>{{ row.newValue is iterable ? row.newValue|json_encode : row.newValue|default('-') }}</strong>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+        </div>
+
+        {# === Variables pane === #}
+        <div class="tab-pane fade"
+             id="diff-pane-variables"
+             role="tabpanel"
+             aria-labelledby="diff-tab-variables">
+            {% if diff.variableChanges is empty %}
+                <p class="text-muted mb-0">{{ 'policy_wizard.diff.no_changes'|trans({}, 'policy_wizard') }}</p>
+            {% else %}
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-hover mb-0',
+                    'noMargin': true,
+                    'responsive': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="w-250px">{{ 'policy_wizard.diff.variable_key'|trans({}, 'policy_wizard') }}</th>
+                            <th scope="col" class="w-100px">{{ 'common.type'|trans({}, 'messages') }}</th>
+                            <th scope="col">{{ 'policy_wizard.diff.previous_value'|trans({}, 'policy_wizard') }}</th>
+                            <th scope="col">{{ 'policy_wizard.diff.current_value'|trans({}, 'policy_wizard') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for change in diff.variableChanges %}
+                            {% set chipVariant = change.change_type == 'added' ? 'success'
+                                : (change.change_type == 'removed' ? 'danger' : 'warning') %}
+                        <tr>
+                            <td><code>{{ change.key }}</code></td>
+                            <td>
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: chipVariant,
+                                    content: ('policy_wizard.diff.' ~ change.change_type)|trans({}, 'policy_wizard')
+                                } %}
+                            </td>
+                            <td class="text-muted">
+                                {% if change.oldValue is null %}
+                                    <em>—</em>
+                                {% else %}
+                                    {{ change.oldValue is iterable ? change.oldValue|json_encode : change.oldValue }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if change.newValue is null %}
+                                    <em>—</em>
+                                {% else %}
+                                    <strong>{{ change.newValue is iterable ? change.newValue|json_encode : change.newValue }}</strong>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+        </div>
+
+        {# === Sections pane === #}
+        <div class="tab-pane fade"
+             id="diff-pane-sections"
+             role="tabpanel"
+             aria-labelledby="diff-tab-sections">
+            {% if diff.sectionsAdded is empty and diff.sectionsRemoved is empty and diff.sectionsModified is empty %}
+                <p class="text-muted mb-0">{{ 'policy_wizard.diff.no_changes'|trans({}, 'policy_wizard') }}</p>
+            {% else %}
+                <ul class="list-group">
+                    {% for section in diff.sectionsAdded %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: 'success',
+                                    content: 'policy_wizard.diff.added'|trans({}, 'policy_wizard')
+                                } %}
+                                <code class="ms-2">{{ section.sectionKey }}</code>
+                            </span>
+                            <small class="text-muted">{{ section.status }}</small>
+                        </li>
+                    {% endfor %}
+                    {% for section in diff.sectionsRemoved %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: 'danger',
+                                    content: 'policy_wizard.diff.removed'|trans({}, 'policy_wizard')
+                                } %}
+                                <code class="ms-2">{{ section.sectionKey }}</code>
+                            </span>
+                            <small class="text-muted">{{ section.status }}</small>
+                        </li>
+                    {% endfor %}
+                    {% for row in diff.sectionsModified %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: 'warning',
+                                    content: 'policy_wizard.diff.modified'|trans({}, 'policy_wizard')
+                                } %}
+                                <code class="ms-2">{{ row.section.sectionKey }}</code>
+                                <small class="text-muted ms-2">{{ 'policy_wizard.diff.hash_changed'|trans({}, 'policy_wizard') }}</small>
+                            </span>
+                            <small class="text-muted">
+                                {{ row.oldHash ? row.oldHash|slice(0, 7) : '-' }}
+                                &rarr;
+                                {{ row.newHash ? row.newHash|slice(0, 7) : '-' }}
+                            </small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+
+    {% endif %}
+    </main>
+</div>
+{% endblock %}

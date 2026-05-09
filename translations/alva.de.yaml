@@ -127,3 +127,28 @@ alva_hint:
         body: '%tenant_name% ist als KRITIS-Betreiber markiert, hat aber keine genehmigte IT-Sicherheitsleitlinie nach BSI-Vorlage. BSIG § 8a und KRITIS-Dachgesetz fordern eine dokumentierte, vom Top-Management freigegebene Leitlinie als Mindestnachweis. Ohne sie droht eine Audit-Feststellung beim nächsten BSI-Nachweis.'
         cta_label: 'BSI-Wizard starten'
         dismiss_label: 'Nicht jetzt'
+    konzern_ciso_drift_alert:
+        title: 'Tochter weicht von Konzern-Vorgabe ab'
+        body: 'Im Konzern %konzern_name% verletzen %affected_count% Tochter-Einstellungen verbindliche Konzern-Defaults (forbidden_to_change / forbidden_to_relax). Erstes Beispiel: Tenant "%first_tenant_name%", Setting "%first_setting_key%". Bitte im Drift-Tab des Konzern-Rollups prüfen und die Tochter zur Korrektur auffordern, bevor das Audit es findet.'
+        cta_label: 'Drift-Tab öffnen'
+        dismiss_label: 'Später erinnern'
+    open_finding_reference:
+        title: 'Audit-Finding ohne Re-Run-Abschluss'
+        body: 'Wizard-Run mit Finding-Referenz "%finding_ref%" ist seit %age_days% Tagen offen (Schwelle: %threshold_days% Tage). Auditor erwartet entweder einen abgeschlossenen Re-Run mit aktualisierter Policy oder eine dokumentierte Begründung. Ohne Reaktion entsteht eine Nichtkonformität.'
+        cta_label: 'Targeted Re-Run starten'
+        dismiss_label: 'Nicht jetzt'
+    training_coverage_gap:
+        title: 'Policy-Bestätigungsquote unter Schwelle'
+        body: 'Die Policy "%document_title%" ist nur zu %coverage_percent% % von der Mitarbeiter-Audience bestätigt (Schwelle: %threshold_percent% %). ISO 27001 Cl. 7.3 Awareness fordert nachweisbare Kommunikation und Bestätigung — bitte Bestätigungs-Inbox prüfen und ausstehende Acknowledgements anstoßen.'
+        cta_label: 'Bestätigungs-Inbox öffnen'
+        dismiss_label: 'Später erinnern'
+    bcm_exercise_due:
+        title: 'BCM-Übung steht in %days% Tagen an'
+        body: 'Geplante BCM-Übung "%exercise_name%" (%exercise_type%) findet in %days% Tagen statt (Erinnerungsfenster: %window_days% Tage). ISO 22301 Cl. 8.6 fordert dokumentierte Vorbereitung — Teilnehmer einladen, Szenario finalisieren, Beobachter benennen.'
+        cta_label: 'Übung öffnen'
+        dismiss_label: 'Später erinnern'
+    bcm_exercise_overdue:
+        title: 'BCM-Übung überfällig'
+        body: 'Geplante BCM-Übung "%exercise_name%" (%exercise_type%) ist seit %days% Tagen überfällig und steht weiterhin auf "planned". ISO 22301 Cl. 8.6 verlangt dokumentierte Übungs-Kadenz — verschieben mit Begründung oder Status auf "cancelled" setzen, andernfalls Audit-Risiko.'
+        cta_label: 'Übung öffnen'
+        dismiss_label: 'Nicht jetzt'

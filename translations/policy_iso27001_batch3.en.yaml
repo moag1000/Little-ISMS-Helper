@@ -261,9 +261,9 @@ policy:
 
                     ## 4. References to Operational Documents
                     The following documents detail this policy:
-                    - **Privacy Policy** — detailed rules on purposes, legal bases, data-subject rights and international transfers. *(TODO: link once module is active.)*
-                    - **RoPA Methodology** — methodology for maintaining the Records of Processing Activities under GDPR Art. 30. *(TODO: link once module is active.)*
-                    - **DPIA Methodology** — methodology for Data Protection Impact Assessments under GDPR Art. 35/36. *(TODO: link once module is active.)*
+                    - **Privacy Policy** — detailed rules on purposes, legal bases, data-subject rights and international transfers. *(linked once the privacy module is active.)*
+                    - **RoPA Methodology** — methodology for maintaining the Records of Processing Activities under GDPR Art. 30. *(linked once the privacy module is active.)*
+                    - **DPIA Methodology** — methodology for Data Protection Impact Assessments under GDPR Art. 35/36. *(linked once the privacy module is active.)*
                     - **Data Processing Agreement Templates** — standard clauses and review process for processor contracts under GDPR Art. 28.
 
                     ## 5. Minimum Requirements Independent of Module Status

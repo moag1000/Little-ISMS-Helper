@@ -285,9 +285,9 @@ policy:
 
                     ## 4. Verweis auf operative Regelwerke
                     Die folgenden Regelwerke konkretisieren diese Richtlinie:
-                    - **Datenschutzrichtlinie (Privacy Policy)** — Detailregeln zu Zwecken, Rechtsgrundlagen, Betroffenenrechten und internationalen Datentransfers. *(TODO: Verlinkung sobald Modul aktiv.)*
-                    - **RoPA-Methodik** — Verfahren zur Führung des Verzeichnisses von Verarbeitungstätigkeiten gemäß DSGVO Art. 30. *(TODO: Verlinkung sobald Modul aktiv.)*
-                    - **DSFA-Methodik** — Verfahren zur Datenschutz-Folgenabschätzung gemäß DSGVO Art. 35/36. *(TODO: Verlinkung sobald Modul aktiv.)*
+                    - **Datenschutzrichtlinie (Privacy Policy)** — Detailregeln zu Zwecken, Rechtsgrundlagen, Betroffenenrechten und internationalen Datentransfers. *(Verlinkung sobald Datenschutz-Modul aktiv.)*
+                    - **RoPA-Methodik** — Verfahren zur Führung des Verzeichnisses von Verarbeitungstätigkeiten gemäß DSGVO Art. 30. *(Verlinkung sobald Datenschutz-Modul aktiv.)*
+                    - **DSFA-Methodik** — Verfahren zur Datenschutz-Folgenabschätzung gemäß DSGVO Art. 35/36. *(Verlinkung sobald Datenschutz-Modul aktiv.)*
                     - **Auftragsverarbeitungs-Vorlagen** — Standardklauseln und Prüfprozess für AV-Verträge gemäß DSGVO Art. 28.
 
                     ## 5. Mindestanforderungen unabhängig von Modul-Status

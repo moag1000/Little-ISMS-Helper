@@ -127,3 +127,28 @@ alva_hint:
         body: '%tenant_name% is flagged as a KRITIS operator but has no approved IT security policy generated from a BSI template. BSIG § 8a and the KRITIS-Dachgesetz require a documented, leadership-approved top-level policy as the minimum evidence baseline. Without it, the next BSI assessment will record this as a finding.'
         cta_label: 'Open BSI wizard'
         dismiss_label: 'Not now'
+    konzern_ciso_drift_alert:
+        title: 'Subsidiary drifted from konzern baseline'
+        body: 'Inside konzern %konzern_name%, %affected_count% subsidiary settings violate strict konzern defaults (forbidden_to_change / forbidden_to_relax). First sample: tenant "%first_tenant_name%", setting "%first_setting_key%". Review the drift tab in the konzern rollup and ask the subsidiary to realign before the audit catches it.'
+        cta_label: 'Open drift tab'
+        dismiss_label: 'Remind me later'
+    open_finding_reference:
+        title: 'Audit finding without re-run closure'
+        body: 'Wizard run carrying finding reference "%finding_ref%" has been open for %age_days% days (threshold: %threshold_days% days). The auditor expects either a completed re-run with refreshed policy or a documented justification. Inaction creates a non-conformity.'
+        cta_label: 'Start targeted re-run'
+        dismiss_label: 'Not now'
+    training_coverage_gap:
+        title: 'Policy acknowledgement coverage below threshold'
+        body: 'Policy "%document_title%" is acknowledged by only %coverage_percent% % of the workforce audience (threshold: %threshold_percent% %). ISO 27001 Cl. 7.3 awareness requires demonstrable communication and acknowledgement — open the acknowledgement inbox and chase outstanding records.'
+        cta_label: 'Open acknowledgement inbox'
+        dismiss_label: 'Remind me later'
+    bcm_exercise_due:
+        title: 'BCM exercise due in %days% days'
+        body: 'Planned BCM exercise "%exercise_name%" (%exercise_type%) is scheduled in %days% days (reminder window: %window_days% days). ISO 22301 Cl. 8.6 expects documented preparation — invite participants, finalise the scenario, assign observers.'
+        cta_label: 'Open exercise'
+        dismiss_label: 'Remind me later'
+    bcm_exercise_overdue:
+        title: 'BCM exercise overdue'
+        body: 'Planned BCM exercise "%exercise_name%" (%exercise_type%) has been overdue for %days% days yet remains in status "planned". ISO 22301 Cl. 8.6 mandates a documented exercise cadence — reschedule with justification or move to "cancelled", otherwise the audit will flag it.'
+        cta_label: 'Open exercise'
+        dismiss_label: 'Not now'

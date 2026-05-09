@@ -51,6 +51,15 @@ class PolicyWizardVoter extends Voter
     public const string FUNCTION_OWNER_REVIEW = 'POLICY_WIZARD_FUNCTION_OWNER_REVIEW';
     public const string KONZERN_DEFAULTS      = 'POLICY_WIZARD_KONZERN_DEFAULTS';
     public const string DPO_SECTION_VETO      = 'POLICY_WIZARD_DPO_SECTION_VETO';
+    public const string EXPORT                = 'POLICY_WIZARD_EXPORT';
+    /**
+     * W7-C — Re-generation diff viewer. Same scope guard as
+     * {@see RUN_FULL}: anyone allowed to start a wizard run can also
+     * inspect the diff between two of its outputs (CISO / Admin in the
+     * Document's tenant scope, Group-CISO when the Document lives in a
+     * descendant tenant of the Holding-Tree).
+     */
+    public const string DIFF_VIEW             = 'POLICY_WIZARD_DIFF_VIEW';
 
     private const array SUPPORTED = [
         self::RUN_FULL,
@@ -60,6 +69,8 @@ class PolicyWizardVoter extends Voter
         self::FUNCTION_OWNER_REVIEW,
         self::KONZERN_DEFAULTS,
         self::DPO_SECTION_VETO,
+        self::EXPORT,
+        self::DIFF_VIEW,
     ];
 
     public function __construct(
@@ -76,6 +87,16 @@ class PolicyWizardVoter extends Voter
         // RUN_FULL/TARGETED/SANDBOX dürfen ohne Subject (Wizard-Start) oder mit Tenant gevotet werden.
         if (in_array($attribute, [self::RUN_FULL, self::RUN_TARGETED, self::RUN_SANDBOX], true)) {
             return $subject === null || $subject instanceof Tenant;
+        }
+
+        // EXPORT supports null (current tenant) / Tenant / Document subjects.
+        if ($attribute === self::EXPORT) {
+            return $subject === null || $subject instanceof Tenant || $subject instanceof Document;
+        }
+
+        // DIFF_VIEW votes on Document (the current/superseding row).
+        if ($attribute === self::DIFF_VIEW) {
+            return $subject instanceof Document;
         }
 
         // BULK_APPROVE / KONZERN_DEFAULTS brauchen einen Tenant.
@@ -110,8 +131,23 @@ class PolicyWizardVoter extends Voter
             self::FUNCTION_OWNER_REVIEW => $this->canFunctionOwnerReview($user, $subject),
             self::KONZERN_DEFAULTS      => $this->canManageKonzernDefaults($user, $subject),
             self::DPO_SECTION_VETO      => $this->canVetoDpoSection($user, $subject),
+            self::EXPORT                => $this->canExport($user, $subject),
+            self::DIFF_VIEW             => $this->canViewDiff($user, $subject),
             default                     => false,
         };
+    }
+
+    /**
+     * W7-C — diff viewer. Same effective scope as {@see canRunFull}:
+     * ROLE_CISO / ROLE_ADMIN of the Document's tenant (or a Holding
+     * ancestor with cross-tree read access).
+     */
+    private function canViewDiff(User $user, Document $document): bool
+    {
+        if (!$this->subjectIsInUserScope($user, $document)) {
+            return false;
+        }
+        return $this->hasAnyRole($user, ['ROLE_CISO', 'ROLE_ADMIN']);
     }
 
     /**
@@ -246,6 +282,36 @@ class PolicyWizardVoter extends Voter
         // Zweifel "true" zurückgeben, damit der DPO sich melden darf —
         // den endgültigen Veto-Fluss validiert ohnehin der Workflow.
         return true;
+    }
+
+    /**
+     * W7-A — PDF / ZIP export. Auditors, CISO, Admin and Group-CISO get
+     * read-side access to the full tenant policy set so they can pull
+     * an audit-pack for an external review. ROLE_AUDITOR is a
+     * read-only role on the regular ISMS surface; here it explicitly
+     * gets export rights because the audit pack is the auditor's
+     * primary deliverable.
+     *
+     * Subject handling:
+     *  - null               → current tenant scope is checked downstream.
+     *  - Tenant             → must match user's tenant or holding tree.
+     *  - Document           → tenant of the document is checked.
+     */
+    private function canExport(User $user, mixed $subject): bool
+    {
+        if (!$this->hasAnyRole($user, ['ROLE_CISO', 'ROLE_ADMIN', 'ROLE_AUDITOR', 'ROLE_GROUP_CISO'])) {
+            return false;
+        }
+        if ($subject === null) {
+            return true;
+        }
+        if ($subject instanceof Tenant) {
+            return $this->isInUserScope($user, $subject);
+        }
+        if ($subject instanceof Document) {
+            return $this->isInUserScope($user, $subject->getTenant());
+        }
+        return false;
     }
 
     /**

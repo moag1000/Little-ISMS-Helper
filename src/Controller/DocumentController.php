@@ -12,6 +12,7 @@ use App\Repository\DocumentRepository;
 use App\Service\DocumentService;
 use App\Service\FileUploadSecurityService;
 use App\Service\InverseCoverageService;
+use App\Service\PolicyWizard\Diff\SettingsDriftDetector;
 use App\Service\SecurityEventLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,6 +41,7 @@ class DocumentController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
+        private readonly ?SettingsDriftDetector $settingsDriftDetector = null,
     ) {}
 
     #[Route('/document/', name: 'app_document_index')]
@@ -51,6 +53,14 @@ class DocumentController extends AbstractController
 
         // Get view filter parameter
         $view = $request->query->get('view', 'own'); // Default: own documents
+
+        // Policy-Wizard W7-C — history toggle. Default OFF: only the
+        // current version of each policy is listed (a Document is
+        // "current" when no other Document points back to it via
+        // supersedes). Toggle via `?include_history=1` (persona-review
+        // 05 lines 243-244 — without this the list balloons after
+        // ~3 years of policy iterations).
+        $includeHistory = (bool) $request->query->get('include_history', false);
 
         // Get documents based on view filter
         if ($tenant) {
@@ -81,6 +91,25 @@ class DocumentController extends AbstractController
         // views can bypass via dedicated endpoints.
         $documents = array_filter($allDocuments, fn(Document $document): bool => $document->isOperational());
 
+        // Policy-Wizard W7-C — collapse to current versions only (default).
+        // A Document is hidden when ANY other Document in the list points
+        // back to it via `supersedes`. We compute the "superseded ids" set
+        // in PHP rather than via SQL so the inheritance / subsidiary
+        // arrays stay the source of truth.
+        if (!$includeHistory) {
+            $supersededIds = [];
+            foreach ($documents as $doc) {
+                $previous = $doc->getSupersedes();
+                if ($previous !== null && $previous->getId() !== null) {
+                    $supersededIds[$previous->getId()] = true;
+                }
+            }
+            $documents = array_filter(
+                $documents,
+                static fn (Document $document): bool => !isset($supersededIds[$document->getId() ?? -1]),
+            );
+        }
+
         // Sort by upload date descending
         usort($documents, fn($a, $b): int => $b->getUploadedAt() <=> $a->getUploadedAt());
 
@@ -91,11 +120,33 @@ class DocumentController extends AbstractController
             $detailedStats = ['own' => count($documents), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($documents)];
         }
 
+        // Policy-Wizard W7-C — settings-drift map. For every Document in
+        // the listing, ask the SettingsDriftDetector whether the snapshot
+        // diverges from current tenant settings. Result map is keyed on
+        // Document.id so the template can render the badge inline. The
+        // service is optional in the DI graph; when missing, the map
+        // stays empty and no badge renders.
+        $driftMap = [];
+        if ($this->settingsDriftDetector !== null && $tenant !== null) {
+            foreach ($documents as $document) {
+                $documentId = $document->getId();
+                if ($documentId === null) {
+                    continue;
+                }
+                if ($document->getSubstitutionVariables() === null) {
+                    continue; // not a wizard-generated doc — drift n/a
+                }
+                $driftMap[$documentId] = $this->settingsDriftDetector->detectDriftFor($document, $tenant);
+            }
+        }
+
         return $this->render('document/index.html.twig', [
             'documents' => $documents,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
             'detailedStats' => $detailedStats,
+            'includeHistory' => $includeHistory,
+            'driftMap' => $driftMap,
         ]);
     }
 

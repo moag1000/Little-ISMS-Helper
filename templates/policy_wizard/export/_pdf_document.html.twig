@@ -1,0 +1,111 @@
+{# Policy-Wizard W7-A — single-document PDF body. Inlined CSS so dompdf
+   can render it without external assets. The cover page sits on page 1
+   inside `<div class="page cover">`; the body starts on page 2 with a
+   forced `page-break-before: always`. The footer is static across pages
+   (dompdf does not honour @page running headers reliably without
+   preprocessing). #}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|default('de') }}">
+<head>
+    <meta charset="utf-8">
+    <title>{{ cover.title }}</title>
+    <style>
+        @page { margin: 90px 60px 90px 60px; }
+        body {
+            font-family: "{{ font_family|e('html_attr') }}", "Helvetica", "Arial", sans-serif;
+            font-size: 10.5pt;
+            color: #222;
+            line-height: 1.4;
+        }
+        h1 { color: {{ primary }}; font-size: 18pt; margin: 12pt 0 6pt 0; }
+        h2 { color: {{ primary }}; font-size: 14pt; margin: 10pt 0 4pt 0; }
+        h3 { color: {{ secondary }}; font-size: 12pt; margin: 8pt 0 4pt 0; }
+        p { margin: 6pt 0; }
+        ul { margin: 6pt 0 6pt 16pt; }
+        li { margin: 2pt 0; }
+        blockquote {
+            border-left: 3pt solid {{ primary }};
+            padding: 4pt 8pt;
+            color: #555;
+            background: #f7f7f7;
+            margin: 6pt 0;
+        }
+        code {
+            font-family: "Menlo", "Consolas", monospace;
+            font-size: 9.5pt;
+            background: #eef;
+            padding: 1pt 3pt;
+            border-radius: 2pt;
+        }
+        .header {
+            border-bottom: 2pt solid {{ primary }};
+            padding-bottom: 8pt;
+            margin-bottom: 16pt;
+            display: table;
+            width: 100%;
+        }
+        .header .logo-cell, .header .name-cell {
+            display: table-cell;
+            vertical-align: middle;
+        }
+        .header .logo-cell { width: 60%; text-align: left; }
+        .header .name-cell { width: 40%; text-align: right; font-weight: bold; color: {{ primary }}; }
+        .header img { max-height: 40pt; }
+        .footer {
+            border-top: 1pt solid {{ secondary }};
+            padding-top: 6pt;
+            margin-top: 18pt;
+            font-size: 8pt;
+            color: #666;
+        }
+        .cover {
+            page-break-after: always;
+        }
+        .cover h1 {
+            font-size: 24pt;
+            border-bottom: 1pt solid {{ secondary }};
+            padding-bottom: 8pt;
+        }
+        .cover dl { margin-top: 18pt; }
+        .cover dt { font-weight: bold; color: {{ primary }}; margin-top: 8pt; }
+        .cover dd { margin-left: 0; }
+        .cover ol { margin: 4pt 0 0 16pt; }
+        .body-section {
+            page-break-before: always;
+        }
+        .header-html, .footer-html {
+            margin: 8pt 0;
+        }
+    </style>
+</head>
+<body>
+    {# ---- Letterhead ---- #}
+    <div class="header">
+        <div class="logo-cell">
+            {% if logo_path is not empty %}
+                <img src="{{ logo_path }}" alt="{{ tenant ? tenant.legalName|default(tenant.name)|default('Tenant') : 'Tenant' }}">
+            {% elseif tenant %}
+                <strong style="font-size: 14pt; color: {{ primary }};">{{ tenant.legalName|default(tenant.name)|default('') }}</strong>
+            {% endif %}
+        </div>
+        <div class="name-cell">
+            {% if tenant %}{{ tenant.legalName|default(tenant.name)|default('') }}{% endif %}
+        </div>
+    </div>
+
+    {% if header_html is not empty %}
+        <div class="header-html">{{ header_html|raw }}</div>
+    {% endif %}
+
+    {# ---- Cover page ---- #}
+    {% include 'policy_wizard/export/_pdf_cover.html.twig' with { cover: cover, primary: primary, secondary: secondary } only %}
+
+    {# ---- Body (Markdown → HTML rendered server-side) ---- #}
+    <div class="body-section">
+        {{ body_html|raw }}
+    </div>
+
+    {# ---- Footer ---- #}
+    {% include 'policy_wizard/export/_pdf_footer.html.twig' with { footer: footer, footer_html: footer_html, secondary: secondary } only %}
+</body>
+</html>

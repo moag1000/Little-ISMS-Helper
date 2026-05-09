@@ -1,0 +1,46 @@
+{# Policy-Wizard W7-A — README.md auto-index for the ZIP audit pack.
+   Renders Markdown (the consumer is a human auditor opening the ZIP
+   in a text editor or IDE — no need for HTML escaping; we still avoid
+   raw-HTML injection by relying on Twig's default autoescape). #}
+# {{ tenant.legalName|default(tenant.name)|default('Tenant') }} — Policy Audit Pack
+
+Generated on **{{ exported_on }}** by Little ISMS Helper.
+
+## Contents
+
+| # | Standard | Topic | Path | Status |
+|---|----------|-------|------|--------|
+{% for entry in entries %}
+| {{ loop.index }} | {{ entry.standard|upper }} | {{ entry.topic|replace({'_': ' '}) }} | `{{ entry.path }}` | {{ entry.status }} |
+{% endfor %}
+
+## Folder layout
+
+```
+README.md
+manifest.json   ← machine-readable index with SHA-256 hashes
+policies/
+  iso27001/<topic>.pdf
+  bsi/<topic>.pdf
+  dora/<topic>.pdf
+  bcm/<topic>.pdf
+  gdpr/<topic>.pdf
+{% if options.includeEvidence %}evidence/
+  audit-trail.csv          ← AuditLog entries for Document operations
+  soa.csv                  ← SoA control-coverage matrix
+  acknowledgements.csv     ← PolicyAcknowledgement evidence (ISO A.6.3)
+  workflow-instances.csv   ← approval-chain audit
+{% endif %}source/
+  wizard-runs.json         ← provenance: WizardRun → Document mapping
+```
+
+## Options used for this export
+
+- Include archived: **{{ options.includeArchived ? 'yes' : 'no' }}**
+- Standards: **{{ options.includeStandards|join(', ') }}**
+- Include evidence folder: **{{ options.includeEvidence ? 'yes' : 'no' }}**
+
+## Verification
+
+Each file under `policies/` has a SHA-256 hash recorded in `{{ manifest_path }}`.
+To verify, recompute the hash of the PDF and compare it with the manifest entry.
