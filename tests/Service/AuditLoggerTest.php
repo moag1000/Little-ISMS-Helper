@@ -423,6 +423,118 @@ class AuditLoggerTest extends TestCase
         $this->logger->logCreate('Document', 1, $newValues);
     }
 
+    #[Test]
+    public function testLogBulkEmitsBatchAndPerEntityEntries(): void
+    {
+        $this->setupRequest('127.0.0.1', 'TestAgent');
+        $this->setupUser('admin@example.com');
+
+        $persisted = [];
+        $this->entityManager
+            ->method('persist')
+            ->willReturnCallback(function (AuditLog $log) use (&$persisted): void {
+                $persisted[] = $log;
+            });
+
+        $batchData = [
+            'source_file_hash' => str_repeat('a', 64),
+            'file_name' => 'assets-2026.xlsx',
+            'row_count_total' => 3,
+            'row_count_success' => 3,
+            'mode' => 'initial',
+        ];
+        $perEntityData = [
+            ['action' => 'create', 'entity_id' => 101, 'new_values' => ['name' => 'Server-A']],
+            ['action' => 'create', 'entity_id' => 102, 'new_values' => ['name' => 'Server-B']],
+            ['action' => 'update', 'entity_id' => 103, 'old_values' => ['name' => 'old'], 'new_values' => ['name' => 'Server-C']],
+        ];
+
+        $batchId = $this->logger->logBulk('bulk_import', 'Asset', $batchData, $perEntityData);
+
+        // 1 batch-entry + 3 per-entity-entries = 4 total
+        self::assertCount(4, $persisted);
+
+        // batch_id is UUIDv4
+        self::assertMatchesRegularExpression(
+            '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
+            $batchId
+        );
+
+        // First entry: batch envelope with action=bulk
+        self::assertSame('bulk', $persisted[0]->getAction());
+        self::assertSame('Asset', $persisted[0]->getEntityType());
+        self::assertNull($persisted[0]->getEntityId());
+        $batchJson = $persisted[0]->getNewValues();
+        self::assertStringContainsString($batchId, $batchJson);
+        self::assertStringContainsString('"event_type":"bulk_import"', $batchJson);
+        self::assertStringContainsString('"per_entity_count":3', $batchJson);
+
+        // Per-entity entries reference batch_id and have correct action
+        foreach (array_slice($persisted, 1) as $i => $entry) {
+            self::assertSame('Asset', $entry->getEntityType());
+            self::assertSame($perEntityData[$i]['entity_id'], $entry->getEntityId());
+            self::assertStringContainsString($batchId, $entry->getNewValues());
+        }
+    }
+
+    #[Test]
+    public function testLogBulkReturnsUuidV4BatchId(): void
+    {
+        $this->setupRequest('127.0.0.1', 'TestAgent');
+        $this->setupUser('admin@example.com');
+
+        $batchId = $this->logger->logBulk(
+            'bulk_import',
+            'Asset',
+            ['source_file_hash' => str_repeat('b', 64), 'row_count_total' => 0],
+            []
+        );
+
+        self::assertMatchesRegularExpression(
+            '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
+            $batchId,
+            'batch_id must be a v4 UUID'
+        );
+    }
+
+    #[Test]
+    public function testLogBulkWithEmptyPerEntityArrayStillEmitsBatchEntry(): void
+    {
+        $this->setupRequest('127.0.0.1', 'TestAgent');
+        $this->setupUser('admin@example.com');
+
+        $persisted = [];
+        $this->entityManager
+            ->method('persist')
+            ->willReturnCallback(function (AuditLog $log) use (&$persisted): void {
+                $persisted[] = $log;
+            });
+
+        $this->logger->logBulk(
+            'sso.jit.batch',
+            'User',
+            ['source' => 'idp_sync', 'row_count_total' => 0],
+            []
+        );
+
+        self::assertCount(1, $persisted);
+        self::assertSame('bulk', $persisted[0]->getAction());
+    }
+
+    #[Test]
+    public function testLogBulkBatchIdsAreUnique(): void
+    {
+        $this->setupRequest('127.0.0.1', 'TestAgent');
+        $this->setupUser('admin@example.com');
+
+        $batchIds = [];
+        for ($i = 0; $i < 10; $i++) {
+            $batchIds[] = $this->logger->logBulk('bulk_import', 'Asset', [], []);
+        }
+
+        self::assertCount(10, array_unique($batchIds), 'each logBulk call must produce a unique batch_id');
+    }
+
     private function setupRequest(string $ip, string $userAgent): void
     {
         $request = $this->createMock(Request::class);
