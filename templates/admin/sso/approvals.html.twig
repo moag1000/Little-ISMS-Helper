@@ -45,7 +45,7 @@
                                     {% if a.tenant %}
                                         {{ a.tenant.name }}
                                     {% else %}
-                                        <span class="badge bg-primary">{{ 'sso.scope.global'|trans }}</span>
+                                        <span class="fa-status-pill fa-status-pill--primary">{{ 'sso.scope.global'|trans }}</span>
                                     {% endif %}
                                 </td>
                                 <td class="small text-muted">{{ a.requestedAt|date('Y-m-d H:i') }}</td>

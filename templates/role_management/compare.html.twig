@@ -72,7 +72,7 @@
                                     <th scope="col" class="text-center" style="width: {{ 70 / roles|length }}%">
                                         <div>{{ role.name }}</div>
                                         {% if role.isSystemRole %}
-                                            <span class="badge bg-warning text-dark">{{ 'role.compare.system_badge'|trans }}</span>
+                                            <span class="fa-status-pill fa-status-pill--warning">{{ 'role.compare.system_badge'|trans }}</span>
                                         {% endif %}
                                     </th>
                                 {% endfor %}

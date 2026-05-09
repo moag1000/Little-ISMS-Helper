@@ -92,7 +92,7 @@
                 <div class="ms-auto">
                     {% for task in urgent_tasks|default([]) %}
                         <a href="{{ task.url }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm ms-1">
-                            {{ task.label }} <span class="badge bg-danger fa-status-pill fa-status-pill--danger">{{ task.count }}</span>
+                            {{ task.label }} <span class="fa-status-pill fa-status-pill--danger">{{ task.count }}</span>
                         </a>
                     {% endfor %}
                 </div>
@@ -249,7 +249,7 @@
                                 <div class="small text-muted">{{ 'dashboard.reuse_fte.subtitle'|trans({}, 'dashboard') }}</div>
                             </div>
                             <div class="text-end">
-                                <span class="badge bg-success-subtle text-success fs-6 fa-status-pill fa-status-pill--success">
+                                <span class="fs-6 fa-status-pill fa-status-pill--success">
                                     <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                     {{ 'dashboard.reuse_fte.cta'|trans({}, 'dashboard') }}
                                 </span>

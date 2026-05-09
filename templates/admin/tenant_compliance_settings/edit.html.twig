@@ -104,9 +104,9 @@
                                 <th>{{ 'admin.tenant_settings.password_complexity'|trans }}</th>
                                 <td>
                                     {% if globals.password_require_complexity %}
-                                        <span class="badge bg-success">{{ 'admin.tenant_settings.enforced'|trans }}</span>
+                                        <span class="fa-status-pill fa-status-pill--success">{{ 'admin.tenant_settings.enforced'|trans }}</span>
                                     {% else %}
-                                        <span class="badge bg-warning">{{ 'admin.tenant_settings.disabled'|trans }}</span>
+                                        <span class="fa-status-pill fa-status-pill--warning">{{ 'admin.tenant_settings.disabled'|trans }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -140,9 +140,9 @@
                                 <th>{{ 'admin.tenant_settings.telemetry'|trans }}</th>
                                 <td>
                                     {% if globals.telemetry_opt_in %}
-                                        <span class="badge bg-info">opt-in</span>
+                                        <span class="fa-status-pill fa-status-pill--primary">opt-in</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">off</span>
+                                        <span class="fa-status-pill fa-status-pill--neutral">off</span>
                                     {% endif %}
                                 </td>
                             </tr>

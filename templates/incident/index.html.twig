@@ -332,7 +332,7 @@
                 </td>
                 <td class="text-center">
                     {% if incident.affectedAssets|length > 0 %}
-                        <a href="{{ path('app_incident_show', {id: incident.id}) }}#affected-assets" class="badge bg-warning-subtle text-warning" title="{{ 'incident.field.affected_assets'|trans({}, 'incident') }}">
+                        <a href="{{ path('app_incident_show', {id: incident.id}) }}#affected-assets" class="fa-status-pill fa-status-pill--warning" title="{{ 'incident.field.affected_assets'|trans({}, 'incident') }}">
                             {{ incident.affectedAssets|length }}
                         </a>
                     {% else %}

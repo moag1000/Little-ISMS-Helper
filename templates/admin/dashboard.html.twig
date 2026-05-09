@@ -135,11 +135,11 @@
                                 <tr>
                                     <td><i class="fa-icon fa-icon--nav-cpu text-primary" aria-hidden="true"></i> {{ 'admin.dashboard.modules.assets'|trans({}, 'admin') }}</td>
                                     {% if currentTenant %}
-                                        <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.own }}</span></td>
-                                        <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.own + stats.modules.assets.inherited }}</span></td>
-                                        <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--primary">{{ stats.modules.assets.own }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--primary">{{ stats.modules.assets.own + stats.modules.assets.inherited }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--primary">{{ stats.modules.assets.total }}</span></td>
                                     {% else %}
-                                        <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--primary">{{ stats.modules.assets.total }}</span></td>
                                     {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_asset_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
@@ -148,11 +148,11 @@
                                 <tr>
                                     <td><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'admin.dashboard.modules.risks'|trans({}, 'admin') }}</td>
                                     {% if currentTenant %}
-                                        <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.own }}</span></td>
-                                        <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.own + stats.modules.risks.inherited }}</span></td>
-                                        <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--danger">{{ stats.modules.risks.own }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--danger">{{ stats.modules.risks.own + stats.modules.risks.inherited }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--danger">{{ stats.modules.risks.total }}</span></td>
                                     {% else %}
-                                        <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--danger">{{ stats.modules.risks.total }}</span></td>
                                     {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_risk_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
@@ -161,11 +161,11 @@
                                 <tr>
                                     <td><i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i> {{ 'admin.dashboard.modules.controls'|trans({}, 'admin') }}</td>
                                     {% if currentTenant %}
-                                        <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.own }}</span></td>
-                                        <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.own + stats.modules.controls.inherited }}</span></td>
-                                        <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--success">{{ stats.modules.controls.own }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--success">{{ stats.modules.controls.own + stats.modules.controls.inherited }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--success">{{ stats.modules.controls.total }}</span></td>
                                     {% else %}
-                                        <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--success">{{ stats.modules.controls.total }}</span></td>
                                     {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_soa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
@@ -174,11 +174,11 @@
                                 <tr>
                                     <td><i class="fa-icon fa-icon--vulnerability fa-icon--warning" aria-hidden="true"></i> {{ 'admin.dashboard.modules.incidents'|trans({}, 'admin') }}</td>
                                     {% if currentTenant %}
-                                        <td class="text-end"><span class="badge bg-warning text-dark">{{ stats.modules.incidents.own }}</span></td>
-                                        <td class="text-end"><span class="badge bg-warning text-dark">{{ stats.modules.incidents.own + stats.modules.incidents.inherited }}</span></td>
-                                        <td class="text-end"><span class="badge bg-warning text-dark">{{ stats.modules.incidents.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--warning">{{ stats.modules.incidents.own }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--warning">{{ stats.modules.incidents.own + stats.modules.incidents.inherited }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--warning">{{ stats.modules.incidents.total }}</span></td>
                                     {% else %}
-                                        <td class="text-end"><span class="badge bg-warning text-dark">{{ stats.modules.incidents.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--warning">{{ stats.modules.incidents.total }}</span></td>
                                     {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_incident_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
@@ -187,11 +187,11 @@
                                 <tr>
                                     <td><i class="fa-icon fa-icon--audit-internal" aria-hidden="true"></i> {{ 'admin.dashboard.modules.audits'|trans({}, 'admin') }}</td>
                                     {% if currentTenant %}
-                                        <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.own }}</span></td>
-                                        <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.own + stats.modules.audits.inherited }}</span></td>
-                                        <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--primary">{{ stats.modules.audits.own }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--primary">{{ stats.modules.audits.own + stats.modules.audits.inherited }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--primary">{{ stats.modules.audits.total }}</span></td>
                                     {% else %}
-                                        <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--primary">{{ stats.modules.audits.total }}</span></td>
                                     {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_audit_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
@@ -200,11 +200,11 @@
                                 <tr>
                                     <td><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.dashboard.modules.compliance'|trans({}, 'admin') }}</td>
                                     {% if currentTenant %}
-                                        <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.own }}</span></td>
-                                        <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.own + stats.modules.compliance_requirements.inherited }}</span></td>
-                                        <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--neutral">{{ stats.modules.compliance_requirements.own }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--neutral">{{ stats.modules.compliance_requirements.own + stats.modules.compliance_requirements.inherited }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--neutral">{{ stats.modules.compliance_requirements.total }}</span></td>
                                     {% else %}
-                                        <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--neutral">{{ stats.modules.compliance_requirements.total }}</span></td>
                                     {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
@@ -213,11 +213,11 @@
                                 <tr>
                                     <td><i class="fa-icon fa-icon--training" aria-hidden="true"></i> {{ 'admin.dashboard.modules.trainings'|trans({}, 'admin') }}</td>
                                     {% if currentTenant %}
-                                        <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.own }}</span></td>
-                                        <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.own + stats.modules.trainings.inherited }}</span></td>
-                                        <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--neutral">{{ stats.modules.trainings.own }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--neutral">{{ stats.modules.trainings.own + stats.modules.trainings.inherited }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--neutral">{{ stats.modules.trainings.total }}</span></td>
                                     {% else %}
-                                        <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.total }}</span></td>
+                                        <td class="text-end"><span class="fa-status-pill fa-status-pill--neutral">{{ stats.modules.trainings.total }}</span></td>
                                     {% endif %}
                                     <td class="text-end">
                                         <a href="{{ path('app_training_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.view'|trans({}, 'messages') }}</a>
@@ -319,7 +319,7 @@
                                             <p class="mb-1 small text-muted">
                                                 {{ log.entityType }} #{{ log.entityId }}
                                                 {% if log.username %}
-                                                    <span class="badge bg-light text-dark border">{{ log.username }}</span>
+                                                    <span class="fa-status-pill fa-status-pill--neutral border">{{ log.username }}</span>
                                                 {% endif %}
                                             </p>
                                         </div>

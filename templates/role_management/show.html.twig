@@ -46,7 +46,7 @@
             <h2 class="fa-section__title">
                 <i class="fa-icon fa-icon--ui-key" aria-hidden="true"></i>
                 {{ 'role_management.section.permissions'|trans({}, 'role_management') }}
-                <span class="badge bg-secondary ms-2">{{ role.permissions|length }}</span>
+                <span class="fa-status-pill fa-status-pill--neutral ms-2">{{ role.permissions|length }}</span>
             </h2>
         </div>
         <div class="fa-section__body">
@@ -64,8 +64,8 @@
                             {% for permission in role.permissions %}
                                 <tr>
                                     <td><strong>{{ permission.name }}</strong></td>
-                                    <td><span class="badge bg-info">{{ permission.resource }}</span></td>
-                                    <td><span class="badge bg-secondary">{{ permission.action }}</span></td>
+                                    <td><span class="fa-status-pill fa-status-pill--primary">{{ permission.resource }}</span></td>
+                                    <td><span class="fa-status-pill fa-status-pill--neutral">{{ permission.action }}</span></td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -83,7 +83,7 @@
             <h2 class="fa-section__title">
                 <i class="fa-icon fa-icon--group" aria-hidden="true"></i>
                 {{ 'role_management.section.users'|trans({}, 'role_management') }}
-                <span class="badge bg-secondary ms-2">{{ role.users|length }}</span>
+                <span class="fa-status-pill fa-status-pill--neutral ms-2">{{ role.users|length }}</span>
             </h2>
         </div>
         <div class="fa-section__body">

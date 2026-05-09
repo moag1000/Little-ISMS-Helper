@@ -274,7 +274,7 @@
                 {% if subsidiary.governanceLabel %}
                     {% set governance_variant = {'hierarchical': 'primary', 'shared': 'warning'}[subsidiary.governanceModel]|default('secondary') %}
                     {% if governance_variant == 'warning' %}
-                        <span class="badge bg-warning text-dark ms-2">{{ subsidiary.governanceLabel }}</span>
+                        <span class="fa-status-pill fa-status-pill--warning ms-2">{{ subsidiary.governanceLabel }}</span>
                     {% else %}
                         <span class="badge bg-{{ governance_variant }} ms-2">{{ subsidiary.governanceLabel }}</span>
                     {% endif %}

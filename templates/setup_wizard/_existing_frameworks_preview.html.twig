@@ -43,7 +43,7 @@
                         </td>
                         <td class="text-end">
                             {% if row.estimated_reusable > 0 %}
-                                <span class="badge bg-success fa-status-pill fa-status-pill--success">
+                                <span class="fa-status-pill fa-status-pill--success">
                                     {{ row.estimated_reusable }}
                                     <small class="ms-1">({{ row.reuse_percentage }}%)</small>
                                 </span>
@@ -65,7 +65,7 @@
                                 </span>
                             {% else %}
                                 {% for source in row.sources %}
-                                    <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral me-1">{{ source }}</span>
+                                    <span class="border fa-status-pill fa-status-pill--neutral me-1">{{ source }}</span>
                                 {% endfor %}
                             {% endif %}
                         </td>
