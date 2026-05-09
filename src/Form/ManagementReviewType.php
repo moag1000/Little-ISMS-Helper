@@ -96,6 +96,20 @@ class ManagementReviewType extends AbstractType
                     'size' => 6,
                 ],
             ])
+            ->add('personParticipants', EntityType::class, [
+                'label' => 'management_review.field.person_participants',
+                'help' => 'management_review.help.person_participants',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'multiple' => true,
+                'expanded' => false,
+                // ManyToMany — by_reference=false uses addPersonParticipant/removePersonParticipant.
+                'by_reference' => false,
+                'required' => false,
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+            ])
             ->add('status', ChoiceType::class, [
                 'label' => 'management_review.field.status',
                 'choices' => [

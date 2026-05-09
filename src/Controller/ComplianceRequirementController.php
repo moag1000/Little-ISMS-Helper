@@ -343,6 +343,16 @@ class ComplianceRequirementController extends AbstractController
             }
         }
 
+        // Person-Rollout Phase B2 — yearly attestation owner (governance
+        // role-holder, distinct from day-to-day responsible_person_*).
+        $attestationOwnerPersonId = $request->request->get('attestationOwnerPersonId');
+        if ($attestationOwnerPersonId !== null) {
+            $attestationOwner = $attestationOwnerPersonId !== ''
+                ? $this->personRepository->find((int) $attestationOwnerPersonId)
+                : null;
+            $fulfillment->setAttestationOwnerPerson($attestationOwner instanceof Person ? $attestationOwner : null);
+        }
+
         $fulfillment->setUpdatedAt(new DateTimeImmutable());
         $fulfillment->setLastUpdatedBy($this->getUser());
 

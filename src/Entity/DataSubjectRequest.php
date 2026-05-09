@@ -251,6 +251,15 @@ class DataSubjectRequest
     private Collection $assignedDeputyPersons;
 
     /**
+     * Person-Rollout Phase B2 — governance-side DPO accountable for the
+     * Data Subject Request, distinct from `assignedTo` (action handler).
+     * Often an external Data Protection Officer.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'dpo_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Person $dpoPerson = null;
+
+    /**
      * Linked processing activity (VVT Art. 30)
      */
     #[ORM\ManyToOne(targetEntity: ProcessingActivity::class)]
@@ -697,6 +706,28 @@ class DataSubjectRequest
     public function getAllAssignedOwners(): array
     {
         return OwnerResolver::resolveAll($this->assignedTo, $this->assignedPerson, null, $this->assignedDeputyPersons);
+    }
+
+    public function getDpoPerson(): ?Person
+    {
+        return $this->dpoPerson;
+    }
+
+    public function setDpoPerson(?Person $dpoPerson): static
+    {
+        $this->dpoPerson = $dpoPerson;
+        return $this;
+    }
+
+    /**
+     * Effective DPO display: prefer the new `dpoPerson.fullName`,
+     * fall back to the assignment User (action handler is often the DPO
+     * in single-DPO orgs). Returns null when neither is set.
+     */
+    public function getEffectiveDpoName(): ?string
+    {
+        return $this->dpoPerson?->getFullName()
+            ?? $this->assignedTo?->getFullName();
     }
 
     public function getProcessingActivity(): ?ProcessingActivity

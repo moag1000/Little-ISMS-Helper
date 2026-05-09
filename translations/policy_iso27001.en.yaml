@@ -1,0 +1,662 @@
+policy:
+    iso27001:
+        top_level:
+            v1:
+                title: 'Information Security Policy'
+                body: |-
+                    # Information Security Policy of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Normative anchor: ISO/IEC 27001:2022 Clause 5.2 | Language: British English | Review interval: {{ review.interval_months }} months*
+
+                    ## 1. Purpose
+                    This Information Security Policy is issued by the top management of {{ tenant.legal_name }} and constitutes the highest normative statement of the information security management system (ISMS). It governs all subordinate topic-specific policies, procedures and work instructions. This policy is appropriate to the purpose of the organisation and provides the framework for setting information security objectives in accordance with ISO/IEC 27001:2022, Cl. 5.2 a) and b). It commits the organisation to satisfying applicable requirements and to the continual improvement of the ISMS in accordance with Cl. 5.2 c) and d).
+
+                    ## 2. Scope
+                    The scope of the ISMS encompasses all information assets, business processes, sites, personnel and third parties documented in the ISMS scope statement under Clause 4.3 of ISO/IEC 27001:2022:
+
+                    > {{ tenant.scope_statement }}
+
+                    This policy applies to all employees (regardless of contractual basis), contractors, interns, working students and all third parties processing information on behalf of the organisation or having access to information assets.
+
+                    Pursuant to ISO/IEC 27001:2022/Amd. 1:2024, climate change is taken into account as an external and internal issue when determining the context of the organisation under Clauses 4.1 and 4.2. Climate-related risks (for example impacts of extreme weather events on physical sites, supply chains, energy supply and personnel availability) are addressed in the annual risk assessment where they are material to the information security of the organisation.
+
+                    ## 3. Information Security Objectives
+                    The organisation pursues the following overarching information security objectives, derived from business goals, stakeholder requirements, risk assessments and regulatory obligations:
+
+                    1. **Confidentiality** – protection of information against unauthorised disclosure, applied through {{ data.classification_levels }} classification levels in accordance with the Information Classification & Handling Policy.
+                    2. **Integrity** – assurance of the accuracy and completeness of information and processing methods.
+                    3. **Availability** – provision of information and associated services to authorised users at the time required, supported by the Backup Policy and ICT Continuity Policy.
+                    4. **Compliance** – adherence to applicable legal, regulatory and contractual requirements, in particular the EU General Data Protection Regulation (Regulation (EU) 2016/679), the German Federal Data Protection Act, and sector-specific obligations.
+                    5. **Resilience** – continuity of critical business processes during disruption in accordance with A.5.29 and A.5.30.
+                    6. **Continual Improvement** – maturation of the ISMS through Management Review (Cl. 9.3), internal audit (Cl. 9.2) and corrective action (Cl. 10.1).
+
+                    This policy provides the framework within which measurable information security objectives are set, monitored and reviewed annually pursuant to ISO/IEC 27001:2022 Clause 6.2. The current measurable objectives are documented in the separate document *Information Security Objectives of {{ tenant.legal_name }}*.
+
+                    ## 4. Top Management Commitment
+                    The top management of {{ tenant.legal_name }} commits, in line with ISO/IEC 27001:2022 Clause 5.1, to:
+
+                    - providing the resources required (personnel, financial, infrastructural) for the establishment, implementation, maintenance and continual improvement of the ISMS;
+                    - ensuring that information security requirements are integrated into the business processes of the organisation;
+                    - promoting the importance of effective information security and of conformity with the ISMS requirements;
+                    - ensuring that the ISMS achieves its intended outcomes;
+                    - directing and supporting persons contributing to the effectiveness of the ISMS;
+                    - promoting the continual improvement of the ISMS;
+                    - supporting other relevant management roles to demonstrate their leadership as it applies to their areas.
+
+                    Top management delegates operational responsibility for the ISMS to the Chief Information Security Officer {{ roles.ciso.fullName }}, while retaining non-delegable overall accountability under Clause 5.1.
+
+                    ## 5. Roles, Responsibilities and Authorities
+                    Pursuant to Clause 5.3 of ISO/IEC 27001:2022, responsibilities are assigned as follows:
+
+                    - **Top management** – approval of this policy, provision of resources, performance of the Management Review under Clause 9.3.
+                    - **CISO / Information Security Officer** – {{ roles.ciso.fullName }}: governance of the ISMS, reporting to top management, approval of subordinate policies.
+                    - **Data Protection Officer (DPO)** – {{ roles.dpo.fullName }}: review of privacy-relevant sections, advisory under Article 39 GDPR.
+                    - **Compliance Manager** – review of conformity with applicable frameworks, maintenance of the Statement of Applicability (SoA).
+                    - **Risk owners** – accountability for risks within their respective areas of responsibility under Clause 6.1.
+                    - **Asset owners** – accountability for information assets under A.5.9.
+                    - **Employees and contractors** – adherence to this policy and all subordinate policies, reporting of security events through the documented channel pursuant to A.6.8.
+
+                    The approval chain for this policy comprises: {{ approval.chain }}.
+
+                    ## 6. Framework and Applicable Frameworks
+                    The organisation aligns with the following frameworks:
+
+                    - **ISO/IEC 27001:2022** including Amd. 1:2024 – primary certification framework.
+                    - **ISO/IEC 27002:2022** – guidance for Annex A controls.
+                    - **GDPR (Regulation (EU) 2016/679)** and **German Federal Data Protection Act (BDSG)** – data protection framework.
+                    - Where applicable: **EU Digital Operational Resilience Act, Regulation (EU) 2022/2554**, **NIS2 Directive (EU) 2022/2555**, **BSI IT-Grundschutz**, **ISO/IEC 27701:2025** (Privacy Information Management System).
+
+                    The associated topic-specific policies cover the applicable Annex A controls and are documented in the Statement of Applicability under Cl. 6.1.3 d).
+
+                    ## 7. Risk Appetite
+                    The organisation's risk appetite is set by top management at tier **{{ risk.appetite_tier }}** (scale 1 = risk-averse to 5 = risk-seeking). This setting governs the thresholds for risk acceptance, treatment options and escalation paths in accordance with the separate Risk Appetite Statement and the Risk Management Policy.
+
+                    ## 8. Exceptions
+                    Deviations from this policy or its subordinate policies are not permitted as a rule. In justified cases, time-limited exceptions may be requested. Requests are submitted in writing to the CISO {{ roles.ciso.fullName }} and shall include a description of the deviation, justification, risk assessment, compensating controls, time limit (maximum 12 months), requestor and approver. Approved exceptions are entered in the exceptions register and reviewed during the next internal audit under Clause 9.2.
+
+                    ## 9. Review and Change Cycle
+                    This policy is reviewed at least every {{ review.interval_months }} months and upon material change (for example change of scope, change of top management, major security incident, change of applicable regulation). The review is performed by the CISO and presented to top management as part of the Management Review under Clause 9.3. Changes require renewed approval by the chain set out in Section 5. Earlier approved versions remain available in the audit log under Clause 7.5 in tamper-evident form for at least seven years.
+
+                    ## 10. Communication and Training
+                    This policy is made available to all employees and relevant third parties (Cl. 5.2 f). Communication channels include the intranet, the on-boarding process for new employees, mandatory annual training under A.6.3, and contractual obligations placed on third parties under A.5.20. External publication occurs only where authorised by top management (Cl. 5.2 g).
+
+                    ## 11. Terms and Definitions
+                    The definitions of ISO/IEC 27000:2018 apply. Key terms:
+
+                    - **Information Security Management System (ISMS)** – part of the overall management system that establishes, implements, operates, monitors, reviews, maintains and improves information security based on a business risk approach.
+                    - **Asset** – anything that has value to the organisation (information, hardware, software, personnel, site, reputation, third party).
+                    - **Risk** – the effect of uncertainty on objectives.
+                    - **Control** – a measure that modifies risk (for example Annex A controls).
+
+                    ## 12. Breaches
+                    Breaches of this policy may result in disciplinary action under the Human Resources Security Policy (A.6.4), civil consequences or criminal prosecution. Third parties face contractual consequences under A.5.20.
+
+                    ## 13. Mandatory References to Subordinate Policies
+                    This policy is supplemented by topic-specific policies in line with Annex A of ISO/IEC 27001:2022, including: Acceptable Use Policy, Access Control Policy, Information Classification & Handling Policy, Information Transfer Policy, Identity Management Policy, Authentication Information Policy, Cryptography Policy, Backup Policy, Logging & Monitoring Policy, Vulnerability & Patch Management Policy, Malware Protection Policy, Secure Configuration Policy, Network Security Policy, Secure Development Policy, Supplier Security Policy, Human Resources Security Policy, Physical & Environmental Security Policy, Mobile Device & Remote Working Policy, Asset Management Policy, Privacy & PII Protection Policy, Information Security Incident Management Policy, ICT Continuity Policy, Threat Intelligence Policy.
+
+                    ---
+                    *This policy is appropriate to the purpose of the organisation and commits to the continual improvement of the ISMS.*
+                section:
+                    purpose:
+                        title: 'Purpose of the Policy'
+                        body: |-
+                            This policy establishes the information security management system of {{ tenant.legal_name }} pursuant to ISO/IEC 27001:2022 Clause 5.2 and ensures that requirements a) to g) of the standard are met: appropriate to the purpose of the organisation, framework for information security objectives, commitment to satisfy applicable requirements, commitment to continual improvement, available as documented information, communicated within the organisation and available to interested parties as appropriate.
+                    scope:
+                        title: 'Scope'
+                        body: |-
+                            The scope of the ISMS is defined in the separate *Scope Statement* (Clause 4.3):
+
+                            > {{ tenant.scope_statement }}
+
+                            Pursuant to ISO/IEC 27001:2022/Amd. 1:2024, climate-related issues are taken into account as part of the external context where material. This policy obliges all employees, contractors and third parties acting within the defined scope.
+                    objectives:
+                        title: 'Information Security Objectives'
+                        body: |-
+                            The overarching protection goals of confidentiality, integrity and availability, together with derived compliance and resilience objectives, form the framework within which measurable annual information security objectives are set under Clause 6.2. The current objectives are documented separately.
+                    commitment:
+                        title: 'Top Management Commitment'
+                        body: |-
+                            The top management of {{ tenant.legal_name }} commits to providing the necessary resources, integrating information security into the business processes and continually improving the ISMS in accordance with Clause 5.1 of ISO/IEC 27001:2022. This commitment is non-delegable.
+                    framework:
+                        title: 'Framework'
+                        body: |-
+                            This policy is the highest normative statement of the ISMS. Subordinate topic-specific policies cover the applicable Annex A controls and are documented in the Statement of Applicability under Clause 6.1.3 d).
+                    exceptions:
+                        title: 'Exceptions'
+                        body: |-
+                            Exceptions to this policy are permitted only in justified cases and only on a time-limited basis (maximum 12 months). Requests are submitted to the CISO and recorded in the exceptions register.
+                    review:
+                        title: 'Review and Change Cycle'
+                        body: |-
+                            This policy is reviewed at least every {{ review.interval_months }} months and upon material change. Earlier approved versions are retained in tamper-evident form for at least seven years pursuant to Clause 7.5.
+                    applicable_frameworks:
+                        title: 'Applicable Frameworks'
+                        body: |-
+                            ISO/IEC 27001:2022 (incl. Amd. 1:2024), ISO/IEC 27002:2022, GDPR, BDSG; where applicable EU DORA (Regulation (EU) 2022/2554), NIS2 (Directive (EU) 2022/2555), BSI IT-Grundschutz, ISO/IEC 27701:2025.
+                    communication:
+                        title: 'Communication and Training'
+                        body: |-
+                            This policy is communicated through the intranet, the on-boarding process and mandatory annual training under A.6.3 of ISO/IEC 27002:2022. Third parties are obliged through contractual clauses under A.5.20.
+                    definitions:
+                        title: 'Terms and Definitions'
+                        body: |-
+                            Terms align with ISO/IEC 27000:2018, in particular ISMS, asset, risk and control.
+                tailoring_field:
+                    organisation_specific_objectives:
+                        label: 'Organisation-specific Security Objectives'
+                        placeholder: 'Example: "We aim for at least 99.5 % availability of our core services on an annual basis, a 20 % year-on-year reduction of security-relevant incidents, and a 100 % training-completion rate by the end of Q3."'
+                    board_reporting_cadence:
+                        label: 'Board Reporting Cadence'
+                        placeholder: 'Example: "Quarterly written CISO report to the executive board; annual Management Review under Clause 9.3 in February; ad-hoc escalation for incidents classified as high or critical."'
+                    sector_specific_threats:
+                        label: 'Sector-specific Threats and Requirements'
+                        placeholder: 'Example: "As a financial services firm we are subject to EU DORA and face elevated targeted-phishing and supply-chain compromise threats. Resulting priorities: third-party register, exit strategies for critical providers, regular threat-intelligence review under A.5.7."'
+        acceptable_use:
+            v1:
+                title: 'Acceptable Use Policy'
+                body: |-
+                    # Acceptable Use Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: ISO/IEC 27001:2022 Annex A.5.10, ISO/IEC 27002:2022 § 5.10 | Review interval: {{ review.interval_months }} months*
+
+                    ## 1. Purpose
+                    This policy sets out the rules for the acceptable use of information and other associated assets in accordance with ISO/IEC 27002:2022 § 5.10: *"Rules for the acceptable use of information and other associated assets shall be identified, documented and implemented."* It safeguards the confidentiality, integrity and availability of the information assets of {{ tenant.legal_name }} and gives effect to the Information Security Policy.
+
+                    ## 2. Scope
+                    This policy applies to all employees (permanent, fixed-term, on probation), contractors, interns, working students and all third parties with access to information assets of the organisation. The asset categories covered under A.5.9 include:
+
+                    - hardware: laptops, desktops, smartphones, tablets, printers, removable storage devices;
+                    - software: operating systems, business applications, cloud accounts, communications services;
+                    - information: digital and physical documents, databases, backups, e-mail archives;
+                    - services: virtual private networks, telephony, video conferencing, AI tools.
+
+                    ## 3. General Principles
+                    1. Information assets are used solely for business purposes. Occasional personal use is permitted only as set out in the separate Personal Use Agreement.
+                    2. Personnel act in accordance with the Information Classification & Handling Policy ({{ data.classification_levels }} classification levels).
+                    3. Use is governed by the need-to-know principle and the Access Control Policy.
+                    4. Breaches are addressed under the Human Resources Security Policy.
+
+                    ## 4. Permitted Use
+                    - Processing of business information on devices and services approved by the organisation.
+                    - Storage of business data only at approved locations (see Annex *Approved Data Repositories*).
+                    - Use of corporate e-mail addresses only for business correspondence.
+                    - Use of AI tools only from the approved list (see annex); inputting information of classification *internal* or above into non-approved AI tools is prohibited.
+
+                    ## 5. Prohibited Use
+                    The following acts are expressly prohibited:
+
+                    - sharing of authentication information (passwords, tokens, MFA codes) with third parties or colleagues;
+                    - installation of non-approved software on corporate devices (see Secure Configuration Policy);
+                    - circumvention of security controls (for example disabling disk encryption, bypassing the web filter, using private VPN services);
+                    - storage of business information in private cloud accounts or on private removable media;
+                    - sending of confidential information through unencrypted channels in breach of the Information Transfer Policy;
+                    - use of corporate devices for unlawful purposes (illegal downloads, copyright-infringing content, hate content);
+                    - representing the organisation on social media without explicit authorisation from Communications;
+                    - submitting personal data or trade secrets to public AI tools.
+
+                    ## 6. Mobile Devices and Removable Media
+                    The use of corporate mobile devices (laptop, smartphone, tablet) follows the Mobile Device & Remote Working Policy. Removable media (USB sticks, external hard drives) may only be used in IT-approved hardware-encrypted form. Private removable media are prohibited on corporate devices.
+
+                    ## 7. BYOD and Private E-Mail
+                    The use of private devices (Bring Your Own Device) is permitted only where the device is enrolled in the organisation's mobile device management and a separate BYOD agreement has been signed. The use of private e-mail addresses for business purposes is prohibited.
+
+                    ## 8. Internet, Social Media and AI Tools
+                    1. Internet usage is logged in line with the Network Security Policy. Misuse is addressed under the Human Resources Security Policy.
+                    2. Posts on social media that may be perceived as representing the organisation require prior approval by Communications.
+                    3. When using approved AI tools, no confidential or personal data shall be entered; outputs shall be critically reviewed and shall not be used as a sole basis for decisions without verification.
+
+                    ## 9. Notice on Logging and Monitoring
+                    The organisation logs the use of IT systems pursuant to the Logging & Monitoring Policy for the purposes of information security, incident analysis and compliance. Processing complies with Article 6(1)(c) and (f) GDPR, the German BDSG, and the works-council agreements in place. Content monitoring of correspondence does not take place absent specific cause and without involvement of the Data Protection Officer {{ roles.dpo.fullName }}.
+
+                    ## 10. Return of Assets
+                    On termination of employment or change of role, all assets provided by the organisation shall be returned promptly and undamaged (A.5.11 *Return of assets*). This includes hardware, removable media, keys, badges, tokens and all paper-form business information.
+
+                    ## 11. Reporting of Security Events
+                    Personnel are obliged to report suspected or confirmed security events without delay through the documented channel (Service Desk / security@{{ tenant.legal_name }}) under A.6.8 *Information security event reporting*. Handling follows the Information Security Incident Management Policy.
+
+                    ## 12. Sanctions
+                    Breaches of this policy are addressed pursuant to the Human Resources Security Policy and A.6.4 ("Disciplinary process"). Serious breaches may result in employment-law, civil-law or criminal-law consequences. Third parties face contractual consequences under A.5.20. Individual cases are assessed under the four-eyes principle by HR leadership and the CISO {{ roles.ciso.fullName }}, with the Data Protection Officer {{ roles.dpo.fullName }} consulted on matters concerning personal data.
+
+                    ## 13. Training and Acknowledgement
+                    All personnel acknowledge this policy on onboarding and on every material update. Acknowledgement is captured electronically through the training and awareness module under the Human Resources Security Policy and is retained in tamper-evident form. Training content includes typical scenarios (phishing, tailgating, shoulder surfing) and sector-specific risk profiles informed by threat intelligence.
+
+                    ## 14. Review Interval
+                    This policy is reviewed every {{ review.interval_months }} months and upon material changes to the working model (for example new BYOD programme, introduction of new cloud services, change to AI-tool strategy, introduction of new collaboration tools). Material changes are communicated to all personnel and require renewed acknowledgement under Section 13.
+
+                    ## 15. Linked Annex A Controls
+                    A.5.10, A.5.11 (Return of assets), A.6.7 (Remote working), A.7.9 (Security of off-premises assets), A.8.1 (User endpoint devices).
+                tailoring_field:
+                    byod_stance:
+                        label: 'BYOD (Bring Your Own Device) Stance'
+                        placeholder: 'Example: "BYOD is permitted for smartphones and tablets subject to enrolment in our MDM (Microsoft Intune). BYOD laptops are not permitted. A separate BYOD agreement shall be signed before first use."'
+                    ai_tool_stance:
+                        label: 'AI Tool Use Stance'
+                        placeholder: 'Example: "Approved AI tools: ChatGPT Enterprise, Microsoft Copilot Business, internal RAG system. Prohibited: free public AI tools for data classified internal or above. AI-tool approvals: CISO in consultation with DPO."'
+                    monitoring_stance:
+                        label: 'Monitoring Stance and Works-Council Agreement'
+                        placeholder: 'Example: "Logging in line with Works-Council Agreement No. 2024-03 of 15 April 2024. Content monitoring only on cause with four-eyes principle CISO + Works-Council Chair + DPO. Retention: security logs 12 months, application logs 90 days."'
+        access_control:
+            v1:
+                title: 'Access Control Policy'
+                body: |-
+                    # Access Control Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: ISO/IEC 27001:2022 Annex A.5.15, ISO/IEC 27002:2022 § 5.15 | Review interval: {{ review.interval_months }} months*
+
+                    ## 1. Purpose
+                    This policy establishes rules to control physical and logical access to information and other associated assets in accordance with ISO/IEC 27002:2022 § 5.15: *"Rules to control physical and logical access to information and other associated assets shall be established and implemented based on business and information security requirements."* It gives effect to A.5.16 (Identity management), A.5.17 (Authentication information), A.5.18 (Access rights), A.8.2 (Privileged access rights), A.8.3 (Information access restriction), A.8.4 (Access to source code) and A.8.5 (Secure authentication).
+
+                    ## 2. Scope
+                    This policy applies to all information systems, applications, databases, network resources, cloud services and physical areas of {{ tenant.legal_name }}, including third-party access to such resources.
+
+                    ## 3. Guiding Principles
+                    Access control at {{ tenant.legal_name }} rests on the following principles:
+
+                    - **Least privilege** – permissions are limited to the minimum necessary for performing the duties assigned.
+                    - **Need-to-know** – access to information is granted only where required for the duties.
+                    - **Segregation of duties (A.5.3)** – conflicting duties (for example approval and execution, accounting and payment release) are split across distinct individuals.
+                    - **Default deny** – access is refused by default unless expressly granted.
+                    - **Four-eyes principle** for privileged actions (for example granting administrative rights).
+
+                    ## 4. Authorisation Model
+                    {{ tenant.legal_name }} operates a role-based access control (RBAC) model. Business areas define roles together with the permissions required. Role assignment is performed exclusively through the documented request and approval process (see Section 5). Direct grants of individual permissions outside of roles are not permitted.
+
+                    ## 5. Request and Approval Process
+                    1. Requests are raised through the IT service management system by the line manager of the requesting individual.
+                    2. For privileged permissions (administrator, database administrator, cloud administrator), additional approval by the CISO {{ roles.ciso.fullName }} is required.
+                    3. For access to personal data the DPO {{ roles.dpo.fullName }} is consulted.
+                    4. Provisioning takes place only after approvals are complete; every grant is logged (A.5.18).
+
+                    ## 6. Joiner-Mover-Leaver Process (JML)
+                    The JML process is jointly owned by HR and IT:
+
+                    - **Joiner** – before first working day, default permissions for the role are provisioned; personal authentication is set up under the Authentication Information Policy (initial password + forced change + MFA).
+                    - **Mover** – on role change, all previous roles are revoked and new roles are granted; role accumulation is not permitted.
+                    - **Leaver** – on termination of employment, all permissions are deactivated immediately (on the last working day; immediately on involuntary termination). Accounts are retained in deactivated state for 30 days and subsequently deleted.
+
+                    ## 7. Privileged Access Rights (A.8.2)
+                    Privileged accounts are subject to enhanced requirements:
+
+                    - separation between standard account and admin account;
+                    - mandatory multi-factor authentication;
+                    - use through the privileged access management (PAM) solution with session recording;
+                    - just-in-time entitlements with time limits (maximum 8 hours);
+                    - four-eyes approval for critical actions.
+
+                    ## 8. Access Reviews (A.5.18)
+                    Permissions are recertified at least every six months by the line managers as part of the annual access recertification programme. Privileged permissions are reviewed quarterly. Permissions no longer required are revoked without delay. Recertification results are reported to the CISO.
+
+                    ## 9. Authentication
+                    Authentication is governed by the Authentication Information Policy. Multi-factor authentication is mandatory for all employees and third parties when accessing from external networks, for all privileged accounts, and for all applications providing access to personal or confidential data.
+
+                    ## 10. Remote Access
+                    Remote access to internal resources is permitted only through approved VPN or zero-trust network access solutions. Remote access is governed by the Mobile Device & Remote Working Policy. Third-party remote access takes place exclusively through dedicated third-party access nodes with session recording.
+
+                    ## 11. Third-Party Access
+                    Third-party access (suppliers, auditors, external consultants) is granted under the following conditions: a written contract with security clauses pursuant to A.5.20, individually named accounts (no shared accounts), MFA, time-limited grants, and supervision by internal owners during sensitive activities.
+
+                    ## 12. Access to Source Code (A.8.4)
+                    Access to the source code of {{ tenant.legal_name }} is restricted to the development team and to legitimate review functions. Code repositories are protected by four-eyes pull-request reviews. Write access to production branches requires successful code review and passing automated security checks (see Secure Development Policy).
+
+                    ## 13. Logging and Monitoring
+                    All access events are logged pursuant to the Logging & Monitoring Policy: sign-ins (successful and failed), permission changes, privileged actions, access to confidential data. Suspicious patterns (for example multiple failed sign-ins, unusual sign-in times) trigger SIEM alerts.
+
+                    ## 14. Breaches
+                    Breaches of this policy are addressed under the Human Resources Security Policy. Wilful circumvention of access controls, sharing of permissions or use of another person's account may result in immediate suspension of all permissions, employment-law consequences and civil or criminal proceedings. Cases are assessed under the four-eyes principle by HR leadership and the CISO {{ roles.ciso.fullName }}.
+
+                    ## 15. Training and Awareness
+                    Personnel with privileged permissions receive role-specific training on privileged-access risks (phishing, social engineering, side-channel risks, operational-security hygiene) in addition to annual awareness training. Training outcomes are recorded in the training module.
+
+                    ## 16. Emergency Access
+                    For emergencies, only the break-glass accounts governed under Section 12 of the Authentication Information Policy are used. Their use is restricted to an emergency team designated by the CISO and is fully logged.
+
+                    ## 17. Review Interval
+                    This policy is reviewed every {{ review.interval_months }} months and upon material changes to the RBAC architecture, the introduction of new critical applications, or changes to the provisioning tooling.
+
+                    ## 18. Linked Annex A Controls
+                    A.5.15, A.5.16, A.5.17, A.5.18, A.8.2, A.8.3, A.8.4, A.8.5.
+                tailoring_field:
+                    access_review_cadence:
+                        label: 'Recertification Cadence'
+                        placeholder: 'Example: "Standard permissions every six months (Q1 + Q3); privileged permissions quarterly; third-party accounts monthly. Owner: line managers, with confirmation to the CISO."'
+                    jml_owner:
+                        label: 'JML Process Owner'
+                        placeholder: 'Example: "JML owner: HR jointly with IT Operations. Trigger: joiner/leaver event in the HR system invokes an automated workflow in the IAM. Escalation to the CISO if deactivation is not effected within 24 hours."'
+                    privileged_access_tooling:
+                        label: 'PAM Tool and Privileged Access Strategy'
+                        placeholder: 'Example: "PAM solution: CyberArk PAM. Just-in-time entitlements via JIT tokens (8 h validity). Four-eyes approval for all Domain Admin actions. Session recording for all privileged sessions, retained for 12 months."'
+        information_classification:
+            v1:
+                title: 'Information Classification & Handling Policy'
+                body: |-
+                    # Information Classification & Handling Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: ISO/IEC 27001:2022 Annex A.5.12, A.5.13, A.5.14; ISO/IEC 27002:2022 §§ 5.12–5.14 | Review interval: {{ review.interval_months }} months*
+
+                    ## 1. Purpose
+                    This policy establishes the classification and handling scheme for information in accordance with ISO/IEC 27002:2022 § 5.12: *"Information should be classified … in accordance with the information security needs of the organization …"* and § 5.13 on labelling. It is the normative basis for all downstream handling rules (storage, transfer, deletion) and supports the privacy framework under A.5.34 and Article 32 GDPR.
+
+                    ## 2. Scope
+                    This policy applies to all information of {{ tenant.legal_name }} regardless of medium (digital, paper, verbal) and processing stage (creation, storage, transfer, archiving, deletion). It applies to all persons creating or processing information.
+
+                    ## 3. Classification Scheme
+                    {{ tenant.legal_name }} uses a scheme with {{ data.classification_levels }} classification levels. Classification is performed by reference to protection requirements across the protection goals of confidentiality, integrity and availability:
+
+                    ### 3.1 Confidentiality
+                    - **Public** – information that may be released without restriction (for example press releases, public website content, marketing material).
+                    - **Internal** – information intended for personnel and authorised third parties only (for example internal process descriptions, project plans without sensitive details).
+                    - **Confidential** – information that would cause significant damage if disclosed (for example contracts, customer master data, personnel files, financial data, security-relevant configuration data).
+                    - **Strictly confidential** *(if 4-tier)* – information that would cause existential damage if disclosed (for example trade secrets, M&A information, critical infrastructure data, authentication keys).
+
+                    ### 3.2 Integrity
+                    Levels *standard*, *elevated*, *high* with requirements for checksums, digital signatures, four-eyes review and version control.
+
+                    ### 3.3 Availability
+                    Levels *standard*, *elevated*, *high* with requirements for backup frequency and RTO/RPO under the Backup Policy and ICT Continuity Policy.
+
+                    ## 4. Responsibilities
+                    - **Information owner** – every information item has a named information owner who sets and reviews the classification. For data objects within applications, the asset owner under the Asset Management Policy is responsible.
+                    - **Processors** – all personnel are obliged to handle information in line with the classification.
+                    - **Data Protection Officer** – {{ roles.dpo.fullName }} confirms the classification of personal data in line with the GDPR.
+
+                    ## 5. Labelling (A.5.13)
+                    Classified information is clearly labelled:
+
+                    - **Digital documents** – classification stamp in the header or footer (for example "Confidential – Property of {{ tenant.legal_name }}"); metadata in the document management system.
+                    - **E-mail** – classification statement in the subject for *confidential* and above (for example "[CONFIDENTIAL] …"); metadata via sensitivity labels.
+                    - **Paper** – classification stamp on top and bottom of every page; red stamps for *confidential* and above.
+                    - **Removable media** – label with classification and responsible person.
+
+                    Information without a label is treated as *internal* by default.
+
+                    ## 6. Handling Matrix
+                    | Level | Storage | Transfer | Destruction |
+                    |-------|---------|----------|-------------|
+                    | Public | unencrypted permitted | unencrypted permitted | standard disposal |
+                    | Internal | only at approved storage locations | unencrypted within the organisation; encrypted externally | shredding security level P-3 |
+                    | Confidential | encrypted at rest (AES-256) | encrypted in transit (TLS 1.2+) | P-4 shredding; secure digital erasure |
+                    | Strictly confidential | encrypted at rest + access via PAM | end-to-end encrypted; no public cloud services | P-5/P-7 shredding; cryptographic erasure with proof of destruction |
+
+                    ## 7. Retention and Deletion
+                    Retention periods are set per information category on the basis of legal (for example § 257 of the German Commercial Code, § 147 of the German Fiscal Code, Article 5(1)(e) GDPR), regulatory and contractual requirements. After expiry, information is securely deleted in accordance with A.8.10. Personal data are processed in accordance with the Privacy & PII Protection Policy. Retention defaults are mandated in the *Retention Matrix* annex by classification level and data category; deviations require justified approval by the information owner and, for personal data, by the DPO.
+
+                    ## 8. Declassification
+                    Classifications are not static. Where information is no longer expected to require protection (for example research results ready for publication, expired confidentiality terms), the information owner may request declassification. The declassification is recorded in the audit log under Clause 7.5. Inadvertent declassification (omitting the label upon republication) is a breach and reportable under the Information Security Incident Management Policy.
+
+                    ## 9. Data Loss Prevention (A.8.12)
+                    The organisation operates data loss prevention controls to prevent unauthorised transfer of classified information. DLP rules are applied to e-mail, cloud storage and endpoint storage. DLP rules are maintained in line with the classification scheme; changes follow the change-management process under the Secure Configuration Policy. False-positive reports are reviewed monthly by the security operations team and reported to the CISO.
+
+                    ## 10. Training and Awareness
+                    All personnel are trained on classification and information handling on onboarding and annually thereafter (A.6.3). Training content covers the classification scheme, the handling matrix, labelling rules, and common pitfalls (for example inadvertent disclosure to external recipients, storage in unauthorised cloud services). Attendance is recorded in the training module under the Human Resources Security Policy.
+
+                    ## 11. Breaches
+                    Breaches result in measures under the Human Resources Security Policy and may trigger regulatory notification under Articles 33/34 GDPR. Wilful misclassification with intent to circumvent protective measures is a matter for employment-law action. Where misclassification is identified, the information owner promptly initiates correction; existing copies are migrated to the correct protective regime under the handling matrix.
+
+                    ## 12. Review Interval
+                    This policy is reviewed every {{ review.interval_months }} months. A change to the classification scheme triggers a re-classification project under the governance of the CISO.
+
+                    ## 13. Linked Annex A Controls
+                    A.5.12, A.5.13, A.5.14, A.5.33 (Protection of records), A.7.10 (Storage media), A.8.10 (Information deletion), A.8.12 (Data leakage prevention).
+                tailoring_field:
+                    classification_scheme:
+                        label: 'Classification Scheme and Examples'
+                        placeholder: 'Example: "Four-tier scheme: public / internal / confidential / strictly confidential. Strictly confidential reserved for M&A data, trade secrets and cryptographic keys. Default classification on creation: internal. Re-classification required at least every 24 months."'
+                    label_format:
+                        label: 'Labelling Format per Medium'
+                        placeholder: 'Example: "Word/PDF: classification in the header (Arial 10, bold, right-aligned). E-mail: Microsoft sensitivity label plus [CONFIDENTIAL] subject prefix. Paper: red stamp top and bottom. Removable media: label with classification and responsible person."'
+                    retention_defaults:
+                        label: 'Retention Defaults per Classification Level'
+                        placeholder: 'Example: "Public: indefinite where relevant. Internal: 5 years from last edit. Confidential: 7 years (commercial law) or as per contract, then deletion. Strictly confidential: deletion without delay once secrecy purpose ends; keys per Cryptography Policy."'
+        information_transfer:
+            v1:
+                title: 'Information Transfer Policy'
+                body: |-
+                    # Information Transfer Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: ISO/IEC 27001:2022 Annex A.5.14, ISO/IEC 27002:2022 § 5.14 | Review interval: {{ review.interval_months }} months*
+
+                    ## 1. Purpose
+                    This policy governs the transfer of information within {{ tenant.legal_name }} and between the organisation and third parties pursuant to ISO/IEC 27002:2022 § 5.14: *"Information transfer rules, procedures or agreements shall be in place for all types of transfer facilities …"* It covers electronic, physical and verbal transfer and supplements the Information Classification & Handling Policy. The objective is to ensure that information receives the protection appropriate to its classification while in transit, regardless of the medium or recipient.
+
+                    ## 2. Scope
+                    This policy applies to all employees, contractors and third parties transferring information of {{ tenant.legal_name }} and to all transfer paths: e-mail, file transfer (cloud / SFTP / on-premise file shares), messaging and chat, telephony, video conferencing, postal mail, couriers, removable media and in-person conversation.
+
+                    ## 3. General Principles
+                    1. Transfer follows the classification of the information; *confidential* and above require encrypted channels.
+                    2. The recipient side shall be checked for authorisation and identity before transfer.
+                    3. Transfers to third parties require contractual confidentiality obligations (NDA, A.6.6 *Confidentiality or non-disclosure agreements*).
+
+                    ## 4. Electronic Transfer
+                    ### 4.1 E-mail
+                    - E-mails of *internal* level are transferred through the corporate e-mail system, which enforces TLS 1.2+ in transit.
+                    - E-mails of *confidential* level and above are end-to-end encrypted (S/MIME or OpenPGP) or shared through secure file-transfer solutions.
+                    - External recipients receive encrypted attachments only where TLS enforcement on the recipient server is confirmed; otherwise file transfer takes place through an approved portal.
+
+                    ### 4.2 File Transfer
+                    Approved file-transfer services are listed in the Annex *Approved File-Transfer Channels*. The use of other (private) cloud services for business information is prohibited. External shares shall be time-limited, restricted to named recipients, and protected with a password and where appropriate MFA.
+
+                    ### 4.3 Messaging and Chat
+                    Corporate chat services (for example Microsoft Teams, Slack Enterprise) may be used for internal communication up to *internal* level. Content of *confidential* level and above is not exchanged via chat. External messengers (for example private WhatsApp, Telegram, Signal) are prohibited for business content.
+
+                    ## 5. Physical Transfer
+                    - Confidential mail is dispatched by registered mail or by an approved courier with proof of receipt.
+                    - Confidential documents are sent in sealed envelopes marked "Personal / Confidential".
+                    - Removable media are hardware-encrypted; keys are transmitted on a separate channel.
+                    - International physical transfers comply with export-control rules (for example Dual-Use Regulation (EU) 2021/821).
+
+                    ## 6. Verbal Transfer
+                    1. Confidential information is not discussed in public areas (public transport, cafes, waiting areas).
+                    2. The use of speakerphones for telephony in open-plan offices is prohibited for *confidential* and above.
+                    3. Before transfer, the identity of the counterparty is verified (call back to a verified number; in-person identification at video conferences).
+                    4. Recordings of meetings require the explicit consent of all participants and are classified and retained in accordance with the Information Classification & Handling Policy and Article 6 GDPR.
+
+                    ## 7. Third-Party Transfer
+                    Before recurring transfers to third parties, the following measures are required:
+
+                    - non-disclosure agreement under A.6.6 with the third party;
+                    - security clauses in the contract under A.5.20 including cryptography, sub-processor and audit-right clauses;
+                    - for transfers of personal data to third countries: assessment under Articles 44–49 GDPR (standard contractual clauses, adequacy decision, binding corporate rules);
+                    - third-party security review under the Supplier Security Policy.
+
+                    ## 8. Cryptography Requirements
+                    Encryption and key management follow the Cryptography Policy. Minimum requirements: TLS 1.2+ (preferred 1.3) in transit, AES-256 at rest, RSA 3072 or ECDSA P-256 for asymmetric algorithms. For transfers to external recipients, technical controls verify the encryption capability of the recipient endpoint (for example MTA-STS, DANE); on failure the message is rerouted to alternative secure channels or rejected by the sender.
+
+                    ## 9. Logging
+                    External transfers through central platforms (e-mail gateway, file-transfer portal) are logged. Logging follows the Logging & Monitoring Policy and Article 32 GDPR. Reviews are performed only on cause and in compliance with the relevant works-council agreement, with involvement of the Data Protection Officer {{ roles.dpo.fullName }}. Reports on irregularities (for example unusual data volumes to external recipients, sending of confidential attachments to recipients without TLS enforcement) are escalated monthly to the CISO {{ roles.ciso.fullName }}.
+
+                    ## 10. Breaches
+                    Breaches are addressed under the Human Resources Security Policy. Third parties face contractual consequences up to and including termination for cause. Where transfer errors lead to a personal-data breach, additional notification paths apply under the Information Security Incident Management Policy and Articles 33/34 GDPR. Cases are assessed under the four-eyes principle by the CISO {{ roles.ciso.fullName }} and the Data Protection Officer {{ roles.dpo.fullName }}, and Legal is consulted where criminal exposure is suspected.
+
+                    ## 11. Training and Awareness
+                    Personnel are trained on secure information transfer on onboarding and as part of annual security awareness training under A.6.3. Focus areas: recognising confidential content, choosing the appropriate channel, verifying recipient identity, handling encrypted attachments, and care in public areas.
+
+                    ## 12. Review Interval
+                    This policy is reviewed every {{ review.interval_months }} months and upon changes to the tooling landscape (for example introduction of a new file-transfer service), upon changes to cryptography requirements, or upon material changes to the regulatory environment.
+
+                    ## 13. Annex: Approved File-Transfer Channels (Excerpt)
+                    The complete annex is maintained as a versioned companion document in the document management system. Mandatory contents: tool name, vendor, classification levels permitted, encryption details, owning business unit, review date, approval status by CISO and DPO. Changes follow the change-management process under the Secure Configuration Policy.
+
+                    ## 14. Linked Annex A Controls
+                    A.5.14, A.6.6 (Confidentiality/NDA), A.8.20–A.8.23 (Network controls), A.8.24 (Cryptography).
+                tailoring_field:
+                    approved_channels:
+                        label: 'Approved File-Transfer Channels'
+                        placeholder: 'Example: "Internal: Microsoft SharePoint Online. External (confidential): Nextcloud Enterprise with MFA, external shares limited to 30 days. External (strictly confidential): SFTP server with key authentication. Prohibited: WeTransfer, private Dropbox, unmanaged cloud services."'
+                    encryption_at_rest:
+                        label: 'Encryption-at-Rest Requirement per Level'
+                        placeholder: 'Example: "Internal: not mandatory (default platform encryption). Confidential: AES-256 platform encryption mandatory. Strictly confidential: additional file/container encryption with separate key; key managed in the KMS."'
+                    nda_template_reference:
+                        label: 'NDA Template and Owner'
+                        placeholder: 'Example: "Standard NDA template version 2025-03 in the contract repository (Compliance/Templates/NDA). Contract owner: Procurement in consultation with Legal. Minimum confidentiality term: 5 years after contract end."'
+        identity_management:
+            v1:
+                title: 'Identity Management Policy'
+                body: |-
+                    # Identity Management Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: ISO/IEC 27001:2022 Annex A.5.16, ISO/IEC 27002:2022 § 5.16 | Review interval: {{ review.interval_months }} months*
+
+                    ## 1. Purpose
+                    This policy governs the management of the full lifecycle of identities pursuant to ISO/IEC 27002:2022 § 5.16: *"The full lifecycle of identities shall be managed."* It supplements the Access Control Policy (A.5.15) and the Authentication Information Policy (A.5.17) and supports the regulatory requirements of EU DORA and NIS2. The objective is to ensure that every identity in the organisation's IT ecosystem is uniquely attributable, verifiable and auditable across its entire lifecycle.
+
+                    ## 2. Scope
+                    The policy covers all identities in systems of {{ tenant.legal_name }}: personal accounts of employees and contractors, technical accounts, service accounts, third-party accounts, and end-customer accounts.
+
+                    ## 3. Identity Types
+                    1. **Personal identity (employee/contractor)** – uniquely assigned to a named person; unique within the organisation; following a defined naming convention (for example `firstname.lastname`).
+                    2. **Privileged identity (admin)** – separate from the personal identity, with an additional prefix (for example `adm-firstname.lastname`); MFA mandatory; linked to the personal identity in the IAM.
+                    3. **Service identity (technical account)** – for service-to-service communication; each service identity has a human owner under the asset-owner principle; authentication via secrets or certificates per the Authentication Information Policy.
+                    4. **Third-party identity** – named individual identity (no shared accounts); time-limited; MFA mandatory.
+                    5. **End-customer identity** – where applicable; with its own naming convention; authentication per the Authentication Information Policy.
+
+                    Shared accounts are prohibited as a rule and permitted only in justified cases with CISO approval (for example device-bound functional accounts in production environments with compensating controls).
+
+                    ## 4. Identity Lifecycle
+                    ### 4.1 Creation (onboarding)
+                    Evaluation of the HR trigger event (joiner) invokes an automated workflow in the IAM. The identity is provisioned before the first working day. Initial authentication information is allocated under the Authentication Information Policy. The line manager confirms the correct role assignment.
+
+                    ### 4.2 Change (mover)
+                    On role change, all previous permissions are revoked and the new role is granted. Permission accumulation across role changes is not permitted. Transitional overlap shall be limited to a maximum of 5 working days.
+
+                    ### 4.3 Suspension
+                    Accounts are suspended for absences over 30 days (parental leave, sabbatical, long-term sickness).
+
+                    ### 4.4 Deletion (leaver)
+                    On voluntary termination: deactivation on the last working day; on involuntary termination: immediate deactivation. Accounts are retained in deactivated state for 30 days to allow line-manager access for business handover; final deletion follows. Where personal data are concerned the GDPR erasure obligations are observed.
+
+                    ## 5. Naming Convention
+                    Personal identities: `firstname.lastname` (lower-case, ASCII). Where names collide: numeric suffix (`max.muller2`). Privileged identities: prefix `adm-`. Service identities: prefix `svc-` plus application code (`svc-erp-prod-01`). Third-party identities: prefix `ext-` plus company (`ext-acme-jdoe`). Uniqueness across all systems is enforced by the IAM.
+
+                    ## 6. Identity Provider
+                    {{ tenant.legal_name }} operates a central identity provider (IdP) to which all internal and cloud-based applications are connected via SAML 2.0, OAuth 2.0 / OIDC or SCIM. Federated identities outside the IdP are permitted only through approved federation partners (for example eduroam, trusted customer IdP). Application-specific sign-ins outside the IdP are not permitted; legacy applications are migrated or detached through CISO-approved exception.
+
+                    ## 7. Service and Technical Identities
+                    Each service identity is:
+
+                    - registered in the IAM with a human owner;
+                    - documented with application, environment and function;
+                    - provisioned with minimal rights (least privilege);
+                    - subject to secret rotation per the Authentication Information Policy;
+                    - recertified annually.
+
+                    Where the owner leaves the organisation, the service identity is reassigned to a new owner.
+
+                    ## 8. Third-Party Identities
+                    Third parties receive named identities through third-party onboarding under the Supplier Security Policy. Maximum term 12 months; renewal requires re-assessment. On contract end, identities are deactivated promptly on the last valid contract day; extension beyond contract end requires explicit approval by the contract manager and the CISO {{ roles.ciso.fullName }} (for example for orderly data handover).
+
+                    ## 9. Audit and Logging
+                    Identity-lifecycle events (creation, activation, deactivation, role change) are logged. Reviews are performed monthly by the IAM owner with a report to the CISO {{ roles.ciso.fullName }}. Anomalies (mass-creation patterns, activations outside business hours, owner-less service accounts) are investigated promptly.
+
+                    ## 10. Federated and End-Customer Identities
+                    Federated identities of approved federation partners are limited to the scope strictly necessary; a federation contract with security requirements under A.5.20 is a precondition. End-customer identities are managed in a separate customer-identity component with its own risk and authentication model tailored to the use case (for example risk-based MFA, step-up authentication for sensitive operations).
+
+                    ## 11. Breaches
+                    Breaches, in particular the use of shared accounts or sharing of authentication information, are addressed under the Human Resources Security Policy. Wilful circumvention of the IAM (for example creation of local accounts outside the IAM, activation of deactivated accounts via backdoor mechanisms, manipulation of lifecycle triggers) is treated as a serious breach and may also result in civil or criminal proceedings. Cases are assessed under the four-eyes principle by HR leadership and the CISO {{ roles.ciso.fullName }}.
+
+                    ## 12. Review Interval
+                    This policy is reviewed every {{ review.interval_months }} months and upon IdP changes. Material extensions (for example introduction of a new federation partner, change of naming convention) trigger an off-cycle review.
+
+                    ## 13. Annex: Identity Model and Uniqueness Rules
+                    The complete identity model with all identity types, naming conventions, lifecycle status values and mandatory attributes is held in the *IAM Model Description* document. Uniqueness rules are technically enforced by the IAM. Extensions to the model follow the change-management process.
+
+                    ## 14. Linked Annex A Controls
+                    A.5.16, A.5.18 (Access rights), A.8.5 (Secure authentication).
+                tailoring_field:
+                    primary_idp:
+                        label: 'Primary Identity Provider'
+                        placeholder: 'Example: "Microsoft Entra ID Premium P2 as central IdP. SaaS applications federated via SAML 2.0; provisioning via SCIM. On-prem AD via Azure AD Connect. Federation partners: eduroam for research."'
+                    naming_convention:
+                        label: 'Naming Convention and Uniqueness Rules'
+                        placeholder: 'Example: "Personal: firstname.lastname (lower-case, umlauts unfolded ae/oe/ue/ss). Privileged: adm-firstname.lastname. Service: svc-{app}-{env}-{nn}. Where names collide, numeric suffix starting at 2."'
+                    service_account_ownership:
+                        label: 'Service-Account Ownership Rule'
+                        placeholder: 'Example: "Each service identity has exactly one human owner from the responsible business team. On owner change: 30-day transition with co-owner. Owner-less service accounts are deactivated after 30 days."'
+        authentication_information:
+            v1:
+                title: 'Authentication Information Policy'
+                body: |-
+                    # Authentication Information Policy of {{ tenant.legal_name }}
+
+                    *Normative anchor: ISO/IEC 27001:2022 Annex A.5.17, ISO/IEC 27002:2022 § 5.17 | Review interval: {{ review.interval_months }} months*
+
+                    ## 1. Purpose
+                    This policy governs the allocation and management of authentication information pursuant to ISO/IEC 27002:2022 § 5.17: *"Allocation and management of authentication information shall be controlled by a management process …"* It replaces the earlier Password Policy and covers all factors of knowledge, possession and inherence. The objective is to ensure that authentication information is protected against theft, phishing and reuse across its full lifecycle (allocation, distribution, use, rotation, revocation).
+
+                    ## 2. Scope
+                    The policy covers all authentication information for all identity types per the Identity Management Policy: passwords, PINs, hardware tokens, software tokens, certificates, cryptographic keys, biometric templates, API keys and other secrets.
+
+                    ## 3. General Requirements
+                    1. Authentication information is strictly confidential.
+                    2. Personal authentication information shall not be shared, written down (except in approved password managers) or stored in unauthorised tools.
+                    3. Loss or suspected compromise shall be reported without delay to security@{{ tenant.legal_name }}.
+
+                    ## 4. Password Requirements
+                    {{ tenant.legal_name }} aligns with current guidance (NIST SP 800-63B Rev. 4 and BSI TR-02102):
+
+                    - minimum length: 12 characters for personal accounts, 16 characters for privileged accounts;
+                    - no forced periodic rotation absent suspected compromise (NIST 800-63B);
+                    - blocklist of frequently compromised passwords (HIBP database);
+                    - mandatory use of the supplied password manager for all accounts;
+                    - on suspected compromise: immediate change;
+                    - reuse of the last 24 passwords is blocked;
+                    - server-side password hashing with Argon2id, scrypt or bcrypt with current parameters.
+
+                    ## 5. Multi-Factor Authentication (MFA)
+                    MFA is mandatory for:
+
+                    - all employees on external access (VPN, cloud);
+                    - all privileged accounts irrespective of location;
+                    - all accounts with access to personal or confidential data;
+                    - all third-party accounts.
+
+                    Acceptable second factors: phishing-resistant methods preferred (FIDO2/WebAuthn, smartcards with PIN). TOTP apps permitted. SMS OTP shall not be relied on as a primary factor but is acceptable as a recovery factor. Push notifications only with number matching.
+
+                    ## 6. Initial Allocation and Recovery
+                    1. On onboarding an initial password is communicated; a change is enforced on first sign-in.
+                    2. Recovery is performed through the self-service reset (with MFA validation) or through the service desk after verified identity check (for example video identification, line-manager confirmation).
+                    3. Emergency recovery codes are kept in the vault and used only on MFA loss.
+
+                    ## 7. Certificates
+                    Certificates (X.509) are issued through the public-key infrastructure (PKI) of the organisation or through approved public CAs. Lifecycle: request → validation → issuance → distribution → renewal → revocation → archiving. Maximum validity: 12 months for server certificates (per CA/Browser Forum); 24 months for code-signing certificates. Timely renewal is monitored by a central certificate management system; expiring certificates trigger alerts to the responsible asset owners and to the CISO {{ roles.ciso.fullName }}.
+
+                    ## 8. Secrets, API Keys, Tokens
+                    Secrets are managed exclusively in the approved secrets-management tool. Hard-coded secrets in source code or configuration files are prohibited; pre-commit hooks and SAST scans check for them under the Secure Development Policy. Rotation: API keys at least every 90 days; service-account secrets at least every 180 days; emergency rotation on suspected compromise.
+
+                    ## 9. Biometrics
+                    Biometrics are used solely as a second factor (for example fingerprint to unlock the MDM-managed endpoint). Biometric templates remain on the device; no central biometrics database is maintained. Article 9 GDPR (special categories of personal data) is observed; a Data Protection Impact Assessment is performed in consultation with the Data Protection Officer {{ roles.dpo.fullName }} before any new biometric mechanism is introduced.
+
+                    ## 10. Protection in Transport and at Rest
+                    Authentication information is transmitted only through encrypted channels (TLS 1.2+, preferred 1.3). Storage is exclusively in hashed/salted form (passwords), in HSM/KMS (private keys) or in the approved secrets manager (secrets).
+
+                    ## 11. Logging
+                    Successful and failed authentications are logged. Brute-force and credential-stuffing attempts trigger SIEM alerts. Privileged authentications are additionally reviewed by the CISO {{ roles.ciso.fullName }}. Anomaly detection (impossible-travel, unusual devices, atypical time patterns) is configured through the IAM or conditional-access mechanism.
+
+                    ## 12. Emergency Access (Break-Glass Accounts)
+                    A limited number of break-glass accounts are maintained for IT emergencies. These accounts:
+
+                    - are named (no shared accounts) and not used for routine activity;
+                    - carry a long password held in a vault and two separate FIDO2 tokens (held at separate physical sites);
+                    - generate full audit logs and an automated alert to the CISO and executive board on every use;
+                    - are tested at least every six months for function and confidentiality, with results documented.
+
+                    ## 13. Breaches
+                    Sharing of authentication information is addressed under the Human Resources Security Policy. Third parties may face contractual consequences. Wilful circumvention of MFA (for example permanent app-password tokens without approval, defeat of conditional-access policies, manipulation of session lifetimes) is a matter for employment-law action and is escalated to the CISO {{ roles.ciso.fullName }} without delay.
+
+                    ## 14. Review Interval
+                    This policy is reviewed every {{ review.interval_months }} months and upon changes to the authentication mechanisms. An update is performed in particular upon NIST/BSI guidance updates, upon material threat-intelligence findings (for example new phishing campaign waves), and upon changes to the MFA tooling landscape.
+
+                    ## 15. Annex: Accepted Authentication Factors (Excerpt)
+                    The complete annex is maintained as a versioned companion document and lists per factor: method (for example FIDO2/WebAuthn, TOTP, smartcard, biometric), classification (phishing-resistant / non-phishing-resistant), permitted use cases, vendor, procurement path, lifetime, revocation process. Inclusion of new factors requires CISO {{ roles.ciso.fullName }} approval following technical and data-protection assessment.
+
+                    ## 16. Linked Annex A Controls
+                    A.5.17, A.8.5 (Secure authentication), A.5.16.
+                tailoring_field:
+                    minimum_password_length:
+                        label: 'Minimum Password Length and Complexity'
+                        placeholder: 'Example: "Personal accounts: 14 characters, no enforced complexity (NIST 800-63B Rev.4). Privileged accounts: 16 characters and passphrase required. Blocklist: HIBP top 1M database, refreshed monthly."'
+                    mfa_scope:
+                        label: 'MFA Scope and Acceptable Factors'
+                        placeholder: 'Example: "MFA mandatory on ALL accounts (also for purely internal access). Phishing-resistant preferred: FIDO2/WebAuthn (YubiKey 5 series), Microsoft Entra Authenticator with number matching. TOTP permitted as transitional. SMS OTP recovery only."'
+                    secrets_management_tool:
+                        label: 'Secrets-Management Tool and Rotation Strategy'
+                        placeholder: 'Example: "HashiCorp Vault Enterprise as central secrets-management. API keys: 90-day rotation, automated. Database credentials: dynamic per-session generation. Hard-coded secrets scanning via Gitleaks in CI."'

@@ -1,0 +1,168 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% set step_title_key = 'policy_wizard.step.' ~ step ~ '.title' %}
+{% set step_subtitle_key = 'policy_wizard.step.' ~ step ~ '.subtitle' %}
+
+{% block title %}{{ step_title_key|trans }} — {{ 'policy_wizard.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4 fa-aurora-surface">
+    {# Junior-ISB Wish #3 — prominent progress-bar above the step
+       title. Controller injects current_step_index (0-based) and
+       total_steps_in_mode. Defensive defaults keep the bar from
+       crashing when extras are missing (e.g. legacy step routes). #}
+    {% set _ts = total_steps_in_mode|default(8) %}
+    {% set _ci = current_step_index|default(0) %}
+    {% set _step_n = _ci + 1 %}
+    {% set _percent = _ts > 0 ? ((_step_n / _ts) * 100)|round : 0 %}
+    <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="small fw-semibold">
+                {{ 'policy_wizard.progress.label'|trans({'%current%': _step_n, '%total%': _ts}) }}
+            </span>
+            <span class="small text-muted">{{ step_title_key|trans }}</span>
+        </div>
+        <div class="progress" style="height: 6px;" role="progressbar"
+             aria-label="{{ 'policy_wizard.progress.aria_label'|trans }}"
+             aria-valuenow="{{ _step_n }}"
+             aria-valuemin="0"
+             aria-valuemax="{{ _ts }}">
+            <div class="progress-bar" style="width: {{ _percent }}%;"></div>
+        </div>
+    </div>
+
+    {{ _fa_page_header.render({
+        badge: { icon: 'magic', label: ('policy_wizard.mode.' ~ run.mode ~ '.label')|trans },
+        title: step_title_key|trans,
+        subtitle: step_subtitle_key|trans,
+        actions: [
+            { label: 'policy_wizard.action.cancel'|trans,
+              variant: 'ghost',
+              icon: 'x-lg',
+              href: path('app_policy_wizard_index') }
+        ]
+    }) }}
+
+    {# Junior-ISB Wish #4 — Cancel-State-Hint. Reassures the
+       implementer that the run state is auto-saved and that
+       Cancel only discards the current run (resumable later). #}
+    <p class="small text-muted mb-3">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'policy_wizard.cancel_hint.label'|trans }}
+    </p>
+
+    {% if run.mode == 'sandbox' %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            body: 'policy_wizard.message.sandbox_no_persistence'|trans
+        }) }}
+    {% endif %}
+
+    {% if errors|default([])|length > 0 %}
+        {% set error_lines %}
+            <ul class="mb-0">
+                {% for field, fieldErrors in errors %}
+                    {% for errKey in fieldErrors %}
+                        <li><strong>{{ field }}</strong>: {{ errKey|trans }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        {% endset %}
+        {{ _fa_alert.render({
+            variant: 'danger',
+            body: error_lines
+        }) }}
+    {% endif %}
+
+    <form method="post"
+          action="{{ path('app_policy_wizard_step_submit', { runId: run.id, step: step }) }}"
+          class="mt-3">
+        <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_step') }}">
+
+        {# Step-key → template-filename mapping. Default 7-step flow plus
+           Mode 2 (targeted re-run) sub-flow templates wired in W3-J. #}
+        {% set template_map = {
+            'bestandsaufnahme': 'policy_wizard/step/_bestandsaufnahme.html.twig',
+            'welcome': 'policy_wizard/step/_welcome_standards.html.twig',
+            'organisation_scope': 'policy_wizard/step/_organisation_scope.html.twig',
+            'roles': 'policy_wizard/step/_roles.html.twig',
+            'risk_classification': 'policy_wizard/step/_risk_classification.html.twig',
+            'operational_baselines': 'policy_wizard/step/_operational_baselines.html.twig',
+            'lifecycle': 'policy_wizard/step/_lifecycle.html.twig',
+            'review_generate': 'policy_wizard/step/_review_generate.html.twig',
+            'targeted_pick_topics': 'policy_wizard/step/_targeted_pick_topics.html.twig',
+            'targeted_finding_reference': 'policy_wizard/step/_targeted_finding_reference.html.twig',
+            'targeted_diff_preview': 'policy_wizard/step/_targeted_diff_preview.html.twig',
+            'targeted_generate': 'policy_wizard/step/_targeted_generate.html.twig'
+        } %}
+        {% set step_template = template_map[step]|default(null) %}
+        {% if step_template is null %}
+            {{ _fa_alert.render({
+                variant: 'info',
+                title: ('policy_wizard.step.' ~ step ~ '.title')|trans|default(step),
+                body: ('policy_wizard.step.' ~ step ~ '.subtitle')|trans|default('')
+            }) }}
+        {% else %}
+            {% include step_template ignore missing with {
+                'run': run,
+                'step': step,
+                'defaults': defaults,
+                'inputs_so_far': inputs_so_far,
+                'standards': standards,
+                'errors': errors,
+                'is_terminal': is_terminal,
+                'hierarchy_conflicts': hierarchy_conflicts,
+                'existing_topics_by_key': existing_topics_by_key|default({}),
+                'diff': diff|default([]),
+                'sandbox_preview': sandbox_preview|default(null),
+                'inventory_rows': inventory_rows|default([]),
+                'topic_suggestions_by_doc': topic_suggestions_by_doc|default({}),
+                'available_topics': available_topics|default([]),
+                'dpo_user_choices': dpo_user_choices|default([]),
+                'bcm_officer_user_choices': bcm_officer_user_choices|default([]),
+                'approver_user_choices': approver_user_choices|default([]),
+                'policy_templates': policy_templates|default([]),
+                'preset_bundles_for_step': preset_bundles_for_step|default([]),
+                'consistency_warnings': consistency_warnings|default([]),
+                'ciso_person_choices': ciso_person_choices|default([]),
+                'isb_person_choices': isb_person_choices|default([]),
+                'dpo_person_choices': dpo_person_choices|default([]),
+                'bcm_officer_person_choices': bcm_officer_person_choices|default([]),
+                'function_owner_person_choices': function_owner_person_choices|default([]),
+                'approval_chain_user_choices': approval_chain_user_choices|default([])
+            } %}
+        {% endif %}
+
+        <div class="mt-4 d-flex flex-wrap gap-2 align-items-center">
+            <a href="{{ path('app_policy_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.back'|trans }}</span>
+            </a>
+            {% if is_terminal %}
+                {# Submit handled by separate complete-form on review_generate template #}
+            {% else %}
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.continue'|trans }}</span>
+                </button>
+            {% endif %}
+        </div>
+    </form>
+
+    {% if is_terminal %}
+        <form method="post"
+              action="{{ path('app_policy_wizard_complete', { runId: run.id }) }}"
+              class="mt-3">
+            <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_complete') }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary"{{ hierarchy_conflicts|default([])|length > 0 ? ' disabled' : '' }}>
+                <i class="bi bi-magic" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.generate'|trans }}</span>
+            </button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}

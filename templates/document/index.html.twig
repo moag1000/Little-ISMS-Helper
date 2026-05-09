@@ -21,17 +21,31 @@
         title: 'document.title'|trans({}, 'document'),
         subtitle: 'document.subtitle'|trans({}, 'document'),
         actions: [
+            { label: 'document.action.policy_wizard'|trans({}, 'document'), variant: 'success', icon: 'magic', href: path('app_policy_wizard_index') },
             { label: 'document.action.upload'|trans({}, 'document'), variant: 'primary', icon: 'cloud-upload', href: path('app_document_new') }
         ]
     }) }}
 
     <main class="fa-aurora-surface">
 
+    {# Alva-Tipp: Policy-Wizard generates ISO 27001 / DORA / BSI / BCM / GDPR mandatory policies #}
+    <div class="alert alert-info border-0 d-flex align-items-start gap-3 mb-3" role="alert">
+        <i class="fa-icon fa-icon--nav-magic flex-shrink-0" aria-hidden="true" style="font-size: 1.5rem;"></i>
+        <div class="flex-grow-1">
+            <strong>{{ 'document.alva_tipp.policy_wizard.title'|trans({}, 'document') }}</strong>
+            <p class="mb-2 mt-1">{{ 'document.alva_tipp.policy_wizard.body'|trans({}, 'document') }}</p>
+            <a href="{{ path('app_policy_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--success btn-sm">
+                <i class="fa-icon fa-icon--nav-magic me-1" aria-hidden="true"></i>
+                {{ 'document.alva_tipp.policy_wizard.cta'|trans({}, 'document') }}
+            </a>
+        </div>
+    </div>
+
     {# View Filter #}
     {% if currentTenant %}
     {% embed '_components/_card.html.twig' with {class: 'mb-3'} %}
         {% block card_body %}
-            <form method="get" action="{{ path('app_document_index') }}" class="d-flex align-items-center gap-2 py-0">
+            <form method="get" action="{{ path('app_document_index') }}" class="d-flex flex-wrap align-items-center gap-2 py-0">
                 <label for="view-filter" class="mb-0 fw-bold">
                     <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                 </label>
@@ -50,6 +64,26 @@
                     </option>
                     {% endif %}
                 </select>
+
+                {# Policy-Wizard W7-C — history toggle (default OFF). #}
+                <span class="ms-3 text-muted">|</span>
+                <label for="include-history-toggle" class="mb-0 fw-bold">
+                    <i class="bi bi-clock-history" aria-hidden="true"></i>
+                    {{ 'policy_wizard.history_toggle.label'|trans({}, 'policy_wizard') }}:
+                </label>
+                <select class="form-select fa-cyber-input__field form-select-sm w-auto"
+                        id="include-history-toggle"
+                        name="include_history"
+                        data-controller="ui-actions"
+                        data-action="change->ui-actions#autoSubmit">
+                    <option value="0" {{ includeHistory ? '' : 'selected' }}>
+                        {{ 'policy_wizard.history_toggle.current_only'|trans({}, 'policy_wizard') }}
+                    </option>
+                    <option value="1" {{ includeHistory ? 'selected' : '' }}>
+                        {{ 'policy_wizard.history_toggle.with_history'|trans({}, 'policy_wizard') }}
+                    </option>
+                </select>
+
                 <noscript>
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
                 </noscript>
@@ -264,6 +298,42 @@
                                 <strong>{{ document.originalFilename }}</strong>
                             </a>
                             {{ inheritance.small_badge(document, currentTenant) }}
+                            {# Policy-Wizard W7-C — settings-drift badge. #}
+                            {% if driftMap[document.id] is defined and driftMap[document.id] %}
+                                <span class="badge bg-warning text-dark ms-1"
+                                      title="{{ 'policy_wizard.drift_badge.settings_drift.tooltip'|trans({}, 'policy_wizard') }}">
+                                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                    {{ 'policy_wizard.drift_badge.settings_drift.label'|trans({}, 'policy_wizard') }}
+                                </span>
+                            {% endif %}
+                            {% if document.supersedes %}
+                                <a href="{{ path('app_policy_wizard_diff', {currentDocId: document.id}) }}"
+                                   class="badge bg-info text-decoration-none ms-1"
+                                   title="{{ 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }}">
+                                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                                    {{ 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }}
+                                </a>
+                            {% endif %}
+                            {# Junior-ISB Wish #5 — Auditor-Score badge.
+                               Only rendered for Wizard-generated docs
+                               (provenance via generatedFromTemplate). #}
+                            {% if document.generatedFromTemplate is not null and auditorScores[document.id] is defined %}
+                                {% set _score = auditorScores[document.id] %}
+                                {% set _variant = _score.tier == 'green' ? 'success' : (_score.tier == 'yellow' ? 'warning text-dark' : 'danger') %}
+                                {% set _icon = _score.tier == 'green' ? 'shield-check' : (_score.tier == 'yellow' ? 'shield-exclamation' : 'shield-x') %}
+                                {% set _reason_lines = [] %}
+                                {% for r in _score.reasons %}
+                                    {% set _key = 'policy_wizard.auditor_score.reason.' ~ (r|split(':')|first) %}
+                                    {% set _reason_lines = _reason_lines|merge([_key|trans({}, 'policy_wizard')]) %}
+                                {% endfor %}
+                                <span class="badge bg-{{ _variant }} ms-1"
+                                      data-bs-toggle="tooltip"
+                                      data-bs-placement="top"
+                                      title="{{ ('policy_wizard.auditor_score.tier_' ~ _score.tier)|trans({}, 'policy_wizard') }} — {{ _reason_lines|join('; ')|default('OK') }}">
+                                    <i class="bi bi-{{ _icon }}" aria-hidden="true"></i>
+                                    {{ 'policy_wizard.auditor_score.label'|trans({}, 'policy_wizard') }}: {{ _score.score }}
+                                </span>
+                            {% endif %}
                             {% if document.description %}
                             <br>
                             <small class="text-muted">{{ document.description|length > 60 ? document.description|slice(0, 60) ~ '...' : document.description }}</small>

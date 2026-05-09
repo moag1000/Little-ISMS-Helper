@@ -1,0 +1,34 @@
+{#
+ # Dashboard widget — pending policy acknowledgements for the current
+ # user. W3-L. Closes auditor's predicted ISO 27001 A.6.3 NC by giving
+ # the user a one-click path from any dashboard into the inbox.
+ #
+ # Usage:
+ #   {% include '_components/_pending_acknowledgements_widget.html.twig'
+ #      with { pending_count: pending_count } only %}
+ #
+ # Required variable:
+ #   pending_count — int, number of policies the user still owes an ack for
+ #}
+{% trans_default_domain 'policy_wizard' %}
+
+{% if pending_count is defined and pending_count > 0 %}
+    <div class="card border-warning mb-3" role="status" aria-live="polite">
+        <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h5 class="card-title mb-1">
+                    <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
+                    {{ 'policy_ack.widget.title'|trans }}
+                </h5>
+                <p class="mb-0 text-muted">
+                    {{ 'policy_ack.inbox.pending_count'|trans({ '%count%': pending_count }) }}
+                </p>
+            </div>
+            <a href="{{ path('app_policy_ack_inbox') }}"
+               class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                <span class="fa-cyber-btn__label">{{ 'policy_ack.widget.action.go_to_inbox'|trans }}</span>
+            </a>
+        </div>
+    </div>
+{% endif %}

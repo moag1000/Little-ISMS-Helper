@@ -1,0 +1,40 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block subject %}{{ 'policy_wizard.notification.rejection.subject'|trans({}, 'policy_wizard') }}{% endblock %}
+
+{% block content %}
+    <h2 style="color: #7f1d1d; font-size: 20px; font-weight: 600; margin: 0 0 16px 0;">
+        {{ 'policy_wizard.notification.rejection.subject'|trans({}, 'policy_wizard') }}
+    </h2>
+    <p style="font-size: 14px; color: #4c4a73; margin: 0 0 16px 0;">
+        {{ 'policy_wizard.notification.rejection.body'|trans({}, 'policy_wizard') }}
+    </p>
+
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+           style="background-color: #fef2f2; border-left: 4px solid #b91c1c; margin-bottom: 20px;">
+        <tr>
+            <td style="padding: 14px 16px;">
+                <p style="margin: 0 0 4px 0; font-weight: 600; color: #1e1b4b; font-size: 14px;">
+                    {{ document.originalFilename|default('(document)') }}
+                </p>
+                <p style="margin: 0 0 4px 0; font-family: 'Courier New', monospace; font-size: 11px; color: #b91c1c; text-transform: uppercase; letter-spacing: 0.08em;">
+                    {{ section.sectionKey|default('section') }}
+                </p>
+                {% if approver is defined %}
+                    <p style="margin: 0 0 8px 0; font-size: 12px; color: #4c4a73;">
+                        Rejected by: <strong>{{ approver.email|default(approver.id) }}</strong>
+                    </p>
+                {% endif %}
+                {% if reason is defined and reason %}
+                    <p style="margin: 0; font-size: 13px; color: #4c4a73; white-space: pre-wrap;">
+                        {{ reason }}
+                    </p>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <p style="font-size: 12px; color: #6d6b92; margin: 0;">
+        Please rework the section and re-submit for sign-off.
+    </p>
+{% endblock %}

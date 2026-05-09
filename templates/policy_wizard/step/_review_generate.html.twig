@@ -1,0 +1,96 @@
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'bi-mortarboard',
+    class: 'mb-3'
+} } %}
+    {% block alert_body %}
+        {% trans_default_domain 'policy_wizard' %}
+        <div class="fa-alert__title">{{ 'policy_wizard.step.review_generate.help.title'|trans }}</div>
+        <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.review_generate.help.body'|trans }}</p>
+        <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.review_generate.help.example'|trans }}</p>
+        <p class="mb-0 small">
+            <i class="bi bi-archive" aria-hidden="true"></i>
+            {{ 'policy_wizard.step.review_generate.help.reversibility'|trans }}
+        </p>
+    {% endblock %}
+{% endembed %}
+
+<h3 class="h6 mb-3">{{ 'policy_wizard.step.review_generate.summary_heading'|trans }}</h3>
+
+<dl class="row mb-4">
+    <dt class="col-sm-3">{{ ('policy_wizard.mode.' ~ run.mode ~ '.label')|trans }}</dt>
+    <dd class="col-sm-9">{{ ('policy_wizard.mode.' ~ run.mode ~ '.description')|trans }}</dd>
+
+    <dt class="col-sm-3">Standards</dt>
+    <dd class="col-sm-9">
+        {% for s in run.standardsAdopted|default([]) %}
+            <span class="badge bg-secondary me-1">{{ s }}</span>
+        {% else %}
+            <span class="text-muted">—</span>
+        {% endfor %}
+    </dd>
+
+    {% for step_key, slot in inputs_so_far|default({}) %}
+        <dt class="col-sm-3">{{ ('policy_wizard.step.' ~ step_key ~ '.title')|trans|default(step_key) }}</dt>
+        <dd class="col-sm-9">
+            <pre class="small mb-0 bg-body-tertiary p-2 rounded">{{ slot|json_encode(constant('JSON_PRETTY_PRINT'))|default('—') }}</pre>
+        </dd>
+    {% endfor %}
+</dl>
+
+{# Cross-step consistency warnings (NON-blocking — informational nudge).
+ # Junior-ISB Wish #6 — each warning is a CLICKABLE alert that
+ # navigates to the warning's `target_step` so the implementer can
+ # fix the root cause without scrolling back manually. The
+ # CrossStepConsistencyValidator stamps every DTO with target_step. #}
+{% if consistency_warnings|default([])|length > 0 %}
+    <h3 class="h6 mb-3">{{ 'policy_wizard.step.review_generate.consistency_heading'|trans }}</h3>
+    {% for w in consistency_warnings %}
+        {% set target = w.target_step|default('review_generate') %}
+        {% set step_title = ('policy_wizard.step.' ~ target ~ '.title')|trans %}
+        <a href="{{ path('app_policy_wizard_step_show', {runId: run.id, step: target}) }}"
+           class="d-block alert alert-warning text-decoration-none mb-2"
+           data-target-step="{{ target }}">
+            <div class="d-flex align-items-start gap-2">
+                <i class="bi bi-arrow-right-circle mt-1 flex-shrink-0" aria-hidden="true"></i>
+                <div>
+                    <div>{{ w.message_key|trans(w.params|default({})) }}</div>
+                    <small class="text-muted d-block mt-1">
+                        {{ 'policy_wizard.warning.click_to_jump'|trans({'%step%': step_title}) }}
+                    </small>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+{% endif %}
+
+<h3 class="h6 mb-3">{{ 'policy_wizard.step.review_generate.conflicts_heading'|trans }}</h3>
+{% if hierarchy_conflicts|default([])|length == 0 %}
+    {{ _fa_alert.render({
+        variant: 'success',
+        body: 'policy_wizard.step.review_generate.conflicts_empty'|trans
+    }) }}
+{% else %}
+    {% set conflicts_body %}
+        <ul class="mb-0">
+            {% for conflict in hierarchy_conflicts %}
+                <li>
+                    <strong>{{ conflict.key }}</strong>:
+                    {{ conflict.message|trans }}
+                    <small class="text-muted">(parent={{ conflict.parent_value|default('—') }}, child={{ conflict.child_value|default('—') }})</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endset %}
+    {{ _fa_alert.render({
+        variant: 'warning',
+        title: 'policy_wizard.step.review_generate.conflicts_heading'|trans,
+        body: conflicts_body
+    }) }}
+{% endif %}
+
+<p class="text-muted small mt-3">{{ 'policy_wizard.step.review_generate.generate_hint'|trans }}</p>

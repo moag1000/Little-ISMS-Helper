@@ -1,0 +1,165 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Entity;
+
+use App\Repository\PolicyAcknowledgementRepository;
+use DateTimeImmutable;
+use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Per-user acknowledgement of a published policy document.
+ *
+ * Closes the auditor's predicted ISO 27001 A.6.3 NC ("policy must be
+ * communicated and acknowledged"). The wizard generates a CRON to
+ * push acknowledgement requests for any Document with status=published
+ * whose required-audience users haven't yet acknowledged. Captures
+ * the document version at acknowledgement time so re-versions don't
+ * silently void existing acks. See `05-architecture.md` §4.1.
+ */
+#[ORM\Entity(repositoryClass: PolicyAcknowledgementRepository::class)]
+#[ORM\Table(name: 'policy_acknowledgement')]
+#[ORM\UniqueConstraint(
+    name: 'uq_policy_acknowledgement_tenant_doc_user_ver',
+    columns: ['tenant_id', 'document_id', 'user_id', 'document_version'],
+)]
+#[ORM\Index(name: 'idx_policy_acknowledgement_tenant', columns: ['tenant_id'])]
+#[ORM\Index(name: 'idx_policy_acknowledgement_document', columns: ['document_id'])]
+#[ORM\Index(name: 'idx_policy_acknowledgement_user', columns: ['user_id'])]
+class PolicyAcknowledgement
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: Tenant::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?Tenant $tenant = null;
+
+    #[ORM\ManyToOne(targetEntity: Document::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?Document $document = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?User $user = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?DateTimeInterface $acknowledgedAt = null;
+
+    /**
+     * Acknowledgement method. Allowed values:
+     *   web_click | email_token | training_pass | signed_pdf
+     */
+    #[ORM\Column(length: 24)]
+    private ?string $acknowledgementMethod = null;
+
+    /**
+     * Document version captured at acknowledgement time so that a later
+     * re-version does not silently invalidate this row.
+     */
+    #[ORM\Column(length: 32)]
+    private ?string $documentVersion = null;
+
+    /**
+     * Optional source IP (audit trail). 45 chars covers IPv6.
+     */
+    #[ORM\Column(length: 45, nullable: true)]
+    private ?string $ipAddress = null;
+
+    public function __construct()
+    {
+        $this->acknowledgedAt = new DateTimeImmutable();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getTenant(): ?Tenant
+    {
+        return $this->tenant;
+    }
+
+    public function setTenant(?Tenant $tenant): static
+    {
+        $this->tenant = $tenant;
+        return $this;
+    }
+
+    public function getTenantId(): ?int
+    {
+        return $this->tenant?->getId();
+    }
+
+    public function getDocument(): ?Document
+    {
+        return $this->document;
+    }
+
+    public function setDocument(?Document $document): static
+    {
+        $this->document = $document;
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    public function getAcknowledgedAt(): ?DateTimeInterface
+    {
+        return $this->acknowledgedAt;
+    }
+
+    public function setAcknowledgedAt(DateTimeInterface $acknowledgedAt): static
+    {
+        $this->acknowledgedAt = $acknowledgedAt;
+        return $this;
+    }
+
+    public function getAcknowledgementMethod(): ?string
+    {
+        return $this->acknowledgementMethod;
+    }
+
+    public function setAcknowledgementMethod(string $acknowledgementMethod): static
+    {
+        $this->acknowledgementMethod = $acknowledgementMethod;
+        return $this;
+    }
+
+    public function getDocumentVersion(): ?string
+    {
+        return $this->documentVersion;
+    }
+
+    public function setDocumentVersion(string $documentVersion): static
+    {
+        $this->documentVersion = $documentVersion;
+        return $this;
+    }
+
+    public function getIpAddress(): ?string
+    {
+        return $this->ipAddress;
+    }
+
+    public function setIpAddress(?string $ipAddress): static
+    {
+        $this->ipAddress = $ipAddress;
+        return $this;
+    }
+}

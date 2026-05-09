@@ -129,6 +129,7 @@ incident:
     reported_by_legacy: Gemeldet von (freitext, veraltet)
     reported_by_person: Gemeldet von (Person aus Stammdaten)
     reported_by_deputies: Vertretungen (Personen)
+    responsible_person: Verantwortliche Person (Governance)
     incident_classification: Vorfallsklassifizierung (A.5.24)
     containment_actions: Eindämmungsmaßnahmen (A.5.26)
     evidence_preserved: Beweise gesichert (A.5.28)
@@ -219,6 +220,7 @@ incident:
     authority_reference: Aktenzeichen von der Behörde
     reported_by_user: -- Meldende Person --
     reported_by_person: -- Person aus Stammdaten --
+    responsible_person: -- Verantwortliche Person waehlen --
     classification: -- Ereignis oder Vorfall --
     containment_actions: 'z.B. System isoliert, Zugänge gesperrt, Backup eingespielt...'
     ict_classification: -- ICT-Incident-Klassifizierung --
@@ -250,6 +252,7 @@ incident:
       extern gemeldet.
     reported_by_person: 'Person ohne System-Login als Melder wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
     reported_by_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
+    responsible_person: 'Langfristig verantwortliche Person fuer diesen Vorfall (Governance-Sicht). Unabhaengig vom Bearbeiter (Ticket-Assignee) und Melder (Audit-Trail). Kann ein externer CISO/ISB ohne System-Login sein.'
     incident_classification: 'Ereignis (Event) vs. Vorfall (Incident) nach A.5.24 — steuert das Workflow-Routing.'
     containment_actions: 'Kurzfristige Sofortmaßnahmen (Eindämmung) und langfristige Abhilfemaßnahmen (Remediation) nach A.5.26.'
     evidence_preserved: 'Bestätigung, dass digitale Beweise gemäß A.5.28 gesichert und integritätsgeschützt wurden.'

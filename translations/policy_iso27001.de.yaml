@@ -1,0 +1,662 @@
+policy:
+    iso27001:
+        top_level:
+            v1:
+                title: 'Informationssicherheits-Leitlinie'
+                body: |-
+                    # Informationssicherheits-Leitlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Leitlinie | Norm-Anker: ISO/IEC 27001:2022 Klausel 5.2 | Sprache: Deutsch (Sie-Form) | Pruefintervall: {{ review.interval_months }} Monate*
+
+                    ## 1. Zweck
+                    Diese Informationssicherheits-Leitlinie wird durch die oberste Leitung der {{ tenant.legal_name }} erlassen und ist die hoechste normative Aussage des Informationssicherheits-Managementsystems (ISMS). Sie ist der Geltungsbereich aller untergeordneten themenspezifischen Richtlinien, Verfahrensanweisungen und Arbeitsanweisungen. Diese Leitlinie ist angemessen fuer den Zweck der Organisation und stellt den Rahmen fuer die Festlegung von Informationssicherheitszielen bereit (ISO/IEC 27001:2022, 5.2 a + b). Sie verpflichtet die Organisation zur Erfuellung anwendbarer Anforderungen und zur fortlaufenden Verbesserung des ISMS (5.2 c + d).
+
+                    ## 2. Geltungsbereich
+                    Der Geltungsbereich des ISMS umfasst saemtliche Informations-Assets, Geschaeftsprozesse, Standorte, Mitarbeitende und Drittparteien, die im ISMS-Anwendungsbereich gemaess Klausel 4.3 ISO/IEC 27001:2022 dokumentiert sind:
+
+                    > {{ tenant.scope_statement }}
+
+                    Diese Leitlinie gilt fuer alle Beschaeftigten (unabhaengig vom Beschaeftigungsverhaeltnis), Auftragnehmer, Praktikantinnen und Praktikanten, sowie alle Drittparteien, die im Auftrag der Organisation Informationen verarbeiten oder Zugang zu Informations-Assets erhalten.
+
+                    Im Sinne von ISO/IEC 27001:2022/Amd. 1:2024 wird der Klimawandel als externer und interner Faktor in die Kontextbestimmung gemaess Klauseln 4.1 und 4.2 einbezogen. Klimabezogene Risiken (z. B. Auswirkungen extremer Wetterereignisse auf physische Standorte, Lieferketten, Energieversorgung sowie Verfuegbarkeit von Personal) werden in der jaehrlichen Risikobeurteilung beruecksichtigt, sofern sie fuer die Informationssicherheit der Organisation wesentlich sind.
+
+                    ## 3. Informationssicherheitsziele
+                    Die Organisation verfolgt die folgenden uebergeordneten Informationssicherheitsziele, abgeleitet aus Geschaeftszielen, Stakeholder-Anforderungen, Risikobeurteilungen und regulatorischen Vorgaben:
+
+                    1. **Vertraulichkeit** – Schutz von Informationen vor unbefugter Offenlegung, abgestuft nach {{ data.classification_levels }} Klassifizierungsstufen gemaess Klassifizierungs- und Handhabungs-Richtlinie.
+                    2. **Integritaet** – Sicherstellung der Richtigkeit und Vollstaendigkeit von Informationen sowie der Verarbeitungsmethoden.
+                    3. **Verfuegbarkeit** – Bereitstellung von Informationen und zugehoeriger Dienste fuer berechtigte Nutzerinnen und Nutzer zum erforderlichen Zeitpunkt, gestuetzt durch die Backup- und IKT-Kontinuitaets-Richtlinien.
+                    4. **Compliance** – Einhaltung anwendbarer rechtlicher, regulatorischer und vertraglicher Anforderungen, insbesondere DSGVO (Verordnung (EU) 2016/679), BDSG, sowie sektorspezifischer Vorgaben.
+                    5. **Resilienz** – Aufrechterhaltung kritischer Geschaeftsprozesse bei Stoerungen gemaess A.5.29 und A.5.30.
+                    6. **Kontinuierliche Verbesserung** – Reifung des ISMS durch Managementbewertung (Klausel 9.3), interne Audits (Klausel 9.2) und Korrekturmassnahmen (Klausel 10.1).
+
+                    Diese Leitlinie bildet den Rahmen, innerhalb dessen messbare Informationssicherheitsziele jaehrlich gemaess Klausel 6.2 ISO/IEC 27001:2022 festgelegt, ueberwacht und ueberprueft werden. Die aktuellen messbaren Ziele sind im separaten Dokument *Informationssicherheitsziele {{ tenant.legal_name }}* dokumentiert.
+
+                    ## 4. Verpflichtung der obersten Leitung
+                    Die oberste Leitung der {{ tenant.legal_name }} verpflichtet sich gemaess ISO/IEC 27001:2022 Klausel 5.1 zur:
+
+                    - Bereitstellung der erforderlichen Ressourcen (personell, finanziell, infrastrukturell) zur Etablierung, Umsetzung, Aufrechterhaltung und kontinuierlichen Verbesserung des ISMS;
+                    - Sicherstellung, dass die Informationssicherheitsanforderungen in die Geschaeftsprozesse der Organisation integriert sind;
+                    - Foerderung der Bedeutung wirksamer Informationssicherheit und der Konformitaet mit den Anforderungen des ISMS;
+                    - Sicherstellung, dass das ISMS die beabsichtigten Ergebnisse erreicht;
+                    - Anleitung und Unterstuetzung von Personen, die zur Wirksamkeit des ISMS beitragen;
+                    - Foerderung der fortlaufenden Verbesserung des ISMS;
+                    - Unterstuetzung relevanter Fuehrungsrollen, um deren Verantwortung in den jeweiligen Bereichen wahrzunehmen.
+
+                    Die oberste Leitung delegiert die operative Verantwortung fuer das ISMS an den Chief Information Security Officer (CISO) {{ roles.ciso.fullName }}, behaelt jedoch die nicht delegierbare Gesamtverantwortung gemaess Klausel 5.1.
+
+                    ## 5. Rollen, Verantwortlichkeiten und Befugnisse
+                    Gemaess Klausel 5.3 ISO/IEC 27001:2022 werden Verantwortlichkeiten zugewiesen:
+
+                    - **Oberste Leitung** – Genehmigung der Leitlinie, Bereitstellung der Ressourcen, Durchfuehrung der Managementbewertung gemaess Klausel 9.3.
+                    - **CISO / Informationssicherheitsbeauftragter (ISB)** – {{ roles.ciso.fullName }}: Steuerung des ISMS, Berichterstattung an die oberste Leitung, Genehmigung untergeordneter Richtlinien.
+                    - **Datenschutzbeauftragter (DSB)** – {{ roles.dpo.fullName }}: Pruefung datenschutzrelevanter Abschnitte, Beratung gemaess Art. 39 DSGVO.
+                    - **Compliance-Manager** – Pruefung der Konformitaet mit anwendbaren Frameworks, Aufrechterhaltung der Anwendbarkeitserklaerung (Statement of Applicability, SoA).
+                    - **Risk Owner** – Verantwortung fuer Risiken im jeweiligen Geschaeftsbereich gemaess Klausel 6.1.
+                    - **Asset Owner** – Verantwortung fuer Informations-Assets gemaess A.5.9.
+                    - **Beschaeftigte und Auftragnehmer** – Einhaltung dieser Leitlinie und aller untergeordneten Richtlinien, Meldung von Sicherheitsereignissen ueber den dokumentierten Meldekanal gemaess A.6.8.
+
+                    Die Genehmigungskette dieser Leitlinie umfasst: {{ approval.chain }}.
+
+                    ## 6. Rahmenwerk und anwendbare Frameworks
+                    Die Organisation bekennt sich zu folgenden Frameworks:
+
+                    - **ISO/IEC 27001:2022** inkl. Amd. 1:2024 – Primaeres Zertifizierungs-Framework.
+                    - **ISO/IEC 27002:2022** – Leitfaden zu Annex-A-Massnahmen.
+                    - **DSGVO (Verordnung (EU) 2016/679)** und **BDSG** – Datenschutzrechtlicher Rahmen.
+                    - Sofern anwendbar: **EU-DORA (Verordnung (EU) 2022/2554)**, **NIS2 (Richtlinie (EU) 2022/2555)**, **BSI IT-Grundschutz**, **ISO/IEC 27701:2025** (PIMS).
+
+                    Die zugehoerigen themenspezifischen Richtlinien decken die anwendbaren Annex-A-Massnahmen ab und sind in der Anwendbarkeitserklaerung (SoA) gemaess Klausel 6.1.3 d) dokumentiert.
+
+                    ## 7. Risikoappetit
+                    Der Risikoappetit der Organisation wird durch die oberste Leitung in Stufe **{{ risk.appetite_tier }}** festgelegt (Skala 1 = risikoavers bis 5 = risikofreudig). Diese Festlegung steuert die Schwellenwerte fuer Risikoakzeptanz, Behandlungsoptionen und Eskalationswege gemaess der separaten Risikoappetit-Erklaerung und der Risikomanagement-Richtlinie.
+
+                    ## 8. Ausnahmen
+                    Abweichungen von dieser Leitlinie oder von untergeordneten Richtlinien sind grundsaetzlich unzulaessig. In begruendeten Ausnahmefaellen kann eine zeitlich befristete Ausnahme beantragt werden. Antraege erfolgen schriftlich an den CISO {{ roles.ciso.fullName }} und beinhalten: Beschreibung der Abweichung, Begruendung, Risikobewertung, kompensierende Massnahmen, Befristung (max. 12 Monate), Antragsteller und Genehmiger. Genehmigte Ausnahmen werden im Ausnahme-Register gefuehrt und im Rahmen des naechsten internen Audits gemaess Klausel 9.2 geprueft.
+
+                    ## 9. Pruef- und Aenderungszyklus
+                    Diese Leitlinie wird mindestens alle {{ review.interval_months }} Monate sowie bei wesentlichen Aenderungen ueberprueft (z. B. Aenderung des Geltungsbereichs, Wechsel der obersten Leitung, schwerwiegender Sicherheitsvorfall, Aenderung anwendbarer Regulatorik). Die Pruefung erfolgt durch den CISO und wird der obersten Leitung im Rahmen der Managementbewertung gemaess Klausel 9.3 vorgelegt. Aenderungen erfordern eine erneute Genehmigung durch die in Abschnitt 5 genannte Genehmigungskette. Frueher genehmigte Versionen bleiben im Audit-Log gemaess Klausel 7.5 fuer mindestens sieben Jahre revisionssicher abrufbar.
+
+                    ## 10. Kommunikation und Schulung
+                    Diese Leitlinie wird allen Beschaeftigten und relevanten Drittparteien zur Verfuegung gestellt (Klausel 5.2 f). Kommunikationskanaele umfassen: Intranet, On-Boarding-Prozess fuer neue Beschaeftigte, jaehrliche verpflichtende Schulungen gemaess A.6.3, Vertraege fuer Drittparteien gemaess A.5.20. Externe Veroeffentlichung erfolgt nur, sofern dies durch die oberste Leitung freigegeben wurde (Klausel 5.2 g).
+
+                    ## 11. Begriffe und Definitionen
+                    Es gelten die Definitionen gemaess ISO/IEC 27000:2018. Wesentliche Begriffe:
+
+                    - **Information Security Management System (ISMS)** – Teil des Gesamtmanagementsystems, der auf der Basis eines Geschaeftsrisikoansatzes die Etablierung, Umsetzung, den Betrieb, die Ueberwachung, Ueberpruefung, Aufrechterhaltung und Verbesserung der Informationssicherheit bewirkt.
+                    - **Asset** – Alles, was einen Wert fuer die Organisation hat (Information, Hardware, Software, Personal, Standort, Reputation, Drittpartei).
+                    - **Risiko** – Auswirkung von Unsicherheit auf Ziele.
+                    - **Massnahme** – Mittel zur Modifikation von Risiken (z. B. Annex-A-Controls).
+
+                    ## 12. Verstoesse
+                    Verstoesse gegen diese Leitlinie koennen zu disziplinarischen Massnahmen gemaess Personalsicherheits-Richtlinie (A.6.4), zivilrechtlichen Konsequenzen oder strafrechtlicher Verfolgung fuehren. Drittparteien werden vertragliche Konsequenzen gemaess A.5.20 angedroht.
+
+                    ## 13. Verbindliche Verweise auf untergeordnete Richtlinien
+                    Diese Leitlinie wird ergaenzt durch themenspezifische Richtlinien gemaess Annex A ISO/IEC 27001:2022, u. a.: Acceptable-Use-Richtlinie, Zugriffskontroll-Richtlinie, Klassifizierungs- und Handhabungs-Richtlinie, Informationsuebertragungs-Richtlinie, Identitaetsmanagement-Richtlinie, Authentisierungsinformations-Richtlinie, Kryptografie-Richtlinie, Backup-Richtlinie, Protokollierungs- und Monitoring-Richtlinie, Schwachstellen- und Patch-Management-Richtlinie, Schutz-vor-Schadsoftware-Richtlinie, Haertungs- und Konfigurations-Richtlinie, Netzwerk-Sicherheits-Richtlinie, Richtlinie fuer sichere Entwicklung, Lieferanten-Sicherheits-Richtlinie, Personalsicherheits-Richtlinie, Physische und umgebungsbezogene Sicherheits-Richtlinie, Richtlinie fuer mobile Geraete und Telearbeit, Asset-Management-Richtlinie, Datenschutz- und PII-Schutz-Richtlinie, Richtlinie zum Sicherheitsvorfallsmanagement, IKT-Kontinuitaets-Richtlinie, Bedrohungsanalyse-Richtlinie.
+
+                    ---
+                    *Diese Leitlinie ist angemessen fuer den Zweck der Organisation und verpflichtet zur fortlaufenden Verbesserung des ISMS.*
+                section:
+                    purpose:
+                        title: 'Zweck der Leitlinie'
+                        body: |-
+                            Diese Leitlinie etabliert das Informationssicherheits-Managementsystem der {{ tenant.legal_name }} gemaess ISO/IEC 27001:2022 Klausel 5.2 und stellt sicher, dass die Anforderungen der Standards a) bis g) erfuellt sind: angemessen fuer den Zweck der Organisation, Rahmen fuer Informationssicherheitsziele, Verpflichtung zur Erfuellung anwendbarer Anforderungen, Verpflichtung zur fortlaufenden Verbesserung, dokumentierte Verfuegbarkeit, Kommunikation innerhalb der Organisation und Verfuegbarkeit fuer interessierte Parteien.
+                    scope:
+                        title: 'Geltungsbereich'
+                        body: |-
+                            Der Geltungsbereich des ISMS ist im separaten Dokument *Geltungsbereichs-Erklaerung* (Klausel 4.3) verbindlich festgelegt:
+
+                            > {{ tenant.scope_statement }}
+
+                            Gemaess ISO/IEC 27001:2022/Amd. 1:2024 werden klimabezogene Faktoren als externer Kontext beruecksichtigt, sofern wesentlich. Diese Leitlinie verpflichtet alle Beschaeftigten, Auftragnehmer und Drittparteien innerhalb des Geltungsbereichs.
+                    objectives:
+                        title: 'Informationssicherheitsziele'
+                        body: |-
+                            Die uebergeordneten Schutzziele Vertraulichkeit, Integritaet und Verfuegbarkeit sowie die abgeleiteten Compliance- und Resilienz-Ziele bilden den Rahmen, innerhalb dessen jaehrliche messbare Informationssicherheitsziele gemaess Klausel 6.2 festgelegt werden. Die aktuellen Ziele sind separat dokumentiert.
+                    commitment:
+                        title: 'Verpflichtung der obersten Leitung'
+                        body: |-
+                            Die oberste Leitung der {{ tenant.legal_name }} verpflichtet sich zur Bereitstellung der Ressourcen, zur Integration der Informationssicherheit in die Geschaeftsprozesse und zur fortlaufenden Verbesserung des ISMS gemaess Klausel 5.1 ISO/IEC 27001:2022. Diese Verpflichtung ist nicht delegierbar.
+                    framework:
+                        title: 'Rahmenwerk'
+                        body: |-
+                            Diese Leitlinie ist die hoechste normative Aussage des ISMS. Untergeordnete themenspezifische Richtlinien decken die anwendbaren Annex-A-Massnahmen ab und sind in der Anwendbarkeitserklaerung (SoA) gemaess Klausel 6.1.3 d) dokumentiert.
+                    exceptions:
+                        title: 'Ausnahmen'
+                        body: |-
+                            Ausnahmen von dieser Leitlinie sind nur in begruendeten Faellen und nur befristet zulaessig (max. 12 Monate). Antraege erfolgen an den CISO und werden im Ausnahme-Register gefuehrt.
+                    review:
+                        title: 'Pruef- und Aenderungszyklus'
+                        body: |-
+                            Diese Leitlinie wird mindestens alle {{ review.interval_months }} Monate ueberprueft sowie bei wesentlichen Aenderungen. Frueher genehmigte Versionen bleiben revisionssicher gemaess Klausel 7.5 fuer mindestens sieben Jahre archiviert.
+                    applicable_frameworks:
+                        title: 'Anwendbare Frameworks'
+                        body: |-
+                            ISO/IEC 27001:2022 (inkl. Amd. 1:2024), ISO/IEC 27002:2022, DSGVO, BDSG; sofern anwendbar EU-DORA (Verordnung (EU) 2022/2554), NIS2 (Richtlinie (EU) 2022/2555), BSI IT-Grundschutz, ISO/IEC 27701:2025.
+                    communication:
+                        title: 'Kommunikation und Schulung'
+                        body: |-
+                            Diese Leitlinie wird ueber Intranet, On-Boarding-Prozess und jaehrliche verpflichtende Schulungen gemaess A.6.3 ISO/IEC 27002:2022 kommuniziert. Drittparteien werden ueber vertragliche Klauseln gemaess A.5.20 verpflichtet.
+                    definitions:
+                        title: 'Begriffe und Definitionen'
+                        body: |-
+                            Begriffe entsprechen ISO/IEC 27000:2018, insbesondere ISMS, Asset, Risiko und Massnahme.
+                tailoring_field:
+                    organisation_specific_objectives:
+                        label: 'Organisations-spezifische Sicherheitsziele'
+                        placeholder: 'Beispiel: "Wir streben jaehrlich mindestens 99,5 % Verfuegbarkeit fuer unsere Hauptdienste an, eine Reduktion sicherheitsrelevanter Vorfaelle gegenueber Vorjahr um 20 % sowie 100 % Schulungsabschlussquote bis Ende Q3."'
+                    board_reporting_cadence:
+                        label: 'Berichtsturnus an die oberste Leitung'
+                        placeholder: 'Beispiel: "Quartalsweise schriftlicher CISO-Report an die Geschaeftsfuehrung; jaehrliche Managementbewertung gemaess Klausel 9.3 im Februar; Ad-hoc-Eskalation bei Vorfaellen der Klassifizierung hoch oder kritisch."'
+                    sector_specific_threats:
+                        label: 'Sektor-spezifische Bedrohungen und Anforderungen'
+                        placeholder: 'Beispiel: "Als Finanzdienstleister unterliegen wir EU-DORA und sind verstaerkt durch gezielte Phishing-Angriffe sowie Supply-Chain-Kompromittierungen bedroht. Daraus abgeleitete Schwerpunkte: TPP-Register, Exit-Strategien fuer kritische Anbieter, regelmaessige Threat-Intelligence-Auswertung gemaess A.5.7."'
+        acceptable_use:
+            v1:
+                title: 'Richtlinie zur akzeptablen Nutzung von Informationen und Assets'
+                body: |-
+                    # Richtlinie zur akzeptablen Nutzung von Informationen und Assets der {{ tenant.legal_name }}
+
+                    *Norm-Anker: ISO/IEC 27001:2022 Annex A.5.10, ISO/IEC 27002:2022 § 5.10 | Pruefintervall: {{ review.interval_months }} Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie definiert die Regeln fuer die akzeptable Nutzung von Informationen und anderen zugehoerigen Assets gemaess ISO/IEC 27002:2022 § 5.10 ("Rules for the acceptable use of information and other associated assets shall be identified, documented and implemented"). Sie schuetzt die Vertraulichkeit, Integritaet und Verfuegbarkeit der Informations-Assets der {{ tenant.legal_name }} und konkretisiert die Informationssicherheits-Leitlinie.
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer alle Beschaeftigten (unbefristet, befristet, in Probezeit), Auftragnehmer, Praktikantinnen und Praktikanten, Werkstudierende sowie alle Drittparteien mit Zugang zu Informations-Assets der Organisation. Erfasst sind alle Asset-Kategorien gemaess A.5.9:
+
+                    - Hardware: Notebooks, Desktop-PCs, Smartphones, Tablets, Drucker, USB-Speichermedien;
+                    - Software: Betriebssysteme, Geschaeftsanwendungen, Cloud-Konten, Kommunikationsdienste;
+                    - Informationen: digitale und physische Dokumente, Datenbanken, Backups, E-Mail-Archive;
+                    - Dienste: VPN, Telefonie, Videokonferenzen, KI-Werkzeuge.
+
+                    ## 3. Allgemeine Grundsaetze
+                    1. Informations-Assets werden ausschliesslich fuer dienstliche Zwecke genutzt. Gelegentliche private Nutzung ist nur im Rahmen der separat geregelten Privatnutzungs-Vereinbarung zulaessig.
+                    2. Beschaeftigte handeln gemaess der Klassifizierungs- und Handhabungs-Richtlinie ({{ data.classification_levels }} Klassifizierungsstufen).
+                    3. Die Nutzung erfolgt unter Beachtung des Need-to-know-Prinzips und der Zugriffskontroll-Richtlinie.
+                    4. Verstoesse werden gemaess Personalsicherheits-Richtlinie sanktioniert.
+
+                    ## 4. Erlaubte Nutzung
+                    - Verarbeitung dienstlicher Informationen auf von der Organisation genehmigten Geraeten und Diensten.
+                    - Speicherung dienstlicher Daten ausschliesslich auf zugelassenen Speicherorten (siehe Anlage *Genehmigte Datenspeicher*).
+                    - Nutzung dienstlicher E-Mail-Adressen ausschliesslich fuer dienstliche Korrespondenz.
+                    - Nutzung von KI-Werkzeugen ausschliesslich auf der Liste der freigegebenen KI-Tools (siehe Anlage); Eingabe von Informationen ab Klassifizierung *intern* in nicht-freigegebene KI-Tools ist untersagt.
+
+                    ## 5. Verbotene Nutzung
+                    Folgende Handlungen sind ausdruecklich untersagt:
+
+                    - Weitergabe von Authentisierungsinformationen (Passwoerter, Tokens, MFA-Codes) an Dritte oder Kolleginnen und Kollegen.
+                    - Installation nicht freigegebener Software auf dienstlichen Geraeten (siehe Haertungs- und Konfigurations-Richtlinie).
+                    - Umgehung von Sicherheitskontrollen (z. B. Deaktivierung der Festplattenverschluesselung, Umgehung des Web-Filters, Nutzung privater VPN-Dienste).
+                    - Speicherung dienstlicher Informationen auf privaten Cloud-Konten oder privaten USB-Sticks.
+                    - Versand vertraulicher Informationen ueber unverschluesselte Kanaele entgegen der Informationsuebertragungs-Richtlinie.
+                    - Nutzung dienstlicher Geraete zu rechtswidrigen Zwecken (illegale Downloads, urheberrechtsverletzende Inhalte, Hass-Inhalte).
+                    - Vertretung der Organisation in sozialen Medien ohne ausdrueckliche Genehmigung der Kommunikationsabteilung.
+                    - Eingabe personenbezogener Daten oder Geschaeftsgeheimnisse in oeffentliche KI-Werkzeuge.
+
+                    ## 6. Mobile Geraete und Wechselmedien
+                    Die Nutzung mobiler dienstlicher Geraete (Notebook, Smartphone, Tablet) folgt der *Richtlinie fuer mobile Geraete und Telearbeit*. Wechselmedien (USB-Sticks, externe Festplatten) duerfen nur in der durch die IT zugelassenen, hardwareverschluesselten Form genutzt werden. Private Wechselmedien sind an dienstlichen Geraeten untersagt.
+
+                    ## 7. BYOD und private E-Mail
+                    Die Nutzung privater Geraete (Bring Your Own Device) ist nur zulaessig, sofern diese durch die IT in das Mobile-Device-Management eingebunden und durch eine separate BYOD-Vereinbarung freigegeben sind. Die Nutzung privater E-Mail-Adressen fuer dienstliche Zwecke ist untersagt.
+
+                    ## 8. Internet, soziale Medien und KI-Werkzeuge
+                    1. Internetnutzung wird gemaess Netzwerk-Sicherheits-Richtlinie protokolliert. Eine missbraeuchliche Nutzung wird gemaess Personalsicherheits-Richtlinie verfolgt.
+                    2. Beitraege in sozialen Medien, die als Vertretung der Organisation aufgefasst werden koennten, beduerfen der vorherigen Freigabe der Kommunikationsabteilung.
+                    3. Bei der Nutzung freigegebener KI-Werkzeuge gilt: keine Eingabe vertraulicher oder personenbezogener Daten; Ausgaben sind kritisch zu pruefen und nicht ungeprueft als Entscheidungsgrundlage zu verwenden.
+
+                    ## 9. Hinweis zur Protokollierung und Ueberwachung
+                    Die Organisation protokolliert die Nutzung von IT-Systemen gemaess Protokollierungs- und Monitoring-Richtlinie zu Zwecken der Informationssicherheit, der Stoerungsanalyse und der Compliance. Die Verarbeitung erfolgt im Einklang mit DSGVO Art. 6 Abs. 1 lit. c und f, BDSG sowie geltenden Betriebsvereinbarungen mit dem Betriebsrat. Eine inhaltliche Ueberwachung der Korrespondenz erfolgt nicht ohne konkreten Anlass und ohne Einbindung des Datenschutzbeauftragten {{ roles.dpo.fullName }}.
+
+                    ## 10. Rueckgabe von Assets
+                    Bei Beendigung des Beschaeftigungsverhaeltnisses oder bei Aenderung der Taetigkeit sind alle ueberlassenen Assets vollstaendig und unbeschaedigt zurueckzugeben (A.5.11 *Return of assets*). Dies umfasst Hardware, Wechselmedien, Schluessel, Ausweise, Tokens und alle in Papierform gehaltenen dienstlichen Informationen.
+
+                    ## 11. Meldung von Sicherheitsereignissen
+                    Beschaeftigte sind verpflichtet, vermutete oder festgestellte Sicherheitsereignisse unverzueglich ueber den dokumentierten Meldekanal (Service-Desk / security@{{ tenant.legal_name }}) zu melden (A.6.8 *Information security event reporting*). Die Bearbeitung erfolgt gemaess Richtlinie zum Sicherheitsvorfallsmanagement.
+
+                    ## 12. Sanktionen
+                    Verstoesse gegen diese Richtlinie werden gemaess Personalsicherheits-Richtlinie und A.6.4 ("Disciplinary process") sanktioniert. Bei schwerwiegenden Verstoessen koennen arbeitsrechtliche, zivilrechtliche oder strafrechtliche Konsequenzen folgen. Drittparteien drohen vertragliche Konsequenzen gemaess A.5.20. Die Bewertung von Einzelfaellen erfolgt im Vier-Augen-Prinzip durch HR-Leitung und CISO {{ roles.ciso.fullName }} unter Hinzuziehung des Datenschutzbeauftragten {{ roles.dpo.fullName }} bei datenschutzrelevanten Sachverhalten.
+
+                    ## 13. Schulung und Bestaetigung
+                    Saemtliche Beschaeftigte bestaetigen die Kenntnisnahme dieser Richtlinie im Onboarding sowie bei jeder wesentlichen Aktualisierung. Die Bestaetigung erfolgt elektronisch ueber das Schulungs- und Awareness-Modul gemaess Personalsicherheits-Richtlinie und wird revisionssicher gespeichert. Schulungsinhalte umfassen typische Beispielszenarien (Phishing, Tailgating, Shoulder-Surfing) sowie branchenspezifische Risikolagen gemaess Threat-Intelligence-Auswertung.
+
+                    ## 14. Pruefintervall
+                    Diese Richtlinie wird alle {{ review.interval_months }} Monate sowie bei Aenderungen der Arbeitsweise (z. B. neue BYOD-Programme, Einfuehrung neuer Cloud-Dienste, Aenderung der KI-Tool-Strategie, Einfuehrung neuer Kollaborations-Werkzeuge) ueberprueft. Wesentliche Aenderungen werden allen Beschaeftigten kommuniziert und erfordern eine erneute Bestaetigung gemaess Abschnitt 13.
+
+                    ## 15. Verbundene Annex-A-Massnahmen
+                    A.5.10, A.5.11 (Return of assets), A.6.7 (Remote working), A.7.9 (Security of off-premises assets), A.8.1 (User endpoint devices).
+                tailoring_field:
+                    byod_stance:
+                        label: 'Haltung zu BYOD (Bring Your Own Device)'
+                        placeholder: 'Beispiel: "BYOD ist zugelassen fuer Smartphones und Tablets unter der Voraussetzung der Einbindung in unser MDM (Microsoft Intune). BYOD-Notebooks sind nicht zulaessig. Eine separate BYOD-Vereinbarung ist vor der ersten Nutzung zu unterzeichnen."'
+                    ai_tool_stance:
+                        label: 'Haltung zur Nutzung von KI-Werkzeugen'
+                        placeholder: 'Beispiel: "Freigegebene KI-Werkzeuge: ChatGPT Enterprise, Microsoft Copilot Business, internes RAG-System. Verboten: oeffentliche kostenlose KI-Tools fuer Daten ab Klassifizierung intern. Zustaendig fuer KI-Freigaben: CISO in Abstimmung mit DSB."'
+                    monitoring_stance:
+                        label: 'Monitoring-Stance und Betriebsvereinbarung'
+                        placeholder: 'Beispiel: "Protokollierung gemaess Betriebsvereinbarung Nr. 2024-03 vom 15.04.2024. Inhaltliche Ueberwachung nur anlassbezogen mit Vier-Augen-Prinzip CISO + Betriebsratsvorsitz + DSB. Aufbewahrung: Sicherheitslogs 12 Monate, Anwendungslogs 90 Tage."'
+        access_control:
+            v1:
+                title: 'Zugriffskontroll-Richtlinie'
+                body: |-
+                    # Zugriffskontroll-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: ISO/IEC 27001:2022 Annex A.5.15, ISO/IEC 27002:2022 § 5.15 | Pruefintervall: {{ review.interval_months }} Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie etabliert Regeln zur Steuerung des physischen und logischen Zugriffs auf Informationen und andere zugehoerige Assets gemaess ISO/IEC 27002:2022 § 5.15: *"Rules to control physical and logical access to information and other associated assets shall be established and implemented based on business and information security requirements."* Sie konkretisiert die Anforderungen aus A.5.16 (Identitaetsmanagement), A.5.17 (Authentisierungsinformationen), A.5.18 (Zugriffsrechte), A.8.2 (Privilegierte Zugriffsrechte), A.8.3 (Einschraenkung des Informationszugangs), A.8.4 (Zugang zum Quellcode) und A.8.5 (Sichere Authentisierung).
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer saemtliche Informationssysteme, Anwendungen, Datenbanken, Netzwerkressourcen, Cloud-Dienste und physischen Bereiche der {{ tenant.legal_name }}, einschliesslich Drittpartei-Zugriffe auf diese Ressourcen.
+
+                    ## 3. Grundprinzipien
+                    Die Zugriffskontrolle der {{ tenant.legal_name }} basiert auf folgenden Prinzipien:
+
+                    - **Geringste Rechte (Least Privilege)** – Berechtigungen werden auf das fuer die Aufgabenerfuellung minimal Notwendige beschraenkt.
+                    - **Need-to-know** – Zugriff auf Informationen wird nur gewaehrt, wenn dies fuer die Aufgabenerfuellung erforderlich ist.
+                    - **Funktionstrennung (Segregation of Duties, A.5.3)** – Konfliktbehaftete Aufgaben (z. B. Genehmigung und Ausfuehrung, Buchhaltung und Zahlungsfreigabe) werden auf verschiedene Personen verteilt.
+                    - **Default-Deny** – Zugriff wird grundsaetzlich verweigert, sofern nicht explizit gewaehrt.
+                    - **Vier-Augen-Prinzip** fuer privilegierte Aktionen (z. B. Vergabe von Administrator-Rechten).
+
+                    ## 4. Berechtigungsmodell
+                    Die {{ tenant.legal_name }} setzt ein rollenbasiertes Berechtigungsmodell (RBAC) ein. Fachbereiche definieren Rollen mit den jeweils erforderlichen Berechtigungen. Die Vergabe von Rollen erfolgt ausschliesslich ueber den dokumentierten Antrags- und Genehmigungsprozess (siehe Abschnitt 5). Direktvergaben von Einzelberechtigungen ohne Rollenbezug sind unzulaessig.
+
+                    ## 5. Antrags- und Genehmigungsprozess
+                    1. Der Antrag erfolgt ueber das ITSM-System durch den Fachvorgesetzten der antragstellenden Person.
+                    2. Bei privilegierten Berechtigungen (Administrator, Datenbank-Admin, Cloud-Admin) ist zusaetzlich die Genehmigung des CISO {{ roles.ciso.fullName }} erforderlich.
+                    3. Bei Zugriff auf personenbezogene Daten ist der DSB {{ roles.dpo.fullName }} einzubeziehen.
+                    4. Die Vergabe erfolgt erst nach abgeschlossener Genehmigung; jede Vergabe wird protokolliert (A.5.18).
+
+                    ## 6. Joiner-Mover-Leaver-Prozess (JML)
+                    Der JML-Prozess wird gemeinsam durch HR und IT verantwortet:
+
+                    - **Joiner** – Vor dem ersten Arbeitstag werden Standardberechtigungen fuer die Rolle bereitgestellt; die persoenliche Authentisierung wird gemaess Authentisierungsinformations-Richtlinie eingerichtet (Initialpasswort + erzwungener Wechsel + MFA).
+                    - **Mover** – Bei Rollenwechsel werden saemtliche bisherigen Rollen entzogen und neue Rollen vergeben; eine Rollenakkumulation ist unzulaessig.
+                    - **Leaver** – Bei Beendigung des Beschaeftigungsverhaeltnisses werden alle Berechtigungen unmittelbar (am letzten Arbeitstag, bei unfreiwilliger Beendigung sofort) deaktiviert. Konten werden 30 Tage in deaktiviertem Zustand vorgehalten und anschliessend geloescht.
+
+                    ## 7. Privilegierte Zugriffsrechte (A.8.2)
+                    Privilegierte Konten unterliegen verschaerften Anforderungen:
+
+                    - Trennung von normalem Konto und Admin-Konto;
+                    - Mehr-Faktor-Authentisierung verpflichtend;
+                    - Nutzung ueber Privileged-Access-Management-Loesung (PAM) mit Session-Recording;
+                    - Just-in-Time-Berechtigungen mit zeitlicher Befristung (max. 8 Stunden);
+                    - Vier-Augen-Genehmigung fuer kritische Aktionen.
+
+                    ## 8. Zugriffsueberpruefung (A.5.18)
+                    Berechtigungen werden gemaess der jaehrlichen Zugriffs-Rezertifizierung mindestens halbjaehrlich durch die Fachvorgesetzten ueberprueft. Privilegierte Berechtigungen werden vierteljaehrlich ueberprueft. Nicht mehr benoetigte Berechtigungen sind unverzueglich zu entziehen. Die Rezertifizierungsergebnisse werden dem CISO berichtet.
+
+                    ## 9. Authentisierung
+                    Die Authentisierung erfolgt gemaess Authentisierungsinformations-Richtlinie. Mehr-Faktor-Authentisierung ist verpflichtend fuer alle Beschaeftigten und Drittparteien beim Zugriff von extern, fuer alle privilegierten Konten und fuer alle Anwendungen mit Zugriff auf personenbezogene oder vertrauliche Daten.
+
+                    ## 10. Fernzugriff
+                    Der Fernzugriff auf interne Ressourcen ist nur ueber zugelassene VPN- oder ZTNA-Loesungen zulaessig. Der Fernzugriff ist gemaess Richtlinie fuer mobile Geraete und Telearbeit geregelt. Drittpartei-Fernzugriffe erfolgen ausschliesslich ueber dedizierte Drittpartei-Zugangsknoten mit Session-Recording.
+
+                    ## 11. Drittpartei-Zugriff
+                    Zugriffe Dritter (Lieferanten, Auditorinnen und Auditoren, externe Beraterinnen und Berater) erfolgen unter folgenden Bedingungen: schriftlicher Vertrag mit Sicherheitsklauseln gemaess A.5.20, individuelle benannte Konten (keine Sammelkonten), MFA, zeitlich befristete Vergabe, Begleitung durch interne Verantwortliche bei sensiblen Taetigkeiten.
+
+                    ## 12. Zugang zum Quellcode (A.8.4)
+                    Der Zugang zum Quellcode der {{ tenant.legal_name }} ist auf das Entwicklungsteam und legitimierte Pruefungsfunktionen beschraenkt. Code-Repositories werden mit Vier-Augen-Pull-Request-Reviews geschuetzt. Schreibender Zugang zu Produktiv-Branches setzt erfolgreichen Code-Review und bestandene automatisierte Sicherheitspruefungen voraus (siehe Richtlinie fuer sichere Entwicklung).
+
+                    ## 13. Logging und Monitoring
+                    Saemtliche Zugriffsereignisse werden gemaess Protokollierungs- und Monitoring-Richtlinie protokolliert: Anmeldungen (erfolgreich und fehlgeschlagen), Berechtigungsaenderungen, privilegierte Aktionen, Zugriffe auf vertrauliche Daten. Auffaellige Muster (z. B. mehrfache Fehlanmeldungen, ungewoehnliche Anmeldezeiten) loesen Alarme im SIEM aus.
+
+                    ## 14. Verstoesse
+                    Verstoesse gegen diese Richtlinie werden gemaess Personalsicherheits-Richtlinie sanktioniert. Vorsaetzliche Umgehung der Zugriffskontrollen, Weitergabe von Berechtigungen oder Nutzung fremder Konten koennen zur sofortigen Sperrung saemtlicher Berechtigungen, zu arbeitsrechtlichen Konsequenzen sowie zu zivil- und strafrechtlicher Verfolgung fuehren. Die Bewertung erfolgt im Vier-Augen-Prinzip durch HR-Leitung und CISO {{ roles.ciso.fullName }}.
+
+                    ## 15. Schulung und Awareness
+                    Beschaeftigte mit privilegierten Berechtigungen werden zusaetzlich zur jaehrlichen Awareness-Schulung in einer rollenspezifischen Schulung zu Privileged-Access-Risiken geschult (Phishing, Social-Engineering, Side-Channel-Risiken, Operational-Security-Hygiene). Schulungserfolge werden im Trainingsmodul dokumentiert.
+
+                    ## 16. Notfallzugaenge
+                    Fuer den Notfall werden ausschliesslich gemaess Abschnitt 12 der Authentisierungsinformations-Richtlinie verwaltete Break-Glass-Konten genutzt. Der Einsatz dieser Konten erfolgt nur durch ein vom CISO benanntes Notfall-Team und wird vollstaendig protokolliert.
+
+                    ## 17. Pruefintervall
+                    Diese Richtlinie wird alle {{ review.interval_months }} Monate sowie bei Aenderungen der RBAC-Architektur, der Einfuehrung neuer kritischer Anwendungen oder Aenderung der Provisioning-Werkzeuge ueberprueft.
+
+                    ## 18. Verbundene Annex-A-Massnahmen
+                    A.5.15, A.5.16, A.5.17, A.5.18, A.8.2, A.8.3, A.8.4, A.8.5.
+                tailoring_field:
+                    access_review_cadence:
+                        label: 'Rezertifizierungs-Turnus'
+                        placeholder: 'Beispiel: "Standardberechtigungen halbjaehrlich (Q1 + Q3); privilegierte Berechtigungen vierteljaehrlich; Konten von Drittparteien monatlich. Verantwortlich: Fachvorgesetzte mit Bestaetigung an CISO."'
+                    jml_owner:
+                        label: 'JML-Prozessverantwortung'
+                        placeholder: 'Beispiel: "JML-Owner: Personalabteilung gemeinsam mit IT-Operations. Trigger: Eintritt/Austritt im HR-System loest automatisierten Workflow im IAM aus. Eskalation an CISO bei nicht-erfolgter Deaktivierung innerhalb 24 Stunden."'
+                    privileged_access_tooling:
+                        label: 'PAM-Werkzeug und Privileged-Access-Strategie'
+                        placeholder: 'Beispiel: "PAM-Loesung: CyberArk PAM. Just-in-Time-Berechtigungen via JIT-Token (8h Gueltigkeit). Vier-Augen-Genehmigung fuer alle Domain-Admin-Aktionen. Session-Recording fuer alle priv. Sessions, Aufbewahrung 12 Monate."'
+        information_classification:
+            v1:
+                title: 'Richtlinie zur Klassifizierung und Handhabung von Informationen'
+                body: |-
+                    # Richtlinie zur Klassifizierung und Handhabung von Informationen der {{ tenant.legal_name }}
+
+                    *Norm-Anker: ISO/IEC 27001:2022 Annex A.5.12, A.5.13, A.5.14, ISO/IEC 27002:2022 §§ 5.12–5.14 | Pruefintervall: {{ review.interval_months }} Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie etabliert das Klassifizierungs- und Handhabungs-Schema fuer Informationen gemaess ISO/IEC 27002:2022 § 5.12: *"Information should be classified … in accordance with the information security needs of the organization …"* sowie § 5.13 zur Kennzeichnung. Sie ist die normative Grundlage fuer alle nachgelagerten Handhabungsregeln (Speicherung, Uebertragung, Loeschung) und unterstuetzt das Datenschutzkonzept gemaess A.5.34 sowie die Anforderungen der DSGVO Art. 32.
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer saemtliche Informationen der {{ tenant.legal_name }} unabhaengig vom Medium (digital, Papier, muendlich) und Verarbeitungsstadium (Erstellung, Speicherung, Uebertragung, Archivierung, Loeschung). Sie gilt ferner fuer alle Personen, die Informationen erstellen oder verarbeiten.
+
+                    ## 3. Klassifizierungsschema
+                    Die {{ tenant.legal_name }} verwendet ein Schema mit {{ data.classification_levels }} Klassifizierungsstufen. Die Klassifizierung erfolgt nach Schutzbedarf in den Schutzzielen Vertraulichkeit, Integritaet und Verfuegbarkeit (CIA):
+
+                    ### 3.1 Vertraulichkeit
+                    - **Oeffentlich** – Informationen, die ohne Einschraenkungen veroeffentlicht werden duerfen (z. B. Pressemitteilungen, oeffentliche Webseite-Inhalte, Marketingmaterial).
+                    - **Intern** – Informationen, die nur fuer Mitarbeitende und legitimierte Drittparteien bestimmt sind (z. B. interne Prozessbeschreibungen, Projektplaene ohne sensible Details).
+                    - **Vertraulich** – Informationen mit erheblichem Schaden bei unbefugter Offenlegung (z. B. Vertraege, Kundenstammdaten, Personalakten, Finanzdaten, sicherheitsrelevante Konfigurationsdaten).
+                    - **Streng vertraulich** *(falls 4-stufig)* – Informationen mit existenzgefaehrdendem Schaden bei Offenlegung (z. B. Geschaeftsgeheimnisse, M&A-Informationen, kritische Infrastrukturdaten, Authentisierungsschluessel).
+
+                    ### 3.2 Integritaet
+                    Stufen *Standard*, *Erhoeht*, *Hoch* mit Anforderungen an Pruefsummen, digitale Signaturen, Vier-Augen-Pruefung und Versionsverwaltung.
+
+                    ### 3.3 Verfuegbarkeit
+                    Stufen *Standard*, *Erhoeht*, *Hoch* mit Anforderungen an Backup-Frequenz und RTO/RPO gemaess Backup-Richtlinie und IKT-Kontinuitaets-Richtlinie.
+
+                    ## 4. Verantwortlichkeiten
+                    - **Information Owner** – Jede Information hat einen benannten Information Owner, der die Klassifizierung festlegt und ueberprueft. Bei Datenobjekten in Anwendungen ist der Asset Owner gemaess Asset-Management-Richtlinie verantwortlich.
+                    - **Verarbeiter** – Saemtliche Beschaeftigte sind verpflichtet, Informationen entsprechend der Klassifizierung zu handhaben.
+                    - **Datenschutzbeauftragter** – {{ roles.dpo.fullName }} bestaetigt die Klassifizierung personenbezogener Daten gemaess DSGVO.
+
+                    ## 5. Kennzeichnung (A.5.13)
+                    Klassifizierte Informationen werden eindeutig gekennzeichnet:
+
+                    - **Digitale Dokumente** – Klassifizierungsstempel in der Kopf- oder Fusszeile (z. B. "Vertraulich – Eigentum {{ tenant.legal_name }}"); Metadaten gemaess Dokumentenmanagement-System.
+                    - **E-Mail** – Klassifizierungsangabe im Betreff bei Stufen *vertraulich* und hoeher (z. B. "[VERTRAULICH] …"); Metadaten via Sensitivity Labels.
+                    - **Papier** – Klassifizierungsstempel oben + unten auf jeder Seite; rote Stempel fuer *vertraulich*/hoeher.
+                    - **Wechselmedien** – Beschriftung mit Klassifizierung + verantwortlicher Person.
+
+                    Informationen ohne Kennzeichnung gelten standardmaessig als *intern*.
+
+                    ## 6. Handhabungsmatrix
+                    | Stufe | Speicherung | Uebertragung | Vernichtung |
+                    |-------|-------------|--------------|-------------|
+                    | Oeffentlich | unverschluesselt zulaessig | unverschluesselt zulaessig | Standard-Entsorgung |
+                    | Intern | nur auf zugelassenen Speicherorten | innerhalb der Organisation unverschluesselt; extern verschluesselt | Aktenvernichtung Sicherheitsstufe P-3 |
+                    | Vertraulich | verschluesselt at-rest (AES-256) | verschluesselt in-transit (TLS 1.2+) | P-4 Schreddern; sicheres digitales Loeschen |
+                    | Streng vertraulich | verschluesselt at-rest + Zugriff via PAM | Ende-zu-Ende-Verschluesselung; keine oeffentlichen Cloud-Services | P-5/P-7 Schreddern; kryptografisches Loeschen mit Pruefnachweis |
+
+                    ## 7. Aufbewahrung und Loeschung
+                    Aufbewahrungsfristen werden je Informationskategorie auf Basis rechtlicher (z. B. HGB § 257, AO § 147, DSGVO Art. 5 Abs. 1 lit. e), regulatorischer und vertraglicher Anforderungen festgelegt. Nach Ablauf der Aufbewahrungsfrist werden Informationen gemaess A.8.10 sicher geloescht. Personenbezogene Daten werden gemaess Datenschutz- und PII-Schutz-Richtlinie verarbeitet. Aufbewahrungs-Defaults werden im Anhang *Aufbewahrungsmatrix* je Klassifizierungsstufe und Datenkategorie verbindlich festgelegt; Abweichungen erfordern eine begruendete Genehmigung des Information Owner sowie des DSB bei personenbezogenen Daten.
+
+                    ## 8. Deklassifizierung
+                    Klassifizierungen sind nicht statisch. Wird eine Information voraussichtlich nicht mehr schutzbeduerftig (z. B. veroeffentlichungsreife Forschungsergebnisse, abgelaufene Vertraulichkeitsfristen), kann der Information Owner eine Deklassifizierung beantragen. Die Deklassifizierung wird im Audit-Log gemaess Klausel 7.5 dokumentiert. Eine versehentliche Deklassifizierung (Auslassen der Kennzeichnung beim Wiederveroeffentlichen) ist Verstoss und meldepflichtig gemaess Sicherheitsvorfalls-Richtlinie.
+
+                    ## 9. Schutz vor Datenabfluss (A.8.12)
+                    Die Organisation setzt Data-Loss-Prevention-Mechanismen ein, um die unbefugte Uebertragung klassifizierter Informationen zu verhindern. DLP-Regeln werden auf E-Mail, Cloud-Storage und Endpunkt-Speicherung angewandt. Die DLP-Regeln werden gemaess Klassifizierungsschema gepflegt; Aenderungen unterliegen dem Change-Management gemaess Haertungs- und Konfigurations-Richtlinie. False-Positive-Berichte werden monatlich durch das Security-Operations-Team ausgewertet und an den CISO berichtet.
+
+                    ## 10. Schulung und Bewusstsein
+                    Saemtliche Beschaeftigte werden im Onboarding sowie jaehrlich verpflichtend zur Klassifizierung und Handhabung von Informationen geschult (A.6.3). Die Schulungsinhalte umfassen das Klassifizierungsschema, die Handhabungsmatrix, die Kennzeichnungsregeln sowie typische Fehlerquellen (z. B. unbeabsichtigte Weitergabe an externe Empfaenger, Ablage in nicht zugelassenen Cloud-Diensten). Die Teilnahme wird im Trainingsmodul gemaess Personalsicherheits-Richtlinie nachgewiesen.
+
+                    ## 11. Verstoesse
+                    Verstoesse fuehren zu Massnahmen gemaess Personalsicherheits-Richtlinie sowie ggf. Meldung an Aufsichtsbehoerden bei Datenschutzverstoessen (DSGVO Art. 33 / 34). Vorsaetzliche Falsch-Klassifizierung mit dem Ziel der Umgehung von Schutzmassnahmen wird arbeitsrechtlich verfolgt. Bei festgestellter Fehl-Klassifizierung loest der Information Owner unverzueglich die Korrektur aus; bestehende Kopien werden gemaess Handhabungsmatrix in den korrekten Schutzmodus ueberfuehrt.
+
+                    ## 12. Pruefintervall
+                    Diese Richtlinie wird alle {{ review.interval_months }} Monate ueberprueft. Eine Aenderung des Klassifizierungsschemas loest ein Re-Klassifizierungs-Projekt aus, dessen Steuerung beim CISO liegt.
+
+                    ## 13. Verbundene Annex-A-Massnahmen
+                    A.5.12, A.5.13, A.5.14, A.5.33 (Protection of records), A.7.10 (Storage media), A.8.10 (Information deletion), A.8.12 (Data leakage prevention).
+                tailoring_field:
+                    classification_scheme:
+                        label: 'Klassifizierungsschema und Beispiele'
+                        placeholder: 'Beispiel: "4-stufiges Schema: oeffentlich / intern / vertraulich / streng vertraulich. Streng vertraulich nur fuer M&A-Daten, Geschaeftsgeheimnisse, kryptografische Schluessel. Standard-Klassifizierung bei Erstellung: intern. Re-Klassifizierung mind. alle 24 Monate."'
+                    label_format:
+                        label: 'Kennzeichnungs-Format pro Medium'
+                        placeholder: 'Beispiel: "Word/PDF: Klassifizierung in Kopfzeile (Schriftart Arial 10, fett, ausgerichtet rechts). E-Mail: Microsoft Sensitivity Label + Praefix [VERTRAULICH] im Betreff. Papier: roter Stempel oben + unten. Wechselmedien: Etikett mit Klassifizierung + Verantwortlichem."'
+                    retention_defaults:
+                        label: 'Aufbewahrungs-Defaults pro Klassifizierungsstufe'
+                        placeholder: 'Beispiel: "Oeffentlich: unbegrenzt sofern relevant. Intern: 5 Jahre nach letzter Bearbeitung. Vertraulich: 7 Jahre (handelsrechtlich) oder gemaess Vertrag, danach Loeschung. Streng vertraulich: nach Wegfall des Geheimhaltungszwecks unverzueglich; Schluessel: gemaess Krypto-Richtlinie."'
+        information_transfer:
+            v1:
+                title: 'Richtlinie zur Informationsuebertragung'
+                body: |-
+                    # Richtlinie zur Informationsuebertragung der {{ tenant.legal_name }}
+
+                    *Norm-Anker: ISO/IEC 27001:2022 Annex A.5.14, ISO/IEC 27002:2022 § 5.14 | Pruefintervall: {{ review.interval_months }} Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Uebertragung von Informationen innerhalb der {{ tenant.legal_name }} sowie zwischen der Organisation und Dritten gemaess ISO/IEC 27002:2022 § 5.14: *"Information transfer rules, procedures or agreements shall be in place for all types of transfer facilities …"* Sie umfasst elektronische, physische und muendliche Uebertragung und ergaenzt die Klassifizierungs- und Handhabungs-Richtlinie. Ziel ist die Sicherstellung, dass Informationen waehrend des Uebertragungsvorgangs in jedem Medium und gegenueber jedem Empfaenger den fuer ihre Klassifizierung definierten Schutz erhalten.
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer alle Beschaeftigten, Auftragnehmer und Drittparteien, die Informationen der {{ tenant.legal_name }} uebertragen, sowie fuer alle Uebertragungswege: E-Mail, Datei-Austausch (Cloud / SFTP / On-Premise-Filer), Nachrichten-/Chat-Dienste, Telefonie, Videokonferenzen, Post, Kuriere, mobile Datentraeger, persoenliches Gespraech.
+
+                    ## 3. Allgemeine Grundsaetze
+                    1. Die Uebertragung folgt der Klassifizierung der Information; Stufen ab *vertraulich* erfordern verschluesselte Kanaele.
+                    2. Empfaengerseite ist vor Uebertragung auf Berechtigung und Identitaet zu pruefen.
+                    3. Bei Uebertragung an Drittparteien sind vertragliche Geheimhaltungsverpflichtungen erforderlich (NDA, A.6.6 *Confidentiality or non-disclosure agreements*).
+
+                    ## 4. Elektronische Uebertragung
+                    ### 4.1 E-Mail
+                    - E-Mails der Stufe *intern* werden ueber das dienstliche E-Mail-System uebertragen, das TLS 1.2+ in-transit erzwingt.
+                    - E-Mails der Stufe *vertraulich* und hoeher werden Ende-zu-Ende verschluesselt (S/MIME oder OpenPGP) oder ueber sichere Datei-Austausch-Loesungen geteilt.
+                    - Externe Empfaenger erhalten verschluesselte Anhaenge nur, wenn die TLS-Erzwingung fuer den Empfaenger-Server bestaetigt ist; andernfalls erfolgt Datei-Austausch ueber ein zugelassenes Portal.
+
+                    ### 4.2 Datei-Austausch
+                    Zugelassene Dienste fuer Datei-Austausch sind im Anhang *Genehmigte Datei-Austausch-Kanaele* gelistet. Die Nutzung anderer (privater) Cloud-Dienste fuer dienstliche Informationen ist untersagt. Externe Freigaben sind zu befristen, auf benannte Empfaenger zu beschraenken und mit Passwort sowie ggf. MFA zu schuetzen.
+
+                    ### 4.3 Messaging und Chat
+                    Dienstliche Chat-Dienste (z. B. Microsoft Teams, Slack Enterprise) duerfen fuer interne Kommunikation bis Stufe *intern* genutzt werden. Inhalte ab Stufe *vertraulich* werden nicht ueber Chat ausgetauscht. Externe Messenger (z. B. private WhatsApp, Telegram, Signal) sind fuer dienstliche Inhalte untersagt.
+
+                    ## 5. Physische Uebertragung
+                    - Vertraulicher Postverkehr erfolgt per Einschreiben oder zugelassenem Kurier mit Empfangsbestaetigung.
+                    - Vertrauliche Dokumente werden in versiegelten Umschlaegen mit dem Vermerk "Persoenlich / Vertraulich" versendet.
+                    - Wechselmedien werden hardware-verschluesselt; Schluessel werden auf separatem Kanal uebermittelt.
+                    - Internationale physische Uebertragung beachtet Exportkontroll-Vorgaben (z. B. Dual-Use-Verordnung (EU) 2021/821).
+
+                    ## 6. Muendliche Uebertragung
+                    1. Vertrauliche Informationen werden nicht in oeffentlichen Bereichen (oeffentliche Verkehrsmittel, Cafes, Wartebereiche) besprochen.
+                    2. Die Nutzung von Lautsprechern fuer Telefonate in Grossraumbueros ist fuer Stufen ab *vertraulich* untersagt.
+                    3. Vor der Uebermittlung wird die Identitaet der Gegenseite verifiziert (Rueckruf an verifizierte Nummer; persoenliche Erkennung bei Videokonferenz).
+                    4. Aufzeichnungen von Besprechungen erfordern die ausdrueckliche Zustimmung aller Teilnehmenden und werden klassifiziert sowie aufbewahrt gemaess Klassifizierungs-Richtlinie und DSGVO Art. 6.
+
+                    ## 7. Drittpartei-Uebertragung
+                    Vor regelmaessigen Uebertragungen an Dritte sind folgende Massnahmen erforderlich:
+
+                    - Geheimhaltungsvereinbarung (NDA) gemaess A.6.6 mit der Drittpartei;
+                    - Sicherheits-Klauseln im Vertrag gemaess A.5.20 inkl. Kryptografie-, Sub-Auftragsverarbeiter- und Audit-Right-Klauseln;
+                    - bei Uebertragung personenbezogener Daten in Drittlaender: Pruefung gemaess DSGVO Art. 44–49 (Standardvertragsklauseln, Angemessenheitsbeschluss, BCR);
+                    - Drittpartei-Sicherheitspruefung gemaess Lieferanten-Sicherheits-Richtlinie.
+
+                    ## 8. Krypto-Anforderungen
+                    Verschluesselung und Schluesselmanagement folgen der Kryptografie-Richtlinie. Mindestanforderungen: TLS 1.2+ (bevorzugt 1.3) fuer in-transit, AES-256 fuer at-rest, RSA 3072 oder ECDSA P-256 fuer asymmetrische Verfahren. Bei der Uebertragung an externe Empfaenger pruefen technische Kontrollen die Verschluesselungsfaehigkeit der Empfaenger-Gegenstelle (z. B. MTA-STS, DANE); bei Nicht-Erfuellung wird der Versand auf alternative sichere Kanaele umgeleitet oder vom Sender bewusst zurueckgewiesen.
+
+                    ## 9. Protokollierung
+                    Externe Uebertragungen ueber zentrale Plattformen (E-Mail-Gateway, Datei-Austausch-Portal) werden protokolliert. Die Protokollierung folgt der Protokollierungs- und Monitoring-Richtlinie und DSGVO Art. 32. Auswertungen erfolgen ausschliesslich anlassbezogen und unter Beachtung der einschlaegigen Betriebsvereinbarung sowie unter Einbindung des Datenschutzbeauftragten {{ roles.dpo.fullName }}. Reports zu Auffaelligkeiten (z. B. ungewoehnliche Datenvolumina an externe Empfaenger, Versand vertraulicher Anhaenge an unverschluesselte Empfaenger-Gegenstellen) werden monatlich an den CISO {{ roles.ciso.fullName }} berichtet.
+
+                    ## 10. Verstoesse
+                    Verstoesse werden gemaess Personalsicherheits-Richtlinie sanktioniert. Drittparteien drohen vertragliche Konsequenzen bis hin zur fristlosen Vertragsbeendigung. Bei Datenpannen ueber Uebertragungsfehler greifen zusaetzlich die Meldewege gemaess Sicherheitsvorfalls-Richtlinie und DSGVO Art. 33/34. Die Bewertung von Einzelfaellen erfolgt im Vier-Augen-Prinzip durch CISO {{ roles.ciso.fullName }} und Datenschutzbeauftragten {{ roles.dpo.fullName }}, bei vermuteten strafrechtlichen Sachverhalten unter Einbindung der Rechtsabteilung.
+
+                    ## 11. Schulung und Bewusstsein
+                    Beschaeftigte werden zu sicherer Informationsuebertragung im Onboarding sowie im Rahmen der jaehrlichen Sicherheits-Awareness-Schulung gemaess A.6.3 geschult. Schwerpunkte: Erkennen vertraulicher Inhalte, Wahl des passenden Kanals, Pruefung der Empfaenger-Identitaet, Umgang mit verschluesselten Anhaengen, Vorsichtspflichten in oeffentlichen Bereichen.
+
+                    ## 12. Pruefintervall
+                    Diese Richtlinie wird alle {{ review.interval_months }} Monate sowie bei Aenderung der Werkzeuglandschaft (z. B. Einfuehrung eines neuen Datei-Austausch-Dienstes), bei Aenderung der Krypto-Vorgaben oder bei wesentlicher Aenderung der regulatorischen Rahmenbedingungen ueberprueft.
+
+                    ## 13. Anhang: Genehmigte Datei-Austausch-Kanaele (Auszug)
+                    Der vollstaendige Anhang wird im Dokumentenmanagementsystem als versioniertes Begleitdokument gefuehrt. Mindestbestandteile: Tool-Name, Hersteller, zugelassene Klassifizierungsstufen, Verschluesselungsangabe, Verantwortliche Fachabteilung, Pruefdatum, Genehmigungsstatus durch CISO und DSB. Aenderungen der Liste folgen dem Change-Management gemaess Haertungs- und Konfigurations-Richtlinie.
+
+                    ## 14. Verbundene Annex-A-Massnahmen
+                    A.5.14, A.6.6 (Confidentiality/NDA), A.8.20–A.8.23 (Network controls), A.8.24 (Cryptography).
+                tailoring_field:
+                    approved_channels:
+                        label: 'Genehmigte Datei-Austausch-Kanaele'
+                        placeholder: 'Beispiel: "Intern: Microsoft SharePoint Online. Extern (vertraulich): Nextcloud Enterprise mit MFA, externe Freigaben max. 30 Tage. Extern (streng vertraulich): SFTP-Server mit Schluesselauthentisierung. Verboten: WeTransfer, Dropbox privat, ungemanagte Cloud-Dienste."'
+                    encryption_at_rest:
+                        label: 'At-Rest-Verschluesselungs-Anforderung pro Stufe'
+                        placeholder: 'Beispiel: "Intern: keine Pflicht (Standard-Plattformverschluesselung). Vertraulich: AES-256 Plattformverschluesselung verpflichtend. Streng vertraulich: zusaetzliche Datei-/Container-Verschluesselung mit eigenem Schluessel; Schluessel im KMS verwaltet."'
+                    nda_template_reference:
+                        label: 'NDA-Vorlage und Verantwortlich'
+                        placeholder: 'Beispiel: "Standard-NDA-Vorlage Version 2025-03 im Vertrags-Repository (Compliance/Templates/NDA). Verantwortlich fuer Vertragsabschluss: Einkauf in Abstimmung mit Rechtsabteilung. Mind. Geheimhaltungsdauer: 5 Jahre nach Vertragsende."'
+        identity_management:
+            v1:
+                title: 'Identitaetsmanagement-Richtlinie'
+                body: |-
+                    # Identitaetsmanagement-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: ISO/IEC 27001:2022 Annex A.5.16, ISO/IEC 27002:2022 § 5.16 | Pruefintervall: {{ review.interval_months }} Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt das Management des gesamten Lebenszyklus von Identitaeten gemaess ISO/IEC 27002:2022 § 5.16: *"The full lifecycle of identities shall be managed."* Sie ergaenzt die Zugriffskontroll-Richtlinie (A.5.15) und die Authentisierungsinformations-Richtlinie (A.5.17) und unterstuetzt die regulatorischen Anforderungen aus EU-DORA und NIS2. Ziel ist die Sicherstellung, dass jede Identitaet im IT-Oekosystem der Organisation eindeutig zuordenbar, ueberpruefbar und im gesamten Lebenszyklus auditierbar gefuehrt wird.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Identitaeten in Systemen der {{ tenant.legal_name }}: persoenliche Konten von Beschaeftigten und Auftragnehmern, technische Konten, Service-Konten, Konten fuer Drittparteien sowie Konten fuer Endkundinnen und Endkunden.
+
+                    ## 3. Identitaetstypen
+                    1. **Persoenliche Identitaet (Beschaeftigte / Auftragnehmer)** – einer benannten Person fest zugeordnet; einmalig in der Organisation, eindeutige Naming-Convention (z. B. `vorname.nachname`).
+                    2. **Privilegierte Identitaet (Admin)** – getrennt von der persoenlichen Identitaet, mit zusaetzlichem Praefix (z. B. `adm-vorname.nachname`); MFA verpflichtend; verbunden mit der persoenlichen Identitaet ueber das IAM.
+                    3. **Service-Identitaet (technisches Konto)** – fuer Dienst-zu-Dienst-Kommunikation; jede Service-Identitaet hat einen menschlichen Owner gemaess Asset-Owner-Prinzip; Authentisierung ueber Secrets oder Zertifikate gemaess Authentisierungsinformations-Richtlinie.
+                    4. **Drittpartei-Identitaet** – individuelle benannte Identitaet (kein Sammelkonto); zeitlich befristet; MFA verpflichtend.
+                    5. **Endkunden-Identitaet** – sofern relevant; eigene Naming-Convention; Authentisierung gemaess Authentisierungsinformations-Richtlinie.
+
+                    Sammelkonten ("shared accounts") sind grundsaetzlich untersagt und nur in begruendeten Ausnahmefaellen mit Genehmigung des CISO zulaessig (z. B. fuer geraetegebundene Funktionskonten in Produktionsumgebungen mit kompensierender Kontrolle).
+
+                    ## 4. Identitaets-Lifecycle
+                    ### 4.1 Erstellung (Onboarding)
+                    Auswertung des HR-Trigger-Ereignisses (Eintritt) loest automatisierten Workflow im IAM aus. Die Identitaet wird vor dem ersten Arbeitstag bereitgestellt. Initial-Authentisierungsinformationen werden gemaess Authentisierungsinformations-Richtlinie zugewiesen. Der Vorgesetzte bestaetigt die korrekte Rollen-Zuordnung.
+
+                    ### 4.2 Aenderung (Mover)
+                    Bei Rollenwechsel werden alle bisherigen Berechtigungen entzogen und die neue Rolle vergeben. Eine Berechtigungs-Akkumulation ueber Rollenwechsel hinweg ist unzulaessig. Zwischenzeitliche Ueberlappungen sind auf max. 5 Werktage zu begrenzen.
+
+                    ### 4.3 Suspendierung
+                    Bei Abwesenheiten von ueber 30 Tagen (Elternzeit, Sabbatical, Langzeiterkrankung) werden Konten suspendiert.
+
+                    ### 4.4 Loeschung (Leaver)
+                    Bei freiwilliger Beendigung: Deaktivierung am letzten Arbeitstag; bei unfreiwilliger Beendigung: sofortige Deaktivierung. Konten verbleiben 30 Tage in deaktiviertem Zustand fuer Zugriff durch Vorgesetzte (geschaeftlicher Datenuebergang); danach erfolgt die endgueltige Loeschung. Fuer Konten mit personenbezogenen Daten ist die DSGVO-Loeschpflicht zu beachten.
+
+                    ## 5. Naming Convention
+                    Persoenliche Identitaeten: `vorname.nachname` (lower-case, ASCII). Bei Namensgleichheit: nummerischer Suffix (`max.mueller2`). Privilegierte Identitaeten: Praefix `adm-`. Service-Identitaeten: Praefix `svc-` + Anwendungs-Code (`svc-erp-prod-01`). Drittpartei-Identitaeten: Praefix `ext-` + Firma (`ext-acme-jdoe`). Eindeutigkeit ueber alle Systeme wird durch das IAM erzwungen.
+
+                    ## 6. Identity Provider
+                    Die {{ tenant.legal_name }} setzt einen zentralen Identity Provider (IdP) ein, an den alle internen und cloudbasierten Anwendungen ueber SAML 2.0, OAuth 2.0 / OIDC oder SCIM angebunden sind. Foederierte Identitaeten ausserhalb des IdP sind nur ueber zugelassene Federation-Partner zulaessig (z. B. Eduroam, Trusted Customer-IdP). Eigene Anwendungs-Anmeldungen ohne IdP-Anbindung sind untersagt; Bestandsanwendungen werden migriert oder durch eine Ausnahme-Genehmigung des CISO entkoppelt.
+
+                    ## 7. Service- und technische Identitaeten
+                    Jede Service-Identitaet ist:
+
+                    - im IAM registriert mit menschlichem Owner;
+                    - mit Anwendung, Umgebung und Funktion dokumentiert;
+                    - mit minimalen Rechten ausgestattet (Least Privilege);
+                    - mit Geheimnis-Rotation gemaess Authentisierungsinformations-Richtlinie;
+                    - jaehrlich rezertifiziert.
+
+                    Verlaesst der Owner die Organisation, wird die Service-Identitaet einem neuen Owner zugewiesen.
+
+                    ## 8. Drittpartei-Identitaeten
+                    Drittparteien erhalten benannte Identitaeten ueber das Drittpartei-Onboarding gemaess Lieferanten-Sicherheits-Richtlinie. Befristung: max. 12 Monate; Verlaengerung erfordert erneute Pruefung. Bei Vertragsende werden Identitaeten unverzueglich am letzten gueltigen Vertragstag deaktiviert; eine Verlaengerung ueber das Vertragsende hinaus ist nur mit ausdruecklicher Genehmigung des Vertragsmanagers und des CISO {{ roles.ciso.fullName }} zulaessig (z. B. fuer eine geordnete Datenuebergabe).
+
+                    ## 9. Audit und Logging
+                    Identity-Lifecycle-Ereignisse (Anlegen, Aktivieren, Deaktivieren, Aenderung der Rolle) werden protokolliert. Auswertungen erfolgen monatlich durch den IAM-Verantwortlichen mit Bericht an den CISO {{ roles.ciso.fullName }}. Auffaelligkeiten (Anomalie-Muster wie Massenanlage, ungewoehnliche Aktivierungen ausserhalb der Geschaeftszeiten, Service-Konten ohne Owner) werden umgehend untersucht.
+
+                    ## 10. Foerderierte Identitaeten und Endkunden-Identitaeten
+                    Foerderierte Identitaeten zugelassener Federation-Partner werden auf den jeweils notwendigen Funktionsumfang beschraenkt; ein Federation-Vertrag mit Sicherheitsanforderungen gemaess A.5.20 ist Voraussetzung. Endkunden-Identitaeten werden separat in der Customer-Identity-Komponente verwaltet, mit eigenem Risiko- und Authentisierungsmodell, abgestimmt auf den jeweiligen Anwendungsfall (z. B. risikobasierte MFA, Schritt-Up-Authentisierung bei kritischen Aktionen).
+
+                    ## 11. Verstoesse
+                    Verstoesse, insbesondere die Nutzung gemeinsamer Konten oder Weitergabe von Authentisierungsinformationen, werden gemaess Personalsicherheits-Richtlinie sanktioniert. Vorsaetzliche Umgehung des IAM (z. B. Erstellung lokaler Konten ohne IAM-Anbindung, Aktivierung deaktivierter Konten ueber Backdoor-Mechanismen, Manipulation von Lifecycle-Triggern) gilt als schwerer Verstoss und wird zusaetzlich zivil- und strafrechtlich verfolgt. Die Bewertung erfolgt im Vier-Augen-Prinzip durch HR-Leitung und CISO {{ roles.ciso.fullName }}.
+
+                    ## 12. Pruefintervall
+                    Diese Richtlinie wird alle {{ review.interval_months }} Monate sowie bei IdP-Aenderungen ueberprueft. Wesentliche Erweiterungen (z. B. Einfuehrung eines neuen Federation-Partners, Aenderung der Naming-Convention) loesen eine Sonder-Pruefung aus.
+
+                    ## 13. Anhang: Identitaets-Modell und Eindeutigkeitsregeln
+                    Das vollstaendige Identitaets-Modell mit allen Identitaetstypen, Naming-Conventions, Lebenszyklus-Statuswerten und Pflicht-Attributen ist im Dokument *IAM-Modellbeschreibung* gefuehrt. Eindeutigkeitsregeln werden technisch durch das IAM ueberprueft. Erweiterungen des Modells folgen dem Change-Management.
+
+                    ## 14. Verbundene Annex-A-Massnahmen
+                    A.5.16, A.5.18 (Access rights), A.8.5 (Secure authentication).
+                tailoring_field:
+                    primary_idp:
+                        label: 'Primaerer Identity Provider'
+                        placeholder: 'Beispiel: "Microsoft Entra ID Premium P2 als zentraler IdP. Anbindung aller SaaS-Anwendungen via SAML 2.0; Provisionierung via SCIM. On-Prem AD via Azure AD Connect. Federation-Partner: Eduroam fuer Forschung."'
+                    naming_convention:
+                        label: 'Naming-Convention und Eindeutigkeitsregeln'
+                        placeholder: 'Beispiel: "Persoenlich: vorname.nachname (lower-case, Umlaute aufgeloest ae/oe/ue/ss). Privilegiert: adm-vorname.nachname. Service: svc-{app}-{env}-{nn}. Bei Namensgleichheit numerischer Suffix beginnend bei 2."'
+                    service_account_ownership:
+                        label: 'Service-Konto-Ownership-Regel'
+                        placeholder: 'Beispiel: "Jede Service-Identitaet hat genau einen menschlichen Owner aus dem fachlich zustaendigen Team. Bei Wechsel: 30 Tage Uebergangsfrist mit Co-Owner. Owner-lose Service-Konten werden nach 30 Tagen deaktiviert."'
+        authentication_information:
+            v1:
+                title: 'Richtlinie fuer Authentisierungsinformationen'
+                body: |-
+                    # Richtlinie fuer Authentisierungsinformationen der {{ tenant.legal_name }}
+
+                    *Norm-Anker: ISO/IEC 27001:2022 Annex A.5.17, ISO/IEC 27002:2022 § 5.17 | Pruefintervall: {{ review.interval_months }} Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Zuteilung und das Management von Authentisierungsinformationen gemaess ISO/IEC 27002:2022 § 5.17: *"Allocation and management of authentication information shall be controlled by a management process …"* Sie ersetzt die fruehere Passwort-Richtlinie und umfasst saemtliche Faktoren von Wissen, Besitz und Inhaerenz. Ziel ist die Sicherstellung, dass Authentisierungsinformationen ueber ihren gesamten Lebenszyklus (Allokation, Verteilung, Nutzung, Rotation, Sperrung) gegen Diebstahl, Phishing und Wiederverwendung geschuetzt sind.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Authentisierungsinformationen aller Identitaetstypen gemaess Identitaetsmanagement-Richtlinie: Passwoerter, PINs, Hardware-Tokens, Software-Tokens, Zertifikate, kryptografische Schluessel, Biometrie-Templates, API-Schluessel und sonstige Geheimnisse.
+
+                    ## 3. Allgemeine Anforderungen
+                    1. Authentisierungsinformationen sind streng vertraulich.
+                    2. Persoenliche Authentisierungsinformationen werden nicht weitergegeben, nicht aufgeschrieben (Ausnahme: zugelassene Passwort-Manager) und nicht in unzugelassenen Werkzeugen gespeichert.
+                    3. Der Verlust oder Verdacht der Kompromittierung wird unverzueglich an security@{{ tenant.legal_name }} gemeldet.
+
+                    ## 4. Passwort-Anforderungen
+                    Die {{ tenant.legal_name }} orientiert sich an aktuellen Empfehlungen (NIST SP 800-63B Rev. 4 und BSI TR-02102):
+
+                    - Mindestlaenge: 12 Zeichen fuer persoenliche Konten, 16 Zeichen fuer privilegierte Konten;
+                    - keine erzwungene periodische Aenderung sofern keine Kompromittierung vermutet wird (NIST 800-63B);
+                    - Sperrliste fuer haeufig kompromittierte Passwoerter (HIBP-Datenbank);
+                    - Nutzung des bereitgestellten Passwort-Managers fuer alle Konten;
+                    - bei Verdacht auf Kompromittierung: sofortige Aenderung;
+                    - Wiederverwendung der letzten 24 Passwoerter ist gesperrt;
+                    - Passwort-Hashing serverseitig mit Argon2id, scrypt oder bcrypt mit zeitgemaessen Parametern.
+
+                    ## 5. Mehr-Faktor-Authentisierung (MFA)
+                    MFA ist verpflichtend fuer:
+
+                    - alle Beschaeftigten beim externen Zugriff (VPN, Cloud);
+                    - alle privilegierten Konten unabhaengig vom Standort;
+                    - alle Konten mit Zugriff auf personenbezogene oder vertrauliche Daten;
+                    - alle Drittpartei-Konten.
+
+                    Akzeptierte zweite Faktoren: phishing-resistente Verfahren bevorzugt (FIDO2/WebAuthn, Smartcards mit PIN). TOTP-Apps zugelassen. SMS-OTP wird nicht als Primaerfaktor empfohlen, ist jedoch als Wiederherstellungs-Faktor zulaessig. Push-Notifications nur mit Number-Matching.
+
+                    ## 6. Erstvergabe und Wiederherstellung
+                    1. Beim Onboarding wird ein Initialpasswort kommuniziert; eine Aenderung wird beim ersten Login erzwungen.
+                    2. Wiederherstellung erfolgt ueber den Self-Service-Reset (mit MFA-Validierung) oder den Service-Desk nach verifizierter Identitaetspruefung (z. B. Video-Ident, Vorgesetzten-Bestaetigung).
+                    3. Notfall-Wiederherstellungs-Codes werden im Tresor verwahrt und nur bei MFA-Verlust verwendet.
+
+                    ## 7. Zertifikate
+                    Zertifikate (X.509) werden ueber die Public-Key-Infrastruktur (PKI) der Organisation oder ueber freigegebene oeffentliche CA ausgestellt. Lebenszyklus: Antrag -> Validierung -> Ausstellung -> Verteilung -> Erneuerung -> Sperrung -> Archivierung. Maximale Gueltigkeitsdauer: 12 Monate fuer Server-Zertifikate (CA/Browser Forum); 24 Monate fuer Code-Signing. Die rechtzeitige Erneuerung wird durch ein zentrales Zertifikatsmanagement-System ueberwacht; ablaufende Zertifikate loesen Alarme an die zustaendigen Asset Owner und an den CISO {{ roles.ciso.fullName }} aus.
+
+                    ## 8. Geheimnisse, API-Schluessel, Tokens
+                    Geheimnisse werden ausschliesslich im genehmigten Secrets-Management-Werkzeug verwaltet. Hardcoded-Secrets in Quellcode oder Konfigurationsdateien sind untersagt; pre-commit-Hooks und SAST-Scans pruefen darauf gemaess Richtlinie fuer sichere Entwicklung. Rotation: API-Schluessel mind. alle 90 Tage; Service-Konto-Geheimnisse mind. alle 180 Tage; Notfall-Rotation bei Verdacht auf Kompromittierung.
+
+                    ## 9. Biometrie
+                    Biometrie wird ausschliesslich als zweiter Faktor (z. B. Fingerprint zum Entsperren des MDM-verwalteten Endgeraets) eingesetzt. Biometrie-Templates verbleiben auf dem Endgeraet; eine zentrale Biometrie-Datenbank wird nicht gefuehrt. DSGVO Art. 9 (besondere Kategorien personenbezogener Daten) wird beachtet, eine Datenschutz-Folgenabschaetzung erfolgt vor Einfuehrung neuer biometrischer Verfahren in Abstimmung mit dem Datenschutzbeauftragten {{ roles.dpo.fullName }}.
+
+                    ## 10. Schutz im Transport und in Ablage
+                    Authentisierungsinformationen werden nur ueber verschluesselte Kanaele (TLS 1.2+, bevorzugt 1.3) uebertragen. Speicherung ausschliesslich in Hashed/Salted-Form (Passwoerter), in HSM/KMS (private Schluessel) oder im zugelassenen Secrets-Manager (Geheimnisse).
+
+                    ## 11. Logging
+                    Erfolgreiche und fehlgeschlagene Authentisierungen werden protokolliert. Brute-Force- und Credential-Stuffing-Versuche loesen Alarme im SIEM aus. Privilegierte Authentisierungen werden zusaetzlich vom CISO {{ roles.ciso.fullName }} ausgewertet. Anomalie-Erkennung (Impossible-Travel, ungewoehnliche Geraete, untypische Zeit-Muster) wird ueber das IAM bzw. den Conditional-Access-Mechanismus konfiguriert.
+
+                    ## 12. Notfall-Zugaenge (Break-Glass-Konten)
+                    Fuer den IT-Notfall werden in begrenzter Zahl Break-Glass-Konten vorgehalten. Diese Konten:
+
+                    - sind benannt (kein Sammelkonto), aber nicht alltaeglich genutzt;
+                    - tragen ein langes, in einem Tresor verwahrtes Passwort sowie zwei separate FIDO2-Tokens (verteilt auf verschiedene physische Standorte);
+                    - werden bei jeder Nutzung lueckenlos protokolliert und loesen einen automatisierten Alarm an CISO und Geschaeftsfuehrung aus;
+                    - werden mind. halbjaehrlich auf Funktion und Geheimhaltung getestet und dokumentiert.
+
+                    ## 13. Verstoesse
+                    Weitergabe von Authentisierungsinformationen wird gemaess Personalsicherheits-Richtlinie sanktioniert. Bei Drittparteien koennen vertragliche Konsequenzen folgen. Eine vorsaetzliche Umgehung der MFA (z. B. dauerhaft aktivierte App-Passwoerter ohne Genehmigung, Aushebelung der Conditional-Access-Policies, Manipulation der Sitzungsdauer) ist arbeitsrechtlich verfolgbar und wird unverzueglich an den CISO {{ roles.ciso.fullName }} eskaliert.
+
+                    ## 14. Pruefintervall
+                    Diese Richtlinie wird alle {{ review.interval_months }} Monate sowie bei Aenderung der Authentisierungs-Mechanismen ueberprueft. Eine Aktualisierung erfolgt insbesondere bei NIST-/BSI-Update der Empfehlungen, bei wesentlichen Threat-Intelligence-Erkenntnissen (z. B. neue Phishing-Kampagnen-Wellen) sowie bei Aenderung der MFA-Werkzeuglandschaft.
+
+                    ## 15. Anhang: Akzeptierte Authentisierungsfaktoren (Auszug)
+                    Der vollstaendige Anhang wird als versioniertes Begleitdokument gefuehrt und umfasst pro Faktor: Verfahren (z. B. FIDO2/WebAuthn, TOTP, Smartcard, biometrisch), Klassifizierung (phishing-resistent / nicht phishing-resistent), zugelassene Anwendungsfaelle, Hersteller, Beschaffungsweg, Lebensdauer, Sperrprozess. Aufnahme neuer Faktoren erfolgt durch den CISO {{ roles.ciso.fullName }} nach technischer und datenschutzrechtlicher Bewertung.
+
+                    ## 16. Verbundene Annex-A-Massnahmen
+                    A.5.17, A.8.5 (Secure authentication), A.5.16.
+                tailoring_field:
+                    minimum_password_length:
+                        label: 'Mindestpasswortlaenge und Komplexitaet'
+                        placeholder: 'Beispiel: "Persoenliche Konten: 14 Zeichen, kein Komplexitaetszwang (NIST 800-63B Rev.4). Privilegierte Konten: 16 Zeichen + zwingend Passphrase. Sperrliste: HIBP-Top-1M-Datenbank, monatlich aktualisiert."'
+                    mfa_scope:
+                        label: 'MFA-Geltungsbereich und akzeptierte Faktoren'
+                        placeholder: 'Beispiel: "MFA verpflichtend fuer ALLE Konten (auch interne ohne externen Zugriff). Phishing-resistent bevorzugt: FIDO2/WebAuthn (YubiKey 5 Series), Microsoft Entra Authenticator mit Number-Matching. Uebergangsweise TOTP zugelassen. SMS-OTP nur als Recovery."'
+                    secrets_management_tool:
+                        label: 'Secrets-Management-Werkzeug und Rotations-Strategie'
+                        placeholder: 'Beispiel: "HashiCorp Vault Enterprise als zentrales Secrets-Management. API-Schluessel: 90 Tage Rotation, automatisiert. Datenbank-Credentials: dynamische Generierung pro Session. Hardcoded-Secrets-Scanning via Gitleaks im CI."'

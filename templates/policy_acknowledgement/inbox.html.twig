@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'policy_ack.inbox.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4 fa-aurora-surface">
+    {{ _fa_page_header.render({
+        badge: { icon: 'check2-square', label: 'policy_wizard.badge'|trans },
+        title: 'policy_ack.inbox.title'|trans,
+        subtitle: 'policy_ack.inbox.subtitle'|trans
+    }) }}
+
+    {% if pending_count == 0 %}
+        <div class="mt-4">
+            {{ _fa_empty_state.render({
+                mood: 'happy',
+                title: 'policy_ack.inbox.no_pending'|trans,
+                text: 'policy_ack.inbox.subtitle'|trans
+            }) }}
+        </div>
+    {% else %}
+        <div class="mt-4">
+            {{ _fa_alert.render({
+                variant: 'info',
+                body: 'policy_ack.inbox.pending_count'|trans({ '%count%': pending_count })
+            }) }}
+        </div>
+
+        {# W7-E — mobile swipe-affordance hint, only visible <768px via CSS. #}
+        <div class="fa-bulk-mobile-hint" aria-hidden="true">
+            <span class="fa-bulk-mobile-hint__chip fa-bulk-mobile-hint__chip--right">
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                {{ 'policy_wizard.bulk_inbox_mobile.swipe_right_to_approve'|trans }}
+            </span>
+            <span class="fa-bulk-mobile-hint__chip fa-bulk-mobile-hint__chip--left">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                {{ 'policy_wizard.bulk_inbox_mobile.swipe_left_to_reject'|trans }}
+            </span>
+        </div>
+
+        {% set inbox_body %}
+            {# W7-E — `fa-grid--mobile-stack` collapses to vertical card-list
+               below 768px so each acknowledgement row stays touch-friendly.
+               The Stimulus controller wires swipe-gesture detection per row. #}
+            <ul class="list-group list-group-flush fa-grid--mobile-stack"
+                data-controller="bulk-approval-mobile">
+                {% for document in pending_documents %}
+                    <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-3 px-0 fa-bulk-mobile-row"
+                        data-bulk-approval-mobile-target="row">
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold">
+                                {{ document.originalFilename ?? document.filename }}
+                            </div>
+                            {% if document.description %}
+                                <small class="text-muted d-block mt-1">
+                                    {{ document.description|slice(0, 200) }}
+                                </small>
+                            {% endif %}
+                            <small class="text-muted">
+                                <i class="bi bi-tag" aria-hidden="true"></i>
+                                {{ document.category }}
+                                {% if document.uploadedAt %}
+                                    &middot; {{ document.uploadedAt|date('Y-m-d') }}
+                                {% endif %}
+                            </small>
+                            <small class="d-none fa-bulk-mobile-row__hint" data-bulk-approval-mobile-target="hint">
+                                {{ 'policy_wizard.bulk_inbox_mobile.tap_to_confirm'|trans }}
+                            </small>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap fa-bulk-mobile-row__actions">
+                            <a href="{{ path('app_policy_ack_view', { documentId: document.id }) }}"
+                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-bulk-mobile-btn"
+                               data-bulk-approval-mobile-target="rejectBtn">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                <span class="fa-cyber-btn__label">{{ 'policy_ack.view.title'|trans }}</span>
+                            </a>
+                            <form method="post"
+                                  action="{{ path('app_policy_ack_acknowledge', { documentId: document.id }) }}"
+                                  class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('policy_ack') }}">
+                                <button type="submit"
+                                        class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm fa-bulk-mobile-btn"
+                                        data-bulk-approval-mobile-target="approveBtn">
+                                    <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                                    <span class="fa-cyber-btn__label">{{ 'policy_ack.view.action.acknowledge'|trans }}</span>
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endset %}
+
+        <div class="mt-4">
+            {{ _fa_section.render({
+                title: 'policy_ack.inbox.title'|trans,
+                body: inbox_body
+            }) }}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

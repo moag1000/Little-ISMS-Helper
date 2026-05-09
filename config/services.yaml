@@ -85,6 +85,9 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+            # W3-D — PolicyTopicPresentCheck is parameterised; the 24
+            # tenant-scoped instances are wired explicitly below.
+            - '../src/Service/ComplianceWizard/Check/PolicyWizard/PolicyTopicPresentCheck.php'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -117,13 +120,152 @@ services:
 
     # Alva-Fee proactive hint rules — every implementation of
     # AlvaHintRuleInterface auto-registers and lands in AlvaHintService.
+    # Policy-Wizard step evaluators — same auto-tagging pattern, every
+    # StepInterface implementation lands in StepEvaluator.
+    # W3-D — Compliance-Wizard check-types covering Policy-Wizard outputs
+    # auto-register via PolicyWizardCheckInterface (collected by
+    # PolicyWizardCheckRegistry).
     _instanceof:
         App\AlvaHint\AlvaHintRuleInterface:
             tags: ['alva.hint_rule']
+        App\Service\PolicyWizard\Step\StepInterface:
+            tags: ['policy_wizard.step']
+        App\Service\PolicyWizard\Mode\ModeHandlerInterface:
+            tags: ['policy_wizard.mode_handler']
+        App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckInterface:
+            tags: ['policy_wizard.compliance_check']
 
     App\AlvaHint\AlvaHintService:
         arguments:
             $rules: !tagged_iterator alva.hint_rule
+
+    # Policy-Wizard W2 — collect every StepInterface implementation
+    # into the StepEvaluator's $steps argument.
+    App\Service\PolicyWizard\StepEvaluator:
+        arguments:
+            $steps: !tagged_iterator policy_wizard.step
+
+    # Policy-Wizard W2-C — collect every ModeHandlerInterface impl
+    # (sandbox / targeted) into the ModeRegistry's $handlers argument.
+    # Full mode has no handler — registry returns null for it.
+    App\Service\PolicyWizard\Mode\ModeRegistry:
+        arguments:
+            $handlers: !tagged_iterator policy_wizard.mode_handler
+
+    # Policy-Wizard — bind DocumentGeneratorInterface to the real
+    # generator (W3). The W2 stub stays available for unit-test
+    # injection via direct instantiation (`new DocumentGeneratorStub()`).
+    App\Service\PolicyWizard\DocumentGeneratorInterface:
+        alias: App\Service\PolicyWizard\DocumentGenerator
+
+    # Policy-Wizard W3-D — Compliance-Wizard check-type registry.
+    # Auto-collects every PolicyWizardCheckInterface implementation via
+    # the `policy_wizard.compliance_check` tag (see _instanceof block).
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry:
+        arguments:
+            $checks: !tagged_iterator policy_wizard.compliance_check
+
+    # Policy-Wizard W3-D — one PolicyTopicPresentCheck instance per ISO 27002
+    # topic from PolicyWizardTopicCatalogue::ISO27001_TOPICS. Listing 24
+    # explicit aliases (rather than a generic factory) keeps the service
+    # graph statically inspectable for `lint:container` and lets autoconfig
+    # tag every instance via the parent _instanceof rule.
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $acceptableUseTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'acceptable_use'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $accessControlTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'access_control'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $informationClassificationTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'information_classification'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $informationTransferTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'information_transfer'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $identityManagementTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'identity_management'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $authenticationInformationTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'authentication_information'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $cryptographyTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'cryptography'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $backupTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'backup'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $loggingTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'logging'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $patchManagementTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'patch_management'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $malwareTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'malware'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $secureConfigurationTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'secure_configuration'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $networkSecurityTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'network_security'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $secureDevelopmentTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'secure_development'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $supplierRelationshipsTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'supplier_relationships'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $projectManagementTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'project_management'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $privacyPiiTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'privacy_pii'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $incidentManagementTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'incident_management'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $continuityTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'continuity'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $threatIntelligenceTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'threat_intelligence'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $mobileDeviceTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'mobile_device'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $assetManagementTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'asset_management'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $hrSecurityTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'hr_security'
+    App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck $physicalSecurityTopicCheck:
+        class: App\Service\ComplianceWizard\Check\PolicyWizard\PolicyTopicPresentCheck
+        arguments:
+            $topic: 'physical_security'
 
     # Configure Data Import Service
     App\Service\DataImportService:
@@ -206,6 +348,15 @@ services:
     App\Service\ComplianceFrameworkActivationService:
         arguments:
             $inheritanceEnabled: '%app.compliance.mapping_inheritance.enabled%'
+
+    # Policy-Wizard W1-C — generic tenant-setting resolver. SettingProviderInterface
+    # is satisfied by SystemSettingsBackedProvider until W1-A's TenantPolicySetting
+    # repository lands; ChangeAttemptLoggerInterface defaults to a null logger
+    # for the same reason.
+    App\Service\TenantSettingResolver\SettingProviderInterface:
+        alias: App\Service\TenantSettingResolver\SystemSettingsBackedProvider
+    App\Service\TenantSettingResolver\ChangeAttemptLoggerInterface:
+        alias: App\Service\TenantSettingResolver\NullChangeAttemptLogger
 
     # WS-1 inheritance service + four-eyes: now read thresholds at runtime via
     # CompliancePolicyService (admin-configurable). Autowiring covers the rest.

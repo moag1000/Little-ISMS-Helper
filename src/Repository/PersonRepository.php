@@ -138,6 +138,96 @@ class PersonRepository extends ServiceEntityRepository
     }
 
     /**
+     * Active Persons in a tenant, sorted by full name ASC.
+     *
+     * Default Person-picker pool for governance roles
+     * (Asset/Risk/Control/Document owner, CISO/ISB/BCM-Officer
+     * holders). Returns an empty list when tenant is null so callers
+     * can render an empty-state without branching first.
+     *
+     * @return list<Person>
+     */
+    public function findActiveByTenant(?Tenant $tenant): array
+    {
+        if (!$tenant instanceof Tenant) {
+            return [];
+        }
+
+        /** @var list<Person> $rows */
+        $rows = $this->createQueryBuilder('p')
+            ->andWhere('p.tenant = :tenant')
+            ->andWhere('p.active = :active')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('active', true)
+            ->orderBy('p.fullName', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return $rows;
+    }
+
+    /**
+     * Active Persons in a tenant, sorted by personType-match-DESC then
+     * full-name ASC. When `$preferredType` is null falls back to
+     * {@see findActiveByTenant()}.
+     *
+     * Useful when a UI wants to surface a specific role-holder type
+     * first (e.g. external `consultant` Persons at the top of a DPO
+     * picker) without filtering out the rest of the roster.
+     *
+     * @return list<Person>
+     */
+    public function findRoleHoldersByTenant(?Tenant $tenant, ?string $preferredType = null): array
+    {
+        if (!$tenant instanceof Tenant) {
+            return [];
+        }
+
+        if ($preferredType === null || $preferredType === '') {
+            return $this->findActiveByTenant($tenant);
+        }
+
+        /** @var list<Person> $rows */
+        $rows = $this->createQueryBuilder('p')
+            ->select('p, CASE WHEN p.personType = :preferred THEN 0 ELSE 1 END AS HIDDEN matchOrder')
+            ->andWhere('p.tenant = :tenant')
+            ->andWhere('p.active = :active')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('active', true)
+            ->setParameter('preferred', $preferredType)
+            ->orderBy('matchOrder', 'ASC')
+            ->addOrderBy('p.fullName', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return $rows;
+    }
+
+    /**
+     * Resolve a Person whose `linkedUser` matches the given User id.
+     *
+     * Backwards-compat shim: when a legacy form submits a User.id where
+     * a Person.id is now expected, the validator can call this to map
+     * the value back to a Person without losing the user's intent.
+     */
+    public function findOneByLinkedUserId(int $userId): ?Person
+    {
+        if ($userId <= 0) {
+            return null;
+        }
+
+        /** @var Person|null $row */
+        $row = $this->createQueryBuilder('p')
+            ->andWhere('p.linkedUser = :uid')
+            ->setParameter('uid', $userId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $row;
+    }
+
+    /**
      * Active Users in tenant that are not linked to any Person yet.
      *
      * @return User[]

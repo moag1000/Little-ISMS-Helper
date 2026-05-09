@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'policy_wizard.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4 fa-aurora-surface">
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-lock', label: 'policy_wizard.badge'|trans },
+        title: 'policy_wizard.title'|trans,
+        subtitle: 'policy_wizard.subtitle'|trans
+    }) }}
+
+    {# In-progress runs #}
+    <div class="mt-4">
+        {% set in_progress_body %}
+            {% if open_runs|length == 0 %}
+                {{ _fa_empty_state.render({
+                    mood: 'idle',
+                    title: 'policy_wizard.landing.in_progress_empty'|trans,
+                    text: 'policy_wizard.landing.intro'|trans
+                }) }}
+            {% else %}
+                <ul class="list-group list-group-flush">
+                    {% for run in open_runs %}
+                        <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-3 px-0">
+                            <div>
+                                <div class="fw-semibold">
+                                    {{ ('policy_wizard.mode.' ~ run.mode ~ '.label')|trans }}
+                                    <span class="badge bg-secondary ms-2">{{ ('policy_wizard.status.' ~ run.status)|trans }}</span>
+                                </div>
+                                <small class="text-muted">
+                                    {{ run.startedAt ? run.startedAt|date('Y-m-d H:i') : '' }} —
+                                    {{ ('policy_wizard.step.' ~ run.step ~ '.title')|trans }}
+                                </small>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="{{ path('app_policy_wizard_step_show', { runId: run.id, step: run.step }) }}"
+                                   class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                                    <i class="bi bi-play-fill" aria-hidden="true"></i>
+                                    <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.resume'|trans }}</span>
+                                </a>
+                                <form method="post"
+                                      action="{{ path('app_policy_wizard_cancel', { runId: run.id }) }}"
+                                      data-controller="ui-actions"
+                                      data-action="submit->ui-actions#confirm"
+                                      data-ui-actions-message-value="{{ 'policy_wizard.action.cancel_confirm'|trans }}"
+                                      class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_cancel') }}">
+                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                        <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                        <span class="fa-cyber-btn__label">{{ 'policy_wizard.action.cancel'|trans }}</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endset %}
+
+        {{ _fa_section.render({
+            title: 'policy_wizard.landing.in_progress_title'|trans,
+            body: in_progress_body
+        }) }}
+    </div>
+
+    {# Mode selection #}
+    <div class="mt-4">
+        {% set mode_body %}
+            <p class="text-muted mb-4">{{ 'policy_wizard.landing.choose_mode'|trans }}</p>
+            <div class="row g-3">
+                {% for mode in ['full', 'targeted', 'sandbox'] %}
+                    <div class="col-md-4">
+                        <article class="fa-section h-100">
+                            <div class="p-3">
+                                <h3 class="h5 mb-2">{{ ('policy_wizard.mode.' ~ mode ~ '.label')|trans }}</h3>
+                                <p class="text-muted small mb-3">{{ ('policy_wizard.mode.' ~ mode ~ '.description')|trans }}</p>
+                                <form method="post" action="{{ path('app_policy_wizard_start') }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_start') }}">
+                                    <input type="hidden" name="mode" value="{{ mode }}">
+                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--{{ mode == 'full' ? 'primary' : 'ghost' }}">
+                                        <i class="bi bi-{{ mode == 'full' ? 'rocket-takeoff' : (mode == 'targeted' ? 'crosshair' : 'flask') }}" aria-hidden="true"></i>
+                                        <span class="fa-cyber-btn__label">{{ ('policy_wizard.action.start_' ~ mode)|trans }}</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endset %}
+
+        {{ _fa_section.render({
+            title: 'policy_wizard.landing.choose_mode'|trans,
+            body: mode_body
+        }) }}
+    </div>
+</div>
+{% endblock %}

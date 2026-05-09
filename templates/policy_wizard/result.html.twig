@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block title %}{{ 'policy_wizard.result.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4 fa-aurora-surface">
+    {{ _fa_page_header.render({
+        badge: { icon: 'check-circle', label: ('policy_wizard.status.' ~ run.status)|trans },
+        title: 'policy_wizard.result.title'|trans,
+        subtitle: 'policy_wizard.result.subtitle'|trans,
+        actions: [
+            { label: 'policy_wizard.title'|trans,
+              variant: 'ghost',
+              icon: 'house',
+              href: path('app_policy_wizard_index') }
+        ]
+    }) }}
+
+    {% if run.mode == 'sandbox' %}
+        {{ _fa_alert.render({
+            variant: 'info',
+            body: 'policy_wizard.message.sandbox_no_persistence'|trans
+        }) }}
+    {% endif %}
+
+    {% set documents_body %}
+        {% if document_ids|default([])|length == 0 %}
+            <p class="text-muted mb-0">{{ 'policy_wizard.result.documents_empty'|trans }}</p>
+        {% else %}
+            <ul class="list-group list-group-flush">
+                {% for doc_id in document_ids %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span>Document #{{ doc_id }}</span>
+                        <span class="badge bg-secondary">{{ ('policy_wizard.status.' ~ run.status)|trans }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endset %}
+
+    {{ _fa_section.render({
+        title: 'policy_wizard.result.documents_heading'|trans,
+        body: documents_body
+    }) }}
+
+    {% set next_steps_body %}
+        <ul class="mb-0">
+            <li>{{ 'policy_wizard.result.next_steps_review'|trans }}</li>
+            <li>{{ 'policy_wizard.result.next_steps_translate'|trans }}</li>
+        </ul>
+    {% endset %}
+
+    {{ _fa_section.render({
+        title: 'policy_wizard.result.next_steps_heading'|trans,
+        body: next_steps_body
+    }) }}
+</div>
+{% endblock %}

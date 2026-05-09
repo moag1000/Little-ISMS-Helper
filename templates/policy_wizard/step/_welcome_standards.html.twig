@@ -1,0 +1,142 @@
+{% trans_default_domain 'policy_wizard' %}
+{% set selected_standards = defaults.standards|default(standards|default([])) %}
+{% set finding_default = defaults.finding_reference|default(run.findingReference) %}
+{% set selected_mode = defaults.mode|default(run.mode) %}
+{% set bundles = industry_preset_bundles|default([]) %}
+{% set selected_bundle_key = defaults.industry_preset_bundle_key|default(inputs_so_far.welcome.industry_preset_bundle_key|default('')) %}
+
+{# Junior-ISB-friendly help-card. Plain-language framing of the step
+ # so first-time users understand what they pick here and why.
+ # Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'bi-mortarboard',
+    class: 'mb-3'
+} } %}
+    {% block alert_body %}
+        {% trans_default_domain 'policy_wizard' %}
+        <div class="fa-alert__title">{{ 'policy_wizard.step.welcome.help.title'|trans }}</div>
+        <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.welcome.help.body'|trans }}</p>
+        <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.welcome.help.example'|trans }}</p>
+        <p class="mb-2 small">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            <strong>DORA:</strong> {{ 'policy_wizard.step.welcome.help.dora_replaces_vait'|trans }}
+        </p>
+
+        {# Junior-ISB Wish #1 — per-standard 1-Satz-Erklärung. Jr-ISB
+         # may not know "PIMS" → spell it out (Privacy Information
+         # Management System) and frame ISO 27701 as the privacy-layer
+         # extension to ISO 27001. Same pattern for every standard. #}
+        <details class="small mt-2">
+            <summary class="text-muted">
+                {{ 'policy_wizard.step.welcome.standard_explainer.summary'|trans }}
+            </summary>
+            <ul class="mt-2 mb-0 ps-3">
+                {% for code in ['iso27001', 'bsi', 'dora', 'gdpr', 'bcm', 'iso27701'] %}
+                    <li class="mb-1">
+                        <strong>{{ ('policy_wizard.step.welcome.standard.' ~ code)|trans }}</strong>:
+                        {{ ('policy_wizard.step.welcome.standard_explainer.' ~ code)|trans }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </details>
+    {% endblock %}
+{% endembed %}
+
+{# Junior-ISB Wish #2 — NIS-2 / DORA lex specialis banner. Surfaced
+ # only when DORA is in the picked-standards set. Reassures the
+ # implementer that NIS-2 Art. 21 + Art. 23 are covered by DORA via
+ # DORA Art. 1(2) + NIS-2 Erwägungsgrund 16. The downstream
+ # DocumentGenerator appends a matching footer to every DORA body
+ # so the cross-regulation evidence chain is explicit. #}
+{% if 'dora' in selected_standards %}
+    {% embed '_components/_fa_alert.html.twig' with { props: {
+        variant: 'success',
+        icon: 'bi-shield-check',
+        class: 'mb-3'
+    } } %}
+        {% block alert_body %}
+            {% trans_default_domain 'policy_wizard' %}
+            <div class="fa-alert__title">{{ 'policy_wizard.step.welcome.dora_nis2_lex_specialis.title'|trans }}</div>
+            <p class="fa-alert__message mb-0 small">
+                {{ 'policy_wizard.step.welcome.dora_nis2_lex_specialis.body'|trans }}
+            </p>
+        {% endblock %}
+    {% endembed %}
+{% endif %}
+
+<div class="row g-3"
+     data-controller="policy-wizard-preset-picker"
+     data-policy-wizard-preset-picker-preview-url-value="{{ path('app_policy_wizard_preset_preview', { key: '__KEY__' }) }}">
+    {% if bundles|length > 0 %}
+        <div class="col-12">
+            <div class="mb-3">
+                <label class="form-label" for="industry-preset-bundle-key">
+                    {{ 'policy_wizard.preset.label'|trans }}
+                </label>
+                <select class="form-select fa-cyber-input__field"
+                        id="industry-preset-bundle-key"
+                        name="industry_preset_bundle_key"
+                        data-policy-wizard-preset-picker-target="select"
+                        data-action="change->policy-wizard-preset-picker#onChange">
+                    <option value="">{{ 'policy_wizard.preset.placeholder'|trans }}</option>
+                    {% for bundle in bundles %}
+                        <option value="{{ bundle.key }}"{% if bundle.key == selected_bundle_key %} selected{% endif %}>
+                            {{ ('policy_wizard.preset.' ~ bundle.key ~ '.label')|trans({}, 'policy_wizard') }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <div class="form-text">{{ 'policy_wizard.preset.help'|trans }}</div>
+                <div class="form-text mt-2 d-none"
+                     data-policy-wizard-preset-picker-target="preview"
+                     role="status"
+                     aria-live="polite"></div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="col-md-8">
+        <fieldset class="mb-3">
+            <legend class="h6">{{ 'policy_wizard.step.welcome.subtitle'|trans }}</legend>
+            <div class="form-text mb-2">
+                {{ 'policy_wizard.message.generate_preview'|trans({'%count%': (selected_standards|length * 4)}) }}
+            </div>
+
+            {% for code in ['iso27001', 'bsi', 'dora', 'gdpr', 'bcm', 'iso27701'] %}
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="standard-{{ code }}"
+                           name="standards[]"
+                           value="{{ code }}"
+                           data-policy-wizard-preset-picker-target="standard"
+                           {% if code in selected_standards %}checked{% endif %}>
+                    <label class="form-check-label" for="standard-{{ code }}">
+                        {{ ('policy_wizard.step.welcome.standard.' ~ code)|trans }}
+                        <i class="bi bi-info-circle text-muted ms-1"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="right"
+                           title="{{ ('policy_wizard.step.welcome.tooltip.' ~ code)|trans }}"
+                           aria-label="{{ ('policy_wizard.step.welcome.tooltip.' ~ code)|trans }}"></i>
+                    </label>
+                </div>
+            {% endfor %}
+        </fieldset>
+    </div>
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label class="form-label" for="finding-reference">
+                {{ 'policy_wizard.step.welcome.finding_reference_label'|trans }}
+            </label>
+            <input type="text"
+                   class="form-control fa-cyber-input__field"
+                   id="finding-reference"
+                   name="finding_reference"
+                   maxlength="100"
+                   value="{{ finding_default|default('') }}">
+            <div class="form-text">{{ 'policy_wizard.step.welcome.finding_reference_help'|trans }}</div>
+        </div>
+
+        <input type="hidden" name="mode" value="{{ selected_mode }}">
+    </div>
+</div>

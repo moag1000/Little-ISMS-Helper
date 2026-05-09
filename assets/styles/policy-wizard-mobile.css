@@ -1,0 +1,88 @@
+/*
+ * Policy-Wizard W7-E — Mobile-responsive enhancements for the
+ * Bulk-Approval Inbox.
+ *
+ * Targets viewports below 768px. The inbox list remains a desktop-grade
+ * table-row above the breakpoint; below it collapses each row to a
+ * vertically-stacked card with full-width touch buttons. Swipe gestures
+ * are wired by `bulk_approval_mobile_controller.js`; the CSS provides
+ * affordance hints and ensures touch targets meet WCAG 2.5.5
+ * (>= 44px on the primary axis).
+ */
+
+/* Affordance-hint chip block, only visible on the mobile breakpoint. */
+.fa-bulk-mobile-hint {
+    display: none;
+    margin-top: var(--space-3, 0.75rem);
+    margin-bottom: var(--space-3, 0.75rem);
+    gap: var(--space-2, 0.5rem);
+    flex-wrap: wrap;
+}
+
+.fa-bulk-mobile-hint__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: var(--surface-2, #f5f7fa);
+    color: var(--text-muted, #6c757d);
+}
+
+.fa-bulk-mobile-hint__chip--right { color: var(--success, #198754); }
+.fa-bulk-mobile-hint__chip--left  { color: var(--danger,  #dc3545); }
+
+.fa-bulk-mobile-row__hint {
+    color: var(--text-muted, #6c757d);
+    font-style: italic;
+}
+
+@media (max-width: 767.98px) {
+    .fa-grid--mobile-stack {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-3, 0.75rem);
+    }
+
+    .fa-grid--mobile-stack .list-group-item.fa-bulk-mobile-row {
+        flex-direction: column;
+        align-items: stretch !important;
+        padding: var(--space-3, 0.75rem) var(--space-3, 0.75rem) !important;
+        background: var(--surface, #ffffff);
+        border-radius: var(--r-md, 0.5rem);
+        border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+        transition: transform 120ms ease-out, box-shadow 120ms ease-out;
+        touch-action: pan-y;
+    }
+
+    .fa-grid--mobile-stack .fa-bulk-mobile-row__actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    /* Touch targets >= 44px (WCAG 2.5.5). */
+    .fa-grid--mobile-stack .fa-bulk-mobile-btn {
+        min-height: 44px;
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+
+    .fa-bulk-mobile-hint {
+        display: flex;
+    }
+
+    /* Swipe-feedback states wired by Stimulus controller. */
+    .fa-bulk-mobile-row.is-swiping-right {
+        transform: translateX(0.75rem);
+        box-shadow: -4px 0 0 0 var(--success, #198754);
+    }
+    .fa-bulk-mobile-row.is-swiping-left {
+        transform: translateX(-0.75rem);
+        box-shadow:  4px 0 0 0 var(--danger,  #dc3545);
+    }
+    .fa-bulk-mobile-row.is-swiping-right .fa-bulk-mobile-row__hint,
+    .fa-bulk-mobile-row.is-swiping-left  .fa-bulk-mobile-row__hint {
+        display: inline-block !important;
+    }
+}

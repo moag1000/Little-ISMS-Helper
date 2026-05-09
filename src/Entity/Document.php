@@ -55,6 +55,25 @@ class Document
     #[ORM\JoinColumn(name: 'uploaded_by_id', nullable: true, onDelete: 'SET NULL')]
     private ?User $uploadedBy = null;
 
+    /**
+     * Person-Rollout Phase A — governance-side document owner.
+     *
+     * `uploadedBy` (User) records who uploaded the file (audit-trail of
+     * the system action). `ownerPerson` (Person) records who is
+     * **accountable** for the document long-term — typically a CISO,
+     * ISB, DPO or function-owner who may or may not have a system
+     * login. External governance owners are common in DACH-Mittelstand
+     * (outsourced DPO, fractional CISO).
+     *
+     * Backfill on initial migration copies `uploadedBy.linkedPerson.id`
+     * here when the uploader already has a Person profile. Otherwise
+     * the column is NULL and the owner is set explicitly through the
+     * document edit form.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Person $ownerPerson = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeInterface $uploadedAt = null;
 
@@ -100,6 +119,53 @@ class Document
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
     private bool $overrideAllowed = true;
+
+    /**
+     * Policy-Wizard W3 — provenance link to the PolicyTemplate that
+     * produced this document. Null when the document was uploaded
+     * manually or imported from another flow.
+     */
+    #[ORM\ManyToOne(targetEntity: PolicyTemplate::class)]
+    #[ORM\JoinColumn(name: 'generated_from_template_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?PolicyTemplate $generatedFromTemplate = null;
+
+    /**
+     * Policy-Wizard W3 — provenance link to the WizardRun that
+     * produced this document. Null when the document was not produced
+     * by a Policy-Wizard run.
+     */
+    #[ORM\ManyToOne(targetEntity: WizardRun::class)]
+    #[ORM\JoinColumn(name: 'generated_from_wizard_run_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?WizardRun $generatedFromWizardRun = null;
+
+    /**
+     * Policy-Wizard W3 — snapshot of the variable substitution map at
+     * generation time. Drives §10 re-generation diffing (compute
+     * stable hash for change detection) and serves as audit-trail
+     * manifest for §11.2 (hidden-marker rendering).
+     *
+     * @var array<string, mixed>|null
+     */
+    #[ORM\Column(name: 'substitution_variables', type: Types::JSON, nullable: true)]
+    private ?array $substitutionVariables = null;
+
+    /**
+     * Policy-Wizard W3 / §10 — once a generated policy reaches
+     * `status='approved'`, the document is locked: the UI hides the
+     * edit button and force-edit requires SUPER_ADMIN + audit entry.
+     */
+    #[ORM\Column(name: 'is_immutable', type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $isImmutable = false;
+
+    /**
+     * Policy-Wizard W3 / §10 — version chain. When a re-run produces
+     * a changed policy, the new Document is created and points back
+     * to the prior approved one via `supersedes`. The old document
+     * stays approved + read-only as historical evidence.
+     */
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\JoinColumn(name: 'supersedes_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?self $supersedes = null;
 
     public function __construct()
     {
@@ -160,6 +226,20 @@ class Document
     public function setEntityId(?int $entityId): static { $this->entityId = $entityId; return $this; }
     public function getUploadedBy(): ?User { return $this->uploadedBy; }
     public function setUploadedBy(?User $user): static { $this->uploadedBy = $user; return $this; }
+
+    public function getOwnerPerson(): ?Person { return $this->ownerPerson; }
+    public function setOwnerPerson(?Person $ownerPerson): static { $this->ownerPerson = $ownerPerson; return $this; }
+
+    /**
+     * Effective owner display: prefer `ownerPerson.fullName`, fall back to
+     * `uploadedBy.fullName`. Returns null when neither is set (legacy
+     * documents pre-Person-Rollout that never had an uploader either).
+     */
+    public function getEffectiveOwnerName(): ?string
+    {
+        return $this->ownerPerson?->getFullName()
+            ?? $this->uploadedBy?->getFullName();
+    }
     public function getUploadedAt(): ?DateTimeInterface { return $this->uploadedAt; }
     public function setUploadedAt(DateTimeInterface $uploadedAt): static { $this->uploadedAt = $uploadedAt; return $this; }
     public function getUpdatedAt(): ?DateTimeInterface { return $this->updatedAt; }
@@ -204,5 +284,62 @@ class Document
     public function isPdf(): bool
     {
         return $this->mimeType === 'application/pdf';
+    }
+
+    public function getGeneratedFromTemplate(): ?PolicyTemplate
+    {
+        return $this->generatedFromTemplate;
+    }
+
+    public function setGeneratedFromTemplate(?PolicyTemplate $template): static
+    {
+        $this->generatedFromTemplate = $template;
+        return $this;
+    }
+
+    public function getGeneratedFromWizardRun(): ?WizardRun
+    {
+        return $this->generatedFromWizardRun;
+    }
+
+    public function setGeneratedFromWizardRun(?WizardRun $run): static
+    {
+        $this->generatedFromWizardRun = $run;
+        return $this;
+    }
+
+    /** @return array<string, mixed>|null */
+    public function getSubstitutionVariables(): ?array
+    {
+        return $this->substitutionVariables;
+    }
+
+    /** @param array<string, mixed>|null $variables */
+    public function setSubstitutionVariables(?array $variables): static
+    {
+        $this->substitutionVariables = $variables;
+        return $this;
+    }
+
+    public function isImmutable(): bool
+    {
+        return $this->isImmutable;
+    }
+
+    public function setIsImmutable(bool $isImmutable): static
+    {
+        $this->isImmutable = $isImmutable;
+        return $this;
+    }
+
+    public function getSupersedes(): ?self
+    {
+        return $this->supersedes;
+    }
+
+    public function setSupersedes(?self $supersedes): static
+    {
+        $this->supersedes = $supersedes;
+        return $this;
     }
 }

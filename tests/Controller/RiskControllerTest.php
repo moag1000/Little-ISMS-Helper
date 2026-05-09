@@ -328,9 +328,8 @@ class RiskControllerTest extends WebTestCase
             'risk[category]' => 'financial',
             'risk[description]' => 'New risk description',
             'risk[probability]' => 3,
-            'risk[likelihoodJustification]' => 'Test likelihood justification',
+            
             'risk[impact]' => 3,
-            'risk[impactJustification]' => 'Test impact justification',
             'risk[treatmentStrategy]' => 'mitigate',
             'risk[status]' => 'identified',
             'risk[riskOwner]' => $this->testUser->getId(),
@@ -364,9 +363,8 @@ class RiskControllerTest extends WebTestCase
             'risk[category]' => 'security',
             'risk[description]' => 'Testing tenant assignment',
             'risk[probability]' => 2,
-            'risk[likelihoodJustification]' => 'Test likelihood justification',
+            
             'risk[impact]' => 2,
-            'risk[impactJustification]' => 'Test impact justification',
             'risk[treatmentStrategy]' => 'mitigate',
             'risk[status]' => 'identified',
             'risk[riskOwner]' => $this->testUser->getId(),

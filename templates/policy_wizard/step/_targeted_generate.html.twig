@@ -1,0 +1,80 @@
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{# Mode 2 (Targeted re-run) Step 4 — final confirmation gate before the
+   orchestrator fires DocumentGenerator on the picked topic subset. The
+   actual Generate button lives outside this partial (in step.html.twig
+   when is_terminal=true), but we still need a confirm checkbox for the
+   step's `validate(confirm=true)` contract. #}
+
+{% set picked_topics = run.targetedTopics|default([]) %}
+{% set finding_ref = run.findingReference|default(null) %}
+{% set is_confirmed = defaults.confirm|default(false) %}
+
+{# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'bi-mortarboard',
+    class: 'mb-3'
+} } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">{{ 'policy_wizard.step.targeted.generate.help.title'|trans }}</div>
+        <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.targeted.generate.help.body'|trans }}</p>
+        <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.targeted.generate.help.example'|trans }}</p>
+        <p class="mb-0 small">
+            <i class="bi bi-archive" aria-hidden="true"></i>
+            {{ 'policy_wizard.step.targeted.generate.help.reversibility'|trans }}
+        </p>
+    {% endblock %}
+{% endembed %}
+
+<p class="text-muted small mb-3">{{ 'policy_wizard.step.targeted.generate.subtitle'|trans }}</p>
+
+{% if run.mode == 'sandbox' %}
+    {{ _fa_alert.render({
+        variant: 'info',
+        body: 'policy_wizard.message.sandbox_no_persistence'|trans
+    }) }}
+{% endif %}
+
+<dl class="row mb-4">
+    <dt class="col-sm-3">{{ 'policy_wizard.step.targeted.generate.topics_heading'|trans }}</dt>
+    <dd class="col-sm-9">
+        {% if picked_topics|length == 0 %}
+            <span class="text-muted">—</span>
+        {% else %}
+            {% for topic_key in picked_topics %}
+                <span class="badge bg-secondary me-1 mb-1">
+                    {{ ('policy_wizard.step.' ~ topic_key ~ '.title')|trans|default(topic_key) }}
+                </span>
+            {% endfor %}
+        {% endif %}
+    </dd>
+
+    <dt class="col-sm-3">{{ 'policy_wizard.step.welcome.finding_reference_label'|trans }}</dt>
+    <dd class="col-sm-9">
+        {% if finding_ref %}
+            <code>{{ finding_ref }}</code>
+        {% else %}
+            <span class="text-muted">—</span>
+        {% endif %}
+    </dd>
+</dl>
+
+{% if sandbox_preview|default(null) %}
+    <h3 class="h6 mb-2">{{ 'policy_wizard.step.targeted.generate.preview_heading'|trans }}</h3>
+    <pre class="small bg-body-tertiary p-2 rounded mb-4">{{ sandbox_preview|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+{% endif %}
+
+<div class="form-check mb-3">
+    <input class="form-check-input"
+           type="checkbox"
+           id="targeted-generate-confirm"
+           name="confirm"
+           value="1"
+           {% if is_confirmed %}checked{% endif %}
+           required>
+    <label class="form-check-label" for="targeted-generate-confirm">
+        {{ 'policy_wizard.step.targeted.generate.action.confirm'|trans }}
+    </label>
+</div>
