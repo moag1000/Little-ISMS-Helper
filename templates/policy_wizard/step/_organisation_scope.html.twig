@@ -69,6 +69,18 @@
                   minlength="30"
                   required>{{ scope_default }}</textarea>
         <div class="form-text">{{ 'policy_wizard.step.organisation_scope.scope_statement_help'|trans }}</div>
+        {# Junior-ISB inline help: 3 concrete sample sentences (collapsible). #}
+        <details class="fa-cyber-input__hint mt-2 small">
+            <summary class="text-primary" style="cursor: pointer;">
+                <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                {{ 'policy_wizard.step.organisation_scope.scope_statement.examples.title'|trans }}
+            </summary>
+            <ul class="mt-2 mb-0 small text-muted">
+                <li>{{ 'policy_wizard.step.organisation_scope.scope_statement.examples.e1'|trans }}</li>
+                <li>{{ 'policy_wizard.step.organisation_scope.scope_statement.examples.e2'|trans }}</li>
+                <li>{{ 'policy_wizard.step.organisation_scope.scope_statement.examples.e3'|trans }}</li>
+            </ul>
+        </details>
     </div>
     <div class="col-12">
         <label class="fa-cyber-input__label form-label" for="site-ids">

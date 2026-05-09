@@ -41,21 +41,30 @@
     {% endfor %}
 </dl>
 
-{# Cross-step consistency warnings (NON-blocking — informational nudge). #}
+{# Cross-step consistency warnings (NON-blocking — informational nudge).
+ # Junior-ISB Wish #6 — each warning is a CLICKABLE alert that
+ # navigates to the warning's `target_step` so the implementer can
+ # fix the root cause without scrolling back manually. The
+ # CrossStepConsistencyValidator stamps every DTO with target_step. #}
 {% if consistency_warnings|default([])|length > 0 %}
     <h3 class="h6 mb-3">{{ 'policy_wizard.step.review_generate.consistency_heading'|trans }}</h3>
-    {% set consistency_body %}
-        <ul class="mb-0">
-            {% for w in consistency_warnings %}
-                <li>{{ w.message_key|trans(w.params|default({})) }}</li>
-            {% endfor %}
-        </ul>
-    {% endset %}
-    {{ _fa_alert.render({
-        variant: 'warning',
-        title: 'policy_wizard.step.review_generate.consistency_heading'|trans,
-        body: consistency_body
-    }) }}
+    {% for w in consistency_warnings %}
+        {% set target = w.target_step|default('review_generate') %}
+        {% set step_title = ('policy_wizard.step.' ~ target ~ '.title')|trans %}
+        <a href="{{ path('app_policy_wizard_step_show', {runId: run.id, step: target}) }}"
+           class="d-block alert alert-warning text-decoration-none mb-2"
+           data-target-step="{{ target }}">
+            <div class="d-flex align-items-start gap-2">
+                <i class="bi bi-arrow-right-circle mt-1 flex-shrink-0" aria-hidden="true"></i>
+                <div>
+                    <div>{{ w.message_key|trans(w.params|default({})) }}</div>
+                    <small class="text-muted d-block mt-1">
+                        {{ 'policy_wizard.warning.click_to_jump'|trans({'%step%': step_title}) }}
+                    </small>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
 {% endif %}
 
 <h3 class="h6 mb-3">{{ 'policy_wizard.step.review_generate.conflicts_heading'|trans }}</h3>

@@ -215,6 +215,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
 
             $body = $this->renderBody($template, $variables);
             $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
+            $body = $this->appendNis2LexSpecialisFooterIfApplicable($template, $body, $run);
 
             // W1 audit-defang gap #3 — Variable-substitution leakage
             // detector. Pre-persist scan for raw `{{ … }}`, `{% … %}`
@@ -423,6 +424,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         foreach ($templates as $template) {
             $body = $this->renderBody($template, $variables);
             $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
+            $body = $this->appendNis2LexSpecialisFooterIfApplicable($template, $body, $run);
             $previews[] = [
                 'template_key' => $template->getKey(),
                 'standard' => $template->getStandard(),
@@ -617,6 +619,47 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $this->doraExtensionApplied[spl_object_id($template)] = true;
 
         return rtrim($body) . "\n\n" . $heading . "\n\n" . $extensionBody . "\n\n";
+    }
+
+    /**
+     * Junior-ISB Wish #2 — append the NIS-2 / DORA lex specialis footer
+     * to DORA-standard bodies.
+     *
+     * DORA Art. 1(2) + NIS-2 Erwägungsgrund 16 establish DORA as the
+     * lex specialis for the financial sector. Where DORA fully covers
+     * NIS-2 Art. 21 (risk management) + Art. 23 (incident reporting),
+     * DORA-compliant policies satisfy the corresponding NIS-2 duties.
+     * Auditors expect the footer in every DORA policy so the cross-
+     * regulation evidence chain is explicit.
+     *
+     * Skip rules:
+     *  - Run.standardsAdopted does NOT include 'dora'.
+     *  - Template.standard !== 'dora' (ISO/BSI/etc. carry their own
+     *    DORA section via {@see appendDoraExtensionIfApplicable}; we
+     *    only footer the standalone DORA documents here).
+     */
+    public function appendNis2LexSpecialisFooterIfApplicable(
+        PolicyTemplate $template,
+        string $body,
+        WizardRun $run,
+    ): string {
+        if ($template->getStandard() !== 'dora') {
+            return $body;
+        }
+        $standards = $run->getStandardsAdopted() ?? [];
+        if (!in_array('dora', $standards, true)) {
+            return $body;
+        }
+
+        $footerKey = 'policy_wizard.step.welcome.dora_nis2_lex_specialis.footer_in_doc';
+        $footer = $this->translator->trans($footerKey, [], 'policy_wizard');
+        if ($footer === $footerKey) {
+            // Translation missing — render a stub so the audit-trail
+            // still shows the intent without leaking the translation key.
+            $footer = 'This DORA policy satisfies NIS-2 Art. 21 + Art. 23 via DORA Art. 6 + Art. 17-23 (lex specialis per DORA Art. 1(2) and NIS-2 recital 16).';
+        }
+
+        return rtrim($body) . "\n\n---\n\n" . $footer . "\n";
     }
 
     /**

@@ -134,7 +134,7 @@ policy_wizard:
                     help: 'Wählen Sie 2 oder mehr Wizard-Themen, auf die Ihr Dokument inhaltlich verteilt werden soll. Der Wizard erstellt Stub-Sections in jedem gewählten Thema.'
             # MUST #3 — Sammelpolitik-Hinweis (multi-Topic-Umbrella).
             sammelpolitik_hint:
-                title: 'Sammelpolitik erkannt'
+                title: 'Sammelpolitik erkannt (= alte 80-Seiten-Allzweck-Richtlinie, die alles abdeckt — Zugangskontrolle + Backup + Krypto + Incident in einem Dokument)'
                 body: 'Dieses Dokument scheint mehrere Themen abzudecken (z. B. Zugang + Krypto + Backup). Empfohlen: <strong>Aufteilen</strong> statt <strong>Ersetzen</strong> — sonst gehen die nicht abgebildeten Inhalte verloren. Die Themen wurden bereits vorbelegt, prüfen Sie die Auswahl.'
             # MUST #5 — Archivierungs-Hinweis prominent (Inline-Reminder).
             replace_archived_hint: 'Hinweis: Beim Ersetzen wird das alte Dokument <strong>archiviert</strong>, nicht gelöscht — wiederherstellbar via Admin → Dokumente → Archiv.'
@@ -196,6 +196,23 @@ policy_wizard:
                 gdpr: 'EU-DSGVO + nationales Recht (BDSG). Pflicht bei Verarbeitung personenbezogener Daten.'
                 bcm: 'ISO 22301 — Business Continuity Management. Empfohlen für KRITIS, Banken, Health.'
                 iso27701: 'ISO/IEC 27701 — PIMS (Privacy Information Management). Ergänzt 27001 um Datenschutz-spezifische Controls.'
+            # Junior-ISB Wish #1 — 1-Satz-Erklärung pro Standard.
+            # Gerade ISO 27701 (PIMS) ist für Junior-Implementer nicht
+            # selbsterklärend — Begriff ausschreiben + Use-Case nennen.
+            standard_explainer:
+                summary: 'Was bedeuten diese Standards? (klicken zum Aufklappen)'
+                iso27001: 'Internationaler Standard für Informationssicherheits-Management-Systeme (ISMS). Pflicht-Basis dieses Wizards — alle anderen Standards bauen darauf auf.'
+                bsi: 'Deutscher Pendant zu ISO 27001 mit detailliertem Bausteinkatalog (200-1/2/3). Sinnvoll wenn Sie öffentliche Aufträge oder KRITIS-Einrichtungen betreuen.'
+                dora: 'EU-Verordnung 2022/2554 — Digital Operational Resilience für Banken, Versicherungen, Zahlungsdienstleister. Ersetzt seit Jan 2025 die alten BaFin-Rundschreiben (VAIT/BAIT/KAIT/ZAIT).'
+                gdpr: 'EU-DSGVO + nationales Recht (BDSG). Pflicht bei Verarbeitung personenbezogener Daten — generiert die Datenschutz-Sektionen Ihrer Richtlinien.'
+                bcm: 'Business Continuity Management nach ISO 22301. Erzeugt Notfall- und Wiederherstellungsvorgaben (RTO/RPO, BIA-Methodik). Empfohlen für KRITIS, Banken und Health.'
+                iso27701: 'ISO 27701 (PIMS = Privacy Information Management System) — Datenschutz-Erweiterung von ISO 27001. Gibt Ihrem ISMS einen Datenschutz-Layer mit klausel-genauer Audit-Spur. Empfohlen wenn Sie DSGVO + ISO 27001 in einem Audit prüfen wollen.'
+            # Junior-ISB Wish #2 — NIS-2 / DORA lex specialis.
+            # Banner im Wizard + Footer-Klausel im generierten DORA-Body.
+            dora_nis2_lex_specialis:
+                title: 'DORA-konform — NIS-2 mit abgedeckt'
+                body: 'NIS-2 Art. 21 (Risikomanagement) + Art. 23 (Meldepflichten) sind durch DORA als lex specialis abgedeckt (DORA Art. 1 Abs. 2 + NIS-2 Erwägungsgrund 16). Hat Ihr Unternehmen NIS-2-relevante Funktionen außerhalb des Finanzteils (z. B. KRITIS-Energieversorgung), weisen Sie NIS-2 separat aus.'
+                footer_in_doc: 'Diese Richtlinie erfüllt NIS-2 Art. 21 + Art. 23 über DORA Art. 6 + Art. 17-23 (lex specialis nach DORA Art. 1 Abs. 2 sowie NIS-2 Erwägungsgrund 16).'
         organisation_scope:
             title: 'Organisation & Geltungsbereich'
             subtitle: 'Rechtsname, Scope-Statement und in Geltungsbereich befindliche Standorte.'
@@ -203,6 +220,12 @@ policy_wizard:
             legal_name_help: 'Vollständiger juristischer Name der Organisation.'
             scope_statement_label: 'Scope-Statement'
             scope_statement_help: 'Konkrete Beschreibung des Geltungsbereichs (mind. 30 Zeichen). Auditor-tauglich, keine Floskeln.'
+            scope_statement:
+                examples:
+                    title: 'Beispiele anzeigen'
+                    e1: '„Alle Geschäftsprozesse, IT-Systeme und Standorte der ABC GmbH am Hauptsitz Bonn (Datacenter inkl.), die personenbezogene Kundendaten verarbeiten."'
+                    e2: '„ICT-Operations + Plattform-Engineering der DEF AG; Standorte Frankfurt + Mailand; ausgenommen externe Cloud-Provider, die separat nach SOC-2 zertifiziert sind."'
+                    e3: '„Produktionsstätten Maschinenbau in Stuttgart + Karlsruhe; OT-Netze + ERP + Engineering-PCs; ausgenommen Verwaltungssitz Berlin."'
             primary_address_label: 'Hauptadresse (optional)'
             sites_label: 'In-Scope-Standorte'
             sites_help: 'Wählen Sie die für den Geltungsbereich relevanten Standorte aus. Nur sichtbare Mandanten-Standorte werden angezeigt.'
@@ -233,6 +256,11 @@ policy_wizard:
             bcm_officer_label: 'BCM-Officer (Business Continuity)'
             function_owners_label: 'Function-Owner pro Geschäftsfunktion'
             function_owners_help: 'Risk-Owner P1 — pro Funktion ein verantwortlicher Owner.'
+            function_owners:
+                junior_help:
+                    title: 'Was ist ein Function-Owner?'
+                    body: 'Function-Owner = verantwortliche Person pro Geschäftsfunktion (analog zu ISO-9001-Prozesseigner). Pro Funktion einen Owner — Mehrfachzuweisung pro Person ist erlaubt. Leitfrage: Wer akzeptiert Risiken im Namen seiner Funktion?'
+                    examples: 'Beispielhafte Funktionen: IT-Leitung, Personal, Produktion/OT, Vertrieb, Forschung & Entwicklung, Einkauf/Lieferanten, Recht & Compliance.'
             help:
                 title: 'Welche Rollen brauche ich wirklich?'
                 body: 'CISO + ISB sind Pflicht in jedem ISMS. DPO ist Pflicht bei DSGVO-Geltungsbereich. BCM-Officer nur bei aktiviertem BCM-Standard. Function-Owner sind die Fachbereichsleiter, die Risiken in ihrem Bereich verantworten.'
@@ -266,6 +294,16 @@ policy_wizard:
             schutzbedarf_4: '4 Stufen'
             review_interval_label: 'Review-Intervall (Monate)'
             annex_help: 'Standardmäßig sind alle Annex-A-Controls anwendbar. Schalten Sie nicht zutreffende Controls aus — die Begründung pflegen Sie später im SoA.'
+            annex_a:
+                when_not_applicable:
+                    title: 'Wann ist ein Annex-A-Control NICHT anwendbar?'
+                    reason1: 'Funktion existiert nicht (z. B. A.5.34 „Privacy" bei einem Mandanten ohne Verarbeitung personenbezogener Daten).'
+                    reason2: 'Asset-Typ existiert nicht (z. B. A.5.23 „Cloud Services" bei einem rein on-premise Mandanten).'
+                    reason3: 'Geschäftsmodell schließt es aus (z. B. A.6.4 „Disciplinary Process" bei einer reinen GmbH ohne Mitarbeitende).'
+                    reason4: 'Übernommen durch ein externes oder höher gelagertes Control (z. B. Konzernmutter erfüllt das Control für die Tochtergesellschaft).'
+                    default_note: 'Default = anwendbar. Bitte nur abwählen, wenn der Ausschluss-Grund auditfest begründbar ist — der Grund wird später im SoA dokumentiert.'
+                control_desc:
+                    stub: 'Beschreibung folgt im Wizard-Output (Statement of Applicability) — Control %control% ist Teil des ISO/IEC 27001:2022 Annex A.'
             annex_applicable: 'Anwendbar'
             annex_not_applicable: 'Nicht anwendbar'
             annex_group:
@@ -342,12 +380,38 @@ policy_wizard:
                 preset_hint: 'Tipp: Wenn Sie in Schritt 1 ein Industrie-Preset gewählt haben, sind sinnvolle Defaults bereits vorbefüllt — Sie können jeden Wert anpassen.'
             tooltip:
                 rpo: 'Recovery-Point-Objective — wie viel Datenverlust seit dem letzten Backup tolerierbar ist (in Stunden).'
+                rpo_usual: 'Recovery Point Objective: maximaler tolerierbarer Datenverlust seit letztem Backup. Üblich: 24h Standard / 4h kritische Systeme / 1h Tier-1-DB.'
                 rto: 'Recovery-Time-Objective — wie schnell ein Geschäftsprozess nach einem Ausfall wieder verfügbar sein muss.'
+                rto_high_usual: 'Recovery Time Objective hoch-kritisch: ≤ 4h üblich (Banking) — bis 24h tolerabel (Mittelstand).'
+                rto_medium_usual: 'RTO mittel: 24–72h üblich.'
+                rto_low_usual: 'RTO gering: 1–2 Wochen üblich.'
+                patch_sla_critical_usual: 'Critical-Patch-SLA: typisch 24h (Mittelstand) bis 4h (regulierter Sektor).'
                 cvss: 'Common Vulnerability Scoring System v3.1 — standardisierte Schwachstellen-Bewertung 0.0–10.0.'
+                crypto_allowlist_bsi: 'BSI-TR-02102:2024-1 konforme Algorithmen vorausgewählt — anpassbar.'
+                crypto_allowlist_modern: 'Moderner und sicherer Standard-Satz vorausgewählt — verfeinern Sie ihn entsprechend Ihrer Risikoneigung.'
                 dora_significant: 'DORA Art. 16 — bedeutendes Unternehmen unterliegt verschärften Resilienz-Anforderungen.'
                 dora_ctpp: 'Critical Third-Party Provider — IKT-Drittanbieter mit systemischer Bedeutung. Self-Assessment als Vorprüfung.'
                 bsi_tr02102: 'BSI Technische Richtlinie 02102 — Empfehlungen für kryptografische Verfahren und Schlüssellängen.'
                 ict_concentration: 'DORA Art. 29 — Schwellwert für Risikokonzentration auf einzelnen IKT-Anbietern.'
+            dora:
+                significance_self_check:
+                    title: 'DORA-Significance-Self-Check (DORA Art. 16 + RTS)'
+                    intro: 'Drei Leitfragen zur Selbsteinstufung als „bedeutendes Unternehmen" gemäß DORA Art. 16. Server-seitig wird ab 2 von 3 Ja-Antworten „bedeutend" abgeleitet.'
+                    q1: 'Q1: Bilanzsumme der Organisation > 5 Mrd EUR?'
+                    q1_help: 'Wert auf Konzernebene zum letzten Jahresabschluss. Schwellwert orientiert sich am EBA/ESRB-Lex-RTS-Entwurf zu DORA Art. 16.'
+                    q2: 'Q2: Anzahl IKT-Drittparteien > 100 oder IKT-Konzentrationsrisiko > 10%?'
+                    q2_help: 'Drittparteien aus dem IKT-Drittparteien-Register (DORA Art. 28). Konzentration: Anteil eines einzelnen Anbieters an kritischen IKT-Funktionen.'
+                    q3: 'Q3: Aktiv im Cross-Border-Service-Provisioning der EU?'
+                    q3_help: 'Erbringung systemrelevanter IKT-Dienste in mehr als einem EU-Mitgliedstaat (relevant für ESA-Aufsicht).'
+                    answer_yes: 'Ja'
+                    answer_no: 'Nein'
+                    derived_label: 'Abgeleitet:'
+                    derived_yes: 'Bedeutendes Unternehmen (DORA Art. 16)'
+                    derived_no: 'Standard-Unternehmen (kein Art.-16-Schwellwert)'
+                not_applicable_hint:
+                    title: 'DORA gilt für Sie vermutlich nicht'
+                    body: 'DORA gilt primär für Finanzdienstleister (Banken, Wertpapierfirmen, Zahlungsdienstleister, FMI, Krypto-Anbieter etc.). Wenn Ihr Unternehmen keine Finanzdienstleistung erbringt, deaktivieren Sie DORA in Schritt 1 (Standards-Auswahl).'
+                    link_label: 'Zurück zu Schritt 1 — Standards anpassen'
         lifecycle:
             title: 'Lebenszyklus'
             subtitle: 'Review-Intervall, per-Template-Overrides und Approver-Zuweisung.'
@@ -546,6 +610,37 @@ policy_wizard:
         next_steps_heading: 'Nächste Schritte'
         next_steps_review: 'Top-Management-Sign-Off einholen (Bulk-Approval-Inbox).'
         next_steps_translate: 'Bei Bedarf englische Übersetzung anfordern.'
+
+    # Junior-ISB Wish #3 — Progress-Bar above every wizard step.
+    progress:
+        label: 'Schritt %current% von %total%'
+        aria_label: 'Wizard-Fortschritt'
+
+    # Junior-ISB Wish #4 — Cancel-State-Hint.
+    cancel_hint:
+        label: 'Ihr Stand wird automatisch gespeichert — Sie können jederzeit pausieren und morgen weitermachen. „Abbrechen" verwirft den Lauf komplett (er kann später unter „Aktive Wizard-Läufe" wiederaufgenommen werden).'
+
+    # Junior-ISB Wish #6 — clickable warning link CTA on Step 7.
+    warning:
+        click_to_jump: 'Klicken um zu „%step%" zu springen und zu korrigieren.'
+
+    # Junior-ISB Wish #5 — Auditor-Score badge / detail section.
+    auditor_score:
+        label: 'Auditor-Score'
+        tier_green: 'Audit-bereit'
+        tier_yellow: 'Bedingt audit-bereit'
+        tier_red: 'Nicht audit-bereit'
+        reasons_heading: 'Begründung:'
+        regenerate_cta: 'Dokument neu generieren'
+        reason:
+            audit_trail_missing: 'Audit-Spur fehlt — der Wizard-Lauf-Bezug ist nicht hinterlegt.'
+            substitution_vars_missing: 'Substitutionsvariablen-Snapshot fehlt komplett.'
+            substitution_var_incomplete: 'Pflicht-Variable fehlt oder ist leer.'
+            body_too_short: 'Dokumenten-Inhalt ist zu kurz für einen sinnvollen Audit-Befund.'
+            substitution_leakage: 'Roh-Twig-Marker im Text — Variable wurde nicht aufgelöst.'
+            climate_wording_missing: 'ISO 27001:2024 Klausel 4.1 Klimawandel-Wording fehlt.'
+            still_in_draft: 'Dokument ist noch im Status „Entwurf" — keine Freigabe vorhanden.'
+            tailoring_vars_missing: 'Template-Pflichtvariablen sind nicht vollständig befüllt.'
 
     # Cross-step consistency warnings (Form-Audit follow-up, May 2026).
     # Surfaced on STEP_REVIEW_GENERATE — informational, NOT blocking.

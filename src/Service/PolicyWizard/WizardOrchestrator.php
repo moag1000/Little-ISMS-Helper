@@ -74,6 +74,7 @@ final class WizardOrchestrator
      *   severity: string,
      *   message_key: string,
      *   params: array<string, mixed>,
+     *   target_step: string,
      * }>
      */
     public function consistencyWarnings(WizardRun $run): array

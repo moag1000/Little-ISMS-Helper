@@ -109,6 +109,19 @@
     <div class="col-12 mt-2">
         <h3 class="h6 mb-2">{{ 'policy_wizard.step.roles.function_owners_label'|trans }}</h3>
         <p class="text-muted small mb-3">{{ 'policy_wizard.step.roles.function_owners_help'|trans }}</p>
+        {# Junior-ISB-friendly explainer card for first-time users:
+         # what is a Function-Owner, which functions are typical. #}
+        {% embed '_components/_fa_alert.html.twig' with { props: {
+            variant: 'info',
+            icon: 'bi-mortarboard',
+            class: 'mb-3 py-2 small'
+        } } %}
+            {% block alert_body %}
+                <div class="fa-alert__title">{{ 'policy_wizard.step.roles.function_owners.junior_help.title'|trans }}</div>
+                <p class="fa-alert__message mb-1 small">{{ 'policy_wizard.step.roles.function_owners.junior_help.body'|trans }}</p>
+                <p class="mb-0 small fst-italic text-muted">{{ 'policy_wizard.step.roles.function_owners.junior_help.examples'|trans }}</p>
+            {% endblock %}
+        {% endembed %}
         <div class="row g-2">
             {% for fn_key in ['sales', 'operations', 'rnd', 'hr', 'it_operations', 'finance'] %}
                 <div class="col-md-4">

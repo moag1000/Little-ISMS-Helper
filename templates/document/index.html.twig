@@ -314,6 +314,26 @@
                                     {{ 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }}
                                 </a>
                             {% endif %}
+                            {# Junior-ISB Wish #5 — Auditor-Score badge.
+                               Only rendered for Wizard-generated docs
+                               (provenance via generatedFromTemplate). #}
+                            {% if document.generatedFromTemplate is not null and auditorScores[document.id] is defined %}
+                                {% set _score = auditorScores[document.id] %}
+                                {% set _variant = _score.tier == 'green' ? 'success' : (_score.tier == 'yellow' ? 'warning text-dark' : 'danger') %}
+                                {% set _icon = _score.tier == 'green' ? 'shield-check' : (_score.tier == 'yellow' ? 'shield-exclamation' : 'shield-x') %}
+                                {% set _reason_lines = [] %}
+                                {% for r in _score.reasons %}
+                                    {% set _key = 'policy_wizard.auditor_score.reason.' ~ (r|split(':')|first) %}
+                                    {% set _reason_lines = _reason_lines|merge([_key|trans({}, 'policy_wizard')]) %}
+                                {% endfor %}
+                                <span class="badge bg-{{ _variant }} ms-1"
+                                      data-bs-toggle="tooltip"
+                                      data-bs-placement="top"
+                                      title="{{ ('policy_wizard.auditor_score.tier_' ~ _score.tier)|trans({}, 'policy_wizard') }} — {{ _reason_lines|join('; ')|default('OK') }}">
+                                    <i class="bi bi-{{ _icon }}" aria-hidden="true"></i>
+                                    {{ 'policy_wizard.auditor_score.label'|trans({}, 'policy_wizard') }}: {{ _score.score }}
+                                </span>
+                            {% endif %}
                             {% if document.description %}
                             <br>
                             <small class="text-muted">{{ document.description|length > 60 ? document.description|slice(0, 60) ~ '...' : document.description }}</small>
