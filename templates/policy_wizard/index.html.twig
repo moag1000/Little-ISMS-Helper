@@ -48,7 +48,7 @@
                                       action="{{ path('app_policy_wizard_cancel', { runId: run.id }) }}"
                                       data-controller="ui-actions"
                                       data-action="submit->ui-actions#confirm"
-                                      data-ui-actions-message-value="{{ 'policy_wizard.action.cancel_confirm'|trans }}"
+                                      data-ui-actions-message-param="{{ 'policy_wizard.action.cancel_confirm'|trans }}"
                                       class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_cancel') }}">
                                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
