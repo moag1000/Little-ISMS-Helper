@@ -12,27 +12,35 @@
 
 ## CISO-Dashboard
 
-Time-to-Insight unter 30 Sekunden. KPIs aggregiert. Kein Klausel-Wortlaut, kein Field-Level-Detail — das macht die ISB.
+Time-to-Insight unter 30 Sekunden. Ein Klick, Status klar.
 
 ![CISO-Dashboard](img/ciso-executive/ciso-dashboard.png)
 
-> *"Wo steht unser Reifegrad vs. letztes Quartal? Wie viele offene Top-Risiken trage ich aktuell im Report an den Vorstand?"*
+> *"Wo steht unser Reifegrad vs. letztes Quartal? Wie viele offene Top-Risiken trage ich aktuell im Report an den Vorstand? Kann ich das ohne ISB-Zuarbeit selbst ziehen?"*
+
+KPIs aggregiert. Kein Klausel-Wortlaut, kein Field-Level-Detail — das macht die ISB.
 
 ---
 
 ## Board-Dashboard
 
-Vorbereitet für Vorstandssitzung. Heatmap, Top-Risiken, Compliance-Ampel. NIS2-Geschäftsleiter-Verantwortung (§ 38 BSIG-neu) und DORA Art. 5 Nachweis.
+Vorbereitet für Vorstandssitzung. Heatmap, Top-Risiken, Compliance-Ampel.
 
 ![Board-Dashboard](img/ciso-executive/board-dashboard.png)
 
+NIS2-Geschäftsleiter-Verantwortung (§ 38 BSIG-neu) und DORA Art. 5 verlangen, dass die Geschäftsleitung Cybersicherheitsrisiken überwacht und die getroffenen Massnahmen dokumentiert hat. Diese Sicht liefert den Nachweis.
+
 ---
 
-## Analytics-Advanced
+## Analytics-Dashboard
 
-Vertiefung — Reifegrad-Trend, Control-Effektivität, Compliance-Coverage über alle Frameworks.
+Tieferer Einblick — Reifegrad-Trend, Control-Effektivität, Compliance-Coverage über Frameworks.
 
-![Analytics-Advanced](img/ciso-executive/analytics-advanced.png)
+![Analytics-Dashboard](img/ciso-executive/analytics-advanced.png)
+
+> *"Was kostet uns Nicht-Umsetzung von Control X?"*
+
+Der CISO will quantifizieren — ALE/EL/Restrisiko-€ ist Roadmap-Thema. Aktueller Stand: Control-Coverage und Reifegrad als KPI-Trend.
 
 ---
 
@@ -42,37 +50,13 @@ Risikoportfolio-Verlauf über Zeit. Trend-Chart Restrisiko-Volumen.
 
 ![Risk-Forecast](img/ciso-executive/risk-forecast.png)
 
-> *"Welcher Treatment-Plan reduziert ALE am meisten pro €?"* — heute qualitativ über Trend, quantitativ als Roadmap-Item.
-
----
-
-## Compliance-Frameworks-Radar
-
-Status pro Framework auf einem Blick. Reifegrad, Coverage, offene Lücken.
-
-![Compliance-Frameworks-Radar](img/ciso-executive/compliance-frameworks-radar.png)
-
----
-
-## DORA-Cockpit
-
-ICT-Resilienz-Status, Drittdienstleister-Register, Vorfall-Meldepflichten gemäß EU-DORA Art. 5–33.
-
-![DORA-Cockpit](img/ciso-executive/dora-dashboard.png)
-
----
-
-## Management-Reports-Hub
-
-Alle CISO-relevanten Reports zentral.
-
-![Management-Reports](img/ciso-executive/management-reports.png)
+Für CRQ/ALE-Diskussionen mit dem CFO: "Welcher Treatment-Plan reduziert ALE am meisten pro €?" — heute qualitativ über Trend, quantitativ als Dev-Item.
 
 ---
 
 ## Executive Report
 
-One-Pager-Export für Vorstandsvorlage. Logo, Compliance-Status, Top-Findings, Massnahmen.
+One-Pager-Export für Vorstandsvorlage. Logo, Compliance-Status, Top-Findings, getroffene Massnahmen.
 
 ![Executive Report](img/ciso-executive/executive-report.png)
 
@@ -80,23 +64,27 @@ PDF-Export auf Knopfdruck. Kein manueller Excel-Stress vor jeder Sitzung.
 
 ---
 
-## Querverweise
+## Management-Reports-Hub
 
-- **SoA + Risikoregister** (Detail-Sicht): [ISB-Sicht](isb-practitioner.md)
-- **Cross-Framework-Mappings**: [Compliance-Manager-Sicht](compliance-manager.md)
-- **Audit-Trail für Haftungs-Doku**: [Auditor-Sicht](auditor-external.md)
+Alle CISO-relevanten Reports in einem Cockpit: Portfolio, Executive, Group/Konzern, Compliance-Gap.
 
----
+![Management-Reports](img/ciso-executive/management-reports.png)
 
-## Was der CISO hier vermisst
-
-Aus der [Persona-Definition](../../.claude/skills/persona-ciso-executive/):
-
-- **Finanzielle Risiko-Bewertung** (ALE, EL, Restrisiko in €) — heute qualitativ
-- **Szenario-Simulation** ("was wenn wir Control Y nicht umsetzen?")
-- **Verknüpfung Kontrollen ↔ Budget ↔ FTE**
-- **Branchenbenchmarks** (NIST CSF Tier-Vergleich vs. Peer-Group)
+Auch die Scheduled-Reports laufen über diese Hub-Seite — wöchentlicher Vorstandsversand vorkonfiguriert, kein manueller Versand.
 
 ---
 
-[← ISB](isb-practitioner.md) · [Übersicht](README.md) · [Nächste: Compliance-Manager →](compliance-manager.md)
+## Was der CISO hier nicht findet (und vermisst)
+
+Aus der [Persona-Definition](../../.claude/skills/persona-ciso-executive/SKILL.md):
+
+- **Finanzielle Risiko-Bewertung** (Annual Loss Expectancy, EL, ALE in €) — heute qualitative Matrix.
+- **Szenario-Simulation** ("was wenn wir Control Y nicht umsetzen?").
+- **Verknüpfung Kontrollen ↔ Budget ↔ FTE** — Lizenz-/Betriebskosten-Sicht.
+- **Branchenbenchmarks** (z.B. NIST CSF Tier-Vergleich vs. Peer-Group).
+
+→ Roadmap-Items aus CISO-Sicht, getriggert über die Persona im Roadmap-Review.
+
+---
+
+[← ISB-Sicht](isb-practitioner.md) · [Übersicht](README.md) · [Nächste Persona: Compliance-Manager →](compliance-manager.md)

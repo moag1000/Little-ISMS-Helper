@@ -105,11 +105,11 @@
                             <tr class="{{ not token.isActive ? 'table-secondary' : '' }}">
                                 <td>
                                     {% if token.tokenType == 'totp' %}
-                                        <i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa.token_type.totp'|trans({}, 'mfa') }}
+                                        <i class="fa-icon fa-icon--asset-endpoint" aria-hidden="true"></i> {{ 'mfa.token_type.totp'|trans({}, 'mfa') }}
                                     {% elseif token.tokenType == 'webauthn' %}
                                         <i class="fa-icon fa-icon--sso" aria-hidden="true"></i> {{ 'mfa.token_type.webauthn'|trans({}, 'mfa') }}
                                     {% elseif token.tokenType == 'sms' %}
-                                        <i class="bi bi-chat" aria-hidden="true"></i> {{ 'mfa.token_type.sms'|trans({}, 'mfa') }}
+                                        <i class="fa-icon fa-icon--review" aria-hidden="true"></i> {{ 'mfa.token_type.sms'|trans({}, 'mfa') }}
                                     {% elseif token.tokenType == 'hardware' %}
                                         <i class="fa-icon fa-icon--nav-cpu" aria-hidden="true"></i> {{ 'mfa.token_type.hardware'|trans({}, 'mfa') }}
                                     {% elseif token.tokenType == 'backup' %}

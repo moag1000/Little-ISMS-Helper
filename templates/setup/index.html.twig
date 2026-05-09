@@ -11,7 +11,7 @@
                 {% block card_header %}
                     <div class="card-header bg-primary text-white">
                         <h1 class="mb-0">
-                            <i class="bi bi-magic me-2" aria-hidden="true"></i>
+                            <i class="fa-icon me-2 fa-icon--nav-magic" aria-hidden="true"></i>
                             Little ISMS Helper - Deployment Wizard
                         </h1>
                     </div>
@@ -24,16 +24,16 @@
 
                             <div class="d-grid gap-3 mt-4">
                                 <a href="{{ path('app_dashboard', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-primary">
-                                    <i class="bi bi-house me-2" aria-hidden="true"></i>
+                                    <i class="fa-icon me-2 fa-icon--nav-home" aria-hidden="true"></i>
                                     {{ 'setup.go_to_dashboard'|trans({}, 'setup') }}
                                 </a>
                                 <a href="{{ path('module_management_index', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-outline-primary">
-                                    <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
+                                    <i class="fa-icon me-2 fa-icon--nav-puzzle" aria-hidden="true"></i>
                                     {{ 'setup.manage_modules'|trans({}, 'setup') }}
                                 </a>
                                 {% if app.environment == 'dev' %}
                                     <a href="{{ path('setup_wizard_reset') }}" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>
+                                        <i class="fa-icon me-2 fa-icon--ui-refresh" aria-hidden="true"></i>
                                         {{ 'setup.reset_development'|trans({}, 'setup') }}
                                     </a>
                                 {% endif %}
@@ -54,11 +54,11 @@
                                             <i class="fa-icon fa-icon--status-ok mb-3" aria-hidden="true"></i>
                                             <p class="h5 mb-3">{{ 'setup.what_will_be_setup'|trans({}, 'setup') }}</p>
                                             <ul class="list-unstyled">
-                                                <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.checklist.check_requirements'|trans({}, 'setup') }}</li>
-                                                <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.checklist.select_modules'|trans({}, 'setup') }}</li>
-                                                <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.checklist.init_database'|trans({}, 'setup') }}</li>
-                                                <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.checklist.import_base_data'|trans({}, 'setup') }}</li>
-                                                <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.checklist.load_sample_data'|trans({}, 'setup') }}</li>
+                                                <li><i class="fa-icon text-success me-2 fa-icon--ui-check" aria-hidden="true"></i>{{ 'setup.checklist.check_requirements'|trans({}, 'setup') }}</li>
+                                                <li><i class="fa-icon text-success me-2 fa-icon--ui-check" aria-hidden="true"></i>{{ 'setup.checklist.select_modules'|trans({}, 'setup') }}</li>
+                                                <li><i class="fa-icon text-success me-2 fa-icon--ui-check" aria-hidden="true"></i>{{ 'setup.checklist.init_database'|trans({}, 'setup') }}</li>
+                                                <li><i class="fa-icon text-success me-2 fa-icon--ui-check" aria-hidden="true"></i>{{ 'setup.checklist.import_base_data'|trans({}, 'setup') }}</li>
+                                                <li><i class="fa-icon text-success me-2 fa-icon--ui-check" aria-hidden="true"></i>{{ 'setup.checklist.load_sample_data'|trans({}, 'setup') }}</li>
                                             </ul>
                                         {% endblock %}
                                     {% endembed %}
@@ -66,13 +66,13 @@
                                 <div class="col-md-6">
                                     {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-info' } %}
                                         {% block card_body %}
-                                            <i class="bi bi-clock text-info  mb-3" aria-hidden="true"></i>
+                                            <i class="fa-icon text-info mb-3 fa-icon--ui-clock" aria-hidden="true"></i>
                                             <p class="h5 mb-3">{{ 'setup.duration_requirements.title'|trans({}, 'setup') }}</p>
                                             <ul class="list-unstyled">
-                                                <li><i class="bi bi-hourglass-split text-info me-2" aria-hidden="true"></i>{{ 'setup.duration_requirements.duration'|trans({}, 'setup') }}</li>
-                                                <li><i class="bi bi-database text-info me-2" aria-hidden="true"></i>{{ 'setup.duration_requirements.database_access'|trans({}, 'setup') }}</li>
-                                                <li><i class="bi bi-server text-info me-2" aria-hidden="true"></i>{{ 'setup.duration_requirements.php_extensions'|trans({}, 'setup') }}</li>
-                                                <li><i class="bi bi-folder text-info me-2" aria-hidden="true"></i>{{ 'setup.duration_requirements.write_permissions'|trans({}, 'setup') }}</li>
+                                                <li><i class="fa-icon text-info me-2 fa-icon--ui-hourglass" aria-hidden="true"></i>{{ 'setup.duration_requirements.duration'|trans({}, 'setup') }}</li>
+                                                <li><i class="fa-icon text-info me-2 fa-icon--asset-database" aria-hidden="true"></i>{{ 'setup.duration_requirements.database_access'|trans({}, 'setup') }}</li>
+                                                <li><i class="fa-icon text-info me-2 fa-icon--asset-server" aria-hidden="true"></i>{{ 'setup.duration_requirements.php_extensions'|trans({}, 'setup') }}</li>
+                                                <li><i class="fa-icon text-info me-2 fa-icon--nav-collection" aria-hidden="true"></i>{{ 'setup.duration_requirements.write_permissions'|trans({}, 'setup') }}</li>
                                             </ul>
                                         {% endblock %}
                                     {% endembed %}
@@ -82,7 +82,7 @@
                             {% embed '_components/_card.html.twig' with { 'class': 'bg-body-secondary mb-4' } %}
                                 {% block card_body %}
                                     <p class="h5 mb-3">
-                                        <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
+                                        <i class="fa-icon me-2 fa-icon--nav-puzzle" aria-hidden="true"></i>
                                         {{ 'setup.available_modules'|trans({}, 'setup') }}
                                     </p>
                                     <p class="text-muted mb-3">
@@ -93,28 +93,28 @@
                                             <small><i class="fa-icon fa-icon--compliance-shield fa-icon--primary me-1" aria-hidden="true"></i> {{ 'setup.module_core_isms'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
-                                            <small><i class="bi bi-database text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_asset_management'|trans({}, 'setup') }}</small>
+                                            <small><i class="fa-icon text-muted me-1 fa-icon--asset-database" aria-hidden="true"></i> {{ 'setup.module_asset_management'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
                                             <small><i class="fa-icon fa-icon--status-warning me-1" aria-hidden="true"></i> {{ 'setup.module_risk_management'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
-                                            <small><i class="bi bi-list-check text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_controls'|trans({}, 'setup') }}</small>
+                                            <small><i class="fa-icon text-muted me-1 fa-icon--nav-list-check" aria-hidden="true"></i> {{ 'setup.module_controls'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
-                                            <small><i class="bi bi-bell text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_incident'|trans({}, 'setup') }}</small>
+                                            <small><i class="fa-icon text-muted me-1 fa-icon--ui-bell" aria-hidden="true"></i> {{ 'setup.module_incident'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
                                             <small><i class="fa-icon fa-icon--sop fa-icon--muted me-1" aria-hidden="true"></i> {{ 'setup.module_audit'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
-                                            <small><i class="bi bi-arrow-clockwise text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_bcm'|trans({}, 'setup') }}</small>
+                                            <small><i class="fa-icon text-muted me-1 fa-icon--ui-refresh" aria-hidden="true"></i> {{ 'setup.module_bcm'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
-                                            <small><i class="bi bi-balance text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_compliance'|trans({}, 'setup') }}</small>
+                                            <small><i class="fa-icon text-muted me-1 fa-icon--review" aria-hidden="true"></i> {{ 'setup.module_compliance'|trans({}, 'setup') }}</small>
                                         </div>
                                         <div class="col-md-4">
-                                            <small><i class="bi bi-mortarboard text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_training'|trans({}, 'setup') }}</small>
+                                            <small><i class="fa-icon text-muted me-1 fa-icon--training" aria-hidden="true"></i> {{ 'setup.module_training'|trans({}, 'setup') }}</small>
                                         </div>
                                     </div>
                                 {% endblock %}
@@ -122,7 +122,7 @@
 
                             <div class="d-grid">
                                 <a href="{{ path('setup_step0_welcome') }}" class="btn btn-lg btn-primary">
-                                    <i class="bi bi-play me-2" aria-hidden="true"></i>
+                                    <i class="fa-icon me-2 fa-icon--status-info" aria-hidden="true"></i>
                                     {{ 'setup.start_setup'|trans({}, 'setup') }}
                                 </a>
                             </div>

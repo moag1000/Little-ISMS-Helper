@@ -52,16 +52,16 @@
             <div class="fa-section__body">
                 <div class="d-flex flex-wrap gap-2" role="list" aria-label="{{ 'compliance_import.preview.summary_aria'|trans({}, 'compliance_import') }}">
                     <div role="listitem">
-                        <span class="badge bg-success">{{ 'compliance_import.status.new'|trans({}, 'compliance_import') }}: {{ summary.new|default(0) }}</span>
+                        <span class="fa-status-pill fa-status-pill--success">{{ 'compliance_import.status.new'|trans({}, 'compliance_import') }}: {{ summary.new|default(0) }}</span>
                     </div>
                     <div role="listitem">
-                        <span class="badge bg-primary">{{ 'compliance_import.status.update'|trans({}, 'compliance_import') }}: {{ summary.update|default(0) }}</span>
+                        <span class="fa-status-pill fa-status-pill--primary">{{ 'compliance_import.status.update'|trans({}, 'compliance_import') }}: {{ summary.update|default(0) }}</span>
                     </div>
                     <div role="listitem">
-                        <span class="badge bg-warning text-dark">{{ 'compliance_import.status.conflict'|trans({}, 'compliance_import') }}: {{ summary.conflict|default(0) }}</span>
+                        <span class="fa-status-pill fa-status-pill--warning">{{ 'compliance_import.status.conflict'|trans({}, 'compliance_import') }}: {{ summary.conflict|default(0) }}</span>
                     </div>
                     <div role="listitem">
-                        <span class="badge bg-danger">{{ 'compliance_import.status.error'|trans({}, 'compliance_import') }}: {{ summary.error|default(0) }}</span>
+                        <span class="fa-status-pill fa-status-pill--danger">{{ 'compliance_import.status.error'|trans({}, 'compliance_import') }}: {{ summary.error|default(0) }}</span>
                     </div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
         <section class="fa-section mb-3">
             <div class="fa-section__header">
                 <h2 class="fa-section__title">
-                    <i class="bi bi-table" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i>
                     {{ 'compliance_import.preview.table_title'|trans({}, 'compliance_import') }}
                 </h2>
             </div>

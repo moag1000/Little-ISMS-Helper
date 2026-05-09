@@ -20,8 +20,8 @@
     }) }}
 
     {% if tenant is null %}
-        <div class="alert alert-warning small">
-            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+        <div class="fa-alert fa-alert--warning small">
+            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
             {{ 'framework_baseline.tenant_required'|trans }}
         </div>
     {% endif %}
@@ -41,12 +41,12 @@
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <code class="small text-muted">{{ baseline.id }}</code>
-                                        <span class="badge bg-info">{{ baseline.industry }}</span>
+                                        <span class="fa-status-pill fa-status-pill--primary">{{ baseline.industry }}</span>
                                     </div>
                                     <h2 class="h5 mb-2">{{ baseline.name }}</h2>
                                     <p class="small text-muted mb-3" style="white-space: pre-line;">{{ baseline.description }}</p>
                                     <p class="small text-muted mb-3">
-                                        <i class="bi bi-file-earmark-code" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
                                         <code>{{ baseline.file }}</code>
                                     </p>
 
@@ -55,13 +55,13 @@
                                             <input type="hidden" name="_token" value="{{ csrf_token('industry_baseline_apply') }}">
                                             <input type="hidden" name="baseline_id" value="{{ baseline.id }}">
                                             <button type="submit" name="dry_run" value="1" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                                 {{ 'framework_baseline.action.preview'|trans }}
                                             </button>
                                             <button type="submit"
                                                     class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary"
                                                     data-confirm="{{ 'framework_baseline.confirm.apply'|trans({'%name%': baseline.name, '%tenant%': tenant.name}, 'framework_baseline') }}">
-                                                <i class="bi bi-check-lg" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                                 {{ 'framework_baseline.action.apply'|trans }}
                                             </button>
                                         </form>

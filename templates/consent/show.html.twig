@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'consent' %}
 
 {% block title %}{{ consent.dataSubjectIdentifier }} - {{ 'consent.header.title'|trans({}, 'consent') }}{% endblock %}
@@ -17,43 +18,44 @@
     {% set hint = alva_hint(consent) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
-    <div class="page-header">
-        <h1>
-            <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i>
-            {{ consent.dataSubjectIdentifier }}
-        </h1>
-        <div class="actions">
-            {% if is_granted('ROLE_USER') and (consent.status == 'pending_verification' or consent.status == 'active') %}
-            <a href="{{ path('app_consent_edit', {id: consent.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-            </a>
-            {% endif %}
+    {% set _show_actions = [] %}
+    {% if is_granted('ROLE_USER') and (consent.status == 'pending_verification' or consent.status == 'active') %}
+        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_consent_edit', {id: consent.id}) }]) %}
+    {% endif %}
+    {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_consent_index') }]) %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'check2-square', label: 'consent.header.title'|trans({}, 'consent') },
+        title: consent.dataSubjectIdentifier,
+        actions: _show_actions
+    }) }}
+
+    {# Modal-triggers (verify/revoke) and POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
+    {% set _has_secondary_actions = (is_granted('ROLE_DPO') and not consent.verifiedBy) or consent.status == 'active' or is_granted('ROLE_ADMIN') %}
+    {% if _has_secondary_actions %}
+        <div class="d-flex justify-content-end gap-2 mb-3">
             {% if is_granted('ROLE_DPO') and not consent.verifiedBy %}
-            <button class="fa-cyber-btn fa-cyber-btn--success" data-bs-toggle="modal" data-bs-target="#verifyModal">
-                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
-            </button>
+                <button class="fa-cyber-btn fa-cyber-btn--success" data-bs-toggle="modal" data-bs-target="#verifyModal">
+                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
+                </button>
             {% endif %}
             {% if consent.status == 'active' %}
-            <button class="fa-cyber-btn fa-cyber-btn--warning" data-bs-toggle="modal" data-bs-target="#revokeModal">
-                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
-            </button>
+                <button class="fa-cyber-btn fa-cyber-btn--warning" data-bs-toggle="modal" data-bs-target="#revokeModal">
+                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
+                </button>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
-            <form method="post" action="{{ path('app_consent_delete', {id: consent.id}) }}" class="d-inline"
-                  data-controller="ui-actions"
-                  data-action="submit->ui-actions#confirm"
-                  data-ui-actions-message-param="{{ 'consent.delete.confirm'|trans({}, 'consent') }}">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consent.id) }}">
-                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
-                </button>
-            </form>
+                <form method="post" action="{{ path('app_consent_delete', {id: consent.id}) }}" class="d-inline"
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'consent.delete.confirm'|trans({}, 'consent') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consent.id) }}">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
+                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                    </button>
+                </form>
             {% endif %}
-            <a href="{{ path('app_consent_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
-            </a>
         </div>
-    </div>
+    {% endif %}
 
     {# Status Badges #}
     <div class="mb-4">
@@ -187,7 +189,7 @@
         {% block card_header %}
             <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
-                    <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                     {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
                 </h2>
             </div>
@@ -278,7 +280,7 @@
         {% block card_header %}
             <div class="card-header bg-body-secondary">
                 <h2 class="mb-0">
-                    <i class="bi bi-sticky" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-flag" aria-hidden="true"></i>
                     {{ 'consent.section.notes'|trans({}, 'consent') }}
                 </h2>
             </div>

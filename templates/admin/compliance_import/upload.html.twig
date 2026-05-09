@@ -48,23 +48,8 @@
             {% endembed %}
 
             {{ form_start(form, { attr: { 'novalidate': 'novalidate', 'aria-label': 'compliance_import.upload.form_aria'|trans({}, 'compliance_import') } }) }}
-                <div class="mb-3">
-                    {{ form_label(form.format, null, { label_attr: { 'class': 'form-label' } }) }}
-                    {{ form_widget(form.format, { attr: { 'class': 'form-select' } }) }}
-                    <div id="compliance_import_format_help" class="form-text">
-                        {{ 'compliance_import.upload.format_help'|trans({}, 'compliance_import') }}
-                    </div>
-                    {{ form_errors(form.format) }}
-                </div>
-
-                <div class="mb-3">
-                    {{ form_label(form.file, null, { label_attr: { 'class': 'form-label' } }) }}
-                    {{ form_widget(form.file, { attr: { 'class': 'form-control' } }) }}
-                    <div id="compliance_import_file_help" class="form-text">
-                        {{ 'compliance_import.upload.file_help'|trans({}, 'compliance_import') }}
-                    </div>
-                    {{ form_errors(form.file) }}
-                </div>
+                {{ form_row(form.format) }}
+                {{ form_row(form.file) }}
 
                 <div class="d-flex gap-2 justify-content-end mt-4">
                     <a href="{{ path('admin_compliance_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">

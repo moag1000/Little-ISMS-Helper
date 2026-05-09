@@ -59,17 +59,17 @@
 
                 <dt class="col-sm-3">{{ 'compliance_import.history.col_status'|trans({}, 'compliance_import') }}</dt>
                 <dd class="col-sm-9">
-                    <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">
+                    <span class="fa-status-pill fa-status-pill--neutral">
                         {{ ('compliance_import.history.status.' ~ session.status)|trans({}, 'compliance_import') }}
                     </span>
                 </dd>
 
                 <dt class="col-sm-3">{{ 'compliance_import.history.detail.counters'|trans({}, 'compliance_import') }}</dt>
                 <dd class="col-sm-9">
-                    <span class="badge bg-success fa-status-pill fa-status-pill--success">{{ 'compliance_import.history.col_imported'|trans({}, 'compliance_import') }}: {{ session.rowCountImported }}</span>
-                    <span class="badge bg-primary fa-status-pill fa-status-pill--primary">{{ 'compliance_import.history.col_superseded'|trans({}, 'compliance_import') }}: {{ session.rowCountSuperseded }}</span>
-                    <span class="badge bg-warning text-dark fa-status-pill fa-status-pill--warning">{{ 'compliance_import.history.col_skipped'|trans({}, 'compliance_import') }}: {{ session.rowCountSkipped }}</span>
-                    <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">{{ 'compliance_import.history.col_total'|trans({}, 'compliance_import') }}: {{ session.rowCountTotal }}</span>
+                    <span class="fa-status-pill fa-status-pill--success">{{ 'compliance_import.history.col_imported'|trans({}, 'compliance_import') }}: {{ session.rowCountImported }}</span>
+                    <span class="fa-status-pill fa-status-pill--primary">{{ 'compliance_import.history.col_superseded'|trans({}, 'compliance_import') }}: {{ session.rowCountSuperseded }}</span>
+                    <span class="fa-status-pill fa-status-pill--warning">{{ 'compliance_import.history.col_skipped'|trans({}, 'compliance_import') }}: {{ session.rowCountSkipped }}</span>
+                    <span class="fa-status-pill fa-status-pill--neutral">{{ 'compliance_import.history.col_total'|trans({}, 'compliance_import') }}: {{ session.rowCountTotal }}</span>
                 </dd>
             </dl>
         </div>

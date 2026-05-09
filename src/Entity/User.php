@@ -167,6 +167,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, options: ['default' => 'bottom-right'])]
     private string $alvaCompanionPosition = 'bottom-right';
 
+    /**
+     * ISO 27001 §7.2 Competence — structured per-user competency tracking.
+     * JSON array: [{name, category: security|compliance|technical|leadership,
+     *   level: 1-5, certifiedBy: string|null, certifiedAt: ISO-date|null, expiresAt: ISO-date|null}]
+     *
+     * @var array<int, array<string, mixed>>|null
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $competencies = null;
+
     #[ORM\ManyToOne(targetEntity: Tenant::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Tenant $tenant = null;
@@ -735,6 +745,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAlvaCompanionPosition(string $alvaCompanionPosition): static
     {
         $this->alvaCompanionPosition = $alvaCompanionPosition;
+        return $this;
+    }
+
+    /** @return array<int, array<string, mixed>>|null */
+    public function getCompetencies(): ?array
+    {
+        return $this->competencies;
+    }
+
+    /** @param array<int, array<string, mixed>>|null $competencies */
+    public function setCompetencies(?array $competencies): static
+    {
+        $this->competencies = $competencies;
         return $this;
     }
 }

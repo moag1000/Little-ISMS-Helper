@@ -155,6 +155,58 @@ class ThreatIntelligence
     private ?Tenant $tenant = null;
 
     /**
+     * TLP Classification (FIRST.org TLP — NIS2 Art. 30 information sharing).
+     * Values: red | amber | green | white
+     */
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['threat:read', 'threat:write'])]
+    private ?string $tlpClassification = null;
+
+    /**
+     * Threat actor attribution (APT-Group / Crime-Group, MITRE ATT&CK).
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['threat:read', 'threat:write'])]
+    private ?string $threatActorAttribution = null;
+
+    /**
+     * MITRE ATT&CK Tactics (e.g. ["TA0001","TA0002"]).
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['threat:read', 'threat:write'])]
+    private ?array $mitreAttackTactics = null;
+
+    /**
+     * MITRE ATT&CK Techniques (e.g. ["T1059","T1566"]).
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['threat:read', 'threat:write'])]
+    private ?array $mitreAttackTechniques = null;
+
+    /**
+     * Indicators of Compromise — STIX 2.1 format.
+     * [{type: ip|domain|hash|url|email, value: string, context: string}]
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['threat:read', 'threat:write'])]
+    private ?array $iocsList = null;
+
+    /**
+     * Confidence level of the intelligence (NIST 800-150).
+     * Values: low | medium | high
+     */
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(['threat:read', 'threat:write'])]
+    private ?string $confidenceLevel = null;
+
+    /**
+     * Whether this intelligence was shared externally (NIS2 Art. 30 — CERT/CSIRT sharing).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['threat:read', 'threat:write'])]
+    private bool $sharedExternally = false;
+
+    /**
      * @var Collection<int, Incident>
      */
     #[ORM\OneToMany(targetEntity: Incident::class, mappedBy: 'originatingThreat')]
@@ -487,6 +539,85 @@ class ThreatIntelligence
             $incident->setOriginatingThreat(null);
         }
 
+        return $this;
+    }
+
+    // ── vulnerability_intel module fields ──────────────────────────────────
+
+    public function getTlpClassification(): ?string
+    {
+        return $this->tlpClassification;
+    }
+
+    public function setTlpClassification(?string $tlpClassification): static
+    {
+        $this->tlpClassification = $tlpClassification;
+        return $this;
+    }
+
+    public function getThreatActorAttribution(): ?string
+    {
+        return $this->threatActorAttribution;
+    }
+
+    public function setThreatActorAttribution(?string $threatActorAttribution): static
+    {
+        $this->threatActorAttribution = $threatActorAttribution;
+        return $this;
+    }
+
+    public function getMitreAttackTactics(): ?array
+    {
+        return $this->mitreAttackTactics;
+    }
+
+    public function setMitreAttackTactics(?array $mitreAttackTactics): static
+    {
+        $this->mitreAttackTactics = $mitreAttackTactics;
+        return $this;
+    }
+
+    public function getMitreAttackTechniques(): ?array
+    {
+        return $this->mitreAttackTechniques;
+    }
+
+    public function setMitreAttackTechniques(?array $mitreAttackTechniques): static
+    {
+        $this->mitreAttackTechniques = $mitreAttackTechniques;
+        return $this;
+    }
+
+    public function getIocsList(): ?array
+    {
+        return $this->iocsList;
+    }
+
+    public function setIocsList(?array $iocsList): static
+    {
+        $this->iocsList = $iocsList;
+        return $this;
+    }
+
+    public function getConfidenceLevel(): ?string
+    {
+        return $this->confidenceLevel;
+    }
+
+    public function setConfidenceLevel(?string $confidenceLevel): static
+    {
+        $this->confidenceLevel = $confidenceLevel;
+        return $this;
+    }
+
+    public function isSharedExternally(): bool
+    {
+        return $this->sharedExternally;
+    }
+
+    public function setSharedExternally(bool $sharedExternally): static
+    {
+        $this->sharedExternally = $sharedExternally;
         return $this;
     }
 }

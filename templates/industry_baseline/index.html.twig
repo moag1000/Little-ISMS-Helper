@@ -59,12 +59,12 @@
                                     {{ baseline.name }}
                                 </h2>
                                 {% if applied %}
-                                    <span class="badge bg-success fa-status-pill fa-status-pill--success">
+                                    <span class="fa-status-pill fa-status-pill--success">
                                         <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                         {{ 'industry_baseline.status.applied'|trans({}, 'industry_baseline') }}
                                     </span>
                                 {% elseif inheritedRecord %}
-                                    <span class="badge bg-info fa-status-pill fa-status-pill--primary" title="{{ 'industry_baseline.status.inherited_from'|trans({'%tenant%': inheritedRecord.tenant.name}, 'industry_baseline') }}">
+                                    <span class="fa-status-pill fa-status-pill--primary" title="{{ 'industry_baseline.status.inherited_from'|trans({'%tenant%': inheritedRecord.tenant.name}, 'industry_baseline') }}">
                                         <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
                                         {{ 'industry_baseline.status.inherited_short'|trans({}, 'industry_baseline') }}
                                     </span>
@@ -73,18 +73,18 @@
                         {% endblock %}
                         {% block card_body %}
                             <div class="mb-2 small">
-                                <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral me-1">
+                                <span class="fa-status-pill fa-status-pill--neutral me-1">
                                     {{ ('industry_baseline.industry.' ~ baseline.industry)|trans({}, 'industry_baseline') }}
                                 </span>
-                                <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">v{{ baseline.version }}</span>
-                                <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">{{ baseline.source }}</span>
+                                <span class="border fa-status-pill fa-status-pill--neutral">v{{ baseline.version }}</span>
+                                <span class="border fa-status-pill fa-status-pill--neutral">{{ baseline.source }}</span>
                             </div>
                             <p class="small text-muted mb-3">{{ baseline.description|u.truncate(200, '…') }}</p>
                             <dl class="row small mb-3">
                                 <dt class="col-sm-5">{{ 'industry_baseline.field.required_frameworks'|trans({}, 'industry_baseline') }}:</dt>
                                 <dd class="col-sm-7">
                                     {% for code in baseline.requiredFrameworks %}
-                                        <span class="badge bg-info fa-status-pill fa-status-pill--primary me-1">{{ code }}</span>
+                                        <span class="fa-status-pill fa-status-pill--primary me-1">{{ code }}</span>
                                     {% endfor %}
                                 </dd>
                                 <dt class="col-sm-5">{{ 'industry_baseline.field.preset_risks'|trans({}, 'industry_baseline') }}:</dt>

@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'assets' %}
 
 {% block title %}{{ asset.name }}{% endblock %}
@@ -17,26 +18,29 @@
     {% set hint = alva_hint(asset) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
-    <div class="page-header">
-        <h1>
-            {{ asset.name }}
-            {% if isInherited is defined and isInherited %}
-                {% include '_components/_badge.html.twig' with { variant: 'info', class: 'ms-2', icon: 'bi-building', content: 'corporate.inherited'|trans({}, 'messages') } %}
-            {% endif %}
-        </h1>
-        <div class="actions">
-            {% if canEdit is defined and canEdit %}
-                <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
-            {% else %}
+    {% set _show_actions = [] %}
+    {% if canEdit is defined and canEdit %}
+        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_asset_edit', {id: asset.id}) }]) %}
+    {% endif %}
+    {% set _show_actions = _show_actions|merge([
+        { label: 'asset.action.bcm_insights'|trans({}, 'asset'), variant: 'ghost', href: path('app_asset_bcm_insights', {id: asset.id}) },
+        { label: 'asset.action.qr_label'|trans({}, 'asset'), variant: 'ghost', icon: 'qr-code', href: path('app_asset_qr_label', {id: asset.id}), attrs: { 'data-turbo': 'false', title: 'asset.action.print_qr_label'|trans({}, 'asset') } },
+        { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', href: path('app_asset_index') }
+    ]) %}
+    {{ _fa_page_header.render({
+        badge: (isInherited is defined and isInherited) ? { icon: 'building', label: 'corporate.inherited'|trans({}, 'messages') } : null,
+        title: asset.name,
+        actions: _show_actions
+    }) }}
+
+    {# Inline POST-delete and disabled-edit kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
+    {% if (canEdit is defined and not canEdit) or (is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit)) %}
+        <div class="d-flex justify-content-end gap-2 mb-3">
+            {% if canEdit is defined and not canEdit %}
                 <button class="fa-cyber-btn fa-cyber-btn--primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
                     <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </button>
             {% endif %}
-            <a href="{{ path('app_asset_bcm_insights', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'asset.action.bcm_insights'|trans({}, 'asset') }}</a>
-            <a href="{{ path('app_asset_qr_label', {id: asset.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'asset.action.print_qr_label'|trans({}, 'asset') }}" data-turbo="false">
-                <i class="bi bi-qr-code" aria-hidden="true"></i> {{ 'asset.action.qr_label'|trans({}, 'asset') }}
-            </a>
-            <a href="{{ path('app_asset_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
                 <form method="post" action="{{ path('app_asset_delete', {id: asset.id}) }}" class="d-inline"
                       data-controller="ui-actions"
@@ -47,7 +51,7 @@
                 </form>
             {% endif %}
         </div>
-    </div>
+    {% endif %}
 
     {% if isInherited is defined and isInherited %}
         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-3' } } %}
@@ -183,7 +187,7 @@
                                 </tbody>
                             </table>
                         {% else %}
-                            <div class="alert alert-warning" role="alert">
+                            <div class="fa-alert fa-alert--warning" role="alert">
                                 <i class="fa-icon fa-icon--status-warning me-1" aria-hidden="true"></i>
                                 {{ 'mris.ai_agent.dpia.warning_missing'|trans({}, 'mris') }}
                                 <div class="mt-2">
@@ -302,7 +306,7 @@
                                         <td>{{ own }}/5</td>
                                         <td>
                                             {% if inherited > own %}
-                                                <span class="badge bg-warning-subtle text-warning fa-status-pill fa-status-pill--warning">{{ inherited }}/5 ↑</span>
+                                                <span class="fa-status-pill fa-status-pill--warning">{{ inherited }}/5 ↑</span>
                                             {% else %}
                                                 {{ inherited }}/5
                                             {% endif %}

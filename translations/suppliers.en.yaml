@@ -319,3 +319,32 @@ corporate:
     section:
         dora: 'DORA Register of Information (Art. 28)'
         privacy: 'Privacy (GDPR Art. 28)'
+        marisk: 'MaRisk Outsourcing Management'
+    marisk:
+        field:
+            outsourcing_classification: Outsourcing Classification (MaRisk AT 9.1)
+            outsourcing_due_diligence_completed: Due Diligence Completed
+            outsourcing_due_diligence_date: Due Diligence Date
+            outsourcing_exit_strategy: Exit Strategy (MaRisk AT 9.6)
+            bafin_notification_required: BaFin Notification Required (AT 9.7 + KWG § 24)
+            bafin_notification_date: BaFin Notification Date
+            risk_bearing_capacity_impact: Impact on Risk-Bearing Capacity (AT 4.1)
+            board_level_risk_acceptance: Board-Level Risk Acceptance (AT 4.3)
+            compliance_function_involvement: Compliance Function Involvement (AT 4.4.2)
+            internal_audit_function_involvement: Internal Audit Function Involvement (AT 4.4.3)
+        placeholder:
+            outsourcing_classification: '-- Select classification --'
+        help:
+            outsourcing_classification: 'Substantial outsourcing (AT 9.1) — separate from DORA "critical or important" classification'
+            outsourcing_due_diligence_completed: Was an appropriate risk review conducted before contract conclusion?
+            outsourcing_due_diligence_date: Date on which the due diligence review was completed
+            outsourcing_exit_strategy: Exit plan for the outsourcing relationship incl. transition measures (MaRisk AT 9.6)
+            bafin_notification_required: 'Is notification to BaFin required? (MaRisk AT 9.7 + § 24 para. 1 no. 12 KWG)'
+            bafin_notification_date: Date of notification to BaFin
+            risk_bearing_capacity_impact: Potential impact on the institution's risk-bearing capacity (MaRisk AT 4.1)
+            board_level_risk_acceptance: Has the management board explicitly accepted this outsourcing risk? (MaRisk AT 4.3)
+            compliance_function_involvement: Was the compliance function involved in the risk assessment? (MaRisk AT 4.4.2)
+            internal_audit_function_involvement: Was the internal audit function involved? (MaRisk AT 4.4.3)
+        outsourcing_classification:
+            substantial: Substantial Outsourcing
+            non_substantial: Non-Substantial Outsourcing

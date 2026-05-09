@@ -40,7 +40,7 @@
         {# Probability Slider #}
         <div class="{% if compact %}col-6{% else %}col-md-6{% endif %}">
             <label class="form-label fw-bold">
-                <i class="bi bi-percent text-info" aria-hidden="true"></i>
+                <i class="fa-icon text-info fa-icon--nav-bar-chart" aria-hidden="true"></i>
                 {{ 'risk.field.probability'|trans({}, 'risk') }}
             </label>
 
@@ -53,7 +53,7 @@
                        data-action="input->risk-slider#calculate"
                        aria-label="{{ 'risk.field.probability'|trans({}, 'risk') }}">
                 <div class="text-center" style="min-width: 100px;">
-                    <span class="badge bg-info fs-5" data-risk-slider-target="probabilityValue">{{ probability }}</span>
+                    <span class="fa-status-pill fa-status-pill--primary fs-5" data-risk-slider-target="probabilityValue">{{ probability }}</span>
                     <div class="small text-muted mt-1" data-risk-slider-target="probabilityLabel">
                         {% set probability_labels = {
                             1: 'risk.probability.rare'|trans({}, 'risk'),
@@ -92,7 +92,7 @@
                        data-action="input->risk-slider#calculate"
                        aria-label="{{ 'risk.field.impact'|trans({}, 'risk') }}">
                 <div class="text-center" style="min-width: 100px;">
-                    <span class="badge bg-warning fs-5" data-risk-slider-target="impactValue">{{ impact }}</span>
+                    <span class="fa-status-pill fa-status-pill--warning fs-5" data-risk-slider-target="impactValue">{{ impact }}</span>
                     <div class="small text-muted mt-1" data-risk-slider-target="impactLabel">
                         {% set impact_labels = {
                             1: 'risk.impact.negligible'|trans({}, 'risk'),

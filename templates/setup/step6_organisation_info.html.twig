@@ -28,7 +28,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h1 class="h3 mb-0">
-                            <i class="bi bi-building me-2" aria-hidden="true"></i>
+                            <i class="fa-icon me-2 fa-icon--nav-building" aria-hidden="true"></i>
                             {{ 'setup.organisation.header'|trans({}, 'setup') }}
                         </h1>
                     </div>
@@ -97,13 +97,13 @@
                         {# Navigation #}
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{{ path('setup_step5_email_config') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+                                <i class="fa-icon me-2 fa-icon--util-arrow-left" aria-hidden="true"></i>
                                 {{ 'setup.navigation.back'|trans({}, 'setup') }}
                             </a>
 
                             <button type="submit" class="btn btn-primary">
                                 {{ 'setup.navigation.next'|trans({}, 'setup') }}
-                                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+                                <i class="fa-icon ms-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
                             </button>
                         </div>
 

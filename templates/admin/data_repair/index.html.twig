@@ -249,7 +249,7 @@
                                 {% endfor %}
                             </select>
                             <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-action="data-repair#fixAllOrphans">
-                                <i class="bi bi-lightning" aria-hidden="true"></i> Fix All Orphans
+                                <i class="fa-icon fa-icon--threat" aria-hidden="true"></i> Fix All Orphans
                             </button>
                         </div>
                     </form>
@@ -283,7 +283,7 @@
                             </div>
                         </div>
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
-                            <i class="bi bi-lightning" aria-hidden="true"></i> Fix Tenant Mismatches
+                            <i class="fa-icon fa-icon--threat" aria-hidden="true"></i> Fix Tenant Mismatches
                         </button>
                     </form>
                 </div>
@@ -381,13 +381,13 @@
                         <section class="fa-section mb-2 border-warning">
         <div class="fa-section__header">
             <span class="fw-semibold small">{{ groupLabel }}</span>
-                                    <span class="badge bg-warning">{{ (entities|length) ~ ' ' ~ 'admin.data_repair.duplicates.items'|trans({}, 'admin') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--warning">{{ (entities|length) ~ ' ' ~ 'admin.data_repair.duplicates.items'|trans({}, 'admin') }}</span>
         </div>
         <div class="fa-section__body">
             <ul class="list-unstyled mb-0 small">
                                 {% for entity in entities %}
                                     <li class="mb-1">
-                                        <span class="badge bg-secondary">{{ 'ID: ' ~ entity.id }}</span>
+                                        <span class="fa-status-pill fa-status-pill--neutral">{{ 'ID: ' ~ entity.id }}</span>
                                         {% if entity.title is defined %}{{ entity.title }}{% elseif entity.name is defined %}{{ entity.name }}{% elseif entity.auditNumber is defined %}{{ entity.auditNumber }}{% elseif entity.originalFilename is defined %}{{ entity.originalFilename }}{% endif %}
                                         {% if entity.tenant is defined and entity.tenant %}<small class="text-muted">({{ entity.tenant.name }})</small>{% endif %}
                                     </li>
@@ -682,9 +682,9 @@
                         </td>
                         <td>
                             {% if risk.asset %}
-                                <span class="badge bg-success">{{ risk.asset.name }}</span>
+                                <span class="fa-status-pill fa-status-pill--success">{{ risk.asset.name }}</span>
                             {% else %}
-                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin') }}</span>
+                                <span class="fa-status-pill fa-status-pill--danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin') }}</span>
                             {% endif %}
                         </td>
                         <td>
@@ -749,10 +749,10 @@
                         <td>
                             {% if incident.affectedAssets|length > 0 %}
                                 {% for asset in incident.affectedAssets %}
-                                    <span class="badge bg-success">{{ asset.name }}</span>
+                                    <span class="fa-status-pill fa-status-pill--success">{{ asset.name }}</span>
                                 {% endfor %}
                             {% else %}
-                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin') }}</span>
+                                <span class="fa-status-pill fa-status-pill--danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin') }}</span>
                             {% endif %}
                         </td>
                         <td>
@@ -808,7 +808,7 @@
                             <tbody>
                     {% for control in controlsWithoutRisks %}
                     <tr class="table-warning">
-                        <td><span class="badge bg-primary">{{ control.controlId }}</span></td>
+                        <td><span class="fa-status-pill fa-status-pill--primary">{{ control.controlId }}</span></td>
                         <td>{{ control.name }}</td>
                         <td>{{ control.category }}</td>
                         <td>
@@ -867,7 +867,7 @@
                             <tbody>
                     {% for control in controlsWithoutAssets %}
                     <tr>
-                        <td><span class="badge bg-primary">{{ control.controlId }}</span></td>
+                        <td><span class="fa-status-pill fa-status-pill--primary">{{ control.controlId }}</span></td>
                         <td>{{ control.name }}</td>
                         <td>{{ control.category }}</td>
                         <td>
@@ -915,13 +915,13 @@
                 <section class="fa-section mb-3 border-warning">
         <div class="fa-section__header">
             <strong>Audit Number:</strong> {{ dup.value }}
-                            <span class="badge bg-warning">{{ dup.count ~ ' duplicates' }}</span>
+                            <span class="fa-status-pill fa-status-pill--warning">{{ dup.count ~ ' duplicates' }}</span>
         </div>
         <div class="fa-section__body">
             <ul class="list-unstyled mb-0">
                         {% for audit in dup.entities %}
                             <li class="mb-2">
-                                <span class="badge bg-secondary">{{ 'ID: ' ~ audit.id }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral">{{ 'ID: ' ~ audit.id }}</span>
                                 {{ audit.title }}
                                 <small class="text-muted">({{ audit.tenant.name }})</small>
                                 {% if audit.plannedDate %}
@@ -951,13 +951,13 @@
                 <section class="fa-section mb-3 border-warning">
         <div class="fa-section__header">
             <strong>Asset Name:</strong> {{ dup.value }}
-                            <span class="badge bg-warning">{{ dup.count ~ ' duplicates' }}</span>
+                            <span class="fa-status-pill fa-status-pill--warning">{{ dup.count ~ ' duplicates' }}</span>
         </div>
         <div class="fa-section__body">
             <ul class="list-unstyled mb-0">
                         {% for asset in dup.entities %}
                             <li class="mb-2">
-                                <span class="badge bg-secondary">{{ 'ID: ' ~ asset.id }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral">{{ 'ID: ' ~ asset.id }}</span>
                                 {{ asset.name }}
                                 <small class="text-muted">({{ asset.tenant.name }}, Type: {{ asset.assetType }})</small>
                             </li>
@@ -984,7 +984,7 @@
             <ul>
             {% for audit in inconsistentData.audits_completed_without_date %}
                 <li>
-                    <span class="badge bg-secondary">{{ audit.auditNumber }}</span>
+                    <span class="fa-status-pill fa-status-pill--neutral">{{ audit.auditNumber }}</span>
                     {{ audit.title }}
                     <span class="badge bg-{{ audit.status == 'completed' ? 'success' : 'primary' }}">{{ audit.status }}</span>
                 </li>
@@ -1008,9 +1008,9 @@
             {% for risk in inconsistentData.risks_residual_higher_than_inherent %}
                 <li>
                     {{ risk.title }}
-                    <span class="badge bg-danger">{{ 'Inherent: ' ~ risk.inherentRiskLevel }}</span>
+                    <span class="fa-status-pill fa-status-pill--danger">{{ 'Inherent: ' ~ risk.inherentRiskLevel }}</span>
                     →
-                    <span class="badge bg-warning">{{ 'Residual: ' ~ risk.residualRiskLevel }}</span>
+                    <span class="fa-status-pill fa-status-pill--warning">{{ 'Residual: ' ~ risk.residualRiskLevel }}</span>
                 </li>
             {% endfor %}
             </ul>
@@ -1080,7 +1080,7 @@
                             <tr class="table-warning">
                                 <td>{{ risk.id }}</td>
                                 <td>{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ risk.status.value }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
                                 <td>{{ risk.inherentRiskLevel }}</td>
                                 <td>
                                     <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
@@ -1117,8 +1117,8 @@
                             <tr class="table-danger">
                                 <td>{{ risk.id }}</td>
                                 <td>{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-primary">{{ risk.inherentRiskLevel }}</span></td>
-                                <td><span class="badge bg-danger">{{ risk.residualRiskLevel }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--primary">{{ risk.inherentRiskLevel }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--danger">{{ risk.residualRiskLevel }}</span></td>
                                 <td>
                                     <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
@@ -1154,7 +1154,7 @@
                             <tr class="table-warning">
                                 <td>{{ risk.id }}</td>
                                 <td>{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ risk.status.value }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
                                 <td><span class="text-truncate d-inline-block" style="max-width:200px" title="{{ risk.treatmentDescription }}">{{ risk.treatmentDescription|slice(0, 60) }}{% if risk.treatmentDescription|length > 60 %}…{% endif %}</span></td>
                                 <td>
                                     <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
@@ -1191,9 +1191,9 @@
                             <tr class="table-warning">
                                 <td>{{ risk.id }}</td>
                                 <td>{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ risk.status.value }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
                                 <td>
-                                    <span class="badge bg-danger">{{ risk.reviewDate|date('d.m.Y') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--danger">{{ risk.reviewDate|date('d.m.Y') }}</span>
                                 </td>
                                 <td>
                                     <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
@@ -1260,7 +1260,7 @@
                     <summary class="fw-semibold cursor-pointer text-danger">
                         <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                         {{ 'admin.data_repair.compliance_health.assets_without_cia'|trans({}, 'admin') }}
-                        <span class="badge bg-danger">{{ complianceHealthIssues.assets_without_cia|length }}</span>
+                        <span class="fa-status-pill fa-status-pill--danger">{{ complianceHealthIssues.assets_without_cia|length }}</span>
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.compliance_health.assets_without_cia_hint'|trans({}, 'admin') }}</p>
@@ -1279,7 +1279,7 @@
                             <tr class="table-danger">
                                 <td>{{ asset.id }}</td>
                                 <td>{{ asset.name }}{% if asset.tenant %}<br><small class="text-muted">{{ asset.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ asset.assetType }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ asset.assetType }}</span></td>
                                 <td>
                                     <a href="{{ path('app_asset_edit', {id: asset.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
@@ -1301,7 +1301,7 @@
                     <summary class="fw-semibold cursor-pointer text-danger">
                         <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                         {{ 'admin.data_repair.compliance_health.breaches_overdue_72h'|trans({}, 'admin') }}
-                        <span class="badge bg-danger">{{ complianceHealthIssues.breaches_overdue_72h|length }}</span>
+                        <span class="fa-status-pill fa-status-pill--danger">{{ complianceHealthIssues.breaches_overdue_72h|length }}</span>
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.compliance_health.breaches_overdue_72h_hint'|trans({}, 'admin') }}</p>
@@ -1322,7 +1322,7 @@
                                 <td>{{ breach.title ?? breach.referenceNumber ?? ('#' ~ breach.id) }}{% if breach.tenant %}<br><small class="text-muted">{{ breach.tenant.name }}</small>{% endif %}</td>
                                 <td>
                                     {% if breach.detectedAt %}
-                                        <span class="badge bg-danger">{{ breach.detectedAt|date('d.m.Y H:i') }}</span>
+                                        <span class="fa-status-pill fa-status-pill--danger">{{ breach.detectedAt|date('d.m.Y H:i') }}</span>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -1346,7 +1346,7 @@
                     <summary class="fw-semibold cursor-pointer text-danger">
                         <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                         {{ 'admin.data_repair.compliance_health.dsr_overdue_30d'|trans({}, 'admin') }}
-                        <span class="badge bg-danger">{{ complianceHealthIssues.dsr_overdue_30d|length }}</span>
+                        <span class="fa-status-pill fa-status-pill--danger">{{ complianceHealthIssues.dsr_overdue_30d|length }}</span>
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.compliance_health.dsr_overdue_30d_hint'|trans({}, 'admin') }}</p>
@@ -1365,7 +1365,7 @@
                             <tr class="table-danger">
                                 <td>{{ dsr.id }}</td>
                                 <td>{{ dsr.requestType ?? ('#' ~ dsr.id) }}{% if dsr.tenant %}<br><small class="text-muted">{{ dsr.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-warning">{{ dsr.status }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--warning">{{ dsr.status }}</span></td>
                                 <td>
                                     <a href="{{ path('app_data_subject_request_show', {id: dsr.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
@@ -1387,7 +1387,7 @@
                     <summary class="fw-semibold cursor-pointer text-danger">
                         <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                         {{ 'admin.data_repair.compliance_health.dpia_without_dpo'|trans({}, 'admin') }}
-                        <span class="badge bg-danger">{{ complianceHealthIssues.dpia_without_dpo|length }}</span>
+                        <span class="fa-status-pill fa-status-pill--danger">{{ complianceHealthIssues.dpia_without_dpo|length }}</span>
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.compliance_health.dpia_without_dpo_hint'|trans({}, 'admin') }}</p>
@@ -1426,7 +1426,7 @@
                     <summary class="fw-semibold cursor-pointer text-danger">
                         <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
                         {{ 'admin.data_repair.compliance_health.vvt_incomplete'|trans({}, 'admin') }}
-                        <span class="badge bg-danger">{{ complianceHealthIssues.vvt_incomplete|length }}</span>
+                        <span class="fa-status-pill fa-status-pill--danger">{{ complianceHealthIssues.vvt_incomplete|length }}</span>
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.compliance_health.vvt_incomplete_hint'|trans({}, 'admin') }}</p>
@@ -1513,7 +1513,7 @@
                     <summary class="fw-semibold cursor-pointer text-warning">
                         <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'admin.data_repair.operational_health.suppliers_unassessed'|trans({}, 'admin') }}
-                        <span class="badge bg-warning">{{ operationalHealthIssues.suppliers_unassessed|length }}</span>
+                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.suppliers_unassessed|length }}</span>
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.suppliers_unassessed_hint'|trans({}, 'admin') }}</p>
@@ -1532,7 +1532,7 @@
                             <tr class="table-warning">
                                 <td>{{ supplier.id }}</td>
                                 <td>{{ supplier.name }}{% if supplier.tenant %}<br><small class="text-muted">{{ supplier.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ supplier.criticality }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ supplier.criticality }}</span></td>
                                 <td>
                                     <a href="{{ path('app_supplier_edit', {id: supplier.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
@@ -1554,7 +1554,7 @@
                     <summary class="fw-semibold cursor-pointer text-warning">
                         <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'admin.data_repair.operational_health.bc_plans_untested'|trans({}, 'admin') }}
-                        <span class="badge bg-warning">{{ operationalHealthIssues.bc_plans_untested|length }}</span>
+                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.bc_plans_untested|length }}</span>
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.bc_plans_untested_hint'|trans({}, 'admin') }}</p>
@@ -1573,7 +1573,7 @@
                             <tr class="table-warning">
                                 <td>{{ plan.id }}</td>
                                 <td>{{ plan.name }}{% if plan.tenant %}<br><small class="text-muted">{{ plan.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ plan.status }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ plan.status }}</span></td>
                                 <td>
                                     <a href="{{ path('app_bc_plan_edit', {id: plan.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
@@ -1595,7 +1595,7 @@
                     <summary class="fw-semibold cursor-pointer text-warning">
                         <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'admin.data_repair.operational_health.findings_overdue'|trans({}, 'admin') }}
-                        <span class="badge bg-warning">{{ operationalHealthIssues.findings_overdue|length }}</span>
+                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.findings_overdue|length }}</span>
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.findings_overdue_hint'|trans({}, 'admin') }}</p>
@@ -1614,7 +1614,7 @@
                             <tr class="table-warning">
                                 <td>{{ finding.id }}</td>
                                 <td>{{ finding.title }}{% if finding.tenant %}<br><small class="text-muted">{{ finding.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ finding.status }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ finding.status }}</span></td>
                                 <td>
                                     <a href="{{ path('app_audit_finding_show', {id: finding.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
@@ -1636,7 +1636,7 @@
                     <summary class="fw-semibold cursor-pointer text-warning">
                         <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'admin.data_repair.operational_health.capa_overdue'|trans({}, 'admin') }}
-                        <span class="badge bg-warning">{{ operationalHealthIssues.capa_overdue|length }}</span>
+                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.capa_overdue|length }}</span>
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.capa_overdue_hint'|trans({}, 'admin') }}</p>
@@ -1655,7 +1655,7 @@
                             <tr class="table-warning">
                                 <td>{{ capa.id }}</td>
                                 <td>{{ capa.title }}{% if capa.tenant %}<br><small class="text-muted">{{ capa.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ capa.status }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ capa.status }}</span></td>
                                 <td>
                                     <a href="{{ path('app_corrective_action_show', {id: capa.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
@@ -1677,7 +1677,7 @@
                     <summary class="fw-semibold cursor-pointer text-warning">
                         <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'admin.data_repair.operational_health.training_overdue'|trans({}, 'admin') }}
-                        <span class="badge bg-warning">{{ operationalHealthIssues.training_overdue|length }}</span>
+                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.training_overdue|length }}</span>
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.training_overdue_hint'|trans({}, 'admin') }}</p>
@@ -1696,7 +1696,7 @@
                             <tr class="table-warning">
                                 <td>{{ training.id }}</td>
                                 <td>{{ training.title }}{% if training.tenant %}<br><small class="text-muted">{{ training.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ training.status }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ training.status }}</span></td>
                                 <td>
                                     <a href="{{ path('app_training_edit', {id: training.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
@@ -1718,7 +1718,7 @@
                     <summary class="fw-semibold cursor-pointer text-warning">
                         <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'admin.data_repair.operational_health.documents_stale'|trans({}, 'admin') }}
-                        <span class="badge bg-warning">{{ operationalHealthIssues.documents_stale|length }}</span>
+                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.documents_stale|length }}</span>
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.documents_stale_hint'|trans({}, 'admin') }}</p>
@@ -1737,7 +1737,7 @@
                             <tr class="table-warning">
                                 <td>{{ doc.id }}</td>
                                 <td>{{ doc.originalFilename ?? doc.filename }}{% if doc.tenant %}<br><small class="text-muted">{{ doc.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ doc.category }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ doc.category }}</span></td>
                                 <td>
                                     <a href="{{ path('app_document_show', {id: doc.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
@@ -1759,7 +1759,7 @@
                     <summary class="fw-semibold cursor-pointer text-warning">
                         <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                         {{ 'admin.data_repair.operational_health.reviews_overdue'|trans({}, 'admin') }}
-                        <span class="badge bg-warning">{{ operationalHealthIssues.reviews_overdue|length }}</span>
+                        <span class="fa-status-pill fa-status-pill--warning">{{ operationalHealthIssues.reviews_overdue|length }}</span>
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.reviews_overdue_hint'|trans({}, 'admin') }}</p>
@@ -1778,7 +1778,7 @@
                             <tr class="table-warning">
                                 <td>{{ review.id }}</td>
                                 <td>{{ review.title }}{% if review.tenant %}<br><small class="text-muted">{{ review.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ review.status }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ review.status }}</span></td>
                                 <td>
                                     <a href="{{ path('app_management_review_show', {id: review.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
@@ -1822,7 +1822,7 @@
                             <tbody>
                     {% for ref in brokenReferences %}
                     <tr class="table-danger">
-                        <td><span class="badge bg-secondary">{{ ref.entity_type }}</span></td>
+                        <td><span class="fa-status-pill fa-status-pill--neutral">{{ ref.entity_type }}</span></td>
                         <td>{{ ref.entity_id }}</td>
                         <td>{{ ref.entity_name }}</td>
                         <td>{{ ref.issue }}</td>
@@ -1900,7 +1900,7 @@
                                 <td>{{ instance.workflow ? instance.workflow.name : '-' }}{% if instance.tenant %}<br><small class="text-muted">{{ instance.tenant.name }}</small>{% endif %}</td>
                                 <td><small class="text-muted">{{ instance.entityType }}</small> #{{ instance.entityId }}</td>
                                 <td>{{ instance.startedAt ? instance.startedAt|date('Y-m-d') : '-' }}</td>
-                                <td><span class="badge bg-warning">{{ instance.status }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--warning">{{ instance.status }}</span></td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -1930,7 +1930,7 @@
                             <tr class="table-warning">
                                 <td>{{ risk.id }}</td>
                                 <td>{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ risk.status.value }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
                                 <td>{{ risk.probability ?? '-' }}</td>
                                 <td>
                                     <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
@@ -1966,7 +1966,7 @@
                             <tr class="table-warning">
                                 <td>{{ incident.id }}</td>
                                 <td>{{ incident.title }}{% if incident.tenant %}<br><small class="text-muted">{{ incident.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="badge bg-secondary">{{ incident.status }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ incident.status }}</span></td>
                                 <td>
                                     <a href="{{ path('app_incident_show', {id: incident.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
@@ -2002,7 +2002,7 @@
                                 <td>{{ plan.id }}</td>
                                 <td>{{ plan.title }}{% if plan.tenant %}<br><small class="text-muted">{{ plan.tenant.name }}</small>{% endif %}</td>
                                 <td>{{ plan.risk ? plan.risk.title : '-' }}</td>
-                                <td><span class="badge bg-success">{{ plan.status }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--success">{{ plan.status }}</span></td>
                             </tr>
                             {% endfor %}
                         </tbody>

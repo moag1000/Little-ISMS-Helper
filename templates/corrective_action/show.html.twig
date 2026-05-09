@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ action.title }}{% endblock %}
 
@@ -11,20 +12,14 @@
             { label: action.title }
         ]
     } %}
-    <div class="d-flex justify-content-between align-items-start mb-4">
-        <div>
-            <h1 class="h3 mb-1">{{ action.title }}</h1>
-            {% if action.finding %}
-                <div class="text-muted">
-                    {{ 'corrective_action.message.for_finding'|trans({}, 'audits') }}:
-                    <a href="{{ path('app_audit_finding_show', {id: action.finding.id}) }}">{{ action.finding.(findingNumber ?? ('#' ~ action.finding.id)) }} — {{ action.finding.title }}</a>
-                </div>
-            {% endif %}
-        </div>
-        <a href="{{ path('app_corrective_action_edit', {id: action.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge:    { icon: 'wrench-adjustable', label: 'corrective_action.page.title'|trans({}, 'audits') },
+        title:    action.title,
+        subtitle: action.finding ? 'corrective_action.message.for_finding'|trans({}, 'audits') ~ ': ' ~ (action.finding.findingNumber ?? '#' ~ action.finding.id) ~ ' — ' ~ action.finding.title : null,
+        actions: [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'ghost', icon: 'pencil', href: path('app_corrective_action_edit', {id: action.id}) }
+        ]
+    }) }}
 
     <div class="row g-3 mb-4">
         <div class="col-md-3"><strong>{{ 'corrective_action.field.status'|trans({}, 'audits') }}:</strong> {{ ('corrective_action.status.' ~ action.status)|trans({}, 'audits') }}</div>

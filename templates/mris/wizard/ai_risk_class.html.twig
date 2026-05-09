@@ -26,7 +26,7 @@
     </div>
 
     {% if fallback_used %}
-        <div class="alert alert-info small">
+        <div class="fa-alert fa-alert--info small">
             <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
             <strong>Hinweis:</strong>
             Wizard-Daten in <code>fixtures/mris/help-texts.yaml</code> unter
@@ -48,7 +48,7 @@
                     {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                         {% block card_body %}
                             <div class="d-flex align-items-start mb-2">
-                                <span class="badge bg-primary rounded-pill me-2" style="min-width: 2rem;">
+                                <span class="fa-status-pill fa-status-pill--primary rounded-pill me-2" style="min-width: 2rem;">
                                     {{ step.no }}
                                 </span>
                                 <h3 class="h6 mb-0">{{ step.title }}</h3>
@@ -63,7 +63,7 @@
 
     {# 12-Tools-Tabelle. #}
     <h2 class="h5 mt-2 mb-3">
-        <i class="bi bi-table" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i>
         12 typische Tools
     </h2>
 
@@ -110,7 +110,7 @@
             {% block card_header %}
                 <div class="card-header">
                     <h2 class="h6 mb-0">
-                        <i class="bi bi-bookmark-star" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-star" aria-hidden="true"></i>
                         Norm-Verweise
                     </h2>
                 </div>

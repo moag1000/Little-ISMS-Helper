@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use DateTimeImmutable;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\BusinessContinuityPlan;
 use App\Form\BusinessContinuityPlanType;
 use App\Repository\BusinessContinuityPlanRepository;
-use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,6 +35,7 @@ class BusinessContinuityPlanController extends AbstractController
     public function index(): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $tenant = $this->tenantContext->getCurrentTenant();
         $bcPlans = $tenant ? $this->businessContinuityPlanRepository->findBy(['tenant' => $tenant]) : [];
         $overdueTests = $this->businessContinuityPlanRepository->findOverdueTests();
@@ -53,6 +54,7 @@ class BusinessContinuityPlanController extends AbstractController
     public function new(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $businessContinuityPlan = new BusinessContinuityPlan();
         $businessContinuityPlan->setTenant($this->tenantContext->getCurrentTenant());
 
@@ -77,6 +79,7 @@ class BusinessContinuityPlanController extends AbstractController
     public function show(BusinessContinuityPlan $businessContinuityPlan): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         return $this->render('business_continuity_plan/show.html.twig', [
             'bc_plan' => $businessContinuityPlan,
         ]);
@@ -86,6 +89,7 @@ class BusinessContinuityPlanController extends AbstractController
     public function edit(Request $request, BusinessContinuityPlan $businessContinuityPlan): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $form = $this->createForm(BusinessContinuityPlanType::class, $businessContinuityPlan);
         $form->handleRequest($request);
 
@@ -107,6 +111,7 @@ class BusinessContinuityPlanController extends AbstractController
     public function delete(Request $request, BusinessContinuityPlan $businessContinuityPlan): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         if ($this->isCsrfTokenValid('delete'.$businessContinuityPlan->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($businessContinuityPlan);
             $this->entityManager->flush();

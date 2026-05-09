@@ -74,7 +74,7 @@
                         {% endif %}
                     {% endif %}
                 </h2>
-                <span class="badge bg-secondary">
+                <span class="fa-status-pill fa-status-pill--neutral">
                     {{ 'gstool_import.result.summary'|trans({
                         '%new%': result.summary.new,
                         '%update%': result.summary.update,
@@ -85,21 +85,21 @@
             <div class="fa-section__body p-0">
                 {% if result.header_error is not null %}
                     <div class="p-3">
-                        <div class="alert alert-danger mb-0">{{ result.header_error }}</div>
+                        <div class="fa-alert fa-alert--danger mb-0">{{ result.header_error }}</div>
                     </div>
                 {% else %}
                     <ul class="nav nav-tabs px-3 pt-3" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="tab-assets" data-bs-toggle="tab" data-bs-target="#pane-assets" type="button" role="tab">
                                 {{ 'gstool_import.tab.assets'|trans({}, 'gstool_import') }}
-                                <span class="badge bg-secondary ms-1">{{ result.rows|length }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ result.rows|length }}</span>
                             </button>
                         </li>
                         {% if result.bausteine_rows is defined and result.bausteine_rows|length > 0 %}
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="tab-bausteine" data-bs-toggle="tab" data-bs-target="#pane-bausteine" type="button" role="tab">
                                 {{ 'gstool_import.tab.bausteine'|trans({}, 'gstool_import') }}
-                                <span class="badge bg-secondary ms-1">{{ result.bausteine_rows|length }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ result.bausteine_rows|length }}</span>
                             </button>
                         </li>
                         {% endif %}
@@ -107,7 +107,7 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="tab-massnahmen" data-bs-toggle="tab" data-bs-target="#pane-massnahmen" type="button" role="tab">
                                 {{ 'gstool_import.tab.massnahmen'|trans({}, 'gstool_import') }}
-                                <span class="badge bg-secondary ms-1">{{ result.massnahmen_rows|length }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ result.massnahmen_rows|length }}</span>
                             </button>
                         </li>
                         {% endif %}
@@ -115,7 +115,7 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="tab-risiken" data-bs-toggle="tab" data-bs-target="#pane-risiken" type="button" role="tab">
                                 {{ 'gstool_import.tab.risiken'|trans({}, 'gstool_import') }}
-                                <span class="badge bg-secondary ms-1">{{ result.risiken_rows|length }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ result.risiken_rows|length }}</span>
                             </button>
                         </li>
                         {% endif %}
@@ -144,13 +144,13 @@
                                     <td class="text-muted small">{{ row.line ?? '' }}</td>
                                     <td>
                                         {% if row.action == 'new' %}
-                                            <span class="badge bg-success">{{ 'gstool_import.action.new'|trans({}, 'gstool_import') }}</span>
+                                            <span class="fa-status-pill fa-status-pill--success">{{ 'gstool_import.action.new'|trans({}, 'gstool_import') }}</span>
                                         {% elseif row.action == 'update' %}
-                                            <span class="badge bg-info">{{ 'gstool_import.action.update'|trans({}, 'gstool_import') }}</span>
+                                            <span class="fa-status-pill fa-status-pill--primary">{{ 'gstool_import.action.update'|trans({}, 'gstool_import') }}</span>
                                         {% elseif row.action == 'error' %}
-                                            <span class="badge bg-danger">{{ 'gstool_import.action.error'|trans({}, 'gstool_import') }}</span>
+                                            <span class="fa-status-pill fa-status-pill--danger">{{ 'gstool_import.action.error'|trans({}, 'gstool_import') }}</span>
                                         {% else %}
-                                            <span class="badge bg-secondary">{{ row.action }}</span>
+                                            <span class="fa-status-pill fa-status-pill--neutral">{{ row.action }}</span>
                                         {% endif %}
                                     </td>
                                     <td><code>{{ row.id ?? '' }}</code></td>
@@ -169,7 +169,7 @@
 
                     {% if result.bausteine_rows is defined and result.bausteine_rows|length > 0 %}
                     <div class="tab-pane fade" id="pane-bausteine" role="tabpanel">
-                    <div class="alert alert-info mx-3 mt-3 mb-0 small">
+                    <div class="fa-alert fa-alert--info mx-3 mt-3 mb-0 small">
                         {{ 'gstool_import.bausteine.note'|trans({}, 'gstool_import') }}
                     </div>
                     <div class="table-responsive">
@@ -241,13 +241,13 @@
                                     <td>
                                         {% set s = r.implementation_status %}
                                         {% if s == 'implemented' %}
-                                            <span class="badge bg-success">{{ s }}</span>
+                                            <span class="fa-status-pill fa-status-pill--success">{{ s }}</span>
                                         {% elseif s == 'partially_implemented' %}
-                                            <span class="badge bg-warning">{{ s }}</span>
+                                            <span class="fa-status-pill fa-status-pill--warning">{{ s }}</span>
                                         {% elseif s == 'not_implemented' %}
-                                            <span class="badge bg-danger">{{ s }}</span>
+                                            <span class="fa-status-pill fa-status-pill--danger">{{ s }}</span>
                                         {% elseif s == 'not_applicable' %}
-                                            <span class="badge bg-secondary">{{ s }}</span>
+                                            <span class="fa-status-pill fa-status-pill--neutral">{{ s }}</span>
                                         {% else %}
                                             <span class="text-muted small">unmapped</span>
                                         {% endif %}
@@ -294,7 +294,7 @@
                                     </td>
                                     <td>
                                         {% if r.treatment_strategy %}
-                                            <span class="badge bg-info">{{ r.treatment_strategy }}</span>
+                                            <span class="fa-status-pill fa-status-pill--primary">{{ r.treatment_strategy }}</span>
                                         {% else %}<span class="text-muted small">–</span>{% endif %}
                                     </td>
                                 </tr>

@@ -52,6 +52,9 @@ consent:
         status: 'Status'
         verified: 'Verifiziert'
         revocation_reason: 'Widerrufsgrund'
+        withdrawn_at: 'Widerrufen am'
+        withdrawal_reason: 'Widerrufsgrund'
+        withdrawal_channel: 'Widerrufs-Kanal'
         created_at: 'Erstellt am'
         updated_at: 'Aktualisiert am'
 
@@ -153,6 +156,22 @@ consent:
     warning:
         already_verified: 'Diese Einwilligung ist bereits verifiziert.'
         already_revoked: 'Diese Einwilligung ist bereits widerrufen.'
+
+    # Withdrawal — GDPR Art. 7(3)
+    help:
+        withdrawn_at: 'Zeitpunkt des Widerrufs durch betroffene Person (DSGVO Art. 7(3))'
+    placeholder:
+        withdrawal_reason: 'Optional: Begründung des Widerrufs'
+        withdrawal_channel: 'Bitte wählen…'
+    withdrawal_channel:
+        web: 'Web-Formular'
+        email: 'E-Mail'
+        phone: 'Telefon'
+        letter: 'Brief'
+        in_person: 'Persönlich'
+    validation:
+        withdrawal_reason_required_when_withdrawn: 'Bei Widerruf muss eine Begründung erfasst werden.'
+        withdrawal_channel_required_when_withdrawn: 'Bei Widerruf muss der Kanal des Widerrufs erfasst werden.'
 
     # Seitenleiste kontextbezogene Hilfe
     sidebar:

@@ -56,33 +56,33 @@
                                 <td><code>{{ p.slug }}</code></td>
                                 <td>
                                     {% if p.global %}
-                                        <span class="badge bg-primary">{{ 'sso.scope.global'|trans }}</span>
+                                        <span class="fa-status-pill fa-status-pill--primary">{{ 'sso.scope.global'|trans }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ p.tenant.name }}</span>
+                                        <span class="fa-status-pill fa-status-pill--neutral">{{ p.tenant.name }}</span>
                                     {% endif %}
                                 </td>
                                 <td><code class="small">{{ p.type }}</code></td>
                                 <td class="small">
                                     {% if p.domainBindings|length > 0 %}
                                         {{ p.domainBindings|join(', ') }}
-                                        <span class="badge bg-light text-dark border ms-1">{{ ('sso.domain_mode.' ~ p.domainBindingMode)|trans }}</span>
+                                        <span class="fa-status-pill fa-status-pill--neutral border ms-1">{{ ('sso.domain_mode.' ~ p.domainBindingMode)|trans }}</span>
                                     {% else %}
                                         <span class="text-muted">—</span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if p.enabled %}
-                                        <span class="badge bg-success">{{ 'sso.status.enabled'|trans }}</span>
+                                        <span class="fa-status-pill fa-status-pill--success">{{ 'sso.status.enabled'|trans }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'sso.status.disabled'|trans }}</span>
+                                        <span class="fa-status-pill fa-status-pill--neutral">{{ 'sso.status.disabled'|trans }}</span>
                                     {% endif %}
                                     {% if p.autoApprove %}
-                                        <span class="badge bg-info ms-1" title="{{ 'sso.field.auto_approve'|trans }}">A</span>
+                                        <span class="fa-status-pill fa-status-pill--primary ms-1" title="{{ 'sso.field.auto_approve'|trans }}">A</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-end">
                                     <a href="{{ path('admin_sso_edit', {id: p.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+                                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                                     </a>
                                     <form method="post" action="{{ path('admin_sso_toggle', {id: p.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('sso_provider_toggle') }}">
@@ -94,7 +94,7 @@
                                           data-confirm="{{ 'sso.confirm.delete'|trans({'%name%': p.name}, 'sso') }}">
                                         <input type="hidden" name="_token" value="{{ csrf_token('sso_provider_delete') }}">
                                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">
-                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
                                         </button>
                                     </form>
                                 </td>

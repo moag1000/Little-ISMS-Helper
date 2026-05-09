@@ -24,7 +24,7 @@
                     <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
                 </a>
                 <a href="{{ path('app_management_reports_bcm_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
+                    <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
                 </a>
             </div>
             {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_management_reports_bcm_pdf'} only %}

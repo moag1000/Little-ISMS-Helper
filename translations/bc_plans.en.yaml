@@ -62,6 +62,10 @@ bc_plans:
     plan_owner_legacy: Plan Owner (free text, legacy)
     plan_owner_person: Plan Owner (Person from master data)
     plan_owner_deputies: Deputies (Persons)
+    response_team_members: 'Response Team Members (structured)'
+    required_resources: 'Required Resources (structured)'
+    escalation_levels: 'Escalation Levels'
+    crisis_teams: 'Crisis Teams'
   status:
     draft: Draft
     under_review: Under Review
@@ -110,9 +114,14 @@ bc_plans:
     plan_owner_user: Plan owner from user management.
     plan_owner_person: 'Select a person without a system login as plan owner. Priority&#58; User &gt; Person &gt; legacy.'
     plan_owner_deputies: Additional persons sharing plan ownership or deputising. Multiple selection possible.
+    response_team_members_json: 'JSON array with response team roles per ISO 22301 §8.5.3. Roles: incident_commander, comms_lead, recovery_lead, technical_lead.'
+    required_resources_json: 'JSON object with resource requirements: {"personnel": [], "equipment": [], "supplies": []}. ISO 22301 §8.1.'
+    escalation_levels_json: 'JSON array with escalation levels per BSI 200-4 §6.2: [{"level":1,"trigger":"...","responder":"...","escalateAfter":"15min"}].'
+    crisis_teams: 'Crisis teams responsible for this plan (ISO 22301 §8.4.2). Multiple selection possible.'
   placeholder:
     plan_owner_user: -- Select owner --
     plan_owner_person: -- Person from master data --
+    response_team_members: '[{"role":"incident_commander","userId":null,"name":"John Doe","contact":"+49 123 456789","responsibilities":"Overall responsibility"}]'
   tooltip:
     activation_criteria: 'Predefined conditions that trigger plan activation (e.g. server outage > 4h, building evacuation). Measurable thresholds make the decision easier during a crisis.'
     recovery_procedures: 'Step-by-step guide to restoring business operations. Each step should include responsible persons, time targets and verification criteria (ISO 22301 Cl. 8.4).'

@@ -86,7 +86,7 @@
             </div>
 
             <div class="mt-3">
-                <a href="{{ path('app_document_by_type', {type: type.id}) }}" class="btn btn-sm">
+                <a href="{{ path('app_document_by_type', {type: type.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                     {{ 'common.view_all'|trans({}, 'messages') }}
                 </a>
             </div>
@@ -162,7 +162,7 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <a href="{{ path('app_document_show', {id: document.id}) }}" class="btn btn-sm mr-025">
+                <a href="{{ path('app_document_show', {id: document.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost mr-025">
                     👁 {{ 'common.view'|trans({}, 'messages') }}
                 </a>
                 <a href="{{ path('app_document_download', {id: document.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
@@ -293,7 +293,7 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <a href="{{ path('app_document_by_type', {type: type.id}) }}" class="btn btn-sm">
+                <a href="{{ path('app_document_by_type', {type: type.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                     👁 {{ 'common.view'|trans({}, 'messages') }}
                 </a>
             </td>

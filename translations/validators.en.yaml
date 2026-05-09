@@ -325,6 +325,14 @@ risk:
         category_invalid: 'Invalid risk category'
         legal_basis_invalid: 'Invalid legal basis according to Art. 6 GDPR'
         processing_scale_invalid: 'Invalid processing scale'
+        likelihood_justification_required: 'Likelihood justification is mandatory (ISO 27001 6.1.2.d).'
+        impact_justification_required: 'Impact justification is mandatory (ISO 27001 6.1.2.d).'
+        risk_owner_required: 'A risk owner must be assigned (ISO 27001 §7.4).'
+
+file_upload:
+    validation:
+        mime_type_invalid: 'File type not permitted. Allowed types: %types%'
+        max_size_exceeded: 'File too large (max %limit%).'
         risk_owner_required: 'A risk owner must be assigned'
 audit:
     validation:

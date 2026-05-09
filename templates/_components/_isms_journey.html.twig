@@ -20,7 +20,7 @@
         </div>
         <div class="isms-journey__summary">
             <h2 class="isms-journey__title">
-                <i class="bi bi-rocket-takeoff me-2" aria-hidden="true"></i>
+                <i class="fa-icon me-2 fa-icon--nav-magic" aria-hidden="true"></i>
                 {{ 'journey.title'|trans }}
             </h2>
             <p class="isms-journey__subtitle text-muted mb-2">
@@ -54,23 +54,23 @@
                 <div class="isms-journey__phase-icon">
                     {% if status == 'complete' %}
                         <span class="isms-journey__status-icon text-success" aria-hidden="true">
-                            <i class="bi bi-check-circle-fill"></i>
+                            <i class="fa-icon fa-icon--status-ok"></i>
                         </span>
                     {% elseif status == 'partial' %}
                         <span class="isms-journey__status-icon text-primary" aria-hidden="true">
-                            <i class="bi bi-circle-half"></i>
+                            <i class="fa-icon fa-icon--status-pending"></i>
                         </span>
                     {% elseif status == 'locked' %}
                         <span class="isms-journey__status-icon text-muted" aria-hidden="true">
-                            <i class="bi bi-lock-fill"></i>
+                            <i class="fa-icon fa-icon--ui-lock"></i>
                         </span>
                     {% elseif status == 'dismissed' %}
                         <span class="isms-journey__status-icon text-secondary" aria-hidden="true">
-                            <i class="bi bi-dash-circle"></i>
+                            <i class="fa-icon fa-icon--status-pending"></i>
                         </span>
                     {% else %}
                         <span class="isms-journey__status-icon text-muted" aria-hidden="true">
-                            <i class="bi bi-circle"></i>
+                            <i class="fa-icon fa-icon--status-pending"></i>
                         </span>
                     {% endif %}
                 </div>
@@ -100,7 +100,7 @@
     {% if current and current.status != 'complete' %}
         <div class="isms-journey__next-step">
             <span class="fw-semibold text-primary">
-                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>
+                <i class="fa-icon me-1 fa-icon--util-arrow-right" aria-hidden="true"></i>
                 {{ 'journey.next_step'|trans }}:
             </span>
             <a href="{{ path(current.route) }}" class="ms-1">
@@ -117,7 +117,7 @@
         <form method="post" action="{{ path('app_dashboard_dismiss_journey') }}" class="d-inline">
             <input type="hidden" name="_token" value="{{ csrf_token('dismiss_journey') }}">
             <button type="submit" class="btn btn-link btn-sm text-muted p-0">
-                <i class="bi bi-eye-slash me-1" aria-hidden="true"></i>
+                <i class="fa-icon me-1 fa-icon--ui-eye-off" aria-hidden="true"></i>
                 {{ 'journey.dismiss'|trans }}
             </button>
         </form>

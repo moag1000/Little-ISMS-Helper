@@ -53,17 +53,17 @@
                         <td class="text-end"><strong>{{ row.loaded_count }}</strong></td>
                         <td class="text-center">
                             {% if not row.exists %}
-                                <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">
-                                    <i class="bi bi-dash-circle" aria-hidden="true"></i>
+                                <span class="fa-status-pill fa-status-pill--neutral">
+                                    <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
                                     {{ 'loader_fixer.status.not_loaded'|trans({}, 'loader_fixer') }}
                                 </span>
                             {% elseif row.loaded_count == 0 %}
-                                <span class="badge bg-warning-subtle text-warning fa-status-pill fa-status-pill--warning">
+                                <span class="fa-status-pill fa-status-pill--warning">
                                     <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
                                     {{ 'loader_fixer.status.empty'|trans({}, 'loader_fixer') }}
                                 </span>
                             {% else %}
-                                <span class="badge bg-success fa-status-pill fa-status-pill--success">
+                                <span class="fa-status-pill fa-status-pill--success">
                                     <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
                                     {{ 'loader_fixer.status.loaded'|trans({}, 'loader_fixer') }}
                                 </span>

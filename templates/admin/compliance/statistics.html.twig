@@ -79,13 +79,13 @@
                                         <small class="text-muted">{{ data.framework.code }}</small>
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge bg-secondary">{{ data.total_requirements }}</span>
+                                        <span class="fa-status-pill fa-status-pill--neutral">{{ data.total_requirements }}</span>
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge bg-info">{{ data.assessed_requirements }}</span>
+                                        <span class="fa-status-pill fa-status-pill--primary">{{ data.assessed_requirements }}</span>
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge bg-success">{{ data.compliant_requirements }}</span>
+                                        <span class="fa-status-pill fa-status-pill--success">{{ data.compliant_requirements }}</span>
                                     </td>
                                     <td class="text-center">
                                         <strong class="{% if data.compliance_percentage >= 75 %}text-success{% elseif data.compliance_percentage >= 50 %}text-warning{% else %}text-danger{% endif %}">

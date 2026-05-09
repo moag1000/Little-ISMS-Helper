@@ -30,14 +30,14 @@
         <a href="{{ path('app_compliance_mapping_seed_review', {origin: 'all'}) }}"
            class="fa-cyber-btn fa-cyber-btn--sm {% if filter == 'all' %}fa-cyber-btn--primary{% else %}fa-cyber-btn--ghost{% endif %}">
             {{ 'compliance.mapping.seed_review.filter.all'|trans({}, 'compliance') }}
-            <span class="badge bg-body-secondary fa-status-pill fa-status-pill--neutral ms-1">{{ counts.all|default(0) }}</span>
+            <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ counts.all|default(0) }}</span>
         </a>
         {% for origin, n in counts %}
             {% if origin != 'all' %}
                 <a href="{{ path('app_compliance_mapping_seed_review', {origin: origin}) }}"
                    class="fa-cyber-btn fa-cyber-btn--sm {% if filter == origin %}fa-cyber-btn--primary{% else %}fa-cyber-btn--ghost{% endif %}">
                     <code>{{ origin }}</code>
-                    <span class="badge bg-body-secondary fa-status-pill fa-status-pill--neutral ms-1">{{ n }}</span>
+                    <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ n }}</span>
                 </a>
             {% endif %}
         {% endfor %}

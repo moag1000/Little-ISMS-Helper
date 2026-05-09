@@ -231,12 +231,39 @@ class BCExercise
     private ?string $planUpdatesRequired = null;
 
     /**
-     * Success criteria met (JSON)
+     * Plans specifically tested in this exercise (alias: bcPlansTested) — ISO 22301 §8.6 a
+     * (testedPlans is the canonical M2M; bcPlansTested references same collection for BCM-Specialist naming)
+     */
+
+    /**
+     * Actual RTO achieved during exercise — ISO 22301 §8.6 d (hours)
+     */
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    private ?string $actualRtoAchieved = null;
+
+    /**
+     * Actual RPO achieved during exercise — ISO 22301 §8.6 d (hours)
+     */
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    private ?string $actualRpoAchieved = null;
+
+    /**
+     * Evidence artifacts for audit — array of document references / filenames
+     * [{type: 'photo'|'log'|'report'|'screenshot', reference: string, description: string}, ...]
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    private ?array $evidenceArtifacts = null;
+
+    /**
+     * Success criteria met (JSON) — ISO 22301 §8.6 c
      * {
-     *   "RTO_met": true,
-     *   "RPO_met": true,
-     *   "communication_effective": true,
-     *   "team_prepared": false
+     *   "rtoMet": true,
+     *   "rpoMet": true,
+     *   "communicationEffective": true,
+     *   "teamPrepared": false
      * }
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
@@ -672,6 +699,49 @@ class BCExercise
     public function isFullyComplete(): bool
     {
         return $this->status === 'completed' && $this->reportCompleted;
+    }
+
+    public function getActualRtoAchieved(): ?string
+    {
+        return $this->actualRtoAchieved;
+    }
+
+    public function setActualRtoAchieved(?string $actualRtoAchieved): static
+    {
+        $this->actualRtoAchieved = $actualRtoAchieved;
+        return $this;
+    }
+
+    public function getActualRpoAchieved(): ?string
+    {
+        return $this->actualRpoAchieved;
+    }
+
+    public function setActualRpoAchieved(?string $actualRpoAchieved): static
+    {
+        $this->actualRpoAchieved = $actualRpoAchieved;
+        return $this;
+    }
+
+    public function getEvidenceArtifacts(): ?array
+    {
+        return $this->evidenceArtifacts;
+    }
+
+    public function setEvidenceArtifacts(?array $evidenceArtifacts): static
+    {
+        $this->evidenceArtifacts = $evidenceArtifacts;
+        return $this;
+    }
+
+    /**
+     * Alias for testedPlans — ISO 22301 §8.6 a naming
+     *
+     * @return Collection<int, BusinessContinuityPlan>
+     */
+    public function getBcPlansTested(): Collection
+    {
+        return $this->testedPlans;
     }
 
     /**

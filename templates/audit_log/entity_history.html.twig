@@ -24,48 +24,37 @@
 <div class="mt-4">
     <h2>{{ 'entity_history.section'|trans({}, 'messages') }}</h2>
 
-    <div class="mt-3">
-    {% embed '_components/_table.html.twig' with {
-        'noMargin': true,
-        'responsive': true
-    } %}
-        {% block table_head %}
-            <tr>
-                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.timestamp'|trans({}, 'audit_log') }}</th>
-                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.action'|trans({}, 'audit_log') }}</th>
-                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.user'|trans({}, 'audit_log') }}</th>
-                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.description'|trans({}, 'audit_log') }}</th>
-                <th scope="col" class="table-cell text-left">{{ 'common.details'|trans({}, 'messages') }}</th>
-            </tr>
-        {% endblock %}
-        {% block table_body %}
-            {% for log in auditLogs %}
-            <tr>
-                <td class="table-cell small">
-                    {{ log.createdAt|date('d.m.Y H:i:s') }}
-                </td>
-                <td class="table-cell">
-                    <span class="badge badge-{{ log.action }}">{{ log.action|capitalize }}</span>
-                </td>
-                <td class="table-cell">
-                    <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}"
-                       class="link-primary">
+    {# Aurora ISMS-Trail Timeline (per docs/design_system/sections/isms-patterns.html § Audit-Trail) #}
+    <div class="isms-trail mt-4">
+        {% for log in auditLogs %}
+            {% set tone = log.action == 'create' ? 'success'
+                : (log.action == 'delete' ? 'danger'
+                : (log.action in ['update', 'modify', 'change'] ? 'warning' : 'neutral')) %}
+            {% set icon = log.action == 'create' ? 'fa-icon--ui-plus'
+                : (log.action == 'delete' ? 'fa-icon--ui-delete'
+                : (log.action in ['update', 'modify', 'change'] ? 'fa-icon--ui-edit'
+                : (log.action == 'login' ? 'fa-icon--ui-lock' : 'fa-icon--ui-circle'))) %}
+            <article class="isms-trail__entry">
+                <span class="isms-trail__dot isms-trail__dot--{{ tone }}" aria-hidden="true">
+                    <i class="fa-icon {{ icon }}"></i>
+                </span>
+                <div class="isms-trail__head">
+                    <span class="isms-trail__title">{{ log.action|capitalize }}</span>
+                    <span class="isms-trail__meta">{{ log.createdAt|date('d.m.Y H:i:s') }}</span>
+                </div>
+                <div class="isms-trail__body">
+                    <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}" class="isms-trail__actor">
+                        <i class="fa-icon fa-icon--nav-users" aria-hidden="true"></i>
                         {{ log.userName }}
                     </a>
-                </td>
-                <td class="table-cell small">
-                    {{ log.description|default('-') }}
-                </td>
-                <td class="table-cell">
+                    {{ log.description|default('—') }}
                     <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
-                       class="link-primary">
+                       class="ms-2 link-primary small">
                         {{ 'entity_history.show_details'|trans({}, 'messages') }}
                     </a>
-                </td>
-            </tr>
-            {% endfor %}
-        {% endblock %}
-    {% endembed %}
+                </div>
+            </article>
+        {% endfor %}
     </div>
 </div>
 {% else %}

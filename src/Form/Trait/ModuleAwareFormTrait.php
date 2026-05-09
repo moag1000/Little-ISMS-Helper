@@ -7,14 +7,20 @@ namespace App\Form\Trait;
 use App\Service\ModuleConfigurationService;
 
 /**
+ * ModuleAwareFormTrait
+ *
  * Provides module-awareness to FormTypes — gate fields/sections by active modules.
+ *
+ * Using class must declare:
+ *   private readonly ModuleConfigurationService $moduleConfiguration;
+ * (typically via constructor promotion) and then call isModuleActive().
  *
  * Usage:
  *   class MyFormType extends AbstractType {
  *       use ModuleAwareFormTrait;
  *
  *       public function __construct(
- *           private readonly ModuleConfigurationService $moduleService,
+ *           private readonly ModuleConfigurationService $moduleConfiguration,
  *       ) {}
  *
  *       public function buildForm(FormBuilderInterface $builder, array $options): void {
@@ -30,11 +36,13 @@ use App\Service\ModuleConfigurationService;
 trait ModuleAwareFormTrait
 {
     /**
-     * Check if a single module is active for the current tenant.
+     * Returns true when the given module key is active in config/active_modules.yaml.
+     * Requires the using class to have a $moduleConfiguration property of type
+     * ModuleConfigurationService.
      */
     protected function isModuleActive(string $moduleKey): bool
     {
-        return $this->moduleService->isModuleActive($moduleKey);
+        return $this->moduleConfiguration->isModuleActive($moduleKey);
     }
 
     /**
@@ -45,7 +53,7 @@ trait ModuleAwareFormTrait
     protected function isAnyModuleActive(string ...$moduleKeys): bool
     {
         foreach ($moduleKeys as $key) {
-            if ($this->moduleService->isModuleActive($key)) {
+            if ($this->moduleConfiguration->isModuleActive($key)) {
                 return true;
             }
         }
@@ -58,7 +66,7 @@ trait ModuleAwareFormTrait
     protected function areAllModulesActive(string ...$moduleKeys): bool
     {
         foreach ($moduleKeys as $key) {
-            if (!$this->moduleService->isModuleActive($key)) {
+            if (!$this->moduleConfiguration->isModuleActive($key)) {
                 return false;
             }
         }

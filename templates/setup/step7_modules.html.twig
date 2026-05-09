@@ -28,7 +28,7 @@
 
         {# Required Modules #}
         <h2 class="fa-setup-section-title">
-            <i class="bi bi-star-fill" style="color: var(--warning);" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--ui-star" style="color: var(--warning);" aria-hidden="true"></i>
             {{ 'setup.step7.required_modules'|trans({}, 'setup') }}
         </h2>
 
@@ -92,7 +92,7 @@
                         <div class="fa-toggle-card__sub">{{ module.description }}</div>
                         {% if module.dependencies|length > 0 %}
                             <div class="fa-toggle-card__meta">
-                                <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--ui-link" aria-hidden="true"></i>
                                 <span style="color: var(--warning-text);">{{ 'setup.step7.dependencies'|trans({}, 'setup') }}</span>
                                 {% for dep in module.dependencies %}
                                     {{ pill.render(all_modules[dep].name, 'warning', { size: 'sm', noDot: true })|raw }}
@@ -105,7 +105,7 @@
         </div>
 
         <div class="fa-setup-modules-summary">
-            <i class="bi bi-pie-chart" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--nav-pie-chart" aria-hidden="true"></i>
             <strong>{{ 'setup.step7.summary.title'|trans({}, 'setup') }}</strong>
             <span>
                 {{ 'setup.step7.summary.selected'|trans({'%selected%': '<span id="selected-count">0</span>', '%total%': all_modules|length}, 'setup')|raw }}

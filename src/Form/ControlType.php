@@ -6,8 +6,14 @@ namespace App\Form;
 
 use App\Entity\Control;
 use App\Entity\Person;
+use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\Asset;
+use App\Form\DataTransformer\JsonArrayTransformer;
+use App\Form\Trait\ModuleAwareFormTrait;
+use App\Repository\RiskRepository;
+use App\Service\ModuleConfigurationService;
+use App\Service\TenantContext;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -24,6 +30,14 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ControlType extends AbstractType
 {
+    use ModuleAwareFormTrait;
+
+    public function __construct(
+        private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly TenantContext $tenantContext,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -185,7 +199,130 @@ class ControlType extends AbstractType
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'control.help.protected_assets',
+            ])
+            // ── Sprint 6: Always-visible effectiveness + classification fields ──
+            ->add('effectiveness', ChoiceType::class, [
+                'choices' => [
+                    'control.effectiveness.not_assessed' => 'not_assessed',
+                    'control.effectiveness.ineffective' => 'ineffective',
+                    'control.effectiveness.partially_effective' => 'partially_effective',
+                    'control.effectiveness.effective' => 'effective',
+                    'control.effectiveness.highly_effective' => 'highly_effective',
+                ],
+                'choice_translation_domain' => 'control',
+                'label' => 'control.field.effectiveness',
+                'required' => false,
+                'placeholder' => 'control.placeholder.effectiveness',
+            ])
+            ->add('controlType', ChoiceType::class, [
+                'choices' => [
+                    'control.type.preventive' => 'preventive',
+                    'control.type.detective' => 'detective',
+                    'control.type.corrective' => 'corrective',
+                    'control.type.deterrent' => 'deterrent',
+                    'control.type.recovery' => 'recovery',
+                ],
+                'choice_translation_domain' => 'control',
+                'label' => 'control.field.control_type',
+                'required' => false,
+                'placeholder' => 'control.placeholder.control_type',
+            ])
+            ->add('automationLevel', ChoiceType::class, [
+                'choices' => [
+                    'control.automation.manual' => 'manual',
+                    'control.automation.semi_automated' => 'semi_automated',
+                    'control.automation.fully_automated' => 'fully_automated',
+                ],
+                'choice_translation_domain' => 'control',
+                'label' => 'control.field.automation_level',
+                'required' => false,
+                'placeholder' => 'control.placeholder.automation_level',
+            ])
+            ->add('controlMaturity', ChoiceType::class, [
+                'choices' => [
+                    'control.maturity.1_initial' => 1,
+                    'control.maturity.2_managed' => 2,
+                    'control.maturity.3_defined' => 3,
+                    'control.maturity.4_quantitatively_managed' => 4,
+                    'control.maturity.5_optimizing' => 5,
+                ],
+                'choice_translation_domain' => 'control',
+                'label' => 'control.field.control_maturity',
+                'required' => false,
+                'placeholder' => 'control.placeholder.control_maturity',
+            ])
+            ->add('lastEffectivenessTest', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'control.field.last_effectiveness_test',
+                'required' => false,
+            ])
+            ->add('nextEffectivenessTest', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'control.field.next_effectiveness_test',
+                'required' => false,
+            ])
+            ->add('frameworkReferences', TextareaType::class, [
+                'label' => 'control.field.framework_references',
+                'required' => false,
+                'attr' => ['rows' => 4],
+                'help' => 'control.help.framework_references_json',
+            ])
+            ->add('risks', EntityType::class, [
+                'class' => Risk::class,
+                'choice_label' => 'title',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'label' => 'control.field.related_risks',
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+                'query_builder' => function (RiskRepository $r) {
+                    $qb = $r->createQueryBuilder('r');
+                    $tenant = $this->tenantContext->getCurrentTenant();
+                    if ($tenant !== null) {
+                        $qb->where('r.tenant = :tenant')->setParameter('tenant', $tenant);
+                    }
+                    return $qb;
+                },
             ]);
+
+        $builder->get('frameworkReferences')->addModelTransformer(new JsonArrayTransformer());
+
+        // ── Cloud-fields gated by 'cloud_security' module ─────────────────────
+        if ($this->isModuleActive('cloud_security')) {
+            $builder
+                ->add('cloudControlReference', TextType::class, [
+                    'label' => 'control.field.cloud_control_reference',
+                    'required' => false,
+                    'help' => 'control.help.iso_27017',
+                    'attr' => ['maxlength' => 255],
+                ])
+                ->add('cloudPrivacyReference', TextType::class, [
+                    'label' => 'control.field.cloud_privacy_reference',
+                    'required' => false,
+                    'help' => 'control.help.iso_27018',
+                    'attr' => ['maxlength' => 255],
+                ])
+                ->add('pimsReference', TextType::class, [
+                    'label' => 'control.field.pims_reference',
+                    'required' => false,
+                    'help' => 'control.help.iso_27701',
+                    'attr' => ['maxlength' => 255],
+                ])
+                ->add('customerOrProviderResponsibility', ChoiceType::class, [
+                    'choices' => [
+                        'control.responsibility.customer' => 'customer',
+                        'control.responsibility.provider' => 'provider',
+                        'control.responsibility.shared' => 'shared',
+                    ],
+                    'choice_translation_domain' => 'control',
+                    'label' => 'control.field.customer_or_provider_responsibility',
+                    'required' => false,
+                    'placeholder' => 'control.placeholder.responsibility',
+                    'help' => 'control.help.shared_responsibility',
+                ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

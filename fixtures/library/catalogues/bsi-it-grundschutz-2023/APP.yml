@@ -1,0 +1,333 @@
+# BSI IT-Grundschutz-Kompendium 2023 — Schicht APP (Anwendungen)
+# Quelle: BSI Bundesamt fuer Sicherheit in der Informationstechnik
+# https://www.bsi.bund.de/IT-Grundschutz-Kompendium
+
+layer: APP
+title: 'Anwendungen'
+description: 'Schicht fuer Anwendungssoftware: Office, Webbrowser, Verzeichnisdienste, Webserver, Datenbanken, Mailserver, Kommunikationssoftware sowie Eigen- und Standardsoftware.'
+bausteine:
+  - id: APP.1.1
+    title: 'Office-Produkte'
+    description: 'Anforderungen an die sichere Auswahl, Konfiguration und Nutzung von Office-Produkten.'
+    anforderungen:
+      basis:
+        - id: APP.1.1.A1
+          title: 'Planung und Konzeption einer Standard-Software'
+          requirement_text: 'Die Einfuehrung einer Standard-Software MUSS geplant werden.'
+        - id: APP.1.1.A2
+          title: 'Auswahl und Freigabe von Office-Produkten'
+          requirement_text: 'Fuer den produktiven Einsatz MUESSEN ausschliesslich Office-Produkte verwendet werden, die offiziell freigegeben wurden. Nicht freigegebene Office-Software DARF NICHT installiert werden.'
+        - id: APP.1.1.A3
+          title: 'Einschraenkung von Makrofunktionen'
+          requirement_text: 'Makros und aktive Inhalte MUESSEN standardmaessig deaktiviert sein. Signierte Makros duerfen nur nach Pruefung und Freigabe durch zentrale IT-Rollen zugelassen werden.'
+      standard:
+        - id: APP.1.1.A4
+          title: 'Dokumentenpruefung auf Metadaten'
+          requirement_text: 'Office-Dokumente, die das Unternehmen verlassen, SOLLTEN auf versehentlich enthaltene Metadaten (Kommentare, Aenderungshistorie, Autor) geprueft werden.'
+      hoch: []
+
+  - id: APP.1.2
+    title: 'Webbrowser'
+    description: 'Anforderungen an Konfiguration und sichere Nutzung von Webbrowsern.'
+    anforderungen:
+      basis:
+        - id: APP.1.2.A1
+          title: 'Sichere Grundkonfiguration des Webbrowsers'
+          requirement_text: 'Webbrowser MUESSEN sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.1.2 Anforderung A1.'
+        - id: APP.1.2.A2
+          title: 'Plug-ins und Erweiterungen'
+          requirement_text: 'Plug-ins und Browser-Erweiterungen MUESSEN auf das Notwendige beschraenkt sein. Siehe BSI Kompendium 2023 Baustein APP.1.2 Anforderung A2.'
+        - id: APP.1.2.A3
+          title: 'Aktuelle Browser-Versionen'
+          requirement_text: 'Es MUESSEN ausschliesslich vom Hersteller unterstuetzte und gepatchte Browser-Versionen eingesetzt werden. Siehe BSI Kompendium 2023 Baustein APP.1.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.1.4
+    title: 'Mobile Anwendungen'
+    description: 'Anforderungen an Auswahl, Beschaffung und Betrieb mobiler Anwendungen (Apps).'
+    anforderungen:
+      basis:
+        - id: APP.1.4.A1
+          title: 'Sicherheitsrichtlinie fuer Mobile Apps'
+          requirement_text: 'Fuer den Einsatz mobiler Apps MUSS eine Richtlinie festgelegt werden, die zulaessige App-Quellen, Freigabe-Prozess und Schutzmassnahmen regelt.'
+        - id: APP.1.4.A2
+          title: 'Sichere Beschaffung und Installation mobiler Apps'
+          requirement_text: 'Apps MUESSEN aus vertrauenswuerdigen Quellen (MDM-Katalog, offizielle Stores mit Unternehmens-Account) bezogen werden. Seitliche Installationen ("sideloading") MUESSEN unterbunden sein.'
+        - id: APP.1.4.A3
+          title: 'Pruefung mobiler Apps auf Sicherheitsmaengel'
+          requirement_text: 'Mobile Apps MUESSEN vor Freigabe auf Sicherheitsmaengel geprueft werden. Siehe BSI Kompendium 2023 Baustein APP.1.4 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.2.1
+    title: 'Allgemeiner Verzeichnisdienst'
+    description: 'Anforderungen an den sicheren Betrieb allgemeiner Verzeichnisdienste.'
+    anforderungen:
+      basis:
+        - id: APP.2.1.A1
+          title: 'Erstellung einer Active Directory-Sicherheitsrichtlinie'
+          requirement_text: 'Es MUSS eine Sicherheitsrichtlinie fuer Active Directory erstellt werden.'
+        - id: APP.2.1.A2
+          title: 'Planung des Einsatzes von Verzeichnisdiensten'
+          requirement_text: 'Der Einsatz von Verzeichnisdiensten MUSS sorgfaeltig geplant werden.'
+        - id: APP.2.1.A3
+          title: 'Sichere Grundkonfiguration des Verzeichnisdienstes'
+          requirement_text: 'Verzeichnisdienste MUESSEN sicher grundkonfiguriert sein. Siehe BSI Kompendium 2023 Baustein APP.2.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.2.2
+    title: 'Active Directory Domain Services'
+    description: 'Anforderungen an die sichere Planung und den Betrieb von Microsoft Active Directory Domain Services.'
+    anforderungen:
+      basis:
+        - id: APP.2.2.A1
+          title: 'Planung des Active Directory Domain Services'
+          requirement_text: 'Der Einsatz von Active Directory Domain Services (AD DS) MUSS sorgfaeltig geplant werden.'
+        - id: APP.2.2.A2
+          title: 'Haertung der Domaenencontroller'
+          requirement_text: 'Domaenencontroller MUESSEN nach BSI-Vorgaben gehaertet sein. Siehe BSI Kompendium 2023 Baustein APP.2.2 Anforderung A2.'
+        - id: APP.2.2.A3
+          title: 'Tiering-Modell und privilegierte Konten'
+          requirement_text: 'Privilegierte Konten MUESSEN nach Tiering-Modell getrennt verwaltet werden. Siehe BSI Kompendium 2023 Baustein APP.2.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.2.3
+    title: 'OpenLDAP'
+    description: 'Anforderungen an den sicheren Betrieb von OpenLDAP-Verzeichnisdiensten.'
+    anforderungen:
+      basis:
+        - id: APP.2.3.A1
+          title: 'Planung des OpenLDAP-Einsatzes'
+          requirement_text: 'Der Einsatz von OpenLDAP MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein APP.2.3 Anforderung A1.'
+        - id: APP.2.3.A2
+          title: 'Sichere Grundkonfiguration von OpenLDAP'
+          requirement_text: 'OpenLDAP MUSS sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.2.3 Anforderung A2.'
+        - id: APP.2.3.A3
+          title: 'Absicherung der Replikation'
+          requirement_text: 'Die Replikation zwischen LDAP-Servern MUSS abgesichert sein. Siehe BSI Kompendium 2023 Baustein APP.2.3 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.3.1
+    title: 'Webanwendungen und Webservices'
+    description: 'Anforderungen an die sichere Entwicklung und den Betrieb von Webanwendungen und Webservices.'
+    anforderungen:
+      basis:
+        - id: APP.3.1.A1
+          title: 'Authentisierung bei Webanwendungen'
+          requirement_text: 'Bei Webanwendungen MUSS eine sichere Authentisierung implementiert werden.'
+        - id: APP.3.1.A2
+          title: 'Sicherer Betrieb von Webanwendungen'
+          requirement_text: 'Webanwendungen MUESSEN sicher betrieben werden, einschliesslich Konfiguration, Patches und Monitoring. Siehe BSI Kompendium 2023 Baustein APP.3.1 Anforderung A2.'
+        - id: APP.3.1.A3
+          title: 'Schutz vor typischen Angriffen auf Webanwendungen'
+          requirement_text: 'Webanwendungen MUESSEN gegen typische Angriffe (z. B. OWASP Top 10) abgesichert sein. Siehe BSI Kompendium 2023 Baustein APP.3.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.3.2
+    title: 'Webserver'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von Webservern.'
+    anforderungen:
+      basis:
+        - id: APP.3.2.A1
+          title: 'Sichere Konfiguration eines Webservers'
+          requirement_text: 'Ein Webserver MUSS sicher konfiguriert werden. Nicht benoetigte Module, Dienste und Funktionen MUESSEN deaktiviert sein.'
+        - id: APP.3.2.A2
+          title: 'Schutz der Webserver-Dateien und -Skripte'
+          requirement_text: 'Die Dateien und Skripte des Webservers MUESSEN vor unberechtigter Veraenderung geschuetzt werden. Rechte MUESSEN minimal gesetzt sein.'
+        - id: APP.3.2.A5
+          title: 'Protokollierung von Ereignissen'
+          requirement_text: 'Sicherheitsrelevante Ereignisse am Webserver MUESSEN protokolliert werden. Die Protokolle MUESSEN regelmaessig ausgewertet werden.'
+      standard: []
+      hoch: []
+
+  - id: APP.3.4
+    title: 'Samba'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von Samba-Diensten.'
+    anforderungen:
+      basis:
+        - id: APP.3.4.A1
+          title: 'Planung des Samba-Einsatzes'
+          requirement_text: 'Der Einsatz von Samba MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein APP.3.4 Anforderung A1.'
+        - id: APP.3.4.A2
+          title: 'Sichere Grundkonfiguration von Samba'
+          requirement_text: 'Samba MUSS sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.3.4 Anforderung A2.'
+        - id: APP.3.4.A3
+          title: 'Absicherung der Samba-Freigaben'
+          requirement_text: 'Samba-Freigaben MUESSEN nach dem Prinzip der geringsten Rechte konfiguriert sein. Siehe BSI Kompendium 2023 Baustein APP.3.4 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.3.6
+    title: 'DNS-Server'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von DNS-Servern.'
+    anforderungen:
+      basis:
+        - id: APP.3.6.A1
+          title: 'Planung des DNS-Einsatzes'
+          requirement_text: 'Vor dem Einsatz eines DNS-Servers MUSS geplant werden, welche Dienste bereitgestellt werden, welche Master-/Slave-Rollen existieren und welche Zonen verwaltet werden.'
+        - id: APP.3.6.A2
+          title: 'Sichere Grundkonfiguration eines DNS-Servers'
+          requirement_text: 'Ein DNS-Server MUSS gehaertet konfiguriert werden. Nicht benoetigte Funktionen (wie Zonentransfers an Unbekannte) MUESSEN deaktiviert sein.'
+        - id: APP.3.6.A5
+          title: 'Ueberwachung von DNS-Servern'
+          requirement_text: 'DNS-Server MUESSEN auf Verfuegbarkeit und Anomalien ueberwacht werden. Unerwartete Aenderungen an Zonendaten MUESSEN erkannt werden.'
+      standard: []
+      hoch: []
+
+  - id: APP.4.2
+    title: 'SAP-ERP-System'
+    description: 'Anforderungen an die sichere Planung, Konfiguration und den Betrieb von SAP-ERP-Systemen.'
+    anforderungen:
+      basis:
+        - id: APP.4.2.A1
+          title: 'Planung des SAP-Einsatzes'
+          requirement_text: 'Der Einsatz von SAP-ERP-Systemen MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein APP.4.2 Anforderung A1.'
+        - id: APP.4.2.A2
+          title: 'Sichere SAP-Grundkonfiguration'
+          requirement_text: 'SAP-Systeme MUESSEN nach BSI-/SAP-Vorgaben sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.4.2 Anforderung A2.'
+        - id: APP.4.2.A3
+          title: 'Berechtigungsmanagement in SAP'
+          requirement_text: 'In SAP-Systemen MUSS ein rollenbasiertes Berechtigungsmanagement umgesetzt sein. Siehe BSI Kompendium 2023 Baustein APP.4.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.4.3
+    title: 'Relationale Datenbanksysteme'
+    description: 'Anforderungen an die sichere Planung, Konfiguration und den Betrieb relationaler Datenbanksysteme.'
+    anforderungen:
+      basis:
+        - id: APP.4.3.A1
+          title: 'Planung des Einsatzes einer relationalen Datenbank'
+          requirement_text: 'Der Einsatz einer relationalen Datenbank MUSS sorgfaeltig geplant werden.'
+        - id: APP.4.3.A2
+          title: 'Sichere Grundkonfiguration des Datenbanksystems'
+          requirement_text: 'Das Datenbanksystem MUSS sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.4.3 Anforderung A2.'
+        - id: APP.4.3.A3
+          title: 'Restriktive Vergabe von Datenbank-Berechtigungen'
+          requirement_text: 'Datenbank-Berechtigungen MUESSEN restriktiv nach dem Prinzip der geringsten Rechte vergeben werden. Siehe BSI Kompendium 2023 Baustein APP.4.3 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.4.4
+    title: 'Kubernetes'
+    description: 'Anforderungen an die sichere Planung und den Betrieb von Kubernetes-Clustern.'
+    anforderungen:
+      basis:
+        - id: APP.4.4.A1
+          title: 'Planung der Absicherung von Kubernetes'
+          requirement_text: 'Bevor Kubernetes eingesetzt wird, MUSS die Absicherung auf allen Ebenen (Cluster, Nodes, Pods, Images) geplant werden.'
+        - id: APP.4.4.A4
+          title: 'Absicherung der Konfiguration der Control-Plane'
+          requirement_text: 'Die Control-Plane von Kubernetes MUSS gehaertet konfiguriert werden; administrative Zugriffe MUESSEN auf das Noetigste beschraenkt sein.'
+      standard:
+        - id: APP.4.4.A8
+          title: 'Separierung von Workloads ueber Namespaces'
+          requirement_text: 'Workloads unterschiedlicher Schutzklassen SOLLTEN durch Namespaces und Netzwerkrichtlinien voneinander getrennt werden.'
+      hoch: []
+
+  - id: APP.4.6
+    title: 'SAP ABAP-Programmierung'
+    description: 'Anforderungen an die sichere Entwicklung von ABAP-Code in SAP-Systemen.'
+    anforderungen:
+      basis:
+        - id: APP.4.6.A1
+          title: 'Sichere ABAP-Programmierung'
+          requirement_text: 'ABAP-Code MUSS nach den Prinzipien sicherer Software-Entwicklung erstellt werden. Siehe BSI Kompendium 2023 Baustein APP.4.6 Anforderung A1.'
+        - id: APP.4.6.A2
+          title: 'Code-Review und ABAP Test Cockpit'
+          requirement_text: 'ABAP-Code MUSS einem Review unterzogen und mit ABAP Test Cockpit (oder gleichwertig) auf Schwachstellen geprueft werden. Siehe BSI Kompendium 2023 Baustein APP.4.6 Anforderung A2.'
+        - id: APP.4.6.A3
+          title: 'Trennung von Entwicklungs-, Test- und Produktivsystem'
+          requirement_text: 'Entwicklungs-, Test- und Produktivsysteme MUESSEN getrennt sein. Siehe BSI Kompendium 2023 Baustein APP.4.6 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.5.2
+    title: 'Microsoft Exchange/Outlook'
+    description: 'Anforderungen an die sichere Planung und den Betrieb von Microsoft Exchange und Outlook.'
+    anforderungen:
+      basis:
+        - id: APP.5.2.A1
+          title: 'Planung des Einsatzes eines Microsoft Exchange-Servers'
+          requirement_text: 'Der Einsatz von Microsoft Exchange MUSS sorgfaeltig geplant werden.'
+        - id: APP.5.2.A2
+          title: 'Sichere Grundkonfiguration von Exchange'
+          requirement_text: 'Exchange-Server MUESSEN nach BSI-/Microsoft-Vorgaben sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.5.2 Anforderung A2.'
+        - id: APP.5.2.A3
+          title: 'Schutz vor Spam und Schadsoftware'
+          requirement_text: 'Exchange-Server MUESSEN gegen Spam, Phishing und Schadsoftware geschuetzt sein. Siehe BSI Kompendium 2023 Baustein APP.5.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.5.3
+    title: 'Allgemeiner E-Mail-Client/-Server'
+    description: 'Anforderungen an Konfiguration und Betrieb allgemeiner E-Mail-Clients und -Server.'
+    anforderungen:
+      basis:
+        - id: APP.5.3.A1
+          title: 'Sichere Konfiguration von E-Mail-Clients'
+          requirement_text: 'E-Mail-Clients MUESSEN sicher konfiguriert werden.'
+        - id: APP.5.3.A2
+          title: 'Verschluesselung und Signatur von E-Mails'
+          requirement_text: 'Vertrauliche E-Mails MUESSEN verschluesselt und ggf. signiert werden. Siehe BSI Kompendium 2023 Baustein APP.5.3 Anforderung A2.'
+        - id: APP.5.3.A3
+          title: 'Schutz des E-Mail-Servers'
+          requirement_text: 'E-Mail-Server MUESSEN sicher konfiguriert und gegen Spam und Schadsoftware geschuetzt sein. Siehe BSI Kompendium 2023 Baustein APP.5.3 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.5.4
+    title: 'Unified Communications und Collaboration'
+    description: 'Anforderungen an Auswahl, Konfiguration und Betrieb von Unified-Communications- und Collaboration-Loesungen.'
+    anforderungen:
+      basis:
+        - id: APP.5.4.A1
+          title: 'Planung des UC/Collaboration-Einsatzes'
+          requirement_text: 'Der Einsatz von UC- und Collaboration-Loesungen MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein APP.5.4 Anforderung A1.'
+        - id: APP.5.4.A2
+          title: 'Sichere Grundkonfiguration der UC/Collaboration-Plattform'
+          requirement_text: 'Die UC/Collaboration-Plattform MUSS sicher grundkonfiguriert werden. Siehe BSI Kompendium 2023 Baustein APP.5.4 Anforderung A2.'
+        - id: APP.5.4.A3
+          title: 'Verschluesselung der Kommunikation'
+          requirement_text: 'Sprach-, Video- und Chat-Kommunikation MUSS Ende-zu-Ende oder transportverschluesselt erfolgen. Siehe BSI Kompendium 2023 Baustein APP.5.4 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.6
+    title: 'Allgemeine Software'
+    description: 'Anforderungen an die Auswahl, Beschaffung und den Betrieb allgemeiner Standardsoftware.'
+    anforderungen:
+      basis:
+        - id: APP.6.A1
+          title: 'Planung der Softwareauswahl'
+          requirement_text: 'Bevor allgemeine Software beschafft wird, MUSS der Bedarf dokumentiert und gegen vorhandene Loesungen geprueft werden.'
+        - id: APP.6.A2
+          title: 'Einsatz freigegebener Versionen'
+          requirement_text: 'Es MUESSEN ausschliesslich vom Hersteller unterstuetzte Versionen der Software eingesetzt werden.'
+        - id: APP.6.A3
+          title: 'Lizenzmanagement'
+          requirement_text: 'Lizenzen fuer eingesetzte Software MUESSEN ordnungsgemaess verwaltet werden. Siehe BSI Kompendium 2023 Baustein APP.6 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: APP.7
+    title: 'Entwicklung von Individualsoftware'
+    description: 'Anforderungen an die sichere Entwicklung von Individualsoftware (Eigen- und Auftragsentwicklung).'
+    anforderungen:
+      basis:
+        - id: APP.7.A1
+          title: 'Sicherheitsrichtlinie fuer Softwareentwicklung'
+          requirement_text: 'Fuer die Entwicklung eigener Software MUSS eine Richtlinie festgelegt werden, die Sicherheitsanforderungen ueber den gesamten Lebenszyklus regelt.'
+        - id: APP.7.A2
+          title: 'Auswahl vertrauenswuerdiger Entwicklungswerkzeuge'
+          requirement_text: 'Werkzeuge zur Softwareentwicklung MUESSEN so ausgewaehlt werden, dass sie keine bekannten Schwachstellen einbringen.'
+      standard:
+        - id: APP.7.A7
+          title: 'Trennung von Entwicklungs-, Test- und Produktivumgebung'
+          requirement_text: 'Entwicklungs-, Test- und Produktivumgebungen SOLLTEN getrennt betrieben werden.'
+      hoch: []

@@ -24,7 +24,7 @@
                     <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
                 </a>
                 <a href="{{ path('app_management_reports_gdpr_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                    <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
+                    <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
                 </a>
             </div>
             {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_management_reports_gdpr_pdf'} only %}
@@ -158,7 +158,7 @@
     {# Pending Notifications Alert #}
     {% if report.notification_status.pending > 0 %}
     <div class="fa-alert fa-alert--danger mb-4" role="alert">
-        <h5><i class="bi bi-exclamation-octagon" aria-hidden="true"></i> {{ 'management_reports.gdpr.urgent_attention'|trans({}, 'management_reports') }}</h5>
+        <h5><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'management_reports.gdpr.urgent_attention'|trans({}, 'management_reports') }}</h5>
         <p>{{ 'management_reports.gdpr.pending_notification_warning'|trans({'%count%': report.notification_status.pending}, 'management_reports') }}</p>
         <a href="{{ path('app_data_breach_index') }}" class="fa-cyber-btn fa-cyber-btn--danger">
             <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_breaches'|trans({}, 'management_reports') }}

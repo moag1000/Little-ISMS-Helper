@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'soa' %}
 
 {% block title %}{{ control.controlId }} - {{ control.name }} - Little ISMS Helper{% endblock %}
@@ -16,41 +17,38 @@
 
     {% set hint = alva_hint(control) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
-</div>
 
-<div class="page-header">
-    <div>
-        <h1>{{ control.controlId }}: {{ control.name }}</h1>
-        <div class="mt-2">
-            {% include '_components/_badge.html.twig' with { variant: 'info', content: ('soa.category.' ~ control.category)|trans({}, 'soa') } %}
-            {% set mrisLocale = app.request.locale|default('de') %}
-            {% if control.mythosResilience == 'standfest' %}
-                <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.standfest', 'tooltip', mrisLocale) }}">
-                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'soa.mris.standfest'|trans({}, 'soa') } %}
-                </span>
-            {% elseif control.mythosResilience == 'degradiert' %}
-                <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.partially_degraded', 'tooltip', mrisLocale) }}">
-                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'soa.mris.degradiert'|trans({}, 'soa') } %}
-                </span>
-            {% elseif control.mythosResilience == 'reibung' %}
-                <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.pure_friction', 'tooltip', mrisLocale) }}">
-                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'soa.mris.reibung'|trans({}, 'soa') } %}
-                </span>
-            {% elseif control.mythosResilience == 'nicht_betroffen' %}
-                <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.not_affected', 'tooltip', mrisLocale) }}">
-                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'soa.mris.nicht_betroffen'|trans({}, 'soa') } %}
-                </span>
-            {% endif %}
-        </div>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
-        </a>
-        {%- set categoryLabel = ('soa.category.' ~ control.category)|trans({}, 'soa') -%}
-        <a href="{{ path('app_soa_by_category', {category: control.category}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            ← {{ 'soa.action.back_to_category'|trans({'%category%': categoryLabel}, 'soa') }}
-        </a>
+    {%- set categoryLabel = ('soa.category.' ~ control.category)|trans({}, 'soa') -%}
+    {{ _fa_page_header.render({
+        badge: { icon: 'check2-circle', label: control.controlId },
+        title: control.name,
+        subtitle: categoryLabel,
+        actions: [
+            { label: 'soa.action.edit'|trans({}, 'soa'), variant: 'primary', icon: 'pencil', href: path('app_soa_edit', {id: control.id}) },
+            { label: 'soa.action.back_to_category'|trans({'%category%': categoryLabel}, 'soa'), variant: 'ghost', icon: 'arrow-left', href: path('app_soa_by_category', {category: control.category}) }
+        ]
+    }) }}
+
+    {# MRIS resilience badge kept below header — multi-badge title row not supported by macro #}
+    {% set mrisLocale = app.request.locale|default('de') %}
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        {% if control.mythosResilience == 'standfest' %}
+            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.standfest', 'tooltip', mrisLocale) }}">
+                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'soa.mris.standfest'|trans({}, 'soa') } %}
+            </span>
+        {% elseif control.mythosResilience == 'degradiert' %}
+            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.partially_degraded', 'tooltip', mrisLocale) }}">
+                {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'soa.mris.degradiert'|trans({}, 'soa') } %}
+            </span>
+        {% elseif control.mythosResilience == 'reibung' %}
+            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.pure_friction', 'tooltip', mrisLocale) }}">
+                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'soa.mris.reibung'|trans({}, 'soa') } %}
+            </span>
+        {% elseif control.mythosResilience == 'nicht_betroffen' %}
+            <span data-bs-toggle="tooltip" title="{{ mris_help('mris.help.not_affected', 'tooltip', mrisLocale) }}">
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'soa.mris.nicht_betroffen'|trans({}, 'soa') } %}
+            </span>
+        {% endif %}
     </div>
 </div>
 
@@ -381,7 +379,7 @@
             {% for code, rows in mapping_suggestions %}
                 <div class="mb-3">
                     <h3 class="h6">
-                        <span class="badge bg-body-secondary border fa-status-pill fa-status-pill--neutral">{{ code }}</span>
+                        <span class="border fa-status-pill fa-status-pill--neutral">{{ code }}</span>
                         {{ rows[0].framework.name }}
                     </h3>
                     <ul class="list-unstyled mb-0">

@@ -1,42 +1,73 @@
 {#
-  Reusable Page Header Component
-
-  Usage:
-  {% include '_components/_page_header.html.twig' with {
-      title: 'Asset Management',
-      subtitle: 'Verwaltung von IT-Assets und Informationswerten',
-      icon: 'bi-server',
-      actions: [
-          { label: 'Neu', url: path('app_asset_new'), variant: 'primary', icon: 'bi-plus-circle' },
-          { label: 'Export', url: path('app_asset_export'), variant: 'secondary', icon: 'bi-download' }
-      ]
-  } %}
+/**
+ * Reusable Page Header Component — DEPRECATED (Tier-2 Refactor 2026-05-09)
+ *
+ * Audit V2 §F6: This legacy macro delegates to the canonical
+ * _fa_page_header.html.twig macro — which uses Aurora v4 classes
+ * (.fa-page-header, .fa-cyber-btn) instead of Bootstrap (.btn.btn-*).
+ *
+ * 48 consumer Templates remain on this Macro and will be migrated to
+ * `{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}`
+ * + `{{ _fa_page_header.render({...}) }}` in Tier-3 (Agent G/H scope).
+ *
+ * Schema-Mapping legacy → canonical:
+ *   icon (bi-prefix) → badge.icon (raw, no `bi bi-`-prefix)
+ *   action.url       → action.href
+ *   action.label     → action.label  (unchanged)
+ *   action.variant   → action.variant (primary|ghost|secondary|accent|danger)
+ *   action.icon      → action.icon (raw, no `bi `-prefix)
+ *   action.turbo     → action.attrs.{data-turbo}
+ *
+ * Usage (legacy, still supported):
+ *   {% include '_components/_page_header.html.twig' with {
+ *       title: 'Asset Management',
+ *       subtitle: 'Verwaltung von IT-Assets und Informationswerten',
+ *       icon: 'bi-server',
+ *       actions: [
+ *           { label: 'Neu', url: path('app_asset_new'), variant: 'primary', icon: 'bi-plus-circle' }
+ *       ]
+ *   } %}
+ *
+ * NEW CODE: import _fa_page_header.html.twig directly — see its docblock
+ * for the canonical schema.
+ */
 #}
 
-<div class="page-header">
-    <div class="page-header-content">
-        <h1 class="page-header-title">
-            {% if icon is defined %}
-                <i class="bi {{ icon }}" aria-hidden="true"></i>
-            {% endif %}
-            {{ title }}
-        </h1>
-        {% if subtitle is defined %}
-            <p class="page-header-subtitle">{{ subtitle }}</p>
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{# Map legacy schema to fa-page-header schema #}
+{% set _badge = null %}
+{% if icon is defined and icon %}
+    {# strip leading `bi-` if present so canonical macro adds proper prefix #}
+    {% set _icon_raw = (icon starts with 'bi-') ? icon|slice(3) : icon %}
+    {% set _badge = { icon: _icon_raw, label: '' } %}
+{% endif %}
+
+{% set _actions = [] %}
+{% if actions is defined and actions|length > 0 %}
+    {% for action in actions %}
+        {% set _action_icon_raw = action.icon is defined and action.icon
+            ? ((action.icon starts with 'bi-') ? action.icon|slice(3) : action.icon)
+            : null %}
+        {% set _attrs = {} %}
+        {% if action.turbo is defined and action.turbo == false %}
+            {% set _attrs = { 'data-turbo': 'false' } %}
+        {% else %}
+            {% set _attrs = { 'data-turbo-action': 'advance' } %}
         {% endif %}
-    </div>
-    {% if actions is defined and actions|length > 0 %}
-        <div class="page-header-actions">
-            {% for action in actions %}
-                <a href="{{ action.url }}"
-                   class="btn btn-{{ action.variant|default('secondary') }}"
-                   {% if action.turbo is defined and action.turbo == false %}data-turbo="false"{% else %}data-turbo-action="advance"{% endif %}>
-                    {% if action.icon is defined %}
-                        <i class="bi {{ action.icon }}" aria-hidden="true"></i>
-                    {% endif %}
-                    {{ action.label }}
-                </a>
-            {% endfor %}
-        </div>
-    {% endif %}
-</div>
+        {% set _actions = _actions|merge([{
+            label:   action.label,
+            href:    action.url,
+            variant: action.variant|default('secondary'),
+            icon:    _action_icon_raw,
+            attrs:   _attrs
+        }]) %}
+    {% endfor %}
+{% endif %}
+
+{{ _fa_page_header.render({
+    badge:    _badge,
+    title:    title|default(''),
+    subtitle: subtitle|default(null),
+    actions:  _actions
+}) }}

@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_appetite' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ appetite.displayName }} - {{ 'risk_appetite.title'|trans({}, 'risk_appetite') }}{% endblock %}
 
@@ -12,39 +13,29 @@
             { label: appetite.displayName }
         ]
     } %}
-</div>
 
-<div class="page-header">
-    <div>
-        <h1>
-            <i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i>
-            {% if appetite.isGlobal() %}
-                <i class="fa-icon fa-icon--ui-globe" aria-hidden="true"></i> {{ 'risk_appetite.category.global'|trans({}, 'risk_appetite') }}
-            {% else %}
-                {{ appetite.category }} {{ 'risk_appetite.title_singular'|trans({}, 'risk_appetite') }}
-            {% endif %}
-        </h1>
-        <p class="text-muted">
-            {{ 'risk_appetite.show.subtitle'|trans({}, 'risk_appetite') }}
-            {% if appetite.isActive() %}
-                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'risk_appetite.status.active'|trans({}, 'risk_appetite'), class: 'ms-2' } %}
-            {% else %}
-                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'risk_appetite.status.inactive'|trans({}, 'risk_appetite'), class: 'ms-2' } %}
-            {% endif %}
-            {% if appetite.isApproved() %}
-                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'risk_appetite.approved'|trans({}, 'risk_appetite'), class: 'ms-2' } %}
-            {% endif %}
-        </p>
-    </div>
-    <div class="button-group">
-        {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_risk_appetite_edit', {id: appetite.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-        </a>
+    {% set _show_actions = [] %}
+    {% if is_granted('ROLE_ADMIN') %}
+        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_risk_appetite_edit', {id: appetite.id}) }]) %}
+    {% endif %}
+    {% set _show_actions = _show_actions|merge([{ label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_risk_appetite_index') }]) %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'speedometer2', label: appetite.isGlobal() ? 'risk_appetite.category.global'|trans({}, 'risk_appetite') : appetite.category },
+        title: appetite.displayName,
+        subtitle: 'risk_appetite.show.subtitle'|trans({}, 'risk_appetite'),
+        actions: _show_actions
+    }) }}
+
+    {# Status badges (active / approved) kept below header — multi-badge subtitle not supported by macro #}
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        {% if appetite.isActive() %}
+            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'risk_appetite.status.active'|trans({}, 'risk_appetite') } %}
+        {% else %}
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'risk_appetite.status.inactive'|trans({}, 'risk_appetite') } %}
         {% endif %}
-        <a href="{{ path('app_risk_appetite_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-        </a>
+        {% if appetite.isApproved() %}
+            {% include '_components/_badge.html.twig' with { variant: 'info', content: 'risk_appetite.approved'|trans({}, 'risk_appetite') } %}
+        {% endif %}
     </div>
 </div>
 

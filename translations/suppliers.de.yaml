@@ -320,3 +320,32 @@ corporate:
     section:
         dora: 'DORA Register of Information (Art. 28)'
         privacy: 'Datenschutz (DSGVO Art. 28)'
+        marisk: 'MaRisk Auslagerungsmanagement'
+    marisk:
+        field:
+            outsourcing_classification: Auslagerungsklassifikation (MaRisk AT 9.1)
+            outsourcing_due_diligence_completed: Due Diligence abgeschlossen
+            outsourcing_due_diligence_date: Datum der Due Diligence
+            outsourcing_exit_strategy: Exit-Strategie (MaRisk AT 9.6)
+            bafin_notification_required: BaFin-Meldung erforderlich (AT 9.7 + KWG § 24)
+            bafin_notification_date: Datum der BaFin-Meldung
+            risk_bearing_capacity_impact: Auswirkung auf Risikotragfähigkeit (AT 4.1)
+            board_level_risk_acceptance: Vorstandsebene Risikoakzeptanz (AT 4.3)
+            compliance_function_involvement: Compliance-Funktion einbezogen (AT 4.4.2)
+            internal_audit_function_involvement: Interne Revision einbezogen (AT 4.4.3)
+        placeholder:
+            outsourcing_classification: '-- Klassifikation wählen --'
+        help:
+            outsourcing_classification: 'Wesentliche Auslagerung (AT 9.1) — separat von DORA-Klassifikation "critical or important"'
+            outsourcing_due_diligence_completed: Wurde vor Vertragsschluss eine angemessene Risikoprüfung durchgeführt?
+            outsourcing_due_diligence_date: Datum, an dem die Due-Diligence-Prüfung abgeschlossen wurde
+            outsourcing_exit_strategy: Ausstiegsplan für die Auslagerungsbeziehung inkl. Übergangsmaßnahmen (MaRisk AT 9.6)
+            bafin_notification_required: 'Ist die Auslagerung der BaFin meldepflichtig? (MaRisk AT 9.7 + § 24 Abs. 1 Nr. 12 KWG)'
+            bafin_notification_date: Datum der Anzeige an die BaFin
+            risk_bearing_capacity_impact: Mögliche Auswirkung auf die Risikotragfähigkeit des Instituts (MaRisk AT 4.1)
+            board_level_risk_acceptance: Hat die Geschäftsleitung dieses Auslagerungsrisiko explizit akzeptiert? (MaRisk AT 4.3)
+            compliance_function_involvement: Wurde die Compliance-Funktion bei der Risikobeurteilung einbezogen? (MaRisk AT 4.4.2)
+            internal_audit_function_involvement: Wurde die Interne Revision einbezogen? (MaRisk AT 4.4.3)
+        outsourcing_classification:
+            substantial: Wesentliche Auslagerung
+            non_substantial: Nicht-wesentliche Auslagerung

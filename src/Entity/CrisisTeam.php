@@ -201,13 +201,34 @@ class CrisisTeam
     private ?DateTimeImmutable $nextTrainingAt = null;
 
     /**
-     * Related business continuity plans
+     * Related business continuity plans (legacy unidirectional — kept for backward compat)
      *
      * @var Collection<int, BusinessContinuityPlan>
      */
     #[ORM\ManyToMany(targetEntity: BusinessContinuityPlan::class)]
     #[ORM\JoinTable(name: 'crisis_team_bcp')]
     private Collection $businessContinuityPlans;
+
+    /**
+     * BC Plans that have assigned this team (inverse side of BCP.crisisTeams)
+     *
+     * @var Collection<int, BusinessContinuityPlan>
+     */
+    #[ORM\ManyToMany(targetEntity: BusinessContinuityPlan::class, mappedBy: 'crisisTeams')]
+    private Collection $bcPlans;
+
+    /**
+     * Number of real activations — BSI 200-4 §7.2
+     */
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $activationCount = 0;
+
+    /**
+     * Escalation matrix for external partners — BSI 200-4 §6.2 + NIS2 Art. 23
+     * [{trigger: string, externalPartner: 'BSI'|'Police'|'CERT-Bund'|string, contactInfo: string, escalateAfter: string}, ...]
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $escalationMatrix = null;
 
     /**
      * Documentation and procedures
@@ -235,6 +256,7 @@ class CrisisTeam
 public function __construct()
     {
         $this->businessContinuityPlans = new ArrayCollection();
+        $this->bcPlans = new ArrayCollection();
         $this->teamLeaderDeputyPersons = new ArrayCollection();
         $this->deputyLeaderDeputyPersons = new ArrayCollection();
         $this->personMembers = new ArrayCollection();
@@ -766,6 +788,56 @@ public function __construct()
     public function setTenant(?Tenant $tenant): static
     {
         $this->tenant = $tenant;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BusinessContinuityPlan>
+     */
+    public function getBcPlans(): Collection
+    {
+        return $this->bcPlans;
+    }
+
+    public function addBcPlan(BusinessContinuityPlan $bcPlan): static
+    {
+        if (!$this->bcPlans->contains($bcPlan)) {
+            $this->bcPlans->add($bcPlan);
+        }
+        return $this;
+    }
+
+    public function removeBcPlan(BusinessContinuityPlan $bcPlan): static
+    {
+        $this->bcPlans->removeElement($bcPlan);
+        return $this;
+    }
+
+    public function getActivationCount(): int
+    {
+        return $this->activationCount;
+    }
+
+    public function setActivationCount(int $activationCount): static
+    {
+        $this->activationCount = $activationCount;
+        return $this;
+    }
+
+    public function incrementActivationCount(): static
+    {
+        $this->activationCount++;
+        return $this;
+    }
+
+    public function getEscalationMatrix(): ?array
+    {
+        return $this->escalationMatrix;
+    }
+
+    public function setEscalationMatrix(?array $escalationMatrix): static
+    {
+        $this->escalationMatrix = $escalationMatrix;
         return $this;
     }
 }

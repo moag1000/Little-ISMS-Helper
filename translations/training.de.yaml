@@ -72,6 +72,7 @@ training:
     attendee_count: Anzahl Teilnehmer
     completion_date: Abschlussdatum
     trainer_legacy: Trainer (freitext, veraltet)
+    program_type: Programm-Klassifikation (§7.3)
   placeholder:
     title: z.B. ISO 27001 Awareness Training
     description: Beschreiben Sie Inhalt und Ziele der Schulung...
@@ -79,6 +80,7 @@ training:
     location: z.B. Konferenzraum A oder Zoom-Link
     trainer_user: -- Trainer --
     trainer_person: '-- Person aus Stammdaten --'
+    program_type: '-- Programm-Typ wählen --'
   help:
     duration: Dauer in Minuten (15-480)
     participants: STRG gedrückt halten um mehrere Teilnehmer auszuwählen
@@ -91,6 +93,15 @@ training:
       nutzen.
     trainer_person: 'Person ohne System-Login als Trainer. Reihenfolge: User > Person > Legacy-Text.'
     trainer_deputy_persons: 'Weitere Personen mit Vertretungsfunktion beim Training.'
+    program_type: 'Programm-Klassifikation gemäß ISO 27001 §7.3 Bewusstsein – für Reporting und Auswertung.'
+  program_type:
+    awareness: Allgemeine Awareness
+    role_specific: Rollenspezifisch
+    management: Management-Schulung
+    onboarding: Onboarding
+    compliance_specific: Compliance-spezifisch
+    technical: Technisch
+    regulatory_required: Regulatorisch vorgeschrieben
   validation:
     title_required: Bitte geben Sie einen Titel ein
     date_required: Bitte wählen Sie ein Datum

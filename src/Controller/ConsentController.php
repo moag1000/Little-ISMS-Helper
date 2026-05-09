@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Consent;
 use App\Entity\User;
 use App\Form\ConsentType;
-use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Repository\ConsentRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
@@ -40,6 +40,7 @@ class ConsentController extends AbstractController
     public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $tenant = $this->tenantContext->getCurrentTenant();
 
         // Get filter parameters
@@ -93,6 +94,7 @@ class ConsentController extends AbstractController
     public function new(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $consent = new Consent();
         $tenant = $this->tenantContext->getCurrentTenant();
 
@@ -141,6 +143,7 @@ class ConsentController extends AbstractController
     public function show(Consent $consent): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         return $this->render('consent/show.html.twig', [
             'consent' => $consent,
         ]);
@@ -151,6 +154,7 @@ class ConsentController extends AbstractController
     public function edit(Request $request, Consent $consent): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         // Only allow editing if pending or active
         if (!in_array($consent->getStatus(), ['pending_verification', 'active'], true)) {
             $this->addFlash('error', $this->translator->trans('consent.error.cannot_edit_status', [], 'consent'));
@@ -180,6 +184,7 @@ class ConsentController extends AbstractController
     public function verify(Request $request, Consent $consent): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('verify' . $consent->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('consent.error.invalid_token', [], 'consent'));
             return $this->redirectToRoute('app_consent_show', ['id' => $consent->getId()]);
@@ -212,6 +217,7 @@ class ConsentController extends AbstractController
     public function revoke(Request $request, Consent $consent): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('revoke' . $consent->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('consent.error.invalid_token', [], 'consent'));
             return $this->redirectToRoute('app_consent_show', ['id' => $consent->getId()]);
@@ -263,6 +269,7 @@ class ConsentController extends AbstractController
     public function delete(Request $request, Consent $consent): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('delete' . $consent->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('consent.error.invalid_token', [], 'consent'));
             return $this->redirectToRoute('app_consent_show', ['id' => $consent->getId()]);

@@ -52,6 +52,24 @@
                     <div class="col-md-6">{{ form_row(form.riskMatrixSize) }}</div>
                     <div class="col-md-6">{{ form_row(form.wizardMaturityTarget) }}</div>
                 </div>
+
+                <hr class="my-4">
+                <h3 class="h6 text-muted mb-3">{{ 'admin.tenant_settings.section_api'|trans }}</h3>
+                <div class="row g-3">
+                    <div class="col-md-6">{{ form_row(form.apiRateLimitPerMinute) }}</div>
+                </div>
+
+                <hr class="my-4">
+                <h3 class="h6 text-muted mb-3">{{ 'admin.tenant_settings.section_json'|trans }}</h3>
+                <p class="text-muted small">{{ 'admin.tenant_settings.json_help'|trans }}</p>
+                <div class="row g-3">
+                    <div class="col-12">{{ form_row(form.supervisoryAuthorities) }}</div>
+                    <div class="col-12">{{ form_row(form.dataRetentionPolicies) }}</div>
+                    <div class="col-12">{{ form_row(form.notificationPreferences) }}</div>
+                    <div class="col-12">{{ form_row(form.csirtEndpoints) }}</div>
+                    <div class="col-12">{{ form_row(form.crisisTeamOnCall) }}</div>
+                </div>
+
                 <div class="d-flex gap-2 mt-3">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
                         <i class="bi bi-check2 me-1"></i>{{ 'admin.tenant_settings.save'|trans }}
@@ -87,9 +105,9 @@
                                 <th>{{ 'admin.tenant_settings.password_complexity'|trans }}</th>
                                 <td>
                                     {% if globals.password_require_complexity %}
-                                        <span class="badge bg-success">{{ 'admin.tenant_settings.enforced'|trans }}</span>
+                                        <span class="fa-status-pill fa-status-pill--success">{{ 'admin.tenant_settings.enforced'|trans }}</span>
                                     {% else %}
-                                        <span class="badge bg-warning">{{ 'admin.tenant_settings.disabled'|trans }}</span>
+                                        <span class="fa-status-pill fa-status-pill--warning">{{ 'admin.tenant_settings.disabled'|trans }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -106,6 +124,28 @@
                             <tr>
                                 <th>{{ 'admin.tenant_settings.session_timeout'|trans }}</th>
                                 <td>{{ globals.session_timeout_minutes }} {{ 'admin.tenant_settings.minutes'|trans }}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ 'admin.tenant_settings.backup_schedule'|trans }}</th>
+                                <td><code>{{ globals.backup_schedule }}</code></td>
+                            </tr>
+                            <tr>
+                                <th>{{ 'admin.tenant_settings.backup_retention'|trans }}</th>
+                                <td>{{ globals.backup_retention_days }} {{ 'admin.tenant_settings.days'|trans }}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ 'admin.tenant_settings.environment_label'|trans }}</th>
+                                <td><code>{{ globals.environment_label }}</code></td>
+                            </tr>
+                            <tr>
+                                <th>{{ 'admin.tenant_settings.telemetry'|trans }}</th>
+                                <td>
+                                    {% if globals.telemetry_opt_in %}
+                                        <span class="fa-status-pill fa-status-pill--primary">opt-in</span>
+                                    {% else %}
+                                        <span class="fa-status-pill fa-status-pill--neutral">off</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
