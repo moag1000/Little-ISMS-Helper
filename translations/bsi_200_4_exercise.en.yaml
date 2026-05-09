@@ -1,0 +1,16 @@
+# Translation skeleton for bsi_200_4_exercise
+# Sprint 0 Task 0.1 — empty skeleton with standard sections.
+# Keys to be filled during feature implementation.
+
+bsi_200_4_exercise:
+  nav:
+    title: ''
+  page:
+    title: ''
+    subtitle: ''
+  field: {}
+  error: {}
+  help: {}
+  audit: {}
+  success: {}
+  warning: {}
