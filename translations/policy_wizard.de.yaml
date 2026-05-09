@@ -649,6 +649,7 @@ policy_wizard:
     # Junior-ISB Wish #6 — clickable warning link CTA on Step 7.
     warning:
         click_to_jump: 'Klicken um zu „%step%" zu springen und zu korrigieren.'
+        self_approval_single_user: 'Selbst-Genehmigung aktiv: dieser Mandant hat nur einen App-User. Im Audit dokumentieren — sobald ein zweiter User existiert, muss die Approval-Chain auf 4-Augen-Prinzip umgestellt werden.'
 
     # Junior-ISB Wish #5 — Auditor-Score badge / detail section.
     auditor_score:
@@ -690,7 +691,7 @@ policy_wizard:
         function_slot_unknown: 'Unbekannter Function-Owner-Slot.'
         approval_chain_invalid: 'Die Approval-Chain ist ungültig.'
         approval_chain_required: 'Mindestens ein Approver in der Approval-Chain ist erforderlich.'
-        self_approval_forbidden: 'Selbst-Genehmigung ist verboten — der Wizard-Starter darf nicht in der eigenen Approval-Chain stehen.'
+        self_approval_forbidden: 'Selbst-Genehmigung ist verboten — der Wizard-Starter darf nicht in der eigenen Approval-Chain stehen, sobald mindestens ein zweiter App-User existiert.'
         crypto_allowlist_required: 'Mindestens ein erlaubter Algorithmus muss ausgewählt sein.'
         crypto_allowlist_invalid: 'Die Krypto-Allow-List ist ungültig.'
         backup_rpo_required: 'Bitte einen Backup-RPO in Stunden angeben.'
