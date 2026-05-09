@@ -301,9 +301,9 @@
                             {# Policy-Wizard W7-C — settings-drift badge. #}
                             {% if driftMap[document.id] is defined and driftMap[document.id] %}
                                 <span class="badge bg-warning text-dark ms-1"
-                                      title="{{ 'policy_wizard.badge.settings_drift.tooltip'|trans({}, 'policy_wizard') }}">
+                                      title="{{ 'policy_wizard.drift_badge.settings_drift.tooltip'|trans({}, 'policy_wizard') }}">
                                     <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                                    {{ 'policy_wizard.badge.settings_drift.label'|trans({}, 'policy_wizard') }}
+                                    {{ 'policy_wizard.drift_badge.settings_drift.label'|trans({}, 'policy_wizard') }}
                                 </span>
                             {% endif %}
                             {% if document.supersedes %}

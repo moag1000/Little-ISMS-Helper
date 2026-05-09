@@ -370,6 +370,41 @@ policy_wizard:
         label: 'Group drift'
         title: 'This policy was not regenerated after a group-level settings change.'
         aria_label: 'Group settings drift detected'
+        settings_drift:
+            label: 'Settings drift'
+            tooltip: 'The settings driving this policy have changed since it was generated. A re-run is recommended.'
+
+    # W7-C — Re-generation diff UX (doc-level + variable-level only).
+    diff:
+        title: 'Re-generation diff'
+        subtitle: '%total% changes detected — severity: %severity%'
+        severity_minor: 'minor'
+        severity_moderate: 'moderate'
+        severity_major: 'major'
+        previous_version: 'Previous version'
+        current_version: 'Current version'
+        previous_value: 'Old value'
+        current_value: 'New value'
+        field_label: 'Field'
+        variable_key: 'Variable'
+        added: 'added'
+        removed: 'removed'
+        modified: 'modified'
+        no_changes: 'No changes in this section.'
+        hash_changed: 'Content hash changed'
+        restore_previous_button: 'Restore previous version'
+        restore_confirm: 'Archive the current version and reactivate the previous one?'
+        restore_success: 'Previous version restored; current version archived.'
+        tab:
+            metadata: 'Metadata'
+            variables: 'Variables'
+            sections: 'Sections'
+
+    # W7-C — History toggle on the Document index.
+    history_toggle:
+        label: 'Show versions'
+        current_only: 'Current versions only'
+        with_history: 'Include history'
 
 # W3-L — Per-user policy acknowledgement collection.
 # Closes auditor's predicted ISO 27001 A.6.3 NC ("policy must be communicated and acknowledged").
@@ -795,58 +830,4 @@ compliance_check:
         gdpr_premises_processing:
             title: 'Personal data in physical security zones (GDPR Art. 32)'
             description: 'Embedded in the Physical Security Policy. Protection of personal data in premises and access-control regimes.'
-
-# ────────────────────────────────────────────────────────────────────────
-# W7-C — Top-level widget block reserved for the Re-Generation Diff,
-# Settings-Drift Badge and History-Toggle UI. W7-E adds its own widget
-# keys nested under `policy_wizard.widget.*` (see line ~348) so the two
-# code paths do not collide in the trans-lookup.
-# ────────────────────────────────────────────────────────────────────────
-widget:
-    # W7-C — Re-generation diff UX (doc-level + variable-level only).
-    # Deliberately NO character-level diff — section hash + variable-key
-    # are sufficient for ISB / CISO approval discussion (persona-review 05
-    # lines 198-204).
-    diff:
-        title: 'Re-generation diff'
-        subtitle: '%total% changes detected — severity: %severity%'
-        severity_minor: 'minor'
-        severity_moderate: 'moderate'
-        severity_major: 'major'
-        previous_version: 'Previous version'
-        current_version: 'Current version'
-        previous_value: 'Old value'
-        current_value: 'New value'
-        field_label: 'Field'
-        variable_key: 'Variable'
-        added: 'added'
-        removed: 'removed'
-        modified: 'modified'
-        no_changes: 'No changes in this section.'
-        hash_changed: 'Content hash changed'
-        restore_previous_button: 'Restore previous version'
-        restore_confirm: 'Archive the current version and reactivate the previous one?'
-        restore_success: 'Previous version restored; current version archived.'
-        tab:
-            metadata: 'Metadata'
-            variables: 'Variables'
-            sections: 'Sections'
-
-    # W7-C — Settings drift badge for the Document listing. Surfaces when
-    # tenant settings driving this policy have changed since the policy
-    # was generated. Click leads into a targeted re-run (persona review 05
-    # line 184).
-    badge:
-        settings_drift:
-            label: 'Settings drift'
-            tooltip: 'The settings driving this policy have changed since it was generated. A re-run is recommended.'
-
-    # W7-C — History toggle on the Document index. Default: show only the
-    # latest version per policy; the toggle reveals the historical chain
-    # (persona review 05 lines 243-244 — otherwise the list becomes
-    # unusable after a couple of years).
-    history_toggle:
-        label: 'Show versions'
-        current_only: 'Current versions only'
-        with_history: 'Include history'
 

@@ -370,6 +370,41 @@ policy_wizard:
         label: 'Konzern-Drift'
         title: 'Diese Richtlinie wurde nach einer Konzern-Settings-Verschärfung nicht erneut generiert.'
         aria_label: 'Konzern-Settings-Drift erkannt'
+        settings_drift:
+            label: 'Settings-Drift'
+            tooltip: 'Settings, die diese Richtlinie steuern, haben sich seit der Erzeugung geaendert. Re-Run empfohlen.'
+
+    # W7-C — Re-generation diff UX (doc-level + variable-level only).
+    diff:
+        title: 'Re-Generierungs-Diff'
+        subtitle: '%total% Aenderungen erkannt — Schweregrad: %severity%'
+        severity_minor: 'gering'
+        severity_moderate: 'mittel'
+        severity_major: 'hoch'
+        previous_version: 'Vorgaenger-Version'
+        current_version: 'Aktuelle Version'
+        previous_value: 'Alter Wert'
+        current_value: 'Neuer Wert'
+        field_label: 'Feld'
+        variable_key: 'Variable'
+        added: 'hinzugefuegt'
+        removed: 'entfernt'
+        modified: 'geaendert'
+        no_changes: 'Keine Aenderungen in diesem Bereich.'
+        hash_changed: 'Inhalts-Hash geaendert'
+        restore_previous_button: 'Vorgaenger-Version wiederherstellen'
+        restore_confirm: 'Aktuelle Version archivieren und die Vorgaenger-Version reaktivieren?'
+        restore_success: 'Vorgaenger-Version wiederhergestellt; aktuelle Version archiviert.'
+        tab:
+            metadata: 'Metadaten'
+            variables: 'Variablen'
+            sections: 'Sektionen'
+
+    # W7-C — History-Toggle auf der Dokumenten-Liste.
+    history_toggle:
+        label: 'Versionen anzeigen'
+        current_only: 'Nur aktuelle Versionen'
+        with_history: 'Inklusive Historie'
 
 # W3-L — Per-user policy acknowledgement collection.
 # Closes auditor's predicted ISO 27001 A.6.3 NC ("policy must be communicated and acknowledged").
@@ -795,56 +830,4 @@ compliance_check:
         gdpr_premises_processing:
             title: 'Datenschutz in physischen Sicherheitsbereichen (DSGVO Art. 32)'
             description: 'Eingebettet in die Physical-Security-Policy. Schutz personenbezogener Daten in Räumlichkeiten und Zutrittskontrollen.'
-
-# ────────────────────────────────────────────────────────────────────────
-# W7-C — Top-level widget block reserved for the Re-Generation Diff,
-# Settings-Drift Badge and History-Toggle UI. W7-E adds its own widget
-# keys nested under `policy_wizard.widget.*` (see line ~348) so the two
-# code paths do not collide in the trans-lookup.
-# ────────────────────────────────────────────────────────────────────────
-widget:
-    # W7-C — Re-generation diff UX (doc-level + variable-level only).
-    # Bewusst KEIN Zeichen-Diff — Section-Hash + Variablen-Key reichen
-    # fuer ISB-/CISO-Approval-Diskussion (Persona-Review 05 Z.198-204).
-    diff:
-        title: 'Re-Generierungs-Diff'
-        subtitle: '%total% Aenderungen erkannt — Schweregrad: %severity%'
-        severity_minor: 'gering'
-        severity_moderate: 'mittel'
-        severity_major: 'hoch'
-        previous_version: 'Vorgaenger-Version'
-        current_version: 'Aktuelle Version'
-        previous_value: 'Alter Wert'
-        current_value: 'Neuer Wert'
-        field_label: 'Feld'
-        variable_key: 'Variable'
-        added: 'hinzugefuegt'
-        removed: 'entfernt'
-        modified: 'geaendert'
-        no_changes: 'Keine Aenderungen in diesem Bereich.'
-        hash_changed: 'Inhalts-Hash geaendert'
-        restore_previous_button: 'Vorgaenger-Version wiederherstellen'
-        restore_confirm: 'Aktuelle Version archivieren und die Vorgaenger-Version reaktivieren?'
-        restore_success: 'Vorgaenger-Version wiederhergestellt; aktuelle Version archiviert.'
-        tab:
-            metadata: 'Metadaten'
-            variables: 'Variablen'
-            sections: 'Sektionen'
-
-    # W7-C — Settings-Drift Badge auf der Dokumenten-Liste. Sichtbar
-    # wenn die Tenant-Settings sich seit Generierung der Policy geaendert
-    # haben — Klick fuehrt in den Targeted-Re-Run (Persona-Review 05 Z.184).
-    badge:
-        settings_drift:
-            label: 'Settings-Drift'
-            tooltip: 'Settings, die diese Richtlinie steuern, haben sich seit der Erzeugung geaendert. Re-Run empfohlen.'
-
-    # W7-C — History-Toggle auf der Dokumenten-Liste. Default: nur die
-    # aktuelle Version je Policy zeigen; Toggle blendet Historie ein
-    # (Persona-Review 05 Z.243-244 — sonst wird die Liste nach 3 Jahren
-    # unbrauchbar).
-    history_toggle:
-        label: 'Versionen anzeigen'
-        current_only: 'Nur aktuelle Versionen'
-        with_history: 'Inklusive Historie'
 
