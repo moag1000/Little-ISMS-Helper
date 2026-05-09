@@ -326,7 +326,7 @@
 .filter-control select:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgb(52, 152, 219, 0.1);
+    box-shadow: 0 0 0 3px rgb(var(--primary-rgb), 0.1);
 }
 
 /* Dark Mode - Filter Panel */
@@ -363,7 +363,7 @@
 .search-box input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgb(52, 152, 219, 0.1);
+    box-shadow: 0 0 0 3px rgb(var(--primary-rgb), 0.1);
 }
 
 .search-box::before {

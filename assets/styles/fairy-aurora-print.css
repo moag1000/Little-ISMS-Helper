@@ -286,17 +286,17 @@
         display: grid;
         place-items: center;
         font: 700 96pt var(--font-sans, "Inter", sans-serif);
-        color: rgba(220, 38, 38, 0.08);  /* default = VERTRAULICH (rot) */
+        color: rgba(var(--danger-rgb), 0.08);  /* default = VERTRAULICH (rot) */
         transform: rotate(-30deg);
         pointer-events: none;
         z-index: 0;
         white-space: nowrap;
     }
     body[data-print-watermark="ENTWURF"]::after {
-        color: rgba(245, 158, 11, 0.10); /* gelb */
+        color: rgba(var(--warning-rgb), 0.10); /* gelb */
     }
     body[data-print-watermark="VERTRAULICH"]::after {
-        color: rgba(220, 38, 38, 0.08);  /* rot */
+        color: rgba(var(--danger-rgb), 0.08);  /* rot */
     }
     body[data-print-watermark="ARCHIVIERT"]::after {
         color: rgba(94, 88, 120, 0.10);  /* grau */
