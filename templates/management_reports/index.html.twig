@@ -107,7 +107,7 @@
                 {% block card_header %}
                     <div class="card-header bg-body-secondary">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'management_reports.quick_access.title'|trans({}, 'management_reports') }}
+                            <i class="fa-icon fa-icon--threat" aria-hidden="true"></i> {{ 'management_reports.quick_access.title'|trans({}, 'management_reports') }}
                         </h3>
                     </div>
                 {% endblock %}
@@ -143,22 +143,22 @@
                             <h4 class="h6">{{ 'management_reports.quick_access.excel_exports'|trans({}, 'management_reports') }}</h4>
                             <div class="d-flex flex-wrap gap-2 mb-3">
                                 <a href="{{ path('app_management_reports_risk_excel') }}" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
-                                    <i class="bi bi-file-excel" aria-hidden="true"></i> Risk Register
+                                    <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> Risk Register
                                 </a>
                                 <a href="{{ path('app_management_reports_assets_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                    <i class="bi bi-file-excel" aria-hidden="true"></i> Asset Inventory
+                                    <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> Asset Inventory
                                 </a>
                                 <a href="{{ path('app_management_reports_bcm_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                    <i class="bi bi-file-excel" aria-hidden="true"></i> BCM Report
+                                    <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> BCM Report
                                 </a>
                                 <a href="{{ path('app_management_reports_compliance_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                    <i class="bi bi-file-excel" aria-hidden="true"></i> Compliance Status
+                                    <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> Compliance Status
                                 </a>
                                 <a href="{{ path('app_management_reports_audit_excel') }}" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm">
-                                    <i class="bi bi-file-excel" aria-hidden="true"></i> Audit Report
+                                    <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> Audit Report
                                 </a>
                                 <a href="{{ path('app_management_reports_gdpr_excel') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                    <i class="bi bi-file-excel" aria-hidden="true"></i> GDPR / Data Breach
+                                    <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> GDPR / Data Breach
                                 </a>
                             </div>
                             <h4 class="h6">{{ 'cert_readiness.title'|trans({}, 'management_reports') }}</h4>
@@ -173,7 +173,7 @@
                             <h4 class="h6">{{ 'management_reports.quick_access.evidence_package'|trans({}, 'management_reports') }}</h4>
                             <div class="d-flex flex-wrap gap-2">
                                 <a href="{{ path('app_management_reports_evidence_package') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                    <i class="bi bi-file-zip" aria-hidden="true"></i> {{ 'management_reports.action.download_evidence_package'|trans({}, 'management_reports') }}
+                                    <i class="fa-icon fa-icon--archive" aria-hidden="true"></i> {{ 'management_reports.action.download_evidence_package'|trans({}, 'management_reports') }}
                                 </a>
                             </div>
                         </div>

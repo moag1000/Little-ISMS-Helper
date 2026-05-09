@@ -44,7 +44,7 @@
                             <form method="post" action="{{ path(alert.fix_route) }}" class="d-inline ms-2">
                                 <input type="hidden" name="_token" value="{{ csrf_token(alert.fix_csrf_name) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
-                                    <i class="bi bi-wrench-adjustable" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i>
                                     {{ alert.fix_label|trans({}, 'admin') }}
                                 </button>
                             </form>
@@ -111,7 +111,7 @@
             <section class="fa-section">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
-                        <i class="bi bi-bar-chart-fill text-primary" aria-hidden="true"></i>
+                        <i class="fa-icon text-primary fa-icon--nav-bar-chart" aria-hidden="true"></i>
                         {{ 'admin.dashboard.modules.title'|trans({}, 'admin') }}
                     </h2>
                 </div>
@@ -237,7 +237,7 @@
             <section class="fa-section mb-4">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
-                        <i class="bi bi-lightning-fill text-warning" aria-hidden="true"></i>
+                        <i class="fa-icon text-warning fa-icon--threat" aria-hidden="true"></i>
                         {{ 'admin.dashboard.quick_actions.title'|trans({}, 'admin') }}
                     </h2>
                 </div>
@@ -283,10 +283,10 @@
                             <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i> {{ 'risk_approval_config.title'|trans({}, 'risk_approval_config') }}
                         </a>
                         <a href="{{ path('app_admin_tenant_email_branding') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-envelope-paper" aria-hidden="true"></i> {{ 'tenant.email.title'|trans({}, 'tenant') }}
+                            <i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i> {{ 'tenant.email.title'|trans({}, 'tenant') }}
                         </a>
                         <a href="{{ path('app_admin_incident_sla_config') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            <i class="bi bi-stopwatch" aria-hidden="true"></i> {{ 'incident_sla.title'|trans({}, 'incident_sla') }}
+                            <i class="fa-icon fa-icon--ui-hourglass" aria-hidden="true"></i> {{ 'incident_sla.title'|trans({}, 'incident_sla') }}
                         </a>
                         <a href="{{ path('app_admin_quick_fix_settings') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                             <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'quick_fix.settings.title'|trans({}, 'quick_fix') }}
@@ -299,7 +299,7 @@
             <section class="fa-section">
                 <div class="fa-section__header">
                     <h2 class="fa-section__title">
-                        <i class="bi bi-clock-history text-info" aria-hidden="true"></i>
+                        <i class="fa-icon text-info fa-icon--audit-trail" aria-hidden="true"></i>
                         {{ 'admin.dashboard.activity.title'|trans({}, 'admin') }}
                     </h2>
                 </div>

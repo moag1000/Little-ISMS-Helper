@@ -129,7 +129,7 @@
     {% if source_type != 'incident' %}
         <div class="link-matrix-block mt-3" data-testid="link-matrix-incidents">
             <h4 class="h6">
-                <i class="bi bi-fire" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--incident" aria-hidden="true"></i>
                 {{ 'common.link_matrix.related_incidents'|trans({}, 'messages') }}
                 {% include '_components/_badge.html.twig' with { variant: 'secondary', content: linked_incidents|length } only %}
             </h4>

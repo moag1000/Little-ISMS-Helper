@@ -158,7 +158,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><span class="fa-status-pill fa-status-pill--success"><i class="bi bi-check-circle" aria-hidden="true"></i> Erlaubt</span></td>
+                                        <td><span class="fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> Erlaubt</span></td>
                                         <td><small>Permissive Lizenzen (MIT, BSD, Apache)</small></td>
                                         <td class="text-end"><strong>{{ stats.allowed }}</strong></td>
                                         <td class="text-end">{{ (stats.allowed / stats.total * 100)|round(1) }}%</td>
@@ -172,7 +172,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><span class="fa-status-pill fa-status-pill--warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Eingeschränkt</span></td>
+                                        <td><span class="fa-status-pill fa-status-pill--warning"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Eingeschränkt</span></td>
                                         <td><small>Weak copyleft (MPL, EPL, CC-BY)</small></td>
                                         <td class="text-end"><strong>{{ stats.restricted }}</strong></td>
                                         <td class="text-end">{{ (stats.restricted / stats.total * 100)|round(1) }}%</td>
@@ -186,7 +186,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><span class="fa-status-pill fa-status-pill--primary"><i class="bi bi-arrow-repeat" aria-hidden="true"></i> Copyleft</span></td>
+                                        <td><span class="fa-status-pill fa-status-pill--primary"><i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i> Copyleft</span></td>
                                         <td><small>Strong copyleft (GPL, LGPL, AGPL)</small></td>
                                         <td class="text-end"><strong>{{ stats.copyleft }}</strong></td>
                                         <td class="text-end">{{ (stats.copyleft / stats.total * 100)|round(1) }}%</td>
@@ -200,7 +200,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><span class="fa-status-pill fa-status-pill--danger"><i class="bi bi-x-circle" aria-hidden="true"></i> Nicht erlaubt</span></td>
+                                        <td><span class="fa-status-pill fa-status-pill--danger"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> Nicht erlaubt</span></td>
                                         <td><small>Non-commercial Lizenzen</small></td>
                                         <td class="text-end"><strong>{{ stats.not_allowed }}</strong></td>
                                         <td class="text-end">{{ (stats.not_allowed / stats.total * 100)|round(1) }}%</td>

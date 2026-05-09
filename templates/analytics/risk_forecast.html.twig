@@ -109,7 +109,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#anomalies-tab" type="button" role="tab">
-                <i class="bi bi-exclamation-diamond me-1" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.anomalies'|trans({}, 'analytics') }}
+                <i class="fa-icon me-1 fa-icon--status-warning" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.anomalies'|trans({}, 'analytics') }}
                 {% if anomalies.total_count > 0 %}
                 {% include '_components/_badge.html.twig' with { variant: 'danger', content: anomalies.total_count } %}
                 {% endif %}
@@ -352,7 +352,7 @@
                         <div class="list-group-item">
                             <div class="d-flex w-100 justify-content-between">
                                 <h6 class="mb-1">
-                                    <i class="bi bi-exclamation-diamond text-danger me-2" aria-hidden="true"></i>
+                                    <i class="fa-icon text-danger me-2 fa-icon--status-warning" aria-hidden="true"></i>
                                     {{ breach.level|title }} Risk Threshold Exceeded
                                 </h6>
                                 {% include '_components/_badge.html.twig' with { variant: breach.severity == 'high' ? 'danger' : 'warning', content: breach.severity|title } %}
@@ -379,7 +379,7 @@
                             <div class="card-header bg-{{ anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info') }} text-{{ anomaly.severity == 'warning' ? 'dark' : 'white' }}">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">
-                                        <i class="bi bi-exclamation-diamond me-2" aria-hidden="true"></i>
+                                        <i class="fa-icon me-2 fa-icon--status-warning" aria-hidden="true"></i>
                                         {{ anomaly.type|replace({'_': ' '})|title }}
                                     </h5>
                                     {% include '_components/_badge.html.twig' with { variant: 'light', content: anomaly.severity|title } %}

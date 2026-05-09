@@ -48,7 +48,7 @@
         <div class="col-md-3">
             {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-secondary text-white' } %}
                 {% block card_body %}
-                    <i class="bi bi-pause-circle fs-1" aria-hidden="true"></i>
+                    <i class="fa-icon fs-1 fa-icon--status-pending" aria-hidden="true"></i>
                     <h3 class="display-5">{{ statistics.inactive }}</h3>
                     <small>{{ 'scheduled_report.stats.inactive'|trans({}, 'scheduled_reports') }}</small>
                 {% endblock %}

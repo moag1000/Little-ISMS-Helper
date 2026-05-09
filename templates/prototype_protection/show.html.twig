@@ -55,7 +55,7 @@
             </a>
             <div>
                 <a href="{{ path('app_prototype_protection_pdf', {id: assessment.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-turbo="false">
-                    <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                     {{ 'prototype_protection.action.pdf'|trans({}, 'prototype_protection') }}
                 </a>
                 {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_prototype_protection_pdf', route_params: {id: assessment.id}} only %}

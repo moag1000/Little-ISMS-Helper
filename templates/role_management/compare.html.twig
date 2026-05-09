@@ -58,7 +58,7 @@
         <section class="fa-section mb-4">
             <div class="fa-section__header">
                 <h3 class="fa-section__title">
-                    <i class="bi bi-table" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i>
                     {{ 'role.compare.permission_matrix'|trans }}
                 </h3>
             </div>
@@ -85,7 +85,7 @@
                                     {% set current_category = data.category %}
                                     <tr class="table-secondary">
                                         <td colspan="{{ roles|length + 1 }}" class="fw-bold">
-                                            <i class="bi bi-folder" aria-hidden="true"></i> {{ data.category|title }}
+                                            <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ data.category|title }}
                                         </td>
                                     </tr>
                                 {% endif %}

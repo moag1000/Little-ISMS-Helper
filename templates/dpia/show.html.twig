@@ -97,7 +97,7 @@
                     <form action="{{ path('app_dpia_reopen', {id: dpia.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('reopen' ~ dpia.id) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="bi bi-folder2-open" aria-hidden="true"></i> {{ 'dpia.action.reopen'|trans({}, 'privacy') }}
+                            <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ 'dpia.action.reopen'|trans({}, 'privacy') }}
                         </button>
                     </form>
                 {% endif %}

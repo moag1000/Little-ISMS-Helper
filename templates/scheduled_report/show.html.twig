@@ -88,7 +88,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="h5 mb-0">
-                            <i class="bi bi-envelope" aria-hidden="true"></i> {{ 'scheduled_report.recipients.title'|trans({}, 'scheduled_reports') }}
+                            <i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i> {{ 'scheduled_report.recipients.title'|trans({}, 'scheduled_reports') }}
                         </h3>
                     </div>
                 {% endblock %}
@@ -179,9 +179,9 @@
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ report.id) }}">
                             <button type="submit" class="fa-cyber-btn {% if report.active %}fa-cyber-btn--danger{% else %}fa-cyber-btn--success{% endif %}">
                                 {% if report.active %}
-                                <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'scheduled_report.action.deactivate'|trans({}, 'scheduled_reports') }}
+                                <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i> {{ 'scheduled_report.action.deactivate'|trans({}, 'scheduled_reports') }}
                                 {% else %}
-                                <i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'scheduled_report.action.activate'|trans({}, 'scheduled_reports') }}
+                                <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'scheduled_report.action.activate'|trans({}, 'scheduled_reports') }}
                                 {% endif %}
                             </button>
                         </form>

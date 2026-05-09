@@ -40,7 +40,7 @@
                 {% block card_body %}
                     <div class="text-center">
                         <h3 class="text-primary">{{ totp_count }}</h3>
-                        <p class="mb-0"><i class="bi bi-phone" aria-hidden="true"></i> TOTP</p>
+                        <p class="mb-0"><i class="fa-icon fa-icon--asset-endpoint" aria-hidden="true"></i> TOTP</p>
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -163,7 +163,7 @@
                                                     <button type="submit"
                                                             class="fa-cyber-btn fa-cyber-btn--warning"
                                                             title="{{ 'mfa_token.action.disable'|trans({}, 'mfa') }}" aria-label="{{ 'mfa_token.action.disable'|trans({}, 'mfa') }}">
-                                                        <i class="bi bi-pause-circle" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
                                                     </button>
                                                 </form>
                                             {% endif %}

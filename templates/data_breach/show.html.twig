@@ -146,7 +146,7 @@
 
                 {% if is_granted('ROLE_MANAGER') and breach.status == 'closed' %}
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" data-bs-toggle="modal" data-bs-target="#reopenModal">
-                        <i class="bi bi-folder2-open" aria-hidden="true"></i> {{ 'privacy.data_breach.action.reopen'|trans({}, 'privacy') }}
+                        <i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ 'privacy.data_breach.action.reopen'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 

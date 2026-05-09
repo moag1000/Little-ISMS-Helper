@@ -34,7 +34,7 @@
             <div class="fa-toggle-card__sub">{{ framework.description }}</div>
             {% if classification[framework.code] is defined and classification[framework.code].reason_key %}
                 <div class="fa-toggle-card__reason">
-                    <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                    <i class="fa-icon fa-icon--ui-lightbulb" aria-hidden="true"></i>
                     <strong>{{ ('setup.applicability.bucket.' ~ bucket ~ '.why')|trans({}, 'setup') }}:</strong>
                     {{ classification[framework.code].reason_key|trans({}, 'setup') }}
                 </div>

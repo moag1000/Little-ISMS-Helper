@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ requirement.requirementId }} - {{ requirement.title }}{% endblock %}
 
@@ -15,17 +16,15 @@
         </ol>
     </nav>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i> {{ requirement.requirementId }}</h1>
-        <div>
-            <a href="{{ path('app_compliance_requirement_edit', {id: requirement.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> Edit
-            </a>
-            <a href="{{ path('app_compliance_requirement_index') }}?framework={{ requirement.framework.id }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> Back to List
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'list-check', label: requirement.framework.code },
+        title: requirement.requirementId,
+        subtitle: requirement.title,
+        actions: [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_compliance_requirement_edit', {id: requirement.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_compliance_requirement_index') ~ '?framework=' ~ requirement.framework.id }
+        ]
+    }) }}
 
     <div class="row">
         <div class="col-md-8">
@@ -278,7 +277,7 @@
 
                     {% if calculated_fulfillment != fulfillment.fulfillmentPercentage %}
                         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-calculator' } } %}
-                            {% block alert_body %}<small><i class="bi bi-calculator" aria-hidden="true"></i> Calculated from controls: <strong>{{ calculated_fulfillment }}%</strong></small>{% endblock %}
+                            {% block alert_body %}<small><i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i> Calculated from controls: <strong>{{ calculated_fulfillment }}%</strong></small>{% endblock %}
                         {% endembed %}
                     {% endif %}
 

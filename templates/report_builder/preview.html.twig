@@ -32,7 +32,7 @@
     <div class="row mb-4">
         <div class="col">
             <div class="d-flex gap-3 text-muted small">
-                <span><i class="bi bi-folder" aria-hidden="true"></i> {{ report.category }}</span>
+                <span><i class="fa-icon fa-icon--nav-collection" aria-hidden="true"></i> {{ report.category }}</span>
                 <span><i class="fa-icon fa-icon--ui-calendar" aria-hidden="true"></i> {{ report_data.report.generated_at|date('d.m.Y H:i') }}</span>
                 <span><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ report.owner.fullName }}</span>
             </div>
@@ -152,7 +152,7 @@
             <div class="status-widget text-center p-4">
                 {% set statusColor = data.status == 'green' ? 'success' : (data.status == 'amber' ? 'warning' : 'danger') %}
                 <div class="display-1">
-                    <i class="bi bi-circle-fill text-{{ statusColor }}" aria-hidden="true"></i>
+                    <i class="fa-icon text-{{ statusColor }} fa-icon--status-pending" aria-hidden="true"></i>
                 </div>
                 <div class="h5 mt-2">{{ data.label }}</div>
                 {% if data.factors is defined %}

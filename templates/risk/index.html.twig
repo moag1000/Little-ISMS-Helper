@@ -289,8 +289,8 @@
                 <th scope="col">{{ 'risk.index.table.threat'|trans({}, 'risk') }}</th>
                 <th scope="col" class="text-center">{{ 'risk.index.table.probability'|trans({}, 'risk') }}</th>
                 <th scope="col" class="text-center">{{ 'risk.index.table.impact'|trans({}, 'risk') }}</th>
-                <th scope="col" class="text-center">{{ 'risk.index.table.risk_score'|trans({}, 'risk') }}<a href="{{ path('app_help_glossary') }}#glossary-inherent-risk" class="text-muted ms-1" title="{{ 'common.glossary_link'|trans({}, 'messages') }}" data-bs-toggle="tooltip"><i class="bi bi-question-circle" aria-hidden="true" style="font-size: 0.75rem;"></i></a></th>
-                <th scope="col" class="text-center">{{ 'risk.index.table.residual_risk'|trans({}, 'risk') }}<a href="{{ path('app_help_glossary') }}#glossary-residual-risk" class="text-muted ms-1" title="{{ 'common.glossary_link'|trans({}, 'messages') }}" data-bs-toggle="tooltip"><i class="bi bi-question-circle" aria-hidden="true" style="font-size: 0.75rem;"></i></a></th>
+                <th scope="col" class="text-center">{{ 'risk.index.table.risk_score'|trans({}, 'risk') }}<a href="{{ path('app_help_glossary') }}#glossary-inherent-risk" class="text-muted ms-1" title="{{ 'common.glossary_link'|trans({}, 'messages') }}" data-bs-toggle="tooltip"><i class="fa-icon fa-icon--ui-help" aria-hidden="true" style="font-size: 0.75rem;"></i></a></th>
+                <th scope="col" class="text-center">{{ 'risk.index.table.residual_risk'|trans({}, 'risk') }}<a href="{{ path('app_help_glossary') }}#glossary-residual-risk" class="text-muted ms-1" title="{{ 'common.glossary_link'|trans({}, 'messages') }}" data-bs-toggle="tooltip"><i class="fa-icon fa-icon--ui-help" aria-hidden="true" style="font-size: 0.75rem;"></i></a></th>
                 <th scope="col">{{ 'risk.index.table.treatment'|trans({}, 'risk') }}</th>
                 <th scope="col" class="text-center">{{ 'risk.index.table.risk_subject'|trans({}, 'risk') }}</th>
                 <th scope="col" class="text-center">{{ 'risk.index.table.actions'|trans({}, 'risk') }}</th>
@@ -367,7 +367,7 @@
                         </a>
                     {% elseif risk.supplier %}
                         <a href="{{ path('app_supplier_show', {id: risk.supplier.id}) }}" class="fa-status-pill fa-status-pill--success" title="{{ risk.supplier.name }}">
-                            <i class="bi bi-truck" aria-hidden="true"></i> {{ 'risk.index.table.supplier'|trans({}, 'risk') }}
+                            <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i> {{ 'risk.index.table.supplier'|trans({}, 'risk') }}
                         </a>
                     {% else %}
                         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'risk.index.table.none'|trans({}, 'risk') } %}

@@ -173,7 +173,7 @@
                                   data-ui-actions-message-param="{{ 'mfa.confirm.disable'|trans({}, 'mfa') }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('disable_' ~ mfa_token.id) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning w-100">
-                                    <i class="bi bi-pause-circle" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
                                     {{ 'mfa.action.disable'|trans({}, 'mfa') }}
                                 </button>
                             </form>

@@ -130,13 +130,13 @@
                                 <small class="text-muted" title="{{ session.userAgent }}">
                                     {% if session.userAgent %}
                                         {% if 'Chrome' in session.userAgent %}
-                                            <i class="bi bi-browser-chrome" aria-hidden="true"></i> Chrome
+                                            <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> Chrome
                                         {% elseif 'Firefox' in session.userAgent %}
-                                            <i class="bi bi-browser-firefox" aria-hidden="true"></i> Firefox
+                                            <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> Firefox
                                         {% elseif 'Safari' in session.userAgent %}
-                                            <i class="bi bi-browser-safari" aria-hidden="true"></i> Safari
+                                            <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> Safari
                                         {% elseif 'Edge' in session.userAgent %}
-                                            <i class="bi bi-browser-edge" aria-hidden="true"></i> Edge
+                                            <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> Edge
                                         {% else %}
                                             <i class="fa-icon fa-icon--ui-globe" aria-hidden="true"></i> {{ session.userAgent|slice(0, 20) }}...
                                         {% endif %}

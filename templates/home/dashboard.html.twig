@@ -44,7 +44,7 @@
             {# Role-Based Dashboard Switcher #}
             <div class="dropdown me-2">
                 <button class="fa-cyber-btn fa-cyber-btn--ghost dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-grid" aria-hidden="true"></i> {{ 'dashboard.action.role_dashboards'|trans({}, 'dashboard') }}
+                    <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i> {{ 'dashboard.action.role_dashboards'|trans({}, 'dashboard') }}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
                     {% if is_granted('ROLE_MANAGER') %}
@@ -60,7 +60,7 @@
                     </li>
                     <li>
                         <a class="dropdown-item" href="{{ path('app_dashboard_board') }}">
-                            <i class="bi bi-briefcase me-2" aria-hidden="true"></i>{{ 'dashboard.role.board'|trans({}, 'dashboard') }}
+                            <i class="fa-icon me-2 fa-icon--nav-process" aria-hidden="true"></i>{{ 'dashboard.role.board'|trans({}, 'dashboard') }}
                         </a>
                     </li>
                     {% endif %}
@@ -109,7 +109,7 @@
             {% block alert_body %}
                 <div class="d-flex align-items-center">
                     <div class="flex-shrink-0 me-3">
-                        <i class="fa-icon {% if total_overdue > 0 %}fa-icon--status-warning{% else %}bi-clock-fill{% endif %} fa-glyph-size-md" aria-hidden="true"></i>
+                        <i class="fa-icon {% if total_overdue > 0 %}fa-icon--status-warning{% else %}{% endif %} fa-glyph-size-md fa-icon--ui-clock" aria-hidden="true"></i>
                     </div>
                     <div class="flex-grow-1">
                         <div class="fa-alert__title">
@@ -645,7 +645,7 @@
                     </h3>
                     <div class="widget-actions">
                         <a href="{{ path('app_audit_log_index') }}" class="widget-action" title="{{ 'common.view_all'|trans({}, 'messages') }}" aria-label="{{ 'common.view_all'|trans({}, 'messages') }}">
-                            <i class="bi bi-arrows-fullscreen" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--util-zoom-in" aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>

@@ -11,7 +11,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="{{ path('app_consent_index') }}" data-turbo-action="advance">
-                            <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i> {{ 'nav.consents'|trans({}, 'nav') }}
+                            <i class="fa-icon fa-icon--approve" aria-hidden="true"></i> {{ 'nav.consents'|trans({}, 'nav') }}
                         </a>
                     </li>
                     {% if form.vars.data.id %}
@@ -126,7 +126,7 @@
                         {% block card_header %}
                             <div class="card-header bg-body-secondary">
                                 <h3 class="mb-0">
-                                    <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                                     {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
                                 </h3>
                             </div>
@@ -165,7 +165,7 @@
                         {% block card_header %}
                             <div class="card-header bg-body-secondary">
                                 <h3 class="mb-0">
-                                    <i class="bi bi-sticky" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-flag" aria-hidden="true"></i>
                                     {{ 'consent.section.notes'|trans({}, 'consent') }}
                                 </h3>
                             </div>

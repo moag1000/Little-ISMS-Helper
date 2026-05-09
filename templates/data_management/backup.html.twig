@@ -124,7 +124,7 @@
                                 {% for backup in backups %}
                                     <tr data-backup="{{ backup.filename }}">
                                         <td>
-                                            <i class="bi bi-file-earmark-zip" aria-hidden="true"></i>
+                                            <i class="fa-icon fa-icon--archive" aria-hidden="true"></i>
                                             {{ backup.filename }}
                                         </td>
                                         <td>{{ backup.created_at }}</td>
@@ -276,7 +276,7 @@
                 <div class="backup-modal-footer">
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost backup-modal-close">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" id="dryRunRestoreBtn">
-                        <i class="bi bi-shield-check me-2" aria-hidden="true"></i>{{ 'data.backup.restore_dry_run'|trans({}, 'data_management') }}
+                        <i class="fa-icon me-2 fa-icon--compliance-shield" aria-hidden="true"></i>{{ 'data.backup.restore_dry_run'|trans({}, 'data_management') }}
                     </button>
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--warning" id="confirmRestoreBtn">
                         <i class="fa-icon fa-icon--ui-refresh me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.start_restore'|trans({}, 'admin') }}
@@ -843,7 +843,7 @@
                     if (result.success) {
                         const isDryRun = result.dry_run === true;
                         let html = isDryRun
-                            ? `<div class="fa-alert fa-alert--info" role="alert"><i class="bi bi-shield-check fa-alert__icon" aria-hidden="true"></i><div class="fa-alert__body"><strong>${result.message}</strong>`
+                            ? `<div class="fa-alert fa-alert--info" role="alert"><i class="fa-icon fa-alert__icon fa-icon--compliance-shield" aria-hidden="true"></i><div class="fa-alert__body"><strong>${result.message}</strong>`
                             : `<div class="fa-alert fa-alert--success" role="alert">
                                 <i class="fa-icon fa-icon--ui-check" fa-alert__icon" aria-hidden="true"></i>
                                 <div class="fa-alert__body"><i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> <strong>${result.message}</strong>`;
