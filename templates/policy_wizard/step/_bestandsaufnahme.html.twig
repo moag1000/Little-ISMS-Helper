@@ -24,53 +24,59 @@
         body: 'policy_wizard.step.bestandsaufnahme.intro'|trans
     }) }}
 
-    {# Junior-ISB-friendly help-card explaining the 4 actions with concrete examples. #}
-    <div class="alert alert-secondary border-0 mt-3 mb-0">
-        <div class="d-flex justify-content-between align-items-start gap-2">
-            <h6 class="mb-2">
-                <i class="bi bi-mortarboard" aria-hidden="true"></i>
-                {{ 'policy_wizard.step.bestandsaufnahme.help.title'|trans }}
-            </h6>
-            {# MUST #2 — Topic explainer popover trigger. #}
-            <button type="button"
-                    class="btn btn-link btn-sm p-0"
-                    data-bs-toggle="modal"
-                    data-bs-target="#bestandsaufnahme-topic-help-modal"
-                    title="{{ 'policy_wizard.step.bestandsaufnahme.topic_help.button_label'|trans }}">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
-                {{ 'policy_wizard.step.bestandsaufnahme.topic_help.button_label'|trans }}
-            </button>
-        </div>
-        <ul class="mb-0 small">
-            <li><strong>{{ 'policy_wizard.step.bestandsaufnahme.action.replace'|trans }}</strong> — {{ 'policy_wizard.step.bestandsaufnahme.help.replace'|trans|raw }}</li>
-            <li><strong>{{ 'policy_wizard.step.bestandsaufnahme.action.keep'|trans }}</strong> — {{ 'policy_wizard.step.bestandsaufnahme.help.keep'|trans }}</li>
-            <li><strong>{{ 'policy_wizard.step.bestandsaufnahme.action.merge_into_topic'|trans }}</strong> — {{ 'policy_wizard.step.bestandsaufnahme.help.merge_into_topic'|trans }}</li>
-            <li><strong>{{ 'policy_wizard.step.bestandsaufnahme.action.split_to_topics'|trans }}</strong> — {{ 'policy_wizard.step.bestandsaufnahme.help.split_to_topics'|trans }}</li>
-        </ul>
-    </div>
+    {# Junior-ISB-friendly help-card explaining the 4 actions with concrete examples.
+     # Aurora-DS: _fa_alert info-variant + bi-mortarboard icon for the "Junior-ISB tip" pattern. #}
+    {% embed '_components/_fa_alert.html.twig' with { props: {
+        variant: 'info',
+        icon: 'bi-mortarboard',
+        class: 'mt-3 mb-0'
+    } } %}
+        {% block alert_body %}
+            <div class="d-flex justify-content-between align-items-start gap-2">
+                <div class="fa-alert__title">{{ 'policy_wizard.step.bestandsaufnahme.help.title'|trans }}</div>
+                {# MUST #2 — Topic explainer popover trigger. #}
+                <button type="button"
+                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#bestandsaufnahme-topic-help-modal"
+                        title="{{ 'policy_wizard.step.bestandsaufnahme.topic_help.button_label'|trans }}">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'policy_wizard.step.bestandsaufnahme.topic_help.button_label'|trans }}
+                </button>
+            </div>
+            <ul class="mb-0 small mt-2">
+                <li><strong>{{ 'policy_wizard.step.bestandsaufnahme.action.replace'|trans }}</strong> — {{ 'policy_wizard.step.bestandsaufnahme.help.replace'|trans|raw }}</li>
+                <li><strong>{{ 'policy_wizard.step.bestandsaufnahme.action.keep'|trans }}</strong> — {{ 'policy_wizard.step.bestandsaufnahme.help.keep'|trans }}</li>
+                <li><strong>{{ 'policy_wizard.step.bestandsaufnahme.action.merge_into_topic'|trans }}</strong> — {{ 'policy_wizard.step.bestandsaufnahme.help.merge_into_topic'|trans }}</li>
+                <li><strong>{{ 'policy_wizard.step.bestandsaufnahme.action.split_to_topics'|trans }}</strong> — {{ 'policy_wizard.step.bestandsaufnahme.help.split_to_topics'|trans }}</li>
+            </ul>
+        {% endblock %}
+    {% endembed %}
 
-    {# MUST #4 — Bulk action bar (above the inventory table). #}
-    <div class="card border-0 bg-body-tertiary mt-3"
-         data-controller="bestandsaufnahme-bulk"
-         data-bestandsaufnahme-bulk-replace-body="{{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_replace_body'|trans }}"
-         data-bestandsaufnahme-bulk-keep-body="{{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_keep_body'|trans }}"
-         data-bestandsaufnahme-bulk-applied-template="{{ 'policy_wizard.step.bestandsaufnahme.bulk.applied'|trans }}"
-         data-bestandsaufnahme-bulk-no-targets-message="{{ 'policy_wizard.step.bestandsaufnahme.bulk.no_targets'|trans }}">
-        <div class="card-body py-2 px-3">
+    {# MUST #4 — Bulk action bar (above the inventory table).
+     # Aurora-DS: <section class="fa-section"> wrapper instead of bare .card +
+     # fa-cyber-btn buttons instead of bare btn btn-X. #}
+    <section class="fa-section mt-3"
+             data-controller="bestandsaufnahme-bulk"
+             data-bestandsaufnahme-bulk-replace-body="{{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_replace_body'|trans }}"
+             data-bestandsaufnahme-bulk-keep-body="{{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_keep_body'|trans }}"
+             data-bestandsaufnahme-bulk-applied-template="{{ 'policy_wizard.step.bestandsaufnahme.bulk.applied'|trans }}"
+             data-bestandsaufnahme-bulk-no-targets-message="{{ 'policy_wizard.step.bestandsaufnahme.bulk.no_targets'|trans }}">
+        <div class="fa-section__body">
             <div class="d-flex flex-wrap gap-2 align-items-center">
                 <div class="me-auto">
                     <strong class="small d-block">{{ 'policy_wizard.step.bestandsaufnahme.bulk.heading'|trans }}</strong>
                     <small class="text-muted">{{ 'policy_wizard.step.bestandsaufnahme.bulk.subheading'|trans }}</small>
                 </div>
                 <button type="button"
-                        class="btn btn-sm btn-outline-warning"
+                        class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm"
                         data-action="bestandsaufnahme-bulk#replaceAllOutdated"
                         title="{{ 'policy_wizard.step.bestandsaufnahme.bulk.replace_all_outdated_help'|trans }}">
                     <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
                     {{ 'policy_wizard.step.bestandsaufnahme.bulk.replace_all_outdated'|trans }}
                 </button>
                 <button type="button"
-                        class="btn btn-sm btn-outline-secondary"
+                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                         data-action="bestandsaufnahme-bulk#keepAllWizardTagged"
                         title="{{ 'policy_wizard.step.bestandsaufnahme.bulk.keep_all_wizard_tagged_help'|trans }}">
                     <i class="bi bi-skip-forward" aria-hidden="true"></i>
@@ -83,7 +89,8 @@
                  data-bestandsaufnahme-bulk-target="feedback"></div>
         </div>
 
-        {# MUST #4 — Confirm modal (Bootstrap). #}
+        {# MUST #4 — Confirm modal (Bootstrap structure required for modal mechanics;
+         # action buttons use Aurora fa-cyber-btn variants). #}
         <div class="modal fade"
              tabindex="-1"
              aria-hidden="true"
@@ -100,11 +107,11 @@
                     </div>
                     <div class="modal-body" data-bestandsaufnahme-bulk-target="confirmBody"></div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                             {{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_cancel'|trans }}
                         </button>
                         <button type="button"
-                                class="btn btn-warning"
+                                class="fa-cyber-btn fa-cyber-btn--warning"
                                 data-bestandsaufnahme-bulk-target="confirmApplyBtn">
                             {{ 'policy_wizard.step.bestandsaufnahme.bulk.confirm_apply'|trans }}
                         </button>
@@ -112,7 +119,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <div class="table-responsive mt-3">
         <table class="table table-hover align-middle">
@@ -166,9 +173,11 @@
                         data-wizard-tagged="{{ row.hasPolicyWizardTag ? '1' : '0' }}">
                         <td>
                             <div class="d-flex align-items-start gap-2">
-                                {# MUST #1 — Click the title → open PDF drawer. #}
+                                {# MUST #1 — Click the title → open PDF drawer.
+                                 # Aurora-DS: link-style action via fa-cyber-btn--ghost (sm) keeps title tappable
+                                 # without bare btn-link Bootstrap utility. #}
                                 <button type="button"
-                                        class="btn btn-link p-0 fw-semibold text-start"
+                                        class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fw-semibold text-start"
                                         data-action="bestandsaufnahme-drawer#open"
                                         data-bestandsaufnahme-drawer-doc-id-param="{{ doc_id }}"
                                         data-bestandsaufnahme-drawer-doc-title-param="{{ row.title }}"
@@ -214,19 +223,22 @@
                                 {{ 'policy_wizard.step.bestandsaufnahme.suggestion_label'|trans }}: {{ suggestion_key|trans|default(row.suggestedAction) }}
                             </span>
 
-                            {# MUST #3 — Sammelpolitik prominent warning. #}
+                            {# MUST #3 — Sammelpolitik prominent warning. Aurora-DS: _fa_alert macro. #}
                             {% if is_sammelpolitik %}
-                                <div class="alert alert-warning border-0 py-2 small mb-2">
-                                    <i class="bi bi-collection-fill" aria-hidden="true"></i>
-                                    <strong>{{ 'policy_wizard.step.bestandsaufnahme.sammelpolitik_hint.title'|trans }}.</strong>
-                                    {{ 'policy_wizard.step.bestandsaufnahme.sammelpolitik_hint.body'|trans|raw }}
-                                </div>
+                                {{ _fa_alert.render({
+                                    variant: 'warning',
+                                    icon: 'bi-collection-fill',
+                                    title: 'policy_wizard.step.bestandsaufnahme.sammelpolitik_hint.title'|trans,
+                                    body: 'policy_wizard.step.bestandsaufnahme.sammelpolitik_hint.body'|trans,
+                                    class: 'py-2 small mb-2'
+                                }) }}
                             {% elseif is_top_level %}
-                                <div class="alert alert-warning border-0 py-2 small mb-2">
-                                    <i class="bi bi-info-circle" aria-hidden="true"></i>
-                                    <strong>{{ 'policy_wizard.step.bestandsaufnahme.top_level_hint.title'|trans }}.</strong>
-                                    {{ 'policy_wizard.step.bestandsaufnahme.top_level_hint.body'|trans }}
-                                </div>
+                                {{ _fa_alert.render({
+                                    variant: 'warning',
+                                    title: 'policy_wizard.step.bestandsaufnahme.top_level_hint.title'|trans,
+                                    body: 'policy_wizard.step.bestandsaufnahme.top_level_hint.body'|trans,
+                                    class: 'py-2 small mb-2'
+                                }) }}
                             {% endif %}
 
                             <label class="form-label small fw-semibold mb-1" for="action-{{ doc_id }}">
@@ -248,12 +260,16 @@
                                 {% endfor %}
                             </select>
 
-                            {# MUST #5 — Inline reminder when action=replace. #}
-                            <div class="alert alert-warning border-0 py-1 px-2 small mb-2"
+                            {# MUST #5 — Inline reminder when action=replace.
+                             # Aurora-DS: fa-alert + warning variant (Stimulus target preserved on root). #}
+                            <div class="fa-alert fa-alert--warning py-1 px-2 small mb-2"
+                                 role="alert"
                                  data-bestandsaufnahme-row-target="replaceReminder"
                                  {% if chosen_action != 'replace' %}hidden{% endif %}>
-                                <i class="bi bi-archive" aria-hidden="true"></i>
-                                {{ 'policy_wizard.step.bestandsaufnahme.replace_archived_hint'|trans|raw }}
+                                <i class="bi bi-archive fa-alert__icon" aria-hidden="true"></i>
+                                <div class="fa-alert__body">
+                                    <p class="fa-alert__message mb-0">{{ 'policy_wizard.step.bestandsaufnahme.replace_archived_hint'|trans|raw }}</p>
+                                </div>
                             </div>
 
                             {# merge_into_topic — single dropdown. Only relevant when action=merge_into_topic. #}
@@ -355,24 +371,22 @@
                     hidden></iframe>
 
             <div data-bestandsaufnahme-drawer-target="fallback" class="p-3" hidden>
-                <div class="alert alert-info">
-                    <h6 class="mb-2"><i class="bi bi-info-circle" aria-hidden="true"></i>
-                        {{ 'policy_wizard.step.bestandsaufnahme.preview.no_pdf_title'|trans }}</h6>
-                    <p class="mb-0 small">
-                        {{ 'policy_wizard.step.bestandsaufnahme.preview.no_pdf_body'|trans({'%mime%': '__MIME__'})|replace({'__MIME__': '<code data-bestandsaufnahme-drawer-target="mimeNote"></code>'})|raw }}
-                    </p>
-                </div>
+                {{ _fa_alert.render({
+                    variant: 'info',
+                    title: 'policy_wizard.step.bestandsaufnahme.preview.no_pdf_title'|trans,
+                    body: 'policy_wizard.step.bestandsaufnahme.preview.no_pdf_body'|trans({'%mime%': '__MIME__'})|replace({'__MIME__': '<code data-bestandsaufnahme-drawer-target="mimeNote"></code>'})
+                }) }}
             </div>
 
             <div class="p-3 border-top d-flex gap-2">
-                <a class="btn btn-sm btn-primary"
+                <a class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm"
                    target="_blank"
                    rel="noopener"
                    data-bestandsaufnahme-drawer-target="downloadLink">
                     <i class="bi bi-download" aria-hidden="true"></i>
                     {{ 'policy_wizard.step.bestandsaufnahme.preview.download'|trans }}
                 </a>
-                <a class="btn btn-sm btn-outline-secondary"
+                <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                    target="_blank"
                    rel="noopener"
                    data-bestandsaufnahme-drawer-target="showLink">
@@ -427,7 +441,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
                         {{ 'policy_wizard.step.bestandsaufnahme.topic_help.close'|trans }}
                     </button>
                 </div>

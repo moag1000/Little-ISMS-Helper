@@ -20,19 +20,22 @@
 
 <div class="row g-3">
     <div class="col-lg-8">
-        {# Junior-ISB-friendly help-card. #}
-        <div class="alert alert-secondary border-0 mb-3">
-            <h6 class="mb-2">
-                <i class="bi bi-mortarboard" aria-hidden="true"></i>
-                {{ 'policy_wizard.step.targeted.finding.help_card.title'|trans }}
-            </h6>
-            <p class="mb-2 small">{{ 'policy_wizard.step.targeted.finding.help_card.body'|trans }}</p>
-            <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.targeted.finding.help_card.example'|trans }}</p>
-            <p class="mb-0 small">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
-                {{ 'policy_wizard.step.targeted.finding.help_card.optional_hint'|trans }}
-            </p>
-        </div>
+        {# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+        {% embed '_components/_fa_alert.html.twig' with { props: {
+            variant: 'info',
+            icon: 'bi-mortarboard',
+            class: 'mb-3'
+        } } %}
+            {% block alert_body %}
+                <div class="fa-alert__title">{{ 'policy_wizard.step.targeted.finding.help_card.title'|trans }}</div>
+                <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.targeted.finding.help_card.body'|trans }}</p>
+                <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.targeted.finding.help_card.example'|trans }}</p>
+                <p class="mb-0 small">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'policy_wizard.step.targeted.finding.help_card.optional_hint'|trans }}
+                </p>
+            {% endblock %}
+        {% endembed %}
 
         {{ _fa_alert.render({
             variant: 'info',
