@@ -8,6 +8,7 @@
     class: 'mb-3'
 } } %}
     {% block alert_body %}
+        {% trans_default_domain 'policy_wizard' %}
         <div class="fa-alert__title">{{ 'policy_wizard.step.review_generate.help.title'|trans }}</div>
         <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.review_generate.help.body'|trans }}</p>
         <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.review_generate.help.example'|trans }}</p>

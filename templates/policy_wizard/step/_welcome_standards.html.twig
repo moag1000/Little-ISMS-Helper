@@ -14,6 +14,7 @@
     class: 'mb-3'
 } } %}
     {% block alert_body %}
+        {% trans_default_domain 'policy_wizard' %}
         <div class="fa-alert__title">{{ 'policy_wizard.step.welcome.help.title'|trans }}</div>
         <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.welcome.help.body'|trans }}</p>
         <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.welcome.help.example'|trans }}</p>
@@ -55,6 +56,7 @@
         class: 'mb-3'
     } } %}
         {% block alert_body %}
+            {% trans_default_domain 'policy_wizard' %}
             <div class="fa-alert__title">{{ 'policy_wizard.step.welcome.dora_nis2_lex_specialis.title'|trans }}</div>
             <p class="fa-alert__message mb-0 small">
                 {{ 'policy_wizard.step.welcome.dora_nis2_lex_specialis.body'|trans }}
