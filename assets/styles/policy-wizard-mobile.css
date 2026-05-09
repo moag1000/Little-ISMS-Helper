@@ -13,9 +13,9 @@
 /* Affordance-hint chip block, only visible on the mobile breakpoint. */
 .fa-bulk-mobile-hint {
     display: none;
-    margin-top: var(--space-3, 0.75rem);
-    margin-bottom: var(--space-3, 0.75rem);
-    gap: var(--space-2, 0.5rem);
+    margin-top: var(--space-3);
+    margin-bottom: var(--space-3);
+    gap: var(--space-2);
     flex-wrap: wrap;
 }
 
@@ -26,15 +26,15 @@
     font-size: 0.75rem;
     padding: 0.25rem 0.6rem;
     border-radius: 999px;
-    background: var(--surface-2, #f5f7fa);
-    color: var(--text-muted, #6c757d);
+    background: var(--surface-2);
+    color: var(--text-muted);
 }
 
-.fa-bulk-mobile-hint__chip--right { color: var(--success, #198754); }
-.fa-bulk-mobile-hint__chip--left  { color: var(--danger,  #dc3545); }
+.fa-bulk-mobile-hint__chip--right { color: var(--success); }
+.fa-bulk-mobile-hint__chip--left  { color: var(--danger); }
 
 .fa-bulk-mobile-row__hint {
-    color: var(--text-muted, #6c757d);
+    color: var(--text-muted);
     font-style: italic;
 }
 
@@ -42,16 +42,16 @@
     .fa-grid--mobile-stack {
         display: flex;
         flex-direction: column;
-        gap: var(--space-3, 0.75rem);
+        gap: var(--space-3);
     }
 
     .fa-grid--mobile-stack .list-group-item.fa-bulk-mobile-row {
         flex-direction: column;
         align-items: stretch !important;
-        padding: var(--space-3, 0.75rem) var(--space-3, 0.75rem) !important;
-        background: var(--surface, #ffffff);
-        border-radius: var(--r-md, 0.5rem);
-        border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+        padding: var(--space-3) var(--space-3) !important;
+        background: var(--surface);
+        border-radius: var(--r-md);
+        border: 1px solid var(--border);
         transition: transform 120ms ease-out, box-shadow 120ms ease-out;
         touch-action: pan-y;
     }
@@ -75,11 +75,11 @@
     /* Swipe-feedback states wired by Stimulus controller. */
     .fa-bulk-mobile-row.is-swiping-right {
         transform: translateX(0.75rem);
-        box-shadow: -4px 0 0 0 var(--success, #198754);
+        box-shadow: -4px 0 0 0 var(--success);
     }
     .fa-bulk-mobile-row.is-swiping-left {
         transform: translateX(-0.75rem);
-        box-shadow:  4px 0 0 0 var(--danger,  #dc3545);
+        box-shadow:  4px 0 0 0 var(--danger);
     }
     .fa-bulk-mobile-row.is-swiping-right .fa-bulk-mobile-row__hint,
     .fa-bulk-mobile-row.is-swiping-left  .fa-bulk-mobile-row__hint {
