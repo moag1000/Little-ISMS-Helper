@@ -12,6 +12,7 @@ import BestandsaufnahmeRowController from './controllers/bestandsaufnahme_row_co
 import TsFindingPickerController from './controllers/ts_finding_picker_controller.js';
 import BulkApprovalMobileController from './controllers/bulk_approval_mobile_controller.js';
 import PolicyWizardPresetPickerController from './controllers/policy_wizard_preset_picker_controller.js';
+import PolicyWizardTargetedPickController from './controllers/policy_wizard_targeted_pick_controller.js';
 
 const app = startStimulusApp();
 
@@ -35,3 +36,4 @@ app.register('bestandsaufnahme-row', BestandsaufnahmeRowController);
 app.register('ts-finding-picker', TsFindingPickerController);
 app.register('bulk-approval-mobile', BulkApprovalMobileController);
 app.register('policy-wizard-preset-picker', PolicyWizardPresetPickerController);
+app.register('policy-wizard-targeted-pick', PolicyWizardTargetedPickController);
