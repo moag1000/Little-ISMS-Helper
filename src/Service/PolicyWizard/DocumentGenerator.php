@@ -215,6 +215,15 @@ final class DocumentGenerator implements DocumentGeneratorInterface
 
             $body = $this->renderBody($template, $variables);
             $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
+
+            // W1 audit-defang gap #3 — Variable-substitution leakage
+            // detector. Pre-persist scan for raw `{{ … }}`, `{% … %}`
+            // and `{# … #}` markers. Auditors will not accept generator
+            // transparency in published policies (persona-review
+            // `06-external-auditor-review.md` lines 180-185), so we
+            // abort the run rather than persist a corrupted body.
+            $this->assertNoSubstitutionLeaks($run, $template, $body);
+
             $hash = $this->hashSubstitution($variables, $body);
 
             $existing = $this->findExistingForTemplate($tenant, $template);
@@ -650,6 +659,40 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             'iso27001 body must contain climate-change wording per Amd. 1:2024 '
             . '(template "' . ($template->getKey() ?? 'unknown') . '")',
         );
+    }
+
+    /**
+     * W1 audit-defang gap #3 — wrap the static {@see SubstitutionLeakageDetector}
+     * call so the detector failure surfaces as a structured audit-log
+     * entry before the exception bubbles out of {@see runPersistent}.
+     * The transactional rollback in {@see generate} ensures NOTHING
+     * persists when this fires, but the audit trail of "we noticed and
+     * refused to ship a leaky body" is itself the auditor-defensible
+     * artefact.
+     *
+     * @throws SubstitutionLeakageException re-thrown after logging.
+     */
+    private function assertNoSubstitutionLeaks(
+        WizardRun $run,
+        PolicyTemplate $template,
+        string $body,
+    ): void {
+        try {
+            SubstitutionLeakageDetector::assertNoLeaks($body);
+        } catch (SubstitutionLeakageException $leak) {
+            $this->logger->critical(
+                'PolicyWizard W1 defang: substitution leakage detected; aborting generation',
+                [
+                    'wizard_run_id' => $run->getId(),
+                    'template_key'  => $template->getKey(),
+                    'standard'      => $template->getStandard(),
+                    'topic'         => $template->getTopic(),
+                    'leak_count'    => count($leak->leaks),
+                    'first_leak'    => $leak->leaks[0] ?? null,
+                ],
+            );
+            throw $leak;
+        }
     }
 
     /**
