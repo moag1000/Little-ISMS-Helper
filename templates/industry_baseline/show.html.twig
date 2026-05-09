@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ baseline.name }} · {{ 'industry_baseline.title'|trans({}, 'industry_baseline') }}{% endblock %}
 
@@ -11,20 +12,15 @@
         ]
     } %}
 
+    {{ _fa_page_header.render({
+        badge: { icon: 'collection', label: ('industry_baseline.industry.' ~ baseline.industry)|trans({}, 'industry_baseline') },
+        title: baseline.name,
+        subtitle: 'v' ~ baseline.version ~ ' · ' ~ baseline.source
+    }) }}
+
+    {# Apply / Status forms (POST + complex layout) kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
     <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
-        <div>
-            <h1 class="h2 mb-1">
-                <i class="fa-icon fa-icon--nav-collection text-primary" aria-hidden="true"></i>
-                {{ baseline.name }}
-            </h1>
-            <p class="text-muted mb-0">
-                <span class="fa-status-pill fa-status-pill--neutral">
-                    {{ ('industry_baseline.industry.' ~ baseline.industry)|trans({}, 'industry_baseline') }}
-                </span>
-                <span class="border fa-status-pill fa-status-pill--neutral">v{{ baseline.version }}</span>
-                <span class="border fa-status-pill fa-status-pill--neutral">{{ baseline.source }}</span>
-            </p>
-        </div>
+        <div></div>
         <div class="d-flex flex-column align-items-end gap-2">
             {% if applied_record %}
                 <span class="fa-status-pill fa-status-pill--success fs-6">

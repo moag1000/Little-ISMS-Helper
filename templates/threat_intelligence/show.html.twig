@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'threat' %}
 
 {% block title %}{{ threat.title }} - {{ 'threat.title.index'|trans({}, 'threat') }}{% endblock %}
@@ -12,32 +13,32 @@
         ]
     } %}
 
-    <div class="page-header">
-        <h1>{{ threat.title }}</h1>
-        <div class="actions">
-            {% if is_granted('ROLE_MANAGER') %}
-                <a href="{{ path('app_threat_intelligence_edit', {id: threat.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                    {{ 'common.edit'|trans({}, 'messages') }}
-                </a>
-            {% endif %}
-            <a href="{{ path('app_threat_intelligence_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                {{ 'common.back_to_list'|trans({}, 'messages') }}
-            </a>
-            {% if is_granted('ROLE_ADMIN') %}
-                <form method="post" action="{{ path('app_threat_intelligence_delete', {id: threat.id}) }}" class="d-inline"
-                      data-controller="ui-actions"
-                      data-action="submit->ui-actions#confirm"
-                      data-ui-actions-message-param="{{ 'threat.confirm.delete'|trans({}, 'threat') }}">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ threat.id) }}">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
-                        <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
-                        {{ 'common.delete'|trans({}, 'messages') }}
-                    </button>
-                </form>
-            {% endif %}
+    {% set _show_actions = [] %}
+    {% if is_granted('ROLE_MANAGER') %}
+        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_threat_intelligence_edit', {id: threat.id}) }]) %}
+    {% endif %}
+    {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_threat_intelligence_index') }]) %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-exclamation', label: 'threat.title.index'|trans({}, 'threat') },
+        title: threat.title,
+        actions: _show_actions
+    }) }}
+
+    {# Inline POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="d-flex justify-content-end mb-3">
+            <form method="post" action="{{ path('app_threat_intelligence_delete', {id: threat.id}) }}" class="d-inline"
+                  data-controller="ui-actions"
+                  data-action="submit->ui-actions#confirm"
+                  data-ui-actions-message-param="{{ 'threat.confirm.delete'|trans({}, 'threat') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ threat.id) }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">
+                    <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i>
+                    {{ 'common.delete'|trans({}, 'messages') }}
+                </button>
+            </form>
         </div>
-    </div>
+    {% endif %}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}

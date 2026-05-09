@@ -1,5 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block admin_title %}{{ mfa_token.tokenTypeName }}{% endblock %}
 {% block admin_subtitle %}
@@ -15,11 +16,14 @@
         ]
     } %}
 
-    <div class="mb-4">
-        <a href="{{ path('admin_mfa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-lock', label: 'nav.mfa'|trans({}, 'nav') },
+        title: mfa_token.tokenTypeName,
+        subtitle: 'mfa_token.details.subtitle'|trans({}, 'mfa'),
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('admin_mfa_index') }
+        ]
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">
