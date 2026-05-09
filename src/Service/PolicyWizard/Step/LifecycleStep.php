@@ -70,7 +70,12 @@ final class LifecycleStep extends AbstractStep
             $normalisedOverrides[$templateKey] = $months;
         }
 
-        // Per-document approver mapping (template_key => user_id).
+        // Per-document approver mapping (template_key => user_id INT).
+        // Form-Audit (May 2026): plain role strings ('ROLE_CISO') are no
+        // longer accepted — the picker must yield concrete user-ids so
+        // ApprovalKickoffService can route the WorkflowInstance to a
+        // real assignee. Strings get rejected here to surface the
+        // mismatch instead of silently dropping.
         $approvers = $input['approver_per_template'] ?? [];
         if (!is_array($approvers)) {
             $errors['approver_per_template'][] = 'policy_wizard.error.approver_per_template_invalid';
@@ -78,7 +83,16 @@ final class LifecycleStep extends AbstractStep
         }
         $normalisedApprovers = [];
         foreach ($approvers as $templateKey => $userId) {
-            if (!is_string($templateKey) || $templateKey === '' || !is_numeric($userId)) {
+            if (!is_string($templateKey) || $templateKey === '') {
+                continue;
+            }
+            // Reject role-string inputs explicitly so the form-audit
+            // mismatch (string ROLE_CISO vs int 42) is surfaced.
+            if (is_string($userId) && !is_numeric($userId) && $userId !== '') {
+                $errors['approver_per_template'][] = 'policy_wizard.error.approver_must_be_user_id';
+                continue;
+            }
+            if (!is_numeric($userId)) {
                 continue;
             }
             $userId = (int) $userId;
@@ -86,6 +100,22 @@ final class LifecycleStep extends AbstractStep
                 continue;
             }
             $normalisedApprovers[$templateKey] = $userId;
+        }
+
+        // Default tenant-wide fallback approver (user-id INT). When set
+        // it is used for any policy template that has no per-template
+        // override.
+        $defaultApproverUserId = $input['default_approver_user_id'] ?? null;
+        if (is_string($defaultApproverUserId) && !is_numeric($defaultApproverUserId) && $defaultApproverUserId !== '') {
+            $errors['default_approver_user_id'][] = 'policy_wizard.error.approver_must_be_user_id';
+            $defaultApproverUserId = null;
+        } elseif (is_numeric($defaultApproverUserId)) {
+            $defaultApproverUserId = (int) $defaultApproverUserId;
+            if ($defaultApproverUserId <= 0) {
+                $defaultApproverUserId = null;
+            }
+        } else {
+            $defaultApproverUserId = null;
         }
 
         // Auto-publish — forced false. Architecture §6 Step 6 / §11.5.
@@ -99,6 +129,7 @@ final class LifecycleStep extends AbstractStep
             'default_review_interval_months' => $defaultInterval,
             'per_policy_overrides' => $normalisedOverrides,
             'approver_per_template' => $normalisedApprovers,
+            'default_approver_user_id' => $defaultApproverUserId,
             'auto_publish' => $autoPublish,
             'alva_hint_on_review' => $alvaHintOnReview,
         ];

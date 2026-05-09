@@ -1,44 +1,286 @@
 {% trans_default_domain 'policy_wizard' %}
-{% set patch_default = defaults.patch_cadence_days|default(30) %}
-{% set log_default = defaults.log_retention_days|default(90) %}
-{% set backup_default = defaults.backup_frequency|default('daily') %}
-{% set awareness_default = defaults.awareness_frequency|default('annual') %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
 
-<div class="row g-3">
-    <div class="col-md-3">
-        <label class="form-label" for="patch-cadence">{{ 'policy_wizard.step.operational_baselines.patch_cadence_label'|trans }}</label>
-        <input type="number"
-               class="form-control fa-cyber-input__field"
-               id="patch-cadence"
-               name="patch_cadence_days"
-               min="1"
-               max="365"
-               value="{{ patch_default }}">
-    </div>
-    <div class="col-md-3">
-        <label class="form-label" for="log-retention">{{ 'policy_wizard.step.operational_baselines.log_retention_label'|trans }}</label>
-        <input type="number"
-               class="form-control fa-cyber-input__field"
-               id="log-retention"
-               name="log_retention_days"
-               min="1"
-               max="3650"
-               value="{{ log_default }}">
-    </div>
-    <div class="col-md-3">
-        <label class="form-label" for="backup-frequency">{{ 'policy_wizard.step.operational_baselines.backup_frequency_label'|trans }}</label>
-        <select class="form-select fa-cyber-input__field" id="backup-frequency" name="backup_frequency">
-            {% for opt in ['hourly', 'daily', 'weekly', 'monthly'] %}
-                <option value="{{ opt }}" {% if backup_default == opt %}selected{% endif %}>{{ opt|capitalize }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="col-md-3">
-        <label class="form-label" for="awareness-frequency">{{ 'policy_wizard.step.operational_baselines.awareness_frequency_label'|trans }}</label>
-        <select class="form-select fa-cyber-input__field" id="awareness-frequency" name="awareness_frequency">
-            {% for opt in ['quarterly', 'semi_annual', 'annual'] %}
-                <option value="{{ opt }}" {% if awareness_default == opt %}selected{% endif %}>{{ opt|replace({'_': ' '})|capitalize }}</option>
-            {% endfor %}
-        </select>
+{# Form-Audit follow-up (May 2026) — REWRITE.
+   Template now matches OperationalBaselinesStep::validate() contract
+   exactly. Field list (from validate normalised_input):
+     crypto_allowlist[]              — multi-select TomSelect
+     backup_rpo_hours                — number 1..720
+     patch_sla_hours[critical|high|medium]
+     continuity_rto_hours[high|medium|low]   (only when bcm in scope)
+     dora.entity_type|is_significant|competent_authority|
+       ictt_concentration_threshold_pct|is_ctpp_self_assessment
+                                       (only when dora in scope)
+     dpo_user_id                     (only when gdpr or dora in scope)
+     bcm_officer_user_id             (only when bcm in scope)
+     industry_preset_bundle_key      (one-shot apply)
+#}
+
+{% set crypto_default = defaults.crypto_allowlist|default(['AES-256-GCM']) %}
+{% set rpo_default = defaults.backup_rpo_hours|default(24) %}
+{% set patch_default = defaults.patch_sla_hours|default({'critical': 4, 'high': 24, 'medium': 168}) %}
+{% set rto_default = defaults.continuity_rto_hours|default({'high': 24, 'medium': 72, 'low': 168}) %}
+{% set dora_default = defaults.dora|default({}) %}
+{% set dpo_default = defaults.dpo_user_id|default(null) %}
+{% set bcm_default = defaults.bcm_officer_user_id|default(null) %}
+{% set preset_default = defaults.industry_preset_bundle_key|default(null) %}
+{% set bcm_in_scope = 'bcm' in standards %}
+{% set dora_in_scope = 'dora' in standards %}
+{% set gdpr_in_scope = 'gdpr' in standards %}
+
+{# ── Crypto allowlist ─────────────────────────────────────────────── #}
+<div class="fa-form-row mb-4">
+    <label class="form-label" for="op-crypto-allowlist">
+        {{ 'policy_wizard.step.operational_baselines.crypto_allowlist_label'|trans }}
+    </label>
+    <select id="op-crypto-allowlist"
+            name="crypto_allowlist[]"
+            multiple
+            class="form-select fa-cyber-input__field"
+            data-controller="tom-select"
+            aria-describedby="op-crypto-allowlist-help">
+        {% for algo in ['AES-256-GCM', 'AES-128-GCM', 'CHACHA20-POLY1305', 'RSA-3072', 'RSA-4096', 'ECDSA-P256', 'ECDSA-P384'] %}
+            <option value="{{ algo }}" {% if algo in crypto_default %}selected{% endif %}>{{ algo }}</option>
+        {% endfor %}
+    </select>
+    <div id="op-crypto-allowlist-help" class="form-text">
+        {{ 'policy_wizard.step.operational_baselines.crypto_allowlist_help'|trans }}
     </div>
 </div>
+
+<div class="row g-3 mb-4">
+    {# ── Backup RPO ───────────────────────────────────────────────── #}
+    <div class="col-md-4">
+        <label class="form-label" for="op-backup-rpo">
+            {{ 'policy_wizard.step.operational_baselines.backup_rpo_label'|trans }}
+        </label>
+        <input type="number"
+               class="form-control fa-cyber-input__field"
+               id="op-backup-rpo"
+               name="backup_rpo_hours"
+               min="1"
+               max="720"
+               value="{{ rpo_default }}"
+               aria-describedby="op-backup-rpo-help">
+        <div id="op-backup-rpo-help" class="form-text">
+            {{ 'policy_wizard.step.operational_baselines.backup_rpo_help'|trans }}
+        </div>
+    </div>
+
+    {# ── Patch SLA per severity ───────────────────────────────────── #}
+    {% for severity in ['critical', 'high', 'medium'] %}
+        <div class="col-md-2">
+            <label class="form-label" for="op-patch-{{ severity }}">
+                {{ ('policy_wizard.step.operational_baselines.patch_sla_' ~ severity ~ '_label')|trans }}
+            </label>
+            <input type="number"
+                   class="form-control fa-cyber-input__field"
+                   id="op-patch-{{ severity }}"
+                   name="patch_sla_hours[{{ severity }}]"
+                   min="1"
+                   max="8760"
+                   value="{{ patch_default[severity]|default('') }}"
+                   aria-describedby="op-patch-{{ severity }}-help">
+            <div id="op-patch-{{ severity }}-help" class="form-text small">
+                {{ ('policy_wizard.step.operational_baselines.patch_sla_' ~ severity ~ '_help')|trans }}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{# ── Continuity RTO (BCM only) ───────────────────────────────────── #}
+{% if bcm_in_scope %}
+    {% set rto_body %}
+        <div class="row g-3">
+            {% for level in ['high', 'medium', 'low'] %}
+                <div class="col-md-4">
+                    <label class="form-label" for="op-rto-{{ level }}">
+                        {{ ('policy_wizard.step.operational_baselines.rto_' ~ level ~ '_label')|trans }}
+                    </label>
+                    <input type="number"
+                           class="form-control fa-cyber-input__field"
+                           id="op-rto-{{ level }}"
+                           name="continuity_rto_hours[{{ level }}]"
+                           min="1"
+                           max="8760"
+                           value="{{ rto_default[level]|default('') }}"
+                           aria-describedby="op-rto-{{ level }}-help">
+                    <div id="op-rto-{{ level }}-help" class="form-text small">
+                        {{ ('policy_wizard.step.operational_baselines.rto_' ~ level ~ '_help')|trans }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endset %}
+    {{ _fa_section.render({
+        title: 'policy_wizard.step.operational_baselines.rto_section_title'|trans,
+        subtitle: 'policy_wizard.step.operational_baselines.rto_section_subtitle'|trans,
+        body: rto_body
+    }) }}
+{% endif %}
+
+{# ── DORA block (DORA only) ──────────────────────────────────────── #}
+{% if dora_in_scope %}
+    {% set dora_body %}
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="op-dora-entity-type">
+                    {{ 'policy_wizard.step.operational_baselines.dora_entity_type_label'|trans }}
+                </label>
+                <select id="op-dora-entity-type"
+                        name="dora[entity_type]"
+                        class="form-select fa-cyber-input__field">
+                    <option value="">—</option>
+                    {% for et in ['kreditinstitut', 'wertpapierfirma', 'zahlungsdienstleister', 'e_geld_institut', 'fmi', 'sonstige'] %}
+                        <option value="{{ et }}" {% if (dora_default.entity_type|default('')) == et %}selected{% endif %}>
+                            {{ ('policy_wizard.step.operational_baselines.dora_entity_type.' ~ et)|trans }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="op-dora-authority">
+                    {{ 'policy_wizard.step.operational_baselines.dora_authority_label'|trans }}
+                </label>
+                <select id="op-dora-authority"
+                        name="dora[competent_authority]"
+                        class="form-select fa-cyber-input__field">
+                    <option value="">—</option>
+                    {% for ca in ['BaFin', 'Bundesbank', 'ECB', 'EBA', 'sonstige'] %}
+                        <option value="{{ ca }}" {% if (dora_default.competent_authority|default('')) == ca %}selected{% endif %}>{{ ca }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <div class="form-check mt-4">
+                    <input type="hidden" name="dora[is_significant]" value="0">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="op-dora-significant"
+                           name="dora[is_significant]"
+                           value="1"
+                           {% if dora_default.is_significant|default(false) %}checked{% endif %}>
+                    <label class="form-check-label" for="op-dora-significant">
+                        {{ 'policy_wizard.step.operational_baselines.dora_significant_label'|trans }}
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="op-dora-threshold">
+                    {{ 'policy_wizard.step.operational_baselines.dora_threshold_label'|trans }}
+                </label>
+                <input type="number"
+                       class="form-control fa-cyber-input__field"
+                       id="op-dora-threshold"
+                       name="dora[ictt_concentration_threshold_pct]"
+                       min="1"
+                       max="100"
+                       value="{{ dora_default.ictt_concentration_threshold_pct|default('') }}">
+                <div class="form-text small">
+                    {{ 'policy_wizard.step.operational_baselines.dora_threshold_help'|trans }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-check mt-4">
+                    <input type="hidden" name="dora[is_ctpp_self_assessment]" value="0">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="op-dora-ctpp"
+                           name="dora[is_ctpp_self_assessment]"
+                           value="1"
+                           {% if dora_default.is_ctpp_self_assessment|default(false) %}checked{% endif %}>
+                    <label class="form-check-label" for="op-dora-ctpp">
+                        {{ 'policy_wizard.step.operational_baselines.dora_ctpp_label'|trans }}
+                    </label>
+                </div>
+            </div>
+        </div>
+    {% endset %}
+    {{ _fa_section.render({
+        title: 'policy_wizard.step.operational_baselines.dora_section_title'|trans,
+        subtitle: 'policy_wizard.step.operational_baselines.dora_section_subtitle'|trans,
+        body: dora_body
+    }) }}
+{% endif %}
+
+{# ── DPO + BCM-Officer pickers ───────────────────────────────────── #}
+{% if (gdpr_in_scope or dora_in_scope) or bcm_in_scope %}
+    {% set roles_body %}
+        <div class="row g-3">
+            {% if gdpr_in_scope or dora_in_scope %}
+                <div class="col-md-6">
+                    <label class="form-label" for="op-dpo-user">
+                        {{ 'policy_wizard.step.operational_baselines.dpo_user_label'|trans }}
+                    </label>
+                    <select id="op-dpo-user"
+                            name="dpo_user_id"
+                            class="form-select fa-cyber-input__field"
+                            data-controller="tom-select">
+                        <option value="">—</option>
+                        {% for u in dpo_user_choices|default([]) %}
+                            <option value="{{ u.id }}" {% if dpo_default == u.id %}selected{% endif %}>
+                                {{ u.lastName|default('') }}, {{ u.firstName|default('') }} ({{ u.email }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text small">
+                        {{ 'policy_wizard.step.operational_baselines.dpo_user_help'|trans }}
+                    </div>
+                </div>
+            {% endif %}
+            {% if bcm_in_scope %}
+                <div class="col-md-6">
+                    <label class="form-label" for="op-bcm-user">
+                        {{ 'policy_wizard.step.operational_baselines.bcm_officer_label'|trans }}
+                    </label>
+                    <select id="op-bcm-user"
+                            name="bcm_officer_user_id"
+                            class="form-select fa-cyber-input__field"
+                            data-controller="tom-select">
+                        <option value="">—</option>
+                        {% for u in bcm_officer_user_choices|default([]) %}
+                            <option value="{{ u.id }}" {% if bcm_default == u.id %}selected{% endif %}>
+                                {{ u.lastName|default('') }}, {{ u.firstName|default('') }} ({{ u.email }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text small">
+                        {{ 'policy_wizard.step.operational_baselines.bcm_officer_help'|trans }}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endset %}
+    {{ _fa_section.render({
+        title: 'policy_wizard.step.operational_baselines.responsible_section_title'|trans,
+        subtitle: 'policy_wizard.step.operational_baselines.responsible_section_subtitle'|trans,
+        body: roles_body
+    }) }}
+{% endif %}
+
+{# ── Industry preset bundle (one-shot apply) ─────────────────────── #}
+{% if preset_bundles_for_step|default([])|length > 0 %}
+    {% set preset_body %}
+        <label class="form-label" for="op-preset-bundle">
+            {{ 'policy_wizard.step.operational_baselines.preset_bundle_label'|trans }}
+        </label>
+        <select id="op-preset-bundle"
+                name="industry_preset_bundle_key"
+                class="form-select fa-cyber-input__field"
+                data-controller="tom-select">
+            <option value="">—</option>
+            {% for bundle in preset_bundles_for_step %}
+                <option value="{{ bundle.key }}" {% if preset_default == bundle.key %}selected{% endif %}>
+                    {{ bundle.label }}
+                </option>
+            {% endfor %}
+        </select>
+        <div class="form-text small">
+            {{ 'policy_wizard.step.operational_baselines.preset_bundle_help'|trans }}
+        </div>
+    {% endset %}
+    {{ _fa_section.render({
+        title: 'policy_wizard.step.operational_baselines.preset_section_title'|trans,
+        body: preset_body
+    }) }}
+{% endif %}

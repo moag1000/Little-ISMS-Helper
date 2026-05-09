@@ -89,7 +89,13 @@
                 'sandbox_preview': sandbox_preview|default(null),
                 'inventory_rows': inventory_rows|default([]),
                 'topic_suggestions_by_doc': topic_suggestions_by_doc|default({}),
-                'available_topics': available_topics|default([])
+                'available_topics': available_topics|default([]),
+                'dpo_user_choices': dpo_user_choices|default([]),
+                'bcm_officer_user_choices': bcm_officer_user_choices|default([]),
+                'approver_user_choices': approver_user_choices|default([]),
+                'policy_templates': policy_templates|default([]),
+                'preset_bundles_for_step': preset_bundles_for_step|default([]),
+                'consistency_warnings': consistency_warnings|default([])
             } %}
         {% endif %}
 
