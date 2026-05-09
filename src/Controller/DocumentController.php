@@ -344,7 +344,7 @@ class DocumentController extends AbstractController
     }
 
     #[Route('/document/{id}/download', name: 'app_document_download', requirements: ['id' => '\d+'])]
-    public function download(Document $document): Response
+    public function download(Document $document, Request $request): Response
     {
         // Security: Check if user has permission to download this document (OWASP #1 - Broken Access Control)
         $this->denyAccessUnlessGranted('download', $document);
@@ -382,8 +382,13 @@ class DocumentController extends AbstractController
 
         // Security: Sanitize filename for content disposition header
         $safeOriginalName = preg_replace('/[^\w\s\.\-]/', '', (string) $document->getOriginalFilename());
+        // ?inline=1 (e.g. Bestandsaufnahme PDF preview drawer) renders the
+        // file inside an <iframe> instead of triggering a browser download.
+        $disposition = $request->query->getBoolean('inline')
+            ? ResponseHeaderBag::DISPOSITION_INLINE
+            : ResponseHeaderBag::DISPOSITION_ATTACHMENT;
         $binaryFileResponse->setContentDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $disposition,
             $safeOriginalName
         );
 

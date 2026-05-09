@@ -181,7 +181,7 @@
                                         data-action="bestandsaufnahme-drawer#open"
                                         data-bestandsaufnahme-drawer-doc-id-param="{{ doc_id }}"
                                         data-bestandsaufnahme-drawer-doc-title-param="{{ row.title }}"
-                                        data-bestandsaufnahme-drawer-pdf-url-param="{{ path('app_document_download', {id: doc_id}) }}"
+                                        data-bestandsaufnahme-drawer-pdf-url-param="{{ path('app_document_download', {id: doc_id, inline: 1}) }}"
                                         data-bestandsaufnahme-drawer-show-url-param="{{ path('app_document_show', {id: doc_id}) }}"
                                         data-bestandsaufnahme-drawer-mime-param="{{ row.mimeType|default('') }}"
                                         title="{{ 'policy_wizard.step.bestandsaufnahme.preview.open'|trans }}">
