@@ -47,7 +47,7 @@ class DPIAControllerTest extends WebTestCase
                 'incidents', 'audits', 'training', 'reviews', 'bcm',
                 'compliance', 'audit_logging', 'privacy', 'nis2_dora',
                 'ai_governance', 'cloud_security', 'vulnerability_intel',
-                'marisk', 'tisax', 'quantitative_risk',
+                'marisk', 'tisax', 'quantitative_risk', 'notifications', 'eu_authority_reporting', 'tisax_isa', 'ai_act', 'cra_sbom', 'procedures',
             ], true)
         );
         $container->set(\App\Service\ModuleConfigurationService::class, $moduleService);
