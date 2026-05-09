@@ -92,7 +92,19 @@ export default class extends Controller {
             }, { once: true });
 
             this._showModal();
+        } else if (typeof window.faConfirm === 'function') {
+            // Aurora helper available — async dialog tone=warn for bulk-set.
+            window.faConfirm(interpolated, { tone: 'warn' }).then((ok) => {
+                if (!ok) {
+                    return;
+                }
+                const applied = this._applyToRows(rows, value);
+                this._announce((this._dataset('appliedTemplate') || '%count% rows updated.').replace('%count%', String(applied)));
+            });
         } else {
+            // Last-resort fallback — should never fire in production since
+            // fa-alerts.js is bundled in app.js. Native confirm preserved
+            // so the bulk-action still works on stripped-down envs.
             // eslint-disable-next-line no-alert
             if (window.confirm(interpolated)) {
                 const applied = this._applyToRows(rows, value);
