@@ -100,7 +100,7 @@ final class Version20260509040000_person_rollout_b1_bcm extends AbstractMigratio
             'bc_exercise',
             'fk_bc_exercise_leader_user',
             'ALTER TABLE bc_exercise ADD CONSTRAINT fk_bc_exercise_leader_user '
-            . 'FOREIGN KEY (exercise_leader_user_id) REFERENCES user (id) ON DELETE SET NULL'
+            . 'FOREIGN KEY (exercise_leader_user_id) REFERENCES users (id) ON DELETE SET NULL'
         );
         $this->addSqlIfMissingConstraint(
             'bc_exercise',
