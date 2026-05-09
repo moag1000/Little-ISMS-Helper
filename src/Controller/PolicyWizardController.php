@@ -7,6 +7,8 @@ namespace App\Controller;
 use App\Entity\IndustryPresetBundle;
 use App\Entity\WizardRun;
 use App\Repository\IndustryPresetBundleRepository;
+use App\Repository\PolicyTemplateRepository;
+use App\Repository\UserRepository;
 use App\Repository\WizardRunRepository;
 use App\Security\Voter\PolicyWizardVoter;
 use App\Repository\DocumentRepository;
@@ -53,6 +55,8 @@ final class PolicyWizardController extends AbstractController
         private readonly ExistingDocumentInventoryService $inventoryService,
         private readonly ExistingDocumentMatcher $documentMatcher,
         private readonly DocumentRepository $documentRepository,
+        private readonly UserRepository $userRepository,
+        private readonly PolicyTemplateRepository $policyTemplateRepository,
     ) {
     }
 
@@ -179,7 +183,9 @@ final class PolicyWizardController extends AbstractController
             ? $this->buildBestandsaufnahmePayload($run)
             : ['inventory_rows' => [], 'topic_suggestions_by_doc' => [], 'available_topics' => []];
 
-        return $this->render('policy_wizard/step.html.twig', [
+        $stepExtras = $this->buildStepExtras($run, $step, $isTerminal);
+
+        return $this->render('policy_wizard/step.html.twig', array_merge([
             'run' => $run,
             'step' => $step,
             'defaults' => $resume['data']['defaults'] ?? [],
@@ -192,7 +198,7 @@ final class PolicyWizardController extends AbstractController
             'inventory_rows' => $bestandsaufnahmePayload['inventory_rows'],
             'topic_suggestions_by_doc' => $bestandsaufnahmePayload['topic_suggestions_by_doc'],
             'available_topics' => $bestandsaufnahmePayload['available_topics'],
-        ]);
+        ], $stepExtras));
     }
 
     /**
@@ -233,7 +239,9 @@ final class PolicyWizardController extends AbstractController
                 ? $this->buildBestandsaufnahmePayload($run)
                 : ['inventory_rows' => [], 'topic_suggestions_by_doc' => [], 'available_topics' => []];
 
-            return $this->render('policy_wizard/step.html.twig', [
+            $stepExtras = $this->buildStepExtras($run, $step, $isTerminal);
+
+            return $this->render('policy_wizard/step.html.twig', array_merge([
                 'run' => $run,
                 'step' => $step,
                 'defaults' => $payload,
@@ -246,7 +254,7 @@ final class PolicyWizardController extends AbstractController
                 'inventory_rows' => $bestandsaufnahmePayload['inventory_rows'],
                 'topic_suggestions_by_doc' => $bestandsaufnahmePayload['topic_suggestions_by_doc'],
                 'available_topics' => $bestandsaufnahmePayload['available_topics'],
-            ], new Response('', Response::HTTP_UNPROCESSABLE_ENTITY));
+            ], $stepExtras), new Response('', Response::HTTP_UNPROCESSABLE_ENTITY));
         } catch (\InvalidArgumentException) {
             $this->addFlash('warning', $this->translator->trans('policy_wizard.error.invalid_step', [], 'policy_wizard'));
             return $this->redirectToRoute('app_policy_wizard_index');
@@ -305,7 +313,9 @@ final class PolicyWizardController extends AbstractController
             $result = $this->orchestrator->complete($run);
         } catch (HierarchyConflictException $conflict) {
             $this->addFlash('danger', $this->translator->trans('policy_wizard.step.review_generate.conflicts_heading', [], 'policy_wizard'));
-            return $this->render('policy_wizard/step.html.twig', [
+            $stepExtras = $this->buildStepExtras($run, $run->getStep(), true);
+
+            return $this->render('policy_wizard/step.html.twig', array_merge([
                 'run' => $run,
                 'step' => $run->getStep(),
                 'defaults' => [],
@@ -314,7 +324,7 @@ final class PolicyWizardController extends AbstractController
                 'is_terminal' => true,
                 'hierarchy_conflicts' => $conflict->conflicts,
                 'errors' => [],
-            ], new Response('', Response::HTTP_CONFLICT));
+            ], $stepExtras), new Response('', Response::HTTP_CONFLICT));
         } catch (\RuntimeException $e) {
             $this->addFlash('danger', $e->getMessage());
             return $this->redirectToRoute('app_policy_wizard_step_show', [
@@ -484,6 +494,66 @@ final class PolicyWizardController extends AbstractController
             'topic_suggestions_by_doc' => $suggestions,
             'available_topics' => ExistingDocumentMatcher::knownTopics(),
         ];
+    }
+
+    /**
+     * Build the step-specific extra context (User-pickers, policy
+     * templates, preset bundles, consistency warnings) that the step
+     * partials need. Centralised so the GET show + POST submit + complete
+     * error paths stay in sync.
+     *
+     * @return array<string, mixed>
+     */
+    private function buildStepExtras(WizardRun $run, string $step, bool $isTerminal): array
+    {
+        $tenant = $run->getTenant();
+        $standards = $run->getStandardsAdopted() ?? [];
+        $extras = [
+            'dpo_user_choices' => [],
+            'bcm_officer_user_choices' => [],
+            'approver_user_choices' => [],
+            'policy_templates' => [],
+            'preset_bundles_for_step' => [],
+            'consistency_warnings' => [],
+        ];
+
+        // Step 5 — Operational Baselines: DPO + BCM-Officer pickers
+        // and IndustryPresetBundle picker for one-shot apply.
+        if ($step === WizardStepKeys::STEP_OPERATIONAL_BASELINES) {
+            if (in_array('gdpr', $standards, true) || in_array('dora', $standards, true)) {
+                $extras['dpo_user_choices'] = $this->userRepository->findByRoleInTenant('ROLE_DPO', $tenant);
+            }
+            if (in_array('bcm', $standards, true)) {
+                $extras['bcm_officer_user_choices'] = $this->userRepository->findByRoleInTenant(
+                    'ROLE_GROUP_BCM_OFFICER',
+                    $tenant,
+                );
+            }
+            $extras['preset_bundles_for_step'] = $this->presetBundleRepository->findActiveBundles();
+        }
+
+        // Step 6 — Lifecycle: per-template overrides + approver-picker.
+        if ($step === WizardStepKeys::STEP_LIFECYCLE) {
+            $templates = [];
+            foreach ($standards as $std) {
+                if (!is_string($std)) {
+                    continue;
+                }
+                $templates = array_merge(
+                    $templates,
+                    $this->policyTemplateRepository->findActiveByStandard($std),
+                );
+            }
+            $extras['policy_templates'] = $templates;
+            $extras['approver_user_choices'] = $this->userRepository->findApproversInTenant($tenant);
+        }
+
+        // Step 7 — Review & Generate: surface non-blocking warnings.
+        if ($isTerminal && $step === WizardStepKeys::STEP_REVIEW_GENERATE) {
+            $extras['consistency_warnings'] = $this->orchestrator->consistencyWarnings($run);
+        }
+
+        return $extras;
     }
 
     /**

@@ -1,10 +1,26 @@
 {% trans_default_domain 'policy_wizard' %}
-{% set review_default = defaults.default_review_interval_months|default(12) %}
-{% set approver_default = defaults.designated_approver|default('') %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
 
-<div class="row g-3">
+{# Form-Audit follow-up (May 2026).
+   Template now matches LifecycleStep::validate() contract exactly:
+     default_review_interval_months  — number 1..24
+     per_policy_overrides[key]       — table editor, 1..24 OR blank=use-default
+     approver_per_template[key]      — User-picker per PolicyTemplate
+     default_approver_user_id        — fallback User-picker
+     alva_hint_on_review             — boolean
+#}
+
+{% set review_default = defaults.default_review_interval_months|default(12) %}
+{% set per_policy_default = defaults.per_policy_overrides|default({}) %}
+{% set approvers_default = defaults.approver_per_template|default({}) %}
+{% set default_approver_default = defaults.default_approver_user_id|default(null) %}
+{% set alva_default = defaults.alva_hint_on_review|default(true) %}
+
+<div class="row g-3 mb-4">
     <div class="col-md-6">
-        <label class="form-label" for="lifecycle-review-interval">{{ 'policy_wizard.step.lifecycle.review_interval_label'|trans }}</label>
+        <label class="form-label" for="lifecycle-review-interval">
+            {{ 'policy_wizard.step.lifecycle.review_interval_label'|trans }}
+        </label>
         <input type="number"
                class="form-control fa-cyber-input__field"
                id="lifecycle-review-interval"
@@ -12,20 +28,115 @@
                min="1"
                max="24"
                value="{{ review_default }}"
-               required>
-        <div class="form-text">{{ 'policy_wizard.step.lifecycle.review_interval_help'|trans }}</div>
+               required
+               aria-describedby="lifecycle-review-interval-help">
+        <div id="lifecycle-review-interval-help" class="form-text">
+            {{ 'policy_wizard.step.lifecycle.review_interval_help'|trans }}
+        </div>
         {% if review_default > 24 %}
             <div class="invalid-feedback d-block">{{ 'policy_wizard.error.review_interval_max'|trans }}</div>
         {% endif %}
     </div>
     <div class="col-md-6">
-        <label class="form-label" for="lifecycle-approver">{{ 'policy_wizard.step.lifecycle.approver_label'|trans }}</label>
-        <select class="form-select fa-cyber-input__field" id="lifecycle-approver" name="designated_approver">
+        <label class="form-label" for="lifecycle-default-approver">
+            {{ 'policy_wizard.step.lifecycle.default_approver_label'|trans }}
+        </label>
+        <select id="lifecycle-default-approver"
+                name="default_approver_user_id"
+                class="form-select fa-cyber-input__field"
+                data-controller="tom-select"
+                aria-describedby="lifecycle-default-approver-help">
             <option value="">—</option>
-            {% for role in ['ROLE_CISO', 'ROLE_TOP_MGMT', 'ROLE_ADMIN'] %}
-                <option value="{{ role }}" {% if approver_default == role %}selected{% endif %}>{{ role }}</option>
+            {% for u in approver_user_choices|default([]) %}
+                <option value="{{ u.id }}" {% if default_approver_default == u.id %}selected{% endif %}>
+                    {{ u.lastName|default('') }}, {{ u.firstName|default('') }} ({{ u.email }})
+                </option>
             {% endfor %}
         </select>
-        <div class="form-text">{{ 'policy_wizard.step.lifecycle.approver_help'|trans }}</div>
+        <div id="lifecycle-default-approver-help" class="form-text">
+            {{ 'policy_wizard.step.lifecycle.default_approver_help'|trans }}
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-check">
+            <input type="hidden" name="alva_hint_on_review" value="0">
+            <input class="form-check-input"
+                   type="checkbox"
+                   id="lifecycle-alva-hint"
+                   name="alva_hint_on_review"
+                   value="1"
+                   {% if alva_default %}checked{% endif %}>
+            <label class="form-check-label" for="lifecycle-alva-hint">
+                {{ 'policy_wizard.step.lifecycle.alva_hint_label'|trans }}
+            </label>
+            <div class="form-text small">
+                {{ 'policy_wizard.step.lifecycle.alva_hint_help'|trans }}
+            </div>
+        </div>
     </div>
 </div>
+
+{# ── Per-policy overrides + approvers table ──────────────────────── #}
+{% if policy_templates|default([])|length > 0 %}
+    {% set table_body %}
+        <p class="form-text small">
+            {{ 'policy_wizard.step.lifecycle.per_policy_help'|trans }}
+        </p>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ 'policy_wizard.step.lifecycle.column.template'|trans }}</th>
+                        <th scope="col">{{ 'policy_wizard.step.lifecycle.column.standard'|trans }}</th>
+                        <th scope="col" style="width: 140px;">{{ 'policy_wizard.step.lifecycle.column.review_override'|trans }}</th>
+                        <th scope="col" style="width: 280px;">{{ 'policy_wizard.step.lifecycle.column.approver_override'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tpl in policy_templates %}
+                        {% set tpl_key = tpl.key %}
+                        {% set override_value = per_policy_default[tpl_key]|default(null) %}
+                        {% set approver_value = approvers_default[tpl_key]|default(null) %}
+                        <tr>
+                            <td>
+                                <div><strong>{{ tpl.titleTranslationKey|default(tpl_key) }}</strong></div>
+                                <div class="text-muted small">{{ tpl_key }}</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ tpl.standard|default('—') }}</span>
+                            </td>
+                            <td>
+                                <input type="number"
+                                       class="form-control form-control-sm fa-cyber-input__field"
+                                       name="per_policy_overrides[{{ tpl_key }}]"
+                                       min="1"
+                                       max="24"
+                                       value="{{ override_value }}"
+                                       placeholder="{{ review_default }}"
+                                       aria-label="{{ 'policy_wizard.step.lifecycle.column.review_override'|trans }} {{ tpl_key }}">
+                            </td>
+                            <td>
+                                <select name="approver_per_template[{{ tpl_key }}]"
+                                        class="form-select form-select-sm fa-cyber-input__field"
+                                        data-controller="tom-select"
+                                        aria-label="{{ 'policy_wizard.step.lifecycle.column.approver_override'|trans }} {{ tpl_key }}">
+                                    <option value="">—</option>
+                                    {% for u in approver_user_choices|default([]) %}
+                                        <option value="{{ u.id }}" {% if approver_value == u.id %}selected{% endif %}>
+                                            {{ u.lastName|default('') }}, {{ u.firstName|default('') }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endset %}
+    {{ _fa_section.render({
+        title: 'policy_wizard.step.lifecycle.per_policy_section_title'|trans,
+        subtitle: 'policy_wizard.step.lifecycle.per_policy_section_subtitle'|trans,
+        body: table_body
+    }) }}
+{% endif %}

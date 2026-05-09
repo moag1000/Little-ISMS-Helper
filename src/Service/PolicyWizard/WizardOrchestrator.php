@@ -56,7 +56,32 @@ final class WizardOrchestrator
         private readonly LoggerInterface $logger = new NullLogger(),
         private readonly ?BcExerciseAutoSeeder $bcExerciseAutoSeeder = null,
         private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?CrossStepConsistencyValidator $consistencyValidator = null,
     ) {
+    }
+
+    /**
+     * Form-Audit follow-up (May 2026): cross-step consistency warnings.
+     *
+     * Returns NON-blocking warnings the controller can surface on
+     * STEP_REVIEW_GENERATE so the user sees mismatches between the
+     * settings collected in different steps (e.g. very-conservative
+     * risk appetite + 24h backup RPO). The user can still proceed —
+     * this is an informational nudge, not a hard block.
+     *
+     * @return list<array{
+     *   rule: string,
+     *   severity: string,
+     *   message_key: string,
+     *   params: array<string, mixed>,
+     * }>
+     */
+    public function consistencyWarnings(WizardRun $run): array
+    {
+        if ($this->consistencyValidator === null) {
+            return [];
+        }
+        return $this->consistencyValidator->validate($run);
     }
 
     /**
