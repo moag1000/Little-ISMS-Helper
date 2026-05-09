@@ -32,6 +32,7 @@
         class: 'mt-3 mb-0'
     } } %}
         {% block alert_body %}
+            {% trans_default_domain 'policy_wizard' %}
             <div class="d-flex justify-content-between align-items-start gap-2">
                 <div class="fa-alert__title">{{ 'policy_wizard.step.bestandsaufnahme.help.title'|trans }}</div>
                 {# MUST #2 — Topic explainer popover trigger. #}
