@@ -28,8 +28,11 @@ final class LifecycleStep extends AbstractStep
     {
         $errors = [];
 
-        // Default review interval.
+        // Default review interval. Empty string also = "use default" (12).
         $defaultInterval = $input['default_review_interval_months'] ?? 12;
+        if ($defaultInterval === '' || $defaultInterval === null) {
+            $defaultInterval = 12;
+        }
         if (!is_numeric($defaultInterval)) {
             $errors['default_review_interval_months'][] = 'policy_wizard.error.review_interval_invalid';
             $defaultInterval = 12;
@@ -53,6 +56,13 @@ final class LifecycleStep extends AbstractStep
         $normalisedOverrides = [];
         foreach ($perPolicy as $templateKey => $months) {
             if (!is_string($templateKey) || $templateKey === '') {
+                continue;
+            }
+            // Empty / null = "use default" — silent skip, no error. The
+            // form renders one input per template even when the user
+            // wants the global default; rejecting empty inputs would
+            // throw 24+ red errors on a vanilla submit.
+            if ($months === null || $months === '' || (is_array($months) && $months === [])) {
                 continue;
             }
             if (!is_numeric($months)) {
