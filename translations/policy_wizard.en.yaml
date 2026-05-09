@@ -264,7 +264,7 @@ policy_wizard:
                 body: 'CISO + ISO are mandatory in every ISMS. DPO is mandatory when GDPR applies. BCM Officer only when the BCM standard is enabled. Function owners are the line managers who own risks in their area.'
                 example: 'Small-org example: CISO + ISO can be the same person (document the dual role). DPO may be outsourced (§ 38(1) BDSG).'
                 missing_user_link: 'Person not listed?'
-                missing_user_link_cta: 'Open tenant settings'
+                missing_user_link_cta: 'Open persons module'
             tooltip:
                 ciso: 'CISO — strategic responsibility for information security. Reports to executive management.'
                 isb: 'ISO (Information Security Officer) — operational implementation of CISO directives. In small orgs often combined with CISO.'
@@ -659,7 +659,7 @@ policy_wizard:
                 example: 'Example: Default = 12 months, approver = CISO. Specific templates like "Incident Response Plan" can be tightened to 6 months.'
                 reversibility: 'Approver changes ARCHIVE existing workflow assignments but DO NOT delete them — already-issued approvals remain valid.'
                 missing_user_link: 'Approver not listed?'
-                missing_user_link_cta: 'Open tenant settings'
+                missing_user_link_cta: 'Open persons module'
             tooltip:
                 review_interval: 'ISO 27001:2022 Clause 7.5.3 requires periodic review of documented information. Audit defang: max 24 months.'
                 alva_hint: 'Alva is your compliance co-pilot — sends a friendly reminder 30 days before the due date.'
