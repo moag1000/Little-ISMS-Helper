@@ -154,9 +154,14 @@
     </form>
 
     {% if is_terminal %}
+        {# data-turbo=false: complete() renders the result page directly
+           (no redirect). Turbo Drive enforces redirect-after-POST and
+           would otherwise throw "Form responses must redirect to another
+           location" — visible in the browser console as silent failure. #}
         <form method="post"
               action="{{ path('app_policy_wizard_complete', { runId: run.id }) }}"
-              class="mt-3">
+              class="mt-3"
+              data-turbo="false">
             <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_complete') }}">
             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary"{{ hierarchy_conflicts|default([])|length > 0 ? ' disabled' : '' }}>
                 <i class="bi bi-magic" aria-hidden="true"></i>

@@ -25,6 +25,32 @@
             variant: 'info',
             body: 'policy_wizard.message.sandbox_no_persistence'|trans
         }) }}
+
+        {% if sandbox_preview is not null %}
+            {% set preview_count = sandbox_preview.documents|default([])|length %}
+            {% set preview_body %}
+                <p class="text-muted small mb-3">
+                    {{ 'policy_wizard.result.sandbox_preview_count'|trans({'%count%': preview_count}, 'policy_wizard') }}
+                </p>
+                {% if preview_count > 0 %}
+                    <ul class="list-group list-group-flush">
+                        {% for doc in sandbox_preview.documents %}
+                            <li class="list-group-item px-0">
+                                <strong>{{ doc.title|default(doc.topic|default('—')) }}</strong>
+                                <span class="badge bg-secondary ms-2">{{ doc.standard|default('—') }}</span>
+                                {% if doc.body_excerpt is defined %}
+                                    <p class="small text-muted mb-0 mt-1">{{ doc.body_excerpt|slice(0, 200) }}…</p>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endset %}
+            {{ _fa_section.render({
+                title: 'policy_wizard.result.sandbox_preview_heading'|trans,
+                body: preview_body
+            }) }}
+        {% endif %}
     {% endif %}
 
     {% set documents_body %}

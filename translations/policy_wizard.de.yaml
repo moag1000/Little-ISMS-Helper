@@ -834,6 +834,8 @@ policy_wizard:
         next_steps_heading: 'Nächste Schritte'
         next_steps_review: 'Top-Management-Sign-Off einholen (Bulk-Approval-Inbox).'
         next_steps_translate: 'Bei Bedarf englische Übersetzung anfordern.'
+        sandbox_preview_heading: 'Sandbox-Vorschau (nicht persistiert)'
+        sandbox_preview_count: '%count% Vorschau-Dokumente generiert. Inhalte werden NICHT gespeichert — Sandbox-Modus.'
 
     # Junior-ISB Wish #3 — Progress-Bar above every wizard step.
     progress:
