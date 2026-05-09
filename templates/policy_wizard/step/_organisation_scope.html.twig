@@ -1,5 +1,6 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
@@ -25,33 +26,27 @@
 
 <div class="row g-3">
     <div class="col-md-6">
-        <label class="fa-cyber-input__label form-label" for="legal-name">
-            {{ 'policy_wizard.step.organisation_scope.legal_name_label'|trans }}
-        </label>
-        <input type="text"
-               class="form-control fa-cyber-input__field"
-               id="legal-name"
-               name="legal_name"
-               maxlength="191"
-               value="{{ legal_default }}"
-               required>
+        {{ _fa_cyber.text('legal_name', {
+            id: 'legal-name',
+            label: 'policy_wizard.step.organisation_scope.legal_name_label'|trans,
+            help: 'policy_wizard.step.organisation_scope.legal_name_help'|trans,
+            value: legal_default,
+            required: true,
+            max: 191
+        }) }}
         {% if prefilled_legal_name %}
             <small class="text-muted d-block mt-1">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
                 {{ 'policy_wizard.step.organisation_scope.field.legal_name.prefilled_hint'|trans }}
             </small>
         {% endif %}
-        <div class="form-text">{{ 'policy_wizard.step.organisation_scope.legal_name_help'|trans }}</div>
     </div>
     <div class="col-md-6">
-        <label class="fa-cyber-input__label form-label" for="primary-address">
-            {{ 'policy_wizard.step.organisation_scope.primary_address_label'|trans }}
-        </label>
-        <input type="text"
-               class="form-control fa-cyber-input__field"
-               id="primary-address"
-               name="primary_address"
-               value="{{ address_default }}">
+        {{ _fa_cyber.text('primary_address', {
+            id: 'primary-address',
+            label: 'policy_wizard.step.organisation_scope.primary_address_label'|trans,
+            value: address_default
+        }) }}
         {% if prefilled_primary_address %}
             <small class="text-muted d-block mt-1">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
@@ -60,16 +55,17 @@
         {% endif %}
     </div>
     <div class="col-12">
-        <label class="fa-cyber-input__label form-label" for="scope-statement">
-            {{ 'policy_wizard.step.organisation_scope.scope_statement_label'|trans }}
-        </label>
-        <textarea class="form-control fa-cyber-input__field"
-                  id="scope-statement"
-                  name="scope_statement"
-                  rows="4"
-                  minlength="30"
-                  required>{{ scope_default }}</textarea>
-        <div class="form-text">{{ 'policy_wizard.step.organisation_scope.scope_statement_help'|trans }}</div>
+        {{ _fa_cyber.textarea('scope_statement', {
+            id: 'scope-statement',
+            label: 'policy_wizard.step.organisation_scope.scope_statement_label'|trans,
+            help: 'policy_wizard.step.organisation_scope.scope_statement_help'|trans,
+            value: scope_default,
+            rows: 4,
+            required: true,
+            extra_attrs: {
+                'minlength': '30'
+            }
+        }) }}
         {# Junior-ISB inline help: 3 concrete sample sentences (collapsible). #}
         <details class="fa-cyber-input__hint mt-2 small">
             <summary class="text-primary" style="cursor: pointer;">

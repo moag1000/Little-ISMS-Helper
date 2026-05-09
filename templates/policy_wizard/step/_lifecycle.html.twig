@@ -1,6 +1,7 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {# Form-Audit follow-up (May 2026).
    Template now matches LifecycleStep::validate() contract exactly:
@@ -37,52 +38,39 @@
 
 <div class="row g-3 mb-4">
     <div class="col-md-6">
-        <label class="form-label" for="lifecycle-review-interval">
-            {{ 'policy_wizard.step.lifecycle.review_interval_label'|trans }}
-            <i class="bi bi-info-circle text-muted ms-1"
-               data-bs-toggle="tooltip"
-               title="{{ 'policy_wizard.step.lifecycle.tooltip.review_interval'|trans }}"
-               aria-label="{{ 'policy_wizard.step.lifecycle.tooltip.review_interval'|trans }}"></i>
-        </label>
-        <input type="number"
-               class="form-control fa-cyber-input__field"
-               id="lifecycle-review-interval"
-               name="default_review_interval_months"
-               min="1"
-               max="24"
-               value="{{ review_default }}"
-               required
-               aria-describedby="lifecycle-review-interval-help">
-        <div id="lifecycle-review-interval-help" class="form-text">
-            {{ 'policy_wizard.step.lifecycle.review_interval_help'|trans }}
-        </div>
+        {{ _fa_cyber.text('default_review_interval_months', {
+            id: 'lifecycle-review-interval',
+            type: 'number',
+            label: 'policy_wizard.step.lifecycle.review_interval_label'|trans,
+            help: 'policy_wizard.step.lifecycle.review_interval_help'|trans,
+            value: review_default,
+            required: true,
+            extra_attrs: {
+                'min': '1',
+                'max': '24'
+            }
+        }) }}
         {% if review_default > 24 %}
             <div class="invalid-feedback d-block">{{ 'policy_wizard.error.review_interval_max'|trans }}</div>
         {% endif %}
     </div>
     <div class="col-md-6">
-        <label class="form-label" for="lifecycle-default-approver">
-            {{ 'policy_wizard.step.lifecycle.default_approver_label'|trans }}
-            <i class="bi bi-info-circle text-muted ms-1"
-               data-bs-toggle="tooltip"
-               title="{{ 'policy_wizard.step.lifecycle.tooltip.approver'|trans }}"
-               aria-label="{{ 'policy_wizard.step.lifecycle.tooltip.approver'|trans }}"></i>
-        </label>
-        <select id="lifecycle-default-approver"
-                name="default_approver_user_id"
-                class="form-select fa-cyber-input__field"
-                data-controller="tom-select"
-                aria-describedby="lifecycle-default-approver-help">
-            <option value="">—</option>
-            {% for u in approver_user_choices|default([]) %}
-                <option value="{{ u.id }}" {% if default_approver_default == u.id %}selected{% endif %}>
-                    {{ u.lastName|default('') }}, {{ u.firstName|default('') }} ({{ u.email }})
-                </option>
-            {% endfor %}
-        </select>
-        <div id="lifecycle-default-approver-help" class="form-text">
-            {{ 'policy_wizard.step.lifecycle.default_approver_help'|trans }}
-        </div>
+        {% set approver_options = [{value: '', label: '—'}] %}
+        {% for u in approver_user_choices|default([]) %}
+            {% set approver_options = approver_options|merge([{
+                value: u.id,
+                label: (u.lastName|default('') ~ ', ' ~ u.firstName|default('') ~ ' (' ~ u.email ~ ')')
+            }]) %}
+        {% endfor %}
+        {{ _fa_cyber.select('default_approver_user_id', approver_options, {
+            id: 'lifecycle-default-approver',
+            label: 'policy_wizard.step.lifecycle.default_approver_label'|trans,
+            help: 'policy_wizard.step.lifecycle.default_approver_help'|trans,
+            value: default_approver_default,
+            extra_attrs: {
+                'data-controller': 'tom-select'
+            }
+        }) }}
     </div>
     <div class="col-md-12">
         <p class="small text-muted mb-2">
