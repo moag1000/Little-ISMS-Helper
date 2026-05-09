@@ -43,6 +43,8 @@ bc_exercises:
         duration_hours: 'Dauer (Stunden)'
         participants: Teilnehmende
         facilitator: 'Moderator/Leitung'
+        exercise_leader_user: 'Übungsleitung (User)'
+        exercise_leader_person: 'Übungsleitung (Person)'
         observers: Beobachter
         status: Status
         results: Ergebnisse
@@ -76,6 +78,8 @@ bc_exercises:
         duration_hours: 'Geplante oder tatsächliche Dauer der Übung in Stunden'
         participants: 'Welche Personen/Teams nehmen an der Übung teil?'
         facilitator: 'Person, die die Übung leitet und moderiert'
+        exercise_leader_user: 'Übungsleitung mit Anwendungs-Login. Optional, wenn die Leitung intern und mit System-Account hinterlegt ist.'
+        exercise_leader_person: 'Übungsleitung als Stammdaten-Person — typischerweise externer BCM-Berater ohne System-Login.'
         observers: 'Externe Beobachter (z.B. Auditoren, Management)'
         status: 'Aktueller Status der Übung'
         results: 'Zusammenfassung der Übungsergebnisse'
@@ -107,6 +111,8 @@ bc_exercises:
         scenario: 'z.B. Stromausfall im Hauptgebäude für 24 Stunden'
         participants: 'z.B. IT-Team, Geschäftsleitung, Krisenteam'
         facilitator: 'Name des Übungsleiters'
+        exercise_leader_user: '-- User auswählen --'
+        exercise_leader_person: '-- Person aus Stammdaten --'
         observers: 'z.B. Externer Auditor, ISO-Beauftragter'
     tooltip:
         scenario: 'Beschreiben Sie das konkrete Übungsszenario (z. B. "Ransomware-Angriff auf Produktivsysteme"). Ein realistisches Szenario erhöht den Lerneffekt und deckt Lücken in den BC-Plänen auf.'

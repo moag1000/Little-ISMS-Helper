@@ -14,8 +14,11 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 
 use App\Repository\BCExerciseRepository;
+use App\Service\OwnerResolver;
 use App\State\TenantAwareStateProcessor;
+use App\Entity\Person;
 use App\Entity\Tenant;
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -134,12 +137,34 @@ class BCExercise
     private ?string $participants = null;
 
     /**
-     * Exercise facilitator/lead
+     * Exercise facilitator/lead — legacy free-text field. Phase B1
+     * adds typed `exerciseLeaderUser` / `exerciseLeaderPerson` slots
+     * alongside; populate either when the leader is known to be an
+     * application User or a Stammdaten Person (external BC consultant).
      */
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
     private ?string $facilitator = null;
+
+    /**
+     * Person-Rollout Phase B1 — typed exercise leader. Application
+     * User (employee with login). Backward-compat optional slot —
+     * `facilitator` string remains canonical for Migration legacy data.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'exercise_leader_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    private ?User $exerciseLeaderUser = null;
+
+    /**
+     * Person-Rollout Phase B1 — typed exercise leader as Person
+     * (external BC consultant without app login is the typical case).
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'exercise_leader_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
+    private ?Person $exerciseLeaderPerson = null;
 
     /**
      * Observers
@@ -416,6 +441,42 @@ class BCExercise
     {
         $this->facilitator = $facilitator;
         return $this;
+    }
+
+    public function getExerciseLeaderUser(): ?User
+    {
+        return $this->exerciseLeaderUser;
+    }
+
+    public function setExerciseLeaderUser(?User $exerciseLeaderUser): static
+    {
+        $this->exerciseLeaderUser = $exerciseLeaderUser;
+        return $this;
+    }
+
+    public function getExerciseLeaderPerson(): ?Person
+    {
+        return $this->exerciseLeaderPerson;
+    }
+
+    public function setExerciseLeaderPerson(?Person $exerciseLeaderPerson): static
+    {
+        $this->exerciseLeaderPerson = $exerciseLeaderPerson;
+        return $this;
+    }
+
+    /**
+     * Effective exercise leader name — Tri-State chain User → Person →
+     * legacy `facilitator` string. Templates prefer this over reading
+     * the raw fields so the migration window stays UI-transparent.
+     */
+    public function getEffectiveExerciseLeaderName(): ?string
+    {
+        return OwnerResolver::resolveEffective(
+            $this->exerciseLeaderUser,
+            $this->exerciseLeaderPerson,
+            $this->facilitator,
+        );
     }
 
     public function getObservers(): ?string

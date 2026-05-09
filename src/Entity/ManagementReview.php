@@ -33,6 +33,21 @@ class ManagementReview
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $participants;
 
+    /**
+     * Person-Rollout Phase B1 — typed Person participants twin of the
+     * Collection<User> `participants`. External board members /
+     * auditors / consultants attend without an app login; surfacing
+     * them here keeps the attendance roster complete without licence
+     * inflation on User accounts.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'management_review_person_participants')]
+    #[ORM\JoinColumn(name: 'management_review_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $personParticipants;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $changesRelevantToISMS = null;
 
@@ -126,6 +141,7 @@ public function __construct()
         $this->createdAt = new DateTimeImmutable();
         $this->participants = new ArrayCollection();
         $this->reviewedByDeputyPersons = new ArrayCollection();
+        $this->personParticipants = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -189,6 +205,62 @@ public function __construct()
     {
         $this->participants->removeElement($user);
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Person>
+     */
+    public function getPersonParticipants(): Collection
+    {
+        return $this->personParticipants;
+    }
+
+    public function addPersonParticipant(Person $person): static
+    {
+        if (!$this->personParticipants->contains($person)) {
+            $this->personParticipants->add($person);
+        }
+        return $this;
+    }
+
+    public function removePersonParticipant(Person $person): static
+    {
+        $this->personParticipants->removeElement($person);
+        return $this;
+    }
+
+    /**
+     * Combined attendance count — application Users plus typed
+     * Persons. Useful for ISMS audit reports where the total roster
+     * matters more than the User/Person split.
+     */
+    public function getEffectiveParticipantCount(): int
+    {
+        return $this->participants->count() + $this->personParticipants->count();
+    }
+
+    /**
+     * Combined attendance display: User full names then Person full
+     * names. Empty list if neither slot is populated.
+     *
+     * @return list<string>
+     */
+    public function getEffectiveParticipantNames(): array
+    {
+        $names = [];
+        foreach ($this->participants as $user) {
+            $name = trim(($user->getFirstName() ?? '') . ' ' . ($user->getLastName() ?? ''));
+            if ($name !== '') {
+                $names[] = $name;
+            }
+        }
+        foreach ($this->personParticipants as $person) {
+            $fullName = $person->getFullName();
+            if ($fullName !== null && $fullName !== '') {
+                $names[] = $fullName;
+            }
+        }
+        return $names;
     }
 
     public function getChangesRelevantToISMS(): ?string

@@ -36,6 +36,7 @@ crisis_team:
         last_training_at: 'Letztes Training'
         next_training_at: 'Nächstes Training'
         business_continuity_plans: 'Business Continuity Pläne'
+        person_members: 'Krisenstab-Mitglieder (Personen)'
         notes: Notizen
     type:
         operational: 'Operativer Krisenstab'
@@ -76,6 +77,7 @@ crisis_team:
         training_schedule: 'Regelmäßige Trainings und Übungen'
         next_training_at: 'Wann findet das nächste Training statt?'
         business_continuity_plans: 'Zugeordnete BCPs'
+        person_members: 'Strukturierte Mitgliederliste — Stammdaten-Personen, ergänzend zur JSON-Liste mit Rollen/Kontakt. Externe Berater oder Auditoren können hier ohne System-Login geführt werden.'
     success:
         created: 'Krisenstab erfolgreich erstellt.'
         updated: 'Krisenstab erfolgreich aktualisiert.'

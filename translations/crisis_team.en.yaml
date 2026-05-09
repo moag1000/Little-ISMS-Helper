@@ -36,6 +36,7 @@ crisis_team:
         last_training_at: 'Last Training'
         next_training_at: 'Next Training'
         business_continuity_plans: 'Business Continuity Plans'
+        person_members: 'Crisis Team Members (Persons)'
         notes: Notes
     type:
         operational: 'Operational Crisis Team'
@@ -76,6 +77,7 @@ crisis_team:
         next_training_at: 'When is the next training?'
         business_continuity_plans: 'Assigned BCPs'
         meeting_location: 'Physical meeting point during crises'
+        person_members: 'Structured roster — master-data Persons in addition to the JSON list with roles/contact details. External consultants or auditors can be tracked here without a system login.'
     success:
         created: 'Crisis team created successfully.'
         updated: 'Crisis team updated successfully.'

@@ -54,6 +54,7 @@ management_review:
         reviewed_by_person: 'Durchgeführt von (Person)'
         reviewed_by_deputy_persons: 'Vertretungen (Personen)'
         participants: Teilnehmende
+        person_participants: 'Teilnehmende (Personen)'
         status: Status
         changes_relevant_to_isms: 'Änderungen mit Relevanz für das ISMS'
         feedback_from_interested_parties: 'Rückmeldungen interessierter Parteien'
@@ -134,6 +135,7 @@ management_review:
         reviewed_by: 'Üblicherweise ein Mitglied des Top-Managements'
         reviewed_by_person: 'Person ohne System-Login als Reviewer. Reihenfolge: User > Person > leer.'
         reviewed_by_deputy_persons: 'Weitere Personen mit Vertretungs- oder Mitverantwortung.'
+        person_participants: 'Externe Teilnehmende (Beirat, Auditoren, Berater) ohne System-Login. Ergänzt die Anwender-Teilnahme aus dem Feld "Teilnehmende".'
         performance_evaluation: 'Bewertung der ISMS-Performance und KPIs'
         changes_relevant_to_isms: 'Änderungen, die für das ISMS relevant sind (z.B. gesetzliche, organisatorische, technologische)'
         feedback_from_interested_parties: 'Rückmeldungen interessierter Parteien (Kunden, Partner, Behörden, Mitarbeitende)'
