@@ -36,7 +36,7 @@
         <div class="col-md-6">
             <label class="form-label" for="role-{{ role_key }}">{{ label_key|trans }}</label>
             <input type="number"
-                   class="form-control"
+                   class="form-control fa-cyber-input__field"
                    id="role-{{ role_key }}"
                    name="roles[{{ role_key }}]"
                    min="1"
@@ -55,7 +55,7 @@
                         {{ fn_key|replace({'_': ' '})|capitalize }}
                     </label>
                     <input type="number"
-                           class="form-control"
+                           class="form-control fa-cyber-input__field"
                            id="fn-{{ fn_key }}"
                            name="function_owners[{{ fn_key }}]"
                            min="0"
@@ -69,7 +69,7 @@
     <div class="col-12">
         <label class="form-label" for="approval-chain">Approval chain (User-IDs, comma-separated)</label>
         <input type="text"
-               class="form-control"
+               class="form-control fa-cyber-input__field"
                id="approval-chain-csv"
                value="{{ approval_chain_default|join(',') }}">
         {% for uid in approval_chain_default %}

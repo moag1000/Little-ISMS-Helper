@@ -1,11 +1,22 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{# Mode 2 (Targeted re-run) Step 2 — optional Audit-Finding ID. Surfaces in
-   the audit log so future auditors can see "this 3-policy fix was triggered
-   by Finding NCR-2026-04". #}
+{# Mode 2 (Targeted re-run) Step 2 — Audit-Finding picker.
+
+   Form-Audit (May 2026): replaces the legacy plain-text NCR-XXXX input
+   with a TomSelect dropdown over the tenant's open AuditFinding entities
+   so the wizard can write a structured audit-trail link (entity ID) into
+   the audit log instead of relying on a free-text reference. The picker
+   still allows free typing for legacy / external systems
+   (`create: true`).
+
+   The TargetedFindingReferenceStep::defaults() supplies:
+     - `defaults.finding_reference`  : currently persisted reference (or null)
+     - `defaults.audit_findings`     : list of open finding rows for the
+                                       current tenant. #}
 
 {% set finding_value = defaults.finding_reference|default(run.findingReference|default('')) %}
+{% set audit_findings = defaults.audit_findings|default([]) %}
 
 <div class="row g-3">
     <div class="col-lg-8">
@@ -18,16 +29,46 @@
             <label class="form-label" for="finding-reference">
                 {{ 'policy_wizard.step.targeted.finding.title'|trans }}
             </label>
-            <input type="text"
-                   class="form-control"
-                   id="finding-reference"
-                   name="finding_reference"
-                   maxlength="100"
-                   placeholder="{{ 'policy_wizard.step.targeted.finding.placeholder'|trans }}"
-                   value="{{ finding_value }}">
-            <div class="form-text">
-                {{ 'policy_wizard.step.targeted.finding.help'|trans }}
-            </div>
+
+            {% if audit_findings|length > 0 %}
+                <select id="finding-reference"
+                        name="finding_reference"
+                        class="form-select fa-cyber-input__field"
+                        data-controller="ts-finding-picker"
+                        data-ts-finding-picker-placeholder-value="{{ 'policy_wizard.step.targeted.finding.placeholder'|trans }}">
+                    <option value="">{{ 'policy_wizard.step.targeted.finding.placeholder'|trans }}</option>
+                    {% for finding in audit_findings %}
+                        {% set option_value = 'AUDIT_FINDING:' ~ finding.id %}
+                        <option value="{{ option_value }}"{% if finding_value == option_value %} selected{% endif %}>
+                            {{ finding.finding_number }} — {{ finding.title }}
+                            ({{ ('policy_wizard.step.targeted.finding.severity.' ~ finding.severity)|trans }}{% if finding.due_date %}, {{ 'policy_wizard.step.targeted.finding.due'|trans }}: {{ finding.due_date }}{% endif %})
+                        </option>
+                    {% endfor %}
+                    {# Render the persisted free-text reference back as an option so
+                       the picker can show it as the current selection. #}
+                    {% if finding_value is not empty
+                          and finding_value starts with 'AUDIT_FINDING:' is same as(false) %}
+                        <option value="{{ finding_value }}" selected>{{ finding_value }}</option>
+                    {% endif %}
+                </select>
+                <div class="form-text">
+                    {{ 'policy_wizard.step.targeted.finding.help_picker'|trans }}
+                </div>
+            {% else %}
+                {# No open audit findings for this tenant — fall back to the
+                   plain text input so external references (paper findings,
+                   another GRC system, …) can still be linked. #}
+                <input type="text"
+                       class="form-control fa-cyber-input__field"
+                       id="finding-reference"
+                       name="finding_reference"
+                       maxlength="100"
+                       placeholder="{{ 'policy_wizard.step.targeted.finding.placeholder'|trans }}"
+                       value="{{ finding_value }}">
+                <div class="form-text">
+                    {{ 'policy_wizard.step.targeted.finding.no_open_findings'|trans }}
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

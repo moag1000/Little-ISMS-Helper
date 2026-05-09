@@ -83,7 +83,7 @@
                             <label class="visually-hidden" for="action-{{ doc_id }}">
                                 {{ 'policy_wizard.step.bestandsaufnahme.column.action'|trans }}
                             </label>
-                            <select class="form-select form-select-sm mb-2"
+                            <select class="form-select form-select-sm fa-cyber-input__field mb-2"
                                     id="action-{{ doc_id }}"
                                     name="decisions[{{ doc_id }}][action]"
                                     required>
@@ -101,7 +101,7 @@
                             <label class="visually-hidden" for="merge-{{ doc_id }}">
                                 {{ 'policy_wizard.step.bestandsaufnahme.action.merge_into_topic'|trans }}
                             </label>
-                            <select class="form-select form-select-sm mb-2"
+                            <select class="form-select form-select-sm fa-cyber-input__field mb-2"
                                     id="merge-{{ doc_id }}"
                                     name="decisions[{{ doc_id }}][target_topic]">
                                 <option value="">—</option>
@@ -121,7 +121,7 @@
                             <label class="visually-hidden" for="split-{{ doc_id }}">
                                 {{ 'policy_wizard.step.bestandsaufnahme.action.split_to_topics'|trans }}
                             </label>
-                            <select class="form-select form-select-sm mb-2"
+                            <select class="form-select form-select-sm fa-cyber-input__field mb-2"
                                     id="split-{{ doc_id }}"
                                     name="decisions[{{ doc_id }}][target_topics][]"
                                     multiple>
@@ -136,7 +136,7 @@
                             <label class="visually-hidden" for="rationale-{{ doc_id }}">
                                 {{ 'policy_wizard.step.bestandsaufnahme.rationale_label'|trans }}
                             </label>
-                            <textarea class="form-control form-control-sm"
+                            <textarea class="form-control form-control-sm fa-cyber-input__field"
                                       id="rationale-{{ doc_id }}"
                                       name="decisions[{{ doc_id }}][rationale]"
                                       rows="2"
