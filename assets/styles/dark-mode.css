@@ -283,7 +283,7 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-theme="dark"] .text-muted .bi,
 [data-bs-theme="dark"] .text-muted .bi {
     color: var(--fg-3) !important;
-    text-shadow: 0 0 4px rgb(148, 163, 184, 0.4);
+    text-shadow: 0 0 4px rgb(var(--sev-neutral-rgb), 0.4);
 }
 
 /* Special glow classes */
@@ -304,7 +304,7 @@ html[data-bs-theme="dark"] .alert h6 {
 [data-theme="dark"] .bi-glow-purple,
 [data-bs-theme="dark"] .bi-glow-purple {
     color: var(--accent) !important;
-    text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px rgb(139, 92, 246, 0.5);
+    text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px rgb(var(--tone-purple-rgb), 0.5);
     filter: drop-shadow(0 0 3px var(--accent));
 }
 

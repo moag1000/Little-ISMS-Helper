@@ -36,7 +36,7 @@
 /* High contrast focus for dark mode */
 [data-theme="dark"] *:focus-visible {
     outline-color: var(--primary);
-    box-shadow: 0 0 0 3px rgb(34, 211, 238, 0.4);
+    box-shadow: 0 0 0 3px rgb(var(--tone-cyan-rgb), 0.4);
 }
 
 /* Specific focus styles for buttons */
@@ -68,7 +68,7 @@ textarea:focus-visible {
 [data-theme="dark"] textarea:focus-visible {
     outline-color: var(--primary) !important;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgb(34, 211, 238, 0.4);
+    box-shadow: 0 0 0 3px rgb(var(--tone-cyan-rgb), 0.4);
 }
 
 /* Link focus indicators */
@@ -95,7 +95,7 @@ input[type="radio"]:focus-visible {
 [data-theme="dark"] input[type="checkbox"]:focus-visible,
 [data-theme="dark"] input[type="radio"]:focus-visible {
     outline-color: var(--primary);
-    box-shadow: 0 0 0 3px rgb(34, 211, 238, 0.4);
+    box-shadow: 0 0 0 3px rgb(var(--tone-cyan-rgb), 0.4);
 }
 
 body {
@@ -132,13 +132,13 @@ body {
     pointer-events: auto;
     outline: 4px solid var(--warning); /* Gold outline for high visibility */
     outline-offset: 2px;
-    box-shadow: 0 6px 20px rgb(30, 64, 175, 0.5),
-                0 0 0 4px rgb(251, 191, 36, 0.3);
+    box-shadow: 0 6px 20px rgb(var(--primary-rgb), 0.5),
+                0 0 0 4px rgb(var(--warning-rgb), 0.3);
 }
 
 .skip-link:hover {
     background: var(--primary-hover);
-    box-shadow: 0 6px 20px rgb(30, 64, 175, 0.6);
+    box-shadow: 0 6px 20px rgb(var(--primary-rgb), 0.6);
 }
 
 /* Dark mode support for skip links */
@@ -150,8 +150,8 @@ body {
 [data-theme="dark"] .skip-link:focus,
 [data-theme="dark"] .skip-link:focus-visible {
     outline-color: var(--warning);
-    box-shadow: 0 6px 20px rgb(59, 130, 246, 0.6),
-                0 0 0 4px rgb(251, 191, 36, 0.3);
+    box-shadow: 0 6px 20px rgb(var(--primary-rgb), 0.6),
+                0 0 0 4px rgb(var(--warning-rgb), 0.3);
 }
 
 [data-theme="dark"] .skip-link:hover {
@@ -1432,7 +1432,7 @@ body {
     background-blend-mode: normal, multiply;
     color: white; /* design-spec: text on dark multiply-blend gradient dark-mode active link */
     text-shadow: 0 1px 3px rgb(0, 0, 0, 0.9), /* design-spec: text on dark gradient dark-mode active link */
-                 0 0 15px rgb(34, 211, 238, 0.6);
+                 0 0 15px rgb(var(--tone-cyan-rgb), 0.6);
 }
 
 /* Sidebar Submenu (Expandable Navigation) */
@@ -1521,9 +1521,9 @@ body {
 }
 
 .app-sidebar .badge-mini.badge-danger {
-    background: rgb(239, 68, 68, 0.8);
+    background: rgb(var(--danger-rgb), 0.8);
     color: var(--on-danger);
-    box-shadow: 0 0 8px rgb(239, 68, 68, 0.5);
+    box-shadow: 0 0 8px rgb(var(--danger-rgb), 0.5);
 }
 
 .app-sidebar .framework-link {
@@ -1879,19 +1879,19 @@ h3 {
 }
 
 .warning-box {
-    background-color: rgb(245, 158, 11, 0.1);
+    background-color: rgb(var(--warning-rgb), 0.1);
     border-color: var(--warning);
     color: var(--fg);
 }
 
 .success-box {
-    background-color: rgb(16, 185, 129, 0.1);
+    background-color: rgb(var(--success-rgb), 0.1);
     border-color: var(--success);
     color: var(--fg);
 }
 
 .danger-box {
-    background-color: rgb(239, 68, 68, 0.1);
+    background-color: rgb(var(--danger-rgb), 0.1);
     border-color: var(--danger);
     color: var(--fg);
 }
@@ -2071,7 +2071,7 @@ tbody td {
     background: linear-gradient(135deg, var(--danger), var(--danger-strong));
     color: var(--on-danger);
     font-weight: 600;
-    box-shadow: 0 2px 4px rgb(220, 38, 38, 0.3);
+    box-shadow: 0 2px 4px rgb(var(--danger-rgb), 0.3);
     text-shadow: 0 1px 2px rgb(0, 0, 0, 0.6); /* design-spec: text on colored badge for WCAG AA contrast */
 }
 
@@ -2293,7 +2293,7 @@ input.is-invalid:focus,
 select.is-invalid:focus,
 textarea.is-invalid:focus {
     border-color: var(--danger);
-    box-shadow: 0 0 0 3px rgb(239, 68, 68, 0.2);
+    box-shadow: 0 0 0 3px rgb(var(--danger-rgb), 0.2);
 }
 
 [data-theme="dark"] .invalid-feedback,
@@ -3034,7 +3034,7 @@ textarea.is-valid {
 .form-control.is-valid:focus,
 input.is-valid:focus {
     border-color: var(--success);
-    box-shadow: 0 0 0 0.2rem rgb(16, 185, 129, 0.25);
+    box-shadow: 0 0 0 0.2rem rgb(var(--success-rgb), 0.25);
 }
 
 /* Valid feedback message */

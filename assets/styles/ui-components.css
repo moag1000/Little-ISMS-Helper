@@ -1094,7 +1094,7 @@
 }
 
 .bg-audit-cancelled {
-    background: rgb(148, 163, 184, 0.1);  /* slate-400 */
+    background: rgb(var(--sev-neutral-rgb), 0.1);  /* slate-400 */
     border-radius: var(--r-md);
 }
 
@@ -1767,7 +1767,7 @@
 }
 
 .bg-other-light {
-    background: rgb(148, 163, 184, 0.1);  /* slate-400 */
+    background: rgb(var(--sev-neutral-rgb), 0.1);  /* slate-400 */
     border-radius: var(--r-md);
 }
 
@@ -2472,13 +2472,13 @@
 [data-theme="dark"] .badge-create {
     background: var(--success);
     color: var(--on-success);
-    box-shadow: 0 0 8px rgb(16, 185, 129, 0.3);
+    box-shadow: 0 0 8px rgb(var(--success-rgb), 0.3);
 }
 
 [data-theme="dark"] .badge-update {
     background: var(--warning);
     color: var(--on-warning);
-    box-shadow: 0 0 8px rgb(245, 158, 11, 0.3);
+    box-shadow: 0 0 8px rgb(var(--warning-rgb), 0.3);
 }
 
 [data-theme="dark"] .badge-delete {

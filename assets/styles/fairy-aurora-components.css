@@ -47,7 +47,7 @@
 html[data-theme="dark"] .fa-brand-mark {
     box-shadow: 0 0 12px var(--primary-glow),
                 inset 0 0 0 1px rgb(255, 255, 255, 0.3),
-                0 0 0 1px rgb(56, 189, 248, 0.35);
+                0 0 0 1px rgb(var(--primary-rgb), 0.35);
 }
 
 .fa-brand-sparkle {
@@ -68,7 +68,7 @@ body {
     background-color: var(--bg);
     background-image:
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 900' preserveAspectRatio='xMidYMid slice'%3E%3Cg stroke='%230284c7' stroke-width='0.7' fill='none' opacity='0.22'%3E%3Cpath d='M 0 120 L 240 120 L 270 150 L 520 150' stroke-linecap='round'/%3E%3Cpath d='M 1200 260 L 900 260 L 870 290 L 640 290' stroke-linecap='round'/%3E%3Cpath d='M 0 460 L 320 460 L 350 430 L 560 430' stroke-linecap='round'/%3E%3Cpath d='M 1200 640 L 820 640 L 790 670 L 620 670' stroke-linecap='round'/%3E%3Cpath d='M 140 780 L 380 780' stroke-linecap='round'/%3E%3Cpath d='M 700 820 L 1060 820' stroke-linecap='round'/%3E%3C/g%3E%3Cg fill='%237c3aed' opacity='0.5'%3E%3Ccircle cx='240' cy='120' r='2.2'/%3E%3Ccircle cx='520' cy='150' r='2.2'/%3E%3Ccircle cx='900' cy='260' r='2.2'/%3E%3Ccircle cx='640' cy='290' r='2.2'/%3E%3Ccircle cx='320' cy='460' r='2.2'/%3E%3Ccircle cx='560' cy='430' r='2.2'/%3E%3Ccircle cx='820' cy='640' r='2.2'/%3E%3Ccircle cx='620' cy='670' r='2.2'/%3E%3C/g%3E%3C/svg%3E"),
-        radial-gradient(circle at 32px 32px, rgb(2, 132, 199, 0.22) 0.9px, transparent 1.6px);
+        radial-gradient(circle at 32px 32px, rgb(var(--primary-rgb), 0.22) 0.9px, transparent 1.6px);
     background-size: cover, 64px 64px;
     background-position: center center, 0 0;
     background-repeat: no-repeat, repeat;
@@ -78,7 +78,7 @@ body {
 html[data-theme="dark"] body {
     background-image:
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 900' preserveAspectRatio='xMidYMid slice'%3E%3Cg stroke='%2338bdf8' stroke-width='0.7' fill='none' opacity='0.32'%3E%3Cpath d='M 0 120 L 240 120 L 270 150 L 520 150' stroke-linecap='round'/%3E%3Cpath d='M 1200 260 L 900 260 L 870 290 L 640 290' stroke-linecap='round'/%3E%3Cpath d='M 0 460 L 320 460 L 350 430 L 560 430' stroke-linecap='round'/%3E%3Cpath d='M 1200 640 L 820 640 L 790 670 L 620 670' stroke-linecap='round'/%3E%3Cpath d='M 140 780 L 380 780' stroke-linecap='round'/%3E%3Cpath d='M 700 820 L 1060 820' stroke-linecap='round'/%3E%3C/g%3E%3Cg fill='%23a78bfa' opacity='0.6'%3E%3Ccircle cx='240' cy='120' r='2.2'/%3E%3Ccircle cx='520' cy='150' r='2.2'/%3E%3Ccircle cx='900' cy='260' r='2.2'/%3E%3Ccircle cx='640' cy='290' r='2.2'/%3E%3Ccircle cx='320' cy='460' r='2.2'/%3E%3Ccircle cx='560' cy='430' r='2.2'/%3E%3Ccircle cx='820' cy='640' r='2.2'/%3E%3Ccircle cx='620' cy='670' r='2.2'/%3E%3C/g%3E%3C/svg%3E"),
-        radial-gradient(circle at 32px 32px, rgb(56, 189, 248, 0.22) 1px, transparent 1.8px);
+        radial-gradient(circle at 32px 32px, rgb(var(--primary-rgb), 0.22) 1px, transparent 1.8px);
 }
 
 /* Content-Areas transparent, damit Body-Pattern durchscheint */
@@ -136,7 +136,7 @@ html[data-theme="dark"] .mega-menu-panel {
     background:
         linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%),
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 800' preserveAspectRatio='xMidYMid slice'%3E%3Cg stroke='%2338bdf8' stroke-width='0.55' fill='none' opacity='0.22'%3E%3Cpath d='M 0 160 L 140 160 L 170 190 L 290 190' stroke-linecap='round'/%3E%3Cpath d='M 600 280 L 460 280 L 430 310 L 340 310' stroke-linecap='round'/%3E%3Cpath d='M 60 560 L 180 560 L 210 530 L 330 530' stroke-linecap='round'/%3E%3Cpath d='M 520 620 L 400 620' stroke-linecap='round'/%3E%3C/g%3E%3Cg fill='%23a78bfa' opacity='0.5'%3E%3Ccircle cx='140' cy='160' r='1.8'/%3E%3Ccircle cx='290' cy='190' r='1.8'/%3E%3Ccircle cx='460' cy='280' r='1.8'/%3E%3Ccircle cx='340' cy='310' r='1.8'/%3E%3Ccircle cx='180' cy='560' r='1.8'/%3E%3Ccircle cx='330' cy='530' r='1.8'/%3E%3Ccircle cx='400' cy='620' r='1.8'/%3E%3C/g%3E%3C/svg%3E"),
-        radial-gradient(circle at 24px 24px, rgb(56, 189, 248, 0.18) 0.8px, transparent 1.4px);
+        radial-gradient(circle at 24px 24px, rgb(var(--primary-rgb), 0.18) 0.8px, transparent 1.4px);
     background-size: 100% 100%, 100% 100%, 48px 48px;
     background-position: 0 0, center center, 0 0;
     background-repeat: no-repeat, no-repeat, repeat;
@@ -2447,7 +2447,7 @@ html[data-theme="dark"] .keyboard-key {
     background: var(--surface-3);
     color: var(--fg);
     border-color: var(--border-strong);
-    box-shadow: 0 1px 0 rgb(0, 0, 0, 0.4), inset 0 0 0 1px rgb(56, 189, 248, 0.1); /* design-spec: kbd dark-mode underside + sky glow composite */
+    box-shadow: 0 1px 0 rgb(0, 0, 0, 0.4), inset 0 0 0 1px rgb(var(--primary-rgb), 0.1); /* design-spec: kbd dark-mode underside + sky glow composite */
 }
 
 /* ═══════════════════════════════════════════════════════════════════
