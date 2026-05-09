@@ -172,7 +172,7 @@
 {% endembed %}
 {% endif %}
 
-{# Approval History #}
+{# Approval History — Aurora ISMS-Trail Timeline #}
 {% if instance.approvalHistory|length > 0 %}
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
     {% block card_header %}
@@ -181,54 +181,49 @@
         </div>
     {% endblock %}
     {% block card_body %}
-        <div class="table-responsive">
-        <table class="table table-sm">
-            <thead>
-                <tr>
-                    <th scope="col">{{ 'workflow.activity.timestamp'|trans({}, 'workflows') }}</th>
-                    <th scope="col">{{ 'workflow.activity.user'|trans({}, 'workflows') }}</th>
-                    <th scope="col">{{ 'workflow.activity.action'|trans({}, 'workflows') }}</th>
-                    <th scope="col">{{ 'workflow.activity.details'|trans({}, 'workflows') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for entry in instance.approvalHistory|reverse %}
-                <tr>
-                    <td>{{ entry.timestamp|date('d.m.Y H:i:s') }}</td>
-                    <td>
-                        {% if entry.approver_name is defined and entry.approver_name %}
-                            {{ entry.approver_name }}
-                        {% elseif entry.user is defined and entry.user %}
-                            {{ entry.user }}
-                        {% else %}
-                            <span class="text-muted">-</span>
+        <div class="isms-trail">
+            {% for entry in instance.approvalHistory|reverse %}
+                {% set isAutoApproved = entry.action == 'auto_approved' or (entry.auto_progression is defined and entry.auto_progression) %}
+                {% set tone = entry.action in ['approved', 'auto_approved'] ? 'success'
+                    : (entry.action == 'rejected' ? 'danger'
+                    : (entry.action in ['cancelled', 'expired'] ? 'neutral' : 'warning')) %}
+                {% set icon = entry.action in ['approved', 'auto_approved'] ? 'fa-icon--ui-check'
+                    : (entry.action == 'rejected' ? 'fa-icon--ui-close'
+                    : (entry.action == 'cancelled' ? 'fa-icon--status-critical'
+                    : (entry.action == 'submitted' ? 'fa-icon--ui-edit' : 'fa-icon--ui-circle'))) %}
+                <article class="isms-trail__entry">
+                    <span class="isms-trail__dot isms-trail__dot--{{ tone }}" aria-hidden="true">
+                        <i class="fa-icon {{ icon }}"></i>
+                    </span>
+                    <div class="isms-trail__head">
+                        <span class="isms-trail__title">
+                            {% if isAutoApproved %}
+                                {{ 'workflow.action.auto_approved'|trans({}, 'workflows') }}
+                            {% else %}
+                                {{ entry.action|capitalize }}
+                            {% endif %}
+                            {% if entry.step_name is defined %}
+                                <small class="text-muted ms-1">({{ entry.step_name }})</small>
+                            {% endif %}
+                        </span>
+                        <span class="isms-trail__meta">{{ entry.timestamp|date('d.m.Y H:i:s') }}</span>
+                    </div>
+                    <div class="isms-trail__body">
+                        {% set actor = entry.approver_name|default(entry.user|default(null)) %}
+                        {% if actor %}
+                            <span class="isms-trail__actor">
+                                <i class="fa-icon fa-icon--nav-users" aria-hidden="true"></i>
+                                {{ actor }}
+                            </span>
                         {% endif %}
-                    </td>
-                    <td>
-                        {% set actionColor = entry.action == 'approved' ? 'success' : (entry.action == 'rejected' ? 'danger' : 'info') %}
-                        {% set isAutoApproved = entry.action == 'auto_approved' or (entry.auto_progression is defined and entry.auto_progression) %}
-                        {% if isAutoApproved %}
-                            {% include '_components/_badge.html.twig' with { variant: 'success', class: 'fairy-workflow-magic', icon: 'bi-stars', content: 'workflow.action.auto_approved'|trans({}, 'workflows') } %}
-                        {% else %}
-                            {% include '_components/_badge.html.twig' with { variant: actionColor, content: entry.action|capitalize } %}
-                        {% endif %}
-                        {% if entry.step_name is defined %}
-                            <small class="text-muted ms-1">({{ entry.step_name }})</small>
-                        {% endif %}
-                    </td>
-                    <td>
                         {% if entry.comments is defined and entry.comments %}
-                            <small class="text-muted">{{ entry.comments }}</small>
+                            {{ entry.comments }}
                         {% elseif entry.reason is defined and entry.reason %}
-                            <small class="text-muted">{{ entry.reason }}</small>
-                        {% else %}
-                            <small class="text-muted">-</small>
+                            {{ entry.reason }}
                         {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    </div>
+                </article>
+            {% endfor %}
         </div>
     {% endblock %}
 {% endembed %}
