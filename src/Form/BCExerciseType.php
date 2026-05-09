@@ -197,7 +197,6 @@ class BCExerciseType extends AbstractType
                 'label' => 'bc_exercises.field.bc_plans_tested',
                 'help' => 'bc_exercises.help.bc_plans_tested',
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
             ])

@@ -260,7 +260,6 @@ class ManagementReviewType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
                 'input' => 'datetime_immutable',
-                'attr' => ['class' => 'form-control'],
                 'help' => 'management_review.help.next_review_date',
             ])
             ->add('meetingMinutesDocument', EntityType::class, [
@@ -269,7 +268,6 @@ class ManagementReviewType extends AbstractType
                 'choice_label' => fn(Document $d): string => $d->getOriginalFilename() ?? $d->getFilename() ?? (string) $d->getId(),
                 'placeholder' => 'management_review.placeholder.meeting_minutes_document',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'management_review.help.meeting_minutes_document',
                 'query_builder' => function (EntityRepository $er) use ($currentTenant): \Doctrine\ORM\QueryBuilder {
                     $qb = $er->createQueryBuilder('d')
@@ -287,7 +285,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.risk_treatment_effectiveness',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'management_review.placeholder.risk_treatment_effectiveness',
                 ],
@@ -297,7 +294,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.policy_review_outcome',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'management_review.placeholder.policy_review_outcome',
                 ],
@@ -307,7 +303,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.action_items_with_deadlines',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 6,
                     'placeholder' => 'management_review.placeholder.action_items_with_deadlines',
                 ],
@@ -322,7 +317,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.framework_compliance_status',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'management_review.placeholder.framework_compliance_status',
                 ],

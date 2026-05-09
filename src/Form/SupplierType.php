@@ -483,7 +483,6 @@ class SupplierType extends AbstractType
                 'label' => 'supplier.marisk.field.outsourcing_classification',
                 'required' => false,
                 'placeholder' => 'supplier.marisk.placeholder.outsourcing_classification',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'supplier.marisk.help.outsourcing_classification',
             ])
             ->add('outsourcingDueDiligenceCompleted', CheckboxType::class, [

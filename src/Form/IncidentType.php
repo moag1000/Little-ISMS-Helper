@@ -361,7 +361,6 @@ class IncidentType extends AbstractType
                     'required' => false,
                     'help' => 'incident.help.critical_services_affected',
                     'attr' => [
-                        'class' => 'form-select',
                         'data-controller' => 'tom-select',
                     ],
                 ])

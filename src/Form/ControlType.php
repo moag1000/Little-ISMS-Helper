@@ -213,7 +213,6 @@ class ControlType extends AbstractType
                 'label' => 'control.field.effectiveness',
                 'required' => false,
                 'placeholder' => 'control.placeholder.effectiveness',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('controlType', ChoiceType::class, [
                 'choices' => [
@@ -227,7 +226,6 @@ class ControlType extends AbstractType
                 'label' => 'control.field.control_type',
                 'required' => false,
                 'placeholder' => 'control.placeholder.control_type',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('automationLevel', ChoiceType::class, [
                 'choices' => [
@@ -239,7 +237,6 @@ class ControlType extends AbstractType
                 'label' => 'control.field.automation_level',
                 'required' => false,
                 'placeholder' => 'control.placeholder.automation_level',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('controlMaturity', ChoiceType::class, [
                 'choices' => [
@@ -253,24 +250,21 @@ class ControlType extends AbstractType
                 'label' => 'control.field.control_maturity',
                 'required' => false,
                 'placeholder' => 'control.placeholder.control_maturity',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('lastEffectivenessTest', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'control.field.last_effectiveness_test',
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
             ])
             ->add('nextEffectivenessTest', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'control.field.next_effectiveness_test',
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
             ])
             ->add('frameworkReferences', TextareaType::class, [
                 'label' => 'control.field.framework_references',
                 'required' => false,
-                'attr' => ['rows' => 4, 'class' => 'form-control'],
+                'attr' => ['rows' => 4],
                 'help' => 'control.help.framework_references_json',
             ])
             ->add('risks', EntityType::class, [
@@ -281,7 +275,6 @@ class ControlType extends AbstractType
                 'required' => false,
                 'label' => 'control.field.related_risks',
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'query_builder' => function (RiskRepository $r) {
@@ -303,19 +296,19 @@ class ControlType extends AbstractType
                     'label' => 'control.field.cloud_control_reference',
                     'required' => false,
                     'help' => 'control.help.iso_27017',
-                    'attr' => ['class' => 'form-control', 'maxlength' => 255],
+                    'attr' => ['maxlength' => 255],
                 ])
                 ->add('cloudPrivacyReference', TextType::class, [
                     'label' => 'control.field.cloud_privacy_reference',
                     'required' => false,
                     'help' => 'control.help.iso_27018',
-                    'attr' => ['class' => 'form-control', 'maxlength' => 255],
+                    'attr' => ['maxlength' => 255],
                 ])
                 ->add('pimsReference', TextType::class, [
                     'label' => 'control.field.pims_reference',
                     'required' => false,
                     'help' => 'control.help.iso_27701',
-                    'attr' => ['class' => 'form-control', 'maxlength' => 255],
+                    'attr' => ['maxlength' => 255],
                 ])
                 ->add('customerOrProviderResponsibility', ChoiceType::class, [
                     'choices' => [
@@ -327,7 +320,6 @@ class ControlType extends AbstractType
                     'label' => 'control.field.customer_or_provider_responsibility',
                     'required' => false,
                     'placeholder' => 'control.placeholder.responsibility',
-                    'attr' => ['class' => 'form-select'],
                     'help' => 'control.help.shared_responsibility',
                 ]);
         }

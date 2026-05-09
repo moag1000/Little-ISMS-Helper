@@ -235,7 +235,6 @@ class BusinessContinuityPlanType extends AbstractType
                 'label' => 'bc_plans.field.crisis_teams',
                 'help' => 'bc_plans.help.crisis_teams',
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'query_builder' => function (CrisisTeamRepository $r) {
