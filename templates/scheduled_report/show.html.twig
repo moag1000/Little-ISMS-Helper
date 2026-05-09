@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'scheduled_reports' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ report.name }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -13,19 +14,14 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2 mb-0">
-            <i class="fa-icon fa-icon--nav-calendar-check" aria-hidden="true"></i> {{ report.name }}
-        </h1>
-        <div class="btn-group">
-            <a href="{{ path('app_scheduled_report_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'scheduled_report.action.edit'|trans({}, 'scheduled_reports') }}
-            </a>
-            <a href="{{ path('app_scheduled_report_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'scheduled_report.action.preview'|trans({}, 'scheduled_reports') }}
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge:    { icon: 'calendar-check', label: 'scheduled_report.title'|trans({}, 'scheduled_reports') },
+        title:    report.name,
+        actions: [
+            { label: 'scheduled_report.action.edit'|trans({}, 'scheduled_reports'),    variant: 'ghost', icon: 'pencil', href: path('app_scheduled_report_edit',    {id: report.id}) },
+            { label: 'scheduled_report.action.preview'|trans({}, 'scheduled_reports'), variant: 'ghost', icon: 'eye',    href: path('app_scheduled_report_preview', {id: report.id}) }
+        ]
+    }) }}
 
     <div class="row">
         {# Main Info #}

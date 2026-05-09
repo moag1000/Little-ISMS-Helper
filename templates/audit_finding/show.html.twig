@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ finding.title }}{% endblock %}
 
@@ -15,24 +16,15 @@
 
     {% set hint = alva_hint(finding) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
-    <div class="d-flex justify-content-between align-items-start mb-4">
-        <div>
-            <div class="text-muted small">{{ finding.(findingNumber ?? ('#' ~ finding.id)) }}</div>
-            <h1 class="h3 mb-1">{{ finding.title }}</h1>
-            {% if finding.clauseReference %}
-                <div class="text-muted">{{ finding.clauseReference }}</div>
-            {% endif %}
-        </div>
-        <div>
-            <a href="{{ path('app_audit_finding_edit', {id: finding.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-            </a>
-            <a href="{{ path('app_corrective_action_new', {findingId: finding.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
-                {{ 'corrective_action.action.new'|trans({}, 'audits') }}
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge:    { icon: 'exclamation-circle', label: finding.(findingNumber ?? ('#' ~ finding.id)) },
+        title:    finding.title,
+        subtitle: finding.clauseReference|default(null),
+        actions: [
+            { label: 'common.edit'|trans({}, 'messages'),                       variant: 'ghost',   icon: 'pencil', href: path('app_audit_finding_edit',     {id: finding.id}) },
+            { label: 'corrective_action.action.new'|trans({}, 'audits'),        variant: 'primary', icon: 'plus',   href: path('app_corrective_action_new', {findingId: finding.id}) }
+        ]
+    }) }}
 
     <div class="row g-3 mb-4">
         <div class="col-md-3"><strong>{{ 'audit_finding.field.type'|trans({}, 'audits') }}:</strong> {{ ('audit_finding.type.' ~ finding.type)|trans({}, 'audits') }}</div>

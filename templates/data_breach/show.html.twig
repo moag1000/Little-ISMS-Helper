@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'privacy.data_breach.show.page_title'|trans({'%ref%': breach.referenceNumber}, 'privacy') }}{% endblock %}
 
@@ -18,15 +19,15 @@
     {% set hint = alva_hint(breach) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
-    {% include '_components/_page_header.html.twig' with {
-        title: breach.title,
-        subtitle: breach.referenceNumber ~ ' - ' ~ breach.status|replace({'_': ' '})|title,
-        icon: 'bi-exclamation-triangle-fill',
+    {{ _fa_page_header.render({
+        badge:    { icon: 'exclamation-triangle-fill', label: breach.referenceNumber },
+        title:    breach.title,
+        subtitle: breach.status|replace({'_': ' '})|title,
         actions: [
-            { label: 'privacy.data_breach.action.export_pdf'|trans({}, 'privacy'), url: path('app_data_breach_export_pdf', {id: breach.id}), variant: 'success', icon: 'bi-file-pdf' },
-            { label: 'common.back_to_list'|trans({}, 'messages'), url: path('app_data_breach_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'privacy.data_breach.action.export_pdf'|trans({}, 'privacy'), variant: 'success', icon: 'file-pdf',    href: path('app_data_breach_export_pdf', {id: breach.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'),                  variant: 'ghost',   icon: 'arrow-left',  href: path('app_data_breach_index') }
         ]
-    } %}
+    }) }}
     {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_data_breach_export_pdf', route_params: {id: breach.id}} only %}
 
     {# CRITICAL: 72-Hour Deadline Alert #}

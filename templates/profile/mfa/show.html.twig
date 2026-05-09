@@ -1,20 +1,18 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'mfa.token_details'|trans({}, 'mfa') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>
-            <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
-            {{ 'mfa.token_details'|trans({}, 'mfa') }}
-        </h1>
-        <a href="{{ path('app_profile_mfa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
-            {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge:   { icon: 'shield-check', label: 'mfa.section.title'|trans({}, 'mfa') },
+        title:   'mfa.token_details'|trans({}, 'mfa'),
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_profile_mfa_index') }
+        ]
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">

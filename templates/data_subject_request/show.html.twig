@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'data_subject_request' %}
 
 {% block title %}{{ 'dsr.page.show_title'|trans({'%id%': dsr.id}, 'data_subject_request') }}{% endblock %}
@@ -18,14 +19,14 @@
     {% set hint = alva_hint(dsr) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
-    {% include '_components/_page_header.html.twig' with {
-        title: dsr.dataSubjectName,
+    {{ _fa_page_header.render({
+        badge:    { icon: 'person-raised-hand', label: '#' ~ dsr.id },
+        title:    dsr.dataSubjectName,
         subtitle: ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') ~ ' (' ~ dsr.gdprArticle ~ ')',
-        icon: 'bi-person-raised-hand',
         actions: [
-            { label: 'common.back_to_list'|trans({}, 'messages'), url: path('app_data_subject_request_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_data_subject_request_index') }
         ]
-    } only %}
+    }) }}
 
     {# Overdue Warning #}
     {% if dsr.overdue %}
