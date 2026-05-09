@@ -5,6 +5,12 @@ document:
         upload: 'Dokument hochladen'
         update: Aktualisieren
         create: Erstellen
+        policy_wizard: 'Policy-Wizard öffnen'
+    alva_tipp:
+        policy_wizard:
+            title: 'Alva-Tipp: Pflicht-Richtlinien automatisch generieren'
+            body: 'Statt jede Policy einzeln hochzuladen, kannst du den Policy-Wizard nutzen. Er generiert in 7 Schritten alle Pflicht-Richtlinien für ISO 27001, DORA, BSI Grundschutz, BCM (ISO 22301 / BSI 200-4) und GDPR-PIMS — mit DPO-Veto, Konzern-Defaults, Industry-Presets und Audit-Trail.'
+            cta: 'Policy-Wizard starten'
     kpi:
         total_documents: 'Gesamte Dokumente'
         total_size: 'Gesamte Größe'

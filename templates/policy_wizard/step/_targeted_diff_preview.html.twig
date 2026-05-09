@@ -1,0 +1,96 @@
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{# Mode 2 (Targeted re-run) Step 3 — read-only diff preview. Controller
+   passes `diff` (computed by TargetedRerunModeHandler::computeDiff) as a
+   list of { topic, key, label_t_key, current_value, approved_value,
+   changed }. The user inspects and confirms. #}
+
+{% set diff_rows = diff|default([]) %}
+{% set is_confirmed = defaults.confirm|default(false) %}
+
+{# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'bi-mortarboard',
+    class: 'mb-3'
+} } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">
+            {{ 'policy_wizard.step.targeted.diff.help.title'|trans }}
+            <i class="bi bi-info-circle text-muted ms-1"
+               data-bs-toggle="tooltip"
+               title="{{ 'policy_wizard.step.targeted.diff.tooltip.drift'|trans }}"
+               aria-label="{{ 'policy_wizard.step.targeted.diff.tooltip.drift'|trans }}"></i>
+        </div>
+        <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.targeted.diff.help.body'|trans }}</p>
+        <p class="mb-0 small fst-italic text-muted">{{ 'policy_wizard.step.targeted.diff.help.example'|trans }}</p>
+    {% endblock %}
+{% endembed %}
+
+<p class="text-muted small mb-3">{{ 'policy_wizard.step.targeted.diff.subtitle'|trans }}</p>
+
+{% if diff_rows|length == 0 %}
+    {{ _fa_alert.render({
+        variant: 'success',
+        title: 'policy_wizard.step.targeted.diff.no_changes_title'|trans,
+        body: 'policy_wizard.step.targeted.diff.no_changes_body'|trans
+    }) }}
+{% else %}
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'policy_wizard.step.targeted.diff.column.topic'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.targeted.diff.column.setting'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.targeted.diff.column.current'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.targeted.diff.column.approved'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.targeted.diff.column.changed'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in diff_rows %}
+                    <tr class="{{ row.changed ? 'table-warning' : '' }}">
+                        <td>
+                            <small class="text-muted">{{ ('policy_wizard.step.' ~ row.topic ~ '.title')|trans|default(row.topic) }}</small>
+                        </td>
+                        <td>
+                            <code class="small">{{ row.label_t_key is defined ? (row.label_t_key|trans|default(row.key)) : row.key }}</code>
+                        </td>
+                        <td>
+                            <small>{{ row.current_value is null ? '—' : row.current_value }}</small>
+                        </td>
+                        <td>
+                            <small>{{ row.approved_value is null ? '—' : row.approved_value }}</small>
+                        </td>
+                        <td>
+                            {% if row.changed %}
+                                <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                                    {{ 'policy_wizard.message.changed_yes'|trans }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">
+                                    {{ 'policy_wizard.message.changed_no'|trans }}
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}
+
+<div class="form-check mt-4">
+    <input class="form-check-input"
+           type="checkbox"
+           id="diff-confirm"
+           name="confirm"
+           value="1"
+           {% if is_confirmed %}checked{% endif %}
+           required>
+    <label class="form-check-label" for="diff-confirm">
+        {{ 'policy_wizard.step.targeted.diff.confirm_label'|trans }}
+    </label>
+</div>

@@ -102,6 +102,20 @@ class CrisisTeam
     private array $members = [];
 
     /**
+     * Person-Rollout Phase B1 — typed Person roster, twin of the
+     * legacy JSON `members` blob. Used for governance reports + future
+     * cross-linking to PhysicalAccessLog/Training. JSON `members`
+     * stays as the authoritative role/contact descriptor for now.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\ManyToMany(targetEntity: Person::class)]
+    #[ORM\JoinTable(name: 'crisis_team_persons')]
+    #[ORM\JoinColumn(name: 'crisis_team_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'person_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $personMembers;
+
+    /**
      * Primary contact phone number
      */
     #[ORM\Column(length: 50, nullable: true)]
@@ -245,6 +259,7 @@ public function __construct()
         $this->bcPlans = new ArrayCollection();
         $this->teamLeaderDeputyPersons = new ArrayCollection();
         $this->deputyLeaderDeputyPersons = new ArrayCollection();
+        $this->personMembers = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -432,6 +447,64 @@ public function __construct()
     public function getMemberCount(): int
     {
         return count($this->members);
+    }
+
+    /**
+     * Typed Person roster — Phase B1. Independent of the legacy JSON
+     * `members` blob; combine via {@see getEffectiveMemberCount()}
+     * when reporting total roster size.
+     *
+     * @return Collection<int, Person>
+     */
+    public function getPersonMembers(): Collection
+    {
+        return $this->personMembers;
+    }
+
+    public function addPersonMember(Person $person): static
+    {
+        if (!$this->personMembers->contains($person)) {
+            $this->personMembers->add($person);
+        }
+        return $this;
+    }
+
+    public function removePersonMember(Person $person): static
+    {
+        $this->personMembers->removeElement($person);
+        return $this;
+    }
+
+    public function getPersonMemberCount(): int
+    {
+        return $this->personMembers->count();
+    }
+
+    /**
+     * Combined roster size — JSON entries plus typed Persons. Useful
+     * for dashboards while customers migrate from JSON to Person.
+     */
+    public function getEffectiveMemberCount(): int
+    {
+        return count($this->members) + $this->personMembers->count();
+    }
+
+    /**
+     * Display names for the typed Person roster. Empty list when no
+     * Person has been linked yet.
+     *
+     * @return list<string>
+     */
+    public function getPersonMemberNames(): array
+    {
+        $names = [];
+        foreach ($this->personMembers as $person) {
+            $name = $person->getFullName();
+            if ($name !== null && $name !== '') {
+                $names[] = $name;
+            }
+        }
+        return $names;
     }
 
     public function getPrimaryPhone(): ?string

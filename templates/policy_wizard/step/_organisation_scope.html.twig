@@ -1,0 +1,131 @@
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'bi-mortarboard',
+    class: 'mb-3'
+} } %}
+    {% block alert_body %}
+        {% trans_default_domain 'policy_wizard' %}
+        <div class="fa-alert__title">{{ 'policy_wizard.step.organisation_scope.help.title'|trans }}</div>
+        <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.organisation_scope.help.body'|trans }}</p>
+        <p class="mb-0 small fst-italic text-muted">{{ 'policy_wizard.step.organisation_scope.help.example'|trans }}</p>
+    {% endblock %}
+{% endembed %}
+
+{% set legal_default = defaults.legal_name|default('') %}
+{% set scope_default = defaults.scope_statement|default('') %}
+{% set address_default = defaults.primary_address|default('') %}
+{% set sites_default = defaults.site_ids|default([]) %}
+{% set available_locations = defaults.available_locations|default([]) %}
+{% set prefilled_legal_name = defaults.prefilled_legal_name|default(false) %}
+{% set prefilled_primary_address = defaults.prefilled_primary_address|default(false) %}
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label class="fa-cyber-input__label form-label" for="legal-name">
+            {{ 'policy_wizard.step.organisation_scope.legal_name_label'|trans }}
+        </label>
+        <input type="text"
+               class="form-control fa-cyber-input__field"
+               id="legal-name"
+               name="legal_name"
+               maxlength="191"
+               value="{{ legal_default }}"
+               required>
+        {% if prefilled_legal_name %}
+            <small class="text-muted d-block mt-1">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {{ 'policy_wizard.step.organisation_scope.field.legal_name.prefilled_hint'|trans }}
+            </small>
+        {% endif %}
+        <div class="form-text">{{ 'policy_wizard.step.organisation_scope.legal_name_help'|trans }}</div>
+    </div>
+    <div class="col-md-6">
+        <label class="fa-cyber-input__label form-label" for="primary-address">
+            {{ 'policy_wizard.step.organisation_scope.primary_address_label'|trans }}
+        </label>
+        <input type="text"
+               class="form-control fa-cyber-input__field"
+               id="primary-address"
+               name="primary_address"
+               value="{{ address_default }}">
+        {% if prefilled_primary_address %}
+            <small class="text-muted d-block mt-1">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {{ 'policy_wizard.step.organisation_scope.field.headquarters_address.prefilled_hint'|trans }}
+            </small>
+        {% endif %}
+    </div>
+    <div class="col-12">
+        <label class="fa-cyber-input__label form-label" for="scope-statement">
+            {{ 'policy_wizard.step.organisation_scope.scope_statement_label'|trans }}
+        </label>
+        <textarea class="form-control fa-cyber-input__field"
+                  id="scope-statement"
+                  name="scope_statement"
+                  rows="4"
+                  minlength="30"
+                  required>{{ scope_default }}</textarea>
+        <div class="form-text">{{ 'policy_wizard.step.organisation_scope.scope_statement_help'|trans }}</div>
+        {# Junior-ISB inline help: 3 concrete sample sentences (collapsible). #}
+        <details class="fa-cyber-input__hint mt-2 small">
+            <summary class="text-primary" style="cursor: pointer;">
+                <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                {{ 'policy_wizard.step.organisation_scope.scope_statement.examples.title'|trans }}
+            </summary>
+            <ul class="mt-2 mb-0 small text-muted">
+                <li>{{ 'policy_wizard.step.organisation_scope.scope_statement.examples.e1'|trans }}</li>
+                <li>{{ 'policy_wizard.step.organisation_scope.scope_statement.examples.e2'|trans }}</li>
+                <li>{{ 'policy_wizard.step.organisation_scope.scope_statement.examples.e3'|trans }}</li>
+            </ul>
+        </details>
+    </div>
+    <div class="col-12">
+        <label class="fa-cyber-input__label form-label" for="site-ids">
+            {{ 'policy_wizard.step.organisation_scope.sites_label'|trans }}
+        </label>
+
+        {% if available_locations|length == 0 %}
+            {{ _fa_empty_state.render({
+                mood: 'thinking',
+                title: 'policy_wizard.step.organisation_scope.field.in_scope_locations.empty_state.title'|trans,
+                text: 'policy_wizard.step.organisation_scope.field.in_scope_locations.empty_state.body'|trans,
+                actions: [
+                    {
+                        label: 'policy_wizard.step.organisation_scope.field.in_scope_locations.empty_state.cta_label'|trans,
+                        variant: 'primary',
+                        icon: 'plus-circle',
+                        href: path('app_location_new')
+                    }
+                ]
+            }) }}
+        {% else %}
+            <select id="site-ids"
+                    name="site_ids[]"
+                    class="form-select fa-cyber-input__field"
+                    multiple
+                    data-controller="tom-select"
+                    data-tom-select-placeholder-value="{{ 'policy_wizard.step.organisation_scope.field.in_scope_locations.placeholder'|trans }}">
+                {% for loc in available_locations %}
+                    <option value="{{ loc.id }}"{% if loc.id in sites_default %} selected{% endif %}>
+                        {{ loc.label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <div class="form-text">{{ 'policy_wizard.step.organisation_scope.sites_help'|trans }}</div>
+        {% endif %}
+    </div>
+    <div class="col-12">
+        <p class="small text-muted mb-0">
+            <i class="bi bi-info-circle" aria-hidden="true"
+               data-bs-toggle="tooltip"
+               data-bs-placement="right"
+               title="{{ 'policy_wizard.step.organisation_scope.tooltip.climate'|trans }}"
+               aria-label="{{ 'policy_wizard.step.organisation_scope.tooltip.climate'|trans }}"></i>
+            {{ 'policy_wizard.step.organisation_scope.climate_note'|trans }}
+        </p>
+    </div>
+</div>

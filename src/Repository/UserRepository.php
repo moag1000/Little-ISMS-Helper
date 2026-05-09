@@ -119,6 +119,90 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
+     * Find active users carrying the given role string within a tenant.
+     *
+     * Used by Policy-Wizard step partials (DPO-picker, BCM-Officer-picker,
+     * approver-picker) so the dropdowns are scoped to the run's tenant.
+     *
+     * @param string                          $role   Symfony role string (e.g. 'ROLE_DPO')
+     * @param \App\Entity\Tenant|int|null     $tenant Tenant entity, id or null for global
+     *
+     * @return list<User>
+     */
+    public function findByRoleInTenant(string $role, mixed $tenant = null): array
+    {
+        $tenantId = null;
+        if ($tenant instanceof \App\Entity\Tenant) {
+            $tenantId = $tenant->getId();
+        } elseif (is_int($tenant)) {
+            $tenantId = $tenant;
+        }
+
+        $qb = $this->createQueryBuilder('u')
+            ->andWhere('u.roles LIKE :role')
+            ->andWhere('u.isActive = :active')
+            ->setParameter('role', '%"' . $role . '"%')
+            ->setParameter('active', true)
+            ->orderBy('u.lastName', 'ASC')
+            ->addOrderBy('u.firstName', 'ASC');
+
+        if ($tenantId !== null) {
+            $qb->andWhere('u.tenant = :tenantId')
+               ->setParameter('tenantId', $tenantId);
+        }
+
+        /** @var list<User> $rows */
+        $rows = $qb->getQuery()->getResult();
+        return $rows;
+    }
+
+    /**
+     * Find active users in a tenant who can serve as policy approvers.
+     *
+     * Approver pool = users carrying any of: ROLE_GROUP_CISO, ROLE_DPO,
+     * ROLE_ADMIN. Mirrors LifecycleStep approver-per-template selection.
+     *
+     * @param \App\Entity\Tenant|int|null $tenant Tenant entity, id or null for global
+     *
+     * @return list<User>
+     */
+    public function findApproversInTenant(mixed $tenant = null): array
+    {
+        $approverRoles = ['ROLE_GROUP_CISO', 'ROLE_DPO', 'ROLE_ADMIN'];
+
+        $tenantId = null;
+        if ($tenant instanceof \App\Entity\Tenant) {
+            $tenantId = $tenant->getId();
+        } elseif (is_int($tenant)) {
+            $tenantId = $tenant;
+        }
+
+        $qb = $this->createQueryBuilder('u')
+            ->andWhere('u.isActive = :active')
+            ->setParameter('active', true);
+
+        $orParts = [];
+        foreach ($approverRoles as $idx => $r) {
+            $param = 'role' . $idx;
+            $orParts[] = sprintf('u.roles LIKE :%s', $param);
+            $qb->setParameter($param, '%"' . $r . '"%');
+        }
+        $qb->andWhere(implode(' OR ', $orParts));
+
+        if ($tenantId !== null) {
+            $qb->andWhere('u.tenant = :tenantId')
+               ->setParameter('tenantId', $tenantId);
+        }
+
+        $qb->orderBy('u.lastName', 'ASC')
+           ->addOrderBy('u.firstName', 'ASC');
+
+        /** @var list<User> $rows */
+        $rows = $qb->getQuery()->getResult();
+        return $rows;
+    }
+
+    /**
      * Find users with custom role
      */
     public function findByCustomRole(string $roleName): array

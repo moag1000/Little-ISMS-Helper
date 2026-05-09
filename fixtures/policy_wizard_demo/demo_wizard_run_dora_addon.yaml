@@ -1,0 +1,174 @@
+# Demo Wizard Run - ISO 27001 + DORA addon, full mode (W7-F)
+#
+# Same tenant as demo_wizard_run_iso.yaml, but with DORA scope enabled.
+# Triggers Step 5b DORA-wizard-within-wizard and emits the 6 NEW DORA
+# templates plus 18 EXTENDS markers on the ISO baseline.
+#
+# Use this fixture for demonstrating the DORA addon path including the
+# Step 5a/5b split, dual-signoff enforcement, and the DORA-specific
+# compliance-wizard checks.
+
+wizard_run:
+    tenant: 'demo-finserv'                    # the regulated subsidiary
+    started_by: 'ciso@demo-industrial.example' # group CISO acts for subsidiary
+    started_at: '2026-04-15T10:02:00+02:00'
+    completed_at: '2026-04-15T13:18:00+02:00'
+    mode: 'full'
+    standards_adopted:
+        - 'iso27001'
+        - 'dora'
+    status: 'completed'
+    affected_functions:
+        - 'IT-Sicherheit'
+        - 'IT-Operations'
+        - 'Risikomanagement'
+        - 'Compliance'
+        - 'Vorstand'
+    targeted_topics: null
+    finding_reference: null
+    error_message: null
+
+inputs:
+    bestandsaufnahme:
+        decisions: []   # green-field tenant, no existing documents
+
+    welcome_standards:
+        adopted_standards: ['iso27001', 'dora']
+        skipped_standards_with_reason:
+            bsi: 'Nicht im Anwendungsbereich - kein KRITIS-Sektor.'
+
+    organisation_scope:
+        legal_name: 'Demo Financial Services GmbH'
+        scope_statement: 'Alle ICT-relevanten Geschaeftsprozesse der Demo Financial Services GmbH zur Erbringung ihrer Finanzdienstleistungen, einschliesslich Kernbankensysteme, Zahlungsverkehr, Trading-Plattform und Outsourcing-Verhaeltnisse zu kritischen Drittparteien. Geltungsbereich gemaess DORA Art. 2.'
+        sites:
+            - 'Theresienhoehe 11, 80339 Muenchen'
+        kritis_flag: false
+        regulated_finance: true
+
+    roles:
+        ciso: 'ciso@demo-industrial.example'
+        isb: 'isb-finserv@demo-finserv.example'
+        dpo: 'dpo@demo-industrial.example'
+        function_owners:
+            it_operations: 'it-finserv@demo-finserv.example'
+            risk_management: 'risk-finserv@demo-finserv.example'
+            compliance: 'compliance-finserv@demo-finserv.example'
+            management: 'gf-finserv@demo-finserv.example'
+
+    risk_classification:
+        risk_appetite_tier: 1   # very conservative - regulated financial services
+        risk_appetite_rationale: 'BaFin-beaufsichtigtes Institut. Risikoappetit gemaess MaRisk + DORA-Anforderungen sehr konservativ.'
+        review_interval_months: 6   # half-yearly for DORA tenant
+
+    operational_baselines:
+        logging_enabled: true
+        logging_retention_months: 60   # 5 years per DORA / regulator
+        backup_strategy: '3-2-1-1 mit taeglichen Snapshots, Off-Site und Air-Gapped Cold-Storage'
+        backup_rto_hours: 2
+        backup_rpo_hours: 1
+        mfa_enforced: true
+        mfa_exceptions: []
+        crypto_baseline: 'BSI TR-02102 Stand 2025 + BAIT 6.7'
+
+    operational_baselines_dora:           # Step 5b DORA wizard-within-wizard
+        ict_risk_framework_owner: 'risk-finserv@demo-finserv.example'
+        incident_classification_thresholds:
+            major_incident_users: 10000
+            major_incident_downtime_minutes: 60
+            major_incident_data_records: 100000
+        tlpt_cadence_months: 36           # at least every 3 years per DORA Art. 26
+        tlpt_lead_provider: 'Externer akkreditierter Anbieter (TBD je TLPT-Zyklus)'
+        third_party_register_owner: 'compliance-finserv@demo-finserv.example'
+        third_party_count_at_baseline: 23
+        critical_third_party_count: 4
+        exit_strategies_documented: true
+        validity_from: '2025-01-17'        # DORA enforcement date
+        cross_sector_clauses_acknowledged: true
+
+    lifecycle:
+        review_interval_months: 6
+        approval_chain:
+            - 'isb'
+            - 'ciso'
+            - 'compliance_officer'
+            - 'gf'
+        publication_channel: 'intranet + verpflichtende Acknowledgement + Vorstands-Vorlage'
+        dual_signoff_enforced: true       # forced ON for dora_scope=inscope
+
+    review_generate:
+        sandbox_preview_run: false
+        confirmed_at: '2026-04-15T13:10:00+02:00'
+        confirmed_by: 'ciso@demo-industrial.example'
+        rationale: 'Erstvorlage der ISMS+DORA-Dokumentation der Demo Financial Services GmbH zur Vorlage beim Vorstand und nachfolgender Pruefung durch die Innenrevision. Konzern-Default-Vererbung von der Demo Industrial Holding aktiv (forbidden_to_relax). DORA-Validity-from auf den 17. Januar 2025 gesetzt.'
+
+generated_documents:
+    # ISO 27001 baseline (24 documents)
+    -   filename: 'isms-leitlinie-finserv-v1.pdf'
+        title: 'Informationssicherheits-Leitlinie'
+        version: '1.0'
+        status: 'draft'
+        framework: 'iso27001'
+        dora_extends: false
+        batch_id: 'c9d1e3f5-7a2b-9c4d-8e6f-0a1b2c3d4e5f'
+    # ... 23 weitere ISO-Templates (Auszug)
+
+    # DORA NEW (6 documents)
+    -   filename: 'dora-ict-risk-framework-v1.pdf'
+        title: 'DORA ICT-Risk-Management-Framework'
+        version: '1.0'
+        status: 'draft'
+        framework: 'dora'
+        clause_references: ['DORA Art. 6', 'DORA Art. 8']
+        dora_extends: false
+        batch_id: 'c9d1e3f5-7a2b-9c4d-8e6f-0a1b2c3d4e5f'
+    -   filename: 'dora-incident-reporting-v1.pdf'
+        title: 'DORA Incident Reporting Procedure'
+        version: '1.0'
+        status: 'draft'
+        framework: 'dora'
+        clause_references: ['DORA Art. 19']
+        dora_extends: false
+        batch_id: 'c9d1e3f5-7a2b-9c4d-8e6f-0a1b2c3d4e5f'
+    -   filename: 'dora-tlpt-policy-v1.pdf'
+        title: 'DORA Threat-Led Penetration Testing Policy'
+        version: '1.0'
+        status: 'draft'
+        framework: 'dora'
+        clause_references: ['DORA Art. 26', 'DORA Art. 27']
+        dora_extends: false
+        batch_id: 'c9d1e3f5-7a2b-9c4d-8e6f-0a1b2c3d4e5f'
+    -   filename: 'dora-third-party-register-procedure-v1.pdf'
+        title: 'DORA Third-Party Register Procedure'
+        version: '1.0'
+        status: 'draft'
+        framework: 'dora'
+        clause_references: ['DORA Art. 28', 'DORA Art. 30']
+        dora_extends: false
+        batch_id: 'c9d1e3f5-7a2b-9c4d-8e6f-0a1b2c3d4e5f'
+    -   filename: 'dora-exit-strategy-v1.pdf'
+        title: 'DORA Exit-Strategy for Critical Third-Party Providers'
+        version: '1.0'
+        status: 'draft'
+        framework: 'dora'
+        clause_references: ['DORA Art. 28(8)']
+        dora_extends: false
+        batch_id: 'c9d1e3f5-7a2b-9c4d-8e6f-0a1b2c3d4e5f'
+    -   filename: 'dora-validity-attestation-v1.pdf'
+        title: 'DORA Validity-from Attestation'
+        version: '1.0'
+        status: 'draft'
+        framework: 'dora'
+        clause_references: ['DORA Art. 1', 'DORA Art. 64']
+        dora_extends: false
+        batch_id: 'c9d1e3f5-7a2b-9c4d-8e6f-0a1b2c3d4e5f'
+
+# DORA EXTENDS markers (18 markers - amend existing ISO documents
+# with DORA-specific clauses; rendered as appendices on the ISO docs).
+# Examples (full list deferred to runtime metadata):
+extends_markers:
+    - { iso_template: 'access-control-policy', dora_clause: 'DORA Art. 9' }
+    - { iso_template: 'cryptography-policy', dora_clause: 'DORA Art. 10' }
+    - { iso_template: 'incident-management-policy', dora_clause: 'DORA Art. 17' }
+    - { iso_template: 'business-continuity-policy', dora_clause: 'DORA Art. 11' }
+    - { iso_template: 'supplier-security-policy', dora_clause: 'DORA Art. 28' }
+    # ... 13 weitere EXTENDS markers

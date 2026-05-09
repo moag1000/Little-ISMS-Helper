@@ -156,7 +156,8 @@
             {% set incidentItems = [
                 { label: 'incident.field.category'|trans({}, 'incident'), value: incident.category|upper|replace({'_': ' '}) },
                 { label: 'incident.field.detected'|trans({}, 'incident'), value: incident.detectedAt ? incident.detectedAt|date('d.m.Y H:i') : 'N/A' },
-                { label: 'incident.field.reported_by'|trans({}, 'incident'), value: incident.reportedBy ?? 'N/A' }
+                { label: 'incident.field.reported_by'|trans({}, 'incident'), value: incident.effectiveReportedBy ?? incident.reportedBy ?? 'N/A' },
+                { label: 'incident.field.responsible_person'|trans({}, 'incident'), value: incident.effectiveResponsiblePersonName ?? 'N/A' }
             ] %}
             {% if incident.occurredAt %}
                 {% set incidentItems = incidentItems|merge([{ label: 'incident.field.occurred'|trans({}, 'incident'), value: incident.occurredAt|date('d.m.Y H:i') }]) %}

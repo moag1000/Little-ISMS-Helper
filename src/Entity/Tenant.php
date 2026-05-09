@@ -197,6 +197,7 @@ class Tenant
     #[ORM\Column(type: Types::INTEGER, nullable: true, options: ['default' => 600, 'comment' => 'API requests/minute per tenant (default 600 = 10/sec)'])]
     private ?int $apiRateLimitPerMinute = 600;
 
+
     public function getBsiPhase(): ?string
     {
         return $this->bsiPhase;

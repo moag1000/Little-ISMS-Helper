@@ -138,6 +138,11 @@ common:
     next: Next
     yes: 'Yes'
     no: 'No'
+    person_picker:
+        placeholder: 'Select a person…'
+        empty_state:
+            title: 'No persons in tenant'
+            body: 'Please create a Person record before assigning this role.'
     section:
         other: 'Other Fields'
     link_matrix:

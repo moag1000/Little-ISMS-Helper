@@ -138,6 +138,17 @@ class ComplianceRequirementFulfillment
     private Collection $responsibleDeputyPersons;
 
     /**
+     * Person-Rollout Phase B2 — yearly attestation owner. Distinct from
+     * `responsiblePerson` (day-to-day implementation owner) — the
+     * attestation owner signs off on the formal compliance attestation
+     * and may be a different governance role-holder (CISO, Compliance
+     * Officer, external Auditor).
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'attestation_owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Person $attestationOwnerPerson = null;
+
+    /**
      * Implementation status
      */
     #[ORM\Column(length: 50)]
@@ -330,6 +341,29 @@ class ComplianceRequirementFulfillment
             null,
             $this->responsibleDeputyPersons
         );
+    }
+
+    public function getAttestationOwnerPerson(): ?Person
+    {
+        return $this->attestationOwnerPerson;
+    }
+
+    public function setAttestationOwnerPerson(?Person $attestationOwnerPerson): static
+    {
+        $this->attestationOwnerPerson = $attestationOwnerPerson;
+        return $this;
+    }
+
+    /**
+     * Effective attestation-owner display: prefer the new
+     * `attestationOwnerPerson.fullName`, fall back to the
+     * day-to-day responsible person (User then Person), then null.
+     */
+    public function getEffectiveAttestationOwnerName(): ?string
+    {
+        return $this->attestationOwnerPerson?->getFullName()
+            ?? $this->responsiblePersonUser?->getFullName()
+            ?? $this->responsiblePerson?->getFullName();
     }
 
     public function getStatus(): string

@@ -43,6 +43,8 @@ bc_exercises:
         duration_hours: 'Duration (hours)'
         participants: Participants
         facilitator: 'Facilitator/Lead'
+        exercise_leader_user: 'Exercise Leader (User)'
+        exercise_leader_person: 'Exercise Leader (Person)'
         observers: Observers
         status: Status
         results: Results
@@ -81,6 +83,8 @@ bc_exercises:
         duration_hours: 'Planned or actual duration of the exercise in hours'
         participants: 'Which persons/teams are participating in the exercise?'
         facilitator: 'Person leading and moderating the exercise'
+        exercise_leader_user: 'Exercise leader with an application login. Optional when leadership is internal and account-tracked.'
+        exercise_leader_person: 'Exercise leader as a master-data Person — typically an external BCM consultant without a system login.'
         observers: 'External observers (e.g. auditors, management)'
         status: 'Current status of the exercise'
         results: 'Summary of exercise results'
@@ -117,6 +121,8 @@ bc_exercises:
         scenario: 'e.g. Power outage in main building for 24 hours'
         participants: 'e.g. IT team, management, crisis team'
         facilitator: 'Name of exercise leader'
+        exercise_leader_user: '-- Select user --'
+        exercise_leader_person: '-- Person from master data --'
         observers: 'e.g. External auditor, ISO officer'
     tooltip:
         scenario: 'Describe the concrete exercise scenario (e.g. "Ransomware attack on production systems"). A realistic scenario increases the learning effect and uncovers gaps in BC plans.'

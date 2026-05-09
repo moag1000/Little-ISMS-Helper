@@ -233,6 +233,20 @@ class CrisisTeamType extends AbstractType
                     'size' => 5,
                 ],
             ])
+            ->add('personMembers', EntityType::class, [
+                'label' => 'crisis_team.field.person_members',
+                'help' => 'crisis_team.help.person_members',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'multiple' => true,
+                'expanded' => false,
+                // Required for ManyToMany so add/remove methods are used.
+                'by_reference' => false,
+                'required' => false,
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+            ])
             ->add('notes', TextareaType::class, [
                 'label' => 'crisis_team.field.notes',
                 'required' => false,

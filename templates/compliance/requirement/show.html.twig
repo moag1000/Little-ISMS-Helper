@@ -409,6 +409,23 @@
                                 <small class="text-muted">{{ 'fulfillment.help.responsible_deputy_persons'|trans({}, 'compliance') }}</small>
                             </div>
 
+                            {# Person-Rollout B2 — yearly attestation owner (governance role-holder, distinct from day-to-day responsible owner) #}
+                            <div class="mb-3">
+                                <label for="attestationOwnerPersonId" class="form-label small fw-semibold">
+                                    {{ 'fulfillment.field.attestation_owner_person'|trans({}, 'compliance') }}
+                                </label>
+                                <select id="attestationOwnerPersonId" name="attestationOwnerPersonId" class="form-select form-select-sm fa-cyber-input__field"
+                                        data-controller="tom-select">
+                                    <option value="">{{ 'fulfillment.placeholder.attestation_owner_person'|trans({}, 'compliance') }}</option>
+                                    {% for person in available_persons %}
+                                        <option value="{{ person.id }}"{% if fulfillment.attestationOwnerPerson and fulfillment.attestationOwnerPerson.id == person.id %} selected{% endif %}>
+                                            {{ person.fullName }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="text-muted">{{ 'fulfillment.help.attestation_owner_person'|trans({}, 'compliance') }}</small>
+                            </div>
+
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary w-100"
                                     data-bs-toggle="tooltip" data-bs-placement="top"
                                     title="{{ 'compliance.requirement.tooltip.save'|trans({}, 'compliance') }}">

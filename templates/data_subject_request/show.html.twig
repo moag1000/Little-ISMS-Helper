@@ -85,6 +85,9 @@
                             {% if dsr.assignedTo %}
                                 <p><strong>{{ 'dsr.field.assigned_to'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.assignedTo.firstName }} {{ dsr.assignedTo.lastName }}</p>
                             {% endif %}
+                            {% if dsr.dpoPerson %}
+                                <p><strong>{{ 'dsr.form.dpo_person'|trans({}, 'data_subject_request') }}:</strong> {{ dsr.effectiveDpoName }}</p>
+                            {% endif %}
                         </div>
                     </div>
                     <hr>

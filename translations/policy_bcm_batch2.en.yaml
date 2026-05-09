@@ -1,0 +1,888 @@
+policy:
+    bcm:
+        crisis_management_plan:
+            v1:
+                title: 'Crisis Management Plan / Crisis Team Charter (ISO 22301 Cl. 8.4.4; BSI 200-4 Ch. 5.4)'
+                body: |-
+                    # Crisis Management Plan of {{ tenant.legal_name }}
+
+                    *Document class: Plan (operational, but at the apex of the incident pyramid) | Regulatory basis: ISO 22301:2019 Clause 8.4.4 in conjunction with Clause 8.4.2 (Warning and communication), BSI 200-4:2023 Chapter 5.4 ("Krisenstabsordnung" / Crisis Team Charter); cross-references: ISO/IEC 27001:2022 A.5.29, EU-DORA Art. 11 paragraph 6 (crisis communication), KRITIS-Dachgesetz §§ 11–13 for operators of critical infrastructure | Effective date: {{ generation_date }} | Language: English (formal British / EU register) | Review interval: annually pursuant to ISO 22301 Cl. 9.3 and after every activation*
+
+                    ## 1. Purpose and binding effect
+                    This Crisis Management Plan establishes the binding organisational and procedural arrangements for the Crisis Team of {{ tenant.legal_name }} pursuant to ISO 22301:2019 Clause 8.4.4 ("Business continuity plans and procedures") in conjunction with Clause 8.4.2. It translates the top-management commitment expressed in the Business Continuity Policy (Clause 5.2) into operational crisis-management arrangements and at the same time satisfies the requirements of BSI 200-4 Chapter 5.4. For operators of critical infrastructure within the meaning of the German KRITIS-Dachgesetz (KRITIS-DachG), this charter forms the basis for the resilience-oriented Crisis-Team operations required by §§ 11–13 KRITIS-DachG.
+
+                    The Crisis Management Plan is binding on all members of the Crisis Team, on all managers with escalation duties and on all employees who are activated during a crisis. It enters into force upon top-management approval pursuant to ISO 22301 Clause 5.1 ("Leadership and commitment") and remains binding until formally rescinded by a successor version.
+
+                    ## 2. Scope
+                    This Plan applies to all crisis situations exceeding the scope of a disturbance or emergency and which require strategic steering by top management or by a crisis structure explicitly mandated by top management. It applies to all sites, business processes and legal entities within the BCMS scope (see BCMS Scope Statement).
+
+                    Distinction of escalation levels in line with BSI 200-4 Chapter 5.5:
+
+                    - **Disturbance ("Stoerung")** – ordinary business operations are temporarily impaired; handled in the line organisation; Crisis Team is not activated.
+                    - **Emergency ("Notfall")** – a business process is threatened beyond the Maximum Tolerable Period of Disruption (MTPD); the BCM Officer is activated and individual BC Plans are invoked as needed; the Crisis Team is placed on stand-by.
+                    - **Crisis** – a situation that threatens the existence, reputation or survival of the organisation; the Crisis Team is fully activated; strategic decisions with far-reaching consequences are required.
+                    - **Catastrophe** – for KRITIS operators within the meaning of KRITIS-DachG § 2 paragraph 6: a situation in which the Federal Office of Civil Protection and Disaster Assistance (BBK) and/or the competent state authorities are involved.
+
+                    ## 3. Activation criteria and thresholds
+                    The Crisis Team is activated pursuant to ISO 22301 Clause 8.4.3.2 as soon as at least one of the following criteria is met. Activation authority lies with {{ roles.crisis_team_lead.fullName }} (Crisis Team Chair) or their named deputy.
+
+                    - **Criterion A1 (Business continuity):** one or more critical business processes have failed, or are likely to fail, beyond the MTPD threshold.
+                    - **Criterion A2 (Reputation):** an event is likely, within the next 24 hours, to attract significant adverse media coverage of {{ tenant.legal_name }}.
+                    - **Criterion A3 (Regulatory):** the situation requires notification to a supervisory authority pursuant to EU-DORA Art. 17–19 (major ICT-related incident), pursuant to NIS2 implementation (BSIG § 32), pursuant to KRITIS-DachG § 14 (incident reporting) or pursuant to GDPR Art. 33 (personal data breach).
+                    - **Criterion A4 (Personal safety):** a threat to the life or limb of staff, customers or third parties exists.
+                    - **Criterion A5 (Cyber-crisis):** a cyber-incident materially impairs availability, confidentiality or integrity within the meaning of ISO/IEC 27001:2022 A.5.24–A.5.28 and coincides with a crisis situation under A1 or A3.
+                    - **Criterion A6 (Supply-chain crisis):** failure of a critical third-party ICT provider or supplier within the meaning of EU-DORA Art. 28 or pursuant to the German Supply Chain Due Diligence Act (LkSG) §§ 4–5.
+
+                    ## 4. Crisis Team composition
+                    The Crisis Team of {{ tenant.legal_name }} is composed of the following named functions, each with a binding deputy pursuant to BSI 200-4 Chapter 5.4 (deputy principle):
+
+                    - **Crisis Team Chair** – {{ roles.crisis_team_lead.fullName }}; decision authority within the meaning of ISO 22301 Clause 5.1; binding ultimate responsibility for all decisions taken during the crisis.
+                    - **Deputy Crisis Team Chair** – mandatory pursuant to BSI 200-4 Ch. 5.4; equivalent authority during deputisation.
+                    - **BCM Officer (Notfallbeauftragte/r)** – {{ roles.bcm_officer.fullName }}; operational steering of the BC Plans and interface to BIA results.
+                    - **Information Security Officer (ISB)** – {{ roles.isb.fullName }}; interface to ICT-related incidents, cyber-crises and ISMS processes.
+                    - **Communications Lead** – responsible for internal and external crisis communications, press contacts and authority communications.
+                    - **IT Lead** – operational steering of ICT recovery; interface to recovery and restoration plans.
+                    - **HR Lead** – staff welfare, internal crisis communication, interface to employee representatives.
+                    - **Legal Lead** – legal assessment, supervisory notifications, contractual matters, data-protection escalation.
+                    - **Records Keeper** – auditable documentation of all decisions, escalations and activities.
+                    - **Optional members on demand:** Data Protection Officer (for GDPR-relevant cases), Facility Management (for site-related cases), Group Liaison (for group constellations), Authority Liaison (for KRITIS situations).
+
+                    Quorum pursuant to ISO 22301 Clause 8.4.4: the Crisis Team is quorate with the Chair (or Deputy) plus at least three additional members. During cyber-crises, the ISB is a mandatory quorum participant.
+
+                    ## 5. Escalation matrix
+                    The following escalation matrix defines the maximum reaction times from initial detection to Crisis-Team activation:
+
+                    - **Stage 0 (initial detection to assessment):** 30 minutes – the first responder informs {{ roles.bcm_officer.fullName }} or the Crisis Team Chair.
+                    - **Stage 1 (assessment to activation decision):** 60 minutes – evaluation of activation criteria; decision to activate yes/no.
+                    - **Stage 2 (activation decision to first meeting):** 90 minutes – convocation of the Crisis Team in the primary or alternate Crisis Room.
+                    - **Stage 3 (first meeting to first external communication):** 120 minutes – including, where applicable, initial notification to supervisors (DORA: 4-hour deadline for initial notification under Art. 19 in conjunction with the relevant RTS).
+
+                    Shortened deadlines for mandatory authority notifications: GDPR Art. 33 (72 hours from awareness), DORA Art. 19 (4 hours initial for major incident), KRITIS-DachG § 14 (without undue delay), BSIG § 32 (without undue delay, at the latest 24 hours).
+
+                    ## 6. Communication chain
+                    Crisis communication follows the principle of "one mouth to the outside" pursuant to BSI 200-4 Ch. 5.4. External communication is handled exclusively through the Communications Lead or through a spokesperson role explicitly designated by the Crisis Team Chair. Internal communication runs along defined escalation and information strands:
+
+                    1. **Strand top-management** – Crisis Team Chair informs the executive board and, where applicable, the supervisory board, advisory board and shareholders.
+                    2. **Strand workforce** – HR Lead in coordination with Communications Lead; out-of-band channels in case of ICT outage (a {{ bcm.exercise_frequency }} test of the phone-tree is mandatory).
+                    3. **Strand customers and contractual partners** – Communications Lead, Sales Lead; SLA-relevant information.
+                    4. **Strand supervisory authorities** – Legal Lead in coordination with the Chair; initial notification under DORA, NIS2, KRITIS-DachG, GDPR.
+                    5. **Strand media and public** – exclusively Communications Lead or top-management; never by individual employees.
+                    6. **Strand authorities in the catastrophe case** – in a catastrophe pursuant to KRITIS-DachG § 2 paragraph 6: BBK, competent state authority, police, fire brigade.
+
+                    ## 7. Crisis Room (operations centre)
+                    The primary Crisis Room and an alternate Crisis Room are designated in the BCMS master data. Minimum equipment in line with BSI 200-4 Ch. 5.4: secured telecommunications, out-of-band connection (mobile and fixed-line), redundant power supply, situation-display tools, whiteboard, printer, printed emergency contact lists, printed BC Plans, emergency catering for 24 hours of crisis-team operations.
+
+                    For cyber-crises with suspicion of compromise of own ICT: crisis-team operations take place on isolated infrastructure (e.g. dedicated mobile devices, an external cloud service with out-of-band authentication).
+
+                    ## 8. Decision logging
+                    Each Crisis-Team decision is logged in an audit-proof manner by the Records Keeper (timestamp, decision content, voting record, justification, affected business processes, action owners). The log is evidence within the meaning of ISO 22301 Clause 7.5 ("Documented information") and within the meaning of DORA Art. 17 paragraph 1 (incident-documentation duty).
+
+                    Retention period pursuant to Clause 7.5 and KRITIS-DachG: at least five years; for cyber-crises with DORA reference at least seven years.
+
+                    ## 9. Stand-down criteria
+                    The Crisis Team is formally stood down by the Chair once the following conditions are met: (a) activation criteria no longer apply; (b) business processes are stable in recovery or normal operations; (c) no open regulatory escalations; (d) a Lessons-Learned session is scheduled within 14 days.
+
+                    The formal stand-down is logged. Responsibility for residual measures transfers to the BCM Officer {{ roles.bcm_officer.fullName }}.
+
+                    ## 10. Interface to BC Plans and recovery plans
+                    The Crisis Team activates BC Plans pursuant to the separate BC Plan Template Standard. Activation authority lies with the Crisis Team Chair, with the BCM Officer as deputy pursuant to BSI 200-4 Ch. 6.
+
+                    ## 11. Review and change cycle
+                    This Crisis Team Charter is reviewed at least annually (cadence {{ bcm.review_interval_months }} months) and after every activation as part of a Lessons-Learned review. Changes require approval pursuant to the approval chain {{ approval.chain }}.
+
+                    ## 12. Verification through the Exercise Programme
+                    The crisis-team function is exercised at the frequency defined in the Exercise Programme {{ bcm.exercise_frequency }}. At least one tabletop and one realistic functional exercise per year are mandatory pursuant to ISO 22301 Clause 8.6 and BSI 200-4 Ch. 8.
+
+                    ---
+                    *This Crisis Team Charter has been approved by the top management of {{ tenant.legal_name }} as part of the approval chain {{ approval.chain }} and is binding from {{ generation_date }}.*
+                section:
+                    activation:
+                        title: 'Activation criteria and thresholds'
+                        body: |-
+                            The Crisis Team is activated pursuant to ISO 22301 Clause 8.4.3.2 in case of MTPD breach, reputation event, regulatory notification duty (DORA Art. 17–19, NIS2, KRITIS-DachG § 14, GDPR Art. 33), personal-safety situation, cyber-crisis or supply-chain crisis. Activation authority: {{ roles.crisis_team_lead.fullName }} or named deputy.
+                    composition:
+                        title: 'Crisis Team composition with deputies'
+                        body: |-
+                            Mandatory pursuant to BSI 200-4 Ch. 5.4 (deputy principle): Chair, Deputy Chair, BCM Officer ({{ roles.bcm_officer.fullName }}), ISB ({{ roles.isb.fullName }}), Communications Lead, IT Lead, HR Lead, Legal Lead, Records Keeper. Quorum: Chair (or Deputy) plus three members; ISB mandatory in cyber-crises.
+                    escalation_matrix:
+                        title: 'Escalation matrix'
+                        body: |-
+                            Stage 0 (30 min): assessment of initial detection; Stage 1 (60 min): activation decision; Stage 2 (90 min): first meeting; Stage 3 (120 min): first authority communication. Shortened deadlines: DORA Art. 19 (4h), GDPR Art. 33 (72h), KRITIS-DachG § 14 (without undue delay), BSIG § 32 (without undue delay, max. 24h).
+                    communication_chain:
+                        title: 'Communication chain and external perception'
+                        body: |-
+                            "One mouth to the outside" pursuant to BSI 200-4 Ch. 5.4. Six communication strands: top management, workforce, customers, supervisors, media, authorities in catastrophe case. External communication exclusively through Communications Lead or a spokesperson designated by the Crisis Team Chair.
+                    decision_logging:
+                        title: 'Decision logging and evidence preservation'
+                        body: |-
+                            Audit-proof logging pursuant to ISO 22301 Clause 7.5 and DORA Art. 17 paragraph 1. Retention at least five years, at least seven years for DORA-reference. Records Keeper bears responsibility; minutes are countersigned immediately after each session.
+                    crisis_room:
+                        title: 'Crisis Room primary and alternate'
+                        body: |-
+                            Minimum equipment pursuant to BSI 200-4 Ch. 5.4: secured telecoms, out-of-band connection, redundant power, situation-display tools, printed contact lists and BC Plans, 24h emergency catering. For cyber-crisis: isolated infrastructure.
+                    standdown:
+                        title: 'Stand-down and transition to Lessons-Learned'
+                        body: |-
+                            Formal stand-down by the Chair once activation criteria no longer apply, processes are stable, no open regulatory escalations, Lessons-Learned scheduled within 14 days. Responsibility for residual measures transfers to {{ roles.bcm_officer.fullName }}. Transition into the CAPA process pursuant to Clause 10.1.
+                    review:
+                        title: 'Review and change cycle'
+                        body: |-
+                            At least annually, cadence {{ bcm.review_interval_months }} months; ad hoc after every activation. Approval of changes via {{ approval.chain }}.
+                tailoring_field:
+                    crisis_team_composition_local:
+                        label: 'Local Crisis Team composition with deputies'
+                        placeholder: 'Example: "Chair: COO Dr. Schmidt; Deputy: CFO Mr. Mueller. BCM Officer: Ms. Wagner, Deputy: Mr. Bauer. ISB: Mr. Schulze, Deputy: Ms. Becker. Communications Lead: Ms. Klein. IT Lead: Mr. Fischer. HR Lead: Ms. Hoffmann. Legal Lead: external firm XYZ. Records Keeper: Ms. Schneider."'
+                    activation_thresholds_local:
+                        label: 'Tenant-specific activation thresholds for the Crisis Team'
+                        placeholder: 'Example: "Activation mandatory in case of core-banking-system outage > 2h, in case of personal-data breach with > 1000 affected data subjects, in case of cyber-incident with suspected data exfiltration, in case of regional newspaper coverage with circulation > 50,000."'
+                    out_of_band_channels:
+                        label: 'Out-of-band communication channels in case of primary ICT outage'
+                        placeholder: 'Example: "Primary: Microsoft Teams. Out-of-band 1: Signal group Crisis Team (private devices). Out-of-band 2: phone tree with printed list in every Crisis Room. Out-of-band 3: satellite phone in the Crisis Room, semi-annual functional test. Physical assembly point: conference centre main building, ground floor."'
+        recovery_plans:
+            v1:
+                title: 'Recovery and Restoration Plan Standard (ISO 22301 Cl. 8.4.5; BSI 200-4 Ch. 6.2)'
+                body: |-
+                    # Recovery and Restoration Plan Standard of {{ tenant.legal_name }}
+
+                    *Document class: Procedure (defines plan-authoring rules; individual recovery plans are records linked per asset) | Regulatory basis: ISO 22301:2019 Clause 8.4.5 ("Recovery"), BSI 200-4:2023 Chapter 6.2 ("Wiederanlauf- und Wiederherstellungsplaene"); cross-references: ISO/IEC 27001:2022 A.5.30 (ICT readiness for business continuity) and A.8.13 (Backup), EU-DORA Art. 12 (backup, restoration and recovery policies) | Effective date: {{ generation_date }} | Language: English (formal British / EU register) | Review interval: annually pursuant to ISO 22301 Clause 9.3*
+
+                    ## 1. Purpose and binding effect
+                    This Standard defines the binding structure, minimum content and validation rules for all recovery and restoration plans of {{ tenant.legal_name }} pursuant to ISO 22301:2019 Clause 8.4.5. It applies to all assets classified as critical or high in line with the separate Asset Classification Policy, in particular to all "crown jewel" assets identified in the ISMS protection-needs analysis.
+
+                    For tenants having adopted BSI 200-4, the Chapter 6 differentiation between Geschaeftsfortfuehrungsplan (Business Continuation Plan), Wiederanlaufplan (Recovery Plan) and Wiederherstellungsplan (Restoration Plan) is binding. For ISO 22301-only tenants, the consolidated term "Recovery Plan" is used.
+
+                    ## 2. Terminology pursuant to BSI 200-4 Ch. 6
+                    The BSI 200-4 differentiation is binding for the recovery process of German tenants:
+
+                    - **Geschaeftsfortfuehrungsplan / Business Continuation Plan** – describes how the business operation is maintained through workarounds and degraded operations while the underlying resources are unavailable.
+                    - **Wiederanlaufplan / Recovery Plan** – describes how failed resources are returned to a functional, possibly degraded, state.
+                    - **Wiederherstellungsplan / Restoration Plan** – describes the long-term return to the full pre-incident state, including data consistency, capacity scaling and full functional coverage.
+
+                    English ISO 22301 conflates the first two as "Business Continuity Plan" and distinguishes the "Recovery Plan" from these. For dual-certified tenants: BSI adoption mandates all three plan types; under ISO-22301 only, the Business Continuation Plan may be merged into the BC Plan Template Standard.
+
+                    ## 3. Scope and mandatory coverage
+                    A recovery and restoration plan is mandatory for:
+
+                    - all assets with protection needs "high" or "very high" in at least one of the protection goals (confidentiality, integrity, availability) pursuant to BSI 200-2 Ch. 8.2.4;
+                    - all assets directly supporting a critical or important business process (RTO ≤ 24 hours);
+                    - all ICT assets that are listed in the DORA Information Register pursuant to EU-DORA Art. 28 as supporting a Critical or Important Function ("CIF");
+                    - all assets associated with a KRITIS-installation in the KRITIS asset register.
+
+                    Validation rule: any asset record in the ISMS meeting the above criteria MUST have a linked recovery-plan record with status "approved"; otherwise an audit finding is generated automatically.
+
+                    ## 4. Plan content for IT recovery plans
+                    Each IT recovery plan contains at minimum:
+
+                    - **Plan identification:** Plan ID, asset reference, owner, version, classification (default Internal-Confidential), approval date.
+                    - **Asset description:** technical components, dependencies (upstream and downstream), critical interfaces, geographic location.
+                    - **RTO target** (Recovery Time Objective): contractually or regulatorily required value; source: BIA Methodology {{ bcm.review_interval_months }}.
+                    - **RPO target** (Recovery Point Objective): maximum tolerable data loss; source: BIA Methodology.
+                    - **MTPD reference** (Maximum Tolerable Period of Disruption): inherited from BIA.
+                    - **Recovery sequence:** step-by-step recovery order with defined preconditions per step; validation checkpoints; escalation paths.
+                    - **Backup configuration:** reference to BackupService configuration, retention periods, storage location, encryption standard, test-restore frequency.
+                    - **Fallback strategy:** hot-standby, warm-standby, cold-standby or manual workaround; activation authority.
+                    - **Test evidence:** last successful test, next planned test, results, identified deficiencies and CAPA reference.
+                    - **Responsibilities:** plan owner, activation authority, technical executors, quality gate.
+                    - **Cross-references:** linked BC Plans, linked business process, linked Crisis-Team entry.
+
+                    ## 5. Plan content for non-IT recovery plans
+                    Non-IT recovery plans cover sites, staff, physical records or specialised installations. Minimum content:
+
+                    - **Site recovery:** alternate workspace, workforce relocation, telework activation, key control, first-aid provision.
+                    - **Staff recovery:** deputy activation, cross-training plans, key-person risk mitigation pursuant to BSI 200-4 Ch. 5.3.
+                    - **Records recovery:** physical key records, vault access, retrieval of historical documents, retention compliance.
+                    - **Installations recovery:** specialised equipment, spare parts, external service providers, regulatory recommissioning requirements.
+
+                    ## 6. Interface to backup procedures
+                    Restoration plans bindingly reference the backup configuration of the {{ tenant.legal_name }} BackupService. Minimum requirements pursuant to EU-DORA Art. 12 in conjunction with ISO/IEC 27001:2022 A.8.13:
+
+                    - 3-2-1 rule: three copies, two distinct media, one off-site;
+                    - regular test-restore (at least annually; quarterly for critical assets);
+                    - segregated retention and recovery responsibilities (four-eyes principle);
+                    - encryption at rest and in transit;
+                    - protection against ransomware via immutable backup storage for critical assets.
+
+                    ## 7. Test-evidence requirement
+                    Each recovery and restoration plan must be tested at least annually with documented evidence pursuant to ISO 22301 Clause 8.6. For critical ICT assets (CIF under DORA, KRITIS installations), the test frequency is {{ bcm.exercise_frequency }} with documented success criteria. Failed tests automatically generate an audit finding and a CAPA entry.
+
+                    ## 8. Review and change cycle
+                    This Standard is reviewed at least annually (cadence {{ bcm.review_interval_months }} months) and ad hoc after material architecture changes, new critical assets or failed tests. Approval pursuant to the approval chain {{ approval.chain }}.
+
+                    ## 9. Consequences of non-conformity
+                    Missing or outdated recovery and restoration plans for critical assets constitute an audit major finding pursuant to ISO 22301 Clause 8.4.5. With DORA reference, an authority notification pursuant to Art. 17 paragraph 1 must be considered.
+
+                    ## 10. Crown-jewel list
+                    A list of "crown-jewel" assets is maintained as an annex to this Standard. It comprises the five to ten most important assets of {{ tenant.legal_name }} whose failure would cause existential damage. The list is reconciled quarterly between {{ roles.bcm_officer.fullName }} and top management.
+
+                    ---
+                    *This Recovery and Restoration Plan Standard has been approved by the top management of {{ tenant.legal_name }} pursuant to the approval chain {{ approval.chain }} and is binding from {{ generation_date }}.*
+                section:
+                    scope:
+                        title: 'Scope and mandatory coverage'
+                        body: |-
+                            Mandatory coverage applies to assets with protection needs "high" or "very high", assets of critical business processes with RTO ≤ 24h, ICT assets in the DORA Information Register and KRITIS installation assets. Validation rule: any asset record meeting the above criteria MUST have an approved plan.
+                    bsi_terminology:
+                        title: 'BSI 200-4 terminology and ISO mapping'
+                        body: |-
+                            BSI 200-4 Ch. 6 differentiates: Geschaeftsfortfuehrungsplan (Business Continuation Plan), Wiederanlaufplan (Recovery Plan), Wiederherstellungsplan (Restoration Plan). ISO 22301 conflates the first two. BSI adoption mandates all three; ISO-only allows merging the Business Continuation Plan into the BC Plan Standard.
+                    it_recovery:
+                        title: 'IT recovery plans – minimum content'
+                        body: |-
+                            Plan ID, asset reference, RTO target, RPO target, MTPD reference, recovery sequence, backup configuration, fallback strategy, test evidence, responsibilities, cross-references. Source for target values: BIA Methodology {{ bcm.review_interval_months }}.
+                    non_it_recovery:
+                        title: 'Non-IT recovery plans'
+                        body: |-
+                            Site, staff, records and installations recovery. Reference to BSI 200-4 Ch. 5.3 (key-person risk mitigation) and cross-training. Activation authority defined by name.
+                    backup_interface:
+                        title: 'Interface to backup procedures'
+                        body: |-
+                            3-2-1 rule, annual test-restore (quarterly for critical assets), four-eyes principle, encryption at rest and in transit, immutable backup against ransomware for critical assets. Source: EU-DORA Art. 12 in conjunction with ISO/IEC 27001:2022 A.8.13.
+                    test_evidence:
+                        title: 'Test evidence and CAPA'
+                        body: |-
+                            Annual testing mandatory pursuant to ISO 22301 Clause 8.6; for CIF under DORA and KRITIS installations frequency {{ bcm.exercise_frequency }}. Failed tests: automatic audit finding and CAPA entry.
+                    crown_jewels:
+                        title: 'Crown-jewel list'
+                        body: |-
+                            Five to ten most important assets; failure = existential. Quarterly reconciliation between {{ roles.bcm_officer.fullName }} and top management. Annex to this Standard.
+                    review:
+                        title: 'Review and change cycle'
+                        body: |-
+                            At least annually, cadence {{ bcm.review_interval_months }} months, ad hoc after material architecture changes or failed tests. Approval via {{ approval.chain }}.
+                tailoring_field:
+                    crown_jewel_assets:
+                        label: 'Crown-jewel asset list of the organisation'
+                        placeholder: 'Example: "1. Core banking system (RTO 2h, RPO 15min); 2. Payment gateway (RTO 1h, RPO 5min); 3. Online banking platform (RTO 4h, RPO 30min); 4. KYC database (RTO 8h, RPO 1h); 5. Supervisory reporting system (RTO 24h, RPO 4h)."'
+                    backup_strategy:
+                        label: 'Backup strategy of the organisation'
+                        placeholder: 'Example: "Primary backup: daily full to on-prem NAS; secondary backup: daily incremental to EU cloud; tertiary backup: weekly to tape stored in external vault (off-site, air-gapped). Encryption AES-256. Immutable storage for crown-jewels 30 days. Test-restore quarterly for crown-jewels."'
+                    fallback_strategy_per_tier:
+                        label: 'Fallback strategy per criticality tier'
+                        placeholder: 'Example: "Tier 1 (RTO ≤ 4h): hot-standby with active-active geo-redundancy. Tier 2 (RTO ≤ 24h): warm-standby with cloud failover zone. Tier 3 (RTO ≤ 72h): cold-standby with bare-metal restore. Tier 4 (RTO > 72h): manual workaround, retrieval from backup."'
+        exercise_testing_programme:
+            v1:
+                title: 'BCMS Exercise and Testing Programme (ISO 22301 Cl. 8.6; BSI 200-4 Ch. 8)'
+                body: |-
+                    # Exercise and Testing Programme of {{ tenant.legal_name }}
+
+                    *Document class: Programme | Regulatory basis: ISO 22301:2019 Clause 8.6 ("Exercise programme"), BSI 200-4:2023 Chapter 8 ("Tests und Uebungen"); cross-references: ISO/IEC 27001:2022 A.5.29 paragraph c and A.5.30 paragraph c, EU-DORA Art. 24–27 (Digital Operational Resilience Testing including TLPT), KRITIS-DachG § 13 (resilience measures) | Effective date: {{ generation_date }} | Language: English (formal British / EU register) | Review interval: annually pursuant to ISO 22301 Clause 9.3*
+
+                    ## 1. Purpose and binding effect
+                    This Exercise and Testing Programme defines on a binding basis the frequency, scope and methodology with which the capability of {{ tenant.legal_name }} to manage emergencies and crises is tested. It satisfies the requirement of ISO 22301:2019 Clause 8.6 ("The organization shall implement and maintain a programme of exercising and testing"), BSI 200-4:2023 Chapter 8 and EU-DORA Art. 24 in conjunction with Art. 25 (comprehensive testing programme).
+
+                    External auditors regularly classify the absence of credible exercise evidence as a major nonconformity. Implementation of this Programme is therefore mandatory and its effectiveness must be demonstrable.
+
+                    ## 2. Scope
+                    The Programme applies to all in-scope business processes, BC Plans, recovery plans, restoration plans, the Crisis Team and to all ICT systems listed in the DORA Information Register. Scope is reviewed at least annually by {{ roles.bcm_officer.fullName }}.
+
+                    ## 3. Exercise types
+                    The Programme covers the following exercise types pursuant to ISO 22301 Clause 8.6.1 in conjunction with BSI 200-4 Ch. 8:
+
+                    - **Walkthrough:** unstructured walkthrough of the Plan by participants; the goal is familiarisation with the Plan. Frequency: prior to every tabletop, at least semi-annually.
+                    - **Tabletop exercise:** facilitated team or staff discussion of a scenario at the conference table; Plans are walked through in content. Frequency: at least annually per Crisis Team and per critical BC Plan.
+                    - **Functional simulation:** a portion of a Plan or a system recovery is executed in real terms, embedded in a simulated scenario. Frequency: at least annually per critical system.
+                    - **Full-scale exercise:** realistic, possibly multi-day staging with full activation of the Crisis Team and recovery of real systems at alternate sites. Frequency: at least every 24 to 36 months pursuant to BSI 200-4 Ch. 8 recommendation.
+                    - **Notification-only exercise:** test of the reachability and availability of Crisis-Team members without substantive crisis-team work. Frequency: at least semi-annually.
+                    - **ICT recovery test:** technical recovery test of a critical system pursuant to its recovery plan; quarterly for crown-jewels, annually for all highly critical systems.
+                    - **Threat-Led Penetration Test (TLPT):** mandatory for DORA-significant financial entities pursuant to Art. 26 DORA; frequency at least every three years; methodology in line with the finalised RTS in alignment with TIBER-EU.
+
+                    ## 4. Frequency plan
+                    {{ tenant.legal_name }} follows a three-year rolling logic pursuant to ISO 22301 Clause 8.6.1: over a three-year cycle every in-scope business process is addressed at least once in a tabletop or functional exercise. The frequency {{ bcm.exercise_frequency }} is the minimum; top management or supervisory authorities may require shorter cycles.
+
+                    Mandatory minimum frequencies:
+
+                    - tabletop per Crisis Team: annual;
+                    - tabletop per critical BC Plan: annual;
+                    - functional simulation per critical system: annual;
+                    - ICT recovery test for crown-jewels: quarterly;
+                    - full-scale exercise: every 24 to 36 months;
+                    - notification-only exercise: semi-annual;
+                    - TLPT (where DORA-significant): at least every three years.
+
+                    ## 5. Rotation and coverage rules
+                    Over three consecutive calendar years, every in-scope process is tested in at least one documented exercise. Over three consecutive calendar years, all relevant crisis scenarios (cyber, power outage, pandemic, site loss, key-person loss, supplier failure, natural event, fire) are each covered at least once as a tabletop or functional simulation.
+
+                    The annual rotation plan is documented by {{ roles.bcm_officer.fullName }} no later than January for the current calendar year as an Exercise Roadmap and approved by top management pursuant to {{ approval.chain }}.
+
+                    ## 6. Exercise design
+                    Each exercise is documented in a structured manner pursuant to ISO 22301 Clause 8.6.2:
+
+                    - **Exercise objectives:** specific, measurable goals (e.g. "Confirm that the Crisis Team can convene quorate within 90 minutes").
+                    - **Scenario:** credible, realistic, plausible, derived from the BCM risk register.
+                    - **Success criteria:** quantitative criteria per objective (e.g. RTO met, notification deadline met).
+                    - **Observers:** independent of those exercising; at least two persons per exercise; at least three for full-scale.
+                    - **Debrief:** immediately after the end of the exercise, structured, with Lessons-Learned documentation.
+                    - **Report:** within four weeks of exercise end; submitted to {{ roles.bcm_officer.fullName }} and the Crisis Team Chair.
+                    - **CAPA:** identified deficiencies are recorded as corrective-action entries in the CAPA process pursuant to Clause 10.1.
+
+                    ## 7. Lessons-Learned closure
+                    Each exercise report contains a Lessons-Learned section. Identified deficiencies are recorded in the CAPA system with responsible person, target date and escalation rule. {{ roles.bcm_officer.fullName }} reviews quarterly the closure rate and reports to the Crisis Team.
+
+                    ## 8. DORA-specific requirements
+                    For DORA-applicable entities the following also applies:
+
+                    - annual comprehensive testing programme pursuant to Art. 24 paragraph 6 DORA;
+                    - TLPT at least every three years for significant financial entities pursuant to Art. 26 DORA, methodology in line with the finalised RTS and TIBER-EU;
+                    - communication of test results to the competent supervisory authority pursuant to Art. 27 DORA;
+                    - inclusion of critical ICT third-party providers within the TLPT scope pursuant to Art. 26 paragraph 3 DORA.
+
+                    ## 9. KRITIS-specific requirements
+                    For KRITIS-applicable entities pursuant to KRITIS-DachG, resilience reviews must be evidenced at least every two years pursuant to § 13 KRITIS-DachG. Resilience reviews are integrated into the present Exercise Programme.
+
+                    ## 10. Review and change cycle
+                    This Programme is reviewed at least annually (cadence {{ bcm.review_interval_months }} months). Changes are approved pursuant to the approval chain {{ approval.chain }}. Ad-hoc changes are made on materially changed threat landscape, after a major incident or upon regulatory change.
+
+                    ---
+                    *This Exercise and Testing Programme has been approved by the top management of {{ tenant.legal_name }} pursuant to the approval chain {{ approval.chain }} and is binding from {{ generation_date }}.*
+                section:
+                    exercise_types:
+                        title: 'Exercise types and methodology'
+                        body: |-
+                            Walkthrough, tabletop, functional simulation, full-scale, notification-only, ICT recovery test, TLPT (DORA Art. 26). Each exercise type has dedicated success criteria pursuant to ISO 22301 Clause 8.6.2.
+                    frequency_plan:
+                        title: 'Frequency plan and minimum cadence'
+                        body: |-
+                            Minimum {{ bcm.exercise_frequency }}; tabletop annual, functional simulation annual, ICT recovery test for crown-jewels quarterly, full-scale every 24-36 months, notification-only semi-annual, TLPT at least every three years for DORA-significant financial entities.
+                    rotation:
+                        title: 'Rotation and coverage over three years'
+                        body: |-
+                            Three-year rolling cycle pursuant to ISO 22301 Clause 8.6.1: every process tested at least once. Eight standard scenarios (cyber, power outage, pandemic, site loss, key-person loss, supplier failure, natural event, fire) each covered once. Roadmap approved by top management by January.
+                    design:
+                        title: 'Exercise design and success criteria'
+                        body: |-
+                            Exercise objectives, scenario, success criteria, observers, debrief, report (within 4 weeks), CAPA linkage. Documented in structured form pursuant to ISO 22301 Clause 8.6.2.
+                    lessons_learned:
+                        title: 'Lessons-Learned and CAPA closure'
+                        body: |-
+                            Deficiencies with responsible person, target date and escalation rule in the CAPA system. Quarterly closure-rate report by {{ roles.bcm_officer.fullName }} to the Crisis Team.
+                    dora_specific:
+                        title: 'DORA-specific testing requirements'
+                        body: |-
+                            Annual comprehensive testing programme (Art. 24 DORA). TLPT at least every three years for significant financial entities (Art. 26 DORA), methodology in line with TIBER-EU. Communication to the supervisor (Art. 27 DORA). Inclusion of critical ICT third-party providers.
+                    kritis_specific:
+                        title: 'KRITIS-DachG resilience reviews'
+                        body: |-
+                            Resilience review every two years pursuant to § 13 KRITIS-DachG, integrated into the present Exercise Programme. Evidence to be provided to competent federal and state authorities.
+                    review:
+                        title: 'Review and change cycle'
+                        body: |-
+                            At least annually, cadence {{ bcm.review_interval_months }} months. Ad hoc upon major incident, changed threat landscape or regulatory change. Approval via {{ approval.chain }}.
+                tailoring_field:
+                    annual_roadmap:
+                        label: 'Annual exercise roadmap of the organisation'
+                        placeholder: 'Example: "Q1: tabletop Crisis Team cyber-crisis; notification-only exercise. Q2: functional simulation core banking system; ICT recovery test crown-jewels. Q3: tabletop BC Plan main-site outage; notification-only exercise. Q4: full-scale exercise alternate site (every three years); Lessons-Learned workshop."'
+                    scenario_catalogue:
+                        label: 'Scenario catalogue of the organisation'
+                        placeholder: 'Example: "Cyber: ransomware encrypting the core system; power outage: 8h regional; pandemic: 30 percent staff absence; site: fire main building; key person: simultaneous loss of CIO and deputy; supplier: cloud provider outage 24h; natural event: flood at data-centre site; supply chain: insolvency of critical software vendor."'
+                    observer_pool:
+                        label: 'Pool of independent observers'
+                        placeholder: 'Example: "Internal Audit (3 persons), external specialist consultancy (contract with three-day availability), supervisors from non-affected business areas (pool of 6 persons). For full-scale exercises, additional observers from group sister entities."'
+        internal_audit_bcm:
+            v1:
+                title: 'BCMS Internal Audit Programme (ISO 22301 Cl. 9.2)'
+                body: |-
+                    # BCMS Internal Audit Programme of {{ tenant.legal_name }}
+
+                    *Document class: Programme | Regulatory basis: ISO 22301:2019 Clause 9.2 ("Internal audit"); cross-references: ISO 19011:2018 (guidelines for auditing management systems), ISO/IEC 27001:2022 Clause 9.2 (joint audit programmes permitted), EU-DORA Art. 6 paragraph 6 (independent internal review of the ICT-RMF) | Effective date: {{ generation_date }} | Language: English (formal British / EU register) | Review interval: annually pursuant to Clause 9.3*
+
+                    ## 1. Purpose and binding effect
+                    This Programme governs the binding conduct of internal audits of the BCMS of {{ tenant.legal_name }} pursuant to ISO 22301:2019 Clause 9.2 ("The organization shall conduct internal audits at planned intervals"). Internal audits provide systematic, documented evidence of whether the BCMS meets the organisation's own requirements, the requirements of ISO 22301 and applicable regulatory requirements and is effectively implemented.
+
+                    For ISO-22301 certification, the existence of an internal audit programme with demonstrable execution is a precondition. Auditors regularly classify the absence of an active audit function as a major nonconformity.
+
+                    ## 2. Scope
+                    This Programme covers all components of the BCMS of {{ tenant.legal_name }}: the Business Continuity Policy, the BCMS Scope Statement, BIA Methodology, BCM Risk Assessment Methodology, BC Strategy, BC Plans, recovery plans, restoration plans, Crisis Team Charter, Notfallhandbuch and all BCMS records (exercise reports, BIA results, emergency records).
+
+                    For tenants operating a joint audit programme covering ISMS and BCMS (recommended for efficiency), a consolidated audit is conducted; clause coverage of both standards must be documented separately and demonstrably.
+
+                    ## 3. Audit programme objectives
+                    Pursuant to ISO 22301 Clause 9.2.2 the audit programme pursues the following objectives:
+
+                    - verification of conformity with ISO 22301:2019 requirements;
+                    - verification of conformity with the organisation's own requirements (Business Continuity Policy, internal procedures);
+                    - verification of effective implementation;
+                    - identification of opportunities for improvement;
+                    - provision of credible inputs to the management review pursuant to Clause 9.3.
+
+                    ## 4. Audit frequency and three-year cycle
+                    {{ tenant.legal_name }} operates a three-year cycle within which all clauses and all BCMS components are fully audited at least once. Minimum frequencies:
+
+                    - at least one internal audit per year;
+                    - clauses 4–10 fully covered over three years;
+                    - critical components (Crisis Team, crown-jewel recovery plans, BC Plans of critical processes) audited at least annually;
+                    - ad-hoc special audits after major incident, failed exercise or supervisory direction.
+
+                    ## 5. Auditor competence and independence
+                    Auditors are selected pursuant to ISO 19011:2018. Minimum competences:
+
+                    - knowledge of ISO 22301:2019 requirements, preferably with personal lead-auditor certification;
+                    - knowledge of BSI 200-4 for BSI-adopting tenants;
+                    - audit methodology pursuant to ISO 19011 (preparation, on-site review, reporting);
+                    - sector knowledge and understanding of the {{ tenant.legal_name }} business processes;
+                    - independence from the audited area: auditors may not have day-to-day responsibility for the area they audit;
+                    - {{ roles.bcm_officer.fullName }} is never auditor of their own area of responsibility.
+
+                    External auditors or auditors from group sister entities may strengthen independence where internal auditors are not available or not sufficiently independent.
+
+                    ## 6. Audit phases
+                    Each audit follows the structure of ISO 19011:2018:
+
+                    - **Audit planning:** definition of scope, audit period, audit criteria, audit methodology, sampling strategy;
+                    - **Audit preparation:** documentation review, preliminary discussions, preparation of checklists and interview guides;
+                    - **Opening meeting:** clarification of scope, schedule, escalation rules, confidentiality;
+                    - **On-site review:** interviews, document inspection, walk-throughs, sampling, process observation;
+                    - **Findings consolidation:** interim results, plausibility check, classification (major NC, minor NC, observation, opportunity for improvement);
+                    - **Closing meeting:** presentation of findings, clarification of misunderstandings, acceptance;
+                    - **Audit report:** within four weeks of the closing meeting; submitted to {{ roles.bcm_officer.fullName }} and top management;
+                    - **CAPA linkage:** findings are entered into the CAPA system with responsible person, target date and escalation.
+
+                    ## 7. Findings classification
+                    Findings are classified into:
+
+                    - **Major nonconformity (NC):** serious deviation that fundamentally jeopardises BCMS effectiveness (e.g. missing BIA, missing Crisis Team, missing exercise programme).
+                    - **Minor nonconformity:** isolated deviation that does not fundamentally jeopardise overall BCMS effectiveness (e.g. incomplete documentation of a single BC Plan).
+                    - **Observation:** observation without an established deviation but with an indication of improvement potential.
+                    - **Opportunity for improvement:** explicit recommendation for further BCMS maturity.
+
+                    ## 8. Reporting and escalation
+                    Audit reports are submitted to {{ roles.bcm_officer.fullName }} and top management. Major NCs trigger immediate escalation to the Crisis Team Chair {{ roles.crisis_team_lead.fullName }} and top management. Consolidated audit results feed the annual management review pursuant to Clause 9.3.
+
+                    ## 9. Joint audit with ISMS
+                    {{ tenant.legal_name }} runs the BCMS audit programme jointly with the ISMS audit programme pursuant to ISO/IEC 27001 Clause 9.2 (recommended for efficiency). Clause coverage of both standards is documented in a combined audit matrix; overlapping topics (e.g. A.5.29 and A.5.30 ISO 27001 in conjunction with ISO 22301 Clause 8.4) are audited once with cross-reference to both standards.
+
+                    ## 10. Review and change cycle
+                    This Programme is reviewed at least annually (cadence {{ bcm.review_interval_months }} months), ad hoc upon material BCMS scope changes or regulatory changes. Approval pursuant to the approval chain {{ approval.chain }}.
+
+                    ---
+                    *This Audit Programme has been approved by the top management of {{ tenant.legal_name }} pursuant to the approval chain {{ approval.chain }} and is binding from {{ generation_date }}.*
+                section:
+                    objectives:
+                        title: 'Audit programme objectives'
+                        body: |-
+                            Conformity verification against ISO 22301:2019 requirements and the organisation's own requirements; verification of effectiveness; identification of opportunities for improvement; input to the management review pursuant to Clause 9.3.
+                    frequency:
+                        title: 'Audit frequency and three-year cycle'
+                        body: |-
+                            At least one internal audit per year; full clause coverage 4-10 over three years. Critical components (Crisis Team, crown-jewel plans, BC Plans of critical processes) annual. Ad-hoc special audits upon major incident or failed exercise.
+                    competence:
+                        title: 'Auditor competence and independence'
+                        body: |-
+                            ISO 19011:2018, ISO 22301:2019, BSI 200-4 (where adopted), sector knowledge. Independence from the audited area mandatory; {{ roles.bcm_officer.fullName }} never auditor of own area. External or group auditors as needed.
+                    phases:
+                        title: 'Audit phases pursuant to ISO 19011'
+                        body: |-
+                            Planning, preparation, opening meeting, on-site review, findings consolidation, closing meeting, audit report (within 4 weeks), CAPA linkage. Sampling strategy and audit criteria documented per audit.
+                    findings:
+                        title: 'Findings classification'
+                        body: |-
+                            Major NC (BCMS effectiveness fundamentally jeopardised), minor NC (isolated deviation), observation (indication), opportunity for improvement (recommendation). Classification rules documented.
+                    reporting:
+                        title: 'Reporting and escalation'
+                        body: |-
+                            Audit report to {{ roles.bcm_officer.fullName }} and top management. Major NC: immediate escalation to Crisis Team Chair {{ roles.crisis_team_lead.fullName }} and top management. Input to the annual management review.
+                    shared_isms:
+                        title: 'Joint audit with ISMS'
+                        body: |-
+                            Recommended for efficiency. Combined audit matrix documents clause coverage of both standards. Overlapping topics (A.5.29, A.5.30) audited once with cross-reference.
+                    review:
+                        title: 'Review and change cycle'
+                        body: |-
+                            At least annually, cadence {{ bcm.review_interval_months }} months. Ad hoc upon material BCMS changes or regulatory change. Approval via {{ approval.chain }}.
+                tailoring_field:
+                    auditor_pool:
+                        label: 'Auditor pool and independence rules'
+                        placeholder: 'Example: "Internal pool: 4 auditors from Internal Audit (all ISO-22301 lead-auditor certified). External contract with consultancy XYZ for peak load. Group sister entity XYZ provides 2 auditors for cross-tenant audits. {{ roles.bcm_officer.fullName }} is never an auditor."'
+                    audit_matrix_3y:
+                        label: 'Three-year audit matrix – clause coverage'
+                        placeholder: 'Example: "Year 1: Clause 4 + 5 + Crisis Team Charter; Year 2: Clause 6 + 7 + 8 (BIA, RA, Strategy, Plans); Year 3: Clause 9 + 10 + Notfallhandbuch + Recovery Plans."'
+                    capa_thresholds:
+                        label: 'CAPA closure deadlines per findings class'
+                        placeholder: 'Example: "Major NC: containment within 30 days, permanent corrective action within 90 days. Minor NC: corrective action within 90 days. Observation: assessment within 60 days, implementation optional. Opportunity for improvement: assessment as part of the annual management review."'
+        management_review_bcm:
+            v1:
+                title: 'BCMS Management Review Procedure (ISO 22301 Cl. 9.3)'
+                body: |-
+                    # BCMS Management Review Procedure of {{ tenant.legal_name }}
+
+                    *Document class: Procedure | Regulatory basis: ISO 22301:2019 Clause 9.3 ("Management review"); cross-references: ISO/IEC 27001:2022 Clause 9.3 (joint management review possible), EU-DORA Art. 5 paragraph 2 (annual review of the ICT-RMF by the management body) | Effective date: {{ generation_date }} | Language: English (formal British / EU register) | Review interval: annually pursuant to Clause 9.3*
+
+                    ## 1. Purpose and binding effect
+                    This Procedure governs the binding conduct of the management review of the BCMS of {{ tenant.legal_name }} pursuant to ISO 22301:2019 Clause 9.3. The management review is the central strategic review of the suitability, adequacy and effectiveness of the BCMS and provides the decision basis for resource allocation, BCMS scope changes and corrective actions.
+
+                    Auditors regularly classify the absence of a documented management review as a major nonconformity. Implementation of this Procedure is therefore mandatory and must be evidenced in documentation.
+
+                    ## 2. Scope
+                    The Procedure applies to the BCMS of {{ tenant.legal_name }} as defined in the BCMS Scope Statement. It applies to all BCMS records, all audit reports (internal and external), all exercise reports, and all incident and CAPA records.
+
+                    ## 3. Frequency and convenor
+                    The management review is conducted at least once per year by the top management of {{ tenant.legal_name }}. Frequency: {{ bcm.review_interval_months }} months. The convenor is {{ roles.crisis_team_lead.fullName }} or a deputy designated by top management. {{ roles.bcm_officer.fullName }} has a mandatory participant role and provides the inputs.
+
+                    Recommendation for efficiency: joint management review with the ISMS management review (ISO/IEC 27001 Clause 9.3); separate clause coverage is documented in a combined agenda.
+
+                    ## 4. Mandatory inputs pursuant to Clause 9.3.2
+                    The following inputs are mandatorily presented:
+
+                    - **Status of actions from previous management reviews** – closure rate, open actions, justifications for delays.
+                    - **Changes in external and internal issues affecting the BCMS** – regulatory changes (e.g. new NIS2 transposition, DORA RTS publications, KRITIS-DachG updates), organisational changes, market and competitive developments, threat landscape.
+                    - **Information on BCMS performance** – BCMS performance metrics, BIA timeliness, scope coverage, RTO performance in tests.
+                    - **Incident statistics** – count, classification, Crisis Team activations, MTPD breaches, regulatory notifications (DORA Art. 19, KRITIS-DachG § 14, BSIG § 32, GDPR Art. 33).
+                    - **Exercise results** – conducted exercises, results, identified deficiencies, closure rates.
+                    - **Audit results** – internal and external audits, findings classification, trend analysis.
+                    - **Feedback from interested parties** – supervisory authorities, customers, contractual partners, group parent, workforce.
+                    - **Risk assessment results** – updated BCM risk register, breaches of risk thresholds.
+                    - **Opportunities for improvement** – from CAPA, Lessons-Learned, external benchmarks.
+
+                    ## 5. Mandatory outputs pursuant to Clause 9.3.3
+                    The following outputs must be documented:
+
+                    - decisions on BCMS changes (scope, procedures, structures);
+                    - decisions on resource allocation (people, budget, training, infrastructure);
+                    - decisions on opportunities for improvement;
+                    - explicit decision on the suitability, adequacy and effectiveness of the BCMS.
+
+                    All decisions are recorded with responsible person, target date and escalation.
+
+                    ## 6. Documentation and retention
+                    The management review is recorded with minutes pursuant to Clause 7.5. Retention period at least five years; at least seven years for DORA reference; at least five years for KRITIS reference.
+
+                    ## 7. Escalation and immediate measures
+                    Where the management review questions the suitability, adequacy or effectiveness of the BCMS, immediate escalation to the Crisis Team Chair {{ roles.crisis_team_lead.fullName }} and top management is triggered. Immediate measures are handled outside the regular CAPA process.
+
+                    ## 8. Joint management review with ISMS
+                    {{ tenant.legal_name }} conducts the BCMS management review jointly with the ISMS management review pursuant to ISO/IEC 27001 Clause 9.3 (recommended for efficiency). The agenda documents separate clause coverage; overlapping topics (incidents, audits, regulatory changes) are addressed once with cross-reference.
+
+                    ## 9. Review and change cycle
+                    This Procedure is reviewed at least annually (cadence {{ bcm.review_interval_months }} months). Approval of changes via {{ approval.chain }}.
+
+                    ---
+                    *This Procedure has been approved by the top management of {{ tenant.legal_name }} pursuant to the approval chain {{ approval.chain }} and is binding from {{ generation_date }}.*
+                section:
+                    frequency:
+                        title: 'Frequency and convenor'
+                        body: |-
+                            At least annually; frequency {{ bcm.review_interval_months }} months. Convenor: {{ roles.crisis_team_lead.fullName }} or named deputy. {{ roles.bcm_officer.fullName }} provides inputs. Joint management review with ISMS recommended.
+                    inputs:
+                        title: 'Mandatory inputs pursuant to Clause 9.3.2'
+                        body: |-
+                            Status of previous actions, external and internal changes, BCMS performance, incident statistics (DORA Art. 19, KRITIS-DachG § 14, BSIG § 32, GDPR Art. 33), exercise results, audit results, feedback from interested parties, risk assessment results, opportunities for improvement.
+                    outputs:
+                        title: 'Mandatory outputs pursuant to Clause 9.3.3'
+                        body: |-
+                            BCMS-change decisions, resource allocation, improvement decisions, explicit suitability, adequacy and effectiveness statement. With responsible person, target date and escalation.
+                    documentation:
+                        title: 'Documentation and retention'
+                        body: |-
+                            Minutes pursuant to Clause 7.5. Retention five years standard, seven years for DORA reference, five years for KRITIS reference.
+                    escalation:
+                        title: 'Escalation and immediate measures'
+                        body: |-
+                            Where suitability, adequacy or effectiveness is in question: immediate escalation to Crisis Team Chair {{ roles.crisis_team_lead.fullName }} and top management; immediate measures outside the regular CAPA process.
+                    shared_isms:
+                        title: 'Joint management review with ISMS'
+                        body: |-
+                            Recommended for efficiency. Agenda documents separate clause coverage. Overlapping topics addressed once with cross-reference.
+                    review:
+                        title: 'Review and change cycle'
+                        body: |-
+                            At least annually, cadence {{ bcm.review_interval_months }} months. Approval of changes via {{ approval.chain }}.
+                tailoring_field:
+                    review_chair_and_attendees:
+                        label: 'Chair and mandatory attendees of the management review'
+                        placeholder: 'Example: "Chair: CEO Dr. Schmidt. Mandatory attendance: COO, CFO, CIO, CISO ({{ roles.isb.fullName }}), BCM Officer ({{ roles.bcm_officer.fullName }}), Data Protection Officer, Internal Audit Lead, HR Lead, Legal Lead. Optional: Group CISO for dual-hatted topics, external advisors."'
+                    annual_kpi_dashboard:
+                        label: 'BCMS KPI dashboard for the management review'
+                        placeholder: 'Example: "RTO performance in tests (target ≥ 95 percent), MTPD breaches per year (target = 0), major incidents (trend), Crisis Team activations (count per year), CAPA closure rate (target ≥ 90 percent within SLA), exercise coverage three-year rolling cycle (target = 100 percent), audit major NCs (target = 0)."'
+                    review_combined_isms_dora:
+                        label: 'Combined reviews across BCMS, ISMS and DORA'
+                        placeholder: 'Example: "Combined BCMS + ISMS management review annually in November (Day 1 ISMS, Day 2 BCMS, joint Day 3 cross-cutting topics). Separate DORA review pursuant to Art. 5 paragraph 2 DORA by the management body in February. Results feed reciprocally into the respective subsequent reviews."'
+        nonconformity_corrective_action_bcm:
+            v1:
+                title: 'BCMS Nonconformity and Corrective Action Procedure (ISO 22301 Cl. 10.1)'
+                body: |-
+                    # BCMS Nonconformity and Corrective Action Procedure of {{ tenant.legal_name }}
+
+                    *Document class: Procedure | Regulatory basis: ISO 22301:2019 Clause 10.1 ("Nonconformity and corrective action"); cross-references: ISO/IEC 27001:2022 Clause 10.1 (joint procedure permitted), EU-DORA Art. 13 (Lessons-Learned) | Effective date: {{ generation_date }} | Language: English (formal British / EU register) | Review interval: every two years pursuant to Clause 9.3*
+
+                    ## 1. Purpose and binding effect
+                    This Procedure governs the binding capture, evaluation, treatment and closure of nonconformities and corrective actions ("CAPA") in the BCMS of {{ tenant.legal_name }} pursuant to ISO 22301:2019 Clause 10.1. It is binding on all employees and persons accountable within the BCMS scope.
+
+                    ## 2. Scope
+                    The Procedure applies to all BCMS nonconformities and to all corrective-action needs derived from audit, exercise and incident records. It covers both major and minor nonconformities and observations.
+
+                    ## 3. Trigger sources
+                    The following sources may trigger a nonconformity or corrective-action procedure:
+
+                    - **audit findings** (internal audits pursuant to Clause 9.2, external certification audits, supervisory inspections);
+                    - **exercise Lessons-Learned** (tabletop, functional simulation, full-scale, ICT recovery tests);
+                    - **real incident insights** (Crisis Team activations, emergencies, disturbances);
+                    - **external complaints** (customers, contractual partners, supervisory authorities, workforce);
+                    - **self-reports** by employees (anonymous or open whistle-blowing);
+                    - **DORA Lessons-Learned** pursuant to Art. 13 DORA (mandatory for financial entities);
+                    - **threat-landscape changes** (e.g. new threats, new vulnerabilities, new regulatory requirements).
+
+                    ## 4. Capture and classification
+                    Each nonconformity is recorded in the {{ tenant.legal_name }} CAPA system with the following mandatory fields: trigger source, detection date, classification (major NC, minor NC, observation, opportunity for improvement), description, affected BCMS component, first reporter, owner.
+
+                    Classification follows the findings schema (see Internal Audit Programme § 7).
+
+                    ## 5. Root-cause analysis
+                    A root-cause analysis (RCA) is performed for major NCs and as needed for minor NCs. Accepted methods:
+
+                    - **5-Why method** (default for minor NC and observations);
+                    - **Ishikawa diagram** (fishbone) for more complex major NC with multiple root-cause categories;
+                    - **formal RCA** with external experts for existence-threatening major NC or for DORA major incidents.
+
+                    The RCA method is selected by the owner; the choice is documented in the CAPA record.
+
+                    ## 6. Determination and approval of corrective actions
+                    Corrective actions are determined in two classes:
+
+                    - **immediate measure** (containment) – short-term measure to contain effects, within 30 days;
+                    - **permanent corrective action** – removal of the root cause, within 90 days for major NC, within 90 days for minor NC.
+
+                    Approval: immediate measure by the owner and {{ roles.bcm_officer.fullName }}; permanent corrective action for major NC by top management pursuant to {{ approval.chain }}.
+
+                    ## 7. Effectiveness review
+                    The effectiveness of each corrective action is reviewed pursuant to ISO 22301 Clause 10.1.f. Review timing:
+
+                    - immediate measure: 30 days after implementation;
+                    - permanent corrective action: 90 days after implementation;
+                    - for systemic measures: additional review at 180 and 365 days.
+
+                    The review is conducted by an independent person, never by the owner alone.
+
+                    ## 8. Documentation requirements
+                    Mandatory fields in the CAPA system: trigger, classification, RCA method and result, immediate measure, permanent corrective action, approval, implementation date, effectiveness result. Retention pursuant to Clause 7.5; retention period at least five years, at least seven years for DORA reference.
+
+                    ## 9. Escalation thresholds
+                    The following thresholds trigger escalation to the Crisis Team Chair {{ roles.crisis_team_lead.fullName }} and top management:
+
+                    - major NC affecting critical business processes;
+                    - repeated identical or similar major NCs within 24 months;
+                    - closure rate below 80 percent over two consecutive quarters;
+                    - DORA major incident pursuant to Art. 17 DORA;
+                    - KRITIS incident report pursuant to KRITIS-DachG § 14;
+                    - supervisory inspection findings.
+
+                    ## 10. Joint procedure with ISMS
+                    {{ tenant.legal_name }} runs the BCMS CAPA procedure jointly with the ISMS CAPA procedure pursuant to ISO/IEC 27001 Clause 10.1 (recommended for efficiency). CAPA records are tagged with the standard reference (ISO 22301 or ISO 27001 or both).
+
+                    ## 11. Review and change cycle
+                    This Procedure is reviewed every two years (cadence 24 months), ad hoc upon material changes. Approval of changes via {{ approval.chain }}.
+
+                    ---
+                    *This Procedure has been approved by the top management of {{ tenant.legal_name }} pursuant to the approval chain {{ approval.chain }} and is binding from {{ generation_date }}.*
+                section:
+                    triggers:
+                        title: 'Trigger sources for CAPA'
+                        body: |-
+                            Audit findings (Clause 9.2), exercise Lessons-Learned, incident insights, external complaints, self-reports, DORA Lessons-Learned (Art. 13), threat-landscape changes.
+                    classification:
+                        title: 'Capture and classification'
+                        body: |-
+                            Mandatory fields: trigger source, detection date, classification (major NC, minor NC, observation, opportunity for improvement), description, affected component, first reporter, owner. Classification per audit findings schema.
+                    rca:
+                        title: 'Root-cause analysis methods'
+                        body: |-
+                            5-Why (default), Ishikawa (complex), formal RCA with external experts (existence-threatening, DORA major). Method choice by owner, documented in the CAPA record.
+                    actions:
+                        title: 'Immediate and permanent corrective actions'
+                        body: |-
+                            Immediate measure within 30 days (containment); permanent corrective action within 90 days. Approval of permanent action for major NC by top management pursuant to {{ approval.chain }}.
+                    effectiveness:
+                        title: 'Effectiveness review'
+                        body: |-
+                            Immediate measure: review after 30 days; permanent corrective action: 90 days; systemic measures: 180 and 365 days. Review by independent person, never solely by the owner.
+                    escalation:
+                        title: 'Escalation thresholds'
+                        body: |-
+                            Major NC affecting critical processes, repeated major NC within 24 months, closure rate below 80 percent, DORA major incident (Art. 17), KRITIS incident report (KRITIS-DachG § 14), supervisory inspection findings.
+                    shared_isms:
+                        title: 'Joint procedure with ISMS'
+                        body: |-
+                            Recommended for efficiency. CAPA records tagged with the standard reference (ISO 22301 or ISO 27001 or both). Procedure consolidated.
+                    review:
+                        title: 'Review and change cycle'
+                        body: |-
+                            Two-year review (cadence 24 months); ad hoc upon material changes. Approval via {{ approval.chain }}.
+                tailoring_field:
+                    capa_tool:
+                        label: 'CAPA tool and data model of the organisation'
+                        placeholder: 'Example: "CAPA module of the integrated GRC tool (linked to the ISMS tool). Mandatory fields per Procedure. Access for all owners and Internal Audit. Integration with audit module and incident module."'
+                    rca_threshold:
+                        label: 'Thresholds for the choice of RCA method'
+                        placeholder: 'Example: "5-Why for all minor NC and observations. Ishikawa for major NC involving more than two business areas or with incident loss above EUR 100k. Formal RCA with an external expert for existence-threatening major NC or for DORA major incident."'
+                    capa_kpi:
+                        label: 'CAPA KPIs for the management review'
+                        placeholder: 'Example: "Closure rate per quarter (target ≥ 90 percent within SLA). Recurrence rate (target = 0 percent identical major NC within 24 months). Average closure duration major NC (target ≤ 60 days). Average closure duration minor NC (target ≤ 30 days)."'
+        notfallhandbuch_bsi_2004:
+            v1:
+                title: 'Emergency Manual / Notfallhandbuch (BSI 200-4 Ch. 7)'
+                body: |-
+                    # Emergency Manual (Notfallhandbuch) of {{ tenant.legal_name }}
+
+                    *Document class: Programme (overarching documentation bundling all BCMS architecture descriptions) | Regulatory basis: BSI 200-4:2023 Chapter 7 ("Notfallhandbuch"); cross-references: ISO 22301:2019 Clauses 4–10 (overall BCMS), ISO/IEC 27001:2022 A.5.29 and A.5.30, BSI Grundschutz building block DER.4 ("Notfallmanagement"), KRITIS-Dachgesetz §§ 11–13 (resilience duties), KRITIS-Stufenmodell-2023 of the German BBK | Effective date: {{ generation_date }} | Language: English (formal British / EU register) | Review interval: annually pursuant to BSI 200-4 Ch. 7.4 and ad hoc upon material changes | Classification: Internal-Confidential*
+
+                    ## 1. Purpose and binding effect
+                    The Emergency Manual (Notfallhandbuch) bundles all architecture, governance and procedural documents of the emergency management of {{ tenant.legal_name }} into a consolidated reference document pursuant to BSI 200-4:2023 Chapter 7. It is the central point of reference for all persons acting in an emergency or crisis, for supervisory authorities and for internal and external auditors.
+
+                    For tenants with BSI-200-4 adoption, the Emergency Manual is mandatory. For KRITIS operators within the meaning of the German KRITIS-Dachgesetz (KRITIS-DachG), the Emergency Manual together with the KRITIS-Stufenmodell-2023 of the Federal Office of Civil Protection and Disaster Assistance (BBK) satisfies the evidence duty for resilience-oriented crisis-team organisation pursuant to §§ 11–13 KRITIS-DachG.
+
+                    The Emergency Manual does not replace the BCMS individual documents kept separately; it bundles them and demonstrates their interplay in a comprehensible manner.
+
+                    ## 2. Scope
+                    The Emergency Manual covers the entire emergency management of {{ tenant.legal_name }} within the meaning of BSI 200-4 Ch. 3. Geographically it covers all sites; organisationally all legal entities within the group constellation (where applicable); processually all business processes classified as critical or high; technically all ICT systems classified as critical or high.
+
+                    KRITIS reference: where {{ tenant.legal_name }} operates a KRITIS installation pursuant to the schedule of the KRITIS-DachG threshold ordinance, KRITIS-specific resilience criteria pursuant to the KRITIS-Stufenmodell-2023 are appended to the Emergency Manual.
+
+                    ## 3. Architecture of the emergency management
+                    The emergency management of {{ tenant.legal_name }} is structured into the following elements pursuant to BSI 200-4 Ch. 4:
+
+                    - **Notfallleitlinie / Business Continuity Policy** (top-management commitment, see separate document);
+                    - **BCMS Scope Statement** (see separate document);
+                    - **BIA Methodology** (see separate document);
+                    - **BCM Risk Assessment Methodology** (see separate document);
+                    - **BC Strategy and Solutions** (see separate document);
+                    - **BC Plan Template Standard** (see separate document);
+                    - **Incident Response and Communication Procedure** (see separate document);
+                    - **Crisis Management Plan / Crisis Team Charter** (see separate document);
+                    - **Recovery and Restoration Plan Standard** (see separate document);
+                    - **Exercise and Testing Programme** (see separate document);
+                    - **BCMS Internal Audit Programme** (see separate document);
+                    - **BCMS Management Review Procedure** (see separate document);
+                    - **BCMS Nonconformity and Corrective Action Procedure** (see separate document).
+
+                    ## 4. Governance and responsibilities
+                    Pursuant to BSI 200-4 Ch. 4.4:
+
+                    - **Top management** – ultimate accountability for emergency management pursuant to BSI 200-4 Ch. 4.1; annual approval of the Notfallleitlinie and the Emergency Manual.
+                    - **BCM Officer (Notfallbeauftragte/r)** – {{ roles.bcm_officer.fullName }}: operational steering of the emergency management, interface to BIA, BC Strategy and BC Plans.
+                    - **Deputy BCM Officer** – mandatory pursuant to BSI 200-4 Ch. 4.4 deputy principle.
+                    - **Crisis Team Chair** – {{ roles.crisis_team_lead.fullName }}: crisis-team leadership pursuant to BSI 200-4 Ch. 5.4.
+                    - **Information Security Officer (ISB)** – {{ roles.isb.fullName }}: interface to ICT-related incidents and cyber-crises.
+                    - **BC Plan owners** – per business process; responsibility for currency and testing.
+
+                    ## 5. KRITIS reference and Stufenmodell-2023
+                    Where {{ tenant.legal_name }} is a KRITIS operator the following additionally applies:
+
+                    - **KRITIS-Stufenmodell-2023** of the BBK – classification of the KRITIS installation into stages 1 to 4; defined minimum resilience standards per stage;
+                    - **KRITIS-DachG § 13** – mandatory resilience reviews every two years;
+                    - **KRITIS-DachG § 14** – incident-reporting duties to the competent authority;
+                    - **BSI Kritisverordnung (KritisV)** – sectoral thresholds;
+                    - **BSIG § 8a** – state of the art in KRITIS practice;
+                    - **BSIG § 32** – reporting duties pursuant to NIS2 transposition.
+
+                    For KRITIS installations, an additional KRITIS Annex to the Emergency Manual is maintained, comprising stage classification, resilience measures and interfaces to the authority (BSI Bonn, BBK Bonn, possibly the competent state authority).
+
+                    ## 6. Interfaces to other management systems
+                    The emergency management of {{ tenant.legal_name }} is integrated with further management systems:
+
+                    - **ISMS pursuant to ISO/IEC 27001:2022** – via A.5.29 and A.5.30; joint audit and management review recommended;
+                    - **ICT-RMF pursuant to EU-DORA** – integrated via Art. 11 DORA (business continuity policy) and Art. 12 DORA (backup, restoration and recovery);
+                    - **Data protection pursuant to GDPR** – interface via Art. 32 (security of processing) and Art. 33 (notification duty);
+                    - **Supply-chain due diligence pursuant to LkSG** – interface via supplier risk management;
+                    - **Quality management pursuant to ISO 9001** – where present, interface via CAPA and management review.
+
+                    ## 7. Crisis Room requirements pursuant to BSI 200-4 Ch. 5.4
+                    The Emergency Manual documents the Crisis Room requirements established in the BCMS:
+
+                    - primary Crisis Room with secured telecommunications, redundant power and out-of-band connection;
+                    - alternate Crisis Room at a geographically separated site;
+                    - printed emergency contact lists and BC Plans in both Crisis Rooms;
+                    - 24-hour emergency catering for crisis-team operations;
+                    - in cyber-crisis: isolated infrastructure (dedicated mobile devices, external cloud service with out-of-band authentication).
+
+                    ## 8. Glossary
+                    The Emergency Manual includes a binding glossary pursuant to BSI 200-4 Ch. 7.3 covering the relevant terms:
+
+                    - **BIA** – Business Impact Analysis;
+                    - **BCMS** – Business Continuity Management System;
+                    - **CIF** – Critical or Important Function (DORA);
+                    - **Geschaeftsfortfuehrungsplan / Business Continuation Plan** – plan to maintain business operation through workarounds;
+                    - **Crisis** – existence-, reputation- or survival-threatening situation;
+                    - **Krisenstabsordnung / Crisis Team Charter** – binding organisational and procedural arrangements of the Crisis Team;
+                    - **MTPD** – Maximum Tolerable Period of Disruption;
+                    - **Emergency** – business process threatened beyond MTPD;
+                    - **Notfallbeauftragte/r** – BCM Officer pursuant to BSI 200-4 Ch. 4.4;
+                    - **Notfallhandbuch / Emergency Manual** – consolidated reference document pursuant to BSI 200-4 Ch. 7;
+                    - **Notfallleitlinie / Business Continuity Policy** – top-management commitment pursuant to BSI 200-4 Ch. 4.1;
+                    - **RPO** – Recovery Point Objective;
+                    - **RTO** – Recovery Time Objective;
+                    - **Disturbance** – ordinary business operations temporarily impaired;
+                    - **TLPT** – Threat-Led Penetration Test pursuant to DORA Art. 26;
+                    - **Wiederanlaufplan / Recovery Plan** – plan to return failed resources to a functional state;
+                    - **Wiederherstellungsplan / Restoration Plan** – plan for the long-term return to the pre-incident state.
+
+                    ## 9. Document control
+                    The Emergency Manual is documented pursuant to BSI 200-4 Ch. 7.4:
+
+                    - **Owner** – {{ roles.bcm_officer.fullName }};
+                    - **Approval** – top management pursuant to the approval chain {{ approval.chain }};
+                    - **Classification** – Internal-Confidential (default); audit-proof version control;
+                    - **Distribution** – Crisis Team in full, BC Plan owners, Internal Audit, top management, audit functions; list maintained by name;
+                    - **Retention period** – at least five years; at least seven years for DORA reference; at least five years for KRITIS reference.
+
+                    ## 10. Emergency quick-reference card
+                    An annex to the Emergency Manual is the Emergency Quick-Reference Card (printed on one or two A4 pages and distributed within the organisation). It contains: emergency numbers (110 fire/police, 112 EU emergency), the {{ tenant.legal_name }} emergency hotline, first-response steps for five standard scenarios (fire, cyber, power outage, site loss, personal injury), behavioural rules and the escalation path.
+
+                    ## 11. KRITIS Annex (where applicable)
+                    Where there is KRITIS reference:
+
+                    - stage classification pursuant to the KRITIS-Stufenmodell-2023 of the BBK;
+                    - sectoral thresholds pursuant to KritisV;
+                    - interface to BSI Bonn, BBK Bonn, the competent state authority;
+                    - resilience measures pursuant to KRITIS-DachG § 13;
+                    - incident-reporting templates pursuant to KRITIS-DachG § 14;
+                    - communication aids for authority crisis communications.
+
+                    ## 12. Review and change cycle
+                    The Emergency Manual is reviewed at least annually (cadence {{ bcm.review_interval_months }} months) and ad hoc upon material changes (scope change, regulatory change, occurrence of a major incident, changed threat landscape, organisational restructuring). Approval of changes via {{ approval.chain }}.
+
+                    ## 13. Relationship to certification and supervisory inspection
+                    The Emergency Manual is subject to inspection by BSI 200-4 audits, ISO 22301 audits, KRITIS supervisory inspections and, where applicable, DORA supervisory inspections. The BCM Officer ensures availability to auditors and supervisors; requests are processed within five working days.
+
+                    ---
+                    *This Emergency Manual has been approved by the top management of {{ tenant.legal_name }} pursuant to the approval chain {{ approval.chain }} and is binding from {{ generation_date }}.*
+                section:
+                    architecture:
+                        title: 'Architecture of the emergency management'
+                        body: |-
+                            Components pursuant to BSI 200-4 Ch. 4: Notfallleitlinie, BCMS Scope, BIA Methodology, BCM RA Methodology, BC Strategy, BC Plan Standard, Incident Response, Crisis Team Charter, Recovery and Restoration Plan Standard, Exercise Programme, Audit Programme, Management Review, CAPA Procedure.
+                    governance:
+                        title: 'Governance and responsibilities'
+                        body: |-
+                            Top-management ultimate accountability pursuant to BSI 200-4 Ch. 4.1; BCM Officer {{ roles.bcm_officer.fullName }} with deputy pursuant to deputy principle; Crisis Team Chair {{ roles.crisis_team_lead.fullName }}; ISB {{ roles.isb.fullName }}; BC Plan owners per business process.
+                    kritis:
+                        title: 'KRITIS reference and Stufenmodell-2023'
+                        body: |-
+                            KRITIS-Stufenmodell-2023 of the BBK; KRITIS-DachG §§ 11-14 (resilience duties, incident reports); KritisV (sectoral thresholds); BSIG § 8a (state of the art); BSIG § 32 (reporting duties pursuant to NIS2 transposition). KRITIS Annex to the Emergency Manual.
+                    interfaces:
+                        title: 'Interfaces to other management systems'
+                        body: |-
+                            ISMS (ISO/IEC 27001 A.5.29 and A.5.30), ICT-RMF (DORA Art. 11 and Art. 12), data protection (GDPR Art. 32 and Art. 33), supply-chain due diligence (LkSG), quality management (ISO 9001 where present).
+                    crisis_room:
+                        title: 'Crisis Room requirements'
+                        body: |-
+                            Mandatory pursuant to BSI 200-4 Ch. 5.4: primary Crisis Room, geographically separated alternate Crisis Room, printed contact and BC Plan lists, 24h emergency catering. In cyber-crisis: isolated infrastructure.
+                    glossary:
+                        title: 'Glossary pursuant to BSI 200-4 Ch. 7.3'
+                        body: |-
+                            Mandatory terms: BIA, BCMS, CIF, Geschaeftsfortfuehrungsplan, crisis, Krisenstabsordnung, MTPD, emergency, Notfallbeauftragte/r, Notfallhandbuch, Notfallleitlinie, RPO, RTO, disturbance, TLPT, Wiederanlaufplan, Wiederherstellungsplan.
+                    document_control:
+                        title: 'Document control'
+                        body: |-
+                            Owner {{ roles.bcm_officer.fullName }}; approval by top management pursuant to {{ approval.chain }}; classification Internal-Confidential; distribution maintained by name; retention 5 years standard, 7 years for DORA reference, 5 years for KRITIS reference.
+                    review:
+                        title: 'Review and change cycle'
+                        body: |-
+                            At least annually, cadence {{ bcm.review_interval_months }} months; ad hoc upon material changes. Approval via {{ approval.chain }}.
+                tailoring_field:
+                    kritis_classification:
+                        label: 'KRITIS classification and stage assignment'
+                        placeholder: 'Example: "Sector: Energy. Installation category: power supply with threshold ≥ 500,000 end-customers. Stage per KRITIS-Stufenmodell-2023: Stage 3. Competent authority: BSI Bonn, sectorally BNetzA. Resilience review interval pursuant to KRITIS-DachG § 13: 24 months."'
+                    distribution_list:
+                        label: 'Named distribution list'
+                        placeholder: 'Example: "Executive board in full (5 persons). Crisis Team incl. deputies (18 persons). BC Plan owners per critical business process (12 persons). Internal Audit Lead (1 person). Data Protection Officer (1 person). Group parent Group CISO (1 person). Total 38 persons with distribution tracking in the document module."'
+                    emergency_quick_reference:
+                        label: 'Content of the Emergency Quick-Reference Card'
+                        placeholder: 'Example: "Page 1: emergency numbers 110/112; organisational emergency hotline +49 800 1234567 (24/7); BCM Officer {{ roles.bcm_officer.fullName }} mobile: 0151-XXXXXXX. Page 2: first response for fire (3 steps), cyber (3 steps), power outage (3 steps), site loss (3 steps), personal injury (3 steps). Behavioural rule: physical assembly point conference centre main building, ground floor."'

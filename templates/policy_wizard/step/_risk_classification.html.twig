@@ -1,0 +1,241 @@
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{# Form-Audit follow-up (May 2026).
+   RiskClassificationStep::validate() field list:
+     risk_appetite_tier         — 1..5 radio
+     data_classification_levels — 3 | 4
+     schutzbedarf_levels        — 2..4 (only when bsi in scope)
+     annex_a_applicability      — map controlRef => bool (default: all true)
+     review_interval_months     — 1..24
+#}
+
+{% set tier_default = defaults.risk_appetite_tier|default(3) %}
+{% set data_levels_default = defaults.data_classification_levels|default(3) %}
+{% set schutzbedarf_default = defaults.schutzbedarf_levels|default(3) %}
+{% set review_interval_default = defaults.review_interval_months|default(12) %}
+{% set annex_default = defaults.annex_a_applicability|default({}) %}
+{% set bsi_in_scope = 'bsi' in standards %}
+
+{# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'bi-mortarboard',
+    class: 'mb-3'
+} } %}
+    {% block alert_body %}
+        {% trans_default_domain 'policy_wizard' %}
+        <div class="fa-alert__title">{{ 'policy_wizard.step.risk_classification.help.title'|trans }}</div>
+        <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.risk_classification.help.body'|trans }}</p>
+        <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.risk_classification.help.example'|trans }}</p>
+        <p class="mb-0 small">
+            <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+            {{ 'policy_wizard.step.risk_classification.help.annex_reversibility'|trans }}
+        </p>
+    {% endblock %}
+{% endembed %}
+
+{# ── ISO/IEC 27001:2022 Annex A controls grouped by theme.
+   Counts: A.5=37, A.6=8, A.7=14, A.8=34, total=93. #}
+{% set annex_groups = {
+    'a5': {
+        'label': 'policy_wizard.step.risk_classification.annex_group.a5',
+        'controls': [
+            'A.5.1','A.5.2','A.5.3','A.5.4','A.5.5','A.5.6','A.5.7','A.5.8','A.5.9','A.5.10',
+            'A.5.11','A.5.12','A.5.13','A.5.14','A.5.15','A.5.16','A.5.17','A.5.18','A.5.19','A.5.20',
+            'A.5.21','A.5.22','A.5.23','A.5.24','A.5.25','A.5.26','A.5.27','A.5.28','A.5.29','A.5.30',
+            'A.5.31','A.5.32','A.5.33','A.5.34','A.5.35','A.5.36','A.5.37'
+        ]
+    },
+    'a6': {
+        'label': 'policy_wizard.step.risk_classification.annex_group.a6',
+        'controls': ['A.6.1','A.6.2','A.6.3','A.6.4','A.6.5','A.6.6','A.6.7','A.6.8']
+    },
+    'a7': {
+        'label': 'policy_wizard.step.risk_classification.annex_group.a7',
+        'controls': [
+            'A.7.1','A.7.2','A.7.3','A.7.4','A.7.5','A.7.6','A.7.7','A.7.8','A.7.9','A.7.10',
+            'A.7.11','A.7.12','A.7.13','A.7.14'
+        ]
+    },
+    'a8': {
+        'label': 'policy_wizard.step.risk_classification.annex_group.a8',
+        'controls': [
+            'A.8.1','A.8.2','A.8.3','A.8.4','A.8.5','A.8.6','A.8.7','A.8.8','A.8.9','A.8.10',
+            'A.8.11','A.8.12','A.8.13','A.8.14','A.8.15','A.8.16','A.8.17','A.8.18','A.8.19','A.8.20',
+            'A.8.21','A.8.22','A.8.23','A.8.24','A.8.25','A.8.26','A.8.27','A.8.28','A.8.29','A.8.30',
+            'A.8.31','A.8.32','A.8.33','A.8.34'
+        ]
+    }
+} %}
+
+<div class="row g-3 mb-4">
+    <div class="col-md-12">
+        <fieldset>
+            <legend class="h6">{{ 'policy_wizard.step.risk_classification.tier_label'|trans }}</legend>
+            <p class="text-muted small mb-3">{{ 'policy_wizard.step.risk_classification.direction_hint'|trans }}</p>
+            {% for tier in [1, 2, 3, 4, 5] %}
+                <div class="form-check">
+                    <input class="form-check-input"
+                           type="radio"
+                           id="tier-{{ tier }}"
+                           name="risk_appetite_tier"
+                           value="{{ tier }}"
+                           {% if tier_default == tier %}checked{% endif %}>
+                    <label class="form-check-label" for="tier-{{ tier }}">
+                        {{ ('policy_wizard.step.risk_classification.tier_' ~ tier)|trans }}
+                    </label>
+                </div>
+            {% endfor %}
+        </fieldset>
+    </div>
+
+    <div class="col-md-4">
+        <label class="form-label" for="data-classification-levels">
+            {{ 'policy_wizard.step.risk_classification.data_classification_label'|trans }}
+        </label>
+        <select class="form-select fa-cyber-input__field"
+                id="data-classification-levels"
+                name="data_classification_levels">
+            <option value="3" {% if data_levels_default == 3 %}selected{% endif %}>
+                {{ 'policy_wizard.step.risk_classification.data_classification_3'|trans }}
+            </option>
+            <option value="4" {% if data_levels_default == 4 %}selected{% endif %}>
+                {{ 'policy_wizard.step.risk_classification.data_classification_4'|trans }}
+            </option>
+        </select>
+    </div>
+
+    {% if bsi_in_scope %}
+        <div class="col-md-4">
+            <label class="form-label" for="schutzbedarf-levels">
+                {{ 'policy_wizard.step.risk_classification.schutzbedarf_label'|trans }}
+                <i class="bi bi-info-circle text-muted ms-1"
+                   data-bs-toggle="tooltip"
+                   title="{{ 'policy_wizard.step.risk_classification.tooltip.schutzbedarf'|trans }}"
+                   aria-label="{{ 'policy_wizard.step.risk_classification.tooltip.schutzbedarf'|trans }}"></i>
+            </label>
+            <select class="form-select fa-cyber-input__field"
+                    id="schutzbedarf-levels"
+                    name="schutzbedarf_levels">
+                <option value="3" {% if schutzbedarf_default == 3 %}selected{% endif %}>
+                    {{ 'policy_wizard.step.risk_classification.schutzbedarf_3'|trans }}
+                </option>
+                <option value="4" {% if schutzbedarf_default == 4 %}selected{% endif %}>
+                    {{ 'policy_wizard.step.risk_classification.schutzbedarf_4'|trans }}
+                </option>
+            </select>
+        </div>
+    {% endif %}
+
+    <div class="col-md-4">
+        <label class="form-label" for="review-interval">
+            {{ 'policy_wizard.step.risk_classification.review_interval_label'|trans }}
+            <i class="bi bi-info-circle text-muted ms-1"
+               data-bs-toggle="tooltip"
+               title="{{ 'policy_wizard.step.risk_classification.tooltip.review_interval'|trans }}"
+               aria-label="{{ 'policy_wizard.step.risk_classification.tooltip.review_interval'|trans }}"></i>
+        </label>
+        <input type="number"
+               class="form-control fa-cyber-input__field"
+               id="review-interval"
+               name="review_interval_months"
+               min="1"
+               max="24"
+               value="{{ review_interval_default }}">
+        <div class="form-text">{{ 'policy_wizard.error.review_interval_max'|trans }}</div>
+    </div>
+</div>
+
+{# ── Junior-ISB inline help: "Wann ist ein Annex-A-Control NICHT applicable?".
+   Compact help-card with the 4 typical exclusion reasons + the default note.
+   Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'bi-mortarboard',
+    class: 'mb-3 py-2 small'
+} } %}
+    {% block alert_body %}
+        {% trans_default_domain 'policy_wizard' %}
+        <div class="fa-alert__title">{{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.title'|trans }}</div>
+        <ul class="mb-1 small">
+            <li>{{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.reason1'|trans }}</li>
+            <li>{{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.reason2'|trans }}</li>
+            <li>{{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.reason3'|trans }}</li>
+            <li>{{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.reason4'|trans }}</li>
+        </ul>
+        <p class="mb-0 small fst-italic text-muted">{{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.default_note'|trans }}</p>
+    {% endblock %}
+{% endembed %}
+
+{# ── Annex A applicability table ─────────────────────────────────── #}
+{% for group_key, group in annex_groups %}
+    {% set group_body %}
+        <p class="form-text small">
+            <i class="bi bi-info-circle text-muted"
+               data-bs-toggle="tooltip"
+               title="{{ 'policy_wizard.step.risk_classification.tooltip.annex_a'|trans }}"
+               aria-label="{{ 'policy_wizard.step.risk_classification.tooltip.annex_a'|trans }}"></i>
+            {{ 'policy_wizard.step.risk_classification.annex_help'|trans }}
+        </p>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width: 90px;">{{ 'policy_wizard.step.risk_classification.annex_column.control'|trans }}</th>
+                        <th scope="col">{{ 'policy_wizard.step.risk_classification.annex_column.applicable'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ctrl in group.controls %}
+                        {# Default is "applicable" — only when explicitly false do we render not_applicable. #}
+                        {% set is_applicable = annex_default[ctrl] is defined ? annex_default[ctrl] : true %}
+                        {# Per-row Annex-A control description (Junior-ISB hand-holding).
+                         # Lookup key: policy_wizard.step.risk_classification.annex_a.control_desc.<A.X.Y>.
+                         # Stub fallback when the key is not yet authored. #}
+                        {% set ctrl_desc_key = 'policy_wizard.step.risk_classification.annex_a.control_desc.' ~ ctrl %}
+                        {% set ctrl_desc = ctrl_desc_key|trans({}, 'policy_wizard') %}
+                        {% if ctrl_desc == ctrl_desc_key %}
+                            {% set ctrl_desc = 'policy_wizard.step.risk_classification.annex_a.control_desc.stub'|trans({'%control%': ctrl}, 'policy_wizard') %}
+                        {% endif %}
+                        <tr>
+                            <td>
+                                <code>{{ ctrl }}</code>
+                                <i class="bi bi-info-circle text-muted ms-1"
+                                   role="button"
+                                   tabindex="0"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="right"
+                                   title="{{ ctrl_desc }}"
+                                   aria-label="{{ ctrl_desc }}"></i>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="hidden" name="annex_a_applicability[{{ ctrl }}]" value="0">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           id="annex-{{ ctrl|replace({'.':'-'}) }}"
+                                           name="annex_a_applicability[{{ ctrl }}]"
+                                           value="1"
+                                           {% if is_applicable %}checked{% endif %}>
+                                    <label class="form-check-label" for="annex-{{ ctrl|replace({'.':'-'}) }}">
+                                        {% if is_applicable %}
+                                            {{ 'policy_wizard.step.risk_classification.annex_applicable'|trans }}
+                                        {% else %}
+                                            {{ 'policy_wizard.step.risk_classification.annex_not_applicable'|trans }}
+                                        {% endif %}
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endset %}
+    {{ _fa_section.render({
+        title: group.label|trans,
+        body: group_body
+    }) }}
+{% endfor %}

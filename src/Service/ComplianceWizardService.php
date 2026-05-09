@@ -21,6 +21,40 @@ use App\Repository\DataSubjectRequestRepository;
 use App\Repository\ProcessingActivityRepository;
 use App\Repository\SupplierRepository;
 use App\Repository\TrainingRepository;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmBiaMethodologyPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmCrisisManagementPlanPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmExerciseProgrammeActiveCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmManagementReviewBcmCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmRecoveryPlansPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmsScopeStatementPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bcm\BcmTopLevelPolicyPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiBaselineCoverageCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiIsmsConceptPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiKritisFlagDocumentedCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiSchutzbedarfMethodPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiTierConsistencyCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Bsi\BsiTopLevelLeitliniePresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraExitStrategyDocumentedCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraExtensionCoverageCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraIctRiskFrameworkPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraIncidentReportingDeadlinesCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraThirdPartyRegisterMaintainedCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraTlptCadenceCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Dora\DoraValidityFromCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Iso27701\Iso27701ClauseTagsAppliedCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Iso27701\Iso27701SchremsIIClauseInTransfersCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Iso27701\Iso27701VersionConfiguredCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardCheckRegistry;
+use App\Service\ComplianceWizard\Check\PolicyWizard\PolicyWizardTopicCatalogue;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\A534ThinHostPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\DataBreachNotification72hCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\DpiaMethodologyPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\DpoCharterAppointedCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\DsrProcedurePresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\GdprSectionCoverageCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\PrivacyPolicyPresentCheck;
+use App\Service\ComplianceWizard\Check\PolicyWizard\Privacy\RopaMethodologyPresentCheck;
+use App\Service\TenantSettingResolver\PolicySettingProvider;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -64,7 +98,10 @@ class ComplianceWizardService
         private readonly ProcessingActivityRepository $processingActivityRepository,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
+        private readonly PolicyWizardCheckRegistry $policyWizardCheckRegistry,
         private readonly ?\App\Repository\ComplianceRequirementRepository $requirementRepository = null,
+        private readonly ?\App\Repository\TenantPolicySettingRepository $tenantPolicySettingRepository = null,
+        private readonly ?PolicySettingProvider $policySettingProvider = null,
     ) {
     }
 
@@ -540,6 +577,10 @@ class ComplianceWizardService
 
             case 'dpia_coverage':
                 $result = $this->checkDpiaCoverage($check, $tenant);
+                break;
+
+            case 'policy_wizard':
+                $result = $this->dispatchPolicyWizardCheck($check, $tenant);
                 break;
 
             default:
@@ -1366,6 +1407,60 @@ class ComplianceWizardService
     }
 
     /**
+     * Dispatch a `policy_wizard` check-type entry through the
+     * {@see PolicyWizardCheckRegistry}.
+     *
+     * Reads the `check_id` (e.g. `policy_top_level_present`,
+     * `policy_topic_access_control_present`) from the category-row, resolves
+     * the matching {@see PolicyWizardCheckInterface} implementation and
+     * adapts the {@see PolicyWizardCheckResult} into the legacy
+     * `runCheck()` array shape (`score`, `details`, `gap`).
+     *
+     * Unknown / missing check ids fail closed (score=0, gap surfaced) so
+     * mis-wired category rows degrade gracefully rather than raising.
+     *
+     * @param array<string, mixed> $check
+     * @return array{score: float|int, details: array<string, mixed>, gap: array<string, mixed>|null}
+     */
+    private function dispatchPolicyWizardCheck(array $check, ?Tenant $tenant): array
+    {
+        $checkId = (string) ($check['check_id'] ?? '');
+        if ($checkId === '') {
+            return [
+                'score' => 0,
+                'details' => ['error' => 'missing_check_id'],
+                'gap' => [
+                    'title' => $check['name'] ?? 'Policy-Wizard check misconfigured',
+                    'description' => 'check_id missing in category row',
+                    'priority' => 'high',
+                ],
+            ];
+        }
+
+        $impl = $this->policyWizardCheckRegistry->get($checkId);
+        if ($impl === null) {
+            return [
+                'score' => 0,
+                'details' => ['error' => 'unknown_check_id', 'check_id' => $checkId],
+                'gap' => [
+                    'title' => $check['name'] ?? sprintf('Unknown Policy-Wizard check: %s', $checkId),
+                    'description' => sprintf('No PolicyWizardCheckInterface implementation registered for "%s".', $checkId),
+                    'priority' => $check['priority'] ?? 'high',
+                    'route' => $check['route'] ?? null,
+                ],
+            ];
+        }
+
+        $result = $impl->run($tenant);
+
+        return [
+            'score' => $result->score,
+            'details' => $result->details,
+            'gap' => $result->gap,
+        ];
+    }
+
+    /**
      * Get status label from score
      */
     private function getStatusFromScore(float $score): string
@@ -1849,6 +1944,89 @@ class ComplianceWizardService
                     ],
                 ],
             ],
+
+            // Policy-Wizard outputs — Top-Level (ISO 27001 Cl. 5.2)
+            'policies_top_level' => [
+                'name' => 'wizard.iso27001.policies_top_level',
+                'description' => 'wizard.iso27001.policies_top_level_desc',
+                'icon' => 'bi-file-earmark-text',
+                'weight' => 1.5,
+                'clause' => '5.2',
+                'checks' => [
+                    'policy_top_level_present' => [
+                        'name' => 'compliance_check.policy_top_level_present.title',
+                        'description' => 'compliance_check.policy_top_level_present.description',
+                        'translation_domain' => 'policy_wizard',
+                        'type' => 'policy_wizard',
+                        'check_id' => 'policy_top_level_present',
+                        'priority' => 'critical',
+                        'clause' => '5.2',
+                        'route' => 'app_policy_wizard_index',
+                    ],
+                ],
+            ],
+
+            // Policy-Wizard outputs — 24 ISO 27002 topic policies + 4 cross-cutting
+            'policies_topic_coverage' => $this->buildPolicyWizardTopicCategory(),
+        ];
+    }
+
+    /**
+     * Build the "Policies / Topic Coverage" category for the ISO 27001 wizard.
+     *
+     * Aggregates the 24 ISO 27002:2022 topic policies (one row per topic from
+     * {@see PolicyWizardTopicCatalogue::ISO27001_TOPICS}) plus the 4
+     * cross-cutting Policy-Wizard checks (approval-chain, acknowledgement,
+     * review-cadence, tailoring-fields). Each row is a `policy_wizard`
+     * type and resolves through {@see dispatchPolicyWizardCheck()} into the
+     * registry.
+     *
+     * @return array<string, mixed>
+     */
+    private function buildPolicyWizardTopicCategory(): array
+    {
+        $checks = [];
+
+        foreach (PolicyWizardTopicCatalogue::iso27001Topics() as $topic) {
+            $checkId = sprintf('policy_topic_%s_present', $topic);
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => 'high',
+                'route' => 'app_policy_wizard_index',
+            ];
+        }
+
+        // Cross-cutting Policy-Wizard checks (approval-chain, acknowledgement,
+        // review-cadence, tailoring-fields) — apply across all generated
+        // policies, not per-topic.
+        foreach ([
+            'policy_approval_chain_completed' => 'critical',
+            'policy_acknowledgement_coverage' => 'high',
+            'policy_review_cadence' => 'high',
+            'policy_tailoring_fields' => 'medium',
+        ] as $checkId => $priority) {
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => $priority,
+                'route' => 'app_policy_wizard_index',
+            ];
+        }
+
+        return [
+            'name' => 'wizard.iso27001.policies_topic_coverage',
+            'description' => 'wizard.iso27001.policies_topic_coverage_desc',
+            'icon' => 'bi-files',
+            'weight' => 2,
+            'clause' => 'A.5/A.6/A.7/A.8',
+            'checks' => $checks,
         ];
     }
 
@@ -2248,7 +2426,7 @@ class ComplianceWizardService
      */
     private function getDoraCategories(): array
     {
-        return [
+        $categories = [
             // Chapter II, Section I: ICT Risk Management Framework (Art. 5-6)
             'governance' => [
                 'name' => 'wizard.dora.governance',
@@ -2746,7 +2924,83 @@ class ComplianceWizardService
                     ],
                 ],
             ],
+
+            // Policy-Wizard outputs — DORA-specific policies, deadlines + tags
+            // Gated on DORA scope being active (ComplianceFramework with code
+            // 'DORA' present + active OR tenant policy setting 'dora.in_scope').
+            // Returns null when out-of-scope; array_filter() drops the row.
+            'dora_policies' => $this->buildDoraPolicyWizardCategory(),
         ];
+
+        // Drop categories that opted out (returned null) when DORA is not in
+        // scope for the current tenant — keeps the assessment surface clean.
+        return array_filter($categories, static fn ($cat): bool => $cat !== null);
+    }
+
+    /**
+     * Build the "DORA Policy-Wizard outputs" category. Returns null when DORA
+     * is not in scope for the tenant — see scope detection below.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function buildDoraPolicyWizardCategory(): ?array
+    {
+        if (!$this->isDoraInScope($this->tenantContext->getCurrentTenant())) {
+            return null;
+        }
+
+        $checks = [];
+        foreach ([
+            DoraIctRiskFrameworkPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            DoraIncidentReportingDeadlinesCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_admin_incident_sla_index'],
+            DoraThirdPartyRegisterMaintainedCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_supplier_index'],
+            DoraTlptCadenceCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_bc_exercise_index'],
+            DoraExitStrategyDocumentedCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_supplier_index'],
+            DoraValidityFromCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_document_index'],
+            DoraExtensionCoverageCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+        ] as $checkId => $meta) {
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => $meta['priority'],
+                'route' => $meta['route'],
+            ];
+        }
+
+        return [
+            'name' => 'wizard.dora.dora_policies',
+            'description' => 'wizard.dora.dora_policies_desc',
+            'icon' => 'bi-bank2',
+            'weight' => 2,
+            'article' => '6/19/26-27/28',
+            'checks' => $checks,
+        ];
+    }
+
+    /**
+     * Detects whether DORA is in scope for the tenant. The signal is the
+     * presence of an active {@see ComplianceFramework} with `code='DORA'`.
+     *
+     * Returns false for null tenants when the framework is not active
+     * either — keeping the DORA category out of generic admin previews.
+     * The tenant-policy-setting alternative (`dora.in_scope`) is intentionally
+     * not consulted here to avoid forcing a DB lookup on every category-map
+     * build; the DORA wizard is the authoritative entry-point.
+     */
+    private function isDoraInScope(?Tenant $tenant): bool
+    {
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'DORA']);
+        if ($framework instanceof ComplianceFramework && $framework->isActive() === true) {
+            return true;
+        }
+
+        // No active framework → DORA is not in scope. Tenant-specific
+        // settings remain a future extension hook.
+        unset($tenant); // intentional — see method PHPDoc
+        return false;
     }
 
     private function getTisaxCategories(): array
@@ -2806,7 +3060,7 @@ class ComplianceWizardService
 
     private function getGdprCategories(): array
     {
-        return [
+        $categories = [
             'lawfulness' => [
                 'name' => 'wizard.gdpr.lawfulness',
                 'description' => 'wizard.gdpr.lawfulness_desc',
@@ -2887,7 +3141,89 @@ class ComplianceWizardService
                     ],
                 ],
             ],
+
+            // Policy-Wizard outputs — GDPR-specific policies, sections, DPO
+            // appointment + breach SLA. Gated on GDPR scope being active
+            // (ComplianceFramework code 'GDPR' active OR tenant policy setting
+            // 'org.is_gdpr_subject' true). Returns null when out-of-scope;
+            // array_filter() drops the row.
+            'gdpr_policies' => $this->buildGdprPolicyWizardCategory(),
         ];
+
+        return array_filter($categories, static fn ($cat): bool => $cat !== null);
+    }
+
+    /**
+     * Build the "GDPR Policy-Wizard outputs" category. Returns null when GDPR
+     * scope is not declared for the tenant.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function buildGdprPolicyWizardCategory(): ?array
+    {
+        if (!$this->isGdprInScope($this->tenantContext->getCurrentTenant())) {
+            return null;
+        }
+
+        $checks = [];
+        foreach ([
+            PrivacyPolicyPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            RopaMethodologyPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            DpiaMethodologyPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            DsrProcedurePresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            DataBreachNotification72hCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_admin_incident_sla_index'],
+            DpoCharterAppointedCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            GdprSectionCoverageCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+            A534ThinHostPresentCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+        ] as $checkId => $meta) {
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => $meta['priority'],
+                'route' => $meta['route'],
+            ];
+        }
+
+        return [
+            'name' => 'wizard.gdpr.gdpr_policies',
+            'description' => 'wizard.gdpr.gdpr_policies_desc',
+            'icon' => 'bi-person-lock',
+            'weight' => 2,
+            'article' => 'GDPR Art. 5/24/30/33-34/35/37-39 + ISO 27001 A.5.34',
+            'checks' => $checks,
+        ];
+    }
+
+    /**
+     * Detects whether GDPR is in scope for the tenant. Signals:
+     * - ComplianceFramework with `code='GDPR'` and `isActive=true`, OR
+     * - Tenant policy setting `org.is_gdpr_subject` set to true.
+     *
+     * Returns false when neither signal is present (keeps the GDPR category
+     * out of generic admin previews).
+     */
+    private function isGdprInScope(?Tenant $tenant): bool
+    {
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'GDPR']);
+        if ($framework instanceof ComplianceFramework && $framework->isActive() === true) {
+            return true;
+        }
+
+        if ($tenant === null || $this->tenantPolicySettingRepository === null) {
+            return false;
+        }
+        $setting = $this->tenantPolicySettingRepository->findOneByTenantAndKey(
+            $tenant,
+            'org.is_gdpr_subject',
+        );
+        if ($setting === null) {
+            return false;
+        }
+        $value = $setting->getValue();
+        return $value === true || $value === 'true' || $value === 1 || $value === '1';
     }
 
     /**
@@ -2899,7 +3235,7 @@ class ComplianceWizardService
      */
     private function getIso22301Categories(): array
     {
-        return [
+        $categories = [
             'context' => [
                 'name' => 'wizard.iso22301.context',
                 'description' => 'wizard.iso22301.context_desc',
@@ -3014,7 +3350,84 @@ class ComplianceWizardService
                     ],
                 ],
             ],
+            // Policy-Wizard outputs — BCM-specific policies (top-level, scope,
+            // BIA methodology, exercise programme, crisis plan, recovery plans,
+            // management review). Gated on BCM scope being active
+            // (`bcm.enabled` tenant setting OR ComplianceFramework code
+            // 'ISO_22301' active). Returns null when out-of-scope.
+            'bcm_policies' => $this->buildBcmPolicyWizardCategory(),
         ];
+
+        return array_filter($categories, static fn ($cat): bool => $cat !== null);
+    }
+
+    /**
+     * Build the "BCM Policy-Wizard outputs" category. Returns null when BCM
+     * scope is not declared for the tenant.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function buildBcmPolicyWizardCategory(): ?array
+    {
+        if (!$this->isBcmInScope($this->tenantContext->getCurrentTenant())) {
+            return null;
+        }
+
+        $checks = [];
+        foreach ([
+            BcmTopLevelPolicyPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BcmsScopeStatementPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BcmBiaMethodologyPresentCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+            BcmExerciseProgrammeActiveCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_bc_exercise_index'],
+            BcmCrisisManagementPlanPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BcmRecoveryPlansPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BcmManagementReviewBcmCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+        ] as $checkId => $meta) {
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => $meta['priority'],
+                'route' => $meta['route'],
+            ];
+        }
+
+        return [
+            'name' => 'wizard.bcm.bcm_policies',
+            'description' => 'wizard.bcm.bcm_policies_desc',
+            'icon' => 'bi-life-preserver',
+            'weight' => 2,
+            'article' => 'ISO 22301 Cl. 5.2/4.3/8.2.2/8.4.4/8.4.5/8.6/9.3',
+            'checks' => $checks,
+        ];
+    }
+
+    /**
+     * Detects whether BCM is in scope for the tenant. Signals:
+     * - ComplianceFramework with `code='ISO_22301'` and `isActive=true`, OR
+     * - Tenant policy setting `bcm.enabled` set to true.
+     */
+    private function isBcmInScope(?Tenant $tenant): bool
+    {
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'ISO_22301']);
+        if ($framework instanceof ComplianceFramework && $framework->isActive() === true) {
+            return true;
+        }
+
+        if ($tenant === null || $this->tenantPolicySettingRepository === null) {
+            return false;
+        }
+        $setting = $this->tenantPolicySettingRepository->findOneByTenantAndKey(
+            $tenant,
+            'bcm.enabled',
+        );
+        if ($setting === null) {
+            return false;
+        }
+        $value = $setting->getValue();
+        return $value === true || $value === 'true' || $value === 1 || $value === '1';
     }
 
     /**
@@ -3025,7 +3438,7 @@ class ComplianceWizardService
      */
     private function getIso27701Categories(): array
     {
-        return [
+        $categories = [
             'pims_context' => [
                 'name' => 'wizard.iso27701.pims_context',
                 'description' => 'wizard.iso27701.pims_context_desc',
@@ -3157,7 +3570,68 @@ class ComplianceWizardService
                     ],
                 ],
             ],
+
+            // Policy-Wizard outputs — ISO 27701 PIMS-specific checks (version
+            // declaration, clause-level mapping tags, Schrems II + supplementary
+            // measures wording on transfers). Gated on `iso27701.enabled` tenant
+            // policy setting being true. Returns null when out-of-scope.
+            'iso27701_pims' => $this->buildIso27701PolicyWizardCategory(),
         ];
+
+        return array_filter($categories, static fn ($cat): bool => $cat !== null);
+    }
+
+    /**
+     * Build the "ISO 27701 PIMS Policy-Wizard outputs" category. Returns null
+     * when the PIMS addon is not opted in for the tenant.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function buildIso27701PolicyWizardCategory(): ?array
+    {
+        if (!$this->isIso27701InScope($this->tenantContext->getCurrentTenant())) {
+            return null;
+        }
+
+        $checks = [];
+        foreach ([
+            Iso27701VersionConfiguredCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+            Iso27701ClauseTagsAppliedCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_document_index'],
+            Iso27701SchremsIIClauseInTransfersCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+        ] as $checkId => $meta) {
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => $meta['priority'],
+                'route' => $meta['route'],
+            ];
+        }
+
+        return [
+            'name' => 'wizard.iso27701.iso27701_pims',
+            'description' => 'wizard.iso27701.iso27701_pims_desc',
+            'icon' => 'bi-shield-fill-check',
+            'weight' => 1.5,
+            'article' => 'ISO 27701:2025 Cl. 5.1/7.2.8/7.5 + GDPR Art. 44-49',
+            'checks' => $checks,
+        ];
+    }
+
+    /**
+     * Detects whether the ISO 27701 PIMS addon is opted in for the tenant.
+     * Signal: `iso27701.enabled` tenant policy setting set to true (resolved
+     * via {@see PolicySettingProvider}). When the provider is not wired in
+     * (legacy DI compositions in tests) the category stays hidden.
+     */
+    private function isIso27701InScope(?Tenant $tenant): bool
+    {
+        if ($this->policySettingProvider === null) {
+            return false;
+        }
+        return $this->policySettingProvider->isIso27701Enabled($tenant);
     }
 
     /**
@@ -3519,7 +3993,7 @@ class ComplianceWizardService
      */
     private function getBsiGrundschutzCategories(): array
     {
-        return [
+        $categories = [
             'isms' => [
                 'name' => 'wizard.bsi_grundschutz.isms',
                 'description' => 'wizard.bsi_grundschutz.isms_desc',
@@ -3681,7 +4155,89 @@ class ComplianceWizardService
                     ],
                 ],
             ],
+            // Policy-Wizard outputs — BSI 200-1/2/3/4 policies, baseline coverage,
+            // tier-consistency, KRITIS-applicability. Gated on BSI scope being
+            // active (ComplianceFramework code 'BSI_GRUNDSCHUTZ' active OR
+            // tenant policy setting 'org.targets_bsi_certification' true).
+            // Returns null when out-of-scope; array_filter() drops the row.
+            'bsi_policies' => $this->buildBsiPolicyWizardCategory(),
         ];
+
+        // Drop categories that opted out (returned null) when BSI scope is
+        // not declared for the current tenant — keeps the surface clean.
+        return array_filter($categories, static fn ($cat): bool => $cat !== null);
+    }
+
+    /**
+     * Build the "BSI Policy-Wizard outputs" category. Returns null when BSI
+     * scope is not declared for the tenant.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function buildBsiPolicyWizardCategory(): ?array
+    {
+        if (!$this->isBsiInScope($this->tenantContext->getCurrentTenant())) {
+            return null;
+        }
+
+        $checks = [];
+        foreach ([
+            BsiTopLevelLeitliniePresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BsiIsmsConceptPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BsiBaselineCoverageCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BsiSchutzbedarfMethodPresentCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+            BsiTierConsistencyCheck::CHECK_ID => ['priority' => 'high', 'route' => 'app_policy_wizard_index'],
+            BsiKritisFlagDocumentedCheck::CHECK_ID => ['priority' => 'critical', 'route' => 'app_policy_wizard_index'],
+        ] as $checkId => $meta) {
+            $checks[$checkId] = [
+                'name' => sprintf('compliance_check.%s.title', $checkId),
+                'description' => sprintf('compliance_check.%s.description', $checkId),
+                'translation_domain' => 'policy_wizard',
+                'type' => 'policy_wizard',
+                'check_id' => $checkId,
+                'priority' => $meta['priority'],
+                'route' => $meta['route'],
+            ];
+        }
+
+        return [
+            'name' => 'wizard.bsi.bsi_policies',
+            'description' => 'wizard.bsi.bsi_policies_desc',
+            'icon' => 'bi-flag-fill',
+            'weight' => 2,
+            'article' => '200-1/200-2/200-3/200-4',
+            'checks' => $checks,
+        ];
+    }
+
+    /**
+     * Detects whether BSI Grundschutz is in scope for the tenant. Signals:
+     * - ComplianceFramework with `code='BSI_GRUNDSCHUTZ'` and `isActive=true`,
+     *   OR
+     * - Tenant policy setting `org.targets_bsi_certification` set to true.
+     *
+     * Returns false when neither signal is present (keeps the BSI category
+     * out of generic admin previews).
+     */
+    private function isBsiInScope(?Tenant $tenant): bool
+    {
+        $framework = $this->frameworkRepository->findOneBy(['code' => 'BSI_GRUNDSCHUTZ']);
+        if ($framework instanceof ComplianceFramework && $framework->isActive() === true) {
+            return true;
+        }
+
+        if ($tenant === null || $this->tenantPolicySettingRepository === null) {
+            return false;
+        }
+        $setting = $this->tenantPolicySettingRepository->findOneByTenantAndKey(
+            $tenant,
+            'org.targets_bsi_certification',
+        );
+        if ($setting === null) {
+            return false;
+        }
+        $value = $setting->getValue();
+        return $value === true || $value === 'true' || $value === 1 || $value === '1';
     }
 
     /**

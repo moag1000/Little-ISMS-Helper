@@ -1,95 +1,96 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'admin' %}
 
 {% block title %}{{ 'admin.tenant_settings.title'|trans }} — {{ tenant.name }}{% endblock %}
 
-{% block body %}
-<div class="container-fluid py-4">
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('admin_dashboard') }}">{{ 'admin.dashboard'|trans }}</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('admin_tenant_management_index') }}">{{ 'admin.tenants'|trans }}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'admin.tenant_settings.title'|trans }}</li>
-        </ol>
-    </nav>
+{% block admin_content %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="h3 mb-1">{{ 'admin.tenant_settings.title'|trans }}</h1>
-            <p class="text-muted">{{ tenant.name }} — {{ 'admin.tenant_settings.subtitle'|trans }}</p>
-        </div>
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'admin.dashboard'|trans, url: path('admin_dashboard') },
+        { label: 'admin.tenants'|trans, url: path('admin_tenant_management_index') },
+        { label: 'admin.tenant_settings.title'|trans }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'gear', label: tenant.name },
+    title: 'admin.tenant_settings.title'|trans,
+    subtitle: 'admin.tenant_settings.subtitle'|trans
+}) }}
+
+<main class="fa-aurora-surface">
+
+{% for label, msgs in app.flashes %}
+    {% for msg in msgs %}
+        <div class="alert alert-{{ label }} mb-3">{{ msg|trans }}</div>
+    {% endfor %}
+{% endfor %}
+
+<div class="row">
+    <div class="col-lg-7 mb-4">
+        <section class="fa-section">
+            <header class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'admin.tenant_settings.section_tenant'|trans }}</h2>
+            </header>
+            <div class="fa-section__body">
+                {{ form_start(form) }}
+                <div class="row g-3">
+                    <div class="col-md-6">{{ form_row(form.locale) }}</div>
+                    <div class="col-md-6">{{ form_row(form.timezone) }}</div>
+                    <div class="col-md-6">{{ form_row(form.financialYearStartMonth) }}</div>
+                    <div class="col-md-6">{{ form_row(form.tlpDefault) }}</div>
+                    <div class="col-md-6">{{ form_row(form.dpoContactName) }}</div>
+                    <div class="col-md-6">{{ form_row(form.dpoContactEmail) }}</div>
+                </div>
+
+                <hr class="my-4">
+                <h3 class="h6 text-muted mb-3">{{ 'admin.tenant_settings.section_operational'|trans }}</h3>
+                <div class="row g-3">
+                    <div class="col-md-6">{{ form_row(form.riskMethodology) }}</div>
+                    <div class="col-md-6">{{ form_row(form.riskMatrixSize) }}</div>
+                    <div class="col-md-6">{{ form_row(form.wizardMaturityTarget) }}</div>
+                </div>
+
+                <hr class="my-4">
+                <h3 class="h6 text-muted mb-3">{{ 'admin.tenant_settings.section_api'|trans }}</h3>
+                <div class="row g-3">
+                    <div class="col-md-6">{{ form_row(form.apiRateLimitPerMinute) }}</div>
+                </div>
+
+                <hr class="my-4">
+                <h3 class="h6 text-muted mb-3">{{ 'admin.tenant_settings.section_json'|trans }}</h3>
+                <p class="text-muted small">{{ 'admin.tenant_settings.json_help'|trans }}</p>
+                <div class="row g-3">
+                    <div class="col-12">{{ form_row(form.supervisoryAuthorities) }}</div>
+                    <div class="col-12">{{ form_row(form.dataRetentionPolicies) }}</div>
+                    <div class="col-12">{{ form_row(form.notificationPreferences) }}</div>
+                    <div class="col-12">{{ form_row(form.csirtEndpoints) }}</div>
+                    <div class="col-12">{{ form_row(form.crisisTeamOnCall) }}</div>
+                </div>
+
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                        <i class="bi bi-check2 me-1"></i>{{ 'admin.tenant_settings.save'|trans }}
+                    </button>
+                    <a href="{{ path('admin_tenant_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                        {{ 'admin.cancel'|trans }}
+                    </a>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </section>
     </div>
 
-    {% for label, msgs in app.flashes %}
-        {% for msg in msgs %}
-            <div class="alert alert-{{ label }} mb-3">{{ msg|trans }}</div>
-        {% endfor %}
-    {% endfor %}
-
-    <div class="row">
-        <div class="col-lg-7 mb-4">
-            {% embed '_components/_card.html.twig' with {'class': 'border-0 shadow-sm'} %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title h5 mb-0">{{ 'admin.tenant_settings.section_tenant'|trans }}</h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    {{ form_start(form) }}
-                    <div class="row g-3">
-                        <div class="col-md-6">{{ form_row(form.locale) }}</div>
-                        <div class="col-md-6">{{ form_row(form.timezone) }}</div>
-                        <div class="col-md-6">{{ form_row(form.financialYearStartMonth) }}</div>
-                        <div class="col-md-6">{{ form_row(form.tlpDefault) }}</div>
-                        <div class="col-md-6">{{ form_row(form.dpoContactName) }}</div>
-                        <div class="col-md-6">{{ form_row(form.dpoContactEmail) }}</div>
-                    </div>
-
-                    <hr class="my-4">
-                    <h3 class="h6 text-muted mb-3">{{ 'admin.tenant_settings.section_operational'|trans }}</h3>
-                    <div class="row g-3">
-                        <div class="col-md-6">{{ form_row(form.riskMethodology) }}</div>
-                        <div class="col-md-6">{{ form_row(form.riskMatrixSize) }}</div>
-                        <div class="col-md-6">{{ form_row(form.wizardMaturityTarget) }}</div>
-                    </div>
-                    <hr class="my-4">
-                    <h3 class="h6 text-muted mb-3">{{ 'admin.tenant_settings.section_api'|trans }}</h3>
-                    <div class="row g-3">
-                        <div class="col-md-6">{{ form_row(form.apiRateLimitPerMinute) }}</div>
-                    </div>
-
-                    <hr class="my-4">
-                    <h3 class="h6 text-muted mb-3">{{ 'admin.tenant_settings.section_json'|trans }}</h3>
-                    <p class="text-muted small">{{ 'admin.tenant_settings.json_help'|trans }}</p>
-                    <div class="row g-3">
-                        <div class="col-12">{{ form_row(form.supervisoryAuthorities) }}</div>
-                        <div class="col-12">{{ form_row(form.dataRetentionPolicies) }}</div>
-                        <div class="col-12">{{ form_row(form.notificationPreferences) }}</div>
-                        <div class="col-12">{{ form_row(form.csirtEndpoints) }}</div>
-                        <div class="col-12">{{ form_row(form.crisisTeamOnCall) }}</div>
-                    </div>
-                    <div class="d-flex gap-2 mt-3">
-                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                            <i class="fa-icon me-1 fa-icon--ui-check"></i>{{ 'admin.tenant_settings.save'|trans }}
-                        </button>
-                        <a href="{{ path('admin_tenant_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                            {{ 'admin.cancel'|trans }}
-                        </a>
-                    </div>
-                    {{ form_end(form) }}
-                {% endblock %}
-            {% endembed %}
-        </div>
-
-        <div class="col-lg-5 mb-4">
-            {% embed '_components/_card.html.twig' with {'class': 'border-0 shadow-sm'} %}
-                {% block card_header %}
-                    <div class="card-header">
-                        <h2 class="card-title h5 mb-0">{{ 'admin.tenant_settings.section_global'|trans }}</h2>
-                    </div>
-                {% endblock %}
-                {% block card_body %}
-                    <p class="text-muted small">{{ 'admin.tenant_settings.global_help'|trans }}</p>
+    <div class="col-lg-5 mb-4">
+        <section class="fa-section">
+            <header class="fa-section__header">
+                <h2 class="fa-section__title">{{ 'admin.tenant_settings.section_global'|trans }}</h2>
+            </header>
+            <div class="fa-section__body">
+                <p class="text-muted small">{{ 'admin.tenant_settings.global_help'|trans }}</p>
+                <div class="table-responsive">
                     <table class="table table-sm">
                         <tbody>
                             <tr>
@@ -148,12 +149,13 @@
                             </tr>
                         </tbody>
                     </table>
-                    <a href="{{ path('app_system_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost btn-sm">
-                        <i class="fa-icon me-1 fa-icon--nav-gear"></i>{{ 'admin.tenant_settings.edit_globals'|trans }}
-                    </a>
-                {% endblock %}
-            {% endembed %}
-        </div>
+                </div>
+                <a href="{{ path('app_system_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost btn-sm">
+                    <i class="bi bi-gear me-1"></i>{{ 'admin.tenant_settings.edit_globals'|trans }}
+                </a>
+            </div>
+        </section>
     </div>
 </div>
+</main>
 {% endblock %}

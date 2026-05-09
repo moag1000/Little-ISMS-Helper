@@ -187,10 +187,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: MfaToken::class, mappedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $mfaTokens;
 
+    /**
+     * Inverse side of {@see Person::$linkedUser}. Read-only convenience
+     * accessor for the Person-Rollout (governance roles point to
+     * Person, not User; we still want to surface "is this User backed
+     * by a Person record?" cheaply). Lazy-loaded — Doctrine will only
+     * issue a SELECT when {@see self::getLinkedPerson()} is called.
+     *
+     * Person.linkedUser is `ManyToOne` (no unique constraint) so we
+     * model the inverse as a collection and treat the first row as the
+     * canonical link. Business-rule = at most one Person per User; if
+     * multiple rows show up, the first by id wins.
+     *
+     * @var Collection<int, Person>
+     */
+    #[ORM\OneToMany(targetEntity: Person::class, mappedBy: 'linkedUser')]
+    private Collection $linkedPersons;
+
     public function __construct()
     {
         $this->customRoles = new ArrayCollection();
         $this->mfaTokens = new ArrayCollection();
+        $this->linkedPersons = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -317,6 +335,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getFullName(): string
     {
         return $this->firstName . ' ' . $this->lastName;
+    }
+
+    /**
+     * Read-only accessor for the canonical {@see Person} record linked
+     * to this User. Returns null when no Person profile exists yet.
+     *
+     * Used by Person-Rollout consumers (Asset/Risk/Control/Document
+     * owner-pickers, Policy-Wizard role validators) to decide whether
+     * a legacy User-id can be resolved to a Person without an
+     * additional repository call.
+     */
+    public function getLinkedPerson(): ?Person
+    {
+        if ($this->linkedPersons->isEmpty()) {
+            return null;
+        }
+
+        return $this->linkedPersons->first() ?: null;
+    }
+
+    /**
+     * @return Collection<int, Person>
+     */
+    public function getLinkedPersons(): Collection
+    {
+        return $this->linkedPersons;
     }
 
     public function isActive(): bool

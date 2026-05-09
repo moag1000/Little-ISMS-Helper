@@ -1,0 +1,88 @@
+{#
+ # Policy-Wizard W7-E — "Policies you own" dashboard widget.
+ #
+ # Renders a compact list of Documents the current user is responsible
+ # for, either as direct uploader or as function-owner per the source
+ # PolicyTemplate.affectedFunctions.
+ #
+ # Embedded into dashboards via:
+ #   {{ render(controller('App\\Controller\\Component\\PoliciesYouOwnWidgetController::widget')) }}
+ #
+ # Required variable:
+ #   documents — list<Document>, sorted DESC by lastUpdatedAt
+ #
+ # Status chips: draft / pending_approval / approved / archived (Aurora chip-style).
+ #}
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% set status_variant = {
+    'draft': 'secondary',
+    'pending_approval': 'warning',
+    'approved': 'success',
+    'published': 'success',
+    'archived': 'secondary',
+    'rejected': 'danger',
+} %}
+
+{% if documents is not defined or documents|length == 0 %}
+    {% set body %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'policy_wizard.widget.policies_you_own.empty_state'|trans,
+            actions: []
+        }) }}
+    {% endset %}
+    {{ _fa_section.render({
+        title: 'policy_wizard.widget.policies_you_own.title'|trans,
+        body: body
+    }) }}
+{% else %}
+    {% set body %}
+        <ul class="list-group list-group-flush">
+            {% for document in documents %}
+                {% set status_key = document.status|default('draft') %}
+                {% set chip_variant = status_variant[status_key]|default('secondary') %}
+                <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-3 px-0">
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold">
+                            <a href="{{ path('app_document_show', { id: document.id }) }}"
+                               class="text-decoration-none">
+                                {{ document.originalFilename ?? document.filename }}
+                            </a>
+                        </div>
+                        <small class="text-muted d-block">
+                            {% if document.updatedAt %}
+                                <i class="bi bi-clock-history" aria-hidden="true"></i>
+                                {{ document.updatedAt|date('Y-m-d') }}
+                            {% elseif document.uploadedAt %}
+                                <i class="bi bi-clock-history" aria-hidden="true"></i>
+                                {{ document.uploadedAt|date('Y-m-d') }}
+                            {% endif %}
+                            &middot;
+                            <i class="bi bi-tag" aria-hidden="true"></i>
+                            {{ document.category }}
+                        </small>
+                    </div>
+                    <span class="fa-cyber-btn fa-cyber-btn--{{ chip_variant }} fa-cyber-btn--sm" role="status">
+                        <span class="fa-cyber-btn__label">{{ status_key|replace({'_': ' '}) }}</span>
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endset %}
+
+    {% set footer %}
+        <a href="{{ path('app_document_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            <span class="fa-cyber-btn__label">{{ 'policy_wizard.widget.policies_you_own.see_all'|trans }}</span>
+        </a>
+    {% endset %}
+
+    {{ _fa_section.render({
+        title: 'policy_wizard.widget.policies_you_own.title'|trans,
+        body: body,
+        footer: footer
+    }) }}
+{% endif %}

@@ -373,6 +373,8 @@ wizard:
         third_party_risk_enhanced: 'Continuous TPP-Monitoring, automated SBOM-Vulnerability-Tracking, Multi-Vendor-Strategy fuer Single-Point-of-Failure-Analysen.'
         contractual_baseline: 'CDR 2024/1773 Klauseln in allen TPP-Vertraegen; jaehrliche Vertrags-Reviews.'
         contractual_enhanced: 'Pre-Contract Risk-Assessment, automated Contract-Compliance-Monitoring, Mutual-Audit-Rights mit Pooled-Audits.'
+        dora_policies: 'DORA Policy-Wizard outputs'
+        dora_policies_desc: 'Generated DORA policies, reporting deadlines, Register of Information, TLPT cadence, exit strategies, validity tags, and ISO extension coverage.'
 
     # Check names (generic)
     check:
@@ -838,6 +840,9 @@ wizard:
         breach_notification_enhanced: 'Automatisierte Breach-Detection, vorqualifizierte Meldetexte, Cross-Border-DPA-Coordination.'
         awareness_baseline: 'Jaehrliche Datenschutz-Schulung pflichtmaessig; Phishing-Tests durchgefuehrt.'
         awareness_enhanced: 'Rollenbasierte Datenschutz-Curricula, Just-in-Time-Schulungen bei Auffaelligkeiten, externe Data-Protection-Audits.'
+        # W6-D — GDPR Policy-Wizard outputs category
+        gdpr_policies: 'GDPR Policy-Wizard outputs'
+        gdpr_policies_desc: 'Generated GDPR mandatory policies per GDPR Art. 5/24/30/33-39 and ISO 27001 A.5.34: Privacy / Data-Protection Policy, RoPA / DPIA methodologies, DSR procedure, 72-h breach notification path, DPO charter, GDPR section coverage and A.5.34 thin host.'
 
     # ISO 22301 BCM Categories
     iso22301:
@@ -896,6 +901,9 @@ wizard:
         policy_doc_enhanced: 'PIMS extern zertifiziert, kontinuierliche Privacy-Reviews, Cross-Border-Transfer-Compliance automated.'
         data_subject_rights_baseline: 'PIMS-Anforderung umgesetzt, DPO/PII-Officer benannt, Records of Processing aktuell.'
         data_subject_rights_enhanced: 'PIMS extern zertifiziert, kontinuierliche Privacy-Reviews, Cross-Border-Transfer-Compliance automated.'
+        # W6-D — ISO 27701 PIMS Policy-Wizard outputs category
+        iso27701_pims: 'ISO 27701 PIMS Policy-Wizard outputs'
+        iso27701_pims_desc: 'Generated ISO 27701 PIMS checks when the addon is enabled: edition (2019/2025) declared, clause tags applied to documents, Schrems II clause in international-transfers policy.'
         privacy_risk_baseline: 'DPIA methodology established, high-risk processing activities identified and assessed (Art. 35).'
         privacy_risk_enhanced: 'Continuous DPIA lifecycle management with re-assessment after data flow changes, AI-driven privacy impact scoring.'
         records_of_processing_baseline: 'Records of Processing per Art. 30 fully documented, updates per new processing activity.'
@@ -1383,3 +1391,19 @@ wizard:
         cra_vuln_handling_enhanced: 'Coordinated-Vulnerability-Disclosure aktiv, automated SBOM-Pflege, Conformity-Body-Audit.'
         sbom_supply_chain_baseline: 'CRA Anhang-I-Pflicht erfuellt, technische Dokumentation vorhanden.'
         sbom_supply_chain_enhanced: 'Coordinated-Vulnerability-Disclosure aktiv, automated SBOM-Pflege, Conformity-Body-Audit.'
+
+    # Policy-Wizard W5-A: BSI IT-Grundschutz Vorgehensweise (tier filter)
+    bsi_tier_filter:
+        basis_only: 'Basis-Absicherung (mandatory baseline, fastest entry path)'
+        up_to_standard: 'Standard-Absicherung (Basis + Standard building blocks)'
+        kern_full: 'Kern-Absicherung (full coverage, highest protection needs)'
+
+    # Policy-Wizard W5-C: BSI Policy-Wizard category labels (Compliance-Wizard)
+    bsi:
+        bsi_policies: 'BSI Policy-Wizard outputs'
+        bsi_policies_desc: 'Generated BSI mandatory policies per BSI 200-1/200-2/200-3/200-4: IT Security Policy, ISMS concept, 28 baseline policies, protection-needs methodology, tier consistency, and KRITIS applicability.'
+
+    # Policy-Wizard W5-C: BCM Policy-Wizard category labels (Compliance-Wizard)
+    bcm:
+        bcm_policies: 'BCM Policy-Wizard outputs'
+        bcm_policies_desc: 'Generated BCM mandatory policies per ISO 22301:2019: BCM top-level policy, BCMS scope, BIA methodology, exercise programme, crisis management plan, recovery plans, and management review.'

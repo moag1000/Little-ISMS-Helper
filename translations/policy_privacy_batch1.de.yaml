@@ -1,0 +1,922 @@
+policy:
+    gdpr:
+        privacy_policy:
+            v1:
+                title: 'Datenschutz-Leitlinie'
+                body: |-
+                    # Datenschutz-Leitlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Leitlinie (oberste Ebene Datenschutz) | Norm-Anker: DSGVO Art. 5, Art. 24 / ISO 27701:2025 Klauseln 5.1 und 5.2 / BDSG-neu § 1 | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate | Genehmigung: {{ approval.chain }}*
+
+                    ## 1. Zweck und Bekenntnis (ISO 27701 Cl. 5.2)
+
+                    Diese Datenschutz-Leitlinie ist die hoechste normative Aussage der {{ tenant.legal_name }} (nachfolgend "die Organisation") zum Schutz personenbezogener Daten und stellt das Pendant zur Informationssicherheits-Leitlinie auf der Datenschutzebene dar. Sie wird durch die oberste Leitung erlassen und verpflichtet die Organisation gemaess Art. 24 Abs. 1 DSGVO zur Implementierung geeigneter technischer und organisatorischer Massnahmen, um die Konformitaet aller Verarbeitungstaetigkeiten mit der Verordnung (EU) 2016/679 (DSGVO), dem Bundesdatenschutzgesetz (BDSG-neu) sowie ISO 27701:2025 nachweisen zu koennen ("Rechenschaftspflicht" / Accountability).
+
+                    Die oberste Leitung erkennt an, dass der Schutz personenbezogener Daten ein Grundrecht der betroffenen Personen ist (Art. 8 Charta der Grundrechte der Europaeischen Union; Art. 16 AEUV) und dass Verstoesse erhebliche Bussgelder (Art. 83 DSGVO bis zu 20 Mio. EUR oder 4 % des weltweiten Konzernumsatzes), Reputationsschaeden, zivilrechtliche Anspruechen (Art. 82 DSGVO) sowie aufsichtsbehoerdliche Anordnungen (Art. 58 DSGVO) nach sich ziehen koennen. Diese Leitlinie ist angemessen fuer den Zweck der Organisation und stellt den Rahmen fuer die Festlegung von Datenschutzzielen bereit (ISO 27701:2025 Cl. 5.2 a + b).
+
+                    ## 2. Geltungsbereich
+
+                    Diese Leitlinie gilt fuer alle Verarbeitungstaetigkeiten der Organisation in ihrer Rolle als Verantwortlicher i.S.v. Art. 4 Nr. 7 DSGVO sowie als Auftragsverarbeiter i.S.v. Art. 4 Nr. 8 DSGVO. Erfasst sind saemtliche Beschaeftigte (unbefristet, befristet, in Probezeit), Werkstudierende, Praktikantinnen und Praktikanten, Auftragnehmer, gemeinsam Verantwortliche (Art. 26 DSGVO) sowie Auftragsverarbeiter und Sub-Auftragsverarbeiter (Art. 28 DSGVO).
+
+                    Inhaltlich erfasst die Leitlinie alle Lebenszyklusphasen personenbezogener Daten: Erhebung, Erfassung, Organisation, Ordnung, Speicherung, Anpassung, Auslesen, Abfragen, Verwendung, Offenlegung durch Uebermittlung, Verbreitung, Bereitstellung, Abgleich, Verknuepfung, Einschraenkung, Loeschung und Vernichtung (Art. 4 Nr. 2 DSGVO).
+
+                    ## 3. Die sieben Grundsaetze nach Art. 5 DSGVO (verbatim)
+
+                    Die Organisation verarbeitet personenbezogene Daten ausschliesslich nach den folgenden Grundsaetzen, die fuer alle Verarbeitungstaetigkeiten verbindlich sind:
+
+                    1. **Rechtmaessigkeit, Verarbeitung nach Treu und Glauben, Transparenz** (Art. 5 Abs. 1 lit. a) — jede Verarbeitung beruht auf einer der sechs Rechtsgrundlagen des Art. 6 Abs. 1 DSGVO; Standard-Rechtsgrundlage in der Organisation: {{ gdpr.legal_basis_default }}. Besondere Kategorien (Art. 9) erfordern zusaetzlich eine Rechtsgrundlage nach Art. 9 Abs. 2 DSGVO oder § 22 BDSG-neu. Strafrechtliche Verurteilungen werden nur auf Basis von Art. 10 DSGVO i.V.m. § 24 BDSG-neu verarbeitet.
+                    2. **Zweckbindung** (Art. 5 Abs. 1 lit. b) — eindeutige, festgelegte und legitime Zwecke vor Beginn jeder Verarbeitung.
+                    3. **Datenminimierung** (Art. 5 Abs. 1 lit. c) — beschraenkt auf das fuer den Zweck notwendige Mass.
+                    4. **Richtigkeit** (Art. 5 Abs. 1 lit. d) — proaktive Korrektur unrichtiger Daten.
+                    5. **Speicherbegrenzung** (Art. 5 Abs. 1 lit. e) — Loeschung bzw. Anonymisierung nach Zweckerfuellung gemaess Aufbewahrungs- und Loeschrichtlinie.
+                    6. **Integritaet und Vertraulichkeit** (Art. 5 Abs. 1 lit. f) — gewaehrleistet durch das ISMS und die Massnahmen nach Art. 32 DSGVO.
+                    7. **Rechenschaftspflicht** (Art. 5 Abs. 2) — Nachweis der Einhaltung durch das gesamte Datenschutz-Managementsystem (PIMS) gemaess ISO 27701:2025.
+
+                    ## 4. Bekenntnis zu Betroffenenrechten (Art. 12-22 DSGVO)
+
+                    Die Organisation gewaehrleistet die Ausuebung saemtlicher Betroffenenrechte: Auskunft (Art. 15), Berichtigung (Art. 16), Loeschung / "Recht auf Vergessenwerden" (Art. 17), Einschraenkung (Art. 18), Mitteilungspflicht bei Berichtigung/Loeschung (Art. 19), Datenuebertragbarkeit (Art. 20), Widerspruch (Art. 21) sowie das Recht, keiner ausschliesslich automatisierten Entscheidungsfindung einschliesslich Profiling unterworfen zu werden (Art. 22). Antraege werden innerhalb von {{ gdpr.dsr_response_deadline_days }} Kalendertagen gemaess Art. 12 Abs. 3 DSGVO beantwortet; die Verlaengerung um zwei Monate bei komplexen Antraegen ist zulaessig und wird der betroffenen Person begruendet mitgeteilt. Das Verfahren ist im separaten Dokument *Verfahren Betroffenenrechte* (siehe Cross-Reference unten) geregelt.
+
+                    ## 5. Rechtsgrundlagen-Disziplin
+
+                    Vor Beginn jeder Verarbeitungstaetigkeit wird die Rechtsgrundlage dokumentiert (Methodik: Methodik zur Festlegung der Rechtsgrundlage). Eine Verarbeitung ohne dokumentierte Rechtsgrundlage ist untersagt. Wird Einwilligung als Rechtsgrundlage gewaehlt, gelten die Bedingungen des Art. 7 DSGVO und die Einwilligungs-Management-Richtlinie; eingesetzt wird das Werkzeug {{ gdpr.consent_management_tool }}. Berechtigte Interessen i.S.v. Art. 6 Abs. 1 lit. f erfordern eine dokumentierte Interessensabwaegung (Legitimate Interest Assessment, LIA) gemaess Erwaegungsgrund 47.
+
+                    ## 6. Rahmenwerk der Rechenschaftspflicht
+
+                    Diese Leitlinie verweist auf die nachgelagerten verbindlichen Methodiken und Verfahren des Datenschutz-Managementsystems der Organisation:
+
+                    - **Verfahrensverzeichnis** (RoPA, Art. 30 DSGVO) — gefuehrt im Modul `ProcessingActivity` gemaess der RoPA-Methodik.
+                    - **Datenschutz-Folgenabschaetzung (DSFA)** — Methodik gemaess Art. 35 DSGVO; Schwellwert-Score: {{ gdpr.dpia_threshold_score }}; Vorabkonsultation der Aufsichtsbehoerde gemaess Art. 36 bei Resterisiko hoch.
+                    - **Verfahren Betroffenenrechte** (Art. 12-22 DSGVO).
+                    - **Verfahren zur Meldung von Datenschutzverletzungen** (Art. 33 / Art. 34 DSGVO).
+                    - **Methodik zur Festlegung der Rechtsgrundlage** (Art. 6, 9, 10 DSGVO; § 22 BDSG-neu).
+                    - **Einwilligungs-Management-Richtlinie** (Art. 7, 8 DSGVO).
+                    - **Methodik zur gemeinsamen Verantwortlichkeit** (Art. 26 DSGVO).
+                    - **Richtlinie zur Uebermittlung in Drittlaender** (Kapitel V DSGVO; Schrems-II-konform mit ergaenzenden Massnahmen).
+                    - **Aufbewahrungs- und Loeschrichtlinie** (Art. 5 Abs. 1 lit. e DSGVO; § 35 BDSG-neu; HGB § 257; AO § 147).
+                    - **Methodik Privacy by Design und Default** (Art. 25 DSGVO; ISO 27701 Cl. 7.4.x).
+
+                    ## 7. Designation des Datenschutzbeauftragten (Art. 37-39 DSGVO; ISO 27701 Cl. 5.3)
+
+                    Die Organisation hat den Datenschutzbeauftragten (DSB) {{ roles.dpo.fullName }} benannt, dessen Bestellungs- und Aufgabenbeschreibung im separaten Dokument *Bestellung und Aufgabenbeschreibung des Datenschutzbeauftragten* dokumentiert ist. Der DSB berichtet unmittelbar an die oberste Leitung (Art. 38 Abs. 3 DSGVO), ist nicht weisungsgebunden in Datenschutzfragen und steht in keinem Interessenkonflikt (Art. 38 Abs. 6 DSGVO). Der DSB ist von der Funktion des Informationssicherheitsbeauftragten (ISB) {{ roles.ciso.fullName }} **zwingend zu trennen** (BSI-Empfehlung "DSB ungleich ISB"); eine Personalunion stellt einen Interessenkonflikt dar.
+
+                    Die Kontaktdaten des DSB werden gemaess Art. 37 Abs. 7 DSGVO der Aufsichtsbehoerde mitgeteilt und auf der Website der Organisation veroeffentlicht (postalische Adresse, E-Mail, Telefon).
+
+                    ## 8. Federfuehrende Aufsichtsbehoerde (Art. 56 DSGVO)
+
+                    Die federfuehrende Aufsichtsbehoerde der Organisation wird ueber das Konzept der Hauptniederlassung (Art. 4 Nr. 16 DSGVO) bestimmt. Bei grenzueberschreitender Verarbeitung gilt der One-Stop-Shop-Mechanismus. Sekundaere Aufsichtsbehoerden in betroffenen Mitgliedstaaten werden gemaess Art. 60 DSGVO einbezogen. Die zustaendige federfuehrende Aufsichtsbehoerde ist im Setup-Wizard hinterlegt und wird durch die Vertretung des Verantwortlichen {{ roles.controller_repr.fullName }} kontaktiert.
+
+                    ## 9. Bekenntnis zur Reaktion auf Datenschutzverletzungen
+
+                    Die Organisation verpflichtet sich, Datenschutzverletzungen i.S.v. Art. 4 Nr. 12 DSGVO unverzueglich, spaetestens jedoch binnen 72 Stunden ab Kenntnisnahme, der federfuehrenden Aufsichtsbehoerde zu melden (Art. 33 Abs. 1 DSGVO). Bei voraussichtlich hohem Risiko fuer die Rechte und Freiheiten betroffener Personen wird zusaetzlich die Benachrichtigung der Betroffenen gemaess Art. 34 DSGVO veranlasst. Saemtliche Datenschutzverletzungen werden gemaess Art. 33 Abs. 5 DSGVO unabhaengig von der Meldepflicht intern dokumentiert (Modul `DataBreach`). Bei Finanzdienstleistern wird parallel die DORA Art. 19 ICT-Major-Incident-Meldung mit 4-Stunden-Initial / 72-Stunden-Zwischen-Bericht ausgeloest.
+
+                    ## 10. Pruef- und Aenderungszyklus
+
+                    Diese Leitlinie wird mindestens alle 12 Monate sowie ausserplanmaessig auf folgende Trigger geprueft: neue Verarbeitungstaetigkeit mit hohem Risiko, neuer Auftragsverarbeiter in einem Drittland ohne Angemessenheitsbeschluss, Aenderung sektoraler Vorgaben (z. B. AI Act, EHDS), neue Leitlinien der federfuehrenden Aufsichtsbehoerde oder des Europaeischen Datenschutzausschusses (EDSA), wesentliche organisatorische Aenderung der Organisation. Aenderungen unterliegen der Genehmigungskette {{ approval.chain }} mit der zwingenden Sondergenehmigung des DSB (DSB-Veto i.S.d. ISO 27701:2025 Cl. 5.1).
+
+                    ## 11. Anhang A — Kinder als Betroffene (Art. 8 DSGVO)
+
+                    Sofern die Organisation Dienste der Informationsgesellschaft direkt gegenueber Kindern anbietet, gelten die zusaetzlichen Anforderungen des Art. 8 DSGVO i.V.m. § 8 BDSG-neu (DE-Standard: 16 Jahre als Schwelle elterlicher Einwilligung). Werbliche Ansprache Minderjaehriger ist untersagt. Eine DSFA gemaess EDSA-Kriterium "vulnerable subjects" ist verpflichtend. Details: Richtlinie zum Umgang mit Daten Minderjaehriger.
+
+                    ## 12. Anhang B — Besondere Kategorien personenbezogener Daten (Art. 9 + 10 DSGVO; § 22 BDSG-neu)
+
+                    Verarbeitungen besonderer Kategorien (Rasse, ethnische Herkunft, politische Meinungen, religioese / weltanschauliche Ueberzeugungen, Gewerkschaftszugehoerigkeit, genetische Daten, biometrische Daten zur eindeutigen Identifizierung, Gesundheitsdaten, Daten zum Sexualleben, sexuelle Orientierung) sowie strafrechtliche Daten erfordern eine dokumentierte Rechtsgrundlage nach Art. 9 Abs. 2 lit. a-j bzw. Art. 10 i.V.m. § 22 / § 24 BDSG-neu. Im Beschaeftigungskontext gilt zusaetzlich § 26 Abs. 3 BDSG-neu (Mitwirkung des Betriebsrats). Eine DSFA ist verpflichtend. Details: Richtlinie fuer besondere Kategorien personenbezogener Daten.
+
+                    ## 13. Cross-References zu ISO 27001:2022 und weiteren Frameworks
+
+                    - **A.5.34** (Privacy and protection of PII) — diese Leitlinie ist der Inhalt des A.5.34-Controls; Verweis-Dokument *Privatsphaere und Schutz von PII (A.5.34)* leitet auf diese Leitlinie weiter.
+                    - **A.5.31** (Legal, statutory, regulatory requirements) — DSGVO als zentrale gesetzliche Anforderung.
+                    - **A.5.24-A.5.30** (Incident management) — Reaktion auf Datenschutzverletzungen verzahnt mit ISO-27001-Vorfallsmanagement.
+                    - **A.6.3** (Information security awareness, education, training) — erweitert durch das Datenschutz-Schulungs- und Awareness-Programm.
+                    - **ISO 27701:2025 Cl. 5.1, 5.2** — Leadership-Bekenntnis, PIMS-Erklaerung.
+                    - **ISO 27701:2025 Cl. 6.13** — Reaktion auf Datenschutzverletzungen (frueher 6.13.1.5 in :2019).
+                    - **EU-DORA Art. 19** — ICT-Incident-Meldepflicht (sofern Finanzdienstleister).
+                    - **NIS2 Art. 23** — Cybersecurity-Incident-Meldungen (sofern wesentliche/wichtige Einrichtung).
+
+                    ---
+
+                    *Genehmigt durch DPO {{ roles.dpo.fullName }} am [Datum] — der DSB-Sign-off ist gemaess Art. 38 Abs. 3 DSGVO und ISO 27701:2025 Cl. 5.1 unabhaengig vom CISO-Sign-off zu erteilen und kann durch CISO-Bulk-Approval nicht ueberstimmt werden.*
+
+                    *Genehmigungskette: {{ approval.chain }}*
+                section:
+                    purpose:
+                        title: 'Zweck und Bekenntnis'
+                        body: |-
+                            Diese Leitlinie etabliert das Datenschutz-Managementsystem (PIMS) der {{ tenant.legal_name }} gemaess ISO 27701:2025 Cl. 5.2 und verpflichtet die Organisation gemaess Art. 24 Abs. 1 DSGVO zur Rechenschaftspflicht. Sie ist das Pendant zur ISO-27001-Informationssicherheits-Leitlinie auf der Datenschutzebene.
+                    scope:
+                        title: 'Geltungsbereich'
+                        body: |-
+                            Erfasst sind alle Verarbeitungstaetigkeiten der Organisation in den Rollen Verantwortlicher (Art. 4 Nr. 7 DSGVO) und Auftragsverarbeiter (Art. 4 Nr. 8 DSGVO) sowie alle Beschaeftigten und Drittparteien.
+                    principles:
+                        title: 'Grundsaetze nach Art. 5 DSGVO'
+                        body: |-
+                            Verbindlich sind die sieben Grundsaetze: Rechtmaessigkeit, Zweckbindung, Datenminimierung, Richtigkeit, Speicherbegrenzung, Integritaet und Vertraulichkeit, Rechenschaftspflicht.
+                    data_subject_rights:
+                        title: 'Bekenntnis zu Betroffenenrechten'
+                        body: |-
+                            Die Rechte gemaess Art. 12-22 DSGVO werden innerhalb von {{ gdpr.dsr_response_deadline_days }} Kalendertagen gewaehrt; das Verfahren ist gesondert dokumentiert.
+                    lawful_basis:
+                        title: 'Rechtsgrundlagen-Disziplin'
+                        body: |-
+                            Standard-Rechtsgrundlage: {{ gdpr.legal_basis_default }}. Einwilligungen werden ueber {{ gdpr.consent_management_tool }} verwaltet. Berechtigte Interessen erfordern eine dokumentierte Abwaegung (LIA).
+                    accountability:
+                        title: 'Rahmenwerk der Rechenschaftspflicht'
+                        body: |-
+                            Die Leitlinie verweist auf RoPA, DSFA, DSR-Verfahren, Breach-Verfahren, Lawful-Basis-Methodik, Consent-Policy, Joint-Controllership-Methodik, International-Transfers-Policy, Aufbewahrungs-Policy, PbD-Methodik.
+                    dpo_designation:
+                        title: 'Designation des Datenschutzbeauftragten'
+                        body: |-
+                            Der DSB {{ roles.dpo.fullName }} ist gemaess Art. 37-39 DSGVO bestellt, berichtet an die oberste Leitung, ist weisungsfrei und steht nicht in Personalunion mit dem ISB {{ roles.ciso.fullName }} (BSI-Trennungsgebot).
+                    supervisory_authority:
+                        title: 'Federfuehrende Aufsichtsbehoerde'
+                        body: |-
+                            Die Bestimmung erfolgt nach Art. 56 DSGVO ueber die Hauptniederlassung; One-Stop-Shop-Mechanismus mit Sekundaerbehoerden gemaess Art. 60.
+                    breach_commitment:
+                        title: 'Reaktion auf Datenschutzverletzungen'
+                        body: |-
+                            Meldung an die Aufsichtsbehoerde binnen 72h (Art. 33), Benachrichtigung Betroffener bei hohem Risiko (Art. 34), interne Dokumentation aller Verletzungen (Art. 33 Abs. 5).
+                    review_cadence:
+                        title: 'Pruef- und Aenderungszyklus'
+                        body: |-
+                            Pruefintervall 12 Monate; ausserplanmaessige Pruefung auf Trigger (neue Hochrisiko-Verarbeitung, neuer Auftragsverarbeiter im Drittland, EDSA-Leitlinien, sektorale Aenderungen).
+                    children_appendix:
+                        title: 'Anhang Kinder'
+                        body: |-
+                            Sofern Dienste der Informationsgesellschaft direkt an Kinder gerichtet sind, gilt Art. 8 DSGVO i.V.m. § 8 BDSG-neu (DE: 16 Jahre Schwelle).
+                    special_categories_appendix:
+                        title: 'Anhang Besondere Kategorien'
+                        body: |-
+                            Art. 9 + 10 DSGVO i.V.m. §§ 22, 24, 26 Abs. 3 BDSG-neu; DSFA verpflichtend.
+                tailoring_field:
+                    organisation_data_protection_objectives:
+                        label: 'Organisations-spezifische Datenschutzziele'
+                        placeholder: 'Beispiel: "Wir streben jaehrlich eine DSR-Quote von 100 % beantworteter Antraege binnen 14 Tagen statt der gesetzlichen 30 Tage an, eine Reduktion der Anzahl meldepflichtiger Datenschutzverletzungen gegenueber Vorjahr um 25 % sowie eine 100-prozentige Schulungsabschlussquote im Bereich Datenschutz bis Ende Q3."'
+                    sector_specific_privacy_threats:
+                        label: 'Sektor-spezifische Datenschutzrisiken'
+                        placeholder: 'Beispiel: "Als Anbieter im Gesundheitssektor verarbeiten wir Gesundheitsdaten i.S.v. Art. 9 Abs. 1 DSGVO und unterliegen aerztlicher Schweigepflicht (§ 203 StGB) sowie ggf. dem KHZG / EHDS. Daraus abgeleitete Schwerpunkte: Pseudonymisierung patientenbezogener Forschungsdaten, strikte Rollen-und-Rechte-Trennung in der KIS-Umgebung, jaehrliche DSFA-Wiederholung fuer Gesundheits-IT-Verfahren."'
+                    public_facing_privacy_notice_url:
+                        label: 'URL der oeffentlich zugaenglichen Datenschutzhinweise'
+                        placeholder: 'Beispiel: "https://www.example-organisation.de/datenschutz und im Konzern-Login https://intranet.example-organisation.de/datenschutz; barrierefreie Variante gemaess BITV 2.0 unter /datenschutz-leichte-sprache."'
+        ropa_methodology:
+            v1:
+                title: 'Verfahrensverzeichnis-Methodik (RoPA)'
+                body: |-
+                    # Verfahrensverzeichnis-Methodik der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Methodik | Norm-Anker: DSGVO Art. 30 / ISO 27701:2025 Cl. 7.2.8 und 8.2.6 / BDSG-neu § 70 | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+
+                    Diese Methodik regelt verbindlich, wie die {{ tenant.legal_name }} das Verzeichnis von Verarbeitungstaetigkeiten (Records of Processing Activities, RoPA) gemaess Art. 30 DSGVO erstellt, fuehrt, aktualisiert, ueberprueft und der Aufsichtsbehoerde auf Anfrage gemaess Art. 30 Abs. 4 DSGVO zur Verfuegung stellt. Das eigentliche RoPA-Register wird im bestehenden Modul `ProcessingActivity` gefuehrt; diese Methodik definiert die Pflege-Disziplin und ist die Anwendung von ISO 27701:2025 Cl. 7.2.8 (Verantwortlicher) und Cl. 8.2.6 (Auftragsverarbeiter) in der Organisation.
+
+                    ## 2. Geltungsbereich
+
+                    Erfasst sind alle Verarbeitungstaetigkeiten in beiden DSGVO-Rollen:
+
+                    - **Verantwortlicher (Art. 30 Abs. 1 DSGVO)** — Pflichtinhalte (a) bis (g): Name und Kontaktdaten des Verantwortlichen, gemeinsam Verantwortlicher und Datenschutzbeauftragten; Verarbeitungszwecke; Beschreibung der Kategorien betroffener Personen und der Kategorien personenbezogener Daten; Kategorien von Empfaengern; Drittland-Uebermittlungen mit Garantien; vorgesehene Loeschfristen; allgemeine Beschreibung der technischen und organisatorischen Massnahmen i.S.v. Art. 32 Abs. 1 DSGVO.
+                    - **Auftragsverarbeiter (Art. 30 Abs. 2 DSGVO)** — Pflichtinhalte (a) bis (d): Name und Kontaktdaten der Auftragsverarbeiter, jedes Verantwortlichen und gegebenenfalls der Vertreter; Kategorien der im Auftrag durchgefuehrten Verarbeitungen; Drittland-Uebermittlungen; allgemeine Beschreibung der technischen und organisatorischen Massnahmen.
+
+                    Die Befreiung des Art. 30 Abs. 5 DSGVO (< 250 Beschaeftigte) wird durch die Organisation **nicht in Anspruch genommen**, da regelmaessig Verarbeitungen mit Risiko fuer die Rechte und Freiheiten betroffener Personen, regelmaessige Verarbeitung oder besondere Kategorien stattfinden — die Ausnahme greift praktisch nie.
+
+                    ## 3. Trigger fuer einen RoPA-Eintrag
+
+                    Eine neue RoPA-Eintragung ist verpflichtend bei jedem der folgenden Ereignisse:
+
+                    1. Einfuehrung eines neuen IT-Verfahrens, einer neuen Anwendung oder eines neuen Cloud-Dienstes mit personenbezogenen Daten;
+                    2. Aufnahme eines neuen Auftragsverarbeiters oder Sub-Auftragsverarbeiters (Art. 28 DSGVO);
+                    3. Aenderung des Verarbeitungszwecks oder der Rechtsgrundlage einer bestehenden Verarbeitung;
+                    4. Erweiterung der Datenkategorien oder Betroffenenkategorien;
+                    5. Einfuehrung einer neuen Marketing-Kampagne, eines neuen HR-Prozesses oder eines neuen Kundenbindungsprogramms;
+                    6. Einfuehrung einer Datenuebermittlung in ein Drittland (Kapitel V DSGVO);
+                    7. Wechsel des Auftragsverarbeiters oder Sub-Auftragsverarbeiters;
+                    8. Einsatz neuer KI-/automatisierter Entscheidungsfindungs-Verfahren (Art. 22 DSGVO; Schnittstelle zu AI Act).
+
+                    ## 4. Rechtsgrundlagen-Sub-Section (Art. 6, 9, 10 DSGVO)
+
+                    Jeder RoPA-Eintrag fuehrt zwingend mindestens eine dokumentierte Rechtsgrundlage. Die Festlegung folgt der Methodik zur Festlegung der Rechtsgrundlage. Folgende Auspraegungen sind zulaessig:
+
+                    - **Art. 6 Abs. 1 lit. a — Einwilligung**: nur wenn keine andere Rechtsgrundlage einschlaegig ist; siehe Sub-Section Consent. Standard-Rechtsgrundlage in der Organisation: {{ gdpr.legal_basis_default }} (Default fuer neue Verarbeitungen, sofern nicht spezifisch begruendet).
+                    - **Art. 6 Abs. 1 lit. b — Vertragserfuellung / vorvertragliche Massnahmen**.
+                    - **Art. 6 Abs. 1 lit. c — Rechtliche Verpflichtung** (HGB, AO, GWG, SGB, BetrVG etc.); konkrete Norm im Eintrag zu zitieren.
+                    - **Art. 6 Abs. 1 lit. d — Lebenswichtige Interessen**: enge Auslegung.
+                    - **Art. 6 Abs. 1 lit. e — Wahrnehmung oeffentlicher Aufgaben**.
+                    - **Art. 6 Abs. 1 lit. f — Berechtigtes Interesse**: nur mit dokumentierter LIA gemaess Erwaegungsgrund 47.
+
+                    Fuer besondere Kategorien (Art. 9) und strafrechtliche Daten (Art. 10) ist zusaetzlich eine Rechtsgrundlage nach Art. 9 Abs. 2 lit. a-j bzw. § 22 BDSG-neu zu dokumentieren. Im Beschaeftigungskontext gilt § 26 BDSG-neu mit Sondervorgaben fuer den Betriebsrat (§ 26 Abs. 3).
+
+                    ## 5. Einwilligungs-Sub-Section (Art. 7 DSGVO)
+
+                    Wird eine Verarbeitung auf Einwilligung gestuetzt, gelten verschaerfte Anforderungen, deren Einhaltung im RoPA-Eintrag durch Verweis auf das Consent-Management-Tool {{ gdpr.consent_management_tool }} dokumentiert wird:
+
+                    1. **Freiwilligkeit** (Art. 7 Abs. 4) — keine Kopplung von Vertragserfuellung an nicht-erforderliche Einwilligung.
+                    2. **Spezifizitaet** — Einwilligung pro Verarbeitungszweck; Granular-Bundling-Verbot.
+                    3. **Informiertheit** — vollstaendige Pflichtinformationen nach Art. 13 / 14 DSGVO vor Einwilligung.
+                    4. **Eindeutige zustimmende Handlung** (Erwaegungsgrund 32) — Opt-in, keine Voreinstellung.
+                    5. **Demonstrability** (Art. 7 Abs. 1 + Erwaegungsgrund 42) — Nachweis durch Logging im Tool {{ gdpr.consent_management_tool }}.
+                    6. **Widerrufbarkeit** (Art. 7 Abs. 3) — "so einfach wie die Erteilung", Widerrufskanal explizit dokumentiert.
+
+                    ## 6. Pflichtfelder pro RoPA-Eintrag (Mapping zu Art. 30)
+
+                    | Feld | Art.-30-Verweis | Beispiel |
+                    |---|---|---|
+                    | Name der Verarbeitung | (1)(b) Zweck | "Bewerbermanagement" |
+                    | Verantwortlicher / DSB | (1)(a) | {{ tenant.legal_name }} / {{ roles.dpo.fullName }} |
+                    | Zweck | (1)(b) | "Pruefung Bewerbungseingaenge" |
+                    | Rechtsgrundlage | NEU (Best Practice) | Art. 6 Abs. 1 lit. b + § 26 Abs. 1 BDSG |
+                    | Kategorien Betroffener | (1)(c) | "Bewerber" |
+                    | Kategorien Daten | (1)(c) | "Stammdaten, CV, Zeugnisse" |
+                    | Kategorien Empfaenger | (1)(d) | "HR-Team, IT-Admin (Cloud-ATS)" |
+                    | Drittland-Transfer | (1)(e) | "ja, USA, SCC + ergaenzende Massnahmen" |
+                    | Loeschfrist | (1)(f) | "6 Monate nach Absage; Talent-Pool 24 Monate mit Einwilligung" |
+                    | TOM | (1)(g) | "Verweis auf ISMS-TOM-Erklaerung" |
+                    | Kategorisches Risiko (DSFA-Indikator) | NEU | hoch / mittel / niedrig |
+
+                    ## 7. Rollen und Zustaendigkeiten
+
+                    | Rolle | Zustaendigkeit |
+                    |---|---|
+                    | Fachbereichsleiter (Risk Owner) | Initialer RoPA-Entwurf bei Trigger; jaehrliche Aktualisierung |
+                    | DSB {{ roles.dpo.fullName }} | Pruefung der Rechtsgrundlage; Freigabe; Pflege der Methodik |
+                    | CISO {{ roles.ciso.fullName }} | Quervalidierung der TOM-Beschreibung gegen das ISMS |
+                    | Vertretung des Verantwortlichen {{ roles.controller_repr.fullName }} | Aufsichtsbehoerde-Disclosure auf Anfrage Art. 30 Abs. 4 |
+                    | Auftragsverarbeiter | Pflege des eigenen Art.-30-Abs.-2-Verzeichnisses, Bereitstellung an Verantwortlichen |
+
+                    ## 8. Pruefintervall und Re-Assessment-Trigger
+
+                    Jeder Eintrag wird mindestens alle 12 Monate durch den Risk Owner und den DSB ueberprueft. Eine ausserplanmaessige Pruefung erfolgt zwingend bei: Wechsel des Auftragsverarbeiters; Aenderung der Rechtsgrundlage; Aenderung der Datenkategorien; aufsichtsbehoerdlicher Anfrage; Datenschutzverletzung mit Bezug zur Verarbeitung; neuen EDSA-Leitlinien zur Verarbeitungskategorie.
+
+                    ## 9. Aufbewahrung historischer Eintraege
+
+                    Geloeschte oder ueberholte RoPA-Eintraege werden revisionssicher fuer 7 Jahre aufbewahrt (Audit-Log gemaess ISO 27001 Cl. 7.5; Beweissicherung gegenueber der Aufsichtsbehoerde gemaess Art. 30 Abs. 4 DSGVO). Loeschung erfolgt erst nach Ablauf der Verjaehrungsfristen und Audit-Bestaetigung.
+
+                    ## 10. Format und Aufsichtsbehoerde-Disclosure (Art. 30 Abs. 4)
+
+                    Das Verzeichnis wird elektronisch gefuehrt (Modul `ProcessingActivity`); ein Export als PDF oder CSV in deutscher Sprache und auf Anfrage in englischer Sprache wird innerhalb von 72 Stunden nach Aufsichtsbehoerden-Anfrage bereitgestellt. Uebermittlung erfolgt verschluesselt ueber den im jeweiligen Aufsichtsbehoerden-Portal vorgegebenen Kanal.
+
+                    ## 11. Cross-References
+
+                    - **ISO 27001:2022** A.5.34 (host control, ersetzt durch diese Methodik) und A.5.31 (gesetzliche Anforderungen).
+                    - **ISO 27701:2025** Cl. 7.2.8 (Verantwortlicher), Cl. 8.2.6 (Auftragsverarbeiter).
+                    - **DSGVO** Art. 30 (Pflichtinhalt), Art. 28 (Auftragsverarbeitung), Art. 26 (gemeinsam Verantwortliche), Art. 32 (TOM), Art. 35 (DSFA-Trigger aus RoPA), Kapitel V (Drittland-Transfer-Doku).
+                    - **BDSG-neu** § 70 (oeffentliche Stellen), § 22 (besondere Kategorien), § 26 (Beschaeftigte).
+
+                    ---
+
+                    *Genehmigt durch DPO {{ roles.dpo.fullName }} am [Datum] — DSB-Sign-off ist gemaess Art. 38 Abs. 3 DSGVO unabhaengig vom CISO-Sign-off.*
+
+                    *Genehmigungskette: {{ approval.chain }}*
+                section:
+                    purpose:
+                        title: 'Zweck der Methodik'
+                        body: |-
+                            Verbindliche Pflege-Disziplin fuer das Modul `ProcessingActivity` als RoPA i.S.v. Art. 30 DSGVO und ISO 27701:2025 Cl. 7.2.8 / 8.2.6.
+                    scope:
+                        title: 'Geltungsbereich'
+                        body: |-
+                            Verantwortlicher- und Auftragsverarbeiter-Rolle; Befreiung Art. 30 Abs. 5 wird nicht in Anspruch genommen.
+                    triggers:
+                        title: 'Trigger-Ereignisse'
+                        body: |-
+                            Neuer Cloud-Dienst, neuer Auftragsverarbeiter, Zweck-/Rechtsgrundlagen-Aenderung, Drittland-Transfer, KI-Einsatz.
+                    lawful_basis:
+                        title: 'Rechtsgrundlagen-Sub-Section'
+                        body: |-
+                            Art. 6 / 9 / 10 DSGVO und § 22 BDSG-neu; Standard-Rechtsgrundlage: {{ gdpr.legal_basis_default }}; LIA bei Art. 6 Abs. 1 lit. f.
+                    consent:
+                        title: 'Einwilligungs-Sub-Section'
+                        body: |-
+                            Art. 7 DSGVO mit Tool {{ gdpr.consent_management_tool }}; Demonstrability, Widerrufbarkeit, Granularitaet.
+                    mandatory_fields:
+                        title: 'Pflichtfelder pro Eintrag'
+                        body: |-
+                            Vollstaendiges Mapping zu Art. 30 Abs. 1 lit. a-g + Art. 30 Abs. 2 lit. a-d.
+                    roles:
+                        title: 'Rollen und Zustaendigkeiten'
+                        body: |-
+                            Risk Owner erstellt und aktualisiert; DSB freigibt; CISO validiert TOM; {{ roles.controller_repr.fullName }} stellt der Aufsichtsbehoerde bereit.
+                    review:
+                        title: 'Pruefintervall'
+                        body: |-
+                            12 Monate je Eintrag; ausserplanmaessig bei Trigger.
+                    retention:
+                        title: 'Aufbewahrung historischer Eintraege'
+                        body: |-
+                            7 Jahre revisionssicher in `audit_log`.
+                    authority_disclosure:
+                        title: 'Aufsichtsbehoerde-Disclosure'
+                        body: |-
+                            Art. 30 Abs. 4 DSGVO; Bereitstellung in 72 Stunden nach Anfrage.
+                tailoring_field:
+                    sector_specific_processing_categories:
+                        label: 'Sektor-spezifische Verarbeitungskategorien'
+                        placeholder: 'Beispiel: "Als Krankenhaustraeger fuehren wir zusaetzlich zum Standard-Set: Patientenakten i.S.v. § 630f BGB, Forschungsdaten gemaess § 27 BDSG-neu, Telemedizin-Verfahren mit besonderer DSFA-Pflicht, sowie Krebsregister-Meldungen nach KRG."'
+                    ropa_review_interval_months:
+                        label: 'RoPA-Pruefintervall (Monate)'
+                        placeholder: 'Beispiel: "12" (gesetzliches Minimum gemaess Best Practice; verkuerzt auf 6 Monate fuer Verarbeitungen mit hohem Risiko und auf 3 Monate fuer Drittland-Transfers ohne Angemessenheitsbeschluss."'
+                    authority_disclosure_sla_hours:
+                        label: 'Disclosure-SLA gegenueber Aufsichtsbehoerde'
+                        placeholder: 'Beispiel: "72 Stunden ab elektronischem Eingang einer formellen Anfrage gemaess Art. 30 Abs. 4 DSGVO; Eskalation an die Vertretung des Verantwortlichen {{ roles.controller_repr.fullName }} bei Fristdruck."'
+        dpia_methodology:
+            v1:
+                title: 'DSFA-Methodik (Datenschutz-Folgenabschaetzung)'
+                body: |-
+                    # DSFA-Methodik der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Methodik | Norm-Anker: DSGVO Art. 35 + Art. 36 / ISO 27701:2025 Cl. 7.2.5 und 8.2.1 / EDSA WP248 rev.01 / BfDI Schwarze Liste | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+
+                    Diese Methodik regelt die Durchfuehrung der Datenschutz-Folgenabschaetzung (DSFA) i.S.v. Art. 35 DSGVO sowie die vorherige Konsultation der federfuehrenden Aufsichtsbehoerde i.S.v. Art. 36 DSGVO. Sie ist der Anwendungsrahmen von ISO 27701:2025 Cl. 7.2.5 (Verantwortlicher) und Cl. 8.2.1 (Auftragsverarbeiter) und nutzt das bestehende Modul `DataProtectionImpactAssessment` als Datenhaltung.
+
+                    ## 2. Geltungsbereich
+
+                    Eine DSFA ist verpflichtend, wenn eine Verarbeitung "voraussichtlich ein hohes Risiko fuer die Rechte und Freiheiten natuerlicher Personen" hat (Art. 35 Abs. 1 DSGVO). Die Pflicht trifft die Organisation in der Verantwortlichenrolle; Auftragsverarbeiter unterstuetzen den Verantwortlichen gemaess Art. 28 Abs. 3 lit. f DSGVO.
+
+                    ## 3. Schwellwert-Pruefung (Threshold Assessment)
+
+                    Vor jeder neuen Verarbeitung wird ein zweistufiges Verfahren durchlaufen:
+
+                    ### 3.1 Pflicht-Trigger nach Art. 35 Abs. 3 DSGVO
+
+                    DSFA ist immer verpflichtend bei:
+
+                    1. systematischer und umfassender Bewertung persoenlicher Aspekte natuerlicher Personen, einschliesslich Profiling, mit rechtlicher oder aehnlich erheblicher Wirkung;
+                    2. umfangreicher Verarbeitung besonderer Kategorien personenbezogener Daten (Art. 9) oder strafrechtlicher Daten (Art. 10);
+                    3. systematischer umfangreicher Ueberwachung oeffentlich zugaenglicher Bereiche.
+
+                    ### 3.2 EDSA-WP248-rev.01-Kriterien (neun Kriterien)
+
+                    Erfuellt eine Verarbeitung **zwei oder mehr** der folgenden Kriterien, ist eine DSFA verpflichtend:
+
+                    1. Bewertung oder Einstufung (Profiling, Scoring);
+                    2. automatisierte Entscheidung mit rechtlicher / aehnlich erheblicher Wirkung;
+                    3. systematische Ueberwachung;
+                    4. besondere Datenkategorien oder hoechstpersoenliche Daten;
+                    5. Datenverarbeitung in grossem Umfang;
+                    6. Abgleich oder Zusammenfuehrung von Datensaetzen;
+                    7. Daten von schutzbeduerftigen Betroffenen (Kinder, Beschaeftigte, Patienten);
+                    8. innovative Nutzung oder Anwendung neuer technologischer / organisatorischer Loesungen (z. B. KI, IoT, Biometrie);
+                    9. Verarbeitung verhindert die Wahrnehmung eines Rechts oder den Abschluss eines Vertrags.
+
+                    ### 3.3 BfDI Schwarze Liste
+
+                    Zusaetzlich verpflichtend ist eine DSFA fuer alle in der "Liste von Verarbeitungsvorgaengen, fuer die eine DSFA durchzufuehren ist" der BfDI gefuehrten Verarbeitungstaetigkeiten (z. B. umfangreiche Verarbeitung biometrischer Daten zur eindeutigen Identifizierung, Forschung mit besonderen Kategorien ohne ausdrueckliche Einwilligung).
+
+                    ### 3.4 Schwellwert-Score
+
+                    Der organisationsinterne Schwellwert-Score betraegt {{ gdpr.dpia_threshold_score }}. Erreicht eine Verarbeitung in der Vor-Pruefung diesen Score, ist die DSFA auch dann durchzufuehren, wenn keine Pflicht-Trigger zwingend einschlaegig sind ("Vorsorge-DSFA" als Best Practice).
+
+                    ## 4. DSFA-Methodik (Inhalt nach Art. 35 Abs. 7)
+
+                    Eine DSFA dokumentiert mindestens:
+
+                    1. **Systematische Beschreibung** der geplanten Verarbeitungsvorgaenge und der Verarbeitungszwecke; ggf. die berechtigten Interessen, die vom Verantwortlichen verfolgt werden (Art. 35 Abs. 7 lit. a).
+                    2. **Bewertung der Notwendigkeit und Verhaeltnismaessigkeit** der Verarbeitungsvorgaenge in Bezug auf den Zweck (Art. 35 Abs. 7 lit. b).
+                    3. **Bewertung der Risiken** fuer die Rechte und Freiheiten der betroffenen Personen (Art. 35 Abs. 7 lit. c) — qualitative Skala (niedrig / mittel / hoch / sehr hoch) ueber die Achsen Eintrittswahrscheinlichkeit und Schwere; Verzahnung mit der ISO-27005-Risikomethodik des ISMS, jedoch separater Risikoraum (Rechte-und-Freiheiten-Sicht statt CIA-Sicht).
+                    4. **Massnahmen** zur Bewaeltigung der Risiken einschliesslich Garantien, Sicherheitsvorkehrungen und Verfahren, durch die der Schutz personenbezogener Daten sichergestellt und der Nachweis der Einhaltung der DSGVO gefuehrt wird (Art. 35 Abs. 7 lit. d).
+
+                    ## 5. Stakeholder-Konsultation (Art. 35 Abs. 9 DSGVO)
+
+                    Der Verantwortliche holt "gegebenenfalls" den Standpunkt der Betroffenen oder ihrer Vertreter ein. Konkrete Auspraegungen in der Organisation:
+
+                    - Im Beschaeftigungskontext (Art. 88 DSGVO + § 26 Abs. 3 BDSG-neu): zwingende Beteiligung des Betriebsrats / Personalrats.
+                    - Bei Verbraucherprodukten: anonymisierte Nutzerbefragung oder Stakeholder-Workshop.
+                    - Bei Forschung mit Patienten: Beteiligung der Ethikkommission gemaess GCP / EU-Verordnung 536/2014.
+                    - Dokumentation aller Konsultationsergebnisse in der DSFA-Akte (Modul `DataProtectionImpactAssessment`).
+
+                    ## 6. Vorabkonsultation (Art. 36 DSGVO)
+
+                    Wenn die DSFA ein "hohes Restrisiko" trotz Bewaeltigungsmassnahmen identifiziert (Stufe hoch oder sehr hoch in der Risikomatrix nach Massnahme), ist die federfuehrende Aufsichtsbehoerde **vor** Beginn der Verarbeitung gemaess Art. 36 Abs. 1 DSGVO zu konsultieren. Die Konsultation erfolgt schriftlich mit den Inhalten nach Art. 36 Abs. 3 lit. a-f. Die Aufsichtsbehoerde hat 8 Wochen Zeit fuer eine schriftliche Stellungnahme; verlaengerbar um 6 Wochen. Die Verarbeitung wird in dieser Zeit nicht aufgenommen.
+
+                    ## 7. Risiko-Behandlungs-Eskalation
+
+                    Risiken werden gemaess folgender Eskalationsmatrix behandelt:
+
+                    | Restrisiko | Eskalation | Sign-off |
+                    |---|---|---|
+                    | niedrig | Standard-Massnahmen, Dokumentation in DSFA | DSB |
+                    | mittel | zusaetzliche Massnahmen (Pseudonymisierung, Zugriffs-Restriktion); 12-Monats-Re-Assessment | DSB + CISO |
+                    | hoch | umfassende Massnahmen + zwingender Vorabkonsultations-Check (Art. 36) | DSB + CISO + oberste Leitung |
+                    | sehr hoch | Vorabkonsultation Art. 36 verpflichtend; Verarbeitung erst nach Behoerden-Stellungnahme | oberste Leitung + Aufsichtsbehoerde |
+
+                    ## 8. Stakeholder-Workshops und ISO-27005-Verzahnung
+
+                    Die DSFA-Risikobewertung nutzt die ISO-27005-konformen Bewertungsachsen des ISMS (Wahrscheinlichkeit / Schwere) **methodisch wieder**, aber im separaten Bewertungsraum "Rechte und Freiheiten". Doppelpflege wird durch das Modul vermieden: technische Risiken aus dem ISMS-Risikoregister werden referenziert, nicht dupliziert.
+
+                    ## 9. Pruefintervall und Re-Assessment-Trigger
+
+                    Jede DSFA wird alle 24 Monate vollstaendig ueberprueft. Eine ausserplanmaessige Pruefung erfolgt zwingend bei: Aenderung des Verarbeitungszwecks; Erweiterung der Datenkategorien oder Betroffenenkreise; aufgetretene Datenschutzverletzung mit Bezug zur Verarbeitung; neue technologische Komponenten (z. B. KI-Modul-Update); aufsichtsbehoerdliche Hinweise oder Sektor-Leitlinien.
+
+                    ## 10. Aufbewahrung als Beweismittel
+
+                    DSFAs werden waehrend der gesamten Lebensdauer der Verarbeitung sowie 3 Jahre nach Beendigung revisionssicher aufbewahrt; bei Vorabkonsultation Art. 36: 7 Jahre nach letzter behoerdlicher Stellungnahme.
+
+                    ## 11. Cross-References
+
+                    - **ISO 27001:2022** A.5.34, A.8.27 (sichere Systemarchitektur).
+                    - **ISO 27701:2025** Cl. 7.2.5, 8.2.1.
+                    - **DSGVO** Art. 24 (Verantwortliche), Art. 25 (PbD), Art. 32 (TOM).
+                    - **BDSG-neu** § 67 (oeffentliche Stellen).
+                    - **EDSA WP248 rev.01**, **BfDI Schwarze Liste**.
+                    - **AI Act** (Verordnung (EU) 2024/1689) — Hochrisiko-KI-Systeme erfordern parallel zur DSFA eine FRIA (Fundamental Rights Impact Assessment).
+
+                    ---
+
+                    *Genehmigt durch DPO {{ roles.dpo.fullName }} am [Datum] — DSB-Sign-off unabhaengig vom CISO-Sign-off (ISO 27701:2025 Cl. 5.1).*
+
+                    *Genehmigungskette: {{ approval.chain }}*
+                section:
+                    purpose:
+                        title: 'Zweck der Methodik'
+                        body: |-
+                            Verbindliche Methodik zur Durchfuehrung von DSFAs nach Art. 35 DSGVO und Vorabkonsultationen nach Art. 36; Anwendungsrahmen ISO 27701:2025 Cl. 7.2.5 / 8.2.1.
+                    scope:
+                        title: 'Geltungsbereich'
+                        body: |-
+                            Verantwortlicher-Rolle; Auftragsverarbeiter unterstuetzen gemaess Art. 28 Abs. 3 lit. f.
+                    threshold_assessment:
+                        title: 'Schwellwert-Pruefung'
+                        body: |-
+                            Pflicht-Trigger Art. 35 Abs. 3, EDSA-Neunerliste, BfDI Schwarze Liste, organisationsinterner Schwellwert-Score {{ gdpr.dpia_threshold_score }}.
+                    methodology:
+                        title: 'DSFA-Inhalt'
+                        body: |-
+                            Beschreibung, Notwendigkeit/Verhaeltnismaessigkeit, Risikobewertung, Bewaeltigungsmassnahmen (Art. 35 Abs. 7 lit. a-d).
+                    stakeholder_consultation:
+                        title: 'Stakeholder-Konsultation'
+                        body: |-
+                            Art. 35 Abs. 9 DSGVO; Betriebsrat im Beschaeftigungskontext, Ethikkommission in der Forschung.
+                    prior_consultation:
+                        title: 'Vorabkonsultation'
+                        body: |-
+                            Art. 36 DSGVO bei hohem Restrisiko; 8-Wochen-Frist + 6 Wochen Verlaengerung.
+                    risk_treatment_escalation:
+                        title: 'Risiko-Behandlungs-Eskalation'
+                        body: |-
+                            Stufenmatrix niedrig / mittel / hoch / sehr hoch mit zugehoerigem Sign-off bis zur Aufsichtsbehoerde.
+                    iso27005_alignment:
+                        title: 'Verzahnung mit ISO 27005'
+                        body: |-
+                            Methodische Wiederverwendung der ISMS-Risikoachsen, separater Rechte-und-Freiheiten-Bewertungsraum.
+                    review_cadence:
+                        title: 'Pruefintervall'
+                        body: |-
+                            24 Monate, ausserplanmaessig bei Aenderung der Verarbeitung, Verletzung, neuer Technologie.
+                    retention:
+                        title: 'Aufbewahrung'
+                        body: |-
+                            Lebensdauer + 3 Jahre; bei Art. 36 Konsultation 7 Jahre nach Stellungnahme.
+                tailoring_field:
+                    organisation_specific_dpia_triggers:
+                        label: 'Organisations-spezifische DSFA-Trigger'
+                        placeholder: 'Beispiel: "Zusaetzlich zur EDSA-Neunerliste fuehren wir DSFA durch fuer: Einsatz neuer KI-Module mit Personenbezug, Telemedizin-Verfahren mit Patientendaten, neue Marketing-Tracking-Loesungen ueber Drittanbieter, sowie alle Verfahren mit ueber 100.000 Betroffenen unabhaengig von der Datenkategorie."'
+                    dpia_review_cadence_months:
+                        label: 'Pruefintervall pro DSFA (Monate)'
+                        placeholder: 'Beispiel: "24" (Standard) bzw. "12" fuer Verarbeitungen besonderer Kategorien gemaess Art. 9 DSGVO und solche mit Restrisiko hoch nach Bewaeltigung.'
+                    fria_alignment:
+                        label: 'AI-Act-FRIA-Verzahnung (sofern KI-Hochrisiko)'
+                        placeholder: 'Beispiel: "Fuer Hochrisiko-KI-Systeme i.S.v. Art. 6 AI Act fuehren wir DSFA und FRIA gemeinsam in einer Akte; gemeinsamer Workshop, gemeinsame Risikomatrix mit zwei Bewertungsachsen (Datenschutz / Grundrechte breiter); Genehmigung durch DSB + KI-Beauftragten."'
+        dsr_procedure:
+            v1:
+                title: 'Verfahren Betroffenenrechte'
+                body: |-
+                    # Verfahren Betroffenenrechte der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verfahren | Norm-Anker: DSGVO Art. 12-22 / ISO 27701:2025 Cl. 7.3.1-7.3.10 und 8.3 / BDSG-neu §§ 32-37 | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+
+                    Dieses Verfahren regelt die Annahme, Pruefung, Bearbeitung und Beantwortung von Antraegen betroffener Personen (Data Subject Requests, DSR) gemaess Art. 12 bis 22 DSGVO. Antraege werden im bestehenden Modul `DataSubjectRequest` dokumentiert.
+
+                    ## 2. Geltungsbereich
+
+                    Erfasst sind alle Rechte natuerlicher Personen aus den Art. 15 bis 22 DSGVO sowie die zugehoerigen Pflichten der Organisation aus Art. 12 DSGVO. Das Verfahren gilt auch fuer Antraege ueber Auftragsverarbeiter, die gemaess Art. 28 Abs. 3 lit. e DSGVO an die Organisation als Verantwortlichen weiterzuleiten sind.
+
+                    ## 3. Erfasste Rechte
+
+                    | Recht | Inhalt | Frist |
+                    |---|---|---|
+                    | Art. 15 — Auskunft | Bestaetigung Verarbeitung Y/N + Kopie der Daten + Pflichtinformationen | {{ gdpr.dsr_response_deadline_days }} Tage |
+                    | Art. 16 — Berichtigung | Korrektur unrichtiger / Vervollstaendigung unvollstaendiger Daten | {{ gdpr.dsr_response_deadline_days }} Tage |
+                    | Art. 17 — Loeschung | "Recht auf Vergessenwerden" mit den Ausnahmen Abs. 3 (Meinungsfreiheit, Rechtspflichten, oeffentliches Interesse, archivierungs-/forschungs-/statistische Zwecke, Rechtsanspruechen) | {{ gdpr.dsr_response_deadline_days }} Tage |
+                    | Art. 18 — Einschraenkung | "Marker"-Status mit eingeschraenkter Verarbeitbarkeit, ausser Speicherung | {{ gdpr.dsr_response_deadline_days }} Tage |
+                    | Art. 19 — Mitteilungspflicht | Information aller Empfaenger ueber Berichtigung / Loeschung / Einschraenkung | unverzueglich |
+                    | Art. 20 — Datenuebertragbarkeit | strukturiertes, gaengiges, maschinenlesbares Format (CSV, JSON); Direkt-Uebertragung wenn technisch moeglich | {{ gdpr.dsr_response_deadline_days }} Tage |
+                    | Art. 21 — Widerspruch | gegen Verarbeitung auf Grundlage Art. 6 Abs. 1 lit. e oder f sowie immer gegen Direktwerbung | unverzueglich, max. {{ gdpr.dsr_response_deadline_days }} Tage |
+                    | Art. 22 — Automatisierte Entscheidung | Recht auf Nicht-Unterwerfung, Eingreifen einer Person, Anhoerung, Anfechtung | {{ gdpr.dsr_response_deadline_days }} Tage |
+
+                    ## 4. Annahmekanaele
+
+                    Antraege werden ueber folgende Kanaele angenommen:
+
+                    1. dediziertes Web-Formular auf der Tenant-Website (barrierefrei nach BITV 2.0);
+                    2. dedizierte E-Mail-Adresse `datenschutz@<tenant-domain>` (DSB-Postfach von {{ roles.dpo.fullName }});
+                    3. postalische Anschrift gemaess Datenschutzhinweis (Art. 37 Abs. 7 DSGVO);
+                    4. telefonischer Erstkontakt mit Schriftform-Folgeschritt;
+                    5. Antragsweiterleitung von Auftragsverarbeitern (Art. 28 Abs. 3 lit. e).
+
+                    Eingangsbestaetigung erfolgt automatisch binnen 48 Stunden mit Vorgangsnummer.
+
+                    ## 5. Identitaetspruefung (Art. 12 Abs. 6 DSGVO)
+
+                    Bei begruendeten Zweifeln an der Identitaet des Antragstellers werden zusaetzliche Informationen angefordert. Verfahren:
+
+                    1. **Niedrige Schwelle (Default)** — Abgleich der hinterlegten E-Mail-Adresse / Kundennummer / Versicherungsnummer.
+                    2. **Mittlere Schwelle** — Anforderung einer beidseitigen Kopie eines amtlichen Ausweises mit geschwaerzten nicht-erforderlichen Feldern (Foto, Seriennummer); alternativ Video-Ident-Verfahren.
+                    3. **Hohe Schwelle (besondere Kategorien / Loeschantrag)** — qualifizierte elektronische Signatur i.S.v. eIDAS oder Vor-Ort-Identifikation mit Ausweis.
+
+                    Ueberhoehte Anforderungen sind unzulaessig (EDSA-Leitlinie 01/2022); die Identitaetspruefung darf den Antrag nicht faktisch vereiteln.
+
+                    ## 6. SLA und Fristen (Art. 12 Abs. 3 + 4 DSGVO)
+
+                    Die gesetzliche Standard-Frist betraegt einen Monat ab Eingang ({{ gdpr.dsr_response_deadline_days }} Kalendertage als organisationsinterne Auspraegung). Bei komplexen oder zahlreichen Antraegen kann die Frist um zwei weitere Monate verlaengert werden; die Verlaengerung wird dem Antragsteller binnen des ersten Monats unter Angabe der Gruende mitgeteilt. Wird einem Antrag nicht entsprochen, ist dies binnen eines Monats mit Begruendung sowie Hinweis auf Beschwerderecht bei der Aufsichtsbehoerde und Rechtsbehelf mitzuteilen.
+
+                    ## 7. Ablehnungsgruende
+
+                    Eine Ablehnung kommt nur in den folgenden Faellen in Betracht:
+
+                    - **Offenkundig unbegruendet oder uebermaessig** (Art. 12 Abs. 5) — z. B. wiederholte Antraege ohne neue Sachlage; Beweislast bei der Organisation.
+                    - **Beschraenkungen nach BDSG-neu §§ 32-37** — z. B. § 34 Abs. 1 Nr. 2 (Auskunft entfaellt bei unverhaeltnismaessigem Aufwand und Datensicherung-Zwecken); § 35 Abs. 1 (Loeschung entfaellt bei Aufbewahrungspflichten und ist durch Einschraenkung zu ersetzen).
+                    - **Geheimhaltungspflichten** — z. B. § 203 StGB aerztliche Schweigepflicht; Bankgeheimnis.
+                    - **Rechte Dritter** — Daten Dritter sind in Art.-15-Kopien zu schwaerzen.
+
+                    Jede Ablehnung wird im Modul `DataSubjectRequest` mit Begruendung dokumentiert; der DSB pruegt die Ablehnungsentscheidung formal mit.
+
+                    ## 8. Koordination mit operativen Teams
+
+                    Antraege werden zentral durch den DSB {{ roles.dpo.fullName }} angenommen und an die jeweiligen Owner verteilt:
+
+                    | Datenkategorie | Owner |
+                    |---|---|
+                    | HR-Daten | HR-Lead |
+                    | Kundendaten / CRM | Kundenservice-Lead |
+                    | Marketing-Daten | Marketing-Lead |
+                    | IT-Logs / Authentication | IT-Operations / CISO {{ roles.ciso.fullName }} |
+                    | Forschungsdaten | Forschungs-Lead / Ethik-Komitee |
+
+                    Die Owner liefern die Daten innerhalb von 14 Kalendertagen an den DSB; der DSB konsolidiert und beantwortet.
+
+                    ## 9. Auftragsverarbeiter-Beistand (Art. 28 Abs. 3 lit. e)
+
+                    Auftragsverarbeiter sind im AVV verpflichtet, "den Verantwortlichen mit geeigneten technischen und organisatorischen Massnahmen dabei zu unterstuetzen, seinen Pflichten zur Beantwortung von Antraegen nachzukommen". SLA gegenueber Auftragsverarbeitern: 14 Kalendertage interner Antwortpflicht; Verstoesse fuehren zu vertraglichen Konsequenzen gemaess Lieferanten-Sicherheits-Richtlinie.
+
+                    ## 10. Logging und Beweis
+
+                    Jeder Antrag wird vollstaendig im Modul `DataSubjectRequest` dokumentiert: Eingang, Identitaetspruefung, Owner-Zuteilung, Bearbeitungsstand, Antwort, Ablehnungsgruende ggf. mit Beschwerde-Hinweis. Aufbewahrung: 3 Jahre nach Beantwortung als Beweis gegenueber Aufsichtsbehoerde und betroffenen Personen.
+
+                    ## 11. Cross-References
+
+                    - **ISO 27001:2022** A.5.34.
+                    - **ISO 27701:2025** Cl. 7.3.1-7.3.10 (Verantwortlicher), Cl. 8.3 (Auftragsverarbeiter).
+                    - **DSGVO** Art. 12-22, Art. 23 (Beschraenkungen), Art. 28 Abs. 3 lit. e.
+                    - **BDSG-neu** §§ 32-37 (deutsche Modifikationen, insb. § 34 Auskunft, § 35 Loeschung).
+                    - **EDSA-Leitlinie 01/2022** zu Betroffenenrechten / Auskunftsrecht.
+
+                    ---
+
+                    *Genehmigt durch DPO {{ roles.dpo.fullName }} am [Datum] — DSB-Sign-off unabhaengig vom CISO-Sign-off.*
+
+                    *Genehmigungskette: {{ approval.chain }}*
+                section:
+                    purpose:
+                        title: 'Zweck des Verfahrens'
+                        body: |-
+                            Verbindliches Verfahren zur Bearbeitung aller Betroffenenrechte gemaess Art. 12-22 DSGVO und ISO 27701:2025 Cl. 7.3.1-7.3.10.
+                    scope:
+                        title: 'Geltungsbereich'
+                        body: |-
+                            Alle Rechte natuerlicher Personen + Pflichten Art. 12; auch Antraege ueber Auftragsverarbeiter.
+                    rights_covered:
+                        title: 'Erfasste Rechte'
+                        body: |-
+                            Art. 15 (Auskunft), 16 (Berichtigung), 17 (Loeschung), 18 (Einschraenkung), 19 (Mitteilung), 20 (Portabilitaet), 21 (Widerspruch), 22 (automatisierte Entscheidung).
+                    intake_channels:
+                        title: 'Annahmekanaele'
+                        body: |-
+                            Web-Formular, DSB-E-Mail, Postanschrift, Telefon mit Schriftform-Folge, Auftragsverarbeiter-Weiterleitung.
+                    identity_verification:
+                        title: 'Identitaetspruefung'
+                        body: |-
+                            Drei-Stufen-Schema (niedrig / mittel / hoch) gemaess Art. 12 Abs. 6 DSGVO; ueberhoehte Anforderungen unzulaessig.
+                    sla:
+                        title: 'SLA und Fristen'
+                        body: |-
+                            {{ gdpr.dsr_response_deadline_days }} Kalendertage Standard, +2 Monate Verlaengerung bei Komplexitaet (Art. 12 Abs. 3).
+                    refusal_grounds:
+                        title: 'Ablehnungsgruende'
+                        body: |-
+                            Art. 12 Abs. 5 (offenkundig unbegruendet/uebermaessig), BDSG-neu §§ 34, 35; Schwaerzung von Daten Dritter.
+                    operative_coordination:
+                        title: 'Koordination mit operativen Teams'
+                        body: |-
+                            DSB zentral; HR / Kundenservice / Marketing / IT / Forschung als Owner mit 14-Tage-Lieferpflicht.
+                    processor_assistance:
+                        title: 'Auftragsverarbeiter-Beistand'
+                        body: |-
+                            Art. 28 Abs. 3 lit. e; vertragliche Pflicht im AVV mit 14-Tage-SLA.
+                    logging:
+                        title: 'Logging und Beweis'
+                        body: |-
+                            Vollstaendige Dokumentation in `DataSubjectRequest`; 3 Jahre Aufbewahrung.
+                tailoring_field:
+                    response_language_set:
+                        label: 'Antwort-Sprachen'
+                        placeholder: 'Beispiel: "Standard Deutsch (DE-Sie-Form, juristisch); Englisch fuer auslaendische Antragsteller; ergaenzend Tuerkisch und Russisch fuer ausgewaehlte Standorte gemaess Art. 12 Abs. 1 (klare und einfache Sprache)."'
+                    identity_verification_default:
+                        label: 'Standard-Identitaetspruefungsmethode'
+                        placeholder: 'Beispiel: "Niedrige Schwelle: E-Mail-Verifikation gegen hinterlegte Kundenkennung. Mittlere Schwelle bei sensiblen Antraegen: Video-Ident. Hohe Schwelle bei Loeschantraegen mit besonderen Kategorien: qualifizierte elektronische Signatur (eIDAS)."'
+                    automated_decision_used:
+                        label: 'Automatisierte Entscheidungsfindung Y/N'
+                        placeholder: 'Beispiel: "Ja: Bonitaetspruefung im Online-Bestellprozess (Art. 22 Abs. 2 lit. a DSGVO + Vertrag); Anti-Fraud-Scoring (Art. 22 Abs. 2 lit. b + Rechtsvorschrift); Mitarbeitenden-Performance-Scoring NICHT eingesetzt."'
+        data_breach_notification_procedure:
+            v1:
+                title: 'Verfahren zur Meldung von Datenschutzverletzungen'
+                body: |-
+                    # Verfahren zur Meldung von Datenschutzverletzungen der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verfahren | Norm-Anker: DSGVO Art. 33 (72h Aufsichtsbehoerde) + Art. 34 (Benachrichtigung Betroffener) + Art. 4 Nr. 12 / ISO 27701:2025 Cl. 6.13 und 7.2.7 / BDSG-neu § 65 / DORA Art. 19 | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+
+                    Dieses Verfahren regelt die Identifikation, Bewertung, Meldung und Dokumentation von Datenschutzverletzungen ("Personal Data Breaches") gemaess Art. 33 und 34 DSGVO. Es ist eng mit dem Sicherheitsvorfallsmanagement-Verfahren (ISO 27001 A.5.24-A.5.30) und ggf. dem DORA-Major-Incident-Verfahren (Art. 19 Verordnung (EU) 2022/2554) verzahnt; die Datenhaltung erfolgt im bestehenden Modul `DataBreach`.
+
+                    ## 2. Definition (Art. 4 Nr. 12 DSGVO)
+
+                    Eine Datenschutzverletzung ist "eine Verletzung der Sicherheit, die zur unbeabsichtigten oder unrechtmaessigen Vernichtung, zum Verlust, zur Veraenderung, zur unbefugten Offenlegung von oder zum unbefugten Zugang zu personenbezogenen Daten fuehrt, die uebermittelt, gespeichert oder auf sonstige Weise verarbeitet wurden". Erfasst sind alle drei klassischen Schutzziel-Verletzungen:
+
+                    1. **Vertraulichkeitsverletzung** — unbefugte Offenlegung oder unbefugter Zugang;
+                    2. **Integritaetsverletzung** — unbefugte Aenderung;
+                    3. **Verfuegbarkeitsverletzung** — Verlust oder Vernichtung (auch unbeabsichtigt).
+
+                    ## 3. Detektionskanaele und interne Meldung
+
+                    Datenschutzverletzungen werden detektiert ueber:
+
+                    - SIEM-Alerts und Monitoring-Tools (CISO-Bereich);
+                    - Hinweise von Beschaeftigten ueber den dokumentierten Meldekanal gemaess A.6.8;
+                    - Hinweise von Auftragsverarbeitern (Art. 33 Abs. 2 DSGVO);
+                    - Hinweise betroffener Personen ueber den DSR-Kanal;
+                    - externe Hinweise (Sicherheitsforscher, Strafverfolgungsbehoerden, Medien).
+
+                    Interner Meldekanal: `breach@<tenant-domain>` (gemeinsames Postfach von DSB {{ roles.dpo.fullName }} und CISO {{ roles.ciso.fullName }}). Internes SLA: jede vermutete Verletzung wird binnen 24 Stunden nach Bemerken an den DSB gemeldet, um den 72h-Countdown des Art. 33 DSGVO anzulaufen lassen zu koennen.
+
+                    ## 4. Bewertung der Risiken fuer Rechte und Freiheiten
+
+                    Die Bewertung folgt EDSA-Leitlinie 9/2022 ("Notification of personal data breach under Regulation 2016/679"). Bewertungsachsen:
+
+                    1. **Art der Verletzung** (Vertraulichkeit / Integritaet / Verfuegbarkeit);
+                    2. **Art und Sensibilitaet der Daten** (besondere Kategorien Art. 9 / 10 — automatisch hoch);
+                    3. **Volumen** (Anzahl Betroffener);
+                    4. **Identifizierbarkeit** der Betroffenen aus den abgeflossenen Daten;
+                    5. **Schwere der Konsequenzen** (Identitaetsdiebstahl, finanzieller Schaden, Diskriminierung, Reputationsschaden, Aufhebung der Pseudonymisierung);
+                    6. **Eigenschaften der Betroffenen** (schutzbeduerftig: Kinder, Patienten, Beschaeftigte);
+                    7. **Anzahl der Betroffenen** und **dauer der Exposition**.
+
+                    Die Bewertung erfolgt durch den `GdprBreachAssessmentService` als Werkzeug-Unterstuetzung; finale Bewertung durch den DSB. Ergebnis: keine Meldepflicht / Meldung Art. 33 / Meldung Art. 33 + Art. 34.
+
+                    ## 5. 72h-Frist (Art. 33 Abs. 1 DSGVO)
+
+                    Die Frist beginnt mit "Becoming aware" — dem Zeitpunkt, an dem die Organisation eine angemessene Gewissheit ueber die Verletzung erhaelt, nicht der erste Verdachtsmoment (EDSA-Leitlinie 9/2022 Rn. 20-23). Konkrete Meilensteine:
+
+                    | Stunde | Aktion |
+                    |---|---|
+                    | T + 0h | "Becoming aware" — DSB-Trigger; Workflow-Start im Modul `DataBreach` |
+                    | T + 4h | erste Faktensicherung; Eindaemmungsmassnahmen aktiv |
+                    | T + 24h | Risikobewertung erstes Ergebnis; CISO-Tech-Assessment |
+                    | T + 48h | Entscheidung Meldepflicht Y/N; Vorbereitung Meldetext |
+                    | T + 72h | Versand der Meldung an die federfuehrende Aufsichtsbehoerde (Art. 33 Abs. 1) |
+
+                    Die Frist kann mit Begruendung ueberschritten werden, wenn "Verzoegerung gerechtfertigt" (Art. 33 Abs. 1 Satz 2); jede Verzoegerung wird im Modul `DataBreach` mit Begruendung dokumentiert. "Stop-the-Clock"-Bedingungen nach Art. 33 sind eng auszulegen.
+
+                    ## 6. Inhalt der Meldung an die Aufsichtsbehoerde (Art. 33 Abs. 3)
+
+                    Die Meldung enthaelt mindestens:
+
+                    1. Beschreibung der Art der Verletzung, soweit moeglich Kategorien und ungefaehre Anzahl der betroffenen Personen, Kategorien und ungefaehre Anzahl der Datensaetze (lit. a);
+                    2. Name und Kontaktdaten des Datenschutzbeauftragten oder einer anderen Anlaufstelle (lit. b) — {{ roles.dpo.fullName }};
+                    3. Beschreibung der wahrscheinlichen Folgen (lit. c);
+                    4. Beschreibung der ergriffenen oder vorgeschlagenen Massnahmen zur Behebung und Schadensbegrenzung (lit. d).
+
+                    Sind nicht alle Informationen verfuegbar, erfolgt eine **erste Meldung** mit den verfuegbaren Daten und einer **Nachreichung** ohne unangemessene Verzoegerung (Art. 33 Abs. 4).
+
+                    Uebermittlungskanal: das jeweilige Online-Portal der federfuehrenden Aufsichtsbehoerde (z. B. Online-Formular der BfDI, oder zustaendige Landes-DPA), als Backup verschluesselte E-Mail an die offizielle Meldeadresse.
+
+                    ## 7. Benachrichtigung der Betroffenen (Art. 34 DSGVO)
+
+                    Bei "voraussichtlich hohem Risiko fuer die Rechte und Freiheiten" der Betroffenen ist die zusaetzliche Benachrichtigung unverzueglich erforderlich. Inhalt nach Art. 34 Abs. 2:
+
+                    - klare und einfache Sprache (kein Juristen-Deutsch);
+                    - mindestens die Informationen aus Art. 33 Abs. 3 lit. b, c, d;
+                    - praktische Empfehlungen fuer Selbstschutz (z. B. Passwort-Wechsel, Bonitaets-Monitoring).
+
+                    Verzicht auf Einzelbenachrichtigung ist nur in den engen Faellen Art. 34 Abs. 3 zulaessig (technische Schutzmassnahmen wie Verschluesselung wirksam vor Vorfall; nachtraegliche Massnahmen senken Risiko; unverhaeltnismaessiger Aufwand → oeffentliche Bekanntmachung als Alternative).
+
+                    ## 8. Dokumentationspflicht aller Verletzungen (Art. 33 Abs. 5)
+
+                    **Auch nicht-meldepflichtige Datenschutzverletzungen werden dokumentiert** — Art. 33 Abs. 5 verlangt eine vollstaendige interne Dokumentation, die der Aufsichtsbehoerde die Pruefung der Einhaltung des Art. 33 ermoeglicht. Aufbewahrung im Modul `DataBreach` mindestens 7 Jahre.
+
+                    ## 9. Cross-Regulatorische Meldepflicht-Matrix
+
+                    | Regulatorik | Frist | Empfaenger |
+                    |---|---|---|
+                    | DSGVO Art. 33 | 72h ab Becoming-aware | federfuehrende DPA |
+                    | DSGVO Art. 34 | unverzueglich (sofern Pflicht) | Betroffene |
+                    | DORA Art. 19 (Finanzsektor) | 4h Initial / 72h Zwischen / 1 Monat Final | nationale FI-Behoerde + ESA |
+                    | NIS2 Art. 23 (wesentliche/wichtige Einrichtungen) | 24h Frueh-Warnung / 72h Notifikation / 1 Monat Final | nationale CSIRT |
+                    | TKG § 169 (Telekom-Diensteanbieter) | unverzueglich | BNetzA + Betroffene |
+                    | sektoral (KRITIS, BaFin, AMG, etc.) | sektorspezifisch | Sektoraufsicht |
+
+                    Die Erstellung paralleler Meldungen erfolgt aus der einen `DataBreach`-Akte heraus mit Re-Use der zentralen Felder; Doppelpflege ist verboten. **Cross-Reference zu DORA Art. 19**: Bei Finanzdienstleistern wird der DORA-ICT-Major-Incident-Workflow gleichzeitig getriggert; siehe ICT-Vorfalls-Verfahren.
+
+                    ## 10. Gemeinsam-Verantwortliche-Koordination (Art. 26)
+
+                    In Joint-Controllership-Konstellationen (Art. 26 DSGVO) regelt die Joint-Controllership-Vereinbarung, wer die Meldung an die Aufsichtsbehoerde abgibt und wer die Betroffenenbenachrichtigung uebernimmt. Default: federfuehrend ist der gemeinsam Verantwortliche, in dessen Sphaere die Verletzung primaer eintrat. Cross-Reference: Methodik zur gemeinsamen Verantwortlichkeit.
+
+                    ## 11. Auftragsverarbeiter-Meldekette (Art. 33 Abs. 2)
+
+                    Auftragsverarbeiter melden jede Verletzung "unverzueglich nach Bekanntwerden" an den Verantwortlichen. SLA gegenueber dem Auftragsverarbeiter im AVV: 24 Stunden ab Detektion. Sub-Auftragsverarbeiter melden ueber den Auftragsverarbeiter mit gleicher SLA. Verstoesse gegen die SLA fuehren zu vertraglichen Konsequenzen (siehe Lieferanten-Sicherheits-Richtlinie).
+
+                    ## 12. Schnittstelle zu A.5.24-A.5.30 ISMS-Vorfallsmanagement
+
+                    Jede Datenschutzverletzung ist gleichzeitig ein Sicherheitsvorfall i.S.v. ISO 27001:2022 A.5.24-A.5.30. Die `DataBreach`-Akte ist mit der `Incident`-Akte verknuepft (Modul-Ebene); Lessons Learned werden im post-incident Review (A.5.27) gemeinsam abgeleitet.
+
+                    ## 13. Cross-References
+
+                    - **ISO 27001:2022** A.5.34, A.5.24 (Planung Vorfaelle), A.5.25 (Bewertung), A.5.26 (Reaktion), A.5.27 (Lessons Learned), A.5.28 (Beweissammlung), A.5.29 (Geschaeftskontinuitaet), A.5.30 (IKT-Bereitschaft), A.6.8 (Meldekanal).
+                    - **ISO 27701:2025** Cl. 6.13 (Personal Data Breach Response), Cl. 7.2.7.
+                    - **DSGVO** Art. 33, Art. 34, Art. 4 Nr. 12, Art. 26 (joint), Art. 28 Abs. 3 lit. f (Auftragsverarbeiter-Beistand).
+                    - **BDSG-neu** § 65 (oeffentliche Stellen).
+                    - **DORA Art. 19** (Verordnung (EU) 2022/2554) — ICT-Major-Incident-Meldepflicht (4h / 72h / 1 Monat).
+                    - **NIS2 Art. 23** (Richtlinie (EU) 2022/2555).
+                    - **EDSA-Leitlinie 9/2022** zur Meldung personenbezogener Datenschutzverletzungen.
+
+                    ---
+
+                    *Genehmigt durch DPO {{ roles.dpo.fullName }} am [Datum] — DSB-Sign-off unabhaengig vom CISO-Sign-off; Top-Mgmt-Sign-off zwingend.*
+
+                    *Genehmigungskette: {{ approval.chain }}*
+                section:
+                    purpose:
+                        title: 'Zweck des Verfahrens'
+                        body: |-
+                            Verbindliche Bearbeitung von Datenschutzverletzungen gemaess Art. 33-34 DSGVO und ISO 27701:2025 Cl. 6.13.
+                    definition:
+                        title: 'Definition'
+                        body: |-
+                            Art. 4 Nr. 12 DSGVO; Vertraulichkeits-, Integritaets- und Verfuegbarkeitsverletzungen.
+                    detection:
+                        title: 'Detektion und interne Meldung'
+                        body: |-
+                            SIEM, Hinweise Beschaeftigte/Auftragsverarbeiter/Betroffene/Externe; SLA: 24h interne DSB-Meldung nach Bemerken.
+                    risk_assessment:
+                        title: 'Risikobewertung'
+                        body: |-
+                            EDSA-Leitlinie 9/2022 mit sieben Achsen; finale Bewertung durch DSB ueber `GdprBreachAssessmentService`.
+                    seventy_two_hour_clock:
+                        title: '72h-Frist'
+                        body: |-
+                            Beginn ab "Becoming aware" — Meilenstein-Sequenz T+0/4/24/48/72h; Verzoegerung nur mit Begruendung (Art. 33 Abs. 1 Satz 2).
+                    authority_notification_content:
+                        title: 'Inhalt der Aufsichtsbehoerde-Meldung'
+                        body: |-
+                            Art. 33 Abs. 3 lit. a-d; erste Meldung + Nachreichung zulaessig (Art. 33 Abs. 4).
+                    subject_notification:
+                        title: 'Benachrichtigung Betroffener'
+                        body: |-
+                            Art. 34 DSGVO bei hohem Risiko; klare Sprache; Verzichtsausnahmen Art. 34 Abs. 3 eng.
+                    documentation_duty:
+                        title: 'Dokumentationspflicht aller Verletzungen'
+                        body: |-
+                            Art. 33 Abs. 5 — auch nicht-meldepflichtige Vorfaelle; 7 Jahre Aufbewahrung.
+                    cross_regulatory_matrix:
+                        title: 'Cross-regulatorische Matrix'
+                        body: |-
+                            DSGVO 72h / DORA Art. 19 4h-72h-1m / NIS2 24h-72h-1m / sektoral; Re-Use aus einer Akte; siehe ICT-Vorfalls-Verfahren (DORA Art. 19).
+                    joint_controller:
+                        title: 'Joint-Controller-Koordination'
+                        body: |-
+                            Art. 26 DSGVO; federfuehrend ist die Sphaere des Eintritts.
+                    processor_chain:
+                        title: 'Auftragsverarbeiter-Meldekette'
+                        body: |-
+                            Art. 33 Abs. 2; AVV-SLA 24h; Sub-Auftragsverarbeiter ueber Auftragsverarbeiter.
+                    isms_incident_link:
+                        title: 'Schnittstelle ISMS-Vorfallsmanagement'
+                        body: |-
+                            A.5.24-A.5.30; Verknuepfung `DataBreach` und `Incident`; gemeinsame Lessons Learned.
+                tailoring_field:
+                    lead_supervisory_authority:
+                        label: 'Federfuehrende Aufsichtsbehoerde'
+                        placeholder: 'Beispiel: "Bayerisches Landesamt fuer Datenschutzaufsicht (BayLDA) Ansbach — Promenade 18, 91522 Ansbach. Online-Portal: www.lda.bayern.de/de/datenpannen.html. Kontakt: poststelle@lda.bayern.de."'
+                    secondary_authority_portals:
+                        label: 'Sekundaere Aufsichtsbehoerden bei grenzueberschreitender Verarbeitung'
+                        placeholder: 'Beispiel: "Berliner Beauftragte fuer Datenschutz (Standort Berlin), Hessischer Beauftragter (Standort Frankfurt), CNIL Frankreich (Niederlassung Paris) — One-Stop-Shop-Mechanismus federfuehrend BayLDA gemaess Art. 56."'
+                    public_communications_approver:
+                        label: 'Genehmiger oeffentlicher Kommunikation bei Art. 34'
+                        placeholder: 'Beispiel: "Co-Genehmigung durch DSB {{ roles.dpo.fullName }}, CISO {{ roles.ciso.fullName }} und Vorstand Kommunikation; bei Konzern-Verletzung zusaetzlich Konzern-DSB. Pressemitteilung erst nach Aufsichtsbehoerde-Erstmeldung."'
+        iso_a534_thin_host:
+            v1:
+                title: 'Privatsphaere und Schutz von PII (A.5.34)'
+                body: |-
+                    # Privatsphaere und Schutz von PII (A.5.34) der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Verweis-Dokument | Norm-Anker: ISO/IEC 27001:2022 Annex A.5.34 / ISO/IEC 27002:2022 § 5.34 | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+
+                    Dieses Verweis-Dokument adressiert die ISO/IEC 27001:2022 Massnahme A.5.34 ("Privacy and protection of PII"). Da der Datenschutz in der {{ tenant.legal_name }} ein eigenstaendiges Programm darstellt (Datenschutz-Managementsystem, PIMS, gemaess ISO 27701:2025), enthaelt dieses Dokument bewusst **keinen** eigenstaendigen Datenschutz-Inhalt — es verweist auf die fachlich zustaendigen Datenschutz-Dokumente.
+
+                    ## 2. Geltungsbereich
+
+                    Dieses Dokument dient ausschliesslich als ISO-27001-A.5.34-Erfuellungsverweis und als Cross-Reference fuer Auditoren. Inhaltliche Vorgaben zum Datenschutz finden sich in den nachgelagerten Dokumenten unter Abschnitt 4.
+
+                    ## 3. Begruendung der Verweis-Architektur
+
+                    Der ISO/IEC 27002:2022 Standard formuliert in § 5.34: "The organization shall identify and meet the requirements regarding the preservation of privacy and protection of PII according to applicable laws and regulations and contractual requirements". Dies wird durch das eigenstaendige Datenschutz-Programm der Organisation erfuellt, das auf folgenden Saeulen beruht:
+
+                    - DSGVO (Verordnung (EU) 2016/679) als zentrale gesetzliche Anforderung;
+                    - BDSG-neu als deutsche Konkretisierung;
+                    - ISO 27701:2025 als PIMS-Standard, der die ISMS-Klauseln um datenschutzspezifische Anforderungen erweitert;
+                    - sektorspezifische Vorgaben (z. B. § 22 BDSG-neu fuer besondere Kategorien, AI Act, EHDS).
+
+                    Der DSB {{ roles.dpo.fullName }} ist gemaess Art. 37-39 DSGVO bestellt und in seiner Funktion vom CISO {{ roles.ciso.fullName }} **zwingend zu trennen** (BSI-Empfehlung "DSB ungleich ISB"). Die Genehmigung dieses Verweis-Dokuments erfolgt durch den DSB; CISO-Bulk-Approval kann den DSB-Sign-off nicht ueberstimmen (DSB-Veto-Mechanik gemaess ISO 27701:2025 Cl. 5.1).
+
+                    ## 4. Verbindliche Verweise
+
+                    Die A.5.34-Anforderungen werden durch folgende Dokumente erfuellt — bitte konsultieren Sie diese fuer Inhalte und Pflichten:
+
+                    1. **Datenschutz-Leitlinie** (oberste Datenschutz-Norm, ISO 27701:2025 Cl. 5.2; DSGVO Art. 24).
+                    2. **Verfahrensverzeichnis-Methodik** (RoPA, DSGVO Art. 30; ISO 27701:2025 Cl. 7.2.8 / 8.2.6).
+                    3. **DSFA-Methodik** (Datenschutz-Folgenabschaetzung, DSGVO Art. 35-36; ISO 27701:2025 Cl. 7.2.5).
+                    4. **Verfahren Betroffenenrechte** (DSGVO Art. 12-22; ISO 27701:2025 Cl. 7.3.x).
+                    5. **Verfahren zur Meldung von Datenschutzverletzungen** (DSGVO Art. 33-34; ISO 27701:2025 Cl. 6.13; DORA Art. 19 fuer Finanzsektor).
+                    6. **Methodik zur Festlegung der Rechtsgrundlage** (DSGVO Art. 6, 9, 10; § 22 BDSG-neu).
+                    7. **Einwilligungs-Management-Richtlinie** (DSGVO Art. 7, 8).
+                    8. **Methodik zur gemeinsamen Verantwortlichkeit** (DSGVO Art. 26).
+                    9. **Richtlinie zur Uebermittlung in Drittlaender** (DSGVO Kapitel V).
+                    10. **Aufbewahrungs- und Loeschrichtlinie** (DSGVO Art. 5 Abs. 1 lit. e, Art. 17).
+                    11. **Methodik Privacy by Design und Default** (DSGVO Art. 25).
+                    12. **Bestellung und Aufgabenbeschreibung des Datenschutzbeauftragten** (DSGVO Art. 37-39).
+                    13. **Datenschutz-Schulungs- und Awareness-Programm** (Art. 39 Abs. 1 lit. b DSGVO; ISO 27701:2025 Cl. 6.4.2; ergaenzt A.6.3).
+                    14. ggf. **Richtlinie zum Umgang mit Daten Minderjaehriger** (DSGVO Art. 8) — bedingt.
+                    15. ggf. **Richtlinie fuer besondere Kategorien personenbezogener Daten** (DSGVO Art. 9, 10; § 22 BDSG-neu) — bedingt.
+
+                    ## 5. Cross-References zu weiteren ISO-27001-Massnahmen
+
+                    Datenschutz beruehrt zahlreiche andere Annex-A-Massnahmen:
+
+                    - **A.5.31** Gesetzliche Anforderungen — DSGVO ist zentrale Anforderung.
+                    - **A.5.20** Lieferantenvereinbarungen — AVV-Pflicht (DSGVO Art. 28).
+                    - **A.5.24-A.5.30** Vorfallsmanagement — verzahnt mit Breach-Verfahren.
+                    - **A.5.33** Schutz von Aufzeichnungen — Aufbewahrungsdisziplin.
+                    - **A.6.3** Schulung — ergaenzt durch Datenschutz-Awareness-Programm.
+                    - **A.8.10** Loeschen von Informationen — Umsetzung der Speicherbegrenzung.
+                    - **A.8.11** Datenmaskierung — Pseudonymisierung als TOM gemaess Art. 32.
+                    - **A.8.12** Data Loss Prevention — TOM gemaess Art. 32.
+                    - **A.8.13** Backup — auch fuer Datenschutzdaten geltend.
+                    - **A.8.27** Sichere Systemarchitektur — Privacy by Design (Art. 25).
+                    - **A.8.28** Sicheres Coding — Privacy by Design.
+
+                    ## 6. Pruef- und Aenderungszyklus
+
+                    Dieses Verweis-Dokument wird alle 24 Monate ueberprueft; Aenderungen erfolgen ausschliesslich, wenn neue Datenschutz-Dokumente in das Programm aufgenommen oder bestehende Dokumente entfernt werden. Inhaltliche Datenschutz-Aenderungen werden in den jeweiligen Zieldokumenten vorgenommen, nicht hier.
+
+                    ---
+
+                    *Genehmigt durch DPO {{ roles.dpo.fullName }} am [Datum] — DSB-Sign-off unabhaengig vom CISO-Sign-off (ISO 27701:2025 Cl. 5.1; DSGVO Art. 38 Abs. 3).*
+
+                    *Genehmigungskette: {{ approval.chain }}*
+                section:
+                    purpose:
+                        title: 'Zweck des Verweis-Dokuments'
+                        body: |-
+                            Erfuellung des ISO/IEC 27001:2022 A.5.34-Controls durch Verweis auf das eigenstaendige Datenschutz-Programm.
+                    scope:
+                        title: 'Geltungsbereich'
+                        body: |-
+                            Reines Verweis-Dokument; Inhalte stehen in nachgelagerten Datenschutz-Dokumenten.
+                    rationale:
+                        title: 'Begruendung der Architektur'
+                        body: |-
+                            DSGVO/BDSG-neu/ISO 27701:2025 erfuellen den A.5.34-Anspruch; DSB unabhaengig vom CISO (BSI-Trennung; Art. 38 Abs. 3 DSGVO).
+                    references:
+                        title: 'Verbindliche Verweise'
+                        body: |-
+                            15 Datenschutz-Dokumente: Leitlinie, RoPA, DSFA, DSR, Breach, Lawful-Basis, Consent, Joint-Controller, Transfer, Retention, PbD, DSB-Bestellung, Awareness, Kinder, Special-Cat.
+                    cross_references:
+                        title: 'Cross-References ISO 27001'
+                        body: |-
+                            A.5.31, A.5.20, A.5.24-A.5.30, A.5.33, A.6.3, A.8.10-A.8.13, A.8.27-A.8.28.
+                    review:
+                        title: 'Pruefintervall'
+                        body: |-
+                            24 Monate; Inhalts-Aenderungen nur ueber Zieldokumente.
+                tailoring_field:
+                    standalone_documents_listed:
+                        label: 'Liste der nachgelagerten Datenschutz-Dokumente'
+                        placeholder: 'Beispiel: "Vollstaendige Liste gemaess Abschnitt 4 wird waehrend des Wizard-Durchlaufs automatisch aus dem aktivierten Datenschutz-Programm der Organisation generiert; konditionale Dokumente (Kinder / Special-Cat) erscheinen nur, wenn die jeweiligen Tenant-Settings gesetzt sind."'
+                    iso27701_version_used:
+                        label: 'Verwendete ISO-27701-Version'
+                        placeholder: 'Beispiel: "ISO/IEC 27701:2025 (Standard); Tenant kann auf :2019 wechseln, falls aktiver Audit-Zyklus dies erfordert; Klausel-Mapping wird automatisch im jeweiligen Tag-Set des Dokuments umgeschaltet."'
+                    a534_audit_evidence_pointer:
+                        label: 'Audit-Evidence-Pointer fuer A.5.34'
+                        placeholder: 'Beispiel: "Im SoA-Eintrag A.5.34 wird dieses Verweis-Dokument als zentrales Audit-Evidence-Artefakt genannt; ergaenzend werden im Audit die in Abschnitt 4 verlinkten Dokumente sowie das DSB-Sign-off-Log aus dem `audit_log`-Modul vorgelegt."'

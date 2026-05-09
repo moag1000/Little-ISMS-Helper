@@ -1,0 +1,107 @@
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{# Mode 2 (Targeted re-run) Step 1 — pick up to 10 topics. The controller
+   passes `existing_topics_by_key` as `{ topic_key: [{ id, title, nextReviewDate,
+   lastApprovedAt }, …] }`. When the bag is empty we fall through to an alert
+   so the user knows there is nothing to re-run. #}
+
+{% set existing_by_key = existing_topics_by_key|default({}) %}
+{% set picked_topics = defaults.topics|default(run.targetedTopics|default([])) %}
+{% set max_topics = 10 %}
+
+<input type="hidden" name="finding_reference" value="{{ defaults.finding_reference|default(run.findingReference|default('')) }}">
+
+{% if existing_by_key|length == 0 %}
+    {{ _fa_alert.render({
+        variant: 'info',
+        title: 'policy_wizard.step.targeted.pick.title'|trans,
+        body: 'policy_wizard.step.targeted.pick.subtitle'|trans
+    }) }}
+{% else %}
+    {# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+    {% embed '_components/_fa_alert.html.twig' with { props: {
+        variant: 'info',
+        icon: 'bi-mortarboard',
+        class: 'mb-3'
+    } } %}
+        {% block alert_body %}
+            {% trans_default_domain 'policy_wizard' %}
+            <div class="fa-alert__title">{{ 'policy_wizard.step.targeted.pick.help.title'|trans }}</div>
+            <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.targeted.pick.help.body'|trans }}</p>
+            <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.targeted.pick.help.example'|trans }}</p>
+            <p class="mb-0 small">
+                <i class="bi bi-archive" aria-hidden="true"></i>
+                {{ 'policy_wizard.step.targeted.pick.help.reversibility'|trans }}
+            </p>
+        {% endblock %}
+    {% endembed %}
+
+    <p class="text-muted small mb-3">{{ 'policy_wizard.step.targeted.pick.hint_max_ten'|trans({'%count%': max_topics}) }}</p>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle"
+               data-controller="policy-wizard-targeted-pick"
+               data-policy-wizard-targeted-pick-max-value="{{ max_topics }}">
+            <thead>
+                <tr>
+                    <th scope="col" style="width:48px;">&nbsp;</th>
+                    <th scope="col">{{ 'policy_wizard.step.targeted.pick.column.topic'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.targeted.pick.column.last_approved'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.targeted.pick.column.next_review'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for topic_key, documents in existing_by_key %}
+                    <tr>
+                        <td>
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       id="topic-{{ topic_key }}"
+                                       name="topics[]"
+                                       value="{{ topic_key }}"
+                                       data-action="change->policy-wizard-targeted-pick#enforceMax"
+                                       data-policy-wizard-targeted-pick-target="checkbox"
+                                       {% if topic_key in picked_topics %}checked{% endif %}>
+                            </div>
+                        </td>
+                        <td>
+                            <label class="form-check-label fw-semibold" for="topic-{{ topic_key }}">
+                                {{ ('policy_wizard.step.targeted.pick.topic.' ~ topic_key)|trans|default(topic_key) }}
+                            </label>
+                            {% if documents|length > 0 %}
+                                <ul class="list-unstyled small text-muted mb-0 mt-1">
+                                    {% for doc in documents|slice(0, 3) %}
+                                        <li>{{ doc.title|default('—') }}</li>
+                                    {% endfor %}
+                                    {% if documents|length > 3 %}
+                                        <li class="fst-italic">
+                                            {{ 'policy_wizard.step.targeted.pick.more_documents'|trans({'%count%': documents|length - 3}) }}
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% set last_approved = documents|first.lastApprovedAt|default(null) %}
+                            {% if last_approved %}
+                                <small>{{ last_approved|date('Y-m-d') }}</small>
+                            {% else %}
+                                <small class="text-muted">—</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% set next_review = documents|first.nextReviewDate|default(null) %}
+                            {% if next_review %}
+                                <small>{{ next_review|date('Y-m-d') }}</small>
+                            {% else %}
+                                <small class="text-muted">—</small>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}

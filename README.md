@@ -207,7 +207,7 @@ Sechs Persona-Perspektiven auf dasselbe ISMS — vollautomatisch via Playwright 
 </tr>
 <tr>
 <td align="center">
-<a href="docs/sichtwechsel/risk-owner-business.md"><img src="docs/sichtwechsel/img/risk-owner-business/my-workflows.png" alt="Risk-Owner-Inbox" /></a><br/>
+<a href="docs/sichtwechsel/risk-owner-business.md"><img src="docs/sichtwechsel/img/risk-owner-business/workflows-inbox.png" alt="Risk-Owner-Inbox" /></a><br/>
 <b>Risk-Owner / Fachbereichsleiter</b><br/>
 <sub>Aufgaben-Inbox, Ein-Klick-Freigaben, Business-Sprache</sub>
 </td>

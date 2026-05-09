@@ -1,0 +1,75 @@
+{#
+ # Policy-Wizard W7-E — CISO board-reporting widget.
+ #
+ # Embedded into dashboards via:
+ #   {{ render(controller('App\\Controller\\Component\\CisoBoardReportingWidgetController::widget')) }}
+ #
+ # Required variable:
+ #   kpis — { total_policies, pending_approvals, open_findings,
+ #            ack_coverage_percent, dpo_veto_count }
+ #
+ # Five Aurora KPI feature-cards in a kpi-grid. Pending-approval tile
+ # shows a small SLA-overdue chip when count > 0 (CISO can drill down
+ # into the workflow inbox).
+ #}
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{% set kpis = kpis|default({
+    total_policies: 0,
+    pending_approvals: 0,
+    open_findings: 0,
+    ack_coverage_percent: 0.0,
+    dpo_veto_count: 0,
+}) %}
+
+{% set tiles %}
+    <div class="kpi-grid">
+        {{ _fa_feature_card.render({
+            icon: 'file-earmark-text',
+            label: 'policy_wizard.widget.board_reporting.kpi_total_policies'|trans,
+            value: kpis.total_policies,
+            variant: 'primary'
+        }) }}
+
+        {{ _fa_feature_card.render({
+            icon: 'hourglass-split',
+            label: 'policy_wizard.widget.board_reporting.kpi_pending_approvals'|trans,
+            value: kpis.pending_approvals,
+            variant: kpis.pending_approvals > 0 ? 'warning' : 'success',
+            hint: kpis.pending_approvals > 0
+                ? 'policy_wizard.widget.board_reporting.period_label'|trans
+                : null
+        }) }}
+
+        {{ _fa_feature_card.render({
+            icon: 'shield-exclamation',
+            label: 'policy_wizard.widget.board_reporting.kpi_open_findings'|trans,
+            value: kpis.open_findings,
+            variant: kpis.open_findings > 0 ? 'danger' : 'success'
+        }) }}
+
+        {{ _fa_feature_card.render({
+            icon: 'check2-square',
+            label: 'policy_wizard.widget.board_reporting.kpi_ack_coverage'|trans,
+            value: kpis.ack_coverage_percent|number_format(1, '.', ''),
+            unit: '%',
+            variant: kpis.ack_coverage_percent >= 90.0 ? 'success'
+                  : (kpis.ack_coverage_percent >= 70.0 ? 'warning' : 'danger')
+        }) }}
+
+        {{ _fa_feature_card.render({
+            icon: 'shield-lock',
+            label: 'policy_wizard.widget.board_reporting.kpi_dpo_veto_count'|trans,
+            value: kpis.dpo_veto_count,
+            variant: kpis.dpo_veto_count > 0 ? 'warning' : 'primary',
+            hint: 'policy_wizard.widget.board_reporting.period_label'|trans
+        }) }}
+    </div>
+{% endset %}
+
+{{ _fa_section.render({
+    title: 'policy_wizard.widget.board_reporting.title'|trans,
+    body: tiles
+}) }}

@@ -1,0 +1,366 @@
+policy:
+    iso27001:
+        acceptable_use:
+            v1:
+                gdpr_section:
+                    gdpr_lawful_basis_workplace:
+                        title: 'Data Protection Aspects of Workplace Use'
+                        body: |-
+                            ## Lawful Basis for Workplace Processing of Personal Data
+
+                            *Section class: GDPR section to the Acceptable Use Policy | Normative anchors: Art. 6, Art. 9 and Art. 88 GDPR; § 26 BDSG-new (Federal Data Protection Act); § 87 Works Constitution Act (BetrVG) | Cross-reference ISO/IEC 27001:2022 Annex A.5.10, A.6.3, A.8.1*
+
+                            ### 1. Purpose
+                            The use of IT and communication facilities provided by {{ tenant.legal_name }} regularly involves processing of personal data of employees, customers, business partners and other data subjects. This section sets out the lawful bases, limits and works council co-determination triggers that apply in addition to the general Acceptable Use Policy. It applies to all employees within the meaning of § 26(8) BDSG, including apprentices, interns, working students and temporary workers.
+
+                            ### 2. Lawful bases for employee data processing
+                            Processing of employee personal data for the purposes of establishing, performing or terminating the employment relationship, or for exercising rights and duties arising from law or works agreements, is based on § 26(1) BDSG-new in conjunction with Art. 88(1) GDPR, which authorises Member States to provide more specific employment-context rules. Where processing is not employment-related, a separate lawful basis under Art. 6(1) GDPR is required ({{ gdpr.legal_basis_default }}). Special categories are subject to Art. 9 GDPR and § 26(3) BDSG.
+
+                            ### 3. Works council co-determination
+                            Pursuant to § 87(1) No. 6 of the Works Constitution Act (BetrVG), the introduction and use of technical devices designed to monitor employee behaviour or performance is subject to mandatory co-determination. This includes e-mail and internet logging, endpoint detection and response tools, mobile device management, web proxies, data loss prevention systems and central single sign-on or identity provider solutions. Before introducing or materially changing such systems, a works or service agreement must be concluded with the competent employee representatives. {{ roles.dpo.fullName }} acts in an advisory capacity; negotiation and conclusion remain with executive management.
+
+                            ### 4. Private use and separation principle
+                            Private use of company communication tools is permitted only to the extent expressly allowed in the Acceptable Use Policy. Where prohibited, content data is treated as purely business data under ordinary employee data protection rules. Where allowed or tolerated, supervisory authorities have argued the employer may assume the position of a telecommunications provider with stricter confidentiality and log-analysis requirements. {{ tenant.legal_name }} therefore applies a separation principle: private use only through explicitly designated channels or not at all.
+
+                            ### 5. Permissible monitoring and analysis
+                            Analysis of log and content data to detect criminal offences in the employment relationship is admissible only under the strict conditions of § 26(1) sentence 2 BDSG (documented factual indicia, proportionality, no less intrusive means). Indiscriminate full reviews are prohibited. Sample-based technical checks for security and availability purposes are permitted on a pseudonymous or aggregated basis under Art. 6(1)(f) GDPR, provided the balancing of interests is documented in the record of processing activities.
+
+                            ### 6. Transparency and data subject rights
+                            Employees are informed pursuant to Art. 13 GDPR upon entering the employment relationship and whenever new systems are introduced, covering purposes, lawful bases, retention periods and recipients. Data subject rights under Art. 15 to 22 GDPR are exercised through the Data Subject Rights Procedure; their exercise must not result in any disadvantage.
+
+                            ### 7. Breaches and sanctions
+                            Breaches are pursued through the disciplinary system of {{ tenant.legal_name }}. {{ roles.dpo.fullName }} may prohibit any analysis that does not satisfy § 26 BDSG and the applicable works agreement.
+
+                            ---
+
+                            *Approval: CISO + DPO (joint)*
+                            *Approval chain: {{ approval.chain }}*
+        awareness_training:
+            v1:
+                gdpr_section:
+                    gdpr_dpo_mandate:
+                        title: 'Mandate and Position of the Data Protection Officer'
+                        body: |-
+                            ## Mandate, Tasks and Position of the Data Protection Officer
+
+                            *Section class: GDPR section to the Awareness and Training Policy | Normative anchors: Art. 37 to 39 GDPR; § 38 BDSG-new | Cross-reference ISO/IEC 27001:2022 Annex A.6.3, A.5.2; ISO/IEC 27701:2025 Cl. 5.3, 6.4.2*
+
+                            ### 1. Designation
+                            {{ tenant.legal_name }} has designated {{ roles.dpo.fullName }} as Data Protection Officer pursuant to Art. 37(1) GDPR and § 38 BDSG-new. In Germany, designation is mandatory in particular where at least 20 persons are constantly engaged in the automated processing of personal data, where processing operations are subject to a DPIA, or where personal data is processed on a commercial basis for transfer, anonymised transfer or market or opinion research purposes. Contact details have been published per Art. 37(7) GDPR and notified to the competent supervisory authority.
+
+                            ### 2. Tasks under Art. 39 GDPR
+                            {{ roles.dpo.fullName }} performs at least: informing and advising the controller and employees on their obligations; monitoring compliance with data protection law and the controller's policies, including assignment of responsibilities, awareness-raising and training; advising on and monitoring DPIAs under Art. 35 GDPR; cooperating with the supervisory authority and acting as the contact point under Art. 36 GDPR. These tasks are integrated as recurring mandatory content of the awareness and training programme.
+
+                            ### 3. Position and independence
+                            {{ roles.dpo.fullName }} reports directly to the highest management level of {{ tenant.legal_name }} (Art. 38(3) sentence 3 GDPR). No instructions are given regarding the performance of the tasks; dismissal or sanctioning for performing the tasks is prohibited (Art. 38(3) sentence 2 GDPR; § 6(4) BDSG-new with § 38(2) BDSG). {{ roles.dpo.fullName }} is bound by secrecy or confidentiality (Art. 38(5) GDPR) and enjoys, in employee counselling matters, a statutory right to refuse testimony.
+
+                            ### 4. Resources and access
+                            {{ tenant.legal_name }} provides {{ roles.dpo.fullName }} with the resources necessary for performing the tasks, in particular access to personal data and processing operations and means to maintain expert knowledge (Art. 38(2) GDPR). This includes read access to the record of processing activities, DPIAs, the asset inventory, incident reports and the supplier register.
+
+                            ### 5. No conflict of interest
+                            {{ roles.dpo.fullName }} may not perform any task resulting in a conflict of interest (Art. 38(6) GDPR). In particular, the function may not be combined in one person with executive management, head of HR, head of IT or with the Information Security Officer or CISO role. The absence of conflicts is documented and updated annually and on every role change.
+
+                            ### 6. Awareness and training contribution
+                            Within the awareness and training programme established under Annex A.6.3, {{ roles.dpo.fullName }} delivers, at least annually, role-specific data protection training for all employees and in-depth modules for HR, marketing, sales, IT operations and software engineering. New employees receive a data protection onboarding module within their first 30 days. Effectiveness is measured through test pass rates and targeted phishing-style data protection quizzes.
+
+                            ### 7. Single point of contact
+                            Employees and data subjects may reach {{ roles.dpo.fullName }} through the channels published in the Privacy Notice. Requests are treated confidentially and are not forwarded to line management without the data subject's consent, to the extent permitted by law.
+
+                            ---
+
+                            *Approval: DPO*
+                            *Approval chain: {{ approval.chain }}*
+        information_classification:
+            v1:
+                gdpr_section:
+                    gdpr_special_categories:
+                        title: 'Special Categories of Personal Data and Professional Secrecy'
+                        body: |-
+                            ## Classification and Protection of Special Categories of Personal Data
+
+                            *Section class: GDPR section to the Classification Policy | Normative anchors: Art. 9, Art. 10 GDPR; § 22 BDSG-new; § 203 of the German Criminal Code (StGB) | Cross-reference ISO/IEC 27001:2022 Annex A.5.12, A.5.13, A.8.11, A.8.12; ISO/IEC 27701:2025 Cl. 7.2.2*
+
+                            ### 1. Scope
+                            This section extends the Classification Policy with requirements for special categories of personal data within the meaning of Art. 9(1) GDPR and for personal data relating to criminal convictions and offences (Art. 10 GDPR). It covers, in particular, data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs or trade union membership, as well as genetic data, biometric data processed for unique identification, data concerning health, and data concerning sex life or sexual orientation.
+
+                            ### 2. Classification rule
+                            Data within the scope of Art. 9 and Art. 10 GDPR is classified as at least *confidential*; in regulated sectors (healthcare, social welfare data, law enforcement) the classification is *strictly confidential*. A lower classification is excluded regardless of availability or integrity needs. Pseudonymised or aggregated data sets may be classified lower only after a documented risk assessment excluding re-identifiability within the meaning of Art. 4(5) GDPR with reasonable effort.
+
+                            ### 3. Lawful bases and exceptions
+                            Processing special categories is in principle prohibited by Art. 9(1) GDPR unless one of the exceptions in Art. 9(2)(a) to (j) GDPR applies. In the German employment context, § 26(3) BDSG-new applies; in healthcare, § 22(1) BDSG-new applies in addition. The applicable lawful basis must be documented per processing activity ({{ gdpr.legal_basis_default }} alone is not sufficient).
+
+                            ### 4. Professional secrecy obligations (§ 203 StGB)
+                            Where {{ tenant.legal_name }} processes data subject to a professional secrecy obligation under § 203(1) of the German Criminal Code (medical, dental, legal, tax-advisory, social-work or comparable activities), additional organisational duties apply pursuant to § 203(3) StGB: written confidentiality undertakings of contributing persons, careful selection and oversight of external service providers, and supplementary confidentiality clauses in processor and service-provider arrangements. Breach of professional secrecy is a criminal offence. Training content for affected roles is itemised separately in the awareness programme.
+
+                            ### 5. Technical and organisational measures
+                            Additional minimum measures: encryption at rest and in transit (A.8.24), attribute- or role-based access control on a need-to-know basis (A.5.15, A.5.18), data minimisation in test and development environments via masking or synthetic data (A.8.11, A.8.33), data loss prevention on egress paths (A.8.12) and enhanced access logging (A.8.15) with timely review. Mobile devices may process such data only via certified containers or approved remote-access solutions.
+
+                            ### 6. Mandatory DPIA
+                            A DPIA under Art. 35 GDPR is mandatory where such data is processed on a large scale, biometric data is used for identification, or extensive systematic monitoring is carried out. {{ roles.dpo.fullName }} must be involved.
+
+                            ### 7. Cross-border transfers
+                            Transfers to third countries without an adequacy decision require mandatory supplementary measures per EDPB Recommendations 01/2020 and a TIA. Reliance on Art. 49(1)(a) GDPR (explicit consent) is permissible only as an exception in individual cases.
+
+                            ---
+
+                            *Approval: CISO + DPO (joint)*
+                            *Approval chain: {{ approval.chain }}*
+        secure_development:
+            v1:
+                gdpr_section:
+                    gdpr_privacy_by_design:
+                        title: 'Privacy by Design and by Default in Development'
+                        body: |-
+                            ## Privacy by Design and Privacy by Default
+
+                            *Section class: GDPR section to the Secure Development Policy | Normative anchors: Art. 25 GDPR; ENISA *Privacy and Data Protection by Design* (2014) and subsequent guidelines | Cross-reference ISO/IEC 27001:2022 Annex A.8.25, A.8.27, A.8.28; ISO/IEC 27701:2025 Cl. 7.4.2; ISO/IEC 31700-1:2023*
+
+                            ### 1. Scope and mandate
+                            This section governs how {{ tenant.legal_name }} integrates Art. 25(1) GDPR (data protection by design) and Art. 25(2) GDPR (data protection by default) into the software development lifecycle. It applies to all projects in which personal data is collected, processed or displayed, whether developed in-house or commissioned externally.
+
+                            ### 2. Seven foundational principles
+                            Development follows the seven foundational principles taken up by ENISA (Cavoukian, 1995): proactive not reactive, privacy as the default setting, privacy embedded into the design, full functionality without trade-offs, end-to-end protection across the lifecycle, visibility and transparency, and respect for user privacy. These principles are documented per architectural decision and are mandatory in architectural reviews.
+
+                            ### 3. Mandatory gates
+                            Every project handling personal data passes through at least: a privacy pre-check at project inception (DPIA threshold assessment), a privacy-by-design architecture review before the target architecture is fixed, a privacy-by-design code review profile with dedicated checkpoints (input validation, least privilege, encryption defaults, logging granularity), a pre-production gate (penetration test plus DPIA closure), and a post-launch review 90 days after go-live.
+
+                            ### 4. Privacy-friendly default settings
+                            Defaults are chosen so that only personal data necessary for the specific purpose is processed. Features involving additional processing are explicitly opt-in. Tracking, profiling, sharing and advertising are disabled by default; activation requires a lawful basis under Art. 6 or Art. 9 GDPR. Retention periods are technically enforced via automated deletion or anonymisation routines.
+
+                            ### 5. Minimum security patterns
+                            Mandatory: encryption at rest and in transit with an up-to-date algorithm inventory (A.8.24); pseudonymisation of identifiers in non-production environments (A.8.11, A.8.33); role-based authorisation following least privilege (A.5.15, A.5.18); input validation against OWASP ASVS Level 2 as a minimum baseline; tamper-evident logging of relevant privacy events; secure default configuration of all interfaces.
+
+                            ### 6. Vendor and third-party component governance
+                            Libraries, SaaS components and AI models undergo a data protection suitability check before adoption. {{ tenant.legal_name }} documents per component the vendor, version, processing location, data flows, lawful basis and any third-country transfer paths. Components without a documented assessment are not eligible for production.
+
+                            ### 7. Evidence and audit
+                            Compliance with Art. 25 GDPR must be demonstrable under the Art. 24 GDPR accountability principle. Evidence comprises architecture decision records, threat and risk models, DPIAs, test and audit reports, stored in the document management module tagged iso27001:A.8.27 and iso27701:7.4.2 and provided to supervisory authorities on request. {{ roles.dpo.fullName }} and {{ roles.ciso.fullName }} jointly confirm effectiveness.
+
+                            ---
+
+                            *Approval: CISO + DPO (joint)*
+                            *Approval chain: {{ approval.chain }}*
+                    gdpr_ai_systems:
+                        title: 'AI Systems, Automated Decisions and the EU AI Act Interface'
+                        body: |-
+                            ## Data Protection and AI Systems
+
+                            *Section class: GDPR section to the Secure Development Policy | Normative anchors: Art. 22 GDPR; Regulation (EU) 2024/1689 (EU AI Act), in particular Art. 6 in conjunction with Annex III (high-risk classification) and Art. 26 and Art. 27 (deployer obligations) | Cross-reference ISO/IEC 27001:2022 Annex A.5.8, A.8.27, A.8.28; ISO/IEC 27701:2025 Cl. 7.4.2; ISO/IEC 42001:2023*
+
+                            ### 1. Section activation
+                            This section applies as soon as the tenant setting `ai_system=true` is enabled or {{ tenant.legal_name }} develops, operates or deploys an AI system within the meaning of Art. 3(1) of Regulation (EU) 2024/1689. While disabled, only the general requirements of Art. 25 GDPR apply. Activation also triggers AI-specific check paths in the DPIA methodology and in supplier management.
+
+                            ### 2. EU AI Act and high-risk classification
+                            The EU AI Act distinguishes prohibited practices (Art. 5), high-risk AI systems (Art. 6 with Annex III), AI systems subject to specific transparency obligations (Art. 50) and general-purpose AI systems. {{ tenant.legal_name }} maintains an AI system inventory documenting the classification per system. Annex III high-risk areas include biometric identification, critical infrastructure, education and vocational training, employment and personnel management, access to private and public services, law enforcement, migration and the administration of justice.
+
+                            ### 3. Deployer obligations under Art. 26 EU AI Act
+                            As a deployer within the meaning of Art. 3(4) EU AI Act, {{ tenant.legal_name }} observes: use per provider instructions, competent human oversight, input data control, retention of automatically generated logs, information of affected employees and their representatives prior to workplace deployment, and cooperation with market surveillance. High-risk systems in the workplace are additionally subject to works council co-determination under § 87(1) No. 6 BetrVG.
+
+                            ### 4. Fundamental Rights Impact Assessment (Art. 27 EU AI Act)
+                            Before placing into service a high-risk system listed in Annex III, {{ tenant.legal_name }} conducts a fundamental rights impact assessment under Art. 27 EU AI Act, where appropriate consolidated with the DPIA under Art. 35 GDPR; GDPR requirements remain fully applicable. Outcomes are notified to the competent market surveillance authority where required.
+
+                            ### 5. Solely automated decisions (Art. 22 GDPR)
+                            A decision based solely on automated processing producing legal effects on a data subject or similarly significantly affecting them is permissible only under Art. 22(2) GDPR. {{ tenant.legal_name }} ensures data subjects are informed of automated decision-making, that the logic is explained in intelligible form (Art. 13(2)(f), Art. 15(1)(h) GDPR) and that they may obtain human intervention and contest the decision.
+
+                            ### 6. Training and input data
+                            Training, validation and test data are maintained for representativeness, accuracy and completeness (Art. 10 EU AI Act). Personal training data is subject to Art. 5 and Art. 9 GDPR; processing special categories for training requires an explicit legal basis. Generative systems implement output filters and hallucination checks.
+
+                            ### 7. Vendor and model governance
+                            Third-party model providers, including providers of general-purpose AI systems, are contractually committed to the applicable GDPR and EU AI Act obligations, jointly with the processor and third-country assessment. Models without verifiable data provenance and security patching are not deployed.
+
+                            ### 8. Approval and escalation
+                            {{ roles.dpo.fullName }} and {{ roles.ciso.fullName }} approve the deployment of new AI systems within architectural reviews. Practices prohibited by Art. 5 EU AI Act are rejected without exception; violations result in immediate decommissioning.
+
+                            ---
+
+                            *Approval: CISO + DPO (joint)*
+                            *Approval chain: {{ approval.chain }}*
+        supplier_security:
+            v1:
+                gdpr_section:
+                    gdpr_joint_controllers:
+                        title: 'Joint Controllership under Art. 26 GDPR'
+                        body: |-
+                            ## Joint Controllership and Distinction from Processing on Behalf
+
+                            *Section class: GDPR section to the Supplier Security Policy | Normative anchors: Art. 26 GDPR; CJEU Case C-210/16 *Wirtschaftsakademie Schleswig-Holstein* (judgment of 5 June 2018); EDPB Guidelines 07/2020 on the concepts of controller and processor | Cross-reference ISO/IEC 27001:2022 Annex A.5.19, A.5.20, A.5.21, A.5.22; ISO/IEC 27701:2025 Cl. 7.2.7*
+
+                            ### 1. Use case
+                            This section governs the data protection treatment of supplier relationships in which {{ tenant.legal_name }} jointly with one or more other entities determines the purposes and means of a processing operation. It supplements Art. 28 GDPR (processing on behalf) and applies wherever joint determination is materially given, regardless of contractual label.
+
+                            ### 2. Distinction between controller, processor and joint controller
+                            A controller within the meaning of Art. 4(7) GDPR is the entity which, alone or jointly with others, determines the purposes and means of the processing. Processing on behalf under Art. 28 GDPR presupposes the processor acts solely on the controller's instructions with no own purposes. Where purposes or essential means are jointly determined, the parties qualify as joint controllers under Art. 26 GDPR. EDPB Guidelines 07/2020 provide the assessment criteria; {{ tenant.legal_name }} documents the qualification per relationship in the supplier register.
+
+                            ### 3. Wirtschaftsakademie Schleswig-Holstein standard
+                            In Case C-210/16 (judgment of 5 June 2018), the CJEU held that the operator of a Facebook fan page is a joint controller, together with the platform operator, with respect to the processing of visitor data. Key reasoning: contributing to processing parameters (for example selecting statistical or audience-targeting features) is sufficient to establish joint controllership; the scope need not be equal; an entity in the processing chain may be a controller without itself accessing the data. {{ tenant.legal_name }} applies this standard by analogy to platform integrations, co-branding campaigns, affiliate constellations and jointly operated platforms. Activation of third-party tracking or insight features without an Art. 26 GDPR arrangement is therefore unlawful.
+
+                            ### 4. Mandatory content of the Art. 26 GDPR arrangement
+                            The arrangement transparently allocates the obligations: information duties under Art. 13 and Art. 14 GDPR, handling of data subject rights (Art. 15 to 22 GDPR), designation of the contact point for data subjects, breach notifications under Art. 33 and Art. 34 GDPR, data protection impact assessments, and rules on processors and sub-processors. The essence is made available to data subjects pursuant to Art. 26(2) sentence 2 GDPR.
+
+                            ### 5. Liability
+                            Pursuant to Art. 26(3) GDPR, data subjects may exercise their rights against any of the joint controllers, irrespective of the internal allocation of duties. Internal indemnification follows the agreed quota.
+
+                            ### 6. Contractual implementation
+                            {{ tenant.legal_name }} supplements every affected supplier agreement with a *Joint Controller Annex*. Identification is performed before contract conclusion by the business owner together with {{ roles.dpo.fullName }}; the qualification is recorded in the supplier register with the status `joint_controller` and reviewed annually.
+
+                            ### 7. Termination
+                            When joint processing ends, the arrangement is wound down in a controlled manner: data return or deletion under Art. 17 GDPR, closure of contact points, information of data subjects where necessary, and updates to the record of processing activities and supplier register.
+
+                            ---
+
+                            *Approval: CISO + DPO (joint)*
+                            *Approval chain: {{ approval.chain }}*
+        information_transfer:
+            v1:
+                gdpr_section:
+                    gdpr_international_transfers:
+                        title: 'International Data Transfers, Schrems II and Standard Contractual Clauses'
+                        body: |-
+                            ## Transfers of Personal Data to Third Countries
+
+                            *Section class: GDPR section to the Information Transfer Policy | Normative anchors: Art. 44 to 49 GDPR; CJEU Case C-311/18 *Schrems II* (judgment of 16 July 2020); Commission Implementing Decision (EU) 2021/914 of 4 June 2021 (Standard Contractual Clauses); EDPB Recommendations 01/2020 on supplementary measures | Cross-reference ISO/IEC 27001:2022 Annex A.5.14, A.5.31, A.5.20; ISO/IEC 27701:2025 Cl. 7.5.1 to 7.5.4*
+
+                            ### 1. Scope
+                            This section applies to any transfer of personal data from the EEA to a third country within Art. 44 GDPR, and to importer-side access from a third country to data stored in the EEA (EDPB Guidelines 05/2021). It is triggered only where the tenant setting `privacy.international_transfers=true` is active.
+
+                            ### 2. Tiered model of transfer instruments
+                            The order is mandatory: first, an adequacy decision under Art. 45 GDPR (for example UK, Switzerland, Japan, South Korea, EU-US Data Privacy Framework for certified US recipients). Second, appropriate safeguards under Art. 46 GDPR, in particular Standard Contractual Clauses per Implementing Decision (EU) 2021/914 or binding corporate rules under Art. 47 GDPR. Third, only in narrowly defined exceptional cases, derogations under Art. 49 GDPR; routine reliance is prohibited.
+
+                            ### 3. The Schrems II standard
+                            In Case C-311/18 (judgment of 16 July 2020) the CJEU invalidated the Privacy Shield and held that, while Standard Contractual Clauses remain valid in principle, their effectiveness depends on the legal regime and surveillance powers in the recipient country. The Court emphasised that US law (FISA Section 702 and Executive Order 12333) enables bulk surveillance without a level of protection essentially equivalent to EU law and without an effective remedy. EEA-based data exporters must therefore assess case by case whether the transfer instrument needs to be reinforced with supplementary measures to achieve an essentially equivalent level of protection.
+
+                            ### 4. Standard Contractual Clauses (SCCs)
+                            {{ tenant.legal_name }} uses the SCCs adopted by Commission Implementing Decision (EU) 2021/914 in the relevant module: Module 1 (controller to controller), Module 2 (controller to processor), Module 3 (processor to processor), Module 4 (processor to controller). Annexes are completed in full; description of processing, TOMs, list of sub-processors and dispute resolution are mandatory checkpoints. Additions that lower the level of protection are not permitted.
+
+                            ### 5. Transfer Impact Assessment (TIA)
+                            Before any new third-country transfer, {{ tenant.legal_name }} performs a TIA per EDPB Recommendations 01/2020 covering nature of data, purpose and duration, recipient landscape, applicable law and surveillance practice, and safeguards. The TIA is documented and re-assessed at least every 24 months and immediately upon material change. {{ roles.dpo.fullName }} confirms the outcome.
+
+                            ### 6. Supplementary measures
+                            Appropriate supplementary measures include end-to-end encryption with key custody in the EEA, pseudonymisation, split processing with separated key shares, transparency-report covenants, the right to challenge governmental access requests, recipient selection in sectors with reduced access risk and contractual data-use restrictions. Where insufficient, the transfer must be refrained from or terminated.
+
+                            ### 7. Derogations under Art. 49 GDPR
+                            Derogations are interpreted narrowly, documented per case and require explicit approval by {{ roles.dpo.fullName }}. Explicit consent under Art. 49(1)(a) GDPR presupposes prior information about the specific risks; routine reliance is prohibited.
+
+                            ### 8. Supplier governance and sub-processors
+                            Sub-processors in third countries are recorded in the supplier register with processing location, transfer instrument and TIA status. Changes are governed by Modules 2 and 3 of the SCCs.
+
+                            ---
+
+                            *Approval: CISO + DPO (joint)*
+                            *Approval chain: {{ approval.chain }}*
+        asset_management:
+            v1:
+                gdpr_section:
+                    gdpr_retention_minimisation:
+                        title: 'Data Minimisation, Storage Limitation and Erasure'
+                        body: |-
+                            ## Data Minimisation and Erasure Duties in the Asset Lifecycle
+
+                            *Section class: GDPR section to the Asset Management Policy | Normative anchors: Art. 5(1)(c) and Art. 5(1)(e) GDPR; § 35 BDSG-new; BSI Standard 200-2 and BSI building block CON.6 *Loeschen und Vernichten* | Cross-reference ISO/IEC 27001:2022 Annex A.5.9, A.5.10, A.8.10, A.8.13; ISO/IEC 27701:2025 Cl. 7.4.7*
+
+                            ### 1. Scope
+                            This section extends the Asset Management Policy with data protection requirements concerning data minimisation (Art. 5(1)(c) GDPR) and storage limitation (Art. 5(1)(e) GDPR). It covers all information assets in which personal data is stored or processed, including databases, file shares, backups, archives, logs, reports and end-user devices.
+
+                            ### 2. Principle of data minimisation
+                            When specifying and operating an asset, only personal data that is adequate, relevant and limited to what is necessary for the purposes of the processing is collected and stored. Fields without a documented purpose are neither collected nor retained. The accountable asset owner documents data categories and fields per asset in the inventory; changes are accompanied by a privacy review by {{ roles.dpo.fullName }} within the change process.
+
+                            ### 3. Storage limitation and retention matrix
+                            The central retention and erasure matrix of {{ tenant.legal_name }} (single source of truth per the Retention Schedule) assigns a maximum retention period to each data category. Asset owners associate the asset with the data categories it contains; retention deadlines are technically enforced via automated deletion jobs, storage lifecycle rules or documented manual routines. Applications handling personal data without a documented deletion mechanism are not eligible for production.
+
+                            ### 4. Erasure, anonymisation and pseudonymisation
+                            Erasure under Art. 17 GDPR requires that the data cannot be reconstituted without disproportionate effort. Anonymisation modifies the quality of the data under Art. 4(1) GDPR and removes the data from the material scope of the GDPR; it is permissible if irreversible within the meaning of Recital 26. Pseudonymisation under Art. 4(5) GDPR does not remove the data from scope and is therefore an additional security measure rather than a substitute for erasure. Procedures are documented per asset in the deletion concept.
+
+                            ### 5. BSI CON.6 *Erasure and Destruction*
+                            For physical and logical erasure, BSI building block CON.6 sets the minimum standard. Storage media are securely erased before reuse or disposal per CON.6.A2; defective or decommissioned media are destroyed by certified providers per DIN 66399 in the protection class required for the data category; accountability is allocated to a role in the asset inventory. The cross-reference to CON.6 is recorded in the deletion matrix.
+
+                            ### 6. Backup, restore and archiving
+                            Backups qualify as processing. The right to erasure extends in principle to backups; due to technical realities a deletion or masking procedure with a documented grace period is used. The grace period is made transparent in the deletion concept and explained to data subjects on request. Archives are purpose-bound segregated repositories with a separate lawful basis (for example commercial or tax retention); they are subject to dedicated access control and erased once the obligation lapses.
+
+                            ### 7. Demonstration of effectiveness
+                            Erasure activities are recorded in tamper-evident logs (A.8.15). Asset owners and {{ roles.dpo.fullName }} sample-test erasure effectiveness at least annually; results are reflected in the annual data protection report.
+
+                            ---
+
+                            *Approval: CISO + DPO (joint)*
+                            *Approval chain: {{ approval.chain }}*
+        incident_management:
+            v1:
+                gdpr_section:
+                    gdpr_breach_72h:
+                        title: 'Notification of Personal Data Breaches Within 72 Hours'
+                        body: |-
+                            ## Notification and Communication of Personal Data Breaches
+
+                            *Section class: GDPR section to the Incident Management Policy | Normative anchors: Art. 33 GDPR (72-hour authority notification); Art. 34 GDPR (communication to data subjects); EDPB Guidelines 9/2022 on personal data breach notification | Cross-reference ISO/IEC 27001:2022 Annex A.5.24, A.5.25, A.5.26; ISO/IEC 27701:2025 Cl. 6.13; DORA Regulation (EU) 2022/2554 Art. 19*
+
+                            ### 1. Scope and definition
+                            A personal data breach is any breach of security leading to accidental or unlawful destruction, loss, alteration, unauthorised disclosure of, or access to, personal data transmitted, stored or otherwise processed (Art. 4(12) GDPR). Personal data breaches and purely technical security events use the same incident management process but separate assessment and notification chains.
+
+                            ### 2. State machine and deadlines
+                            {{ tenant.legal_name }} operates the following stages:
+
+                            1. **Detection (T0)** — Reported by employees, monitoring, a processor or third party. The Art. 33 GDPR clock starts when the controller becomes aware per EDPB Guidelines 9/2022.
+                            2. **Initial classification (T0 + 4 hours)** — For DORA-scoped tenants, the initial notification under Art. 19(4) DORA is triggered within 4 hours after major-incident classification.
+                            3. **Risk assessment (T0 + 24 hours)** — Risk to the rights and freedoms of natural persons is assessed per EDPB Guidelines 9/2022 (nature and confidentiality, number of data subjects, identifiability, severity).
+                            4. **Authority notification under Art. 33 GDPR (T0 + 72 hours)** — Where a likely risk is identified, the competent supervisory authority is notified with the minimum content required by Art. 33(3) GDPR. Late notifications are justified per Art. 33(1) sentence 2 GDPR.
+                            5. **DORA intermediate report (T0 + 72 hours)** — For DORA-scoped tenants, the intermediate report under Art. 19 DORA is filed within 72 hours of classification.
+                            6. **Communication to data subjects under Art. 34 GDPR** — Where a likely high risk is determined, data subjects are informed without undue delay in clear and plain language. Art. 34(3) GDPR measures may exclude the obligation.
+                            7. **DORA final report (T0 + 1 month)** — For DORA-scoped tenants, the final report with root-cause analysis and lessons learned is filed no later than one month after classification.
+
+                            ### 3. Minimum notification content
+                            A notification under Art. 33(3) GDPR contains at least: nature of the breach with categories and approximate number of data subjects and records; name and contact details of {{ roles.dpo.fullName }}; likely consequences; and remedial and mitigation measures.
+
+                            ### 4. Multiple notifications and cross-references
+                            Where a tenant is in scope of DORA, NIS2 or sector-specific law (KRITIS Regulation, telecommunications law), notifications are filed in parallel. A consolidation matrix maps each incident class to the applicable duties and recipients; multiple notifications are tracked under the same case file with cross-referencing.
+
+                            ### 5. Processors and joint controllers
+                            Processors notify {{ tenant.legal_name }} without undue delay after becoming aware (Art. 33(2) GDPR); the DPA service level is fixed at 24 hours. With joint controllers, the notification chain operates under Art. 26 GDPR.
+
+                            ### 6. Documentation in non-notifiable cases
+                            Per Art. 33(5) GDPR, {{ tenant.legal_name }} documents every personal data breach, including facts, effects and remedial actions, even without a notification obligation. The documentation is maintained in the DataBreach module and made available to the supervisory authority on request.
+
+                            ### 7. Communication and escalation
+                            External communication is released only with executive management approval; crisis communication is coordinated through the crisis management plan. {{ roles.dpo.fullName }} and {{ roles.ciso.fullName }} jointly confirm the notification before dispatch.
+
+                            ---
+
+                            *Approval: CISO + DPO (joint)*
+                            *Approval chain: {{ approval.chain }}*
+        physical_security:
+            v1:
+                gdpr_section:
+                    gdpr_premises_processing:
+                        title: 'Processing of Personal Data on Premises'
+                        body: |-
+                            ## Data Protection at Physical Sites
+
+                            *Section class: GDPR section to the Physical Security Policy | Normative anchors: Art. 32 GDPR; § 5 BDSG-new (data protection officers in public bodies) and, for employee-data aspects, § 26 BDSG-new | Cross-reference ISO/IEC 27001:2022 Annex A.7.1 to A.7.10, A.8.1; ISO/IEC 27701:2025 Cl. 7.4.6*
+
+                            ### 1. Scope
+                            This section governs data-protection-specific requirements for processing of personal data on physical premises, including office and meeting rooms, server and technical rooms, reception areas, printing locations, storage rooms and archives, off-site locations and home-office workstations. It supplements the general Physical Security Policy with requirements from Art. 32 GDPR and national law.
+
+                            ### 2. Confidentiality of physical spaces
+                            Personal data is processed on premises so as to prevent any unauthorised inspection by third parties. This includes locating workstations outside the line of sight from public areas, privacy filters on screens displaying special categories, acoustic separation in telephony and video-conference rooms, and pull-print procedures for printer outputs. Paper records are stored, outside immediate handling, in lockable cabinets per the clean-desk requirement of A.7.7.
+
+                            ### 3. Access control and visitors
+                            Per A.7.2, physical access is granted only to authorised persons. Visitors are registered and escorted; visit records are kept with a defined retention period and erasure routine. Service providers and tradespeople able to perceive personal data are contractually committed to confidentiality before access (Art. 28 GDPR or § 5 BDSG for public bodies).
+
+                            ### 4. Video surveillance
+                            Video surveillance is permissible only where legitimate interests apply (Art. 6(1)(f) GDPR) or a specific legal basis exists (for example § 4 BDSG-new for publicly accessible areas), where a DPIA has documented necessity, the shortest possible retention period is enforced, signage in line with Art. 13 GDPR is in place and the works council has co-determined the deployment under § 87(1) No. 6 BetrVG. Recordings are subject to strict access restrictions; analysis is case-related under the four-eyes principle.
+
+                            ### 5. Server and technical rooms
+                            Per A.7.4, server and technical rooms are protected by multi-layered physical safeguards. Access logs are stored tamper-evidently; access for data-protection-related analysis requires a documented trigger. The duty to safeguard employee personality rights under § 26 BDSG-new applies in technical areas too.
+
+                            ### 6. Mobile processing and home office
+                            Mobile devices and home-office workstations are addressed with protection equivalent to fixed workstations: physically secured storage of company data carriers, encryption at rest (A.8.24), VPN for accessing processing systems, separation of business and private use. Where personal data is processed in residential premises, additional confidentiality requirements towards household members apply.
+
+                            ### 7. Disposal of physical media and records
+                            Destruction is performed per DIN 66399 in the protection class required for the data category. Collection containers are kept locked and emptied by certified providers under a DPA; destruction certificates are archived. Linkage to the asset lifecycle is established via the deletion concept and CON.6.
+
+                            ### 8. Emergency scenarios
+                            In premises-related incidents (fire, water damage, power outage, unauthorised access), a data-protection initial check is performed as part of the damage assessment; on indicators of a personal data breach, escalation to {{ roles.dpo.fullName }} initiates the 72-hour process under the Incident Management Policy.
+
+                            ---
+
+                            *Approval: CISO + DPO (joint)*
+                            *Approval chain: {{ approval.chain }}*

@@ -111,6 +111,7 @@ incident:
     reported_by_legacy: Reported by (free text, legacy)
     reported_by_person: Reported by (Person from master data)
     reported_by_deputies: Deputies (Persons)
+    responsible_person: Responsible Person (Governance)
     incident_classification: Incident Classification (A.5.24)
     containment_actions: Containment Actions (A.5.26)
     evidence_preserved: Evidence Preserved (A.5.28)
@@ -216,6 +217,7 @@ incident:
     authority_reference: Reference number from authority
     reported_by_user: -- Select reporter --
     reported_by_person: -- Person from master data --
+    responsible_person: -- Select responsible person --
     classification: -- Event or Incident --
     containment_actions: 'e.g. system isolated, access revoked, backup restored...'
     ict_classification: -- ICT incident classification --
@@ -243,6 +245,7 @@ incident:
     reported_by_user: Reporter from user management. Leave empty if reported externally.
     reported_by_person: 'Select a person without a system login as reporter. Priority&#58; User &gt; Person &gt; legacy.'
     reported_by_deputies: Additional persons sharing reporter role or deputising. Multiple selection possible.
+    responsible_person: 'Long-term accountable person for this incident (governance view). Distinct from the ticket assignee (action) and the reporter (audit-trail). May be an external CISO/ISO without a system login.'
     incident_classification: 'Event vs. Incident per A.5.24 — controls workflow routing.'
     containment_actions: 'Short-term containment measures and long-term remediation actions per A.5.26.'
     evidence_preserved: 'Confirm that digital evidence has been preserved with integrity protection per A.5.28.'

@@ -1,0 +1,206 @@
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_person_picker.html.twig' as _fa_person_picker %}
+
+{% set roles_default = defaults.roles|default({}) %}
+{% set function_owners_default = defaults.function_owners|default({}) %}
+{% set approval_chain_default = defaults.approval_chain|default([]) %}
+
+{% set role_person_choices = {
+    'ciso': ciso_person_choices|default([]),
+    'isb': isb_person_choices|default([]),
+    'dpo': dpo_person_choices|default([]),
+    'bcm_officer': bcm_officer_person_choices|default([])
+} %}
+{% set function_owner_choices = function_owner_person_choices|default([]) %}
+{% set approver_user_pool = approval_chain_user_choices|default([]) %}
+
+{# Junior-ISB-friendly help-card. Plain-language framing of which
+ # roles are mandatory in which scope.
+ # Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'bi-mortarboard',
+    class: 'mb-3'
+} } %}
+    {% block alert_body %}
+        {% trans_default_domain 'policy_wizard' %}
+        <div class="fa-alert__title">{{ 'policy_wizard.step.roles.help.title'|trans }}</div>
+        <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.roles.help.body'|trans }}</p>
+        <p class="mb-0 small fst-italic text-muted">{{ 'policy_wizard.step.roles.help.example'|trans }}</p>
+    {% endblock %}
+{% endembed %}
+
+{# Person-Rollout (2026-05-08): role-holders are Persons, not Users.
+ # External CISO/DPO/BCM-Officer are common in the DACH-Mittelstand;
+ # forcing a system login created dummy users + audit-trail noise.
+ # Approval-chain at the bottom remains User (login required for sign-off). #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'bi-people',
+    class: 'mb-3 py-2 small'
+} } %}
+    {% block alert_body %}
+        {% trans_default_domain 'policy_wizard' %}
+        <div class="fa-alert__title">{{ 'policy_wizard.step.roles.person_picker.intro.title'|trans }}</div>
+        <p class="fa-alert__message mb-0 small">{{ 'policy_wizard.step.roles.person_picker.intro.body'|trans }}</p>
+    {% endblock %}
+{% endembed %}
+
+{# W2 Gap-A — Krisen-Team RACI hint card. Senior-Consultant
+ # "Hand-holding content" Step 3 (07-phase4-sprint-reconciliation.md
+ # line 204). Surfaces the default RACI assignment so first-time users
+ # don't have to look up BCM-Roles separately. The card is purely
+ # informational — no input wiring. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'status-info',
+    class: 'mb-3'
+} } %}
+    {% block alert_body %}
+        {% trans_default_domain 'policy_wizard' %}
+        <div class="fa-alert__title">{{ 'policy_wizard.roles.raci_hint.title'|trans }}</div>
+        <p class="fa-alert__message mb-2">{{ 'policy_wizard.roles.raci_hint.intro'|trans }}</p>
+        <ul class="list-unstyled small mb-0">
+            <li>
+                <strong>R</strong>
+                <i class="bi bi-info-circle text-muted"
+                   data-bs-toggle="tooltip"
+                   title="{{ 'policy_wizard.step.roles.tooltip.raci_r'|trans }}"
+                   aria-label="{{ 'policy_wizard.step.roles.tooltip.raci_r'|trans }}"></i>
+                — {{ 'policy_wizard.roles.raci_hint.r'|trans }}
+            </li>
+            <li>
+                <strong>A</strong>
+                <i class="bi bi-info-circle text-muted"
+                   data-bs-toggle="tooltip"
+                   title="{{ 'policy_wizard.step.roles.tooltip.raci_a'|trans }}"
+                   aria-label="{{ 'policy_wizard.step.roles.tooltip.raci_a'|trans }}"></i>
+                — {{ 'policy_wizard.roles.raci_hint.a'|trans }}
+            </li>
+            <li>
+                <strong>C</strong>
+                <i class="bi bi-info-circle text-muted"
+                   data-bs-toggle="tooltip"
+                   title="{{ 'policy_wizard.step.roles.tooltip.raci_c'|trans }}"
+                   aria-label="{{ 'policy_wizard.step.roles.tooltip.raci_c'|trans }}"></i>
+                — {{ 'policy_wizard.roles.raci_hint.c'|trans }}
+            </li>
+            <li>
+                <strong>I</strong>
+                <i class="bi bi-info-circle text-muted"
+                   data-bs-toggle="tooltip"
+                   title="{{ 'policy_wizard.step.roles.tooltip.raci_i'|trans }}"
+                   aria-label="{{ 'policy_wizard.step.roles.tooltip.raci_i'|trans }}"></i>
+                — {{ 'policy_wizard.roles.raci_hint.i'|trans }}
+            </li>
+        </ul>
+    {% endblock %}
+{% endembed %}
+
+<div class="row g-3">
+    {% for role_key, label_key in {
+        'ciso': 'policy_wizard.step.roles.ciso_label',
+        'isb': 'policy_wizard.step.roles.isb_label',
+        'dpo': 'policy_wizard.step.roles.dpo_label',
+        'bcm_officer': 'policy_wizard.step.roles.bcm_officer_label'
+    } %}
+        <div class="col-md-6">
+            <label class="form-label" for="role-{{ role_key }}">
+                {{ label_key|trans }}
+                <i class="bi bi-info-circle text-muted ms-1"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="right"
+                   title="{{ ('policy_wizard.step.roles.tooltip.' ~ role_key)|trans }}"
+                   aria-label="{{ ('policy_wizard.step.roles.tooltip.' ~ role_key)|trans }}"></i>
+            </label>
+            {{ _fa_person_picker.render({
+                id: 'role-' ~ role_key,
+                name: 'roles[' ~ role_key ~ ']',
+                choices: role_person_choices[role_key]|default([]),
+                selectedId: roles_default[role_key]|default(null),
+                placeholder: ('policy_wizard.step.roles.field.' ~ role_key ~ '_picker.placeholder')|trans,
+                required: (role_key in ['ciso', 'dpo']),
+                showInternalExternalBadge: true
+            }) }}
+        </div>
+    {% endfor %}
+
+    <div class="col-12">
+        <p class="small text-muted mb-0">
+            <i class="bi bi-person-plus" aria-hidden="true"></i>
+            {{ 'policy_wizard.step.roles.help.missing_user_link'|trans }}
+            <a href="{{ path('user_management_index') }}" target="_blank" rel="noopener">
+                {{ 'policy_wizard.step.roles.help.missing_user_link_cta'|trans }}
+                <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+            </a>
+        </p>
+    </div>
+
+    <div class="col-12 mt-2">
+        <h3 class="h6 mb-2">{{ 'policy_wizard.step.roles.function_owners_label'|trans }}</h3>
+        <p class="text-muted small mb-3">{{ 'policy_wizard.step.roles.function_owners_help'|trans }}</p>
+        {# Junior-ISB-friendly explainer card for first-time users:
+         # what is a Function-Owner, which functions are typical. #}
+        {% embed '_components/_fa_alert.html.twig' with { props: {
+            variant: 'info',
+            icon: 'bi-mortarboard',
+            class: 'mb-3 py-2 small'
+        } } %}
+            {% block alert_body %}
+                {% trans_default_domain 'policy_wizard' %}
+                <div class="fa-alert__title">{{ 'policy_wizard.step.roles.function_owners.junior_help.title'|trans }}</div>
+                <p class="fa-alert__message mb-1 small">{{ 'policy_wizard.step.roles.function_owners.junior_help.body'|trans }}</p>
+                <p class="mb-0 small fst-italic text-muted">{{ 'policy_wizard.step.roles.function_owners.junior_help.examples'|trans }}</p>
+            {% endblock %}
+        {% endembed %}
+        <div class="row g-2">
+            {% for fn_key in ['sales', 'operations', 'rnd', 'hr', 'it_operations', 'finance'] %}
+                <div class="col-md-4">
+                    <label class="form-label small text-muted" for="fn-{{ fn_key }}">
+                        {{ fn_key|replace({'_': ' '})|capitalize }}
+                    </label>
+                    {{ _fa_person_picker.render({
+                        id: 'fn-' ~ fn_key,
+                        name: 'function_owners[' ~ fn_key ~ ']',
+                        choices: function_owner_choices,
+                        selectedId: function_owners_default[fn_key]|default(null),
+                        placeholder: 'policy_wizard.step.roles.field.function_owner_picker.placeholder'|trans,
+                        required: false,
+                        showInternalExternalBadge: true
+                    }) }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-12 mt-3">
+        <label class="form-label" for="approval-chain">
+            {{ 'policy_wizard.step.roles.field.approval_chain.label'|trans }}
+            <i class="bi bi-info-circle text-muted ms-1"
+               data-bs-toggle="tooltip"
+               data-bs-placement="right"
+               title="{{ 'policy_wizard.step.roles.field.approval_chain.tooltip'|trans }}"
+               aria-label="{{ 'policy_wizard.step.roles.field.approval_chain.tooltip'|trans }}"></i>
+        </label>
+        <select class="form-select fa-cyber-input__field"
+                data-controller="tom-select"
+                data-tom-select-placeholder-value="{{ 'policy_wizard.step.roles.field.approval_chain.placeholder'|trans }}"
+                id="approval-chain"
+                name="approval_chain[]"
+                multiple>
+            {% for approver in approver_user_pool %}
+                <option value="{{ approver.id }}"{% if approver.id in approval_chain_default %} selected{% endif %}>
+                    {{ approver.fullName }}{% if approver.email %} &lt;{{ approver.email }}&gt;{% endif %}
+                </option>
+            {% endfor %}
+        </select>
+        <small class="text-muted d-block mt-1">{{ 'policy_wizard.step.roles.field.approval_chain.help'|trans }}</small>
+        {% if approver_user_pool|length == 0 %}
+            <div class="alert alert-warning border-0 mt-2 small">
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                {{ 'policy_wizard.step.roles.field.approval_chain.empty_state'|trans }}
+            </div>
+        {% endif %}
+    </div>
+</div>

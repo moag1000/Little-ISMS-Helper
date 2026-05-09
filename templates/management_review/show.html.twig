@@ -52,12 +52,15 @@
                         <div class="col-md-6">
                             <div class="text-muted small mb-2">
                                 <i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ 'management_review.field.participants'|trans({}, 'management_review') }}
-                                {% include '_components/_badge.html.twig' with { variant: 'primary', content: review.participants|length } %}
+                                {% include '_components/_badge.html.twig' with { variant: 'primary', content: review.effectiveParticipantCount } %}
                             </div>
-                            {% if review.participants|length > 0 %}
+                            {% if review.effectiveParticipantCount > 0 %}
                             <ul class="list-unstyled mb-0">
                                 {% for participant in review.participants %}
                                 <li><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ participant.firstName }} {{ participant.lastName }}</li>
+                                {% endfor %}
+                                {% for personParticipant in review.personParticipants %}
+                                <li><i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ personParticipant.fullName }}</li>
                                 {% endfor %}
                             </ul>
                             {% else %}

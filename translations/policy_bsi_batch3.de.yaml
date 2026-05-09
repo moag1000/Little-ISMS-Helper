@@ -1,0 +1,987 @@
+policy:
+    bsi:
+        teleworking_directive:
+            v1:
+                title: 'Telearbeits- / Home-Office-Richtlinie'
+                body: |-
+                    # Telearbeits-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI 200-2 | Bausteine: OPS.1.2.4.A1 (Regelungen Telearbeit), A2 (Sicherheitstechnische Anforderungen), A3 (Sensibilisierung) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die sicherheitsrelevanten Aspekte der Telearbeit (Home-Office, mobiles Arbeiten ausserhalb der dienstlichen Liegenschaften) bei der {{ tenant.legal_name }}. Sie setzt die Anforderungen aus OPS.1.2.4 um und beruecksichtigt die Mitbestimmung der Arbeitnehmervertretung.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Beschaeftigten, die anteilig oder ueberwiegend ausserhalb der Liegenschaften der Organisation taetig sind, sowie externe Mitarbeitende, soweit zugelassen.
+
+                    ## 3. Berechtigte Personenkreise und Taetigkeiten
+                    Telearbeit ist grundsaetzlich nach Genehmigung durch die Fuehrungskraft moeglich. Ausgenommen sind Taetigkeiten mit besonders schutzbeduerftigen Daten (z. B. VS-NfD), sofern die haeusliche Umgebung nicht entsprechend zertifiziert ist.
+
+                    ## 4. Anforderungen an den haeuslichen Arbeitsplatz (OPS.1.2.4.A2)
+                    - abschliessbarer Raum oder zumindest abschliessbarer Behaeltnis;
+                    - Sichtschutz vor unbefugten Einblicken (Familie, Besucher);
+                    - geeignete Aufbewahrung dienstlicher Unterlagen;
+                    - keine Aufzeichnung dienstlicher Gespraeche durch private Geraete (z. B. Smart Speakers).
+
+                    ## 5. Erlaubte Geraete
+                    Standard ist die Nutzung von Firmen-Notebooks und -Smartphones. BYOD ist bei normaler Schutzbedarfslage moeglich, jedoch mit Container-Loesung (Trennung dienstlich/privat). Bei hohem Schutzbedarf ist BYOD nicht zugelassen.
+
+                    ## 6. Verbindungssicherheit
+                    - VPN-Pflicht fuer alle dienstlichen Verbindungen;
+                    - MFA verbindlich (Cross-Ref ORP.4);
+                    - keine Nutzung oeffentlicher WLANs ohne VPN;
+                    - heimisches WLAN mit WPA3 (mindestens WPA2) und starkem Passwort.
+
+                    ## 7. Druck- und Aufbewahrungsregelungen
+                    - dienstliche Daten werden zentral gedruckt; haeusliches Drucken nur ausnahmsweise;
+                    - Papier-Unterlagen werden in dienstlichen Raeumen entsorgt (Cross-Ref CON.6);
+                    - keine externen Datentraeger ohne Verschluesselung.
+
+                    ## 8. Verlust / Diebstahl
+                    Bei Verlust oder Diebstahl unverzueglich an Service-Desk / ISB {{ roles.isb.fullName }} melden; Remote-Wipe wird ausgeloest (Cross-Ref DER.2.1).
+
+                    ## 9. Datenschutz und Mitbestimmung
+                    Bei Heimarbeit gelten die DSGVO-Vorgaben unveraendert. Die Mitbestimmung der Arbeitnehmervertretung wird beachtet (z. B. Betriebsvereinbarung Telearbeit).
+
+                    ## 10. Kontrollrechte
+                    Kontrollrechte des Arbeitgebers sind in der Betriebsvereinbarung geregelt; Eingriffe in die Privatsphaere werden vermieden.
+
+                    ## 11. Sensibilisierung (OPS.1.2.4.A3)
+                    Telearbeitende erhalten vor erstmaliger Telearbeit eine Sensibilisierung; jaehrliche Auffrischung im Rahmen der Awareness-Richtlinie (Cross-Ref ORP.3).
+
+                    ---
+                    *Cross-Ref ISO/IEC 27002:2022 § 6.7, 7.1. Genehmigt: {{ approval.chain }}.*
+                section:
+                    eligibility:
+                        title: 'Berechtigung'
+                        body: |-
+                            Genehmigung durch Fuehrungskraft; ausgenommen besonders schutzbeduerftige Taetigkeiten (z. B. VS-NfD).
+                    workplace_requirements:
+                        title: 'Haeuslicher Arbeitsplatz'
+                        body: |-
+                            Abschliessbar, Sichtschutz, Aufbewahrung, keine Smart Speakers (OPS.1.2.4.A2).
+                    devices:
+                        title: 'Erlaubte Geraete'
+                        body: |-
+                            Firmen-Geraete Standard; BYOD nur mit Container und nicht bei hohem Schutzbedarf.
+                    connection:
+                        title: 'Verbindungssicherheit'
+                        body: |-
+                            VPN + MFA Pflicht; kein oeffentliches WLAN ohne VPN; heimisches WLAN WPA3.
+                    print_storage:
+                        title: 'Druck/Aufbewahrung'
+                        body: |-
+                            Zentrales Drucken bevorzugt; Entsorgung in Liegenschaft; keine externen Datentraeger ohne Verschluesselung.
+                    loss:
+                        title: 'Verlust / Diebstahl'
+                        body: |-
+                            Sofort-Meldung an ISB; Remote-Wipe (Cross-Ref DER.2.1).
+                    works_council:
+                        title: 'Datenschutz / Mitbestimmung'
+                        body: |-
+                            DSGVO; Betriebsvereinbarung Telearbeit; Privatsphaere geschuetzt.
+                    awareness:
+                        title: 'Sensibilisierung'
+                        body: |-
+                            Vor erstmaliger Telearbeit + jaehrliche Auffrischung (OPS.1.2.4.A3 + Cross-Ref ORP.3).
+                tailoring_field:
+                    home_office_quota:
+                        label: 'Home-Office-Quote'
+                        placeholder: 'Beispiel: "Bis zu 60 Prozent der Wochenarbeitszeit Home-Office; Praesenztage Mo + Mi verpflichtend; Ausnahmen genehmigt durch Vorgesetzte."'
+                    byod_policy:
+                        label: 'BYOD-Regelung'
+                        placeholder: 'Beispiel: "BYOD nur mit MDM-Container und MFA; nicht zugelassen fuer Nutzer mit hohem Schutzbedarf; jaehrliche Selbstauskunft zur haeuslichen Umgebung."'
+                    works_agreement:
+                        label: 'Betriebsvereinbarung Telearbeit'
+                        placeholder: 'Beispiel: "BV Telearbeit vom 01.07.2025 mit BR; Kontrollrechte limitiert auf Audit-Logs in dienstlichen Systemen; keine Privatsphaeren-Eingriffe."'
+
+        remote_maintenance_directive:
+            v1:
+                title: 'Fernwartungs-Richtlinie'
+                body: |-
+                    # Fernwartungs-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI 200-2 | Bausteine: OPS.1.2.5.A1 (Planung Fernwartung), A2 (Sicherheitsmassnahmen), A3 (Authentisierung), A4 (Protokollierung) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: jaehrlich*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die sichere Fernwartung interner und ausgelagerter IT-Systeme bei der {{ tenant.legal_name }}, einschliesslich Eigen- und Fremdwartung sowie ICS/OT-Spezifika.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Fernzugriffe von extern (Internet, Hersteller-Netze) sowie zwischen organisatorisch oder netztechnisch getrennten Bereichen.
+
+                    ## 3. Erlaubte Fernwartungstools
+                    Eine zentrale Liste freigegebener Fernwartungstools wird gepflegt. Nicht freigegebene Tools sind unzulaessig. Ad-hoc-Tools (z. B. TeamViewer privat) sind verboten.
+
+                    ## 4. Authentisierung (OPS.1.2.5.A3)
+                    - persoenliche Konten (kein Shared);
+                    - MFA verbindlich (Cross-Ref ORP.4);
+                    - keine Standard-/Hersteller-Passwoerter;
+                    - Hersteller-Wartungskonten nur bei aktivem Wartungsbedarf freigeschaltet.
+
+                    ## 5. Session-Aufzeichnung
+                    Bei externen Dienstleistern wird die Session aufgezeichnet (Audio + Video / Tastatur). Aufzeichnung gemaess Mitbestimmung und DSGVO (Cross-Ref OPS.1.1.5).
+
+                    ## 6. Just-in-Time-Genehmigung
+                    Fernwartung erfolgt nur fuer einen bestimmten Wartungs-Slot; Genehmigung pro Session durch Verantwortlichen oder ueber PAM-Workflow.
+
+                    ## 7. Netzsegmentierung
+                    Fernwartungs-Zugaenge enden in einer separaten Wartungs-Zone (Bastion); direkter Zugriff aus dem Internet auf Produktiv-Systeme ist nicht zulaessig.
+
+                    ## 8. Vertragliche Anforderungen Externe (OPS.2.3)
+                    NDA, SLA, Audit-Rechte, Subunternehmer-Genehmigung; Kuendigungsklauseln bei Sicherheitsvorfaellen.
+
+                    ## 9. Notfall-Trennung (Kill-Switch)
+                    Fernwartungsverbindungen koennen jederzeit zentral getrennt werden (Kill-Switch). Bei Verdacht auf Missbrauch wird sofort getrennt und Vorfall an ISB {{ roles.isb.fullName }} gemeldet (Cross-Ref DER.2.1).
+
+                    ## 10. ICS/OT-Spezifika
+                    Bei ICS/OT-Fernwartung gelten zusaetzlich: nur ueber Industrie-Sicherheitsgateway; nur in Wartungsfenstern; Hersteller-Authentisierung auf eigenes IAM gemappt.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27002:2022 § 8.21 (Network services security), § 5.7 (Threat intel). Genehmigt: {{ approval.chain }}.*
+                section:
+                    tools:
+                        title: 'Erlaubte Tools'
+                        body: |-
+                            Zentrale Liste freigegebener Tools; Ad-hoc-Tools verboten.
+                    authentication:
+                        title: 'Authentisierung'
+                        body: |-
+                            Persoenliche Konten; MFA Pflicht; keine Standard-Passwoerter; Just-in-Time-Aktivierung Hersteller (OPS.1.2.5.A3).
+                    recording:
+                        title: 'Session-Aufzeichnung'
+                        body: |-
+                            Externe Dienstleister: Aufzeichnung; Mitbestimmung + DSGVO (Cross-Ref OPS.1.1.5).
+                    jit:
+                        title: 'Just-in-Time'
+                        body: |-
+                            Genehmigung pro Session; PAM-Workflow.
+                    segmentation:
+                        title: 'Netzsegmentierung'
+                        body: |-
+                            Wartungs-Zone (Bastion); kein direkter Internet-Zugriff auf Produktiv.
+                    contracts:
+                        title: 'Vertragliche Anforderungen'
+                        body: |-
+                            NDA, SLA, Audit, Subunternehmer-Genehmigung (Cross-Ref OPS.2.3).
+                    kill_switch:
+                        title: 'Notfall-Trennung'
+                        body: |-
+                            Zentrale Trennung jederzeit; Vorfall-Meldung an ISB (Cross-Ref DER.2.1).
+                    ics_ot:
+                        title: 'ICS/OT-Spezifika'
+                        body: |-
+                            Industrie-Sicherheitsgateway; Wartungsfenster; Hersteller-Auth gemappt.
+                tailoring_field:
+                    approved_tools:
+                        label: 'Freigegebene Tools'
+                        placeholder: 'Beispiel: "BeyondTrust Privileged Remote Access fuer interne Admins; Lieferanten-Bastion via PAM mit Just-in-Time; Notebook-Support via Microsoft Intune Remote Help."'
+                    bastion_setup:
+                        label: 'Bastion / Wartungs-Zone'
+                        placeholder: 'Beispiel: "Bastion-Cluster in DMZ-Wartung; Inbound nur ueber zentralen Reverse-Proxy mit MFA; Outbound nur zu freigegebenen Zielen."'
+                    ot_gateway:
+                        label: 'ICS/OT-Wartungs-Gateway'
+                        placeholder: 'Beispiel: "Industrie-DMZ mit Hardware-Gateway Tofino; Hersteller-Sessions ueber dediziertes IAM; Wartungsfenster Mi 02:00-04:00."'
+
+        cloud_usage_directive:
+            v1:
+                title: 'Cloud-Nutzungsrichtlinie'
+                body: |-
+                    # Cloud-Nutzungsrichtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI 200-2 + BSI C5 | Bausteine: OPS.2.2.A1 (Cloud-Nutzungsstrategie), A2 (Sicherheitsrichtlinie Cloud), A3 (Service-Definition), A4 (Verantwortungsbereiche), A5 (Planung Uebergang) | C5: 2020 / 2026 (in Vorbereitung) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: jaehrlich*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Auswahl, den Bezug und die sichere Nutzung von Cloud-Diensten der {{ tenant.legal_name }}. Sie integriert das BSI Cloud Computing Compliance Criteria Catalogue (C5) und die Schrems-II-Erfordernisse fuer Drittlandtransfers (Cross-Ref CON.2).
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Cloud-Dienste (Public, Private, Hybrid) sowie Multi-Cloud-Konstellationen, unabhaengig vom Bezugmodell (IaaS, PaaS, SaaS, FaaS).
+
+                    ## 3. Cloud-Strategie (OPS.2.2.A1)
+                    Die {{ tenant.legal_name }} verfolgt die Strategie {{ tenant.legal_name }}: Cloud-Smart (Cloud-Wahl je Anwendungsfall, mit Vorrang fuer EU-souveraene Loesungen bei sensiblen Daten); konkret im Tailoring.
+
+                    ## 4. Datenklassifikations-Matrix → Cloud-Eignung
+                    | Schutzbedarf | Cloud zugelassen? |
+                    |---|---|
+                    | normal (intern, oeffentlich) | EU-Public-Cloud, SaaS in EU; sektorale Pruefung |
+                    | hoch | EU-Public-Cloud mit C5-Testat oder ISO 27001 + ISO 27017/27018; Schrems-II-konform |
+                    | sehr hoch | Private-Cloud, eigene Infrastruktur oder C5-Plus mit Sovereign-Optionen; Pruefung BfDI / BSI |
+
+                    Streng vertrauliche / VS-NfD-Daten werden grundsaetzlich nicht in Public-Clouds verarbeitet, sofern nicht eine BSI-Zulassung vorliegt.
+
+                    ## 5. Anforderungen an Cloud-Anbieter
+                    - C5-Testat (Stand 2026 ggf. C5:2026 in Vorbereitung) bei KRITIS / sehr hohem Schutzbedarf Pflicht;
+                    - ISO/IEC 27001 + 27017 (Cloud) + 27018 (PII) Mindestanforderung;
+                    - SOC 2 Type II als Zusatznachweis;
+                    - Datenstandort EU bevorzugt; Drittlandtransfer nur Schrems-II-konform.
+
+                    ## 6. Verantwortungsmatrix (OPS.2.2.A4)
+                    Je Cloud-Service-Modell wird die Shared-Responsibility-Matrix dokumentiert (was Anbieter, was Anwender). Beispiele:
+
+                    - **IaaS:** Anbieter = Hardware, Hypervisor; Anwender = OS, Anwendung, Daten;
+                    - **PaaS:** Anbieter = Hardware, OS, Plattform; Anwender = Anwendung, Daten;
+                    - **SaaS:** Anbieter = Plattform + Anwendung; Anwender = Konfiguration, Identitaeten, Daten.
+
+                    Wichtig: SaaS-Anbieter sichern im Default haeufig keine Anwendungs-Daten — eigene Backups erforderlich (Cross-Ref CON.3).
+
+                    ## 7. Datenstandort und Drittlandtransfer (Schrems-II)
+                    Datenstandort wird vertraglich festgelegt; Sub-Verarbeiter werden offengelegt; bei US-Anbietern ist eine TIA (Transfer Impact Assessment) durchzufuehren; CLOUD-Act-Risiko zu bewerten.
+
+                    ## 8. Verschluesselung
+                    - Customer-Managed-Keys bevorzugt (Cross-Ref CON.1);
+                    - Verschluesselung in Transit (TLS 1.2+) und Speicherung obligatorisch;
+                    - Bring-Your-Own-Key (BYOK) und Hold-Your-Own-Key (HYOK) bei sehr hohem Schutzbedarf.
+
+                    ## 9. Identitaets-Federation
+                    Cloud-Identitaeten werden mit dem zentralen Identity-Provider federiert (SAML/OIDC); MFA verbindlich (Cross-Ref ORP.4); Konditionierte Zugriffe (Geo, Geraet, Risk) wo unterstuetzt.
+
+                    ## 10. Logging / Monitoring
+                    Anbieter-Logs werden zentral ins SIEM integriert (Cross-Ref OPS.1.1.5); zusaetzliche eigene Audit-Mechanismen je nach Servicemodell.
+
+                    ## 11. Backup-Verantwortung
+                    Cloud-Anbieter sichern im Default haeufig **nicht** die Anwendungsdaten. Tenant-seitige Sicherung gemaess CON.3 Pflicht.
+
+                    ## 12. Exit-Strategie
+                    Vertraglich festgelegt: Datenrueckgabe-Format, Frist, Loeschbestaetigung, Crypto-Erase. Reversibilitaets-Test mindestens alle 2 Jahre.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27002:2022 § 5.23. C5 ist BSI-Standard; ISO 27017/27018 sind Cloud-Sicherheits- und Datenschutz-Erweiterungen. Genehmigt: {{ approval.chain }}.*
+                section:
+                    strategy:
+                        title: 'Cloud-Strategie'
+                        body: |-
+                            Cloud-Smart mit Vorrang EU-souveraen bei sensiblen Daten (OPS.2.2.A1).
+                    classification:
+                        title: 'Cloud-Eignung nach Klasse'
+                        body: |-
+                            normal: EU-Public-Cloud; hoch: C5-Testat / ISO 27001+27017+27018; sehr hoch: Private/Sovereign.
+                    provider_requirements:
+                        title: 'Anbieter-Anforderungen'
+                        body: |-
+                            C5 + ISO 27001/27017/27018 + ggf. SOC 2 Type II; EU-Datenstandort bevorzugt.
+                    responsibility:
+                        title: 'Verantwortungsmatrix'
+                        body: |-
+                            Shared-Responsibility je IaaS / PaaS / SaaS dokumentiert (OPS.2.2.A4).
+                    data_location:
+                        title: 'Datenstandort / Drittland'
+                        body: |-
+                            Vertragliche Festlegung; TIA bei US-Anbietern; CLOUD-Act-Risiko bewertet.
+                    encryption:
+                        title: 'Verschluesselung'
+                        body: |-
+                            Customer-Managed Keys bevorzugt; BYOK/HYOK bei sehr hohem Schutzbedarf (Cross-Ref CON.1).
+                    federation:
+                        title: 'Identitaets-Federation'
+                        body: |-
+                            SAML/OIDC mit MFA und konditionierten Zugriffen.
+                    logging:
+                        title: 'Logging / Monitoring'
+                        body: |-
+                            Anbieter-Logs in SIEM; zusaetzliche Audit-Mechanismen.
+                    backup:
+                        title: 'Backup-Verantwortung'
+                        body: |-
+                            SaaS sichert Anwendungsdaten haeufig NICHT — Tenant-Backup Pflicht (Cross-Ref CON.3).
+                    exit:
+                        title: 'Exit-Strategie'
+                        body: |-
+                            Datenrueckgabe, Frist, Loeschbestaetigung, Crypto-Erase; Reversibilitaets-Test alle 2 Jahre.
+                tailoring_field:
+                    cloud_geo:
+                        label: 'Cloud-Geo-Strategie'
+                        placeholder: 'Beispiel: "Daten mit hohem Schutzbedarf nur in EU-Regionen; Sovereign-Cloud (z. B. Deutsche Cloud) bei sehr hoch; US-SaaS nur fuer oeffentliche Dokumente."'
+                    c5_requirement:
+                        label: 'C5-Testat-Pflicht'
+                        placeholder: 'Beispiel: "Alle SaaS-Anbieter mit Datenzugriff hoch oder sensitiver muessen aktuelles C5-Testat (Typ 2) vorweisen; Pruefung jaehrlich durch Compliance."'
+                    exit_test:
+                        label: 'Exit-Test'
+                        placeholder: 'Beispiel: "Reversibilitaets-Test alle 18 Monate fuer den groessten SaaS-Anbieter; Datenrueckfluss-Format CSV + JSON; Verifikation Datenintegritaet."'
+
+        outsourcing_supplier_directive:
+            v1:
+                title: 'Lieferantensicherheits- / Outsourcing-Richtlinie'
+                body: |-
+                    # Outsourcing-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI 200-2 | Bausteine: OPS.2.3.A1-A5 (Sicherheitsanforderungen, Auswahl, Vertrag, Mandantenfaehigkeit, gemeinsames Sicherheitskonzept) | DORA Art. 28-30 (ICT-Drittparteien-Risiko bei Finanzbranche) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: jaehrlich + bei Vertragswechsel*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Sicherheits-Anforderungen an Lieferanten und ausgelagerte Dienstleister der {{ tenant.legal_name }}. Sie integriert das DORA-Drittparteien-Risikomanagement bei Finanzdienstleistern (Cross-Ref EU-DORA Art. 28-30).
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Outsourcing-Beziehungen, einschliesslich IT-Dienstleister, Cloud-Anbieter, Auftragsverarbeiter, Reinigungsdienst, Wachdienst und alle Lieferanten mit Zugang zu Informations-Assets.
+
+                    ## 3. Lieferanten-Klassifikation
+                    Lieferanten werden nach Risiko-Niveau klassifiziert:
+
+                    - **Kritisch:** Zugang zu vertraulichen Daten, Verfuegbarkeitskritisch oder unter DORA-Pflicht;
+                    - **Standard:** Mittlerer Datenzugang oder Verfuegbarkeitsbedarf;
+                    - **Niedrig:** Kein nennenswerter Datenzugang, leicht ersetzbar.
+
+                    ## 4. Onboarding-Prozess
+                    Vor Vertragsschluss erfolgt Due-Diligence:
+
+                    - Bonitaetspruefung;
+                    - Sicherheits-Zertifikate (ISO 27001, C5, SOC 2 Type II) je nach Klassifikation;
+                    - Sicherheits-Fragebogen (z. B. CAIQ);
+                    - Pruefung Sub-Auftragnehmer-Konzept;
+                    - DSB-Pruefung bei Personenbezug.
+
+                    ## 5. Vertragsklauseln-Mindestset (OPS.2.3.A3)
+                    - **NDA / Geheimhaltungsvereinbarung;**
+                    - **AVV** nach DSGVO Art. 28 (bei Personenbezug);
+                    - **SLA** mit Verfuegbarkeit, Reaktionszeit, Wiederherstellungszeit;
+                    - **Audit-Rechte** (auch durch Aufsichtsbehoerden bei DORA);
+                    - **Subunternehmer-Genehmigung** mit Genehmigungspflicht;
+                    - **Vorfall-Meldepflichten** mit Fristen;
+                    - **Exit-/Reversibilitaets-Klauseln** (Datenrueckgabe-Format, Loeschbestaetigung);
+                    - **Sanktionen** bei Sicherheitsverstoessen;
+                    - **DORA-Klauseln** (Art. 30) bei Finanzbranche.
+
+                    ## 6. Mandantenfaehigkeit (OPS.2.3.A4)
+                    Bei mandantenfaehigen Diensten wird die saubere Trennung zwischen Mandanten dokumentiert und auditiert; bei sehr hohem Schutzbedarf wird Single-Tenancy bevorzugt.
+
+                    ## 7. Laufendes Monitoring
+                    - KPI-basiertes Monitoring (Verfuegbarkeit, Vorfaelle);
+                    - Vorfall-Meldekanal aus dem DER.2.1-Workflow eingebunden;
+                    - jaehrliche Sicherheits-Reviews;
+                    - Abnahme-Audits bei kritischen Lieferanten alle 1-3 Jahre.
+
+                    ## 8. Audit-Rhythmus
+                    - Kritische Lieferanten: jaehrlich (vor-Ort oder Remote);
+                    - Standard: alle 2-3 Jahre;
+                    - Niedrig: bei Anlass.
+
+                    ## 9. Exit- und Reversibilitaets-Strategie
+                    Vertraglich festgelegt: Datenrueckgabe, Loeschbestaetigung, Mitarbeit bei Migration, Test des Exit-Prozesses (insb. DORA-Anforderung).
+
+                    ## 10. Supply-Chain-Mapping
+                    Sub-Auftragnehmer und deren Sub-Auftragnehmer werden, soweit moeglich, gemappt; insb. bei DORA-pflichtigen Anbietern.
+
+                    ## 11. Notfall- / Concentration-Risk
+                    Konzentrations-Risiko (Abhaengigkeit von wenigen Anbietern) wird bewertet; Backup-Anbieter bzw. Multi-Sourcing bei kritischen Diensten.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27002:2022 § 5.19-5.23 (Supplier relationships); EU-DORA Art. 28-30 bei Finanzbranche. Genehmigt: {{ approval.chain }}.*
+                section:
+                    classification:
+                        title: 'Lieferanten-Klassifikation'
+                        body: |-
+                            Kritisch / Standard / Niedrig nach Datenzugang, Verfuegbarkeit und DORA-Pflicht.
+                    onboarding:
+                        title: 'Onboarding'
+                        body: |-
+                            Due-Diligence, Zertifikate, Fragebogen, Sub-Auftragnehmer-Konzept, DSB-Pruefung.
+                    contract_clauses:
+                        title: 'Vertragsklauseln'
+                        body: |-
+                            NDA, AVV, SLA, Audit, Subunternehmer-Genehmigung, Meldepflicht, Exit, DORA-Klauseln (OPS.2.3.A3).
+                    multi_tenancy:
+                        title: 'Mandantenfaehigkeit'
+                        body: |-
+                            Trennung dokumentiert; Single-Tenancy bei sehr hohem Schutzbedarf (OPS.2.3.A4).
+                    monitoring:
+                        title: 'Laufendes Monitoring'
+                        body: |-
+                            KPIs, Vorfall-Kanal, jaehrliche Reviews, Audits.
+                    audit_cadence:
+                        title: 'Audit-Rhythmus'
+                        body: |-
+                            Kritisch jaehrlich; Standard alle 2-3 Jahre; Niedrig bei Anlass.
+                    exit:
+                        title: 'Exit-Strategie'
+                        body: |-
+                            Datenrueckgabe, Loeschbestaetigung, Migration, Exit-Test (DORA-relevant).
+                    supply_chain:
+                        title: 'Supply-Chain-Mapping'
+                        body: |-
+                            Sub-Auftragnehmer dokumentiert.
+                    concentration:
+                        title: 'Konzentrationsrisiko'
+                        body: |-
+                            Bewertung, Multi-Sourcing bei kritischen Diensten.
+                tailoring_field:
+                    critical_suppliers:
+                        label: 'Kritische Lieferanten'
+                        placeholder: 'Beispiel: "Microsoft (M365), AWS (Hosting), Datacom (RZ-Wartung), DSL-Telekom (Connectivity); jaehrliches Vor-Ort-Audit; DORA-konforme Vertraege ab Q2/2026."'
+                    contract_template:
+                        label: 'Vertragsklausel-Template'
+                        placeholder: 'Beispiel: "Standard-Outsourcing-Vertrag Version 4.0 mit DORA-Anhang; Audit-Rechte umfassen 30-Tage-Notice; Subunternehmer-Genehmigung in 14 Tagen."'
+                    incident_notification:
+                        label: 'Vorfall-Meldepflicht'
+                        placeholder: 'Beispiel: "Lieferanten melden Sicherheitsvorfaelle binnen 4h initial + 24h Detail-Bericht; Aktivierung des Krisenstabs bei Schweregrad hoch oder kritisch."'
+
+        detection_directive:
+            v1:
+                title: 'Detektionsrichtlinie'
+                body: |-
+                    # Detektionsrichtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI 200-2 | Bausteine: DER.1.A1 (Sicherheitsrichtlinie Detektion), A2 (rechtliche Bedingungen), A3 (Verantwortlichkeiten), A4 (Logmeldungen) | Standard: A5-A11 (Korrelation, Alarmierung) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: jaehrlich*
+
+                    ## 1. Zweck
+                    Diese Richtlinie etabliert die Detektion von Sicherheitsvorfaellen, Anomalien und Bedrohungsindikatoren in den IT-Systemen der {{ tenant.legal_name }}. Sie integriert SIEM, EDR, NDR und ggf. UEBA in einer kohaerenten Detektionsstrategie.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle IT-Systeme im Informationsverbund einschliesslich Cloud-Dienste, ICS/OT (mit Sondervorschriften) und externe Dienstleister-Systeme.
+
+                    ## 3. Detektions-Strategie
+                    - **SIEM:** zentrale Sammelstelle und Korrelation (Cross-Ref OPS.1.1.5);
+                    - **EDR:** Endpoint-Detection-and-Response (Cross-Ref OPS.1.1.4);
+                    - **NDR:** Network-Detection-and-Response;
+                    - **UEBA:** User-and-Entity-Behavior-Analytics (mit DSFA);
+                    - **Cloud-Native-Detection:** Cloud-Provider-Sicherheits-Center (z. B. AWS GuardDuty, Azure Defender).
+
+                    ## 4. Use Cases / Detection Rules
+                    Use-Cases werden auf Basis von:
+
+                    - MITRE ATT&CK Framework;
+                    - BSI-Bedrohungslagebild und Warnmeldungen;
+                    - eigenen Bedrohungsanalysen (Cross-Ref Risikoanalyse BSI 200-3);
+                    - Branchen-Threat-Intel-Feeds.
+
+                    Use-Cases werden mindestens jaehrlich gereviewed und bei neuen Bedrohungen erweitert.
+
+                    ## 5. False-Positive-Mgmt
+                    SOC-Team pflegt Tuning-Liste; False-Positive-Rate wird als KPI gefuehrt; bei hohen FP-Raten wird die Use-Case-Logik angepasst.
+
+                    ## 6. Alarmierung und Eskalation
+                    Klassifikation P1-P4 mit Reaktionszeiten:
+
+                    | Stufe | Reaktion |
+                    |---|---|
+                    | P1 (kritisch) | sofort, 24/7 |
+                    | P2 (hoch) | 1 Stunde |
+                    | P3 (mittel) | 4 Stunden |
+                    | P4 (niedrig) | 1 Werktag |
+
+                    ## 7. SOC-Modell
+                    Das SOC-Modell wird im Tailoring konkretisiert (intern, extern, hybrid). Bei externem SOC sind Outsourcing-Anforderungen relevant (Cross-Ref OPS.2.3).
+
+                    ## 8. Datenschutz (DER.1.A2)
+                    - Mitbestimmung Betriebs-/Personalrat;
+                    - DSFA bei UEBA mit personenbezogener Bewertung;
+                    - Personenbezug minimiert; Pseudonymisierung wo moeglich;
+                    - Zugriffsrechte auf Auswertungen restriktiv.
+
+                    ## 9. Threat-Intelligence-Feeds
+                    - kommerzielle Feeds (zu praezisieren im Tailoring);
+                    - BSI-Lagebild und Warnungen;
+                    - MISP-Communities;
+                    - Branchen-CERTs (z. B. CERT-Bund, sektorale CSIRTs).
+
+                    ---
+                    *Cross-Ref ISO/IEC 27002:2022 § 8.16 (Monitoring activities). Genehmigt: {{ approval.chain }}.*
+                section:
+                    strategy:
+                        title: 'Detektions-Strategie'
+                        body: |-
+                            SIEM, EDR, NDR, UEBA, Cloud-Native; integrierte Korrelation.
+                    use_cases:
+                        title: 'Use-Cases / Rules'
+                        body: |-
+                            MITRE ATT&CK + BSI-Lagebild + eigene Analysen + Branchen-Feeds.
+                    fp_management:
+                        title: 'False-Positive-Mgmt'
+                        body: |-
+                            SOC-Tuning; FP-Rate als KPI; Use-Case-Anpassung.
+                    alerting:
+                        title: 'Alarmierung'
+                        body: |-
+                            P1-P4 mit Reaktionszeiten 24/7 / 1h / 4h / 1WT.
+                    soc_model:
+                        title: 'SOC-Modell'
+                        body: |-
+                            Intern / extern / hybrid; bei extern Cross-Ref OPS.2.3.
+                    privacy:
+                        title: 'Datenschutz'
+                        body: |-
+                            Mitbestimmung, DSFA bei UEBA, Pseudonymisierung, restriktive Zugriffe (DER.1.A2).
+                    threat_intel:
+                        title: 'Threat-Intelligence'
+                        body: |-
+                            Kommerziell + BSI-Lagebild + MISP + Branchen-CERTs.
+                tailoring_field:
+                    soc_setup:
+                        label: 'SOC-Setup'
+                        placeholder: 'Beispiel: "Hybrid: internes SOC 8x5 + externer 24/7-Anbieter (Vertrag mit Z-CERT GmbH); Eskalation an internen ISB-Bereitschafts-Pool bei P1."'
+                    threat_feeds:
+                        label: 'Threat-Intel-Feeds'
+                        placeholder: 'Beispiel: "BSI-CERT-Bund (Pflicht), MISP-Community Sektor X, kommerzieller Feed (Mandiant); Auswertung im SIEM mit IOC-Matching."'
+                    ueba_status:
+                        label: 'UEBA-Status'
+                        placeholder: 'Beispiel: "UEBA noch nicht aktiv; Pilot Q3/2026 mit BR-Mitbestimmung und DSFA; Use-Cases: anomales Login-Verhalten, Datenexfiltration."'
+
+        incident_response_directive:
+            v1:
+                title: 'Sicherheitsvorfall-Reaktionsrichtlinie (Incident Response)'
+                body: |-
+                    # Incident-Response-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI 200-2 | Bausteine: DER.2.1.A1 (Definition), A2 (Behandlung), A3 (Meldewege), A4 (Eindaemmung), A5 (Wiederherstellung), A6 (Nachbearbeitung) | Standard: A7-A14 (Spezialisierte Teams, externe Unterstuetzung) | Regulatorische Cross-Ref: NIS2 Art. 23 (24h/72h/1m), DSGVO Art. 33 (72h), DORA Art. 17-23, BSIG §8b (KRITIS) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: jaehrlich + nach jedem Major Incident*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Behandlung von Sicherheitsvorfaellen bei der {{ tenant.legal_name }}. Sie definiert Meldewege, Reaktions-Phasen, Eskalationen und externe Meldepflichten.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Sicherheitsvorfaelle, einschliesslich Cyberangriffe, Datenschutz-Verletzungen, physische Sicherheitsvorfaelle und Insider-Bedrohungen.
+
+                    ## 3. Definition: Sicherheitsvorfall vs. Stoerung (DER.2.1.A1)
+                    - **Sicherheitsvorfall:** Ereignis, das Vertraulichkeit, Integritaet, Verfuegbarkeit oder Authentizitaet beeintraechtigt oder beeintraechtigen koennte;
+                    - **Stoerung:** technische Beeintraechtigung ohne Sicherheits-Bezug (z. B. Performance-Problem ohne Manipulationsverdacht).
+
+                    ## 4. Klassifikations-Matrix (Schweregrade)
+                    | Stufe | Beispiel | Reaktion |
+                    |---|---|---|
+                    | niedrig | einzelne fehlgeschlagene Logins | Standard-Behandlung |
+                    | mittel | bestaetigtes Phishing-Opfer | SOC + ISB-Eskalation |
+                    | hoch | Malware-Befall einzelner Systeme | ISB + IT-Leitung + Krisenstab-Vorbereitung |
+                    | kritisch | Ransomware-Angriff, Massendatenleck | Krisenstab + externe CERTs + Behoerden |
+
+                    ## 5. Meldewege (DER.2.1.A3)
+                    - **Intern:** Mitarbeitende → Service-Desk → SOC/ISB → Leitung;
+                    - **Extern (gesetzlich):**
+                      - **DSGVO Art. 33:** binnen 72 Stunden an Aufsichtsbehoerde (BfDI);
+                      - **NIS2 Art. 23:** Fruehwarnung 24h, Detail-Meldung 72h, Final-Bericht 1 Monat;
+                      - **DORA Art. 19:** initiale Meldung an Aufsicht (BaFin/EZB);
+                      - **BSIG §8b (KRITIS):** unverzueglich an BSI;
+                      - **Strafverfolgung:** ggf. ZAC oder LKA bei Straftatbestaenden.
+
+                    ## 6. Reaktions-Phasen
+                    1. **Erkennen** — durch SOC, EDR, Mitarbeitende-Meldung;
+                    2. **Bewerten** — Klassifikation Schweregrad;
+                    3. **Eindaemmen** — Isolation, Account-Sperre;
+                    4. **Beseitigen** — Malware-Entfernung, Schwachstelle-Patch;
+                    5. **Wiederherstellen** — Restore aus geprueftem Backup, Verifikation;
+                    6. **Lessons-Learned** — Post-Incident-Review, Massnahmen-Ableitung.
+
+                    ## 7. CSIRT/CERT
+                    Bei mittlerer und hoeherer Klassifikation wird das interne CSIRT aktiviert; bei kritischer Klassifikation zusaetzlich externer Incident-Response-Partner und CERT-Bund.
+
+                    ## 8. Eskalations-Stufen
+                    - **Level 1:** SOC + ISB;
+                    - **Level 2:** ISB + IT-Leitung + ggf. Notfallbeauftragter;
+                    - **Level 3:** Krisenstab + Leitung + ggf. externe Behoerden;
+                    - **Level 4:** Externe Krisenkommunikation (Pressestelle, Kunden).
+
+                    ## 9. Forensik-Schnittstelle
+                    Bei Vorfaellen mit Forensik-Bedarf greift die IT-Forensik-Richtlinie (Cross-Ref DER.2.2). Beweissicherung beginnt sofort, ohne das System auszuschalten.
+
+                    ## 10. Externe Kommunikation
+                    Pressestelle, Kunden-Kommunikation und Aufsichts-Kommunikation werden zentral durch Pressestelle koordiniert; Inhalte vorab durch ISB und Recht freigegeben.
+
+                    ## 11. Uebungspflicht
+                    Mindestens jaehrlich Tabletop-Exercise mit dem Krisenstab; bei kritischer KRITIS-Pflicht zusaetzlich Simulationsuebung. Cross-Ref BCM-Uebungen DER.4.
+
+                    ## 12. Spezifische Meldepflichten
+                    Wizard / ISB pflegt eine **Meldepflichten-Matrix** mit konkreten Empfaengern, Fristen, Vorlagen, Eskalation. Diese Matrix wird mindestens jaehrlich aktualisiert.
+
+                    ---
+                    *Cross-Ref ISO/IEC 27002:2022 § 5.24-5.28 (Incident management); EU-NIS2 Art. 23; DSGVO Art. 33/34; EU-DORA Art. 17-23; BSIG §8b. Genehmigt: {{ approval.chain }}.*
+                section:
+                    definition:
+                        title: 'Definition'
+                        body: |-
+                            Sicherheitsvorfall vs. Stoerung; CIA-Beeintraechtigung als Kriterium (DER.2.1.A1).
+                    classification:
+                        title: 'Klassifikation'
+                        body: |-
+                            niedrig / mittel / hoch / kritisch mit unterschiedlicher Reaktion.
+                    reporting:
+                        title: 'Meldewege'
+                        body: |-
+                            Intern: Service-Desk → SOC/ISB → Leitung; extern: BfDI 72h, NIS2 24/72h/1m, BSI unverzueglich, DORA initiale Meldung.
+                    phases:
+                        title: 'Reaktions-Phasen'
+                        body: |-
+                            Erkennen, Bewerten, Eindaemmen, Beseitigen, Wiederherstellen, Lessons-Learned.
+                    csirt:
+                        title: 'CSIRT/CERT'
+                        body: |-
+                            Internes CSIRT + externer Partner + CERT-Bund bei kritischen Vorfaellen.
+                    escalation:
+                        title: 'Eskalations-Stufen'
+                        body: |-
+                            Level 1-4 mit Verantwortlichen je Stufe.
+                    forensics:
+                        title: 'Forensik-Schnittstelle'
+                        body: |-
+                            DER.2.2 IT-Forensik; Beweissicherung sofort; nicht ausschalten.
+                    communication:
+                        title: 'Externe Kommunikation'
+                        body: |-
+                            Pressestelle koordiniert; Inhalte ISB/Recht freigegeben.
+                    exercise:
+                        title: 'Uebungspflicht'
+                        body: |-
+                            Mind. jaehrlich Tabletop; KRITIS zusaetzlich Simulation.
+                    obligations_matrix:
+                        title: 'Meldepflichten-Matrix'
+                        body: |-
+                            Pflege-Matrix mit Empfaengern, Fristen, Vorlagen; jaehrliche Aktualisierung.
+                tailoring_field:
+                    notification_recipients:
+                        label: 'Meldepflicht-Empfaenger'
+                        placeholder: 'Beispiel: "BSI (KRITIS-Pflicht §8b), BfDI (DSGVO 72h), BaFin (DORA bei Finanzdienstleistung), Branchen-CERT (sektoral); Pflegung der Matrix durch ISB."'
+                    csirt_provider:
+                        label: 'CSIRT-Anbieter'
+                        placeholder: 'Beispiel: "Internes CSIRT 8x5 mit externem Retainer Z-CERT GmbH 24/7; Aktivierung bei Schweregrad hoch oder kritisch; jaehrliche Probefahrt."'
+                    exercise_program:
+                        label: 'Uebungsprogramm'
+                        placeholder: 'Beispiel: "Tabletop quartalsweise mit Krisenstab + ISMS-Team; Simulation jaehrlich mit Spielleitung extern; Lessons-Learned in Massnahmenplan."'
+
+        it_forensics_directive:
+            v1:
+                title: 'IT-Forensik-Richtlinie'
+                body: |-
+                    # IT-Forensik-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI 200-2 | Bausteine: DER.2.2.A1 (rechtliche Rahmenbedingungen), A2 (Beweissicherung-Leitfaden), A3 (Schulung) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die forensische Beweissicherung und -auswertung im Falle von Sicherheitsvorfaellen, internen Untersuchungen und ggf. Strafanzeigen.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle IT-Systeme im Informationsverbund, einschliesslich Cloud-Dienste und externe Systeme, soweit Auditrechte bestehen.
+
+                    ## 3. Vorbereitungsmassnahmen
+                    - Forensik-Toolkit (Hardware: Write-Blocker, Image-Drive; Software: forensische Suites);
+                    - geschultes Personal (Cross-Ref ORP.3 Awareness; spezialisierte Forensik-Schulung);
+                    - geeignete Speicherkapazitaeten fuer Images (Pufferspeicher);
+                    - Vereinbarung mit externem Forensik-Dienstleister fuer Eskalationsfaelle.
+
+                    ## 4. Beweissicherung (DER.2.2.A2)
+                    - **Chain-of-Custody:** lueckenlose Dokumentation von Erfassung bis Auswertung;
+                    - **Hashing:** SHA-256 vor und nach Erfassung;
+                    - **Write-Blocker:** physisch oder Software-basiert;
+                    - **Reihenfolge:** vom fluechtigsten (RAM, Netz-Sessions) zum stabilsten (Datentraeger);
+                    - **Dokumentation:** Datum, Uhrzeit, Person, Quelle, Tool, Hash.
+
+                    ## 5. Eigene vs. externe Forensik
+                    Eigenforensik fuer Standard-Faelle; extern bei:
+
+                    - rechtlichen Verfahren (gerichtliche Verwertbarkeit);
+                    - sehr komplexen oder langfristigen Untersuchungen;
+                    - Faellen mit Cross-Border-Bezug;
+                    - Faellen mit Interessenkonflikt (z. B. Insider-Verdacht).
+
+                    ## 6. Rechtliche Aspekte (DER.2.2.A1)
+                    - Mitbestimmung Betriebs-/Personalrat bei Mitarbeiter-Forensik;
+                    - Strafanzeige-Entscheidung durch Recht/ISB;
+                    - DSGVO-Konformitaet (Art. 6 Abs. 1 lit. f, Art. 10 fuer Strafdaten);
+                    - Verschwiegenheitspflichten bei Untersuchungen.
+
+                    ## 7. Datenschutz bei Forensik
+                    - Personenbezug minimieren;
+                    - Auswertung nur im erforderlichen Umfang;
+                    - Aufbewahrungsdauer der Forensik-Artefakte begrenzen;
+                    - DSB konsultieren bei DSGVO-Relevanz.
+
+                    ## 8. Zusammenarbeit mit Behoerden
+                    Bei Strafanzeige oder Einsatz von Behoerden (BSI, LKA, BKA, StA): Kontakt ueber definierten Single-Point-of-Contact (SPOC); Beweismaterial ggf. uebergeben mit Quittung.
+
+                    ## 9. Schulung (DER.2.2.A3)
+                    Forensik-Beauftragte erhalten regelmaessige Schulungen (z. B. SANS Forensics, BSI-Forensik-Lehrgaenge).
+
+                    ---
+                    *Cross-Ref ISO/IEC 27002:2022 § 5.28 (Collection of evidence). Genehmigt: {{ approval.chain }}.*
+                section:
+                    preparation:
+                        title: 'Vorbereitung'
+                        body: |-
+                            Forensik-Toolkit, geschultes Personal, Speicher, externer Partner.
+                    evidence_collection:
+                        title: 'Beweissicherung'
+                        body: |-
+                            Chain-of-Custody, SHA-256, Write-Blocker, Reihenfolge fluechtig→stabil (DER.2.2.A2).
+                    in_or_out:
+                        title: 'Eigen vs. extern'
+                        body: |-
+                            Eigen Standard; extern bei rechtlichen Verfahren, Komplexitaet, Cross-Border, Interessenkonflikt.
+                    legal:
+                        title: 'Rechtliche Aspekte'
+                        body: |-
+                            Mitbestimmung, Strafanzeige, DSGVO Art. 6/10, Verschwiegenheit (DER.2.2.A1).
+                    privacy:
+                        title: 'Datenschutz'
+                        body: |-
+                            Personenbezug minimieren, Aufbewahrungsdauer begrenzen, DSB-Konsultation.
+                    authorities:
+                        title: 'Zusammenarbeit Behoerden'
+                        body: |-
+                            SPOC fuer BSI / LKA / BKA / StA; Beweismaterial mit Quittung.
+                    training:
+                        title: 'Schulung'
+                        body: |-
+                            SANS Forensics / BSI-Lehrgaenge regelmaessig (DER.2.2.A3).
+                tailoring_field:
+                    forensics_team:
+                        label: 'Forensik-Team'
+                        placeholder: 'Beispiel: "Internes Forensik-Team 2 Personen mit GIAC-GCFE-Zertifizierung; externer Retainer Forensik GmbH binnen 4h aktivierbar."'
+                    toolkit:
+                        label: 'Forensik-Toolkit'
+                        placeholder: 'Beispiel: "Write-Blocker Tableau T8u, Magnet AXIOM, X-Ways Forensics; Pufferspeicher 30 TB im RZ-A."'
+                    external_partner:
+                        label: 'Externer Partner'
+                        placeholder: 'Beispiel: "Rahmenvertrag mit Forensik GmbH; Reaktionszeit 4h; Vor-Ort 24h; gerichtsverwertbare Forensik mit Sachverstaendigen-Gutachten optional."'
+
+        emergency_management_directive:
+            v1:
+                title: 'Notfallmanagement-Richtlinie'
+                body: |-
+                    # Notfallmanagement-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI 200-4 (BCM Final 2023) | Bausteine: DER.4.A1 (Leitlinie Notfallmanagement), A2 (Ziele/Verantwortlichkeiten), A3 (Notfallkonzept), A4 (Notfallorganisation) | ISO-Mapping: ISO 22301:2019 (BCMS) + ISO 27001 Annex A 5.29-5.30 (ICT readiness for business continuity) | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: jaehrlich + nach jedem aktivierten Notfall*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt das Notfallmanagement der {{ tenant.legal_name }} nach BSI-Standard 200-4 und integriert ISO 22301:2019 fuer das Business-Continuity-Management. Sie schafft die organisatorische, prozessuale und technische Voraussetzung fuer Resilienz und Wiederanlauf nach Stoerungen.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Geschaeftsprozesse, IT-Verfahren, Standorte und Dienstleister-Beziehungen der {{ tenant.legal_name }}, die im Rahmen der BIA als kritisch identifiziert wurden.
+
+                    ## 3. Notfall-Leitlinie (DER.4.A1)
+                    Die Leitungsebene bekennt sich zur Etablierung und Aufrechterhaltung eines BCMS gemaess BSI 200-4 und ISO 22301:2019. Notfallmanagement ist eine strategische Pflicht; Ressourcen werden bereitgestellt; Notfallbeauftragter {{ roles.notfallbeauftragter.fullName }} ist benannt.
+
+                    ## 4. Notfall-Organisation (DER.4.A4)
+                    - **Krisenstab:** strategische Steuerung im Notfall; Vorsitz Leitungsebene oder benannte Vertretung;
+                    - **Notfallbeauftragter:** {{ roles.notfallbeauftragter.fullName }} – operative Steuerung des BCMS;
+                    - **Wiederanlauf-Teams:** je kritischem Geschaeftsprozess; technisch und fachlich zusammengesetzt;
+                    - **Krisenkommunikations-Team:** intern + extern (Pressestelle, Kunden, Behoerden).
+
+                    ## 5. BCM-Methodik
+                    Die Methodik orientiert sich an BSI 200-4 und nutzt eine der Stufen:
+
+                    - **Reaktiv-BCMS** (Einstieg);
+                    - **Aufbau-BCMS** (vollumfaenglich);
+                    - **Standard-BCMS** (zertifizierungsfaehig nach ISO 22301).
+
+                    ## 6. BIA (Business Impact Analyse)
+                    Die BIA wird im BCM-Modul gefuehrt; Cross-Ref BCM-Modul. Sie identifiziert kritische Geschaeftsprozesse, Abhaengigkeiten, RTO/RPO-Anforderungen und maximal tolerierbare Ausfallzeit (MTPD).
+
+                    ## 7. Notfallvorsorge (DER.4.A3)
+                    - Redundanzen (RZ, Standorte, Personal);
+                    - Standortuebergreifende Konzepte;
+                    - Dienstleister-Vereinbarungen mit Verfuegbarkeits-SLA (Cross-Ref OPS.2.3);
+                    - Wiederanlauf-Verfahren und -Reihenfolgen.
+
+                    ## 8. Notfallplaene
+                    Notfallplaene umfassen:
+
+                    - Geschaeftsfortfuehrungs-Plaene (provisorische Notbetriebs-Loesungen);
+                    - Wiederanlauf-Plaene (technisch);
+                    - IT-Notfallplan / DR-Plan;
+                    - Krisenkommunikations-Plan;
+                    - Standortausfall-Plan / Personal-Ausfall-Plan.
+
+                    ## 9. Krisenkommunikation
+                    - intern: Mitarbeitende ueber alternative Kanaele;
+                    - extern: Kunden / Lieferanten / Aufsichtsbehoerden / Presse;
+                    - Kontaktlisten gepflegt; alternative Kommunikationskanaele eingerichtet.
+
+                    ## 10. Uebungs- und Test-Konzept
+                    Mindestens jaehrlich:
+
+                    - Tabletop-Exercise mit Krisenstab;
+                    - technische DR-Tests (Wiederanlauf eines kritischen Systems);
+                    - Schulung der Wiederanlauf-Teams;
+                    - bei Standard-BCMS zusaetzlich Echtbetrieb-Tests.
+
+                    ## 11. Aktivierungs-Trigger
+                    Klar definierte Trigger fuer die Aktivierung des BCMS (z. B. Standortverlust, kritischer Cyberangriff, Pandemie, kritische Lieferantenausfall).
+
+                    ## 12. Schnittstelle Incident-Response
+                    Bei Cyberangriffen erfolgt zunaechst Incident-Response (Cross-Ref DER.2.1); bei massiven Auswirkungen wird das BCMS aktiviert.
+
+                    ---
+                    *Cross-Ref ISO 22301:2019 (BCMS); ISO 27001 Annex A 5.29 (ICT readiness for business continuity), 5.30 (ICT readiness in business continuity tests). Genehmigt: {{ approval.chain }}.*
+                section:
+                    leadership:
+                        title: 'Notfall-Leitlinie'
+                        body: |-
+                            Bekenntnis Leitung; Notfallbeauftragter {{ roles.notfallbeauftragter.fullName }} (DER.4.A1).
+                    organisation:
+                        title: 'Notfall-Organisation'
+                        body: |-
+                            Krisenstab, Notfallbeauftragter, Wiederanlauf-Teams, Krisenkommunikation (DER.4.A4).
+                    methodology:
+                        title: 'BCM-Methodik'
+                        body: |-
+                            BSI 200-4 Reaktiv / Aufbau / Standard; ISO 22301-Kompatibilitaet.
+                    bia:
+                        title: 'BIA'
+                        body: |-
+                            BIA im BCM-Modul; kritische Prozesse, Abhaengigkeiten, RTO/RPO/MTPD.
+                    preparedness:
+                        title: 'Notfallvorsorge'
+                        body: |-
+                            Redundanzen, Standortuebergreifend, Dienstleister-SLA, Wiederanlauf-Verfahren (DER.4.A3).
+                    plans:
+                        title: 'Notfallplaene'
+                        body: |-
+                            Geschaeftsfortfuehrung, Wiederanlauf, IT-DR, Krisenkommunikation, Standort/Personal-Ausfall.
+                    communication:
+                        title: 'Krisenkommunikation'
+                        body: |-
+                            Intern + extern; alternative Kanaele; aktuelle Kontaktlisten.
+                    exercise:
+                        title: 'Uebung / Test'
+                        body: |-
+                            Jaehrlich Tabletop + technische DR-Tests; Standard-BCMS zusaetzlich Echtbetriebs-Tests.
+                    triggers:
+                        title: 'Aktivierungs-Trigger'
+                        body: |-
+                            Standortverlust, Cyberangriff, Pandemie, kritischer Lieferantenausfall.
+                    incident_interface:
+                        title: 'IR-Schnittstelle'
+                        body: |-
+                            Cyberangriffe: zuerst IR (DER.2.1); bei massiven Auswirkungen BCMS-Aktivierung.
+                tailoring_field:
+                    bcm_tier:
+                        label: 'BCM-Stufe'
+                        placeholder: 'Beispiel: "Aktuell Aufbau-BCMS nach BSI 200-4; Roadmap zu Standard-BCMS / ISO-22301-Zertifizierung Q4/2027; jaehrliches Reifegrad-Assessment."'
+                    crisis_team_members:
+                        label: 'Krisenstab-Mitglieder'
+                        placeholder: 'Beispiel: "Vorsitz CFO; Stell. Vorsitz CISO {{ roles.ciso.fullName }}; Mitglieder: COO, ISB {{ roles.isb.fullName }}, IT-Leitung, Pressestelle, Recht; Stellvertreter benannt."'
+                    exercise_calendar:
+                        label: 'Uebungs-Kalender'
+                        placeholder: 'Beispiel: "Tabletop Q1, technischer DR-Test Q2 (Kernsystem A), Pandemie-Uebung Q3, Standortausfall Q4; Lessons-Learned in Massnahmenplan."'
+
+        schutzbedarfsfeststellung_method:
+            v1:
+                title: 'Schutzbedarfsfeststellung – Methode'
+                body: |-
+                    # Methode: Schutzbedarfsfeststellung der {{ tenant.legal_name }}
+
+                    *Dokumenten-Typ: **Methode** (kein Verhaltens-/Regel-Dokument) | Norm-Anker: BSI-Standard 200-2 Kap. 6 | Cross-Ref: ISO/IEC 27005 (Risk Mgmt), ISO/IEC 27001 Klausel 6.1.2 | Edition: {{ bsi.kompendium_edition }} | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+                    Dieses Methode-Dokument beschreibt das Verfahren zur **Schutzbedarfsfeststellung** der {{ tenant.legal_name }} gemaess BSI-Standard 200-2 Kap. 6. Es ist die methodische Grundlage fuer die Einstufung der Zielobjekte (Anwendungen, IT-Systeme, Raeume, Kommunikationsverbindungen) im Informationsverbund. Es ist KEINE Richtlinie im Sinne einer Verhaltens-/Regelvorschrift, sondern eine **Methoden-Beschreibung**.
+
+                    ## 2. Geltungsbereich
+                    Diese Methode gilt fuer alle Zielobjekte des Informationsverbunds gemaess Strukturanalyse (Cross-Ref ISMS-Konzept ISMS.1.A6).
+
+                    ## 3. Schutzziele
+                    Die Schutzbedarfsfeststellung erfolgt fuer die Schutzziele:
+
+                    - **Vertraulichkeit (V)** — Schutz vor unbefugter Kenntnisnahme;
+                    - **Integritaet (I)** — Schutz vor unbefugter oder unbeabsichtigter Veraenderung;
+                    - **Verfuegbarkeit (Vf)** — Schutz vor ungeplantem Ausfall.
+
+                    Optional erweitert um:
+
+                    - **Authentizitaet** — Verifikation der Identitaet von Akteuren und Daten;
+                    - **Verbindlichkeit** — beweissichere Zuordenbarkeit von Handlungen.
+
+                    ## 4. Schutzbedarfskategorien (BSI-Standard 3-stufig)
+                    Standardmaessig werden drei Schutzbedarfskategorien verwendet:
+
+                    | Kategorie | Bedeutung |
+                    |---|---|
+                    | **normal** | Schadensauswirkungen sind begrenzt und ueberschaubar |
+                    | **hoch** | Schadensauswirkungen koennen betraechtlich sein |
+                    | **sehr hoch** | Schadensauswirkungen koennen ein existenziell bedrohliches, katastrophales Ausmass erreichen |
+
+                    Tenant-spezifische Erweiterung auf 4-stufig ist moeglich, jedoch nur mit Begruendung empfohlen (Mapping-Probleme mit anderen Frameworks).
+
+                    ## 5. Definition je Stufe pro Schutzziel (Tailoring)
+                    Die {{ tenant.legal_name }} definiert Schadenshoehen und Schadensszenarien pro Stufe und Schutzziel. Beispielhaft (zu konkretisieren im Tailoring):
+
+                    | Stufe | Vertraulichkeit | Integritaet | Verfuegbarkeit |
+                    |---|---|---|---|
+                    | normal | begrenzte interne Wirkung; geringe Umsatzauswirkung | korrigierbarer Datenfehler | Ausfall < 24h tolerierbar |
+                    | hoch | erhebliche Reputations- oder Vertragsverletzung | nicht-korrigierbarer Datenfehler mit Folgewirkung | Ausfall 4-24h schaedlich |
+                    | sehr hoch | existenzielle Bedrohung; Verletzung gesetzlicher Pflichten | Datenverlust mit Folge | Ausfall < 1h existenziell |
+
+                    ## 6. Schadensszenarien-Katalog (BSI 200-2 Kap. 6)
+                    Folgende Schadensszenarien werden bewertet:
+
+                    1. **Verstoesse gegen Gesetze, Vorschriften, Vertraege** (z. B. DSGVO-Bussgelder, BSIG-Sanktionen, Vertragsstrafen);
+                    2. **Beeintraechtigung des informationellen Selbstbestimmungsrechts** (Betroffenen-Rechte);
+                    3. **Beeintraechtigung der koerperlichen Unversehrtheit** (relevant bei medizinischer / industrieller IT);
+                    4. **Beeintraechtigung der Aufgabenerfuellung** (Geschaeftsbetrieb / Behoerdenaufgabe);
+                    5. **Negative Innen- oder Aussenwirkung** (Reputation, Vertrauen, Politik);
+                    6. **Finanzielle Auswirkungen** (direkter und indirekter Schaden).
+
+                    ## 7. Vererbungsregeln (BSI 200-2 Kap. 6.2)
+                    Schutzbedarf vererbt sich entlang der Abhaengigkeiten zwischen Zielobjekten nach folgenden Regeln:
+
+                    - **Maximumprinzip:** Schutzbedarf eines abhaengigen Zielobjekts ist mindestens so hoch wie der hoechste Schutzbedarf der von ihm verarbeiteten Anwendungen / Daten. Standard-Regel.
+                    - **Verteilungseffekt** (optional): Schutzbedarf kann sinken, wenn die Daten so verteilt verarbeitet werden, dass Einzeldaten weniger schutzbeduerftig sind als das Gesamtbild. Anwendung mit Begruendung.
+                    - **Kumulationseffekt** (optional): Schutzbedarf kann steigen, wenn viele Daten mit normalem Schutzbedarf in einem Zielobjekt aggregiert sind und damit kumulativ einen hoeheren Schutzbedarf entstehen lassen. Anwendung mit Begruendung.
+
+                    > **Hinweis Memory-Cross-Ref:** Bestehender `AssetDependencyService` aus dem Schutzbedarfsvererbungs-Projekt implementiert das Maximumprinzip technisch. Diese Methode dokumentiert die Vorgehensweise; der Service ist die operative Umsetzung.
+
+                    ## 8. Dokumentationsvorlagen
+                    Fuer jedes Zielobjekt wird je Schutzziel der Schutzbedarf bestimmt und begruendet:
+
+                    - **Anwendungen:** Verantwortlicher, Kategorie + Begruendung pro CIA;
+                    - **IT-Systeme:** abgeleitet aus den Anwendungen unter Maximumprinzip;
+                    - **Raeume:** abgeleitet aus den IT-Systemen / Datentraegern;
+                    - **Kommunikationsverbindungen:** abgeleitet aus den uebertragenen Daten.
+
+                    ## 9. Abnahme-Verfahren
+                    Die Schutzbedarfsfeststellung wird durch den Anwendungs-/System-Verantwortlichen vorgenommen und durch den ISB {{ roles.isb.fullName }} validiert. Bei Schutzbedarfsklassen *hoch* oder *sehr hoch* erfolgt zusaetzlich eine Abnahme durch die Leitungsebene oder einen von ihr Bevollmaechtigten.
+
+                    ## 10. Aktualisierung
+                    Die Schutzbedarfsfeststellung wird:
+
+                    - bei Strukturaenderungen (neue / geaenderte Zielobjekte) aktualisiert;
+                    - mindestens jaehrlich gepruef;
+                    - bei wesentlichen Vorfaellen anlassbezogen ueberarbeitet.
+
+                    ## 11. Schnittstelle zur Risikoanalyse (BSI 200-3)
+                    Bei Schutzbedarfsklasse *hoch* oder *sehr hoch* sowie bei Kern-Absicherung wird ergaenzend eine Risikoanalyse nach BSI 200-3 durchgefuehrt (Cross-Ref ISMS-Konzept ISMS.1.A6).
+
+                    ---
+                    *Cross-Ref ISO/IEC 27005 (IT-Risk-Mgmt), ISO/IEC 27001 Klausel 6.1.2; BSI-Standard 200-3 fuer ergaenzende Risikoanalyse. Genehmigt: {{ approval.chain }}.*
+                section:
+                    purpose:
+                        title: 'Zweck'
+                        body: |-
+                            Methodische Grundlage fuer Einstufung der Zielobjekte gemaess BSI 200-2 Kap. 6. KEINE Richtlinie.
+                    protection_goals:
+                        title: 'Schutzziele'
+                        body: |-
+                            Vertraulichkeit, Integritaet, Verfuegbarkeit + optional Authentizitaet und Verbindlichkeit.
+                    categories:
+                        title: 'Schutzbedarfskategorien'
+                        body: |-
+                            BSI-Standard 3-stufig (normal / hoch / sehr hoch); 4-stufig nur mit Begruendung.
+                    levels_definition:
+                        title: 'Definition je Stufe'
+                        body: |-
+                            Schadenshoehen und -szenarien pro Stufe und Schutzziel; konkretisiert im Tailoring.
+                    damage_scenarios:
+                        title: 'Schadensszenarien'
+                        body: |-
+                            Gesetze/Vertraege, Selbstbestimmungsrecht, koerperliche Unversehrtheit, Aufgabenerfuellung, Innen-/Aussenwirkung, finanzielle Auswirkungen.
+                    inheritance:
+                        title: 'Vererbungsregeln'
+                        body: |-
+                            Maximumprinzip (Standard); Verteilungseffekt + Kumulationseffekt mit Begruendung (BSI 200-2 Kap. 6.2).
+                    documentation:
+                        title: 'Dokumentationsvorlagen'
+                        body: |-
+                            Anwendungen, IT-Systeme, Raeume, Kommunikation; je CIA Kategorie + Begruendung.
+                    acceptance:
+                        title: 'Abnahme'
+                        body: |-
+                            Anwendungsverantwortlicher; ISB-Validierung; Leitungsabnahme bei hoch / sehr hoch.
+                    update:
+                        title: 'Aktualisierung'
+                        body: |-
+                            Strukturaenderung, jaehrliche Pruefung, anlassbezogen.
+                    risk_interface:
+                        title: 'Risikoanalyse-Schnittstelle'
+                        body: |-
+                            Bei hoch / sehr hoch oder Kern-Absicherung ergaenzend BSI 200-3.
+                tailoring_field:
+                    levels_definitions:
+                        label: 'Stufen-Definitionen je Schutzziel'
+                        placeholder: 'Beispiel: "hoch-Vertraulichkeit: Bekanntwerden fuehrt zu Geldbusse 100k-1Mio EUR und Reputationsschaden mit Pressemitteilung; sehr-hoch-Verfuegbarkeit: Ausfall von 1 Stunde fuehrt zu Existenzgefaehrdung."'
+                    inheritance_choice:
+                        label: 'Vererbungsregel-Wahl'
+                        placeholder: 'Beispiel: "Standard: Maximumprinzip; Verteilungseffekt nur in Ausnahmefaellen mit Begruendung; Kumulationseffekt aktiv bei Massendaten-Verarbeitung."'
+                    sample_object:
+                        label: 'Beispiel-Zielobjekt mit Bewertung'
+                        placeholder: 'Beispiel: "Anwendung CRM-Salesforce: V=hoch (Personenbezug Kunden), I=hoch (Auftragsdaten), Vf=hoch (8h-Ausfall fuehrt zu Vertragsverletzung); Begruendung dokumentiert in CMDB."'

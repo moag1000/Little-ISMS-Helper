@@ -5,6 +5,12 @@ document:
         upload: 'Upload document'
         update: Update
         create: Create
+        policy_wizard: 'Open Policy Wizard'
+    alva_tipp:
+        policy_wizard:
+            title: 'Alva tip: generate mandatory policies automatically'
+            body: 'Instead of uploading each policy individually, use the Policy Wizard. It generates all mandatory policies for ISO 27001, DORA, BSI Grundschutz, BCM (ISO 22301 / BSI 200-4) and GDPR-PIMS in 7 steps — with DPO veto, Konzern defaults, industry presets and audit trail.'
+            cta: 'Start Policy Wizard'
     kpi:
         total_documents: 'Total documents'
         total_size: 'Total size'
