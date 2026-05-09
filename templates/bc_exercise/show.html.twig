@@ -60,7 +60,7 @@
                 </div>
                 <div class="detail-item">
                     <span class="label">{{ 'bc_exercises.field.facilitator'|trans({}, 'bc_exercises') }}:</span>
-                    <span class="value">{{ bc_exercise.facilitator }}</span>
+                    <span class="value">{{ bc_exercise.effectiveExerciseLeaderName ?? bc_exercise.facilitator }}</span>
                 </div>
                 {% if bc_exercise.successRating %}
                 <div class="detail-item">

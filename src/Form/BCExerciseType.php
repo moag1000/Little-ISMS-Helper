@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\BCExercise;
+use App\Entity\Person;
+use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -86,6 +89,22 @@ class BCExerciseType extends AbstractType
                 'help' => 'bc_exercises.help.facilitator',
                 'required' => true,
                 'attr' => ['maxlength' => 100],
+            ])
+            ->add('exerciseLeaderUser', EntityType::class, [
+                'label' => 'bc_exercises.field.exercise_leader_user',
+                'help' => 'bc_exercises.help.exercise_leader_user',
+                'class' => User::class,
+                'choice_label' => fn(User $u): string => trim(($u->getFirstName() ?? '') . ' ' . ($u->getLastName() ?? '')) ?: ($u->getEmail() ?? ''),
+                'placeholder' => 'bc_exercises.placeholder.exercise_leader_user',
+                'required' => false,
+            ])
+            ->add('exerciseLeaderPerson', EntityType::class, [
+                'label' => 'bc_exercises.field.exercise_leader_person',
+                'help' => 'bc_exercises.help.exercise_leader_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'bc_exercises.placeholder.exercise_leader_person',
+                'required' => false,
             ])
             ->add('observers', TextareaType::class, [
                 'label' => 'bc_exercises.field.observers',
