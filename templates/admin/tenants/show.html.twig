@@ -41,9 +41,9 @@
                 <p class="text-muted mb-2">
                     <code class="text-primary">{{ tenant.code }}</code>
                     {% if tenant.isActive %}
-                        <span class="badge bg-success ms-2"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
+                        <span class="fa-status-pill fa-status-pill--success ms-2"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
                     {% else %}
-                        <span class="badge bg-secondary ms-2"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
+                        <span class="fa-status-pill fa-status-pill--neutral ms-2"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
                     {% endif %}
                 </p>
                 {% if tenant.description %}
@@ -109,7 +109,7 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
                 <i class="fa-icon fa-icon--nav-people" aria-hidden="true"></i> {{ 'tenant.tabs.users'|trans({}, 'tenant') }}
-                <span class="badge bg-primary ms-1">{{ userCount }}</span>
+                <span class="fa-status-pill fa-status-pill--primary ms-1">{{ userCount }}</span>
             </button>
         </li>
     </ul>
@@ -167,9 +167,9 @@
                                             <th scope="row">{{ 'tenant.field.status'|trans({}, 'tenant') }}</th>
                                             <td>
                                                 {% if tenant.isActive %}
-                                                    <span class="badge bg-success">{{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
+                                                    <span class="fa-status-pill fa-status-pill--success">{{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
                                                 {% else %}
-                                                    <span class="badge bg-secondary">{{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
+                                                    <span class="fa-status-pill fa-status-pill--neutral">{{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
                                                 {% endif %}
                                             </td>
                                         </tr>
@@ -212,7 +212,7 @@
                                                         <td>
                                                             {% set governance_variant = {'hierarchical': 'primary', 'shared': 'warning'}[defaultGovernance.governanceModel.value]|default('secondary') %}
                                                             {% if governance_variant == 'warning' %}
-                                                                <span class="badge bg-warning text-dark">{{ defaultGovernance.governanceModel.label }}</span>
+                                                                <span class="fa-status-pill fa-status-pill--warning">{{ defaultGovernance.governanceModel.label }}</span>
                                                             {% else %}
                                                                 <span class="badge bg-{{ governance_variant }}">{{ defaultGovernance.governanceModel.label }}</span>
                                                             {% endif %}
@@ -229,7 +229,7 @@
                                                 <tr>
                                                     <th scope="row">{{ 'corporate.field.subsidiaries'|trans({}, 'tenant') }}</th>
                                                     <td>
-                                                        <span class="badge bg-info">{{ tenant.subsidiaries|length }}</span>
+                                                        <span class="fa-status-pill fa-status-pill--primary">{{ tenant.subsidiaries|length }}</span>
                                                         {% if tenant.subsidiaries|length > 0 %}
                                                             <ul class="mt-2 mb-0">
                                                                 {% for subsidiary in tenant.subsidiaries %}
@@ -393,7 +393,7 @@
                                 <h2 class="fa-section__title">
                                     <i class="fa-icon fa-icon--nav-people text-primary" aria-hidden="true"></i>
                                     {{ 'tenant.section.users'|trans({}, 'tenant') }}
-                                    <span class="badge bg-primary ms-2">{{ userCount }}</span>
+                                    <span class="fa-status-pill fa-status-pill--primary ms-2">{{ userCount }}</span>
                                 </h2>
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
                                     <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
@@ -419,9 +419,9 @@
                                                 </div>
                                                 <div>
                                                     {% if user.isActive %}
-                                                        <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                                        <span class="fa-status-pill fa-status-pill--success">{{ 'common.active'|trans({}, 'messages') }}</span>
                                                     {% else %}
-                                                        <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                                        <span class="fa-status-pill fa-status-pill--neutral">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -543,9 +543,9 @@
                                             </div>
                                             <div class="d-flex align-items-center gap-2">
                                                 {% if user.isActive %}
-                                                    <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                                    <span class="fa-status-pill fa-status-pill--success">{{ 'common.active'|trans({}, 'messages') }}</span>
                                                 {% else %}
-                                                    <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                                    <span class="fa-status-pill fa-status-pill--neutral">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                                                 {% endif %}
                                                 <form method="post" action="{{ path('tenant_management_remove_user', {id: tenant.id, userId: user.id}) }}" class="d-inline"
                                                       data-controller="ui-actions"

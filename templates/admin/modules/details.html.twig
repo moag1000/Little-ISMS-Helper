@@ -31,9 +31,9 @@
                     </h2>
                     <div class="fa-section__tools">
                         {% if is_active %}
-                            <span class="badge bg-success fs-6">Aktiv</span>
+                            <span class="fa-status-pill fa-status-pill--success fs-6">Aktiv</span>
                         {% else %}
-                            <span class="badge bg-secondary fs-6">Inaktiv</span>
+                            <span class="fa-status-pill fa-status-pill--neutral fs-6">Inaktiv</span>
                         {% endif %}
                     </div>
                 </div>
@@ -45,21 +45,21 @@
                         <dt class="col-sm-3">Status</dt>
                         <dd class="col-sm-9">
                             {% if module.required %}
-                                <span class="badge bg-warning text-dark me-1">Erforderlich</span>
+                                <span class="fa-status-pill fa-status-pill--warning me-1">Erforderlich</span>
                             {% else %}
-                                <span class="badge bg-info me-1">Optional</span>
+                                <span class="fa-status-pill fa-status-pill--primary me-1">Optional</span>
                             {% endif %}
                             {% if is_active %}
-                                <span class="badge bg-success">Aktiv</span>
+                                <span class="fa-status-pill fa-status-pill--success">Aktiv</span>
                             {% else %}
-                                <span class="badge bg-secondary">Inaktiv</span>
+                                <span class="fa-status-pill fa-status-pill--neutral">Inaktiv</span>
                             {% endif %}
                         </dd>
 
                         <dt class="col-sm-3">Entities</dt>
                         <dd class="col-sm-9">
                             {% for entity in module.entities %}
-                                <span class="badge bg-secondary me-1">{{ entity }}</span>
+                                <span class="fa-status-pill fa-status-pill--neutral me-1">{{ entity }}</span>
                             {% endfor %}
                         </dd>
 
@@ -90,7 +90,7 @@
                             </h3>
                             <div class="mb-4">
                                 {% for dep in graph.dependencies %}
-                                    <span class="badge bg-warning text-dark fs-6 me-2 mb-2">{{ dep }}</span>
+                                    <span class="fa-status-pill fa-status-pill--warning fs-6 me-2 mb-2">{{ dep }}</span>
                                 {% endfor %}
                             </div>
                         {% endif %}
@@ -102,7 +102,7 @@
                             </h3>
                             <div>
                                 {% for dep in graph.dependents %}
-                                    <span class="badge bg-info fs-6 me-2 mb-2">{{ dep }}</span>
+                                    <span class="fa-status-pill fa-status-pill--primary fs-6 me-2 mb-2">{{ dep }}</span>
                                 {% endfor %}
                             </div>
                         {% endif %}

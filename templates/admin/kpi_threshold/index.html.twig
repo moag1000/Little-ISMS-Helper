@@ -45,8 +45,8 @@
                                     <code>{{ c.kpiKey }}</code>
                                     <div class="text-muted small">{{ ('kpi_threshold.key.' ~ c.kpiKey)|trans({}, 'admin') }}</div>
                                 </td>
-                                <td><span class="badge bg-success fa-status-pill fa-status-pill--success">≥ {{ c.goodThreshold }}</span></td>
-                                <td><span class="badge bg-warning-subtle text-warning fa-status-pill fa-status-pill--warning">≥ {{ c.warningThreshold }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--success">≥ {{ c.goodThreshold }}</span></td>
+                                <td><span class="fa-status-pill fa-status-pill--warning">≥ {{ c.warningThreshold }}</span></td>
                                 <td>{{ c.updatedAt ? c.updatedAt|date('Y-m-d H:i') : c.createdAt|date('Y-m-d H:i') }}</td>
                                 <td class="text-end">
                                     <a href="{{ path('admin_kpi_threshold_edit', {id: c.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">

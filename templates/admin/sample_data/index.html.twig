@@ -76,18 +76,18 @@
                                     <td class="text-muted small">{{ sample.description }}</td>
                                     <td>
                                         {% for m in sample.required_modules %}
-                                            <span class="badge bg-secondary">{{ m }}</span>
+                                            <span class="fa-status-pill fa-status-pill--neutral">{{ m }}</span>
                                         {% else %}
                                             <span class="text-muted small">—</span>
                                         {% endfor %}
                                     </td>
                                     <td class="text-end">
                                         {% if sample.imported %}
-                                            <span class="badge bg-success">{{ 'admin.sample_data.imported_count'|trans({'%count%': sample.count}, 'admin') }}</span>
+                                            <span class="fa-status-pill fa-status-pill--success">{{ 'admin.sample_data.imported_count'|trans({'%count%': sample.count}, 'admin') }}</span>
                                         {% elseif not sample.modules_ok %}
-                                            <span class="badge bg-warning">{{ 'admin.sample_data.modules_missing'|trans({}, 'admin') }}</span>
+                                            <span class="fa-status-pill fa-status-pill--warning">{{ 'admin.sample_data.modules_missing'|trans({}, 'admin') }}</span>
                                         {% else %}
-                                            <span class="badge bg-secondary">{{ 'admin.sample_data.not_imported'|trans({}, 'admin') }}</span>
+                                            <span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.sample_data.not_imported'|trans({}, 'admin') }}</span>
                                         {% endif %}
                                     </td>
                                     <td class="text-end">
