@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\IndustryPresetBundle;
 use App\Entity\WizardRun;
 use App\Repository\IndustryPresetBundleRepository;
+use App\Repository\PersonRepository;
 use App\Repository\PolicyTemplateRepository;
 use App\Repository\UserRepository;
 use App\Repository\WizardRunRepository;
@@ -57,6 +58,7 @@ final class PolicyWizardController extends AbstractController
         private readonly DocumentRepository $documentRepository,
         private readonly UserRepository $userRepository,
         private readonly PolicyTemplateRepository $policyTemplateRepository,
+        private readonly PersonRepository $personRepository,
     ) {
     }
 
@@ -536,7 +538,31 @@ final class PolicyWizardController extends AbstractController
             'policy_templates' => [],
             'preset_bundles_for_step' => [],
             'consistency_warnings' => [],
+            // Person-Rollout (2026-05-08): Step 4 Roles uses
+            // Person-pickers instead of bare User-id integers.
+            'ciso_person_choices' => [],
+            'isb_person_choices' => [],
+            'dpo_person_choices' => [],
+            'bcm_officer_person_choices' => [],
+            'function_owner_person_choices' => [],
+            'approval_chain_user_choices' => [],
         ];
+
+        // Step 4 — Roles: Person-pickers for governance roles +
+        // function-owner slots, plus a User-picker for the
+        // approval-chain (approval requires login).
+        if ($step === WizardStepKeys::STEP_ROLES) {
+            $allActive = $this->personRepository->findActiveByTenant($tenant);
+            $extras['ciso_person_choices'] = $allActive;
+            $extras['isb_person_choices'] = $allActive;
+            // DPO commonly external — surface external advisors first.
+            $extras['dpo_person_choices'] = $this->personRepository
+                ->findRoleHoldersByTenant($tenant, 'consultant');
+            $extras['bcm_officer_person_choices'] = $allActive;
+            $extras['function_owner_person_choices'] = $allActive;
+            $extras['approval_chain_user_choices'] = $this->userRepository
+                ->findApproversInTenant($tenant);
+        }
 
         // Step 5 — Operational Baselines: DPO + BCM-Officer pickers
         // and IndustryPresetBundle picker for one-shot apply.

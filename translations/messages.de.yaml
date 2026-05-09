@@ -137,6 +137,11 @@ common:
     next: Weiter
     yes: 'Ja'
     no: 'Nein'
+    person_picker:
+        placeholder: 'Person auswählen…'
+        empty_state:
+            title: 'Keine Personen im Mandanten'
+            body: 'Bitte zuerst eine Person anlegen, bevor diese Rolle vergeben werden kann.'
     section:
         other: 'Weitere Felder'
     link_matrix:

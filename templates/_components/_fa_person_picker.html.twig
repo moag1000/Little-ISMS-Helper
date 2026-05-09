@@ -1,0 +1,88 @@
+{# Aurora-DS: Person-Picker macro. Used by every form that needs to
+ # assign a long-term governance role (CISO/ISB/DPO/BCM-Officer/Asset-
+ # Owner/etc.) without forcing the role-holder to have a system login.
+ #
+ # Pattern A dual-state owner: render this picker alongside the legacy
+ # User-picker so the form can capture either / both. External
+ # consultants typically don't have an app User; their `Person` row may
+ # carry a `linkedUser` FK once they are upgraded to in-tool actors.
+ #
+ # Backed by TomSelect (data-controller="tom-select" — see
+ # `assets/controllers/tom_select_controller.js`) for fuzzy search +
+ # accessibility. The fallback `<select>` semantics work even when JS
+ # is disabled.
+ #
+ # Props (object):
+ #   - id            string, REQUIRED  HTML id of the <select>
+ #   - name          string, REQUIRED  form field name (without [] —
+ #                                     the macro adds [] when multiple)
+ #   - choices       iterable<Person>, default []
+ #   - selectedId    int|null, default null   (single)
+ #   - selectedIds   list<int>, default []    (multi)
+ #   - required      bool, default false
+ #   - multiple      bool, default false
+ #   - placeholder   string|null
+ #   - helpText      string|null
+ #   - showInternalExternalBadge bool, default true   adds [EXT] tag
+ #                              when person.personType matches a type
+ #                              that signals "not internal employee"
+ #   - emptyState    object|null  override the default empty-state
+ #                                {title, body, ctaLabel, ctaUrl}
+ #}
+{% macro render(props) %}
+    {% set _id = props.id %}
+    {% set _name = props.name %}
+    {% set _choices = props.choices|default([]) %}
+    {% set _multiple = props.multiple|default(false) %}
+    {% set _selectedId = props.selectedId|default(null) %}
+    {% set _selectedIds = props.selectedIds|default([]) %}
+    {% set _required = props.required|default(false) %}
+    {% set _placeholder = props.placeholder|default('common.person_picker.placeholder'|trans({}, 'messages')) %}
+    {% set _showBadge = props.showInternalExternalBadge|default(true) %}
+    {% set _externalTypes = ['contractor', 'consultant', 'auditor', 'vendor', 'visitor', 'other'] %}
+
+    <select class="form-select fa-cyber-input__field"
+            data-controller="tom-select"
+            data-tom-select-placeholder-value="{{ _placeholder }}"
+            id="{{ _id }}"
+            name="{{ _name }}{% if _multiple %}[]{% endif %}"
+            {% if _required %}required{% endif %}
+            {% if _multiple %}multiple{% endif %}>
+        {% if not _multiple %}
+            <option value="">{{ _placeholder }}</option>
+        {% endif %}
+        {% for person in _choices %}
+            {% set _isSelected = _multiple
+                ? (person.id in _selectedIds)
+                : (_selectedId == person.id) %}
+            {% set _isExternal = _showBadge and (person.personType in _externalTypes) %}
+            {% set _hasUser = (person.linkedUser is defined and person.linkedUser is not null) %}
+            <option value="{{ person.id }}"{% if _isSelected %} selected{% endif %}>
+                {{- person.fullName -}}
+                {%- if person.jobTitle %} — {{ person.jobTitle }}{% endif -%}
+                {%- if person.company %} @ {{ person.company }}{% endif -%}
+                {%- if _isExternal %} [EXT]{% endif -%}
+                {%- if _hasUser %} ✓{% endif -%}
+            </option>
+        {% endfor %}
+    </select>
+
+    {% if props.helpText is defined and props.helpText is not null %}
+        <small class="text-muted d-block mt-1">{{ props.helpText }}</small>
+    {% endif %}
+
+    {% if _choices|length == 0 %}
+        {% set _emptyTitle = (props.emptyState.title|default(null)) ?: 'common.person_picker.empty_state.title'|trans({}, 'messages') %}
+        {% set _emptyBody  = (props.emptyState.body|default(null))  ?: 'common.person_picker.empty_state.body'|trans({}, 'messages') %}
+        <div class="alert alert-info border-0 mt-2 small fa-person-picker__empty">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            <strong>{{ _emptyTitle }}</strong>
+            <span class="d-block">{{ _emptyBody }}</span>
+            {% if props.emptyState.ctaUrl is defined and props.emptyState.ctaLabel is defined %}
+                <a href="{{ props.emptyState.ctaUrl }}" class="btn btn-sm btn-outline-primary mt-2">
+                    {{ props.emptyState.ctaLabel }}
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endmacro %}
