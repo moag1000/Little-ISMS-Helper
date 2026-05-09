@@ -16,10 +16,28 @@
 {% set default_approver_default = defaults.default_approver_user_id|default(null) %}
 {% set alva_default = defaults.alva_hint_on_review|default(true) %}
 
+{# Junior-ISB-friendly help-card. #}
+<div class="alert alert-secondary border-0 mb-3">
+    <h6 class="mb-2">
+        <i class="bi bi-mortarboard" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.lifecycle.help.title'|trans }}
+    </h6>
+    <p class="mb-2 small">{{ 'policy_wizard.step.lifecycle.help.body'|trans }}</p>
+    <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.lifecycle.help.example'|trans }}</p>
+    <p class="mb-0 small">
+        <i class="bi bi-archive" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.lifecycle.help.reversibility'|trans }}
+    </p>
+</div>
+
 <div class="row g-3 mb-4">
     <div class="col-md-6">
         <label class="form-label" for="lifecycle-review-interval">
             {{ 'policy_wizard.step.lifecycle.review_interval_label'|trans }}
+            <i class="bi bi-info-circle text-muted ms-1"
+               data-bs-toggle="tooltip"
+               title="{{ 'policy_wizard.step.lifecycle.tooltip.review_interval'|trans }}"
+               aria-label="{{ 'policy_wizard.step.lifecycle.tooltip.review_interval'|trans }}"></i>
         </label>
         <input type="number"
                class="form-control fa-cyber-input__field"
@@ -40,6 +58,10 @@
     <div class="col-md-6">
         <label class="form-label" for="lifecycle-default-approver">
             {{ 'policy_wizard.step.lifecycle.default_approver_label'|trans }}
+            <i class="bi bi-info-circle text-muted ms-1"
+               data-bs-toggle="tooltip"
+               title="{{ 'policy_wizard.step.lifecycle.tooltip.approver'|trans }}"
+               aria-label="{{ 'policy_wizard.step.lifecycle.tooltip.approver'|trans }}"></i>
         </label>
         <select id="lifecycle-default-approver"
                 name="default_approver_user_id"
@@ -58,6 +80,14 @@
         </div>
     </div>
     <div class="col-md-12">
+        <p class="small text-muted mb-2">
+            <i class="bi bi-person-plus" aria-hidden="true"></i>
+            {{ 'policy_wizard.step.lifecycle.help.missing_user_link'|trans }}
+            <a href="{{ path('user_management_index') }}" target="_blank" rel="noopener">
+                {{ 'policy_wizard.step.lifecycle.help.missing_user_link_cta'|trans }}
+                <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+            </a>
+        </p>
         <div class="form-check">
             <input type="hidden" name="alva_hint_on_review" value="0">
             <input class="form-check-input"
@@ -68,6 +98,10 @@
                    {% if alva_default %}checked{% endif %}>
             <label class="form-check-label" for="lifecycle-alva-hint">
                 {{ 'policy_wizard.step.lifecycle.alva_hint_label'|trans }}
+                <i class="bi bi-info-circle text-muted ms-1"
+                   data-bs-toggle="tooltip"
+                   title="{{ 'policy_wizard.step.lifecycle.tooltip.alva_hint'|trans }}"
+                   aria-label="{{ 'policy_wizard.step.lifecycle.tooltip.alva_hint'|trans }}"></i>
             </label>
             <div class="form-text small">
                 {{ 'policy_wizard.step.lifecycle.alva_hint_help'|trans }}

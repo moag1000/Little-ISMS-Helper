@@ -7,7 +7,7 @@ import { Controller } from '@hotwired/stimulus';
  * action.
  */
 export default class extends Controller {
-    static targets = ['actionSelect', 'mergeBlock', 'splitBlock'];
+    static targets = ['actionSelect', 'mergeBlock', 'splitBlock', 'replaceReminder'];
 
     connect() {
         this.updateVisibility();
@@ -21,6 +21,11 @@ export default class extends Controller {
         }
         if (this.hasSplitBlockTarget) {
             this.splitBlockTarget.hidden = action !== 'split_to_topics';
+        }
+        // MUST #5 — show the "archived NOT deleted" reminder inline whenever
+        // the user selects 'replace' (also via Bulk action #4).
+        if (this.hasReplaceReminderTarget) {
+            this.replaceReminderTarget.hidden = action !== 'replace';
         }
     }
 }

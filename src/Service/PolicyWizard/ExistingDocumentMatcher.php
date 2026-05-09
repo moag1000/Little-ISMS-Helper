@@ -31,6 +31,43 @@ final class ExistingDocumentMatcher
     public const MAX_SUGGESTIONS = 5;
 
     /**
+     * Synthetic topic key emitted when the matcher detects a "Sammelpolitik"
+     * (umbrella policy) — a single document that mixes ≥3 different ISO 27002
+     * topics (e.g. an 80-page "IT-Sicherheits-Richtlinie" covering access
+     * control + crypto + backup + logging + …). Such documents must NOT be
+     * naively `replace`d (would lose 80 pages of content); the W4-C UI maps
+     * this synthetic suggestion to suggested_action='split_to_topics'.
+     *
+     * Not part of {@see knownTopics()} — split_to_topics multi-pickers stay
+     * scoped to real ISO 27002 topics; this flag only steers Step-0 UX.
+     */
+    public const MATCHER_SAMMELPOLITIK = 'sammelpolitik';
+
+    /**
+     * Confidence threshold above which the synthetic Sammelpolitik flag
+     * out-ranks the (otherwise) winning `top_level` suggestion. Picked so a
+     * "Sicherheitsleitlinie" with ≥3 topic keywords beats a clean top-level
+     * hit (which usually scores 0.7-0.95).
+     */
+    private const SAMMELPOLITIK_BASE_CONFIDENCE = 0.85;
+
+    /**
+     * When the document is also large (file size above this threshold in
+     * bytes), the Sammelpolitik suggestion is boosted to {@see
+     * SAMMELPOLITIK_BOOSTED_CONFIDENCE}. Rationale: a 50 KB policy is
+     * almost certainly a multi-topic umbrella document, not a focused
+     * single-topic note.
+     */
+    private const SAMMELPOLITIK_LARGE_FILE_BYTES = 50_000;
+    private const SAMMELPOLITIK_BOOSTED_CONFIDENCE = 0.9;
+
+    /**
+     * Number of distinct topic-keyword hits (incl. `top_level`) required
+     * to flag a document as a Sammelpolitik.
+     */
+    private const SAMMELPOLITIK_MIN_HITS = 3;
+
+    /**
      * Topic-keyword catalogue. Keys are canonical Policy-Wizard topic keys
      * (mirrors `policy_wizard.topic.*` translation domain + DocumentGenerator
      * §8.5 tag taxonomy). Values are case-insensitive substring matches —
@@ -122,10 +159,21 @@ final class ExistingDocumentMatcher
             }
         }
 
+        // Sammelpolitik detection — fire when `top_level` is among the hits
+        // AND the document covers ≥ SAMMELPOLITIK_MIN_HITS distinct topics.
+        // Optionally boost when the underlying file is large (>50 KB).
+        $sammelpolitikScore = $this->detectSammelpolitik($hits, $document);
+
         // Sort descending by confidence.
         arsort($hits);
 
         $suggestions = [];
+        if ($sammelpolitikScore !== null) {
+            $suggestions[] = [
+                'topic' => self::MATCHER_SAMMELPOLITIK,
+                'confidence' => round($sammelpolitikScore, 2),
+            ];
+        }
         foreach ($hits as $topic => $score) {
             $suggestions[] = ['topic' => $topic, 'confidence' => round($score, 2)];
             if (count($suggestions) >= self::MAX_SUGGESTIONS) {
@@ -133,6 +181,40 @@ final class ExistingDocumentMatcher
             }
         }
         return $suggestions;
+    }
+
+    /**
+     * Decide whether the keyword-hit pattern + file metadata indicate a
+     * "Sammelpolitik" (umbrella policy spanning many topics).
+     *
+     * Conditions (must satisfy ALL):
+     *   - `top_level` was hit (the title/description mentions "Leitlinie",
+     *     "ISMS-Leitlinie" or similar umbrella wording)
+     *   - At least {@see SAMMELPOLITIK_MIN_HITS} distinct topic-keyword
+     *     hits in total (incl. top_level itself)
+     *
+     * Confidence is boosted to {@see SAMMELPOLITIK_BOOSTED_CONFIDENCE} when
+     * the document file is also large (>50 KB) — a heuristic for actual
+     * multi-topic content rather than a stub policy that merely name-checks
+     * many keywords.
+     *
+     * @param array<string, float> $hits
+     */
+    private function detectSammelpolitik(array $hits, Document $document): ?float
+    {
+        if (!isset($hits['top_level'])) {
+            return null;
+        }
+        if (count($hits) < self::SAMMELPOLITIK_MIN_HITS) {
+            return null;
+        }
+
+        $score = self::SAMMELPOLITIK_BASE_CONFIDENCE;
+        $size = $document->getFileSize();
+        if (is_int($size) && $size > self::SAMMELPOLITIK_LARGE_FILE_BYTES) {
+            $score = self::SAMMELPOLITIK_BOOSTED_CONFIDENCE;
+        }
+        return $score;
     }
 
     /**

@@ -9,6 +9,20 @@
 {% set diff_rows = diff|default([]) %}
 {% set is_confirmed = defaults.confirm|default(false) %}
 
+{# Junior-ISB-friendly help-card. #}
+<div class="alert alert-secondary border-0 mb-3">
+    <h6 class="mb-2">
+        <i class="bi bi-mortarboard" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.targeted.diff.help.title'|trans }}
+        <i class="bi bi-info-circle text-muted ms-1"
+           data-bs-toggle="tooltip"
+           title="{{ 'policy_wizard.step.targeted.diff.tooltip.drift'|trans }}"
+           aria-label="{{ 'policy_wizard.step.targeted.diff.tooltip.drift'|trans }}"></i>
+    </h6>
+    <p class="mb-2 small">{{ 'policy_wizard.step.targeted.diff.help.body'|trans }}</p>
+    <p class="mb-0 small fst-italic text-muted">{{ 'policy_wizard.step.targeted.diff.help.example'|trans }}</p>
+</div>
+
 <p class="text-muted small mb-3">{{ 'policy_wizard.step.targeted.diff.subtitle'|trans }}</p>
 
 {% if diff_rows|length == 0 %}

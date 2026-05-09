@@ -5,6 +5,21 @@
 {% set bundles = industry_preset_bundles|default([]) %}
 {% set selected_bundle_key = defaults.industry_preset_bundle_key|default(inputs_so_far.welcome.industry_preset_bundle_key|default('')) %}
 
+{# Junior-ISB-friendly help-card. Plain-language framing of the step
+ # so first-time users understand what they pick here and why. #}
+<div class="alert alert-secondary border-0 mb-3">
+    <h6 class="mb-2">
+        <i class="bi bi-mortarboard" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.welcome.help.title'|trans }}
+    </h6>
+    <p class="mb-2 small">{{ 'policy_wizard.step.welcome.help.body'|trans }}</p>
+    <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.welcome.help.example'|trans }}</p>
+    <p class="mb-0 small">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        <strong>DORA:</strong> {{ 'policy_wizard.step.welcome.help.dora_replaces_vait'|trans }}
+    </p>
+</div>
+
 <div class="row g-3"
      data-controller="policy-wizard-preset-picker"
      data-policy-wizard-preset-picker-preview-url-value="{{ path('app_policy_wizard_preset_preview', { key: '__KEY__' }) }}">
@@ -53,6 +68,11 @@
                            {% if code in selected_standards %}checked{% endif %}>
                     <label class="form-check-label" for="standard-{{ code }}">
                         {{ ('policy_wizard.step.welcome.standard.' ~ code)|trans }}
+                        <i class="bi bi-info-circle text-muted ms-1"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="right"
+                           title="{{ ('policy_wizard.step.welcome.tooltip.' ~ code)|trans }}"
+                           aria-label="{{ ('policy_wizard.step.welcome.tooltip.' ~ code)|trans }}"></i>
                     </label>
                 </div>
             {% endfor %}

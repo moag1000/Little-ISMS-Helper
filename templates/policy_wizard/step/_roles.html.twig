@@ -4,6 +4,17 @@
 {% set function_owners_default = defaults.function_owners|default({}) %}
 {% set approval_chain_default = defaults.approval_chain|default([]) %}
 
+{# Junior-ISB-friendly help-card. Plain-language framing of which
+ # roles are mandatory in which scope. #}
+<div class="alert alert-secondary border-0 mb-3">
+    <h6 class="mb-2">
+        <i class="bi bi-mortarboard" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.roles.help.title'|trans }}
+    </h6>
+    <p class="mb-2 small">{{ 'policy_wizard.step.roles.help.body'|trans }}</p>
+    <p class="mb-0 small fst-italic text-muted">{{ 'policy_wizard.step.roles.help.example'|trans }}</p>
+</div>
+
 {# W2 Gap-A — Krisen-Team RACI hint card. Senior-Consultant
  # "Hand-holding content" Step 3 (07-phase4-sprint-reconciliation.md
  # line 204). Surfaces the default RACI assignment so first-time users
@@ -18,10 +29,38 @@
         <div class="fa-alert__title">{{ 'policy_wizard.roles.raci_hint.title'|trans }}</div>
         <p class="fa-alert__message mb-2">{{ 'policy_wizard.roles.raci_hint.intro'|trans }}</p>
         <ul class="list-unstyled small mb-0">
-            <li><strong>R</strong> — {{ 'policy_wizard.roles.raci_hint.r'|trans }}</li>
-            <li><strong>A</strong> — {{ 'policy_wizard.roles.raci_hint.a'|trans }}</li>
-            <li><strong>C</strong> — {{ 'policy_wizard.roles.raci_hint.c'|trans }}</li>
-            <li><strong>I</strong> — {{ 'policy_wizard.roles.raci_hint.i'|trans }}</li>
+            <li>
+                <strong>R</strong>
+                <i class="bi bi-info-circle text-muted"
+                   data-bs-toggle="tooltip"
+                   title="{{ 'policy_wizard.step.roles.tooltip.raci_r'|trans }}"
+                   aria-label="{{ 'policy_wizard.step.roles.tooltip.raci_r'|trans }}"></i>
+                — {{ 'policy_wizard.roles.raci_hint.r'|trans }}
+            </li>
+            <li>
+                <strong>A</strong>
+                <i class="bi bi-info-circle text-muted"
+                   data-bs-toggle="tooltip"
+                   title="{{ 'policy_wizard.step.roles.tooltip.raci_a'|trans }}"
+                   aria-label="{{ 'policy_wizard.step.roles.tooltip.raci_a'|trans }}"></i>
+                — {{ 'policy_wizard.roles.raci_hint.a'|trans }}
+            </li>
+            <li>
+                <strong>C</strong>
+                <i class="bi bi-info-circle text-muted"
+                   data-bs-toggle="tooltip"
+                   title="{{ 'policy_wizard.step.roles.tooltip.raci_c'|trans }}"
+                   aria-label="{{ 'policy_wizard.step.roles.tooltip.raci_c'|trans }}"></i>
+                — {{ 'policy_wizard.roles.raci_hint.c'|trans }}
+            </li>
+            <li>
+                <strong>I</strong>
+                <i class="bi bi-info-circle text-muted"
+                   data-bs-toggle="tooltip"
+                   title="{{ 'policy_wizard.step.roles.tooltip.raci_i'|trans }}"
+                   aria-label="{{ 'policy_wizard.step.roles.tooltip.raci_i'|trans }}"></i>
+                — {{ 'policy_wizard.roles.raci_hint.i'|trans }}
+            </li>
         </ul>
     {% endblock %}
 {% endembed %}
@@ -34,7 +73,14 @@
         'bcm_officer': 'policy_wizard.step.roles.bcm_officer_label'
     } %}
         <div class="col-md-6">
-            <label class="form-label" for="role-{{ role_key }}">{{ label_key|trans }}</label>
+            <label class="form-label" for="role-{{ role_key }}">
+                {{ label_key|trans }}
+                <i class="bi bi-info-circle text-muted ms-1"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="right"
+                   title="{{ ('policy_wizard.step.roles.tooltip.' ~ role_key)|trans }}"
+                   aria-label="{{ ('policy_wizard.step.roles.tooltip.' ~ role_key)|trans }}"></i>
+            </label>
             <input type="number"
                    class="form-control fa-cyber-input__field"
                    id="role-{{ role_key }}"
@@ -44,6 +90,17 @@
                    value="{{ roles_default[role_key]|default('') }}">
         </div>
     {% endfor %}
+
+    <div class="col-12">
+        <p class="small text-muted mb-0">
+            <i class="bi bi-person-plus" aria-hidden="true"></i>
+            {{ 'policy_wizard.step.roles.help.missing_user_link'|trans }}
+            <a href="{{ path('user_management_index') }}" target="_blank" rel="noopener">
+                {{ 'policy_wizard.step.roles.help.missing_user_link_cta'|trans }}
+                <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+            </a>
+        </p>
+    </div>
 
     <div class="col-12 mt-2">
         <h3 class="h6 mb-2">{{ 'policy_wizard.step.roles.function_owners_label'|trans }}</h3>
