@@ -12,6 +12,10 @@ use App\Repository\EntityTagRepository;
 use App\Repository\TagRepository;
 use DateTimeImmutable;
 
+// Imported for the MATCHER_SAMMELPOLITIK constant — the inventory service
+// reads matcher suggestions to decide split_to_topics vs replace defaults.
+use App\Service\PolicyWizard\ExistingDocumentMatcher;
+
 /**
  * Policy-Wizard W4-C — existing-document inventory for brownfield tenants.
  *
@@ -49,6 +53,7 @@ class ExistingDocumentInventoryService
         private readonly DocumentRepository $documentRepository,
         private readonly TagRepository $tagRepository,
         private readonly EntityTagRepository $entityTagRepository,
+        private readonly ?ExistingDocumentMatcher $documentMatcher = null,
     ) {
     }
 
@@ -59,9 +64,11 @@ class ExistingDocumentInventoryService
      *     id: int,
      *     title: string,
      *     documentType: string,
+     *     mimeType: ?string,
      *     lastApprovedAt: ?\DateTimeImmutable,
      *     ownerName: ?string,
      *     hasPolicyWizardTag: bool,
+     *     isSammelpolitik: bool,
      *     suggestedAction: string,
      * }>
      */
@@ -85,17 +92,23 @@ class ExistingDocumentInventoryService
                 $lastApprovedAt = $this->extractLastApprovedAt($document);
                 $owner = $document->getUploadedBy();
 
+                $isSammelpolitik = $this->isSammelpolitikSuggestion($document);
+
                 $rows[] = [
                     'id' => $documentId,
                     'title' => $this->extractTitle($document),
                     'documentType' => $category,
+                    // MUST #1 — drawer chooses iframe vs download by mime.
+                    'mimeType' => $document->getMimeType(),
                     'lastApprovedAt' => $lastApprovedAt,
                     'ownerName' => $owner !== null ? $owner->getFullName() : null,
                     'hasPolicyWizardTag' => $hasWizardTag,
+                    'isSammelpolitik' => $isSammelpolitik,
                     'suggestedAction' => $this->suggestAction(
                         $hasWizardTag,
                         $lastApprovedAt,
                         $now,
+                        $isSammelpolitik,
                     ),
                 ];
             }
@@ -160,9 +173,16 @@ class ExistingDocumentInventoryService
         bool $hasWizardTag,
         ?DateTimeImmutable $lastApprovedAt,
         DateTimeImmutable $now,
+        bool $isSammelpolitik = false,
     ): string {
         if ($hasWizardTag) {
             return self::ACTION_KEEP;
+        }
+        // Sammelpolitik beats the age heuristic — replacing an 80-page
+        // umbrella policy would silently lose 79 of those pages. Suggest
+        // splitting across the relevant Wizard topics instead.
+        if ($isSammelpolitik) {
+            return self::ACTION_SPLIT_TO_TOPICS;
         }
         if ($lastApprovedAt === null) {
             // No timestamp → nothing to compare; let the user decide.
@@ -173,5 +193,23 @@ class ExistingDocumentInventoryService
             return self::ACTION_REPLACE;
         }
         return 'review';
+    }
+
+    /**
+     * Returns true when the matcher's #1 suggestion for this document is
+     * the synthetic `MATCHER_SAMMELPOLITIK` flag (multi-topic umbrella).
+     * Falls back to false when no matcher is wired (greenfield/legacy
+     * call sites that build the service without the optional dependency).
+     */
+    private function isSammelpolitikSuggestion(Document $document): bool
+    {
+        if ($this->documentMatcher === null) {
+            return false;
+        }
+        $suggestions = $this->documentMatcher->match($document);
+        if ($suggestions === []) {
+            return false;
+        }
+        return ($suggestions[0]['topic'] ?? '') === ExistingDocumentMatcher::MATCHER_SAMMELPOLITIK;
     }
 }

@@ -1,6 +1,16 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
 
+{# Junior-ISB-friendly help-card. #}
+<div class="alert alert-secondary border-0 mb-3">
+    <h6 class="mb-2">
+        <i class="bi bi-mortarboard" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.organisation_scope.help.title'|trans }}
+    </h6>
+    <p class="mb-2 small">{{ 'policy_wizard.step.organisation_scope.help.body'|trans }}</p>
+    <p class="mb-0 small fst-italic text-muted">{{ 'policy_wizard.step.organisation_scope.help.example'|trans }}</p>
+</div>
+
 {% set legal_default = defaults.legal_name|default('') %}
 {% set scope_default = defaults.scope_statement|default('') %}
 {% set address_default = defaults.primary_address|default('') %}
@@ -94,7 +104,11 @@
     </div>
     <div class="col-12">
         <p class="small text-muted mb-0">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            <i class="bi bi-info-circle" aria-hidden="true"
+               data-bs-toggle="tooltip"
+               data-bs-placement="right"
+               title="{{ 'policy_wizard.step.organisation_scope.tooltip.climate'|trans }}"
+               aria-label="{{ 'policy_wizard.step.organisation_scope.tooltip.climate'|trans }}"></i>
             {{ 'policy_wizard.step.organisation_scope.climate_note'|trans }}
         </p>
     </div>

@@ -27,6 +27,23 @@
 {% set bcm_in_scope = 'bcm' in standards %}
 {% set dora_in_scope = 'dora' in standards %}
 {% set gdpr_in_scope = 'gdpr' in standards %}
+{% set has_preset_applied = preset_default is not null and preset_default != '' %}
+
+{# Junior-ISB-friendly help-card. #}
+<div class="alert alert-secondary border-0 mb-3">
+    <h6 class="mb-2">
+        <i class="bi bi-mortarboard" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.operational_baselines.help.title'|trans }}
+    </h6>
+    <p class="mb-2 small">{{ 'policy_wizard.step.operational_baselines.help.body'|trans }}</p>
+    <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.operational_baselines.help.example'|trans }}</p>
+    {% if has_preset_applied %}
+        <p class="mb-0 small">
+            <i class="bi bi-magic" aria-hidden="true"></i>
+            {{ 'policy_wizard.step.operational_baselines.help.preset_hint'|trans }}
+        </p>
+    {% endif %}
+</div>
 
 {# ── Crypto allowlist ─────────────────────────────────────────────── #}
 <div class="fa-form-row mb-4">
@@ -53,6 +70,10 @@
     <div class="col-md-4">
         <label class="form-label" for="op-backup-rpo">
             {{ 'policy_wizard.step.operational_baselines.backup_rpo_label'|trans }}
+            <i class="bi bi-info-circle text-muted ms-1"
+               data-bs-toggle="tooltip"
+               title="{{ 'policy_wizard.step.operational_baselines.tooltip.rpo'|trans }}"
+               aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.rpo'|trans }}"></i>
         </label>
         <input type="number"
                class="form-control fa-cyber-input__field"
@@ -96,6 +117,10 @@
                 <div class="col-md-4">
                     <label class="form-label" for="op-rto-{{ level }}">
                         {{ ('policy_wizard.step.operational_baselines.rto_' ~ level ~ '_label')|trans }}
+                        <i class="bi bi-info-circle text-muted ms-1"
+                           data-bs-toggle="tooltip"
+                           title="{{ 'policy_wizard.step.operational_baselines.tooltip.rto'|trans }}"
+                           aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.rto'|trans }}"></i>
                     </label>
                     <input type="number"
                            class="form-control fa-cyber-input__field"
@@ -162,12 +187,20 @@
                            {% if dora_default.is_significant|default(false) %}checked{% endif %}>
                     <label class="form-check-label" for="op-dora-significant">
                         {{ 'policy_wizard.step.operational_baselines.dora_significant_label'|trans }}
+                        <i class="bi bi-info-circle text-muted ms-1"
+                           data-bs-toggle="tooltip"
+                           title="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_significant'|trans }}"
+                           aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_significant'|trans }}"></i>
                     </label>
                 </div>
             </div>
             <div class="col-md-4">
                 <label class="form-label" for="op-dora-threshold">
                     {{ 'policy_wizard.step.operational_baselines.dora_threshold_label'|trans }}
+                    <i class="bi bi-info-circle text-muted ms-1"
+                       data-bs-toggle="tooltip"
+                       title="{{ 'policy_wizard.step.operational_baselines.tooltip.ict_concentration'|trans }}"
+                       aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.ict_concentration'|trans }}"></i>
                 </label>
                 <input type="number"
                        class="form-control fa-cyber-input__field"
@@ -191,6 +224,10 @@
                            {% if dora_default.is_ctpp_self_assessment|default(false) %}checked{% endif %}>
                     <label class="form-check-label" for="op-dora-ctpp">
                         {{ 'policy_wizard.step.operational_baselines.dora_ctpp_label'|trans }}
+                        <i class="bi bi-info-circle text-muted ms-1"
+                           data-bs-toggle="tooltip"
+                           title="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_ctpp'|trans }}"
+                           aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_ctpp'|trans }}"></i>
                     </label>
                 </div>
             </div>
@@ -249,6 +286,16 @@
                     </div>
                 </div>
             {% endif %}
+            <div class="col-12">
+                <p class="small text-muted mb-0">
+                    <i class="bi bi-person-plus" aria-hidden="true"></i>
+                    {{ 'policy_wizard.step.roles.help.missing_user_link'|trans }}
+                    <a href="{{ path('user_management_index') }}" target="_blank" rel="noopener">
+                        {{ 'policy_wizard.step.roles.help.missing_user_link_cta'|trans }}
+                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                    </a>
+                </p>
+            </div>
         </div>
     {% endset %}
     {{ _fa_section.render({

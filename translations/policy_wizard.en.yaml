@@ -31,6 +31,35 @@ policy_wizard:
         hr_security: 'HR security (A.6.1-6.6)'
         physical_security: 'Physical security (A.7.1-7.14)'
 
+    # MUST #2 — Junior-ISB tooltips: 1-sentence description per topic for the
+    # Bestandsaufnahme topic pickers. Rendered in the topic-help popover.
+    topic_description:
+        top_level: 'Overarching ISMS policy — mission, scope, top-management responsibility (Cl. 5.2).'
+        acceptable_use: 'What employees may do with IT assets — internet, e-mail, private use, sanctions.'
+        access_control: 'Who can do what — users/roles/permissions, joiner-mover-leaver process.'
+        information_classification: 'Confidentiality tiers + labelling (public / internal / confidential / strictly confidential).'
+        information_transfer: 'Secure exchange of information with third parties — e-mail, file transfer, NDAs.'
+        identity_management: 'Lifecycle of digital identities — provisioning, deprovisioning, service accounts.'
+        authentication_information: 'Password and MFA requirements — complexity, rotation, credential storage.'
+        cryptography: 'Encryption at-rest + in-transit, key management, allow-list of algorithms.'
+        backup: 'Backup strategy — frequency, retention, restore tests, RPO.'
+        logging: 'What to log — system events, login audits, SIEM ingest, retention.'
+        patch_management: 'Vulnerability remediation — patch SLA by CVSS, inventory, emergency patches.'
+        malware: 'Protection against malware — EDR/AV solution, updates, handling infected systems.'
+        secure_configuration: 'Hardening standards for systems — baseline configs, CIS benchmarks, drift detection.'
+        network_security: 'Network segmentation, firewalls, VPN, Wi-Fi security, zone concept.'
+        secure_development: 'Secure software development — SDLC, code review, SAST/DAST, DevSecOps.'
+        supplier_relationships: 'Supplier security — vendor assessments, contractual InfoSec requirements.'
+        project_management: 'InfoSec in projects — security reviews at initiation, go-live gates.'
+        privacy_pii: 'Protection of personal data — GDPR requirements, data-subject rights, DPIA duty.'
+        incident_management: 'Detect, report and handle security incidents — CSIRT process, escalation.'
+        continuity: 'Business continuity in crises — BCM, contingency plans, RTO/RPO, recovery.'
+        threat_intelligence: 'Collect and assess external threat landscape — CERT feeds, IoC sharing.'
+        mobile_device: 'Mobile devices and remote work — MDM, BYOD, home-office rules.'
+        asset_management: 'Inventory all assets — hardware, software, data, owners.'
+        hr_security: 'Personnel security — background checks, training, off-boarding.'
+        physical_security: 'Site protection — access control, visitor rules, fire and water hazards.'
+
     landing:
         intro: 'Pick a mode to start the policy wizard. Active wizard runs can be resumed at any time.'
         in_progress_title: 'Active wizard runs'
@@ -72,6 +101,8 @@ policy_wizard:
                 replace: 'Outdated — suggest replace'
                 keep: 'Already wizard-managed — keep'
                 review: 'Review manually'
+                # MUST #3 — Sammelpolitik suggestion label.
+                split_to_topics: 'Umbrella policy — suggest split'
             empty:
                 title: 'Greenfield tenant'
                 message: 'No existing documents found. Let us start fresh.'
@@ -82,7 +113,7 @@ policy_wizard:
             suggested_topic_help: 'Topic suggestion (based on title + description)'
             help:
                 title: 'What do the 4 actions mean?'
-                replace: 'The wizard generates the matching new mandatory document; your old one is archived (not deleted). Recommended for outdated top-level policies, ISMS concepts and governance documents.'
+                replace: 'The wizard generates the matching new mandatory document; your old one is <strong>archived, NOT deleted</strong> — restorable via Admin → Documents → Archive. Recommended for outdated top-level policies, ISMS concepts and governance documents.'
                 keep: 'Your document remains unchanged; the wizard skips the matching topic. Recommended when your document is already current and audit-grade.'
                 merge_into_topic: 'Your document is appended as a section to a wizard-generated topic policy (e.g. your Backup concept goes into the wizard Backup Policy). Recommended for very specific detail concepts.'
                 split_to_topics: 'Your document touches several wizard topics (e.g. a mix of Access Control + Crypto). Split it across multiple wizard topics — the wizard creates stub sections; you fill the content manually.'
@@ -98,6 +129,45 @@ policy_wizard:
                 split_topics:
                     label: 'Which wizard topics should it be split into?'
                     help: 'Pick 2 or more wizard topics across which your document should be split. The wizard creates stub sections in each selected topic.'
+            # MUST #3 — Sammelpolitik (multi-topic umbrella) hint.
+            sammelpolitik_hint:
+                title: 'Umbrella policy detected'
+                body: 'This document seems to cover multiple topics (e.g. access + crypto + backup). Recommended: <strong>split</strong> instead of <strong>replace</strong> — otherwise content not represented elsewhere will be lost. The matched topics have already been pre-selected; please review.'
+            # MUST #5 — Inline reminder that "replace" archives, not deletes.
+            replace_archived_hint: 'Note: replacing <strong>archives</strong> the existing document, it is not deleted — restorable via Admin → Documents → Archive.'
+            # MUST #4 — Bulk action bar.
+            bulk:
+                heading: 'Bulk actions'
+                subheading: 'Apply the same decision to multiple rows — individual rows can still be adjusted afterwards.'
+                replace_all_outdated: 'Replace all outdated'
+                replace_all_outdated_help: 'Sets every row tagged "Outdated" to "Replace".'
+                keep_all_wizard_tagged: 'Skip all wizard-tagged'
+                keep_all_wizard_tagged_help: 'Sets every row already managed by the wizard to "Keep".'
+                applied: '%count% rows updated.'
+                no_targets: 'No matching rows found.'
+                confirm_title: 'Confirm bulk action'
+                confirm_replace_body: 'This sets %count% rows to "Replace". You can still adjust individual rows afterwards.'
+                confirm_keep_body: 'This sets %count% rows to "Keep" (skip topic). You can still adjust individual rows afterwards.'
+                confirm_apply: 'Apply'
+                confirm_cancel: 'Cancel'
+            # MUST #2 — Topic explainer popover.
+            topic_help:
+                button_label: 'What do the topics mean?'
+                modal_title: 'Wizard topics — short reference'
+                modal_intro: 'Each wizard topic covers one ISO 27002:2022 area. The table shows a 1-sentence hint for every topic.'
+                column_topic: 'Topic'
+                column_description: 'Description'
+                close: 'Close'
+            # MUST #1 — PDF preview drawer.
+            preview:
+                open: 'Open preview'
+                drawer_title: 'Document preview'
+                drawer_close: 'Close'
+                no_pdf_title: 'Preview only available for PDFs'
+                no_pdf_body: 'This document is not a PDF (type: %mime%). Please download it to inspect the content.'
+                download: 'Download document'
+                show_full: 'Open in document module'
+                loading: 'Loading preview …'
         welcome:
             title: 'Welcome + standards'
             subtitle: 'Pick the standards mix and the run mode.'
@@ -111,6 +181,18 @@ policy_wizard:
             preview: 'This selection will produce approximately %count% documents.'
             finding_reference_label: 'Audit-finding reference (optional)'
             finding_reference_help: 'Links this wizard run to a specific audit finding for traceability.'
+            help:
+                title: 'Which standards apply to me?'
+                body: 'ISO 27001 is the mandatory baseline. Only enable additional standards that you actually need by regulation or contract — every extra standard generates its own mandatory documents.'
+                example: 'Example: A German bank enables ISO 27001 + DORA + GDPR + BCM. A B2C-SaaS enables ISO 27001 + GDPR.'
+                dora_replaces_vait: 'DORA replaced the legacy German BaFin frameworks (VAIT/BAIT/KAIT/ZAIT) in January 2025 — no separate VAIT/BAIT document needed.'
+            tooltip:
+                iso27001: 'ISO/IEC 27001:2022 — international ISMS standard. Mandatory baseline of this wizard.'
+                bsi: 'BSI IT-Grundschutz — German counterpart to ISO 27001 with detailed building-block catalogue. Common in public sector + KRITIS.'
+                dora: 'Digital Operational Resilience Act (EU 2022/2554) — applies since Jan 2025 to banks/insurers/payment service providers. Replaces VAIT/BAIT/KAIT/ZAIT.'
+                gdpr: 'EU GDPR + national law (BDSG in Germany). Mandatory when processing personal data.'
+                bcm: 'ISO 22301 — Business Continuity Management. Recommended for KRITIS, banks, healthcare.'
+                iso27701: 'ISO/IEC 27701 — PIMS (Privacy Information Management). Extends 27001 with privacy-specific controls.'
         organisation_scope:
             title: 'Organisation & scope'
             subtitle: 'Legal name, scope statement and in-scope sites.'
@@ -133,6 +215,12 @@ policy_wizard:
                         title: 'No locations defined yet'
                         body: 'Create at least one tenant Location to make it pickable here.'
                         cta_label: 'Create location'
+            help:
+                title: 'What belongs in scope?'
+                body: 'The scope defines which parts of your organisation are covered by the ISMS. Auditors read every word literally — no boilerplate.'
+                example: 'Example: "The ISMS covers the development, operation and support of the cloud platform XYZ at the Berlin site (50 staff, excluding subsidiary ABC GmbH)."'
+            tooltip:
+                climate: 'ISO 27001:2024 Clause 4.1 — climate change must be considered as a context factor of the ISMS.'
         roles:
             title: 'Roles & responsibilities'
             subtitle: 'CISO, ISO, DPO, BCM officer and the function owners per business function.'
@@ -142,6 +230,21 @@ policy_wizard:
             bcm_officer_label: 'BCM Officer (Business Continuity)'
             function_owners_label: 'Function owners per business function'
             function_owners_help: 'Risk-owner P1 — one accountable owner per function.'
+            help:
+                title: 'Which roles do I really need?'
+                body: 'CISO + ISO are mandatory in every ISMS. DPO is mandatory when GDPR applies. BCM Officer only when the BCM standard is enabled. Function owners are the line managers who own risks in their area.'
+                example: 'Small-org example: CISO + ISO can be the same person (document the dual role). DPO may be outsourced (§ 38(1) BDSG).'
+                missing_user_link: 'Person not listed?'
+                missing_user_link_cta: 'Open tenant settings'
+            tooltip:
+                ciso: 'CISO — strategic responsibility for information security. Reports to executive management.'
+                isb: 'ISO (Information Security Officer) — operational implementation of CISO directives. In small orgs often combined with CISO.'
+                dpo: 'Data Protection Officer per GDPR Art. 37 + § 38 BDSG. Mandatory above 20 staff with regular personal-data processing.'
+                bcm_officer: 'BCM Officer per ISO 22301 — responsible for emergency and recovery plans.'
+                raci_r: 'Responsible — who executes the task operationally.'
+                raci_a: 'Accountable — who carries final accountability (exactly one person).'
+                raci_c: 'Consulted — who is consulted before the decision.'
+                raci_i: 'Informed — who is notified of the result.'
         risk_classification:
             title: 'Risk classification'
             subtitle: 'Risk-appetite tier (1-5) for the tenant organisation.'
@@ -170,6 +273,16 @@ policy_wizard:
             annex_column:
                 control: 'Control ref'
                 applicable: 'Applicability'
+            help:
+                title: 'What is decided here?'
+                body: 'Risk appetite is the overall tolerance for residual risk in your organisation. Data classification defines how many information levels you use. Annex A controls can be marked "not applicable" later in the SoA with a justification.'
+                example: 'Example: SME without cloud exposure → Tier 3 (balanced), 3 classification levels, all 93 Annex A controls initially "applicable".'
+                annex_reversibility: 'Applicability changes are reversible: you can adjust them later in the SoA module.'
+            tooltip:
+                annex_a: 'ISO/IEC 27001:2022 Annex A — catalogue of 93 controls in 4 themes (A.5/A.6/A.7/A.8). Each needs an applicability statement in the SoA.'
+                schutzbedarf: 'BSI IT-Grundschutz protection-need classes (BSI Standard 200-2). Default: 3 levels (normal/high/very high).'
+                soa: 'Statement of Applicability (SoA) — mandatory ISMS document per ISO 27001 Clause 6.1.3 d).'
+                review_interval: 'Maximum interval between two risk reviews (ISO 27001 Clauses 7.5.3 and 9.3).'
         operational_baselines:
             title: 'Operational baselines'
             subtitle: 'Crypto allow-list, backup RPO, patch SLAs by severity, continuity RTO and (when applicable) the DORA block.'
@@ -219,6 +332,19 @@ policy_wizard:
             preset_section_title: 'Industry preset (optional)'
             preset_bundle_label: 'Apply industry preset'
             preset_bundle_help: 'One-click pre-fill of sector-specific defaults. Existing inputs are preserved.'
+            help:
+                title: 'What are operational baselines?'
+                body: 'Concrete measurable thresholds for your operations: which crypto algorithms are allowed, how fast a patch must land, how much data loss is tolerable. These values flow directly into the generated policies.'
+                example: 'Example: Backup RPO = 24 h means at most 24 hours of data loss on restore. Patch SLA critical = 4 h means critical CVEs must be patched within 4 h.'
+                preset_hint: 'Tip: If you picked an industry preset in Step 1, sensible defaults are pre-filled — you can adjust any value.'
+            tooltip:
+                rpo: 'Recovery Point Objective — how much data loss since the last backup is tolerable (in hours).'
+                rto: 'Recovery Time Objective — how quickly a business process must be available again after an outage.'
+                cvss: 'Common Vulnerability Scoring System v3.1 — standardised vulnerability rating 0.0–10.0.'
+                dora_significant: 'DORA Art. 16 — significant entities are subject to enhanced resilience requirements.'
+                dora_ctpp: 'Critical Third-Party Provider — ICT third-party with systemic relevance. Self-assessment as a pre-check.'
+                bsi_tr02102: 'BSI Technical Guideline 02102 — recommendations for cryptographic methods and key lengths.'
+                ict_concentration: 'DORA Art. 29 — threshold for risk concentration on individual ICT providers.'
         lifecycle:
             title: 'Lifecycle'
             subtitle: 'Review interval, per-template overrides and approver assignment.'
@@ -238,6 +364,17 @@ policy_wizard:
                 standard: 'Standard'
                 review_override: 'Review (months)'
                 approver_override: 'Approver'
+            help:
+                title: 'Who reviews when?'
+                body: 'Every policy needs a review interval (max 24 months per ISO 27001) and a responsible approver. Per-template overrides are optional — leave them blank if the default suffices.'
+                example: 'Example: Default = 12 months, approver = CISO. Specific templates like "Incident Response Plan" can be tightened to 6 months.'
+                reversibility: 'Approver changes ARCHIVE existing workflow assignments but DO NOT delete them — already-issued approvals remain valid.'
+                missing_user_link: 'Approver not listed?'
+                missing_user_link_cta: 'Open tenant settings'
+            tooltip:
+                review_interval: 'ISO 27001:2022 Clause 7.5.3 requires periodic review of documented information. Audit defang: max 24 months.'
+                alva_hint: 'Alva is your compliance co-pilot — sends a friendly reminder 30 days before the due date.'
+                approver: 'A concrete person with a user account, not just a role. Required for workflow routing.'
         review_generate:
             title: 'Review & generate'
             subtitle: 'Inspect the summary, review hierarchy conflicts and generate the policy framework.'
@@ -246,6 +383,11 @@ policy_wizard:
             consistency_heading: 'Consistency hints (non-blocking)'
             conflicts_empty: 'No conflicts detected.'
             generate_hint: 'Pressing Generate will persist the documents. Sandbox mode produces no documents.'
+            help:
+                title: 'Final check before generation'
+                body: 'This page summarises every input from previous steps. Consistency hints are non-blocking — but hierarchy conflicts should be reviewed because they signal contradictory group-tenant directives.'
+                example: 'Example conflict: subsidiary tenant sets backup RPO = 48 h while group default is 24 h → hierarchy conflict (subsidiary may not be laxer).'
+                reversibility: 'Important: Generate persists the documents in the tenant. In a production run generation is NOT undoable, but every document can be ARCHIVED (not deleted). Sandbox mode persists nothing.'
         targeted_pick_topics:
             title: 'Pick topics'
             subtitle: 'Mark up to ten existing topic policies for re-generation.'
@@ -270,6 +412,11 @@ policy_wizard:
                     next_review: 'Next review'
                 action:
                     continue: 'Continue to audit finding'
+                help:
+                    title: 'What is a targeted re-run?'
+                    body: 'In contrast to the full wizard run you only regenerate selected topic policies — e.g. after an audit finding or for small setting changes. At most 10 topics per run.'
+                    example: 'Example: an auditor flags the backup policy. You pick "Backup" only, adjust values if needed, and regenerate the document.'
+                    reversibility: 'Existing versions of the picked topics are ARCHIVED, NOT deleted — the previous version remains as evidence.'
             finding:
                 title: 'Audit-finding ID (optional)'
                 subtitle: 'If you got here via an audit-finding alert, paste the finding ID for evidence.'
@@ -278,6 +425,11 @@ policy_wizard:
                 help_picker: 'Pick from open audit findings or type an external reference (TAB to confirm).'
                 no_open_findings: 'No open audit findings for this tenant — type an external reference or use the Audit module.'
                 due: 'due'
+                help_card:
+                    title: 'Why a finding reference?'
+                    body: 'Links this re-run to a concrete audit observation (Nonconformity, Observation, Improvement). Auditors expect an unbroken evidence chain from finding to corrective action.'
+                    example: 'Example: auditor writes NCR-2026-04 "Backup RPO not documented" → you reference NCR-2026-04 here, the wizard links it in the audit log trail.'
+                    optional_hint: 'Optional — for drift detection or routine re-reviews this field can stay blank.'
                 severity:
                     critical: 'critical'
                     high: 'high'
@@ -300,6 +452,12 @@ policy_wizard:
                 confirm_label: 'I have reviewed the differences and confirm regeneration of the selected topics.'
                 action:
                     regenerate: 'Start regeneration'
+                help:
+                    title: 'Understanding the diff preview'
+                    body: 'You see which setting values changed since the last approval. Yellow rows are "drift" — the current value diverges from the approved baseline.'
+                    example: 'Example: backup RPO was reduced from 24 h (approved) to 12 h (current) → drift, highlighted yellow. Regeneration adopts 12 h into the new document.'
+                tooltip:
+                    drift: 'Drift = deviation between current effective value and the last audit-approved baseline.'
             generate:
                 title: 'Confirm re-generation'
                 subtitle: 'Final step: the selected topics will be regenerated. Sandbox mode persists nothing.'
@@ -307,6 +465,11 @@ policy_wizard:
                 preview_heading: 'Sandbox preview'
                 action:
                     confirm: 'I confirm regeneration of the topics listed above.'
+                help:
+                    title: 'What happens on confirmation?'
+                    body: 'The wizard generates a new document for every topic listed above. The previous version is retained as ARCHIVED — auditors can trace history at any time.'
+                    example: 'Example: backup policy v3 becomes v4. v3 stays visible under "Archive" in the document module.'
+                    reversibility: 'Existing approved versions are ARCHIVED, NOT deleted — recoverable from the document module.'
 
     action:
         start_full: 'Start full run'

@@ -1,6 +1,20 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
+{# Junior-ISB-friendly help-card. #}
+<div class="alert alert-secondary border-0 mb-3">
+    <h6 class="mb-2">
+        <i class="bi bi-mortarboard" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.review_generate.help.title'|trans }}
+    </h6>
+    <p class="mb-2 small">{{ 'policy_wizard.step.review_generate.help.body'|trans }}</p>
+    <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.review_generate.help.example'|trans }}</p>
+    <p class="mb-0 small">
+        <i class="bi bi-archive" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.review_generate.help.reversibility'|trans }}
+    </p>
+</div>
+
 <h3 class="h6 mb-3">{{ 'policy_wizard.step.review_generate.summary_heading'|trans }}</h3>
 
 <dl class="row mb-4">

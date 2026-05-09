@@ -17,6 +17,20 @@
 {% set annex_default = defaults.annex_a_applicability|default({}) %}
 {% set bsi_in_scope = 'bsi' in standards %}
 
+{# Junior-ISB-friendly help-card. #}
+<div class="alert alert-secondary border-0 mb-3">
+    <h6 class="mb-2">
+        <i class="bi bi-mortarboard" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.risk_classification.help.title'|trans }}
+    </h6>
+    <p class="mb-2 small">{{ 'policy_wizard.step.risk_classification.help.body'|trans }}</p>
+    <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.risk_classification.help.example'|trans }}</p>
+    <p class="mb-0 small">
+        <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.risk_classification.help.annex_reversibility'|trans }}
+    </p>
+</div>
+
 {# ── ISO/IEC 27001:2022 Annex A controls grouped by theme.
    Counts: A.5=37, A.6=8, A.7=14, A.8=34, total=93. #}
 {% set annex_groups = {
@@ -92,6 +106,10 @@
         <div class="col-md-4">
             <label class="form-label" for="schutzbedarf-levels">
                 {{ 'policy_wizard.step.risk_classification.schutzbedarf_label'|trans }}
+                <i class="bi bi-info-circle text-muted ms-1"
+                   data-bs-toggle="tooltip"
+                   title="{{ 'policy_wizard.step.risk_classification.tooltip.schutzbedarf'|trans }}"
+                   aria-label="{{ 'policy_wizard.step.risk_classification.tooltip.schutzbedarf'|trans }}"></i>
             </label>
             <select class="form-select fa-cyber-input__field"
                     id="schutzbedarf-levels"
@@ -109,6 +127,10 @@
     <div class="col-md-4">
         <label class="form-label" for="review-interval">
             {{ 'policy_wizard.step.risk_classification.review_interval_label'|trans }}
+            <i class="bi bi-info-circle text-muted ms-1"
+               data-bs-toggle="tooltip"
+               title="{{ 'policy_wizard.step.risk_classification.tooltip.review_interval'|trans }}"
+               aria-label="{{ 'policy_wizard.step.risk_classification.tooltip.review_interval'|trans }}"></i>
         </label>
         <input type="number"
                class="form-control fa-cyber-input__field"
@@ -125,6 +147,10 @@
 {% for group_key, group in annex_groups %}
     {% set group_body %}
         <p class="form-text small">
+            <i class="bi bi-info-circle text-muted"
+               data-bs-toggle="tooltip"
+               title="{{ 'policy_wizard.step.risk_classification.tooltip.annex_a'|trans }}"
+               aria-label="{{ 'policy_wizard.step.risk_classification.tooltip.annex_a'|trans }}"></i>
             {{ 'policy_wizard.step.risk_classification.annex_help'|trans }}
         </p>
         <div class="table-responsive">
