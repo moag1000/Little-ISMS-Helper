@@ -1,0 +1,113 @@
+# Demo Wizard Run - ISO 27001 only, full mode (W7-F)
+#
+# Completed wizard run with all 7 steps populated.
+# Mirrors the typical first-run experience for a tenant adopting ISO 27001
+# without DORA / BSI / BCM / Privacy add-ons.
+
+wizard_run:
+    tenant: 'demo-industrial'
+    started_by: 'isb@demo-industrial.example'
+    started_at: '2026-04-12T09:14:00+02:00'
+    completed_at: '2026-04-12T11:42:00+02:00'
+    mode: 'full'
+    standards_adopted:
+        - 'iso27001'
+    status: 'completed'
+    affected_functions:
+        - 'IT-Sicherheit'
+        - 'IT-Operations'
+        - 'Personalwesen'
+        - 'Geschaeftsfuehrung'
+    targeted_topics: null
+    finding_reference: null
+    error_message: null
+
+inputs:
+    bestandsaufnahme:
+        decisions:
+            -   document_filename: 'isms-leitlinie-v3.pdf'
+                action: 'replace'
+                rationale: 'Veraltete Version 3.0 aus 2023, ohne Climate-Change-Bezug nach ISO 27001:2024.'
+            -   document_filename: 'richtlinie-zugangskontrolle-v2.pdf'
+                action: 'keep'
+                rationale: 'Aktuelle Version, decken neue A.5.15-A.5.18 bereits ab. Wizard erstellt Cross-Reference.'
+            -   document_filename: 'kryptorichtlinie-v1.pdf'
+                action: 'replace'
+                rationale: 'Krypto-Algorithmen-Inventar fehlt. Neuer Wizard-Output integriert BSI TR-02102 Empfehlungen.'
+
+    welcome_standards:
+        adopted_standards: ['iso27001']
+        skipped_standards_with_reason:
+            dora: 'Nicht im Anwendungsbereich - kein FinServ-Geschaeft auf Holding-Ebene.'
+            bsi: 'Nicht im Anwendungsbereich - keine KRITIS-Klassifikation.'
+
+    organisation_scope:
+        legal_name: 'Demo Industrial Holding GmbH'
+        scope_statement: 'Alle ISMS-relevanten Geschaeftsprozesse der Demo Industrial Holding GmbH am Standort Muenchen, einschliesslich IT-Operations, Personalwesen und Geschaeftsfuehrung. Standorte ausserhalb Muenchens sowie Tochtergesellschaften (insbesondere Demo Financial Services GmbH) sind ueber separate Tenants abgebildet.'
+        sites:
+            - 'Hauptstrasse 12, 80331 Muenchen'
+            - 'Lagerstrasse 4, 80339 Muenchen'
+        kritis_flag: false
+        regulated_finance: false
+
+    roles:
+        ciso: 'ciso@demo-industrial.example'
+        isb: 'isb@demo-industrial.example'
+        dpo: 'dpo@demo-industrial.example'
+        function_owners:
+            it_operations: 'it-ops-lead@demo-industrial.example'
+            human_resources: 'hr-lead@demo-industrial.example'
+            management: 'gf@demo-industrial.example'
+
+    risk_classification:
+        risk_appetite_tier: 2   # 1=conservative, 5=aggressive
+        risk_appetite_rationale: 'Industriebetrieb mit langfristigen Kundenbeziehungen, hohe Risikoaversion bei Liefer- und Reputationsrisiken.'
+        review_interval_months: 12
+
+    operational_baselines:
+        logging_enabled: true
+        logging_retention_months: 12
+        backup_strategy: '3-2-1 mit taeglichen Snapshots, woechentlichem Off-Site Tape'
+        backup_rto_hours: 8
+        backup_rpo_hours: 4
+        mfa_enforced: true
+        mfa_exceptions: []
+        crypto_baseline: 'BSI TR-02102 Stand 2025'
+
+    lifecycle:
+        review_interval_months: 12
+        approval_chain:
+            - 'isb'
+            - 'ciso'
+            - 'gf'
+        publication_channel: 'intranet + verpflichtende Acknowledgement'
+
+    review_generate:
+        sandbox_preview_run: false
+        confirmed_at: '2026-04-12T11:35:00+02:00'
+        confirmed_by: 'isb@demo-industrial.example'
+        rationale: 'Vollstaendige Erstgenerierung des ISMS-Regelwerks vor Internem Audit Q3/2026. Climate-Change-Wording, A.6.3 Acknowledgement-Workflow und Konzern-Default-Vererbung explizit aktiviert.'
+
+generated_documents:
+    -   filename: 'isms-leitlinie-v4.pdf'
+        title: 'Informationssicherheits-Leitlinie'
+        version: '4.0'
+        status: 'draft'   # awaits CISO + GF approval after 24h cool-off
+        framework: 'iso27001'
+        clause_references: ['5.1', '5.2']
+        batch_id: 'b3a8f2e1-4d9c-7e6a-9f8b-1c2d3e4f5a6b'
+    -   filename: 'richtlinie-zugangskontrolle-v3.pdf'
+        title: 'Richtlinie Zugangskontrolle'
+        version: '3.0'
+        status: 'draft'
+        framework: 'iso27001'
+        clause_references: ['A.5.15', 'A.5.16', 'A.5.17', 'A.5.18']
+        batch_id: 'b3a8f2e1-4d9c-7e6a-9f8b-1c2d3e4f5a6b'
+    -   filename: 'kryptorichtlinie-v2.pdf'
+        title: 'Richtlinie Kryptographie'
+        version: '2.0'
+        status: 'draft'
+        framework: 'iso27001'
+        clause_references: ['A.8.24']
+        batch_id: 'b3a8f2e1-4d9c-7e6a-9f8b-1c2d3e4f5a6b'
+    # ... 21 weitere Documents (Auszug aus 24 ISO-Templates)

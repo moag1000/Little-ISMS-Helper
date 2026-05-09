@@ -1,0 +1,34 @@
+{# Policy-Wizard W7-A — PDF cover page. Standalone (no body markup so
+   it can be reused inside the multi-document export later). #}
+<div class="cover">
+    <h1>{{ cover.title }}</h1>
+
+    <dl>
+        {% if cover.standard %}
+            <dt>{{ 'policy_wizard.export.cover.standard'|trans({}, 'policy_wizard') }}</dt>
+            <dd>{{ cover.standard|upper }}{% if cover.topic %} — {{ cover.topic|replace({'_': ' '}) }}{% endif %}</dd>
+        {% endif %}
+
+        <dt>{{ 'policy_wizard.export.cover.version'|trans({}, 'policy_wizard') }}</dt>
+        <dd>v{{ cover.version }}</dd>
+
+        {% if cover.valid_from %}
+            <dt>{{ 'policy_wizard.export.cover.valid_from'|trans({}, 'policy_wizard') }}</dt>
+            <dd>{{ cover.valid_from }}{% if cover.valid_until %} &mdash; {{ cover.valid_until }}{% endif %}</dd>
+        {% endif %}
+
+        {% if cover.approver_chain is not empty %}
+            <dt>{{ 'policy_wizard.export.cover.approved_by'|trans({}, 'policy_wizard') }}</dt>
+            <dd>
+                <ol>
+                    {% for approver in cover.approver_chain %}
+                        <li>{{ approver }}</li>
+                    {% endfor %}
+                </ol>
+            </dd>
+        {% endif %}
+
+        <dt>{{ 'policy_wizard.export.cover.generated_on'|trans({}, 'policy_wizard') }}</dt>
+        <dd>{{ cover.generated_on }}</dd>
+    </dl>
+</div>

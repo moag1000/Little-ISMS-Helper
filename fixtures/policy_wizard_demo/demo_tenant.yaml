@@ -1,0 +1,86 @@
+# Policy-Wizard demo tenant fixture (W7-F)
+#
+# Realistic example tenant for exercising the Policy-Wizard end-to-end.
+# Loaded by `app:fixtures:load --pack=policy_wizard_demo` (if seeder is
+# wired up) or imported manually for QA / demo / training scenarios.
+#
+# Persona: mid-sized DACH industrial supplier, ~280 employees, with one
+# regulated subsidiary in scope of DORA (financial services arm).
+# Suitable for demonstrating Konzern hierarchy, BSI tier filter,
+# DORA addon, and Privacy / DPO sub-workflow.
+
+tenant:
+    name: 'Demo Industrial Holding'
+    short_name: 'demo-industrial'
+    legal_name: 'Demo Industrial Holding GmbH'
+    legal_form: 'GmbH'
+    legal_address: 'Hauptstrasse 12, 80331 Muenchen, Germany'
+    registration_number: 'HRB 123456 AG Muenchen'
+    vat_id: 'DE123456789'
+    industry_sector: 'industrial-manufacturing'
+    employee_count: 280
+    locale_default: 'de'
+
+branding:
+    logo_path: '/uploads/branding/demo-industrial-logo.svg'
+    primary_color: '#1a4480'
+    secondary_color: '#5d8aa8'
+    pdf_letterhead_template: 'tenant_branding/demo-industrial.html.twig'
+    footer_legal_text: 'Demo Industrial Holding GmbH - Muenchen - HRB 123456'
+
+assignments:
+    - role: 'CISO'
+      user_email: 'ciso@demo-industrial.example'
+      display_name: 'Dr. Maria Schmidt'
+      function: 'IT-Sicherheit'
+    - role: 'ISB'
+      user_email: 'isb@demo-industrial.example'
+      display_name: 'Klaus Weber'
+      function: 'IT-Sicherheit'
+    - role: 'DPO'
+      user_email: 'dpo@demo-industrial.example'
+      display_name: 'Sabine Mueller, RA'
+      function: 'Datenschutz'
+      external: true
+      external_company: 'Externe Datenschutz Kanzlei Mueller & Partner'
+    - role: 'BCM_OFFICER'
+      user_email: 'bcm@demo-industrial.example'
+      display_name: 'Thomas Becker'
+      function: 'Risikomanagement'
+    - role: 'FUNCTION_OWNER'
+      user_email: 'it-ops-lead@demo-industrial.example'
+      display_name: 'Anna Hoffmann'
+      function: 'IT-Operations'
+    - role: 'FUNCTION_OWNER'
+      user_email: 'hr-lead@demo-industrial.example'
+      display_name: 'Markus Lange'
+      function: 'Personalwesen'
+
+settings:
+    bulkApprovalDualSignoff: true
+    bulkApprovalBatchCap: 10
+    bulkApprovalRationaleMinChars: 200
+    topLevelPolicyExcludedFromBulk: true
+    generationToApprovalMinHours: 24
+    randomSamplePostSubstitutionValidator: true
+    acknowledgementCoverageThreshold: 0.95
+    iso27701Version: '2019'
+    dora_scope: 'inscope'
+    bsi_tier: 'standard'
+    climateChangeWordingHardcoded: true
+    konzernDefaultsMode: 'floor_only'
+    risk_appetite_tier: 2
+    review_interval_months: 12
+
+# Subsidiary in DORA scope - useful to exercise Konzern push-down.
+subsidiary:
+    name: 'Demo Financial Services'
+    short_name: 'demo-finserv'
+    legal_name: 'Demo Financial Services GmbH'
+    parent_tenant: 'demo-industrial'
+    industry_sector: 'financial-services'
+    employee_count: 45
+    settings:
+        dora_scope: 'inscope'
+        bulkApprovalDualSignoff: true       # forced ON for DORA
+        konzernDefaultsMode: 'forbidden_to_relax'  # strict: parent floor

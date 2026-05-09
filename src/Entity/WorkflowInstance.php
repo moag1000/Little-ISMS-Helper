@@ -59,10 +59,26 @@ class WorkflowInstance
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $dueDate = null;
 
-    
+
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
+
+    /**
+     * Policy-Wizard W7-B — co-signature / witness on the approval-trail.
+     *
+     * GDPR DPO/CISO joint sign-offs (Art. 38(3), DPO independence) and
+     * BSI-aligned 4-eyes ceremonies use this slot to record the second
+     * signatory beside the regular approver chain stored in
+     * `approvalHistory`. Always optional — older instances and
+     * single-signature workflows leave both columns null.
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'witness_user_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $witnessUser = null;
+
+    #[ORM\Column(name: 'witnessed_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $witnessedAt = null;
 
 public function __construct()
     {
@@ -255,5 +271,37 @@ public function __construct()
     {
         $this->tenant = $tenant;
         return $this;
+    }
+
+    public function getWitnessUser(): ?User
+    {
+        return $this->witnessUser;
+    }
+
+    public function setWitnessUser(?User $witnessUser): static
+    {
+        $this->witnessUser = $witnessUser;
+        return $this;
+    }
+
+    public function getWitnessedAt(): ?DateTimeImmutable
+    {
+        return $this->witnessedAt;
+    }
+
+    public function setWitnessedAt(?DateTimeImmutable $witnessedAt): static
+    {
+        $this->witnessedAt = $witnessedAt;
+        return $this;
+    }
+
+    /**
+     * True when both witnessUser and witnessedAt are populated. Mirrors
+     * the audit-trail semantics of the BSI 4-eyes ceremony: a witness
+     * exists only when both the actor and timestamp are known.
+     */
+    public function hasWitness(): bool
+    {
+        return $this->witnessUser instanceof User && $this->witnessedAt instanceof DateTimeImmutable;
     }
 }

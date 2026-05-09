@@ -1,0 +1,399 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+
+{% block title %}{{ 'policy_wizard.konzern_rollup.title'|trans }} — {{ 'policy_wizard.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4 fa-aurora-surface">
+    {{ _fa_page_header.render({
+        badge: { icon: 'building-fill-gear', label: 'policy_wizard.konzern_defaults.badge'|trans },
+        title: 'policy_wizard.konzern_rollup.title'|trans,
+        subtitle: 'policy_wizard.konzern_rollup.subtitle'|trans,
+        actions: [
+            { label: 'policy_wizard.action.back'|trans,
+              variant: 'ghost',
+              icon: 'arrow-left',
+              href: path('app_policy_wizard_index') }
+        ]
+    }) }}
+
+    {{ _fa_alert.render({
+        variant: 'info',
+        icon: 'bi-stars',
+        title: 'Alva-Tipp',
+        body: 'policy_wizard.konzern_rollup.alva_tipp'|trans
+    }) }}
+
+    {% if not_a_konzern %}
+        <div class="mt-4">
+            {{ _fa_empty_state.render({
+                mood: 'thinking',
+                title: 'policy_wizard.konzern_rollup.empty.not_konzern'|trans,
+                text: 'policy_wizard.konzern_rollup.empty.no_subsidiaries'|trans
+            }) }}
+        </div>
+    {% elseif report is null or report.isEmpty %}
+        <div class="mt-4">
+            {{ _fa_empty_state.render({
+                mood: 'idle',
+                title: 'policy_wizard.konzern_rollup.empty.no_subsidiaries'|trans,
+                text: 'policy_wizard.konzern_rollup.empty.not_konzern'|trans
+            }) }}
+        </div>
+    {% else %}
+
+        {# Sticky tab nav — five facets of the roll-up #}
+        <div class="mt-4 fa-konzern-rollup__tabs sticky-top bg-body" style="top:0;z-index:5;">
+            <ul class="nav nav-tabs" role="tablist" id="rollupTabs">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="tab-coverage-btn" data-bs-toggle="tab" data-bs-target="#tab-coverage" type="button" role="tab" aria-controls="tab-coverage" aria-selected="true">
+                        <i class="bi bi-shield-check" aria-hidden="true"></i>
+                        {{ 'policy_wizard.konzern_rollup.tab.coverage'|trans }}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-actions-btn" data-bs-toggle="tab" data-bs-target="#tab-actions" type="button" role="tab" aria-controls="tab-actions" aria-selected="false">
+                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                        {{ 'policy_wizard.konzern_rollup.tab.actions'|trans }}
+                        {% if report.outstandingActions|length > 0 %}
+                            <span class="badge bg-warning text-dark ms-1">{{ report.outstandingActions|length }}</span>
+                        {% endif %}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-compliance-btn" data-bs-toggle="tab" data-bs-target="#tab-compliance" type="button" role="tab" aria-controls="tab-compliance" aria-selected="false">
+                        <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                        {{ 'policy_wizard.konzern_rollup.tab.compliance'|trans }}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-drift-btn" data-bs-toggle="tab" data-bs-target="#tab-drift" type="button" role="tab" aria-controls="tab-drift" aria-selected="false">
+                        <i class="bi bi-arrows-collapse-vertical" aria-hidden="true"></i>
+                        {{ 'policy_wizard.konzern_rollup.tab.drift'|trans }}
+                        {% if report.settingsDriftRows|length > 0 %}
+                            <span class="badge bg-danger ms-1">{{ report.settingsDriftRows|length }}</span>
+                        {% endif %}
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-ack-btn" data-bs-toggle="tab" data-bs-target="#tab-ack" type="button" role="tab" aria-controls="tab-ack" aria-selected="false">
+                        <i class="bi bi-person-check-fill" aria-hidden="true"></i>
+                        {{ 'policy_wizard.konzern_rollup.tab.acknowledgement'|trans }}
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="tab-content mt-3" id="rollupTabsContent">
+
+            {# Coverage tab — grid of feature-cards per (tenant, standard) #}
+            <div class="tab-pane fade show active" id="tab-coverage" role="tabpanel" aria-labelledby="tab-coverage-btn">
+                {% set coverage_body %}
+                    {% if report.policyCoverageMatrix|length == 0 %}
+                        {{ _fa_empty_state.render({
+                            mood: 'idle',
+                            title: 'policy_wizard.konzern_rollup.empty.no_subsidiaries'|trans
+                        }) }}
+                    {% else %}
+                        {% for tenantRow in report.policyCoverageMatrix %}
+                            <h3 class="h6 mt-4 mb-2 fw-semibold">
+                                <i class="bi bi-building" aria-hidden="true"></i>
+                                {{ tenantRow.tenant_name }} <small class="text-muted">({{ tenantRow.tenant_code }})</small>
+                            </h3>
+                            <div class="row g-3" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+                                {% if tenantRow.standards|length == 0 %}
+                                    <div class="col-12">
+                                        <p class="text-muted small mb-0">—</p>
+                                    </div>
+                                {% else %}
+                                    {% for stdKey, std in tenantRow.standards %}
+                                        <div>
+                                            {{ _fa_feature_card.render({
+                                                label: std.standard_code,
+                                                value: std.policy_count,
+                                                unit: '',
+                                                variant: 'primary',
+                                                icon: 'shield-lock',
+                                                hint: std.last_updated_at is not null
+                                                    ? (std.last_updated_at|date('Y-m-d'))
+                                                    : '—'
+                                            }) }}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endset %}
+                {{ _fa_section.render({
+                    title: 'policy_wizard.konzern_rollup.tab.coverage'|trans,
+                    body: coverage_body
+                }) }}
+            </div>
+
+            {# Actions tab — list of open WorkflowInstances #}
+            <div class="tab-pane fade" id="tab-actions" role="tabpanel" aria-labelledby="tab-actions-btn">
+                {% set actions_body %}
+                    {% if report.outstandingActions|length == 0 %}
+                        {{ _fa_empty_state.render({
+                            mood: 'happy',
+                            title: 'policy_wizard.konzern_rollup.empty.no_subsidiaries'|trans
+                        }) }}
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">{{ 'policy_wizard.konzern_defaults.column.key'|trans }}</th>
+                                        <th scope="col">{{ 'policy_wizard.konzern_rollup.tab.actions'|trans }}</th>
+                                        <th scope="col">{{ 'policy_wizard.konzern_defaults.column.updated_at'|trans }}</th>
+                                        <th scope="col">{{ 'policy_wizard.witness.label'|trans }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for action in report.outstandingActions %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ action.tenant_name }}</strong><br>
+                                                <code class="small text-muted">{{ action.tenant_code }}</code>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-{{ action.severity == 'danger' ? 'danger' : (action.severity == 'warning' ? 'warning text-dark' : 'secondary') }}">
+                                                    {{ action.action }}
+                                                </span>
+                                                <br>
+                                                <small class="text-muted">
+                                                    {{ action.entity_type }}#{{ action.entity_id }}
+                                                </small>
+                                            </td>
+                                            <td>
+                                                {% if action.due_in_seconds is not null %}
+                                                    {% if action.due_in_seconds < 0 %}
+                                                        <span class="text-danger fw-bold">{{ ((-action.due_in_seconds) / 3600)|round(1) }}h overdue</span>
+                                                    {% else %}
+                                                        <span>{{ (action.due_in_seconds / 3600)|round(1) }}h</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">—</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">{{ 'policy_wizard.witness.optional'|trans }}</small>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                {% endset %}
+                {{ _fa_section.render({
+                    title: 'policy_wizard.konzern_rollup.tab.actions'|trans,
+                    body: actions_body
+                }) }}
+            </div>
+
+            {# Compliance tab — Chart.js stacked bar per tenant #}
+            <div class="tab-pane fade" id="tab-compliance" role="tabpanel" aria-labelledby="tab-compliance-btn">
+                {% set compliance_body %}
+                    {% if report.complianceScore|length == 0 %}
+                        {{ _fa_empty_state.render({
+                            mood: 'idle',
+                            title: 'policy_wizard.konzern_rollup.empty.no_subsidiaries'|trans
+                        }) }}
+                    {% else %}
+                        <div style="position:relative;height:420px;">
+                            <canvas id="complianceChart"></canvas>
+                        </div>
+                        <p class="text-muted small mt-2 mb-0">
+                            {{ 'policy_wizard.konzern_rollup.tab.compliance'|trans }} ·
+                            {{ report.complianceScore|length }} rows
+                        </p>
+                    {% endif %}
+                {% endset %}
+                {{ _fa_section.render({
+                    title: 'policy_wizard.konzern_rollup.tab.compliance'|trans,
+                    body: compliance_body
+                }) }}
+            </div>
+
+            {# Drift tab — table of subsidiaries with override-vs-default delta #}
+            <div class="tab-pane fade" id="tab-drift" role="tabpanel" aria-labelledby="tab-drift-btn">
+                {% set drift_body %}
+                    {% if report.settingsDriftRows|length == 0 %}
+                        {{ _fa_empty_state.render({
+                            mood: 'happy',
+                            title: 'policy_wizard.konzern_rollup.empty.no_subsidiaries'|trans
+                        }) }}
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">{{ 'policy_wizard.konzern_defaults.column.key'|trans }}</th>
+                                        <th scope="col">{{ 'policy_wizard.konzern_defaults.column.value'|trans }} (Konzern)</th>
+                                        <th scope="col">{{ 'policy_wizard.konzern_defaults.column.value'|trans }} (Tochter)</th>
+                                        <th scope="col">{{ 'policy_wizard.konzern_defaults.column.updated_at'|trans }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in report.settingsDriftRows %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ row.tenant_name }}</strong><br>
+                                                <code class="small">{{ row.setting_key }}</code>
+                                                {% if row.override_mode %}
+                                                    <span class="badge bg-secondary ms-2">{{ row.override_mode }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td><code>{{ row.konzern_value is iterable ? row.konzern_value|json_encode : row.konzern_value }}</code></td>
+                                            <td><code class="text-warning">{{ row.tochter_value is iterable ? row.tochter_value|json_encode : row.tochter_value }}</code></td>
+                                            <td>
+                                                <small class="text-muted">{{ row.drift_detected_at|default('—') }}</small>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                {% endset %}
+                {{ _fa_section.render({
+                    title: 'policy_wizard.konzern_rollup.tab.drift'|trans,
+                    body: drift_body
+                }) }}
+            </div>
+
+            {# Acknowledgement tab — progress bars per tenant #}
+            <div class="tab-pane fade" id="tab-ack" role="tabpanel" aria-labelledby="tab-ack-btn">
+                {% set ack_body %}
+                    {% if report.acknowledgmentCoverage|length == 0 %}
+                        {{ _fa_empty_state.render({
+                            mood: 'idle',
+                            title: 'policy_wizard.konzern_rollup.empty.no_subsidiaries'|trans
+                        }) }}
+                    {% else %}
+                        <div class="row g-3" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));">
+                            {% for row in report.acknowledgmentCoverage %}
+                                <div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="h6 mb-1">{{ row.tenant_name }}</h4>
+                                            <code class="small text-muted">{{ row.tenant_code }}</code>
+                                            <div class="progress mt-2" role="progressbar" aria-valuenow="{{ row.coverage_percentage }}" aria-valuemin="0" aria-valuemax="100" style="height: 1.25rem;">
+                                                {% set pct = row.coverage_percentage %}
+                                                {% set bgClass = pct >= 90 ? 'bg-success' : (pct >= 60 ? 'bg-warning' : 'bg-danger') %}
+                                                <div class="progress-bar {{ bgClass }}" style="width: {{ pct }}%;">
+                                                    {{ pct }}%
+                                                </div>
+                                            </div>
+                                            <small class="text-muted d-block mt-2">
+                                                {{ row.acknowledgements_count }} / {{ row.published_documents_count * row.total_users }}
+                                                <span class="ms-1">({{ row.published_documents_count }} docs · {{ row.total_users }} users)</span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endset %}
+                {{ _fa_section.render({
+                    title: 'policy_wizard.konzern_rollup.tab.acknowledgement'|trans,
+                    body: ack_body
+                }) }}
+            </div>
+
+        </div>
+
+        {# Compliance chart data — passed via data attribute, picked up
+           after Chart.js is available. #}
+        {% if report.complianceScore|length > 0 %}
+            {% set chart_tenants = [] %}
+            {% set chart_frameworks = [] %}
+            {% for row in report.complianceScore %}
+                {% if row.tenant_name not in chart_tenants %}
+                    {% set chart_tenants = chart_tenants|merge([row.tenant_name]) %}
+                {% endif %}
+                {% if row.framework_code not in chart_frameworks %}
+                    {% set chart_frameworks = chart_frameworks|merge([row.framework_code]) %}
+                {% endif %}
+            {% endfor %}
+
+            {% set chart_payload = {
+                tenants: chart_tenants,
+                frameworks: chart_frameworks,
+                rows: report.complianceScore
+            } %}
+            <div id="rollupChartData"
+                 data-payload="{{ chart_payload|json_encode|e('html_attr') }}"
+                 hidden></div>
+        {% endif %}
+
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if report is not null and not report.isEmpty and report.complianceScore|length > 0 %}
+    <script type="module">
+        // Stacked-bar chart per tenant for compliance scores. Lazy-loads
+        // Chart.js via the importmap when available. Falls back silently
+        // when offline / network-blocked so the rest of the page is
+        // never blocked.
+        (async () => {
+            const dataNode = document.getElementById('rollupChartData');
+            if (!dataNode) return;
+            let payload;
+            try {
+                payload = JSON.parse(dataNode.getAttribute('data-payload') || '{}');
+            } catch (_e) {
+                return;
+            }
+            if (!payload.tenants || !payload.rows) return;
+
+            let ChartCtor;
+            try {
+                const mod = await import('chart.js/auto');
+                ChartCtor = mod.default || mod.Chart;
+            } catch (_e) {
+                return;
+            }
+            const canvas = document.getElementById('complianceChart');
+            if (!canvas || !ChartCtor) return;
+
+            // Build datasets keyed by framework so we get stacked bars.
+            const palette = ['#5b8def', '#2dd4bf', '#fbbf24', '#fb7185', '#a78bfa', '#34d399'];
+            const datasets = (payload.frameworks || []).map((fw, idx) => ({
+                label: fw,
+                data: (payload.tenants || []).map(t => {
+                    const row = payload.rows.find(r => r.tenant_name === t && r.framework_code === fw);
+                    return row ? Number(row.score_percentage || 0) : 0;
+                }),
+                backgroundColor: palette[idx % palette.length],
+                stack: 'compliance',
+            }));
+
+            new ChartCtor(canvas, {
+                type: 'bar',
+                data: { labels: payload.tenants, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, max: 100 },
+                        x: { stacked: false }
+                    },
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        })();
+    </script>
+    {% endif %}
+{% endblock %}

@@ -31,7 +31,7 @@
     {% if currentTenant %}
     {% embed '_components/_card.html.twig' with {class: 'mb-3'} %}
         {% block card_body %}
-            <form method="get" action="{{ path('app_document_index') }}" class="d-flex align-items-center gap-2 py-0">
+            <form method="get" action="{{ path('app_document_index') }}" class="d-flex flex-wrap align-items-center gap-2 py-0">
                 <label for="view-filter" class="mb-0 fw-bold">
                     <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                 </label>
@@ -50,6 +50,26 @@
                     </option>
                     {% endif %}
                 </select>
+
+                {# Policy-Wizard W7-C — history toggle (default OFF). #}
+                <span class="ms-3 text-muted">|</span>
+                <label for="include-history-toggle" class="mb-0 fw-bold">
+                    <i class="bi bi-clock-history" aria-hidden="true"></i>
+                    {{ 'policy_wizard.history_toggle.label'|trans({}, 'policy_wizard') }}:
+                </label>
+                <select class="form-select fa-cyber-input__field form-select-sm w-auto"
+                        id="include-history-toggle"
+                        name="include_history"
+                        data-controller="ui-actions"
+                        data-action="change->ui-actions#autoSubmit">
+                    <option value="0" {{ includeHistory ? '' : 'selected' }}>
+                        {{ 'policy_wizard.history_toggle.current_only'|trans({}, 'policy_wizard') }}
+                    </option>
+                    <option value="1" {{ includeHistory ? 'selected' : '' }}>
+                        {{ 'policy_wizard.history_toggle.with_history'|trans({}, 'policy_wizard') }}
+                    </option>
+                </select>
+
                 <noscript>
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">{{ 'common.apply'|trans({}, 'messages') }}</button>
                 </noscript>
@@ -264,6 +284,22 @@
                                 <strong>{{ document.originalFilename }}</strong>
                             </a>
                             {{ inheritance.small_badge(document, currentTenant) }}
+                            {# Policy-Wizard W7-C — settings-drift badge. #}
+                            {% if driftMap[document.id] is defined and driftMap[document.id] %}
+                                <span class="badge bg-warning text-dark ms-1"
+                                      title="{{ 'policy_wizard.badge.settings_drift.tooltip'|trans({}, 'policy_wizard') }}">
+                                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                    {{ 'policy_wizard.badge.settings_drift.label'|trans({}, 'policy_wizard') }}
+                                </span>
+                            {% endif %}
+                            {% if document.supersedes %}
+                                <a href="{{ path('app_policy_wizard_diff', {currentDocId: document.id}) }}"
+                                   class="badge bg-info text-decoration-none ms-1"
+                                   title="{{ 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }}">
+                                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                                    {{ 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }}
+                                </a>
+                            {% endif %}
                             {% if document.description %}
                             <br>
                             <small class="text-muted">{{ document.description|length > 60 ? document.description|slice(0, 60) ~ '...' : document.description }}</small>

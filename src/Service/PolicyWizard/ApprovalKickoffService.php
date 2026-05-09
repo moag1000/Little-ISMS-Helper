@@ -196,6 +196,65 @@ final class ApprovalKickoffService
     }
 
     /**
+     * W7-B — record a witness/co-signature on the approval-trail.
+     *
+     * GDPR DPO/CISO joint sign-offs (Art. 38(3) DPO independence) and
+     * BSI 4-eyes ceremonies use this method to attach the second
+     * signatory beside the regular approver chain. Idempotent on
+     * repeated calls with the same witness; throws on attempts to
+     * overwrite a different witness (audit-trail immutability).
+     *
+     * Spec: docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md
+     *       lines 302-304 (CISO "What's missing" Witnessing).
+     */
+    public function recordWitness(WorkflowInstance $instance, User $witness): void
+    {
+        $existing = $instance->getWitnessUser();
+        if ($existing instanceof User && $existing->getId() !== $witness->getId()) {
+            throw new \LogicException(sprintf(
+                'WorkflowInstance #%d already witnessed by user #%d — refusing to overwrite (audit-trail immutability).',
+                $instance->getId() ?? 0,
+                $existing->getId() ?? 0,
+            ));
+        }
+        if ($existing instanceof User && $existing->getId() === $witness->getId()) {
+            // Already recorded — idempotent no-op.
+            return;
+        }
+
+        $witnessedAt = new DateTimeImmutable();
+        $instance->setWitnessUser($witness);
+        $instance->setWitnessedAt($witnessedAt);
+        $instance->addApprovalHistoryEntry([
+            'event'          => 'witness_recorded',
+            'witness_user_id' => $witness->getId(),
+            'witnessed_at'   => $witnessedAt->format(DATE_ATOM),
+            'tag'            => self::AUDIT_TAG,
+        ]);
+
+        $this->entityManager->persist($instance);
+        $this->entityManager->flush();
+
+        $this->auditLogger->logCustom(
+            action: 'policy_approval_witness_recorded',
+            entityType: 'WorkflowInstance',
+            entityId: $instance->getId(),
+            oldValues: null,
+            newValues: [
+                'witness_user_id' => $witness->getId(),
+                'witnessed_at'    => $witnessedAt->format(DATE_ATOM),
+                'tag'             => self::AUDIT_TAG,
+            ],
+            description: sprintf(
+                '[%s] Witness/co-signature recorded for WorkflowInstance #%d by user #%d',
+                self::AUDIT_TAG,
+                $instance->getId() ?? 0,
+                $witness->getId() ?? 0,
+            ),
+        );
+    }
+
+    /**
      * W6 Gap-E — guard called BEFORE adding a Document to a bulk-approval
      * batch. GDPR Art. 38(3) DPO-independence requirement: the DPO Charter
      * MUST be approved standalone so the independence sign-off is on the

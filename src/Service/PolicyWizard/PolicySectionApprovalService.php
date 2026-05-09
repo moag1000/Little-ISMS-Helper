@@ -211,6 +211,84 @@ class PolicySectionApprovalService
     }
 
     /**
+     * W7-B — record a witness/co-signature on the host WorkflowInstance
+     * of the given section. Used when DPO + CISO jointly sign off a
+     * privacy section: the primary approver runs through {@see approve()},
+     * the co-signatory is recorded here against the host workflow.
+     *
+     * Returns false (no-op) when no host WorkflowInstance is wired (test
+     * fixtures / ad-hoc renders) so the rejection path is not blocked.
+     *
+     * Spec: docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md
+     *       lines 302-304 (CISO "What's missing" Witnessing).
+     */
+    public function recordWitness(DocumentSection $section, User $witness): bool
+    {
+        $document = $section->getDocument();
+        if (!$document instanceof Document) {
+            return false;
+        }
+
+        $hostInstance = $this->entityManager->getRepository(WorkflowInstance::class)
+            ->findOneBy([
+                'entityType' => 'Document',
+                'entityId'   => $document->getId(),
+            ]);
+        if (!$hostInstance instanceof WorkflowInstance) {
+            return false;
+        }
+
+        $existing = $hostInstance->getWitnessUser();
+        if ($existing instanceof User && $existing->getId() !== $witness->getId()) {
+            throw new InvalidArgumentException(sprintf(
+                'WorkflowInstance #%d already witnessed by user #%d — refusing to overwrite (audit-trail immutability).',
+                $hostInstance->getId() ?? 0,
+                $existing->getId() ?? 0,
+            ));
+        }
+        if ($existing instanceof User && $existing->getId() === $witness->getId()) {
+            return true;
+        }
+
+        $witnessedAt = new DateTimeImmutable();
+        $hostInstance->setWitnessUser($witness);
+        $hostInstance->setWitnessedAt($witnessedAt);
+        $hostInstance->addApprovalHistoryEntry([
+            'event'           => 'witness_recorded',
+            'witness_user_id' => $witness->getId(),
+            'witnessed_at'    => $witnessedAt->format(\DateTimeInterface::ATOM),
+            'document_id'     => $document->getId(),
+            'section_key'     => $section->getSectionKey(),
+            'tag'             => self::AUDIT_TAG,
+        ]);
+        $this->entityManager->persist($hostInstance);
+        $this->entityManager->flush();
+
+        $this->auditLogger->logCustom(
+            action: 'section_witness_recorded',
+            entityType: 'WorkflowInstance',
+            entityId: $hostInstance->getId(),
+            oldValues: null,
+            newValues: [
+                'witness_user_id' => $witness->getId(),
+                'witnessed_at'    => $witnessedAt->format(\DateTimeInterface::ATOM),
+                'document_id'     => $document->getId(),
+                'section_key'     => $section->getSectionKey(),
+                'tag'             => self::AUDIT_TAG,
+            ],
+            description: sprintf(
+                '[%s] DPO/CISO witness recorded for section "%s" of document #%d (workflow #%d)',
+                self::AUDIT_TAG,
+                $section->getSectionKey() ?? '?',
+                $document->getId() ?? 0,
+                $hostInstance->getId() ?? 0,
+            ),
+        );
+
+        return true;
+    }
+
+    /**
      * If every gated section has reached `approved` AND the host
      * workflow is parked at `top_mgmt_signoff`, advance the host to
      * `published`.

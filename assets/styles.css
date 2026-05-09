@@ -40,3 +40,6 @@
 
 /* Admin Panel — Hub-Card, Permission-Matrix, Audit-Row, API-Key, Service-Tile (DS § Admin Panel) */
 @import './styles/admin-panel.css';
+
+/* Policy-Wizard W7-E — Mobile responsive Bulk-Approval-Inbox enhancements */
+@import './styles/policy-wizard-mobile.css';

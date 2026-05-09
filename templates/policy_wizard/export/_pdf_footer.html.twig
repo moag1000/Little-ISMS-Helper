@@ -1,0 +1,36 @@
+{# Policy-Wizard W7-A — PDF footer. Static footer (dompdf does not
+   honour CSS3 `@page` running boxes reliably without preprocessing).
+   Page numbers are rendered via dompdf's built-in `$PAGE_NUM` /
+   `$PAGE_COUNT` placeholders inside an inline `<script type="text/php">`
+   block — kept short to avoid execution overhead per render. #}
+<div class="footer">
+    {% if footer_html is not empty %}
+        <div class="footer-html">{{ footer_html|raw }}</div>
+    {% endif %}
+
+    <div>
+        {{ footer.system_attribution }}
+        {% if footer.version %} &middot; v{{ footer.version }}{% endif %}
+        {% if footer.batch_id %}
+            &middot; {{ 'policy_wizard.export.footer.batch_id_label'|trans({}, 'policy_wizard') }}: {{ footer.batch_id }}
+        {% endif %}
+    </div>
+</div>
+
+<script type="text/php">
+    if (isset($pdf)) {
+        $font = $fontMetrics->getFont("Helvetica", "normal");
+        $size = 8;
+        $color = array(0.4, 0.4, 0.4);
+        $text = "{{ 'policy_wizard.export.footer.page_of'|trans({}, 'policy_wizard') }} {PAGE_NUM} / {PAGE_COUNT}";
+        $width = $fontMetrics->getTextWidth($text, $font, $size);
+        $pdf->page_text(
+            $pdf->get_width() - $width - 36,
+            $pdf->get_height() - 24,
+            $text,
+            $font,
+            $size,
+            $color
+        );
+    }
+</script>
