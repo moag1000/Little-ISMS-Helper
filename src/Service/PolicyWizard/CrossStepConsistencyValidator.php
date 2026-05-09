@@ -15,6 +15,11 @@ use App\Entity\WizardRun;
  * surfaces the warnings on STEP_REVIEW_GENERATE; the user can still
  * proceed.
  *
+ * Each warning DTO carries a `target_step` field naming the step the
+ * user should jump to in order to fix the inconsistency. The Step 7
+ * review-page renders this as a click-jump button (Junior-ISB Wish #6,
+ * May 2026).
+ *
  * Rules:
  *  1. risk_appetite_tier=1 (very_conservative) + backup_rpo_hours > 12
  *     → warn "conservative tier expects RPO ≤ 12h"
@@ -36,6 +41,22 @@ final class CrossStepConsistencyValidator
     public const RULE_SIGNIFICANT_DPO = 'significant_no_dpo';
 
     /**
+     * Per-rule mapping to the wizard step the user should jump to in
+     * order to fix the inconsistency. Surfaced as `target_step` on every
+     * warning so the Step 7 review-page can render a click-jump button
+     * (Junior-ISB Wish #6).
+     */
+    private const RULE_TARGET_STEP = [
+        self::RULE_CONSERVATIVE_RPO => WizardStepKeys::STEP_OPERATIONAL_BASELINES,
+        self::RULE_AGGRESSIVE_PATCH => WizardStepKeys::STEP_OPERATIONAL_BASELINES,
+        self::RULE_DORA_RPO => WizardStepKeys::STEP_OPERATIONAL_BASELINES,
+        self::RULE_BCM_RTO => WizardStepKeys::STEP_OPERATIONAL_BASELINES,
+        // DPO is assigned in Step 3 Roles; the OpBaselines fallback only
+        // backs it up. Jump should land where the field actually lives.
+        self::RULE_SIGNIFICANT_DPO => WizardStepKeys::STEP_ROLES,
+    ];
+
+    /**
      * Run all consistency rules against the wizard run.
      *
      * @return list<array{
@@ -43,6 +64,7 @@ final class CrossStepConsistencyValidator
      *     severity: string,
      *     message_key: string,
      *     params: array<string, mixed>,
+     *     target_step: string,
      * }>
      */
     public function validate(WizardRun $run): array
@@ -66,12 +88,11 @@ final class CrossStepConsistencyValidator
 
         // Rule 1 — conservative tier + lax RPO.
         if ($tier === 1 && $rpo !== null && $rpo > 12) {
-            $warnings[] = [
-                'rule' => self::RULE_CONSERVATIVE_RPO,
-                'severity' => 'warning',
-                'message_key' => 'policy_wizard.consistency.conservative_tier_rpo',
-                'params' => ['%rpo%' => $rpo],
-            ];
+            $warnings[] = $this->makeWarning(
+                self::RULE_CONSERVATIVE_RPO,
+                'policy_wizard.consistency.conservative_tier_rpo',
+                ['%rpo%' => $rpo],
+            );
         }
 
         // Rule 2 — aggressive tier + extreme patch SLA.
@@ -79,22 +100,20 @@ final class CrossStepConsistencyValidator
             ? (int) $patchSla['critical']
             : null;
         if ($tier === 5 && $patchCritical !== null && $patchCritical < 4) {
-            $warnings[] = [
-                'rule' => self::RULE_AGGRESSIVE_PATCH,
-                'severity' => 'warning',
-                'message_key' => 'policy_wizard.consistency.aggressive_tier_patch',
-                'params' => ['%hours%' => $patchCritical],
-            ];
+            $warnings[] = $this->makeWarning(
+                self::RULE_AGGRESSIVE_PATCH,
+                'policy_wizard.consistency.aggressive_tier_patch',
+                ['%hours%' => $patchCritical],
+            );
         }
 
         // Rule 3 — DORA in scope + lax RPO.
         if (in_array('dora', $standards, true) && $rpo !== null && $rpo > 24) {
-            $warnings[] = [
-                'rule' => self::RULE_DORA_RPO,
-                'severity' => 'warning',
-                'message_key' => 'policy_wizard.consistency.dora_rpo',
-                'params' => ['%rpo%' => $rpo],
-            ];
+            $warnings[] = $this->makeWarning(
+                self::RULE_DORA_RPO,
+                'policy_wizard.consistency.dora_rpo',
+                ['%rpo%' => $rpo],
+            );
         }
 
         // Rule 4 — BCM in scope + lax RTO[high].
@@ -103,12 +122,11 @@ final class CrossStepConsistencyValidator
                 ? (int) $rtoMap['high']
                 : null;
             if ($rtoHigh !== null && $rtoHigh > 24) {
-                $warnings[] = [
-                    'rule' => self::RULE_BCM_RTO,
-                    'severity' => 'warning',
-                    'message_key' => 'policy_wizard.consistency.bcm_rto',
-                    'params' => ['%rto%' => $rtoHigh],
-                ];
+                $warnings[] = $this->makeWarning(
+                    self::RULE_BCM_RTO,
+                    'policy_wizard.consistency.bcm_rto',
+                    ['%rto%' => $rtoHigh],
+                );
             }
         }
 
@@ -131,16 +149,41 @@ final class CrossStepConsistencyValidator
                 }
             }
             if (!$hasDpo) {
-                $warnings[] = [
-                    'rule' => self::RULE_SIGNIFICANT_DPO,
-                    'severity' => 'warning',
-                    'message_key' => 'policy_wizard.consistency.significant_no_dpo',
-                    'params' => [],
-                ];
+                $warnings[] = $this->makeWarning(
+                    self::RULE_SIGNIFICANT_DPO,
+                    'policy_wizard.consistency.significant_no_dpo',
+                    [],
+                );
             }
         }
 
         return $warnings;
+    }
+
+    /**
+     * Build a warning DTO with the click-jump `target_step` resolved
+     * from {@see self::RULE_TARGET_STEP}. Falls back to the review step
+     * itself when a rule lacks an explicit mapping (defensive — should
+     * never happen for the 5 documented rules).
+     *
+     * @param array<string, mixed> $params
+     * @return array{
+     *     rule: string,
+     *     severity: string,
+     *     message_key: string,
+     *     params: array<string, mixed>,
+     *     target_step: string,
+     * }
+     */
+    private function makeWarning(string $rule, string $messageKey, array $params): array
+    {
+        return [
+            'rule' => $rule,
+            'severity' => 'warning',
+            'message_key' => $messageKey,
+            'params' => $params,
+            'target_step' => self::RULE_TARGET_STEP[$rule] ?? WizardStepKeys::STEP_REVIEW_GENERATE,
+        ];
     }
 
     /**

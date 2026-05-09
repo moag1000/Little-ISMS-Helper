@@ -48,6 +48,42 @@
         {% endembed %}
     {% endif %}
 
+    {# Junior-ISB Wish #5 — Auditor-Score detail section. Only for
+       Wizard-generated docs; controller injects the auditorScore DTO. #}
+    {% if document.generatedFromTemplate is not null and auditorScore is defined and auditorScore is not null %}
+        {% set _score = auditorScore %}
+        {% set _variant = _score.tier == 'green' ? 'success' : (_score.tier == 'yellow' ? 'warning' : 'danger') %}
+        {% set _icon = _score.tier == 'green' ? 'shield-check' : (_score.tier == 'yellow' ? 'shield-exclamation' : 'shield-x') %}
+        {% embed '_components/_fa_alert.html.twig' with { props: { variant: _variant, icon: 'bi-' ~ _icon, class: 'mb-3' } } %}
+            {% block alert_body %}
+                <div class="fa-alert__title">
+                    {{ ('policy_wizard.auditor_score.tier_' ~ _score.tier)|trans({}, 'policy_wizard') }}
+                    — {{ 'policy_wizard.auditor_score.label'|trans({}, 'policy_wizard') }}: {{ _score.score }} / 100
+                </div>
+                {% if _score.reasons|length > 0 %}
+                    <p class="mb-2 small">{{ 'policy_wizard.auditor_score.reasons_heading'|trans({}, 'policy_wizard') }}</p>
+                    <ul class="mb-2 small">
+                        {% for r in _score.reasons %}
+                            {% set _code = r|split(':')|first %}
+                            {% set _detail = r|split(':')|slice(1)|join(':') %}
+                            <li>
+                                {{ ('policy_wizard.auditor_score.reason.' ~ _code)|trans({}, 'policy_wizard') }}
+                                {% if _detail %}<small class="text-muted">({{ _detail }})</small>{% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if _score.tier == 'red' and document.generatedFromTemplate.topic %}
+                    <a href="{{ path('app_policy_wizard_index') }}"
+                       class="fa-cyber-btn fa-cyber-btn--{{ _variant }} fa-cyber-btn--sm mt-1">
+                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+                        {{ 'policy_wizard.auditor_score.regenerate_cta'|trans({}, 'policy_wizard') }}
+                    </a>
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}
             <div class="card-header">

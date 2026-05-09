@@ -12,6 +12,7 @@ use App\Repository\DocumentRepository;
 use App\Service\DocumentService;
 use App\Service\FileUploadSecurityService;
 use App\Service\InverseCoverageService;
+use App\Service\PolicyWizard\AuditorScoreCalculator;
 use App\Service\PolicyWizard\Diff\SettingsDriftDetector;
 use App\Service\SecurityEventLogger;
 use Doctrine\ORM\EntityManagerInterface;
@@ -42,6 +43,7 @@ class DocumentController extends AbstractController
         private readonly Security $security,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?SettingsDriftDetector $settingsDriftDetector = null,
+        private readonly ?AuditorScoreCalculator $auditorScoreCalculator = null,
     ) {}
 
     #[Route('/document/', name: 'app_document_index')]
@@ -140,6 +142,14 @@ class DocumentController extends AbstractController
             }
         }
 
+        // Junior-ISB Wish #5 — compute Auditor-Score for every
+        // Wizard-generated document in the listing. Optional service:
+        // when DI omits it, the badge column simply stays empty.
+        $auditorScores = [];
+        if ($this->auditorScoreCalculator !== null) {
+            $auditorScores = $this->auditorScoreCalculator->calculateForBatch($documents);
+        }
+
         return $this->render('document/index.html.twig', [
             'documents' => $documents,
             'inheritanceInfo' => $inheritanceInfo,
@@ -147,6 +157,7 @@ class DocumentController extends AbstractController
             'detailedStats' => $detailedStats,
             'includeHistory' => $includeHistory,
             'driftMap' => $driftMap,
+            'auditorScores' => $auditorScores,
         ]);
     }
 
@@ -334,18 +345,24 @@ class DocumentController extends AbstractController
 
         $inverseCoverage = $this->inverseCoverageService?->forDocument($document) ?? ['total' => 0, 'frameworks' => []];
 
+        // Junior-ISB Wish #5 — Auditor-Score for the show view.
+        // calculateForDocument returns null for non-Wizard docs.
+        $auditorScore = $this->auditorScoreCalculator?->calculateForDocument($document);
+
         return $this->render('document/show.html.twig', [
             'document' => $document,
             'isInherited' => $isInherited,
             'canEdit' => $canEdit,
             'currentTenant' => $tenant,
             'inverse_coverage' => $inverseCoverage,
+            'auditorScore' => $auditorScore,
         ]);
     }
 
     #[Route('/document/{id}/download', name: 'app_document_download', requirements: ['id' => '\d+'])]
-    public function download(Document $document, Request $request): Response
+    public function download(Document $document, ?Request $request = null): Response
     {
+        $request ??= new Request();
         // Security: Check if user has permission to download this document (OWASP #1 - Broken Access Control)
         $this->denyAccessUnlessGranted('download', $document);
 

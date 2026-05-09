@@ -26,6 +26,44 @@ final class OperationalBaselinesStep extends AbstractStep
 {
     public const ALLOWED_CRYPTO_ALGOS = ['AES-256-GCM', 'AES-128-GCM', 'CHACHA20-POLY1305', 'RSA-3072', 'RSA-4096', 'ECDSA-P256', 'ECDSA-P384'];
 
+    /**
+     * Junior-ISB-friendly default crypto allow-list per BSI TR-02102-1
+     * (2024-1 edition) plus modern AEAD/EdDSA suites widely accepted by
+     * NIST SP 800-131A. Used by {@see self::defaults()} when the user
+     * lands on Step 5 with an empty `crypto_allowlist` slot — the user
+     * can still deselect anything they do not want.
+     *
+     * Set is intentionally narrow: AES-GCM (symmetric), modern hashes
+     * (SHA-256+ / SHA3) and modern asymmetric/AEAD (ECDSA on NIST
+     * curves, RSA ≥ 3072, EdDSA, ChaCha20-Poly1305). 3DES, MD5, SHA-1
+     * and RSA < 3072 are intentionally absent.
+     */
+    public const BSI_TR02102_DEFAULT_ALGOS = [
+        'AES-128-GCM',
+        'AES-192-GCM',
+        'AES-256-GCM',
+        'CHACHA20-POLY1305',
+        'SHA-256',
+        'SHA-384',
+        'SHA-512',
+        'SHA3-256',
+        'SHA3-384',
+        'SHA3-512',
+        'ECDH-P256',
+        'ECDH-P384',
+        'ECDH-P521',
+        'ECDH-BRAINPOOLP256R1',
+        'ECDH-BRAINPOOLP384R1',
+        'ECDH-BRAINPOOLP512R1',
+        'ECDSA-P256',
+        'ECDSA-P384',
+        'ECDSA-P521',
+        'RSA-3072',
+        'RSA-4096',
+        'ED25519',
+        'ED448',
+    ];
+
     public const PATCH_SEVERITIES = ['critical', 'high', 'medium'];
 
     public const CONTINUITY_CRITICALITY_LEVELS = ['high', 'medium', 'low'];
@@ -47,9 +85,68 @@ final class OperationalBaselinesStep extends AbstractStep
         'sonstige',
     ];
 
+    /**
+     * Tenant industry-preset bundles that are clearly NOT in DORA's
+     * primary scope (financial services). Used by {@see self::defaults()}
+     * to surface a "DORA-not-applicable" hint when the user has a
+     * non-financial preset selected but DORA is still in their
+     * Step-1 standards-mix.
+     *
+     * @var list<string>
+     */
+    public const NON_FINANCIAL_BUNDLE_KEYS = [
+        'ot_iec62443',
+        'b2c_saas',
+        'public_sector',
+        'custom_general',
+    ];
+
     public function key(): string
     {
         return WizardStepKeys::STEP_OPERATIONAL_BASELINES;
+    }
+
+    /**
+     * Pre-fill helpers for Junior ISB. Currently:
+     *   - BSI-TR-02102-2024 conformant `crypto_allowlist` when the slot
+     *     is empty (Wish #1 from Junior-Implementer-Persona feedback).
+     *   - `dora.not_applicable_hint` flag when DORA is in scope but the
+     *     tenant picked a non-financial industry-preset bundle (Wish #4).
+     *
+     * Existing user input always wins — this method only fills empty
+     * slots, never overrides explicit choices.
+     */
+    public function defaults(WizardRun $run): array
+    {
+        $existing = parent::defaults($run);
+
+        if (!isset($existing['crypto_allowlist'])
+            || !is_array($existing['crypto_allowlist'])
+            || $existing['crypto_allowlist'] === []
+        ) {
+            $existing['crypto_allowlist'] = self::BSI_TR02102_DEFAULT_ALGOS;
+        }
+
+        // DORA-not-applicable detection — only when DORA is in scope.
+        $standards = $run->getStandardsAdopted() ?? [];
+        if (in_array('dora', $standards, true)) {
+            $welcomeSlot = $this->readSlot($run, WizardStepKeys::STEP_WELCOME);
+            $bundleKey = is_string($welcomeSlot['industry_preset_bundle_key'] ?? null)
+                ? $welcomeSlot['industry_preset_bundle_key']
+                : null;
+            $doraSlot = is_array($existing['dora'] ?? null) ? $existing['dora'] : [];
+            $entityType = is_string($doraSlot['entity_type'] ?? null) && $doraSlot['entity_type'] !== ''
+                ? $doraSlot['entity_type']
+                : null;
+
+            $existing['_dora_not_applicable_hint'] = $bundleKey !== null
+                && in_array($bundleKey, self::NON_FINANCIAL_BUNDLE_KEYS, true)
+                && $entityType === null;
+        } else {
+            $existing['_dora_not_applicable_hint'] = false;
+        }
+
+        return $existing;
     }
 
     public function validate(WizardRun $run, array $input): array
@@ -129,9 +226,32 @@ final class OperationalBaselinesStep extends AbstractStep
                 $errors['dora'][] = 'policy_wizard.error.dora_block_invalid';
                 $dora = [];
             }
+
+            // Junior-ISB Self-Check (DORA Art. 16 + RTS) — derive
+            // `is_significant` server-side from three guided questions
+            // when the user filled the Self-Check. Threshold: ≥ 2 yes
+            // out of 3 → significant. The raw answers are persisted so
+            // the next render restores the Self-Check state.
+            $q1 = $this->parseBool($dora['significance_q1'] ?? null);
+            $q2 = $this->parseBool($dora['significance_q2'] ?? null);
+            $q3 = $this->parseBool($dora['significance_q3'] ?? null);
+            $hasSelfCheckAnswers = array_key_exists('significance_q1', $dora)
+                || array_key_exists('significance_q2', $dora)
+                || array_key_exists('significance_q3', $dora);
+            $derivedSignificant = (((int) $q1) + ((int) $q2) + ((int) $q3)) >= 2;
+
             $doraBlock = [
                 'entity_type' => is_string($dora['entity_type'] ?? null) ? $dora['entity_type'] : null,
-                'is_significant' => (bool) ($dora['is_significant'] ?? false),
+                'significance_q1' => $q1,
+                'significance_q2' => $q2,
+                'significance_q3' => $q3,
+                // is_significant is server-derived from the Self-Check
+                // when the user answered any question; otherwise we
+                // honour the legacy boolean flag (backwards-compat for
+                // sandbox runs / API callers that bypass the wizard UI).
+                'is_significant' => $hasSelfCheckAnswers
+                    ? $derivedSignificant
+                    : (bool) ($dora['is_significant'] ?? false),
                 // Backwards-compat: previously stored as `significance` string.
                 'significance' => is_string($dora['significance'] ?? null) ? $dora['significance'] : null,
                 'competent_authority' => is_string($dora['competent_authority'] ?? null)
@@ -192,5 +312,24 @@ final class OperationalBaselinesStep extends AbstractStep
             'errors' => $errors,
             'normalised_input' => $normalised,
         ];
+    }
+
+    /**
+     * Permissive boolean coercion for HTML-form submitted values.
+     * Accepts: true, '1', 1, 'true', 'yes', 'ja', 'on'. Everything
+     * else (incl. null, '0', empty string, '') → false.
+     */
+    private function parseBool(mixed $value): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+        if (is_int($value)) {
+            return $value === 1;
+        }
+        if (is_string($value)) {
+            return in_array(strtolower(trim($value)), ['1', 'true', 'yes', 'ja', 'on'], true);
+        }
+        return false;
     }
 }

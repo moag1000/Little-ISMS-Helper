@@ -11,6 +11,30 @@
 
 {% block body %}
 <div class="container-fluid py-4 fa-aurora-surface">
+    {# Junior-ISB Wish #3 — prominent progress-bar above the step
+       title. Controller injects current_step_index (0-based) and
+       total_steps_in_mode. Defensive defaults keep the bar from
+       crashing when extras are missing (e.g. legacy step routes). #}
+    {% set _ts = total_steps_in_mode|default(8) %}
+    {% set _ci = current_step_index|default(0) %}
+    {% set _step_n = _ci + 1 %}
+    {% set _percent = _ts > 0 ? ((_step_n / _ts) * 100)|round : 0 %}
+    <div class="mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="small fw-semibold">
+                {{ 'policy_wizard.progress.label'|trans({'%current%': _step_n, '%total%': _ts}) }}
+            </span>
+            <span class="small text-muted">{{ step_title_key|trans }}</span>
+        </div>
+        <div class="progress" style="height: 6px;" role="progressbar"
+             aria-label="{{ 'policy_wizard.progress.aria_label'|trans }}"
+             aria-valuenow="{{ _step_n }}"
+             aria-valuemin="0"
+             aria-valuemax="{{ _ts }}">
+            <div class="progress-bar" style="width: {{ _percent }}%;"></div>
+        </div>
+    </div>
+
     {{ _fa_page_header.render({
         badge: { icon: 'magic', label: ('policy_wizard.mode.' ~ run.mode ~ '.label')|trans },
         title: step_title_key|trans,
@@ -22,6 +46,14 @@
               href: path('app_policy_wizard_index') }
         ]
     }) }}
+
+    {# Junior-ISB Wish #4 — Cancel-State-Hint. Reassures the
+       implementer that the run state is auto-saved and that
+       Cancel only discards the current run (resumable later). #}
+    <p class="small text-muted mb-3">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'policy_wizard.cancel_hint.label'|trans }}
+    </p>
 
     {% if run.mode == 'sandbox' %}
         {{ _fa_alert.render({

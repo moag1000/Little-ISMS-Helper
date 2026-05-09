@@ -36,12 +36,19 @@ class IndustryPresetBundle
     public const KEY_PUBLIC_SECTOR = 'public_sector';
     public const KEY_B2C_SAAS = 'b2c_saas';
     public const KEY_OT_IEC62443 = 'ot_iec62443';
+    /**
+     * Junior-ISB-friendly fallback bundle: no industry assumptions —
+     * the user fills Step 4+5 manually. Pre-selects only the mandatory
+     * ISO 27001 baseline. Added per Junior-Implementer-Persona feedback.
+     */
+    public const KEY_CUSTOM_GENERAL = 'custom_general';
 
     public const ALLOWED_KEYS = [
         self::KEY_HEALTHCARE,
         self::KEY_PUBLIC_SECTOR,
         self::KEY_B2C_SAAS,
         self::KEY_OT_IEC62443,
+        self::KEY_CUSTOM_GENERAL,
     ];
 
     public const STANDARD_ISO27001 = 'iso27001';

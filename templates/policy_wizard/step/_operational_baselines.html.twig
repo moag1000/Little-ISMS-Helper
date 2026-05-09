@@ -17,7 +17,22 @@
      industry_preset_bundle_key      (one-shot apply)
 #}
 
-{% set crypto_default = defaults.crypto_allowlist|default(['AES-256-GCM']) %}
+{# BSI-TR-02102:2024-1 conformant default set + modern AEAD/EdDSA — kept
+   in sync with OperationalBaselinesStep::BSI_TR02102_DEFAULT_ALGOS.
+   Used both for the dropdown options AND as a fallback when defaults
+   from the step are unexpectedly missing. #}
+{% set bsi_tr02102_algos = [
+    'AES-128-GCM', 'AES-192-GCM', 'AES-256-GCM',
+    'CHACHA20-POLY1305',
+    'SHA-256', 'SHA-384', 'SHA-512',
+    'SHA3-256', 'SHA3-384', 'SHA3-512',
+    'ECDH-P256', 'ECDH-P384', 'ECDH-P521',
+    'ECDH-BRAINPOOLP256R1', 'ECDH-BRAINPOOLP384R1', 'ECDH-BRAINPOOLP512R1',
+    'ECDSA-P256', 'ECDSA-P384', 'ECDSA-P521',
+    'RSA-3072', 'RSA-4096',
+    'ED25519', 'ED448'
+] %}
+{% set crypto_default = defaults.crypto_allowlist|default(bsi_tr02102_algos) %}
 {% set rpo_default = defaults.backup_rpo_hours|default(24) %}
 {% set patch_default = defaults.patch_sla_hours|default({'critical': 4, 'high': 24, 'medium': 168}) %}
 {% set rto_default = defaults.continuity_rto_hours|default({'high': 24, 'medium': 72, 'low': 168}) %}
@@ -29,6 +44,8 @@
 {% set dora_in_scope = 'dora' in standards %}
 {% set gdpr_in_scope = 'gdpr' in standards %}
 {% set has_preset_applied = preset_default is not null and preset_default != '' %}
+{% set bsi_in_scope = 'bsi' in standards %}
+{% set dora_not_applicable_hint = defaults._dora_not_applicable_hint|default(false) %}
 
 {# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
 {% embed '_components/_fa_alert.html.twig' with { props: {
@@ -53,6 +70,14 @@
 <div class="fa-form-row mb-4">
     <label class="form-label" for="op-crypto-allowlist">
         {{ 'policy_wizard.step.operational_baselines.crypto_allowlist_label'|trans }}
+        <i class="bi bi-info-circle text-muted ms-1"
+           data-bs-toggle="tooltip"
+           title="{{ (bsi_in_scope
+                ? 'policy_wizard.step.operational_baselines.tooltip.crypto_allowlist_bsi'
+                : 'policy_wizard.step.operational_baselines.tooltip.crypto_allowlist_modern')|trans }}"
+           aria-label="{{ (bsi_in_scope
+                ? 'policy_wizard.step.operational_baselines.tooltip.crypto_allowlist_bsi'
+                : 'policy_wizard.step.operational_baselines.tooltip.crypto_allowlist_modern')|trans }}"></i>
     </label>
     <select id="op-crypto-allowlist"
             name="crypto_allowlist[]"
@@ -60,7 +85,7 @@
             class="form-select fa-cyber-input__field"
             data-controller="tom-select"
             aria-describedby="op-crypto-allowlist-help">
-        {% for algo in ['AES-256-GCM', 'AES-128-GCM', 'CHACHA20-POLY1305', 'RSA-3072', 'RSA-4096', 'ECDSA-P256', 'ECDSA-P384'] %}
+        {% for algo in bsi_tr02102_algos %}
             <option value="{{ algo }}" {% if algo in crypto_default %}selected{% endif %}>{{ algo }}</option>
         {% endfor %}
     </select>
@@ -76,8 +101,8 @@
             {{ 'policy_wizard.step.operational_baselines.backup_rpo_label'|trans }}
             <i class="bi bi-info-circle text-muted ms-1"
                data-bs-toggle="tooltip"
-               title="{{ 'policy_wizard.step.operational_baselines.tooltip.rpo'|trans }}"
-               aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.rpo'|trans }}"></i>
+               title="{{ 'policy_wizard.step.operational_baselines.tooltip.rpo_usual'|trans }}"
+               aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.rpo_usual'|trans }}"></i>
         </label>
         <input type="number"
                class="form-control fa-cyber-input__field"
@@ -97,6 +122,12 @@
         <div class="col-md-2">
             <label class="form-label" for="op-patch-{{ severity }}">
                 {{ ('policy_wizard.step.operational_baselines.patch_sla_' ~ severity ~ '_label')|trans }}
+                {% if severity == 'critical' %}
+                    <i class="bi bi-info-circle text-muted ms-1"
+                       data-bs-toggle="tooltip"
+                       title="{{ 'policy_wizard.step.operational_baselines.tooltip.patch_sla_critical_usual'|trans }}"
+                       aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.patch_sla_critical_usual'|trans }}"></i>
+                {% endif %}
             </label>
             <input type="number"
                    class="form-control fa-cyber-input__field"
@@ -123,8 +154,8 @@
                         {{ ('policy_wizard.step.operational_baselines.rto_' ~ level ~ '_label')|trans }}
                         <i class="bi bi-info-circle text-muted ms-1"
                            data-bs-toggle="tooltip"
-                           title="{{ 'policy_wizard.step.operational_baselines.tooltip.rto'|trans }}"
-                           aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.rto'|trans }}"></i>
+                           title="{{ ('policy_wizard.step.operational_baselines.tooltip.rto_' ~ level ~ '_usual')|trans }}"
+                           aria-label="{{ ('policy_wizard.step.operational_baselines.tooltip.rto_' ~ level ~ '_usual')|trans }}"></i>
                     </label>
                     <input type="number"
                            class="form-control fa-cyber-input__field"
@@ -150,6 +181,35 @@
 
 {# ── DORA block (DORA only) ──────────────────────────────────────── #}
 {% if dora_in_scope %}
+    {# Junior-ISB hint: surface a "DORA-not-applicable" notice when the
+       tenant picked a non-financial industry-preset bundle but DORA is
+       still in their Step-1 standards-mix. The hint is silenced once
+       the user picks an entity_type (signals "yes, DORA does apply"). #}
+    {% if dora_not_applicable_hint %}
+        {% embed '_components/_fa_alert.html.twig' with { props: {
+            variant: 'warning',
+            icon: 'bi-question-circle',
+            class: 'mb-3'
+        } } %}
+            {% block alert_body %}
+                <div class="fa-alert__title">
+                    {{ 'policy_wizard.step.operational_baselines.dora.not_applicable_hint.title'|trans }}
+                </div>
+                <p class="fa-alert__message mb-2 small">
+                    {{ 'policy_wizard.step.operational_baselines.dora.not_applicable_hint.body'|trans }}
+                </p>
+                {% if run is defined and run is not null and run.id is defined %}
+                    <p class="mb-0 small">
+                        <a href="{{ path('app_policy_wizard_step_show', {runId: run.id, step: 'welcome'}) }}">
+                            <i class="bi bi-arrow-left-circle" aria-hidden="true"></i>
+                            {{ 'policy_wizard.step.operational_baselines.dora.not_applicable_hint.link_label'|trans }}
+                        </a>
+                    </p>
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
+    {% endif %}
+
     {% set dora_body %}
         <div class="row g-3">
             <div class="col-md-6">
@@ -180,22 +240,80 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="col-md-4">
-                <div class="form-check mt-4">
-                    <input type="hidden" name="dora[is_significant]" value="0">
-                    <input class="form-check-input"
-                           type="checkbox"
-                           id="op-dora-significant"
-                           name="dora[is_significant]"
-                           value="1"
-                           {% if dora_default.is_significant|default(false) %}checked{% endif %}>
-                    <label class="form-check-label" for="op-dora-significant">
-                        {{ 'policy_wizard.step.operational_baselines.dora_significant_label'|trans }}
-                        <i class="bi bi-info-circle text-muted ms-1"
+            {# ── DORA-Significance Self-Check (DORA Art. 16 + RTS) ───
+               Replaces the bare `is_significant` checkbox with a guided
+               three-question Self-Check. Backend derives is_significant
+               server-side: ≥ 2 yes out of 3 → significant. The derived
+               result is rendered read-only below the questions so the
+               Junior-ISB sees the consequence of their answers. #}
+            <div class="col-12">
+                <div class="border rounded p-3 bg-body-tertiary">
+                    <h6 class="mb-2">
+                        <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>
+                        {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.title'|trans }}
+                    </h6>
+                    <p class="small text-muted mb-3">
+                        {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.intro'|trans }}
+                    </p>
+                    {% set sc_questions = ['q1', 'q2', 'q3'] %}
+                    {% for q in sc_questions %}
+                        {% set q_value = dora_default['significance_' ~ q]|default(false) %}
+                        <div class="mb-3">
+                            <p class="mb-1 small fw-semibold">
+                                {{ ('policy_wizard.step.operational_baselines.dora.significance_self_check.' ~ q)|trans }}
+                            </p>
+                            <p class="mb-2 small text-muted">
+                                {{ ('policy_wizard.step.operational_baselines.dora.significance_self_check.' ~ q ~ '_help')|trans }}
+                            </p>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input type="radio"
+                                           class="form-check-input"
+                                           id="op-dora-{{ q }}-yes"
+                                           name="dora[significance_{{ q }}]"
+                                           value="1"
+                                           {% if q_value %}checked{% endif %}>
+                                    <label class="form-check-label small" for="op-dora-{{ q }}-yes">
+                                        {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.answer_yes'|trans }}
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio"
+                                           class="form-check-input"
+                                           id="op-dora-{{ q }}-no"
+                                           name="dora[significance_{{ q }}]"
+                                           value="0"
+                                           {% if not q_value %}checked{% endif %}>
+                                    <label class="form-check-label small" for="op-dora-{{ q }}-no">
+                                        {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.answer_no'|trans }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {# Derived read-only chip — server is the source of truth.
+                       We render the current state for fast feedback after
+                       a postback; the user cannot toggle it directly. #}
+                    {% set derived_significant = dora_default.is_significant|default(false) %}
+                    <div class="mt-3 pt-3 border-top">
+                        <span class="small fw-semibold">
+                            <i class="bi bi-arrow-return-right" aria-hidden="true"></i>
+                            {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.derived_label'|trans }}
+                        </span>
+                        {% if derived_significant %}
+                            <span class="badge bg-warning text-dark ms-2">
+                                {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.derived_yes'|trans }}
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary ms-2">
+                                {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.derived_no'|trans }}
+                            </span>
+                        {% endif %}
+                        <i class="bi bi-info-circle text-muted ms-2"
                            data-bs-toggle="tooltip"
                            title="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_significant'|trans }}"
                            aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_significant'|trans }}"></i>
-                    </label>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">

@@ -184,6 +184,7 @@ final class PolicyWizardController extends AbstractController
             : ['inventory_rows' => [], 'topic_suggestions_by_doc' => [], 'available_topics' => []];
 
         $stepExtras = $this->buildStepExtras($run, $step, $isTerminal);
+        $progress = $this->buildProgressPayload($run, $step);
 
         return $this->render('policy_wizard/step.html.twig', array_merge([
             'run' => $run,
@@ -198,6 +199,8 @@ final class PolicyWizardController extends AbstractController
             'inventory_rows' => $bestandsaufnahmePayload['inventory_rows'],
             'topic_suggestions_by_doc' => $bestandsaufnahmePayload['topic_suggestions_by_doc'],
             'available_topics' => $bestandsaufnahmePayload['available_topics'],
+            'current_step_index' => $progress['current_step_index'],
+            'total_steps_in_mode' => $progress['total_steps_in_mode'],
         ], $stepExtras));
     }
 
@@ -240,6 +243,7 @@ final class PolicyWizardController extends AbstractController
                 : ['inventory_rows' => [], 'topic_suggestions_by_doc' => [], 'available_topics' => []];
 
             $stepExtras = $this->buildStepExtras($run, $step, $isTerminal);
+            $progress = $this->buildProgressPayload($run, $step);
 
             return $this->render('policy_wizard/step.html.twig', array_merge([
                 'run' => $run,
@@ -254,6 +258,8 @@ final class PolicyWizardController extends AbstractController
                 'inventory_rows' => $bestandsaufnahmePayload['inventory_rows'],
                 'topic_suggestions_by_doc' => $bestandsaufnahmePayload['topic_suggestions_by_doc'],
                 'available_topics' => $bestandsaufnahmePayload['available_topics'],
+                'current_step_index' => $progress['current_step_index'],
+                'total_steps_in_mode' => $progress['total_steps_in_mode'],
             ], $stepExtras), new Response('', Response::HTTP_UNPROCESSABLE_ENTITY));
         } catch (\InvalidArgumentException) {
             $this->addFlash('warning', $this->translator->trans('policy_wizard.error.invalid_step', [], 'policy_wizard'));
@@ -314,6 +320,7 @@ final class PolicyWizardController extends AbstractController
         } catch (HierarchyConflictException $conflict) {
             $this->addFlash('danger', $this->translator->trans('policy_wizard.step.review_generate.conflicts_heading', [], 'policy_wizard'));
             $stepExtras = $this->buildStepExtras($run, $run->getStep(), true);
+            $progress = $this->buildProgressPayload($run, $run->getStep());
 
             return $this->render('policy_wizard/step.html.twig', array_merge([
                 'run' => $run,
@@ -324,6 +331,8 @@ final class PolicyWizardController extends AbstractController
                 'is_terminal' => true,
                 'hierarchy_conflicts' => $conflict->conflicts,
                 'errors' => [],
+                'current_step_index' => $progress['current_step_index'],
+                'total_steps_in_mode' => $progress['total_steps_in_mode'],
             ], $stepExtras), new Response('', Response::HTTP_CONFLICT));
         } catch (\RuntimeException $e) {
             $this->addFlash('danger', $e->getMessage());
@@ -554,6 +563,32 @@ final class PolicyWizardController extends AbstractController
         }
 
         return $extras;
+    }
+
+    /**
+     * Junior-ISB Wish #3 — compute the per-mode step index + total so
+     * the step.html.twig progress-bar can render "Schritt X von Y".
+     *
+     * Targeted re-runs follow {@see WizardStepKeys::targetedFlow()};
+     * full + sandbox modes follow {@see WizardStepKeys::defaultFlow()}.
+     * Steps not present in the resolved flow fall back to index 0 so
+     * the bar still renders rather than crashing the page.
+     *
+     * @return array{current_step_index: int, total_steps_in_mode: int}
+     */
+    private function buildProgressPayload(WizardRun $run, string $step): array
+    {
+        $flow = $run->getMode() === WizardStepKeys::MODE_TARGETED
+            ? WizardStepKeys::targetedFlow()
+            : WizardStepKeys::defaultFlow();
+
+        $index = array_search($step, $flow, true);
+        $currentStepIndex = is_int($index) ? $index : 0;
+
+        return [
+            'current_step_index' => $currentStepIndex,
+            'total_steps_in_mode' => count($flow),
+        ];
     }
 
     /**

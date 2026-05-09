@@ -147,6 +147,26 @@
     </div>
 </div>
 
+{# ── Junior-ISB inline help: "Wann ist ein Annex-A-Control NICHT applicable?".
+   Compact help-card with the 4 typical exclusion reasons + the default note.
+   Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'bi-mortarboard',
+    class: 'mb-3 py-2 small'
+} } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">{{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.title'|trans }}</div>
+        <ul class="mb-1 small">
+            <li>{{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.reason1'|trans }}</li>
+            <li>{{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.reason2'|trans }}</li>
+            <li>{{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.reason3'|trans }}</li>
+            <li>{{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.reason4'|trans }}</li>
+        </ul>
+        <p class="mb-0 small fst-italic text-muted">{{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.default_note'|trans }}</p>
+    {% endblock %}
+{% endembed %}
+
 {# ── Annex A applicability table ─────────────────────────────────── #}
 {% for group_key, group in annex_groups %}
     {% set group_body %}
@@ -169,8 +189,25 @@
                     {% for ctrl in group.controls %}
                         {# Default is "applicable" — only when explicitly false do we render not_applicable. #}
                         {% set is_applicable = annex_default[ctrl] is defined ? annex_default[ctrl] : true %}
+                        {# Per-row Annex-A control description (Junior-ISB hand-holding).
+                         # Lookup key: policy_wizard.step.risk_classification.annex_a.control_desc.<A.X.Y>.
+                         # Stub fallback when the key is not yet authored. #}
+                        {% set ctrl_desc_key = 'policy_wizard.step.risk_classification.annex_a.control_desc.' ~ ctrl %}
+                        {% set ctrl_desc = ctrl_desc_key|trans({}, 'policy_wizard') %}
+                        {% if ctrl_desc == ctrl_desc_key %}
+                            {% set ctrl_desc = 'policy_wizard.step.risk_classification.annex_a.control_desc.stub'|trans({'%control%': ctrl}, 'policy_wizard') %}
+                        {% endif %}
                         <tr>
-                            <td><code>{{ ctrl }}</code></td>
+                            <td>
+                                <code>{{ ctrl }}</code>
+                                <i class="bi bi-info-circle text-muted ms-1"
+                                   role="button"
+                                   tabindex="0"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="right"
+                                   title="{{ ctrl_desc }}"
+                                   aria-label="{{ ctrl_desc }}"></i>
+                            </td>
                             <td>
                                 <div class="form-check form-check-inline">
                                     <input type="hidden" name="annex_a_applicability[{{ ctrl }}]" value="0">

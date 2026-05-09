@@ -12,7 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Policy-Wizard Sprint W4-B — seed the four v1 IndustryPresetBundles.
+ * Policy-Wizard Sprint W4-B — seed the v1 IndustryPresetBundles.
  *
  * Idempotent: existing bundles (matched by `key`) are updated in place;
  * new ones are inserted. Bundles seeded:
@@ -24,12 +24,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   3. B2C-SaaS             — ISO 27001 + GDPR, balanced, RPO 24h.
  *   4. OT / IEC 62443       — ISO 27001 + IEC 62443, very conservative,
  *                             physical-heavy A.7.1-A.7.14 applicable.
+ *   5. Custom / Generic     — ISO 27001 only, balanced, no industry
+ *                             assumptions (Junior-ISB fallback).
  *
  * Spec: docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md §3 W4.
  */
 #[AsCommand(
     name: 'app:policy-wizard:seed-bundles',
-    description: 'Seed the v1 IndustryPresetBundles (Healthcare, Public-Sector, B2C-SaaS, OT/IEC 62443).',
+    description: 'Seed the v1 IndustryPresetBundles (Healthcare, Public-Sector, B2C-SaaS, OT/IEC 62443, Custom/Generic).',
 )]
 final class SeedIndustryPresetBundlesCommand
 {
@@ -221,6 +223,24 @@ final class SeedIndustryPresetBundlesCommand
                     'NIS2',
                     'BSI ICS',
                 ],
+                'version' => 1,
+            ],
+            [
+                'key' => IndustryPresetBundle::KEY_CUSTOM_GENERAL,
+                'label' => 'Allgemein / Custom',
+                'description' => 'Generic preset without industry assumptions — you fill Steps 4 and 5 manually. '
+                    . 'Pre-selects only the mandatory ISO 27001 baseline; risk appetite stays balanced (tier 3) '
+                    . 'and no sector-specific Annex A overrides are applied.',
+                'standard' => IndustryPresetBundle::STANDARD_ISO27001,
+                'preselected_standards' => ['iso27001'],
+                'default_risk_appetite_tier' => 3,
+                'default_data_classification_levels' => 3,
+                'default_backup_rpo_hours' => 24,
+                'default_patch_sla_critical_hours' => 72,
+                'annex_a_applicability_overrides' => [],
+                'topic_audience_overrides' => [],
+                'dpo_sections_auto_enabled' => false,
+                'regulatory_references' => [],
                 'version' => 1,
             ],
         ];
