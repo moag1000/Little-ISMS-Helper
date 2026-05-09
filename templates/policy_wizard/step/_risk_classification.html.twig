@@ -183,17 +183,24 @@
             <table class="table table-sm align-middle">
                 <thead>
                     <tr>
-                        <th scope="col" style="width: 90px;">{{ 'policy_wizard.step.risk_classification.annex_column.control'|trans }}</th>
-                        <th scope="col">{{ 'policy_wizard.step.risk_classification.annex_column.applicable'|trans }}</th>
+                        <th scope="col">{{ 'policy_wizard.step.risk_classification.annex_column.control'|trans }}</th>
+                        <th scope="col" style="width: 200px;">{{ 'policy_wizard.step.risk_classification.annex_column.applicable'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for ctrl in group.controls %}
                         {# Default is "applicable" — only when explicitly false do we render not_applicable. #}
                         {% set is_applicable = annex_default[ctrl] is defined ? annex_default[ctrl] : true %}
-                        {# Per-row Annex-A control description (Junior-ISB hand-holding).
-                         # Lookup key: policy_wizard.step.risk_classification.annex_a.control_desc.<A.X.Y>.
-                         # Stub fallback when the key is not yet authored. #}
+                        {# Per-row Annex-A control title + description (Junior-ISB hand-holding).
+                         # Lookup keys:
+                         #   policy_wizard.step.risk_classification.annex_a.control_title.<A.X.Y>
+                         #   policy_wizard.step.risk_classification.annex_a.control_desc.<A.X.Y>
+                         # Stub fallback when a key is not yet authored. #}
+                        {% set ctrl_title_key = 'policy_wizard.step.risk_classification.annex_a.control_title.' ~ ctrl %}
+                        {% set ctrl_title = ctrl_title_key|trans({}, 'policy_wizard') %}
+                        {% if ctrl_title == ctrl_title_key %}
+                            {% set ctrl_title = 'policy_wizard.step.risk_classification.annex_a.control_desc.stub'|trans({'%control%': ctrl}, 'policy_wizard') %}
+                        {% endif %}
                         {% set ctrl_desc_key = 'policy_wizard.step.risk_classification.annex_a.control_desc.' ~ ctrl %}
                         {% set ctrl_desc = ctrl_desc_key|trans({}, 'policy_wizard') %}
                         {% if ctrl_desc == ctrl_desc_key %}
@@ -201,7 +208,8 @@
                         {% endif %}
                         <tr>
                             <td>
-                                <code>{{ ctrl }}</code>
+                                <code class="me-1">{{ ctrl }}</code>
+                                <strong class="small">{{ ctrl_title }}</strong>
                                 <i class="bi bi-info-circle text-muted ms-1"
                                    role="button"
                                    tabindex="0"
