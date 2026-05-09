@@ -259,6 +259,88 @@ modules:
     dependencies:
       - risks
 
+  notifications:
+    name: 'Notification-Rules + Webhooks'
+    description: 'Tenant-konfigurierbare Notification-Rules pro Event-Typ, Channels (Email-Digest, Webhook+HMAC, In-App-Center), SLA-Timer-Events für DORA Art. 19 + NIS-2 Art. 23 + GDPR Art. 33 Deadlines'
+    required: false
+    icon: 'bell'
+    entities:
+      - NotificationRule
+      - NotificationChannel
+      - NotificationDelivery
+      - SlaDeadlineMonitor
+    routes:
+      - admin_notification_rule_index
+      - admin_notification_channel_index
+      - notification_center_index
+    dependencies:
+      - core
+
+  eu_authority_reporting:
+    name: 'EU-Behörden-Reporting-Hub'
+    description: 'Pre-Filling und Export für DACH/EU-Behörden-Meldepflichten — BSI-Meldestelle (NIS-2), BfDI + 16 LfDI (DSGVO Art. 33), DSB-AT, EDÖB-CH, BaFin MVP (DORA-Incidents), ESAs (DORA RoI XBRL), ANSSI/CERT-FR, NCSC.ch'
+    required: false
+    icon: 'building-shield'
+    entities:
+      - AuthorityTemplate
+      - Nis2RegistrationProfile
+    routes:
+      - authority_hub_index
+    dependencies:
+      - compliance
+
+  tisax_isa:
+    name: 'TISAX-ISA-Self-Assessment'
+    description: 'VDA-ISA-Self-Assessment-Workflow — Q&A pro Reifegrad-Level, Gap-Plan-Generator, TISAX-Label-Vorbereitung für Tier-1/Tier-2-Automotive-Lieferanten'
+    required: false
+    icon: 'clipboard-check'
+    entities:
+      - TisaxAssessment
+      - TisaxAssessmentResponse
+    routes:
+      - tisax_assessment_index
+    dependencies:
+      - tisax
+
+  ai_act:
+    name: 'EU-AI-Act-Klassifizierung'
+    description: 'EU-Verordnung 2024/1689 Hochrisiko-KI-System-Inventar — Art. 6/9 Klassifizierung, Conformity-Assessment-Tracker, Annex III Use-Case-Mapping'
+    required: false
+    icon: 'robot'
+    entities:
+      - AiSystemClassification
+    routes:
+      - ai_system_classification_index
+    dependencies:
+      - assets
+      - ai_governance
+
+  cra_sbom:
+    name: 'EU-Cyber-Resilience-Act SBOM'
+    description: 'CRA-Compliance ab 2027 — SBOM-Inventar (CycloneDX/SPDX), Vulnerability-Mapping, Konformitätsbewertung-Workflow für Produkte mit digitalen Elementen'
+    required: false
+    icon: 'package'
+    entities:
+      - SbomComponent
+      - CraConformityAssessment
+    routes:
+      - cra_sbom_index
+    dependencies:
+      - vulnerability_intel
+
+  procedures:
+    name: 'Verfahrens-Authoring'
+    description: 'Procedures-Editor neben Policies — strukturierte Verfahrensanweisungen mit Step-by-Step-Handbüchern, Owner-Approval-Workflow, ISO 27001 Clause 7.5.3 Documented-Information-Control'
+    required: false
+    icon: 'list-ordered'
+    entities:
+      - Procedure
+      - ProcedureStep
+    routes:
+      - procedure_index
+    dependencies:
+      - core
+
 # Basis-Daten die immer importiert werden
 base_data:
   - name: 'ISO 27001 Annex A Controls'
