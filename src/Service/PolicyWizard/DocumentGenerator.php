@@ -429,7 +429,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
                 'template_key' => $template->getKey(),
                 'standard' => $template->getStandard(),
                 'topic' => $template->getTopic(),
-                'title' => $this->translator->trans($template->getTitleTranslationKey() ?? ''),
+                'title' => $this->resolvePolicyTranslation($template->getTitleTranslationKey() ?? '', $template->getStandard()),
                 'body' => $body,
                 'document_type' => $template->getDocumentType(),
             ];
@@ -534,7 +534,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         if ($bodyKey === '') {
             return '';
         }
-        $rawBody = $this->translator->trans($bodyKey);
+        $rawBody = $this->resolvePolicyTranslation($bodyKey, $template->getStandard());
         $body = $this->substitute($rawBody, $variables);
 
         // W3-I Task 3 — defensive ISO 27001 climate-change wording check.
@@ -545,6 +545,41 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $this->assertClimateWordingPresent($template, $body);
 
         return $body;
+    }
+
+    /**
+     * Per-standard candidate-domain map used by `resolvePolicyTranslation`
+     * — mirrors `App\Twig\PolicyTranslationExtension::DOMAINS_BY_STANDARD`.
+     * Translation keys like `policy.bcm.bcms_top_level.v1.title` live in
+     * domain `policy_bcm_batch1`, not `messages` — a bare trans() call
+     * returns the raw key. Walk the candidate domains for the standard
+     * and return the first match.
+     *
+     * @var array<string, list<string>>
+     */
+    private const POLICY_DOMAINS_BY_STANDARD = [
+        'gdpr'      => ['policy_privacy_batch1', 'policy_privacy_sections'],
+        'iso27001'  => ['policy_iso27001', 'policy_iso27001_batch2', 'policy_iso27001_batch3', 'policy_iso27001_batch4'],
+        'bsi'       => ['policy_bsi_batch1', 'policy_bsi_batch2', 'policy_bsi_batch3'],
+        'bcm'       => ['policy_bcm_batch1', 'policy_bcm_batch2'],
+        'dora'      => ['policy_dora'],
+    ];
+
+    private function resolvePolicyTranslation(string $key, ?string $standard): string
+    {
+        if ($key === '') {
+            return '';
+        }
+        $candidates = self::POLICY_DOMAINS_BY_STANDARD[$standard] ?? [];
+        foreach ($candidates as $domain) {
+            $resolved = $this->translator->trans($key, [], $domain);
+            if ($resolved !== $key) {
+                return $resolved;
+            }
+        }
+        // Fallback: try messages domain (legacy) so behaviour stays the
+        // same when no candidate matches.
+        return $this->translator->trans($key);
     }
 
     /**
@@ -601,7 +636,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             $topic,
             $template->getVersion(),
         );
-        $extensionBody = $this->translator->trans($extensionKey);
+        $extensionBody = $this->resolvePolicyTranslation($extensionKey, 'iso27001');
         // Translator returns the key verbatim when no translation is
         // registered; in that case we still mark the extension applied
         // so the audit-trail tag fires, but emit a stub heading rather
@@ -805,7 +840,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         string $hash,
         ?Document $existing,
     ): Document {
-        $title = $this->translator->trans($template->getTitleTranslationKey() ?? '');
+        $title = $this->resolvePolicyTranslation($template->getTitleTranslationKey() ?? '', $template->getStandard());
 
         if ($existing !== null) {
             $existingHash = $this->hashOf($existing);
@@ -1439,7 +1474,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         }
 
         $bodyKey = 'policy.iso.iso_a534_thin_host.v1.body';
-        $body = $this->translator->trans($bodyKey);
+        $body = $this->resolvePolicyTranslation($bodyKey, 'iso27001');
         if ($body === $bodyKey) {
             // Translation not yet authored (W6-F deliverable). Emit a
             // stub body listing the 5 standalone privacy docs as
