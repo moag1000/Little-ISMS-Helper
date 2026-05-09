@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'crisis_team' %}
 {% block title %}{{ crisis_team.teamName }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 {% block body %}
@@ -15,13 +16,14 @@
     {% set hint = alva_hint(crisis_team) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>{{ crisis_team.teamName }}</h1>
-        <div>
-            <a href="{{ path('app_crisis_team_edit', {id: crisis_team.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
-            <a href="{{ path('app_crisis_team_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back'|trans({}, 'messages') }}</a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'people-fill', label: 'nav.crisis_team'|trans({}, 'nav') },
+        title: crisis_team.teamName,
+        actions: [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil',     href: path('app_crisis_team_edit',  {id: crisis_team.id}) },
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost',   icon: 'arrow-left', href: path('app_crisis_team_index') }
+        ]
+    }) }}
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}
             <dl class="row">

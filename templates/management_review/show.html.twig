@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'management_review' %}
 
 {% block title %}{{ review.title }} - {{ parent() }}{% endblock %}
@@ -17,11 +18,10 @@
         </ol>
     </nav>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>
-            <i class="bi bi-clipboard2-check" aria-hidden="true"></i> {{ review.title }}
-        </h1>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'clipboard2-check', label: 'management_review.title'|trans({}, 'management_review') },
+        title: review.title
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">
