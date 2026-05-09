@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\PolicyWizard\Step;
 
 use App\Entity\WizardRun;
+use App\Service\PolicyWizard\TailoringFieldQualityValidator;
 use App\Service\PolicyWizard\WizardStepKeys;
 
 /**
@@ -15,9 +16,18 @@ use App\Service\PolicyWizard\WizardStepKeys;
  * 27001 (architecture §6 Step 2; Auditor P1) — the wizard does NOT
  * surface a toggle. It is recorded as `climate_change_wording=true` on
  * the inputs purely for the §11 auditor manifest.
+ *
+ * W1 audit-defang gap #1 — runs every free-text input through the
+ * {@see TailoringFieldQualityValidator} so 1-character placeholders or
+ * "lorem ipsum" copy-pasta block forward navigation.
  */
 final class OrganisationScopeStep extends AbstractStep
 {
+    public function __construct(
+        private readonly ?TailoringFieldQualityValidator $tailoringValidator = null,
+    ) {
+    }
+
     public function key(): string
     {
         return WizardStepKeys::STEP_ORG_SCOPE;
@@ -45,6 +55,23 @@ final class OrganisationScopeStep extends AbstractStep
             // Auditor §11.1 — tailoring fields need real text; a one-word
             // scope is an obvious rubber-stamp tell.
             $errors['scope_statement'][] = 'policy_wizard.error.scope_statement_too_short';
+        }
+
+        // W1 audit-defang gap #1 — tailoring-field minimum quality.
+        // Layered on top of the existing length floors so the same
+        // input can flag both `*_too_short` (legacy field error) AND
+        // `tailoring_quality.*` (defang-specific error). The validator
+        // is optional (legacy DI graphs / unit fixtures may instantiate
+        // the step without it).
+        if ($this->tailoringValidator !== null) {
+            foreach (['legal_name' => $legalName, 'scope_statement' => $scopeStatement] as $field => $value) {
+                $result = $this->tailoringValidator->validateTailoringInput($field, $value);
+                if (!$result['passed']) {
+                    foreach ($result['violations'] as $violationKey) {
+                        $errors[$field][] = $violationKey;
+                    }
+                }
+            }
         }
 
         $primaryAddress = isset($input['primary_address']) && is_string($input['primary_address'])

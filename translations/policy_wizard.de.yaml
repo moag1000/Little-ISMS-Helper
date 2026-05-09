@@ -235,6 +235,24 @@ policy_wizard:
             rationale_too_long: 'Die Begründung darf maximal 1000 Zeichen lang sein.'
             decision_required: 'Bitte treffen Sie für jedes bestehende Dokument eine Entscheidung.'
         preset_bundle_unknown: 'Das gewählte Industrie-Preset ist unbekannt oder deaktiviert.'
+        # W6 Gap-E — DPO Charter excluded from bulk-approval (GDPR Art. 38(3)).
+        dpo_charter_in_bulk:
+            title: 'DPO-Charter nicht bulk-genehmigungsfähig'
+            detail: 'DSGVO Art. 38(3) erfordert die DPO-Charter als eigenständige Genehmigung. Bitte separat zur Top-Management-Freigabe einreichen.'
+        # W1 audit-defang gap #3 — Variable-substitution Leakage Detector.
+        substitution_leakage:
+            title: 'Vorlagen-Variable nicht aufgelöst'
+            detail: 'Die generierte Richtlinie enthält noch Twig-Marker (`{{ … }}`, `{% … %}` oder `{# … #}`). Bitte vervollständigen Sie die fehlenden Eingaben oder informieren Sie den Administrator. Aus Compliance-Gründen wurde die Speicherung abgebrochen — Auditoren akzeptieren keine Roh-Variablen in freigegebenen Dokumenten.'
+        # W1 audit-defang gap #2 — Generation-to-approval min-elapsed-time gate.
+        minimum_elapsed:
+            title: 'Mindest-Prüfdauer noch nicht erreicht'
+            detail: 'Zwischen der Generierung dieser Richtlinie und Ihrer Freigabe müssen mindestens %required% Sekunden vergehen, damit ein realistischer Lese- und Prüfvorgang nachgewiesen ist. Bitte warten Sie noch %remaining% Sekunden und bestätigen Sie dann erneut.'
+        # W1 audit-defang gap #1 — Tailoring-Feld-Mindestqualität.
+        tailoring_quality:
+            too_short: 'Bitte geben Sie mindestens 30 Zeichen mit echtem Inhalt ein — Auditoren erkennen pauschale Ein-Wort-Eingaben sofort.'
+            repetition: 'Dasselbe Wort wiederholt sich zu oft. Formulieren Sie den Eintrag bitte präziser und ohne Redundanzen.'
+            placeholder: 'Platzhalter-Text wie „lorem ipsum", „TBD", „TODO" oder „n/a" ist nicht erlaubt. Bitte tragen Sie die tenant-spezifische Information ein.'
+            custom: 'Der Eintrag entspricht nicht dem für dieses Feld konfigurierten Format. Bitte prüfen Sie die Vorgabe in der Vorlage.'
 
     # W4-B — IndustryPresetBundle picker (Step 1).
     preset:
@@ -258,6 +276,28 @@ policy_wizard:
 
     csrf:
         invalid: 'Ungültiges CSRF-Token. Bitte laden Sie die Seite neu.'
+
+    # W2 Gap-A — Krisen-Team RACI hint card on Step 3 (RolesStep).
+    roles:
+        raci_hint:
+            title: 'Krisen-Team RACI'
+            intro: 'Standardbesetzung des Krisenstabs gemäß BCM-Best-Practice. Die Felder unten überschreiben diese Defaults pro Tenant.'
+            r: 'Responsible: Notfall-/BCM-Beauftragte'
+            a: 'Accountable: Krisenstab-Leiter'
+            c: 'Consulted: ISB, DPO, IT-Leitung, Rechtsabteilung'
+            i: 'Informed: Geschäftsführung, Fachbereiche, Kommunikation'
+
+    # W3 Gap-B — Rejection notification (notify Document.owner / WizardRun starter).
+    notification:
+        rejection:
+            subject: 'Policy-Sektion abgelehnt — Überarbeitung erforderlich'
+            body: 'Eine Datenschutz- oder Policy-Sektion Ihres Dokuments wurde durch den DPO/Approver abgelehnt. Bitte überarbeiten Sie die markierte Sektion und reichen Sie sie erneut ein.'
+
+    # W6 Gap-D — GDPR-toggle off-cleanup behaviour.
+    gdpr_cleanup:
+        title: 'GDPR-Bereinigung nach Toggle-Off'
+        success: 'GDPR-Dokumente archiviert und Sektionen gesperrt. Inventar im Audit-Log.'
+        confirm: 'Tenant ist nicht mehr GDPR-Subjekt. Sollen alle GDPR-Dokumente archiviert und GDPR-Sektionen gesperrt werden? Diese Aktion ist im Audit-Log nachvollziehbar.'
 
 # W3-L — Per-user policy acknowledgement collection.
 # Closes auditor's predicted ISO 27001 A.6.3 NC ("policy must be communicated and acknowledged").
@@ -496,6 +536,12 @@ compliance_check:
         description: 'Für KRITIS-Operatoren: Bestätigt, dass die IT-Sicherheitsleitlinie einen KRITIS-Hinweis (KRITIS-DachG / BSIG §8a) enthält oder die Substitution-Variable den Marker führt.'
         pass_message: 'KRITIS-Sektion ist in der IT-Sicherheitsleitlinie dokumentiert.'
         fail_message: 'KRITIS-Sektion fehlt in der IT-Sicherheitsleitlinie — Policy-Wizard erneut durchlaufen und legal_basis = „KRITIS-DachG / BSIG §8a" setzen.'
+    # W5 Gap-C — Works-Council BR-evidence attachment (Auditor gap, BetrVG § 87 Abs. 1 Nr. 6).
+    works_council_evidence_attached:
+        title: 'Betriebsrats-Beteiligungsnachweis vorhanden (BetrVG § 87 Abs. 1 Nr. 6)'
+        description: 'Bestätigt, dass jede veröffentlichte Richtlinie zu Logging, Monitoring, Telearbeit, Acceptable-Use, Awareness-Training, Malware-Protection oder IT-Administration einen unterzeichneten BR-Beteiligungsnachweis als Anhang trägt (Document.category=works_council_evidence).'
+        pass_message: 'Alle relevanten Richtlinien tragen einen BR-Beteiligungsnachweis.'
+        fail_message: 'Mindestens eine Richtlinie zu Workplace-Monitoring oder Personalverarbeitung hat keinen BR-Beteiligungsnachweis — bitte BR-Anhang als Document mit Kategorie „works_council_evidence" zur jeweiligen Richtlinie hochladen.'
     # W5-C — BCM Compliance-Checks (ISO 22301:2019)
     bcm_top_level_policy_present:
         title: 'BCM-Top-Level-Policy freigegeben (ISO 22301 Cl. 5.2)'

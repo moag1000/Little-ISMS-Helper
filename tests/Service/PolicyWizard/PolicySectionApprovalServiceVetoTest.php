@@ -232,7 +232,9 @@ class PolicySectionApprovalServiceVetoTest extends TestCase
             editLocked: true,
         );
 
-        $this->auditLogger->expects(self::once())->method('logCustom');
+        // W3 Gap-B: rejection emits an additional rejection_notification
+        // audit event alongside the section_rejected one.
+        $this->auditLogger->expects(self::atLeastOnce())->method('logCustom');
 
         $this->service->reject($section, $dpo, 'Missing lawful-basis evidence for category §22 BDSG.');
 

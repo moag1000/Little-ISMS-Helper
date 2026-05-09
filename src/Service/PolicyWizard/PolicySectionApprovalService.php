@@ -8,15 +8,18 @@ use App\Entity\Document;
 use App\Entity\DocumentSection;
 use App\Entity\Tenant;
 use App\Entity\User;
+use App\Entity\WizardRun;
 use App\Entity\WorkflowInstance;
 use App\Repository\DocumentSectionRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
+use App\Service\EmailNotificationService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Throwable;
 
 /**
  * PolicySectionApprovalService — Phase 4-C / Sprint W3-C.
@@ -58,6 +61,8 @@ class PolicySectionApprovalService
         private readonly AuditLogger $auditLogger,
         private readonly ?UserRepository $userRepository = null,
         private readonly LoggerInterface $logger = new NullLogger(),
+        private readonly ?GenerationApprovalElapsedGuard $elapsedGuard = null,
+        private readonly ?EmailNotificationService $emailNotificationService = null,
     ) {
     }
 
@@ -85,6 +90,20 @@ class PolicySectionApprovalService
         // who authored the section content MUST NOT be the user who
         // signs it off. Throws InvalidArgumentException on violation.
         $this->assertNotSelfApproval($section, $approver);
+
+        // W1 audit-defang gap #2 — generation-to-approval min-elapsed
+        // gate. Blocks the same-second approval anti-pattern by
+        // requiring a plausible reading window between Document
+        // generation and DPO sign-off (`docs/plans/policy-wizard/
+        // persona-reviews/06-external-auditor-review.md` lines 175-178).
+        // Optional: when the guard is not wired (legacy DI graphs /
+        // unit fixtures) we fall through to the old behaviour.
+        if ($this->elapsedGuard !== null) {
+            $document = $section->getDocument();
+            if ($document instanceof Document) {
+                $this->elapsedGuard->assertMinimumElapsed($document, $approver);
+            }
+        }
 
         $previousStatus = $section->getStatus();
         $section->setStatus(DocumentSection::STATUS_APPROVED);
@@ -182,6 +201,13 @@ class PolicySectionApprovalService
                 mb_substr($reason, 0, 120),
             ),
         );
+
+        // W3 Gap-B — notify the Document owner (or wizard-run starter as
+        // fallback) of the rejection so the rework cycle starts immediately
+        // instead of waiting for the next inbox poll. ISB review
+        // "Bulk-approval ergonomics" #2 (07-phase4-sprint-reconciliation.md
+        // line 232).
+        $this->notifyRejectionTarget($section, $approver, $reason);
     }
 
     /**
@@ -552,5 +578,101 @@ class PolicySectionApprovalService
         $flag = $settings[self::SETTING_GDPR_SUBJECT]
             ?? ($settings['org']['is_gdpr_subject'] ?? null);
         return $flag === true;
+    }
+
+    /**
+     * W3 Gap-B — pick the User to notify when a DocumentSection is
+     * rejected. Spec: ISB review "Bulk-approval ergonomics" #2 — the
+     * Document.owner (modelled here as `Document.uploadedBy`) is the
+     * primary recipient; when missing, fall back to
+     * {@see WizardRun::getStartedByUser()}.
+     *
+     * Returns null when neither target is available — the caller still
+     * writes the audit-log event (`policy_wizard.rejection_notification`)
+     * so the rejection trail is preserved even without a notify target.
+     */
+    public function resolveRejectionNotifyTarget(Document $document, ?WizardRun $run): ?User
+    {
+        $owner = $document->getUploadedBy();
+        if ($owner instanceof User) {
+            return $owner;
+        }
+        $starter = $run?->getStartedByUser();
+        if ($starter instanceof User) {
+            return $starter;
+        }
+        return null;
+    }
+
+    /**
+     * W3 Gap-B — wraps the notify-target resolution + email dispatch so
+     * the rejection path stays single-purpose. Failures (no target, no
+     * mailer wired, transport error) degrade silently to an audit-log
+     * entry — rejection persistence MUST never be blocked by a notify
+     * pipeline failure.
+     */
+    private function notifyRejectionTarget(DocumentSection $section, User $approver, string $reason): void
+    {
+        $document = $section->getDocument();
+        if (!$document instanceof Document) {
+            return;
+        }
+
+        $run = $document->getGeneratedFromWizardRun();
+        $target = $this->resolveRejectionNotifyTarget($document, $run);
+
+        $this->auditLogger->logCustom(
+            action: 'policy_wizard.rejection_notification',
+            entityType: 'DocumentSection',
+            entityId: $section->getId(),
+            oldValues: null,
+            newValues: [
+                'document_id'   => $document->getId(),
+                'section_key'   => $section->getSectionKey(),
+                'rejected_by_id' => $approver->getId(),
+                'notify_target_id' => $target?->getId(),
+                'notify_source' => $target === null
+                    ? 'none'
+                    : ($document->getUploadedBy() === $target ? 'document_owner' : 'wizard_run_starter'),
+                'reason_excerpt' => mb_substr($reason, 0, 240),
+                'tag' => self::AUDIT_TAG,
+            ],
+            description: sprintf(
+                '[%s] Rejection notification dispatched for section "%s" of document #%d → user #%s',
+                self::AUDIT_TAG,
+                $section->getSectionKey() ?? '?',
+                $document->getId() ?? 0,
+                $target?->getId() ?? 'none',
+            ),
+        );
+
+        if ($target === null || $this->emailNotificationService === null) {
+            return;
+        }
+
+        try {
+            $this->emailNotificationService->sendGenericNotification(
+                subject: '[ISMS] Policy section rejected — rework required',
+                template: 'emails/policy_wizard_rejection_notification.html.twig',
+                context: [
+                    'document'    => $document,
+                    'section'     => $section,
+                    'approver'    => $approver,
+                    'reason'      => $reason,
+                    'notify_target' => $target,
+                ],
+                recipients: [$target],
+            );
+        } catch (Throwable $error) {
+            $this->logger->warning(
+                'PolicySectionApprovalService: rejection notification email dispatch failed',
+                [
+                    'document_id' => $document->getId(),
+                    'section_id'  => $section->getId(),
+                    'target_id'   => $target->getId(),
+                    'error'       => $error->getMessage(),
+                ],
+            );
+        }
     }
 }

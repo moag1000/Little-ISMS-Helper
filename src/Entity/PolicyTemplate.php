@@ -223,6 +223,23 @@ class PolicyTemplate
     #[ORM\Column(name: 'dpo_gated_section_keys', type: Types::JSON, nullable: true)]
     private ?array $dpoGatedSectionKeys = null;
 
+    /**
+     * W5 Gap-C — Works-Council BR-evidence requirement.
+     *
+     * When true, generated Documents from this template touch
+     * personal-data processing or workplace-monitoring areas (logging,
+     * monitoring, telework, acceptable_use, awareness_training,
+     * malware_protection, IT-administration). The Compliance-Wizard
+     * `WorksCouncilEvidenceAttachedCheck` then asks the tenant to attach
+     * a signed Betriebsrats-Beteiligungsnachweis (BR-evidence) before the
+     * policy is considered audit-ready.
+     *
+     * Spec: `07-phase4-sprint-reconciliation.md` line 261-262 (Auditor
+     * "Auditor-specific gaps" Works-Council, lines 124-129).
+     */
+    #[ORM\Column(name: 'requires_works_council_evidence', type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $requiresWorksCouncilEvidence = false;
+
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'superseded_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?self $supersededBy = null;
@@ -537,6 +554,20 @@ class PolicyTemplate
     public function setSupersededBy(?self $supersededBy): static
     {
         $this->supersededBy = $supersededBy;
+        return $this;
+    }
+
+    /**
+     * W5 Gap-C — Works-Council BR-evidence requirement flag.
+     */
+    public function isRequiresWorksCouncilEvidence(): bool
+    {
+        return $this->requiresWorksCouncilEvidence;
+    }
+
+    public function setRequiresWorksCouncilEvidence(bool $required): static
+    {
+        $this->requiresWorksCouncilEvidence = $required;
         return $this;
     }
 

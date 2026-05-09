@@ -1,7 +1,30 @@
 {% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% set roles_default = defaults.roles|default({}) %}
 {% set function_owners_default = defaults.function_owners|default({}) %}
 {% set approval_chain_default = defaults.approval_chain|default([]) %}
+
+{# W2 Gap-A — Krisen-Team RACI hint card. Senior-Consultant
+ # "Hand-holding content" Step 3 (07-phase4-sprint-reconciliation.md
+ # line 204). Surfaces the default RACI assignment so first-time users
+ # don't have to look up BCM-Roles separately. The card is purely
+ # informational — no input wiring. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'status-info',
+    class: 'mb-3'
+} } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">{{ 'policy_wizard.roles.raci_hint.title'|trans }}</div>
+        <p class="fa-alert__message mb-2">{{ 'policy_wizard.roles.raci_hint.intro'|trans }}</p>
+        <ul class="list-unstyled small mb-0">
+            <li><strong>R</strong> — {{ 'policy_wizard.roles.raci_hint.r'|trans }}</li>
+            <li><strong>A</strong> — {{ 'policy_wizard.roles.raci_hint.a'|trans }}</li>
+            <li><strong>C</strong> — {{ 'policy_wizard.roles.raci_hint.c'|trans }}</li>
+            <li><strong>I</strong> — {{ 'policy_wizard.roles.raci_hint.i'|trans }}</li>
+        </ul>
+    {% endblock %}
+{% endembed %}
 
 <div class="row g-3">
     {% for role_key, label_key in {

@@ -196,6 +196,70 @@ final class ApprovalKickoffService
     }
 
     /**
+     * W6 Gap-E — guard called BEFORE adding a Document to a bulk-approval
+     * batch. GDPR Art. 38(3) DPO-independence requirement: the DPO Charter
+     * MUST be approved standalone so the independence sign-off is on the
+     * audit trail unbundled from any other document. Privacy Policy is
+     * grouped with the DPO Charter for the same reason — the top-level
+     * data-protection commitment is a separate ceremonial act.
+     *
+     * Detection: the source PolicyTemplate's topic is checked against the
+     * known forbidden topics. Documents WITHOUT a generated-from-template
+     * link cannot be DPO Charters by definition (the wizard is the only
+     * producer) and pass without further inspection.
+     *
+     * Spec: `docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md`
+     * line 285 (Auditor "Open questions for Phase 4" #1, lines 291-293).
+     *
+     * @throws DpoCharterBulkApprovalException when $document is a
+     *         DPO Charter or Privacy Policy.
+     */
+    public function assertNotDpoCharterInBulk(Document $document): void
+    {
+        $template = $document->getGeneratedFromTemplate();
+        if ($template === null) {
+            return;
+        }
+        $topic = $template->getTopic();
+        if ($topic === null) {
+            return;
+        }
+        if (in_array($topic, self::DPO_CHARTER_BULK_FORBIDDEN_TOPICS, true)) {
+            $this->auditLogger->logCustom(
+                action: 'dpo_charter_bulk_block',
+                entityType: 'Document',
+                entityId: $document->getId(),
+                oldValues: null,
+                newValues: [
+                    'topic' => $topic,
+                    'tag' => self::AUDIT_TAG,
+                    'reason' => 'GDPR Art. 38(3) DPO independence — must approve standalone',
+                ],
+                description: sprintf(
+                    '[%s] Bulk-approval rejected for Document #%d (topic="%s") — DPO Charter / Privacy Policy must be approved standalone',
+                    self::AUDIT_TAG,
+                    $document->getId() ?? 0,
+                    $topic,
+                ),
+            );
+            throw new DpoCharterBulkApprovalException($document, $topic);
+        }
+    }
+
+    /**
+     * W6 Gap-E — Topic keys forbidden from bulk batches (GDPR Art. 38(3)).
+     * Kept narrow on purpose: only the two artefacts that establish the
+     * DPO independence + data-protection commitment chain. Other GDPR
+     * documents (RoPA, DPIA Methodology, DSR Procedure, Retention) MAY
+     * be bulked because they describe operational practice, not the
+     * appointment itself.
+     */
+    private const array DPO_CHARTER_BULK_FORBIDDEN_TOPICS = [
+        'dpo_charter',
+        'privacy_policy',
+    ];
+
+    /**
      * W4-A Task 4 — does the tenant carry any DORA-tagged Document?
      *
      * Scans EntityTag rows for the canonical DORA markers emitted by

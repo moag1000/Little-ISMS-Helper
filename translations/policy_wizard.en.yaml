@@ -235,6 +235,24 @@ policy_wizard:
             rationale_too_long: 'The rationale may be at most 1000 characters long.'
             decision_required: 'Please record a decision for every existing document.'
         preset_bundle_unknown: 'The selected industry preset is unknown or inactive.'
+        # W1 audit-defang gap #3 — Variable-substitution Leakage Detector.
+        substitution_leakage:
+            title: 'Template variable left unresolved'
+            detail: 'The generated policy still contains raw Twig markers (`{{ … }}`, `{% … %}` or `{# … #}`). Please complete the missing inputs or notify your administrator. Persistence was aborted on purpose — auditors do not accept raw variable names in approved evidence.'
+        # W1 audit-defang gap #2 — Generation-to-approval min-elapsed-time gate.
+        minimum_elapsed:
+            title: 'Minimum review window not reached'
+            detail: 'A minimum of %required% seconds must elapse between document generation and your approval so a realistic read/review pass is on record. Please wait another %remaining% seconds and submit the approval again.'
+        # W1 audit-defang gap #1 — Tailoring field minimum quality.
+        tailoring_quality:
+            too_short: 'Please enter at least 30 characters of real content — auditors immediately spot one-word rubber-stamp answers.'
+            repetition: 'The same word repeats too often. Please rephrase the entry more precisely and without redundancy.'
+            placeholder: 'Placeholder text such as "lorem ipsum", "TBD", "TODO" or "n/a" is not accepted. Please enter the tenant-specific information.'
+            custom: 'The entry does not match the format configured for this field. Please check the template guidance.'
+        # W6 Gap-E — DPO Charter excluded from bulk-approval (GDPR Art. 38(3)).
+        dpo_charter_in_bulk:
+            title: 'DPO Charter cannot be bulk-approved'
+            detail: 'GDPR Art. 38(3) requires the DPO Charter to be approved standalone. Please submit it separately for top-management sign-off.'
 
     # W4-B — IndustryPresetBundle picker (Step 1).
     preset:
@@ -258,6 +276,28 @@ policy_wizard:
 
     csrf:
         invalid: 'Invalid CSRF token. Please reload the page.'
+
+    # W2 Gap-A — Crisis-team RACI hint card on Step 3 (RolesStep).
+    roles:
+        raci_hint:
+            title: 'Crisis Team RACI'
+            intro: 'Default crisis-team responsibilities per BCM best practice. The fields below override these defaults per tenant.'
+            r: 'Responsible: Emergency / BCM Officer'
+            a: 'Accountable: Crisis Team Lead'
+            c: 'Consulted: ISO/CISO, DPO, IT Lead, Legal'
+            i: 'Informed: Executive Management, Business Units, Communications'
+
+    # W3 Gap-B — Rejection notification (notify Document.owner / WizardRun starter).
+    notification:
+        rejection:
+            subject: 'Policy section rejected — rework required'
+            body: 'A privacy or policy section in your document was rejected by the DPO/approver. Please rework the highlighted section and resubmit it for sign-off.'
+
+    # W6 Gap-D — GDPR-toggle off-cleanup behaviour.
+    gdpr_cleanup:
+        title: 'GDPR cleanup after toggle-off'
+        success: 'GDPR documents archived and sections locked. Inventory recorded in audit log.'
+        confirm: 'The tenant is no longer a GDPR subject. Archive all GDPR documents and lock GDPR sections? This action is recorded in the audit log.'
 
 # W3-L — Per-user policy acknowledgement collection.
 # Closes auditor's predicted ISO 27001 A.6.3 NC ("policy must be communicated and acknowledged").
@@ -496,6 +536,12 @@ compliance_check:
         description: 'For KRITIS operators: confirms the IT Security Policy carries a KRITIS marker (KRITIS-DachG / BSIG §8a) in the body or substitution variables.'
         pass_message: 'KRITIS section is documented in the IT Security Policy.'
         fail_message: 'KRITIS section is missing in the IT Security Policy — re-run the Policy-Wizard and set legal_basis to "KRITIS-DachG / BSIG §8a".'
+    # W5 Gap-C — Works-Council BR-evidence attachment (Auditor gap, BetrVG § 87 (1) Nr. 6).
+    works_council_evidence_attached:
+        title: 'Works-Council participation evidence attached (BetrVG § 87 (1) Nr. 6)'
+        description: 'Confirms every published policy covering logging, monitoring, telework, acceptable-use, awareness training, malware protection or IT administration carries a signed Works-Council participation record as an attachment (Document.category=works_council_evidence).'
+        pass_message: 'All relevant policies carry a Works-Council participation record.'
+        fail_message: 'At least one workplace-monitoring or personal-data policy is missing a Works-Council participation record — please upload the BR attachment as a Document with category "works_council_evidence" linked to the policy.'
     # W5-C — BCM Compliance-Checks (ISO 22301:2019)
     bcm_top_level_policy_present:
         title: 'BCM top-level policy approved (ISO 22301 Cl. 5.2)'

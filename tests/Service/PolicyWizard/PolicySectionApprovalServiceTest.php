@@ -136,7 +136,9 @@ class PolicySectionApprovalServiceTest extends TestCase
         $section = $this->makeSection();
         $approver = $this->makeUser();
 
-        $this->auditLogger->expects(self::once())->method('logCustom');
+        // W3 Gap-B: rejection now also emits a `policy_wizard.rejection_notification`
+        // audit-log event (notify-target trail). Two logCustom calls total.
+        $this->auditLogger->expects(self::atLeastOnce())->method('logCustom');
         $this->em->expects(self::atLeastOnce())->method('persist')->with($section);
         $this->em->expects(self::atLeastOnce())->method('flush');
 
