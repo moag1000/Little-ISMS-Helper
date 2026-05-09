@@ -330,7 +330,6 @@ class RiskControllerTest extends WebTestCase
             'risk[probability]' => 3,
             
             'risk[impact]' => 3,
-            'risk[impactJustification]' => 'Test impact justification',
             'risk[treatmentStrategy]' => 'mitigate',
             'risk[status]' => 'identified',
             'risk[riskOwner]' => $this->testUser->getId(),
@@ -366,7 +365,6 @@ class RiskControllerTest extends WebTestCase
             'risk[probability]' => 2,
             
             'risk[impact]' => 2,
-            'risk[impactJustification]' => 'Test impact justification',
             'risk[treatmentStrategy]' => 'mitigate',
             'risk[status]' => 'identified',
             'risk[riskOwner]' => $this->testUser->getId(),
