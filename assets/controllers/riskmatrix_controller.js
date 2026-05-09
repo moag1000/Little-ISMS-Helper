@@ -1,5 +1,18 @@
 import { Controller } from '@hotwired/stimulus';
 
+/**
+ * Renders an Aurora ISMS-Risk-Matrix (5x5).
+ *
+ * Reads the risks-Array from data-riskmatrix-risks-value, places one dot per
+ * risk in the corresponding cell (probability x impact), and wires a click
+ * handler that navigates to the risk detail page.
+ *
+ * DOM-Convention (must match the Aurora pattern in fairy-aurora-components.css):
+ *   .isms-risk-matrix__grid > .isms-risk-cell[data-probability][data-impact]
+ *
+ * The cell-level (1..5) is set server-side by the Twig template; this
+ * controller only adds the per-risk dots, not the cell colour.
+ */
 export default class extends Controller {
     static values = {
         risks: Array
@@ -11,41 +24,32 @@ export default class extends Controller {
 
     renderMatrix() {
         const risks = this.risksValue || [];
-        const matrix = this.element.querySelector('.risk-matrix');
+        const grid = this.element.querySelector('.isms-risk-matrix__grid');
+        if (!grid) return;
 
-        if (!matrix) return;
+        // Clear existing dots before re-render.
+        grid.querySelectorAll('.isms-risk-dot').forEach(el => el.remove());
 
-        // Clear existing risks
-        matrix.querySelectorAll('.risk-item').forEach(el => el.remove());
-
-        // Place risks in matrix
         risks.forEach(risk => {
             const probability = risk.probability || risk.inherentProbability || 1;
             const impact = risk.impact || risk.inherentImpact || 1;
 
-            const cell = matrix.querySelector(`[data-probability="${probability}"][data-impact="${impact}"]`);
-            if (cell) {
-                const riskDot = document.createElement('div');
-                riskDot.className = 'risk-item';
-                riskDot.title = risk.name || risk.title;
-                riskDot.style.backgroundColor = this.getRiskColor(probability * impact);
+            const cell = grid.querySelector(
+                `.isms-risk-cell[data-probability="${probability}"][data-impact="${impact}"]`
+            );
+            if (!cell) return;
 
-                // Add click handler to show risk details
-                riskDot.addEventListener('click', () => {
-                    // Extract locale from current URL path (e.g., /de/ or /en/)
-                    const locale = window.location.pathname.match(/^\/([a-z]{2})\//)?.[1] || 'de';
-                    window.location.href = `/${locale}/risk/${risk.id}`;
-                });
+            const dot = document.createElement('span');
+            dot.className = 'isms-risk-dot';
+            dot.title = risk.name || risk.title || '';
 
-                cell.appendChild(riskDot);
-            }
+            dot.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const locale = window.location.pathname.match(/^\/([a-z]{2})\//)?.[1] || 'de';
+                window.location.href = `/${locale}/risk/${risk.id}`;
+            });
+
+            cell.appendChild(dot);
         });
-    }
-
-    getRiskColor(score) {
-        if (score >= 15) return '#dc2626'; // Critical (15-25) - Red
-        if (score >= 8) return '#ea580c';  // High (8-14) - Orange
-        if (score >= 4) return '#d97706';  // Medium (4-7) - Yellow
-        return '#059669';                   // Low (1-3) - Green
     }
 }
