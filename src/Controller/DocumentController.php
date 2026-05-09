@@ -349,6 +349,16 @@ class DocumentController extends AbstractController
         // Security: Check if user has permission to download this document (OWASP #1 - Broken Access Control)
         $this->denyAccessUnlessGranted('download', $document);
 
+        // Policy-Wizard generated documents have no uploaded file — they live
+        // as rendered body text. Route them through the PolicyExportController
+        // which renders TenantBranding-letterhead PDFs on demand.
+        if ($document->getGeneratedFromTemplate() !== null
+            || str_starts_with((string) $document->getFilePath(), 'virtual:')) {
+            return $this->redirectToRoute('app_policy_export_document_pdf', [
+                'id' => $document->getId(),
+            ]);
+        }
+
         // Security: Validate filename to prevent path traversal attacks
         $fileName = $document->getFileName();
         if (!$fileName || preg_match('/[\/\\\\]/', $fileName)) {

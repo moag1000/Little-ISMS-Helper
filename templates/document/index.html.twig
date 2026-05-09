@@ -21,11 +21,25 @@
         title: 'document.title'|trans({}, 'document'),
         subtitle: 'document.subtitle'|trans({}, 'document'),
         actions: [
+            { label: 'document.action.policy_wizard'|trans({}, 'document'), variant: 'success', icon: 'magic', href: path('app_policy_wizard_index') },
             { label: 'document.action.upload'|trans({}, 'document'), variant: 'primary', icon: 'cloud-upload', href: path('app_document_new') }
         ]
     }) }}
 
     <main class="fa-aurora-surface">
+
+    {# Alva-Tipp: Policy-Wizard generates ISO 27001 / DORA / BSI / BCM / GDPR mandatory policies #}
+    <div class="alert alert-info border-0 d-flex align-items-start gap-3 mb-3" role="alert">
+        <i class="fa-icon fa-icon--nav-magic flex-shrink-0" aria-hidden="true" style="font-size: 1.5rem;"></i>
+        <div class="flex-grow-1">
+            <strong>{{ 'document.alva_tipp.policy_wizard.title'|trans({}, 'document') }}</strong>
+            <p class="mb-2 mt-1">{{ 'document.alva_tipp.policy_wizard.body'|trans({}, 'document') }}</p>
+            <a href="{{ path('app_policy_wizard_index') }}" class="fa-cyber-btn fa-cyber-btn--success btn-sm">
+                <i class="fa-icon fa-icon--nav-magic me-1" aria-hidden="true"></i>
+                {{ 'document.alva_tipp.policy_wizard.cta'|trans({}, 'document') }}
+            </a>
+        </div>
+    </div>
 
     {# View Filter #}
     {% if currentTenant %}
