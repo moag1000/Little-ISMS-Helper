@@ -55,6 +55,7 @@ final class RolesStep extends AbstractStep
 
     public function __construct(
         private readonly ?PersonRepository $personRepository = null,
+        private readonly ?\App\Repository\UserRepository $userRepository = null,
     ) {
     }
 
@@ -139,10 +140,24 @@ final class RolesStep extends AbstractStep
             $errors['approval_chain'][] = 'policy_wizard.error.approval_chain_required';
         }
 
-        // Self-approval guard — author cannot be in the approval chain.
+        // Self-approval guard — author cannot be in the approval chain
+        // EXCEPT for single-user-tenants (Solo-Berater, GF=CISO, Initial-
+        // Setup): there is no second User who could approve. Block only
+        // when ≥ 2 active approver-eligible Users exist for the tenant.
         $authorId = $run->getStartedByUser()?->getId();
         if ($authorId !== null && in_array($authorId, $normalisedChain, true)) {
-            $errors['approval_chain'][] = 'policy_wizard.error.self_approval_forbidden';
+            $eligibleApproverCount = $this->userRepository !== null
+                ? count($this->userRepository->findApproversInTenant($run->getTenant()))
+                : 2; // Defensive: legacy DI without userRepository → strict block
+            if ($eligibleApproverCount >= 2) {
+                $errors['approval_chain'][] = 'policy_wizard.error.self_approval_forbidden';
+            } else {
+                // Single-user tenant — surface the audit hint via warnings
+                // slot so the Review-step can render an Aurora warn-card.
+                // Persists into normalised input so consumers know to log
+                // an audit-trail entry "policy_wizard.self_approval_used".
+                $errors['_warnings']['approval_chain'][] = 'policy_wizard.warning.self_approval_single_user';
+            }
         }
 
         $normalised = [

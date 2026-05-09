@@ -647,6 +647,7 @@ policy_wizard:
     # Junior-ISB Wish #6 — clickable warning link CTA on Step 7.
     warning:
         click_to_jump: 'Click to jump to "%step%" and fix.'
+        self_approval_single_user: 'Self-approval active: this tenant has only one app user. Document this in the audit — once a second user exists, switch the approval chain to four-eyes.'
 
     # Junior-ISB Wish #5 — Auditor-Score badge / detail section.
     auditor_score:
@@ -688,7 +689,7 @@ policy_wizard:
         function_slot_unknown: 'Unknown function-owner slot.'
         approval_chain_invalid: 'The approval chain is invalid.'
         approval_chain_required: 'At least one approver in the approval chain is required.'
-        self_approval_forbidden: 'Self-approval is forbidden — the wizard starter cannot be in the approval chain.'
+        self_approval_forbidden: 'Self-approval is forbidden — the wizard starter cannot be in the approval chain once at least one second app user exists.'
         crypto_allowlist_required: 'At least one allowed algorithm must be selected.'
         crypto_allowlist_invalid: 'The crypto allow-list is invalid.'
         backup_rpo_required: 'Please provide a backup RPO in hours.'
