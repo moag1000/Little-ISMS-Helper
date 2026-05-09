@@ -29,7 +29,6 @@ class WorkflowStepType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'workflow_step.field.name',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'workflow_step.placeholder.name'
                 ],
                 'constraints' => [
@@ -41,7 +40,6 @@ class WorkflowStepType extends AbstractType
                 'label' => 'workflow_step.field.description',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'workflow_step.placeholder.description'
                 ]
@@ -53,10 +51,7 @@ class WorkflowStepType extends AbstractType
                     'workflow_step.type.notification' => 'notification',
                     'workflow_step.type.auto_action' => 'auto_action',
                 ],
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'workflow_step.validation.step_type_required')
                 ],
                 'help' => 'workflow_step.help.step_type',
@@ -73,10 +68,7 @@ class WorkflowStepType extends AbstractType
                     'workflow_step.role.iso_officer' => 'ROLE_ISO_OFFICER',
                     'workflow_step.role.risk_manager' => 'ROLE_RISK_MANAGER',
                 ],
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'placeholder' => 'workflow_step.placeholder.select_role',
+                                'placeholder' => 'workflow_step.placeholder.select_role',
                 'help' => 'workflow_step.help.approver_role',
                     'choice_translation_domain' => 'workflows',
             ])
@@ -86,7 +78,6 @@ class WorkflowStepType extends AbstractType
                 'multiple' => true,
                 'choices' => $this->getUserChoices(),
                 'attr' => [
-                    'class' => 'form-select',
                     'size' => 5
                 ],
                 'help' => 'workflow_step.help.approver_users',
@@ -107,7 +98,6 @@ class WorkflowStepType extends AbstractType
                 'label' => 'workflow_step.field.days_to_complete',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'min' => 1,
                     'max' => 365,
                     'placeholder' => 'workflow_step.placeholder.days_to_complete'

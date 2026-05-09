@@ -107,7 +107,6 @@ class IncidentType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'incident.placeholder.reported_by_user',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'incident.help.reported_by_user',
             ])
             ->add('reportedByPerson', EntityType::class, [
@@ -116,7 +115,6 @@ class IncidentType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'incident.placeholder.reported_by_person',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'incident.help.reported_by_person',
             ])
             ->add('reportedByDeputyPersons', EntityType::class, [
@@ -127,7 +125,6 @@ class IncidentType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'incident.help.reported_by_deputies',
@@ -284,7 +281,6 @@ class IncidentType extends AbstractType
                 'required' => false,
                 'help' => 'incident.help.affected_assets',
                 'attr' => [
-                    'class' => 'form-select',
                     'size' => 5,
                     'data-controller' => 'tom-select',
                 ],

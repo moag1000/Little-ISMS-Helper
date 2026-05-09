@@ -27,7 +27,6 @@ class RiskAppetiteType extends AbstractType
                 'label' => 'risk_appetite.field.category',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'maxlength' => 100,
                     'placeholder' => 'risk_appetite.placeholder.category'
                 ],
@@ -40,7 +39,6 @@ class RiskAppetiteType extends AbstractType
                 'label' => 'risk_appetite.field.max_acceptable_risk',
                 'required' => true,
                 'attr' => [
-                    'class' => 'form-control',
                     'min' => 1,
                     'max' => 25,
                     'placeholder' => '1-25'
@@ -55,7 +53,6 @@ class RiskAppetiteType extends AbstractType
                 'label' => 'risk_appetite.field.description',
                 'required' => true,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 5,
                     'placeholder' => 'risk_appetite.placeholder.description'
                 ],
@@ -80,7 +77,6 @@ class RiskAppetiteType extends AbstractType
                 'required' => true,
                 'scale' => 1,
                 'attr' => [
-                    'class' => 'form-control',
                     'min' => '1.0',
                     'max' => '3.0',
                     'step' => '0.1',
@@ -101,20 +97,14 @@ class RiskAppetiteType extends AbstractType
                 'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
                 'placeholder' => 'risk_appetite.placeholder.approved_by',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'help' => 'risk_appetite.help.approved_by'
+                                'help' => 'risk_appetite.help.approved_by'
             ])
             ->add('approvedAt', DateTimeType::class, [
                 'label' => 'risk_appetite.field.approved_at',
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'help' => 'risk_appetite.help.approved_at'
+                                'help' => 'risk_appetite.help.approved_at'
             ])
         ;
     }

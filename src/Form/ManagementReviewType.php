@@ -43,7 +43,6 @@ class ManagementReviewType extends AbstractType
             ->add('title', TextType::class, [
                 'label' => 'management_review.field.title',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'management_review.placeholder.title',
                 ],
                 'constraints' => [
@@ -53,7 +52,6 @@ class ManagementReviewType extends AbstractType
             ->add('reviewDate', DateType::class, [
                 'label' => 'management_review.field.review_date',
                 'widget' => 'single_text',
-                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new NotBlank(),
                 ],
@@ -64,7 +62,6 @@ class ManagementReviewType extends AbstractType
                 'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
                 'placeholder' => 'common.please_select',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'management_review.help.reviewed_by',
             ])
             ->add('reviewedByPerson', EntityType::class, [
@@ -73,7 +70,6 @@ class ManagementReviewType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'placeholder' => 'management_review.placeholder.reviewed_by_person',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'management_review.help.reviewed_by_person',
             ])
             ->add('reviewedByDeputyPersons', EntityType::class, [
@@ -84,7 +80,6 @@ class ManagementReviewType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'management_review.help.reviewed_by_deputy_persons',
@@ -98,7 +93,6 @@ class ManagementReviewType extends AbstractType
                 'by_reference' => false,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'size' => 6,
                 ],
             ])
@@ -109,14 +103,12 @@ class ManagementReviewType extends AbstractType
                     'management_review.status.completed' => 'completed',
                     'management_review.status.follow_up_required' => 'follow_up_required',
                 ],
-                'attr' => ['class' => 'form-select'],
                 'choice_translation_domain' => 'management_review',
             ])
             ->add('performanceEvaluation', TextareaType::class, [
                 'label' => 'management_review.field.performance_evaluation',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                 ],
                 'help' => 'management_review.help.performance_evaluation',
@@ -125,7 +117,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.changes_relevant_to_isms',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.changes_relevant_to_isms',
@@ -134,7 +125,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.feedback_from_interested_parties',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.feedback_from_interested_parties',
@@ -143,7 +133,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.audit_results',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.audit_results',
@@ -152,7 +141,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.nonconformities_review',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.nonconformities_review',
@@ -161,7 +149,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.incidents_review',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.incidents_review',
@@ -170,7 +157,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.risks_review',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.risks_review',
@@ -179,7 +165,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.objectives_review',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.objectives_review',
@@ -188,7 +173,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.context_changes',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.context_changes',
@@ -197,7 +181,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.previous_review_actions',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.previous_review_actions',
@@ -206,7 +189,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.non_conformities_status',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.non_conformities_status',
@@ -215,7 +197,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.corrective_actions_status',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.corrective_actions_status',
@@ -224,7 +205,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.improvement_opportunities',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                 ],
                 'help' => 'management_review.help.improvement_opportunities',
@@ -233,7 +213,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.opportunities_for_improvement',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                 ],
                 'help' => 'management_review.help.opportunities_for_improvement',
@@ -242,7 +221,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.decisions',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 5,
                 ],
                 'help' => 'management_review.help.decisions',
@@ -251,7 +229,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.action_items',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 5,
                 ],
                 'help' => 'management_review.help.action_items',
@@ -260,7 +237,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.resource_needs',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'management_review.help.resource_needs',
@@ -269,7 +245,6 @@ class ManagementReviewType extends AbstractType
                 'label' => 'management_review.field.summary',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                 ],
                 'help' => 'management_review.help.summary',

@@ -34,10 +34,7 @@ class RiskTreatmentPlanType extends AbstractType
                 'choice_label' => 'title',
                 'placeholder' => 'risk_treatment_plan.placeholder.risk',
                 'required' => true,
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'help' => 'risk_treatment_plan.help.risk',
+                                'help' => 'risk_treatment_plan.help.risk',
                 'constraints' => [
                     new Assert\NotNull(message: 'risk_treatment_plan.validation.risk_required')
                 ],
@@ -47,7 +44,6 @@ class RiskTreatmentPlanType extends AbstractType
                 'label' => 'risk_treatment_plan.field.title',
                 'required' => true,
                 'attr' => [
-                    'class' => 'form-control',
                     'maxlength' => 255,
                     'placeholder' => 'risk_treatment_plan.placeholder.title'
                 ],
@@ -60,7 +56,6 @@ class RiskTreatmentPlanType extends AbstractType
                 'label' => 'risk_treatment_plan.field.description',
                 'required' => true,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'risk_treatment_plan.placeholder.description'
                 ],
@@ -79,10 +74,7 @@ class RiskTreatmentPlanType extends AbstractType
                     'risk_treatment_plan.status.on_hold' => 'on_hold',
                 ],
                 'required' => true,
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'help' => 'risk_treatment_plan.help.status',
+                                'help' => 'risk_treatment_plan.help.status',
                 'choice_translation_domain' => 'risk_treatment_plan',
             ])
             ->add('priority', ChoiceType::class, [
@@ -94,29 +86,20 @@ class RiskTreatmentPlanType extends AbstractType
                     'risk_treatment_plan.priority.critical' => 'critical',
                 ],
                 'required' => true,
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'help' => 'risk_treatment_plan.help.priority',
+                                'help' => 'risk_treatment_plan.help.priority',
                     'choice_translation_domain' => 'risk_treatment_plan',
             ])
             ->add('startDate', DateType::class, [
                 'label' => 'risk_treatment_plan.field.start_date',
                 'widget' => 'single_text',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'help' => 'risk_treatment_plan.help.start_date'
+                                'help' => 'risk_treatment_plan.help.start_date'
             ])
             ->add('targetCompletionDate', DateType::class, [
                 'label' => 'risk_treatment_plan.field.target_completion_date',
                 'widget' => 'single_text',
                 'required' => true,
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'help' => 'risk_treatment_plan.help.target_completion_date',
+                                'help' => 'risk_treatment_plan.help.target_completion_date',
                 'constraints' => [
                     new Assert\NotNull(message: 'risk_treatment_plan.validation.target_completion_date_required')
                 ]
@@ -125,16 +108,12 @@ class RiskTreatmentPlanType extends AbstractType
                 'label' => 'risk_treatment_plan.field.actual_completion_date',
                 'widget' => 'single_text',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'help' => 'risk_treatment_plan.help.actual_completion_date'
+                                'help' => 'risk_treatment_plan.help.actual_completion_date'
             ])
             ->add('budget', NumberType::class, [
                 'label' => 'risk_treatment_plan.field.budget',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'step' => '0.01',
                     'min' => '0',
                     'placeholder' => '0.00'
@@ -150,10 +129,7 @@ class RiskTreatmentPlanType extends AbstractType
                 'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
                 'placeholder' => 'risk_treatment_plan.placeholder.responsible_person_user',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'help' => 'risk_treatment_plan.help.responsible_person_user'
+                                'help' => 'risk_treatment_plan.help.responsible_person_user'
             ])
             ->add('responsiblePerson', EntityType::class, [
                 'label' => 'risk_treatment_plan.field.responsible_person',
@@ -161,10 +137,7 @@ class RiskTreatmentPlanType extends AbstractType
                 'choice_label' => 'fullName',
                 'placeholder' => 'risk_treatment_plan.placeholder.responsible_person',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'help' => 'risk_treatment_plan.help.responsible_person'
+                                'help' => 'risk_treatment_plan.help.responsible_person'
             ])
             ->add('responsibleDeputyPersons', EntityType::class, [
                 'label' => 'risk_treatment_plan.field.responsible_deputy_persons',
@@ -172,10 +145,7 @@ class RiskTreatmentPlanType extends AbstractType
                 'choice_label' => 'fullName',
                 'multiple' => true,
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'help' => 'risk_treatment_plan.help.responsible_deputy_persons'
+                                'help' => 'risk_treatment_plan.help.responsible_deputy_persons'
             ])
             ->add('controls', EntityType::class, [
                 'label' => 'risk_treatment_plan.field.controls',
@@ -184,7 +154,6 @@ class RiskTreatmentPlanType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'size' => 8
                 ],
                 'help' => 'risk_treatment_plan.help.controls'
@@ -193,7 +162,6 @@ class RiskTreatmentPlanType extends AbstractType
                 'label' => 'risk_treatment_plan.field.completion_percentage',
                 'required' => true,
                 'attr' => [
-                    'class' => 'form-control',
                     'min' => 0,
                     'max' => 100,
                     'placeholder' => '0-100'
@@ -207,7 +175,6 @@ class RiskTreatmentPlanType extends AbstractType
                 'label' => 'risk_treatment_plan.field.implementation_notes',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 5,
                     'placeholder' => 'risk_treatment_plan.placeholder.implementation_notes'
                 ],

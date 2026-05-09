@@ -53,7 +53,6 @@ class CustomReportType extends AbstractType
                 ],
                 'required' => true,
                 'choice_translation_domain' => 'report_builder',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('layout', ChoiceType::class, [
                 'label' => 'field.layout',
@@ -66,7 +65,6 @@ class CustomReportType extends AbstractType
                 ],
                 'required' => true,
                 'choice_translation_domain' => 'report_builder',
-                'attr' => ['class' => 'form-select'],
             ])
             // Tri-State owner fields
             ->add('owner', EntityType::class, [
@@ -75,7 +73,6 @@ class CustomReportType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'placeholder.owner_user',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'help.owner_user',
             ])
             ->add('ownerPerson', EntityType::class, [
@@ -84,7 +81,6 @@ class CustomReportType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'placeholder.owner_person',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'help.owner_person',
             ])
             ->add('ownerDeputyPersons', EntityType::class, [
@@ -95,7 +91,6 @@ class CustomReportType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'help.owner_deputies',

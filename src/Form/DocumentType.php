@@ -83,7 +83,6 @@ class DocumentType extends AbstractType
                     'document.classification.strictly_confidential' => 'strictly_confidential',
                 ],
                 'choice_translation_domain' => 'document',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'document.help.data_classification',
             ])
             // Phase 9.P2.1 — holding policy inheritance flags. Only

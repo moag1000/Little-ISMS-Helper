@@ -23,7 +23,6 @@ class ISMSObjectiveType extends AbstractType
             ->add('title', TextType::class, [
                 'label' => 'objective.field.title',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'objective.placeholder.title'
                 ],
                 'constraints' => [
@@ -34,7 +33,6 @@ class ISMSObjectiveType extends AbstractType
             ->add('description', TextareaType::class, [
                 'label' => 'objective.field.description',
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'objective.placeholder.description'
                 ],
@@ -54,10 +52,7 @@ class ISMSObjectiveType extends AbstractType
                     'objective.category.awareness' => 'awareness',
                     'objective.category.continual_improvement' => 'continual_improvement',
                 ],
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'objective.validation.category_required')
                 ],
                 'choice_translation_domain' => 'objective',
@@ -66,7 +61,6 @@ class ISMSObjectiveType extends AbstractType
                 'label' => 'objective.field.measurable_indicators',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'objective.placeholder.measurable_indicators'
                 ]
@@ -75,7 +69,6 @@ class ISMSObjectiveType extends AbstractType
                 'label' => 'objective.field.target_value',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'objective.placeholder.target_value',
                     'step' => '0.01'
                 ],
@@ -86,7 +79,6 @@ class ISMSObjectiveType extends AbstractType
                 'label' => 'objective.field.current_value',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'objective.placeholder.current_value',
                     'step' => '0.01'
                 ],
@@ -107,15 +99,11 @@ class ISMSObjectiveType extends AbstractType
                     'objective.unit.points' => 'points',
                 ],
                 'placeholder' => 'objective.placeholder.unit',
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'choice_translation_domain' => 'objective',
+                                'choice_translation_domain' => 'objective',
             ])
             ->add('responsiblePerson', TextType::class, [
                 'label' => 'objective.field.responsible_person',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'objective.placeholder.responsible_person'
                 ],
                 'constraints' => [
@@ -127,10 +115,7 @@ class ISMSObjectiveType extends AbstractType
                 'label' => 'objective.field.responsible_for_measurement',
                 'required' => false,
                 'help' => 'objective.help.responsible_for_measurement',
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\Length(max: 100, maxMessage: 'objective.validation.name_max_length')
                 ],
             ])
@@ -148,14 +133,12 @@ class ISMSObjectiveType extends AbstractType
                     'objective.frequency.annually' => 'annually',
                     'objective.frequency.on_event' => 'on_event',
                 ],
-                'attr' => ['class' => 'form-control'],
             ])
             ->add('measurementMethod', TextareaType::class, [
                 'label' => 'objective.field.measurement_method',
                 'required' => false,
                 'help' => 'objective.help.measurement_method',
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'objective.placeholder.measurement_method',
                 ],
@@ -163,10 +146,7 @@ class ISMSObjectiveType extends AbstractType
             ->add('targetDate', DateType::class, [
                 'label' => 'objective.field.target_date',
                 'widget' => 'single_text',
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'objective.validation.target_date_required')
                 ],
                 'help' => 'objective.help.target_date'
@@ -180,10 +160,7 @@ class ISMSObjectiveType extends AbstractType
                     'objective.status.delayed' => 'delayed',
                     'objective.status.cancelled' => 'cancelled',
                 ],
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'objective.validation.status_required')
                 ],
                     'choice_translation_domain' => 'objective',
@@ -192,7 +169,6 @@ class ISMSObjectiveType extends AbstractType
                 'label' => 'objective.field.progress_notes',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'objective.placeholder.progress_notes'
                 ]

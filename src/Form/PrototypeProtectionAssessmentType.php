@@ -106,7 +106,6 @@ class PrototypeProtectionAssessmentType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'placeholder' => 'prototype_protection.placeholder.assessor_person',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'prototype_protection.help.assessor_person',
             ])
             ->add('assessorDeputyPersons', EntityType::class, [
@@ -117,7 +116,6 @@ class PrototypeProtectionAssessmentType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'prototype_protection.help.assessor_deputy_persons',

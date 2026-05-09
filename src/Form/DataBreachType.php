@@ -42,7 +42,6 @@ class DataBreachType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'placeholder' => 'data_breach.placeholder.title',
-                    'class' => 'form-control',
                 ],
             ])
             ->add('detectedAt', DateTimeType::class, [
@@ -50,7 +49,6 @@ class DataBreachType extends AbstractType
                 'widget' => 'single_text',
                 'required' => true,
                 'input' => 'datetime_immutable',
-                'attr' => ['class' => 'form-control'],
                 'help' => 'data_breach.help.detected_at',
             ])
             ->add('incident', EntityType::class, [
@@ -59,7 +57,7 @@ class DataBreachType extends AbstractType
                 'choice_label' => fn(Incident $incident): string => sprintf('%s - %s', $incident->getIncidentNumber(), $incident->getTitle()),
                 'placeholder' => 'data_breach.placeholder.incident',
                 'required' => false,
-                'attr' => ['class' => 'form-select select2'],
+                'attr' => ['class' => 'select2'],
                 'help' => 'data_breach.help.incident',
                 'query_builder' => function (IncidentRepository $repo) use ($options): QueryBuilder {
                     $qb = $repo->createQueryBuilder('i')->orderBy('i.detectedAt', 'DESC');
@@ -76,7 +74,7 @@ class DataBreachType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'data_breach.placeholder.processing_activity',
                 'required' => false,
-                'attr' => ['class' => 'form-select select2'],
+                'attr' => ['class' => 'select2'],
                 'help' => 'data_breach.help.processing_activity',
                 'query_builder' => function (ProcessingActivityRepository $repo) use ($options): QueryBuilder {
                     $qb = $repo->createQueryBuilder('pa')->orderBy('pa.name', 'ASC');
@@ -96,7 +94,6 @@ class DataBreachType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'data_breach.placeholder.affected_data_subjects',
-                    'class' => 'form-control',
                     'min' => 0,
                 ],
                 'help' => 'data_breach.help.affected_data_subjects',
@@ -121,7 +118,7 @@ class DataBreachType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'required' => true,
-                'attr' => ['class' => 'form-select select2-multiple'],
+                'attr' => ['class' => 'select2-multiple'],
                 'help' => 'data_breach.help.data_categories',
             ])
             ->add('dataSubjectCategories', ChoiceType::class, [
@@ -142,7 +139,7 @@ class DataBreachType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'required' => true,
-                'attr' => ['class' => 'form-select select2-multiple'],
+                'attr' => ['class' => 'select2-multiple'],
                 'help' => 'data_breach.help.data_subject_categories',
             ])
             ->add('breachNature', TextareaType::class, [
@@ -150,7 +147,6 @@ class DataBreachType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'rows' => 5,
-                    'class' => 'form-control',
                     'placeholder' => 'data_breach.placeholder.breach_nature',
                 ],
                 'help' => 'data_breach.help.breach_nature',
@@ -160,7 +156,6 @@ class DataBreachType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'rows' => 5,
-                    'class' => 'form-control',
                     'placeholder' => 'data_breach.placeholder.likely_consequences',
                 ],
                 'help' => 'data_breach.help.likely_consequences',
@@ -170,7 +165,6 @@ class DataBreachType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'rows' => 5,
-                    'class' => 'form-control',
                     'placeholder' => 'data_breach.placeholder.measures_taken',
                 ],
                 'help' => 'data_breach.help.measures_taken',
@@ -180,7 +174,6 @@ class DataBreachType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'rows' => 4,
-                    'class' => 'form-control',
                     'placeholder' => 'data_breach.placeholder.mitigation_measures',
                 ],
                 'help' => 'data_breach.help.mitigation_measures',
@@ -200,7 +193,6 @@ class DataBreachType extends AbstractType
                 'choice_translation_domain' => 'privacy',
                 'placeholder' => 'data_breach.placeholder.severity',
                 'required' => true,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'data_breach.help.severity',
             ])
             ->add('riskLevel', ChoiceType::class, [
@@ -214,7 +206,6 @@ class DataBreachType extends AbstractType
                 'choice_translation_domain' => 'privacy',
                 'placeholder' => 'data_breach.placeholder.risk_level',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'data_breach.help.risk_level',
             ])
             ->add('riskAssessment', TextareaType::class, [
@@ -222,7 +213,6 @@ class DataBreachType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'rows' => 4,
-                    'class' => 'form-control',
                     'placeholder' => 'data_breach.placeholder.risk_assessment',
                 ],
             ])
@@ -260,7 +250,6 @@ class DataBreachType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'rows' => 3,
-                    'class' => 'form-control',
                     'placeholder' => 'data_breach.placeholder.no_subject_notification_reason',
                     'data-depends-on' => 'data_breach_requiresSubjectNotification',
                     'data-depends-on-negated' => 'true',
@@ -276,7 +265,6 @@ class DataBreachType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'rows' => 4,
-                    'class' => 'form-control',
                     'placeholder' => 'data_breach.placeholder.root_cause',
                 ],
             ])
@@ -285,7 +273,6 @@ class DataBreachType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'rows' => 4,
-                    'class' => 'form-control',
                     'placeholder' => 'data_breach.placeholder.lessons_learned',
                 ],
             ])
@@ -299,7 +286,7 @@ class DataBreachType extends AbstractType
                 'choice_label' => fn(User $user): string => sprintf('%s %s (%s)', $user->getFirstName(), $user->getLastName(), $user->getEmail()),
                 'placeholder' => 'data_breach.placeholder.data_protection_officer',
                 'required' => false,
-                'attr' => ['class' => 'form-select select2'],
+                'attr' => ['class' => 'select2'],
                 'help' => 'data_breach.help.data_protection_officer',
             ])
             ->add('dataProtectionOfficerPerson', EntityType::class, [
@@ -308,7 +295,6 @@ class DataBreachType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'placeholder' => 'data_breach.placeholder.data_protection_officer_person',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'data_breach.help.data_protection_officer_person',
             ])
             ->add('dataProtectionOfficerDeputyPersons', EntityType::class, [
@@ -319,7 +305,6 @@ class DataBreachType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'data_breach.help.data_protection_officer_deputies',
@@ -334,7 +319,6 @@ class DataBreachType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'placeholder' => 'data_breach.placeholder.assessor_person',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'data_breach.help.assessor_person',
             ])
             ->add('assessorDeputyPersons', EntityType::class, [
@@ -345,7 +329,6 @@ class DataBreachType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'data_breach.help.assessor_deputies',

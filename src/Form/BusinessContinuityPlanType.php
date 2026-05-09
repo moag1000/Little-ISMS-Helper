@@ -57,7 +57,6 @@ class BusinessContinuityPlanType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'bc_plans.placeholder.plan_owner_user',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'bc_plans.help.plan_owner_user',
             ])
             ->add('planOwnerPerson', EntityType::class, [
@@ -66,7 +65,6 @@ class BusinessContinuityPlanType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'bc_plans.placeholder.plan_owner_person',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'bc_plans.help.plan_owner_person',
             ])
             ->add('planOwnerDeputyPersons', EntityType::class, [
@@ -77,7 +75,6 @@ class BusinessContinuityPlanType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'bc_plans.help.plan_owner_deputies',

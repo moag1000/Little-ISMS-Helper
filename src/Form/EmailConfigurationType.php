@@ -32,10 +32,7 @@ class EmailConfigurationType extends AbstractType
                 ],
                 'data' => 'smtp',
                 'required' => true,
-                'attr' => [
-                    'class' => 'form-select',
-                ],
-                'help' => 'setup.email.transport_help',
+                                'help' => 'setup.email.transport_help',
                     'choice_translation_domain' => 'admin',
             ])
             ->add('host', TextType::class, [
@@ -43,7 +40,6 @@ class EmailConfigurationType extends AbstractType
                 'required' => false,
                 'data' => 'localhost',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'smtp.example.com',
                 ],
                 'help' => 'setup.email.host_help',
@@ -53,7 +49,6 @@ class EmailConfigurationType extends AbstractType
                 'required' => false,
                 'data' => 587,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => '587',
                 ],
                 'help' => 'setup.email.port_help',
@@ -67,17 +62,13 @@ class EmailConfigurationType extends AbstractType
                 ],
                 'data' => 'tls',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-select',
-                ],
-                'help' => 'setup.email.encryption_help',
+                                'help' => 'setup.email.encryption_help',
                     'choice_translation_domain' => 'admin',
             ])
             ->add('username', TextType::class, [
                 'label' => 'setup.email.username',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'user@example.com',
                 ],
                 'help' => 'setup.email.username_help',
@@ -86,7 +77,6 @@ class EmailConfigurationType extends AbstractType
                 'label' => 'setup.email.password',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => '••••••••',
                 ],
                 'help' => 'setup.email.password_help',
@@ -95,7 +85,6 @@ class EmailConfigurationType extends AbstractType
                 'label' => 'setup.email.from_address',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'noreply@example.com',
                 ],
                 'help' => 'setup.email.from_address_help',
@@ -105,7 +94,6 @@ class EmailConfigurationType extends AbstractType
                 'required' => false,
                 'data' => 'Little ISMS Helper',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'setup.email.from_name_placeholder',
                 ],
                 'help' => 'setup.email.from_name_help',

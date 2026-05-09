@@ -76,7 +76,6 @@ class ThreatIntelligenceType extends AbstractType
                 ],
                 'required' => true,
                 'choice_translation_domain' => 'threat',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('severity', ChoiceType::class, [
                 'label' => 'field.severity',
@@ -89,7 +88,6 @@ class ThreatIntelligenceType extends AbstractType
                 ],
                 'required' => true,
                 'choice_translation_domain' => 'threat',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('source', TextType::class, [
                 'label' => 'field.source',
@@ -118,7 +116,6 @@ class ThreatIntelligenceType extends AbstractType
                 ],
                 'required' => true,
                 'choice_translation_domain' => 'threat',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('detectionDate', DateType::class, [
                 'label' => 'field.detection_date',
@@ -173,7 +170,6 @@ class ThreatIntelligenceType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'help.affected_assets',
@@ -185,7 +181,6 @@ class ThreatIntelligenceType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'placeholder.assigned_to_user',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'help.assigned_to_user',
             ])
             ->add('assignedPerson', EntityType::class, [
@@ -194,7 +189,6 @@ class ThreatIntelligenceType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'placeholder.assigned_person',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'help.assigned_person',
             ])
             ->add('assignedDeputyPersons', EntityType::class, [
@@ -205,7 +199,6 @@ class ThreatIntelligenceType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'help.assigned_deputy_persons',

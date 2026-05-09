@@ -42,10 +42,7 @@ class RiskQuickType extends AbstractType
                 'placeholder' => 'risk.placeholder.category',
                 'required' => true,
                 'choice_translation_domain' => 'risk',
-                'attr' => [
-                    'class' => 'form-select',
-                ],
-            ])
+                            ])
             ->add('description', TextareaType::class, [
                 'label' => 'risk.field.description',
                 'required' => true,
@@ -77,10 +74,7 @@ class RiskQuickType extends AbstractType
                 'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
                 'placeholder' => 'risk.placeholder.risk_owner',
                 'required' => true,
-                'attr' => [
-                    'class' => 'form-select',
-                ],
-            ])
+                            ])
         ;
     }
 
