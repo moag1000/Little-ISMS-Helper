@@ -1,0 +1,144 @@
+{#
+ # Aurora v4 Cyber-Field Macro — hand-rolled input wrapper
+ #
+ # Renders the same .fa-cyber-input frame (with 4-corner tick-marks +
+ # focus-glow) that Symfony Form-Theme `fa_cyber_input.html.twig` produces
+ # automatically for FormType-rendered fields. Use this macro for raw
+ # `<input>` / `<textarea>` / `<select>` markup in templates that bypass
+ # the Symfony form system (e.g. filter-bars, wizard-steps, GET-search).
+ #
+ # Macros:
+ #   1. text(name, props)     — single-line input
+ #   2. textarea(name, props) — multi-line textarea
+ #   3. select(name, options, props) — collapsed select (single-choice dropdown)
+ #   4. wrapper()              — bare frame block (slot via {% call %})
+ #
+ # Common props:
+ #   - id          : DOM-id (auto = 'field-' ~ name)
+ #   - label       : visible label string (already translated)
+ #   - help        : help-text under the frame
+ #   - placeholder : placeholder string
+ #   - value       : current value (text/textarea)
+ #   - required    : bool
+ #   - disabled    : bool
+ #   - error       : optional error message string (renders below frame)
+ #   - type        : input-type (default 'text'; e.g. 'email', 'url', 'number', 'date')
+ #   - rows        : textarea rows (default 4)
+ #   - extra_class : additional class on .fa-cyber-input__field
+ #   - extra_attrs : dict of additional attrs on the input/textarea/select
+ #
+ # Usage:
+ #   {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+ #   {{ _fa_cyber.text('finding_reference', {
+ #       label: 'Finding-Reference'|trans,
+ #       value: finding_default|default(''),
+ #       help: 'Bezug zum Audit-Finding'|trans,
+ #       placeholder: 'AF-2026-001',
+ #       max: 100
+ #   }) }}
+ #
+ # Wrapper-Slot variant (custom widget inside frame):
+ #   {% call _fa_cyber.wrapper({label: 'Custom'}) %}
+ #     <div class="my-custom-widget">...</div>
+ #   {% endcall %}
+ #}
+
+{% macro _frame_open(props) %}
+    {%- set wrapper_classes = ['fa-cyber-input'] -%}
+    {%- if props.error|default('') %}{% set wrapper_classes = wrapper_classes|merge(['has-error']) %}{% endif -%}
+    {%- if props.disabled|default(false) %}{% set wrapper_classes = wrapper_classes|merge(['is-disabled']) %}{% endif -%}
+    <div class="{{ wrapper_classes|join(' ') }}">
+        {%- if props.label is defined and props.label %}
+            <div class="fa-cyber-input__header">
+                <label class="fa-cyber-input__label" for="{{ props.id|default('field-' ~ (props.name|default(''))) }}">
+                    {{- props.label -}}
+                    {%- if props.required|default(false) %} <span class="fa-cyber-input__req" aria-hidden="true">*</span>{% endif -%}
+                </label>
+            </div>
+        {%- endif %}
+        <div class="fa-cyber-input__frame">
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--tl" aria-hidden="true"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--tr" aria-hidden="true"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--bl" aria-hidden="true"></span>
+            <span class="fa-cyber-input__tick fa-cyber-input__tick--br" aria-hidden="true"></span>
+{% endmacro %}
+
+{% macro _frame_close(props) %}
+        </div>
+        {%- if props.help is defined and props.help %}
+            <small id="{{ props.id|default('field-' ~ (props.name|default(''))) }}_help" class="fa-cyber-input__hint">
+                {{- props.help -}}
+            </small>
+        {%- endif %}
+        {%- if props.error|default('') %}
+            <ul class="fa-cyber-input__errors"><li>{{ props.error }}</li></ul>
+        {%- endif %}
+    </div>
+{% endmacro %}
+
+{% macro text(name, props) %}
+    {%- import _self as _self -%}
+    {%- set props = props|merge({name: name}) -%}
+    {{ _self._frame_open(props) }}
+            <input
+                type="{{ props.type|default('text') }}"
+                id="{{ props.id|default('field-' ~ name) }}"
+                name="{{ name }}"
+                class="fa-cyber-input__field {{ props.extra_class|default('') }}"
+                value="{{ props.value|default('') }}"
+                {% if props.placeholder is defined %}placeholder="{{ props.placeholder }}"{% endif %}
+                {% if props.required|default(false) %}required{% endif %}
+                {% if props.disabled|default(false) %}disabled{% endif %}
+                {% if props.max is defined %}maxlength="{{ props.max }}"{% endif %}
+                {% if props.min is defined %}minlength="{{ props.min }}"{% endif %}
+                {% if props.pattern is defined %}pattern="{{ props.pattern }}"{% endif %}
+                {% if props.help is defined and props.help %}aria-describedby="{{ props.id|default('field-' ~ name) }}_help"{% endif %}
+                {%- for k, v in props.extra_attrs|default({}) %} {{ k }}="{{ v }}"{% endfor -%}
+            >
+    {{ _self._frame_close(props) }}
+{% endmacro %}
+
+{% macro textarea(name, props) %}
+    {%- import _self as _self -%}
+    {%- set props = props|merge({name: name}) -%}
+    {{ _self._frame_open(props) }}
+            <textarea
+                id="{{ props.id|default('field-' ~ name) }}"
+                name="{{ name }}"
+                rows="{{ props.rows|default(4) }}"
+                class="fa-cyber-input__field {{ props.extra_class|default('') }}"
+                {% if props.placeholder is defined %}placeholder="{{ props.placeholder }}"{% endif %}
+                {% if props.required|default(false) %}required{% endif %}
+                {% if props.disabled|default(false) %}disabled{% endif %}
+                {% if props.max is defined %}maxlength="{{ props.max }}"{% endif %}
+                {% if props.help is defined and props.help %}aria-describedby="{{ props.id|default('field-' ~ name) }}_help"{% endif %}
+                {%- for k, v in props.extra_attrs|default({}) %} {{ k }}="{{ v }}"{% endfor -%}
+            >{{ props.value|default('') }}</textarea>
+    {{ _self._frame_close(props) }}
+{% endmacro %}
+
+{% macro select(name, options, props) %}
+    {%- import _self as _self -%}
+    {%- set props = props|merge({name: name}) -%}
+    {{ _self._frame_open(props) }}
+            <select
+                id="{{ props.id|default('field-' ~ name) }}"
+                name="{{ name }}"
+                class="fa-cyber-input__field {{ props.extra_class|default('') }}"
+                {% if props.required|default(false) %}required{% endif %}
+                {% if props.disabled|default(false) %}disabled{% endif %}
+                {%- for k, v in props.extra_attrs|default({}) %} {{ k }}="{{ v }}"{% endfor -%}
+            >
+                {% if props.placeholder is defined %}<option value="">{{ props.placeholder }}</option>{% endif %}
+                {% for opt in options %}
+                    {% set optValue = opt.value is defined ? opt.value : opt %}
+                    {% set optLabel = opt.label is defined ? opt.label : opt %}
+                    <option value="{{ optValue }}"{% if props.value|default('') == optValue %} selected{% endif %}>{{ optLabel }}</option>
+                {% endfor %}
+            </select>
+    {{ _self._frame_close(props) }}
+{% endmacro %}
+
+{# wrapper-slot variant intentionally omitted: caller() is not available in
+   Twig macro-context. For custom widgets inside the frame, render the frame
+   manually using the same _frame_open/_frame_close markup. #}
