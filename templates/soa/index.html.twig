@@ -2,6 +2,7 @@
 {% trans_default_domain 'soa' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block title %}{{ 'soa.page.title'|trans({}, 'soa') }} - Little ISMS Helper{% endblock %}
 
@@ -169,9 +170,11 @@
             <form method="post" action="{{ path('app_soa_bulk_applicability') }}" class="row g-2 align-items-end">
                 <input type="hidden" name="_token" value="{{ csrf_token('soa_bulk_applicability') }}">
                 <div class="col-md-4">
-                    <label for="bulk-control-ids" class="form-label small">{{ 'control.bulk.ids'|trans({}, 'control') }}</label>
-                    <input type="text" id="bulk-control-ids" name="control_ids_raw" class="form-control form-control-sm fa-cyber-input__field"
-                           placeholder="12, 34, 56">
+                    {{ _fa_cyber.text('control_ids_raw', {
+                        id: 'bulk-control-ids',
+                        label: 'control.bulk.ids'|trans({}, 'control'),
+                        placeholder: '12, 34, 56'
+                    }) }}
                 </div>
                 <div class="col-md-2">
                     <label for="bulk-applicable" class="form-label small">{{ 'control.bulk.status'|trans({}, 'control') }}</label>
@@ -181,9 +184,11 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label for="bulk-reason" class="form-label small">{{ 'control.bulk.reason'|trans({}, 'control') }}</label>
-                    <input type="text" id="bulk-reason" name="reason" class="form-control form-control-sm fa-cyber-input__field"
-                           placeholder="{{ 'control.bulk.reason_placeholder'|trans({}, 'control') }}">
+                    {{ _fa_cyber.text('reason', {
+                        id: 'bulk-reason',
+                        label: 'control.bulk.reason'|trans({}, 'control'),
+                        placeholder: 'control.bulk.reason_placeholder'|trans({}, 'control')
+                    }) }}
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm w-100"

@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block title %}{{ 'compliance.framework.migrate.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -44,8 +45,11 @@
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label">{{ 'compliance.framework.migrate.field.old'|trans({}, 'compliance') }}</label>
-                    <input type="text" class="form-control fa-cyber-input__field" value="{{ old_framework.code }} — {{ old_framework.name }} ({{ old_framework.version|default('—') }})" disabled>
+                    {{ _fa_cyber.text('old_framework_display', {
+                        label: 'compliance.framework.migrate.field.old'|trans({}, 'compliance'),
+                        value: old_framework.code ~ ' — ' ~ old_framework.name ~ ' (' ~ old_framework.version|default('—') ~ ')',
+                        disabled: true
+                    }) }}
                 </div>
                 <div class="col-md-6">
                     <label for="target-framework-id" class="form-label">

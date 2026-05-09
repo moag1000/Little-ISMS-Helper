@@ -2,6 +2,7 @@
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block title %}{{ 'privacy.data_breach.show.page_title'|trans({'%ref%': breach.referenceNumber}, 'privacy') }}{% endblock %}
 
@@ -410,8 +411,10 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">{{ 'privacy.data_breach.field.reference'|trans({}, 'privacy') }} (optional)</label>
-                        <input type="text" name="authority_reference" class="form-control fa-cyber-input__field" placeholder="{{ 'common.placeholder.case_number_from_authority'|trans({}, 'messages') }}">
+                        {{ _fa_cyber.text('authority_reference', {
+                            label: 'privacy.data_breach.field.reference'|trans({}, 'privacy') ~ ' (optional)',
+                            placeholder: 'common.placeholder.case_number_from_authority'|trans({}, 'messages')
+                        }) }}
                     </div>
                     {% if breach.hoursUntilAuthorityDeadline < 0 %}
                         <div class="mb-3">
@@ -453,8 +456,12 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">{{ 'privacy.data_breach.field.subjects_notified'|trans({}, 'privacy') }} *</label>
-                        <input type="number" name="subjects_notified" class="form-control fa-cyber-input__field" min="1" required>
+                        {{ _fa_cyber.text('subjects_notified', {
+                            type: 'number',
+                            label: 'privacy.data_breach.field.subjects_notified'|trans({}, 'privacy'),
+                            required: true,
+                            extra_attrs: {'min': '1'}
+                        }) }}
                     </div>
                 </div>
                 <div class="modal-footer">

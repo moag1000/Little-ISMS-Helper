@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block title %}{{ 'mapping_review.title'|trans({}, 'compliance') }} #{{ mapping.id }}{% endblock %}
 
@@ -270,9 +271,15 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="manualPercentage">{{ 'mapping_review.field.manual_percentage'|trans({}, 'compliance') }}</label>
-                            <input type="number" class="form-control fa-cyber-input__field" id="manualPercentage" min="0" max="150" value="{{ mapping.manualPercentage }}" placeholder="Optional">
-                            <small class="form-text text-muted">{{ 'mapping_review.field.manual_percentage_help'|trans({}, 'compliance') }}</small>
+                            {{ _fa_cyber.text('manualPercentage', {
+                                id: 'manualPercentage',
+                                type: 'number',
+                                label: 'mapping_review.field.manual_percentage'|trans({}, 'compliance'),
+                                value: mapping.manualPercentage,
+                                placeholder: 'Optional',
+                                help: 'mapping_review.field.manual_percentage_help'|trans({}, 'compliance'),
+                                extra_attrs: {'min': '0', 'max': '150'}
+                            }) }}
                         </div>
                     </div>
                     <div class="col-md-4">

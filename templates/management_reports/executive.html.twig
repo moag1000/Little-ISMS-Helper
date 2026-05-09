@@ -5,6 +5,7 @@
 
 {% block body %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -31,12 +32,20 @@
     {# Date Range Filter #}
     <form class="d-flex gap-2 mb-3 align-items-end" method="get">
         <div>
-            <label for="filter-from" class="form-label small mb-0">{{ 'management_reports.filter.from'|trans({}, 'management_reports') }}</label>
-            <input type="date" id="filter-from" name="from" value="{{ app.request.query.get('from') }}" class="form-control form-control-sm fa-cyber-input__field">
+            {{ _fa_cyber.text('from', {
+                id: 'filter-from',
+                type: 'date',
+                label: 'management_reports.filter.from'|trans({}, 'management_reports'),
+                value: app.request.query.get('from')
+            }) }}
         </div>
         <div>
-            <label for="filter-to" class="form-label small mb-0">{{ 'management_reports.filter.to'|trans({}, 'management_reports') }}</label>
-            <input type="date" id="filter-to" name="to" value="{{ app.request.query.get('to') }}" class="form-control form-control-sm fa-cyber-input__field">
+            {{ _fa_cyber.text('to', {
+                id: 'filter-to',
+                type: 'date',
+                label: 'management_reports.filter.to'|trans({}, 'management_reports'),
+                value: app.request.query.get('to')
+            }) }}
         </div>
         <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
             <i class="fa-icon fa-icon--ui-funnel" aria-hidden="true"></i> {{ 'management_reports.filter.apply'|trans({}, 'management_reports') }}

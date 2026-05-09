@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block title %}{{ 'workflow.builder.title'|trans({}, 'workflows') }} - {{ workflow.name }}{% endblock %}
 
@@ -118,8 +119,12 @@
                         <form data-action="submit->workflow-builder#addStep" data-workflow-builder-target="stepForm">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="stepName" class="form-label">{{ 'workflow.step.name'|trans({}, 'workflows') }} *</label>
-                                    <input type="text" class="form-control fa-cyber-input__field" id="stepName" name="name" required maxlength="255">
+                                    {{ _fa_cyber.text('name', {
+                                        id: 'stepName',
+                                        label: 'workflow.step.name'|trans({}, 'workflows'),
+                                        required: true,
+                                        max: 255
+                                    }) }}
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="stepType" class="form-label">{{ 'workflow.step.type'|trans({}, 'workflows') }} *</label>
@@ -150,9 +155,13 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="daysToComplete" class="form-label">{{ 'workflow.step.days_to_complete'|trans({}, 'workflows') }}</label>
-                                    <input type="number" class="form-control fa-cyber-input__field" id="daysToComplete" name="daysToComplete" min="1" max="365">
-                                    <div class="form-text">{{ 'workflow.step.days_help'|trans({}, 'workflows') }}</div>
+                                    {{ _fa_cyber.text('daysToComplete', {
+                                        id: 'daysToComplete',
+                                        type: 'number',
+                                        label: 'workflow.step.days_to_complete'|trans({}, 'workflows'),
+                                        help: 'workflow.step.days_help'|trans({}, 'workflows'),
+                                        extra_attrs: {'min': '1', 'max': '365'}
+                                    }) }}
                                 </div>
                             </div>
 

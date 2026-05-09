@@ -1,5 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block admin_title %}{{ 'data_management.backup.title'|trans({}, 'admin') }}{% endblock %}
 {% block admin_subtitle %}
@@ -240,14 +241,13 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="adminPassword" class="form-label">
-                                <strong>{{ 'data_management.backup.restore.admin_password'|trans({}, 'admin') }}</strong>
-                            </label>
-                            <input type="password" class="form-control fa-cyber-input__field" id="adminPassword" name="admin_password" placeholder="{{ 'data_management.backup.restore.admin_password_placeholder'|trans({}, 'admin') }}">
-                            <div class="form-text">
-                                <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i>
-                                {{ 'data_management.backup.restore.admin_password_help'|trans({}, 'admin') }}
-                            </div>
+                            {{ _fa_cyber.text('admin_password', {
+                                id: 'adminPassword',
+                                type: 'password',
+                                label: 'data_management.backup.restore.admin_password'|trans({}, 'admin'),
+                                placeholder: 'data_management.backup.restore.admin_password_placeholder'|trans({}, 'admin'),
+                                help: 'data_management.backup.restore.admin_password_help'|trans({}, 'admin')
+                            }) }}
                         </div>
 
                         <div class="mb-3">

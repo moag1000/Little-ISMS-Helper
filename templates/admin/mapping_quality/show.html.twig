@@ -2,6 +2,7 @@
 {% trans_default_domain 'admin' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block title %}{{ 'admin.mapping_quality.detail_title'|trans({}, 'admin') }}{% endblock %}
 
@@ -130,7 +131,11 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('mapping_lifecycle_' ~ mapping.id) }}">
                                 <input type="hidden" name="to" value="{{ state }}">
                                 {% if state in ['approved', 'published', 'deprecated'] %}
-                                    <input type="text" name="reason" class="form-control form-control-sm mb-1 fa-cyber-input__field" placeholder="{{ 'admin.mapping_quality.transition_reason_placeholder'|trans({}, 'admin') }}">
+                                    <div class="mb-1">
+                                        {{ _fa_cyber.text('reason', {
+                                            placeholder: 'admin.mapping_quality.transition_reason_placeholder'|trans({}, 'admin')
+                                        }) }}
+                                    </div>
                                 {% endif %}
                                 {% set btnClass = state == 'published' ? 'success' : (state == 'deprecated' ? 'danger' : (state == 'approved' ? 'primary' : 'secondary')) %}
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost -{{ btnClass }} w-100">

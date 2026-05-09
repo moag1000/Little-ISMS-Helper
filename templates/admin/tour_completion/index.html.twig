@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block admin_title %}{{ 'admin.tour_completion.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -53,9 +54,11 @@
             <form method="get">
                 <div class="row g-2">
                     <div class="col-md-5">
-                        <input type="search" name="q" class="form-control form-control-sm fa-cyber-input__field"
-                               placeholder="{{ 'admin.tour_completion.filter.search_placeholder'|trans({}, 'admin') }}"
-                               value="{{ search }}">
+                        {{ _fa_cyber.text('q', {
+                            type: 'search',
+                            value: search,
+                            placeholder: 'admin.tour_completion.filter.search_placeholder'|trans({}, 'admin')
+                        }) }}
                     </div>
                     <div class="col-md-3">
                         <select name="role" class="form-select form-select-sm fa-cyber-input__field">

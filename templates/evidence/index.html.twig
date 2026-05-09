@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 {% trans_default_domain 'evidence' %}
 
 {% block title %}{{ 'evidence.title'|trans({}, 'evidence') }} - Little ISMS Helper{% endblock %}
@@ -84,8 +85,13 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label for="entity_id" class="form-label">{{ 'evidence.field.entity_id'|trans({}, 'evidence') }}</label>
-                    <input type="number" name="entity_id" id="entity_id" class="form-control fa-cyber-input__field" min="1" required>
+                    {{ _fa_cyber.text('entity_id', {
+                        id: 'entity_id',
+                        type: 'number',
+                        label: 'evidence.field.entity_id'|trans({}, 'evidence'),
+                        required: true,
+                        extra_attrs: {'min': '1'}
+                    }) }}
                 </div>
                 <div class="col-md-5">
                     <label for="evidence_file" class="form-label">{{ 'evidence.field.file'|trans({}, 'evidence') }}</label>

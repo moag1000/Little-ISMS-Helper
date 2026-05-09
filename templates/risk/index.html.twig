@@ -2,6 +2,7 @@
 {% trans_default_domain 'risk' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block title %}{{ 'risk.modern.header.title'|trans({}, 'risk')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -233,10 +234,12 @@
             </select>
         </div>
         <div class="col-md-3">
-            <label for="filter-owner" class="form-label">{{ 'risk.filter.owner_label'|trans({}, 'risk') }}</label>
-            <input type="text" class="form-control fa-cyber-input__field" id="filter-owner" name="owner"
-                   value="{{ app.request.query.get('owner') }}"
-                   placeholder="{{ 'risk.filter.owner_placeholder'|trans({}, 'risk') }}">
+            {{ _fa_cyber.text('owner', {
+                id: 'filter-owner',
+                label: 'risk.filter.owner_label'|trans({}, 'risk'),
+                value: app.request.query.get('owner'),
+                placeholder: 'risk.filter.owner_placeholder'|trans({}, 'risk')
+            }) }}
         </div>
     {% endblock %}
 {% endembed %}
