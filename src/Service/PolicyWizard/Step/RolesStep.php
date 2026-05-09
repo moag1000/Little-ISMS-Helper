@@ -144,6 +144,9 @@ final class RolesStep extends AbstractStep
         // EXCEPT for single-user-tenants (Solo-Berater, GF=CISO, Initial-
         // Setup): there is no second User who could approve. Block only
         // when ≥ 2 active approver-eligible Users exist for the tenant.
+        // Audit-trail of single-user self-approval lands at approval time
+        // via PolicySectionApprovalService; here the wizard just allows
+        // the input through without a UI error.
         $authorId = $run->getStartedByUser()?->getId();
         if ($authorId !== null && in_array($authorId, $normalisedChain, true)) {
             $eligibleApproverCount = $this->userRepository !== null
@@ -151,12 +154,6 @@ final class RolesStep extends AbstractStep
                 : 2; // Defensive: legacy DI without userRepository → strict block
             if ($eligibleApproverCount >= 2) {
                 $errors['approval_chain'][] = 'policy_wizard.error.self_approval_forbidden';
-            } else {
-                // Single-user tenant — surface the audit hint via warnings
-                // slot so the Review-step can render an Aurora warn-card.
-                // Persists into normalised input so consumers know to log
-                // an audit-trail entry "policy_wizard.self_approval_used".
-                $errors['_warnings']['approval_chain'][] = 'policy_wizard.warning.self_approval_single_user';
             }
         }
 
