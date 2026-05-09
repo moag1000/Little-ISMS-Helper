@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'training' %}
 
 {% block title %}{{ training.title }} - {{ parent() }}{% endblock %}
@@ -13,15 +14,21 @@
         ]
     } %}
 
+    {{ _fa_page_header.render({
+        badge: { icon: 'mortarboard', label: 'nav.training'|trans({}, 'nav') },
+        title: training.title,
+        subtitle: ('training.status.' ~ training.status)|trans({}, 'training')
+    }) }}
+
     <div class="row">
         <div class="col-lg-8">
             {# Main Training Information #}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                        <h1 class="mb-0 h2">
-                            <i class="fa-icon fa-icon--training" aria-hidden="true"></i> {{ training.title }}
-                        </h1>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">
+                            <i class="fa-icon fa-icon--training" aria-hidden="true"></i> {{ 'training.section.details'|trans({}, 'training') }}
+                        </h2>
                         <span class="{{ badge_status(training.status) }} fs-6">
                             {{ ('training.status.' ~ training.status)|trans({}, 'training') }}
                         </span>

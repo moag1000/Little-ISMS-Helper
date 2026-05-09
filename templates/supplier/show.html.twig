@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'suppliers' %}
 
 {% block title %}{{ supplier.name }}{% endblock %}
@@ -17,22 +18,25 @@
     {% set hint = alva_hint(supplier) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
-    <div class="page-header">
-        <h1>
-            {{ supplier.name }}
-            {% if isInherited is defined and isInherited %}
-                {% include '_components/_badge.html.twig' with { variant: 'info', class: 'ms-2', icon: 'bi-building', content: 'corporate.inherited'|trans({}, 'messages') } %}
-            {% endif %}
-        </h1>
-        <div class="actions">
-            {% if canEdit is defined and canEdit %}
-                <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'supplier.action.edit'|trans({}, 'suppliers') }}</a>
-            {% else %}
+    {% set _show_actions = [] %}
+    {% if canEdit is defined and canEdit %}
+        {% set _show_actions = _show_actions|merge([{ label: 'supplier.action.edit'|trans({}, 'suppliers'), variant: 'primary', icon: 'pencil', href: path('app_supplier_edit', {id: supplier.id}) }]) %}
+    {% endif %}
+    {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_supplier_index') }]) %}
+    {{ _fa_page_header.render({
+        badge: (isInherited is defined and isInherited) ? { icon: 'building', label: 'corporate.inherited'|trans({}, 'messages') } : { icon: 'truck', label: 'nav.suppliers'|trans({}, 'nav') },
+        title: supplier.name,
+        actions: _show_actions
+    }) }}
+
+    {# Inline disabled-edit + POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
+    {% if (canEdit is defined and not canEdit) or (is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit)) %}
+        <div class="d-flex justify-content-end gap-2 mb-3">
+            {% if canEdit is defined and not canEdit %}
                 <button class="fa-cyber-btn fa-cyber-btn--primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
                     <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i> {{ 'supplier.action.edit'|trans({}, 'suppliers') }}
                 </button>
             {% endif %}
-            <a href="{{ path('app_supplier_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
                 <form method="post" action="{{ path('app_supplier_delete', {id: supplier.id}) }}" class="d-inline"
                       data-controller="ui-actions"
@@ -43,7 +47,7 @@
                 </form>
             {% endif %}
         </div>
-    </div>
+    {% endif %}
 
     {# ── Cross-framework badge bar (WS-3 UX improvement) ─────────────────── #}
     <div class="framework-badge-bar mb-3" aria-label="{{ 'supplier.frameworks.aria_label'|trans({}, 'suppliers') }}">

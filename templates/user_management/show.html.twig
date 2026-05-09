@@ -1,5 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}Benutzer: {{ user.firstName }} {{ user.lastName }}{% endblock %}
 
@@ -13,30 +14,27 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex align-items-center">
-            {% if user.profilePicture %}
-                <img src="{{ asset(user.profilePicture) }}"
-                     alt="{{ user.firstName }} {{ user.lastName }}"
-                     class="rounded-circle me-3 profile-avatar profile-avatar-lg">
-            {% else %}
-                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 profile-avatar profile-avatar-lg">
-                    {{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}
-                </div>
-            {% endif %}
-            <div>
-                <h1>{{ user.firstName }} {{ user.lastName }}</h1>
-                <p class="text-muted mb-0">{{ user.email }}</p>
+    {{ _fa_page_header.render({
+        badge: { icon: 'person-circle', label: 'nav.users'|trans({}, 'nav') },
+        title: user.firstName ~ ' ' ~ user.lastName,
+        subtitle: user.email,
+        actions: [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('user_management_edit', {'id': user.id}) },
+            { label: 'common.back'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('user_management_index') }
+        ]
+    }) }}
+
+    {# Avatar block kept below header as it is a visual identity element, not part of standard page-header pattern #}
+    <div class="d-flex align-items-center mb-4">
+        {% if user.profilePicture %}
+            <img src="{{ asset(user.profilePicture) }}"
+                 alt="{{ user.firstName }} {{ user.lastName }}"
+                 class="rounded-circle me-3 profile-avatar profile-avatar-lg">
+        {% else %}
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 profile-avatar profile-avatar-lg">
+                {{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}
             </div>
-        </div>
-        <div>
-            <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-            </a>
-            <a href="{{ path('user_management_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-            </a>
-        </div>
+        {% endif %}
     </div>
 
     <div class="row">

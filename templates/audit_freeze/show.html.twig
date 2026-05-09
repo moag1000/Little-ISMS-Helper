@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ freeze.freezeName }} · {{ 'audit_freeze.title'|trans({}, 'audit_freeze') }}{% endblock %}
 
@@ -11,42 +12,36 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
-        <div>
-            <h1 class="h2 mb-1">
-                <i class="bi bi-snow text-primary" aria-hidden="true"></i>
-                {{ freeze.freezeName }}
-            </h1>
-            <p class="text-muted mb-0">
-                {{ 'audit_freeze.column.stichtag'|trans({}, 'audit_freeze') }}:
-                <strong>{{ freeze.stichtag|date('Y-m-d') }}</strong>
-                · {{ ('audit_freeze.purpose.' ~ freeze.purpose)|trans({}, 'audit_freeze') }}
-            </p>
+    {% set _show_actions = [] %}
+    {% if freeze.pdfPath %}
+        {% set _show_actions = _show_actions|merge([{ label: 'audit_freeze.action.download_pdf'|trans({}, 'audit_freeze'), variant: 'danger', icon: 'file-earmark-pdf', href: path('app_audit_freeze_download_pdf', {id: freeze.id}) }]) %}
+    {% endif %}
+    {% set _show_actions = _show_actions|merge([
+        { label: 'audit_freeze.action.verify'|trans({}, 'audit_freeze'), variant: 'ghost', icon: 'shield-check', href: path('app_audit_freeze_verify', {id: freeze.id}) }
+    ]) %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'snow', label: freeze.stichtag|date('Y-m-d') },
+        title: freeze.freezeName,
+        subtitle: ('audit_freeze.purpose.' ~ freeze.purpose)|trans({}, 'audit_freeze'),
+        actions: _show_actions
+    }) }}
+
+    {# PDF locale-switch + POST-generate kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
+    {% if freeze.pdfPath %}
+        <div class="d-flex justify-content-end mb-3">
+            {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_audit_freeze_download_pdf', route_params: {id: freeze.id}} only %}
         </div>
-        <div class="d-flex gap-2">
-            {% if freeze.pdfPath %}
-                <div>
-                    <a href="{{ path('app_audit_freeze_download_pdf', {id: freeze.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger">
-                        <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
-                        {{ 'audit_freeze.action.download_pdf'|trans({}, 'audit_freeze') }}
-                    </a>
-                    {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_audit_freeze_download_pdf', route_params: {id: freeze.id}} only %}
-                </div>
-            {% else %}
-                <form method="post" action="{{ path('app_audit_freeze_generate_pdf', {id: freeze.id}) }}" class="d-inline">
-                    <input type="hidden" name="_token" value="{{ csrf_token('audit_freeze_generate_pdf_' ~ freeze.id) }}">
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
-                        {{ 'audit_freeze.action.generate_pdf'|trans({}, 'audit_freeze') }}
-                    </button>
-                </form>
-            {% endif %}
-            <a href="{{ path('app_audit_freeze_verify', {id: freeze.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
-                {{ 'audit_freeze.action.verify'|trans({}, 'audit_freeze') }}
-            </a>
+    {% else %}
+        <div class="d-flex justify-content-end mb-3">
+            <form method="post" action="{{ path('app_audit_freeze_generate_pdf', {id: freeze.id}) }}" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token('audit_freeze_generate_pdf_' ~ freeze.id) }}">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost">
+                    <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
+                    {{ 'audit_freeze.action.generate_pdf'|trans({}, 'audit_freeze') }}
+                </button>
+            </form>
         </div>
-    </div>
+    {% endif %}
 
     {# Integrity badge #}
     <div class="alert {{ verified ? 'alert-success' : 'alert-danger' }}" role="alert">

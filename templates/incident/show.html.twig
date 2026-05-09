@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'incident' %}
 {% import '_macros/workflow.html.twig' as workflow_macros %}
 
@@ -14,14 +15,23 @@
         ]
     } %}
 
-    <div class="page-header">
-        <h1>{{ incident.title }}</h1>
-        <div class="actions">
-            <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'incident.action.edit'|trans({}, 'incident') }}</a>
+    {% set _show_actions = [
+        { label: 'incident.action.edit'|trans({}, 'incident'), variant: 'primary', icon: 'pencil', href: path('app_incident_edit', {id: incident.id}) }
+    ] %}
+    {% if is_nis2_active() and incident.requiresNis2Reporting %}
+        {% set _show_actions = _show_actions|merge([{ label: 'incident.action.download_nis2_report'|trans({}, 'incident'), variant: 'accent', icon: 'file-earmark-pdf', href: path('app_incident_nis2_report', {id: incident.id}), attrs: { 'data-turbo': 'false' } }]) %}
+    {% endif %}
+    {% set _show_actions = _show_actions|merge([{ label: 'incident.action.back_to_list'|trans({}, 'incident'), variant: 'ghost', icon: 'arrow-left', href: path('app_incident_index') }]) %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'exclamation-octagon', label: 'nav.incidents'|trans({}, 'nav') },
+        title: incident.title,
+        actions: _show_actions
+    }) }}
+
+    {# NIS2 MUS-export dropdown + POST-delete kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
+    {% if (is_nis2_active() and incident.requiresNis2Reporting) or is_granted('ROLE_ADMIN') %}
+        <div class="d-flex justify-content-end gap-2 mb-3 flex-wrap">
             {% if is_nis2_active() and incident.requiresNis2Reporting %}
-                <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false" title="{{ 'incident.action.download_nis2_report'|trans({}, 'incident') }}">
-                    <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'incident.action.download_nis2_report'|trans({}, 'incident') }}
-                </a>
                 <div class="btn-group" role="group" aria-label="{{ 'incident.action.mus_export_group'|trans({}, 'incident') }}">
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-turbo="false">
                         <i class="fa-icon fa-icon--asset-cloud" aria-hidden="true"></i> {{ 'incident.action.mus_export'|trans({}, 'incident') }}
@@ -35,7 +45,6 @@
                     </ul>
                 </div>
             {% endif %}
-            <a href="{{ path('app_incident_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'incident.action.back_to_list'|trans({}, 'incident') }}</a>
             {% if is_granted('ROLE_ADMIN') %}
                 <form method="post" action="{{ path('app_incident_delete', {id: incident.id}) }}" class="d-inline"
                       data-controller="ui-actions"
@@ -46,7 +55,7 @@
                 </form>
             {% endif %}
         </div>
-    </div>
+    {% endif %}
 
     {# Workflow Status Section #}
     {% if workflowStatus.has_active_workflow %}

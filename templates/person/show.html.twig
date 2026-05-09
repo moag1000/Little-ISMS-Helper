@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'people' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ person.fullName }} - {{ 'person.title.show'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
 
@@ -12,34 +13,16 @@
             { label: person.fullName }
         ]
     } %}
-</div>
 
-<div class="page-header">
-    <div>
-        <h1>{{ person.fullName }}</h1>
-        <div class="mt-2">
-            {% set typeColors = {
-                'employee': 'success',
-                'contractor': 'info',
-                'visitor': 'warning',
-                'vendor': 'info',
-                'auditor': 'danger',
-                'consultant': 'info'
-            } %}
-            {% include '_components/_badge.html.twig' with { variant: typeColors[person.personType]|default('secondary'), content: ('person.type.' ~ person.personType)|trans({}, 'people') } %}
-            {% if person.badgeId %}
-                <code class="ml-sm">{{ person.badgeId }}</code>
-            {% endif %}
-        </div>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_person_edit', {id: person.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-        </a>
-        <a href="{{ path('app_person_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            ← {{ 'common.back_to_list'|trans({}, 'messages') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'person-badge', label: ('person.type.' ~ person.personType)|trans({}, 'people') },
+        title: person.fullName,
+        subtitle: person.badgeId|default(''),
+        actions: [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_person_edit', {id: person.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_person_index') }
+        ]
+    }) }}
 </div>
 
 {# Person Details #}
