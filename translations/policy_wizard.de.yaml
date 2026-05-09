@@ -276,6 +276,32 @@ policy_wizard:
                 raci_a: 'Accountable — wer trägt die Endverantwortung (genau eine Person).'
                 raci_c: 'Consulted — wer wird vor der Entscheidung konsultiert.'
                 raci_i: 'Informed — wer wird über das Ergebnis informiert.'
+            person_picker:
+                intro:
+                    title: 'Rollen-Inhaber sind Personen, keine User-Accounts'
+                    body: 'CISO/ISB/DPO/BCM-Officer können auch externe Berater ohne System-Login sein — wählen Sie eine Person aus dem Mandanten-Personenstamm. Die Approval-Chain unten benötigt weiterhin Benutzer mit Login (Sign-Off-Aktion).'
+            field:
+                ciso_picker:
+                    placeholder: 'CISO auswählen…'
+                isb_picker:
+                    placeholder: 'ISB auswählen…'
+                dpo_picker:
+                    placeholder: 'DPO auswählen… (extern bevorzugt)'
+                bcm_officer_picker:
+                    placeholder: 'BCM-Officer auswählen…'
+                function_owner_picker:
+                    placeholder: 'Function-Owner auswählen…'
+                approval_chain:
+                    label: 'Approval-Chain (Benutzer mit Login)'
+                    placeholder: 'Genehmiger auswählen…'
+                    tooltip: 'Approval erfordert ein authentifiziertes Sign-Off — daher Benutzer (mit Login), keine reine Person-Rolle.'
+                    help: 'Mehrfachauswahl: jeder Benutzer wird in der angegebenen Reihenfolge zur Freigabe aufgefordert. Der Wizard-Starter darf nicht in der Liste stehen (Selbstgenehmigungs-Verbot).'
+                    empty_state: 'Keine Approver-Benutzer im Mandanten gefunden. Bitte vergeben Sie zunächst die Rollen ROLE_GROUP_CISO, ROLE_DPO oder ROLE_ADMIN an mindestens eine Person mit Login.'
+            empty_state:
+                no_persons:
+                    title: 'Keine Personen im Mandanten'
+                    body: 'Bevor Rollen vergeben werden können, muss mindestens eine Person im Mandanten-Personenstamm existieren.'
+                    cta_label: 'Person anlegen'
         risk_classification:
             title: 'Risikoklassifizierung'
             subtitle: 'Risiko-Appetit (1-5) für die Tenant-Organisation.'
@@ -654,6 +680,17 @@ policy_wizard:
     error:
         review_interval_max: 'Das Review-Intervall darf 24 Monate nicht überschreiten (ISO 27001 + Audit-Defang).'
         approver_must_be_user_id: 'Approver muss eine konkrete Person (User-ID) sein, kein Rollen-String.'
+        approver_must_have_login: 'Approver muss ein Benutzer mit System-Login sein. Bitte zuerst eine Person mit Login verknüpfen.'
+        roles_invalid: 'Das Rollen-Mapping ist ungültig.'
+        role_required:
+            ciso: 'CISO ist eine Pflicht-Rolle.'
+            dpo: 'Datenschutzbeauftragte/r ist eine Pflicht-Rolle.'
+            bcm_officer: 'BCM-Officer ist Pflicht, weil BCM im Geltungsbereich ist.'
+        function_owners_invalid: 'Die Function-Owner-Zuweisungen sind ungültig.'
+        function_slot_unknown: 'Unbekannter Function-Owner-Slot.'
+        approval_chain_invalid: 'Die Approval-Chain ist ungültig.'
+        approval_chain_required: 'Mindestens ein Approver in der Approval-Chain ist erforderlich.'
+        self_approval_forbidden: 'Selbst-Genehmigung ist verboten — der Wizard-Starter darf nicht in der eigenen Approval-Chain stehen.'
         crypto_allowlist_required: 'Mindestens ein erlaubter Algorithmus muss ausgewählt sein.'
         crypto_allowlist_invalid: 'Die Krypto-Allow-List ist ungültig.'
         backup_rpo_required: 'Bitte einen Backup-RPO in Stunden angeben.'

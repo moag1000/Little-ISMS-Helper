@@ -55,6 +55,25 @@ class Document
     #[ORM\JoinColumn(name: 'uploaded_by_id', nullable: true, onDelete: 'SET NULL')]
     private ?User $uploadedBy = null;
 
+    /**
+     * Person-Rollout Phase A — governance-side document owner.
+     *
+     * `uploadedBy` (User) records who uploaded the file (audit-trail of
+     * the system action). `ownerPerson` (Person) records who is
+     * **accountable** for the document long-term — typically a CISO,
+     * ISB, DPO or function-owner who may or may not have a system
+     * login. External governance owners are common in DACH-Mittelstand
+     * (outsourced DPO, fractional CISO).
+     *
+     * Backfill on initial migration copies `uploadedBy.linkedPerson.id`
+     * here when the uploader already has a Person profile. Otherwise
+     * the column is NULL and the owner is set explicitly through the
+     * document edit form.
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'owner_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Person $ownerPerson = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeInterface $uploadedAt = null;
 
@@ -207,6 +226,20 @@ class Document
     public function setEntityId(?int $entityId): static { $this->entityId = $entityId; return $this; }
     public function getUploadedBy(): ?User { return $this->uploadedBy; }
     public function setUploadedBy(?User $user): static { $this->uploadedBy = $user; return $this; }
+
+    public function getOwnerPerson(): ?Person { return $this->ownerPerson; }
+    public function setOwnerPerson(?Person $ownerPerson): static { $this->ownerPerson = $ownerPerson; return $this; }
+
+    /**
+     * Effective owner display: prefer `ownerPerson.fullName`, fall back to
+     * `uploadedBy.fullName`. Returns null when neither is set (legacy
+     * documents pre-Person-Rollout that never had an uploader either).
+     */
+    public function getEffectiveOwnerName(): ?string
+    {
+        return $this->ownerPerson?->getFullName()
+            ?? $this->uploadedBy?->getFullName();
+    }
     public function getUploadedAt(): ?DateTimeInterface { return $this->uploadedAt; }
     public function setUploadedAt(DateTimeInterface $uploadedAt): static { $this->uploadedAt = $uploadedAt; return $this; }
     public function getUpdatedAt(): ?DateTimeInterface { return $this->updatedAt; }

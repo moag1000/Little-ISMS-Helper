@@ -1,8 +1,19 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_person_picker.html.twig' as _fa_person_picker %}
+
 {% set roles_default = defaults.roles|default({}) %}
 {% set function_owners_default = defaults.function_owners|default({}) %}
 {% set approval_chain_default = defaults.approval_chain|default([]) %}
+
+{% set role_person_choices = {
+    'ciso': ciso_person_choices|default([]),
+    'isb': isb_person_choices|default([]),
+    'dpo': dpo_person_choices|default([]),
+    'bcm_officer': bcm_officer_person_choices|default([])
+} %}
+{% set function_owner_choices = function_owner_person_choices|default([]) %}
+{% set approver_user_pool = approval_chain_user_choices|default([]) %}
 
 {# Junior-ISB-friendly help-card. Plain-language framing of which
  # roles are mandatory in which scope.
@@ -17,6 +28,22 @@
         <div class="fa-alert__title">{{ 'policy_wizard.step.roles.help.title'|trans }}</div>
         <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.roles.help.body'|trans }}</p>
         <p class="mb-0 small fst-italic text-muted">{{ 'policy_wizard.step.roles.help.example'|trans }}</p>
+    {% endblock %}
+{% endembed %}
+
+{# Person-Rollout (2026-05-08): role-holders are Persons, not Users.
+ # External CISO/DPO/BCM-Officer are common in the DACH-Mittelstand;
+ # forcing a system login created dummy users + audit-trail noise.
+ # Approval-chain at the bottom remains User (login required for sign-off). #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'bi-people',
+    class: 'mb-3 py-2 small'
+} } %}
+    {% block alert_body %}
+        {% trans_default_domain 'policy_wizard' %}
+        <div class="fa-alert__title">{{ 'policy_wizard.step.roles.person_picker.intro.title'|trans }}</div>
+        <p class="fa-alert__message mb-0 small">{{ 'policy_wizard.step.roles.person_picker.intro.body'|trans }}</p>
     {% endblock %}
 {% endembed %}
 
@@ -87,13 +114,15 @@
                    title="{{ ('policy_wizard.step.roles.tooltip.' ~ role_key)|trans }}"
                    aria-label="{{ ('policy_wizard.step.roles.tooltip.' ~ role_key)|trans }}"></i>
             </label>
-            <input type="number"
-                   class="form-control fa-cyber-input__field"
-                   id="role-{{ role_key }}"
-                   name="roles[{{ role_key }}]"
-                   min="1"
-                   step="1"
-                   value="{{ roles_default[role_key]|default('') }}">
+            {{ _fa_person_picker.render({
+                id: 'role-' ~ role_key,
+                name: 'roles[' ~ role_key ~ ']',
+                choices: role_person_choices[role_key]|default([]),
+                selectedId: roles_default[role_key]|default(null),
+                placeholder: ('policy_wizard.step.roles.field.' ~ role_key ~ '_picker.placeholder')|trans,
+                required: (role_key in ['ciso', 'dpo']),
+                showInternalExternalBadge: true
+            }) }}
         </div>
     {% endfor %}
 
@@ -131,26 +160,47 @@
                     <label class="form-label small text-muted" for="fn-{{ fn_key }}">
                         {{ fn_key|replace({'_': ' '})|capitalize }}
                     </label>
-                    <input type="number"
-                           class="form-control fa-cyber-input__field"
-                           id="fn-{{ fn_key }}"
-                           name="function_owners[{{ fn_key }}]"
-                           min="0"
-                           step="1"
-                           value="{{ function_owners_default[fn_key]|default('') }}">
+                    {{ _fa_person_picker.render({
+                        id: 'fn-' ~ fn_key,
+                        name: 'function_owners[' ~ fn_key ~ ']',
+                        choices: function_owner_choices,
+                        selectedId: function_owners_default[fn_key]|default(null),
+                        placeholder: 'policy_wizard.step.roles.field.function_owner_picker.placeholder'|trans,
+                        required: false,
+                        showInternalExternalBadge: true
+                    }) }}
                 </div>
             {% endfor %}
         </div>
     </div>
 
-    <div class="col-12">
-        <label class="form-label" for="approval-chain">Approval chain (User-IDs, comma-separated)</label>
-        <input type="text"
-               class="form-control fa-cyber-input__field"
-               id="approval-chain-csv"
-               value="{{ approval_chain_default|join(',') }}">
-        {% for uid in approval_chain_default %}
-            <input type="hidden" name="approval_chain[]" value="{{ uid }}">
-        {% endfor %}
+    <div class="col-12 mt-3">
+        <label class="form-label" for="approval-chain">
+            {{ 'policy_wizard.step.roles.field.approval_chain.label'|trans }}
+            <i class="bi bi-info-circle text-muted ms-1"
+               data-bs-toggle="tooltip"
+               data-bs-placement="right"
+               title="{{ 'policy_wizard.step.roles.field.approval_chain.tooltip'|trans }}"
+               aria-label="{{ 'policy_wizard.step.roles.field.approval_chain.tooltip'|trans }}"></i>
+        </label>
+        <select class="form-select fa-cyber-input__field"
+                data-controller="tom-select"
+                data-tom-select-placeholder-value="{{ 'policy_wizard.step.roles.field.approval_chain.placeholder'|trans }}"
+                id="approval-chain"
+                name="approval_chain[]"
+                multiple>
+            {% for approver in approver_user_pool %}
+                <option value="{{ approver.id }}"{% if approver.id in approval_chain_default %} selected{% endif %}>
+                    {{ approver.fullName }}{% if approver.email %} &lt;{{ approver.email }}&gt;{% endif %}
+                </option>
+            {% endfor %}
+        </select>
+        <small class="text-muted d-block mt-1">{{ 'policy_wizard.step.roles.field.approval_chain.help'|trans }}</small>
+        {% if approver_user_pool|length == 0 %}
+            <div class="alert alert-warning border-0 mt-2 small">
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                {{ 'policy_wizard.step.roles.field.approval_chain.empty_state'|trans }}
+            </div>
+        {% endif %}
     </div>
 </div>

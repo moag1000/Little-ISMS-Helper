@@ -274,6 +274,32 @@ policy_wizard:
                 raci_a: 'Accountable — who carries final accountability (exactly one person).'
                 raci_c: 'Consulted — who is consulted before the decision.'
                 raci_i: 'Informed — who is notified of the result.'
+            person_picker:
+                intro:
+                    title: 'Role-holders are Persons, not user accounts'
+                    body: 'CISO/ISO/DPO/BCM-Officer can be external advisors without a system login — pick a Person from the tenant roster. The approval chain at the bottom still requires Users with login (sign-off action).'
+            field:
+                ciso_picker:
+                    placeholder: 'Select CISO…'
+                isb_picker:
+                    placeholder: 'Select ISO…'
+                dpo_picker:
+                    placeholder: 'Select DPO… (external preferred)'
+                bcm_officer_picker:
+                    placeholder: 'Select BCM Officer…'
+                function_owner_picker:
+                    placeholder: 'Select function owner…'
+                approval_chain:
+                    label: 'Approval chain (Users with login)'
+                    placeholder: 'Pick approvers…'
+                    tooltip: 'Approval requires an authenticated sign-off — therefore Users (with login), not bare Person roles.'
+                    help: 'Multi-select: each user is asked to approve in the order shown. The wizard starter must NOT be in the list (self-approval forbidden).'
+                    empty_state: 'No approver users found in this tenant. Please grant ROLE_GROUP_CISO, ROLE_DPO or ROLE_ADMIN to at least one user with login.'
+            empty_state:
+                no_persons:
+                    title: 'No persons in tenant'
+                    body: 'At least one Person must exist in the tenant roster before roles can be assigned.'
+                    cta_label: 'Create a Person'
         risk_classification:
             title: 'Risk classification'
             subtitle: 'Risk-appetite tier (1-5) for the tenant organisation.'
@@ -652,6 +678,17 @@ policy_wizard:
     error:
         review_interval_max: 'The review interval must not exceed 24 months (ISO 27001 + audit defang).'
         approver_must_be_user_id: 'Approver must be a concrete person (user-id), not a role string.'
+        approver_must_have_login: 'Approver must be a User with system login. Please link a Person to a user account first.'
+        roles_invalid: 'The roles mapping is invalid.'
+        role_required:
+            ciso: 'CISO is a mandatory role.'
+            dpo: 'Data Protection Officer is a mandatory role.'
+            bcm_officer: 'BCM Officer is mandatory because BCM is in scope.'
+        function_owners_invalid: 'The function-owner assignments are invalid.'
+        function_slot_unknown: 'Unknown function-owner slot.'
+        approval_chain_invalid: 'The approval chain is invalid.'
+        approval_chain_required: 'At least one approver in the approval chain is required.'
+        self_approval_forbidden: 'Self-approval is forbidden — the wizard starter cannot be in the approval chain.'
         crypto_allowlist_required: 'At least one allowed algorithm must be selected.'
         crypto_allowlist_invalid: 'The crypto allow-list is invalid.'
         backup_rpo_required: 'Please provide a backup RPO in hours.'

@@ -86,7 +86,7 @@ class Person
     #[Groups(['person:read', 'person:write'])]
     private ?string $jobTitle = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'linkedPersons')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(['person:read'])]
     private ?User $linkedUser = null;

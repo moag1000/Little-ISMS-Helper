@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\PolicyWizard\Step;
 
 use App\Entity\WizardRun;
+use App\Repository\PersonRepository;
 use App\Service\PolicyWizard\WizardStepKeys;
 
 /**
@@ -13,6 +14,20 @@ use App\Service\PolicyWizard\WizardStepKeys;
  * Collects role assignments (CISO/ISB, DPO, BCM-Officer, IT Operations
  * Lead) and the per-business-function owner slots (P1 Risk-Owner — see
  * `07-phase4-sprint-reconciliation.md` §1.5 + §3 W2 line 196).
+ *
+ * Person-Rollout (2026-05-08): the four governance roles + the six
+ * function-owner slots store **Person.id** (not User.id) — long-term
+ * role-holders may be external advisors without a system login. The
+ * approval-chain at the bottom continues to store User.id integers
+ * because every approver must own an authenticated session for the
+ * audit-trail.
+ *
+ * Backwards-compat: legacy submissions that send a User.id where a
+ * Person.id is now expected are auto-resolved via
+ * {@see PersonRepository::findOneByLinkedUserId()}. When the User has
+ * no linked Person, the integer is dropped and a soft warning surfaces
+ * in the wizard ("Please assign a Person to this role"). The validator
+ * does NOT auto-create Persons (would silently mutate tenant data).
  *
  * Self-approval guard: refuses to accept the same user-id as both the
  * author (run starter) and any approver in the chain. Junior P1 guard
@@ -38,6 +53,11 @@ final class RolesStep extends AbstractStep
 
     public const REQUIRED_ROLES = ['ciso', 'dpo'];
 
+    public function __construct(
+        private readonly ?PersonRepository $personRepository = null,
+    ) {
+    }
+
     public function key(): string
     {
         return WizardStepKeys::STEP_ROLES;
@@ -54,15 +74,12 @@ final class RolesStep extends AbstractStep
         }
 
         $normalisedRoles = [];
-        foreach ($roles as $roleKey => $userId) {
+        foreach ($roles as $roleKey => $personId) {
             if (!is_string($roleKey) || $roleKey === '') {
                 continue;
             }
-            $userId = is_numeric($userId) ? (int) $userId : null;
-            if ($userId !== null && $userId <= 0) {
-                $userId = null;
-            }
-            $normalisedRoles[$roleKey] = $userId;
+            $resolved = $this->resolvePersonId($personId);
+            $normalisedRoles[$roleKey] = $resolved;
         }
 
         // Required roles must have an assignee.
@@ -81,14 +98,14 @@ final class RolesStep extends AbstractStep
         }
 
         // Function owners (P1 Risk-Owner). Each entry maps function key
-        // -> user id (nullable when intentionally left blank).
+        // -> Person id (nullable when intentionally left blank).
         $functionOwners = $input['function_owners'] ?? [];
         if (!is_array($functionOwners)) {
             $errors['function_owners'][] = 'policy_wizard.error.function_owners_invalid';
             $functionOwners = [];
         }
         $normalisedFunctionOwners = [];
-        foreach ($functionOwners as $functionKey => $userId) {
+        foreach ($functionOwners as $functionKey => $personId) {
             if (!is_string($functionKey) || $functionKey === '') {
                 continue;
             }
@@ -96,14 +113,10 @@ final class RolesStep extends AbstractStep
                 $errors['function_owners'][] = 'policy_wizard.error.function_slot_unknown';
                 continue;
             }
-            $userId = is_numeric($userId) ? (int) $userId : null;
-            if ($userId !== null && $userId <= 0) {
-                $userId = null;
-            }
-            $normalisedFunctionOwners[$functionKey] = $userId;
+            $normalisedFunctionOwners[$functionKey] = $this->resolvePersonId($personId);
         }
 
-        // Approval chain
+        // Approval chain — User.id integers (approval-action requires login).
         $approvalChain = $input['approval_chain'] ?? [];
         if (!is_array($approvalChain)) {
             $errors['approval_chain'][] = 'policy_wizard.error.approval_chain_invalid';
@@ -155,13 +168,55 @@ final class RolesStep extends AbstractStep
         $owners = $input['function_owners'] ?? [];
         if (is_array($owners)) {
             $affected = [];
-            foreach ($owners as $functionKey => $userId) {
-                if (is_string($functionKey) && $userId !== null) {
+            foreach ($owners as $functionKey => $personId) {
+                if (is_string($functionKey) && $personId !== null) {
                     $affected[] = $functionKey;
                 }
             }
             $affected = array_values(array_unique($affected));
             $run->setAffectedFunctions($affected !== [] ? $affected : null);
         }
+    }
+
+    /**
+     * Coerce + resolve a submitted role id.
+     *
+     * Pure shape: any non-numeric / zero / negative input collapses to
+     * null. When a {@see PersonRepository} is wired AND the submitted
+     * id does NOT match an existing Person, we attempt to resolve it
+     * as a User.id and substitute the linked Person. If the User has
+     * no linked Person, the value is preserved as-is so the form can
+     * surface the orphan and prompt the admin to create the Person.
+     *
+     * Guarded so unit tests without a repository wired still work
+     * (the validator falls back to "trust the integer").
+     */
+    private function resolvePersonId(mixed $raw): ?int
+    {
+        if (!is_numeric($raw)) {
+            return null;
+        }
+        $id = (int) $raw;
+        if ($id <= 0) {
+            return null;
+        }
+
+        if (!$this->personRepository instanceof PersonRepository) {
+            return $id;
+        }
+
+        $person = $this->personRepository->find($id);
+        if ($person !== null) {
+            return $id;
+        }
+
+        // Backwards-compat: legacy id might be a User.id. Try to map
+        // it back to its linked Person.
+        $linked = $this->personRepository->findOneByLinkedUserId($id);
+        if ($linked !== null) {
+            return $linked->getId();
+        }
+
+        return $id;
     }
 }
