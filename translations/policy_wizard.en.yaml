@@ -70,8 +70,19 @@ policy_wizard:
             scope_statement_help: 'Concrete description of the in-scope perimeter (min. 30 chars). Auditor-grade, no boilerplate.'
             primary_address_label: 'Primary address (optional)'
             sites_label: 'In-scope sites'
-            sites_help: 'IDs of in-scope sites. Leave empty if only the primary address applies.'
+            sites_help: 'Pick the sites that fall inside the scope. Only locations visible within your tenant are listed.'
             climate_note: 'ISO 27001:2024 Clause 4.1 climate-change wording is enabled by default (audit defang).'
+            field:
+                legal_name:
+                    prefilled_hint: 'Loaded from tenant — editable'
+                headquarters_address:
+                    prefilled_hint: 'Loaded from tenant — editable'
+                in_scope_locations:
+                    placeholder: 'Select locations…'
+                    empty_state:
+                        title: 'No locations defined yet'
+                        body: 'Create at least one tenant Location to make it pickable here.'
+                        cta_label: 'Create location'
         roles:
             title: 'Roles & responsibilities'
             subtitle: 'CISO, ISO, DPO, BCM officer and the function owners per business function.'
@@ -141,6 +152,14 @@ policy_wizard:
                 subtitle: 'If you got here via an audit-finding alert, paste the finding ID for evidence.'
                 placeholder: 'e.g. NCR-2026-04'
                 help: 'Stored in the audit log of this wizard run and copied into the approval-inbox entry.'
+                help_picker: 'Pick from open audit findings or type an external reference (TAB to confirm).'
+                no_open_findings: 'No open audit findings for this tenant — type an external reference or use the Audit module.'
+                due: 'due'
+                severity:
+                    critical: 'critical'
+                    high: 'high'
+                    medium: 'medium'
+                    low: 'low'
                 action:
                     skip: 'Continue without reference'
                     continue: 'Continue to diff preview'
@@ -254,6 +273,9 @@ policy_wizard:
             rationale_too_long: 'The rationale may be at most 1000 characters long.'
             decision_required: 'Please record a decision for every existing document.'
         preset_bundle_unknown: 'The selected industry preset is unknown or inactive.'
+        finding_reference_invalid: 'The audit-finding reference is invalid. Please pick again or leave it empty.'
+        finding_reference_too_long: 'The audit-finding reference must be at most 100 characters long.'
+        finding_reference_unknown: 'The selected audit finding does not exist or belongs to a different tenant.'
         # W1 audit-defang gap #3 — Variable-substitution Leakage Detector.
         substitution_leakage:
             title: 'Template variable left unresolved'

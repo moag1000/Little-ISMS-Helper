@@ -27,7 +27,7 @@
 
     <div class="col-md-4">
         <label class="form-label" for="data-classification-levels">Data classification levels</label>
-        <select class="form-select"
+        <select class="form-select fa-cyber-input__field"
                 id="data-classification-levels"
                 name="data_classification_levels">
             <option value="3" {% if data_levels_default == 3 %}selected{% endif %}>3 levels</option>
@@ -37,7 +37,7 @@
 
     <div class="col-md-4">
         <label class="form-label" for="schutzbedarf-levels">Schutzbedarf levels (BSI)</label>
-        <select class="form-select"
+        <select class="form-select fa-cyber-input__field"
                 id="schutzbedarf-levels"
                 name="schutzbedarf_levels">
             <option value="3" {% if schutzbedarf_default == 3 %}selected{% endif %}>3 (BSI default)</option>
@@ -48,7 +48,7 @@
     <div class="col-md-4">
         <label class="form-label" for="review-interval">Review interval (months)</label>
         <input type="number"
-               class="form-control"
+               class="form-control fa-cyber-input__field"
                id="review-interval"
                name="review_interval_months"
                min="1"

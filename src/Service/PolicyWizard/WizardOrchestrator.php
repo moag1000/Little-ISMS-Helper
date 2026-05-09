@@ -10,6 +10,8 @@ use App\Entity\User;
 use App\Entity\WizardRun;
 use App\Repository\DocumentRepository;
 use App\Repository\WizardRunRepository;
+use App\Service\AuditLogger;
+use App\Service\PolicyWizard\Step\TargetedFindingReferenceStep;
 use BadMethodCallException;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -53,6 +55,7 @@ final class WizardOrchestrator
         private readonly ?DocumentRepository $documentRepository = null,
         private readonly LoggerInterface $logger = new NullLogger(),
         private readonly ?BcExerciseAutoSeeder $bcExerciseAutoSeeder = null,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {
     }
 
@@ -195,6 +198,37 @@ final class WizardOrchestrator
         }
 
         $step->persist($run, $result['normalised_input']);
+
+        // Form-Audit (May 2026): when the user picked an existing
+        // AuditFinding via the TomSelect picker on STEP_TARGETED_FINDING,
+        // emit a structured audit-log entry linking this WizardRun to
+        // the AuditFinding entity so future auditors can trace
+        // "this 3-policy fix was triggered by Finding NCR-2026-04".
+        if ($stepKey === WizardStepKeys::STEP_TARGETED_FINDING && $this->auditLogger !== null) {
+            $persistedRef = $run->getFindingReference();
+            $findingId = $result['normalised_input']['finding_audit_finding_id'] ?? null;
+            if ($findingId !== null
+                && is_string($persistedRef)
+                && str_starts_with($persistedRef, TargetedFindingReferenceStep::AUDIT_FINDING_PREFIX)
+            ) {
+                $this->auditLogger->logCustom(
+                    action: 'policy_wizard.finding_link',
+                    entityType: 'AuditFinding',
+                    entityId: (int) $findingId,
+                    oldValues: null,
+                    newValues: [
+                        'wizard_run_id' => $run->getId(),
+                        'tenant_id' => $run->getTenant()?->getId(),
+                        'finding_reference' => $persistedRef,
+                    ],
+                    description: sprintf(
+                        'Policy-Wizard targeted re-run %d linked to AuditFinding %d',
+                        (int) $run->getId(),
+                        (int) $findingId,
+                    ),
+                );
+            }
+        }
 
         // Advance pointer.
         $next = $this->stepEvaluator->nextStepFor($run);

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Location;
+use App\Entity\Tenant;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,6 +18,48 @@ class LocationRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Location::class);
+    }
+
+    /**
+     * Find Locations visible to the given User within the given Tenant.
+     *
+     * Visibility = tenant-scoped + active. The user's role hierarchy
+     * (ROLE_USER baseline) is enforced by the upstream voter / IsGranted
+     * attribute on the calling controller; this query only applies the
+     * tenant boundary so cross-tenant rows are never returned.
+     *
+     * Used by the Policy-Wizard W2 organisation_scope step to populate
+     * the "in-scope sites" multi-select. Sorted by name for predictable
+     * picker UX.
+     *
+     * @return list<Location>
+     */
+    public function findVisibleForUserAndTenant(User $user, Tenant $tenant): array
+    {
+        // Defensive: ROLE_USER is the baseline for any access at all.
+        // The wizard route already gates on POLICY_WIZARD_RUN_FULL which
+        // implies ROLE_USER, but we mirror the contract here so callers
+        // outside the wizard cannot accidentally bypass it.
+        if (!in_array('ROLE_USER', $user->getRoles(), true)
+            && !in_array('ROLE_AUDITOR', $user->getRoles(), true)
+            && !in_array('ROLE_MANAGER', $user->getRoles(), true)
+            && !in_array('ROLE_ADMIN', $user->getRoles(), true)
+            && !in_array('ROLE_SUPER_ADMIN', $user->getRoles(), true)
+        ) {
+            return [];
+        }
+
+        /** @var list<Location> $rows */
+        $rows = $this->createQueryBuilder('l')
+            ->andWhere('l.tenant = :tenant')
+            ->andWhere('l.active = :active')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('active', true)
+            ->orderBy('l.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return $rows;
     }
 
     /**

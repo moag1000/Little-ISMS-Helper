@@ -8,7 +8,7 @@
     <div class="col-md-3">
         <label class="form-label" for="patch-cadence">{{ 'policy_wizard.step.operational_baselines.patch_cadence_label'|trans }}</label>
         <input type="number"
-               class="form-control"
+               class="form-control fa-cyber-input__field"
                id="patch-cadence"
                name="patch_cadence_days"
                min="1"
@@ -18,7 +18,7 @@
     <div class="col-md-3">
         <label class="form-label" for="log-retention">{{ 'policy_wizard.step.operational_baselines.log_retention_label'|trans }}</label>
         <input type="number"
-               class="form-control"
+               class="form-control fa-cyber-input__field"
                id="log-retention"
                name="log_retention_days"
                min="1"
@@ -27,7 +27,7 @@
     </div>
     <div class="col-md-3">
         <label class="form-label" for="backup-frequency">{{ 'policy_wizard.step.operational_baselines.backup_frequency_label'|trans }}</label>
-        <select class="form-select" id="backup-frequency" name="backup_frequency">
+        <select class="form-select fa-cyber-input__field" id="backup-frequency" name="backup_frequency">
             {% for opt in ['hourly', 'daily', 'weekly', 'monthly'] %}
                 <option value="{{ opt }}" {% if backup_default == opt %}selected{% endif %}>{{ opt|capitalize }}</option>
             {% endfor %}
@@ -35,7 +35,7 @@
     </div>
     <div class="col-md-3">
         <label class="form-label" for="awareness-frequency">{{ 'policy_wizard.step.operational_baselines.awareness_frequency_label'|trans }}</label>
-        <select class="form-select" id="awareness-frequency" name="awareness_frequency">
+        <select class="form-select fa-cyber-input__field" id="awareness-frequency" name="awareness_frequency">
             {% for opt in ['quarterly', 'semi_annual', 'annual'] %}
                 <option value="{{ opt }}" {% if awareness_default == opt %}selected{% endif %}>{{ opt|replace({'_': ' '})|capitalize }}</option>
             {% endfor %}

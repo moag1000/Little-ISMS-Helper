@@ -1,32 +1,55 @@
 {% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
 {% set legal_default = defaults.legal_name|default('') %}
 {% set scope_default = defaults.scope_statement|default('') %}
 {% set address_default = defaults.primary_address|default('') %}
 {% set sites_default = defaults.site_ids|default([]) %}
+{% set available_locations = defaults.available_locations|default([]) %}
+{% set prefilled_legal_name = defaults.prefilled_legal_name|default(false) %}
+{% set prefilled_primary_address = defaults.prefilled_primary_address|default(false) %}
 
 <div class="row g-3">
     <div class="col-md-6">
-        <label class="form-label" for="legal-name">{{ 'policy_wizard.step.organisation_scope.legal_name_label'|trans }}</label>
+        <label class="fa-cyber-input__label form-label" for="legal-name">
+            {{ 'policy_wizard.step.organisation_scope.legal_name_label'|trans }}
+        </label>
         <input type="text"
-               class="form-control"
+               class="form-control fa-cyber-input__field"
                id="legal-name"
                name="legal_name"
                maxlength="191"
                value="{{ legal_default }}"
                required>
+        {% if prefilled_legal_name %}
+            <small class="text-muted d-block mt-1">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {{ 'policy_wizard.step.organisation_scope.field.legal_name.prefilled_hint'|trans }}
+            </small>
+        {% endif %}
         <div class="form-text">{{ 'policy_wizard.step.organisation_scope.legal_name_help'|trans }}</div>
     </div>
     <div class="col-md-6">
-        <label class="form-label" for="primary-address">{{ 'policy_wizard.step.organisation_scope.primary_address_label'|trans }}</label>
+        <label class="fa-cyber-input__label form-label" for="primary-address">
+            {{ 'policy_wizard.step.organisation_scope.primary_address_label'|trans }}
+        </label>
         <input type="text"
-               class="form-control"
+               class="form-control fa-cyber-input__field"
                id="primary-address"
                name="primary_address"
                value="{{ address_default }}">
+        {% if prefilled_primary_address %}
+            <small class="text-muted d-block mt-1">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {{ 'policy_wizard.step.organisation_scope.field.headquarters_address.prefilled_hint'|trans }}
+            </small>
+        {% endif %}
     </div>
     <div class="col-12">
-        <label class="form-label" for="scope-statement">{{ 'policy_wizard.step.organisation_scope.scope_statement_label'|trans }}</label>
-        <textarea class="form-control"
+        <label class="fa-cyber-input__label form-label" for="scope-statement">
+            {{ 'policy_wizard.step.organisation_scope.scope_statement_label'|trans }}
+        </label>
+        <textarea class="form-control fa-cyber-input__field"
                   id="scope-statement"
                   name="scope_statement"
                   rows="4"
@@ -35,20 +58,43 @@
         <div class="form-text">{{ 'policy_wizard.step.organisation_scope.scope_statement_help'|trans }}</div>
     </div>
     <div class="col-12">
-        <label class="form-label" for="site-ids">{{ 'policy_wizard.step.organisation_scope.sites_label'|trans }}</label>
-        <input type="text"
-               class="form-control"
-               id="site-ids"
-               name="site_ids_csv"
-               value="{{ sites_default|join(',') }}">
-        <div class="form-text">{{ 'policy_wizard.step.organisation_scope.sites_help'|trans }}</div>
-        {# Repeat hidden array fields for each parsed id so the controller receives the array form #}
-        {% for sid in sites_default %}
-            <input type="hidden" name="site_ids[]" value="{{ sid }}">
-        {% endfor %}
+        <label class="fa-cyber-input__label form-label" for="site-ids">
+            {{ 'policy_wizard.step.organisation_scope.sites_label'|trans }}
+        </label>
+
+        {% if available_locations|length == 0 %}
+            {{ _fa_empty_state.render({
+                mood: 'thinking',
+                title: 'policy_wizard.step.organisation_scope.field.in_scope_locations.empty_state.title'|trans,
+                text: 'policy_wizard.step.organisation_scope.field.in_scope_locations.empty_state.body'|trans,
+                actions: [
+                    {
+                        label: 'policy_wizard.step.organisation_scope.field.in_scope_locations.empty_state.cta_label'|trans,
+                        variant: 'primary',
+                        icon: 'plus-circle',
+                        href: path('app_location_new')
+                    }
+                ]
+            }) }}
+        {% else %}
+            <select id="site-ids"
+                    name="site_ids[]"
+                    class="form-select fa-cyber-input__field"
+                    multiple
+                    data-controller="tom-select"
+                    data-tom-select-placeholder-value="{{ 'policy_wizard.step.organisation_scope.field.in_scope_locations.placeholder'|trans }}">
+                {% for loc in available_locations %}
+                    <option value="{{ loc.id }}"{% if loc.id in sites_default %} selected{% endif %}>
+                        {{ loc.label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <div class="form-text">{{ 'policy_wizard.step.organisation_scope.sites_help'|trans }}</div>
+        {% endif %}
     </div>
     <div class="col-12">
-        <p class="small text-muted mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i>
+        <p class="small text-muted mb-0">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
             {{ 'policy_wizard.step.organisation_scope.climate_note'|trans }}
         </p>
     </div>

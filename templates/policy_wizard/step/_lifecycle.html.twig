@@ -6,7 +6,7 @@
     <div class="col-md-6">
         <label class="form-label" for="lifecycle-review-interval">{{ 'policy_wizard.step.lifecycle.review_interval_label'|trans }}</label>
         <input type="number"
-               class="form-control"
+               class="form-control fa-cyber-input__field"
                id="lifecycle-review-interval"
                name="default_review_interval_months"
                min="1"
@@ -20,7 +20,7 @@
     </div>
     <div class="col-md-6">
         <label class="form-label" for="lifecycle-approver">{{ 'policy_wizard.step.lifecycle.approver_label'|trans }}</label>
-        <select class="form-select" id="lifecycle-approver" name="designated_approver">
+        <select class="form-select fa-cyber-input__field" id="lifecycle-approver" name="designated_approver">
             <option value="">—</option>
             {% for role in ['ROLE_CISO', 'ROLE_TOP_MGMT', 'ROLE_ADMIN'] %}
                 <option value="{{ role }}" {% if approver_default == role %}selected{% endif %}>{{ role }}</option>
