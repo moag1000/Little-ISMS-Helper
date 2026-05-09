@@ -57,6 +57,7 @@ dsr:
         assigned_to: "Assigned To"
         assigned_person: "Responsible (Person)"
         assigned_deputy_persons: "Deputies (Persons)"
+        dpo_person: "Data Protection Officer (Governance)"
         processing_activity: "Related Processing Activity (VVT)"
         notes: "Internal Notes"
         placeholder:
@@ -68,6 +69,7 @@ dsr:
             verification_method: "-- Select verification method --"
             assigned_to: "-- Assign to user --"
             assigned_person: "-- Person from master data --"
+            dpo_person: "-- Select Data Protection Officer --"
             processing_activity: "-- Link to processing activity --"
             notes: "Internal notes (not shared with the data subject)..."
             response_description: "Describe what was done to fulfill the request..."
@@ -81,6 +83,7 @@ dsr:
             notes: "Internal notes are not shared with the data subject"
             assigned_person: "Person without system login as responsible. Order: User > Person > empty."
             assigned_deputy_persons: "Additional persons with deputy or shared responsibility."
+            dpo_person: "Governance-side DPO accountable for this request. Distinct from the action handler. Often an external person without a system login."
 
     # Section headings
     section:
