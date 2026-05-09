@@ -61,7 +61,7 @@
                 {% endblock %}
                 {% block card_body %}
                     <div class="d-grid gap-2">
-                        <button class="btn btn-outline-warning btn-sm"
+                        <button class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                 data-controller="report-regenerate"
                                 data-action="click->report-regenerate#regenerate"
                                 data-report-regenerate-url-value="{{ path('app_security_report_generate') }}"
@@ -140,7 +140,7 @@
                             <small class="text-muted">
                                 <i class="bi bi-calendar me-1" aria-hidden="true"></i>{{ 'security_reports.label.generated_at'|trans({}, 'security_reports') }}: {{ stats.owasp_2025.generated_at }}
                             </small>
-                            <a href="{{ path('app_security_report_2025') }}" class="btn btn-primary btn-sm">
+                            <a href="{{ path('app_security_report_2025') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
                                 <i class="fa-icon fa-icon--policy me-1" aria-hidden="true"></i>{{ 'security_reports.label.view_report'|trans({}, 'security_reports') }}
                             </a>
                             </div>
@@ -209,7 +209,7 @@
                             <small class="text-muted">
                                 <i class="bi bi-calendar me-1" aria-hidden="true"></i>{{ 'security_reports.label.generated_at'|trans({}, 'security_reports') }}: {{ stats.owasp_2021.generated_at }}
                             </small>
-                            <a href="{{ path('app_security_report_2021') }}" class="btn btn-primary btn-sm">
+                            <a href="{{ path('app_security_report_2021') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
                                 <i class="fa-icon fa-icon--policy me-1" aria-hidden="true"></i>{{ 'security_reports.label.view_report'|trans({}, 'security_reports') }}
                             </a>
                         </div>

@@ -150,7 +150,7 @@
                     {% include '_components/_badge.html.twig' with { variant: securityColors[child.securityLevel] ?? 'secondary', content: ('location.security.' ~ child.securityLevel)|trans({}, 'locations') } %}
                 </td>
                 <td class="text-center">
-                    <a href="{{ path('app_location_show', {id: child.id}) }}" class="btn btn-sm">
+                    <a href="{{ path('app_location_show', {id: child.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         👁 {{ 'common.view'|trans({}, 'messages') }}
                     </a>
                 </td>
