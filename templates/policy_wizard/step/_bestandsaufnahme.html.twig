@@ -1,16 +1,7 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{# W4-C — Step 0 "Bestandsaufnahme" for brownfield tenants.
-
-   The controller passes:
-     - `inventory_rows` : list of inventory rows from
-        ExistingDocumentInventoryService::inventoryFor()
-     - `topic_suggestions_by_doc` : { document_id: [{ topic, confidence }, …] }
-     - `available_topics` : list of canonical topic keys (for the merge / split dropdowns)
-
-   When `inventory_rows` is empty we fall through to the empty-state include
-   so the user gets a clear "you are greenfield" signal. #}
+{# W4-C — Step 0 "Bestandsaufnahme" for brownfield tenants. #}
 
 {% set rows = inventory_rows|default([]) %}
 {% set suggestions = topic_suggestions_by_doc|default({}) %}
@@ -25,6 +16,20 @@
         title: 'policy_wizard.step.bestandsaufnahme.title'|trans,
         body: 'policy_wizard.step.bestandsaufnahme.intro'|trans
     }) }}
+
+    {# Junior-ISB-friendly help-card explaining the 4 actions with concrete examples. #}
+    <div class="alert alert-secondary border-0 mt-3 mb-0">
+        <h6 class="mb-2">
+            <i class="bi bi-mortarboard" aria-hidden="true"></i>
+            {{ 'policy_wizard.step.bestandsaufnahme.help.title'|trans }}
+        </h6>
+        <ul class="mb-0 small">
+            <li><strong>{{ 'policy_wizard.step.bestandsaufnahme.action.replace'|trans }}</strong> — {{ 'policy_wizard.step.bestandsaufnahme.help.replace'|trans }}</li>
+            <li><strong>{{ 'policy_wizard.step.bestandsaufnahme.action.keep'|trans }}</strong> — {{ 'policy_wizard.step.bestandsaufnahme.help.keep'|trans }}</li>
+            <li><strong>{{ 'policy_wizard.step.bestandsaufnahme.action.merge_into_topic'|trans }}</strong> — {{ 'policy_wizard.step.bestandsaufnahme.help.merge_into_topic'|trans }}</li>
+            <li><strong>{{ 'policy_wizard.step.bestandsaufnahme.action.split_to_topics'|trans }}</strong> — {{ 'policy_wizard.step.bestandsaufnahme.help.split_to_topics'|trans }}</li>
+        </ul>
+    </div>
 
     <div class="table-responsive mt-3">
         <table class="table table-hover align-middle">
@@ -46,15 +51,23 @@
                     {% set chosen_target_topics = persisted.target_topics|default([]) %}
                     {% set chosen_rationale = persisted.rationale|default('') %}
                     {% set suggested_topic_list = suggestions[doc_id]|default([]) %}
-                    <tr>
+                    {% set is_top_level = suggested_topic_list|length > 0
+                        and suggested_topic_list[0].topic == 'top_level'
+                        and suggested_topic_list[0].confidence >= 0.7 %}
+                    {# Smart default: top-level documents typically need 'replace', not merge/split. #}
+                    {% if is_top_level and chosen_action == '' %}
+                        {% set chosen_action = 'replace' %}
+                    {% endif %}
+                    <tr data-controller="bestandsaufnahme-row" data-bestandsaufnahme-row-action-value="{{ chosen_action }}">
                         <td>
                             <div class="fw-semibold">{{ row.title }}</div>
                             {% if suggested_topic_list|length > 0 %}
-                                <small class="text-muted d-block">
-                                    {{ 'policy_wizard.step.bestandsaufnahme.suggested_topic'|trans }}:
+                                <small class="text-muted d-block mt-1">
+                                    <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                                    {{ 'policy_wizard.step.bestandsaufnahme.suggested_topic_help'|trans }}:
                                     {% for sug in suggested_topic_list|slice(0, 3) %}
                                         <span class="badge bg-secondary-subtle text-body">
-                                            {{ sug.topic }} ({{ (sug.confidence * 100)|round }}%)
+                                            {{ ('policy_wizard.topic.' ~ sug.topic)|trans({}, 'policy_wizard') }} ({{ (sug.confidence * 100)|round }}%)
                                         </span>
                                     {% endfor %}
                                 </small>
@@ -77,18 +90,28 @@
                             {% set suggestion_key = 'policy_wizard.step.bestandsaufnahme.suggestion.' ~ row.suggestedAction %}
                             <span class="badge bg-info-subtle text-body mb-2 d-inline-block">
                                 <i class="bi bi-lightbulb" aria-hidden="true"></i>
-                                {{ suggestion_key|trans|default(row.suggestedAction) }}
+                                {{ 'policy_wizard.step.bestandsaufnahme.suggestion_label'|trans }}: {{ suggestion_key|trans|default(row.suggestedAction) }}
                             </span>
 
-                            <label class="visually-hidden" for="action-{{ doc_id }}">
-                                {{ 'policy_wizard.step.bestandsaufnahme.column.action'|trans }}
+                            {% if is_top_level %}
+                                <div class="alert alert-warning border-0 py-2 small mb-2">
+                                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                    <strong>{{ 'policy_wizard.step.bestandsaufnahme.top_level_hint.title'|trans }}.</strong>
+                                    {{ 'policy_wizard.step.bestandsaufnahme.top_level_hint.body'|trans }}
+                                </div>
+                            {% endif %}
+
+                            <label class="form-label small fw-semibold mb-1" for="action-{{ doc_id }}">
+                                {{ 'policy_wizard.step.bestandsaufnahme.field.action.label'|trans }}
                             </label>
                             <select class="form-select form-select-sm fa-cyber-input__field mb-2"
                                     id="action-{{ doc_id }}"
                                     name="decisions[{{ doc_id }}][action]"
+                                    data-bestandsaufnahme-row-target="actionSelect"
+                                    data-action="change->bestandsaufnahme-row#updateVisibility"
                                     required>
                                 <option value="" {% if chosen_action == '' %}selected{% endif %}>
-                                    — {{ 'policy_wizard.action.cancel'|trans }} —
+                                    {{ 'policy_wizard.step.bestandsaufnahme.action_placeholder'|trans }}
                                 </option>
                                 {% for act in ['replace', 'keep', 'merge_into_topic', 'split_to_topics'] %}
                                     <option value="{{ act }}" {% if chosen_action == act %}selected{% endif %}>
@@ -97,43 +120,59 @@
                                 {% endfor %}
                             </select>
 
-                            {# merge_into_topic — single dropdown, pre-filled with the strongest suggestion. #}
-                            <label class="visually-hidden" for="merge-{{ doc_id }}">
-                                {{ 'policy_wizard.step.bestandsaufnahme.action.merge_into_topic'|trans }}
-                            </label>
-                            <select class="form-select form-select-sm fa-cyber-input__field mb-2"
-                                    id="merge-{{ doc_id }}"
-                                    name="decisions[{{ doc_id }}][target_topic]">
-                                <option value="">—</option>
-                                {% for topic_key in topics %}
-                                    <option value="{{ topic_key }}"
-                                        {% if chosen_target_topic == topic_key
-                                              or (chosen_target_topic == '' and suggested_topic_list|length > 0
-                                                  and suggested_topic_list[0].topic == topic_key) %}
-                                            selected
-                                        {% endif %}>
-                                        {{ topic_key }}
-                                    </option>
-                                {% endfor %}
-                            </select>
+                            {# merge_into_topic — single dropdown. Only relevant when action=merge_into_topic. #}
+                            <div class="mb-2"
+                                 data-bestandsaufnahme-row-target="mergeBlock"
+                                 {% if chosen_action != 'merge_into_topic' %}hidden{% endif %}>
+                                <label class="form-label small fw-semibold mb-1" for="merge-{{ doc_id }}">
+                                    {{ 'policy_wizard.step.bestandsaufnahme.field.merge_topic.label'|trans }}
+                                </label>
+                                <small class="text-muted d-block mb-1">
+                                    {{ 'policy_wizard.step.bestandsaufnahme.field.merge_topic.help'|trans }}
+                                </small>
+                                <select class="form-select form-select-sm fa-cyber-input__field"
+                                        id="merge-{{ doc_id }}"
+                                        name="decisions[{{ doc_id }}][target_topic]">
+                                    <option value="">{{ 'policy_wizard.step.bestandsaufnahme.target_topic_placeholder'|trans }}</option>
+                                    {% for topic_key in topics %}
+                                        <option value="{{ topic_key }}"
+                                            {% if chosen_target_topic == topic_key
+                                                  or (chosen_target_topic == '' and suggested_topic_list|length > 0
+                                                      and suggested_topic_list[0].topic == topic_key) %}
+                                                selected
+                                            {% endif %}>
+                                            {{ ('policy_wizard.topic.' ~ topic_key)|trans({}, 'policy_wizard') }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
 
-                            {# split_to_topics — multi-select. #}
-                            <label class="visually-hidden" for="split-{{ doc_id }}">
-                                {{ 'policy_wizard.step.bestandsaufnahme.action.split_to_topics'|trans }}
-                            </label>
-                            <select class="form-select form-select-sm fa-cyber-input__field mb-2"
-                                    id="split-{{ doc_id }}"
-                                    name="decisions[{{ doc_id }}][target_topics][]"
-                                    multiple>
-                                {% for topic_key in topics %}
-                                    <option value="{{ topic_key }}"
-                                        {% if topic_key in chosen_target_topics %}selected{% endif %}>
-                                        {{ topic_key }}
-                                    </option>
-                                {% endfor %}
-                            </select>
+                            {# split_to_topics — multi-select. Only relevant when action=split_to_topics. #}
+                            <div class="mb-2"
+                                 data-bestandsaufnahme-row-target="splitBlock"
+                                 {% if chosen_action != 'split_to_topics' %}hidden{% endif %}>
+                                <label class="form-label small fw-semibold mb-1" for="split-{{ doc_id }}">
+                                    {{ 'policy_wizard.step.bestandsaufnahme.field.split_topics.label'|trans }}
+                                </label>
+                                <small class="text-muted d-block mb-1">
+                                    {{ 'policy_wizard.step.bestandsaufnahme.field.split_topics.help'|trans }}
+                                </small>
+                                <select class="form-select form-select-sm fa-cyber-input__field"
+                                        id="split-{{ doc_id }}"
+                                        name="decisions[{{ doc_id }}][target_topics][]"
+                                        multiple
+                                        data-controller="tom-select"
+                                        data-tom-select-placeholder-value="{{ 'policy_wizard.step.bestandsaufnahme.target_topic_placeholder'|trans }}">
+                                    {% for topic_key in topics %}
+                                        <option value="{{ topic_key }}"
+                                            {% if topic_key in chosen_target_topics %}selected{% endif %}>
+                                            {{ ('policy_wizard.topic.' ~ topic_key)|trans({}, 'policy_wizard') }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
 
-                            <label class="visually-hidden" for="rationale-{{ doc_id }}">
+                            <label class="form-label small mb-1" for="rationale-{{ doc_id }}">
                                 {{ 'policy_wizard.step.bestandsaufnahme.rationale_label'|trans }}
                             </label>
                             <textarea class="form-control form-control-sm fa-cyber-input__field"
