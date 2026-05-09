@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'quick_fix' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block admin_title %}{{ 'quick_fix.settings.title'|trans({}, 'quick_fix') }}{% endblock %}
 
@@ -53,13 +54,13 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="ip_allowlist" class="form-label fw-semibold">
-                                {{ 'quick_fix.settings.ip_allowlist.label'|trans({}, 'quick_fix') }}
-                            </label>
-                            <input type="text" class="form-control fa-cyber-input__field" id="ip_allowlist" name="ip_allowlist"
-                                   value="{{ current.ip_allowlist }}"
-                                   placeholder="10.0.0.1, 192.168.1.5">
-                            <div class="form-text">{{ 'quick_fix.settings.ip_allowlist.help'|trans({}, 'quick_fix') }}</div>
+                            {{ _fa_cyber.text('ip_allowlist', {
+                                id: 'ip_allowlist',
+                                label: 'quick_fix.settings.ip_allowlist.label'|trans({}, 'quick_fix'),
+                                value: current.ip_allowlist,
+                                placeholder: '10.0.0.1, 192.168.1.5',
+                                help: 'quick_fix.settings.ip_allowlist.help'|trans({}, 'quick_fix')
+                            }) }}
                         </div>
 
                         <div class="d-flex gap-2">

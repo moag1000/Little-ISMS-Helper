@@ -1,6 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block title %}{{ 'compliance_policy.page.title'|trans({}, 'compliance_policy') }}{% endblock %}
 
@@ -67,12 +68,15 @@
                                             </label>
                                         </div>
                                     {% else %}
-                                        <input type="number" class="form-control fa-cyber-input__field"
-                                               id="{{ fieldId }}" name="{{ fieldName }}"
-                                               value="{{ value }}"
-                                               {% if def.min is defined %}min="{{ def.min }}"{% endif %}
-                                               {% if def.max is defined %}max="{{ def.max }}"{% endif %}
-                                               {% if def.step is defined %}step="{{ def.step }}"{% else %}step="{{ def.type == 'float' ? '0.01' : '1' }}"{% endif %}>
+                                        {% set _num_attrs = {'step': (def.step is defined ? def.step : (def.type == 'float' ? '0.01' : '1'))} %}
+                                        {% if def.min is defined %}{% set _num_attrs = _num_attrs|merge({'min': def.min}) %}{% endif %}
+                                        {% if def.max is defined %}{% set _num_attrs = _num_attrs|merge({'max': def.max}) %}{% endif %}
+                                        {{ _fa_cyber.text(fieldName, {
+                                            id: fieldId,
+                                            type: 'number',
+                                            value: value,
+                                            extra_attrs: _num_attrs
+                                        }) }}
                                     {% endif %}
                                 </div>
                                 <div class="col-md-3 text-md-end">

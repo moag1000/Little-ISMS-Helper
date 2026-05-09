@@ -37,6 +37,7 @@
 {% block admin_content %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
@@ -112,18 +113,29 @@
             </div>
 
             <div>
-                <label for="userName">{{ 'audit_log.filter.user'|trans({}, 'audit_log') }}:</label>
-                <input type="text" name="userName" id="userName" value="{{ filters.userName ?? '' }}" class="form-control fa-cyber-input__field">
+                {{ _fa_cyber.text('userName', {
+                    id: 'userName',
+                    label: 'audit_log.filter.user'|trans({}, 'audit_log'),
+                    value: filters.userName ?? ''
+                }) }}
             </div>
 
             <div>
-                <label for="dateFrom">{{ 'audit_log.filter.date_from'|trans({}, 'audit_log') }}:</label>
-                <input type="date" name="dateFrom" id="dateFrom" value="{{ filters.dateFrom ?? '' }}" class="form-control fa-cyber-input__field">
+                {{ _fa_cyber.text('dateFrom', {
+                    id: 'dateFrom',
+                    type: 'date',
+                    label: 'audit_log.filter.date_from'|trans({}, 'audit_log'),
+                    value: filters.dateFrom ?? ''
+                }) }}
             </div>
 
             <div>
-                <label for="dateTo">{{ 'audit_log.filter.date_to'|trans({}, 'audit_log') }}:</label>
-                <input type="date" name="dateTo" id="dateTo" value="{{ filters.dateTo ?? '' }}" class="form-control fa-cyber-input__field">
+                {{ _fa_cyber.text('dateTo', {
+                    id: 'dateTo',
+                    type: 'date',
+                    label: 'audit_log.filter.date_to'|trans({}, 'audit_log'),
+                    value: filters.dateTo ?? ''
+                }) }}
             </div>
         </div>
 

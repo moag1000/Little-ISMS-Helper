@@ -3,6 +3,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block title %}{{ 'admin.mapping_quality.title'|trans({}, 'admin') }}{% endblock %}
 
@@ -68,8 +69,13 @@
                 </select>
             </div>
             <div>
-                <label class="form-label small mb-1" for="min_score">{{ 'admin.mapping_quality.filter.min_score'|trans({}, 'admin') }}</label>
-                <input type="number" name="min_score" id="min_score" min="0" max="100" value="{{ filterMinScore }}" class="form-control form-control-sm fa-cyber-input__field" style="width: 100px;">
+                {{ _fa_cyber.text('min_score', {
+                    id: 'min_score',
+                    type: 'number',
+                    label: 'admin.mapping_quality.filter.min_score'|trans({}, 'admin'),
+                    value: filterMinScore,
+                    extra_attrs: {'min': '0', 'max': '100'}
+                }) }}
             </div>
             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">{{ 'common.filter'|trans({}, 'messages')|default('Filter') }}</button>
         </form>

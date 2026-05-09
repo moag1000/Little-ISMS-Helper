@@ -4,6 +4,7 @@
 {% block title %}{{ 'new.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -28,15 +29,21 @@
                 {% block card_body %}
                     <form method="post" action="{{ path('report_builder_new') }}">
                         <div class="mb-3">
-                            <label for="name" class="form-label">{{ 'form.name'|trans({}, 'report_builder') }} <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control fa-cyber-input__field" id="name" name="name" required
-                                   placeholder="{{ 'form.name_placeholder'|trans({}, 'report_builder') }}">
+                            {{ _fa_cyber.text('name', {
+                                id: 'name',
+                                label: 'form.name'|trans({}, 'report_builder'),
+                                placeholder: 'form.name_placeholder'|trans({}, 'report_builder'),
+                                required: true
+                            }) }}
                         </div>
 
                         <div class="mb-3">
-                            <label for="description" class="form-label">{{ 'form.description'|trans({}, 'report_builder') }}</label>
-                            <textarea class="form-control fa-cyber-input__field" id="description" name="description" rows="3"
-                                      placeholder="{{ 'form.description_placeholder'|trans({}, 'report_builder') }}"></textarea>
+                            {{ _fa_cyber.textarea('description', {
+                                id: 'description',
+                                label: 'form.description'|trans({}, 'report_builder'),
+                                placeholder: 'form.description_placeholder'|trans({}, 'report_builder'),
+                                rows: 3
+                            }) }}
                         </div>
 
                         <div class="row">

@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block admin_title %}{{ tenant.name }}{% endblock %}
 
@@ -332,9 +333,13 @@
                                                         </select>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label" for="ruleScopeId">{{ 'corporate.granular.field.scope_id'|trans({}, 'tenant') }}</label>
-                                                        <input type="text" class="form-control fa-cyber-input__field" id="ruleScopeId" data-tenant-governance-target="ruleScopeId" placeholder="z.B. A.5.1">
-                                                        <small class="form-text text-muted">{{ 'corporate.granular.help.scope_id'|trans({}, 'tenant') }}</small>
+                                                        {{ _fa_cyber.text('ruleScopeId', {
+                                                            id: 'ruleScopeId',
+                                                            label: 'corporate.granular.field.scope_id'|trans({}, 'tenant'),
+                                                            placeholder: 'z.B. A.5.1',
+                                                            help: 'corporate.granular.help.scope_id'|trans({}, 'tenant'),
+                                                            extra_attrs: {'data-tenant-governance-target': 'ruleScopeId'}
+                                                        }) }}
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label" for="ruleGovernance">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</label>

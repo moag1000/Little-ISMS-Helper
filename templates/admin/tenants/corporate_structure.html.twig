@@ -2,6 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block admin_title %}{{ 'corporate.title'|trans({}, 'tenant') }}{% endblock %}
 {% block admin_subtitle %}
@@ -143,8 +144,11 @@
                 <form method="post" id="setParentForm">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label" for="subsidiaryName">{{ 'corporate.field.subsidiary'|trans({}, 'tenant') }}</label>
-                            <input type="text" class="form-control fa-cyber-input__field" id="subsidiaryName" readonly>
+                            {{ _fa_cyber.text('subsidiaryName', {
+                                id: 'subsidiaryName',
+                                label: 'corporate.field.subsidiary'|trans({}, 'tenant'),
+                                extra_attrs: {'readonly': 'readonly'}
+                            }) }}
                             <input type="hidden" id="subsidiaryId">
                         </div>
 
@@ -193,8 +197,11 @@
                 <form method="post" id="updateGovernanceForm">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label" for="governanceTenantName">{{ 'tenant.field.name'|trans({}, 'tenant') }}</label>
-                            <input type="text" class="form-control fa-cyber-input__field" id="governanceTenantName" readonly>
+                            {{ _fa_cyber.text('governanceTenantName', {
+                                id: 'governanceTenantName',
+                                label: 'tenant.field.name'|trans({}, 'tenant'),
+                                extra_attrs: {'readonly': 'readonly'}
+                            }) }}
                             <input type="hidden" id="governanceTenantId">
                         </div>
 

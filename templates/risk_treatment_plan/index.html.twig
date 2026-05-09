@@ -6,6 +6,7 @@
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -79,10 +80,12 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <label for="filter-responsible" class="form-label">{{ 'risk_treatment_plan.field.responsible_person'|trans({}, 'risk_treatment_plan') }}</label>
-                <input type="text" class="form-control fa-cyber-input__field" id="filter-responsible" name="responsible_person"
-                       value="{{ app.request.query.get('responsible_person') }}"
-                       placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
+                {{ _fa_cyber.text('responsible_person', {
+                    id: 'filter-responsible',
+                    label: 'risk_treatment_plan.field.responsible_person'|trans({}, 'risk_treatment_plan'),
+                    value: app.request.query.get('responsible_person'),
+                    placeholder: 'common.search'|trans({}, 'messages') ~ '...'
+                }) }}
             </div>
             <div class="col-md-3">
                 <label for="filter-overdue" class="form-label">{{ 'risk_treatment_plan.filter.overdue'|trans({}, 'risk_treatment_plan') }}</label>

@@ -2,6 +2,7 @@
 {% trans_default_domain 'asset' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% block title %}{{ 'asset.modern.header.title'|trans({}, 'asset')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -183,10 +184,12 @@
             </select>
         </div>
         <div class="col-md-3">
-            <label for="filter-owner" class="form-label">{{ 'asset.label.owner'|trans({}, 'asset') }}</label>
-            <input type="text" class="form-control fa-cyber-input__field" id="filter-owner" name="owner"
-                   value="{{ app.request.query.get('owner') }}"
-                   placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
+            {{ _fa_cyber.text('owner', {
+                id: 'filter-owner',
+                label: 'asset.label.owner'|trans({}, 'asset'),
+                value: app.request.query.get('owner'),
+                placeholder: 'common.search'|trans({}, 'messages') ~ '...'
+            }) }}
         </div>
         <div class="col-md-3">
             {{ _fa_filter_select.render({
