@@ -1,0 +1,84 @@
+{#
+ # FairyAurora v4.0 — fa-diff-row macro
+ #
+ # Old → New value diff visualization. Used by:
+ #   F2 Bulk-Import Delta-Mode (CSV/XLSX re-upload preview)
+ #   F5 OSCAL-Import Conflict-Cards (existing vs incoming control)
+ #
+ # Macros:
+ #   1. render(oldValue, newValue, props)  — single field-level diff line
+ #   2. cell_diff(left, right, props) — inline cell-pair (for table-rows)
+ #   3. row(label, oldValue, newValue, changeType) — labeled row in a list
+ #
+ # changeType values: 'added' | 'modified' | 'removed' | 'unchanged'
+ #
+ # Usage (single field-line):
+ #   {% import '_components/_fa_diff_row.html.twig' as _fa_diff_row %}
+ #   {{ _fa_diff_row.render('old name', 'new name', {
+ #       label: 'Asset Name',
+ #       changeType: 'modified'
+ #   }) }}
+ #
+ # Usage (inline table-cell-pair):
+ #   <td>{{ _fa_diff_row.cell_diff('confidential', 'restricted') }}</td>
+ #
+ # Usage (labeled list row):
+ #   <ul class="fa-diff-list">
+ #     {{ _fa_diff_row.row('Owner', 'alice@old.com', 'bob@new.com', 'modified') }}
+ #     {{ _fa_diff_row.row('Tags', null, ['critical', 'pii'], 'added') }}
+ #   </ul>
+ #
+ # Parameters (render):
+ #   oldValue / newValue - values to compare (any scalar or array)
+ #   props.label         - field-name shown above the diff (optional)
+ #   props.changeType    - 'added'|'modified'|'removed'|'unchanged' (auto-derived if absent)
+ #   props.class         - extra CSS classes (optional)
+ #
+ # A11y:
+ #   - changeType announced via aria-label on the wrapper
+ #   - additions/removals get distinct semantic colors (CSS vars)
+ #   - <del> for removed text, <ins> for added text
+ #}
+
+{% macro render(oldValue, newValue, props = {}) %}
+    {% set changeType = props.changeType|default(
+        oldValue is null and newValue is not null ? 'added' :
+        (newValue is null and oldValue is not null ? 'removed' :
+        (oldValue == newValue ? 'unchanged' : 'modified'))
+    ) %}
+    {% set rowClass = 'fa-diff-row fa-diff-row--' ~ changeType ~ (props.class is defined ? ' ' ~ props.class : '') %}
+
+    <div class="{{ rowClass }}"
+         aria-label="{{ props.label|default('Diff') }}: {{ ('diff.change_type.' ~ changeType)|trans({}, 'data_import') }}">
+        {% if props.label is defined and props.label %}
+            <div class="fa-diff-row__label">{{ props.label }}</div>
+        {% endif %}
+        <div class="fa-diff-row__values">
+            {{ _self.cell_diff(oldValue, newValue, { changeType: changeType }) }}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro cell_diff(left, right, props = {}) %}
+    {% set changeType = props.changeType|default(
+        left is null and right is not null ? 'added' :
+        (right is null and left is not null ? 'removed' :
+        (left == right ? 'unchanged' : 'modified'))
+    ) %}
+
+    {% if changeType == 'added' %}
+        <ins class="fa-diff-cell fa-diff-cell--added">{{ right is iterable ? right|join(', ') : right }}</ins>
+    {% elseif changeType == 'removed' %}
+        <del class="fa-diff-cell fa-diff-cell--removed">{{ left is iterable ? left|join(', ') : left }}</del>
+    {% elseif changeType == 'unchanged' %}
+        <span class="fa-diff-cell fa-diff-cell--unchanged">{{ left is iterable ? left|join(', ') : left }}</span>
+    {% else %}
+        <del class="fa-diff-cell fa-diff-cell--old">{{ left is iterable ? left|join(', ') : left }}</del>
+        <span class="fa-diff-cell__arrow" aria-hidden="true">→</span>
+        <ins class="fa-diff-cell fa-diff-cell--new">{{ right is iterable ? right|join(', ') : right }}</ins>
+    {% endif %}
+{% endmacro %}
+
+{% macro row(label, oldValue, newValue, changeType = null) %}
+    {{ _self.render(oldValue, newValue, { label: label, changeType: changeType }) }}
+{% endmacro %}

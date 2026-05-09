@@ -1,0 +1,118 @@
+{#
+ # FairyAurora v4.0 — fa-condition-builder macro
+ #
+ # Visual rule-builder for Notification-Rules (F3) and similar condition-
+ # driven configuration. Replaces raw JSON editing with chip-row UI:
+ #
+ #   [field-dropdown] [operator] [value]  [×]  [+ Bedingung]
+ #
+ # Macros:
+ #   1. render(fields, operators, conditions, props) — full builder
+ #   2. chip(field, operator, value, props) — single condition chip (rarely standalone)
+ #
+ # Usage:
+ #   {% import '_components/_fa_condition_builder.html.twig' as _fa_condition_builder %}
+ #
+ #   {{ _fa_condition_builder.render(
+ #       fields = [
+ #           { key: 'severity', label: 'Schweregrad', type: 'enum', options: ['low', 'medium', 'high', 'critical'] },
+ #           { key: 'category', label: 'Kategorie', type: 'string' },
+ #           { key: 'count', label: 'Betroffene', type: 'number' }
+ #       ],
+ #       operators = [
+ #           { key: 'eq', label: '=', appliesTo: ['enum', 'string', 'number'] },
+ #           { key: 'gte', label: '≥', appliesTo: ['number'] },
+ #           { key: 'contains', label: 'enthält', appliesTo: ['string'] }
+ #       ],
+ #       conditions = [
+ #           { field: 'severity', operator: 'eq', value: 'high' }
+ #       ],
+ #       { name: 'rule_conditions', ariaLabel: 'Notification-Bedingungen' }
+ #   ) }}
+ #
+ # Stimulus-controller `condition-builder` is responsible for:
+ #   - add/remove chip
+ #   - aria-live announcement on change
+ #   - serialization to hidden input as JSON
+ #   - validation (operator must apply to field-type)
+ #
+ # Parameters (render):
+ #   fields      - array of {key, label, type, options?} (required)
+ #   operators   - array of {key, label, appliesTo[]} (required)
+ #   conditions  - array of {field, operator, value} initial state (default [])
+ #   props.name        - hidden-input name for form submission (default 'conditions')
+ #   props.ariaLabel   - aria-label for the live-region (default 'Bedingungen')
+ #   props.class       - extra CSS classes (optional)
+ #
+ # A11y:
+ #   - <div role="region" aria-live="polite"> announces add/remove
+ #   - each chip has aria-label "Bedingung: {field} {operator} {value}, Entfernen-Button verfügbar"
+ #   - keyboard: Tab between chips, Enter on remove-button removes chip
+ #}
+
+{% macro render(fields, operators, conditions = [], props = {}) %}
+    {% set name = props.name|default('conditions') %}
+    {% set wrapperClass = 'fa-condition-builder' ~ (props.class is defined ? ' ' ~ props.class : '') %}
+
+    <div class="{{ wrapperClass }}"
+         data-controller="condition-builder"
+         data-condition-builder-fields-value="{{ fields|json_encode|e('html_attr') }}"
+         data-condition-builder-operators-value="{{ operators|json_encode|e('html_attr') }}"
+         data-condition-builder-name-value="{{ name }}">
+        <div class="fa-condition-builder__chips"
+             role="region"
+             aria-live="polite"
+             aria-label="{{ props.ariaLabel|default('Bedingungen') }}"
+             data-condition-builder-target="chips">
+            {% for cond in conditions %}
+                {{ _self.chip(cond.field, cond.operator, cond.value, { fields: fields, operators: operators }) }}
+            {% endfor %}
+        </div>
+
+        <button type="button"
+                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm fa-condition-builder__add"
+                data-action="click->condition-builder#add"
+                aria-label="Bedingung hinzufügen">
+            <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+            Bedingung hinzufügen
+        </button>
+
+        <input type="hidden"
+               name="{{ name }}"
+               value="{{ conditions|json_encode|e('html_attr') }}"
+               data-condition-builder-target="hiddenInput">
+    </div>
+{% endmacro %}
+
+{% macro chip(fieldKey, operatorKey, value, props = {}) %}
+    {% set fields = props.fields|default([]) %}
+    {% set operators = props.operators|default([]) %}
+    {% set fieldDef = null %}
+    {% for f in fields %}
+        {% if f.key == fieldKey %}
+            {% set fieldDef = f %}
+        {% endif %}
+    {% endfor %}
+    {% set operatorDef = null %}
+    {% for op in operators %}
+        {% if op.key == operatorKey %}
+            {% set operatorDef = op %}
+        {% endif %}
+    {% endfor %}
+
+    <span class="fa-condition-chip"
+          data-condition-builder-target="chip"
+          data-field="{{ fieldKey }}"
+          data-operator="{{ operatorKey }}"
+          aria-label="Bedingung: {{ fieldDef.label|default(fieldKey) }} {{ operatorDef.label|default(operatorKey) }} {{ value }}, Entfernen verfügbar">
+        <span class="fa-condition-chip__field">{{ fieldDef.label|default(fieldKey) }}</span>
+        <span class="fa-condition-chip__operator">{{ operatorDef.label|default(operatorKey) }}</span>
+        <span class="fa-condition-chip__value">{{ value is iterable ? value|join(', ') : value }}</span>
+        <button type="button"
+                class="fa-condition-chip__remove"
+                data-action="click->condition-builder#remove"
+                aria-label="Bedingung entfernen">
+            <i class="fa-icon fa-icon--ui-x" aria-hidden="true"></i>
+        </button>
+    </span>
+{% endmacro %}
