@@ -138,7 +138,7 @@
                         {% set approver_value = approvers_default[tpl_key]|default(null) %}
                         <tr>
                             <td>
-                                <div><strong>{{ tpl.titleTranslationKey|default(tpl_key) }}</strong></div>
+                                <div><strong>{{ policy_title(tpl.titleTranslationKey, tpl.standard|default(null), tpl_key) }}</strong></div>
                                 <div class="text-muted small">{{ tpl_key }}</div>
                             </td>
                             <td>

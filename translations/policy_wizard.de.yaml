@@ -266,7 +266,7 @@ policy_wizard:
                 body: 'CISO + ISB sind Pflicht in jedem ISMS. DPO ist Pflicht bei DSGVO-Geltungsbereich. BCM-Officer nur bei aktiviertem BCM-Standard. Function-Owner sind die Fachbereichsleiter, die Risiken in ihrem Bereich verantworten.'
                 example: 'Beispiel kleines Unternehmen: CISO + ISB = dieselbe Person ist erlaubt, sollte aber dokumentiert sein. DPO = externe Beratung zulässig (§ 38 Abs. 1 BDSG).'
                 missing_user_link: 'Person nicht aufgelistet?'
-                missing_user_link_cta: 'Mandanten-Settings öffnen'
+                missing_user_link_cta: 'Personen-Verwaltung öffnen'
             tooltip:
                 ciso: 'CISO — strategische Verantwortung für Informationssicherheit. Berichtsweg an die Geschäftsführung.'
                 isb: 'ISB — operative Umsetzung der CISO-Vorgaben. In kleinen Organisationen oft Personalunion mit CISO.'
@@ -661,7 +661,7 @@ policy_wizard:
                 example: 'Beispiel: Default = 12 Monate, Approver = CISO. Spezifische Templates wie „Incident-Response-Plan" können auf 6 Monate verkürzt werden.'
                 reversibility: 'Approver-Änderungen ARCHIVIEREN bestehende Workflow-Zuweisungen, LÖSCHEN sie aber NICHT — bestehende Genehmigungen bleiben gültig.'
                 missing_user_link: 'Approver nicht aufgelistet?'
-                missing_user_link_cta: 'Mandanten-Settings öffnen'
+                missing_user_link_cta: 'Personen-Verwaltung öffnen'
             tooltip:
                 review_interval: 'ISO 27001:2022 Klausel 7.5.3 verlangt regelmäßige Überprüfung dokumentierter Information. Audit-Defang: max. 24 Monate.'
                 alva_hint: 'Alva ist Ihr Compliance-Co-Pilot — sendet 30 Tage vor Ablauf eine freundliche Erinnerung an den Approver.'
