@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use DateTimeImmutable;
+use App\Entity\Document;
 use App\Entity\Person;
 use App\Entity\Tenant;
 use App\Repository\ManagementReviewRepository;
@@ -135,6 +136,37 @@ class ManagementReview
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $resourcesNeeded = null;
+
+    // ── ISO 27001 §9.3 norm fields (T31.2.5) ──────────────────────────────
+
+    /** ISO 27001 §9.3 — Top-management attendance is mandatory */
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $topManagementAttended = false;
+
+    /** Periodic review date — ≥1× per year required by §9.3 */
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $nextReviewDate = null;
+
+    /** Formal meeting-minutes document reference (§7.5.3) */
+    #[ORM\ManyToOne(targetEntity: Document::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Document $meetingMinutesDocument = null;
+
+    /** Treatment effectiveness — separate from risksReview; evaluates ROI of controls */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $riskTreatmentEffectiveness = null;
+
+    /** InfoSec-Policy review outcome (§5.2) */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $policyReviewOutcome = null;
+
+    /** Snapshot of framework compliance status (DORA/NIS2/ISO/BaFin) — gated on 'compliance' module */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $frameworkComplianceStatus = null;
+
+    /** Structured action items: [{action: string, owner: string, deadline: ISO-date, status: 'open'|'in_progress'|'done'}] */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $actionItemsWithDeadlines = null;
 
 public function __construct()
     {
@@ -566,6 +598,85 @@ public function __construct()
     public function setResourcesNeeded(?string $resourcesNeeded): static
     {
         $this->resourcesNeeded = $resourcesNeeded;
+        return $this;
+    }
+
+    // ── ISO 27001 §9.3 norm fields (T31.2.5) ──────────────────────────────
+
+    public function isTopManagementAttended(): bool
+    {
+        return $this->topManagementAttended;
+    }
+
+    public function setTopManagementAttended(bool $topManagementAttended): static
+    {
+        $this->topManagementAttended = $topManagementAttended;
+        return $this;
+    }
+
+    public function getNextReviewDate(): ?\DateTimeImmutable
+    {
+        return $this->nextReviewDate;
+    }
+
+    public function setNextReviewDate(?\DateTimeImmutable $nextReviewDate): static
+    {
+        $this->nextReviewDate = $nextReviewDate;
+        return $this;
+    }
+
+    public function getMeetingMinutesDocument(): ?Document
+    {
+        return $this->meetingMinutesDocument;
+    }
+
+    public function setMeetingMinutesDocument(?Document $meetingMinutesDocument): static
+    {
+        $this->meetingMinutesDocument = $meetingMinutesDocument;
+        return $this;
+    }
+
+    public function getRiskTreatmentEffectiveness(): ?string
+    {
+        return $this->riskTreatmentEffectiveness;
+    }
+
+    public function setRiskTreatmentEffectiveness(?string $riskTreatmentEffectiveness): static
+    {
+        $this->riskTreatmentEffectiveness = $riskTreatmentEffectiveness;
+        return $this;
+    }
+
+    public function getPolicyReviewOutcome(): ?string
+    {
+        return $this->policyReviewOutcome;
+    }
+
+    public function setPolicyReviewOutcome(?string $policyReviewOutcome): static
+    {
+        $this->policyReviewOutcome = $policyReviewOutcome;
+        return $this;
+    }
+
+    public function getFrameworkComplianceStatus(): ?array
+    {
+        return $this->frameworkComplianceStatus;
+    }
+
+    public function setFrameworkComplianceStatus(?array $frameworkComplianceStatus): static
+    {
+        $this->frameworkComplianceStatus = $frameworkComplianceStatus;
+        return $this;
+    }
+
+    public function getActionItemsWithDeadlines(): ?array
+    {
+        return $this->actionItemsWithDeadlines;
+    }
+
+    public function setActionItemsWithDeadlines(?array $actionItemsWithDeadlines): static
+    {
+        $this->actionItemsWithDeadlines = $actionItemsWithDeadlines;
         return $this;
     }
 }

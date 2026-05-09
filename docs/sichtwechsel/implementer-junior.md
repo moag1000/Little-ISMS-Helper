@@ -12,19 +12,23 @@
 
 ## Welcome-Screen
 
-Erste Anmeldung. Hier wird der Junior-Implementer entweder mitgenommen oder verloren.
+Erste Anmeldung. Das ist der Moment, in dem der Junior das Tool entweder lieb gewinnt oder aufgibt.
 
 ![Welcome](img/implementer-junior/welcome.png)
 
-Statt direkt ins leere Dashboard kippen: Einstiegspfad mit Module-Übersicht und "Begrüßung nicht mehr anzeigen"-Option.
+Statt direkt ins leere Dashboard kippen: Einstiegspfad mit Module-Übersicht und "Begrüßung nicht mehr anzeigen"-Option. Aktive-Module-Kacheln zeigen, was im Tool *aktuell* zu tun ist — keine alphabetische Mega-Menü-Wand.
 
 ---
 
-## Hilfe & Tour
+## Setup-Wizard
 
-Tour-Modus für Onboarding. Alva (die ISMS-Begleiterin) führt durch das Tool. Persona-spezifische Tour-Inhalte sind admin-pflegbar.
+Geführtes Onboarding für die Erstkonfiguration. Schritt-für-Schritt durch Tenant-Daten, Branche, Frameworks.
 
-![Hilfe-Tour](img/implementer-junior/help-tour.png)
+![Setup-Wizard](img/setup/setup-wizard.png)
+
+Branchen-Preset (z.B. "Mittelstand-NIS2", "BaFin-Financial", "KRITIS-Energie") lädt vorgeschlagene Frameworks, Mappings und initiale Controls — der Junior muss nicht entscheiden, was 27001 ist.
+
+> *"Ich weiß nicht was ich hier reinschreiben soll."* — der Wizard reduziert genau diese Momente.
 
 ---
 
@@ -36,45 +40,53 @@ Form mit Pflichtfeld-Markierung, Tooltip pro Feld, Beispiel-Input.
 
 > *"Was ist der Unterschied zwischen Asset und Bedrohung? Bei 9001 hieß das einfach Prozess, warum hier drei Felder?"*
 
-Tooltips erklären Norm-Begriffe in 1–2 Sätzen, nicht in Klausel-Paragraphen.
+Tooltips erklären Norm-Begriffe (z.B. "Asset = ISO 27000:2022 Term 3.1: Anything that has value to the organization") in 1–2 Sätzen, nicht in Klausel-Paragraphen.
 
 ---
 
 ## Risiko-Anlage
 
-Kurz-Form mit den drei Pflichtangaben (Bedrohung, Schwachstelle, Auswirkung) und Auto-Verknüpfung zum Asset.
+Kurz-Form mit den drei Pflichtangaben (Bedrohung, Schwachstelle, Auswirkung) und einer Auto-Verknüpfung zum Asset.
 
 ![Risiko-Anlage](img/implementer-junior/risk-new.png)
 
----
-
-## Setup-Wizard
-
-Der erste Kontakt mit dem Tool: 11-Schritte-Setup. Voller Walkthrough mit Screenshots aller Schritte: [**Quickstart-Guide**](../QUICKSTART.md).
-
-> *"Ich weiß nicht was ich hier reinschreiben soll."* — der Wizard reduziert genau diese Momente.
+Das geführte Wizard-Variante (mehrere Schritte, je 2-3 Felder pro Step) ist als Alternative aufrufbar — für Junior-Implementer realistisch im Tagesgeschäft.
 
 ---
 
-## Querverweise
+## Hauptdashboard
 
-- **Setup-Wizard im Detail**: [Quickstart](../QUICKSTART.md)
-- **Compliance-Wizard für Framework-Onboarding**: [Compliance-Manager-Sicht](compliance-manager.md)
-- **Risiko-Register danach**: [ISB-Sicht](isb-practitioner.md)
+Nach erstem Setup. Zeigt Aufgaben, Pending-Reviews, Dringend-zu-tun.
 
----
+![Dashboard](img/isb-practitioner/dashboard.png)
 
-## Was der Junior vermisst
-
-Aus der [Persona-Definition](../../.claude/skills/persona-implementer-junior/):
-
-- **Onboarding-Wizard nach Reihenfolge ISMS-Aufbau** ("Erstelle jetzt: Kontext → Assets → Risiken → SoA")
-- **9001→27001-Bridge-View**: "Du kennst CAPA — hier heißt das Maßnahme. Du kennst Prozesslandkarte — hier heißt das SoA"
-- **Empty-States mit konkreter CTA** auf jeder Listen-Seite
-- **Beispieldaten-Import** als ein-Klick-Schalter im Setup-Wizard
-
-Detaillierter Junior-Walkthrough (textuell): [JUNIOR_IMPLEMENTER_WALKTHROUGH.md](../JUNIOR_IMPLEMENTER_WALKTHROUGH.md)
+Junior sieht: "Was muss ich heute machen?" — nicht: "Hier sind 47 Klausel-Status-Indikatoren, viel Spaß."
 
 ---
 
-[← Compliance-Manager](compliance-manager.md) · [Übersicht](README.md) · [Nächste: Risk-Owner →](risk-owner-business.md)
+## Hilfe & Tour
+
+Tour-Modus für Onboarding. Alva (die ISMS-Fee/Maskotchen-Figur) führt durch das Tool.
+
+![Hilfe-Tour](img/implementer-junior/help-tour.png)
+
+Persona-spezifische Tour-Inhalte (Junior, ISB, CISO, Risk-Owner — siehe `app:admin_tour_content_*` Routes) erlauben mehrere Touren parallel zu pflegen.
+
+---
+
+## Was der Junior hier nicht findet (und vermisst)
+
+Aus der [Persona-Definition](../../.claude/skills/persona-implementer-junior/SKILL.md):
+
+- **Onboarding-Wizard nach Reihenfolge ISMS-Aufbau** ("Erstelle jetzt: Kontext → Assets → Risiken → SoA").
+- **9001→27001-Bridge-View**: "Du kennst CAPA aus 9001 — hier heißt das Maßnahme. Du kennst Prozesslandkarte — hier heißt das SoA."
+- **Empty-States mit konkreter CTA** auf jeder Listen-Seite (heute teils nur "Keine Einträge" ohne Anlege-Vorschlag).
+- **Beispieldaten-Import** als ein-Klick-Schalter im Setup-Wizard für Lernumgebungen.
+
+→ Roadmap-Items getriggert über die Junior-Persona im UX-Review.
+
+Mehr Detail: [Junior-Implementer-Walkthrough (textuell)](../JUNIOR_IMPLEMENTER_WALKTHROUGH.md).
+
+---
+
+[← Compliance-Manager](compliance-manager.md) · [Übersicht](README.md) · [Nächste Persona: Risk-Owner →](risk-owner-business.md)

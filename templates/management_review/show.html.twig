@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'management_review' %}
 
 {% block title %}{{ review.title }} - {{ parent() }}{% endblock %}
@@ -10,18 +11,17 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="{{ path('app_management_review_index') }}" data-turbo-action="advance">
-                    <i class="bi bi-clipboard2-check" aria-hidden="true"></i> {{ 'management_review.title'|trans({}, 'management_review') }}
+                    <i class="fa-icon fa-icon--audit-trail" aria-hidden="true"></i> {{ 'management_review.title'|trans({}, 'management_review') }}
                 </a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">{{ review.title }}</li>
         </ol>
     </nav>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>
-            <i class="bi bi-clipboard2-check" aria-hidden="true"></i> {{ review.title }}
-        </h1>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'clipboard2-check', label: 'management_review.title'|trans({}, 'management_review') },
+        title: review.title
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">
@@ -30,7 +30,7 @@
                 {% block card_header %}
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 class="h5 mb-0">
-                            <i class="bi bi-clipboard2-check" aria-hidden="true"></i> {{ 'management_review.field.basic_info'|trans({}, 'management_review') }}
+                            <i class="fa-icon fa-icon--audit-trail" aria-hidden="true"></i> {{ 'management_review.field.basic_info'|trans({}, 'management_review') }}
                         </h2>
                         {% set statusClass = {
                             'planned': 'warning',
@@ -172,7 +172,7 @@
                     <div class="mb-3">
                         <div class="text-muted small fw-semibold">{{ 'management_review.decisions'|trans({}, 'management_review') }}</div>
                         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'bi-gavel' } } %}
-                            {% block alert_body %}<strong><i class="bi bi-gavel" aria-hidden="true"></i> {{ 'management_review.management_decisions'|trans({}, 'management_review') }}</strong> <p class="mb-0 mt-2">{{ review.decisions|nl2br }}</p>{% endblock %}
+                            {% block alert_body %}<strong><i class="fa-icon fa-icon--review" aria-hidden="true"></i> {{ 'management_review.management_decisions'|trans({}, 'management_review') }}</strong> <p class="mb-0 mt-2">{{ review.decisions|nl2br }}</p>{% endblock %}
                         {% endembed %}
                     </div>
                     {% endif %}
@@ -212,7 +212,7 @@
                             <a href="{{ path('app_management_review_pdf', {id: review.id}) }}"
                                class="fa-cyber-btn fa-cyber-btn--ghost"
                                data-turbo="false">
-                                <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                                 {{ 'management_review.action.pdf'|trans({}, 'management_review') }}
                             </a>
                             {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_management_review_pdf', route_params: {id: review.id}} only %}

@@ -61,7 +61,7 @@
         {# Norm reference #}
         {% if props.norm_ref is defined and props.norm_ref %}
             <p class="fa-empty-state__norm-ref text-muted small mb-2">
-                <i class="bi bi-book" aria-hidden="true"></i> {{ props.norm_ref }}
+                <i class="fa-icon fa-icon--nav-book" aria-hidden="true"></i> {{ props.norm_ref }}
             </p>
         {% endif %}
 
@@ -88,7 +88,7 @@
                 {% endfor %}
                 {% if props.help_link is defined and props.help_link %}
                     <a href="{{ props.help_link }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                        <i class="bi bi-question-circle" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--ui-help" aria-hidden="true"></i>
                         <span class="fa-cyber-btn__label">{{ 'common.learn_more'|trans({}, 'messages') }}</span>
                     </a>
                 {% endif %}

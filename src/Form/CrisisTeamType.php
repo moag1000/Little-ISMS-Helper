@@ -8,11 +8,13 @@ use App\Entity\BusinessContinuityPlan;
 use App\Entity\CrisisTeam;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\DataTransformer\JsonArrayTransformer;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -166,6 +168,10 @@ class CrisisTeamType extends AbstractType
                     'placeholder' => 'crisis_team.placeholder.virtual_meeting_url',
                 ],
                 'help' => 'crisis_team.help.virtual_meeting_url',
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Url(protocols: ['https']),
+                    new \App\Validator\Constraint\NoInternalIp(),
+                ],
             ])
             ->add('alertProcedures', TextareaType::class, [
                 'label' => 'crisis_team.field.alert_procedures',
@@ -248,7 +254,31 @@ class CrisisTeamType extends AbstractType
                     'rows' => 3,
                 ],
             ])
+            ->add('escalationMatrix', TextareaType::class, [
+                'label' => 'crisis_team.field.escalation_matrix',
+                'required' => false,
+                'attr' => [
+                    'rows' => 6,
+                    'placeholder' => 'crisis_team.placeholder.escalation_matrix',
+                ],
+                'help' => 'crisis_team.help.escalation_matrix_json',
+            ])
+            ->add('activationCount', IntegerType::class, [
+                'label' => 'crisis_team.field.activation_count',
+                'required' => false,
+                'attr' => ['min' => 0],
+                'help' => 'crisis_team.help.activation_count',
+            ])
+            ->add('lastActivatedAt', DateTimeType::class, [
+                'label' => 'crisis_team.field.last_activated_at',
+                'required' => false,
+                'widget' => 'single_text',
+                'input' => 'datetime_immutable',
+                'help' => 'crisis_team.help.last_activated_at',
+            ])
         ;
+
+        $builder->get('escalationMatrix')->addModelTransformer(new JsonArrayTransformer());
     }
 
     public function configureOptions(OptionsResolver $resolver): void

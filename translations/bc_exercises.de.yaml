@@ -57,6 +57,11 @@ bc_exercises:
         success_rating: 'Gesamterfolgsbewertung (1-5)'
         report_completed: 'Bericht abgeschlossen'
         report_date: Berichtsdatum
+        success_criteria: 'Erfolgskriterien (strukturiert)'
+        actual_rto_achieved: 'Tatsächliches RTO erreicht (Stunden)'
+        actual_rpo_achieved: 'Tatsächliches RPO erreicht (Stunden)'
+        bc_plans_tested: 'Getestete BC-Pläne'
+        evidence_artifacts: 'Nachweise & Artefakte'
     badge:
         'yes': Ja
         'no': Nein
@@ -92,6 +97,11 @@ bc_exercises:
         success_rating: 'Gesamtbewertung der Übung auf einer Skala von 1-5'
         report_completed: 'Wurde der Übungsbericht fertiggestellt?'
         report_date: 'Datum, an dem der Übungsbericht erstellt wurde'
+        success_criteria_json: 'JSON-Objekt mit Erfolgskriterien gemäß ISO 22301 §8.6 c: {"rtoMet":true,"rpoMet":true,"communicationEffective":true,"teamPrepared":true}.'
+        actual_rto_achieved: 'Tatsächlich gemessene Wiederherstellungszeit in Stunden (ISO 22301 §8.6 d). Vergleich mit Ziel-RTO.'
+        actual_rpo_achieved: 'Tatsächlich gemessener Datenverlust-Zeitraum in Stunden (ISO 22301 §8.6 d). Vergleich mit Ziel-RPO.'
+        bc_plans_tested: 'BC-Pläne, die in dieser Übung getestet wurden (ISO 22301 §8.6 a). Mehrfachauswahl möglich.'
+        evidence_artifacts_json: 'JSON-Array mit Audit-Nachweisen: [{"type":"photo|log|report|screenshot","reference":"Dateiname/URL","description":"Beschreibung"}].'
     exercise_type:
         tabletop: 'Planübung (Tabletop)'
         walkthrough: 'Walkthrough-Übung'

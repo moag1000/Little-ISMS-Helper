@@ -19,14 +19,16 @@ export default class extends Controller {
         commands: { type: Array, default: [] }
     };
 
-    // Default commands (fallback if not provided via values)
+    // Default commands (fallback if not provided via values).
+    // Icons use Aurora fa-icon names (no `bi-` prefix); render below
+    // emits <i class="fa-icon fa-icon--{icon}">.
     defaultCommands = [
         // Navigation
-        { id: 'goto-dashboard', label: 'Dashboard', category: 'Navigation', icon: 'bi-speedometer2', url: '/dashboard', keywords: ['home', 'start'] },
-        { id: 'goto-assets', label: 'Assets', category: 'Navigation', icon: 'bi-server', url: '/asset', keywords: ['asset', 'inventory'] },
-        { id: 'goto-risks', label: 'Risks', category: 'Navigation', icon: 'bi-exclamation-triangle', url: '/risk', keywords: ['risk'] },
-        { id: 'goto-incidents', label: 'Incidents', category: 'Navigation', icon: 'bi-bug', url: '/incident', keywords: ['incident'] },
-        { id: 'goto-soa', label: 'SoA', category: 'Navigation', icon: 'bi-shield-check', url: '/soa', keywords: ['soa', 'controls'] },
+        { id: 'goto-dashboard', label: 'Dashboard', category: 'Navigation', icon: 'nav-dashboard', url: '/dashboard', keywords: ['home', 'start'] },
+        { id: 'goto-assets', label: 'Assets', category: 'Navigation', icon: 'nav-assets', url: '/asset', keywords: ['asset', 'inventory'] },
+        { id: 'goto-risks', label: 'Risks', category: 'Navigation', icon: 'risk-register', url: '/risk', keywords: ['risk'] },
+        { id: 'goto-incidents', label: 'Incidents', category: 'Navigation', icon: 'incident', url: '/incident', keywords: ['incident'] },
+        { id: 'goto-soa', label: 'SoA', category: 'Navigation', icon: 'soa', url: '/soa', keywords: ['soa', 'controls'] },
     ];
 
     filteredCommands = [];
@@ -212,13 +214,19 @@ export default class extends Controller {
                 const globalIndex = this.filteredCommands.indexOf(cmd);
                 const isSelected = globalIndex === this.selectedIndex;
 
+                // Backward compat: support legacy bi-* icon names — render
+                // as Bootstrap-Icon. New code should use fa-icon names.
+                const iconHtml = (cmd.icon || '').startsWith('bi-')
+                    ? `<i class="bi ${cmd.icon} command-item-icon" aria-hidden="true"></i>`
+                    : `<i class="fa-icon fa-icon--${cmd.icon} command-item-icon" aria-hidden="true"></i>`;
+
                 html += `
                     <div class="command-item ${isSelected ? 'selected' : ''}"
                          data-command-id="${cmd.id}"
                          data-action="click->command-palette#execute"
                          data-index="${globalIndex}">
                         <div class="command-item-content">
-                            <i class="bi ${cmd.icon} command-item-icon"></i>
+                            ${iconHtml}
                             <span class="command-item-label">${cmd.label}</span>
                         </div>
                         ${this.getShortcutBadge(cmd)}

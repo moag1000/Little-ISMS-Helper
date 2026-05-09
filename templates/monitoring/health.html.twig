@@ -24,7 +24,7 @@
 {% block admin_content %}
     <div class="mb-3">
         <a href="{{ path('monitoring_health_json') }}" class="fa-cyber-btn fa-cyber-btn--ghost" target="_blank">
-            <i class="bi bi-code-square" aria-hidden="true"></i> {{ 'monitoring.health.json_api'|trans({}, 'monitoring') }}
+            <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.health.json_api'|trans({}, 'monitoring') }}
         </a>
     </div>
 
@@ -159,7 +159,7 @@
 
                             <div class="btn-group" role="group" aria-label="{{ 'monitoring.schema.actions_label'|trans({}, 'monitoring') }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
-                                    <i class="bi bi-database-gear" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--asset-database" aria-hidden="true"></i>
                                     {{ 'monitoring.schema.apply_update'|trans({}, 'monitoring') }}
                                 </button>
                             </div>
@@ -305,7 +305,7 @@
                                 data-action="click->autofix#fix"
                                 data-autofix-action-param="cache"
                                 data-autofix-url-value="{{ path('monitoring_health') }}">
-                            <i class="bi bi-wrench" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }}
                         </button>
                     {% endif %}
                     <button class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm auto-fix-btn"
@@ -356,7 +356,7 @@
                                 data-action="click->autofix#fix"
                                 data-autofix-action-param="logs"
                                 data-autofix-url-value="{{ path('monitoring_health') }}">
-                            <i class="bi bi-wrench" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }}
+                            <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }}
                         </button>
                     {% endif %}
                     <button class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--sm auto-fix-btn"
@@ -426,7 +426,7 @@
                                 data-action="click->autofix#fix"
                                 data-autofix-action-param="var-permissions"
                                 data-autofix-url-value="{{ path('monitoring_health') }}">
-                            <i class="bi bi-wrench" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }} var/
+                            <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }} var/
                         </button>
                     {% endif %}
                     {% if health_checks.permissions.uploads_writable is not null and not health_checks.permissions.uploads_writable %}
@@ -435,7 +435,7 @@
                                 data-action="click->autofix#fix"
                                 data-autofix-action-param="uploads-permissions"
                                 data-autofix-url-value="{{ path('monitoring_health') }}">
-                            <i class="bi bi-wrench" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }} uploads/
+                            <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }} uploads/
                         </button>
                     {% endif %}
                     <div id="fix-result-var-permissions"></div>
@@ -612,7 +612,7 @@
                             data-action="click->autofix#fix"
                             data-autofix-action-param="session-permissions"
                             data-autofix-url-value="{{ path('monitoring_health') }}">
-                        <i class="bi bi-wrench" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.action.fix_permissions'|trans({}, 'monitoring') }}
                     </button>
                     <div id="fix-result-session-permissions"></div>
                 {% endif %}

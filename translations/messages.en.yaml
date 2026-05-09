@@ -133,6 +133,7 @@ confirm:
     typing_hint: 'Type "%keyword%" to confirm:'
 back: Back
 common:
+    module_not_active: 'Module "%module%" is not active. Please activate via Setup → Modules.'
     please_select: 'Please select...'
     next: Next
     yes: 'Yes'
@@ -1407,6 +1408,9 @@ security:
         saml_login_error: ''
         saml_logout_error: ''
     csrf_token_invalid: ''
+    url:
+        no_internal_ip: 'Internal IP addresses are not permitted for security reasons (SSRF protection). Please use a public URL.'
+        dns_resolution_failed: 'Hostname could not be resolved (potential DNS-pinning attack blocked).'
 location:
     success:
         created: ''
@@ -2036,6 +2040,11 @@ data_breach:
         overdue: 'Overdue'
         hours_left: '%hours% hrs remaining'
         table_title: 'Data breaches'
+
+file_upload:
+    validation:
+        mime_type_invalid: 'File type not permitted. Allowed types: %types%'
+        max_size_exceeded: 'File too large (max %limit%).'
 
 pdf_switch:
     also_available: 'Also available in'

@@ -181,7 +181,7 @@
                 {% endif %}
                 {% if excel_url %}
                     <a href="{{ excel_url }}" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm" data-turbo="false">
-                        <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'reports.action.download_excel'|trans({}, 'reports') }}
+                        <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> {{ 'reports.action.download_excel'|trans({}, 'reports') }}
                     </a>
                 {% endif %}
             </div>
@@ -237,7 +237,7 @@
    {% set db_content %}
        <dl class="row mb-0">
            <dt class="col-sm-4">Status:</dt>
-           <dd class="col-sm-8"><span class="badge bg-success fa-status-pill fa-status-pill--success">HEALTHY</span></dd>
+           <dd class="col-sm-8"><span class="fa-status-pill fa-status-pill--success">HEALTHY</span></dd>
        </dl>
    {% endset %}
 

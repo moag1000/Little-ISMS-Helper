@@ -1,0 +1,194 @@
+# BSI IT-Grundschutz-Kompendium 2023 — Schicht NET (Netze und Kommunikation)
+# Quelle: BSI Bundesamt fuer Sicherheit in der Informationstechnik
+# https://www.bsi.bund.de/IT-Grundschutz-Kompendium
+
+layer: NET
+title: 'Netze und Kommunikation'
+description: 'Schicht fuer Netzarchitektur, Netzmanagement, WLAN, Router/Switches, Firewalls, VPN, Network Access Control, TK-Anlagen und VoIP.'
+bausteine:
+  - id: NET.1.1
+    title: 'Netzarchitektur und -design'
+    description: 'Anforderungen an Planung, Dokumentation und Sicherheit der Netzarchitektur.'
+    anforderungen:
+      basis:
+        - id: NET.1.1.A1
+          title: 'Erstellung einer Netzarchitektur'
+          requirement_text: 'Es MUSS eine Netzarchitektur erstellt werden.'
+        - id: NET.1.1.A2
+          title: 'Netztrennung in Sicherheitszonen'
+          requirement_text: 'Das Netz MUSS in Sicherheitszonen getrennt werden.'
+        - id: NET.1.1.A3
+          title: 'Dokumentation der Netzarchitektur'
+          requirement_text: 'Die Netzarchitektur MUSS umfassend dokumentiert sein. Siehe BSI Kompendium 2023 Baustein NET.1.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: NET.1.2
+    title: 'Netzmanagement'
+    description: 'Anforderungen an Planung und sicheren Betrieb des Netzmanagements.'
+    anforderungen:
+      basis:
+        - id: NET.1.2.A1
+          title: 'Planung des Netzmanagements'
+          requirement_text: 'Das Netzmanagement MUSS sorgfaeltig geplant werden.'
+        - id: NET.1.2.A2
+          title: 'Trennung des Management-Netzes'
+          requirement_text: 'Das Management-Netz MUSS vom Produktivnetz getrennt sein. Siehe BSI Kompendium 2023 Baustein NET.1.2 Anforderung A2.'
+        - id: NET.1.2.A3
+          title: 'Absicherung der Management-Zugriffe'
+          requirement_text: 'Administrative Zugriffe auf Netzkomponenten MUESSEN nur ueber sichere Protokolle und nach starker Authentisierung moeglich sein. Siehe BSI Kompendium 2023 Baustein NET.1.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: NET.2.1
+    title: 'WLAN-Betrieb'
+    description: 'Anforderungen an Planung, Konfiguration und Betrieb von WLAN-Infrastrukturen.'
+    anforderungen:
+      basis:
+        - id: NET.2.1.A1
+          title: 'Planung des WLAN-Einsatzes'
+          requirement_text: 'Der WLAN-Einsatz MUSS sorgfaeltig geplant werden.'
+        - id: NET.2.1.A2
+          title: 'Auswahl geeigneter WLAN-Geraete'
+          requirement_text: 'Die WLAN-Geraete MUESSEN nach dem aktuellen Stand der Technik ausgewaehlt werden.'
+        - id: NET.2.1.A3
+          title: 'Sichere WLAN-Konfiguration'
+          requirement_text: 'WLANs MUESSEN mit aktuellen, sicheren Verschluesselungs- und Authentisierungsverfahren konfiguriert werden. Siehe BSI Kompendium 2023 Baustein NET.2.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: NET.2.2
+    title: 'WLAN-Nutzung'
+    description: 'Anforderungen an die sichere Nutzung von WLAN durch Endbenutzer.'
+    anforderungen:
+      basis:
+        - id: NET.2.2.A1
+          title: 'Regelungen zur WLAN-Nutzung'
+          requirement_text: 'Es MUESSEN Regelungen zur WLAN-Nutzung erstellt werden.'
+        - id: NET.2.2.A2
+          title: 'Sensibilisierung zur WLAN-Nutzung'
+          requirement_text: 'Mitarbeiter MUESSEN zur sicheren WLAN-Nutzung sensibilisiert werden. Siehe BSI Kompendium 2023 Baustein NET.2.2 Anforderung A2.'
+        - id: NET.2.2.A3
+          title: 'Trennung von Gast- und Mitarbeiter-WLAN'
+          requirement_text: 'Gast-WLAN MUSS vom Mitarbeiter-/Unternehmens-WLAN getrennt sein. Siehe BSI Kompendium 2023 Baustein NET.2.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: NET.3.1
+    title: 'Router und Switches'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von Routern und Switches im Datennetz.'
+    anforderungen:
+      basis:
+        - id: NET.3.1.A1
+          title: 'Sichere Grundkonfiguration von Routern und Switches'
+          requirement_text: 'Router und Switches MUESSEN sicher konfiguriert werden.'
+        - id: NET.3.1.A2
+          title: 'Aenderung von Default-Passwoertern'
+          requirement_text: 'Default-Passwoerter und -Konten von Routern und Switches MUESSEN geaendert oder deaktiviert werden. Siehe BSI Kompendium 2023 Baustein NET.3.1 Anforderung A2.'
+        - id: NET.3.1.A3
+          title: 'Aktualitaet der Geraetesoftware'
+          requirement_text: 'Router und Switches MUESSEN regelmaessig mit aktuellen Firmware-/Software-Versionen versorgt werden. Siehe BSI Kompendium 2023 Baustein NET.3.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: NET.3.2
+    title: 'Firewall'
+    description: 'Anforderungen an Planung, Konfiguration und Betrieb von Firewalls.'
+    anforderungen:
+      basis:
+        - id: NET.3.2.A1
+          title: 'Erstellung einer Firewall-Richtlinie'
+          requirement_text: 'Es MUSS eine Firewall-Richtlinie erstellt werden.'
+        - id: NET.3.2.A2
+          title: 'Einrichten von Paketfiltern'
+          requirement_text: 'Paketfilter MUESSEN nach dem Prinzip der restriktiven Rechtevergabe konfiguriert werden.'
+        - id: NET.3.2.A3
+          title: 'Regelmaessige Pruefung der Firewall-Regeln'
+          requirement_text: 'Firewall-Regeln MUESSEN regelmaessig auf Notwendigkeit und Korrektheit geprueft werden. Siehe BSI Kompendium 2023 Baustein NET.3.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: NET.3.3
+    title: 'VPN'
+    description: 'Anforderungen an Planung, Konfiguration und Betrieb von VPN-Loesungen.'
+    anforderungen:
+      basis:
+        - id: NET.3.3.A1
+          title: 'Planung des VPN-Einsatzes'
+          requirement_text: 'Vor dem Einsatz eines VPN MUSS der Einsatzzweck festgelegt und die Auswahl der Protokolle dokumentiert werden.'
+        - id: NET.3.3.A2
+          title: 'Sichere Konfiguration des VPN'
+          requirement_text: 'Fuer VPN-Verbindungen MUESSEN ausschliesslich als sicher geltende kryptographische Protokolle und Verfahren eingesetzt werden.'
+      standard:
+        - id: NET.3.3.A8
+          title: 'Absicherung der VPN-Gegenstellen'
+          requirement_text: 'Die Endgeraete, die sich per VPN verbinden, SOLLTEN ausreichend abgesichert sein (z. B. Haertung, EDR, Patch-Stand).'
+      hoch: []
+
+  - id: NET.3.4
+    title: 'Network Access Control'
+    description: 'Anforderungen an Planung und Betrieb von Network-Access-Control-Loesungen.'
+    anforderungen:
+      basis:
+        - id: NET.3.4.A1
+          title: 'Planung des NAC-Einsatzes'
+          requirement_text: 'Der Einsatz von Network Access Control (NAC) MUSS sorgfaeltig geplant werden.'
+        - id: NET.3.4.A2
+          title: 'Authentisierung der Endgeraete'
+          requirement_text: 'Endgeraete MUESSEN sich vor Zugriff auf das Netz authentisieren (z. B. ueber 802.1X). Siehe BSI Kompendium 2023 Baustein NET.3.4 Anforderung A2.'
+        - id: NET.3.4.A3
+          title: 'Behandlung nicht-konformer Endgeraete'
+          requirement_text: 'Endgeraete, die die Sicherheitsanforderungen nicht erfuellen, MUESSEN in ein Quarantaene-Segment verlagert oder abgewiesen werden. Siehe BSI Kompendium 2023 Baustein NET.3.4 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: NET.4.1
+    title: 'TK-Anlagen'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von Telekommunikationsanlagen.'
+    anforderungen:
+      basis:
+        - id: NET.4.1.A1
+          title: 'Planung des Einsatzes einer TK-Anlage'
+          requirement_text: 'Der Einsatz einer Telefonanlage (klassisch oder VoIP) MUSS geplant werden: Netzwerkdesign, VLAN-Trennung von Sprach- und Datenverkehr, Notruffunktion.'
+        - id: NET.4.1.A2
+          title: 'Sichere Konfiguration der TK-Anlage'
+          requirement_text: 'Die TK-Anlage MUSS sicher konfiguriert werden. Default-Accounts MUESSEN geaendert, nicht benoetigte Dienste deaktiviert sein.'
+        - id: NET.4.1.A3
+          title: 'Aktualitaet und Patchmanagement'
+          requirement_text: 'TK-Anlagen MUESSEN regelmaessig mit Sicherheitsupdates versorgt werden. Siehe BSI Kompendium 2023 Baustein NET.4.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: NET.4.2
+    title: 'VoIP'
+    description: 'Anforderungen an Planung, Konfiguration und Betrieb von VoIP-Loesungen.'
+    anforderungen:
+      basis:
+        - id: NET.4.2.A1
+          title: 'Sichere Grundkonfiguration von Routern und Switches fuer VoIP'
+          requirement_text: 'Router und Switches MUESSEN sicher grundkonfiguriert werden. Standard-Passwoerter MUESSEN geaendert, unbenutzte Ports MUESSEN deaktiviert sein.'
+        - id: NET.4.2.A2
+          title: 'Redundanz und Verfuegbarkeit'
+          requirement_text: 'Fuer kritische Router und Switches MUESSEN Redundanz-Massnahmen (Loopback, Failover, Stacking) ergriffen werden.'
+        - id: NET.4.2.A3
+          title: 'Schutz vor unautorisiertem Zugriff'
+          requirement_text: 'Administrative Zugriffe auf Router und Switches MUESSEN ueber verschluesselte Kanaele (SSH statt Telnet, HTTPS) und mit starken Authentisierungsverfahren erfolgen.'
+      standard: []
+      hoch: []
+
+  - id: NET.4.3
+    title: 'Faxgeraete und Faxserver'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb von Faxgeraeten und Faxservern.'
+    anforderungen:
+      basis:
+        - id: NET.4.3.A1
+          title: 'Geeignete Aufstellung von Faxgeraeten'
+          requirement_text: 'Faxgeraete MUESSEN so aufgestellt sein, dass keine Unbefugten Einsicht in eingehende oder ausgehende Faxe erlangen koennen. Siehe BSI Kompendium 2023 Baustein NET.4.3 Anforderung A1.'
+        - id: NET.4.3.A2
+          title: 'Sichere Konfiguration von Faxservern'
+          requirement_text: 'Faxserver MUESSEN sicher konfiguriert werden. Siehe BSI Kompendium 2023 Baustein NET.4.3 Anforderung A2.'
+        - id: NET.4.3.A3
+          title: 'Geregelter Umgang mit eingehenden und ausgehenden Faxen'
+          requirement_text: 'Eingehende und ausgehende Faxe MUESSEN durch geregelten Prozess der berechtigten Person zugestellt werden. Siehe BSI Kompendium 2023 Baustein NET.4.3 Anforderung A3.'
+      standard: []
+      hoch: []

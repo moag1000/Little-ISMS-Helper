@@ -85,6 +85,21 @@ class AuditFindingType extends AbstractType
                 'choice_translation_domain' => 'audits',
                 'required' => true,
             ])
+            ->add('source', ChoiceType::class, [
+                'label' => 'audits.field.finding_source',
+                'required' => false,
+                'placeholder' => 'audits.placeholder.finding_source',
+                'choices' => [
+                    'audits.finding_source.internal_audit' => 'internal_audit',
+                    'audits.finding_source.external_audit' => 'external_audit',
+                    'audits.finding_source.incident' => 'incident',
+                    'audits.finding_source.review' => 'review',
+                    'audits.finding_source.customer_complaint' => 'customer_complaint',
+                    'audits.finding_source.management_review' => 'management_review',
+                ],
+                'choice_translation_domain' => 'audits',
+                'help' => 'audits.help.finding_source',
+            ])
             ->add('clauseReference', TextType::class, [
                 'label' => 'audit_finding.field.clause_reference',
                 'required' => false,

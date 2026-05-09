@@ -1008,4 +1008,189 @@ class Supplier
         $this->bcmAssessmentResult = $bcmAssessmentResult;
         return $this;
     }
+
+    // ── Sprint 7-B: MaRisk outsourcing fields (gated 'marisk' module) ─────────
+
+    /**
+     * Outsourcing classification (MaRisk AT 9.1).
+     * Values: substantial | non_substantial
+     * Note: separate from DORA's "critical or important" classification.
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['supplier:read', 'supplier:write'])]
+    private ?string $outsourcingClassification = null;
+
+    /**
+     * Whether the initial due diligence was completed before outsourcing (MaRisk AT 9.2).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['supplier:read', 'supplier:write'])]
+    private bool $outsourcingDueDiligenceCompleted = false;
+
+    /**
+     * Date on which due diligence was completed.
+     */
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Groups(['supplier:read', 'supplier:write'])]
+    private ?\DateTimeImmutable $outsourcingDueDiligenceDate = null;
+
+    /**
+     * Exit strategy for the outsourcing relationship (MaRisk AT 9.6).
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['supplier:read', 'supplier:write'])]
+    private ?string $outsourcingExitStrategy = null;
+
+    /**
+     * Whether BaFin notification is required (MaRisk AT 9.7 + § 24 Abs. 1 Nr. 12 KWG).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['supplier:read', 'supplier:write'])]
+    private bool $bafinNotificationRequired = false;
+
+    /**
+     * Date when BaFin was notified.
+     */
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Groups(['supplier:read', 'supplier:write'])]
+    private ?\DateTimeImmutable $bafinNotificationDate = null;
+
+    /**
+     * Impact on risk-bearing capacity (MaRisk AT 4.1).
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['supplier:read', 'supplier:write'])]
+    private ?string $riskBearingCapacityImpact = null;
+
+    /**
+     * Whether the management board has explicitly accepted this outsourcing risk (MaRisk AT 4.3).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['supplier:read', 'supplier:write'])]
+    private bool $boardLevelRiskAcceptance = false;
+
+    /**
+     * Whether the compliance function was involved in outsourcing assessment (MaRisk AT 4.4.2).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['supplier:read', 'supplier:write'])]
+    private bool $complianceFunctionInvolvement = false;
+
+    /**
+     * Whether the internal audit function was involved (MaRisk AT 4.4.3).
+     */
+    #[ORM\Column(options: ['default' => false])]
+    #[Groups(['supplier:read', 'supplier:write'])]
+    private bool $internalAuditFunctionInvolvement = false;
+
+    public function getOutsourcingClassification(): ?string
+    {
+        return $this->outsourcingClassification;
+    }
+
+    public function setOutsourcingClassification(?string $outsourcingClassification): static
+    {
+        $this->outsourcingClassification = $outsourcingClassification;
+        return $this;
+    }
+
+    public function isOutsourcingDueDiligenceCompleted(): bool
+    {
+        return $this->outsourcingDueDiligenceCompleted;
+    }
+
+    public function setOutsourcingDueDiligenceCompleted(bool $outsourcingDueDiligenceCompleted): static
+    {
+        $this->outsourcingDueDiligenceCompleted = $outsourcingDueDiligenceCompleted;
+        return $this;
+    }
+
+    public function getOutsourcingDueDiligenceDate(): ?\DateTimeImmutable
+    {
+        return $this->outsourcingDueDiligenceDate;
+    }
+
+    public function setOutsourcingDueDiligenceDate(?\DateTimeImmutable $outsourcingDueDiligenceDate): static
+    {
+        $this->outsourcingDueDiligenceDate = $outsourcingDueDiligenceDate;
+        return $this;
+    }
+
+    public function getOutsourcingExitStrategy(): ?string
+    {
+        return $this->outsourcingExitStrategy;
+    }
+
+    public function setOutsourcingExitStrategy(?string $outsourcingExitStrategy): static
+    {
+        $this->outsourcingExitStrategy = $outsourcingExitStrategy;
+        return $this;
+    }
+
+    public function isBafinNotificationRequired(): bool
+    {
+        return $this->bafinNotificationRequired;
+    }
+
+    public function setBafinNotificationRequired(bool $bafinNotificationRequired): static
+    {
+        $this->bafinNotificationRequired = $bafinNotificationRequired;
+        return $this;
+    }
+
+    public function getBafinNotificationDate(): ?\DateTimeImmutable
+    {
+        return $this->bafinNotificationDate;
+    }
+
+    public function setBafinNotificationDate(?\DateTimeImmutable $bafinNotificationDate): static
+    {
+        $this->bafinNotificationDate = $bafinNotificationDate;
+        return $this;
+    }
+
+    public function getRiskBearingCapacityImpact(): ?string
+    {
+        return $this->riskBearingCapacityImpact;
+    }
+
+    public function setRiskBearingCapacityImpact(?string $riskBearingCapacityImpact): static
+    {
+        $this->riskBearingCapacityImpact = $riskBearingCapacityImpact;
+        return $this;
+    }
+
+    public function isBoardLevelRiskAcceptance(): bool
+    {
+        return $this->boardLevelRiskAcceptance;
+    }
+
+    public function setBoardLevelRiskAcceptance(bool $boardLevelRiskAcceptance): static
+    {
+        $this->boardLevelRiskAcceptance = $boardLevelRiskAcceptance;
+        return $this;
+    }
+
+    public function isComplianceFunctionInvolvement(): bool
+    {
+        return $this->complianceFunctionInvolvement;
+    }
+
+    public function setComplianceFunctionInvolvement(bool $complianceFunctionInvolvement): static
+    {
+        $this->complianceFunctionInvolvement = $complianceFunctionInvolvement;
+        return $this;
+    }
+
+    public function isInternalAuditFunctionInvolvement(): bool
+    {
+        return $this->internalAuditFunctionInvolvement;
+    }
+
+    public function setInternalAuditFunctionInvolvement(bool $internalAuditFunctionInvolvement): static
+    {
+        $this->internalAuditFunctionInvolvement = $internalAuditFunctionInvolvement;
+        return $this;
+    }
+
 }

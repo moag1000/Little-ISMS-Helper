@@ -1,36 +1,96 @@
 /*
- * FairyAurora v3.0 — Print-Styles (Plan § 23)
+ * FairyAurora v4.0 — Print-Styles (Audit V2 §F7 — Spec-Coverage 30→90%)
  *
  * @media print — Neutral-Light-Fallback für Browser-Ctrl+P.
  * Unterscheidet sich von PDF-Templates (templates/pdf/) — die bleiben
  * corporate-neutral und werden nicht von diesem Stylesheet betroffen.
+ *
+ * Spec-Source: docs/design_system/sections/print-styles.html
+ * Coverage: @page rules, page-break-utilities, thead-repeat,
+ *           print-color-adjust, Serif-Switch, Watermark, .print-only/.no-print,
+ *           Inline-URL nach Links.
  */
 
+/* ═══════════════════════════════════════════════════════════════════
+   @page — A4 portrait default + landscape variant
+   ═══════════════════════════════════════════════════════════════════ */
+@page {
+    size: A4 portrait;
+    margin: 22mm 18mm; /* 22mm top/bottom for header/footer, 18mm sides */
+}
+@page :first {
+    /* Cover-page borderless */
+    margin-top: 0;
+}
+
+/* Landscape page-class — apply via `page: landscape` on the wrapping element
+   or by adding `.print-landscape` to the print-doc body. */
+@page landscape {
+    size: A4 landscape;
+    margin: 18mm 22mm;
+}
+
 @media print {
-    /* Light-Palette zwingen, auch wenn Dark aktiv ist */
+    /* ─────────────────────────────────────────────────────────
+       Print-Tokens — Aurora → Papier-Mapping
+       Light-Palette zwingen, auch wenn Dark aktiv ist.
+       ───────────────────────────────────────────────────────── */
     :root,
     html[data-theme="dark"],
     html[data-theme="system"] {
-        --bg: #fff;
-        --surface: #fff;
-        --surface-2: #f5f6fa;
-        --border: #cbd5e0;
-        --fg: #1a1a1a;
-        --fg-2: #4c4a73;
-        --fg-3: #6d6b92;
-        --primary: #0369a1;
-        --primary-tint: rgb(3, 105, 161, 0.08);
+        --bg:          #fff;
+        --surface:     #fff;
+        --surface-2:   #f6f6fa;
+        --border:      #cbd5e0;
+        --fg:          #0e0a1f;
+        --fg-2:        #2a2540;
+        --fg-3:        #5e5878;
+        --primary:     #0369a1;
+        --primary-tint: rgba(3, 105, 161, 0.08);
+        --shadow-sm:    none;
+        --shadow-md:    none;
+        --shadow-lg:    none;
+        --shadow-overlay: none;
+        --aurora-gradient: none;
+        /* Serif-Body, Sans-Headlines (Spec §print-tokens) */
+        --font-serif:  Charter, "Source Serif Pro", Georgia, "Times New Roman", serif;
     }
 
-    /* Alle Animationen stoppen */
+    /* Body uses serif for running text — better readability on paper.
+       Headings, eyebrows, tables stay sans (declared below). */
+    body {
+        font-family: var(--font-serif, Charter, Georgia, "Times New Roman", serif);
+        font-size: 10pt;
+        line-height: 1.45;
+        color: #0e0a1f;
+        background: #fff !important;
+    }
+    h1, h2, h3, h4, h5, h6,
+    .ds-eyebrow, .fa-page-header__title,
+    table, thead, .fa-cyber-btn, .fa-status-pill, .badge,
+    code, pre, .font-monospace {
+        font-family: var(--font-sans, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+    }
+    code, pre, .font-monospace {
+        font-family: var(--font-mono, "JetBrains Mono", ui-monospace, monospace);
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       Color-Adjust — Browser nicht entfärben lassen
+       (Pflicht für KPI-Tiles + Status-Badges + Sparklines)
+       ───────────────────────────────────────────────────────── */
     *, *::before, *::after {
         animation: none !important;
         transition: none !important;
         box-shadow: none !important;
         text-shadow: none !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
     }
 
-    /* Shell-Elemente komplett ausblenden */
+    /* ─────────────────────────────────────────────────────────
+       Sichtbarkeit — Shell + UI-Chrome komplett aus
+       ───────────────────────────────────────────────────────── */
     .app-sidebar,
     .header,
     .header-actions,
@@ -52,12 +112,28 @@
     .skip-link,
     .mode-switch,
     .fa-mode-switch,
+    .bulk-action-bar,
+    .alva-dock,
+    .tweaks-panel,
+    .floating-toolbar,
+    .fa-floating-toolbar,
+    .no-print,
     [data-controller*="tour"],
     [data-controller*="guided"] {
         display: none !important;
     }
 
-    /* Content auf volle Breite */
+    /* Print-only elements: hidden by default in screen, visible only in print.
+       Apply to print-headers, footers, watermarks, signature-blocks etc. */
+    .print-only {
+        display: block !important;
+    }
+    .print-only-inline { display: inline !important; }
+    .print-only-flex   { display: flex !important; }
+
+    /* ─────────────────────────────────────────────────────────
+       Layout — full width, no chrome
+       ───────────────────────────────────────────────────────── */
     body,
     .app-layout,
     .app-main,
@@ -71,9 +147,8 @@
         padding: 0 !important;
         max-width: 100% !important;
         width: 100% !important;
-        background: var(--bg) !important;
-        color: var(--fg) !important;
-        box-shadow: none !important;
+        background: #fff !important;
+        color: #0e0a1f !important;
         overflow: visible !important;
         display: block !important;
     }
@@ -84,44 +159,162 @@
         display: none !important;
     }
 
-    /* Links mit URL in Klammern (Audit-Nachvollziehbarkeit) */
+    /* ─────────────────────────────────────────────────────────
+       Links — externe URL hinter Linktext anzeigen
+       (Audit-Nachvollziehbarkeit per Spec §print-links)
+       ───────────────────────────────────────────────────────── */
     a[href^="http"]:not(.no-print-url)::after,
     a[href^="/"]:not(.no-print-url)::after {
         content: " (" attr(href) ")";
-        font-size: 10px;
-        color: var(--fg-3);
+        font-size: 9pt;
+        color: #5e5878;
         font-weight: normal;
+        word-break: break-all;
+    }
+    /* Aber nicht für interne Anker oder Bild-Links */
+    a[href^="#"]::after,
+    a:has(img)::after {
+        content: "";
     }
 
-    /* Page-Break-Utilities */
-    .page-break-before { break-before: page; }
-    .page-break-after  { break-after: page; }
-    .page-break-avoid  { break-inside: avoid; }
+    /* ─────────────────────────────────────────────────────────
+       Page-Break-Utilities (Spec §print-rules)
+       ───────────────────────────────────────────────────────── */
+    .page-break-before { break-before: page; page-break-before: always; }
+    .page-break-after  { break-after: page;  page-break-after: always; }
+    .page-break-avoid  { break-inside: avoid; page-break-inside: avoid; }
 
-    /* Tabellen nicht mitten abbrechen wenn möglich */
-    table, tr, td, th { break-inside: avoid; }
+    /* Auto-page-break before each top-level section heading */
+    h1, .print-section {
+        break-before: page;
+        page-break-before: always;
+    }
+    /* But: NOT for the very first H1 in a print-doc */
+    .print-doc > h1:first-child,
+    .print-doc > *:first-child h1:first-child,
+    article > h1:first-child {
+        break-before: auto;
+        page-break-before: auto;
+    }
 
     /* Headings nicht allein am Seitenende */
-    h1, h2, h3, h4 { break-after: avoid; }
+    h1, h2, h3, h4 {
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+
+    /* Tabellen nicht mitten abbrechen wenn möglich */
+    table, tr, td, th {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    /* Tabellen-Header über Seitenwechsel wiederholen (Pflicht für SoA) */
+    thead {
+        display: table-header-group;
+    }
+    tfoot {
+        display: table-footer-group;
+    }
 
     /* Cards/Sections zusammenhalten */
-    .card, .fa-kpi-card, .fa-alert, .fa-stepper,
-    .fa-accordion__item {
+    .card, .fa-section, .fa-kpi-card, .fa-feature-card,
+    .fa-widget-card, .fa-entity-card,
+    .fa-alert, .fa-stepper, .fa-accordion__item,
+    .kpi-card,
+    figure, pre {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    /* Bilder skalieren auf Seitenbreite, kein Mid-Page-Break */
+    img {
+        max-width: 100% !important;
+        height: auto !important;
         break-inside: avoid;
     }
 
-    /* Form-Elemente lesbar aber ohne Interaktion-Hints */
-    input, select, textarea {
-        border: 1px solid var(--border) !important;
-        background: var(--surface) !important;
-        color: var(--fg) !important;
+    /* Code-Blöcke wickeln statt abschneiden */
+    pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        border: 0.5pt solid #999;
+        background: #f6f6fa;
+        padding: 8pt;
+        font-size: 9pt;
     }
-    button, .btn {
-        border: 1px solid var(--border) !important;
-        background: var(--surface-2) !important;
-        color: var(--fg) !important;
+
+    /* ─────────────────────────────────────────────────────────
+       Form-Elemente lesbar aber ohne Interaktion-Hints
+       ───────────────────────────────────────────────────────── */
+    input, select, textarea {
+        border: 1px solid #cbd5e0 !important;
+        background: #fff !important;
+        color: #0e0a1f !important;
+    }
+    button, .btn, .fa-cyber-btn {
+        border: 1px solid #cbd5e0 !important;
+        background: #f6f6fa !important;
+        color: #0e0a1f !important;
     }
 
     /* Sparklines sichtbar aber monochrom */
     .fa-sparkline { filter: grayscale(100%); }
+
+    /* ─────────────────────────────────────────────────────────
+       Status-Pills + KPI-Tiles — Farbe behalten (S/W-Drucker
+       fallen auf Symbol/Label zurück, daher print-color-adjust:exact
+       ist oben gesetzt — diese Regel pinnt das Background-Render).
+       ───────────────────────────────────────────────────────── */
+    .fa-status-pill,
+    .badge,
+    .fa-kpi-card,
+    .fa-feature-card {
+        print-color-adjust: exact !important;
+        -webkit-print-color-adjust: exact !important;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       Watermark — diagonal hinter Inhalt (Spec §print-anatomy)
+       Aktiviert via <body data-print-watermark="VERTRAULICH">.
+       Levels: ENTWURF (gelb) | VERTRAULICH (rot) | ARCHIVIERT (grau).
+       ───────────────────────────────────────────────────────── */
+    body[data-print-watermark]::after {
+        content: attr(data-print-watermark);
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font: 700 96pt var(--font-sans, "Inter", sans-serif);
+        color: rgba(var(--danger-rgb), 0.08);  /* default = VERTRAULICH (rot) */
+        transform: rotate(-30deg);
+        pointer-events: none;
+        z-index: 0;
+        white-space: nowrap;
+    }
+    body[data-print-watermark="ENTWURF"]::after {
+        color: rgba(var(--warning-rgb), 0.10); /* gelb */
+    }
+    body[data-print-watermark="VERTRAULICH"]::after {
+        color: rgba(var(--danger-rgb), 0.08);  /* rot */
+    }
+    body[data-print-watermark="ARCHIVIERT"]::after {
+        color: rgba(94, 88, 120, 0.10);  /* grau */
+    }
+
+    /* Optional: print-doc landscape */
+    .print-landscape {
+        page: landscape;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Screen-Mode: hide elements that are .print-only
+   ═══════════════════════════════════════════════════════════════════ */
+@media screen {
+    .print-only,
+    .print-only-inline,
+    .print-only-flex {
+        display: none !important;
+    }
 }

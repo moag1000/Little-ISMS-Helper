@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'privacy'%}
 {% block title %}{{ processing_activity.name }} - Processing Activity{% endblock %}
 
@@ -19,16 +20,16 @@
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
     {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
-        title: processing_activity.name,
+    {{ _fa_page_header.render({
+        badge:    { icon: 'file-earmark-text', label: 'GDPR' },
+        title:    processing_activity.name,
         subtitle: 'processing_activity.show.subtitle'|trans({}, 'privacy'),
-        icon: 'bi-file-earmark-text',
         actions: [
-            { label: 'Edit', url: path('app_processing_activity_edit', {id: processing_activity.id}), variant: 'primary', icon: 'bi-pencil' },
-            { label: 'Clone', url: '#', variant: 'outline-secondary', icon: 'bi-files', attributes: 'data-action="clone"' },
-            { label: 'Back to List', url: path('app_processing_activity_index'), variant: 'outline-secondary', icon: 'bi-arrow-left' }
+            { label: 'Edit',         variant: 'primary', icon: 'pencil',     href: path('app_processing_activity_edit', {id: processing_activity.id}) },
+            { label: 'Clone',        variant: 'ghost',   icon: 'files',      href: '#', attrs: { 'data-action': 'clone' } },
+            { label: 'Back to List', variant: 'ghost',   icon: 'arrow-left', href: path('app_processing_activity_index') }
         ]
-    } %}
+    }) }}
 
     {# Compliance Status Banner #}
     {% if not compliance_report.is_compliant %}

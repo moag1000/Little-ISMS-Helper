@@ -12,7 +12,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h1 class="h3 mb-0">
-                            <i class="bi bi-file-earmark-code me-2" aria-hidden="true"></i>
+                            <i class="fa-icon me-2 fa-icon--nav-document" aria-hidden="true"></i>
                             {{ 'setup.step10.header'|trans({}, 'setup') }}
                         </h1>
                     </div>
@@ -38,7 +38,7 @@
                         </div>
 
                         <h2 class="h5 mb-3">
-                            <i class="bi bi-database me-2" aria-hidden="true"></i>
+                            <i class="fa-icon me-2 fa-icon--asset-database" aria-hidden="true"></i>
                             {{ 'setup.step10.import_title'|trans({}, 'setup') }}
                         </h2>
 
@@ -69,19 +69,19 @@
                                                             <p class="text-muted mb-2">{{ data.description }}</p>
                                                             {% if data.command is defined %}
                                                                 <small class="text-muted">
-                                                                    <i class="bi bi-terminal me-1" aria-hidden="true"></i>
+                                                                    <i class="fa-icon me-1 fa-icon--nav-tools" aria-hidden="true"></i>
                                                                     {{ 'setup.step10.command'|trans({}, 'setup') }}: <code>{{ data.command }}</code>
                                                                 </small>
                                                             {% elseif data.file is defined %}
                                                                 <small class="text-muted">
-                                                                    <i class="bi bi-file-earmark me-1" aria-hidden="true"></i>
+                                                                    <i class="fa-icon me-1 fa-icon--nav-document" aria-hidden="true"></i>
                                                                     {{ 'setup.step10.file'|trans({}, 'setup') }}: <code>{{ data.file }}</code>
                                                                 </small>
                                                             {% endif %}
                                                             {% if data.required_modules is defined %}
                                                                 <div class="mt-2">
                                                                     <small class="text-muted">
-                                                                        <i class="bi bi-puzzle me-1" aria-hidden="true"></i>
+                                                                        <i class="fa-icon me-1 fa-icon--nav-puzzle" aria-hidden="true"></i>
                                                                         {{ 'setup.step10.modules'|trans({}, 'setup') }}:
                                                                         {% for module in data.required_modules %}
                                                                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: module } %}
@@ -99,7 +99,7 @@
 
                                 <div class="d-flex justify-content-between mt-4">
                                     <a href="{{ path('setup_step9_base_data') }}" class="btn btn-outline-secondary">
-                                        <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+                                        <i class="fa-icon me-2 fa-icon--util-arrow-left" aria-hidden="true"></i>
                                         {{ 'setup.navigation.back'|trans({}, 'setup') }}
                                     </a>
                                     <div>
@@ -107,11 +107,11 @@
                                                 data-controller="ui-actions"
                                                 data-action="click->ui-actions#submitForm"
                                                 data-ui-actions-form-id-param="skip-form">
-                                            <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
+                                            <i class="fa-icon me-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
                                             {{ 'setup.common.skip'|trans({}, 'setup') }}
                                         </button>
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-download me-2" aria-hidden="true"></i>
+                                            <i class="fa-icon me-2 fa-icon--nav-download" aria-hidden="true"></i>
                                             {{ 'setup.sample_data.import_selected'|trans({}, 'setup') }}
                                         </button>
                                     </div>
@@ -128,12 +128,12 @@
 
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{{ path('setup_step9_base_data') }}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+                                    <i class="fa-icon me-2 fa-icon--util-arrow-left" aria-hidden="true"></i>
                                     {{ 'setup.navigation.back'|trans({}, 'setup') }}
                                 </a>
                                 <a href="{{ path('setup_step11_complete') }}" class="btn btn-primary">
                                     {{ 'setup.step10.next_button'|trans({}, 'setup') }}
-                                    <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+                                    <i class="fa-icon ms-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
                                 </a>
                             </div>
                         {% endif %}

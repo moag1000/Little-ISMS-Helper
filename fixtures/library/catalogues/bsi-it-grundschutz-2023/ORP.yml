@@ -1,0 +1,95 @@
+# BSI IT-Grundschutz-Kompendium 2023 — Schicht ORP (Organisation und Personal)
+# Quelle: BSI Bundesamt fuer Sicherheit in der Informationstechnik
+# https://www.bsi.bund.de/IT-Grundschutz-Kompendium
+
+layer: ORP
+title: 'Organisation und Personal'
+description: 'Schicht fuer organisatorische und personelle Sicherheitsanforderungen, einschliesslich Identitaets- und Berechtigungsmanagement und Compliance.'
+bausteine:
+  - id: ORP.1
+    title: 'Organisation'
+    description: 'Anforderungen an organisatorische Sicherheitsregelungen einschliesslich Auswahl und Eignung von Mitarbeitern.'
+    anforderungen:
+      basis:
+        - id: ORP.1.A1
+          title: 'Geeignete Auswahl von Mitarbeitern'
+          requirement_text: 'Mitarbeiter MUESSEN fuer ihre Aufgaben und Taetigkeiten geeignet sein.'
+        - id: ORP.1.A2
+          title: 'Definition von Sicherheitsrollen und Verantwortlichkeiten'
+          requirement_text: 'Rollen und Verantwortlichkeiten fuer Informationssicherheit MUESSEN definiert und zugewiesen werden. Siehe BSI Kompendium 2023 Baustein ORP.1 Anforderung A2.'
+        - id: ORP.1.A3
+          title: 'Beauftragung des Informationssicherheitsbeauftragten'
+          requirement_text: 'Ein Informationssicherheitsbeauftragter MUSS mit angemessener Befugnis und Ressourcen benannt werden. Siehe BSI Kompendium 2023 Baustein ORP.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: ORP.2
+    title: 'Personal'
+    description: 'Anforderungen an personelle Sicherheit, einschliesslich Einarbeitung, Vertraulichkeitsvereinbarungen und Personalauswahl.'
+    anforderungen:
+      basis:
+        - id: ORP.2.A1
+          title: 'Geregelte Einarbeitung neuer Mitarbeiter'
+          requirement_text: 'Neue Mitarbeiter MUESSEN in ihre Aufgaben und Taetigkeiten eingearbeitet werden.'
+        - id: ORP.2.A2
+          title: 'Verpflichtung auf Vertraulichkeit'
+          requirement_text: 'Alle Mitarbeiter MUESSEN vor dem Zugriff auf vertrauliche Informationen Vertraulichkeitsvereinbarungen unterzeichnen. Siehe BSI Kompendium 2023 Baustein ORP.2 Anforderung A2.'
+        - id: ORP.2.A3
+          title: 'Geregeltes Verfahren bei Wechsel oder Ausscheiden von Mitarbeitern'
+          requirement_text: 'Beim Wechsel oder Ausscheiden von Mitarbeitern MUESSEN Berechtigungen und uebergebene Werte geregelt zurueckgenommen werden. Siehe BSI Kompendium 2023 Baustein ORP.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: ORP.3
+    title: 'Sensibilisierung und Schulung'
+    description: 'Anforderungen an Sensibilisierung, Schulung und Bewusstseinsbildung der Mitarbeiter im Bereich Informationssicherheit.'
+    anforderungen:
+      basis:
+        - id: ORP.3.A1
+          title: 'Sensibilisierung des Managements fuer Informationssicherheit'
+          requirement_text: 'Das Management MUSS fuer Informationssicherheit sensibilisiert werden.'
+        - id: ORP.3.A2
+          title: 'Ansprechpartner zu Sicherheitsfragen'
+          requirement_text: 'Es MUESSEN Ansprechpartner fuer Sicherheitsfragen benannt werden.'
+        - id: ORP.3.A3
+          title: 'Einweisung des Personals in den sicheren Umgang mit IT'
+          requirement_text: 'Alle Mitarbeiter MUESSEN in den sicheren Umgang mit IT eingewiesen werden.'
+      standard: []
+      hoch: []
+
+  - id: ORP.4
+    title: 'Identitaets- und Berechtigungsmanagement'
+    description: 'Anforderungen an die Verwaltung von Identitaeten, Benutzerkonten und Zugriffsberechtigungen.'
+    anforderungen:
+      basis:
+        - id: ORP.4.A1
+          title: 'Regelung fuer die Einrichtung und Loeschung von Benutzern und Benutzergruppen'
+          requirement_text: 'Es MUSS geregelt sein, wie Benutzerkonten und Benutzergruppen eingerichtet und geloescht werden.'
+        - id: ORP.4.A2
+          title: 'Einrichtung, Aenderung und Entzug von Berechtigungen'
+          requirement_text: 'Berechtigungen DUERFEN NUR auf Antrag eingerichtet, geaendert oder entzogen werden.'
+        - id: ORP.4.A3
+          title: 'Dokumentation der Berechtigungen'
+          requirement_text: 'Die vergebenen Zugriffsrechte MUESSEN dokumentiert werden.'
+        - id: ORP.4.A4
+          title: 'Aufgabenverteilung und Funktionstrennung'
+          requirement_text: 'Die Aufgabenverteilung und die Funktionstrennung zwischen den Rollen MUESSEN nach dem Prinzip der geringsten Berechtigung geregelt sein.'
+      standard: []
+      hoch: []
+
+  - id: ORP.5
+    title: 'Compliance Management'
+    description: 'Anforderungen an die Identifikation und Einhaltung rechtlicher, regulatorischer und vertraglicher Rahmenbedingungen.'
+    anforderungen:
+      basis:
+        - id: ORP.5.A1
+          title: 'Identifizierung der rechtlichen Rahmenbedingungen'
+          requirement_text: 'Die fuer die Institution relevanten rechtlichen Rahmenbedingungen MUESSEN identifiziert werden.'
+        - id: ORP.5.A2
+          title: 'Beachtung rechtlicher Rahmenbedingungen'
+          requirement_text: 'Die identifizierten rechtlichen Rahmenbedingungen MUESSEN bei allen relevanten Aktivitaeten beachtet werden.'
+        - id: ORP.5.A3
+          title: 'Dokumentation der rechtlichen Rahmenbedingungen'
+          requirement_text: 'Die rechtlichen Rahmenbedingungen MUESSEN dokumentiert werden. Siehe BSI Kompendium 2023 Baustein ORP.5 Anforderung A3.'
+      standard: []
+      hoch: []

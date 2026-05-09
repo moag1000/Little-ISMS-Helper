@@ -4,11 +4,18 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\Document;
 use App\Entity\ManagementReview;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\DataTransformer\JsonArrayTransformer;
+use App\Form\Trait\ModuleAwareFormTrait;
+use App\Service\ModuleConfigurationService;
+use App\Service\TenantContext;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -21,8 +28,17 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ManagementReviewType extends AbstractType
 {
+    use ModuleAwareFormTrait;
+
+    public function __construct(
+        private readonly ModuleConfigurationService $moduleConfiguration,
+        private readonly TenantContext $tenantContext,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $currentTenant = $this->tenantContext->getCurrentTenant();
         $builder
             ->add('title', TextType::class, [
                 'label' => 'management_review.field.title',
@@ -246,7 +262,83 @@ class ManagementReviewType extends AbstractType
                     'rows' => 4,
                 ],
                 'help' => 'management_review.help.summary',
+            ])
+            // ── ISO 27001 §9.3 norm fields (T31.2.5) ──────────────────────
+            ->add('topManagementAttended', CheckboxType::class, [
+                'label' => 'management_review.field.top_management_attended',
+                'required' => false,
+                'help' => 'management_review.help.top_management_attended',
+            ])
+            ->add('nextReviewDate', DateType::class, [
+                'label' => 'management_review.field.next_review_date',
+                'widget' => 'single_text',
+                'required' => false,
+                'input' => 'datetime_immutable',
+                'help' => 'management_review.help.next_review_date',
+            ])
+            ->add('meetingMinutesDocument', EntityType::class, [
+                'label' => 'management_review.field.meeting_minutes_document',
+                'class' => Document::class,
+                'choice_label' => fn(Document $d): string => $d->getOriginalFilename() ?? $d->getFilename() ?? (string) $d->getId(),
+                'placeholder' => 'management_review.placeholder.meeting_minutes_document',
+                'required' => false,
+                'help' => 'management_review.help.meeting_minutes_document',
+                'query_builder' => function (EntityRepository $er) use ($currentTenant): \Doctrine\ORM\QueryBuilder {
+                    $qb = $er->createQueryBuilder('d')
+                        ->where('d.status != :deleted')
+                        ->setParameter('deleted', 'deleted')
+                        ->orderBy('d.originalFilename', 'ASC');
+                    if ($currentTenant !== null) {
+                        $qb->andWhere('d.tenant = :tenant')
+                           ->setParameter('tenant', $currentTenant);
+                    }
+                    return $qb;
+                },
+            ])
+            ->add('riskTreatmentEffectiveness', TextareaType::class, [
+                'label' => 'management_review.field.risk_treatment_effectiveness',
+                'required' => false,
+                'attr' => [
+                    'rows' => 4,
+                    'placeholder' => 'management_review.placeholder.risk_treatment_effectiveness',
+                ],
+                'help' => 'management_review.help.risk_treatment_effectiveness',
+            ])
+            ->add('policyReviewOutcome', TextareaType::class, [
+                'label' => 'management_review.field.policy_review_outcome',
+                'required' => false,
+                'attr' => [
+                    'rows' => 3,
+                    'placeholder' => 'management_review.placeholder.policy_review_outcome',
+                ],
+                'help' => 'management_review.help.policy_review_outcome',
+            ])
+            ->add('actionItemsWithDeadlines', TextareaType::class, [
+                'label' => 'management_review.field.action_items_with_deadlines',
+                'required' => false,
+                'attr' => [
+                    'rows' => 6,
+                    'placeholder' => 'management_review.placeholder.action_items_with_deadlines',
+                ],
+                'help' => 'management_review.help.action_items_with_deadlines',
             ]);
+
+        $builder->get('actionItemsWithDeadlines')
+            ->addModelTransformer(new JsonArrayTransformer());
+
+        if ($this->isModuleActive('compliance')) {
+            $builder->add('frameworkComplianceStatus', TextareaType::class, [
+                'label' => 'management_review.field.framework_compliance_status',
+                'required' => false,
+                'attr' => [
+                    'rows' => 4,
+                    'placeholder' => 'management_review.placeholder.framework_compliance_status',
+                ],
+                'help' => 'management_review.help.framework_compliance_status',
+            ]);
+            $builder->get('frameworkComplianceStatus')
+                ->addModelTransformer(new JsonArrayTransformer());
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

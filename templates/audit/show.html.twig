@@ -1,23 +1,24 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'audit' %}
 
 {% block title %}{{ audit.title }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_audit_index') }}" data-turbo-action="advance">
-                    <i class="fa-icon fa-icon--sop" aria-hidden="true"></i> {{ 'audit_management.title'|trans({}, 'audit') }}
-                </a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ audit.title }}</li>
-        </ol>
-    </nav>
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'audit_management.title'|trans({}, 'audit'), url: path('app_audit_index') },
+            { label: audit.title }
+        ]
+    } %}
 
-    <h1 class="visually-hidden">{{ audit.title }}</h1>
+    {{ _fa_page_header.render({
+        badge: { icon: 'clipboard-check', label: audit.auditNumber|default('audit_management.title'|trans({}, 'audit')) },
+        title: audit.title,
+        subtitle: ('audit.status.' ~ audit.status)|trans({}, 'audit')
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">

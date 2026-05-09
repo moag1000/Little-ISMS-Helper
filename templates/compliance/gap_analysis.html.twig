@@ -18,10 +18,10 @@
             {% include '_components/_fa_pdf_locale_switch.html.twig' with {route: 'app_compliance_export_gaps_pdf', route_params: {id: framework.id}} only %}
         </div>
         <a href="{{ path('app_compliance_export_gaps_excel', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false">
-            <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
+            <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i> {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
         </a>
         <a href="{{ path('app_compliance_export_gaps', {id: framework.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo="false">
-            <i class="bi bi-file-text" aria-hidden="true"></i> {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
+            <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i> {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
         </a>
     </div>
 </div>
@@ -60,7 +60,7 @@
 
     {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning' } %}
         {% block card_body %}
-            <div class="fs-2-mb-sm"><i class="bi bi-circle-fill text-warning" aria-hidden="true"></i></div>
+            <div class="fs-2-mb-sm"><i class="fa-icon text-warning fa-icon--status-pending" aria-hidden="true"></i></div>
             <h2>{{ 'compliance.severity.high'|trans({}, 'compliance') }}</h2>
             <div class="mt-2">
                 <strong class="fs-15-warning">{{ gaps|filter(g => g.requirement.priority == 'high')|length }}</strong>
@@ -73,7 +73,7 @@
 
     {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
         {% block card_body %}
-            <div class="fs-2-mb-sm"><i class="bi bi-circle-fill text-info" aria-hidden="true"></i></div>
+            <div class="fs-2-mb-sm"><i class="fa-icon text-info fa-icon--status-pending" aria-hidden="true"></i></div>
             <h2>{{ 'compliance.severity.medium'|trans({}, 'compliance') }}</h2>
             <div class="mt-2">
                 <strong class="fs-15-info">{{ gaps|filter(g => g.requirement.priority == 'medium')|length }}</strong>
@@ -86,7 +86,7 @@
 
     {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'secondary' } %}
         {% block card_body %}
-            <div class="fs-2-mb-sm"><i class="bi bi-circle text-secondary" aria-hidden="true"></i></div>
+            <div class="fs-2-mb-sm"><i class="fa-icon text-secondary fa-icon--status-pending" aria-hidden="true"></i></div>
             <h2>{{ 'compliance.severity.low'|trans({}, 'compliance') }}</h2>
             <div class="mt-2">
                 <strong class="fs-4">{{ gaps|filter(g => g.requirement.priority == 'low')|length }}</strong>

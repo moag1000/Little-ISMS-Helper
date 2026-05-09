@@ -37,6 +37,7 @@ class CrisisTeamController extends AbstractController
     public function index(): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $user = $this->security->getUser();
         $tenant = $user instanceof UserInterface ? $user->getTenant() : null;
         $crisisTeams = $tenant !== null
@@ -60,6 +61,7 @@ class CrisisTeamController extends AbstractController
     public function new(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $crisisTeam = new CrisisTeam();
 
         // Set tenant from current user
@@ -89,6 +91,7 @@ class CrisisTeamController extends AbstractController
     public function show(CrisisTeam $crisisTeam): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         return $this->render('crisis_team/show.html.twig', [
             'crisis_team' => $crisisTeam,
         ]);
@@ -98,6 +101,7 @@ class CrisisTeamController extends AbstractController
     public function edit(Request $request, CrisisTeam $crisisTeam): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $form = $this->createForm(CrisisTeamType::class, $crisisTeam);
         $form->handleRequest($request);
 
@@ -118,6 +122,7 @@ class CrisisTeamController extends AbstractController
     public function delete(Request $request, CrisisTeam $crisisTeam): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         if ($this->isCsrfTokenValid('delete'.$crisisTeam->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($crisisTeam);
             $this->entityManager->flush();
@@ -132,6 +137,7 @@ class CrisisTeamController extends AbstractController
     public function activate(Request $request, CrisisTeam $crisisTeam): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         if ($this->isCsrfTokenValid('activate'.$crisisTeam->getId(), $request->request->get('_token'))) {
             $crisisTeam->setLastActivatedAt(new DateTimeImmutable());
             $this->entityManager->flush();

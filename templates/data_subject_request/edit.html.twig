@@ -50,6 +50,10 @@
                             'label': '<i class="fa-icon fa-icon--role" aria-hidden="true"></i> ' ~ 'dsr.section.assignment'|trans({}, 'data_subject_request'),
                             'fields': ['assignedTo', 'assignedPerson', 'assignedDeputyPersons', 'processingActivity']
                         },
+                        'response_tracking': {
+                            'label': '<i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> ' ~ 'dsr.section.response_tracking'|trans({}, 'data_subject_request'),
+                            'fields': ['responseAt', 'responseMethod', 'responseDocument', 'extendedDeadlineAt', 'extensionReason', 'rejectionReason']
+                        },
                         'internal': {
                             'label': '<i class="fa-icon fa-icon--nav-journal" aria-hidden="true"></i> ' ~ 'dsr.section.internal_notes'|trans({}, 'data_subject_request'),
                             'fields': ['notes']
@@ -68,6 +72,12 @@
                         'assignedPerson': 6,
                         'assignedDeputyPersons': 12,
                         'processingActivity': 6,
+                        'responseAt': 6,
+                        'responseMethod': 6,
+                        'responseDocument': 12,
+                        'extendedDeadlineAt': 6,
+                        'extensionReason': 6,
+                        'rejectionReason': 12,
                         'notes': 12
                     },
                     'translation_domain': 'data_subject_request'

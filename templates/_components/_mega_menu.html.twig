@@ -76,6 +76,7 @@
             {% endif %}
 
             {# Privacy/GDPR Category #}
+            {% if is_module_active('privacy') %}
             <li class="mega-menu-category" role="none">
                 <button class="mega-menu-trigger {% if current_route starts with 'app_processing_activity_' or current_route starts with 'app_dpia_' or current_route starts with 'app_data_breach_' %}active{% endif %}"
                         data-mega-menu-target="trigger"
@@ -89,6 +90,7 @@
                     <i class="fa-icon fa-icon--util-chevron-right mega-menu-arrow" aria-hidden="true"></i>
                 </button>
             </li>
+            {% endif %}
 
             {# Operations Category #}
             {% if is_module_active('core') or is_module_active('incidents') %}

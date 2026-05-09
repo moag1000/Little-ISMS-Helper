@@ -112,6 +112,22 @@ incident:
     reported_by_person: Reported by (Person from master data)
     reported_by_deputies: Deputies (Persons)
     responsible_person: Responsible Person (Governance)
+    incident_classification: Incident Classification (A.5.24)
+    containment_actions: Containment Actions (A.5.26)
+    evidence_preserved: Evidence Preserved (A.5.28)
+    ict_incident_classification: ICT Incident Classification (DORA Art. 18)
+    data_loss_occurred: Data Loss Occurred (DORA Art. 19)
+    data_leakage_occurred: Data Leakage Occurred (DORA Art. 19)
+    economic_impact: Economic Impact in EUR (DORA Art. 19)
+    reputational_impact: Reputational Impact 1–5 (DORA Art. 19)
+    critical_services_affected: Critical Services Affected (DORA Art. 19)
+    recurring_incident: Recurring Incident (DORA Art. 19)
+    clients_affected: Clients / Counterparties Affected (Count)
+    clients_affected_financial_volume: Financial Volume of Affected Clients (EUR)
+    replication_of_impact: Service Replica / Failover Activated
+    initial_report_submitted_at: Initial Report Submitted (DORA 4h)
+    intermediate_report_submitted_at: Intermediate Report Submitted (DORA 72h)
+    data_recovery_strategy: Data Recovery Strategy (BCM Art. 11)
   label:
     title: Title
     severity: Severity
@@ -202,6 +218,11 @@ incident:
     reported_by_user: -- Select reporter --
     reported_by_person: -- Person from master data --
     responsible_person: -- Select responsible person --
+    classification: -- Event or Incident --
+    containment_actions: 'e.g. system isolated, access revoked, backup restored...'
+    ict_classification: -- ICT incident classification --
+    economic_impact: '0.00'
+    reputational_impact: -- Assess reputational impact --
   help:
     visible_to_holding: 'Default on: holding / group CISO can see this incident to coordinate group-level response. Disable only for confidential cases (e.g. HR).'
     severity: Assess severity based on impact and scope (ISO 27001 A.16.1.4)
@@ -225,6 +246,16 @@ incident:
     reported_by_person: 'Select a person without a system login as reporter. Priority&#58; User &gt; Person &gt; legacy.'
     reported_by_deputies: Additional persons sharing reporter role or deputising. Multiple selection possible.
     responsible_person: 'Long-term accountable person for this incident (governance view). Distinct from the ticket assignee (action) and the reporter (audit-trail). May be an external CISO/ISO without a system login.'
+    incident_classification: 'Event vs. Incident per A.5.24 — controls workflow routing.'
+    containment_actions: 'Short-term containment measures and long-term remediation actions per A.5.26.'
+    evidence_preserved: 'Confirm that digital evidence has been preserved with integrity protection per A.5.28.'
+    ict_incident_classification: 'Classification per DORA Art. 18 and EBA/ESMA/EIOPA RTS: Major ICT Incident or significant cyber threat.'
+    economic_impact: 'Estimated total economic damage in EUR (direct + consequential costs) per DORA Art. 19(1)(b).'
+    critical_services_affected: 'Critical or important functions/services impacted (DORA Art. 19(1)(e)).'
+    clients_affected_financial_volume: 'Total transaction or contract volume of affected clients in EUR (DORA Art. 19).'
+    replication_of_impact: 'Was a service replica or failover activated to limit impact?'
+    initial_report_submitted_at: 'DORA 4-hour initial report (≠ NIS2 24h!): timestamp of submission to the competent authority (Art. 19(4)(a)).'
+    data_recovery_strategy: 'Strategy for restoring data and services; cross-reference to the BCM continuity plan (DORA Art. 11(2)).'
   category:
     data_breach: Data Breach
     security_incident: Security Incident
@@ -299,3 +330,16 @@ incident:
       risks
   error:
     owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
+  # T31.2.2 — ISO 27001 A.5.24-A.5.28 + DORA Art. 17-19
+  classification:
+    event: Event
+    incident: Incident
+  dora_classification:
+    major: Major ICT Incident (Art. 18)
+    significant: Significant Cyber Threat (Art. 17)
+  impact:
+    minimal: 1 – Minimal
+    minor: 2 – Minor
+    moderate: 3 – Moderate
+    major: 4 – Major
+    severe: 5 – Severe

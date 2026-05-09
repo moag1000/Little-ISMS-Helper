@@ -904,6 +904,16 @@ wizard:
         # W6-D — ISO 27701 PIMS Policy-Wizard outputs category
         iso27701_pims: 'ISO 27701 PIMS Policy-Wizard-Outputs'
         iso27701_pims_desc: 'Generierte ISO 27701-PIMS-Checks bei aktiviertem Addon: Edition (2019/2025) deklariert, Klausel-Tags auf Dokumenten gesetzt, Schrems-II-Klausel in International-Transfers-Policy.'
+        privacy_risk_baseline: 'DSFA-Methodik etabliert, High-Risk-Verarbeitungen identifiziert und bewertet (Art. 35).'
+        privacy_risk_enhanced: 'Kontinuierliches DPIA-Lifecycle-Management mit Re-Assessment nach Datenfluss-Änderungen, AI-Risk-Scoring fuer Privacy-Impact.'
+        records_of_processing_baseline: 'Verarbeitungsverzeichnis nach Art. 30 vollstaendig dokumentiert, Updates pro neuem Verfahren.'
+        records_of_processing_enhanced: 'Auto-discovered Datenfluesse via Asset-Inventar-Sync, Versionsverlauf, Cross-Tenant-Konzern-Reporting.'
+        breach_notification_baseline: 'Breach-Response-Team etabliert, 72h-Meldepfad an Aufsichtsbehoerde dokumentiert (Art. 33/34).'
+        breach_notification_enhanced: 'Automatisierte Breach-Detection, vorqualifizierte Meldetexte, Cross-Border-DPA-Coordination.'
+        privacy_by_design_baseline: 'TOM-Katalog gemaess Art. 25 dokumentiert, Datenminimierung und Zweckbindung in Verfahren verankert.'
+        privacy_by_design_enhanced: 'Privacy-Engineering im SDLC, Default-Settings audit-faehig, kontinuierliche TOM-Effektivitaets-Bewertung.'
+        third_party_processors_baseline: 'Lieferanten-Auftragsverarbeitungsverträge nach Art. 28 vollstaendig, Drittland-Pruefung etabliert.'
+        third_party_processors_enhanced: 'Continuous Vendor-Risk-Assessments, automated SCC-Refresh nach Schrems-II, Sub-Prozessor-Notification-SLA.'
 
     # ISO 27017 Cloud Security Categories
     iso27017:

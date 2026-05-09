@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'objective'%}
 
 {% block title %}{{ objective.title }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -12,6 +13,18 @@
             { label: objective.title }
         ]
     } %}
+
+    {% set _show_actions = [] %}
+    {% if is_granted('ROLE_ADMIN') %}
+        {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_objective_edit', {id: objective.id}) }]) %}
+    {% endif %}
+    {% set _show_actions = _show_actions|merge([{ label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_objective_index') }]) %}
+    {{ _fa_page_header.render({
+        badge: { icon: 'bullseye', label: ('objective.status.' ~ objective.status)|trans({}, 'objective') },
+        title: objective.title,
+        subtitle: objective.category|default(''),
+        actions: _show_actions
+    }) }}
 
     <div class="row">
         <div class="col-lg-8">

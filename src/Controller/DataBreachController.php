@@ -6,9 +6,9 @@ namespace App\Controller;
 
 use RuntimeException;
 use DateTime;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\DataBreach;
 use App\Form\DataBreachType;
-use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Service\DataBreachService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
@@ -30,8 +30,8 @@ class DataBreachController extends AbstractController
         private readonly DataBreachService $dataBreachService,
         private readonly PdfExportService $pdfExportService,
         private readonly TenantContext $tenantContext,
-        private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
+        private readonly ModuleConfigurationService $moduleService,
     ) {
     }
 
@@ -42,6 +42,7 @@ class DataBreachController extends AbstractController
     public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $filter = $request->query->get('filter', 'all');
 
         $breaches = match ($filter) {
@@ -75,6 +76,7 @@ class DataBreachController extends AbstractController
     public function dashboard(): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $statistics = $this->dataBreachService->getDashboardStatistics();
         $complianceScore = $this->dataBreachService->calculateComplianceScore();
         $actionItems = $this->dataBreachService->getActionItems();
@@ -99,6 +101,7 @@ class DataBreachController extends AbstractController
     public function new(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         // Create a new breach with tenant and reference number pre-set
         $breach = $this->dataBreachService->prepareNewBreach();
 
@@ -132,6 +135,7 @@ class DataBreachController extends AbstractController
     public function show(DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         return $this->render('data_breach/show.html.twig', [
             'breach' => $dataBreach,
         ]);
@@ -145,6 +149,7 @@ class DataBreachController extends AbstractController
     public function edit(Request $request, DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!in_array($dataBreach->getStatus(), ['draft', 'under_assessment'])) {
             $this->addFlash('error', 'Cannot edit data breach in current status.');
             return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
@@ -177,6 +182,7 @@ class DataBreachController extends AbstractController
     public function delete(Request $request, DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('delete' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
@@ -202,6 +208,7 @@ class DataBreachController extends AbstractController
     public function submitForAssessment(Request $request, DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('submit' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
@@ -226,6 +233,7 @@ class DataBreachController extends AbstractController
     public function notifyAuthority(Request $request, DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('notify_authority' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
@@ -276,6 +284,7 @@ class DataBreachController extends AbstractController
     public function notifySubjects(Request $request, DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('notify_subjects' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
@@ -308,6 +317,7 @@ class DataBreachController extends AbstractController
     public function subjectNotificationExemption(Request $request, DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('exemption' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
@@ -339,6 +349,7 @@ class DataBreachController extends AbstractController
     public function close(Request $request, DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('close' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
@@ -363,6 +374,7 @@ class DataBreachController extends AbstractController
     public function reopen(Request $request, DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('reopen' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
@@ -393,6 +405,7 @@ class DataBreachController extends AbstractController
     public function exportPdf(DataBreach $dataBreach): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         // Generate version from last update date (Format: Year.Month.Day)
         $lastUpdate = $dataBreach->getUpdatedAt() ?? $dataBreach->getCreatedAt() ?? new DateTime();
         $version = $lastUpdate->format('Y.m.d');

@@ -38,6 +38,9 @@ crisis_team:
         business_continuity_plans: 'Business Continuity Pläne'
         person_members: 'Krisenstab-Mitglieder (Personen)'
         notes: Notizen
+        escalation_matrix: 'Eskalationsmatrix externe Partner'
+        activation_count: 'Anzahl Aktivierungen'
+        last_activated_at: 'Zuletzt aktiviert am'
     type:
         operational: 'Operativer Krisenstab'
         strategic: 'Strategischer Krisenstab'
@@ -59,6 +62,7 @@ crisis_team:
         decision_authority: 'Wer darf welche Entscheidungen treffen?'
         communication_protocols: 'Wie kommuniziert der Krisenstab intern und extern?'
         training_schedule: 'Wann finden Trainings und Übungen statt?'
+        escalation_matrix: '[{"trigger":"Cyberangriff","externalPartner":"CERT-Bund","contactInfo":"https://www.bsi.bund.de","escalateAfter":"1h"}]'
     help:
         team_name: 'Bezeichnung des Krisenstabs'
         team_type: 'Art des Krisenstabs nach BSI 200-4'
@@ -78,6 +82,9 @@ crisis_team:
         next_training_at: 'Wann findet das nächste Training statt?'
         business_continuity_plans: 'Zugeordnete BCPs'
         person_members: 'Strukturierte Mitgliederliste — Stammdaten-Personen, ergänzend zur JSON-Liste mit Rollen/Kontakt. Externe Berater oder Auditoren können hier ohne System-Login geführt werden.'
+        escalation_matrix_json: 'JSON-Array mit externen Eskalationspartnern gemäß BSI 200-4 §6.2 und NIS2 Art. 23. Partner: BSI, Police, CERT-Bund, etc.'
+        activation_count: 'Gesamtanzahl der realen Aktivierungen dieses Krisenstabs (BSI 200-4 §7.2). Wird typisch automatisch erhöht.'
+        last_activated_at: 'Datum und Uhrzeit der letzten realen Aktivierung (BSI 200-4 §7.2 Einsatz-Tracking).'
     success:
         created: 'Krisenstab erfolgreich erstellt.'
         updated: 'Krisenstab erfolgreich aktualisiert.'

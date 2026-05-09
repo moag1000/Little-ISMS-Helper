@@ -11,7 +11,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="{{ path('app_consent_index') }}" data-turbo-action="advance">
-                            <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i> {{ 'nav.consents'|trans({}, 'nav') }}
+                            <i class="fa-icon fa-icon--approve" aria-hidden="true"></i> {{ 'nav.consents'|trans({}, 'nav') }}
                         </a>
                     </li>
                     {% if form.vars.data.id %}
@@ -126,7 +126,7 @@
                         {% block card_header %}
                             <div class="card-header bg-body-secondary">
                                 <h3 class="mb-0">
-                                    <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
                                     {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
                                 </h3>
                             </div>
@@ -165,7 +165,7 @@
                         {% block card_header %}
                             <div class="card-header bg-body-secondary">
                                 <h3 class="mb-0">
-                                    <i class="bi bi-sticky" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--ui-flag" aria-hidden="true"></i>
                                     {{ 'consent.section.notes'|trans({}, 'consent') }}
                                 </h3>
                             </div>
@@ -174,6 +174,31 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     {{ form_row(form.notes) }}
+                                </div>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
+
+                    {# Section 7: Withdrawal — GDPR Art. 7(3) #}
+                    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                        {% block card_header %}
+                            <div class="card-header bg-body-secondary">
+                                <h3 class="mb-0">
+                                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                    {{ 'consent.section.revocation'|trans({}, 'consent') }}
+                                </h3>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
+                            <div class="row">
+                                <div class="col-md-4">
+                                    {{ form_row(form.withdrawnAt) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_row(form.withdrawalChannel) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_row(form.withdrawalReason) }}
                                 </div>
                             </div>
                         {% endblock %}

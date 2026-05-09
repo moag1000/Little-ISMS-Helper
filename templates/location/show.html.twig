@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'locations' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ location.name }} - {{ 'location.title.show'|trans({}, 'locations') }} - Little ISMS Helper{% endblock %}
 
@@ -12,26 +13,16 @@
             { label: location.name }
         ]
     } %}
-</div>
 
-<div class="page-header">
-    <div>
-        <h1>{{ location.name }}</h1>
-        <div class="mt-2">
-            {% include '_components/_badge.html.twig' with { variant: 'info', content: ('location.type.' ~ location.locationType)|trans({}, 'locations') } %}
-            {% if location.code %}
-                <code class="ml-sm">{{ location.code }}</code>
-            {% endif %}
-        </div>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_location_edit', {id: location.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-        </a>
-        <a href="{{ path('app_location_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            ← {{ 'common.back_to_list'|trans({}, 'messages') }}
-        </a>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'geo-alt', label: ('location.type.' ~ location.locationType)|trans({}, 'locations') },
+        title: location.name,
+        subtitle: location.code|default(''),
+        actions: [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_location_edit', {id: location.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_location_index') }
+        ]
+    }) }}
 </div>
 
 {# Location Details #}
@@ -150,7 +141,7 @@
                     {% include '_components/_badge.html.twig' with { variant: securityColors[child.securityLevel] ?? 'secondary', content: ('location.security.' ~ child.securityLevel)|trans({}, 'locations') } %}
                 </td>
                 <td class="text-center">
-                    <a href="{{ path('app_location_show', {id: child.id}) }}" class="btn btn-sm">
+                    <a href="{{ path('app_location_show', {id: child.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                         👁 {{ 'common.view'|trans({}, 'messages') }}
                     </a>
                 </td>

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use RuntimeException;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\DataSubjectRequest;
 use App\Form\DataSubjectRequestType;
-use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Service\DataSubjectRequestService;
 use App\Service\ModuleConfigurationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,8 +25,8 @@ class DataSubjectRequestController extends AbstractController
 
     public function __construct(
         private readonly DataSubjectRequestService $dataSubjectRequestService,
-        private readonly ModuleConfigurationService $moduleService,
         private readonly TranslatorInterface $translator,
+        private readonly ModuleConfigurationService $moduleService,
     ) {
     }
 
@@ -37,6 +37,7 @@ class DataSubjectRequestController extends AbstractController
     public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $filterStatus = $request->query->get('status');
         $filterType = $request->query->get('type');
 
@@ -73,6 +74,7 @@ class DataSubjectRequestController extends AbstractController
     public function new(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $dsr = new DataSubjectRequest();
 
         $form = $this->createForm(DataSubjectRequestType::class, $dsr);
@@ -98,6 +100,7 @@ class DataSubjectRequestController extends AbstractController
     public function show(DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         return $this->render('data_subject_request/show.html.twig', [
             'dsr' => $dsr,
         ]);
@@ -110,6 +113,7 @@ class DataSubjectRequestController extends AbstractController
     public function edit(Request $request, DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (in_array($dsr->getStatus(), ['completed', 'rejected'], true)) {
             $this->addFlash('error', 'dsr.flash.cannot_edit_terminal');
             return $this->redirectToRoute('app_data_subject_request_show', ['id' => $dsr->getId()]);
@@ -139,6 +143,7 @@ class DataSubjectRequestController extends AbstractController
     public function complete(Request $request, DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('complete' . $dsr->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
@@ -168,6 +173,7 @@ class DataSubjectRequestController extends AbstractController
     public function reject(Request $request, DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('reject' . $dsr->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
@@ -197,6 +203,7 @@ class DataSubjectRequestController extends AbstractController
     public function extend(Request $request, DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('extend' . $dsr->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
@@ -227,6 +234,7 @@ class DataSubjectRequestController extends AbstractController
     public function delete(Request $request, DataSubjectRequest $dsr): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('delete' . $dsr->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');

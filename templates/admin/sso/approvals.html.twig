@@ -45,7 +45,7 @@
                                     {% if a.tenant %}
                                         {{ a.tenant.name }}
                                     {% else %}
-                                        <span class="badge bg-primary">{{ 'sso.scope.global'|trans }}</span>
+                                        <span class="fa-status-pill fa-status-pill--primary">{{ 'sso.scope.global'|trans }}</span>
                                     {% endif %}
                                 </td>
                                 <td class="small text-muted">{{ a.requestedAt|date('Y-m-d H:i') }}</td>
@@ -59,7 +59,7 @@
                                     <form method="post" action="{{ path('admin_sso_approval_approve', {id: a.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('sso_approval') }}">
                                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--success">
-                                            <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'sso.action.approve'|trans }}
+                                            <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'sso.action.approve'|trans }}
                                         </button>
                                     </form>
                                     <form method="post" action="{{ path('admin_sso_approval_reject', {id: a.id}) }}" class="d-inline ms-1"
@@ -67,7 +67,7 @@
                                         <input type="hidden" name="_token" value="{{ csrf_token('sso_approval') }}">
                                         <input type="hidden" name="reason" value="">
                                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--danger">
-                                            <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'sso.action.reject'|trans }}
+                                            <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'sso.action.reject'|trans }}
                                         </button>
                                     </form>
                                 </td>

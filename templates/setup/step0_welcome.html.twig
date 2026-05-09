@@ -21,7 +21,7 @@
     <div class="fa-setup-welcome-grid">
         <section class="fa-setup-welcome-col">
             <h3 class="fa-setup-welcome-col__title">
-                <i class="bi bi-list-check" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-list-check" aria-hidden="true"></i>
                 {{ 'setup.welcome.steps.title'|trans({}, 'setup') }}
             </h3>
             {{ row.render({ status: 'idle', label: 'setup.welcome.steps.database'|trans({}, 'setup') })|raw }}
@@ -35,7 +35,7 @@
 
         <section class="fa-setup-welcome-col">
             <h3 class="fa-setup-welcome-col__title">
-                <i class="bi bi-clock" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-clock" aria-hidden="true"></i>
                 {{ 'setup.welcome.requirements.title'|trans({}, 'setup') }}
             </h3>
             {{ row.render({ status: 'ok', label: 'setup.welcome.requirements.duration'|trans({}, 'setup') })|raw }}
@@ -47,7 +47,7 @@
 
     <div class="fa-setup-welcome-info">
         <h4 class="fa-setup-welcome-info__title">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
             {{ 'setup.welcome.info.title'|trans({}, 'setup') }}
         </h4>
         <p class="fa-setup-welcome-info__desc">{{ 'setup.welcome.info.description'|trans({}, 'setup') }}</p>

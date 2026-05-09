@@ -12,9 +12,14 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @deprecated since 3.5.0 — superseded by app:load-bsi-grundschutz-catalogue
+ * which reads the canonical YAML tree at fixtures/library/catalogues/
+ * bsi-it-grundschutz-2023/. Kept as Compat-Layer.
+ */
 #[AsCommand(
     name: 'app:load-bsi-requirements',
-    description: 'Load BSI IT-Grundschutz requirements including core building blocks and BCM with ISO mappings'
+    description: '[DEPRECATED — use app:load-bsi-grundschutz-catalogue] Legacy BSI IT-Grundschutz loader (Compat-Layer).'
 )]
 class LoadBsiRequirementsCommand
 {
@@ -27,12 +32,12 @@ class LoadBsiRequirementsCommand
     {
         // Create or get BSI framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
-            ->findOneBy(['code' => 'BSI-Grundschutz']);
+            ->findOneBy(['code' => 'BSI_GRUNDSCHUTZ']);
         $isNew = !$framework instanceof ComplianceFramework;
         if ($isNew) {
             $framework = new ComplianceFramework();
         }
-        $framework->setCode('BSI-Grundschutz')
+        $framework->setCode('BSI_GRUNDSCHUTZ')
             ->setName('BSI IT-Grundschutz')
             ->setDescription('BSI IT-Grundschutz: Comprehensive IT security standard with building blocks (Bausteine) for organization, infrastructure, systems, and applications')
             ->setVersion('2023')

@@ -8,6 +8,8 @@ use App\Entity\Asset;
 use App\Entity\Location;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Form\Trait\ModuleAwareFormTrait;
+use App\Service\ModuleConfigurationService;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -23,6 +25,13 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class AssetType extends AbstractType
 {
+    use ModuleAwareFormTrait;
+
+    public function __construct(
+        private readonly ModuleConfigurationService $moduleConfiguration,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -222,9 +231,57 @@ class AssetType extends AbstractType
                 'help' => 'asset.help.status',
                 'choice_translation_domain' => 'asset',
             ])
-            // ── AI-Agent fields (only relevant when assetType = 'ai_agent') ──
-            // Erfüllt EU AI Act Art. 6/9-16, ISO 42001 Annex A, MRIS MHC-13.
-            // All fields nullable — only meaningful for ai_agent subtype.
+        ;
+
+        // ── AI-Agent fields: only added when 'ai_governance' module is active ──
+        // Erfüllt EU AI Act Art. 6/9-16, ISO 42001 Annex A, MRIS MHC-13.
+        // Stimulus show/hide via data-depends-on (assetType=ai_agent) is kept
+        // intact — module gate is the outer guard.
+        if ($this->isModuleActive('ai_governance')) {
+            $this->addAiAgentFields($builder);
+        }
+
+        // Array <-> textarea (one entry per line) transformers for the two
+        // JSON columns. Empty input persists as null; otherwise lines are
+        // trimmed and empty lines dropped.
+        $arrayTransformer = new CallbackTransformer(
+            // model (?array) -> view (string)
+            static function (?array $value): string {
+                if ($value === null || $value === []) {
+                    return '';
+                }
+
+                return implode("\n", $value);
+            },
+            // view (?string) -> model (?array)
+            static function (?string $value): ?array {
+                if ($value === null) {
+                    return null;
+                }
+                $lines = preg_split('/\r\n|\r|\n/', $value) ?: [];
+                $cleaned = array_values(array_filter(array_map('trim', $lines), static fn(string $l): bool => $l !== ''));
+
+                return $cleaned === [] ? null : $cleaned;
+            }
+        );
+
+        if ($builder->has('aiAgentCapabilityScope')) {
+            $builder->get('aiAgentCapabilityScope')->addModelTransformer($arrayTransformer);
+        }
+        if ($builder->has('aiAgentExtensionAllowlist')) {
+            $builder->get('aiAgentExtensionAllowlist')->addModelTransformer($arrayTransformer);
+        }
+    }
+
+    /**
+     * Adds all 9 AI-Agent inventory fields to the builder.
+     * Called only when the 'ai_governance' module is active.
+     * All fields nullable — only meaningful for ai_agent subtype.
+     * Stimulus show/hide (data-depends-on assetType=ai_agent) is preserved.
+     */
+    private function addAiAgentFields(FormBuilderInterface $builder): void
+    {
+        $builder
             ->add('aiAgentClassification', ChoiceType::class, [
                 'label' => 'asset.ai_agent.field.classification',
                 'choices' => [
@@ -337,33 +394,6 @@ class AssetType extends AbstractType
                 'help' => 'asset.ai_agent.help.extension_allowlist',
             ])
         ;
-
-        // Array <-> textarea (one entry per line) transformers for the two
-        // JSON columns. Empty input persists as null; otherwise lines are
-        // trimmed and empty lines dropped.
-        $arrayTransformer = new CallbackTransformer(
-            // model (?array) -> view (string)
-            static function (?array $value): string {
-                if ($value === null || $value === []) {
-                    return '';
-                }
-
-                return implode("\n", $value);
-            },
-            // view (?string) -> model (?array)
-            static function (?string $value): ?array {
-                if ($value === null) {
-                    return null;
-                }
-                $lines = preg_split('/\r\n|\r|\n/', $value) ?: [];
-                $cleaned = array_values(array_filter(array_map('trim', $lines), static fn(string $l): bool => $l !== ''));
-
-                return $cleaned === [] ? null : $cleaned;
-            }
-        );
-
-        $builder->get('aiAgentCapabilityScope')->addModelTransformer($arrayTransformer);
-        $builder->get('aiAgentExtensionAllowlist')->addModelTransformer($arrayTransformer);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

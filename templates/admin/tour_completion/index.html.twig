@@ -126,7 +126,7 @@
                                             {% if t in row.completed_tours %}
                                                 <i class="fa-icon fa-icon--status-ok" aria-label="{{ 'admin.tour_completion.completed'|trans({}, 'admin') }}"></i>
                                             {% else %}
-                                                <i class="bi bi-dash-circle text-muted" aria-label="{{ 'admin.tour_completion.not_completed'|trans({}, 'admin') }}"></i>
+                                                <i class="fa-icon text-muted fa-icon--status-pending" aria-label="{{ 'admin.tour_completion.not_completed'|trans({}, 'admin') }}"></i>
                                             {% endif %}
                                         </td>
                                     {% endfor %}

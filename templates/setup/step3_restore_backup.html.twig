@@ -25,9 +25,9 @@
                         </p>
 
                         <div class="fa-alert fa-alert--info" role="alert">
-                            <i class="bi bi-info-circle fa-alert__icon" aria-hidden="true"></i>
+                            <i class="fa-icon fa-alert__icon fa-icon--status-info" aria-hidden="true"></i>
                             <div class="fa-alert__body"><p class="h5 mb-2">
-                                <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                                <i class="fa-icon me-2 fa-icon--status-info" aria-hidden="true"></i>
                                 {{ 'setup.step3.info.title'|trans({}, 'setup') }}
                             </p>
                             <ul class="mb-0">
@@ -86,7 +86,7 @@
                                             {% embed '_components/_card.html.twig' with { 'class': 'border-warning' } %}
                                                 {% block card_body %}
                                                     <p class="h5 mb-3">
-                                                        <i class="bi bi-tools me-2" aria-hidden="true"></i>
+                                                        <i class="fa-icon me-2 fa-icon--nav-tools" aria-hidden="true"></i>
                                                         {{ 'setup.step3.orphaned.repair.title'|trans({}, 'setup') }}
                                                     </p>
                                                     <p class="card-text text-muted">
@@ -115,7 +115,7 @@
                                                             </div>
                                                             <div class="col-md-4">
                                                                 <button type="submit" class="btn btn-warning w-100">
-                                                                    <i class="bi bi-wrench me-2" aria-hidden="true"></i>
+                                                                    <i class="fa-icon me-2 fa-icon--nav-tools" aria-hidden="true"></i>
                                                                     {{ 'setup.step3.orphaned.repair.submit'|trans({}, 'setup') }}
                                                                 </button>
                                                             </div>
@@ -130,7 +130,7 @@
                                     {# Risk-Asset and Incident-Asset Repair #}
                                     {% if backup_restore_result.risks_without_assets is defined and backup_restore_result.risks_without_assets > 0 %}
                                         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-link', class: 'mt-3' } } %}
-                                            {% block alert_body %}<p class="h5 mb-2"> <i class="bi bi-link me-2" aria-hidden="true"></i> {{ 'setup.step3.asset_links.title'|trans({}, 'setup') }} </p> <p> {{ 'setup.step3.asset_links.description'|trans({'%count%': backup_restore_result.risks_without_assets}, 'setup')|raw }} <a href="{{ path('admin_data_repair_index') }}" class="alert-link">{{ 'setup.step3.asset_links.link_text'|trans({}, 'setup') }}</a> {{ 'setup.step3.asset_links.suffix'|trans({}, 'setup') }} </p>{% endblock %}
+                                            {% block alert_body %}<p class="h5 mb-2"> <i class="fa-icon me-2 fa-icon--ui-link" aria-hidden="true"></i> {{ 'setup.step3.asset_links.title'|trans({}, 'setup') }} </p> <p> {{ 'setup.step3.asset_links.description'|trans({'%count%': backup_restore_result.risks_without_assets}, 'setup')|raw }} <a href="{{ path('admin_data_repair_index') }}" class="alert-link">{{ 'setup.step3.asset_links.link_text'|trans({}, 'setup') }}</a> {{ 'setup.step3.asset_links.suffix'|trans({}, 'setup') }} </p>{% endblock %}
                                         {% endembed %}
                                     {% endif %}
 
@@ -138,7 +138,7 @@
                                     {% if backup_restore_result.orphaned_entities is not defined or backup_restore_result.orphaned_entities.total == 0 %}
                                         <div class="mt-4">
                                             <a href="{{ path('setup_step11_complete') }}" class="btn btn-success btn-lg">
-                                                <i class="bi bi-check me-2" aria-hidden="true"></i>
+                                                <i class="fa-icon me-2 fa-icon--ui-check" aria-hidden="true"></i>
                                                 {{ 'setup.step3.complete_setup'|trans({}, 'setup') }}
                                             </a>
                                         </div>
@@ -157,7 +157,7 @@
                             {% block card_header %}
                                 <div class="card-header bg-warning-subtle text-warning">
                                     <h2 class="h5 mb-0">
-                                        <i class="bi bi-database me-2" aria-hidden="true"></i>
+                                        <i class="fa-icon me-2 fa-icon--asset-database" aria-hidden="true"></i>
                                         {{ 'setup.step3.schema.title'|trans({}, 'setup') }}
                                     </h2>
                                 </div>
@@ -181,7 +181,7 @@
                                     <input type="hidden" name="_token" value="{{ csrf_token('setup_create_schema') }}">
                                     <button type="submit" class="btn btn-warning btn-lg">
                                         <span class="btn-text">
-                                            <i class="bi bi-gears me-2" aria-hidden="true"></i>
+                                            <i class="fa-icon me-2 fa-icon--nav-tools" aria-hidden="true"></i>
                                             {{ 'setup.step3.schema.submit'|trans({}, 'setup') }}
                                         </span>
                                         <span class="btn-loading d-none">
@@ -240,14 +240,14 @@
                                         </label>
                                         <input type="password" class="form-control fa-cyber-input__field" id="adminPassword" name="admin_password" placeholder="{{ 'setup.restore.password_placeholder'|trans({}, 'setup') }}" required>
                                         <div class="form-text">
-                                            <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+                                            <i class="fa-icon me-1 fa-icon--status-info" aria-hidden="true"></i>
                                             {{ 'setup.restore.password_hint'|trans({}, 'setup') }}
                                         </div>
                                     </div>
 
                                     <button type="submit" class="btn btn-info btn-lg">
                                         <span class="btn-text">
-                                            <i class="bi bi-upload me-2" aria-hidden="true"></i>
+                                            <i class="fa-icon me-2 fa-icon--nav-upload" aria-hidden="true"></i>
                                             {{ 'setup.restore.upload_and_restore'|trans({}, 'setup') }}
                                         </span>
                                         <span class="btn-loading d-none">
@@ -265,7 +265,7 @@
                             {% block card_header %}
                                 <div class="card-header">
                                     <h2 class="h5 mb-0">
-                                        <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
+                                        <i class="fa-icon me-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'setup.restore.option_new_install'|trans({}, 'setup') }}
                                     </h2>
                                 </div>
@@ -285,7 +285,7 @@
                                     <input type="hidden" name="_token" value="{{ csrf_token('setup_skip_restore') }}">
                                     <button type="submit" class="btn btn-secondary btn-lg">
                                         <span class="btn-text">
-                                            <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
+                                            <i class="fa-icon me-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
                                             {{ 'setup.restore.skip_new_install'|trans({}, 'setup') }}
                                         </span>
                                         <span class="btn-loading d-none">

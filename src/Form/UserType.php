@@ -17,9 +17,11 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use App\Form\DataTransformer\JsonArrayTransformer;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -91,12 +93,17 @@ class UserType extends AbstractType
                     'accept' => 'image/jpeg,image/png,image/gif,image/webp',
                 ],
                 'constraints' => [
-                    new Assert\File(maxSize: '2M', mimeTypes: [
-                        'image/jpeg',
-                        'image/png',
-                        'image/gif',
-                        'image/webp',
-                    ], mimeTypesMessage: 'user.validation.avatar_format'),
+                    new Assert\File(
+                        maxSize: '1M',
+                        mimeTypes: [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                            'image/webp',
+                        ],
+                        mimeTypesMessage: 'file_upload.validation.mime_type_invalid',
+                        maxSizeMessage: 'file_upload.validation.max_size_exceeded',
+                    ),
                 ],
             ])
 
@@ -209,6 +216,15 @@ class UserType extends AbstractType
                 'attr' => ['class' => 'form-check-input'],
             ]);
         }
+
+        // ISO 27001 §7.2 Competence — available for all edit modes
+        $builder->add('competencies', TextareaType::class, [
+            'label' => 'user.field.competencies',
+            'required' => false,
+            'attr' => ['rows' => 6, 'placeholder' => 'user.placeholder.competencies_json'],
+            'help' => 'user.help.competencies_json',
+        ]);
+        $builder->get('competencies')->addModelTransformer(new JsonArrayTransformer());
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -3,6 +3,26 @@ audits:
         title: Audits
     error:
         owner_required_user_or_person: 'Owner: User or master-data Person required (free-text alone is not sufficient).'
+    field:
+        finding_source: 'Finding Source'
+        action_type: 'Action Type'
+    placeholder:
+        finding_source: '-- Select source --'
+        action_type: '-- Select action type --'
+    help:
+        finding_source: 'Origin of the finding — ISO 27001 §10.1: nonconformities can arise from any source'
+        action_type: 'Corrective: remediate deviation. Preventive: prevent recurrence. Improvement: proactive opportunity (§10.2).'
+    finding_source:
+        internal_audit: 'Internal Audit'
+        external_audit: 'External Audit'
+        incident: 'Incident'
+        review: 'Management / Document Review'
+        customer_complaint: 'Customer Complaint'
+        management_review: 'Management Review'
+    action_type:
+        corrective: 'Corrective Action'
+        preventive: 'Preventive Action'
+        improvement: 'Continual Improvement'
 
 title: Audits
 description: 'Planning, execution and follow-up of internal and external audits'

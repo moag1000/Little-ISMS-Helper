@@ -43,6 +43,13 @@ class AuditFinding
     public const SEVERITY_MEDIUM = 'medium';
     public const SEVERITY_LOW = 'low';
 
+    public const SOURCE_INTERNAL_AUDIT = 'internal_audit';
+    public const SOURCE_EXTERNAL_AUDIT = 'external_audit';
+    public const SOURCE_INCIDENT = 'incident';
+    public const SOURCE_REVIEW = 'review';
+    public const SOURCE_CUSTOMER_COMPLAINT = 'customer_complaint';
+    public const SOURCE_MANAGEMENT_REVIEW = 'management_review';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -73,6 +80,13 @@ class AuditFinding
 
     #[ORM\Column(length: 30)]
     private string $status = self::STATUS_OPEN;
+
+    /**
+     * Source of the finding — ISO 27001 §10.1: NCs can originate from any source.
+     * Values: internal_audit | external_audit | incident | review | customer_complaint | management_review
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $source = null;
 
     /** Clause/control reference (e.g. "ISO 27001 A.5.1", "Clause 9.3"). */
     #[ORM\Column(length: 100, nullable: true)]
@@ -226,6 +240,17 @@ class AuditFinding
     public function setStatus(string $status): static
     {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getSource(): ?string
+    {
+        return $this->source;
+    }
+
+    public function setSource(?string $source): static
+    {
+        $this->source = $source;
         return $this;
     }
 

@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'data_subject_request' %}
 
 {% block title %}{{ 'dsr.page.show_title'|trans({'%id%': dsr.id}, 'data_subject_request') }}{% endblock %}
@@ -18,14 +19,14 @@
     {% set hint = alva_hint(dsr) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
-    {% include '_components/_page_header.html.twig' with {
-        title: dsr.dataSubjectName,
+    {{ _fa_page_header.render({
+        badge:    { icon: 'person-raised-hand', label: '#' ~ dsr.id },
+        title:    dsr.dataSubjectName,
         subtitle: ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') ~ ' (' ~ dsr.gdprArticle ~ ')',
-        icon: 'bi-person-raised-hand',
         actions: [
-            { label: 'common.back_to_list'|trans({}, 'messages'), url: path('app_data_subject_request_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_data_subject_request_index') }
         ]
-    } only %}
+    }) }}
 
     {# Overdue Warning #}
     {% if dsr.overdue %}
@@ -52,7 +53,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <p><strong>{{ 'dsr.field.request_type'|trans({}, 'data_subject_request') }}:</strong><br>
-                                <span class="badge bg-info fa-status-pill fa-status-pill--primary">{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>
+                                <span class="fa-status-pill fa-status-pill--primary">{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>
                                 <small class="text-muted ms-1">({{ dsr.gdprArticle }})</small>
                             </p>
                             <p><strong>{{ 'dsr.field.status'|trans({}, 'data_subject_request') }}:</strong><br>
@@ -156,11 +157,11 @@
             {% endembed %}
 
             {# Response / Rejection / Extension Details #}
-            {% if dsr.responseDescription or dsr.rejectionReason or dsr.extensionReason %}
+            {% if dsr.responseDescription or dsr.rejectionReason or dsr.extensionReason or dsr.responseAt or dsr.responseMethod or dsr.responseDocument %}
                 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                     {% block card_header %}
                         <div class="card-header">
-                            <h2 class="mb-0"><i class="bi bi-reply" aria-hidden="true"></i> {{ 'dsr.section.response'|trans({}, 'data_subject_request') }}</h2>
+                            <h2 class="mb-0"><i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'dsr.section.response_tracking'|trans({}, 'data_subject_request') }}</h2>
                         </div>
                     {% endblock %}
                     {% block card_body %}
@@ -168,6 +169,29 @@
                             <p><strong>{{ 'dsr.field.response_description'|trans({}, 'data_subject_request') }}:</strong></p>
                             <p>{{ dsr.responseDescription|nl2br }}</p>
                         {% endif %}
+                        <div class="row">
+                            {% if dsr.responseAt %}
+                                <div class="col-md-6">
+                                    <p><strong>{{ 'dsr.field.response_at'|trans({}, 'data_subject_request') }}:</strong><br>
+                                        <span class="text-success fw-semibold">{{ dsr.responseAt|date('Y-m-d H:i') }}</span>
+                                    </p>
+                                </div>
+                            {% endif %}
+                            {% if dsr.responseMethod %}
+                                <div class="col-md-6">
+                                    <p><strong>{{ 'dsr.field.response_method'|trans({}, 'data_subject_request') }}:</strong><br>
+                                        {{ ('dsr.response_method.' ~ dsr.responseMethod)|trans({}, 'data_subject_request') }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                            {% if dsr.responseDocument %}
+                                <div class="col-12">
+                                    <p><strong>{{ 'dsr.field.response_document'|trans({}, 'data_subject_request') }}:</strong><br>
+                                        <code class="small">{{ dsr.responseDocument }}</code>
+                                    </p>
+                                </div>
+                            {% endif %}
+                        </div>
                         {% if dsr.rejectionReason %}
                             <p><strong>{{ 'dsr.field.rejection_reason'|trans({}, 'data_subject_request') }}:</strong></p>
                             <p class="text-danger">{{ dsr.rejectionReason|nl2br }}</p>
@@ -201,7 +225,7 @@
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0"><i class="bi bi-lightning" aria-hidden="true"></i> {{ 'dsr.section.actions'|trans({}, 'data_subject_request') }}</h2>
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--threat" aria-hidden="true"></i> {{ 'dsr.section.actions'|trans({}, 'data_subject_request') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}

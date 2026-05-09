@@ -71,9 +71,9 @@
                             <p>{{ framework.name }}</p>
                         </div>
                         {% if framework.loaded %}
-                            <span class="badge bg-success">{{ 'compliance.loaded'|trans({}, 'compliance') }}</span>
+                            <span class="fa-status-pill fa-status-pill--success">{{ 'compliance.loaded'|trans({}, 'compliance') }}</span>
                         {% else %}
-                            <span class="badge bg-warning text-dark">{{ 'compliance.not_loaded'|trans({}, 'compliance') }}</span>
+                            <span class="fa-status-pill fa-status-pill--warning">{{ 'compliance.not_loaded'|trans({}, 'compliance') }}</span>
                         {% endif %}
                     </div>
 
@@ -95,11 +95,11 @@
                                 <span class="label">{{ 'admin.compliance.applicability.label'|trans({}, 'compliance') }}:</span>
                                 <span class="value">
                                     {% if _applicability == 'universal' %}
-                                        <span class="badge bg-danger">{{ 'admin.compliance.applicability.universal'|trans({}, 'compliance') }}</span>
+                                        <span class="fa-status-pill fa-status-pill--danger">{{ 'admin.compliance.applicability.universal'|trans({}, 'compliance') }}</span>
                                     {% elseif _applicability == 'conditional' %}
-                                        <span class="badge bg-warning text-dark">{{ 'admin.compliance.applicability.conditional'|trans({}, 'compliance') }}</span>
+                                        <span class="fa-status-pill fa-status-pill--warning">{{ 'admin.compliance.applicability.conditional'|trans({}, 'compliance') }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'admin.compliance.applicability.voluntary'|trans({}, 'compliance') }}</span>
+                                        <span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.compliance.applicability.voluntary'|trans({}, 'compliance') }}</span>
                                     {% endif %}
                                 </span>
                             </div>

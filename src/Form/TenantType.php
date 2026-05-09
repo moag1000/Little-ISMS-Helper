@@ -69,15 +69,21 @@ class TenantType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
-                    'accept' => 'image/jpeg,image/png,image/gif,image/webp',
+                    'accept' => 'image/jpeg,image/png,image/svg+xml,image/gif,image/webp',
                 ],
                 'constraints' => [
-                    new Assert\File(maxSize: '2M', mimeTypes: [
-                        'image/jpeg',
-                        'image/png',
-                        'image/gif',
-                        'image/webp',
-                    ], mimeTypesMessage: 'tenant.validation.logo_format'),
+                    new Assert\File(
+                        maxSize: '2M',
+                        mimeTypes: [
+                            'image/jpeg',
+                            'image/png',
+                            'image/svg+xml',
+                            'image/gif',
+                            'image/webp',
+                        ],
+                        mimeTypesMessage: 'file_upload.validation.mime_type_invalid',
+                        maxSizeMessage: 'file_upload.validation.max_size_exceeded',
+                    ),
                 ],
             ])
             ->add('azureTenantId', TextType::class, [

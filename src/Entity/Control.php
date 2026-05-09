@@ -852,4 +852,224 @@ class Control
         return $this;
     }
 
+    // ── Sprint 6: Effectiveness & Cloud fields ────────────────────────────────
+
+    /**
+     * Control effectiveness rating (ISO 27001 §9.1).
+     * Values: not_assessed | ineffective | partially_effective | effective | highly_effective
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    private ?string $effectiveness = null;
+
+    /**
+     * Control type classification (NIST 800-53).
+     * Values: preventive | detective | corrective | deterrent | recovery
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    private ?string $controlType = null;
+
+    /**
+     * Degree of automation for this control.
+     * Values: manual | semi_automated | fully_automated
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    private ?string $automationLevel = null;
+
+    /**
+     * Process-capability maturity level 1-5 (ISO 27017 + ISO 33001).
+     */
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    #[Assert\Range(min: 1, max: 5)]
+    private ?int $controlMaturity = null;
+
+    /**
+     * Date of the most recent effectiveness test.
+     */
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    private ?\DateTimeImmutable $lastEffectivenessTest = null;
+
+    /**
+     * Planned date for the next effectiveness test.
+     */
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    private ?\DateTimeImmutable $nextEffectivenessTest = null;
+
+    /**
+     * Cross-framework references as JSON map.
+     * Example: {iso27001: ['A.5.1'], bsi: ['ORP.1.A1'], nist: ['AC-1'], dora: ['Art. 6']}
+     *
+     * @var array<string, list<string>>|null
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    private ?array $frameworkReferences = null;
+
+    /**
+     * Related risks for cross-linking (ISO 27005 §8.5).
+     * Uses the existing control↔risk join table (control has inversedBy='controls').
+     *
+     * @var Collection<int, Risk>
+     */
+    // NOTE: uses existing join (Control::$risks ↔ Risk::$controls); no new join table needed.
+
+    // ── Cloud-Security fields (gated 'cloud_security' module) ─────────────────
+
+    /**
+     * ISO 27017 cloud-control reference code.
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    private ?string $cloudControlReference = null;
+
+    /**
+     * ISO 27018 cloud-privacy reference code.
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    private ?string $cloudPrivacyReference = null;
+
+    /**
+     * ISO 27701 PIMS reference code.
+     */
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    private ?string $pimsReference = null;
+
+    /**
+     * Shared-responsibility model (ISO 27017 §5.1.1).
+     * Values: customer | provider | shared
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['control:read', 'control:write'])]
+    private ?string $customerOrProviderResponsibility = null;
+
+    public function getEffectiveness(): ?string
+    {
+        return $this->effectiveness;
+    }
+
+    public function setEffectiveness(?string $effectiveness): static
+    {
+        $this->effectiveness = $effectiveness;
+        return $this;
+    }
+
+    public function getControlType(): ?string
+    {
+        return $this->controlType;
+    }
+
+    public function setControlType(?string $controlType): static
+    {
+        $this->controlType = $controlType;
+        return $this;
+    }
+
+    public function getAutomationLevel(): ?string
+    {
+        return $this->automationLevel;
+    }
+
+    public function setAutomationLevel(?string $automationLevel): static
+    {
+        $this->automationLevel = $automationLevel;
+        return $this;
+    }
+
+    public function getControlMaturity(): ?int
+    {
+        return $this->controlMaturity;
+    }
+
+    public function setControlMaturity(?int $controlMaturity): static
+    {
+        $this->controlMaturity = $controlMaturity;
+        return $this;
+    }
+
+    public function getLastEffectivenessTest(): ?\DateTimeImmutable
+    {
+        return $this->lastEffectivenessTest;
+    }
+
+    public function setLastEffectivenessTest(?\DateTimeImmutable $lastEffectivenessTest): static
+    {
+        $this->lastEffectivenessTest = $lastEffectivenessTest;
+        return $this;
+    }
+
+    public function getNextEffectivenessTest(): ?\DateTimeImmutable
+    {
+        return $this->nextEffectivenessTest;
+    }
+
+    public function setNextEffectivenessTest(?\DateTimeImmutable $nextEffectivenessTest): static
+    {
+        $this->nextEffectivenessTest = $nextEffectivenessTest;
+        return $this;
+    }
+
+    /** @return array<string, list<string>>|null */
+    public function getFrameworkReferences(): ?array
+    {
+        return $this->frameworkReferences;
+    }
+
+    /** @param array<string, list<string>>|null $frameworkReferences */
+    public function setFrameworkReferences(?array $frameworkReferences): static
+    {
+        $this->frameworkReferences = $frameworkReferences;
+        return $this;
+    }
+
+    public function getCloudControlReference(): ?string
+    {
+        return $this->cloudControlReference;
+    }
+
+    public function setCloudControlReference(?string $cloudControlReference): static
+    {
+        $this->cloudControlReference = $cloudControlReference;
+        return $this;
+    }
+
+    public function getCloudPrivacyReference(): ?string
+    {
+        return $this->cloudPrivacyReference;
+    }
+
+    public function setCloudPrivacyReference(?string $cloudPrivacyReference): static
+    {
+        $this->cloudPrivacyReference = $cloudPrivacyReference;
+        return $this;
+    }
+
+    public function getPimsReference(): ?string
+    {
+        return $this->pimsReference;
+    }
+
+    public function setPimsReference(?string $pimsReference): static
+    {
+        $this->pimsReference = $pimsReference;
+        return $this;
+    }
+
+    public function getCustomerOrProviderResponsibility(): ?string
+    {
+        return $this->customerOrProviderResponsibility;
+    }
+
+    public function setCustomerOrProviderResponsibility(?string $customerOrProviderResponsibility): static
+    {
+        $this->customerOrProviderResponsibility = $customerOrProviderResponsibility;
+        return $this;
+    }
+
 }

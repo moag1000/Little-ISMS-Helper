@@ -10,6 +10,7 @@ use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Consent Entity - GDPR Art. 7 Compliance
@@ -246,6 +247,28 @@ class Consent
      */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $notes = null;
+
+    // ═══════════════════════════════════════════════════════════
+    // WIDERRUF-TRACKING GDPR Art. 7(3) (Withdrawal)
+    // ═══════════════════════════════════════════════════════════
+
+    /**
+     * Timestamp when consent was withdrawn by data subject (GDPR Art. 7(3))
+     */
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeImmutable $withdrawnAt = null;
+
+    /**
+     * Reason given for withdrawal (audit trail)
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $withdrawalReason = null;
+
+    /**
+     * Channel through which withdrawal was communicated
+     */
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $withdrawalChannel = null;
 
     // ═══════════════════════════════════════════════════════════
     // AUDIT TRAIL
@@ -560,6 +583,47 @@ class Consent
         return $this;
     }
 
+    public function getWithdrawnAt(): ?\DateTimeImmutable
+    {
+        return $this->withdrawnAt;
+    }
+
+    public function setWithdrawnAt(?\DateTimeImmutable $withdrawnAt): static
+    {
+        $this->withdrawnAt = $withdrawnAt;
+        return $this;
+    }
+
+    public function getWithdrawalReason(): ?string
+    {
+        return $this->withdrawalReason;
+    }
+
+    public function setWithdrawalReason(?string $withdrawalReason): static
+    {
+        $this->withdrawalReason = $withdrawalReason;
+        return $this;
+    }
+
+    public function getWithdrawalChannel(): ?string
+    {
+        return $this->withdrawalChannel;
+    }
+
+    public function setWithdrawalChannel(?string $withdrawalChannel): static
+    {
+        $this->withdrawalChannel = $withdrawalChannel;
+        return $this;
+    }
+
+    /**
+     * Convenience: returns true when withdrawal timestamp is set (GDPR Art. 7(3))
+     */
+    public function isWithdrawn(): bool
+    {
+        return $this->withdrawnAt !== null;
+    }
+
     // ═══════════════════════════════════════════════════════════
     // HELPER METHODS
     // ═══════════════════════════════════════════════════════════
@@ -620,5 +684,25 @@ class Consent
             'rejected' => 'danger',
             default => 'secondary',
         };
+    }
+
+    /**
+     * GDPR Art. 7(3): When withdrawal date is set, reason and channel are mandatory for audit completeness.
+     */
+    #[Assert\Callback]
+    public function validateWithdrawalCompleteness(ExecutionContextInterface $context): void
+    {
+        if ($this->withdrawnAt !== null) {
+            if (empty($this->withdrawalReason)) {
+                $context->buildViolation('consent.validation.withdrawal_reason_required_when_withdrawn')
+                    ->atPath('withdrawalReason')
+                    ->addViolation();
+            }
+            if (empty($this->withdrawalChannel)) {
+                $context->buildViolation('consent.validation.withdrawal_channel_required_when_withdrawn')
+                    ->atPath('withdrawalChannel')
+                    ->addViolation();
+            }
+        }
     }
 }

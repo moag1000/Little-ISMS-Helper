@@ -1,0 +1,126 @@
+# BSI IT-Grundschutz-Kompendium 2023 — Schicht IND (Industrielle IT)
+# Quelle: BSI Bundesamt fuer Sicherheit in der Informationstechnik
+# https://www.bsi.bund.de/IT-Grundschutz-Kompendium
+
+layer: IND
+title: 'Industrielle IT'
+description: 'Schicht fuer industrielle IT-Systeme: Prozessleit- und Automatisierungstechnik (OT/ICS), SPS, Sensorik, Maschinen, sicherheitsgerichtete Systeme und Fernwartung.'
+bausteine:
+  - id: IND.1
+    title: 'Prozessleit- und Automatisierungstechnik'
+    description: 'Anforderungen an Sicherheit von Prozessleit- und Automatisierungstechnik (OT/ICS).'
+    anforderungen:
+      basis:
+        - id: IND.1.A1
+          title: 'Segmentierung der OT-Netze'
+          requirement_text: 'OT-Netze MUESSEN von anderen Netzen (z. B. Office-IT) segmentiert werden.'
+        - id: IND.1.A2
+          title: 'Einschraenkung der Fernwartung'
+          requirement_text: 'Fernwartungszugaenge fuer ICS-Komponenten MUESSEN eingeschraenkt werden.'
+        - id: IND.1.A3
+          title: 'Inventarisierung der OT-Komponenten'
+          requirement_text: 'Alle OT-Komponenten MUESSEN inventarisiert sein. Siehe BSI Kompendium 2023 Baustein IND.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: IND.2.1
+    title: 'Allgemeine ICS-Komponente'
+    description: 'Anforderungen an die sichere Konfiguration und den Betrieb allgemeiner ICS-Komponenten.'
+    anforderungen:
+      basis:
+        - id: IND.2.1.A1
+          title: 'Sichere Konfiguration von ICS-Komponenten'
+          requirement_text: 'ICS-Komponenten MUESSEN sicher konfiguriert werden.'
+        - id: IND.2.1.A2
+          title: 'Aenderung von Default-Passwoertern'
+          requirement_text: 'Default-Passwoerter und -Konten von ICS-Komponenten MUESSEN geaendert oder deaktiviert werden. Siehe BSI Kompendium 2023 Baustein IND.2.1 Anforderung A2.'
+        - id: IND.2.1.A3
+          title: 'Patchmanagement fuer ICS-Komponenten'
+          requirement_text: 'ICS-Komponenten MUESSEN soweit moeglich mit sicherheitsrelevanten Updates versorgt werden. Siehe BSI Kompendium 2023 Baustein IND.2.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: IND.2.2
+    title: 'Speicherprogrammierbare Steuerung (SPS)'
+    description: 'Anforderungen an die sichere Planung, Konfiguration und den Betrieb von Speicherprogrammierbaren Steuerungen.'
+    anforderungen:
+      basis:
+        - id: IND.2.2.A1
+          title: 'Planung des SPS-Einsatzes'
+          requirement_text: 'Der Einsatz von Speicherprogrammierbaren Steuerungen (SPS) MUSS geplant werden.'
+        - id: IND.2.2.A2
+          title: 'Sichere Konfiguration von SPS'
+          requirement_text: 'SPS MUESSEN sicher konfiguriert werden. Programmieranschluesse MUESSEN abgesichert sein. Siehe BSI Kompendium 2023 Baustein IND.2.2 Anforderung A2.'
+        - id: IND.2.2.A3
+          title: 'Schutz der SPS-Programme vor unbefugter Aenderung'
+          requirement_text: 'SPS-Programme MUESSEN gegen unbefugte Aenderung geschuetzt sein. Siehe BSI Kompendium 2023 Baustein IND.2.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: IND.2.3
+    title: 'Sensoren und Aktoren'
+    description: 'Anforderungen an Auswahl, Konfiguration und Betrieb von Sensoren und Aktoren.'
+    anforderungen:
+      basis:
+        - id: IND.2.3.A1
+          title: 'Planung des Einsatzes von Sensoren und Aktoren'
+          requirement_text: 'Der Einsatz von Sensoren und Aktoren MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein IND.2.3 Anforderung A1.'
+        - id: IND.2.3.A2
+          title: 'Sichere Anbindung von Sensoren und Aktoren'
+          requirement_text: 'Sensoren und Aktoren MUESSEN sicher in das OT-Netz eingebunden sein. Siehe BSI Kompendium 2023 Baustein IND.2.3 Anforderung A2.'
+        - id: IND.2.3.A3
+          title: 'Manipulationsschutz'
+          requirement_text: 'Sensoren und Aktoren MUESSEN soweit moeglich gegen physische und logische Manipulation geschuetzt sein. Siehe BSI Kompendium 2023 Baustein IND.2.3 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: IND.2.4
+    title: 'Maschine'
+    description: 'Anforderungen an die sichere Integration und den Betrieb vernetzter Maschinen in der Produktion.'
+    anforderungen:
+      basis:
+        - id: IND.2.4.A1
+          title: 'Planung der Maschinenintegration'
+          requirement_text: 'Die Integration von Maschinen in die Produktions-IT MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein IND.2.4 Anforderung A1.'
+        - id: IND.2.4.A2
+          title: 'Sichere Anbindung von Maschinen'
+          requirement_text: 'Maschinen MUESSEN sicher in das Netz eingebunden sein, einschliesslich Segmentierung. Siehe BSI Kompendium 2023 Baustein IND.2.4 Anforderung A2.'
+        - id: IND.2.4.A3
+          title: 'Sichere Wartung von Maschinen'
+          requirement_text: 'Wartungszugaenge fuer Maschinen MUESSEN abgesichert und protokolliert sein. Siehe BSI Kompendium 2023 Baustein IND.2.4 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: IND.2.7
+    title: 'Safety-Instrumented Systems'
+    description: 'Anforderungen an Sicherheit von sicherheitsgerichteten Systemen (SIS) in industriellen Umgebungen.'
+    anforderungen:
+      basis:
+        - id: IND.2.7.A1
+          title: 'Trennung von SIS und Prozessleitsystem'
+          requirement_text: 'Sicherheitsgerichtete Systeme MUESSEN logisch und moeglichst auch physisch von der Prozessleitebene getrennt sein. Siehe BSI Kompendium 2023 Baustein IND.2.7 Anforderung A1.'
+        - id: IND.2.7.A2
+          title: 'Schutz vor unbefugter Aenderung'
+          requirement_text: 'Sicherheitsfunktionen von SIS MUESSEN gegen unbefugte Aenderung geschuetzt sein. Siehe BSI Kompendium 2023 Baustein IND.2.7 Anforderung A2.'
+        - id: IND.2.7.A3
+          title: 'Pruefung und Aenderungsmanagement'
+          requirement_text: 'Aenderungen an SIS MUESSEN einem geregelten Aenderungs- und Pruefprozess unterzogen werden. Siehe BSI Kompendium 2023 Baustein IND.2.7 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: IND.3.2
+    title: 'Fernwartung im industriellen Umfeld'
+    description: 'Anforderungen an die sichere Planung und Durchfuehrung von Fernwartung an OT-Komponenten.'
+    anforderungen:
+      basis:
+        - id: IND.3.2.A1
+          title: 'Planung der Fernwartung'
+          requirement_text: 'Die Fernwartung von ICS-Komponenten MUSS sorgfaeltig geplant werden.'
+        - id: IND.3.2.A2
+          title: 'Sichere Anbindung der Fernwartung'
+          requirement_text: 'Fernwartungszugaenge MUESSEN ueber dedizierte, abgesicherte Kanaele (z. B. VPN mit MFA) erfolgen. Siehe BSI Kompendium 2023 Baustein IND.3.2 Anforderung A2.'
+        - id: IND.3.2.A3
+          title: 'Protokollierung der Fernwartung'
+          requirement_text: 'Fernwartungstaetigkeiten MUESSEN vollstaendig protokolliert und nachvollziehbar sein. Siehe BSI Kompendium 2023 Baustein IND.3.2 Anforderung A3.'
+      standard: []
+      hoch: []

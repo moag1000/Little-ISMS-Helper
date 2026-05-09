@@ -67,7 +67,7 @@
                     data-action="api-key-reveal#toggle"
                     data-api-key-reveal-target="toggle"
                     aria-label="Reveal token">
-                <i class="bi bi-eye" aria-hidden="true" data-api-key-reveal-target="icon"></i>
+                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true" data-api-key-reveal-target="icon"></i>
             </button>
         {% endif %}
 
@@ -75,7 +75,7 @@
             <form method="post" action="{{ props.revokeUrl }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ props.revokeCsrf }}">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm">
-                    <i class="bi bi-shield-x" aria-hidden="true"></i> Revoke
+                    <i class="fa-icon fa-icon--nav-shield-alert" aria-hidden="true"></i> Revoke
                 </button>
             </form>
         {% endif %}

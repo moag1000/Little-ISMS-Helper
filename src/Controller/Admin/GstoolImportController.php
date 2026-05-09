@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Form\Admin\GstoolImportUploadType;
+use App\Service\FileUploadSecurityService;
 use App\Service\Import\GstoolXmlImporter;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,6 +38,7 @@ final class GstoolImportController extends AbstractController
     public function __construct(
         private readonly GstoolXmlImporter $importer,
         private readonly TenantContext $tenantContext,
+        private readonly FileUploadSecurityService $fileUploadSecurityService,
         #[Autowire('%kernel.project_dir%')]
         private readonly string $projectDir,
     ) {
@@ -63,6 +66,14 @@ final class GstoolImportController extends AbstractController
 
             if ($upload === null || !$upload->isValid()) {
                 $this->addFlash('error', 'gstool_import.error.upload_failed');
+                return $this->redirectToRoute('admin_gstool_import_index');
+            }
+
+            // Security: deep validation beyond Symfony form constraints (magic bytes, extension whitelist)
+            try {
+                $this->fileUploadSecurityService->validateUploadedFile($upload);
+            } catch (FileException $e) {
+                $this->addFlash('error', $e->getMessage());
                 return $this->redirectToRoute('admin_gstool_import_index');
             }
 

@@ -285,6 +285,10 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    App\Command\LoadBsiItGrundschutzCatalogueCommand:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     App\Command\LoadNistCsf2FullCatalogueCommand:
         arguments:
             $projectDir: '%kernel.project_dir%'

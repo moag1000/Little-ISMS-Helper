@@ -31,7 +31,7 @@
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="h5 mb-0"><i class="bi bi-lightning" aria-hidden="true"></i> {{ 'section.quick_start'|trans }}</h2>
+                        <h2 class="h5 mb-0"><i class="fa-icon fa-icon--threat" aria-hidden="true"></i> {{ 'section.quick_start'|trans }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -40,7 +40,7 @@
                         <div class="col-md-4 col-lg-2">
                             <a href="{{ path('report_builder_from_template', {templateKey: key}) }}" class="card fa-section h-100 text-decoration-none text-center hover-lift">
                                 <div class="card-body p-3">
-                                    <i class="bi bi-file-earmark-richtext fs-1 text-primary" aria-hidden="true"></i>
+                                    <i class="fa-icon fs-1 text-primary fa-icon--nav-document" aria-hidden="true"></i>
                                     <h3 class="h6 mt-2 mb-0">{{ template.name }}</h3>
                                 </div>
                             </a>
@@ -188,7 +188,7 @@
                                 <form method="post" action="{{ path('report_builder_clone', {id: template.id}) }}" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('clone' ~ template.id) }}">
                                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" title="{{ 'action.use_template'|trans }}">
-                                        <i class="bi bi-copy" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--ui-copy" aria-hidden="true"></i>
                                     </button>
                                 </form>
                             </div>

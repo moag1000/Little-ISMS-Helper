@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ risk.title }}{% endblock %}
 
@@ -17,22 +18,27 @@
     {% set hint = alva_hint(risk) %}
     {% if hint %}{{ _fa_alva_hint.render(hint) }}{% endif %}
 
-    <div class="page-header">
-        <h1>
-            {{ risk.title }}
-            {% if isInherited is defined and isInherited %}
-                {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-building', class: 'ms-2', content: 'corporate.inherited'|trans({}, 'tenant') } %}
-            {% endif %}
-        </h1>
-        <div class="actions">
-            {% if canEdit is defined and canEdit %}
-                <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'action.edit'|trans({}, 'messages') }}</a>
-            {% else %}
+    {% set _show_actions = [] %}
+    {% if canEdit is defined and canEdit %}
+        {% set _show_actions = _show_actions|merge([{ label: 'action.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_risk_edit', {id: risk.id}) }]) %}
+    {% endif %}
+    {% set _show_actions = _show_actions|merge([
+        { label: 'action.back_to_list'|trans({}, 'messages'), variant: 'ghost', href: path('app_risk_index') }
+    ]) %}
+    {{ _fa_page_header.render({
+        badge: (isInherited is defined and isInherited) ? { icon: 'building', label: 'corporate.inherited'|trans({}, 'tenant') } : null,
+        title: risk.title,
+        actions: _show_actions
+    }) }}
+
+    {# Inline POST-delete and disabled-edit kept below header (cannot be expressed via _fa_page_header GET-only actions) #}
+    {% if (canEdit is defined and not canEdit) or (is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit)) %}
+        <div class="d-flex justify-content-end gap-2 mb-3">
+            {% if canEdit is defined and not canEdit %}
                 <button class="fa-cyber-btn fa-cyber-btn--primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'tenant') }}">
                     <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i> {{ 'action.edit'|trans({}, 'messages') }}
                 </button>
             {% endif %}
-            <a href="{{ path('app_risk_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'action.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
                 <form method="post" action="{{ path('app_risk_delete', {id: risk.id}) }}" class="d-inline"
                       data-controller="ui-actions"
@@ -43,7 +49,7 @@
                 </form>
             {% endif %}
         </div>
-    </div>
+    {% endif %}
 
     {% if isInherited is defined and isInherited %}
         {{ _fa_alert.render({ variant: 'info', class: 'mb-3', title: 'corporate.inheritance.view_only_title'|trans({}, 'tenant'), body: 'corporate.inheritance.risk_inherited_message'|trans({}, 'tenant') }) }}
@@ -87,36 +93,47 @@
                 </div>
             {% endif %}
 
+            {# ISMS Risk-Score-Cards (Aurora-Pattern, replaces hand-rolled risk-matrix-mini) #}
+            {% set inherentLevel = risk.inherentRiskLevel >= 20 ? 5 : (risk.inherentRiskLevel >= 12 ? 4 : (risk.inherentRiskLevel >= 8 ? 3 : (risk.inherentRiskLevel >= 4 ? 2 : 1))) %}
             <div class="risk-assessment-grid">
                 <div class="assessment-card">
                     <h3>{{ 'risk.assessment.inherent_risk'|trans({}, 'risk') }}</h3>
-                    <div class="risk-matrix-mini risk-level-{{ riskClass }}">
-                        <div class="risk-score">
-                            {{ risk.inherentRiskLevel }}
-                        </div>
-                        <div class="risk-components">
-                            <div>{{ 'risk.assessment.probability'|trans({}, 'risk') }}: {{ risk.probability }}/5</div>
-                            <div>{{ 'risk.assessment.impact'|trans({}, 'risk') }}: {{ risk.impact }}/5</div>
+                    <div class="isms-risk-score" data-level="{{ inherentLevel }}">
+                        <div class="isms-risk-score__value">{{ risk.inherentRiskLevel }}</div>
+                        <div class="isms-risk-score__components">
+                            <div class="isms-risk-score__component">
+                                <span class="isms-risk-score__component-label">{{ 'risk.assessment.probability'|trans({}, 'risk') }}</span>
+                                <span class="isms-risk-score__component-value">{{ risk.probability }}/5</span>
+                            </div>
+                            <div class="isms-risk-score__component">
+                                <span class="isms-risk-score__component-label">{{ 'risk.assessment.impact'|trans({}, 'risk') }}</span>
+                                <span class="isms-risk-score__component-value">{{ risk.impact }}/5</span>
+                            </div>
+                            <div class="isms-risk-score__level">{{ riskClass }}</div>
                         </div>
                     </div>
-                    <p class="risk-level-text">{{ 'risk.assessment.level'|trans({}, 'risk') }}: <strong>{{ riskClass|upper }} ({{ 'risk.assessment.score'|trans({}, 'risk') }}: {{ risk.inherentRiskLevel }})</strong></p>
                 </div>
 
                 {% if risk.residualProbability and risk.residualImpact %}
                 {# ISO 27001 compliant thresholds: 20/12/6 #}
                 {% set residualClass = risk.residualRiskLevel >= 20 ? 'critical' : (risk.residualRiskLevel >= 12 ? 'high' : (risk.residualRiskLevel >= 6 ? 'medium' : 'low')) %}
+                {% set residualLevel = risk.residualRiskLevel >= 20 ? 5 : (risk.residualRiskLevel >= 12 ? 4 : (risk.residualRiskLevel >= 8 ? 3 : (risk.residualRiskLevel >= 4 ? 2 : 1))) %}
                 <div class="assessment-card">
                     <h3>{{ 'risk.assessment.residual_risk'|trans({}, 'risk') }}</h3>
-                    <div class="risk-matrix-mini risk-level-{{ residualClass }}">
-                        <div class="risk-score">
-                            {{ risk.residualRiskLevel }}
-                        </div>
-                        <div class="risk-components">
-                            <div>{{ 'risk.assessment.probability'|trans({}, 'risk') }}: {{ risk.residualProbability }}/5</div>
-                            <div>{{ 'risk.assessment.impact'|trans({}, 'risk') }}: {{ risk.residualImpact }}/5</div>
+                    <div class="isms-risk-score" data-level="{{ residualLevel }}">
+                        <div class="isms-risk-score__value">{{ risk.residualRiskLevel }}</div>
+                        <div class="isms-risk-score__components">
+                            <div class="isms-risk-score__component">
+                                <span class="isms-risk-score__component-label">{{ 'risk.assessment.probability'|trans({}, 'risk') }}</span>
+                                <span class="isms-risk-score__component-value">{{ risk.residualProbability }}/5</span>
+                            </div>
+                            <div class="isms-risk-score__component">
+                                <span class="isms-risk-score__component-label">{{ 'risk.assessment.impact'|trans({}, 'risk') }}</span>
+                                <span class="isms-risk-score__component-value">{{ risk.residualImpact }}/5</span>
+                            </div>
+                            <div class="isms-risk-score__level">{{ residualClass }}</div>
                         </div>
                     </div>
-                    <p class="risk-level-text">{{ 'risk.assessment.level'|trans({}, 'risk') }}: <strong>{{ residualClass|upper }} ({{ 'risk.assessment.score'|trans({}, 'risk') }}: {{ risk.residualRiskLevel }})</strong></p>
                 </div>
                 {% endif %}
             </div>
@@ -337,29 +354,8 @@
     border-radius: 8px;
     border: 1px solid var(--border);
 }
-.risk-matrix-mini {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 1rem 0;
-}
-.risk-score {
-    width: 80px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    font-weight: bold;
-    border-radius: 8px;
-    color: var(--fg);
-}
-.risk-level-low { background: var(--success-glow); }
-.risk-level-medium { background: var(--warning-glow); }
-.risk-level-high { background: color-mix(in srgb, var(--warning) 20%, transparent); }
-.risk-level-critical { background: var(--danger-glow); }
-.risk-components { font-size: 0.9rem; }
-.risk-level-text { margin-top: 1rem; font-size: 1.1rem; }
+/* risk-matrix-mini + .risk-score + .risk-level-* + .risk-components + .risk-level-text:
+   migrated to .isms-risk-score (canonical Aurora-pattern in fairy-aurora-components.css) */
 /* Data Reuse Styles */
 .controls-list, .incidents-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
 .control-item, .incident-item {

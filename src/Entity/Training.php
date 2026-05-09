@@ -178,6 +178,14 @@ class Training
     private Collection $complianceRequirements;
 
 
+    /**
+     * ISO 27001 §7.3 Awareness — programme classification for reporting
+     * Values: awareness | role_specific | management | onboarding | compliance_specific | technical | regulatory_required
+     */
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['training:read', 'training:write'])]
+    private ?string $programType = null;
+
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
@@ -620,6 +628,17 @@ public function __construct()
     public function getAllTrainerOwners(): array
     {
         return OwnerResolver::resolveAll($this->trainerUser, $this->trainerPerson, $this->trainer, $this->trainerDeputyPersons);
+    }
+
+    public function getProgramType(): ?string
+    {
+        return $this->programType;
+    }
+
+    public function setProgramType(?string $programType): static
+    {
+        $this->programType = $programType;
+        return $this;
     }
 
 }

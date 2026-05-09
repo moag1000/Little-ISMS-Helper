@@ -65,14 +65,14 @@
                                 </td>
                                 <td>
                                     {% if level.isDefault %}
-                                        <span class="badge bg-success fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span>
+                                        <span class="fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i></span>
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if level.isActive %}
-                                        <span class="badge bg-success fa-status-pill fa-status-pill--success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                        <span class="fa-status-pill fa-status-pill--success">{{ 'common.active'|trans({}, 'messages') }}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary fa-status-pill fa-status-pill--neutral">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                        <span class="fa-status-pill fa-status-pill--neutral">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-end">

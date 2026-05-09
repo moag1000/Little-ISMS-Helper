@@ -6,10 +6,10 @@ namespace App\Controller;
 
 use RuntimeException;
 use DateTime;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Asset;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Form\DataProtectionImpactAssessmentType;
-use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Service\DataProtectionImpactAssessmentService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
@@ -43,6 +43,7 @@ class DPIAController extends AbstractController
     public function index(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         // Get filter parameters
         $filter = $request->query->get('filter', 'all');
 
@@ -78,6 +79,7 @@ class DPIAController extends AbstractController
     public function new(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $dataProtectionImpactAssessment = new DataProtectionImpactAssessment();
         $dataProtectionImpactAssessment->setTenant($this->tenantContext->getCurrentTenant());
 
@@ -115,6 +117,7 @@ class DPIAController extends AbstractController
     public function edit(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         // Only draft and requires_revision can be edited
         if (!in_array($dataProtectionImpactAssessment->getStatus(), ['draft', 'requires_revision'])) {
             $this->addFlash('warning', 'Only draft or revision-required DPIAs can be edited');
@@ -145,6 +148,7 @@ class DPIAController extends AbstractController
     public function delete(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if ($this->isCsrfTokenValid('delete' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->dataProtectionImpactAssessmentService->delete($dataProtectionImpactAssessment);
 
@@ -165,6 +169,7 @@ class DPIAController extends AbstractController
     public function submitForReview(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('submit' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -188,6 +193,7 @@ class DPIAController extends AbstractController
     public function approve(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('approve' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -213,6 +219,7 @@ class DPIAController extends AbstractController
     public function reject(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('reject' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -243,6 +250,7 @@ class DPIAController extends AbstractController
     public function requestRevision(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('revision' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -272,6 +280,7 @@ class DPIAController extends AbstractController
     public function reopen(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('reopen' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -299,6 +308,7 @@ class DPIAController extends AbstractController
     public function dpConsultation(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('dpo' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -325,6 +335,7 @@ class DPIAController extends AbstractController
     public function supervisoryConsultation(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('supervisory' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -354,6 +365,7 @@ class DPIAController extends AbstractController
     public function markForReview(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('review' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -383,6 +395,7 @@ class DPIAController extends AbstractController
     public function completeReview(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('complete-review' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -405,6 +418,7 @@ class DPIAController extends AbstractController
     public function clone(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         if (!$this->isCsrfTokenValid('clone' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'Invalid CSRF token');
             return $this->redirectToRoute('app_dpia_show', ['id' => $dataProtectionImpactAssessment->getId()]);
@@ -428,6 +442,7 @@ class DPIAController extends AbstractController
     public function dashboard(): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $statistics = $this->dataProtectionImpactAssessmentService->getDashboardStatistics();
         $complianceScore = $this->dataProtectionImpactAssessmentService->calculateComplianceScore();
 
@@ -455,6 +470,7 @@ class DPIAController extends AbstractController
     public function search(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $query = $request->query->get('q', '');
 
         if (strlen($query) < 2) {
@@ -482,6 +498,7 @@ class DPIAController extends AbstractController
     public function show(DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $complianceReport = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
 
         return $this->render('dpia/show.html.twig', [
@@ -497,6 +514,7 @@ class DPIAController extends AbstractController
     public function exportPdf(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $complianceReport = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
 
         // Close session to prevent blocking
@@ -532,6 +550,7 @@ class DPIAController extends AbstractController
     public function complianceReport(DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $report = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
 
         return $this->json($report);
@@ -544,6 +563,7 @@ class DPIAController extends AbstractController
     public function validate(DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
+
         $errors = $this->dataProtectionImpactAssessmentService->validate($dataProtectionImpactAssessment);
         $isCompliant = $errors === [];
 

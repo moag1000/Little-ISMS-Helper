@@ -62,7 +62,7 @@
                                 <i class="bi {{ section.icon }} me-2" aria-hidden="true"></i>
                                 {{ section.title_key|trans({}, 'dashboard') }}
                                 {% if hasDanger %}
-                                    <span class="badge bg-danger fa-status-pill fa-status-pill--danger ms-2">!</span>
+                                    <span class="fa-status-pill fa-status-pill--danger ms-2">!</span>
                                 {% endif %}
                             </button>
                         </h2>
@@ -96,7 +96,7 @@
                                                         {% if kpi.trend == 'up' %}
                                                             <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                                         {% elseif kpi.trend == 'down' %}
-                                                            <i class="bi bi-graph-down-arrow" aria-hidden="true"></i>
+                                                            <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                                         {% endif %}
                                                         {% if kpi.trend_delta is defined %}
                                                             <small>{{ kpi.trend_delta > 0 ? '+' : '' }}{{ kpi.trend_delta }}{{ kpi.unit|default('') }}</small>
@@ -127,7 +127,7 @@
                                                     {% if kpi.trend == 'up' %}
                                                         <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                                     {% elseif kpi.trend == 'down' %}
-                                                        <i class="bi bi-graph-down-arrow" aria-hidden="true"></i>
+                                                        <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                                     {% endif %}
                                                     {% if kpi.trend_delta is defined %}
                                                         <small>{{ kpi.trend_delta > 0 ? '+' : '' }}{{ kpi.trend_delta }}{{ kpi.unit|default('') }}</small>

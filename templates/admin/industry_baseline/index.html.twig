@@ -19,8 +19,8 @@
     }) }}
 
     {% if tenant is null %}
-        <div class="alert alert-warning small">
-            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+        <div class="fa-alert fa-alert--warning small">
+            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
             {{ 'framework_baseline.tenant_required'|trans }}
         </div>
     {% endif %}
@@ -45,7 +45,7 @@
                                     </p>
                                     <a href="{{ path('admin_industry_baselines_show', {framework: f.code}) }}"
                                        class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--primary mt-2">
-                                        <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'framework_baseline.action.view'|trans }}
+                                        <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ 'framework_baseline.action.view'|trans }}
                                     </a>
                                 </div>
                             </div>
@@ -56,8 +56,8 @@
         </section>
     {% endif %}
 
-    <div class="alert alert-light mt-4 small">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
+    <div class="fa-alert fa-alert--info mt-4 small">
+        <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
         {{ 'framework_baseline.help'|trans|raw }}
     </div>
 {% endblock %}

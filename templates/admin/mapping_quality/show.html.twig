@@ -43,7 +43,7 @@
                 <div class="fa-section__body">
                     <dl class="row mb-0">
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.relationship'|trans({}, 'admin') }}</dt>
-                        <dd class="col-sm-8">{% if mapping.relationship %}<span class="badge bg-secondary">{{ mapping.relationship|replace({'_': ' '}) }}</span>{% else %}—{% endif %}</dd>
+                        <dd class="col-sm-8">{% if mapping.relationship %}<span class="fa-status-pill fa-status-pill--neutral">{{ mapping.relationship|replace({'_': ' '}) }}</span>{% else %}—{% endif %}</dd>
 
                         <dt class="col-sm-4">{{ 'admin.mapping_quality.field.confidence'|trans({}, 'admin') }}</dt>
                         <dd class="col-sm-8"><span class="badge bg-{{ mapping.confidence == 'high' ? 'success' : (mapping.confidence == 'medium' ? 'warning' : 'secondary') }}">{{ mapping.confidence }}</span></dd>
@@ -133,7 +133,7 @@
                                     <input type="text" name="reason" class="form-control form-control-sm mb-1 fa-cyber-input__field" placeholder="{{ 'admin.mapping_quality.transition_reason_placeholder'|trans({}, 'admin') }}">
                                 {% endif %}
                                 {% set btnClass = state == 'published' ? 'success' : (state == 'deprecated' ? 'danger' : (state == 'approved' ? 'primary' : 'secondary')) %}
-                                <button type="submit" class="btn btn-sm btn-{{ btnClass }} w-100">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost -{{ btnClass }} w-100">
                                     <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i> {{ state }}
                                 </button>
                             </form>

@@ -46,22 +46,22 @@
                                     </td>
                                     <td>
                                         {% if key in active_modules %}
-                                            <span class="badge bg-success">Aktiv</span>
+                                            <span class="fa-status-pill fa-status-pill--success">Aktiv</span>
                                         {% else %}
-                                            <span class="badge bg-secondary">Inaktiv</span>
+                                            <span class="fa-status-pill fa-status-pill--neutral">Inaktiv</span>
                                         {% endif %}
                                     </td>
                                     <td>
                                         {% if graph.required %}
-                                            <span class="badge bg-warning text-dark">Erforderlich</span>
+                                            <span class="fa-status-pill fa-status-pill--warning">Erforderlich</span>
                                         {% else %}
-                                            <span class="badge bg-info">Optional</span>
+                                            <span class="fa-status-pill fa-status-pill--primary">Optional</span>
                                         {% endif %}
                                     </td>
                                     <td>
                                         {% if graph.dependencies|length > 0 %}
                                             {% for dep in graph.dependencies %}
-                                                <span class="badge bg-warning text-dark me-1">{{ dependency_graph[dep].name }}</span>
+                                                <span class="fa-status-pill fa-status-pill--warning me-1">{{ dependency_graph[dep].name }}</span>
                                             {% endfor %}
                                         {% else %}
                                             <span class="text-muted">-</span>
@@ -70,7 +70,7 @@
                                     <td>
                                         {% if graph.dependents|length > 0 %}
                                             {% for dep in graph.dependents %}
-                                                <span class="badge bg-info me-1">{{ dependency_graph[dep].name }}</span>
+                                                <span class="fa-status-pill fa-status-pill--primary me-1">{{ dependency_graph[dep].name }}</span>
                                             {% endfor %}
                                         {% else %}
                                             <span class="text-muted">-</span>
@@ -92,16 +92,16 @@
                 </div>
                 <div class="fa-section__body">
                     <dl class="mb-0">
-                        <dt><span class="badge bg-success">Aktiv</span></dt>
+                        <dt><span class="fa-status-pill fa-status-pill--success">Aktiv</span></dt>
                         <dd>Modul ist derzeit aktiviert</dd>
 
-                        <dt><span class="badge bg-secondary">Inaktiv</span></dt>
+                        <dt><span class="fa-status-pill fa-status-pill--neutral">Inaktiv</span></dt>
                         <dd>Modul ist derzeit deaktiviert</dd>
 
-                        <dt><span class="badge bg-warning text-dark">Erforderlich</span></dt>
+                        <dt><span class="fa-status-pill fa-status-pill--warning">Erforderlich</span></dt>
                         <dd>Modul ist Pflicht und kann nicht deaktiviert werden</dd>
 
-                        <dt><span class="badge bg-info">Optional</span></dt>
+                        <dt><span class="fa-status-pill fa-status-pill--primary">Optional</span></dt>
                         <dd>Modul kann aktiviert/deaktiviert werden</dd>
 
                         <dt>Benötigt</dt>

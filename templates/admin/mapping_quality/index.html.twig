@@ -116,7 +116,7 @@
                                     <code class="small">{{ m.targetRequirement.requirementId }}</code>
                                     <div class="small text-muted">{{ m.sourceRequirement.framework.name }} → {{ m.targetRequirement.framework.name }}</div>
                                 </td>
-                                <td>{% if m.relationship %}<span class="badge bg-secondary">{{ m.relationship|replace({'_': ' '}) }}</span>{% else %}—{% endif %}</td>
+                                <td>{% if m.relationship %}<span class="fa-status-pill fa-status-pill--neutral">{{ m.relationship|replace({'_': ' '}) }}</span>{% else %}—{% endif %}</td>
                                 <td><span class="badge bg-{{ m.confidence == 'high' ? 'success' : (m.confidence == 'medium' ? 'warning' : 'secondary') }}">{{ m.confidence }}</span></td>
                                 <td><span class="badge bg-{{ m.lifecycleBadgeClass }}">{{ m.lifecycleState }}</span></td>
                                 <td class="text-end">

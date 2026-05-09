@@ -222,15 +222,15 @@
 </head>
 <body>
     <div class="print-header">
-        <h1><i class="bi bi-qr-code" aria-hidden="true"></i> {% trans from 'asset' %}qr.labels_sheet.title{% endtrans %}</h1>
+        <h1><i class="fa-icon fa-icon--mfa" aria-hidden="true"></i> {% trans from 'asset' %}qr.labels_sheet.title{% endtrans %}</h1>
         <p>{{ labels|length }} {% trans from 'asset' %}qr.labels_sheet.count{% endtrans %} | {% trans from 'asset' %}qr.printed_on{% endtrans %}: {{ printDate|date('d.m.Y H:i') }}</p>
         <div class="print-actions">
             <button class="btn btn-primary" data-controller="ui-actions" data-action="click->ui-actions#print">
-                <i class="bi bi-printer" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i>
                 {% trans from 'asset' %}qr.button.print{% endtrans %}
             </button>
             <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
                 {% trans from 'asset' %}qr.button.back_to_list{% endtrans %}
             </a>
         </div>
@@ -263,7 +263,7 @@
                                     {% elseif label.asset.assetType == 'service' %}
                                         <i class="fa-icon fa-icon--asset-cloud" aria-hidden="true"></i>
                                     {% elseif label.asset.assetType == 'personnel' %}
-                                        <i class="bi bi-person" aria-hidden="true"></i>
+                                        <i class="fa-icon fa-icon--user" aria-hidden="true"></i>
                                     {% else %}
                                         <i class="fa-icon fa-icon--asset-server" aria-hidden="true"></i>
                                     {% endif %}

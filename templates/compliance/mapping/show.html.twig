@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'compliance' %}
 
 {% block title %}Mapping: {{ mapping.sourceRequirement.requirementId }} → {{ mapping.targetRequirement.requirementId }}{% endblock %}
@@ -13,17 +14,15 @@
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="fa-icon fa-icon--nav-workflow" aria-hidden="true"></i> Compliance Mapping</h1>
-        <div>
-            <a href="{{ path('app_compliance_mapping_edit', {id: mapping.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> Edit
-            </a>
-            <a href="{{ path('app_compliance_mapping_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> Back to List
-            </a>
-        </div>
-    </div>
+    {{ _fa_page_header.render({
+        badge: { icon: 'arrow-left-right', label: 'compliance.mapping.title'|trans({}, 'compliance') },
+        title: mapping.sourceRequirement.requirementId ~ ' → ' ~ mapping.targetRequirement.requirementId,
+        subtitle: 'Compliance Mapping',
+        actions: [
+            { label: 'common.edit'|trans({}, 'messages'), variant: 'primary', icon: 'pencil', href: path('app_compliance_mapping_edit', {id: mapping.id}) },
+            { label: 'common.back_to_list'|trans({}, 'messages'), variant: 'ghost', icon: 'arrow-left', href: path('app_compliance_mapping_index') }
+        ]
+    }) }}
 
     <div class="row">
         <div class="col-md-8">

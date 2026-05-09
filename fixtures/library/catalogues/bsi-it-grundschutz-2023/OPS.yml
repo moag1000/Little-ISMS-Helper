@@ -1,0 +1,231 @@
+# BSI IT-Grundschutz-Kompendium 2023 — Schicht OPS (Betrieb)
+# Quelle: BSI Bundesamt fuer Sicherheit in der Informationstechnik
+# https://www.bsi.bund.de/IT-Grundschutz-Kompendium
+
+layer: OPS
+title: 'Betrieb'
+description: 'Schicht fuer Sicherheitsanforderungen im laufenden IT-Betrieb, einschliesslich Administration, Patch- und Aenderungsmanagement, Schadprogramm-Schutz, Protokollierung, Cloud und Outsourcing.'
+bausteine:
+  - id: OPS.1.1.1
+    title: 'Allgemeiner IT-Betrieb'
+    description: 'Anforderungen an die uebergeordnete Planung und Organisation des IT-Betriebs.'
+    anforderungen:
+      basis:
+        - id: OPS.1.1.1.A1
+          title: 'Planung des IT-Betriebs'
+          requirement_text: 'Der IT-Betrieb MUSS systematisch geplant werden.'
+        - id: OPS.1.1.1.A2
+          title: 'Festlegung von Betriebsprozessen'
+          requirement_text: 'Wesentliche Betriebsprozesse MUESSEN festgelegt und dokumentiert werden. Siehe BSI Kompendium 2023 Baustein OPS.1.1.1 Anforderung A2.'
+        - id: OPS.1.1.1.A3
+          title: 'Zuweisung von Verantwortlichkeiten im IT-Betrieb'
+          requirement_text: 'Verantwortlichkeiten fuer den IT-Betrieb MUESSEN zugewiesen sein. Siehe BSI Kompendium 2023 Baustein OPS.1.1.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: OPS.1.1.2
+    title: 'Ordnungsgemaesse IT-Administration'
+    description: 'Anforderungen an die ordnungsgemaesse, nachvollziehbare und sichere Durchfuehrung administrativer Taetigkeiten.'
+    anforderungen:
+      basis:
+        - id: OPS.1.1.2.A1
+          title: 'Personalauswahl fuer administrative Taetigkeiten'
+          requirement_text: 'Administratoren MUESSEN sorgfaeltig ausgewaehlt werden.'
+        - id: OPS.1.1.2.A2
+          title: 'Vertretungsregelungen und Notfallvorsorge'
+          requirement_text: 'Es MUESSEN Vertretungsregelungen fuer Administratoren festgelegt werden.'
+        - id: OPS.1.1.2.A3
+          title: 'Dokumentation von administrativen Taetigkeiten'
+          requirement_text: 'Administrative Taetigkeiten MUESSEN nachvollziehbar dokumentiert werden. Siehe BSI Kompendium 2023 Baustein OPS.1.1.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: OPS.1.1.3
+    title: 'Patch- und Aenderungsmanagement'
+    description: 'Anforderungen an einen geregelten Patch- und Aenderungsmanagement-Prozess.'
+    anforderungen:
+      basis:
+        - id: OPS.1.1.3.A1
+          title: 'Erstellung eines Patchmanagement-Konzepts'
+          requirement_text: 'Es MUSS ein Patchmanagement-Konzept erstellt werden.'
+        - id: OPS.1.1.3.A2
+          title: 'Festlegung von Zustaendigkeiten im Patchmanagement'
+          requirement_text: 'Die Zustaendigkeiten fuer das Patchmanagement MUESSEN festgelegt werden.'
+        - id: OPS.1.1.3.A3
+          title: 'Konzept fuer Patch- und Aenderungsmanagement'
+          requirement_text: 'Fuer das Patch- und Aenderungsmanagement MUSS ein schriftliches Konzept existieren, das Prozessschritte, Verantwortlichkeiten und Zeitvorgaben festlegt.'
+      standard: []
+      hoch: []
+
+  - id: OPS.1.1.4
+    title: 'Schutz vor Schadprogrammen'
+    description: 'Anforderungen an Konzept und technische Massnahmen zum Schutz vor Schadprogrammen.'
+    anforderungen:
+      basis:
+        - id: OPS.1.1.4.A1
+          title: 'Erstellung eines Konzepts fuer den Schutz vor Schadprogrammen'
+          requirement_text: 'Es MUSS ein Konzept fuer den Schutz vor Schadprogrammen erstellt werden.'
+        - id: OPS.1.1.4.A2
+          title: 'Nutzung systemspezifischer Schutzmechanismen'
+          requirement_text: 'Die systemspezifischen Schutzmechanismen MUESSEN aktiviert und konfiguriert werden.'
+        - id: OPS.1.1.4.A3
+          title: 'Auswahl eines Virenschutzprogramms'
+          requirement_text: 'Ein geeignetes Virenschutzprogramm MUSS ausgewaehlt und installiert werden. Siehe BSI Kompendium 2023 Baustein OPS.1.1.4 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: OPS.1.1.5
+    title: 'Protokollierung'
+    description: 'Anforderungen an Erstellung, Konfiguration und Auswertung der Protokollierung.'
+    anforderungen:
+      basis:
+        - id: OPS.1.1.5.A1
+          title: 'Erstellung eines Protokollierungskonzepts'
+          requirement_text: 'Es MUSS ein Protokollierungskonzept erstellt werden.'
+        - id: OPS.1.1.5.A2
+          title: 'Konfiguration der Protokollierung'
+          requirement_text: 'Die Protokollierung MUSS so konfiguriert werden, dass sicherheitsrelevante Ereignisse protokolliert werden.'
+        - id: OPS.1.1.5.A3
+          title: 'Speicherung von Protokolldaten'
+          requirement_text: 'Protokolldaten MUESSEN zentral und manipulationssicher gespeichert werden. Siehe BSI Kompendium 2023 Baustein OPS.1.1.5 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: OPS.1.1.6
+    title: 'Software-Tests und -Freigaben'
+    description: 'Anforderungen an die Planung, Durchfuehrung und Freigabe von Software-Tests vor Inbetriebnahme.'
+    anforderungen:
+      basis:
+        - id: OPS.1.1.6.A1
+          title: 'Planung der Software-Tests'
+          requirement_text: 'Software-Tests MUESSEN geplant werden.'
+        - id: OPS.1.1.6.A2
+          title: 'Durchfuehrung von Software-Tests'
+          requirement_text: 'Software MUSS vor der Inbetriebnahme getestet werden.'
+        - id: OPS.1.1.6.A3
+          title: 'Freigabe von Software'
+          requirement_text: 'Vor dem produktiven Einsatz MUESSEN Software-Versionen formal freigegeben werden. Siehe BSI Kompendium 2023 Baustein OPS.1.1.6 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: OPS.1.2.2
+    title: 'Archivierung'
+    description: 'Anforderungen an die geregelte und revisionssichere Archivierung von Informationen.'
+    anforderungen:
+      basis:
+        - id: OPS.1.2.2.A1
+          title: 'Erstellung einer Richtlinie zur Archivierung'
+          requirement_text: 'Es MUSS eine Richtlinie zur Archivierung erstellt werden.'
+        - id: OPS.1.2.2.A2
+          title: 'Auswahl geeigneter Archivierungsverfahren'
+          requirement_text: 'Es MUESSEN geeignete Archivierungsverfahren und -medien ausgewaehlt werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.2 Anforderung A2.'
+        - id: OPS.1.2.2.A3
+          title: 'Schutz und Wiederherstellbarkeit archivierter Daten'
+          requirement_text: 'Archivierte Daten MUESSEN ueber den Aufbewahrungszeitraum gegen Verlust und unberechtigte Aenderungen geschuetzt sein. Siehe BSI Kompendium 2023 Baustein OPS.1.2.2 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: OPS.1.2.4
+    title: 'Telearbeit'
+    description: 'Anforderungen an Konzeption und Sicherheit der Telearbeit (Heim- oder mobile Arbeit).'
+    anforderungen:
+      basis:
+        - id: OPS.1.2.4.A1
+          title: 'Konzept fuer die Telearbeit'
+          requirement_text: 'Es MUSS ein Konzept fuer die Telearbeit erstellt werden.'
+        - id: OPS.1.2.4.A2
+          title: 'Sicherheitsrichtlinie fuer Telearbeit'
+          requirement_text: 'Eine Sicherheitsrichtlinie fuer die Telearbeit MUSS erstellt werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.4 Anforderung A2.'
+        - id: OPS.1.2.4.A3
+          title: 'Sichere Anbindung des Telearbeitsplatzes'
+          requirement_text: 'Telearbeitsplaetze MUESSEN sicher an das interne Netz angebunden werden (z. B. ueber VPN). Siehe BSI Kompendium 2023 Baustein OPS.1.2.4 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: OPS.1.2.5
+    title: 'Fernwartung'
+    description: 'Anforderungen an die sichere Durchfuehrung von Fernwartungszugriffen.'
+    anforderungen:
+      basis:
+        - id: OPS.1.2.5.A1
+          title: 'Planung der Fernwartung'
+          requirement_text: 'Fernwartungszugriffe MUESSEN geplant und dokumentiert werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.5 Anforderung A1.'
+        - id: OPS.1.2.5.A2
+          title: 'Sichere Authentisierung bei Fernwartung'
+          requirement_text: 'Fernwartungszugriffe MUESSEN durch starke Authentisierung abgesichert sein. Siehe BSI Kompendium 2023 Baustein OPS.1.2.5 Anforderung A2.'
+        - id: OPS.1.2.5.A3
+          title: 'Protokollierung der Fernwartung'
+          requirement_text: 'Fernwartungstaetigkeiten MUESSEN protokolliert und ausgewertet werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.5 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: OPS.1.2.6
+    title: 'NTP-Zeitsynchronisation'
+    description: 'Anforderungen an die zentrale, sichere Zeitsynchronisation aller relevanten IT-Systeme.'
+    anforderungen:
+      basis:
+        - id: OPS.1.2.6.A1
+          title: 'Planung der Zeitsynchronisation'
+          requirement_text: 'Eine zentrale Zeitsynchronisation MUSS geplant werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.6 Anforderung A1.'
+        - id: OPS.1.2.6.A2
+          title: 'Auswahl vertrauenswuerdiger NTP-Quellen'
+          requirement_text: 'Es MUESSEN vertrauenswuerdige NTP-Quellen ausgewaehlt werden. Siehe BSI Kompendium 2023 Baustein OPS.1.2.6 Anforderung A2.'
+        - id: OPS.1.2.6.A3
+          title: 'Absicherung der Zeitsynchronisation'
+          requirement_text: 'Die Kommunikation zur Zeitsynchronisation MUSS gegen Manipulation geschuetzt sein. Siehe BSI Kompendium 2023 Baustein OPS.1.2.6 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: OPS.2.1
+    title: 'Outsourcing fuer Kunden'
+    description: 'Anforderungen an Sicherheit und Steuerung, wenn die Institution selbst Outsourcing-Dienstleistungen erbringt.'
+    anforderungen:
+      basis:
+        - id: OPS.2.1.A1
+          title: 'Sicherheitsanforderungen an Outsourcing-Leistungen'
+          requirement_text: 'Sicherheitsanforderungen an die erbrachten Outsourcing-Leistungen MUESSEN festgelegt sein. Siehe BSI Kompendium 2023 Baustein OPS.2.1 Anforderung A1.'
+        - id: OPS.2.1.A2
+          title: 'Vertragliche Regelungen mit dem Kunden'
+          requirement_text: 'Vertragliche Regelungen mit dem Kunden MUESSEN sicherheitsrelevante Anforderungen einschliesslich SLA und Meldewege enthalten. Siehe BSI Kompendium 2023 Baustein OPS.2.1 Anforderung A2.'
+        - id: OPS.2.1.A3
+          title: 'Mandantentrennung'
+          requirement_text: 'Die Daten und Systeme verschiedener Kunden MUESSEN sicher voneinander getrennt sein. Siehe BSI Kompendium 2023 Baustein OPS.2.1 Anforderung A3.'
+      standard: []
+      hoch: []
+
+  - id: OPS.2.2
+    title: 'Cloud-Nutzung'
+    description: 'Anforderungen an die sichere Nutzung von Cloud-Diensten.'
+    anforderungen:
+      basis:
+        - id: OPS.2.2.A1
+          title: 'Erstellung einer Cloud-Strategie'
+          requirement_text: 'Vor der Nutzung von Cloud-Diensten MUSS eine Cloud-Strategie erstellt werden, die Auswahlkriterien, Exit-Anforderungen und Datenschutz-Rahmenbedingungen regelt.'
+        - id: OPS.2.2.A2
+          title: 'Auswahl geeigneter Cloud-Dienste'
+          requirement_text: 'Cloud-Dienste MUESSEN anhand vorher definierter Kriterien (Sicherheit, Verfuegbarkeit, Compliance, Exit-Moeglichkeiten) ausgewaehlt und dokumentiert werden.'
+        - id: OPS.2.2.A3
+          title: 'Vertragliche Gestaltung der Cloud-Nutzung'
+          requirement_text: 'Vertragliche Regelungen mit dem Cloud-Dienstleister MUESSEN sicherheitsrelevante Anforderungen, SLA, Datenortsgarantien und Audit-Rechte enthalten.'
+      standard: []
+      hoch: []
+
+  - id: OPS.2.3
+    title: 'Nutzung von Outsourcing'
+    description: 'Anforderungen an die Steuerung von Outsourcing-Dienstleistern aus Auftraggebersicht.'
+    anforderungen:
+      basis:
+        - id: OPS.2.3.A1
+          title: 'Erstellung einer Outsourcing-Strategie'
+          requirement_text: 'Fuer die Nutzung von Outsourcing MUSS eine Strategie festgelegt werden, die Risiken, Governance und Exit-Optionen regelt.'
+        - id: OPS.2.3.A2
+          title: 'Vertragliche Regelungen mit dem Outsourcing-Dienstleister'
+          requirement_text: 'Die Anforderungen an den Dienstleister MUESSEN vertraglich geregelt sein, einschliesslich SLA, Audit-Rechten und Meldewegen.'
+        - id: OPS.2.3.A3
+          title: 'Festlegung von Sicherheitsanforderungen'
+          requirement_text: 'Sicherheitsanforderungen an den Dienstleister MUESSEN festgelegt sein. Siehe BSI Kompendium 2023 Baustein OPS.2.3 Anforderung A3.'
+      standard:
+        - id: OPS.2.3.A6
+          title: 'Ueberwachung des Outsourcing-Dienstleisters'
+          requirement_text: 'Die Einhaltung der vereinbarten Sicherheitsanforderungen SOLLTE regelmaessig ueberprueft werden.'
+      hoch: []

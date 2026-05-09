@@ -168,13 +168,13 @@
 .stat-card-icon.bg-warning {
     background: linear-gradient(135deg, var(--warning) 0%, var(--warning) 100%);
     color: var(--on-warning);
-    box-shadow: 0 0 15px rgb(245, 158, 11, 0.4);
+    box-shadow: 0 0 15px rgb(var(--warning-rgb), 0.4);
 }
 
 .stat-card-icon.bg-danger {
     background: linear-gradient(135deg, var(--danger) 0%, var(--danger) 100%);
     color: var(--on-danger);
-    box-shadow: 0 0 15px rgb(239, 68, 68, 0.4);
+    box-shadow: 0 0 15px rgb(var(--danger-rgb), 0.4);
 }
 
 .stat-card-icon.bg-info {

@@ -130,6 +130,22 @@ incident:
     reported_by_person: Gemeldet von (Person aus Stammdaten)
     reported_by_deputies: Vertretungen (Personen)
     responsible_person: Verantwortliche Person (Governance)
+    incident_classification: Vorfallsklassifizierung (A.5.24)
+    containment_actions: Eindämmungsmaßnahmen (A.5.26)
+    evidence_preserved: Beweise gesichert (A.5.28)
+    ict_incident_classification: ICT-Incident-Klassifizierung (DORA Art. 18)
+    data_loss_occurred: Datenverlust eingetreten (DORA Art. 19)
+    data_leakage_occurred: Datenabfluss eingetreten (DORA Art. 19)
+    economic_impact: Wirtschaftlicher Schaden in EUR (DORA Art. 19)
+    reputational_impact: Reputationsschaden 1–5 (DORA Art. 19)
+    critical_services_affected: Betroffene kritische Dienste (DORA Art. 19)
+    recurring_incident: Wiederkehrender Incident (DORA Art. 19)
+    clients_affected: Betroffene Kunden / Gegenparteien (Anzahl)
+    clients_affected_financial_volume: Geschäftsvolumen betroffener Kunden (EUR)
+    replication_of_impact: Service-Replikat / Failover aktiviert
+    initial_report_submitted_at: Erstmeldung eingereicht (DORA 4h)
+    intermediate_report_submitted_at: Zwischenmeldung eingereicht (DORA 72h)
+    data_recovery_strategy: Datenwiederherstellungsstrategie (BCM Art. 11)
   nis2_compliance:
     title: NIS2 Compliance-Status
     not_applicable: Nicht NIS2-relevant
@@ -205,6 +221,11 @@ incident:
     reported_by_user: -- Meldende Person --
     reported_by_person: -- Person aus Stammdaten --
     responsible_person: -- Verantwortliche Person waehlen --
+    classification: -- Ereignis oder Vorfall --
+    containment_actions: 'z.B. System isoliert, Zugänge gesperrt, Backup eingespielt...'
+    ict_classification: -- ICT-Incident-Klassifizierung --
+    economic_impact: '0.00'
+    reputational_impact: -- Reputationsschaden bewerten --
   help:
     visible_to_holding: 'Standard ein: Holding-/Konzern-CISO kann diesen Vorfall sehen, um Konzern-Response zu koordinieren. Nur für vertrauliche Fälle (z. B. HR) deaktivieren.'
     severity: Bewerten Sie den Schweregrad basierend auf Auswirkung und Umfang (ISO
@@ -232,6 +253,16 @@ incident:
     reported_by_person: 'Person ohne System-Login als Melder wählen. Reihenfolge&#58; User &gt; Person &gt; Legacy.'
     reported_by_deputies: Weitere Personen mit Vertretungs- oder Mitverantwortung. Mehrfachauswahl möglich.
     responsible_person: 'Langfristig verantwortliche Person fuer diesen Vorfall (Governance-Sicht). Unabhaengig vom Bearbeiter (Ticket-Assignee) und Melder (Audit-Trail). Kann ein externer CISO/ISB ohne System-Login sein.'
+    incident_classification: 'Ereignis (Event) vs. Vorfall (Incident) nach A.5.24 — steuert das Workflow-Routing.'
+    containment_actions: 'Kurzfristige Sofortmaßnahmen (Eindämmung) und langfristige Abhilfemaßnahmen (Remediation) nach A.5.26.'
+    evidence_preserved: 'Bestätigung, dass digitale Beweise gemäß A.5.28 gesichert und integritätsgeschützt wurden.'
+    ict_incident_classification: 'Klassifizierung nach DORA Art. 18 und den EBA/ESMA/EIOPA RTS: Major ICT-Incident oder bedeutende Cyber-Bedrohung.'
+    economic_impact: 'Geschätzter wirtschaftlicher Gesamtschaden in EUR (Direkt- und Folgekosten) gemäß DORA Art. 19(1)(b).'
+    critical_services_affected: 'Kritische oder wichtige Funktionen/Dienste, die beeinträchtigt wurden (DORA Art. 19(1)(e)).'
+    clients_affected_financial_volume: 'Gesamtes Transaktions- oder Vertragsvolumen der betroffenen Kunden in EUR (DORA Art. 19).'
+    replication_of_impact: 'Wurde ein Service-Replikat oder Failover aktiviert, um die Auswirkungen zu begrenzen?'
+    initial_report_submitted_at: 'DORA 4-Stunden-Erstmeldung (≠ NIS2 24h!): Zeitpunkt der Übermittlung an die zuständige Behörde (Art. 19(4)(a)).'
+    data_recovery_strategy: 'Strategie zur Wiederherstellung von Daten und Diensten; Cross-Referenz auf den BCM-Kontinuitätsplan (DORA Art. 11(2)).'
   category:
     data_breach: Datenschutzverletzung
     security_incident: Sicherheitsvorfall
@@ -309,3 +340,16 @@ incident:
       ausgelöst
   error:
     owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+  # T31.2.2 — ISO 27001 A.5.24-A.5.28 + DORA Art. 17-19
+  classification:
+    event: Ereignis
+    incident: Vorfall
+  dora_classification:
+    major: Major ICT-Incident (Art. 18)
+    significant: Bedeutende Cyber-Bedrohung (Art. 17)
+  impact:
+    minimal: 1 – Minimal
+    minor: 2 – Gering
+    moderate: 3 – Mäßig
+    major: 4 – Erheblich
+    severe: 5 – Schwerwiegend

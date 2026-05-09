@@ -43,9 +43,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * so that the existing filter UI picks the new rows up without further
  * migration work.
  */
+/**
+ * @deprecated since 3.5.0 — superseded by app:load-bsi-grundschutz-catalogue
+ * which reads the canonical YAML tree at fixtures/library/catalogues/
+ * bsi-it-grundschutz-2023/. Kept as Compat-Layer.
+ */
 #[AsCommand(
     name: 'app:load-bsi-kompendium-delta',
-    description: 'Fill BSI IT-Grundschutz gaps (Kompendium 2023): high-value Bausteine missing from base + supplement loaders'
+    description: '[DEPRECATED — use app:load-bsi-grundschutz-catalogue] Legacy BSI Delta-Loader (Compat-Layer).'
 )]
 class LoadBsiKompendium2023DeltaCommand
 {

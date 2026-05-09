@@ -150,7 +150,7 @@ input[type="checkbox"]:indeterminate {
 }
 
 .table-bulk-selectable tbody tr:has(input[type="checkbox"]:checked) {
-    background-color: rgb(52, 152, 219, 0.1);
+    background-color: rgb(var(--primary-rgb), 0.1);
 }
 
 .table-bulk-selectable tbody tr:hover {
@@ -158,7 +158,7 @@ input[type="checkbox"]:indeterminate {
 }
 
 .table-bulk-selectable tbody tr:has(input[type="checkbox"]:checked):hover {
-    background-color: rgb(52, 152, 219, 0.15);
+    background-color: rgb(var(--primary-rgb), 0.15);
 }
 
 /* Selection Column */

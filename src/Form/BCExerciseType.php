@@ -7,14 +7,17 @@ namespace App\Form;
 use App\Entity\BCExercise;
 use App\Entity\Person;
 use App\Entity\User;
+use App\Entity\BusinessContinuityPlan;
+use App\Form\DataTransformer\JsonArrayTransformer;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -183,7 +186,48 @@ class BCExerciseType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
             ])
+            ->add('successCriteria', TextareaType::class, [
+                'label' => 'bc_exercises.field.success_criteria',
+                'required' => false,
+                'attr' => ['rows' => 4],
+                'help' => 'bc_exercises.help.success_criteria_json',
+            ])
+            ->add('actualRtoAchieved', NumberType::class, [
+                'label' => 'bc_exercises.field.actual_rto_achieved',
+                'required' => false,
+                'scale' => 2,
+                'attr' => ['step' => '0.01', 'min' => '0'],
+                'help' => 'bc_exercises.help.actual_rto_achieved',
+            ])
+            ->add('actualRpoAchieved', NumberType::class, [
+                'label' => 'bc_exercises.field.actual_rpo_achieved',
+                'required' => false,
+                'scale' => 2,
+                'attr' => ['step' => '0.01', 'min' => '0'],
+                'help' => 'bc_exercises.help.actual_rpo_achieved',
+            ])
+            ->add('testedPlans', EntityType::class, [
+                'class' => BusinessContinuityPlan::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => false,
+                'label' => 'bc_exercises.field.bc_plans_tested',
+                'help' => 'bc_exercises.help.bc_plans_tested',
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+            ])
+            ->add('evidenceArtifacts', TextareaType::class, [
+                'label' => 'bc_exercises.field.evidence_artifacts',
+                'required' => false,
+                'attr' => ['rows' => 4],
+                'help' => 'bc_exercises.help.evidence_artifacts_json',
+            ])
         ;
+
+        $builder->get('successCriteria')->addModelTransformer(new JsonArrayTransformer());
+        $builder->get('evidenceArtifacts')->addModelTransformer(new JsonArrayTransformer());
     }
 
     public function configureOptions(OptionsResolver $resolver): void

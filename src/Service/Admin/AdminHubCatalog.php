@@ -78,6 +78,13 @@ class AdminHubCatalog
                         'description' => 'admin.hub.module.tenant_branding.desc',
                         'route' => 'app_admin_tenant_email_branding',
                     ],
+                    [
+                        'key' => 'tenant_compliance_settings',
+                        'icon' => 'sliders',
+                        'label' => 'admin.hub.module.tenant_compliance_settings.label',
+                        'description' => 'admin.hub.module.tenant_compliance_settings.desc',
+                        'route' => 'admin_tenant_compliance_settings_current',
+                    ],
                 ],
             ],
             [

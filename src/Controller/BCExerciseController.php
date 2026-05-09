@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use DateTimeImmutable;
+use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\BCExercise;
 use App\Form\BCExerciseType;
 use App\Repository\BCExerciseRepository;
-use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,6 +35,7 @@ class BCExerciseController extends AbstractController
     public function index(): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $currentTenant = $this->tenantContext->getCurrentTenant();
         $bcExercises = $currentTenant !== null
             ? $this->bcExerciseRepository->findBy(['tenant' => $currentTenant])
@@ -55,6 +56,7 @@ class BCExerciseController extends AbstractController
     public function new(Request $request): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $bcExercise = new BCExercise();
         $bcExercise->setTenant($this->tenantContext->getCurrentTenant());
 
@@ -79,6 +81,7 @@ class BCExerciseController extends AbstractController
     public function show(BCExercise $bcExercise): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         return $this->render('bc_exercise/show.html.twig', [
             'bc_exercise' => $bcExercise,
         ]);
@@ -88,6 +91,7 @@ class BCExerciseController extends AbstractController
     public function edit(Request $request, BCExercise $bcExercise): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         $form = $this->createForm(BCExerciseType::class, $bcExercise);
         $form->handleRequest($request);
 
@@ -109,6 +113,7 @@ class BCExerciseController extends AbstractController
     public function delete(Request $request, BCExercise $bcExercise): Response
     {
         if ($redirect = $this->checkModuleActive('bcm')) return $redirect;
+
         if ($this->isCsrfTokenValid('delete'.$bcExercise->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($bcExercise);
             $this->entityManager->flush();

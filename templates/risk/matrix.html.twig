@@ -1,259 +1,73 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'risk'%}
+{% trans_default_domain 'risk' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
 {% block title %}{{ 'risk.matrix.title'|trans({}, 'risk') }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="page-header">
-        <h1>{{ 'risk.matrix.title'|trans({}, 'risk') }}</h1>
-        <a href="{{ path('app_risk_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'risk.matrix.back_to_risks'|trans({}, 'risk') }}</a>
-    </div>
+<div class="container py-4">
+    {{ _fa_page_header.render({
+        badge: { icon: 'shield-exclamation', label: '5 × 5' },
+        title: 'risk.matrix.title'|trans({}, 'risk'),
+        subtitle: 'risk.matrix.description'|trans({}, 'risk'),
+        actions: [
+            { label: 'risk.matrix.back_to_risks'|trans({}, 'risk'), variant: 'ghost', icon: 'arrow-left', href: path('app_risk_index') }
+        ]
+    }) }}
 
-    {% embed '_components/_card.html.twig' %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2>{{ 'risk.matrix.header'|trans({}, 'risk') }}</h2>
-                <p>{{ 'risk.matrix.description'|trans({}, 'risk') }}</p>
-            </div>
-        {% endblock %}
-        {% block card_body %}
+    <section class="fa-section">
+        <div class="fa-section__header">
+            <h2 class="ds-h3 m-0">{{ 'risk.matrix.header'|trans({}, 'risk') }}</h2>
+        </div>
+        <div class="fa-section__body">
             <div data-controller="riskmatrix"
                  data-riskmatrix-risks-value="{{ risks|json_encode|e('html_attr') }}">
 
-                <div class="risk-matrix-container">
-                    <div class="matrix-wrapper">
-                        <div class="y-label-vertical">{{ 'risk.matrix.impact'|trans({}, 'risk') }}</div>
+                <div class="isms-risk-matrix" role="figure" aria-label="{{ 'risk.matrix.title'|trans({}, 'risk') }}">
+                    <div class="isms-risk-matrix__y-label">{{ 'risk.matrix.impact'|trans({}, 'risk') }}</div>
 
-                        <div class="y-axis-labels">
-                            {% for i in 5..1 %}
-                                <div class="axis-label">{{ i }}</div>
+                    <div class="isms-risk-matrix__grid">
+                        {# Empty corner + X-Header (Probability 1..5) #}
+                        <div></div>
+                        {% for p in 1..5 %}
+                            <div class="isms-risk-matrix__hd">
+                                {{ p }}<span>{{ ('risk.matrix.probability_label.' ~ p)|trans({}, 'risk') }}</span>
+                            </div>
+                        {% endfor %}
+
+                        {# Rows: Impact 5..1 (highest top) × Probability 1..5 #}
+                        {% for impact in 5..1 %}
+                            <div class="isms-risk-matrix__hd-y">{{ impact }}</div>
+                            {% for probability in 1..5 %}
+                                {% set score = probability * impact %}
+                                {# 5-Tier Mapping: Cell-Level 1..5 entsprechend Score-Bändern (5*5=25 max) #}
+                                {% set level = score >= 20 ? 5 : (score >= 12 ? 4 : (score >= 8 ? 3 : (score >= 4 ? 2 : 1))) %}
+                                <div class="isms-risk-cell"
+                                     data-level="{{ level }}"
+                                     data-probability="{{ probability }}"
+                                     data-impact="{{ impact }}"
+                                     tabindex="0"
+                                     role="button"
+                                     aria-label="{{ 'risk.matrix.cell_title'|trans({'%probability%': probability, '%impact%': impact, '%score%': score}, 'risk') }}">
+                                    {{ score }}
+                                </div>
                             {% endfor %}
-                        </div>
-
-                        <div>
-                            <div class="risk-matrix">
-                                {% for impact in 5..1 %}
-                                    {% for probability in 1..5 %}
-                                        {% set score = probability * impact %}
-                                        {# ISO 27001 compliant thresholds: 20/12/6 #}
-                                        {% set level = score >= 20 ? 'critical' : (score >= 12 ? 'high' : (score >= 6 ? 'medium' : 'low')) %}
-                                        <div class="matrix-cell risk-{{ level }}"
-                                             data-probability="{{ probability }}"
-                                             data-impact="{{ impact }}"
-                                             title="{{ 'risk.matrix.cell_title'|trans({'%probability%': probability, '%impact%': impact, '%score%': score}, 'risk') }}">
-                                            <span class="cell-score">{{ score }}</span>
-                                        </div>
-                                    {% endfor %}
-                                {% endfor %}
-                            </div>
-
-                            <div class="x-axis-labels">
-                                {% for i in 1..5 %}
-                                    <div class="axis-label">{{ i }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="x-label-horizontal">{{ 'risk.matrix.probability'|trans({}, 'risk') }}</div>
-                        </div>
+                        {% endfor %}
                     </div>
-                </div>
 
-                <div class="matrix-legend">
-                    <h3>{{ 'risk.matrix.legend_title'|trans({}, 'risk') }}</h3>
-                    <div class="legend-items">
-                        <div class="legend-item">
-                            <span class="legend-color risk-critical"></span>
-                            <span>{{ 'risk.matrix.level.critical'|trans({}, 'risk') }}</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-color risk-high"></span>
-                            <span>{{ 'risk.matrix.level.high'|trans({}, 'risk') }}</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-color risk-medium"></span>
-                            <span>{{ 'risk.matrix.level.medium'|trans({}, 'risk') }}</span>
-                        </div>
-                        <div class="legend-item">
-                            <span class="legend-color risk-low"></span>
-                            <span>{{ 'risk.matrix.level.low'|trans({}, 'risk') }}</span>
-                        </div>
+                    <div class="isms-risk-matrix__x-label">{{ 'risk.matrix.probability'|trans({}, 'risk') }}</div>
+
+                    <div class="isms-risk-legend">
+                        <span class="isms-risk-legend__chip" data-level="1">{{ 'risk.matrix.level.low'|trans({}, 'risk') }}</span>
+                        <span class="isms-risk-legend__chip" data-level="2">{{ 'risk.matrix.level.minor'|trans({'%fallback%': 'Gering'}, 'risk') }}</span>
+                        <span class="isms-risk-legend__chip" data-level="3">{{ 'risk.matrix.level.medium'|trans({}, 'risk') }}</span>
+                        <span class="isms-risk-legend__chip" data-level="4">{{ 'risk.matrix.level.high'|trans({}, 'risk') }}</span>
+                        <span class="isms-risk-legend__chip" data-level="5">{{ 'risk.matrix.level.critical'|trans({}, 'risk') }}</span>
+                        <span class="ms-auto fa-mono fa-text-muted small">{{ risks|length }} {{ 'risk.matrix.risks_total'|trans({}, 'risk') }}</span>
                     </div>
                 </div>
             </div>
-        {% endblock %}
-    {% endembed %}
+        </div>
+    </section>
 </div>
-
-<style>
-.legend-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-    align-items: center;
-    margin-top: 1rem;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.625rem;
-    padding: 0.5rem 1rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    white-space: nowrap;
-}
-
-.legend-color {
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    flex-shrink: 0;
-}
-
-.risk-matrix-container {
-    padding: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.matrix-wrapper {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-
-.y-label-vertical {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    font-weight: bold;
-    font-size: 18px;
-    color: var(--fg);
-    margin-right: 0.5rem;
-}
-
-.x-label-horizontal {
-    text-align: center;
-    font-weight: bold;
-    font-size: 18px;
-    color: var(--fg);
-    margin-top: 0.5rem;
-    width: 100%;
-}
-
-.y-axis-labels {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    margin-right: 0.75rem;
-}
-
-.x-axis-labels {
-    display: flex;
-    gap: 2px;
-    justify-content: center;
-    margin-top: 0.75rem;
-}
-
-.axis-label {
-    width: 100px;
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--fg-3);
-}
-
-.x-axis-labels .axis-label {
-    height: auto;
-    padding: 0.5rem;
-}
-
-.risk-matrix {
-    display: grid;
-    grid-template-columns: repeat(5, 100px);
-    grid-template-rows: repeat(5, 100px);
-    gap: 2px;
-    background: var(--border);
-    padding: 2px;
-}
-
-.matrix-cell {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.matrix-cell:hover {
-    transform: scale(1.05);
-    z-index: 10;
-}
-
-.cell-score {
-    font-size: 12px;
-    color: var(--fg-3);
-    position: absolute;
-    top: 2px;
-    left: 4px;
-}
-
-.risk-low { background-color: var(--success-glow); }
-.risk-medium { background-color: var(--warning-glow); }
-.risk-high { background-color: color-mix(in srgb, var(--warning) 20%, transparent); }
-.risk-critical { background-color: var(--danger-glow); }
-
-/* Legend color boxes — .legend-color specificity sufficient via compound selector */
-.legend-color.risk-low { background-color: var(--success-glow); }
-.legend-color.risk-medium { background-color: var(--warning-glow); }
-.legend-color.risk-high { background-color: color-mix(in srgb, var(--warning) 20%, transparent); }
-.legend-color.risk-critical { background-color: var(--danger-glow); }
-
-.risk-item {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin: 2px;
-    cursor: pointer;
-    transition: transform 0.2s;
-    border: 1px solid rgba(0,0,0,0.2);
-}
-
-.risk-item:hover {
-    transform: scale(1.5);
-    z-index: 100;
-}
-
-.matrix-legend {
-    margin-top: 2rem;
-    padding: 1rem;
-    background: var(--bg);
-    border-radius: 8px;
-    width: 100%;
-}
-
-.matrix-legend .legend-items {
-    row-gap: 0.75rem;
-}
-
-.matrix-legend .legend-item {
-    font-size: 0.875rem;
-    font-weight: 500;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    flex: 0 0 auto;
-}
-
-.matrix-legend .legend-color {
-    border-radius: 3px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-</style>
 {% endblock %}

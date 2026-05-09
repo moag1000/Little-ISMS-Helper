@@ -47,7 +47,7 @@
                                             <i class="bi bi-{{ module.icon }} text-{{ module.required ? 'warning' : 'success' }}" aria-hidden="true"></i>
                                             {{ module.name }}
                                         </h3>
-                                        <span class="badge bg-success">{{ 'admin.modules.status.active'|trans({}, 'admin') }}</span>
+                                        <span class="fa-status-pill fa-status-pill--success">{{ 'admin.modules.status.active'|trans({}, 'admin') }}</span>
                                     </div>
                                     <p class="text-muted small">{{ module.description }}</p>
 
@@ -58,7 +58,7 @@
                                                 <strong>{{ 'admin.modules.dependencies'|trans({}, 'admin') }}:</strong>
                                             </small><br>
                                             {% for dep in dependency_graph[key].dependencies %}
-                                                <span class="badge bg-warning text-dark me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                                <span class="fa-status-pill fa-status-pill--warning me-1 mb-1">{{ all_modules[dep].name }}</span>
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -70,7 +70,7 @@
                                                 <strong>{{ 'admin.modules.required_by'|trans({}, 'admin') }}:</strong>
                                             </small><br>
                                             {% for dep in dependency_graph[key].dependents %}
-                                                <span class="badge bg-info me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                                <span class="fa-status-pill fa-status-pill--primary me-1 mb-1">{{ all_modules[dep].name }}</span>
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -133,7 +133,7 @@
                                         <i class="bi bi-{{ module.icon }}" aria-hidden="true"></i>
                                         {{ module.name }}
                                     </h3>
-                                    <span class="badge bg-secondary">{{ 'admin.modules.status.inactive'|trans({}, 'admin') }}</span>
+                                    <span class="fa-status-pill fa-status-pill--neutral">{{ 'admin.modules.status.inactive'|trans({}, 'admin') }}</span>
                                 </div>
                                 <p class="text-muted small">{{ module.description }}</p>
 
@@ -144,7 +144,7 @@
                                             <strong>{{ 'admin.modules.dependencies'|trans({}, 'admin') }}:</strong>
                                         </small><br>
                                         {% for dep in dependency_graph[key].dependencies %}
-                                            <span class="badge bg-warning text-dark me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                            <span class="fa-status-pill fa-status-pill--warning me-1 mb-1">{{ all_modules[dep].name }}</span>
                                         {% endfor %}
                                     </div>
                                 {% endif %}
