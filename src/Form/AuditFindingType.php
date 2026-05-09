@@ -98,7 +98,6 @@ class AuditFindingType extends AbstractType
                     'audits.finding_source.management_review' => 'management_review',
                 ],
                 'choice_translation_domain' => 'audits',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'audits.help.finding_source',
             ])
             ->add('clauseReference', TextType::class, [

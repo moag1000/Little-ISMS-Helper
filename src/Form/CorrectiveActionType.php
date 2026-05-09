@@ -71,7 +71,6 @@ class CorrectiveActionType extends AbstractType
                     'audits.action_type.improvement' => CorrectiveAction::ACTION_TYPE_IMPROVEMENT,
                 ],
                 'choice_translation_domain' => 'audits',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'audits.help.action_type',
             ])
             ->add('responsiblePersonUser', EntityType::class, [

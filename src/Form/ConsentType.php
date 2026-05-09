@@ -155,14 +155,12 @@ class ConsentType extends AbstractType
                 'label' => 'consent.field.withdrawn_at',
                 'required' => false,
                 'input' => 'datetime_immutable',
-                'attr' => ['class' => 'form-control'],
                 'help' => 'consent.help.withdrawn_at',
             ])
             ->add('withdrawalReason', TextareaType::class, [
                 'label' => 'consent.field.withdrawal_reason',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 2,
                     'placeholder' => 'consent.placeholder.withdrawal_reason',
                 ],
@@ -178,7 +176,6 @@ class ConsentType extends AbstractType
                 ],
                 'required' => false,
                 'placeholder' => 'consent.placeholder.withdrawal_channel',
-                'attr' => ['class' => 'form-select'],
             ])
         ;
     }

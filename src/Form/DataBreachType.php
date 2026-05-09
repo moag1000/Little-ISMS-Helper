@@ -57,7 +57,7 @@ class DataBreachType extends AbstractType
                 'choice_label' => fn(Incident $incident): string => sprintf('%s - %s', $incident->getIncidentNumber(), $incident->getTitle()),
                 'placeholder' => 'data_breach.placeholder.incident',
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'help' => 'data_breach.help.incident',
                 'query_builder' => function (IncidentRepository $repo) use ($options): QueryBuilder {
                     $qb = $repo->createQueryBuilder('i')->orderBy('i.detectedAt', 'DESC');
@@ -74,7 +74,7 @@ class DataBreachType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'data_breach.placeholder.processing_activity',
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'help' => 'data_breach.help.processing_activity',
                 'query_builder' => function (ProcessingActivityRepository $repo) use ($options): QueryBuilder {
                     $qb = $repo->createQueryBuilder('pa')->orderBy('pa.name', 'ASC');
@@ -286,7 +286,7 @@ class DataBreachType extends AbstractType
                 'choice_label' => fn(User $user): string => sprintf('%s %s (%s)', $user->getFirstName(), $user->getLastName(), $user->getEmail()),
                 'placeholder' => 'data_breach.placeholder.data_protection_officer',
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'help' => 'data_breach.help.data_protection_officer',
             ])
             ->add('dataProtectionOfficerPerson', EntityType::class, [

@@ -125,7 +125,7 @@ class DataSubjectRequestType extends AbstractType
                 ),
                 'placeholder' => 'dsr.form.placeholder.assigned_to',
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
             ])
             ->add('assignedPerson', EntityType::class, [
                 'label' => 'dsr.form.assigned_person',
@@ -153,7 +153,7 @@ class DataSubjectRequestType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'dsr.form.placeholder.processing_activity',
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'help' => 'dsr.form.help.processing_activity',
             ])
 
@@ -165,7 +165,6 @@ class DataSubjectRequestType extends AbstractType
                 'label' => 'dsr.form.response_at',
                 'required' => false,
                 'input' => 'datetime_immutable',
-                'attr' => ['class' => 'form-control'],
                 'help' => 'dsr.form.help.response_at',
             ])
             ->add('extendedDeadlineAt', DateTimeType::class, [
@@ -173,7 +172,6 @@ class DataSubjectRequestType extends AbstractType
                 'label' => 'dsr.form.extended_deadline',
                 'required' => false,
                 'input' => 'datetime_immutable',
-                'attr' => ['class' => 'form-control'],
                 'help' => 'dsr.form.help.extended_deadline',
             ])
             ->add('extensionReason', TextareaType::class, [
@@ -181,7 +179,6 @@ class DataSubjectRequestType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'rows' => 2,
-                    'class' => 'form-control',
                     'placeholder' => 'dsr.form.placeholder.extension_reason',
                 ],
                 'help' => 'dsr.form.help.extension_reason',
@@ -191,7 +188,6 @@ class DataSubjectRequestType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'maxlength' => 255,
-                    'class' => 'form-control',
                     'placeholder' => 'dsr.form.placeholder.response_document',
                 ],
                 'help' => 'dsr.form.help.response_document',
@@ -206,14 +202,12 @@ class DataSubjectRequestType extends AbstractType
                     'dsr.response_method.portal' => 'portal',
                     'dsr.response_method.in_person' => 'in_person',
                 ],
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('rejectionReason', TextareaType::class, [
                 'label' => 'dsr.form.rejection_reason',
                 'required' => false,
                 'attr' => [
                     'rows' => 3,
-                    'class' => 'form-control',
                     'placeholder' => 'dsr.form.placeholder.rejection_reason',
                 ],
                 'help' => 'dsr.form.help.rejection_reason',

@@ -219,7 +219,6 @@ class ThreatIntelligenceType extends AbstractType
                         'threat_intelligence.tlp.white' => 'white',
                     ],
                     'help' => 'threat_intelligence.help.tlp_classification',
-                    'attr' => ['class' => 'form-select'],
                 ])
                 ->add('threatActorAttribution', TextType::class, [
                     'label' => 'threat_intelligence.field.threat_actor_attribution',
@@ -263,7 +262,6 @@ class ThreatIntelligenceType extends AbstractType
                         'threat_intelligence.confidence.medium' => 'medium',
                         'threat_intelligence.confidence.high' => 'high',
                     ],
-                    'attr' => ['class' => 'form-select'],
                 ])
                 ->add('sharedExternally', CheckboxType::class, [
                     'label' => 'threat_intelligence.field.shared_externally',
