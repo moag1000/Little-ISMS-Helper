@@ -1,5 +1,6 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {# Form-Audit follow-up (May 2026) — REWRITE.
    Template now matches OperationalBaselinesStep::validate() contract
@@ -29,21 +30,24 @@
 {% set gdpr_in_scope = 'gdpr' in standards %}
 {% set has_preset_applied = preset_default is not null and preset_default != '' %}
 
-{# Junior-ISB-friendly help-card. #}
-<div class="alert alert-secondary border-0 mb-3">
-    <h6 class="mb-2">
-        <i class="bi bi-mortarboard" aria-hidden="true"></i>
-        {{ 'policy_wizard.step.operational_baselines.help.title'|trans }}
-    </h6>
-    <p class="mb-2 small">{{ 'policy_wizard.step.operational_baselines.help.body'|trans }}</p>
-    <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.operational_baselines.help.example'|trans }}</p>
-    {% if has_preset_applied %}
-        <p class="mb-0 small">
-            <i class="bi bi-magic" aria-hidden="true"></i>
-            {{ 'policy_wizard.step.operational_baselines.help.preset_hint'|trans }}
-        </p>
-    {% endif %}
-</div>
+{# Junior-ISB-friendly help-card. Aurora-DS: _fa_alert info-variant + bi-mortarboard icon. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'info',
+    icon: 'bi-mortarboard',
+    class: 'mb-3'
+} } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">{{ 'policy_wizard.step.operational_baselines.help.title'|trans }}</div>
+        <p class="fa-alert__message mb-2 small">{{ 'policy_wizard.step.operational_baselines.help.body'|trans }}</p>
+        <p class="mb-2 small fst-italic text-muted">{{ 'policy_wizard.step.operational_baselines.help.example'|trans }}</p>
+        {% if has_preset_applied %}
+            <p class="mb-0 small">
+                <i class="bi bi-magic" aria-hidden="true"></i>
+                {{ 'policy_wizard.step.operational_baselines.help.preset_hint'|trans }}
+            </p>
+        {% endif %}
+    {% endblock %}
+{% endembed %}
 
 {# ── Crypto allowlist ─────────────────────────────────────────────── #}
 <div class="fa-form-row mb-4">
