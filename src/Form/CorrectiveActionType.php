@@ -30,7 +30,6 @@ class CorrectiveActionType extends AbstractType
                 'choice_label' => fn(AuditFinding $f): string => ($f->getFindingNumber() ?? '#' . $f->getId()) . ' — ' . ($f->getTitle() ?? ''),
                 'placeholder' => 'corrective_action.placeholder.finding',
                 'required' => true,
-                'attr' => ['class' => 'form-select'],
                 'disabled' => $options['finding_locked'],
             ])
             ->add('title', TextType::class, [
@@ -61,7 +60,6 @@ class CorrectiveActionType extends AbstractType
                 ],
                 'choice_translation_domain' => 'audits',
                 'required' => true,
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('responsiblePersonUser', EntityType::class, [
                 'label' => 'corrective_action.field.responsible_person_user',
@@ -69,7 +67,6 @@ class CorrectiveActionType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'placeholder' => 'corrective_action.placeholder.responsible_person_user',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('responsiblePerson', EntityType::class, [
                 'label' => 'corrective_action.field.responsible_person',
@@ -77,7 +74,6 @@ class CorrectiveActionType extends AbstractType
                 'choice_label' => 'fullName',
                 'placeholder' => 'corrective_action.placeholder.responsible_person',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('responsibleDeputyPersons', EntityType::class, [
                 'label' => 'corrective_action.field.responsible_deputy_persons',
@@ -85,7 +81,6 @@ class CorrectiveActionType extends AbstractType
                 'choice_label' => 'fullName',
                 'multiple' => true,
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('plannedCompletionDate', DateType::class, [
                 'label' => 'corrective_action.field.planned_completion_date',

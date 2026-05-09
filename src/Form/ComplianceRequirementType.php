@@ -24,10 +24,7 @@ class ComplianceRequirementType extends AbstractType
                 'label' => 'compliance_requirement.field.framework',
                 'class' => ComplianceFramework::class,
                 'choice_label' => 'name',
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'compliance_requirement.validation.framework_required')
                 ],
                 'help' => 'compliance_requirement.help.framework'
@@ -35,7 +32,6 @@ class ComplianceRequirementType extends AbstractType
             ->add('requirementId', TextType::class, [
                 'label' => 'compliance_requirement.field.requirement_id',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'compliance_requirement.placeholder.requirement_id'
                 ],
                 'constraints' => [
@@ -47,7 +43,6 @@ class ComplianceRequirementType extends AbstractType
             ->add('title', TextType::class, [
                 'label' => 'compliance_requirement.field.title',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'compliance_requirement.placeholder.title'
                 ],
                 'constraints' => [
@@ -58,7 +53,6 @@ class ComplianceRequirementType extends AbstractType
             ->add('description', TextareaType::class, [
                 'label' => 'compliance_requirement.field.description',
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 5,
                     'placeholder' => 'compliance_requirement.placeholder.description'
                 ],
@@ -70,7 +64,6 @@ class ComplianceRequirementType extends AbstractType
                 'label' => 'compliance_requirement.field.category',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'compliance_requirement.placeholder.category'
                 ],
                 'constraints' => [
@@ -87,10 +80,7 @@ class ComplianceRequirementType extends AbstractType
                     'compliance_requirement.priority.low' => 'low',
                 ],
                 'choice_translation_domain' => 'compliance',
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'compliance_requirement.validation.priority_required')
                 ]
             ])
@@ -102,10 +92,7 @@ class ComplianceRequirementType extends AbstractType
                     'compliance_requirement.requirement_type.sub_requirement' => 'sub_requirement',
                 ],
                 'choice_translation_domain' => 'compliance',
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'compliance_requirement.validation.requirement_type_required')
                 ],
                 'help' => 'compliance_requirement.help.requirement_type'
@@ -115,10 +102,7 @@ class ComplianceRequirementType extends AbstractType
                 'class' => ComplianceRequirement::class,
                 'choice_label' => fn(ComplianceRequirement $complianceRequirement): string => $complianceRequirement->getRequirementId() . ' - ' . $complianceRequirement->getTitle(),
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'help' => 'compliance_requirement.help.parent_requirement'
+                                'help' => 'compliance_requirement.help.parent_requirement'
             ])
             // Note: applicable, applicabilityJustification, and fulfillmentPercentage
             // are now tenant-specific and managed via ComplianceRequirementFulfillment.

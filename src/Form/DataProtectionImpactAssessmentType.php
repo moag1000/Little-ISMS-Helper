@@ -52,7 +52,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'choice_label' => 'name',
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.processing_activity',
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
             ])
 
             // ============================================================================
@@ -89,7 +89,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 ],
                 'multiple' => true,
                 'required' => true,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
             ->add('dataSubjectCategories', ChoiceType::class, [
@@ -110,7 +110,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 ],
                 'multiple' => true,
                 'required' => true,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                     'choice_translation_domain' => 'privacy',
             ])
             ->add('estimatedDataSubjects', IntegerType::class, [
@@ -241,7 +241,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'choice_label' => fn(Control $control): string => $control->getControlId() . ' - ' . $control->getName(),
                 'multiple' => true,
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
             ])
             ->add('complianceMeasures', TextareaType::class, [
                 'label' => 'dpia.form.compliance_measures',
@@ -288,7 +288,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.data_protection_officer',
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
             ])
             ->add('dataProtectionOfficerPerson', EntityType::class, [
                 'label' => 'dpia.form.data_protection_officer_person',
@@ -297,7 +297,6 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.data_protection_officer_person',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('dataProtectionOfficerDeputyPersons', EntityType::class, [
                 'label' => 'dpia.form.data_protection_officer_deputies',
@@ -308,7 +307,6 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
             ])
@@ -379,7 +377,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.conductor',
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
             ])
             ->add('conductorPerson', EntityType::class, [
                 'label' => 'dpia.form.conductor_person',
@@ -388,7 +386,6 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.conductor_person',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('conductorDeputyPersons', EntityType::class, [
                 'label' => 'dpia.form.conductor_deputies',
@@ -399,7 +396,6 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
             ])
@@ -410,7 +406,6 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.approver_person',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('approverDeputyPersons', EntityType::class, [
                 'label' => 'dpia.form.approver_deputies',
@@ -421,7 +416,6 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
             ])

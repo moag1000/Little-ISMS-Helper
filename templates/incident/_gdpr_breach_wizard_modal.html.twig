@@ -342,7 +342,7 @@
     right: 0;
     bottom: 0;
     background-color: var(--overlay-bg, rgba(0, 0, 0, 0.6));
-    z-index: 1050;
+    z-index: var(--z-modal-backdrop, 1000);
     display: none;
 }
 
@@ -357,7 +357,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 1055;
+    z-index: var(--z-modal, 1001);
     display: none;
     overflow-y: auto;
     padding: 1rem;

@@ -32,7 +32,6 @@ class TrainingType extends AbstractType
             ->add('title', TextType::class, [
                 'label' => 'training.field.title',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'training.placeholder.title',
                 ],
                 'constraints' => [
@@ -43,7 +42,6 @@ class TrainingType extends AbstractType
                 'label' => 'training.field.description',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'training.placeholder.description',
                 ],
@@ -60,7 +58,6 @@ class TrainingType extends AbstractType
                     'training.types.cyber_security' => 'cyber_security',
                     'training.types.other' => 'other',
                 ],
-                'attr' => ['class' => 'form-select'],
                 'constraints' => [
                     new NotBlank(),
                 ],
@@ -75,13 +72,11 @@ class TrainingType extends AbstractType
                     'training.delivery_methods.hybrid' => 'hybrid',
                     'training.delivery_methods.workshop' => 'workshop',
                 ],
-                'attr' => ['class' => 'form-select'],
                 'choice_translation_domain' => 'training',
             ])
             ->add('scheduledDate', DateType::class, [
                 'label' => 'training.field.scheduled_date',
                 'widget' => 'single_text',
-                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new NotBlank(message: 'training.validation.date_required'),
                 ],
@@ -90,7 +85,6 @@ class TrainingType extends AbstractType
                 'label' => 'training.field.duration',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'min' => 15,
                     'placeholder' => 'training.placeholder.duration',
                 ],
@@ -105,7 +99,6 @@ class TrainingType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'training.placeholder.trainer_user',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'training.help.trainer_user',
             ])
             ->add('trainerPerson', EntityType::class, [
@@ -114,7 +107,6 @@ class TrainingType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'placeholder' => 'training.placeholder.trainer_person',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'training.help.trainer_person',
             ])
             ->add('trainerDeputyPersons', EntityType::class, [
@@ -125,7 +117,6 @@ class TrainingType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'training.help.trainer_deputy_persons',
@@ -134,7 +125,6 @@ class TrainingType extends AbstractType
                 'label' => 'training.field.trainer_legacy',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'training.placeholder.trainer',
                 ],
             ])
@@ -142,7 +132,6 @@ class TrainingType extends AbstractType
                 'label' => 'training.field.target_audience',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'training.placeholder.target_audience',
                 ],
                 'help' => 'training.help.target_audience',
@@ -151,7 +140,6 @@ class TrainingType extends AbstractType
                 'label' => 'training.field.participants',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'training.placeholder.participants',
                 ],
@@ -161,7 +149,6 @@ class TrainingType extends AbstractType
                 'label' => 'training.field.attendee_count',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'min' => 0,
                 ],
             ])
@@ -174,7 +161,6 @@ class TrainingType extends AbstractType
                     'training.statuses.completed' => 'completed',
                     'training.statuses.cancelled' => 'cancelled',
                 ],
-                'attr' => ['class' => 'form-select'],
                 'choice_translation_domain' => 'training',
             ])
             ->add('mandatory', ChoiceType::class, [
@@ -193,7 +179,6 @@ class TrainingType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'size' => 5,
                     'data-controller' => 'tom-select',
                 ],
@@ -210,7 +195,6 @@ class TrainingType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'training.help.compliance_requirements',
@@ -219,7 +203,6 @@ class TrainingType extends AbstractType
                 'label' => 'training.field.materials',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                 ],
                 'help' => 'training.help.materials',
@@ -228,7 +211,6 @@ class TrainingType extends AbstractType
                 'label' => 'training.field.feedback',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                 ],
                 'help' => 'training.help.feedback',
@@ -237,7 +219,6 @@ class TrainingType extends AbstractType
                 'label' => 'training.field.completion_date',
                 'widget' => 'single_text',
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
             ]);
     }
 

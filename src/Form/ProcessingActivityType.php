@@ -62,7 +62,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'multiple' => true,
                 'required' => true,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
 
@@ -85,7 +85,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'multiple' => true,
                 'required' => true,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
             ->add('estimatedDataSubjectsCount', IntegerType::class, [
@@ -114,7 +114,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'multiple' => true,
                 'required' => true,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
             ->add('processesSpecialCategories', ChoiceType::class, [
@@ -144,7 +144,7 @@ class ProcessingActivityType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'attr' => [
-                    'class' => 'select2',
+                    'data-controller' => 'tom-select',
                     'data-depends-on' => 'processing_activity_processesSpecialCategories',
                     'data-depends-on-value' => '1',
                 ],
@@ -181,7 +181,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'multiple' => true,
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
             ->add('recipientDetails', TextareaType::class, [
@@ -220,7 +220,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'multiple' => true,
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
             ->add('transferSafeguards', ChoiceType::class, [
@@ -239,7 +239,7 @@ class ProcessingActivityType extends AbstractType
                     'processing_activity.transfer_safeguard.vital_interests' => 'vital_interests',
                 ],
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
 
@@ -280,7 +280,7 @@ class ProcessingActivityType extends AbstractType
                 'choice_label' => fn(Control $control): string => $control->getControlId() . ' - ' . $control->getName(),
                 'multiple' => true,
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
             ])
 
             // ============================================================================
@@ -298,7 +298,7 @@ class ProcessingActivityType extends AbstractType
                     'processing_activity.legal_basis.legitimate_interests' => 'legitimate_interests',
                 ],
                 'required' => true,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
             ->add('legalBasisDetails', TextareaType::class, [
@@ -323,7 +323,7 @@ class ProcessingActivityType extends AbstractType
                     'processing_activity.legal_basis_special.research_statistics' => 'research_statistics',
                 ],
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
 
@@ -341,7 +341,7 @@ class ProcessingActivityType extends AbstractType
                 'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
             ])
             ->add('contactPerson', EntityType::class, [
                 'label' => 'processing_activity.form.contact_person_person',
@@ -350,7 +350,6 @@ class ProcessingActivityType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'processing_activity.placeholder.contact_person_person',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('contactDeputyPersons', EntityType::class, [
                 'label' => 'processing_activity.form.contact_deputies',
@@ -361,7 +360,6 @@ class ProcessingActivityType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
             ])
@@ -371,7 +369,7 @@ class ProcessingActivityType extends AbstractType
                 'class' => User::class,
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
             ])
             ->add('dataProtectionOfficerPerson', EntityType::class, [
                 'label' => 'processing_activity.form.data_protection_officer_person',
@@ -380,7 +378,6 @@ class ProcessingActivityType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'processing_activity.placeholder.data_protection_officer_person',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('dataProtectionOfficerDeputyPersons', EntityType::class, [
                 'label' => 'processing_activity.form.data_protection_officer_deputies',
@@ -391,7 +388,6 @@ class ProcessingActivityType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
             ])
@@ -467,7 +463,7 @@ class ProcessingActivityType extends AbstractType
                     'processing_activity.risk_level.critical' => 'critical',
                 ],
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
 
@@ -510,7 +506,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'multiple' => true,
                 'required' => false,
-                'attr' => ['class' => 'select2'],
+                'attr' => ['data-controller' => 'tom-select'],
                 'choice_translation_domain' => 'privacy',
             ])
 

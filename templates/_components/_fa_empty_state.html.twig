@@ -65,10 +65,10 @@
             </p>
         {% endif %}
 
-        {# Prerequisite warning #}
+        {# Prerequisite warning — Aurora-Pattern (kein Bootstrap-alert) #}
         {% if props.prerequisite is defined and props.prerequisite %}
-            <div class="fa-empty-state__prereq alert alert-warning d-inline-flex align-items-center gap-2 mt-2 mb-3 py-2 px-3 small">
-                <i class="bi bi-lock-fill" aria-hidden="true"></i>
+            <div class="fa-empty-state__prereq fa-alert fa-alert--warning d-inline-flex align-items-center gap-2 mt-2 mb-3 py-2 px-3 small">
+                <i class="fa-icon fa-icon--ui-lock" aria-hidden="true"></i>
                 {{ props.prerequisite }}
             </div>
         {% endif %}

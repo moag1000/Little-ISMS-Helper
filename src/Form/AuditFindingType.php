@@ -31,7 +31,6 @@ class AuditFindingType extends AbstractType
                 'choice_label' => fn(InternalAudit $a): string => ($a->getAuditNumber() ?? '') . ' — ' . ($a->getTitle() ?? ''),
                 'placeholder' => 'audit_finding.placeholder.audit',
                 'required' => true,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'audit_finding.help.audit',
             ])
             ->add('findingNumber', TextType::class, [
@@ -61,7 +60,6 @@ class AuditFindingType extends AbstractType
                 ],
                 'choice_translation_domain' => 'audits',
                 'required' => true,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'audit_finding.help.type',
             ])
             ->add('severity', ChoiceType::class, [
@@ -74,7 +72,6 @@ class AuditFindingType extends AbstractType
                 ],
                 'choice_translation_domain' => 'audits',
                 'required' => true,
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'audit_finding.field.status',
@@ -87,7 +84,6 @@ class AuditFindingType extends AbstractType
                 ],
                 'choice_translation_domain' => 'audits',
                 'required' => true,
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('clauseReference', TextType::class, [
                 'label' => 'audit_finding.field.clause_reference',
@@ -107,7 +103,6 @@ class AuditFindingType extends AbstractType
                 'choice_label' => fn(Control $c): string => ($c->getControlId() ?? '') . ' — ' . ($c->getName() ?? ''),
                 'placeholder' => 'audit_finding.placeholder.related_control',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('assignedTo', EntityType::class, [
                 'label' => 'audit_finding.field.assigned_to',
@@ -115,7 +110,6 @@ class AuditFindingType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'placeholder' => 'audit_finding.placeholder.assigned_to',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('assignedPerson', EntityType::class, [
                 'label' => 'audit_finding.field.assigned_person',
@@ -123,7 +117,6 @@ class AuditFindingType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'placeholder' => 'audit_finding.placeholder.assigned_person',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'audit_finding.help.assigned_person',
             ])
             ->add('assignedDeputyPersons', EntityType::class, [
@@ -134,7 +127,6 @@ class AuditFindingType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'audit_finding.help.assigned_deputy_persons',
@@ -145,7 +137,6 @@ class AuditFindingType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'placeholder' => 'audit_finding.placeholder.reported_by_person',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'audit_finding.help.reported_by_person',
             ])
             ->add('reportedByDeputyPersons', EntityType::class, [
@@ -156,7 +147,6 @@ class AuditFindingType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'audit_finding.help.reported_by_deputy_persons',

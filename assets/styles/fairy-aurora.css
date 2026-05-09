@@ -133,6 +133,22 @@
     --warning-rgb: 217, 119, 6;
     --danger-rgb:  220, 38, 38;
 
+    /* — Semantic-Aliases (used by older CSS, mapped to canonical tokens) — */
+    --success-bg:   var(--success-tint);
+    --warning-bg:   var(--warning-tint);
+    --danger-bg:    var(--danger-tint);
+    --info-bg:      var(--info-tint);
+    --text-muted:   var(--fg-3);
+
+    /* — Spacing-Scale (canonical, rem-basiert) — */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 3rem;
+
     /* — Shadows (light mode default) — */
     --shadow-sm:    0 1px 3px rgba(0, 0, 0, 0.05);
     --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.06);

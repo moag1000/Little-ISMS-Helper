@@ -33,7 +33,6 @@ class FourEyesApprovalRequestType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'placeholder.requested_approver_user',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'help.requested_approver_user',
             ])
             ->add('requestedApproverPerson', EntityType::class, [
@@ -42,7 +41,6 @@ class FourEyesApprovalRequestType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'placeholder.requested_approver_person',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'help.requested_approver_person',
             ])
             ->add('requestedApproverDeputyPersons', EntityType::class, [
@@ -53,7 +51,6 @@ class FourEyesApprovalRequestType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'help.requested_approver_deputy_persons',

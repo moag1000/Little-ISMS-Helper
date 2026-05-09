@@ -81,7 +81,6 @@ class CrisisTeamType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'placeholder' => 'crisis_team.placeholder.team_leader_person',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'crisis_team.help.team_leader_person',
             ])
             ->add('teamLeaderDeputyPersons', EntityType::class, [
@@ -92,7 +91,6 @@ class CrisisTeamType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'crisis_team.help.team_leader_deputy_persons',
@@ -111,7 +109,6 @@ class CrisisTeamType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'placeholder' => 'crisis_team.placeholder.deputy_leader_person',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'crisis_team.help.deputy_leader_person',
             ])
             ->add('deputyLeaderDeputyPersons', EntityType::class, [
@@ -122,7 +119,6 @@ class CrisisTeamType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'crisis_team.help.deputy_leader_deputy_persons',
@@ -228,7 +224,6 @@ class CrisisTeamType extends AbstractType
                 'required' => false,
                 'help' => 'crisis_team.help.business_continuity_plans',
                 'attr' => [
-                    'class' => 'form-select',
                     'size' => 5,
                 ],
             ])

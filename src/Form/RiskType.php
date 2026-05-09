@@ -54,10 +54,7 @@ class RiskType extends AbstractType
                 'placeholder' => 'risk.placeholder.category',
                 'required' => true,
                 'help' => 'risk.help.category',
-                'attr' => [
-                    'class' => 'form-select',
-                ],
-                    'choice_translation_domain' => 'risk',
+                                    'choice_translation_domain' => 'risk',
             ])
             // DSGVO Risk Assessment Extension (Priority 2.2)
             ->add('involvesPersonalData', CheckboxType::class, [
@@ -83,10 +80,7 @@ class RiskType extends AbstractType
                 'placeholder' => 'risk.placeholder.legal_basis',
                 'required' => false,
                 'help' => 'risk.help.legal_basis',
-                'attr' => [
-                    'class' => 'form-select',
-                ],
-                    'choice_translation_domain' => 'risk',
+                                    'choice_translation_domain' => 'risk',
             ])
             ->add('processingScale', ChoiceType::class, [
                 'label' => 'risk.field.processing_scale',
@@ -98,10 +92,7 @@ class RiskType extends AbstractType
                 'placeholder' => 'risk.placeholder.processing_scale',
                 'required' => false,
                 'help' => 'risk.help.processing_scale',
-                'attr' => [
-                    'class' => 'form-select',
-                ],
-                    'choice_translation_domain' => 'risk',
+                                    'choice_translation_domain' => 'risk',
             ])
             ->add('requiresDPIA', CheckboxType::class, [
                 'label' => 'risk.field.requires_dpia',
@@ -141,7 +132,6 @@ class RiskType extends AbstractType
                 'choice_label' => fn(ThreatIntelligence $t): string => (string) ($t->getTitle() ?? ''),
                 'required' => false,
                 'placeholder' => 'risk.placeholder.threat_intelligence',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'risk.help.threat_intelligence',
             ])
             ->add('vulnerability', TextareaType::class, [
@@ -159,7 +149,6 @@ class RiskType extends AbstractType
                 'choice_label' => fn(Vulnerability $v): string => ($v->getCveId() ?? '') . ' — ' . ($v->getTitle() ?? ''),
                 'required' => false,
                 'placeholder' => 'risk.placeholder.linked_vulnerability',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'risk.help.linked_vulnerability',
             ])
             // Risk Subject - At least one must be selected (Asset, Person, Location, or Supplier)
@@ -238,17 +227,13 @@ class RiskType extends AbstractType
                 'placeholder' => 'risk.placeholder.risk_owner',
                 'required' => false,
                 'help' => 'risk.help.risk_owner',
-                'attr' => [
-                    'class' => 'form-select',
-                ],
-            ])
+                            ])
             ->add('riskOwnerPerson', EntityType::class, [
                 'label' => 'risk.field.risk_owner_person',
                 'class' => Person::class,
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'risk.placeholder.risk_owner_person',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'risk.help.risk_owner_person',
             ])
             ->add('riskOwnerDeputyPersons', EntityType::class, [
@@ -259,7 +244,6 @@ class RiskType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'risk.help.risk_owner_deputies',
@@ -288,7 +272,6 @@ class RiskType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'risk.placeholder.acceptance_approved_by_user',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'risk.help.acceptance_approved_by_user',
             ])
             ->add('acceptanceApprovedBy', TextType::class, [

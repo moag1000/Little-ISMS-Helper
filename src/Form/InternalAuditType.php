@@ -27,7 +27,7 @@ class InternalAuditType extends AbstractType
         $builder
             ->add('title', TextType::class, [
                 'label' => 'audit.field.title',
-                'attr' => ['class' => 'form-control', 'placeholder' => 'audit.placeholder.title'],
+                'attr' => ['placeholder' => 'audit.placeholder.title'],
                 'constraints' => [
                     new NotBlank(message: 'audit.validation.title_required'),
                     new Length(min: 5, max: 255),
@@ -37,7 +37,6 @@ class InternalAuditType extends AbstractType
                 'label' => 'audit.field.scope',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'audit.placeholder.scope',
                 ],
@@ -56,7 +55,6 @@ class InternalAuditType extends AbstractType
                     'audit.scope_type.corporate_subsidiaries' => 'corporate_subsidiaries',
                 ],
                 'attr' => [
-                    'class' => 'form-select',
                     'data-corporate-scope' => '1',
                 ],
                 'constraints' => [
@@ -69,7 +67,6 @@ class InternalAuditType extends AbstractType
                 'label' => 'audit.field.objectives',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'audit.placeholder.objectives',
                 ],
@@ -78,7 +75,6 @@ class InternalAuditType extends AbstractType
             ->add('plannedDate', DateType::class, [
                 'label' => 'audit.field.planned_date',
                 'widget' => 'single_text',
-                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new NotBlank(message: 'audit.validation.date_required'),
                 ],
@@ -87,7 +83,6 @@ class InternalAuditType extends AbstractType
                 'label' => 'audit.field.actual_date',
                 'required' => false,
                 'widget' => 'single_text',
-                'attr' => ['class' => 'form-control'],
                 'help' => 'audit.help.actual_date',
             ])
             ->add('status', ChoiceType::class, [
@@ -99,14 +94,12 @@ class InternalAuditType extends AbstractType
                     'audit.status.postponed' => 'postponed',
                     'audit.status.cancelled' => 'cancelled',
                 ],
-                'attr' => ['class' => 'form-select'],
                     'choice_translation_domain' => 'audit',
             ])
             ->add('leadAuditor', TextType::class, [
                 'label' => 'audit.field.lead_auditor',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'audit.placeholder.lead_auditor',
                 ],
             ])
@@ -114,7 +107,6 @@ class InternalAuditType extends AbstractType
                 'label' => 'audit.field.audit_team',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'audit.placeholder.audit_team',
                 ],
@@ -126,10 +118,7 @@ class InternalAuditType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'audit.placeholder.scoped_framework',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-select',
-                ],
-                'help' => 'audit.help.scoped_framework',
+                                'help' => 'audit.help.scoped_framework',
             ])
             ->add('additionalScopedFrameworks', EntityType::class, [
                 'label' => 'audit.field.additional_scoped_frameworks',
@@ -138,7 +127,6 @@ class InternalAuditType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'size' => 6,
                 ],
                 'help' => 'audit.help.additional_scoped_frameworks',
@@ -153,7 +141,6 @@ class InternalAuditType extends AbstractType
                     ->where('t.parent IS NOT NULL')
                     ->orderBy('t.name', 'ASC'),
                 'attr' => [
-                    'class' => 'form-select',
                     'size' => 8,
                     'data-corporate-subsidiaries' => '1',
                 ],
@@ -163,7 +150,6 @@ class InternalAuditType extends AbstractType
                 'label' => 'audit.field.findings',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 6,
                 ],
                 'help' => 'audit.help.findings',
@@ -172,7 +158,6 @@ class InternalAuditType extends AbstractType
                 'label' => 'audit.field.recommendations',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                 ],
                 'help' => 'audit.help.recommendations',
@@ -181,7 +166,6 @@ class InternalAuditType extends AbstractType
                 'label' => 'audit.field.conclusion',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                 ],
                 'help' => 'audit.help.conclusion',

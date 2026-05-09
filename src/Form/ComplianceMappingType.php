@@ -26,10 +26,7 @@ class ComplianceMappingType extends AbstractType
                 'label' => 'compliance_mapping.field.source_requirement',
                 'class' => ComplianceRequirement::class,
                 'choice_label' => fn(ComplianceRequirement $complianceRequirement): string => $complianceRequirement->getFramework()->getCode() . ' - ' . $complianceRequirement->getRequirementId() . ': ' . $complianceRequirement->getTitle(),
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'compliance_mapping.validation.source_requirement_required')
                 ],
                 'help' => 'compliance_mapping.help.source_requirement'
@@ -38,10 +35,7 @@ class ComplianceMappingType extends AbstractType
                 'label' => 'compliance_mapping.field.target_requirement',
                 'class' => ComplianceRequirement::class,
                 'choice_label' => fn(ComplianceRequirement $complianceRequirement): string => $complianceRequirement->getFramework()->getCode() . ' - ' . $complianceRequirement->getRequirementId() . ': ' . $complianceRequirement->getTitle(),
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'compliance_mapping.validation.target_requirement_required')
                 ],
                 'help' => 'compliance_mapping.help.target_requirement'
@@ -49,7 +43,6 @@ class ComplianceMappingType extends AbstractType
             ->add('mappingPercentage', IntegerType::class, [
                 'label' => 'compliance_mapping.field.mapping_percentage',
                 'attr' => [
-                    'class' => 'form-control',
                     'min' => 0,
                     'max' => 150,
                     'placeholder' => '0-150'
@@ -69,10 +62,7 @@ class ComplianceMappingType extends AbstractType
                     'compliance_mapping.mapping_type.exceeds' => 'exceeds',
                 ],
                 'choice_translation_domain' => 'compliance',
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'compliance_mapping.validation.mapping_type_required')
                 ],
                 'help' => 'compliance_mapping.help.mapping_type'
@@ -81,7 +71,6 @@ class ComplianceMappingType extends AbstractType
                 'label' => 'compliance_mapping.field.mapping_rationale',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'compliance_mapping.placeholder.mapping_rationale'
                 ],
@@ -106,10 +95,7 @@ class ComplianceMappingType extends AbstractType
                     'compliance_mapping.confidence.high' => 'high',
                 ],
                 'choice_translation_domain' => 'compliance',
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'compliance_mapping.validation.confidence_required')
                 ],
                 'help' => 'compliance_mapping.help.confidence'
@@ -118,7 +104,6 @@ class ComplianceMappingType extends AbstractType
                 'label' => 'compliance_mapping.field.verified_by',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'compliance_mapping.placeholder.verified_by'
                 ],
                 'constraints' => [

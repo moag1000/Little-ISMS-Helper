@@ -28,10 +28,7 @@ class WorkflowInstanceType extends AbstractType
                 'label' => 'workflow_instance.field.workflow',
                 'class' => Workflow::class,
                 'choice_label' => 'name',
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'workflow_instance.validation.workflow_required')
                 ],
                 'help' => 'workflow_instance.help.workflow'
@@ -39,7 +36,6 @@ class WorkflowInstanceType extends AbstractType
             ->add('entityType', TextType::class, [
                 'label' => 'workflow_instance.field.entity_type',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'workflow_instance.placeholder.entity_type'
                 ],
                 'constraints' => [
@@ -51,7 +47,6 @@ class WorkflowInstanceType extends AbstractType
             ->add('entityId', IntegerType::class, [
                 'label' => 'workflow_instance.field.entity_id',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'workflow_instance.placeholder.entity_id'
                 ],
                 'constraints' => [
@@ -69,10 +64,7 @@ class WorkflowInstanceType extends AbstractType
                     'workflow_instance.status.rejected' => 'rejected',
                     'workflow_instance.status.cancelled' => 'cancelled',
                 ],
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'constraints' => [
+                                'constraints' => [
                     new Assert\NotBlank(message: 'workflow_instance.validation.status_required')
                 ],
                 'choice_translation_domain' => 'workflows',
@@ -82,26 +74,19 @@ class WorkflowInstanceType extends AbstractType
                 'class' => User::class,
                 'choice_label' => 'email',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'help' => 'workflow_instance.help.initiated_by'
+                                'help' => 'workflow_instance.help.initiated_by'
             ])
             ->add('currentStep', EntityType::class, [
                 'label' => 'workflow_instance.field.current_step',
                 'class' => WorkflowStep::class,
                 'choice_label' => 'name',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-select'
-                ],
-                'help' => 'workflow_instance.help.current_step'
+                                'help' => 'workflow_instance.help.current_step'
             ])
             ->add('comments', TextareaType::class, [
                 'label' => 'workflow_instance.field.comments',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'workflow_instance.placeholder.comments'
                 ]
@@ -111,10 +96,7 @@ class WorkflowInstanceType extends AbstractType
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
                 'required' => false,
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-                'help' => 'workflow_instance.help.due_date'
+                                'help' => 'workflow_instance.help.due_date'
             ])
         ;
     }

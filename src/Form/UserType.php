@@ -48,7 +48,6 @@ class UserType extends AbstractType
             ->add('firstName', TextType::class, [
                 'label' => 'user.field.first_name',
                 'required' => true,
-                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new Assert\NotBlank(message: 'Bitte geben Sie einen Vornamen ein.'),
                     new Assert\Length(max: 100, maxMessage: 'Der Vorname darf maximal {{ limit }} Zeichen lang sein.'),
@@ -57,7 +56,6 @@ class UserType extends AbstractType
             ->add('lastName', TextType::class, [
                 'label' => 'user.field.last_name',
                 'required' => true,
-                'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new Assert\NotBlank(message: 'Bitte geben Sie einen Nachnamen ein.'),
                     new Assert\Length(max: 100, maxMessage: 'Der Nachname darf maximal {{ limit }} Zeichen lang sein.'),
@@ -66,7 +64,6 @@ class UserType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'user.field.email',
                 'required' => true,
-                'attr' => ['class' => 'form-control'],
                 'help' => 'Wird als Benutzername verwendet',
                 'constraints' => [
                     new Assert\NotBlank(message: 'Bitte geben Sie eine E-Mail-Adresse ein.'),
@@ -76,17 +73,14 @@ class UserType extends AbstractType
             ->add('department', TextType::class, [
                 'label' => 'user.field.department',
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
             ])
             ->add('jobTitle', TextType::class, [
                 'label' => 'user.field.job_title',
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
             ])
             ->add('phoneNumber', TelType::class, [
                 'label' => 'user.field.phone_number',
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
             ])
             ->add('avatarFile', FileType::class, [
                 'label' => 'user.field.avatar',
@@ -112,7 +106,6 @@ class UserType extends AbstractType
                 'mapped' => false,
                 'required' => !$isEdit,
                 'attr' => [
-                    'class' => 'form-control',
                     'autocomplete' => 'new-password',
                     'spellcheck' => 'false',
                 ],

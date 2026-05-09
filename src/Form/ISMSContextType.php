@@ -23,7 +23,6 @@ class ISMSContextType extends AbstractType
             ->add('organizationName', TextType::class, [
                 'label' => 'context.field.organization_name',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'context.placeholder.organization_name',
                 ],
                 'help' => 'context.help.organization_name',
@@ -36,7 +35,6 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.isms_scope',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 5,
                     'placeholder' => 'context.placeholder.isms_scope'
                 ],
@@ -46,7 +44,6 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.scope_exclusions',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'context.placeholder.scope_exclusions'
                 ],
@@ -56,7 +53,6 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.external_issues',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'context.placeholder.external_issues'
                 ],
@@ -66,7 +62,6 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.internal_issues',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'context.placeholder.internal_issues'
                 ],
@@ -85,7 +80,6 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.interested_parties_requirements',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'context.placeholder.interested_parties_requirements'
                 ],
@@ -95,7 +89,6 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.legal_requirements',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'context.placeholder.legal_requirements'
                 ],
@@ -105,7 +98,6 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.regulatory_requirements',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'context.placeholder.regulatory_requirements'
                 ],
@@ -115,7 +107,6 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.contractual_obligations',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'context.placeholder.contractual_obligations'
                 ],
@@ -125,7 +116,6 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.isms_policy',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 6,
                     'placeholder' => 'context.placeholder.isms_policy'
                 ],
@@ -135,7 +125,6 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.roles_and_responsibilities',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 5,
                     'placeholder' => 'context.placeholder.roles_and_responsibilities'
                 ],
@@ -145,19 +134,13 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.last_review_date',
                 'required' => false,
                 'widget' => 'single_text',
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'help' => 'context.help.last_review_date'
+                                'help' => 'context.help.last_review_date'
             ])
             ->add('nextReviewDate', DateType::class, [
                 'label' => 'context.field.next_review_date',
                 'required' => false,
                 'widget' => 'single_text',
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'help' => 'context.help.next_review_date'
+                                'help' => 'context.help.next_review_date'
             ])
         ;
 
@@ -171,7 +154,6 @@ class ISMSContextType extends AbstractType
                 $form->add('organizationName', TextType::class, [
                     'label' => 'context.field.organization_name',
                     'attr' => [
-                        'class' => 'form-control',
                         'placeholder' => 'context.placeholder.organization_name',
                         'readonly' => true,
                     ],
