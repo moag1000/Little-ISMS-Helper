@@ -24,6 +24,7 @@ class AuditLogger
     private const string ACTION_VIEW = 'view';
     private const string ACTION_EXPORT = 'export';
     private const string ACTION_IMPORT = 'import';
+    private const string ACTION_BULK = 'bulk';
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -82,6 +83,83 @@ class AuditLogger
     public function logImport(string $entityType, int $count, ?string $description = null): void
     {
         $this->log(self::ACTION_IMPORT, $entityType, null, null, ['count' => $count], $description);
+    }
+
+    /**
+     * Log a bulk operation as a hybrid pattern: 1 batch-entry + N per-entity-entries.
+     *
+     * Required for ISO 27001 Clause 7.5.3 (Documented Information) — auditor must
+     * be able to ask "show me history of Asset X" AND "show me the import event
+     * with source-file-hash". Per-entity entries reference the batch_id so both
+     * questions are answerable without external files.
+     *
+     * @param string $eventType   Specific event type (e.g. "bulk_import", "sso.jit.batch")
+     * @param string $entityType  Entity-class short name (e.g. "Asset")
+     * @param array  $batchData   Batch-level metadata: source_file_hash, file_name,
+     *                            row_count_total, row_count_success, row_count_skipped,
+     *                            row_count_error, dry_run_result_hash, mode (initial/delta/dry_run)
+     * @param array  $perEntityData Array of per-entity rows: each row is
+     *                              ['entity_id' => int|null, 'action' => 'create'|'update'|'delete',
+     *                               'old_values' => array|null, 'new_values' => array|null]
+     * @param string|null $description Optional human-readable description
+     *
+     * @return string The generated batch_id (UUIDv4) — referenced from per-entity entries
+     */
+    public function logBulk(
+        string $eventType,
+        string $entityType,
+        array $batchData,
+        array $perEntityData,
+        ?string $description = null,
+    ): string {
+        $batchId = $this->generateBatchId();
+        $batchEnvelope = array_merge($batchData, [
+            'batch_id' => $batchId,
+            'event_type' => $eventType,
+            'per_entity_count' => count($perEntityData),
+        ]);
+
+        // 1 batch-entry: source-file provenance + aggregate counts
+        $this->log(
+            self::ACTION_BULK,
+            $entityType,
+            null,
+            null,
+            $batchEnvelope,
+            $description ?? sprintf('Bulk %s: %d rows', $eventType, count($perEntityData)),
+        );
+
+        // N per-entity-entries: each references batch_id for traceability
+        foreach ($perEntityData as $row) {
+            $action = $row['action'] ?? self::ACTION_CREATE;
+            $entityId = $row['entity_id'] ?? null;
+            $oldValues = $row['old_values'] ?? null;
+            $newValues = isset($row['new_values'])
+                ? array_merge($row['new_values'], ['_batch_id' => $batchId])
+                : ['_batch_id' => $batchId];
+
+            $this->log(
+                $action,
+                $entityType,
+                $entityId,
+                $oldValues,
+                $newValues,
+                sprintf('Bulk-row of batch %s', $batchId),
+            );
+        }
+
+        return $batchId;
+    }
+
+    /**
+     * Generate a UUIDv4 for batch-id correlation.
+     */
+    private function generateBatchId(): string
+    {
+        $data = random_bytes(16);
+        $data[6] = chr((ord($data[6]) & 0x0f) | 0x40);
+        $data[8] = chr((ord($data[8]) & 0x3f) | 0x80);
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
     /**
