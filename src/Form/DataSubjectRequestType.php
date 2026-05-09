@@ -44,7 +44,6 @@ class DataSubjectRequestType extends AbstractType
                 ],
                 'placeholder' => 'dsr.form.placeholder.request_type',
                 'required' => true,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'dsr.form.help.request_type',
             ])
             ->add('receivedAt', DateTimeType::class, [
@@ -52,7 +51,6 @@ class DataSubjectRequestType extends AbstractType
                 'widget' => 'single_text',
                 'required' => true,
                 'input' => 'datetime_immutable',
-                'attr' => ['class' => 'form-control'],
                 'help' => 'dsr.form.help.received_at',
             ])
             ->add('description', TextareaType::class, [
@@ -60,7 +58,6 @@ class DataSubjectRequestType extends AbstractType
                 'required' => true,
                 'attr' => [
                     'rows' => 5,
-                    'class' => 'form-control',
                     'placeholder' => 'dsr.form.placeholder.description',
                 ],
             ])
@@ -72,7 +69,6 @@ class DataSubjectRequestType extends AbstractType
                 'label' => 'dsr.form.data_subject_name',
                 'required' => true,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'dsr.form.placeholder.data_subject_name',
                 ],
             ])
@@ -80,7 +76,6 @@ class DataSubjectRequestType extends AbstractType
                 'label' => 'dsr.form.data_subject_email',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'dsr.form.placeholder.data_subject_email',
                 ],
             ])
@@ -88,7 +83,6 @@ class DataSubjectRequestType extends AbstractType
                 'label' => 'dsr.form.data_subject_identifier',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'dsr.form.placeholder.data_subject_identifier',
                 ],
                 'help' => 'dsr.form.help.data_subject_identifier',
@@ -113,7 +107,6 @@ class DataSubjectRequestType extends AbstractType
                 'placeholder' => 'dsr.form.placeholder.verification_method',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-depends-on' => 'data_subject_request_identityVerified',
                 ],
             ])
@@ -132,7 +125,7 @@ class DataSubjectRequestType extends AbstractType
                 ),
                 'placeholder' => 'dsr.form.placeholder.assigned_to',
                 'required' => false,
-                'attr' => ['class' => 'form-select select2'],
+                'attr' => ['class' => 'select2'],
             ])
             ->add('assignedPerson', EntityType::class, [
                 'label' => 'dsr.form.assigned_person',
@@ -140,7 +133,6 @@ class DataSubjectRequestType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'placeholder' => 'dsr.form.placeholder.assigned_person',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'dsr.form.help.assigned_person',
             ])
             ->add('assignedDeputyPersons', EntityType::class, [
@@ -151,7 +143,6 @@ class DataSubjectRequestType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'dsr.form.help.assigned_deputy_persons',
@@ -162,7 +153,7 @@ class DataSubjectRequestType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'dsr.form.placeholder.processing_activity',
                 'required' => false,
-                'attr' => ['class' => 'form-select select2'],
+                'attr' => ['class' => 'select2'],
                 'help' => 'dsr.form.help.processing_activity',
             ])
 
@@ -236,7 +227,6 @@ class DataSubjectRequestType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'rows' => 4,
-                    'class' => 'form-control',
                     'placeholder' => 'dsr.form.placeholder.notes',
                 ],
                 'help' => 'dsr.form.help.notes',

@@ -29,7 +29,6 @@ class ConsentType extends AbstractType
                 'label' => 'consent.form.data_subject_identifier',
                 'attr' => [
                     'placeholder' => 'consent.form.data_subject_identifier_placeholder',
-                    'class' => 'form-control',
                 ],
                 'help' => 'consent.form.data_subject_identifier_help',
             ])
@@ -42,7 +41,6 @@ class ConsentType extends AbstractType
                     'consent.form.identifier_type_options.phone' => 'phone',
                     'consent.form.identifier_type_options.other' => 'other',
                 ],
-                'attr' => ['class' => 'form-select'],
             ])
 
             // ═══════════════════════════════════════════════════════════
@@ -58,7 +56,6 @@ class ConsentType extends AbstractType
                         ->setParameter('legal_basis', 'consent')
                         ->orderBy('p.name', 'ASC');
                 },
-                'attr' => ['class' => 'form-select'],
                 'help' => 'consent.form.processing_activity_help',
             ])
             ->add('purposes', ChoiceType::class, [
@@ -72,7 +69,6 @@ class ConsentType extends AbstractType
                 ],
                 'multiple' => true,
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'consent.form.purposes_help',
             ])
 
@@ -83,7 +79,6 @@ class ConsentType extends AbstractType
                 'label' => 'consent.form.granted_at',
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
-                'attr' => ['class' => 'form-control'],
                 'help' => 'consent.form.granted_at_help',
             ])
             ->add('consentMethod', ChoiceType::class, [
@@ -96,7 +91,6 @@ class ConsentType extends AbstractType
                     'consent.form.consent_method_options.email' => 'email',
                     'consent.form.consent_method_options.other' => 'other',
                 ],
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('consentChannel', ChoiceType::class, [
                 'label' => 'consent.form.consent_channel',
@@ -109,12 +103,10 @@ class ConsentType extends AbstractType
                     'consent.form.consent_channel_options.other' => 'other',
                 ],
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('consentText', TextareaType::class, [
                 'label' => 'consent.form.consent_text',
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 6,
                     'placeholder' => 'consent.form.consent_text_placeholder',
                 ],
@@ -129,7 +121,6 @@ class ConsentType extends AbstractType
                 'class' => Document::class,
                 'choice_label' => 'title',
                 'required' => false,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'consent.form.proof_document_help',
             ])
 
@@ -141,7 +132,6 @@ class ConsentType extends AbstractType
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
                 'help' => 'consent.form.expires_at_help',
             ])
 
@@ -152,7 +142,6 @@ class ConsentType extends AbstractType
                 'label' => 'consent.form.notes',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'consent.form.notes_placeholder',
                 ],

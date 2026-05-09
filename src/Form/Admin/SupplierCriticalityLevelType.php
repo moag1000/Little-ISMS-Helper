@@ -83,7 +83,6 @@ class SupplierCriticalityLevelType extends AbstractType
                     'supplier_criticality.color.dark' => 'dark',
                 ],
                 'choice_translation_domain' => 'supplier_criticality',
-                'attr' => [],
             ])
             ->add('isDefault', CheckboxType::class, [
                 'label' => 'supplier_criticality.field.is_default',

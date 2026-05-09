@@ -44,7 +44,6 @@ class ControlType extends AbstractType
             ->add('controlId', TextType::class, [
                 'label' => 'control.field.control_id',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'control.placeholder.control_id',
                     'readonly' => !$options['allow_control_id_edit'],
                 ],
@@ -56,7 +55,6 @@ class ControlType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'control.field.name',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'control.placeholder.name',
                 ],
                 'constraints' => [
@@ -67,7 +65,6 @@ class ControlType extends AbstractType
                 'label' => 'control.field.description',
                 'required' => true,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                 ],
                 'constraints' => [
@@ -83,7 +80,6 @@ class ControlType extends AbstractType
                     'control.category.technological' => 'technological',
                 ],
                 'choice_translation_domain' => 'control',
-                'attr' => ['class' => 'form-select'],
                 'constraints' => [
                     new NotBlank(),
                 ],
@@ -103,7 +99,6 @@ class ControlType extends AbstractType
                 'label' => 'control.field.justification',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'control.placeholder.justification',
                 ],
@@ -119,13 +114,11 @@ class ControlType extends AbstractType
                     'control.implementation_status.verified' => 'verified',
                 ],
                 'choice_translation_domain' => 'control',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'control.help.implementation_status_explained',
             ])
             ->add('implementationPercentage', IntegerType::class, [
                 'label' => 'control.field.implementation_percentage',
                 'attr' => [
-                    'class' => 'form-control',
                     'min' => 0,
                     'max' => 100,
                 ],
@@ -138,7 +131,6 @@ class ControlType extends AbstractType
                 'label' => 'control.field.implementation_notes',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                 ],
                 'help' => 'control.help.implementation_notes',
@@ -149,7 +141,6 @@ class ControlType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'control.placeholder.responsible_person_user',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'control.help.responsible_person_user',
             ])
             ->add('responsiblePersonRef', EntityType::class, [
@@ -158,7 +149,6 @@ class ControlType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'control.placeholder.responsible_person_contact',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'control.help.responsible_person_contact',
             ])
             ->add('responsibleDeputyPersons', EntityType::class, [
@@ -169,7 +159,6 @@ class ControlType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'control.help.responsible_deputies',
@@ -178,7 +167,6 @@ class ControlType extends AbstractType
                 'label' => 'control.field.responsible_person_legacy',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'maxlength' => 100,
                     'placeholder' => 'control.placeholder.responsible_person',
                 ],
@@ -187,20 +175,17 @@ class ControlType extends AbstractType
                 'label' => 'control.field.target_date',
                 'required' => false,
                 'widget' => 'single_text',
-                'attr' => ['class' => 'form-control'],
                 'help' => 'control.help.target_date',
             ])
             ->add('lastReviewDate', DateType::class, [
                 'label' => 'control.field.last_review_date',
                 'required' => false,
                 'widget' => 'single_text',
-                'attr' => ['class' => 'form-control'],
             ])
             ->add('nextReviewDate', DateType::class, [
                 'label' => 'control.field.next_review_date',
                 'required' => false,
                 'widget' => 'single_text',
-                'attr' => ['class' => 'form-control'],
                 'help' => 'control.help.next_review_date',
             ])
             ->add('protectedAssets', EntityType::class, [
@@ -210,7 +195,6 @@ class ControlType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'size' => 5,
                     'data-controller' => 'tom-select',
                 ],

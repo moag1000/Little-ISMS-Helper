@@ -31,7 +31,6 @@ class OrganisationInfoType extends AbstractType
                     new Assert\Length(min: 2, max: 255, minMessage: 'setup.organisation.name_min', maxMessage: 'setup.organisation.name_max'),
                 ],
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'setup.organisation.name_placeholder',
                 ],
                 'help' => 'setup.organisation.name_help',
@@ -65,7 +64,6 @@ class OrganisationInfoType extends AbstractType
                     new Assert\Count(min: 1, minMessage: 'setup.organisation.industries_min'),
                 ],
                 'attr' => [
-                    'class' => 'form-select',
                     'size' => 6,
                 ],
                 'help' => 'setup.organisation.industries_help',
@@ -85,10 +83,7 @@ class OrganisationInfoType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(message: 'setup.organisation.employee_count_required'),
                 ],
-                'attr' => [
-                    'class' => 'form-select',
-                ],
-                'help' => 'setup.organisation.employee_count_help',
+                                'help' => 'setup.organisation.employee_count_help',
                     'choice_translation_domain' => 'admin',
             ])
             ->add('country', ChoiceType::class, [
@@ -115,17 +110,13 @@ class OrganisationInfoType extends AbstractType
                 ],
                 'required' => true,
                 'data' => 'DE',
-                'attr' => [
-                    'class' => 'form-select',
-                ],
-                'choice_translation_domain' => 'admin',
+                                'choice_translation_domain' => 'admin',
                 'help' => 'setup.organisation.country_help',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'setup.organisation.description_label',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'setup.organisation.description_placeholder',
                 ],

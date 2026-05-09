@@ -30,12 +30,11 @@ class BusinessProcessType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'business_process.field.name',
-                'attr' => ['class' => 'form-control'],
                 'constraints' => [new NotBlank()],
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'business_process.field.description',
-                'attr' => ['class' => 'form-control', 'rows' => 4],
+                'attr' => ['rows' => 4],
                 'required' => false,
             ])
             ->add('processOwnerUser', EntityType::class, [
@@ -44,7 +43,6 @@ class BusinessProcessType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'business_process.placeholder.process_owner_user',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'business_process.help.process_owner_user',
             ])
             ->add('processOwnerPerson', EntityType::class, [
@@ -53,7 +51,6 @@ class BusinessProcessType extends AbstractType
                 'choice_label' => fn(\App\Entity\Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'business_process.placeholder.process_owner_person',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'business_process.help.process_owner_person',
             ])
             ->add('processOwnerDeputyPersons', EntityType::class, [
@@ -64,14 +61,12 @@ class BusinessProcessType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'business_process.help.process_owner_deputies',
             ])
             ->add('processOwner', TextType::class, [
                 'label' => 'business_process.field.process_owner_legacy',
-                'attr' => ['class' => 'form-control'],
                 'required' => false,
             ])
             ->add('criticality', ChoiceType::class, [
@@ -83,13 +78,11 @@ class BusinessProcessType extends AbstractType
                     'business_process.criticality.low' => 'low',
                 ],
                 'choice_translation_domain' => 'business_process',
-                'attr' => ['class' => 'form-select'],
                 'constraints' => [new NotBlank()],
             ])
             ->add('rto', IntegerType::class, [
                 'label' => 'business_process.field.rto',
                 'attr' => [
-                    'class' => 'form-control',
                     'min' => 0,
                     'placeholder' => 'business_process.placeholder.rto',
                 ],
@@ -102,7 +95,6 @@ class BusinessProcessType extends AbstractType
             ->add('rpo', IntegerType::class, [
                 'label' => 'business_process.field.rpo',
                 'attr' => [
-                    'class' => 'form-control',
                     'min' => 0,
                     'placeholder' => 'business_process.placeholder.rpo',
                 ],
@@ -115,7 +107,6 @@ class BusinessProcessType extends AbstractType
             ->add('mtpd', IntegerType::class, [
                 'label' => 'business_process.field.mtpd',
                 'attr' => [
-                    'class' => 'form-control',
                     'min' => 0,
                     'placeholder' => 'business_process.placeholder.mtpd',
                 ],
@@ -128,13 +119,11 @@ class BusinessProcessType extends AbstractType
             ->add('financialImpactPerHour', MoneyType::class, [
                 'label' => 'business_process.field.financial_impact_per_hour',
                 'currency' => 'EUR',
-                'attr' => ['class' => 'form-control'],
                 'required' => false,
             ])
             ->add('financialImpactPerDay', MoneyType::class, [
                 'label' => 'business_process.field.financial_impact_per_day',
                 'currency' => 'EUR',
-                'attr' => ['class' => 'form-control'],
                 'required' => false,
             ])
             ->add('reputationalImpact', ChoiceType::class, [
@@ -147,7 +136,6 @@ class BusinessProcessType extends AbstractType
                     'business_process.impact_level.very_high' => 5,
                 ],
                 'choice_translation_domain' => 'business_process',
-                'attr' => ['class' => 'form-select'],
                 'constraints' => [new NotBlank()],
             ])
             ->add('regulatoryImpact', ChoiceType::class, [
@@ -160,7 +148,6 @@ class BusinessProcessType extends AbstractType
                     'business_process.impact_level.very_high' => 5,
                 ],
                 'choice_translation_domain' => 'business_process',
-                'attr' => ['class' => 'form-select'],
                 'constraints' => [new NotBlank()],
             ])
             ->add('operationalImpact', ChoiceType::class, [
@@ -173,24 +160,23 @@ class BusinessProcessType extends AbstractType
                     'business_process.impact_level.very_high' => 5,
                 ],
                 'choice_translation_domain' => 'business_process',
-                'attr' => ['class' => 'form-select'],
                 'constraints' => [new NotBlank()],
             ])
             ->add('dependenciesUpstream', TextareaType::class, [
                 'label' => 'business_process.field.dependencies_upstream',
-                'attr' => ['class' => 'form-control', 'rows' => 3],
+                'attr' => ['rows' => 3],
                 'help' => 'business_process.help.dependencies_upstream',
                 'required' => false,
             ])
             ->add('dependenciesDownstream', TextareaType::class, [
                 'label' => 'business_process.field.dependencies_downstream',
-                'attr' => ['class' => 'form-control', 'rows' => 3],
+                'attr' => ['rows' => 3],
                 'help' => 'business_process.help.dependencies_downstream',
                 'required' => false,
             ])
             ->add('recoveryStrategy', TextareaType::class, [
                 'label' => 'business_process.field.recovery_strategy',
-                'attr' => ['class' => 'form-control', 'rows' => 4],
+                'attr' => ['rows' => 4],
                 'required' => false,
             ])
             ->add('supportingAssets', EntityType::class, [
@@ -199,7 +185,7 @@ class BusinessProcessType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'label' => 'business_process.field.supporting_assets',
-                'attr' => ['class' => 'form-select', 'size' => 5,
+                'attr' => ['size' => 5,
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'business_process.help.supporting_assets',
@@ -210,7 +196,7 @@ class BusinessProcessType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'label' => 'business_process.field.identified_risks',
-                'attr' => ['class' => 'form-select', 'size' => 5,
+                'attr' => ['size' => 5,
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'business_process.help.identified_risks',

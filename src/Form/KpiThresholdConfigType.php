@@ -35,7 +35,6 @@ class KpiThresholdConfigType extends AbstractType
                 'choices' => self::KPI_KEYS,
                 'placeholder' => 'kpi_threshold.placeholder.kpi_key',
                 'required' => true,
-                'attr' => ['class' => 'form-select'],
                 'help' => 'kpi_threshold.help.kpi_key',
             ])
             ->add('goodThreshold', IntegerType::class, [
