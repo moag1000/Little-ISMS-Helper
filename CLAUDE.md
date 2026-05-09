@@ -280,6 +280,10 @@ next sprint's commits are merged to main.
 - [ ] Input sanitized via `InputValidationService`
 - [ ] File uploads checked via `FileUploadSecurityService`
 - [ ] Sensitive data excluded from audit logs
+- [ ] Bulk operations use `AuditLogger::logBulk()` (1 batch-entry +
+      N per-entity-entries, returns UUIDv4 batch_id) — never bypass
+      Doctrine lifecycle via raw `executeStatement()` without explicit
+      audit-call. Required by ISO 27001 Clause 7.5.3.
 
 ## Common Pitfalls
 
@@ -349,6 +353,9 @@ copyable snippets at `/dev/design-system` (dev env only).
 | `fa-filter-chip` | Filter chip + chip-group | `_fa_filter_chip.html.twig` |
 | `fa-entity-card` | Listen-Item-Card with entity-icon, title, meta, status — for Findings/Risks/Incidents/Audits/NCs | `_fa_entity_card.html.twig` |
 | `fa-entity-badge` | ISMS-entity marker (10 types: finding/nonconformity/risk/control/evidence/policy/asset/incident/audit/training) | `_fa_entity_badge.html.twig` |
+| `fa-stepper` | Multi-step wizard chrome (Preset → Discovery → Test for SSO; Upload → Map → Preview → Commit for Bulk-Import) | `_fa_stepper.html.twig` |
+| `fa-diff-row` | Old → New value diff visualization for Bulk-Import Delta-Mode + OSCAL-Conflict-Cards | `_fa_diff_row.html.twig` |
+| `fa-condition-builder` | Visual rule-builder (chip-row WHEN/CONDITIONS) for Notification-Rules — replaces raw JSON editing | `_fa_condition_builder.html.twig` |
 | `.fa-aurora-surface` | Opt-in page-level Aurora atmosphere (CSS utility, not macro) | — |
 
 Import pattern: `{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}`.
