@@ -245,10 +245,22 @@ final class PolicyWizardController extends AbstractController
             $stepExtras = $this->buildStepExtras($run, $step, $isTerminal);
             $progress = $this->buildProgressPayload($run, $step);
 
+            // Merge the step's own defaults() output (e.g. available_locations,
+            // prefilled hints) UNDER the user's submitted payload so the form
+            // re-render keeps its picker/empty-state context intact. User
+            // input always wins.
+            $stepDefaults = [];
+            try {
+                $stepDefaults = $this->stepEvaluator->getStep($step)->defaults($run);
+            } catch (\Throwable) {
+                // Defensive: if the step has no defaults() helper, fall through.
+            }
+            $mergedDefaults = array_merge($stepDefaults, $payload);
+
             return $this->render('policy_wizard/step.html.twig', array_merge([
                 'run' => $run,
                 'step' => $step,
-                'defaults' => $payload,
+                'defaults' => $mergedDefaults,
                 'inputs_so_far' => $run->getInputs() ?? [],
                 'standards' => $run->getStandardsAdopted() ?? [],
                 'is_terminal' => $isTerminal,
