@@ -141,18 +141,15 @@ final class OrganisationScopeStep extends AbstractStep
         }
 
         // W1 audit-defang gap #1 — tailoring-field minimum quality.
-        // Layered on top of the existing length floors so the same
-        // input can flag both `*_too_short` (legacy field error) AND
-        // `tailoring_quality.*` (defang-specific error). The validator
-        // is optional (legacy DI graphs / unit fixtures may instantiate
-        // the step without it).
+        // ONLY for narrative fields (scope_statement). Legal name is a
+        // proper noun (e.g. "Mordor Inc.", 11 chars) and must NOT trip
+        // the 30-char min_length default — that bug rejected valid org
+        // names with "tailoring_quality.too_short".
         if ($this->tailoringValidator !== null) {
-            foreach (['legal_name' => $legalName, 'scope_statement' => $scopeStatement] as $field => $value) {
-                $result = $this->tailoringValidator->validateTailoringInput($field, $value);
-                if (!$result['passed']) {
-                    foreach ($result['violations'] as $violationKey) {
-                        $errors[$field][] = $violationKey;
-                    }
+            $result = $this->tailoringValidator->validateTailoringInput('scope_statement', $scopeStatement);
+            if (!$result['passed']) {
+                foreach ($result['violations'] as $violationKey) {
+                    $errors['scope_statement'][] = $violationKey;
                 }
             }
         }
