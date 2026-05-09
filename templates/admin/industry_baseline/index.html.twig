@@ -19,7 +19,7 @@
     }) }}
 
     {% if tenant is null %}
-        <div class="alert alert-warning small">
+        <div class="fa-alert fa-alert--warning small">
             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
             {{ 'framework_baseline.tenant_required'|trans }}
         </div>
@@ -56,7 +56,7 @@
         </section>
     {% endif %}
 
-    <div class="alert alert-light mt-4 small">
+    <div class="fa-alert fa-alert--info mt-4 small">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
         {{ 'framework_baseline.help'|trans|raw }}
     </div>

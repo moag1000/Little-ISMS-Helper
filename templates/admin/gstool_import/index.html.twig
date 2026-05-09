@@ -85,7 +85,7 @@
             <div class="fa-section__body p-0">
                 {% if result.header_error is not null %}
                     <div class="p-3">
-                        <div class="alert alert-danger mb-0">{{ result.header_error }}</div>
+                        <div class="fa-alert fa-alert--danger mb-0">{{ result.header_error }}</div>
                     </div>
                 {% else %}
                     <ul class="nav nav-tabs px-3 pt-3" role="tablist">
@@ -169,7 +169,7 @@
 
                     {% if result.bausteine_rows is defined and result.bausteine_rows|length > 0 %}
                     <div class="tab-pane fade" id="pane-bausteine" role="tabpanel">
-                    <div class="alert alert-info mx-3 mt-3 mb-0 small">
+                    <div class="fa-alert fa-alert--info mx-3 mt-3 mb-0 small">
                         {{ 'gstool_import.bausteine.note'|trans({}, 'gstool_import') }}
                     </div>
                     <div class="table-responsive">
