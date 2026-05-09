@@ -2,7 +2,8 @@ module.exports = {
     extends: ['stylelint-config-standard'],
     ignoreFiles: [
         'assets/styles/fairy-aurora.css',        // Token SoT — defines hex
-        'assets/styles/admin-panel.css',         // WIP — user iterating, not in refactor scope
+        'assets/styles/fairy-aurora-print.css',  // Print SoT — fixed paper-colors per print-styles.html spec
+        'assets/styles/admin-panel.css',         // Tier-2 §F5 tokenized 2026-05-09 — kept ignored: rgba() syntax legacy-style, repo-wide pattern
         'assets/styles/alva.css',                // SVG brand fills legitimate
         'assets/styles/bootstrap*.css',          // Vendor
         'assets/Little ISMS Helper Design System/**', // Spec/design assets

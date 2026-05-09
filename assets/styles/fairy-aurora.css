@@ -133,6 +133,31 @@
     --warning-rgb: 217, 119, 6;
     --danger-rgb:  220, 38, 38;
 
+    /* — Tone-Aliases (Admin-Hub / Audit-Severity / Service-State) —
+       Light-Mode canonical; Dark-Mode override below. */
+    --tone-cyan:          #06b6d4;
+    --tone-pink:          #ec4899;
+    --tone-purple:        #8b5cf6;
+    --tone-cyan-strong:   #0891b2;
+    --tone-pink-strong:   #db2777;
+    --tone-purple-strong: #7c3aed;
+    --tone-cyan-rgb:   6, 182, 212;
+    --tone-pink-rgb:   236, 72, 153;
+    --tone-purple-rgb: 139, 92, 246;
+    /* Severity-Hex-Tokens (Audit-Row, Service-Tile) */
+    --sev-info-color:     #06b6d4;
+    --sev-warning-color:  #f59e0b;
+    --sev-critical-color: #f97316;
+    --sev-danger-color:   #ef4444;
+    --sev-success-color:  #10b981;
+    --sev-neutral-color:  #94a3b8;
+    --sev-info-rgb:     6, 182, 212;
+    --sev-warning-rgb:  245, 158, 11;
+    --sev-critical-rgb: 249, 115, 22;
+    --sev-danger-rgb:   239, 68, 68;
+    --sev-success-rgb:  16, 185, 129;
+    --sev-neutral-rgb:  148, 163, 184;
+
     /* — Semantic-Aliases (used by older CSS, mapped to canonical tokens) — */
     --success-bg:   var(--success-tint);
     --warning-bg:   var(--warning-tint);
@@ -300,6 +325,30 @@ html[data-theme="dark"] {
     --warning-rgb: 251, 191, 36;
     --danger-rgb:  248, 113, 113;
 
+    /* — Tone-Aliases (dark — heller, mehr Sättigung) — */
+    --tone-cyan:          #22d3ee;
+    --tone-pink:          #f472b6;
+    --tone-purple:        #a78bfa;
+    --tone-cyan-strong:   #67e8f9;
+    --tone-pink-strong:   #f9a8d4;
+    --tone-purple-strong: #c4b5fd;
+    --tone-cyan-rgb:   34, 211, 238;
+    --tone-pink-rgb:   244, 114, 182;
+    --tone-purple-rgb: 167, 139, 250;
+    /* Severity-Hex-Tokens (dark — leicht heller für Lesbarkeit) */
+    --sev-info-color:     #22d3ee;
+    --sev-warning-color:  #fbbf24;
+    --sev-critical-color: #fb923c;
+    --sev-danger-color:   #f87171;
+    --sev-success-color:  #34d399;
+    --sev-neutral-color:  #94a3b8;
+    --sev-info-rgb:     34, 211, 238;
+    --sev-warning-rgb:  251, 191, 36;
+    --sev-critical-rgb: 251, 146, 60;
+    --sev-danger-rgb:   248, 113, 113;
+    --sev-success-rgb:  52, 211, 153;
+    --sev-neutral-rgb:  148, 163, 184;
+
     /* — Shadows (dark mode: stronger black + primary-aura accent) — */
     --shadow-sm:    0 2px 4px rgba(0, 0, 0, 0.4),  0 0 8px  rgba(var(--primary-rgb), 0.10);
     --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.5), 0 0 12px rgba(var(--primary-rgb), 0.15);
@@ -358,6 +407,16 @@ html[data-theme="dark"] {
         --primary-rgb: 56, 189, 248; --accent-rgb: 167, 139, 250;
         --success-rgb: 52, 211, 153; --warning-rgb: 251, 191, 36;
         --danger-rgb: 248, 113, 113;
+        /* Tone-Aliases (system-dark) */
+        --tone-cyan: #22d3ee; --tone-pink: #f472b6; --tone-purple: #a78bfa;
+        --tone-cyan-strong: #67e8f9; --tone-pink-strong: #f9a8d4; --tone-purple-strong: #c4b5fd;
+        --tone-cyan-rgb: 34, 211, 238; --tone-pink-rgb: 244, 114, 182; --tone-purple-rgb: 167, 139, 250;
+        --sev-info-color: #22d3ee; --sev-warning-color: #fbbf24;
+        --sev-critical-color: #fb923c; --sev-danger-color: #f87171;
+        --sev-success-color: #34d399; --sev-neutral-color: #94a3b8;
+        --sev-info-rgb: 34, 211, 238; --sev-warning-rgb: 251, 191, 36;
+        --sev-critical-rgb: 251, 146, 60; --sev-danger-rgb: 248, 113, 113;
+        --sev-success-rgb: 52, 211, 153; --sev-neutral-rgb: 148, 163, 184;
         --shadow-sm:    0 2px 4px rgba(0, 0, 0, 0.4),  0 0 8px  rgba(var(--primary-rgb), 0.10);
         --shadow-md:    0 4px 12px rgba(0, 0, 0, 0.5), 0 0 12px rgba(var(--primary-rgb), 0.15);
         --shadow-lg:    0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(var(--primary-rgb), 0.20);
