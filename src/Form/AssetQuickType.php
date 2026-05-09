@@ -47,7 +47,6 @@ class AssetQuickType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'asset.placeholder.owner_user',
-                'attr' => ['class' => 'form-select'],
             ])
             ->add('confidentialityValue', IntegerType::class, [
                 'label' => 'asset.field.confidentiality',

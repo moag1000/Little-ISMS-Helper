@@ -10,6 +10,8 @@
 
     {# PWA Support - Phase 8A (FairyAurora v3.0) #}
     <link rel="manifest" href="{{ asset('manifest.json') }}">
+    {# PWA theme-color: hex must be static (meta-tags can't reference CSS-vars).
+       Keep in sync with --primary token in fairy-aurora.css (light: #0284c7, dark: #38bdf8). #}
     <meta name="theme-color" content="#0284c7" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#38bdf8" media="(prefers-color-scheme: dark)">
     <meta name="mobile-web-app-capable" content="yes">
@@ -55,7 +57,7 @@
             position: absolute;
             top: -40px;
             left: 0;
-            z-index: 10000;
+            z-index: var(--z-tour, 2000);
             padding: 0.5rem 1rem;
             background: var(--primary);
             color: var(--on-primary);
@@ -127,7 +129,7 @@
                 border-radius: 0 0 8px 8px;
                 font-size: 12px;
                 font-weight: 600;
-                z-index: 10001;
+                z-index: var(--z-turbo-bar, 999999);
                 box-shadow: 0 2px 10px var(--danger-glow);
             }
 

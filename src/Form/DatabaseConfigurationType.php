@@ -82,7 +82,6 @@ class DatabaseConfigurationType extends AbstractType
                 'data' => $defaultDbType,
                 'required' => true,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'database-type',
                     'data-action' => 'change->database-type#toggle',
                 ],
@@ -100,7 +99,6 @@ class DatabaseConfigurationType extends AbstractType
                     ),
                 ],
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'localhost',
                     'data-database-type-target' => 'hostField',
                 ],
@@ -111,7 +109,6 @@ class DatabaseConfigurationType extends AbstractType
                 'data' => $defaultPort,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => '3306',
                     'data-database-type-target' => 'portField',
                 ],
@@ -122,7 +119,6 @@ class DatabaseConfigurationType extends AbstractType
                 'data' => $defaultSocket,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => '/var/run/mysqld/mysqld.sock',
                     'data-database-type-target' => 'socketField',
                 ],
@@ -140,7 +136,6 @@ class DatabaseConfigurationType extends AbstractType
                     ),
                 ],
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => $isStandaloneDocker ? 'isms' : 'little_isms_helper',
                 ],
                 'help' => 'setup.database.name_help',
@@ -156,7 +151,6 @@ class DatabaseConfigurationType extends AbstractType
                     ),
                 ],
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => $isStandaloneDocker ? 'isms' : 'root',
                     'data-database-type-target' => 'userField',
                 ],
@@ -167,7 +161,6 @@ class DatabaseConfigurationType extends AbstractType
                 'data' => $defaultPassword,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => '••••••••',
                     'data-database-type-target' => 'passwordField',
                 ],
@@ -180,7 +173,6 @@ class DatabaseConfigurationType extends AbstractType
                 'data' => $defaultVersion,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => $isStandaloneDocker ? 'mariadb-11.4.0' : '8.0',
                     'data-database-type-target' => 'versionField',
                 ],

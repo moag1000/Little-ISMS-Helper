@@ -29,7 +29,6 @@ class AdminUserType extends AbstractType
                     new Assert\Email(message: 'setup.admin.email_invalid'),
                 ],
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'admin@example.com',
                     'autocomplete' => 'email',
                 ],
@@ -43,7 +42,6 @@ class AdminUserType extends AbstractType
                     new Assert\Length(min: 2, max: 50, minMessage: 'setup.admin.first_name_min', maxMessage: 'setup.admin.first_name_max'),
                 ],
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'setup.admin.first_name_placeholder',
                     'autocomplete' => 'given-name',
                 ],
@@ -56,7 +54,6 @@ class AdminUserType extends AbstractType
                     new Assert\Length(min: 2, max: 50, minMessage: 'setup.admin.last_name_min', maxMessage: 'setup.admin.last_name_max'),
                 ],
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'setup.admin.last_name_placeholder',
                     'autocomplete' => 'family-name',
                 ],
@@ -68,7 +65,6 @@ class AdminUserType extends AbstractType
                 'first_options' => [
                     'label' => 'setup.admin.password',
                     'attr' => [
-                        'class' => 'form-control',
                         'placeholder' => '••••••••',
                         'autocomplete' => 'new-password',
                     ],
@@ -77,7 +73,6 @@ class AdminUserType extends AbstractType
                 'second_options' => [
                     'label' => 'setup.admin.password_confirm',
                     'attr' => [
-                        'class' => 'form-control',
                         'placeholder' => '••••••••',
                         'autocomplete' => 'new-password',
                     ],

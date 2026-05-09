@@ -50,10 +50,12 @@
                 <div class="ms-auto">
                     <form method="post"
                           action="{{ path('app_policy_wizard_diff_restore', {currentDocId: current.id}) }}"
-                          onsubmit="return confirm('{{ 'policy_wizard.diff.restore_confirm'|trans({}, 'policy_wizard')|e('js') }}');">
+                          data-controller="ui-actions"
+                          data-action="submit->ui-actions#confirm"
+                          data-ui-actions-message-param="{{ 'policy_wizard.diff.restore_confirm'|trans({}, 'policy_wizard') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('policy_wizard_diff_restore') }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                            <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-undo" aria-hidden="true"></i>
                             {{ 'policy_wizard.diff.restore_previous_button'|trans({}, 'policy_wizard') }}
                         </button>
                     </form>

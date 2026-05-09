@@ -22,7 +22,6 @@ class ComplianceFrameworkType extends AbstractType
             ->add('code', TextType::class, [
                 'label' => 'compliance_framework.field.code',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'compliance_framework.placeholder.code'
                 ],
                 'constraints' => [
@@ -34,7 +33,6 @@ class ComplianceFrameworkType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'compliance_framework.field.name',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'compliance_framework.placeholder.name'
                 ],
                 'constraints' => [
@@ -46,7 +44,6 @@ class ComplianceFrameworkType extends AbstractType
                 'label' => 'compliance_framework.field.description',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'compliance_framework.placeholder.description'
                 ]
@@ -54,7 +51,6 @@ class ComplianceFrameworkType extends AbstractType
             ->add('version', TextType::class, [
                 'label' => 'compliance_framework.field.version',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'compliance_framework.placeholder.version'
                 ],
                 'constraints' => [
@@ -84,8 +80,7 @@ class ComplianceFrameworkType extends AbstractType
                 ],
                 'choice_translation_domain' => 'compliance',
                 'attr' => [
-                    'class' => 'form-control form-select',
-                ],
+                    ],
                 'placeholder' => 'compliance_framework.placeholder.select_industry',
                 'constraints' => [
                     new Assert\NotBlank(message: 'compliance_framework.validation.applicable_industry_required'),
@@ -95,7 +90,6 @@ class ComplianceFrameworkType extends AbstractType
             ->add('regulatoryBody', TextType::class, [
                 'label' => 'compliance_framework.field.regulatory_body',
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'compliance_framework.placeholder.regulatory_body'
                 ],
                 'constraints' => [
@@ -119,7 +113,6 @@ class ComplianceFrameworkType extends AbstractType
                 'label' => 'compliance_framework.field.scope',
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-control',
                     'rows' => 4,
                     'placeholder' => 'compliance_framework.placeholder.scope_description'
                 ]

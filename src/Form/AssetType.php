@@ -67,7 +67,6 @@ class AssetType extends AbstractType
                 'choice_label' => fn(User $u): string => $u->getFullName() . ' (' . $u->getEmail() . ')',
                 'required' => false,
                 'placeholder' => 'asset.placeholder.owner_user',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'asset.help.owner_user',
             ])
             ->add('ownerPerson', EntityType::class, [
@@ -76,7 +75,6 @@ class AssetType extends AbstractType
                 'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
                 'required' => false,
                 'placeholder' => 'asset.placeholder.owner_person',
-                'attr' => ['class' => 'form-select'],
                 'help' => 'asset.help.owner_person',
             ])
             ->add('ownerDeputyPersons', EntityType::class, [
@@ -87,7 +85,6 @@ class AssetType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'asset.help.owner_deputies',
@@ -107,10 +104,7 @@ class AssetType extends AbstractType
                 'choice_label' => 'name',
                 'required' => false,
                 'placeholder' => 'asset.placeholder.location_select',
-                'attr' => [
-                    'class' => 'form-select',
-                ],
-                'help' => 'asset.help.physical_location',
+                                'help' => 'asset.help.physical_location',
             ])
             ->add('dependsOn', EntityType::class, [
                 'label' => 'asset.field.depends_on',
@@ -122,7 +116,6 @@ class AssetType extends AbstractType
                     return $repo->createQueryBuilder('a')->orderBy('a.name', 'ASC');
                 },
                 'attr' => [
-                    'class' => 'form-select',
                     'data-controller' => 'tom-select',
                 ],
                 'help' => 'asset.help.depends_on',

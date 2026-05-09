@@ -114,7 +114,6 @@ class PatchType extends AbstractType
                 'required' => false,
                 'help' => 'patch.help.affected_assets',
                 'attr' => [
-                    'class' => 'form-select',
                     'size' => 5,
                 ],
             ])
