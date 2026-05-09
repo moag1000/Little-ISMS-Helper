@@ -111,6 +111,7 @@ incident:
     reported_by_legacy: Reported by (free text, legacy)
     reported_by_person: Reported by (Person from master data)
     reported_by_deputies: Deputies (Persons)
+    responsible_person: Responsible Person (Governance)
   label:
     title: Title
     severity: Severity
@@ -200,6 +201,7 @@ incident:
     authority_reference: Reference number from authority
     reported_by_user: -- Select reporter --
     reported_by_person: -- Person from master data --
+    responsible_person: -- Select responsible person --
   help:
     visible_to_holding: 'Default on: holding / group CISO can see this incident to coordinate group-level response. Disable only for confidential cases (e.g. HR).'
     severity: Assess severity based on impact and scope (ISO 27001 A.16.1.4)
@@ -222,6 +224,7 @@ incident:
     reported_by_user: Reporter from user management. Leave empty if reported externally.
     reported_by_person: 'Select a person without a system login as reporter. Priority&#58; User &gt; Person &gt; legacy.'
     reported_by_deputies: Additional persons sharing reporter role or deputising. Multiple selection possible.
+    responsible_person: 'Long-term accountable person for this incident (governance view). Distinct from the ticket assignee (action) and the reporter (audit-trail). May be an external CISO/ISO without a system login.'
   category:
     data_breach: Data Breach
     security_incident: Security Incident

@@ -1341,6 +1341,39 @@ class Incident
         );
     }
 
+    /**
+     * Person-Rollout Phase B2 — long-term governance owner of the
+     * incident, distinct from the action-bound `assigned_to` ticket
+     * assignee and the `reported_by_*` audit-trail. May be an external
+     * Person without a system login (e.g. CISO consultant).
+     */
+    #[ORM\ManyToOne(targetEntity: Person::class)]
+    #[ORM\JoinColumn(name: 'responsible_person_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    #[Groups(['incident:read', 'incident:write'])]
+    private ?Person $responsiblePerson = null;
+
+    public function getResponsiblePerson(): ?Person
+    {
+        return $this->responsiblePerson;
+    }
+
+    public function setResponsiblePerson(?Person $responsiblePerson): static
+    {
+        $this->responsiblePerson = $responsiblePerson;
+        return $this;
+    }
+
+    /**
+     * Effective responsible-person display: prefer the new
+     * `responsiblePerson.fullName`, fall back to the legacy
+     * `assignedTo` string. Returns null when neither is set.
+     */
+    public function getEffectiveResponsiblePersonName(): ?string
+    {
+        return $this->responsiblePerson?->getFullName()
+            ?? $this->assignedTo;
+    }
+
     /*
      * DORA Art. 18 / RTS on classification of ICT-related incidents.
      * Axes defined by the Joint Committee of the ESAs: clients impacted,

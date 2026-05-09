@@ -2,7 +2,16 @@
 
 **Sprint:** 2026-05-08 — Phase A (Policy-Wizard scope) + Phase B planning
 **Branch:** `feature/policy-wizard`
-**Status:** Phase A live (this PR). Phase B queued for follow-up sprint.
+**Status:** Phase A live. Phase B2 (Privacy + Incident + Audit cluster
+narrow-scope) live as of `Version20260509050000_person_rollout_b2_privacy_incident`
+— adds the three remaining genuinely-missing governance Person FKs:
+`incident.responsible_person_id`, `data_subject_request.dpo_person_id`,
+`compliance_requirement_fulfillment.attestation_owner_person_id`.
+
+Most other Phase-B candidates (DPIA, ProcessingActivity, DataBreach,
+AuditFinding, CorrectiveAction, Training, BCM cluster) ALREADY have
+Person FKs from prior sprint work — see "Already migrated" matrix
+below. B1 (BCM cluster) is owned by the parallel agent.
 
 ## Background
 
@@ -133,12 +142,13 @@ Each row lists `<entity>.<field>` → classification → migration plan.
 | `CorporateGovernance.responsiblePartyPerson` | NEW Person FK | B | Governance role-holder. |
 | `DataProtectionImpactAssessment.{conductedByPerson, dataProcessorContact}` | NEW Person FKs | B | External DPO/processor contacts. |
 | `ProcessingActivity.{controllerContactPerson, dpoContactPerson, processorContactPerson}` | NEW Person FKs | B | External-by-default contacts. |
-| `DataBreach.dpoPerson` | NEW Person FK | B | Governance DPO (action stays on `dpoNotifiedBy`). |
-| `Incident.responsiblePerson` | NEW Person FK alongside `assignedTo` (User) | B | Long-term ownership vs ticket assignment. |
-| `AuditFinding.responsiblePerson` | NEW Person FK | B | Finding owner may be external. |
-| `CorrectiveAction.responsiblePerson` | NEW Person FK | B | Same. |
-| `Training.deliveredByPerson` | NEW Person FK | B | External trainers common. |
-| `ComplianceRequirementFulfillment.attestationOwnerPerson` | NEW Person FK | B | Attestation responsibility. |
+| `DataBreach.dpoPerson` | covered by `dataProtectionOfficerPerson` (prior work) | B | Same governance DPO concept. |
+| `Incident.responsiblePerson` | NEW Person FK alongside legacy `assignedTo` string + `reportedByPerson` | **B2 (live)** | Long-term ownership vs ticket assignment. |
+| `AuditFinding.responsiblePerson` | covered by existing `assignedPerson` (prior work) | B | Same governance role-holder concept. |
+| `CorrectiveAction.responsiblePerson` | EXISTING (prior work) | B | Pattern A live. |
+| `Training.deliveredByPerson` | covered by `trainerPerson` (prior work) | B | External trainers via `trainerPerson`. |
+| `ComplianceRequirementFulfillment.attestationOwnerPerson` | NEW Person FK | **B2 (live)** | Attestation responsibility, distinct from day-to-day responsible. |
+| `DataSubjectRequest.dpoPerson` | NEW Person FK alongside `assignedTo` (User) + `assignedPerson` | **B2 (live)** | Governance DPO sign-off, distinct from action handler. |
 
 ### Already migrated (Pattern A live)
 

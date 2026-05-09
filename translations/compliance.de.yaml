@@ -1076,10 +1076,13 @@ fulfillment:
         responsible_person_user: 'Verantwortliche Person (Benutzer)'
         responsible_person: 'Verantwortliche Person (Kontakt)'
         responsible_deputy_persons: 'Stellvertreter'
+        attestation_owner_person: 'Attestierungs-Verantwortlicher (Governance)'
     placeholder:
         responsible_person_user: '-- Benutzer auswählen --'
         responsible_person: '-- Kontaktperson auswählen --'
+        attestation_owner_person: '-- Attestierungs-Verantwortliche/n auswaehlen --'
     help:
         responsible_person_user: 'Systembenutzer, der für die Umsetzung verantwortlich ist'
         responsible_person: 'Kontaktperson (Personenstamm) als Verantwortliche'
         responsible_deputy_persons: 'Stellvertretende Kontaktpersonen für diesen Anforderungspunkt'
+        attestation_owner_person: 'Person, die die jaehrliche Konformitaets-Attestierung formal abzeichnet. Unabhaengig vom taeglichen Verantwortlichen — typischerweise CISO, Compliance-Officer oder externer Auditor.'

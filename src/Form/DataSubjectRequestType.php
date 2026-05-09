@@ -147,6 +147,17 @@ class DataSubjectRequestType extends AbstractType
                 ],
                 'help' => 'dsr.form.help.assigned_deputy_persons',
             ])
+            ->add('dpoPerson', EntityType::class, [
+                'label' => 'dsr.form.dpo_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'placeholder' => 'dsr.form.placeholder.dpo_person',
+                'required' => false,
+                'help' => 'dsr.form.help.dpo_person',
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+            ])
             ->add('processingActivity', EntityType::class, [
                 'label' => 'dsr.form.processing_activity',
                 'class' => ProcessingActivity::class,

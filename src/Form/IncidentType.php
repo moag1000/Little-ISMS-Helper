@@ -126,6 +126,17 @@ class IncidentType extends AbstractType
                     'placeholder' => 'incident.placeholder.reported_by',
                 ],
             ])
+            ->add('responsiblePerson', EntityType::class, [
+                'label' => 'incident.field.responsible_person',
+                'class' => Person::class,
+                'choice_label' => fn(Person $p): string => $p->getFullName() ?? '',
+                'required' => false,
+                'placeholder' => 'incident.placeholder.responsible_person',
+                'help' => 'incident.help.responsible_person',
+                'attr' => [
+                    'data-controller' => 'tom-select',
+                ],
+            ])
             ->add('status', EnumType::class, [
                 'label' => 'incident.field.status',
                 'class' => IncidentStatus::class,
