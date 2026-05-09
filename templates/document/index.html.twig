@@ -128,7 +128,7 @@
                 <div class="col-md-3">
                     <div class="type-card text-center p-4 bg-image-light">
                         <div class="type-icon mb-3 fs-25 color-image">
-                            <i class="bi bi-image" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.images'|trans({}, 'document') }}</div>
                         <div class="type-count fs-2 fw-700 color-image">
@@ -141,7 +141,7 @@
                 <div class="col-md-3">
                     <div class="type-card text-center p-4 bg-excel-light">
                         <div class="type-icon mb-3 fs-25 color-excel">
-                            <i class="bi bi-file-earmark-spreadsheet" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.tables'|trans({}, 'document') }}</div>
                         <div class="type-count fs-2 fw-700 color-excel">
@@ -154,7 +154,7 @@
                 <div class="col-md-3">
                     <div class="type-card text-center p-4 bg-other-light">
                         <div class="type-icon mb-3 fs-25 color-other">
-                            <i class="bi bi-file-earmark" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--nav-document" aria-hidden="true"></i>
                         </div>
                         <div class="type-label text-muted mb-2">{{ 'document.type.other'|trans({}, 'document') }}</div>
                         <div class="type-count fs-2 fw-700 color-other">
@@ -250,13 +250,13 @@
                             {% if document.mimeType == 'application/pdf' %}
                                 <i class="fa-icon fa-icon--nav-file-pdf text-danger fs-15" aria-hidden="true"></i>
                             {% elseif document.mimeType starts with 'image/' %}
-                                <i class="bi bi-file-image-fill text-primary fs-15" aria-hidden="true"></i>
+                                <i class="fa-icon text-primary fs-15 fa-icon--nav-document" aria-hidden="true"></i>
                             {% elseif document.mimeType matches '/spreadsheet/' %}
-                                <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-15" aria-hidden="true"></i>
+                                <i class="fa-icon text-success fs-15 fa-icon--nav-file-check" aria-hidden="true"></i>
                             {% elseif document.mimeType matches '/word/' or document.mimeType matches '/document/' %}
-                                <i class="bi bi-file-word-fill text-info fs-15" aria-hidden="true"></i>
+                                <i class="fa-icon text-info fs-15 fa-icon--nav-document" aria-hidden="true"></i>
                             {% else %}
-                                <i class="bi bi-file-earmark-fill text-secondary fs-15" aria-hidden="true"></i>
+                                <i class="fa-icon text-secondary fs-15 fa-icon--nav-document" aria-hidden="true"></i>
                             {% endif %}
                         </td>
                         <td>

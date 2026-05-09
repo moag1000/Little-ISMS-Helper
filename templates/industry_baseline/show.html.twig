@@ -43,7 +43,7 @@
                       data-ui-actions-tone-param="danger">
                     <input type="hidden" name="_token" value="{{ csrf_token('apply_baseline_' ~ baseline.code) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                        <i class="bi bi-rocket-takeoff" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i>
                         {{ 'industry_baseline.action.apply_locally'|trans({}, 'industry_baseline') }}
                     </button>
                 </form>
@@ -55,7 +55,7 @@
                       data-ui-actions-tone-param="danger">
                     <input type="hidden" name="_token" value="{{ csrf_token('apply_baseline_' ~ baseline.code) }}">
                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-                        <i class="bi bi-rocket-takeoff" aria-hidden="true"></i>
+                        <i class="fa-icon fa-icon--nav-magic" aria-hidden="true"></i>
                         {{ 'industry_baseline.action.apply'|trans({}, 'industry_baseline') }}
                     </button>
                 </form>
@@ -142,7 +142,7 @@
                     {% block card_header %}
                         <div class="card-header">
                             <h2 class="h5 mb-0">
-                                <i class="bi bi-box text-primary" aria-hidden="true"></i>
+                                <i class="fa-icon text-primary fa-icon--nav-boxes" aria-hidden="true"></i>
                                 {{ 'industry_baseline.field.preset_assets'|trans({}, 'industry_baseline') }}
                                 <span class="fa-status-pill fa-status-pill--neutral ms-1">{{ baseline.presetAssets|length }}</span>
                             </h2>

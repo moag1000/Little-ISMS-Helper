@@ -36,7 +36,7 @@
                             {% if category.maturity_baseline is defined or category.maturity_enhanced is defined %}
                                 <details class="mt-3 small">
                                     <summary class="text-muted" style="cursor: pointer;">
-                                        <i class="bi bi-bar-chart-steps me-1" aria-hidden="true"></i>
+                                        <i class="fa-icon me-1 fa-icon--nav-bar-chart" aria-hidden="true"></i>
                                         {{ 'wizard.maturity.toggle'|trans({}, 'wizard') }}
                                     </summary>
                                     {% if category.maturity_baseline is defined %}
@@ -118,7 +118,7 @@
                                 {% elseif item.score >= 50 %}
                                     <i class="fa-icon fa-icon--status-warning text-warning fs-5" aria-hidden="true" title="{{ 'wizard.status.partial'|trans({}, 'wizard') }}"></i>
                                 {% elseif item.score > 0 %}
-                                    <i class="bi bi-dash-circle-fill text-info fs-5" aria-hidden="true" title="{{ 'wizard.status.in_progress'|trans({}, 'wizard') }}"></i>
+                                    <i class="fa-icon text-info fs-5 fa-icon--status-pending" aria-hidden="true" title="{{ 'wizard.status.in_progress'|trans({}, 'wizard') }}"></i>
                                 {% else %}
                                     <i class="fa-icon fa-icon--status-critical text-danger fs-5" aria-hidden="true" title="{{ 'wizard.status.not_started'|trans({}, 'wizard') }}"></i>
                                 {% endif %}

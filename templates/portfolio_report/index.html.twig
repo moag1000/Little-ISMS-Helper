@@ -49,7 +49,7 @@
                 stichtag: stichtag|date('Y-m-d'),
                 vorperiode: vorperiode ? vorperiode|date('Y-m-d') : null
             }) }}" class="fa-cyber-btn fa-cyber-btn--success">
-                <i class="bi bi-file-earmark-excel" aria-hidden="true"></i>
+                <i class="fa-icon fa-icon--nav-file-check" aria-hidden="true"></i>
                 {{ 'portfolio_report.action.download_excel'|trans({}, 'portfolio_report') }}
             </a>
         </div>
@@ -212,7 +212,7 @@
                             {% for row in matrix.rows %}
                                 <tr>
                                     <th scope="row" class="text-nowrap">
-                                        <i class="bi bi-layers-half text-muted" aria-hidden="true"></i>
+                                        <i class="fa-icon text-muted fa-icon--nav-collection" aria-hidden="true"></i>
                                         {{ ('portfolio_report.category.' ~ row.category|lower)|trans({}, 'portfolio_report') }}
                                     </th>
                                     {% for framework in matrix.frameworks %}
@@ -292,7 +292,7 @@
                                                     </span>
                                                     {% if cell.gaps > 0 %}
                                                         <span class="ms-2 text-danger" title="{{ 'portfolio_report.cell.gaps_tooltip'|trans({}, 'portfolio_report') }}">
-                                                            <i class="bi bi-exclamation-diamond" aria-hidden="true"></i> {{ cell.gaps }}
+                                                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ cell.gaps }}
                                                         </span>
                                                     {% endif %}
                                                     <span class="ms-2 {{ trend_class }}"
@@ -325,7 +325,7 @@
             {% block card_header %}
                 <div class="card-header">
                     <h2 class="h5 mb-0">
-                        <i class="bi bi-share-fill text-primary" aria-hidden="true"></i>
+                        <i class="fa-icon text-primary fa-icon--util-external-link" aria-hidden="true"></i>
                         {{ 'portfolio_report.inheritance.title'|trans({}, 'portfolio_report') }}
                     </h2>
                 </div>

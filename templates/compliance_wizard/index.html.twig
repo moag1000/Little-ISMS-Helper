@@ -70,7 +70,7 @@
                 {% block card_footer %}
                     <div class="card-footer bg-transparent border-{{ wizard.color }}">
                         <a href="{{ path('app_compliance_wizard_start', {wizard: key}) }}" class="btn btn-{{ wizard.color }} w-100">
-                            <i class="bi bi-play-circle me-1" aria-hidden="true"></i>{{ 'wizard.start_wizard'|trans({}, 'wizard') }}
+                            <i class="fa-icon me-1 fa-icon--status-info" aria-hidden="true"></i>{{ 'wizard.start_wizard'|trans({}, 'wizard') }}
                         </a>
                     </div>
                 {% endblock %}

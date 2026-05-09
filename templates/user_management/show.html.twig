@@ -134,9 +134,9 @@
                                 <th scope="row">{{ 'user.label.auth_provider'|trans({}, 'user') }}</th>
                                 <td>
                                     {% if user.authProvider == 'azure_oauth' %}
-                                        <i class="bi bi-microsoft" aria-hidden="true"></i> {{ 'user.auth.azure_oauth'|trans({}, 'user') }}
+                                        <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> {{ 'user.auth.azure_oauth'|trans({}, 'user') }}
                                     {% elseif user.authProvider == 'azure_saml' %}
-                                        <i class="bi bi-microsoft" aria-hidden="true"></i> {{ 'user.auth.azure_saml'|trans({}, 'user') }}
+                                        <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> {{ 'user.auth.azure_saml'|trans({}, 'user') }}
                                     {% else %}
                                         <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'user.auth.local'|trans({}, 'user') }}
                                     {% endif %}
@@ -299,14 +299,14 @@
                         <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle_active' ~ user.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--warning">
-                                <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'user.action.deactivate'|trans({}, 'user') }}
+                                <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i> {{ 'user.action.deactivate'|trans({}, 'user') }}
                             </button>
                         </form>
                     {% else %}
                         <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle_active' ~ user.id) }}">
                             <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
-                                <i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'common.activate'|trans({}, 'messages') }}
+                                <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'common.activate'|trans({}, 'messages') }}
                             </button>
                         </form>
                     {% endif %}

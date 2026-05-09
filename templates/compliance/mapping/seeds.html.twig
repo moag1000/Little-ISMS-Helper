@@ -64,7 +64,7 @@
                         </div>
 
                         <p class="small text-muted mb-3">
-                            <i class="bi bi-bookmark" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--ui-flag" aria-hidden="true"></i>
                             {{ seed.rationale_source }}
                         </p>
 
@@ -80,7 +80,7 @@
                                   action="{{ path('app_compliance_mapping_seeds_apply', { id: seed.id }) }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('seed_' ~ seed.id) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary w-100">
-                                    <i class="bi bi-play-circle" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i>
                                     {% if seed.currently_loaded > 0 %}
                                         {{ 'compliance.mapping.seeds.action.reapply'|trans({}, 'compliance') }}
                                     {% else %}

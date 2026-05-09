@@ -30,7 +30,7 @@
             <a href="{{ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'effort'}) }}"
                class="fa-cyber-btn fa-cyber-btn--sm {{ sort == 'effort' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}"
                aria-pressed="{{ sort == 'effort' ? 'true' : 'false' }}">
-                <i class="bi bi-sort-numeric-down me-1" aria-hidden="true"></i>{{ 'gap_report.sort.effort'|trans({}, 'gap_report') }}
+                <i class="fa-icon me-1 fa-icon--util-arrow-down" aria-hidden="true"></i>{{ 'gap_report.sort.effort'|trans({}, 'gap_report') }}
             </a>
             <a href="{{ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'quick-wins'}) }}"
                class="fa-cyber-btn fa-cyber-btn--sm {{ sort == 'quick-wins' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}"

@@ -27,7 +27,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h1 class="h3 mb-0">
-                            <i class="bi bi-database me-2" aria-hidden="true"></i>
+                            <i class="fa-icon me-2 fa-icon--asset-database" aria-hidden="true"></i>
                             {{ 'setup.database.header'|trans({}, 'setup') }}
                         </h1>
                     </div>
@@ -53,12 +53,12 @@
                                             data-controller="ui-actions"
                                             data-action="click->ui-actions#copyToClipboard"
                                             data-ui-actions-text-param="{{ docker_password }}">
-                                        <i class="bi bi-clipboard me-1" aria-hidden="true"></i>
+                                        <i class="fa-icon me-1 fa-icon--audit-trail" aria-hidden="true"></i>
                                         {{ 'setup.common.copy'|trans({}, 'setup') }}
                                     </button>
                                 </div>
                                 <small class="text-muted mt-2 d-block">
-                                    <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+                                    <i class="fa-icon me-1 fa-icon--status-info" aria-hidden="true"></i>
                                     {{ 'setup.database.docker_password_location'|trans({}, 'setup') }}
                                 </small>
                                 </div>
@@ -168,8 +168,8 @@
 
                         {# Info Box #}
                         <div class="fa-alert fa-alert--info" role="alert">
-                            <i class="bi bi-info-circle fa-alert__icon" aria-hidden="true"></i>
-                            <div class="fa-alert__body"><i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-alert__icon fa-icon--status-info" aria-hidden="true"></i>
+                            <div class="fa-alert__body"><i class="fa-icon me-2 fa-icon--status-info" aria-hidden="true"></i>
                             <strong>{{ 'setup.database.info.title'|trans({}, 'setup') }}</strong>
                             <ul class="mb-0 mt-2">
                                 <li>{{ 'setup.database.info.mysql'|trans({}, 'setup') }}</li>
@@ -196,18 +196,18 @@
                         {# Navigation #}
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{{ path('setup_step0_welcome') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+                                <i class="fa-icon me-2 fa-icon--util-arrow-left" aria-hidden="true"></i>
                                 {{ 'setup.navigation.back'|trans({}, 'setup') }}
                             </a>
 
                             <div>
                                 <button type="submit" name="test" value="1" class="btn btn-outline-primary me-2">
-                                    <i class="bi bi-flask me-2" aria-hidden="true"></i>
+                                    <i class="fa-icon me-2 fa-icon--nav-tools" aria-hidden="true"></i>
                                     {{ 'setup.database.test_button'|trans({}, 'setup') }}
                                 </button>
                                 <button type="submit" name="save" value="1" class="btn btn-primary">
                                     {{ 'setup.navigation.next'|trans({}, 'setup') }}
-                                    <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+                                    <i class="fa-icon ms-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>

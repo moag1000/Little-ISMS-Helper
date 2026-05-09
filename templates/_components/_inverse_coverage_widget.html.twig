@@ -10,7 +10,7 @@
  #}
 {% if coverage.total == 0 %}
     <div class="text-muted small">
-        <i class="bi bi-dash-circle" aria-hidden="true"></i>
+        <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
         {{ ('inverse_coverage.' ~ scope_key ~ '.empty')|trans({}, 'control') }}
     </div>
 {% else %}

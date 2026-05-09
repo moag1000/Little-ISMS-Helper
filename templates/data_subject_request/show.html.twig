@@ -158,7 +158,7 @@
                 {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                     {% block card_header %}
                         <div class="card-header">
-                            <h2 class="mb-0"><i class="bi bi-reply-all" aria-hidden="true"></i> {{ 'dsr.section.response_tracking'|trans({}, 'data_subject_request') }}</h2>
+                            <h2 class="mb-0"><i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'dsr.section.response_tracking'|trans({}, 'data_subject_request') }}</h2>
                         </div>
                     {% endblock %}
                     {% block card_body %}
@@ -222,7 +222,7 @@
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h2 class="mb-0"><i class="bi bi-lightning" aria-hidden="true"></i> {{ 'dsr.section.actions'|trans({}, 'data_subject_request') }}</h2>
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--threat" aria-hidden="true"></i> {{ 'dsr.section.actions'|trans({}, 'data_subject_request') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}

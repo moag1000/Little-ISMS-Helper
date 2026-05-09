@@ -144,9 +144,9 @@
                                     </td>
                                     <td>
                                         {% if user.authProvider == 'azure_oauth' %}
-                                            <i class="bi bi-microsoft" aria-hidden="true"></i> {{ 'user.auth.azure_oauth'|trans({}, 'user') }}
+                                            <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> {{ 'user.auth.azure_oauth'|trans({}, 'user') }}
                                         {% elseif user.authProvider == 'azure_saml' %}
-                                            <i class="bi bi-microsoft" aria-hidden="true"></i> {{ 'user.auth.azure_saml'|trans({}, 'user') }}
+                                            <i class="fa-icon fa-icon--asset-application" aria-hidden="true"></i> {{ 'user.auth.azure_saml'|trans({}, 'user') }}
                                         {% else %}
                                             <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'user.auth.local'|trans({}, 'user') }}
                                         {% endif %}

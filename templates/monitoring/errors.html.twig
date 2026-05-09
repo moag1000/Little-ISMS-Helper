@@ -101,7 +101,7 @@
                                         <p class="mb-1 font-monospace small">{{ error.message|slice(0, 300) }}{% if error.message|length > 300 %}...{% endif %}</p>
                                         <details class="mt-2">
                                             <summary class="text-muted small" style="cursor: pointer;">
-                                                <i class="bi bi-code-square" aria-hidden="true"></i> {{ 'monitoring.errors.show_full'|trans({}, 'monitoring') }}
+                                                <i class="fa-icon fa-icon--nav-tools" aria-hidden="true"></i> {{ 'monitoring.errors.show_full'|trans({}, 'monitoring') }}
                                             </summary>
                                             <pre class="mt-2 mb-0 small bg-body-secondary p-3 rounded">{{ error.raw }}</pre>
                                         </details>

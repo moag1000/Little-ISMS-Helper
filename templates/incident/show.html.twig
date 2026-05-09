@@ -20,11 +20,11 @@
             <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="fa-cyber-btn fa-cyber-btn--primary"><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'incident.action.edit'|trans({}, 'incident') }}</a>
             {% if is_nis2_active() and incident.requiresNis2Reporting %}
                 <a href="{{ path('app_incident_nis2_report', {id: incident.id}) }}" class="fa-cyber-btn fa-cyber-btn--success" data-turbo="false" title="{{ 'incident.action.download_nis2_report'|trans({}, 'incident') }}">
-                    <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> {{ 'incident.action.download_nis2_report'|trans({}, 'incident') }}
+                    <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i> {{ 'incident.action.download_nis2_report'|trans({}, 'incident') }}
                 </a>
                 <div class="btn-group" role="group" aria-label="{{ 'incident.action.mus_export_group'|trans({}, 'incident') }}">
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-turbo="false">
-                        <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i> {{ 'incident.action.mus_export'|trans({}, 'incident') }}
+                        <i class="fa-icon fa-icon--asset-cloud" aria-hidden="true"></i> {{ 'incident.action.mus_export'|trans({}, 'incident') }}
                     </button>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{ path('app_nis2_mus_export_early_warning', {id: incident.id}) }}" data-turbo="false">{{ 'incident.action.mus_early_warning'|trans({}, 'incident') }}</a></li>
@@ -66,7 +66,7 @@
             <div class="workflow-status-header">
                 <div class="workflow-status-title">
                     {# TODO(aurora-v4-icons): dynamic icon switch — isDataBreach ? exclamation-triangle-fill : gear-fill #}
-                    <i class="{% if isDataBreach %}fa-icon fa-icon--status-warning{% else %}bi bi-gear-fill{% endif %}" aria-hidden="true"></i>
+                    <i class="fa-icon {% if isDataBreach %}fa-icon fa-icon--status-warning{% else %} {% endif %} fa-icon--nav-gear" aria-hidden="true"></i>
                     <strong>
                         {% if isDataBreach %}
                             {{ 'incident.workflow.data_breach_active'|trans({}, 'incident') }}

@@ -58,7 +58,7 @@
                             <form method="post" action="{{ path('admin_sso_test', {id: provider.id}) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('sso_provider_test') }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                    <i class="bi bi-cloud-arrow-down" aria-hidden="true"></i> {{ 'sso.action.discover'|trans }}
+                                    <i class="fa-icon fa-icon--asset-cloud" aria-hidden="true"></i> {{ 'sso.action.discover'|trans }}
                                 </button>
                             </form>
                         </div>
@@ -130,10 +130,10 @@
 
     <div class="d-flex justify-content-between mt-4">
         <a href="{{ path('admin_sso_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
         </a>
         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
-            <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
         </button>
     </div>
     {{ form_end(form) }}

@@ -9,7 +9,7 @@
 {% block admin_content %}
     <div class="mb-4">
         <a href="{{ path('admin_mfa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -18,7 +18,7 @@
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
                     <div class="card-header">
-                        <h3 class="mb-0"><i class="bi bi-qr-code" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.step1'|trans({}, 'mfa') }}</h3>
+                        <h3 class="mb-0"><i class="fa-icon fa-icon--mfa" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.step1'|trans({}, 'mfa') }}</h3>
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -47,7 +47,7 @@
                                     data-action="mfa-setup#copySecret"
                                     data-mfa-setup-copy-target-param="secret-key"
                                     data-mfa-setup-copied-text-value="{{ 'common.copied'|trans({}, 'messages') }}">
-                                <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'common.copy'|trans({}, 'messages') }}
+                                <i class="fa-icon fa-icon--audit-trail" aria-hidden="true"></i> {{ 'common.copy'|trans({}, 'messages') }}
                             </button>
                         </div>
                     </div>
@@ -146,12 +146,12 @@
                         <button type="button"
                                 class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                 data-action="backup-codes#copy">
-                            <i class="bi bi-clipboard" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.copy_all'|trans({}, 'mfa') }}
+                            <i class="fa-icon fa-icon--audit-trail" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.copy_all'|trans({}, 'mfa') }}
                         </button>
                         <button type="button"
                                 class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                 data-action="backup-codes#print">
-                            <i class="bi bi-printer" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.print'|trans({}, 'mfa') }}
+                            <i class="fa-icon fa-icon--ui-printer" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.print'|trans({}, 'mfa') }}
                         </button>
                     </div>
                 {% endblock %}

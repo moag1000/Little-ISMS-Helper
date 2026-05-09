@@ -27,7 +27,7 @@
 
                         {# Base Data List #}
                         <h2 class="h5 mb-3">
-                            <i class="bi bi-list-check me-2" aria-hidden="true"></i>
+                            <i class="fa-icon me-2 fa-icon--nav-list-check" aria-hidden="true"></i>
                             {{ 'setup.step9.data_to_import'|trans({}, 'setup') }}
                         </h2>
 
@@ -43,14 +43,14 @@
                                             <p class="text-muted mb-2">{{ data.description }}</p>
                                             {% if data.command is defined %}
                                                 <small class="text-muted">
-                                                    <i class="bi bi-terminal me-1" aria-hidden="true"></i>
+                                                    <i class="fa-icon me-1 fa-icon--nav-tools" aria-hidden="true"></i>
                                                     {{ 'setup.step9.command'|trans({}, 'setup') }}: <code>{{ data.command }}</code>
                                                 </small>
                                             {% endif %}
                                             {% if data.required_modules is defined %}
                                                 <div class="mt-2">
                                                     <small class="text-muted">
-                                                        <i class="bi bi-puzzle me-1" aria-hidden="true"></i>
+                                                        <i class="fa-icon me-1 fa-icon--nav-puzzle" aria-hidden="true"></i>
                                                         {{ 'setup.step9.modules'|trans({}, 'setup') }}:
                                                         {% for module in data.required_modules %}
                                                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: module } %}
@@ -91,11 +91,11 @@
                             {% endif %}
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{{ path('setup_step8_compliance_frameworks') }}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+                                    <i class="fa-icon me-2 fa-icon--util-arrow-left" aria-hidden="true"></i>
                                     {{ 'setup.navigation.back'|trans({}, 'setup') }}
                                 </a>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-download me-2" aria-hidden="true"></i>
+                                    <i class="fa-icon me-2 fa-icon--nav-download" aria-hidden="true"></i>
                                     {{ 'setup.step9.import_button'|trans({}, 'setup') }}
                                 </button>
                             </div>

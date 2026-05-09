@@ -149,7 +149,7 @@
                     <i class="fa-icon fa-icon--util-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back'|trans }}
                 </a>
                 <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="btn btn-{{ config.color }} btn-lg">
-                    <i class="bi bi-play-circle me-2" aria-hidden="true"></i>{{ 'wizard.run_assessment'|trans }}
+                    <i class="fa-icon me-2 fa-icon--status-info" aria-hidden="true"></i>{{ 'wizard.run_assessment'|trans }}
                 </a>
             </div>
         </div>
@@ -161,7 +161,7 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h3 class="card-title h6 mb-0">
-                            <i class="bi bi-puzzle me-2" aria-hidden="true"></i>{{ 'wizard.active_modules'|trans }}
+                            <i class="fa-icon me-2 fa-icon--nav-puzzle" aria-hidden="true"></i>{{ 'wizard.active_modules'|trans }}
                         </h3>
                     </div>
                 {% endblock %}

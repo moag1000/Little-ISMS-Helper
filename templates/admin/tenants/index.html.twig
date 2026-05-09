@@ -117,7 +117,7 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <span class="fa-status-pill fa-status-pill--primary"><i class="bi bi-people" aria-hidden="true"></i> {{ item.userCount }}</span>
+                                        <span class="fa-status-pill fa-status-pill--primary"><i class="fa-icon fa-icon--group" aria-hidden="true"></i> {{ item.userCount }}</span>
                                     </td>
                                     <td>
                                         {% if tenant.azureTenantId %}
@@ -128,9 +128,9 @@
                                     </td>
                                     <td>
                                         {% if tenant.isActive %}
-                                            <span class="fa-status-pill fa-status-pill--success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
+                                            <span class="fa-status-pill fa-status-pill--success"><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
                                         {% else %}
-                                            <span class="fa-status-pill fa-status-pill--neutral"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
+                                            <span class="fa-status-pill fa-status-pill--neutral"><i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
                                         {% endif %}
                                     </td>
                                     <td>
@@ -151,7 +151,7 @@
                                             <a href="{{ path('admin_tenant_compliance_settings_edit', {tenantId: tenant.id}) }}"
                                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
                                                title="{{ 'admin.tenant_settings.title'|trans({}, 'admin') }}" aria-label="{{ 'admin.tenant_settings.title'|trans({}, 'admin') }}">
-                                                <i class="bi bi-sliders" aria-hidden="true"></i>
+                                                <i class="fa-icon fa-icon--nav-sliders" aria-hidden="true"></i>
                                             </a>
                                             <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
                                                   data-controller="ui-actions"
