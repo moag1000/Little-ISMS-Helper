@@ -80,7 +80,10 @@ class IndustryPresetBundleTest extends TestCase
         $this->assertContains(IndustryPresetBundle::KEY_PUBLIC_SECTOR, IndustryPresetBundle::ALLOWED_KEYS);
         $this->assertContains(IndustryPresetBundle::KEY_B2C_SAAS, IndustryPresetBundle::ALLOWED_KEYS);
         $this->assertContains(IndustryPresetBundle::KEY_OT_IEC62443, IndustryPresetBundle::ALLOWED_KEYS);
-        $this->assertCount(4, IndustryPresetBundle::ALLOWED_KEYS);
+        // Junior-ISB Wish #5 (commit ea1d4870): added KEY_CUSTOM_GENERAL as
+        // a fallback for tenants outside the 4 industry verticals.
+        $this->assertContains(IndustryPresetBundle::KEY_CUSTOM_GENERAL, IndustryPresetBundle::ALLOWED_KEYS);
+        $this->assertCount(5, IndustryPresetBundle::ALLOWED_KEYS);
 
         $this->assertContains(IndustryPresetBundle::STANDARD_ISO27001, IndustryPresetBundle::ALLOWED_STANDARDS);
         $this->assertContains(IndustryPresetBundle::STANDARD_ISO_GDPR, IndustryPresetBundle::ALLOWED_STANDARDS);
