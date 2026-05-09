@@ -1,6 +1,7 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {# Form-Audit follow-up (May 2026).
    RiskClassificationStep::validate() field list:
@@ -92,59 +93,41 @@
     </div>
 
     <div class="col-md-4">
-        <label class="form-label" for="data-classification-levels">
-            {{ 'policy_wizard.step.risk_classification.data_classification_label'|trans }}
-        </label>
-        <select class="form-select fa-cyber-input__field"
-                id="data-classification-levels"
-                name="data_classification_levels">
-            <option value="3" {% if data_levels_default == 3 %}selected{% endif %}>
-                {{ 'policy_wizard.step.risk_classification.data_classification_3'|trans }}
-            </option>
-            <option value="4" {% if data_levels_default == 4 %}selected{% endif %}>
-                {{ 'policy_wizard.step.risk_classification.data_classification_4'|trans }}
-            </option>
-        </select>
+        {{ _fa_cyber.select('data_classification_levels', [
+            {value: '3', label: 'policy_wizard.step.risk_classification.data_classification_3'|trans},
+            {value: '4', label: 'policy_wizard.step.risk_classification.data_classification_4'|trans}
+        ], {
+            id: 'data-classification-levels',
+            label: 'policy_wizard.step.risk_classification.data_classification_label'|trans,
+            value: data_levels_default
+        }) }}
     </div>
 
     {% if bsi_in_scope %}
         <div class="col-md-4">
-            <label class="form-label" for="schutzbedarf-levels">
-                {{ 'policy_wizard.step.risk_classification.schutzbedarf_label'|trans }}
-                <i class="bi bi-info-circle text-muted ms-1"
-                   data-bs-toggle="tooltip"
-                   title="{{ 'policy_wizard.step.risk_classification.tooltip.schutzbedarf'|trans }}"
-                   aria-label="{{ 'policy_wizard.step.risk_classification.tooltip.schutzbedarf'|trans }}"></i>
-            </label>
-            <select class="form-select fa-cyber-input__field"
-                    id="schutzbedarf-levels"
-                    name="schutzbedarf_levels">
-                <option value="3" {% if schutzbedarf_default == 3 %}selected{% endif %}>
-                    {{ 'policy_wizard.step.risk_classification.schutzbedarf_3'|trans }}
-                </option>
-                <option value="4" {% if schutzbedarf_default == 4 %}selected{% endif %}>
-                    {{ 'policy_wizard.step.risk_classification.schutzbedarf_4'|trans }}
-                </option>
-            </select>
+            {{ _fa_cyber.select('schutzbedarf_levels', [
+                {value: '3', label: 'policy_wizard.step.risk_classification.schutzbedarf_3'|trans},
+                {value: '4', label: 'policy_wizard.step.risk_classification.schutzbedarf_4'|trans}
+            ], {
+                id: 'schutzbedarf-levels',
+                label: 'policy_wizard.step.risk_classification.schutzbedarf_label'|trans,
+                value: schutzbedarf_default
+            }) }}
         </div>
     {% endif %}
 
     <div class="col-md-4">
-        <label class="form-label" for="review-interval">
-            {{ 'policy_wizard.step.risk_classification.review_interval_label'|trans }}
-            <i class="bi bi-info-circle text-muted ms-1"
-               data-bs-toggle="tooltip"
-               title="{{ 'policy_wizard.step.risk_classification.tooltip.review_interval'|trans }}"
-               aria-label="{{ 'policy_wizard.step.risk_classification.tooltip.review_interval'|trans }}"></i>
-        </label>
-        <input type="number"
-               class="form-control fa-cyber-input__field"
-               id="review-interval"
-               name="review_interval_months"
-               min="1"
-               max="24"
-               value="{{ review_interval_default }}">
-        <div class="form-text">{{ 'policy_wizard.error.review_interval_max'|trans }}</div>
+        {{ _fa_cyber.text('review_interval_months', {
+            id: 'review-interval',
+            type: 'number',
+            label: 'policy_wizard.step.risk_classification.review_interval_label'|trans,
+            help: 'policy_wizard.error.review_interval_max'|trans,
+            value: review_interval_default,
+            extra_attrs: {
+                'min': '1',
+                'max': '24'
+            }
+        }) }}
     </div>
 </div>
 

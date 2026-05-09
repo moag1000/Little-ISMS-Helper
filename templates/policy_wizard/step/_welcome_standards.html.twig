@@ -1,4 +1,5 @@
 {% trans_default_domain 'policy_wizard' %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 {% set selected_standards = defaults.standards|default(standards|default([])) %}
 {% set finding_default = defaults.finding_reference|default(run.findingReference) %}
 {% set selected_mode = defaults.mode|default(run.mode) %}
@@ -70,28 +71,28 @@
      data-policy-wizard-preset-picker-preview-url-value="{{ path('app_policy_wizard_preset_preview', { key: '__KEY__' }) }}">
     {% if bundles|length > 0 %}
         <div class="col-12">
-            <div class="mb-3">
-                <label class="form-label" for="industry-preset-bundle-key">
-                    {{ 'policy_wizard.preset.label'|trans }}
-                </label>
-                <select class="form-select fa-cyber-input__field"
-                        id="industry-preset-bundle-key"
-                        name="industry_preset_bundle_key"
-                        data-policy-wizard-preset-picker-target="select"
-                        data-action="change->policy-wizard-preset-picker#onChange">
-                    <option value="">{{ 'policy_wizard.preset.placeholder'|trans }}</option>
-                    {% for bundle in bundles %}
-                        <option value="{{ bundle.key }}"{% if bundle.key == selected_bundle_key %} selected{% endif %}>
-                            {{ ('policy_wizard.preset.' ~ bundle.key ~ '.label')|trans({}, 'policy_wizard') }}
-                        </option>
-                    {% endfor %}
-                </select>
-                <div class="form-text">{{ 'policy_wizard.preset.help'|trans }}</div>
-                <div class="form-text mt-2 d-none"
-                     data-policy-wizard-preset-picker-target="preview"
-                     role="status"
-                     aria-live="polite"></div>
-            </div>
+            {% set bundle_options = [] %}
+            {% for bundle in bundles %}
+                {% set bundle_options = bundle_options|merge([{
+                    value: bundle.key,
+                    label: ('policy_wizard.preset.' ~ bundle.key ~ '.label')|trans({}, 'policy_wizard')
+                }]) %}
+            {% endfor %}
+            {{ _fa_cyber.select('industry_preset_bundle_key', bundle_options, {
+                id: 'industry-preset-bundle-key',
+                label: 'policy_wizard.preset.label'|trans,
+                help: 'policy_wizard.preset.help'|trans,
+                placeholder: 'policy_wizard.preset.placeholder'|trans,
+                value: selected_bundle_key,
+                extra_attrs: {
+                    'data-policy-wizard-preset-picker-target': 'select',
+                    'data-action': 'change->policy-wizard-preset-picker#onChange'
+                }
+            }) }}
+            <div class="form-text mt-2 d-none"
+                 data-policy-wizard-preset-picker-target="preview"
+                 role="status"
+                 aria-live="polite"></div>
         </div>
     {% endif %}
 
@@ -124,18 +125,13 @@
         </fieldset>
     </div>
     <div class="col-md-4">
-        <div class="mb-3">
-            <label class="form-label" for="finding-reference">
-                {{ 'policy_wizard.step.welcome.finding_reference_label'|trans }}
-            </label>
-            <input type="text"
-                   class="form-control fa-cyber-input__field"
-                   id="finding-reference"
-                   name="finding_reference"
-                   maxlength="100"
-                   value="{{ finding_default|default('') }}">
-            <div class="form-text">{{ 'policy_wizard.step.welcome.finding_reference_help'|trans }}</div>
-        </div>
+        {{ _fa_cyber.text('finding_reference', {
+            id: 'finding-reference',
+            label: 'policy_wizard.step.welcome.finding_reference_label'|trans,
+            help: 'policy_wizard.step.welcome.finding_reference_help'|trans,
+            value: finding_default|default(''),
+            max: 100
+        }) }}
 
         <input type="hidden" name="mode" value="{{ selected_mode }}">
     </div>

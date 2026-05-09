@@ -1,6 +1,7 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {# Form-Audit follow-up (May 2026) — REWRITE.
    Template now matches OperationalBaselinesStep::validate() contract
@@ -98,49 +99,33 @@
 <div class="row g-3 mb-4">
     {# ── Backup RPO ───────────────────────────────────────────────── #}
     <div class="col-md-4">
-        <label class="form-label" for="op-backup-rpo">
-            {{ 'policy_wizard.step.operational_baselines.backup_rpo_label'|trans }}
-            <i class="bi bi-info-circle text-muted ms-1"
-               data-bs-toggle="tooltip"
-               title="{{ 'policy_wizard.step.operational_baselines.tooltip.rpo_usual'|trans }}"
-               aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.rpo_usual'|trans }}"></i>
-        </label>
-        <input type="number"
-               class="form-control fa-cyber-input__field"
-               id="op-backup-rpo"
-               name="backup_rpo_hours"
-               min="1"
-               max="720"
-               value="{{ rpo_default }}"
-               aria-describedby="op-backup-rpo-help">
-        <div id="op-backup-rpo-help" class="form-text">
-            {{ 'policy_wizard.step.operational_baselines.backup_rpo_help'|trans }}
-        </div>
+        {{ _fa_cyber.text('backup_rpo_hours', {
+            id: 'op-backup-rpo',
+            type: 'number',
+            label: 'policy_wizard.step.operational_baselines.backup_rpo_label'|trans,
+            help: 'policy_wizard.step.operational_baselines.backup_rpo_help'|trans,
+            value: rpo_default,
+            extra_attrs: {
+                'min': '1',
+                'max': '720'
+            }
+        }) }}
     </div>
 
     {# ── Patch SLA per severity ───────────────────────────────────── #}
     {% for severity in ['critical', 'high', 'medium'] %}
         <div class="col-md-2">
-            <label class="form-label" for="op-patch-{{ severity }}">
-                {{ ('policy_wizard.step.operational_baselines.patch_sla_' ~ severity ~ '_label')|trans }}
-                {% if severity == 'critical' %}
-                    <i class="bi bi-info-circle text-muted ms-1"
-                       data-bs-toggle="tooltip"
-                       title="{{ 'policy_wizard.step.operational_baselines.tooltip.patch_sla_critical_usual'|trans }}"
-                       aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.patch_sla_critical_usual'|trans }}"></i>
-                {% endif %}
-            </label>
-            <input type="number"
-                   class="form-control fa-cyber-input__field"
-                   id="op-patch-{{ severity }}"
-                   name="patch_sla_hours[{{ severity }}]"
-                   min="1"
-                   max="8760"
-                   value="{{ patch_default[severity]|default('') }}"
-                   aria-describedby="op-patch-{{ severity }}-help">
-            <div id="op-patch-{{ severity }}-help" class="form-text small">
-                {{ ('policy_wizard.step.operational_baselines.patch_sla_' ~ severity ~ '_help')|trans }}
-            </div>
+            {{ _fa_cyber.text('patch_sla_hours[' ~ severity ~ ']', {
+                id: 'op-patch-' ~ severity,
+                type: 'number',
+                label: ('policy_wizard.step.operational_baselines.patch_sla_' ~ severity ~ '_label')|trans,
+                help: ('policy_wizard.step.operational_baselines.patch_sla_' ~ severity ~ '_help')|trans,
+                value: patch_default[severity]|default(''),
+                extra_attrs: {
+                    'min': '1',
+                    'max': '8760'
+                }
+            }) }}
         </div>
     {% endfor %}
 </div>
@@ -151,24 +136,17 @@
         <div class="row g-3">
             {% for level in ['high', 'medium', 'low'] %}
                 <div class="col-md-4">
-                    <label class="form-label" for="op-rto-{{ level }}">
-                        {{ ('policy_wizard.step.operational_baselines.rto_' ~ level ~ '_label')|trans }}
-                        <i class="bi bi-info-circle text-muted ms-1"
-                           data-bs-toggle="tooltip"
-                           title="{{ ('policy_wizard.step.operational_baselines.tooltip.rto_' ~ level ~ '_usual')|trans }}"
-                           aria-label="{{ ('policy_wizard.step.operational_baselines.tooltip.rto_' ~ level ~ '_usual')|trans }}"></i>
-                    </label>
-                    <input type="number"
-                           class="form-control fa-cyber-input__field"
-                           id="op-rto-{{ level }}"
-                           name="continuity_rto_hours[{{ level }}]"
-                           min="1"
-                           max="8760"
-                           value="{{ rto_default[level]|default('') }}"
-                           aria-describedby="op-rto-{{ level }}-help">
-                    <div id="op-rto-{{ level }}-help" class="form-text small">
-                        {{ ('policy_wizard.step.operational_baselines.rto_' ~ level ~ '_help')|trans }}
-                    </div>
+                    {{ _fa_cyber.text('continuity_rto_hours[' ~ level ~ ']', {
+                        id: 'op-rto-' ~ level,
+                        type: 'number',
+                        label: ('policy_wizard.step.operational_baselines.rto_' ~ level ~ '_label')|trans,
+                        help: ('policy_wizard.step.operational_baselines.rto_' ~ level ~ '_help')|trans,
+                        value: rto_default[level]|default(''),
+                        extra_attrs: {
+                            'min': '1',
+                            'max': '8760'
+                        }
+                    }) }}
                 </div>
             {% endfor %}
         </div>
@@ -215,32 +193,29 @@
     {% set dora_body %}
         <div class="row g-3">
             <div class="col-md-6">
-                <label class="form-label" for="op-dora-entity-type">
-                    {{ 'policy_wizard.step.operational_baselines.dora_entity_type_label'|trans }}
-                </label>
-                <select id="op-dora-entity-type"
-                        name="dora[entity_type]"
-                        class="form-select fa-cyber-input__field">
-                    <option value="">—</option>
-                    {% for et in ['kreditinstitut', 'wertpapierfirma', 'zahlungsdienstleister', 'e_geld_institut', 'fmi', 'sonstige'] %}
-                        <option value="{{ et }}" {% if (dora_default.entity_type|default('')) == et %}selected{% endif %}>
-                            {{ ('policy_wizard.step.operational_baselines.dora_entity_type.' ~ et)|trans }}
-                        </option>
-                    {% endfor %}
-                </select>
+                {% set dora_entity_options = [{value: '', label: '—'}] %}
+                {% for et in ['kreditinstitut', 'wertpapierfirma', 'zahlungsdienstleister', 'e_geld_institut', 'fmi', 'sonstige'] %}
+                    {% set dora_entity_options = dora_entity_options|merge([{
+                        value: et,
+                        label: ('policy_wizard.step.operational_baselines.dora_entity_type.' ~ et)|trans
+                    }]) %}
+                {% endfor %}
+                {{ _fa_cyber.select('dora[entity_type]', dora_entity_options, {
+                    id: 'op-dora-entity-type',
+                    label: 'policy_wizard.step.operational_baselines.dora_entity_type_label'|trans,
+                    value: dora_default.entity_type|default('')
+                }) }}
             </div>
             <div class="col-md-6">
-                <label class="form-label" for="op-dora-authority">
-                    {{ 'policy_wizard.step.operational_baselines.dora_authority_label'|trans }}
-                </label>
-                <select id="op-dora-authority"
-                        name="dora[competent_authority]"
-                        class="form-select fa-cyber-input__field">
-                    <option value="">—</option>
-                    {% for ca in ['BaFin', 'Bundesbank', 'ECB', 'EBA', 'sonstige'] %}
-                        <option value="{{ ca }}" {% if (dora_default.competent_authority|default('')) == ca %}selected{% endif %}>{{ ca }}</option>
-                    {% endfor %}
-                </select>
+                {% set dora_authority_options = [{value: '', label: '—'}] %}
+                {% for ca in ['BaFin', 'Bundesbank', 'ECB', 'EBA', 'sonstige'] %}
+                    {% set dora_authority_options = dora_authority_options|merge([{value: ca, label: ca}]) %}
+                {% endfor %}
+                {{ _fa_cyber.select('dora[competent_authority]', dora_authority_options, {
+                    id: 'op-dora-authority',
+                    label: 'policy_wizard.step.operational_baselines.dora_authority_label'|trans,
+                    value: dora_default.competent_authority|default('')
+                }) }}
             </div>
             {# ── DORA-Significance Self-Check (DORA Art. 16 + RTS) ───
                Replaces the bare `is_significant` checkbox with a guided
@@ -319,23 +294,17 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <label class="form-label" for="op-dora-threshold">
-                    {{ 'policy_wizard.step.operational_baselines.dora_threshold_label'|trans }}
-                    <i class="bi bi-info-circle text-muted ms-1"
-                       data-bs-toggle="tooltip"
-                       title="{{ 'policy_wizard.step.operational_baselines.tooltip.ict_concentration'|trans }}"
-                       aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.ict_concentration'|trans }}"></i>
-                </label>
-                <input type="number"
-                       class="form-control fa-cyber-input__field"
-                       id="op-dora-threshold"
-                       name="dora[ictt_concentration_threshold_pct]"
-                       min="1"
-                       max="100"
-                       value="{{ dora_default.ictt_concentration_threshold_pct|default('') }}">
-                <div class="form-text small">
-                    {{ 'policy_wizard.step.operational_baselines.dora_threshold_help'|trans }}
-                </div>
+                {{ _fa_cyber.text('dora[ictt_concentration_threshold_pct]', {
+                    id: 'op-dora-threshold',
+                    type: 'number',
+                    label: 'policy_wizard.step.operational_baselines.dora_threshold_label'|trans,
+                    help: 'policy_wizard.step.operational_baselines.dora_threshold_help'|trans,
+                    value: dora_default.ictt_concentration_threshold_pct|default(''),
+                    extra_attrs: {
+                        'min': '1',
+                        'max': '100'
+                    }
+                }) }}
             </div>
             <div class="col-md-4">
                 <div class="form-check mt-4">
@@ -370,44 +339,38 @@
         <div class="row g-3">
             {% if gdpr_in_scope or dora_in_scope %}
                 <div class="col-md-6">
-                    <label class="form-label" for="op-dpo-user">
-                        {{ 'policy_wizard.step.operational_baselines.dpo_user_label'|trans }}
-                    </label>
-                    <select id="op-dpo-user"
-                            name="dpo_user_id"
-                            class="form-select fa-cyber-input__field"
-                            data-controller="tom-select">
-                        <option value="">—</option>
-                        {% for u in dpo_user_choices|default([]) %}
-                            <option value="{{ u.id }}" {% if dpo_default == u.id %}selected{% endif %}>
-                                {{ u.lastName|default('') }}, {{ u.firstName|default('') }} ({{ u.email }})
-                            </option>
-                        {% endfor %}
-                    </select>
-                    <div class="form-text small">
-                        {{ 'policy_wizard.step.operational_baselines.dpo_user_help'|trans }}
-                    </div>
+                    {% set dpo_options = [{value: '', label: '—'}] %}
+                    {% for u in dpo_user_choices|default([]) %}
+                        {% set dpo_options = dpo_options|merge([{
+                            value: u.id,
+                            label: (u.lastName|default('') ~ ', ' ~ u.firstName|default('') ~ ' (' ~ u.email ~ ')')
+                        }]) %}
+                    {% endfor %}
+                    {{ _fa_cyber.select('dpo_user_id', dpo_options, {
+                        id: 'op-dpo-user',
+                        label: 'policy_wizard.step.operational_baselines.dpo_user_label'|trans,
+                        help: 'policy_wizard.step.operational_baselines.dpo_user_help'|trans,
+                        value: dpo_default,
+                        extra_attrs: {'data-controller': 'tom-select'}
+                    }) }}
                 </div>
             {% endif %}
             {% if bcm_in_scope %}
                 <div class="col-md-6">
-                    <label class="form-label" for="op-bcm-user">
-                        {{ 'policy_wizard.step.operational_baselines.bcm_officer_label'|trans }}
-                    </label>
-                    <select id="op-bcm-user"
-                            name="bcm_officer_user_id"
-                            class="form-select fa-cyber-input__field"
-                            data-controller="tom-select">
-                        <option value="">—</option>
-                        {% for u in bcm_officer_user_choices|default([]) %}
-                            <option value="{{ u.id }}" {% if bcm_default == u.id %}selected{% endif %}>
-                                {{ u.lastName|default('') }}, {{ u.firstName|default('') }} ({{ u.email }})
-                            </option>
-                        {% endfor %}
-                    </select>
-                    <div class="form-text small">
-                        {{ 'policy_wizard.step.operational_baselines.bcm_officer_help'|trans }}
-                    </div>
+                    {% set bcm_options = [{value: '', label: '—'}] %}
+                    {% for u in bcm_officer_user_choices|default([]) %}
+                        {% set bcm_options = bcm_options|merge([{
+                            value: u.id,
+                            label: (u.lastName|default('') ~ ', ' ~ u.firstName|default('') ~ ' (' ~ u.email ~ ')')
+                        }]) %}
+                    {% endfor %}
+                    {{ _fa_cyber.select('bcm_officer_user_id', bcm_options, {
+                        id: 'op-bcm-user',
+                        label: 'policy_wizard.step.operational_baselines.bcm_officer_label'|trans,
+                        help: 'policy_wizard.step.operational_baselines.bcm_officer_help'|trans,
+                        value: bcm_default,
+                        extra_attrs: {'data-controller': 'tom-select'}
+                    }) }}
                 </div>
             {% endif %}
             <div class="col-12">
@@ -432,23 +395,17 @@
 {# ── Industry preset bundle (one-shot apply) ─────────────────────── #}
 {% if preset_bundles_for_step|default([])|length > 0 %}
     {% set preset_body %}
-        <label class="form-label" for="op-preset-bundle">
-            {{ 'policy_wizard.step.operational_baselines.preset_bundle_label'|trans }}
-        </label>
-        <select id="op-preset-bundle"
-                name="industry_preset_bundle_key"
-                class="form-select fa-cyber-input__field"
-                data-controller="tom-select">
-            <option value="">—</option>
-            {% for bundle in preset_bundles_for_step %}
-                <option value="{{ bundle.key }}" {% if preset_default == bundle.key %}selected{% endif %}>
-                    {{ bundle.label }}
-                </option>
-            {% endfor %}
-        </select>
-        <div class="form-text small">
-            {{ 'policy_wizard.step.operational_baselines.preset_bundle_help'|trans }}
-        </div>
+        {% set preset_options = [{value: '', label: '—'}] %}
+        {% for bundle in preset_bundles_for_step %}
+            {% set preset_options = preset_options|merge([{value: bundle.key, label: bundle.label}]) %}
+        {% endfor %}
+        {{ _fa_cyber.select('industry_preset_bundle_key', preset_options, {
+            id: 'op-preset-bundle',
+            label: 'policy_wizard.step.operational_baselines.preset_bundle_label'|trans,
+            help: 'policy_wizard.step.operational_baselines.preset_bundle_help'|trans,
+            value: preset_default,
+            extra_attrs: {'data-controller': 'tom-select'}
+        }) }}
     {% endset %}
     {{ _fa_section.render({
         title: 'policy_wizard.step.operational_baselines.preset_section_title'|trans,

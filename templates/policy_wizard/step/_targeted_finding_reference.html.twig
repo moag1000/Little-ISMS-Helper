@@ -1,5 +1,6 @@
 {% trans_default_domain 'policy_wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {# Mode 2 (Targeted re-run) Step 2 — Audit-Finding picker.
 
@@ -44,48 +45,45 @@
         }) }}
 
         <div class="mb-3 mt-3">
-            <label class="form-label" for="finding-reference">
-                {{ 'policy_wizard.step.targeted.finding.title'|trans }}
-            </label>
-
             {% if audit_findings|length > 0 %}
-                <select id="finding-reference"
-                        name="finding_reference"
-                        class="form-select fa-cyber-input__field"
-                        data-controller="ts-finding-picker"
-                        data-ts-finding-picker-placeholder-value="{{ 'policy_wizard.step.targeted.finding.placeholder'|trans }}">
-                    <option value="">{{ 'policy_wizard.step.targeted.finding.placeholder'|trans }}</option>
-                    {% for finding in audit_findings %}
-                        {% set option_value = 'AUDIT_FINDING:' ~ finding.id %}
-                        <option value="{{ option_value }}"{% if finding_value == option_value %} selected{% endif %}>
-                            {{ finding.finding_number }} — {{ finding.title }}
-                            ({{ ('policy_wizard.step.targeted.finding.severity.' ~ finding.severity)|trans }}{% if finding.due_date %}, {{ 'policy_wizard.step.targeted.finding.due'|trans }}: {{ finding.due_date }}{% endif %})
-                        </option>
-                    {% endfor %}
-                    {# Render the persisted free-text reference back as an option so
-                       the picker can show it as the current selection. #}
-                    {% if finding_value is not empty
-                          and finding_value starts with 'AUDIT_FINDING:' is same as(false) %}
-                        <option value="{{ finding_value }}" selected>{{ finding_value }}</option>
-                    {% endif %}
-                </select>
-                <div class="form-text">
-                    {{ 'policy_wizard.step.targeted.finding.help_picker'|trans }}
-                </div>
+                {% set finding_options = [] %}
+                {% for finding in audit_findings %}
+                    {% set option_value = 'AUDIT_FINDING:' ~ finding.id %}
+                    {% set option_label = finding.finding_number ~ ' — ' ~ finding.title
+                        ~ ' (' ~ ('policy_wizard.step.targeted.finding.severity.' ~ finding.severity)|trans
+                        ~ (finding.due_date ? ', ' ~ 'policy_wizard.step.targeted.finding.due'|trans ~ ': ' ~ finding.due_date : '')
+                        ~ ')' %}
+                    {% set finding_options = finding_options|merge([{value: option_value, label: option_label}]) %}
+                {% endfor %}
+                {# Render the persisted free-text reference back as an option so
+                   the picker can show it as the current selection. #}
+                {% if finding_value is not empty
+                      and finding_value starts with 'AUDIT_FINDING:' is same as(false) %}
+                    {% set finding_options = finding_options|merge([{value: finding_value, label: finding_value}]) %}
+                {% endif %}
+                {{ _fa_cyber.select('finding_reference', finding_options, {
+                    id: 'finding-reference',
+                    label: 'policy_wizard.step.targeted.finding.title'|trans,
+                    help: 'policy_wizard.step.targeted.finding.help_picker'|trans,
+                    placeholder: 'policy_wizard.step.targeted.finding.placeholder'|trans,
+                    value: finding_value,
+                    extra_attrs: {
+                        'data-controller': 'ts-finding-picker',
+                        'data-ts-finding-picker-placeholder-value': 'policy_wizard.step.targeted.finding.placeholder'|trans
+                    }
+                }) }}
             {% else %}
                 {# No open audit findings for this tenant — fall back to the
                    plain text input so external references (paper findings,
                    another GRC system, …) can still be linked. #}
-                <input type="text"
-                       class="form-control fa-cyber-input__field"
-                       id="finding-reference"
-                       name="finding_reference"
-                       maxlength="100"
-                       placeholder="{{ 'policy_wizard.step.targeted.finding.placeholder'|trans }}"
-                       value="{{ finding_value }}">
-                <div class="form-text">
-                    {{ 'policy_wizard.step.targeted.finding.no_open_findings'|trans }}
-                </div>
+                {{ _fa_cyber.text('finding_reference', {
+                    id: 'finding-reference',
+                    label: 'policy_wizard.step.targeted.finding.title'|trans,
+                    help: 'policy_wizard.step.targeted.finding.no_open_findings'|trans,
+                    placeholder: 'policy_wizard.step.targeted.finding.placeholder'|trans,
+                    value: finding_value,
+                    max: 100
+                }) }}
             {% endif %}
         </div>
     </div>
