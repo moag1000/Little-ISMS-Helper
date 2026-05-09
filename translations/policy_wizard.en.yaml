@@ -3,6 +3,34 @@ policy_wizard:
     subtitle: Generate your policy framework with minimal typing
     badge: ISMS
 
+    # Topic-key translations (24 ISO 27002:2022 topics + cross-cutting).
+    topic:
+        top_level: 'Top-level policy (ISO 27001 Cl. 5.2)'
+        acceptable_use: 'Acceptable use (A.5.10)'
+        access_control: 'Access control (A.5.15-5.18)'
+        information_classification: 'Information classification (A.5.12-5.13)'
+        information_transfer: 'Information transfer (A.5.14)'
+        identity_management: 'Identity management (A.5.16)'
+        authentication_information: 'Authentication information (A.5.17)'
+        cryptography: 'Cryptography (A.8.24)'
+        backup: 'Backup (A.8.13)'
+        logging: 'Logging (A.8.15-8.17)'
+        patch_management: 'Patch management (A.8.8 + A.8.32)'
+        malware: 'Malware protection (A.8.7)'
+        secure_configuration: 'Secure configuration (A.8.9)'
+        network_security: 'Network security (A.8.20-8.23)'
+        secure_development: 'Secure development (A.8.25-8.30)'
+        supplier_relationships: 'Supplier relationships (A.5.19-5.23)'
+        project_management: 'Project management (A.5.8)'
+        privacy_pii: 'Privacy / PII (A.5.34)'
+        incident_management: 'Incident management (A.5.24-5.28)'
+        continuity: 'Continuity (A.5.29-5.30)'
+        threat_intelligence: 'Threat intelligence (A.5.7)'
+        mobile_device: 'Mobile device (A.6.7 + A.7.9)'
+        asset_management: 'Asset management (A.5.9-5.11)'
+        hr_security: 'HR security (A.6.1-6.6)'
+        physical_security: 'Physical security (A.7.1-7.14)'
+
     landing:
         intro: 'Pick a mode to start the policy wizard. Active wizard runs can be resumed at any time.'
         in_progress_title: 'Active wizard runs'
@@ -48,6 +76,28 @@ policy_wizard:
                 title: 'Greenfield tenant'
                 message: 'No existing documents found. Let us start fresh.'
                 action_continue: 'Continue to Step 1 (Welcome).'
+            action_placeholder: '— pick action —'
+            target_topic_placeholder: '— pick topic —'
+            suggestion_label: 'Suggestion'
+            suggested_topic_help: 'Topic suggestion (based on title + description)'
+            help:
+                title: 'What do the 4 actions mean?'
+                replace: 'The wizard generates the matching new mandatory document; your old one is archived (not deleted). Recommended for outdated top-level policies, ISMS concepts and governance documents.'
+                keep: 'Your document remains unchanged; the wizard skips the matching topic. Recommended when your document is already current and audit-grade.'
+                merge_into_topic: 'Your document is appended as a section to a wizard-generated topic policy (e.g. your Backup concept goes into the wizard Backup Policy). Recommended for very specific detail concepts.'
+                split_to_topics: 'Your document touches several wizard topics (e.g. a mix of Access Control + Crypto). Split it across multiple wizard topics — the wizard creates stub sections; you fill the content manually.'
+            top_level_hint:
+                title: 'Top-level document detected'
+                body: 'This document appears to be your ISMS policy / top-level governance document. Such documents are typically replaced 1:1 by the wizard (action "Replace"). "Merge" or "Split" rarely make sense here.'
+            field:
+                action:
+                    label: 'What should the wizard do with this document?'
+                merge_topic:
+                    label: 'Which wizard topic should it be merged into?'
+                    help: 'Pick the wizard topic that best matches your document. Your content is appended as a section to the wizard-generated topic policy.'
+                split_topics:
+                    label: 'Which wizard topics should it be split into?'
+                    help: 'Pick 2 or more wizard topics across which your document should be split. The wizard creates stub sections in each selected topic.'
         welcome:
             title: 'Welcome + standards'
             subtitle: 'Pick the standards mix and the run mode.'

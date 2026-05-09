@@ -3,6 +3,36 @@ policy_wizard:
     subtitle: Regelwerk-Generierung mit minimalem Tipp-Aufwand
     badge: ISMS
 
+    # Topic-Schluessel-Uebersetzungen (24 ISO 27002:2022 Topics + Cross-Cutting).
+    # Verwendet im Bestandsaufnahme-Picker, im Targeted-Re-Run-Topic-Picker
+    # und in DocumentGenerator-Vorschauen. Quelle: PolicyWizardTopicCatalogue.
+    topic:
+        top_level: 'Top-Level Leitlinie (ISO 27001 Cl. 5.2)'
+        acceptable_use: 'Akzeptable Nutzung (A.5.10)'
+        access_control: 'Zugangskontrolle (A.5.15-5.18)'
+        information_classification: 'Informationsklassifizierung (A.5.12-5.13)'
+        information_transfer: 'Informationsuebertragung (A.5.14)'
+        identity_management: 'Identitaetsmanagement (A.5.16)'
+        authentication_information: 'Authentifizierungsinformation (A.5.17)'
+        cryptography: 'Kryptografie (A.8.24)'
+        backup: 'Datensicherung (A.8.13)'
+        logging: 'Protokollierung (A.8.15-8.17)'
+        patch_management: 'Patch-Management (A.8.8 + A.8.32)'
+        malware: 'Schadsoftware-Schutz (A.8.7)'
+        secure_configuration: 'Sichere Konfiguration (A.8.9)'
+        network_security: 'Netzwerksicherheit (A.8.20-8.23)'
+        secure_development: 'Sichere Entwicklung (A.8.25-8.30)'
+        supplier_relationships: 'Lieferantenbeziehungen (A.5.19-5.23)'
+        project_management: 'Projektmanagement (A.5.8)'
+        privacy_pii: 'Datenschutz / PII (A.5.34)'
+        incident_management: 'Incident-Management (A.5.24-5.28)'
+        continuity: 'Kontinuitaet (A.5.29-5.30)'
+        threat_intelligence: 'Threat Intelligence (A.5.7)'
+        mobile_device: 'Mobile Geraete (A.6.7 + A.7.9)'
+        asset_management: 'Asset-Management (A.5.9-5.11)'
+        hr_security: 'Personalsicherheit (A.6.1-6.6)'
+        physical_security: 'Physische Sicherheit (A.7.1-7.14)'
+
     landing:
         intro: 'Wählen Sie einen Modus, um den Policy-Wizard zu starten. Aktive Wizard-Läufe können jederzeit fortgesetzt werden.'
         in_progress_title: 'Aktive Wizard-Läufe'
@@ -48,6 +78,28 @@ policy_wizard:
                 title: 'Greenfield-Tenant'
                 message: 'Es wurden keine bestehenden Dokumente gefunden. Lassen Sie uns frisch starten.'
                 action_continue: 'Weiter zu Schritt 1 (Welcome).'
+            action_placeholder: '— Aktion wählen —'
+            target_topic_placeholder: '— Thema wählen —'
+            suggestion_label: 'Empfehlung'
+            suggested_topic_help: 'Thema-Vorschlag (basiert auf Titel + Beschreibung)'
+            help:
+                title: 'Was bedeuten die 4 Aktionen?'
+                replace: 'Wizard generiert das passende neue Pflicht-Dokument; Ihr altes Dokument wird archiviert (nicht gelöscht). Empfohlen für veraltete Leitlinien, ISMS-Konzepte und Top-Level-Politiken.'
+                keep: 'Ihr Dokument bleibt unverändert, der Wizard überspringt das passende Thema. Empfohlen, wenn Ihr Dokument bereits aktuell und audit-tauglich ist.'
+                merge_into_topic: 'Ihr Dokument wird als Anhang/Section in eine vom Wizard generierte Themen-Richtlinie eingebunden (z. B. Ihr Backup-Konzept geht in die Wizard-Backup-Policy). Empfohlen für sehr spezifische Detail-Konzepte.'
+                split_to_topics: 'Ihr Dokument betrifft mehrere Wizard-Themen (z. B. eine Mischung aus Zugangskontrolle + Krypto). Verteilen Sie es auf mehrere Wizard-Themen — der Wizard erstellt Stub-Sections; Sie tragen die Inhalte manuell nach.'
+            top_level_hint:
+                title: 'Top-Level-Dokument erkannt'
+                body: 'Dieses Dokument scheint Ihre ISMS-Leitlinie / Top-Level-Politik zu sein. Solche Dokumente werden typischerweise vom Wizard 1:1 ersetzt (Aktion „Ersetzen"). „Einbinden" oder „Aufteilen" macht hier selten Sinn.'
+            field:
+                action:
+                    label: 'Was soll der Wizard mit diesem Dokument tun?'
+                merge_topic:
+                    label: 'In welches Wizard-Thema einbinden?'
+                    help: 'Wählen Sie das Wizard-Thema, dem Ihr Dokument inhaltlich am nächsten kommt. Ihr Inhalt wird als Anhang in die Wizard-Themen-Richtlinie eingebunden.'
+                split_topics:
+                    label: 'In welche Wizard-Themen aufteilen?'
+                    help: 'Wählen Sie 2 oder mehr Wizard-Themen, auf die Ihr Dokument inhaltlich verteilt werden soll. Der Wizard erstellt Stub-Sections in jedem gewählten Thema.'
         welcome:
             title: 'Willkommen + Standards'
             subtitle: 'Wählen Sie den Standards-Mix und den Run-Modus.'
