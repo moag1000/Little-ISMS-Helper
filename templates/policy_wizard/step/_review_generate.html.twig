@@ -19,36 +19,58 @@
     {% endblock %}
 {% endembed %}
 
-<h3 class="h6 mb-3">{{ 'policy_wizard.step.review_generate.summary_heading'|trans }}</h3>
+{# -- Sandbox banner -- non-persistence is a critical user-expectation guard.
+ # When the user confirms in sandbox mode, no Documents are written; the
+ # banner makes that explicit BEFORE the user clicks "Generate". #}
+{% if run.mode == 'sandbox' %}
+    {{ _fa_alert.render({
+        variant: 'warning',
+        icon: 'bi-flask',
+        title: 'policy_wizard.step.review_generate.sandbox_banner.title'|trans,
+        body: 'policy_wizard.step.review_generate.sandbox_banner.body'|trans
+    }) }}
+{% endif %}
 
-<dl class="row mb-4">
-    <dt class="col-sm-3">{{ ('policy_wizard.mode.' ~ run.mode ~ '.label')|trans }}</dt>
-    <dd class="col-sm-9">{{ ('policy_wizard.mode.' ~ run.mode ~ '.description')|trans }}</dd>
+{# -- Conflicts + consistency hints rendered ABOVE the review table so the
+ # user resolves them BEFORE re-confirming the inputs. Persona-ISB Wish:
+ # severity classification before data confirmation. #}
+{% if hierarchy_conflicts|default([])|length > 0 %}
+    {% set conflicts_body %}
+        <ul class="mb-0">
+            {% for conflict in hierarchy_conflicts %}
+                <li>
+                    <strong>{{ conflict.key }}</strong>:
+                    {{ conflict.message|trans }}
+                    <small class="text-muted">(parent={{ conflict.parent_value|default('—') }}, child={{ conflict.child_value|default('—') }})</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endset %}
+    {{ _fa_alert.render({
+        variant: 'danger',
+        icon: 'bi-exclamation-octagon',
+        title: 'policy_wizard.step.review_generate.conflicts_heading'|trans ~ ' (' ~ ('policy_wizard.review.severity.blocking'|trans) ~ ')',
+        body: conflicts_body
+    }) }}
+{% else %}
+    {{ _fa_alert.render({
+        variant: 'success',
+        icon: 'bi-check-circle',
+        body: 'policy_wizard.step.review_generate.conflicts_empty'|trans
+    }) }}
+{% endif %}
 
-    <dt class="col-sm-3">Standards</dt>
-    <dd class="col-sm-9">
-        {% for s in run.standardsAdopted|default([]) %}
-            <span class="badge bg-secondary me-1">{{ s }}</span>
-        {% else %}
-            <span class="text-muted">—</span>
-        {% endfor %}
-    </dd>
-
-    {% for step_key, slot in inputs_so_far|default({}) %}
-        <dt class="col-sm-3">{{ ('policy_wizard.step.' ~ step_key ~ '.title')|trans|default(step_key) }}</dt>
-        <dd class="col-sm-9">
-            <pre class="small mb-0 bg-body-tertiary p-2 rounded">{{ slot|json_encode(constant('JSON_PRETTY_PRINT'))|default('—') }}</pre>
-        </dd>
-    {% endfor %}
-</dl>
-
-{# Cross-step consistency warnings (NON-blocking — informational nudge).
+{# Cross-step consistency warnings (NON-blocking informational nudges).
  # Junior-ISB Wish #6 — each warning is a CLICKABLE alert that
- # navigates to the warning's `target_step` so the implementer can
- # fix the root cause without scrolling back manually. The
- # CrossStepConsistencyValidator stamps every DTO with target_step. #}
+ # navigates to the warning's `target_step`. The CrossStepConsistencyValidator
+ # stamps every DTO with target_step. #}
 {% if consistency_warnings|default([])|length > 0 %}
-    <h3 class="h6 mb-3">{{ 'policy_wizard.step.review_generate.consistency_heading'|trans }}</h3>
+    <h3 class="h6 mb-2">
+        {{ 'policy_wizard.step.review_generate.consistency_heading'|trans }}
+        <span class="badge bg-warning-subtle text-warning-emphasis ms-1">
+            {{ 'policy_wizard.review.severity.non_blocking'|trans }}
+        </span>
+    </h3>
     {% for w in consistency_warnings %}
         {% set target = w.target_step|default('review_generate') %}
         {% set step_title = ('policy_wizard.step.' ~ target ~ '.title')|trans %}
@@ -68,29 +90,114 @@
     {% endfor %}
 {% endif %}
 
-<h3 class="h6 mb-3">{{ 'policy_wizard.step.review_generate.conflicts_heading'|trans }}</h3>
-{% if hierarchy_conflicts|default([])|length == 0 %}
+{# -- Curated review summary table (replaces the legacy raw-JSON dump).
+ # The view-model is built server-side in PolicyWizardController::buildReviewSummary
+ # and resolves all User-ID / Person-ID references to "Full Name <email>"
+ # so auditors can read the summary without cross-referencing the user table. #}
+<h3 class="h6 mb-3 mt-4">{{ 'policy_wizard.step.review_generate.summary_heading'|trans }}</h3>
+
+<dl class="row mb-4">
+    <dt class="col-sm-3">{{ ('policy_wizard.mode.' ~ run.mode ~ '.label')|trans }}</dt>
+    <dd class="col-sm-9">{{ ('policy_wizard.mode.' ~ run.mode ~ '.description')|trans }}</dd>
+</dl>
+
+{% if review_summary|default([])|length == 0 %}
     {{ _fa_alert.render({
-        variant: 'success',
-        body: 'policy_wizard.step.review_generate.conflicts_empty'|trans
+        variant: 'info',
+        body: 'policy_wizard.review.no_inputs_yet'|trans
     }) }}
 {% else %}
-    {% set conflicts_body %}
-        <ul class="mb-0">
-            {% for conflict in hierarchy_conflicts %}
-                <li>
-                    <strong>{{ conflict.key }}</strong>:
-                    {{ conflict.message|trans }}
-                    <small class="text-muted">(parent={{ conflict.parent_value|default('—') }}, child={{ conflict.child_value|default('—') }})</small>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endset %}
-    {{ _fa_alert.render({
-        variant: 'warning',
-        title: 'policy_wizard.step.review_generate.conflicts_heading'|trans,
-        body: conflicts_body
-    }) }}
+    {% for section in review_summary %}
+        <div class="card mb-3">
+            <div class="card-header py-2 d-flex align-items-center justify-content-between">
+                <h4 class="h6 mb-0">{{ section.title_key|trans }}</h4>
+                <a href="{{ path('app_policy_wizard_step_show', {runId: run.id, step: section.step_key}) }}"
+                   class="small text-decoration-none"
+                   title="{{ 'policy_wizard.review.edit_step'|trans }}">
+                    <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                    {{ 'policy_wizard.review.edit_step'|trans }}
+                </a>
+            </div>
+            <div class="card-body py-2">
+                {% if section.rows|length == 0 %}
+                    <p class="mb-0 small text-muted">{{ 'policy_wizard.review.no_inputs_in_step'|trans }}</p>
+                {% else %}
+                    <dl class="row mb-0 small">
+                        {% for row in section.rows %}
+                            <dt class="col-sm-4 fw-medium">{{ row.label_key|trans }}</dt>
+                            <dd class="col-sm-8">
+                                {% if row.value_type == 'badges' %}
+                                    {% if row.value|length == 0 %}
+                                        <span class="text-muted">—</span>
+                                    {% else %}
+                                        {% for v in row.value %}
+                                            <span class="badge bg-secondary me-1">{{ v }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% elseif row.value_type == 'list' %}
+                                    {% if row.value|length == 0 %}
+                                        <span class="text-muted">—</span>
+                                    {% else %}
+                                        <ol class="mb-0 ps-3">
+                                            {% for v in row.value %}
+                                                <li>{{ v }}</li>
+                                            {% endfor %}
+                                        </ol>
+                                    {% endif %}
+                                {% elseif row.value_type == 'bool' %}
+                                    {% if row.value %}
+                                        <span class="badge bg-success-subtle text-success-emphasis">
+                                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                            {{ 'policy_wizard.review.value.yes'|trans }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary-subtle text-secondary-emphasis">
+                                            <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                            {{ 'policy_wizard.review.value.no'|trans }}
+                                        </span>
+                                    {% endif %}
+                                {% elseif row.value_type == 'count' %}
+                                    {{ 'policy_wizard.review.value.count'|trans({'%count%': row.value}) }}
+                                {% elseif row.value_type == 'count_of' %}
+                                    {{ 'policy_wizard.review.value.count_of'|trans(
+                                        (row.params|default({}))|merge({'%count%': row.value})
+                                    ) }}
+                                {% elseif row.value_type == 'hours' %}
+                                    {{ 'policy_wizard.review.value.hours'|trans({'%count%': row.value}) }}
+                                {% elseif row.value_type == 'months' %}
+                                    {{ 'policy_wizard.review.value.months'|trans({'%count%': row.value}) }}
+                                {% elseif row.value_type == 'months_with_label' %}
+                                    {{ 'policy_wizard.review.value.months'|trans({'%count%': row.value}) }}
+                                    {% if row.value == 12 %}
+                                        <span class="text-muted small">({{ 'policy_wizard.review.value.months_label.yearly'|trans }})</span>
+                                    {% elseif row.value == 24 %}
+                                        <span class="text-muted small">({{ 'policy_wizard.review.value.months_label.biennial'|trans }})</span>
+                                    {% elseif row.value == 6 %}
+                                        <span class="text-muted small">({{ 'policy_wizard.review.value.months_label.semi_annual'|trans }})</span>
+                                    {% elseif row.value == 3 %}
+                                        <span class="text-muted small">({{ 'policy_wizard.review.value.months_label.quarterly'|trans }})</span>
+                                    {% endif %}
+                                {% elseif row.value_type == 'trans' %}
+                                    {{ row.value|trans }}
+                                {% elseif row.value_type == 'muted' %}
+                                    <span class="text-muted">{{ row.value }}</span>
+                                {% else %}
+                                    {{ row.value }}
+                                {% endif %}
+                            </dd>
+                        {% endfor %}
+                    </dl>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
 {% endif %}
 
-<p class="text-muted small mt-3">{{ 'policy_wizard.step.review_generate.generate_hint'|trans }}</p>
+{# Audit-trail hint — explicit promise that the generation event is logged
+ # with wizard run id + approver names + timestamp. ISO 27001 Clause 7.5.3. #}
+<p class="text-muted small mt-3 d-flex align-items-start gap-2">
+    <i class="bi bi-shield-lock mt-1 flex-shrink-0" aria-hidden="true"></i>
+    <span>{{ 'policy_wizard.step.review_generate.audit_trail_hint'|trans({'%run_id%': run.id}) }}</span>
+</p>
+
+<p class="text-muted small mt-2">{{ 'policy_wizard.step.review_generate.generate_hint'|trans }}</p>

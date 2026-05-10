@@ -687,6 +687,10 @@ policy_wizard:
                 body: 'This page summarises every input from previous steps. Consistency hints are non-blocking — but hierarchy conflicts should be reviewed because they signal contradictory group-tenant directives.'
                 example: 'Example conflict: subsidiary tenant sets backup RPO = 48 h while group default is 24 h → hierarchy conflict (subsidiary may not be laxer).'
                 reversibility: 'Important: Generate persists the documents in the tenant. In a production run generation is NOT undoable, but every document can be ARCHIVED (not deleted). Sandbox mode persists nothing.'
+            sandbox_banner:
+                title: 'Sandbox mode active — no persisted output'
+                body: 'This run was started in sandbox mode. Pressing Generate will NOT persist any documents in the tenant. Use this mode for trial runs without audit traces.'
+            audit_trail_hint: 'This generation will be recorded in the audit log with wizard run ID #%run_id%, the approver names listed below and the confirmation timestamp (ISO 27001 Clause 7.5.3).'
         targeted_pick_topics:
             title: 'Pick topics'
             subtitle: 'Mark up to ten existing topic policies for re-generation.'
@@ -889,6 +893,69 @@ policy_wizard:
         dora_rpo: 'DORA Art. 12 expects a backup RPO ≤ 24 h for critical ICT systems. Currently configured: %rpo% h.'
         bcm_rto: 'BCM-critical processes typically need RTO ≤ 24 h. Current high-criticality RTO: %rto% h.'
         significant_no_dpo: 'A DORA significant entity should have a Data Protection Officer appointed. Please review the DPO assignment in Step 3 or Step 5.'
+
+    # Persona-ISB / Auditor follow-up: Step 7 review summary replaces the
+    # legacy raw-JSON dump with a curated, label/value-formatted view.
+    review:
+        no_inputs_yet: 'No inputs from previous steps available yet.'
+        no_inputs_in_step: 'No relevant inputs in this step.'
+        edit_step: 'Edit'
+        severity:
+            blocking: 'blocking'
+            non_blocking: 'non-blocking — informational'
+        value:
+            yes: 'Yes'
+            no: 'No'
+            count: '%count%'
+            count_of: '%count% of %total%'
+            hours: '%count% hours'
+            months: '%count% months'
+            months_label:
+                yearly: 'yearly'
+                biennial: 'biennial'
+                semi_annual: 'semi-annual'
+                quarterly: 'quarterly'
+        welcome:
+            standards: 'Adopted standards'
+            mode: 'Run mode'
+            finding_reference: 'Audit-finding reference'
+            preset_bundle: 'Industry preset'
+        org:
+            legal_name: 'Legal name'
+            scope_statement: 'Scope statement'
+            primary_address: 'Primary address'
+            site_count: 'Number of sites'
+            climate_change_wording: 'Climate-change clause (ISO 27001:2024)'
+        roles:
+            role:
+                ciso: 'CISO'
+                isb: 'Information security officer'
+                dpo: 'Data protection officer'
+                bcm_officer: 'BCM officer'
+            function_owners_count: 'Assigned function-owner slots'
+            approval_chain: 'Approval chain'
+        risk:
+            appetite_tier: 'Risk appetite tier'
+            data_classification_levels: 'Data classification levels'
+            schutzbedarf_levels: 'Protection-requirement levels (BSI Schutzbedarf)'
+            annex_applicable_count: 'Applicable Annex A controls'
+            review_interval_months: 'Review interval'
+        op:
+            crypto_count: 'Crypto allowlist entries'
+            backup_rpo_hours: 'Backup RPO'
+            patch_sla_severities: 'Patch-SLA severities'
+            continuity_rto_count: 'Continuity-RTO classes'
+            dora_significant: 'DORA: significant'
+            dora_entity_type: 'DORA: entity type'
+            dora_competent_authority: 'DORA: competent authority'
+            dpo: 'DPO (operationally confirmed)'
+            bcm_officer: 'BCM officer (operationally confirmed)'
+        lifecycle:
+            default_review_interval: 'Default review interval'
+            per_policy_overrides_count: 'Policy-specific overrides'
+            approver_per_template: 'Template-specific approvers'
+            default_approver: 'Default approver'
+            alva_hint_on_review: 'Alva reminder 30 days before review'
 
     error:
         review_interval_max: 'The review interval must not exceed 24 months (ISO 27001 + audit defang).'
