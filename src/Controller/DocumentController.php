@@ -9,6 +9,7 @@ use Exception;
 use App\Entity\Document;
 use App\Form\DocumentType;
 use App\Repository\DocumentRepository;
+use App\Repository\EntityTagRepository;
 use App\Service\DocumentService;
 use App\Service\FileUploadSecurityService;
 use App\Service\InverseCoverageService;
@@ -48,6 +49,7 @@ class DocumentController extends AbstractController
         private readonly ?SettingsDriftDetector $settingsDriftDetector = null,
         private readonly ?AuditorScoreCalculator $auditorScoreCalculator = null,
         private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?EntityTagRepository $entityTagRepository = null,
     ) {}
 
     #[Route('/document/', name: 'app_document_index')]
@@ -473,6 +475,28 @@ class DocumentController extends AbstractController
             $policyBodyHtml = $pdfExporter->renderBodyHtmlPublic($document, false);
         }
 
+        // Compliance-Manager Wish — surface the `dora-validity:YYYY-MM-DD`
+        // and `climate-change:amended` EntityTag flags directly in the
+        // header. Auditors expect the DORA-Stand and Amd. 1:2024 marker
+        // to be visible without grepping through the tag-list overlay.
+        $doraValidityDate = null;
+        $climateChangeAware = false;
+        if ($this->entityTagRepository !== null && $document->getId() !== null) {
+            $activeTags = $this->entityTagRepository->findActiveFor(Document::class, $document->getId());
+            $tagNames = [];
+            foreach ($activeTags as $entityTag) {
+                $tag = $entityTag->getTag();
+                if ($tag !== null) {
+                    $name = $tag->getName();
+                    if (is_string($name)) {
+                        $tagNames[] = $name;
+                    }
+                }
+            }
+            $doraValidityDate = Document::parseDoraValidityFromTags($tagNames);
+            $climateChangeAware = Document::isClimateChangeAwareFromTags($tagNames);
+        }
+
         return $this->render('document/show.html.twig', [
             'document' => $document,
             'isInherited' => $isInherited,
@@ -481,6 +505,8 @@ class DocumentController extends AbstractController
             'inverse_coverage' => $inverseCoverage,
             'auditorScore' => $auditorScore,
             'policyBodyHtml' => $policyBodyHtml,
+            'doraValidityDate' => $doraValidityDate,
+            'climateChangeAware' => $climateChangeAware,
         ]);
     }
 

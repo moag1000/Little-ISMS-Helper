@@ -6,6 +6,7 @@ namespace App\Service\PolicyWizard\Export;
 
 use App\Entity\Document;
 use App\Entity\TenantBranding;
+use App\Repository\EntityTagRepository;
 use App\Repository\TenantBrandingRepository;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -35,6 +36,7 @@ class PolicyPdfExporter
     public function __construct(
         private readonly TwigEnvironment $twig,
         private readonly ?TenantBrandingRepository $brandingRepository = null,
+        private readonly ?EntityTagRepository $entityTagRepository = null,
     ) {
     }
 
@@ -114,7 +116,7 @@ class PolicyPdfExporter
 
     /**
      * @param array<string, mixed> $variables
-     * @return array{title: string, version: int, valid_from: ?string, valid_until: ?string, approver_chain: list<string>, generated_on: string, topic: ?string, standard: ?string}
+     * @return array{title: string, version: int, valid_from: ?string, valid_until: ?string, approver_chain: list<string>, generated_on: string, topic: ?string, standard: ?string, dora_validity_date: ?string, climate_change_aware: bool}
      */
     private function buildCoverContext(Document $doc, array $variables): array
     {
@@ -141,16 +143,55 @@ class PolicyPdfExporter
             $approverChain[] = $rawChain;
         }
 
+        // Compliance-Manager Wish — surface DORA-validity + Climate-Change
+        // marker on the PDF cover. Tag-set is resolved via EntityTagRepository
+        // when the dependency is wired (legacy unit-tests construct the
+        // exporter without it; in that case both flags fall back to null/false).
+        $tagNames = $this->resolveActiveTagNames($doc);
+        $doraValidity = Document::parseDoraValidityFromTags($tagNames);
+        $climateAware = Document::isClimateChangeAwareFromTags($tagNames);
+
         return [
-            'title'          => $title,
-            'version'        => $version,
-            'valid_from'     => $this->stringOrNull($variables['valid_from'] ?? null),
-            'valid_until'    => $this->stringOrNull($variables['valid_until'] ?? null),
-            'approver_chain' => $approverChain,
-            'generated_on'   => ($doc->getUploadedAt() ?? new \DateTimeImmutable())->format('Y-m-d'),
-            'topic'          => $template?->getTopic(),
-            'standard'       => $template?->getStandard(),
+            'title'                => $title,
+            'version'              => $version,
+            'valid_from'           => $this->stringOrNull($variables['valid_from'] ?? null),
+            'valid_until'          => $this->stringOrNull($variables['valid_until'] ?? null),
+            'approver_chain'       => $approverChain,
+            'generated_on'         => ($doc->getUploadedAt() ?? new \DateTimeImmutable())->format('Y-m-d'),
+            'topic'                => $template?->getTopic(),
+            'standard'             => $template?->getStandard(),
+            'dora_validity_date'   => $doraValidity?->format('Y-m-d'),
+            'climate_change_aware' => $climateAware,
         ];
+    }
+
+    /**
+     * Resolve the active EntityTag names for a Document. Returns an
+     * empty list when the repository is not wired (test seam) or the
+     * Document has no id yet.
+     *
+     * @return list<string>
+     */
+    private function resolveActiveTagNames(Document $doc): array
+    {
+        if ($this->entityTagRepository === null) {
+            return [];
+        }
+        $id = $doc->getId();
+        if ($id === null) {
+            return [];
+        }
+        $names = [];
+        foreach ($this->entityTagRepository->findActiveFor(Document::class, $id) as $entityTag) {
+            $tag = $entityTag->getTag();
+            if ($tag !== null) {
+                $name = $tag->getName();
+                if (is_string($name) && $name !== '') {
+                    $names[] = $name;
+                }
+            }
+        }
+        return $names;
     }
 
     /**
