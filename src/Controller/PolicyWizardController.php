@@ -563,6 +563,9 @@ final class PolicyWizardController extends AbstractController
             'bcm_officer_person_choices' => [],
             'function_owner_person_choices' => [],
             'approval_chain_user_choices' => [],
+            // Step 7 — curated review-summary view-model (replaces the
+            // legacy raw-JSON dump). See buildReviewSummary() for shape.
+            'review_summary' => [],
         ];
 
         // Step 4 — Roles: Person-pickers for governance roles +
@@ -612,12 +615,518 @@ final class PolicyWizardController extends AbstractController
             $extras['approver_user_choices'] = $this->userRepository->findApproversInTenant($tenant);
         }
 
-        // Step 7 — Review & Generate: surface non-blocking warnings.
+        // Step 7 — Review & Generate: surface non-blocking warnings +
+        // build the curated, audit-friendly review-summary view-model
+        // (Persona-ISB Wish: replace the raw `inputs_so_far` JSON dump
+        // with a readable table — Auditor-Reizthema).
         if ($isTerminal && $step === WizardStepKeys::STEP_REVIEW_GENERATE) {
             $extras['consistency_warnings'] = $this->orchestrator->consistencyWarnings($run);
+            $extras['review_summary'] = $this->buildReviewSummary($run);
         }
 
         return $extras;
+    }
+
+    /**
+     * Build the curated review-summary view-model for Step 7.
+     *
+     * Each section corresponds to ONE preceding wizard step and contains
+     * a hand-picked list of label/value rows — NEVER a raw JSON dump.
+     * User/Person id-references are resolved to a `display` string of
+     * the form "Full Name <email>" so auditors can read the summary
+     * without cross-referencing the user table.
+     *
+     * Output shape:
+     * ```
+     * [
+     *     [
+     *         'step_key' => 'organisation_scope',
+     *         'title_key' => 'policy_wizard.step.organisation_scope.title',
+     *         'rows' => [
+     *             ['label_key' => '...', 'value' => 'string', 'value_type' => 'text'|'badges'|'list'|'muted'],
+     *             ...
+     *         ],
+     *     ],
+     *     ...
+     * ]
+     * ```
+     *
+     * @return list<array{step_key: string, title_key: string, rows: list<array{label_key: string, value: mixed, value_type: string, params?: array<string, mixed>}>}>
+     */
+    private function buildReviewSummary(WizardRun $run): array
+    {
+        $inputs = $run->getInputs() ?? [];
+
+        // Resolve every user-id-like value the summary references to a
+        // `[id => "Full Name <email>"]` map in ONE round-trip so the
+        // template never has to do per-row queries.
+        $userIds = $this->collectReferencedUserIds($inputs);
+        $userDisplay = $this->resolveUserDisplays($userIds);
+
+        $personIds = $this->collectReferencedPersonIds($inputs);
+        $personDisplay = $this->resolvePersonDisplays($personIds);
+
+        $sections = [];
+
+        // -- welcome / standards ----------------------------------------------
+        $welcome = $inputs[WizardStepKeys::STEP_WELCOME] ?? [];
+        if (is_array($welcome) && $welcome !== []) {
+            $rows = [];
+            $standards = is_array($welcome['standards'] ?? null) ? $welcome['standards'] : [];
+            $rows[] = [
+                'label_key' => 'policy_wizard.review.welcome.standards',
+                'value' => $standards,
+                'value_type' => 'badges',
+            ];
+            if (!empty($welcome['mode'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.welcome.mode',
+                    'value' => 'policy_wizard.mode.' . $welcome['mode'] . '.label',
+                    'value_type' => 'trans',
+                ];
+            }
+            if (!empty($welcome['finding_reference'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.welcome.finding_reference',
+                    'value' => (string) $welcome['finding_reference'],
+                    'value_type' => 'text',
+                ];
+            }
+            if (!empty($welcome['industry_preset_bundle_key'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.welcome.preset_bundle',
+                    'value' => (string) $welcome['industry_preset_bundle_key'],
+                    'value_type' => 'text',
+                ];
+            }
+            $sections[] = [
+                'step_key' => WizardStepKeys::STEP_WELCOME,
+                'title_key' => 'policy_wizard.step.welcome.title',
+                'rows' => $rows,
+            ];
+        }
+
+        // -- organisation scope ------------------------------------------------
+        $org = $inputs[WizardStepKeys::STEP_ORG_SCOPE] ?? [];
+        if (is_array($org) && $org !== []) {
+            $rows = [];
+            if (!empty($org['legal_name'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.org.legal_name',
+                    'value' => (string) $org['legal_name'],
+                    'value_type' => 'text',
+                ];
+            }
+            if (!empty($org['scope_statement'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.org.scope_statement',
+                    'value' => (string) $org['scope_statement'],
+                    'value_type' => 'text',
+                ];
+            }
+            if (!empty($org['primary_address'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.org.primary_address',
+                    'value' => (string) $org['primary_address'],
+                    'value_type' => 'text',
+                ];
+            }
+            $siteIds = is_array($org['site_ids'] ?? null) ? $org['site_ids'] : [];
+            $rows[] = [
+                'label_key' => 'policy_wizard.review.org.site_count',
+                'value' => count($siteIds),
+                'value_type' => 'count',
+            ];
+            $rows[] = [
+                'label_key' => 'policy_wizard.review.org.climate_change_wording',
+                'value' => (bool) ($org['climate_change_wording'] ?? false),
+                'value_type' => 'bool',
+            ];
+            $sections[] = [
+                'step_key' => WizardStepKeys::STEP_ORG_SCOPE,
+                'title_key' => 'policy_wizard.step.organisation_scope.title',
+                'rows' => $rows,
+            ];
+        }
+
+        // -- roles -------------------------------------------------------------
+        $roles = $inputs[WizardStepKeys::STEP_ROLES] ?? [];
+        if (is_array($roles) && $roles !== []) {
+            $rows = [];
+            $rolesMap = is_array($roles['roles'] ?? null) ? $roles['roles'] : [];
+            foreach ($rolesMap as $roleKey => $personId) {
+                if (!is_string($roleKey) || $roleKey === '' || !is_int($personId)) {
+                    continue;
+                }
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.roles.role.' . $roleKey,
+                    'value' => $personDisplay[$personId] ?? ('#' . $personId),
+                    'value_type' => 'text',
+                ];
+            }
+            $functionOwners = is_array($roles['function_owners'] ?? null) ? $roles['function_owners'] : [];
+            $assignedFunctions = 0;
+            foreach ($functionOwners as $personId) {
+                if (is_int($personId)) {
+                    $assignedFunctions++;
+                }
+            }
+            if ($assignedFunctions > 0 || $functionOwners !== []) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.roles.function_owners_count',
+                    'value' => $assignedFunctions,
+                    'value_type' => 'count',
+                ];
+            }
+            $approvalChain = is_array($roles['approval_chain'] ?? null) ? $roles['approval_chain'] : [];
+            if ($approvalChain !== []) {
+                $chainNames = [];
+                foreach ($approvalChain as $userId) {
+                    if (!is_int($userId)) {
+                        continue;
+                    }
+                    $chainNames[] = $userDisplay[$userId] ?? ('User #' . $userId);
+                }
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.roles.approval_chain',
+                    'value' => $chainNames,
+                    'value_type' => 'list',
+                ];
+            }
+            $sections[] = [
+                'step_key' => WizardStepKeys::STEP_ROLES,
+                'title_key' => 'policy_wizard.step.roles.title',
+                'rows' => $rows,
+            ];
+        }
+
+        // -- risk classification ----------------------------------------------
+        $risk = $inputs[WizardStepKeys::STEP_RISK_CLASSIFICATION] ?? [];
+        if (is_array($risk) && $risk !== []) {
+            $rows = [];
+            if (isset($risk['risk_appetite_tier'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.risk.appetite_tier',
+                    'value' => (int) $risk['risk_appetite_tier'],
+                    'value_type' => 'text',
+                ];
+            }
+            $dataLevels = is_array($risk['data_classification_levels'] ?? null)
+                ? $risk['data_classification_levels'] : [];
+            if ($dataLevels !== []) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.risk.data_classification_levels',
+                    'value' => array_values(array_filter(array_map('strval', $dataLevels))),
+                    'value_type' => 'badges',
+                ];
+            }
+            $schutzbedarf = is_array($risk['schutzbedarf_levels'] ?? null)
+                ? $risk['schutzbedarf_levels'] : [];
+            if ($schutzbedarf !== []) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.risk.schutzbedarf_levels',
+                    'value' => array_values(array_filter(array_map('strval', $schutzbedarf))),
+                    'value_type' => 'badges',
+                ];
+            }
+            $annex = is_array($risk['annex_a_applicability'] ?? null)
+                ? $risk['annex_a_applicability'] : [];
+            $applicableCount = 0;
+            foreach ($annex as $applicable) {
+                if ($applicable) {
+                    $applicableCount++;
+                }
+            }
+            if ($annex !== []) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.risk.annex_applicable_count',
+                    'value' => $applicableCount,
+                    'value_type' => 'count_of',
+                    'params' => ['%total%' => count($annex)],
+                ];
+            }
+            if (isset($risk['review_interval_months'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.risk.review_interval_months',
+                    'value' => (int) $risk['review_interval_months'],
+                    'value_type' => 'months',
+                ];
+            }
+            $sections[] = [
+                'step_key' => WizardStepKeys::STEP_RISK_CLASSIFICATION,
+                'title_key' => 'policy_wizard.step.risk_classification.title',
+                'rows' => $rows,
+            ];
+        }
+
+        // -- operational baselines --------------------------------------------
+        $op = $inputs[WizardStepKeys::STEP_OPERATIONAL_BASELINES] ?? [];
+        if (is_array($op) && $op !== []) {
+            $rows = [];
+            $crypto = is_array($op['crypto_allowlist'] ?? null) ? $op['crypto_allowlist'] : [];
+            if ($crypto !== []) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.crypto_count',
+                    'value' => count($crypto),
+                    'value_type' => 'count',
+                ];
+            }
+            if (isset($op['backup_rpo_hours'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.backup_rpo_hours',
+                    'value' => (int) $op['backup_rpo_hours'],
+                    'value_type' => 'hours',
+                ];
+            }
+            $patch = is_array($op['patch_sla_hours'] ?? null) ? $op['patch_sla_hours'] : [];
+            if ($patch !== []) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.patch_sla_severities',
+                    'value' => array_keys($patch),
+                    'value_type' => 'badges',
+                ];
+            }
+            $rto = is_array($op['continuity_rto_hours'] ?? null) ? $op['continuity_rto_hours'] : [];
+            if ($rto !== []) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.continuity_rto_count',
+                    'value' => count($rto),
+                    'value_type' => 'count',
+                ];
+            }
+            $dora = is_array($op['dora'] ?? null) ? $op['dora'] : null;
+            if ($dora !== null) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.dora_significant',
+                    'value' => (bool) ($dora['is_significant'] ?? false),
+                    'value_type' => 'bool',
+                ];
+                if (!empty($dora['entity_type'])) {
+                    $rows[] = [
+                        'label_key' => 'policy_wizard.review.op.dora_entity_type',
+                        'value' => (string) $dora['entity_type'],
+                        'value_type' => 'text',
+                    ];
+                }
+                if (!empty($dora['competent_authority'])) {
+                    $rows[] = [
+                        'label_key' => 'policy_wizard.review.op.dora_competent_authority',
+                        'value' => (string) $dora['competent_authority'],
+                        'value_type' => 'text',
+                    ];
+                }
+            }
+            if (!empty($op['dpo_user_id']) && is_int($op['dpo_user_id'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.dpo',
+                    'value' => $userDisplay[$op['dpo_user_id']] ?? ('User #' . $op['dpo_user_id']),
+                    'value_type' => 'text',
+                ];
+            }
+            if (!empty($op['bcm_officer_user_id']) && is_int($op['bcm_officer_user_id'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.op.bcm_officer',
+                    'value' => $userDisplay[$op['bcm_officer_user_id']] ?? ('User #' . $op['bcm_officer_user_id']),
+                    'value_type' => 'text',
+                ];
+            }
+            $sections[] = [
+                'step_key' => WizardStepKeys::STEP_OPERATIONAL_BASELINES,
+                'title_key' => 'policy_wizard.step.operational_baselines.title',
+                'rows' => $rows,
+            ];
+        }
+
+        // -- lifecycle ---------------------------------------------------------
+        $lc = $inputs[WizardStepKeys::STEP_LIFECYCLE] ?? [];
+        if (is_array($lc) && $lc !== []) {
+            $rows = [];
+            if (isset($lc['default_review_interval_months'])) {
+                $months = (int) $lc['default_review_interval_months'];
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.lifecycle.default_review_interval',
+                    'value' => $months,
+                    'value_type' => 'months_with_label',
+                ];
+            }
+            $perPolicy = is_array($lc['per_policy_overrides'] ?? null) ? $lc['per_policy_overrides'] : [];
+            if ($perPolicy !== []) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.lifecycle.per_policy_overrides_count',
+                    'value' => count($perPolicy),
+                    'value_type' => 'count',
+                ];
+            }
+            $approverPerTemplate = is_array($lc['approver_per_template'] ?? null)
+                ? $lc['approver_per_template'] : [];
+            if ($approverPerTemplate !== []) {
+                $approverList = [];
+                foreach ($approverPerTemplate as $templateKey => $userId) {
+                    if (!is_string($templateKey) || !is_int($userId)) {
+                        continue;
+                    }
+                    $approverList[] = sprintf(
+                        '%s → %s',
+                        $templateKey,
+                        $userDisplay[$userId] ?? ('User #' . $userId),
+                    );
+                }
+                if ($approverList !== []) {
+                    $rows[] = [
+                        'label_key' => 'policy_wizard.review.lifecycle.approver_per_template',
+                        'value' => $approverList,
+                        'value_type' => 'list',
+                    ];
+                }
+            }
+            if (!empty($lc['default_approver_user_id']) && is_int($lc['default_approver_user_id'])) {
+                $rows[] = [
+                    'label_key' => 'policy_wizard.review.lifecycle.default_approver',
+                    'value' => $userDisplay[$lc['default_approver_user_id']]
+                        ?? ('User #' . $lc['default_approver_user_id']),
+                    'value_type' => 'text',
+                ];
+            }
+            $rows[] = [
+                'label_key' => 'policy_wizard.review.lifecycle.alva_hint_on_review',
+                'value' => (bool) ($lc['alva_hint_on_review'] ?? true),
+                'value_type' => 'bool',
+            ];
+            $sections[] = [
+                'step_key' => WizardStepKeys::STEP_LIFECYCLE,
+                'title_key' => 'policy_wizard.step.lifecycle.title',
+                'rows' => $rows,
+            ];
+        }
+
+        return $sections;
+    }
+
+    /**
+     * Walk the wizard inputs to collect every User.id reference that the
+     * review-summary will display. Returns DEDUPLICATED list of ints.
+     *
+     * @param array<string, mixed> $inputs
+     * @return list<int>
+     */
+    private function collectReferencedUserIds(array $inputs): array
+    {
+        $ids = [];
+
+        // RolesStep.approval_chain — list<int>
+        $roles = $inputs[WizardStepKeys::STEP_ROLES] ?? [];
+        if (is_array($roles)) {
+            $chain = $roles['approval_chain'] ?? [];
+            if (is_array($chain)) {
+                foreach ($chain as $id) {
+                    if (is_int($id) && $id > 0) {
+                        $ids[] = $id;
+                    }
+                }
+            }
+        }
+
+        // OperationalBaselinesStep.dpo_user_id + .bcm_officer_user_id
+        $op = $inputs[WizardStepKeys::STEP_OPERATIONAL_BASELINES] ?? [];
+        if (is_array($op)) {
+            foreach (['dpo_user_id', 'bcm_officer_user_id'] as $key) {
+                $val = $op[$key] ?? null;
+                if (is_int($val) && $val > 0) {
+                    $ids[] = $val;
+                }
+            }
+        }
+
+        // LifecycleStep.default_approver_user_id + .approver_per_template[*]
+        $lc = $inputs[WizardStepKeys::STEP_LIFECYCLE] ?? [];
+        if (is_array($lc)) {
+            $defApp = $lc['default_approver_user_id'] ?? null;
+            if (is_int($defApp) && $defApp > 0) {
+                $ids[] = $defApp;
+            }
+            $perTpl = $lc['approver_per_template'] ?? [];
+            if (is_array($perTpl)) {
+                foreach ($perTpl as $userId) {
+                    if (is_int($userId) && $userId > 0) {
+                        $ids[] = $userId;
+                    }
+                }
+            }
+        }
+
+        return array_values(array_unique($ids));
+    }
+
+    /**
+     * Walk the wizard inputs to collect every Person.id reference that
+     * the review-summary will display.
+     *
+     * @param array<string, mixed> $inputs
+     * @return list<int>
+     */
+    private function collectReferencedPersonIds(array $inputs): array
+    {
+        $ids = [];
+        $roles = $inputs[WizardStepKeys::STEP_ROLES] ?? [];
+        if (is_array($roles)) {
+            foreach (['roles', 'function_owners'] as $bucket) {
+                $map = $roles[$bucket] ?? [];
+                if (!is_array($map)) {
+                    continue;
+                }
+                foreach ($map as $personId) {
+                    if (is_int($personId) && $personId > 0) {
+                        $ids[] = $personId;
+                    }
+                }
+            }
+        }
+
+        return array_values(array_unique($ids));
+    }
+
+    /**
+     * Resolve User-ids to "Full Name <email>" display strings in ONE
+     * findBy() call. Missing ids fall back to the placeholder format
+     * "User #<id>" so the template can still render.
+     *
+     * @param list<int> $ids
+     * @return array<int, string>
+     */
+    private function resolveUserDisplays(array $ids): array
+    {
+        if ($ids === []) {
+            return [];
+        }
+        $map = [];
+        foreach ($this->userRepository->findBy(['id' => $ids]) as $u) {
+            $name = trim($u->getFullName());
+            $email = (string) ($u->getEmail() ?? '');
+            $display = $name !== '' && $email !== ''
+                ? sprintf('%s <%s>', $name, $email)
+                : ($name !== '' ? $name : $email);
+            $map[(int) $u->getId()] = $display !== '' ? $display : ('User #' . $u->getId());
+        }
+        return $map;
+    }
+
+    /**
+     * Resolve Person-ids to display strings.
+     *
+     * @param list<int> $ids
+     * @return array<int, string>
+     */
+    private function resolvePersonDisplays(array $ids): array
+    {
+        if ($ids === []) {
+            return [];
+        }
+        $map = [];
+        foreach ($this->personRepository->findBy(['id' => $ids]) as $p) {
+            $name = trim((string) $p->getFullName());
+            $map[(int) $p->getId()] = $name !== '' ? $name : ('Person #' . $p->getId());
+        }
+        return $map;
     }
 
     /**

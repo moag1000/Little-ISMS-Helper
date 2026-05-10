@@ -689,6 +689,10 @@ policy_wizard:
                 body: 'Diese Seite zeigt eine kompakte Übersicht aller Eingaben aus den vorherigen Schritten. Konsistenz-Hinweise sind nicht blockierend — Hierarchie-Konflikte sollten Sie aber prüfen, da sie auf widersprüchliche Konzern-Vorgaben hindeuten.'
                 example: 'Beispiel-Konflikt: Tochter-Tenant setzt Backup-RPO = 48 h, Konzern-Default ist 24 h → Hierarchie-Konflikt (Tochter darf nicht lascher sein).'
                 reversibility: 'Wichtig: „Erzeugen" persistiert die Dokumente im Tenant. Bei einem produktiven Lauf ist die Generierung NICHT rückgängig, aber jedes Dokument kann ARCHIVIERT (nicht gelöscht) werden. Sandbox-Modus persistiert nichts.'
+            sandbox_banner:
+                title: 'Sandbox-Modus aktiv — kein persistierter Output'
+                body: 'Dieser Lauf wurde im Sandbox-Modus gestartet. Beim Klick auf „Erzeugen" werden KEINE Dokumente im Mandanten gespeichert. Verwenden Sie diesen Modus für Probeläufe ohne Audit-Spuren.'
+            audit_trail_hint: 'Diese Generierung wird mit Wizard-Run-ID #%run_id%, den unten gelisteten Approver-Namen und dem Zeitstempel der Bestätigung im Audit-Log erfasst (ISO 27001 Klausel 7.5.3).'
         targeted_pick_topics:
             title: 'Themen auswählen'
             subtitle: 'Bis zu zehn bestehende Topic-Policies für die Re-Generierung markieren.'
@@ -891,6 +895,69 @@ policy_wizard:
         dora_rpo: 'DORA Art. 12 erwartet einen Backup-RPO ≤ 24 h für kritische IKT-Systeme. Aktuell konfiguriert: %rpo% h.'
         bcm_rto: 'BCM-kritische Prozesse benötigen typischerweise eine RTO ≤ 24 h. Aktuell für hohe Kritikalität: %rto% h.'
         significant_no_dpo: 'DORA-bedeutendes Unternehmen sollte einen Datenschutzbeauftragten benannt haben. Bitte DPO-Zuweisung in Schritt 3 oder Schritt 5 prüfen.'
+
+    # Persona-ISB / Auditor follow-up: Step 7 review summary replaces the
+    # legacy raw-JSON dump with a curated, label/value-formatted view.
+    review:
+        no_inputs_yet: 'Es liegen noch keine Eingaben aus den vorherigen Schritten vor.'
+        no_inputs_in_step: 'Keine relevanten Eingaben in diesem Schritt.'
+        edit_step: 'Bearbeiten'
+        severity:
+            blocking: 'blockierend'
+            non_blocking: 'nicht blockierend — informativ'
+        value:
+            yes: 'Ja'
+            no: 'Nein'
+            count: '%count%'
+            count_of: '%count% von %total%'
+            hours: '%count% Stunden'
+            months: '%count% Monate'
+            months_label:
+                yearly: 'jährlich'
+                biennial: 'zweijährlich'
+                semi_annual: 'halbjährlich'
+                quarterly: 'quartalsweise'
+        welcome:
+            standards: 'Gewählte Standards'
+            mode: 'Lauf-Modus'
+            finding_reference: 'Audit-Finding-Referenz'
+            preset_bundle: 'Branchen-Preset'
+        org:
+            legal_name: 'Juristischer Name'
+            scope_statement: 'Scope-Statement'
+            primary_address: 'Hauptadresse'
+            site_count: 'Anzahl Standorte'
+            climate_change_wording: 'Klimawandel-Klausel (ISO 27001:2024)'
+        roles:
+            role:
+                ciso: 'CISO'
+                isb: 'ISB / Informationssicherheitsbeauftragter'
+                dpo: 'Datenschutzbeauftragter'
+                bcm_officer: 'BCM-Officer'
+            function_owners_count: 'Belegte Function-Owner-Slots'
+            approval_chain: 'Approval-Chain'
+        risk:
+            appetite_tier: 'Risiko-Appetit-Stufe'
+            data_classification_levels: 'Daten-Klassifikations-Stufen'
+            schutzbedarf_levels: 'Schutzbedarfs-Stufen (BSI)'
+            annex_applicable_count: 'Anwendbare Annex-A-Controls'
+            review_interval_months: 'Review-Intervall'
+        op:
+            crypto_count: 'Krypto-Allowlist-Einträge'
+            backup_rpo_hours: 'Backup-RPO'
+            patch_sla_severities: 'Patch-SLA-Schweregrade'
+            continuity_rto_count: 'Continuity-RTO-Klassen'
+            dora_significant: 'DORA: signifikant'
+            dora_entity_type: 'DORA: Entity-Typ'
+            dora_competent_authority: 'DORA: Aufsichtsbehörde'
+            dpo: 'DPO (operativ bestätigt)'
+            bcm_officer: 'BCM-Officer (operativ bestätigt)'
+        lifecycle:
+            default_review_interval: 'Standard-Prüfintervall'
+            per_policy_overrides_count: 'Policy-spezifische Overrides'
+            approver_per_template: 'Template-spezifische Approver'
+            default_approver: 'Standard-Approver'
+            alva_hint_on_review: 'Alva-Erinnerung 30 Tage vor Review'
 
     error:
         review_interval_max: 'Das Review-Intervall darf 24 Monate nicht überschreiten (ISO 27001 + Audit-Defang).'
