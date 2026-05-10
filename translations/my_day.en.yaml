@@ -1,7 +1,7 @@
 # My Day Inbox (Phase 7 Persona-driven Inbox)
 title: 'My Day'
 badge: 'My Day'
-subtitle: 'All open items from 16 inboxes — today, %generated_at%'
+subtitle: 'All open items from 19 inboxes — today, %generated_at%'
 
 action:
     standard_dashboard: 'Standard Dashboard'
@@ -23,6 +23,9 @@ kpi:
     audit_checklist_due: 'Audit checklist due'
     change_requests_pending_approval: 'CRs pending approval'
     management_review_upcoming: 'Mgmt review upcoming'
+    documents_pending_approval_for_me: 'Documents pending approval'
+    wizard_overdue: 'Wizard assessments stalled'
+    framework_gaps_critical: 'Framework gaps critical'
 
 section:
     workflows_pending: 'Workflows open'
@@ -41,6 +44,9 @@ section:
     audit_checklist_due: 'Audit checklist — due within 7 days'
     change_requests_pending_approval: 'Change requests — pending approval'
     management_review_upcoming: 'Management review — upcoming (90-day window)'
+    documents_pending_approval_for_me: 'Documents in review — pending CM approval'
+    wizard_overdue: 'Wizard assessments — stalled (90+ days)'
+    framework_gaps_critical: 'Framework coverage gaps — critical (< 60 %)'
 
 bucket:
     risk_acceptance_expiring:

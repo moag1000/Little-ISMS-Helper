@@ -20,6 +20,7 @@ use App\Entity\Tenant;
 use App\Entity\TrainingParticipation;
 use App\Entity\User;
 use App\Entity\Vulnerability;
+use App\Entity\WizardSession;
 use App\Entity\WorkflowInstance;
 use App\Repository\AuditChecklistRepository;
 use App\Repository\AuditFindingRepository;
@@ -35,6 +36,7 @@ use App\Repository\PolicyAcknowledgementRepository;
 use App\Repository\RiskRepository;
 use App\Repository\TrainingParticipationRepository;
 use App\Repository\VulnerabilityRepository;
+use App\Repository\WizardSessionRepository;
 use App\Repository\WorkflowInstanceRepository;
 use DateTimeImmutable;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -101,6 +103,12 @@ class MyDayAggregator
     /** Incident-priority look-ahead window for "due-soon" badge (V4 R2). */
     private const INCIDENT_PRIORITY_DAYS = 7;
 
+    /** V4-EF-7: Wizard stall window in days before surfaced as "overdue" to CM. */
+    private const WIZARD_OVERDUE_DAYS = 90;
+
+    /** V4-EF-7: Framework coverage threshold below which a gap is "critical". */
+    private const FRAMEWORK_GAP_CRITICAL_PCT = 60.0;
+
     public function __construct(
         private readonly TenantContext $tenantContext,
         private readonly WorkflowInstanceRepository $workflowInstances,
@@ -118,6 +126,8 @@ class MyDayAggregator
         private readonly AuditChecklistRepository $auditChecklistRepo,
         private readonly ChangeRequestRepository $changeRequestRepo,
         private readonly ManagementReviewRepository $managementReviewRepo,
+        private readonly WizardSessionRepository $wizardSessionRepo,
+        private readonly ComplianceAnalyticsService $complianceAnalytics,
         private readonly UrlGeneratorInterface $urls,
     ) {
     }
@@ -143,6 +153,9 @@ class MyDayAggregator
      *   audit_checklist_due: array<int, array<string, mixed>>,
      *   change_requests_pending_approval: array<int, array<string, mixed>>,
      *   management_review_upcoming: array<int, array<string, mixed>>,
+     *   documents_pending_approval_for_me: array<int, array<string, mixed>>,
+     *   wizard_overdue: array<int, array<string, mixed>>,
+     *   framework_gaps_critical: array<int, array<string, mixed>>,
      *   total: int
      * }
      */
@@ -172,13 +185,24 @@ class MyDayAggregator
         $checklistDue      = $tenant ? $this->buildAuditChecklistDue($user, $tenant) : [];
         $changesPending    = $tenant ? $this->buildChangeRequestsPendingApproval($user, $tenant) : [];
         $reviewsUpcoming   = $tenant ? $this->buildManagementReviewUpcoming($user, $tenant) : [];
+        // V4-EF-7 — Compliance-Manager CM-Buckets (visibility-gated to ROLE_COMPLIANCE_MANAGER).
+        $docsPendingApproval = ($tenant && $this->isComplianceManager($user))
+            ? $this->buildDocumentsPendingApproval($user, $tenant)
+            : [];
+        $wizardOverdue       = ($tenant && $this->isComplianceManager($user))
+            ? $this->buildWizardOverdue($user, $tenant)
+            : [];
+        $frameworkGaps       = ($tenant && $this->isComplianceManager($user))
+            ? $this->buildFrameworkGapsCritical($user)
+            : [];
 
         $total = count($workflowsPending) + count($workflowsOverdue)
             + count($fourEyes) + count($acks) + count($findings)
             + count($dsrs) + count($caOverdue)
             + count($riskAcceptance) + count($docsReviewOver) + count($trainingsPending)
             + count($incidentsAssigned) + count($breaches72h) + count($vulnsCritical)
-            + count($checklistDue) + count($changesPending) + count($reviewsUpcoming);
+            + count($checklistDue) + count($changesPending) + count($reviewsUpcoming)
+            + count($docsPendingApproval) + count($wizardOverdue) + count($frameworkGaps);
 
         return [
             'summary' => [
@@ -198,6 +222,9 @@ class MyDayAggregator
                 'audit_checklist_due' => count($checklistDue),
                 'change_requests_pending_approval' => count($changesPending),
                 'management_review_upcoming' => count($reviewsUpcoming),
+                'documents_pending_approval_for_me' => count($docsPendingApproval),
+                'wizard_overdue' => count($wizardOverdue),
+                'framework_gaps_critical' => count($frameworkGaps),
             ],
             'workflows_pending' => $workflowsPending,
             'workflows_overdue' => $workflowsOverdue,
@@ -215,6 +242,9 @@ class MyDayAggregator
             'audit_checklist_due' => $checklistDue,
             'change_requests_pending_approval' => $changesPending,
             'management_review_upcoming' => $reviewsUpcoming,
+            'documents_pending_approval_for_me' => $docsPendingApproval,
+            'wizard_overdue'    => $wizardOverdue,
+            'framework_gaps_critical' => $frameworkGaps,
             'total'             => $total,
             'generated_at'      => $today,
         ];
@@ -924,5 +954,115 @@ class MyDayAggregator
             || in_array('ROLE_SUPER_ADMIN', $roles, true)
             || in_array('ROLE_MANAGER', $roles, true)
             || in_array('ROLE_GROUP_CISO', $roles, true);
+    }
+
+    // =========================================================================
+    //  V4-EF-7 — Compliance-Manager CM-Buckets (visibility-gated)
+    // =========================================================================
+
+    /**
+     * V4-EF-7 CM-Bucket 1 — Documents in 'in_review' status, awaiting formal
+     * approval by a Compliance Manager. ISO 27001 Clause 7.5.2 requires that
+     * documented information is reviewed and approved for adequacy and
+     * suitability prior to release.
+     *
+     * Visibility: ROLE_COMPLIANCE_MANAGER only (gated in aggregate()).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildDocumentsPendingApproval(User $user, Tenant $tenant): array
+    {
+        $items = [];
+        foreach ($this->documentRepo->findPendingApprovalForTenant($tenant) as $document) {
+            /** @var Document $document */
+            $title = method_exists($document, 'getTitle')
+                ? (string) ($document->getTitle() ?? '')
+                : (string) ($document->getOriginalFilename() ?? $document->getFilename() ?? 'Document');
+            $items[] = [
+                'priority'    => 'medium',
+                'due_date'    => null,
+                'link'        => $this->urls->generate('app_document_show', ['id' => $document->getId()]),
+                'entity_type' => 'document_pending_approval',
+                'tone'        => 'warning',
+                'title'       => $title,
+                'subtitle'    => sprintf('v%s · in_review', $document->getVersion() ?? '—'),
+                'badge'       => 'in_review',
+            ];
+        }
+        return $items;
+    }
+
+    /**
+     * V4-EF-7 CM-Bucket 2 — In-progress WizardSessions whose lastActivityAt
+     * has not been updated in WIZARD_OVERDUE_DAYS days — i.e. stalled
+     * compliance assessments. ISO 27001 Clause 9.1 requires regular
+     * monitoring; abandoned assessments are a compliance-programme risk.
+     *
+     * Visibility: ROLE_COMPLIANCE_MANAGER only (gated in aggregate()).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildWizardOverdue(User $user, Tenant $tenant): array
+    {
+        $items = [];
+        foreach ($this->wizardSessionRepo->findOverdueByTenant($tenant, self::WIZARD_OVERDUE_DAYS) as $session) {
+            /** @var WizardSession $session */
+            $lastActivity = $session->getLastActivityAt();
+            $daysSince = null;
+            if ($lastActivity !== null) {
+                $diff = (new DateTimeImmutable('today'))->diff($lastActivity);
+                $daysSince = (int) $diff->days;
+            }
+            $items[] = [
+                'priority'    => 'medium',
+                'due_date'    => $lastActivity,
+                'link'        => $this->urls->generate('app_compliance_wizard_index'),
+                'entity_type' => 'wizard_overdue',
+                'tone'        => 'warning',
+                'title'       => $session->getWizardName(),
+                'subtitle'    => $daysSince !== null
+                    ? sprintf('stalled %dd · %s', $daysSince, $session->getUser()?->getUserIdentifier() ?? '—')
+                    : 'stalled',
+                'badge'       => 'overdue',
+            ];
+        }
+        return $items;
+    }
+
+    /**
+     * V4-EF-7 CM-Bucket 3 — Active compliance frameworks with coverage below
+     * FRAMEWORK_GAP_CRITICAL_PCT (60 %). ISO 27001 Clause 9.1 — evaluation of
+     * compliance obligations. A framework below 60 % represents a critical gap
+     * that the CM must escalate or plan remediation for.
+     *
+     * Visibility: ROLE_COMPLIANCE_MANAGER only (gated in aggregate()).
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function buildFrameworkGapsCritical(User $user): array
+    {
+        $items = [];
+        foreach ($this->complianceAnalytics->findFrameworkGapsCritical(self::FRAMEWORK_GAP_CRITICAL_PCT) as $f) {
+            $items[] = [
+                'priority'    => 'high',
+                'due_date'    => null,
+                'link'        => $this->urls->generate('app_compliance_index'),
+                'entity_type' => 'framework_gap',
+                'tone'        => 'danger',
+                'title'       => sprintf('%s — %s', $f['code'] ?? '?', $f['name'] ?? '—'),
+                'subtitle'    => sprintf('%.1f%% compliant', $f['compliance_percentage']),
+                'badge'       => $f['mandatory'] ? 'mandatory' : 'optional',
+            ];
+        }
+        return $items;
+    }
+
+    /** V4-EF-7: Check whether the user holds ROLE_COMPLIANCE_MANAGER. */
+    private function isComplianceManager(User $user): bool
+    {
+        $roles = $user->getRoles();
+        return in_array('ROLE_COMPLIANCE_MANAGER', $roles, true)
+            || in_array('ROLE_ADMIN', $roles, true)
+            || in_array('ROLE_SUPER_ADMIN', $roles, true);
     }
 }

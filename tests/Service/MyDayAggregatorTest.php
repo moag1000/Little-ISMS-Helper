@@ -37,7 +37,9 @@ use App\Repository\PolicyAcknowledgementRepository;
 use App\Repository\RiskRepository;
 use App\Repository\TrainingParticipationRepository;
 use App\Repository\VulnerabilityRepository;
+use App\Repository\WizardSessionRepository;
 use App\Repository\WorkflowInstanceRepository;
+use App\Service\ComplianceAnalyticsService;
 use App\Service\MyDayAggregator;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -78,6 +80,8 @@ final class MyDayAggregatorTest extends TestCase
     private MockObject $auditChecklistRepo;
     private MockObject $changeRequestRepo;
     private MockObject $managementReviewRepo;
+    private MockObject $wizardSessionRepo;
+    private MockObject $complianceAnalytics;
     private MockObject $urls;
     private MyDayAggregator $aggregator;
 
@@ -99,6 +103,8 @@ final class MyDayAggregatorTest extends TestCase
         $this->auditChecklistRepo = $this->createMock(AuditChecklistRepository::class);
         $this->changeRequestRepo = $this->createMock(ChangeRequestRepository::class);
         $this->managementReviewRepo = $this->createMock(ManagementReviewRepository::class);
+        $this->wizardSessionRepo = $this->createMock(WizardSessionRepository::class);
+        $this->complianceAnalytics = $this->createMock(ComplianceAnalyticsService::class);
         $this->urls = $this->createMock(UrlGeneratorInterface::class);
 
         $this->aggregator = new MyDayAggregator(
@@ -118,6 +124,8 @@ final class MyDayAggregatorTest extends TestCase
             $this->auditChecklistRepo,
             $this->changeRequestRepo,
             $this->managementReviewRepo,
+            $this->wizardSessionRepo,
+            $this->complianceAnalytics,
             $this->urls,
         );
     }
@@ -149,6 +157,7 @@ final class MyDayAggregatorTest extends TestCase
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
         $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
         $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
@@ -157,6 +166,8 @@ final class MyDayAggregatorTest extends TestCase
         $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
         $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
         $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
 
         $result = $this->aggregator->aggregate($user);
@@ -189,6 +200,10 @@ final class MyDayAggregatorTest extends TestCase
         $this->auditChecklistRepo->expects($this->never())->method('findDueForUser');
         $this->changeRequestRepo->expects($this->never())->method('findPendingApprovalByTenant');
         $this->managementReviewRepo->expects($this->never())->method('findUpcomingByTenant');
+        // V4-EF-7 CM-Buckets must also short-circuit when no tenant.
+        $this->documentRepo->expects($this->never())->method('findPendingApprovalForTenant');
+        $this->wizardSessionRepo->expects($this->never())->method('findOverdueByTenant');
+        $this->complianceAnalytics->expects($this->never())->method('findFrameworkGapsCritical');
 
         $result = $this->aggregator->aggregate($user);
 
@@ -212,6 +227,7 @@ final class MyDayAggregatorTest extends TestCase
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
         $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
         $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
@@ -220,6 +236,8 @@ final class MyDayAggregatorTest extends TestCase
         $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
         $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
         $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
 
         $dsr = $this->createMock(DataSubjectRequest::class);
@@ -248,6 +266,7 @@ final class MyDayAggregatorTest extends TestCase
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
         $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
         $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
@@ -256,6 +275,8 @@ final class MyDayAggregatorTest extends TestCase
         $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
         $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
         $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
 
         $dsr = $this->createMock(DataSubjectRequest::class);
@@ -613,6 +634,165 @@ final class MyDayAggregatorTest extends TestCase
             $result['management_review_upcoming'][0]['title']);
     }
 
+    // ------------- V4-EF-7 CM-Bucket tests -----------------
+
+    #[Test]
+    public function testDocumentsPendingApprovalSurfacesToComplianceManager(): void
+    {
+        $tenant = $this->createTenant(1);
+        $cm = $this->createUser(11, $tenant, ['ROLE_COMPLIANCE_MANAGER', 'ROLE_USER']);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->stubAllExceptDocsPendingApproval();
+
+        $doc = $this->createMock(Document::class);
+        $doc->method('getId')->willReturn(42);
+        $doc->method('getOriginalFilename')->willReturn('IT-Security-Policy-v3.pdf');
+        $doc->method('getVersion')->willReturn('3');
+        $this->documentRepo->expects($this->once())
+            ->method('findPendingApprovalForTenant')
+            ->with($tenant)
+            ->willReturn([$doc]);
+        $this->urls->method('generate')->willReturn('/document/42');
+
+        $result = $this->aggregator->aggregate($cm);
+
+        self::assertSame(1, $result['summary']['documents_pending_approval_for_me']);
+        self::assertSame('in_review', $result['documents_pending_approval_for_me'][0]['badge']);
+    }
+
+    #[Test]
+    public function testDocumentsPendingApprovalHiddenFromRegularUser(): void
+    {
+        $tenant = $this->createTenant(1);
+        $user = $this->createUser(22, $tenant, ['ROLE_USER']);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->stubAllRepoEmpty();
+
+        // Repo must NOT be called for plain ROLE_USER.
+        $this->documentRepo->expects($this->never())->method('findPendingApprovalForTenant');
+
+        $result = $this->aggregator->aggregate($user);
+
+        self::assertSame(0, $result['summary']['documents_pending_approval_for_me']);
+    }
+
+    #[Test]
+    public function testWizardOverdueSurfacesToComplianceManager(): void
+    {
+        $tenant = $this->createTenant(1);
+        $cm = $this->createUser(11, $tenant, ['ROLE_COMPLIANCE_MANAGER', 'ROLE_USER']);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->stubAllExceptWizardOverdue();
+
+        $session = $this->createMock(\App\Entity\WizardSession::class);
+        $session->method('getId')->willReturn(5);
+        $session->method('getWizardName')->willReturn('ISO 27001:2022');
+        $session->method('getLastActivityAt')->willReturn(new DateTimeImmutable('-100 days'));
+        $session->method('getUser')->willReturn($cm);
+        $this->wizardSessionRepo->expects($this->once())
+            ->method('findOverdueByTenant')
+            ->with($tenant, 90)
+            ->willReturn([$session]);
+        $this->urls->method('generate')->willReturn('/compliance-wizard');
+
+        $result = $this->aggregator->aggregate($cm);
+
+        self::assertSame(1, $result['summary']['wizard_overdue']);
+        self::assertSame('overdue', $result['wizard_overdue'][0]['badge']);
+    }
+
+    #[Test]
+    public function testFrameworkGapsCriticalSurfacesToComplianceManager(): void
+    {
+        $tenant = $this->createTenant(1);
+        $cm = $this->createUser(11, $tenant, ['ROLE_COMPLIANCE_MANAGER', 'ROLE_USER']);
+        $this->tenantContext->method('getCurrentTenant')->willReturn($tenant);
+        $this->stubAllExceptFrameworkGaps();
+
+        $this->complianceAnalytics->expects($this->once())
+            ->method('findFrameworkGapsCritical')
+            ->with(60.0)
+            ->willReturn([
+                ['id' => 3, 'name' => 'NIS2 Directive', 'code' => 'NIS2', 'compliance_percentage' => 45.0, 'mandatory' => true],
+            ]);
+        $this->urls->method('generate')->willReturn('/compliance');
+
+        $result = $this->aggregator->aggregate($cm);
+
+        self::assertSame(1, $result['summary']['framework_gaps_critical']);
+        self::assertSame('danger', $result['framework_gaps_critical'][0]['tone']);
+        self::assertSame('mandatory', $result['framework_gaps_critical'][0]['badge']);
+    }
+
+    private function stubAllExceptDocsPendingApproval(): void
+    {
+        $this->workflowInstances->method('findPendingForUser')->willReturn([]);
+        $this->workflowInstances->method('findOverdueForTenant')->willReturn([]);
+        $this->fourEyesRepo->method('findPendingFor')->willReturn([]);
+        $this->auditFindingRepo->method('findOpenByTenant')->willReturn([]);
+        $this->dsrRepo->method('findByTenant')->willReturn([]);
+        $this->caRepo->method('findOverdue')->willReturn([]);
+        $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
+        $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
+        $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
+        $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
+        $this->dataBreachRepo->method('findAuthorityNotification72hTicking')->willReturn([]);
+        $this->vulnerabilityRepo->method('findCriticalUnpatchedByTenant')->willReturn([]);
+        $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
+        $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
+        $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
+        $this->stubEmptyDocumentQuery();
+    }
+
+    private function stubAllExceptWizardOverdue(): void
+    {
+        $this->workflowInstances->method('findPendingForUser')->willReturn([]);
+        $this->workflowInstances->method('findOverdueForTenant')->willReturn([]);
+        $this->fourEyesRepo->method('findPendingFor')->willReturn([]);
+        $this->auditFindingRepo->method('findOpenByTenant')->willReturn([]);
+        $this->dsrRepo->method('findByTenant')->willReturn([]);
+        $this->caRepo->method('findOverdue')->willReturn([]);
+        $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
+        $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
+        $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
+        $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
+        $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
+        $this->dataBreachRepo->method('findAuthorityNotification72hTicking')->willReturn([]);
+        $this->vulnerabilityRepo->method('findCriticalUnpatchedByTenant')->willReturn([]);
+        $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
+        $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
+        $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
+        $this->stubEmptyDocumentQuery();
+    }
+
+    private function stubAllExceptFrameworkGaps(): void
+    {
+        $this->workflowInstances->method('findPendingForUser')->willReturn([]);
+        $this->workflowInstances->method('findOverdueForTenant')->willReturn([]);
+        $this->fourEyesRepo->method('findPendingFor')->willReturn([]);
+        $this->auditFindingRepo->method('findOpenByTenant')->willReturn([]);
+        $this->dsrRepo->method('findByTenant')->willReturn([]);
+        $this->caRepo->method('findOverdue')->willReturn([]);
+        $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
+        $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
+        $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
+        $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
+        $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
+        $this->dataBreachRepo->method('findAuthorityNotification72hTicking')->willReturn([]);
+        $this->vulnerabilityRepo->method('findCriticalUnpatchedByTenant')->willReturn([]);
+        $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
+        $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
+        $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->stubEmptyDocumentQuery();
+    }
+
     // ------------- Round-2 stub helpers -----------------
 
     private function stubAllExceptIncident(): void
@@ -625,12 +805,15 @@ final class MyDayAggregatorTest extends TestCase
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
         $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->dataBreachRepo->method('findAuthorityNotification72hTicking')->willReturn([]);
         $this->vulnerabilityRepo->method('findCriticalUnpatchedByTenant')->willReturn([]);
         $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
         $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
         $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
     }
 
@@ -644,6 +827,7 @@ final class MyDayAggregatorTest extends TestCase
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
         $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
         $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
@@ -651,6 +835,8 @@ final class MyDayAggregatorTest extends TestCase
         $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
         $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
         $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
     }
 
@@ -664,6 +850,7 @@ final class MyDayAggregatorTest extends TestCase
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
         $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
         $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
@@ -671,6 +858,8 @@ final class MyDayAggregatorTest extends TestCase
         $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
         $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
         $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
     }
 
@@ -684,6 +873,7 @@ final class MyDayAggregatorTest extends TestCase
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
         $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
         $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
@@ -691,6 +881,8 @@ final class MyDayAggregatorTest extends TestCase
         $this->vulnerabilityRepo->method('findCriticalUnpatchedByTenant')->willReturn([]);
         $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
         $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
     }
 
@@ -704,6 +896,7 @@ final class MyDayAggregatorTest extends TestCase
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
         $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
         $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
@@ -711,6 +904,8 @@ final class MyDayAggregatorTest extends TestCase
         $this->vulnerabilityRepo->method('findCriticalUnpatchedByTenant')->willReturn([]);
         $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
         $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
     }
 
@@ -724,6 +919,7 @@ final class MyDayAggregatorTest extends TestCase
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
         $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
         $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
@@ -731,6 +927,8 @@ final class MyDayAggregatorTest extends TestCase
         $this->vulnerabilityRepo->method('findCriticalUnpatchedByTenant')->willReturn([]);
         $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
         $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
     }
 
@@ -749,6 +947,7 @@ final class MyDayAggregatorTest extends TestCase
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
         $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
         $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
@@ -757,6 +956,8 @@ final class MyDayAggregatorTest extends TestCase
         $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
         $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
         $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
     }
 
@@ -769,6 +970,7 @@ final class MyDayAggregatorTest extends TestCase
         $this->dsrRepo->method('findByTenant')->willReturn([]);
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
         $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
@@ -777,6 +979,8 @@ final class MyDayAggregatorTest extends TestCase
         $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
         $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
         $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
     }
 
@@ -789,6 +993,7 @@ final class MyDayAggregatorTest extends TestCase
         $this->dsrRepo->method('findByTenant')->willReturn([]);
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
         $this->trainingParticipationRepo->method('findPendingForUser')->willReturn([]);
         $this->incidentRepo->method('findOpenIncidents')->willReturn([]);
         $this->incidentRepo->method('findOpenAssignedToUser')->willReturn([]);
@@ -797,6 +1002,8 @@ final class MyDayAggregatorTest extends TestCase
         $this->auditChecklistRepo->method('findDueForUser')->willReturn([]);
         $this->changeRequestRepo->method('findPendingApprovalByTenant')->willReturn([]);
         $this->managementReviewRepo->method('findUpcomingByTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
     }
 
@@ -810,6 +1017,9 @@ final class MyDayAggregatorTest extends TestCase
         $this->caRepo->method('findOverdue')->willReturn([]);
         $this->riskRepo->method('findAcceptanceExpiring')->willReturn([]);
         $this->documentRepo->method('findReviewOverdue')->willReturn([]);
+        $this->documentRepo->method('findPendingApprovalForTenant')->willReturn([]);
+        $this->wizardSessionRepo->method('findOverdueByTenant')->willReturn([]);
+        $this->complianceAnalytics->method('findFrameworkGapsCritical')->willReturn([]);
         $this->stubEmptyDocumentQuery();
     }
 

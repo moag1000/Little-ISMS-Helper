@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Service\ActivityFeed;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -21,16 +22,27 @@ class ActivityFeedController extends AbstractController
     ) {
     }
 
+    /** Valid scope values for the ?scope= query parameter (V4-EF-6). */
+    private const VALID_SCOPES = ['all', 'compliance'];
+
     #[Route('/activity-feed', name: 'app_activity_feed')]
     #[IsGranted('ROLE_USER')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         /** @var User $user */
         $user = $this->getUser();
-        $items = $this->activityFeed->recent($user, 50);
+
+        // V4-EF-6: optional ?scope=compliance filter.
+        $scope = $request->query->get('scope', 'all');
+        if (!in_array($scope, self::VALID_SCOPES, true)) {
+            $scope = 'all';
+        }
+
+        $items = $this->activityFeed->recent($user, 50, $scope);
 
         return $this->render('activity_feed/index.html.twig', [
-            'items' => $items,
+            'items'         => $items,
+            'current_scope' => $scope,
         ]);
     }
 }

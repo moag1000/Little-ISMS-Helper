@@ -6,6 +6,10 @@ subtitle: 'Letzte Aktivitäten aus Audit-Log, Workflows, Dokumenten und Risiken'
 action:
     standard_dashboard: 'Standard-Dashboard'
 
+scope:
+    all: 'Alle Events'
+    compliance: 'Nur Compliance'
+
 widget:
     heading: 'Letzte Aktivität'
     empty: 'Noch keine Aktivität.'

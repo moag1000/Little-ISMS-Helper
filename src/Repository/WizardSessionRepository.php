@@ -154,6 +154,29 @@ class WizardSessionRepository extends ServiceEntityRepository
     }
 
     /**
+     * V4-EF-7 CM-Bucket — In-progress wizard sessions whose lastActivityAt is
+     * older than $days days (i.e. stalled / overdue). Used to surface neglected
+     * compliance assessments to the Compliance Manager.
+     *
+     * @return WizardSession[] Sorted by lastActivityAt ASC (most stalled first)
+     */
+    public function findOverdueByTenant(Tenant $tenant, int $days = 90): array
+    {
+        $cutoff = new \DateTimeImmutable("-{$days} days");
+
+        return $this->createQueryBuilder('ws')
+            ->andWhere('ws.tenant = :tenant')
+            ->andWhere('ws.status = :status')
+            ->andWhere('ws.lastActivityAt < :cutoff')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('status', WizardSession::STATUS_IN_PROGRESS)
+            ->setParameter('cutoff', $cutoff)
+            ->orderBy('ws.lastActivityAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Clean up old abandoned sessions
      */
     public function cleanupAbandonedSessions(int $daysOld = 90): int

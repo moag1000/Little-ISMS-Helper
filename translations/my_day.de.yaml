@@ -1,7 +1,7 @@
 # My Day Inbox (Phase 7 Persona-driven Inbox)
 title: 'Mein Tag'
 badge: 'My Day'
-subtitle: 'Alle offenen Punkte aus 16 Posteingängen — heute, %generated_at%'
+subtitle: 'Alle offenen Punkte aus 19 Posteingängen — heute, %generated_at%'
 
 action:
     standard_dashboard: 'Standard-Dashboard'
@@ -23,6 +23,9 @@ kpi:
     audit_checklist_due: 'Audit-Checkliste fällig'
     change_requests_pending_approval: 'CRs zur Freigabe'
     management_review_upcoming: 'Mgmt-Review anstehend'
+    documents_pending_approval_for_me: 'Dokumente zur Freigabe'
+    wizard_overdue: 'Wizard-Assessments gestoppt'
+    framework_gaps_critical: 'Framework-Gaps kritisch'
 
 section:
     workflows_pending: 'Workflows offen'
@@ -41,6 +44,9 @@ section:
     audit_checklist_due: 'Audit-Checkliste — fällig in 7 Tagen'
     change_requests_pending_approval: 'Change Requests — warten auf Freigabe'
     management_review_upcoming: 'Management-Review — anstehend (90-Tage-Fenster)'
+    documents_pending_approval_for_me: 'Dokumente in Prüfung — warten auf Freigabe (CM)'
+    wizard_overdue: 'Wizard-Assessments — gestoppt (90+ Tage)'
+    framework_gaps_critical: 'Framework-Coverage-Gaps — kritisch (< 60 %)'
 
 bucket:
     risk_acceptance_expiring:
