@@ -125,6 +125,8 @@ audit:
         status: 'Status & Ergebnisse'
         objectives: 'Ziele & Kriterien'
         findings: Feststellungen
+        structured_findings: 'Strukturierte Findings'
+        structured_findings_help: 'Einzelne Feststellungen mit Severity, Status und Verantwortung (Ergänzung zum Freitext-Findings).'
         recommendations: 'Empfehlungen & Maßnahmen'
         documentation: Dokumentation
         history: Verlauf
