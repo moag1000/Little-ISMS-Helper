@@ -43,7 +43,7 @@ class ComplianceManagerDashboardController extends AbstractController
     }
 
     #[Route('/compliance-manager', name: 'compliance_manager')]
-    #[IsGranted('ROLE_MANAGER')]
+    #[IsGranted('ROLE_COMPLIANCE_MANAGER')]
     public function index(): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -51,6 +51,14 @@ class ComplianceManagerDashboardController extends AbstractController
         // Framework coverage
         $frameworkComparison = $this->analytics->getFrameworkComparison();
         $frameworks = $frameworkComparison['frameworks'] ?? [];
+
+        // V3 W2-M2: Service exposes `compliance_percentage` — normalize to
+        // `compliance` so the template (heatmap + Top-3) reads the value.
+        // Without this, all rows render 0 % even when coverage > 0.
+        foreach ($frameworks as &$fw) {
+            $fw['compliance'] = $fw['compliance_percentage'] ?? 0;
+        }
+        unset($fw);
 
         // Sort & take Top-3 lowest coverage
         $sorted = $frameworks;

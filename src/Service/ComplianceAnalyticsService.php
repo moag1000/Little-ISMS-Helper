@@ -477,12 +477,36 @@ class ComplianceAnalyticsService
                 'highest_compliance' => null,
                 'lowest_compliance' => null,
                 'mandatory_compliance' => 0,
+                // V3 W2-M2: keys consumed by Compliance-Manager-Dashboard KPIs.
+                'at_risk' => 0,
+                'cross_mapping_coverage' => 0,
+                'total_frameworks' => 0,
+                'total_requirements' => 0,
+                'total_fulfilled' => 0,
             ];
         }
 
         $mandatoryFrameworks = array_filter($comparison, fn($f) => $f['mandatory']);
         $mandatoryCompliance = count($mandatoryFrameworks) > 0
             ? round(array_sum(array_column($mandatoryFrameworks, 'compliance_percentage')) / count($mandatoryFrameworks), 1)
+            : 0;
+
+        // V3 W2-M2: at-risk = mandatory frameworks with < 80 % coverage.
+        // Mirrors getExecutiveSummary frameworks.at_risk so CM-Dashboard
+        // KPI tile shows non-zero values.
+        $atRisk = count(array_filter(
+            $comparison,
+            static fn($f) => ($f['mandatory'] ?? false) && ($f['compliance_percentage'] ?? 0) < 80,
+        ));
+
+        // V3 W2-M2: cross-framework mapping coverage = % of frameworks with
+        // at least one fulfilled requirement (rough but stable proxy).
+        $withFulfilled = count(array_filter(
+            $comparison,
+            static fn($f) => ($f['fulfilled'] ?? 0) > 0,
+        ));
+        $crossMappingCoverage = count($comparison) > 0
+            ? (int) round(($withFulfilled / count($comparison)) * 100)
             : 0;
 
         return [
@@ -493,6 +517,9 @@ class ComplianceAnalyticsService
             'total_frameworks' => count($comparison),
             'total_requirements' => array_sum(array_column($comparison, 'total')),
             'total_fulfilled' => array_sum(array_column($comparison, 'fulfilled')),
+            // V3 W2-M2: keys consumed by Compliance-Manager-Dashboard KPIs.
+            'at_risk' => $atRisk,
+            'cross_mapping_coverage' => $crossMappingCoverage,
         ];
     }
 
