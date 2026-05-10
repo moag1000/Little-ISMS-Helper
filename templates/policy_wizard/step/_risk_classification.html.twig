@@ -152,6 +152,80 @@
     {% endblock %}
 {% endembed %}
 
+{# ── Annex A applicability — counter + filter (Junior-Helps) ────── #}
+{% set total_controls = annex_groups.a5.controls|length
+    + annex_groups.a6.controls|length
+    + annex_groups.a7.controls|length
+    + annex_groups.a8.controls|length %}
+{# Compute "selected" from defaults: missing key = applicable (default true). #}
+{% set selected_count = 0 %}
+{% for group in annex_groups %}
+    {% for ctrl in group.controls %}
+        {% set is_applicable = annex_default[ctrl] is defined ? annex_default[ctrl] : true %}
+        {% if is_applicable %}{% set selected_count = selected_count + 1 %}{% endif %}
+    {% endfor %}
+{% endfor %}
+
+<div class="border rounded p-3 bg-body-tertiary mb-3"
+     data-controller="annex-a-filter"
+     data-annex-a-filter-total-value="{{ total_controls }}">
+    {# Counter — live-updated by Stimulus controller. #}
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+        <div>
+            <i class="bi bi-list-check me-1" aria-hidden="true"></i>
+            <strong>
+                <span data-annex-a-filter-target="counter">{{ selected_count }}</span>
+            </strong>
+            <span class="text-muted">
+                {{ 'policy_wizard.step.risk_classification.annex_counter.of_total'|trans({
+                    '%total%': total_controls
+                }) }}
+            </span>
+        </div>
+        <button type="button"
+                class="btn btn-sm btn-outline-secondary"
+                data-action="annex-a-filter#clear">
+            <i class="bi bi-x-circle me-1" aria-hidden="true"></i>
+            {{ 'policy_wizard.step.risk_classification.annex_filter.clear'|trans }}
+        </button>
+    </div>
+    <p class="small text-muted mb-2">
+        {{ 'policy_wizard.step.risk_classification.annex_counter.hint'|trans }}
+    </p>
+    <div class="row g-2">
+        <div class="col-md-8">
+            <label for="annex-search" class="form-label small mb-1">
+                {{ 'policy_wizard.step.risk_classification.annex_filter.search_label'|trans }}
+            </label>
+            <input type="search"
+                   id="annex-search"
+                   class="form-control form-control-sm"
+                   placeholder="{{ 'policy_wizard.step.risk_classification.annex_filter.search_placeholder'|trans }}"
+                   data-annex-a-filter-target="search"
+                   data-action="input->annex-a-filter#filter">
+        </div>
+        <div class="col-md-4">
+            <label for="annex-theme" class="form-label small mb-1">
+                {{ 'policy_wizard.step.risk_classification.annex_filter.theme_label'|trans }}
+            </label>
+            <select id="annex-theme"
+                    class="form-select form-select-sm"
+                    data-annex-a-filter-target="theme"
+                    data-action="change->annex-a-filter#filter">
+                <option value="">{{ 'policy_wizard.step.risk_classification.annex_filter.theme_all'|trans }}</option>
+                <option value="a5">{{ annex_groups.a5.label|trans }}</option>
+                <option value="a6">{{ annex_groups.a6.label|trans }}</option>
+                <option value="a7">{{ annex_groups.a7.label|trans }}</option>
+                <option value="a8">{{ annex_groups.a8.label|trans }}</option>
+            </select>
+        </div>
+    </div>
+    <div class="small text-muted mt-2 d-none" data-annex-a-filter-target="empty">
+        <i class="bi bi-search me-1" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.risk_classification.annex_filter.empty_match'|trans }}
+    </div>
+</div>
+
 {# ── Annex A applicability table ─────────────────────────────────── #}
 {% for group_key, group in annex_groups %}
     {% set group_body %}
@@ -163,11 +237,13 @@
             {{ 'policy_wizard.step.risk_classification.annex_help'|trans }}
         </p>
         <div class="table-responsive">
-            <table class="table table-sm align-middle">
+            <table class="table table-sm align-middle annex-a-table"
+                   data-annex-a-filter-target="table"
+                   data-theme="{{ group_key }}">
                 <thead>
                     <tr>
                         <th scope="col">{{ 'policy_wizard.step.risk_classification.annex_column.control'|trans }}</th>
-                        <th scope="col" style="width: 200px;">{{ 'policy_wizard.step.risk_classification.annex_column.applicable'|trans }}</th>
+                        <th scope="col" style="width: 220px;">{{ 'policy_wizard.step.risk_classification.annex_column.applicable'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -189,17 +265,32 @@
                         {% if ctrl_desc == ctrl_desc_key %}
                             {% set ctrl_desc = 'policy_wizard.step.risk_classification.annex_a.control_desc.stub'|trans({'%control%': ctrl}, 'policy_wizard') %}
                         {% endif %}
-                        <tr>
+                        {# Detect "optional" hint by scanning the description for German/English markers. #}
+                        {% set is_optional = ('Nicht-anwendbar' in ctrl_desc)
+                            or ('Häufig nicht' in ctrl_desc)
+                            or ('Not-applicable' in ctrl_desc)
+                            or ('not-applicable' in ctrl_desc)
+                            or ('Often not-applicable' in ctrl_desc) %}
+                        <tr data-annex-a-filter-target="row"
+                            data-control-ref="{{ ctrl }}"
+                            data-search-blob="{{ (ctrl ~ ' ' ~ ctrl_title ~ ' ' ~ ctrl_desc)|lower }}">
                             <td>
-                                <code class="me-1">{{ ctrl }}</code>
-                                <strong class="small">{{ ctrl_title }}</strong>
-                                <i class="bi bi-info-circle text-muted ms-1"
-                                   role="button"
-                                   tabindex="0"
-                                   data-bs-toggle="tooltip"
-                                   data-bs-placement="right"
-                                   title="{{ ctrl_desc }}"
-                                   aria-label="{{ ctrl_desc }}"></i>
+                                <div class="d-flex flex-column">
+                                    <div>
+                                        <code class="me-1">{{ ctrl }}</code>
+                                        <strong class="small">{{ ctrl_title }}</strong>
+                                    </div>
+                                    <div class="small text-muted mt-1">
+                                        {{ ctrl_desc }}
+                                    </div>
+                                    {% if is_optional %}
+                                        <div class="small text-warning-emphasis mt-1">
+                                            <i class="bi bi-toggle-off me-1" aria-hidden="true"></i>
+                                            <em>{{ 'policy_wizard.step.risk_classification.annex_not_applicable'|trans }}</em>
+                                            — {{ 'policy_wizard.step.risk_classification.annex_a.when_not_applicable.default_note'|trans }}
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </td>
                             <td>
                                 <div class="form-check form-check-inline">
@@ -209,6 +300,8 @@
                                            id="annex-{{ ctrl|replace({'.':'-'}) }}"
                                            name="annex_a_applicability[{{ ctrl }}]"
                                            value="1"
+                                           data-annex-a-filter-target="checkbox"
+                                           data-action="change->annex-a-filter#updateCounter"
                                            {% if is_applicable %}checked{% endif %}>
                                     <label class="form-check-label" for="annex-{{ ctrl|replace({'.':'-'}) }}">
                                         {% if is_applicable %}
