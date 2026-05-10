@@ -1093,6 +1093,8 @@ policy_wizard:
                 rejected: 'Approval rejected'
                 cancelled: 'Approval cancelled'
         document:
+            body_preview_heading: 'Content preview'
+            body_preview_chars: '%count% chars body'
             coverage_label: 'Contributes to:'
             approval_chain: 'Approval chain'
 

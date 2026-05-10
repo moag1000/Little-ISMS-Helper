@@ -435,6 +435,23 @@ final class PolicyWizardController extends AbstractController
         if ($documentIds !== []) {
             foreach ($this->documentRepository->findBy(['id' => $documentIds]) as $doc) {
                 $workflow = $this->crossCoverageCalculator->findActiveWorkflowFor($doc);
+                // Body-snippet for inline preview on the result page —
+                // user complaint "ich sehe keinen content" was driven
+                // by the result list showing names + buttons only. We
+                // surface the first ~280 chars (post-Markdown-strip) so
+                // each row visibly carries content density.
+                $bodySnippet = null;
+                $bodyChars = 0;
+                $body = $doc->getEffectivePolicyBody();
+                if (is_string($body) && $body !== '') {
+                    $bodyChars = mb_strlen($body);
+                    $stripped = preg_replace('/^#+\s+|^\*+\s*|^>\s+/m', '', $body) ?? $body;
+                    $stripped = preg_replace('/\s+/', ' ', $stripped) ?? $stripped;
+                    $stripped = trim($stripped);
+                    $bodySnippet = mb_strlen($stripped) > 280
+                        ? mb_substr($stripped, 0, 280) . '…'
+                        : $stripped;
+                }
                 $resultDocuments[] = [
                     'id' => $doc->getId(),
                     'title' => $doc->getOriginalFilename() ?: $doc->getFilename() ?: ('Document #' . $doc->getId()),
@@ -442,6 +459,8 @@ final class PolicyWizardController extends AbstractController
                     'workflow_id' => $workflow?->getId(),
                     'workflow_status' => $workflow?->getStatus(),
                     'approval_history' => $workflow?->getApprovalHistory() ?? [],
+                    'body_snippet' => $bodySnippet,
+                    'body_chars' => $bodyChars,
                 ];
             }
         }

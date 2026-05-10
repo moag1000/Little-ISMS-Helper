@@ -1096,6 +1096,8 @@ policy_wizard:
                 rejected: 'Approval abgelehnt'
                 cancelled: 'Approval abgebrochen'
         document:
+            body_preview_heading: 'Inhalts-Vorschau'
+            body_preview_chars: '%count% Zeichen Body-Inhalt'
             coverage_label: 'Trägt bei zu:'
             approval_chain: 'Approval-Kette'
 
