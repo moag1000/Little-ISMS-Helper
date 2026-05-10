@@ -1,3 +1,10 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Group Corporate Tree — fa-report-doc 5-slot macro (web variant)
+   Audience: auditor (Group-CISO / Konzern-Auditor)
+   Status:   final
+   Note: renderNode macro retained for recursive tree rendering;
+         tree HTML is passed via body_html slot.
+   ─────────────────────────────────────────────────────────────────────── #}
 {% extends 'base.html.twig' %}
 {% import _self as macros %}
 
@@ -54,52 +61,62 @@
         ]
     } %}
 
-    <div class="mb-4 d-flex justify-content-between align-items-end flex-wrap gap-2">
-        <div>
-            <h1 class="h2 mb-1">
-                <i class="fa-icon fa-icon--nav-process text-primary" aria-hidden="true"></i>
-                {{ 'group_report.tree.title'|trans({}, 'group_report') }}
-            </h1>
-            <p class="text-muted mb-0">{{ 'group_report.tree.subtitle'|trans({}, 'group_report') }}</p>
-        </div>
-        <div class="btn-group flex-wrap" role="group" aria-label="Group reports">
-            <a href="{{ path('app_group_report_nis2_registration') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--compliance-shield" aria-hidden="true"></i>
-                {{ 'group_report.nis2.title'|trans({}, 'group_report') }}
-            </a>
-            <a href="{{ path('app_group_report_risks') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                {{ 'group_report.risks.title'|trans({}, 'group_report') }}
-            </a>
-            <a href="{{ path('app_group_report_kpi_matrix') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i>
-                {{ 'group_report.kpi.title'|trans({}, 'group_report') }}
-            </a>
-            <a href="{{ path('app_group_report_soa_matrix') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i>
-                {{ 'group_report.soa.title'|trans({}, 'group_report') }}
-            </a>
-            <a href="{{ path('app_group_report_suppliers') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--nav-process" aria-hidden="true"></i>
-                {{ 'group_report.suppliers.title'|trans({}, 'group_report') }}
-            </a>
-            <a href="{{ path('app_group_report_incidents') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--ui-bell" aria-hidden="true"></i>
-                {{ 'group_report.incidents.title'|trans({}, 'group_report') }}
-            </a>
-            <a href="{{ path('app_group_report_audit_program') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                <i class="fa-icon fa-icon--audit-external" aria-hidden="true"></i>
-                {{ 'group_report.audit_program.title'|trans({}, 'group_report') }}
-            </a>
-        </div>
-    </div>
+    {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
-        {% block card_body %}
-            <ul class="list-group list-group-flush">
-                {{ macros.renderNode(root, current, 0) }}
-            </ul>
-        {% endblock %}
-    {% endembed %}
+    {# Navigation shortcuts — rendered as body_html in the nav section #}
+    {% set _nav_html = '<div class="d-flex flex-wrap gap-2" style="margin-bottom:1rem;">'
+        ~ '<a href="' ~ path('app_group_report_nis2_registration') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.nis2.title'|trans({}, 'group_report')) ~ '</a>'
+        ~ '<a href="' ~ path('app_group_report_risks') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.risks.title'|trans({}, 'group_report')) ~ '</a>'
+        ~ '<a href="' ~ path('app_group_report_kpi_matrix') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.kpi.title'|trans({}, 'group_report')) ~ '</a>'
+        ~ '<a href="' ~ path('app_group_report_soa_matrix') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.soa.title'|trans({}, 'group_report')) ~ '</a>'
+        ~ '<a href="' ~ path('app_group_report_suppliers') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.suppliers.title'|trans({}, 'group_report')) ~ '</a>'
+        ~ '<a href="' ~ path('app_group_report_incidents') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.incidents.title'|trans({}, 'group_report')) ~ '</a>'
+        ~ '<a href="' ~ path('app_group_report_audit_program') ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">' ~ ('group_report.audit_program.title'|trans({}, 'group_report')) ~ '</a>'
+        ~ '</div>' %}
+
+    {# Tree rendered via recursive macro — output captured into body_html slot #}
+    {% set _tree_html %}
+        <ul class="list-group list-group-flush">
+            {{ macros.renderNode(root, current, 0) }}
+        </ul>
+    {% endset %}
+
+    {{ _fa_report_doc.render({
+        report: {
+            title:        'group_report.tree.title'|trans({}, 'group_report'),
+            subtitle:     'group_report.tree.subtitle'|trans({}, 'group_report'),
+            kicker:       'group_report.title'|trans({}, 'group_report'),
+            status:       'final',
+            audience:     'auditor',
+            generated_at: 'now'|date('d.m.Y H:i'),
+        },
+        brand_name: root.name,
+        key_findings: [
+            { label: ('group_report.kpi.col.tenant'|trans({}, 'group_report')) ~ ': ' ~ all_tenants|default([])|length, tone: 'ok' },
+        ],
+        kpis: [
+            { label: 'group_report.kpi.col.tenant'|trans({}, 'group_report'), value: all_tenants|default([])|length, tone: 'neutral' },
+        ],
+        sections: [
+            {
+                heading: 'group_report.title'|trans({}, 'group_report'),
+                body_html: _nav_html ~ _tree_html,
+            },
+        ],
+        appendix: {
+            sources: [
+                { label: 'TenantRepository', detail: 'findGroupTree() — full corporate hierarchy rooted at current tenant' },
+            ],
+            glossary: [
+                { term: 'Essential',     definition: 'NIS2 Art. 3 — Large entity in critical sectors' },
+                { term: 'Important',     definition: 'NIS2 Art. 3 — Medium entity or specific sectors' },
+                { term: 'Not regulated', definition: 'Entity not in scope of NIS2 Directive' },
+            ],
+        },
+        distribution: [
+            { role: 'Group-CISO',      name: '—' },
+            { role: 'Konzern-Auditor', name: 'Group Audit Committee' },
+        ],
+    }) }}
 </div>
 {% endblock %}

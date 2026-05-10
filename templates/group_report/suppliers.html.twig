@@ -1,5 +1,9 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Group Suppliers Report — fa-report-doc 5-slot macro (web variant)
+   Audience: auditor (Group-CISO / Konzern-Auditor)
+   Status:   final
+   ─────────────────────────────────────────────────────────────────────── #}
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'group_report.suppliers.title'|trans({}, 'group_report') }}{% endblock %}
 
@@ -12,118 +16,92 @@
         ]
     } %}
 
-    <div class="mb-4">
-        <h1 class="h2 mb-1">
-            <i class="fa-icon text-primary fa-icon--nav-process" aria-hidden="true"></i>
-            {{ 'group_report.suppliers.title'|trans({}, 'group_report') }}
-        </h1>
-        <p class="text-muted mb-0">{{ 'group_report.suppliers.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
-    </div>
+    {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
-        {% block alert_body %}<div class="small">{{ 'group_report.suppliers.intro'|trans({}, 'group_report')|raw }}</div>{% endblock %}
-    {% endembed %}
+    {# Build grouped supplier table rows #}
+    {% set _sup_rows = [] %}
+    {% for group in grouped %}
+        {% set rep = group.representative %}
+        {% set refCount = group.tenant_codes|length %}
+        {% set crit = group.max_criticality %}
+        {% set _cchip = crit == 'critical' ? 'confidential' : (crit == 'high' ? 'draft' : (crit == 'medium' ? 'auditor-only' : 'final')) %}
 
-    <div class="row row-cols-2 row-cols-md-4 g-2 mb-4">
-        <div class="col">
-            <div class="card fa-section h-100 text-center">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold">{{ totals.unique }}</div>
-                    <div class="small text-muted">{{ 'group_report.suppliers.stat.unique'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center border-primary">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-primary">{{ totals.shared }}</div>
-                    <div class="small text-muted">{{ 'group_report.suppliers.stat.shared'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center border-success fa-rag-card fa-rag-card--green">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-success">{{ totals.with_lei }}</div>
-                    <div class="small text-muted">{{ 'group_report.suppliers.stat.with_lei'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center border-danger fa-rag-card fa-rag-card--red">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-danger">{{ totals.critical }}</div>
-                    <div class="small text-muted">{{ 'group_report.suppliers.stat.critical'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-    </div>
+        {# Supplier / identity cell #}
+        {% set _id_cell = group.has_lei
+            ? '<code>' ~ rep.leiCode ~ '</code> <span class="report-doc__chip report-doc__chip--status-final" style="font-size:.7em;">LEI</span>'
+            : '<span style="color:var(--fg-3);font-size:.75em;" title="' ~ ('group_report.suppliers.no_lei_help'|trans({}, 'group_report')) ~ '">' ~ ('group_report.suppliers.matched_by_name'|trans({}, 'group_report')) ~ '</span>' %}
 
-    {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
-        {% block card_body %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle" aria-label="{{ 'group_report.suppliers.title'|trans({}, 'group_report') }}">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col">{{ 'group_report.suppliers.col.supplier'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.suppliers.col.identity'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.suppliers.col.criticality'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.suppliers.col.used_by'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.suppliers.col.service'|trans({}, 'group_report') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for group in grouped %}
-                            {% set rep = group.representative %}
-                            {% set refCount = group.tenant_codes|length %}
-                            {% set crit = group.max_criticality %}
-                            {% set critBadge = {
-                                'critical': 'bg-danger',
-                                'high': 'bg-warning-subtle text-warning',
-                                'medium': 'bg-info',
-                                'low': 'bg-secondary'
-                            }[crit]|default('bg-body-secondary border') %}
-                            <tr>
-                                <td>
-                                    <strong>{{ rep.name }}</strong>
-                                    {% if rep.contactPerson %}
-                                        <div class="small text-muted">{{ rep.contactPerson }}</div>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if group.has_lei %}
-                                        <code class="small">{{ rep.leiCode }}</code>
-                                        <span class="fa-status-pill fa-status-pill--success ms-1">LEI</span>
-                                    {% else %}
-                                        <span class="fa-status-pill fa-status-pill--neutral" title="{{ 'group_report.suppliers.no_lei_help'|trans({}, 'group_report') }}">
-                                            {{ 'group_report.suppliers.matched_by_name'|trans({}, 'group_report') }}
-                                        </span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if crit %}
-                                        <span class="badge {{ critBadge }}">{{ crit }}</span>
-                                    {% else %}
-                                        <span class="text-muted">—</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if refCount >= 2 %}
-                                        <span class="fa-status-pill fa-status-pill--primary me-1">{{ refCount }}×</span>
-                                    {% endif %}
-                                    {% for code in group.tenant_codes %}
-                                        <code class="fa-status-pill fa-status-pill--neutral me-1">{{ code }}</code>
-                                    {% endfor %}
-                                </td>
-                                <td class="small text-muted">{{ rep.serviceProvided|default('—')|u.truncate(80, '…') }}</td>
-                            </tr>
-                        {% else %}
-                            <tr><td colspan="5" class="text-center text-muted py-3">{{ 'group_report.suppliers.none'|trans({}, 'group_report') }}</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endblock %}
-    {% endembed %}
+        {# Used-by tenants cell #}
+        {% set _tenants_cell = '' %}
+        {% if refCount >= 2 %}
+            {% set _tenants_cell = '<span class="report-doc__chip report-doc__chip--status-auditor-only" style="font-size:.7em;">' ~ refCount ~ '×</span> ' %}
+        {% endif %}
+        {% for code in group.tenant_codes %}
+            {% set _tenants_cell = _tenants_cell ~ '<code style="font-size:.75em;">' ~ code ~ '</code> ' %}
+        {% endfor %}
+
+        {% set _sup_rows = _sup_rows|merge([[
+            '<strong>' ~ rep.name ~ '</strong>' ~ (rep.contactPerson ? '<br><span style="font-size:.75em;color:var(--fg-3);">' ~ rep.contactPerson ~ '</span>' : ''),
+            _id_cell,
+            crit ? '<span class="report-doc__chip report-doc__chip--status-' ~ _cchip ~ '">' ~ crit ~ '</span>' : '<span style="color:var(--fg-3);">—</span>',
+            _tenants_cell,
+            rep.serviceProvided ? (rep.serviceProvided|length > 80 ? rep.serviceProvided|slice(0, 80) ~ '…' : rep.serviceProvided) : '—',
+        ]]) %}
+    {% endfor %}
+
+    {{ _fa_report_doc.render({
+        report: {
+            title:        'group_report.suppliers.title'|trans({}, 'group_report'),
+            subtitle:     'group_report.suppliers.subtitle'|trans({'%root%': root.name}, 'group_report'),
+            kicker:       'group_report.title'|trans({}, 'group_report'),
+            status:       'final',
+            audience:     'auditor',
+            generated_at: 'now'|date('d.m.Y H:i'),
+        },
+        brand_name: root.name,
+        key_findings: [
+            { label: ('group_report.suppliers.stat.unique'|trans({}, 'group_report')) ~ ': ' ~ totals.unique,    tone: 'ok' },
+            { label: ('group_report.suppliers.stat.shared'|trans({}, 'group_report')) ~ ': ' ~ totals.shared,    tone: totals.shared > 0 ? 'warn' : 'ok' },
+            { label: ('group_report.suppliers.stat.critical'|trans({}, 'group_report')) ~ ': ' ~ totals.critical, tone: totals.critical > 0 ? 'danger' : 'ok' },
+        ],
+        kpis: [
+            { label: 'group_report.suppliers.stat.unique'|trans({}, 'group_report'),    value: totals.unique,    tone: 'neutral' },
+            { label: 'group_report.suppliers.stat.shared'|trans({}, 'group_report'),    value: totals.shared,    tone: totals.shared > 0 ? 'warning' : 'success' },
+            { label: 'group_report.suppliers.stat.with_lei'|trans({}, 'group_report'),  value: totals.with_lei,  tone: 'success' },
+            { label: 'group_report.suppliers.stat.critical'|trans({}, 'group_report'),  value: totals.critical,  tone: totals.critical > 0 ? 'danger' : 'success' },
+        ],
+        sections: [
+            {
+                heading: 'group_report.suppliers.title'|trans({}, 'group_report'),
+                intro: 'group_report.suppliers.intro'|trans({}, 'group_report'),
+                table: _sup_rows|length > 0 ? {
+                    headers: [
+                        'group_report.suppliers.col.supplier'|trans({}, 'group_report'),
+                        'group_report.suppliers.col.identity'|trans({}, 'group_report'),
+                        'group_report.suppliers.col.criticality'|trans({}, 'group_report'),
+                        'group_report.suppliers.col.used_by'|trans({}, 'group_report'),
+                        'group_report.suppliers.col.service'|trans({}, 'group_report'),
+                    ],
+                    rows: _sup_rows,
+                } : null,
+                body_html: _sup_rows|length == 0
+                    ? '<p style="color:var(--fg-3);font-style:italic;">' ~ ('group_report.suppliers.none'|trans({}, 'group_report')) ~ '</p>'
+                    : null,
+            },
+        ],
+        appendix: {
+            sources: [
+                { label: 'SupplierRepository', detail: 'findGroupSuppliers() — cross-tenant supplier grouping by LEI / name match' },
+            ],
+            glossary: [
+                { term: 'LEI',    definition: 'Legal Entity Identifier — ISO 17442, 20-char alphanumeric global company ID' },
+                { term: 'Shared', definition: 'Supplier referenced by ≥2 tenants within the group' },
+            ],
+        },
+        distribution: [
+            { role: 'Group-CISO',      name: '—' },
+            { role: 'Konzern-Auditor', name: 'Group Audit Committee' },
+        ],
+    }) }}
 </div>
 {% endblock %}
