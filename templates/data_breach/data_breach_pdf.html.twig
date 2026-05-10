@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <title>Data Breach Report - {{ breach.referenceNumber }}</title>
     <style>
+        :root {
+            --primary:       var(--primary);
+            --surface:       var(--surface);
+            --surface-2:     var(--surface-2);
+            --fg:            #0f172a;
+            --fg-2:          var(--fg-2);
+            --fg-3:          var(--fg-3);
+            --border:        var(--border);
+            --success:       var(--success);
+            --success-tint:  var(--success-tint);
+            --danger:        var(--danger);
+            --danger-tint:   var(--danger-tint);
+            --warning:       var(--warning);
+            --warning-tint:  var(--warning-tint);
+            --info-tint:     var(--info-tint);
+            --info-text:     var(--info-text);
+        }
+
         @page {
             margin: 2cm;
         }
@@ -11,7 +29,7 @@
             font-family: Arial, sans-serif;
             font-size: 11pt;
             line-height: 1.6;
-            color: #333;
+            color: var(--fg);
         }
         .header {
             text-align: center;
@@ -35,7 +53,7 @@
             background: linear-gradient(135deg, var(--bg) 0%, var(--border) 100%);
             padding: 15px;
             margin-bottom: 20px;
-            border: 2px solid #cbd5e1;
+            border: 2px solid var(--border);
             border-left-width: 4px;
             border-left-color: var(--primary);
         }
@@ -76,7 +94,7 @@
             border-radius: 3px;
             font-size: 9pt;
             font-weight: bold;
-            color: white;
+            color: var(--surface);
             letter-spacing: 0.3pt;
             border: 1.5pt solid transparent;
         }
@@ -85,21 +103,21 @@
             border-color: var(--danger);
         }
         .badge-warning {
-            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
-            border-color: #d97706;
-            color: white;
+            background: linear-gradient(135deg, var(--warning) 0%, var(--warning) 100%);
+            border-color: var(--warning);
+            color: var(--surface);
         }
         .badge-success {
-            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
-            border-color: #059669;
+            background: linear-gradient(135deg, var(--success) 0%, var(--success) 100%);
+            border-color: var(--success);
         }
         .badge-info {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
             border-color: var(--primary-hover);
         }
         .badge-secondary {
-            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-            border-color: #4b5563;
+            background: linear-gradient(135deg, var(--fg-2) 0%, var(--fg-2) 100%);
+            border-color: var(--fg-2);
         }
         .table {
             width: 100%;
@@ -125,14 +143,14 @@
             border-left: 4px solid;
         }
         .alert-danger {
-            background: #f8d7da;
+            background: var(--danger-tint);
             border-color: var(--danger);
-            color: #721c24;
+            color: var(--danger);
         }
         .alert-warning {
-            background: #fff3cd;
+            background: var(--warning-tint);
             border-color: var(--warning);
-            color: #856404;
+            color: var(--warning);
         }
         .footer {
             margin-top: 40px;
