@@ -358,9 +358,26 @@ final class PolicyWizardController extends AbstractController
 
         $this->addFlash('success', $this->translator->trans('policy_wizard.message.run_completed', [], 'policy_wizard'));
 
+        // Hydrate Document rows so the result template can render real
+        // titles + standard badges + view/PDF links instead of the bare
+        // "Document #X" placeholders. Skip the lookup when there are no
+        // document_ids (sandbox / targeted-rerun without diff).
+        $resultDocuments = [];
+        $documentIds = $result['document_ids'] ?? [];
+        if ($documentIds !== []) {
+            foreach ($this->documentRepository->findBy(['id' => $documentIds]) as $doc) {
+                $resultDocuments[] = [
+                    'id' => $doc->getId(),
+                    'title' => $doc->getOriginalFilename() ?: $doc->getFilename() ?: ('Document #' . $doc->getId()),
+                    'standard' => $doc->getGeneratedFromTemplate()?->getStandard(),
+                ];
+            }
+        }
+
         return $this->render('policy_wizard/result.html.twig', [
             'run' => $run,
-            'document_ids' => $result['document_ids'] ?? [],
+            'document_ids' => $documentIds,
+            'result_documents' => $resultDocuments,
             'sandbox_preview' => $result['sandbox_preview'] ?? null,
         ]);
     }

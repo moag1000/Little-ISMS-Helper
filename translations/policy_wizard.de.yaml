@@ -836,6 +836,10 @@ policy_wizard:
         next_steps_translate: 'Bei Bedarf englische Übersetzung anfordern.'
         sandbox_preview_heading: 'Sandbox-Vorschau (nicht persistiert)'
         sandbox_preview_count: '%count% Vorschau-Dokumente generiert. Inhalte werden NICHT gespeichert — Sandbox-Modus.'
+        documents_count: '%count% Dokumente erzeugt. Klicken Sie auf "Anzeigen" um den Inhalt zu prüfen oder "PDF" für die druckfertige Version mit Tenant-Briefkopf.'
+        action:
+            view: 'Anzeigen'
+            pdf: 'PDF'
 
     # Junior-ISB Wish #3 — Progress-Bar above every wizard step.
     progress:
@@ -968,6 +972,17 @@ policy_wizard:
         ot_iec62443:
             label: 'OT / IEC 62443 (Industrieanlagen)'
             description: 'Operational-Technology-Umgebungen — Produktionslinien, SCADA, PLCs, IIoT — nach IEC 62443 und NIS2. Sehr konservativ mit physischen Schwerpunkten.'
+        custom_general:
+            label: 'Allgemein / Custom'
+            description: 'Generisches Preset ohne Branchen-Annahmen — du füllst Schritt 4 + 5 manuell aus. Empfohlen, wenn keines der 4 Branchen-Presets passt.'
+
+    standard_badge:
+        iso27001: 'ISO 27001'
+        bsi: 'BSI Grundschutz'
+        bcm: 'BCM (ISO 22301)'
+        dora: 'EU DORA'
+        gdpr: 'GDPR / DSGVO'
+        iso27701: 'ISO 27701 (PIMS)'
 
     csrf:
         invalid: 'Ungültiges CSRF-Token. Bitte laden Sie die Seite neu.'

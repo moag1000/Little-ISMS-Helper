@@ -130,7 +130,7 @@
                                 <div class="text-muted small">{{ tpl_key }}</div>
                             </td>
                             <td>
-                                <span class="badge bg-secondary">{{ tpl.standard|default('—') }}</span>
+                                <span class="badge bg-secondary">{{ tpl.standard ? ('policy_wizard.standard_badge.' ~ tpl.standard)|trans({}, 'policy_wizard') : '—' }}</span>
                             </td>
                             <td>
                                 <input type="number"
