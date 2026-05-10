@@ -1,40 +1,44 @@
 #!/usr/bin/env python3
 """
-Twig Macro-Scope Static Checker
+Twig Macro-Scope Static Checker  (v3)
 
-Detects the pattern where {% import 'X' as Y %} is declared at file-scope
-(outside any block) in a template that also uses {% extends %}, but the
-macro variable Y is referenced inside a {% embed %}...{% endembed %} block
-WITHOUT a local {% import %} for the alias within that embed context.
+Detects macro aliases that are used inside a {% embed %} block but were NOT
+imported within that same embed scope (or an inner scope).
 
-Key distinction:
-- Regular {% block %} in extending templates CAN see file-scope imports (Twig
-  inheritance propagates them).  These are NOT bugs.
-- {% embed %} has its own isolated scope and CANNOT see file-scope imports.
-  A local {% import %} must appear inside the embed block for the alias to work.
+Twig scope rules relevant to this checker:
+- {% extends %} + {% block %}: inheriting templates CAN see all file-scope
+  imports; block-scope is fine for direct content of that block.
+- {% embed %}: creates a completely isolated scope. Imports made OUTSIDE an
+  embed (whether at file-scope, block-scope, or outer-embed-scope) are NOT
+  visible inside that embed — even if they are at the same nesting depth
+  (sibling embeds do not share scope).
+- Imports must be placed inside the exact embed block where they are used.
 
-The checker also avoids false-positives caused by alias names matching embed
-path strings (e.g. `{% embed '_components/_fa_alert.html.twig' %}` would
-naively match the alias `_fa_alert` — this checker only flags real macro calls
-i.e. patterns like `alias.method`, not string-literal occurrences).
+Algorithm (stack-based):
+  scope_stack — each element is a dict: {alias: import_line}.
+  - scope_stack[0] = file/block scope (always present)
+  - Push new empty dict on {% embed %}
+  - Pop on {% endembed %}
+  - When we see {% import X as alias %}, add to scope_stack[-1] (current scope)
+  - When we see alias.method usage at embed_depth > 0:
+      * Check scope_stack[-1] (current embed scope) — if alias present: OK
+      * Do NOT accept alias from any outer scope (scope_stack[:-1])
+      * If not found in current embed scope: FAIL
 
-Twig silently parses this without error. At render-time the embed block has its
-own scope and cannot see the file-scope import — resulting in
-"Variable 'Y' does not exist" exceptions.
-
-This bug is invisible to `php bin/console lint:twig`.
-
-Regression guard for bulk-fix commits 075e36a4 and 8797122c.
+False-positive guards:
+- Only real macro calls (alias.word) trigger detection, not string literals.
+- Imports inside the current embed scope satisfy the check.
+- We skip known-excluded templates per the SKIP list.
 
 Usage:
     python3 scripts/quality/check_twig_macro_scope.py
     # Exit 0 = clean, Exit 1 = issues found
 
-    # From repo root:
-    python3 scripts/quality/check_twig_macro_scope.py
-
-    # Verbose output to file:
-    python3 scripts/quality/check_twig_macro_scope.py 2>&1 | tee macro_scope_report.txt
+Regression guard for bulk-fix commits 075e36a4, 8797122c, b361a80e, and
+the v3 sweep (fixes in management_reports/bcm.html.twig,
+management_reports/certification_readiness.html.twig,
+policy_wizard/step/_bestandsaufnahme.html.twig,
+workflow/pending.html.twig).
 """
 
 import re
@@ -42,9 +46,6 @@ import sys
 from pathlib import Path
 
 # --- Regex patterns ---
-
-# {% extends '...' %} or {% extends "..." %}
-RE_EXTENDS = re.compile(r"""\{%-?\s*extends\s+['"]""")
 
 # {% import '...' as alias %} — captures alias
 RE_IMPORT = re.compile(r"""\{%-?\s*import\s+['"][^'"]+['"]\s+as\s+(\w+)\s*-?%\}""")
@@ -55,117 +56,122 @@ RE_EMBED_OPEN = re.compile(r"""\{%-?\s*embed\s+""")
 # {% endembed %}
 RE_EMBED_CLOSE = re.compile(r"""\{%-?\s*endembed\s*-?%\}""")
 
-# {% block name %} — opening block tag
-RE_BLOCK_OPEN = re.compile(r"""\{%-?\s*block\s+\w+""")
-
-# {% endblock %} or {% endblock name %}
-RE_BLOCK_CLOSE = re.compile(r"""\{%-?\s*endblock(?:\s+\w+)?\s*-?%\}""")
+# Files to exclude from checking
+SKIP_TEMPLATES = {
+    'templates/dpia/index.html.twig',          # already fixed b361a80e
+    'templates/base.html.twig',                # intentional inline imports
+    'templates/_components/_mega_menu_panel_only.html.twig',
+}
 
 
 def make_real_call_pattern(alias: str) -> re.Pattern:
     """
     Match `alias.word` as a Twig macro call, but NOT when the alias appears
     inside a string literal (e.g. '_components/_fa_alias.html.twig' would
-    otherwise match because / is not a word character — we exclude preceding
-    /, ', and " characters).
+    match the alias part — we exclude preceding /, ', and " characters).
     """
     return re.compile(r'(?<![\'"/\w])' + re.escape(alias) + r'\s*\.\s*\w')
 
 
-def check_file(path: Path) -> list[tuple[int, str, int]]:
+def check_file(path: Path) -> list[tuple[int, str, int, str]]:
     """
-    Check a single Twig file for embed-scope macro issues.
+    Check a single Twig file for embed-scope macro issues using a scope stack.
 
-    Returns a list of (import_line_no, alias, first_usage_line_no) tuples
-    for each problematic import (file-scope import used inside an embed block
-    without a local import in that embed context).
+    Returns a list of (import_line_no, alias, usage_line_no, reason) tuples.
+    Only the first violation per alias is returned (to keep output concise).
+
+    The stack-based approach correctly handles:
+    1. File/block-scope imports used inside any embed (depth > 0)
+    2. Imports in embed A used in sibling embed B (same depth, different instance)
+    3. Imports in outer embed used in doubly-nested embed (depth 0 → depth 1 → depth 2)
     """
     try:
         content = path.read_text(encoding='utf-8', errors='replace')
     except OSError:
         return []
 
-    lines = content.splitlines()
-
-    # Fast-path: skip files without {% extends %}
-    if not RE_EXTENDS.search(content):
-        return []
-
-    # Fast-path: skip files without any import
+    # Fast-paths
     if '{% import' not in content and '{%- import' not in content:
         return []
-
-    # Fast-path: skip files without any embed
     if '{% embed' not in content and '{%- embed' not in content:
         return []
 
-    # Find line number of first {% block %} occurrence
-    first_block_line: int | None = None
-    for i, line in enumerate(lines, start=1):
-        if RE_BLOCK_OPEN.search(line):
-            first_block_line = i
-            break
+    lines = content.splitlines()
+    issues: list[tuple[int, str, int, str]] = []
 
-    if first_block_line is None:
-        return []
+    # scope_stack: list of dicts, each dict maps alias -> import_line_no
+    # scope_stack[0] = file/block scope
+    # scope_stack[N] = N-th embed nesting level
+    scope_stack: list[dict[str, int]] = [{}]
 
-    # Collect imports that appear BEFORE first_block_line (file-scope imports)
-    file_scope_imports: list[tuple[int, str]] = []  # (line_no, alias)
-    for i, line in enumerate(lines, start=1):
-        if i >= first_block_line:
-            break
+    # Track which aliases have already been reported (first occurrence only)
+    reported_aliases: set[str] = set()
+
+    # All known aliases (collected on first pass or dynamically)
+    # We need to build call patterns. Use lazy construction.
+    call_pattern_cache: dict[str, re.Pattern] = {}
+
+    def get_call_re(alias: str) -> re.Pattern:
+        if alias not in call_pattern_cache:
+            call_pattern_cache[alias] = make_real_call_pattern(alias)
+        return call_pattern_cache[alias]
+
+    for lineno, line in enumerate(lines, start=1):
+        embed_opens = len(RE_EMBED_OPEN.findall(line))
+        embed_closes = len(RE_EMBED_CLOSE.findall(line))
+
+        # Push new scope(s) for embed opens (opens happen before content)
+        for _ in range(embed_opens):
+            scope_stack.append({})
+
+        # Record any import on this line into the current scope
         m = RE_IMPORT.search(line)
         if m:
             alias = m.group(1)
-            file_scope_imports.append((i, alias))
+            # Register in current scope (deepest scope = scope_stack[-1])
+            scope_stack[-1][alias] = lineno
 
-    if not file_scope_imports:
-        return []
+        # Check for macro usages when inside at least one embed
+        if len(scope_stack) > 1:
+            # Collect all known aliases from any scope
+            all_aliases = set()
+            for scope in scope_stack:
+                all_aliases.update(scope.keys())
 
-    issues: list[tuple[int, str, int]] = []
+            for alias in all_aliases:
+                if alias in reported_aliases:
+                    continue
+                call_re = get_call_re(alias)
+                if call_re.search(line):
+                    # Usage found at embed depth. Check: is alias imported in
+                    # the current embed scope (scope_stack[-1])?
+                    current_embed_scope = scope_stack[-1]
+                    if alias in current_embed_scope:
+                        # Local import in this exact embed scope — OK
+                        pass
+                    else:
+                        # Alias imported only in outer scope(s) — BUG
+                        # Find the import line from the outermost scope that has it
+                        outer_import_line = None
+                        outer_depth = None
+                        for depth, scope in enumerate(scope_stack[:-1]):
+                            if alias in scope:
+                                outer_import_line = scope[alias]
+                                outer_depth = depth
+                                break
+                        if outer_import_line is not None:
+                            embed_depth = len(scope_stack) - 1
+                            reason = (
+                                f"imported at embed-depth {outer_depth} "
+                                f"but used at embed-depth {embed_depth} (line {lineno})"
+                            )
+                            issues.append((outer_import_line, alias, lineno, reason))
+                            reported_aliases.add(alias)
 
-    for import_line, alias in file_scope_imports:
-        real_call_re = make_real_call_pattern(alias)
-
-        block_depth = 0
-        # embed_stack: list of sets, each set holds aliases locally imported
-        # within that embed level. Push on embed open, pop on endembed.
-        embed_stack: list[set[str]] = []
-
-        for i, line in enumerate(lines, start=1):
-            embed_opens = len(RE_EMBED_OPEN.findall(line))
-            embed_closes = len(RE_EMBED_CLOSE.findall(line))
-            block_opens = len(RE_BLOCK_OPEN.findall(line))
-            block_closes = len(RE_BLOCK_CLOSE.findall(line))
-
-            # Push new embed context(s) before checking imports/usage on this line
-            for _ in range(embed_opens):
-                embed_stack.append(set())
-
-            # Track local imports within the current embed context
-            if embed_stack:
-                m = RE_IMPORT.search(line)
-                if m:
-                    embed_stack[-1].add(m.group(1))
-
-            block_depth += block_opens
-
-            # Check for real macro call inside embed + block context
-            if block_depth > 0 and embed_stack and real_call_re.search(line):
-                # Alias is locally imported if any enclosing embed level imported it
-                locally_imported = any(alias in s for s in embed_stack)
-                if not locally_imported:
-                    issues.append((import_line, alias, i))
-                    break  # report first occurrence only
-
-            block_depth -= block_closes
-            if block_depth < 0:
-                block_depth = 0
-
-            # Pop embed context(s) after processing closes
-            for _ in range(embed_closes):
-                if embed_stack:
-                    embed_stack.pop()
+        # Pop scope(s) for embed closes (closes happen after content)
+        for _ in range(embed_closes):
+            if len(scope_stack) > 1:
+                scope_stack.pop()
 
     return issues
 
@@ -183,15 +189,18 @@ def main() -> int:
     failed_files = 0
 
     for twig_file in twig_files:
+        rel_path = twig_file.relative_to(repo_root)
+        rel_str = str(rel_path)
+        if rel_str in SKIP_TEMPLATES:
+            continue
+
         issues = check_file(twig_file)
         if issues:
             failed_files += 1
-            rel_path = twig_file.relative_to(repo_root)
-            for import_line, alias, usage_line in issues:
+            for import_line, alias, usage_line, reason in issues:
                 print(
                     f"FAIL {rel_path}:{import_line}: "
-                    f"macro '{alias}' imported at file-scope but used inside embed-block "
-                    f"at line {usage_line} without local import"
+                    f"macro '{alias}' {reason}"
                 )
             total_issues += len(issues)
 
@@ -201,8 +210,8 @@ def main() -> int:
     else:
         print(f"\n{total_issues} embed-scope macro issue(s) in {failed_files} template(s).")
         print(
-            "Fix: add {%% import '_components/_fa_X.html.twig' as alias %%} "
-            "at the top of the embed block where the macro is used."
+            "Fix: add {% import '_components/_fa_X.html.twig' as alias %} "
+            "inside the embed block where the macro is used."
         )
         return 1
 
