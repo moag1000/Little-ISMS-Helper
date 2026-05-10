@@ -578,6 +578,7 @@ compliance:
         applicable_description: 'This requirement applies to our organization'
         save_quick_update: 'Save Quick Update'
     cross_framework:
+        exceeds_tooltip: 'Extended coverage: source framework covers %pct%% of the target requirement — over 100 % means source controls are stricter than the target requires.'
         source_target_label: __compliance.cross_framework.source_target_label
         table:
             source: __compliance.cross_framework.table.source
