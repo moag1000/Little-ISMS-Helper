@@ -76,8 +76,11 @@ class MyDayAggregator
         $tenant = $this->tenantContext->getCurrentTenant();
         $today = new DateTimeImmutable();
 
-        $workflowsPending = $this->buildWorkflowsPending($user);
-        $workflowsOverdue = $this->buildWorkflowsOverdue($user);
+        // Audit V3 W2-C2: tenant-scope all aggregator queries to prevent
+        // Cross-Tenant-Leakage. Without an active tenant we surface nothing
+        // — better empty than mixed-tenant.
+        $workflowsPending = $tenant ? $this->buildWorkflowsPending($user, $tenant) : [];
+        $workflowsOverdue = $tenant ? $this->buildWorkflowsOverdue($user, $tenant) : [];
         $fourEyes        = $tenant ? $this->buildFourEyes($user, $tenant) : [];
         $acks            = $tenant ? $this->buildAcknowledgements($user, $tenant) : [];
         $findings        = $tenant ? $this->buildFindings($user, $tenant) : [];
@@ -113,10 +116,10 @@ class MyDayAggregator
     /**
      * @return array<int, array<string, mixed>>
      */
-    private function buildWorkflowsPending(User $user): array
+    private function buildWorkflowsPending(User $user, Tenant $tenant): array
     {
         $items = [];
-        foreach ($this->workflowInstances->findPendingForUser($user) as $instance) {
+        foreach ($this->workflowInstances->findPendingForUser($user, $tenant) as $instance) {
             /** @var WorkflowInstance $instance */
             $items[] = $this->mapWorkflow($instance, false);
         }
@@ -126,10 +129,10 @@ class MyDayAggregator
     /**
      * @return array<int, array<string, mixed>>
      */
-    private function buildWorkflowsOverdue(User $user): array
+    private function buildWorkflowsOverdue(User $user, Tenant $tenant): array
     {
         $items = [];
-        foreach ($this->workflowInstances->findOverdue() as $instance) {
+        foreach ($this->workflowInstances->findOverdueForTenant($tenant) as $instance) {
             /** @var WorkflowInstance $instance */
             // Filter overdue to those visible to this user (initiated or pending approver).
             if ($this->isWorkflowRelevant($instance, $user)) {
@@ -224,10 +227,14 @@ class MyDayAggregator
                 && !$document->getRequiresAcknowledgement()) {
                 continue;
             }
-            // Check if ack exists for this user + version
+            // Check if ack exists for this user + version. Audit V3 W2-C4:
+            // PENDING rows (created by Auto-Acknowledgement-Campaign) keep
+            // the document on the user's My-Day list — only ACKNOWLEDGED
+            // rows close the item.
             $version = method_exists($document, 'getVersion') ? (string) ($document->getVersion() ?? '') : '';
             $existing = $this->policyAckRepo->findOneFor($tenant, $document, $user, $version);
-            if ($existing instanceof PolicyAcknowledgement) {
+            if ($existing instanceof PolicyAcknowledgement
+                && $existing->getStatus() === PolicyAcknowledgement::STATUS_ACKNOWLEDGED) {
                 continue;
             }
 
@@ -319,15 +326,17 @@ class MyDayAggregator
 
     private function dsrAssignedToUser(DataSubjectRequest $dsr, User $user): bool
     {
+        // Audit V3 W2-C2 DSGVO-Fix: DSRs contain personally-identifiable
+        // data of the data subject (Art. 4 (1) DSGVO). Surface them ONLY
+        // to the explicitly assigned handler — no See-All-Fallback for
+        // generic ROLE_MANAGER. The DPO/Compliance-Manager-Persona has
+        // a dedicated dashboard via ROLE_DPO (W2-C5); seeing every open
+        // DSR via My-Day would breach Art. 5 (1) (c) (Datenminimierung).
         if (method_exists($dsr, 'getAssignedTo')) {
             $u = $dsr->getAssignedTo();
             if ($u instanceof User && $u->getId() === $user->getId()) {
                 return true;
             }
-        }
-        // For now: surface all open DSRs to DPO-like roles
-        if (in_array('ROLE_ADMIN', $user->getRoles(), true) || in_array('ROLE_MANAGER', $user->getRoles(), true)) {
-            return true;
         }
         return false;
     }
