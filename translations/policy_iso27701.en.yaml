@@ -1,0 +1,1044 @@
+policy:
+    iso27701:
+        pims_top_level:
+            v1:
+                title: 'PIMS Policy (Privacy Information Management System)'
+                body: |-
+                    # PIMS Policy of {{ tenant.legal_name }}
+
+                    *Document class: Top-level policy (privacy management system) | Norm anchors: ISO 27701:2025 Cl. 5.2 + 6.1.1, ISO 27001:2022 Cl. 5.2 (prerequisite), GDPR Art. 5 + Art. 24, German BDSG § 1 | Language: English | Review interval: 12 months | Approval: {{ approval.chain }}*
+
+                    ## 1. Purpose and PIMS commitment (ISO 27701:2025 Cl. 5.2)
+
+                    This policy establishes the Privacy Information Management System (PIMS) of {{ tenant.legal_name }} (hereinafter "the Organisation") in accordance with ISO/IEC 27701:2025 as an extension of the existing Information Security Management System (ISMS) under ISO/IEC 27001:2022. It is the highest normative statement of the Organisation regarding the protection of personally identifiable information (PII) and links the ISMS scope to the data-protection obligations under Regulation (EU) 2016/679 (GDPR), the German Federal Data Protection Act (BDSG), and sectoral regulations (TTDSG, SGB, KHZG, EHDS, AI Act, NIS2 + DORA where the Organisation is a financial entity).
+
+                    Top management acknowledges that PIMS conformity presupposes ISO 27001 conformity and that Cl. 6 + Annex A/B can only be satisfied where the ISMS is already established, documented and audited (ISO 27701:2025 Cl. 4.4 explicitly references ISO 27001:2022 Cl. 4-10). This policy commits the Organisation pursuant to Art. 24(1) GDPR to implement appropriate technical and organisational measures to demonstrate compliance of all processing activities ("Accountability").
+
+                    ## 2. PIMS scope (ISO 27701:2025 Cl. 4.3)
+
+                    The PIMS scope covers all processing activities of the Organisation in the GDPR roles of controller (Art. 4(7) GDPR; ISO 27701 Cl. 7) and processor (Art. 4(8) GDPR; ISO 27701 Cl. 8). Covered are all employees, working students, interns, contractors, joint controllers (Art. 26 GDPR), and processors and sub-processors (Art. 28 GDPR).
+
+                    Substantively, the scope covers all life-cycle phases of personal data per Art. 4(2) GDPR and ISO 27701:2025 Cl. 7.4 + 8.4 (collection, use, storage, transmission, deletion).
+
+                    ## 3. Roles and responsibilities (ISO 27701:2025 Cl. 5.3 + 6.3)
+
+                    The following roles are mandatorily staffed in the PIMS and must be segregated from each other (German BSI segregation requirement):
+
+                    - **Data Protection Officer (DPO)** {{ roles.dpo.fullName }} — appointed in accordance with Art. 37-39 GDPR, instruction-free in data-protection matters, reports directly to top management (Art. 38(3) GDPR), not in personal union with the CISO.
+                    - **Chief Information Security Officer (CISO)** {{ roles.ciso.fullName }} — responsible for the ISMS per ISO 27001:2022.
+                    - **Controller representative** {{ roles.controller_repr.fullName }} — point of contact for the lead supervisory authority per Art. 56 GDPR.
+                    - **Top management** — responsible for resource provisioning, approval of the PIMS policy and privacy objectives.
+
+                    ## 4. Privacy objectives (ISO 27701:2025 Cl. 6.2)
+
+                    The Organisation defines measurable privacy objectives annually, at minimum for:
+
+                    1. **Completeness of the records of processing activities** (Art. 30 GDPR; ISO 27701 Cl. 7.2.8 / 8.2.6) — target: 100 % of processing operations recorded, tolerance 0.
+                    2. **DPIA coverage** (Art. 35 GDPR) — all high-risk processing operations with valid DPIA, tolerance 0.
+                    3. **DSR processing time** (Art. 12(3) GDPR) — average processing time < 14 calendar days versus statutory 30 days.
+                    4. **Data-breach notification rate** (Art. 33 GDPR) — reduction of notifiable breaches versus prior year.
+                    5. **Training completion rate** (Art. 39(1)(b) GDPR) — 100 % of employees with current data-protection training.
+                    6. **Third-country transfers with valid mechanism** (Chapter V GDPR) — 100 %, tolerance 0.
+
+                    ## 5. Risk management approach (ISO 27701:2025 Cl. 6.1.2)
+
+                    The Organisation extends the ISO 27001 risk-management process by the dimension "risks to the rights and freedoms of data subjects" per Recital 75 GDPR. Likelihood and severity are assessed for the data subject, not primarily for the Organisation. The risk appetite for privacy risks is reported separately in the Organisation's risk-appetite statement. The methodology is governed by the *PIA/DPIA Methodology* document.
+
+                    ## 6. PIMS mandatory documents (ISO 27701:2025 Annex A/B mapping)
+
+                    The following downstream documents are mandatory components of the PIMS:
+
+                    - **Controller responsibilities** (Cl. 7.2 + Annex A) — application of Annex A.7.2-A.7.5.
+                    - **Processor responsibilities** (Cl. 8.2 + Annex B) — application of Annex B.8.2-B.8.5.
+                    - **PII inventory + records of processing activities** (Cl. 7.2.1, 7.2.8, 8.2.1, 8.2.6).
+                    - **Consent + lawful basis** (Cl. 7.2.2-7.2.5).
+                    - **Data-subject rights procedure** (Cl. 7.3.1-7.3.10).
+                    - **PIA/DPIA methodology** (Cl. 7.2.5).
+                    - **PII breach notification** (Cl. 6.13).
+                    - **Third-country transfer policy** (Cl. 7.5 + 8.5).
+                    - **Retention + disposal policy** (Cl. 7.4 + 8.4).
+
+                    ## 7. Commitment to data-subject rights (ISO 27701:2025 Cl. 7.3, GDPR Art. 12-22)
+
+                    The Organisation guarantees the exercise of all data-subject rights: access (Art. 15 / Cl. 7.3.4), rectification (Art. 16 / Cl. 7.3.6), erasure (Art. 17 / Cl. 7.3.7), restriction (Art. 18 / Cl. 7.3.7), notification (Art. 19), portability (Art. 20 / Cl. 7.3.8), objection (Art. 21 / Cl. 7.3.5), no-automated-decision (Art. 22). Requests are handled within {{ gdpr.dsr_response_deadline_days }} calendar days per Art. 12(3) GDPR.
+
+                    ## 8. ISMS-PIMS interlock (ISO 27701:2025 Cl. 4.4 + Annex A/B)
+
+                    The following ISO 27001:2022 Annex A controls are extended by privacy aspects (PIMS view):
+
+                    - **A.5.34** (Privacy + protection of PII) — host control for all PIMS documents.
+                    - **A.5.31** (Legal, statutory, regulatory requirements) — GDPR + BDSG as central legal requirements.
+                    - **A.5.33** (Protection of records) — RoPA maintenance per Art. 30 GDPR.
+                    - **A.5.24-A.5.30** (Incident management) — interlocked with PII breach notification per Art. 33/34 GDPR.
+                    - **A.5.19-A.5.23** (Supplier relationships) — DPAs per Art. 28 GDPR.
+                    - **A.6.3** (Awareness, education, training) — extended by privacy training (Art. 39(1)(b) GDPR).
+                    - **A.8.10** (Information deletion) — interlocked with retention + disposal policy.
+                    - **A.8.11** (Data masking) — pseudonymisation per Art. 4(5) GDPR.
+
+                    ## 9. Review and change cycle
+
+                    This policy is reviewed at least every 12 months and ad-hoc on the following triggers: new processing activity with high risk, new processor in a third country without adequacy decision, change of sectoral requirements, new lead-supervisory-authority or EDPB guidelines, material organisational change. Changes are subject to the approval chain {{ approval.chain }} with mandatory DPO sign-off (DPO veto per ISO 27701:2025 Cl. 5.1).
+
+                    ## 10. Cross-reference to other frameworks
+
+                    - **ISO 27001:2022 A.5.34** — host control in the ISMS, this PIMS document is its content.
+                    - **GDPR Art. 24 + 32** — accountability + technical measures.
+                    - **EU DORA Art. 19** — ICT major-incident notification at financial entities (parallel to Art. 33 GDPR).
+                    - **NIS2 Art. 23** — cybersecurity-incident notifications (parallel).
+                    - **AI Act** — transparency obligations for AI processing of personal data (Art. 22 GDPR interface).
+
+                    ---
+
+                    *Approved by DPO {{ roles.dpo.fullName }} on [date] — DPO sign-off per Art. 38(3) GDPR and ISO 27701:2025 Cl. 5.1 is independent of CISO sign-off.*
+
+                    *Approval chain: {{ approval.chain }}*
+        role_data_controller_responsibilities:
+            v1:
+                title: 'Controller Responsibilities Policy'
+                body: |-
+                    # Controller Responsibilities of {{ tenant.legal_name }}
+
+                    *Document class: Policy (controller role) | Norm anchors: ISO 27701:2025 Cl. 7.2 + Annex A, ISO 27001:2022 A.5.34 (prerequisite), GDPR Art. 4(7), Art. 24, Art. 26 + Chapter IV | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+
+                    This policy mandatorily governs the obligations of {{ tenant.legal_name }} in the role of controller per Art. 4(7) GDPR. It operationalises ISO 27701:2025 Cl. 7.2 (Conditions for collection and processing) as well as the full Annex A of the standard (PIMS-specific controls for controllers).
+
+                    ## 2. Definition of the role (Art. 4(7) GDPR)
+
+                    The Organisation is a controller where, alone or jointly with others, it determines the purposes and means of the processing of personal data. Examples in the Organisation:
+
+                    - HR processing (employee data per § 26 BDSG);
+                    - Customer processing (CRM, contract handling, marketing);
+                    - Own website tracking;
+                    - Internal IT logging and security telemetry;
+                    - Supplier master data for contract handling.
+
+                    ## 3. Identification of purposes and lawful bases (ISO 27701:2025 Cl. 7.2.1 + 7.2.2)
+
+                    Before any processing begins, the Organisation documents:
+
+                    1. The **legitimate purpose** (Art. 5(1)(b) GDPR — purpose limitation);
+                    2. The **lawful basis** under Art. 6(1)(a-f) GDPR; for special categories additionally Art. 9(2) or § 22 BDSG;
+                    3. The **data categories** and **data-subject categories** linked to the Organisation's data catalogue;
+                    4. The **retention periods** per the deletion concept.
+
+                    Selection follows the *Consent + Lawful Basis* methodology. Processing without documented lawful basis is prohibited.
+
+                    ## 4. Obligations toward data subjects (ISO 27701:2025 Cl. 7.3, GDPR Art. 12-14)
+
+                    The controller ensures information obligations per Art. 13 GDPR (direct collection) or Art. 14 GDPR (indirect collection) at the time of collection. Implementation:
+
+                    - **Privacy notices** on the website ({{ gdpr.privacy_notice_url }});
+                    - **Layered privacy notices** in applications with drilldown;
+                    - **Employee privacy notices** in the intranet;
+                    - **Applicant privacy notices** in the recruitment portal.
+
+                    ## 5. Privacy by Design and Default (ISO 27701:2025 Cl. 7.4.x, GDPR Art. 25)
+
+                    For every new IT process, before go-live the Privacy-by-Design methodology applies:
+
+                    - **Data minimisation** in the collection mask (Art. 5(1)(c));
+                    - **Privacy-friendly defaults** (e.g. opt-in instead of opt-out for optional fields);
+                    - **Pseudonymisation** where technically feasible (Art. 4(5));
+                    - **Encryption** in transit and at rest (Art. 32);
+                    - **Authorisation concept** with need-to-know (A.5.15-A.5.18 ISO 27001).
+
+                    ## 6. Processor engagement (Art. 28 GDPR + ISO 27701:2025 Cl. 7.2.6 + Annex A.7.2.6)
+
+                    Before engaging any processor:
+
+                    1. **Suitability assessment** of the processor per Art. 28(1) GDPR (technical and organisational measures, sufficient guarantees);
+                    2. **Conclusion of a DPA** per Art. 28(3) GDPR with all mandatory contents (subject, duration, nature and purpose, data categories, controller's rights and obligations, confidentiality, TOMs, sub-processors, support for DSR and breaches, deletion/return after contract end, audit right);
+                    3. **Authorisation of sub-processors** (Art. 28(2) GDPR);
+                    4. **Audit right** at least annually or event-triggered.
+
+                    ## 7. Joint controllers (Art. 26 GDPR + ISO 27701:2025 Cl. 7.2.7)
+
+                    Where purposes and means are jointly determined:
+
+                    - **Joint-controller arrangement** per Art. 26(1) GDPR with clear allocation of roles (allocation of GDPR obligations, in particular for the exercise of data-subject rights and information obligations);
+                    - **Essential contents** of the arrangement made available to data subjects per Art. 26(2) GDPR.
+
+                    ## 8. EU representative (Art. 27 GDPR + ISO 27701:2025 Cl. 7.2.7)
+
+                    Where the Organisation acts as a non-EU-established controller processing data of EU data subjects, an EU representative per Art. 27 GDPR is appointed and published in the privacy notices.
+
+                    ## 9. Records of processing activities (Art. 30(1) GDPR + ISO 27701:2025 Cl. 7.2.8)
+
+                    The records of processing activities (RoPA) are maintained per the separate methodology *PII inventory + records of processing activities* and audited at least annually. They contain all mandatory content of Art. 30(1) GDPR.
+
+                    ## 10. DPIA (Art. 35 GDPR + ISO 27701:2025 Cl. 7.2.5)
+
+                    Where processing is likely to result in high risk to rights and freedoms of data subjects, a Data Protection Impact Assessment is performed per the *PIA/DPIA Methodology*. Trigger logic: profiling with legal effect; large-scale processing of special categories; systematic public monitoring; hits on the lead supervisory authority's list.
+
+                    ## 11. Third-country transfers (Chapter V GDPR + ISO 27701:2025 Cl. 7.5)
+
+                    Third-country transfers occur only based on a valid transfer mechanism (adequacy decision, SCCs 2021/914 with Schrems-II-compliant TIA, Binding Corporate Rules) per the separate *Third-Country Transfer Policy*.
+
+                    ## 12. Data breaches (Art. 33/34 GDPR + ISO 27701:2025 Cl. 6.13)
+
+                    Data-breach notification to the supervisory authority within 72h per the separate *PII Breach Notification Procedure*.
+
+                    ## 13. Erasure (Art. 5(1)(e) + Art. 17 GDPR + ISO 27701:2025 Cl. 7.4)
+
+                    Erasure per the deletion concept; pseudonymisation where retention obligations (HGB § 257, AO § 147) apply.
+
+                    ## 14. Audit + evidence (ISO 27701:2025 Cl. 9 + Annex A)
+
+                    Annual internal audits of controller obligations per Annex A; external recertification every 3 years. Evidence in audit trail (evidence module).
+
+                    ---
+
+                    *Approved by DPO + CISO + Top Mgmt | Approval chain: {{ approval.chain }}*
+        role_data_processor_responsibilities:
+            v1:
+                title: 'Processor Responsibilities Policy'
+                body: |-
+                    # Processor Responsibilities of {{ tenant.legal_name }}
+
+                    *Document class: Policy (processor role) | Norm anchors: ISO 27701:2025 Cl. 8.2 + Annex B, ISO 27001:2022 A.5.34 (prerequisite), GDPR Art. 4(8), Art. 28 + Chapter IV | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+
+                    This policy mandatorily governs the obligations of {{ tenant.legal_name }} in the role of processor per Art. 4(8) GDPR. It operationalises ISO 27701:2025 Cl. 8.2 (Conditions for collection and processing) as well as Annex B of the standard (PIMS-specific controls for processors).
+
+                    ## 2. Definition of the role (Art. 4(8) GDPR)
+
+                    The Organisation is a processor where it processes personal data **on behalf** of a controller without deciding on purposes and means. Examples in the Organisation: SaaS provisioning for customers, hosting services, payroll on behalf, customer-service ticketing for customer tenants.
+
+                    ## 3. Data Processing Agreement (Art. 28(3) GDPR + ISO 27701:2025 Cl. 8.2.2)
+
+                    Processing occurs exclusively based on a written or electronic DPA with the controller, containing at minimum:
+
+                    1. Subject matter and duration of processing;
+                    2. Nature and purpose of processing;
+                    3. Categories of personal data and data subjects;
+                    4. Controller's rights and obligations;
+                    5. Confidentiality undertaking (Art. 28(3)(b));
+                    6. Technical and organisational measures per Art. 32 GDPR;
+                    7. Conditions for engaging sub-processors;
+                    8. Support for the controller in fulfilling DSR (Art. 12-22) and breach (Art. 33-34) obligations;
+                    9. Deletion or return of all data after contract end (controller's choice);
+                    10. Audit right and cooperation duty.
+
+                    ## 4. Processing on documented instructions (Art. 28(3)(a) + ISO 27701:2025 Cl. 8.2.2)
+
+                    Processing occurs solely on documented instructions of the controller. Instructions are documented in the ticketing or contract-management system. If an instruction in the processor's view violates GDPR or other EU/Member State data-protection law, the controller is informed without undue delay (Art. 28(3) last sentence).
+
+                    ## 5. Confidentiality (Art. 28(3)(b) + ISO 27701:2025 Cl. 8.2.2)
+
+                    All persons involved in the processing are bound to confidentiality (separate confidentiality document, inclusion in the employment contract, or commitment per § 53 BDSG for DPO-relevant functions).
+
+                    ## 6. Security of processing (Art. 28(3)(c) + Art. 32 + ISO 27701:2025 Cl. 8.2.4)
+
+                    Technical-organisational measures are implemented per the ISMS (ISO 27001:2022 Annex A) and documented in the DPA annex. At minimum:
+
+                    - Pseudonymisation and encryption;
+                    - Ensuring ongoing confidentiality, integrity, availability, and resilience;
+                    - Recoverability after incident;
+                    - Process for regular testing, assessing, and evaluating effectiveness of TOMs.
+
+                    ## 7. Sub-processors (Art. 28(2) + (4) + ISO 27701:2025 Cl. 8.2.5)
+
+                    1. General written authorisation from controller or specific authorisation per sub-processor;
+                    2. Prior information about any intended change with right of objection;
+                    3. Sub-DPA with sub-processor with identical or stricter obligations;
+                    4. Full liability vis-a-vis controller for sub-processor breaches;
+                    5. Sub-processor list publicly available or accessible to controller.
+
+                    ## 8. Support for data-subject rights (Art. 28(3)(e) + ISO 27701:2025 Cl. 8.3)
+
+                    The processor supports the controller via appropriate technical-organisational measures in responding to data-subject requests (Art. 12-22 GDPR). Concrete approach: forwarding the request to the controller within {{ gdpr.dsr_processor_forwarding_hours }} hours; provision of necessary data via standardised API or export mechanism.
+
+                    ## 9. Support for breach notification (Art. 28(3)(f) + Art. 33(2) + ISO 27701:2025 Cl. 8.2.4)
+
+                    The processor notifies the controller of a breach **without undue delay** after becoming aware — per the separate *PII Breach Notification Procedure*. Concrete deadline in the DPA: maximum {{ gdpr.processor_breach_notification_hours }} hours, since the controller must comply with the 72h deadline vis-a-vis the supervisory authority.
+
+                    ## 10. Erasure or return after contract end (Art. 28(3)(g) + ISO 27701:2025 Cl. 8.4.2)
+
+                    After processing ends, the processor erases all personal data or returns them at the controller's choice and destroys existing copies, unless statutory retention obligations apply. Erasure proof (deletion log) is provided to the controller.
+
+                    ## 11. Audit right (Art. 28(3)(h) + ISO 27701:2025 Cl. 8.2.4)
+
+                    Controller has the right to audits by itself or third parties; alternatively provision of certificates and audit reports (e.g. ISO 27001, SOC 2 Type II, BSI C5). Audit preparation per separate audit-logistics policy.
+
+                    ## 12. Third-country transfers (ISO 27701:2025 Cl. 8.5, GDPR Art. 44-49)
+
+                    Sub-processors in third countries only with transfer mechanism per the separate *Third-Country Transfer Policy*. TIA (Transfer Impact Assessment) per Schrems II case law mandatory.
+
+                    ## 13. Records of processing activities (Art. 30(2) + ISO 27701:2025 Cl. 8.2.6)
+
+                    Processor RoPA with:
+
+                    - Name and contact details of processors and each controller;
+                    - Categories of processing carried out on behalf;
+                    - Third-country transfers with safeguards;
+                    - General TOM description.
+
+                    Maintained in the RoPA module with filter "role = processor".
+
+                    ## 14. Audit + evidence
+
+                    Annual internal audits per Annex B; provision of audit reports to controllers on request. External recertification every 3 years.
+
+                    ---
+
+                    *Approved by DPO + CISO + Top Mgmt | Approval chain: {{ approval.chain }}*
+        pii_inventory_records_processing:
+            v1:
+                title: 'PII Inventory and Records of Processing Activities (RoPA)'
+                body: |-
+                    # PII Inventory and Records of Processing Activities of {{ tenant.legal_name }}
+
+                    *Document class: Methodology | Norm anchors: ISO 27701:2025 Cl. 7.2.1 + 7.2.8 + 8.2.1 + 8.2.6, GDPR Art. 30, BDSG § 70 | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+
+                    This methodology mandatorily governs how {{ tenant.legal_name }} establishes, maintains, updates, reviews, and provides to the supervisory authority per Art. 30(4) GDPR the PII inventory (ISO 27701:2025 Cl. 7.2.1 + 8.2.1) and the records of processing activities (RoPA) per Art. 30 GDPR. The actual register is maintained in the existing `ProcessingActivity` module; this methodology defines the maintenance discipline.
+
+                    ## 2. Scope (dual role: controller + processor)
+
+                    All processing activities in both GDPR roles are covered:
+
+                    - **Controller (Art. 30(1) + ISO 27701:2025 Cl. 7.2.8)** — mandatory contents (a)-(g): name and contact details of controller, joint controllers, and DPO; processing purposes; categories of data subjects and personal data; categories of recipients; third-country transfers with safeguards; envisaged retention periods; general TOM description.
+                    - **Processor (Art. 30(2) + ISO 27701:2025 Cl. 8.2.6)** — mandatory contents (a)-(d): name and contact details of processors and controllers; categories of processing; third-country transfers; general TOM description.
+
+                    The exemption of Art. 30(5) GDPR (< 250 employees) is **not invoked**, as the carve-out conditions (regular processing, risk to rights and freedoms, special categories) practically always apply.
+
+                    ## 3. PII inventory (ISO 27701:2025 Cl. 7.2.1)
+
+                    The PII inventory is the inventory of all PII data categories the Organisation collects, stores, or processes. It is the basis for the RoPA and is maintained in the `DataCategory` module:
+
+                    - **Data category** (e.g. master data, contact data, bank details, health data);
+                    - **Classification** (standard / special category per Art. 9 / criminal per Art. 10);
+                    - **Risk class** (low / medium / high / very high);
+                    - **Asset linkage** (which IT system stores the category);
+                    - **Retention period** (default; overridden per processing operation);
+                    - **Minimum TOM requirements**.
+
+                    ## 4. RoPA-entry triggers
+
+                    A new RoPA entry is mandatory upon:
+
+                    1. Introduction of a new IT process, application, or cloud service with PII;
+                    2. Engagement of a new processor or sub-processor (Art. 28 GDPR);
+                    3. Change of processing purpose or lawful basis of an existing operation;
+                    4. Extension of data categories or data-subject categories;
+                    5. Introduction of a marketing campaign, new HR process, or new customer-loyalty programme;
+                    6. Introduction of a third-country transfer (Chapter V);
+                    7. Change of processor or sub-processor;
+                    8. Deployment of new AI / automated-decision-making processes (Art. 22 GDPR; AI Act).
+
+                    ## 5. Mandatory fields per RoPA entry (controller)
+
+                    | Field | Art. 30(1) | Note |
+                    |---|---|---|
+                    | Name + contact controller | (a) | From tenant master data |
+                    | Name + contact DPO | (a) | {{ roles.dpo.fullName }} |
+                    | Processing purposes | (b) | Concrete, not generic |
+                    | Categories of data subjects | (c) | From DataSubjectCategory |
+                    | Categories of personal data | (c) | From DataCategory |
+                    | Categories of recipients | (d) | Incl. third-country recipients |
+                    | Third-country transfers + safeguards | (e) | Cross-ref to transfer mechanism |
+                    | Retention periods | (f) | From deletion concept |
+                    | TOM description | (g) | From ISMS (Annex A) |
+
+                    Additionally captured (best practice, beyond mandatory):
+
+                    - Lawful basis (Art. 6(1)(a-f), Art. 9(2), Art. 10);
+                    - LIA (Legitimate Interest Assessment) when (f);
+                    - DPIA-obligation check (Art. 35);
+                    - Linkage to IT asset in the ISMS module;
+                    - Risk class of processing.
+
+                    ## 6. Mandatory fields per RoPA entry (processor)
+
+                    | Field | Art. 30(2) | Note |
+                    |---|---|---|
+                    | Name + contact processor | (a) | Own organisation |
+                    | Name + contact controller | (a) | From customer/contract data |
+                    | Categories of processing | (b) | Per customer |
+                    | Third-country transfers + safeguards | (c) | TIA cross-ref |
+                    | TOM description | (d) | From ISMS (Annex A) |
+
+                    ## 7. Update frequency
+
+                    - **Quarterly mandatory review** by DPO ({{ roles.dpo.fullName }}) for plausibility and completeness;
+                    - **Event-driven update** on every trigger (see §4);
+                    - **Annual RoPA audit** by internal audit or external auditor.
+
+                    ## 8. Provision to supervisory authority (Art. 30(4))
+
+                    On supervisory-authority request, the RoPA is provided electronically within {{ gdpr.ropa_authority_response_days }} working days. Format: machine-readable CSV/JSON export from the `ProcessingActivity` module.
+
+                    ## 9. ISMS interlock (data-reuse principle)
+
+                    The RoPA reuses existing ISMS data instead of duplicating it:
+
+                    - **Asset → ProcessingActivity**: asset stores data category X → automatic linkage with RoPA entries processing this category;
+                    - **Supplier → Sub-Processor**: supplier processes PII → automatic DPA reminder;
+                    - **Control → TOM**: ISO 27001 Annex A controls referenced as TOMs per Art. 32 GDPR;
+                    - **Risk → DPIA trigger**: risk with `requiresDpia=true` triggers DPIA-obligation check.
+
+                    ## 10. Audit trail
+
+                    Every RoPA change is logged in the audit log with HMAC chain (ISO 27001:2022 A.8.15). Change history per RoPA entry with diff visualisation.
+
+                    ---
+
+                    *Approved by DPO + CISO | Approval chain: {{ approval.chain }}*
+        consent_management_legal_basis:
+            v1:
+                title: 'Consent and Lawful Basis Policy'
+                body: |-
+                    # Consent and Lawful Basis of {{ tenant.legal_name }}
+
+                    *Document class: Policy + methodology | Norm anchors: ISO 27701:2025 Cl. 7.2.2-7.2.5, GDPR Art. 6 + 7 + 8 + 9 + 10, BDSG §§ 22, 24, 26 | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+
+                    This policy mandatorily governs which lawful basis under Art. 6 (general data), Art. 9 (special categories), and Art. 10 (criminal data) GDPR is invoked for which processing activity of {{ tenant.legal_name }}, and ensures consent management per Art. 7 GDPR.
+
+                    ## 2. Hierarchy of lawful bases (Art. 6(1) GDPR)
+
+                    Processing without documented lawful basis is prohibited. Selection is made before processing begins in the following order of review:
+
+                    1. **Art. 6(1)(b) — Contract performance / pre-contractual measures**: preferred where processing is necessary for contract performance (no "absolutely necessary" criterion, but objectively required).
+                    2. **Art. 6(1)(c) — Legal obligation**: where statutory processing duty exists; concrete norm to be cited (German HGB §§ 238, 257; AO § 147; SGB; GwG; BetrVG; BBG; § 26 BDSG for employees).
+                    3. **Art. 6(1)(d) — Vital interests**: narrow interpretation; emergencies only.
+                    4. **Art. 6(1)(e) — Public task / official authority**: only for public-law tasks or statutory authority.
+                    5. **Art. 6(1)(f) — Legitimate interests**: mandatory three-step test (existence of legitimate interest, necessity, balancing against data-subject interests) — documented as LIA per Recital 47.
+                    6. **Art. 6(1)(a) — Consent**: only where no other basis applies; consent must not serve to circumvent other bases.
+
+                    Default lawful basis in the Organisation for new processing: {{ gdpr.legal_basis_default }}.
+
+                    ## 3. Special categories (Art. 9 GDPR + § 22 BDSG)
+
+                    Processing of special categories (race, ethnic origin, political opinions, religious / philosophical beliefs, trade-union membership, genetic data, biometric data for unique identification, health data, sex-life data, sexual orientation) requires **in addition** to the Art. 6 basis a basis under Art. 9(2)(a-j) GDPR or § 22 BDSG. Practice-relevant variants:
+
+                    - **Art. 9(2)(a) — Explicit consent**: for marketing/research;
+                    - **Art. 9(2)(b) + § 22(1)(1)(b) BDSG — Employment relationship**: for integration management, severely-disabled reporting;
+                    - **Art. 9(2)(c) — Vital interests**;
+                    - **Art. 9(2)(f) — Legal-claim defence**;
+                    - **Art. 9(2)(h) + § 22(1)(1)(b) BDSG — Healthcare**: KIS systems, occupational-health promotion;
+                    - **Art. 9(2)(i) — Public health interest**;
+                    - **Art. 9(2)(j) + § 27 BDSG — Scientific / historical research**: anonymisation requirement applies.
+
+                    ## 4. Criminal data (Art. 10 GDPR + §§ 24 + 26(3) BDSG)
+
+                    Processing of criminal convictions and offences only under Art. 10 GDPR with § 24 BDSG (e.g. background checks for security-critical functions) or § 26(3) BDSG (employment context with works-council involvement).
+
+                    ## 5. Employee data (§ 26 BDSG)
+
+                    Processing of employee data is primarily based on § 26(1) BDSG (necessity for the employment relationship). Consent in the employment context only where it is genuinely free (§ 26(2) BDSG): economic / legal advantage for employees, no negative consequences upon refusal. Written form for consent (§ 26(2) sentence 3 BDSG).
+
+                    ## 6. Consent management (Art. 7 + ISO 27701:2025 Cl. 7.2.4)
+
+                    Where consent is the lawful basis, the following apply:
+
+                    1. **Granular** — per purpose individually (no bundling of different purposes).
+                    2. **Informed** — clear plain language, prior information per Art. 13/14 (controller, purpose, categories, recipients, duration, rights, right of withdrawal).
+                    3. **Free** — no tying to contract performance (Art. 7(4)) where not necessary.
+                    4. **Active** — opt-in (no pre-checked boxes, ECJ C-673/17 Planet49).
+                    5. **Withdrawable** — withdrawal as easy as granting (Art. 7(3)); no obligation to state reason.
+                    6. **Versioned** — new consent on purpose change; old remains valid for legacy data.
+                    7. **Demonstrable** (Art. 7(1)) — who, when, what, how consented; storage in `Consent` module with timestamp, IP hash, version number.
+
+                    Tooling in use: {{ gdpr.consent_management_tool }}.
+
+                    ## 7. Children's consent (Art. 8 + § 8 BDSG)
+
+                    For information-society services offered directly to children: parental consent up to age 16 (German default per § 8 BDSG, Member State option Art. 8(1) GDPR). Verification obligation of consenting person "considering available technology" (Art. 8(2)). Marketing addressed to minors: additional UWG requirements.
+
+                    ## 8. Legitimate Interest Assessment (LIA)
+
+                    For Art. 6(1)(f) the documented three-step test is mandatory:
+
+                    - **Step 1**: Does a legitimate interest exist? (own or third party's; lawful, clearly articulated, real and present);
+                    - **Step 2**: Is processing necessary? (no less intrusive means; data minimisation considered);
+                    - **Step 3**: Do the interests / fundamental rights / fundamental freedoms of data subjects override? (in particular for children, Recital 47/48; reasonable expectations of data subjects; sensitivity of data; potential harm).
+
+                    Storage as LIA document in the RoPA entry.
+
+                    ## 9. Withdrawal (Art. 7(3) + ISO 27701:2025 Cl. 7.3.5)
+
+                    Withdrawal process:
+
+                    1. **Reception channels**: email to {{ gdpr.dpo_email }}, self-service in account area, reply to marketing-mail footer ("unsubscribe link").
+                    2. **Processing time**: without undue delay, latest within 7 calendar days.
+                    3. **Effect**: termination of consent-based processing; deletion of consent-collected data (where no other lawful basis applies).
+                    4. **Audit trail**: storage in `Consent` module with withdrawal timestamp, withdrawal channel.
+
+                    ## 10. ePrivacy interface (TTDSG)
+
+                    Cookies and comparable storage technologies are subject to § 25 TTDSG (German implementation of ePrivacy Directive). Consent for all non-strictly-necessary cookies. Cookie banner per German DPA guidelines (clear choice, equivalent alternatives, no dark patterns, granular per category).
+
+                    ---
+
+                    *Approved by DPO + CISO | Approval chain: {{ approval.chain }}*
+        data_subject_rights_procedure:
+            v1:
+                title: 'Data-Subject Rights Procedure'
+                body: |-
+                    # Data-Subject Rights Procedure of {{ tenant.legal_name }}
+
+                    *Document class: Procedure | Norm anchors: ISO 27701:2025 Cl. 7.3.1-7.3.10, GDPR Art. 12-22, BDSG §§ 32-37 | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+
+                    This procedure governs the receipt, identification, processing, and response to data-subject requests under Art. 12-22 GDPR by {{ tenant.legal_name }}. The actual case management runs in the `DataSubjectRequest` (DSR) module.
+
+                    ## 2. Covered rights
+
+                    | Right | GDPR | ISO 27701:2025 |
+                    |---|---|---|
+                    | Transparent information | Art. 12 | Cl. 7.3.2 |
+                    | Information on direct collection | Art. 13 | Cl. 7.3.3 |
+                    | Information on indirect collection | Art. 14 | Cl. 7.3.3 |
+                    | Access | Art. 15 | Cl. 7.3.4 |
+                    | Rectification | Art. 16 | Cl. 7.3.6 |
+                    | Erasure ("right to be forgotten") | Art. 17 | Cl. 7.3.7 |
+                    | Restriction | Art. 18 | Cl. 7.3.7 |
+                    | Notification | Art. 19 | Cl. 7.3.6 |
+                    | Portability | Art. 20 | Cl. 7.3.8 |
+                    | Objection | Art. 21 | Cl. 7.3.5 |
+                    | No automated decision | Art. 22 | Cl. 7.3.10 |
+
+                    ## 3. Reception channels (ISO 27701:2025 Cl. 7.3.1)
+
+                    Requests are received via:
+
+                    - **Email** to {{ gdpr.dsr_email }} (default channel, separated from GDPR access mailbox);
+                    - **Postal** to the Organisation's address;
+                    - **Self-service** in customer / employee account (where technically implemented);
+                    - **Telephone** at {{ gdpr.dsr_phone }} (with subsequent written confirmation);
+                    - **In person** with the controller representative.
+
+                    Requests are accepted informally — the Organisation must not require a specific form (e.g. own template) as a validity condition.
+
+                    ## 4. Identity verification (ISO 27701:2025 Cl. 7.3.4 + GDPR Recital 64)
+
+                    **Critical**: false disclosure is itself a data breach. Identity verification is risk-based:
+
+                    - **Low risk** (rectifying own email in account): confirmation via existing channel;
+                    - **Medium risk** (access to master data): name match + verification email to address on record;
+                    - **High risk** (access to special categories, large-scale erasure): additional identity attributes (e.g. contract number, date of birth, postal address) or video ID.
+
+                    For reasonable doubts, the Organisation may request additional information per Art. 12(6) GDPR; the deadline only starts upon presentation of identity proof. Recommendation: do **not** demand "ID copy in general" — German DSK recommendation applies (only as necessary, redact non-relevant fields).
+
+                    ## 5. Processing time (Art. 12(3) GDPR)
+
+                    - **Default**: 30 calendar days from receipt (or from identity-proof presentation);
+                    - **Extension**: up to 60 additional days (i.e. max. 90) for complexity or high request volume;
+                    - **Extension notification** must occur **within the first 30 days** with reasons;
+                    - **Refusal** (manifestly unfounded or excessive, Art. 12(5)(b)): with reasons and reference to right of complaint (Art. 77) and right of action (Art. 79).
+
+                    Organisation goal: average processing time < 14 calendar days.
+
+                    ## 6. Workflow
+
+                    1. **Receipt** → entry in `DataSubjectRequest` module → auto-assignment to DPO ({{ roles.dpo.fullName }});
+                    2. **Identity verification** within 3 working days → receipt confirmation with deadline reminder;
+                    3. **Request type review** (access/rectification/erasure/restriction/portability/objection) → workflow routing;
+                    4. **Data identification** across all asset systems via GDPR search (tenant-isolated);
+                    5. **Exception review** (e.g. § 34 BDSG access restriction, § 35 BDSG erasure restriction due to retention obligation);
+                    6. **Response provision** (see §7 format) → dispatch;
+                    7. **Audit trail** in DSR module with HMAC chain (ISO 27001:2022 A.8.15);
+                    8. **KPI reporting** monthly to DPO.
+
+                    ## 7. Request specifics
+
+                    - **Access (Art. 15 / Cl. 7.3.4)**: copy of all processed data + mandatory information (purposes, categories, recipients, duration, rights, complaint right, source, automated decision-making). Format: PDF + JSON attachment.
+                    - **Rectification (Art. 16 / Cl. 7.3.6)**: correction in all source systems + notification to recipients (Art. 19), where proportionate.
+                    - **Erasure (Art. 17 / Cl. 7.3.7)**: review of exceptions Art. 17(3) (statutory retention, legal-claim defence); pseudonymisation instead of erasure where exceptions apply.
+                    - **Restriction (Art. 18 / Cl. 7.3.7)**: marker in system (e.g. "GDPR block"), suspension of all processing except storage.
+                    - **Portability (Art. 20 / Cl. 7.3.8)**: structured, common, machine-readable — JSON or CSV; only for legal basis consent or contract and automated processing.
+                    - **Objection (Art. 21 / Cl. 7.3.5)**: for legitimate interests (f) review of overriding compelling grounds; for direct marketing **unconditional** stop.
+                    - **No automated decision (Art. 22 / Cl. 7.3.10)**: for profiling with legal / similarly significant effect — human intervention, expression of view, contestation.
+
+                    ## 8. Notification to recipients (Art. 19)
+
+                    Rectifications, erasures, and restrictions are communicated to all recipients to whom data have been disclosed — unless impossible or involving disproportionate effort. Obligation to disclose recipients to the data subject upon request.
+
+                    ## 9. Processor involvement (ISO 27701:2025 Cl. 8.3)
+
+                    Where data sit with a processor: request is forwarded per DPA to the processor, who supports per Art. 28(3)(e) GDPR. Response data are centrally consolidated and delivered to the data subject.
+
+                    ## 10. Escalation and complaints
+
+                    - **Supervisory-authority complaint**: data subjects are pointed in every response to the right of complaint with the lead supervisory authority (Art. 77 GDPR);
+                    - **Compensation** (Art. 82 GDPR): for material or non-material damage;
+                    - **Right of action** (Art. 78/79 GDPR).
+
+                    ## 11. Audit trail + KPIs
+
+                    Every DSR is documented with all processing steps, decision-makers, response document in `DataSubjectRequest` module. KPIs:
+
+                    - Number of DSRs per month (trend);
+                    - Average processing time (target: < 14 days);
+                    - Fully-answered ratio (target: 100 %);
+                    - Number of extensions (target: < 5 %);
+                    - Number of refusals (target: < 1 %).
+
+                    ---
+
+                    *Approved by DPO + CISO | Approval chain: {{ approval.chain }}*
+        pia_dpia_methodology:
+            v1:
+                title: 'PIA / DPIA Methodology (Privacy Impact Assessment)'
+                body: |-
+                    # PIA / DPIA Methodology of {{ tenant.legal_name }}
+
+                    *Document class: Methodology | Norm anchors: ISO 27701:2025 Cl. 6.2 + 7.2.5, GDPR Art. 35 + 36, EDPB Guidelines WP248 + WP250 | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+
+                    This methodology mandatorily governs when and how {{ tenant.legal_name }} carries out a Data Protection Impact Assessment (DPIA / PIA) per Art. 35 GDPR and ISO 27701:2025 Cl. 7.2.5. The DPIA workflow tool is the `DataProtectionImpactAssessment` module with 6-step workflow.
+
+                    ## 2. Mandatory trigger (Art. 35(1) GDPR)
+
+                    A DPIA is mandatory where processing is **likely to result in high risk** to rights and freedoms of data subjects. A DPIA is performed **before** processing begins, not retroactively.
+
+                    ## 3. Trigger logic (Art. 35(3) + EDPB WP248 9-criteria list)
+
+                    A DPIA is mandatory under at least one of the following criteria:
+
+                    1. **Profiling and scoring** (evaluation or scoring with legal / similarly significant effect — Art. 35(3)(a), EDPB #1);
+                    2. **Automated decisions** with legal effect (Art. 22 GDPR reference);
+                    3. **Systematic monitoring** (e.g. video surveillance, employee monitoring — Art. 35(3)(c), EDPB #3);
+                    4. **Special categories** (Art. 9) or **criminal data** (Art. 10) on a large scale (Art. 35(3)(b), EDPB #4);
+                    5. **Data processed on a large scale** (EDPB #5);
+                    6. **Data sets matched or combined** (EDPB #6);
+                    7. **Data on vulnerable subjects** (children, patients, employees, asylum-authority clients — EDPB #7);
+                    8. **Innovative use of new technological solutions** (AI, biometrics, IoT — EDPB #8);
+                    9. **Preventing data subjects from exercising rights** (e.g. credit scoring — EDPB #9).
+
+                    Where **2 of 9** criteria are met: DPIA mandatory (EDPB rule of thumb). For only 1 criterion: mandatory DPO check; in case of doubt, perform DPIA.
+
+                    Additionally, the DPIA mandatory list of the lead supervisory authority applies (Art. 35(4)); for Germany: BfDI list or competent state authority.
+
+                    ## 4. Mandatory contents of a DPIA (Art. 35(7) + ISO 27701:2025 Cl. 7.2.5)
+
+                    Every DPIA contains at minimum:
+
+                    1. **Systematic description** of envisaged processing operations and purposes, including, where applicable, the legitimate interest pursued by the controller (Art. 35(7)(a));
+                    2. **Assessment of the necessity and proportionality** of processing operations in relation to the purposes (b);
+                    3. **Assessment of the risks** to rights and freedoms of data subjects (c) — incl. likelihood and severity;
+                    4. **Envisaged measures** (safeguards, security measures, mechanisms) to address risks and demonstrate compliance (d).
+
+                    ## 5. Six-step workflow (module implementation)
+
+                    | Step | Responsible | Description |
+                    |---|---|---|
+                    | 1 — Description | Process owner | Describe processing (data flow diagram, systems, parties) |
+                    | 2 — Necessity + proportionality | DPO + process owner | Review against data minimisation, purpose limitation, less-intrusive means |
+                    | 3 — Risk analysis | DPO + CISO | Assessment of likelihood + severity for data subjects |
+                    | 4 — Mitigation | DPO + CISO | Derive TOMs (pseudonymisation, encryption, access restriction, logging) |
+                    | 5 — DPO consultation | DPO ({{ roles.dpo.fullName }}) | **Mandatory** per Art. 35(2); auditably documented |
+                    | 6 — On residual high risk: prior consultation | Controller representative | Supervisory authority per Art. 36(1) |
+
+                    Workflow auto-progression: Step 1 → 2 after description fields complete; 2 → 3 after rationale; 3 → 4 after risk assessment; 4 → 5 after measures list; 5 → 6 only if residual risk = "high" after measures.
+
+                    ## 6. DPO consultation (Art. 35(2) — MANDATORY)
+
+                    The DPO is **mandatorily** consulted on every DPIA. DPO consultation cannot be skipped or substituted by another sign-off. Consultation comprises assessment of methodology adequacy, risk evaluation, measure adequacy. DPO veto right: where DPO recommendation is not followed, written justification by controller required.
+
+                    ## 7. Prior consultation supervisory authority (Art. 36 + ISO 27701:2025 Cl. 7.2.5)
+
+                    Where residual risk remains **high** despite envisaged measures: prior consultation of the lead supervisory authority. Submission per Art. 36(3)(a-f). Authority responds within 8 weeks (extendable by 6 weeks). Processing **must not** start before response.
+
+                    ## 8. Consultation of data subjects (Art. 35(9))
+
+                    Where appropriate and possible: involvement of data subjects or their representatives. Format: surveys, workshops, stakeholder reviews. Documentation in DPIA report.
+
+                    ## 9. Update obligation
+
+                    A DPIA is to be updated upon material change of processing; latest **every 3 years** as part of the PIMS review (ISO 27701:2025 Cl. 9). Triggers: new data category, new purpose, new processor, technological change, new threat landscape, regulatory direction.
+
+                    ## 10. ISMS interlock (data reuse)
+
+                    - **Asset (ISMS) → DPIA scope**: existing asset risk classes are reused;
+                    - **Risk (ISMS) → DPIA risk**: existing risk analysis as starting point;
+                    - **Control (ISMS A.5-A.8) → TOM (DPIA Step 4)**: existing controls referenced;
+                    - **DPIA output → Risk treatment plan**: measures flow into the risk-treatment module.
+
+                    ## 11. Audit trail + retention
+
+                    DPIA documentation kept at least **for the duration of processing + 3 years** (proof obligation). For supervisory-authority review: provision within 5 working days.
+
+                    ---
+
+                    *Approved by DPO + CISO | Approval chain: {{ approval.chain }}*
+        data_breach_notification:
+            v1:
+                title: 'PII Breach Notification Procedure'
+                body: |-
+                    # PII Breach Notification Procedure of {{ tenant.legal_name }}
+
+                    *Document class: Procedure | Norm anchors: ISO 27701:2025 Cl. 6.13 (formerly 6.13.1.5 in 2019), GDPR Art. 33 + 34, BDSG §§ 65, 66 | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+
+                    This procedure governs detection, assessment, notification, and documentation of personal-data breaches (PII breaches) by {{ tenant.legal_name }} per Art. 33 (notification to supervisory authority, 72h deadline) and Art. 34 GDPR (notification of data subjects on high risk).
+
+                    ## 2. Definition (Art. 4(12) GDPR)
+
+                    A personal-data breach is a breach of security leading to **destruction**, **loss**, **alteration**, **unauthorised disclosure**, or **unauthorised access** to personal data transmitted, stored, or otherwise processed — accidental or unlawful.
+
+                    ## 3. Classification (CIA triad)
+
+                    | Type | Definition | Example |
+                    |---|---|---|
+                    | **Confidentiality breach** | Unauthorised access or disclosure | Accidental email to wrong recipient list |
+                    | **Integrity breach** | Unauthorised or accidental alteration | Manipulation of database records |
+                    | **Availability breach** | Accidental or unauthorised loss of access / destruction | Ransomware encryption, deletion without backup |
+
+                    ## 4. Detection triggers (ISO 27701:2025 Cl. 6.13)
+
+                    A breach is considered detected when the Organisation has **sufficient certainty** that a security incident has occurred affecting personal data. Typically after the first forensic review. Triggers:
+
+                    - SIEM/IDS alerts;
+                    - Employee reports (reinforced by awareness);
+                    - External tips (supervisory authority, security researchers, data subjects);
+                    - Processor notification (Art. 33(2) — processor notifies controller without undue delay, DPA obligation);
+                    - Routine audit findings.
+
+                    ## 5. 72-hour notification deadline (Art. 33(1))
+
+                    Notification to the lead supervisory authority **without undue delay, latest within 72 hours** after becoming aware. Where not feasible within 72h: notification with reasons for delay.
+
+                    The deadline starts **on becoming aware** of the incident (typically completion of the first forensic assessment with sufficient certainty, not on tool-alert detection).
+
+                    ## 6. Assessment criteria (risk to rights and freedoms)
+
+                    Notification to supervisory authority can be **omitted only** if the breach is "unlikely to result in a risk to the rights and freedoms of natural persons" (Art. 33(1)). Assessment per EDPB WP250 criteria:
+
+                    - **Data type and sensitivity** (special categories Art. 9 = very high);
+                    - **Identifiability** of data subjects;
+                    - **Severity of consequences** (financial, reputational, health, discriminatory);
+                    - **Number of data subjects**;
+                    - **Personal characteristics** (children, vulnerable groups);
+                    - **Purpose and harm** (e.g. identity-theft risk).
+
+                    In doubt: notify.
+
+                    ## 7. Notification content (Art. 33(3))
+
+                    The notification includes at minimum:
+
+                    1. **Description** of the breach (nature, categories of data subjects, number, data categories, number of records);
+                    2. **Name and contact details** of the DPO ({{ roles.dpo.fullName }}, {{ gdpr.dpo_email }}, {{ gdpr.dpo_phone }});
+                    3. **Likely consequences** of the breach;
+                    4. **Measures taken or proposed** to address and where appropriate mitigate adverse effects.
+
+                    Where information missing: phased notification per Art. 33(4) (initial notification with available information + follow-up).
+
+                    ## 8. Notification channel
+
+                    Notification via the online portal of the lead supervisory authority (BfDI or competent state authority). Receipt confirmation archived in `DataBreach` module. Parallel review of sectoral notification obligations:
+
+                    - **EU DORA Art. 19** (financial entities): ICT major incident in 4h-initial / 72h-intermediate / 1-month-final to BaFin / EBA / EIOPA / ESMA;
+                    - **NIS2 Art. 23** (essential/important entities): cybersecurity incident in 24h-early / 72h-initial / 1-month-final to BSI;
+                    - **TKG § 109a / TTDSG** (telecommunications): to BNetzA and where applicable BfDI;
+                    - **KRITIS regulation**: to BSI.
+
+                    ## 9. Notification of data subjects (Art. 34)
+
+                    Where breach is likely to result in **high risk** to rights and freedoms of data subjects: additional notification of data subjects **without undue delay** in clear plain language. Minimum contents: nature description, DPO contact, likely consequences, measures.
+
+                    Exceptions (Art. 34(3)): appropriate TOMs (e.g. encryption) applied AND remaining risk excluded; subsequent measures exclude risk; disproportionate effort → public communication as substitute.
+
+                    ## 10. Internal documentation (Art. 33(5) — ALWAYS, regardless of notification obligation)
+
+                    All breaches are documented in the `DataBreach` module — even where no supervisory-authority notification occurs. Mandatory fields:
+
+                    - Incident (date/time, source, description);
+                    - Data categories + number of data subjects;
+                    - Consequences (actual + potential);
+                    - Measures (immediate, follow-up);
+                    - Notification-obligation assessment (rationale yes/no);
+                    - Notification status (authority, data subjects);
+                    - Lessons learned.
+
+                    ## 11. Workflow (6-step with auto-progression)
+
+                    1. Detection → DataBreach entry → DPO auto-assignment + timer start (72h);
+                    2. DPO assessment (severity, scope, affectedDataSubjectsCount, dataCategories);
+                    3. Technical assessment (CISO) — TOM effectiveness, containment;
+                    4. Notification decision (DPO + CISO + Top Mgmt at high) — notification check;
+                    5. Authority notification + subject notification (parallel where required);
+                    6. Post-incident review (lessons learned, risk update, control update).
+
+                    ## 12. Processor view (Art. 33(2) + ISO 27701:2025 Cl. 8.2.4)
+
+                    For breach in a process where the Organisation is **processor**: notification to controller **without undue delay** (in DPA: max. {{ gdpr.processor_breach_notification_hours }} hours), so that controller can meet its 72h deadline. NO own notification to supervisory authority unless DPA provides otherwise.
+
+                    ## 13. Audit trail + evidence
+
+                    Full documentation in `DataBreach` module with HMAC chain. Evidence preservation per forensic policy. For supervisory-authority review: provision within 24 hours.
+
+                    ## 14. KPIs
+
+                    - Mean time to detection (MTTD);
+                    - Mean time to response (MTTR);
+                    - Mean time to notification (target < 72h from awareness);
+                    - Notifiable vs. internally documented breaches;
+                    - Year-over-year trend.
+
+                    ---
+
+                    *Approved by DPO + CISO + Top Mgmt | Approval chain: {{ approval.chain }}*
+        third_party_transfer_policy:
+            v1:
+                title: 'Third-Country Transfer Policy'
+                body: |-
+                    # Third-Country Transfer Policy of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Norm anchors: ISO 27701:2025 Cl. 7.5 + 8.5, GDPR Chapter V (Art. 44-49), Schrems II judgment (ECJ C-311/18), EDPB Recommendations 01/2020 (TIA) + 02/2020 (supplementary measures) | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+
+                    This policy mandatorily governs the conditions under which {{ tenant.legal_name }} transfers personal data to third countries (non-EU/EEA) or international organisations. It operationalises ISO 27701:2025 Cl. 7.5 (controller) and Cl. 8.5 (processor).
+
+                    ## 2. Scope
+
+                    All constellations of a third-country transfer are covered:
+
+                    - Data flow from an EU/EEA location to a recipient in a third country;
+                    - Access from a third country to data stored in the EU ("remote access");
+                    - Sub-processing in a third country;
+                    - Cloud storage with third-country data centre;
+                    - Access to EU data by third-country authorities ("FISA 702 / Cloud Act / EO 12333" risk).
+
+                    ## 3. General prohibition with permission reservation (Art. 44)
+
+                    Third-country transfers are generally prohibited and only permissible based on one of the mechanisms below.
+
+                    ## 4. Hierarchy of mechanisms (Art. 45-49)
+
+                    **Order of review:**
+
+                    1. **Adequacy decision** (Art. 45) — preferred;
+                    2. **Appropriate safeguards** (Art. 46): SCC, BCR, CoC, certification;
+                    3. **Derogations** (Art. 49) — narrow construction, not for ongoing processing.
+
+                    ## 5. Adequacy decision (Art. 45)
+
+                    Current EU Commission decisions (status: continuously verified via EU Commission website):
+
+                    - **EU-US Data Privacy Framework** (DPF, 2023) — for certified US recipients; check: is recipient in DPF register?
+                    - **Other countries with adequacy decision** (Andorra, Argentina, Faroe Islands, Guernsey, Israel, Isle of Man, Japan, Jersey, Canada [commercial organisations, PIPEDA], New Zealand, Switzerland, South Korea, Uruguay, UK).
+
+                    Where adequacy decision exists: transfer without further authorisation; **no TIA required**.
+
+                    ## 6. Appropriate safeguards (Art. 46) — standard mechanism
+
+                    ### 6.1 Standard Contractual Clauses (SCC, Art. 46(2)(c))
+
+                    Use of **EU Commission SCC 2021/914** (of 4 June 2021) — four modules:
+
+                    - Module 1: Controller-to-controller;
+                    - Module 2: Controller-to-processor;
+                    - Module 3: Processor-to-(sub-)processor;
+                    - Module 4: Processor-to-controller (reverse).
+
+                    Mandatory annexes: Annex I (transfer description), Annex II (TOMs), Annex III (sub-processor list).
+
+                    Older SCCs (2001/497, 2010/87) have been ineffective since 27 December 2022 and must be replaced without undue delay.
+
+                    ### 6.2 Binding Corporate Rules (BCR, Art. 47)
+
+                    Intra-group data transfers, approval by lead supervisory authority following consultation procedure with EDPB. Useful for multi-jurisdictional groups.
+
+                    ### 6.3 Codes of Conduct (Art. 40 + 46(2)(e)) and certification (Art. 42 + 46(2)(f))
+
+                    Subject to approved CoC or certification schemes; currently of little practical relevance.
+
+                    ## 7. Schrems II — Transfer Impact Assessment (TIA, EDPB Rec. 01/2020)
+
+                    For every Art. 46 transfer without adequacy decision a **Transfer Impact Assessment (TIA)** is mandatory (ECJ C-311/18 "Schrems II"; EDPB Recommendations 01/2020):
+
+                    1. **Step 1**: Data mapping (which data, to whom, to which third country, purpose, data categories);
+                    2. **Step 2**: Identification of transfer mechanism (typically SCC 2021/914);
+                    3. **Step 3**: Assessment of transfer-mechanism effectiveness in third-country context (third-country legal landscape, in particular state-access rights — for USA: FISA 702, EO 12333, Cloud Act, ECPA; for CN: NSL, DSL, PIPL; for RU: SORM);
+                    4. **Step 4**: Where gaps identified: supplementary measures (technical [encryption with EU-held keys, pseudonymisation], contractual [transparency reports, government-access reporting], organisational [data localisation, access segregation]);
+                    5. **Step 5**: Repeated effectiveness review after measures;
+                    6. **Step 6**: Documentation + DPO sign-off + annual reassessment.
+
+                    Where essentially equivalent protection cannot be achieved: **transfer prohibited**.
+
+                    ## 8. Derogations (Art. 49) — narrow construction
+
+                    Only **where neither adequacy decision nor safeguards apply**. Practice-relevant:
+
+                    - **Art. 49(1)(a) — Explicit consent** after information about risks;
+                    - **Art. 49(1)(b) — Contract performance with data subject** (e.g. hotel booking in USA);
+                    - **Art. 49(1)(d) — Important reasons of public interest**;
+                    - **Art. 49(1)(e) — Legal-claim defence**;
+                    - **Art. 49(1)(f) — Vital interests**.
+
+                    Derogations are **not** suitable for ongoing or structural transfers (EDPB Guidelines 2/2018).
+
+                    ## 9. Mandatory check per new processing operation
+
+                    Before go-live of an operation with third-country involvement:
+
+                    1. **DPO consultation** (Art. 38(1));
+                    2. **Mechanism selection** (Stage 1-3);
+                    3. **TIA execution** where no adequacy decision;
+                    4. **Contract conclusion** (SCC 2021/914 with all annexes);
+                    5. **RoPA entry** with third-country flag (Art. 30(1)(e) GDPR);
+                    6. **Privacy notice update** (Art. 13(1)(f)) with third-country information and availability of safeguards;
+                    7. **Audit trail** in `ProcessingActivity` and `Supplier` modules.
+
+                    ## 10. Sub-processors in third country (ISO 27701:2025 Cl. 8.5)
+
+                    Where the Organisation as processor uses sub-processors in a third country: identical review. Controller is informed in advance and has right of objection (Art. 28(2)). Sub-DPA with identical or stricter SCC modules.
+
+                    ## 11. Audit + reassessment
+
+                    - **Annual TIA reassessment** per third-country recipient;
+                    - **Event-driven reassessment** on: new third-country legal landscape (e.g. new surveillance legislation), new Schrems / ECJ case law, new EDPB recommendation, recipient change, cloud-region change;
+                    - **Audit right** per SCC clause 8.9 (Module 2/3) — annual or event-triggered.
+
+                    ## 12. USA special case
+
+                    Even with DPF certification: ongoing observation of legal developments (Trump-DPF stress 2025+, possibly new Schrems III case before ECJ). Recommendation: SCC 2021/914 + TIA as backup strategy even with DPF recipients; for cloud providers, EU-region data localisation + Customer-Managed Keys (CMK) in EU KMS.
+
+                    ## 13. Privacy notices (Art. 13(1)(f) + Art. 14(1)(f))
+
+                    Publication of third-country recipients and underlying safeguard mechanisms in the public privacy notices ({{ gdpr.privacy_notice_url }}). Provision of a copy of safeguards to data subjects on request.
+
+                    ---
+
+                    *Approved by DPO + CISO + Top Mgmt | Approval chain: {{ approval.chain }}*
+        retention_disposal_policy:
+            v1:
+                title: 'Retention and Disposal Policy'
+                body: |-
+                    # Retention and Disposal Policy of {{ tenant.legal_name }}
+
+                    *Document class: Policy + methodology | Norm anchors: ISO 27701:2025 Cl. 7.4 + 8.4, GDPR Art. 5(1)(e) + Art. 17, BDSG §§ 35, 75; HGB §§ 238, 257, 261; AO § 147; GoBD; TMG §§ 13, 15; TTDSG | Language: English | Review interval: 24 months*
+
+                    ## 1. Purpose
+
+                    This policy mandatorily governs retention periods and the deletion / pseudonymisation procedure for personal data of {{ tenant.legal_name }}. It operationalises GDPR storage limitation (Art. 5(1)(e)) against opposing statutory retention obligations and ISO 27701:2025 Cl. 7.4 (controller) and Cl. 8.4 (processor).
+
+                    ## 2. Principles
+
+                    1. **Storage limitation** (Art. 5(1)(e) GDPR): retention only as long as necessary for the purpose;
+                    2. **Erasure obligation** (Art. 17 GDPR): on cessation of purpose or successful DSR erasure request;
+                    3. **Retention obligation** **takes precedence** over erasure obligation (Art. 17(3)(b) GDPR) where statutory retention applies — then **pseudonymisation instead of erasure** and lockout from further processing (§ 35 BDSG);
+                    4. **Erasure proof**: erasure is documented in audit log (deletion log).
+
+                    ## 3. Retention matrix (German law)
+
+                    ### 3.1 Commercial retention (HGB §§ 238, 257)
+
+                    | Data category | Period | Norm |
+                    |---|---|---|
+                    | Books of account, inventories, opening balance sheets, annual financial statements, management reports, group financial statements, group management reports, work instructions, other organisational documents | 10 years | HGB § 257(1) No. 1 + (4) |
+                    | Received commercial or business letters | 6 years | HGB § 257(1) No. 2 + (4) |
+                    | Reproductions of sent commercial or business letters | 6 years | HGB § 257(1) No. 3 + (4) |
+                    | Booking vouchers | 10 years | HGB § 257(1) No. 4 + (4) |
+
+                    ### 3.2 Tax retention (AO § 147)
+
+                    | Data category | Period | Norm |
+                    |---|---|---|
+                    | Books and records, inventories, annual statements, management reports, opening balance sheets, booking vouchers | 10 years | AO § 147(3) with (1) Nos. 1, 4, 4a |
+                    | Received commercial / business letters | 6 years | AO § 147(3) with (1) No. 2 |
+                    | Reproductions of sent commercial / business letters | 6 years | AO § 147(3) with (1) No. 3 |
+                    | Other documents relevant for taxation | 6 years | AO § 147(3) with (1) No. 5 |
+
+                    Period starts at the end of the calendar year of last entry / creation (HGB § 257(5); AO § 147(4)).
+
+                    ### 3.3 Personnel files / employee data (§ 26 BDSG)
+
+                    | Data category | Period | Rationale |
+                    |---|---|---|
+                    | Wage accounts, payroll | 6 years after last entry | AO § 147(1) No. 5 |
+                    | Social-insurance vouchers | until next audit, min. 4 years after due date | § 28f(1) SGB IV |
+                    | Application documents of rejected applicants | max. 6 months after rejection (AGG extension if claim filed) | § 15(4) AGG |
+                    | Personnel file of active employees | until end of employment + 3 years | § 195 BGB / § 199 BGB general limitation |
+                    | Job references, employment contracts | 30 years after termination | § 197 BGB limitation + social-insurance reference |
+                    | Severely-disabled notifications | 5 years after end of employment | § 154 SGB IX |
+
+                    ### 3.4 Telemedia / cookies (TMG, TTDSG)
+
+                    | Data category | Period | Norm |
+                    |---|---|---|
+                    | Stock data (contractual relationship) | until end of contract + 3 years limitation | § 14 TMG / § 75 TKG |
+                    | Usage data (logs without billing reference) | without undue delay after session end, max. 7 days | § 15 TMG, § 95 TKG / German DSK recommendation |
+                    | Billing data | 6 months after invoicing | § 95(3) TKG |
+
+                    ### 3.5 Documentation of data protection itself
+
+                    | Data category | Period | Rationale |
+                    |---|---|---|
+                    | DPIA documentation | duration of processing + 3 years | Proof obligation Art. 5(2) |
+                    | DSR-processing files | 3 years after closure | Limitation Art. 79 + § 195 BGB |
+                    | Data-breach documentation | 5 years | EDPB recommendation + fine limitation Art. 83 with § 31 OWiG |
+                    | Consent records | up to 3 years after withdrawal | Proof obligation + limitation |
+                    | Audit logs (HMAC chain) | 10 years | ISO 27001:2022 A.8.15 + KonTraG |
+
+                    ### 3.6 Sectoral special periods
+
+                    - **Health data / patient documentation**: 10 years (§ 630f(3) BGB), X-ray retention 30 years (§ 28 RoeV);
+                    - **Anti-money-laundering customer data**: 5 years after business relationship (§ 8 GwG);
+                    - **Banking supervisory law**: 6 years business documents (§ 25a KWG);
+                    - **Telecommunications traffic data**: max. 6 months billing data (§ 96 TKG);
+                    - **Research data**: until research-purpose fulfilment + 10 years for traceability (DFG guidelines on safeguarding good scientific practice).
+
+                    ## 4. Erasure procedure (ISO 27701:2025 Cl. 7.4.5 + 7.4.6 + 8.4)
+
+                    ### 4.1 Triggers
+
+                    - **Periodic trigger**: cron job daily checks retention deadlines of all data;
+                    - **Ad-hoc trigger**: DSR erasure request (Art. 17);
+                    - **Contract-end trigger**: for processor processing (Art. 28(3)(g));
+                    - **Purpose-cessation trigger**: on processing-purpose change;
+                    - **Consent withdrawal** (Art. 7(3)): erase consent-based data unless another lawful basis applies.
+
+                    ### 4.2 Erasure standards
+
+                    - **Logical erasure** in databases: record marked as "deleted" + after 30-day grace period physically removed;
+                    - **Physical erasure** on storage media: NIST SP 800-88 "Clear" (standard erasure); for highly sensitive data "Purge" (cryptographic erase) or "Destroy" (physical destruction);
+                    - **Backup erasure**: per backup-retention policy; "right to be forgotten" applies in backups per EDPB recommendation only on next restore — guarantee via documented erasure obligation;
+                    - **Cloud erasure**: tenant data via provider API; obtain erasure proof from provider;
+                    - **Paper erasure**: shredding per DIN 66399 level P-4 (standard) / P-5 (sensitive) / P-7 (highly sensitive).
+
+                    ### 4.3 Pseudonymisation instead of erasure (Art. 4(5) + Art. 17(3)(b))
+
+                    Where retention obligation prevents erasure: **pseudonymisation** with separation of mapping keys + lockout of any processing beyond the retention purpose (§ 35(3) BDSG). The mapping key is held in a separate KMS under four-eyes principle.
+
+                    ## 5. Deletion-concept integration with RoPA
+
+                    Every RoPA entry (Art. 30(1)(f)) mandatorily contains the retention period with norm reference. Changes to retention period in the deletion concept trigger RoPA update.
+
+                    ## 6. Erasure-discipline workflow
+
+                    1. Cron job daily checks retention dueness per asset/module;
+                    2. Auto-erasure where defined; **for sensitive data categories four-eyes erasure** by DPO + data owner;
+                    3. Deletion log with record count, reviewer, timestamp, hash proof;
+                    4. Entry in audit log (HMAC chain) — erasure proof retained 10 years (even after erasure of the actual data);
+                    5. Quarterly report to DPO on erasures performed.
+
+                    ## 7. Processor view (ISO 27701:2025 Cl. 8.4.2)
+
+                    After contract end: erasure or return **at controller's choice** (Art. 28(3)(g)). Erasure proof (deletion log with hash) is provided to controller. Where statutory retention applies at processor (e.g. AO § 147 for invoice sub-data): notification to controller with rationale.
+
+                    ## 8. Anonymisation (§ 9 BDSG, Recital 26)
+
+                    Anonymised data fall outside the GDPR scope. Anonymisation requirements per EDPB Opinion 05/2014 (Art. 29 Working Party): linkability + inference + singling-out unlikely. Pseudonymisation alone **is not** anonymisation. Re-identification risk regularly reviewed.
+
+                    ## 9. Audit + reporting obligation
+
+                    - **Quarterly report** by DPO to top management: number of erasures, number of pseudonymisations, erasure-capability ratio;
+                    - **Annual deletion-concept audit** by internal audit or external auditor;
+                    - **Authority submission** on request within 5 working days.
+
+                    ---
+
+                    *Approved by DPO + CISO | Approval chain: {{ approval.chain }}*
