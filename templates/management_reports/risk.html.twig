@@ -182,40 +182,36 @@
         {% block card_body %}
             {% set critical_high_risks = report.by_level.critical|merge(report.by_level.high) %}
             {% if critical_high_risks|length > 0 %}
-            <div class="table-responsive">
-                <table class="table table-sm table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'management_reports.risk.header.id'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.risk.header.title'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.risk.header.category'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.risk.header.score'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.risk.header.level'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.risk.header.treatment'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.risk.header.owner'|trans({}, 'management_reports') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for risk in critical_high_risks %}
-                        <tr>
-                            <td>{{ risk.id }}</td>
-                            <td>
-                                <a href="{{ path('app_risk_show', {id: risk.id}) }}">
-                                    {{ risk.title }}
-                                </a>
-                            </td>
-                            <td>{{ risk.category }}</td>
-                            <td><strong>{{ risk.riskScore }}</strong></td>
-                            <td>
-                                {% include '_components/_badge.html.twig' with { variant: risk.riskScore >= 20 ? 'danger' : 'warning', content: risk.riskScore >= 20 ? 'management_reports.risk_level.critical'|trans({}, 'management_reports') : 'management_reports.risk_level.high'|trans({}, 'management_reports') } %}
-                            </td>
-                            <td>{{ risk.treatmentStrategy ? risk.treatmentStrategy.value : '-' }}</td>
-                            <td>{{ risk.effectiveRiskOwner ?? '-' }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.risk.header.id'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.risk.header.title'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.risk.header.category'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'management_reports.risk.header.score'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.risk.header.level'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.risk.header.treatment'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.risk.header.owner'|trans({}, 'management_reports') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for risk in critical_high_risks %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">{{ risk.id }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_risk_show', {id: risk.id}) }}">{{ risk.title }}</a>
+                        </td>
+                        <td class="fa-table__cell">{{ risk.category }}</td>
+                        <td class="fa-table__cell fa-table__cell--num"><strong>{{ risk.riskScore }}</strong></td>
+                        <td class="fa-table__cell">
+                            {% include '_components/_badge.html.twig' with { variant: risk.riskScore >= 20 ? 'danger' : 'warning', content: risk.riskScore >= 20 ? 'management_reports.risk_level.critical'|trans({}, 'management_reports') : 'management_reports.risk_level.high'|trans({}, 'management_reports') } %}
+                        </td>
+                        <td class="fa-table__cell">{{ risk.treatmentStrategy ? risk.treatmentStrategy.value : '-' }}</td>
+                        <td class="fa-table__cell">{{ risk.effectiveRiskOwner ?? '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
             {% else %}
             <div class="fa-alert fa-alert--success mb-0" role="alert">
                 <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
@@ -236,30 +232,28 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="table-responsive">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'management_reports.trend.month'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.trend.total_risks'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.trend.high_critical'|trans({}, 'management_reports') }}</th>
-                            <th scope="col">{{ 'management_reports.trend.new_risks'|trans({}, 'management_reports') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for trend in trends %}
-                        <tr>
-                            <td>{{ trend.month_name }}</td>
-                            <td><strong>{{ trend.total }}</strong></td>
-                            <td>
-                                {% include '_components/_badge.html.twig' with { variant: trend.high_critical > 0 ? 'danger' : 'success', content: trend.high_critical > 0 ? trend.high_critical : '0' } %}
-                            </td>
-                            <td>{{ trend.new_risks }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'management_reports.trend.month'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'management_reports.trend.total_risks'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'management_reports.trend.high_critical'|trans({}, 'management_reports') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'management_reports.trend.new_risks'|trans({}, 'management_reports') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for trend in trends %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">{{ trend.month_name }}</td>
+                        <td class="fa-table__cell fa-table__cell--num"><strong>{{ trend.total }}</strong></td>
+                        <td class="fa-table__cell fa-table__cell--num">
+                            {% include '_components/_badge.html.twig' with { variant: trend.high_critical > 0 ? 'danger' : 'success', content: trend.high_critical > 0 ? trend.high_critical : '0' } %}
+                        </td>
+                        <td class="fa-table__cell fa-table__cell--num">{{ trend.new_risks }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         {% endblock %}
     {% endembed %}
 
