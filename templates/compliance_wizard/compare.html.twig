@@ -113,71 +113,58 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col">{{ 'wizard.category'|trans({}, 'wizard') }}</th>
-                            {% for key, result in results %}
-                            <th scope="col" class="text-center" style="min-width: 120px;">
-                                {% include '_components/_badge.html.twig' with { variant: available_wizards[key].color|default('secondary'), content: result.framework } %}
-                            </th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {# Collect all unique categories #}
-                        {% set all_categories = {} %}
+            {% embed '_components/_fa_table.html.twig' %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'wizard.category'|trans({}, 'wizard') }}</th>
                         {% for key, result in results %}
-                            {% for cat_key, cat in result.categories %}
-                                {% set all_categories = all_categories|merge({(cat_key): cat.name}) %}
-                            {% endfor %}
+                        <th scope="col" class="fa-table__th fa-table__th--center" style="min-width: 120px;">
+                            {% include '_components/_badge.html.twig' with { variant: available_wizards[key].color|default('secondary'), content: result.framework } %}
+                        </th>
                         {% endfor %}
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {# Collect all unique categories #}
+                    {% set all_categories = {} %}
+                    {% for key, result in results %}
+                        {% for cat_key, cat in result.categories %}
+                            {% set all_categories = all_categories|merge({(cat_key): cat.name}) %}
+                        {% endfor %}
+                    {% endfor %}
 
-                        {% for cat_key, cat_name in all_categories %}
-                        <tr>
-                            <td>
-                                <strong>{{ cat_name|trans({}, 'wizard') }}</strong>
-                            </td>
-                            {% for key, result in results %}
-                            <td class="text-center">
-                                {% if result.categories[cat_key] is defined %}
-                                    {% set score = result.categories[cat_key].score %}
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        {{ _fa_progress.render({ value: score, tone: score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger'), size: 'sm', class: 'me-2' }) }}
-                                        <span class="
-                                            {% if score >= 80 %}text-success
-                                            {% elseif score >= 60 %}text-warning
-                                            {% else %}text-danger{% endif %}
-                                            fw-semibold">
-                                            {{ score }}%
-                                        </span>
-                                    </div>
-                                {% else %}
-                                    <span class="text-muted">-</span>
-                                {% endif %}
-                            </td>
-                            {% endfor %}
-                        </tr>
+                    {% for cat_key, cat_name in all_categories %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell"><strong>{{ cat_name|trans({}, 'wizard') }}</strong></td>
+                        {% for key, result in results %}
+                        <td class="fa-table__cell fa-table__cell--center">
+                            {% if result.categories[cat_key] is defined %}
+                                {% set score = result.categories[cat_key].score %}
+                                <div class="d-flex align-items-center justify-content-center">
+                                    {{ _fa_progress.render({ value: score, tone: score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger'), size: 'sm', class: 'me-2' }) }}
+                                    <span class="{% if score >= 80 %}text-success{% elseif score >= 60 %}text-warning{% else %}text-danger{% endif %} fw-semibold">{{ score }}%</span>
+                                </div>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
                         {% endfor %}
-                    </tbody>
-                    <tfoot class="table-light">
-                        <tr>
-                            <th scope="col">{{ 'wizard.overall'|trans({}, 'wizard') }}</th>
-                            {% for key, result in results %}
-                            <th scope="col" class="text-center">
-                                <span class="fs-5 fw-bold
-                                    {% if result.overall_score >= 80 %}text-success
-                                    {% elseif result.overall_score >= 60 %}text-warning
-                                    {% else %}text-danger{% endif %}">
-                                    {{ result.overall_score }}%
-                                </span>
-                            </th>
-                            {% endfor %}
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+                {% block table_foot %}
+                    <tr>
+                        <th scope="col" class="fa-table__cell">{{ 'wizard.overall'|trans({}, 'wizard') }}</th>
+                        {% for key, result in results %}
+                        <th scope="col" class="fa-table__cell fa-table__cell--center">
+                            <span class="fs-5 fw-bold {% if result.overall_score >= 80 %}text-success{% elseif result.overall_score >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ result.overall_score }}%
+                            </span>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                {% endblock %}
+            {% endembed %}
         {% endblock %}
     {% endembed %}
 

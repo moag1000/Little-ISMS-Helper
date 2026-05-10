@@ -93,39 +93,39 @@
                     <p class="small text-muted">
                         <em>Quelle: Peddi (2026) MRIS v1.5. Lizenz: CC BY 4.0.</em>
                     </p>
-                    <table class="table table-sm">
-                        <tbody>
-                            <tr>
-                                <th scope="row" style="width: 30%;">Risikoklasse <small class="text-muted">(AI Act Art. 6)</small></th>
-                                <td>
+                    {% embed '_components/_fa_table.html.twig' with { compact: true, hover: false } %}
+                        {% block table_body %}
+                            <tr class="fa-table__row">
+                                <th scope="row" class="fa-table__cell" style="width: 30%;">Risikoklasse <small class="text-muted">(AI Act Art. 6)</small></th>
+                                <td class="fa-table__cell">
                                     {% if asset.aiAgentClassification %}
                                         <code>{{ asset.aiAgentClassification }}</code>
                                     {% else %}<span class="text-warning">— nicht klassifiziert —</span>{% endif %}
                                 </td>
                             </tr>
-                            <tr>
-                                <th scope="row">Anbieter <small class="text-muted">(Art. 16)</small></th>
-                                <td>{{ asset.aiAgentProvider|default('—') }}</td>
+                            <tr class="fa-table__row">
+                                <th scope="row" class="fa-table__cell">Anbieter <small class="text-muted">(Art. 16)</small></th>
+                                <td class="fa-table__cell">{{ asset.aiAgentProvider|default('—') }}</td>
                             </tr>
-                            <tr>
-                                <th scope="row">Modell-Version <small class="text-muted">(ISO 42001)</small></th>
-                                <td><code>{{ asset.aiAgentModelVersion|default('—') }}</code></td>
+                            <tr class="fa-table__row">
+                                <th scope="row" class="fa-table__cell">Modell-Version <small class="text-muted">(ISO 42001)</small></th>
+                                <td class="fa-table__cell"><code>{{ asset.aiAgentModelVersion|default('—') }}</code></td>
                             </tr>
-                            <tr>
-                                <th scope="row">Zweckbestimmung <small class="text-muted">(Art. 11)</small></th>
-                                <td>{{ asset.aiAgentPurpose|default('—')|nl2br }}</td>
+                            <tr class="fa-table__row">
+                                <th scope="row" class="fa-table__cell">Zweckbestimmung <small class="text-muted">(Art. 11)</small></th>
+                                <td class="fa-table__cell">{{ asset.aiAgentPurpose|default('—')|nl2br }}</td>
                             </tr>
-                            <tr>
-                                <th scope="row">Datengovernance <small class="text-muted">(Art. 10)</small></th>
-                                <td>{{ asset.aiAgentDataSources|default('—')|nl2br }}</td>
+                            <tr class="fa-table__row">
+                                <th scope="row" class="fa-table__cell">Datengovernance <small class="text-muted">(Art. 10)</small></th>
+                                <td class="fa-table__cell">{{ asset.aiAgentDataSources|default('—')|nl2br }}</td>
                             </tr>
-                            <tr>
-                                <th scope="row">Human Oversight <small class="text-muted">(Art. 14)</small></th>
-                                <td>{{ asset.aiAgentOversightMechanism|default('—') }}</td>
+                            <tr class="fa-table__row">
+                                <th scope="row" class="fa-table__cell">Human Oversight <small class="text-muted">(Art. 14)</small></th>
+                                <td class="fa-table__cell">{{ asset.aiAgentOversightMechanism|default('—') }}</td>
                             </tr>
-                            <tr>
-                                <th scope="row">Capability-Scope <small class="text-muted">(MHC-13)</small></th>
-                                <td>
+                            <tr class="fa-table__row">
+                                <th scope="row" class="fa-table__cell">Capability-Scope <small class="text-muted">(MHC-13)</small></th>
+                                <td class="fa-table__cell">
                                     {% if asset.aiAgentCapabilityScope is not empty %}
                                         {% for cap in asset.aiAgentCapabilityScope %}
                                             <code class="me-1">{{ cap }}</code>
@@ -133,17 +133,17 @@
                                     {% else %}—{% endif %}
                                 </td>
                             </tr>
-                            <tr>
-                                <th scope="row">Bedrohungsmodell-Doc <small class="text-muted">(Art. 9 + MHC-13)</small></th>
-                                <td>
+                            <tr class="fa-table__row">
+                                <th scope="row" class="fa-table__cell">Bedrohungsmodell-Doc <small class="text-muted">(Art. 9 + MHC-13)</small></th>
+                                <td class="fa-table__cell">
                                     {% if asset.aiAgentThreatModelDocId %}
                                         <a href="{{ path('app_document_show', {id: asset.aiAgentThreatModelDocId}) }}">Dokument #{{ asset.aiAgentThreatModelDocId }}</a>
                                     {% else %}<span class="text-warning">— nicht hinterlegt —</span>{% endif %}
                                 </td>
                             </tr>
-                            <tr>
-                                <th scope="row">Extension-Allowlist <small class="text-muted">(MHC-13)</small></th>
-                                <td>
+                            <tr class="fa-table__row">
+                                <th scope="row" class="fa-table__cell">Extension-Allowlist <small class="text-muted">(MHC-13)</small></th>
+                                <td class="fa-table__cell">
                                     {% if asset.aiAgentExtensionAllowlist is not empty %}
                                         {% for ext in asset.aiAgentExtensionAllowlist %}
                                             <code class="me-1">{{ ext }}</code>
@@ -151,8 +151,8 @@
                                     {% else %}—{% endif %}
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
 
                 {# DPIA-Status für Hochrisiko-AI-Agents (DSGVO Art. 35 + AI Act Art. 9). #}
@@ -164,28 +164,28 @@
                             {{ 'mris.ai_agent.dpia.section_title'|trans({}, 'mris') }}
                         </h3>
                         {% if linkedDpias|length > 0 %}
-                            <table class="table table-sm">
-                                <thead>
+                            {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                                {% block table_head %}
                                     <tr>
-                                        <th scope="col">{{ 'mris.ai_agent.dpia.col_title'|trans({}, 'mris') }}</th>
-                                        <th scope="col">{{ 'mris.ai_agent.dpia.col_status'|trans({}, 'mris') }}</th>
-                                        <th scope="col">{{ 'mris.ai_agent.dpia.col_link'|trans({}, 'mris') }}</th>
+                                        <th scope="col" class="fa-table__th">{{ 'mris.ai_agent.dpia.col_title'|trans({}, 'mris') }}</th>
+                                        <th scope="col" class="fa-table__th">{{ 'mris.ai_agent.dpia.col_status'|trans({}, 'mris') }}</th>
+                                        <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'mris.ai_agent.dpia.col_link'|trans({}, 'mris') }}</th>
                                     </tr>
-                                </thead>
-                                <tbody>
+                                {% endblock %}
+                                {% block table_body %}
                                     {% for dpia in linkedDpias %}
-                                        <tr>
-                                            <td>{{ dpia.referenceNumber }} — {{ dpia.title }}</td>
-                                            <td><code>{{ dpia.status }}</code></td>
-                                            <td>
-                                                <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">
+                                        <tr class="fa-table__row">
+                                            <td class="fa-table__cell">{{ dpia.referenceNumber }} — {{ dpia.title }}</td>
+                                            <td class="fa-table__cell"><code>{{ dpia.status }}</code></td>
+                                            <td class="fa-table__cell fa-table__cell--actions">
+                                                <a href="{{ path('app_dpia_show', {id: dpia.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                                     {{ 'mris.ai_agent.dpia.open'|trans({}, 'mris') }}
                                                 </a>
                                             </td>
                                         </tr>
                                     {% endfor %}
-                                </tbody>
-                            </table>
+                                {% endblock %}
+                            {% endembed %}
                         {% else %}
                             <div class="fa-alert fa-alert--warning" role="alert">
                                 <i class="fa-icon fa-icon--status-warning me-1" aria-hidden="true"></i>
@@ -287,31 +287,31 @@
                         {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'warning', icon: 'status-warning' } } %}
                             {% block alert_body %}{{ 'asset.inherited_protection.warning'|trans({}, 'asset') }}{% endblock %}
                         {% endembed %}
-                        <table class="table table-sm">
-                            <thead>
+                        {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                            {% block table_head %}
                                 <tr>
-                                    <th scope="col">{{ 'asset.inherited_protection.dimension'|trans({}, 'asset') }}</th>
-                                    <th scope="col">{{ 'asset.inherited_protection.own'|trans({}, 'asset') }}</th>
-                                    <th scope="col">{{ 'asset.inherited_protection.inherited'|trans({}, 'asset') }}</th>
-                                    <th scope="col">{{ 'asset.inherited_protection.driven_by'|trans({}, 'asset') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'asset.inherited_protection.dimension'|trans({}, 'asset') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'asset.inherited_protection.own'|trans({}, 'asset') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'asset.inherited_protection.inherited'|trans({}, 'asset') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'asset.inherited_protection.driven_by'|trans({}, 'asset') }}</th>
                                 </tr>
-                            </thead>
-                            <tbody>
+                            {% endblock %}
+                            {% block table_body %}
                                 {% for dim in ['confidentiality', 'integrity', 'availability'] %}
                                     {% set own = {confidentiality: ownC, integrity: ownI, availability: ownA}[dim] %}
                                     {% set inherited = attribute(inheritedProtection, dim) %}
                                     {% set driver = inheritedProtection.drivenBy[dim] %}
-                                    <tr>
-                                        <td>{{ ('asset.field.' ~ dim)|trans({}, 'asset') }}</td>
-                                        <td>{{ own }}/5</td>
-                                        <td>
+                                    <tr class="fa-table__row">
+                                        <td class="fa-table__cell">{{ ('asset.field.' ~ dim)|trans({}, 'asset') }}</td>
+                                        <td class="fa-table__cell">{{ own }}/5</td>
+                                        <td class="fa-table__cell">
                                             {% if inherited > own %}
                                                 <span class="fa-status-pill fa-status-pill--warning">{{ inherited }}/5 ↑</span>
                                             {% else %}
                                                 {{ inherited }}/5
                                             {% endif %}
                                         </td>
-                                        <td>
+                                        <td class="fa-table__cell">
                                             {% if driver and driver.id != asset.id %}
                                                 <a href="{{ path('app_asset_show', {id: driver.id}) }}">{{ driver.name }}</a>
                                             {% else %}
@@ -320,8 +320,8 @@
                                         </td>
                                     </tr>
                                 {% endfor %}
-                            </tbody>
-                        </table>
+                            {% endblock %}
+                        {% endembed %}
                     </div>
                 {% endif %}
             {% endif %}
