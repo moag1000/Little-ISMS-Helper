@@ -13,6 +13,7 @@ use App\Repository\UserRepository;
 use App\Repository\WizardRunRepository;
 use App\Security\Voter\PolicyWizardVoter;
 use App\Repository\DocumentRepository;
+use App\Service\PolicyWizard\CrossCoverageCalculator;
 use App\Service\PolicyWizard\ExistingDocumentInventoryService;
 use App\Service\PolicyWizard\ExistingDocumentMatcher;
 use App\Service\PolicyWizard\HierarchyConflictException;
@@ -59,6 +60,7 @@ final class PolicyWizardController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly PolicyTemplateRepository $policyTemplateRepository,
         private readonly PersonRepository $personRepository,
+        private readonly CrossCoverageCalculator $crossCoverageCalculator,
     ) {
     }
 
@@ -366,19 +368,26 @@ final class PolicyWizardController extends AbstractController
         $documentIds = $result['document_ids'] ?? [];
         if ($documentIds !== []) {
             foreach ($this->documentRepository->findBy(['id' => $documentIds]) as $doc) {
+                $workflow = $this->crossCoverageCalculator->findActiveWorkflowFor($doc);
                 $resultDocuments[] = [
                     'id' => $doc->getId(),
                     'title' => $doc->getOriginalFilename() ?: $doc->getFilename() ?: ('Document #' . $doc->getId()),
                     'standard' => $doc->getGeneratedFromTemplate()?->getStandard(),
+                    'workflow_id' => $workflow?->getId(),
+                    'workflow_status' => $workflow?->getStatus(),
+                    'approval_history' => $workflow?->getApprovalHistory() ?? [],
                 ];
             }
         }
+
+        $crossCoverage = $this->crossCoverageCalculator->calculateForRun($run);
 
         return $this->render('policy_wizard/result.html.twig', [
             'run' => $run,
             'document_ids' => $documentIds,
             'result_documents' => $resultDocuments,
             'sandbox_preview' => $result['sandbox_preview'] ?? null,
+            'cross_coverage' => $crossCoverage,
         ]);
     }
 

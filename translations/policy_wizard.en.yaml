@@ -864,6 +864,26 @@ policy_wizard:
         action:
             view: 'View'
             pdf: 'PDF'
+        # Cross-Framework-Coverage matrix (Persona walkthrough May 2026):
+        # Compliance manager / ISO / CISO / Junior want to see how much of
+        # the framework portfolio the generated documents cover.
+        cross_coverage:
+            heading: 'Cross-framework coverage'
+            description: 'How far do the generated documents cover the active frameworks? Only frameworks with at least one hit are shown.'
+            framework_label: '%covered% of %total% requirements covered'
+            coverage_percent: 'Coverage'
+            show_refs: 'Show covered references (%count%)'
+        # Per-document workflow / approval / coverage badges.
+        workflow:
+            status:
+                pending: 'Approval pending'
+                in_progress: 'Approval in progress'
+                approved: 'Approval granted'
+                rejected: 'Approval rejected'
+                cancelled: 'Approval cancelled'
+        document:
+            coverage_label: 'Contributes to:'
+            approval_chain: 'Approval chain'
 
     # Junior-ISB Wish #3 — Progress-Bar above every wizard step.
     progress:
