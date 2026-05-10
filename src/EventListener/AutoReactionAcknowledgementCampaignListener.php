@@ -56,21 +56,26 @@ class AutoReactionAcknowledgementCampaignListener
         if ($document->getStatus() !== 'approved') {
             return;
         }
-        if (method_exists($document, 'getRequiresAcknowledgement')
-            && !$document->getRequiresAcknowledgement()) {
+        // V3 W2-Bug2: getRequiresAcknowledgement() / getVersion() now live
+        // on Document — drop the method_exists() defence that previously
+        // short-circuited the listener silently.
+        if (!$document->getRequiresAcknowledgement()) {
             return;
         }
 
         try {
             $em = $args->getObjectManager();
-            $tenant = method_exists($document, 'getTenant') ? $document->getTenant() : null;
+            $tenant = $document->getTenant();
             if (!$tenant) {
                 return;
             }
 
-            $version = method_exists($document, 'getVersion') ? (string) ($document->getVersion() ?? '') : '';
+            $version = trim($document->getVersion());
             if ($version === '') {
-                // Cannot satisfy unique constraint (tenant, doc, user, version) without a version.
+                // Defensive: setVersion() normalises empty input to '1.0',
+                // but a NULL row from a pre-migration backfill could
+                // theoretically land here. Cannot satisfy unique
+                // constraint (tenant, doc, user, version) without one.
                 $this->logger->warning('Auto-Acknowledgement-Campaign skipped: document has no version', [
                     'document_id' => $document->getId(),
                 ]);
