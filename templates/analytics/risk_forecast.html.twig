@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'analytics' %}
 
 {% block title %}{{ 'analytics.forecast.title'|trans({}, 'analytics') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -315,13 +316,8 @@
                                     {% include '_components/_badge.html.twig' with { variant: level == 'critical' ? 'danger' : (level == 'high' ? 'warning' : (level == 'medium' ? 'info' : 'success')), content: level|title } %}
                                     <span>{{ actual_val }} / {{ threshold_val }} {{ 'analytics.forecast.appetite.threshold'|trans({}, 'analytics') }}</span>
                                 </div>
-                                <div class="progress progress-h-25">
-                                    {% set progress_pct = threshold_val > 0 ? (actual_val / threshold_val) * 100 : 0 %}
-                                    <div class="progress-bar bg-{% if is_compliant %}success{% else %}danger{% endif %}"
-                                         style="width: {{ progress_pct > 100 ? 100 : progress_pct }}%">
-                                        {{ actual_val }}
-                                    </div>
-                                </div>
+                                {% set progress_pct = threshold_val > 0 ? (actual_val / threshold_val) * 100 : 0 %}
+                                {{ _fa_progress.render({ value: progress_pct > 100 ? 100 : progress_pct, tone: is_compliant ? 'success' : 'danger' }) }}
                                 <small class="{% if is_compliant %}text-success{% else %}text-danger{% endif %}">
                                     {% if is_compliant %}
                                         <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'analytics.forecast.appetite.within_threshold'|trans({}, 'analytics') }}
@@ -339,9 +335,9 @@
             {% if appetite.breaches|length > 0 %}
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}
-                    <div class="card-header bg-danger text-white">
+                    <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>
+                            <i class="fa-icon fa-icon--status-warning text-danger me-2" aria-hidden="true"></i>
                             {{ 'analytics.forecast.appetite.recommendations'|trans({}, 'analytics') }}
                         </h5>
                     </div>
@@ -376,10 +372,10 @@
                 <div class="col-md-6 mb-4">
                     {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ (anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info')) } %}
                         {% block card_header %}
-                            <div class="card-header bg-{{ anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info') }} text-{{ anomaly.severity == 'warning' ? 'dark' : 'white' }}">
+                            <div class="card-header">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">
-                                        <i class="fa-icon me-2 fa-icon--status-warning" aria-hidden="true"></i>
+                                        <i class="fa-icon me-2 fa-icon--status-warning text-{{ anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info') }}" aria-hidden="true"></i>
                                         {{ anomaly.type|replace({'_': ' '})|title }}
                                     </h5>
                                     {% include '_components/_badge.html.twig' with { variant: 'light', content: anomaly.severity|title } %}

@@ -159,9 +159,9 @@
                 } %}
                 {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-warning' } %}
                     {% block card_header %}
-                        <div class="card-header bg-warning-subtle text-warning">
+                        <div class="card-header">
                             <h2 class="mb-0">
-                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--status-warning text-warning" aria-hidden="true"></i>
                                 {{ 'audit.section.structured_findings'|trans({}, 'audit') }}
                                 <span class="badge bg-warning ms-2">{{ audit.structuredFindings|length }}</span>
                             </h2>
@@ -208,9 +208,9 @@
             {% if audit.findings or audit.nonConformities or audit.observations %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-warning' } %}
                 {% block card_header %}
-                    <div class="card-header bg-warning-subtle text-warning">
+                    <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'audit.section.findings'|trans({}, 'audit') }}
+                            <i class="fa-icon fa-icon--status-warning text-warning" aria-hidden="true"></i> {{ 'audit.section.findings'|trans({}, 'audit') }}
                         </h2>
                     </div>
                 {% endblock %}

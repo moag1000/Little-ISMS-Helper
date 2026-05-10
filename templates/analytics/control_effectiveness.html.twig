@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'analytics' %}
 
 {% block title %}{{ 'analytics.controls.title'|trans({}, 'analytics') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -160,11 +161,7 @@
                                         {% include '_components/_badge.html.twig' with { variant: 'info', content: cat.average_effectiveness ~ '%' } %}
                                     </td>
                                     <td>
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-success" style="width: {{ cat.implementation_rate }}%">
-                                                {{ cat.implementation_rate }}%
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: cat.implementation_rate, tone: 'success', showText: true }) }}
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -222,9 +219,9 @@
                 <div class="col-lg-6 mb-4">
                     {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-danger' } %}
                         {% block card_header %}
-                            <div class="card-header bg-danger text-white">
+                            <div class="card-header">
                                 <h5 class="mb-0">
-                                    <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-warning text-danger me-2" aria-hidden="true"></i>
                                     {{ 'analytics.controls.performance.needs_attention'|trans({}, 'analytics') }}
                                 </h5>
                             </div>
@@ -390,9 +387,9 @@
                 <div class="col-lg-6 mb-4">
                     {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                         {% block card_header %}
-                            <div class="card-header bg-warning-subtle text-warning">
+                            <div class="card-header">
                                 <h5 class="mb-0">
-                                    <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>
+                                    <i class="fa-icon fa-icon--status-warning text-warning me-2" aria-hidden="true"></i>
                                     {{ 'analytics.controls.aging.overdue_controls'|trans({}, 'analytics') }}
                                 </h5>
                             </div>
