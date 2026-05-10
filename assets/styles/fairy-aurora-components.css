@@ -5539,7 +5539,7 @@ html[data-theme="dark"] .framework-card {
     border-color: var(--primary);
     color: var(--primary);
     background: var(--primary-tint, var(--surface));
-    box-shadow: 0 0 0 4px rgba(var(--primary-rgb, 13 110 253), 0.18);
+    box-shadow: 0 0 0 4px rgb(var(--primary-rgb, 13 110 253), 0.18);
 }
 .isms-approval-stages__item--completed .isms-approval-stages__dot {
     border-color: var(--success);
@@ -5613,4 +5613,556 @@ html[data-theme="dark"] .framework-card {
     border-radius: var(--r-md);
     background: var(--surface);
     border: 1px solid var(--border);
+}
+
+/* ---------------------------------------------------------------------------
+ * fa-toast — Aurora Toast Notification (V3 W3-UX-Toast)
+ *
+ * Stack-Manager: top-right viewport, vertical stack via gap.
+ * Tones: info (default), success, warning, danger.
+ * Auto-dismiss via JS + animated progress bar; persistent toasts hide bar.
+ * Slide-in / slide-out animations respect prefers-reduced-motion.
+ *
+ * Markup (created by fa_toast_controller.js or _fa_toast macro):
+ *   <div class="fa-toast-stack" data-controller="fa-toast" data-fa-toast-target="stack">
+ *     <div class="fa-toast fa-toast--success" role="status" aria-live="polite">
+ *       <i class="fa-toast__icon bi bi-check-circle-fill" aria-hidden="true"></i>
+ *       <div class="fa-toast__body">
+ *         <div class="fa-toast__title">Saved.</div>
+ *         <div class="fa-toast__message">Control A.5.1 updated.</div>
+ *       </div>
+ *       <button class="fa-toast__close" aria-label="Close">×</button>
+ *       <span class="fa-toast__progress" aria-hidden="true"></span>
+ *     </div>
+ *   </div>
+ * ------------------------------------------------------------------------- */
+.fa-toast-stack {
+    position: fixed;
+    top: var(--space-4);
+    right: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    z-index: var(--z-toast);
+    max-width: min(420px, calc(100vw - 2 * var(--space-4)));
+    pointer-events: none;
+}
+.fa-toast-stack--bottom-right {
+    top: auto;
+    bottom: var(--space-4);
+}
+.fa-toast-stack--bottom-left {
+    top: auto;
+    right: auto;
+    bottom: var(--space-4);
+    left: var(--space-4);
+}
+.fa-toast-stack--top-left {
+    right: auto;
+    left: var(--space-4);
+}
+
+.fa-toast {
+    pointer-events: auto;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-5) var(--space-3) var(--space-3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--primary);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    min-width: 280px;
+    max-width: 100%;
+    animation: fa-toast-enter var(--t-base) var(--ease-out);
+}
+.fa-toast.is-dismissing {
+    animation: fa-toast-exit var(--t-base) var(--ease-in-out) forwards;
+}
+
+@keyframes fa-toast-enter {
+    from { opacity: 0; transform: translateX(16px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fa-toast-exit {
+    to { opacity: 0; transform: translateX(16px); height: 0; padding-top: 0; padding-bottom: 0; margin: 0; border-width: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fa-toast,
+    .fa-toast.is-dismissing { animation: none; }
+}
+
+.fa-toast__icon {
+    font-size: 18px;
+    line-height: 1.2;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--primary);
+}
+.fa-toast__body {
+    flex: 1;
+    min-width: 0;
+}
+.fa-toast__title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--fg);
+    margin-bottom: 2px;
+}
+.fa-toast__message {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--fg-2);
+    word-break: break-word;
+}
+.fa-toast__actions {
+    margin-top: var(--space-2);
+    display: flex;
+    gap: var(--space-2);
+}
+.fa-toast__close {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: transparent;
+    border: 0;
+    color: var(--fg-3);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 4px 6px;
+    border-radius: var(--r-sm);
+    transition: color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.fa-toast__close:hover { color: var(--fg); background: var(--surface-2); }
+.fa-toast__close:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 1px;
+}
+
+.fa-toast__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background: var(--primary);
+    transform-origin: left center;
+    animation: fa-toast-progress 5s linear forwards;
+}
+
+@keyframes fa-toast-progress {
+    from { transform: scaleX(1); }
+    to   { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fa-toast__progress { animation: none; width: 100%; }
+}
+
+/* Tones */
+.fa-toast--info    { border-left-color: var(--primary); }
+.fa-toast--info    .fa-toast__icon,
+.fa-toast--info    .fa-toast__progress { color: var(--primary); background: var(--primary); }
+.fa-toast--success { border-left-color: var(--success); background: var(--surface); }
+.fa-toast--success .fa-toast__icon,
+.fa-toast--success .fa-toast__progress { color: var(--success); background: var(--success); }
+.fa-toast--warning { border-left-color: var(--warning); }
+.fa-toast--warning .fa-toast__icon,
+.fa-toast--warning .fa-toast__progress { color: var(--warning); background: var(--warning); }
+.fa-toast--danger  { border-left-color: var(--danger); }
+.fa-toast--danger  .fa-toast__icon,
+.fa-toast--danger  .fa-toast__progress { color: var(--danger); background: var(--danger); }
+
+.fa-toast--persistent .fa-toast__progress { display: none; }
+
+
+/* ---------------------------------------------------------------------------
+ * fa-action-bar — Top-of-list/detail Action Toolbar (V3 W3-UX-ActionBar)
+ *
+ * Single-line action-bar that sits below the page-header and above list/table
+ * content. Holds: search, filters (chips), sort, secondary actions (export
+ * etc.), and primary CTA. Aurora-styled (surface bg, bottom-border).
+ *
+ * Markup pattern:
+ *   <div class="fa-action-bar">
+ *     <div class="fa-action-bar__lead">  (search + filter-chips)
+ *       <input class="fa-action-bar__search" ...>
+ *       <span class="fa-action-bar__chip-group"> ... </span>
+ *     </div>
+ *     <div class="fa-action-bar__trail">
+ *       <button class="fa-cyber-btn fa-cyber-btn--ghost"> ... </button>
+ *       <a class="fa-cyber-btn fa-cyber-btn--primary"> ... </a>
+ *     </div>
+ *   </div>
+ * ------------------------------------------------------------------------- */
+.fa-action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: var(--space-4);
+}
+.fa-action-bar--flush {
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    box-shadow: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+.fa-action-bar__lead,
+.fa-action-bar__trail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+}
+.fa-action-bar__lead { flex: 1 1 auto; min-width: 0; }
+.fa-action-bar__trail { flex: 0 0 auto; }
+.fa-action-bar__title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--fg);
+    margin: 0;
+    margin-right: var(--space-3);
+}
+.fa-action-bar__count {
+    font-size: 12px;
+    color: var(--fg-3);
+    font-weight: 500;
+}
+.fa-action-bar__search {
+    flex: 1 1 240px;
+    min-width: 200px;
+    max-width: 360px;
+    height: 36px;
+    padding: 0 var(--space-3) 0 36px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--fg);
+    font-size: 13px;
+    font-family: var(--font-sans);
+    transition: border-color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.fa-action-bar__search:focus {
+    outline: 0;
+    border-color: var(--primary);
+    background: var(--surface);
+}
+.fa-action-bar__search-wrap {
+    position: relative;
+    flex: 1 1 240px;
+    max-width: 360px;
+}
+.fa-action-bar__search-wrap > .bi,
+.fa-action-bar__search-wrap > .fa-icon {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--fg-3);
+    pointer-events: none;
+    font-size: 14px;
+}
+.fa-action-bar__divider {
+    width: 1px;
+    align-self: stretch;
+    background: var(--border);
+    margin: 0 var(--space-1);
+}
+.fa-action-bar__chip-group {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    align-items: center;
+}
+
+@media (max-width: 600px) {
+    .fa-action-bar { padding: var(--space-3); }
+    .fa-action-bar__lead,
+    .fa-action-bar__trail { width: 100%; }
+    .fa-action-bar__search,
+    .fa-action-bar__search-wrap { max-width: 100%; }
+}
+
+
+/* ---------------------------------------------------------------------------
+ * fa-table — Aurora Table Pattern (V3 W3-UX-Table)
+ *
+ * Replacement for raw bootstrap `<table class="table">` in list views.
+ * Tokens-only (no hex), zebra-striping via --surface-2, hover-state,
+ * sortable headers, sticky-header opt-in, selected-row state for bulk-select.
+ *
+ * Markup:
+ *   <div class="fa-table-wrap">
+ *     <table class="fa-table">
+ *       <thead class="fa-table__head">
+ *         <tr>
+ *           <th class="fa-table__th fa-table__th--sortable" data-sort-key="name">Name</th>
+ *         </tr>
+ *       </thead>
+ *       <tbody class="fa-table__body">
+ *         <tr class="fa-table__row">
+ *           <td class="fa-table__cell">...</td>
+ *         </tr>
+ *       </tbody>
+ *     </table>
+ *   </div>
+ * ------------------------------------------------------------------------- */
+.fa-table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-sm);
+    overflow: auto;
+    /* horizontal scroll preserved on small viewports without losing border-radius */
+    isolation: isolate;
+}
+.fa-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--fg);
+    background: var(--surface);
+}
+.fa-table__head {
+    background: var(--surface-2);
+}
+.fa-table--sticky-head .fa-table__head th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--surface-2);
+}
+.fa-table__th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+    color: var(--fg-2);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    user-select: none;
+}
+.fa-table__th--num,
+.fa-table__cell--num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.fa-table__th--center,
+.fa-table__cell--center { text-align: center; }
+.fa-table__th--actions,
+.fa-table__cell--actions {
+    text-align: right;
+    white-space: nowrap;
+    width: 1%;
+}
+
+.fa-table__th--sortable {
+    cursor: pointer;
+    transition: background var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out);
+}
+.fa-table__th--sortable:hover { background: var(--surface-3); color: var(--fg); }
+.fa-table__th--sortable:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: -2px;
+}
+.fa-table__th--sortable::after {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: var(--space-2);
+    vertical-align: middle;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid var(--fg-3);
+    opacity: 0.4;
+    transition: opacity var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+}
+.fa-table__th--sort-asc::after  { opacity: 1; transform: rotate(180deg); border-top-color: var(--primary); }
+.fa-table__th--sort-desc::after { opacity: 1; border-top-color: var(--primary); }
+
+.fa-table__row {
+    transition: background var(--t-fast) var(--ease-out);
+}
+.fa-table__row + .fa-table__row .fa-table__cell {
+    border-top: 1px solid var(--border);
+}
+.fa-table--striped .fa-table__row:nth-child(even) {
+    background: color-mix(in srgb, var(--surface-2) 50%, var(--surface));
+}
+.fa-table--hover .fa-table__row:hover,
+.fa-table__row:hover { background: var(--surface-2); }
+.fa-table__row--selected,
+.fa-table__row--selected:hover {
+    background: var(--primary-tint);
+}
+.fa-table__row--clickable { cursor: pointer; }
+
+.fa-table__cell {
+    padding: var(--space-3) var(--space-4);
+    vertical-align: middle;
+    line-height: 1.5;
+}
+.fa-table--compact .fa-table__cell,
+.fa-table--compact .fa-table__th { padding: var(--space-2) var(--space-3); }
+
+.fa-table__cell--checkbox,
+.fa-table__th--checkbox {
+    width: 36px;
+    padding-left: var(--space-3);
+    padding-right: 0;
+}
+.fa-table__cell--muted { color: var(--fg-3); }
+
+.fa-table__empty {
+    padding: var(--space-6) var(--space-4);
+    text-align: center;
+    color: var(--fg-3);
+}
+
+.fa-table__foot {
+    background: var(--surface-2);
+    color: var(--fg-2);
+    font-size: 12px;
+}
+.fa-table__foot td {
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--border);
+}
+
+
+/* ---------------------------------------------------------------------------
+ * fa-bulk-action-bar — Sticky Bulk-Action Bar (V3 W3-UX-Bulk)
+ *
+ * Sticky-bottom action bar that slides up when ≥1 row is selected. Aurora-
+ * styled, supports primary/danger/ghost actions, count-display with live
+ * region, deselect-all close button.
+ *
+ * Markup:
+ *   <div class="fa-bulk-action-bar" hidden>
+ *     <div class="fa-bulk-action-bar__count" aria-live="polite">
+ *       <span class="fa-bulk-action-bar__count-value">3</span>
+ *       <span class="fa-bulk-action-bar__count-label">selected</span>
+ *     </div>
+ *     <div class="fa-bulk-action-bar__divider"></div>
+ *     <div class="fa-bulk-action-bar__actions"> ...buttons... </div>
+ *     <button class="fa-bulk-action-bar__close" aria-label="Deselect all">×</button>
+ *   </div>
+ * ------------------------------------------------------------------------- */
+.fa-bulk-action-bar {
+    position: sticky;
+    bottom: var(--space-4);
+    margin: var(--space-4) auto 0;
+    width: fit-content;
+    max-width: calc(100% - 2 * var(--space-4));
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-pill);
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-sticky);
+    animation: fa-bulk-action-bar-enter var(--t-base) var(--ease-out);
+}
+
+@keyframes fa-bulk-action-bar-enter {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fa-bulk-action-bar { animation: none; }
+}
+.fa-bulk-action-bar[hidden] { display: none; }
+
+.fa-bulk-action-bar__count {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--fg);
+    white-space: nowrap;
+}
+.fa-bulk-action-bar__count-value {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--primary);
+    font-variant-numeric: tabular-nums;
+}
+.fa-bulk-action-bar__count-label { color: var(--fg-2); }
+
+.fa-bulk-action-bar__divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    flex-shrink: 0;
+}
+
+.fa-bulk-action-bar__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.fa-bulk-action-bar__close {
+    background: transparent;
+    border: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--r-pill);
+    color: var(--fg-3);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: var(--space-1);
+    transition: color var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.fa-bulk-action-bar__close:hover { color: var(--fg); background: var(--surface-2); }
+.fa-bulk-action-bar__close:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 1px;
+}
+
+/* Mobile: full-width bottom-pinned */
+@media (max-width: 600px) {
+    .fa-bulk-action-bar {
+        position: fixed;
+        left: var(--space-2);
+        right: var(--space-2);
+        bottom: var(--space-2);
+        margin: 0;
+        width: auto;
+        max-width: none;
+        border-radius: var(--r-lg);
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 }
