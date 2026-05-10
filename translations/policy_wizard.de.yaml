@@ -560,6 +560,16 @@ policy_wizard:
             annex_column:
                 control: 'Control-Ref'
                 applicable: 'Anwendbarkeit'
+            annex_filter:
+                search_label: 'Volltext-Suche (Control-Ref oder Stichwort)'
+                search_placeholder: 'z. B. „Cloud", „A.5.23", „Backup" …'
+                theme_label: 'Theme-Filter'
+                theme_all: 'Alle Themes (93 Controls)'
+                clear: 'Filter zurücksetzen'
+                empty_match: 'Kein Control entspricht der Suche.'
+            annex_counter:
+                of_total: 'von %total% Controls als anwendbar markiert'
+                hint: 'Default = alle anwendbar. Schalten Sie ein Control nur ab, wenn der Ausschluss-Grund auditfest begründbar ist.'
             help:
                 title: 'Was wird hier festgelegt?'
                 body: 'Risiko-Appetit ist die übergreifende Toleranz Ihrer Organisation gegenüber Rest-Risiken. Datenklassifizierung legt fest, in wie viele Stufen Informationen eingeteilt werden. Annex-A-Controls können bei sachlicher Begründung später im SoA als „nicht anwendbar" deaktiviert werden.'
@@ -866,6 +876,26 @@ policy_wizard:
         action:
             view: 'Anzeigen'
             pdf: 'PDF'
+        # Cross-Framework-Coverage matrix (Persona-Walkthrough Mai 2026):
+        # Compliance-Manager / ISB / CISO / Junior wollen sehen, wieviel
+        # vom Norm-Portfolio die generierten Dokumente abdecken.
+        cross_coverage:
+            heading: 'Cross-Framework-Coverage'
+            description: 'Wie weit decken die erzeugten Dokumente die aktiven Frameworks ab? Nur Frameworks mit mindestens einem Treffer werden angezeigt.'
+            framework_label: '%covered% von %total% Anforderungen abgedeckt'
+            coverage_percent: 'Abdeckung'
+            show_refs: 'Abgedeckte Referenzen anzeigen (%count%)'
+        # Per-document workflow / approval / coverage badges.
+        workflow:
+            status:
+                pending: 'Approval ausstehend'
+                in_progress: 'Approval läuft'
+                approved: 'Approval freigegeben'
+                rejected: 'Approval abgelehnt'
+                cancelled: 'Approval abgebrochen'
+        document:
+            coverage_label: 'Trägt bei zu:'
+            approval_chain: 'Approval-Kette'
 
     # Junior-ISB Wish #3 — Progress-Bar above every wizard step.
     progress:
