@@ -186,10 +186,20 @@ final class OperationalBaselinesStep extends AbstractStep
             $errors['patch_sla_hours'][] = 'policy_wizard.error.patch_sla_invalid';
             $patchSlaHours = [];
         }
+        // Sensible BSI/Industry-Default-SLAs per severity (User-Feedback: high
+        // + medium hatten keinen Standardwert, validate forderte Pflichteingabe
+        // → Fehlertapete). Defaults match the form's tooltip "üblich"-Werte.
+        $patchSlaDefaults = ['critical' => 4, 'high' => 24, 'medium' => 168];
         $normalisedSla = [];
         foreach (self::PATCH_SEVERITIES as $sev) {
             $val = $patchSlaHours[$sev] ?? null;
-            if ($val !== null && is_numeric($val) && (int) $val > 0) {
+            // Empty / null = use the default — silent skip with sensible BSI
+            // value, no error. User can override via the form input.
+            if ($val === null || $val === '') {
+                $normalisedSla[$sev] = $patchSlaDefaults[$sev] ?? 24;
+                continue;
+            }
+            if (is_numeric($val) && (int) $val > 0) {
                 $normalisedSla[$sev] = (int) $val;
             } else {
                 $errors['patch_sla_hours'][] = 'policy_wizard.error.patch_sla_required.' . $sev;

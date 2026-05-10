@@ -57,12 +57,37 @@
         {% if document_ids|default([])|length == 0 %}
             <p class="text-muted mb-0">{{ 'policy_wizard.result.documents_empty'|trans }}</p>
         {% else %}
+            <p class="text-muted small mb-3">
+                {{ 'policy_wizard.result.documents_count'|trans({'%count%': document_ids|length}, 'policy_wizard') }}
+            </p>
             <ul class="list-group list-group-flush">
-                {% for doc_id in document_ids %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                        <span>Document #{{ doc_id }}</span>
-                        <span class="badge bg-secondary">{{ ('policy_wizard.status.' ~ run.status)|trans }}</span>
+                {% for doc in result_documents|default([]) %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 flex-wrap gap-2">
+                        <div class="me-auto">
+                            <strong>{{ doc.title|default('Document #' ~ doc.id) }}</strong>
+                            {% if doc.standard %}
+                                <span class="badge bg-secondary ms-2">{{ ('policy_wizard.standard_badge.' ~ doc.standard)|trans({}, 'policy_wizard') }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex gap-2 align-items-center">
+                            <a href="{{ path('app_document_show', {id: doc.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost btn-sm" target="_blank" rel="noopener">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                {{ 'policy_wizard.result.action.view'|trans({}, 'policy_wizard') }}
+                            </a>
+                            <a href="{{ path('app_document_download', {id: doc.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost btn-sm" target="_blank" rel="noopener">
+                                <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                                {{ 'policy_wizard.result.action.pdf'|trans({}, 'policy_wizard') }}
+                            </a>
+                        </div>
                     </li>
+                {% else %}
+                    {# Legacy fallback for callers that still pass only document_ids #}
+                    {% for doc_id in document_ids %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <a href="{{ path('app_document_show', {id: doc_id}) }}" target="_blank" rel="noopener">Document #{{ doc_id }}</a>
+                            <span class="badge bg-secondary">{{ ('policy_wizard.status.' ~ run.status)|trans }}</span>
+                        </li>
+                    {% endfor %}
                 {% endfor %}
             </ul>
         {% endif %}
