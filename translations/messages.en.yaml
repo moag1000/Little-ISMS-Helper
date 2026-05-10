@@ -216,6 +216,12 @@ common:
     download: Download
     error: Error
     error.invalid_csrf: 'Invalid security token. Please reload the page and try again.'
+    error.access_denied: 'Access denied.'
+    error.no_tenant: 'No tenant assigned.'
+    csrf_invalid: 'Invalid CSRF token.'
+    none: 'None'
+    type: 'Type'
+    no_data: 'No data available'
     export: Export
     export_excel: 'Export as Excel'
     filter: Filter
@@ -453,6 +459,9 @@ role:
         incident_manager: 'Incident Manager'
         asset_manager: 'Asset Manager'
         readonly: 'Read-Only User'
+messages:
+    csrf:
+        invalid: 'Invalid CSRF token.'
 error:
     csrf_invalid: 'Invalid CSRF token.'
     generic:
@@ -1682,6 +1691,10 @@ bulk_actions:
     assign: 'Assign'
     delete: 'Delete'
     deselect: 'Clear selection'
+    toolbar: 'Bulk actions'
+
+aria:
+    notifications: 'Notifications'
 not_assigned: ''
 page:
     title: ''
@@ -2058,3 +2071,38 @@ comments:
     label: 'Comment'
     placeholder: 'Write a comment...'
     submit: 'Send'
+
+# SSO admin / approvals UI
+sso:
+    action:
+        approve: 'Approve'
+        reject: 'Reject'
+        enable: 'Enable'
+        disable: 'Disable'
+    admin:
+        col:
+            name: 'Name'
+            slug: 'Slug'
+            type: 'Type'
+            scope: 'Scope'
+            status: 'Status'
+            domains: 'Domains'
+            actions: 'Actions'
+    approvals:
+        col:
+            email: 'Email'
+            provider: 'Provider'
+            tenant: 'Tenant'
+            claims: 'Claims'
+            requested_at: 'Requested at'
+            actions: 'Actions'
+        show_claims: 'Show claims'
+    field:
+        auto_approve: 'Auto approve'
+    prompt:
+        reject_reason: 'Please provide a rejection reason'
+    scope:
+        global: 'Global'
+    status:
+        enabled: 'Enabled'
+        disabled: 'Disabled'

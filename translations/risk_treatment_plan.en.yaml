@@ -13,6 +13,7 @@ risk_treatment_plan:
     days_remaining: 'days remaining'
     action:
         add_new: 'Add new'
+        new: 'New treatment plan'
     stats:
         total: Total
         planned: Planned

@@ -216,6 +216,12 @@ common:
     download: Herunterladen
     error: Fehler
     error.invalid_csrf: 'Ungültiges Sicherheitstoken. Bitte laden Sie die Seite neu und versuchen Sie es erneut.'
+    error.access_denied: 'Zugriff verweigert.'
+    error.no_tenant: 'Kein Mandant zugeordnet.'
+    csrf_invalid: 'Ungültiges CSRF-Token.'
+    none: 'Keine'
+    type: 'Typ'
+    no_data: 'Keine Daten verfügbar'
     export: Exportieren
     export_excel: 'Als Excel exportieren'
     filter: Filtern
@@ -466,6 +472,9 @@ role:
         incident_manager: 'Incident Manager'
         asset_manager: 'Asset Manager'
         readonly: Nur-Lese-Benutzer
+messages:
+    csrf:
+        invalid: 'Ungültiges CSRF-Token.'
 error:
     csrf_invalid: 'Ungültiges CSRF-Token.'
     generic:
@@ -1216,6 +1225,10 @@ bulk_actions:
     assign: 'Zuweisen'
     delete: 'Löschen'
     deselect: 'Auswahl aufheben'
+    toolbar: 'Bulk-Aktionen'
+
+aria:
+    notifications: 'Benachrichtigungen'
 nis2:
     notification:
         early_warning: 'NIS2 Frühwarnung für Incident "%incident%" fällig in %hours% Stunden. Deadline: %deadline%'
@@ -2117,3 +2130,38 @@ comments:
     label: 'Kommentar'
     placeholder: 'Kommentar verfassen...'
     submit: 'Senden'
+
+# SSO admin / approvals UI
+sso:
+    action:
+        approve: 'Genehmigen'
+        reject: 'Ablehnen'
+        enable: 'Aktivieren'
+        disable: 'Deaktivieren'
+    admin:
+        col:
+            name: 'Name'
+            slug: 'Slug'
+            type: 'Typ'
+            scope: 'Geltungsbereich'
+            status: 'Status'
+            domains: 'Domains'
+            actions: 'Aktionen'
+    approvals:
+        col:
+            email: 'E-Mail'
+            provider: 'Provider'
+            tenant: 'Mandant'
+            claims: 'Claims'
+            requested_at: 'Beantragt am'
+            actions: 'Aktionen'
+        show_claims: 'Claims anzeigen'
+    field:
+        auto_approve: 'Auto-Approve'
+    prompt:
+        reject_reason: 'Bitte Ablehnungsgrund angeben'
+    scope:
+        global: 'Global'
+    status:
+        enabled: 'Aktiv'
+        disabled: 'Deaktiviert'

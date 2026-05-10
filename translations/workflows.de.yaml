@@ -368,3 +368,44 @@ workflow.dashboard.alert.overdue_message: '%overdue% von %total% Workflows sind 
 workflow.dashboard.alert.pending_title: '%count% ausstehende Workflow-Genehmigungen'
 workflow.dashboard.alert.pending_message: 'Sie haben %count% Workflows, die Ihre Genehmigung erfordern.'
 workflow.dashboard.alert.view_all: 'Alle Workflows anzeigen'
+
+# Top-level approval namespace (templates use approval.* directly)
+approval:
+    section_title: 'Zur Freigabe'
+    error:
+        clarification_empty: 'Bitte formulieren Sie eine konkrete Rückfrage.'
+    success:
+        clarification_sent: 'Rückfrage gesendet.'
+    deadline:
+        label: 'Frist'
+        overdue: 'überschritten'
+        critical_warning: 'Kritisch — weniger als 24 Stunden verbleibend'
+    business_summary:
+        heading: 'Auf einen Blick'
+        what_is_it_label: 'Worum geht es?'
+        what_is_it_default: 'Sie sollen ein internes Regelwerk freigeben, das Ihren Verantwortungsbereich betrifft.'
+        what_expected_label: 'Was wird von Ihnen erwartet?'
+        what_expected: 'Bitte prüfen Sie, ob die Inhalte aus Ihrer Fachbereichs-Sicht sinnvoll und umsetzbar sind.'
+        what_if_reject_label: 'Was passiert bei "Ablehnen"?'
+        what_if_reject: 'Das Dokument geht mit Ihrer Begründung zurück an den Autor.'
+        what_if_idle_label: 'Was passiert bei Untätigkeit?'
+        what_if_idle: 'Nach Ablauf der Frist wird die Aufgabe automatisch eskaliert.'
+        what_if_idle_with_target: 'Nach Ablauf der Frist (%deadline%) wird die Aufgabe automatisch an %target% eskaliert.'
+    action:
+        approve: 'Genehmigen'
+        reject: 'Mit Begründung ablehnen'
+        clarify: 'Rückfrage stellen'
+    score:
+        tooltip: 'Konfidenz-Score: Wie sicher ist die Empfehlung?'
+    approve_modal:
+        title: 'Genehmigung bestätigen'
+        comment_label: 'Kommentar (optional)'
+        comment_placeholder: 'z.B. Hinweise für die Veröffentlichung oder Auflagen für die Umsetzung...'
+        submit: 'Jetzt genehmigen'
+    clarify_modal:
+        title: 'Rückfrage zum Dokument stellen'
+        intro: 'Sie können dem Autor eine Rückfrage senden, ohne das Dokument abzulehnen oder zu genehmigen.'
+        question_label: 'Ihre Rückfrage'
+        question_placeholder: 'z.B. "In Abschnitt 3 ist mir unklar, ob das auch für externe Dienstleister gilt."'
+        cancel: 'Abbrechen'
+        submit: 'Rückfrage senden'

@@ -1,6 +1,11 @@
 document:
     title: Dokumente
     subtitle: 'Verwaltung und Ablage von Richtlinien, Nachweisen und ISMS‑Dokumenten'
+    status:
+        draft: 'Entwurf'
+        in_review: 'In Prüfung'
+        approved: 'Freigegeben'
+        published: 'Veröffentlicht'
     action:
         upload: 'Dokument hochladen'
         update: Aktualisieren

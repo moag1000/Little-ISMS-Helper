@@ -124,6 +124,8 @@ audit:
         recommendations: Recommendations
         documentation: Documentation
         history: History
+        structured_findings: 'Structured findings'
+        structured_findings_help: 'Findings are captured here in a structured way and automatically flow into the corrective-action pipeline.'
     field:
         title: Title
         scope: Scope

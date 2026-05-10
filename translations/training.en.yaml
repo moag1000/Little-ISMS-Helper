@@ -51,6 +51,7 @@ training:
     status: Status
     controls: Linked Controls
     materials: Materials
+    details: Details
   field:
     title: Title
     description: Description

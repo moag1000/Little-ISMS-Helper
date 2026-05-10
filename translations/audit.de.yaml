@@ -100,6 +100,8 @@ audit:
         recommendations: 'Empfehlungen & Maßnahmen'
         documentation: Dokumentation
         history: Verlauf
+        structured_findings: 'Strukturierte Findings'
+        structured_findings_help: 'Findings werden hier strukturiert erfasst und gehen automatisch in die Korrekturmaßnahmen-Pipeline.'
     message:
         corporate_subsidiaries_info: 'Dieses Konzernaudit umfasst %count% Tochtergesellschaft(en)'
         corporate_audit_note_title: Konzernaudit
