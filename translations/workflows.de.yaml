@@ -248,6 +248,88 @@ workflow:
         change_request: Änderungsantrag
         document: Dokument
         audit: Audit
+    # Step-Namen — humanisierte Klartext-Bezeichnungen für snake_case-Step-Namen
+    # aus den Seed-Commands (SeedPolicyApprovalWorkflowCommand, GenerateRegulatoryWorkflowsCommand).
+    # Verwendet vom |workflow_step_label-Filter und in instance_show.html.twig.
+    step_label:
+        prepared: 'Vorbereitet (Entwurf eingereicht)'
+        ciso_review: 'Prüfung durch CISO'
+        dpo_review: 'Prüfung durch Datenschutzbeauftragten'
+        dpo_cross_check: 'Datenschutz-Querprüfung (DSB)'
+        function_owner_review: 'Prüfung durch Fachbereichsleitung'
+        top_mgmt_signoff: 'Freigabe durch Geschäftsleitung'
+        management_signoff: 'Freigabe durch Geschäftsleitung'
+        published: 'Veröffentlicht'
+        risk_owner_review: 'Prüfung durch Risk-Owner'
+        risk_acceptance: 'Risikoakzeptanz'
+        risk_treatment_decision: 'Behandlungs-Entscheidung'
+        technical_assessment: 'Technische Bewertung'
+        post_incident_review: 'Nachbereitung Vorfall'
+        notification_authority: 'Meldung an Aufsichtsbehörde'
+        notification_data_subjects: 'Information der Betroffenen'
+        dpo_assessment: 'Bewertung durch Datenschutzbeauftragten'
+        privacy_impact_assessment: 'Datenschutz-Folgenabschätzung'
+        legal_review: 'Juristische Prüfung'
+        documentation: 'Dokumentation'
+        approved: 'Genehmigt'
+    step_description:
+        prepared: 'Der Autor hat den Entwurf zur Prüfung eingereicht.'
+        ciso_review: 'Der/die CISO prüft Inhalte aus Sicherheits-Sicht.'
+        dpo_review: 'Der/die Datenschutzbeauftragte prüft datenschutz-relevante Aspekte.'
+        dpo_cross_check: 'Der/die Datenschutzbeauftragte führt eine Querprüfung der Datenschutz-Aspekte durch.'
+        function_owner_review: 'Die Fachbereichsleitung prüft aus operativer Sicht (Geschäftsprozess, Kundenwirkung).'
+        top_mgmt_signoff: 'Die Geschäftsleitung erteilt die formale Freigabe.'
+        management_signoff: 'Die Geschäftsleitung erteilt die formale Freigabe.'
+        published: 'Das Dokument ist final freigegeben und veröffentlicht.'
+    # Business-Summary-Block für Approval-Email + Approval-Screen.
+    # Vermeidet ITSec-Jargon, erklärt Kontext für Fachbereichsleiter ohne Security-Hintergrund.
+    approval:
+        section_title: 'Zur Freigabe'
+        business_summary:
+            heading: 'Auf einen Blick'
+            what_is_it_label: 'Worum geht es?'
+            what_is_it_default: 'Sie sollen ein internes Regelwerk freigeben, das Ihren Verantwortungsbereich betrifft.'
+            what_expected_label: 'Was wird von Ihnen erwartet?'
+            what_expected: 'Bitte prüfen Sie, ob die Inhalte aus Ihrer Fachbereichs-Sicht sinnvoll und umsetzbar sind. Sie müssen kein IT-Sicherheits-Experte sein — Ihre Geschäftsprozess-Sicht zählt.'
+            what_if_reject_label: 'Was passiert bei "Ablehnen"?'
+            what_if_reject: 'Das Dokument geht mit Ihrer Begründung zurück an den Autor. Es wird kein Projekt blockiert — es wird nur überarbeitet.'
+            what_if_idle_label: 'Was passiert bei Untätigkeit?'
+            what_if_idle: 'Nach Ablauf der Frist wird die Aufgabe automatisch eskaliert (Erinnerung an Sie und Information an Ihre Vertretung / nächste Eskalationsstufe).'
+            what_if_idle_with_target: 'Nach Ablauf der Frist (%deadline%) wird die Aufgabe automatisch an %target% eskaliert.'
+        deadline:
+            label: 'Frist'
+            overdue: 'überschritten'
+            critical_warning: 'Kritisch — weniger als 24 Stunden verbleibend'
+            no_deadline: 'Keine Frist gesetzt'
+            remaining_hours: 'noch %hours% h'
+            remaining_days: 'noch %days% Tage'
+        action:
+            approve: 'Genehmigen'
+            reject: 'Mit Begründung ablehnen'
+            clarify: 'Rückfrage stellen'
+            approve_short: 'Genehmigen'
+            reject_short: 'Ablehnen'
+            clarify_short: 'Rückfrage'
+        approve_modal:
+            title: 'Genehmigung bestätigen'
+            comment_label: 'Kommentar (optional)'
+            comment_placeholder: 'z.B. Hinweise für die Veröffentlichung oder Auflagen für die Umsetzung...'
+            submit: 'Jetzt genehmigen'
+        clarify_modal:
+            title: 'Rückfrage zum Dokument stellen'
+            intro: 'Sie können dem Autor eine Rückfrage senden, ohne das Dokument abzulehnen oder zu genehmigen. Der Workflow bleibt bei Ihnen offen.'
+            question_label: 'Ihre Rückfrage'
+            question_placeholder: 'z.B. "Ab wann gilt diese Richtlinie für Bestandsverträge?" oder "Wer trägt die Schulungskosten in unserem Bereich?"'
+            question_required: 'Bitte formulieren Sie Ihre Rückfrage.'
+            submit: 'Rückfrage senden'
+            cancel: 'Abbrechen'
+        score:
+            tooltip: 'Auditor-Score (0-100): bewertet automatisch die Vollständigkeit und Audit-Tauglichkeit des Dokuments. Wert >70 = audit-tauglich. Sie müssen den Score nicht selbst prüfen — er ist Hilfsinformation für die Geschäftsleitung.'
+        success:
+            clarification_sent: 'Ihre Rückfrage wurde an den Autor gesendet. Der Workflow bleibt bei Ihnen offen.'
+        error:
+            clarification_empty: 'Bitte formulieren Sie Ihre Rückfrage, bevor Sie sie absenden.'
+            clarification_failed: 'Die Rückfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut oder kontaktieren Sie den ISB.'
 workflow_instance:
     status:
         pending: Ausstehend

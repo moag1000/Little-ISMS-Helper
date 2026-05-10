@@ -138,6 +138,8 @@ common:
     next: Weiter
     yes: 'Ja'
     no: 'Nein'
+    greeting:
+        hello_name: 'Hallo %name%,'
     person_picker:
         placeholder: 'Person auswählen…'
         empty_state:

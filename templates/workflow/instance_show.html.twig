@@ -4,6 +4,15 @@
 {% block title %}{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }} - {{ 'workflow.title.instance_show'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+{# Persona-Walkthrough Risk-Owner-Business (Task #124, KRITISCH):
+   Business-Summary-Block oben, Step-Namen humanisiert, Frist als Badge,
+   "Rückfrage stellen"-Aktion ohne Workflow-Blockade. #}
+{% set deadline_dt = instance.dueDate %}
+{% set hours_remaining = deadline_dt ? ((deadline_dt.timestamp - "now"|date('U')) / 3600)|round(0, 'floor') : null %}
+{% set is_overdue = hours_remaining is not null and hours_remaining < 0 %}
+{% set is_critical = hours_remaining is not null and hours_remaining < 24 and hours_remaining >= 0 %}
+{% set deadline_variant = is_overdue ? 'danger' : (is_critical ? 'warning' : 'info') %}
+
 <div class="page-header">
     <div>
         <h1>{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}</h1>
@@ -19,6 +28,15 @@
             {% if instance.overdue %}
                 {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', content: 'workflow.badge.overdue'|trans({}, 'workflows') } %}
             {% endif %}
+            {% if deadline_dt %}
+                {% include '_components/_badge.html.twig' with {
+                    variant: deadline_variant,
+                    class: 'ms-1',
+                    content: ('approval.deadline.label'|trans({}, 'workflows')) ~ ': ' ~ deadline_dt|date('d.m.Y H:i')
+                        ~ (is_overdue ? ' — ' ~ ('approval.deadline.overdue'|trans({}, 'workflows')) : '')
+                        ~ (is_critical ? ' — ' ~ ('approval.deadline.critical_warning'|trans({}, 'workflows')) : '')
+                } %}
+            {% endif %}
         </div>
     </div>
     <div class="button-group">
@@ -27,6 +45,35 @@
         </a>
     </div>
 </div>
+
+{# Business-Summary-Block (Aurora _fa_alert) — visible to current approvers #}
+{% if can_approve %}
+{% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-4' } } %}
+    {% block alert_body %}
+        <div class="fa-alert__title">{{ 'approval.business_summary.heading'|trans({}, 'workflows') }}</div>
+        <p class="fa-alert__message mb-2">
+            <strong>{{ 'approval.business_summary.what_is_it_label'|trans({}, 'workflows') }}</strong>
+            {{ business_summary_what_is_it|default('approval.business_summary.what_is_it_default'|trans({}, 'workflows')) }}
+        </p>
+        <p class="fa-alert__message mb-2">
+            <strong>{{ 'approval.business_summary.what_expected_label'|trans({}, 'workflows') }}</strong>
+            {{ 'approval.business_summary.what_expected'|trans({}, 'workflows') }}
+        </p>
+        <p class="fa-alert__message mb-2">
+            <strong>{{ 'approval.business_summary.what_if_reject_label'|trans({}, 'workflows') }}</strong>
+            {{ 'approval.business_summary.what_if_reject'|trans({}, 'workflows') }}
+        </p>
+        <p class="fa-alert__message mb-0">
+            <strong>{{ 'approval.business_summary.what_if_idle_label'|trans({}, 'workflows') }}</strong>
+            {% if escalation_target is defined and escalation_target and deadline_dt %}
+                {{ 'approval.business_summary.what_if_idle_with_target'|trans({'%deadline%': deadline_dt|date('d.m.Y'), '%target%': escalation_target}, 'workflows') }}
+            {% else %}
+                {{ 'approval.business_summary.what_if_idle'|trans({}, 'workflows') }}
+            {% endif %}
+        </p>
+    {% endblock %}
+{% endembed %}
+{% endif %}
 
 {# Instance Overview #}
 {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
@@ -44,7 +91,7 @@
 
             <div class="col-md-3 mb-3">
                 <strong class="d-block text-muted">{{ 'workflow.field.current_step'|trans({}, 'workflows') }}</strong>
-                {{ instance.currentStep ? instance.currentStep.name : '-' }}
+                {{ instance.currentStep ? instance.currentStep.name|workflow_step_label : '-' }}
             </div>
 
             <div class="col-md-3 mb-3">
@@ -148,7 +195,7 @@
                     </span>
                     <div class="isms-approval-stages__content">
                         <div class="isms-approval-stages__head d-flex justify-content-between align-items-center">
-                            <strong>{{ loop.index }}. {{ step.name }}</strong>
+                            <strong>{{ loop.index }}. {{ step.name|workflow_step_label }}</strong>
                             <span>
                                 {% if isCurrentStep %}
                                     {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-2', content: 'workflow.badge.current'|trans({}, 'workflows') } %}
@@ -157,19 +204,23 @@
                                 {% endif %}
                             </span>
                         </div>
-                        {% if step.description %}
+                        {# Description: prefer translated workflow.step_description.<name>, fallback to entity description #}
+                        {% set translated_desc = step.name|workflow_step_description %}
+                        {% if translated_desc %}
+                            <p class="text-muted mb-2 mt-1 small">{{ translated_desc }}</p>
+                        {% elseif step.description %}
                             <p class="text-muted mb-2 mt-1 small">{{ step.description }}</p>
                         {% endif %}
                         {% if isCurrentStep and can_approve %}
-                            <div class="d-flex gap-2 mt-1">
-                                <form method="post" action="{{ path('app_workflow_instance_approve', {id: instance.id}) }}" class="d-inline">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ instance.id) }}">
-                                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm">
-                                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
-                                    </button>
-                                </form>
+                            <div class="d-flex gap-2 mt-1 flex-wrap">
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm" data-bs-toggle="modal" data-bs-target="#approveModal">
+                                    <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'approval.action.approve'|trans({}, 'workflows') }}
+                                </button>
                                 <button type="button" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
+                                    <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i> {{ 'approval.action.reject'|trans({}, 'workflows') }}
+                                </button>
+                                <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-bs-toggle="modal" data-bs-target="#clarifyModal">
+                                    <i class="fa-icon fa-icon--ui-help" aria-hidden="true"></i> {{ 'approval.action.clarify'|trans({}, 'workflows') }}
                                 </button>
                             </div>
                         {% endif %}
@@ -212,7 +263,7 @@
                                 {{ entry.action|capitalize }}
                             {% endif %}
                             {% if entry.step_name is defined %}
-                                <small class="text-muted ms-1">({{ entry.step_name }})</small>
+                                <small class="text-muted ms-1">({{ entry.step_name|workflow_step_label }})</small>
                             {% endif %}
                         </span>
                         <span class="isms-trail__meta">{{ entry.timestamp|date('d.m.Y H:i:s') }}</span>
@@ -257,15 +308,43 @@
     </a>
 </div>
 
-{# Reject Modal #}
+{# Approve Modal — optional comment field for audit-trail completeness #}
 {% if can_approve %}
+<div class="modal fade" id="approveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_workflow_instance_approve', {id: instance.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ instance.id) }}">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="approveModalLabel">{{ 'approval.approve_modal.title'|trans({}, 'workflows') }}</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="approve_comments" class="form-label">{{ 'approval.approve_modal.comment_label'|trans({}, 'workflows') }}</label>
+                        <textarea class="form-control fa-cyber-input__field" id="approve_comments" name="comments" rows="3"
+                                  placeholder="{{ 'approval.approve_modal.comment_placeholder'|trans({}, 'workflows') }}"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--success">
+                        <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i> {{ 'approval.approve_modal.submit'|trans({}, 'workflows') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# Reject Modal #}
 <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" action="{{ path('app_workflow_instance_reject', {id: instance.id}) }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ instance.id) }}">
                 <div class="modal-header">
-                    <h2 class="modal-title h5" id="rejectModalLabel">{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}</h2>
+                    <h2 class="modal-title h5" id="rejectModalLabel">{{ 'approval.action.reject'|trans({}, 'workflows') }}</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
@@ -276,7 +355,37 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger">{{ 'approval.action.reject'|trans({}, 'workflows') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# Clarify Modal — sends a question to the wizard initiator without rejecting/approving.
+   Audit-event: workflow_clarification_requested (logged in WorkflowController::clarifyInstance). #}
+<div class="modal fade" id="clarifyModal" tabindex="-1" aria-labelledby="clarifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_workflow_instance_clarify', {id: instance.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('clarify' ~ instance.id) }}">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="clarifyModalLabel">{{ 'approval.clarify_modal.title'|trans({}, 'workflows') }}</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small mb-3">{{ 'approval.clarify_modal.intro'|trans({}, 'workflows') }}</p>
+                    <div class="mb-3">
+                        <label for="clarify_question" class="form-label">{{ 'approval.clarify_modal.question_label'|trans({}, 'workflows') }}</label>
+                        <textarea class="form-control fa-cyber-input__field" id="clarify_question" name="question" rows="4" required
+                                  placeholder="{{ 'approval.clarify_modal.question_placeholder'|trans({}, 'workflows') }}"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">{{ 'approval.clarify_modal.cancel'|trans({}, 'workflows') }}</button>
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--info">
+                        <i class="fa-icon fa-icon--ui-help" aria-hidden="true"></i> {{ 'approval.clarify_modal.submit'|trans({}, 'workflows') }}
+                    </button>
                 </div>
             </form>
         </div>

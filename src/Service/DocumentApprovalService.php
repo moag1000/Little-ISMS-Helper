@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Entity\Document;
 use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Document Approval Service
@@ -46,7 +47,8 @@ class DocumentApprovalService
         private readonly EmailNotificationService $emailNotificationService,
         private readonly UserRepository $userRepository,
         private readonly AuditLogger $auditLogger,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly ?UrlGeneratorInterface $urlGenerator = null,
     ) {}
 
     /**
@@ -227,7 +229,7 @@ class DocumentApprovalService
             foreach ($assignedUsers as $userId) {
                 $user = $this->userRepository->find($userId);
                 if ($user) {
-                    $this->sendNotificationToUser($document, $user, $approvalLevel, $isNewDocument);
+                    $this->sendNotificationToUser($document, $user, $approvalLevel, $isNewDocument, $workflowInstance);
                 }
             }
         }
@@ -236,32 +238,62 @@ class DocumentApprovalService
         if ($assignedRole) {
             $roleUsers = $this->userRepository->findByRole($assignedRole);
             foreach ($roleUsers as $roleUser) {
-                $this->sendNotificationToUser($document, $roleUser, $approvalLevel, $isNewDocument);
+                $this->sendNotificationToUser($document, $roleUser, $approvalLevel, $isNewDocument, $workflowInstance);
             }
         }
     }
 
     /**
-     * Send notification email to a specific user
+     * Send notification email to a specific user.
+     *
+     * Persona-Walkthrough Risk-Owner-Business (Task #124, KRITISCH):
+     * passes Approval-Screen + Reject + Clarify deep-links plus a 1-sentence
+     * "what is it about?" heuristic, so the Business-Summary-Block in
+     * `templates/emails/document_approval_notification.html.twig` can render
+     * for non-ITSec approvers without ITSec-jargon.
      */
     private function sendNotificationToUser(
         Document $document,
         User $user,
         string $approvalLevel,
-        bool $isNewDocument
+        bool $isNewDocument,
+        ?WorkflowInstance $workflowInstance = null
     ): void {
         try {
-            $this->emailNotificationService->sendEmail(
-                $user->getEmail(),
-                sprintf('Document Approval Required: %s', $document->getOriginalFilename()),
+            $context = [
+                'document'         => $document,
+                'user'             => $user,
+                'approval_level'   => $approvalLevel,
+                'is_new_document'  => $isNewDocument,
+                'category'         => $document->getCategory(),
+                'workflow_instance'=> $workflowInstance,
+                'what_is_it'       => $this->extractWhatIsIt($document),
+            ];
+
+            // Generate deep-links to Approval-Screen — only when UrlGenerator is wired.
+            if ($workflowInstance instanceof WorkflowInstance && $this->urlGenerator !== null) {
+                try {
+                    $approvalUrl = $this->urlGenerator->generate(
+                        'app_workflow_instance_show',
+                        ['id' => $workflowInstance->getId()],
+                        UrlGeneratorInterface::ABSOLUTE_URL,
+                    );
+                    $context['approval_link'] = $approvalUrl;
+                    $context['reject_link']   = $approvalUrl . '#rejectModal';
+                    $context['clarify_link']  = $approvalUrl . '#clarifyModal';
+                } catch (Exception $urlError) {
+                    $this->logger->debug('Could not generate approval deep-links', [
+                        'workflow_instance_id' => $workflowInstance->getId(),
+                        'error'                => $urlError->getMessage(),
+                    ]);
+                }
+            }
+
+            $this->emailNotificationService->sendGenericNotification(
+                sprintf('Document Approval Required: %s', $document->getOriginalFilename() ?? '(untitled)'),
                 'emails/document_approval_notification.html.twig',
-                [
-                    'document' => $document,
-                    'user' => $user,
-                    'approval_level' => $approvalLevel,
-                    'is_new_document' => $isNewDocument,
-                    'category' => $document->getCategory(),
-                ]
+                $context,
+                [$user],
             );
 
             $this->logger->info('Approval notification sent', [
@@ -276,5 +308,49 @@ class DocumentApprovalService
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Generate a 1-sentence "what is this about?" summary for the
+     * Business-Summary-Block in the approval-email.
+     *
+     * Heuristic priority (first non-empty wins):
+     *   1. Document.description (if author wrote it)
+     *   2. First sentence of Document.policyBody (Markdown body)
+     *   3. NULL → email falls back to a generic translation key
+     *
+     * Output is hard-capped at 240 chars to keep the summary block scannable.
+     */
+    private function extractWhatIsIt(Document $document): ?string
+    {
+        $description = method_exists($document, 'getDescription') ? $document->getDescription() : null;
+        if (is_string($description) && trim($description) !== '') {
+            return $this->trimToSentence($description, 240);
+        }
+
+        $body = method_exists($document, 'getPolicyBody') ? $document->getPolicyBody() : null;
+        if (is_string($body) && trim($body) !== '') {
+            // Strip Markdown headings and lists, then take the first sentence.
+            $plain = preg_replace('/^[#>\-*]\s*/m', '', $body) ?? $body;
+            $plain = preg_replace('/\s+/', ' ', $plain) ?? $plain;
+            return $this->trimToSentence(trim($plain), 240);
+        }
+
+        return null;
+    }
+
+    private function trimToSentence(string $text, int $maxLen): string
+    {
+        $text = trim($text);
+        if ($text === '') {
+            return '';
+        }
+        // Cut at first sentence end (., !, ?) within the first $maxLen chars.
+        $slice = mb_substr($text, 0, $maxLen);
+        if (preg_match('/^(.+?[\.!\?])(\s|$)/u', $slice, $m)) {
+            return trim($m[1]);
+        }
+        // No sentence boundary — fall back to ellipsised cut.
+        return mb_strlen($text) > $maxLen ? mb_substr($text, 0, $maxLen - 1) . '…' : $text;
     }
 }
