@@ -298,6 +298,15 @@ class RiskType extends AbstractType
                 ],
                 'help' => 'risk.help.acceptance_justification',
             ])
+            // ISO 27001 Cl. 8.3 — Audit-V3 LB-7: acceptance must carry an
+            // expiry / re-evaluation date so accepted risks do not "expire
+            // silent" after the approver leaves the org or threat changes.
+            ->add('acceptanceExpiryDate', DateType::class, [
+                'label' => 'risk.field.acceptance_expiry_date',
+                'widget' => 'single_text',
+                'required' => false,
+                'help' => 'risk.help.acceptance_expiry_date',
+            ])
             ->add('status', EnumType::class, [
                 'label' => 'risk.field.status',
                 'class' => RiskStatus::class,

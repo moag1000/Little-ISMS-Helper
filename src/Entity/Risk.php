@@ -278,6 +278,19 @@ class Risk
     private ?string $acceptanceJustification = null;
 
     /**
+     * Risk Acceptance Expiry (ISO 27001 Cl. 8.3 — Audit-V3 LB-7)
+     *
+     * Date until which the risk acceptance is valid. After this date the
+     * acceptance must be re-evaluated by the risk owner. Closing the
+     * audit-finding "risk acceptance without expiry date" requires every
+     * accepted risk to carry a finite review horizon. Auditors check this
+     * field as a tripwire for stale acceptances.
+     */
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['risk:read', 'risk:write'])]
+    private ?DateTimeInterface $acceptanceExpiryDate = null;
+
+    /**
      * Formal approval for risk acceptance
      */
     #[ORM\Column(type: Types::BOOLEAN)]
@@ -902,6 +915,50 @@ class Risk
     {
         $this->acceptanceJustification = $acceptanceJustification;
         return $this;
+    }
+
+    public function getAcceptanceExpiryDate(): ?DateTimeInterface
+    {
+        return $this->acceptanceExpiryDate;
+    }
+
+    public function setAcceptanceExpiryDate(?DateTimeInterface $acceptanceExpiryDate): static
+    {
+        $this->acceptanceExpiryDate = $acceptanceExpiryDate;
+        return $this;
+    }
+
+    /**
+     * Whether the risk acceptance has passed its expiry date and must be
+     * re-evaluated. Returns false when no expiry is set or strategy is
+     * not "accept" — the caller should treat that as "no acceptance, no
+     * expiry signal".
+     */
+    #[Groups(['risk:read'])]
+    public function isAcceptanceExpired(): bool
+    {
+        if ($this->treatmentStrategy !== TreatmentStrategy::Accept) {
+            return false;
+        }
+        if ($this->acceptanceExpiryDate === null) {
+            return false;
+        }
+        return $this->acceptanceExpiryDate < new \DateTimeImmutable('today');
+    }
+
+    /**
+     * Number of days the acceptance has been expired. Returns 0 if not
+     * expired, positive int otherwise.
+     */
+    #[Groups(['risk:read'])]
+    public function getAcceptanceExpiredDays(): int
+    {
+        if (!$this->isAcceptanceExpired() || $this->acceptanceExpiryDate === null) {
+            return 0;
+        }
+        $now = new \DateTimeImmutable('today');
+        $diff = $now->diff($this->acceptanceExpiryDate);
+        return (int) $diff->days;
     }
 
     public function isFormallyAccepted(): bool
