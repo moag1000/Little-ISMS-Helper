@@ -148,6 +148,11 @@ class UserType extends AbstractType
                 'ROLE_MANAGER' => $this->translator->trans('user.role_description.manager', [], 'user'),
                 'ROLE_ADMIN' => $this->translator->trans('user.role_description.admin', [], 'user'),
                 'ROLE_SUPER_ADMIN' => $this->translator->trans('user.role_description.super_admin', [], 'user'),
+                // Audit V3 W2-C5 — persona-roles for dashboard gating.
+                'ROLE_CISO' => $this->translator->trans('user.role_description.ciso', [], 'user'),
+                'ROLE_RISK_MANAGER' => $this->translator->trans('user.role_description.risk_manager', [], 'user'),
+                'ROLE_DPO' => $this->translator->trans('user.role_description.dpo', [], 'user'),
+                'ROLE_COMPLIANCE_MANAGER' => $this->translator->trans('user.role_description.compliance_manager', [], 'user'),
             ];
 
             $builder
@@ -160,6 +165,11 @@ class UserType extends AbstractType
                     'user.role.manager' => 'ROLE_MANAGER',
                     'user.role.admin' => 'ROLE_ADMIN',
                     'user.role.super_admin' => 'ROLE_SUPER_ADMIN',
+                    // Audit V3 W2-C5 persona-roles
+                    'user.role.ciso' => 'ROLE_CISO',
+                    'user.role.risk_manager' => 'ROLE_RISK_MANAGER',
+                    'user.role.dpo' => 'ROLE_DPO',
+                    'user.role.compliance_manager' => 'ROLE_COMPLIANCE_MANAGER',
                 ],
                 'multiple' => true,
                 'expanded' => true,

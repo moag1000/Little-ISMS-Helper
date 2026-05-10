@@ -68,7 +68,18 @@ security:
     role_hierarchy:
         ROLE_AUDITOR:           ROLE_USER
         ROLE_MANAGER:           [ROLE_USER, ROLE_AUDITOR]
-        ROLE_ADMIN:             [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER]
+        # Audit V3 W2-C5 — Persona-Roles for dashboard gating.
+        # Previously the four persona-dashboards (CISO, Risk-Manager, Board,
+        # Compliance-Manager / DPO) were all gated with ROLE_MANAGER, so any
+        # Manager saw every persona view. The roles below model the four
+        # personas explicitly so each dashboard only surfaces to its actual
+        # audience. They all inherit ROLE_MANAGER (operational read+write
+        # scope) — admins assign exactly one to each user via the User-Form.
+        ROLE_CISO:                  ROLE_MANAGER
+        ROLE_RISK_MANAGER:          ROLE_MANAGER
+        ROLE_DPO:                   ROLE_MANAGER
+        ROLE_COMPLIANCE_MANAGER:    ROLE_MANAGER
+        ROLE_ADMIN:             [ROLE_USER, ROLE_AUDITOR, ROLE_MANAGER, ROLE_CISO, ROLE_RISK_MANAGER, ROLE_DPO, ROLE_COMPLIANCE_MANAGER]
         ROLE_SUPER_ADMIN:       [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH, ROLE_GROUP_CISO, ROLE_KONZERN_AUDITOR]
         # Phase 8M.5 / 9.P1.6 — Holding-Rollen für Konzern-Strukturen.
         #

@@ -447,7 +447,11 @@ class RoleDashboardService
     }
 
     /**
-     * Determine which dashboard a user should see based on their role
+     * Determine which dashboard a user should see based on their role.
+     *
+     * Audit V3 W2-C5: persona-roles take precedence over the generic
+     * Manager/Admin fallback so a user with ROLE_DPO sees the
+     * Compliance-Manager dashboard rather than the CISO one.
      */
     public function getRecommendedDashboard(): string
     {
@@ -457,9 +461,20 @@ class RoleDashboardService
             return 'default';
         }
 
-        // Check roles in order of specificity
+        // Check persona-roles first — most specific takes precedence.
+        if ($this->security->isGranted('ROLE_CISO')) {
+            return 'ciso';
+        }
+        if ($this->security->isGranted('ROLE_RISK_MANAGER')) {
+            return 'risk_manager';
+        }
+        if ($this->security->isGranted('ROLE_COMPLIANCE_MANAGER') || $this->security->isGranted('ROLE_DPO')) {
+            return 'compliance_manager';
+        }
+
+        // Generic role fallbacks
         if ($this->security->isGranted('ROLE_SUPER_ADMIN') || $this->security->isGranted('ROLE_ADMIN')) {
-            return 'ciso'; // Admins see CISO view
+            return 'ciso'; // Admins inherit all persona-roles, default landing is CISO view
         }
 
         if ($this->security->isGranted('ROLE_MANAGER')) {
