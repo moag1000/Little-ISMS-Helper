@@ -1,0 +1,520 @@
+policy:
+    tisax:
+        information_security_policies:
+            v1:
+                title: 'Informationssicherheits-Leitlinie (TISAX)'
+                body: |-
+                    # Informationssicherheits-Leitlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Top-Level-Leitlinie | Norm-Anker: VDA ISA 1.1, 1.2, 1.3, 1.4 | ISO 27001:2022 A.5.1, A.5.2 | TISAX-Pruefkatalog: VDA ISA Edition {{ tisax.isa_edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Stellenwert der Informationssicherheit
+                    Die {{ tenant.legal_name }} verarbeitet als Teilnehmer der automobilen Wertschoepfungskette in erheblichem Umfang vertrauliche Geschaeftsinformationen ihrer Kunden, Lieferanten und Entwicklungspartner, einschliesslich Konstruktionsdaten, Beschaffungsspezifikationen, Tooling-Vorlaeufer und – sofern einschlaegig – Prototypeninformationen. Die Leitungsebene erkennt an, dass die Aufrechterhaltung der Vertraulichkeit, Integritaet und Verfuegbarkeit dieser Informationen unverzichtbare Voraussetzung fuer den Erhalt von Kundenfreigaben (TISAX-Label), die Erfuellung vertraglicher Geheimhaltungspflichten sowie den Schutz vor erheblichen wirtschaftlichen, rechtlichen und reputativen Folgen darstellt. Die Leitungsebene bekennt sich daher uneingeschraenkt zur Etablierung, Aufrechterhaltung und kontinuierlichen Verbesserung eines Informationssicherheits-Managementsystems (ISMS) auf Basis der VDA ISA Edition {{ tisax.isa_edition }} sowie der ISO/IEC 27001:2022.
+
+                    ## 2. Sicherheitsziele
+                    Diese Leitlinie verfolgt die folgenden uebergeordneten Sicherheitsziele, abgeleitet aus den Geschaeftszielen, Kundenanforderungen und regulatorischen Vorgaben:
+
+                    1. **Vertraulichkeit** – Informationen werden ausschliesslich Befugten zugaenglich gemacht; die Klassifikation orientiert sich an den TISAX-Schutzbedarfsstufen *normal*, *hoch* und *sehr hoch*.
+                    2. **Integritaet** – Informationen und Verarbeitungsmethoden bleiben unveraendert und vollstaendig; Manipulationen werden verhindert oder zuverlaessig erkannt.
+                    3. **Verfuegbarkeit** – Informationen, IT-Verfahren und IT-Systeme stehen Berechtigten zur erforderlichen Zeit zur Verfuegung; Geschaeftsfortfuehrung und Wiederanlauf sind sichergestellt.
+                    4. **Authentizitaet und Verbindlichkeit** – Identitaeten von Nutzenden, Systemen und Daten sind verifiziert; Handlungen sind beweissicher zuordenbar.
+                    5. **Compliance** – Saemtliche fuer die {{ tenant.legal_name }} anwendbaren gesetzlichen, regulatorischen und vertraglichen Anforderungen werden eingehalten, insbesondere die TISAX-Teilnahmebedingungen der ENX Association.
+
+                    ## 3. TISAX-Reifegradmodell
+                    Die Wirksamkeit der ISMS-Massnahmen wird gemaess dem VDA-ISA-Reifegradmodell nach den Stufen 0 (Initial / nicht durchgefuehrt) bis 5 (Optimiert) bewertet. Fuer alle relevanten Pruefthemen mit Schutzbedarfsstufe *hoch* oder *sehr hoch* ist der Ziel-Reifegrad mindestens **3 (Etabliert)**, fuer ausgewaehlte Kernthemen (IAM, Incident Response, Lieferantensicherheit) mindestens **4 (Vorhersagbar)**. Die Reifegradbewertung erfolgt mindestens jaehrlich im Rahmen der internen ISMS-Pruefung.
+
+                    ## 4. Geltungsbereich (TISAX-Scope)
+                    Der TISAX-Scope ist organisatorisch, geographisch und technisch definiert:
+
+                    - **Organisatorisch:** Saemtliche Organisationseinheiten der {{ tenant.legal_name }}, ihre Beschaeftigten, Auftragnehmer, Praktikantinnen und Praktikanten sowie alle Dritten, die Informationen aus dem TISAX-Scope verarbeiten.
+                    - **Geographisch:** Saemtliche Standorte gemaess Anhang 1 dieser Leitlinie; ausgenommene Standorte sind im ISMS-Konzept dokumentiert und begruendet.
+                    - **Technisch:** Alle Anwendungen, IT-Systeme, Engineering-Workstations, OT-Systeme und Kommunikationsverbindungen, ueber die TISAX-relevante Informationen verarbeitet werden.
+
+                    Der Scope umfasst die TISAX-Pruefziele {{ tisax.assessment_objectives }} (z. B. *Information mit hohem Schutzbedarf*, *Prototypenschutz*, *Anbindung an Dritte*, *Datenschutz nach DSGVO Art. 28*).
+
+                    ## 5. Bezug zu gesetzlichen und vertraglichen Verpflichtungen
+                    Diese Leitlinie wird unter Beruecksichtigung der folgenden Rechtsgrundlagen erlassen, soweit anwendbar: DSGVO (Verordnung (EU) 2016/679), BDSG, GeschGehG (Geschaeftsgeheimnisgesetz), HGB (insb. Aufbewahrungspflichten), sektorspezifische Aufsichtsanforderungen sowie die jeweils geltenden TISAX-Teilnahmebedingungen und kundenspezifischen Geheimhaltungsvereinbarungen.
+
+                    ## 6. Sicherheitsorganisation
+                    Die Verantwortlichkeiten fuer Informationssicherheit sind eindeutig zugeordnet:
+
+                    - **Leitungsebene:** Gesamtverantwortung, Bereitstellung von Ressourcen, Genehmigung dieser Leitlinie, Durchfuehrung der jaehrlichen Managementbewertung.
+                    - **Informationssicherheitsbeauftragter (CISO/ISB):** {{ roles.isb.fullName }} – steuerndes Organ des ISMS, direkt der Leitungsebene unterstellt.
+                    - **Datenschutzbeauftragter (DSB):** {{ roles.dpo.fullName }} – stimmt sich mit dem ISB ab; Personenidentitaet zwischen ISB und DSB ist gemaess DSGVO Art. 38 unzulaessig.
+                    - **Prototypenschutz-Beauftragter:** {{ roles.prototype_officer.fullName }} – sofern Pruefziel *Prototypenschutz* einschlaegig.
+                    - **Fachbereichs- und Standortverantwortliche:** Fachlich und betrieblich verantwortlich fuer die Sicherheit der ihnen zugeordneten Zielobjekte.
+
+                    ## 7. Verbindlichkeit
+                    Diese Leitlinie ist fuer alle Beschaeftigten und Beauftragten der {{ tenant.legal_name }} verbindlich. Verstoesse werden gemaess der Personalrichtlinie sanktioniert und koennen disziplinarische, arbeits-, zivil- oder strafrechtliche Konsequenzen nach sich ziehen, insbesondere bei Verletzung von Geschaeftsgeheimnissen nach GeschGehG. Auftragnehmer und Lieferanten werden vertraglich gemaess der Lieferanten-Sicherheitsrichtlinie verpflichtet.
+
+                    ## 8. Verpflichtung zur kontinuierlichen Verbesserung
+                    Die Leitungsebene verpflichtet sich zur kontinuierlichen Aufrechterhaltung und Verbesserung des ISMS. Hierzu zaehlen: regelmaessige Wirksamkeitspruefungen, Auswertung von Sicherheitsvorfaellen und Audit-Ergebnissen, interne Audits, externe TISAX-Pruefungen durch akkreditierte Pruefdienstleister im Drei-Jahres-Zyklus, Managementbewertung sowie Ableitung von Korrektur- und Vorbeugungsmassnahmen.
+
+                    ## 9. Genehmigung
+                    Diese Leitlinie tritt mit Unterzeichnung durch die Leitungsebene in Kraft und ersetzt alle vorhergehenden Versionen. Sie wird mindestens alle 12 Monate sowie anlassbezogen ueberprueft. Genehmigungskette: {{ approval.chain }}.
+
+                    Genehmigt durch [Leitungsebene] am [Datum] – Unterschrift: ____________________
+
+                    ---
+                    *Diese Leitlinie ist die hoechste normative Aussage des ISMS der {{ tenant.legal_name }}. Untergeordnete Richtlinien (Organisation, Personal, Physische Sicherheit, IAM, IT-Betrieb, Lieferantensicherheit, Compliance, ggf. Prototypenschutz, ggf. Datenschutz-Anhang) konkretisieren diese Vorgaben. Cross-Ref ISO/IEC 27001:2022 Klausel 5.2 / Annex A 5.1.*
+
+        organisation_information_security:
+            v1:
+                title: 'Organisation der Informationssicherheit (TISAX)'
+                body: |-
+                    # Organisation der Informationssicherheit der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Norm-Anker: VDA ISA 2.1.1 - 2.1.4 | ISO 27001:2022 A.5.2, A.5.3, A.5.4, A.5.5 | TISAX-Pruefkatalog: VDA ISA Edition {{ tisax.isa_edition }} | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die organisatorische Verankerung der Informationssicherheit innerhalb der {{ tenant.legal_name }}. Sie legt Rollen, Verantwortlichkeiten, Berichtswege und Eskalationsstufen fest und stellt damit die organisatorische Voraussetzung fuer ein wirksames ISMS gemaess VDA ISA und ISO/IEC 27001:2022 sicher.
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer alle Organisationseinheiten, Standorte und Beschaeftigten der {{ tenant.legal_name }} im TISAX-Scope sowie fuer ausgelagerte Funktionen, soweit sie sicherheitsrelevante Aufgaben wahrnehmen.
+
+                    ## 3. Rollen und Verantwortlichkeiten
+
+                    ### 3.1 Leitungsebene
+                    Die Leitungsebene traegt die Gesamtverantwortung fuer die Informationssicherheit. Sie ernennt den ISB, stellt angemessene Ressourcen bereit, genehmigt das Sicherheitskonzept und die Risikoakzeptanzkriterien und fuehrt mindestens jaehrlich die Managementbewertung durch.
+
+                    ### 3.2 Informationssicherheitsbeauftragter (ISB / CISO)
+                    Der ISB {{ roles.isb.fullName }} ist der Leitungsebene direkt unterstellt und nicht der IT-Leitung. Er steuert das ISMS, koordiniert die Pruefthemen der VDA ISA, vertritt die {{ tenant.legal_name }} gegenueber Pruefdienstleistern und ENX und berichtet mindestens quartalsweise an die Leitungsebene. Eine Personenidentitaet zwischen ISB und DSB ist unzulaessig.
+
+                    ### 3.3 IS-Management-Team / Sicherheitsforum
+                    Das IS-Management-Team ({{ roles.is_management_team }}) tagt mindestens quartalsweise. Teilnehmende sind ISB, DSB, IT-Leitung, Personalleitung, Beschaffung, Produktion / Engineering, Facility-Management sowie ggf. der Prototypenschutz-Beauftragte. Aufgaben: Bewertung von Risiken, Abstimmung uebergreifender Massnahmen, Vorbereitung der Managementbewertung.
+
+                    ### 3.4 Datenschutzbeauftragter (DSB)
+                    Der DSB {{ roles.dpo.fullName }} verantwortet die DSGVO-Compliance, beraet die Fachbereiche bei DSFA-Pflichten und stimmt sich mit dem ISB bei Sicherheitsvorfaellen mit Personendatenbezug ab.
+
+                    ### 3.5 Prototypenschutz-Beauftragter
+                    Sofern das TISAX-Pruefziel *Prototypenschutz* einschlaegig ist, wird ein Prototypenschutz-Beauftragter ({{ roles.prototype_officer.fullName }}) benannt. Dieser verantwortet die Umsetzung der PSx-Anforderungen und ist Ansprechpartner fuer kundenseitige Prototypen-Audits.
+
+                    ### 3.6 Fachbereichs- und Standortverantwortliche
+                    Jeder Fachbereich und jeder Standort benennt eine fachliche Sicherheitsverantwortung. Diese Person ist erste Anlaufstelle fuer den ISB, fuehrt lokal die Risikobewertung durch und meldet Sicherheitsvorfaelle.
+
+                    ### 3.7 Beschaeftigte
+                    Alle Beschaeftigten sind verpflichtet, die Sicherheitsanforderungen zu beachten, Schwachstellen und Vorfaelle unverzueglich zu melden und an Awareness-Massnahmen teilzunehmen.
+
+                    ## 4. Funktionstrennung
+                    Sicherheitskritische Taetigkeiten werden so verteilt, dass keine Person eine vollstaendige Transaktion allein ausfuehren und nachtraeglich verschleiern kann. Insbesondere sind administrative IT-Aufgaben, Anwendungsfreigaben sowie Zugriffsvergabe und Pruefung der Zugriffsvergabe getrennt zu organisieren. Wo eine Trennung nicht moeglich ist, sind kompensierende Kontrollen (z. B. Vier-Augen-Prinzip, vollstaendige Protokollierung) etabliert.
+
+                    ## 5. Kontakte zu Behoerden und Interessengruppen
+                    Der ISB pflegt Kontakte zu BSI, BfDI, ggf. branchenspezifischen Aufsichtsbehoerden sowie zu Allianz fuer Cyber-Sicherheit, ENX Association und einschlaegigen ISACs.
+
+                    ## 6. Berichtswege und Eskalation
+                    Sicherheitsvorfaelle werden gemaess Incident-Response-Verfahren gemeldet. Schwere Vorfaelle (Stufe *hoch* / *kritisch*) werden binnen 24 Stunden an die Leitungsebene eskaliert. Personendatenrelevante Vorfaelle werden gemaess DSGVO Art. 33 binnen 72 Stunden an die zustaendige Aufsichtsbehoerde gemeldet.
+
+                    ## 7. Pruefnachweise
+                    Folgende Nachweise werden vorgehalten und sind im TISAX-Audit pruefbar: Bestellurkunde des ISB, Geschaeftsordnung des Sicherheitsforums, Sitzungsprotokolle des IS-Management-Teams, Stellenbeschreibungen mit Sicherheitsverantwortung, Funktionstrennungsmatrix, Bestellurkunde des Prototypenschutz-Beauftragten (sofern einschlaegig).
+
+                    ## 8. Pruefung und Aktualisierung
+                    Diese Richtlinie wird mindestens alle 12 Monate sowie anlassbezogen (Reorganisation, Wechsel des ISB, schwerwiegende Vorfaelle) ueberprueft.
+
+        human_resources_security:
+            v1:
+                title: 'Personalsicherheit (TISAX)'
+                body: |-
+                    # Personalsicherheit der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Norm-Anker: VDA ISA 3.1.1 - 3.1.4 | ISO 27001:2022 A.6.1 - A.6.6 | DSGVO Art. 5(1)(c), Art. 32 | BDSG § 26 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt sicherheitsrelevante Pflichten und Massnahmen vor, waehrend und nach einem Beschaeftigungsverhaeltnis. Sie stellt sicher, dass alle Personen mit Zugriff auf Informationen aus dem TISAX-Scope ihrer Sensibilitaet entsprechend vorausgewaehlt, verpflichtet, geschult und – beim Ausscheiden – kontrolliert vom Zugriff getrennt werden.
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer alle Beschaeftigten der {{ tenant.legal_name }} (unbefristet, befristet, Teilzeit, Werkstudierende, Praktikantinnen und Praktikanten), Leiharbeitskraefte sowie Drittpersonal, das vertraglich zur Erbringung von Leistungen verpflichtet ist und Zugriff auf TISAX-relevante Informationen erhalten soll.
+
+                    ## 3. Vor Beschaeftigungsbeginn
+
+                    ### 3.1 Sicherheitsueberpruefung (Background Check)
+                    Vor Beschaeftigungsbeginn wird die Identitaet anhand amtlicher Dokumente geprueft. Bei Stellen mit Zugriff auf Informationen der Schutzbedarfsstufe *hoch* oder *sehr hoch* werden zusaetzlich Bewerbungsunterlagen verifiziert (Zeugnisse, Lebenslaufluecken), Referenzen eingeholt und – soweit rechtlich zulaessig (BDSG § 26) – ein erweitertes Fuehrungszeugnis verlangt. Bei Stellen mit Prototypen-Zugriff wird zusaetzlich eine Geheimhaltungsverpflichtung mit Vertragsstrafe eingeholt.
+
+                    ### 3.2 Vertragliche Pflichten
+                    Im Arbeits- bzw. Werkvertrag werden folgende Pflichten aufgenommen: Verpflichtung auf das Datengeheimnis (Art. 5 DSGVO, BDSG § 53), Verpflichtung auf die Wahrung von Geschaefts- und Betriebsgeheimnissen (GeschGehG), Verpflichtung zur Einhaltung der internen Sicherheitsrichtlinien, Geheimhaltungsverpflichtung mit angemessener Vertragsstrafe sowie – bei einschlaegigen Stellen – die Verpflichtung auf das Fernmeldegeheimnis (TKG) und ggf. die Verpflichtung nach § 1 VerpflG.
+
+                    ## 4. Waehrend des Beschaeftigungsverhaeltnisses
+
+                    ### 4.1 Awareness und Schulung
+                    Alle Beschaeftigten durchlaufen vor Erteilung produktiver Zugriffsrechte eine Erstschulung zu Informationssicherheit, Datenschutz und – sofern einschlaegig – Prototypenschutz. Wiederholungsschulungen erfolgen mindestens jaehrlich, anlassbezogen sowie bei Aenderung wesentlicher Sicherheitsanforderungen.
+
+                    ### 4.2 Disziplinarverfahren
+                    Verstoesse gegen Sicherheitsanforderungen werden gemaess Disziplinarordnung sanktioniert. Die Stufung reicht von muendlicher Ermahnung ueber Abmahnung, Aenderungskuendigung bis zur ausserordentlichen Kuendigung; bei Verletzung von Geschaeftsgeheimnissen werden zusaetzlich zivil- und strafrechtliche Schritte (UWG, GeschGehG, StGB §§ 17 alt / § 23 GeschGehG) geprueft.
+
+                    ## 5. Beendigung oder Aenderung des Beschaeftigungsverhaeltnisses
+
+                    ### 5.1 Offboarding
+                    Spaetestens am letzten Arbeitstag werden alle Zugriffsrechte (logisch und physisch) entzogen, Hardware (Laptop, Smartphone, Token, Schluessel, Werksausweis) zurueckgegeben und die Rueckgabe schriftlich quittiert. Bei Verdacht auf Vertragsverletzung werden Zugriffsrechte sofort gesperrt (Notfall-Offboarding).
+
+                    ### 5.2 Pflichten nach Beendigung
+                    Geheimhaltungspflichten gelten ueber das Beschaeftigungsende hinaus fort. Im Austrittsgespraech wird auf fortbestehende Verpflichtungen hingewiesen; eine schriftliche Bestaetigung wird zur Personalakte genommen.
+
+                    ## 6. Datenschutz
+                    Personenbezogene Daten (Bewerbungs-, Eignungs- und Personalakten) werden ausschliesslich auf Basis von BDSG § 26 und DSGVO Art. 6(1)(b)(c)(f) verarbeitet. Aufbewahrungsfristen, Loeschkonzept und Auskunftsrechte sind in der Datenschutz-Richtlinie geregelt.
+
+                    ## 7. Pruefnachweise
+                    Folgende Nachweise werden vorgehalten: Vorlage Arbeitsvertrag mit Sicherheitspflichten, Verpflichtungserklaerung Datengeheimnis, Awareness-Schulungsnachweise (TN-Liste, Inhalte, Termine), Background-Check-Nachweise gemaess Schutzbedarf, Offboarding-Checklisten mit Quittungen.
+
+                    ## 8. Pruefung und Aktualisierung
+                    Diese Richtlinie wird mindestens alle 12 Monate sowie anlassbezogen ueberprueft.
+
+        physical_environmental_security:
+            v1:
+                title: 'Physische und umgebungsbezogene Sicherheit (TISAX)'
+                body: |-
+                    # Physische und umgebungsbezogene Sicherheit der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Norm-Anker: VDA ISA 4.1.1 - 4.1.4 | ISO 27001:2022 A.7.1 - A.7.14 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt den Schutz von Standorten, Bereichen, Raeumen, IT-Infrastruktur und Betriebsmitteln der {{ tenant.legal_name }} vor unbefugtem Zutritt, Diebstahl, Beschaedigung, Spionage und Umwelteinwirkungen. Sie konkretisiert die Anforderungen der VDA ISA 4.x sowie ISO/IEC 27001:2022 A.7 fuer den TISAX-Scope.
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer alle Standorte und Bereiche der {{ tenant.legal_name }} im TISAX-Scope, einschliesslich Produktions-, Entwicklungs-, Lager-, Verwaltungs- und Rechenzentrumsflaechen sowie temporaerer Bereiche (z. B. Kunden-Showrooms, Auswaertstermine).
+
+                    ## 3. Sicherheitszonenkonzept
+                    Standorte werden in abgestufte Sicherheitszonen eingeteilt:
+
+                    - **Zone 0 – Oeffentlich:** Empfang, Foyer, Besucherparkplatz; keine Schutzbeduerfnisse.
+                    - **Zone 1 – Allgemein:** Bueroflaechen mit normaler Sensibilitaet; Zutritt fuer Beschaeftigte.
+                    - **Zone 2 – Vertraulich:** Entwicklung, Konstruktion, Engineering; Zutritt nur mit Berechtigung und Protokollierung.
+                    - **Zone 3 – Streng vertraulich:** Prototypen-Werkstatt, Labor mit Schutzbedarf hoch / sehr hoch; Zutritt mit erweiterter Berechtigung, Vier-Augen-Prinzip und elektronischer Protokollierung.
+                    - **Zone 4 – Hochsicherheitsbereich:** Datacenter, Server-Raum, Tresore; Zutritt nur fuer benannten Personenkreis mit MFA-Authentisierung.
+
+                    ## 4. Zutrittsschutz
+
+                    ### 4.1 Perimeterschutz
+                    Standorte sind durch Zaeune, Mauern, Vereinzelungsanlagen oder gleichwertige Massnahmen gegen unbefugten Zutritt geschuetzt. Wege fuer Anlieferung und Personenverkehr sind getrennt. Aussenbereiche sind beleuchtet und – bei Schutzbedarf hoch / sehr hoch – videoueberwacht.
+
+                    ### 4.2 Zutrittskontrolle
+                    Der Zutritt zu Zonen 2 - 4 erfolgt elektronisch (Kartenleser, biometrische Verfahren) mit Protokollierung. Die Berechtigungsmatrix (Zone x Person) wird mindestens halbjaehrlich rezertifiziert. Verloren gemeldete Karten werden binnen 1 Stunde gesperrt.
+
+                    ### 4.3 Besuchermanagement
+                    Besucher werden am Empfang registriert (Name, Firma, Anlass, Gastgeber, Lichtbildausweis), erhalten ein deutlich erkennbares Besucher-Badge und werden in Zonen 2 - 4 durchgehend begleitet. Bei Zutritt zu Bereichen mit Prototypen-Schutzbedarf gilt zusaetzlich Foto-Verbot, Mobiltelefone werden in Schliessfaechern hinterlegt.
+
+                    ## 5. Schutz vor Umwelteinwirkungen
+                    Server-Raeume und Bereiche mit kritischer Infrastruktur sind gegen Feuer (VdS-konforme Brandfrueherkennung, Geschossbrandschutz), Wasser (Hochlegung der Geraete, Leckage-Sensorik), Stromausfall (USV mit Mindesthaltezeit 15 Min, Notstromaggregat fuer kritische Bereiche) und Klimaeinwirkungen (Temperatur-/Luftfeuchteueberwachung) geschuetzt.
+
+                    ## 6. Sichere Arbeitsplatzgestaltung
+                    Es gilt das Prinzip *Clear Desk / Clear Screen*: Vertrauliche Unterlagen werden ausserhalb der Bearbeitung verschlossen, Bildschirme bei Verlassen des Arbeitsplatzes manuell oder automatisch nach max. 5 Minuten gesperrt. Druck-Aufgaben mit vertraulichem Inhalt nutzen *Pull-Print* mit Authentisierung am Geraet.
+
+                    ## 7. Sichere Beseitigung
+                    Datentraeger (Papier, Festplatten, SSD, Magnetbaender) werden gemaess DIN 66399 nach Schutzbedarfsstufen vernichtet. Vernichtung wird durch Zertifikat dokumentiert. Vor Aussonderung von IT-Geraeten erfolgt die Datentraegerloeschung gemaess Loesch- und Vernichtungsrichtlinie.
+
+                    ## 8. Mobile Geraete und Heimarbeit
+                    Mobile Geraete sind durch Festplattenverschluesselung, Bildschirmsperre und Diebstahlschutz gesichert. Bei Heimarbeit sind ein abschliessbarer Arbeitsbereich, Sichtschutz und ein dedizierter Schredder fuer ausgedruckte Vertraulichkeiten Pflicht; eine Heimarbeitsgenehmigung wird einzeln erteilt.
+
+                    ## 9. Pruefnachweise
+                    Folgende Nachweise werden vorgehalten: Zonen- und Berechtigungsmatrix, Zutrittsprotokolle (Aufbewahrung 90 Tage), Rezertifizierungs-Nachweise, Besucherbuch, Wartungsnachweise USV / Klima / Brandschutz, Vernichtungszertifikate.
+
+                    ## 10. Pruefung und Aktualisierung
+                    Diese Richtlinie wird mindestens alle 12 Monate sowie anlassbezogen (Standortwechsel, Reorganisation der Zonen) ueberprueft.
+
+        identity_access_management:
+            v1:
+                title: 'Identitaets- und Berechtigungsmanagement (TISAX)'
+                body: |-
+                    # Identitaets- und Berechtigungsmanagement der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Norm-Anker: VDA ISA 5.1.1 - 5.2.6 | ISO 27001:2022 A.5.15 - A.5.18, A.8.2 - A.8.5 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Vergabe, Aenderung, Pruefung und Entziehung von Identitaeten und Zugriffsrechten auf IT-Systeme, Anwendungen und Informationen der {{ tenant.legal_name }}. Sie stellt sicher, dass jeder Zugriff zweckgebunden, minimal, dokumentiert und auditierbar ist.
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer alle IT-Systeme und Anwendungen im TISAX-Scope, fuer alle Beschaeftigten, Drittpersonal, technischen Konten (Service-Accounts) sowie System- und Schnittstellenkonten.
+
+                    ## 3. Grundsaetze
+                    Es gelten die Prinzipien *Need-to-Know*, *Least Privilege*, *Need-to-Use*, *Funktionstrennung* und *Eindeutige Identifizierung*. Sammelkonten sind grundsaetzlich unzulaessig; Ausnahmen sind nur in dokumentiert begruendeten Faellen mit kompensierenden Kontrollen (Vier-Augen-Login, vollstaendige Protokollierung) zulaessig.
+
+                    ## 4. Identitaetsmanagement
+
+                    ### 4.1 Anlage
+                    Die Anlage einer digitalen Identitaet erfolgt ausschliesslich auf Basis eines genehmigten Personalstammsatzes (HR-Master) bzw. eines genehmigten Drittpersonal-Antrags. Initialpasswoerter werden ausschliesslich ueber gesicherte Kanaele uebermittelt und sind beim Erstlogin zwingend zu aendern.
+
+                    ### 4.2 Aenderung
+                    Bei Stellenwechsel werden bisherige Berechtigungen entzogen und neu zugewiesen (kein additives Wachstum). Vor Reaktivierung ruhender Identitaeten wird ein verkuerzter Onboarding-Prozess durchgefuehrt.
+
+                    ### 4.3 Loeschung
+                    Identitaeten werden bei Beendigung des Beschaeftigungsverhaeltnisses unverzueglich deaktiviert; Personenstammdaten werden gemaess Datenschutz-Loeschkonzept aufbewahrt und endgueltig geloescht.
+
+                    ## 5. Authentisierung
+
+                    ### 5.1 Passwoerter
+                    Es gilt eine Passwortrichtlinie nach NIST SP 800-63B (mindestens 12 Zeichen, Pruefung gegen kompromittierte Passwortlisten, kein Zwangs-Wechselintervall ohne Anlass, Sperrkonto nach 10 Fehlversuchen, sichere Speicherung mit Argon2id / bcrypt).
+
+                    ### 5.2 Mehrfaktor-Authentisierung
+                    Mehrfaktor-Authentisierung (MFA) ist verpflichtend fuer: Remote-Zugriff (VPN, Zero-Trust-Access), administrative Konten, Zugriff auf Informationen mit Schutzbedarf hoch / sehr hoch, Zugriff auf Konten in der Cloud, Zugriff auf Prototypen-Repositorien. Phishing-resistente MFA (FIDO2 / Smartcard) wird bevorzugt; SMS-OTP ist nur als Uebergangsverfahren zulaessig.
+
+                    ### 5.3 Privilegierte Zugriffe
+                    Privilegierte Zugriffe (Domain-Admin, Datenbank-Admin, Hypervisor-Admin etc.) erfolgen ueber separate administrative Konten, nutzen Privileged-Access-Management (PAM) mit Session-Recording und werden fuer jeden Vorgang einzeln aktiviert (*Just-in-Time-Access*).
+
+                    ## 6. Berechtigungsvergabe
+
+                    ### 6.1 Rollenmodell
+                    Berechtigungen werden in einem rollenbasierten Modell (RBAC) vergeben. Rollen sind aus Geschaeftsfunktionen abgeleitet und werden vom Fachbereich gepflegt. Direktberechtigungen (ausserhalb der Rollen) sind genehmigungspflichtig und mit Ablaufdatum versehen.
+
+                    ### 6.2 Genehmigung und Vier-Augen-Prinzip
+                    Berechtigungsantraege durchlaufen einen Workflow: Antragsteller (Beschaeftigter), Genehmiger (Vorgesetzte), Daten- bzw. Anwendungseigner. Anlage und Genehmigung erfolgen durch unterschiedliche Personen.
+
+                    ### 6.3 Rezertifizierung
+                    Berechtigungen werden mindestens halbjaehrlich, privilegierte Berechtigungen vierteljaehrlich rezertifiziert. Nicht rezertifizierte Berechtigungen werden automatisch entzogen.
+
+                    ## 7. Service- und technische Konten
+                    Technische Konten sind eindeutig benannt, einer Person als Verantwortlichem zugeordnet, mit langen, in einem Secret-Vault hinterlegten Zugangsdaten ausgestattet und werden ebenfalls jaehrlich rezertifiziert. Persoenliche Konten als Service-Account zu nutzen ist untersagt.
+
+                    ## 8. Protokollierung
+                    Authentisierungs- und Berechtigungs-Ereignisse (Anmeldung, Fehlversuch, Sperrung, Berechtigungsaenderung, Privileg-Eskalation) werden gemaess Protokollierungsrichtlinie revisionssicher protokolliert. Auswertungen erfolgen im SOC.
+
+                    ## 9. Pruefnachweise
+                    Folgende Nachweise werden vorgehalten: Rollenmatrix, Genehmigungs-Workflow-Auszuege, Rezertifizierungsprotokolle, MFA-Coverage-Report, PAM-Session-Logs, Service-Account-Inventar.
+
+                    ## 10. Pruefung und Aktualisierung
+                    Diese Richtlinie wird mindestens alle 12 Monate sowie anlassbezogen ueberprueft.
+
+        it_security_operations:
+            v1:
+                title: 'IT-Sicherheits-Betrieb (TISAX)'
+                body: |-
+                    # IT-Sicherheits-Betrieb der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Norm-Anker: VDA ISA 6.1.1 - 6.1.4 | ISO 27001:2022 A.8.6 - A.8.32 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt den sicheren Betrieb der IT-Infrastruktur, der IT-Systeme und der Anwendungen der {{ tenant.legal_name }}. Sie umfasst Konfiguration, Patch-, Vulnerability-, Malware-, Backup-, Logging- und Netzwerksicherheits-Anforderungen und stellt damit die operative Wirksamkeit des ISMS sicher.
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer alle IT-Systeme und Anwendungen im TISAX-Scope, einschliesslich Server, Endgeraete, Netzwerkkomponenten, Cloud-Workloads, OT- und IoT-Systeme.
+
+                    ## 3. Konfigurationsmanagement
+                    Es gilt das Prinzip *Secure-by-Default*. Fuer relevante System- und Anwendungstypen liegen gehaertete Standardkonfigurationen vor (CIS-Benchmarks oder gleichwertig). Abweichungen werden in einer Ausnahmedatenbank dokumentiert und periodisch geprueft. Konfigurationsaenderungen erfolgen ueber das Change-Management.
+
+                    ## 4. Patch- und Vulnerability-Management
+
+                    ### 4.1 Schwachstellen-Scan
+                    Saemtliche IT-Systeme werden mindestens monatlich automatisiert auf bekannte Schwachstellen geprueft. Internet-exponierte Systeme werden zusaetzlich woechentlich gescannt.
+
+                    ### 4.2 Patch-Fristen
+                    Patches werden gemaess CVSS-Score umgesetzt: kritisch (CVSS >= 9,0) binnen 7 Tagen, hoch (7,0 - 8,9) binnen 30 Tagen, mittel (4,0 - 6,9) binnen 90 Tagen, niedrig im Rahmen des regulaeren Patch-Zyklus. Verkuerzte Fristen gelten bei aktiv ausgenutzten Schwachstellen (Zero-Day): Patch oder kompensierende Massnahme binnen 72 Stunden.
+
+                    ## 5. Schadsoftware-Schutz
+                    Auf allen Endgeraeten und kompatiblen Servern ist eine Endpoint-Detection-and-Response-Loesung (EDR) mit zentraler Konsole, automatisierten Updates und integriertem SOC-Anschluss aktiv. Wechseldatentraeger werden vor Nutzung gescannt; nicht autorisierte Wechseldatentraeger sind blockiert.
+
+                    ## 6. Datensicherung
+                    Datensicherungen erfolgen nach dem Prinzip *3-2-1-1-0* (drei Kopien, zwei Medien, eine offsite, eine offline / immutable, null Fehler im Restore-Test). Restore-Tests fuer kritische Daten werden mindestens vierteljaehrlich durchgefuehrt und protokolliert. Verschluesselung der Backups ist verpflichtend.
+
+                    ## 7. Logging und Monitoring
+                    Sicherheitsrelevante Ereignisse werden gemaess Protokollierungsrichtlinie zentral und revisionssicher (SIEM) gesammelt. Aufbewahrungsfrist mindestens 6 Monate, fuer privilegierte Aktionen 12 Monate. Use-Cases (Detection-Rules) decken die VDA ISA Pruefthemen sowie MITRE-ATT&CK-Top-20-TTP ab.
+
+                    ## 8. Netzwerksicherheit
+                    Das Netzwerk ist zonenbasiert segmentiert (Office, Produktion, Engineering, OT, DMZ, Out-of-Band-Management). Inter-Zonen-Verkehr wird durch Firewalls mit Default-Deny-Regelwerk gesteuert. Externer Zugriff erfolgt ueber Zero-Trust-Architekturen oder gehaerteten VPN-Zugang. Drahtlose Netze nutzen WPA3 / 802.1X.
+
+                    ## 9. Kryptographie
+                    Verschluesselung wird gemaess Krypto-Richtlinie eingesetzt: TLS 1.2+, AES-256, Argon2id / bcrypt, RSA >= 3072 / EC >= 256. Schluesselmanagement erfolgt ueber dedizierte Key-Management-Systeme (HSM oder gleichwertig).
+
+                    ## 10. Change-Management
+                    Aenderungen an produktiven Systemen werden geplant, getestet, genehmigt und dokumentiert. Notfallaenderungen sind zulaessig, beduerfen aber Nachgenehmigung binnen 5 Werktagen.
+
+                    ## 11. Pruefnachweise
+                    Folgende Nachweise werden vorgehalten: Hardening-Standards, Schwachstellen-Scan-Reports, Patch-Compliance-Reports, EDR-Coverage-Report, Backup-/Restore-Protokolle, SIEM-Use-Case-Katalog, Netzwerktopologie und Firewall-Regelwerk-Reviews, Krypto-Inventar, Change-Tickets.
+
+                    ## 12. Pruefung und Aktualisierung
+                    Diese Richtlinie wird mindestens alle 12 Monate sowie anlassbezogen ueberprueft.
+
+        supplier_relationships_security:
+            v1:
+                title: 'Lieferantensicherheit (TISAX)'
+                body: |-
+                    # Lieferantensicherheit der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Norm-Anker: VDA ISA 7.1.1 - 7.1.3 | ISO 27001:2022 A.5.19 - A.5.23 | DSGVO Art. 28 (AVV) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Sicherheitsanforderungen an Lieferanten, Dienstleister und sonstige Drittparteien, die Zugriff auf Informationen, IT-Systeme oder Bereiche der {{ tenant.legal_name }} im TISAX-Scope erhalten.
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer alle Lieferantenbeziehungen mit Sicherheitsrelevanz, insbesondere ICT-Auslagerungen, Cloud-Dienste, Engineering- und Konstruktionsdienstleister, Logistik- und Transportdienstleister, Reinigungs- und Wachdienste, Auftragsverarbeiter im Sinne von DSGVO Art. 28.
+
+                    ## 3. Lieferanten-Klassifizierung
+                    Lieferanten werden anhand der durch sie verarbeiteten Informationen und der bezogenen Leistung in vier Stufen klassifiziert:
+
+                    - **Stufe 1 – Niedrig:** Keine vertraulichen Informationen, kein Systemzugriff (z. B. Bueromaterial-Lieferant).
+                    - **Stufe 2 – Normal:** Bueroinformationen mit Schutzbedarf normal (z. B. Standard-IT-Lieferant).
+                    - **Stufe 3 – Hoch:** Vertrauliche Informationen, Cloud-Workloads, Systemzugriff (z. B. SaaS-Plattformen, IT-Outsourcer).
+                    - **Stufe 4 – Sehr hoch:** Prototypen, Konstruktionsdaten, hochsensible Personendaten (z. B. Engineering-Dienstleister, Prototypen-Logistik).
+
+                    ## 4. Auswahl und Due Diligence
+                    Vor Vertragsschluss wird eine Sicherheitsbewertung durchgefuehrt. Mindestens zu pruefen sind: einschlaegige Zertifikate (TISAX, ISO 27001, BSI C5), Sicherheitsorganisation, Subunternehmerketten, Standortlage (insb. Drittlandbezug nach DSGVO), finanzielle Stabilitaet. Bei Stufe 3 / 4 wird ergaenzend ein Lieferanten-Audit oder eine Security-Selbstauskunft (z. B. VDA-ISA-Lieferantenfragebogen) eingeholt.
+
+                    ## 5. Vertragliche Anforderungen
+                    Vertraege mit sicherheitsrelevanten Lieferanten enthalten verbindlich folgende Klauseln: Geltung der Sicherheitsrichtlinien der {{ tenant.legal_name }}, Vertraulichkeits- und Geheimhaltungsverpflichtung, Pflicht zur Subdienstleister-Zustimmung, Audit- und Pruefrechte, Datenschutz-Auftragsverarbeitungsvertrag (Art. 28 DSGVO) inkl. EU-Standardvertragsklauseln und Schrems-II-konformer Transfer-Impact-Assessment-Pflicht bei Drittlandbezug, Meldepflicht fuer Sicherheitsvorfaelle binnen 24 Stunden, Loesch- und Rueckgabeverpflichtung bei Vertragsende, Beendigungsklauseln und Exit-Strategie.
+
+                    ## 6. Datenschutz – Auftragsverarbeitung (DSGVO Art. 28)
+                    Bei Auftragsverarbeitungen wird ein AVV nach Art. 28 DSGVO geschlossen. Pruefungen umfassen: Auflistung der Verarbeitungstaetigkeiten, technisch-organisatorische Massnahmen (TOM), Subdienstleisterliste mit Zustimmungsregime, Drittland-Transfer und Schrems-II-Pruefung, Betroffenenrechte-Unterstuetzung, Loesch- bzw. Rueckgabepflicht bei Vertragsende, Meldepflicht bei Datenschutzverletzungen binnen 24 Stunden.
+
+                    ## 7. Onboarding und laufendes Monitoring
+                    Vor produktivem Einsatz erfolgt ein technisches Onboarding (Zugangsvergabe, Schulung in Sicherheitsrichtlinien, Sicherheitsaufklaerung). Im Betrieb werden mindestens jaehrlich SLA-Reviews und – bei Stufe 3 / 4 – Sicherheits-Audits oder Re-Assessments durchgefuehrt. Bei Vorfaellen wird das Eskalations- und Reportingverfahren gemaess Incident-Response-Richtlinie aktiviert.
+
+                    ## 8. Offboarding
+                    Bei Vertragsende werden Zugriffsrechte entzogen, ueberlassene Hardware zurueckgefordert, Daten geloescht oder vollstaendig zurueckgegeben (mit Loeschnachweis), gemeinsam genutzte Schnittstellen abgeschaltet und Vertraulichkeitspflichten in einer Schlusserklaerung bekraeftigt.
+
+                    ## 9. Pruefnachweise
+                    Folgende Nachweise werden vorgehalten: Lieferantenklassifikationsregister, Due-Diligence-Berichte, Vertraege mit Sicherheits- und Datenschutz-Klauseln, AVV-Sammlung, Audit- und Re-Assessment-Berichte, Vorfall-Meldungen, Offboarding-Dokumentation.
+
+                    ## 10. Pruefung und Aktualisierung
+                    Diese Richtlinie wird mindestens alle 12 Monate sowie anlassbezogen ueberprueft.
+
+        compliance_management:
+            v1:
+                title: 'Compliance-Management (TISAX)'
+                body: |-
+                    # Compliance-Management der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Richtlinie | Norm-Anker: VDA ISA 8.1.1 - 8.1.4 | ISO 27001:2022 A.5.31 - A.5.36 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Identifikation, Pflege und Einhaltung der fuer die {{ tenant.legal_name }} einschlaegigen gesetzlichen, regulatorischen und vertraglichen Anforderungen mit Bezug zur Informationssicherheit.
+
+                    ## 2. Geltungsbereich
+                    Diese Richtlinie gilt fuer alle Geschaeftsbereiche, Standorte und Geschaeftsprozesse der {{ tenant.legal_name }} sowie fuer Drittparteien, soweit sie Anforderungen im Auftrag der {{ tenant.legal_name }} erfuellen.
+
+                    ## 3. Identifikation einschlaegiger Anforderungen
+                    Die Compliance-Funktion in Abstimmung mit ISB und DSB pflegt einen Compliance-Anforderungskatalog. Mindestens zu beruecksichtigen sind: DSGVO und BDSG, GeschGehG (Geschaeftsgeheimnisgesetz), HGB / AO (Aufbewahrungs- und Buchfuehrungspflichten), TKG / TDSG, ProdSG (Produkthaftung mit IT-Bezug), branchenspezifische Aufsichtsanforderungen, ggf. NIS2-UmsuG, ggf. Lieferkettensorgfaltspflichtengesetz (LkSG), TISAX-Teilnahmebedingungen und kundenspezifische Sicherheits- bzw. Geheimhaltungsvereinbarungen.
+
+                    ## 4. Geistige Eigentumsrechte
+                    Die Beschaffung, Nutzung und Aussonderung von Software und sonstigen schutzrechtlich geschuetzten Inhalten erfolgt unter Wahrung der jeweils einschlaegigen Lizenzbedingungen. Eine Software-Asset-Management-Loesung dokumentiert eingesetzte Lizenzen, ueberwacht Lizenzgrenzen und unterstuetzt Audits durch Hersteller.
+
+                    ## 5. Schutz von Aufzeichnungen
+                    Aufzeichnungen werden gemaess gesetzlichen Aufbewahrungsfristen (HGB §§ 257, AO §§ 147) sowie vertraglichen Anforderungen aufbewahrt und vor Verlust, Zerstoerung, Faelschung und unbefugtem Zugriff geschuetzt. Die Aufbewahrung erfolgt elektronisch in revisionssicheren Archiven mit dokumentierten Loeschfristen.
+
+                    ## 6. Datenschutz und Schutz personenbezogener Daten
+                    Die DSGVO- und BDSG-Anforderungen werden in der Datenschutz-Richtlinie konkretisiert. Diese Compliance-Richtlinie verweist auf den DSB als zentrale Steuerungsinstanz und fordert die Einhaltung der Betroffenenrechte (Art. 15 - 22 DSGVO), die Fuehrung des Verzeichnisses von Verarbeitungstaetigkeiten (Art. 30 DSGVO), die Durchfuehrung von DSFA bei hohem Risiko (Art. 35 DSGVO) und die Meldung von Datenschutzverletzungen binnen 72 Stunden (Art. 33 DSGVO).
+
+                    ## 7. Geschaeftsgeheimnisschutz (GeschGehG)
+                    Geschaeftsgeheimnisse werden durch organisatorische und technische Massnahmen geschuetzt: Vertraulichkeits-Klassifizierung, Geheimhaltungsverpflichtungen mit Vertragsstrafe (Beschaeftigte und Drittparteien), Need-to-Know-Zugriff, Protokollierung des Zugriffs auf besonders geheim klassifizierte Inhalte. Damit wird der Tatbestand der *angemessenen Geheimhaltungsmassnahmen* nach § 2 Nr. 1 lit. b) GeschGehG erfuellt.
+
+                    ## 8. Unabhaengige Pruefung
+                    Die Wirksamkeit des ISMS wird durch unabhaengige Pruefungen kontrolliert: jaehrliche interne Audits durch unabhaengige Auditierende, externe TISAX-Pruefung durch akkreditierten Pruefdienstleister im Drei-Jahres-Zyklus, ggf. anlassbezogene Pen-Tests. Pruefungsfeststellungen werden in einem zentralen Mangel-Register verfolgt.
+
+                    ## 9. Pruefnachweise
+                    Folgende Nachweise werden vorgehalten: Compliance-Anforderungskatalog mit Verantwortlichkeiten und Pruefintervallen, Lizenzregister, AVV-Register, Aufbewahrungs- und Loeschkonzept, Audit- und Pen-Test-Berichte, Mangel- und Massnahmenregister.
+
+                    ## 10. Pruefung und Aktualisierung
+                    Diese Richtlinie wird mindestens alle 12 Monate sowie anlassbezogen (Gesetzesaenderung, neue Kundenpflicht) ueberprueft.
+
+        prototype_protection:
+            v1:
+                title: 'Prototypenschutz (TISAX PSx)'
+                body: |-
+                    # Prototypenschutz der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Programm-Dokument | Norm-Anker: VDA ISA PS 1 - PS 8 (Prototypenschutz, Pruefziel hoch / sehr hoch) | ISO 27001:2022 A.5.10, A.5.13, A.5.14, A.6.6, A.7.x, A.8.12 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Dieses Dokument konkretisiert die organisatorischen, baulichen und technischen Massnahmen zum Schutz von Prototypen, Komponenten, Bauteilen und Erprobungsfahrzeugen der {{ tenant.legal_name }} und ihrer Auftraggeber. Es richtet sich an die Pruefziele *Prototypenschutz hoch* und *Prototypenschutz sehr hoch* der TISAX-VDA-ISA und ist verbindlich, sobald entsprechende Auftraggeber-Anforderungen einschlaegig sind.
+
+                    ## 2. Geltungsbereich
+                    Dieses Dokument gilt fuer alle Bereiche, Personen und Prozesse, die mit Prototypen befasst sind: Entwicklung, Konstruktion, Modellbau, Werkstaetten, Pruefstaende, Erprobungsabteilungen, Logistik und externe Erprobungsstrecken sowie alle Lieferanten, die im Rahmen der Prototypen-Entwicklung beauftragt sind.
+
+                    ## 3. Klassifikation und Kennzeichnung
+                    Prototypeninformationen und -bauteile werden vor Anlage einer Akte oder Bereitstellung in einem Repository klassifiziert (*hoch* oder *sehr hoch*). Physische Prototypen werden mit nicht entfernbaren Tarnungen (z. B. Camouflage-Folierung) versehen, sofern Sichtschutz erforderlich ist.
+
+                    ## 4. Personelle Massnahmen
+
+                    ### 4.1 Erweiterte Sicherheitsueberpruefung
+                    Beschaeftigte und Drittpersonal mit Zugriff auf Prototypen durchlaufen eine erweiterte Sicherheitsueberpruefung (Identitaetspruefung, Lebenslauf-Verifikation, ggf. erweitertes Fuehrungszeugnis – soweit BDSG § 26 dies zulaesst).
+
+                    ### 4.2 Geheimhaltungsverpflichtung
+                    Vor Erstzutritt unterzeichnen alle Personen eine Prototypen-spezifische Geheimhaltungsverpflichtung mit substantieller Vertragsstrafe und Klausel zur Unterlassung von Foto- und Videoaufnahmen.
+
+                    ### 4.3 Awareness
+                    Vor Erstzutritt findet eine Prototypen-Schutz-Schulung statt; Wiederholung mindestens jaehrlich. Inhalte: Vertraulichkeitsgrad, Verhalten bei Erprobung, Foto-Verbot, Verhalten bei Anbahnung durch Dritte (Industriespionage).
+
+                    ## 5. Bauliche Massnahmen
+
+                    ### 5.1 Sicherheitsbereich
+                    Prototypen werden in einem baulich abgegrenzten Sicherheitsbereich gelagert (Zone 3 / 4 gemaess Sicherheitszonenkonzept). Wandhoehe und Sichtschutz sind so ausgelegt, dass Einsicht von aussen ausgeschlossen ist.
+
+                    ### 5.2 Zutritt
+                    Zutritt erfolgt elektronisch protokolliert; bei Zone 4 durchgaengig nach dem Vier-Augen-Prinzip. Besucher werden ausschliesslich nach Voranmeldung, mit gesondertem Bedarf-Nachweis und unter durchgaengiger Begleitung zugelassen. Beim Zutritt werden Mobiltelefone und Kameras in Schliessfaecher hinterlegt; Body-Worn-Cameras sind verboten.
+
+                    ### 5.3 Ueberwachung
+                    Sicherheitsbereiche werden mit Videoanlagen ueberwacht; Aufzeichnungsdauer 30 - 90 Tage gemaess Datenschutzkonzept. Sensorik (Bewegungs-, Glasbruchmelder) ist mit dem Sicherheitsdienst aufgeschaltet.
+
+                    ## 6. Logische Massnahmen
+
+                    ### 6.1 Datenraum-Trennung
+                    Prototypen-Daten (CAD, CAE, Testdaten) werden in physisch und logisch separierten Repositorien (*Prototypen-Datenraum*) gehalten, getrennt vom Office-Netz. Zugriff erfolgt ausschliesslich ueber MFA mit Phishing-resistentem Faktor (FIDO2 / Smartcard).
+
+                    ### 6.2 Endpunkt-Schutz
+                    Engineering-Workstations werden gehaertet, ohne USB-Massenspeicher (per Policy gesperrt), mit Festplattenverschluesselung und EDR. Abmelden / Sperren ist nach maximal 5 Minuten Inaktivitaet erzwungen.
+
+                    ### 6.3 DLP
+                    Data-Loss-Prevention erkennt unautorisierte Abflusswege (Mail, Cloud-Sharing, Web-Upload) fuer Prototypen-klassifizierte Inhalte und blockiert oder eskaliert.
+
+                    ## 7. Erprobung ausserhalb des Sicherheitsbereichs
+                    Erprobungsfahrten und externe Tests beduerfen einer schriftlichen Genehmigung und werden geplant (Strecke, Stopps, Tankvorgang, Begleitfahrzeuge). Bei Bedarf werden zwei Begleitpersonen eingesetzt; Pausen ausserhalb gesicherter Bereiche werden minimiert; Foto-Verbot fuer Aussenstehende ist in Beschilderung am Fahrzeug ausgewiesen.
+
+                    ## 8. Logistik
+                    Prototypen-Transporte werden ausschliesslich ueber zertifizierte Logistikdienstleister mit Sicherheitsfreigabe abgewickelt. Geschlossene Transportbehaelter, Track-and-Trace und – bei Stufe sehr hoch – sicherheitsbegleitete Transporte sind Pflicht. Lade- und Entladestellen sind kameraueberwacht.
+
+                    ## 9. Lieferanten und externe Werkstaetten
+                    Externe Werkstaetten, Modellbauer und Erprobungspartner durchlaufen vor Beauftragung eine Prototypenschutz-Auditierung. Vertragspflicht: Geheimhaltung, Foto-Verbot, Background-Check des eingesetzten Personals, Beachtung dieses Programms, Pflicht zur Meldung von Sicherheitsvorfaellen binnen 24 Stunden.
+
+                    ## 10. Vorfall-Management
+                    Bei Verdacht auf Verletzung des Prototypenschutzes (Foto-Veroeffentlichung, Informationsabfluss, Diebstahl) wird unverzueglich ein Krisenstab aktiviert (CISO, Prototypenschutz-Beauftragter, Recht, Kommunikation, ggf. Auftraggeber). Forensische Massnahmen erfolgen gemaess IT-Forensik-Richtlinie.
+
+                    ## 11. Pruefnachweise
+                    Folgende Nachweise werden vorgehalten: Bestellurkunde Prototypenschutz-Beauftragter, Sicherheitsbereichsplaene, Zutritts- und Besucherprotokolle, Geheimhaltungsverpflichtungen, Schulungsnachweise, DLP-Reports, Logistik-Auditberichte, Audit-Berichte externer Werkstaetten.
+
+                    ## 12. Pruefung und Aktualisierung
+                    Dieses Programm-Dokument wird mindestens alle 12 Monate sowie anlassbezogen (neuer Auftraggeber mit hoeheren Anforderungen, schwerwiegender Vorfall) ueberprueft.
+
+        data_protection_addendum:
+            v1:
+                title: 'Datenschutz-Anhang (TISAX DSx)'
+                body: |-
+                    # Datenschutz-Anhang der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Anhang zur IS-Leitlinie | Norm-Anker: VDA ISA DS 1 - DS 4 (Datenschutz, Pruefziel pers.bez. Daten) | DSGVO Art. 5, 6, 24, 28, 30, 32, 33, 35, 44 ff. | BDSG § 26 | ISO 27001:2022 A.5.34 | ISO/IEC 27701:2019/2025 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Dieser Anhang ergaenzt die Informationssicherheits-Leitlinie der {{ tenant.legal_name }} um die Pruefthemen des TISAX-Pruefziels *Datenschutz* (DSx) und stellt sicher, dass personenbezogene Daten gemaess DSGVO, BDSG und – sofern einschlaegig – ISO/IEC 27701 verarbeitet werden.
+
+                    ## 2. Geltungsbereich
+                    Dieser Anhang gilt fuer alle Verarbeitungstaetigkeiten der {{ tenant.legal_name }}, die personenbezogene Daten von Beschaeftigten, Bewerberinnen und Bewerbern, Kunden, Geschaeftspartnern, Lieferanten, Besuchern und sonstigen Betroffenen umfassen, sowie fuer ICT-Auftragsverarbeitungen.
+
+                    ## 3. Grundsaetze der Verarbeitung (Art. 5 DSGVO)
+                    Die {{ tenant.legal_name }} verarbeitet personenbezogene Daten nach den Grundsaetzen Rechtmaessigkeit, Verarbeitung nach Treu und Glauben, Transparenz, Zweckbindung, Datenminimierung, Richtigkeit, Speicherbegrenzung, Integritaet und Vertraulichkeit sowie Rechenschaftspflicht.
+
+                    ## 4. Rechtsgrundlagen (Art. 6 DSGVO, BDSG § 26)
+                    Verarbeitungen erfolgen ausschliesslich auf Grundlage einer der folgenden Rechtsgrundlagen: Einwilligung (Art. 6(1)(a) DSGVO), Vertragserfuellung (Art. 6(1)(b)), rechtliche Verpflichtung (Art. 6(1)(c)), berechtigtes Interesse mit dokumentierter Interessenabwaegung (Art. 6(1)(f)). Beschaeftigtendaten werden auf Basis BDSG § 26 verarbeitet.
+
+                    ## 5. Verzeichnis von Verarbeitungstaetigkeiten (Art. 30 DSGVO)
+                    Der DSB pflegt ein Verzeichnis von Verarbeitungstaetigkeiten, das fuer Verantwortliche und Auftragsverarbeiter getrennt gefuehrt wird. Es enthaelt fuer jede Verarbeitung: Bezeichnung, Verantwortliche, Zwecke, Kategorien Betroffener und Daten, Empfaenger (inkl. Drittlandsuebermittlungen), Loeschfristen und – knapp – die ergriffenen TOM.
+
+                    ## 6. Auftragsverarbeitung (Art. 28 DSGVO)
+                    Werden personenbezogene Daten durch Auftragsverarbeiter verarbeitet, wird ein AVV gemaess Art. 28 DSGVO geschlossen. Mindestbestandteile: Gegenstand, Dauer, Art und Zweck der Verarbeitung, Betroffenenkategorien, Datenkategorien, Pflichten des Auftragsverarbeiters, Sub-Verarbeitung mit Zustimmungsregime, Mitwirkung bei Betroffenenrechten, Loesch- bzw. Rueckgabepflicht, Pruefrechte des Verantwortlichen.
+
+                    ## 7. Drittlandsuebermittlung und Schrems II (Art. 44 ff. DSGVO)
+                    Vor Uebermittlung in Drittlaender erfolgt eine *Transfer-Impact-Assessment* (Schrems II): Pruefung des Schutzniveaus, Heranziehung der EU-Standardvertragsklauseln (SCC 2021/914), Bewertung von Zugriffsmoeglichkeiten staatlicher Stellen, Implementierung ergaenzender Massnahmen (z. B. Verschluesselung mit kundeneigenen Schluesseln, Pseudonymisierung). Ergebnisse werden dokumentiert.
+
+                    ## 8. Technisch-organisatorische Massnahmen (Art. 32 DSGVO)
+                    Fuer alle Verarbeitungen werden risikoadaequate TOM eingesetzt: Pseudonymisierung, Verschluesselung, Mehrfaktor-Authentisierung, Berechtigungsmanagement, Protokollierung, Datensicherung mit Restore-Test, Wiederanlauffaehigkeit, regelmaessige Wirksamkeitspruefungen. Detaillierte Anforderungen ergeben sich aus den uebrigen Richtlinien dieses ISMS.
+
+                    ## 9. Datenschutz-Folgenabschaetzung (Art. 35 DSGVO)
+                    Bei Verarbeitungen mit voraussichtlich hohem Risiko fuer die Rechte und Freiheiten Betroffener (z. B. systematische umfangreiche Beobachtung, Verarbeitung besonderer Datenkategorien, neue Technologien) fuehrt der Verantwortliche – mit Beratung des DSB – eine DSFA durch. Bei verbleibendem hohem Risiko erfolgt vorherige Konsultation der Aufsichtsbehoerde nach Art. 36 DSGVO.
+
+                    ## 10. Betroffenenrechte (Art. 12 - 22 DSGVO)
+                    Antraege auf Auskunft, Berichtigung, Loeschung, Einschraenkung, Datenuebertragbarkeit oder Widerspruch werden binnen einer Frist von 1 Monat – verlaengerbar auf 3 Monate bei Komplexitaet – beantwortet. Verfahrensanweisungen, Identifikationspruefung und Eskalationswege sind im Datenschutz-Verfahren dokumentiert.
+
+                    ## 11. Datenschutzverletzungen (Art. 33, 34 DSGVO)
+                    Bei einer Datenschutzverletzung wird der DSB unverzueglich, spaetestens binnen 24 Stunden, informiert. Der Verantwortliche meldet der Aufsichtsbehoerde die Verletzung binnen 72 Stunden, sofern nicht voraussichtlich kein Risiko besteht. Betroffene werden bei voraussichtlich hohem Risiko unverzueglich informiert (Art. 34).
+
+                    ## 12. Schulung und Verpflichtung
+                    Beschaeftigte, die personenbezogene Daten verarbeiten, werden vor Aufnahme der Taetigkeit sowie mindestens jaehrlich datenschutzrechtlich geschult und nach BDSG § 53 auf das Datengeheimnis verpflichtet.
+
+                    ## 13. Pruefnachweise
+                    Folgende Nachweise werden vorgehalten: Verzeichnis der Verarbeitungstaetigkeiten, AVV-Sammlung mit Sub-Verarbeiterlisten, Schrems-II-Bewertungen, DSFA-Protokolle, Schulungsnachweise, Verpflichtungserklaerungen, Vorfallsregister mit Meldebehoerdenbescheinigungen.
+
+                    ## 14. Pruefung und Aktualisierung
+                    Dieser Anhang wird mindestens alle 12 Monate sowie anlassbezogen (regulatorische Aenderung, neue Verarbeitungstaetigkeit, schwerwiegender Vorfall) ueberprueft.
