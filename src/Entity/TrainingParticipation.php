@@ -61,7 +61,7 @@ class TrainingParticipation
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Tenant $tenant = null;
 
-    #[ORM\ManyToOne(targetEntity: Training::class)]
+    #[ORM\ManyToOne(targetEntity: Training::class, cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Training $training = null;
 
