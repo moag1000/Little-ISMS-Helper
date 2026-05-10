@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config.name }} - Compliance Report</title>
     <style>
+        :root {
+            --primary:       #0ea5e9;
+            --surface:       var(--surface)fff;
+            --surface-2:     #f1f5f9;
+            --fg:            #0f172a;
+            --fg-2:          #475569;
+            --fg-3:          var(--fg-3);
+            --border:        #cbd5e1;
+            --success:       #166534;
+            --success-tint:  #dcfce7;
+            --danger:        #991b1b;
+            --danger-tint:   #fecaca;
+            --warning:       #92400e;
+            --warning-tint:  #fef3c7;
+            --info-tint:     var(--info-tint);
+            --info-text:     var(--info-text);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,25 +32,25 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 11pt;
             line-height: 1.5;
-            color: #333;
+            color: var(--fg);
             padding: 20px 40px;
         }
         .header {
-            border-bottom: 3px solid #0d6efd;
+            border-bottom: 3px solid var(--primary);
             padding-bottom: 20px;
             margin-bottom: 30px;
         }
         .header h1 {
             font-size: 24pt;
-            color: #0d6efd;
+            color: var(--primary);
             margin-bottom: 5px;
         }
         .header .subtitle {
-            color: #666;
+            color: var(--fg-2);
             font-size: 12pt;
         }
         .meta-info {
-            background: #f8f9fa;
+            background: var(--surface-2);
             padding: 15px;
             margin-bottom: 30px;
             border-radius: 5px;
@@ -45,7 +63,7 @@
         }
         .meta-info .label {
             font-weight: bold;
-            color: #666;
+            color: var(--fg-2);
             width: 150px;
         }
         .score-box {
@@ -54,17 +72,17 @@
             margin: 30px 0;
             border-radius: 10px;
         }
-        .score-box.compliant { background: #d1e7dd; border: 2px solid #198754; }
-        .score-box.partial { background: #fff3cd; border: 2px solid var(--warning); }
-        .score-box.in_progress { background: #cff4fc; border: 2px solid #0dcaf0; }
-        .score-box.non_compliant { background: #f8d7da; border: 2px solid var(--danger); }
+        .score-box.compliant { background: var(--success-tint); border: 2px solid var(--success); }
+        .score-box.partial { background: var(--surface)3cd; border: 2px solid var(--warning); }
+        .score-box.in_progress { background: var(--info-tint); border: 2px solid var(--primary); }
+        .score-box.non_compliant { background: var(--danger-tint); border: 2px solid var(--danger); }
         .score-box .score {
             font-size: 48pt;
             font-weight: bold;
         }
-        .score-box.compliant .score { color: #198754; }
-        .score-box.partial .score { color: #856404; }
-        .score-box.in_progress .score { color: #055160; }
+        .score-box.compliant .score { color: var(--success); }
+        .score-box.partial .score { color: var(--warning); }
+        .score-box.in_progress .score { color: var(--info-text); }
         .score-box.non_compliant .score { color: var(--danger); }
         .score-box .status {
             font-size: 14pt;
@@ -72,7 +90,7 @@
             letter-spacing: 2px;
         }
         h2 {
-            color: #0d6efd;
+            color: var(--primary);
             font-size: 16pt;
             margin: 30px 0 15px 0;
             padding-bottom: 5px;
@@ -94,14 +112,14 @@
             text-align: left;
         }
         table.data-table th {
-            background: #f8f9fa;
+            background: var(--surface-2);
             font-weight: bold;
         }
         table.data-table tr:nth-child(even) {
-            background: #f8f9fa;
+            background: var(--surface-2);
         }
         .progress-bar {
-            background: #e9ecef;
+            background: var(--border);
             border-radius: 4px;
             height: 10px;
             overflow: hidden;
@@ -110,7 +128,7 @@
             height: 100%;
             border-radius: 4px;
         }
-        .progress-bar .fill.success { background: #198754; }
+        .progress-bar .fill.success { background: var(--success); }
         .progress-bar .fill.warning { background: var(--warning); }
         .progress-bar .fill.danger { background: var(--danger); }
         .badge {
@@ -120,17 +138,17 @@
             font-size: 9pt;
             font-weight: bold;
         }
-        .badge.success { background: #d1e7dd; color: #0f5132; }
-        .badge.warning { background: #fff3cd; color: #856404; }
-        .badge.danger { background: #f8d7da; color: #842029; }
+        .badge.success { background: var(--success-tint); color: var(--success); }
+        .badge.warning { background: var(--surface)3cd; color: var(--warning); }
+        .badge.danger { background: var(--danger-tint); color: var(--danger); }
         .gap-item {
-            background: #fff3cd;
+            background: var(--surface)3cd;
             border-left: 4px solid var(--warning);
             padding: 10px 15px;
             margin: 10px 0;
         }
         .gap-item.critical {
-            background: #f8d7da;
+            background: var(--danger-tint);
             border-left-color: var(--danger);
         }
         .gap-item strong {
@@ -142,7 +160,7 @@
             padding-top: 20px;
             border-top: 1px solid var(--border);
             font-size: 9pt;
-            color: #666;
+            color: var(--fg-2);
             text-align: center;
         }
         .page-break {

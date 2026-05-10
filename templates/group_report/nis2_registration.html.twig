@@ -1,5 +1,9 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Group NIS2 Registration Report — fa-report-doc 5-slot macro (web variant)
+   Audience: aufsicht (BSI / EU-NIS2 Supervisory Authority)
+   Status:   final
+   ─────────────────────────────────────────────────────────────────────── #}
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'group_report.nis2.title'|trans({}, 'group_report') }}{% endblock %}
 
@@ -12,154 +16,85 @@
         ]
     } %}
 
-    <div class="mb-4">
-        <h1 class="h2 mb-1">
-            <i class="fa-icon fa-icon--compliance-shield fa-icon--primary" aria-hidden="true"></i>
-            {{ 'group_report.nis2.title'|trans({}, 'group_report') }}
-        </h1>
-        <p class="text-muted mb-0">
-            {{ 'group_report.nis2.subtitle'|trans({'%root%': root.name}, 'group_report') }}
-        </p>
-    </div>
+    {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
-        {% block alert_body %}<div class="small">{{ 'group_report.nis2.intro'|trans({}, 'group_report')|raw }}</div>{% endblock %}
-    {% endembed %}
+    {# Build NIS2 matrix table #}
+    {% set _nis2_rows = [] %}
+    {% for tenant in tenants %}
+        {% set _class = tenant.nis2Classification|default('unknown') %}
+        {% set _cbadge = _class == 'essential' ? 'confidential' : (_class == 'important' ? 'draft' : 'final') %}
+        {% set _reg_cell = tenant.nis2RegisteredAt
+            ? '<span style="color:var(--success);font-weight:700;">' ~ tenant.nis2RegisteredAt|date('Y-m-d') ~ '</span>'
+            : (tenant.isNis2Regulated
+                ? '<span style="color:var(--danger);font-weight:700;">' ~ ('group_report.nis2.registration.missing'|trans({}, 'group_report')) ~ '</span>'
+                : '<span style="color:var(--fg-3);">—</span>') %}
+        {% set _nis2_rows = _nis2_rows|merge([[
+            '<strong>' ~ tenant.name ~ '</strong><br><code style="font-size:.75em;color:var(--fg-3);">' ~ tenant.code ~ '</code>',
+            tenant.legalName ? (tenant.legalName ~ (tenant.legalForm ? ' (' ~ tenant.legalForm ~ ')' : '')) : '<span style="color:var(--fg-3);">—</span>',
+            '<span class="report-doc__chip report-doc__chip--status-' ~ _cbadge ~ '">' ~ ('group_report.nis2.class.' ~ _class)|trans({}, 'group_report') ~ '</span>',
+            tenant.nis2Sector|default('—'),
+            tenant.naceCode ? '<code>' ~ tenant.naceCode ~ '</code>' : '—',
+            tenant.nis2ContactPoint|default('—'),
+            _reg_cell,
+        ]]) %}
+    {% endfor %}
 
-    <div class="row row-cols-2 row-cols-md-6 g-2 mb-4">
-        <div class="col">
-            <div class="card fa-section h-100 text-center">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold">{{ stats.total }}</div>
-                    <div class="small text-muted">{{ 'group_report.nis2.stat.total'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center border-danger fa-rag-card fa-rag-card--red">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-danger">{{ stats.essential }}</div>
-                    <div class="small text-muted">{{ 'group_report.nis2.class.essential'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center border-warning fa-rag-card fa-rag-card--amber">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-warning">{{ stats.important }}</div>
-                    <div class="small text-muted">{{ 'group_report.nis2.class.important'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-muted">{{ stats.not_regulated }}</div>
-                    <div class="small text-muted">{{ 'group_report.nis2.class.not_regulated'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-secondary">{{ stats.unknown }}</div>
-                    <div class="small text-muted">{{ 'group_report.nis2.class.unknown'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center border-success fa-rag-card fa-rag-card--green">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-success">{{ stats.registered }}</div>
-                    <div class="small text-muted">{{ 'group_report.nis2.stat.registered'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
-        {% block card_header %}
-            <div class="card-header">
-                <h2 class="h5 mb-0">
-                    <i class="fa-icon fa-icon--nav-grid" aria-hidden="true"></i>
-                    {{ 'group_report.nis2.matrix.title'|trans({}, 'group_report') }}
-                </h2>
-            </div>
-        {% endblock %}
-        {% block card_body %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle" aria-label="{{ 'group_report.nis2.matrix.title'|trans({}, 'group_report') }}">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col">{{ 'group_report.nis2.col.tenant'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.nis2.col.legal'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.nis2.col.classification'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.nis2.col.sector'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.nis2.col.nace'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.nis2.col.contact'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.nis2.col.registered'|trans({}, 'group_report') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for tenant in tenants %}
-                            {% set class = tenant.nis2Classification|default('unknown') %}
-                            {% set classBadge = {
-                                'essential': 'bg-danger',
-                                'important': 'bg-warning-subtle text-warning',
-                                'not_regulated': 'bg-secondary',
-                                'unknown': 'bg-body-secondary border'
-                            }[class]|default('bg-body-secondary border') %}
-                            <tr>
-                                <td>
-                                    {% if tenant is same as(root) %}
-                                        <i class="fa-icon fa-icon--nav-building text-primary" aria-hidden="true" title="{{ 'group_report.root_marker'|trans({}, 'group_report') }}"></i>
-                                    {% else %}
-                                        <i class="fa-icon fa-icon--nav-workflow text-muted" aria-hidden="true"></i>
-                                    {% endif %}
-                                    <strong>{{ tenant.name }}</strong>
-                                    <div class="small text-muted"><code>{{ tenant.code }}</code></div>
-                                </td>
-                                <td>
-                                    {% if tenant.legalName %}
-                                        {{ tenant.legalName }}
-                                        {% if tenant.legalForm %}
-                                            <span class="fa-status-pill fa-status-pill--neutral">{{ tenant.legalForm }}</span>
-                                        {% endif %}
-                                    {% else %}
-                                        <span class="text-muted">—</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <span class="badge {{ classBadge }}">
-                                        {{ ('group_report.nis2.class.' ~ class)|trans({}, 'group_report') }}
-                                    </span>
-                                </td>
-                                <td>{{ tenant.nis2Sector|default('—') }}</td>
-                                <td>
-                                    {% if tenant.naceCode %}<code>{{ tenant.naceCode }}</code>{% else %}<span class="text-muted">—</span>{% endif %}
-                                </td>
-                                <td>{{ tenant.nis2ContactPoint|default('—') }}</td>
-                                <td>
-                                    {% if tenant.nis2RegisteredAt %}
-                                        <span class="fa-status-pill fa-status-pill--success">
-                                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                                            {{ tenant.nis2RegisteredAt|date('Y-m-d') }}
-                                        </span>
-                                    {% elseif tenant.isNis2Regulated %}
-                                        <span class="fa-status-pill fa-status-pill--danger">
-                                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                                            {{ 'group_report.nis2.registration.missing'|trans({}, 'group_report') }}
-                                        </span>
-                                    {% else %}
-                                        <span class="text-muted">—</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endblock %}
-    {% endembed %}
+    {{ _fa_report_doc.render({
+        report: {
+            title:        'group_report.nis2.title'|trans({}, 'group_report'),
+            subtitle:     'group_report.nis2.subtitle'|trans({'%root%': root.name}, 'group_report'),
+            kicker:       'NIS2 Directive · Art. 3 Registration',
+            status:       'final',
+            audience:     'aufsicht',
+            generated_at: 'now'|date('d.m.Y H:i'),
+        },
+        brand_name: root.name,
+        key_findings: [
+            { label: ('group_report.nis2.stat.total'|trans({}, 'group_report')) ~ ': ' ~ stats.total, tone: 'ok' },
+            { label: ('group_report.nis2.class.essential'|trans({}, 'group_report')) ~ ': ' ~ stats.essential,
+              tone: stats.essential > 0 ? 'warn' : 'ok' },
+            { label: ('group_report.nis2.stat.registered'|trans({}, 'group_report')) ~ ': ' ~ stats.registered,
+              tone: stats.registered >= stats.essential ? 'ok' : 'danger' },
+        ],
+        kpis: [
+            { label: 'group_report.nis2.stat.total'|trans({}, 'group_report'),        value: stats.total,        tone: 'neutral' },
+            { label: 'group_report.nis2.class.essential'|trans({}, 'group_report'),   value: stats.essential,    tone: stats.essential > 0 ? 'danger' : 'success' },
+            { label: 'group_report.nis2.class.important'|trans({}, 'group_report'),   value: stats.important,    tone: stats.important > 0 ? 'warning' : 'success' },
+            { label: 'group_report.nis2.stat.registered'|trans({}, 'group_report'),   value: stats.registered,   tone: stats.registered >= stats.essential ? 'success' : 'danger' },
+        ],
+        sections: [
+            {
+                heading: 'group_report.nis2.matrix.title'|trans({}, 'group_report'),
+                intro: 'group_report.nis2.intro'|trans({}, 'group_report'),
+                table: {
+                    headers: [
+                        'group_report.nis2.col.tenant'|trans({}, 'group_report'),
+                        'group_report.nis2.col.legal'|trans({}, 'group_report'),
+                        'group_report.nis2.col.classification'|trans({}, 'group_report'),
+                        'group_report.nis2.col.sector'|trans({}, 'group_report'),
+                        'group_report.nis2.col.nace'|trans({}, 'group_report'),
+                        'group_report.nis2.col.contact'|trans({}, 'group_report'),
+                        'group_report.nis2.col.registered'|trans({}, 'group_report'),
+                    ],
+                    rows: _nis2_rows,
+                },
+            },
+        ],
+        appendix: {
+            methodology: '<p>NIS2 classification per EU Directive 2022/2555 Art. 3. Essential = large entity in critical sectors; Important = medium entity or specific sectors. Registration mandatory per Art. 3(3).</p>',
+            sources: [
+                { label: 'TenantRepository', detail: 'findGroupTenants() — NIS2 classification + registration fields' },
+            ],
+            glossary: [
+                { term: 'Essential', definition: 'NIS2 Art. 3 — Large entity in critical sectors (energy, transport, banking, etc.)' },
+                { term: 'Important', definition: 'NIS2 Art. 3 — Medium entity or specific sector classifications' },
+                { term: 'NACE',      definition: 'EU economic activity classification code' },
+            ],
+        },
+        distribution: [
+            { role: 'Group-CISO',  name: '—' },
+            { role: 'BSI/BNetzA',  name: '—' },
+        ],
+    }) }}
 </div>
 {% endblock %}

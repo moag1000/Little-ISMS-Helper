@@ -56,154 +56,50 @@
 </tr>
 {% endblock %}
 
-{# Custom Styles for SoA - Cyberpunk InfoSec Theme #}
+{# Custom Styles for SoA — Aurora token CSS (no raw hex) #}
 {% block custom_styles %}
-.stats-grid {
-    display: table;
-    width: 100%;
-    margin-bottom: 20pt;
-    border: 3px solid transparent;
-    border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
-    border-collapse: collapse;
-}
+.stats-grid       { display: table; width: 100%; margin-bottom: 20pt; border-collapse: collapse; border: 2px solid var(--border); }
+.stats-row        { display: table-row; }
+.stats-cell       { display: table-cell; padding: 10pt; text-align: center; border: 1px solid var(--border); width: 25%; background: var(--surface-2); }
+.stats-label      { font-size: 8pt; color: var(--fg-2); text-transform: uppercase; font-weight: bold; margin-bottom: 5pt; letter-spacing: 0.5pt; }
+.stats-value      { font-size: 18pt; color: var(--primary); font-weight: bold; }
 
-.stats-row {
-    display: table-row;
-}
-
-.stats-cell {
-    display: table-cell;
-    padding: 12pt;
-    text-align: center;
-    border: 1px solid #cbd5e1;
-    width: 25%;
-    background: linear-gradient(135deg, var(--bg) 0%, var(--surface-2) 100%);
-}
-
-.stats-cell:first-child {
-    border-left: 3px solid var(--primary);
-}
-
-.stats-cell:last-child {
-    border-right: 3px solid var(--accent);
-}
-
-.stats-label {
-    font-size: 8pt;
-    color: var(--bg);
-    text-transform: uppercase;
-    font-weight: bold;
-    margin-bottom: 6pt;
-    letter-spacing: 0.5pt;
-}
-
-.stats-value {
-    font-size: 20pt;
-    color: var(--primary);
-    font-weight: bold;
-    text-shadow: 0 0 1pt rgba(6, 182, 212, 0.3);
-}
-
-.control-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 15pt;
-    font-size: 8pt;
-    border: 2px solid #cbd5e1;
-}
-
-.control-table th {
-    background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
-    color: var(--primary);
-    padding: 6pt;
-    text-align: left;
-    font-weight: bold;
-    border: 1px solid #1e3a8a;
-    text-transform: uppercase;
-    letter-spacing: 0.3pt;
-}
-
-.control-table td {
-    padding: 5pt;
-    border: 1px solid #cbd5e1;
-    vertical-align: top;
-}
-
-.control-table tr:nth-child(even) {
-    background: linear-gradient(135deg, var(--bg) 0%, var(--surface-2) 100%);
-}
-
-.control-id {
-    font-weight: bold;
-    color: var(--primary);
-    white-space: nowrap;
-}
+.control-table    { width: 100%; border-collapse: collapse; margin-bottom: 14pt; font-size: 8pt; border: 1px solid var(--border); }
+.control-table th { background: var(--fg); color: var(--surface); padding: 5pt; text-align: left; font-weight: bold; border: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.3pt; }
+.control-table td { padding: 4pt; border: 1px solid var(--border); vertical-align: top; }
+.control-table tr:nth-child(even) { background: var(--surface-2); }
+.control-id       { font-weight: bold; color: var(--primary); white-space: nowrap; }
 
 .badge {
     display: inline-block;
-    padding: 2pt 6pt;
+    padding: 2pt 5pt;
     border-radius: 3pt;
     font-size: 7pt;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.3pt;
-    border: 1.5pt solid transparent;
 }
-
-.badge-implemented {
-    background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
-    border-color: #059669;
-    color: white;
-}
-
-.badge-partial {
-    background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
-    border-color: #d97706;
-    color: white;
-}
-
-.badge-not-implemented {
-    background: linear-gradient(135deg, var(--danger) 0%, var(--danger) 100%);
-    border-color: var(--danger);
-    color: white;
-}
-
-.badge-planned {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-    border-color: var(--primary-hover);
-    color: white;
-}
-
-.badge-applicable {
-    background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
-    border-color: #059669;
-    color: white;
-}
-
-.badge-not-applicable {
-    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-    border-color: #4b5563;
-    color: white;
-}
+.badge-implemented     { background: var(--success-tint); color: var(--success); }
+.badge-partial         { background: var(--warning-tint); color: var(--warning); }
+.badge-not-implemented { background: var(--danger-tint);  color: var(--danger);  }
+.badge-planned         { background: #dbeafe; color: var(--info-text); }
+.badge-applicable      { background: var(--success-tint); color: var(--success); }
+.badge-not-applicable  { background: var(--surface-2); color: var(--fg-2); border: 1px solid var(--border); }
 
 .category-header {
-    background: linear-gradient(135deg, var(--bg) 0%, var(--border) 100%);
-    padding: 8pt;
-    margin-top: 15pt;
-    margin-bottom: 8pt;
-    border-left: 4px solid transparent;
-    border-image: linear-gradient(180deg, var(--primary) 0%, var(--accent) 100%) 1;
+    background: var(--info-tint);
+    padding: 7pt 10pt;
+    margin-top: 12pt;
+    margin-bottom: 7pt;
+    border-left: 4px solid var(--primary);
     font-weight: bold;
-    font-size: 10pt;
-    color: var(--bg);
+    font-size: 9.5pt;
+    color: var(--info-text);
     text-transform: uppercase;
-    letter-spacing: 0.5pt;
+    letter-spacing: 0.4pt;
 }
 
-.percentage {
-    font-weight: bold;
-    color: var(--primary);
-}
+.percentage { font-weight: bold; color: var(--primary); }
 {% endblock %}
 
 {# Main Document Content #}

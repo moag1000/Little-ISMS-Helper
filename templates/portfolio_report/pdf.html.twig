@@ -4,33 +4,89 @@
     <meta charset="UTF-8">
     <title>{{ 'portfolio_report.title'|trans({}, 'portfolio_report') }} - {{ tenant.name }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 10pt; margin: 0; padding: 20px; color: var(--bg); }
-        .header { border-bottom: 3px solid #0ea5e9; padding-bottom: 10px; margin-bottom: 20px; }
-        .header h1 { margin: 0 0 6px 0; font-size: 18pt; color: var(--bg); }
-        .header .meta { font-size: 9pt; color: #475569; }
-        .header .meta strong { color: var(--bg); }
+        :root {
+            --primary:       #0ea5e9;
+            --surface:       #ffffff;
+            --surface-2:     #f1f5f9;
+            --fg:            #0f172a;
+            --fg-2:          #475569;
+            --fg-3:          #94a3b8;
+            --border:        #cbd5e1;
+            --success:       #166534;
+            --success-tint:  #dcfce7;
+            --warning:       #92400e;
+            --warning-tint:  #fef3c7;
+            --danger:        #991b1b;
+            --danger-tint:   #fecaca;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 10pt;
+            margin: 0;
+            padding: 20px;
+            color: var(--fg);
+            background: var(--surface);
+        }
 
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        th, td { padding: 6px 8px; border: 1px solid #cbd5e1; text-align: center; font-size: 9pt; }
-        thead th { background: var(--bg); color: var(--surface-2); }
-        tbody th { background: var(--surface-2); text-align: left; color: var(--bg); }
+        /* ── Cover ── */
+        .report-cover {
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .report-cover h1  { margin: 0 0 4px; font-size: 18pt; color: var(--fg); }
+        .report-cover .meta { font-size: 9pt; color: var(--fg-2); }
+        .report-cover .meta strong { color: var(--fg); }
 
-        .badge { display: inline-block; padding: 3px 8px; border-radius: 10px; font-size: 9pt; font-weight: bold; }
-        .badge-success { background: #dcfce7; color: #166534; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-        .badge-danger  { background: #fecaca; color: #991b1b; }
-        .badge-muted   { background: var(--border); color: #475569; }
+        /* ── Table ── */
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 9pt; }
+        th, td { padding: 5px 8px; border: 1px solid var(--border); text-align: center; }
+        thead th { background: var(--fg); color: var(--surface); }
+        tbody th  { background: var(--surface-2); text-align: left; color: var(--fg); }
 
-        .cell-meta { font-size: 8pt; color: #64748b; margin-top: 4px; }
-        .cell-gaps { color: #b91c1c; }
+        /* ── Badges ── */
+        .badge {
+            display: inline-block;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-size: 8pt;
+            font-weight: bold;
+        }
+        .badge-success { background: var(--success-tint);  color: var(--success); }
+        .badge-warning { background: var(--warning-tint);  color: var(--warning); }
+        .badge-danger  { background: var(--danger-tint);   color: var(--danger);  }
+        .badge-muted   { background: var(--surface-2);     color: var(--fg-2); border: 1px solid var(--border); }
 
-        .legend { font-size: 8pt; color: #475569; margin-top: 12px; padding: 8px; background: var(--bg); border-left: 3px solid #0ea5e9; }
+        /* ── Cell meta ── */
+        .cell-meta { font-size: 7.5pt; color: var(--fg-3); margin-top: 3px; }
+        .cell-gaps { color: var(--danger); }
 
-        .footer { margin-top: 30px; text-align: center; font-size: 8pt; color: #64748b; border-top: 1px solid #cbd5e1; padding-top: 8px; }
+        /* ── Legend ── */
+        .legend {
+            font-size: 8pt;
+            color: var(--fg-2);
+            margin-top: 12px;
+            padding: 7px 10px;
+            background: var(--surface-2);
+            border-left: 3px solid var(--primary);
+        }
+
+        /* ── Footer ── */
+        .report-footer {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 8pt;
+            color: var(--fg-3);
+            border-top: 1px solid var(--border);
+            padding-top: 7px;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
+
+    {# ── Cover ── #}
+    <div class="report-cover">
         <h1>{{ 'portfolio_report.title'|trans({}, 'portfolio_report') }}</h1>
         <div class="meta">
             <strong>{{ 'portfolio_report.header.tenant'|trans({}, 'portfolio_report') }}:</strong> {{ tenant.name }}
@@ -45,8 +101,9 @@
         </div>
     </div>
 
+    {# ── Matrix table ── #}
     {% if matrix.frameworks|length == 0 %}
-        <p>{{ 'portfolio_report.matrix.no_frameworks'|trans({}, 'portfolio_report') }}</p>
+        <p style="color:var(--fg-3);font-style:italic;">{{ 'portfolio_report.matrix.no_frameworks'|trans({}, 'portfolio_report') }}</p>
     {% else %}
         <table>
             <thead>
@@ -91,9 +148,9 @@
                                     <div class="cell-meta">
                                         n={{ cell.count }}
                                         {% if cell.gaps > 0 %}
-                                            <span class="cell-gaps">&nbsp;&middot; {{ cell.gaps }} {{ 'portfolio_report.cell.gaps_short'|trans({}, 'portfolio_report') }}</span>
+                                            <span class="cell-gaps">&nbsp;· {{ cell.gaps }} {{ 'portfolio_report.cell.gaps_short'|trans({}, 'portfolio_report') }}</span>
                                         {% endif %}
-                                        &middot; {{ trend_icon }}{% if delta_val is not null and delta_val != 0 %} {{ delta_val > 0 ? '+' : '' }}{{ delta_val }}{% endif %}
+                                        &nbsp;· {{ trend_icon }}{% if delta_val is not null and delta_val != 0 %} {{ delta_val > 0 ? '+' : '' }}{{ delta_val }}{% endif %}
                                     </div>
                                 {% endif %}
                             </td>
@@ -109,8 +166,9 @@
         </div>
     {% endif %}
 
-    <div class="footer">
+    <div class="report-footer">
         {{ 'portfolio_report.pdf.footer'|trans({}, 'portfolio_report') }}
     </div>
+
 </body>
 </html>

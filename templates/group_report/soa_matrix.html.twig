@@ -1,3 +1,8 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Group SoA Matrix — fa-report-doc 5-slot macro (web variant)
+   Audience: auditor (ISO 27001 SoA cross-tenant view)
+   Status:   final
+   ─────────────────────────────────────────────────────────────────────── #}
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'group_report.soa.title'|trans({}, 'group_report') }}{% endblock %}
@@ -11,99 +16,89 @@
         ]
     } %}
 
-    <div class="mb-4">
-        <h1 class="h2 mb-1">
-            <i class="fa-icon text-primary fa-icon--nav-grid" aria-hidden="true"></i>
-            {{ 'group_report.soa.title'|trans({}, 'group_report') }}
-        </h1>
-        <p class="text-muted mb-0">{{ 'group_report.soa.subtitle'|trans({'%controls%': control_ids|length, '%tenants%': tenants|length}, 'group_report') }}</p>
-    </div>
+    {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    <div class="row row-cols-1 row-cols-md-3 g-2 mb-4">
-        <div class="col">
-            <div class="card fa-section h-100 text-center">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold">{{ totals.cells }}</div>
-                    <div class="small text-muted">{{ 'group_report.soa.stat.cells'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center border-primary">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-primary">{{ totals.applicable }}</div>
-                    <div class="small text-muted">{{ 'group_report.soa.stat.applicable'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center border-success fa-rag-card fa-rag-card--green">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-success">{{ totals.implemented }}</div>
-                    <div class="small text-muted">{{ 'group_report.soa.stat.implemented'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {# Build SoA matrix table (control IDs × tenants) #}
+    {% set _headers = [ 'group_report.soa.col.control'|trans({}, 'group_report') ] %}
+    {% for tenant in tenants %}
+        {% set _headers = _headers|merge([ tenant.code ]) %}
+    {% endfor %}
 
-    {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
-        {% block card_body %}
-            <div class="table-responsive" style="max-height: 70vh;">
-                <table class="table table-hover table-sm mb-0 align-middle" aria-label="{{ 'group_report.soa.title'|trans({}, 'group_report') }}">
-                    <thead class="table-light" style="position: sticky; top: 0;">
-                        <tr>
-                            <th scope="col">{{ 'group_report.soa.col.control'|trans({}, 'group_report') }}</th>
-                            {% for tenant in tenants %}
-                                <th scope="col" class="text-center" title="{{ tenant.name }}">
-                                    <code class="small">{{ tenant.code }}</code>
-                                </th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for cid in control_ids %}
-                            <tr>
-                                <th scope="row"><code>{{ cid }}</code></th>
-                                {% for tenant in tenants %}
-                                    {% set control = matrix[cid][tenant.code]|default(null) %}
-                                    <td class="text-center">
-                                        {% if control is null %}
-                                            <span class="text-muted">·</span>
-                                        {% elseif not control.applicable %}
-                                            <span class="fa-status-pill fa-status-pill--neutral" title="{{ 'group_report.soa.cell.not_applicable'|trans({}, 'group_report') }}">N/A</span>
-                                        {% else %}
-                                            {% set status = control.implementationStatus %}
-                                            {% set cls = {
-                                                'implemented': 'bg-success',
-                                                'in_progress': 'bg-warning-subtle text-warning',
-                                                'planned': 'bg-info',
-                                                'not_started': 'bg-secondary'
-                                            }[status]|default('bg-secondary') %}
-                                            <span class="badge {{ cls }}" title="{{ status }}">
-                                                {% if status == 'implemented' %}✓
-                                                {% elseif status == 'in_progress' %}◐
-                                                {% elseif status == 'planned' %}◯
-                                                {% else %}–{% endif %}
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endblock %}
-        {% block card_footer %}
-            <div class="card-footer small text-muted">
-                <strong>{{ 'group_report.soa.legend.title'|trans({}, 'group_report') }}:</strong>
-                <span class="fa-status-pill fa-status-pill--success">✓</span> {{ 'group_report.soa.legend.implemented'|trans({}, 'group_report') }}
-                · <span class="fa-status-pill fa-status-pill--warning">◐</span> {{ 'group_report.soa.legend.in_progress'|trans({}, 'group_report') }}
-                · <span class="fa-status-pill fa-status-pill--primary">◯</span> {{ 'group_report.soa.legend.planned'|trans({}, 'group_report') }}
-                · <span class="fa-status-pill fa-status-pill--neutral">–</span> {{ 'group_report.soa.legend.not_started'|trans({}, 'group_report') }}
-                · <span class="fa-status-pill fa-status-pill--neutral">N/A</span> {{ 'group_report.soa.legend.not_applicable'|trans({}, 'group_report') }}
-            </div>
-        {% endblock %}
-    {% endembed %}
+    {% set _soa_rows = [] %}
+    {% for cid in control_ids %}
+        {% set _row = [ '<code>' ~ cid ~ '</code>' ] %}
+        {% for tenant in tenants %}
+            {% set control = matrix[cid][tenant.code]|default(null) %}
+            {% if control is null %}
+                {% set _row = _row|merge([ '<span style="color:var(--fg-3);">·</span>' ]) %}
+            {% elseif not control.applicable %}
+                {% set _row = _row|merge([ '<span style="font-size:.75em;color:var(--fg-3);">N/A</span>' ]) %}
+            {% else %}
+                {% set status = control.implementationStatus %}
+                {% set _chip = status == 'implemented' ? 'final' : (status == 'in_progress' ? 'draft' : (status == 'planned' ? 'auditor-only' : 'confidential')) %}
+                {% set _sym = status == 'implemented' ? '✓' : (status == 'in_progress' ? '◐' : (status == 'planned' ? '◯' : '–')) %}
+                {% set _row = _row|merge([ '<span class="report-doc__chip report-doc__chip--status-' ~ _chip ~ '" title="' ~ status ~ '">' ~ _sym ~ '</span>' ]) %}
+            {% endif %}
+        {% endfor %}
+        {% set _soa_rows = _soa_rows|merge([_row]) %}
+    {% endfor %}
+
+    {# Legend body_html #}
+    {% set _legend_html = '<p style="font-size:8pt;color:var(--fg-2);">'
+        ~ '<strong>' ~ ('group_report.soa.legend.title'|trans({}, 'group_report')) ~ ':</strong> '
+        ~ '✓ ' ~ ('group_report.soa.legend.implemented'|trans({}, 'group_report'))
+        ~ ' · ◐ ' ~ ('group_report.soa.legend.in_progress'|trans({}, 'group_report'))
+        ~ ' · ◯ ' ~ ('group_report.soa.legend.planned'|trans({}, 'group_report'))
+        ~ ' · – ' ~ ('group_report.soa.legend.not_started'|trans({}, 'group_report'))
+        ~ ' · N/A ' ~ ('group_report.soa.legend.not_applicable'|trans({}, 'group_report'))
+        ~ '</p>' %}
+
+    {{ _fa_report_doc.render({
+        report: {
+            title:        'group_report.soa.title'|trans({}, 'group_report'),
+            subtitle:     'group_report.soa.subtitle'|trans({'%controls%': control_ids|length, '%tenants%': tenants|length}, 'group_report'),
+            kicker:       'group_report.title'|trans({}, 'group_report'),
+            status:       'final',
+            audience:     'auditor',
+            generated_at: 'now'|date('d.m.Y H:i'),
+        },
+        brand_name: root.name,
+        key_findings: [
+            { label: ('group_report.soa.stat.cells'|trans({}, 'group_report')) ~ ': ' ~ totals.cells, tone: 'ok' },
+            { label: ('group_report.soa.stat.applicable'|trans({}, 'group_report')) ~ ': ' ~ totals.applicable, tone: 'ok' },
+            { label: ('group_report.soa.stat.implemented'|trans({}, 'group_report')) ~ ': ' ~ totals.implemented,
+              tone: totals.applicable > 0 and (totals.implemented / totals.applicable) >= 0.8 ? 'ok' : 'warn' },
+        ],
+        kpis: [
+            { label: 'group_report.soa.stat.cells'|trans({}, 'group_report'),       value: totals.cells,       tone: 'neutral' },
+            { label: 'group_report.soa.stat.applicable'|trans({}, 'group_report'),  value: totals.applicable,  tone: 'neutral' },
+            { label: 'group_report.soa.stat.implemented'|trans({}, 'group_report'), value: totals.implemented,
+              tone: totals.applicable > 0 and (totals.implemented / totals.applicable) >= 0.8 ? 'success' : 'warning' },
+        ],
+        sections: [
+            {
+                heading: 'group_report.soa.title'|trans({}, 'group_report'),
+                table: {
+                    headers: _headers,
+                    rows:    _soa_rows,
+                },
+                body_html: _legend_html,
+            },
+        ],
+        appendix: {
+            sources: [
+                { label: 'ControlRepository', detail: 'findGroupSoAMatrix() — ISO 27001 Annex A per control_id × tenant' },
+            ],
+            glossary: [
+                { term: 'SoA',           definition: 'Statement of Applicability (ISO 27001 Clause 6.1.3d)' },
+                { term: 'Applicable',    definition: 'Control included in the ISMS scope for this tenant' },
+                { term: 'Implemented',   definition: 'Control fully implemented and operational' },
+            ],
+        },
+        distribution: [
+            { role: 'Konzern-Auditor', name: 'Group Audit Committee' },
+            { role: 'Group-CISO',      name: '—' },
+        ],
+    }) }}
 </div>
 {% endblock %}

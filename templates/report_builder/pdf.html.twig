@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <title>{{ report.name }}</title>
     <style>
+        :root {
+            --primary:       var(--primary);
+            --surface:       #ffffff;
+            --surface-2:     var(--surface-2);
+            --fg:            #0f172a;
+            --fg-2:          var(--fg-2);
+            --fg-3:          var(--fg-3);
+            --border:        var(--border);
+            --success:       var(--success);
+            --success-tint:  var(--success-tint);
+            --danger:        var(--danger);
+            --danger-tint:   var(--danger-tint);
+            --warning:       var(--warning);
+            --warning-tint:  var(--warning-tint);
+            --info-tint:     var(--info-tint);
+            --info-text:     var(--info-text);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -18,14 +36,14 @@
         }
 
         .report-header {
-            border-bottom: 2px solid {{ report.styles.primaryColor|default('#0d6efd') }};
+            border-bottom: 2px solid {{ report.styles.primaryColor|default('var(--primary)') }};
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
 
         .report-header h1 {
             font-size: 18pt;
-            color: {{ report.styles.primaryColor|default('#0d6efd') }};
+            color: {{ report.styles.primaryColor|default('var(--primary)') }};
             margin-bottom: 5px;
         }
 
@@ -51,7 +69,7 @@
             font-size: 11pt;
             font-weight: bold;
             margin-bottom: 10px;
-            color: {{ report.styles.primaryColor|default('#0d6efd') }};
+            color: {{ report.styles.primaryColor|default('var(--primary)') }};
         }
 
         /* KPI Widgets */
@@ -70,11 +88,11 @@
             color: #666;
         }
 
-        .kpi-success .kpi-value { color: #198754; }
+        .kpi-success .kpi-value { color: var(--success); }
         .kpi-warning .kpi-value { color: var(--warning); }
         .kpi-danger .kpi-value { color: var(--danger); }
-        .kpi-primary .kpi-value { color: #0d6efd; }
-        .kpi-info .kpi-value { color: #0dcaf0; }
+        .kpi-primary .kpi-value { color: var(--primary); }
+        .kpi-info .kpi-value { color: var(--primary); }
 
         /* Tables */
         .data-table {
@@ -91,12 +109,12 @@
         }
 
         .data-table th {
-            background: #f8f9fa;
+            background: var(--surface-2);
             font-weight: bold;
         }
 
         .data-table tr:nth-child(even) {
-            background: #f8f9fa;
+            background: var(--surface-2);
         }
 
         /* Risk Matrix */
@@ -115,14 +133,14 @@
         }
 
         .risk-matrix th {
-            background: #f8f9fa;
+            background: var(--surface-2);
             font-size: 8pt;
         }
 
-        .risk-low { background: #198754; color: white; }
-        .risk-medium { background: #0dcaf0; color: white; }
+        .risk-low { background: var(--success); color: var(--surface); }
+        .risk-medium { background: var(--primary); color: var(--surface); }
         .risk-high { background: var(--warning); color: #333; }
-        .risk-critical { background: var(--danger); color: white; }
+        .risk-critical { background: var(--danger); color: var(--surface); }
 
         /* Status Widget */
         .status-widget {
@@ -138,7 +156,7 @@
             margin-bottom: 10px;
         }
 
-        .status-green { background: #198754; }
+        .status-green { background: var(--success); }
         .status-amber { background: var(--warning); }
         .status-red { background: var(--danger); }
 
@@ -269,7 +287,7 @@
             {# Chart Placeholder (charts need JavaScript) #}
             {% elseif widgetType starts with 'chart_' %}
             <div class="widget-title">{{ ('widget.' ~ widgetType)|trans({}, 'report_builder') }}</div>
-            <div style="text-align: center; padding: 30px; color: #666; background: #f8f9fa; border-radius: 4px;">
+            <div style="text-align: center; padding: 30px; color: #666; background: var(--surface-2); border-radius: 4px;">
                 {{ 'pdf.chart_data'|trans({}, 'report_builder') }}:
                 {% if data.labels is defined %}
                 <br><strong>{{ data.labels|join(', ') }}</strong>

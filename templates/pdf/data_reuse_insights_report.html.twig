@@ -4,6 +4,23 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Data Reuse Insights - {{ framework.name }}</title>
     <style>
+        :root {
+            --primary:       #0ea5e9;
+            --surface:       #ffffff;
+            --surface-2:     #f1f5f9;
+            --fg:            #0f172a;
+            --fg-2:          #475569;
+            --fg-3:          #94a3b8;
+            --border:        #cbd5e1;
+            --success:       #166534;
+            --success-tint:  #dcfce7;
+            --danger:        #991b1b;
+            --danger-tint:   #fecaca;
+            --warning:       #92400e;
+            --warning-tint:  #fef3c7;
+            --info-tint:     #dbeafe;
+            --info-text:     #1e40af;
+        }
         @page {
             margin: 2cm 1.5cm;
         }
@@ -12,30 +29,30 @@
             font-family: DejaVu Sans, sans-serif;
             font-size: 9pt;
             line-height: 1.4;
-            color: #333;
+            color: var(--fg);
         }
 
         h1 {
             font-size: 18pt;
-            color: #1a56db;
+            color: var(--primary);
             text-align: center;
             margin-bottom: 5pt;
-            border-bottom: 3px solid #1a56db;
+            border-bottom: 3px solid var(--primary);
             padding-bottom: 10pt;
         }
 
         h2 {
             font-size: 14pt;
-            color: #1a56db;
+            color: var(--primary);
             margin-top: 15pt;
             margin-bottom: 8pt;
-            border-bottom: 1px solid #cbd5e1;
+            border-bottom: 1px solid var(--border);
             padding-bottom: 5pt;
         }
 
         h3 {
             font-size: 11pt;
-            color: #334155;
+            color: var(--fg);
             margin-top: 12pt;
             margin-bottom: 6pt;
             font-weight: bold;
@@ -44,7 +61,7 @@
         .header-info {
             text-align: center;
             font-size: 9pt;
-            color: #64748b;
+            color: var(--fg-2);
             margin-bottom: 20pt;
         }
 
@@ -52,7 +69,7 @@
             display: table;
             width: 100%;
             margin-bottom: 20pt;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             border-collapse: collapse;
         }
 
@@ -64,38 +81,38 @@
             display: table-cell;
             padding: 10pt;
             text-align: center;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             width: 20%;
         }
 
         .stats-label {
             font-size: 8pt;
-            color: #64748b;
+            color: var(--fg-2);
             font-weight: bold;
             margin-bottom: 4pt;
         }
 
         .stats-value {
             font-size: 16pt;
-            color: #1a56db;
+            color: var(--primary);
             font-weight: bold;
         }
 
         .stats-value-success {
-            color: #10b981;
+            color: var(--success);
         }
 
         .insight-box {
-            background: #f8fafc;
-            border-left: 4pt solid #1a56db;
+            background: var(--surface-2);
+            border-left: 4pt solid var(--primary);
             padding: 10pt;
             margin: 10pt 0;
             font-size: 8pt;
-            color: #475569;
+            color: var(--fg-2);
         }
 
         .quick-win-box {
-            background: #f0fdf4;
+            background: var(--success-tint);
             border-left: 4pt solid #10b981;
             padding: 10pt;
             margin: 10pt 0;
@@ -110,22 +127,22 @@
         }
 
         table th {
-            background-color: #1a56db;
-            color: white;
+            background-color: var(--primary);
+            color: var(--surface);
             padding: 6pt;
             text-align: left;
             font-weight: bold;
-            border: 1px solid #1e3a8a;
+            border: 1px solid var(--border);
         }
 
         table td {
             padding: 5pt;
-            border: 1px solid #cbd5e1;
+            border: 1px solid var(--border);
             vertical-align: top;
         }
 
         table tr:nth-child(even) {
-            background-color: #f8fafc;
+            background-color: var(--surface-2);
         }
 
         .badge {
@@ -137,23 +154,23 @@
         }
 
         .badge-success {
-            background-color: #10b981;
-            color: white;
+            background: var(--success-tint); color: var(--success);
+            color: var(--surface);
         }
 
         .badge-warning {
-            background-color: #f59e0b;
-            color: white;
+            background: var(--warning-tint); color: var(--warning);
+            color: var(--surface);
         }
 
         .badge-info {
-            background-color: #3b82f6;
-            color: white;
+            background: #dbeafe; color: var(--info-text);
+            color: var(--surface);
         }
 
         .badge-secondary {
-            background-color: #6b7280;
-            color: white;
+            background: var(--surface-2); color: var(--fg-2);
+            color: var(--surface);
         }
 
         .page-break {
@@ -176,8 +193,8 @@
             height: 30pt;
             text-align: center;
             font-size: 7pt;
-            color: #64748b;
-            border-top: 1px solid #cbd5e1;
+            color: var(--fg-2);
+            border-top: 1px solid var(--border);
             padding-top: 5pt;
         }
     </style>
@@ -329,7 +346,7 @@
 
     <h3>Recommendation 2: Leverage Mid-Term Potentials (Week 3-8)</h3>
     {% set medium_reuse = data_reuse_analysis|filter(item => item.value.reuse_percentage >= 50 and item.value.reuse_percentage < 80) %}
-    <div style="background: #fffbeb; border-left: 4pt solid #f59e0b; padding: 10pt; margin: 10pt 0; font-size: 8pt;">
+    <div style="background: var(--warning-tint); border-left: 4pt solid #f59e0b; padding: 10pt; margin: 10pt 0; font-size: 8pt;">
         <strong>Priority: High</strong> - {{ medium_reuse|length }} requirements with 50-80% reuse potential: Adapt/extend data, reuse templates, identify common control implementations. <strong>Time savings: {{ medium_reuse|reduce((carry, item) => carry + item.value.estimated_hours_saved, 0)|round(1) }}h</strong> | Effort: Medium
     </div>
 
