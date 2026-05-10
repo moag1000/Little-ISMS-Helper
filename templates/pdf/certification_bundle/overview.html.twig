@@ -71,19 +71,19 @@
     </thead>
     <tbody>
         <tr>
-            <td><span style="color: #dc2626;">{{ 'certification_bundle.pdf.overview.risk.critical'|trans({}, 'certification_bundle') }}</span></td>
+            <td><span style="color: var(--danger);">{{ 'certification_bundle.pdf.overview.risk.critical'|trans({}, 'certification_bundle') }}</span></td>
             <td>{{ risks_by_level.critical }}</td>
         </tr>
         <tr>
-            <td><span style="color: #f97316;">{{ 'certification_bundle.pdf.overview.risk.high'|trans({}, 'certification_bundle') }}</span></td>
+            <td><span style="color: var(--warning);">{{ 'certification_bundle.pdf.overview.risk.high'|trans({}, 'certification_bundle') }}</span></td>
             <td>{{ risks_by_level.high }}</td>
         </tr>
         <tr>
-            <td><span style="color: #eab308;">{{ 'certification_bundle.pdf.overview.risk.medium'|trans({}, 'certification_bundle') }}</span></td>
+            <td><span style="color: var(--warning);">{{ 'certification_bundle.pdf.overview.risk.medium'|trans({}, 'certification_bundle') }}</span></td>
             <td>{{ risks_by_level.medium }}</td>
         </tr>
         <tr>
-            <td><span style="color: #22c55e;">{{ 'certification_bundle.pdf.overview.risk.low'|trans({}, 'certification_bundle') }}</span></td>
+            <td><span style="color: var(--success);">{{ 'certification_bundle.pdf.overview.risk.low'|trans({}, 'certification_bundle') }}</span></td>
             <td>{{ risks_by_level.low }}</td>
         </tr>
         <tr>
