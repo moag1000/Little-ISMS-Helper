@@ -1,0 +1,723 @@
+policy:
+    bsi:
+        bsi_app_3_2_web_server:
+            v1:
+                title: 'Webserver-Sicherheitsrichtlinie (APP.3.2)'
+                body: |-
+                    # Webserver-Sicherheitsrichtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI APP.3.2 (Webserver) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis-Anforderungen verbindlich, Standard-Anforderungen bei normalem Schutzbedarf umzusetzen | Cross-Ref: ISO/IEC 27001:2022 Annex A.8.9, A.8.20, A.8.21, A.8.23, A.8.26 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt die sichere Konfiguration, den Betrieb und die Aussonderung saemtlicher Webserver der {{ tenant.legal_name }}, unabhaengig von der eingesetzten Produktlinie (z. B. Apache HTTP Server, nginx, Microsoft IIS) und vom Betriebsmodell (on-premises, virtualisiert, Container, IaaS). Sie konkretisiert den Baustein APP.3.2 des IT-Grundschutz-Kompendiums in der Edition {{ bsi.kompendium_edition }} und ergaenzt die uebergeordnete Webanwendungs-Richtlinie (CON.10) sowie die Detektionsrichtlinie (DER.1).
+
+                    ## 2. Verantwortlichkeiten
+                    Die fachliche Verantwortung fuer Webserver liegt bei der jeweils benannten Anwendungs- bzw. Plattformverantwortlichen Person. Die uebergeordnete Norm-Konformitaet verantwortet der ISB ({{ roles.isb.fullName }}); die operative Administration erfolgt durch den IT-Betrieb gemaess der IT-Administrations-Richtlinie (OPS.1.1.2). Aenderungen unterliegen dem Patch- und Change-Management gemaess OPS.1.1.3.
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    Die folgenden Anforderungen aus APP.3.2 sind verbindlich umzusetzen:
+
+                    - **APP.3.2.A1 Sichere Konfiguration eines Webservers:** Der Webserver wird gemaess vorab erstelltem Konfigurations-Hardening-Profil installiert. Standard-Accounts und nicht benoetigte Dienste sind zu deaktivieren. Konfigurationsbeispiele orientieren sich an der CIS Benchmark fuer den jeweiligen Hersteller sowie den BSI Mindeststandards.
+                    - **APP.3.2.A2 Schutz der Webserver-Dateien:** Datei- und Verzeichnis-Berechtigungen werden nach dem Least-Privilege-Prinzip vergeben. Konfigurationsdateien sind ausschliesslich der Administrationsrolle zugaenglich. Web-Inhalte und Server-Binaries werden in separaten Pfaden gehalten.
+                    - **APP.3.2.A3 Absicherung von Datenbankzugriffen:** Verbindungen zu Backend-Datenbanken erfolgen ueber dedizierte Service-Accounts mit minimalen Rechten. Zugangsdaten werden im Secrets-Store hinterlegt; Klartext-Passwoerter in Konfigurationsdateien sind unzulaessig.
+                    - **APP.3.2.A4 Authentisierung schuetzen:** Authentisierungsmechanismen folgen dem Kryptokonzept (CON.1) und nutzen ausschliesslich Verfahren gemaess BSI TR-02102. Brute-Force-Schutz (Rate-Limiting, Account-Lockout) ist zwingend.
+                    - **APP.3.2.A5 Protokollierung sicherheitsrelevanter Ereignisse:** Zugriffs-, Fehler- und Sicherheitsereignisse werden gemaess der Protokollierungsrichtlinie (OPS.1.1.5) erfasst und an die zentrale Log-Sammelstelle weitergeleitet.
+                    - **APP.3.2.A6 Aussonderung eines Webservers:** Vor Ausserdienststellung sind Konfigurations- und Inhaltsdaten gemaess der Loesch-/Vernichtungsrichtlinie (CON.6) sicher zu loeschen. Speichermedien werden physisch gemaess BSI Datenloesch-Standards behandelt.
+                    - **APP.3.2.A7 Mindestanforderungen an die TLS-Konfiguration:** Es werden ausschliesslich TLS 1.2 und TLS 1.3 mit den durch BSI TR-02102-2 freigegebenen Cipher-Suites verwendet. SSL/TLS-Zertifikate werden ueber eine vertrauenswuerdige PKI bezogen; HSTS ist aktiviert.
+
+                    ## 4. Standard-Anforderungen (Normaler Schutzbedarf)
+                    - **APP.3.2.A11 Verschluesselung ueber TLS:** Die gesamte Kommunikation mit Klienten erfolgt ausschliesslich verschluesselt; HTTP-Anfragen werden zu HTTPS umgeleitet. Mixed-Content ist auszuschliessen.
+                    - **Geeignete Auswahl eines Webservers:** Auswahl beruecksichtigt die Hersteller-Unterstuetzung, Patch-Frequenz, Hardening-Optionen und Dokumentationsqualitaet.
+                    - **Trennung von Funktionen und Inhalten:** Web-Anwendungen mit unterschiedlichen Schutzbedarfen werden auf separaten Instanzen betrieben oder durch geeignete Mandantentrennung isoliert.
+                    - **Reverse-Proxy / WAF:** Vor produktiven Webservern wird ein Reverse-Proxy mit Web Application Firewall vorgeschaltet, der mindestens die OWASP-Top-10-Klassen abdeckt.
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    Bei hohem oder sehr hohem Schutzbedarf werden ergaenzend umgesetzt: Redundanz auf Anwendungs- und Infrastrukturebene, geografische Verteilung, kontinuierliche Schwachstellenpruefung mittels DAST, Bug-Bounty-Programme sowie unabhaengige Pruefung der TLS-Konfiguration (z. B. ueber externe Test-Werkzeuge auf Konformitaet zu BSI TR-02102-2).
+
+                    ## 6. Cross-Refs
+                    - CON.1 Kryptokonzept (TLS/PKI-Vorgaben)
+                    - CON.10 Webanwendungen (Anwendungslogik, Eingabevalidierung)
+                    - OPS.1.1.3 Patch- und Change-Management
+                    - OPS.1.1.5 Protokollierung
+                    - DER.1 Detektion (SIEM-Anbindung)
+                    - NET.3.2 Firewall (Perimeter-Schutz)
+                    - ISO/IEC 27017 (Cloud-Webserver)
+
+                    ## 7. Pruefintervall und Genehmigung
+                    Die Richtlinie wird mindestens alle 12 Monate sowie anlassbezogen geprueft. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Verbindlich fuer alle Webserver der {{ tenant.legal_name }}. Abweichungen erfordern eine dokumentierte Risikoakzeptanz durch den ISB.*
+
+        bsi_app_3_4_samba:
+            v1:
+                title: 'Samba-Datei- und Druckserver-Richtlinie (APP.3.4)'
+                body: |-
+                    # Samba-Datei- und Druckserver-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI APP.3.4 (Samba) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis-Anforderungen verbindlich | Cross-Ref: ISO/IEC 27001:2022 Annex A.5.15, A.8.2, A.8.20 | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt den Einsatz von Samba zur Datei- und Druckdienst-Bereitstellung in heterogenen Umgebungen der {{ tenant.legal_name }}. Sie umfasst Samba-Server, die als Domain-Member, Standalone-Server oder Active-Directory-Domain-Controller-Aequivalent betrieben werden.
+
+                    ## 2. Verantwortlichkeiten
+                    Die operative Administration liegt beim IT-Betrieb. Die fachliche Genehmigung neuer Freigaben verantwortet die jeweilige Datenverantwortliche Person; die Norm-Konformitaet verantwortet der ISB ({{ roles.isb.fullName }}).
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **APP.3.4.A1 Planung des Samba-Einsatzes:** Vor Inbetriebnahme erfolgt eine dokumentierte Einsatzplanung, die Authentisierungsmechanismus (Kerberos/AD bevorzugt), Protokoll-Versionen, Mandantentrennung und Zugriffsmodell festlegt.
+                    - **APP.3.4.A2 Sichere Grundkonfiguration:** SMB1 ist ausnahmslos zu deaktivieren; ausschliesslich SMB2/SMB3 mit Signing und Encryption sind zulaessig. Anonymous Logins (Null Sessions) sind verboten.
+                    - **APP.3.4.A3 Absicherung der Authentisierung:** NTLM-Versionen vor NTLMv2 sind zu deaktivieren. Wo moeglich wird Kerberos eingesetzt; Passwoerter folgen der IAM-Richtlinie (ORP.4).
+                    - **APP.3.4.A4 Restriktive Vergabe von Zugriffsrechten:** Freigaben werden nach Need-to-Know vergeben; Standard-Freigaben (ADMIN$, IPC$) sind zu beschraenken oder zu deaktivieren. Berechtigungen werden mindestens halbjaehrlich rezertifiziert.
+                    - **APP.3.4.A5 Sichere Konfiguration der Samba-Dienste:** Nicht benoetigte Module und Funktionen sind zu deaktivieren. Konfigurationsaenderungen werden gemaess Change-Management dokumentiert.
+                    - **APP.3.4.A6 Sichere Anbindung externer Verzeichnisdienste:** LDAP-Anbindungen erfolgen ausschliesslich ueber LDAPS. Service-Accounts werden mit minimalen Rechten konfiguriert.
+                    - **APP.3.4.A7 Datensicherung von Samba-Servern:** Sicherung erfolgt gemaess Datensicherungskonzept (CON.3); Konfigurationsdateien, Berechtigungslisten und Datenbestand werden separat gesichert.
+
+                    ## 4. Standard-Anforderungen
+                    - Verschluesselung saemtlicher SMB-Verbindungen (SMB3 Encryption)
+                    - Aktivierung von Audit-Logging fuer Zugriffe und Berechtigungsaenderungen
+                    - Trennung Benutzer- und Administrations-Netz fuer SMB-Verkehr
+                    - Vermeidung der Funktion als AD-Domain-Controller, sofern vermeidbar (Komplexitaet)
+
+                    ## 5. Cross-Refs
+                    - ORP.4 Identitaets- und Berechtigungsmanagement
+                    - OPS.1.1.2 IT-Administration (Privileged Access)
+                    - CON.3 Datensicherung
+                    - NET.1.1 Netzarchitektur (SMB-Trennung)
+                    - DER.1 Detektion (Log-Anbindung)
+
+                    ## 6. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 24 Monate sowie bei wesentlichen Aenderungen der Samba-Architektur. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_app_4_3_relational_database:
+            v1:
+                title: 'Datenbank-Sicherheitsrichtlinie (APP.4.3)'
+                body: |-
+                    # Datenbank-Sicherheitsrichtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI APP.4.3 (Relationale Datenbanksysteme) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis-Anforderungen verbindlich, Standard-Anforderungen bei normalem Schutzbedarf umzusetzen | Cross-Ref: ISO/IEC 27001:2022 Annex A.8.2, A.8.13, A.8.15, A.8.24 | DSGVO Art. 32 (TOM) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt Beschaffung, Konfiguration, Betrieb und Aussonderung relationaler Datenbankmanagementsysteme (RDBMS) der {{ tenant.legal_name }}. Sie umfasst kommerzielle und Open-Source-Systeme (z. B. Oracle, PostgreSQL, MySQL/MariaDB, MS SQL Server, IBM Db2) sowohl on-premises als auch in Database-as-a-Service-Konstellationen.
+
+                    ## 2. Verantwortlichkeiten
+                    Die operative Datenbank-Administration (DBA) erfolgt im IT-Betrieb. Die fachliche Datenverantwortung liegt bei der jeweiligen Anwendungs-Owner-Rolle. Die DSB-Beteiligung ({{ roles.dpo.fullName }}) ist verpflichtend bei Datenbanken mit personenbezogenen Daten gemaess DSGVO Art. 30.
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **APP.4.3.A1 Erstellung einer Sicherheitsrichtlinie fuer Datenbanksysteme:** Diese Richtlinie selbst erfuellt diese Anforderung.
+                    - **APP.4.3.A2 Installation des Datenbankmanagementsystems:** Installation erfolgt mit gehaertetem Profil; Standard-Schemata, -Benutzer und -Beispieldatenbanken werden entfernt oder deaktiviert.
+                    - **APP.4.3.A3 Basishaertung des Datenbankmanagementsystems:** Default-Passwoerter werden umgehend geaendert; nicht benoetigte Netzwerk-Listener werden deaktiviert; lokale Authentisierung wird auf Notfaelle begrenzt.
+                    - **APP.4.3.A4 Geregelte Verfahren zur Verwaltung des Datenbankmanagementsystems:** Aenderungen an Schema, Berechtigungen und Konfiguration unterliegen dem Change-Management (OPS.1.1.3) und werden ausschliesslich ueber dokumentierte Verfahren durchgefuehrt.
+                    - **APP.4.3.A5 Restriktive Handhabung von Datenbankverbindungen:** Anwendungen verbinden ueber dedizierte Service-Accounts mit minimalen Rechten; direkte Endbenutzer-Zugriffe auf produktive Datenbanken sind unzulaessig.
+                    - **APP.4.3.A6 Anlage neuer Datenbankbenutzer:** Erfolgt ausschliesslich auf dokumentierten Antrag, Genehmigung durch DBA und Datenverantwortlichen.
+                    - **APP.4.3.A7 Berechtigungskonzept fuer Datenbankzugriffe:** Rollenbasiertes Berechtigungsmodell (RBAC) mit halbjaehrlicher Rezertifizierung gemaess ORP.4. Privilegierte Rollen (DBA, sysadmin) sind getrennt von Anwendungsrollen.
+                    - **APP.4.3.A8 Datensicherung eines Datenbanksystems:** Backup gemaess Datensicherungskonzept (CON.3); Tests der Wiederherstellbarkeit mindestens jaehrlich. Transaktions-Log-Backups bei Schutzbedarf hoch fuer Verfuegbarkeit.
+
+                    ## 4. Standard-Anforderungen
+                    - **APP.4.3.A11 Schulung der Administratoren:** DBAs werden produkt- und Sicherheitsspezifisch geschult; Schulungsnachweise gemaess ORP.3.
+                    - Verschluesselung sensibler Spalten (Transparent Data Encryption oder applikationsseitig) gemaess Kryptokonzept (CON.1)
+                    - TLS-Verschluesselung saemtlicher Datenbankverbindungen
+                    - Pseudonymisierung / Maskierung in Test- und Entwicklungsumgebungen (DSGVO Art. 32 Abs. 1 lit. a)
+                    - Datenbank-spezifisches Audit-Logging (Login-Versuche, Schema-Aenderungen, privilegierte Operationen) mit Anbindung an SIEM (DER.1)
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    Hochverfuegbarkeit (Replikation, Failover-Cluster), kontinuierliche Schwachstellenpruefung der DBMS-Patches gegen BSI Schwachstellenwarnungen, getrennter Hardware- und Netz-Stack fuer kritische Datenbanken, regelmaessige unabhaengige DB-Audits.
+
+                    ## 6. Datenschutz-Anforderungen
+                    Bei Verarbeitung personenbezogener Daten gemaess DSGVO ist die DSB-Beteiligung verpflichtend (DSGVO Art. 39 Abs. 1 lit. a). Loeschkonzepte folgen der Loesch-/Vernichtungsrichtlinie (CON.6); Sperr-/Loesch-Routinen werden dokumentiert und nachweisbar ausgefuehrt. Auskunfts- und Berichtigungsersuchen muessen technisch unterstuetzbar sein (DSGVO Art. 15-17).
+
+                    ## 7. Cross-Refs
+                    - CON.1 Kryptokonzept (TDE, Verbindungsverschluesselung)
+                    - CON.3 Datensicherung
+                    - CON.6 Loeschen / Vernichten
+                    - ORP.4 Identitaets- und Berechtigungsmanagement
+                    - OPS.1.1.3 Patch- und Change-Management
+                    - OPS.1.1.5 Protokollierung
+                    - DER.1 Detektion
+
+                    ## 8. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 12 Monate sowie bei DB-Migrationsprojekten und Major-Upgrades. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_app_5_3_email:
+            v1:
+                title: 'E-Mail-Sicherheitsrichtlinie (APP.5.3)'
+                body: |-
+                    # E-Mail-Sicherheitsrichtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI APP.5.3 (Allgemeiner E-Mail-Client und -Server) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis-Anforderungen verbindlich | Cross-Ref: ISO/IEC 27001:2022 Annex A.5.14, A.8.20, A.8.23 | DSGVO Art. 32 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt den sicheren Betrieb von E-Mail-Clients und -Servern der {{ tenant.legal_name }} sowie das Verhalten von Beschaeftigten im E-Mail-Verkehr. Sie umfasst sowohl on-premises betriebene Mailserver (z. B. MS Exchange, Postfix, Dovecot) als auch Software-as-a-Service-Bezuege.
+
+                    ## 2. Verantwortlichkeiten
+                    Die operative Administration der Mailinfrastruktur liegt beim IT-Betrieb; die fachliche Aufsicht beim ISB ({{ roles.isb.fullName }}). Bei Mailservern mit personenbezogenen Daten ist die DSB-Beteiligung ({{ roles.dpo.fullName }}) verpflichtend.
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **APP.5.3.A1 Sicherheitsrichtlinie fuer E-Mail:** Diese Richtlinie selbst erfuellt diese Anforderung.
+                    - **APP.5.3.A2 Festlegungen fuer die Nutzung von E-Mail:** Geschaeftliche und private Nutzung sind klar abzugrenzen; private Nutzung ist nur zulaessig, sofern in der Betriebsvereinbarung geregelt.
+                    - **APP.5.3.A3 Schulung zu Sicherheitsmechanismen von E-Mail-Clients:** Beschaeftigte werden im sicheren Umgang mit E-Mail (Phishing-Erkennung, Anhang-Behandlung, S/MIME-Bedienung) gemaess ORP.3 geschult.
+                    - **APP.5.3.A4 Sichere Konfiguration der E-Mail-Clients:** Automatische Anzeige aktiver Inhalte (HTML, JavaScript, externe Bilder) wird unterbunden; Anhaenge werden nicht automatisch ausgefuehrt.
+                    - **APP.5.3.A5 Schutz vor Schadsoftware:** Mailserver durchsucht eingehende und ausgehende Nachrichten auf Schadsoftware gemaess Schadprogramm-Schutz-Richtlinie (OPS.1.1.4); aktive Inhalte werden nach Risikobewertung gefiltert.
+                    - **APP.5.3.A6 Spam-Schutz:** Spam-Filter mit kontinuierlich aktualisierten Erkennungsregeln; Quarantaene-Verfahren mit Self-Service-Freigabe durch die Empfaengerin / den Empfaenger.
+                    - **APP.5.3.A7 Verschluesselung von Mailclient-Mailserver-Verbindungen:** SMTP-Submission, IMAP und POP3 sind ausschliesslich ueber TLS gemaess BSI TR-02102-2 zulaessig.
+                    - **APP.5.3.A8 Sichere Konfiguration des Mailservers:** Open-Relay ist auszuschliessen; SMTP-Auth ist Pflicht; SPF, DKIM und DMARC sind zu konfigurieren und durchzusetzen.
+
+                    ## 4. Standard-Anforderungen
+                    - Ende-zu-Ende-Verschluesselung (S/MIME oder OpenPGP) fuer schutzbeduerftige Inhalte gemaess Klassifikation (ORP.1)
+                    - Sandboxing verdaechtiger Anhaenge
+                    - DMARC-Reject-Policy nach Erprobungsphase
+                    - Archivierung gemaess gesetzlicher Aufbewahrungspflichten (HGB, AO) unter Beachtung der DSGVO
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    Bei Schutzbedarf hoch / sehr hoch werden zusaetzlich umgesetzt: verpflichtende S/MIME-Signatur fuer alle ausgehenden Geschaefts-E-Mails, geografische Trennung von Mailserver-Standorten, Hardware-Sicherheitsmodul (HSM) fuer Schluesselverwaltung, regelmaessige unabhaengige Penetrationstests des Mailservers.
+
+                    ## 6. Verhaltensregeln
+                    Beschaeftigte sind verpflichtet, verdaechtige E-Mails ueber den definierten Meldeweg ({{ awareness.phishing_report_address }}) zu melden, niemals Authentisierungsdaten per E-Mail zu uebermitteln und schutzbeduerftige Informationen ausschliesslich verschluesselt zu versenden.
+
+                    ## 7. Cross-Refs
+                    - ORP.1 Organisation (Klassifikation)
+                    - ORP.3 Sensibilisierung
+                    - CON.1 Kryptokonzept (S/MIME, TLS)
+                    - OPS.1.1.4 Schadprogramm-Schutz
+                    - DER.1 Detektion
+
+                    ## 8. Datenschutz
+                    Inhalte und Verbindungsdaten von E-Mails sind personenbezogene Daten i.S.d. DSGVO. Auswertungen erfolgen ausschliesslich im Rahmen der Betriebsvereinbarung; Beschlagnahmung / Auswertung im Rahmen forensischer Massnahmen gemaess IT-Forensik-Richtlinie (DER.2.2) und unter DSB-Beteiligung.
+
+                    ## 9. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 12 Monate. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_sys_1_1_general_server:
+            v1:
+                title: 'Allgemeine Server-Richtlinie (SYS.1.1)'
+                body: |-
+                    # Allgemeine Server-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI SYS.1.1 (Allgemeiner Server) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis-Anforderungen verbindlich, Standard-Anforderungen bei normalem Schutzbedarf | Cross-Ref: ISO/IEC 27001:2022 Annex A.8.1, A.8.5, A.8.8, A.8.9, A.8.18 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt grundlegende Sicherheitsanforderungen an alle Server-Systeme der {{ tenant.legal_name }}, unabhaengig von Betriebssystem, Form-Faktor (physisch / virtuell / Container) und Betriebsmodell (on-premises / IaaS). Sie ist die uebergeordnete Klammer ueber die spezifischen Bausteine SYS.1.2.2 (Windows Server), SYS.1.3 (Linux/Unix) und SYS.1.6 (Container).
+
+                    ## 2. Verantwortlichkeiten
+                    Die fachliche Verantwortung pro Server liegt bei der jeweiligen Anwendungs-Owner-Rolle, die operative Administration beim IT-Betrieb. Privilegierte Zugriffe folgen der IT-Administrations-Richtlinie (OPS.1.1.2).
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **SYS.1.1.A1 Geeignete Aufstellung:** Server sind in Raeumen mit angemessenem physischen Schutz aufzustellen (Cross-Ref INF.2 Rechenzentrum / Serverraum). Aufstellung in allgemeinen Bueroflaechen ist unzulaessig.
+                    - **SYS.1.1.A2 Benutzerauthentisierung:** Authentisierung erfolgt gemaess IAM-Richtlinie (ORP.4) mit individuellen Konten. Geteilte Accounts sind unzulaessig; technische Service-Accounts sind dokumentiert und auf System-zu-System-Kommunikation beschraenkt.
+                    - **SYS.1.1.A3 Restriktive Rechtevergabe:** Nutzungsrechte folgen dem Least-Privilege-Prinzip; administrative Rechte werden nur fuer dedizierte Admin-Sitzungen verwendet.
+                    - **SYS.1.1.A4 Rollentrennung:** Funktionsrollen (Anwender, Anwendungs-Admin, System-Admin, Auditor) sind organisatorisch und technisch zu trennen.
+                    - **SYS.1.1.A5 Schutz von Schnittstellen:** Nicht benoetigte Schnittstellen (USB, Remote-Konsolen, Wartungs-Ports) werden deaktiviert oder beschraenkt.
+                    - **SYS.1.1.A6 Deaktivierung nicht benoetigter Dienste:** Nach Installation werden alle nicht benoetigten Dienste, Module und Default-Konten entfernt oder deaktiviert (Hardening).
+                    - **SYS.1.1.A7 Updates und Patches:** Patch-Management gemaess OPS.1.1.3; sicherheitsrelevante Patches werden gemaess Schweregrad innerhalb dokumentierter SLAs eingespielt.
+                    - **SYS.1.1.A8 Regelmaessige Datensicherung:** Sicherung gemaess Datensicherungskonzept (CON.3); Wiederherstellbarkeit wird mindestens jaehrlich getestet.
+                    - **SYS.1.1.A9 Einsatz von Schutzprogrammen:** Schadprogramm-Schutz gemaess OPS.1.1.4; bei Servern mit Datenaustausch zu unsicheren Netzen verpflichtend.
+                    - **SYS.1.1.A10 Protokollierung:** Sicherheitsereignisse werden gemaess Protokollierungsrichtlinie (OPS.1.1.5) erfasst und an die zentrale Log-Sammelstelle uebermittelt.
+
+                    ## 4. Standard-Anforderungen
+                    - Verschluesselung der Festplatten / Volumes (insbesondere bei mobilem Einsatz oder hohem Schutzbedarf der Vertraulichkeit)
+                    - Sichere Boot-Prozesse (Secure Boot, Measured Boot)
+                    - Zentrale Konfigurations-Verwaltung (z. B. Ansible, GPO) mit Versionskontrolle
+                    - Konfigurationspruefung gegen ein dokumentiertes Hardening-Profil mindestens halbjaehrlich
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    Hardware-basierte Sicherheitsmechanismen (TPM-gestuetzte Verschluesselung), redundante Auslegung, kontinuierliche Integritaetspruefung der Server-Konfiguration (z. B. ueber File-Integrity-Monitoring), Out-of-Band-Management ueber separates Netz.
+
+                    ## 6. Cross-Refs
+                    - INF.2 Rechenzentrum sowie Serverraum (physische Aufstellung)
+                    - ORP.4 IAM
+                    - OPS.1.1.2 IT-Administration
+                    - OPS.1.1.3 Patch- und Change-Management
+                    - OPS.1.1.4 Schadprogramm-Schutz
+                    - OPS.1.1.5 Protokollierung
+                    - CON.3 Datensicherung
+                    - DER.1 Detektion
+
+                    ## 7. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 12 Monate sowie nach wesentlichen Plattform-Aenderungen. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_sys_1_2_2_windows_server:
+            v1:
+                title: 'Windows-Server-Richtlinie (SYS.1.2.2)'
+                body: |-
+                    # Windows-Server-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI SYS.1.2.2 (Windows Server 2022) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis-Anforderungen verbindlich | Cross-Ref: ISO/IEC 27001:2022 Annex A.8.5, A.8.8, A.8.9 | Uebergeordnet: SYS.1.1 (Allgemeiner Server) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie konkretisiert SYS.1.1 fuer den Einsatz von Microsoft Windows Server (Versionsstaende ab Windows Server 2019, primaer 2022) in der {{ tenant.legal_name }}. Sie umfasst Domain-Controller, Anwendungs-, Datenbank- und Datei-Server unter Windows.
+
+                    ## 2. Verantwortlichkeiten
+                    Operative Administration durch den Windows-Plattform-Betrieb; fachliche Aufsicht durch den ISB ({{ roles.isb.fullName }}). Aenderungen am Active Directory sind besonders schutzbeduerftig und unterliegen verschaerften Change-Verfahren.
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **SYS.1.2.2.A1 Planung des Einsatzes von Windows Server:** Vor Inbetriebnahme erfolgt eine dokumentierte Planung (Editions-Wahl, Lizenzmodell, Rollen, Hochverfuegbarkeitskonzept).
+                    - **SYS.1.2.2.A2 Sichere Installation:** Installation aus vertrauenswuerdigen Quellen (Microsoft VLSC, signiertes Image); minimaler Footprint (Server Core wo moeglich); Einbindung in dokumentierten Build-Prozess.
+                    - **SYS.1.2.2.A3 Sichere Administration:** Privileged Access Workstations (PAW) fuer administrative Taetigkeiten; Tier-Modell zur Trennung von Tier 0 (DCs / AD-Admins), Tier 1 (Server-Admins), Tier 2 (Workstation-Admins). Just-in-Time-Administration gemaess OPS.1.1.2.
+                    - **SYS.1.2.2.A4 Sichere Konfiguration:** Hardening gemaess Microsoft Security Baseline und CIS Benchmark Windows Server; abweichende Einstellungen sind dokumentiert zu begruenden. SMB1 deaktiviert; LM/NTLMv1 deaktiviert; PowerShell ConstrainedLanguage-Mode bei Bedarf.
+                    - **SYS.1.2.2.A5 Schutz vor Schadsoftware:** Microsoft Defender for Endpoint oder gleichwertiger zertifizierter Schadprogramm-Schutz mit zentraler Verwaltung gemaess OPS.1.1.4.
+                    - **SYS.1.2.2.A6 Sichere Authentisierung:** Authentisierung ueber Kerberos; LM/NTLMv1 deaktiviert; Domain-Admin-Konten sind dediziert und nicht alltaeglich nutzbar; Mehrfaktor-Authentisierung gemaess ORP.4.
+                    - **SYS.1.2.2.A7 Aktivierung der Autoupdates / Patchmanagement:** WSUS oder Endpoint Configuration Manager mit klassifizierten Patch-Ringen (Pilot, Pruefung, Produktion); Notfall-Patches gemaess OPS.1.1.3.
+
+                    ## 4. Standard-Anforderungen
+                    - BitLocker-Verschluesselung der Volumes mit TPM-Schutz
+                    - Windows Defender Application Control / AppLocker fuer Allow-Listing
+                    - Windows Event Forwarding zur zentralen Log-Aggregation (DER.1)
+                    - LAPS (Local Administrator Password Solution) zur Rotation lokaler Admin-Passwoerter
+                    - Tiering-Modell auch organisatorisch durchgesetzt
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    Microsoft Defender for Identity zur Erkennung von Pass-the-Hash / Pass-the-Ticket / Golden-Ticket-Angriffen, separate Forest-Trennung fuer Tier 0, Just-Enough-Administration (JEA) fuer PowerShell-Remoting, kontinuierliche AD-Sicherheitspruefung (z. B. PingCastle / Purple Knight).
+
+                    ## 6. Cross-Refs
+                    - SYS.1.1 Allgemeiner Server
+                    - ORP.4 IAM (MFA, Privileged Accounts)
+                    - OPS.1.1.2 IT-Administration (Tiering, JIT)
+                    - OPS.1.1.3 Patch-Management
+                    - OPS.1.1.4 Schadprogramm-Schutz
+                    - OPS.1.1.5 Protokollierung
+
+                    ## 7. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 12 Monate sowie bei Major-Versionswechsel. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_sys_1_3_linux_unix_server:
+            v1:
+                title: 'Linux/Unix-Server-Richtlinie (SYS.1.3)'
+                body: |-
+                    # Linux/Unix-Server-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI SYS.1.3 (Server unter Linux und Unix) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis-Anforderungen verbindlich | Cross-Ref: ISO/IEC 27001:2022 Annex A.8.5, A.8.8, A.8.9, A.8.18 | Uebergeordnet: SYS.1.1 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie konkretisiert SYS.1.1 fuer den Einsatz von Linux- und Unix-Servern (z. B. RHEL, SLES, Debian, Ubuntu LTS, AIX, Solaris) in der {{ tenant.legal_name }}.
+
+                    ## 2. Verantwortlichkeiten
+                    Operative Administration durch den Linux-Plattform-Betrieb; fachliche Aufsicht durch den ISB ({{ roles.isb.fullName }}).
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **SYS.1.3.A1 Auswahl einer geeigneten Distribution:** Es werden ausschliesslich Distributionen mit aktivem Hersteller- bzw. Community-Support und langfristigem Patch-Lifecycle eingesetzt (z. B. RHEL, SLES, Debian Stable, Ubuntu LTS).
+                    - **SYS.1.3.A2 Sorgfaeltige Installation:** Installation aus signierten, verifizierten Repositories; minimaler Paket-Footprint; dokumentierter Build-Prozess.
+                    - **SYS.1.3.A3 Sichere Administration:** Administrative Taetigkeiten ueber sudo mit individueller Authentisierung; root-Login per SSH ist zu deaktivieren; SSH ausschliesslich mit Public-Key-Authentisierung gemaess Kryptokonzept (CON.1).
+                    - **SYS.1.3.A4 Sichere Konfiguration:** Hardening gemaess CIS Benchmark der jeweiligen Distribution; unnoetige Pakete und Dienste werden entfernt.
+                    - **SYS.1.3.A5 Sichere Installation von Softwarepaketen:** Installation ausschliesslich aus signierten Repositories; Drittanbieter-Repositories werden vorab pruefen und freigeben.
+                    - **SYS.1.3.A6 Schutz vor Ausnutzung von Schwachstellen:** Aktivierung von Address Space Layout Randomization (ASLR), No-Execute (NX), Kernel-Module-Signaturpruefung, ggf. SELinux/AppArmor im Enforcing-Mode.
+                    - **SYS.1.3.A7 Datensicherung:** Sicherung gemaess CON.3; Wiederherstellungstests mindestens jaehrlich.
+                    - **SYS.1.3.A8 Protokollierung:** systemd-journald / syslog-ng / rsyslog mit Forwarding an zentrale Log-Sammelstelle gemaess OPS.1.1.5.
+                    - **SYS.1.3.A10 Schutz der Systemintegritaet:** File-Integrity-Monitoring (z. B. AIDE, Tripwire) fuer kritische Systembereiche.
+
+                    ## 4. Standard-Anforderungen
+                    - Verpflichtende Aktivierung von SELinux/AppArmor im Enforcing-Mode
+                    - Festplattenverschluesselung (LUKS) fuer Datentraeger mit hoher Vertraulichkeit
+                    - Container-Isolation (cgroups, namespaces) bei gemeinsamer Nutzung
+                    - Konfigurations-Management ueber Ansible / Puppet / Chef mit Git-Versionierung
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    Kernel-Live-Patching zur Reduktion von Patch-Reboot-Fenstern, gehaerteter Kernel (z. B. grsecurity-aequivalente Massnahmen), Just-in-Time-sudo, eBPF-basiertes Runtime-Monitoring.
+
+                    ## 6. Cross-Refs
+                    - SYS.1.1 Allgemeiner Server
+                    - CON.1 Kryptokonzept (SSH-Keys, LUKS)
+                    - OPS.1.1.2 IT-Administration
+                    - OPS.1.1.3 Patch-Management
+                    - OPS.1.1.5 Protokollierung
+                    - DER.1 Detektion
+
+                    ## 7. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 12 Monate. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_sys_2_1_general_client:
+            v1:
+                title: 'Allgemeine Client-Richtlinie (SYS.2.1)'
+                body: |-
+                    # Allgemeine Client-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI SYS.2.1 (Allgemeiner Client) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis-Anforderungen verbindlich | Cross-Ref: ISO/IEC 27001:2022 Annex A.5.10, A.8.1, A.8.5, A.8.7 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt die Beschaffung, Konfiguration, den Betrieb und die Aussonderung von Endgeraeten der Beschaeftigten der {{ tenant.legal_name }} (Desktops, Notebooks, Thin Clients). Sie ist die uebergeordnete Klammer ueber spezifische Client-Bausteine wie SYS.2.2.3 (Windows Client) und SYS.2.5 (Client-Virtualisierung).
+
+                    ## 2. Verantwortlichkeiten
+                    Operative Administration durch den Client-Betrieb; fachliche Aufsicht durch den ISB ({{ roles.isb.fullName }}).
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **SYS.2.1.A1 Benutzerauthentisierung:** Anmeldung am Client erfolgt mit individuellen Konten gemaess IAM-Richtlinie (ORP.4); geteilte Konten sind unzulaessig.
+                    - **SYS.2.1.A2 Rollentrennung:** Endbenutzer arbeiten mit unprivilegierten Konten; administrative Aufgaben erfolgen ueber separate Admin-Konten.
+                    - **SYS.2.1.A3 Aktivieren von Autoupdates:** Betriebssystem- und Anwendungs-Updates werden automatisiert verteilt; Notfall-Patches binnen 72h.
+                    - **SYS.2.1.A4 Regelmaessige Datensicherung:** Daten werden ueber zentrale Sync-Mechanismen oder per User-Profile-Synchronisation gesichert; lokale Datenhaltung ist auf das Notwendige zu beschraenken.
+                    - **SYS.2.1.A5 Schutz vor Schadsoftware:** Endpoint-Protection gemaess OPS.1.1.4 mit zentraler Verwaltung.
+                    - **SYS.2.1.A6 Einsatz von Personal Firewalls:** Aktivierte Personal Firewall mit restriktivem Default-Regelwerk.
+                    - **SYS.2.1.A7 Schutz von Schnittstellen:** USB-Massenspeicher werden gemaess Wechseldatentraeger-Richtlinie (SYS.4.5) kontrolliert; Remote-Verbindungen werden auf VPN-Konzentrator geleitet.
+                    - **SYS.2.1.A8 Inventarisierung der Clients:** Saemtliche Clients sind im Asset-Inventar erfasst; Inventur-Abgleich mindestens jaehrlich.
+                    - **SYS.2.1.A9 Sicheres Login:** Bildschirmsperre nach 5 Minuten Inaktivitaet automatisch; Boot-Passwort fuer mobile Geraete.
+                    - **SYS.2.1.A10 Konfigurationsmanagement:** Zentrale Konfigurations-Vorgaben ueber Mobile Device Management (MDM) bzw. Group Policy.
+
+                    ## 4. Standard-Anforderungen
+                    - Festplattenverschluesselung (BitLocker / FileVault / LUKS) Pflicht fuer alle mobilen Clients
+                    - Application-Allow-Listing (z. B. AppLocker, WDAC, Gatekeeper)
+                    - Einsatz von TPM 2.0 fuer Secure Boot und Schluessel-Speicherung
+                    - Endpoint Detection and Response (EDR) mit zentraler Auswertung
+                    - Clear-Desk- / Clear-Screen-Policy gemaess INF.1
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    Privileged Access Workstations fuer administrative Taetigkeiten, virtualisierte Browser fuer riskante Webnutzung, Hardware-Token-basierte Anmeldung (FIDO2), kontinuierliches Compliance-Monitoring der Client-Konfiguration.
+
+                    ## 6. Cross-Refs
+                    - ORP.4 IAM
+                    - OPS.1.1.3 Patch-Management
+                    - OPS.1.1.4 Schadprogramm-Schutz
+                    - SYS.4.5 Wechseldatentraeger
+                    - INF.1 Allgemeines Gebaeude (Clear-Desk)
+                    - DER.1 Detektion (EDR)
+
+                    ## 7. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 12 Monate. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_sys_4_5_storage_systems:
+            v1:
+                title: 'Wechseldatentraeger-Richtlinie (SYS.4.5)'
+                body: |-
+                    # Wechseldatentraeger-Richtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI SYS.4.5 (Wechseldatentraeger) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis-Anforderungen verbindlich | Cross-Ref: ISO/IEC 27001:2022 Annex A.7.10, A.7.14, A.8.10, A.8.12, A.8.24 | DSGVO Art. 32 | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt den Umgang mit Wechseldatentraegern (USB-Speichermedien, externe Festplatten, optische Medien, Speicherkarten) in der {{ tenant.legal_name }}. Sie ergaenzt die Loesch-/Vernichtungsrichtlinie (CON.6) und die Auslandsreisen-Richtlinie (CON.7).
+
+                    ## 2. Verantwortlichkeiten
+                    Die Beschaffung erfolgt zentral ueber den IT-Einkauf; die Inventarisierung im Asset-Management. Der ISB ({{ roles.isb.fullName }}) verantwortet die Norm-Konformitaet; bei personenbezogenen Daten ist die DSB-Beteiligung ({{ roles.dpo.fullName }}) verpflichtend.
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **SYS.4.5.A1 Sensibilisierung der Beschaeftigten:** Beschaeftigte werden im sicheren Umgang mit Wechseldatentraegern gemaess ORP.3 geschult; Risiken (Verlust, Schadprogramme, Datenabfluss) sind explizit Inhalt.
+                    - **SYS.4.5.A2 Erstellung einer Richtlinie zum Einsatz:** Diese Richtlinie selbst erfuellt diese Anforderung.
+                    - **SYS.4.5.A3 Datenschutz und Informationsschutz:** Personenbezogene oder vertrauliche Daten duerfen nur auf verschluesselten Datentraegern transportiert werden; Verschluesselungsverfahren gemaess Kryptokonzept (CON.1).
+                    - **SYS.4.5.A4 Schutz vor Schadprogrammen:** Vor Anschluss an einen Client erfolgt eine Pruefung auf Schadsoftware gemaess OPS.1.1.4. Auto-Run-Funktionen sind deaktiviert.
+                    - **SYS.4.5.A5 Sichere Aufbewahrung:** Wechseldatentraeger mit schutzbeduerftigen Daten werden in verschlossenen Behaeltnissen gemaess INF.1 verwahrt.
+                    - **SYS.4.5.A6 Sicheres Loeschen / Vernichten:** Bei Aussonderung erfolgt sicheres Loeschen gemaess CON.6 und BSI-Empfehlungen (z. B. mehrfaches Ueberschreiben oder physische Vernichtung). Defekte Datentraeger werden ueber zertifizierte Dienstleister vernichtet.
+
+                    ## 4. Standard-Anforderungen
+                    - Ausgabe ausschliesslich verschluesselungsfaehiger Datentraeger (Hardware-verschluesselt mit FIPS-140-Validierung bevorzugt)
+                    - Zentrale Endpoint-Protection-Regel: nur registrierte Datentraeger duerfen angebunden werden (Device Control)
+                    - Inventar mit Verantwortlicher / Verantwortlichem, Ausgabe-, Rueckgabe- und Vernichtungsdatum
+                    - Verbot privater Datentraeger an Geschaefts-Clients
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    Komplettverbot des Wechseldatentraeger-Einsatzes, Ersetzen durch alternative Transferverfahren (gesicherte File-Transfer-Plattformen, klassifizierte Daten-Diodes); Hardware-Token mit PIN- und Biometrie-Schutz.
+
+                    ## 6. Cross-Refs
+                    - ORP.3 Sensibilisierung
+                    - CON.1 Kryptokonzept
+                    - CON.6 Loeschen / Vernichten
+                    - CON.7 Auslandsreisen
+                    - OPS.1.1.4 Schadprogramm-Schutz
+                    - INF.1 Allgemeines Gebaeude (Aufbewahrung)
+                    - SYS.2.1 Allgemeiner Client (Schnittstellen-Schutz)
+
+                    ## 7. Datenschutz
+                    Verluste oder Diebstaehle von Wechseldatentraegern mit personenbezogenen Daten sind potenziell meldepflichtige Datenschutzvorfaelle gemaess DSGVO Art. 33 / 34 und werden unmittelbar an den DSB ({{ roles.dpo.fullName }}) gemeldet.
+
+                    ## 8. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 24 Monate. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_net_1_1_network_architecture:
+            v1:
+                title: 'Netzarchitektur und -design (NET.1.1)'
+                body: |-
+                    # Netzarchitektur und -design der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI NET.1.1 (Netzarchitektur und -design) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis-Anforderungen verbindlich, Standard-Anforderungen umzusetzen | Cross-Ref: ISO/IEC 27001:2022 Annex A.8.20, A.8.21, A.8.22 | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Dieses Konzept dokumentiert die Architektur und das Design des Netzwerks der {{ tenant.legal_name }}. Es bildet die Grundlage fuer alle nachgelagerten Netz-Bausteine (NET.1.2 Netzmanagement, NET.3.1 Router/Switches, NET.3.2 Firewall, NET.3.3 VPN, NET.4.x WLAN/Mobilfunk).
+
+                    ## 2. Verantwortlichkeiten
+                    Die Architektur-Hoheit liegt beim Netz-Architekturteam des IT-Betriebs; die fachliche Aufsicht beim ISB ({{ roles.isb.fullName }}). Aenderungen an Sicherheitszonen oder zonengrenzueberschreitenden Verbindungen erfordern explizite ISB-Genehmigung.
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **NET.1.1.A1 Sicherheitsrichtlinie fuer das Netzwerk:** Diese Richtlinie selbst sowie die Themen-Richtlinien NET.3.1 / NET.3.2 erfuellen diese Anforderung.
+                    - **NET.1.1.A2 Dokumentation des Netzes:** Vollstaendige Netzdokumentation (Topologie, IP-Plan, VLAN-Struktur, Routing-Konzept, Sicherheitszonen) in versionierter Form; Aktualisierung bei jeder wesentlichen Aenderung, mindestens halbjaehrliche Konsistenzpruefung.
+                    - **NET.1.1.A3 Anforderungsanalyse:** Bevor Aenderungen am Netz vorgenommen werden, sind Anforderungen aus Schutzbedarf, regulatorischen Vorgaben und Geschaeftszielen dokumentiert.
+                    - **NET.1.1.A4 Netzplanung:** Planung erfolgt anhand definierter Sicherheitszonen mit unterschiedlichem Vertrauensgrad: Untrusted (Internet), DMZ, Internal, Management, Restricted (KRITIS / personenbezogene Daten), ICS/OT (vollstaendig getrennt). Uebergaenge ausschliesslich ueber kontrollierte Gateways gemaess NET.3.2.
+                    - **NET.1.1.A5 Festlegung einer Netzaufteilungs- und Mikrosegmentierungs-Strategie:** Aufteilung in funktionale Subnetze; Mikrosegmentierung im Server-Segment zur Reduktion von Lateral Movement.
+                    - **NET.1.1.A6 Spezifikation des Netzdesigns:** Konkrete Auswahl der Hardware-Klassen, Redundanzkonzept, Bandbreitenplanung, Latenzanforderungen.
+                    - **NET.1.1.A7 Realisierung des Netzdesigns:** Umsetzung erfolgt nach dokumentierter Reihenfolge, mit Tests jeder Aenderung in Staging-Umgebung vor Produktion.
+                    - **NET.1.1.A8 Regelmaessige Aktualisierung:** Architektur-Review mindestens jaehrlich oder bei wesentlichen Geschaeftsaenderungen.
+
+                    ## 4. Standard-Anforderungen
+                    - Mikrosegmentierung saemtlicher Server-Workloads ueber Stateful Firewalls oder Software-defined Networking
+                    - Out-of-Band-Management-Netz fuer alle Netz-Komponenten
+                    - Zero-Trust-Architektur-Bausteine fuer Anwendungszugriffe
+                    - Redundante Anbindung zu externen Netzen (insbesondere Internet)
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    Vollstaendig physisch getrennte Netze fuer Kronjuwelen (Air-Gap), Mehrwege-Anbindung mit unterschiedlichen Carriern, kontinuierliches Network-Behaviour-Analysis-Monitoring, Software-Defined-Perimeter (SDP) anstelle klassischer VPN-Konzentratoren.
+
+                    ## 6. Cross-Refs
+                    - NET.1.2 Netzmanagement
+                    - NET.3.1 Router und Switches
+                    - NET.3.2 Firewall
+                    - NET.3.3 VPN
+                    - NET.4.x WLAN / Mobilfunk
+                    - INF.2 Rechenzentrum (physische Verkabelung)
+                    - DER.1 Detektion (NIDS / NDR)
+
+                    ## 7. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 24 Monate, anlassbezogen bei Standortaenderungen. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_net_3_1_router_switches:
+            v1:
+                title: 'Router- und Switch-Sicherheitsrichtlinie (NET.3.1)'
+                body: |-
+                    # Router- und Switch-Sicherheitsrichtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI NET.3.1 (Router und Switches) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis-Anforderungen verbindlich | Cross-Ref: ISO/IEC 27001:2022 Annex A.8.5, A.8.20, A.8.21 | Uebergeordnet: NET.1.1 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt Beschaffung, Konfiguration und Betrieb von Routern und Switches in der {{ tenant.legal_name }}. Sie umfasst sowohl Backbone-Komponenten als auch Access-Layer-Switches und Edge-Router.
+
+                    ## 2. Verantwortlichkeiten
+                    Operative Administration durch den Netz-Betrieb; fachliche Aufsicht durch den ISB. Aenderungen am Backbone und an Sicherheitszonen-Uebergaengen unterliegen verschaerften Change-Verfahren gemaess OPS.1.1.3.
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **NET.3.1.A1 Sichere Grundkonfiguration:** Default-Passwoerter werden umgehend ersetzt; nicht benoetigte Dienste (HTTP-Mgmt, Telnet, CDP/LLDP nach Bedarf) werden deaktiviert. Konfiguration erfolgt aus dokumentierten Vorlagen.
+                    - **NET.3.1.A2 Einspielen von Updates und Patches:** Hersteller-Updates werden gemaess Patch-Management-Richtlinie (OPS.1.1.3) eingespielt; sicherheitskritische Updates innerhalb dokumentierter SLAs.
+                    - **NET.3.1.A3 Restriktive Rechtevergabe:** Administrative Zugaenge erfolgen ueber Rollen mit minimal erforderlichen Privilegien; Sammeldaten-Authentisierung (TACACS+, RADIUS) gegen das zentrale IAM gemaess ORP.4.
+                    - **NET.3.1.A4 Schutz der Administrationsschnittstellen:** Administration ausschliesslich ueber SSH (mit Public-Key-Authentisierung) und HTTPS aus dem Management-Netz; Out-of-Band-Konsolen sind physisch zu sichern.
+                    - **NET.3.1.A5 Schutz vor Missbrauch:** Port-Security an Access-Switches (z. B. MAC-Limit, sticky-MAC); Storm Control; BPDU-Guard / Root-Guard im Spanning-Tree.
+                    - **NET.3.1.A6 Notfallzugriff:** Definierter Notfallzugriff (Console-Server, Out-of-Band-Modem) mit dokumentierten Notfall-Credentials im Schluessel-Tresor.
+                    - **NET.3.1.A7 Protokollierung:** Geraete protokollieren Konfigurationsaenderungen, Login-Versuche und sicherheitsrelevante Ereignisse an die zentrale Log-Sammelstelle (OPS.1.1.5).
+
+                    ## 4. Standard-Anforderungen
+                    - Konfigurations-Backups taeglich; Versionsvergleich zur Erkennung unautorisierter Aenderungen
+                    - Network Time Protocol (NTP) gegen interne Zeitserver mit Authentisierung
+                    - 802.1X-Network-Access-Control im Access-Layer
+                    - Verschluesseltes SNMPv3 ausschliesslich; SNMPv1/v2c verboten
+                    - Trennung Management- und Produktivnetz auf VLAN-Ebene mindestens, besser physisch
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    MACsec-Verschluesselung im Backbone, redundante Hardware-Auslegung mit Hot-Standby, kontinuierliche Konfigurations-Compliance-Pruefung gegen Hardening-Profil.
+
+                    ## 6. Cross-Refs
+                    - NET.1.1 Netzarchitektur
+                    - NET.3.2 Firewall
+                    - ORP.4 IAM (TACACS+/RADIUS-Anbindung)
+                    - OPS.1.1.2 IT-Administration
+                    - OPS.1.1.3 Patch-Management
+                    - OPS.1.1.5 Protokollierung
+                    - DER.1 Detektion
+
+                    ## 7. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 12 Monate. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_net_3_2_firewall:
+            v1:
+                title: 'Firewall-Sicherheitsrichtlinie (NET.3.2)'
+                body: |-
+                    # Firewall-Sicherheitsrichtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI NET.3.2 (Firewall) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis- und Standard-Anforderungen verbindlich (Standard-Tier wegen kritischer Funktion am Sicherheitszonen-Uebergang) | Cross-Ref: ISO/IEC 27001:2022 Annex A.8.20, A.8.21, A.8.22, A.8.23 | Uebergeordnet: NET.1.1 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt Auswahl, Konfiguration und Betrieb saemtlicher Firewalls (Perimeter-, Segment-, Cloud-, Web-Application-Firewalls) der {{ tenant.legal_name }}. Sie ist die zentrale technische Umsetzung der in NET.1.1 definierten Sicherheitszonen.
+
+                    ## 2. Verantwortlichkeiten
+                    Operative Administration durch den Firewall-Betrieb (mehrere Augen); fachliche Aufsicht und Regelwerks-Genehmigung durch den ISB ({{ roles.isb.fullName }}); Vier-Augen-Prinzip fuer alle Regelaenderungen am Perimeter.
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **NET.3.2.A1 Erstellung einer Sicherheitsrichtlinie:** Diese Richtlinie selbst erfuellt diese Anforderung.
+                    - **NET.3.2.A2 Festlegung der Firewall-Regeln:** Default-Deny-Prinzip; jede zugelassene Verbindung muss aus einer dokumentierten Anforderung mit Geschaeftsbegruendung hervorgehen.
+                    - **NET.3.2.A3 Einrichten geeigneter Filterregeln:** Filterregeln werden je Sicherheitszonen-Paar konfiguriert; Source / Destination / Service / Begruendung / Eigentuemer / Review-Datum sind Pflichtfelder.
+                    - **NET.3.2.A4 Sichere Konfiguration der Firewall:** Hardening gemaess Hersteller-Empfehlung und CIS Benchmark; nicht benoetigte Funktionen deaktiviert; Default-Zertifikate ersetzt.
+                    - **NET.3.2.A5 Restriktive Konfiguration der Verwaltungsschnittstellen:** Administration ausschliesslich aus Management-Netz, mit MFA und individueller Authentisierung (TACACS+/RADIUS).
+                    - **NET.3.2.A6 Schutz vor invaliden Paketen:** Anti-Spoofing-Filter, Stateful Inspection, Schutz vor fragmentierten Angriffen.
+                    - **NET.3.2.A7 Zeitsynchronisierung:** NTP gegen interne, authentisierte Zeitserver.
+                    - **NET.3.2.A8 Protokollierung:** Verbindungs-, Verwerfungs- und Konfigurationsaenderungs-Logs werden an zentrale Log-Sammelstelle uebermittelt.
+                    - **NET.3.2.A9 Notfallzugriff:** Out-of-Band-Notfallzugriff mit dokumentierten Notfall-Credentials.
+                    - **NET.3.2.A10 Aktualitaet von Firmware und Patches:** Sicherheits-Updates innerhalb 14 Tagen, Notfall-Patches binnen 72h.
+                    - **NET.3.2.A11 Datensicherung der Konfiguration:** Konfigurations-Backups taeglich; Wiederherstellung mindestens jaehrlich getestet.
+
+                    ## 4. Standard-Anforderungen
+                    - Periodisches Regelwerks-Review (mindestens halbjaehrlich) auf Aktualitaet, Notwendigkeit und Konsistenz
+                    - Hochverfuegbare Auslegung (HA-Cluster) am Perimeter
+                    - Application-Layer-Inspection (Next-Generation-Firewall-Funktionalitaet) fuer kritische Anwendungs-Protokolle
+                    - Intrusion Prevention System (IPS) im aktiven Mode am Perimeter
+                    - Vier-Augen-Prinzip technisch durchgesetzt fuer Regel-Commits
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    Geografisch verteilte Perimeter-Architektur, herstellerdiverse Defense-in-Depth (zwei Firewall-Hersteller hintereinander), automatisierte Regelwerks-Konsistenzpruefung, Threat-Intelligence-basierte dynamische Block-Listen.
+
+                    ## 6. Regel-Lebenszyklus
+                    Jede Firewall-Regel hat eine Eigentuemerin / einen Eigentuemer, ein Ablaufdatum (max. 24 Monate), eine dokumentierte Geschaeftsbegruendung und einen Review-Termin. Ablaufende Regeln werden 30 Tage vorher der Eigentuemerin / dem Eigentuemer angekuendigt; ohne Verlaengerung erfolgt automatische Loeschung.
+
+                    ## 7. Cross-Refs
+                    - NET.1.1 Netzarchitektur (Sicherheitszonen)
+                    - NET.3.1 Router und Switches
+                    - ORP.4 IAM (Vier-Augen-Prinzip, MFA)
+                    - OPS.1.1.2 IT-Administration
+                    - OPS.1.1.3 Patch-Management
+                    - DER.1 Detektion (IPS-Anbindung)
+
+                    ## 8. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 12 Monate, Regelwerks-Review halbjaehrlich. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_inf_1_general_building:
+            v1:
+                title: 'Gebaeude-Sicherheitsrichtlinie (INF.1)'
+                body: |-
+                    # Gebaeude-Sicherheitsrichtlinie der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI INF.1 (Allgemeines Gebaeude) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis-Anforderungen verbindlich | Cross-Ref: ISO/IEC 27001:2022 Annex A.7.1, A.7.2, A.7.3, A.7.5, A.7.6, A.7.7 | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt physische und umgebungsbezogene Sicherheitsmassnahmen fuer alle Liegenschaften der {{ tenant.legal_name }}. Sie ist die uebergeordnete Klammer ueber spezifische Bausteine wie INF.2 (Rechenzentrum), INF.7 (Bueroraum), INF.9 (Mobiler Arbeitsplatz).
+
+                    ## 2. Verantwortlichkeiten
+                    Die operative Verantwortung fuer Gebaeude-Sicherheit liegt beim Facility-Management; die Abstimmung mit Informationssicherheits-Anforderungen verantwortet der ISB ({{ roles.isb.fullName }}). Schluesselverwaltung erfolgt nach dokumentiertem Verfahren.
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **INF.1.A1 Planung der Gebaeudeabsicherung:** Vor Bezug oder wesentlicher Umnutzung erfolgt eine dokumentierte Sicherheitsbewertung mit Ableitung von Schutzzonen.
+                    - **INF.1.A2 Anpassung der Verkabelung an aktuelle Anforderungen:** Datenkabel und Stromkabel werden physisch getrennt verlegt; nicht genutzte Patch-Felder sind deaktiviert oder physisch geschuetzt.
+                    - **INF.1.A3 Einhaltung von Brandschutzbestimmungen:** Brandschutzvorschriften werden eingehalten; Brandmeldeanlage und -meldewege sind dokumentiert; jaehrliche Brandschutzunterweisung verpflichtend.
+                    - **INF.1.A4 Branderkennung in Gebaeuden:** Automatische Brandmeldeanlage in technisch genutzten Raeumen verpflichtend.
+                    - **INF.1.A5 Handfeuerloescher:** Geeignete Handfeuerloescher in fuer Loeschung relevanten Raeumen; jaehrliche Wartung.
+                    - **INF.1.A6 Geschlossene Fenster und Tueren:** Aussenfenster und -tueren ausserhalb der Geschaeftszeiten verschlossen; Vier-Augen-Pruefung bei sensiblen Bereichen.
+                    - **INF.1.A7 Zutrittsregelungen und -kontrollen:** Zutritt zu Gebaeuden und Raeumen ueber dokumentiertes Berechtigungsmodell; Besucher mit Begleitpflicht in nicht-oeffentlichen Bereichen.
+                    - **INF.1.A8 Schluesselverwaltung:** Schluessel und Berechtigungstoken werden zentral verwaltet, Ausgabe und Rueckgabe protokolliert; Verlust meldepflichtig.
+                    - **INF.1.A9 Beruecksichtigung von Sicherheitsvorgaben in Bau- und Umbaumassnahmen:** ISB-Beteiligung bei allen Bau- und Umbauvorhaben mit Bezug zu IT- oder schutzbeduerftigen Bereichen.
+                    - **INF.1.A10 Einhaltung der Klimavorgaben:** Klimavorgaben fuer Server- und Technikraeume werden ueberwacht; Abweichungen werden alarmiert.
+                    - **INF.1.A11 Aufgeraeumter Arbeitsplatz und Bildschirmsperre (Clear Desk / Clear Screen):** Schutzbeduerftige Unterlagen sind ausserhalb der Bearbeitung verschlossen aufzubewahren; Bildschirme werden bei Verlassen gesperrt.
+
+                    ## 4. Standard-Anforderungen
+                    - Videoueberwachung kritischer Gebaeudezonen (mit datenschutzrechtlicher Pruefung gemaess DSGVO Art. 6 / Art. 88 BDSG; Speicherbegrenzung 72h sofern keine Vorfaelle)
+                    - Einbruchmeldeanlage mit Anbindung an Notruf-Servicestelle
+                    - Stromversorgungs-Redundanz fuer technisch genutzte Raeume
+                    - Sektorenweise Zutritts-Berechtigung mit elektronischen Tokens
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    Mehrstufige Zutrittskontrolle mit Mantrap-Schleusen, Mehrfaktor-Zutritt (Token + Biometrie), 24/7-Sicherheitsdienst, sicherer Empfangsbereich mit Vereinzelungsanlage.
+
+                    ## 6. Cross-Refs
+                    - INF.2 Rechenzentrum sowie Serverraum
+                    - ORP.4 IAM (Zutritts-Berechtigungen)
+                    - ORP.3 Sensibilisierung (Clear-Desk)
+                    - DER.4 Notfallmanagement (Brand, Stromausfall)
+
+                    ## 7. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 24 Monate sowie nach wesentlichen baulichen Aenderungen. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_inf_2_data_center:
+            v1:
+                title: 'Rechenzentrums- und Serverraum-Konzept (INF.2)'
+                body: |-
+                    # Rechenzentrums- und Serverraum-Konzept der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI INF.2 (Rechenzentrum sowie Serverraum) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis- und Standard-Anforderungen verbindlich (kritische Infrastruktur) | Cross-Ref: ISO/IEC 27001:2022 Annex A.7.1, A.7.4, A.7.5, A.7.8, A.7.11, A.7.12 | EN 50600 (Rechenzentrums-Norm) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Dieses Konzept regelt Errichtung, Betrieb und Sicherheit aller Rechenzentren und Serverraeume der {{ tenant.legal_name }}. Es konkretisiert die Anforderungen aus INF.1 (Allgemeines Gebaeude) und INF.7 (Bueroraum) fuer technisch genutzte Raeume.
+
+                    ## 2. Verantwortlichkeiten
+                    Die fachliche Verantwortung liegt beim RZ-Betrieb; die Norm-Konformitaet beim ISB ({{ roles.isb.fullName }}); die Notfallplanung bei der Notfall-Beauftragten / dem Notfall-Beauftragten ({{ roles.notfallbeauftragter.fullName }}) gemaess BSI 200-4.
+
+                    ## 3. Basis-Anforderungen (Pflicht)
+                    - **INF.2.A1 Festlegung von Anforderungen:** Vor Errichtung dokumentierte Anforderungsanalyse (Verfuegbarkeitsklasse, Schutzbedarf, regulatorische Pflichten).
+                    - **INF.2.A2 Bildung von Sicherheitszonen:** Gestaffelte Zonen (oeffentlicher Bereich, kontrollierter Bereich, Sicherheitsbereich, Hochsicherheitsbereich) mit eskalierender Zutritts-Kontrolle.
+                    - **INF.2.A3 Zutrittskontrolle:** Zutritt zu RZ-Flaechen ausschliesslich mit individueller Authentisierung; Mehrfaktor (Token + PIN/Biometrie); Protokollierung saemtlicher Zutritte; Begleitung externer Personen Pflicht.
+                    - **INF.2.A4 Branderkennung und -bekaempfung:** Frueherkennungsanlage (z. B. Rauchansaugsystem) und automatische Loeschanlage (Inertgas oder gleichwertig); Feuerwehrplan dokumentiert.
+                    - **INF.2.A5 Klimatisierung:** Redundante Klimatisierung mit Ueberwachung von Temperatur und Luftfeuchte; Alarmierung bei Schwellwertueberschreitung.
+                    - **INF.2.A6 Stromversorgung:** Redundante Stromeinspeisung; USV mit ausreichender Ueberbrueckungszeit; Notstromaggregat fuer kritische Bereiche; jaehrlicher Lasttest.
+                    - **INF.2.A7 Verkabelung:** Strukturierte Verkabelung mit klarer Trennung Strom / Daten; Brandlast minimiert; Patch-Dokumentation aktuell.
+                    - **INF.2.A8 Einbruchsschutz:** Einbruchhemmende Tueren und Fenster; Einbruchmeldeanlage mit Anbindung an Notruf-Servicestelle.
+                    - **INF.2.A9 Vermeidung von Wasserschaeden:** Doppelboden mit Wassermelder; keine Wasserleitungen ueber technisch genutzten Bereichen.
+                    - **INF.2.A10 Inventarisierung der Hardware:** Vollstaendiges Asset-Inventar; Zugang zur Hardware physisch protokolliert.
+                    - **INF.2.A11 Schutz vor unbefugtem Zugriff:** Server-Racks abschliessbar; Schluesselverwaltung dokumentiert.
+                    - **INF.2.A12 Ueberwachung der baulichen Infrastruktur:** Kontinuierliches Monitoring von Klima, Strom, Brand, Einbruch, Wasser; Alarmierung an Leitstand 24/7.
+
+                    ## 4. Standard-Anforderungen
+                    - Verfuegbarkeitsklasse mindestens VK 3 (EN 50600) fuer kritische Workloads
+                    - Geografische Trennung primaeres / sekundaeres RZ (Mindestabstand gemaess BCM-Anforderung)
+                    - Mantrap-Schleusen am Eingang zum Hochsicherheitsbereich
+                    - Videoueberwachung mit datenschutzkonformer Speicherung
+                    - Notfall- und Wiederanlaufplaene gemaess BSI 200-4 / DER.4
+
+                    ## 5. Anforderungen bei erhoehtem Schutzbedarf
+                    Tier IV / VK 4 Auslegung, vollstaendig georedundante Aktiv-Aktiv-Konzepte, biometrische Zutrittskontrolle in Vereinzelungsanlagen, EMV-Schirmung sensibler Bereiche, Schutz vor Cyber-Physical-Angriffen (z. B. EMP-Schutz fuer Kronjuwelen).
+
+                    ## 6. Cross-Refs
+                    - INF.1 Allgemeines Gebaeude
+                    - SYS.1.1 Allgemeiner Server (physische Aufstellung)
+                    - DER.4 Notfallmanagement
+                    - BSI 200-4 Business Continuity Management
+                    - EN 50600 Rechenzentrums-Norm
+
+                    ## 7. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 12 Monate; nach jedem Notfall- bzw. Wiederherstellungstest. Genehmigungskette: {{ approval.chain }}.
+
+        bsi_ind_1_2_ot_network_architecture:
+            v1:
+                title: 'Prozessleit- und Automatisierungstechnik (OT/ICS) (IND.1)'
+                body: |-
+                    # Sicherheitskonzept fuer Prozessleit- und Automatisierungstechnik (OT/ICS) der {{ tenant.legal_name }}
+
+                    *Norm-Anker: BSI IND.1 (Prozessleit- und Automatisierungstechnik) | Edition: IT-Grundschutz-Kompendium {{ bsi.kompendium_edition }} | Pflicht-Niveau: Basis- und Standard-Anforderungen verbindlich (KRITIS-Relevanz) | Cross-Ref: ISO/IEC 27001:2022 Annex A.5.7, A.7.4, A.8.20, A.8.21, A.8.32 | IEC 62443 (Industrial Communication Networks Security), NIS2-UmsuG, BSIG § 8a | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Dieses Konzept regelt die Informationssicherheit fuer alle Prozessleit-, Automatisierungs-, SCADA- und ICS-Komponenten der {{ tenant.legal_name }}. Es ist die uebergeordnete Klammer ueber die spezifischen IND-Bausteine (IND.2.x SPS, IND.2.4 Sicherheitsgerichtete IT, IND.3.x Sensoren/Aktoren, IND.4.x Mobile Geraete in der ICS-Umgebung).
+
+                    ## 2. Verantwortlichkeiten
+                    Die fachliche Verantwortung liegt bei der OT-Leitung ({{ roles.ot_lead.fullName }}); die Abstimmung mit IT-Sicherheit beim ISB ({{ roles.isb.fullName }}). Konvergenz-Themen (IT/OT-Schnittstellen) erfordern paritaetische Genehmigung. Bei KRITIS-Pflicht: ISB ist KRITIS-Beauftragter / KRITIS-Beauftragte i.S.d. BSIG § 8a Abs. 5.
+
+                    ## 3. Besonderheiten von OT/ICS
+                    Die folgenden Charakteristika unterscheiden OT von klassischer IT und sind handlungsleitend:
+
+                    - **Lifecycle 15+ Jahre:** Komponenten haben ueblicherweise Betriebszeiten von 15-30 Jahren; Patch-Verfuegbarkeit endet oft frueher. Kompensierende Massnahmen sind verbindlich.
+                    - **Verfuegbarkeit vor Vertraulichkeit:** Schutzziel-Hierarchie ist Verfuegbarkeit > Integritaet > Vertraulichkeit (umgekehrt zur klassischen IT).
+                    - **Echtzeitanforderungen:** Latenzen im Millisekunden-Bereich; Tiefen-Inspektion oder Verschluesselung darf den Prozess nicht stoeren.
+                    - **Safety-Auswirkungen:** Sicherheitsmassnahmen duerfen die funktionale Sicherheit (Safety) nicht beeintraechtigen; Safety-Instrumented-Systems (SIS) sind unantastbar.
+                    - **Patch-Strategie:** Patches werden ausschliesslich in Wartungsfenstern und nach Lab-Test eingespielt; Notfall-Patches erfordern Risiko-Abwaegung mit Anlagenbetrieb.
+
+                    ## 4. Basis-Anforderungen (Pflicht)
+                    - **IND.1.A1 Aufstellung einer Sicherheitsrichtlinie:** Dieses Konzept selbst erfuellt diese Anforderung.
+                    - **IND.1.A2 Aufbauorganisation:** OT-Sicherheitsorganisation ist dokumentiert; Schnittstellen IT/OT/Safety sind definiert.
+                    - **IND.1.A3 Vergabe von Verantwortlichkeiten:** Asset-Owner pro ICS-Komponente sind benannt; Stellvertretungen geregelt.
+                    - **IND.1.A4 Geltungsbereich:** Geltungsbereich ist anhand des ICS-Zonen- und Conduit-Modells (IEC 62443-3-2) dokumentiert.
+                    - **IND.1.A5 Identifikation von Anforderungen:** Anforderungen aus Geschaefts-, Safety-, Umweltschutz- und regulatorischen Pflichten (BSIG, NIS2-UmsuG, KRITIS-Verordnung) sind erfasst.
+                    - **IND.1.A6 Dokumentation der ICS-Umgebung:** Vollstaendiges Inventar aller ICS-Komponenten (PLC, HMI, Engineering Stations, Historian, Field-Devices); Netzdiagramm mit Zonen und Conduits.
+                    - **IND.1.A7 Konzeption der ICS-Wartung:** Wartungs- und Patch-Konzept beruecksichtigt Lifecycle und Verfuegbarkeitsanforderungen; alternative Schutzmassnahmen fuer nicht-patchbare Komponenten sind dokumentiert.
+                    - **IND.1.A8 Sichere Inbetriebnahme von ICS-Komponenten:** Vor Inbetriebnahme: Hardening gemaess Hersteller, Aenderung Default-Credentials, Pen-Test im Lab.
+                    - **IND.1.A9 Restriktive Vergabe von Zugaengen:** Zugaenge zu Engineering-Workstations, HMI und Field-Geraeten ausschliesslich nach Need-to-Know; privilegierte Zugaenge mit MFA gemaess ORP.4.
+                    - **IND.1.A10 Awareness und Schulung:** Spezielle OT-Sicherheits-Schulung fuer Anlagenbedienende, OT-Engineers und externe Wartungsfirmen.
+                    - **IND.1.A11 Logische und physische Trennung von ICS-Netzen:** Strikte Trennung IT-Netz / OT-Netz ueber dokumentierte Conduits; Air-Gap fuer Safety-relevante Bereiche bevorzugt.
+                    - **IND.1.A12 Sichere Anbindung an externe Netze:** Externe Anbindungen (Fernwartung, MES-Anbindung, Historian-Replikation) ausschliesslich ueber dedizierte Gateways mit DPI-Inspection und Kontroll-Mechanismen gemaess Fernwartungs-Richtlinie (OPS.1.2.5).
+                    - **IND.1.A13 Notfallmanagement fuer ICS:** OT-spezifische Notfall- und Wiederanlaufplaene gemaess DER.4 / BSI 200-4 mit Fokus auf Anlagenwiederherstellung; jaehrliche Notfall-Uebung verpflichtend.
+                    - **IND.1.A14 Datensicherung der ICS-Komponenten:** Konfigurations-Backups (PLC-Programme, HMI-Projekte, Historian-Daten) mit dokumentierten Wiederherstellungsverfahren; Offline-Kopie verpflichtend.
+                    - **IND.1.A15 Schutz vor Schadprogrammen in ICS-Umgebungen:** Allow-Listing-Ansatz statt klassischer AV-Loesungen; USB-Schleusen fuer Wartungs-Datentraeger; signaturbasierte Loesungen nur wenn vom Hersteller freigegeben.
+
+                    ## 5. Standard-Anforderungen
+                    - Implementierung des Zonen- und Conduit-Modells gemaess IEC 62443-3-2 mit dokumentierten Security-Levels (SL-T) je Zone
+                    - Network-Intrusion-Detection (NIDS) speziell fuer ICS-Protokolle (Modbus, Profinet, S7, OPC-UA) mit baseline-basiertem Anomalie-Detect
+                    - Hardening saemtlicher Engineering-Workstations gemaess SYS-Bausteinen mit zusaetzlichen ICS-spezifischen Anpassungen
+                    - Lifecycle-Management mit dokumentierter End-of-Support-Strategie und Migrations-Roadmap
+                    - Penetrationstests im Lab vor Roll-out neuer ICS-Komponenten
+
+                    ## 6. Anforderungen bei erhoehtem Schutzbedarf (KRITIS, Safety-relevante Anlagen)
+                    Vollstaendige physische Trennung von IT- und OT-Netzen (Air-Gap), unidirektionale Daten-Diodes fuer Telemetrie aus dem OT-Netz, dedizierter OT-SOC mit 24/7-Schichtbetrieb, redundante Engineering-Workstations in geschuetzter Umgebung, Insider-Threat-Monitoring fuer privilegierte OT-Operatoren.
+
+                    ## 7. KRITIS- und NIS2-Pflichten
+                    Bei KRITIS-Pflicht (BSIG § 8a) bzw. NIS2-Wesentlichkeit (NIS2-UmsuG): Meldepflichten gemaess § 8b BSIG; Nachweispflicht alle 2 Jahre; ISB als KRITIS-Beauftragter / KRITIS-Beauftragte; Anwendung des branchenspezifischen Sicherheitsstandards (B3S) sofern verfuegbar.
+
+                    ## 8. Cross-Refs
+                    - NET.1.1 Netzarchitektur (IT/OT-Trennung)
+                    - NET.3.2 Firewall (OT-Conduits)
+                    - OPS.1.1.3 Patch- und Change-Management (OT-spezifische Strategie)
+                    - OPS.1.1.4 Schadprogramm-Schutz (Allow-Listing)
+                    - OPS.1.2.5 Fernwartung
+                    - DER.1 Detektion (OT-NIDS)
+                    - DER.4 Notfallmanagement
+                    - INF.2 Rechenzentrum (Schaltzentralen)
+                    - IEC 62443 (Zonen, Conduits, Security-Level)
+                    - BSI 200-4 BCM
+                    - BSIG § 8a, NIS2-UmsuG
+
+                    ## 9. Pruefintervall und Genehmigung
+                    Pruefung mindestens alle 12 Monate sowie nach wesentlichen Anlagenaenderungen oder ICS-Sicherheitsvorfaellen. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Verbindlich fuer alle OT/ICS-Bereiche der {{ tenant.legal_name }}. Konflikte zwischen Safety und Security werden nach dokumentiertem Eskalationspfad zugunsten der funktionalen Sicherheit (Safety) entschieden.*
