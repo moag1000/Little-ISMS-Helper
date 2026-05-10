@@ -341,6 +341,244 @@ modules:
     dependencies:
       - core
 
+  # ─── Operational Modules (2026-05-10 inventory) ─────────────────────────────
+  # Added after full controller/entity audit: 14 controllers with live routes
+  # had no corresponding config/modules.yaml entry → invisible on /admin/modules.
+
+  documents:
+    name: 'Dokumente & Policies'
+    description: 'Policy- und Dokumenten-Bibliothek mit Versions-Kontrolle, Genehmigungsworkflow und Effektivitätsprüfung (ISO 27001 Clause 7.5)'
+    required: false
+    icon: 'file-earmark-text'
+    entities:
+      - Document
+      - DocumentSection
+      - DocumentControlLink
+      - PolicyTemplate
+      - PolicyAcknowledgement
+    routes:
+      - /document
+      - /policy
+    dependencies:
+      - core
+    wizard_consumers:
+      # PolicyWizard WRITES Documents (generator), READS DocumentRepository
+      # ComplianceWizard Privacy/Bcm/Bsi/Dora checks READ DocumentRepository
+      - policy_wizard
+      - compliance_wizard_privacy
+      - compliance_wizard_bcm
+      - compliance_wizard_bsi
+      - compliance_wizard_dora
+      - compliance_wizard_iso27701
+
+  suppliers:
+    name: 'Lieferanten & Drittparteien'
+    description: 'Lieferantenbewertung, AVV-Tracking, DORA-Drittparteien-Register (Art. 28) — ISO 27001 A.5.19-5.22'
+    required: false
+    icon: 'truck'
+    entities:
+      - Supplier
+      - SupplierCriticalityLevel
+    routes:
+      - /supplier
+    dependencies:
+      - risks
+      - assets
+    wizard_consumers:
+      # ComplianceWizard Dora checks READ SupplierRepository (exit strategy, third-party register)
+      - compliance_wizard_dora
+
+  locations:
+    name: 'Standorte & Infrastruktur'
+    description: 'Physische Standorte, Rechenzentren und Infrastruktur-Inventar für Asset-Zuordnung und BIA'
+    required: false
+    icon: 'geo-alt'
+    entities:
+      - Location
+    routes:
+      - /location
+    dependencies:
+      - assets
+
+  persons:
+    name: 'Personen & Kontakte'
+    description: 'Interne und externe Kontakte — ISB, DSB, Risk-Owner, Lieferanten-Kontakte'
+    required: false
+    icon: 'person-badge'
+    entities:
+      - Person
+    routes:
+      - /person
+    dependencies:
+      - core
+    wizard_consumers:
+      # PolicyWizard reads PersonRepository for DPO/BCM-Officer selection
+      - policy_wizard
+
+  interested_parties:
+    name: 'Interessierte Parteien'
+    description: 'ISO 27001 Clause 4.2 — Stakeholder-Analyse: Kunden, Behörden, Aufsichtsrat, Zertifizierungsstellen'
+    required: false
+    icon: 'people'
+    entities:
+      - InterestedParty
+    routes:
+      - /interested-party
+    dependencies:
+      - core
+
+  objectives:
+    name: 'ISMS-Ziele'
+    description: 'ISO 27001 Clause 6.2 — messbare Informationssicherheitsziele mit KPI-Tracking und Fortschrittsüberwachung'
+    required: false
+    icon: 'bullseye'
+    entities:
+      - ISMSObjective
+    routes:
+      - /objective
+    dependencies:
+      - core
+
+  change_requests:
+    name: 'Change Management'
+    description: 'Änderungsmanagement nach ISO 27001 A.8.32 — RFC-Workflow, Risikobewertung, Genehmigungspfad'
+    required: false
+    icon: 'arrow-left-right'
+    entities:
+      - ChangeRequest
+    routes:
+      - /change-request
+    dependencies:
+      - controls
+
+  patches:
+    name: 'Patch Management'
+    description: 'Patch-Tracking und CVE-Behebung — NIS2 Art. 21.2(e) + ISO 27001 A.8.8 Vulnerability-Mgmt'
+    required: false
+    icon: 'bandaid'
+    entities:
+      - Patch
+    routes:
+      - /patch
+    dependencies:
+      - vulnerability_intel
+
+  corrective_actions:
+    name: 'Korrekturmaßnahmen'
+    description: 'ISO 27001 Clause 10.2 — Nonconformity-Tracking, Root-Cause-Analyse, Wirksamkeitsprüfung aus Audit-Findings'
+    required: false
+    icon: 'wrench'
+    entities:
+      - CorrectiveAction
+    routes:
+      - /corrective-action
+    dependencies:
+      - audits
+
+  evidence:
+    name: 'Evidence Management'
+    description: 'Nachweisdokumente für Controls und Audit-Findings — Datei-Upload mit Audit-Trail (ISO 27001 A.5.36)'
+    required: false
+    icon: 'paperclip'
+    entities: []
+    routes:
+      - /evidence
+    dependencies:
+      - audits
+      - controls
+
+  workflows:
+    name: 'Workflow-Automatisierung'
+    description: 'Event-getriebene Genehmigungs-Workflows — GDPR Art. 33, DORA Art. 19, ISO 27001 A.6.8 (Data Breach 72h, Incident-Response, Risk-Treatment, DPIA)'
+    required: false
+    icon: 'diagram-3'
+    entities:
+      - Workflow
+      - WorkflowInstance
+      - WorkflowStep
+    routes:
+      - /workflow
+    dependencies:
+      - core
+
+  risk_appetite:
+    name: 'Risikoappetit & Toleranz'
+    description: 'ISO 27001 Clause 6.1.3 + DORA Art. 6(2) — Risikoappetit-Schwellwerte für Financial, Operational, Reputational und Compliance-Risiken'
+    required: false
+    icon: 'speedometer'
+    entities:
+      - RiskAppetite
+      - RiskApprovalConfig
+    routes:
+      - /risk-appetite
+    dependencies:
+      - risks
+
+  risk_treatment_plans:
+    name: 'Risikobehandlungspläne'
+    description: 'ISO 27001 Clause 6.1.3 — strukturierte RTP-Dokumente mit Maßnahmen-Tracking und 4-Augen-Genehmigung'
+    required: false
+    icon: 'journal-check'
+    entities:
+      - RiskTreatmentPlan
+    routes:
+      - /risk-treatment-plan
+    dependencies:
+      - risks
+      - controls
+
+  analytics:
+    name: 'Analytics & KPI-Dashboard'
+    description: 'ISMS-Kennzahlen, KPI-Snapshots, Trend-Charts — Management-Ready Reporting für ISO 27001 Clause 9.1'
+    required: false
+    icon: 'bar-chart-line'
+    entities:
+      - KpiSnapshot
+      - KpiThresholdConfig
+    routes:
+      - /analytics
+    dependencies:
+      - core
+
+  report_builder:
+    name: 'Report Builder'
+    description: 'Konfigurierbarer Berichts-Generator für Management-Reports, Gap-Reports, Portfolio-Reports'
+    required: false
+    icon: 'layout-text-sidebar'
+    entities:
+      - CustomReport
+    routes:
+      - /report-builder
+      - /reports
+    dependencies:
+      - core
+
+  scheduled_reports:
+    name: 'Geplante Berichte'
+    description: 'Automatisierte Report-Auslieferung per E-Mail-Digest zu konfigurierbaren Zeitplänen'
+    required: false
+    icon: 'calendar-check'
+    entities:
+      - ScheduledReport
+      - ScheduledTask
+    routes:
+      - /reports/scheduled
+    dependencies:
+      - report_builder
+
+  portfolio_reports:
+    name: 'Portfolio- & Konzern-Reports'
+    description: 'Mandanten-übergreifende Rollup-Reports für Holding-CISO und Konzern-Auditor (ROLE_GROUP_CISO)'
+    required: false
+    icon: 'collection'
+    entities:
+      - PortfolioSnapshot
+    routes:
+      - /reports/management/portfolio
+      - /group-report
+    dependencies:
+      - core
+
 # Basis-Daten die immer importiert werden
 base_data:
   - name: 'ISO 27001 Annex A Controls'
