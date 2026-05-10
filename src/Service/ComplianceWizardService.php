@@ -211,7 +211,7 @@ class ComplianceWizardService
                 'icon' => 'bi-shield-fill-check',
                 'color' => 'primary',
                 'required_modules' => ['controls'],
-                'recommended_modules' => ['gdpr', 'incidents', 'suppliers'],
+                'recommended_modules' => ['privacy', 'incidents', 'suppliers'],
                 'categories' => $this->getIso27701Categories(),
             ],
             'iso27017' => [
@@ -231,7 +231,7 @@ class ComplianceWizardService
                 'icon' => 'bi-cloud-check',
                 'color' => 'success',
                 'required_modules' => ['controls'],
-                'recommended_modules' => ['gdpr', 'suppliers'],
+                'recommended_modules' => ['privacy', 'suppliers'],
                 'categories' => $this->getIso27018Categories(),
             ],
             'iso42001' => [
@@ -361,7 +361,7 @@ class ComplianceWizardService
                 'icon' => 'bi-bug-fill',
                 'color' => 'danger',
                 'required_modules' => ['controls'],
-                'recommended_modules' => ['vulnerabilities', 'incidents', 'assets', 'documents'],
+                'recommended_modules' => ['vulnerability_intel', 'incidents', 'assets', 'documents'],
                 'categories' => $this->getCraCategories(),
             ],
         ];
@@ -3484,7 +3484,7 @@ class ComplianceWizardService
                     'dsr_pipeline' => [
                         'name' => 'wizard.check.iso27701_dsr',
                         'type' => 'dsr_coverage',
-                        'module' => 'gdpr',
+                        'module' => 'privacy',
                         'route' => 'app_data_subject_request_index',
                     ],
                 ],
@@ -3500,7 +3500,7 @@ class ComplianceWizardService
                     'dpia' => [
                         'name' => 'wizard.check.iso27701_dpia',
                         'type' => 'dpia_coverage',
-                        'module' => 'gdpr',
+                        'module' => 'privacy',
                         'route' => 'app_processing_activity_index',
                     ],
                 ],
@@ -3549,7 +3549,7 @@ class ComplianceWizardService
                     'consent_pipeline' => [
                         'name' => 'wizard.check.iso27701_consent',
                         'type' => 'consent_coverage',
-                        'module' => 'gdpr',
+                        'module' => 'privacy',
                         'route' => 'app_consent_index',
                     ],
                 ],
@@ -3767,7 +3767,7 @@ class ComplianceWizardService
                     'iso27018_consent' => [
                         'name' => 'wizard.check.iso27018_consent',
                         'type' => 'consent_coverage',
-                        'module' => 'gdpr',
+                        'module' => 'privacy',
                         'route' => 'app_consent_index',
                     ],
                 ],
@@ -3809,7 +3809,7 @@ class ComplianceWizardService
                     'iso27018_dsr' => [
                         'name' => 'wizard.check.iso27018_dsr',
                         'type' => 'dsr_coverage',
-                        'module' => 'gdpr',
+                        'module' => 'privacy',
                         'route' => 'app_data_subject_request_index',
                     ],
                 ],
@@ -5922,7 +5922,7 @@ class ComplianceWizardService
                         'name' => 'wizard.check.cra_vuln_handling',
                         'type' => 'manual',
                         'priority' => 'critical',
-                        'module' => 'vulnerabilities',
+                        'module' => 'vulnerability_intel',
                         'route' => 'app_vulnerability_index',
                     ],
                 ],
