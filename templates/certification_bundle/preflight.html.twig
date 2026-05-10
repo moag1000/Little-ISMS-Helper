@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'cert_bundle' %}
 
 {% block title %}{{ 'cert_bundle.preflight.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -67,9 +68,7 @@
             <span class="small fw-semibold">{{ 'cert_bundle.preflight.score.label'|trans }}</span>
             <span class="small fw-bold">{{ readiness.score }}%</span>
         </div>
-        <div class="progress" style="height: 16px;" role="progressbar" aria-valuenow="{{ readiness.score }}" aria-valuemin="0" aria-valuemax="100">
-            <div class="progress-bar bg-{{ scoreVariant }}" style="width: {{ readiness.score }}%;"></div>
-        </div>
+        {{ _fa_progress.render({ value: readiness.score, tone: scoreVariant }) }}
     </div>
 
     {# Checks Overview #}
@@ -105,8 +104,8 @@
     {# Blockers #}
     {% if readiness.blockers|length > 0 %}
         <div class="card mb-4 border-danger">
-            <div class="card-header bg-danger text-white fw-semibold">
-                <i class="bi bi-shield-x me-1" aria-hidden="true"></i>
+            <div class="card-header fw-semibold">
+                <i class="bi bi-shield-x text-danger me-1" aria-hidden="true"></i>
                 {{ 'cert_bundle.preflight.blockers.title'|trans }}
             </div>
             <ul class="list-group list-group-flush">
@@ -127,8 +126,8 @@
     {# Warnings #}
     {% if readiness.warnings|length > 0 %}
         <div class="card mb-4 border-warning">
-            <div class="card-header bg-warning text-dark fw-semibold">
-                <i class="bi bi-exclamation-triangle-fill me-1" aria-hidden="true"></i>
+            <div class="card-header fw-semibold">
+                <i class="bi bi-exclamation-triangle-fill text-warning me-1" aria-hidden="true"></i>
                 {{ 'cert_bundle.preflight.warnings.title'|trans }}
             </div>
             <ul class="list-group list-group-flush">
