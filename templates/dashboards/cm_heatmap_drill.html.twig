@@ -96,48 +96,46 @@
         </div>
         <div class="fa-section__body">
             {% if covered|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-sm align-middle">
-                        <thead>
-                            <tr>
-                                <th>{{ 'compliance_manager.heatmap.drill.col.req_id'|trans }}</th>
-                                <th>{{ 'compliance_manager.heatmap.drill.col.title'|trans }}</th>
-                                <th>{{ 'compliance_manager.heatmap.drill.col.category'|trans }}</th>
-                                <th>{{ 'compliance_manager.heatmap.drill.col.controls'|trans }}</th>
-                                <th>{{ 'compliance_manager.heatmap.drill.col.priority'|trans }}</th>
+                {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.req_id'|trans }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.title'|trans }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.category'|trans }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.controls'|trans }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.priority'|trans }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for req in covered %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell"><code class="small">{{ req.requirementId }}</code></td>
+                                <td class="fa-table__cell">{{ req.title }}</td>
+                                <td class="fa-table__cell">
+                                    {% if req.category %}
+                                        <span class="badge bg-body-secondary text-body border">{{ req.category }}</span>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% for ctrl in req.mappedControls %}
+                                        {% set implStatus = ctrl.implementationStatus|default('unknown') %}
+                                        {% set tone = implStatus in ['implemented','operational'] ? 'success' : (implStatus == 'partially_implemented' ? 'warning' : 'secondary') %}
+                                        <span class="badge text-bg-{{ tone }} me-1" title="{{ implStatus }}">{{ ctrl.controlId|default(ctrl.id) }}</span>
+                                    {% else %}
+                                        <span class="text-muted small">—</span>
+                                    {% endfor %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% set prio = req.priority|default('medium') %}
+                                    {% set prioTone = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
+                                    <span class="badge text-bg-{{ prioTone[prio]|default('secondary') }}">{{ prio }}</span>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for req in covered %}
-                                <tr>
-                                    <td><code class="small">{{ req.requirementId }}</code></td>
-                                    <td>{{ req.title }}</td>
-                                    <td>
-                                        {% if req.category %}
-                                            <span class="badge bg-body-secondary text-body border">{{ req.category }}</span>
-                                        {% else %}
-                                            <span class="text-muted">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% for ctrl in req.mappedControls %}
-                                            {% set implStatus = ctrl.implementationStatus|default('unknown') %}
-                                            {% set tone = implStatus in ['implemented','operational'] ? 'success' : (implStatus == 'partially_implemented' ? 'warning' : 'secondary') %}
-                                            <span class="badge text-bg-{{ tone }} me-1" title="{{ implStatus }}">{{ ctrl.controlId|default(ctrl.id) }}</span>
-                                        {% else %}
-                                            <span class="text-muted small">—</span>
-                                        {% endfor %}
-                                    </td>
-                                    <td>
-                                        {% set prio = req.priority|default('medium') %}
-                                        {% set prioTone = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
-                                        <span class="badge text-bg-{{ prioTone[prio]|default('secondary') }}">{{ prio }}</span>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 {{ _fa_empty_state.render({
                     mood: 'thinking',
@@ -159,50 +157,48 @@
         </div>
         <div class="fa-section__body">
             {% if gaps|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-sm align-middle">
-                        <thead>
-                            <tr>
-                                <th>{{ 'compliance_manager.heatmap.drill.col.req_id'|trans }}</th>
-                                <th>{{ 'compliance_manager.heatmap.drill.col.title'|trans }}</th>
-                                <th>{{ 'compliance_manager.heatmap.drill.col.category'|trans }}</th>
-                                <th>{{ 'compliance_manager.heatmap.drill.col.priority'|trans }}</th>
-                                <th>{{ 'compliance_manager.heatmap.drill.col.action'|trans }}</th>
+                {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.req_id'|trans }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.title'|trans }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.category'|trans }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'compliance_manager.heatmap.drill.col.priority'|trans }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'compliance_manager.heatmap.drill.col.action'|trans }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for req in gaps %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell"><code class="small">{{ req.requirementId }}</code></td>
+                                <td class="fa-table__cell">{{ req.title }}</td>
+                                <td class="fa-table__cell">
+                                    {% if req.category %}
+                                        <span class="badge bg-body-secondary text-body border">{{ req.category }}</span>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% set prio = req.priority|default('medium') %}
+                                    {% set prioTone = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
+                                    <span class="badge text-bg-{{ prioTone[prio]|default('secondary') }}">{{ prio }}</span>
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--actions">
+                                    {# Link to the compliance wizard for this framework #}
+                                    {% set _knownWizards = ['iso27001','nis2','dora','tisax','gdpr','iso22301','iso27701','iso27017','iso27018','iso42001','bsi_grundschutz','bsi_c5','bsi_c5_2026','bsi_grundschutz_standard','bsi_grundschutz_kern','nist_csf','kritis','pci_dss','soc2','eu_ai_act','eucs','cra'] %}
+                                    {% if framework_code is not empty and (framework_code|lower) in _knownWizards %}
+                                        <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                           href="{{ path('app_compliance_wizard_start', {wizard: framework_code|lower}) }}">
+                                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                            {{ 'compliance_manager.heatmap.drill.fix'|trans }}
+                                        </a>
+                                    {% endif %}
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for req in gaps %}
-                                <tr>
-                                    <td><code class="small">{{ req.requirementId }}</code></td>
-                                    <td>{{ req.title }}</td>
-                                    <td>
-                                        {% if req.category %}
-                                            <span class="badge bg-body-secondary text-body border">{{ req.category }}</span>
-                                        {% else %}
-                                            <span class="text-muted">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% set prio = req.priority|default('medium') %}
-                                        {% set prioTone = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
-                                        <span class="badge text-bg-{{ prioTone[prio]|default('secondary') }}">{{ prio }}</span>
-                                    </td>
-                                    <td>
-                                        {# Link to the compliance wizard for this framework #}
-                                        {% set _knownWizards = ['iso27001','nis2','dora','tisax','gdpr','iso22301','iso27701','iso27017','iso27018','iso42001','bsi_grundschutz','bsi_c5','bsi_c5_2026','bsi_grundschutz_standard','bsi_grundschutz_kern','nist_csf','kritis','pci_dss','soc2','eu_ai_act','eucs','cra'] %}
-                                        {% if framework_code is not empty and (framework_code|lower) in _knownWizards %}
-                                            <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                               href="{{ path('app_compliance_wizard_start', {wizard: framework_code|lower}) }}">
-                                                <i class="bi bi-arrow-right" aria-hidden="true"></i>
-                                                {{ 'compliance_manager.heatmap.drill.fix'|trans }}
-                                            </a>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 {{ _fa_empty_state.render({
                     mood: 'happy',

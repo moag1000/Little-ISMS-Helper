@@ -72,66 +72,64 @@
         </div>
         <div class="fa-section__body">
             {% if dashboard.frameworks|length > 0 %}
-            <div class="table-responsive">
-                <table class="table table-sm align-middle">
-                    <thead>
-                        <tr>
-                            <th>{{ 'compliance_manager.table.framework'|trans }}</th>
-                            <th>{{ 'compliance_manager.table.coverage'|trans }}</th>
-                            <th>{{ 'compliance_manager.table.bar'|trans }}</th>
-                            <th>{{ 'compliance_manager.table.status'|trans }}</th>
-                            <th>{{ 'compliance_manager.table.actions'|trans }}</th>
+            {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'compliance_manager.table.framework'|trans }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--num">{{ 'compliance_manager.table.coverage'|trans }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'compliance_manager.table.bar'|trans }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'compliance_manager.table.status'|trans }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'compliance_manager.table.actions'|trans }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for fw in dashboard.frameworks %}
+                        {% set coverage = fw.compliance|default(0) %}
+                        {% set tone = coverage >= 80 ? 'success' : (coverage >= 60 ? 'warning' : 'danger') %}
+                        {# V3 W3-Aurora: Aurora-Tone-Tokens via inline style — bypass Bootstrap bg-* fallback. #}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell">
+                                {# V4-EF-5: Framework name links to drill-down #}
+                                {% if fw.code is defined and fw.code %}
+                                    <a href="{{ path('app_dashboard_cm_heatmap_drill', {framework: fw.code}) }}" class="fw-bold text-decoration-none link-body-emphasis">{{ fw.name|default(fw.code|default('—')) }}</a>
+                                {% else %}
+                                    <strong>{{ fw.name|default(fw.code|default('—')) }}</strong>
+                                {% endif %}
+                            </td>
+                            <td class="fa-table__cell fa-table__cell--num">{{ coverage }}%</td>
+                            <td class="fa-table__cell" style="min-width: 180px;">
+                                <div class="progress" role="progressbar" aria-valuenow="{{ coverage }}" aria-valuemin="0" aria-valuemax="100" style="height: 12px; background-color: var(--surface-2);">
+                                    <div class="progress-bar" style="width: {{ coverage }}%; background-color: var(--{{ tone }}); color: var(--on-{{ tone }});"></div>
+                                </div>
+                            </td>
+                            <td class="fa-table__cell">
+                                <span class="badge" style="background-color: var(--{{ tone }}-tint); color: var(--{{ tone }}-strong, var(--{{ tone }})); border: 1px solid var(--{{ tone }});">
+                                    {{ coverage >= 80 ? 'compliance_manager.status.ok'|trans : (coverage >= 60 ? 'compliance_manager.status.at_risk'|trans : 'compliance_manager.status.gap'|trans) }}
+                                </span>
+                            </td>
+                            <td class="fa-table__cell fa-table__cell--actions">
+                                {# V4-EF-5: Drill-down link to heatmap detail page #}
+                                {% if fw.code is defined and fw.code %}
+                                    <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm me-1"
+                                       href="{{ path('app_dashboard_cm_heatmap_drill', {framework: fw.code}) }}"
+                                       title="{{ 'compliance_manager.heatmap.drill.title'|trans }}">
+                                        <i class="bi bi-zoom-in" aria-hidden="true"></i>
+                                        {{ 'compliance_manager.heatmap.drill.action'|trans }}
+                                    </a>
+                                {% endif %}
+                                {# Wizard-Link nur wenn Framework-Code Konsument hat (Whitelist via Route-Requirements). Verhindert 500 bei obsoleten Codes wie 'bait' (DORA-replaced). #}
+                                {% set _knownWizards = ['iso27001','nis2','dora','tisax','gdpr','iso22301','iso27701','iso27017','iso27018','iso42001','bsi_grundschutz','bsi_c5','bsi_c5_2026','bsi_grundschutz_standard','bsi_grundschutz_kern','nist_csf','kritis','pci_dss','soc2','eu_ai_act','eucs','cra'] %}
+                                {% if fw.code is defined and fw.code and (fw.code|lower) in _knownWizards %}
+                                    <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_compliance_wizard_start', {wizard: fw.code|lower}) }}">
+                                        <i class="fa-icon fa-icon--ui-magic" aria-hidden="true"></i>
+                                        {{ 'compliance_manager.common.wizard'|trans }}
+                                    </a>
+                                {% endif %}
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for fw in dashboard.frameworks %}
-                            {% set coverage = fw.compliance|default(0) %}
-                            {% set tone = coverage >= 80 ? 'success' : (coverage >= 60 ? 'warning' : 'danger') %}
-                            {# V3 W3-Aurora: Aurora-Tone-Tokens via inline style — bypass Bootstrap bg-* fallback. #}
-                            <tr>
-                                <td>
-                                    {# V4-EF-5: Framework name links to drill-down #}
-                                    {% if fw.code is defined and fw.code %}
-                                        <a href="{{ path('app_dashboard_cm_heatmap_drill', {framework: fw.code}) }}" class="fw-bold text-decoration-none link-body-emphasis">{{ fw.name|default(fw.code|default('—')) }}</a>
-                                    {% else %}
-                                        <strong>{{ fw.name|default(fw.code|default('—')) }}</strong>
-                                    {% endif %}
-                                </td>
-                                <td>{{ coverage }}%</td>
-                                <td style="min-width: 180px;">
-                                    <div class="progress" role="progressbar" aria-valuenow="{{ coverage }}" aria-valuemin="0" aria-valuemax="100" style="height: 12px; background-color: var(--surface-2);">
-                                        <div class="progress-bar" style="width: {{ coverage }}%; background-color: var(--{{ tone }}); color: var(--on-{{ tone }});"></div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="badge" style="background-color: var(--{{ tone }}-tint); color: var(--{{ tone }}-strong, var(--{{ tone }})); border: 1px solid var(--{{ tone }});">
-                                        {{ coverage >= 80 ? 'compliance_manager.status.ok'|trans : (coverage >= 60 ? 'compliance_manager.status.at_risk'|trans : 'compliance_manager.status.gap'|trans) }}
-                                    </span>
-                                </td>
-                                <td>
-                                    {# V4-EF-5: Drill-down link to heatmap detail page #}
-                                    {% if fw.code is defined and fw.code %}
-                                        <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm me-1"
-                                           href="{{ path('app_dashboard_cm_heatmap_drill', {framework: fw.code}) }}"
-                                           title="{{ 'compliance_manager.heatmap.drill.title'|trans }}">
-                                            <i class="bi bi-zoom-in" aria-hidden="true"></i>
-                                            {{ 'compliance_manager.heatmap.drill.action'|trans }}
-                                        </a>
-                                    {% endif %}
-                                    {# Wizard-Link nur wenn Framework-Code Konsument hat (Whitelist via Route-Requirements). Verhindert 500 bei obsoleten Codes wie 'bait' (DORA-replaced). #}
-                                    {% set _knownWizards = ['iso27001','nis2','dora','tisax','gdpr','iso22301','iso27701','iso27017','iso27018','iso42001','bsi_grundschutz','bsi_c5','bsi_c5_2026','bsi_grundschutz_standard','bsi_grundschutz_kern','nist_csf','kritis','pci_dss','soc2','eu_ai_act','eucs','cra'] %}
-                                    {% if fw.code is defined and fw.code and (fw.code|lower) in _knownWizards %}
-                                        <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_compliance_wizard_start', {wizard: fw.code|lower}) }}">
-                                            <i class="fa-icon fa-icon--ui-magic" aria-hidden="true"></i>
-                                            {{ 'compliance_manager.common.wizard'|trans }}
-                                        </a>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
             {% else %}
                 {{ _fa_empty_state.render({
                     mood: 'thinking',
