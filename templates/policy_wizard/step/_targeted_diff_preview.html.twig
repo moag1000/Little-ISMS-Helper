@@ -38,49 +38,47 @@
         body: 'policy_wizard.step.targeted.diff.no_changes_body'|trans
     }) }}
 {% else %}
-    <div class="table-responsive">
-        <table class="table table-sm align-middle">
-            <thead>
-                <tr>
-                    <th scope="col">{{ 'policy_wizard.step.targeted.diff.column.topic'|trans }}</th>
-                    <th scope="col">{{ 'policy_wizard.step.targeted.diff.column.setting'|trans }}</th>
-                    <th scope="col">{{ 'policy_wizard.step.targeted.diff.column.current'|trans }}</th>
-                    <th scope="col">{{ 'policy_wizard.step.targeted.diff.column.approved'|trans }}</th>
-                    <th scope="col">{{ 'policy_wizard.step.targeted.diff.column.changed'|trans }}</th>
+    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.targeted.diff.column.topic'|trans }}</th>
+                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.targeted.diff.column.setting'|trans }}</th>
+                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.targeted.diff.column.current'|trans }}</th>
+                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.targeted.diff.column.approved'|trans }}</th>
+                <th scope="col" class="fa-table__th fa-table__th--center">{{ 'policy_wizard.step.targeted.diff.column.changed'|trans }}</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for row in diff_rows %}
+                <tr class="fa-table__row{{ row.changed ? ' table-warning' : '' }}">
+                    <td class="fa-table__cell">
+                        <small class="text-muted">{{ ('policy_wizard.step.' ~ row.topic ~ '.title')|trans|default(row.topic) }}</small>
+                    </td>
+                    <td class="fa-table__cell">
+                        <code class="small">{{ row.label_t_key is defined ? (row.label_t_key|trans|default(row.key)) : row.key }}</code>
+                    </td>
+                    <td class="fa-table__cell">
+                        <small>{{ row.current_value is null ? '—' : row.current_value }}</small>
+                    </td>
+                    <td class="fa-table__cell">
+                        <small>{{ row.approved_value is null ? '—' : row.approved_value }}</small>
+                    </td>
+                    <td class="fa-table__cell fa-table__cell--center">
+                        {% if row.changed %}
+                            <span class="badge bg-warning text-dark">
+                                <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                                {{ 'policy_wizard.message.changed_yes'|trans }}
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary">
+                                {{ 'policy_wizard.message.changed_no'|trans }}
+                            </span>
+                        {% endif %}
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for row in diff_rows %}
-                    <tr class="{{ row.changed ? 'table-warning' : '' }}">
-                        <td>
-                            <small class="text-muted">{{ ('policy_wizard.step.' ~ row.topic ~ '.title')|trans|default(row.topic) }}</small>
-                        </td>
-                        <td>
-                            <code class="small">{{ row.label_t_key is defined ? (row.label_t_key|trans|default(row.key)) : row.key }}</code>
-                        </td>
-                        <td>
-                            <small>{{ row.current_value is null ? '—' : row.current_value }}</small>
-                        </td>
-                        <td>
-                            <small>{{ row.approved_value is null ? '—' : row.approved_value }}</small>
-                        </td>
-                        <td>
-                            {% if row.changed %}
-                                <span class="badge bg-warning text-dark">
-                                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
-                                    {{ 'policy_wizard.message.changed_yes'|trans }}
-                                </span>
-                            {% else %}
-                                <span class="badge bg-secondary">
-                                    {{ 'policy_wizard.message.changed_no'|trans }}
-                                </span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 {% endif %}
 
 <div class="form-check mt-4">

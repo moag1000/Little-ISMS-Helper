@@ -122,26 +122,24 @@
             {% elseif widgetType starts with 'table_' %}
             <div class="table-widget">
                 {% if data.rows|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-sm table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                {% for col in data.columns %}
-                                <th scope="col">{{ col }}</th>
-                                {% endfor %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in data.rows %}
-                            <tr>
-                                {% for key, value in row|filter((v, k) => k != 'id') %}
-                                <td>{{ value }}</td>
-                                {% endfor %}
-                            </tr>
+                {% embed '_components/_fa_table.html.twig' with { compact: true, hover: true } %}
+                    {% block table_head %}
+                        <tr>
+                            {% for col in data.columns %}
+                            <th scope="col" class="fa-table__th">{{ col }}</th>
                             {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for row in data.rows %}
+                        <tr class="fa-table__row">
+                            {% for key, value in row|filter((v, k) => k != 'id') %}
+                            <td class="fa-table__cell">{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
                 {% else %}
                 <p class="text-muted text-center py-3">{{ 'preview.no_data'|trans }}</p>
                 {% endif %}

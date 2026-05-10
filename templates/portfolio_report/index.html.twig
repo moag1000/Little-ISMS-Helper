@@ -191,124 +191,120 @@
             {% if matrix.frameworks|length == 0 %}
                 {{ _fa_alert.render({ variant: 'info', class: 'mb-0 m-3', body: 'portfolio_report.matrix.no_frameworks'|trans({}, 'portfolio_report') }) }}
             {% else %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0 align-middle">
-                        <caption class="visually-hidden">
-                            {{ 'portfolio_report.matrix.caption'|trans({}, 'portfolio_report') }}
-                        </caption>
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col" class="text-nowrap">
-                                    {{ 'portfolio_report.matrix.function'|trans({}, 'portfolio_report') }}
+                {% embed '_components/_fa_table.html.twig' with { hover: true } %}
+                    {% block table_caption %}<caption class="visually-hidden">{{ 'portfolio_report.matrix.caption'|trans({}, 'portfolio_report') }}</caption>{% endblock %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th text-nowrap">
+                                {{ 'portfolio_report.matrix.function'|trans({}, 'portfolio_report') }}
+                            </th>
+                            {% for framework in matrix.frameworks %}
+                                <th scope="col" class="fa-table__th fa-table__th--center text-nowrap">
+                                    <span title="{{ framework.name }}">{{ framework.code }}</span>
+                                </th>
+                            {% endfor %}
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for row in matrix.rows %}
+                            <tr class="fa-table__row">
+                                <th scope="row" class="fa-table__cell text-nowrap">
+                                    <i class="fa-icon text-muted fa-icon--nav-collection" aria-hidden="true"></i>
+                                    {{ ('portfolio_report.category.' ~ row.category|lower)|trans({}, 'portfolio_report') }}
                                 </th>
                                 {% for framework in matrix.frameworks %}
-                                    <th scope="col" class="text-nowrap text-center">
-                                        <span title="{{ framework.name }}">{{ framework.code }}</span>
-                                    </th>
-                                {% endfor %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in matrix.rows %}
-                                <tr>
-                                    <th scope="row" class="text-nowrap">
-                                        <i class="fa-icon text-muted fa-icon--nav-collection" aria-hidden="true"></i>
-                                        {{ ('portfolio_report.category.' ~ row.category|lower)|trans({}, 'portfolio_report') }}
-                                    </th>
-                                    {% for framework in matrix.frameworks %}
-                                        {% set cell = row.cells[framework.code] %}
+                                    {% set cell = row.cells[framework.code] %}
+                                    {% set cell_variant = 'secondary' %}
+                                    {% set cell_icon = 'bi-dash-circle' %}
+                                    {% if cell.count == 0 %}
                                         {% set cell_variant = 'secondary' %}
-                                        {% set cell_icon = 'bi-dash-circle' %}
+                                        {% set cell_icon = 'bi-slash-circle' %}
+                                    {% elseif cell.pct >= thresholds.green %}
+                                        {% set cell_variant = 'success' %}
+                                        {% set cell_icon = 'bi-check-circle-fill' %}
+                                    {% elseif cell.pct >= thresholds.yellow %}
+                                        {% set cell_variant = 'warning' %}
+                                        {% set cell_icon = 'bi-exclamation-triangle-fill' %}
+                                    {% else %}
+                                        {% set cell_variant = 'danger' %}
+                                        {% set cell_icon = 'bi-x-circle-fill' %}
+                                    {% endif %}
+
+                                    {% set aria = 'portfolio_report.cell.aria'|trans({
+                                        '%category%': ('portfolio_report.category.' ~ row.category|lower)|trans({}, 'portfolio_report'),
+                                        '%framework%': framework.name,
+                                        '%pct%': cell.pct,
+                                        '%count%': cell.count,
+                                        '%gaps%': cell.gaps
+                                    }, 'portfolio_report') %}
+
+                                    {% set delta_val = cell.delta is defined ? cell.delta : null %}
+                                    {% if delta_val is null %}
+                                        {% set trend_icon = '—' %}
+                                        {% set trend_class = 'text-muted' %}
+                                        {% set trend_key = 'no_data' %}
+                                    {% elseif delta_val > 5 %}
+                                        {% set trend_icon = '↗' %}
+                                        {% set trend_class = 'text-success' %}
+                                        {% set trend_key = 'up' %}
+                                    {% elseif delta_val < -5 %}
+                                        {% set trend_icon = '↘' %}
+                                        {% set trend_class = 'text-danger' %}
+                                        {% set trend_key = 'down' %}
+                                    {% else %}
+                                        {% set trend_icon = '→' %}
+                                        {% set trend_class = 'text-muted' %}
+                                        {% set trend_key = 'stable' %}
+                                    {% endif %}
+
+                                    <td class="fa-table__cell fa-table__cell--center">
                                         {% if cell.count == 0 %}
-                                            {% set cell_variant = 'secondary' %}
-                                            {% set cell_icon = 'bi-slash-circle' %}
-                                        {% elseif cell.pct >= thresholds.green %}
-                                            {% set cell_variant = 'success' %}
-                                            {% set cell_icon = 'bi-check-circle-fill' %}
-                                        {% elseif cell.pct >= thresholds.yellow %}
-                                            {% set cell_variant = 'warning' %}
-                                            {% set cell_icon = 'bi-exclamation-triangle-fill' %}
+                                            {% include '_components/_badge.html.twig' with {
+                                                variant: 'secondary',
+                                                icon: cell_icon,
+                                                aria_label: aria,
+                                                title: aria,
+                                                content: 'portfolio_report.cell.na'|trans({}, 'portfolio_report')
+                                            } only %}
                                         {% else %}
-                                            {% set cell_variant = 'danger' %}
-                                            {% set cell_icon = 'bi-x-circle-fill' %}
-                                        {% endif %}
-
-                                        {% set aria = 'portfolio_report.cell.aria'|trans({
-                                            '%category%': ('portfolio_report.category.' ~ row.category|lower)|trans({}, 'portfolio_report'),
-                                            '%framework%': framework.name,
-                                            '%pct%': cell.pct,
-                                            '%count%': cell.count,
-                                            '%gaps%': cell.gaps
-                                        }, 'portfolio_report') %}
-
-                                        {% set delta_val = cell.delta is defined ? cell.delta : null %}
-                                        {% if delta_val is null %}
-                                            {% set trend_icon = '—' %}
-                                            {% set trend_class = 'text-muted' %}
-                                            {% set trend_key = 'no_data' %}
-                                        {% elseif delta_val > 5 %}
-                                            {% set trend_icon = '↗' %}
-                                            {% set trend_class = 'text-success' %}
-                                            {% set trend_key = 'up' %}
-                                        {% elseif delta_val < -5 %}
-                                            {% set trend_icon = '↘' %}
-                                            {% set trend_class = 'text-danger' %}
-                                            {% set trend_key = 'down' %}
-                                        {% else %}
-                                            {% set trend_icon = '→' %}
-                                            {% set trend_class = 'text-muted' %}
-                                            {% set trend_key = 'stable' %}
-                                        {% endif %}
-
-                                        <td class="text-center">
-                                            {% if cell.count == 0 %}
+                                            <a href="{{ path('app_management_reports_portfolio_drill', {
+                                                    frameworkCode: framework.code,
+                                                    category: row.category,
+                                                    _locale: app.request.locale,
+                                                    stichtag: stichtag|date('Y-m-d')
+                                                }) }}"
+                                               class="text-decoration-none"
+                                               aria-label="{{ aria }}">
                                                 {% include '_components/_badge.html.twig' with {
-                                                    variant: 'secondary',
+                                                    variant: cell_variant,
                                                     icon: cell_icon,
                                                     aria_label: aria,
                                                     title: aria,
-                                                    content: 'portfolio_report.cell.na'|trans({}, 'portfolio_report')
+                                                    content: cell.pct ~ '%'
                                                 } only %}
-                                            {% else %}
-                                                <a href="{{ path('app_management_reports_portfolio_drill', {
-                                                        frameworkCode: framework.code,
-                                                        category: row.category,
-                                                        _locale: app.request.locale,
-                                                        stichtag: stichtag|date('Y-m-d')
-                                                    }) }}"
-                                                   class="text-decoration-none"
-                                                   aria-label="{{ aria }}">
-                                                    {% include '_components/_badge.html.twig' with {
-                                                        variant: cell_variant,
-                                                        icon: cell_icon,
-                                                        aria_label: aria,
-                                                        title: aria,
-                                                        content: cell.pct ~ '%'
-                                                    } only %}
-                                                </a>
-                                                <div class="small text-muted mt-1">
-                                                    <span title="{{ 'portfolio_report.cell.count_tooltip'|trans({}, 'portfolio_report') }}">
-                                                        <i class="fa-icon fa-icon--nav-list-ordered" aria-hidden="true"></i> {{ cell.count }}
+                                            </a>
+                                            <div class="small text-muted mt-1">
+                                                <span title="{{ 'portfolio_report.cell.count_tooltip'|trans({}, 'portfolio_report') }}">
+                                                    <i class="fa-icon fa-icon--nav-list-ordered" aria-hidden="true"></i> {{ cell.count }}
+                                                </span>
+                                                {% if cell.gaps > 0 %}
+                                                    <span class="ms-2 text-danger" title="{{ 'portfolio_report.cell.gaps_tooltip'|trans({}, 'portfolio_report') }}">
+                                                        <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ cell.gaps }}
                                                     </span>
-                                                    {% if cell.gaps > 0 %}
-                                                        <span class="ms-2 text-danger" title="{{ 'portfolio_report.cell.gaps_tooltip'|trans({}, 'portfolio_report') }}">
-                                                            <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ cell.gaps }}
-                                                        </span>
-                                                    {% endif %}
-                                                    <span class="ms-2 {{ trend_class }}"
-                                                          aria-label="{{ ('portfolio_report.trend.' ~ trend_key)|trans({'%delta%': delta_val ?? 0}, 'portfolio_report') }}"
-                                                          title="{{ ('portfolio_report.trend.' ~ trend_key)|trans({'%delta%': delta_val ?? 0}, 'portfolio_report') }}">
-                                                        {{ trend_icon }}{% if delta_val is not null and delta_val != 0 %} {{ delta_val > 0 ? '+' : '' }}{{ delta_val }}{% endif %}
-                                                    </span>
-                                                </div>
-                                            {% endif %}
-                                        </td>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                                {% endif %}
+                                                <span class="ms-2 {{ trend_class }}"
+                                                      aria-label="{{ ('portfolio_report.trend.' ~ trend_key)|trans({'%delta%': delta_val ?? 0}, 'portfolio_report') }}"
+                                                      title="{{ ('portfolio_report.trend.' ~ trend_key)|trans({'%delta%': delta_val ?? 0}, 'portfolio_report') }}">
+                                                    {{ trend_icon }}{% if delta_val is not null and delta_val != 0 %} {{ delta_val > 0 ? '+' : '' }}{{ delta_val }}{% endif %}
+                                                </span>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         {% endblock %}
         {% block card_footer %}
@@ -331,50 +327,48 @@
                 </div>
             {% endblock %}
             {% block card_body %}
-                <div class="table-responsive">
-                <table class="table table-sm mb-0 align-middle">
-                    <thead class="table-light">
+                {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                    {% block table_head %}
                         <tr>
-                            <th scope="col">{{ 'portfolio_report.matrix.function'|trans({}, 'portfolio_report') }}</th>
-                            <th scope="col" class="text-end">{{ 'portfolio_report.inheritance.total'|trans({}, 'portfolio_report') }}</th>
-                            <th scope="col" class="text-end">{{ 'portfolio_report.inheritance.manual'|trans({}, 'portfolio_report') }}</th>
-                            <th scope="col" class="text-end">{{ 'portfolio_report.inheritance.inherited'|trans({}, 'portfolio_report') }}</th>
-                            <th scope="col" class="text-end">{{ 'portfolio_report.inheritance.pending'|trans({}, 'portfolio_report') }}</th>
-                            <th scope="col" class="text-end">{{ 'portfolio_report.inheritance.rate'|trans({}, 'portfolio_report') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'portfolio_report.matrix.function'|trans({}, 'portfolio_report') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'portfolio_report.inheritance.total'|trans({}, 'portfolio_report') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'portfolio_report.inheritance.manual'|trans({}, 'portfolio_report') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'portfolio_report.inheritance.inherited'|trans({}, 'portfolio_report') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'portfolio_report.inheritance.pending'|trans({}, 'portfolio_report') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'portfolio_report.inheritance.rate'|trans({}, 'portfolio_report') }}</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                    {% endblock %}
+                    {% block table_body %}
                         {% for row in inheritance_metrics.per_framework %}
                             {% set inherited = row.fulfillments_from_inheritance_confirmed + row.fulfillments_from_inheritance_overridden %}
-                            <tr>
-                                <th scope="row">{{ row.framework_code }}</th>
-                                <td class="text-end">{{ row.fulfillments_total }}</td>
-                                <td class="text-end">{{ row.fulfillments_manual }}</td>
-                                <td class="text-end">{{ inherited }}</td>
-                                <td class="text-end">
+                            <tr class="fa-table__row">
+                                <th scope="row" class="fa-table__cell">{{ row.framework_code }}</th>
+                                <td class="fa-table__cell fa-table__cell--num">{{ row.fulfillments_total }}</td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ row.fulfillments_manual }}</td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ inherited }}</td>
+                                <td class="fa-table__cell fa-table__cell--num">
                                     {% if row.pending_review_count > 0 %}
                                         <span class="text-warning">{{ row.pending_review_count }}</span>
                                     {% else %}
                                         0
                                     {% endif %}
                                 </td>
-                                <td class="text-end fw-semibold">{{ row.inheritance_rate_percent }}%</td>
+                                <td class="fa-table__cell fa-table__cell--num fw-semibold">{{ row.inheritance_rate_percent }}%</td>
                             </tr>
                         {% endfor %}
-                    </tbody>
-                    <tfoot class="table-light">
+                    {% endblock %}
+                    {% block table_foot %}
                         {% set total_inherited = inheritance_metrics.total.fulfillments_from_inheritance_confirmed + inheritance_metrics.total.fulfillments_from_inheritance_overridden %}
                         <tr>
-                            <th scope="row">&Sigma;</th>
-                            <td class="text-end fw-semibold">{{ inheritance_metrics.total.fulfillments_total }}</td>
-                            <td class="text-end fw-semibold">{{ inheritance_metrics.total.fulfillments_manual }}</td>
-                            <td class="text-end fw-semibold">{{ total_inherited }}</td>
-                            <td class="text-end fw-semibold">{{ inheritance_metrics.total.pending_review_count }}</td>
-                            <td class="text-end fw-bold text-primary">{{ inheritance_metrics.total.inheritance_rate_percent }}%</td>
+                            <th scope="row" class="fa-table__cell">&Sigma;</th>
+                            <td class="fa-table__cell fa-table__cell--num fw-semibold">{{ inheritance_metrics.total.fulfillments_total }}</td>
+                            <td class="fa-table__cell fa-table__cell--num fw-semibold">{{ inheritance_metrics.total.fulfillments_manual }}</td>
+                            <td class="fa-table__cell fa-table__cell--num fw-semibold">{{ total_inherited }}</td>
+                            <td class="fa-table__cell fa-table__cell--num fw-semibold">{{ inheritance_metrics.total.pending_review_count }}</td>
+                            <td class="fa-table__cell fa-table__cell--num fw-bold text-primary">{{ inheritance_metrics.total.inheritance_rate_percent }}%</td>
                         </tr>
-                    </tfoot>
-                </table>
-            </div>
+                    {% endblock %}
+                {% endembed %}
             {% endblock %}
         {% endembed %}
     {% endif %}

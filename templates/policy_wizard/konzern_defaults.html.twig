@@ -40,26 +40,26 @@
                     text: 'policy_wizard.konzern_defaults.no_settings_hint'|trans
                 }) }}
             {% else %}
-                <div class="table-responsive">
-                    <table class="table table-sm align-middle">
-                        <thead>
+                <div class="fa-table-wrap">
+                    <table class="fa-table fa-table--compact align-middle">
+                        <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">{{ 'policy_wizard.konzern_defaults.column.key'|trans }}</th>
-                                <th scope="col">{{ 'policy_wizard.konzern_defaults.column.value'|trans }}</th>
-                                <th scope="col">{{ 'policy_wizard.konzern_defaults.column.updated_at'|trans }}</th>
-                                <th scope="col" class="text-end">&nbsp;</th>
+                                <th scope="col" class="fa-table__th">{{ 'policy_wizard.konzern_defaults.column.key'|trans }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'policy_wizard.konzern_defaults.column.value'|trans }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'policy_wizard.konzern_defaults.column.updated_at'|trans }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--actions">&nbsp;</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="fa-table__body">
                             {% for setting in parent_settings %}
-                                <tr>
-                                    <td>
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell">
                                         <code class="small">{{ setting.key }}</code>
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         <small>{{ setting.value is null ? '—' : (setting.value is iterable ? setting.value|json_encode : setting.value) }}</small>
                                     </td>
-                                    <td>
+                                    <td class="fa-table__cell">
                                         <small class="text-muted">
                                             {% if setting.updatedAt %}
                                                 {{ setting.updatedAt|date('Y-m-d H:i') }}
@@ -68,7 +68,7 @@
                                             {% endif %}
                                         </small>
                                     </td>
-                                    <td class="text-end">
+                                    <td class="fa-table__cell fa-table__cell--actions">
                                         {# Edit-CTA stub — wired up in W3-B follow-up #}
                                         <span class="text-muted small">
                                             {{ 'policy_wizard.konzern_defaults.action.edit'|trans }}
