@@ -102,9 +102,11 @@
                                     </span>
                                 </td>
                                 <td>
-                                    {% if fw.code is defined and fw.code %}
+                                    {# Wizard-Link nur wenn Framework-Code Konsument hat (Whitelist via Route-Requirements). Verhindert 500 bei obsoleten Codes wie 'bait' (DORA-replaced). #}
+                                    {% set _knownWizards = ['iso27001','nis2','dora','tisax','gdpr','iso22301','iso27701','iso27017','iso27018','iso42001','bsi_grundschutz','bsi_c5','bsi_c5_2026','bsi_grundschutz_standard','bsi_grundschutz_kern','nist_csf','kritis','pci_dss','soc2','eu_ai_act','eucs','cra'] %}
+                                    {% if fw.code is defined and fw.code and (fw.code|lower) in _knownWizards %}
                                         <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_compliance_wizard_start', {wizard: fw.code|lower}) }}">
-                                            <i class="bi bi-magic"></i>
+                                            <i class="fa-icon fa-icon--ui-magic" aria-hidden="true"></i>
                                             {{ 'compliance_manager.common.wizard'|trans }}
                                         </a>
                                     {% endif %}
