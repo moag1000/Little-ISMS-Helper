@@ -671,6 +671,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         'soc2'      => ['policy_soc2'],
         'tisax'     => ['policy_tisax'],
         'nis2'      => ['policy_nis2'],
+        'c5'        => ['policy_c5'],
     ];
 
     private function resolvePolicyTranslation(string $key, ?string $standard): string

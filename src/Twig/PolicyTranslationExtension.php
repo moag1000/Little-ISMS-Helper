@@ -43,6 +43,7 @@ final class PolicyTranslationExtension extends AbstractExtension
         'soc2'      => ['policy_soc2'],
         'tisax'     => ['policy_tisax'],
         'nis2'      => ['policy_nis2'],
+        'c5'        => ['policy_c5'],
     ];
 
     public function __construct(
