@@ -544,9 +544,22 @@ final class DocumentGenerator implements DocumentGeneratorInterface
     {
         $bodyKey = $template->getBodyTranslationKey() ?? '';
         if ($bodyKey === '') {
-            return '';
+            return $this->renderUnauthoredPlaceholder($template, 'no_body_translation_key');
         }
         $rawBody = $this->resolvePolicyTranslation($bodyKey, $template->getStandard());
+
+        // Translation-key fall-through guard — when no domain has the
+        // body authored, the resolver returns the key string itself
+        // ("policy.bsi.logging_policy.v1.body"). Persisting that as
+        // the policy body produces useless 30-character "documents"
+        // shown to auditors. Replace with an explicit, audit-visible
+        // placeholder that lists the norm-anker references and a
+        // loud "Inhalt nicht verfasst" warning so reviewers know the
+        // template still needs authoring.
+        if ($rawBody === $bodyKey) {
+            return $this->renderUnauthoredPlaceholder($template, 'translation_missing:' . $bodyKey);
+        }
+
         $body = $this->substitute($rawBody, $variables);
 
         // W3-I Task 3 — defensive ISO 27001 climate-change wording check.
@@ -557,6 +570,85 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $this->assertClimateWordingPresent($template, $body);
 
         return $body;
+    }
+
+    /**
+     * Build an explicit placeholder body for templates whose translation
+     * was never authored. Lists the topic, version, norm-anker references
+     * and a loud warning so the resulting Document is recognisable as
+     * "skeleton awaiting content authoring" instead of a stub-string.
+     */
+    private function renderUnauthoredPlaceholder(PolicyTemplate $template, string $reason): string
+    {
+        $topic = $template->getTopic() ?? 'unknown';
+        $standard = $template->getStandard() ?? 'unknown';
+        $version = $template->getVersion();
+
+        $annexA = (array) ($template->getLinkedAnnexAControls() ?? []);
+        $bsi = (array) ($template->getLinkedBausteine() ?? []);
+        $dora = (array) ($template->getLinkedDoraArticles() ?? []);
+
+        $body = "# {$topic} (Vorlage v{$version})\n\n";
+        $body .= "> **Inhalt noch nicht verfasst.** Diese Vorlage ist im PolicyTemplate-Register "
+            . "geseedet, aber die Body-Translation `" . ($template->getBodyTranslationKey() ?? '∅')
+            . "` wurde noch nicht in den `policy_{$standard}_*.{de,en}.yaml` Domains autorisiert. "
+            . "Bitte ISB / Compliance-Manager konsultieren, bevor diese Richtlinie auditrelevant verwendet wird.\n\n";
+        $body .= "## Norm-Anker (aus Template-Definition)\n\n";
+        if ($annexA !== []) {
+            $body .= "- ISO 27001:2022 Annex A: " . implode(', ', $annexA) . "\n";
+        }
+        if ($bsi !== []) {
+            $body .= "- BSI 200-2 Bausteine: " . implode(', ', $bsi) . "\n";
+        }
+        if ($dora !== []) {
+            $body .= "- DORA Artikel: " . implode(', ', $dora) . "\n";
+        }
+        if ($annexA === [] && $bsi === [] && $dora === []) {
+            $body .= "_(Keine Norm-Anker im Template hinterlegt.)_\n";
+        }
+        $body .= "\n## Pflicht-Inhalte (Junior-ISB-Checkliste)\n\n";
+        $body .= "1. Zweck und Geltungsbereich der Richtlinie\n";
+        $body .= "2. Verantwortlichkeiten (RACI)\n";
+        $body .= "3. Verbindliche Regelungen / Kontrollen\n";
+        $body .= "4. Mess- und Wirksamkeitskriterien\n";
+        $body .= "5. Eskalations- und Ausnahmeverfahren\n";
+        $body .= "6. Pruef- und Aenderungs-Zyklus\n";
+        $body .= "\n_Diagnostik: reason=`{$reason}`_\n";
+
+        // Surface in audit log so authoring gap is tracked centrally.
+        $this->logger->warning('PolicyWizard: rendering unauthored-placeholder body', [
+            'standard' => $standard,
+            'topic' => $topic,
+            'body_translation_key' => $template->getBodyTranslationKey(),
+            'reason' => $reason,
+        ]);
+
+        return $body;
+    }
+
+    /**
+     * Public backfill helper for legacy wizard-generated docs that
+     * predate the `policy_body` column (added in migration
+     * `20260510010000_document_policy_body`). Re-renders the body
+     * from the persisted PolicyTemplate + substitutionVariables and
+     * returns it without touching the Document. Caller persists.
+     *
+     * Returns null when the doc cannot be backfilled (no template,
+     * empty body-key, or rendered body comes back empty).
+     */
+    public function renderBodyForBackfill(Document $doc): ?string
+    {
+        $template = $doc->getGeneratedFromTemplate();
+        if ($template === null) {
+            return null;
+        }
+        $vars = $doc->getSubstitutionVariables() ?? [];
+        try {
+            $body = $this->renderBody($template, $vars);
+        } catch (\Throwable) {
+            return null;
+        }
+        return $body !== '' ? $body : null;
     }
 
     /**
