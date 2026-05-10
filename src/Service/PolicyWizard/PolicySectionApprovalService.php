@@ -467,14 +467,30 @@ class PolicySectionApprovalService
     }
 
     /**
-     * W6-A §0.A.5 — Art. 38(3) self-approval prohibition. Throws if the
-     * user who authored the section content is the same user attempting
-     * to approve / veto it. Preserves the §9.5 carve-out documented for
-     * the DPO Charter (which is itself authored about the DPO but never
-     * BY the DPO via this service — a separate workflow excludes the
-     * DPO from the approval chain entirely).
+     * W6-A §0.A.5 — Art. 38(3) self-approval prohibition with single-
+     * user-tenant graceful degradation.
      *
-     * @throws InvalidArgumentException on violation.
+     * Logic:
+     *  1. Author === Approver mismatch → silent pass (the common path).
+     *  2. Author === Approver AND tenant has ≥ 2 active approver-eligible
+     *     Users → throw InvalidArgumentException (4-eyes enforced).
+     *  3. Author === Approver AND tenant has exactly 1 approver-eligible
+     *     User (Solo-Berater / GF=CISO / Initial-Setup) → log a
+     *     `policy_wizard.self_approval_single_user_tenant_bypass` audit
+     *     event and ALLOW the approval. Once a 2nd approver-User is
+     *     created the strict 4-eyes guard fires automatically again.
+     *
+     * Defensive fallback: if no UserRepository is wired (legacy DI graphs
+     * or unit fixtures), the method falls back to the strict 4-eyes throw
+     * so the security default is "block" rather than "silently allow".
+     *
+     * Mirrors the same single-user-tenant heuristic as
+     * {@see \App\Service\PolicyWizard\Step\RolesStep::validate} so the
+     * runtime guard never contradicts the wizard-time guard.
+     *
+     * @throws InvalidArgumentException on violation (≥ 2 approvers OR
+     *                                  fallback when UserRepository is
+     *                                  missing).
      */
     public function assertNotSelfApproval(DocumentSection $section, User $approver): void
     {
@@ -489,30 +505,114 @@ class PolicySectionApprovalService
             return;
         }
 
+        // Author === Approver. Decide between hard-block and single-user
+        // bypass based on the tenant's approver pool size.
+        $tenant = $this->resolveTenantFor($section);
+        $approverCount = $this->countApproverEligibleUsersInTenant($tenant);
+
+        // approverCount === null → UserRepository missing. Defensive
+        // fallback: enforce the strict 4-eyes throw (security default).
+        if ($approverCount === null || $approverCount >= 2) {
+            $this->auditLogger->logCustom(
+                action: 'section_self_approval_blocked',
+                entityType: 'DocumentSection',
+                entityId: $section->getId(),
+                oldValues: null,
+                newValues: [
+                    'section_key' => $section->getSectionKey(),
+                    'document_id' => $section->getDocument()?->getId(),
+                    'actor_id'    => $approver->getId(),
+                    'approver_pool_size' => $approverCount,
+                    'tag'         => self::AUDIT_TAG,
+                ],
+                description: sprintf(
+                    '[%s] Self-approval blocked on section "%s" (document #%d, actor #%d) — Art. 38(3)',
+                    self::AUDIT_TAG,
+                    $section->getSectionKey() ?? '?',
+                    $section->getDocument()?->getId() ?? 0,
+                    $approver->getId() ?? 0,
+                ),
+            );
+
+            throw new InvalidArgumentException(sprintf(
+                'Self-approval blocked on section #%d: author and approver are the same user (Art. 38(3) GDPR / §0.A.5).',
+                $section->getId() ?? 0,
+            ));
+        }
+
+        // approverCount === 1 (or 0 — implausible but treated as 1):
+        // single-user-tenant bypass. Document the self-approval in the
+        // audit-trail so the next external auditor sees a defensible
+        // "Solo-Berater self-approved" row instead of a missing approval.
+        $document = $section->getDocument();
+        $wizardRunId = $document instanceof Document
+            ? $document->getGeneratedFromWizardRun()?->getId()
+            : null;
         $this->auditLogger->logCustom(
-            action: 'section_self_approval_blocked',
+            action: 'policy_wizard.self_approval_single_user_tenant_bypass',
             entityType: 'DocumentSection',
             entityId: $section->getId(),
             oldValues: null,
             newValues: [
-                'section_key' => $section->getSectionKey(),
-                'document_id' => $section->getDocument()?->getId(),
-                'actor_id'    => $approver->getId(),
-                'tag'         => self::AUDIT_TAG,
+                'section_key'   => $section->getSectionKey(),
+                'document_id'   => $document?->getId(),
+                'tenant_id'     => $tenant?->getId(),
+                'wizard_run_id' => $wizardRunId,
+                'user_id'       => $approver->getId(),
+                'approver_pool_size' => $approverCount,
+                'tag'           => self::AUDIT_TAG,
             ],
             description: sprintf(
-                '[%s] Self-approval blocked on section "%s" (document #%d, actor #%d) — Art. 38(3)',
+                '[%s] Single-user-tenant self-approval bypass for section "%s" (document #%d, '
+                . 'tenant #%d, user #%d) — author === approver, only 1 approver-User exists',
                 self::AUDIT_TAG,
                 $section->getSectionKey() ?? '?',
-                $section->getDocument()?->getId() ?? 0,
+                $document?->getId() ?? 0,
+                $tenant?->getId() ?? 0,
                 $approver->getId() ?? 0,
             ),
         );
+        // Allow the approval — caller proceeds with state-machine update.
+    }
 
-        throw new InvalidArgumentException(sprintf(
-            'Self-approval blocked on section #%d: author and approver are the same user (Art. 38(3) GDPR / §0.A.5).',
-            $section->getId() ?? 0,
-        ));
+    /**
+     * Resolve the {@see Tenant} owning a section. Prefers the section's
+     * direct tenant pointer, falls back to the host Document's tenant
+     * (test fixtures sometimes only set one of the two).
+     */
+    private function resolveTenantFor(DocumentSection $section): ?Tenant
+    {
+        $tenant = $section->getTenant();
+        if ($tenant instanceof Tenant) {
+            return $tenant;
+        }
+        $document = $section->getDocument();
+        if ($document instanceof Document) {
+            return $document->getTenant();
+        }
+        return null;
+    }
+
+    /**
+     * Count approver-eligible Users in a tenant via
+     * {@see UserRepository::findApproversInTenant}. Returns null when no
+     * UserRepository is wired — caller treats null as "fall back to
+     * strict 4-eyes" so the security default never silently degrades.
+     */
+    private function countApproverEligibleUsersInTenant(?Tenant $tenant): ?int
+    {
+        if ($this->userRepository === null) {
+            return null;
+        }
+        try {
+            return count($this->userRepository->findApproversInTenant($tenant));
+        } catch (Throwable $error) {
+            $this->logger->warning(
+                'PolicySectionApprovalService: findApproversInTenant lookup failed',
+                ['tenant_id' => $tenant?->getId(), 'error' => $error->getMessage()],
+            );
+            return null;
+        }
     }
 
     /**
