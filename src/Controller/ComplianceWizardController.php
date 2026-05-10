@@ -17,6 +17,7 @@ use App\Service\GapEffortCalculator;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
+use App\Service\WizardSessionDiffService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -56,6 +57,7 @@ class ComplianceWizardController extends AbstractController
         private readonly ?MappingLibraryLoader $mappingLibraryLoader = null,
         private readonly ?WizardSessionRepository $wizardSessionRepository = null,
         private readonly ?PdfExportService $pdfExportService = null,
+        private readonly ?WizardSessionDiffService $wizardSessionDiffService = null,
     ) {
     }
 
@@ -673,6 +675,74 @@ class ComplianceWizardController extends AbstractController
             'config' => $config,
             'sessions' => $sessions,
             'trend_points' => $trendPoints,
+        ]);
+    }
+
+    /**
+     * V4-EF-3: Diff view — compare two WizardSession snapshots side-by-side.
+     *
+     * Route: GET /compliance-wizard/{wizard}/diff/{fromId}/{toId}
+     * Access: ROLE_AUDITOR (same as other wizard routes)
+     * Tenant isolation: both sessions must belong to the current tenant.
+     */
+    #[Route(
+        '/{wizard}/diff/{fromId}/{toId}',
+        name: 'app_compliance_wizard_diff',
+        requirements: [
+            'wizard' => 'iso27001|nis2|dora|tisax|gdpr|iso22301|iso27701|iso27017|iso27018|iso42001|bsi_grundschutz|bsi_c5|bsi_c5_2026|bsi_grundschutz_standard|bsi_grundschutz_kern|nist_csf|kritis|pci_dss|soc2|eu_ai_act|eucs|cra',
+            'fromId' => '\d+',
+            'toId'   => '\d+',
+        ],
+        methods: ['GET'],
+    )]
+    public function diff(string $wizard, int $fromId, int $toId): Response
+    {
+        if ($this->wizardSessionRepository === null || $this->wizardSessionDiffService === null) {
+            $this->addFlash('warning', $this->translator->trans('diff.unavailable', [], 'compliance_wizard'));
+            return $this->redirectToRoute('app_compliance_wizard_history', ['wizard' => $wizard]);
+        }
+
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($tenant === null) {
+            throw $this->createAccessDeniedException('No tenant context.');
+        }
+
+        /** @var WizardSession|null $fromSession */
+        $fromSession = $this->wizardSessionRepository->find($fromId);
+        /** @var WizardSession|null $toSession */
+        $toSession   = $this->wizardSessionRepository->find($toId);
+
+        if ($fromSession === null || $toSession === null) {
+            throw $this->createNotFoundException('One or both snapshots not found.');
+        }
+
+        // Tenant isolation
+        if (
+            $fromSession->getTenant()?->getId() !== $tenant->getId()
+            || $toSession->getTenant()?->getId() !== $tenant->getId()
+        ) {
+            throw $this->createAccessDeniedException('Snapshot tenant mismatch.');
+        }
+
+        // Wizard type must match
+        $sessionType = $this->mapWizardCodeToSessionType($wizard);
+        if (
+            $fromSession->getWizardType() !== $sessionType
+            || $toSession->getWizardType() !== $sessionType
+        ) {
+            $this->addFlash('warning', $this->translator->trans('diff.wizard_mismatch', [], 'compliance_wizard'));
+            return $this->redirectToRoute('app_compliance_wizard_history', ['wizard' => $wizard]);
+        }
+
+        $config  = $this->wizardService->getWizardConfig($wizard);
+        $diffData = $this->wizardSessionDiffService->diff($fromSession, $toSession);
+
+        return $this->render('compliance_wizard/diff.html.twig', [
+            'wizard'       => $wizard,
+            'config'       => $config,
+            'from_session' => $fromSession,
+            'to_session'   => $toSession,
+            'diff'         => $diffData,
         ]);
     }
 

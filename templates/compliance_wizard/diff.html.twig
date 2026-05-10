@@ -1,0 +1,182 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'compliance_wizard' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_section.html.twig'     as _fa_section %}
+{% import '_components/_fa_empty_state.html.twig'  as _fa_empty_state %}
+{% import '_components/_fa_diff_row.html.twig'     as _fa_diff_row %}
+
+{% block title %}{{ 'diff.title'|trans({}, 'compliance_wizard') }} — {{ config.name }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+
+    {# Breadcrumb #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'wizard.title'|trans({}, 'wizard'), url: path('app_compliance_wizard_index') },
+            { label: config.name, url: path('app_compliance_wizard_start', {wizard: wizard}) },
+            { label: 'wizard.history.title'|trans({}, 'wizard'), url: path('app_compliance_wizard_history', {wizard: wizard}) },
+            { label: 'diff.title'|trans({}, 'compliance_wizard') }
+        ]
+    } %}
+
+    {# Page header #}
+    {{ _fa_page_header.render({
+        title:    ('diff.title'|trans({}, 'compliance_wizard')) ~ ' — ' ~ config.name,
+        subtitle: 'diff.subtitle'|trans({from: from_session.completedAt ? from_session.completedAt|date('Y-m-d') : '?', to: to_session.completedAt ? to_session.completedAt|date('Y-m-d') : '?'}, 'compliance_wizard'),
+        badge:    { icon: 'arrow-left-right', label: config.code },
+        actions: [
+            { label: 'wizard.history.title'|trans({}, 'wizard'), href: path('app_compliance_wizard_history', {wizard: wizard}), variant: 'ghost', icon: 'arrow-left' }
+        ]
+    }) }}
+
+    {# ---- Summary header ---- #}
+    <div class="row g-3 mb-4">
+        {# Score delta card #}
+        <div class="col-12 col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="text-muted small mb-1">{{ 'diff.score_delta'|trans({}, 'compliance_wizard') }}</div>
+                    {% set delta = diff.score_delta %}
+                    <div class="display-6 fw-bold
+                        {% if delta > 0 %}text-success{% elseif delta < 0 %}text-danger{% else %}text-secondary{% endif %}">
+                        {{ delta > 0 ? '+' : '' }}{{ delta }}%
+                    </div>
+                    <div class="text-muted small mt-1">
+                        {{ diff.from_score }}% → {{ diff.to_score }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Change counters #}
+        <div class="col-12 col-md-8">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="row g-2 text-center">
+                        <div class="col-6 col-sm-3">
+                            <div class="fw-bold text-success fs-4">{{ diff.summary.added }}</div>
+                            <div class="small text-muted">{{ 'diff.summary.added'|trans({}, 'compliance_wizard') }}</div>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <div class="fw-bold text-primary fs-4">{{ diff.summary.changed }}</div>
+                            <div class="small text-muted">{{ 'diff.summary.changed'|trans({}, 'compliance_wizard') }}</div>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <div class="fw-bold text-danger fs-4">{{ diff.summary.removed }}</div>
+                            <div class="small text-muted">{{ 'diff.summary.removed'|trans({}, 'compliance_wizard') }}</div>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <div class="fw-bold text-secondary fs-4">{{ diff.summary.unchanged }}</div>
+                            <div class="small text-muted">{{ 'diff.summary.unchanged'|trans({}, 'compliance_wizard') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ---- Snapshot meta ---- #}
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6">
+            <div class="card border-secondary-subtle">
+                <div class="card-header">
+                    <i class="bi bi-clock-history" aria-hidden="true"></i>
+                    {{ 'diff.from_snapshot'|trans({}, 'compliance_wizard') }}
+                </div>
+                <div class="card-body py-2">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5">{{ 'wizard.history.field.completed_at'|trans({}, 'wizard') }}</dt>
+                        <dd class="col-7">{{ from_session.completedAt ? from_session.completedAt|date('Y-m-d H:i') : '—' }}</dd>
+                        <dt class="col-5">{{ 'wizard.history.field.user'|trans({}, 'wizard') }}</dt>
+                        <dd class="col-7">{{ from_session.user ? from_session.user.email : '—' }}</dd>
+                        <dt class="col-5">{{ 'wizard.history.field.score'|trans({}, 'wizard') }}</dt>
+                        <dd class="col-7">{{ from_session.overallScore }}%</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card border-primary-subtle">
+                <div class="card-header">
+                    <i class="bi bi-clock" aria-hidden="true"></i>
+                    {{ 'diff.to_snapshot'|trans({}, 'compliance_wizard') }}
+                </div>
+                <div class="card-body py-2">
+                    <dl class="row mb-0 small">
+                        <dt class="col-5">{{ 'wizard.history.field.completed_at'|trans({}, 'wizard') }}</dt>
+                        <dd class="col-7">{{ to_session.completedAt ? to_session.completedAt|date('Y-m-d H:i') : '—' }}</dd>
+                        <dt class="col-5">{{ 'wizard.history.field.user'|trans({}, 'wizard') }}</dt>
+                        <dd class="col-7">{{ to_session.user ? to_session.user.email : '—' }}</dd>
+                        <dt class="col-5">{{ 'wizard.history.field.score'|trans({}, 'wizard') }}</dt>
+                        <dd class="col-7">{{ to_session.overallScore }}%</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ---- Empty state ---- #}
+    {% set nonUnchanged = diff.summary.added + diff.summary.changed + diff.summary.removed %}
+    {% if diff.summary.total == 0 %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'diff.empty'|trans({}, 'compliance_wizard'),
+            text:  'diff.empty_desc'|trans({}, 'compliance_wizard')
+        }) }}
+
+    {% else %}
+
+        {# ---- Legend ---- #}
+        <div class="d-flex flex-wrap gap-3 align-items-center mb-3 small">
+            <span class="fw-semibold">{{ 'diff.legend'|trans({}, 'compliance_wizard') }}:</span>
+            <span><ins class="fa-diff-cell fa-diff-cell--added px-1">{{ 'diff.summary.added'|trans({}, 'compliance_wizard') }}</ins></span>
+            <span>
+                <del class="fa-diff-cell fa-diff-cell--old px-1">{{ 'diff.from_label'|trans({}, 'compliance_wizard') }}</del>
+                <span aria-hidden="true">→</span>
+                <ins class="fa-diff-cell fa-diff-cell--new px-1">{{ 'diff.to_label'|trans({}, 'compliance_wizard') }}</ins>
+                ({{ 'diff.summary.changed'|trans({}, 'compliance_wizard') }})
+            </span>
+            <span><del class="fa-diff-cell fa-diff-cell--removed px-1">{{ 'diff.summary.removed'|trans({}, 'compliance_wizard') }}</del></span>
+            <span><span class="fa-diff-cell fa-diff-cell--unchanged px-1">{{ 'diff.summary.unchanged'|trans({}, 'compliance_wizard') }}</span></span>
+        </div>
+
+        {# ---- Section-grouped diff rows ---- #}
+        {% for sectionKey, section in diff.sections %}
+            {% set sectionChanged = 0 %}
+            {% for item in section.items %}
+                {% if item.changeType != 'unchanged' %}{% set sectionChanged = sectionChanged + 1 %}{% endif %}
+            {% endfor %}
+
+            <div class="card fa-section mb-3">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h2 class="h6 mb-0">
+                        {{ ('diff.section.' ~ sectionKey)|trans({}, 'compliance_wizard') is not same as ('diff.section.' ~ sectionKey)
+                            ? ('diff.section.' ~ sectionKey)|trans({}, 'compliance_wizard')
+                            : section.name }}
+                    </h2>
+                    {% if sectionChanged > 0 %}
+                        <span class="badge bg-primary">{{ sectionChanged }}</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ 'diff.section.unchanged_badge'|trans({}, 'compliance_wizard') }}</span>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    <ul class="fa-diff-list list-unstyled mb-0">
+                        {% for item in section.items %}
+                            {{ _fa_diff_row.row(
+                                item.label ~ ' (' ~ item.question ~ ')',
+                                item.oldAnswer is not null ? item.oldAnswer ~ '%' : null,
+                                item.newAnswer is not null ? item.newAnswer ~ '%' : null,
+                                item.changeType == 'changed' ? 'modified' : item.changeType
+                            ) }}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -7,6 +7,7 @@
 {% block title %}{{ 'wizard.history.title'|trans({}, 'wizard') }} - {{ config.name }}{% endblock %}
 
 {% block body %}
+<meta name="turbo-cache-control" content="no-cache">
 <div class="container-fluid py-4">
     {# Aurora Breadcrumb #}
     {% include '_components/_breadcrumb.html.twig' with {
@@ -27,6 +28,11 @@
             { label: 'wizard.run_assessment'|trans({}, 'wizard'), href: path('app_compliance_wizard_assess', {wizard: wizard}), variant: 'primary', icon: 'play-fill' }
         ]
     }) }}
+
+    {# V4-EF-3: flash messages (e.g. diff unavailable) #}
+    {% for message in app.flashes('warning') %}
+        <div class="alert alert-warning" role="alert">{{ message }}</div>
+    {% endfor %}
 
     {% if sessions|length == 0 %}
         {{ _fa_empty_state.render({
@@ -53,6 +59,73 @@
                             height="180"></canvas>
                 </div>
             </div>
+        {% endif %}
+
+        {# V4-EF-3: 2-Snapshot compare selector #}
+        {% if sessions|length >= 2 %}
+        <div class="card fa-section mb-4">
+            <div class="card-header">
+                <h2 class="card-title h5 mb-0">
+                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                    {{ 'diff.action.compare'|trans({}, 'compliance_wizard') }}
+                </h2>
+            </div>
+            <div class="card-body">
+                <form method="get" id="diff-select-form"
+                      data-controller="diff-select"
+                      class="row g-3 align-items-end">
+                    <div class="col-12 col-md-5">
+                        <label class="form-label" for="diff-from">
+                            {{ 'diff.from_snapshot'|trans({}, 'compliance_wizard') }}
+                        </label>
+                        <select id="diff-from" name="from" class="form-select" required>
+                            {% for session in sessions %}
+                                <option value="{{ session.id }}">
+                                    {{ session.completedAt ? session.completedAt|date('Y-m-d H:i') : '?' }}
+                                    — {{ session.overallScore }}%
+                                    {% if session.user %}({{ session.user.email }}){% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-auto d-none d-md-flex align-items-end pb-1">
+                        <i class="bi bi-arrow-right fs-4 text-muted" aria-hidden="true"></i>
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <label class="form-label" for="diff-to">
+                            {{ 'diff.to_snapshot'|trans({}, 'compliance_wizard') }}
+                        </label>
+                        <select id="diff-to" name="to" class="form-select" required>
+                            {% for session in sessions %}
+                                <option value="{{ session.id }}"
+                                    {% if loop.first %}selected{% endif %}>
+                                    {{ session.completedAt ? session.completedAt|date('Y-m-d H:i') : '?' }}
+                                    — {{ session.overallScore }}%
+                                    {% if session.user %}({{ session.user.email }}){% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-auto">
+                        {# JS submit redirects to the route; fallback = hidden action filled by JS #}
+                        <button type="button" class="btn btn-primary"
+                                onclick="
+                                    var from = document.getElementById('diff-from').value;
+                                    var to   = document.getElementById('diff-to').value;
+                                    if (from && to && from !== to) {
+                                        var base = '{{ path('app_compliance_wizard_history', {wizard: wizard}) }}';
+                                        window.location.href = base.replace('/history', '/diff/' + from + '/' + to);
+                                    } else {
+                                        alert('{{ 'diff.select_different'|trans({}, 'compliance_wizard')|e('js') }}');
+                                    }
+                                ">
+                            <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                            {{ 'diff.action.compare'|trans({}, 'compliance_wizard') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
         {% endif %}
 
         {# Snapshot list #}
