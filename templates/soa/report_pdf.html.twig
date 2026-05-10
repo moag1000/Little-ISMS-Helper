@@ -1,229 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>{% trans_default_domain 'soa' %}{{ 'soa.page.title'|trans({}, 'soa') }} - ISO 27001:2022</title>
+    <title>{{ 'soa.page.title'|trans({}, 'soa') }} - ISO 27001:2022</title>
     <style>
-        @page {
-            margin: 2cm 1.5cm;
+        :root {
+            --primary:       #0ea5e9;
+            --surface:       #ffffff;
+            --surface-2:     #f1f5f9;
+            --fg:            #0f172a;
+            --fg-2:          #475569;
+            --fg-3:          #94a3b8;
+            --border:        #cbd5e1;
+            --success:       #166534;
+            --success-tint:  #dcfce7;
+            --danger:        #991b1b;
+            --danger-tint:   #fecaca;
+            --warning:       #92400e;
+            --warning-tint:  #fef3c7;
+            --info-tint:     #e0e7ff;
+            --info-text:     #1e3a8a;
         }
-
+        * { box-sizing: border-box; }
+        @page { margin: 2cm 1.5cm; }
         body {
-            font-family: DejaVu Sans, sans-serif;
+            font-family: 'DejaVu Sans', Arial, sans-serif;
             font-size: 9pt;
             line-height: 1.4;
-            color: #333;
+            color: var(--fg);
+            background: var(--surface);
         }
 
         h1 {
-            font-size: 18pt;
-            color: #1a56db;
+            font-size: 16pt;
+            color: var(--primary);
             text-align: center;
             margin-bottom: 5pt;
-            border-bottom: 3px solid #1a56db;
-            padding-bottom: 10pt;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 8pt;
         }
-
         h2 {
-            font-size: 14pt;
-            color: #1a56db;
-            margin-top: 15pt;
-            margin-bottom: 8pt;
-            border-bottom: 1px solid #cbd5e1;
-            padding-bottom: 5pt;
+            font-size: 13pt;
+            color: var(--primary);
+            margin-top: 14pt;
+            margin-bottom: 7pt;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 4pt;
         }
-
         h3 {
-            font-size: 11pt;
-            color: #334155;
-            margin-top: 12pt;
-            margin-bottom: 6pt;
+            font-size: 10pt;
+            color: var(--fg);
+            margin-top: 10pt;
+            margin-bottom: 5pt;
             font-weight: bold;
         }
 
-        .header-info {
-            text-align: center;
-            font-size: 9pt;
-            color: #64748b;
-            margin-bottom: 20pt;
-        }
+        /* ── Header info ── */
+        .header-info { text-align: center; font-size: 8.5pt; color: var(--fg-2); margin-bottom: 18pt; }
 
-        .stats-grid {
-            display: table;
-            width: 100%;
-            margin-bottom: 20pt;
-            border: 1px solid #cbd5e1;
-            border-collapse: collapse;
-        }
+        /* ── KPI stat grid (CSS table for dompdf) ── */
+        .stats-grid       { display: table; width: 100%; margin-bottom: 18pt; border-collapse: collapse; border: 1px solid var(--border); }
+        .stats-row        { display: table-row; }
+        .stats-cell       { display: table-cell; padding: 8pt; text-align: center; border: 1px solid var(--border); width: 25%; }
+        .stats-label      { font-size: 7.5pt; color: var(--fg-2); text-transform: uppercase; font-weight: bold; }
+        .stats-value      { font-size: 14pt; color: var(--primary); font-weight: bold; margin-top: 3pt; }
+        .stats-value-success { color: var(--success); }
+        .stats-value-warning { color: var(--warning); }
+        .stats-value-danger  { color: var(--danger);  }
 
-        .stats-row {
-            display: table-row;
-        }
+        /* ── Control table ── */
+        .control-table               { width: 100%; border-collapse: collapse; margin-bottom: 12pt; font-size: 7.5pt; }
+        .control-table th            { background: var(--fg); color: var(--surface); padding: 5pt; text-align: left; font-weight: bold; border: 1px solid var(--border); }
+        .control-table td            { padding: 4pt; border: 1px solid var(--border); vertical-align: top; }
+        .control-table tr:nth-child(even) { background: var(--surface-2); }
+        .control-id                  { font-weight: bold; color: var(--primary); white-space: nowrap; }
 
-        .stats-cell {
-            display: table-cell;
-            padding: 8pt;
-            text-align: center;
-            border: 1px solid #cbd5e1;
-            width: 25%;
-        }
-
-        .stats-label {
-            font-size: 8pt;
-            color: #64748b;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .stats-value {
-            font-size: 16pt;
-            color: #1a56db;
-            font-weight: bold;
-            margin-top: 3pt;
-        }
-
-        .control-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 15pt;
-            font-size: 8pt;
-        }
-
-        .control-table th {
-            background-color: #1a56db;
-            color: white;
-            padding: 6pt;
-            text-align: left;
-            font-weight: bold;
-            border: 1px solid #1e3a8a;
-        }
-
-        .control-table td {
-            padding: 5pt;
-            border: 1px solid #cbd5e1;
-            vertical-align: top;
-        }
-
-        .control-table tr:nth-child(even) {
-            background-color: var(--bg);
-        }
-
-        .control-id {
-            font-weight: bold;
-            color: #1a56db;
-            white-space: nowrap;
-        }
-
+        /* ── Badges ── */
         .badge {
             display: inline-block;
-            padding: 2pt 6pt;
+            padding: 1pt 5pt;
             border-radius: 3pt;
-            font-size: 7pt;
+            font-size: 6.5pt;
             font-weight: bold;
             text-transform: uppercase;
         }
+        .badge-implemented    { background: var(--success-tint); color: var(--success); }
+        .badge-partial        { background: var(--warning-tint); color: var(--warning); }
+        .badge-not-implemented { background: var(--danger-tint); color: var(--danger); }
+        .badge-planned        { background: #dbeafe; color: var(--info-text); }
+        .badge-applicable     { background: var(--success-tint); color: var(--success); }
+        .badge-not-applicable { background: var(--surface-2); color: var(--fg-2); border: 1px solid var(--border); }
 
-        .badge-implemented {
-            background-color: var(--success);
-            color: white;
-        }
-
-        .badge-partial {
-            background-color: var(--warning);
-            color: white;
-        }
-
-        .badge-not-implemented {
-            background-color: var(--danger);
-            color: white;
-        }
-
-        .badge-planned {
-            background-color: #3b82f6;
-            color: white;
-        }
-
-        .badge-applicable {
-            background-color: var(--success);
-            color: white;
-        }
-
-        .badge-not-applicable {
-            background-color: #6b7280;
-            color: white;
-        }
-
+        /* ── Category header ── */
         .category-header {
-            background-color: #e0e7ff;
-            padding: 8pt;
-            margin-top: 15pt;
-            margin-bottom: 8pt;
-            border-left: 4px solid #1a56db;
+            background: var(--info-tint);
+            padding: 6pt 8pt;
+            margin-top: 12pt;
+            margin-bottom: 6pt;
+            border-left: 4px solid var(--primary);
             font-weight: bold;
-            font-size: 10pt;
-            color: #1e3a8a;
+            font-size: 9.5pt;
+            color: var(--info-text);
         }
 
-        .footer {
+        /* ── Text helpers ── */
+        .text-muted  { color: var(--fg-3); font-size: 7pt; }
+        .text-center { text-align: center; }
+        .percentage  { font-weight: bold; color: var(--success); }
+        .page-break  { page-break-before: always; }
+
+        /* ── Column widths ── */
+        .w-8  { width: 8%;  }
+        .w-12 { width: 12%; }
+        .w-25 { width: 25%; }
+        .w-35 { width: 35%; }
+
+        /* ── Footer ── */
+        .report-footer {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30pt;
+            bottom: 0; left: 0; right: 0;
+            height: 26pt;
             text-align: center;
             font-size: 7pt;
-            color: #64748b;
-            border-top: 1px solid #cbd5e1;
-            padding-top: 5pt;
-        }
-
-        .page-break {
-            page-break-before: always;
-        }
-
-        .text-muted {
-            color: #64748b;
-            font-size: 7pt;
-        }
-
-        .percentage {
-            font-weight: bold;
-            color: #059669;
-        }
-
-        /* Color variants for stats values */
-        .stats-value-success {
-            color: var(--success);
-        }
-
-        .stats-value-warning {
-            color: var(--warning);
-        }
-
-        .stats-value-danger {
-            color: var(--danger);
-        }
-
-        /* Text alignment */
-        .text-center {
-            text-align: center;
-        }
-
-        /* Column widths */
-        .w-8 {
-            width: 8%;
-        }
-
-        .w-12 {
-            width: 12%;
-        }
-
-        .w-25 {
-            width: 25%;
-        }
-
-        .w-35 {
-            width: 35%;
+            color: var(--fg-2);
+            border-top: 1px solid var(--border);
+            padding-top: 4pt;
         }
     </style>
 </head>
@@ -235,7 +136,7 @@
         {{ 'soa.report.generated_at'|trans({'%datetime%': generatedDateTime}, 'soa') }}
     </div>
 
-    <!-- Statistics Overview -->
+    {# Statistics Overview #}
     <h2>{{ 'soa.section.implementation_overview'|trans({}, 'soa') }}</h2>
     <div class="stats-grid">
         <div class="stats-row">
@@ -258,13 +159,12 @@
         </div>
     </div>
 
-    <!-- Category Summary -->
+    {# Category Summary #}
     <h2>{{ 'soa.section.controls_by_category'|trans({}, 'soa') }}</h2>
     <table class="control-table">
         <thead>
             <tr>
                 <th scope="col">{{ 'soa.table.category'|trans({}, 'soa') }}</th>
-                <th scope="col">{{ 'soa.table.name'|trans({}, 'soa') }}</th>
                 <th scope="col" class="text-center">{{ 'soa.table.count'|trans({}, 'soa') }}</th>
             </tr>
         </thead>
@@ -272,14 +172,13 @@
             {% for stat in categoryStats %}
                 <tr>
                     <td><strong>{{ ('soa.category.' ~ stat.category)|trans({}, 'soa') }}</strong></td>
-                    <td>{{ ('soa.category.' ~ stat.category)|trans({}, 'soa') }}</td>
                     <td class="text-center">{{ stat.total }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <!-- Detailed Controls List -->
+    {# Detailed Controls List #}
     <div class="page-break"></div>
     <h2>{{ 'soa.section.detailed_assessment'|trans({}, 'soa') }}</h2>
 
@@ -327,19 +226,17 @@
                         </td>
                         <td>
                             {% if not control.applicable and control.justification %}
-                                <strong>{{ 'soa.label.not_applicable_prefix'|trans({}, 'soa') }}</strong> {{ control.justification|slice(0, 200) }}{% if control.justification|length > 200 %}...{% endif %}
+                                <strong>{{ 'soa.label.not_applicable_prefix'|trans({}, 'soa') }}</strong>
+                                {{ control.justification|length > 200 ? control.justification|slice(0, 200) ~ '…' : control.justification }}
                             {% elseif control.implementationNotes %}
-                                {{ control.implementationNotes|slice(0, 200) }}{% if control.implementationNotes|length > 200 %}...{% endif %}
+                                {{ control.implementationNotes|length > 200 ? control.implementationNotes|slice(0, 200) ~ '…' : control.implementationNotes }}
                             {% endif %}
-
                             {% if control.responsiblePerson %}
                                 <br><span class="text-muted">{{ 'soa.label.responsible'|trans({}, 'soa') }} {{ control.responsiblePerson }}</span>
                             {% endif %}
-
                             {% if control.targetDate %}
                                 <br><span class="text-muted">{{ 'soa.table.target_date'|trans({}, 'soa') }}: {{ control.targetDate|date('d.m.Y') }}</span>
                             {% endif %}
-
                             {% if control.risks|length > 0 %}
                                 <br><span class="text-muted">{{ 'soa.label.linked_risks'|trans({}, 'soa') }} {{ control.risks|length }}</span>
                             {% endif %}
@@ -350,7 +247,7 @@
         </table>
     {% endfor %}
 
-    <div class="footer">
+    <div class="report-footer">
         {%- set generatedDateTimeSeconds = generatedAt|date('d.m.Y H:i:s') -%}
         {{ 'soa.page.title'|trans({}, 'soa') }} — {{ 'soa.report.generated_at'|trans({'%datetime%': generatedDateTimeSeconds}, 'soa') }} — {{ 'soa.footer.note'|trans({}, 'soa') }}
     </div>
