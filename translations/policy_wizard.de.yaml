@@ -828,16 +828,72 @@ policy_wizard:
     konzern_rollup:
         title: 'Konzern Roll-Up'
         subtitle: 'Compliance-Übersicht über alle Tochtergesellschaften der Holding.'
-        alva_tipp: 'Tipp: Wechseln Sie über die Tabs zwischen Coverage, Aktionen, Compliance, Abweichungen und Bestätigung. Die Abweichungs-Spalte zeigt sofort, wo eine Tochter strenger oder lascher als die Konzern-Vorgabe arbeitet.'
+        alva_tipp: 'Tipp: Wechseln Sie über die Tabs zwischen Coverage, Aktionen, Heatmap, Compliance, Abweichungen und Bestätigung. Die Abweichungs-Spalte zeigt sofort, wo eine Tochter strenger oder lascher als die Konzern-Vorgabe arbeitet.'
         tab:
             coverage: 'Coverage'
             actions: 'Offene Aktionen'
+            heatmap: 'Heatmap'
             compliance: 'Compliance-Score'
             drift: 'Abweichungen'
             acknowledgement: 'Bestätigung'
         empty:
             not_konzern: 'Diese Mandantenebene ist keine Holding.'
             no_subsidiaries: 'Es sind keine Tochtergesellschaften unterhalb dieses Tenants vorhanden.'
+        # CISO Task #130 — Quartals-Trend (Sparkline + Delta) auf Compliance-Tab.
+        trend:
+            heading: 'Quartals-Trend pro Tochtergesellschaft'
+            subtitle: 'Compliance-Score-Verlauf über die letzten %count% Quartale.'
+            col:
+                tenant: 'Tochtergesellschaft'
+                sparkline: 'Verlauf'
+                latest: 'Aktuell'
+                delta: 'Δ vs. Vorquartal'
+            direction:
+                up: 'steigend'
+                down: 'fallend'
+                stable: 'stabil'
+        # CISO Task #130 — Severity-Heatmap (Subsidiary x Severity-Bucket).
+        heatmap:
+            empty: 'Keine offenen Aktionen — alle Tochtergesellschaften sind aktuell aufgeräumt.'
+            legend: 'Zellen-Färbung: rot >5 kritisch, gelb >2 hoch, grün/leer = unkritisch.'
+            col:
+                tenant: 'Tochtergesellschaft'
+                danger: 'Kritisch (überfällig)'
+                warning: 'Warnung (<72h)'
+                info: 'Info (regulär)'
+        # CISO Task #130 — One-Pager-PDF-Export (Vorstandssitzung).
+        one_pager:
+            cta: 'One-Pager (Vorstand)'
+            cta_short: 'PDF'
+            as_of_label: 'Stichtag'
+            title: 'Konzern Compliance One-Pager'
+            heading: 'Konzern Compliance — Vorstands-One-Pager'
+            as_of: 'Stichtag'
+            subsidiaries: '%count% Tochtergesellschaften'
+            kpi:
+                compliance_mean: 'Ø Compliance-Score'
+                ack_coverage: 'Ø Acks-Quote'
+                open_actions: 'Offene Aktionen'
+                drift_count: 'Settings-Drift'
+            trend:
+                heading: '4-Quartal Trend (Konzern-Mittel)'
+                delta: 'Δ %delta% pp vs. Vorquartal — %direction%'
+            top_risks:
+                heading: 'Top-3 Risiken'
+                empty: 'Keine offenen Risiken.'
+            top_gaps:
+                heading: 'Top-3 Compliance-Lücken'
+                empty: 'Keine signifikanten Lücken.'
+            col:
+                tenant: 'Tochter'
+                action: 'Aktion'
+                severity: 'Schwere'
+                framework: 'Framework'
+                score: 'Score'
+            ale:
+                skeleton: 'Geschätzter ALE (Annualized Loss Expectancy): %value% — Kopplung an Risk-Manager-Modul folgt.'
+            footer:
+                generated: 'Generiert von Little ISMS Helper am %date% — Version %version%.'
 
     witness:
         label: 'Zeuge / Co-Signatur'
