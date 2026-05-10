@@ -157,6 +157,14 @@ class PolicySectionApprovalServiceVetoTest extends TestCase
         $author = $this->makeUser(13, ['ROLE_DPO']);
         $section = $this->makeSection(authoredBy: $author);
 
+        // Multi-user tenant: ≥ 2 active approver-eligible Users → strict
+        // 4-eyes guard fires. Stub findApproversInTenant explicitly so
+        // the new single-user-tenant bypass path does NOT engage.
+        $this->userRepo->method('findApproversInTenant')->willReturn([
+            $this->makeUser(13, ['ROLE_DPO']),
+            $this->makeUser(99, ['ROLE_GROUP_CISO']),
+        ]);
+
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/Self-approval blocked/');
         $this->service->assertNotSelfApproval($section, $author);
@@ -169,9 +177,96 @@ class PolicySectionApprovalServiceVetoTest extends TestCase
         $approver = $this->makeUser(14, ['ROLE_DPO']);
         $section = $this->makeSection(authoredBy: $author);
 
-        // No throw — the assertion completes silently.
+        // No throw — the assertion completes silently. Author and
+        // approver IDs differ so the bypass path is never reached.
         $this->service->assertNotSelfApproval($section, $approver);
         $this->addToAssertionCount(1);
+    }
+
+    #[Test]
+    public function assertNotSelfApprovalAllowsSingleUserTenantWithAuditLog(): void
+    {
+        // Solo-Berater scenario: Author IS Approver AND tenant has only
+        // 1 active approver-eligible User → bypass path. The audit-log
+        // emits `policy_wizard.self_approval_single_user_tenant_bypass`
+        // with the wizard_run_id / tenant_id / user_id payload, and the
+        // approval is allowed (no throw).
+        $author = $this->makeUser(42, ['ROLE_DPO']);
+        $section = $this->makeSection(authoredBy: $author);
+
+        $this->userRepo->method('findApproversInTenant')->willReturn([$author]);
+
+        $this->auditLogger->expects(self::once())
+            ->method('logCustom')
+            ->with(
+                self::equalTo('policy_wizard.self_approval_single_user_tenant_bypass'),
+                self::equalTo('DocumentSection'),
+                self::anything(),
+                self::isNull(),
+                self::callback(static function (array $payload): bool {
+                    return ($payload['user_id'] ?? null) === 42
+                        && array_key_exists('tenant_id', $payload)
+                        && array_key_exists('wizard_run_id', $payload)
+                        && ($payload['approver_pool_size'] ?? null) === 1
+                        && ($payload['tag'] ?? null) === 'policy-section-approval';
+                }),
+                self::stringContains('Single-user-tenant self-approval bypass'),
+            );
+
+        // No throw — the assertion completes silently. addToAssertionCount
+        // makes the lack-of-throw an explicit assertion.
+        $this->service->assertNotSelfApproval($section, $author);
+        $this->addToAssertionCount(1);
+    }
+
+    #[Test]
+    public function assertNotSelfApprovalThrowsForMultiUserTenant(): void
+    {
+        // Tenant has ≥ 2 approver-eligible Users → strict 4-eyes guard
+        // ALWAYS fires when author === approver. Verifies the new bypass
+        // path does NOT degrade the legacy security default once a 2nd
+        // approver-User exists.
+        $author = $this->makeUser(50, ['ROLE_DPO']);
+        $section = $this->makeSection(authoredBy: $author);
+
+        $this->userRepo->method('findApproversInTenant')->willReturn([
+            $author,
+            $this->makeUser(51, ['ROLE_GROUP_CISO']),
+            $this->makeUser(52, ['ROLE_ADMIN']),
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/Self-approval blocked/');
+        $this->service->assertNotSelfApproval($section, $author);
+    }
+
+    #[Test]
+    public function assertNotSelfApprovalFallbackThrowsWhenUserRepositoryMissing(): void
+    {
+        // Defensive fallback: when no UserRepository is wired (legacy DI
+        // graphs or unit fixtures), the bypass path NEVER engages — the
+        // strict 4-eyes throw stays the security default. This test
+        // builds a service without the userRepository constructor arg.
+        $em = $this->createMock(EntityManagerInterface::class);
+        $sectionRepo = $this->createMock(DocumentSectionRepository::class);
+        $auditLogger = $this->createMock(AuditLogger::class);
+        $hostRepo = $this->createMock(EntityRepository::class);
+        $hostRepo->method('findOneBy')->willReturn(null);
+        $em->method('getRepository')->willReturn($hostRepo);
+
+        $serviceWithoutUserRepo = new PolicySectionApprovalService(
+            $em,
+            $sectionRepo,
+            $auditLogger,
+            // userRepository intentionally omitted (defaults to null)
+        );
+
+        $author = $this->makeUser(60, ['ROLE_DPO']);
+        $section = $this->makeSection(authoredBy: $author);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/Self-approval blocked/');
+        $serviceWithoutUserRepo->assertNotSelfApproval($section, $author);
     }
 
     #[Test]
