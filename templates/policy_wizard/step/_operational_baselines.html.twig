@@ -69,7 +69,12 @@
 {% endembed %}
 
 {# ── Crypto allowlist ─────────────────────────────────────────────── #}
-<div class="fa-form-row mb-4">
+{# Junior-Helps: keep a compact TomSelect for keyboard-power-users + render
+   a parallel "decision aid" panel that lists every algorithm with
+   purpose / BSI-status / when-can-it-be-un-ticked. Both controls submit
+   the same field name; the TomSelect remains the canonical input, the
+   decision-aid is read-only documentation. #}
+<div class="fa-form-row mb-2">
     <label class="form-label" for="op-crypto-allowlist">
         {{ 'policy_wizard.step.operational_baselines.crypto_allowlist_label'|trans }}
         <i class="bi bi-info-circle text-muted ms-1"
@@ -95,6 +100,55 @@
         {{ 'policy_wizard.step.operational_baselines.crypto_allowlist_help'|trans }}
     </div>
 </div>
+
+{# Junior-Helps: per-algorithm decision-aid (read-only), collapsible to keep
+   the page short for Senior-ISBs who already know the algos. Default open
+   so a Junior cannot miss it. #}
+<details class="mb-4 border rounded p-2 bg-body-tertiary" open>
+    <summary class="small fw-semibold">
+        <i class="bi bi-mortarboard me-1" aria-hidden="true"></i>
+        {{ 'policy_wizard.step.operational_baselines.crypto_decision_aid_title'|trans }}
+    </summary>
+    <p class="small text-muted mt-2 mb-2">
+        {{ 'policy_wizard.step.operational_baselines.crypto_decision_aid_intro'|trans }}
+    </p>
+    <div class="table-responsive">
+        <table class="table table-sm align-middle small mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'policy_wizard.step.operational_baselines.crypto_col.algorithm'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.operational_baselines.crypto_col.purpose'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.operational_baselines.crypto_col.bsi_status'|trans }}</th>
+                    <th scope="col">{{ 'policy_wizard.step.operational_baselines.crypto_col.optional_when'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for algo in bsi_tr02102_algos %}
+                    {% set algo_purpose_key = 'policy_wizard.step.operational_baselines.crypto_algorithms.' ~ algo ~ '.purpose' %}
+                    {% set algo_bsi_key = 'policy_wizard.step.operational_baselines.crypto_algorithms.' ~ algo ~ '.bsi_status' %}
+                    {% set algo_optional_key = 'policy_wizard.step.operational_baselines.crypto_algorithms.' ~ algo ~ '.optional_when' %}
+                    {% set algo_purpose = algo_purpose_key|trans({}, 'policy_wizard') %}
+                    {% set algo_bsi = algo_bsi_key|trans({}, 'policy_wizard') %}
+                    {% set algo_optional = algo_optional_key|trans({}, 'policy_wizard') %}
+                    {# Highlight "NIE abwählen" rows so a Junior cannot accidentally remove them. #}
+                    {% set is_critical = ('NIE' in algo_optional) or ('NEVER' in algo_optional) %}
+                    <tr {% if is_critical %}class="table-warning"{% endif %}>
+                        <td><code>{{ algo }}</code></td>
+                        <td>{{ algo_purpose }}</td>
+                        <td>{{ algo_bsi }}</td>
+                        <td>
+                            {% if is_critical %}
+                                <strong class="text-danger">{{ algo_optional }}</strong>
+                            {% else %}
+                                {{ algo_optional }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</details>
 
 <div class="row g-3 mb-4">
     {# ── Backup RPO ───────────────────────────────────────────────── #}
@@ -235,14 +289,15 @@
                     {% set sc_questions = ['q1', 'q2', 'q3'] %}
                     {% for q in sc_questions %}
                         {% set q_value = dora_default['significance_' ~ q]|default(false) %}
-                        <div class="mb-3">
+                        <div class="mb-3 p-2 border-start border-3 border-info-subtle">
+                            {# Q-text inline-visible (Junior-Helps): user does NOT have to click to see what they answer. #}
                             <p class="mb-1 small fw-semibold">
                                 {{ ('policy_wizard.step.operational_baselines.dora.significance_self_check.' ~ q)|trans }}
                             </p>
                             <p class="mb-2 small text-muted">
                                 {{ ('policy_wizard.step.operational_baselines.dora.significance_self_check.' ~ q ~ '_help')|trans }}
                             </p>
-                            <div class="d-flex gap-3">
+                            <div class="d-flex gap-3 mb-2">
                                 <div class="form-check">
                                     <input type="radio"
                                            class="form-check-input"
@@ -264,6 +319,18 @@
                                     <label class="form-check-label small" for="op-dora-{{ q }}-no">
                                         {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.answer_no'|trans }}
                                     </label>
+                                </div>
+                            </div>
+                            {# Junior-Helps: per-Q yes/no implication is rendered ABOVE the answer
+                               so users see the consequence before they choose, not after. #}
+                            <div class="small text-muted">
+                                <div>
+                                    <i class="bi bi-check-circle text-success me-1" aria-hidden="true"></i>
+                                    {{ ('policy_wizard.step.operational_baselines.dora.significance_self_check.' ~ q ~ '_yes_implication')|trans }}
+                                </div>
+                                <div>
+                                    <i class="bi bi-dash-circle text-secondary me-1" aria-hidden="true"></i>
+                                    {{ ('policy_wizard.step.operational_baselines.dora.significance_self_check.' ~ q ~ '_no_implication')|trans }}
                                 </div>
                             </div>
                         </div>
@@ -290,6 +357,14 @@
                            data-bs-toggle="tooltip"
                            title="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_significant'|trans }}"
                            aria-label="{{ 'policy_wizard.step.operational_baselines.tooltip.dora_significant'|trans }}"></i>
+                        {# Junior-Helps: explain in plain language what the result MEANS for the tenant. #}
+                        <p class="small text-muted mb-0 mt-2">
+                            {% if derived_significant %}
+                                {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.derived_yes_consequence'|trans }}
+                            {% else %}
+                                {{ 'policy_wizard.step.operational_baselines.dora.significance_self_check.derived_no_consequence'|trans }}
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>

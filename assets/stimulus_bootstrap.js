@@ -13,6 +13,7 @@ import TsFindingPickerController from './controllers/ts_finding_picker_controlle
 import BulkApprovalMobileController from './controllers/bulk_approval_mobile_controller.js';
 import PolicyWizardPresetPickerController from './controllers/policy_wizard_preset_picker_controller.js';
 import PolicyWizardTargetedPickController from './controllers/policy_wizard_targeted_pick_controller.js';
+import AnnexAFilterController from './controllers/annex_a_filter_controller.js';
 
 const app = startStimulusApp();
 
@@ -37,3 +38,4 @@ app.register('ts-finding-picker', TsFindingPickerController);
 app.register('bulk-approval-mobile', BulkApprovalMobileController);
 app.register('policy-wizard-preset-picker', PolicyWizardPresetPickerController);
 app.register('policy-wizard-targeted-pick', PolicyWizardTargetedPickController);
+app.register('annex-a-filter', AnnexAFilterController);
