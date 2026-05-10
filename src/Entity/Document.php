@@ -207,6 +207,37 @@ class Document
     #[ORM\JoinColumn(name: 'policy_body_edited_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?User $policyBodyEditedBy = null;
 
+    /**
+     * Effectiveness-Review (Auditor MINOR-NC reply, 2026-05-10).
+     *
+     * SoaAutoUpdateService bumps Annex-A controls from `not_implemented`
+     * to `in_progress` when a policy is generated, but it NEVER bumps
+     * to `implemented` — that decision requires a separate effectiveness
+     * review (Wirksamkeitspruefung) by ISB or Auditor. These three
+     * columns capture the explicit review event:
+     *
+     *  - `lastEffectivenessReviewAt` — timestamp of the most recent
+     *    review (NULL = never reviewed).
+     *  - `lastEffectivenessReviewBy` — User who performed the review.
+     *    FK SET NULL: review evidence survives user deletion.
+     *  - `effectivenessReviewNotes` — free-text rationale / observation
+     *    captured during the review (auditor evidence).
+     *
+     * The review event itself does NOT mutate the SoA implementation
+     * status — the ISB still has to decide manually whether the
+     * effectiveness evidence warrants a status bump to `implemented`.
+     * That separation preserves the auditor-mandated decision moment.
+     */
+    #[ORM\Column(name: 'last_effectiveness_review_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $lastEffectivenessReviewAt = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'last_effectiveness_review_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $lastEffectivenessReviewBy = null;
+
+    #[ORM\Column(name: 'effectiveness_review_notes', type: Types::TEXT, nullable: true)]
+    private ?string $effectivenessReviewNotes = null;
+
     public function __construct()
     {
         $this->uploadedAt = new DateTimeImmutable();
@@ -427,6 +458,78 @@ class Document
     public function getEffectivePolicyBody(): ?string
     {
         return $this->policyBody;
+    }
+
+    public function getLastEffectivenessReviewAt(): ?DateTimeImmutable
+    {
+        return $this->lastEffectivenessReviewAt;
+    }
+
+    public function setLastEffectivenessReviewAt(?DateTimeImmutable $reviewedAt): static
+    {
+        $this->lastEffectivenessReviewAt = $reviewedAt;
+        return $this;
+    }
+
+    public function getLastEffectivenessReviewBy(): ?User
+    {
+        return $this->lastEffectivenessReviewBy;
+    }
+
+    public function setLastEffectivenessReviewBy(?User $reviewedBy): static
+    {
+        $this->lastEffectivenessReviewBy = $reviewedBy;
+        return $this;
+    }
+
+    public function getEffectivenessReviewNotes(): ?string
+    {
+        return $this->effectivenessReviewNotes;
+    }
+
+    public function setEffectivenessReviewNotes(?string $notes): static
+    {
+        $this->effectivenessReviewNotes = $notes;
+        return $this;
+    }
+
+    /**
+     * Age (\DateInterval) since the last effectiveness review.
+     * Returns NULL when no review has ever been recorded — callers
+     * should treat NULL as "never reviewed" and rank it as the worst
+     * possible age (most-overdue) for sorting / overdue logic.
+     */
+    public function getEffectivenessAge(): ?\DateInterval
+    {
+        if ($this->lastEffectivenessReviewAt === null) {
+            return null;
+        }
+        return $this->lastEffectivenessReviewAt->diff(new DateTimeImmutable());
+    }
+
+    /**
+     * True when the effectiveness review is overdue against the given
+     * cadence (months). Conservative semantics:
+     *  - never reviewed → ALWAYS overdue (returns true)
+     *  - reviewed > $intervalMonths ago → overdue
+     *  - reviewed within the interval → not overdue
+     *
+     * Caller chooses the cadence — typically the default review
+     * interval from the Policy-Wizard Lifecycle step (12 months) or
+     * a per-policy override.
+     */
+    public function isEffectivenessOverdue(int $intervalMonths): bool
+    {
+        if ($intervalMonths < 1) {
+            return false; // defensive — no cadence ⇒ no overdue concept
+        }
+        if ($this->lastEffectivenessReviewAt === null) {
+            return true;
+        }
+        $deadline = $this->lastEffectivenessReviewAt->modify(
+            sprintf('+%d months', $intervalMonths),
+        );
+        return new DateTimeImmutable() > $deadline;
     }
 
     /**

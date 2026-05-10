@@ -715,6 +715,23 @@ policy_wizard:
                 title: 'Sandbox-Modus aktiv — kein persistierter Output'
                 body: 'Dieser Lauf wurde im Sandbox-Modus gestartet. Beim Klick auf „Erzeugen" werden KEINE Dokumente im Mandanten gespeichert. Verwenden Sie diesen Modus für Probeläufe ohne Audit-Spuren.'
             audit_trail_hint: 'Diese Generierung wird mit Wizard-Run-ID #%run_id%, den unten gelisteten Approver-Namen und dem Zeitstempel der Bestätigung im Audit-Log erfasst (ISO 27001 Klausel 7.5.3).'
+            confirm_box:
+                title: 'Vor dem Erzeugen bestätigen'
+                intro: 'Bitte prüfen Sie die folgenden Approver und Prüfintervalle. Diese Werte werden für jedes generierte Dokument als Workflow-Routing und Review-Cadence übernommen.'
+                approvers_heading: 'Approver pro Dokument-Vorlage'
+                no_approvers: 'Keine Approver konfiguriert. Bitte zurück zu Schritt „Lifecycle" und einen Default-Approver setzen.'
+                default_approver_badge: 'Default'
+                intervals_heading: 'Prüfintervalle (Wirksamkeitsprüfung)'
+                default_interval: 'Standard: %count% Monat(e)'
+                interval_months: '%count% Monat(e)'
+                docs_heading: 'Geschätzte Anzahl zu erzeugender Dokumente'
+                docs_count: '%count% Dokument(e) (Schätzung; final ergibt sich aus den im Wizard gewählten Vorlagen)'
+                confirm_label: 'Ich bestätige die oben gelisteten Approver und Prüfintervalle.'
+            confirm_approvers:
+                required: 'Bitte bestätigen Sie zuerst die Approver und Prüfintervalle, bevor Sie die Generierung starten.'
+            acknowledge_warnings:
+                label: 'Ich habe die %count% Konsistenz-Warnung(en) gepruft und akzeptiere die Generierung trotzdem.'
+                required: 'Bitte bestätigen Sie zuerst, dass Sie die Konsistenz-Warnungen geprüft haben.'
         targeted_pick_topics:
             title: 'Themen auswählen'
             subtitle: 'Bis zu zehn bestehende Topic-Policies für die Re-Generierung markieren.'

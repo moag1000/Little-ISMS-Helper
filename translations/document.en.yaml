@@ -135,6 +135,28 @@ document:
     drag_files: 'Drag files here or click to upload'
     validation:
         mime_types: 'Please select a valid file (PDF, Word, Excel, Image or Text)'
+    effectiveness:
+        section_title: 'Effectiveness Review'
+        last_reviewed_at: 'Last reviewed at'
+        last_reviewed_by: 'Reviewed by'
+        notes: 'Notes / Observations'
+        never_reviewed: 'This policy has never been reviewed for effectiveness. Please ask the ISB / Auditor for an initial assessment.'
+        no_soa_bump_hint: 'Recording an effectiveness review does NOT automatically bump the SoA status to "implemented" — that decision stays with the ISB in the Control register.'
+        action:
+            record: 'Record effectiveness review'
+        modal:
+            title: 'Record effectiveness review'
+            intro: 'Capture observations, the effectiveness assessment and any derived measures. The entry is recorded in the audit trail (event: document_effectiveness_reviewed).'
+            notes_label: 'Notes / Observations'
+            notes_placeholder: 'e.g. Q1/2026 sample audit: control implemented, effectiveness confirmed by reviewer A. Residual risk within acceptance threshold.'
+            confirm_label: 'I confirm that the effectiveness of this policy has been reviewed.'
+            submit: 'Save review'
+        success:
+            recorded: 'Effectiveness review saved and recorded in the audit trail.'
+        badge:
+            overdue:
+                label: 'Effectiveness due'
+                tooltip: 'Last effectiveness review was more than 12 months ago or has never taken place. ISB / Auditor should document a review.'
     policy_body:
         section_title: 'Edit policy text (your customisation)'
         label: 'Policy text (your customisation)'

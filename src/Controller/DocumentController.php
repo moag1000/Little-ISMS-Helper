@@ -612,6 +612,92 @@ class DocumentController extends AbstractController
         ]);
     }
 
+    /**
+     * Effectiveness-Review (Wirksamkeitspruefung).
+     *
+     * Captures an explicit ISB / Auditor review event for the policy
+     * document. Stores the timestamp + reviewing user + free-text
+     * notes; emits a `document_effectiveness_reviewed` audit-trail
+     * entry. INTENTIONALLY does NOT bump the SoA implementation
+     * status to `implemented` — that decision stays with the ISB and
+     * happens via the regular Control edit form. The effectiveness
+     * review is the audit evidence that the decision was reviewed,
+     * not the decision itself.
+     *
+     * Authorisation: ROLE_AUDITOR (covers AUDITOR + MANAGER + ADMIN +
+     * SUPER_ADMIN per security.yaml hierarchy). USERs can read but
+     * not record reviews.
+     */
+    #[Route(
+        '/document/{id}/mark-effectiveness-reviewed',
+        name: 'app_document_mark_effectiveness_reviewed',
+        requirements: ['id' => '\d+'],
+        methods: ['POST'],
+    )]
+    #[IsGranted('ROLE_AUDITOR')]
+    public function markEffectivenessReviewed(Request $request, Document $document): Response
+    {
+        $user = $this->security->getUser();
+        if (!$user instanceof User) {
+            $this->addFlash('error', $this->translator->trans('common.error.access_denied', [], 'messages'));
+            return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
+        }
+
+        // Authorise per-document via the existing voter — the same
+        // gate that protects view/edit. Auditor on a non-readable
+        // document still gets blocked.
+        $this->denyAccessUnlessGranted('view', $document);
+
+        if (!$this->isCsrfTokenValid(
+            'document_effectiveness_review_' . $document->getId(),
+            (string) $request->request->get('_token'),
+        )) {
+            $this->addFlash('error', $this->translator->trans('common.error.invalid_csrf', [], 'messages'));
+            return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
+        }
+
+        $notes = trim((string) $request->request->get('notes', ''));
+        $confirmed = (bool) $request->request->get('confirmed', false);
+
+        $reviewedAt = new DateTimeImmutable();
+        $document->setLastEffectivenessReviewAt($reviewedAt);
+        $document->setLastEffectivenessReviewBy($user);
+        $document->setEffectivenessReviewNotes($notes !== '' ? $notes : null);
+
+        $this->entityManager->flush();
+
+        if ($this->auditLogger !== null) {
+            $this->auditLogger->logCustom(
+                action: 'document_effectiveness_reviewed',
+                entityType: 'Document',
+                entityId: $document->getId(),
+                oldValues: null,
+                newValues: [
+                    'document_id'        => $document->getId(),
+                    'reviewed_by_user_id' => $user->getId(),
+                    'reviewed_at'        => $reviewedAt->format(\DateTimeInterface::ATOM),
+                    'notes_length'       => strlen($notes),
+                    'confirmed'          => $confirmed,
+                ],
+                description: sprintf(
+                    'Effectiveness review recorded for Document #%d by %s (notes: %d chars, confirmed=%s)',
+                    (int) $document->getId(),
+                    $user->getFullName() ?? $user->getEmail() ?? '?',
+                    strlen($notes),
+                    $confirmed ? 'yes' : 'no',
+                ),
+            );
+        }
+
+        $this->addFlash('success', $this->translator->trans(
+            'document.effectiveness.success.recorded',
+            [],
+            'document',
+        ));
+
+        return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
+    }
+
     #[Route('/document/{id}/delete', name: 'app_document_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Document $document): Response

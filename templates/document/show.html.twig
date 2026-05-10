@@ -185,6 +185,49 @@
                 </div>
             {% endif %}
 
+            {# Effectiveness Review (Auditor MINOR-NC reply, 2026-05-10).
+               Surfaces the most recent ISB / Auditor effectiveness
+               review evidence + an action button that opens a modal
+               with a notes textarea. Visible to all readers; the
+               action button is gated to ROLE_AUDITOR (server-side
+               enforcement still wins). #}
+            <div class="detail-section">
+                <h3>
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    {{ 'document.effectiveness.section_title'|trans({}, 'document') }}
+                </h3>
+                {% if document.lastEffectivenessReviewAt %}
+                    <dl class="row mb-2 small">
+                        <dt class="col-sm-4">{{ 'document.effectiveness.last_reviewed_at'|trans({}, 'document') }}</dt>
+                        <dd class="col-sm-8">{{ document.lastEffectivenessReviewAt|date('d.m.Y H:i') }}</dd>
+                        <dt class="col-sm-4">{{ 'document.effectiveness.last_reviewed_by'|trans({}, 'document') }}</dt>
+                        <dd class="col-sm-8">{{ document.lastEffectivenessReviewBy ? document.lastEffectivenessReviewBy.fullName : '—' }}</dd>
+                        {% if document.effectivenessReviewNotes %}
+                            <dt class="col-sm-4">{{ 'document.effectiveness.notes'|trans({}, 'document') }}</dt>
+                            <dd class="col-sm-8"><pre class="small mb-0" style="white-space:pre-wrap">{{ document.effectivenessReviewNotes }}</pre></dd>
+                        {% endif %}
+                    </dl>
+                {% else %}
+                    <p class="small text-muted mb-2">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        {{ 'document.effectiveness.never_reviewed'|trans({}, 'document') }}
+                    </p>
+                {% endif %}
+                {% if is_granted('ROLE_AUDITOR') and (canEdit is not defined or canEdit) %}
+                    <button type="button"
+                            class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#effectivenessReviewModal">
+                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                        {{ 'document.effectiveness.action.record'|trans({}, 'document') }}
+                    </button>
+                    <p class="small text-muted mt-2 mb-0">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        {{ 'document.effectiveness.no_soa_bump_hint'|trans({}, 'document') }}
+                    </p>
+                {% endif %}
+            </div>
+
             {% if inverse_coverage is defined %}
                 <div class="detail-section">
                     <h3>
@@ -199,5 +242,53 @@
             {% endif %}
         {% endblock %}
     {% endembed %}
+
+    {% if is_granted('ROLE_AUDITOR') and (canEdit is not defined or canEdit) %}
+        {# Effectiveness-Review Modal — Bootstrap modal (lazy-loaded
+           via the existing modal-pattern documented in CLAUDE.md). #}
+        <div class="modal fade" id="effectivenessReviewModal" tabindex="-1"
+             aria-labelledby="effectivenessReviewModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form method="post" action="{{ path('app_document_mark_effectiveness_reviewed', {id: document.id}) }}"
+                      class="modal-content"
+                      data-turbo="false">
+                    <input type="hidden" name="_token" value="{{ csrf_token('document_effectiveness_review_' ~ document.id) }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="effectivenessReviewModalLabel">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            {{ 'document.effectiveness.modal.title'|trans({}, 'document') }}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="small text-muted">{{ 'document.effectiveness.modal.intro'|trans({}, 'document') }}</p>
+                        <div class="mb-3">
+                            <label for="effectivenessReviewNotes" class="form-label">
+                                {{ 'document.effectiveness.modal.notes_label'|trans({}, 'document') }}
+                            </label>
+                            <textarea class="form-control" id="effectivenessReviewNotes" name="notes" rows="4"
+                                      placeholder="{{ 'document.effectiveness.modal.notes_placeholder'|trans({}, 'document') }}"></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="effectivenessReviewConfirmed" name="confirmed" value="1">
+                            <label class="form-check-label small" for="effectivenessReviewConfirmed">
+                                {{ 'document.effectiveness.modal.confirm_label'|trans({}, 'document') }}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="fa-cyber-btn fa-cyber-btn--ghost" data-bs-dismiss="modal">
+                            {{ 'common.cancel'|trans({}, 'messages') }}
+                        </button>
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                            {{ 'document.effectiveness.modal.submit'|trans({}, 'document') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
