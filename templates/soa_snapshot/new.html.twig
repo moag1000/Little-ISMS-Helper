@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'soa' %}
+
+{% block title %}{{ 'soa.snapshot.new.title'|trans({}, 'soa') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.soa'|trans({}, 'nav'), url: path('app_soa_index') },
+        { label: 'soa.snapshot.page.title'|trans({}, 'soa'), url: path('app_soa_snapshot_index') },
+        { label: 'soa.snapshot.new.title'|trans({}, 'soa') }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'camera', label: 'soa.snapshot.badge'|trans({}, 'soa') },
+    title: 'soa.snapshot.new.title'|trans({}, 'soa'),
+    subtitle: 'soa.snapshot.new.subtitle'|trans({}, 'soa')
+}) }}
+
+<main class="fa-aurora-surface">
+    <div class="row">
+        <div class="col-md-8">
+            <form method="post" action="{{ path('app_soa_snapshot_new') }}" class="vstack gap-3">
+                <input type="hidden" name="_token" value="{{ csrf_token('soa_snapshot_create') }}">
+
+                <div>
+                    <label for="as_of_date" class="form-label fw-bold">{{ 'soa.snapshot.field.as_of_date'|trans({}, 'soa') }}</label>
+                    <input type="date" id="as_of_date" name="as_of_date" class="form-control" required value="{{ today }}" max="{{ today }}">
+                    <div class="form-text">{{ 'soa.snapshot.field.as_of_date_help'|trans({}, 'soa') }}</div>
+                </div>
+
+                <div>
+                    <label for="purpose" class="form-label fw-bold">{{ 'soa.snapshot.field.purpose'|trans({}, 'soa') }}</label>
+                    <input type="text" id="purpose" name="purpose" class="form-control" maxlength="255" placeholder="{{ 'soa.snapshot.field.purpose_placeholder'|trans({}, 'soa') }}">
+                    <div class="form-text">{{ 'soa.snapshot.field.purpose_help'|trans({}, 'soa') }}</div>
+                </div>
+
+                <div>
+                    <label for="notes" class="form-label fw-bold">{{ 'soa.snapshot.field.notes'|trans({}, 'soa') }}</label>
+                    <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary">
+                        <i class="bi bi-camera" aria-hidden="true"></i>
+                        <span class="fa-cyber-btn__label">{{ 'soa.snapshot.action.create'|trans({}, 'soa') }}</span>
+                    </button>
+                    <a href="{{ path('app_soa_snapshot_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                        <span class="fa-cyber-btn__label">{{ 'common.cancel'|trans({}, 'messages') }}</span>
+                    </a>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <div class="fa-alert fa-alert--info p-3">
+                <h3 class="h6 mb-2"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'soa.snapshot.new.help_title'|trans({}, 'soa') }}</h3>
+                <p class="small mb-0">{{ 'soa.snapshot.new.help_text'|trans({}, 'soa') }}</p>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

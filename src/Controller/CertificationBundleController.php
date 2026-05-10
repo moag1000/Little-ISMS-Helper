@@ -93,10 +93,23 @@ class CertificationBundleController extends AbstractController
         $activeFrameworks = $this->frameworkRepository->findActiveFrameworks();
         $selectedCodes = $this->resolveFrameworkCodes($request, $activeFrameworks);
 
+        // Task #128 — optional point-in-time freeze. When the form
+        // posts an `as_of_date` (YYYY-MM-DD), the bundle includes the
+        // SoA snapshot section (00_SOA_SNAPSHOT/) instead of the live
+        // SoA only. Future dates and bad inputs fall back to live.
+        $asOfDate = null;
+        $rawAsOf = trim((string) $request->request->get('as_of_date', ''));
+        if ($rawAsOf !== '') {
+            $parsed = \DateTimeImmutable::createFromFormat('Y-m-d', $rawAsOf);
+            if ($parsed instanceof \DateTimeImmutable && $parsed <= new \DateTimeImmutable()) {
+                $asOfDate = $parsed->setTime(23, 59, 59);
+            }
+        }
+
         $locale = $this->resolvePdfLocale($request);
         $result = $this->localeSwitcher->runWithLocale(
             $locale,
-            fn() => $this->exporter->export($tenant, $selectedCodes)
+            fn() => $this->exporter->export($tenant, $selectedCodes, $asOfDate)
         );
 
         $response = new BinaryFileResponse($result['path']);

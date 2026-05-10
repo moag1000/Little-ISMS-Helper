@@ -171,3 +171,57 @@ soa:
     iso27001_full_title: 'Iso27001 Full Title'
     in_progress_badge: 'In Progress'
     in_progress_badge_emoji: '🔄 In Progress'
+    snapshot:
+        badge: 'SoA freeze'
+        page:
+            title: 'SoA point-in-time snapshots'
+            subtitle: 'Freeze the Statement of Applicability to the audit cut-off so exports stay reproducible.'
+        new:
+            title: 'Create new SoA snapshot'
+            subtitle: 'Pick the as-of-date for the audit-relevant SoA view.'
+            help_title: 'What does the snapshot capture?'
+            help_text: 'For every applicable control we freeze the implementation status, the evidence document version current at the cut-off (with version-supersedes chain) and the approver identity. The snapshot is immutable (no UPDATE) and tamper-evident via SHA-256.'
+        show:
+            title: 'SoA snapshot %date%'
+        empty:
+            title: 'No SoA snapshots yet'
+            text: 'As soon as you create a snapshot, the Statement of Applicability is frozen to the chosen as-of-date and can be re-exported into the certification bundle in exactly that state.'
+        section:
+            integrity: 'Integrity'
+            controls: 'Frozen control state'
+        action:
+            new: 'Create new snapshot'
+            create: 'Freeze snapshot'
+            export_csv: 'Export CSV'
+        field:
+            as_of_date: 'As-of-date'
+            as_of_date_help: 'Inclusive date: documents and approvals up to and including this day are considered.'
+            purpose: 'Purpose'
+            purpose_placeholder: 'e.g. External audit 2026-06-15 (TÜV)'
+            purpose_help: 'Surfaces in the audit trail and the cert-bundle metadata.'
+            notes: 'Notes'
+            checksum: 'SHA-256 checksum'
+        kpi:
+            controls: 'Controls in snapshot'
+            as_of: 'As of'
+            frozen_at: 'Frozen at'
+            created_by: 'Created by'
+        col:
+            as_of_date: 'As-of-date'
+            purpose: 'Purpose'
+            created_at: 'Created at'
+            created_by: 'Created by'
+            controls: 'Controls'
+            checksum: 'SHA-256'
+            control_id: 'Control ID'
+            name: 'Name'
+            applicable: 'Applicable'
+            status: 'Status'
+            evidence: 'Evidence'
+            approved_by: 'Approved by'
+            approved_at: 'Approved at'
+        flash:
+            created: 'SoA snapshot for as-of-date %date% created (%count% controls frozen).'
+        error:
+            invalid_date: 'Please supply a valid date in YYYY-MM-DD format.'
+            future_date: 'As-of-date must not be in the future.'

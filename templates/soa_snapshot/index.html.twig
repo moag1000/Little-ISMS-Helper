@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'soa' %}
+
+{% block title %}{{ 'soa.snapshot.page.title'|trans({}, 'soa') }} - Little ISMS Helper{% endblock %}
+
+{% block body %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.soa'|trans({}, 'nav'), url: path('app_soa_index') },
+        { label: 'soa.snapshot.page.title'|trans({}, 'soa') }
+    ]
+} %}
+
+{{ _fa_page_header.render({
+    badge: { icon: 'camera', label: 'soa.snapshot.badge'|trans({}, 'soa') },
+    title: 'soa.snapshot.page.title'|trans({}, 'soa'),
+    subtitle: 'soa.snapshot.page.subtitle'|trans({}, 'soa'),
+    actions: [
+        { label: 'soa.snapshot.action.new'|trans({}, 'soa'), variant: 'primary', icon: 'plus-lg', href: path('app_soa_snapshot_new') }
+    ]
+}) }}
+
+<main class="fa-aurora-surface">
+    {% if snapshots is empty %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'soa.snapshot.empty.title'|trans({}, 'soa'),
+            text: 'soa.snapshot.empty.text'|trans({}, 'soa'),
+            actions: [
+                { label: 'soa.snapshot.action.new'|trans({}, 'soa'), variant: 'primary', icon: 'plus-lg', href: path('app_soa_snapshot_new') }
+            ]
+        }) }}
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ 'soa.snapshot.col.as_of_date'|trans({}, 'soa') }}</th>
+                        <th scope="col">{{ 'soa.snapshot.col.purpose'|trans({}, 'soa') }}</th>
+                        <th scope="col">{{ 'soa.snapshot.col.created_at'|trans({}, 'soa') }}</th>
+                        <th scope="col">{{ 'soa.snapshot.col.created_by'|trans({}, 'soa') }}</th>
+                        <th scope="col" class="text-end">{{ 'soa.snapshot.col.controls'|trans({}, 'soa') }}</th>
+                        <th scope="col">{{ 'soa.snapshot.col.checksum'|trans({}, 'soa') }}</th>
+                        <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for snapshot in snapshots %}
+                    <tr>
+                        <td><strong>{{ snapshot.asOfDate|date('Y-m-d') }}</strong></td>
+                        <td>{{ snapshot.purpose|default('—') }}</td>
+                        <td>{{ snapshot.createdAt|date('Y-m-d H:i') }}</td>
+                        <td>{{ snapshot.createdBy ? snapshot.createdBy.email : '—' }}</td>
+                        <td class="text-end">{{ snapshot.controlCount }}</td>
+                        <td><code class="small">{{ snapshot.checksumSha256|slice(0, 16) }}…</code></td>
+                        <td class="text-end">
+                            <a href="{{ path('app_soa_snapshot_show', { id: snapshot.id }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                <span class="fa-cyber-btn__label">{{ 'common.view'|trans({}, 'messages') }}</span>
+                            </a>
+                            <a href="{{ path('app_soa_snapshot_export_csv', { id: snapshot.id }) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" data-turbo="false">
+                                <i class="bi bi-download" aria-hidden="true"></i>
+                                <span class="fa-cyber-btn__label">{{ 'soa.snapshot.action.export_csv'|trans({}, 'soa') }}</span>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</main>
+{% endblock %}

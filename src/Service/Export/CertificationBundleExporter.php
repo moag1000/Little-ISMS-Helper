@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Export;
 
 use App\Entity\Document;
+use App\Entity\SoaSnapshot;
 use App\Entity\Tenant;
 use App\Entity\User;
 use App\Entity\WorkflowInstance;
@@ -21,6 +22,7 @@ use App\Repository\WorkflowInstanceRepository;
 use App\Service\AuditLogger;
 use App\Service\PdfExportService;
 use App\Service\PolicyWizard\Export\PolicyPdfExporter;
+use App\Service\Soa\SoaSnapshotService;
 use App\Service\SoAReportService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -75,6 +77,7 @@ final class CertificationBundleExporter
         private readonly ?TenantBrandingRepository $brandingRepository = null,
         private readonly ?LoggerInterface $logger = null,
         private readonly ?WorkflowInstanceRepository $workflowInstanceRepository = null,
+        private readonly ?SoaSnapshotService $soaSnapshotService = null,
     ) {
     }
 
@@ -110,9 +113,17 @@ final class CertificationBundleExporter
      * @param string|list<string> $frameworks Framework code(s). String for
      *                                        back-compat, list for the new
      *                                        multi-framework path.
-     * @return array{path: string, filename: string, sha256: string, document_count: int, frameworks: list<string>}
+     * @param ?DateTimeImmutable  $asOfDate   Optional point-in-time freeze.
+     *                                        When set, the bundle includes a
+     *                                        `00_SOA_SNAPSHOT/` section with
+     *                                        the frozen SoA state + metadata.
+     *                                        If a snapshot for the date does
+     *                                        not yet exist for the tenant,
+     *                                        one is created on-the-fly via
+     *                                        {@see SoaSnapshotService}.
+     * @return array{path: string, filename: string, sha256: string, document_count: int, frameworks: list<string>, snapshot_id?: int|null, as_of_date?: string|null}
      */
-    public function export(Tenant $tenant, string|array $frameworks = 'ISO27001'): array
+    public function export(Tenant $tenant, string|array $frameworks = 'ISO27001', ?DateTimeImmutable $asOfDate = null): array
     {
         $now = new DateTimeImmutable();
         $dateStr = $now->format('Y-m-d');
@@ -149,6 +160,39 @@ final class CertificationBundleExporter
         // ── 00: ISMS Overview PDF ───────────────────────────────────────
         $overviewPdf = $this->generateOverviewPdf($tenant, $now);
         $zip->addFromString($rootDir . '/00_ISMS_OVERVIEW.pdf', $overviewPdf);
+
+        // ── 00_SOA_SNAPSHOT: optional point-in-time freeze ──────────────
+        // Persona-walkthrough gap: ISB + Auditor-External demanded a
+        // bundle that reflects the SoA "as of <audit cut-off>" instead
+        // of always showing live state. When `asOfDate` is set, look up
+        // (or create on-the-fly) an immutable {@see SoaSnapshot} and
+        // emit `snapshot_metadata.csv` + `soa_state_asof.csv` next to
+        // the live SoA PDF so auditors can compare at a glance.
+        $snapshot = null;
+        if ($asOfDate !== null && $this->soaSnapshotService !== null && $user instanceof User) {
+            $snapshot = $this->soaSnapshotService->findByTenantAndDate($tenant, $asOfDate);
+            if ($snapshot === null) {
+                $snapshot = $this->soaSnapshotService->createSnapshot(
+                    $tenant,
+                    $asOfDate,
+                    $user,
+                    'Certification bundle export ' . $now->format('Y-m-d'),
+                    null,
+                );
+            }
+            $zip->addFromString(
+                $rootDir . '/00_SOA_SNAPSHOT/snapshot_metadata.csv',
+                $this->soaSnapshotService->exportMetadataCsv($snapshot),
+            );
+            $zip->addFromString(
+                $rootDir . '/00_SOA_SNAPSHOT/soa_state_asof.csv',
+                $this->soaSnapshotService->exportPayloadCsv($snapshot),
+            );
+            $zip->addFromString(
+                $rootDir . '/00_SOA_SNAPSHOT/payload.json',
+                json_encode($snapshot->getPayload(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            );
+        }
 
         // ── 01: Statement of Applicability PDF ──────────────────────────
         $soaPdf = $this->soAReportService->generateSoAReport();
@@ -213,6 +257,9 @@ final class CertificationBundleExporter
                 'gaps' => $gapCount,
             ],
             'sha256' => '(computed after ZIP close)',
+            'asOfDate' => $asOfDate?->format('Y-m-d'),
+            'soaSnapshotId' => $snapshot?->getId(),
+            'soaSnapshotChecksum' => $snapshot?->getChecksumSha256(),
         ];
 
         $zip->addFromString($rootDir . '/METADATA.json', json_encode($metadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
@@ -294,6 +341,8 @@ final class CertificationBundleExporter
             'sha256' => $sha256,
             'document_count' => $documentCount,
             'frameworks' => $frameworkList,
+            'snapshot_id' => $snapshot?->getId(),
+            'as_of_date' => $asOfDate?->format('Y-m-d'),
         ];
     }
 

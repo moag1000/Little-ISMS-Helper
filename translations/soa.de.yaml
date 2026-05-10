@@ -169,3 +169,57 @@ soa:
     iso27001_full_title: 'ISO/IEC 27001:2022 vollständiger Titel'
     in_progress_badge: 'In Arbeit'
     in_progress_badge_emoji: '🚧 In Arbeit'
+    snapshot:
+        badge: 'SoA-Stichtag'
+        page:
+            title: 'SoA-Stichtag-Snapshots'
+            subtitle: 'Frieren Sie die Anwendbarkeitserklärung zum Audit-Stichtag ein, damit Exporte reproduzierbar bleiben.'
+        new:
+            title: 'Neuen SoA-Snapshot erstellen'
+            subtitle: 'Wählen Sie das Stichtagsdatum für die Audit-relevante SoA-Sicht.'
+            help_title: 'Was passiert beim Snapshot?'
+            help_text: 'Pro anwendbarem Control wird die Implementierungsstatus-Bewertung, das jeweils gültige Nachweisdokument (inkl. Versionshistorie) und der Freigeber zum Stichtag eingefroren. Der Snapshot ist unveränderlich (kein UPDATE) und per SHA-256 manipulationsgeschützt.'
+        show:
+            title: 'SoA-Snapshot %date%'
+        empty:
+            title: 'Noch keine SoA-Snapshots'
+            text: 'Sobald Sie einen Snapshot erstellen, wird die Anwendbarkeitserklärung zum gewählten Stichtag eingefroren und kann beim Zertifizierungs-Bundle wieder genau so exportiert werden.'
+        section:
+            integrity: 'Integrität'
+            controls: 'Eingefrorener Control-Stand'
+        action:
+            new: 'Neuen Snapshot erstellen'
+            create: 'Snapshot einfrieren'
+            export_csv: 'CSV exportieren'
+        field:
+            as_of_date: 'Stichtagsdatum'
+            as_of_date_help: 'Inklusiv-Datum: Dokumente und Freigaben bis einschließlich dieses Tages werden berücksichtigt.'
+            purpose: 'Zweck'
+            purpose_placeholder: 'z.B. Externes Audit 2026-06-15 (TÜV)'
+            purpose_help: 'Wird im Audit-Trail und in den Cert-Bundle-Metadaten ausgewiesen.'
+            notes: 'Notizen'
+            checksum: 'SHA-256 Prüfsumme'
+        kpi:
+            controls: 'Controls im Snapshot'
+            as_of: 'Stichtag'
+            frozen_at: 'Eingefroren am'
+            created_by: 'Erstellt von'
+        col:
+            as_of_date: 'Stichtag'
+            purpose: 'Zweck'
+            created_at: 'Erstellt am'
+            created_by: 'Erstellt von'
+            controls: 'Controls'
+            checksum: 'SHA-256'
+            control_id: 'Control-ID'
+            name: 'Name'
+            applicable: 'Anwendbar'
+            status: 'Status'
+            evidence: 'Nachweise'
+            approved_by: 'Freigegeben von'
+            approved_at: 'Freigegeben am'
+        flash:
+            created: 'SoA-Snapshot zum Stichtag %date% erstellt (%count% Controls eingefroren).'
+        error:
+            invalid_date: 'Bitte ein gültiges Datum im Format YYYY-MM-DD angeben.'
+            future_date: 'Stichtagsdatum darf nicht in der Zukunft liegen.'
