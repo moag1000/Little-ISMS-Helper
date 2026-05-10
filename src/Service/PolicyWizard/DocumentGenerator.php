@@ -116,6 +116,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         private readonly ?DoraExtensionCatalogue $doraExtensionCatalogue = null,
         private readonly ?PolicySettingProvider $policySettingProvider = null,
         private readonly ?GdprSectionCatalogue $gdprSectionCatalogue = null,
+        private readonly ?SoaAutoUpdateService $soaAutoUpdateService = null,
     ) {
     }
 
@@ -1009,6 +1010,19 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             $template->getLinkedDoraArticles() ?? [],
         );
 
+        // User-mandate (2026-05-08): delegate the implementation-status
+        // bump + audit-trail emission to {@see SoaAutoUpdateService} so
+        // a `policy_wizard.soa_auto_updated` event lands in the trail
+        // for every actually-changed row + a `soa_self_assessment` event
+        // is added on single-user tenants. The service mirrors the same
+        // STATUS_RANK matrix as this class, so semantics stay identical.
+        // Falls back to the inline max-comparator when the service is
+        // not wired (legacy unit tests instantiate DocumentGenerator
+        // without it).
+        if ($this->soaAutoUpdateService !== null) {
+            $this->soaAutoUpdateService->propagateForDocument($document, $run);
+        }
+
         $wizardRank = self::STATUS_RANK[self::WIZARD_STATUS_LABEL];
 
         foreach ($refs as $ref) {
@@ -1027,6 +1041,9 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             }
 
             // Implementation-status max-comparator (NEVER downgrade).
+            // Kept inline as belt-and-suspenders fallback when
+            // SoaAutoUpdateService is not wired; idempotent when the
+            // service already bumped the row (same target + comparator).
             $current = $control->getImplementationStatus() ?? 'not_started';
             $currentRank = self::STATUS_RANK[$current] ?? 0;
             if ($currentRank < $wizardRank) {
