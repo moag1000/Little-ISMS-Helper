@@ -77,6 +77,11 @@ class ReportBuilderController extends AbstractController
         $tenantId = $this->tenantContext->getCurrentTenantId();
 
         if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('report_builder_new', $request->request->get('_token'))) {
+                $this->addFlash('danger', $this->translator->trans('common.csrf_error', [], 'messages'));
+                return $this->redirectToRoute('report_builder_new');
+            }
+
             $data = $request->request->all();
 
             $report = new CustomReport();

@@ -158,6 +158,10 @@ final class ComplianceInheritanceController extends AbstractController
     #[Route('/{id}/confirm', name: 'confirm', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function confirm(FulfillmentInheritanceLog $log, Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('inheritance_confirm_' . $log->getId(), $request->request->get('_token', ''))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
         $this->denyAccessUnlessGranted(ComplianceInheritanceVoter::CONFIRM, $log);
         $this->assertSameTenant($log);
 
@@ -185,6 +189,10 @@ final class ComplianceInheritanceController extends AbstractController
     #[Route('/{id}/reject', name: 'reject', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function reject(FulfillmentInheritanceLog $log, Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('inheritance_reject_' . $log->getId(), $request->request->get('_token', ''))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
         $this->denyAccessUnlessGranted(ComplianceInheritanceVoter::REJECT, $log);
         $this->assertSameTenant($log);
 
@@ -204,6 +212,10 @@ final class ComplianceInheritanceController extends AbstractController
     #[Route('/{id}/override', name: 'override', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function override(FulfillmentInheritanceLog $log, Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('inheritance_override_' . $log->getId(), $request->request->get('_token', ''))) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
         $this->denyAccessUnlessGranted(ComplianceInheritanceVoter::OVERRIDE, $log);
         $this->assertSameTenant($log);
 

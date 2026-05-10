@@ -38,6 +38,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
         {% endblock %}
         {% block card_body %}
             <form method="post" enctype="multipart/form-data">
+                <input type="hidden" name="_token" value="{{ csrf_token('user_import') }}">
                 <div class="mb-3">
                     <label for="import_file" class="form-label">{{ 'user.import.file_label'|trans({}, 'user') }}</label>
                     <input type="file"

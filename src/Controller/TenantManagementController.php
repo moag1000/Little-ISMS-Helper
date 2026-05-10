@@ -320,8 +320,13 @@ class TenantManagementController extends AbstractController
     }
     #[Route('/admin/tenants/{id}/toggle', name: 'tenant_management_toggle', methods: ['POST'])]
     #[IsGranted('TENANT_EDIT')]
-    public function toggle(Tenant $tenant): Response
+    public function toggle(Tenant $tenant, Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('toggle_tenant_' . $tenant->getId(), $request->request->get('_token'))) {
+            $this->addFlash('danger', 'common.csrf_error');
+            return $this->redirectToRoute('tenant_management_index');
+        }
+
         try {
             $previousStatus = $tenant->isActive();
             $tenant->setIsActive(!$previousStatus);
@@ -489,6 +494,11 @@ class TenantManagementController extends AbstractController
     #[IsGranted('TENANT_EDIT')]
     public function setParent(Request $request, Tenant $tenant): Response
     {
+        if (!$this->isCsrfTokenValid('set_parent', $request->request->get('_token'))) {
+            $this->addFlash('danger', 'common.csrf_error');
+            return $this->redirectToRoute('tenant_management_corporate_structure');
+        }
+
         $parentId = $request->request->get('parent_id');
         $governanceModel = $request->request->get('governance_model');
 
@@ -572,6 +582,11 @@ class TenantManagementController extends AbstractController
     #[IsGranted('TENANT_EDIT')]
     public function updateGovernance(Request $request, Tenant $tenant): Response
     {
+        if (!$this->isCsrfTokenValid('update_governance', $request->request->get('_token'))) {
+            $this->addFlash('danger', 'common.csrf_error');
+            return $this->redirectToRoute('tenant_management_corporate_structure');
+        }
+
         $governanceModel = $request->request->get('governance_model');
 
         if (!$governanceModel || !in_array($governanceModel, ['hierarchical', 'shared', 'independent'])) {
