@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% trans_default_domain 'certification_bundle' %}
 
 {% block title %}{{ 'certification_bundle.title'|trans({}, 'certification_bundle') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -14,15 +16,12 @@
         ]
     } only %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h2 mb-1">
-                <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
-                {{ 'certification_bundle.title'|trans({}, 'certification_bundle') }}
-            </h1>
-            <p class="text-muted mb-0">{{ 'certification_bundle.subtitle'|trans({}, 'certification_bundle') }}</p>
-        </div>
-    </div>
+    {# V3 W2-H1: migrate hand-rolled <h1 class="h2"> to fa-page-header. #}
+    {{ _fa_page_header.render({
+        badge: { icon: 'download', label: 'ISO 27001' },
+        title: 'certification_bundle.title'|trans({}, 'certification_bundle'),
+        subtitle: 'certification_bundle.subtitle'|trans({}, 'certification_bundle')
+    }) }}
 
     {# Tenant & Framework Info — Audit-V3 EF-3 + task #122: multi-framework
        bundle. Single-framework dropdown stays for back-compat (default
@@ -64,15 +63,17 @@
                         <div>ISO/IEC 27001:2022</div>
                     {% endif %}
 
-                    {# Multi-framework composite bundle (task #122).
+                    {# V3 W2-H1: Multi-framework composite bundle (task #122).
                        Checked codes are POST'd as `frameworks[]` and each
-                       contributes a 02_FRAMEWORK_MAPPING/<code>_coverage.csv. #}
+                       contributes a 02_FRAMEWORK_MAPPING/<code>_coverage.csv.
+                       Dropdown always-visible (was hidden in <details>). #}
                     {% if frameworks is defined and frameworks|length > 1 %}
-                        <details class="mt-3">
-                            <summary class="small text-muted" style="cursor: pointer;">
+                        <div class="mt-3">
+                            <label class="form-label fw-semibold small mb-1">
+                                <i class="bi bi-collection" aria-hidden="true"></i>
                                 {{ 'certification_bundle.preview.multi_framework_toggle'|trans({}, 'certification_bundle') }}
-                            </summary>
-                            <div class="mt-2 ps-2 border-start" id="cert-bundle-multi-framework">
+                            </label>
+                            <div class="ps-2 border-start" id="cert-bundle-multi-framework">
                                 {% for fw in frameworks %}
                                     <div class="form-check">
                                         <input class="form-check-input cert-bundle-fw-checkbox"
@@ -87,7 +88,7 @@
                                     </div>
                                 {% endfor %}
                             </div>
-                        </details>
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -103,55 +104,61 @@
         }) }}
     {% endif %}
 
-    {# Preview Counts #}
+    {# V3 W2-H1: 6× legacy variant:'kpi' replaced by Aurora fa-feature-card. #}
     <div class="row mb-4">
         <div class="col-md-4 col-lg-2 mb-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 text-center', 'variant': 'kpi', 'borderColor': 'primary' } %}
-                {% block card_body %}
-                    <div class="kpi-card-value">{{ counts.assets }}</div>
-                    <div class="kpi-card-label">{{ 'certification_bundle.preview.assets'|trans({}, 'certification_bundle') }}</div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label: 'certification_bundle.preview.assets'|trans({}, 'certification_bundle'),
+                value: counts.assets,
+                variant: 'primary',
+                icon: 'box-seam',
+                class: 'h-100'
+            }) }}
         </div>
         <div class="col-md-4 col-lg-2 mb-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 text-center', 'variant': 'kpi', 'borderColor': 'warning' } %}
-                {% block card_body %}
-                    <div class="kpi-card-value">{{ counts.risks }}</div>
-                    <div class="kpi-card-label">{{ 'certification_bundle.preview.risks'|trans({}, 'certification_bundle') }}</div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label: 'certification_bundle.preview.risks'|trans({}, 'certification_bundle'),
+                value: counts.risks,
+                variant: 'warning',
+                icon: 'exclamation-triangle',
+                class: 'h-100'
+            }) }}
         </div>
         <div class="col-md-4 col-lg-2 mb-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 text-center', 'variant': 'kpi', 'borderColor': 'success' } %}
-                {% block card_body %}
-                    <div class="kpi-card-value">{{ counts.controls_applicable }}</div>
-                    <div class="kpi-card-label">{{ 'certification_bundle.preview.controls_applicable'|trans({}, 'certification_bundle') }}</div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label: 'certification_bundle.preview.controls_applicable'|trans({}, 'certification_bundle'),
+                value: counts.controls_applicable,
+                variant: 'success',
+                icon: 'shield-check',
+                class: 'h-100'
+            }) }}
         </div>
         <div class="col-md-4 col-lg-2 mb-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 text-center', 'variant': 'kpi', 'borderColor': 'success' } %}
-                {% block card_body %}
-                    <div class="kpi-card-value">{{ counts.controls_implemented }}</div>
-                    <div class="kpi-card-label">{{ 'certification_bundle.preview.controls_implemented'|trans({}, 'certification_bundle') }}</div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label: 'certification_bundle.preview.controls_implemented'|trans({}, 'certification_bundle'),
+                value: counts.controls_implemented,
+                variant: 'success',
+                icon: 'check-circle-fill',
+                class: 'h-100'
+            }) }}
         </div>
         <div class="col-md-4 col-lg-2 mb-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 text-center', 'variant': 'kpi', 'borderColor': 'info' } %}
-                {% block card_body %}
-                    <div class="kpi-card-value">{{ counts.evidence_documents }}</div>
-                    <div class="kpi-card-label">{{ 'certification_bundle.preview.evidence_documents'|trans({}, 'certification_bundle') }}</div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label: 'certification_bundle.preview.evidence_documents'|trans({}, 'certification_bundle'),
+                value: counts.evidence_documents,
+                variant: 'primary',
+                icon: 'file-earmark-text',
+                class: 'h-100'
+            }) }}
         </div>
         <div class="col-md-4 col-lg-2 mb-3">
-            {% embed '_components/_card.html.twig' with { 'class': 'h-100 text-center', 'variant': 'kpi', 'borderColor': counts.gaps > 0 ? 'danger' : 'success' } %}
-                {% block card_body %}
-                    <div class="kpi-card-value {% if counts.gaps > 0 %}text-danger{% else %}text-success{% endif %}">{{ counts.gaps }}</div>
-                    <div class="kpi-card-label">{{ 'certification_bundle.preview.gaps'|trans({}, 'certification_bundle') }}</div>
-                {% endblock %}
-            {% endembed %}
+            {{ _fa_feature_card.render({
+                label: 'certification_bundle.preview.gaps'|trans({}, 'certification_bundle'),
+                value: counts.gaps,
+                variant: counts.gaps > 0 ? 'danger' : 'success',
+                icon: counts.gaps > 0 ? 'exclamation-octagon' : 'check2-circle',
+                class: 'h-100'
+            }) }}
         </div>
     </div>
 
