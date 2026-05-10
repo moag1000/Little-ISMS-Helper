@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'wizard' %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block title %}{{ 'wizard.history.title'|trans({}, 'wizard') }} - {{ config.name }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {# Aurora Breadcrumb #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'wizard.title'|trans({}, 'wizard'), url: path('app_compliance_wizard_index') },
+            { label: config.name, url: path('app_compliance_wizard_start', {wizard: wizard}) },
+            { label: 'wizard.history.title'|trans({}, 'wizard') }
+        ]
+    } %}
+
+    {# Aurora Page Header #}
+    {{ _fa_page_header.render({
+        title: ('wizard.history.title'|trans({}, 'wizard')) ~ ' — ' ~ config.name,
+        subtitle: 'wizard.history.subtitle'|trans({}, 'wizard'),
+        badge: { icon: 'clock-history', label: config.code },
+        actions: [
+            { label: 'wizard.back'|trans({}, 'wizard'), href: path('app_compliance_wizard_start', {wizard: wizard}), variant: 'ghost', icon: 'arrow-left' },
+            { label: 'wizard.run_assessment'|trans({}, 'wizard'), href: path('app_compliance_wizard_assess', {wizard: wizard}), variant: 'primary', icon: 'play-fill' }
+        ]
+    }) }}
+
+    {% if sessions|length == 0 %}
+        {{ _fa_empty_state.render({
+            mood: 'thinking',
+            title: 'wizard.history.empty.title'|trans({}, 'wizard'),
+            text: 'wizard.history.empty.description'|trans({}, 'wizard'),
+            actions: [
+                { label: 'wizard.run_assessment'|trans({}, 'wizard'), variant: 'primary', icon: 'play', href: path('app_compliance_wizard_assess', {wizard: wizard}) }
+            ]
+        }) }}
+    {% else %}
+        {# Trend Chart #}
+        {% if trend_points|length >= 2 %}
+            <div class="card fa-section mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-3">
+                        <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
+                        {{ 'wizard.history.trend.title'|trans({}, 'wizard') }}
+                    </h2>
+                    <canvas id="wizard-trend-chart"
+                            data-controller="chart-trend"
+                            data-chart-trend-data-value="{{ trend_points|json_encode|e('html_attr') }}"
+                            data-chart-trend-label-value="{{ 'wizard.history.trend.score_label'|trans({}, 'wizard') }}"
+                            height="180"></canvas>
+                </div>
+            </div>
+        {% endif %}
+
+        {# Snapshot list #}
+        <div class="card fa-section mb-4">
+            <div class="card-header">
+                <h2 class="card-title h5 mb-0">{{ 'wizard.history.snapshots'|trans({}, 'wizard') }} ({{ sessions|length }})</h2>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>{{ 'wizard.history.field.completed_at'|trans({}, 'wizard') }}</th>
+                            <th>{{ 'wizard.history.field.user'|trans({}, 'wizard') }}</th>
+                            <th class="text-end">{{ 'wizard.history.field.score'|trans({}, 'wizard') }}</th>
+                            <th>{{ 'wizard.history.field.status'|trans({}, 'wizard') }}</th>
+                            <th class="text-end">{{ 'wizard.history.field.gaps'|trans({}, 'wizard') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for session in sessions %}
+                            <tr>
+                                <td>
+                                    {% if session.completedAt %}{{ session.completedAt|date('Y-m-d H:i') }}{% else %}—{% endif %}
+                                </td>
+                                <td>
+                                    {% if session.user %}{{ session.user.email }}{% else %}—{% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <span class="fw-bold
+                                        {% if session.overallScore >= 80 %}text-success
+                                        {% elseif session.overallScore >= 60 %}text-warning
+                                        {% else %}text-danger{% endif %}">
+                                        {{ session.overallScore }}%
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge {{ session.statusBadgeClass }}">
+                                        {{ session.status }}
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    {{ session.criticalGaps|length }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

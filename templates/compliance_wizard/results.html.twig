@@ -22,9 +22,21 @@
         subtitle: ('wizard.assessed_at'|trans({}, 'wizard')) ~ ': ' ~ (result.assessed_at|date('d.m.Y H:i')),
         badge: { icon: 'clipboard2-check', label: ('wizard.results'|trans({}, 'wizard')) ~ ' · ' ~ result.overall_score ~ '%' },
         actions: [
+            { label: 'wizard.history.title'|trans({}, 'wizard'), href: path('app_compliance_wizard_history', {wizard: wizard}), variant: 'ghost', icon: 'clock-history' },
             { label: 'wizard.export_pdf'|trans({}, 'wizard'), href: path('app_compliance_wizard_export_pdf', {wizard: wizard}), variant: 'primary', icon: 'file-pdf' }
         ]
     }) }}
+
+    {# V3 B5 / EF-2: Snapshot CTA #}
+    <div class="d-flex justify-content-end mb-3">
+        <form method="post" action="{{ path('app_compliance_wizard_snapshot', {wizard: wizard}) }}" class="d-inline">
+            <input type="hidden" name="_token" value="{{ csrf_token('wizard_snapshot_' ~ wizard) }}">
+            <button type="submit" class="fa-cyber-btn fa-cyber-btn--info">
+                <i class="fa-icon fa-icon--ui-camera" aria-hidden="true"></i>
+                {{ 'wizard.snapshot.cta'|trans({}, 'wizard') }}
+            </button>
+        </form>
+    </div>
 
     {# Score summary card #}
     <div class="row mb-4">

@@ -1407,3 +1407,24 @@ wizard:
     bcm:
         bcm_policies: 'BCM Policy-Wizard outputs'
         bcm_policies_desc: 'Generated BCM mandatory policies per ISO 22301:2019: BCM top-level policy, BCMS scope, BIA methodology, exercise programme, crisis management plan, recovery plans, and management review.'
+
+    # V3 B5 / EF-2: Snapshot + History
+    snapshot:
+        cta: 'Save this run as snapshot'
+        saved: 'Snapshot saved. History now shows the new entry.'
+    history:
+        title: 'Coverage History'
+        subtitle: 'Snapshots of this wizard over time — for as-of-date comparison and trend analysis.'
+        snapshots: 'Snapshots'
+        empty:
+            title: 'No snapshots yet'
+            description: 'Run the assessment and save the run as a snapshot to track coverage over time.'
+        trend:
+            title: 'Coverage over time'
+            score_label: 'Score (%)'
+        field:
+            completed_at: 'Completed'
+            user: 'User'
+            score: 'Score'
+            status: 'Status'
+            gaps: 'Critical Gaps'
