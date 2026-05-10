@@ -1,223 +1,190 @@
-{% extends 'base.html.twig' %}
+{#
+ # Audit-V3 FP-2: align Setup-Wizard "existing frameworks" page with the
+ # rest of the Aurora Setup-Layout (`setup/_layout.html.twig`). The
+ # original template extended the standard `base.html.twig` with a
+ # hand-rolled Bootstrap progress-bar — this caused a visible layout
+ # break in the onboarding flow ("Aurora -> Bootstrap -> Aurora").
+ #
+ # The page sits logically right after `frameworks` (step 9). We re-use
+ # that step's mood/line/sub from SetupFlow so Alva keeps her voice.
+ #}
+{% extends 'setup/_layout.html.twig' %}
+{% trans_default_domain 'setup_wizard' %}
+{% set active_step = 'frameworks' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
-{% block title %}{{ 'existing_frameworks.title'|trans({}, 'setup_wizard') }} - Deployment Wizard{% endblock %}
+{% block title %}{{ 'existing_frameworks.title'|trans({}, 'setup_wizard') }} — Setup{% endblock %}
 
-{% block head %}
-    {{ parent() }}
-    <meta name="turbo-cache-control" content="no-cache">
-{% endblock %}
+{% block step_content %}
+    {# Flash messages — keep the Aurora alert variant inside the step content. #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            {% set faVariant = label in ['danger','error'] ? 'danger' : (label == 'success' ? 'success' : (label == 'warning' ? 'warning' : 'info')) %}
+            {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message }) }}
+        {% endfor %}
+    {% endfor %}
 
-{% block body %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-11">
-            {# Flash Messages #}
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    {% set faVariant = label in ['danger','error'] ? 'danger' : (label == 'success' ? 'success' : (label == 'warning' ? 'warning' : 'info')) %}
-                    {{ _fa_alert.render({ variant: faVariant, dismissible: true, body: message }) }}
-                {% endfor %}
-            {% endfor %}
+    <header class="fa-setup-step-header mb-4">
+        <h1 class="h3 mb-2">
+            <i class="fa-icon me-2 fa-icon--nav-collection" aria-hidden="true"></i>
+            {{ 'existing_frameworks.header'|trans({}, 'setup_wizard') }}
+        </h1>
+        <p class="text-muted mb-0">{{ 'existing_frameworks.description'|trans({}, 'setup_wizard') }}</p>
+    </header>
 
-            {# Progress Bar #}
-            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } only %}
-                {% block card_body %}
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h4>
-                        <small class="text-muted">
-                            {{ 'setup.progress.step_of'|trans({'%current%': 8, '%total%': 11}, 'setup') }}
-                        </small>
+    {{ _fa_alert.render({ variant: 'info', icon: 'bi-lightbulb', body: '<strong>' ~ ('existing_frameworks.info.title'|trans({}, 'setup_wizard')) ~ '</strong> ' ~ ('existing_frameworks.info.message'|trans({}, 'setup_wizard')) }) }}
+
+    {{ form_start(form, {
+        'attr': {
+            'class': 'needs-validation',
+            'novalidate': 'novalidate',
+            'id': 'existing-frameworks-form',
+            'data-preview-url': path('setup_wizard_existing_frameworks_preview'),
+            'data-controller': 'wizard-busy',
+            'data-wizard-busy-message-value': 'setup.alva.busy.frameworks'|trans({}, 'setup')
+        }
+    }) }}
+
+    <div class="row g-4">
+        {# Left panel: already certified #}
+        <div class="col-lg-6">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-success', 'form': form, 'available_frameworks': available_frameworks } only %}
+                {% block card_header %}
+                    <div class="card-header bg-success-subtle">
+                        <h2 class="h5 mb-0">
+                            <i class="fa-icon fa-icon--attestation text-success me-2" aria-hidden="true"></i>
+                            {{ 'existing_frameworks.already_certified.heading'|trans({}, 'setup_wizard') }}
+                        </h2>
                     </div>
-                    <div class="progress progress-h-10">
-                        <div class="progress-bar"
-                             role="progressbar"
-                             style="width: 75%;"
-                             aria-valuenow="75"
-                             aria-valuemin="0"
-                             aria-valuemax="100"></div>
+                {% endblock %}
+                {% block card_body %}
+                    <p class="text-muted small mb-3">
+                        {{ 'existing_frameworks.already_certified.description'|trans({}, 'setup_wizard') }}
+                    </p>
+                    <div class="existing-frameworks-list"
+                         role="group"
+                         aria-labelledby="already-certified-label">
+                        {% for child in form.alreadyCertified %}
+                            {% set fwk_code = child.vars.value %}
+                            {% set fwk_meta = null %}
+                            {% for fwk in available_frameworks %}
+                                {% if fwk.code == fwk_code %}
+                                    {% set fwk_meta = fwk %}
+                                {% endif %}
+                            {% endfor %}
+                            <div class="form-check mb-2 d-flex align-items-start gap-2">
+                                {{ form_widget(child, {'attr': {'class': 'form-check-input mt-1', 'data-reuse-trigger': 'alreadyCertified'}}) }}
+                                <div class="flex-grow-1">
+                                    {{ form_label(child, null, {'label_attr': {'class': 'form-check-label fw-semibold'}}) }}
+                                    {% if fwk_meta is not null %}
+                                        <div class="text-muted small">{{ fwk_meta.description }}</div>
+                                        <div class="mt-1">
+                                            <label class="form-label small mb-0"
+                                                   for="certification-date-{{ fwk_code }}">
+                                                {{ 'existing_frameworks.certification_date.label'|trans({}, 'setup_wizard') }}
+                                            </label>
+                                            <input type="date"
+                                                   class="form-control form-control-sm fa-cyber-input__field"
+                                                   id="certification-date-{{ fwk_code }}"
+                                                   name="certification_dates[{{ fwk_code }}]"
+                                                   aria-describedby="certification-date-help-{{ fwk_code }}">
+                                            <small id="certification-date-help-{{ fwk_code }}"
+                                                   class="form-text text-muted">
+                                                {{ 'existing_frameworks.certification_date.help'|trans({}, 'setup_wizard') }}
+                                            </small>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 {% endblock %}
             {% endembed %}
+        </div>
 
-            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg', 'form': form, 'available_frameworks': available_frameworks } only %}
+        {# Right panel: newly added #}
+        <div class="col-lg-6">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary', 'form': form, 'available_frameworks': available_frameworks } only %}
                 {% block card_header %}
-                    <div class="card-header">
-                        <h1 class="h3 mb-0">
-                            <i class="fa-icon me-2 fa-icon--nav-collection" aria-hidden="true"></i>
-                            {{ 'existing_frameworks.header'|trans({}, 'setup_wizard') }}
-                        </h1>
+                    <div class="card-header bg-primary-subtle">
+                        <h2 class="h5 mb-0">
+                            <i class="fa-icon text-primary me-2 fa-icon--ui-plus" aria-hidden="true"></i>
+                            {{ 'existing_frameworks.newly_added.heading'|trans({}, 'setup_wizard') }}
+                        </h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
-                    <div class="p-4">
-                        <p class="lead mb-4">
-                            {{ 'existing_frameworks.description'|trans({}, 'setup_wizard') }}
-                        </p>
-
-                        {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-lightbulb' } } %}
-                            {% block alert_body %}<strong>{{ 'existing_frameworks.info.title'|trans({}, 'setup_wizard') }}</strong> <p class="mb-0"> {{ 'existing_frameworks.info.message'|trans({}, 'setup_wizard') }} </p>{% endblock %}
-                        {% endembed %}
-
-                        {{ form_start(form, {
-                            'attr': {
-                                'class': 'needs-validation',
-                                'novalidate': 'novalidate',
-                                'id': 'existing-frameworks-form',
-                                'data-preview-url': path('setup_wizard_existing_frameworks_preview'),
-                                'data-controller': 'wizard-busy',
-                                'data-wizard-busy-message-value': 'setup.alva.busy.frameworks'|trans({}, 'setup')
-                            }
-                        }) }}
-
-                        <div class="row g-4">
-                            {# Left panel: already certified #}
-                            <div class="col-lg-6">
-                                {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-success', 'form': form, 'available_frameworks': available_frameworks } only %}
-                                    {% block card_header %}
-                                        <div class="card-header bg-success-subtle">
-                                            <h2 class="h5 mb-0">
-                                                <i class="fa-icon fa-icon--attestation text-success me-2" aria-hidden="true"></i>
-                                                {{ 'existing_frameworks.already_certified.heading'|trans({}, 'setup_wizard') }}
-                                            </h2>
-                                        </div>
-                                    {% endblock %}
-                                    {% block card_body %}
-                                        <p class="text-muted small mb-3">
-                                            {{ 'existing_frameworks.already_certified.description'|trans({}, 'setup_wizard') }}
-                                        </p>
-                                        <div class="existing-frameworks-list"
-                                             role="group"
-                                             aria-labelledby="already-certified-label">
-                                            {% for child in form.alreadyCertified %}
-                                                {% set fwk_code = child.vars.value %}
-                                                {% set fwk_meta = null %}
-                                                {% for fwk in available_frameworks %}
-                                                    {% if fwk.code == fwk_code %}
-                                                        {% set fwk_meta = fwk %}
-                                                    {% endif %}
-                                                {% endfor %}
-                                                <div class="form-check mb-2 d-flex align-items-start gap-2">
-                                                    {{ form_widget(child, {'attr': {'class': 'form-check-input mt-1', 'data-reuse-trigger': 'alreadyCertified'}}) }}
-                                                    <div class="flex-grow-1">
-                                                        {{ form_label(child, null, {'label_attr': {'class': 'form-check-label fw-semibold'}}) }}
-                                                        {% if fwk_meta is not null %}
-                                                            <div class="text-muted small">{{ fwk_meta.description }}</div>
-                                                            <div class="mt-1">
-                                                                <label class="form-label small mb-0"
-                                                                       for="certification-date-{{ fwk_code }}">
-                                                                    {{ 'existing_frameworks.certification_date.label'|trans({}, 'setup_wizard') }}
-                                                                </label>
-                                                                <input type="date"
-                                                                       class="form-control form-control-sm fa-cyber-input__field"
-                                                                       id="certification-date-{{ fwk_code }}"
-                                                                       name="certification_dates[{{ fwk_code }}]"
-                                                                       aria-describedby="certification-date-help-{{ fwk_code }}">
-                                                                <small id="certification-date-help-{{ fwk_code }}"
-                                                                       class="form-text text-muted">
-                                                                    {{ 'existing_frameworks.certification_date.help'|trans({}, 'setup_wizard') }}
-                                                                </small>
-                                                            </div>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    {% endblock %}
-                                {% endembed %}
+                    <p class="text-muted small mb-3">
+                        {{ 'existing_frameworks.newly_added.description'|trans({}, 'setup_wizard') }}
+                    </p>
+                    <div class="existing-frameworks-list"
+                         role="group"
+                         aria-labelledby="newly-added-label">
+                        {% for child in form.newlyAdded %}
+                            {% set fwk_code = child.vars.value %}
+                            {% set fwk_meta = null %}
+                            {% for fwk in available_frameworks %}
+                                {% if fwk.code == fwk_code %}
+                                    {% set fwk_meta = fwk %}
+                                {% endif %}
+                            {% endfor %}
+                            <div class="form-check mb-2 d-flex align-items-start gap-2">
+                                {{ form_widget(child, {'attr': {'class': 'form-check-input mt-1', 'data-reuse-trigger': 'newlyAdded'}}) }}
+                                <div class="flex-grow-1">
+                                    {{ form_label(child, null, {'label_attr': {'class': 'form-check-label fw-semibold'}}) }}
+                                    {% if fwk_meta is not null %}
+                                        <div class="text-muted small">{{ fwk_meta.description }}</div>
+                                    {% endif %}
+                                </div>
                             </div>
-
-                            {# Right panel: newly added #}
-                            <div class="col-lg-6">
-                                {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary', 'form': form, 'available_frameworks': available_frameworks } only %}
-                                    {% block card_header %}
-                                        <div class="card-header bg-primary-subtle">
-                                            <h2 class="h5 mb-0">
-                                                <i class="fa-icon text-primary me-2 fa-icon--ui-plus" aria-hidden="true"></i>
-                                                {{ 'existing_frameworks.newly_added.heading'|trans({}, 'setup_wizard') }}
-                                            </h2>
-                                        </div>
-                                    {% endblock %}
-                                    {% block card_body %}
-                                        <p class="text-muted small mb-3">
-                                            {{ 'existing_frameworks.newly_added.description'|trans({}, 'setup_wizard') }}
-                                        </p>
-                                        <div class="existing-frameworks-list"
-                                             role="group"
-                                             aria-labelledby="newly-added-label">
-                                            {% for child in form.newlyAdded %}
-                                                {% set fwk_code = child.vars.value %}
-                                                {% set fwk_meta = null %}
-                                                {% for fwk in available_frameworks %}
-                                                    {% if fwk.code == fwk_code %}
-                                                        {% set fwk_meta = fwk %}
-                                                    {% endif %}
-                                                {% endfor %}
-                                                <div class="form-check mb-2 d-flex align-items-start gap-2">
-                                                    {{ form_widget(child, {'attr': {'class': 'form-check-input mt-1', 'data-reuse-trigger': 'newlyAdded'}}) }}
-                                                    <div class="flex-grow-1">
-                                                        {{ form_label(child, null, {'label_attr': {'class': 'form-check-label fw-semibold'}}) }}
-                                                        {% if fwk_meta is not null %}
-                                                            <div class="text-muted small">{{ fwk_meta.description }}</div>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    {% endblock %}
-                                {% endembed %}
-                            </div>
-                        </div>
-
-                        {# AJAX Preview Area #}
-                        <div class="mt-4">
-                            <h2 class="h5 mb-3">
-                                <i class="fa-icon me-2 fa-icon--nav-bar-chart" aria-hidden="true"></i>
-                                {{ 'existing_frameworks.preview.heading'|trans({}, 'setup_wizard') }}
-                            </h2>
-                            <div id="existing-frameworks-preview"
-                                 class="existing-frameworks-preview"
-                                 aria-live="polite"
-                                 aria-busy="false"
-                                 aria-label="{{ 'existing_frameworks.preview.aria_label'|trans({}, 'setup_wizard') }}">
-                                {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'border' } } %}
-                                    {% block alert_body %}{{ 'existing_frameworks.preview.idle'|trans({}, 'setup_wizard') }}{% endblock %}
-                                {% endembed %}
-                            </div>
-                        </div>
-
-                        {# Certification-dates hidden placeholder (for CSRF-compliant submission) #}
-                        <div class="d-none">
-                            {{ form_widget(form.certificationDates) }}
-                        </div>
-
-                        {# Navigation #}
-                        <div class="d-flex flex-wrap justify-content-between gap-2 mt-4">
-                            <a href="{{ path('setup_step8_compliance_frameworks') }}" class="btn btn-outline-secondary">
-                                <i class="fa-icon me-2 fa-icon--util-arrow-left" aria-hidden="true"></i>
-                                {{ 'setup.navigation.back'|trans({}, 'setup') }}
-                            </a>
-
-                            <div class="d-flex flex-wrap gap-2">
-                                <a href="{{ path('setup_wizard_existing_frameworks_skip') }}"
-                                   class="btn btn-outline-warning">
-                                    <i class="fa-icon me-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                    {{ 'existing_frameworks.actions.skip'|trans({}, 'setup_wizard') }}
-                                </a>
-                                <button type="submit" class="btn btn-primary">
-                                    {{ 'existing_frameworks.actions.save_next'|trans({}, 'setup_wizard') }}
-                                    <i class="fa-icon ms-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        {{ form_end(form) }}
+                        {% endfor %}
                     </div>
                 {% endblock %}
             {% endembed %}
         </div>
     </div>
-</div>
+
+    {# AJAX Preview Area #}
+    <div class="mt-4">
+        <h2 class="h5 mb-3">
+            <i class="fa-icon me-2 fa-icon--nav-bar-chart" aria-hidden="true"></i>
+            {{ 'existing_frameworks.preview.heading'|trans({}, 'setup_wizard') }}
+        </h2>
+        <div id="existing-frameworks-preview"
+             class="existing-frameworks-preview"
+             aria-live="polite"
+             aria-busy="false"
+             aria-label="{{ 'existing_frameworks.preview.aria_label'|trans({}, 'setup_wizard') }}">
+            {{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'border', body: 'existing_frameworks.preview.idle'|trans({}, 'setup_wizard') }) }}
+        </div>
+    </div>
+
+    {# Certification-dates hidden placeholder (for CSRF-compliant submission) #}
+    <div class="d-none">
+        {{ form_widget(form.certificationDates) }}
+    </div>
+
+    {# Navigation #}
+    <div class="d-flex flex-wrap justify-content-between gap-2 mt-4">
+        <a href="{{ path('setup_step8_compliance_frameworks') }}" class="btn btn-outline-secondary">
+            <i class="fa-icon me-2 fa-icon--util-arrow-left" aria-hidden="true"></i>
+            {{ 'setup.navigation.back'|trans({}, 'setup') }}
+        </a>
+
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ path('setup_wizard_existing_frameworks_skip') }}"
+               class="btn btn-outline-warning">
+                <i class="fa-icon me-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
+                {{ 'existing_frameworks.actions.skip'|trans({}, 'setup_wizard') }}
+            </a>
+            <button type="submit" class="btn btn-primary">
+                {{ 'existing_frameworks.actions.save_next'|trans({}, 'setup_wizard') }}
+                <i class="fa-icon ms-2 fa-icon--util-arrow-right" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+    {{ form_end(form) }}
 
 {# Vanilla JS preview loader — no Stimulus dependency, fail-safe on turbo:load. #}
 <script>
@@ -231,6 +198,10 @@
         var previewBox = document.getElementById('existing-frameworks-preview');
         var previewUrl = form.dataset.previewUrl;
         if (!previewBox || !previewUrl) { return; }
+
+        var idleHtml = previewBox.innerHTML;
+        var noNewlyHtml = {{ ('existing_frameworks.preview.no_newly_added'|trans({}, 'setup_wizard'))|json_encode|raw }};
+        var errorHtml = {{ ('existing_frameworks.preview.error'|trans({}, 'setup_wizard'))|json_encode|raw }};
 
         var debounceTimer = null;
 
@@ -247,7 +218,7 @@
             var newlyAdded = collectCodes('newlyAdded');
 
             if (newlyAdded.length === 0) {
-                previewBox.innerHTML = '{{ _fa_alert.render({ variant: 'info', icon: 'bi-info-circle', class: 'border', body: '\' + {{ \'existing_frameworks.preview.no_newly_added\'|trans({}, \'setup_wizard\')|json_encode|raw }} + \'' }) }}';
+                previewBox.innerHTML = '<div class="alert alert-info border" role="alert">' + noNewlyHtml + '</div>';
                 previewBox.setAttribute('aria-busy', 'false');
                 return;
             }
@@ -273,7 +244,7 @@
                     previewBox.setAttribute('aria-busy', 'false');
                 })
                 .catch(function() {
-                    previewBox.innerHTML = '{{ _fa_alert.render({ variant: 'danger', icon: 'bi-exclamation-triangle', body: '\' + {{ \'existing_frameworks.preview.error\'|trans({}, \'setup_wizard\')|json_encode|raw }} + \'' }) }}';
+                    previewBox.innerHTML = '<div class="alert alert-danger" role="alert">' + errorHtml + '</div>';
                     previewBox.setAttribute('aria-busy', 'false');
                 });
         }
