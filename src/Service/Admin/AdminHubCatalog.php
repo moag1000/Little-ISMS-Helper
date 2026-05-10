@@ -85,6 +85,13 @@ class AdminHubCatalog
                         'description' => 'admin.hub.module.tenant_compliance_settings.desc',
                         'route' => 'admin_tenant_compliance_settings_current',
                     ],
+                    [
+                        'key' => 'policy_style',
+                        'icon' => 'palette2',
+                        'label' => 'admin.hub.module.policy_style.label',
+                        'description' => 'admin.hub.module.policy_style.desc',
+                        'route' => 'app_admin_policy_style_edit',
+                    ],
                 ],
             ],
             [

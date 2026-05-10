@@ -47,6 +47,61 @@ class TenantBranding
     #[ORM\Column(length: 64, options: ['default' => 'Inter'])]
     private string $fontFamily = 'Inter';
 
+    // ------------------------------------------------------------------
+    // Policy-Doc Style Configuration (Sprint policy-style-admin)
+    //
+    // Per-tenant overrides for the `_fa_policy_doc.html.twig` macro that
+    // renders generated policy documents (cover / TOC / history / body /
+    // signature). Defaults match the design-system reference; tenants
+    // can re-skin without touching code via /admin/policy-style.
+    // ------------------------------------------------------------------
+
+    #[ORM\Column(length: 64, options: ['default' => 'Inter'])]
+    private string $policyDocFontFamily = 'Inter';
+
+    /** "minimal" | "branded" | "auditor-formal" | "engineering" */
+    #[ORM\Column(length: 32, options: ['default' => 'branded'])]
+    private string $policyDocCoverPattern = 'branded';
+
+    #[ORM\Column(options: ['default' => true])]
+    private bool $policyDocWatermarkEnabled = true;
+
+    /** 0.0 – 1.0 (UI exposes 0–100 %). */
+    #[ORM\Column(type: Types::FLOAT, options: ['default' => 0.08])]
+    private float $policyDocWatermarkOpacity = 0.08;
+
+    /** 1 – 6 signature blocks on the signature page. */
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 3])]
+    private int $policyDocSignatureLines = 3;
+
+    #[ORM\Column(options: ['default' => true])]
+    private bool $policyDocShowToc = true;
+
+    #[ORM\Column(options: ['default' => true])]
+    private bool $policyDocShowHistory = true;
+
+    #[ORM\Column(options: ['default' => true])]
+    private bool $policyDocShowAnnexARefs = true;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $policyDocFooterText = null;
+
+    /** "small" | "medium" | "large" */
+    #[ORM\Column(length: 16, options: ['default' => 'medium'])]
+    private string $policyDocCoverLogoSize = 'medium';
+
+    /** "compact" | "standard" | "wide" */
+    #[ORM\Column(length: 16, options: ['default' => 'standard'])]
+    private string $policyDocPageMargin = 'standard';
+
+    /**
+     * Optional advanced CSS override (paste-only; rendered via
+     * `|raw` inside the policy-doc <style> block). Restricted to
+     * ROLE_ADMIN at the form layer.
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $policyDocCustomCss = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeInterface $updatedAt = null;
 
@@ -161,5 +216,195 @@ class TenantBranding
     {
         $this->updatedByUser = $updatedByUser;
         return $this;
+    }
+
+    // ------------------------------------------------------------------
+    // Policy-Doc style accessors (Sprint policy-style-admin)
+    // ------------------------------------------------------------------
+
+    public const POLICY_DOC_COVER_PATTERNS = ['minimal', 'branded', 'auditor-formal', 'engineering'];
+    public const POLICY_DOC_LOGO_SIZES = ['small', 'medium', 'large'];
+    public const POLICY_DOC_PAGE_MARGINS = ['compact', 'standard', 'wide'];
+
+    public function getPolicyDocFontFamily(): string
+    {
+        return $this->policyDocFontFamily;
+    }
+
+    public function setPolicyDocFontFamily(string $value): static
+    {
+        $this->policyDocFontFamily = $value;
+        return $this;
+    }
+
+    public function getPolicyDocCoverPattern(): string
+    {
+        return $this->policyDocCoverPattern;
+    }
+
+    public function setPolicyDocCoverPattern(string $value): static
+    {
+        if (!in_array($value, self::POLICY_DOC_COVER_PATTERNS, true)) {
+            throw new \InvalidArgumentException(sprintf('Invalid cover pattern "%s".', $value));
+        }
+        $this->policyDocCoverPattern = $value;
+        return $this;
+    }
+
+    public function isPolicyDocWatermarkEnabled(): bool
+    {
+        return $this->policyDocWatermarkEnabled;
+    }
+
+    public function setPolicyDocWatermarkEnabled(bool $value): static
+    {
+        $this->policyDocWatermarkEnabled = $value;
+        return $this;
+    }
+
+    public function getPolicyDocWatermarkOpacity(): float
+    {
+        return $this->policyDocWatermarkOpacity;
+    }
+
+    /**
+     * Setter accepts any float and clamps to the [0.0, 1.0] band so
+     * that the Form Range constraint and the underlying property setter
+     * agree on the validation contract (Symfony forms bind via the
+     * setter before validators run; throwing here would short-circuit
+     * the validator and surface as an opaque 500). Direct API callers
+     * who want strict validation should pre-check via the entity-level
+     * `Assert\Range` annotation or this constant range.
+     */
+    public function setPolicyDocWatermarkOpacity(float $value): static
+    {
+        $this->policyDocWatermarkOpacity = max(0.0, min(1.0, $value));
+        return $this;
+    }
+
+    public function getPolicyDocSignatureLines(): int
+    {
+        return $this->policyDocSignatureLines;
+    }
+
+    /**
+     * Setter clamps to [1, 6] for the same reason as the watermark
+     * opacity setter (form-binding compatibility; see comment above).
+     */
+    public function setPolicyDocSignatureLines(int $value): static
+    {
+        $this->policyDocSignatureLines = max(1, min(6, $value));
+        return $this;
+    }
+
+    public function isPolicyDocShowToc(): bool
+    {
+        return $this->policyDocShowToc;
+    }
+
+    public function setPolicyDocShowToc(bool $value): static
+    {
+        $this->policyDocShowToc = $value;
+        return $this;
+    }
+
+    public function isPolicyDocShowHistory(): bool
+    {
+        return $this->policyDocShowHistory;
+    }
+
+    public function setPolicyDocShowHistory(bool $value): static
+    {
+        $this->policyDocShowHistory = $value;
+        return $this;
+    }
+
+    public function isPolicyDocShowAnnexARefs(): bool
+    {
+        return $this->policyDocShowAnnexARefs;
+    }
+
+    public function setPolicyDocShowAnnexARefs(bool $value): static
+    {
+        $this->policyDocShowAnnexARefs = $value;
+        return $this;
+    }
+
+    public function getPolicyDocFooterText(): ?string
+    {
+        return $this->policyDocFooterText;
+    }
+
+    public function setPolicyDocFooterText(?string $value): static
+    {
+        $this->policyDocFooterText = $value;
+        return $this;
+    }
+
+    public function getPolicyDocCoverLogoSize(): string
+    {
+        return $this->policyDocCoverLogoSize;
+    }
+
+    public function setPolicyDocCoverLogoSize(string $value): static
+    {
+        if (!in_array($value, self::POLICY_DOC_LOGO_SIZES, true)) {
+            throw new \InvalidArgumentException(sprintf('Invalid logo size "%s".', $value));
+        }
+        $this->policyDocCoverLogoSize = $value;
+        return $this;
+    }
+
+    public function getPolicyDocPageMargin(): string
+    {
+        return $this->policyDocPageMargin;
+    }
+
+    public function setPolicyDocPageMargin(string $value): static
+    {
+        if (!in_array($value, self::POLICY_DOC_PAGE_MARGINS, true)) {
+            throw new \InvalidArgumentException(sprintf('Invalid page margin "%s".', $value));
+        }
+        $this->policyDocPageMargin = $value;
+        return $this;
+    }
+
+    public function getPolicyDocCustomCss(): ?string
+    {
+        return $this->policyDocCustomCss;
+    }
+
+    public function setPolicyDocCustomCss(?string $value): static
+    {
+        $this->policyDocCustomCss = $value;
+        return $this;
+    }
+
+    /**
+     * Snapshot of all policy-doc style fields, ready to pass as
+     * `style_config` to the `_fa_policy_doc` macro. Keys are the
+     * canonical macro-side property names (snake_case).
+     *
+     * @return array<string, mixed>
+     */
+    public function getPolicyDocStyleConfig(): array
+    {
+        return [
+            'font_family' => $this->policyDocFontFamily,
+            'cover_pattern' => $this->policyDocCoverPattern,
+            'watermark_enabled' => $this->policyDocWatermarkEnabled,
+            'watermark_opacity' => $this->policyDocWatermarkOpacity,
+            'signature_lines' => $this->policyDocSignatureLines,
+            'show_toc' => $this->policyDocShowToc,
+            'show_history' => $this->policyDocShowHistory,
+            'show_annex_a_refs' => $this->policyDocShowAnnexARefs,
+            'footer_text' => $this->policyDocFooterText,
+            'cover_logo_size' => $this->policyDocCoverLogoSize,
+            'page_margin' => $this->policyDocPageMargin,
+            'custom_css' => $this->policyDocCustomCss,
+            'primary_color' => $this->primaryColor,
+            'secondary_color' => $this->secondaryColor,
+            'logo_path' => $this->logoPath,
+        ];
     }
 }
