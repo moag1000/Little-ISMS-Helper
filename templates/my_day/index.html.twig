@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'messages' %}
+
+{% block title %}Mein Tag - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block body %}
+<main class="fa-aurora-surface my-day">
+    {{ _fa_page_header.render({
+        badge:    { icon: 'inboxes', label: 'My Day' },
+        title:    'Mein Tag',
+        subtitle: 'Alle offenen Punkte aus 7 Posteingängen — heute, ' ~ inbox.generated_at|date('d.m.Y H:i'),
+        actions: [
+            { label: 'Standard-Dashboard', variant: 'ghost', icon: 'house', href: path('app_dashboard') }
+        ]
+    }) }}
+
+    {# KPI tile bar — Counts per category #}
+    <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
+        {{ _fa_feature_card.render({
+            icon: 'arrow-counterclockwise',
+            label: 'Workflows offen',
+            value: inbox.summary.workflows_pending,
+            variant: inbox.summary.workflows_pending > 0 ? 'warning' : 'success',
+            href: '#workflows-pending'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'exclamation-octagon',
+            label: 'Workflows überfällig',
+            value: inbox.summary.workflows_overdue,
+            variant: inbox.summary.workflows_overdue > 0 ? 'danger' : 'success',
+            href: '#workflows-overdue'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'people',
+            label: '4-Augen-Anfragen',
+            value: inbox.summary.four_eyes,
+            variant: inbox.summary.four_eyes > 0 ? 'warning' : 'success',
+            href: '#four-eyes'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'check2-square',
+            label: 'Policy-Ack ausstehend',
+            value: inbox.summary.acknowledgements,
+            variant: inbox.summary.acknowledgements > 0 ? 'primary' : 'success',
+            href: '#acknowledgements'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'search',
+            label: 'Findings (mir)',
+            value: inbox.summary.findings,
+            variant: inbox.summary.findings > 0 ? 'warning' : 'success',
+            href: '#findings'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'file-person',
+            label: 'DSR (mir)',
+            value: inbox.summary.dsrs,
+            variant: inbox.summary.dsrs > 0 ? 'danger' : 'success',
+            href: '#dsrs'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'hourglass-bottom',
+            label: 'CA überfällig',
+            value: inbox.summary.corrective_actions_overdue,
+            variant: inbox.summary.corrective_actions_overdue > 0 ? 'danger' : 'success',
+            href: '#corrective-actions'
+        }) }}
+    </div>
+
+    {% if inbox.total == 0 %}
+        <div class="my-4">
+            {{ _fa_empty_state.render({
+                mood: 'happy',
+                title: 'Alles erledigt',
+                text: 'Aktuell keine offenen Aufgaben für dich. Gute Arbeit!',
+            }) }}
+        </div>
+    {% else %}
+
+    {% set sections = [
+        { id: 'workflows-pending', title: 'Workflows offen', items: inbox.workflows_pending },
+        { id: 'workflows-overdue', title: 'Workflows überfällig', items: inbox.workflows_overdue },
+        { id: 'four-eyes', title: '4-Augen-Approval', items: inbox.four_eyes },
+        { id: 'acknowledgements', title: 'Policy-Acknowledgements', items: inbox.acknowledgements },
+        { id: 'findings', title: 'Audit-Findings (mir zugewiesen)', items: inbox.findings },
+        { id: 'dsrs', title: 'Data-Subject-Requests', items: inbox.dsrs },
+        { id: 'corrective-actions', title: 'Korrekturmaßnahmen überfällig', items: inbox.corrective_actions_overdue },
+    ] %}
+
+    {% for section in sections %}
+        {% if section.items|length > 0 %}
+        <section class="fa-section mb-4" id="{{ section.id }}">
+            <div class="fa-section__header">
+                <h2 class="fa-section__title">{{ section.title }}
+                    <span class="badge bg-secondary ms-2">{{ section.items|length }}</span>
+                </h2>
+            </div>
+            <div class="fa-section__body">
+                <div class="list-group">
+                    {% for item in section.items %}
+                        <a href="{{ item.link }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">
+                                    {% if item.entity_type == 'workflow' %}
+                                        <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'four_eyes' %}
+                                        <i class="bi bi-people" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'acknowledgement' %}
+                                        <i class="bi bi-check2-square" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'audit_finding' %}
+                                        <i class="bi bi-search" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'dsr' %}
+                                        <i class="bi bi-file-person" aria-hidden="true"></i>
+                                    {% elseif item.entity_type == 'corrective_action' %}
+                                        <i class="bi bi-hourglass-bottom" aria-hidden="true"></i>
+                                    {% endif %}
+                                    {{ item.title }}
+                                </div>
+                                <small class="text-muted">{{ item.subtitle }}</small>
+                                {% if item.due_date %}
+                                    <small class="d-block text-muted">Fällig: {{ item.due_date|date('d.m.Y') }}</small>
+                                {% endif %}
+                            </div>
+                            <div class="text-end">
+                                {% if item.badge %}
+                                    {% set badgeClass = item.tone == 'danger' ? 'bg-danger'
+                                        : (item.tone == 'warning' ? 'bg-warning text-dark'
+                                        : (item.tone == 'success' ? 'bg-success'
+                                        : 'bg-info text-dark')) %}
+                                    <span class="badge {{ badgeClass }}">{{ item.badge }}</span>
+                                {% endif %}
+                                {% if item.priority == 'high' %}
+                                    <span class="badge bg-danger ms-1">High</span>
+                                {% elseif item.priority == 'medium' %}
+                                    <span class="badge bg-warning text-dark ms-1">Med</span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    {% endfor %}
+
+    {% endif %}
+</main>
+{% endblock %}
