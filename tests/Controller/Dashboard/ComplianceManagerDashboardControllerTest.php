@@ -8,6 +8,7 @@ use App\Controller\Dashboard\ComplianceManagerDashboardController;
 use App\Entity\Tenant;
 use App\Repository\AuditFindingRepository;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ComplianceRequirementRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Service\ComplianceAnalyticsService;
@@ -39,6 +40,7 @@ class ComplianceManagerDashboardControllerTest extends TestCase
     private MockObject $auditRepo;
     private MockObject $documentRepo;
     private MockObject $tenantContext;
+    private MockObject $requirementRepo;
     private MockObject $container;
     private MockObject $twig;
     private ComplianceManagerDashboardController $controller;
@@ -51,6 +53,7 @@ class ComplianceManagerDashboardControllerTest extends TestCase
         $this->findingRepo = $this->createMock(AuditFindingRepository::class);
         $this->auditRepo = $this->createMock(InternalAuditRepository::class);
         $this->documentRepo = $this->createMock(DocumentRepository::class);
+        $this->requirementRepo = $this->createMock(ComplianceRequirementRepository::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
         $this->container = $this->createMock(ContainerInterface::class);
         $this->twig = $this->createMock(Environment::class);
@@ -77,6 +80,7 @@ class ComplianceManagerDashboardControllerTest extends TestCase
             $this->auditRepo,
             $this->documentRepo,
             $this->tenantContext,
+            $this->requirementRepo,
         );
         $this->controller->setContainer($this->container);
     }

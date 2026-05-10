@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Controller\Trait\PdfLocaleTrait;
 use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Service\CertBundleReadinessService;
 use App\Service\Export\CertificationBundleExporter;
 use App\Service\TenantContext;
 use DateTimeImmutable;
@@ -39,6 +40,7 @@ class CertificationBundleController extends AbstractController
         private readonly Security $security,
         private readonly LocaleSwitcher $localeSwitcher,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
+        private readonly CertBundleReadinessService $readinessService,
     ) {
     }
 
@@ -66,6 +68,37 @@ class CertificationBundleController extends AbstractController
             'counts' => $counts,
             'frameworks' => $frameworks,
             'selected_framework_code' => $selectedCode,
+        ]);
+    }
+
+    /**
+     * V4-EF-8: Pre-export preflight check.
+     *
+     * Shows readiness score + blocker list before the user can export the bundle.
+     * The form on this page posts to /export (with bypass flag) or redirects
+     * back to the index to fix blockers.
+     *
+     * GET  → render preflight card
+     * POST (bypass=1) → redirect to export
+     */
+    #[Route('/preflight', name: 'preflight')]
+    public function preflight(Request $request): Response
+    {
+        $tenant = $this->security->getUser()?->getTenant();
+        if ($tenant === null) {
+            throw $this->createAccessDeniedException('No tenant context available.');
+        }
+
+        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $selectedCode = $this->resolveFrameworkCode($request, $frameworks);
+
+        $readiness = $this->readinessService->check($tenant, $selectedCode);
+
+        return $this->render('certification_bundle/preflight.html.twig', [
+            'tenant'                 => $tenant,
+            'frameworks'             => $frameworks,
+            'selected_framework_code' => $selectedCode,
+            'readiness'              => $readiness,
         ]);
     }
 

@@ -192,6 +192,36 @@ compliance_manager:
         compare_wizards: 'Compare wizards'
     common:
         wizard: 'Wizard'
+    heatmap:
+        drill:
+            title: 'Heatmap Drill-Down: %framework% / %section%'
+            page_title: 'Drill-Down %framework% — %section%'
+            subtitle: 'Covered controls, gaps and open findings for this section'
+            breadcrumb: 'Heatmap Drill-Down'
+            action: 'Details'
+            back: 'Back to overview'
+            filter_section: 'Section'
+            all_sections: 'All Sections'
+            covered: 'Covered'
+            gaps: 'Gaps'
+            findings: 'Open Findings'
+            coverage_rate: 'Coverage Rate'
+            fix: 'Fix'
+            framework_not_found: 'Framework "%code%" not found or not active.'
+            col:
+                req_id: 'Requirement ID'
+                title: 'Title'
+                category: 'Category'
+                controls: 'Controls'
+                priority: 'Priority'
+                action: 'Action'
+            empty:
+                no_covered_title: 'No covered requirements'
+                no_covered_text: 'No controls for this section have been implemented yet.'
+                no_gaps_title: 'No gaps — fully covered!'
+                no_gaps_text: 'All requirements in this section are covered by controls.'
+                no_findings_title: 'No open findings'
+                no_findings_text: 'There are currently no open audit findings.'
 
 # Board Dashboard
 board:
