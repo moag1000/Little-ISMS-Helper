@@ -8,6 +8,20 @@ policy_wizard:
     approval_routing:
         top_management_assigned: 'Approval for "%document%" routed to top management (%user%).'
         top_management_assigned_short: 'Approval routed to top management'
+
+    # Task #126 — Approver-Role Validation per Topic.
+    # Persona walkthrough Risk-Owner-Business + Auditor-External
+    # surfaced the gap: the approval chain had no fachlich validation
+    # ("does this approver actually carry the right role for this
+    # topic?"). The audit trail now answers it via the
+    # policy_wizard.approver_role_match* events.
+    approver_match:
+        strict_label: 'Match'
+        weak_label: 'Recommended role: %roles%'
+        mismatch_label: 'Recommended role: %roles%'
+        recommended_roles_tooltip: 'Recommended approver role(s) for this topic: %roles%. You may approve with a different role — the audit trail records the decision.'
+        recommended_roles_hint: 'Recommended: %roles%'
+        chain_hint: 'At approval time the system checks per topic whether the approver carries the recommended role. The audit trail records every match / mismatch — a mismatch approval is permitted but visibly defensible in an external audit.'
     # SoA auto-update on document generation — Aurora flash + audit-trail strings.
     soa_auto_update:
         bumped: 'SoA entry %control% bumped from "%old_status%" to "%new_status%" by Policy Wizard.'
