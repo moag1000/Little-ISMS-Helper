@@ -138,6 +138,42 @@ export default class extends Controller {
         if (!fetchResponse.succeeded) {
             // Could dispatch an event here if needed
         }
+
+        // File-download fix: when a Turbo-intercepted request returns
+        // an attachment, Turbo issues no `turbo:render` for it (the
+        // payload is binary), so the progress bar + body.turbo-loading
+        // never clear. We detect Content-Disposition: attachment and
+        // hand the response back to the browser as a native download.
+        // Cleanest single point — works for every download endpoint
+        // across the app without needing data-turbo="false" everywhere.
+        try {
+            const response = fetchResponse.response;
+            const disposition = response?.headers?.get?.('content-disposition') ?? '';
+            if (disposition.toLowerCase().includes('attachment')) {
+                event.preventDefault();
+                document.body.classList.remove('turbo-loading');
+                const progress = document.querySelector('.turbo-progress-bar');
+                if (progress) {
+                    progress.style.opacity = '0';
+                }
+                response.blob().then((blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    const filenameMatch = disposition.match(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i);
+                    if (filenameMatch && filenameMatch[1]) {
+                        link.download = decodeURIComponent(filenameMatch[1]);
+                    }
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    setTimeout(() => URL.revokeObjectURL(url), 1000);
+                });
+            }
+        } catch (e) {
+            // Defensive: if anything fails, fall through to default
+            // Turbo handling. Worst case: pre-fix behaviour (hung bar).
+        }
     }
 
     /**
