@@ -26,6 +26,13 @@
             { label: 'processing_activity.button.new'|trans({}, 'privacy'), variant: 'primary', icon: 'plus-lg', href: path('app_processing_activity_new') }
         ]
     }) }}
+{% set _global_hints = alva_hints('processing_activity_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 
     <main class="fa-aurora-surface">
 

@@ -22,6 +22,13 @@
             { label: 'business_process.index.new_process'|trans({}, 'business_process'), href: path('app_business_process_new'), variant: 'primary', icon: 'plus-circle' }
         ]
     }) }}
+{% set _global_hints = alva_hints('business_process_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
     <main class="fa-aurora-surface">
 
     {# Notifications Container for Turbo Streams #}

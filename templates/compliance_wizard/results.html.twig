@@ -25,6 +25,13 @@
             { label: 'wizard.export_pdf'|trans({}, 'wizard'), href: path('app_compliance_wizard_export_pdf', {wizard: wizard}), variant: 'primary', icon: 'file-pdf' }
         ]
     }) }}
+{% set _global_hints = alva_hints('compliance_wizard_results') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 
     {# V3 B5 / EF-2: Snapshot CTA #}
     <div class="d-flex justify-content-end mb-3">
