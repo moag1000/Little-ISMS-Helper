@@ -116,6 +116,7 @@
                         </div>
                     {% endblock %}
                     {% block card_body %}
+                        {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
                         <form data-action="submit->workflow-builder#addStep" data-workflow-builder-target="stepForm">
                             <div class="row">
                                 <div class="col-md-6 mb-3">

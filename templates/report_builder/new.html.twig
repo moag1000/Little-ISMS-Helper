@@ -29,6 +29,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+                    {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
                     <form method="post" action="{{ path('report_builder_new') }}">
                         <div class="mb-3">
                             {{ _fa_cyber.text('name', {

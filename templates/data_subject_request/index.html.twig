@@ -119,98 +119,97 @@
         {% endblock %}
         {% block card_body %}
             {% if requests|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th scope="col">{{ 'dsr.table.id'|trans({}, 'data_subject_request') }}</th>
-                                <th scope="col">{{ 'dsr.table.type'|trans({}, 'data_subject_request') }}</th>
-                                <th scope="col">{{ 'dsr.table.data_subject'|trans({}, 'data_subject_request') }}</th>
-                                <th scope="col">{{ 'dsr.table.status'|trans({}, 'data_subject_request') }}</th>
-                                <th scope="col">{{ 'dsr.table.received'|trans({}, 'data_subject_request') }}</th>
-                                <th scope="col">{{ 'dsr.table.deadline'|trans({}, 'data_subject_request') }}</th>
-                                <th scope="col">{{ 'dsr.table.assigned_to'|trans({}, 'data_subject_request') }}</th>
-                                <th scope="col">{{ 'dsr.table.actions'|trans({}, 'data_subject_request') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for dsr in requests %}
-                                <tr data-filter-target="filterableRow">
-                                    <td>
-                                        <a href="{{ path('app_data_subject_request_show', {id: dsr.id}) }}">
-                                            #{{ dsr.id }}
+                {# V3 W3-UX: migrated to fa-table Aurora pattern #}
+                {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="id" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'dsr.table.id'|trans({}, 'data_subject_request') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'dsr.table.type'|trans({}, 'data_subject_request') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'dsr.table.data_subject'|trans({}, 'data_subject_request') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'dsr.table.status'|trans({}, 'data_subject_request') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="received" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'dsr.table.received'|trans({}, 'data_subject_request') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--sortable" data-sort-key="deadline" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'dsr.table.deadline'|trans({}, 'data_subject_request') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'dsr.table.assigned_to'|trans({}, 'data_subject_request') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'dsr.table.actions'|trans({}, 'data_subject_request') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for dsr in requests %}
+                            <tr class="fa-table__row" data-filter-target="filterableRow">
+                                <td class="fa-table__cell" data-sort-value="{{ dsr.id }}">
+                                    <a href="{{ path('app_data_subject_request_show', {id: dsr.id}) }}">
+                                        #{{ dsr.id }}
+                                    </a>
+                                </td>
+                                <td class="fa-table__cell">
+                                    <span class="fa-status-pill fa-status-pill--primary">{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>
+                                    <br><small class="text-muted">{{ dsr.gdprArticle }}</small>
+                                </td>
+                                <td class="fa-table__cell">
+                                    {{ dsr.dataSubjectName }}
+                                    {% if dsr.dataSubjectEmail %}
+                                        <br><small class="text-muted">{{ dsr.dataSubjectEmail }}</small>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% set status_class = {
+                                        'received': 'secondary',
+                                        'identity_verification': 'info',
+                                        'in_progress': 'primary',
+                                        'completed': 'success',
+                                        'rejected': 'danger',
+                                        'extended': 'warning'
+                                    }[dsr.status]|default('secondary') %}
+                                    {% include '_components/_badge.html.twig' with { variant: status_class, content: ('dsr.status.' ~ dsr.status)|trans({}, 'data_subject_request') } only %}
+                                    {% if dsr.overdue %}
+                                        <br>{% include '_components/_badge.html.twig' with { variant: 'danger', content: 'dsr.badge.overdue'|trans({}, 'data_subject_request') } only %}
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell" data-sort-value="{{ dsr.receivedAt ? dsr.receivedAt|date('Y-m-d') : '' }}">{{ dsr.receivedAt|locale_date }}</td>
+                                <td class="fa-table__cell" data-sort-value="{{ dsr.effectiveDeadline ? dsr.effectiveDeadline|date('Y-m-d') : '' }}">
+                                    {% set deadline = dsr.effectiveDeadline %}
+                                    {% if deadline %}
+                                        <span class="{% if dsr.overdue %}text-danger fw-bold{% elseif dsr.daysUntilDeadline <= 7 %}text-warning{% endif %}">
+                                            {{ deadline|locale_date }}
+                                        </span>
+                                        {% if dsr.status not in ['completed', 'rejected'] %}
+                                            <br><small class="{% if dsr.overdue %}text-danger{% else %}text-muted{% endif %}">
+                                                {% if dsr.overdue %}
+                                                    {{ 'dsr.deadline.overdue_days'|trans({'%days%': dsr.daysUntilDeadline|abs}, 'data_subject_request') }}
+                                                {% else %}
+                                                    {{ 'dsr.deadline.remaining_days'|trans({'%days%': dsr.daysUntilDeadline}, 'data_subject_request') }}
+                                                {% endif %}
+                                            </small>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% if dsr.assignedTo %}
+                                        {{ dsr.assignedTo.firstName }} {{ dsr.assignedTo.lastName }}
+                                    {% else %}
+                                        <span class="text-muted">{{ 'dsr.table.unassigned'|trans({}, 'data_subject_request') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--actions">
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ path('app_data_subject_request_show', {id: dsr.id}) }}"
+                                           class="fa-cyber-btn fa-cyber-btn--ghost"
+                                           title="{{ 'dsr.action.view'|trans({}, 'data_subject_request') }}">
+                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
                                         </a>
-                                    </td>
-                                    <td>
-                                        <span class="fa-status-pill fa-status-pill--primary">{{ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request') }}</span>
-                                        <br><small class="text-muted">{{ dsr.gdprArticle }}</small>
-                                    </td>
-                                    <td>
-                                        {{ dsr.dataSubjectName }}
-                                        {% if dsr.dataSubjectEmail %}
-                                            <br><small class="text-muted">{{ dsr.dataSubjectEmail }}</small>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% set status_class = {
-                                            'received': 'secondary',
-                                            'identity_verification': 'info',
-                                            'in_progress': 'primary',
-                                            'completed': 'success',
-                                            'rejected': 'danger',
-                                            'extended': 'warning'
-                                        }[dsr.status]|default('secondary') %}
-                                        {% include '_components/_badge.html.twig' with { variant: status_class, content: ('dsr.status.' ~ dsr.status)|trans({}, 'data_subject_request') } only %}
-                                        {% if dsr.overdue %}
-                                            <br>{% include '_components/_badge.html.twig' with { variant: 'danger', content: 'dsr.badge.overdue'|trans({}, 'data_subject_request') } only %}
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ dsr.receivedAt|locale_date }}</td>
-                                    <td>
-                                        {% set deadline = dsr.effectiveDeadline %}
-                                        {% if deadline %}
-                                            <span class="{% if dsr.overdue %}text-danger fw-bold{% elseif dsr.daysUntilDeadline <= 7 %}text-warning{% endif %}">
-                                                {{ deadline|locale_date }}
-                                            </span>
-                                            {% if dsr.status not in ['completed', 'rejected'] %}
-                                                <br><small class="{% if dsr.overdue %}text-danger{% else %}text-muted{% endif %}">
-                                                    {% if dsr.overdue %}
-                                                        {{ 'dsr.deadline.overdue_days'|trans({'%days%': dsr.daysUntilDeadline|abs}, 'data_subject_request') }}
-                                                    {% else %}
-                                                        {{ 'dsr.deadline.remaining_days'|trans({'%days%': dsr.daysUntilDeadline}, 'data_subject_request') }}
-                                                    {% endif %}
-                                                </small>
-                                            {% endif %}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if dsr.assignedTo %}
-                                            {{ dsr.assignedTo.firstName }} {{ dsr.assignedTo.lastName }}
-                                        {% else %}
-                                            <span class="text-muted">{{ 'dsr.table.unassigned'|trans({}, 'data_subject_request') }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="{{ path('app_data_subject_request_show', {id: dsr.id}) }}"
+                                        {% if dsr.status not in ['completed', 'rejected'] %}
+                                            <a href="{{ path('app_data_subject_request_edit', {id: dsr.id}) }}"
                                                class="fa-cyber-btn fa-cyber-btn--ghost"
-                                               title="{{ 'dsr.action.view'|trans({}, 'data_subject_request') }}">
-                                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                               title="{{ 'dsr.action.edit'|trans({}, 'data_subject_request') }}">
+                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                             </a>
-                                            {% if dsr.status not in ['completed', 'rejected'] %}
-                                                <a href="{{ path('app_data_subject_request_edit', {id: dsr.id}) }}"
-                                                   class="fa-cyber-btn fa-cyber-btn--ghost"
-                                                   title="{{ 'dsr.action.edit'|trans({}, 'data_subject_request') }}">
-                                                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                                </a>
-                                            {% endif %}
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 {% include '_components/_empty_state.html.twig' with {
                     icon: 'bi-person-raised-hand',

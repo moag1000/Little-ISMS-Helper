@@ -57,6 +57,7 @@
         </div>
     {% endblock %}
     {% block card_body %}
+        {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
         <form method="get" action="{{ path('app_risk_treatment_plan_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}" id="filter-section" tabindex="-1">
             <div class="col-md-3">
                 <label for="filter-status" class="form-label">{{ 'risk_treatment_plan.field.status'|trans({}, 'risk_treatment_plan') }}</label>
