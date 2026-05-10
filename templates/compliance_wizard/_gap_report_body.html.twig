@@ -93,79 +93,76 @@
         </div>
 
         {# Table #}
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col">{{ 'gap_report.table.requirement'|trans({}, 'gap_report') }}</th>
-                        <th scope="col">{{ 'gap_report.table.category'|trans({}, 'gap_report') }}</th>
-                        <th scope="col" class="text-center">{{ 'gap_report.table.priority'|trans({}, 'gap_report') }}</th>
-                        <th scope="col" class="text-end">{{ 'gap_report.table.fulfillment'|trans({}, 'gap_report') }}</th>
-                        <th scope="col" class="text-end">{{ 'gap_report.table.base_effort'|trans({}, 'gap_report') }}</th>
-                        <th scope="col" class="text-end">{{ 'gap_report.table.remaining_effort'|trans({}, 'gap_report') }}</th>
-                        <th scope="col" class="text-center">{{ 'gap_report.table.quick_win'|trans({}, 'gap_report') }}</th>
+        {% embed '_components/_fa_table.html.twig' %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col" class="fa-table__th">{{ 'gap_report.table.requirement'|trans({}, 'gap_report') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'gap_report.table.category'|trans({}, 'gap_report') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--center">{{ 'gap_report.table.priority'|trans({}, 'gap_report') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'gap_report.table.fulfillment'|trans({}, 'gap_report') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'gap_report.table.base_effort'|trans({}, 'gap_report') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--num">{{ 'gap_report.table.remaining_effort'|trans({}, 'gap_report') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--center">{{ 'gap_report.table.quick_win'|trans({}, 'gap_report') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for row in effort_table %}
+                    <tr class="fa-table__row"
+                        data-budget-simulator-target="row"
+                        data-effort="{{ row.remaining_effort_days ?: 0 }}">
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_compliance_requirement_show', {id: row.requirement.id}) }}">
+                                <code>{{ row.requirement.requirementId }}</code>
+                            </a>
+                            <div class="small text-muted text-truncate" style="max-width: 320px;"
+                                 title="{{ row.requirement.title }}">
+                                {{ row.requirement.title }}
+                            </div>
+                        </td>
+                        <td class="fa-table__cell small">{{ row.category|default('—') }}</td>
+                        <td class="fa-table__cell fa-table__cell--center">
+                            {% if row.priority %}
+                                {% set _pv = row.priority == 'critical' ? 'danger' : (row.priority == 'high' ? 'warning' : (row.priority == 'medium' ? 'info' : 'secondary')) %}
+                                {% set _pp = row.priority == 'critical' ? 'danger' : (row.priority == 'high' ? 'warning' : (row.priority == 'medium' ? 'primary' : 'neutral')) %}
+                                <span class="badge bg-{{ _pv }} fa-status-pill fa-status-pill--{{ _pp }}">{{ row.priority }}</span>
+                            {% else %}—{% endif %}
+                        </td>
+                        <td class="fa-table__cell fa-table__cell--num">{{ row.fulfillment_percentage }}%</td>
+                        <td class="fa-table__cell fa-table__cell--num">
+                            {% if row.effective_effort_days is not null %}
+                                {{ row.effective_effort_days }}
+                                {% if row.adjusted_effort_days is not null %}
+                                    <i class="fa-icon fa-icon--ui-edit text-primary ms-1"
+                                       title="{{ 'gap_report.table.override_hint'|trans({}, 'gap_report') }}"
+                                       aria-label="{{ 'gap_report.table.override_hint'|trans({}, 'gap_report') }}"></i>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted small">{{ 'gap_report.table.not_estimated'|trans({}, 'gap_report') }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="fa-table__cell fa-table__cell--num fw-semibold">
+                            {% if row.effective_effort_days is not null %}
+                                {{ row.remaining_effort_days|number_format(1, '.', ',') }}
+                            {% else %}—{% endif %}
+                        </td>
+                        <td class="fa-table__cell fa-table__cell--center">
+                            {% if row.is_quick_win %}
+                                <span class="fa-status-pill fa-status-pill--success">
+                                    <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
+                                    {{ 'gap_report.table.quick_win_badge'|trans({}, 'gap_report') }}
+                                </span>
+                            {% endif %}
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for row in effort_table %}
-                        <tr data-budget-simulator-target="row"
-                            data-effort="{{ row.remaining_effort_days ?: 0 }}">
-                            <td>
-                                <a href="{{ path('app_compliance_requirement_show', {id: row.requirement.id}) }}">
-                                    <code>{{ row.requirement.requirementId }}</code>
-                                </a>
-                                <div class="small text-muted text-truncate" style="max-width: 320px;"
-                                     title="{{ row.requirement.title }}">
-                                    {{ row.requirement.title }}
-                                </div>
-                            </td>
-                            <td class="small">{{ row.category|default('—') }}</td>
-                            <td class="text-center">
-                                {% if row.priority %}
-                                    {% set _pv = row.priority == 'critical' ? 'danger' : (row.priority == 'high' ? 'warning' : (row.priority == 'medium' ? 'info' : 'secondary')) %}
-                                    {% set _pp = row.priority == 'critical' ? 'danger' : (row.priority == 'high' ? 'warning' : (row.priority == 'medium' ? 'primary' : 'neutral')) %}
-                                    <span class="badge bg-{{ _pv }} fa-status-pill fa-status-pill--{{ _pp }}">
-                                        {{ row.priority }}
-                                    </span>
-                                {% else %}—{% endif %}
-                            </td>
-                            <td class="text-end">{{ row.fulfillment_percentage }}%</td>
-                            <td class="text-end">
-                                {% if row.effective_effort_days is not null %}
-                                    {{ row.effective_effort_days }}
-                                    {% if row.adjusted_effort_days is not null %}
-                                        <i class="fa-icon fa-icon--ui-edit text-primary ms-1"
-                                           title="{{ 'gap_report.table.override_hint'|trans({}, 'gap_report') }}"
-                                           aria-label="{{ 'gap_report.table.override_hint'|trans({}, 'gap_report') }}"></i>
-                                    {% endif %}
-                                {% else %}
-                                    <span class="text-muted small">{{ 'gap_report.table.not_estimated'|trans({}, 'gap_report') }}</span>
-                                {% endif %}
-                            </td>
-                            <td class="text-end fw-semibold">
-                                {% if row.effective_effort_days is not null %}
-                                    {{ row.remaining_effort_days|number_format(1, '.', ',') }}
-                                {% else %}—{% endif %}
-                            </td>
-                            <td class="text-center">
-                                {% if row.is_quick_win %}
-                                    <span class="fa-status-pill fa-status-pill--success">
-                                        <i class="fa-icon fa-icon--threat" aria-hidden="true"></i>
-                                        {{ 'gap_report.table.quick_win_badge'|trans({}, 'gap_report') }}
-                                    </span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
-                                {{ 'gap_report.table.empty'|trans({}, 'gap_report') }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            {{ 'gap_report.table.empty'|trans({}, 'gap_report') }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
         {% endblock %}
     {% endembed %}
 {% endif %}

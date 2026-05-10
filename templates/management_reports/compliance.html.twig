@@ -125,28 +125,26 @@
                 </div>
                 <div class="col-md-9">
                     {% if report.frameworks|length > 0 %}
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th scope="col">{{ 'management_reports.compliance.framework_name'|trans({}, 'management_reports') }}</th>
-                                    <th scope="col">{{ 'management_reports.compliance.framework_code'|trans({}, 'management_reports') }}</th>
-                                    <th scope="col">{{ 'management_reports.compliance.framework_status'|trans({}, 'management_reports') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for framework in report.frameworks %}
-                                <tr>
-                                    <td>{{ framework.name }}</td>
-                                    <td><code>{{ framework.code }}</code></td>
-                                    <td>
-                                        {% include '_components/_badge.html.twig' with { variant: framework.active ? 'success' : 'secondary', content: framework.active ? 'management_reports.compliance.active'|trans({}, 'management_reports') : 'management_reports.compliance.inactive'|trans({}, 'management_reports') } %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" class="fa-table__th">{{ 'management_reports.compliance.framework_name'|trans({}, 'management_reports') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'management_reports.compliance.framework_code'|trans({}, 'management_reports') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'management_reports.compliance.framework_status'|trans({}, 'management_reports') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for framework in report.frameworks %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">{{ framework.name }}</td>
+                                <td class="fa-table__cell"><code>{{ framework.code }}</code></td>
+                                <td class="fa-table__cell">
+                                    {% include '_components/_badge.html.twig' with { variant: framework.active ? 'success' : 'secondary', content: framework.active ? 'management_reports.compliance.active'|trans({}, 'management_reports') : 'management_reports.compliance.inactive'|trans({}, 'management_reports') } %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                     {% else %}
                     <div class="fa-alert fa-alert--info mb-0" role="alert">
                         {{ 'management_reports.compliance.no_frameworks'|trans({}, 'management_reports') }}

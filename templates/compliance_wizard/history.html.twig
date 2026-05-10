@@ -134,45 +134,38 @@
                 <h2 class="card-title h5 mb-0">{{ 'wizard.history.snapshots'|trans({}, 'wizard') }} ({{ sessions|length }})</h2>
             </div>
             <div class="card-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead>
+                {% embed '_components/_fa_table.html.twig' %}
+                    {% block table_head %}
                         <tr>
-                            <th>{{ 'wizard.history.field.completed_at'|trans({}, 'wizard') }}</th>
-                            <th>{{ 'wizard.history.field.user'|trans({}, 'wizard') }}</th>
-                            <th class="text-end">{{ 'wizard.history.field.score'|trans({}, 'wizard') }}</th>
-                            <th>{{ 'wizard.history.field.status'|trans({}, 'wizard') }}</th>
-                            <th class="text-end">{{ 'wizard.history.field.gaps'|trans({}, 'wizard') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'wizard.history.field.completed_at'|trans({}, 'wizard') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'wizard.history.field.user'|trans({}, 'wizard') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'wizard.history.field.score'|trans({}, 'wizard') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'wizard.history.field.status'|trans({}, 'wizard') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--num">{{ 'wizard.history.field.gaps'|trans({}, 'wizard') }}</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                    {% endblock %}
+                    {% block table_body %}
                         {% for session in sessions %}
-                            <tr>
-                                <td>
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">
                                     {% if session.completedAt %}{{ session.completedAt|date('Y-m-d H:i') }}{% else %}—{% endif %}
                                 </td>
-                                <td>
+                                <td class="fa-table__cell">
                                     {% if session.user %}{{ session.user.email }}{% else %}—{% endif %}
                                 </td>
-                                <td class="text-end">
-                                    <span class="fw-bold
-                                        {% if session.overallScore >= 80 %}text-success
-                                        {% elseif session.overallScore >= 60 %}text-warning
-                                        {% else %}text-danger{% endif %}">
+                                <td class="fa-table__cell fa-table__cell--num">
+                                    <span class="fw-bold {% if session.overallScore >= 80 %}text-success{% elseif session.overallScore >= 60 %}text-warning{% else %}text-danger{% endif %}">
                                         {{ session.overallScore }}%
                                     </span>
                                 </td>
-                                <td>
-                                    <span class="badge {{ session.statusBadgeClass }}">
-                                        {{ session.status }}
-                                    </span>
+                                <td class="fa-table__cell">
+                                    <span class="badge {{ session.statusBadgeClass }}">{{ session.status }}</span>
                                 </td>
-                                <td class="text-end">
-                                    {{ session.criticalGaps|length }}
-                                </td>
+                                <td class="fa-table__cell fa-table__cell--num">{{ session.criticalGaps|length }}</td>
                             </tr>
                         {% endfor %}
-                    </tbody>
-                </table>
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     {% endif %}
