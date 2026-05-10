@@ -413,8 +413,14 @@
     {# Notification Center (Paket C - Premium) #}
     {% include '_components/_notification_center.html.twig' %}
 
-    {# Toast Notifications Container #}
-    <div class="toast-container" data-controller="toast" data-toast-target="container" role="status" aria-live="polite" aria-atomic="true"></div>
+    {# Toast Notifications Stack — canonical Aurora _fa_toast (V4-FP-1)
+       Picks up Symfony flash-messages via fa_toast_controller#_convertFlashMessages
+       and listens for both `fa-toast:show` (canonical) and legacy `toast:show`
+       window/document events. Tones: info | success | warning | danger.
+       Flash label mapping: success→success, error/danger→danger,
+       warning→warning, info/notice→info (via _toneFromAlertClass). #}
+    {% import '_components/_fa_toast.html.twig' as _fa_toast %}
+    {{ _fa_toast.stack([]) }}
 
     {# Keyboard Shortcuts Help #}
     {% include '_components/_keyboard_shortcuts.html.twig' %}

@@ -86,11 +86,13 @@ export default class extends Controller {
     }
 
     flash(message, variant) {
-        // Use existing toast system if available
-        const event = new CustomEvent('toast:show', { detail: { message, variant } });
-        document.dispatchEvent(event);
-        // Fallback: simple alert if no toast handler
-        if (!document.querySelector('.toast-container')) {
+        // Canonical: dispatch on window for fa_toast_controller (V4-FP-1).
+        // Also dispatch on document for any legacy listeners.
+        const detail = { message, variant, tone: variant, type: variant };
+        window.dispatchEvent(new CustomEvent('fa-toast:show', { detail }));
+        document.dispatchEvent(new CustomEvent('toast:show', { detail }));
+        // Fallback: simple alert if no toast handler is mounted.
+        if (!document.querySelector('.fa-toast-stack') && !document.querySelector('.toast-container')) {
             alert(message);
         }
     }
