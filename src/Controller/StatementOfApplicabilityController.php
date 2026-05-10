@@ -10,6 +10,7 @@ use App\Entity\Control;
 use App\Entity\User;
 use App\Entity\Tenant;
 use App\Form\ControlType;
+use App\Repository\CommentRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ControlRepository;
 use App\Service\AnnexAControlsBootstrapService;
@@ -46,6 +47,7 @@ class StatementOfApplicabilityController extends AbstractController
         private readonly ModuleConfigurationService $moduleConfiguration,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
+        private readonly ?CommentRepository $commentRepository = null,
     ) {}
     #[Route('/soa/', name: 'app_soa_index')]
     public function index(Request $request): Response
@@ -232,11 +234,20 @@ class StatementOfApplicabilityController extends AbstractController
         $suggestions = $this->mappingSuggestionService->suggestForControl($control);
         // V3 B6 / EF-4: Inverse-Coverage Impact-Analyse
         $impactCoverage = $this->inverseCoverageService?->forControl($control) ?? ['total' => 0, 'frameworks' => []];
+
+        // V4 LB-4: Comment-Thread adoption — load thread for this Control.
+        $comments = [];
+        $tenant = $this->security->getUser()?->getTenant();
+        if ($this->commentRepository !== null && $tenant !== null && $control->getId() !== null) {
+            $comments = $this->commentRepository->findThread($tenant, 'Control', $control->getId());
+        }
+
         return $this->render('soa/show.html.twig', [
             'control' => $control,
             'mapping_suggestions' => $suggestions,
             'mapping_suggestions_total' => $this->mappingSuggestionService->totalCount($suggestions),
             'impact_coverage' => $impactCoverage,
+            'comments' => $comments,
         ]);
     }
 

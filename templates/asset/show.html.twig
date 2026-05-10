@@ -574,6 +574,16 @@
         impact: impact_coverage|default({total: 0, frameworks: []}),
         entity_label: 'asset'
     } %}
+
+    {# V4 LB-4: Comment-Thread adoption (C7 macro). #}
+    {% include '_components/_isms_comment_thread.html.twig' with {
+        comments: comments|default([]),
+        entityType: 'Asset',
+        entityId: asset.id,
+        showForm: canEdit is not defined or canEdit,
+        formAction: path('app_comment_post', {entityType: 'Asset', entityId: asset.id}),
+        csrfToken: csrf_token('isms-comment')
+    } only %}
 </div>
 
 <style>

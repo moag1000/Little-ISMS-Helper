@@ -8,6 +8,7 @@ use App\Entity\AuditFinding;
 use App\Entity\CorrectiveAction;
 use App\Entity\Tenant;
 use App\Form\CorrectiveActionType;
+use App\Repository\CommentRepository;
 use App\Repository\CorrectiveActionRepository;
 use App\Service\AuditLogger;
 use App\Service\TenantContext;
@@ -30,6 +31,7 @@ class CorrectiveActionController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
+        private readonly ?CommentRepository $commentRepository = null,
     ) {
     }
 
@@ -94,8 +96,16 @@ class CorrectiveActionController extends AbstractController
     {
         $this->denyIfWrongTenant($action);
 
+        // V4 LB-4: Comment-Thread adoption — load thread for this CorrectiveAction.
+        $comments = [];
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($this->commentRepository !== null && $tenant !== null && $action->getId() !== null) {
+            $comments = $this->commentRepository->findThread($tenant, 'CorrectiveAction', $action->getId());
+        }
+
         return $this->render('corrective_action/show.html.twig', [
             'action' => $action,
+            'comments' => $comments,
         ]);
     }
 

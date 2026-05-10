@@ -16,6 +16,7 @@ use App\Service\AiAgentInventoryService;
 use App\Service\AssetDependencyService;
 use App\Service\AssetService;
 use App\Service\AssetQrCodeService;
+use App\Repository\CommentRepository;
 use App\Service\InverseCoverageService;
 use App\Service\ProtectionRequirementService;
 use App\Service\TagFilterService;
@@ -50,6 +51,7 @@ class AssetController extends AbstractController
         private readonly ?AssetDependencyService $assetDependencyService = null,
         private readonly ?AiAgentInventoryService $aiAgentInventoryService = null,
         private readonly ?InverseCoverageService $inverseCoverageService = null,
+        private readonly ?CommentRepository $commentRepository = null,
     ) {}
     #[Route('/asset/', name: 'app_asset_index')]
     #[IsGranted('ROLE_USER')]
@@ -352,6 +354,13 @@ class AssetController extends AbstractController
         // V3 B6 / EF-4: Inverse-Coverage Impact-Analyse
         $impactCoverage = $this->inverseCoverageService?->forAsset($asset) ?? ['total' => 0, 'frameworks' => []];
 
+        // V4 LB-4: Comment-Thread adoption — load thread for this Asset.
+        $comments = [];
+        $tenantCtx = $this->tenantContext->getCurrentTenant();
+        if ($this->commentRepository !== null && $tenantCtx !== null && $asset->getId() !== null) {
+            $comments = $this->commentRepository->findThread($tenantCtx, 'Asset', $asset->getId());
+        }
+
         return $this->render('asset/show.html.twig', [
             'asset' => $asset,
             'analysis' => $analysis,
@@ -364,6 +373,7 @@ class AssetController extends AbstractController
             'inheritedProtection' => $inheritedProtection,
             'linkedDpias' => $linkedDpias,
             'impact_coverage' => $impactCoverage,
+            'comments' => $comments,
         ]);
     }
     #[Route('/asset/{id}/edit', name: 'app_asset_edit', requirements: ['id' => '\d+'])]

@@ -57,5 +57,15 @@
             <i class="fa-icon fa-icon--ui-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
         </button>
     </form>
+
+    {# V4 LB-4: Comment-Thread adoption (C7 macro). #}
+    {% include '_components/_isms_comment_thread.html.twig' with {
+        comments: comments|default([]),
+        entityType: 'CorrectiveAction',
+        entityId: action.id,
+        showForm: true,
+        formAction: path('app_comment_post', {entityType: 'CorrectiveAction', entityId: action.id}),
+        csrfToken: csrf_token('isms-comment')
+    } only %}
 </div>
 {% endblock %}

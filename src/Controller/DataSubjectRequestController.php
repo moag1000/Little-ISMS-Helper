@@ -8,8 +8,10 @@ use RuntimeException;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\DataSubjectRequest;
 use App\Form\DataSubjectRequestType;
+use App\Repository\CommentRepository;
 use App\Service\DataSubjectRequestService;
 use App\Service\ModuleConfigurationService;
+use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +29,8 @@ class DataSubjectRequestController extends AbstractController
         private readonly DataSubjectRequestService $dataSubjectRequestService,
         private readonly TranslatorInterface $translator,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly ?TenantContext $tenantContext = null,
+        private readonly ?CommentRepository $commentRepository = null,
     ) {
     }
 
@@ -101,8 +105,16 @@ class DataSubjectRequestController extends AbstractController
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
+        // V4 LB-4: Comment-Thread adoption — load thread for this DataSubjectRequest.
+        $comments = [];
+        $tenant = $this->tenantContext?->getCurrentTenant();
+        if ($this->commentRepository !== null && $tenant !== null && $dsr->getId() !== null) {
+            $comments = $this->commentRepository->findThread($tenant, 'DataSubjectRequest', $dsr->getId());
+        }
+
         return $this->render('data_subject_request/show.html.twig', [
             'dsr' => $dsr,
+            'comments' => $comments,
         ]);
     }
 
