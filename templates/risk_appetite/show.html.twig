@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_appetite' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ appetite.displayName }} - {{ 'risk_appetite.title'|trans({}, 'risk_appetite') }}{% endblock %}
 
 {% block body %}
@@ -216,6 +214,7 @@
                 </tr>
             {% endblock %}
             {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                 {% for risk in risksWithinAppetite|slice(0, 10) %}
                 <tr>
                     <td>{{ risk.title }}</td>

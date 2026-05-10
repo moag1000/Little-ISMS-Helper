@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}AI-Agent-Inventar{% endblock %}
 
 {% block body %}
@@ -85,6 +83,7 @@
                         </tr>
                     {% endblock %}
                     {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                         {% for agent in agents %}
                             {% set comp = completeness[agent.id] %}
                             <tr class="fa-table__row">

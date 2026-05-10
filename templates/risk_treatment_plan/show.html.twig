@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'risk_treatment_plan' %}
 
 {% block title %}{{ plan.title }} - {{ 'risk_treatment_plan.title'|trans({}, 'risk_treatment_plan') }}{% endblock %}
 
 {% block body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [

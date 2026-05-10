@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'soa' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 
@@ -94,6 +93,7 @@
         </tr>
     {% endblock %}
     {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
         {% for control in controls %}
         <tr>
             <td>{% include '_components/_iso_reference_label.html.twig' with { control: control, show_name: false, code_class: 'fw-bold' } only %}</td>

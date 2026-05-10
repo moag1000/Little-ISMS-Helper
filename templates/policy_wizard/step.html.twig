@@ -3,14 +3,13 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% set step_title_key = 'policy_wizard.step.' ~ step ~ '.title' %}
 {% set step_subtitle_key = 'policy_wizard.step.' ~ step ~ '.subtitle' %}
 
 {% block title %}{{ step_title_key|trans }} — {{ 'policy_wizard.title'|trans }}{% endblock %}
 
 {% block body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 <div class="container-fluid py-4 fa-aurora-surface">
     {# Junior-ISB Wish #3 — prominent progress-bar above the step
        title. Controller injects current_step_index (0-based) and

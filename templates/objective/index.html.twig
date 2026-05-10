@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'objective'%}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -71,6 +70,7 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% for objective in objectives %}
                     <tr>
                         <td><strong>{{ objective.title }}</strong></td>

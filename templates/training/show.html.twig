@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'training' %}
 
 {% block title %}{{ training.title }} - {{ parent() }}{% endblock %}
@@ -262,6 +261,7 @@
                     </div>
                 {% endblock %}
                 {% block card_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             <span class="small text-muted">{{ 'training.completion_rate'|trans({}, 'training') }}</span>

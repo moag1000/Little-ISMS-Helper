@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}BIA - {{ business_process.name }}{% endblock %}
 
 {% block body %}
@@ -109,6 +107,7 @@
             </div>
         {% endblock %}
         {% block card_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
             <div class="row">
                 <div class="col-md-4">
                     <div class="small text-muted text-uppercase fw-semibold mb-2">{{ 'business_process.bia.field.reputational_impact'|trans({}, 'business_process') }}</div>

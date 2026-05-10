@@ -1,8 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ 'mapping_review.title'|trans({}, 'compliance') }} #{{ mapping.id }}{% endblock %}
 
 {% block body %}
@@ -107,6 +105,7 @@
                     <div class="card-header"><h3 class="mb-0 h5"><i class="fa-icon fa-icon--ui-star" aria-hidden="true"></i> {{ 'mapping_review.section.quality_confidence'|trans({}, 'compliance') }}</h3></div>
                 {% endblock %}
                 {% block card_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% if mapping.qualityScore is not null %}
                     <div class="mb-3">
                         <small class="text-muted">{{ 'mapping_review.field.quality_score'|trans({}, 'compliance') }}</small>

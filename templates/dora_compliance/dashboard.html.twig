@@ -1,11 +1,10 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'dora' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ 'dora.dashboard.title'|trans }}{% endblock %}
 
 {% block body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
 <div class="container-fluid py-4">
     {# Header #}
     <div class="row mb-4">

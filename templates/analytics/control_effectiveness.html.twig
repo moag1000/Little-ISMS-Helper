@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'analytics' %}
 
 {% block title %}{{ 'analytics.controls.title'|trans({}, 'analytics') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -148,6 +147,7 @@
                             </tr>
                         {% endblock %}
                         {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                             {% for cat in category_performance %}
                             <tr class="fa-table__row">
                                 <td class="fa-table__cell"><strong>{{ cat.category }}</strong></td>

@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'compliance' %}
 
 {% block title %}{{ framework.name }}{% endblock %}
@@ -220,6 +219,7 @@
                 'class': 'mb-4'
             } %}
                 {% block card_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'compliance.requirement.priority.critical'|trans({}, 'compliance') } %}

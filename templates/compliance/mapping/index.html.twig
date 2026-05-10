@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'compliance' %}
 
 {% block title %}Compliance Mappings{% endblock %}
@@ -80,6 +79,7 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% for mapping in mappings %}
                         <tr>
                             <td>

@@ -2,8 +2,6 @@
 {% trans_default_domain 'consent' %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
-{% import '_components/_fa_progress.html.twig' as _fa_progress %}
-
 {% block title %}{{ 'consent.header.title'|trans({}, 'consent') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
@@ -69,6 +67,7 @@
         </div>
     {% endblock %}
     {% block card_body %}
+    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
         <div class="row">
             {# TODO(aurora-migration): dynamic icon — keep bi-* (icon rendered via `<i class="bi {{ data.icon }}">`) #}
             {% set statuses = {
