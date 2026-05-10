@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_policy_doc.html.twig' as _fa_policy_doc %}
 {% trans_default_domain 'document' %}
 
 {% block title %}{{ document.originalFilename }}{% endblock %}
@@ -199,9 +200,51 @@
                             }, 'document') }}
                         </p>
                     {% endif %}
-                    <div class="policy-body-preview border rounded p-3 bg-body-tertiary">
-                        {{ policyBodyHtml|raw }}
-                    </div>
+                    {# Design-system policy-doc 5-slot template (Mai 2026).
+                       Renders cover/toc/history/body/signature in the show
+                       view using the same Aurora macro the PDF export uses
+                       — guarantees visual parity between the on-screen
+                       preview and the printed audit-pack. #}
+                    {{ _fa_policy_doc.render({
+                        document: document,
+                        body_html: policyBodyHtml,
+                        cover: {
+                            title:               document.originalFilename,
+                            kicker:              document.generatedFromTemplate ? (document.generatedFromTemplate.standard|upper ~ ' · ' ~ document.generatedFromTemplate.topic|replace({'_': ' '})) : 'ISMS-Policy',
+                            version:             document.version,
+                            valid_from:          document.uploadedAt ? document.uploadedAt|date('d.m.Y') : null,
+                            next_review:         document.nextReviewDate ? document.nextReviewDate|date('d.m.Y') : null,
+                            owner:               document.effectiveOwnerName,
+                            classification:      document.tisaxInformationClassification,
+                            standard:            document.generatedFromTemplate ? document.generatedFromTemplate.standard : null,
+                            topic:               document.generatedFromTemplate ? document.generatedFromTemplate.topic : null,
+                            generated_on:        document.uploadedAt ? document.uploadedAt|date('d.m.Y') : null,
+                            dora_validity_date:  doraValidityDate ? doraValidityDate|date('d.m.Y') : null,
+                            climate_change_aware: climateChangeAware|default(false),
+                            owner_label:         'policy_wizard.export.cover.owner'|trans({}, 'policy_wizard'),
+                            version_label:       'policy_wizard.export.cover.version'|trans({}, 'policy_wizard'),
+                            valid_from_label:    'policy_wizard.export.cover.valid_from'|trans({}, 'policy_wizard'),
+                            next_review_label:   'policy_wizard.export.cover.next_review'|trans({}, 'policy_wizard'),
+                            classification_label:'policy_wizard.export.cover.classification'|trans({}, 'policy_wizard'),
+                            standard_label:      'policy_wizard.export.cover.standard'|trans({}, 'policy_wizard'),
+                            generated_on_label:  'policy_wizard.export.cover.generated_on'|trans({}, 'policy_wizard'),
+                            dora_validity_label: 'policy_wizard.export.cover.dora_validity'|trans({}, 'policy_wizard'),
+                            climate_change_label:'policy_wizard.export.cover.climate_change'|trans({}, 'policy_wizard'),
+                            climate_change_value:'policy_wizard.export.cover.climate_change_value'|trans({}, 'policy_wizard'),
+                            history_label:       'policy_wizard.export.history.heading'|trans({}, 'policy_wizard'),
+                            history_col_version: 'policy_wizard.export.history.col_version'|trans({}, 'policy_wizard'),
+                            history_col_date:    'policy_wizard.export.history.col_date'|trans({}, 'policy_wizard'),
+                            history_col_change:  'policy_wizard.export.history.col_change'|trans({}, 'policy_wizard'),
+                            history_col_author:  'policy_wizard.export.history.col_author'|trans({}, 'policy_wizard'),
+                            history_col_approver:'policy_wizard.export.history.col_approver'|trans({}, 'policy_wizard'),
+                            toc_label:           'policy_wizard.export.toc.heading'|trans({}, 'policy_wizard'),
+                            signature_intro_label:'policy_wizard.export.signature.intro_label'|trans({}, 'policy_wizard'),
+                            signature_intro:     'policy_wizard.export.signature.intro'|trans({}, 'policy_wizard'),
+                        },
+                        tenant_branding: tenant_branding|default(null),
+                        brand_name: currentTenant ? currentTenant.legalName|default(currentTenant.name)|default('') : '',
+                        brand_meta: 'policy_wizard.export.cover.brand_meta'|trans({}, 'policy_wizard'),
+                    }) }}
                     {% if canEdit is defined and canEdit %}
                         <div class="mt-2">
                             <a href="{{ path('app_document_edit', {id: document.id}) }}#policy-body"
