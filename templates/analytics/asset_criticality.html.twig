@@ -134,40 +134,38 @@
         {% endblock %}
         {% block card_body %}
             {% if incident_probability.high_risk_assets|length > 0 %}
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'analytics.assets.table.asset'|trans({}, 'analytics') }}</th>
-                            <th scope="col">{{ 'analytics.assets.table.type'|trans({}, 'analytics') }}</th>
-                            <th scope="col" class="text-center">{{ 'analytics.assets.table.criticality'|trans({}, 'analytics') }}</th>
-                            <th scope="col" class="text-center">{{ 'analytics.assets.table.incidents'|trans({}, 'analytics') }}</th>
-                            <th scope="col" class="text-center">{{ 'analytics.assets.table.probability'|trans({}, 'analytics') }}</th>
-                            <th scope="col">{{ 'analytics.assets.table.risk_level'|trans({}, 'analytics') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for asset in incident_probability.high_risk_assets %}
-                        <tr>
-                            <td>
-                                <strong>{{ asset.asset_name }}</strong>
-                            </td>
-                            <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.asset_type } %}</td>
-                            <td class="text-center">
-                                {% include '_components/_badge.html.twig' with { variant: asset.criticality >= 12 ? 'danger' : (asset.criticality >= 9 ? 'warning' : (asset.criticality >= 6 ? 'info' : 'success')), content: asset.criticality } %}
-                            </td>
-                            <td class="text-center">{{ asset.historical_incidents }}</td>
-                            <td class="text-center">
-                                {{ _fa_progress.render({ value: asset.incident_probability, tone: asset.incident_probability >= 70 ? 'danger' : (asset.incident_probability >= 40 ? 'warning' : 'info'), showText: true }) }}
-                            </td>
-                            <td>
-                                {% include '_components/_badge.html.twig' with { variant: asset.criticality_level == 'critical' ? 'danger' : (asset.criticality_level == 'high' ? 'warning' : (asset.criticality_level == 'medium' ? 'info' : 'success')), content: asset.criticality_level|title } %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_fa_table.html.twig' %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'analytics.assets.table.asset'|trans({}, 'analytics') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'analytics.assets.table.type'|trans({}, 'analytics') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'analytics.assets.table.criticality'|trans({}, 'analytics') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'analytics.assets.table.incidents'|trans({}, 'analytics') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'analytics.assets.table.probability'|trans({}, 'analytics') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'analytics.assets.table.risk_level'|trans({}, 'analytics') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for asset in incident_probability.high_risk_assets %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">
+                            <strong>{{ asset.asset_name }}</strong>
+                        </td>
+                        <td class="fa-table__cell">{% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.asset_type } %}</td>
+                        <td class="fa-table__cell fa-table__cell--center">
+                            {% include '_components/_badge.html.twig' with { variant: asset.criticality >= 12 ? 'danger' : (asset.criticality >= 9 ? 'warning' : (asset.criticality >= 6 ? 'info' : 'success')), content: asset.criticality } %}
+                        </td>
+                        <td class="fa-table__cell fa-table__cell--center">{{ asset.historical_incidents }}</td>
+                        <td class="fa-table__cell fa-table__cell--center">
+                            {{ _fa_progress.render({ value: asset.incident_probability, tone: asset.incident_probability >= 70 ? 'danger' : (asset.incident_probability >= 40 ? 'warning' : 'info'), showText: true }) }}
+                        </td>
+                        <td class="fa-table__cell">
+                            {% include '_components/_badge.html.twig' with { variant: asset.criticality_level == 'critical' ? 'danger' : (asset.criticality_level == 'high' ? 'warning' : (asset.criticality_level == 'medium' ? 'info' : 'success')), content: asset.criticality_level|title } %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
             {% else %}
             <div class="text-center py-4">
                 <i class="fa-icon fa-icon--status-ok display-4" aria-hidden="true"></i>
@@ -229,38 +227,36 @@
             </div>
 
             {% if incident_probability.profiles|length > 0 %}
-            <div class="table-responsive">
-                <table class="table table-hover table-sm" id="allAssetsTable">
-                    <thead>
-                        <tr>
-                            <th scope="col">{{ 'analytics.assets.table.asset'|trans({}, 'analytics') }}</th>
-                            <th scope="col">{{ 'analytics.assets.table.type'|trans({}, 'analytics') }}</th>
-                            <th scope="col" class="text-center">{{ 'analytics.assets.table.criticality'|trans({}, 'analytics') }}</th>
-                            <th scope="col" class="text-center">{{ 'analytics.assets.table.incidents'|trans({}, 'analytics') }}</th>
-                            <th scope="col" class="text-center">{{ 'analytics.assets.table.probability'|trans({}, 'analytics') }}</th>
-                            <th scope="col">{{ 'analytics.assets.table.risk_level'|trans({}, 'analytics') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for asset in incident_probability.profiles %}
-                        <tr>
-                            <td>
-                                <a href="{{ path('app_asset_show', {id: asset.asset_id}) }}">
-                                    <strong>{{ asset.asset_name }}</strong>
-                                </a>
-                            </td>
-                            <td><small>{{ asset.asset_type }}</small></td>
-                            <td class="text-center">{{ asset.criticality }}</td>
-                            <td class="text-center">{{ asset.historical_incidents }}</td>
-                            <td class="text-center">{{ asset.incident_probability }}%</td>
-                            <td>
-                                {% include '_components/_badge.html.twig' with { variant: asset.criticality_level == 'critical' ? 'danger' : (asset.criticality_level == 'high' ? 'warning' : (asset.criticality_level == 'medium' ? 'info' : 'success')), content: asset.criticality_level|title } %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th">{{ 'analytics.assets.table.asset'|trans({}, 'analytics') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'analytics.assets.table.type'|trans({}, 'analytics') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'analytics.assets.table.criticality'|trans({}, 'analytics') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'analytics.assets.table.incidents'|trans({}, 'analytics') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'analytics.assets.table.probability'|trans({}, 'analytics') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'analytics.assets.table.risk_level'|trans({}, 'analytics') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for asset in incident_probability.profiles %}
+                    <tr class="fa-table__row" id="allAssetsTable">
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_asset_show', {id: asset.asset_id}) }}">
+                                <strong>{{ asset.asset_name }}</strong>
+                            </a>
+                        </td>
+                        <td class="fa-table__cell"><small>{{ asset.asset_type }}</small></td>
+                        <td class="fa-table__cell fa-table__cell--center">{{ asset.criticality }}</td>
+                        <td class="fa-table__cell fa-table__cell--center">{{ asset.historical_incidents }}</td>
+                        <td class="fa-table__cell fa-table__cell--center">{{ asset.incident_probability }}%</td>
+                        <td class="fa-table__cell">
+                            {% include '_components/_badge.html.twig' with { variant: asset.criticality_level == 'critical' ? 'danger' : (asset.criticality_level == 'high' ? 'warning' : (asset.criticality_level == 'medium' ? 'info' : 'success')), content: asset.criticality_level|title } %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
             {% else %}
             <div class="text-center py-5">
                 <i class="fa-icon fa-icon--asset-server display-1 fa-icon--muted" aria-hidden="true"></i>

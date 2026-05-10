@@ -46,174 +46,172 @@
             </div>
         {% endblock %}
         {% block card_body %}
-            <div class="table-responsive">
-                <table class="table table-striped table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="ps-3">{{ 'help.iso9001_bridge.col_9001'|trans({}, 'help') }}</th>
-                            <th scope="col">{{ 'help.iso9001_bridge.col_27001'|trans({}, 'help') }}</th>
-                            <th scope="col">{{ 'help.iso9001_bridge.col_tool'|trans({}, 'help') }}</th>
-                            <th scope="col">{{ 'help.iso9001_bridge.col_reference'|trans({}, 'help') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="fa-icon fa-icon--nav-building me-1" aria-hidden="true"></i>
-                                {{ 'help.iso9001_bridge.map.context.from'|trans({}, 'help') }}
-                            </td>
-                            <td>{{ 'help.iso9001_bridge.map.context.to'|trans({}, 'help') }}</td>
-                            <td>
-                                <a href="{{ path('app_context_index') }}" class="text-decoration-none">
-                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
-                                    {{ 'help.iso9001_bridge.map.context.module'|trans({}, 'help') }}
-                                </a>
-                            </td>
-                            <td><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 4.1-4.4</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="fa-icon fa-icon--nav-process me-1" aria-hidden="true"></i>
-                                {{ 'help.iso9001_bridge.map.process_map.from'|trans({}, 'help') }}
-                            </td>
-                            <td>{{ 'help.iso9001_bridge.map.process_map.to'|trans({}, 'help') }}</td>
-                            <td>
-                                <a href="{{ path('app_soa_index') }}" class="text-decoration-none">
-                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
-                                    {{ 'help.iso9001_bridge.map.process_map.module'|trans({}, 'help') }}
-                                </a>
-                            </td>
-                            <td><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 6.1.3 d</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="fa-icon fa-icon--status-warning me-1" aria-hidden="true"></i>
-                                {{ 'help.iso9001_bridge.map.risks.from'|trans({}, 'help') }}
-                            </td>
-                            <td>{{ 'help.iso9001_bridge.map.risks.to'|trans({}, 'help') }}</td>
-                            <td>
-                                <a href="{{ path('app_risk_index') }}" class="text-decoration-none">
-                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
-                                    {{ 'help.iso9001_bridge.map.risks.module'|trans({}, 'help') }}
-                                </a>
-                            </td>
-                            <td><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 6.1.2</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="fa-icon fa-icon--nav-tools me-1" aria-hidden="true"></i>
-                                {{ 'help.iso9001_bridge.map.capa.from'|trans({}, 'help') }}
-                            </td>
-                            <td>{{ 'help.iso9001_bridge.map.capa.to'|trans({}, 'help') }}</td>
-                            <td>
-                                <a href="{{ path('app_risk_treatment_plan_index') }}" class="text-decoration-none">
-                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
-                                    {{ 'help.iso9001_bridge.map.capa.module'|trans({}, 'help') }}
-                                </a>
-                            </td>
-                            <td><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 6.1.3</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="fa-icon fa-icon--sop me-1" aria-hidden="true"></i>
-                                {{ 'help.iso9001_bridge.map.audit.from'|trans({}, 'help') }}
-                            </td>
-                            <td>{{ 'help.iso9001_bridge.map.audit.to'|trans({}, 'help') }}</td>
-                            <td>
-                                <a href="{{ path('app_audit_index') }}" class="text-decoration-none">
-                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
-                                    {{ 'help.iso9001_bridge.map.audit.module'|trans({}, 'help') }}
-                                </a>
-                            </td>
-                            <td><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 9.2</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="fa-icon fa-icon--group me-1" aria-hidden="true"></i>
-                                {{ 'help.iso9001_bridge.map.review.from'|trans({}, 'help') }}
-                            </td>
-                            <td>{{ 'help.iso9001_bridge.map.review.to'|trans({}, 'help') }}</td>
-                            <td>
-                                <a href="{{ path('app_management_review_index') }}" class="text-decoration-none">
-                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
-                                    {{ 'help.iso9001_bridge.map.review.module'|trans({}, 'help') }}
-                                </a>
-                            </td>
-                            <td><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 9.3</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="fa-icon fa-icon--nav-hdd me-1" aria-hidden="true"></i>
-                                {{ 'help.iso9001_bridge.map.infrastructure.from'|trans({}, 'help') }}
-                            </td>
-                            <td>{{ 'help.iso9001_bridge.map.infrastructure.to'|trans({}, 'help') }}</td>
-                            <td>
-                                <a href="{{ path('app_asset_index') }}" class="text-decoration-none">
-                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
-                                    {{ 'help.iso9001_bridge.map.infrastructure.module'|trans({}, 'help') }}
-                                </a>
-                            </td>
-                            <td><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 A.5.9</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="fa-icon fa-icon--nav-mortarboard me-1" aria-hidden="true"></i>
-                                {{ 'help.iso9001_bridge.map.competence.from'|trans({}, 'help') }}
-                            </td>
-                            <td>{{ 'help.iso9001_bridge.map.competence.to'|trans({}, 'help') }}</td>
-                            <td>
-                                <a href="{{ path('app_training_index') }}" class="text-decoration-none">
-                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
-                                    {{ 'help.iso9001_bridge.map.competence.module'|trans({}, 'help') }}
-                                </a>
-                            </td>
-                            <td><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 A.6.3</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="fa-icon fa-icon--policy me-1" aria-hidden="true"></i>
-                                {{ 'help.iso9001_bridge.map.documents.from'|trans({}, 'help') }}
-                            </td>
-                            <td>{{ 'help.iso9001_bridge.map.documents.to'|trans({}, 'help') }}</td>
-                            <td>
-                                <a href="{{ path('app_document_index') }}" class="text-decoration-none">
-                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
-                                    {{ 'help.iso9001_bridge.map.documents.module'|trans({}, 'help') }}
-                                </a>
-                            </td>
-                            <td><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 7.5</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="fa-icon me-1 fa-icon--nav-process" aria-hidden="true"></i>
-                                {{ 'help.iso9001_bridge.map.suppliers.from'|trans({}, 'help') }}
-                            </td>
-                            <td>{{ 'help.iso9001_bridge.map.suppliers.to'|trans({}, 'help') }}</td>
-                            <td>
-                                <a href="{{ path('app_supplier_index') }}" class="text-decoration-none">
-                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
-                                    {{ 'help.iso9001_bridge.map.suppliers.module'|trans({}, 'help') }}
-                                </a>
-                            </td>
-                            <td><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 A.5.19-5.22</span></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">
-                                <i class="fa-icon fa-icon--breach me-1" aria-hidden="true"></i>
-                                {{ 'help.iso9001_bridge.map.nonconformity.from'|trans({}, 'help') }}
-                            </td>
-                            <td>{{ 'help.iso9001_bridge.map.nonconformity.to'|trans({}, 'help') }}</td>
-                            <td>
-                                <a href="{{ path('app_incident_index') }}" class="text-decoration-none">
-                                    <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
-                                    {{ 'help.iso9001_bridge.map.nonconformity.module'|trans({}, 'help') }}
-                                </a>
-                            </td>
-                            <td><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 A.5.24-5.28</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            {% embed '_components/_fa_table.html.twig' with { striped: true } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th ps-3">{{ 'help.iso9001_bridge.col_9001'|trans({}, 'help') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'help.iso9001_bridge.col_27001'|trans({}, 'help') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'help.iso9001_bridge.col_tool'|trans({}, 'help') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'help.iso9001_bridge.col_reference'|trans({}, 'help') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell ps-3">
+                            <i class="fa-icon fa-icon--nav-building me-1" aria-hidden="true"></i>
+                            {{ 'help.iso9001_bridge.map.context.from'|trans({}, 'help') }}
+                        </td>
+                        <td class="fa-table__cell">{{ 'help.iso9001_bridge.map.context.to'|trans({}, 'help') }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_context_index') }}" class="text-decoration-none">
+                                <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.context.module'|trans({}, 'help') }}
+                            </a>
+                        </td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 4.1-4.4</span></td>
+                    </tr>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell ps-3">
+                            <i class="fa-icon fa-icon--nav-process me-1" aria-hidden="true"></i>
+                            {{ 'help.iso9001_bridge.map.process_map.from'|trans({}, 'help') }}
+                        </td>
+                        <td class="fa-table__cell">{{ 'help.iso9001_bridge.map.process_map.to'|trans({}, 'help') }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_soa_index') }}" class="text-decoration-none">
+                                <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.process_map.module'|trans({}, 'help') }}
+                            </a>
+                        </td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 6.1.3 d</span></td>
+                    </tr>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell ps-3">
+                            <i class="fa-icon fa-icon--status-warning me-1" aria-hidden="true"></i>
+                            {{ 'help.iso9001_bridge.map.risks.from'|trans({}, 'help') }}
+                        </td>
+                        <td class="fa-table__cell">{{ 'help.iso9001_bridge.map.risks.to'|trans({}, 'help') }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_risk_index') }}" class="text-decoration-none">
+                                <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.risks.module'|trans({}, 'help') }}
+                            </a>
+                        </td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 6.1.2</span></td>
+                    </tr>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell ps-3">
+                            <i class="fa-icon fa-icon--nav-tools me-1" aria-hidden="true"></i>
+                            {{ 'help.iso9001_bridge.map.capa.from'|trans({}, 'help') }}
+                        </td>
+                        <td class="fa-table__cell">{{ 'help.iso9001_bridge.map.capa.to'|trans({}, 'help') }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_risk_treatment_plan_index') }}" class="text-decoration-none">
+                                <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.capa.module'|trans({}, 'help') }}
+                            </a>
+                        </td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 6.1.3</span></td>
+                    </tr>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell ps-3">
+                            <i class="fa-icon fa-icon--sop me-1" aria-hidden="true"></i>
+                            {{ 'help.iso9001_bridge.map.audit.from'|trans({}, 'help') }}
+                        </td>
+                        <td class="fa-table__cell">{{ 'help.iso9001_bridge.map.audit.to'|trans({}, 'help') }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_audit_index') }}" class="text-decoration-none">
+                                <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.audit.module'|trans({}, 'help') }}
+                            </a>
+                        </td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 9.2</span></td>
+                    </tr>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell ps-3">
+                            <i class="fa-icon fa-icon--group me-1" aria-hidden="true"></i>
+                            {{ 'help.iso9001_bridge.map.review.from'|trans({}, 'help') }}
+                        </td>
+                        <td class="fa-table__cell">{{ 'help.iso9001_bridge.map.review.to'|trans({}, 'help') }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_management_review_index') }}" class="text-decoration-none">
+                                <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.review.module'|trans({}, 'help') }}
+                            </a>
+                        </td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 9.3</span></td>
+                    </tr>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell ps-3">
+                            <i class="fa-icon fa-icon--nav-hdd me-1" aria-hidden="true"></i>
+                            {{ 'help.iso9001_bridge.map.infrastructure.from'|trans({}, 'help') }}
+                        </td>
+                        <td class="fa-table__cell">{{ 'help.iso9001_bridge.map.infrastructure.to'|trans({}, 'help') }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_asset_index') }}" class="text-decoration-none">
+                                <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.infrastructure.module'|trans({}, 'help') }}
+                            </a>
+                        </td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 A.5.9</span></td>
+                    </tr>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell ps-3">
+                            <i class="fa-icon fa-icon--nav-mortarboard me-1" aria-hidden="true"></i>
+                            {{ 'help.iso9001_bridge.map.competence.from'|trans({}, 'help') }}
+                        </td>
+                        <td class="fa-table__cell">{{ 'help.iso9001_bridge.map.competence.to'|trans({}, 'help') }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_training_index') }}" class="text-decoration-none">
+                                <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.competence.module'|trans({}, 'help') }}
+                            </a>
+                        </td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 A.6.3</span></td>
+                    </tr>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell ps-3">
+                            <i class="fa-icon fa-icon--policy me-1" aria-hidden="true"></i>
+                            {{ 'help.iso9001_bridge.map.documents.from'|trans({}, 'help') }}
+                        </td>
+                        <td class="fa-table__cell">{{ 'help.iso9001_bridge.map.documents.to'|trans({}, 'help') }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_document_index') }}" class="text-decoration-none">
+                                <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.documents.module'|trans({}, 'help') }}
+                            </a>
+                        </td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 7.5</span></td>
+                    </tr>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell ps-3">
+                            <i class="fa-icon me-1 fa-icon--nav-process" aria-hidden="true"></i>
+                            {{ 'help.iso9001_bridge.map.suppliers.from'|trans({}, 'help') }}
+                        </td>
+                        <td class="fa-table__cell">{{ 'help.iso9001_bridge.map.suppliers.to'|trans({}, 'help') }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_supplier_index') }}" class="text-decoration-none">
+                                <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.suppliers.module'|trans({}, 'help') }}
+                            </a>
+                        </td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 A.5.19-5.22</span></td>
+                    </tr>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell ps-3">
+                            <i class="fa-icon fa-icon--breach me-1" aria-hidden="true"></i>
+                            {{ 'help.iso9001_bridge.map.nonconformity.from'|trans({}, 'help') }}
+                        </td>
+                        <td class="fa-table__cell">{{ 'help.iso9001_bridge.map.nonconformity.to'|trans({}, 'help') }}</td>
+                        <td class="fa-table__cell">
+                            <a href="{{ path('app_incident_index') }}" class="text-decoration-none">
+                                <i class="fa-icon fa-icon--util-external-link me-1" aria-hidden="true"></i>
+                                {{ 'help.iso9001_bridge.map.nonconformity.module'|trans({}, 'help') }}
+                            </a>
+                        </td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">ISO 27001 A.5.24-5.28</span></td>
+                    </tr>
+                {% endblock %}
+            {% endembed %}
         {% endblock %}
     {% endembed %}
 
