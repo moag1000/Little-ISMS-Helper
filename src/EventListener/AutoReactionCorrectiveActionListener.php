@@ -6,7 +6,9 @@ namespace App\EventListener;
 
 use App\Entity\AuditFinding;
 use App\Entity\CorrectiveAction;
+use App\Repository\UserRepository;
 use App\Service\AutoReactionService;
+use App\Service\EmailNotificationService;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
@@ -30,6 +32,8 @@ class AutoReactionCorrectiveActionListener
     public function __construct(
         private readonly AutoReactionService $reactions,
         private readonly LoggerInterface $logger,
+        private readonly ?EmailNotificationService $emailNotifier = null,
+        private readonly ?UserRepository $userRepository = null,
     ) {
     }
 
@@ -96,9 +100,64 @@ class AutoReactionCorrectiveActionListener
                 'finding_id' => $finding->getId(),
                 'ca_id' => $ca->getId(),
             ]);
+
+            // V3 W2-H4 (ISO 27001 Cl.7.4 + Cl.10.1): Notify CA assignee /
+            // finding owner so the 30-day target lands on a calendar.
+            $this->notifyAssignee($finding, $ca);
         } catch (\Throwable $e) {
             $this->logger->warning('Auto-CorrectiveAction failed', [
                 'finding_id' => $finding->getId(),
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * V3 W2-H4 — Notify the CA assignee. Falls back to finding.assignee, then
+     * tenant ROLE_AUDITOR / ROLE_MANAGER. Best-effort.
+     */
+    private function notifyAssignee(AuditFinding $finding, CorrectiveAction $ca): void
+    {
+        if ($this->emailNotifier === null) {
+            return;
+        }
+        try {
+            $tenant = method_exists($finding, 'getTenant') ? $finding->getTenant() : null;
+            $recipients = [];
+
+            // 1) Direct assignee on the CA (currently null since we just created it)
+            if (method_exists($ca, 'getResponsiblePersonUser') && $ca->getResponsiblePersonUser() !== null) {
+                $recipients[] = $ca->getResponsiblePersonUser();
+            }
+            // 2) Finding owner
+            if (empty($recipients) && method_exists($finding, 'getAssignedTo') && $finding->getAssignedTo() !== null) {
+                $recipients[] = $finding->getAssignedTo();
+            }
+            // 3) Tenant fallback
+            if (empty($recipients) && $this->userRepository !== null) {
+                $recipients = $this->userRepository->findByRoleInTenant('ROLE_AUDITOR', $tenant);
+                if (empty($recipients)) {
+                    $recipients = $this->userRepository->findByRoleInTenant('ROLE_MANAGER', $tenant);
+                }
+            }
+
+            if (empty($recipients)) {
+                return;
+            }
+
+            $this->emailNotifier->sendGenericNotification(
+                sprintf('Corrective Action 30-day target: %s', (string) ($finding->getTitle() ?? '—')),
+                'emails/auto_reaction_corrective_action.html.twig',
+                [
+                    'finding' => $finding,
+                    'ca' => $ca,
+                    'plannedCompletionDate' => $ca->getPlannedCompletionDate(),
+                ],
+                $recipients
+            );
+        } catch (\Throwable $e) {
+            $this->logger->warning('Auto-CA notification failed', [
+                'ca_id' => $ca->getId(),
                 'error' => $e->getMessage(),
             ]);
         }

@@ -6,7 +6,9 @@ namespace App\EventListener;
 
 use App\Entity\Risk;
 use App\Entity\Vulnerability;
+use App\Repository\UserRepository;
 use App\Service\AutoReactionService;
+use App\Service\EmailNotificationService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
@@ -29,6 +31,8 @@ class AutoReactionRiskSkeletonListener
     public function __construct(
         private readonly AutoReactionService $reactions,
         private readonly LoggerInterface $logger,
+        private readonly ?EmailNotificationService $emailNotifier = null,
+        private readonly ?UserRepository $userRepository = null,
     ) {
     }
 
@@ -102,9 +106,54 @@ class AutoReactionRiskSkeletonListener
                 'cvss' => $cvss,
                 'risk_id' => $risk->getId(),
             ]);
+
+            // V3 W2-H4 (ISO 27001 Cl.7.4): Notify Risk-Owner candidates so the
+            // skeleton lands in someone's inbox instead of waiting silently.
+            $this->notifyRiskOwner($risk, $vuln, $cve, $cvss);
         } catch (\Throwable $e) {
             $this->logger->warning('Auto-Risk-Skeleton failed', [
                 'vulnerability_id' => $vuln->getId(),
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * V3 W2-H4 — Notify Risk-Owner / Risk-Manager about the auto-created
+     * skeleton. The skeleton has no owner yet, so we fall back to ROLE_RISK_MANAGER
+     * then ROLE_CISO (tenant-scoped). Best-effort.
+     */
+    private function notifyRiskOwner(Risk $risk, Vulnerability $vuln, string $cve, float $cvss): void
+    {
+        if ($this->emailNotifier === null || $this->userRepository === null) {
+            return;
+        }
+        try {
+            $tenant = method_exists($risk, 'getTenant') ? $risk->getTenant() : null;
+            $recipients = $this->userRepository->findByRoleInTenant('ROLE_RISK_MANAGER', $tenant);
+            if (empty($recipients)) {
+                $recipients = $this->userRepository->findByRoleInTenant('ROLE_CISO', $tenant);
+            }
+            if (empty($recipients)) {
+                $recipients = $this->userRepository->findByRoleInTenant('ROLE_MANAGER', $tenant);
+            }
+            if (empty($recipients)) {
+                return;
+            }
+            $this->emailNotifier->sendGenericNotification(
+                sprintf('Auto-Risk skeleton created for vulnerability %s (CVSS %.1f)', $cve, $cvss),
+                'emails/auto_reaction_risk_skeleton.html.twig',
+                [
+                    'risk' => $risk,
+                    'vulnerability' => $vuln,
+                    'cve' => $cve,
+                    'cvss' => $cvss,
+                ],
+                $recipients
+            );
+        } catch (\Throwable $e) {
+            $this->logger->warning('Auto-Risk-Skeleton notification failed', [
+                'risk_id' => $risk->getId(),
                 'error' => $e->getMessage(),
             ]);
         }
