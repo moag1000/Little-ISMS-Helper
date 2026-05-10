@@ -8,6 +8,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Exception;
 use App\Entity\Document;
 use App\Form\DocumentType;
+use App\Repository\CommentRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\EntityTagRepository;
 use App\Service\DocumentService;
@@ -50,6 +51,7 @@ class DocumentController extends AbstractController
         private readonly ?AuditorScoreCalculator $auditorScoreCalculator = null,
         private readonly ?AuditLogger $auditLogger = null,
         private readonly ?EntityTagRepository $entityTagRepository = null,
+        private readonly ?CommentRepository $commentRepository = null,
     ) {}
 
     #[Route('/document/', name: 'app_document_index')]
@@ -497,6 +499,12 @@ class DocumentController extends AbstractController
             $climateChangeAware = Document::isClimateChangeAwareFromTags($tagNames);
         }
 
+        // V3 W2-H3: Comment-Thread (C7) — load thread for this Document.
+        $comments = [];
+        if ($this->commentRepository !== null && $tenant !== null && $document->getId() !== null) {
+            $comments = $this->commentRepository->findThread($tenant, 'Document', $document->getId());
+        }
+
         return $this->render('document/show.html.twig', [
             'document' => $document,
             'isInherited' => $isInherited,
@@ -507,6 +515,8 @@ class DocumentController extends AbstractController
             'policyBodyHtml' => $policyBodyHtml,
             'doraValidityDate' => $doraValidityDate,
             'climateChangeAware' => $climateChangeAware,
+            // V3 W2-H3: Comments thread + form action
+            'comments' => $comments,
         ]);
     }
 

@@ -18,6 +18,7 @@ use App\Entity\Vulnerability;
 use App\Form\RiskQuickType;
 use App\Form\RiskType;
 use App\Repository\AuditLogRepository;
+use App\Repository\CommentRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
@@ -57,7 +58,8 @@ class RiskController extends AbstractController
         private readonly VulnerabilityRepository $vulnerabilityRepository,
         private readonly IncidentRepository $incidentRepository,
         private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
-        private readonly ?InverseCoverageService $inverseCoverageService = null
+        private readonly ?InverseCoverageService $inverseCoverageService = null,
+        private readonly ?CommentRepository $commentRepository = null,
     ) {}
     #[Route('/risk/', name: 'app_risk_index')]
     #[IsGranted('ROLE_USER')]
@@ -967,6 +969,12 @@ class RiskController extends AbstractController
         // V3 B6 / EF-4: Inverse-Coverage Impact-Analyse
         $impactCoverage = $this->inverseCoverageService?->forRisk($risk) ?? ['total' => 0, 'frameworks' => []];
 
+        // V3 W2-H3: Comment-Thread (C7) — load thread for this Risk.
+        $comments = [];
+        if ($this->commentRepository !== null && $tenant !== null && $risk->getId() !== null) {
+            $comments = $this->commentRepository->findThread($tenant, 'Risk', $risk->getId());
+        }
+
         return $this->render('risk/show.html.twig', [
             'risk' => $risk,
             'auditLogs' => $recentAuditLogs,
@@ -981,6 +989,8 @@ class RiskController extends AbstractController
             'treatmentPlans' => $treatmentPlans,
             // V3 B6: Impact analysis (which frameworks break if this risk changes?)
             'impact_coverage' => $impactCoverage,
+            // V3 W2-H3: Comments thread + form action
+            'comments' => $comments,
         ]);
     }
     #[Route('/risk/{id}/edit', name: 'app_risk_edit', requirements: ['id' => '\d+'])]
