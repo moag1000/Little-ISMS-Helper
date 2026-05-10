@@ -6,6 +6,7 @@ certification_bundle:
     preview:
         organization: 'Organisation'
         framework: 'Framework'
+        framework_help: 'Wähle den Standard, für den das Paket generiert werden soll. ISO 27001 ist Default; BSI Grundschutz, NIS2 etc. erscheinen in Metadata + Dateinamen.'
         assets: 'Assets im Register'
         risks: 'Bewertete Risiken'
         controls_applicable: 'Anwendbare Controls'

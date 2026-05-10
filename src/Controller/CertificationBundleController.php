@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Trait\PdfLocaleTrait;
+use App\Repository\ComplianceFrameworkRepository;
 use App\Service\Export\CertificationBundleExporter;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,14 +36,19 @@ class CertificationBundleController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly Security $security,
         private readonly LocaleSwitcher $localeSwitcher,
+        private readonly ComplianceFrameworkRepository $frameworkRepository,
     ) {
     }
 
     /**
      * Preview page showing bundle contents and counts before generation.
+     *
+     * Audit-V3 EF-3: framework-aware. `?framework=BSI_GRUNDSCHUTZ` selects
+     * a non-default framework for the bundle metadata. Only active
+     * frameworks are accepted; unknown codes fall back to ISO27001.
      */
     #[Route('', name: 'index')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $tenant = $this->security->getUser()?->getTenant();
         if ($tenant === null) {
@@ -50,10 +56,14 @@ class CertificationBundleController extends AbstractController
         }
 
         $counts = $this->exporter->getPreviewCounts($tenant);
+        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $selectedCode = $this->resolveFrameworkCode($request, $frameworks);
 
         return $this->render('certification_bundle/index.html.twig', [
             'tenant' => $tenant,
             'counts' => $counts,
+            'frameworks' => $frameworks,
+            'selected_framework_code' => $selectedCode,
         ]);
     }
 
@@ -73,10 +83,13 @@ class CertificationBundleController extends AbstractController
             throw $this->createAccessDeniedException('No tenant context available.');
         }
 
+        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $frameworkCode = $this->resolveFrameworkCode($request, $frameworks);
+
         $locale = $this->resolvePdfLocale($request);
         $result = $this->localeSwitcher->runWithLocale(
             $locale,
-            fn() => $this->exporter->export($tenant)
+            fn() => $this->exporter->export($tenant, $frameworkCode)
         );
 
         $response = new BinaryFileResponse($result['path']);
@@ -89,5 +102,29 @@ class CertificationBundleController extends AbstractController
         $this->addFlash('success', 'certification_bundle.success');
 
         return $response;
+    }
+
+    /**
+     * Resolve the framework code from the request (`framework` form/query
+     * param). Falls back to ISO27001 when missing or invalid. We compare
+     * against active frameworks so an inactive code can never leak into
+     * the audit-log description.
+     *
+     * @param iterable<\App\Entity\ComplianceFramework> $frameworks
+     */
+    private function resolveFrameworkCode(Request $request, iterable $frameworks): string
+    {
+        $requested = (string) ($request->request->get('framework') ?? $request->query->get('framework') ?? '');
+        if ($requested === '') {
+            return 'ISO27001';
+        }
+
+        foreach ($frameworks as $fw) {
+            if ((string) $fw->getCode() === $requested) {
+                return $requested;
+            }
+        }
+
+        return 'ISO27001';
     }
 }

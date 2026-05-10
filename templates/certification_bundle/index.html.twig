@@ -24,17 +24,43 @@
         </div>
     </div>
 
-    {# Tenant & Framework Info #}
+    {# Tenant & Framework Info — Audit-V3 EF-3: framework selectable.
+       Default ISO27001 keeps backward-compat; any other active framework
+       (BSI_GRUNDSCHUTZ, NIS2, …) flips the metadata + filename + audit-log. #}
     {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
         {% block card_body %}
-            <div class="row">
+            <div class="row align-items-end">
                 <div class="col-md-6">
                     <strong>{{ 'certification_bundle.preview.organization'|trans({}, 'certification_bundle') }}:</strong>
                     {{ tenant.name }}
                 </div>
                 <div class="col-md-6">
-                    <strong>{{ 'certification_bundle.preview.framework'|trans({}, 'certification_bundle') }}:</strong>
-                    ISO/IEC 27001:2022
+                    <label for="cert-bundle-framework-select" class="form-label fw-semibold mb-1">
+                        {{ 'certification_bundle.preview.framework'|trans({}, 'certification_bundle') }}
+                    </label>
+                    {% if frameworks is defined and frameworks|length > 0 %}
+                        <select id="cert-bundle-framework-select"
+                                class="form-select form-select-sm"
+                                aria-describedby="cert-bundle-framework-help"
+                                onchange="document.getElementById('cert-bundle-framework-input').value = this.value;">
+                            {# Always offer ISO27001 even if not loaded as ComplianceFramework. #}
+                            {% set has_iso = false %}
+                            {% for fw in frameworks %}
+                                {% if fw.code == 'ISO27001' %}{% set has_iso = true %}{% endif %}
+                            {% endfor %}
+                            {% if not has_iso %}
+                                <option value="ISO27001" {% if (selected_framework_code|default('ISO27001')) == 'ISO27001' %}selected{% endif %}>ISO/IEC 27001:2022</option>
+                            {% endif %}
+                            {% for fw in frameworks %}
+                                <option value="{{ fw.code }}" {% if (selected_framework_code|default('ISO27001')) == fw.code %}selected{% endif %}>{{ fw.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <small id="cert-bundle-framework-help" class="form-text text-muted">
+                            {{ 'certification_bundle.preview.framework_help'|trans({}, 'certification_bundle') }}
+                        </small>
+                    {% else %}
+                        <div>ISO/IEC 27001:2022</div>
+                    {% endif %}
                 </div>
             </div>
         {% endblock %}
@@ -145,10 +171,13 @@
         {% endblock %}
     {% endembed %}
 
-    {# Generate Button — data-turbo="false" weil Server BinaryFileResponse (ZIP) returnt #}
+    {# Generate Button — data-turbo="false" weil Server BinaryFileResponse (ZIP) returnt.
+       Audit-V3 EF-3: hidden #cert-bundle-framework-input mirrors the dropdown above
+       (kept in sync via inline onchange) so POST carries the chosen framework code. #}
     <div class="text-center">
         <form method="post" action="{{ path('app_certification_bundle_export') }}" data-turbo="false">
             <input type="hidden" name="_token" value="{{ csrf_token('certification_bundle_export') }}">
+            <input type="hidden" name="framework" id="cert-bundle-framework-input" value="{{ selected_framework_code|default('ISO27001') }}">
             <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
                 <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                 {{ 'certification_bundle.generate'|trans({}, 'certification_bundle') }}
