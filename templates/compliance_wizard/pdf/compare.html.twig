@@ -5,30 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ 'wizard.export.pdf.title'|trans({}, 'wizard') }}</title>
     <style>
+        :root {
+            --primary:       #0ea5e9;
+            --surface:       var(--surface)fff;
+            --surface-2:     #f1f5f9;
+            --fg:            #0f172a;
+            --fg-2:          #475569;
+            --fg-3:          var(--fg-3);
+            --border:        #cbd5e1;
+            --success:       #166534;
+            --success-tint:  #dcfce7;
+            --danger:        #991b1b;
+            --danger-tint:   #fecaca;
+            --warning:       #92400e;
+            --warning-tint:  #fef3c7;
+            --info-tint:     var(--info-tint);
+            --info-text:     var(--info-text);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 10.5pt;
             line-height: 1.45;
-            color: #333;
+            color: var(--fg);
             padding: 20px 40px;
         }
         .header {
-            border-bottom: 3px solid #0d6efd;
+            border-bottom: 3px solid var(--primary);
             padding-bottom: 18px;
             margin-bottom: 24px;
         }
         .header h1 {
             font-size: 22pt;
-            color: #0d6efd;
+            color: var(--primary);
             margin-bottom: 4px;
         }
         .header .subtitle {
-            color: #666;
+            color: var(--fg-2);
             font-size: 11pt;
         }
         .meta-info {
-            background: #f8f9fa;
+            background: var(--surface-2);
             padding: 12px 15px;
             margin-bottom: 24px;
             border-radius: 5px;
@@ -37,11 +55,11 @@
         .meta-info td { padding: 4px 8px; vertical-align: top; }
         .meta-info .label {
             font-weight: bold;
-            color: #666;
+            color: var(--fg-2);
             width: 160px;
         }
         h2 {
-            color: #0d6efd;
+            color: var(--primary);
             font-size: 15pt;
             margin: 26px 0 12px 0;
             padding-bottom: 4px;
@@ -65,12 +83,12 @@
             border: 1px solid var(--border);
             border-radius: 6px;
             padding: 14px;
-            background: #fff;
+            background: var(--surface);
         }
         .framework-card .fw-name {
             font-weight: bold;
             font-size: 11pt;
-            color: #0d6efd;
+            color: var(--primary);
             margin-bottom: 6px;
         }
         .framework-card .fw-score {
@@ -90,15 +108,15 @@
         }
         .framework-card table.cat-list td {
             padding: 3px 4px;
-            border-bottom: 1px solid #f1f3f5;
+            border-bottom: 1px solid var(--border);
         }
         .framework-card table.cat-list td.pct {
             text-align: right;
             width: 50px;
             font-weight: bold;
         }
-        .score-success { color: #198754; }
-        .score-warning { color: #b58900; }
+        .score-success { color: var(--success); }
+        .score-warning { color: var(--warning); }
         .score-danger { color: var(--danger); }
         table.matrix {
             width: 100%;
@@ -113,7 +131,7 @@
             text-align: left;
         }
         table.matrix th {
-            background: #f8f9fa;
+            background: var(--surface-2);
             font-weight: bold;
         }
         table.matrix td.num {
@@ -129,17 +147,17 @@
             min-width: 50px;
             text-align: center;
         }
-        .badge.success  { background: #d1e7dd; color: #0f5132; }
-        .badge.warning  { background: #fff3cd; color: #856404; }
-        .badge.danger   { background: #f8d7da; color: #842029; }
-        .badge.muted    { background: #e9ecef; color: var(--fg-3); }
+        .badge.success  { background: var(--success-tint); color: var(--success); }
+        .badge.warning  { background: var(--surface)3cd; color: var(--warning); }
+        .badge.danger   { background: var(--danger-tint); color: var(--danger); }
+        .badge.muted    { background: var(--border); color: var(--fg-3); }
         tfoot .badge { font-size: 10pt; }
         .footer {
             margin-top: 36px;
             padding-top: 16px;
             border-top: 1px solid var(--border);
             font-size: 8.5pt;
-            color: #666;
+            color: var(--fg-2);
             text-align: center;
         }
         @media print {
