@@ -1,3 +1,8 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Compliance Wizard — Gap Report — fa-report-doc 5-slot macro (web variant)
+   Audience: internal (ISB / Compliance Team)
+   Status:   draft
+   ─────────────────────────────────────────────────────────────────────── #}
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'gap_report' %}
 
@@ -5,54 +10,78 @@
 
 {% block body %}
 <div class="container-fluid py-4">
-    {# Breadcrumb #}
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_compliance_wizard_index') }}">{{ 'wizard.title'|trans({}, 'wizard') }}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}">{{ config.name }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ 'gap_report.title'|trans({}, 'gap_report') }}</li>
-        </ol>
-    </nav>
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'wizard.title'|trans({}, 'wizard'),         path: 'app_compliance_wizard_index' },
+            { label: config.name,                                  path: 'app_compliance_wizard_assess', pathParams: {wizard: wizard} },
+            { label: 'gap_report.title'|trans({}, 'gap_report') }
+        ]
+    } %}
 
-    {# Header + summary #}
-    <div class="d-flex justify-content-between align-items-start flex-wrap mb-4">
-        <div>
-            <h1 class="h3 mb-1">
-                <i class="fa-icon fa-icon--gap-analysis me-2" aria-hidden="true"></i>{{ 'gap_report.title'|trans({}, 'gap_report') }}
-            </h1>
-            <p class="text-muted mb-0">{{ config.name }}</p>
-        </div>
-        <div class="btn-group" role="group" aria-label="{{ 'gap_report.sort_label'|trans({}, 'gap_report') }}">
-            <a href="{{ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'effort'}) }}"
-               class="fa-cyber-btn fa-cyber-btn--sm {{ sort == 'effort' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}"
-               aria-pressed="{{ sort == 'effort' ? 'true' : 'false' }}">
-                <i class="fa-icon me-1 fa-icon--util-arrow-down" aria-hidden="true"></i>{{ 'gap_report.sort.effort'|trans({}, 'gap_report') }}
+    {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
+
+    {# Sort navigation — preserved as body_html prefix #}
+    {% set _sort_html = '<div style="margin-bottom:1rem;display:flex;gap:.5rem;flex-wrap:wrap;">'
+        ~ '<a href="' ~ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'effort'}) ~ '" class="fa-cyber-btn fa-cyber-btn--sm ' ~ (sort == 'effort' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost') ~ '">'
+        ~ ('gap_report.sort.effort'|trans({}, 'gap_report'))
+        ~ '</a>'
+        ~ '<a href="' ~ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'quick-wins'}) ~ '" class="fa-cyber-btn fa-cyber-btn--sm ' ~ (sort == 'quick-wins' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost') ~ '">'
+        ~ ('gap_report.sort.quick_wins'|trans({}, 'gap_report'))
+        ~ '</a>'
+        ~ '</div>' %}
+
+    {# Capture gap report body partial (includes Stimulus budget-simulator) #}
+    {% set _body_partial %}
+        {{ _sort_html|raw }}
+        {% include 'compliance_wizard/_gap_report_body.html.twig' with {
+            wizard: wizard,
+            effort_table: effort_table,
+            total_effort_days: total_effort_days,
+            quick_wins: quick_wins,
+            effort_estimated_count: effort_estimated_count,
+            effort_unestimated_count: effort_unestimated_count,
+        } only %}
+        <div style="margin-top:1rem;">
+            <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                ← {{ 'gap_report.back_to_assessment'|trans({}, 'gap_report') }}
             </a>
-            <a href="{{ path('app_compliance_wizard_gap_report', {wizard: wizard, sort: 'quick-wins'}) }}"
-               class="fa-cyber-btn fa-cyber-btn--sm {{ sort == 'quick-wins' ? 'fa-cyber-btn--primary' : 'fa-cyber-btn--ghost' }}"
-               aria-pressed="{{ sort == 'quick-wins' ? 'true' : 'false' }}">
-                <i class="fa-icon fa-icon--threat me-1" aria-hidden="true"></i>{{ 'gap_report.sort.quick_wins'|trans({}, 'gap_report') }}
-            </a>
         </div>
-    </div>
+    {% endset %}
 
-    {% include 'compliance_wizard/_gap_report_body.html.twig' with {
-        wizard: wizard,
-        effort_table: effort_table,
-        total_effort_days: total_effort_days,
-        quick_wins: quick_wins,
-        effort_estimated_count: effort_estimated_count,
-        effort_unestimated_count: effort_unestimated_count,
-    } only %}
-
-    <div class="d-flex justify-content-between mt-4">
-        <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left me-1" aria-hidden="true"></i>{{ 'gap_report.back_to_assessment'|trans({}, 'gap_report') }}
-        </a>
-    </div>
+    {{ _fa_report_doc.render({
+        report: {
+            title:        'gap_report.title'|trans({}, 'gap_report'),
+            subtitle:     config.name,
+            kicker:       'compliance_wizard'|trans({}, 'compliance_wizard')|default('Compliance Wizard'),
+            status:       'draft',
+            audience:     'internal',
+            generated_at: 'now'|date('d.m.Y H:i'),
+        },
+        brand_name: config.name,
+        key_findings: [
+            { label: ('gap_report.summary.total_effort'|trans({}, 'gap_report')) ~ ': ' ~ total_effort_days|number_format(1, '.', ',') ~ ' ' ~ ('gap_report.unit.person_days'|trans({}, 'gap_report')), tone: 'ok' },
+            { label: ('gap_report.summary.quick_wins'|trans({}, 'gap_report')) ~ ': ' ~ quick_wins|length, tone: quick_wins|length > 0 ? 'ok' : 'warn' },
+        ],
+        kpis: [
+            { label: 'gap_report.summary.total_effort'|trans({}, 'gap_report'),   value: total_effort_days|number_format(1, '.', ','), tone: 'neutral' },
+            { label: 'gap_report.summary.quick_wins'|trans({}, 'gap_report'),     value: quick_wins|length,         tone: quick_wins|length > 0 ? 'success' : 'neutral' },
+            { label: 'gap_report.summary.coverage'|trans({}, 'gap_report'),       value: effort_estimated_count,    tone: 'neutral' },
+        ],
+        sections: [
+            {
+                heading: 'gap_report.title'|trans({}, 'gap_report'),
+                body_html: _body_partial,
+            },
+        ],
+        appendix: {
+            glossary: [
+                { term: 'Quick Win',    definition: 'Requirement with ≤1 person-day effort and ≥50% current fulfillment' },
+                { term: 'Person-day',   definition: '8 working hours of compliance effort' },
+            ],
+        },
+        distribution: [
+            { role: 'ISB / Compliance', name: '—' },
+        ],
+    }) }}
 </div>
 {% endblock %}
