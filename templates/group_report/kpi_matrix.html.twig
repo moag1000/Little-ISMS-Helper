@@ -1,5 +1,12 @@
+{# ───────────────────────────────────────────────────────────────────
+   Group-KPI-Matrix — Konzern-Compliance je Framework × Tenant
+   Migriert auf das fa-report-doc 5-slot Template (Cover · Exec ·
+   Data · Appendix · Footer).
+
+   Audience: auditor → table-first Layout (dichte Tabelle, kompakte KPIs)
+   Status:   final   → kein Watermark, freigegeben zur Verteilung
+   ─────────────────────────────────────────────────────────────────── #}
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'group_report.kpi.title'|trans({}, 'group_report') }}{% endblock %}
 
@@ -12,62 +19,104 @@
         ]
     } %}
 
-    <div class="mb-4">
-        <h1 class="h2 mb-1">
-            <i class="fa-icon fa-icon--nav-grid text-primary" aria-hidden="true"></i>
-            {{ 'group_report.kpi.title'|trans({}, 'group_report') }}
-        </h1>
-        <p class="text-muted mb-0">{{ 'group_report.kpi.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
-    </div>
+    {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
-        {% block alert_body %}<div class="small">{{ 'group_report.kpi.intro'|trans({}, 'group_report') }}</div>{% endblock %}
-    {% endembed %}
+    {# Aggregate KPIs across the matrix #}
+    {% set _total_cells = 0 %}
+    {% set _green_cells = 0 %}
+    {% set _amber_cells = 0 %}
+    {% set _red_cells = 0 %}
+    {% set _na_cells = 0 %}
+    {% for tenant in tenants %}
+        {% for framework in frameworks %}
+            {% set cell = matrix[tenant.code][framework.code]|default({}) %}
+            {% set pct = cell.percentage|default(null) %}
+            {% set _total_cells = _total_cells + 1 %}
+            {% if pct is null %}
+                {% set _na_cells = _na_cells + 1 %}
+            {% elseif pct >= 80 %}
+                {% set _green_cells = _green_cells + 1 %}
+            {% elseif pct >= 50 %}
+                {% set _amber_cells = _amber_cells + 1 %}
+            {% else %}
+                {% set _red_cells = _red_cells + 1 %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
 
-    {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
-        {% block card_body %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle" aria-label="{{ 'group_report.kpi.title'|trans({}, 'group_report') }}">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col">{{ 'group_report.kpi.col.tenant'|trans({}, 'group_report') }}</th>
-                            {% for framework in frameworks %}
-                                <th scope="col" class="text-center" title="{{ framework.name }}">
-                                    <code class="small">{{ framework.code }}</code>
-                                </th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for tenant in tenants %}
-                            <tr>
-                                <td>
-                                    <strong>{{ tenant.name }}</strong>
-                                    <code class="small text-muted ms-1">{{ tenant.code }}</code>
-                                    {% if tenant.isCorporateParent %}
-                                        <span class="fa-status-pill fa-status-pill--primary ms-1">{{ 'group_report.kpi.holding'|trans({}, 'group_report') }}</span>
-                                    {% endif %}
-                                </td>
-                                {% for framework in frameworks %}
-                                    {% set cell = matrix[tenant.code][framework.code]|default({}) %}
-                                    {% set pct = cell.percentage|default(null) %}
-                                    <td class="text-center">
-                                        {% if pct is null %}
-                                            <span class="text-muted small" title="{{ 'group_report.kpi.n_a_help'|trans({}, 'group_report') }}">—</span>
-                                        {% else %}
-                                            <span class="badge {% if pct >= 80 %}bg-success{% elseif pct >= 50 %}bg-warning-subtle text-warning{% else %}bg-danger{% endif %}"
-                                                  title="{{ cell.fulfilled }}/{{ cell.applicable }} {{ 'group_report.kpi.requirements'|trans({}, 'group_report') }}">
-                                                {{ pct }}%
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endblock %}
-    {% endembed %}
+    {# Build matrix table rows (cells include report-doc chip HTML for raw output) #}
+    {% set _matrix_rows = [] %}
+    {% for tenant in tenants %}
+        {% set _row = [
+            '<strong>' ~ tenant.name ~ '</strong> <code style="font-size:.75em;color:var(--fg-3);">' ~ tenant.code ~ '</code>'
+        ] %}
+        {% for framework in frameworks %}
+            {% set cell = matrix[tenant.code][framework.code]|default({}) %}
+            {% set pct = cell.percentage|default(null) %}
+            {% if pct is null %}
+                {% set _row = _row|merge([ '<span style="color:var(--fg-3);">—</span>' ]) %}
+            {% else %}
+                {% set _chip = pct >= 80 ? 'final' : (pct >= 50 ? 'draft' : 'confidential') %}
+                {% set _row = _row|merge([ '<span class="report-doc__chip report-doc__chip--status-' ~ _chip ~ '">' ~ pct ~ '%</span>' ]) %}
+            {% endif %}
+        {% endfor %}
+        {% set _matrix_rows = _matrix_rows|merge([_row]) %}
+    {% endfor %}
+
+    {% set _headers = [ 'group_report.kpi.col.tenant'|trans({}, 'group_report') ] %}
+    {% for framework in frameworks %}
+        {% set _headers = _headers|merge([ framework.code ]) %}
+    {% endfor %}
+
+    {{ _fa_report_doc.render({
+        report: {
+            title:        'group_report.kpi.title'|trans({}, 'group_report'),
+            subtitle:     'group_report.kpi.subtitle'|trans({'%root%': root.name}, 'group_report'),
+            kicker:       'group_report.title'|trans({}, 'group_report'),
+            status:       'final',
+            audience:     'auditor',
+            generated_at: 'now'|date('d.m.Y H:i'),
+        },
+        brand_name: root.name,
+        key_findings: [
+            { label: ('group_report.kpi.col.tenant'|trans({}, 'group_report')) ~ ': ' ~ tenants|length, tone: 'ok' },
+            { label: 'Frameworks: ' ~ frameworks|length, tone: 'ok' },
+            { label: 'OK ≥80%: ' ~ _green_cells, tone: 'ok' },
+            { label: '50-79%: ' ~ _amber_cells, tone: 'warn' },
+            { label: '<50%: ' ~ _red_cells, tone: 'danger' },
+        ],
+        kpis: [
+            { label: 'group_report.kpi.col.tenant'|trans({}, 'group_report'), value: tenants|length, tone: 'neutral' },
+            { label: 'Frameworks',                                            value: frameworks|length, tone: 'neutral' },
+            { label: 'OK',                                                    value: _green_cells, tone: 'success' },
+            { label: 'Critical',                                              value: _red_cells, tone: _red_cells > 0 ? 'danger' : 'success' },
+        ],
+        sections: [
+            {
+                heading: 'group_report.kpi.title'|trans({}, 'group_report'),
+                intro:   'group_report.kpi.intro'|trans({}, 'group_report'),
+                table: {
+                    headers: _headers,
+                    rows:    _matrix_rows,
+                },
+            },
+        ],
+        appendix: {
+            methodology: '<p>' ~ ('group_report.kpi.intro'|trans({}, 'group_report')) ~ '</p>',
+            sources: [
+                { label: 'ComplianceRequirementRepository', detail: 'getFrameworkStatisticsForTenant() — applicable + fulfilled per framework × tenant' },
+                { label: 'TenantContext', detail: 'getAccessibleTenants() — full subtree of root tenant' },
+            ],
+            glossary: [
+                { term: 'Applicable',  definition: 'Anzahl Anforderungen, die für den Tenant gelten (nach Scope-Filter)' },
+                { term: 'Fulfilled',   definition: 'Anzahl Anforderungen mit Status "fulfilled" oder "compliant"' },
+                { term: 'Percentage',  definition: 'fulfilled / applicable * 100, gerundet' },
+            ],
+        },
+        distribution: [
+            { role: 'Konzern-Auditor', name: 'Group Audit Committee' },
+            { role: 'Group-CISO',      name: '—' },
+        ],
+    }) }}
 </div>
 {% endblock %}

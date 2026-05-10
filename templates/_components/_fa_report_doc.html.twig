@@ -1,0 +1,360 @@
+{#
+ # FairyAurora v4 — fa-report-doc macro
+ #
+ # 5-slot ISMS-report-document renderer (audience-aware). Sister-macro to
+ # _fa_policy_doc; same Aurora-token philosophy, but tuned for board /
+ # auditor / aufsicht output.
+ #
+ # Spec: docs/design_system/sections/report-templates.html.
+ # CSS counterpart: assets/styles/report-doc.css.
+ #
+ # The five mandatory slots:
+ #   1. .report-doc__cover            — brand · title · subtitle · status · audience
+ #   2. .report-doc__exec-summary     — TL;DR-Box + 4-up KPI-Tiles
+ #   3. .report-doc__data-section     — repeatable section with charts + tables
+ #   4. .report-doc__appendix         — Methodik · Datenquellen · Glossar
+ #   5. .report-doc__footer-disclaimer — Verteilung · Vertraulichkeit · Branding
+ #
+ # Watermark per status (`draft`/`final`/`confidential`/`auditor-only`).
+ # Audience-spezifische Layout-Klassen:
+ #   - report-doc--vorstand   visual-first  (KPI-Tiles dominieren)
+ #   - report-doc--auditor    table-first   (Tabellen + Norm-Anker)
+ #   - report-doc--aufsicht   norm-first    (Norm-Anker + Datenquellen oben)
+ #
+ # Usage:
+ #   {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
+ #   {{ _fa_report_doc.render({
+ #       report:          { title:'Q2/2026 Board One-Pager', subtitle:'…',
+ #                          status:'final', audience:'vorstand',
+ #                          generated_at: '15.05.2026', classification:'CONFIDENTIAL' },
+ #       tenant_branding: tenant_branding,
+ #       key_findings:    [{label:'…', value:'…', tone:'ok'}],
+ #       kpis:            [{label:'…', value:'92%', trend:'up', tone:'success'}],
+ #       sections:        [{heading:'…', body_html:'…', charts:[…], table:{…}}],
+ #       appendix:        {methodology:'…', sources:[…], glossary:[…]},
+ #       distribution:    [{role:'CISO', name:'…'}, …],
+ #       disclaimer:      'Dieses Dokument …',
+ #   }) }}
+ #
+ # Parameters:
+ #   report          - assoc array (title*, subtitle, status, audience,
+ #                     generated_at, classification, period, kicker)
+ #   tenant_branding - App\Entity\TenantBranding (optional, for logo + footer)
+ #   brand_name      - string fallback if no branding (optional)
+ #   brand_meta      - small subtitle under brand-name (optional)
+ #   key_findings    - list of {label, value?, tone?} TL;DR bullet rows
+ #   kpis            - list of {label, value, trend?, trend_value?, tone?}
+ #                     (renders 4-up auto-fit grid)
+ #   sections        - list of {heading, intro?, body_html?, table?, charts?}
+ #   appendix        - {methodology?, sources?, glossary?}
+ #   distribution    - list of {role, name} for the disclaimer block
+ #   disclaimer      - string (override default confidentiality clause)
+ #}
+
+{% macro render(props = {}) %}
+    {% set report = props.report|default({}) %}
+    {% set _status_raw = report.status|default('draft')|lower %}
+    {% set _status_class = _status_raw in ['draft', 'final', 'confidential', 'auditor-only'] ? _status_raw : 'draft' %}
+    {% set _audience_raw = report.audience|default('vorstand')|lower %}
+    {% set _audience_class = _audience_raw in ['vorstand', 'auditor', 'aufsicht'] ? _audience_raw : 'vorstand' %}
+
+    {% set _watermark = {
+        'draft':         'report.doc.watermark.draft'|trans({}, 'reports'),
+        'final':         '',
+        'confidential':  'report.doc.watermark.confidential'|trans({}, 'reports'),
+        'auditor-only':  'report.doc.watermark.auditor_only'|trans({}, 'reports'),
+    }[_status_class]|default('') %}
+
+    {% set _classification = report.classification|default('') %}
+    {% set _audience_label = ('report.doc.audience.' ~ _audience_class)|trans({}, 'reports') %}
+    {% set _status_label   = ('report.doc.status.'   ~ (_status_class|replace({'-': '_'})))|trans({}, 'reports') %}
+
+    <article class="report-doc report-doc--{{ _status_class }} report-doc--{{ _audience_class }}"
+             data-report-status="{{ _status_class }}"
+             data-report-audience="{{ _audience_class }}"
+             {% if _watermark %}data-watermark="{{ _watermark }}"{% endif %}>
+
+        {# ── Slot 1 · Cover ──────────────────────────────────────── #}
+        <header class="report-doc__cover">
+            <div class="report-doc__cover-top">
+                <div class="report-doc__brand">
+                    <div class="report-doc__logo" aria-hidden="true">
+                        {% if props.tenant_branding is defined and props.tenant_branding and props.tenant_branding.logoPath is defined and props.tenant_branding.logoPath %}
+                            <img src="{{ props.tenant_branding.logoPath }}" alt="">
+                        {% else %}
+                            {{ (props.brand_name|default('L'))|slice(0, 1)|upper }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="report-doc__brand-name">{{ props.brand_name|default(props.tenant_branding.brandName|default('')) }}</div>
+                        <div class="report-doc__brand-meta">{{ props.brand_meta|default('report.doc.brand.default_meta'|trans({}, 'reports')) }}</div>
+                    </div>
+                </div>
+                <div class="report-doc__chips">
+                    <span class="report-doc__chip report-doc__chip--audience report-doc__chip--audience-{{ _audience_class }}">{{ _audience_label }}</span>
+                    <span class="report-doc__chip report-doc__chip--status report-doc__chip--status-{{ _status_class }}">{{ _status_label }}</span>
+                    {% if _classification %}
+                        <span class="report-doc__chip report-doc__chip--classification">{{ _classification }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="report-doc__cover-center">
+                {% if report.kicker is defined and report.kicker %}
+                    <p class="report-doc__kicker">{{ report.kicker }}</p>
+                {% endif %}
+                <h1 class="report-doc__title">{{ report.title|default('—') }}</h1>
+                {% if report.subtitle is defined and report.subtitle %}
+                    <p class="report-doc__sub">{{ report.subtitle }}</p>
+                {% endif %}
+            </div>
+
+            <dl class="report-doc__cover-grid">
+                {% if report.period is defined and report.period %}
+                    <div>
+                        <dt class="report-doc__cover-label">{{ 'report.doc.cover.period'|trans({}, 'reports') }}</dt>
+                        <dd class="report-doc__cover-value">{{ report.period }}</dd>
+                    </div>
+                {% endif %}
+                {% if report.generated_at is defined and report.generated_at %}
+                    <div>
+                        <dt class="report-doc__cover-label">{{ 'report.doc.cover.generated_at'|trans({}, 'reports') }}</dt>
+                        <dd class="report-doc__cover-value"><time>{{ report.generated_at }}</time></dd>
+                    </div>
+                {% endif %}
+                {% if report.prepared_by is defined and report.prepared_by %}
+                    <div>
+                        <dt class="report-doc__cover-label">{{ 'report.doc.cover.prepared_by'|trans({}, 'reports') }}</dt>
+                        <dd class="report-doc__cover-value">{{ report.prepared_by }}</dd>
+                    </div>
+                {% endif %}
+                {% if report.audience is defined %}
+                    <div>
+                        <dt class="report-doc__cover-label">{{ 'report.doc.cover.audience'|trans({}, 'reports') }}</dt>
+                        <dd class="report-doc__cover-value">{{ _audience_label }}</dd>
+                    </div>
+                {% endif %}
+                {% if _classification %}
+                    <div>
+                        <dt class="report-doc__cover-label">{{ 'report.doc.cover.classification'|trans({}, 'reports') }}</dt>
+                        <dd class="report-doc__cover-value">{{ _classification }}</dd>
+                    </div>
+                {% endif %}
+                {% if report.standard is defined and report.standard %}
+                    <div>
+                        <dt class="report-doc__cover-label">{{ 'report.doc.cover.standard'|trans({}, 'reports') }}</dt>
+                        <dd class="report-doc__cover-value">{{ report.standard|upper }}</dd>
+                    </div>
+                {% endif %}
+            </dl>
+        </header>
+
+        {# ── Slot 2 · Executive Summary ──────────────────────────── #}
+        {% set _findings = props.key_findings|default([]) %}
+        {% set _kpis     = props.kpis|default([]) %}
+        {% if _findings|length > 0 or _kpis|length > 0 %}
+            <section class="report-doc__exec-summary" aria-labelledby="report-doc-exec-summary-heading">
+                <h2 id="report-doc-exec-summary-heading" class="report-doc__exec-heading">{{ 'report.doc.exec_summary.heading'|trans({}, 'reports') }}</h2>
+
+                {% if _findings|length > 0 %}
+                    <div class="report-doc__tldr">
+                        <p class="report-doc__tldr-label">{{ 'report.doc.exec_summary.tldr_label'|trans({}, 'reports') }}</p>
+                        <ul class="report-doc__tldr-list">
+                            {% for f in _findings|slice(0, 5) %}
+                                {% set _tone = f.tone|default('neutral') %}
+                                <li class="report-doc__tldr-item report-doc__tldr-item--{{ _tone }}">
+                                    <span class="report-doc__tldr-dot" aria-hidden="true"></span>
+                                    <span class="report-doc__tldr-text">
+                                        <strong>{{ f.label|default('—') }}</strong>
+                                        {% if f.value is defined and f.value %}
+                                            <span class="report-doc__tldr-value">{{ f.value }}</span>
+                                        {% endif %}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if _kpis|length > 0 %}
+                    <div class="report-doc__kpi-grid">
+                        {% for kpi in _kpis|slice(0, 8) %}
+                            {% set _tone = kpi.tone|default('neutral') %}
+                            {% set _trend = kpi.trend|default('') %}
+                            <div class="report-doc__kpi-tile report-doc__kpi-tile--{{ _tone }}">
+                                <div class="report-doc__kpi-label">{{ kpi.label|default('—') }}</div>
+                                <div class="report-doc__kpi-value">{{ kpi.value|default('—') }}</div>
+                                {% if _trend %}
+                                    <div class="report-doc__kpi-trend report-doc__kpi-trend--{{ _trend }}">
+                                        {% if _trend == 'up' %}&#9650;{% elseif _trend == 'down' %}&#9660;{% else %}&#8226;{% endif %}
+                                        {% if kpi.trend_value is defined and kpi.trend_value %}
+                                            <span>{{ kpi.trend_value }}</span>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </section>
+        {% endif %}
+
+        {# ── Slot 3 · Data sections (repeatable) ─────────────────── #}
+        {% set _sections = props.sections|default([]) %}
+        {% if _sections|length > 0 %}
+            {% for section in _sections %}
+                <section class="report-doc__data-section">
+                    {% if section.heading is defined and section.heading %}
+                        <h2 class="report-doc__section-heading">{{ section.heading }}</h2>
+                    {% endif %}
+                    {% if section.intro is defined and section.intro %}
+                        <p class="report-doc__section-intro">{{ section.intro }}</p>
+                    {% endif %}
+
+                    {% if section.charts is defined and section.charts|length > 0 %}
+                        <div class="report-doc__chart-grid">
+                            {% for chart in section.charts %}
+                                {% set _ctype = chart.type|default('bar') %}
+                                <figure class="report-doc__chart report-doc__chart--{{ _ctype }}">
+                                    {% if chart.image_src is defined and chart.image_src %}
+                                        <img src="{{ chart.image_src }}" alt="{{ chart.alt|default(chart.caption|default('')) }}" class="report-doc__chart-img">
+                                    {% else %}
+                                        <div class="report-doc__chart-placeholder" data-chart-type="{{ _ctype }}" aria-hidden="true">
+                                            <span class="report-doc__chart-placeholder-label">{{ ('report.doc.chart.type.' ~ _ctype)|trans({}, 'reports') }}</span>
+                                        </div>
+                                    {% endif %}
+                                    {% if chart.caption is defined and chart.caption %}
+                                        <figcaption class="report-doc__chart-caption">{{ chart.caption }}</figcaption>
+                                    {% endif %}
+                                </figure>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if section.body_html is defined and section.body_html %}
+                        <div class="report-doc__section-body">
+                            {{ section.body_html|raw }}
+                        </div>
+                    {% endif %}
+
+                    {% if section.table is defined and section.table %}
+                        {% set _tbl = section.table %}
+                        <div class="report-doc__table-wrap">
+                            {% if _tbl.caption is defined and _tbl.caption %}
+                                <p class="report-doc__table-caption">{{ _tbl.caption }}</p>
+                            {% endif %}
+                            <table class="report-doc__table">
+                                {% if _tbl.headers is defined and _tbl.headers|length > 0 %}
+                                    <thead>
+                                        <tr>
+                                            {% for h in _tbl.headers %}
+                                                <th scope="col">{{ h }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                {% endif %}
+                                <tbody>
+                                    {% for row in _tbl.rows|default([]) %}
+                                        <tr>
+                                            {% for cell in row %}
+                                                <td>{{ cell|raw }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </section>
+            {% endfor %}
+        {% endif %}
+
+        {# ── Slot 4 · Appendix ───────────────────────────────────── #}
+        {% set _appendix = props.appendix|default({}) %}
+        {% set _has_appendix = (_appendix.methodology is defined and _appendix.methodology)
+            or (_appendix.sources is defined and _appendix.sources|length > 0)
+            or (_appendix.glossary is defined and _appendix.glossary|length > 0) %}
+        {% if _has_appendix %}
+            <section class="report-doc__appendix">
+                <h2 class="report-doc__appendix-heading">{{ 'report.doc.appendix.heading'|trans({}, 'reports') }}</h2>
+
+                {% if _appendix.methodology is defined and _appendix.methodology %}
+                    <div class="report-doc__appendix-block">
+                        <h3 class="report-doc__appendix-subheading">{{ 'report.doc.appendix.methodology'|trans({}, 'reports') }}</h3>
+                        <div class="report-doc__appendix-body">{{ _appendix.methodology|raw }}</div>
+                    </div>
+                {% endif %}
+
+                {% if _appendix.sources is defined and _appendix.sources|length > 0 %}
+                    <div class="report-doc__appendix-block">
+                        <h3 class="report-doc__appendix-subheading">{{ 'report.doc.appendix.sources'|trans({}, 'reports') }}</h3>
+                        <ul class="report-doc__appendix-sources">
+                            {% for src in _appendix.sources %}
+                                <li>
+                                    {% if src.label is defined %}
+                                        <strong>{{ src.label }}</strong>{% if src.detail is defined and src.detail %} — {{ src.detail }}{% endif %}
+                                    {% else %}
+                                        {{ src }}
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if _appendix.glossary is defined and _appendix.glossary|length > 0 %}
+                    <div class="report-doc__appendix-block">
+                        <h3 class="report-doc__appendix-subheading">{{ 'report.doc.appendix.glossary'|trans({}, 'reports') }}</h3>
+                        <dl class="report-doc__appendix-glossary">
+                            {% for entry in _appendix.glossary %}
+                                <div>
+                                    <dt>{{ entry.term|default('—') }}</dt>
+                                    <dd>{{ entry.definition|default('—') }}</dd>
+                                </div>
+                            {% endfor %}
+                        </dl>
+                    </div>
+                {% endif %}
+            </section>
+        {% endif %}
+
+        {# ── Slot 5 · Footer / Disclaimer ────────────────────────── #}
+        {% set _distribution = props.distribution|default([]) %}
+        {% set _disclaimer = props.disclaimer|default('') %}
+        <footer class="report-doc__footer-disclaimer">
+            {% if _distribution|length > 0 %}
+                <div class="report-doc__distribution">
+                    <p class="report-doc__distribution-label">{{ 'report.doc.footer.distribution_label'|trans({}, 'reports') }}</p>
+                    <ul class="report-doc__distribution-list">
+                        {% for entry in _distribution %}
+                            <li>
+                                {% if entry.role is defined %}<strong>{{ entry.role }}</strong> &middot; {% endif %}
+                                {{ entry.name|default(entry) }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="report-doc__disclaimer-text">
+                {% if _disclaimer %}
+                    {{ _disclaimer|raw }}
+                {% else %}
+                    {{ 'report.doc.footer.default_disclaimer'|trans({}, 'reports') }}
+                {% endif %}
+            </div>
+
+            <div class="report-doc__footer-meta">
+                <span class="report-doc__footer-brand">{{ props.brand_name|default(props.tenant_branding.brandName|default('Little ISMS Helper')) }}</span>
+                {% if report.generated_at is defined and report.generated_at %}
+                    &middot; <span>{{ 'report.doc.footer.generated'|trans({}, 'reports') }}: {{ report.generated_at }}</span>
+                {% endif %}
+                {% if _classification %}
+                    &middot; <span class="report-doc__footer-classification">{{ _classification }}</span>
+                {% endif %}
+                <span class="report-doc__footer-page" aria-hidden="true"></span>
+            </div>
+        </footer>
+
+    </article>
+{% endmacro %}

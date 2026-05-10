@@ -1,0 +1,851 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Report-Doc — 5-slot ISMS-report template
+   ═══════════════════════════════════════════════════════════════════
+   Production-render counterpart to docs/design_system/sections/
+   report-templates.html. Five mandatory slots:
+     1. .report-doc__cover            — brand · title · status · audience
+     2. .report-doc__exec-summary     — TL;DR-Box + 4-up KPI-Tiles
+     3. .report-doc__data-section     — repeatable section (charts + tables)
+     4. .report-doc__appendix         — Methodik · Datenquellen · Glossar
+     5. .report-doc__footer-disclaimer — Verteilung · Vertraulichkeit · Branding
+
+   Renders identically in Web (preview) and Print (PDF via dompdf). Uses
+   Aurora design tokens — NO raw hex (Stylelint blocks raw hex in this
+   file via the global rule). Print-fork pins page-size, sets page-breaks,
+   overlays a status-watermark for draft/confidential/auditor-only.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Article shell ────────────────────────────────────────────────── */
+.report-doc {
+    background: var(--surface);
+    color: var(--fg-1);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 13px;
+    line-height: 1.55;
+    max-width: 960px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md, 8px);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Status watermark — pseudo-element overlay so body text stays selectable.
+   .report-doc--final removes the watermark entirely (approved-for-distribution). */
+.report-doc--draft::before,
+.report-doc--confidential::before,
+.report-doc--auditor-only::before {
+    content: attr(data-watermark);
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: clamp(48px, 12vw, 140px);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--danger-glow);
+    transform: rotate(-30deg);
+    pointer-events: none;
+    z-index: 1;
+    text-transform: uppercase;
+}
+
+.report-doc--confidential::before {
+    color: var(--warning-glow);
+}
+
+.report-doc--auditor-only::before {
+    color: var(--primary-glow);
+}
+
+.report-doc__cover,
+.report-doc__exec-summary,
+.report-doc__data-section,
+.report-doc__appendix,
+.report-doc__footer-disclaimer {
+    position: relative;
+    z-index: 2;
+}
+
+/* ── Slot 1 · Cover ───────────────────────────────────────────────── */
+.report-doc__cover {
+    padding: 40px 48px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.report-doc__cover-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.report-doc__brand {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+
+.report-doc__logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: var(--surface);
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 22px;
+    flex: 0 0 auto;
+}
+
+.report-doc__logo img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: inherit;
+}
+
+.report-doc__brand-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--fg-1);
+}
+
+.report-doc__brand-meta {
+    font-size: 11px;
+    color: var(--fg-3);
+    margin-top: 2px;
+}
+
+.report-doc__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.report-doc__chip {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: var(--surface-2);
+    color: var(--fg-2);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+}
+
+.report-doc__chip--status-final {
+    background: var(--success-tint, var(--success-glow));
+    color: var(--success-strong);
+    border-color: transparent;
+}
+
+.report-doc__chip--status-draft {
+    background: var(--warning-glow);
+    color: var(--warning-strong);
+    border-color: transparent;
+}
+
+.report-doc__chip--status-confidential,
+.report-doc__chip--status-auditor-only {
+    background: var(--danger-glow);
+    color: var(--danger-strong);
+    border-color: transparent;
+}
+
+.report-doc__chip--audience-vorstand {
+    background: var(--primary-tint);
+    color: var(--primary-strong);
+    border-color: transparent;
+}
+
+.report-doc__chip--audience-auditor {
+    background: var(--accent-tint);
+    color: var(--accent-strong);
+    border-color: transparent;
+}
+
+.report-doc__chip--audience-aufsicht {
+    background: var(--info-glow);
+    color: var(--primary-strong);
+    border-color: transparent;
+}
+
+.report-doc__chip--classification {
+    background: var(--fg-1);
+    color: var(--surface);
+    border-color: transparent;
+}
+
+.report-doc__cover-center {
+    padding: 32px 0 24px;
+}
+
+.report-doc__kicker {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+}
+
+.report-doc__title {
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 800;
+    color: var(--fg-1);
+    line-height: 1.05;
+    margin: 0 0 14px;
+    letter-spacing: -0.02em;
+}
+
+.report-doc__sub {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--fg-2);
+    max-width: 640px;
+    margin: 0;
+}
+
+.report-doc__cover-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 24px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 0;
+    margin: 0;
+}
+
+.report-doc__cover-grid > div {
+    margin: 0;
+}
+
+.report-doc__cover-label {
+    font-size: 10px;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin: 0 0 4px;
+}
+
+.report-doc__cover-value {
+    font-size: 13px;
+    color: var(--fg-1);
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ── Slot 2 · Executive Summary ──────────────────────────────────── */
+.report-doc__exec-summary {
+    padding: 32px 48px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+}
+
+.report-doc__exec-heading {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--fg-1);
+    margin: 0 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--fg-1);
+}
+
+.report-doc__tldr {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--r-md, 8px);
+    padding: 16px 20px;
+    margin: 0 0 22px;
+}
+
+.report-doc__tldr-label {
+    font-size: 10px;
+    color: var(--primary-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin: 0 0 10px;
+}
+
+.report-doc__tldr-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.report-doc__tldr-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--fg-1);
+    line-height: 1.5;
+}
+
+.report-doc__tldr-dot {
+    flex: 0 0 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 7px;
+    background: var(--fg-3);
+}
+
+.report-doc__tldr-item--ok .report-doc__tldr-dot,
+.report-doc__tldr-item--success .report-doc__tldr-dot {
+    background: var(--success);
+}
+
+.report-doc__tldr-item--warn .report-doc__tldr-dot,
+.report-doc__tldr-item--warning .report-doc__tldr-dot {
+    background: var(--warning);
+}
+
+.report-doc__tldr-item--danger .report-doc__tldr-dot,
+.report-doc__tldr-item--critical .report-doc__tldr-dot {
+    background: var(--danger);
+}
+
+.report-doc__tldr-text strong {
+    font-weight: 700;
+}
+
+.report-doc__tldr-value {
+    margin-left: 6px;
+    color: var(--fg-2);
+    font-variant-numeric: tabular-nums;
+}
+
+/* KPI grid — 4-up auto-fit */
+.report-doc__kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin: 0;
+}
+
+.report-doc__kpi-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md, 8px);
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 96px;
+}
+
+.report-doc__kpi-tile--success {
+    border-left: 4px solid var(--success);
+}
+
+.report-doc__kpi-tile--warning {
+    border-left: 4px solid var(--warning);
+}
+
+.report-doc__kpi-tile--danger {
+    border-left: 4px solid var(--danger);
+}
+
+.report-doc__kpi-tile--neutral {
+    border-left: 4px solid var(--primary);
+}
+
+.report-doc__kpi-label {
+    font-size: 10px;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.report-doc__kpi-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--fg-1);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+.report-doc__kpi-trend {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--fg-3);
+    display: inline-flex;
+    gap: 4px;
+    align-items: baseline;
+}
+
+.report-doc__kpi-trend--up {
+    color: var(--success-strong);
+}
+
+.report-doc__kpi-trend--down {
+    color: var(--danger-strong);
+}
+
+.report-doc__kpi-trend--stable {
+    color: var(--fg-3);
+}
+
+/* ── Slot 3 · Data sections ──────────────────────────────────────── */
+.report-doc__data-section {
+    padding: 32px 48px;
+    border-bottom: 1px solid var(--border);
+}
+
+.report-doc__section-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--fg-1);
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--fg-1);
+}
+
+.report-doc__section-intro {
+    font-size: 13px;
+    color: var(--fg-2);
+    line-height: 1.6;
+    margin: 0 0 18px;
+    max-width: 720px;
+}
+
+.report-doc__section-body {
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--fg-1);
+    margin: 0 0 18px;
+}
+
+.report-doc__section-body p {
+    margin: 0 0 10px;
+    color: var(--fg-2);
+}
+
+/* Chart grid — responsive on web, 2-up max for print */
+.report-doc__chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin: 0 0 22px;
+}
+
+.report-doc__chart {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md, 8px);
+    padding: 14px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.report-doc__chart-img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+}
+
+.report-doc__chart-placeholder {
+    aspect-ratio: 16 / 9;
+    background:
+        repeating-linear-gradient(
+            45deg,
+            var(--surface-3) 0,
+            var(--surface-3) 8px,
+            var(--surface-2) 8px,
+            var(--surface-2) 16px
+        );
+    border-radius: 4px;
+    display: grid;
+    place-items: center;
+    color: var(--fg-3);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.report-doc__chart-placeholder-label {
+    background: var(--surface);
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+
+.report-doc__chart-caption {
+    font-size: 11px;
+    color: var(--fg-3);
+    margin: 0;
+    text-align: center;
+}
+
+/* Audit-friendly tables — zebra rows, sticky header on web. */
+.report-doc__table-wrap {
+    margin: 0 0 18px;
+    overflow-x: auto;
+}
+
+.report-doc__table-caption {
+    font-size: 11px;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin: 0 0 6px;
+}
+
+.report-doc__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.report-doc__table th {
+    text-align: left;
+    background: var(--surface-2);
+    color: var(--fg-2);
+    padding: 8px 10px;
+    border: 0.5pt solid var(--border-strong);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 10px;
+    position: sticky;
+    top: 0;
+}
+
+.report-doc__table td {
+    padding: 8px 10px;
+    border: 0.5pt solid var(--border);
+    color: var(--fg-1);
+    vertical-align: top;
+    line-height: 1.45;
+}
+
+.report-doc__table tbody tr:nth-child(odd) td {
+    background: var(--surface);
+}
+
+.report-doc__table tbody tr:nth-child(even) td {
+    background: var(--surface-2);
+}
+
+.report-doc__table tbody tr:hover td {
+    background: var(--primary-tint);
+}
+
+/* ── Slot 4 · Appendix ────────────────────────────────────────────── */
+.report-doc__appendix {
+    padding: 32px 48px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+}
+
+.report-doc__appendix-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--fg-1);
+    margin: 0 0 18px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--fg-1);
+}
+
+.report-doc__appendix-block {
+    margin: 0 0 22px;
+}
+
+.report-doc__appendix-block:last-child {
+    margin-bottom: 0;
+}
+
+.report-doc__appendix-subheading {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--fg-1);
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.report-doc__appendix-body {
+    font-size: 12px;
+    color: var(--fg-2);
+    line-height: 1.6;
+}
+
+.report-doc__appendix-sources {
+    margin: 0;
+    padding: 0 0 0 18px;
+    font-size: 12px;
+    color: var(--fg-2);
+    line-height: 1.6;
+}
+
+.report-doc__appendix-sources li {
+    margin: 4px 0;
+}
+
+.report-doc__appendix-glossary {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px 22px;
+}
+
+.report-doc__appendix-glossary > div {
+    margin: 0;
+}
+
+.report-doc__appendix-glossary dt {
+    font-weight: 700;
+    color: var(--fg-1);
+    font-size: 12px;
+    margin: 0 0 2px;
+}
+
+.report-doc__appendix-glossary dd {
+    margin: 0;
+    color: var(--fg-2);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+/* ── Slot 5 · Footer / Disclaimer ────────────────────────────────── */
+.report-doc__footer-disclaimer {
+    padding: 28px 48px 36px;
+    background: var(--surface);
+    border-top: 1px solid var(--border-strong);
+}
+
+.report-doc__distribution {
+    margin: 0 0 18px;
+}
+
+.report-doc__distribution-label {
+    font-size: 10px;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    margin: 0 0 6px;
+}
+
+.report-doc__distribution-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    font-size: 12px;
+    color: var(--fg-2);
+}
+
+.report-doc__distribution-list li {
+    border-left: 2px solid var(--border);
+    padding-left: 10px;
+}
+
+.report-doc__disclaimer-text {
+    font-size: 11px;
+    color: var(--fg-3);
+    line-height: 1.55;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border-radius: var(--r-md, 6px);
+    border: 1px solid var(--border);
+    margin: 0 0 14px;
+}
+
+.report-doc__footer-meta {
+    font-size: 10px;
+    color: var(--fg-3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.report-doc__footer-brand {
+    font-weight: 700;
+    color: var(--fg-2);
+}
+
+.report-doc__footer-classification {
+    color: var(--danger-strong);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* ── Audience-specific layout overrides ──────────────────────────── */
+/* Vorstand → visual-first: bigger KPI tiles, charts before tables. */
+.report-doc--vorstand .report-doc__kpi-tile {
+    min-height: 110px;
+}
+
+.report-doc--vorstand .report-doc__kpi-value {
+    font-size: 30px;
+}
+
+.report-doc--vorstand .report-doc__data-section .report-doc__chart-grid {
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+}
+
+/* Auditor → table-first: dense tables, smaller charts, stronger borders. */
+.report-doc--auditor .report-doc__table {
+    font-size: 11px;
+}
+
+.report-doc--auditor .report-doc__table th,
+.report-doc--auditor .report-doc__table td {
+    padding: 6px 8px;
+}
+
+.report-doc--auditor .report-doc__chart-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.report-doc--auditor .report-doc__exec-summary {
+    background: var(--surface);
+}
+
+.report-doc--auditor .report-doc__kpi-tile {
+    min-height: 80px;
+}
+
+.report-doc--auditor .report-doc__kpi-value {
+    font-size: 22px;
+}
+
+/* Aufsicht → norm-anchor-first: appendix block visually elevated. */
+.report-doc--aufsicht .report-doc__appendix {
+    background: var(--surface);
+    border-top: 3px solid var(--primary);
+}
+
+.report-doc--aufsicht .report-doc__cover-grid {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.report-doc--aufsicht .report-doc__exec-summary {
+    background: var(--surface);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Print fork — A4-portrait + page-breaks at slot boundaries.
+   landscape-toggle via .report-doc--landscape class.
+   ═══════════════════════════════════════════════════════════════════ */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 18mm 14mm 22mm 14mm;
+
+        @top-right {
+            content: attr(data-report-status);
+            font-size: 8pt;
+            color: var(--fg-3);
+        }
+
+        @bottom-right {
+            content: counter(page) " / " counter(pages);
+            font-size: 8pt;
+            color: var(--fg-3);
+        }
+    }
+
+    body {
+        background: var(--surface);
+    }
+
+    .report-doc {
+        max-width: none;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .report-doc--landscape {
+        /* Opt-in landscape layout — inject `<body class="report-doc--landscape">`
+           or set the class on the article. The @page block must be re-declared
+           because @page does not cascade through descendant selectors. */
+    }
+
+    @page landscape {
+        size: A4 landscape;
+    }
+
+    .report-doc--landscape {
+        page: landscape;
+    }
+
+    .report-doc__cover,
+    .report-doc__exec-summary,
+    .report-doc__appendix,
+    .report-doc__footer-disclaimer {
+        page-break-after: always;
+        break-after: page;
+    }
+
+    .report-doc__data-section {
+        page-break-before: auto;
+        break-before: auto;
+    }
+
+    .report-doc__data-section + .report-doc__data-section {
+        page-break-before: always;
+        break-before: page;
+    }
+
+    .report-doc__section-heading {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+
+    .report-doc__kpi-tile,
+    .report-doc__chart,
+    .report-doc__table tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .report-doc__table th {
+        position: static;
+    }
+
+    /* Repeating header on every printed page — uses thead repeat for tables,
+       and a fixed positioned strip for the document header (status + page
+       number is wired via @page directives above). */
+    .report-doc__table thead {
+        display: table-header-group;
+    }
+
+    .report-doc__table tfoot {
+        display: table-footer-group;
+    }
+
+    /* Suppress hover-state in print. */
+    .report-doc__table tbody tr:hover td {
+        background: inherit;
+    }
+}

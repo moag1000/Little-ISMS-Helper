@@ -1,338 +1,232 @@
+{# ───────────────────────────────────────────────────────────────────
+   Board One-Pager — Vorstands-Bericht
+   Migriert auf das fa-report-doc 5-slot Template (Cover · Exec ·
+   Data · Appendix · Footer). Sister-Vorlage zu fa-policy-doc.
+
+   Audience: vorstand → visual-first Layout (große KPI-Tiles, weniger Text)
+   Status:   final     → kein Watermark, freigegeben zur Verteilung
+   Class:    CONFIDENTIAL → Footer-Pill + per-page bei dompdf-render
+   ─────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'board_one_pager.title'|trans({}, 'reports') }}</title>
     <style>
-        @page { margin: 15mm 12mm; size: A4 portrait; }
-        body {
-            font-family: 'DejaVu Sans', sans-serif;
-            font-size: 8.5pt;
-            margin: 0;
-            padding: 0;
-            color: var(--surface);
+        {# Inline a minimal Aurora-token-fork so dompdf can render this page
+           without external assets. The full report-doc.css lives at
+           assets/styles/report-doc.css for web previews. #}
+        :root {
+            --surface: #ffffff;
+            --surface-2: #f6f6fa;
+            --surface-3: #eef0f9;
+            --border: #dfe3f0;
+            --border-strong: #b9bfd6;
+            --fg-1: #0e0a1f;
+            --fg-2: #4c4a73;
+            --fg-3: #6d6b92;
+            --primary: #0284c7;
+            --primary-strong: #0369a1;
+            --primary-tint: rgba(2, 132, 199, 0.10);
+            --primary-glow: rgba(2, 132, 199, 0.20);
+            --accent: #7c3aed;
+            --accent-strong: #6d28d9;
+            --accent-tint: rgba(124, 58, 237, 0.10);
+            --success: #059669;
+            --success-strong: #047857;
+            --success-tint: rgba(5, 150, 105, 0.10);
+            --success-glow: rgba(5, 150, 105, 0.20);
+            --warning: #d97706;
+            --warning-strong: #b45309;
+            --warning-glow: rgba(217, 119, 6, 0.20);
+            --danger: #dc2626;
+            --danger-strong: #b91c1c;
+            --danger-glow: rgba(220, 38, 38, 0.20);
+            --info-glow: rgba(2, 132, 199, 0.20);
+            --r-md: 8px;
         }
-
-        /* Header */
-        .header {
-            display: table;
-            width: 100%;
-            border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
-        }
-        .header-left { display: table-cell; vertical-align: middle; }
-        .header-right { display: table-cell; vertical-align: middle; text-align: right; }
-        .header h1 { color: var(--bg); margin: 0; font-size: 15pt; text-transform: uppercase; letter-spacing: 0.5pt; }
-        .header .subtitle { color: #666; font-size: 9pt; margin-top: 2px; }
-
-        /* RAG Status Cards */
-        .rag-grid { display: table; width: 100%; margin-bottom: 12px; }
-        .rag-cell {
-            display: table-cell;
-            width: 25%;
-            text-align: center;
-            padding: 8px 6px;
-            border: 1px solid var(--border);
-        }
-        .rag-cell h4 { margin: 0 0 4px 0; font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.3pt; color: #475569; }
-        .rag-indicator {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 8pt;
-            font-weight: bold;
-            color: #fff;
-        }
-        .rag-green { background: #16a34a; }
-        .rag-amber { background: #d97706; }
-        .rag-red { background: var(--danger); }
-
-        /* Key Metrics */
-        .metrics-grid { display: table; width: 100%; margin-bottom: 12px; }
-        .metric-box {
-            display: table-cell;
-            width: 25%;
-            padding: 8px 6px;
-            border: 1px solid var(--border);
-            text-align: center;
-            background: var(--bg);
-        }
-        .metric-box .number { font-size: 18pt; font-weight: bold; color: var(--primary); margin: 0; }
-        .metric-box .number.danger { color: var(--danger); }
-        .metric-box .number.success { color: var(--success); }
-        .metric-box .number.warning { color: #d97706; }
-        .metric-box .label { font-size: 7pt; color: #475569; text-transform: uppercase; font-weight: bold; letter-spacing: 0.3pt; }
-        .metric-box .trend { font-size: 7pt; }
-        .trend-up { color: var(--success); }
-        .trend-down { color: var(--danger); }
-        .trend-stable { color: var(--fg-3); }
-        .trend-up-bad { color: var(--danger); }
-        .trend-down-good { color: var(--success); }
-
-        /* Two-column layout */
-        .two-col { display: table; width: 100%; margin-bottom: 10px; }
-        .col-left { display: table-cell; width: 50%; padding-right: 8px; vertical-align: top; }
-        .col-right { display: table-cell; width: 50%; padding-left: 8px; vertical-align: top; }
-
-        /* Section headers */
-        .section-header {
-            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
-            color: var(--primary);
-            padding: 5px 8px;
-            font-size: 9pt;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.3pt;
-            margin: 0 0 6px 0;
-        }
-
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; }
-        th {
-            background: var(--surface-2);
-            color: #475569;
-            padding: 4px 6px;
-            text-align: left;
-            font-size: 7.5pt;
-            text-transform: uppercase;
-            border-bottom: 1px solid #cbd5e1;
-        }
-        td { padding: 4px 6px; font-size: 8pt; border-bottom: 1px solid var(--border); }
-
-        /* Badges */
-        .badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
-        .badge-critical { background: #fecaca; color: #991b1b; }
-        .badge-high { background: #fed7aa; color: #9a3412; }
-        .badge-medium { background: #fef3c7; color: #92400e; }
-        .badge-low { background: #dcfce7; color: #166534; }
-
-        /* Progress bars */
-        .progress-bar-container { background: #e5e7eb; height: 10px; border-radius: 5px; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 5px; }
-        .progress-fill.success { background: #16a34a; }
-        .progress-fill.warning { background: #d97706; }
-        .progress-fill.danger { background: var(--danger); }
-        .progress-fill.info { background: var(--primary); }
-
-        /* Compliance framework rows */
-        .fw-row { margin-bottom: 5px; }
-        .fw-name { font-size: 8pt; font-weight: bold; display: inline-block; width: 90px; }
-        .fw-pct { font-size: 8pt; font-weight: bold; display: inline-block; width: 35px; text-align: right; margin-right: 4px; }
-        .fw-bar { display: inline-block; width: calc(100% - 135px); vertical-align: middle; }
-
-        /* Readiness checklist */
-        .check-item { font-size: 7.5pt; padding: 1px 0; }
-        .check-pass { color: var(--success); }
-        .check-fail { color: var(--danger); }
-
-        /* Footer */
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 7pt;
-            color: var(--fg-3);
-            border-top: 1px solid var(--border);
-            padding-top: 4px;
-        }
+        @page { size: A4 portrait; margin: 14mm 12mm 18mm 12mm; }
+        body { background: #fff; font-family: 'DejaVu Sans', sans-serif; margin: 0; padding: 0; }
+        {# Inline subset of report-doc.css critical rules so dompdf renders without
+           external assets. Full stylesheet at assets/styles/report-doc.css. #}
+        .report-doc { background: var(--surface); color: var(--fg-1); font-size: 12pt; line-height: 1.45; max-width: none; margin: 0; border: 0; border-radius: 0; position: relative; }
+        .report-doc__cover { padding: 18pt 16pt 12pt; border-bottom: 1px solid var(--border); }
+        .report-doc__cover-top { display: table; width: 100%; }
+        .report-doc__brand { display: table-cell; vertical-align: middle; }
+        .report-doc__chips { display: table-cell; text-align: right; vertical-align: middle; }
+        .report-doc__logo { display: inline-block; width: 32pt; height: 32pt; border-radius: 6pt; background: var(--primary); color: #fff; text-align: center; line-height: 32pt; font-weight: 700; font-size: 18pt; vertical-align: middle; margin-right: 8pt; }
+        .report-doc__brand-name { font-weight: 700; font-size: 11pt; color: var(--fg-1); display: inline-block; vertical-align: middle; }
+        .report-doc__brand-meta { font-size: 8pt; color: var(--fg-3); }
+        .report-doc__chip { display: inline-block; padding: 2pt 7pt; border-radius: 8pt; background: var(--surface-2); color: var(--fg-2); font-size: 7pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border: 1px solid var(--border); margin-left: 4pt; }
+        .report-doc__chip--status-final { background: var(--success-tint); color: var(--success-strong); border-color: transparent; }
+        .report-doc__chip--audience-vorstand { background: var(--primary-tint); color: var(--primary-strong); border-color: transparent; }
+        .report-doc__chip--classification { background: var(--fg-1); color: #fff; border-color: transparent; }
+        .report-doc__cover-center { padding: 16pt 0 12pt; }
+        .report-doc__kicker { font-size: 8pt; color: var(--primary); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin: 0 0 4pt; }
+        .report-doc__title { font-size: 22pt; font-weight: 800; color: var(--fg-1); margin: 0 0 6pt; line-height: 1.05; }
+        .report-doc__sub { font-size: 10pt; color: var(--fg-2); margin: 0; }
+        .report-doc__cover-grid { display: table; width: 100%; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 8pt 0; margin: 0; }
+        .report-doc__cover-grid > div { display: inline-block; width: 31%; margin: 0 1% 6pt 0; vertical-align: top; }
+        .report-doc__cover-label { font-size: 7pt; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin: 0 0 2pt; }
+        .report-doc__cover-value { font-size: 9pt; color: var(--fg-1); font-weight: 600; margin: 0; }
+        .report-doc__exec-summary { padding: 12pt 16pt; background: var(--surface-2); border-bottom: 1px solid var(--border); }
+        .report-doc__exec-heading { font-size: 13pt; font-weight: 800; margin: 0 0 8pt; padding-bottom: 4pt; border-bottom: 2px solid var(--fg-1); }
+        .report-doc__tldr { background: var(--surface); border: 1px solid var(--border); border-left: 3pt solid var(--primary); padding: 8pt 10pt; margin: 0 0 12pt; }
+        .report-doc__tldr-label { font-size: 7pt; color: var(--primary-strong); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 6pt; }
+        .report-doc__tldr-list { list-style: none; margin: 0; padding: 0; }
+        .report-doc__tldr-item { font-size: 9pt; color: var(--fg-1); padding: 2pt 0; }
+        .report-doc__tldr-item--ok { border-left: 2pt solid var(--success); padding-left: 6pt; }
+        .report-doc__tldr-item--warn { border-left: 2pt solid var(--warning); padding-left: 6pt; }
+        .report-doc__tldr-item--danger { border-left: 2pt solid var(--danger); padding-left: 6pt; }
+        .report-doc__tldr-dot { display: none; }
+        .report-doc__kpi-grid { display: table; width: 100%; border-spacing: 6pt; }
+        .report-doc__kpi-tile { display: table-cell; width: 25%; padding: 10pt; border: 1px solid var(--border); border-radius: 4pt; vertical-align: top; background: var(--surface); }
+        .report-doc__kpi-tile--success { border-left: 3pt solid var(--success); }
+        .report-doc__kpi-tile--warning { border-left: 3pt solid var(--warning); }
+        .report-doc__kpi-tile--danger { border-left: 3pt solid var(--danger); }
+        .report-doc__kpi-tile--neutral { border-left: 3pt solid var(--primary); }
+        .report-doc__kpi-label { font-size: 7pt; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 4pt; }
+        .report-doc__kpi-value { font-size: 18pt; font-weight: 800; color: var(--fg-1); margin-bottom: 2pt; }
+        .report-doc__kpi-trend { font-size: 8pt; font-weight: 600; }
+        .report-doc__kpi-trend--up { color: var(--success-strong); }
+        .report-doc__kpi-trend--down { color: var(--danger-strong); }
+        .report-doc__data-section { padding: 12pt 16pt; border-bottom: 1px solid var(--border); page-break-inside: avoid; }
+        .report-doc__section-heading { font-size: 12pt; font-weight: 700; color: var(--fg-1); margin: 0 0 8pt; padding-bottom: 4pt; border-bottom: 2px solid var(--fg-1); }
+        .report-doc__table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+        .report-doc__table th { background: var(--surface-2); color: var(--fg-2); padding: 5pt 6pt; border: 0.5pt solid var(--border-strong); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-size: 7pt; text-align: left; }
+        .report-doc__table td { padding: 5pt 6pt; border: 0.5pt solid var(--border); color: var(--fg-1); vertical-align: top; }
+        .report-doc__appendix { padding: 12pt 16pt; background: var(--surface-2); border-bottom: 1px solid var(--border); }
+        .report-doc__appendix-heading { font-size: 12pt; font-weight: 700; margin: 0 0 8pt; padding-bottom: 4pt; border-bottom: 2px solid var(--fg-1); }
+        .report-doc__appendix-subheading { font-size: 9pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin: 8pt 0 4pt; }
+        .report-doc__appendix-sources { padding-left: 14pt; font-size: 8pt; color: var(--fg-2); }
+        .report-doc__footer-disclaimer { padding: 12pt 16pt; background: var(--surface); border-top: 1px solid var(--border-strong); }
+        .report-doc__distribution-label { font-size: 7pt; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin: 0 0 4pt; }
+        .report-doc__distribution-list { list-style: none; padding: 0; margin: 0 0 8pt; font-size: 9pt; color: var(--fg-2); }
+        .report-doc__distribution-list li { display: inline-block; border-left: 2pt solid var(--border); padding: 0 8pt; }
+        .report-doc__disclaimer-text { font-size: 8pt; color: var(--fg-3); padding: 8pt; background: var(--surface-2); border-radius: 4pt; border: 1px solid var(--border); margin: 0 0 8pt; }
+        .report-doc__footer-meta { font-size: 7pt; color: var(--fg-3); }
+        .report-doc__footer-brand { font-weight: 700; color: var(--fg-2); }
+        .report-doc__footer-classification { color: var(--danger-strong); font-weight: 700; text-transform: uppercase; }
     </style>
 </head>
 <body>
-    {# ===== HEADER ===== #}
-    <div class="header">
-        <div class="header-left">
-            <h1>{{ 'board_one_pager.title'|trans({}, 'reports') }}</h1>
-            <div class="subtitle">{{ generated_at|date('d.m.Y') }}</div>
-        </div>
-        <div class="header-right">
-            <span style="font-size: 10pt; font-weight: bold; color: var(--bg);">Little ISMS Helper</span>
-        </div>
-    </div>
+{% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {# ===== RAG STATUS ===== #}
-    <div class="rag-grid">
-        {% set rag_areas = {
-            'security': board_data.rag_status.security|default('green'),
-            'compliance': board_data.rag_status.compliance|default('green'),
-            'risk': board_data.rag_status.risk|default('green'),
-            'operations': board_data.rag_status.operations|default('green')
-        } %}
-        {% for area, status in rag_areas %}
-        <div class="rag-cell">
-            <h4>{{ ('board_one_pager.rag.' ~ area)|trans({}, 'reports') }}</h4>
-            <span class="rag-indicator rag-{{ status }}">
-                {% if status == 'green' %}
-                    {{ 'board_one_pager.status.good'|trans({}, 'reports') }}
-                {% elseif status == 'amber' %}
-                    {{ 'board_one_pager.status.warning'|trans({}, 'reports') }}
-                {% else %}
-                    {{ 'board_one_pager.status.critical'|trans({}, 'reports') }}
-                {% endif %}
-            </span>
-        </div>
-        {% endfor %}
-    </div>
+{# Build TL;DR key-findings from board metrics #}
+{% set _health = kpis.health.isms_health_score.value|default(0) %}
+{% set _compliance = board_data.metrics.overall_compliance|default(0) %}
+{% set _critical = board_data.metrics.critical_risks|default(0) %}
+{% set _mttr = kpis.incident_management.mttr.value|default(0) %}
 
-    {# ===== KEY METRICS ===== #}
-    <div class="section-header">{{ 'board_one_pager.section.key_metrics'|trans({}, 'reports') }}</div>
-    <div class="metrics-grid">
-        {# Health Score #}
-        {% set health_score = kpis.health.isms_health_score.value|default(0) %}
-        {% set health_trend = kpis.health.isms_health_score.trend_delta|default(0) %}
-        <div class="metric-box">
-            <div class="number {% if health_score >= 80 %}success{% elseif health_score >= 60 %}warning{% else %}danger{% endif %}">{{ health_score }}%</div>
-            <div class="label">{{ 'board_one_pager.metric.health'|trans({}, 'reports') }}</div>
-            {% if health_trend != 0 %}
-            <div class="trend {% if health_trend > 0 %}trend-up{% else %}trend-down{% endif %}">
-                {% if health_trend > 0 %}&#9650;{% else %}&#9660;{% endif %} {{ health_trend > 0 ? '+' : '' }}{{ health_trend }}%
-            </div>
-            {% endif %}
-        </div>
+{% set _findings = [
+    { label: ('board_one_pager.metric.health'|trans({}, 'reports')) ~ ': ' ~ _health ~ '%',
+      tone: _health >= 80 ? 'ok' : (_health >= 60 ? 'warn' : 'danger') },
+    { label: ('board_one_pager.metric.compliance'|trans({}, 'reports')) ~ ': ' ~ _compliance ~ '%',
+      tone: _compliance >= 80 ? 'ok' : (_compliance >= 60 ? 'warn' : 'danger') },
+    { label: ('board_one_pager.metric.critical_risks'|trans({}, 'reports')) ~ ': ' ~ _critical,
+      tone: _critical > 5 ? 'danger' : (_critical > 0 ? 'warn' : 'ok') },
+    { label: ('board_one_pager.metric.mttr'|trans({}, 'reports')) ~ ': ' ~ _mttr ~ 'h',
+      tone: _mttr > 72 ? 'warn' : 'ok' },
+] %}
 
-        {# Compliance #}
-        {% set compliance = board_data.metrics.overall_compliance|default(0) %}
-        {% set compliance_trend = board_data.trends.compliance|default(0) %}
-        <div class="metric-box">
-            <div class="number {% if compliance >= 80 %}success{% elseif compliance >= 60 %}warning{% else %}danger{% endif %}">{{ compliance }}%</div>
-            <div class="label">{{ 'board_one_pager.metric.compliance'|trans({}, 'reports') }}</div>
-            {% if compliance_trend != 0 %}
-            <div class="trend {% if compliance_trend > 0 %}trend-up{% else %}trend-down{% endif %}">
-                {% if compliance_trend > 0 %}&#9650;{% else %}&#9660;{% endif %} {{ compliance_trend > 0 ? '+' : '' }}{{ compliance_trend }}%
-            </div>
-            {% endif %}
-        </div>
+{% set _health_trend = kpis.health.isms_health_score.trend_delta|default(0) %}
+{% set _compliance_trend = board_data.trends.compliance|default(0) %}
+{% set _risks_trend = board_data.trends.risks|default(0) %}
 
-        {# Critical Risks #}
-        {% set critical_risks = board_data.metrics.critical_risks|default(0) %}
-        {% set risks_trend = board_data.trends.risks|default(0) %}
-        <div class="metric-box">
-            <div class="number {% if critical_risks > 5 %}danger{% elseif critical_risks > 0 %}warning{% else %}success{% endif %}">{{ critical_risks }}</div>
-            <div class="label">{{ 'board_one_pager.metric.critical_risks'|trans({}, 'reports') }}</div>
-            {% if risks_trend != 0 %}
-            <div class="trend {% if risks_trend > 0 %}trend-up-bad{% else %}trend-down-good{% endif %}">
-                {% if risks_trend > 0 %}&#9650;{% else %}&#9660;{% endif %} {{ risks_trend > 0 ? '+' : '' }}{{ risks_trend }}
-            </div>
-            {% endif %}
-        </div>
+{% set _kpis = [
+    { label: 'board_one_pager.metric.health'|trans({}, 'reports'),
+      value: _health ~ '%',
+      trend: _health_trend > 0 ? 'up' : (_health_trend < 0 ? 'down' : 'stable'),
+      trend_value: _health_trend != 0 ? (_health_trend > 0 ? '+' : '') ~ _health_trend ~ '%' : '',
+      tone: _health >= 80 ? 'success' : (_health >= 60 ? 'warning' : 'danger') },
+    { label: 'board_one_pager.metric.compliance'|trans({}, 'reports'),
+      value: _compliance ~ '%',
+      trend: _compliance_trend > 0 ? 'up' : (_compliance_trend < 0 ? 'down' : 'stable'),
+      trend_value: _compliance_trend != 0 ? (_compliance_trend > 0 ? '+' : '') ~ _compliance_trend ~ '%' : '',
+      tone: _compliance >= 80 ? 'success' : (_compliance >= 60 ? 'warning' : 'danger') },
+    { label: 'board_one_pager.metric.critical_risks'|trans({}, 'reports'),
+      value: _critical,
+      trend: _risks_trend > 0 ? 'up' : (_risks_trend < 0 ? 'down' : 'stable'),
+      trend_value: _risks_trend != 0 ? (_risks_trend > 0 ? '+' : '') ~ _risks_trend : '',
+      tone: _critical > 5 ? 'danger' : (_critical > 0 ? 'warning' : 'success') },
+    { label: 'board_one_pager.metric.mttr'|trans({}, 'reports'),
+      value: _mttr ~ 'h',
+      trend: 'stable',
+      tone: _mttr > 72 ? 'warning' : 'success' },
+] %}
 
-        {# MTTR #}
-        {% set mttr = kpis.incident_management.mttr.value|default(0) %}
-        <div class="metric-box">
-            <div class="number {% if mttr > 72 %}warning{% else %}success{% endif %}">{{ mttr }}h</div>
-            <div class="label">{{ 'board_one_pager.metric.mttr'|trans({}, 'reports') }}</div>
-        </div>
-    </div>
+{# Top-Risks table → data-section #}
+{% set _top_risks_rows = [] %}
+{% for risk in top_risks %}
+    {% set _top_risks_rows = _top_risks_rows|merge([[
+        loop.index,
+        risk.title|length > 35 ? risk.title[:35] ~ '…' : risk.title,
+        risk.level,
+    ]]) %}
+{% endfor %}
 
-    {# ===== TWO-COLUMN: TOP RISKS + FRAMEWORK COMPLIANCE ===== #}
-    <div class="two-col">
-        <div class="col-left">
-            <div class="section-header">{{ 'board_one_pager.section.top_risks'|trans({}, 'reports') }}</div>
-            {% if top_risks|length > 0 %}
-            <table>
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">{{ 'board_one_pager.table.risk'|trans({}, 'reports') }}</th>
-                        <th scope="col">{{ 'board_one_pager.table.level'|trans({}, 'reports') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for risk in top_risks %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ risk.title|length > 35 ? risk.title[:35] ~ '...' : risk.title }}</td>
-                        <td>
-                            <span class="badge badge-{{ risk.level|lower }}">{{ risk.level }}</span>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p style="color: var(--fg-3); text-align: center; padding: 10px;">{{ 'board_one_pager.no_risks'|trans({}, 'reports') }}</p>
-            {% endif %}
-        </div>
+{# Framework-Compliance table #}
+{% set _fw_rows = [] %}
+{% for fw in framework_compliance %}
+    {% set _fw_rows = _fw_rows|merge([[ fw.name, fw.percentage ~ '%' ]]) %}
+{% endfor %}
 
-        <div class="col-right">
-            <div class="section-header">{{ 'board_one_pager.section.framework_compliance'|trans({}, 'reports') }}</div>
-            {% if framework_compliance|length > 0 %}
-                {% for fw in framework_compliance %}
-                <div class="fw-row">
-                    <span class="fw-name">{{ fw.name|length > 12 ? fw.name[:12] ~ '.' : fw.name }}</span>
-                    <span class="fw-pct {% if fw.percentage >= 80 %}success{% elseif fw.percentage >= 60 %}warning{% else %}danger{% endif %}" style="color: {% if fw.percentage >= 80 %}var(--success){% elseif fw.percentage >= 60 %}var(--warning){% else %}var(--danger){% endif %}">{{ fw.percentage }}%</span>
-                    <span class="fw-bar">
-                        <div class="progress-bar-container">
-                            <div class="progress-fill {% if fw.percentage >= 80 %}success{% elseif fw.percentage >= 60 %}warning{% else %}danger{% endif %}"
-                                 style="width: {{ fw.percentage }}%"></div>
-                        </div>
-                    </span>
-                </div>
-                {% endfor %}
-            {% else %}
-                <p style="color: var(--fg-3); text-align: center; padding: 10px;">{{ 'board_one_pager.no_frameworks'|trans({}, 'reports') }}</p>
-            {% endif %}
-        </div>
-    </div>
+{# Operational table — 5 rows from kpis #}
+{% set _ops_rows = [
+    [ 'board_one_pager.ops.open_incidents'|trans({}, 'reports'),       kpis.incident_management.open_incidents.value|default(0) ],
+    [ 'board_one_pager.ops.risk_treatment'|trans({}, 'reports'),       (kpis.risk_management.risk_treatment_rate.value|default(0)) ~ '%' ],
+    [ 'board_one_pager.ops.overdue_treatments'|trans({}, 'reports'),   kpis.risk_management.overdue_treatments.value|default(0) ],
+    [ 'board_one_pager.ops.training_completion'|trans({}, 'reports'),  (kpis.training.training_completion_rate.value|default(0)) ~ '%' ],
+    [ 'board_one_pager.ops.control_compliance'|trans({}, 'reports'),   (kpis.core.control_compliance.value|default(0)) ~ '%' ],
+] %}
 
-    {# ===== READINESS CHECKLIST + ADDITIONAL METRICS ===== #}
-    <div class="two-col">
-        <div class="col-left">
-            <div class="section-header">{{ 'board_one_pager.section.readiness'|trans({}, 'reports') }}</div>
-            {% set readiness = kpis.health.readiness_checklist.details|default({}) %}
-            {% set readiness_labels = {
-                'soa_reviewed': 'board_one_pager.readiness.soa_reviewed',
-                'risk_assessment_done': 'board_one_pager.readiness.risk_assessment',
-                'asset_inventory': 'board_one_pager.readiness.asset_inventory',
-                'training_active': 'board_one_pager.readiness.training_active',
-                'management_review_done': 'board_one_pager.readiness.management_review'
-            } %}
-            {% for check_key, is_done in readiness %}
-            <div class="check-item {% if is_done %}check-pass{% else %}check-fail{% endif %}">
-                {% if is_done %}&#10003;{% else %}&#10007;{% endif %}
-                {{ (readiness_labels[check_key]|default(check_key))|trans({}, 'reports') }}
-            </div>
-            {% endfor %}
-            {% if readiness is empty %}
-            <p style="color: var(--fg-3); font-size: 7.5pt;">{{ 'board_one_pager.no_data'|trans({}, 'reports') }}</p>
-            {% endif %}
-        </div>
+{% set _sections = [
+    {
+        heading: 'board_one_pager.section.top_risks'|trans({}, 'reports'),
+        table: top_risks|length > 0 ? {
+            headers: [ '#', 'board_one_pager.table.risk'|trans({}, 'reports'), 'board_one_pager.table.level'|trans({}, 'reports') ],
+            rows:    _top_risks_rows,
+        } : null,
+    },
+] %}
 
-        <div class="col-right">
-            <div class="section-header">{{ 'board_one_pager.section.operational'|trans({}, 'reports') }}</div>
-            <table>
-                <tr>
-                    <td>{{ 'board_one_pager.ops.open_incidents'|trans({}, 'reports') }}</td>
-                    <td class="text-end fw-bold">{{ kpis.incident_management.open_incidents.value|default(0) }}</td>
-                </tr>
-                <tr>
-                    <td>{{ 'board_one_pager.ops.risk_treatment'|trans({}, 'reports') }}</td>
-                    <td class="text-end fw-bold">{{ kpis.risk_management.risk_treatment_rate.value|default(0) }}%</td>
-                </tr>
-                <tr>
-                    <td>{{ 'board_one_pager.ops.overdue_treatments'|trans({}, 'reports') }}</td>
-                    <td class="text-end fw-bold">{{ kpis.risk_management.overdue_treatments.value|default(0) }}</td>
-                </tr>
-                <tr>
-                    <td>{{ 'board_one_pager.ops.training_completion'|trans({}, 'reports') }}</td>
-                    <td class="text-end fw-bold">{{ kpis.training.training_completion_rate.value|default(0) }}%</td>
-                </tr>
-                <tr>
-                    <td>{{ 'board_one_pager.ops.control_compliance'|trans({}, 'reports') }}</td>
-                    <td class="text-end fw-bold">{{ kpis.core.control_compliance.value|default(0) }}%</td>
-                </tr>
-            </table>
-        </div>
-    </div>
+{% if framework_compliance|length > 0 %}
+    {% set _sections = _sections|merge([{
+        heading: 'board_one_pager.section.framework_compliance'|trans({}, 'reports'),
+        table: { headers: [ 'board_one_pager.section.framework_compliance'|trans({}, 'reports'), '%' ], rows: _fw_rows },
+    }]) %}
+{% endif %}
 
-    {# ===== FOOTER ===== #}
-    <div class="footer">
-        {{ 'board_one_pager.footer.prepared_by'|trans({}, 'reports') }}: {{ prepared_by }} |
-        {{ 'board_one_pager.footer.generated'|trans({}, 'reports') }}: {{ generated_at|date('d.m.Y H:i') }} |
-        {{ 'board_one_pager.footer.confidential'|trans({}, 'reports') }} | Little ISMS Helper
-    </div>
+{% set _sections = _sections|merge([{
+    heading: 'board_one_pager.section.operational'|trans({}, 'reports'),
+    table: { headers: [ 'board_one_pager.metric.health'|trans({}, 'reports'), '#' ], rows: _ops_rows },
+}]) %}
+
+{{ _fa_report_doc.render({
+    report: {
+        title:          'board_one_pager.title'|trans({}, 'reports'),
+        kicker:         'board_one_pager.section.key_metrics'|trans({}, 'reports'),
+        status:         'final',
+        audience:       'vorstand',
+        classification: 'CONFIDENTIAL',
+        generated_at:   generated_at|date('d.m.Y H:i'),
+        prepared_by:    prepared_by,
+    },
+    brand_name:   'Little ISMS Helper',
+    key_findings: _findings,
+    kpis:         _kpis,
+    sections:     _sections,
+    appendix: {
+        sources: [
+            { label: 'ISMS-Health KPI', detail: 'kpis.health.isms_health_score' },
+            { label: 'Compliance Engine', detail: 'ComplianceAnalyticsService.getFrameworkComparison' },
+            { label: 'Risk Repository', detail: 'RiskRepository.findByTenant + Inherent-Risk-Sort (Top 5)' },
+        ],
+    },
+    distribution: [
+        { role: 'Vorstand', name: 'Geschäftsführung' },
+        { role: 'CISO',     name: prepared_by },
+    ],
+}) }}
 </body>
 </html>

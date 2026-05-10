@@ -110,6 +110,49 @@ report:
     document_type: 'Dokumenttyp'
     header_center: 'Kopfzeile (Mitte)'
     default_reviewer: 'Standard-Prüfer'
+    # Report-Doc 5-slot template (used by templates/_components/_fa_report_doc.html.twig)
+    doc:
+        brand:
+            default_meta: 'Information Security Management System'
+        watermark:
+            draft: 'ENTWURF'
+            confidential: 'VERTRAULICH'
+            auditor_only: 'AUDITOR-ONLY'
+        status:
+            draft: 'Entwurf'
+            final: 'Final'
+            confidential: 'Vertraulich'
+            auditor_only: 'Auditor-Only'
+        audience:
+            vorstand: 'Vorstand'
+            auditor: 'Auditor'
+            aufsicht: 'Aufsicht'
+        cover:
+            period: 'Berichtsperiode'
+            generated_at: 'Erstellt am'
+            prepared_by: 'Erstellt durch'
+            audience: 'Zielgruppe'
+            classification: 'Klassifikation'
+            standard: 'Norm-Bezug'
+        exec_summary:
+            heading: 'Executive Summary'
+            tldr_label: 'TL;DR — Kernaussagen'
+        chart:
+            type:
+                bar: 'Balkendiagramm'
+                line: 'Liniendiagramm'
+                pie: 'Kreisdiagramm'
+                heatmap: 'Heatmap'
+                area: 'Flächendiagramm'
+        appendix:
+            heading: 'Anhang'
+            methodology: 'Methodik'
+            sources: 'Datenquellen'
+            glossary: 'Glossar'
+        footer:
+            distribution_label: 'Verteiler'
+            generated: 'Erstellt'
+            default_disclaimer: 'Dieses Dokument enthält vertrauliche Informationen und ist ausschließlich für den genannten Empfängerkreis bestimmt. Weitergabe an Dritte ist nur nach schriftlicher Freigabe zulässig.'
 
 # PDF Export Templates
 pdf:
