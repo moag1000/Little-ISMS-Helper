@@ -1,4 +1,5 @@
 help:
+    badge: "Hilfe"
     iso9001_bridge:
         title: "Von ISO 9001 zu ISO 27001 — Ihr Wegweiser"
         subtitle: "Nutzen Sie Ihr QM-Wissen fuer den Einstieg in die Informationssicherheit"
