@@ -335,10 +335,7 @@
 
     {% set current_route = app.request.attributes.get('_route') %}
 
-    {# Skip to Content Link - WCAG 2.1 AA (Issue 13.1) #}
-    <a href="#main-content" class="skip-link">
-        {{ 'accessibility.skip_to_content'|trans({}, 'messages') }}
-    </a>
+    {# Skip-Links sind bereits oben (Line 190-191, vor jeglichem Content) — WCAG 2.1 AA. #}
 
     {# Main App Layout with Sidebar #}
     <div class="app-layout">
