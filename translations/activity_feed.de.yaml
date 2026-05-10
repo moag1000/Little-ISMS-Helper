@@ -1,0 +1,7 @@
+# Activity Feed
+title: 'Activity-Feed'
+badge: 'Feed'
+subtitle: 'Letzte Aktivitäten aus Audit-Log, Workflows, Dokumenten und Risiken'
+
+action:
+    standard_dashboard: 'Standard-Dashboard'

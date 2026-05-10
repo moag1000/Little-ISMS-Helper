@@ -1,18 +1,18 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'messages' %}
+{% trans_default_domain 'activity_feed' %}
 
-{% block title %}Activity-Feed - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block body %}
 <main class="fa-aurora-surface">
     {{ _fa_page_header.render({
-        badge:    { icon: 'activity', label: 'Feed' },
-        title:    'Activity-Feed',
-        subtitle: 'Letzte Aktivitäten aus Audit-Log, Workflows, Dokumenten und Risiken',
+        badge:    { icon: 'activity', label: 'badge'|trans },
+        title:    'title'|trans,
+        subtitle: 'subtitle'|trans,
         actions: [
-            { label: 'Standard-Dashboard', variant: 'ghost', icon: 'house', href: path('app_dashboard') }
+            { label: 'action.standard_dashboard'|trans, variant: 'ghost', icon: 'house', href: path('app_dashboard') }
         ]
     }) }}
 

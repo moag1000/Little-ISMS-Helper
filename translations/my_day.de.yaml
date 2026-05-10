@@ -1,0 +1,36 @@
+# My Day Inbox (Phase 7 Persona-driven Inbox)
+title: 'Mein Tag'
+badge: 'My Day'
+subtitle: 'Alle offenen Punkte aus 7 Posteingängen — heute, %generated_at%'
+
+action:
+    standard_dashboard: 'Standard-Dashboard'
+
+kpi:
+    workflows_pending: 'Workflows offen'
+    workflows_overdue: 'Workflows überfällig'
+    four_eyes: '4-Augen-Anfragen'
+    acknowledgements: 'Policy-Ack ausstehend'
+    findings: 'Findings (mir)'
+    dsrs: 'DSR (mir)'
+    corrective_actions_overdue: 'CA überfällig'
+
+section:
+    workflows_pending: 'Workflows offen'
+    workflows_overdue: 'Workflows überfällig'
+    four_eyes: '4-Augen-Approval'
+    acknowledgements: 'Policy-Acknowledgements'
+    findings: 'Audit-Findings (mir zugewiesen)'
+    dsrs: 'Data-Subject-Requests'
+    corrective_actions_overdue: 'Korrekturmaßnahmen überfällig'
+
+empty:
+    title: 'Alles erledigt'
+    text: 'Aktuell keine offenen Aufgaben für dich. Gute Arbeit!'
+
+item:
+    due: 'Fällig'
+
+priority:
+    high: 'High'
+    medium: 'Med'
