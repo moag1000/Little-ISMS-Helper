@@ -63,46 +63,35 @@
         </div>
     {% endif %}
 
-    {# Hero Section with Alva — inline SVG reagiert auf Mode-Switch #}
-    {% import '_components/_alva.html.twig' as alva %}
+    {# Hero — V3 W2-M9: Aurora _fa_hero macro replaces Bootstrap-Insel #}
+    {% import '_components/_fa_hero.html.twig' as _fa_hero %}
+    {% set _hero_subtitle = 'welcome.tagline'|trans({}, 'welcome') %}
+    {% if overall_compliance is defined and overall_compliance > 0 %}
+        {% set _hero_subtitle = _hero_subtitle ~ ' — ' ~ 'welcome.hero.status'|trans({
+            '%compliance%': overall_compliance,
+            '%urgent%': total_urgent_count|default(0),
+            '%risks%': risks_total|default(0)
+        }, 'welcome') %}
+    {% endif %}
+    {% set _hero_actions = [
+        { label: 'welcome.action.dashboard'|trans({}, 'welcome'),
+          variant: 'primary', icon: 'bi-grid', href: path('app_dashboard') }
+    ] %}
+    {% if total_urgent_count|default(0) > 0 %}
+        {% set _hero_actions = _hero_actions|merge([
+            { label: 'welcome.action.urgent_tasks'|trans({'%count%': total_urgent_count}, 'welcome'),
+              variant: 'warning', icon: 'bi-exclamation-triangle', href: '#urgent-tasks' }
+        ]) %}
+    {% endif %}
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10 col-xl-8">
-            <div class="welcome-hero text-center py-5">
-                <div class="welcome-logo mb-4 d-flex justify-content-center">
-                    {{ alva.render('happy', { size: 180, ariaLabel: 'welcome.logo_alt'|trans({}, 'welcome') })|raw }}
-                </div>
-                <h1 class="h3 mb-3 welcome-hero__title">{{ 'welcome.headline'|trans({}, 'welcome') }}</h1>
-                <p class="lead mb-2 welcome-hero__lead">
-                    {{ 'welcome.tagline'|trans({}, 'welcome') }}
-                </p>
-
-                {# Dynamic Compliance Status Line #}
-                {% if overall_compliance is defined and overall_compliance > 0 %}
-                    <p class="lead mb-4 welcome-hero__lead">
-                        {{ 'welcome.hero.status'|trans({
-                            '%compliance%': overall_compliance,
-                            '%urgent%': total_urgent_count|default(0),
-                            '%risks%': risks_total|default(0)
-                        }, 'welcome') }}
-                    </p>
-                {% else %}
-                    <div class="mb-4"></div>
-                {% endif %}
-
-                {# Quick Action Buttons #}
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a href="{{ path('app_dashboard') }}" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--lg">
-                        <i class="fa-icon fa-icon--nav-dashboard me-2" aria-hidden="true"></i>
-                        {{ 'welcome.action.dashboard'|trans({}, 'welcome') }}
-                    </a>
-                    {% if total_urgent_count > 0 %}
-                        <a href="#urgent-tasks" class="fa-cyber-btn fa-cyber-btn--warning fa-cyber-btn--lg">
-                            <i class="fa-icon fa-icon--status-warning me-2" aria-hidden="true"></i>
-                            {{ 'welcome.action.urgent_tasks'|trans({'%count%': total_urgent_count}, 'welcome') }}
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
+            {{ _fa_hero.render({
+                mood: 'happy',
+                title: 'welcome.headline'|trans({}, 'welcome'),
+                subtitle: _hero_subtitle,
+                actions: _hero_actions,
+                alvaSize: 160
+            }) }}
         </div>
     </div>
 
@@ -250,45 +239,10 @@
 </div>
 
 <style>
+    /* V3 W2-M9: .welcome-hero CSS removed — replaced by _fa_hero macro
+       (uses fa-hero / fa-hero__* classes from FairyAurora v4 stylesheet). */
     .welcome-page {
         padding-top: 2rem;
-    }
-
-    .welcome-hero {
-        /* Dezenter Aurora-Farbverlauf — gleichmäßig lesbar über ganze Breite */
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 1rem;
-        padding: 3rem 2rem;
-        color: var(--fg);
-    }
-    /* Optionaler subtiler Glow-Hint oben (kein links/rechts-Unterschied) */
-    .welcome-hero {
-        box-shadow: 0 0 0 1px var(--primary-glow),
-                    0 6px 20px rgba(0, 0, 0, 0.04);
-        position: relative;
-        overflow: hidden;
-    }
-    .welcome-hero::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 2px;
-        background: var(--brand-gradient);
-        opacity: 0.6;
-    }
-
-    html[data-theme="dark"] .welcome-hero,
-    [data-bs-theme="dark"] .welcome-hero {
-        background: var(--surface);
-        border-color: var(--border);
-        color: var(--fg);
-        box-shadow: 0 0 0 1px var(--primary-glow),
-                    0 8px 24px rgba(0, 0, 0, 0.25);
-    }
-
-    .welcome-logo img {
-        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
     }
 
     .module-card {
@@ -334,14 +288,6 @@
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
-        .welcome-hero {
-            padding: 2rem 1rem;
-        }
-
-        .welcome-logo img {
-            max-height: 140px !important;
-        }
-
         .h3 {
             font-size: 1.25rem;
         }

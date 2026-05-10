@@ -1,6 +1,8 @@
 {#
  # First-Hour Checklist — Post-Setup guided onboarding for small businesses.
  #
+ # V3 W2-M9: migrated from Bootstrap card to Aurora _fa_section.
+ #
  # Shows 4 actionable steps after the setup wizard has seeded initial data:
  # 1. Review pre-loaded assets (edit names, adjust CIA)
  # 2. Review pre-loaded risks (adjust scores)
@@ -19,17 +21,17 @@
 {% trans_default_domain 'journey' %}
 
 {% if journey and journey.overallPercent < 50 and asset_count|default(0) > 0 %}
-<div class="card border-primary mb-4 shadow-sm">
-    <div class="card-header bg-primary-subtle d-flex align-items-center">
-        <div class="me-3">
+<section class="fa-section fa-section--accent mb-4" aria-label="{{ 'first_hour.title'|trans }}">
+    <div class="fa-section__header d-flex align-items-center gap-3">
+        <div aria-hidden="true">
             {% include '_components/_alva.html.twig' with { mood: 'working', size: 40, decorative: true } only %}
         </div>
-        <div>
-            <h2 class="h5 mb-0">{{ 'first_hour.title'|trans }}</h2>
-            <small class="text-muted">{{ 'first_hour.subtitle'|trans }}</small>
+        <div class="flex-grow-1">
+            <h2 class="fa-section__title h5 mb-0">{{ 'first_hour.title'|trans }}</h2>
+            <small class="text-muted d-block">{{ 'first_hour.subtitle'|trans }}</small>
         </div>
     </div>
-    <div class="card-body">
+    <div class="fa-section__body">
         <div class="list-group list-group-flush">
             {# Step 1: Review assets #}
             <a href="{{ path('app_asset_index') }}" class="list-group-item list-group-item-action d-flex align-items-center">
@@ -96,5 +98,5 @@
             </a>
         </div>
     </div>
-</div>
+</section>
 {% endif %}
