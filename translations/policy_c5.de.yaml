@@ -1,0 +1,1062 @@
+policy:
+    c5:
+        c5_organisation_information_security:
+            v1:
+                title: 'Richtlinie Organisation der Informationssicherheit (Cloud)'
+                body: |-
+                    # Richtlinie Organisation der Informationssicherheit (Cloud) der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: BSI C5:2020 OIS-01 bis OIS-07 + C5:2026-Erweiterung (OIS) + ISO/IEC 27001:2022 Annex A.5.1-A.5.4 + ISO/IEC 27017:2015 CLD.6.3 + ISO/IEC 27018:2019 + BSI 200-2 OPS.2.2 (Cloud-Nutzung) | Edition: C5:2026 | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt die Aufbau- und Ablauforganisation der Informationssicherheit fuer den Cloud-Betrieb der {{ tenant.legal_name }} entsprechend der Basiskriterien des BSI C5:2020 (OIS-01 bis OIS-07) sowie der C5:2026-Erweiterungen. Sie definiert Rollen, Verantwortlichkeiten und Berichtslinien fuer alle Cloud-Service-Modelle (IaaS, PaaS, SaaS, FaaS) und Bereitstellungsmodelle (Public, Private, Hybrid, Community), die durch die {{ tenant.legal_name }} genutzt oder als Cloud-Service-Provider (CSP) bereitgestellt werden. Eine besondere Beruecksichtigung erfaehrt die Verantwortlichkeitsgrenze zwischen CSP und Kunden im Sinne des Shared-Responsibility-Models.
+
+                    ## 2. Verantwortlichkeitsgrenze CSP / Kunde
+                    Die Verantwortlichkeitsgrenze (Shared-Responsibility) wird fuer jeden Cloud-Dienst dokumentiert und vertraglich fixiert. Die nachfolgende Matrix gilt als Mindestaufteilung; abweichende vertragliche Regelungen sind im Cloud-Register zu hinterlegen:
+
+                    | Verantwortungsbereich | IaaS | PaaS | SaaS |
+                    |---|---|---|---|
+                    | Physische Sicherheit RZ | CSP | CSP | CSP |
+                    | Hypervisor / Virtualisierung | CSP | CSP | CSP |
+                    | Betriebssystem | Kunde | CSP | CSP |
+                    | Container-Runtime / Plattform | Kunde | CSP | CSP |
+                    | Anwendung | Kunde | Kunde | CSP |
+                    | Identitaeten und Berechtigungen | Kunde | Kunde | Kunde (Konfiguration) |
+                    | Daten und Klassifizierung | Kunde | Kunde | Kunde |
+                    | Verschluesselung in Transit | Geteilt | Geteilt | Geteilt |
+                    | Verschluesselung at Rest | Konfiguration Kunde | Konfiguration Kunde | Konfiguration Kunde |
+                    | Schluesselmanagement (BYOK/HYOK) | Kunde optional | Kunde optional | Kunde optional |
+
+                    ## 3. Rollen und Verantwortlichkeiten (OIS-01)
+                    - **Geschaeftsleitung ({{ roles.top_management.fullName }}):** Letztverantwortung gemaess C5:2020 OIS-01, Genehmigung dieser Richtlinie, Bereitstellung Ressourcen, Strategievorgabe Cloud-Adoption;
+                    - **Cloud-Security-Officer (CSO) / ISB ({{ roles.isb.fullName }}):** operative Steuerung Cloud-Sicherheit, Genehmigung Cloud-Onboarding, Pflege Cloud-Register, Kontaktpunkt fuer C5-Auditor;
+                    - **Cloud-Architekt:** technische Referenzarchitekturen, Zero-Trust-Designvorgaben, Plattform-Standardisierung;
+                    - **Cloud-Operations-Lead:** Betrieb, Monitoring, Incident-Erstreaktion;
+                    - **Datenschutzbeauftragter (DSB):** Pruefung DSGVO-Konformitaet, Auftragsverarbeitungsvertraege (AVV) gemaess Art. 28, Drittlandtransfers;
+                    - **Compliance-Manager / GRC:** Steuerung C5-Pruefungs-Programm, Beweisaufnahme fuer Subject-Matter-Pruefung Typ 1 / Typ 2;
+                    - **Einkauf und Recht:** SLA-Verhandlung, Exit- und Audit-Klauseln;
+                    - **Fachbereiche:** Bedarfsanmeldung, Datenklassifikation, Use-Case-Beschreibung.
+
+                    ## 4. Trennung von Verantwortung (OIS-02, OIS-03)
+                    Die Funktionstrennung zwischen Entwicklung, Betrieb und Pruefung wird gemaess C5 OIS-02 (Trennung von Verantwortung) und A.5.3 (Aufgabentrennung) durchgesetzt:
+
+                    1. Wer Cloud-Ressourcen produktiv betreibt, darf diese nicht selbstaendig entwickeln (4-Augen-Pflicht bei Aenderungen, Cross-Ref OPS-08);
+                    2. Wer einen Cloud-Audit durchfuehrt, darf den gepruften Bereich nicht operativ verantworten;
+                    3. Wer Schluesselmaterial verwaltet (KOS), darf weder Anwendungs- noch Datenzugriff besitzen;
+                    4. Konflikte werden ueber den Privileged-Access-Management-Prozess (Cross-Ref IDM) eskaliert.
+
+                    ## 5. Kontakt zu Behoerden und Interessensgruppen (OIS-04, OIS-05)
+                    Die {{ tenant.legal_name }} unterhaelt dokumentierte Kontakte zu:
+
+                    - **BSI** (CERT-Bund, BSI-Lagezentrum, KRITIS-Buero) — Meldepflichten gemaess BSIG, NIS2-UmsuG;
+                    - **zustaendiger Datenschutz-Aufsichtsbehoerde** (Landes- oder Bundesdatenschutzbehoerde) — Meldungen DSGVO Art. 33;
+                    - **EU-Behoerden bei DORA-Pflichten** (BaFin, ESMA, EIOPA) — bei Finanzaufsicht;
+                    - **Strafverfolgungsbehoerden** — fuer IT-forensische Eskalationen;
+                    - **Branchenverbaenden, ISACs, Cyber-Sharing-Plattformen** — fuer Threat-Intelligence;
+                    - **EUCS- bzw. ENISA-Kontakt** sofern EUCS-Substantial-Konformitaet angestrebt wird.
+
+                    Die Kontaktliste ist mindestens jaehrlich zu pruefen.
+
+                    ## 6. Informationssicherheit im Projektmanagement (OIS-06)
+                    Jedes Projekt mit Cloud-Bezug durchlaeuft eine sicherheitsrelevante Vorpruefung (Cloud-Security-Review). Diese umfasst Schutzbedarf, Datenklassifikation, regulatorische Pflichten, Wahl des Service- und Bereitstellungsmodells, Verantwortungsabgrenzung sowie eine erste Risikoabschaetzung. Ergebnis ist Voraussetzung fuer die Aufnahme in das Cloud-Register.
+
+                    ## 7. Funktionen mit besonderer Verantwortung (OIS-07)
+                    Funktionen mit erhoehter Verantwortung (Cloud-Architekt, KMS-Administrator, Privileged-IAM-Admin, Auditor) werden vor Erstbesetzung einer dokumentierten Eignungspruefung unterzogen (Cross-Ref PSS, HR-02), ihr Berechtigungsprofil wird halbjaehrlich rezertifiziert.
+
+                    ## 8. C5-Pruefungsbereitschaft (Typ 1 / Typ 2)
+                    Die Organisation ist so aufzustellen, dass sowohl die Angemessenheit (Typ-1-Pruefung, Stichtagsbetrachtung) als auch die Wirksamkeit (Typ-2-Pruefung, mind. 6 Monate Nachweiszeitraum) der Massnahmen nachgewiesen werden kann. Hierfuer fuehrt der CSO einen kontinuierlichen Beweismitteltrack im GRC-Tool. Kontroll-Verantwortliche stellen mindestens halbjaehrlich Wirksamkeitsnachweise bereit.
+
+                    ## 9. Steuerung der C5:2026-Zusatzkriterien
+                    Zusatzkriterien sind kundenspezifisch und werden im Risiko- und Anforderungsdialog mit Cloud-Kunden vereinbart. Die Geschaeftsleitung priorisiert die Aufnahme von Zusatzkriterien jaehrlich auf Basis Marktnachfrage, regulatorischer Entwicklung und Risikobewertung.
+
+                    ## 10. Pruefintervall, Genehmigung und Aenderungen
+                    Diese Richtlinie wird mindestens alle 24 Monate sowie bei wesentlichen Aenderungen (Wechsel CSP-Anbieter, neue Compliance-Anforderungen, organisatorische Restrukturierungen) ueberprueft. Genehmigung: Geschaeftsleitung + ISB. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI C5:2020 OIS-01 bis OIS-07, C5:2026-Erweiterung, ISO/IEC 27001:2022 A.5.1-A.5.4, ISO/IEC 27017:2015 CLD.6.3, ISO/IEC 27018:2019, BSI 200-2 OPS.2.2, DSGVO Art. 28, NIS2-UmsuG § 30, DORA Art. 6.*
+
+        c5_security_policies_procedures:
+            v1:
+                title: 'Cloud-Sicherheitsrichtlinien und Verfahrensdokumentation'
+                body: |-
+                    # Cloud-Sicherheitsrichtlinien und Verfahrensdokumentation der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: BSI C5:2020 SP-01 bis SP-04 + C5:2026-Erweiterung (SPP) + ISO/IEC 27001:2022 Annex A.5.1 + ISO/IEC 27017:2015 + ISO/IEC 27018:2019 + BSI 200-1 Kap. 5 | Edition: C5:2026 | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie strukturiert den Aufbau, die Verabschiedung, die Veroeffentlichung, das Lesen-und-Verstehen sowie die Aktualisierung aller cloud-bezogenen Sicherheitsdokumente der {{ tenant.legal_name }}. Sie operationalisiert C5:2020 SP-01 (Sicherheitsleitlinie) bis SP-04 (Aktualisierung) sowie ISO 27001 A.5.1 (Information-Security-Policy).
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Dokumente, die Anforderungen, Verfahrens- oder Konfigurationsregeln fuer Cloud-Dienste festlegen — unabhaengig vom Format (Text, Wiki, Code-as-Policy, Infrastruktur-as-Code-Templates, Runbooks, Konfigurationsbaselines). Eingeschlossen sind Dokumente, die im Rahmen der C5-Pruefung als Beweismittel dienen.
+
+                    ## 3. Verantwortlichkeiten
+                    - **CSO / ISB ({{ roles.isb.fullName }}):** Eigentuemer der Cloud-Sicherheitsleitlinie, Veroeffentlichungsfreigabe;
+                    - **Policy-Owner pro Themenrichtlinie:** verantwortlich fuer fachliche Aktualitaet;
+                    - **Document Controller:** Versionierung, Verteilung, Lesbestaetigung;
+                    - **Compliance-Manager:** Mapping auf C5- und ISO-Anforderungen, Beweismittel fuer Auditor;
+                    - **Beschaeftigte:** Pflicht zur Lesbestaetigung der fuer ihre Rolle relevanten Dokumente.
+
+                    ## 4. Dokumenten-Hierarchie (SP-01)
+                    Die Cloud-Dokumentation folgt einer dreistufigen Hierarchie:
+
+                    1. **Cloud-Sicherheitsleitlinie** (Tier 1, Top-Level) — Genehmigung Geschaeftsleitung, Pruefintervall 24 Monate;
+                    2. **Themenrichtlinien** (Tier 2, diese Richtlinie und 11 weitere C5-Domaenen-Richtlinien) — Genehmigung CSO, Pruefintervall 12-24 Monate;
+                    3. **Verfahrensanweisungen, Runbooks, Baselines, IaC-Templates** (Tier 3) — Genehmigung Fachbereich, Pruefintervall 12 Monate, bei Codebase-Aenderungen kontinuierlich (CI/CD).
+
+                    ## 5. Mindest-Inhalte je Dokument (SP-02)
+                    Jedes Dokument enthaelt mindestens:
+
+                    - Geltungsbereich (welche Dienste, welche Regionen, welche Kundenklassen);
+                    - Verantwortliche Rollen mit RACI;
+                    - Norm-Anker (C5-Kriterium, ISO-Annex, BSI-Baustein);
+                    - Konkrete Vorgaben (SOLL-Zustand) sowie Pruefkriterien (Wirksamkeitsnachweis);
+                    - Referenzen zu anderen Dokumenten;
+                    - Versionsstand, Genehmigungsdatum, Pruefintervall, naechster Review-Termin.
+
+                    ## 6. Veroeffentlichung und Bekanntmachung (SP-03)
+                    Verabschiedete Dokumente werden im zentralen Dokumentenmanagement-System (DMS) veroeffentlicht. Beschaeftigte werden ueber wesentliche Aenderungen aktiv informiert (E-Mail-Verteiler, Intranet, Onboarding-Pflicht). Die Lesbestaetigung wird fuer rollenrelevante Dokumente erzwungen und mind. 3 Jahre archiviert (C5-Beweismittelpflicht).
+
+                    ## 7. Aktualisierung und Abweichungs-Management (SP-04)
+                    Dokumente werden mindestens im definierten Pruefintervall ueberprueft. Anlassbezogene Pruefung erfolgt bei:
+
+                    - Aenderung der Cloud-Strategie oder des CSP-Portfolios;
+                    - neuen regulatorischen Anforderungen (z. B. DORA, NIS2-UmsuG, EUCS, EU AI Act);
+                    - schwerwiegenden Sicherheitsvorfaellen mit Lesson-Learned;
+                    - Aenderung des C5-Katalogs (z. B. Wechsel von C5:2020 auf C5:2026 oder kuenftige Versionen);
+                    - relevanten Erkenntnissen aus dem internen Audit oder dem C5-Pruefer.
+
+                    Abweichungen vom Soll-Zustand sind dokumentiert zu beantragen, zu bewerten, durch CSO zu genehmigen und mit Befristung in das Risikoregister aufzunehmen.
+
+                    ## 8. C5-Beweisaufnahme
+                    Pro Dokument werden Beweismittel hinterlegt: aktuelle Version, Genehmigungsprotokoll, Lesbestaetigungs-Statistik. Diese Belege sind essenziell fuer die Subject-Matter-Pruefung Typ 1 (Angemessenheit zum Stichtag) und Typ 2 (Wirksamkeit ueber den Pruefzeitraum).
+
+                    ## 9. Kunden-Transparenz (Shared-Responsibility-Beilage)
+                    Sofern die {{ tenant.legal_name }} als CSP auftritt, wird Cloud-Kunden eine kuratierte Sammlung von Sicherheitsdokumenten transparent zur Verfuegung gestellt. Inhalte sind: Service-Beschreibung, Verantwortungsmatrix, technische Sicherheitsmassnahmen, C5-Testat (Typ 1 oder Typ 2). Veroeffentlichungspflicht im Rahmen vertraglicher Auskunftsrechte.
+
+                    ## 10. Pruefintervall und Genehmigung
+                    Diese Richtlinie wird mindestens alle 24 Monate ueberprueft. Genehmigung: Geschaeftsleitung + CSO. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI C5:2020 SP-01 bis SP-04, C5:2026, ISO/IEC 27001:2022 A.5.1, ISO/IEC 27017:2015, BSI 200-1 Kap. 5.*
+
+        c5_personnel_security:
+            v1:
+                title: 'Cloud-Personalsicherheit'
+                body: |-
+                    # Cloud-Personalsicherheit der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: BSI C5:2020 HR-01 bis HR-06 + C5:2026-Erweiterung (PSS) + ISO/IEC 27001:2022 Annex A.6.1 bis A.6.6 + ISO/IEC 27017:2015 + ISO/IEC 27018:2019 (PII-Beschaeftigte) + BSI 200-2 ORP.2 + DSGVO Art. 32, § 26 BDSG | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie definiert personalbezogene Sicherheitsmassnahmen fuer alle Personen, die Cloud-Ressourcen der {{ tenant.legal_name }} entwickeln, betreiben, administrieren oder pruefen. Eingeschlossen sind Beschaeftigte, externe Beschaeftigte, Auftragnehmer, Praktikanten und (sofern erforderlich) Mitarbeiter von Subdienstleistern. Sie operationalisiert C5:2020 HR-01 (Eignungspruefung), HR-02 (Vertraulichkeitsverpflichtung), HR-03 (Schulung), HR-04 (Disziplinarverfahren), HR-05 (Verantwortlichkeiten bei Beendigung), HR-06 (Aufgabentrennung).
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Cloud-relevanten Rollen, mit besonderer Schaerfung fuer privilegierte Rollen (Cloud-Architekt, KMS-Administrator, IAM-Privileged-Admin, Cloud-Operator, SOC-Analyst, internal Auditor).
+
+                    ## 3. Verantwortlichkeiten
+                    - **HR-Leitung ({{ roles.hr.fullName }}):** Eignungspruefung, Onboarding, Offboarding, disziplinarrechtliche Massnahmen;
+                    - **CSO / ISB ({{ roles.isb.fullName }}):** Pflichtenheft je Rolle, Awareness-Programm, Wirksamkeitspruefung;
+                    - **DSB ({{ roles.dpo.fullName }}):** Datenschutzkonformitaet (§ 26 BDSG, Beschaeftigtendatenschutz);
+                    - **Fuehrungskraefte:** Wahrnehmung Aufsichtspflicht, regelmaessige Bewertungen;
+                    - **Beschaeftigte:** Einhaltung Vertraulichkeitsverpflichtung, Awareness-Pflicht, Meldung verdaechtiger Aktivitaeten.
+
+                    ## 4. Eignungspruefung vor Aufnahme (HR-01)
+                    Vor Aufnahme einer Cloud-relevanten Taetigkeit ist eine dokumentierte Eignungspruefung durchzufuehren. Mindestumfang:
+
+                    - Identitaetspruefung (amtl. Lichtbildausweis);
+                    - Lebenslauf-Verifikation, Bestaetigung relevanter Zertifikate (z. B. CISSP, CCSP, BSI IT-Grundschutz Praktiker);
+                    - Referenzpruefung mind. zwei Vorbeschaeftigte;
+                    - bei sehr hohem Schutzbedarf oder VS-NfD-Beruehrung: Sicherheitsueberpruefung gemaess SUEG (Stufe Ue1 bis Ue3);
+                    - polizeiliches Fuehrungszeugnis (nicht aelter als 3 Monate) bei privilegierten Rollen;
+                    - SCHUFA-Bonitaetspruefung nur bei finanzwirksam Funktionen, mit dokumentierter Erforderlichkeit (DSGVO Art. 6, § 26 BDSG).
+
+                    Pruefumfang ist abhaengig vom Schutzbedarf der zu verarbeitenden Daten und wird im Stellenprofil verankert.
+
+                    ## 5. Vertraulichkeitsverpflichtung und Vertragsgestaltung (HR-02)
+                    Vor erstem Datenzugriff unterzeichnen Beschaeftigte eine Vertraulichkeitsverpflichtung (NDA), die ueber die gesetzlichen Verschwiegenheitsregeln hinaus mind. nachfolgende Punkte enthaelt:
+
+                    - Geltung waehrend und nach Beendigung der Taetigkeit (Standard 3 Jahre, bei VS-NfD bis 30 Jahre);
+                    - Verbot externer Speicherung (Schatten-IT, private Cloud, Generative-AI-Tools ohne Freigabe);
+                    - Verpflichtung auf Datenschutz nach DSGVO und BDSG;
+                    - Zustimmung zu Logging und Monitoring (Beschaeftigtendatenschutz);
+                    - Pflicht zur unverzueglichen Meldung verlorener oder kompromittierter Anmeldedaten.
+
+                    ## 6. Awareness, Schulung und Zertifizierung (HR-03)
+                    Die {{ tenant.legal_name }} betreibt ein cloud-spezifisches Awareness- und Trainingsprogramm:
+
+                    - **Onboarding-Pflicht:** binnen 30 Tagen nach Eintritt; Inhalt: Cloud-Sicherheitsleitlinie, Shared-Responsibility, Phishing, sichere Konfiguration, Geheimnis-Handhabung;
+                    - **Jaehrliche Refresher:** mit verpflichtender Lernkontrolle (Pass-Quote ≥ 80 Prozent);
+                    - **Rollenbasierte Vertiefungs-Trainings:** Privileged-Access, Secure-DevOps, Cloud-IR, IAM-Hardening, Container-Security;
+                    - **Phishing-Simulationen:** quartalsweise mit Click-Rate-Monitoring (Ziel ≤ 5 Prozent);
+                    - **Zertifizierungspflicht** fuer Schluesselrollen (z. B. CCSP, AWS/Azure/GCP Security Specialty, BSI IT-Grundschutz Praktiker).
+
+                    Schulungsnachweise sind 5 Jahre aufzubewahren (C5-Beweismittelpflicht).
+
+                    ## 7. Disziplinarverfahren bei Verstoessen (HR-04)
+                    Verstoesse gegen Cloud-Sicherheitsregeln werden in einem dokumentierten, abgestuften Verfahren behandelt:
+
+                    1. Sofortige technische Massnahme (z. B. Sperrung Account, Cross-Ref IDM);
+                    2. Dokumentation Vorfall, Beteiligung HR und CSO;
+                    3. Anhoerung Beschaeftigter, ggf. Beteiligung Betriebsrat;
+                    4. Massnahme von Ermahnung bis Kuendigung; bei Vorsatz und Schaden: zivil- und strafrechtliche Schritte;
+                    5. Meldung an DSB sofern personenbezogene Daten betroffen.
+
+                    ## 8. Beendigung und Funktionswechsel (HR-05)
+                    Bei Beendigung oder Funktionswechsel werden binnen vereinbarten Fristen folgende Massnahmen umgesetzt:
+
+                    - Sofort am Austrittstag: Sperrung aller Cloud-Konten, Widerruf MFA-Faktoren, Ungueltigmachen Token und API-Keys, Sperrung Hardware-Token;
+                    - binnen 24 Stunden: Loeschung lokaler Geraete-Daten, Rueckgabe Hardware, Loeschung mobiler Zertifikate;
+                    - binnen 7 Tagen: Re-Assignment Daten-Eigentuemerschaft, Archivierung E-Mail-Postfach, Pruefung delegierter Berechtigungen;
+                    - Aufhebung NDAs nicht vor Ablauf vertraglich vereinbarter Verschwiegenheitsfristen.
+
+                    Bei interner Funktionsaenderung erfolgt ein Berechtigungs-Reset vor Vergabe neuer Rechte (Zero-Trust-Prinzip).
+
+                    ## 9. Aufgabentrennung (HR-06)
+                    Konfliktreiche Rollenkombinationen sind verboten und systemisch zu verhindern (Cross-Ref OIS, IDM):
+
+                    - Entwicklung darf nicht produktiv betreiben;
+                    - KMS-Admin darf nicht auf Anwendungs-/Datenebene zugreifen;
+                    - interne Auditoren duerfen nicht im gepruften Bereich operativ taetig sein;
+                    - Zwei-Personen-Pflicht fuer Aenderungen am Cloud-Foundation-Account.
+
+                    ## 10. Datenschutz, ISO 27018 und Beschaeftigtendaten
+                    Personenbezogene Daten von Beschaeftigten werden gemaess DSGVO und § 26 BDSG verarbeitet. Bei Verarbeitung in Public-Cloud-Diensten gilt zusaetzlich ISO/IEC 27018:2019 (PII in der Public Cloud). Logging und Monitoring werden datenschutzkonform gestaltet, Mitbestimmungsrechte des Betriebsrats werden gewahrt (BetrVG § 87 Abs. 1 Nr. 6).
+
+                    ## 11. Pruefintervall und Genehmigung
+                    Diese Richtlinie wird mindestens alle 24 Monate sowie bei wesentlichen Aenderungen (neue regulatorische Vorgaben, Wechsel CSP) ueberprueft. Genehmigung: HR-Leitung + CSO. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI C5:2020 HR-01 bis HR-06, C5:2026, ISO/IEC 27001:2022 A.6.1-A.6.6, ISO/IEC 27018:2019, BSI 200-2 ORP.2/ORP.3, DSGVO Art. 32, § 26 BDSG, BetrVG § 87.*
+
+        c5_asset_management:
+            v1:
+                title: 'Cloud-Asset-Management'
+                body: |-
+                    # Cloud-Asset-Management der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: BSI C5:2020 AM-01 bis AM-05 + C5:2026-Erweiterung (AM, inkl. SBOM) + ISO/IEC 27001:2022 Annex A.5.9 bis A.5.13 + ISO/IEC 27017:2015 CLD.6.3 + BSI 200-2 OPS.2.2 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Inventarisierung, Klassifikation, Eigentuemerschaft und sichere Handhabung aller Cloud-Assets der {{ tenant.legal_name }}. Sie operationalisiert C5:2020 AM-01 (Inventar), AM-02 (Eigentuemerschaft), AM-03 (akzeptierter Gebrauch), AM-04 (Klassifizierung), AM-05 (Kennzeichnung) sowie die C5:2026-Erweiterung (Software-Bill-of-Materials-Pflicht).
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle digitalen und logischen Cloud-Assets:
+
+                    - Compute-Ressourcen (VMs, Bare-Metal, Container, Functions, Lambdas);
+                    - Storage-Ressourcen (Object-, Block-, File-Storage, Datenbanken, Caches);
+                    - Netzwerk-Ressourcen (VPCs, Subnetze, Gateways, Load-Balancer, DNS-Zonen);
+                    - Identitaeten (User, Service-Accounts, Roles, Workload-Identities);
+                    - Schluessel und Geheimnisse (KMS-Schluessel, Zertifikate, API-Keys, Tokens);
+                    - Daten und Datensaetze inkl. Trainingsdaten fuer ML-Modelle;
+                    - Software-Bill-of-Materials (SBOM) fuer alle bereitgestellten und genutzten Komponenten;
+                    - Cloud-Konfigurations-Templates (Terraform, ARM, CloudFormation, Helm-Charts).
+
+                    ## 3. Verantwortlichkeiten
+                    - **CSO / ISB:** Eigentuemer Cloud-Asset-Register, Pruefintervall, Reporting;
+                    - **Cloud-Architekt:** Definition Tagging-Standards, Asset-Discovery-Tooling;
+                    - **Service-Owner:** fachliche Eigentuemerschaft, Schutzbedarfsfeststellung, Kennzeichnung;
+                    - **DSB:** Pruefung der Datenklassifikation, PII-spezifische Anforderungen;
+                    - **DevOps / SRE:** Pflege SBOM, IaC-Templates, Tagging-Compliance;
+                    - **Beschaeftigte:** Beachtung des akzeptierten Gebrauchs (Acceptable-Use-Policy).
+
+                    ## 4. Cloud-Asset-Register (AM-01)
+                    Es wird ein zentrales Cloud-Asset-Register gefuehrt mit mindestens:
+
+                    | Pflichtfeld | Inhalt |
+                    |---|---|
+                    | Asset-ID | eindeutiger Identifier |
+                    | Asset-Typ | Compute, Storage, Identity, Schluessel, Daten, SBOM-Komponente, IaC-Template |
+                    | Eigentuemer | Person + Rolle |
+                    | Service-Owner-Rolle | Bezug zur Organisationsstruktur |
+                    | Mandant / Geschaeftsbereich | Multi-Tenancy-Zuordnung |
+                    | Cloud-Provider und Region | inkl. EU/EWR-Pruefung |
+                    | Schutzbedarf | C/I/V mit Begruendung |
+                    | Datenklassifikation | oeffentlich / intern / vertraulich / streng vertraulich / VS-NfD |
+                    | regulatorische Pflicht | KRITIS, NIS2, DORA, GDPR-spezifisch |
+                    | Beschaffungs-/Erzeugungsdatum | und Lebenszyklus-Status |
+                    | Verfallsdatum / Rotation | bei Schluesseln, Zertifikaten, Geheimnissen |
+
+                    Discovery erfolgt automatisiert via Cloud-Posture-Management (CSPM) plus IaC-Drift-Erkennung. Manuelle Erfassung ist Ausnahme; Frequenz: kontinuierlich, mind. taeglich.
+
+                    ## 5. Eigentuemerschaft und akzeptierter Gebrauch (AM-02, AM-03)
+                    Jedes Asset hat einen technischen und einen fachlichen Eigentuemer. Beide tragen Verantwortung fuer die Einhaltung der Sicherheitsmassnahmen. Der akzeptierte Gebrauch wird in einer Acceptable-Use-Policy geregelt:
+
+                    - keine Speicherung personenbezogener Daten ausserhalb genehmigter Cloud-Dienste;
+                    - keine Nutzung Generative-AI-Tools mit vertraulichen Daten ohne CSO-Freigabe;
+                    - keine Schatten-IT, keine privaten Cloud-Konten;
+                    - kein Export von Schluesseln, Geheimnissen oder Trainingsdaten ohne Genehmigung.
+
+                    ## 6. Klassifizierung und Kennzeichnung (AM-04, AM-05)
+                    Alle Assets werden mit einem standardisierten Tagging-Schema versehen, mindestens:
+
+                    `owner`, `service`, `environment` (prod/test/dev), `data-classification`, `regulatory` (kritis/nis2/dora/gdpr/none), `cost-center`, `retention`, `c5-scope` (in/out).
+
+                    Tagging-Compliance wird taeglich automatisiert geprueft; Verstoesse erzeugen Alerts und werden binnen 5 Arbeitstagen behoben.
+
+                    ## 7. Software-Bill-of-Materials (SBOM-Pflicht, C5:2026-Erweiterung)
+                    Fuer jede deployte Komponente wird ein SBOM gepflegt (CycloneDX oder SPDX). Mindestinhalt:
+
+                    - alle direkten und transitiven Abhaengigkeiten;
+                    - Versionen und Lizenzen;
+                    - bekannte CVEs (mit Verfolgung in Vulnerability-Management);
+                    - Hersteller- und Herkunftsnachweis (Code-Signatur, Provenance gemaess SLSA-Level).
+
+                    SBOM ist Teil der Build-Pipeline und kann jederzeit fuer Auditoren bereitgestellt werden.
+
+                    ## 8. Lebenszyklus und Aussonderung
+                    Asset-Lebenszyklus: Plan → Erwerb / Erzeugung → Inbetriebnahme → Betrieb → Aussonderung. Aussonderung umfasst:
+
+                    - sichere Loeschung der Daten (Cross-Ref Loeschkonzept, Crypto-Erase fuer Cloud-Storage);
+                    - Widerruf assoziierter Schluessel und Berechtigungen;
+                    - Aktualisierung Cloud-Asset-Register (Status `decommissioned`);
+                    - Loeschnachweis vom CSP (sofern Drittparteien betroffen).
+
+                    ## 9. Pruefung und Reporting
+                    Mindestens quartalsweise wird ein Cloud-Asset-Inventur-Report erstellt mit Stichproben-Verifikation. Auswertungen umfassen Tagging-Quote, SBOM-Aktualitaet, herrenlose Assets, ungeplante Region- oder Provider-Migration.
+
+                    ## 10. Pruefintervall und Genehmigung
+                    Diese Richtlinie wird mindestens alle 12 Monate ueberprueft. Genehmigung: CSO. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI C5:2020 AM-01 bis AM-05, C5:2026 SBOM-Pflicht, ISO/IEC 27001:2022 A.5.9-A.5.13, ISO/IEC 27017:2015 CLD.6.3, BSI 200-2 OPS.2.2.*
+
+        c5_physical_security:
+            v1:
+                title: 'Physische Sicherheit der Cloud-Infrastruktur'
+                body: |-
+                    # Physische Sicherheit der Cloud-Infrastruktur der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: BSI C5:2020 PS-01 bis PS-11 + C5:2026-Erweiterung (PS) + ISO/IEC 27001:2022 Annex A.7.1 bis A.7.8 + ISO/IEC 27017:2015 + BSI 200-2 INF.1, INF.2 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck und Geltungsbereich
+                    Diese Richtlinie regelt die Anforderungen an die physische Sicherheit der Cloud-Infrastruktur der {{ tenant.legal_name }}. Sie gilt sowohl fuer eigenbetriebene Rechenzentren (sofern als Private Cloud bereitgestellt) als auch fuer die Pruefung von Public-Cloud-Anbietern und Co-Location-Partnern. Sie operationalisiert C5:2020 PS-01 bis PS-11 und ISO 27001 A.7.1 bis A.7.8.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Standorte, an denen Cloud-Infrastruktur fuer Daten, Workloads oder Schluesselmaterial der {{ tenant.legal_name }} betrieben wird. Bei Public-Cloud-Anbietern erfolgt die Pruefung indirekt ueber CSP-Testate (C5, ISO 27001, SOC 2 Typ II) sowie vertragliche Audit-Rechte. Eingeschlossen sind eigene Office-Standorte mit Cloud-Endpoint-Funktion (z. B. Hardware-Token-Lager, Hardware-Security-Module, KMS-Recovery-Material).
+
+                    ## 3. Verantwortlichkeiten
+                    - **CSO / ISB:** Pruefung CSP-Testate, Genehmigung neuer Standorte, Risikobewertung;
+                    - **Facility-Management:** Betrieb eigene Standorte, Zutrittsmanagement, Umgebungsueberwachung;
+                    - **Cloud-Operations:** Verifikation Provider-Standortliste mit Cloud-Asset-Register;
+                    - **Compliance / GRC:** Verfolgung Geltungsbereich Region-Lock (DE, EU);
+                    - **Beschaeftigte:** Einhaltung Zutrittsregelungen, Meldung verdaechtiger Beobachtungen.
+
+                    ## 4. Standortauswahl und Region-Lock (PS-01)
+                    Standorte fuer die Verarbeitung von Daten der {{ tenant.legal_name }} werden anhand definierter Kriterien gewaehlt:
+
+                    1. Risikoanalyse Naturgefahren (Hochwasser, Erdbeben, Starkwetter, EMP);
+                    2. Risikoanalyse politische Stabilitaet, Rechtsraum (insbesondere CLOUD-Act, FISA 702, Schrems-II-Risiken);
+                    3. Verfuegbarkeit Strom-, Kuehl-, Netzanbindung;
+                    4. Naehe zu Notfall-Infrastruktur (Feuerwehr, Polizei).
+
+                    Datenstandort: vorrangig Deutschland und EU/EWR. Drittlandtransfer nur unter Angemessenheitsbeschluss (DSGVO Art. 45) oder geeigneten Garantien (Art. 46, SCC 2021/914 + Transfer-Impact-Assessment gemaess Schrems II). Sovereign-Cloud-Optionen werden bevorzugt fuer streng vertrauliche Daten.
+
+                    ## 5. Zonierung und Zutrittsschutz (PS-02 bis PS-04)
+                    Es gilt das Prinzip der konzentrischen Sicherheitszonen:
+
+                    | Zone | Beschreibung | Zutrittskontrolle |
+                    |---|---|---|
+                    | 0 — Aussen | Perimeter, Zaun, Begruenung | CCTV, Bewegungssensoren |
+                    | 1 — Gebaeude | Eingang, Lobby | Empfang, Vereinzelungsanlage |
+                    | 2 — Office | Arbeitsplatzbereiche | Badge + PIN |
+                    | 3 — RZ-Vorbereich | Operator-Raeume | MFA + Begleitpflicht Externe |
+                    | 4 — RZ-Hot-Zone | Server-Caging | MFA + biometrisch + Vier-Augen |
+                    | 5 — Spezial | HSM-Raum, KMS-Recovery | Vier-Augen + Logging + Video |
+
+                    Zutritte werden protokolliert und mind. 12 Monate aufbewahrt. Stichprobenauswertung quartalsweise.
+
+                    ## 6. Umgebungsbedingungen und Versorgungssicherheit (PS-05 bis PS-07)
+                    Mindestanforderungen:
+
+                    - **Stromversorgung:** unterbrechungsfreie Stromversorgung (USV) mit Notstromaggregat, Pruefintervall der Aggregate quartalsweise mit Lasttest;
+                    - **Klimatisierung:** redundante Kuehlanlagen, Kalt-/Warmgang-Trennung;
+                    - **Brandfrueherkennung:** Frueherkennungs-System (z. B. Ansaugrauchmelder), Inertgas-Loeschanlage;
+                    - **Wassereinbruch:** Bodenbelag mit Wassersensoren, Hochwasser-Risiko-Bewertung;
+                    - **Klimaschutz / Energieeffizienz:** PUE-Monitoring, Anstreben PUE ≤ 1.3 fuer Neubauten;
+                    - **EMP- und Funkstoerungs-Schutz:** Ausstattungspruefung im Rahmen der Standortauswahl.
+
+                    ## 7. Geraete-Schutz und Verkabelung (PS-08, PS-09)
+                    Hardware wird mit eindeutigem Asset-Tag versehen. Verkabelung wird strukturiert verlegt, kreuzungsfreie Trennung Strom/Daten, dokumentiert in Patch-Plaenen. Wartung erfolgt nur durch autorisiertes Personal mit dokumentiertem Vier-Augen-Begleitschutz bei sehr hohem Schutzbedarf.
+
+                    ## 8. Aussonderung und Geraetewartung (PS-10)
+                    Vor Aussonderung oder externer Reparatur werden alle Datentraeger sicher geloescht oder physisch zerstoert (Cross-Ref Loeschkonzept). Defekte SSDs werden wegen Wear-Levelling ausschliesslich physisch zerstoert. Bei Public-Cloud-Anbietern wird der Loesch-/Vernichtungsnachweis vertraglich gefordert.
+
+                    ## 9. Externe Bereiche, Unbeaufsichtigte Geraete (PS-11)
+                    Mobile Endgeraete mit Cloud-Zugriff (Notebooks, Tablets, Smartphones) sind mit Vollverschluesselung, Remote-Wipe-Faehigkeit, Bildschirm-Sperre und Diebstahlschutz auszustatten. Verlust ist binnen 24 Stunden zu melden; Notfall-Sperrung erfolgt binnen 1 Stunde.
+
+                    ## 10. CSP-Pruefung (Public Cloud)
+                    Bei Nutzung Public-Cloud werden folgende Belege erhoben und gepflegt:
+
+                    - aktuelles C5-Testat Typ 2 (oder vergleichbares Testat wie ISO 27001 plus SOC 2 Typ II);
+                    - Standort- und Region-Bestaetigung mit vertraglicher Bindung;
+                    - Subprozessor-Liste mit Aenderungsrecht;
+                    - Audit-Bericht oder vergleichbare Pruefnachweise.
+
+                    Mindestens jaehrliche Re-Verifikation, dokumentiert im Cloud-Register.
+
+                    ## 11. Pruefintervall und Genehmigung
+                    Diese Richtlinie wird mindestens alle 12 Monate ueberprueft. Genehmigung: CSO. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI C5:2020 PS-01 bis PS-11, C5:2026, ISO/IEC 27001:2022 A.7.1-A.7.8, BSI 200-2 INF.1/INF.2, DSGVO Art. 44-49.*
+
+        c5_operations_security:
+            v1:
+                title: 'Cloud-Betriebssicherheit'
+                body: |-
+                    # Cloud-Betriebssicherheit der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: BSI C5:2020 OPS-01 bis OPS-13 + C5:2026-Erweiterung (OPS, inkl. Container und Orchestrierung) + ISO/IEC 27001:2022 Annex A.8.6-A.8.16, A.8.32 + ISO/IEC 27017:2015 CLD.12.1, CLD.12.4 + BSI 200-2 OPS.1.1.3, OPS.1.1.4, OPS.1.1.5 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt den sicheren Betrieb aller Cloud-Workloads der {{ tenant.legal_name }}, von Compute, Container und Orchestrierung bis zu Backup, Logging und Monitoring. Sie operationalisiert C5:2020 OPS-01 bis OPS-13 sowie die C5:2026-Ergaenzungen zu Container- und Orchestrierungssicherheit (CNT-Domaene).
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle produktiven, Test- und Entwicklungsumgebungen in IaaS, PaaS, SaaS, FaaS und Container-Plattformen (Kubernetes, OpenShift, Cloud-Run, ECS, AKS, GKE).
+
+                    ## 3. Verantwortlichkeiten
+                    - **Cloud-Operations-Lead:** Eigentum dieser Richtlinie, taegliche Steuerung;
+                    - **Service-Owner:** Konfigurations-Baseline, Patch-Status, Backup-Integritaet;
+                    - **CSO:** Genehmigung Verfahrens-Ausnahmen, Wirksamkeitspruefung;
+                    - **SOC:** kontinuierliche Detektion (Cross-Ref Detektionsrichtlinie);
+                    - **DevOps / Platform-Engineering:** sichere CI/CD, IaC-Reviews, Container-Hardening.
+
+                    ## 4. Konfigurations-Baselines (OPS-01 bis OPS-03)
+                    Fuer jede Cloud-Plattform existiert eine **Konfigurations-Baseline** auf Basis CIS Cloud Benchmarks (AWS, Azure, GCP), CIS Kubernetes Benchmark, BSI-Empfehlungen und Cloud-Provider-Best-Practices. Drift zur Baseline wird kontinuierlich (mind. taeglich) erkannt; sicherheitskritischer Drift wird automatisch remediated oder binnen 24 Stunden manuell behoben.
+
+                    ## 5. Kapazitaets-, Verfuegbarkeits- und Performance-Management (OPS-04, OPS-05)
+                    Auto-Scaling, Multi-AZ-Deployment, Health-Probes und Service-Mesh sind Standard fuer produktive Workloads. Wirksamkeit wird durch Chaos-Engineering und SLA-Reports nachgewiesen. Reservekapazitaet wird quartalsweise evaluiert.
+
+                    ## 6. Schadprogramm-Schutz (OPS-06)
+                    Fuer Cloud-Workloads gilt:
+
+                    - **Compute (VMs):** EDR-Agent mit Cloud-Workload-Protection-Platform (CWPP);
+                    - **Container:** Image-Scanning vor Deployment (Cross-Ref CNT-1 SBOM-Pflicht), Runtime-Schutz mit eBPF-basiertem Threat-Detection;
+                    - **Serverless / Functions:** statische Code-Analyse, Function-Layer-Scanning;
+                    - **Storage:** Anti-Malware bei eingehenden Datei-Uploads;
+                    - **Email-Workloads:** Anti-Phishing, Anti-Malware, DMARC, SPF, DKIM.
+
+                    Quarantaene-Vorgaenge sind binnen 1 Stunde zu eskalieren.
+
+                    ## 7. Backup und Datenwiederherstellung (OPS-07)
+                    Backup-Strategie nach 3-2-1-Prinzip mit zusaetzlicher Anforderung Air-Gap- oder Immutable-Backup gegen Ransomware:
+
+                    - mind. 3 Kopien;
+                    - 2 verschiedene Speichertypen;
+                    - 1 ausserhalb des primaeren Cloud-Providers oder ausserhalb der primaeren Region;
+                    - Object-Lock / Write-Once-Read-Many (WORM) fuer mind. 30 Tage Standard, regulatorisch ggf. laenger;
+                    - Restore-Tests halbjaehrlich, dokumentiert im Backup-Register.
+
+                    RTO und RPO werden je Service definiert (siehe BCM-Richtlinien).
+
+                    ## 8. Logging, Monitoring und Korrelation (OPS-08 bis OPS-10)
+                    Mindest-Logging-Anforderungen:
+
+                    - Cloud-Audit-Logs (alle Provider-API-Aufrufe);
+                    - IAM-Authentifizierungs- und Autorisierungs-Events;
+                    - Netzwerk-Flow-Logs;
+                    - Anwendungs-Logs nach OWASP-Logging-Cheat-Sheet;
+                    - Container-Runtime-Events;
+                    - KMS-Key-Use-Logs.
+
+                    Aufbewahrung mind. 12 Monate, KRITIS / NIS2-relevant mind. 24 Monate. Korrelation in zentralem SIEM mit Use-Cases gemaess Detektionsrichtlinie. Manipulationsschutz: Append-Only-Storage, Hash-Chains, separater Log-Account.
+
+                    ## 9. Patch- und Vulnerability-Management (OPS-11)
+                    Cloud-Workloads werden gegen Schwachstellenkataloge (CVE, CISA KEV, Cloud-Provider-Advisories) gemonitort. SLAs:
+
+                    | Kritikalitaet | Patch-SLA Compute | Patch-SLA Container-Image | Patch-SLA Function |
+                    |---|---|---|---|
+                    | Critical (CVSS ≥ 9.0 oder KEV) | 7 Tage | 3 Tage | 3 Tage |
+                    | High (CVSS 7.0-8.9) | 30 Tage | 14 Tage | 14 Tage |
+                    | Medium | 90 Tage | 30 Tage | 30 Tage |
+                    | Low | 180 Tage | 90 Tage | 90 Tage |
+
+                    Ausnahmen erfordern Risikoakzeptanz durch CSO mit Befristung.
+
+                    ## 10. Aenderungs- und Change-Management (OPS-12)
+                    Aenderungen an produktiven Cloud-Workloads erfolgen ueber GitOps-Pipelines mit Vier-Augen-Pull-Request, automatischen Tests, Security-Gates (SCA, SAST, IaC-Scan) und nachvollziehbarem Audit-Trail. Manuelle Hot-Fixes sind dokumentiert nachzubereiten (Pull-Request-Backfill binnen 5 Arbeitstagen).
+
+                    ## 11. Container- und Orchestrierungs-Sicherheit (C5:2026 CNT-1 bis CNT-6)
+                    Spezielle Anforderungen fuer Container und Orchestrierung:
+
+                    - Image-Scanning vor Deployment;
+                    - Image-Signing (z. B. Cosign / Notary v2);
+                    - Container-Runtime-Hardening (read-only Filesystem, Non-Root, capabilities-Drop, seccomp/AppArmor);
+                    - Kubernetes-Hardening gemaess CIS-Benchmark, Pod-Security-Standards Restricted;
+                    - Network-Policies pro Namespace, Service-Mesh mit mTLS;
+                    - Container-Registry mit RBAC und Image-Signatur-Verifikation;
+                    - Container-Isolation: separate Worker-Pools fuer Mandanten, dedicated Nodes fuer sehr hohen Schutzbedarf.
+
+                    ## 12. Service-Trennung und Multi-Tenancy (OPS-13)
+                    Produktive Mandantendaten werden durch IAM-Policies, Network-Segmentierung, dedizierte KMS-Schluessel pro Mandant und gegebenenfalls dedizierte Compute-Pools getrennt. Multi-Tenancy-Tests werden im Penetrationstest-Programm verankert.
+
+                    ## 13. Pruefintervall und Genehmigung
+                    Diese Richtlinie wird mindestens alle 12 Monate ueberprueft. Genehmigung: CSO. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI C5:2020 OPS-01 bis OPS-13, C5:2026 CNT-1 bis CNT-6, ISO/IEC 27001:2022 A.8.6-A.8.16, A.8.32, ISO/IEC 27017:2015 CLD.12, BSI 200-2 OPS.1.1.3-5.*
+
+        c5_identity_access_management:
+            v1:
+                title: 'Cloud-Identitaets- und Zugriffsmanagement'
+                body: |-
+                    # Cloud-Identitaets- und Zugriffsmanagement der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: BSI C5:2020 IDM-01 bis IDM-09 + C5:2026-Erweiterung (IDM) + ISO/IEC 27001:2022 Annex A.5.15-A.5.18, A.8.2, A.8.5 + ISO/IEC 27017:2015 + BSI 200-2 ORP.4 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt das Management aller Identitaeten und Zugriffsrechte fuer Cloud-Ressourcen der {{ tenant.legal_name }}. Sie operationalisiert C5:2020 IDM-01 bis IDM-09 sowie ISO 27001 A.5.15-A.5.18.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Identitaeten:
+
+                    - menschliche Identitaeten (Beschaeftigte, externe Beschaeftigte, Auftragnehmer, Kunden, Partner);
+                    - nicht-menschliche Identitaeten (Service-Accounts, Workload-Identitaeten, Maschinen-Identitaeten, API-Clients);
+                    - Bot- und KI-Agent-Identitaeten;
+                    - Notfall-Identitaeten (Break-Glass-Accounts).
+
+                    ## 3. Verantwortlichkeiten
+                    - **CSO:** Eigentuemer dieser Richtlinie;
+                    - **IAM-Team:** Betrieb IdP, IGA, PAM;
+                    - **HR:** Joiner-Mover-Leaver-Prozess (Cross-Ref PSS);
+                    - **Service-Owner:** Definition rollenbasierter Berechtigungs-Profile;
+                    - **DSB:** Datenschutzkonformitaet bei Logging.
+
+                    ## 4. Identity-Provider und SSO (IDM-01, IDM-02)
+                    Es gilt das Single-Source-of-Identity-Prinzip: ein zentraler Identity-Provider (z. B. Entra ID, Okta, Keycloak) liefert via OpenID Connect, SAML 2.0 oder SCIM Identitaeten an alle Cloud-Dienste. Lokale Cloud-Konten sind verboten ausser bei Notfall-Accounts (Punkt 9).
+
+                    ## 5. Multi-Faktor-Authentifizierung (IDM-03)
+                    MFA-Pflicht fuer alle interaktiven Zugriffe. Mindestens phishing-resistente Faktoren fuer privilegierte Rollen:
+
+                    - **Standard-Beschaeftigte:** Authenticator-App mit TOTP oder Push, Backup-Codes;
+                    - **Privilegierte Rollen:** FIDO2 / WebAuthn (Hardware-Token) oder Passkeys; SMS-OTP ist verboten;
+                    - **VS-NfD-relevante Rollen:** Smartcard mit Hardware-PIN gemaess BSI TR-03145.
+
+                    ## 6. Berechtigungsmodell und Least Privilege (IDM-04, IDM-05)
+                    Es gilt rollenbasiertes Zugriffsmanagement (RBAC) mit attributbasierten Erweiterungen (ABAC) bei Bedarf. Grundsaetze:
+
+                    - **Least Privilege:** minimaler Berechtigungssatz fuer die Aufgabe;
+                    - **Just-in-Time:** privilegierte Berechtigungen werden zeitlich befristet (Standard 8 Stunden, max. 24 Stunden) ueber Privileged-Access-Management (PAM) gewaehrt;
+                    - **Just-Enough-Access:** Berechtigungen scharf an Aufgabe geschnitten;
+                    - **Segregation of Duties (SoD):** Konflikte werden im IGA-Tool detektiert und blockiert.
+
+                    ## 7. Joiner-Mover-Leaver (IDM-06)
+                    - **Joiner:** Account binnen 24 Stunden nach HR-Ankuendigung bereit, MFA verpflichtend bei Erstanmeldung;
+                    - **Mover:** Berechtigungs-Reset bei Funktionswechsel; alte Rechte werden binnen 7 Tagen entzogen, neue erst nach Genehmigung;
+                    - **Leaver:** Sperrung am Austrittstag, Loeschung nach Aufbewahrungsfrist (Cross-Ref Loeschkonzept).
+
+                    ## 8. Rezertifizierung (IDM-07)
+                    Berechtigungen werden mindestens halbjaehrlich rezertifiziert, fuer privilegierte Rollen quartalsweise. Rezertifizierung erfolgt durch Service-Owner; nicht-bestaetigte Berechtigungen werden binnen 14 Tagen automatisch entzogen.
+
+                    ## 9. Privileged-Access-Management (IDM-08)
+                    Privileged-Access-Management (PAM) ist Pflicht fuer:
+
+                    - Cloud-Foundation-Accounts (z. B. AWS Organizations Root, Azure Tenant Root);
+                    - KMS-Administratoren;
+                    - Kubernetes-Cluster-Admins;
+                    - Datenbank-Admins mit Zugriff auf Klartext-Daten;
+                    - SOC-Analysten mit Hunting-Berechtigungen.
+
+                    PAM stellt Just-in-Time-Sessions, Session-Recording, Workflow-Approval, Hash-protokollierte Audit-Trails. Break-Glass-Accounts werden im Tresor verwahrt, bei jeder Nutzung sofort alarmiert und post-mortem dokumentiert.
+
+                    ## 10. Service- und Workload-Identitaeten (IDM-09)
+                    Statische API-Keys und Long-Lived-Tokens sind zu vermeiden. Verwendung von:
+
+                    - Workload-Identity (z. B. AWS IAM Roles for Service Accounts, Azure Managed Identity, GCP Workload Identity);
+                    - kurzlebigen Tokens (max. 1 Stunde) mit automatischer Rotation;
+                    - SPIFFE/SPIRE fuer Service-Mesh-Identitaeten.
+
+                    Wo statische Geheimnisse unvermeidbar sind, werden sie im zentralen Secret-Manager mit automatischer Rotation (max. 90 Tage) verwahrt.
+
+                    ## 11. Identity-Threat-Detection (ITDR)
+                    Anomale Anmelde-Muster, Token-Missbrauch, Privilege-Escalations und Lateral Movement werden via ITDR-Tooling erkannt und an SOC eskaliert (Cross-Ref Detektionsrichtlinie).
+
+                    ## 12. Pruefintervall und Genehmigung
+                    Diese Richtlinie wird mindestens alle 12 Monate ueberprueft. Genehmigung: CSO. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI C5:2020 IDM-01 bis IDM-09, C5:2026, ISO/IEC 27001:2022 A.5.15-A.5.18, A.8.2, A.8.5, BSI 200-2 ORP.4, BSI TR-03145, FIDO2/WebAuthn.*
+
+        c5_cryptography_key_management:
+            v1:
+                title: 'Cloud-Kryptographie und Schluesselmanagement'
+                body: |-
+                    # Cloud-Kryptographie und Schluesselmanagement der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Programmdokument | Norm-Anker: BSI C5:2020 CRY-01 bis CRY-04 + C5:2026-Erweiterung (KOS, inkl. Post-Quantum-Cryptography-Roadmap PQC-1 bis PQC-4) + ISO/IEC 27001:2022 Annex A.8.24 + ISO/IEC 27017:2015 CLD.10.1 + BSI 200-2 CON.1 + BSI TR-02102 (kryptografische Verfahren) + BSI TR-03145 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Dieses Programmdokument regelt die Auswahl, Implementierung und den Betrieb kryptographischer Verfahren und Schluesselmanagement-Loesungen fuer Cloud-Workloads der {{ tenant.legal_name }}. Es operationalisiert C5:2020 CRY-01 bis CRY-04 sowie die C5:2026-Erweiterung um Post-Quantum-Cryptography-Anforderungen.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind:
+
+                    - Verschluesselung in Transit (TLS, IPSec, SSH);
+                    - Verschluesselung at Rest (Storage, Datenbank, Backup);
+                    - Schluesselverwaltung (KMS, HSM, BYOK, HYOK);
+                    - kryptographische Signaturen (Code-Signing, JWT, SAML);
+                    - Geheimnisverwaltung (Secret-Manager);
+                    - Hash-Verfahren und Pseudonymisierung.
+
+                    ## 3. Verantwortlichkeiten
+                    - **CSO:** Genehmigung Kryptokonzept, Algorithmen-Liste;
+                    - **KMS-Administrator:** Betrieb Key-Lifecycle (separates Vier-Augen-Team);
+                    - **Cloud-Architekt:** Integrationsdesign in Anwendungen;
+                    - **DSB:** Pruefung Pseudonymisierung und PII-spezifischer Anforderungen;
+                    - **Beschaeftigte:** Pflicht zur Verwendung freigegebener Verfahren.
+
+                    ## 4. Algorithmen-Whitelist (BSI TR-02102, CRY-01)
+                    Die Algorithmen-Whitelist orientiert sich an BSI TR-02102-1 (Stand der Technik) und wird jaehrlich aktualisiert. Stand bei Verabschiedung dieser Richtlinie:
+
+                    | Verfahren | Algorithmen | Mindest-Schluessellaenge | Verbot |
+                    |---|---|---|---|
+                    | symmetrisch | AES (GCM, CTR mit MAC), ChaCha20-Poly1305 | 256 Bit | DES, 3DES, RC4 |
+                    | asymmetrisch | RSA (PSS), ECDSA, Ed25519 | RSA ≥ 3072 Bit, ECDSA P-256/P-384 | RSA ≤ 2048 fuer neue Implementierungen |
+                    | Schluesselaustausch | ECDH (P-256/P-384), X25519 | — | DH ohne Forward Secrecy |
+                    | Hash | SHA-256, SHA-384, SHA-512, SHA-3 | — | MD5, SHA-1 |
+                    | Passwort-Hash | Argon2id, scrypt, bcrypt (Cost ≥ 12) | — | unbestempelte Hashes, MD5/SHA-1 fuer Passworte |
+                    | TLS | TLS 1.3 (bevorzugt), TLS 1.2 mit modernen Cipher-Suites | — | TLS ≤ 1.1, SSL aller Versionen |
+
+                    ## 5. Verschluesselung in Transit (CRY-02)
+                    Sammtliche Datenuebertragung (intern, extern, zwischen Cloud-Diensten) wird mit TLS 1.3 (bevorzugt) oder TLS 1.2 mit modernen Cipher-Suites verschluesselt. mTLS ist Pflicht fuer Service-zu-Service-Kommunikation in Microservices und Kubernetes-Workloads. Zertifikate werden ueber automatisierten Lifecycle (z. B. ACME, Cloud-PKI) verwaltet, Lifetime max. 90 Tage fuer oeffentliche Endpunkte.
+
+                    ## 6. Verschluesselung at Rest (CRY-02)
+                    Mindestanforderungen fuer Verschluesselung at Rest:
+
+                    | Schutzbedarf | Verfahren | Schluessel-Eigentum |
+                    |---|---|---|
+                    | Normal | Provider-managed Encryption (CMK) mit AES-256 | CSP-managed |
+                    | Hoch | BYOK (Bring-Your-Own-Key) mit Customer-Managed-Key (CMK) im KMS | Kunde besitzt Schluessel im KMS |
+                    | Sehr hoch | HYOK (Hold-Your-Own-Key) oder External-Key-Store mit on-prem-HSM | Schluessel verlaesst NIE die Kunden-Hoheit |
+                    | VS-NfD | BSI-zugelassenes HSM mit dedizierter Verwaltung | Kunde |
+
+                    ## 7. Schluessel-Lebenszyklus (CRY-03)
+                    Pro Schluessel werden dokumentiert: Erzeugung (Quelle Hardware-RNG), Verteilung, Speicherung (HSM mind. FIPS 140-3 Level 3), Nutzung, Rotation, Sperrung, Vernichtung.
+
+                    Mindest-Rotationsintervalle:
+
+                    - Datenverschluesselungsschluessel (DEK): jaehrlich oder bei Kompromittierungsverdacht;
+                    - Key-Encryption-Keys (KEK) im KMS: bei Bedarf, mind. dreijaehrlich;
+                    - JWT-Signatur-Schluessel: vierteljaehrlich;
+                    - TLS-Server-Zertifikate: max. 90 Tage;
+                    - SSH-Hostkeys: bei Migration / Inkident.
+
+                    ## 8. Schluesselgeheimnis-Management (CRY-04)
+                    Geheimnisse (API-Keys, Datenbankpassworte, OAuth-Secrets) werden im zentralen Secret-Manager (z. B. HashiCorp Vault, Cloud-KMS-integrierte Secret-Stores) verwaltet. Speicherung im Code, in Konfigurationsdateien oder in CI/CD-Variablen ohne Manager ist verboten und wird automatisiert gescannt (Cross-Ref OPS, Secret-Scanning in Pipelines).
+
+                    ## 9. Post-Quantum-Cryptography-Roadmap (C5:2026 PQC-1 bis PQC-4)
+                    Die {{ tenant.legal_name }} bereitet die Migration zu Post-Quantum-Algorithmen vor:
+
+                    1. **PQC-Roadmap:** dokumentiert mit Meilensteinen bis 2030;
+                    2. **Crypto-Agility:** Architektur ist so gestaltet, dass Algorithmen austauschbar sind (Wrapper-Pattern, Algorithmen-Konfiguration zentralisiert);
+                    3. **Hybrid-Verfahren** werden geprueft (z. B. X25519+Kyber768 fuer Schluesselaustausch);
+                    4. **Daten mit Langzeit-Vertraulichkeit** (mind. 10 Jahre Schutzbedarf) werden bevorzugt mit hybriden oder PQC-faehigen Verfahren geschuetzt (Schutz vor Harvest-Now-Decrypt-Later).
+
+                    ## 10. CSP-managed Keys vs. CMK vs. BYOK vs. HYOK
+                    Die Wahl des Schluesselmanagement-Modells folgt dem Schutzbedarf (siehe Punkt 6). Bei BYOK und HYOK gilt:
+
+                    - vertraglich gesichertes Recht zur Schluessel-Sperrung mit Soforteffekt (Crypto-Erase);
+                    - Verfahrensbeschreibung zur Schluessel-Lieferung (Key-Ceremony);
+                    - dokumentierte Notfall-Verfahren bei Verlust oder Kompromittierung;
+                    - keine Schluesseldelegation an CSP-Mitarbeiter ohne Vier-Augen-Genehmigung.
+
+                    ## 11. Pruefintervall und Genehmigung
+                    Dieses Programmdokument wird mindestens alle 12 Monate sowie bei Aenderungen der BSI TR-02102, neuen Cryptanalysis-Erkenntnissen oder NIST-PQC-Standards ueberprueft. Genehmigung: CSO. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI C5:2020 CRY-01 bis CRY-04, C5:2026 PQC-1 bis PQC-4, ISO/IEC 27001:2022 A.8.24, BSI 200-2 CON.1, BSI TR-02102, BSI TR-03145, FIPS 140-3, NIST PQC.*
+
+        c5_communication_security:
+            v1:
+                title: 'Cloud-Kommunikationssicherheit'
+                body: |-
+                    # Cloud-Kommunikationssicherheit der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: BSI C5:2020 KOS-01 bis KOS-07 + C5:2026-Erweiterung (COS) + ISO/IEC 27001:2022 Annex A.8.20-A.8.23 + ISO/IEC 27017:2015 CLD.13 + BSI 200-2 NET.1.1, NET.3.1 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Netzwerksicherheit aller Cloud-Workloads der {{ tenant.legal_name }} sowie die Absicherung der Verbindungen zwischen Cloud, On-Premises und Endbenutzergeraeten. Sie operationalisiert C5:2020 KOS-01 bis KOS-07 sowie ISO 27001 A.8.20 bis A.8.23.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind:
+
+                    - Cloud-internes Netzwerk (VPC, vNet, Subnetze, Service-Endpoints);
+                    - Inter-Cloud- und Cross-Region-Verbindungen;
+                    - Cloud-zu-On-Premises-Verbindungen (VPN, Direct Connect, ExpressRoute, Interconnect);
+                    - Endbenutzer-zu-Cloud-Verbindungen (User-VPN, Zero-Trust-Network-Access);
+                    - Service-zu-Service-Kommunikation (mTLS, Service-Mesh);
+                    - oeffentliche Endpunkte (API-Gateway, Load-Balancer).
+
+                    ## 3. Verantwortlichkeiten
+                    - **Cloud-Architekt:** Netzwerk-Referenzdesign, Segmentierung, Zonenkonzept;
+                    - **CSO:** Genehmigung Inbound-Exposures und Cross-Border-Transfers;
+                    - **NetOps:** Betrieb Konnektivitaet und Firewalls;
+                    - **SOC:** Detektion ungewoehnlicher Netzwerk-Aktivitaet (Cross-Ref Detektionsrichtlinie).
+
+                    ## 4. Zero-Trust-Network-Architecture (KOS-01)
+                    Die {{ tenant.legal_name }} verfolgt Zero-Trust-Network-Architecture nach NIST SP 800-207. Grundsaetze:
+
+                    1. Kein implizites Vertrauen aus Netzwerk-Zugehoerigkeit;
+                    2. Authentifizierung und Autorisierung pro Verbindung, kontextbasiert;
+                    3. mTLS zwischen allen produktiven Workloads;
+                    4. Mikrosegmentierung an Service-Ebene;
+                    5. Least-Privilege bei Network-Policies und Security-Groups.
+
+                    ## 5. Segmentierung und Trennung (KOS-02)
+                    Cloud-Netzwerk-Segmentierung folgt einer dreidimensionalen Trennung:
+
+                    | Dimension | Trennung |
+                    |---|---|
+                    | Umgebung | prod / staging / dev / sandbox |
+                    | Funktion | Web-Tier / App-Tier / Data-Tier / Management-Tier |
+                    | Mandant | dedizierte VPC oder Subnetz pro Mandant bei sehr hohem Schutzbedarf |
+
+                    Inter-Segment-Verkehr wird ueber explizite Network-Policies erlaubt.
+
+                    ## 6. Perimeter und Inbound-Schutz (KOS-03)
+                    Anforderungen:
+
+                    - DDoS-Schutz auf Tier-3/4 (Provider-Service) plus Tier-7 (WAF mit OWASP-Core-Rule-Set);
+                    - keine direkten oeffentlichen Endpunkte ohne API-Gateway oder Load-Balancer;
+                    - WAF mit Bot-Schutz, Rate-Limiting, Geo-Blocking sofern fachlich begruendet;
+                    - eingehende Verbindungen ausschliesslich ueber dokumentierte Endpunkte mit Cloud-Public-Inventory.
+
+                    ## 7. Outbound-Kontrolle und Egress (KOS-04)
+                    Outbound-Verkehr wird ueber Egress-Proxies oder NAT-Gateways gefiltert. Daten-Exfiltrations-Kontrollen:
+
+                    - Whitelisting fuer egress-Ziele bei produktiven Workloads;
+                    - Cloud-Access-Security-Broker (CASB) fuer SaaS-Egress;
+                    - DNS-Filter-Service mit Threat-Intelligence;
+                    - Volumen-Anomalie-Detektion (Egress-Spikes ueber Baseline → SOC-Alert).
+
+                    ## 8. Hybrid- und Cross-Cloud-Konnektivitaet (KOS-05)
+                    Verbindungen zwischen Cloud und On-Premises werden ueber dedizierte Verbindungen (Direct Connect, ExpressRoute, Interconnect) realisiert, ergaenzt um Backup-VPN. IPSec mit IKEv2, AES-256-GCM und PFS ist Mindestanforderung. BGP-Konfiguration mit MD5-Authentication und Route-Filtering, ggf. RPKI-Validation.
+
+                    ## 9. Endbenutzer-Zugriff (KOS-06)
+                    Endbenutzer-Zugriff auf Cloud-Workloads erfolgt vorrangig ueber:
+
+                    - **Zero-Trust-Network-Access (ZTNA):** identitaetsbasierte Autorisierung pro Anwendung;
+                    - **Cloud-IAM:** SSO mit MFA (Cross-Ref IDM);
+                    - **VDI / VPN:** als Fallback fuer Legacy-Anwendungen mit Gerate-Posture-Pruefung.
+
+                    Klassisches Site-to-Site-VPN als Standard-User-Zugriff ist abzuloesen.
+
+                    ## 10. Service-Mesh und mTLS (KOS-07)
+                    Fuer Microservice-Architekturen wird ein Service-Mesh (z. B. Istio, Linkerd, Cloud-Provider-Mesh) eingesetzt. mTLS-Pflicht zwischen Workloads, automatische Zertifikats-Rotation, identitaetsbasierte Autorisierung mit SPIFFE/SPIRE. Sidecar- oder Mesh-Proxy-Konfiguration ist Teil der IaC-Templates.
+
+                    ## 11. Pruefintervall und Genehmigung
+                    Diese Richtlinie wird mindestens alle 12 Monate ueberprueft. Genehmigung: CSO. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI C5:2020 KOS-01 bis KOS-07, C5:2026, ISO/IEC 27001:2022 A.8.20-A.8.23, BSI 200-2 NET.1.1/NET.3.1, NIST SP 800-207.*
+
+        c5_portability_interoperability:
+            v1:
+                title: 'Cloud-Portabilitaet, Interoperabilitaet und Exit-Strategie'
+                body: |-
+                    # Cloud-Portabilitaet, Interoperabilitaet und Exit-Strategie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: BSI C5:2020 PI-01 bis PI-04 + C5:2026-Erweiterung (PI) + ISO/IEC 27001:2022 Annex A.5.23, A.5.30 + ISO/IEC 27017:2015 CLD.6.3.1 + BSI 200-2 OPS.2.2.A12 + DORA Art. 28 (ICT-TPP-Risikomanagement) | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt Anforderungen an die Vermeidung von Cloud-Lock-in, an die Interoperabilitaet zwischen Cloud-Diensten und an dokumentierte Exit-Strategien fuer alle Cloud-Verfahren der {{ tenant.legal_name }}. Sie operationalisiert C5:2020 PI-01 bis PI-04 sowie BSI 200-2 OPS.2.2.A12 (Exit-Konzept).
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Cloud-Dienste — IaaS, PaaS, SaaS, FaaS — bei denen Daten oder Workloads der {{ tenant.legal_name }} verarbeitet werden. Eingeschlossen sind eingebettete Cloud-Komponenten in On-Premises-Software (Telemetrie, Auto-Update-Server, Lizenz-Aktivierung, externe AI-APIs).
+
+                    ## 3. Verantwortlichkeiten
+                    - **CSO / Cloud-Architekt:** Vermeidung Lock-in im Architekturdesign;
+                    - **Service-Owner:** Pflege Exit-Strategie pro Service;
+                    - **Einkauf / Recht:** vertragliche Sicherung Datenexport- und Loesch-Rechte;
+                    - **BCM ({{ roles.bcm.fullName }}):** Integration Exit-Strategie ins Notfallhandbuch fuer kritische Dienste;
+                    - **DORA-Funktion:** bei finanzaufsichtsrechtlicher Relevanz Sicherung Exit-Plan gemaess Art. 28.
+
+                    ## 4. Lock-in-Vermeidung im Design (PI-01, PI-02)
+                    Bei Architektur- und Beschaffungs-Entscheidungen werden Lock-in-Risiken bewertet und dokumentiert:
+
+                    - **Daten-Portabilitaet:** Datenformate sollen offen, dokumentiert oder einfach exportierbar sein (z. B. Parquet, CSV, JSON, OpenDocument);
+                    - **Code-Portabilitaet:** wo moeglich Wahl portabler Technologien (Kubernetes statt proprietaerer Orchestrierung, OCI-Container, Standard-SQL);
+                    - **Netzwerk-Portabilitaet:** Verwendung Standardprotokolle (HTTPS, OAuth 2.0, OIDC, gRPC);
+                    - **Provider-Diversifikation:** kritische Workloads multi-Cloud-faehig oder mit dokumentierter Sekundaerprovider-Option;
+                    - **Open-Source-Alternativen** zu proprietaeren Cloud-Services werden mindestens evaluiert und dokumentiert.
+
+                    ## 5. Interoperabilitaet (PI-03)
+                    Cloud-Dienste werden so integriert, dass standardisierte Schnittstellen verwendet werden:
+
+                    - REST/gRPC-APIs mit OpenAPI/Protobuf-Spezifikation;
+                    - Identity-Foederation via OIDC, SAML, SCIM;
+                    - Event-Streaming mit CloudEvents, Kafka-kompatiblen Brokern;
+                    - Storage mit S3-kompatiblen Schnittstellen wo moeglich;
+                    - Observability mit OpenTelemetry.
+
+                    ## 6. Exit-Strategie pro Service (PI-04)
+                    Fuer jeden Cloud-Dienst ist eine dokumentierte Exit-Strategie zu pflegen mit:
+
+                    1. **Migrationspfad:** Beschreibung Ziel-Plattform-Optionen (alternativer CSP, On-Premises, Hybrid);
+                    2. **Datenformat:** Export-Format und Werkzeuge mit Beispiel-Export;
+                    3. **Test-Lauf:** mindestens jaehrlich technischer Export-Test mit dokumentierten Ergebnissen;
+                    4. **Datenmenge / Datenrate:** Abschaetzung Migrationszeit unter realistischer Bandbreite;
+                    5. **Geheimnis- und Schluessel-Migration:** Schluessel-Re-Wrap-Verfahren, Re-Issuing fuer JWT, OAuth, Zertifikate;
+                    6. **Loeschnachweis:** vertraglich gesicherte Loeschung beim verlassenden CSP binnen 30 Kalendertagen, inkl. Loeschprotokoll;
+                    7. **Kostenabschaetzung:** Migrations- und Parallelbetriebs-Kosten;
+                    8. **Zeitschiene:** realistische Migrationsdauer, Notfall-Beschleunigungsoption.
+
+                    ## 7. DORA-spezifische Exit-Pflichten
+                    Sofern die {{ tenant.legal_name }} unter DORA (EU-Verordnung 2022/2554) faellt, gelten zusaetzlich verschaerfte Anforderungen an ICT-TPP-Risikomanagement:
+
+                    - Exit-Plan ist Teil der ICT-Strategie (Art. 6);
+                    - Konzentrationsrisiko-Bewertung bei kritischen Cloud-Anbietern (Art. 29);
+                    - vertragliche Mindestklauseln gemaess Art. 30 inkl. Exit-Recht und Audit-Recht;
+                    - Aufnahme in das ICT-Drittparteien-Register und Meldung an Aufsicht.
+
+                    ## 8. Exit-Test und Wirksamkeitsnachweis
+                    Exit-Tests werden mindestens jaehrlich, fuer kritische Dienste halbjaehrlich durchgefuehrt. Dokumentation umfasst Testumfang, Ergebnis, Abweichungen, Massnahmenplan. Test-Reports sind als Beweismittel fuer C5-Pruefung Typ 2 sowie DORA-Aufsicht aufzubewahren.
+
+                    ## 9. Vertragliche Vorgaben
+                    Cloud-Vertraege enthalten zwingend:
+
+                    - dokumentiertes Recht zum Datenexport in offenen Formaten;
+                    - dokumentiertes Recht zur Loeschung mit Loeschnachweis nach Vertragsende;
+                    - garantierte Mindest-Kuendigungsfristen, Notfall-Kuendigung bei Pflichtverletzung;
+                    - keine "Vendor Hostage"-Klauseln (Daten-Geiselhaft, exklusive Datenformate, Tarifsperren);
+                    - Migrations-Unterstuetzung bei Vertragsende (sog. Wind-Down-Phase).
+
+                    ## 10. Pruefintervall und Genehmigung
+                    Diese Richtlinie wird mindestens alle 24 Monate ueberprueft. Genehmigung: CSO + Einkauf. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI C5:2020 PI-01 bis PI-04, C5:2026, ISO/IEC 27001:2022 A.5.23, A.5.30, BSI 200-2 OPS.2.2.A12, DORA Art. 28-30, ENISA Cloud Exit Guidelines.*
+
+        c5_procurement_supplier_management:
+            v1:
+                title: 'Cloud-Beschaffung und Lieferanten-Management'
+                body: |-
+                    # Cloud-Beschaffung und Lieferanten-Management der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: BSI C5:2020 DLL-01 bis DLL-06 + C5:2026-Erweiterung (BPM, inkl. Supply-Chain-Security SCS-1 bis SCS-6) + ISO/IEC 27001:2022 Annex A.5.19-A.5.23 + ISO/IEC 27017:2015 + ISO/IEC 27018:2019 + BSI 200-2 OPS.2.3 + DSGVO Art. 28, Art. 44-49 + DORA Art. 28-30 | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Auswahl, Beauftragung, Steuerung und Beendigung von Cloud-Lieferanten und deren Subdienstleistern. Sie operationalisiert C5:2020 DLL-01 bis DLL-06 sowie die C5:2026-Erweiterung um Supply-Chain-Security-Anforderungen.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind:
+
+                    - primaere Cloud-Service-Provider (CSP);
+                    - Subdienstleister (Auftragsverarbeiter zweiter Stufe);
+                    - Software-Lieferanten mit eingebetteten Cloud-Komponenten (z. B. SaaS-Komponenten, Telemetrie);
+                    - Open-Source-Komponenten (Stand-Pflege, Provenance, Lizenzkonformitaet);
+                    - Beratungs- und Implementierungspartner mit Zugriff auf Cloud-Ressourcen.
+
+                    ## 3. Verantwortlichkeiten
+                    - **Einkauf:** Verhandlungsfuehrung, Vertragsgestaltung;
+                    - **Recht:** Pruefung AVV, SCC, Subprozessor-Klauseln, Drittland-Transferregeln;
+                    - **CSO / ISB:** Pruefung Sicherheitsanforderungen und Testate;
+                    - **DSB:** Pruefung Datenschutz, Drittlandtransfer, Auftragsverarbeitung;
+                    - **Compliance / GRC:** Steuerung Lieferanten-Register und Risikobewertung, DORA-Register;
+                    - **Service-Owner:** fachliche Anforderungen, Wirksamkeitspruefung waehrend Vertragslaufzeit.
+
+                    ## 4. Lieferanten-Klassifizierung (DLL-01)
+                    Lieferanten werden nach Risikoklassen kategorisiert:
+
+                    | Klasse | Kriterien | Pruefintensitaet |
+                    |---|---|---|
+                    | Niedrig | kein Datenzugriff, kein Cloud-Workload | leichtgewichtige Selbstauskunft |
+                    | Mittel | Zugriff auf nicht-vertrauliche Daten oder unkritische Cloud-Komponente | Selbstauskunft + Stichprobenpruefung |
+                    | Hoch | Verarbeitung vertraulicher / personenbezogener Daten | Selbstauskunft + Testat-Pflicht (C5, ISO 27001) + Audit-Recht |
+                    | Kritisch | KRITIS- / NIS2- / DORA-relevant oder sehr hoher Schutzbedarf | Vor-Ort-Audit, On-Site-Inspection, vertraglich verschaerfte Klauseln, ggf. Konzentrationsanalyse |
+
+                    ## 5. Auswahl-Kriterien (DLL-02, DLL-03)
+                    Vor Vertragsunterzeichnung erfolgt eine dokumentierte Anbieter-Bewertung. Mindestkriterien:
+
+                    1. **Compliance-Nachweise:** BSI C5:2020 / C5:2026 Typ-2-Testat (bevorzugt fuer Cloud), ISO/IEC 27001, ISO/IEC 27017, ISO/IEC 27018, SOC 2 Typ II;
+                    2. **Datenstandort:** vorrangig EU/EWR, Drittland nur bei Angemessenheitsbeschluss oder geeigneten Garantien (SCC + TIA);
+                    3. **Sicherheitsorganisation:** etablierter ISMS-Prozess, dokumentierte Vorfallsbewaeltigung;
+                    4. **Subdienstleister:** vollstaendige Liste, Recht zur Aenderungspruefung;
+                    5. **Verschluesselung:** TLS 1.3, AES-256-at-Rest, BYOK/HYOK-Optionen;
+                    6. **Audit-Recht:** mindestens als Pruefnachweis akzeptiertes externes Testat;
+                    7. **Wirtschaftliche Stabilitaet:** Bonitaetspruefung, Sicherheits-Insolvenz-Analyse;
+                    8. **Notfall- und BC-Faehigkeit:** RTO/RPO-Zusicherung, getesteter Disaster-Recovery-Plan;
+                    9. **Transparenz:** Bereitstellung Sicherheits-Dokumentation, Trust-Center, Status-Page.
+
+                    ## 6. Vertragliche Mindestanforderungen (DLL-04)
+                    Cloud-Vertraege enthalten zwingend:
+
+                    - **Auftragsverarbeitungsvertrag** mit Weisungsbindung, Vertraulichkeitsverpflichtung der Mitarbeiter, technische und organisatorische Massnahmen (TOM), Subprozessor-Liste und Aenderungsrecht;
+                    - **Meldepflichten:** Anbieter meldet Sicherheitsvorfaelle binnen 24 Stunden, Datenschutzverstoesse binnen 36 Stunden;
+                    - **Audit- und Inspektionsrechte;**
+                    - **Loesch- und Rueckgaberechte** nach Vertragsende mit Loeschnachweis (Cross-Ref Loeschkonzept);
+                    - **Haftungs- und Pflichtenkatalog** bei Pflichtverletzung;
+                    - **Drittland-Klauseln** (SCC 2021/914 + TIA fuer USA, UK, Indien etc.);
+                    - **SLA** mit definierter Verfuegbarkeit, Reaktionszeiten, Verguetungen bei Nichteinhaltung;
+                    - **Exit- und Migrationsrechte** (Cross-Ref PI-Richtlinie).
+
+                    ## 7. Subdienstleister und Lieferketten-Sicherheit (DLL-05, C5:2026 SCS-1 bis SCS-6)
+                    Subdienstleister-Steuerung umfasst:
+
+                    - **Subdienstleister-Register** mit Verarbeitungs-Zweck, Ort, Datenkategorien;
+                    - **vorherige Zustimmungspflicht** zur Aufnahme oder zum Wechsel;
+                    - **vertragliche Durchreichung** aller Sicherheitsanforderungen (Back-to-Back);
+                    - **regelmaessige Pruefungen** der Subdienstleister-Testate.
+
+                    Software-Supply-Chain-Security gemaess C5:2026:
+
+                    - **SBOM** fuer alle bezogenen Komponenten (Cross-Ref AM);
+                    - **Vulnerability-Tracking** in Drittparteien-Komponenten (CVE, CISA KEV);
+                    - **Lieferanten-Sicherheits-Bewertung** vor Engagement und regelmaessig;
+                    - **Secure-Software-Development-Practices** des Lieferanten (z. B. NIST SSDF);
+                    - **Code-Signing und Provenance** (Cosign, Sigstore, SLSA-Level mind. 3 fuer kritische Komponenten);
+                    - **Dependency-Management** mit Version-Pinning und Integritaetspruefung.
+
+                    ## 8. Laufende Steuerung und Reporting (DLL-06)
+                    Pro Lieferant werden mindestens jaehrlich gemessen und dokumentiert:
+
+                    - aktuelle Testate und Zertifikate;
+                    - SLA-Erreichung (Verfuegbarkeit, Incidents);
+                    - Vorfallshistorie mit Bewertung;
+                    - Subdienstleister-Aenderungen;
+                    - Risikobewertung (Score) mit Trend.
+
+                    Bei kritischen Lieferanten erfolgt zusaetzlich quartalsweises Performance-Review.
+
+                    ## 9. Beendigung und Off-Boarding
+                    Bei Vertragsende:
+
+                    - Datenexport gemaess Exit-Strategie (Cross-Ref PI);
+                    - Sperrung aller Lieferanten-Identitaeten in Cloud-Diensten;
+                    - Loeschnachweis vom Lieferanten binnen 30 Tagen;
+                    - Aktualisierung Lieferanten-Register, ggf. DORA-Register-Meldung.
+
+                    ## 10. DORA-spezifische Pflichten
+                    Sofern die {{ tenant.legal_name }} unter DORA faellt:
+
+                    - **ICT-TPP-Register** mit allen kritischen Drittparteien (Art. 28);
+                    - **Konzentrationsrisiko-Analyse** bei Mehrfach-Abhaengigkeit von einem CSP (Art. 29);
+                    - **vertragliche Pflichtinhalte** gemaess Art. 30 inkl. Sub-Outsourcing, Audit-Recht, Exit-Plan;
+                    - **Meldung kritischer Drittparteien** an Aufsicht.
+
+                    ## 11. Pruefintervall und Genehmigung
+                    Diese Richtlinie wird mindestens alle 12 Monate ueberprueft. Genehmigung: CSO + Einkauf. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI C5:2020 DLL-01 bis DLL-06, C5:2026 SCS-1 bis SCS-6, ISO/IEC 27001:2022 A.5.19-A.5.23, ISO/IEC 27017:2015, ISO/IEC 27018:2019, BSI 200-2 OPS.2.3, DSGVO Art. 28 / Art. 44-49, DORA Art. 28-30, NIST SSDF, SLSA.*
+
+        c5_compliance_audit:
+            v1:
+                title: 'Cloud-Compliance, Audit und C5-Pruefung'
+                body: |-
+                    # Cloud-Compliance, Audit und C5-Pruefung der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: BSI C5:2020 COM-01 bis COM-05 + C5:2026-Erweiterung (COM, inkl. EUCS-Substantial-Alignment) + ISO/IEC 27001:2022 Annex A.5.31-A.5.36 + ISO/IEC 27017:2015 + ISO/IEC 27018:2019 + DSGVO Art. 28 + DORA Art. 6, Art. 28 | Pruefintervall: 24 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt die Compliance-Steuerung, Audit-Bereitschaft und Durchfuehrung der C5-Pruefung (Subject-Matter-Pruefung Typ 1 / Typ 2) fuer alle Cloud-Verfahren der {{ tenant.legal_name }}. Sie operationalisiert C5:2020 COM-01 bis COM-05 sowie die C5:2026-Erweiterung um die Harmonisierung mit dem European Cloud Services Scheme (EUCS) auf Assurance-Level Substantial.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Cloud-Verfahren der {{ tenant.legal_name }} im definierten Pruefumfang sowie alle Funktionen, die zur Aufrechterhaltung der Compliance beitragen (Architektur, Operations, IAM, KMS, SOC, GRC).
+
+                    ## 3. Verantwortlichkeiten
+                    - **CSO / ISB:** Eigentum dieser Richtlinie, Steuerung Audit-Programm;
+                    - **Compliance-Manager / GRC:** Beweismittel-Management, Auditor-Schnittstelle;
+                    - **DSB:** Datenschutz-Compliance, Pflege Verzeichnis Verarbeitungstaetigkeiten (VVT);
+                    - **interne Revision:** unabhaengige interne Pruefungen (Cross-Ref OIS Aufgabentrennung);
+                    - **Service-Owner:** Bereitstellung Beweismitteln im Verantwortungsbereich;
+                    - **Geschaeftsleitung:** Genehmigung und Akzeptanz der Pruefberichte.
+
+                    ## 4. Identifikation regulatorischer Anforderungen (COM-01)
+                    Die {{ tenant.legal_name }} pflegt ein Verzeichnis aller cloud-relevanten regulatorischen und vertraglichen Anforderungen. Mindestumfang:
+
+                    - **DSGVO** (Art. 28, Art. 32, Art. 33-34, Art. 44-49) und nationales Datenschutzrecht (BDSG);
+                    - **NIS2-UmsuG** und KRITIS-Verordnung sofern anwendbar;
+                    - **DORA** (EU 2022/2554) sofern Finanzdienstleistungen erbracht werden;
+                    - **EU AI Act** sofern KI-Systeme betrieben werden;
+                    - **EUCS** (European Cloud Services Scheme) auf Assurance-Level Basic, Substantial oder High;
+                    - branchen-spezifische Vorgaben (z. B. § 203 StGB fuer Berufsgeheimnistraeger, MaRisk fuer Finanzwirtschaft, KHZG fuer Krankenhaeuser);
+                    - vertragliche Anforderungen aus Kundenvertraegen (z. B. C5-Testat-Pflicht).
+
+                    Verzeichnis wird mindestens jaehrlich aktualisiert.
+
+                    ## 5. C5-Pruefung — Vorgehen und Pruefarten (COM-02)
+
+                    ### 5.1 Pruefarten gemaess C5
+                    Die C5-Pruefung erfolgt nach IDW PS 860 und ISAE 3000 / ISAE 3402 als Subject-Matter-Pruefung in zwei Auspraegungen:
+
+                    | Pruefart | Inhalt | Aussagezeitraum | Aussagekraft |
+                    |---|---|---|---|
+                    | Typ 1 | Angemessenheit der Beschreibung und der Massnahmen | Stichtagsbetrachtung | "Zum Stichtag X waren die Massnahmen geeignet" |
+                    | Typ 2 | Angemessenheit + Wirksamkeit ueber Zeitraum | mindestens 6 Monate | "Im Zeitraum X bis Y waren die Massnahmen wirksam" |
+
+                    Typ 2 ist Industriestandard und wird kundenseitig bevorzugt. Typ 1 ist Eintrittsbetrachtung fuer Erstpruefung.
+
+                    ### 5.2 Pruefablauf (Subject-Matter-Pruefung)
+                    1. **Pruefumfang-Definition** (Scope: Cloud-Service, Region, Komponenten, Subdienstleister);
+                    2. **Systembeschreibung** durch CSP (umfassende Darstellung der Massnahmen je C5-Kriterium);
+                    3. **Pruefer-Auswahl** (qualifizierter Wirtschaftspruefer nach IDW PS 860, persoenliche Unabhaengigkeit);
+                    4. **Pruefdurchfuehrung** mit Walkthrough, Designtest, Wirksamkeitstest (Typ 2);
+                    5. **Pruefbericht** mit Pruefungsurteil (uneingeschraenkt / eingeschraenkt / versagt / disclaimer);
+                    6. **Veroeffentlichung** des Berichts an Cloud-Kunden unter Vertraulichkeit;
+                    7. **Continuous-Audit-Bereitschaft** im Folgezeitraum.
+
+                    ### 5.3 Beweismittel-Management
+                    Pro C5-Kriterium werden Beweismittel im GRC-Tool gepflegt:
+
+                    - aktuelle Konfigurations-Snapshots;
+                    - Logging-Auszuege relevanter Zeitraeume;
+                    - Genehmigungs-Tickets, Change-Records, Vier-Augen-Nachweise;
+                    - Trainings- und Awareness-Nachweise;
+                    - Vertraege und SLA-Reports.
+
+                    Aufbewahrungsfrist mind. 5 Jahre nach Veroeffentlichung des Pruefberichts.
+
+                    ## 6. EUCS-Substantial-Alignment (C5:2026)
+                    Die C5:2026-Erweiterung verweist auf EUCS-Substantial. Wo Kunden EUCS-konformen Bezug fordern:
+
+                    - Mapping C5:2026-Kriterien auf EUCS-Substantial-Anforderungen;
+                    - zusaetzliche EUCS-spezifische Anforderungen werden im Compliance-Verzeichnis getrackt;
+                    - Pruefer wird fuer EUCS-Vorbereitung qualifiziert.
+
+                    ## 7. Internes Auditprogramm (COM-03)
+                    Internes Auditprogramm umfasst:
+
+                    - **Risikobasierte Audit-Planung** ueber 3-Jahres-Zyklus mit jaehrlicher Aktualisierung;
+                    - **Audit-Universe** mit allen C5-Domaenen, gewichtet nach Risiko;
+                    - **mindestens jaehrlicher Audit** pro C5-Domaene mit Bericht an CSO und Geschaeftsleitung;
+                    - **Befunds-Verfolgung** im GRC-Tool mit SLA-basierter Behebung (Critical 30 Tage, High 90 Tage, Medium 180 Tage, Low 365 Tage);
+                    - **Wiederholungspruefung** zur Wirksamkeitsbestaetigung;
+                    - **Eskalation** ungeloester Befunde an Geschaeftsleitung.
+
+                    ## 8. Externe Audits und Zertifizierungen (COM-04)
+                    Externe Pruefungen umfassen:
+
+                    - **C5-Pruefung Typ 2** jaehrlich (Pruefumfang gemaess Punkt 5);
+                    - **ISO/IEC 27001-Zertifizierung** mit jaehrlichem Surveillance-Audit, Re-Zertifizierung alle 3 Jahre;
+                    - **ISO/IEC 27017** und **ISO/IEC 27018** als Annex-Zertifizierungen wo Kundenanforderung;
+                    - **DSGVO Art. 28 Audit-Rechte** durch Cloud-Kunden, vertraglich geregelt;
+                    - **DORA-Aufsichtspruefungen** und ESA-Anforderungen fuer Finanzdienstleister;
+                    - **Penetrationstests** mind. jaehrlich, bei kritischen Diensten halbjaehrlich;
+                    - **Red-Teaming** mind. zweijaehrlich.
+
+                    ## 9. Datenschutz-Compliance (COM-05)
+                    DSGVO-spezifische Anforderungen:
+
+                    - Verzeichnis Verarbeitungstaetigkeiten (VVT) auf aktuellem Stand;
+                    - Auftragsverarbeitungsvertraege (AVV) mit allen Cloud-Anbietern (Cross-Ref Lieferanten-Richtlinie);
+                    - Datenschutz-Folgenabschaetzungen (DSFA / DPIA) bei hohem Risiko Verarbeitungstaetigkeiten;
+                    - Drittlandtransfer-Pruefung (TIA gemaess Schrems II);
+                    - Meldewesen Datenpannen (Art. 33 binnen 72 Stunden, Art. 34 wenn Hoch-Risiko);
+                    - Auskunfts-/Loesch-/Berichtigungs-/Widerspruchs-Rechte (Art. 15-21).
+
+                    Bei Verarbeitung personenbezogener Daten in Public Clouds gilt zusaetzlich ISO/IEC 27018:2019 (PII Processor in der Public Cloud).
+
+                    ## 10. Reporting an Geschaeftsleitung
+                    Mindestens halbjaehrlich erfolgt Compliance-Bericht an Geschaeftsleitung mit:
+
+                    - Status laufender Pruefungen und Zertifikate;
+                    - offene C5- und ISO-Befunde mit Risiko-Score;
+                    - Aenderungen regulatorischer Anforderungen;
+                    - DORA-spezifische Berichterstattung sofern anwendbar.
+
+                    ## 11. Pruefintervall und Genehmigung
+                    Diese Richtlinie wird mindestens alle 24 Monate ueberprueft. Genehmigung: Geschaeftsleitung + CSO + DSB. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Ref: BSI C5:2020 COM-01 bis COM-05, C5:2026 inkl. EUCS-Substantial, ISO/IEC 27001:2022 A.5.31-A.5.36, ISO/IEC 27017:2015, ISO/IEC 27018:2019, DSGVO Art. 28 / Art. 32 / Art. 33-34 / Art. 44-49, DORA Art. 6 / Art. 28-30, IDW PS 860, ISAE 3000 / 3402.*
