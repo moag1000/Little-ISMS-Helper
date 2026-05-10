@@ -45,4 +45,6 @@
 @import './styles/policy-wizard-mobile.css';
 
 /* Policy-Doc — 5-slot ISMS-policy-document template (cover/toc/history/body/signature) */
-@import './styles/policy-doc.css';
+@import "./styles/policy-doc.css";
+/* Report-Doc 5-slot template — sister stylesheet, used by templates/_components/_fa_report_doc.html.twig */
+@import "./styles/report-doc.css";
