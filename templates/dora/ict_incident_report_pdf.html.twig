@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <title>{{ 'dora.ict_incident_report.title'|trans({}, 'dora') }}</title>
     <style>
+        :root {
+            --primary:       var(--primary);
+            --surface:       var(--surface);
+            --surface-2:     var(--surface-2);
+            --fg:            #0f172a;
+            --fg-2:          var(--fg-2);
+            --fg-3:          var(--fg-3);
+            --border:        var(--border);
+            --success:       var(--success);
+            --success-tint:  var(--success-tint);
+            --danger:        var(--danger);
+            --danger-tint:   var(--danger-tint);
+            --warning:       var(--warning);
+            --warning-tint:  var(--warning-tint);
+            --info-tint:     var(--info-tint);
+            --info-text:     var(--info-text);
+        }
+
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 20px; color: var(--surface); }
         .header {
             text-align: center;
@@ -12,18 +30,18 @@
             padding-bottom: 10px;
         }
         .header h1 { color: var(--accent); margin: 0; font-size: 16pt; text-transform: uppercase; letter-spacing: 0.5pt; }
-        .header .subtitle { color: #475569; font-size: 9pt; margin-top: 3px; }
-        .header .date { color: #64748b; font-size: 8pt; margin-top: 3px; }
+        .header .subtitle { color: var(--fg-2); font-size: 9pt; margin-top: 3px; }
+        .header .date { color: var(--fg-2); font-size: 8pt; margin-top: 3px; }
 
         .meta-grid { display: table; width: 100%; margin: 10px 0 15px 0; border: 1px solid var(--border); }
         .meta-row { display: table-row; }
-        .meta-label { display: table-cell; width: 30%; padding: 4px 8px; font-weight: bold; font-size: 8pt; color: #475569; text-transform: uppercase; background: var(--bg); border-bottom: 1px solid var(--border); }
+        .meta-label { display: table-cell; width: 30%; padding: 4px 8px; font-weight: bold; font-size: 8pt; color: var(--fg-2); text-transform: uppercase; background: var(--surface-2); border-bottom: 1px solid var(--border); }
         .meta-value { display: table-cell; width: 70%; padding: 4px 8px; font-size: 9pt; border-bottom: 1px solid var(--border); }
 
         .section { margin: 15px 0; page-break-inside: avoid; }
         .section h2 {
             background: var(--accent);
-            color: #ffffff;
+            color: var(--surface);
             padding: 6px 10px;
             font-size: 10pt;
             margin: 0 0 8px 0;
@@ -34,34 +52,34 @@
             color: var(--accent);
             font-size: 9pt;
             margin: 8px 0 4px 0;
-            border-bottom: 1px solid #cbd5e1;
+            border-bottom: 1px solid var(--border);
             padding-bottom: 3px;
         }
 
         table { width: 100%; border-collapse: collapse; margin: 8px 0; }
         th {
             background: var(--surface);
-            color: #c4b5fd;
+            color: var(--primary);
             padding: 5px 6px;
             text-align: left;
             font-size: 8pt;
             text-transform: uppercase;
         }
         td { padding: 4px 6px; border-bottom: 1px solid var(--border); font-size: 8pt; }
-        tr:nth-child(even) { background: var(--bg); }
+        tr:nth-child(even) { background: var(--surface-2); }
 
         .field-group { margin: 6px 0; }
-        .field-label { font-weight: bold; font-size: 8pt; color: #475569; text-transform: uppercase; }
-        .field-value { font-size: 9pt; margin-top: 2px; padding: 4px 6px; background: var(--bg); border-left: 3px solid #c4b5fd; }
-        .field-value.empty { color: #94a3b8; font-style: italic; }
+        .field-label { font-weight: bold; font-size: 8pt; color: var(--fg-2); text-transform: uppercase; }
+        .field-value { font-size: 9pt; margin-top: 2px; padding: 4px 6px; background: var(--surface-2); border-left: 3px solid var(--primary); }
+        .field-value.empty { color: var(--fg-3); font-style: italic; }
 
         .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
-        .badge-danger { background: #fecaca; color: #991b1b; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-        .badge-success { background: #dcfce7; color: #166534; }
-        .badge-info { background: #ede9fe; color: #5b21b6; }
-        .badge-major { background: #fecaca; color: #991b1b; border: 1px solid var(--danger); }
-        .badge-non-major { background: #dbeafe; color: #1e40af; }
+        .badge-danger { background: var(--danger-tint); color: var(--danger); }
+        .badge-warning { background: var(--warning-tint); color: var(--warning); }
+        .badge-success { background: var(--success-tint); color: var(--success); }
+        .badge-info { background: var(--info-tint); color: var(--info-text); }
+        .badge-major { background: var(--danger-tint); color: var(--danger); border: 1px solid var(--danger); }
+        .badge-non-major { background: var(--info-tint); color: var(--info-text); }
 
         .criteria-list { list-style: none; padding: 0; margin: 4px 0; }
         .criteria-list li { padding: 2px 0; font-size: 8pt; }
@@ -70,10 +88,10 @@
         .criteria-not-met::before { background: var(--border); }
 
         .overdue { color: var(--danger); font-weight: bold; }
-        .compliant { color: #16a34a; font-weight: bold; }
-        .pending { color: #d97706; font-weight: bold; }
+        .compliant { color: var(--success); font-weight: bold; }
+        .pending { color: var(--warning); font-weight: bold; }
 
-        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: #94a3b8; border-top: 1px solid var(--border); padding-top: 6px; }
+        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 7pt; color: var(--fg-3); border-top: 1px solid var(--border); padding-top: 6px; }
         .page-break { page-break-after: always; }
 
         @media print {
