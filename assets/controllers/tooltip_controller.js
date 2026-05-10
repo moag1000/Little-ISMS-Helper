@@ -50,59 +50,28 @@ export default class extends Controller {
     }
 }
 
-// Auto-initialize tooltips on turbo:load for pages without explicit controller
-document.addEventListener('turbo:load', () => {
-    console.log('[Tooltip] turbo:load fired');
-    console.log('[Tooltip] window.bootstrap:', window.bootstrap);
+const TOOLTIP_OPTIONS = {
+    trigger: 'hover focus',
+    delay: { show: 200, hide: 100 },
+    container: 'body',
+    boundary: 'viewport',
+    fallbackPlacements: ['top', 'bottom', 'right', 'left']
+};
 
-    if (window.bootstrap && window.bootstrap.Tooltip) {
-        // Dispose any existing tooltips
-        const existingTooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-        existingTooltips.forEach(el => {
-            const existingTooltip = window.bootstrap.Tooltip.getInstance(el);
-            if (existingTooltip) {
-                existingTooltip.dispose();
-            }
-        });
-
-        // Initialize new tooltips
-        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-        console.log('[Tooltip] Found elements on turbo:load:', tooltipTriggerList.length);
-        tooltipTriggerList.forEach((tooltipTriggerEl, i) => {
-            console.log(`[Tooltip] turbo init #${i}:`, tooltipTriggerEl.getAttribute('data-bs-title')?.substring(0, 50));
-            new window.bootstrap.Tooltip(tooltipTriggerEl, {
-                trigger: 'hover focus',
-                delay: { show: 200, hide: 100 },
-                container: 'body',
-                boundary: 'viewport',
-                fallbackPlacements: ['top', 'bottom', 'right', 'left']
-            });
-        });
-    } else {
-        console.error('[Tooltip] Bootstrap not available on turbo:load!');
+function initAllTooltips() {
+    if (!window.bootstrap || !window.bootstrap.Tooltip) {
+        return;
     }
-});
+    // Dispose any existing tooltips
+    const existing = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    existing.forEach(el => {
+        const inst = window.bootstrap.Tooltip.getInstance(el);
+        if (inst) inst.dispose();
+    });
+    // Initialize fresh
+    existing.forEach(el => new window.bootstrap.Tooltip(el, TOOLTIP_OPTIONS));
+}
 
-// Also handle DOMContentLoaded for initial page load
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('[Tooltip] DOMContentLoaded fired');
-    console.log('[Tooltip] window.bootstrap:', window.bootstrap);
-    console.log('[Tooltip] window.bootstrap.Tooltip:', window.bootstrap?.Tooltip);
-
-    if (window.bootstrap && window.bootstrap.Tooltip) {
-        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-        console.log('[Tooltip] Found elements:', tooltipTriggerList.length);
-        tooltipTriggerList.forEach((tooltipTriggerEl, i) => {
-            console.log(`[Tooltip] Initializing #${i}:`, tooltipTriggerEl.getAttribute('data-bs-title')?.substring(0, 50));
-            new window.bootstrap.Tooltip(tooltipTriggerEl, {
-                trigger: 'hover focus',
-                delay: { show: 200, hide: 100 },
-                container: 'body',
-                boundary: 'viewport',
-                fallbackPlacements: ['top', 'bottom', 'right', 'left']
-            });
-        });
-    } else {
-        console.error('[Tooltip] Bootstrap not available!');
-    }
-});
+// Auto-init on Turbo navigation + initial DOMContentLoaded.
+document.addEventListener('turbo:load', initAllTooltips);
+document.addEventListener('DOMContentLoaded', initAllTooltips);
