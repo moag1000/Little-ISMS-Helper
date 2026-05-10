@@ -14,11 +14,14 @@ use App\Repository\ControlRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
+use App\Repository\TenantBrandingRepository;
 use App\Service\AuditLogger;
 use App\Service\PdfExportService;
+use App\Service\PolicyWizard\Export\PolicyPdfExporter;
 use App\Service\SoAReportService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
 /**
@@ -52,7 +55,10 @@ final class CertificationBundleExporter
         private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
         private readonly ComplianceFrameworkRepository $frameworkRepository,
         private readonly RiskTreatmentPlanRepository $treatmentPlanRepository,
+        private readonly PolicyPdfExporter $pdfExporter,
         private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?TenantBrandingRepository $brandingRepository = null,
+        private readonly ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -97,9 +103,25 @@ final class CertificationBundleExporter
         $assetPdf = $this->generateAssetRegisterPdf($tenant, $now);
         $zip->addFromString($rootDir . '/03_ASSET_REGISTER.pdf', $assetPdf);
 
+        // ── 01b: Policy-Wizard generated Documents ──────────────────────
+        // Renders every wizard-generated Document (PolicyTemplate-driven)
+        // via PolicyPdfExporter into 01_POLICIES/<standard>/. These are the
+        // policies the user authored through the Policy-Wizard — they are
+        // NOT linked to ComplianceRequirement.evidenceDocuments and would
+        // otherwise be silently missing from the audit bundle (Bug #1).
+        //
+        // SoA linkage note: PolicyTemplate.linkedAnnexAControls maps each
+        // template to the Annex-A controls it covers (e.g. access_control →
+        // ['A.5.15','A.5.16']). The SoA-Auto-Update service (separate
+        // worktree) will bump implementation_status when generated docs
+        // land. A back-reference (SoA row → Document FK) is a future
+        // enhancement that will let auditors click "show me the policy
+        // covering A.5.15" and jump to the rendered Document.
+        $wizardResult = $this->addPolicyWizardDocuments($zip, $rootDir, $tenant);
+
         // ── 04: Evidence Documents ──────────────────────────────────────
         $evidenceResult = $this->addEvidenceDocuments($zip, $rootDir, $tenant);
-        $documentCount = $evidenceResult['document_count'];
+        $documentCount = $evidenceResult['document_count'] + $wizardResult['document_count'];
 
         // ── 05: Gap Analysis CSV ────────────────────────────────────────
         $gapResult = $this->generateGapAnalysisCsv($tenant);
@@ -315,6 +337,84 @@ final class CertificationBundleExporter
         );
     }
 
+    // ─── Policy-Wizard Documents (Bug #1 fix) ──────────────────────────
+
+    /**
+     * Render every Policy-Wizard generated Document for this tenant via
+     * {@see PolicyPdfExporter} (W7-A) and pack into
+     * `01_POLICIES/<standard>/<safe-filename>.pdf`. Emits an
+     * `01_POLICIES/INDEX.csv` with standard/topic/title/status/drift_flag
+     * for auditors.
+     *
+     * Filters: archived docs are excluded so the user does not get both
+     * the legacy and the replaced policy in the bundle.
+     *
+     * @return array{document_count: int, index_rows: list<list<string>>}
+     */
+    private function addPolicyWizardDocuments(\ZipArchive $zip, string $rootDir, Tenant $tenant): array
+    {
+        $policiesDir = $rootDir . '/01_POLICIES';
+        $documentCount = 0;
+        $indexRows = [
+            ['standard', 'topic', 'title', 'document_id', 'generated_at', 'status', 'drift_flag'],
+        ];
+
+        $branding = $this->brandingRepository?->findOneByTenant($tenant);
+
+        $documents = $this->documentRepository->findByTenant($tenant);
+        foreach ($documents as $doc) {
+            $template = $doc->getGeneratedFromTemplate();
+            if ($template === null) {
+                continue;
+            }
+            if ($doc->isArchived() || $doc->getStatus() === 'archived') {
+                continue;
+            }
+
+            $standard = $this->safeFilename((string) ($template->getStandard() ?: 'general'));
+            $titleBase = $doc->getOriginalFilename() ?: ('policy-' . ($doc->getId() ?? 0));
+            $filename = $this->safeFilename((string) $titleBase) . '.pdf';
+            $zipPath = $policiesDir . '/' . $standard . '/' . $filename;
+
+            try {
+                $pdfBinary = $this->pdfExporter->exportDocument($doc, $branding);
+                $zip->addFromString($zipPath, $pdfBinary);
+                $documentCount++;
+
+                $driftFlag = method_exists($doc, 'hasPostGenerationEdits') && $doc->hasPostGenerationEdits()
+                    ? 'edited'
+                    : 'pristine';
+
+                $indexRows[] = [
+                    $standard,
+                    (string) ($template->getTopic() ?: ''),
+                    $this->oneLine((string) ($doc->getOriginalFilename() ?? '')),
+                    (string) ($doc->getId() ?? 0),
+                    $doc->getUploadedAt()?->format('Y-m-d') ?? '',
+                    (string) $doc->getStatus(),
+                    $driftFlag,
+                ];
+            } catch (\Throwable $e) {
+                $this->logger?->warning(
+                    'CertificationBundle: skipped wizard document due to PDF export error',
+                    [
+                        'document_id' => $doc->getId(),
+                        'standard'    => $standard,
+                        'error'       => $e->getMessage(),
+                    ],
+                );
+            }
+        }
+
+        // Always emit INDEX.csv so auditors see "0 wizard policies" explicitly.
+        $zip->addFromString($policiesDir . '/INDEX.csv', $this->rowsToCsv($indexRows));
+
+        return [
+            'document_count' => $documentCount,
+            'index_rows'     => $indexRows,
+        ];
+    }
+
     // ─── Evidence Collection ────────────────────────────────────────────
 
     /**
@@ -343,6 +443,23 @@ final class CertificationBundleExporter
                 $idx = 1;
 
                 foreach ($evidence as $doc) {
+                    // Bug #2 fix: skip archived legacy docs (e.g. replaced via
+                    // Bestandsaufnahme `replace` action). Otherwise auditors
+                    // get BOTH the legacy AND the wizard-generated successor.
+                    if ($doc->isArchived() || $doc->getStatus() === 'archived') {
+                        continue;
+                    }
+
+                    // Bug #1 + #3 fix: wizard-generated docs are emitted by
+                    // addPolicyWizardDocuments() above (full PDF render via
+                    // PolicyPdfExporter). Skipping here avoids double-add and
+                    // also prevents the MISSING.txt placeholder problem,
+                    // because wizard docs use filePath='virtual:...' and have
+                    // no file on disk.
+                    if ($doc->getGeneratedFromTemplate() !== null) {
+                        continue;
+                    }
+
                     $originalName = (string) ($doc->getOriginalFilename() ?? $doc->getFilename() ?? 'document-' . $doc->getId());
                     $zipName = sprintf('%02d_%s', $idx, $this->safeFilename($originalName));
                     $zipPath = $evidenceDir . '/' . $category . '/' . $zipName;
