@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\ManagementReview;
+use App\Entity\Tenant;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -38,6 +40,36 @@ class ManagementReviewRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('m')
             ->orderBy('m.reviewDate', 'DESC')
             ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Audit V4 V4-LB-1 Round-2 — Upcoming management reviews within a
+     * window (default 90 days). ISO 27001 Clause 9.3 mandates planned
+     * intervals; surfacing the next-review-due-date to top management
+     * keeps the review cadence honest.
+     *
+     * `status = 'planned'` AND `reviewDate BETWEEN today AND today+window`.
+     * Tenant-scoped.
+     *
+     * @return ManagementReview[]
+     */
+    public function findUpcomingByTenant(Tenant $tenant, int $windowDays = 90): array
+    {
+        $today = new DateTimeImmutable('today');
+        $deadline = $today->modify("+{$windowDays} days");
+
+        return $this->createQueryBuilder('m')
+            ->where('m.tenant = :tenant')
+            ->andWhere('m.status = :status')
+            ->andWhere('m.reviewDate IS NOT NULL')
+            ->andWhere('m.reviewDate BETWEEN :today AND :deadline')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('status', 'planned')
+            ->setParameter('today', $today)
+            ->setParameter('deadline', $deadline)
+            ->orderBy('m.reviewDate', 'ASC')
             ->getQuery()
             ->getResult();
     }

@@ -1,7 +1,7 @@
 # My Day Inbox (Phase 7 Persona-driven Inbox)
 title: 'Mein Tag'
 badge: 'My Day'
-subtitle: 'Alle offenen Punkte aus 7 Posteingängen — heute, %generated_at%'
+subtitle: 'Alle offenen Punkte aus 16 Posteingängen — heute, %generated_at%'
 
 action:
     standard_dashboard: 'Standard-Dashboard'
@@ -17,6 +17,12 @@ kpi:
     risk_acceptance_expiring: 'Risiko-Akzeptanz fällig'
     documents_review_overdue: 'Dokumente Review überfällig'
     trainings_pending: 'Trainings offen'
+    incidents_open_assigned: 'Incidents (mir)'
+    data_breaches_72h_ticking: 'Datenpannen 72h'
+    vulnerabilities_critical_unpatched: 'Schwachstellen kritisch'
+    audit_checklist_due: 'Audit-Checkliste fällig'
+    change_requests_pending_approval: 'CRs zur Freigabe'
+    management_review_upcoming: 'Mgmt-Review anstehend'
 
 section:
     workflows_pending: 'Workflows offen'
@@ -29,6 +35,12 @@ section:
     risk_acceptance_expiring: 'Risiko-Akzeptanz läuft ab'
     documents_review_overdue: 'Dokumente: Review überfällig'
     trainings_pending: 'Trainings (mir zugewiesen)'
+    incidents_open_assigned: 'Incidents (mir zugewiesen)'
+    data_breaches_72h_ticking: 'Datenpannen — 72h-Frist läuft (DSGVO Art. 33)'
+    vulnerabilities_critical_unpatched: 'Schwachstellen — kritisch / ungepatcht'
+    audit_checklist_due: 'Audit-Checkliste — fällig in 7 Tagen'
+    change_requests_pending_approval: 'Change Requests — warten auf Freigabe'
+    management_review_upcoming: 'Management-Review — anstehend (90-Tage-Fenster)'
 
 bucket:
     risk_acceptance_expiring:
@@ -40,6 +52,24 @@ bucket:
     trainings_pending:
         title: 'Trainings (mir zugewiesen)'
         empty: 'Aktuell keine offenen Trainings.'
+    incidents_open_assigned:
+        title: 'Incidents (mir zugewiesen)'
+        empty: 'Keine offenen Incidents auf deinem Tisch.'
+    data_breaches_72h_ticking:
+        title: 'Datenpannen — 72h-Frist läuft'
+        empty: 'Keine offenen Datenpannen mit laufender 72h-Frist.'
+    vulnerabilities_critical_unpatched:
+        title: 'Schwachstellen — kritisch / ungepatcht'
+        empty: 'Keine kritischen Schwachstellen offen.'
+    audit_checklist_due:
+        title: 'Audit-Checkliste — fällig'
+        empty: 'Keine Audit-Checklisten-Items in den nächsten 7 Tagen fällig.'
+    change_requests_pending_approval:
+        title: 'Change Requests — warten auf Freigabe'
+        empty: 'Keine Change Requests warten auf Freigabe.'
+    management_review_upcoming:
+        title: 'Management-Review — anstehend'
+        empty: 'Keine Management-Reviews in den nächsten 90 Tagen geplant.'
 
 empty:
     title: 'Alles erledigt'
