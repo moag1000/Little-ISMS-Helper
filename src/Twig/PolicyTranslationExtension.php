@@ -41,6 +41,7 @@ final class PolicyTranslationExtension extends AbstractExtension
         'dora'      => ['policy_dora'],
         'soc2'      => ['policy_soc2'],
         'tisax'     => ['policy_tisax'],
+        'nis2'      => ['policy_nis2'],
     ];
 
     public function __construct(
