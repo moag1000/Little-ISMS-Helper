@@ -172,8 +172,8 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
                 {% block card_header %}
-                    <div class="card-header bg-warning-subtle text-warning">
-                        <h2 class="mb-0"><i class="fa-icon fa-icon--control" aria-hidden="true"></i> {{ 'user.section.system_roles'|trans({}, 'user') }}</h2>
+                    <div class="card-header">
+                        <h2 class="mb-0"><i class="fa-icon fa-icon--control text-warning" aria-hidden="true"></i> {{ 'user.section.system_roles'|trans({}, 'user') }}</h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
