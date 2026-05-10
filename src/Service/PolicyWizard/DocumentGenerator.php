@@ -218,6 +218,16 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
             $body = $this->appendNis2LexSpecialisFooterIfApplicable($template, $body, $run);
 
+            // Compliance-Manager / Auditor-External Wish — prominent
+            // norm-anchor header at the very top of every generated
+            // policy body. Lists every linked Annex A control / BSI
+            // Baustein / DORA article + the DORA validity stand
+            // (when applicable) + a Climate-Change marker (Amd. 1:2024
+            // — ISO top-level only). Header is generator-controlled
+            // text (no tenant variables) so it is leak-safe by
+            // construction.
+            $body = $this->prependNormAnkerHeader($template, $body);
+
             // W1 audit-defang gap #3 — Variable-substitution leakage
             // detector. Pre-persist scan for raw `{{ … }}`, `{% … %}`
             // and `{# … #}` markers. Auditors will not accept generator
@@ -426,6 +436,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             $body = $this->renderBody($template, $variables);
             $body = $this->appendDoraExtensionIfApplicable($template, $body, $run);
             $body = $this->appendNis2LexSpecialisFooterIfApplicable($template, $body, $run);
+            $body = $this->prependNormAnkerHeader($template, $body);
             $previews[] = [
                 'template_key' => $template->getKey(),
                 'standard' => $template->getStandard(),
@@ -696,6 +707,93 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         }
 
         return rtrim($body) . "\n\n---\n\n" . $footer . "\n";
+    }
+
+    /**
+     * Compliance-Manager / Auditor-External Wish — render a prominent
+     * "Norm-Anker" header at the very top of every generated policy
+     * body. The header makes the regulatory linkage explicit so
+     * auditors do not have to expand the EntityTag list to verify
+     * which Annex A controls / BSI Bausteine / DORA articles the
+     * document covers.
+     *
+     * Format (Markdown):
+     *   ```
+     *   > **Norm-Anker:** ISO 27001:2022 A.5.23, A.8.13 | BSI 200-2 OPS.1.2.4 | DORA Art. 6, 9
+     *   > _DORA-Stand: 2025-01-17 · Climate-Change Amd. 1:2024 angewandt_
+     *   ```
+     *
+     * Skip rules:
+     *  - Templates with no linked refs at all → no header (nothing to
+     *    anchor against; injecting an empty header would be noise).
+     *
+     * The header text is fully generator-controlled — no tenant
+     * substitution variables — so it is leak-safe. ISO climate-wording
+     * remains in the body proper (the assertion already fired in
+     * {@see renderBody}); the header just surfaces a Climate-Change
+     * marker line for visual prominence.
+     */
+    public function prependNormAnkerHeader(PolicyTemplate $template, string $body): string
+    {
+        $segments = [];
+
+        $annexA = array_values(array_filter(
+            $template->getLinkedAnnexAControls() ?? [],
+            static fn ($ref): bool => is_string($ref) && $ref !== '',
+        ));
+        if ($annexA !== []) {
+            $segments[] = 'ISO 27001:2022 ' . implode(', ', $annexA);
+        }
+
+        $bausteine = array_values(array_filter(
+            $template->getLinkedBausteine() ?? [],
+            static fn ($ref): bool => is_string($ref) && $ref !== '',
+        ));
+        if ($bausteine !== []) {
+            $segments[] = 'BSI 200-2 ' . implode(', ', $bausteine);
+        }
+
+        $doraArticles = array_values(array_filter(
+            $template->getLinkedDoraArticles() ?? [],
+            static fn ($ref): bool => is_string($ref) && $ref !== '',
+        ));
+        if ($doraArticles !== []) {
+            $segments[] = 'DORA ' . implode(', ', $doraArticles);
+        }
+
+        // No linkage → suppress the header entirely. Empty headers add
+        // visual noise without auditor value.
+        if ($segments === []) {
+            return $body;
+        }
+
+        $header = '> **Norm-Anker:** ' . implode(' | ', $segments);
+
+        $supplements = [];
+        // DORA-Stand line — emit when the template itself is DORA OR
+        // when the DORA extension was appended to an ISO body.
+        $isDoraTemplate = $template->getStandard() === 'dora';
+        $isDoraExtension = ($this->doraExtensionApplied[spl_object_id($template)] ?? false) === true;
+        if ($isDoraTemplate || $isDoraExtension) {
+            $supplements[] = 'DORA-Stand: 2025-01-17';
+        }
+
+        // Climate-Change line — only on ISO 27001 top-level renders that
+        // carry the Amd. 1:2024 wording (mirrors the existing assertion
+        // in renderBody).
+        if (
+            $template->getStandard() === 'iso27001'
+            && $template->getTopic() === 'top_level'
+            && $template->isClimateChangeWording()
+        ) {
+            $supplements[] = 'Climate-Change Amd. 1:2024 angewandt';
+        }
+
+        if ($supplements !== []) {
+            $header .= "\n> _" . implode(' · ', $supplements) . '_';
+        }
+
+        return $header . "\n\n" . ltrim($body);
     }
 
     /**
@@ -1135,6 +1233,20 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             if (!in_array('dora-validity:2025-01-17', $tagsToApply, true)) {
                 $tagsToApply[] = 'dora-validity:2025-01-17';
             }
+        }
+
+        // Compliance-Manager / Auditor-External Wish — `climate-change:amended`
+        // marker on top-level ISO 27001 Information-Security-Policy
+        // renders. Mirrors the in-body Amd. 1:2024 wording assertion
+        // and drives the prominent header chip on the document show
+        // view + PDF cover. Skipped for non-iso27001 / non-top_level
+        // templates where the wording is not applicable.
+        if (
+            $template->getStandard() === 'iso27001'
+            && $template->getTopic() === 'top_level'
+            && $template->isClimateChangeWording()
+        ) {
+            $tagsToApply[] = 'climate-change:amended';
         }
 
         $documentId = $document->getId();
