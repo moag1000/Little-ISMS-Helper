@@ -3,16 +3,86 @@ policy:
         cryptography:
             v1:
                 title: 'Cryptography Policy'
-                body: |
-                    # Cryptography Policy
+                body: |-
+                    # Cryptography Policy of {{ tenant.legal_name }}
 
-                    **Scope:** {{ tenant.legal_name }} together with all subsidiaries, sites and service providers that fall within the scope of the Information Security Management System (ISMS) per ISO/IEC 27001:2022.
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.8.24 (Use of cryptography) | ISO/IEC 27002:2022 § 8.24 | BSI CON.1 (Cryptographic concept) in conjunction with SYS.1.x, NET.3.3 | BSI TR-02102-1/2/3/4 | GDPR Art. 32(1)(a) | DORA Art. 9(4)(b) and Art. 28 | NIS2 Art. 21(2)(h) | eIDAS Regulation (EU) 910/2014 | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
 
-                    **Normative anchor:** ISO/IEC 27001:2022 Annex A Control A.8.24 *Use of cryptography*. ISO/IEC 27002:2022 §8.24 states verbatim: *"Rules for the effective use of cryptography, including cryptographic key management, shall be defined and implemented."* This policy implements the requirement and supplements it with the regulatory drivers from EU-DORA (Regulation (EU) 2022/2554), NIS2 (Directive (EU) 2022/2555) and — where applicable — BSI TR-02102.
+                    ## 1. Purpose
+                    This policy mandates the selection, deployment, operation, key management and decommissioning of cryptographic mechanisms and keys throughout the ISMS scope of {{ tenant.legal_name }}. It implements ISO/IEC 27001:2022 Annex A 8.24 and complements it with BSI CON.1 (cryptographic concept), the technical guidelines BSI TR-02102-1 to -4, and the regulatory requirements from GDPR Art. 32, EU-DORA Art. 9 + 28, NIS2 Art. 21 and the eIDAS Regulation. The objective is to safeguard confidentiality, integrity and authenticity of protected information and to prepare the organisation for the migration to post-quantum-capable schemes (PQC).
 
-                    **Owner:** {{ roles.ciso.fullName }} (CISO) is the policy owner. Operational key management lies with the platform and application owners coordinated by the cryptography lead.
+                    ## 2. Scope
+                    The policy covers all IT processing within the ISMS scope ({{ tenant.scope_statement }}). Included are own servers, clients, mobile devices, network devices, cloud tenants ({{ cloud.providers }}), SaaS platforms, industrial / control systems (where in scope), code-signing pipelines, e-mail gateways, VPN and zero-trust gateways, backup systems, removable media as well as print and archival interfaces. It applies to all employees, contractors, interns and processors within the meaning of GDPR Art. 28.
 
-                    **Applicability:** This policy applies to all employees, external contractors and service providers who deploy, operate or configure cryptographic mechanisms on behalf of {{ tenant.legal_name }}.
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate change is included as an external factor when assessing cryptographic mechanisms: the energy footprint of larger key sizes and PQC schemes is considered in procurement and algorithm choice; site risks (heat, cooling failure) for HSM and key-management infrastructure form part of the risk assessment under Clause 6.1.2.
+
+                    ## 3. Risk and protection-need alignment
+                    Cryptographic mechanisms are selected risk-based according to data classification ({{ data.classification_levels }}) and the protection need of information assets. The effectiveness assessment considers the confidentiality lifetime ("harvest-now-decrypt-later" risk), regulatory minimum standards, the current threat picture (Threat Intelligence, A.5.7) and the organisation's risk appetite {{ risk.appetite_tier }}.
+
+                    ## 4. Approved algorithms and minimum key sizes
+                    Mandatory schemes ({{ crypto.algorithms }}); deviations require approval per Section 12:
+
+                    - **Symmetric encryption:** AES-256 in GCM (preferred for new connections due to integrated authentication), CCM or XTS (full-disk). AES-128 only for legacy systems pending migration; ChaCha20-Poly1305 for mobile / embedded platforms without AES hardware.
+                    - **Asymmetric schemes:** RSA with minimum 3072 bit (from 2030: 4096 bit), ECDSA P-256 or P-384, Ed25519 for signatures, ECDH P-256/P-384 or X25519 for key exchange.
+                    - **Hash functions:** SHA-256, SHA-384, SHA-512 or SHA-3 family. SHA-1 and MD5 are forbidden in security-relevant contexts; residual use in non-security checksums is permitted.
+                    - **Key derivation and password hashing:** Argon2id (preferred), scrypt or PBKDF2 with at least 600 000 iterations.
+                    - **Transport encryption:** TLS 1.3 is the target for new connections; TLS 1.2 remains permitted with forward-secrecy suites. Forbidden: SSL of any version, TLS 1.0/1.1, NULL/EXPORT/anonymous suites.
+                    - **Disk and file encryption:** LUKS2/dm-crypt (Linux), BitLocker XTS-AES-256 (Windows), FileVault (macOS); mobile devices through vendor-supplied platform encryption with key escrow in MDM.
+                    - **Code and container signing:** Sigstore/Cosign or equivalent for container images; PE/JAR/RPM signing with vendor keys from HSM.
+                    - **Quantum-resistant schemes (hybrid):** ML-KEM (FIPS 203) and ML-DSA (FIPS 204) as hybrid components per BSI TR-02102-1 from the pilot roadmap (see Section 11).
+
+                    Forbidden schemes: DES, 3DES (final by 2026), RC4, Blowfish, anonymous Diffie-Hellman groups, static DH groups smaller than 2048 bit, MD5/SHA-1 in security-relevant functions, RSA below 2048 bit.
+
+                    ## 5. Key-management lifecycle
+                    Every cryptographic key passes through generation, distribution, storage, use, rotation, revocation and destruction. All transitions are auditably recorded in the central key inventory ({{ crypto.key_inventory_system }}).
+
+                    - **Generation:** exclusively in HSM or software KMS at FIPS 140-3 Level 2 (minimum) with qualified random generators (TRNG or certified PRNG).
+                    - **Distribution:** encrypted only; key splitting under M-of-N for root and master keys.
+                    - **Storage:** hardcoded secrets in source code, configuration files or container images are forbidden and treated as critical security events. Secrets are managed in the central secret manager ({{ crypto.secret_manager }}).
+                    - **Rotation:** default intervals — data-encryption keys at least every 24 months; TLS server certificates every 12 months; code-signing every 36 months; JWT signing every 6 months; PIM/PAM tokens every 90 days; SSH host keys at re-image. Shorter intervals are permitted; extensions require documented risk acceptance.
+                    - **Revocation:** compromised keys are revoked within 1 hour after detection; CRL/OCSP refresh within 4 hours.
+                    - **Destruction:** cryptographic erase or physical destruction (DIN 66399 protection class 3 or higher); confirmation evidence retained 7 years.
+
+                    ## 6. Public-Key-Infrastructure (PKI) and certificates
+                    A two-tier internal PKI (offline root CA, online issuing CA) is operated per BSI CON.1.A19. External certificates exclusively from publicly trusted CAs per CA/Browser Forum baseline. Lifecycle management covers automated expiry monitoring, pre-expiry alerting (60/30/7 days), uninterrupted renewal and revocation via CRL and/or OCSP stapling. ACME (RFC 8555) is permitted for internal service identities.
+
+                    ## 7. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Maintenance of this policy | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | Crypto lead, DPO {{ roles.dpo.fullName }}, Legal | All staff |
+                    | Key inventory and lifecycle | Crypto lead | CISO | IT operations, Secure Development | Audit |
+                    | Algorithm approval and exceptions | CISO | Executive board | ISO, Crypto lead, Legal | ISMS steering |
+                    | HSM/KMS operations | IT operations | CIO | ISO, Crypto lead | – |
+                    | PQC migration planning | Crypto lead | CISO | Architecture, Vendor management | Executive board |
+                    | Effectiveness measurement (KPI) | ISO | CISO | Internal Audit | Management Review |
+
+                    ## 8. Cloud, SaaS and third parties
+                    For cloud and SaaS services BYOK / HYOK is preferred where regulatory requirements demand. Provider-owned keys are only acceptable when contracts ensure key separation, tenant isolation, audit rights and confirmed key destruction. Key sovereignty is documented in the GDPR Art. 30 record of processing activities.
+
+                    ## 9. Secure implementation
+                    Internal development uses recognised cryptographic libraries only ({{ crypto.libraries }} – e. g. libsodium, BoringSSL, Bouncy Castle, .NET Cryptography). Custom implementation of cryptographic primitives is forbidden ("don't roll your own crypto"). Code reviews check for typical implementation pitfalls (static IVs, padding oracles, nonce reuse, timing side-channels). Static analysis and SAST rules for cryptography must be active in the CI pipeline (see Secure Development policy).
+
+                    ## 10. Key recovery and escrow
+                    For full-disk encryption keys (BitLocker, FileVault, LUKS) key escrow is implemented in MDM or Active Directory recovery; access is dual-control with audit logging. Backup keys are stored separately from the backup data; restore tests per the Backup policy (A.8.13) include key restore.
+
+                    ## 11. Post-quantum cryptography (PQC)
+                    A staged hybrid approach per BSI TR-02102-1 and NIST PQC standards is followed: (1) PQC inventory with confidentiality-lifetime assessment; (2) identification of harvest-now-decrypt-later data (lifetime greater than 5 years); (3) hybrid pilot for TLS and code signing by {{ pqc.hybrid_pilot_due }}; (4) prioritised migration of confidential long-term data; (5) supplier and cloud provider commitment to a PQC roadmap. Progress is reported in the Management Review (Clause 9.3).
+
+                    ## 12. Exceptions and deviations
+                    Deviations require documented risk acceptance by CISO {{ roles.ciso.fullName }} referencing the risk register, time-bound to a maximum of 12 months, with compensating controls and a defined re-review. Deviations are reported quarterly to the ISMS steering committee.
+
+                    ## 13. Effectiveness measurement (KPI)
+                    - Share of systems using algorithms per Section 4 (target greater than 98 percent)
+                    - Share of keys rotated within target (target greater than 95 percent)
+                    - Mean time between CVE publication and revocation/re-issue for compromised keys (target less than 4 hours)
+                    - Share of certificate-induced service outages (target 0)
+                    - Share of PQC-capable critical connections by {{ pqc.target_year }} (target greater than 80 percent)
+
+                    ## 14. Escalation, review and approval
+                    Violations or suspected incidents escalate via the ISO to CISO and ISMS steering; reportable cases per NIS2 Art. 23 / DORA Art. 19 / GDPR Art. 33 are coordinated by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}. The policy is reviewed at least annually and on relevant triggers (new BSI/NIST algorithm guidance, regulatory change, critical vulnerability in a crypto library, supplier change). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.10, A.5.23, A.8.13, A.8.20-A.8.24; BSI CON.1, CON.3, OPS.1.1.5, NET.3.3; GDPR Art. 25, 28, 30, 32; DORA Art. 9, 28; NIS2 Art. 21(2)(h); eIDAS Regulation Annex II.*
                 section:
                     1:
                         title: 'Principle and Objectives'
@@ -96,14 +166,90 @@ policy:
         backup:
             v1:
                 title: 'Backup Policy'
-                body: |
-                    # Backup Policy
+                body: |-
+                    # Backup Policy of {{ tenant.legal_name }}
 
-                    **Scope:** All information, applications and systems within the ISMS scope of {{ tenant.legal_name }}.
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.8.13 (Information backup) | ISO/IEC 27002:2022 § 8.13 | A.5.29/A.5.30 (ICT continuity) | BSI CON.3 (Data backup concept) | BSI 200-4 BCM | GDPR Art. 32(1)(c) | DORA Art. 12 (ICT business continuity, backup) | NIS2 Art. 21(2)(c) | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
 
-                    **Normative anchor:** ISO/IEC 27001:2022 Annex A Control A.8.13 *Information backup*. ISO/IEC 27002:2022 §8.13 states verbatim: *"Backup copies of information, software and systems shall be maintained and regularly tested in accordance with the agreed topic-specific policy on backup."* This makes the present policy one of the few ISMS documents the standard names explicitly.
+                    ## 1. Purpose
+                    This policy mandates strategy, procedures, scope, retention, protection, restoration and test requirements for data backup throughout the ISMS scope of {{ tenant.legal_name }}. It implements ISO/IEC 27001:2022 Annex A 8.13 (literally required ISMS document) and complements requirements from BSI CON.3, BSI 200-4 (BCM), GDPR Art. 32(1)(c), EU-DORA Art. 12 and NIS2 Art. 21(2)(c). The objective is recoverability of information, applications and systems within agreed RPO/RTO and resilience against ransomware and destructive attacks.
 
-                    **Owner:** {{ roles.ciso.fullName }} (CISO) is the policy owner. IT Operations is responsible for execution and restore tests. Recovery prioritisation lies with the respective business-process owners.
+                    ## 2. Scope
+                    All information assets within the ISMS scope ({{ tenant.scope_statement }}): production data, databases, virtual machines, containers, configurations ("infrastructure as code"), source-code repositories, identity stores, encryption keys (see Cryptography policy), application logs (see Logging policy), mailboxes, collaboration data (files, wikis), SaaS tenants ({{ saas.systems_in_scope }}), mobile devices (where business data are stored locally), end-user profiles where required. Backup keys are governed by the Cryptography policy.
+
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate change is included as an external factor in backup site selection, architecture and tests: extreme weather, power outages and energy shortages inform geo-redundant backup site selection and emergency restore tests.
+
+                    ## 3. Protection objectives and principles
+                    - **3-2-1-1-0 rule:** at least 3 copies (1 production + 2 backups), on 2 different media types, with 1 off-site, 1 offline/immutable (air-gap or object-lock), 0 errors in restore tests.
+                    - **Immutable backups:** WORM/object-lock for at least one copy for ransomware resilience; minimum lock period per retention class.
+                    - **Encryption:** backup data in transit and at rest per Cryptography policy (A.8.24); key custody separate from backup data.
+                    - **Segregation of duties:** backup operators have no delete or key authority; dual control for destructive operations.
+                    - **Tenant isolation:** no cross-tenant restores; tenant_id-based isolation also in the backup system.
+
+                    ## 4. RPO, RTO and classification
+                    Recovery Point Objectives (RPO) and Recovery Time Objectives (RTO) are derived from the BIA (BSI 200-4) and the ISMS risk assessment and documented per system. Default classes:
+
+                    | Tier | RPO | RTO | Example |
+                    |---|---|---|---|
+                    | 0 (mission-critical) | {{ backup.rpo_hours }} h (e. g. 1 h) | {{ backup.rto_hours_tier0 }} h (e. g. 4 h) | Core banking, order management |
+                    | 1 (business-critical) | 4 h | 8 h | CRM, customer portal |
+                    | 2 (operational) | 24 h | 24 h | Intranet, internal tools |
+                    | 3 (archival) | 7 d | 72 h | Archive systems |
+
+                    Deviations from defaults are documented in the asset inventory (A.5.9) and approved by the business-process owner and the ISO.
+
+                    ## 5. Backup procedures and frequency
+                    - **Full backup:** weekly minimum (Sunday); twice-weekly for Tier 0/1.
+                    - **Incremental / differential:** daily, supplemented by hourly snapshots for Tier 0.
+                    - **Database backup:** transaction-log backups per RPO; online backup with consistency check.
+                    - **Configuration backup:** automated capture of IaC, network configurations, IAM policies; daily minimum.
+                    - **SaaS backup:** third-party backup or API-based self-backup for M365, Google Workspace, Salesforce etc.; provider-only retention is not sufficient.
+                    - **Endpoint backup:** business data via cloud sync or endpoint backup; local personal stores are forbidden.
+
+                    ## 6. Retention
+                    Default retention: daily backups 30 days, weekly 12 weeks, monthly 12 months, yearly 7 years (commercial / tax records 10 years AO §§ 146-147). GDPR erasure obligations (Art. 17, Art. 5(1)(e)) apply to backups: erasure concepts are documented in the record of processing activities; time-to-live is selected so that erasure obligations take effect within the documented window.
+
+                    ## 7. Restore tests
+                    - **Frequency:** quarterly at minimum per Tier-0/1 system; annually for Tier-2/3; full DR test (site switch) at least annually.
+                    - **Restore scenarios:** file/DB restore, system restore, bare-metal restore, geo-redundant site switch, ransomware recovery from immutable backup.
+                    - **Acceptance criteria:** data integrity (checksum, sample validation by business), RPO/RTO met, full application function.
+                    - **Documentation:** test report, deviations, actions; results feed into Management Review (Clause 9.3) and BCM exercise report.
+
+                    ## 8. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Maintenance of this policy | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | IT operations, BCM lead | All |
+                    | Operational backup runs | IT operations / backup operator | CIO | ISO, App owner | – |
+                    | RPO/RTO definition | Business-process owner | Executive board | ISO, BCM | IT operations |
+                    | Restore tests | IT operations | CISO | App owner, Internal Audit | ISMS steering |
+                    | Erasure concepts / GDPR | DPO {{ roles.dpo.fullName }} | Executive board | ISO, Business | IT operations |
+                    | Audit / KPI reporting | Internal Audit | CISO | ISO | Executive board |
+
+                    ## 9. Protection of the backup infrastructure
+                    - Network segmentation (backup network logically and physically separated).
+                    - Privileged access management for backup consoles; MFA mandatory.
+                    - Central logging of administrator activity (see Logging policy A.8.15/A.8.16).
+                    - SIEM detection use cases for mass deletion, configuration changes and unusual restore attempts.
+                    - Vendor access (maintenance) only via documented maintenance windows, dual control, session logging.
+
+                    ## 10. Cloud and processors
+                    For cloud and SaaS backup services key sovereignty (BYOK/HYOK) is preferred. Contracts ensure data residency ({{ data.residency }}), tenant isolation, audit rights, deletion evidence, RTO/RPO SLAs, exit strategy with data restitution / destruction. Data processing agreements per GDPR Art. 28 are mandatory.
+
+                    ## 11. Effectiveness measurement (KPI)
+                    - Share of successful backup jobs per day (target greater than 99 percent)
+                    - Share of systematically tested restores per quarter (target 100 percent Tier 0/1)
+                    - Median measured restore time vs. RTO (target less than 80 percent of the RTO)
+                    - Share of immutable copies per Tier 0 (target 100 percent)
+                    - Number of unplanned backup deletions (target 0)
+
+                    ## 12. Escalation and incident response
+                    Backup or restore disruptions threatening RPO/RTO escalate via the IT operations on-call to the ISO and IT emergency organisation. Suspected sabotage / ransomware: immediate activation of the Incident policy (A.5.24-A.5.27); reportable cases per NIS2 Art. 23, DORA Art. 19 and GDPR Art. 33/34 coordinated by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}.
+
+                    ## 13. Review and approval
+                    Reviewed at least annually and on relevant triggers (architecture change, supplier change, incident, regulatory change). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.29, A.5.30, A.8.13, A.8.14, A.8.16, A.8.24; BSI CON.3, OPS.1.1.5, OPS.2.2; BSI 200-4 BCM; GDPR Art. 5, 17, 28, 32; DORA Art. 11, 12; NIS2 Art. 21(2)(c).*
                 section:
                     1:
                         title: 'Objectives and Protection Purpose'
@@ -187,14 +333,93 @@ policy:
         logging:
             v1:
                 title: 'Logging and Monitoring Policy'
-                body: |
-                    # Logging and Monitoring Policy
+                body: |-
+                    # Logging and Monitoring Policy of {{ tenant.legal_name }}
 
-                    **Scope:** All ISMS-relevant IT systems, applications, network components and security services of {{ tenant.legal_name }}.
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.8.15 (Logging), A.8.16 (Monitoring activities), A.8.17 (Clock synchronization) | ISO/IEC 27002:2022 §§ 8.15-8.17 | BSI OPS.1.1.5 (Logging) | BSI DER.1 (Detection of security-relevant events) | GDPR Art. 5(1)(c), Art. 25, Art. 32 | BetrVG § 87(1) No. 6 | NIS2 Art. 21(2)(f), Art. 23 | DORA Art. 10, 17, 19 | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
 
-                    **Normative anchor:** ISO/IEC 27001:2022 Annex A Controls A.8.15 *Logging*, A.8.16 *Monitoring activities*, A.8.17 *Clock synchronization*. ISO/IEC 27002:2022 §8.15: *"Logs that record activities, exceptions, faults and other relevant events shall be produced, stored, protected and analysed."* Supplemented by DORA Art. 16 (ICT risk-management framework) and NIS2 Art. 21(2)(f) (detection and response).
+                    ## 1. Purpose
+                    This policy mandates the scope, procedures, protection, retention, analysis and erasure of security-relevant log data of {{ tenant.legal_name }}. It implements ISO/IEC 27001:2022 Annex A 8.15-8.17 in conjunction with BSI OPS.1.1.5 and provides the basis for detection, forensic investigation, fulfilment of statutory record obligations and effectiveness evidence for security controls. It also fulfils GDPR Art. 32, NIS2 Art. 21/23 and DORA Art. 17/19 requirements.
 
-                    **Co-determination:** In Germany this policy is subject to works-council co-determination per §87(1) No. 6 BetrVG, since logging may be capable of monitoring employee behaviour and performance. Prior to entry into force the works-council agreement must be obtained and recorded in writing.
+                    ## 2. Scope
+                    All IT components within the ISMS scope ({{ tenant.scope_statement }}): servers, clients, network components (firewall, switch, router, WLAN controller, load balancer), applications, databases, identity providers, cloud / SaaS tenants, EDR/AV/HIPS, IDS/NDR/WAF, SOAR/SIEM, vulnerability scanners, OT/ICS (where in scope), physical security systems (access, video subject to separate privacy provisions).
+
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate change is included as an external factor: climate-related threats (extreme weather affecting logging infrastructure, energy bottlenecks, site failure) are considered in the availability planning of the logging infrastructure.
+
+                    ## 3. Co-determination and data protection
+                    Because logging in Germany may be capable of monitoring employee behaviour or performance, this policy is subject to works-council co-determination per BetrVG § 87(1) No. 6. A works agreement must be in place prior to entry into force. Personal-data analyses are purpose-bound, agreed with DPO {{ roles.dpo.fullName }} and the works council; a DPIA per GDPR Art. 35 is performed when introducing new analytics tools.
+
+                    ## 4. Minimum log content
+                    Per event the following must be recorded:
+
+                    - Timestamp in UTC (second precision, NTP-synchronised, A.8.17)
+                    - Source (system/host name, IP)
+                    - Subject (user identifier or service account)
+                    - Action (CRUD verb, command, event type)
+                    - Target object (path, database object, URL)
+                    - Outcome (success, failure, code)
+                    - Correlation identifier (trace / session ID)
+
+                    ## 5. Mandatory loggable events
+                    Mandatory events (minimum baseline OPS.1.1.5.A6):
+
+                    - Logons / logoffs, failed authentications, account lockouts, MFA changes
+                    - Granting, change and revocation of permissions
+                    - Privileged actions (administrator accounts, service accounts with elevated rights)
+                    - Access to confidential and strictly confidential data
+                    - Security-relevant configuration changes (firewall, IAM, crypto)
+                    - Start, stop and modification of security-relevant services
+                    - Events from anti-malware, IDS, EDR, firewall
+                    - External interface access and data exports
+                    - Access to the logging / SIEM system itself ("logging the logging")
+
+                    ## 6. Clock synchronisation (A.8.17)
+                    All systems use NTP against authenticated time sources (Stratum 1 or 2). Drift is centrally monitored; deviations greater than 1 second trigger alerting. Prerequisite for forensically usable correlation.
+
+                    ## 7. Central logging and protection (A.8.16)
+                    All relevant logs are consolidated into a central, hardened SIEM/log platform ({{ logging.siem_platform }}). Transport TLS 1.2 or higher (see Cryptography policy). Tamper protection: append-only storage, hash chaining or audit-proof storage (WORM). Administrative SIEM access is dual-control and audit-logged. High availability: active mirroring across redundant sites ({{ logging.dr_site }}).
+
+                    ## 8. Retention periods
+                    Default retentions (deviations to be documented in the retention register):
+
+                    - Security-relevant logs (authentication, privileges, IDS): 12 months online, 24 months archive
+                    - Application audit logs with personal reference: 6 months online, then automated erasure unless an active investigation requires retention
+                    - Network flow data (NetFlow): 90 days rolling
+                    - Logs supporting commercial / tax obligations: 10 years (AO §§ 146-147)
+                    - DORA-relevant telemetry: per DORA Art. 17 minimum 10 years for major incidents
+
+                    ## 9. Detection and correlation
+                    The SOC ({{ soc.location }}) operates defined use-case rules, MITRE ATT&CK-mapped, with semi-annual effectiveness review against threat intelligence (A.5.7). False-positive rates are KPI. Anomaly detection via machine learning only on non-personal or pseudonymised data. Detection use cases must be approved through change management before activation.
+
+                    ## 10. Cloud and SaaS logs
+                    For cloud services ({{ cloud.providers }}) tenant-level audit logs (Cloud Audit Logs, Azure Sign-In Logs, AWS CloudTrail, M365 Unified Audit Log) are activated and exported into the central SIEM. Cloud contracts must provide audit-log access and a minimum retention of 90 days (cross-ref OPS.2.2). DORA-relevant TPP contracts ({{ dora.thirdparty_providers }}) provide additional telemetry obligations.
+
+                    ## 11. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Definition of logging requirements | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | DPO, IT architecture | App owners |
+                    | Provision of central log platform | IT operations | CIO | ISO | – |
+                    | Correlation rules and use cases | SOC lead | ISO | App owners | – |
+                    | Personal-data analyses | ISO | Executive board | DPO {{ roles.dpo.fullName }}, Works council | Data subjects |
+                    | Retention and deletion | IT operations | ISO | DPO | – |
+                    | Audit / KPI reporting | Internal Audit | CISO | ISO | Executive board |
+
+                    ## 12. Effectiveness measurement (KPI)
+                    - Share of systems meeting minimum logging requirements (target greater than 95 percent)
+                    - Mean time from event to SIEM visibility (target less than 5 minutes)
+                    - Share of regularly tested use cases (target 100 percent per half year)
+                    - Number of audit-proof refused deletion requests without justification (target 0)
+                    - Median MTTD (target less than 60 minutes)
+                    - Median MTTR (target less than 4 hours)
+
+                    ## 13. Escalation and reporting
+                    Security-relevant findings are documented in the daily SOC report; weekly and monthly reports go to ISO and management. Suspicious findings escalate per the Incident policy (A.5.24-A.5.27). Reporting obligations under NIS2 Art. 23, DORA Art. 19 and GDPR Art. 33/34 are coordinated by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}.
+
+                    ## 14. Review and approval
+                    Reviewed at least annually and on relevant triggers (regulatory change, new threat picture, major architecture change, incident). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.7, A.5.24-A.5.28, A.8.15-A.8.17; BSI OPS.1.1.5, DER.1, DER.2.1, OPS.2.2; GDPR Art. 5, 25, 32, 33-35; BetrVG § 87(1) No. 6; NIS2 Art. 21, 23; DORA Art. 10, 17, 19.*
                 section:
                     1:
                         title: 'Objectives and Principles'
@@ -284,12 +509,92 @@ policy:
         patch_management:
             v1:
                 title: 'Vulnerability and Patch Management Policy'
-                body: |
-                    # Vulnerability and Patch Management Policy
+                body: |-
+                    # Vulnerability and Patch Management Policy of {{ tenant.legal_name }}
 
-                    **Scope:** All hardware and software components within the ISMS scope of {{ tenant.legal_name }}, including endpoints, servers, network devices, cloud workloads, containers, libraries and firmware.
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.8.8 (Management of technical vulnerabilities), A.8.32 (Change management) | ISO/IEC 27002:2022 §§ 8.8, 8.32 | BSI OPS.1.1.3 (Patch and change management) in conjunction with SYS.1.x, SYS.2.x, APP.x | GDPR Art. 32 | DORA Art. 9(4)(b) and Art. 13 | NIS2 Art. 21(2)(e) and (f) | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
 
-                    **Normative anchor:** ISO/IEC 27001:2022 Annex A Control A.8.8 *Management of technical vulnerabilities*. ISO/IEC 27002:2022 §8.8: *"Information about technical vulnerabilities of information systems in use shall be obtained, the organization''s exposure to such vulnerabilities evaluated and appropriate measures taken."* Supplemented by DORA Art. 9(4)(b) (vulnerability identification) and NIS2 Art. 21(2)(e) (security of acquisition, development and maintenance, including vulnerability handling).
+                    ## 1. Purpose
+                    This policy mandates the identification, evaluation, remediation and reporting of technical vulnerabilities and the controlled deployment of patches and security-relevant changes throughout the ISMS scope of {{ tenant.legal_name }}. It implements ISO/IEC 27001:2022 A.8.8 in conjunction with BSI OPS.1.1.3 and fulfils requirements from GDPR Art. 32, DORA Art. 9/13 and NIS2 Art. 21. The objective is to reduce the attack surface through timely patch application while preventing availability disruptions through uncoordinated changes.
+
+                    ## 2. Scope
+                    All hardware and software components within the ISMS scope ({{ tenant.scope_statement }}): endpoints, servers, virtual machines, containers, container images, network components, firmware, cloud workloads, cloud services (IaaS/PaaS/SaaS), databases, applications, libraries (incl. open-source dependencies), mobile devices (see Mobile Device policy), OT/ICS (where in scope) and used third-party systems.
+
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate change is included as an external factor in patch planning: heat periods with elevated load risk for data centres are considered when selecting maintenance windows and in the trade-off "patch now vs. later"; climate-driven site or supply chain disruptions are evaluated through change management.
+
+                    ## 3. Principles
+                    - **Risk-based prioritisation:** CVSS 4.0 + EPSS + exploit availability (CISA KEV) + asset criticality + threat picture.
+                    - **Asset inventory as prerequisite:** completeness per A.5.9; CMDB as single source of truth.
+                    - **Segregation of duties:** detection (vulnerability management) and execution (IT operations) are separated; dual control for production-critical changes.
+                    - **Threat-intelligence link:** incoming TI (A.5.7) prioritises actively exploited vulnerabilities.
+                    - **Change discipline:** every patch is a change per A.8.32 with test, backout and communication plan.
+
+                    ## 4. Vulnerability sources
+                    - CVE/NVD, MITRE
+                    - Vendor advisories of all deployed components
+                    - BSI WID, CERT-Bund, CERT-EU, ENISA, CISA KEV
+                    - Sector ISACs ({{ isac.memberships }})
+                    - Internal SAST/DAST/IAST/SCA, container image scans, cloud posture management
+                    - External pen tests, bug-bounty reports, coordinated disclosure
+                    - Supplier emergency notifications (DORA Art. 28)
+
+                    ## 5. Vulnerability remediation SLA
+                    Default SLAs (stricter values may apply per asset or contract):
+
+                    | Severity | Definition (CVSS 4.0 / Exploit) | SLA Internet-exposed | SLA internal |
+                    |---|---|---|---|
+                    | Critical | CVSS >= 9.0 or CISA-KEV / active exploitation | 24 h | 7 days |
+                    | High | CVSS 7.0-8.9 | 7 days | 30 days |
+                    | Medium | CVSS 4.0-6.9 | 30 days | 90 days |
+                    | Low | CVSS below 4.0 | next regular patch window | next regular patch window |
+
+                    Zero-day vulnerabilities under active exploitation trigger escalation per the Incident policy with immediate compensating actions (virtual patching via WAF/IPS, isolation, function disable) until the actual patch.
+
+                    ## 6. Patch process
+                    1. **Identification:** automated vulnerability scans and feed consumption (daily).
+                    2. **Evaluation:** correlation with asset inventory, threat picture; risk score and SLA assignment.
+                    3. **Test:** patch in staging / pre-prod, automated regression / security tests.
+                    4. **Approval:** Change Advisory Board (CAB) for major patches; standard change for approved patch classes.
+                    5. **Roll-out:** scheduled maintenance windows ({{ patch.maintenance_windows }}), staged, with health checks.
+                    6. **Verification:** re-scan, confirmation of remediation, ticket closure.
+                    7. **Documentation:** change history in CMDB; report to ISMS steering.
+
+                    ## 7. Special cases
+                    - **Emergency change:** abbreviated CAB process, documented CISO {{ roles.ciso.fullName }} approval, mandatory backout plan.
+                    - **Non-patchable systems (e. g. EoL, ICS):** compensating controls (isolation, monitoring, virtual patching) and time-bound risk acceptance in the risk register.
+                    - **Cloud / SaaS patches:** provider-side patch obligation; own responsibility covers configuration, identity, data and customer-side components (shared-responsibility model).
+                    - **OT/ICS:** patch only after vendor approval; maintenance windows aligned with business; assess outage risk before patching.
+                    - **Open-source dependencies:** SCA scans per build; Critical/High block the build pipeline.
+
+                    ## 8. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Maintenance of this policy | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | Vuln-mgmt lead, IT operations | All |
+                    | Vulnerability identification | Vuln-mgmt lead | CISO | SOC, threat intel | App owner |
+                    | Patch execution | IT operations / app owner | CIO | ISO | ISMS steering |
+                    | CAB approvals | CAB chair | CIO | ISO, app owner | Audit |
+                    | Risk acceptance | Risk owner | CISO | ISO, Legal | Executive board |
+                    | Audit / KPI | Internal Audit | CISO | ISO | Executive board |
+
+                    ## 9. Effectiveness measurement (KPI)
+                    - Share of Critical vulnerabilities remediated within SLA (target 100 percent)
+                    - Share of High vulnerabilities remediated within SLA (target greater than 95 percent)
+                    - Mean time to patch (MTTP) per severity (target trend decreasing)
+                    - Share of endpoints up to date (target greater than 98 percent)
+                    - Number of unauthorised production changes (target 0)
+                    - Share of tested patches with backout plan (target 100 percent)
+
+                    ## 10. Escalation and incident response
+                    SLA breaches or unauthorised changes are escalated by the ISO to the CISO; security-relevant consequences are handled per the Incident policy. Reporting obligations under NIS2 Art. 23, DORA Art. 19 and GDPR Art. 33/34 are coordinated by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}.
+
+                    ## 11. Exceptions and deviations
+                    Deviations require documented risk acceptance by the CISO referencing the risk register, time-bound to a maximum of 6 months, with compensating controls.
+
+                    ## 12. Review and approval
+                    Reviewed at least annually and on relevant triggers (new threat picture, regulatory change, major architecture change, incident). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.7, A.5.9, A.8.8, A.8.9, A.8.32; BSI OPS.1.1.3, OPS.1.1.4, OPS.1.1.5, SYS.1.1; GDPR Art. 25, 32; DORA Art. 9, 13, 28; NIS2 Art. 21(2)(e), (f).*
                 section:
                     1:
                         title: 'Objectives and Principles'
@@ -386,12 +691,77 @@ policy:
         malware_protection:
             v1:
                 title: 'Malware Protection Policy'
-                body: |
-                    # Malware Protection Policy
+                body: |-
+                    # Malware Protection Policy of {{ tenant.legal_name }}
 
-                    **Scope:** All endpoint devices, servers, mobile devices and cloud workloads within the ISMS scope of {{ tenant.legal_name }}.
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.8.7 (Protection against malware) | ISO/IEC 27002:2022 § 8.7 | BSI OPS.1.1.4 (Protection against malware) in conjunction with SYS.2.1, NET.1.1, OPS.1.1.5 | GDPR Art. 32 | DORA Art. 9, 11 | NIS2 Art. 21(2)(a), (c), (e) | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
 
-                    **Normative anchor:** ISO/IEC 27001:2022 Annex A Control A.8.7 *Protection against malware*. ISO/IEC 27002:2022 §8.7: *"Protection against malware shall be implemented and supported by appropriate user awareness."* This policy covers both the technical protective measures and the awareness component the standard explicitly requires.
+                    ## 1. Purpose
+                    This policy mandates the organisational and technical measures to protect against malware (viruses, worms, trojans, ransomware, spyware, cryptominers, rootkits, fileless attacks) within the ISMS scope of {{ tenant.legal_name }}. It implements ISO/IEC 27001:2022 Annex A 8.7 in conjunction with BSI OPS.1.1.4 and fulfils GDPR Art. 32, DORA Art. 9/11 and NIS2 Art. 21 requirements. The objective is a multi-layered defense-in-depth concept (prevention, detection, response, recovery) with measurable effectiveness.
+
+                    ## 2. Scope
+                    All endpoints, servers, virtual machines, containers, container registries, mobile devices (see Mobile Device policy), cloud workloads ({{ cloud.providers }}), e-mail and web gateways, file servers, backup systems, OT/ICS where in scope, and all removable media within the scope ({{ tenant.scope_statement }}).
+
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate change is included as an external factor when assessing threat landscapes: actors increasingly target critical infrastructure during crises (energy, water, food); this evolving threat picture flows into threat-intelligence-driven adjustment of detection use cases.
+
+                    ## 3. Defense-in-depth layers
+                    - **Perimeter prevention:** e-mail security gateway with sandbox, URL reputation, attachment detonation; secure web gateway with reputation and content filtering; DNS filter (DNS-RPZ).
+                    - **Endpoint prevention:** EDR/XDR with next-gen AV, behavioural and ML detection, application allow-listing for Tier-0 systems, hardware-based memory protection, tamper protection, USB device control.
+                    - **Detection and response:** SIEM integration (see Logging policy A.8.15/A.8.16), SOC use cases, automated isolation of compromised hosts, threat hunting based on MITRE ATT&CK.
+                    - **Resilience:** backups per the Backup policy including immutable copies; quarterly restore tests; prepared crisis communication.
+
+                    ## 4. Process and configuration requirements
+                    - **Coverage:** EDR/AV on 100 percent of endpoints and servers. Confirmed via inventory reconciliation (see Asset policy A.5.9).
+                    - **Update cadence:** signature / model updates multiple times per day; engine updates within 7 days of release.
+                    - **Scan regime:** real-time scan (always on) plus weekly deep scan; scan of all incoming removable media.
+                    - **Configuration hardening:** central policy via {{ edr.management_platform }}; tamper protection enforced; local disable only via a dedicated dual-control admin account, audited.
+                    - **Sandboxing:** unknown executables are detonated in a sandbox prior to delivery.
+                    - **Application control:** allow-listing on highly sensitive systems; block-listing as minimum standard.
+
+                    ## 5. E-mail, web and identity protection
+                    - E-mail: SPF, DKIM, DMARC reject policy; external sender banner; phishing-reporting button connected to SOC.
+                    - Web: allow- or block-listing for high-risk categories; content control for executable downloads.
+                    - Identity: MFA for privileged accounts and remote access; conditional access with risk indicators; protection against MFA fatigue.
+                    - Macros: Office macros from internet sources blocked (Microsoft "blocked-by-default"); exceptions only for signed internal templates.
+
+                    ## 6. Awareness
+                    Mandatory training annually for all staff; role-based deep-dive for risk groups (finance, HR, executives). Phishing simulations at least semi-annually; high click-through rates trigger refresher training. Reporting rate ("phish reported") is a KPI. Content aligned with BSI guidance and ENISA materials.
+
+                    ## 7. Specific threats
+                    - **Ransomware:** backup discipline (3-2-1-1-0); network segmentation; application allow-listing on Tier 0; detection of encryption patterns; crisis communication playbook per the Incident Response policy.
+                    - **Phishing/spear phishing:** gateway prevention, awareness, MFA, just-in-time privileges.
+                    - **Supply-chain compromises:** SBOM requirement on suppliers (see Supplier Security policy A.5.19-A.5.23); verify code signatures.
+                    - **Living-off-the-land:** behavioural detection; restricted use of administrative tools (PowerShell constrained-language mode, Just-Enough-Administration).
+                    - **Mobile malware:** device compliance via MDM, app reputation, app-store restriction (see Mobile Device policy).
+
+                    ## 8. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Maintenance of this policy | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | EDR admin, IT operations | All |
+                    | EDR operations | IT operations / SOC | CIO | ISO | – |
+                    | Awareness | HR / ISO | CISO | DPO {{ roles.dpo.fullName }}, Works council | All |
+                    | Incident response | SOC / IR | CISO | ISO, Legal | Executive board |
+                    | Audit / KPI | Internal Audit | CISO | ISO | Executive board |
+
+                    ## 9. Effectiveness measurement (KPI)
+                    - EDR coverage (target greater than 99 percent)
+                    - Phish click rate (target less than 5 percent)
+                    - Phish report rate (target greater than 30 percent)
+                    - Mean detection time (target less than 30 minutes)
+                    - Share of hosts with current engine / signatures (target greater than 98 percent)
+                    - Number of confirmed malware incidents per quarter (trend decreasing)
+
+                    ## 10. Escalation and incident response
+                    Confirmed malware findings trigger the Incident policy (A.5.24-A.5.27). Reporting obligations under NIS2 Art. 23, DORA Art. 19 and GDPR Art. 33/34 are coordinated by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}.
+
+                    ## 11. Exceptions and deviations
+                    Deviations require documented risk acceptance by the CISO with compensating controls, time-bound to a maximum of 12 months.
+
+                    ## 12. Review and approval
+                    Reviewed at least annually and on relevant triggers. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.7, A.5.9, A.5.24-A.5.27, A.6.3, A.8.7, A.8.13, A.8.15-A.8.17; BSI OPS.1.1.4, OPS.1.1.5, SYS.2.1, NET.1.1, ORP.3; GDPR Art. 32; DORA Art. 9, 11; NIS2 Art. 21(2)(a), (c), (e).*
                 section:
                     1:
                         title: 'Objectives and Threat Landscape'
@@ -471,12 +841,85 @@ policy:
         secure_configuration:
             v1:
                 title: 'Secure Configuration Policy'
-                body: |
-                    # Secure Configuration Policy
+                body: |-
+                    # Secure Configuration Policy of {{ tenant.legal_name }}
 
-                    **Scope:** All hardware, software, service and network configurations within the ISMS scope of {{ tenant.legal_name }}.
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.8.9 (Configuration management), A.8.27 (Secure system architecture and engineering principles), A.8.32 (Change management) | ISO/IEC 27002:2022 §§ 8.9, 8.27, 8.32 | BSI SYS.1.x, SYS.2.x, NET.1.x, APP.x | GDPR Art. 25, 32 | DORA Art. 9, 13 | NIS2 Art. 21(2)(e) | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
 
-                    **Normative anchor:** ISO/IEC 27001:2022 Annex A Control A.8.9 *Configuration management*. ISO/IEC 27002:2022 §8.9: *"Configurations, including security configurations, of hardware, software, services and networks shall be established, documented, implemented, monitored and reviewed."* Supplemented by BSI IT-Grundschutz building blocks SYS.1.* (server hardening) and APP.* (application hardening).
+                    ## 1. Purpose
+                    This policy mandates the definition, documentation, implementation, monitoring and review of secure configurations ("hardening baselines") for hardware, software, services and networks within the ISMS scope of {{ tenant.legal_name }}. It implements ISO/IEC 27001:2022 A.8.9 in conjunction with the BSI building blocks SYS.1.x/SYS.2.x/NET/APP and fulfils GDPR Art. 25/32, DORA Art. 9/13 and NIS2 Art. 21 requirements. The objective is to minimise the attack surface through consistent, reproducible and verifiable configurations ("Secure by Default", "Least Functionality").
+
+                    ## 2. Scope
+                    Servers (Linux, Windows), client operating systems, mobile devices, containers and orchestration (Kubernetes, OpenShift), databases, web and app servers, identity providers, network devices (firewall, switch, router, load balancer, WLAN), cloud services (IaaS, PaaS), SaaS tenants ({{ saas.systems_in_scope }}), DevOps toolchains, OT/ICS where in scope. Scope is {{ tenant.scope_statement }}.
+
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate change is included as an external factor in configuration discipline: energy-efficiency settings (power management, workload scheduling) are part of the baseline and balanced against security requirements; site failures from extreme weather inform the configuration of redundant systems.
+
+                    ## 3. Principles
+                    - **Secure by Default:** safe defaults; unnecessary functions disabled.
+                    - **Least Functionality:** only required services, ports, protocols, accounts.
+                    - **Configuration as Code:** versioned, reproducible configurations via infrastructure as code ({{ iac.tooling }}).
+                    - **Drift detection:** continuous comparison actual vs. target baseline with alerting.
+                    - **Build/Run separation:** build artefacts immutable; changes via re-build, not in running systems.
+                    - **Dual control for critical configuration changes.**
+
+                    ## 4. Hardening baselines
+                    Mandatory baselines based on recognised sources:
+
+                    - CIS Benchmarks (Level 1 minimum; Level 2 for highly sensitive systems)
+                    - DISA STIGs (selected platforms)
+                    - BSI IT-Grundschutz building blocks SYS.1.x, SYS.2.x, NET.x, APP.x
+                    - Vendor hardening guides (Microsoft Security Baselines, RedHat Hardening, Cisco Hardening)
+                    - Cloud-provider best practices (AWS Foundations, CIS Azure, GCP CIS)
+                    - Additional internal requirements (e. g. central logging, monitoring agent, EDR)
+
+                    Per-system deviations are documented with risk acceptance (risk register) and time-bound.
+
+                    ## 5. Configuration lifecycle
+                    1. **Definition:** baseline per platform, ISO-approved.
+                    2. **Realisation:** provisioning via IaC; templates centrally versioned.
+                    3. **Inventory:** CMDB with target configuration; asset reference A.5.9.
+                    4. **Monitoring:** continuous compliance scans, drift detection ({{ posture.tools }}).
+                    5. **Change:** change management per A.8.32; CAB approvals for major changes.
+                    6. **Re-hardening:** quarterly baseline review; ad hoc on threat landscape changes.
+                    7. **Decommissioning:** secure erase per Cryptography policy.
+
+                    ## 6. Specific hardening requirements (excerpt)
+                    - **Authentication:** MFA for privileged access; disable local default accounts; service accounts non-interactive.
+                    - **Network:** no open, unauthenticated management ports; SSH key-auth only, no root login; HTTPS-only with modern TLS suites.
+                    - **Logging:** central onboarding mandatory (see Logging policy).
+                    - **Updates:** automatic security updates for standard components; exceptions justified.
+                    - **Cloud:** public buckets forbidden without risk acceptance; default VPC rules hardened; cloud posture management active.
+                    - **Containers:** distroless / minimal images; non-root user; read-only rootfs; image signing (Sigstore/Cosign); vulnerability scan in build.
+                    - **Kubernetes:** PSP / Pod Security Standards "restricted"; NetworkPolicies "deny-by-default"; RBAC least-privilege.
+
+                    ## 7. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Maintenance of this policy | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | IT architecture, IT operations | All |
+                    | Definition of baselines | IT architecture | CIO | ISO, app owners | IT operations |
+                    | Realisation / IaC | IT operations / DevOps | CIO | ISO | – |
+                    | Compliance monitoring | SOC / Vuln-mgmt | CISO | ISO | App owner |
+                    | Change approvals | CAB chair | CIO | ISO | Audit |
+                    | Audit / KPI | Internal Audit | CISO | ISO | Executive board |
+
+                    ## 8. Effectiveness measurement (KPI)
+                    - Share of systems compliant with approved baseline (target greater than 95 percent)
+                    - Mean time to remediate drift findings (target less than 30 days Medium, less than 7 days High)
+                    - Share of production changes via IaC (target greater than 90 percent)
+                    - Number of unauthorised changes (target 0)
+                    - Share of cloud resources with critical misconfiguration (target less than 1 percent)
+
+                    ## 9. Escalation and incident response
+                    Critical misconfigurations (e. g. publicly exposed data store) trigger immediate action and possibly the Incident policy. Reporting obligations under NIS2/DORA/GDPR are coordinated by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}.
+
+                    ## 10. Exceptions and deviations
+                    Deviations require documented risk acceptance by the CISO referencing the risk register, time-bound to 12 months.
+
+                    ## 11. Review and approval
+                    Reviewed at least annually and on relevant triggers (new platform, new threat picture, regulatory change). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.9, A.8.5, A.8.8, A.8.9, A.8.20-A.8.23, A.8.27, A.8.32; BSI SYS.1.x, SYS.2.x, NET.x, APP.x, OPS.1.1.3; GDPR Art. 25, 32; DORA Art. 9, 13; NIS2 Art. 21(2)(e).*
                 section:
                     1:
                         title: 'Objectives and Principles'
@@ -568,12 +1011,94 @@ policy:
         network_security:
             v1:
                 title: 'Network Security Policy'
-                body: |
-                    # Network Security Policy
+                body: |-
+                    # Network Security Policy of {{ tenant.legal_name }}
 
-                    **Scope:** All networks, network components and network services within the ISMS scope of {{ tenant.legal_name }}, including on-premises networks, cloud VPCs, VPN connectivity, wireless networks and third-party network services.
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.8.20 (Networks security), A.8.21 (Security of network services), A.8.22 (Segregation of networks), A.8.23 (Web filtering) | ISO/IEC 27002:2022 §§ 8.20-8.23 | BSI NET.1.1 (Network architecture and design), NET.1.2 (Network management), NET.2.x (WLAN), NET.3.x (Router/Switch/Firewall) | GDPR Art. 32 | DORA Art. 9 | NIS2 Art. 21(2)(d), (e), (f) | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
 
-                    **Normative anchor:** ISO/IEC 27001:2022 Annex A Controls A.8.20 *Networks security*, A.8.21 *Security of network services*, A.8.22 *Segregation of networks*, A.8.23 *Web filtering*. ISO/IEC 27002:2022 §8.20: *"Networks and network devices shall be secured, managed and controlled to protect information in systems and applications."* §8.22: *"Groups of information services, users and information systems shall be segregated in the organization''s networks."*
+                    ## 1. Purpose
+                    This policy mandates the architecture, operation, protection and monitoring of all networks and network services within the ISMS scope of {{ tenant.legal_name }}. It implements ISO/IEC 27001:2022 A.8.20-A.8.23 in conjunction with the BSI building blocks NET.1.x, NET.2.x, NET.3.x and fulfils GDPR Art. 32, DORA Art. 9 and NIS2 Art. 21 requirements. The strategic target architecture is Zero Trust ("never trust, always verify"); defense-in-depth with segmented zones is the minimum baseline.
+
+                    ## 2. Scope
+                    On-premises LANs, data-centre networks, WLANs, WANs, VPN connectivity, cloud VPCs ({{ cloud.providers }}), service mesh in container platforms, Operational Technology / OT (where in scope), third-party network services (carrier, MPLS, SD-WAN, cloud interconnect), DDoS-protection services, DNS and CDN. Scope is {{ tenant.scope_statement }}.
+
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate change is included as an external factor in network architecture: redundant carrier connections via different routes, geo-redundant sites and resilience tests against climate-driven site loss are part of the network strategy.
+
+                    ## 3. Principles
+                    - **Default deny:** anything not explicitly allowed is forbidden.
+                    - **Micro-segmentation:** workload- and identity-based segmentation rather than purely L3 zones.
+                    - **In-transit encryption:** TLS 1.2+, IPsec, mTLS per Cryptography policy; also within internal networks for sensitive data.
+                    - **Identity-first:** every network access identity-authenticated (user or workload identity).
+                    - **Continuous monitoring:** telemetry into SIEM/NDR; anomaly detection.
+                    - **Change discipline:** firewall and routing changes via change management with dual control.
+
+                    ## 4. Zone model and segmentation (A.8.22)
+                    Default zones (adjust in appendix):
+
+                    | Zone | Purpose | Examples |
+                    |---|---|---|
+                    | Internet/Untrusted | external access | Internet, third-party networks without contract |
+                    | DMZ | exposed services | reverse proxy, e-mail gateway, WAF |
+                    | Trusted | internal standard networks | office LAN, standard VPCs |
+                    | Restricted | highly sensitive | Tier-0 systems, crown jewels |
+                    | Management | out-of-band administration | admin jump hosts, monitoring |
+                    | Backup | backup network | backup targets, immutable storage |
+                    | OT/ICS | control | production / control systems (where in scope) |
+
+                    Zone transitions via stateful firewalls; east-west traffic in Restricted via micro-segmentation. Inter-zone traffic auditable and limited to what is necessary.
+
+                    ## 5. Perimeter and inbound protection
+                    - Stateful firewalls (NGFW minimum) hardened per A.8.9.
+                    - Web Application Firewall (WAF) in front of exposed web apps; OWASP Core Rule Set active.
+                    - DDoS protection at volumetric / protocol / application layer; tested annually.
+                    - E-mail security gateway with sandboxing (see Malware policy).
+                    - DNS filter (RPZ) with threat feeds; own recursive resolvers.
+                    - Reverse proxy / API gateway for every external interface; OAuth2/OIDC standard.
+
+                    ## 6. Outbound and web filtering (A.8.23)
+                    Egress traffic via secure web gateway / cloud proxy with category filter, reputation, TLS inspection (subject to data-protection consideration and co-determination). High-risk categories (anonymisers, malware distribution, crypto mining) blocked. Non-approved SaaS use detected and controlled via CASB ("shadow IT" reduction).
+
+                    ## 7. Wireless networks (BSI NET.2.x)
+                    - WPA3-Enterprise with 802.1X / EAP-TLS standard; WPA2-Enterprise as transition.
+                    - Separate SSIDs for staff, guests, IoT/OT.
+                    - Guest WLAN with no access to internal resources; internet only via separate egress path.
+                    - Rogue AP detection; site walk-throughs at least annually.
+
+                    ## 8. Remote access and Zero Trust
+                    Remote access exclusively via: (a) a ZTNA platform with identity- and device-compliance check (preferred) or (b) classical VPN with MFA, device certificate and posture check. Privileged remote access additionally via PAM with session recording. No direct supplier access without controlled maintenance window and dual control.
+
+                    ## 9. Cloud network security
+                    Cloud VPCs/VNets with default-deny security groups; private endpoints for cloud services; service-to-service auth via workload identity. No public IP for data stores. Cloud posture management ({{ posture.tools }}) continuously monitored. Cloud interconnect (e. g. Direct Connect, ExpressRoute) instead of internet where commercially and security-relevant.
+
+                    ## 10. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Maintenance of this policy | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | Network architecture, IT operations | All |
+                    | Network architecture | Network architecture | CIO | ISO, app owners | All |
+                    | Firewall operations | IT operations / Network engineering | CIO | ISO | App owners |
+                    | Change approval | CAB chair | CIO | ISO | Audit |
+                    | Monitoring (NDR/SIEM) | SOC | CISO | ISO, IT operations | Executive board |
+                    | Audit / KPI | Internal Audit | CISO | ISO | Executive board |
+
+                    ## 11. Effectiveness measurement (KPI)
+                    - Share of firewall rules with documented owner and review (target greater than 95 percent)
+                    - Mean time-to-mitigate a DDoS incident (target less than 15 minutes)
+                    - Share of workloads with micro-segmentation (target greater than 80 percent in Restricted)
+                    - Number of default-deny violations per quarter (target 0)
+                    - Share of encrypted inter-zone connections (target 100 percent)
+                    - Share of remote sessions with MFA and posture check (target 100 percent)
+
+                    ## 12. Escalation and incident response
+                    Violations or suspected network compromise trigger the Incident policy. Reporting obligations under NIS2 Art. 23, DORA Art. 19 and GDPR Art. 33/34 are coordinated by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}.
+
+                    ## 13. Exceptions and deviations
+                    Deviations require documented risk acceptance by the CISO; time-bound to a maximum of 12 months.
+
+                    ## 14. Review and approval
+                    Reviewed at least annually and on relevant triggers (architecture change, new provider, threat picture, incident). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.10, A.5.14, A.8.5, A.8.7, A.8.9, A.8.15-A.8.17, A.8.20-A.8.24; BSI NET.1.x, NET.2.x, NET.3.x, OPS.1.1.5; GDPR Art. 25, 32; DORA Art. 9; NIS2 Art. 21(2)(d), (e), (f).*
                 section:
                     1:
                         title: 'Objectives and Principles'
