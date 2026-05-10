@@ -367,6 +367,11 @@ class UserManagementController extends AbstractController
     ): Response {
 
         if ($request->isMethod('POST')) {
+            if (!$this->isCsrfTokenValid('user_import', $request->request->get('_token'))) {
+                $this->addFlash('danger', $translator->trans('common.csrf_error', [], 'messages'));
+                return $this->redirectToRoute('user_management_import');
+            }
+
             $file = $request->files->get('import_file');
 
             if (!$file) {

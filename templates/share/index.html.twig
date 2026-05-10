@@ -82,6 +82,7 @@
                     <h2 class="h6 mb-3">{{ 'share.select_action'|trans({}, 'messages') }}</h2>
 
                     <form action="{{ path('app_share_process') }}" method="post">
+                        <input type="hidden" name="_token" value="{{ csrf_token('share_process') }}">
                         <input type="hidden" name="title" value="{{ title }}">
                         <input type="hidden" name="text" value="{{ text }}">
                         <input type="hidden" name="url" value="{{ url }}">

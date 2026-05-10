@@ -121,6 +121,7 @@
                     </div>
                     <div class="fa-section__body">
                         <form method="post" action="{{ path('admin_modules_import_data', {moduleKey: module_key}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('module_import_' ~ module_key) }}">
                             {% for key, data in sample_data %}
                                 <div class="form-check mb-3">
                                     <input class="form-check-input" type="checkbox" name="samples[{{ key }}]" value="1" id="sample_{{ key }}">
@@ -158,6 +159,7 @@
                                       data-controller="ui-actions"
                                       data-action="submit->ui-actions#confirm"
                                       data-ui-actions-message-param="Modul {{ module.name }} wirklich deaktivieren?">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('module_deactivate_' ~ module_key) }}">
                                     <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger w-100">
                                         <i class="fa-icon fa-icon--ui-close" aria-hidden="true"></i>
                                         Modul deaktivieren
@@ -176,6 +178,7 @@
                             </a>
                         {% else %}
                             <form method="post" action="{{ path('admin_modules_activate', {moduleKey: module_key}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('module_activate_' ~ module_key) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success w-100">
                                     <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                     Modul aktivieren
