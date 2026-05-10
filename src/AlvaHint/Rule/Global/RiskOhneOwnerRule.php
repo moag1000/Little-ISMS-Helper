@@ -53,7 +53,7 @@ final class RiskOhneOwnerRule extends AbstractGlobalAlvaHintRule
             'SELECT COUNT(r.id) FROM App\Entity\Risk r
              WHERE r.tenant = :tenant
              AND r.riskOwner IS NULL
-             AND r.riskOwnerName IS NULL',
+            ',
         )
             ->setParameter('tenant', $tenant)
             ->getSingleScalarResult();
