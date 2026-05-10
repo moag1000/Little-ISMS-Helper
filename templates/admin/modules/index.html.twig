@@ -84,6 +84,7 @@
                                                   data-controller="ui-actions"
                                                   data-action="submit->ui-actions#confirm"
                                                   data-ui-actions-message-param="{{ 'admin.modules.confirm_deactivate'|trans({'%name%': module.name}, 'admin') }}">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('module_deactivate_' ~ key) }}">
                                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--danger fa-cyber-btn--sm w-100">
                                                     <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i> {{ 'admin.modules.deactivate'|trans({}, 'admin') }}
                                                 </button>
@@ -154,6 +155,7 @@
                                         <i class="fa-icon fa-icon--ui-info" aria-hidden="true"></i> {{ 'admin.modules.details'|trans({}, 'admin') }}
                                     </a>
                                     <form method="post" action="{{ path('admin_modules_activate', {moduleKey: key}) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('module_activate_' ~ key) }}">
                                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm w-100">
                                             <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'admin.modules.activate'|trans({}, 'admin') }}
                                         </button>
