@@ -88,6 +88,42 @@ Einmal gepflegt, deckt DORA-Drittdienstleister + ISO 27001 A.5.19–22 + GDPR Ar
 
 ---
 
+## Policy-Wizard
+
+Geführte Policy-Erstellung pro Framework (ISO, NIS2, DORA, BSI). 7 Schritte vom Scope bis zum Sign-Off. Sandbox-Modus, Targeted-Re-Run, Konzern-Push-Down.
+
+![Policy-Wizard](img/compliance-manager/policy-wizard.png)
+
+Dazu der **Konzern-Rollup**: Policy-Coverage über alle Tochtergesellschaften, One-Pager-PDF-Export für Vorstand.
+
+![Policy-Wizard Konzern-Rollup](img/compliance-manager/policy-wizard-konzern-rollup.png)
+
+---
+
+## Industry-Presets-Admin
+
+Branchen-Bundles als versionierte Artefakte. KMU-Mittelstand, KRITIS, Healthcare, B2C-SaaS, OT/IEC 62443. Aktivieren ein Preset → lädt Frameworks + Mappings + initiale Controls auf einen Schlag.
+
+![Industry-Presets](img/compliance-manager/industry-presets.png)
+
+---
+
+## GSTOOL-XML-Import
+
+5-phasiger Migrationspfad für Verinice/BSI-Grundschutz-Profile (Zielobjekte → Bausteine → Maßnahmen → Risikoanalyse).
+
+![GSTOOL-Import](img/compliance-manager/gstool-import.png)
+
+---
+
+## BCM-Data-Reuse-Insights
+
+Wo werden BCM-Daten (Geschäftsprozesse, BIA, BC-Pläne) bereits framework-übergreifend genutzt? Effektivitäts-Lens für BCM-Investitionen.
+
+![BCM-Data-Reuse-Insights](img/compliance-manager/bcm-data-reuse-insights.png)
+
+---
+
 ## Querverweise
 
 - **DORA-Cockpit + Compliance-Ampel** (CISO-View): [CISO-Sicht](ciso-executive.md)

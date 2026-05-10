@@ -68,6 +68,14 @@ Idempotentes Nachladen aller Framework-Loader (22 Stück). Tester checkt: läuft
 
 ---
 
+## Admin-Hub
+
+Zentrale Landung für Admin-Aufgaben. Tester startet hier seine Smoke-Runs.
+
+![Admin Hub](img/tool-tester/admin-hub.png)
+
+---
+
 ## Admin-Settings (Application + Features)
 
 Application-, Security-, Feature-Toggle-Konfiguration. Tester prüft: aktiviert/deaktiviert Toggle wirklich, was Doku verspricht?
@@ -75,6 +83,54 @@ Application-, Security-, Feature-Toggle-Konfiguration. Tester prüft: aktiviert/
 ![Admin Settings](img/tool-tester/admin-settings.png)
 
 ![Admin Settings — Features](img/tool-tester/admin-settings-features.png)
+
+---
+
+## Monitoring (Health, Performance, Errors)
+
+Health-Check, Performance-Metriken, Error-Log. Tester provoziert Errors + verifiziert Sichtbarkeit.
+
+![Monitoring Health](img/tool-tester/monitoring-health.png)
+
+![Monitoring Performance](img/tool-tester/monitoring-performance.png)
+
+![Monitoring Errors](img/tool-tester/monitoring-errors.png)
+
+---
+
+## Sessions
+
+Aktive Sessions, statistische Auswertung. Tester prüft: Logout invalidiert Session sofort? Session-Hijacking-Schutz?
+
+![Sessions](img/tool-tester/sessions.png)
+
+---
+
+## Users + Roles-Templates
+
+User-Verwaltung + Rollen-Templates. Tester prüft RBAC-Permissions-Matrix per Rolle.
+
+![Users](img/tool-tester/users.png)
+
+![Roles-Templates](img/tool-tester/roles-templates.png)
+
+---
+
+## Policy-Style + Report-Style
+
+Admin-Templates für Policy- und Report-Erscheinung. Aurora-Konformität pro Tenant-Branding.
+
+![Policy-Style](img/tool-tester/policy-style.png)
+
+![Report-Style](img/tool-tester/report-style.png)
+
+---
+
+## Alva-Hint-Stats
+
+Telemetrie der Alva-Tipp-Cards (Render-Count, Dismiss-Count pro Tenant). Tester misst, ob Hints sinnvoll triggern.
+
+![Alva-Hint-Stats](img/tool-tester/alva-hint-stats.png)
 
 ---
 

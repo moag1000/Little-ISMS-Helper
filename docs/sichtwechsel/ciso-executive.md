@@ -74,6 +74,16 @@ Auch die Scheduled-Reports laufen über diese Hub-Seite — wöchentlicher Vorst
 
 ---
 
+## AI-Agents-Cockpit
+
+Übersicht über aktive AI-Agents (Mapping-Quality-Reviewer, Risk-Forecast, Audit-Companion). Aktiv/inaktiv, letzter Lauf, Budget-Verbrauch.
+
+![AI-Agents](img/ciso-executive/ai-agents.png)
+
+> *"Was kostet uns die AI-Pipeline pro Monat? Welche Agents liefern messbar Effizienz?"*
+
+---
+
 ## Was der CISO hier nicht findet (und vermisst)
 
 Aus der [Persona-Definition](../../.claude/skills/persona-ciso-executive/SKILL.md):
