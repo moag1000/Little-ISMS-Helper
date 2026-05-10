@@ -41,6 +41,7 @@ admin:
             tenant_branding: { label: 'Mandanten-Branding', desc: 'E-Mail-Logos und Absender pro Mandant' }
             tenant_compliance_settings: { label: 'Compliance-Einstellungen', desc: 'Locale, TLP, DPO, Risk-Methodik, Eskalation, JSON-Defaults' }
             policy_style: { label: 'Policy-Optik', desc: 'Layout, Wasserzeichen und Typografie für Richtlinien-Dokumente' }
+            report_style: { label: 'Report-Optik', desc: 'Cover-Muster, Audience-Default, Watermark, Diagramm-Farben pro Mandant' }
             users: { label: 'Benutzer', desc: 'Konten, Status, Sperrungen' }
             roles: { label: 'Rollen', desc: 'Tenant-Rollen und Vorlagen' }
             permissions: { label: 'Berechtigungen', desc: 'Permission-Matrix Modul × Rolle' }
@@ -979,6 +980,88 @@ kpi_threshold:
             col_note: 'Anmerkung'
             default_footer: '%tenant% — Vertrauliches ISMS-Dokument — Ausdruck unkontrolliert'
             custom_css_inert: 'Custom-CSS (in Vorschau inaktiv — wird nur in PDF-Export gerendert)'
+
+    report_style:
+        title: 'Report-Optik'
+        subtitle: 'Layout, Watermark und Audience-Defaults für generierte Reports — pro Mandant. Live-Vorschau rechts.'
+        save: 'Speichern'
+        reset: 'Auf Defaults zurücksetzen'
+        reset_confirm: 'Wirklich alle 12 Felder auf Default zurücksetzen?'
+        flash:
+            saved: 'Report-Style aktualisiert.'
+            reset: 'Report-Style auf Defaults zurückgesetzt.'
+        section:
+            form: 'Konfiguration'
+            form_subtitle: 'Aurora-Defaults sind sinnvoll. Anpassen pro Audience (Vorstand/Auditor/Aufsicht) erleichtert Stakeholder-spezifische Reports.'
+            preview: 'Live-Vorschau'
+            preview_subtitle: '5-Slot-Layout (Cover, Exec-Summary, Daten, Anhang, Footer). Audience-Toggle wechselt das Eyebrow-Label im Cover.'
+        group:
+            cover: 'Cover & Audience'
+            typography: 'Typografie & Format'
+            charts: 'Diagramm-Farben'
+            watermark: 'Wasserzeichen'
+            slots: 'Sichtbare Abschnitte'
+            footer: 'Footer-Disclaimer'
+            advanced: 'Erweitert (Custom CSS)'
+        field:
+            cover_pattern: 'Cover-Muster'
+            default_audience: 'Default-Zielgruppe'
+            font_family: 'Schriftart'
+            page_orientation: 'Seitenausrichtung'
+            chart_color_scheme: 'Diagramm-Farbschema'
+            watermark_enabled: 'Wasserzeichen aktiv'
+            watermark_opacity: 'Wasserzeichen-Deckkraft'
+            show_exec_summary: 'Executive-Summary anzeigen'
+            show_appendix: 'Anhang anzeigen'
+            show_distribution_list: 'Verteiler anzeigen'
+            footer_disclaimer: 'Footer-Disclaimer (überschreibt Default)'
+            custom_css: 'Custom CSS (paste-only)'
+        help:
+            cover_pattern: 'Visuelles Setting für die Titelseite — von minimal (klar) bis Auditor-formal (Serif).'
+            default_audience: 'Bestimmt Default-Zielgruppe neuer Reports — Layout und Watermark passen sich an.'
+            font_family: 'Wirkt im Cover und Body. Inter ist neutral; Merriweather erzeugt Audit-/Behörden-Anmutung.'
+            page_orientation: 'Auto wählt je nach Inhalt; portrait für Text-Reports, landscape für Daten-Tabellen.'
+            chart_color_scheme: 'Aurora ist farbintensiv; Audit/Print-friendly für s/w-Druck; Colorblind-safe für Barrierefreiheit.'
+            watermark_enabled: 'Wasserzeichen mit Klassifizierung (z. B. TLP:AMBER) als diagonaler Schriftzug.'
+            watermark_opacity: 'Niedrige Werte (5–10 %) sind dezent; höher fürs Sichtbar-Markieren von Drafts.'
+            show_exec_summary: 'Vorstand-Reports haben sie typischerweise; Auditor-Reports nicht zwingend.'
+            show_appendix: 'Detail-Tabellen, Methodik-Hinweise. Aufsichts-Reports brauchen sie meistens.'
+            show_distribution_list: 'Im Anhang. Pflicht für Aufsichtsbehörden, optional für interne Reports.'
+            footer_disclaimer: 'Überschreibt den Default-Footer mit Mandant-Name. Max. 1.000 Zeichen.'
+            custom_css: 'Wird im Export per |raw eingebettet. Vorsicht: Layout kann brechen. Nur ROLE_ADMIN.'
+        cover:
+            minimal: 'Minimal (clean, keine Akzente)'
+            branded: 'Branded (Mandant-Primary-Color)'
+            board_formal: 'Vorstand-formal (zentriert, Serif-Titel)'
+            auditor_formal: 'Auditor-formal (Serif, Uppercase-Headings)'
+        audience:
+            vorstand: 'Vorstand / C-Level'
+            auditor: 'Auditor (intern/extern)'
+            aufsicht: 'Aufsichtsbehörde (BaFin, BSI)'
+            internal: 'Intern (CISO/ISB-Team)'
+        orientation:
+            portrait: 'Hochformat'
+            landscape: 'Querformat'
+            auto: 'Auto (je nach Inhalt)'
+        chart:
+            aurora: 'Aurora (cyan/violet/grün/amber/rot)'
+            audit: 'Audit (Graustufen, dezent)'
+            print_friendly: 'Print-friendly (s/w-tauglich)'
+            colorblind_safe: 'Colorblind-safe (Wong-Palette)'
+        swatches:
+            label: 'Aktuelle Palette (Vorschau)'
+        preview:
+            period: 'Berichtszeitraum'
+            classification: 'Klassifizierung'
+            audience: 'Zielgruppe'
+            exec_summary: 'Executive-Summary'
+            data_section: 'Daten und Analyse'
+            appendix: 'Anhang'
+            distribution_list: 'Verteiler'
+            col_recipient: 'Empfänger'
+            col_role: 'Rolle'
+            default_footer: '%tenant% — vertraulich. Nicht ohne Genehmigung weitergeben.'
+            custom_css_inert: 'Custom-CSS (nur im Export aktiv — Vorschau bleibt unangetastet)'
 
 industry_preset:
     title: 'Industry-Presets'
