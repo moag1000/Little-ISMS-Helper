@@ -1,5 +1,9 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Portfolio Report — Drill-Down (Framework × Category) — fa-report-doc macro
+   Audience: auditor
+   Status:   final
+   ─────────────────────────────────────────────────────────────────────── #}
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'portfolio_report' %}
 
 {% block title %}{{ 'portfolio_report.drill.title'|trans({'%framework%': framework.code, '%category%': category}, 'portfolio_report') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -8,87 +12,83 @@
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+            { label: 'nav.reports'|trans({}, 'nav'),                         path: 'app_reports_index' },
             { label: 'management_reports.title'|trans({}, 'management_reports'), path: 'app_management_reports' },
             { label: 'portfolio_report.title'|trans({}, 'portfolio_report'), path: 'app_management_reports_portfolio' },
             { label: 'portfolio_report.drill.title'|trans({'%framework%': framework.code, '%category%': category}, 'portfolio_report') }
         ]
     } %}
 
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-        <div>
-            <h1 class="h2 mb-1">
-                <i class="fa-icon fa-icon--util-zoom-in text-primary" aria-hidden="true"></i>
-                {{ 'portfolio_report.drill.title'|trans({'%framework%': framework.code, '%category%': ('portfolio_report.category.' ~ category|lower)|trans({}, 'portfolio_report')}, 'portfolio_report') }}
-            </h1>
-            <p class="text-muted mb-0">
-                <i class="fa-icon fa-icon--nav-building" aria-hidden="true"></i>
-                <strong>{{ tenant.name }}</strong>
-                <span class="mx-2">&middot;</span>
-                <i class="fa-icon fa-icon--ui-calendar-event" aria-hidden="true"></i>
-                {{ 'portfolio_report.header.stichtag'|trans({}, 'portfolio_report') }}:
-                <strong>{{ stichtag|date('Y-m-d') }}</strong>
-            </p>
-        </div>
-        <a href="{{ path('app_management_reports_portfolio', {
-            _locale: app.request.locale,
-            stichtag: stichtag|date('Y-m-d')
-        }) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i>
-            {{ 'portfolio_report.drill.back'|trans({}, 'portfolio_report') }}
-        </a>
-    </div>
+    {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    <div class="card fa-section shadow-sm">
-        <div class="card-body p-0">
-            {% if rows|length == 0 %}
-                {{ _fa_alert.render({ variant: 'info', class: 'mb-0 m-3', body: 'portfolio_report.drill.empty'|trans({}, 'portfolio_report') }) }}
-            {% else %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0 align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col">{{ 'portfolio_report.drill.table.requirement'|trans({}, 'portfolio_report') }}</th>
-                                <th scope="col">{{ 'portfolio_report.drill.table.title'|trans({}, 'portfolio_report') }}</th>
-                                <th scope="col" class="text-end">{{ 'portfolio_report.drill.table.fulfillment'|trans({}, 'portfolio_report') }}</th>
-                                <th scope="col" class="text-center">{{ 'portfolio_report.drill.table.applicable'|trans({}, 'portfolio_report') }}</th>
-                                <th scope="col" class="text-end">{{ 'portfolio_report.drill.table.link'|trans({}, 'portfolio_report') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in rows %}
-                                <tr>
-                                    <th scope="row" class="text-nowrap">{{ row.requirement.requirementId }}</th>
-                                    <td>{{ row.requirement.title }}</td>
-                                    <td class="text-end">
-                                        {% if row.fulfillment is null %}
-                                            <span class="text-muted">—</span>
-                                        {% else %}
-                                            <span class="fw-semibold">{{ row.pct }}%</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-center">
-                                        {% if row.applicable %}
-                                            <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                                            <span class="visually-hidden">{{ 'portfolio_report.drill.table.applicable'|trans({}, 'portfolio_report') }}</span>
-                                        {% else %}
-                                            <i class="fa-icon text-muted fa-icon--status-archived" aria-hidden="true"></i>
-                                            <span class="visually-hidden">n/a</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-end">
-                                        <a href="{{ path('app_compliance_requirement_show', { id: row.requirement.id, _locale: app.request.locale }) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                            <i class="fa-icon fa-icon--util-external-link" aria-hidden="true"></i>
-                                            {{ 'portfolio_report.drill.table.link'|trans({}, 'portfolio_report') }}
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% endif %}
-        </div>
-    </div>
+    {# Back-link as body_html prefix #}
+    {% set _back_html = '<div style="margin-bottom:1rem;">'
+        ~ '<a href="' ~ path('app_management_reports_portfolio', {_locale: app.request.locale, stichtag: stichtag|date('Y-m-d')}) ~ '" class="fa-cyber-btn fa-cyber-btn--ghost">'
+        ~ '← ' ~ ('portfolio_report.drill.back'|trans({}, 'portfolio_report'))
+        ~ '</a></div>' %}
+
+    {# Build drill table rows #}
+    {% set _drill_rows = [] %}
+    {% for row in rows %}
+        {% set _fulf = row.fulfillment is null ? '<span style="color:var(--fg-3);">—</span>' : '<strong>' ~ row.pct ~ '%</strong>' %}
+        {% set _appl = row.applicable
+            ? '<span style="color:var(--success);">✓</span>'
+            : '<span style="color:var(--fg-3);">n/a</span>' %}
+        {% set _link = '<a href="' ~ path('app_compliance_requirement_show', {id: row.requirement.id, _locale: app.request.locale}) ~ '" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">'
+            ~ ('portfolio_report.drill.table.link'|trans({}, 'portfolio_report'))
+            ~ '</a>' %}
+        {% set _drill_rows = _drill_rows|merge([[
+            '<code>' ~ row.requirement.requirementId ~ '</code>',
+            row.requirement.title,
+            _fulf,
+            _appl,
+            _link,
+        ]]) %}
+    {% endfor %}
+
+    {% set _category_label = ('portfolio_report.category.' ~ category|lower)|trans({}, 'portfolio_report') %}
+
+    {{ _fa_report_doc.render({
+        report: {
+            title:        'portfolio_report.drill.title'|trans({'%framework%': framework.code, '%category%': _category_label}, 'portfolio_report'),
+            subtitle:     tenant.name ~ ' · ' ~ ('portfolio_report.header.stichtag'|trans({}, 'portfolio_report')) ~ ': ' ~ stichtag|date('Y-m-d'),
+            kicker:       framework.code ~ ' / ' ~ _category_label,
+            status:       'final',
+            audience:     'auditor',
+            generated_at: 'now'|date('d.m.Y H:i'),
+        },
+        brand_name: tenant.name,
+        key_findings: [
+            { label: ('portfolio_report.drill.table.requirement'|trans({}, 'portfolio_report')) ~ ': ' ~ rows|length, tone: 'ok' },
+        ],
+        kpis: [
+            { label: 'portfolio_report.drill.table.requirement'|trans({}, 'portfolio_report'), value: rows|length, tone: 'neutral' },
+        ],
+        sections: [
+            {
+                heading: framework.code ~ ' — ' ~ _category_label,
+                body_html: _back_html,
+                table: _drill_rows|length > 0 ? {
+                    headers: [
+                        'portfolio_report.drill.table.requirement'|trans({}, 'portfolio_report'),
+                        'portfolio_report.drill.table.title'|trans({}, 'portfolio_report'),
+                        'portfolio_report.drill.table.fulfillment'|trans({}, 'portfolio_report'),
+                        'portfolio_report.drill.table.applicable'|trans({}, 'portfolio_report'),
+                        'portfolio_report.drill.table.link'|trans({}, 'portfolio_report'),
+                    ],
+                    rows: _drill_rows,
+                } : null,
+                intro: _drill_rows|length == 0 ? ('portfolio_report.drill.empty'|trans({}, 'portfolio_report')) : null,
+            },
+        ],
+        appendix: {
+            sources: [
+                { label: 'ComplianceRepository', detail: 'findDrillDown() — framework × category × tenant requirement fulfillment' },
+            ],
+        },
+        distribution: [
+            { role: 'Group-CISO', name: '—' },
+        ],
+    }) }}
 </div>
 {% endblock %}

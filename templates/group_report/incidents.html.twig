@@ -1,5 +1,9 @@
+{# ─────────────────────────────────────────────────────────────────────────
+   Group Incidents Report — fa-report-doc 5-slot macro (web variant)
+   Audience: auditor (Group Audit Committee)
+   Status:   auditor-only
+   ─────────────────────────────────────────────────────────────────────── #}
 {% extends 'base.html.twig' %}
-{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% block title %}{{ 'group_report.incidents.title'|trans({}, 'group_report') }}{% endblock %}
 
@@ -12,108 +16,71 @@
         ]
     } %}
 
-    <div class="mb-4">
-        <h1 class="h2 mb-1">
-            <i class="fa-icon fa-icon--ui-bell text-danger" aria-hidden="true"></i>
-            {{ 'group_report.incidents.title'|trans({}, 'group_report') }}
-        </h1>
-        <p class="text-muted mb-0">{{ 'group_report.incidents.subtitle'|trans({'%root%': root.name}, 'group_report') }}</p>
-    </div>
+    {% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-info-circle', class: 'd-flex gap-2' } } %}
-        {% block alert_body %}<div class="small">{{ 'group_report.incidents.intro'|trans({}, 'group_report')|raw }}</div>{% endblock %}
-    {% endembed %}
+    {# Build incident table rows #}
+    {% set _inc_rows = [] %}
+    {% for incident in incidents %}
+        {% set _sev = incident.severity ? incident.severity.value : '' %}
+        {% set _sbadge = _sev == 'critical' ? 'confidential' : (_sev == 'high' ? 'draft' : (_sev == 'medium' ? 'auditor-only' : 'final')) %}
+        {% set _inc_rows = _inc_rows|merge([[
+            incident.detectedAt|date('Y-m-d H:i'),
+            '<code style="font-size:.7em;">' ~ incident.incidentNumber ~ '</code> <strong>' ~ incident.title ~ '</strong>' ~ (incident.category ? '<br><span style="font-size:.75em;color:var(--fg-3);">' ~ incident.category ~ '</span>' : ''),
+            '<code style="font-size:.75em;">' ~ incident.tenant.code ~ '</code>',
+            '<span class="report-doc__chip report-doc__chip--status-' ~ _sbadge ~ '">' ~ _sev ~ '</span>',
+            '<code style="font-size:.75em;">' ~ (incident.status ? incident.status.value : '') ~ '</code>',
+        ]]) %}
+    {% endfor %}
 
-    <div class="row row-cols-2 row-cols-md-5 g-2 mb-4">
-        <div class="col">
-            <div class="card fa-section h-100 text-center">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold">{{ total_visible }}</div>
-                    <div class="small text-muted">{{ 'group_report.incidents.stat.total'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center border-danger fa-rag-card fa-rag-card--red">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-danger">{{ severity_buckets.critical }}</div>
-                    <div class="small text-muted">{{ 'group_report.incidents.severity.critical'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center border-warning fa-rag-card fa-rag-card--amber">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-warning">{{ severity_buckets.high }}</div>
-                    <div class="small text-muted">{{ 'group_report.incidents.severity.high'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-info">{{ severity_buckets.medium }}</div>
-                    <div class="small text-muted">{{ 'group_report.incidents.severity.medium'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card fa-section h-100 text-center">
-                <div class="card-body py-2">
-                    <div class="display-6 fw-bold text-secondary">{{ severity_buckets.low }}</div>
-                    <div class="small text-muted">{{ 'group_report.incidents.severity.low'|trans({}, 'group_report') }}</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {% embed '_components/_card.html.twig' with { class: 'shadow-sm', noPadding: true } %}
-        {% block card_body %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle" aria-label="{{ 'group_report.incidents.title'|trans({}, 'group_report') }}">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col">{{ 'group_report.incidents.col.detected_at'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.incidents.col.incident'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.incidents.col.tenant'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.incidents.col.severity'|trans({}, 'group_report') }}</th>
-                            <th scope="col">{{ 'group_report.incidents.col.status'|trans({}, 'group_report') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for incident in incidents %}
-                            {% set sev = incident.severity ? incident.severity.value : '' %}
-                            {% set sevBadge = {
-                                'critical': 'bg-danger',
-                                'high': 'bg-warning-subtle text-warning',
-                                'medium': 'bg-info',
-                                'low': 'bg-secondary'
-                            }[sev]|default('bg-body-secondary border') %}
-                            <tr>
-                                <td class="small text-muted">{{ incident.detectedAt|date('Y-m-d H:i') }}</td>
-                                <td>
-                                    <code class="small">{{ incident.incidentNumber }}</code>
-                                    <strong>{{ incident.title }}</strong>
-                                    {% if incident.category %}
-                                        <div class="small text-muted">{{ incident.category }}</div>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <code class="small">{{ incident.tenant.code }}</code>
-                                    {% if incident.tenant is same as(root) %}
-                                        <span class="fa-status-pill fa-status-pill--primary ms-1">{{ 'group_report.incidents.own'|trans({}, 'group_report') }}</span>
-                                    {% endif %}
-                                </td>
-                                <td><span class="badge {{ sevBadge }}">{{ sev }}</span></td>
-                                <td><code class="small">{{ incident.status ? incident.status.value : '' }}</code></td>
-                            </tr>
-                        {% else %}
-                            <tr><td colspan="5" class="text-center text-muted py-3">{{ 'group_report.incidents.none'|trans({}, 'group_report') }}</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endblock %}
-    {% endembed %}
+    {{ _fa_report_doc.render({
+        report: {
+            title:        'group_report.incidents.title'|trans({}, 'group_report'),
+            subtitle:     'group_report.incidents.subtitle'|trans({'%root%': root.name}, 'group_report'),
+            kicker:       'group_report.title'|trans({}, 'group_report'),
+            status:       'auditor-only',
+            audience:     'auditor',
+            generated_at: 'now'|date('d.m.Y H:i'),
+        },
+        brand_name: root.name,
+        key_findings: [
+            { label: ('group_report.incidents.stat.total'|trans({}, 'group_report')) ~ ': ' ~ total_visible, tone: total_visible > 0 ? 'warn' : 'ok' },
+            { label: ('group_report.incidents.severity.critical'|trans({}, 'group_report')) ~ ': ' ~ severity_buckets.critical,
+              tone: severity_buckets.critical > 0 ? 'danger' : 'ok' },
+            { label: ('group_report.incidents.severity.high'|trans({}, 'group_report')) ~ ': ' ~ severity_buckets.high,
+              tone: severity_buckets.high > 0 ? 'warn' : 'ok' },
+        ],
+        kpis: [
+            { label: 'group_report.incidents.stat.total'|trans({}, 'group_report'),         value: total_visible,            tone: 'neutral' },
+            { label: 'group_report.incidents.severity.critical'|trans({}, 'group_report'),  value: severity_buckets.critical, tone: severity_buckets.critical > 0 ? 'danger' : 'success' },
+            { label: 'group_report.incidents.severity.high'|trans({}, 'group_report'),      value: severity_buckets.high,    tone: severity_buckets.high > 0 ? 'warning' : 'success' },
+            { label: 'group_report.incidents.severity.medium'|trans({}, 'group_report'),    value: severity_buckets.medium,  tone: 'neutral' },
+        ],
+        sections: [
+            {
+                heading: 'group_report.incidents.title'|trans({}, 'group_report'),
+                intro: 'group_report.incidents.intro'|trans({}, 'group_report'),
+                table: _inc_rows|length > 0 ? {
+                    headers: [
+                        'group_report.incidents.col.detected_at'|trans({}, 'group_report'),
+                        'group_report.incidents.col.incident'|trans({}, 'group_report'),
+                        'group_report.incidents.col.tenant'|trans({}, 'group_report'),
+                        'group_report.incidents.col.severity'|trans({}, 'group_report'),
+                        'group_report.incidents.col.status'|trans({}, 'group_report'),
+                    ],
+                    rows: _inc_rows,
+                } : null,
+                body_html: _inc_rows|length == 0 ? '<p style="color:var(--fg-3);font-style:italic;">' ~ ('group_report.incidents.none'|trans({}, 'group_report')) ~ '</p>' : null,
+            },
+        ],
+        appendix: {
+            sources: [
+                { label: 'IncidentRepository', detail: 'findGroupVisibleIncidents() — cross-tenant, current user access' },
+            ],
+        },
+        distribution: [
+            { role: 'Konzern-Auditor', name: 'Group Audit Committee' },
+            { role: 'Group-CISO',      name: '—' },
+        ],
+    }) }}
 </div>
 {% endblock %}
