@@ -55,36 +55,34 @@
             {% if finding.correctiveActions|length == 0 %}
                 <p class="text-muted mb-0">{{ 'corrective_action.message.none'|trans({}, 'audits') }}</p>
             {% else %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col">{{ 'corrective_action.field.title'|trans({}, 'audits') }}</th>
-                                <th scope="col">{{ 'corrective_action.field.status'|trans({}, 'audits') }}</th>
-                                <th scope="col">{{ 'corrective_action.field.responsible_person'|trans({}, 'audits') }}</th>
-                                <th scope="col">{{ 'corrective_action.field.planned_completion_date'|trans({}, 'audits') }}</th>
-                                <th scope="col"></th>
+                {% embed '_components/_fa_table.html.twig' %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'corrective_action.field.title'|trans({}, 'audits') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'corrective_action.field.status'|trans({}, 'audits') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'corrective_action.field.responsible_person'|trans({}, 'audits') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'corrective_action.field.planned_completion_date'|trans({}, 'audits') }}</th>
+                            <th scope="col" class="fa-table__th fa-table__th--actions"></th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for ca in finding.correctiveActions %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">{{ ca.title }}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--primary">{{ ('corrective_action.status.' ~ ca.status)|trans({}, 'audits') }}</span></td>
+                                <td class="fa-table__cell">{{ ca.effectiveResponsiblePerson ?? '—' }}</td>
+                                <td class="fa-table__cell">
+                                    {% if ca.plannedCompletionDate %}
+                                        <span {% if ca.isOverdue %}class="text-danger fw-bold"{% endif %}>
+                                            {{ ca.plannedCompletionDate|date('Y-m-d') }}
+                                        </span>
+                                    {% else %}—{% endif %}
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--actions"><a href="{{ path('app_corrective_action_show', {id: ca.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for ca in finding.correctiveActions %}
-                                <tr>
-                                    <td>{{ ca.title }}</td>
-                                    <td><span class="fa-status-pill fa-status-pill--primary">{{ ('corrective_action.status.' ~ ca.status)|trans({}, 'audits') }}</span></td>
-                                    <td>{{ ca.effectiveResponsiblePerson ?? '—' }}</td>
-                                    <td>
-                                        {% if ca.plannedCompletionDate %}
-                                            <span {% if ca.isOverdue %}class="text-danger fw-bold"{% endif %}>
-                                                {{ ca.plannedCompletionDate|date('Y-m-d') }}
-                                            </span>
-                                        {% else %}—{% endif %}
-                                    </td>
-                                    <td class="text-end"><a href="{{ path('app_corrective_action_show', {id: ca.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"><i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i></a></td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         {% endblock %}
     {% endembed %}

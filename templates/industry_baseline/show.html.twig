@@ -99,35 +99,35 @@
                         </div>
                     {% endblock %}
                     {% block card_body %}
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead class="table-light">
+                        {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                            {% block table_head %}
                                 <tr>
-                                    <th scope="col">{{ 'industry_baseline.risk.title'|trans({}, 'industry_baseline') }}</th>
-                                    <th scope="col">{{ 'industry_baseline.risk.category'|trans({}, 'industry_baseline') }}</th>
-                                    <th scope="col">{{ 'industry_baseline.risk.inherent'|trans({}, 'industry_baseline') }}</th>
-                                    <th scope="col">{{ 'industry_baseline.risk.treatment'|trans({}, 'industry_baseline') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'industry_baseline.risk.title'|trans({}, 'industry_baseline') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'industry_baseline.risk.category'|trans({}, 'industry_baseline') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'industry_baseline.risk.inherent'|trans({}, 'industry_baseline') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'industry_baseline.risk.treatment'|trans({}, 'industry_baseline') }}</th>
                                 </tr>
-                            </thead>
-                            <tbody>
+                            {% endblock %}
+                            {% block table_body %}
                                 {% for risk in baseline.presetRisks %}
                                     {% set inherent = (risk.inherent_likelihood|default(3)) * (risk.inherent_impact|default(3)) %}
-                                    <tr>
-                                        <td>
+                                    <tr class="fa-table__row">
+                                        <td class="fa-table__cell">
                                             <strong>{{ risk.title }}</strong>
                                             <div class="small text-muted">{{ risk.description|default('')|u.truncate(120, '…') }}</div>
                                         </td>
-                                        <td><code>{{ risk.category|default('–') }}</code></td>
-                                        <td>
+                                        <td class="fa-table__cell"><code>{{ risk.category|default('–') }}</code></td>
+                                        <td class="fa-table__cell">
                                             {% set _v = inherent >= 15 ? 'danger' : (inherent >= 8 ? 'warning' : 'success') %}
                                             <span class="badge {% if inherent >= 15 %}bg-danger{% elseif inherent >= 8 %}bg-warning-subtle text-warning{% else %}bg-success{% endif %} fa-status-pill fa-status-pill--{{ _v }}">
                                                 {{ inherent }}
                                             </span>
                                         </td>
-                                        <td><code>{{ risk.treatment_strategy|default('mitigate') }}</code></td>
+                                        <td class="fa-table__cell"><code>{{ risk.treatment_strategy|default('mitigate') }}</code></td>
                                     </tr>
                                 {% endfor %}
-                            </tbody>
-                        </table>
+                            {% endblock %}
+                        {% endembed %}
                     {% endblock %}
                 {% endembed %}
             {% endif %}
@@ -145,31 +145,31 @@
                         </div>
                     {% endblock %}
                     {% block card_body %}
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead class="table-light">
+                        {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                            {% block table_head %}
                                 <tr>
-                                    <th scope="col">{{ 'industry_baseline.asset.name'|trans({}, 'industry_baseline') }}</th>
-                                    <th scope="col">{{ 'industry_baseline.asset.type'|trans({}, 'industry_baseline') }}</th>
-                                    <th scope="col">C</th>
-                                    <th scope="col">I</th>
-                                    <th scope="col">A</th>
+                                    <th scope="col" class="fa-table__th">{{ 'industry_baseline.asset.name'|trans({}, 'industry_baseline') }}</th>
+                                    <th scope="col" class="fa-table__th">{{ 'industry_baseline.asset.type'|trans({}, 'industry_baseline') }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--num">C</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--num">I</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--num">A</th>
                                 </tr>
-                            </thead>
-                            <tbody>
+                            {% endblock %}
+                            {% block table_body %}
                                 {% for asset in baseline.presetAssets %}
-                                    <tr>
-                                        <td>
+                                    <tr class="fa-table__row">
+                                        <td class="fa-table__cell">
                                             <strong>{{ asset.name }}</strong>
                                             <div class="small text-muted">{{ asset.description|default('') }}</div>
                                         </td>
-                                        <td><code>{{ asset.asset_type|default('–') }}</code></td>
-                                        <td>{{ asset.confidentiality|default(3) }}</td>
-                                        <td>{{ asset.integrity|default(3) }}</td>
-                                        <td>{{ asset.availability|default(3) }}</td>
+                                        <td class="fa-table__cell"><code>{{ asset.asset_type|default('–') }}</code></td>
+                                        <td class="fa-table__cell fa-table__cell--num">{{ asset.confidentiality|default(3) }}</td>
+                                        <td class="fa-table__cell fa-table__cell--num">{{ asset.integrity|default(3) }}</td>
+                                        <td class="fa-table__cell fa-table__cell--num">{{ asset.availability|default(3) }}</td>
                                     </tr>
                                 {% endfor %}
-                            </tbody>
-                        </table>
+                            {% endblock %}
+                        {% endembed %}
                     {% endblock %}
                 {% endembed %}
             {% endif %}
