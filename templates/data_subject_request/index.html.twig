@@ -2,6 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'data_subject_request' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 
 {% block title %}{{ 'dsr.page.index_title'|trans({}, 'data_subject_request') }}{% endblock %}
 
@@ -22,6 +23,13 @@
             { label: 'dsr.action.new'|trans({}, 'data_subject_request'), variant: 'primary', icon: 'plus-lg', href: path('app_data_subject_request_new') }
         ]
     }) }}
+{% set _global_hints = alva_hints('data_subject_request_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 
     <main class="fa-aurora-surface">
 

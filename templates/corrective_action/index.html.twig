@@ -7,6 +7,7 @@
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_alva_hint.html.twig' as _fa_alva_hint %}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'audit_finding.page.title'|trans({}, 'audits'), url: path('app_audit_finding_index') },
@@ -20,6 +21,13 @@
         { label: 'corrective_action.action.new'|trans({}, 'audits'), href: path('app_corrective_action_new'), variant: 'primary', icon: 'plus-lg' }
     ]
 }) }}
+{% set _global_hints = alva_hints('corrective_action_index') %}
+{% if _global_hints|length > 0 %}
+    {% for _h in _global_hints %}
+        {{ _fa_alva_hint.render(_h) }}
+    {% endfor %}
+{% endif %}
+
 <main class="fa-aurora-surface">
 <div class="container-fluid py-4">
 
