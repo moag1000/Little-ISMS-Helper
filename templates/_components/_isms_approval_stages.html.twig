@@ -1,0 +1,89 @@
+{#
+ # V3 W2-M4 — ISMS Approval Stages Macro
+ #
+ # Reusable visualization of multi-step approval flows. Originally inline in
+ # workflow/instance_show.html.twig — extracted so other entities (RiskTreatmentPlan,
+ # DPIA-Approval, Document-Effectiveness-Review, etc.) can use it.
+ #
+ # USAGE:
+ #
+ #   {% import '_components/_isms_approval_stages.html.twig' as _isms_approval_stages %}
+ #   {{ _isms_approval_stages.render({
+ #     stages: [
+ #       { name: 'Initial Review',  state: 'completed', icon: 'fa-icon--ui-check' },
+ #       { name: 'Technical Sign-Off', state: 'current', icon: 'fa-icon--ui-edit' },
+ #       { name: 'CISO Approval', state: 'pending', icon: 'fa-icon--ui-circle' }
+ #     ],
+ #     ariaLabel: 'Workflow steps'  # optional, defaults to "Approval stages"
+ #   }) }}
+ #
+ # STAGE FIELDS:
+ #   - name: string (required) — title of this stage
+ #   - state: 'completed' | 'current' | 'pending' (required)
+ #   - icon: fa-icon class (optional, derived from state if absent)
+ #   - description: string (optional) — small subtitle below name
+ #   - badge: string (optional) — e.g. "current" or "approved"
+ #   - badge_variant: 'primary' | 'success' | 'warning' | 'danger' (optional)
+ #   - actions: list of { label, variant, icon, modal_target?, href? } (optional)
+ #     rendered as fa-cyber-btn buttons under the stage description.
+ #}
+
+{% macro render(props) %}
+    {% set stages = props.stages|default([]) %}
+    {% set ariaLabel = props.ariaLabel|default('Approval stages') %}
+
+    {% if stages|length > 0 %}
+        <ol class="isms-approval-stages" aria-label="{{ ariaLabel }}">
+            {% for stage in stages %}
+                {% set state = stage.state|default('pending') %}
+                {% set defaultIcon = state == 'completed' ? 'fa-icon--ui-check'
+                    : (state == 'current' ? 'fa-icon--ui-edit' : 'fa-icon--ui-circle') %}
+                {% set icon = stage.icon|default(defaultIcon) %}
+
+                <li class="isms-approval-stages__item isms-approval-stages__item--{{ state }}">
+                    <span class="isms-approval-stages__dot" aria-hidden="true">
+                        <i class="fa-icon {{ icon }}"></i>
+                    </span>
+                    <div class="isms-approval-stages__content">
+                        <div class="isms-approval-stages__head d-flex justify-content-between align-items-center">
+                            <strong>{{ loop.index }}. {{ stage.name }}</strong>
+                            <span>
+                                {% if stage.badge is defined and stage.badge %}
+                                    {% include '_components/_badge.html.twig' with {
+                                        variant: stage.badge_variant|default('primary'),
+                                        class: 'ms-2',
+                                        content: stage.badge
+                                    } %}
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% if stage.description is defined and stage.description %}
+                            <p class="text-muted mb-2 mt-1 small">{{ stage.description }}</p>
+                        {% endif %}
+                        {% if stage.actions is defined and stage.actions|length > 0 %}
+                            <div class="d-flex gap-2 mt-1 flex-wrap">
+                                {% for action in stage.actions %}
+                                    {% if action.modal_target is defined and action.modal_target %}
+                                        <button type="button"
+                                                class="fa-cyber-btn fa-cyber-btn--{{ action.variant|default('primary') }} fa-cyber-btn--sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="{{ action.modal_target }}">
+                                            {% if action.icon is defined %}<i class="fa-icon {{ action.icon }}" aria-hidden="true"></i>{% endif %}
+                                            {{ action.label }}
+                                        </button>
+                                    {% else %}
+                                        <a href="{{ action.href|default('#') }}"
+                                           class="fa-cyber-btn fa-cyber-btn--{{ action.variant|default('primary') }} fa-cyber-btn--sm">
+                                            {% if action.icon is defined %}<i class="fa-icon {{ action.icon }}" aria-hidden="true"></i>{% endif %}
+                                            {{ action.label }}
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ol>
+    {% endif %}
+{% endmacro %}
