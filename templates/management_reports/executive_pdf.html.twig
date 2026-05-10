@@ -174,9 +174,9 @@
     {% set _trend_rows = [] %}
     {% for trend in risk_trends %}
         {% set _trend_rows = _trend_rows|merge([[
-            trend.month,
-            trend.total_risks,
-            (trend.critical ?? 0) + (trend.high ?? 0),
+            trend.month_name ?? trend.month,
+            trend.total,
+            trend.high_critical,
         ]]) %}
     {% endfor %}
     {% set _sections = _sections|merge([{
