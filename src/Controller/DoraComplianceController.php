@@ -158,12 +158,12 @@ class DoraComplianceController extends AbstractController
         $tenant = $this->getUser()?->getTenant();
         $allAssets = $tenant ? $this->assetRepository->findActiveAssets($tenant) : [];
         $ictAssets = array_filter($allAssets, function ($asset) {
-            $type = strtolower($asset->getType() ?? '');
-            $category = strtolower($asset->getCategory() ?? '');
+            $type = strtolower($asset->getAssetType() ?? '');
+            $name = strtolower($asset->getName() ?? '');
             $keywords = ['hardware', 'software', 'network', 'server', 'database', 'application', 'system', 'ict'];
 
             foreach ($keywords as $keyword) {
-                if (str_contains($type, $keyword) || str_contains($category, $keyword)) {
+                if (str_contains($type, $keyword) || str_contains($name, $keyword)) {
                     return true;
                 }
             }
@@ -217,11 +217,11 @@ class DoraComplianceController extends AbstractController
         // Filter for ICT-related incidents
         $ictIncidents = array_filter($allIncidents, function ($incident) {
             $category = strtolower($incident->getCategory() ?? '');
-            $type = strtolower($incident->getType() ?? '');
+            $title = strtolower($incident->getTitle() ?? '');
             $keywords = ['ict', 'cyber', 'system', 'network', 'data', 'security', 'malware', 'breach', 'outage'];
 
             foreach ($keywords as $keyword) {
-                if (str_contains($category, $keyword) || str_contains($type, $keyword)) {
+                if (str_contains($category, $keyword) || str_contains($title, $keyword)) {
                     return true;
                 }
             }
