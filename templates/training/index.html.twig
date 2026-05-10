@@ -223,17 +223,18 @@
             }) }}
             {% else %}
             {% embed '_components/_table.html.twig' with {
-                'variant': 'striped'
+                'variant': 'striped',
+                'class': 'table-bulk-selectable'
             } %}
                 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col" class="w-40px">
+                        <th scope="col" class="bulk-select-column">
                             <input type="checkbox"
                                    class="form-check-input"
                                    data-action="bulk-actions#selectAll"
                                    data-bulk-actions-target="selectAllCheckbox"
-                                   aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
                         </th>
                         <th scope="col">{{ 'training.title'|trans({}, 'training') }}</th>
                         <th scope="col">{{ 'training.type_label'|trans({}, 'training') }}</th>
@@ -247,12 +248,13 @@
                 {% block table_body %}
                     {% for training in trainings %}
                     <tr data-training-id="{{ training.id }}">
-                        <td>
+                        <td class="bulk-select-column">
                             <input type="checkbox"
                                    class="form-check-input"
                                    data-bulk-actions-target="item"
                                    data-action="bulk-actions#selectItem"
-                                   value="{{ training.id }}">
+                                   value="{{ training.id }}"
+                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ training.title }}">
                         </td>
                         <td>
                             <strong>{{ training.title }}</strong>

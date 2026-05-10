@@ -294,18 +294,18 @@
     {% endblock %}
     {% block card_body %}
     {% embed '_components/_table.html.twig' with {
-        'class': 'table-hover mb-0',
+        'class': 'table-hover table-bulk-selectable mb-0',
         'noMargin': true,
         'responsive': true
     } %}
         {% block table_head %}
             <tr>
-                <th scope="col" class="w-40px">
+                <th scope="col" class="bulk-select-column">
                     <input type="checkbox"
                            class="form-check-input"
                            data-action="bulk-actions#selectAll"
                            data-bulk-actions-target="selectAllCheckbox"
-                           aria-label="{{ 'risk.index.table.select_all'|trans({}, 'risk') }}">
+                           aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
                 </th>
                 <th scope="col">{{ 'risk.index.table.title'|trans({}, 'risk') }}</th>
                 <th scope="col">{{ 'risk.index.table.threat'|trans({}, 'risk') }}</th>
@@ -325,12 +325,13 @@
             {% set residual = risk.getResidualRiskLevel() %}
             <tr data-risk-id="{{ risk.id }}"
                 data-risk-level="{{ riskScore >= 20 ? 'critical' : (riskScore >= 12 ? 'high' : (riskScore >= 6 ? 'medium' : 'low')) }}">
-                <td>
+                <td class="bulk-select-column">
                     <input type="checkbox"
                            class="form-check-input"
                            data-bulk-actions-target="item"
                            data-action="bulk-actions#selectItem"
-                           value="{{ risk.id }}">
+                           value="{{ risk.id }}"
+                           aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ risk.title }}">
                 </td>
                 <td>
                     <strong>{{ risk.title }}</strong>

@@ -299,7 +299,8 @@
                             <input type="checkbox"
                                    data-bulk-actions-target="item"
                                    data-action="bulk-actions#selectItem"
-                                   value="{{ document.id }}">
+                                   value="{{ document.id }}"
+                                   aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ document.originalFilename }}">
                         </td>
                         <td>
                             {# File Type Icon #}

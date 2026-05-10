@@ -256,19 +256,19 @@
     {% endblock %}
     {% block card_body %}
     {% embed '_components/_table.html.twig' with {
-        'class': 'table-hover mb-0',
+        'class': 'table-hover table-bulk-selectable mb-0',
         'caption': 'asset.modern.table.caption'|trans({}, 'asset'),
         'noMargin': true,
         'responsive': true
     } %}
         {% block table_head %}
             <tr>
-                <th scope="col" class="w-40px">
+                <th scope="col" class="bulk-select-column">
                     <input type="checkbox"
                            class="form-check-input"
                            data-action="bulk-actions#selectAll"
                            data-bulk-actions-target="selectAllCheckbox"
-                           aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
+                           aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
                 </th>
                 <th scope="col">{{ 'asset.label.name'|trans({}, 'asset') }}</th>
                 <th scope="col">{{ 'asset.label.type'|trans({}, 'asset') }}</th>
@@ -284,7 +284,7 @@
             {% import '_macros/inheritance_badge.html.twig' as inheritance %}
             {% for asset in assets %}
             <tr data-asset-id="{{ asset.id }}">
-                <td>
+                <td class="bulk-select-column">
                     <input type="checkbox"
                            class="form-check-input"
                            data-bulk-actions-target="item"

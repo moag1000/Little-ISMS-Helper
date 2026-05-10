@@ -148,18 +148,18 @@
     {% endblock %}
     {% block card_body %}
     {% embed '_components/_table.html.twig' with {
-        'class': 'table-hover mb-0',
+        'class': 'table-hover table-bulk-selectable mb-0',
         'noMargin': true,
         'responsive': true
     } %}
         {% block table_head %}
             <tr>
-                <th scope="col" class="w-40px">
+                <th scope="col" class="bulk-select-column">
                     <input type="checkbox"
                            class="form-check-input"
                            data-action="bulk-actions#selectAll"
                            data-bulk-actions-target="selectAllCheckbox"
-                           aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
+                           aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
                 </th>
                 <th scope="col">{{ 'consent.field.id'|trans({}, 'consent') }}</th>
                 <th scope="col">{{ 'consent.field.data_subject'|trans({}, 'consent') }}</th>
@@ -173,12 +173,13 @@
         {% block table_body %}
             {% for consent in consents %}
             <tr data-consent-id="{{ consent.id }}">
-                <td>
+                <td class="bulk-select-column">
                     <input type="checkbox"
                            class="form-check-input"
                            data-bulk-actions-target="item"
                            data-action="bulk-actions#selectItem"
-                           value="{{ consent.id }}">
+                           value="{{ consent.id }}"
+                           aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ consent.dataSubjectIdentifier }}">
                 </td>
                 <td>
                     <code>{{ consent.id }}</code>
