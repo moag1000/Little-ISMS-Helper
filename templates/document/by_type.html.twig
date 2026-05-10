@@ -224,7 +224,7 @@
         <ul class="list-unstyled-mt-md">
             {% for doc in selectedType.recentDocuments|slice(0, 5) %}
             <li class="li-border-item">
-                <strong>{{ doc.title }}</strong>
+                <strong>{{ doc.originalFilename|default(doc.filename|default('Document #' ~ doc.id)) }}</strong>
                 <br><small class="text-muted">
                     {{ 'document.field.updated'|trans({}, 'document') }}: {{ doc.updatedAt|date('d.m.Y H:i') }}
                 </small>

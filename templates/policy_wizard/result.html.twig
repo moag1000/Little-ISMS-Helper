@@ -155,6 +155,21 @@
                             </div>
                         </div>
 
+                        {% if doc.body_snippet is defined and doc.body_snippet is not null %}
+                            <div class="mt-2 p-2 rounded bg-body-tertiary border small text-body-secondary">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-semibold text-body">
+                                        <i class="bi bi-file-earmark-richtext" aria-hidden="true"></i>
+                                        {{ 'policy_wizard.result.document.body_preview_heading'|trans({}, 'policy_wizard') }}
+                                    </span>
+                                    <span class="text-muted">
+                                        {{ 'policy_wizard.result.document.body_preview_chars'|trans({'%count%': doc.body_chars}, 'policy_wizard') }}
+                                    </span>
+                                </div>
+                                <div>{{ doc.body_snippet }}</div>
+                            </div>
+                        {% endif %}
+
                         {% if cross_coverage is defined and cross_coverage is not null
                             and cross_coverage.documentToFrameworks[doc.id] is defined
                             and cross_coverage.documentToFrameworks[doc.id]|length > 0 %}
