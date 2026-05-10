@@ -248,8 +248,8 @@ class DoraComplianceController extends AbstractController
             if ($i->getDetectedAt() === null) {
                 return false;
             }
-            // Check if reported within 4 hours (simplified check)
-            $reportedAt = $i->getReportedAt() ?? $i->getCreatedAt();
+            // Check if reported within 4 hours (DORA Art. 19 — early warning deadline)
+            $reportedAt = $i->getEarlyWarningReportedAt() ?? $i->getCreatedAt();
             if ($reportedAt === null) {
                 return false;
             }
@@ -298,14 +298,14 @@ class DoraComplianceController extends AbstractController
 
         // BC Exercises / Resilience Tests
         $allExercises = $this->bcExerciseRepository->findAll();
-        $exercisesThisYear = array_filter($allExercises, fn($e) => $e->getScheduledDate() !== null && $e->getScheduledDate()->format('Y') === $thisYear
+        $exercisesThisYear = array_filter($allExercises, fn($e) => $e->getExerciseDate() !== null && $e->getExerciseDate()->format('Y') === $thisYear
         );
         $completedExercises = array_filter($exercisesThisYear, fn($e) => $e->getStatus() === 'completed');
 
         // BC Plans coverage
         $allPlans = $this->bcPlanRepository->findAll();
         $activePlans = array_filter($allPlans, fn($p) => $p->getStatus() === 'approved' || $p->getStatus() === 'active');
-        $testedPlans = array_filter($activePlans, fn($p) => method_exists($p, 'getLastTestDate') && $p->getLastTestDate() !== null
+        $testedPlans = array_filter($activePlans, fn($p) => $p->getLastTested() !== null
         );
 
         // Critical processes with BC plans
@@ -316,11 +316,11 @@ class DoraComplianceController extends AbstractController
         // Training / awareness for resilience
         $allTrainings = $this->trainingRepository->findAll();
         $resilienceTrainings = array_filter($allTrainings, function ($t) {
-            $topic = strtolower($t->getTopic() ?? '');
+            $searchText = strtolower(($t->getTitle() ?? '') . ' ' . ($t->getDescription() ?? '') . ' ' . ($t->getTrainingType() ?? ''));
             $keywords = ['resilience', 'continuity', 'disaster', 'recovery', 'backup', 'incident'];
 
             foreach ($keywords as $keyword) {
-                if (str_contains($topic, $keyword)) {
+                if (str_contains($searchText, $keyword)) {
                     return true;
                 }
             }
@@ -348,10 +348,10 @@ class DoraComplianceController extends AbstractController
     {
         $allSuppliers = $this->supplierRepository->findAll();
 
-        // ICT third-party providers
+        // ICT third-party providers (Supplier has no generic "type"; use ictFunctionType + serviceProvided)
         $ictProviders = array_filter($allSuppliers, function ($supplier) {
-            $type = strtolower($supplier->getType() ?? '');
-            $services = strtolower($supplier->getServicesProvided() ?? '');
+            $type = strtolower($supplier->getIctFunctionType() ?? '');
+            $services = strtolower($supplier->getServiceProvided() ?? '');
             $keywords = ['ict', 'it ', 'cloud', 'software', 'hosting', 'data', 'network', 'saas', 'iaas', 'paas'];
 
             foreach ($keywords as $keyword) {
@@ -368,19 +368,19 @@ class DoraComplianceController extends AbstractController
         $criticalProviders = array_filter($ictProviders, fn($s) => $s->getCriticality() === 'critical' || $s->getCriticality() === 'high');
         $totalCriticalProviders = count($criticalProviders);
 
-        // Assessed providers
-        $assessedProviders = array_filter($criticalProviders, fn($s) => $s->getLastAssessmentDate() !== null);
+        // Assessed providers (Supplier uses getLastSecurityAssessment())
+        $assessedProviders = array_filter($criticalProviders, fn($s) => $s->getLastSecurityAssessment() !== null);
         $assessmentRate = $totalCriticalProviders > 0 ? round((count($assessedProviders) / $totalCriticalProviders) * 100) : 100;
 
         // Overdue assessments (> 12 months)
-        $overdueAssessments = count(array_filter($criticalProviders, fn($s) => $s->getLastAssessmentDate() === null || $s->getLastAssessmentDate()->diff(new DateTime())->days > 365
+        $overdueAssessments = count(array_filter($criticalProviders, fn($s) => $s->getLastSecurityAssessment() === null || $s->getLastSecurityAssessment()->diff(new DateTime())->days > 365
         ));
 
-        // Concentration risk - providers with high dependency
-        $highDependencyProviders = array_filter($ictProviders, fn($s) => $s->getDependencyLevel() === 'critical' || $s->getDependencyLevel() === 'high');
+        // Concentration risk — use getIctCriticality() or getCriticality(); no getDependencyLevel() on Supplier
+        $highDependencyProviders = array_filter($ictProviders, fn($s) => $s->getIctCriticality() === 'critical' || $s->getIctCriticality() === 'important');
 
-        // Exit strategies
-        $providersWithExitStrategy = array_filter($criticalProviders, fn($s) => method_exists($s, 'getExitStrategy') && $s->getExitStrategy() !== null && $s->getExitStrategy() !== ''
+        // Exit strategies (Supplier has hasExitStrategy() bool; no getExitStrategy() string getter)
+        $providersWithExitStrategy = array_filter($criticalProviders, fn($s) => $s->hasExitStrategy()
         );
         $exitStrategyRate = $totalCriticalProviders > 0 ? round((count($providersWithExitStrategy) / $totalCriticalProviders) * 100) : 100;
 
