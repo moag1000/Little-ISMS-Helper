@@ -14,6 +14,9 @@ kpi:
     findings: 'Findings (mine)'
     dsrs: 'DSR (mine)'
     corrective_actions_overdue: 'CA overdue'
+    risk_acceptance_expiring: 'Risk acceptance expiring'
+    documents_review_overdue: 'Documents review overdue'
+    trainings_pending: 'Trainings pending'
 
 section:
     workflows_pending: 'Workflows open'
@@ -23,6 +26,20 @@ section:
     findings: 'Audit findings (assigned to me)'
     dsrs: 'Data subject requests'
     corrective_actions_overdue: 'Corrective actions overdue'
+    risk_acceptance_expiring: 'Risk acceptance expiring'
+    documents_review_overdue: 'Documents: review overdue'
+    trainings_pending: 'Trainings (assigned to me)'
+
+bucket:
+    risk_acceptance_expiring:
+        title: 'Risk acceptance expiring'
+        empty: 'No risk acceptances expiring within the next 30 days.'
+    documents_review_overdue:
+        title: 'Documents: review overdue'
+        empty: 'No overdue document reviews.'
+    trainings_pending:
+        title: 'Trainings (assigned to me)'
+        empty: 'No pending trainings right now.'
 
 empty:
     title: 'All done'

@@ -14,6 +14,9 @@ kpi:
     findings: 'Findings (mir)'
     dsrs: 'DSR (mir)'
     corrective_actions_overdue: 'CA überfällig'
+    risk_acceptance_expiring: 'Risiko-Akzeptanz fällig'
+    documents_review_overdue: 'Dokumente Review überfällig'
+    trainings_pending: 'Trainings offen'
 
 section:
     workflows_pending: 'Workflows offen'
@@ -23,6 +26,20 @@ section:
     findings: 'Audit-Findings (mir zugewiesen)'
     dsrs: 'Data-Subject-Requests'
     corrective_actions_overdue: 'Korrekturmaßnahmen überfällig'
+    risk_acceptance_expiring: 'Risiko-Akzeptanz läuft ab'
+    documents_review_overdue: 'Dokumente: Review überfällig'
+    trainings_pending: 'Trainings (mir zugewiesen)'
+
+bucket:
+    risk_acceptance_expiring:
+        title: 'Risiko-Akzeptanz läuft ab'
+        empty: 'Keine Risiko-Akzeptanzen laufen in den nächsten 30 Tagen ab.'
+    documents_review_overdue:
+        title: 'Dokumente: Review überfällig'
+        empty: 'Keine überfälligen Dokument-Reviews.'
+    trainings_pending:
+        title: 'Trainings (mir zugewiesen)'
+        empty: 'Aktuell keine offenen Trainings.'
 
 empty:
     title: 'Alles erledigt'
