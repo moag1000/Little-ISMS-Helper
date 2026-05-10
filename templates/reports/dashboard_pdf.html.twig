@@ -1,77 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'pdf.dashboard.title'|trans({}, 'reports') }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 11pt; }
-        .header {
+        :root {
+            --primary:       #0ea5e9;
+            --surface:       #ffffff;
+            --surface-2:     #f1f5f9;
+            --fg:            #0f172a;
+            --fg-2:          #475569;
+            --fg-3:          #94a3b8;
+            --border:        #cbd5e1;
+            --success:       #166534;
+            --danger:        #991b1b;
+            --warning:       #92400e;
+            --warning-tint:  #fef3c7;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 11pt;
+            margin: 0;
+            padding: 20px;
+            color: var(--fg);
+            background: var(--surface);
+        }
+
+        /* ── Cover ── */
+        .report-cover {
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, var(--primary) 0%, var(--accent) 50%, var(--accent) 100%) 1;
+            margin-bottom: 24px;
+            border-bottom: 3px solid var(--primary);
             padding-bottom: 10px;
         }
-        .header h1 {
-            color: var(--bg);
+        .report-cover h1 {
+            color: var(--fg);
             margin: 0;
-            font-size: 24pt;
+            font-size: 22pt;
             text-transform: uppercase;
             letter-spacing: 0.5pt;
         }
-        .header .date { color: #666; font-size: 10pt; margin-top: 5px; }
-        .stats-grid { display: table; width: 100%; margin: 20px 0; }
+        .report-cover .date { color: var(--fg-2); font-size: 9pt; margin-top: 4px; }
+
+        /* ── KPI stat boxes (CSS table for dompdf compat) ── */
+        .stats-grid { display: table; width: 100%; margin: 16px 0; border-spacing: 6px; }
         .stat-box {
             display: table-cell;
             width: 33%;
-            padding: 15px;
-            border: 2px solid #cbd5e1;
+            padding: 12px 8px;
+            border: 2px solid var(--border);
             text-align: center;
-            background: linear-gradient(135deg, var(--bg) 0%, var(--surface-2) 100%);
+            background: var(--surface-2);
+            border-radius: 4px;
         }
-        .stat-box .number {
-            font-size: 32pt;
-            font-weight: bold;
-            color: var(--primary);
-            text-shadow: 0 0 1pt rgba(6, 182, 212, 0.3);
-        }
-        .stat-box .label {
-            font-size: 10pt;
-            color: var(--bg);
-            text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 0.5pt;
-        }
-        .section { margin: 30px 0; page-break-inside: avoid; }
+        .stat-box .number  { font-size: 28pt; font-weight: bold; color: var(--primary); }
+        .stat-box .label   { font-size: 9pt; color: var(--fg); text-transform: uppercase; font-weight: bold; letter-spacing: 0.5pt; }
+
+        /* ── Section ── */
+        .section { margin: 24px 0; page-break-inside: avoid; }
         .section h2 {
-            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
-            color: var(--primary);
-            padding: 10px;
-            font-size: 14pt;
+            background: var(--fg);
+            color: var(--surface);
+            padding: 8px 10px;
+            font-size: 12pt;
             margin-top: 0;
             text-transform: uppercase;
             letter-spacing: 0.3pt;
         }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+
+        /* ── Table ── */
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
         th {
-            background: linear-gradient(90deg, var(--bg) 0%, var(--surface) 100%);
-            color: var(--primary);
-            padding: 8px;
+            background: var(--fg);
+            color: var(--surface);
+            padding: 7px 8px;
             text-align: left;
-            font-size: 10pt;
+            font-size: 9pt;
             text-transform: uppercase;
             letter-spacing: 0.3pt;
         }
-        td { padding: 8px; border-bottom: 1px solid #ddd; font-size: 10pt; }
-        .footer { position: fixed; bottom: 20px; left: 0; right: 0; text-align: center; font-size: 9pt; color: #666; }
+        td { padding: 7px 8px; border-bottom: 1px solid var(--border); font-size: 10pt; }
+
+        /* ── Footer ── */
+        .report-footer { position: fixed; bottom: 16px; left: 0; right: 0; text-align: center; font-size: 8pt; color: var(--fg-3); }
     </style>
 </head>
 <body>
-    <div class="header">
+    <div class="report-cover">
         <h1>{{ 'pdf.dashboard.title'|trans({}, 'reports') }}</h1>
         <div class="date">{{ 'pdf.common.generated'|trans({}, 'reports') }}: {{ generated_at|date('d.m.Y H:i') }}</div>
     </div>
 
+    {# Row 1: assets / risks / high-critical #}
     <div class="stats-grid">
         <div class="stat-box">
             <div class="number">{{ data.assets_count }}</div>
@@ -87,13 +108,14 @@
         </div>
     </div>
 
+    {# Row 2: controls / implemented / compliance % #}
     <div class="stats-grid">
         <div class="stat-box">
             <div class="number">{{ data.controls_count }}</div>
             <div class="label">{{ 'pdf.dashboard.stats.controls'|trans({}, 'reports') }}</div>
         </div>
         <div class="stat-box">
-            <div class="number" style="color: #16a34a;">{{ data.implemented_controls }}</div>
+            <div class="number" style="color: var(--success);">{{ data.implemented_controls }}</div>
             <div class="label">{{ 'pdf.dashboard.stats.implemented'|trans({}, 'reports') }}</div>
         </div>
         <div class="stat-box">
@@ -105,31 +127,35 @@
     <div class="section">
         <h2>{{ 'pdf.dashboard.metrics.title'|trans({}, 'reports') }}</h2>
         <table>
-            <tr>
-                <th scope="col">{{ 'pdf.dashboard.metrics.metric'|trans({}, 'reports') }}</th>
-                <th scope="col">{{ 'pdf.dashboard.metrics.value'|trans({}, 'reports') }}</th>
-                <th scope="col">{{ 'pdf.dashboard.metrics.status'|trans({}, 'reports') }}</th>
-            </tr>
-            <tr>
-                <td>{{ 'pdf.dashboard.metrics.open_incidents'|trans({}, 'reports') }}</td>
-                <td>{{ data.open_incidents }}</td>
-                <td>{% if data.open_incidents > 5 %}⚠ {{ 'pdf.dashboard.status.attention'|trans({}, 'reports') }}{% else %}✓ {{ 'pdf.dashboard.status.normal'|trans({}, 'reports') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <td>{{ 'pdf.dashboard.metrics.total_trainings'|trans({}, 'reports') }}</td>
-                <td>{{ data.total_trainings }}</td>
-                <td>✓ {{ 'pdf.dashboard.status.active'|trans({}, 'reports') }}</td>
-            </tr>
-            <tr>
-                <td>{{ 'pdf.dashboard.metrics.audits_this_year'|trans({}, 'reports') }}</td>
-                <td>{{ data.audits_this_year }}</td>
-                <td>{% if data.audits_this_year >= 2 %}✓ {{ 'pdf.dashboard.status.compliant'|trans({}, 'reports') }}{% else %}⚠ {{ 'pdf.dashboard.status.review'|trans({}, 'reports') }}{% endif %}</td>
-            </tr>
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'pdf.dashboard.metrics.metric'|trans({}, 'reports') }}</th>
+                    <th scope="col">{{ 'pdf.dashboard.metrics.value'|trans({}, 'reports') }}</th>
+                    <th scope="col">{{ 'pdf.dashboard.metrics.status'|trans({}, 'reports') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ 'pdf.dashboard.metrics.open_incidents'|trans({}, 'reports') }}</td>
+                    <td>{{ data.open_incidents }}</td>
+                    <td>{% if data.open_incidents > 5 %}⚠ {{ 'pdf.dashboard.status.attention'|trans({}, 'reports') }}{% else %}✓ {{ 'pdf.dashboard.status.normal'|trans({}, 'reports') }}{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'pdf.dashboard.metrics.total_trainings'|trans({}, 'reports') }}</td>
+                    <td>{{ data.total_trainings }}</td>
+                    <td>✓ {{ 'pdf.dashboard.status.active'|trans({}, 'reports') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'pdf.dashboard.metrics.audits_this_year'|trans({}, 'reports') }}</td>
+                    <td>{{ data.audits_this_year }}</td>
+                    <td>{% if data.audits_this_year >= 2 %}✓ {{ 'pdf.dashboard.status.compliant'|trans({}, 'reports') }}{% else %}⚠ {{ 'pdf.dashboard.status.review'|trans({}, 'reports') }}{% endif %}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 
-    <div class="footer">
-        <p>{{ 'pdf.common.confidential'|trans({}, 'reports') }} - Little ISMS Helper | {{ 'pdf.common.page'|trans({}, 'reports') }} 1</p>
+    <div class="report-footer">
+        <p>{{ 'pdf.common.confidential'|trans({}, 'reports') }} — Little ISMS Helper | {{ 'pdf.common.page'|trans({}, 'reports') }} 1</p>
     </div>
 </body>
 </html>
