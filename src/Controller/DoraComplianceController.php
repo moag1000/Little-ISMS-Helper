@@ -136,7 +136,7 @@ class DoraComplianceController extends AbstractController
         // ICT-related risks (filter by category or name containing ICT/IT/Cyber)
         $ictRisks = array_filter($allRisks, function ($risk) {
             $category = strtolower($risk->getCategory() ?? '');
-            $name = strtolower($risk->getName() ?? '');
+            $name = strtolower($risk->getTitle() ?? '');
             $description = strtolower($risk->getDescription() ?? '');
             $keywords = ['ict', 'it ', 'cyber', 'digital', 'system', 'network', 'data', 'software', 'hardware'];
 
