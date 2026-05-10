@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'management_reports' %}
 
 {% block title %}{{ 'management_reports.quarterly_trend.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -100,18 +101,10 @@
                             </td>
                             <td>
                                 {% if metric.max_value is defined and metric.max_value > 0 %}
-                                <div class="progress progress-h-18">
-                                    {% set pct = (metric.current / metric.max_value * 100)|round %}
-                                    {% if pct > 100 %}{% set pct = 100 %}{% endif %}
-                                    <div class="progress-bar {% if metric.higher_is_better %}{% if pct >= 80 %}bg-success{% elseif pct >= 60 %}bg-warning{% else %}bg-danger{% endif %}{% else %}{% if pct <= 20 %}bg-success{% elseif pct <= 50 %}bg-warning{% else %}bg-danger{% endif %}{% endif %}"
-                                         role="progressbar"
-                                         style="width: {{ pct }}%"
-                                         aria-valuenow="{{ metric.current }}"
-                                         aria-valuemin="0"
-                                         aria-valuemax="{{ metric.max_value }}">
-                                        {{ metric.current }}{{ metric.unit }}
-                                    </div>
-                                </div>
+                                {% set pct = (metric.current / metric.max_value * 100)|round %}
+                                {% if pct > 100 %}{% set pct = 100 %}{% endif %}
+                                {% set tone = metric.higher_is_better ? (pct >= 80 ? 'success' : (pct >= 60 ? 'warning' : 'danger')) : (pct <= 20 ? 'success' : (pct <= 50 ? 'warning' : 'danger')) %}
+                                {{ _fa_progress.render({ value: pct, max: 100, tone: tone }) }}
                                 {% endif %}
                             </td>
                         </tr>

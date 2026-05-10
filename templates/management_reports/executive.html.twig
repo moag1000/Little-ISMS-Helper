@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'management_reports' %}
 
 {% block title %}{{ 'management_reports.executive.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -112,36 +113,28 @@
                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'management_reports.risk_level.critical'|trans({}, 'management_reports') } %}
                             <span>{{ summary.risk_distribution.critical }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-danger" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.critical / summary.summary.total_risks * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: summary.summary.total_risks > 0 ? (summary.risk_distribution.critical / summary.summary.total_risks * 100) : 0, tone: 'danger' }) }}
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'management_reports.risk_level.high'|trans({}, 'management_reports') } %}
                             <span>{{ summary.risk_distribution.high }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-warning" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.high / summary.summary.total_risks * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: summary.summary.total_risks > 0 ? (summary.risk_distribution.high / summary.summary.total_risks * 100) : 0, tone: 'warning' }) }}
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'info', content: 'management_reports.risk_level.medium'|trans({}, 'management_reports') } %}
                             <span>{{ summary.risk_distribution.medium }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-info" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.medium / summary.summary.total_risks * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: summary.summary.total_risks > 0 ? (summary.risk_distribution.medium / summary.summary.total_risks * 100) : 0, tone: 'info' }) }}
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'success', content: 'management_reports.risk_level.low'|trans({}, 'management_reports') } %}
                             <span>{{ summary.risk_distribution.low }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-success" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.low / summary.summary.total_risks * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: summary.summary.total_risks > 0 ? (summary.risk_distribution.low / summary.summary.total_risks * 100) : 0, tone: 'success' }) }}
                     </div>
                 {% endblock %}
             {% endembed %}
@@ -164,27 +157,21 @@
                             {% include '_components/_badge.html.twig' with { variant: 'success', content: 'management_reports.control_status.implemented'|trans({}, 'management_reports') } %}
                             <span>{{ summary.control_status.implemented }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-success" style="width: {{ summary.summary.total_controls > 0 ? (summary.control_status.implemented / summary.summary.total_controls * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: summary.summary.total_controls > 0 ? (summary.control_status.implemented / summary.summary.total_controls * 100) : 0, tone: 'success' }) }}
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'management_reports.control_status.in_progress'|trans({}, 'management_reports') } %}
                             <span>{{ summary.control_status.in_progress }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-warning" style="width: {{ summary.summary.total_controls > 0 ? (summary.control_status.in_progress / summary.summary.total_controls * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: summary.summary.total_controls > 0 ? (summary.control_status.in_progress / summary.summary.total_controls * 100) : 0, tone: 'warning' }) }}
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'management_reports.control_status.not_started'|trans({}, 'management_reports') } %}
                             <span>{{ summary.control_status.not_started }}</span>
                         </div>
-                        <div class="progress progress-h-20">
-                            <div class="progress-bar bg-secondary" style="width: {{ summary.summary.total_controls > 0 ? (summary.control_status.not_started / summary.summary.total_controls * 100) : 0 }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: summary.summary.total_controls > 0 ? (summary.control_status.not_started / summary.summary.total_controls * 100) : 0, tone: 'neutral' }) }}
                     </div>
                 {% endblock %}
             {% endembed %}

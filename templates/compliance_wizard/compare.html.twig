@@ -2,6 +2,7 @@
 {% trans_default_domain 'wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ 'wizard.compare_title'|trans({}, 'wizard') }} - {{ 'wizard.title'|trans({}, 'wizard') }}{% endblock %}
 
@@ -143,14 +144,7 @@
                                 {% if result.categories[cat_key] is defined %}
                                     {% set score = result.categories[cat_key].score %}
                                     <div class="d-flex align-items-center justify-content-center">
-                                        <div class="progress me-2" style="width: 50px; height: 6px;">
-                                            <div class="progress-bar
-                                                {% if score >= 80 %}bg-success
-                                                {% elseif score >= 60 %}bg-warning
-                                                {% else %}bg-danger{% endif %}"
-                                                style="width: {{ score }}%">
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: score, tone: score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger'), size: 'sm', class: 'me-2' }) }}
                                         <span class="
                                             {% if score >= 80 %}text-success
                                             {% elseif score >= 60 %}text-warning

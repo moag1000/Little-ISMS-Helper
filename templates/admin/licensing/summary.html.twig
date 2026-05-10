@@ -2,6 +2,7 @@
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_kpi_card.html.twig' as _fa_kpi_card %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}Lizenz-Zusammenfassung{% endblock %}
 
@@ -162,12 +163,7 @@
                                     <td class="fa-table__cell fa-table__cell--num"><strong>{{ stats.allowed }}</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ (stats.allowed / stats.total * 100)|round(1) }}%</td>
                                     <td class="fa-table__cell">
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-success" role="progressbar"
-                                                 style="width: {{ (stats.allowed / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.allowed }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: stats.allowed, max: stats.total, tone: 'success' }) }}
                                     </td>
                                 </tr>
                                 <tr class="fa-table__row">
@@ -176,12 +172,7 @@
                                     <td class="fa-table__cell fa-table__cell--num"><strong>{{ stats.restricted }}</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ (stats.restricted / stats.total * 100)|round(1) }}%</td>
                                     <td class="fa-table__cell">
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-warning" role="progressbar"
-                                                 style="width: {{ (stats.restricted / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.restricted }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: stats.restricted, max: stats.total, tone: 'warning' }) }}
                                     </td>
                                 </tr>
                                 <tr class="fa-table__row">
@@ -190,12 +181,7 @@
                                     <td class="fa-table__cell fa-table__cell--num"><strong>{{ stats.copyleft }}</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ (stats.copyleft / stats.total * 100)|round(1) }}%</td>
                                     <td class="fa-table__cell">
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-info" role="progressbar"
-                                                 style="width: {{ (stats.copyleft / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.copyleft }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: stats.copyleft, max: stats.total, tone: 'info' }) }}
                                     </td>
                                 </tr>
                                 <tr class="fa-table__row">
@@ -204,12 +190,7 @@
                                     <td class="fa-table__cell fa-table__cell--num"><strong>{{ stats.not_allowed }}</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ (stats.not_allowed / stats.total * 100)|round(1) }}%</td>
                                     <td class="fa-table__cell">
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-danger" role="progressbar"
-                                                 style="width: {{ (stats.not_allowed / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.not_allowed }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: stats.not_allowed, max: stats.total, tone: 'danger' }) }}
                                     </td>
                                 </tr>
                                 <tr class="fa-table__row">
@@ -218,12 +199,7 @@
                                     <td class="fa-table__cell fa-table__cell--num"><strong>{{ stats.unknown }}</strong></td>
                                     <td class="fa-table__cell fa-table__cell--num">{{ (stats.unknown / stats.total * 100)|round(1) }}%</td>
                                     <td class="fa-table__cell">
-                                        <div class="progress progress-h-20">
-                                            <div class="progress-bar bg-secondary" role="progressbar"
-                                                 style="width: {{ (stats.unknown / stats.total * 100)|round(1) }}%"
-                                                 aria-valuenow="{{ stats.unknown }}" aria-valuemin="0" aria-valuemax="{{ stats.total }}">
-                                            </div>
-                                        </div>
+                                        {{ _fa_progress.render({ value: stats.unknown, max: stats.total, tone: 'neutral' }) }}
                                     </td>
                                 </tr>
                             {% endblock %}

@@ -2,6 +2,7 @@
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% block title %}{{ 'dpia.index.title'|trans({}, 'privacy')}}{% endblock %}
 
 {% block body %}
@@ -85,9 +86,7 @@
                 {% block card_body %}
                     <div class="text-muted fw-semibold">{{ 'dpia.index.completeness'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold">{{ statistics.completeness_rate }}%</div>
-                    <div class="progress progress-h-10 mt-2">
-                        <div class="progress-bar bg-success" style="width: {{ statistics.completeness_rate }}%"></div>
-                    </div>
+                    {{ _fa_progress.render({ value: statistics.completeness_rate, tone: 'success', class: 'mt-2' }) }}
                 {% endblock %}
             {% endembed %}
         </div>
@@ -186,14 +185,8 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <div class="progress progress-h-20">
-                                        {% set percentage = dpia.completenessPercentage %}
-                                        {% set bar_class = percentage == 100 ? 'bg-success' : 'bg-warning' %}
-                                        <div class="progress-bar {{ bar_class }}"
-                                             style="width: {{ percentage }}%">
-                                            {{ percentage }}%
-                                        </div>
-                                    </div>
+                                    {% set percentage = dpia.completenessPercentage %}
+                                    {{ _fa_progress.render({ value: percentage, tone: percentage == 100 ? 'success' : 'warning', showText: true }) }}
                                 </td>
                                 <td>
                                     {% if dpia.dpoConsultationDate %}

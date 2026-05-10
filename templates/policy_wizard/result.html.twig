@@ -3,6 +3,7 @@
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_section.html.twig' as _fa_section %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ 'policy_wizard.result.title'|trans }}{% endblock %}
 
@@ -73,14 +74,7 @@
                                             '%total%': framework.total_requirements
                                         }) }}
                                     </p>
-                                    <div class="progress" role="progressbar"
-                                         aria-label="{{ framework.label }}"
-                                         aria-valuenow="{{ framework.coverage_percent }}"
-                                         aria-valuemin="0" aria-valuemax="100"
-                                         style="height: 0.6rem;">
-                                        <div class="progress-bar bg-{{ bar_variant }}"
-                                             style="width: {{ framework.coverage_percent }}%;"></div>
-                                    </div>
+                                    {{ _fa_progress.render({ value: framework.coverage_percent, tone: bar_variant, size: 'sm', label: framework.label }) }}
                                     <p class="small mb-0 mt-2">
                                         <strong>{{ framework.coverage_percent }}%</strong>
                                         {{ 'policy_wizard.result.cross_coverage.coverage_percent'|trans }}

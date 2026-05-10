@@ -3,6 +3,7 @@
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_filter_select.html.twig' as _fa_filter_select %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ 'asset.modern.header.title'|trans({}, 'asset')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -130,12 +131,7 @@
             <div class="col-md-3 mb-3">
                 <div class="stat-item">
                     <strong>{{ stat.assetType }}</strong>
-                    <div class="progress mt-2 progress-h-8">
-                        <div class="progress-bar"
-                             style="width: {{ sharePercent }}%"
-                             title="{{ stat.count }} Assets">
-                        </div>
-                    </div>
+                    {{ _fa_progress.render({ value: sharePercent, class: 'mt-2' }) }}
                     <small class="text-muted">{{ stat.count }} Assets ({{ sharePercent }}%)</small>
                 </div>
             </div>

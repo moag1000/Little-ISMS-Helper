@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'compliance' %}
 
 {% block title %}Compliance Mappings{% endblock %}
@@ -93,13 +94,7 @@
                                 {% include '_components/_badge.html.twig' with { variant: mapping.mappingBadgeClass, content: mapping.mappingType } %}
                             </td>
                             <td>
-                                <div class="progress" style="width: 100px; height: 20px;">
-                                    <div class="progress-bar bg-{{ mapping.mappingBadgeClass }}"
-                                         role="progressbar"
-                                         style="width: {{ mapping.finalPercentage }}%">
-                                        {{ mapping.finalPercentage }}%
-                                    </div>
-                                </div>
+                                {{ _fa_progress.render({ value: mapping.finalPercentage, tone: mapping.mappingBadgeClass, showText: true }) }}
                             </td>
                             <td>
                                 {% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.confidence } %}
