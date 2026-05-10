@@ -43,3 +43,6 @@
 
 /* Policy-Wizard W7-E — Mobile responsive Bulk-Approval-Inbox enhancements */
 @import './styles/policy-wizard-mobile.css';
+
+/* Policy-Doc — 5-slot ISMS-policy-document template (cover/toc/history/body/signature) */
+@import './styles/policy-doc.css';

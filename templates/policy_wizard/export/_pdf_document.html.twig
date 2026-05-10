@@ -1,111 +1,340 @@
-{# Policy-Wizard W7-A — single-document PDF body. Inlined CSS so dompdf
-   can render it without external assets. The cover page sits on page 1
-   inside `<div class="page cover">`; the body starts on page 2 with a
-   forced `page-break-before: always`. The footer is static across pages
-   (dompdf does not honour @page running headers reliably without
-   preprocessing). #}
+{# Policy-Wizard W7-A — single-document PDF render.
+   Adopts the design-system `policy-doc` 5-slot template via the
+   `_fa_policy_doc` macro (templates/_components/_fa_policy_doc.html.twig +
+   assets/styles/policy-doc.css). The CSS is inlined below so dompdf can
+   render it standalone — Aurora design tokens are pinned to neutral
+   defaults; tenant branding still overrides --primary via the token row
+   at the top of <style>.
+
+   Spec: docs/design_system/sections/policy-templates.html. #}
+{% import '_components/_fa_policy_doc.html.twig' as _fa_policy_doc %}
 <!DOCTYPE html>
 <html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta charset="utf-8">
-    <title>{{ cover.title }}</title>
+    <title>{{ cover.title|default(document.originalFilename) }}</title>
     <style>
-        @page { margin: 90px 60px 90px 60px; }
+        /* ── Aurora-token defaults pinned for dompdf (no CSS-vars cascade). ── */
+        :root {
+            --surface: #ffffff;
+            --surface-2: #f6f6fa;
+            --border: #e5e5ed;
+            --border-strong: #c8c8d0;
+            --fg-1: #0e0a1f;
+            --fg-2: #2a2540;
+            --fg-3: #5e5878;
+            --primary: {{ primary|default('#6366f1') }};
+            --primary-tint: rgba(99, 102, 241, 0.05);
+            --accent: #22d3ee;
+            --success: #15803d;
+            --success-tint: rgba(34, 197, 94, 0.14);
+            --warning: #a16207;
+            --warning-tint: rgba(234, 179, 8, 0.14);
+            --danger: #b91c1c;
+            --danger-tint: rgba(220, 38, 38, 0.14);
+            --r-md: 8px;
+            --font-mono: "Menlo", "Consolas", monospace;
+        }
+
+        @page { size: A4 portrait; margin: 18mm 16mm 22mm 16mm; }
         body {
-            font-family: "{{ font_family|e('html_attr') }}", "Helvetica", "Arial", sans-serif;
+            font-family: "{{ font_family|default('Inter')|e('html_attr') }}", "Helvetica", "Arial", sans-serif;
             font-size: 10.5pt;
-            color: #222;
-            line-height: 1.4;
+            color: var(--fg-1);
+            line-height: 1.55;
+            margin: 0;
+            background: #fff;
         }
-        h1 { color: {{ primary }}; font-size: 18pt; margin: 12pt 0 6pt 0; }
-        h2 { color: {{ primary }}; font-size: 14pt; margin: 10pt 0 4pt 0; }
-        h3 { color: {{ secondary }}; font-size: 12pt; margin: 8pt 0 4pt 0; }
-        p { margin: 6pt 0; }
-        ul { margin: 6pt 0 6pt 16pt; }
-        li { margin: 2pt 0; }
-        blockquote {
-            border-left: 3pt solid {{ primary }};
-            padding: 4pt 8pt;
-            color: #555;
-            background: #f7f7f7;
-            margin: 6pt 0;
-        }
-        code {
-            font-family: "Menlo", "Consolas", monospace;
-            font-size: 9.5pt;
-            background: #eef;
-            padding: 1pt 3pt;
-            border-radius: 2pt;
-        }
-        .header {
-            border-bottom: 2pt solid {{ primary }};
+
+        /* Repeating header on every page (legacy letterhead row). dompdf
+           does not honour @page running boxes — the inline strip at the
+           top of the cover slot already names the tenant, so the legacy
+           `.pdf-header` row only renders when explicit branding HTML is
+           present. */
+        .pdf-header {
+            border-bottom: 2pt solid var(--primary);
             padding-bottom: 8pt;
-            margin-bottom: 16pt;
+            margin-bottom: 12pt;
             display: table;
             width: 100%;
         }
-        .header .logo-cell, .header .name-cell {
+        .pdf-header__logo, .pdf-header__name {
             display: table-cell;
             vertical-align: middle;
         }
-        .header .logo-cell { width: 60%; text-align: left; }
-        .header .name-cell { width: 40%; text-align: right; font-weight: bold; color: {{ primary }}; }
-        .header img { max-height: 40pt; }
+        .pdf-header__logo { width: 60%; text-align: left; }
+        .pdf-header__name { width: 40%; text-align: right; font-weight: 700; color: var(--primary); }
+        .pdf-header img { max-height: 32pt; }
+
+        /* Tenant branding-html pre/post-amble (free-form HTML stored in
+           TenantBranding.headerHtml / footerHtml). */
+        .pdf-branding-pre,
+        .pdf-branding-post {
+            margin: 8pt 0 12pt;
+            padding: 6pt 8pt;
+            border-left: 2pt solid var(--primary);
+            background: var(--surface-2);
+            font-size: 9pt;
+            color: var(--fg-2);
+        }
+
         .footer {
-            border-top: 1pt solid {{ secondary }};
+            border-top: 1pt solid var(--border-strong);
             padding-top: 6pt;
             margin-top: 18pt;
             font-size: 8pt;
-            color: #666;
+            color: var(--fg-3);
         }
-        .cover {
-            page-break-after: always;
+        .footer .locally-edited-marker {
+            margin-top: 4pt;
+            color: var(--warning);
+            font-style: italic;
         }
-        .cover h1 {
-            font-size: 24pt;
-            border-bottom: 1pt solid {{ secondary }};
-            padding-bottom: 8pt;
+
+        /* ═══════════════════════════════════════════════════════════
+           Inlined policy-doc.css — kept in sync with
+           assets/styles/policy-doc.css. Edit there first; mirror here.
+           ═══════════════════════════════════════════════════════════ */
+        .policy-doc {
+            background: var(--surface);
+            color: var(--fg-1);
+            font-family: "Inter", "Helvetica", "Arial", sans-serif;
+            font-size: 10.5pt;
+            line-height: 1.55;
+            position: relative;
         }
-        .cover dl { margin-top: 18pt; }
-        .cover dt { font-weight: bold; color: {{ primary }}; margin-top: 8pt; }
-        .cover dd { margin-left: 0; }
-        .cover ol { margin: 4pt 0 0 16pt; }
-        .body-section {
-            page-break-before: always;
+        .policy-doc--draft::before,
+        .policy-doc--review::before,
+        .policy-doc--retired::before {
+            content: attr(data-watermark);
+            position: absolute;
+            top: 40%; left: 0; right: 0;
+            text-align: center;
+            font-family: "Inter", sans-serif;
+            font-size: 80pt;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: rgba(220, 38, 38, 0.07);
+            transform: rotate(-30deg);
+            pointer-events: none;
+            z-index: 1;
+            text-transform: uppercase;
         }
-        .header-html, .footer-html {
+        .policy-doc__cover, .policy-doc__toc, .policy-doc__history,
+        .policy-doc__body, .policy-doc__signature { position: relative; z-index: 2; }
+
+        /* Slot 1 · Cover */
+        .policy-doc__cover { padding: 18pt 0 14pt; border-bottom: 1pt solid var(--border); }
+        .policy-doc__cover-top { display: table; width: 100%; }
+        .policy-doc__brand { display: table-cell; vertical-align: middle; width: 65%; }
+        .policy-doc__chips { display: table-cell; vertical-align: top; text-align: right; width: 35%; }
+        .policy-doc__logo {
+            display: inline-block; width: 32pt; height: 32pt;
+            background: var(--primary); color: #fff;
+            border-radius: 6pt; text-align: center; line-height: 32pt;
+            font-weight: 700; font-size: 16pt; vertical-align: middle;
+            margin-right: 8pt;
+        }
+        .policy-doc__logo img { max-width: 100%; max-height: 100%; }
+        .policy-doc__brand-name { font-weight: 700; font-size: 11pt; color: var(--fg-1); display: inline-block; vertical-align: middle; }
+        .policy-doc__brand-meta { font-size: 8pt; color: var(--fg-3); }
+        .policy-doc__chip {
+            display: inline-block; padding: 2pt 7pt; border-radius: 99pt;
+            background: var(--surface-2); color: var(--fg-2);
+            font-size: 7.5pt; font-weight: 600; letter-spacing: 0.06em;
+            text-transform: uppercase; margin-left: 4pt;
+        }
+        .policy-doc__chip--ok { background: var(--success-tint); color: var(--success); }
+        .policy-doc__chip--warn { background: var(--warning-tint); color: var(--warning); }
+        .policy-doc__chip--danger { background: var(--danger-tint); color: var(--danger); }
+        .policy-doc__cover-center { padding: 18pt 0 14pt; }
+        .policy-doc__kicker {
+            font-size: 8.5pt; color: var(--primary); font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase; margin: 0 0 6pt;
+        }
+        .policy-doc__title {
+            font-size: 22pt; font-weight: 800; color: var(--fg-1);
+            line-height: 1.05; margin: 0 0 8pt; letter-spacing: -0.02em;
+        }
+        .policy-doc__sub { font-size: 10pt; line-height: 1.55; color: var(--fg-2); margin: 0; }
+        .policy-doc__cover-grid {
+            border-top: 1pt solid var(--border); border-bottom: 1pt solid var(--border);
+            padding: 8pt 0; margin: 0; display: table; width: 100%;
+        }
+        .policy-doc__cover-grid > div {
+            display: table-cell; vertical-align: top; padding: 4pt 8pt 4pt 0; width: 33%;
+        }
+        .policy-doc__cover-label {
+            font-size: 7pt; color: var(--fg-3); text-transform: uppercase;
+            letter-spacing: 0.08em; font-weight: 600; margin: 0 0 2pt;
+        }
+        .policy-doc__cover-value { font-size: 9.5pt; color: var(--fg-1); font-weight: 600; margin: 0; }
+        .policy-doc__cover-foot { text-align: center; font-size: 8pt; color: var(--fg-3); margin-top: 10pt; }
+
+        /* Slot 2 · TOC */
+        .policy-doc__toc { padding: 16pt 0; page-break-before: always; border-bottom: 1pt solid var(--border); }
+        .policy-doc__toc-heading {
+            font-size: 16pt; font-weight: 800; color: var(--fg-1);
+            margin: 0 0 12pt; padding-bottom: 6pt; border-bottom: 1.5pt solid var(--fg-1);
+        }
+        .policy-doc__toc-list { list-style: decimal; margin: 0 0 0 18pt; padding: 0; }
+        .policy-doc__toc-list li { font-size: 10pt; margin: 4pt 0; color: var(--fg-1); }
+        .policy-doc__toc-leader, .policy-doc__toc-page { display: none; }
+
+        /* Slot 3 · History */
+        .policy-doc__history { padding: 16pt 0; page-break-before: always; border-bottom: 1pt solid var(--border); }
+        .policy-doc__history-heading {
+            font-size: 14pt; font-weight: 700; color: var(--fg-1);
+            margin: 0 0 10pt; padding-bottom: 6pt; border-bottom: 1.5pt solid var(--fg-1);
+        }
+        .policy-doc__history-table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+        .policy-doc__history-table th {
+            text-align: left; background: var(--surface-2); color: var(--fg-2);
+            padding: 5pt 7pt; border: 0.5pt solid var(--border-strong);
+            font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; font-size: 7.5pt;
+        }
+        .policy-doc__history-table td {
+            padding: 5pt 7pt; border: 0.5pt solid var(--border);
+            color: var(--fg-1); vertical-align: top;
+        }
+        .policy-doc__history-table tr:first-child td { background: var(--primary-tint); }
+
+        /* Slot 4 · Body */
+        .policy-doc__body {
+            padding: 18pt 0; page-break-before: always;
+            font-family: "Charter", "Source Serif Pro", "Georgia", serif;
+            font-size: 10.5pt; line-height: 1.6; color: var(--fg-1);
+            border-bottom: 1pt solid var(--border);
+        }
+        .policy-doc__body p { margin: 0 0 8pt; color: var(--fg-2); }
+        .policy-doc__body h1, .policy-doc__body h2, .policy-doc__body h3 {
+            font-family: "Inter", "Helvetica", sans-serif; color: var(--fg-1);
+            line-height: 1.25; letter-spacing: -0.01em;
+            page-break-after: avoid;
+        }
+        .policy-doc__body h1 {
+            font-size: 16pt; font-weight: 800; margin: 14pt 0 6pt;
+            padding-bottom: 4pt; border-bottom: 1pt solid var(--border);
+        }
+        .policy-doc__body h2 { font-size: 13pt; font-weight: 700; margin: 12pt 0 6pt; }
+        .policy-doc__body h3 { font-size: 11pt; font-weight: 700; color: var(--fg-2); margin: 10pt 0 4pt; }
+        .policy-doc__body ul, .policy-doc__body ol { margin: 0 0 10pt 16pt; padding: 0; }
+        .policy-doc__body li { margin: 2pt 0; }
+        .policy-doc__body blockquote {
+            border-left: 2.5pt solid var(--primary); padding: 6pt 10pt;
+            color: var(--fg-2); background: var(--primary-tint);
             margin: 8pt 0;
         }
+        .policy-doc__body code {
+            font-family: var(--font-mono); font-size: 9pt;
+            background: var(--surface-2); padding: 1pt 4pt; border-radius: 2pt;
+            color: var(--fg-1);
+        }
+        .policy-doc__body table { width: 100%; border-collapse: collapse; margin: 8pt 0; font-family: "Inter", sans-serif; font-size: 9pt; }
+        .policy-doc__body th, .policy-doc__body td {
+            border: 0.5pt solid var(--border-strong); padding: 4pt 7pt;
+            text-align: left; vertical-align: top;
+        }
+        .policy-doc__body th { background: var(--surface-2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; font-size: 8pt; color: var(--fg-2); }
+        .policy-doc__body-empty { color: var(--fg-3); font-style: italic; text-align: center; padding: 20pt 0; }
+
+        /* Slot 5 · Signature */
+        .policy-doc__signature { padding: 18pt 0; page-break-before: always; }
+        .policy-doc__signature-intro {
+            font-size: 9.5pt; line-height: 1.5; color: var(--fg-2);
+            padding-bottom: 14pt; border-bottom: 1pt solid var(--border);
+            margin: 0 0 18pt;
+        }
+        .policy-doc__signature-grid { display: table; width: 100%; }
+        .policy-doc__signature-field {
+            display: table-cell; vertical-align: top; padding: 0 12pt 0 0; width: 33%;
+        }
+        .policy-doc__signature-role {
+            font-size: 7.5pt; color: var(--fg-3); text-transform: uppercase;
+            letter-spacing: 0.1em; font-weight: 700; margin: 0 0 22pt;
+        }
+        .policy-doc__signature-line { border-top: 0.6pt solid var(--fg-1); margin: 0 0 6pt; height: 1pt; }
+        .policy-doc__signature-name { font-size: 9.5pt; font-weight: 600; color: var(--fg-1); margin: 0 0 2pt; }
+        .policy-doc__signature-meta { font-size: 8pt; color: var(--fg-3); line-height: 1.5; margin: 0; }
     </style>
 </head>
 <body>
-    {# ---- Letterhead ---- #}
-    <div class="header">
-        <div class="logo-cell">
-            {% if logo_path is not empty %}
-                <img src="{{ logo_path }}" alt="{{ tenant ? tenant.legalName|default(tenant.name)|default('Tenant') : 'Tenant' }}">
-            {% elseif tenant %}
-                <strong style="font-size: 14pt; color: {{ primary }};">{{ tenant.legalName|default(tenant.name)|default('') }}</strong>
-            {% endif %}
+    {# Letterhead — preserved for backward-compat. The cover slot now
+       carries the brand row; this strip only renders when the tenant
+       has a logo path or legal name (avoids visual duplication). #}
+    {% if logo_path is not empty or (tenant and tenant.legalName|default(tenant.name)) %}
+        <div class="pdf-header">
+            <div class="pdf-header__logo">
+                {% if logo_path is not empty %}
+                    <img src="{{ logo_path }}" alt="{{ tenant ? tenant.legalName|default(tenant.name)|default('Tenant') : 'Tenant' }}">
+                {% elseif tenant %}
+                    <strong style="font-size: 13pt; color: var(--primary);">{{ tenant.legalName|default(tenant.name)|default('') }}</strong>
+                {% endif %}
+            </div>
+            <div class="pdf-header__name">
+                {% if tenant %}{{ tenant.legalName|default(tenant.name)|default('') }}{% endif %}
+            </div>
         </div>
-        <div class="name-cell">
-            {% if tenant %}{{ tenant.legalName|default(tenant.name)|default('') }}{% endif %}
-        </div>
-    </div>
-
-    {% if header_html is not empty %}
-        <div class="header-html">{{ header_html|raw }}</div>
     {% endif %}
 
-    {# ---- Cover page ---- #}
-    {% include 'policy_wizard/export/_pdf_cover.html.twig' with { cover: cover, primary: primary, secondary: secondary } only %}
+    {% if header_html is not empty %}
+        <div class="pdf-branding-pre">{{ header_html|raw }}</div>
+    {% endif %}
 
-    {# ---- Body (Markdown → HTML rendered server-side) ---- #}
-    <div class="body-section">
-        {{ body_html|raw }}
-    </div>
+    {# Compose the policy-doc cover context from the W7-A `cover` payload. #}
+    {% set _doc_cover = {
+        title:               cover.title|default(document.originalFilename),
+        kicker:              (cover.standard ? (cover.standard|upper ~ (cover.topic ? ' · ' ~ cover.topic|replace({'_': ' '}) : '')) : 'ISMS-Policy'),
+        subtitle:            cover.subtitle|default(null),
+        version:             cover.version|default(document.version|default('1')),
+        valid_from:          cover.valid_from|default(null),
+        valid_until:         cover.valid_until|default(null),
+        next_review:         cover.next_review|default(document.nextReviewDate ? document.nextReviewDate|date('Y-m-d') : null),
+        owner:               cover.owner|default(document.effectiveOwnerName|default(document.uploadedBy ? document.uploadedBy.fullName : null)),
+        approver:            cover.approver|default(cover.approver_chain is defined and cover.approver_chain|length > 0 ? cover.approver_chain|first : null),
+        approver_chain:      cover.approver_chain|default([]),
+        classification:      cover.classification|default(document.tisaxInformationClassification|default(null)),
+        standard:            cover.standard|default(null),
+        topic:               cover.topic|default(null),
+        annex_a_refs:        cover.annex_a_refs|default([]),
+        generated_on:        cover.generated_on|default(null),
+        dora_validity_date:  cover.dora_validity_date|default(null),
+        climate_change_aware: cover.climate_change_aware|default(false),
+        owner_label:         'policy_wizard.export.cover.owner'|trans({}, 'policy_wizard'),
+        approver_label:      'policy_wizard.export.cover.approved_by'|trans({}, 'policy_wizard'),
+        version_label:       'policy_wizard.export.cover.version'|trans({}, 'policy_wizard'),
+        valid_from_label:    'policy_wizard.export.cover.valid_from'|trans({}, 'policy_wizard'),
+        next_review_label:   'policy_wizard.export.cover.next_review'|trans({}, 'policy_wizard'),
+        classification_label:'policy_wizard.export.cover.classification'|trans({}, 'policy_wizard'),
+        standard_label:      'policy_wizard.export.cover.standard'|trans({}, 'policy_wizard'),
+        annex_a_label:       'policy_wizard.export.cover.annex_a'|trans({}, 'policy_wizard'),
+        generated_on_label:  'policy_wizard.export.cover.generated_on'|trans({}, 'policy_wizard'),
+        dora_validity_label: 'policy_wizard.export.cover.dora_validity'|trans({}, 'policy_wizard'),
+        climate_change_label:'policy_wizard.export.cover.climate_change'|trans({}, 'policy_wizard'),
+        climate_change_value:'policy_wizard.export.cover.climate_change_value'|trans({}, 'policy_wizard'),
+        history_label:       'policy_wizard.export.history.heading'|trans({}, 'policy_wizard'),
+        history_col_version: 'policy_wizard.export.history.col_version'|trans({}, 'policy_wizard'),
+        history_col_date:    'policy_wizard.export.history.col_date'|trans({}, 'policy_wizard'),
+        history_col_change:  'policy_wizard.export.history.col_change'|trans({}, 'policy_wizard'),
+        history_col_author:  'policy_wizard.export.history.col_author'|trans({}, 'policy_wizard'),
+        history_col_approver:'policy_wizard.export.history.col_approver'|trans({}, 'policy_wizard'),
+        toc_label:           'policy_wizard.export.toc.heading'|trans({}, 'policy_wizard'),
+        signature_intro_label:'policy_wizard.export.signature.intro_label'|trans({}, 'policy_wizard'),
+        signature_intro:     'policy_wizard.export.signature.intro'|trans({}, 'policy_wizard'),
+        signature_method:    'internal',
+    } %}
 
-    {# ---- Footer ---- #}
+    {{ _fa_policy_doc.render({
+        document: document,
+        body_html: body_html,
+        cover: _doc_cover,
+        tenant_branding: branding,
+        brand_name: tenant ? tenant.legalName|default(tenant.name)|default('') : '',
+        brand_meta: 'policy_wizard.export.cover.brand_meta'|trans({}, 'policy_wizard'),
+    }) }}
+
+    {# ---- Footer (still rendered outside the policy-doc article so
+         dompdf places it after the signature page). ---- #}
     {% include 'policy_wizard/export/_pdf_footer.html.twig' with { footer: footer, footer_html: footer_html, secondary: secondary } only %}
 </body>
 </html>
