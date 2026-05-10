@@ -1,0 +1,41 @@
+{# V3 W2-H4 — Auto-DPIA-Suggestion notification to ROLE_DPO.
+   ISO 27001 Cl. 7.4 (Communication) + GDPR Art. 35. #}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'emails.auto_reaction.dpia.subject'|trans({}, 'emails')|default('Auto-DPIA suggested') }}</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: #7c3aed; color: white; padding: 20px; border-radius: 6px 6px 0 0;">
+            <h1 style="margin: 0; font-size: 18px;">
+                {{ 'emails.auto_reaction.dpia.title'|trans({}, 'emails')|default('Auto-DPIA Skeleton Created') }}
+            </h1>
+        </div>
+
+        <div style="background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-radius: 0 0 6px 6px;">
+            <p>{{ 'emails.auto_reaction.dpia.intro'|trans({}, 'emails')|default('A new ProcessingActivity was flagged as high-risk. A DPIA skeleton has been auto-generated for your review:') }}</p>
+
+            <div style="background: white; padding: 12px; border-left: 4px solid #7c3aed; margin: 16px 0;">
+                <p style="margin: 0;"><strong>Processing Activity:</strong> {{ activity.title|default('—') }}</p>
+                <p style="margin: 4px 0 0 0;"><strong>DPIA:</strong> {{ dpia.title|default('—') }}</p>
+                <p style="margin: 4px 0 0 0;"><strong>Status:</strong> {{ dpia.status|default('draft') }}</p>
+            </div>
+
+            {% if reasons is defined and reasons|length > 0 %}
+            <p><strong>{{ 'emails.auto_reaction.dpia.reasons'|trans({}, 'emails')|default('High-risk indicators:') }}</strong></p>
+            <ul>
+                {% for reason in reasons %}
+                    <li>{{ reason }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <p style="font-size: 13px; color: #666; margin-top: 16px;">
+                {{ 'emails.auto_reaction.dpia.footer'|trans({}, 'emails')|default('Please review the auto-generated DPIA skeleton and complete the required Art. 35 (7) GDPR sections.') }}
+            </p>
+        </div>
+    </div>
+</body>
+</html>
