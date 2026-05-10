@@ -1,0 +1,95 @@
+# Industry-Preset: KRITIS Energie-Sektor
+# Audit V3 C4
+# Target: Energy-sector KRITIS operators (Stromversorger, Gasnetz, Fernwärme).
+
+id: kritis-energie
+name: 'KRITIS Energie-Sektor'
+description: |
+  Express-Setup für KRITIS-Anlagen-Betreiber im Energie-Sektor. Inkludiert
+  BSI IT-Grundschutz, B3S-Energie, NIS2, EnWG §11/§13, ISO 27019. Erweiterte
+  Risk-Categories für ICS/OT-Umgebung und SCADA-spezifische Controls.
+
+locale: de
+
+modules:
+  - core
+  - authentication
+  - assets
+  - risks
+  - controls
+  - incidents
+  - audits
+  - training
+  - reviews
+  - bcm
+  - compliance
+  - audit_logging
+  - privacy
+  - vulnerability_intel
+  - nis2_dora
+
+frameworks:
+  - code: BSI_GRUNDSCHUTZ
+    activate: true
+    priority: primary
+  - code: NIS2
+    activate: true
+    priority: primary
+  - code: ISO27001
+    activate: true
+    priority: primary
+  - code: ISO22301
+    activate: true
+    priority: secondary
+  - code: KRITIS
+    activate: true
+    priority: primary
+
+risk_categories:
+  - name: 'OT/ICS-Cyberangriff'
+    description: 'SCADA-Manipulation, Schaltbefehl-Spoofing, Stuxnet-artige Angriffe'
+    typical_assets: ['scada-system', 'rtu', 'plc', 'engineering-workstation']
+  - name: 'Anlagen-Ausfall (Hardware)'
+    description: 'Trafo-Ausfall, Kabelschaden, Generator-Defekt'
+  - name: 'Versorgungs-Engpass'
+    description: 'Brennstoff-Mangel, Netzfrequenz-Abweichung, n-1-Verletzung'
+  - name: 'Sabotage / Physische Sicherheit'
+    description: 'Eindringling, Drohnenangriff, Vandalismus an Trafo-Stationen'
+  - name: 'IT-Lieferketten-Risiko'
+    description: 'Hersteller-Backdoor, kompromittierte Firmware-Updates'
+  - name: 'Cyber-Hybrid-Bedrohung'
+    description: 'Staatliche Akteure, APT-Gruppen mit Energie-Sektor-Fokus'
+
+initial_controls:
+  - identifier: ISMS.1.A1
+    framework: BSI_GRUNDSCHUTZ
+    name: 'Übernahme der Gesamtverantwortung durch die Leitungsebene'
+    implementation_status: planned
+  - identifier: SYS.2.1.A6
+    framework: BSI_GRUNDSCHUTZ
+    name: 'Festlegen von berechtigten Benutzern und Administratoren'
+    implementation_status: in_progress
+  - identifier: NET.4.1.A1
+    framework: BSI_GRUNDSCHUTZ
+    name: 'Planung des LAN-Verbundes'
+    implementation_status: implemented
+  - identifier: A.5.7
+    framework: ISO27001
+    name: 'Threat intelligence'
+    implementation_status: planned
+
+initial_documents:
+  - title: 'B3S-Konformitätserklärung'
+    type: policy
+    status: draft
+  - title: 'OT-Sicherheits-Leitlinie'
+    type: policy
+    status: draft
+  - title: 'KRITIS-Meldewege gem. §8b BSIG'
+    type: procedure
+    status: draft
+  - title: 'BCM-Plan: Versorgungswiederherstellung'
+    type: bc_plan
+    status: draft
+
+target_alva_journey: getting_started

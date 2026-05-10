@@ -1,0 +1,108 @@
+# Industry-Preset: Health-Care + DORA-pflichtige IT-Dienstleister
+# Audit V3 C4
+# Target: Hospitals, MedTech, health-data-processors with DORA exposure.
+
+id: health-care-dora
+name: 'Health-Care mit DORA-Exposure'
+description: |
+  Express-Setup für Krankenhäuser und IT-Dienstleister mit DORA-Compliance-Pflicht
+  (z.B. wenn Bank-Outsourcing-Provider). Inkludiert ISO 27001 + ISO 27799
+  (health-specific) + GDPR + DORA + B3S-Krankenhaus. Risk-Categories rund um
+  Patientendaten, MedTech-Geräte, klinische Prozesse.
+
+locale: de
+
+modules:
+  - core
+  - authentication
+  - assets
+  - risks
+  - controls
+  - incidents
+  - audits
+  - training
+  - reviews
+  - bcm
+  - compliance
+  - audit_logging
+  - privacy
+  - ai_governance
+  - vulnerability_intel
+  - nis2_dora
+
+frameworks:
+  - code: ISO27001
+    activate: true
+    priority: primary
+  - code: GDPR
+    activate: true
+    priority: primary
+  - code: DORA
+    activate: true
+    priority: primary
+  - code: NIS2
+    activate: true
+    priority: primary
+  - code: ISO22301
+    activate: true
+    priority: secondary
+  - code: ISO27701
+    activate: true
+    priority: secondary
+
+risk_categories:
+  - name: 'Patientendaten-Verletzung'
+    description: 'Unbefugter Zugriff auf KIS, Bildgebung, Labordaten'
+    typical_assets: ['kis', 'pacs', 'lab-system']
+  - name: 'MedTech-Geräte-Sicherheit'
+    description: 'Vernetzte Medizinprodukte, Insulin-Pumpen, Beatmungsgeräte'
+    typical_assets: ['medical-device', 'iot-sensor']
+  - name: 'Cyber-Angriff klinischer Betrieb'
+    description: 'Ransomware mit Notfall-OP-Stop, Diagnostik-Ausfall'
+  - name: 'Lieferketten-Risiko (DORA)'
+    description: 'Cloud-MedTech-Provider, ICT-Dienstleister-Konzentration'
+  - name: 'KI-Diagnostik-Bias'
+    description: 'AI-gestützte Diagnose-Tools, ISO 42001'
+  - name: 'Datenexport in Drittländer'
+    description: 'Klinische Studien, Telemedizin-Plattformen'
+
+initial_controls:
+  - identifier: A.5.1
+    framework: ISO27001
+    name: 'Policies for information security'
+    implementation_status: planned
+  - identifier: A.5.10
+    framework: ISO27001
+    name: 'Acceptable use of information and other associated assets'
+    implementation_status: planned
+  - identifier: A.5.23
+    framework: ISO27001
+    name: 'Information security for use of cloud services'
+    implementation_status: in_progress
+  - identifier: A.6.6
+    framework: ISO27001
+    name: 'Confidentiality or non-disclosure agreements'
+    implementation_status: implemented
+  - identifier: A.8.16
+    framework: ISO27001
+    name: 'Monitoring activities'
+    implementation_status: planned
+
+initial_documents:
+  - title: 'Informationssicherheits-Leitlinie Klinik'
+    type: policy
+    status: draft
+  - title: 'Patientendaten-Schutz-Konzept'
+    type: policy
+    status: draft
+  - title: 'DORA-ICT-Risikomanagement-Framework'
+    type: policy
+    status: draft
+  - title: 'BCM-Plan: Notfall-OP-Bereitschaft'
+    type: bc_plan
+    status: draft
+  - title: 'MedTech-Vulnerability-Management'
+    type: procedure
+    status: draft
+
+target_alva_journey: getting_started

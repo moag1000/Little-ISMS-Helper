@@ -1,0 +1,107 @@
+# Industry-Preset: SaaS-Startup ISO 27001 Erstzertifizierung
+# Audit V3 C4
+# Target: 20-200 employees, B2B-SaaS, AWS/GCP/Azure, customer-facing security promise.
+
+id: saas-iso27001
+name: 'SaaS-Startup ISO 27001'
+description: |
+  Express-Setup für B2B-SaaS-Unternehmen auf dem Weg zur ISO 27001-
+  Erstzertifizierung. Cloud-native Infrastruktur, Customer-Audit-Bereitschaft,
+  TISAX/SOC2 als Sekundär-Frameworks. Schlanke Initial-Controls auf das nötige
+  Minimum für ein erstes ISMS-Gerüst reduziert.
+
+locale: en
+
+modules:
+  - core
+  - authentication
+  - assets
+  - risks
+  - controls
+  - incidents
+  - audits
+  - training
+  - reviews
+  - compliance
+  - audit_logging
+  - privacy
+  - cloud_security
+  - vulnerability_intel
+
+frameworks:
+  - code: ISO27001
+    activate: true
+    priority: primary
+  - code: GDPR
+    activate: true
+    priority: primary
+  - code: SOC2
+    activate: true
+    priority: secondary
+  - code: TISAX
+    activate: false
+    priority: optional
+  - code: ISO27017
+    activate: true
+    priority: secondary
+
+risk_categories:
+  - name: 'Cloud Misconfiguration'
+    description: 'Open S3 buckets, IAM over-permission, exposed APIs'
+    typical_assets: ['cloud-account', 'kubernetes-cluster', 'api-gateway']
+  - name: 'Supply-Chain Compromise'
+    description: 'Dependency injection, npm/pypi malicious packages'
+  - name: 'Account Takeover'
+    description: 'Credential stuffing, weak SSO config'
+  - name: 'Customer Data Exposure'
+    description: 'Multi-tenant data leak, broken access control'
+    typical_assets: ['production-database', 'object-storage']
+  - name: 'Insider Threat'
+    description: 'Departing employee, privileged access misuse'
+  - name: 'Code-Injection / Application Security'
+    description: 'OWASP Top 10, SAST/DAST findings'
+
+initial_controls:
+  - identifier: A.5.1
+    framework: ISO27001
+    name: 'Policies for information security'
+    implementation_status: planned
+  - identifier: A.5.15
+    framework: ISO27001
+    name: 'Access control'
+    implementation_status: in_progress
+  - identifier: A.5.23
+    framework: ISO27001
+    name: 'Information security for use of cloud services'
+    implementation_status: in_progress
+  - identifier: A.8.8
+    framework: ISO27001
+    name: 'Management of technical vulnerabilities'
+    implementation_status: in_progress
+  - identifier: A.8.25
+    framework: ISO27001
+    name: 'Secure development life cycle'
+    implementation_status: planned
+  - identifier: A.8.28
+    framework: ISO27001
+    name: 'Secure coding'
+    implementation_status: planned
+
+initial_documents:
+  - title: 'Information Security Policy'
+    type: policy
+    status: draft
+  - title: 'Acceptable Use Policy'
+    type: policy
+    status: draft
+  - title: 'Cloud Security Standard'
+    type: policy
+    status: draft
+  - title: 'Secure SDLC Procedure'
+    type: procedure
+    status: draft
+  - title: 'Incident Response Runbook'
+    type: procedure
+    status: draft
+
+target_alva_journey: getting_started
