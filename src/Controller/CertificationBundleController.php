@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Controller\Trait\PdfLocaleTrait;
+use App\Entity\Tenant;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Service\Export\CertificationBundleExporter;
 use App\Service\TenantContext;
+use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -177,5 +179,93 @@ class CertificationBundleController extends AbstractController
         }
 
         return [$this->resolveFrameworkCode($request, $frameworks)];
+    }
+
+    /**
+     * Generate and download a Konzern-scoped certification bundle ZIP.
+     *
+     * Task #129: aggregates per-subsidiary bundles (root + all
+     * descendants) into one holding-level archive with an aggregated
+     * INDEX.csv (`tenant_*` columns prepended), a 00_KONZERN_OVERVIEW.csv
+     * showing per-subsidiary coverage %, and a 00_KONZERN_RACI.md
+     * placeholder. Restricted to ROLE_GROUP_CISO / ROLE_KONZERN_AUDITOR
+     * and only available when the current tenant has subsidiaries.
+     */
+    #[Route('/konzern-export', name: 'konzern_export', methods: ['POST'])]
+    #[IsGranted(new \Symfony\Component\ExpressionLanguage\Expression(
+        "is_granted('ROLE_GROUP_CISO') or is_granted('ROLE_KONZERN_AUDITOR')"
+    ))]
+    public function konzernExport(Request $request): Response
+    {
+        $submittedToken = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('certification_bundle_konzern_export', $submittedToken)) {
+            throw $this->createAccessDeniedException('Invalid CSRF token.');
+        }
+
+        $tenant = $this->security->getUser()?->getTenant();
+        if (!$tenant instanceof Tenant) {
+            throw $this->createAccessDeniedException('No tenant context available.');
+        }
+
+        if ($tenant->getSubsidiaries()->count() === 0) {
+            $this->addFlash('warning', 'certification_bundle.konzern_export.error.not_a_holding');
+            return $this->redirectToRoute('app_certification_bundle_index');
+        }
+
+        $activeFrameworks = $this->frameworkRepository->findActiveFrameworks();
+        $selectedCodes = $this->resolveFrameworkCodes($request, $activeFrameworks);
+
+        $asOfDate = null;
+        $asOfRaw = (string) $request->request->get('as_of_date', '');
+        if ($asOfRaw !== '') {
+            try {
+                $asOfDate = new DateTimeImmutable($asOfRaw);
+            } catch (\Throwable) {
+                $asOfDate = null;
+            }
+        }
+
+        $includeOnly = null;
+        $rawSubsidiaryIds = $request->request->all('subsidiary_ids');
+        if (is_array($rawSubsidiaryIds) && $rawSubsidiaryIds !== []) {
+            $includeOnly = [];
+            foreach ($rawSubsidiaryIds as $id) {
+                $intId = (int) $id;
+                if ($intId > 0) {
+                    $includeOnly[] = $intId;
+                }
+            }
+            if ($includeOnly === []) {
+                $includeOnly = null;
+            }
+        }
+
+        $locale = $this->resolvePdfLocale($request);
+        try {
+            $result = $this->localeSwitcher->runWithLocale(
+                $locale,
+                fn() => $this->exporter->exportKonzern($tenant, $selectedCodes, $asOfDate, $includeOnly),
+            );
+        } catch (\InvalidArgumentException $e) {
+            // The exporter raises the i18n key `not_a_holding` so the
+            // controller can surface a clean flash without leaking the
+            // exception message to the user.
+            if ($e->getMessage() === 'not_a_holding') {
+                $this->addFlash('warning', 'certification_bundle.konzern_export.error.not_a_holding');
+                return $this->redirectToRoute('app_certification_bundle_index');
+            }
+            throw $e;
+        }
+
+        $response = new BinaryFileResponse($result['path']);
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $result['filename'],
+        );
+        $response->deleteFileAfterSend(true);
+
+        $this->addFlash('success', 'certification_bundle.konzern_export.success');
+
+        return $response;
     }
 }
