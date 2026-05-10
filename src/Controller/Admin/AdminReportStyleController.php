@@ -40,7 +40,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * action also re-resolves the tenant from context (no tenant_id in
  * request payload).
  */
-#[Route('/{_locale}/admin/report-style', requirements: ['_locale' => 'de|en'])]
+#[Route('/admin/report-style')]
 #[IsGranted('ROLE_ADMIN')]
 final class AdminReportStyleController extends AbstractController
 {

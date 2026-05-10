@@ -7,6 +7,8 @@
 {% block title %}{{ document.originalFilename }}{% endblock %}
 
 {% block body %}
+{# Twig {% extends %} requires re-import inside the block where used. #}
+{% import '_components/_fa_policy_doc.html.twig' as _fa_policy_doc %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
@@ -134,6 +136,8 @@
             </div>
         {% endblock %}
         {% block card_body %}
+            {# embed creates a new scope — re-import macros used inside. #}
+            {% import '_components/_fa_policy_doc.html.twig' as _fa_policy_doc %}
             <div class="detail-grid">
                 <div class="detail-item">
                     <span class="label">{{ 'document.label.type'|trans({}, 'document') }}</span>
