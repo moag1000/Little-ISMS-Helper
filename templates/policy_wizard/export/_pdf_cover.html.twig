@@ -1,5 +1,10 @@
 {# Policy-Wizard W7-A — PDF cover page. Standalone (no body markup so
-   it can be reused inside the multi-document export later). #}
+   it can be reused inside the multi-document export later).
+
+   DEPRECATED (Mai 2026): _pdf_document.html.twig now adopts the
+   design-system 5-slot policy-doc template via _fa_policy_doc.html.twig
+   and no longer includes this partial. Kept on disk for any external
+   call-sites; will be removed once all references are migrated. #}
 <div class="cover">
     <h1>{{ cover.title }}</h1>
 

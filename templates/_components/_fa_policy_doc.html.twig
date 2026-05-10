@@ -1,0 +1,308 @@
+{#
+ # FairyAurora v4 — fa-policy-doc macro
+ #
+ # 5-slot ISMS-policy-document renderer. Used both by:
+ #  - PolicyPdfExporter (PDF export — inlines policy-doc.css for dompdf)
+ #  - templates/document/show.html.twig (web preview — uses bundled CSS)
+ #
+ # Spec: docs/design_system/sections/policy-templates.html lines 60-122.
+ # CSS counterpart: assets/styles/policy-doc.css.
+ #
+ # The five mandatory slots:
+ #   1. .policy-doc__cover     — brand · title · version · status · dates
+ #   2. .policy-doc__toc       — auto-generated from <h2>s in body_html
+ #   3. .policy-doc__history   — version-history (Document.supersedes-chain)
+ #   4. .policy-doc__body      — Markdown→HTML rendered policy text
+ #   5. .policy-doc__signature — author/reviewer/approver footer
+ #
+ # Usage:
+ #   {% import '_components/_fa_policy_doc.html.twig' as _fa_policy_doc %}
+ #   {{ _fa_policy_doc.render({
+ #       document:        document,
+ #       body_html:       policyBodyHtml,
+ #       cover:           coverContext,         # optional override
+ #       version_history: historyEntries,       # optional list of {version,date,change,author,approver}
+ #       signatures:      signatureEntries,     # optional list of {role,name,meta,signed}
+ #       tenant_branding: tenantBranding,       # optional TenantBranding entity
+ #       brand_name:      'Acme GmbH',          # optional fallback if no branding
+ #       brand_meta:      'Information Security Management System',
+ #       chips:           [{label:'Approved', variant:'ok'}, ...],
+ #   }) }}
+ #
+ # Parameters:
+ #   document        - App\Entity\Document (required for status/version/dates)
+ #   body_html       - string of safe HTML for the body slot (required)
+ #   cover           - associative array with cover-page values (optional override
+ #                     of values pulled from document)
+ #   version_history - list of {version,date,change,author,approver} rows (optional;
+ #                     auto-built from document.supersedes-chain when omitted)
+ #   signatures      - list of {role,name,meta,signed?} (optional; auto-built
+ #                     from cover.approver_chain when omitted)
+ #   tenant_branding - App\Entity\TenantBranding for logo/header/footer (optional)
+ #   brand_name      - fallback brand-name string (optional)
+ #   brand_meta      - small subtitle under brand-name (optional)
+ #   chips           - status-chips list rendered top-right of cover (optional)
+ #}
+
+{% macro render(props = {}) %}
+    {% set document = props.document %}
+    {% set body_html = props.body_html|default('') %}
+    {% set cover = props.cover|default({}) %}
+
+    {# Status-driven modifier + watermark text. Falls back to "draft" when
+       Document.status is not one of the known values (draft/review/approved/retired). #}
+    {% set _status = document is defined and document is not null ? document.status|default('draft') : (cover.status|default('draft')) %}
+    {% set _status_class = _status in ['draft', 'review', 'approved', 'retired'] ? _status : 'draft' %}
+    {% set _watermark = {
+        'draft':    'Entwurf',
+        'review':   'In Review',
+        'approved': '',
+        'retired':  'Archiviert',
+    }[_status_class]|default('') %}
+
+    <article class="policy-doc policy-doc--{{ _status_class }}"
+             data-policy-id="{{ document is defined and document is not null ? document.id : '' }}"
+             data-policy-status="{{ _status_class }}"
+             {% if _watermark %}data-watermark="{{ _watermark }}"{% endif %}>
+
+        {# ── Slot 1 · Cover ──────────────────────────────────────── #}
+        <header class="policy-doc__cover">
+            <div class="policy-doc__cover-top">
+                <div class="policy-doc__brand">
+                    <div class="policy-doc__logo" aria-hidden="true">
+                        {% if props.tenant_branding is defined and props.tenant_branding and props.tenant_branding.logoPath %}
+                            <img src="{{ props.tenant_branding.logoPath }}" alt="">
+                        {% else %}
+                            {{ (props.brand_name|default('L'))|slice(0, 1)|upper }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="policy-doc__brand-name">{{ props.brand_name|default('') }}</div>
+                        <div class="policy-doc__brand-meta">{{ props.brand_meta|default('Information Security Management System') }}</div>
+                    </div>
+                </div>
+                <div class="policy-doc__chips">
+                    {% if props.chips is defined and props.chips %}
+                        {% for chip in props.chips %}
+                            <span class="policy-doc__chip{% if chip.variant is defined and chip.variant %} policy-doc__chip--{{ chip.variant }}{% endif %}">{{ chip.label }}</span>
+                        {% endfor %}
+                    {% else %}
+                        <span class="policy-doc__chip policy-doc__chip--{{ _status_class == 'approved' ? 'ok' : (_status_class == 'retired' ? 'danger' : 'warn') }}">{{ _status_class|capitalize }}</span>
+                        {% if cover.classification is defined and cover.classification %}
+                            <span class="policy-doc__chip">{{ cover.classification }}</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="policy-doc__cover-center">
+                {% if cover.kicker is defined and cover.kicker %}
+                    <p class="policy-doc__kicker">{{ cover.kicker }}</p>
+                {% endif %}
+                <h1 class="policy-doc__title">{{ cover.title|default(document is defined and document is not null ? document.originalFilename : '—') }}</h1>
+                {% if cover.subtitle is defined and cover.subtitle %}
+                    <p class="policy-doc__sub">{{ cover.subtitle }}</p>
+                {% endif %}
+            </div>
+
+            <dl class="policy-doc__cover-grid">
+                {% if cover.owner is defined and cover.owner %}
+                    <div>
+                        <dt class="policy-doc__cover-label">{{ cover.owner_label|default('Owner') }}</dt>
+                        <dd class="policy-doc__cover-value">{{ cover.owner }}</dd>
+                    </div>
+                {% endif %}
+                {% if cover.approver is defined and cover.approver %}
+                    <div>
+                        <dt class="policy-doc__cover-label">{{ cover.approver_label|default('Approver') }}</dt>
+                        <dd class="policy-doc__cover-value">{{ cover.approver }}</dd>
+                    </div>
+                {% endif %}
+                {% if cover.version is defined and cover.version %}
+                    <div>
+                        <dt class="policy-doc__cover-label">{{ cover.version_label|default('Version') }}</dt>
+                        <dd class="policy-doc__cover-value">v{{ cover.version }}</dd>
+                    </div>
+                {% endif %}
+                {% if cover.valid_from is defined and cover.valid_from %}
+                    <div>
+                        <dt class="policy-doc__cover-label">{{ cover.valid_from_label|default('Stand') }}</dt>
+                        <dd class="policy-doc__cover-value"><time>{{ cover.valid_from }}</time>{% if cover.valid_until is defined and cover.valid_until %} &ndash; <time>{{ cover.valid_until }}</time>{% endif %}</dd>
+                    </div>
+                {% endif %}
+                {% if cover.next_review is defined and cover.next_review %}
+                    <div>
+                        <dt class="policy-doc__cover-label">{{ cover.next_review_label|default('Nächstes Review') }}</dt>
+                        <dd class="policy-doc__cover-value"><time>{{ cover.next_review }}</time></dd>
+                    </div>
+                {% endif %}
+                {% if cover.classification is defined and cover.classification %}
+                    <div>
+                        <dt class="policy-doc__cover-label">{{ cover.classification_label|default('Klassifikation') }}</dt>
+                        <dd class="policy-doc__cover-value">{{ cover.classification }}</dd>
+                    </div>
+                {% endif %}
+                {% if cover.standard is defined and cover.standard %}
+                    <div>
+                        <dt class="policy-doc__cover-label">{{ cover.standard_label|default('Standard') }}</dt>
+                        <dd class="policy-doc__cover-value">{{ cover.standard|upper }}{% if cover.topic is defined and cover.topic %} &middot; {{ cover.topic|replace({'_': ' '}) }}{% endif %}</dd>
+                    </div>
+                {% endif %}
+                {% if cover.dora_validity_date is defined and cover.dora_validity_date %}
+                    <div>
+                        <dt class="policy-doc__cover-label">{{ cover.dora_validity_label|default('DORA-Stand') }}</dt>
+                        <dd class="policy-doc__cover-value"><time>{{ cover.dora_validity_date }}</time></dd>
+                    </div>
+                {% endif %}
+                {% if cover.climate_change_aware is defined and cover.climate_change_aware %}
+                    <div>
+                        <dt class="policy-doc__cover-label">{{ cover.climate_change_label|default('Climate Change') }}</dt>
+                        <dd class="policy-doc__cover-value">{{ cover.climate_change_value|default('ISO 27001:2022 Amd. 1:2024') }}</dd>
+                    </div>
+                {% endif %}
+                {% if cover.generated_on is defined and cover.generated_on %}
+                    <div>
+                        <dt class="policy-doc__cover-label">{{ cover.generated_on_label|default('Erstellt am') }}</dt>
+                        <dd class="policy-doc__cover-value"><time>{{ cover.generated_on }}</time></dd>
+                    </div>
+                {% endif %}
+                {% if cover.annex_a_refs is defined and cover.annex_a_refs %}
+                    <div style="grid-column: 1 / -1;">
+                        <dt class="policy-doc__cover-label">{{ cover.annex_a_label|default('Annex-A') }}</dt>
+                        <dd class="policy-doc__cover-value">{{ cover.annex_a_refs|join(' · ') }}</dd>
+                    </div>
+                {% endif %}
+            </dl>
+
+            {% if cover.foot is defined and cover.foot %}
+                <div class="policy-doc__cover-foot">{{ cover.foot }}</div>
+            {% endif %}
+        </header>
+
+        {# ── Slot 2 · Table of Contents ──────────────────────────── #}
+        {# Auto-generated from <h2> headings inside body_html. Splits the
+           body on the opening `<h2` tag so we don't depend on a regex
+           filter (Twig's `matches` requires a Symfony bridge ext that
+           dompdf's render context does not always carry). Empty TOC
+           slot is suppressed entirely. #}
+        {% set _headings_raw = body_html|default('')|split('<h2') %}
+        {% if _headings_raw|length > 1 %}
+            <nav class="policy-doc__toc" aria-label="{{ cover.toc_label|default('Inhalt') }}">
+                <h2 class="policy-doc__toc-heading">{{ cover.toc_label|default('Inhalt') }}</h2>
+                <ol class="policy-doc__toc-list">
+                    {% for chunk in _headings_raw|slice(1) %}
+                        {% set _open_close = chunk|split('</h2>') %}
+                        {% set _opening_and_inner = _open_close|first %}
+                        {# Drop any attributes after the `<h2` we split on. #}
+                        {% set _inner = _opening_and_inner|split('>', 2)|last %}
+                        {% set _title = _inner|striptags|trim %}
+                        {% if _title %}
+                            <li>
+                                <span class="policy-doc__toc-title">{{ _title }}</span>
+                                <span class="policy-doc__toc-leader" aria-hidden="true"></span>
+                                <span class="policy-doc__toc-page">&middot;</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ol>
+            </nav>
+        {% endif %}
+
+        {# ── Slot 3 · Version-history ────────────────────────────── #}
+        {% set _history = props.version_history|default([]) %}
+        {% if _history is empty and document is defined and document is not null and document.supersedes is defined and document.supersedes %}
+            {# Walk the supersedes-chain (current first, then ancestors). #}
+            {% set _walker = document %}
+            {% set _chain = [] %}
+            {% for _i in 0..9 %}
+                {% if _walker %}
+                    {% set _chain = _chain|merge([_walker]) %}
+                    {% set _walker = _walker.supersedes %}
+                {% endif %}
+            {% endfor %}
+            {% set _history = [] %}
+            {% for entry in _chain %}
+                {% set _history = _history|merge([{
+                    version: entry.version|default('—'),
+                    date: entry.uploadedAt ? entry.uploadedAt|date('d.m.Y') : '—',
+                    change: entry.description|default('—')|striptags|slice(0, 240),
+                    author: entry.uploadedBy ? entry.uploadedBy.fullName : '—',
+                    approver: entry.policyBodyEditedBy ? entry.policyBodyEditedBy.fullName : '—',
+                }]) %}
+            {% endfor %}
+        {% endif %}
+
+        {% if _history|length > 0 %}
+            <section class="policy-doc__history">
+                <h2 class="policy-doc__history-heading">{{ cover.history_label|default('Versionshistorie') }}</h2>
+                <table class="policy-doc__history-table">
+                    <thead>
+                        <tr>
+                            <th>{{ cover.history_col_version|default('Version') }}</th>
+                            <th>{{ cover.history_col_date|default('Datum') }}</th>
+                            <th>{{ cover.history_col_change|default('Änderung') }}</th>
+                            <th>{{ cover.history_col_author|default('Autor') }}</th>
+                            <th>{{ cover.history_col_approver|default('Approver') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in _history %}
+                            <tr>
+                                <td><strong>{{ row.version }}</strong></td>
+                                <td>{{ row.date }}</td>
+                                <td>{{ row.change }}</td>
+                                <td>{{ row.author }}</td>
+                                <td>{{ row.approver }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        {% endif %}
+
+        {# ── Slot 4 · Body ───────────────────────────────────────── #}
+        <main class="policy-doc__body">
+            {% if body_html is not empty %}
+                {{ body_html|raw }}
+            {% else %}
+                <p class="policy-doc__body-empty">{{ cover.body_empty|default('—') }}</p>
+            {% endif %}
+        </main>
+
+        {# ── Slot 5 · Signature footer ───────────────────────────── #}
+        {% set _signatures = props.signatures|default([]) %}
+        {% if _signatures is empty and cover.approver_chain is defined and cover.approver_chain|length > 0 %}
+            {% set _signatures = [] %}
+            {% for entry in cover.approver_chain %}
+                {% set _parts = entry|split(':', 2) %}
+                {% if _parts|length == 2 %}
+                    {% set _signatures = _signatures|merge([{role: _parts[0]|trim, name: _parts[1]|trim, meta: ''}]) %}
+                {% else %}
+                    {% set _signatures = _signatures|merge([{role: 'Approver', name: entry, meta: ''}]) %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% if _signatures|length > 0 %}
+            <footer class="policy-doc__signature" data-signature-method="{{ cover.signature_method|default('internal') }}">
+                <p class="policy-doc__signature-intro">
+                    <strong>{{ cover.signature_intro_label|default('Freigabe.') }}</strong>
+                    {{ cover.signature_intro|default('Die Unterzeichnenden bestätigen die Gültigkeit dieser Policy für den genannten Geltungsbereich.') }}
+                </p>
+                <div class="policy-doc__signature-grid">
+                    {% for sig in _signatures|slice(0, 3) %}
+                        <div class="policy-doc__signature-field" data-role="{{ sig.role|default('approver')|lower }}">
+                            <p class="policy-doc__signature-role">{{ sig.role|default('Approver') }}</p>
+                            <div class="policy-doc__signature-line" aria-hidden="true"></div>
+                            <p class="policy-doc__signature-name">{{ sig.name|default('—') }}</p>
+                            {% if sig.meta is defined and sig.meta %}
+                                <p class="policy-doc__signature-meta">{{ sig.meta|raw }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </footer>
+        {% endif %}
+
+    </article>
+{% endmacro %}

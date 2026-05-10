@@ -1,0 +1,544 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Policy-Doc — 5-slot ISMS-policy-document template
+   ═══════════════════════════════════════════════════════════════════
+   Production-render counterpart to docs/design_system/sections/
+   policy-templates.html. Five mandatory slots:
+     1. .policy-doc__cover     — brand · title · version · status · dates
+     2. .policy-doc__toc       — table-of-contents (auto from <h2>s)
+     3. .policy-doc__history   — version-history table (supersedes-chain)
+     4. .policy-doc__body      — chapters · statements · refs (Markdown→HTML)
+     5. .policy-doc__signature — author/reviewer/approver signature footer
+
+   Renders identically in Web (document show-view) and Print (PDF export
+   via dompdf). Uses Aurora design tokens (--surface, --border, --primary,
+   --fg-1, --fg-2 …); print fork pins page-size to A4-portrait, sets
+   page-breaks between slots, and overlays a status-watermark for
+   draft/in-review/retired.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Article shell ────────────────────────────────────────────────── */
+.policy-doc {
+    background: var(--surface, #fff);
+    color: var(--fg-1, #0e0a1f);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    max-width: 920px;
+    margin: 0 auto;
+    border: 1px solid var(--border, #e5e5ed);
+    border-radius: var(--r-md, 8px);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Status-watermark — overlay on every slot. Pseudo-element so it does
+   not interfere with body text selection. Approved removes the
+   watermark entirely. */
+.policy-doc--draft::before,
+.policy-doc--review::before,
+.policy-doc--retired::before {
+    content: attr(data-watermark);
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: clamp(48px, 12vw, 140px);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: rgba(220, 38, 38, 0.07);
+    transform: rotate(-30deg);
+    pointer-events: none;
+    z-index: 1;
+    text-transform: uppercase;
+}
+
+.policy-doc__cover,
+.policy-doc__toc,
+.policy-doc__history,
+.policy-doc__body,
+.policy-doc__signature {
+    position: relative;
+    z-index: 2;
+}
+
+/* ── Slot 1 · Cover ───────────────────────────────────────────────── */
+.policy-doc__cover {
+    padding: 48px 56px 40px;
+    border-bottom: 1px solid var(--border, #e5e5ed);
+}
+
+.policy-doc__cover-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.policy-doc__brand {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+
+.policy-doc__logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #22d3ee));
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 22px;
+    flex: 0 0 auto;
+}
+
+.policy-doc__logo img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: inherit;
+}
+
+.policy-doc__brand-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--fg-1, #0e0a1f);
+}
+
+.policy-doc__brand-meta {
+    font-size: 11px;
+    color: var(--fg-3, #5e5878);
+    margin-top: 2px;
+}
+
+.policy-doc__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+.policy-doc__chip {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: var(--surface-2, #f0f0f6);
+    color: var(--fg-2, #2a2540);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid var(--border, #e5e5ed);
+}
+
+.policy-doc__chip--ok {
+    background: var(--success-tint, rgba(34, 197, 94, 0.14));
+    color: var(--success, #15803d);
+    border-color: transparent;
+}
+
+.policy-doc__chip--warn {
+    background: var(--warning-tint, rgba(234, 179, 8, 0.14));
+    color: var(--warning, #a16207);
+    border-color: transparent;
+}
+
+.policy-doc__chip--danger {
+    background: var(--danger-tint, rgba(220, 38, 38, 0.14));
+    color: var(--danger, #b91c1c);
+    border-color: transparent;
+}
+
+.policy-doc__cover-center {
+    padding: 36px 0 28px;
+    text-align: left;
+}
+
+.policy-doc__kicker {
+    font-size: 12px;
+    color: var(--primary, #6366f1);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 14px;
+}
+
+.policy-doc__title {
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 800;
+    color: var(--fg-1, #0e0a1f);
+    line-height: 1.05;
+    margin: 0 0 16px;
+    letter-spacing: -0.02em;
+}
+
+.policy-doc__sub {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--fg-2, #2a2540);
+    max-width: 640px;
+    margin: 0;
+}
+
+.policy-doc__cover-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 24px;
+    border-top: 1px solid var(--border, #e5e5ed);
+    border-bottom: 1px solid var(--border, #e5e5ed);
+    padding: 18px 0;
+    margin: 0;
+}
+
+.policy-doc__cover-grid > div {
+    margin: 0;
+}
+
+.policy-doc__cover-label {
+    font-size: 10px;
+    color: var(--fg-3, #5e5878);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin: 0 0 4px;
+}
+
+.policy-doc__cover-value {
+    font-size: 13px;
+    color: var(--fg-1, #0e0a1f);
+    font-weight: 600;
+    margin: 0;
+}
+
+.policy-doc__cover-foot {
+    text-align: center;
+    font-size: 11px;
+    color: var(--fg-3, #5e5878);
+    margin-top: 18px;
+}
+
+/* ── Slot 2 · Table of Contents ──────────────────────────────────── */
+.policy-doc__toc {
+    padding: 36px 56px;
+    border-bottom: 1px solid var(--border, #e5e5ed);
+}
+
+.policy-doc__toc-heading {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--fg-1, #0e0a1f);
+    margin: 0 0 22px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--fg-1, #0e0a1f);
+}
+
+.policy-doc__toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    counter-reset: toc-item;
+}
+
+.policy-doc__toc-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 13px;
+    counter-increment: toc-item;
+}
+
+.policy-doc__toc-list li::before {
+    content: counter(toc-item);
+    flex: 0 0 24px;
+    font-weight: 700;
+    color: var(--primary, #6366f1);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 12px;
+}
+
+.policy-doc__toc-list a,
+.policy-doc__toc-title {
+    color: var(--fg-1, #0e0a1f);
+    font-weight: 500;
+    text-decoration: none;
+    flex: 0 0 auto;
+}
+
+.policy-doc__toc-list a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.policy-doc__toc-leader {
+    flex: 1 1 auto;
+    border-bottom: 1.5px dotted var(--border-strong, #c8c8d0);
+    transform: translateY(-4px);
+    margin: 0 6px;
+}
+
+.policy-doc__toc-page {
+    color: var(--fg-3, #5e5878);
+    font-variant-numeric: tabular-nums;
+    flex: 0 0 auto;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+/* ── Slot 3 · Version-history ────────────────────────────────────── */
+.policy-doc__history {
+    padding: 36px 56px;
+    border-bottom: 1px solid var(--border, #e5e5ed);
+}
+
+.policy-doc__history-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--fg-1, #0e0a1f);
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--fg-1, #0e0a1f);
+}
+
+.policy-doc__history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.policy-doc__history-table th {
+    text-align: left;
+    background: var(--surface-2, #f6f6fa);
+    color: var(--fg-2, #2a2540);
+    padding: 8px 10px;
+    border: 0.5pt solid var(--border-strong, #c8c8d0);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 10px;
+}
+
+.policy-doc__history-table td {
+    padding: 8px 10px;
+    border: 0.5pt solid var(--border, #d8d8e0);
+    color: var(--fg-1, #0e0a1f);
+    vertical-align: top;
+    line-height: 1.45;
+}
+
+.policy-doc__history-table tr:first-child td {
+    background: var(--primary-tint, rgba(99, 102, 241, 0.05));
+}
+
+/* ── Slot 4 · Body ────────────────────────────────────────────────── */
+.policy-doc__body {
+    padding: 40px 56px;
+    font-family: Charter, "Source Serif Pro", Georgia, serif;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--fg-1, #0e0a1f);
+    border-bottom: 1px solid var(--border, #e5e5ed);
+}
+
+.policy-doc__body p {
+    margin: 0 0 12px;
+    color: var(--fg-2, #2a2540);
+}
+
+.policy-doc__body h1,
+.policy-doc__body h2,
+.policy-doc__body h3 {
+    font-family: "Inter", system-ui, sans-serif;
+    color: var(--fg-1, #0e0a1f);
+    line-height: 1.25;
+    margin: 24px 0 10px;
+    letter-spacing: -0.01em;
+}
+
+.policy-doc__body h1 {
+    font-size: 22px;
+    font-weight: 800;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border, #e5e5ed);
+}
+
+.policy-doc__body h2 {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.policy-doc__body h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--fg-2, #2a2540);
+}
+
+.policy-doc__body ul,
+.policy-doc__body ol {
+    margin: 0 0 14px 22px;
+    padding: 0;
+}
+
+.policy-doc__body li {
+    margin: 4px 0;
+}
+
+.policy-doc__body blockquote {
+    border-left: 3px solid var(--primary, #6366f1);
+    padding: 8px 14px;
+    color: var(--fg-2, #2a2540);
+    background: var(--primary-tint, rgba(99, 102, 241, 0.05));
+    margin: 12px 0;
+    border-radius: 0 4px 4px 0;
+}
+
+.policy-doc__body code {
+    font-family: var(--font-mono, "Menlo", "Consolas", monospace);
+    font-size: 12px;
+    background: var(--surface-2, #eef);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--fg-1, #0e0a1f);
+}
+
+.policy-doc__body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+}
+
+.policy-doc__body th,
+.policy-doc__body td {
+    border: 0.5pt solid var(--border-strong, #c8c8d0);
+    padding: 6px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.policy-doc__body th {
+    background: var(--surface-2, #f6f6fa);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 10px;
+    color: var(--fg-2, #2a2540);
+}
+
+.policy-doc__body-empty {
+    color: var(--fg-3, #5e5878);
+    font-style: italic;
+    text-align: center;
+    padding: 32px 0;
+}
+
+/* ── Slot 5 · Signature footer ───────────────────────────────────── */
+.policy-doc__signature {
+    padding: 36px 56px 44px;
+    background: var(--surface-2, #fafafe);
+}
+
+.policy-doc__signature-intro {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--fg-2, #2a2540);
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border, #e5e5ed);
+    margin: 0 0 26px;
+}
+
+.policy-doc__signature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+}
+
+.policy-doc__signature-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.policy-doc__signature-role {
+    font-size: 10px;
+    color: var(--fg-3, #5e5878);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    margin: 0 0 32px;
+}
+
+.policy-doc__signature-line {
+    border-top: 1px solid var(--fg-1, #0e0a1f);
+    margin-bottom: 8px;
+    height: 1px;
+}
+
+.policy-doc__signature-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-1, #0e0a1f);
+    margin: 0 0 2px;
+}
+
+.policy-doc__signature-meta {
+    font-size: 10px;
+    color: var(--fg-3, #5e5878);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Print fork — A4-portrait + page-breaks at slot boundaries.
+   Used both by the browser print stylesheet and inlined into the PDF
+   export so dompdf can honour the rules without external assets.
+   ═══════════════════════════════════════════════════════════════════ */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 18mm 16mm 22mm 16mm;
+    }
+
+    body {
+        background: #fff;
+    }
+
+    .policy-doc {
+        max-width: none;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .policy-doc__cover,
+    .policy-doc__toc,
+    .policy-doc__history,
+    .policy-doc__signature {
+        page-break-after: always;
+        break-after: page;
+    }
+
+    .policy-doc__body {
+        page-break-before: always;
+        break-before: page;
+    }
+
+    .policy-doc__body h2,
+    .policy-doc__body h3 {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+
+    .policy-doc__body p,
+    .policy-doc__body li,
+    .policy-doc__history-table tr,
+    .policy-doc__signature-field {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+}
