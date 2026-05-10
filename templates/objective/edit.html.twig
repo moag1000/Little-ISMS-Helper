@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'objective' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'objective.title.edit'|trans({}, 'objective')}}: {{ objective.title }}{% endblock %}
 
@@ -13,10 +14,13 @@
         ]
     } %}
 
-    <div class="page-header">
-        <h1>{{ 'objective.title.edit'|trans({}, 'objective')}}: {{ objective.title }}</h1>
-        <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back'|trans({}, 'messages') }}</a>
-    </div>
+    {{ _fa_page_header.render({
+    title: ('objective.title.edit'|trans({}, 'objective')) ~ ': ' ~ (objective.title),
+    badge: { icon: 'pencil', label: '' },
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_objective_show', {id: objective.id}), variant: 'ghost', icon: 'arrow-left' }
+    ]
+}) }}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}

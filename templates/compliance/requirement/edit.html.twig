@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'compliance.requirement.edit.title'|trans({}, 'compliance') }} {{ requirement.requirementId }}{% endblock %}
 
@@ -15,14 +16,14 @@
     } %}
 
     {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: ('compliance.requirement.edit.title'|trans({}, 'compliance')) ~ ' ' ~ requirement.requirementId,
-        icon: 'bi-pencil',
+        badge: { icon: 'pencil', label: '' },
         actions: [
-            { label: 'common.view'|trans({}, 'messages'), url: path('app_compliance_requirement_show', {id: requirement.id}), variant: 'outline-primary', icon: 'bi-eye' },
-            { label: 'common.back'|trans({}, 'messages'), url: path('app_compliance_requirement_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'common.view'|trans({}, 'messages'), href: path('app_compliance_requirement_show', {id: requirement.id}), variant: 'outline-primary', icon: 'eye' },
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_compliance_requirement_index'), variant: 'secondary', icon: 'arrow-left' }
         ]
-    } %}
+    }) }}
 
     <div class="row">
         <div class="col-md-8">

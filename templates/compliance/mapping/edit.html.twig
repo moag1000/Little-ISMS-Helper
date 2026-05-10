@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'compliance.mapping.edit.title'|trans({}, 'compliance') }}{% endblock %}
 
@@ -15,14 +16,14 @@
     } %}
 
     {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'compliance.mapping.edit.title'|trans({}, 'compliance'),
-        icon: 'bi-pencil',
+        badge: { icon: 'pencil', label: '' },
         actions: [
-            { label: 'common.view'|trans({}, 'messages'), url: path('app_compliance_mapping_show', {id: mapping.id}), variant: 'outline-primary', icon: 'bi-eye' },
-            { label: 'common.back'|trans({}, 'messages'), url: path('app_compliance_mapping_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'common.view'|trans({}, 'messages'), href: path('app_compliance_mapping_show', {id: mapping.id}), variant: 'outline-primary', icon: 'eye' },
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_compliance_mapping_index'), variant: 'secondary', icon: 'arrow-left' }
         ]
-    } %}
+    }) }}
 
     <div class="row">
         <div class="col-md-8">

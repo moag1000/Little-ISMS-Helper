@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'risk_appetite' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'risk_appetite.edit'|trans({}, 'risk_appetite')}}: {{ appetite.displayName }}{% endblock %}
 
@@ -14,10 +15,13 @@
         ]
     } %}
 
-    <div class="page-header">
-        <h1>{{ 'risk_appetite.edit'|trans({}, 'risk_appetite')}}: {{ appetite.displayName }}</h1>
-        <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back'|trans({}, 'messages') }}</a>
-    </div>
+    {{ _fa_page_header.render({
+    title: ('risk_appetite.edit'|trans({}, 'risk_appetite')) ~ ': ' ~ (appetite.displayName),
+    badge: { icon: 'pencil', label: '' },
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_appetite_show', {id: appetite.id}), variant: 'ghost', icon: 'arrow-left' }
+    ]
+}) }}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}

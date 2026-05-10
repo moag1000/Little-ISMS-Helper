@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'report_builder' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'new.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -14,9 +15,10 @@
         ]
     } %}
 
-    <h1 class="h2 mb-4">
-        <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'new.title'|trans({}, 'report_builder') }}
-    </h1>
+    {{ _fa_page_header.render({
+        title: 'new.title'|trans({}, 'report_builder'),
+        badge: { icon: 'plus', label: '' }
+    }) }}
 
     <div class="row justify-content-center">
         <div class="col-lg-8">

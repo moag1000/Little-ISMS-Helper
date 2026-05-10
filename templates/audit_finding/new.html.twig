@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'audit_finding.page.new'|trans({}, 'audits') }}{% endblock %}
 
@@ -11,7 +12,10 @@
             { label: 'audit_finding.page.new'|trans({}, 'audits') }
         ]
     } %}
-    <h1 class="h3 mb-4">{{ 'audit_finding.page.new'|trans({}, 'audits') }}</h1>
+    {{ _fa_page_header.render({
+        title: 'audit_finding.page.new'|trans({}, 'audits'),
+        badge: { icon: 'plus', label: '' }
+    }) }}
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}
             {% include 'audit_finding/_form.html.twig' with {form: form} %}

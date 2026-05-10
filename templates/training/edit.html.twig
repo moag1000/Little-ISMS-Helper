@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'training' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'training.edit'|trans({}, 'training')}} - {{ training.title }}{% endblock %}
 
@@ -13,10 +14,13 @@
         ]
     } %}
 
-    <div class="page-header">
-        <h1>{{ 'training.edit'|trans({}, 'training')}}: {{ training.title }}</h1>
-        <a href="{{ path('app_training_show', {id: training.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back'|trans({}, 'messages') }}</a>
-    </div>
+    {{ _fa_page_header.render({
+    title: ('training.edit'|trans({}, 'training')) ~ ': ' ~ (training.title),
+    badge: { icon: 'pencil', label: '' },
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_training_show', {id: training.id}), variant: 'ghost', icon: 'arrow-left' }
+    ]
+}) }}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}

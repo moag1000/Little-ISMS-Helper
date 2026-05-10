@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'privacy' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}Edit DPIA - {{ dpia.referenceNumber }}{% endblock %}
 
@@ -15,14 +16,14 @@
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'Edit DPIA: ' ~ dpia.title,
         subtitle: dpia.referenceNumber ~ ' - Version ' ~ dpia.version,
-        icon: 'bi-pencil-square',
+        badge: { icon: 'pencil-square', label: '' },
         actions: [
-            { label: 'Cancel', url: path('app_dpia_show', {id: dpia.id}), variant: 'secondary', icon: 'bi-x-lg' }
+            { label: 'Cancel', href: path('app_dpia_show', {id: dpia.id}), variant: 'secondary', icon: 'x-lg' }
         ]
-    } %}
+    }) }}
 
     {% if dpia.status == 'requires_revision' and dpia.rejectionReason %}
         {{ _fa_alert.render({ variant: 'warning', title: 'Revision Required', body: dpia.rejectionReason }) }}

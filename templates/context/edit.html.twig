@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'context' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'context.edit.title'|trans({}, 'context') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -14,14 +15,14 @@
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'context.edit.title'|trans({}, 'context'),
         subtitle: 'context.info.subtitle'|trans({}, 'context'),
-        icon: 'bi-building',
+        badge: { icon: 'building', label: '' },
         actions: [
-            { label: 'common.back'|trans({}, 'messages'), url: path('app_context_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'common.back'|trans({}, 'messages'), href: path('app_context_index'), variant: 'secondary', icon: 'arrow-left' }
         ]
-    } %}
+    }) }}
 
     {% if tenant is defined and tenant %}
         {{ _fa_alert.render({ variant: 'info', class: 'mb-4', body: '<strong>' ~ 'tenant.isms_context.linked_to'|trans({}, 'tenant') ~ ':</strong> ' ~ tenant.name ~ ' (' ~ tenant.code ~ ')' }) }}

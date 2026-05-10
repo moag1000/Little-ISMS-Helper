@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'corrective_action.page.new'|trans({}, 'audits') }}{% endblock %}
 
@@ -11,7 +12,10 @@
             { label: 'corrective_action.page.new'|trans({}, 'audits') }
         ]
     } %}
-    <h1 class="h3 mb-4">{{ 'corrective_action.page.new'|trans({}, 'audits') }}</h1>
+    {{ _fa_page_header.render({
+        title: 'corrective_action.page.new'|trans({}, 'audits'),
+        badge: { icon: 'plus', label: '' }
+    }) }}
     {% if finding %}
         <p class="text-muted mb-3">
             {{ 'corrective_action.message.for_finding'|trans({}, 'audits') }}:

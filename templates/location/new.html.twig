@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'locations' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'location.title.create'|trans({}, 'locations')}} - Little ISMS Helper{% endblock %}
 
@@ -13,16 +14,13 @@
     } %}
 </div>
 
-<div class="page-header">
-    <div>
-        <h1>{{ 'location.title.create'|trans({}, 'locations')}}</h1>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_location_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            ← {{ 'common.back_to_list'|trans({}, 'messages') }}
-        </a>
-    </div>
-</div>
+{{ _fa_page_header.render({
+    title: ('location.title.create'|trans({}, 'locations')),
+    badge: { icon: 'plus', label: '' },
+    actions: [
+        { label: '← {{ \'common.back_to_list\'|trans({}, \'messages\') }}', href: path('app_location_index'), variant: 'ghost', icon: 'arrow-left' }
+    ]
+}) }}
 
 {% embed '_components/_card.html.twig' %}
     {% block card_body %}

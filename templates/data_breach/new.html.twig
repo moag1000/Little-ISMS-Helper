@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'privacy.data_breach.page.new_title'|trans({}, 'privacy') }}{% endblock %}
 
@@ -13,14 +14,14 @@
         ]
     } %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'privacy.data_breach.page.new_title'|trans({}, 'privacy'),
         subtitle: 'privacy.data_breach.page.new_subtitle'|trans({}, 'privacy'),
-        icon: 'bi-exclamation-triangle-fill',
+        badge: { icon: 'exclamation-triangle-fill', label: '' },
         actions: [
-            { label: 'common.cancel'|trans({}, 'messages'), url: path('app_data_breach_index'), variant: 'secondary', icon: 'bi-x-lg' }
+            { label: 'common.cancel'|trans({}, 'messages'), href: path('app_data_breach_index'), variant: 'secondary', icon: 'x-lg' }
         ]
-    } %}
+    }) }}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}

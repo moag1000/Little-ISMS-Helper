@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% trans_default_domain 'audit' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'audit.edit'|trans({}, 'audit') }} - {{ audit.title }} - {{ parent() }}{% endblock %}
 
@@ -24,17 +25,13 @@
                 </ol>
             </nav>
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0">
-                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                    {{ 'audit.edit'|trans({}, 'audit') }}: {{ audit.title }}
-                </h1>
-                <div>
-                    <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
-                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
-                    </a>
-                </div>
-            </div>
+            {{ _fa_page_header.render({
+    title: ('audit.edit'|trans({}, 'audit')) ~ ': ' ~ (audit.title),
+    badge: { icon: 'pencil', label: '' },
+    actions: [
+        { label: 'common.view'|trans({}, 'messages'), href: path('app_audit_show', {id: audit.id}), variant: 'ghost', icon: 'arrow-left' }
+    ]
+}) }}
 
             {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'status-info', class: 'mb-4' } } %}
                 {% block alert_body %}<div class="fw-bold mb-2"> <i class="fa-icon fa-icon--status-info" aria-hidden="true"></i> {{ 'audit.iso_27001_requirement'|trans({}, 'audit') }} </div> <p class="mb-0 small"> {{ 'audit.iso_27001_clause_info'|trans({}, 'audit') }} </p>{% endblock %}

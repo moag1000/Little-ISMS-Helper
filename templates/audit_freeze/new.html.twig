@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'audit_freeze.new.title'|trans({}, 'audit_freeze') }}{% endblock %}
 
@@ -12,10 +13,10 @@
         ]
     } %}
 
-    <h1 class="h2 mb-3">
-        <i class="fa-icon text-primary fa-icon--audit-internal" aria-hidden="true"></i>
-        {{ 'audit_freeze.new.title'|trans({}, 'audit_freeze') }}
-    </h1>
+    {{ _fa_page_header.render({
+        title: 'audit_freeze.new.title'|trans({}, 'audit_freeze'),
+        badge: { icon: 'lock-fill', label: '' }
+    }) }}
 
     {{ _fa_alert.render({ variant: 'info', title: 'audit_freeze.new.hint_title'|trans({}, 'audit_freeze'), body: '<span class="small">' ~ 'audit_freeze.new.hint_body'|trans({}, 'audit_freeze') ~ '</span>' }) }}
 

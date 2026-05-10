@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'business_process' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'business_process.new'|trans({}, 'business_process')}}{% endblock %}
 
@@ -12,10 +13,13 @@
         ]
     } %}
 
-    <div class="page-header">
-        <h1>{{ 'business_process.new'|trans({}, 'business_process')}}</h1>
-        <a href="{{ path('app_business_process_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
-    </div>
+    {{ _fa_page_header.render({
+    title: ('business_process.new'|trans({}, 'business_process')),
+    badge: { icon: 'plus', label: '' },
+    actions: [
+        { label: 'common.back_to_list'|trans({}, 'messages'), href: path('app_business_process_index'), variant: 'ghost', icon: 'arrow-left' }
+    ]
+}) }}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}

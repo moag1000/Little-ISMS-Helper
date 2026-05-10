@@ -14,13 +14,13 @@
 } %}
 
 {# Page Header #}
-{% include '_components/_page_header.html.twig' with {
+{{ _fa_page_header.render({
     title: 'risk.new'|trans({}, 'risk'),
-    icon: 'bi-plus-circle',
+    badge: { icon: 'plus-circle', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), url: path('app_risk_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_index'), variant: 'secondary', icon: 'arrow-left' }
     ]
-} %}
+}) }}
 
 {% embed '_components/_card.html.twig' %}
     {% block card_body %}

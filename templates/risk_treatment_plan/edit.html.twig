@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_treatment_plan' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'risk_treatment_plan.edit'|trans({}, 'risk_treatment_plan') }}: {{ plan.title }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
@@ -14,17 +15,13 @@
     } %}
 </div>
 
-<div class="page-header">
-    <div>
-        <h1><i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'risk_treatment_plan.edit'|trans({}, 'risk_treatment_plan') }}</h1>
-        <p class="text-muted">{{ plan.title }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_risk_treatment_plan_show', {id: plan.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-            <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
-</div>
+{{ _fa_page_header.render({
+    title: ('risk_treatment_plan.edit'|trans({}, 'risk_treatment_plan')),
+    badge: { icon: 'pencil', label: '' },
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_risk_treatment_plan_show', {id: plan.id}), variant: 'ghost', icon: 'arrow-left' }
+    ]
+}) }}
 
 {% embed '_components/_card.html.twig' %}
     {% block card_body %}

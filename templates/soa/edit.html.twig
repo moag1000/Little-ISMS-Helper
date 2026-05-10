@@ -14,17 +14,16 @@
     } %}
 </div>
 
-<div class="page-header">
-    <div>
-        <h1>{{ 'soa.action.edit'|trans({}, 'soa') }}: {{ control.controlId }}</h1>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_soa_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost">← {{ 'common.back_to_list'|trans({}, 'messages') }}</a>
-    </div>
-
-</div>
+{{ _fa_page_header.render({
+    title: ('soa.action.edit'|trans({}, 'soa')) ~ ': ' ~ (control.controlId),
+    badge: { icon: 'pencil', label: '' },
+    actions: [
+        { label: '← {{ \'common.back_to_list\'|trans({}, \'messages\') }}', href: path('app_soa_index'), variant: 'ghost', icon: 'arrow-left' }
+    ]
+}) }}
 
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', class: 'mb-4' } } %}
     {% block alert_body %}
         <div class="fa-alert__title">{{ control.name|trans({}, 'control') }}</div>

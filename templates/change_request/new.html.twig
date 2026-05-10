@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'change_requests' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'change_request.new'|trans({}, 'change_requests') }} - {{ parent() }}{% endblock %}
 
@@ -18,14 +19,13 @@
                 </ol>
             </nav>
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="mb-0">
-                    <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i> {{ 'change_request.page.new'|trans({}, 'change_requests') }}
-                </h1>
-                <a href="{{ path('app_change_request_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost" data-turbo-action="advance">
-                    <i class="fa-icon fa-icon--util-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-                </a>
-            </div>
+            {{ _fa_page_header.render({
+    title: ('change_request.page.new'|trans({}, 'change_requests')),
+    badge: { icon: 'plus', label: '' },
+    actions: [
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_change_request_index'), variant: 'ghost', icon: 'arrow-left' }
+    ]
+}) }}
 
             {% embed '_components/_card.html.twig' %}
                 {% block card_header %}

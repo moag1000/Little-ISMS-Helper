@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'data_subject_request' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'dsr.page.edit_title'|trans({}, 'data_subject_request') }}{% endblock %}
 
@@ -14,14 +15,14 @@
         ]
     } only %}
 
-    {% include '_components/_page_header.html.twig' with {
+    {{ _fa_page_header.render({
         title: 'dsr.page.edit_title'|trans({}, 'data_subject_request'),
         subtitle: dsr.dataSubjectName ~ ' - ' ~ ('dsr.type.' ~ dsr.requestType)|trans({}, 'data_subject_request'),
-        icon: 'bi-pencil-square',
+        badge: { icon: 'pencil-square', label: '' },
         actions: [
-            { label: 'common.cancel'|trans({}, 'messages'), url: path('app_data_subject_request_show', {id: dsr.id}), variant: 'secondary', icon: 'bi-x-lg' }
+            { label: 'common.cancel'|trans({}, 'messages'), href: path('app_data_subject_request_show', {id: dsr.id}), variant: 'secondary', icon: 'x-lg' }
         ]
-    } only %}
+    }) }}
 
     {% embed '_components/_card.html.twig' %}
         {% block card_header %}

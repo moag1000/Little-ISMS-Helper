@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'threat' %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ 'threat.title.edit'|trans({}, 'threat') }} - {{ parent() }}{% endblock %}
 
@@ -12,13 +13,13 @@
     ]
 } %}
 
-{% include '_components/_page_header.html.twig' with {
+{{ _fa_page_header.render({
     title: 'threat.title.edit'|trans({}, 'threat') ~ ': ' ~ threat.title,
-    icon: 'bi-pencil',
+    badge: { icon: 'pencil', label: '' },
     actions: [
-        { label: 'common.back'|trans({}, 'messages'), url: path('app_threat_intelligence_show', {id: threat.id}), variant: 'secondary', icon: 'bi-arrow-left' }
+        { label: 'common.back'|trans({}, 'messages'), href: path('app_threat_intelligence_show', {id: threat.id}), variant: 'secondary', icon: 'arrow-left' }
     ]
-} %}
+}) }}
 
 {% embed '_components/_card.html.twig' %}
     {% block card_body %}
