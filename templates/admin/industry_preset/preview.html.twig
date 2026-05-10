@@ -1,33 +1,34 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'admin' %}
 
-{% block title %}Preview: {{ config.name|default(preset) }} · {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'industry_preset.preview.badge'|trans }}: {{ config.name|default(preset) }} · {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block body %}
 <main class="fa-aurora-surface">
     {{ _fa_page_header.render({
-        badge:    { icon: 'eye', label: 'Preview' },
+        badge:    { icon: 'eye', label: 'industry_preset.preview.badge'|trans },
         title:    config.name|default(preset),
-        subtitle: 'Inhalt des Industry-Presets vor Anwendung prüfen.',
+        subtitle: 'industry_preset.preview.subtitle'|trans,
         actions: [
-            { label: 'Zurück', variant: 'ghost', icon: 'arrow-left', href: path('app_admin_industry_preset_index') }
+            { label: 'industry_preset.action.back'|trans, variant: 'ghost', icon: 'arrow-left', href: path('app_admin_industry_preset_index') }
         ]
     }) }}
 
+    {# V3 W3-Aurora: Bootstrap .card → Aurora .fa-section across all preview-cards. #}
     <div class="row g-3">
         <div class="col-12 col-lg-8">
-            <div class="card mb-3">
-                <div class="card-header"><h2 class="h5 mb-0">Beschreibung</h2></div>
-                <div class="card-body">
+            <section class="fa-section mb-3">
+                <div class="fa-section__header"><h2 class="fa-section__title mb-0">{{ 'industry_preset.preview.section_description'|trans }}</h2></div>
+                <div class="fa-section__body">
                     <p class="text-muted">{{ config.description|default('—')|nl2br }}</p>
                 </div>
-            </div>
+            </section>
 
-            <div class="card mb-3">
-                <div class="card-header"><h2 class="h5 mb-0">Module ({{ (config.modules|default([]))|length }})</h2></div>
-                <div class="card-body">
+            <section class="fa-section mb-3">
+                <div class="fa-section__header"><h2 class="fa-section__title mb-0">{{ 'industry_preset.preview.section_modules'|trans }} ({{ (config.modules|default([]))|length }})</h2></div>
+                <div class="fa-section__body">
                     <div class="d-flex flex-wrap gap-2">
                         {% for module in config.modules|default([]) %}
                             {% set isActive = module in active_modules %}
@@ -37,32 +38,36 @@
                         {% endfor %}
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="card mb-3">
-                <div class="card-header"><h2 class="h5 mb-0">Frameworks ({{ (config.frameworks|default([]))|length }})</h2></div>
-                <div class="card-body">
+            <section class="fa-section mb-3">
+                <div class="fa-section__header"><h2 class="fa-section__title mb-0">{{ 'industry_preset.preview.section_frameworks'|trans }} ({{ (config.frameworks|default([]))|length }})</h2></div>
+                <div class="fa-section__body">
                     <table class="table table-sm">
                         <thead>
-                            <tr><th>Code</th><th>Priorität</th><th>Aktivieren</th></tr>
+                            <tr>
+                                <th>{{ 'industry_preset.preview.table.code'|trans }}</th>
+                                <th>{{ 'industry_preset.preview.table.priority'|trans }}</th>
+                                <th>{{ 'industry_preset.preview.table.activate'|trans }}</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {% for fw in config.frameworks|default([]) %}
                                 <tr>
                                     <td><strong>{{ fw.code }}</strong></td>
                                     <td><span class="badge bg-info-subtle text-info">{{ fw.priority|default('—') }}</span></td>
-                                    <td>{% if fw.activate ?? false %}<i class="bi bi-check-circle text-success"></i>{% else %}<span class="text-muted">optional</span>{% endif %}</td>
+                                    <td>{% if fw.activate ?? false %}<i class="bi bi-check-circle text-success"></i>{% else %}<span class="text-muted">{{ 'industry_preset.preview.table.optional'|trans }}</span>{% endif %}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </section>
 
             {% if config.initial_controls|default([])|length > 0 %}
-            <div class="card mb-3">
-                <div class="card-header"><h2 class="h5 mb-0">Initial-Controls ({{ config.initial_controls|length }})</h2></div>
-                <div class="card-body">
+            <section class="fa-section mb-3">
+                <div class="fa-section__header"><h2 class="fa-section__title mb-0">{{ 'industry_preset.preview.section_initial_controls'|trans }} ({{ config.initial_controls|length }})</h2></div>
+                <div class="fa-section__body">
                     <ul class="list-group list-group-flush">
                         {% for c in config.initial_controls %}
                             <li class="list-group-item d-flex justify-content-between">
@@ -72,13 +77,13 @@
                         {% endfor %}
                     </ul>
                 </div>
-            </div>
+            </section>
             {% endif %}
 
             {% if config.initial_documents|default([])|length > 0 %}
-            <div class="card mb-3">
-                <div class="card-header"><h2 class="h5 mb-0">Initial-Dokumente ({{ config.initial_documents|length }})</h2></div>
-                <div class="card-body">
+            <section class="fa-section mb-3">
+                <div class="fa-section__header"><h2 class="fa-section__title mb-0">{{ 'industry_preset.preview.section_initial_documents'|trans }} ({{ config.initial_documents|length }})</h2></div>
+                <div class="fa-section__body">
                     <ul class="list-group list-group-flush">
                         {% for d in config.initial_documents %}
                             <li class="list-group-item d-flex justify-content-between">
@@ -88,28 +93,28 @@
                         {% endfor %}
                     </ul>
                 </div>
-            </div>
+            </section>
             {% endif %}
         </div>
 
         <div class="col-12 col-lg-4">
-            <div class="card sticky-top" style="top: 1rem;">
-                <div class="card-header"><h2 class="h5 mb-0">Anwenden</h2></div>
-                <div class="card-body">
+            <section class="fa-section sticky-top" style="top: 1rem;">
+                <div class="fa-section__header"><h2 class="fa-section__title mb-0">{{ 'industry_preset.preview.section_apply'|trans }}</h2></div>
+                <div class="fa-section__body">
                     <p class="small text-muted mb-3">
-                        Mit dem Anwenden werden Module aktiviert, Frameworks freigeschaltet
-                        und Initial-Controls/Dokumente persistent angelegt. Bestehende
-                        Datensätze bleiben unangetastet.
+                        {{ 'industry_preset.preview.apply_hint'|trans }}
                     </p>
                     <form method="post" action="{{ path('app_admin_industry_preset_apply', { preset: preset }) }}"
-                          onsubmit="return confirm('Preset wirklich anwenden?');">
+                          data-controller="ui-actions"
+                          data-action="submit->ui-actions#confirm"
+                          data-ui-actions-message-param="{{ 'industry_preset.confirm.apply_short'|trans }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('industry_preset_' ~ preset) }}">
                         <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary w-100">
-                            <i class="bi bi-rocket-takeoff"></i> Preset anwenden
+                            <i class="bi bi-rocket-takeoff"></i> {{ 'industry_preset.action.apply_button'|trans }}
                         </button>
                     </form>
                 </div>
-            </div>
+            </section>
         </div>
     </div>
 </main>
