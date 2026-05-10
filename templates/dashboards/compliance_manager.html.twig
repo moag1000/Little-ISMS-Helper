@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'dashboards' %}
 
-{% block title %}Compliance-Manager-Dashboard - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'compliance_manager.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
@@ -10,13 +10,13 @@
 {% block body %}
 <main class="fa-aurora-surface role-dashboard compliance-manager-dashboard">
     {{ _fa_page_header.render({
-        badge:    { icon: 'clipboard2-check', label: 'GRC' },
-        title:    'Compliance-Manager-Dashboard',
-        subtitle: 'Frameworks, Findings, Audits, Approval-Queue — Head-of-GRC-Sicht',
+        badge:    { icon: 'clipboard2-check', label: 'compliance_manager.badge'|trans },
+        title:    'compliance_manager.title'|trans,
+        subtitle: 'compliance_manager.subtitle'|trans,
         actions: [
-            { label: 'Standard-Dashboard', variant: 'ghost',   icon: 'house',     href: path('app_dashboard') },
-            { label: 'CISO-Sicht',         variant: 'ghost',   icon: 'shield-lock', href: path('app_dashboard_ciso') },
-            { label: 'Compliance-Wizards', variant: 'primary', icon: 'magic',     href: path('app_compliance_wizard_index') }
+            { label: 'action.standard_dashboard'|trans, variant: 'ghost',   icon: 'house',     href: path('app_dashboard') },
+            { label: 'compliance_manager.action.ciso_view'|trans, variant: 'ghost', icon: 'shield-lock', href: path('app_dashboard_ciso') },
+            { label: 'compliance_manager.action.compliance_wizards'|trans, variant: 'primary', icon: 'magic', href: path('app_compliance_wizard_index') }
         ]
     }) }}
 
@@ -24,41 +24,41 @@
     <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
         {{ _fa_feature_card.render({
             icon: 'collection',
-            label: 'Frameworks aktiv',
+            label: 'compliance_manager.kpi.frameworks_active'|trans,
             value: dashboard.frameworks_active,
             variant: 'primary',
             href: path('app_compliance_wizard_index')
         }) }}
         {{ _fa_feature_card.render({
             icon: 'speedometer',
-            label: 'Ø Compliance',
+            label: 'compliance_manager.kpi.avg_compliance'|trans,
             value: dashboard.avg_compliance,
             unit: '%',
             variant: dashboard.avg_compliance >= 80 ? 'success' : (dashboard.avg_compliance >= 60 ? 'warning' : 'danger'),
         }) }}
         {{ _fa_feature_card.render({
             icon: 'exclamation-triangle',
-            label: 'Frameworks at-risk',
+            label: 'compliance_manager.kpi.at_risk'|trans,
             value: dashboard.at_risk_count,
             variant: dashboard.at_risk_count > 0 ? 'warning' : 'success',
         }) }}
         {{ _fa_feature_card.render({
             icon: 'search',
-            label: 'Open Findings',
+            label: 'compliance_manager.kpi.open_findings'|trans,
             value: dashboard.findings_total,
             variant: dashboard.findings_total > 0 ? 'warning' : 'success',
             href: '#findings'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'calendar-event',
-            label: 'Audits 90d',
+            label: 'compliance_manager.kpi.upcoming_audits'|trans,
             value: dashboard.upcoming_audits|length,
             variant: 'info',
             href: '#audit-schedule'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'file-earmark-check',
-            label: 'Doc-Approval-Queue',
+            label: 'compliance_manager.kpi.approval_queue'|trans,
             value: dashboard.pending_docs|length,
             variant: dashboard.pending_docs|length > 0 ? 'warning' : 'success',
             href: '#approval-queue'
@@ -68,7 +68,7 @@
     {# Coverage Heatmap (table-styled) #}
     <section class="fa-section mb-4" id="coverage-heatmap">
         <div class="fa-section__header">
-            <h2 class="fa-section__title">Coverage-Heatmap pro Framework</h2>
+            <h2 class="fa-section__title">{{ 'compliance_manager.section.coverage_heatmap'|trans }}</h2>
         </div>
         <div class="fa-section__body">
             {% if dashboard.frameworks|length > 0 %}
@@ -76,35 +76,36 @@
                 <table class="table table-sm align-middle">
                     <thead>
                         <tr>
-                            <th>Framework</th>
-                            <th>Coverage</th>
-                            <th>Bar</th>
-                            <th>Status</th>
-                            <th>Aktionen</th>
+                            <th>{{ 'compliance_manager.table.framework'|trans }}</th>
+                            <th>{{ 'compliance_manager.table.coverage'|trans }}</th>
+                            <th>{{ 'compliance_manager.table.bar'|trans }}</th>
+                            <th>{{ 'compliance_manager.table.status'|trans }}</th>
+                            <th>{{ 'compliance_manager.table.actions'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for fw in dashboard.frameworks %}
                             {% set coverage = fw.compliance|default(0) %}
                             {% set tone = coverage >= 80 ? 'success' : (coverage >= 60 ? 'warning' : 'danger') %}
+                            {# V3 W3-Aurora: Aurora-Tone-Tokens via inline style — bypass Bootstrap bg-* fallback. #}
                             <tr>
                                 <td><strong>{{ fw.name|default(fw.code|default('—')) }}</strong></td>
                                 <td>{{ coverage }}%</td>
                                 <td style="min-width: 180px;">
-                                    <div class="progress" role="progressbar" aria-valuenow="{{ coverage }}" aria-valuemin="0" aria-valuemax="100" style="height: 12px;">
-                                        <div class="progress-bar bg-{{ tone }}" style="width: {{ coverage }}%;"></div>
+                                    <div class="progress" role="progressbar" aria-valuenow="{{ coverage }}" aria-valuemin="0" aria-valuemax="100" style="height: 12px; background-color: var(--surface-2);">
+                                        <div class="progress-bar" style="width: {{ coverage }}%; background-color: var(--{{ tone }}); color: var(--on-{{ tone }});"></div>
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="badge bg-{{ tone }}">
-                                        {{ coverage >= 80 ? 'OK' : (coverage >= 60 ? 'At Risk' : 'Lücke') }}
+                                    <span class="badge" style="background-color: var(--{{ tone }}-tint); color: var(--{{ tone }}-strong, var(--{{ tone }})); border: 1px solid var(--{{ tone }});">
+                                        {{ coverage >= 80 ? 'compliance_manager.status.ok'|trans : (coverage >= 60 ? 'compliance_manager.status.at_risk'|trans : 'compliance_manager.status.gap'|trans) }}
                                     </span>
                                 </td>
                                 <td>
                                     {% if fw.code is defined and fw.code %}
                                         <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_compliance_wizard_start', {wizard: fw.code|lower}) }}">
                                             <i class="bi bi-magic"></i>
-                                            Wizard
+                                            {{ 'compliance_manager.common.wizard'|trans }}
                                         </a>
                                     {% endif %}
                                 </td>
@@ -116,10 +117,10 @@
             {% else %}
                 {{ _fa_empty_state.render({
                     mood: 'thinking',
-                    title: 'Noch keine Frameworks aktiv',
-                    text: 'Aktivieren Sie ein Framework über die Compliance-Wizard-Übersicht.',
+                    title: 'compliance_manager.empty.no_frameworks_title'|trans,
+                    text: 'compliance_manager.empty.no_frameworks_text'|trans,
                     actions: [
-                        { label: 'Wizard wählen', variant: 'primary', icon: 'magic', href: path('app_compliance_wizard_index') }
+                        { label: 'compliance_manager.empty.no_frameworks_action'|trans, variant: 'primary', icon: 'magic', href: path('app_compliance_wizard_index') }
                     ]
                 }) }}
             {% endif %}
@@ -130,7 +131,7 @@
     {% if dashboard.lowest_coverage|length > 0 %}
     <section class="fa-section mb-4" id="lowest-coverage">
         <div class="fa-section__header">
-            <h2 class="fa-section__title">Top-3 Frameworks mit niedrigster Coverage</h2>
+            <h2 class="fa-section__title">{{ 'compliance_manager.section.lowest_coverage'|trans }}</h2>
         </div>
         <div class="fa-section__body">
             <ol class="list-group list-group-numbered">
@@ -138,12 +139,12 @@
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                         <div class="ms-2 me-auto">
                             <div class="fw-bold">{{ fw.name|default(fw.code|default('—')) }}</div>
-                            <small class="text-muted">{{ fw.compliance|default(0) }}% Coverage — Priorisiert für nächsten Sprint</small>
+                            <small class="text-muted">{{ 'compliance_manager.lowest.coverage_hint'|trans({'%coverage%': fw.compliance|default(0)}) }}</small>
                         </div>
                         {% if fw.code is defined and fw.code %}
                             <a class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm" href="{{ path('app_compliance_wizard_start', {wizard: fw.code|lower}) }}">
                                 <i class="bi bi-arrow-right-circle"></i>
-                                Bearbeiten
+                                {{ 'compliance_manager.lowest.edit'|trans }}
                             </a>
                         {% endif %}
                     </li>
@@ -156,14 +157,14 @@
     {# Findings by Severity #}
     <section class="fa-section mb-4" id="findings">
         <div class="fa-section__header">
-            <h2 class="fa-section__title">Open Findings nach Severity</h2>
+            <h2 class="fa-section__title">{{ 'compliance_manager.section.findings_by_severity'|trans }}</h2>
         </div>
         <div class="fa-section__body">
             <div class="row g-3">
                 <div class="col-md-3">
                     {{ _fa_feature_card.render({
                         icon: 'shield-fill-exclamation',
-                        label: 'Critical',
+                        label: 'compliance_manager.severity.critical'|trans,
                         value: dashboard.findings_severity.critical,
                         variant: 'danger'
                     }) }}
@@ -171,7 +172,7 @@
                 <div class="col-md-3">
                     {{ _fa_feature_card.render({
                         icon: 'exclamation-circle',
-                        label: 'High',
+                        label: 'compliance_manager.severity.high'|trans,
                         value: dashboard.findings_severity.high,
                         variant: 'warning'
                     }) }}
@@ -179,7 +180,7 @@
                 <div class="col-md-3">
                     {{ _fa_feature_card.render({
                         icon: 'info-circle',
-                        label: 'Medium',
+                        label: 'compliance_manager.severity.medium'|trans,
                         value: dashboard.findings_severity.medium,
                         variant: 'info'
                     }) }}
@@ -187,7 +188,7 @@
                 <div class="col-md-3">
                     {{ _fa_feature_card.render({
                         icon: 'circle',
-                        label: 'Low',
+                        label: 'compliance_manager.severity.low'|trans,
                         value: dashboard.findings_severity.low,
                         variant: 'success'
                     }) }}
@@ -199,7 +200,7 @@
     {# Audit Schedule #}
     <section class="fa-section mb-4" id="audit-schedule">
         <div class="fa-section__header">
-            <h2 class="fa-section__title">Audit-Schedule (nächste 90 Tage)</h2>
+            <h2 class="fa-section__title">{{ 'compliance_manager.section.audit_schedule'|trans }}</h2>
         </div>
         <div class="fa-section__body">
             {% if dashboard.upcoming_audits|length > 0 %}
@@ -207,12 +208,13 @@
                     {% for audit in dashboard.upcoming_audits %}
                         <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="list-group-item list-group-item-action d-flex justify-content-between">
                             <div>
-                                <strong>{{ audit.title|default(('Audit #' ~ audit.id)) }}</strong>
+                                <strong>{{ audit.title|default(('compliance_manager.audit.prefix'|trans ~ audit.id)) }}</strong>
                                 <small class="d-block text-muted">{{ audit.scope|default('—') }}</small>
                             </div>
                             <span>
                                 {% if audit.plannedDate is defined and audit.plannedDate %}
-                                    <span class="badge bg-info">{{ audit.plannedDate|date('d.m.Y') }}</span>
+                                    {# V3 W3-Aurora: Aurora-Tone via inline style. #}
+                                    <span class="badge" style="background-color: var(--info-tint); color: var(--info); border: 1px solid var(--info);">{{ audit.plannedDate|date('d.m.Y') }}</span>
                                 {% endif %}
                             </span>
                         </a>
@@ -221,8 +223,8 @@
             {% else %}
                 {{ _fa_empty_state.render({
                     mood: 'idle',
-                    title: 'Keine Audits geplant',
-                    text: 'In den nächsten 90 Tagen ist kein Audit terminiert.'
+                    title: 'compliance_manager.empty.no_audits_title'|trans,
+                    text: 'compliance_manager.empty.no_audits_text'|trans
                 }) }}
             {% endif %}
         </div>
@@ -231,7 +233,7 @@
     {# Document Approval Queue #}
     <section class="fa-section mb-4" id="approval-queue">
         <div class="fa-section__header">
-            <h2 class="fa-section__title">Dokument-Approval-Queue</h2>
+            <h2 class="fa-section__title">{{ 'compliance_manager.section.approval_queue'|trans }}</h2>
         </div>
         <div class="fa-section__body">
             {% if dashboard.pending_docs|length > 0 %}
@@ -242,15 +244,16 @@
                                 <strong>{{ doc.title }}</strong>
                                 <small class="d-block text-muted">{{ doc.documentType|default('—') }} · v{{ doc.version|default('—') }}</small>
                             </div>
-                            <span class="badge bg-warning text-dark">{{ doc.status }}</span>
+                            {# V3 W3-Aurora: Aurora-Tone via inline style. #}
+                            <span class="badge" style="background-color: var(--warning-tint); color: var(--warning-strong, var(--warning)); border: 1px solid var(--warning);">{{ doc.status }}</span>
                         </a>
                     {% endfor %}
                 </div>
             {% else %}
                 {{ _fa_empty_state.render({
                     mood: 'happy',
-                    title: 'Approval-Queue leer',
-                    text: 'Keine Dokumente warten auf Ihre Freigabe.'
+                    title: 'compliance_manager.empty.no_pending_docs_title'|trans,
+                    text: 'compliance_manager.empty.no_pending_docs_text'|trans
                 }) }}
             {% endif %}
         </div>
@@ -259,21 +262,21 @@
     {# Quick Actions #}
     <section class="fa-section mb-4" id="quick-actions">
         <div class="fa-section__header">
-            <h2 class="fa-section__title">Quick-Actions</h2>
+            <h2 class="fa-section__title">{{ 'compliance_manager.section.quick_actions'|trans }}</h2>
         </div>
         <div class="fa-section__body">
             <div class="d-flex flex-wrap gap-2">
                 <a class="fa-cyber-btn fa-cyber-btn--primary" href="{{ path('app_compliance_wizard_index') }}">
                     <i class="bi bi-magic"></i>
-                    Neuen Wizard starten
+                    {{ 'compliance_manager.quick.new_wizard'|trans }}
                 </a>
                 <a class="fa-cyber-btn fa-cyber-btn--ghost" href="{{ path('app_compliance_mapping_hub') }}">
                     <i class="bi bi-diagram-3"></i>
-                    Cross-Framework-Mapping
+                    {{ 'compliance_manager.quick.cross_mapping'|trans }}
                 </a>
                 <a class="fa-cyber-btn fa-cyber-btn--ghost" href="{{ path('app_compliance_wizard_compare') }}">
                     <i class="bi bi-bar-chart-steps"></i>
-                    Wizards vergleichen
+                    {{ 'compliance_manager.quick.compare_wizards'|trans }}
                 </a>
             </div>
         </div>
