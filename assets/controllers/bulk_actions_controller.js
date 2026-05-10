@@ -1,28 +1,57 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Bulk Actions Controller
- * Enables bulk operations on table rows
+ * Bulk Actions Controller — canonical Aurora bulk-action-bar (per
+ * docs/design_system/sections/feedback-systems.html §175-255).
  *
- * Usage:
- * <div data-controller="bulk-actions">
- *   <table>
- *     <thead>
- *       <tr>
- *         <th><input type="checkbox" data-action="bulk-actions#selectAll"></th>
- *       </tr>
- *     </thead>
- *     <tbody>
- *       <tr>
- *         <td><input type="checkbox" data-bulk-actions-target="item" value="1"></td>
- *       </tr>
- *     </tbody>
- *   </table>
- *   <div data-bulk-actions-target="actionBar" hidden>...</div>
- * </div>
+ * Usage (canonical):
+ *   <div data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset">
+ *     <table class="table-bulk-selectable">
+ *       <thead><tr>
+ *         <th class="bulk-select-column">
+ *           <input type="checkbox" data-action="bulk-actions#selectAll"
+ *                  data-bulk-actions-target="selectAllCheckbox">
+ *         </th>...
+ *       </tr></thead>
+ *       <tbody><tr>
+ *         <td class="bulk-select-column">
+ *           <input type="checkbox" data-bulk-actions-target="item" value="1"
+ *                  data-action="bulk-actions#selectItem">
+ *         </td>...
+ *       </tr></tbody>
+ *     </table>
+ *
+ *     <div class="bulk-action-bar" hidden role="region" aria-live="polite"
+ *          data-bulk-actions-target="actionBar">
+ *       <div class="bulk-selection-info">
+ *         <span class="bulk-selection-count" data-bulk-actions-target="count">0</span>
+ *         <span class="bulk-selection-label">ausgewählt</span>
+ *       </div>
+ *       <div class="bulk-action-divider"></div>
+ *       <div class="bulk-actions">
+ *         <button class="bulk-action-btn">…</button>
+ *         <button class="bulk-action-btn bulk-action-btn-success">Approven</button>
+ *         <button class="bulk-action-btn bulk-action-btn-danger"
+ *                 data-action="click->bulk-actions#bulkDelete">Löschen</button>
+ *       </div>
+ *       <button class="bulk-action-close" aria-label="Auswahl aufheben"
+ *               data-action="click->bulk-actions#deselectAll"><i class="bi bi-x"></i></button>
+ *     </div>
+ *   </div>
+ *
+ * Targets:
+ *   item                <input type="checkbox"> per row
+ *   actionBar / bar     `.bulk-action-bar` element to show/hide (alias for canonical 'bar')
+ *   count               <span> showing the selected count
+ *   selectAllCheckbox   header `<thead>` master checkbox
+ *
+ * Public API:
+ *   ctrl.selectedIds()       → ['1','7','42']  (canonical name)
+ *   ctrl.getSelectedIds()    → alias of selectedIds() for legacy callers
+ *   ctrl.getSelectedItems()  → checked input nodes
  */
 export default class extends Controller {
-    static targets = ['item', 'actionBar', 'count', 'selectAllCheckbox'];
+    static targets = ['item', 'actionBar', 'bar', 'count', 'selectAllCheckbox'];
     static values = {
         endpoint: String,
         // Translation strings
@@ -71,15 +100,20 @@ export default class extends Controller {
         }
     }
 
-    showActionBar(count) {
-        if (this.hasActionBarTarget) {
-            this.actionBarTarget.hidden = false;
+    /**
+     * Resolve the bar element — supports canonical `bar` target alias and
+     * legacy `actionBar` target. Returns null if neither is wired.
+     */
+    _barElement() {
+        if (this.hasBarTarget) return this.barTarget;
+        if (this.hasActionBarTarget) return this.actionBarTarget;
+        return null;
+    }
 
-            // Animate in
-            requestAnimationFrame(() => {
-                this.actionBarTarget.style.transform = 'translateY(0)';
-                this.actionBarTarget.style.opacity = '1';
-            });
+    showActionBar(count) {
+        const bar = this._barElement();
+        if (bar) {
+            bar.hidden = false;
 
             // Update count
             if (this.hasCountTarget) {
@@ -89,13 +123,9 @@ export default class extends Controller {
     }
 
     hideActionBar() {
-        if (this.hasActionBarTarget) {
-            this.actionBarTarget.style.transform = 'translateY(20px)';
-            this.actionBarTarget.style.opacity = '0';
-
-            setTimeout(() => {
-                this.actionBarTarget.hidden = true;
-            }, 200);
+        const bar = this._barElement();
+        if (bar) {
+            bar.hidden = true;
         }
     }
 
@@ -103,14 +133,28 @@ export default class extends Controller {
         return this.itemTargets.filter(item => item.checked);
     }
 
-    getSelectedIds() {
+    /**
+     * Canonical public API — returns array of values for checked items.
+     * Spec: feedback-systems.html §"Public method: selectedIds()".
+     */
+    selectedIds() {
         return this.getSelectedItems().map(item => item.value);
+    }
+
+    /** Alias for legacy callers — prefer selectedIds(). */
+    getSelectedIds() {
+        return this.selectedIds();
+    }
+
+    /** Canonical recount/visibility update — alias of updateActionBar(). */
+    update() {
+        this.updateActionBar();
     }
 
     async bulkDelete(event) {
         event.preventDefault();
 
-        const ids = this.getSelectedIds();
+        const ids = this.selectedIds();
 
         if (ids.length === 0) {
             return;
@@ -198,7 +242,7 @@ export default class extends Controller {
     async bulkExport(event) {
         event.preventDefault();
 
-        const ids = this.getSelectedIds();
+        const ids = this.selectedIds();
 
         if (ids.length === 0) {
             return;
@@ -238,7 +282,7 @@ export default class extends Controller {
     async bulkTag(event) {
         event.preventDefault();
 
-        const ids = this.getSelectedIds();
+        const ids = this.selectedIds();
 
         if (ids.length === 0) {
             return;
