@@ -36,6 +36,22 @@
     {% endblock %}
 {% endembed %}
 
+{# Compliance-Manager-Walkthrough — BSI-200-2-Hinweis: 24 Monate ist
+   nur der Maximalwert. Bei HOCH/SEHR HOCH Schutzbedarf empfiehlt das
+   BSI risikobasiert 6-12 Monate. Subtle warning-card so it does not
+   compete with the primary help-card above. #}
+{% embed '_components/_fa_alert.html.twig' with { props: {
+    variant: 'warning',
+    icon: 'bi-exclamation-triangle',
+    class: 'mb-3'
+} } %}
+    {% block alert_body %}
+        {% trans_default_domain 'policy_wizard' %}
+        <div class="fa-alert__title">{{ 'policy_wizard.step.lifecycle.bsi_interval_guidance.title'|trans }}</div>
+        <p class="fa-alert__message mb-0 small">{{ 'policy_wizard.step.lifecycle.bsi_interval_guidance.body'|trans }}</p>
+    {% endblock %}
+{% endembed %}
+
 <div class="row g-3 mb-4">
     <div class="col-md-6">
         {{ _fa_cyber.text('default_review_interval_months', {
@@ -47,11 +63,21 @@
             required: true,
             extra_attrs: {
                 'min': '1',
-                'max': '24'
+                'max': '24',
+                'data-bsi-interval-input': '1'
             }
         }) }}
         {% if review_default > 24 %}
             <div class="invalid-feedback d-block">{{ 'policy_wizard.error.review_interval_max'|trans }}</div>
+        {% endif %}
+        {# Compliance-Manager Wish — surface BSI 200-2 risk-based guidance
+           when the user picks the 24-month maximum. Subtle warning chip,
+           never blocking — just nudging towards 6-12 months for HOCH/SEHR HOCH. #}
+        {% if review_default == 24 %}
+            <div class="form-text small text-warning mt-1" data-bsi-interval-hint="1">
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                {{ 'policy_wizard.step.lifecycle.bsi_interval_guidance.inline_hint'|trans }}
+            </div>
         {% endif %}
     </div>
     <div class="col-md-6">
@@ -129,6 +155,9 @@
                         {% set recommended_roles = tpl_topic_meta ? tpl_topic_meta.recommended_roles : [] %}
                         {% set tpl_match_map = approver_match_map[tpl_key]|default({}) %}
                         {% set selected_match = approver_value ? tpl_match_map[approver_value]|default(null) : null %}
+                        {# Task #132 — BSI 200-2 max-interval guidance. #}
+                        {% set is_bsi = tpl.standard == 'bsi' %}
+                        {% set hits_max = (override_value == 24) or (override_value is null and review_default == 24) %}
                         <tr>
                             <td>
                                 <div><strong>{{ policy_title(tpl.titleTranslationKey, tpl.standard|default(null), tpl_key) }}</strong></div>
@@ -139,13 +168,21 @@
                             </td>
                             <td>
                                 <input type="number"
-                                       class="form-control form-control-sm fa-cyber-input__field"
+                                       class="form-control form-control-sm fa-cyber-input__field{% if is_bsi and hits_max %} border-warning{% endif %}"
                                        name="per_policy_overrides[{{ tpl_key }}]"
                                        min="1"
                                        max="24"
                                        value="{{ override_value }}"
                                        placeholder="{{ review_default }}"
-                                       aria-label="{{ 'policy_wizard.step.lifecycle.column.review_override'|trans }} {{ tpl_key }}">
+                                       aria-label="{{ 'policy_wizard.step.lifecycle.column.review_override'|trans }} {{ tpl_key }}"
+                                       {% if is_bsi %}data-bs-toggle="tooltip"
+                                       title="{{ 'policy_wizard.step.lifecycle.bsi_interval_guidance.body'|trans }}"{% endif %}>
+                                {% if is_bsi and hits_max %}
+                                    <i class="bi bi-exclamation-triangle text-warning small"
+                                       aria-label="{{ 'policy_wizard.step.lifecycle.bsi_interval_guidance.inline_hint'|trans }}"
+                                       data-bs-toggle="tooltip"
+                                       title="{{ 'policy_wizard.step.lifecycle.bsi_interval_guidance.inline_hint'|trans }}"></i>
+                                {% endif %}
                             </td>
                             <td>
                                 <select name="approver_per_template[{{ tpl_key }}]"
