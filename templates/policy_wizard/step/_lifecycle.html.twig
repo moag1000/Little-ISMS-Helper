@@ -124,6 +124,11 @@
                         {% set tpl_key = tpl.key %}
                         {% set override_value = per_policy_default[tpl_key]|default(null) %}
                         {% set approver_value = approvers_default[tpl_key]|default(null) %}
+                        {# Task #126 — recommended-roles + per-user match data. #}
+                        {% set tpl_topic_meta = topic_recommended_roles_map[tpl_key]|default(null) %}
+                        {% set recommended_roles = tpl_topic_meta ? tpl_topic_meta.recommended_roles : [] %}
+                        {% set tpl_match_map = approver_match_map[tpl_key]|default({}) %}
+                        {% set selected_match = approver_value ? tpl_match_map[approver_value]|default(null) : null %}
                         <tr>
                             <td>
                                 <div><strong>{{ policy_title(tpl.titleTranslationKey, tpl.standard|default(null), tpl_key) }}</strong></div>
@@ -154,6 +159,38 @@
                                         </option>
                                     {% endfor %}
                                 </select>
+                                {# Task #126 — match-status badge + recommended-roles tooltip. #}
+                                {% if recommended_roles|length > 0 %}
+                                    {% if selected_match is not null %}
+                                        {% if selected_match.state == 'strict_match' %}
+                                            <span class="badge bg-success-subtle text-success-emphasis mt-1"
+                                                  data-bs-toggle="tooltip"
+                                                  title="{{ 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')}) }}">
+                                                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                                {{ 'policy_wizard.approver_match.strict_label'|trans }}
+                                            </span>
+                                        {% elseif selected_match.state == 'weak_match' %}
+                                            <span class="badge bg-warning-subtle text-warning-emphasis mt-1"
+                                                  data-bs-toggle="tooltip"
+                                                  title="{{ 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')}) }}">
+                                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                                {{ 'policy_wizard.approver_match.weak_label'|trans({'%roles%': recommended_roles|join(', ')}) }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-warning-subtle text-warning-emphasis mt-1"
+                                                  data-bs-toggle="tooltip"
+                                                  title="{{ 'policy_wizard.approver_match.recommended_roles_tooltip'|trans({'%roles%': recommended_roles|join(', ')}) }}">
+                                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                                {{ 'policy_wizard.approver_match.mismatch_label'|trans({'%roles%': recommended_roles|join(', ')}) }}
+                                            </span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="form-text small text-muted mt-1">
+                                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                            {{ 'policy_wizard.approver_match.recommended_roles_hint'|trans({'%roles%': recommended_roles|join(', ')}) }}
+                                        </span>
+                                    {% endif %}
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

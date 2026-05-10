@@ -63,7 +63,122 @@ class PolicySectionApprovalService
         private readonly LoggerInterface $logger = new NullLogger(),
         private readonly ?GenerationApprovalElapsedGuard $elapsedGuard = null,
         private readonly ?EmailNotificationService $emailNotificationService = null,
+        private readonly ?TopicApproverRoleResolver $topicApproverRoleResolver = null,
     ) {
+    }
+
+    /**
+     * Task #126 — Approver-Role Validation per Topic.
+     *
+     * Validates that $approver carries a role recommended for the
+     * Document's topic (resolved via the host
+     * {@see Document::getGeneratedFromTemplate()}). Emits ONE of three
+     * audit-events:
+     *
+     *  - `policy_wizard.approver_role_match`            (strict_match)
+     *  - `policy_wizard.approver_role_weak_match_warning` (weak_match)
+     *  - `policy_wizard.approver_role_mismatch_warning` (mismatch)
+     *
+     * NOT blocking — the wizard-starter is allowed to overrule the
+     * recommendation (e.g. a Top-Mgmt user formally approves a
+     * Cryptography Policy after the CISO already vetted it). The audit
+     * trail provides the "warum DIESER Approver fuer DIESES Topic"
+     * defence required by the External-Auditor walkthrough.
+     *
+     * Defensive: silent no-op when no resolver is wired (legacy DI
+     * graphs / unit fixtures without TopicApproverRoleResolver) — the
+     * security contract is "approval still proceeds" anyway, the audit
+     * trail simply lacks the role-match event.
+     */
+    public function assertApproverRoleMatch(DocumentSection $section, User $approver): ?ApproverMatchResult
+    {
+        if ($this->topicApproverRoleResolver === null) {
+            return null;
+        }
+
+        $topicKey = $this->resolveTopicKey($section);
+        $result = $this->topicApproverRoleResolver->validateApproverForTopic($approver, $topicKey);
+
+        $document = $section->getDocument();
+        $payload = $result->toAuditPayload() + [
+            'section_key'       => $section->getSectionKey(),
+            'document_id'       => $document?->getId(),
+            'approver_user_id'  => $approver->getId(),
+            'tag'               => self::AUDIT_TAG,
+        ];
+
+        if ($result->isStrictMatch()) {
+            $this->auditLogger->logCustom(
+                action: 'policy_wizard.approver_role_match',
+                entityType: 'DocumentSection',
+                entityId: $section->getId(),
+                oldValues: null,
+                newValues: $payload,
+                description: sprintf(
+                    '[%s] Approver role STRICT-MATCH for section "%s" (document #%d, topic "%s", approver #%d)',
+                    self::AUDIT_TAG,
+                    $section->getSectionKey() ?? '?',
+                    $document?->getId() ?? 0,
+                    $topicKey ?? '?',
+                    $approver->getId() ?? 0,
+                ),
+            );
+        } elseif ($result->isWeakMatch()) {
+            $this->auditLogger->logCustom(
+                action: 'policy_wizard.approver_role_weak_match_warning',
+                entityType: 'DocumentSection',
+                entityId: $section->getId(),
+                oldValues: null,
+                newValues: $payload,
+                description: sprintf(
+                    '[%s] Approver role WEAK-MATCH for section "%s" (document #%d, topic "%s", approver #%d) — broad-authority role used in lieu of topic-specialist',
+                    self::AUDIT_TAG,
+                    $section->getSectionKey() ?? '?',
+                    $document?->getId() ?? 0,
+                    $topicKey ?? '?',
+                    $approver->getId() ?? 0,
+                ),
+            );
+        } else {
+            $this->auditLogger->logCustom(
+                action: 'policy_wizard.approver_role_mismatch_warning',
+                entityType: 'DocumentSection',
+                entityId: $section->getId(),
+                oldValues: null,
+                newValues: $payload,
+                description: sprintf(
+                    '[%s] Approver role MISMATCH WARNING for section "%s" (document #%d, topic "%s", approver #%d) — wizard-starter overruled the recommendation',
+                    self::AUDIT_TAG,
+                    $section->getSectionKey() ?? '?',
+                    $document?->getId() ?? 0,
+                    $topicKey ?? '?',
+                    $approver->getId() ?? 0,
+                ),
+            );
+        }
+
+        return $result;
+    }
+
+    /**
+     * Resolve the topic key for the host Document. Uses the linked
+     * PolicyTemplate where available; falls back to the section-key
+     * itself so off-template sections (test fixtures / ad-hoc renders)
+     * still receive a defensible audit-event.
+     */
+    private function resolveTopicKey(DocumentSection $section): ?string
+    {
+        $document = $section->getDocument();
+        if ($document instanceof Document) {
+            $template = $document->getGeneratedFromTemplate();
+            if ($template !== null && method_exists($template, 'getTopic')) {
+                $topic = $template->getTopic();
+                if (is_string($topic) && $topic !== '') {
+                    return $topic;
+                }
+            }
+        }
+        return $section->getSectionKey();
     }
 
     /**
@@ -90,6 +205,12 @@ class PolicySectionApprovalService
         // who authored the section content MUST NOT be the user who
         // signs it off. Throws InvalidArgumentException on violation.
         $this->assertNotSelfApproval($section, $approver);
+
+        // Task #126 — Approver-Role Validation per Topic. NON-blocking:
+        // emits one of three audit-events (match / weak-match / mismatch
+        // warning) so the external auditor can answer "warum DIESER
+        // Approver fuer DIESES Topic" without a runtime block.
+        $this->assertApproverRoleMatch($section, $approver);
 
         // W1 audit-defang gap #2 — generation-to-approval min-elapsed
         // gate. Blocks the same-second approval anti-pattern by
