@@ -110,34 +110,32 @@
                             <em>{{ 'compliance.requirement.mris.source'|trans({}, 'compliance') }}</em>
                         </p>
 
-                        <div class="table-responsive mb-3">
-                            <table class="table table-sm align-middle">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th scope="col">{{ 'compliance.requirement.mris.stage'|trans({}, 'compliance') }}</th>
-                                        <th scope="col">{{ 'compliance.requirement.mris.current'|trans({}, 'compliance') }}</th>
-                                        <th scope="col">{{ 'compliance.requirement.mris.target'|trans({}, 'compliance') }}</th>
+                        {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                            {% block table_head %}
+                                <tr>
+                                    <th scope="col" class="fa-table__th">{{ 'compliance.requirement.mris.stage'|trans({}, 'compliance') }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--center">{{ 'compliance.requirement.mris.current'|trans({}, 'compliance') }}</th>
+                                    <th scope="col" class="fa-table__th fa-table__th--center">{{ 'compliance.requirement.mris.target'|trans({}, 'compliance') }}</th>
+                                </tr>
+                            {% endblock %}
+                            {% block table_body %}
+                                {% for stage in mris.stages %}
+                                    <tr class="fa-table__row">
+                                        <td class="fa-table__cell"><code>{{ stage }}</code></td>
+                                        <td class="fa-table__cell fa-table__cell--center">
+                                            {% if mris.current == stage %}
+                                                <i class="fa-icon fa-icon--ui-check text-warning" aria-label="Ist"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td class="fa-table__cell fa-table__cell--center">
+                                            {% if mris.target == stage %}
+                                                <i class="fa-icon fa-icon--nav-bullseye text-success" aria-label="Soll"></i>
+                                            {% endif %}
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {% for stage in mris.stages %}
-                                        <tr>
-                                            <td><code>{{ stage }}</code></td>
-                                            <td class="text-center">
-                                                {% if mris.current == stage %}
-                                                    <i class="fa-icon fa-icon--ui-check text-warning" aria-label="Ist"></i>
-                                                {% endif %}
-                                            </td>
-                                            <td class="text-center">
-                                                {% if mris.target == stage %}
-                                                    <i class="fa-icon fa-icon--nav-bullseye text-success" aria-label="Soll"></i>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                                {% endfor %}
+                            {% endblock %}
+                        {% endembed %}
 
                         <form method="post" action="{{ path('app_compliance_requirement_mris_maturity', {id: requirement.id}) }}" class="row g-2 align-items-end">
                             <input type="hidden" name="_token" value="{{ csrf_token('mris_maturity_' ~ requirement.id) }}">
