@@ -165,7 +165,7 @@
                 <a href="{{ path('app_document_show', {id: document.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost mr-025">
                     👁 {{ 'common.view'|trans({}, 'messages') }}
                 </a>
-                <a href="{{ path('app_document_download', {id: document.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                <a href="{{ path('app_document_download', {id: document.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost" data-turbo="false">
                     📥 {{ 'common.download'|trans({}, 'messages') }}
                 </a>
             </td>

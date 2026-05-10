@@ -15,7 +15,7 @@
     } %}
 
     {% set _show_actions = [
-        { label: 'common.download'|trans({}, 'messages'), variant: 'primary', icon: 'download', href: path('app_document_download', {id: document.id}) }
+        { label: 'common.download'|trans({}, 'messages'), variant: 'primary', icon: 'download', href: path('app_document_download', {id: document.id}), attrs: {'data-turbo': 'false'} }
     ] %}
     {% if canEdit is defined and canEdit %}
         {% set _show_actions = _show_actions|merge([{ label: 'common.edit'|trans({}, 'messages'), variant: 'ghost', icon: 'pencil', href: path('app_document_edit', {id: document.id}) }]) %}
