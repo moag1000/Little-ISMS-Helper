@@ -22,6 +22,7 @@ use App\Service\PolicyWizard\StepEvaluator;
 use App\Service\PolicyWizard\StepValidationException;
 use App\Service\PolicyWizard\WizardOrchestrator;
 use App\Service\PolicyWizard\WizardStepKeys;
+use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -62,6 +63,7 @@ final class PolicyWizardController extends AbstractController
         private readonly PersonRepository $personRepository,
         private readonly CrossCoverageCalculator $crossCoverageCalculator,
         private readonly \App\Service\PolicyWizard\TopicApproverRoleResolver $topicApproverRoleResolver,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {
     }
 
@@ -325,11 +327,74 @@ final class PolicyWizardController extends AbstractController
     #[Route('/run/{runId}/complete', name: 'complete', methods: ['POST'], requirements: ['runId' => '\d+'])]
     #[IsGranted('POLICY_WIZARD_RUN_FULL')]
     #[IsCsrfTokenValid('policy_wizard_complete', tokenKey: '_token')]
-    public function complete(int $runId): Response
+    public function complete(int $runId, Request $request): Response
     {
         $run = $this->loadAuthorisedRun($runId);
         if (!$run instanceof WizardRun) {
             return $this->redirectToRoute('app_policy_wizard_index');
+        }
+
+        // Auditor Observation 2026-05-10: Step 7 must REQUIRE explicit
+        // confirmation that the user reviewed approver names + review
+        // intervals BEFORE we kick off generation + WorkflowInstance
+        // creation. The checkbox is rendered in _review_generate.html.twig.
+        $approverConfirmed = (bool) $request->request->get('confirm_approvers', false);
+        if (!$approverConfirmed) {
+            $this->addFlash('warning', $this->translator->trans(
+                'policy_wizard.step.review_generate.confirm_approvers.required',
+                [],
+                'policy_wizard',
+            ));
+            return $this->redirectToRoute('app_policy_wizard_step_show', [
+                'runId' => $run->getId(),
+                'step' => $run->getStep(),
+            ]);
+        }
+
+        // ISB Wish 2026-05-10: when consistency_warnings are present
+        // the user MUST explicitly acknowledge them before generation
+        // proceeds. Emit a dedicated audit-event so the audit trail
+        // shows that the warnings were seen + actively dismissed.
+        $consistencyWarnings = $this->orchestrator->consistencyWarnings($run);
+        if ($consistencyWarnings !== []) {
+            $warningsAcknowledged = (bool) $request->request->get('acknowledged_warnings', false);
+            if (!$warningsAcknowledged) {
+                $this->addFlash('warning', $this->translator->trans(
+                    'policy_wizard.step.review_generate.acknowledge_warnings.required',
+                    [],
+                    'policy_wizard',
+                ));
+                return $this->redirectToRoute('app_policy_wizard_step_show', [
+                    'runId' => $run->getId(),
+                    'step' => $run->getStep(),
+                ]);
+            }
+
+            if ($this->auditLogger !== null) {
+                $warningKeys = array_values(array_map(
+                    static fn (array $w): string => (string) ($w['rule'] ?? $w['message_key'] ?? '?'),
+                    $consistencyWarnings,
+                ));
+                $userObj = $this->getUser();
+                $userId = $userObj instanceof \App\Entity\User ? $userObj->getId() : null;
+                $this->auditLogger->logCustom(
+                    action: 'policy_wizard.consistency_warning_acknowledged',
+                    entityType: 'WizardRun',
+                    entityId: $run->getId(),
+                    oldValues: null,
+                    newValues: [
+                        'wizard_run_id' => $run->getId(),
+                        'warning_count' => count($consistencyWarnings),
+                        'warning_keys'  => $warningKeys,
+                        'user_id'       => $userId,
+                    ],
+                    description: sprintf(
+                        'Wizard-Run #%d: %d consistency warning(s) acknowledged + generation proceeded',
+                        (int) $run->getId(),
+                        count($consistencyWarnings),
+                    ),
+                );
+            }
         }
 
         try {
@@ -672,9 +737,105 @@ final class PolicyWizardController extends AbstractController
         if ($isTerminal && $step === WizardStepKeys::STEP_REVIEW_GENERATE) {
             $extras['consistency_warnings'] = $this->orchestrator->consistencyWarnings($run);
             $extras['review_summary'] = $this->buildReviewSummary($run);
+            // Auditor Observation 2026-05-10: Step 7 must explicitly
+            // expose approver names + per-policy review intervals +
+            // expected document count so the user can confirm both
+            // before generation.
+            $extras['generation_confirmation'] = $this->buildGenerationConfirmation($run);
         }
 
         return $extras;
+    }
+
+    /**
+     * Build the explicit pre-generation confirmation payload for Step 7.
+     *
+     * Resolves the LifecycleStep approver-per-template + default-approver
+     * to "Full Name <email>" displays, the default review interval +
+     * per-policy overrides, and an estimate of how many documents will
+     * be generated. Drives the confirmation box rendered just above
+     * the Generate button so the user actively confirms the contract.
+     *
+     * Output shape:
+     * ```
+     * [
+     *   'approvers' => list<array{template_key: string, display: string, source: 'per_template'|'default'}>,
+     *   'default_review_interval_months' => int,
+     *   'per_policy_intervals' => array<string, int>,
+     *   'expected_document_count' => int,
+     * ]
+     * ```
+     *
+     * @return array{
+     *   approvers: list<array{template_key: string, display: string, source: string}>,
+     *   default_review_interval_months: int,
+     *   per_policy_intervals: array<string, int>,
+     *   expected_document_count: int,
+     * }
+     */
+    private function buildGenerationConfirmation(WizardRun $run): array
+    {
+        $inputs = $run->getInputs() ?? [];
+        $lc = is_array($inputs[WizardStepKeys::STEP_LIFECYCLE] ?? null) ? $inputs[WizardStepKeys::STEP_LIFECYCLE] : [];
+        $perTpl = is_array($lc['approver_per_template'] ?? null) ? $lc['approver_per_template'] : [];
+        $defaultApproverId = is_int($lc['default_approver_user_id'] ?? null) ? $lc['default_approver_user_id'] : null;
+        $defaultInterval = is_int($lc['default_review_interval_months'] ?? null)
+            ? $lc['default_review_interval_months']
+            : 12;
+        $perPolicy = is_array($lc['per_policy_overrides'] ?? null) ? $lc['per_policy_overrides'] : [];
+
+        // Resolve user displays in one round-trip.
+        $userIds = [];
+        foreach ($perTpl as $uid) {
+            if (is_int($uid) && $uid > 0) {
+                $userIds[] = $uid;
+            }
+        }
+        if ($defaultApproverId !== null) {
+            $userIds[] = $defaultApproverId;
+        }
+        $userDisplay = $this->resolveUserDisplays(array_values(array_unique($userIds)));
+
+        $approvers = [];
+        foreach ($perTpl as $tplKey => $uid) {
+            if (!is_string($tplKey) || $tplKey === '') {
+                continue;
+            }
+            $uid = is_int($uid) ? $uid : (is_numeric($uid) ? (int) $uid : 0);
+            if ($uid <= 0) {
+                continue;
+            }
+            $approvers[] = [
+                'template_key' => $tplKey,
+                'display' => $userDisplay[$uid] ?? ('User #' . $uid),
+                'source' => 'per_template',
+            ];
+        }
+
+        // Tenant-default approver row only when at least one template
+        // would actually fall through to the default (or always when
+        // no per-template overrides are set).
+        if ($defaultApproverId !== null) {
+            $approvers[] = [
+                'template_key' => '*',
+                'display' => $userDisplay[$defaultApproverId] ?? ('User #' . $defaultApproverId),
+                'source' => 'default',
+            ];
+        }
+
+        // Estimate document count from selected standards (Step 1) +
+        // pre-selected presets — same heuristic the welcome-step
+        // preview uses: ~4 docs per standard. Where the orchestrator
+        // already knows precise template count we'd swap this in W4-D.
+        $standards = $run->getStandardsAdopted() ?? [];
+        $expectedDocumentCount = max(0, count($standards) * 4);
+
+        return [
+            'approvers' => $approvers,
+            'default_review_interval_months' => $defaultInterval,
+            'per_policy_intervals' => $perPolicy,
+            'expected_document_count' => $expectedDocumentCount,
+        ];
     }
 
     /**
