@@ -53,6 +53,42 @@
         {% endembed %}
     {% endif %}
 
+    {# Compliance-Manager / Auditor-External Wish — prominent norm-anchor row.
+       DORA-Stand (validity-from) + Climate-Change-Amendment marker live as
+       EntityTag rows; surface them as header chips so auditors see the
+       regulatory-clock + Amd. 1:2024 marker without expanding the tag list. #}
+    {% if (doraValidityDate is defined and doraValidityDate is not null) or (climateChangeAware is defined and climateChangeAware) %}
+        <div class="d-flex flex-wrap gap-2 mb-3" data-test="document-norm-anchor-chips">
+            {% if doraValidityDate is defined and doraValidityDate is not null %}
+                <span class="badge text-bg-info d-inline-flex align-items-center gap-1"
+                      data-bs-toggle="tooltip"
+                      title="{{ 'document.dora_validity.tooltip'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document') }}"
+                      data-test="document-dora-validity-badge">
+                    <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                    {{ 'document.dora_validity.badge'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document') }}
+                </span>
+            {% endif %}
+            {% if climateChangeAware is defined and climateChangeAware %}
+                <span class="badge text-bg-success d-inline-flex align-items-center gap-1"
+                      data-bs-toggle="tooltip"
+                      title="{{ 'document.climate_change.tooltip'|trans({}, 'document') }}"
+                      data-test="document-climate-change-badge">
+                    <i class="bi bi-globe2" aria-hidden="true"></i>
+                    {{ 'document.climate_change.badge'|trans({}, 'document') }}
+                </span>
+            {% endif %}
+        </div>
+
+        {% if doraValidityDate is defined and doraValidityDate is not null %}
+            {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info', icon: 'bi-calendar-event', class: 'mb-3' } } %}
+                {% block alert_body %}
+                    <div class="fa-alert__title">{{ 'document.dora_validity.heading'|trans({}, 'document') }}</div>
+                    <p class="fa-alert__message mb-0 small">{{ 'document.dora_validity.body'|trans({'%date%': doraValidityDate|date('d.m.Y')}, 'document') }}</p>
+                {% endblock %}
+            {% endembed %}
+        {% endif %}
+    {% endif %}
+
     {# Junior-ISB Wish #5 — Auditor-Score detail section. Only for
        Wizard-generated docs; controller injects the auditorScore DTO. #}
     {% if document.generatedFromTemplate is not null and auditorScore is defined and auditorScore is not null %}

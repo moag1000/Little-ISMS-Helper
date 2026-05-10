@@ -160,6 +160,14 @@ document:
             overdue:
                 label: 'Wirksamkeit fällig'
                 tooltip: 'Letzte Wirksamkeitsprüfung liegt mehr als 12 Monate zurück oder hat noch nie stattgefunden. ISB / Auditor sollte eine Prüfung dokumentieren.'
+    dora_validity:
+        badge: 'DORA-Stand: %date%'
+        tooltip: 'Dieses Dokument verweist auf den DORA-Norm-Stand zum %date%.'
+        heading: 'DORA-Stichtag'
+        body: 'Dieses Dokument verweist auf den DORA-Norm-Stand zum %date%. Nächste Revision empfohlen sobald RTS/ITS aktualisiert werden.'
+    climate_change:
+        badge: 'Climate-Change-Aware (Amd. 1:2024)'
+        tooltip: 'ISO 27001:2022 Amd. 1:2024 — Climate-Change-Considerations wurden berücksichtigt.'
     policy_body:
         section_title: 'Richtlinien-Text bearbeiten (eigene Anpassung)'
         label: 'Richtlinien-Text (eigene Anpassung)'

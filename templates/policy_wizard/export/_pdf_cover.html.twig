@@ -30,5 +30,18 @@
 
         <dt>{{ 'policy_wizard.export.cover.generated_on'|trans({}, 'policy_wizard') }}</dt>
         <dd>{{ cover.generated_on }}</dd>
+
+        {# Compliance-Manager Wish — DORA-Stand prominent neben dem
+           Generated-On-Datum, klein gehalten. #}
+        {% if cover.dora_validity_date is defined and cover.dora_validity_date is not null %}
+            <dt>{{ 'policy_wizard.export.cover.dora_validity'|trans({}, 'policy_wizard') }}</dt>
+            <dd>{{ cover.dora_validity_date }}</dd>
+        {% endif %}
+
+        {# Climate-Change-Aware Marker — ISO 27001:2022 Amd. 1:2024 #}
+        {% if cover.climate_change_aware is defined and cover.climate_change_aware %}
+            <dt>{{ 'policy_wizard.export.cover.climate_change'|trans({}, 'policy_wizard') }}</dt>
+            <dd>{{ 'policy_wizard.export.cover.climate_change_value'|trans({}, 'policy_wizard') }}</dd>
+        {% endif %}
     </dl>
 </div>

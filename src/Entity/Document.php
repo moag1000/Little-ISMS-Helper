@@ -550,4 +550,62 @@ class Document
         return $this->policyBodyEditedAt !== null
             || $this->policyBodyEditedBy !== null;
     }
+
+    /**
+     * Compliance-Manager Wish — parse the `dora-validity:YYYY-MM-DD`
+     * EntityTag name into an immutable date so the document show-view
+     * and PDF cover can render the DORA-Stand prominently.
+     *
+     * Documents do not own their tags directly (the `EntityTag` table is
+     * the join row); callers resolve the active tag-name list via
+     * {@see \App\Repository\EntityTagRepository::findActiveFor} and pass
+     * the names in. Returns null when no `dora-validity:*` tag is
+     * present or when the date payload fails ISO-8601 parsing.
+     *
+     * @param iterable<int, string> $tagNames Active tag names for this document.
+     */
+    public static function parseDoraValidityFromTags(iterable $tagNames): ?DateTimeImmutable
+    {
+        foreach ($tagNames as $name) {
+            if (!is_string($name) || $name === '') {
+                continue;
+            }
+            if (!str_starts_with($name, 'dora-validity:')) {
+                continue;
+            }
+            $payload = substr($name, strlen('dora-validity:'));
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $payload)) {
+                continue;
+            }
+            $parsed = DateTimeImmutable::createFromFormat('!Y-m-d', $payload);
+            // Strict round-trip check — `createFromFormat` silently
+            // rolls over invalid dates (Feb 30 → Mar 2). Reject when
+            // the formatted result diverges from the input payload.
+            if ($parsed instanceof DateTimeImmutable && $parsed->format('Y-m-d') === $payload) {
+                return $parsed;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Compliance-Manager Wish — true when the active tag set marks the
+     * document as Climate-Change-aware (ISO 27001:2022 Amd. 1:2024).
+     *
+     * The wizard emits `climate-change:amended` on top-level ISO 27001
+     * Information-Security-Policy renders. Show-view + PDF cover use
+     * the flag to surface a prominent badge so auditors recognise the
+     * 2024 amendment was applied without reading the body prose.
+     *
+     * @param iterable<int, string> $tagNames Active tag names for this document.
+     */
+    public static function isClimateChangeAwareFromTags(iterable $tagNames): bool
+    {
+        foreach ($tagNames as $name) {
+            if (is_string($name) && $name === 'climate-change:amended') {
+                return true;
+            }
+        }
+        return false;
+    }
 }
