@@ -293,6 +293,7 @@
     {% endblock %}
     {% block table_body %}
         {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+        {% import '_components/_fa_progress.html.twig' as _fa_progress %}
         {% for control in controls %}
         <tr data-filter-target="filterableRow" data-category="{{ control.category }}" data-status="{{ control.implementationStatus }}">
             <td class="bulk-select-column">
