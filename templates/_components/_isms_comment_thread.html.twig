@@ -1,0 +1,76 @@
+{#
+ # Audit V3 C7 — ISMS Comment Thread (Aurora pattern: isms-comment)
+ #
+ # Polymorphic thread renderer for any entity. Pulls comments via
+ # CommentRepository in the controller and renders the isms-comment
+ # pattern. Optional inline form for new comments.
+ #
+ # Variables:
+ #   comments     - array<Comment>
+ #   entityType   - short class name (e.g. 'Risk', 'AuditFinding')
+ #   entityId     - int
+ #   showForm     - bool (default true) — render inline post-comment form
+ #   formAction   - URL the form posts to (e.g. /comment/Risk/42)
+ #   csrfToken    - csrf token (optional)
+ #}
+
+{% set _comments = comments|default([]) %}
+{% set _showForm = showForm|default(true) %}
+
+<section class="fa-section mb-3" aria-label="Kommentare">
+    <div class="fa-section__header">
+        <h2 class="fa-section__title">
+            <i class="fa-icon fa-icon--ui-chat" aria-hidden="true"></i>
+            Kommentare
+            <span class="badge bg-secondary ms-2">{{ _comments|length }}</span>
+        </h2>
+    </div>
+    <div class="fa-section__body">
+        {% if _comments|length > 0 %}
+        <div class="isms-comment-thread">
+            {% for comment in _comments %}
+                {% set author = comment.author %}
+                {% set initials = author
+                    ? (author.firstName|default('?')|first ~ author.lastName|default('?')|first)|upper
+                    : '?' %}
+                <article class="isms-comment">
+                    <div class="isms-comment__avatar" aria-hidden="true">{{ initials }}</div>
+                    <div>
+                        <div class="isms-comment__head">
+                            <span class="isms-comment__author">
+                                {% if author %}{{ author.firstName }} {{ author.lastName }}{% else %}—{% endif %}
+                            </span>
+                            <span class="isms-comment__meta">{{ comment.createdAt|date('d.m.Y H:i') }}</span>
+                        </div>
+                        <div class="isms-comment__body">
+                            {{ comment.body|nl2br }}
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="text-muted mb-0">Noch keine Kommentare.</p>
+        {% endif %}
+
+        {% if _showForm and formAction is defined %}
+        <form method="post" action="{{ formAction }}" class="isms-comment-form mt-3">
+            <input type="hidden" name="_token" value="{{ csrfToken|default('') }}">
+            <label for="comment-body-{{ entityType|lower }}-{{ entityId }}" class="form-label visually-hidden">Kommentar</label>
+            <textarea
+                id="comment-body-{{ entityType|lower }}-{{ entityId }}"
+                name="body"
+                class="form-control fa-cyber-input__field"
+                rows="3"
+                required
+                placeholder="Kommentar verfassen..."></textarea>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                    <i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i>
+                    Senden
+                </button>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+</section>
