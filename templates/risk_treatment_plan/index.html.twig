@@ -132,6 +132,7 @@
             </tr>
         {% endblock %}
         {% block table_body %}
+            {% import '_components/_fa_progress.html.twig' as _fa_progress %}
             {% for plan in plans %}
             <tr class="{{ plan.isOverdue() ? 'table-warning' : '' }}">
                 <td>
