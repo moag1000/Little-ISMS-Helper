@@ -174,7 +174,12 @@ final class KonzernTrendCalculator
             'isArchived' => false,
         ]);
 
-        $acks = $this->policyAcknowledgementRepository->findBy(['tenant' => $tenant]);
+        // Audit V3 W2-C4: only count completed ACKNOWLEDGED rows; PENDING
+        // campaign rows are tracked but unsigned and must not skew trends.
+        $acks = $this->policyAcknowledgementRepository->findBy([
+            'tenant' => $tenant,
+            'status' => \App\Entity\PolicyAcknowledgement::STATUS_ACKNOWLEDGED,
+        ]);
 
         // Map quarter-key → counts.
         $documentCounts = array_fill_keys($quarters, 0);

@@ -93,7 +93,11 @@ final class PolicyAcknowledgementService
                 continue;
             }
             $existing = $this->repository->findOneFor($tenant, $document, $user, $version);
-            if ($existing instanceof PolicyAcknowledgement) {
+            // Audit V3 W2-C4: PENDING rows still count toward "pending"
+            // (the user owes an acknowledgement); only ACKNOWLEDGED
+            // rows close the loop.
+            if ($existing instanceof PolicyAcknowledgement
+                && $existing->getStatus() === PolicyAcknowledgement::STATUS_ACKNOWLEDGED) {
                 continue;
             }
             $pending++;
@@ -127,7 +131,12 @@ final class PolicyAcknowledgementService
         $version = $this->resolveDocumentVersion($document);
 
         $existing = $this->repository->findOneFor($tenant, $document, $user, $version);
-        if ($existing instanceof PolicyAcknowledgement) {
+
+        // Audit V3 W2-C4: an existing PENDING row (from the auto-campaign)
+        // is upgraded in-place to ACKNOWLEDGED. Only an existing
+        // ACKNOWLEDGED row blocks the call.
+        if ($existing instanceof PolicyAcknowledgement
+            && $existing->getStatus() === PolicyAcknowledgement::STATUS_ACKNOWLEDGED) {
             throw new RuntimeException(sprintf(
                 'User %d has already acknowledged Document %d at version %s.',
                 $user->getId() ?? -1,
@@ -136,16 +145,19 @@ final class PolicyAcknowledgementService
             ));
         }
 
-        $ack = new PolicyAcknowledgement();
+        $ack = $existing instanceof PolicyAcknowledgement ? $existing : new PolicyAcknowledgement();
         $ack->setTenant($tenant);
         $ack->setDocument($document);
         $ack->setUser($user);
+        $ack->setStatus(PolicyAcknowledgement::STATUS_ACKNOWLEDGED);
         $ack->setAcknowledgedAt(new DateTimeImmutable());
         $ack->setAcknowledgementMethod($method);
         $ack->setDocumentVersion($version);
         $ack->setIpAddress($ipAddress);
 
-        $this->entityManager->persist($ack);
+        if (!$ack->getId()) {
+            $this->entityManager->persist($ack);
+        }
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
@@ -210,7 +222,10 @@ final class PolicyAcknowledgementService
         if ($tenant instanceof Tenant) {
             foreach ($audience as $user) {
                 $existing = $this->repository->findOneFor($tenant, $document, $user, $version);
-                if ($existing instanceof PolicyAcknowledgement) {
+                // Audit V3 W2-C4: only ACKNOWLEDGED rows count toward coverage —
+                // pending campaign rows are tracked but unsigned.
+                if ($existing instanceof PolicyAcknowledgement
+                    && $existing->getStatus() === PolicyAcknowledgement::STATUS_ACKNOWLEDGED) {
                     $acknowledged++;
                 }
             }
@@ -271,7 +286,12 @@ final class PolicyAcknowledgementService
             }
             $version = $this->resolveDocumentVersion($document);
             $existing = $this->repository->findOneFor($tenant, $document, $user, $version);
-            if ($existing instanceof PolicyAcknowledgement) {
+            // Audit V3 W2-C4: PENDING rows still count as "pending"
+            // (auto-campaign created an audit-trail row but the user
+            // hasn't clicked through). Only ACKNOWLEDGED rows close
+            // the loop.
+            if ($existing instanceof PolicyAcknowledgement
+                && $existing->getStatus() === PolicyAcknowledgement::STATUS_ACKNOWLEDGED) {
                 continue;
             }
             $pending[] = $document;

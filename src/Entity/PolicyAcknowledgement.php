@@ -29,8 +29,25 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_policy_acknowledgement_tenant', columns: ['tenant_id'])]
 #[ORM\Index(name: 'idx_policy_acknowledgement_document', columns: ['document_id'])]
 #[ORM\Index(name: 'idx_policy_acknowledgement_user', columns: ['user_id'])]
+#[ORM\Index(name: 'idx_policy_acknowledgement_status', columns: ['status'])]
 class PolicyAcknowledgement
 {
+    /**
+     * Audit V3 W2-C4 — explicit pending/completed state.
+     *
+     * Previously PolicyAcknowledgement was a "completion-only" row;
+     * the auto-campaign listener could only log a campaign trigger,
+     * not persist per-user audit-trail of "user X was asked to ack
+     * version Y at time T". Adding STATUS_PENDING closes that gap.
+     */
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_ACKNOWLEDGED = 'acknowledged';
+
+    public const ALLOWED_STATUSES = [
+        self::STATUS_PENDING,
+        self::STATUS_ACKNOWLEDGED,
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -48,14 +65,33 @@ class PolicyAcknowledgement
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
+    /**
+     * Lifecycle status. STATUS_PENDING for rows created by the auto
+     * acknowledgement-campaign listener, STATUS_ACKNOWLEDGED once the
+     * user signed off via the inbox UI.
+     */
+    #[ORM\Column(length: 16)]
+    private string $status = self::STATUS_ACKNOWLEDGED;
+
+    /**
+     * When the campaign requested the acknowledgement (snapshot of
+     * the audience at campaign time). Always set; equal to
+     * acknowledgedAt for legacy rows that were created in completed
+     * state directly via the inbox UI.
+     */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?DateTimeInterface $requestedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeInterface $acknowledgedAt = null;
 
     /**
      * Acknowledgement method. Allowed values:
      *   web_click | email_token | training_pass | signed_pdf
+     *
+     * Nullable now: pending rows have no method yet.
      */
-    #[ORM\Column(length: 24)]
+    #[ORM\Column(length: 24, nullable: true)]
     private ?string $acknowledgementMethod = null;
 
     /**
@@ -73,7 +109,12 @@ class PolicyAcknowledgement
 
     public function __construct()
     {
-        $this->acknowledgedAt = new DateTimeImmutable();
+        $now = new DateTimeImmutable();
+        $this->requestedAt = $now;
+        // Backwards-compat: existing call-sites construct + setAcknowledgedAt
+        // immediately, so we keep populating acknowledgedAt on construct.
+        // Auto-campaign callers explicitly downgrade to pending via setStatus().
+        $this->acknowledgedAt = $now;
     }
 
     public function getId(): ?int
@@ -119,12 +160,41 @@ class PolicyAcknowledgement
         return $this;
     }
 
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        if (!in_array($status, self::ALLOWED_STATUSES, true)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Invalid PolicyAcknowledgement status "%s". Allowed: %s',
+                $status,
+                implode(', ', self::ALLOWED_STATUSES),
+            ));
+        }
+        $this->status = $status;
+        return $this;
+    }
+
+    public function getRequestedAt(): ?DateTimeInterface
+    {
+        return $this->requestedAt;
+    }
+
+    public function setRequestedAt(DateTimeInterface $requestedAt): static
+    {
+        $this->requestedAt = $requestedAt;
+        return $this;
+    }
+
     public function getAcknowledgedAt(): ?DateTimeInterface
     {
         return $this->acknowledgedAt;
     }
 
-    public function setAcknowledgedAt(DateTimeInterface $acknowledgedAt): static
+    public function setAcknowledgedAt(?DateTimeInterface $acknowledgedAt): static
     {
         $this->acknowledgedAt = $acknowledgedAt;
         return $this;
@@ -135,7 +205,7 @@ class PolicyAcknowledgement
         return $this->acknowledgementMethod;
     }
 
-    public function setAcknowledgementMethod(string $acknowledgementMethod): static
+    public function setAcknowledgementMethod(?string $acknowledgementMethod): static
     {
         $this->acknowledgementMethod = $acknowledgementMethod;
         return $this;
