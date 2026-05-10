@@ -23,6 +23,31 @@
 
     <main class="fa-aurora-surface">
 
+    {# V3 B4 / EF-1: Auto-Collect Card (Alva-Tipp pattern) #}
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="card fa-section border-info mb-4">
+            <div class="card-body py-3">
+                <div class="d-flex align-items-start gap-3 flex-wrap">
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <i class="fa-icon fa-icon--nav-stars text-info" aria-hidden="true"></i>
+                            <strong>{{ 'management_review.auto_collect.title'|trans({}, 'management_review') }}</strong>
+                            <span class="badge bg-info-subtle text-info small">Alva-Tipp</span>
+                        </div>
+                        <p class="text-muted mb-0 small">{{ 'management_review.auto_collect.help'|trans({}, 'management_review') }}</p>
+                    </div>
+                    <form method="post" action="{{ path('app_management_review_auto_collect') }}" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('auto_collect_review') }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--info">
+                            <i class="fa-icon fa-icon--ui-magic" aria-hidden="true"></i>
+                            {{ 'management_review.auto_collect.cta'|trans({}, 'management_review') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     {# ISO 27001 Clause Information #}
     {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'management_review.iso_requirement'|trans({}, 'management_review'), body: '<span class="small">' ~ 'management_review.iso_clause_info'|trans({}, 'management_review') ~ '</span>' }) }}
 

@@ -175,3 +175,9 @@ management_review:
         action_items_with_deadlines: 'Strukturierte Maßnahmen mit Verantwortlichen und Fristen. JSON-Format: [{action, owner, deadline (ISO-Datum), status: open|in_progress|done}]'
     error:
         owner_required_user_or_person: 'Verantwortlich: Benutzer oder Person aus Stammdaten erforderlich (Freitext allein reicht nicht).'
+    auto_collect:
+        title: 'Aus aktueller Datenlage generieren'
+        title_prefix: 'Management-Review (auto-generiert)'
+        help: 'Spart 30 Min Aggregations-Arbeit: Risiken, Audit-Findings, KPIs, Treatment-Plans und Verbesserungspotenziale werden vorbefüllt — Sie editieren und finalisieren.'
+        cta: 'Vorbefüllt erstellen'
+        success: 'Management-Review wurde aus §9.3-Datenquellen vorbefüllt. Bitte prüfen und ergänzen.'
