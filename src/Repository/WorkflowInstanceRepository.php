@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use DateTimeImmutable;
+use App\Entity\Tenant;
 use App\Entity\User;
 use DateTimeInterface;
 use App\Entity\WorkflowInstance;
@@ -46,6 +47,25 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find active workflow instances scoped to a specific tenant.
+     *
+     * Audit V3 W2-C1: prevents Cross-Tenant-Leakage in ActivityFeed.
+     *
+     * @return WorkflowInstance[] Array of active instances sorted by start date (newest first)
+     */
+    public function findActiveForTenant(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('wi')
+            ->andWhere('wi.tenant = :tenant')
+            ->andWhere('wi.status IN (:statuses)')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('statuses', ['pending', 'in_progress'])
+            ->orderBy('wi.startedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find overdue workflow instances (past due date but still active).
      *
      * @return WorkflowInstance[] Array of overdue instances sorted by due date (oldest first)
@@ -55,6 +75,27 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('wi')
             ->where('wi.status IN (:statuses)')
             ->andWhere('wi.dueDate < :now')
+            ->setParameter('statuses', ['pending', 'in_progress'])
+            ->setParameter('now', new DateTimeImmutable())
+            ->orderBy('wi.dueDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find overdue workflow instances scoped to a specific tenant.
+     *
+     * Audit V3 W2-C2: prevents Cross-Tenant-Leakage in MyDayAggregator.
+     *
+     * @return WorkflowInstance[] Array of overdue instances sorted by due date (oldest first)
+     */
+    public function findOverdueForTenant(Tenant $tenant): array
+    {
+        return $this->createQueryBuilder('wi')
+            ->andWhere('wi.tenant = :tenant')
+            ->andWhere('wi.status IN (:statuses)')
+            ->andWhere('wi.dueDate < :now')
+            ->setParameter('tenant', $tenant)
             ->setParameter('statuses', ['pending', 'in_progress'])
             ->setParameter('now', new DateTimeImmutable())
             ->orderBy('wi.dueDate', 'ASC')
@@ -104,9 +145,10 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
      * Find pending workflow instances for a specific user.
      *
      * @param User $user User to filter by
+     * @param Tenant|null $tenant Optional tenant scope (Audit V3 W2-C2: required to prevent cross-tenant-leakage in MyDayAggregator)
      * @return WorkflowInstance[] Array of pending instances sorted by due date (earliest first)
      */
-    public function findPendingForUser(User $user): array
+    public function findPendingForUser(User $user, ?Tenant $tenant = null): array
     {
         // Get user roles for role-based filtering
         $userRoles = $user->getRoles();
@@ -133,6 +175,12 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
         }
 
         $queryBuilder->andWhere($orx);
+
+        // Audit V3 W2-C2: tenant-scope when provided (callers via TenantContext)
+        if ($tenant instanceof Tenant) {
+            $queryBuilder->andWhere('wi.tenant = :tenant')
+                ->setParameter('tenant', $tenant);
+        }
 
         return $queryBuilder->getQuery()->getResult();
     }

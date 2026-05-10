@@ -48,9 +48,15 @@ class ActivityFeed
     public function recent(?User $user = null, int $limit = 50): array
     {
         $items = [];
+        $tenant = $this->tenantContext->getCurrentTenant();
 
-        // 1. AuditLog (last 50)
-        foreach ($this->auditLogRepo->findAllOrdered($limit, 0) as $log) {
+        // 1. AuditLog (last 50) — tenant-scoped (Audit V3 W2-C1).
+        // When no tenant context is available we deliberately return nothing
+        // from this source rather than leaking cross-tenant rows.
+        $auditLogs = $tenant
+            ? $this->auditLogRepo->findAllOrderedForTenant($tenant, $limit, 0)
+            : [];
+        foreach ($auditLogs as $log) {
             $items[] = [
                 'tone'      => $this->toneForAction($log->getAction() ?? ''),
                 'icon'      => $this->iconForAction($log->getAction() ?? ''),
@@ -63,8 +69,11 @@ class ActivityFeed
             ];
         }
 
-        // 2. WorkflowInstance recent (active)
-        foreach (array_slice($this->workflowRepo->findActive(), 0, 25) as $instance) {
+        // 2. WorkflowInstance recent (active) — tenant-scoped (Audit V3 W2-C1).
+        $activeWorkflows = $tenant
+            ? $this->workflowRepo->findActiveForTenant($tenant)
+            : [];
+        foreach (array_slice($activeWorkflows, 0, 25) as $instance) {
             /** @var WorkflowInstance $instance */
             $items[] = [
                 'tone'      => $instance->getStatus() === 'rejected' ? 'danger'
@@ -82,7 +91,6 @@ class ActivityFeed
         }
 
         // 3. Recent Document changes
-        $tenant = $this->tenantContext->getCurrentTenant();
         if ($tenant) {
             $docs = $this->documentRepo->createQueryBuilder('d')
                 ->andWhere('d.tenant = :tenant')
