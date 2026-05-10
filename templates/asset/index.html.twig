@@ -147,6 +147,24 @@
 {% endif %}
 {% endif %}
 
+{# Aurora filter-chip quick row (Audit V3 C5) — quick toggles for classification #}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{% set _activeClass = app.request.query.get('classification') %}
+{% set _baseAssetUrl = path('app_asset_index') %}
+{{ _fa_filter_chip.group([
+    { label: 'common.all'|trans({}, 'messages'),                href: _baseAssetUrl },
+    { label: 'asset.classification.public'|trans({}, 'asset'),       href: _baseAssetUrl ~ '?classification=public' },
+    { label: 'asset.classification.internal'|trans({}, 'asset'),     href: _baseAssetUrl ~ '?classification=internal' },
+    { label: 'asset.classification.confidential'|trans({}, 'asset'), href: _baseAssetUrl ~ '?classification=confidential' },
+    { label: 'asset.classification.restricted'|trans({}, 'asset'),   href: _baseAssetUrl ~ '?classification=restricted' }
+],
+    _activeClass == 'public' ? 1
+    : (_activeClass == 'internal' ? 2
+    : (_activeClass == 'confidential' ? 3
+    : (_activeClass == 'restricted' ? 4 : 0))),
+    { class: 'mb-3', ariaLabel: 'asset.label.data_classification'|trans({}, 'asset') }
+) }}
+
 {# Search-first Filter: search input prominent, filter dropdowns in collapsible details.
    All state lives in URL query params (UXC-11 / UXC-12). #}
 {% embed '_components/_search_filter_form.html.twig' with {
