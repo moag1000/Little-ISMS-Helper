@@ -1,0 +1,431 @@
+<!-- ══════════════════════════════════════════════════════════════
+     Report-Templates — ISMS-Reports · Cover · Exec · Data · Appendix · Footer
+     ══════════════════════════════════════════════════════════════ -->
+
+<section id="report-overview" class="ds-section">
+    <div class="ds-eyebrow">Output · ISMS-Report-Dokumente</div>
+    <h2 class="ds-h2">Report-Templates</h2>
+    <p class="ds-p">
+        Jeder ISMS-Report braucht dieselben Bausteine — <strong>Cover · Executive-Summary · Daten-Sections · Appendix · Footer-Disclaimer</strong> — sonst ist er weder vorstandstauglich noch audit-fest. Statt jeden Report
+        ad-hoc neu zu layouten (~30 Templates derzeit), kommt jeder aus derselben Vorlage:
+        <code>&lt;article class="report-doc"&gt;</code> mit semantischen Sub-Komponenten.
+    </p>
+    <p class="ds-p">
+        Der Werkzeugkasten unten ist ein <strong>Markup-System</strong>, kein One-Page-Render. Jeder
+        Report ist ein eigenes Dokument — aber alle nutzen dieselben Klassen, Header, KPI-Tiles,
+        Watermarks und Disclaimer-Footer. So ist „Board-One-Pager" optisch nicht von „NIS2-Bericht"
+        zu unterscheiden — beabsichtigt: <em>einheitliches Erscheinungsbild für die gesamte
+        Report-Familie</em>.
+    </p>
+    <div class="ds-example">
+        <div class="ds-example__stage">
+            <div class="ds-policy-pillars">
+                <div class="ds-policy-pillar">
+                    <i class="bi bi-bookmark-star ds-policy-pillar__icon"></i>
+                    <div class="ds-policy-pillar__title">Konsistent</div>
+                    <div class="ds-policy-pillar__desc">Eine Vorlage, alle Reports. Cover &amp; Footer immer gleich.</div>
+                </div>
+                <div class="ds-policy-pillar">
+                    <i class="bi bi-people ds-policy-pillar__icon"></i>
+                    <div class="ds-policy-pillar__title">Vorstands-tauglich</div>
+                    <div class="ds-policy-pillar__desc">Executive-Summary mit TL;DR + KPI-Tiles ganz vorne.</div>
+                </div>
+                <div class="ds-policy-pillar">
+                    <i class="bi bi-shield-check ds-policy-pillar__icon"></i>
+                    <div class="ds-policy-pillar__title">Audit-fest</div>
+                    <div class="ds-policy-pillar__desc">Datenquellen, Methodik &amp; Glossar im Appendix Pflicht.</div>
+                </div>
+                <div class="ds-policy-pillar">
+                    <i class="bi bi-printer ds-policy-pillar__icon"></i>
+                    <div class="ds-policy-pillar__title">Druckbar</div>
+                    <div class="ds-policy-pillar__desc">A4 portrait + landscape-toggle, repeating Header, Status-Watermark.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ds-callout ds-callout--info">
+        <strong>Schwester-Vorlage zum Policy-Doc.</strong> Während <code>policy-doc</code>
+        ISMS-Richtlinien rendert (Cover · TOC · History · Body · Signature), rendert
+        <code>report-doc</code> Berichte (Cover · Exec · Data · Appendix · Footer). Beide nutzen
+        dieselben Aurora-Tokens, dieselbe Status-Watermark-Logik und dieselbe Print-Pipeline.
+    </div>
+</section>
+
+<section id="report-anatomy" class="ds-section">
+    <div class="ds-eyebrow">Report · Anatomie</div>
+    <h2 class="ds-h2">Aufbau eines Report-Dokuments</h2>
+    <p class="ds-p">
+        Ein Report ist ein <code>&lt;article class="report-doc"&gt;</code> mit fünf Pflicht-Slots:
+        <code>.report-doc__cover</code>, <code>.report-doc__exec-summary</code>,
+        <code>.report-doc__data-section</code> (1..n, wiederholbar),
+        <code>.report-doc__appendix</code>, <code>.report-doc__footer-disclaimer</code>.
+        Reihenfolge ist verbindlich — die Print-Styles setzen Page-Breaks an genau diesen Übergängen.
+    </p>
+    <div class="ds-example">
+        <div class="ds-example__stage">
+            <div class="ds-policy-anatomy">
+                <div class="ds-policy-anatomy__page" data-slot="cover">
+                    <span class="ds-policy-anatomy__num">1</span>
+                    <div class="ds-policy-anatomy__name">.report-doc__cover</div>
+                    <div class="ds-policy-anatomy__hint">Logo · Titel · Subtitle (z.B. „Q2/2026") · Status · Generated-At · Audience-Pill</div>
+                </div>
+                <div class="ds-policy-anatomy__arrow">›</div>
+                <div class="ds-policy-anatomy__page" data-slot="exec">
+                    <span class="ds-policy-anatomy__num">2</span>
+                    <div class="ds-policy-anatomy__name">.report-doc__exec-summary</div>
+                    <div class="ds-policy-anatomy__hint">TL;DR · 3-5 Key-Findings · 4-up KPI-Tiles · Trend-Indicator</div>
+                </div>
+                <div class="ds-policy-anatomy__arrow">›</div>
+                <div class="ds-policy-anatomy__page ds-policy-anatomy__page--wide" data-slot="data">
+                    <span class="ds-policy-anatomy__num">3</span>
+                    <div class="ds-policy-anatomy__name">.report-doc__data-section ×n</div>
+                    <div class="ds-policy-anatomy__hint">Heading · Intro · Charts (Bar/Line/Pie/Heatmap) · Tabelle</div>
+                </div>
+                <div class="ds-policy-anatomy__arrow">›</div>
+                <div class="ds-policy-anatomy__page" data-slot="appendix">
+                    <span class="ds-policy-anatomy__num">4</span>
+                    <div class="ds-policy-anatomy__name">.report-doc__appendix</div>
+                    <div class="ds-policy-anatomy__hint">Methodik · Datenquellen · Glossar</div>
+                </div>
+                <div class="ds-policy-anatomy__arrow">›</div>
+                <div class="ds-policy-anatomy__page" data-slot="footer">
+                    <span class="ds-policy-anatomy__num">5</span>
+                    <div class="ds-policy-anatomy__name">.report-doc__footer-disclaimer</div>
+                    <div class="ds-policy-anatomy__hint">Verteilung · Vertraulichkeits-Klausel · Branding · Page-Number</div>
+                </div>
+            </div>
+        </div>
+        <pre class="ds-example__code">&lt;article class="report-doc report-doc--final report-doc--vorstand"
+         data-report-status="final"
+         data-report-audience="vorstand"&gt;
+
+  &lt;header  class="report-doc__cover"&gt;…&lt;/header&gt;
+  &lt;section class="report-doc__exec-summary"&gt;…&lt;/section&gt;
+
+  &lt;section class="report-doc__data-section"&gt;
+    &lt;h2 class="report-doc__section-heading"&gt;Risiko-Verteilung&lt;/h2&gt;
+    &lt;div class="report-doc__chart-grid"&gt;…charts…&lt;/div&gt;
+    &lt;div class="report-doc__table-wrap"&gt;…tabelle…&lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;section class="report-doc__appendix"&gt;…&lt;/section&gt;
+  &lt;footer  class="report-doc__footer-disclaimer"&gt;…&lt;/footer&gt;
+&lt;/article&gt;</pre>
+    </div>
+    <div class="ds-callout">
+        <strong>Statuswerte für <code>data-report-status</code>.</strong>
+        <ul class="ds-list">
+            <li><code>draft</code> — Watermark <em>ENTWURF</em>, nur für interne Vorab-Reviews</li>
+            <li><code>final</code> — kein Watermark, freigegeben zur Verteilung</li>
+            <li><code>confidential</code> — Watermark <em>VERTRAULICH</em>, beschränkter Verteiler</li>
+            <li><code>auditor-only</code> — Watermark <em>AUDITOR-ONLY</em>, nur für externe Auditoren</li>
+        </ul>
+    </div>
+</section>
+
+<section id="report-cover" class="ds-section">
+    <div class="ds-eyebrow">Report · Cover</div>
+    <h2 class="ds-h2">Cover-Page</h2>
+    <p class="ds-p">
+        Seite 1 jedes Reports. Logo + Titel + Subtitle + Status-/Audience-Pill + Klassifikation +
+        Stand-Datum. Der Audience-Pill steuert das Layout: <code>vorstand</code> = visual-first,
+        <code>auditor</code> = table-first, <code>aufsicht</code> = norm-anchor-first.
+    </p>
+    <div class="ds-example">
+        <pre class="ds-example__code">&lt;header class="report-doc__cover"&gt;
+  &lt;div class="report-doc__cover-top"&gt;
+    &lt;div class="report-doc__brand"&gt;
+      &lt;div class="report-doc__logo"&gt;A&lt;/div&gt;
+      &lt;div&gt;
+        &lt;div class="report-doc__brand-name"&gt;Acme GmbH&lt;/div&gt;
+        &lt;div class="report-doc__brand-meta"&gt;Information Security Management System&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="report-doc__chips"&gt;
+      &lt;span class="report-doc__chip report-doc__chip--audience-vorstand"&gt;Vorstand&lt;/span&gt;
+      &lt;span class="report-doc__chip report-doc__chip--status-final"&gt;Final&lt;/span&gt;
+      &lt;span class="report-doc__chip report-doc__chip--classification"&gt;CONFIDENTIAL&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="report-doc__cover-center"&gt;
+    &lt;p class="report-doc__kicker"&gt;Quartalsbericht · Q2/2026&lt;/p&gt;
+    &lt;h1 class="report-doc__title"&gt;ISMS Board One-Pager&lt;/h1&gt;
+    &lt;p  class="report-doc__sub"&gt;Status, Risiken, Compliance &amp; KPIs zum Quartalsende.&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;dl class="report-doc__cover-grid"&gt;
+    &lt;div&gt;&lt;dt&gt;Berichtsperiode&lt;/dt&gt;&lt;dd&gt;Q2/2026&lt;/dd&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;dt&gt;Erstellt am&lt;/dt&gt;&lt;dd&gt;&lt;time&gt;30.06.2026&lt;/time&gt;&lt;/dd&gt;&lt;/div&gt;
+    &lt;div&gt;&lt;dt&gt;Erstellt durch&lt;/dt&gt;&lt;dd&gt;M. Lange · CISO&lt;/dd&gt;&lt;/div&gt;
+  &lt;/dl&gt;
+&lt;/header&gt;</pre>
+    </div>
+</section>
+
+<section id="report-exec-summary" class="ds-section">
+    <div class="ds-eyebrow">Report · Executive Summary</div>
+    <h2 class="ds-h2">Executive Summary</h2>
+    <p class="ds-p">
+        TL;DR-Box mit 3-5 Key-Findings + 4-up-KPI-Grid. Die Box steht <em>vor</em> der ersten
+        Daten-Section: ein Vorstand soll in 30 Sekunden den Status erkennen können. Die
+        TL;DR-Items haben einen <code>tone</code>-Modifier (<code>ok</code>, <code>warn</code>,
+        <code>danger</code>) — der Punkt-Indikator färbt sich entsprechend.
+    </p>
+    <div class="ds-example">
+        <pre class="ds-example__code">&lt;section class="report-doc__exec-summary"&gt;
+  &lt;h2 class="report-doc__exec-heading"&gt;Executive Summary&lt;/h2&gt;
+
+  &lt;div class="report-doc__tldr"&gt;
+    &lt;p class="report-doc__tldr-label"&gt;TL;DR&lt;/p&gt;
+    &lt;ul class="report-doc__tldr-list"&gt;
+      &lt;li class="report-doc__tldr-item report-doc__tldr-item--ok"&gt;
+        &lt;span class="report-doc__tldr-dot"&gt;&lt;/span&gt;
+        &lt;span&gt;&lt;strong&gt;ISMS-Health&lt;/strong&gt; — 92% (+4% ggü. Vorquartal)&lt;/span&gt;
+      &lt;/li&gt;
+      &lt;li class="report-doc__tldr-item report-doc__tldr-item--warn"&gt;…&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+
+  &lt;div class="report-doc__kpi-grid"&gt;
+    &lt;div class="report-doc__kpi-tile report-doc__kpi-tile--success"&gt;
+      &lt;div class="report-doc__kpi-label"&gt;ISMS-Health&lt;/div&gt;
+      &lt;div class="report-doc__kpi-value"&gt;92%&lt;/div&gt;
+      &lt;div class="report-doc__kpi-trend report-doc__kpi-trend--up"&gt;▲ +4%&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="report-doc__kpi-tile report-doc__kpi-tile--warning"&gt;…&lt;/div&gt;
+    &lt;div class="report-doc__kpi-tile report-doc__kpi-tile--danger"&gt;…&lt;/div&gt;
+    &lt;div class="report-doc__kpi-tile report-doc__kpi-tile--neutral"&gt;…&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</pre>
+    </div>
+    <div class="ds-callout">
+        <strong>KPI-Tile-Tones.</strong> <code>success</code> (grün) / <code>warning</code> (gelb)
+        / <code>danger</code> (rot) / <code>neutral</code> (primary). Der linke Border-Stripe färbt
+        sich entsprechend. Die <code>--vorstand</code>-Audience hebt die Tile-Höhe und
+        Schriftgrößen an, die <code>--auditor</code>-Audience reduziert sie zugunsten dichterer
+        Tabellen.
+    </div>
+</section>
+
+<section id="report-data-section" class="ds-section">
+    <div class="ds-eyebrow">Report · Data Sections</div>
+    <h2 class="ds-h2">Daten-Sections (wiederholbar)</h2>
+    <p class="ds-p">
+        Eine Daten-Section bündelt eine Frage-Antwort-Einheit: Heading + optionaler Intro-Text +
+        Charts (responsive Grid, fallback dompdf-img) + Tabelle (Zebra, Sticky-Header on Web).
+        Mehrere Sections werden hintereinandergehängt — beim Druck setzt CSS einen Page-Break
+        zwischen jeder Section.
+    </p>
+    <div class="ds-example">
+        <pre class="ds-example__code">&lt;section class="report-doc__data-section"&gt;
+  &lt;h2 class="report-doc__section-heading"&gt;Risiko-Verteilung nach Score&lt;/h2&gt;
+  &lt;p  class="report-doc__section-intro"&gt;Das Risikoportfolio …&lt;/p&gt;
+
+  &lt;div class="report-doc__chart-grid"&gt;
+    &lt;figure class="report-doc__chart report-doc__chart--bar"&gt;
+      &lt;img src="…/risk-bar.png" alt=""&gt;
+      &lt;figcaption class="report-doc__chart-caption"&gt;Risiken nach Schweregrad&lt;/figcaption&gt;
+    &lt;/figure&gt;
+    &lt;figure class="report-doc__chart report-doc__chart--pie"&gt;
+      &lt;div class="report-doc__chart-placeholder" data-chart-type="pie"&gt;Pie&lt;/div&gt;
+    &lt;/figure&gt;
+  &lt;/div&gt;
+
+  &lt;div class="report-doc__table-wrap"&gt;
+    &lt;p class="report-doc__table-caption"&gt;Top 10 Risiken nach Inherent-Risk&lt;/p&gt;
+    &lt;table class="report-doc__table"&gt;
+      &lt;thead&gt;&lt;tr&gt;&lt;th&gt;ID&lt;/th&gt;&lt;th&gt;Titel&lt;/th&gt;&lt;th&gt;Score&lt;/th&gt;&lt;th&gt;Owner&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+      &lt;tbody&gt;…&lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</pre>
+    </div>
+    <div class="ds-callout ds-callout--info">
+        <strong>Chart-Strategie.</strong> Bei Web-Preview rendert die Section statt eines Bildes
+        ein <code>.report-doc__chart-placeholder</code> mit Schraffur — sichtbar für den Designer,
+        ignoriert beim Druck wenn ein <code>image_src</code> übergeben wird. Server-Side rendert
+        z.B. <code>SvgChartRenderer</code> via <code>chart.js-node</code> ein PNG, das dann via
+        dompdf inline eingebettet wird.
+    </div>
+</section>
+
+<section id="report-appendix" class="ds-section">
+    <div class="ds-eyebrow">Report · Appendix</div>
+    <h2 class="ds-h2">Appendix — Methodik · Datenquellen · Glossar</h2>
+    <p class="ds-p">
+        Pflicht-Slot für Audit-Festigkeit. Der Auditor will wissen: <em>woher kommen die Zahlen,
+        wie wurden sie berechnet, was bedeuten die Begriffe</em>. Ohne Appendix ist ein Report
+        nicht audit-tauglich — und ein Vorstand traut Zahlen ohne Methodik-Hinweis sowieso nicht.
+    </p>
+    <div class="ds-example">
+        <pre class="ds-example__code">&lt;section class="report-doc__appendix"&gt;
+  &lt;h2 class="report-doc__appendix-heading"&gt;Anhang&lt;/h2&gt;
+
+  &lt;div class="report-doc__appendix-block"&gt;
+    &lt;h3 class="report-doc__appendix-subheading"&gt;Methodik&lt;/h3&gt;
+    &lt;div class="report-doc__appendix-body"&gt;
+      &lt;p&gt;Risikoscore berechnet als Probability × Impact (1-25). Threshold: ≥20 critical, ≥12 high.&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="report-doc__appendix-block"&gt;
+    &lt;h3 class="report-doc__appendix-subheading"&gt;Datenquellen&lt;/h3&gt;
+    &lt;ul class="report-doc__appendix-sources"&gt;
+      &lt;li&gt;&lt;strong&gt;ISMS-DB&lt;/strong&gt; — Stand 30.06.2026, 23:59 UTC&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;Compliance-Engine&lt;/strong&gt; — ISO 27001:2022 Annex A&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+
+  &lt;div class="report-doc__appendix-block"&gt;
+    &lt;h3 class="report-doc__appendix-subheading"&gt;Glossar&lt;/h3&gt;
+    &lt;dl class="report-doc__appendix-glossary"&gt;
+      &lt;div&gt;&lt;dt&gt;MTTR&lt;/dt&gt;&lt;dd&gt;Mean Time To Resolve — durchschnittliche Lösungszeit&lt;/dd&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;dt&gt;ISMS-Health&lt;/dt&gt;&lt;dd&gt;Composite-Score aus 5 Indikatoren …&lt;/dd&gt;&lt;/div&gt;
+    &lt;/dl&gt;
+  &lt;/div&gt;
+&lt;/section&gt;</pre>
+    </div>
+</section>
+
+<section id="report-footer" class="ds-section">
+    <div class="ds-eyebrow">Report · Footer / Disclaimer</div>
+    <h2 class="ds-h2">Footer-Disclaimer</h2>
+    <p class="ds-p">
+        Schließt jeden Report ab. Drei Bereiche: <strong>Verteilungsliste</strong> (wer bekommt
+        diesen Report?), <strong>Vertraulichkeitsklausel</strong> (Disclaimer-Box mit Default oder
+        custom-Text), <strong>Branding-Footer</strong> (Tenant-Name + Generated-At + Klassifikation
+        + Page-Number). Die Page-Number kommt im Print über
+        <code>@bottom-right counter(page) " / " counter(pages)</code>.
+    </p>
+    <div class="ds-example">
+        <pre class="ds-example__code">&lt;footer class="report-doc__footer-disclaimer"&gt;
+  &lt;div class="report-doc__distribution"&gt;
+    &lt;p class="report-doc__distribution-label"&gt;Verteiler&lt;/p&gt;
+    &lt;ul class="report-doc__distribution-list"&gt;
+      &lt;li&gt;&lt;strong&gt;CISO&lt;/strong&gt; · M. Lange&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;Vorstand&lt;/strong&gt; · T. Berger&lt;/li&gt;
+      &lt;li&gt;&lt;strong&gt;Aufsichtsrat&lt;/strong&gt; · H. Kuhn&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+
+  &lt;div class="report-doc__disclaimer-text"&gt;
+    Dieser Bericht enthält vertrauliche Informationen über den ISMS-Status der Acme GmbH …
+  &lt;/div&gt;
+
+  &lt;div class="report-doc__footer-meta"&gt;
+    &lt;span class="report-doc__footer-brand"&gt;Acme GmbH&lt;/span&gt;
+    · &lt;span&gt;Erstellt: 30.06.2026&lt;/span&gt;
+    · &lt;span class="report-doc__footer-classification"&gt;CONFIDENTIAL&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/footer&gt;</pre>
+    </div>
+</section>
+
+<section id="report-audience-layouts" class="ds-section">
+    <div class="ds-eyebrow">Report · Audience-Layouts</div>
+    <h2 class="ds-h2">Audience-spezifische Layout-Varianten</h2>
+    <p class="ds-p">
+        Drei Audience-Modifier passen das Layout an die Zielgruppe an, ohne die Slot-Reihenfolge
+        zu ändern:
+    </p>
+    <div class="ds-example">
+        <div class="ds-example__stage">
+            <div class="ds-policy-pillars">
+                <div class="ds-policy-pillar">
+                    <i class="bi bi-graph-up-arrow ds-policy-pillar__icon"></i>
+                    <div class="ds-policy-pillar__title">--vorstand</div>
+                    <div class="ds-policy-pillar__desc">Visual-first. Größere KPI-Tiles (110px), Charts in 2-up Grid, weniger Text. „Auf den ersten Blick erkennbar."</div>
+                </div>
+                <div class="ds-policy-pillar">
+                    <i class="bi bi-table ds-policy-pillar__icon"></i>
+                    <div class="ds-policy-pillar__title">--auditor</div>
+                    <div class="ds-policy-pillar__desc">Table-first. Dichte Tabellen (11pt), kleinere Charts, kompakte KPI-Tiles. „Vollständige Datenbasis."</div>
+                </div>
+                <div class="ds-policy-pillar">
+                    <i class="bi bi-shield-lock ds-policy-pillar__icon"></i>
+                    <div class="ds-policy-pillar__title">--aufsicht</div>
+                    <div class="ds-policy-pillar__desc">Norm-first. Appendix optisch hervorgehoben (3px primary border-top), 2-Spalten-Cover-Grid. „Norm-Anker im Mittelpunkt."</div>
+                </div>
+            </div>
+        </div>
+        <pre class="ds-example__code">// Wahl per data-Attribut + class-Modifier
+&lt;article class="report-doc report-doc--final report-doc--vorstand"
+         data-report-audience="vorstand"&gt;…&lt;/article&gt;
+
+&lt;article class="report-doc report-doc--final report-doc--auditor"
+         data-report-audience="auditor"&gt;…&lt;/article&gt;
+
+&lt;article class="report-doc report-doc--auditor-only report-doc--aufsicht"
+         data-report-audience="aufsicht"&gt;…&lt;/article&gt;</pre>
+    </div>
+    <div class="ds-callout">
+        <strong>Layout-Auswahl im Controller.</strong> Üblicherweise vom Use-Case bestimmt:
+        <code>board_one_pager</code> → <code>vorstand</code>, <code>iso_audit_report</code> →
+        <code>auditor</code>, <code>nis2_quarterly</code> → <code>aufsicht</code>. Wenn der gleiche
+        Bericht für mehrere Audiences gerendert werden muss (z.B. Risk-Report sowohl für Vorstand
+        als auch ISMS-Manager), den Audience-Modifier per Query-Param oder Tab umschalten.
+    </div>
+</section>
+
+<section id="report-watermark" class="ds-section">
+    <div class="ds-eyebrow">Report · Watermark</div>
+    <h2 class="ds-h2">Status-Watermarks</h2>
+    <p class="ds-p">
+        Drei Stati zeigen einen Watermark hinter dem Inhalt: <code>draft</code> (rot, „ENTWURF"),
+        <code>confidential</code> (gelb, „VERTRAULICH"), <code>auditor-only</code> (blau,
+        „AUDITOR-ONLY"). <code>final</code> zeigt keinen Watermark — der Bericht ist freigegeben.
+        Implementiert als <code>::before</code>-Pseudo-Element mit <code>z-index: 1</code> hinter
+        dem Inhalt (<code>z-index: 2</code>) — Text bleibt selektierbar.
+    </p>
+    <div class="ds-example">
+        <pre class="ds-example__code">.report-doc--draft::before { content: attr(data-watermark); color: var(--danger-glow); }
+.report-doc--confidential::before { color: var(--warning-glow); }
+.report-doc--auditor-only::before { color: var(--primary-glow); }
+.report-doc--final::before { /* kein Watermark */ }</pre>
+    </div>
+    <div class="ds-callout">
+        <strong>Druckverhalten.</strong> Der Watermark erscheint im Print proportional zur Größe
+        einer A4-Seite (clamp(48px, 12vw, 140px)). Auf jeder gedruckten Seite — durch das fixed
+        positioning des Pseudo-Elements innerhalb der Article-Box. Wenn der Watermark auf jeder
+        Seite garantiert sichtbar sein muss, einen <code>position: fixed</code>-Trick im
+        @media print Block ergänzen (siehe <code>policy-doc.css</code> für Pattern).
+    </div>
+</section>
+
+<section id="report-migration" class="ds-section">
+    <div class="ds-eyebrow">Report · Migration</div>
+    <h2 class="ds-h2">Migration der ~30 bestehenden Reports</h2>
+    <p class="ds-p">
+        Initial migriert (Referenz): <code>templates/reports/board_one_pager.html.twig</code>
+        (vorstand), <code>templates/group_report/kpi_matrix.html.twig</code> (auditor),
+        <code>templates/pdf/risk_report.html.twig</code> (auditor). Die übrigen ~27 Reports werden
+        als Follow-up-Ticket migriert — Pattern für jede Migration:
+    </p>
+    <div class="ds-example">
+        <pre class="ds-example__code">// Vorher: 200+ Zeilen ad-hoc CSS + Markup
+&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;style&gt;…&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div class="header"&gt;…&lt;/div&gt;&lt;div class="metrics-grid"&gt;…
+
+// Nachher: 1 Macro-Call + struktur. Daten
+{% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
+{{ _fa_report_doc.render({
+    report:       { title: 'ISMS Board One-Pager', subtitle: 'Q2/2026',
+                    status: 'final', audience: 'vorstand',
+                    generated_at: generated_at|date('d.m.Y'),
+                    classification: 'CONFIDENTIAL' },
+    key_findings: [{label:'ISMS-Health 92%', tone:'ok'}, …],
+    kpis:         [{label:'Health', value:'92%', trend:'up', tone:'success'}, …],
+    sections:     [{heading:'Top Risks', table: {…}}, …],
+    appendix:     {methodology:'…', sources:[…], glossary:[…]},
+    distribution: [{role:'CISO', name:'…'}],
+}) }}</pre>
+    </div>
+    <div class="ds-callout ds-callout--info">
+        <strong>Geltungsbereich der Vorlage.</strong> <code>fa-report-doc</code> ersetzt die
+        ad-hoc HTML-Templates für PDF-Reports. Web-Listen-Views (Dashboard-Cards, Filter-UIs)
+        bleiben in den Aurora-Standard-Macros (<code>fa-feature-card</code>,
+        <code>fa-section</code> etc.). Faustregel: <em>Wenn das Output ein Doc/PDF ist, nutze
+        report-doc; wenn es eine interaktive Liste ist, nutze die Standard-Macros.</em>
+    </div>
+</section>

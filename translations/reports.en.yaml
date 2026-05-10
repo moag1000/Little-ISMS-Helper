@@ -110,6 +110,49 @@ report:
     document_type: 'Document Type'
     header_center: 'Header (Center)'
     default_reviewer: 'Default Reviewer'
+    # Report-Doc 5-slot template (used by templates/_components/_fa_report_doc.html.twig)
+    doc:
+        brand:
+            default_meta: 'Information Security Management System'
+        watermark:
+            draft: 'DRAFT'
+            confidential: 'CONFIDENTIAL'
+            auditor_only: 'AUDITOR-ONLY'
+        status:
+            draft: 'Draft'
+            final: 'Final'
+            confidential: 'Confidential'
+            auditor_only: 'Auditor-Only'
+        audience:
+            vorstand: 'Board'
+            auditor: 'Auditor'
+            aufsicht: 'Regulator'
+        cover:
+            period: 'Reporting Period'
+            generated_at: 'Generated on'
+            prepared_by: 'Prepared by'
+            audience: 'Audience'
+            classification: 'Classification'
+            standard: 'Standard'
+        exec_summary:
+            heading: 'Executive Summary'
+            tldr_label: 'TL;DR — Key Findings'
+        chart:
+            type:
+                bar: 'Bar Chart'
+                line: 'Line Chart'
+                pie: 'Pie Chart'
+                heatmap: 'Heatmap'
+                area: 'Area Chart'
+        appendix:
+            heading: 'Appendix'
+            methodology: 'Methodology'
+            sources: 'Data Sources'
+            glossary: 'Glossary'
+        footer:
+            distribution_label: 'Distribution'
+            generated: 'Generated'
+            default_disclaimer: 'This document contains confidential information and is intended only for the named recipients. Disclosure to third parties requires written approval.'
 
 # PDF Export Templates
 pdf:
