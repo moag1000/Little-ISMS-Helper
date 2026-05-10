@@ -1734,4 +1734,39 @@ class Risk
         return $this;
     }
 
+    /**
+     * V3 W2-FV-5 — audit-trail: when was this risk last reassessed in
+     * direct response to an incident (and which incident triggered it)?
+     * Set by IncidentController::reassessLinkedRisk() so an auditor can
+     * verify "Risk-Update was incident-driven" without grep-ing the audit
+     * log.
+     */
+    #[ORM\Column(name: 'last_incident_reassessment_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $lastIncidentReassessmentAt = null;
+
+    #[ORM\ManyToOne(targetEntity: Incident::class)]
+    #[ORM\JoinColumn(name: 'last_incident_reassessment_incident_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Incident $lastIncidentReassessmentIncident = null;
+
+    public function getLastIncidentReassessmentAt(): ?DateTimeImmutable
+    {
+        return $this->lastIncidentReassessmentAt;
+    }
+
+    public function setLastIncidentReassessmentAt(?DateTimeImmutable $at): static
+    {
+        $this->lastIncidentReassessmentAt = $at;
+        return $this;
+    }
+
+    public function getLastIncidentReassessmentIncident(): ?Incident
+    {
+        return $this->lastIncidentReassessmentIncident;
+    }
+
+    public function setLastIncidentReassessmentIncident(?Incident $incident): static
+    {
+        $this->lastIncidentReassessmentIncident = $incident;
+        return $this;
+    }
 }

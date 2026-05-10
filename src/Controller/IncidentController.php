@@ -616,6 +616,47 @@ class IncidentController extends AbstractController
         return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
     }
     /**
+     * V3 W2-FV-5 — Reassess a risk in direct response to an incident.
+     *
+     * Stamps the audit-trail (Risk.lastIncidentReassessmentAt /
+     * .lastIncidentReassessmentIncident) and forwards the risk-owner to
+     * the Risk-Edit screen so they can update probability / impact /
+     * controls based on the realised incident.
+     *
+     * Risk must be among the incident's realizedRisks (security guard);
+     * otherwise the request is treated as tampered.
+     */
+    #[Route('/incident/{id}/risk/{riskId}/reassess', name: 'app_incident_risk_reassess', requirements: ['id' => '\d+', 'riskId' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function reassessLinkedRisk(Request $request, Incident $incident, int $riskId): Response
+    {
+        if (!$this->isCsrfTokenValid('incident-risk-reassess-' . $incident->getId() . '-' . $riskId, (string) $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('messages.csrf.invalid', [], 'messages'));
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        $risk = $this->riskRepository->find($riskId);
+        if (!$risk instanceof Risk) {
+            $this->addFlash('error', $this->translator->trans('risk.not_found', [], 'risk'));
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        // Guard: risk must be linked to this incident.
+        if (!$incident->getRealizedRisks()->contains($risk)) {
+            $this->addFlash('error', $this->translator->trans('incident.fv5.not_linked', [], 'incident'));
+            return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
+        }
+
+        $risk->setLastIncidentReassessmentAt(new \DateTimeImmutable());
+        $risk->setLastIncidentReassessmentIncident($incident);
+        $this->entityManager->flush();
+
+        $this->addFlash('info', $this->translator->trans('incident.fv5.reassess_started', [], 'incident'));
+
+        return $this->redirectToRoute('app_risk_edit', ['id' => $risk->getId()]);
+    }
+
+    /**
      * Generate BCM impact report (PDF)
      */
     #[Route('/incident/{id}/bcm-impact/report', name: 'app_incident_bcm_impact_report', methods: ['GET'])]

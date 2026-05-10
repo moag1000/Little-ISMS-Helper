@@ -343,3 +343,10 @@ incident:
     moderate: 3 – Moderate
     major: 4 – Major
     severe: 5 – Severe
+  # V3 W2-FV-5 — Incident-driven Risk-Reassessment
+  fv5:
+    not_linked: Risk is not linked to this incident.
+    reassess_started: Risk reassessment started — please update the risk values based on the incident.
+    reassess_button: Update risk assessment
+    reassess_help: Re-evaluate this risk based on the actual incident.
+    last_reassessed: 'Last incident-driven reassessment on %date%'
