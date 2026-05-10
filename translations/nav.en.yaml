@@ -126,6 +126,11 @@ nav:
             frameworks_mapping: 'Frameworks & Mapping'
             wizards: 'Wizards & Assistants'
             specialized_tools: 'DORA / NIS2 / MRIS / AI'
+            # V3 W2-H2: Persona dashboards (Compliance-Manager dashboard)
+            persona_dashboards: 'Persona Dashboards'
+
+        dashboard:
+            compliance_manager: 'Compliance Manager Dashboard'
 
         help:
             iso9001_bridge: 'ISO 9001 → 27001 Bridge'
@@ -165,6 +170,7 @@ nav:
             audits: 'Internal and external audits'
             training: 'Security awareness training'
             management_reviews: 'Management review meetings'
+            compliance_manager_dashboard: 'Coverage heatmap, open findings, audit plan, doc approvals'
             compliance_frameworks: 'Multi-framework management'
             framework_dashboard: 'Cross-framework overview'
             mapping_hub: 'Central entry: wizard, seeds, quality, transitive coverage'

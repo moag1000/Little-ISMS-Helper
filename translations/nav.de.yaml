@@ -132,6 +132,11 @@ nav:
             frameworks_mapping: 'Frameworks & Mapping'
             wizards: 'Wizards & Assistenten'
             specialized_tools: 'DORA / NIS2 / MRIS / AI'
+            # V3 W2-H2: Persona-Dashboards (Compliance-Manager-Dashboard)
+            persona_dashboards: 'Persona-Dashboards'
+
+        dashboard:
+            compliance_manager: 'Compliance-Manager-Dashboard'
 
         desc:
             home: 'Übersicht und Schnellzugriff'
@@ -165,6 +170,7 @@ nav:
             audits: 'Interne und externe Audits'
             training: 'Sicherheitsbewusstseins-Schulungen'
             management_reviews: 'Managementbewertungs-Meetings'
+            compliance_manager_dashboard: 'Coverage-Heatmap, offene Findings, Audit-Plan, Doc-Approvals'
             compliance_frameworks: 'Multi-Framework-Management'
             framework_dashboard: 'Framework-übergreifende Übersicht'
             mapping_hub: 'Zentraler Einstieg: Wizard, Seeds, Qualität, transitive Abdeckung'

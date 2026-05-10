@@ -426,6 +426,23 @@
         {% if is_module_active('audits') or is_module_active('compliance') %}
         <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="compliance" role="menu" aria-label="{{ 'nav.mega.category.compliance'|trans({}, 'nav') }}">
             <div class="mega-menu-panel-content">
+                {# V3 W2-H2: Compliance-Manager-Dashboard (C2) — was implemented but
+                   never linked from the mega-menu. Surfaced here behind the
+                   compliance-module-gate. #}
+                {% if is_module_active('compliance') %}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.persona_dashboards'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_dashboard_compliance_manager') }}" class="{% if current_route == 'app_dashboard_compliance_manager' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mega.dashboard.compliance_manager'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.compliance_manager_dashboard'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+                {% endif %}
                 <div class="mega-menu-section">
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.auditing'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
