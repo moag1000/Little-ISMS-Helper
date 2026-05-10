@@ -5,3 +5,7 @@ subtitle: 'Letzte Aktivitäten aus Audit-Log, Workflows, Dokumenten und Risiken'
 
 action:
     standard_dashboard: 'Standard-Dashboard'
+
+widget:
+    heading: 'Letzte Aktivität'
+    empty: 'Noch keine Aktivität.'

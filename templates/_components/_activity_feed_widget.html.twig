@@ -19,7 +19,7 @@
 {% if showHeader|default(false) %}
 <h3 class="h5 mb-3">
     <i class="fa-icon fa-icon--ui-circle me-1" aria-hidden="true"></i>
-    Letzte Aktivität
+    {{ 'widget.heading'|trans({}, 'activity_feed') }}
 </h3>
 {% endif %}
 
@@ -62,5 +62,5 @@
     {% endfor %}
 </div>
 {% else %}
-<p class="text-muted mb-0">Noch keine Aktivität.</p>
+<p class="text-muted mb-0">{{ 'widget.empty'|trans({}, 'activity_feed') }}</p>
 {% endif %}

@@ -433,10 +433,11 @@
                 {# V3 W2-H2: Compliance-Manager-Dashboard (C2) — was implemented but
                    never linked from the mega-menu. Surfaced here behind the
                    compliance-module-gate. #}
-                {% if is_module_active('compliance') %}
+                {% if is_module_active('compliance') or is_granted('ROLE_CISO') or is_granted('ROLE_RISK_MANAGER') or is_granted('ROLE_AUDITOR') %}
                 <div class="mega-menu-section">
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.persona_dashboards'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
+                        {% if is_granted('ROLE_COMPLIANCE_MANAGER') and is_module_active('compliance') %}
                         <li><a href="{{ path('app_dashboard_compliance_manager') }}" class="{% if current_route == 'app_dashboard_compliance_manager' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-dashboard" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -444,6 +445,43 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.compliance_manager_dashboard'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_CISO') %}
+                        <li><a href="{{ path('app_dashboard_ciso') }}" class="{% if current_route == 'app_dashboard_ciso' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-shield" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mega.dashboard.ciso'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.ciso_dashboard'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_RISK_MANAGER') %}
+                        <li><a href="{{ path('app_dashboard_risk_manager') }}" class="{% if current_route == 'app_dashboard_risk_manager' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-target" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mega.dashboard.risk_manager'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.risk_manager_dashboard'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_AUDITOR') %}
+                        <li><a href="{{ path('app_dashboard_auditor') }}" class="{% if current_route == 'app_dashboard_auditor' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-clipboard-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mega.dashboard.auditor'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.auditor_dashboard'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_CISO') %}
+                        <li><a href="{{ path('app_dashboard_board') }}" class="{% if current_route == 'app_dashboard_board' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mega.dashboard.board'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.board_dashboard'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
                     </ul>
                 </div>
                 {% endif %}

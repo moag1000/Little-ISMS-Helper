@@ -137,6 +137,10 @@ nav:
 
         dashboard:
             compliance_manager: 'Compliance-Manager-Dashboard'
+            ciso: 'CISO-Dashboard'
+            risk_manager: 'Risk-Manager-Dashboard'
+            auditor: 'Auditor-Dashboard'
+            board: 'Board-Dashboard'
 
         desc:
             home: 'Übersicht und Schnellzugriff'
@@ -171,6 +175,10 @@ nav:
             training: 'Sicherheitsbewusstseins-Schulungen'
             management_reviews: 'Managementbewertungs-Meetings'
             compliance_manager_dashboard: 'Coverage-Heatmap, offene Findings, Audit-Plan, Doc-Approvals'
+            ciso_dashboard: 'Risiko-, Incident- und Control-Übersicht für CISOs'
+            risk_manager_dashboard: 'Top-Risiken, Treatments, Akzeptanzen, KRI-Trends'
+            auditor_dashboard: 'Findings, Nachweise, Audit-Plan, Stichprobenverfolgung'
+            board_dashboard: 'Strategische Risiken, ROI, Compliance-Status für Geschäftsführung'
             compliance_frameworks: 'Multi-Framework-Management'
             framework_dashboard: 'Framework-übergreifende Übersicht'
             mapping_hub: 'Zentraler Einstieg: Wizard, Seeds, Qualität, transitive Abdeckung'
