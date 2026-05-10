@@ -89,7 +89,14 @@
                             {% set tone = coverage >= 80 ? 'success' : (coverage >= 60 ? 'warning' : 'danger') %}
                             {# V3 W3-Aurora: Aurora-Tone-Tokens via inline style — bypass Bootstrap bg-* fallback. #}
                             <tr>
-                                <td><strong>{{ fw.name|default(fw.code|default('—')) }}</strong></td>
+                                <td>
+                                    {# V4-EF-5: Framework name links to drill-down #}
+                                    {% if fw.code is defined and fw.code %}
+                                        <a href="{{ path('app_dashboard_cm_heatmap_drill', {framework: fw.code}) }}" class="fw-bold text-decoration-none link-body-emphasis">{{ fw.name|default(fw.code|default('—')) }}</a>
+                                    {% else %}
+                                        <strong>{{ fw.name|default(fw.code|default('—')) }}</strong>
+                                    {% endif %}
+                                </td>
                                 <td>{{ coverage }}%</td>
                                 <td style="min-width: 180px;">
                                     <div class="progress" role="progressbar" aria-valuenow="{{ coverage }}" aria-valuemin="0" aria-valuemax="100" style="height: 12px; background-color: var(--surface-2);">
@@ -102,6 +109,15 @@
                                     </span>
                                 </td>
                                 <td>
+                                    {# V4-EF-5: Drill-down link to heatmap detail page #}
+                                    {% if fw.code is defined and fw.code %}
+                                        <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm me-1"
+                                           href="{{ path('app_dashboard_cm_heatmap_drill', {framework: fw.code}) }}"
+                                           title="{{ 'compliance_manager.heatmap.drill.title'|trans }}">
+                                            <i class="bi bi-zoom-in" aria-hidden="true"></i>
+                                            {{ 'compliance_manager.heatmap.drill.action'|trans }}
+                                        </a>
+                                    {% endif %}
                                     {# Wizard-Link nur wenn Framework-Code Konsument hat (Whitelist via Route-Requirements). Verhindert 500 bei obsoleten Codes wie 'bait' (DORA-replaced). #}
                                     {% set _knownWizards = ['iso27001','nis2','dora','tisax','gdpr','iso22301','iso27701','iso27017','iso27018','iso42001','bsi_grundschutz','bsi_c5','bsi_c5_2026','bsi_grundschutz_standard','bsi_grundschutz_kern','nist_csf','kritis','pci_dss','soc2','eu_ai_act','eucs','cra'] %}
                                     {% if fw.code is defined and fw.code and (fw.code|lower) in _knownWizards %}

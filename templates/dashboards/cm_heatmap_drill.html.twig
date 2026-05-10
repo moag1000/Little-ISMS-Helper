@@ -1,0 +1,270 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dashboards' %}
+
+{% block title %}{{ 'compliance_manager.heatmap.drill.page_title'|trans({'%framework%': framework_code, '%section%': section_code}) }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+{% import '_components/_fa_section.html.twig' as _fa_section %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
+
+{% block body %}
+<main class="fa-aurora-surface compliance-manager-dashboard">
+
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'compliance_manager.title'|trans, path: 'app_dashboard_compliance_manager' },
+            { label: 'compliance_manager.heatmap.drill.breadcrumb'|trans }
+        ]
+    } only %}
+
+    {{ _fa_page_header.render({
+        badge:    { icon: 'zoom-in', label: framework_code|default('—') },
+        title:    'compliance_manager.heatmap.drill.title'|trans({'%framework%': framework_code, '%section%': section_code ?: 'compliance_manager.heatmap.drill.all_sections'|trans}),
+        subtitle: 'compliance_manager.heatmap.drill.subtitle'|trans,
+        actions: [
+            { label: 'compliance_manager.heatmap.drill.back'|trans, variant: 'ghost', icon: 'arrow-left', href: path('app_dashboard_compliance_manager') ~ '#coverage-heatmap' }
+        ]
+    }) }}
+
+    {# Section / Category filter #}
+    {% if available_sections|length > 0 %}
+    <div class="fa-section mb-3">
+        <div class="fa-section__body">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <span class="text-muted small fw-semibold">{{ 'compliance_manager.heatmap.drill.filter_section'|trans }}:</span>
+                <a class="badge rounded-pill {% if section_code == '' %}bg-primary{% else %}bg-body-secondary text-body{% endif %} text-decoration-none"
+                   href="{{ path('app_dashboard_cm_heatmap_drill', {framework: framework_code}) }}">
+                    {{ 'compliance_manager.heatmap.drill.all_sections'|trans }}
+                </a>
+                {% for sec in available_sections %}
+                    <a class="badge rounded-pill {% if section_code == sec %}bg-primary{% else %}bg-body-secondary text-body{% endif %} text-decoration-none"
+                       href="{{ path('app_dashboard_cm_heatmap_drill', {framework: framework_code, section: sec}) }}">
+                        {{ sec }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Summary KPI row #}
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="display-6 fw-bold text-success">{{ covered|length }}</div>
+                    <div class="small text-muted">{{ 'compliance_manager.heatmap.drill.covered'|trans }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="display-6 fw-bold text-danger">{{ gaps|length }}</div>
+                    <div class="small text-muted">{{ 'compliance_manager.heatmap.drill.gaps'|trans }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="display-6 fw-bold text-warning">{{ open_findings|length }}</div>
+                    <div class="small text-muted">{{ 'compliance_manager.heatmap.drill.findings'|trans }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    {% set pct = all_requirements|length > 0 ? ((covered|length / all_requirements|length) * 100)|round(0) : 0 %}
+                    <div class="display-6 fw-bold {% if pct >= 80 %}text-success{% elseif pct >= 60 %}text-warning{% else %}text-danger{% endif %}">{{ pct }}%</div>
+                    <div class="small text-muted">{{ 'compliance_manager.heatmap.drill.coverage_rate'|trans }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Covered Requirements #}
+    <section class="fa-section mb-4" id="covered-requirements">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="bi bi-check-circle-fill text-success me-1" aria-hidden="true"></i>
+                {{ 'compliance_manager.heatmap.drill.covered'|trans }}
+                <span class="badge bg-success ms-1">{{ covered|length }}</span>
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            {% if covered|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>{{ 'compliance_manager.heatmap.drill.col.req_id'|trans }}</th>
+                                <th>{{ 'compliance_manager.heatmap.drill.col.title'|trans }}</th>
+                                <th>{{ 'compliance_manager.heatmap.drill.col.category'|trans }}</th>
+                                <th>{{ 'compliance_manager.heatmap.drill.col.controls'|trans }}</th>
+                                <th>{{ 'compliance_manager.heatmap.drill.col.priority'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in covered %}
+                                <tr>
+                                    <td><code class="small">{{ req.requirementId }}</code></td>
+                                    <td>{{ req.title }}</td>
+                                    <td>
+                                        {% if req.category %}
+                                            <span class="badge bg-body-secondary text-body border">{{ req.category }}</span>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% for ctrl in req.mappedControls %}
+                                            {% set implStatus = ctrl.implementationStatus|default('unknown') %}
+                                            {% set tone = implStatus in ['implemented','operational'] ? 'success' : (implStatus == 'partially_implemented' ? 'warning' : 'secondary') %}
+                                            <span class="badge text-bg-{{ tone }} me-1" title="{{ implStatus }}">{{ ctrl.controlId|default(ctrl.id) }}</span>
+                                        {% else %}
+                                            <span class="text-muted small">—</span>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% set prio = req.priority|default('medium') %}
+                                        {% set prioTone = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
+                                        <span class="badge text-bg-{{ prioTone[prio]|default('secondary') }}">{{ prio }}</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                {{ _fa_empty_state.render({
+                    mood: 'thinking',
+                    title: 'compliance_manager.heatmap.drill.empty.no_covered_title'|trans,
+                    text: 'compliance_manager.heatmap.drill.empty.no_covered_text'|trans
+                }) }}
+            {% endif %}
+        </div>
+    </section>
+
+    {# Gap Requirements #}
+    <section class="fa-section mb-4" id="gap-requirements">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="bi bi-exclamation-circle-fill text-danger me-1" aria-hidden="true"></i>
+                {{ 'compliance_manager.heatmap.drill.gaps'|trans }}
+                <span class="badge bg-danger ms-1">{{ gaps|length }}</span>
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            {% if gaps|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>{{ 'compliance_manager.heatmap.drill.col.req_id'|trans }}</th>
+                                <th>{{ 'compliance_manager.heatmap.drill.col.title'|trans }}</th>
+                                <th>{{ 'compliance_manager.heatmap.drill.col.category'|trans }}</th>
+                                <th>{{ 'compliance_manager.heatmap.drill.col.priority'|trans }}</th>
+                                <th>{{ 'compliance_manager.heatmap.drill.col.action'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in gaps %}
+                                <tr>
+                                    <td><code class="small">{{ req.requirementId }}</code></td>
+                                    <td>{{ req.title }}</td>
+                                    <td>
+                                        {% if req.category %}
+                                            <span class="badge bg-body-secondary text-body border">{{ req.category }}</span>
+                                        {% else %}
+                                            <span class="text-muted">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% set prio = req.priority|default('medium') %}
+                                        {% set prioTone = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
+                                        <span class="badge text-bg-{{ prioTone[prio]|default('secondary') }}">{{ prio }}</span>
+                                    </td>
+                                    <td>
+                                        {# Link to the compliance wizard for this framework #}
+                                        {% set _knownWizards = ['iso27001','nis2','dora','tisax','gdpr','iso22301','iso27701','iso27017','iso27018','iso42001','bsi_grundschutz','bsi_c5','bsi_c5_2026','bsi_grundschutz_standard','bsi_grundschutz_kern','nist_csf','kritis','pci_dss','soc2','eu_ai_act','eucs','cra'] %}
+                                        {% if framework_code is not empty and (framework_code|lower) in _knownWizards %}
+                                            <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                               href="{{ path('app_compliance_wizard_start', {wizard: framework_code|lower}) }}">
+                                                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                                {{ 'compliance_manager.heatmap.drill.fix'|trans }}
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                {{ _fa_empty_state.render({
+                    mood: 'happy',
+                    title: 'compliance_manager.heatmap.drill.empty.no_gaps_title'|trans,
+                    text: 'compliance_manager.heatmap.drill.empty.no_gaps_text'|trans
+                }) }}
+            {% endif %}
+        </div>
+    </section>
+
+    {# Open Findings for this Tenant #}
+    <section class="fa-section mb-4" id="open-findings">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">
+                <i class="bi bi-flag-fill text-warning me-1" aria-hidden="true"></i>
+                {{ 'compliance_manager.heatmap.drill.findings'|trans }}
+                <span class="badge bg-warning text-dark ms-1">{{ open_findings|length }}</span>
+            </h2>
+        </div>
+        <div class="fa-section__body">
+            {% if open_findings|length > 0 %}
+                <div class="list-group">
+                    {% for finding in open_findings %}
+                        {% set sev = finding.severity|default('medium') %}
+                        {% set sevTone = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
+                        <div class="list-group-item d-flex justify-content-between align-items-start gap-2">
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold">{{ finding.title|default('#' ~ finding.id) }}</div>
+                                {% if finding.description %}
+                                    <small class="text-muted">{{ finding.description|u.truncate(120, '…') }}</small>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex gap-1 align-items-center flex-shrink-0">
+                                <span class="badge text-bg-{{ sevTone[sev]|default('secondary') }}">{{ sev }}</span>
+                                <span class="badge bg-body-secondary text-body border">{{ finding.status }}</span>
+                                {% if finding.audit is defined and finding.audit %}
+                                    <a href="{{ path('app_audit_show', {id: finding.audit.id}) }}" class="btn btn-sm btn-outline-secondary py-0 px-1 small">
+                                        <i class="bi bi-search" aria-hidden="true"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ _fa_empty_state.render({
+                    mood: 'happy',
+                    title: 'compliance_manager.heatmap.drill.empty.no_findings_title'|trans,
+                    text: 'compliance_manager.heatmap.drill.empty.no_findings_text'|trans
+                }) }}
+            {% endif %}
+        </div>
+    </section>
+
+    {# No Framework found #}
+    {% if framework is null %}
+        {{ _fa_alert.render({
+            variant: 'warning',
+            class: 'mt-3',
+            body: 'compliance_manager.heatmap.drill.framework_not_found'|trans({'%code%': framework_code})
+        }) }}
+    {% endif %}
+
+</main>
+{% endblock %}

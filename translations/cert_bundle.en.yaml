@@ -1,0 +1,51 @@
+# Cert-Bundle Preflight Translations (English)
+# V4-EF-8: Pre-Audit-Check before Certification Bundle Export
+
+cert_bundle:
+    preflight:
+        title: 'Pre-Audit Check — Certification Readiness'
+        subtitle: 'Verify all prerequisites before exporting the bundle for the auditor'
+        breadcrumb: 'Pre-Audit Check'
+        back: 'Back'
+        all_clear: 'All checks passed — the bundle is ready for the auditor.'
+        override_warning: 'Warning: There are unresolved blockers. The export may be incomplete. Only proceed if the auditor has explicitly agreed.'
+        score:
+            label: 'Readiness Score'
+        status:
+            label: 'Status'
+            ready: 'Ready'
+            not_ready: 'Not Ready'
+        blockers:
+            title: 'Blockers (must be resolved)'
+            count_label: 'Blocker Count'
+        warnings:
+            title: 'Warnings (recommended to resolve)'
+        checks:
+            title: 'Checklist'
+            passed: 'OK'
+            failed: 'Missing'
+            documents_approved: 'All documents approved'
+            policy_acknowledgements: 'All policy acknowledgements collected'
+            findings_closed: 'All audit findings closed'
+            risk_assessment_current: 'Risk assessment current (< 12 months)'
+            management_review_current: 'Management review current (< 12 months)'
+        blocker:
+            documents_unapproved: '%count% document(s) not yet approved'
+            documents_unapproved_hint: 'All documents must have "approved" status before creating an audit bundle.'
+            acknowledgements_pending: '%count% policy acknowledgement(s) still pending'
+            acknowledgements_pending_hint: 'All staff must have acknowledged the relevant policies (ISO 27001 A.6.3).'
+            open_major_findings: '%count% open major NC(s)'
+            open_major_findings_hint: 'Major nonconformities must be closed or accepted (ISO 27001 Clause 10.1).'
+            no_risks: 'No risk assessment found'
+            no_risks_hint: 'At least one documented risk assessment is required (ISO 27001 Clause 6.1.2).'
+            risk_assessment_outdated: 'Last risk assessment older than 12 months'
+            risk_assessment_outdated_hint: 'The risk assessment must be updated regularly (ISO 27001 Clause 8.2).'
+            management_review_outdated: 'No management review in the last 12 months'
+            management_review_outdated_hint: 'A management review must be held at least annually (ISO 27001 Clause 9.3).'
+        warning:
+            open_minor_findings: '%count% open minor NC(s) or observation(s)'
+            open_minor_findings_hint: 'Minor nonconformities and observations should be closed before an audit.'
+        action:
+            fix: 'Fix blockers'
+            export: 'Export bundle'
+            export_anyway: 'Export anyway (risk)'

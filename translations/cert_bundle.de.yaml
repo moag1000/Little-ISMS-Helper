@@ -1,0 +1,51 @@
+# Cert-Bundle Preflight Translations (German)
+# V4-EF-8: Pre-Audit-Check vor dem Zertifizierungsbundle-Export
+
+cert_bundle:
+    preflight:
+        title: 'Pre-Audit-Check — Zertifizierungsbereitschaft'
+        subtitle: 'Prüfe alle Voraussetzungen bevor das Paket für den Auditor exportiert wird'
+        breadcrumb: 'Pre-Audit-Check'
+        back: 'Zurück'
+        all_clear: 'Alle Prüfungen bestanden — das Paket ist bereit für den Auditor.'
+        override_warning: 'Achtung: Es gibt noch ungelöste Blocker. Der Export könnte unvollständig sein. Nur fortfahren wenn der Auditor ausdrücklich zugestimmt hat.'
+        score:
+            label: 'Readiness-Score'
+        status:
+            label: 'Status'
+            ready: 'Bereit'
+            not_ready: 'Nicht bereit'
+        blockers:
+            title: 'Blocker (müssen behoben werden)'
+            count_label: 'Anzahl Blocker'
+        warnings:
+            title: 'Warnungen (empfohlen zu beheben)'
+        checks:
+            title: 'Checkliste'
+            passed: 'OK'
+            failed: 'Fehlt'
+            documents_approved: 'Alle Dokumente genehmigt'
+            policy_acknowledgements: 'Alle Policy-Bestätigungen gesammelt'
+            findings_closed: 'Alle Audit-Findings geschlossen'
+            risk_assessment_current: 'Risikobeurteilung aktuell (< 12 Monate)'
+            management_review_current: 'Management-Review aktuell (< 12 Monate)'
+        blocker:
+            documents_unapproved: '%count% Dokument(e) noch nicht genehmigt'
+            documents_unapproved_hint: 'Alle Dokumente müssen den Status "approved" haben bevor ein Audit-Bundle erstellt wird.'
+            acknowledgements_pending: '%count% Policy-Bestätigung(en) noch ausstehend'
+            acknowledgements_pending_hint: 'Alle Mitarbeiter müssen die relevanten Policies bestätigt haben (ISO 27001 A.6.3).'
+            open_major_findings: '%count% offene Major-NC(s)'
+            open_major_findings_hint: 'Major Nonconformities müssen geschlossen oder akzeptiert sein (ISO 27001 Clause 10.1).'
+            no_risks: 'Kein Risiko-Assessment vorhanden'
+            no_risks_hint: 'Mindestens eine dokumentierte Risikobeurteilung ist erforderlich (ISO 27001 Clause 6.1.2).'
+            risk_assessment_outdated: 'Letzte Risikobeurteilung älter als 12 Monate'
+            risk_assessment_outdated_hint: 'Die Risikobeurteilung muss regelmäßig aktualisiert werden (ISO 27001 Clause 8.2).'
+            management_review_outdated: 'Kein Management-Review in den letzten 12 Monaten'
+            management_review_outdated_hint: 'Ein Management-Review muss mindestens jährlich stattfinden (ISO 27001 Clause 9.3).'
+        warning:
+            open_minor_findings: '%count% offene Minor-NC(s) oder Beobachtungen'
+            open_minor_findings_hint: 'Minor Nonconformities und Beobachtungen sollten vor einem Audit geschlossen werden.'
+        action:
+            fix: 'Blocker beheben'
+            export: 'Bundle exportieren'
+            export_anyway: 'Trotzdem exportieren (Risiko)'

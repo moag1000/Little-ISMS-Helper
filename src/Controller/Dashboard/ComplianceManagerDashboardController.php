@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller\Dashboard;
 
+use App\Entity\AuditFinding;
 use App\Repository\AuditFindingRepository;
 use App\Repository\ComplianceFrameworkRepository;
+use App\Repository\ComplianceRequirementRepository;
 use App\Repository\DocumentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\TenantContext;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -39,6 +42,7 @@ class ComplianceManagerDashboardController extends AbstractController
         private readonly InternalAuditRepository $auditRepo,
         private readonly DocumentRepository $documentRepo,
         private readonly TenantContext $tenantContext,
+        private readonly ComplianceRequirementRepository $requirementRepo,
     ) {
     }
 
@@ -123,6 +127,103 @@ class ComplianceManagerDashboardController extends AbstractController
                 'avg_compliance'     => $frameworkComparison['summary']['average_compliance'] ?? 0,
                 'at_risk_count'      => $frameworkComparison['summary']['at_risk'] ?? 0,
             ],
+        ]);
+    }
+
+    /**
+     * V4-EF-5: Heatmap drill-down page.
+     *
+     * Renders covered controls (with status), gap requirements (TODO) and
+     * open AuditFindings for a given framework + section (category).
+     *
+     * Route: GET /dashboards/cm-heatmap-drill?framework=ISO27001&section=A.5
+     */
+    #[Route('/cm-heatmap-drill', name: 'cm_heatmap_drill')]
+    #[IsGranted('ROLE_COMPLIANCE_MANAGER')]
+    public function heatmapDrill(Request $request): Response
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+
+        $frameworkCode = (string) $request->query->get('framework', '');
+        $sectionCode   = (string) $request->query->get('section', '');
+
+        // Resolve the framework entity
+        $framework = null;
+        foreach ($this->frameworkRepo->findActiveFrameworks() as $fw) {
+            if ((string) $fw->getCode() === $frameworkCode) {
+                $framework = $fw;
+                break;
+            }
+        }
+
+        // Gather all requirements for this framework, filtered by section (category)
+        $allRequirements = [];
+        $coveredRequirements = [];
+        $gapRequirements = [];
+
+        if ($framework !== null) {
+            $requirements = $this->requirementRepo->findByFramework($framework);
+            foreach ($requirements as $req) {
+                $category = $req->getCategory() ?? '';
+                // Filter by section when provided; empty section shows all
+                if ($sectionCode !== '' && $category !== $sectionCode) {
+                    continue;
+                }
+                $allRequirements[] = $req;
+
+                // Determine covered vs gap based on mapped controls
+                $mappedControls = $req->getMappedControls();
+                $hasCoveredControl = false;
+                foreach ($mappedControls as $control) {
+                    $implStatus = method_exists($control, 'getImplementationStatus')
+                        ? $control->getImplementationStatus()
+                        : null;
+                    if (in_array($implStatus, ['implemented', 'operational', 'partially_implemented'], true)) {
+                        $hasCoveredControl = true;
+                        break;
+                    }
+                }
+
+                if ($hasCoveredControl) {
+                    $coveredRequirements[] = $req;
+                } else {
+                    $gapRequirements[] = $req;
+                }
+            }
+        }
+
+        // Open findings for this tenant (optionally filtered by framework section)
+        $openFindings = [];
+        if ($tenant !== null) {
+            $allOpenFindings = $this->findingRepo->findOpenByTenant($tenant);
+            foreach ($allOpenFindings as $finding) {
+                // Include all findings or filter by those in a matching section
+                // AuditFinding does not have section, so we include all open findings
+                $openFindings[] = $finding;
+            }
+        }
+
+        // Collect distinct sections for the framework (for section selector)
+        $availableSections = [];
+        if ($framework !== null) {
+            foreach ($this->requirementRepo->findByFramework($framework) as $req) {
+                $cat = $req->getCategory();
+                if ($cat !== null && !in_array($cat, $availableSections, true)) {
+                    $availableSections[] = $cat;
+                }
+            }
+            sort($availableSections);
+        }
+
+        return $this->render('dashboards/cm_heatmap_drill.html.twig', [
+            'framework_code'       => $frameworkCode,
+            'framework'            => $framework,
+            'section_code'         => $sectionCode,
+            'available_sections'   => $availableSections,
+            'covered'              => $coveredRequirements,
+            'gaps'                 => $gapRequirements,
+            'all_requirements'     => $allRequirements,
+            'open_findings'        => $openFindings,
         ]);
     }
 }

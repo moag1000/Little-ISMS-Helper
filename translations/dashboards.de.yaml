@@ -192,6 +192,36 @@ compliance_manager:
         compare_wizards: 'Wizards vergleichen'
     common:
         wizard: 'Wizard'
+    heatmap:
+        drill:
+            title: 'Heatmap-Drill-Down: %framework% / %section%'
+            page_title: 'Drill-Down %framework% — %section%'
+            subtitle: 'Abgedeckte Controls, Lücken und offene Findings für diese Section'
+            breadcrumb: 'Heatmap-Drill-Down'
+            action: 'Details'
+            back: 'Zurück zur Übersicht'
+            filter_section: 'Section'
+            all_sections: 'Alle Sections'
+            covered: 'Abgedeckt'
+            gaps: 'Lücken'
+            findings: 'Open Findings'
+            coverage_rate: 'Coverage-Rate'
+            fix: 'Beheben'
+            framework_not_found: 'Framework "%code%" nicht gefunden oder nicht aktiv.'
+            col:
+                req_id: 'Anforderungs-ID'
+                title: 'Titel'
+                category: 'Category'
+                controls: 'Controls'
+                priority: 'Priorität'
+                action: 'Aktion'
+            empty:
+                no_covered_title: 'Keine abgedeckten Anforderungen'
+                no_covered_text: 'Noch keine Controls dieser Section implementiert.'
+                no_gaps_title: 'Keine Lücken — alles abgedeckt!'
+                no_gaps_text: 'Alle Anforderungen dieser Section sind durch Controls abgedeckt.'
+                no_findings_title: 'Keine offenen Findings'
+                no_findings_text: 'Es gibt aktuell keine offenen Audit-Findings.'
 
 # Board Dashboard
 board:
