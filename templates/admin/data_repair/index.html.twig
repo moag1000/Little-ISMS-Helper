@@ -474,23 +474,23 @@
                 {% if orphanedAssets|length > 0 %}
                 <div class="mb-4">
                     <h3>{{ 'admin.data_repair.orphaned_assets_list'|trans({}, 'admin') }}</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'asset.label.type'|trans({}, 'asset') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'asset.label.type'|trans({}, 'asset') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for asset in orphanedAssets %}
-                            <tr>
-                                <td>{{ asset.id }}</td>
-                                <td>{{ asset.name }}</td>
-                                <td>{{ asset.assetType }}</td>
-                                <td>
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">{{ asset.id }}</td>
+                                <td class="fa-table__cell">{{ asset.name }}</td>
+                                <td class="fa-table__cell">{{ asset.assetType }}</td>
+                                <td class="fa-table__cell">
                                     <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'asset', id: asset.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ asset.id) }}">
                                         <div class="input-group input-group-sm">
@@ -516,23 +516,23 @@
                 {% if orphanedRisks|length > 0 %}
                 <div class="mb-4">
                     <h3>{{ 'admin.data_repair.orphaned_risks_list'|trans({}, 'admin') }}</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'risk.label.inherent_risk'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.label.inherent_risk'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for risk in orphanedRisks %}
-                            <tr>
-                                <td>{{ risk.id }}</td>
-                                <td>{{ risk.title }}</td>
-                                <td>{{ risk.inherentRiskLevel }}</td>
-                                <td>
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">{{ risk.id }}</td>
+                                <td class="fa-table__cell">{{ risk.title }}</td>
+                                <td class="fa-table__cell">{{ risk.inherentRiskLevel }}</td>
+                                <td class="fa-table__cell">
                                     <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'risk', id: risk.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ risk.id) }}">
                                         <div class="input-group input-group-sm">
@@ -558,23 +558,23 @@
                 {% if orphanedIncidents|length > 0 %}
                 <div class="mb-4">
                     <h3>{{ 'admin.data_repair.orphaned_incidents_list'|trans({}, 'admin') }}</h3>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'incident.label.title'|trans({}, 'incident') }}</th>
-                                <th scope="col">{{ 'incident.label.severity'|trans({}, 'incident') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'incident.label.title'|trans({}, 'incident') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'incident.label.severity'|trans({}, 'incident') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for incident in orphanedIncidents %}
-                            <tr>
-                                <td>{{ incident.id }}</td>
-                                <td>{{ incident.title }}</td>
-                                <td>{{ incident.severity ? incident.severity.value : '' }}</td>
-                                <td>
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">{{ incident.id }}</td>
+                                <td class="fa-table__cell">{{ incident.title }}</td>
+                                <td class="fa-table__cell">{{ incident.severity ? incident.severity.value : '' }}</td>
+                                <td class="fa-table__cell">
                                     <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'incident', id: incident.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ incident.id) }}">
                                         <div class="input-group input-group-sm">
@@ -608,36 +608,36 @@
                 </h2>
         </div>
         <div class="fa-section__body">
-            <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
+            <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
                             <thead>
                     <tr>
-                        <th scope="col">{{ 'tenant.name'|trans({}, 'tenant') }}</th>
-                        <th scope="col" class="text-center">{{ 'nav.assets'|trans({}, 'nav') }}</th>
-                        <th scope="col" class="text-center">{{ 'nav.risks'|trans({}, 'nav') }}</th>
-                        <th scope="col" class="text-center">{{ 'nav.incidents'|trans({}, 'nav') }}</th>
-                        <th scope="col" class="text-center">Audits</th>
-                        <th scope="col" class="text-center">Documents</th>
-                        <th scope="col" class="text-center">BC Plans</th>
-                        <th scope="col" class="text-center">{{ 'common.all'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'tenant.name'|trans({}, 'tenant') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'nav.assets'|trans({}, 'nav') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'nav.risks'|trans({}, 'nav') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'nav.incidents'|trans({}, 'nav') }}</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">Audits</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">Documents</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">BC Plans</th>
+                        <th scope="col" class="fa-table__th fa-table__th--center">{{ 'common.all'|trans({}, 'messages') }}</th>
                     </tr>
                 </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                     {% for stat in tenantStats %}
-                    <tr>
-                        <td>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">
                             <strong>{{ stat.tenant.name }}</strong>
                             {% if stat.tenant.description %}
                                 <br><small class="text-muted">{{ stat.tenant.description }}</small>
                             {% endif %}
                         </td>
-                        <td class="text-center">{{ stat.assets }}</td>
-                        <td class="text-center">{{ stat.risks }}</td>
-                        <td class="text-center">{{ stat.incidents }}</td>
-                        <td class="text-center">{{ stat.audits|default(0) }}</td>
-                        <td class="text-center">{{ stat.documents|default(0) }}</td>
-                        <td class="text-center">{{ stat.bc_plans|default(0) }}</td>
-                        <td class="text-center"><strong>{{ stat.assets + stat.risks + stat.incidents + (stat.audits|default(0)) + (stat.documents|default(0)) + (stat.bc_plans|default(0)) }}</strong></td>
+                        <td class="fa-table__cell fa-table__cell--center">{{ stat.assets }}</td>
+                        <td class="fa-table__cell fa-table__cell--center">{{ stat.risks }}</td>
+                        <td class="fa-table__cell fa-table__cell--center">{{ stat.incidents }}</td>
+                        <td class="fa-table__cell fa-table__cell--center">{{ stat.audits|default(0) }}</td>
+                        <td class="fa-table__cell fa-table__cell--center">{{ stat.documents|default(0) }}</td>
+                        <td class="fa-table__cell fa-table__cell--center">{{ stat.bc_plans|default(0) }}</td>
+                        <td class="fa-table__cell fa-table__cell--center"><strong>{{ stat.assets + stat.risks + stat.incidents + (stat.audits|default(0)) + (stat.documents|default(0)) + (stat.bc_plans|default(0)) }}</strong></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -660,34 +660,34 @@
         <div class="fa-section__body">
             {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.risk_asset_assignment_desc'|trans({}, 'admin') }) }}
-            <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
+            <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
                             <thead>
                     <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.current_asset'|trans({}, 'admin') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.assign_to_asset'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">ID</th>
+                        <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.current_asset'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.assign_to_asset'|trans({}, 'admin') }}</th>
                     </tr>
                 </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                     {% for risk in risksWithoutAsset %}
                     <tr class="table-warning">
-                        <td>{{ risk.id }}</td>
-                        <td>
+                        <td class="fa-table__cell">{{ risk.id }}</td>
+                        <td class="fa-table__cell">
                             {{ risk.title }}
                             {% if risk.tenant %}
                                 <br><small class="text-muted">{{ risk.tenant.name }}</small>
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             {% if risk.asset %}
                                 <span class="fa-status-pill fa-status-pill--success">{{ risk.asset.name }}</span>
                             {% else %}
                                 <span class="fa-status-pill fa-status-pill--danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin') }}</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             <form method="post" action="{{ path('admin_data_repair_assign_asset', {type: 'risk', id: risk.id}) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ risk.id) }}">
                                 <div class="input-group input-group-sm">
@@ -726,27 +726,27 @@
         <div class="fa-section__body">
             {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.incident_asset_assignment_desc'|trans({}, 'admin') }) }}
-            <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
+            <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
                             <thead>
                     <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">{{ 'incident.label.title'|trans({}, 'incident') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.current_asset'|trans({}, 'admin') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.assign_to_asset'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">ID</th>
+                        <th scope="col" class="fa-table__th">{{ 'incident.label.title'|trans({}, 'incident') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.current_asset'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.assign_to_asset'|trans({}, 'admin') }}</th>
                     </tr>
                 </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                     {% for incident in incidentsWithoutAsset %}
                     <tr class="table-warning">
-                        <td>{{ incident.id }}</td>
-                        <td>
+                        <td class="fa-table__cell">{{ incident.id }}</td>
+                        <td class="fa-table__cell">
                             {{ incident.title }}
                             {% if incident.tenant %}
                                 <br><small class="text-muted">{{ incident.tenant.name }}</small>
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             {% if incident.affectedAssets|length > 0 %}
                                 {% for asset in incident.affectedAssets %}
                                     <span class="fa-status-pill fa-status-pill--success">{{ asset.name }}</span>
@@ -755,7 +755,7 @@
                                 <span class="fa-status-pill fa-status-pill--danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin') }}</span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             <form method="post" action="{{ path('admin_data_repair_assign_asset', {type: 'incident', id: incident.id}) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ incident.id) }}">
                                 <div class="input-group input-group-sm">
@@ -794,27 +794,27 @@
             {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'warning', body: '<strong>' ~ 'common.warning'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.controls_without_risks_desc'|trans({}, 'admin') }) }}
             <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutRisks|length}, 'admin') }}</p>
-            <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
+            <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
                             <thead>
                     <tr>
-                        <th scope="col">{{ 'control.field.control_id'|trans({}, 'control') }}</th>
-                        <th scope="col">{{ 'control.field.name'|trans({}, 'control') }}</th>
-                        <th scope="col">{{ 'control.field.category'|trans({}, 'control') }}</th>
-                        <th scope="col">{{ 'control.field.implementation_status'|trans({}, 'control') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.assign_risk'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'control.field.control_id'|trans({}, 'control') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'control.field.name'|trans({}, 'control') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'control.field.category'|trans({}, 'control') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'control.field.implementation_status'|trans({}, 'control') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.assign_risk'|trans({}, 'admin') }}</th>
                     </tr>
                 </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                     {% for control in controlsWithoutRisks %}
                     <tr class="table-warning">
-                        <td><span class="fa-status-pill fa-status-pill--primary">{{ control.controlId }}</span></td>
-                        <td>{{ control.name }}</td>
-                        <td>{{ control.category }}</td>
-                        <td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--primary">{{ control.controlId }}</span></td>
+                        <td class="fa-table__cell">{{ control.name }}</td>
+                        <td class="fa-table__cell">{{ control.category }}</td>
+                        <td class="fa-table__cell">
                             <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) }}">{{ ('control.status.' ~ control.implementationStatus)|trans({}, 'control') }}</span>
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             <form method="post" action="{{ path('admin_data_repair_assign_risk', {id: control.id}) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_risk_' ~ control.id) }}">
                                 <div class="input-group input-group-sm">
@@ -853,27 +853,27 @@
             {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'info', body: '<strong>' ~ 'common.info'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.controls_without_assets_desc'|trans({}, 'admin') }) }}
             <p class="text-muted">{{ 'admin.data_repair.controls_count'|trans({'%count%': controlsWithoutAssets|length}, 'admin') }}</p>
-            <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
+            <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
                             <thead>
                     <tr>
-                        <th scope="col">{{ 'control.field.control_id'|trans({}, 'control') }}</th>
-                        <th scope="col">{{ 'control.field.name'|trans({}, 'control') }}</th>
-                        <th scope="col">{{ 'control.field.category'|trans({}, 'control') }}</th>
-                        <th scope="col">{{ 'control.field.implementation_status'|trans({}, 'control') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.assign_asset'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'control.field.control_id'|trans({}, 'control') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'control.field.name'|trans({}, 'control') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'control.field.category'|trans({}, 'control') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'control.field.implementation_status'|trans({}, 'control') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.assign_asset'|trans({}, 'admin') }}</th>
                     </tr>
                 </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                     {% for control in controlsWithoutAssets %}
-                    <tr>
-                        <td><span class="fa-status-pill fa-status-pill--primary">{{ control.controlId }}</span></td>
-                        <td>{{ control.name }}</td>
-                        <td>{{ control.category }}</td>
-                        <td>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--primary">{{ control.controlId }}</span></td>
+                        <td class="fa-table__cell">{{ control.name }}</td>
+                        <td class="fa-table__cell">{{ control.category }}</td>
+                        <td class="fa-table__cell">
                             <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) }}">{{ ('control.status.' ~ control.implementationStatus)|trans({}, 'control') }}</span>
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             <form method="post" action="{{ path('admin_data_repair_assign_asset_to_control', {id: control.id}) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_to_control_' ~ control.id) }}">
                                 <div class="input-group input-group-sm">
@@ -1064,25 +1064,25 @@
                 <div class="mb-4">
                     <h3 class="fs-5">{{ 'admin.data_repair.risk_health.risks_missing_treatment_strategy'|trans({}, 'admin') }}</h3>
                     <p class="text-muted small">{{ 'admin.data_repair.risk_health.risks_missing_treatment_strategy_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'risk.field.inherent_risk'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.field.inherent_risk'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for risk in riskHealthIssues.risks_missing_treatment_strategy %}
                             <tr class="table-warning">
-                                <td>{{ risk.id }}</td>
-                                <td>{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
-                                <td>{{ risk.inherentRiskLevel }}</td>
-                                <td>
+                                <td class="fa-table__cell">{{ risk.id }}</td>
+                                <td class="fa-table__cell">{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
+                                <td class="fa-table__cell">{{ risk.inherentRiskLevel }}</td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1101,25 +1101,25 @@
                 <div class="mb-4">
                     <h3 class="fs-5">{{ 'admin.data_repair.risk_health.risks_residual_exceeds_inherent'|trans({}, 'admin') }}</h3>
                     <p class="text-muted small">{{ 'admin.data_repair.risk_health.risks_residual_exceeds_inherent_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'risk.field.inherent_risk'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'risk.field.residual_risk'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.field.inherent_risk'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.field.residual_risk'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for risk in riskHealthIssues.risks_residual_exceeds_inherent %}
                             <tr class="table-danger">
-                                <td>{{ risk.id }}</td>
-                                <td>{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--primary">{{ risk.inherentRiskLevel }}</span></td>
-                                <td><span class="fa-status-pill fa-status-pill--danger">{{ risk.residualRiskLevel }}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ risk.id }}</td>
+                                <td class="fa-table__cell">{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--primary">{{ risk.inherentRiskLevel }}</span></td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--danger">{{ risk.residualRiskLevel }}</span></td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1138,25 +1138,25 @@
                 <div class="mb-4">
                     <h3 class="fs-5">{{ 'admin.data_repair.risk_health.risks_treatment_plan_without_controls'|trans({}, 'admin') }}</h3>
                     <p class="text-muted small">{{ 'admin.data_repair.risk_health.risks_treatment_plan_without_controls_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'risk.field.treatment_description'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.field.treatment_description'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for risk in riskHealthIssues.risks_treatment_plan_without_controls %}
                             <tr class="table-warning">
-                                <td>{{ risk.id }}</td>
-                                <td>{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
-                                <td><span class="text-truncate d-inline-block" style="max-width:200px" title="{{ risk.treatmentDescription }}">{{ risk.treatmentDescription|slice(0, 60) }}{% if risk.treatmentDescription|length > 60 %}…{% endif %}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ risk.id }}</td>
+                                <td class="fa-table__cell">{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
+                                <td class="fa-table__cell"><span class="text-truncate d-inline-block" style="max-width:200px" title="{{ risk.treatmentDescription }}">{{ risk.treatmentDescription|slice(0, 60) }}{% if risk.treatmentDescription|length > 60 %}…{% endif %}</span></td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1175,27 +1175,27 @@
                 <div class="mb-4">
                     <h3 class="fs-5">{{ 'admin.data_repair.risk_health.risks_past_review_date'|trans({}, 'admin') }}</h3>
                     <p class="text-muted small">{{ 'admin.data_repair.risk_health.risks_past_review_date_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'risk.field.review_date'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.field.review_date'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for risk in riskHealthIssues.risks_past_review_date %}
                             <tr class="table-warning">
-                                <td>{{ risk.id }}</td>
-                                <td>{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ risk.id }}</td>
+                                <td class="fa-table__cell">{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
+                                <td class="fa-table__cell">
                                     <span class="fa-status-pill fa-status-pill--danger">{{ risk.reviewDate|date('d.m.Y') }}</span>
                                 </td>
-                                <td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1264,23 +1264,23 @@
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.compliance_health.assets_without_cia_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'asset.label.type'|trans({}, 'asset') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'asset.label.type'|trans({}, 'asset') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for asset in complianceHealthIssues.assets_without_cia %}
                             <tr class="table-danger">
-                                <td>{{ asset.id }}</td>
-                                <td>{{ asset.name }}{% if asset.tenant %}<br><small class="text-muted">{{ asset.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ asset.assetType }}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ asset.id }}</td>
+                                <td class="fa-table__cell">{{ asset.name }}{% if asset.tenant %}<br><small class="text-muted">{{ asset.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ asset.assetType }}</span></td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_asset_edit', {id: asset.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.edit'|trans({}, 'messages') }}
@@ -1305,27 +1305,27 @@
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.compliance_health.breaches_overdue_72h_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.date'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.date'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for breach in complianceHealthIssues.breaches_overdue_72h %}
                             <tr class="table-danger">
-                                <td>{{ breach.id }}</td>
-                                <td>{{ breach.title ?? breach.referenceNumber ?? ('#' ~ breach.id) }}{% if breach.tenant %}<br><small class="text-muted">{{ breach.tenant.name }}</small>{% endif %}</td>
-                                <td>
+                                <td class="fa-table__cell">{{ breach.id }}</td>
+                                <td class="fa-table__cell">{{ breach.title ?? breach.referenceNumber ?? ('#' ~ breach.id) }}{% if breach.tenant %}<br><small class="text-muted">{{ breach.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell">
                                     {% if breach.detectedAt %}
                                         <span class="fa-status-pill fa-status-pill--danger">{{ breach.detectedAt|date('d.m.Y H:i') }}</span>
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_data_breach_show', {id: breach.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1350,23 +1350,23 @@
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.compliance_health.dsr_overdue_30d_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">Status</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for dsr in complianceHealthIssues.dsr_overdue_30d %}
                             <tr class="table-danger">
-                                <td>{{ dsr.id }}</td>
-                                <td>{{ dsr.requestType ?? ('#' ~ dsr.id) }}{% if dsr.tenant %}<br><small class="text-muted">{{ dsr.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--warning">{{ dsr.status }}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ dsr.id }}</td>
+                                <td class="fa-table__cell">{{ dsr.requestType ?? ('#' ~ dsr.id) }}{% if dsr.tenant %}<br><small class="text-muted">{{ dsr.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--warning">{{ dsr.status }}</span></td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_data_subject_request_show', {id: dsr.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1391,21 +1391,21 @@
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.compliance_health.dpia_without_dpo_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for dpia in complianceHealthIssues.dpia_without_dpo %}
                             <tr class="table-danger">
-                                <td>{{ dpia.id }}</td>
-                                <td>{{ dpia.title ?? ('#' ~ dpia.id) }}{% if dpia.tenant %}<br><small class="text-muted">{{ dpia.tenant.name }}</small>{% endif %}</td>
-                                <td>
+                                <td class="fa-table__cell">{{ dpia.id }}</td>
+                                <td class="fa-table__cell">{{ dpia.title ?? ('#' ~ dpia.id) }}{% if dpia.tenant %}<br><small class="text-muted">{{ dpia.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_dpia_show', {id: dpia.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1430,21 +1430,21 @@
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.compliance_health.vvt_incomplete_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for pa in complianceHealthIssues.vvt_incomplete %}
                             <tr class="table-danger">
-                                <td>{{ pa.id }}</td>
-                                <td>{{ pa.name ?? ('#' ~ pa.id) }}{% if pa.tenant %}<br><small class="text-muted">{{ pa.tenant.name }}</small>{% endif %}</td>
-                                <td>
+                                <td class="fa-table__cell">{{ pa.id }}</td>
+                                <td class="fa-table__cell">{{ pa.name ?? ('#' ~ pa.id) }}{% if pa.tenant %}<br><small class="text-muted">{{ pa.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_processing_activity_edit', {id: pa.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.edit'|trans({}, 'messages') }}
@@ -1517,23 +1517,23 @@
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.suppliers_unassessed_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for supplier in operationalHealthIssues.suppliers_unassessed %}
                             <tr class="table-warning">
-                                <td>{{ supplier.id }}</td>
-                                <td>{{ supplier.name }}{% if supplier.tenant %}<br><small class="text-muted">{{ supplier.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ supplier.criticality }}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ supplier.id }}</td>
+                                <td class="fa-table__cell">{{ supplier.name }}{% if supplier.tenant %}<br><small class="text-muted">{{ supplier.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ supplier.criticality }}</span></td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_supplier_edit', {id: supplier.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.edit'|trans({}, 'messages') }}
@@ -1558,23 +1558,23 @@
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.bc_plans_untested_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for plan in operationalHealthIssues.bc_plans_untested %}
                             <tr class="table-warning">
-                                <td>{{ plan.id }}</td>
-                                <td>{{ plan.name }}{% if plan.tenant %}<br><small class="text-muted">{{ plan.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ plan.status }}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ plan.id }}</td>
+                                <td class="fa-table__cell">{{ plan.name }}{% if plan.tenant %}<br><small class="text-muted">{{ plan.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ plan.status }}</span></td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_bc_plan_edit', {id: plan.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.edit'|trans({}, 'messages') }}
@@ -1599,23 +1599,23 @@
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.findings_overdue_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for finding in operationalHealthIssues.findings_overdue %}
                             <tr class="table-warning">
-                                <td>{{ finding.id }}</td>
-                                <td>{{ finding.title }}{% if finding.tenant %}<br><small class="text-muted">{{ finding.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ finding.status }}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ finding.id }}</td>
+                                <td class="fa-table__cell">{{ finding.title }}{% if finding.tenant %}<br><small class="text-muted">{{ finding.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ finding.status }}</span></td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_audit_finding_show', {id: finding.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1640,23 +1640,23 @@
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.capa_overdue_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for capa in operationalHealthIssues.capa_overdue %}
                             <tr class="table-warning">
-                                <td>{{ capa.id }}</td>
-                                <td>{{ capa.title }}{% if capa.tenant %}<br><small class="text-muted">{{ capa.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ capa.status }}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ capa.id }}</td>
+                                <td class="fa-table__cell">{{ capa.title }}{% if capa.tenant %}<br><small class="text-muted">{{ capa.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ capa.status }}</span></td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_corrective_action_show', {id: capa.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1681,23 +1681,23 @@
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.training_overdue_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for training in operationalHealthIssues.training_overdue %}
                             <tr class="table-warning">
-                                <td>{{ training.id }}</td>
-                                <td>{{ training.title }}{% if training.tenant %}<br><small class="text-muted">{{ training.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ training.status }}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ training.id }}</td>
+                                <td class="fa-table__cell">{{ training.title }}{% if training.tenant %}<br><small class="text-muted">{{ training.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ training.status }}</span></td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_training_edit', {id: training.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.edit'|trans({}, 'messages') }}
@@ -1722,23 +1722,23 @@
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.documents_stale_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.category'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.category'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for doc in operationalHealthIssues.documents_stale %}
                             <tr class="table-warning">
-                                <td>{{ doc.id }}</td>
-                                <td>{{ doc.originalFilename ?? doc.filename }}{% if doc.tenant %}<br><small class="text-muted">{{ doc.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ doc.category }}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ doc.id }}</td>
+                                <td class="fa-table__cell">{{ doc.originalFilename ?? doc.filename }}{% if doc.tenant %}<br><small class="text-muted">{{ doc.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ doc.category }}</span></td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_document_show', {id: doc.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1763,23 +1763,23 @@
                     </summary>
                     <div class="mt-2">
                     <p class="text-muted small">{{ 'admin.data_repair.operational_health.reviews_overdue_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for review in operationalHealthIssues.reviews_overdue %}
                             <tr class="table-warning">
-                                <td>{{ review.id }}</td>
-                                <td>{{ review.title }}{% if review.tenant %}<br><small class="text-muted">{{ review.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ review.status }}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ review.id }}</td>
+                                <td class="fa-table__cell">{{ review.title }}{% if review.tenant %}<br><small class="text-muted">{{ review.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ review.status }}</span></td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_management_review_show', {id: review.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1809,23 +1809,23 @@
         <div class="fa-section__body">
             {% import '_components/_fa_alert.html.twig' as _fa_alert %}
             {{ _fa_alert.render({ variant: 'danger', body: '<strong>' ~ 'common.error'|trans({}, 'messages') ~ ':</strong> ' ~ 'admin.data_repair.broken_references_desc'|trans({}, 'admin') }) }}
-            <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
+            <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
                             <thead>
                     <tr>
-                        <th scope="col">{{ 'admin.data_repair.entity_type'|trans({}, 'admin') }}</th>
-                        <th scope="col">ID</th>
-                        <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.issue'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.entity_type'|trans({}, 'admin') }}</th>
+                        <th scope="col" class="fa-table__th">ID</th>
+                        <th scope="col" class="fa-table__th">{{ 'common.name'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'admin.data_repair.issue'|trans({}, 'admin') }}</th>
                     </tr>
                 </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                     {% for ref in brokenReferences %}
                     <tr class="table-danger">
-                        <td><span class="fa-status-pill fa-status-pill--neutral">{{ ref.entity_type }}</span></td>
-                        <td>{{ ref.entity_id }}</td>
-                        <td>{{ ref.entity_name }}</td>
-                        <td>{{ ref.issue }}</td>
+                        <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ ref.entity_type }}</span></td>
+                        <td class="fa-table__cell">{{ ref.entity_id }}</td>
+                        <td class="fa-table__cell">{{ ref.entity_name }}</td>
+                        <td class="fa-table__cell">{{ ref.issue }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -1882,25 +1882,25 @@
                 <div class="mb-4">
                     <h3 class="fs-5">{{ 'admin.data_repair.data_quality.workflows_stuck'|trans({}, 'admin') }}</h3>
                     <p class="text-muted small">{{ 'admin.data_repair.data_quality.workflows_stuck_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'admin.data_repair.data_quality.col_workflow'|trans({}, 'admin') }}</th>
-                                <th scope="col">{{ 'admin.data_repair.data_quality.col_entity'|trans({}, 'admin') }}</th>
-                                <th scope="col">{{ 'admin.data_repair.data_quality.col_started'|trans({}, 'admin') }}</th>
-                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.data_repair.data_quality.col_workflow'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.data_repair.data_quality.col_entity'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.data_repair.data_quality.col_started'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for instance in dataQualityIssues.workflows_stuck %}
                             <tr class="table-warning">
-                                <td>{{ instance.id }}</td>
-                                <td>{{ instance.workflow ? instance.workflow.name : '-' }}{% if instance.tenant %}<br><small class="text-muted">{{ instance.tenant.name }}</small>{% endif %}</td>
-                                <td><small class="text-muted">{{ instance.entityType }}</small> #{{ instance.entityId }}</td>
-                                <td>{{ instance.startedAt ? instance.startedAt|date('Y-m-d') : '-' }}</td>
-                                <td><span class="fa-status-pill fa-status-pill--warning">{{ instance.status }}</span></td>
+                                <td class="fa-table__cell">{{ instance.id }}</td>
+                                <td class="fa-table__cell">{{ instance.workflow ? instance.workflow.name : '-' }}{% if instance.tenant %}<br><small class="text-muted">{{ instance.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><small class="text-muted">{{ instance.entityType }}</small> #{{ instance.entityId }}</td>
+                                <td class="fa-table__cell">{{ instance.startedAt ? instance.startedAt|date('Y-m-d') : '-' }}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--warning">{{ instance.status }}</span></td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -1914,25 +1914,25 @@
                 <div class="mb-4">
                     <h3 class="fs-5">{{ 'admin.data_repair.data_quality.risks_zero_values'|trans({}, 'admin') }}</h3>
                     <p class="text-muted small">{{ 'admin.data_repair.data_quality.risks_zero_values_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'risk.field.probability'|trans({}, 'risk') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.field.status'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'risk.field.probability'|trans({}, 'risk') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for risk in dataQualityIssues.risks_zero_values %}
                             <tr class="table-warning">
-                                <td>{{ risk.id }}</td>
-                                <td>{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
-                                <td>{{ risk.probability ?? '-' }}</td>
-                                <td>
+                                <td class="fa-table__cell">{{ risk.id }}</td>
+                                <td class="fa-table__cell">{{ risk.title }}{% if risk.tenant %}<br><small class="text-muted">{{ risk.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ risk.status.value }}</span></td>
+                                <td class="fa-table__cell">{{ risk.probability ?? '-' }}</td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_risk_show', {id: risk.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1951,23 +1951,23 @@
                 <div class="mb-4">
                     <h3 class="fs-5">{{ 'admin.data_repair.data_quality.incidents_no_rca'|trans({}, 'admin') }}</h3>
                     <p class="text-muted small">{{ 'admin.data_repair.data_quality.incidents_no_rca_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'incident.field.title'|trans({}, 'incident') }}</th>
-                                <th scope="col">{{ 'incident.field.status'|trans({}, 'incident') }}</th>
-                                <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'incident.field.title'|trans({}, 'incident') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'incident.field.status'|trans({}, 'incident') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for incident in dataQualityIssues.incidents_no_rca %}
                             <tr class="table-warning">
-                                <td>{{ incident.id }}</td>
-                                <td>{{ incident.title }}{% if incident.tenant %}<br><small class="text-muted">{{ incident.tenant.name }}</small>{% endif %}</td>
-                                <td><span class="fa-status-pill fa-status-pill--neutral">{{ incident.status }}</span></td>
-                                <td>
+                                <td class="fa-table__cell">{{ incident.id }}</td>
+                                <td class="fa-table__cell">{{ incident.title }}{% if incident.tenant %}<br><small class="text-muted">{{ incident.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ incident.status }}</span></td>
+                                <td class="fa-table__cell">
                                     <a href="{{ path('app_incident_show', {id: incident.id, _locale: app.request.locale}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
                                         <i class="fa-icon fa-icon--util-arrow-right" aria-hidden="true"></i>
                                         {{ 'common.view'|trans({}, 'messages') }}
@@ -1986,23 +1986,23 @@
                 <div class="mb-4">
                     <h3 class="fs-5">{{ 'admin.data_repair.data_quality.treatments_unreviewed'|trans({}, 'admin') }}</h3>
                     <p class="text-muted small">{{ 'admin.data_repair.data_quality.treatments_unreviewed_hint'|trans({}, 'admin') }}</p>
-                    <div class="table-responsive">
-                        <table class="table table-hover table-sm table-striped">
-                            <thead>
+                    <div class="fa-table-wrap">
+                        <table class="fa-table fa-table--hover fa-table--compact fa-table--striped">
+                            <thead class="fa-table__head">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">{{ 'admin.data_repair.data_quality.col_treatment'|trans({}, 'admin') }}</th>
-                                <th scope="col">{{ 'admin.data_repair.data_quality.col_risk'|trans({}, 'admin') }}</th>
-                                <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
+                                <th scope="col" class="fa-table__th">ID</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.data_repair.data_quality.col_treatment'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'admin.data_repair.data_quality.col_risk'|trans({}, 'admin') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'common.status'|trans({}, 'messages') }}</th>
                             </tr>
                         </thead>
-                            <tbody>
+                            <tbody class="fa-table__body">
                             {% for plan in dataQualityIssues.treatments_unreviewed %}
                             <tr class="table-warning">
-                                <td>{{ plan.id }}</td>
-                                <td>{{ plan.title }}{% if plan.tenant %}<br><small class="text-muted">{{ plan.tenant.name }}</small>{% endif %}</td>
-                                <td>{{ plan.risk ? plan.risk.title : '-' }}</td>
-                                <td><span class="fa-status-pill fa-status-pill--success">{{ plan.status }}</span></td>
+                                <td class="fa-table__cell">{{ plan.id }}</td>
+                                <td class="fa-table__cell">{{ plan.title }}{% if plan.tenant %}<br><small class="text-muted">{{ plan.tenant.name }}</small>{% endif %}</td>
+                                <td class="fa-table__cell">{{ plan.risk ? plan.risk.title : '-' }}</td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--success">{{ plan.status }}</span></td>
                             </tr>
                             {% endfor %}
                         </tbody>
