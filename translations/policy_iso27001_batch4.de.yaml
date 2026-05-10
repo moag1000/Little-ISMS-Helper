@@ -7,27 +7,92 @@ policy:
         continuity:
             v1:
                 title: 'IKT-Kontinuitäts-Richtlinie'
-                body: |
-                    Diese IKT-Kontinuitäts-Richtlinie regelt, wie {{ tenant.legal_name }} die
-                    informationssicherheitsbezogenen Aspekte der Wiederherstellung von Informations- und
-                    Kommunikationstechnik (IKT) während und nach einer Betriebsstörung steuert. Sie setzt
-                    die Anforderungen aus ISO/IEC 27002:2022 §5.29 (Informationssicherheit bei Störungen)
-                    und §5.30 (IKT-Bereitschaft für Geschäftskontinuität) um und stellt sicher, dass
-                    Vertraulichkeit, Integrität und Verfügbarkeit informationsverarbeitender Systeme auch
-                    unter Stressbedingungen erhalten bleiben.
+                body: |-
+                    # IKT-Kontinuitaets-Richtlinie der {{ tenant.legal_name }}
 
-                    Wichtige Abgrenzung: Diese Richtlinie deckt **ausschliesslich** die IKT-Bereitschaft
-                    (Disaster Recovery, IT-Redundanz, technisches Failover) ab. Das vollständige
-                    Business-Continuity-Management-System (BCMS) nach ISO 22301 — einschliesslich
-                    Business-Impact-Analyse (BIA), Krisenstab-Aktivierung, nicht-IT-Wiederanlaufpläne
-                    und externe Kommunikation — wird in der separaten **BCM-Richtlinie** geregelt.
-                    Bei Konflikten zwischen IKT- und BCM-Vorgaben hat die BCM-Richtlinie Vorrang, da
-                    sie die strategische Geschäftssicht abbildet.
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: ISO/IEC 27001:2022 A.5.29 (Information security during disruption), A.5.30 (ICT readiness for business continuity), A.8.13 (Backup), A.8.14 (Redundancy of information processing facilities) | ISO/IEC 27002:2022 §§ 5.29, 5.30, 8.13, 8.14 | ISO 22301:2019 (BCMS) | ISO/IEC 27031:2011 (ICT readiness) | BSI 200-4 (BCM) | DSGVO Art. 32 Abs. 1 lit. b und c | DORA Art. 11 (ICT business continuity policy), Art. 12 (Backup and restoration) | NIS2 Art. 21 Abs. 2 lit. c | Edition: {{ policy.edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
 
-                    Verantwortlich für die Pflege dieser Richtlinie ist {{ roles.ciso.fullName }} in
-                    Abstimmung mit dem BCM-Officer. Alle IKT-Kontinuitätsmassnahmen werden konsistent
-                    zur Kritikalitätsklassifizierung der jeweiligen Geschäftsprozesse aus der BIA
-                    geplant — eine isolierte IT-Sicht ohne Business-Anker ist ausdrücklich nicht zulässig.
+                    ## 1. Zweck
+                    Diese Richtlinie regelt verbindlich die informationssicherheitsbezogenen Aspekte der Wiederherstellung von Informations- und Kommunikationstechnik (IKT) der {{ tenant.legal_name }} bei Stoerungen, einschliesslich Disaster Recovery, IT-Redundanz und technischem Failover. Sie setzt ISO/IEC 27001:2022 A.5.29/A.5.30/A.8.13/A.8.14 in Verbindung mit ISO 22301, BSI 200-4 und ISO/IEC 27031 verbindlich um und erfuellt die Vorgaben aus DSGVO Art. 32, DORA Art. 11/12 sowie NIS2 Art. 21. Ziel ist die Wiederanlauffaehigkeit IKT-gestuetzter Geschaeftsprozesse innerhalb der von der Business-Impact-Analyse (BIA) abgeleiteten Recovery-Ziele.
+
+                    ## 2. Geltungsbereich und Abgrenzung
+                    Geltungsbereich sind alle produktiven IKT-Systeme, Cloud-Services ({{ cloud.providers }}), Netz-Infrastrukturen, unterstuetzende Dienste, kritische Drittparteien sowie zugehoerige Personal- und Standort-Ressourcen, die zur Erbringung der im ISMS-Scope befindlichen Geschaeftsprozesse erforderlich sind ({{ tenant.scope_statement }}).
+
+                    Diese Richtlinie deckt ausschliesslich die IKT-Bereitschaft ab. Das vollstaendige BCMS gemaess ISO 22301 (BIA, Krisenstab, nicht-IT-Wiederanlaufplaene, externe Kommunikation) wird in der separaten BCM-Richtlinie geregelt. Bei Konflikten hat die BCM-Richtlinie Vorrang.
+
+                    Im Sinne von ISO/IEC 27001:2022/Amd. 1:2024 wird der Klimawandel als externer Faktor in die IKT-Kontinuitaetsplanung einbezogen: Extremwetter, Hitzewellen mit Auswirkungen auf Rechenzentrums-Verfuegbarkeit, Wassermangel an RZ-Standorten mit Verdunstungs-Kuehlung, klimabedingte Energie-Knappheiten sowie Stoerungen kritischer Lieferanten und Energie-/Telekommunikations-Infrastruktur sind Bestandteil von Bedrohungsanalyse, Standortwahl und Resilienz-Tests.
+
+                    ## 3. Grundsaetze
+                    - **BIA-Verankerung:** Recovery-Ziele leiten sich aus der BIA gemaess BCM-Richtlinie ab; eine isolierte IT-Sicht ohne Business-Anker ist unzulaessig.
+                    - **Defense in Depth:** Kombination aus geo-redundanter Architektur, Failover-Automatisierung, Backups (A.8.13), Standort-Redundanz (A.8.14) und manuellen Wiederanlauf-Prozeduren.
+                    - **Tested Recovery:** Wiederherstellbarkeit ist nachzuweisen, nicht nur zu dokumentieren.
+                    - **Sichere Wiederherstellung:** Vertraulichkeit, Integritaet und Authentizitaet bleiben auch im Notbetrieb gewahrt; keine Sicherheits-Aussetzung ohne explizite Risikoakzeptanz.
+                    - **Lessons Learned:** Jede Auslosung und jede Uebung fuehrt zu nachvollziehbaren Korrektur- und Verbesserungsmassnahmen.
+
+                    ## 4. RTO/RPO/MTPD-Klassen
+                    Die Recovery-Ziele werden je System aus der BIA abgeleitet. Default-Klassen:
+
+                    | Tier | RPO | RTO | MTPD | Beispiel |
+                    |---|---|---|---|---|
+                    | 0 (mission-critical) | 1 h | 4 h | 24 h | Kernbankensystem, Order-Management |
+                    | 1 (business-critical) | 4 h | 8 h | 48 h | CRM, Kundenportal |
+                    | 2 (operational) | 24 h | 24 h | 5 d | Intranet, interne Tools |
+                    | 3 (archival) | 7 d | 72 h | 14 d | Archive |
+
+                    ## 5. Architektur-Anforderungen
+                    - **Standort-Redundanz (A.8.14):** Tier 0/1 in geo-getrennten Standorten ({{ dr.sites }}); Mindest-Distanz nach RZ-Strategie.
+                    - **Datenbank-Replikation:** synchron oder asynchron je RPO; Failover automatisiert.
+                    - **Cloud-Resilienz:** Multi-AZ Pflicht fuer Tier 0/1; Multi-Region fuer DSGVO-konforme Disaster-Faelle dokumentiert.
+                    - **Netz-Resilienz:** redundante Carrier ueber unterschiedliche Trassen; SD-WAN/Loadbalancing.
+                    - **Sicherheits-Komponenten:** SIEM, EDR, IAM, Backup-System sind selbst Tier-0-faehig auszulegen.
+                    - **Personal-Resilienz:** Stellvertreterregelungen fuer Schluesselrollen (CISO, ISB, IT-Notfall-Koordination).
+
+                    ## 6. Wiederherstellungs-Verfahren
+                    1. **Erkennung:** Monitoring-Alert oder externe Meldung loest Pruefung aus.
+                    2. **Bewertung:** Lagebewertung durch IT-Notfallorganisation; Aktivierung der entsprechenden DR-Prozedur.
+                    3. **Eskalation:** Beanspruchung des Krisenstabs gemaess BCM-Richtlinie bei Tier-0-Faellen oder Mehrfachstoerungen.
+                    4. **Failover/Wiederanlauf:** dokumentierte Prozeduren je System, mit Verantwortlichkeiten und Pruefpunkten.
+                    5. **Notbetrieb:** kompensierende Massnahmen (manuelle Verfahren, reduzierter Funktionsumfang) gemaess BC-Plan.
+                    6. **Recovery:** kontrollierte Rueckfuehrung in den Normalbetrieb.
+                    7. **Lessons Learned:** Nachbereitung mit Massnahmenkatalog.
+
+                    ## 7. Test-Programm
+                    - **Tabletop-Uebungen:** halbjaehrlich pro Tier-0-System.
+                    - **Komponenten-/Failover-Tests:** quartalsweise.
+                    - **Voll-DR-Tests (Site-Switch):** mindestens jaehrlich.
+                    - **Ransomware-Recovery-Tests:** jaehrlich aus immutable Backup.
+                    - **Multi-Standort-Test:** alle 24 Monate (oder anlassbezogen).
+
+                    Akzeptanzkriterien: Erreichen RTO/RPO, vollstaendige Anwendungsfunktion, Datenintegritaet, Sicherheits-Komponenten verfuegbar. Ergebnisse fliessen in Management Review (Klausel 9.3) und in BCM-Uebungs-Bericht.
+
+                    ## 8. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Pflege dieser Richtlinie | ISB {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | BCM-Officer, IT-Betrieb | Alle |
+                    | DR-Architektur | IT-Architektur | CIO | ISB, App-Owner | – |
+                    | DR-Plaene und Tests | IT-Notfallorganisation | CIO | ISB, App-Owner, Internal Audit | Geschaeftsleitung |
+                    | RPO/RTO-Festlegung | Geschaeftsprozess-Owner | Vorstand | BCM-Officer, ISB | IT-Betrieb |
+                    | Krisenkommunikation | Krisenstab-Lead | Vorstand | Legal, Communications, DSB {{ roles.dpo.fullName }} | Stakeholder |
+                    | Audit / KPI | Internal Audit | CISO | ISB, BCM | Geschaeftsleitung |
+
+                    ## 9. Mess- und Wirksamkeits-Kriterien (KPI)
+                    - Anteil Tier-0/1-Systeme mit getesteter Wiederherstellbarkeit pro Quartal (Ziel: 100 Prozent)
+                    - Median Recovery-Zeit gemessen vs. RTO (Ziel: kleiner 80 Prozent der RTO)
+                    - Anteil DR-Plaene mit aktualem Pruefdatum (Ziel: groesser 95 Prozent)
+                    - Anzahl ungeplanter Tier-0-Ausfaelle laenger als RTO (Ziel: 0)
+                    - Anzahl im Test entdeckter blocker-grade Befunde (Trend abnehmend)
+
+                    ## 10. Eskalation und Vorfallsmanagement
+                    Stoerungen und Verdacht auf gezielte Sabotage oder Ransomware loesen die Vorfalls- und ggf. die BCM-Aktivierung aus. Meldepflichten gemaess NIS2 Art. 23, DORA Art. 19 und DSGVO Art. 33/34 koordinieren CISO {{ roles.ciso.fullName }} und DSB {{ roles.dpo.fullName }}; aufsichtliche Meldungen erfolgen ueber den Krisenstab unter Beteiligung von Legal.
+
+                    ## 11. Ausnahmen und Abweichungen
+                    Abweichungen beduerfen einer dokumentierten Risikoakzeptanz durch CISO mit Bezug auf Risikoregister und BIA, befristet auf maximal 12 Monate.
+
+                    ## 12. Pruefung und Genehmigung
+                    Pruefung mindestens jaehrlich sowie anlassbezogen (Architekturwechsel, Lieferantenwechsel, BIA-Aktualisierung, Vorfall, regulatorische Aenderung). Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: ISO/IEC 27001:2022 A.5.29, A.5.30, A.7.5, A.7.11, A.7.12, A.8.13, A.8.14; ISO 22301:2019; ISO/IEC 27031:2011; BSI 200-4; CON.3, OPS.1.1.5; DSGVO Art. 32; DORA Art. 11, 12; NIS2 Art. 21 Abs. 2 lit. c.*
 
                 section:
                     1:
@@ -113,21 +178,91 @@ policy:
         threat_intelligence:
             v1:
                 title: 'Bedrohungsanalyse-Richtlinie'
-                body: |
-                    Diese Richtlinie legt fest, wie {{ tenant.legal_name }} sicherheitsrelevante
-                    Bedrohungsinformationen (Threat Intelligence) systematisch erhebt, bewertet,
-                    aufbereitet und an die operativen Sicherheitsfunktionen verteilt. Sie setzt die
-                    Anforderung aus ISO/IEC 27002:2022 §5.7 um, die mit der Revision 2022 neu
-                    eingeführt wurde: "Information relating to information security threats shall be
-                    collected and analysed to produce threat intelligence."
+                body: |-
+                    # Threat-Intelligence-Richtlinie der {{ tenant.legal_name }}
 
-                    Ziel ist es, Entscheidungen in Schwachstellen-Management, Incident Response,
-                    SOC-Detektion, Architektur-Reviews und Lieferantensteuerung mit aktuellem,
-                    organisations-relevantem Bedrohungswissen zu unterlegen — und damit den Wandel
-                    von einer rein reaktiven zu einer prädiktiven Sicherheitsorganisation zu
-                    ermöglichen. Verantwortlich ist {{ roles.ciso.fullName }} bzw. die ihm
-                    unterstehende Threat-Intelligence-Funktion (in kleineren Organisationen oft eine
-                    Rolle des SOC-Leads oder ISB).
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: ISO/IEC 27001:2022 A.5.7 (Threat intelligence) | ISO/IEC 27002:2022 § 5.7 | BSI DER.1 (Detektion sicherheitsrelevanter Ereignisse) | BSI 200-3 | DSGVO Art. 32 | NIS2 Art. 21 Abs. 2 lit. a, Art. 29 (Information sharing) | DORA Art. 45-49 | TLP-Standard (FIRST.org) | Edition: {{ policy.edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt verbindlich Erhebung, Analyse, Bewertung und Verteilung von Bedrohungsinformationen (Threat Intelligence) im Geltungsbereich des ISMS der {{ tenant.legal_name }}. Sie setzt ISO/IEC 27001:2022 A.5.7 — den mit der Revision 2022 neu eingefuehrten Control — verbindlich um und ermoeglicht den Wandel von einer reaktiven zu einer praediktiven Sicherheitsorganisation. Sie erfuellt zugleich die Vorgaben aus NIS2 Art. 21/29 (Information Sharing) und DORA Art. 45-49 (Information sharing arrangements).
+
+                    ## 2. Geltungsbereich
+                    Geltungsbereich ist der gesamte ISMS-Scope ({{ tenant.scope_statement }}). Erfasst sind alle Bedrohungs-Domaenen: Cyber-Bedrohungen, physische Bedrohungen, Insider-Bedrohungen, Supply-Chain-Bedrohungen, geopolitische Bedrohungen sowie hybride Bedrohungen kritischer Infrastruktur.
+
+                    Im Sinne von ISO/IEC 27001:2022/Amd. 1:2024 werden Klimawandel-bezogene Bedrohungen ausdruecklich als eigene Threat-Domaene erfasst: Hitzewellen mit Auswirkungen auf RZ-Verfuegbarkeit, Extremwetter mit Stoerung kritischer Lieferanten, Wassermangel an RZ-Standorten mit Verdunstungs-Kuehlung, hybride Bedrohungen klimakritischer Infrastruktur (Energienetz, Wasser, Telekommunikation). Diese Threat-Intelligence speist die Risikobeurteilung gemaess Klausel 6.1.2.
+
+                    ## 3. Quellen
+                    Mischung aus behoerdlichen, kollaborativen, kommerziellen und open-source Quellen:
+
+                    - **Behoerdlich:** BSI WID/CERT-Bund, CERT-EU, ENISA Advisories, BSI-Lageberichte, ggf. CISA KEV.
+                    - **Sektoral:** branchenrelevante ISAC-Mitgliedschaften ({{ isac.memberships }} — z. B. FS-ISAC fuer Finanz, Auto-ISAC, Health-ISAC, Allianz fuer Cyber-Sicherheit-Kreise des BSI).
+                    - **Kommerziell:** lizenzierte Premium-Feeds gemaess Beschaffungsentscheidung der Geschaeftsleitung.
+                    - **Open-Source / OSINT:** MITRE ATT&CK, MISP-Communities, NVD, Vendor-Advisories, Forschungs-Veroeffentlichungen.
+                    - **Eigentelemetrie:** SIEM, EDR, Honeypots, interne Vorfalls-Lessons-Learned (siehe Logging-Richtlinie A.8.15/A.8.16).
+
+                    ## 4. Klassifikation: strategisch, taktisch, operativ
+                    - **Strategisch:** Geopolitik, Akteursprofile, langfristige Trends, Sektor-Risiken. Zielgruppe: Geschaeftsleitung, Aufsichtsrat. Kadenz: monatlich konsolidiert, quartalsweise ins Management Review (Klausel 9.3).
+                    - **Taktisch:** TTPs gemaess MITRE ATT&CK; Akteurs-Kampagnen; Sektor-spezifische Modus-Operandi. Zielgruppe: Architektur, ISB, Secure-Development-Lead. Kadenz: woechentlich.
+                    - **Operativ:** IoCs (Hashes, Domains, IPs, URLs, Mutex-Namen, YARA-Regeln). Zielgruppe: SOC, EDR, Firewall-Operations. Kadenz: taeglich automatisiert.
+
+                    ## 5. Verarbeitungs-Pipeline
+                    1. **Collection:** Aufnahme via STIX/TAXII, MISP, Vendor-APIs, behoerdliche Mailing-Listen.
+                    2. **Normalisierung:** Vereinheitlichung im internen Threat-Intelligence-Plattform (TIP)-Format.
+                    3. **Anreicherung:** Mapping auf eigene Asset-Inventur (A.5.9), Schwachstellen-Inventur, MITRE-ATT&CK-Tagging.
+                    4. **Bewertung:** Relevanz-Scoring (sektor-, asset-, technologie-spezifisch).
+                    5. **Verteilung:** automatisiert an SIEM/EDR/Firewall fuer operativ; per Briefing-Format fuer taktisch/strategisch.
+                    6. **Feedback-Loop:** Trefferquoten und Falsch-Positive werden monatlich ausgewertet; nicht-treffsichere Quellen werden re-evaluiert.
+
+                    ## 6. Verteilung an operative Funktionen
+                    - **SOC:** Echtzeit-Feeds via SIEM-Integration, automatisierte Detektions-Regeln.
+                    - **Vulnerability Management:** Priorisierung anhand Exploit-Aktivitaet (CISA KEV, EPSS-Score).
+                    - **Incident Response:** fallbezogene Analystenunterstuetzung mit Akteursprofil.
+                    - **Architektur und Secure Development:** TTP-Briefings mit konkreten Hardening-Empfehlungen.
+                    - **Lieferantensteuerung:** Sektor- und Lieferanten-spezifische Bedrohungslagen fuer A.5.19-A.5.23.
+
+                    Verbindung zu A.5.5 (Behoerden-Kontakt) und A.5.6 (Special-Interest-Groups) ist gegeben.
+
+                    ## 7. Sharing-Verantwortung und TLP
+                    Externer Austausch in Trust-Communities (ISAC, branchenspezifische Arbeitskreise, BSI-CERT-Verbund) ist erwuenscht. Vor jeder Weitergabe ist das Traffic Light Protocol (TLP:CLEAR / GREEN / AMBER / RED) gemaess FIRST-Standard zu beachten:
+
+                    - **TLP:CLEAR** — uneingeschraenkte Weitergabe.
+                    - **TLP:GREEN** — Community-weite Weitergabe innerhalb relevanter Branche.
+                    - **TLP:AMBER** — Weitergabe nur an benannte Stellen.
+                    - **TLP:RED** — verlaesst nicht den ursprunglichen Empfaengerkreis.
+
+                    Bei meldepflichtigen Sachverhalten (NIS2 Art. 23, DORA Art. 19): Meldung erfolgt durch CISO {{ roles.ciso.fullName }} oder beauftragte Meldeperson; rechtliche Pruefung durch DSB {{ roles.dpo.fullName }} und Legal.
+
+                    ## 8. Vertraulichkeit erhaltener Informationen
+                    Erhaltene TLP-eingestufte Informationen werden gemaess Klassifizierungs-Richtlinie verarbeitet (TLP:RED groesser/gleich STRENG VERTRAULICH; TLP:AMBER groesser/gleich VERTRAULICH). Weitergabe nur durch autorisierte Personen.
+
+                    ## 9. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Pflege dieser Richtlinie | ISB {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | Threat-Intel-Lead, SOC-Lead | Alle |
+                    | Quellen-Auswahl | Threat-Intelligence-Lead | CISO | SOC, Vuln-Mgmt | Konsumenten |
+                    | Operative Auswertung (IoC) | SOC | CISO | IT-Betrieb, Vuln-Mgmt | Geschaeftsfuehrung |
+                    | Taktische Auswertung (TTP) | Threat-Intelligence-Lead | CISO | Architektur, Secure Development | Audit |
+                    | Strategische Auswertung | CISO | Geschaeftsfuehrung | Konzern-Sicherheit | Aufsichtsrat |
+                    | Sharing mit Behoerden / ISAC | CISO | Geschaeftsfuehrung | Legal, DSB {{ roles.dpo.fullName }} | Empfaengerkreis |
+
+                    ## 10. Mess- und Wirksamkeits-Kriterien (KPI)
+                    - Anzahl konsumierter IoCs pro Monat (Trendmonitoring)
+                    - Trefferquote im SIEM (Ziel: groesser 60 Prozent praezise Hits, kleiner 5 Prozent Falsch-Positive)
+                    - Anteil durch Threat-Intelligence verhinderter oder frueh erkannter Vorfaelle (Ziel: jaehrlich steigend)
+                    - Median Time-from-Disclosure-to-Detection-Rule (Ziel: kleiner 24 Stunden bei kritischen Schwachstellen)
+                    - Anzahl quartalsweiser Briefings an Geschaeftsleitung (Ziel: 100 Prozent)
+
+                    ## 11. Qualitaetssicherung
+                    Quellen werden jaehrlich auf Relevanz und Treffsicherheit ueberprueft. Niedrig-treffsichere Quellen werden gekuendigt oder umgewichtet. Falsch-Positive werden zentral geloggt und mit Quellen-Kennung versehen, um Quellen-Qualitaet objektiv vergleichen zu koennen.
+
+                    ## 12. Eskalation
+                    Erkenntnis kritischer Bedrohung gegen die Organisation: sofortige Eskalation an CISO und Geschaeftsfuehrung, Pruefung Aktivierung des Vorfalls-Response-Prozesses (siehe Vorfalls-Richtlinie), Pruefung Kommunikation an Aufsicht und betroffene interessierte Parteien gemaess A.5.5.
+
+                    ## 13. Pruef- und Aenderungszyklus
+                    Diese Richtlinie wird mindestens jaehrlich sowie anlassbezogen ueberprueft (wesentliche Aenderung der Bedrohungslage, neue geopolitische Konstellation, branchenspezifische Akteursverschiebung, Aenderung verbindlicher Meldepflichten). Frueher genehmigte Versionen bleiben gemaess Klausel 7.5 sieben Jahre archiviert. Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: ISO/IEC 27001:2022 A.5.5, A.5.6, A.5.7, A.5.9, A.5.19-A.5.23, A.5.24-A.5.27, A.8.8, A.8.15-A.8.17; BSI DER.1, DER.2.1, OPS.1.1.4; DSGVO Art. 32; NIS2 Art. 21, 23, 29; DORA Art. 19, 45-49.*
 
                 section:
                     1:
@@ -208,21 +343,83 @@ policy:
         mobile_teleworking:
             v1:
                 title: 'Richtlinie für mobile Geräte und Telearbeit'
-                body: |
-                    Diese Richtlinie regelt für {{ tenant.legal_name }} die Bedingungen und
-                    Einschränkungen der Nutzung mobiler Endgeräte (Notebooks, Smartphones, Tablets)
-                    und der ortsungebundenen Arbeit (Homeoffice, Telearbeit, mobiles Arbeiten,
-                    Workation). Sie setzt ISO/IEC 27002:2022 §6.7 (Remote working — explizit als
-                    "topic-specific policy" gefordert), §7.9 (Sicherheit von Vermögenswerten ausserhalb
-                    der Räumlichkeiten) und §8.1 (Endgeräte) um.
+                body: |-
+                    # Richtlinie fuer mobile Geraete und Telearbeit der {{ tenant.legal_name }}
 
-                    Hintergrund: Mobile Arbeit hat sich als dauerhaftes Arbeitsmodell etabliert. Sie
-                    erweitert den klassischen Perimeter der Organisation auf private Wohnumgebungen,
-                    öffentliche Räume und wechselnde Netzwerkumgebungen. Dies erhöht die
-                    Angriffsfläche signifikant und erfordert technische, organisatorische und
-                    verhaltensbezogene Kompensationsmassnahmen. Bei Mitbestimmungsrelevanz (z. B.
-                    Geräte-Monitoring, Standortdaten) ist § 87 BetrVG zu beachten und der
-                    Betriebsrat einzubinden.
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: ISO/IEC 27001:2022 A.6.7 (Remote working), A.7.9 (Security of assets off-premises), A.8.1 (User endpoint devices) | ISO/IEC 27002:2022 §§ 6.7, 7.9, 8.1 | BSI SYS.3.1 (Laptops), SYS.3.2.x (Mobile Devices), INF.8 (Haeuslicher Arbeitsplatz), INF.9 (Mobiler Arbeitsplatz) | DSGVO Art. 32 i. V. m. Art. 5 Abs. 1 lit. f | BetrVG § 87 Abs. 1 Nr. 6 | NIS2 Art. 21 Abs. 2 lit. e | DORA Art. 9 | Edition: {{ policy.edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt verbindlich Bedingungen und Einschraenkungen der Nutzung mobiler Endgeraete (Notebooks, Smartphones, Tablets) sowie ortsungebundener Arbeit (Homeoffice, Telearbeit, mobiles Arbeiten, Workation) im Geltungsbereich der {{ tenant.legal_name }}. Sie setzt ISO/IEC 27001:2022 A.6.7 (explizit als topic-specific policy gefordert), A.7.9 und A.8.1 in Verbindung mit den BSI-Bausteinen SYS.3.1, SYS.3.2.x, INF.8 und INF.9 verbindlich um. Sie erfuellt zugleich Vorgaben aus DSGVO Art. 32, BetrVG § 87 Abs. 1 Nr. 6, NIS2 Art. 21 und DORA Art. 9.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle dienstlichen mobilen Endgeraete (Bestand: {{ mobile.fleet_size }}), private Endgeraete unter BYOD-Genehmigung sowie alle Mitarbeitenden, Auftragnehmer und Praktikantinnen/Praktikanten, die ausserhalb der Standorte der {{ tenant.legal_name }} arbeiten. Geltungsbereich ist {{ tenant.scope_statement }}.
+
+                    Im Sinne von ISO/IEC 27001:2022/Amd. 1:2024 wird der Klimawandel als externer Faktor in die Telearbeit-Konzeption einbezogen: Hitzewellen koennen Heimarbeitsplaetze beeintraechtigen (Klimatisierung, Stromausfall); Extremwetter koennen Reisen und Workations betreffen. Ausweich-Standorte und Office-Verfuegbarkeit werden in der Notfallplanung beruecksichtigt.
+
+                    ## 3. Mitbestimmung und Datenschutz
+                    Der Einsatz von Geraete-Monitoring, Standortdaten oder Nutzungs-Analytik unterliegt der Mitbestimmung des Betriebsrats nach BetrVG § 87 Abs. 1 Nr. 6. Eine Betriebsvereinbarung ist herzustellen. Personenbezogene Auswertungen sind zweckgebunden, mit DSB {{ roles.dpo.fullName }} und Betriebsrat abgestimmt; eine DSFA ist erforderlich, sofern personenbezogene Bewegungs- oder Verhaltensdaten verarbeitet werden.
+
+                    ## 4. Genehmigte Arbeitsmodi und Standorte
+                    - **Buero:** Standardarbeitsplatz innerhalb gesicherter Standorte.
+                    - **Homeoffice:** dauerhafter Wohnsitz, mit raeumlich abgrenzbarem Arbeitsbereich.
+                    - **Mobiles Arbeiten:** wechselnde Standorte, einschliesslich Reise.
+                    - **Workation:** zeitlich befristetes Arbeiten an wechselnden Urlaubs-Standorten; vorab anzumelden.
+
+                    Datenresidenz: Verarbeitung personenbezogener Daten ausserhalb EU/EWR nur im Rahmen einer gueltigen Uebermittlungsgrundlage nach DSGVO Kap. V (Angemessenheitsbeschluss, SCC, BCR, Art. 49 Ausnahmen). Arbeit aus Hochrisiko-Laendern (Sanktionslisten, erhoehtes Spionagerisiko) ist genehmigungspflichtig durch CISO {{ roles.ciso.fullName }} und DSB {{ roles.dpo.fullName }}.
+
+                    ## 5. Endgeraete-Haertung und MDM
+                    - **Mobile Device Management:** Pflichtenrollout via {{ mdm.platform }}; ohne MDM-Enrolment kein Zugang zu dienstlichen Daten.
+                    - **Vollverschluesselung:** BitLocker (Win), FileVault (macOS), LUKS2 (Linux); Mobilgeraete via Plattform-Verschluesselung.
+                    - **Lockscreen, Auto-Lock, Bildschirmsperre:** maximal 5 Minuten Inaktivitaet.
+                    - **Authentifizierung:** Geraete-PIN/Passwort gemaess Krypto-Richtlinie; biometrische Verfahren ergaenzend.
+                    - **App-Steuerung:** App-Store-Restriktion oder Allow-Liste fuer Tier-0-Profile; Verbot von Sideloading.
+                    - **EDR/AV:** verpflichtend (siehe Malware-Richtlinie).
+                    - **Patching:** automatisierte Sicherheits-Updates; Compliance-Pruefung im Conditional Access.
+                    - **Remote-Wipe:** bei Verlust/Diebstahl, ohne Zustimmung des Mitarbeitenden im Containerized-Profil zulaessig (BYOD: nur Container, keine Privat-Daten).
+                    - **Root/Jailbreak:** verboten; automatische Detection und Blockierung.
+
+                    ## 6. BYOD (Bring-Your-Own-Device)
+                    BYOD ist nur fuer ausgewaehlte Anwendungsfaelle und mit Genehmigung des ISB zulaessig. Voraussetzungen: MDM-Container (Work-Profile), Verschluesselung, Mindest-OS-Version, kein Root/Jailbreak, Trennung dienstlicher und privater Daten, Recht zum Container-Wipe, Schulung.
+
+                    ## 7. Datenklassifikation und mobile Verarbeitung
+                    Streng vertrauliche Daten ({{ data.classification_levels }}) duerfen mobil nur in zugelassenen, MDM-verwalteten Apps verarbeitet werden; Offline-Speicherung minimieren. Sichtschutz-Folie auf Notebooks Pflicht; Vermeidung lautstaendiger Kommunikation in oeffentlichen Raeumen; Sperrbildschirm bei Abwesenheit.
+
+                    ## 8. Netz und Zugang
+                    - Remote-Zugriff via ZTNA oder VPN mit MFA und Geraete-Compliance-Pruefung (siehe Netz-Richtlinie).
+                    - Oeffentliche WLAN nur ueber VPN; bevorzugt Tethering ueber dienstliches Mobilgeraet.
+                    - Drucker/USB im Heimumfeld nur, wenn dienstlich genehmigt; Datenspeicherung auf privaten Geraeten verboten.
+
+                    ## 9. Heim-Arbeitsplatz (BSI INF.8)
+                    Anforderungen Heimarbeitsplatz: separater abschliessbarer Arbeitsbereich oder mindestens physische Trennung von Familienmitgliedern; Schutz vor Sichtkontakt durch Dritte; sichere Aufbewahrung dienstlicher Unterlagen (abschliessbarer Schrank); Strom-/Internet-Verfuegbarkeit; Aufzeichnung von Schluesselpersonen-Bereitschaft im DR-Plan. Mitarbeitende bestaetigen jaehrlich die Anforderungen per Self-Attestation.
+
+                    ## 10. Verlust, Diebstahl, Schaden
+                    Verlust oder Diebstahl ist unverzueglich (innerhalb 1 Stunde) an IT-Service-Desk und ISB zu melden. Sofortmassnahmen: Konten-Sperrung, Geraete-Sperrung, Remote-Wipe, Pruefung Datenschutz-Vorfall (DSGVO Art. 33/34) durch DSB {{ roles.dpo.fullName }}. Verlust streng vertraulicher Daten ist meldepflichtig.
+
+                    ## 11. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Pflege dieser Richtlinie | ISB {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | HR, DSB, Betriebsrat | Alle |
+                    | MDM-Betrieb | IT-Betrieb | CIO | ISB | – |
+                    | Genehmigung Hochrisiko-Standorte | CISO | Vorstand | DSB, Legal | Antragsteller |
+                    | Awareness | HR | CISO | ISB | Alle |
+                    | Audit / KPI | Internal Audit | CISO | ISB | Geschaeftsleitung |
+
+                    ## 12. Mess- und Wirksamkeits-Kriterien (KPI)
+                    - Anteil Endgeraete im MDM (Ziel: 100 Prozent)
+                    - Anteil Endgeraete mit aktuellem Patch-Stand (Ziel: groesser 98 Prozent)
+                    - Anteil verschluesselter Endgeraete (Ziel: 100 Prozent)
+                    - Mittlere Time-to-Wipe nach Verlustmeldung (Ziel: kleiner 4 Stunden)
+                    - Anteil Mitarbeitender mit aktualer Telearbeit-Schulung (Ziel: groesser 95 Prozent)
+                    - Anzahl Datenschutz-Vorfaelle aus mobiler Verarbeitung (Trend abnehmend)
+
+                    ## 13. Eskalation und Vorfallsmanagement
+                    Verstoesse oder Vorfaelle eskalieren ueber den ISB an CISO. Meldepflichten gemaess NIS2 Art. 23, DORA Art. 19 und DSGVO Art. 33/34 koordinieren CISO {{ roles.ciso.fullName }} und DSB {{ roles.dpo.fullName }}.
+
+                    ## 14. Ausnahmen und Pruefung
+                    Abweichungen beduerfen einer dokumentierten Risikoakzeptanz durch CISO. Pruefung mindestens jaehrlich sowie anlassbezogen (neuer Plattform-/Geraetetyp, neue Bedrohungslage, regulatorische Aenderung). Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: ISO/IEC 27001:2022 A.5.10, A.5.14, A.6.5, A.6.7, A.7.5, A.7.7, A.7.9, A.8.1, A.8.7, A.8.8, A.8.20-A.8.23, A.8.24; BSI SYS.3.1, SYS.3.2.x, INF.8, INF.9, ORP.4; DSGVO Art. 5, 32, 33-35, 44-49; BetrVG § 87 Abs. 1 Nr. 6; NIS2 Art. 21; DORA Art. 9.*
 
                 section:
                     1:
@@ -305,20 +502,79 @@ policy:
         asset_management:
             v1:
                 title: 'Asset-Management-Richtlinie'
-                body: |
-                    Diese Richtlinie regelt für {{ tenant.legal_name }} die Identifizierung,
-                    Verzeichnung, Eigentumszuweisung, Klassifizierung, akzeptable Nutzung und
-                    geordnete Aussonderung von Informations- und IT-Vermögenswerten ("Assets"). Sie
-                    setzt ISO/IEC 27002:2022 §5.9 (Inventar von Informationen und anderen
-                    zugehörigen Vermögenswerten), §5.10 (Akzeptable Nutzung von Informationen und
-                    anderen zugehörigen Vermögenswerten) sowie §5.11 (Rückgabe von Vermögenswerten)
-                    um.
+                body: |-
+                    # Asset-Management-Richtlinie der {{ tenant.legal_name }}
 
-                    Asset-Management ist die Grundlage des gesamten ISMS: ohne vollständiges,
-                    aktuelles Inventar ist keine Risikobewertung, keine Klassifizierung und keine
-                    Schutzbedarfsfeststellung möglich. Das Vorhandensein eines benannten Asset-
-                    Eigentümers für jedes Asset ist eine der häufigsten Audit-Prüfungen — fehlende
-                    Owner werden regelmässig als Major Nonconformity gewertet.
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: ISO/IEC 27001:2022 A.5.9 (Inventory of information and other associated assets), A.5.10 (Acceptable use), A.5.11 (Return of assets), A.5.12 (Classification) | ISO/IEC 27002:2022 §§ 5.9-5.12 | BSI ORP.1 (Organisation), ISMS.1 (IS-Management) | DSGVO Art. 30, 32 | NIS2 Art. 21 Abs. 2 lit. e | DORA Art. 8 (Identification) | Edition: {{ policy.edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt verbindlich Identifizierung, Verzeichnung, Eigentumszuweisung, Klassifizierung, akzeptable Nutzung und geordnete Aussonderung von Informations- und IT-Vermoegenswerten ("Assets") der {{ tenant.legal_name }}. Sie setzt ISO/IEC 27001:2022 A.5.9-A.5.12 in Verbindung mit BSI ORP.1 verbindlich um und schafft die unverzichtbare Datenbasis fuer Risikobeurteilung (Klausel 6.1.2), Schutzbedarfsfeststellung, Lieferantensteuerung und Vorfallsanalyse. Erfuellt zugleich Anforderungen aus DSGVO Art. 30/32, DORA Art. 8 und NIS2 Art. 21.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Asset-Klassen im ISMS-Scope ({{ tenant.scope_statement }}): Informationen/Daten, Hardware, Software/Lizenzen, Cloud- und SaaS-Dienste, Netzkomponenten, OT/ICS, unterstuetzende Dienste (Strom, Kuehlung, Konnektivitaet), kritische Personen-Rollen, sowie immaterielle Vermoegenswerte (Marken, Vertraege, Verfahren). Geltungsbereich umfasst alle Mitarbeitenden, Auftragnehmer, Praktikantinnen/Praktikanten und Drittparteien (Auftragsverarbeiter im Sinne DSGVO Art. 28).
+
+                    Im Sinne von ISO/IEC 27001:2022/Amd. 1:2024 wird der Klimawandel als externer Faktor in die Asset-Bewertung einbezogen: Standort-Risiken (Hochwasser, Hitzewelle), Versorgungsrisiken (Energie, Wasser), Lieferanten-Resilienz und Lebenszyklus-Aspekte (Energieverbrauch, Wiederverwendung, fachgerechtes Recycling) sind im Asset-Inventar zu pflegen.
+
+                    ## 3. Grundsaetze
+                    - **Vollstaendigkeit:** kein Asset ohne Eintrag im fuehrenden Inventar.
+                    - **Eindeutige Identifikation:** ID, Name, Typ, Standort, technische Merkmale.
+                    - **Eigentum:** jedes Asset hat einen benannten Asset-Owner und einen Asset-Custodian (technischer Verantwortlicher).
+                    - **Klassifizierung:** Schutzbedarf je Asset und Datentyp gemaess Klassifizierungs-Richtlinie ({{ data.classification_levels }}).
+                    - **Lebenszyklus:** Beschaffung, Inbetriebnahme, Aenderung, Aussonderung — vollstaendig dokumentiert.
+                    - **Synchronizitaet:** automatischer Abgleich CMDB ↔ Discovery-Tools mindestens taeglich.
+
+                    ## 4. Asset-Kategorien und Mindest-Attribute
+                    | Kategorie | Mindest-Attribute |
+                    |---|---|
+                    | Informationen / Daten | Eigentuemer, Klassifizierung, Speicherort(e), Aufbewahrung, gesetzliche Pflichten |
+                    | Hardware | Hersteller, Modell, Seriennummer, Standort, Owner, Custodian, Garantie |
+                    | Software / Lizenzen | Hersteller, Version, Lizenztyp, Anzahl, Vertragspartner, EoL |
+                    | Cloud-/SaaS-Service | Provider, Region, Tenant-ID, Datenklassen, Vertrag (AVV), Schluessel-Hoheit |
+                    | Netzkomponente | Hersteller, OS/Firmware, Standort, Zone, Owner |
+                    | OT/ICS | Hersteller, Modell, Patch-Status, Hersteller-Support, Wartungsfenster |
+                    | Personen-Rolle | Funktion, Stellvertreter, Berechtigungsprofil |
+                    | Unterstuetzender Dienst | Anbieter, SLA, Redundanz, Lieferant |
+
+                    ## 5. Klassifizierung und Handhabung (A.5.12-A.5.13)
+                    Klassifizierungsstufen ({{ data.classification_levels }}) je Asset und Datentyp. Handhabungs-Regeln (Speicherung, Uebertragung, Druck, Vernichtung) sind je Stufe definiert (siehe Klassifizierungs-Richtlinie).
+
+                    ## 6. Akzeptable Nutzung (A.5.10)
+                    Acceptable-Use-Policy ist Pflichtbestandteil der Mitarbeitenden-Bestimmungen (siehe HR-Richtlinie A.6.2). Verbote: private Vermarktung, illegale Inhalte, Kompromittierung Dritter. Privat-Nutzung dienstlicher Geraete: gemaess Betriebsvereinbarung (Mitbestimmung BetrVG § 87).
+
+                    ## 7. Rueckgabe von Vermoegenswerten (A.5.11)
+                    Rueckgabeprozess bei Personalwechsel oder Vertragsende: Geraete, Datentraeger, Schluessel, Token, Ausweise, Software-Lizenzen. Off-/On-Boarding-Checkliste in HR und IT-Service-Desk; Bestaetigung dokumentiert. Beendigung der Berechtigungen am letzten Arbeitstag (Just-in-Time-Sperre).
+
+                    ## 8. Aussonderung und Wiederverwertung
+                    Sichere Loeschung gemaess NIST SP 800-88 oder physische Vernichtung gemaess DIN 66399 (Schutzklasse mindestens 3, je nach Schutzbedarf hoeher). Entsorgungs- und Vernichtungsnachweise mindestens 3 Jahre archivieren. Klimaschutz: priorisierte Wiederverwendung gegenueber Vernichtung, sofern sicherheitsvertraeglich.
+
+                    ## 9. Verzeichnis von Verarbeitungstaetigkeiten (DSGVO Art. 30)
+                    Personenbezogene Daten-Assets fliessen in das Verzeichnis von Verarbeitungstaetigkeiten ein; Querverweise sind zu pflegen. DSB {{ roles.dpo.fullName }} erhaelt Schreib-/Leserecht. AVV-Vertraege sind je betroffenem Auftragsverarbeiter referenziert.
+
+                    ## 10. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Pflege dieser Richtlinie | ISB {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | IT-Betrieb, DSB | Alle |
+                    | Pflege CMDB / Inventar | IT-Betrieb / Asset-Manager | CIO | Asset-Owner, App-Owner | Audit |
+                    | Asset-Klassifizierung | Asset-Owner | Vorstand | ISB, DSB | Internal Audit |
+                    | Beschaffung / Aussonderung | Einkauf, IT-Betrieb | CIO | ISB, DSB, Legal | – |
+                    | Audit / KPI | Internal Audit | CISO | ISB | Geschaeftsleitung |
+
+                    ## 11. Mess- und Wirksamkeits-Kriterien (KPI)
+                    - Anteil Assets mit benanntem Owner (Ziel: 100 Prozent)
+                    - Anteil Assets mit Klassifizierung (Ziel: 100 Prozent)
+                    - Discovery-Drift (CMDB-Pflege-Quote, Ziel: groesser 98 Prozent in 7 Tagen)
+                    - Anzahl Audit-Findings "Asset ohne Owner" (Ziel: 0)
+                    - Anteil Aussonderungs-Nachweise vollstaendig (Ziel: 100 Prozent)
+                    - Anteil personenbezogener Assets mit Eintrag im DSGVO-Art-30-Verzeichnis (Ziel: 100 Prozent)
+
+                    ## 12. Eskalation und Vorfallsmanagement
+                    Inventar-Luecken oder fehlende Owner werden quartalsweise an ISMS-Lenkungskreis eskaliert. Verlust/Diebstahl wird gemaess Mobile-Richtlinie und Vorfalls-Richtlinie behandelt. Meldepflichten gemaess NIS2 Art. 23, DORA Art. 19, DSGVO Art. 33/34 koordinieren CISO {{ roles.ciso.fullName }} und DSB {{ roles.dpo.fullName }}.
+
+                    ## 13. Pruefung und Genehmigung
+                    Pruefung mindestens jaehrlich sowie anlassbezogen (Re-Organisation, Lieferantenwechsel, neuer Standort, regulatorische Aenderung). Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: ISO/IEC 27001:2022 A.5.9-A.5.13, A.5.19-A.5.23, A.7.9, A.7.14, A.8.1, A.8.7, A.8.10-A.8.12, A.8.32; BSI ORP.1, ISMS.1, CON.1, CON.2; DSGVO Art. 28, 30, 32; NIS2 Art. 21 Abs. 2 lit. e; DORA Art. 8.*
 
                 section:
                     1:
@@ -399,27 +655,72 @@ policy:
         hr_security:
             v1:
                 title: 'Personalsicherheits-Richtlinie'
-                body: |
-                    Diese Richtlinie regelt für {{ tenant.legal_name }} alle informationssicherheits-
-                    relevanten Aspekte des Personalwesens entlang des Mitarbeiter-Lebenszyklus:
-                    Vor-Anstellung, während der Beschäftigung sowie bei Beendigung oder
-                    Funktionswechsel. Sie setzt ISO/IEC 27002:2022 §6.1 (Screening), §6.2
-                    (Beschäftigungsbedingungen), §6.3 (Awareness, Schulung und Training), §6.4
-                    (Disziplinarverfahren), §6.5 (Verantwortlichkeiten nach Beendigung oder
-                    Wechsel) und §6.6 (Vertraulichkeits- und Geheimhaltungsvereinbarungen) um.
+                body: |-
+                    # Personalsicherheits-Richtlinie der {{ tenant.legal_name }}
 
-                    Rechtliche Grundlagen in Deutschland: Die Verarbeitung personenbezogener
-                    Daten von Beschäftigten richtet sich nach **§ 26 BDSG-neu** (Datenverarbeitung
-                    für Zwecke des Beschäftigungsverhältnisses) sowie **Art. 88 DSGVO**
-                    (Datenverarbeitung im Beschäftigungskontext mit nationalen Spezifikationen).
-                    Bei mitbestimmungsrelevanten Massnahmen — insbesondere Einführung und
-                    Anwendung technischer Einrichtungen, die zur Verhaltens- oder
-                    Leistungsüberwachung geeignet sind — ist die Mitbestimmung des Betriebsrats
-                    nach **§ 87 Abs. 1 Nr. 6 BetrVG** zwingend zu wahren. Dazu zählen u. a.
-                    Awareness-Plattformen mit Tracking, Phishing-Simulationen mit Auswertung auf
-                    Personenebene und Endpoint-Monitoring. Verantwortlich für diese Richtlinie ist
-                    {{ roles.ciso.fullName }} in enger Abstimmung mit der Personalleitung,
-                    {{ roles.dpo.fullName }} und ggf. dem Betriebsrat.
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: ISO/IEC 27001:2022 A.6.1 (Screening), A.6.2 (Terms and conditions of employment), A.6.3 (Information security awareness, education and training), A.6.4 (Disciplinary process), A.6.5 (Responsibilities after termination or change of employment), A.6.6 (Confidentiality or non-disclosure agreements), A.6.7 (Remote working) | ISO/IEC 27002:2022 §§ 6.1-6.7 | BSI ORP.2 (Personal), ORP.3 (Sensibilisierung und Schulung) | DSGVO Art. 5, 32, 88; BDSG § 26 | BetrVG §§ 87 Abs. 1 Nr. 6, 75 | NIS2 Art. 21 Abs. 2 lit. g | DORA Art. 13 (Awareness) | Edition: {{ policy.edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt verbindlich die informationssicherheits-relevanten Aspekte des Personalwesens entlang des Mitarbeitenden-Lebenszyklus (Vor-Anstellung, waehrend der Beschaeftigung, bei Beendigung oder Funktionswechsel). Sie setzt ISO/IEC 27001:2022 A.6.1-A.6.7 in Verbindung mit BSI ORP.2/ORP.3 verbindlich um und beachtet zugleich BDSG § 26, DSGVO Art. 88, BetrVG §§ 75/87 sowie NIS2/DORA-Anforderungen.
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle Beschaeftigten unabhaengig vom Beschaeftigungsverhaeltnis (Festanstellung, Befristung, Werkstudierende, Praktikantinnen und Praktikanten, Leiharbeit, Freelancer mit Zugriff auf Informations-Assets), sowie Auftragnehmer im ISMS-Scope ({{ tenant.scope_statement }}). Verbund-Tochtergesellschaften gemaess Konzernvereinbarung.
+
+                    Im Sinne von ISO/IEC 27001:2022/Amd. 1:2024 wird der Klimawandel als externer Faktor betrachtet: Aenderungen in Reise- und Praesenz-Mustern (z. B. Ausfall von Verkehrstraegern bei Extremwetter), gesundheitliche Belastungen (Hitze) und psychische Resilienz von Schluesselpersonal sind in Personalplanung und BCP einzubeziehen.
+
+                    ## 3. Mitbestimmung und Datenschutz
+                    Massnahmen, die zur Verhaltens- oder Leistungskontrolle geeignet sind (Awareness-Plattformen mit Tracking, Phishing-Simulationen mit Personenbezug, Endpoint-/Geraete-Monitoring), unterliegen Mitbestimmung nach BetrVG § 87 Abs. 1 Nr. 6 und sind in einer Betriebsvereinbarung zu regeln. Personenbezogene Verarbeitungen erfuellen DSGVO Art. 5 (Datenminimierung, Zweckbindung) und sind im Verzeichnis von Verarbeitungstaetigkeiten gefuehrt; DSB {{ roles.dpo.fullName }} wird einbezogen. Disziplinarmassnahmen folgen den arbeitsrechtlichen Grundsaetzen (Anhoerung, Verhaeltnismaessigkeit).
+
+                    ## 4. Vor-Anstellung (A.6.1, A.6.2, A.6.6)
+                    - **Screening:** risikobasiert; Identitaetspruefung, Plausibilisierung, Referenzen. Fuer sicherheitskritische Rollen zusaetzlich Fuehrungszeugnis nach BZRG § 30, ggf. erweiterte Sicherheitsueberpruefung gemaess SUeG (sofern anwendbar).
+                    - **Vertraege:** Arbeitsvertrag enthaelt Sicherheits- und Vertraulichkeitsklauseln; NDA fuer hoch schutzbeduerftige Funktionen sowie fuer Externe.
+                    - **Datenschutz:** Bewerber-Daten gemaess BDSG § 26 / DSGVO Art. 88 verarbeitet; Loeschung gemaess Aufbewahrungs-Konzept.
+
+                    ## 5. Waehrend der Beschaeftigung (A.6.3, A.6.4)
+                    - **Onboarding-Schulung:** Pflicht innerhalb der ersten {{ training.onboarding_days }} Tage. Inhalte: ISMS-Grundlagen, Klassifizierung, Passwort/MFA, Phishing, Datenschutz, Vorfallsmeldung.
+                    - **Jaehrliche Awareness:** Pflicht-Refresher; Themen rotierend (Phishing, Mobile, Cloud, Insider-Risiken, Krise).
+                    - **Rollenbasierte Vertiefung:** zusaetzliche Schulung fuer Risiko-Gruppen (Geschaeftsfuehrung, HR, Finance, Admins, Entwicklung).
+                    - **Phishing-Simulationen:** halbjaehrlich; Auswertung anonymisiert/pseudonymisiert; Nachschulungen bei Auffaelligkeiten.
+                    - **Disziplinarverfahren:** dokumentierter Prozess bei Verstoessen, abgestuft (Belehrung, Abmahnung, Aenderungs-/Beendigungs-Kuendigung) im Rahmen arbeitsrechtlicher Grundsaetze; Beteiligung Betriebsrat.
+
+                    ## 6. Funktionswechsel und Beendigung (A.6.5, A.5.11)
+                    Off-/On-Boarding-Checkliste in HR und IT-Service-Desk: Sperrung Zugaenge am letzten Arbeitstag (Just-in-Time-Sperre), Rueckgabe Geraete/Token/Schluessel/Ausweise (siehe Asset-Richtlinie A.5.11), Daten-Uebergabe. NDA-Pflichten ueberdauern das Beschaeftigungsverhaeltnis. Lessons-Learned-Gespraech bei Schluesselpositionen. Wechsel-Reviews fuer Berechtigungen alle 6 Monate (Tier 0/1).
+
+                    ## 7. Schluesselrollen, Stellvertretung, Vier-Augen
+                    Kritische Funktionen (CISO, ISB, DSB, Krypto-Verantwortlicher, Backup-Operator, IT-Notfall-Koordination) haben benannte Stellvertreter (siehe BCM-Richtlinie). Vier-Augen bei Vergabe administrativer Rechte und bei sicherheitskritischen Aenderungen.
+
+                    ## 8. Awareness-Programm
+                    - Inhalte abgeglichen mit BSI Empfehlungen, ENISA-Material, Branchen-Best-Practice.
+                    - Gamified Elemente und realitaetsnahe Szenarien.
+                    - Erfolgsmessung: Wissens-Tests, Phish-Klickquoten, Reporting-Quoten.
+                    - Sonder-Schulungen anlassbezogen (Vorfall, neue Bedrohungslage, regulatorische Aenderung).
+                    - Externe Zielgruppen: Auftragsverarbeiter und Lieferanten erhalten zielgerichtete Awareness-Materialien (siehe Lieferanten-Richtlinie).
+
+                    ## 9. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Pflege dieser Richtlinie | ISB {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | HR-Leitung, DSB {{ roles.dpo.fullName }}, Betriebsrat | Alle |
+                    | Screening / Onboarding | HR | CHRO | ISB, DSB, Legal | Fachbereich |
+                    | Awareness | HR / ISB | CISO | DSB, Betriebsrat | Alle |
+                    | Disziplinarmassnahmen | HR / Fachbereich | CHRO | Legal, ISB, Betriebsrat | Betroffene |
+                    | Off-/Onboarding IT | IT-Service-Desk | CIO | HR, ISB, App-Owner | Fachbereich |
+                    | Audit / KPI | Internal Audit | CISO | ISB, HR | Geschaeftsleitung |
+
+                    ## 10. Mess- und Wirksamkeits-Kriterien (KPI)
+                    - Anteil neuer Mitarbeitender mit Onboarding-Schulung in Frist (Ziel: 100 Prozent)
+                    - Jaehrliche Awareness-Quote (Ziel: groesser 95 Prozent)
+                    - Phish-Klick-Quote (Ziel: kleiner 5 Prozent), Phish-Report-Quote (Ziel: groesser 30 Prozent)
+                    - Anteil zeitgerechter Off-Boardings (Just-in-Time-Sperre, Ziel: 100 Prozent)
+                    - Anzahl HR-bezogener Sicherheitsvorfaelle (Trend abnehmend)
+
+                    ## 11. Eskalation und Vorfallsmanagement
+                    Verstoesse oder Vorfaelle (Insider-Vorfall, Verlust von Daten/Geraet, Vertraulichkeitsverletzung) loesen die Vorfalls-Richtlinie aus. Meldepflichten gemaess NIS2 Art. 23, DORA Art. 19 und DSGVO Art. 33/34 koordinieren CISO {{ roles.ciso.fullName }} und DSB {{ roles.dpo.fullName }}.
+
+                    ## 12. Ausnahmen und Pruefung
+                    Abweichungen beduerfen einer dokumentierten Risikoakzeptanz durch CISO; befristet auf maximal 12 Monate. Pruefung mindestens jaehrlich sowie anlassbezogen (Reorganisation, regulatorische Aenderung, Vorfall). Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: ISO/IEC 27001:2022 A.5.10, A.5.11, A.5.16, A.5.18, A.5.24-A.5.27, A.6.1-A.6.7, A.7.4, A.7.7, A.8.1; BSI ORP.2, ORP.3, ORP.4; DSGVO Art. 5, 32, 88; BDSG § 26; BetrVG §§ 75, 87; NIS2 Art. 21 Abs. 2 lit. g; DORA Art. 13.*
 
                 section:
                     1:
@@ -516,14 +817,83 @@ policy:
         physical_security:
             v1:
                 title: 'Physische und umgebungsbezogene Sicherheits-Richtlinie'
-                body: |
-                    Diese Richtlinie regelt für {{ tenant.legal_name }} den Schutz von Menschen,
-                    Räumen und informationsverarbeitenden Einrichtungen vor unbefugtem physischem
-                    Zutritt sowie vor umgebungsbezogenen Gefahren (Feuer, Wasser, Stromausfall,
-                    extreme Temperaturen). Sie setzt ISO/IEC 27002:2022 §7.1 bis §7.14 um. Bei
-                    rein remote arbeitenden Organisationen mit Cloud-only-Infrastruktur ist die
-                    Richtlinie schlanker, jedoch nicht entbehrlich — auch das Heimbüro ist
-                    physischer Arbeitsplatz und Schutzobjekt.
+                body: |-
+                    # Physische und umgebungsbezogene Sicherheits-Richtlinie der {{ tenant.legal_name }}
+
+                    *Dokumentenklasse: Themenrichtlinie | Norm-Anker: ISO/IEC 27001:2022 A.7.1 (Physical security perimeters), A.7.2 (Physical entry), A.7.3 (Securing offices), A.7.4 (Physical security monitoring), A.7.5 (Protecting against physical and environmental threats), A.7.6 (Working in secure areas), A.7.7 (Clear desk and clear screen), A.7.8 (Equipment siting), A.7.9 (Off-premises assets), A.7.10 (Storage media), A.7.11 (Supporting utilities), A.7.12 (Cabling security), A.7.13 (Equipment maintenance), A.7.14 (Secure disposal or re-use) | ISO/IEC 27002:2022 §§ 7.1-7.14 | BSI INF.1 (Allgemeines Gebaeude), INF.2 (Rechenzentrum), INF.7 (Bueroarbeitsplatz), INF.8 (Haeuslicher Arbeitsplatz), INF.9 (Mobiler Arbeitsplatz) | DSGVO Art. 5, 6, 32; BDSG § 4; BetrVG § 87 Abs. 1 Nr. 6 | DIN 66399 (Datentraeger-Vernichtung); NIST SP 800-88 (Media Sanitization) | NIS2 Art. 21 Abs. 2 lit. e | DORA Art. 9 | Edition: {{ policy.edition }} | Sprache: Deutsch (Sie-Form, juristisch) | Pruefintervall: 12 Monate*
+
+                    ## 1. Zweck
+                    Diese Richtlinie regelt verbindlich den Schutz von Menschen, Raeumen, Versorgungs-Infrastruktur und informationsverarbeitenden Einrichtungen der {{ tenant.legal_name }} vor unbefugtem physischem Zutritt sowie vor umgebungsbezogenen Gefahren (Feuer, Wasser, Stromausfall, extreme Temperaturen, Erschuetterung, Einbruch, Sabotage). Sie setzt ISO/IEC 27001:2022 A.7.1-A.7.14 in Verbindung mit den BSI-Bausteinen INF.1, INF.2, INF.7-INF.9 verbindlich um. Auch bei rein remote arbeitenden Organisationen mit Cloud-only-Infrastruktur bleibt die Richtlinie anwendbar (Heimbuero gemaess INF.8, mobile Arbeitsplaetze gemaess INF.9, ausgewaehlte Standorte fuer Hardware-Aussonderung).
+
+                    ## 2. Geltungsbereich
+                    Erfasst sind alle eigenen und angemieteten Standorte ({{ sites.list }}), Co-Location-Standorte, Heimarbeitsplaetze, mobile Arbeitsplaetze, Datentraeger-Aussonderungs-Stellen, Druck- und Postverarbeitungs-Bereiche, Archive, sowie kritische Versorgungs-Infrastruktur (Strom, USV, Notstrom, Klima, Brandschutz). Geltungsbereich ist {{ tenant.scope_statement }}.
+
+                    Im Sinne von ISO/IEC 27001:2022/Amd. 1:2024 wird der Klimawandel als externer Faktor in die Standort- und Umgebungsplanung einbezogen: Hochwasser-Risiko (Standortbewertung, Hebeschutz, Verlegung sensibler Komponenten ueber kritische Hochwasser-Pegel), Hitzewellen (Klima-Resilienz, Doppel-Kuehlung, Lastreduktion), Wassermangel (Verdunstungs-Kuehlung), Sturmrisiko (Dach- und Aussenwand-Standfestigkeit, Antennen, Glas), klimabedingte Stromknappheit (Notstromreserven, Lastenpriorisierung). Diese Faktoren sind in Risikobeurteilung und Notfallplanung dokumentiert.
+
+                    ## 3. Sicherheitszonen-Modell (A.7.1, A.7.2)
+                    | Zone | Beispiel | Zutrittsregel |
+                    |---|---|---|
+                    | Oeffentlich | Vorfeld, Zufahrt | frei |
+                    | Empfang | Eingangsbereich | kontrolliert, Identifikation |
+                    | Buero | Bueroflaechen | Mitarbeiter-Karte |
+                    | Eingeschraenkt | Serverraum, Archiv | Karte + PIN; Vier-Augen bei Tier 0 |
+                    | Hochsicherheit / RZ | Tier-1-Rechenzentrum | biometrisch + Karte; Vier-Augen; Mantrap |
+
+                    Besucher werden registriert, identifiziert, mit Besucherausweis ausgestattet und in nicht-oeffentlichen Zonen begleitet. Lieferanten-Zutritt nur nach Anmeldung und in Begleitung; Vor-Ort-Wartungen werden protokolliert.
+
+                    ## 4. Ueberwachung und Datenschutz (A.7.4)
+                    CCTV-Massnahmen unterliegen in Deutschland strenger Datenschutzkontrolle: zulaessig nur bei Rechtsgrundlage gemaess DSGVO Art. 6 Abs. 1 lit. f i. V. m. BDSG § 4 (oeffentlich zugaenglich) bzw. BDSG § 26 (Beschaeftigtenbereich); Mitbestimmung gemaess BetrVG § 87 Abs. 1 Nr. 6 ist zwingend. Hinweisschilder Pflicht. Aufzeichnungsdauer auf das Erforderliche begrenzt (typisch 72 Stunden, maximal 10 Werktage). Live-Auswertung Verbot ohne Anlass; ereignisbezogene Auswertung mit DSB {{ roles.dpo.fullName }} und Betriebsrat abgestimmt. Hochsicherheitsbereiche zusaetzlich Bewegungsmelder, Glasbruch- und Tuerkontakt-Sensorik mit Anbindung an Sicherheitsleitstand.
+
+                    ## 5. Umweltschutz und Versorgung (A.7.5, A.7.11, A.7.12)
+                    - **Brandschutz:** Brandfrueherkennung in allen Technikraeumen; Gas-/Inert-Loeschanlage oder gleichwertige Alternative im RZ; mindestens jaehrlich Wartungs- und Pruefnachweis.
+                    - **Wasserdetektion:** unter Doppelboden, in Bereichen unterhalb wasserfuehrender Leitungen.
+                    - **Klimatisierung:** redundante Auslegung im RZ (N+1 mindestens), Temperatur- und Feuchte-Ueberwachung.
+                    - **Stromversorgung:** USV mit Mindestlaufzeit zur geordneten Abschaltung; Notstrom-Aggregat fuer Tier 0/1; Pruefung Volllast jaehrlich.
+                    - **Versorgungs-Trassen:** Strom- und Datenkabel getrennt, Verteiler zutrittsgeschuetzt; Beschriftung; Schutz gegen Beschaedigung.
+
+                    ## 6. Buero, Clear-Desk und Heimbuero (A.7.7, A.7.9, INF.7-INF.9)
+                    - **Clear Desk / Clear Screen:** klassifizierte Dokumente bei Verlassen des Arbeitsplatzes weggeschlossen; Bildschirme bei Abwesenheit gesperrt (Screen-Lock max. 5 Minuten).
+                    - **Off-premises Assets (A.7.9):** Sichtschutz, Diebstahlschutz, sichere Lagerung; Kabelschloesser bei Notebooks ausserhalb gesicherter Standorte.
+                    - **Heimbuero (INF.8):** abgrenzbarer Arbeitsbereich; Sichtschutz; Vermeidung lautstarker Telefonate mit vertraulichem Inhalt; sichere Aufbewahrung dienstlicher Unterlagen.
+                    - **Mobiler Arbeitsplatz (INF.9):** Hochrisiko-Standorte gemaess Mobile-Richtlinie genehmigungspflichtig.
+
+                    ## 7. Geraete-Standort, Wartung und Aussonderung (A.7.8, A.7.13, A.7.14)
+                    - **Geraete-Standort:** geschuetzt vor Stoss, Vibration, Sonnenlicht; Kabel-Management; redundante Auslegung kritischer Komponenten.
+                    - **Wartung:** durch autorisiertes Personal mit dokumentiertem Auftrag; Hersteller-Techniker werden begleitet; Sitzungs-Aufzeichnung wo angemessen.
+                    - **Aussonderung und Wiederverwertung:** zertifizierte Datentraeger-Bereinigung gemaess NIST SP 800-88, oder physische Vernichtung gemaess DIN 66399 (Schutzklasse mindestens 3, je nach Schutzbedarf hoeher). Entsorgungsnachweise mindestens 3 Jahre archivieren. Wiederverwertung gegenueber Vernichtung priorisiert (Klima- und Ressourcenschutz), sofern sicherheitsvertraeglich.
+
+                    ## 8. Datentraeger und Druck (A.7.10)
+                    - Wechseldatentraeger nur, wenn dienstlich erforderlich; verschluesselt gemaess Krypto-Richtlinie.
+                    - Verlust ist binnen 1 Stunde an IT-Service-Desk und ISB zu melden.
+                    - Vertrauliche Druckauftraege via Pull-Print mit Authentifizierung; Standard-Druck mit Klassifikation Open auf gemeinsamen Druckern zulaessig.
+                    - Postverarbeitung von vertraulichen Sendungen in dedizierten Bereichen; Aussendungen mit Versand-Sicherung gemaess Klassifizierung.
+
+                    ## 9. Verantwortlichkeiten (RACI)
+                    | Aktivitaet | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Pflege dieser Richtlinie | ISB {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | Facility-Management, DSB, HR | Alle |
+                    | Zutritts- und Schliess-Konzept | Facility-Management | COO | ISB, HR, Betriebsrat | Standorte |
+                    | RZ-Betrieb | IT-Betrieb | CIO | ISB, Facility | – |
+                    | CCTV-/Sensorik-Betrieb | Facility / Sicherheitsdienst | COO | DSB {{ roles.dpo.fullName }}, Betriebsrat | Beschaeftigte |
+                    | Datentraeger-Vernichtung | IT-Betrieb / Asset-Management | CIO | ISB, DSB, Lieferant | Audit |
+                    | Audit / KPI | Internal Audit | CISO | ISB, Facility | Geschaeftsleitung |
+
+                    ## 10. Mess- und Wirksamkeits-Kriterien (KPI)
+                    - Anteil aktualer Zutrittsberechtigungen (Ziel: 100 Prozent in Quartals-Review)
+                    - Zutritts-Inkonsistenzen pro Quartal (Ziel: 0)
+                    - Anteil RZ-Komponenten mit redundanter Versorgung (Ziel: 100 Prozent Tier 0)
+                    - Anzahl unautorisierter Zutritts-Versuche pro Standort (Trend abnehmend, Investigation 100 Prozent)
+                    - Anzahl Datentraeger-Aussonderungen mit Nachweis (Ziel: 100 Prozent)
+                    - Anteil Mitarbeitender mit Clear-Desk-Schulung (Ziel: groesser 95 Prozent)
+
+                    ## 11. Eskalation und Vorfallsmanagement
+                    Verstoesse oder Verdacht auf Einbruch, Sabotage oder Diebstahl loesen die Vorfalls-Richtlinie aus; im Bedarfsfall Anzeige bei zustaendiger Strafverfolgungsbehoerde unter Beteiligung Legal. Meldepflichten gemaess NIS2 Art. 23, DORA Art. 19 und DSGVO Art. 33/34 koordinieren CISO {{ roles.ciso.fullName }} und DSB {{ roles.dpo.fullName }}.
+
+                    ## 12. Ausnahmen und Pruefung
+                    Abweichungen beduerfen einer dokumentierten Risikoakzeptanz durch CISO mit kompensierenden Massnahmen, befristet auf maximal 12 Monate. Pruefung mindestens jaehrlich sowie anlassbezogen (Standortwechsel, Umbau, neue Bedrohungslage, Vorfall, regulatorische Aenderung). Genehmigungskette: {{ approval.chain }}.
+
+                    ---
+                    *Cross-Refs: ISO/IEC 27001:2022 A.5.10, A.5.11, A.5.30, A.6.7, A.7.1-A.7.14, A.8.1, A.8.10-A.8.14; BSI INF.1, INF.2, INF.7-INF.9, ORP.1, ORP.4; DSGVO Art. 5, 6, 32; BDSG §§ 4, 26; BetrVG § 87 Abs. 1 Nr. 6; DIN 66399; NIST SP 800-88; NIS2 Art. 21 Abs. 2 lit. e; DORA Art. 9.*
 
                 section:
                     1:
