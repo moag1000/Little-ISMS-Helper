@@ -137,6 +137,47 @@
                 </div>
             {% endif %}
 
+            {# Wizard-generated docs: render the resolved policy body
+               via the same safe-subset Markdown renderer the PDF uses.
+               Hidden for legacy uploads (controller passes null). #}
+            {% if policyBodyHtml is defined and policyBodyHtml is not null %}
+                <div class="detail-section">
+                    <h3>
+                        <i class="bi bi-file-earmark-richtext" aria-hidden="true"></i>
+                        {{ 'document.policy_body.preview.heading'|trans({}, 'document') }}
+                        {% if document.hasPostGenerationEdits() %}
+                            <span class="badge bg-warning text-dark ms-2"
+                                  data-bs-toggle="tooltip"
+                                  title="{{ 'document.policy_body.drift_badge.tooltip'|trans({}, 'document') }}">
+                                <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                                {{ 'document.policy_body.drift_badge.label'|trans({}, 'document') }}
+                            </span>
+                        {% endif %}
+                    </h3>
+                    {% if document.hasPostGenerationEdits() %}
+                        <p class="small text-muted mb-2">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            {{ 'document.policy_body.edited_by'|trans({
+                                '%name%': document.policyBodyEditedBy ? document.policyBodyEditedBy.fullName : '—',
+                                '%date%': document.policyBodyEditedAt ? document.policyBodyEditedAt|date('d.m.Y H:i') : '—',
+                            }, 'document') }}
+                        </p>
+                    {% endif %}
+                    <div class="policy-body-preview border rounded p-3 bg-body-tertiary">
+                        {{ policyBodyHtml|raw }}
+                    </div>
+                    {% if canEdit is defined and canEdit %}
+                        <div class="mt-2">
+                            <a href="{{ path('app_document_edit', {id: document.id}) }}#policy-body"
+                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                {{ 'document.policy_body.preview.edit_cta'|trans({}, 'document') }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
             {% if document.entityType and document.entityId %}
                 <div class="detail-section">
                     <h3>{{ 'document.label.related_entity'|trans({}, 'document') }}</h3>

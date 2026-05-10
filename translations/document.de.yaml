@@ -139,12 +139,15 @@ document:
     validation:
         mime_types: 'Bitte wählen Sie eine gültige Datei (PDF, Word, Excel, Bild oder Text)'
     policy_body:
-        section_title: 'Policy-Body bearbeiten (lokale Anpassung)'
-        label: 'Policy-Body (lokale Anpassung)'
-        help: 'Markdown unterstützt. Leer lassen = Wizard-Standard verwenden. Diese Anpassung wird bei der nächsten Wizard-Re-Generierung erkannt; Konflikte werden im Diff angezeigt.'
+        section_title: 'Richtlinien-Text bearbeiten (eigene Anpassung)'
+        label: 'Richtlinien-Text (eigene Anpassung)'
+        help: 'Markdown unterstützt. Leer lassen = Wizard-Standard verwenden. Diese Anpassung wird beim nächsten Wizard-Lauf erkannt; Abweichungen vom Standard werden im Vergleich angezeigt.'
         edited_by: 'Zuletzt bearbeitet von %name% am %date%'
-        regen_warning_title: 'Re-Generierungs-Verhalten'
-        regeneration_conflict_warning: 'Bei einem erneuten Wizard-Lauf wird Ihre Anpassung erkannt: der angepasste Body bleibt erhalten, eine neue Wizard-Standard-Version wird als versionierte Nachfolge erstellt. Konflikte werden im Re-Generation-Diff (W7-C) sichtbar.'
+        regen_warning_title: 'Was passiert beim nächsten Wizard-Lauf?'
+        regeneration_conflict_warning: 'Wenn Sie den Wizard erneut laufen lassen: Ihre Anpassung bleibt erhalten, eine neue Wizard-Standard-Version wird als Nachfolge-Version angelegt. Abweichungen sehen Sie im Vergleich (W7-C).'
         drift_badge:
-            label: 'Lokal angepasst'
-            tooltip: 'Diese Policy hat tenant-spezifische Anpassungen — sie weicht vom Wizard-Standard ab.'
+            label: 'Eigene Anpassung'
+            tooltip: 'Diese Richtlinie wurde nach der Erzeugung manuell angepasst — sie weicht vom Wizard-Standard ab.'
+        preview:
+            heading: 'Richtlinien-Inhalt'
+            edit_cta: 'Inhalt bearbeiten'

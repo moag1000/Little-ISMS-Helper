@@ -129,8 +129,8 @@ alva_hint:
         dismiss_label: 'Nicht jetzt'
     konzern_ciso_drift_alert:
         title: 'Tochter weicht von Konzern-Vorgabe ab'
-        body: 'Im Konzern %konzern_name% verletzen %affected_count% Tochter-Einstellungen verbindliche Konzern-Defaults (forbidden_to_change / forbidden_to_relax). Erstes Beispiel: Tenant "%first_tenant_name%", Setting "%first_setting_key%". Bitte im Drift-Tab des Konzern-Rollups prüfen und die Tochter zur Korrektur auffordern, bevor das Audit es findet.'
-        cta_label: 'Drift-Tab öffnen'
+        body: 'Im Konzern %konzern_name% verletzen %affected_count% Tochter-Einstellungen verbindliche Konzern-Vorgaben (nicht-änderbar / nicht-lockerbar). Erstes Beispiel: Tenant "%first_tenant_name%", Einstellung "%first_setting_key%". Bitte im Konzern-Rollup unter "Abweichungen" prüfen und die Tochter zur Korrektur auffordern, bevor das Audit es findet.'
+        cta_label: 'Abweichungen öffnen'
         dismiss_label: 'Später erinnern'
     open_finding_reference:
         title: 'Audit-Finding ohne Re-Run-Abschluss'

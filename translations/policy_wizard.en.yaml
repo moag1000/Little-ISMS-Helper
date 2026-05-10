@@ -752,11 +752,11 @@ policy_wizard:
                 action:
                     regenerate: 'Start regeneration'
                 help:
-                    title: 'Understanding the diff preview'
-                    body: 'You see which setting values changed since the last approval. Yellow rows are "drift" — the current value diverges from the approved baseline.'
-                    example: 'Example: backup RPO was reduced from 24 h (approved) to 12 h (current) → drift, highlighted yellow. Regeneration adopts 12 h into the new document.'
+                    title: 'Understanding the comparison view'
+                    body: 'You see which setting values changed since the last approval. Yellow rows differ from the approved baseline — the current value is no longer the one that was reviewed.'
+                    example: 'Example: backup RPO was reduced from 24 h (approved) to 12 h (current) → highlighted yellow. Regeneration adopts 12 h into the new document.'
                 tooltip:
-                    drift: 'Drift = deviation between current effective value and the last audit-approved baseline.'
+                    drift: 'Difference = the current effective value no longer matches the last audit-approved value.'
             generate:
                 title: 'Confirm re-generation'
                 subtitle: 'Final step: the selected topics will be regenerated. Sandbox mode persists nothing.'
@@ -800,12 +800,12 @@ policy_wizard:
     konzern_rollup:
         title: 'Group Roll-Up'
         subtitle: 'Compliance overview across all subsidiaries of the holding.'
-        alva_tipp: 'Tip: switch between Coverage, Actions, Compliance, Drift and Acknowledgement via the tabs. The Drift column highlights subsidiaries that deviate from the group-wide baseline (stricter or laxer).'
+        alva_tipp: 'Tip: switch between Coverage, Actions, Compliance, Differences and Acknowledgement via the tabs. The Differences column highlights subsidiaries that deviate from the group-wide baseline (stricter or laxer).'
         tab:
             coverage: 'Coverage'
             actions: 'Open actions'
             compliance: 'Compliance score'
-            drift: 'Settings drift'
+            drift: 'Differences'
             acknowledgement: 'Acknowledgement'
         empty:
             not_konzern: 'This tenant is not a holding entity.'
@@ -1067,12 +1067,12 @@ policy_wizard:
     # Drift badge on the Document index. W7-C ships the SettingsDriftDetector
     # — its display strings live here so W7-E can wire the badge.
     drift_badge:
-        label: 'Group drift'
-        title: 'This policy was not regenerated after a group-level settings change.'
-        aria_label: 'Group settings drift detected'
+        label: 'Group baseline updated'
+        title: 'Group-level settings tightened after this policy was generated. Please re-generate.'
+        aria_label: 'Group settings updated'
         settings_drift:
-            label: 'Settings drift'
-            tooltip: 'The settings driving this policy have changed since it was generated. A re-run is recommended.'
+            label: 'Settings changed'
+            tooltip: 'Settings driving this policy have changed since it was generated. Please re-generate.'
 
     # W7-C — Re-generation diff UX (doc-level + variable-level only).
     diff:
