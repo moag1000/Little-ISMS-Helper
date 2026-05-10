@@ -1,0 +1,100 @@
+# Industry-Preset: Deutscher Mittelstand mit NIS2-Pflicht
+# Audit V3 C4 — Pre-curated module-activation + framework-subset
+# Target: 250-2000 employees, EU-based operations, NIS2 essential or important entity.
+
+id: de-mittelstand-nis2
+name: 'Deutscher Mittelstand mit NIS2'
+description: |
+  Express-Setup für mittelständische Unternehmen mit NIS2-Compliance-Pflicht.
+  Deutsche Sprache, NIS2 + ISO 27001 + DSGVO + BCM als Foundation. BSI Grundschutz
+  als optionale Erweiterung. Industrie-typische Risk-Categories und Initial-Controls
+  werden vorbereitet.
+
+locale: de
+
+modules:
+  - core
+  - authentication
+  - assets
+  - risks
+  - controls
+  - incidents
+  - audits
+  - training
+  - reviews
+  - bcm
+  - compliance
+  - audit_logging
+  - privacy
+  - vulnerability_intel
+  - nis2_dora
+
+frameworks:
+  - code: ISO27001
+    activate: true
+    priority: primary
+  - code: NIS2
+    activate: true
+    priority: primary
+  - code: GDPR
+    activate: true
+    priority: primary
+  - code: ISO22301
+    activate: true
+    priority: secondary
+  - code: BSI_GRUNDSCHUTZ
+    activate: false
+    priority: optional
+
+risk_categories:
+  - name: 'Cyber-Angriff (Ransomware)'
+    description: 'Verschlüsselungs-Trojaner, Datenexfiltration'
+    typical_assets: ['workstation', 'fileserver', 'backup-system']
+  - name: 'Lieferketten-Ausfall'
+    description: 'Critical-Supplier-Outage, Cloud-Abhängigkeit'
+    typical_assets: ['cloud-service', 'supplier-system']
+  - name: 'Datenschutzverletzung'
+    description: 'GDPR-Art-33 meldepflichtige Vorfälle'
+    typical_assets: ['crm-system', 'hr-system']
+  - name: 'Insider-Threat'
+    description: 'Mitarbeiter-Missbrauch, Social-Engineering'
+  - name: 'Stromausfall / Standort-Unverfügbarkeit'
+    description: 'Naturereignis, Brand, Wasserschaden'
+
+initial_controls:
+  - identifier: A.5.1
+    framework: ISO27001
+    name: 'Policies for information security'
+    implementation_status: planned
+  - identifier: A.5.7
+    framework: ISO27001
+    name: 'Threat intelligence'
+    implementation_status: planned
+  - identifier: A.8.16
+    framework: ISO27001
+    name: 'Monitoring activities'
+    implementation_status: planned
+  - identifier: A.8.7
+    framework: ISO27001
+    name: 'Protection against malware'
+    implementation_status: in_progress
+  - identifier: A.8.13
+    framework: ISO27001
+    name: 'Information backup'
+    implementation_status: in_progress
+
+initial_documents:
+  - title: 'Informationssicherheits-Leitlinie'
+    type: policy
+    status: draft
+  - title: 'BCM-Strategie'
+    type: policy
+    status: draft
+  - title: 'Datenschutzerklärung'
+    type: policy
+    status: draft
+  - title: 'NIS2-Meldekonzept'
+    type: procedure
+    status: draft
+
+target_alva_journey: getting_started
