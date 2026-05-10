@@ -175,6 +175,24 @@
     {% endblock %}
 {% endembed %}
 
+{# Aurora filter-chip quick row (Audit V3 C5) — quick toggles for severity #}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{% set _activeSeverity = app.request.query.get('severity') %}
+{% set _baseIncidentUrl = path('app_incident_index') %}
+{{ _fa_filter_chip.group([
+    { label: 'incident.filter.all_severity'|trans({}, 'incident'), href: _baseIncidentUrl },
+    { label: 'incident.severity.critical'|trans({}, 'incident'),    href: _baseIncidentUrl ~ '?severity=critical' },
+    { label: 'incident.severity.high'|trans({}, 'incident'),        href: _baseIncidentUrl ~ '?severity=high' },
+    { label: 'incident.severity.medium'|trans({}, 'incident'),      href: _baseIncidentUrl ~ '?severity=medium' },
+    { label: 'incident.severity.low'|trans({}, 'incident'),         href: _baseIncidentUrl ~ '?severity=low' }
+],
+    _activeSeverity == 'critical' ? 1
+    : (_activeSeverity == 'high' ? 2
+    : (_activeSeverity == 'medium' ? 3
+    : (_activeSeverity == 'low' ? 4 : 0))),
+    { class: 'mb-3', ariaLabel: 'incident.field.severity'|trans({}, 'incident') }
+) }}
+
 {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
 {% embed '_components/_search_filter_form.html.twig' with {
     action: path('app_incident_index'),

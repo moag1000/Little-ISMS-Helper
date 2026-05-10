@@ -200,6 +200,24 @@
         {% endblock %}
     {% endembed %}
 
+    {# Aurora filter-chip quick row (Audit V3 C5) — quick toggles for status #}
+    {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+    {% set _activeDocStatus = app.request.query.get('status') %}
+    {% set _baseDocUrl = path('app_document_index') %}
+    {{ _fa_filter_chip.group([
+        { label: 'common.all'|trans({}, 'messages'),                    href: _baseDocUrl },
+        { label: 'document.status.draft'|trans({}, 'document'),         href: _baseDocUrl ~ '?status=draft' },
+        { label: 'document.status.in_review'|trans({}, 'document'),     href: _baseDocUrl ~ '?status=in_review' },
+        { label: 'document.status.approved'|trans({}, 'document'),      href: _baseDocUrl ~ '?status=approved' },
+        { label: 'document.status.published'|trans({}, 'document'),     href: _baseDocUrl ~ '?status=published' }
+    ],
+        _activeDocStatus == 'draft' ? 1
+        : (_activeDocStatus == 'in_review' ? 2
+        : (_activeDocStatus == 'approved' ? 3
+        : (_activeDocStatus == 'published' ? 4 : 0))),
+        { class: 'mb-3', ariaLabel: 'document.section.all_documents'|trans({}, 'document') }
+    ) }}
+
     {# Document List with Bulk Actions #}
     {% embed '_components/_card.html.twig' %}
         {% block card_attrs %}data-controller="bulk-actions document-filter" data-bulk-actions-endpoint-value="/document"{% endblock %}

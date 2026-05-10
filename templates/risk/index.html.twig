@@ -188,6 +188,24 @@
     {% endblock %}
 {% endembed %}
 
+{# Aurora filter-chip quick row (Audit V3 C5) — quick toggles for level filter #}
+{% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+{% set _activeLevel = app.request.query.get('level') %}
+{% set _baseUrl = path('app_risk_index') %}
+{{ _fa_filter_chip.group([
+    { label: 'risk.filter.all_risks'|trans({}, 'risk'),     href: _baseUrl },
+    { label: 'risk.filter.level_critical'|trans({}, 'risk'), href: _baseUrl ~ '?level=critical' },
+    { label: 'risk.filter.level_high'|trans({}, 'risk'),     href: _baseUrl ~ '?level=high' },
+    { label: 'risk.filter.level_medium'|trans({}, 'risk'),   href: _baseUrl ~ '?level=medium' },
+    { label: 'risk.filter.level_low'|trans({}, 'risk'),      href: _baseUrl ~ '?level=low' }
+],
+    _activeLevel == 'critical' ? 1
+    : (_activeLevel == 'high' ? 2
+    : (_activeLevel == 'medium' ? 3
+    : (_activeLevel == 'low' ? 4 : 0))),
+    { class: 'mb-3', ariaLabel: 'risk.filter.level_label'|trans({}, 'risk') }
+) }}
+
 {# Search-first Filter: URL-persisted state (UXC-11 / UXC-12) #}
 {% embed '_components/_search_filter_form.html.twig' with {
     action: path('app_risk_index'),

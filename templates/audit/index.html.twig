@@ -137,6 +137,24 @@
     {{ _fa_alert.render({ variant: 'info', class: 'mb-4', title: 'audit.upcoming_audits'|trans({}, 'audit'), body: 'audit.upcoming_audits_count'|trans({'%count%': upcoming|length}, 'audit') }) }}
     {% endif %}
 
+    {# Aurora filter-chip quick row (Audit V3 C5) — quick toggles for status #}
+    {% import '_components/_fa_filter_chip.html.twig' as _fa_filter_chip %}
+    {% set _activeAuditStatus = app.request.query.get('status') %}
+    {% set _baseAuditUrl = path('app_audit_index') %}
+    {{ _fa_filter_chip.group([
+        { label: 'audit.filter.all_status'|trans({}, 'audit'),    href: _baseAuditUrl },
+        { label: 'audit.status.planned'|trans({}, 'audit'),       href: _baseAuditUrl ~ '?status=planned' },
+        { label: 'audit.status.in_progress'|trans({}, 'audit'),   href: _baseAuditUrl ~ '?status=in_progress' },
+        { label: 'audit.status.completed'|trans({}, 'audit'),     href: _baseAuditUrl ~ '?status=completed' },
+        { label: 'audit.status.reported'|trans({}, 'audit'),      href: _baseAuditUrl ~ '?status=reported' }
+    ],
+        _activeAuditStatus == 'planned' ? 1
+        : (_activeAuditStatus == 'in_progress' ? 2
+        : (_activeAuditStatus == 'completed' ? 3
+        : (_activeAuditStatus == 'reported' ? 4 : 0))),
+        { class: 'mb-3', ariaLabel: 'audit.filter.all_status'|trans({}, 'audit') }
+    ) }}
+
     {# Audit List #}
     {% embed '_components/_card.html.twig' with {noPadding: true} %}
         {% block card_header %}
@@ -146,7 +164,7 @@
                     {{ 'audit.list.all'|trans({}, 'audit')}}
                 </h2>
 
-                {# Filter Controls #}
+                {# Filter Controls (legacy in-page JS-filter) #}
                 <div class="d-flex gap-2">
                     <select class="form-select fa-cyber-input__field form-select-sm" id="statusFilter" class="w-auto">
                         <option value="">{{ 'audit.filter.all_status'|trans({}, 'audit')}}</option>
