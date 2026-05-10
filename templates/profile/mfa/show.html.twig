@@ -113,9 +113,9 @@
             {% if mfa_token.tokenType == 'totp' %}
                 {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-warning' } %}
                     {% block card_header %}
-                        <div class="card-header bg-warning-subtle text-warning">
+                        <div class="card-header">
                             <h2 class="mb-0">
-                                <i class="fa-icon fa-icon--mfa" aria-hidden="true"></i>
+                                <i class="fa-icon fa-icon--mfa text-warning" aria-hidden="true"></i>
                                 {{ 'mfa.backup_codes.title'|trans({}, 'mfa') }}
                             </h2>
                         </div>

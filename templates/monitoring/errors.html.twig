@@ -78,9 +78,9 @@
         {# Error List #}
         {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
             {% block card_header %}
-                <div class="card-header bg-danger text-white">
+                <div class="card-header">
                     <h2 class="mb-0">
-                        <i class="fa-icon fa-icon--ui-list" aria-hidden="true"></i> {{ 'monitoring.errors.recent'|trans({}, 'monitoring') }}
+                        <i class="fa-icon fa-icon--ui-list text-danger" aria-hidden="true"></i> {{ 'monitoring.errors.recent'|trans({}, 'monitoring') }}
                     </h2>
                 </div>
             {% endblock %}

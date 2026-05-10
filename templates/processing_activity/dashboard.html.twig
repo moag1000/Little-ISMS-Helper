@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}VVT Dashboard{% endblock %}
 
@@ -70,9 +71,7 @@
                 {% block card_body %}
                     <div class="text-muted fw-semibold">Completeness Rate</div>
                     <div class="fs-2 fw-bold">{{ statistics.completeness_rate }}%</div>
-                    <div class="progress progress-h-10 mt-2">
-                        <div class="progress-bar bg-success" style="width: {{ statistics.completeness_rate }}%"></div>
-                    </div>
+                    {{ _fa_progress.render({ value: statistics.completeness_rate, tone: 'success', class: 'mt-2' }) }}
                 {% endblock %}
             {% endembed %}
         </div>
@@ -83,7 +82,7 @@
         <div class="col-md-6">
             {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
                 {% block card_header %}
-                    <div class="card-header bg-warning-subtle text-warning"><h2 class="mb-0 h5"><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> Action Items</h2></div>
+                    <div class="card-header"><h2 class="mb-0 h5"><i class="fa-icon fa-icon--status-warning text-warning" aria-hidden="true"></i> Action Items</h2></div>
                 {% endblock %}
                 {% block card_body %}
                     {% if incomplete|length > 0 %}
