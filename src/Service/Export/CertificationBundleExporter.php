@@ -298,6 +298,516 @@ final class CertificationBundleExporter
     }
 
     /**
+     * Generate a Konzern-scoped certification bundle ZIP that contains the
+     * per-subsidiary bundles plus aggregated holding-level overview files.
+     *
+     * Structure:
+     *   <root>/
+     *     00_KONZERN_OVERVIEW.csv      — per-subsidiary coverage matrix
+     *     00_KONZERN_RACI.md           — RACI assignment per framework
+     *     INDEX.csv                    — aggregated document index across
+     *                                    all subsidiaries (tenant_* columns
+     *                                    prepended so the holding-auditor can
+     *                                    pivot by subsidiary)
+     *     METADATA.json                — holding-level metadata + SHA-256
+     *     <subsidiary_slug>/...        — full per-subsidiary bundle (the
+     *                                    same layout `export()` produces)
+     *
+     * @param Tenant                  $holdingTenant The holding root. MUST
+     *                                               have at least one
+     *                                               subsidiary; otherwise
+     *                                               an `\InvalidArgumentException`
+     *                                               with the message
+     *                                               `not_a_holding` is
+     *                                               thrown so the controller
+     *                                               can render an i18n error.
+     * @param list<string>            $frameworks    List of framework codes
+     *                                               passed through to each
+     *                                               per-subsidiary export.
+     *                                               Empty falls back to
+     *                                               ISO27001.
+     * @param ?DateTimeImmutable      $asOfDate      Reserved for SoA-Stichtag
+     *                                               wiring (Item H). Currently
+     *                                               recorded in METADATA.json
+     *                                               but not yet propagated to
+     *                                               per-tenant export — placeholder
+     *                                               so the API surface is stable.
+     * @param ?list<int>              $includeOnly   Optional whitelist of
+     *                                               subsidiary IDs to include
+     *                                               (root is always included).
+     *                                               null = all subsidiaries.
+     *
+     * @return array{path: string, filename: string, sha256: string, document_count: int, frameworks: list<string>, subsidiary_count: int, included_subsidiary_ids: list<int>}
+     */
+    public function exportKonzern(
+        Tenant $holdingTenant,
+        array $frameworks = ['ISO27001'],
+        ?DateTimeImmutable $asOfDate = null,
+        ?array $includeOnly = null,
+    ): array {
+        $directSubs = $holdingTenant->getSubsidiaries();
+        if ($directSubs->count() === 0) {
+            throw new \InvalidArgumentException('not_a_holding');
+        }
+
+        if ($frameworks === []) {
+            $frameworks = ['ISO27001'];
+        }
+
+        $now = new DateTimeImmutable();
+        $dateStr = $now->format('Y-m-d');
+        $rootDir = 'ISMS_Konzern_Certification_Bundle_' . $dateStr;
+
+        // Holding root + all (recursive) subsidiaries form the export
+        // population. The holding itself is included so the auditor sees
+        // the parent's own ISMS evidence chain alongside subsidiaries.
+        $allTenants = array_merge([$holdingTenant], $holdingTenant->getAllSubsidiaries());
+
+        // Apply optional whitelist. Root is always preserved so the bundle
+        // never produces a "phantom holding without parent" tree.
+        if ($includeOnly !== null) {
+            $rootId = $holdingTenant->getId();
+            $allTenants = array_values(array_filter(
+                $allTenants,
+                static fn(Tenant $t): bool => $t->getId() === $rootId
+                    || in_array($t->getId(), $includeOnly, true),
+            ));
+        }
+
+        $tempPath = tempnam(sys_get_temp_dir(), 'konzern_cert_bundle_');
+        if ($tempPath === false) {
+            throw new \RuntimeException('Unable to create temp file for Konzern ZIP.');
+        }
+
+        $zip = new \ZipArchive();
+        if ($zip->open($tempPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            throw new \RuntimeException('Unable to open Konzern ZIP for writing: ' . $tempPath);
+        }
+
+        $aggregatedIndexRows = [
+            [
+                'tenant_id',
+                'tenant_name',
+                'tenant_slug',
+                'section',
+                'document_id',
+                'title',
+                'framework_or_standard',
+                'category_or_topic',
+                'document_path_in_zip',
+                'approved_by_user_email',
+                'approved_by_user_id',
+                'approved_at',
+                'wizard_run_id',
+                'template_version',
+                'sha256',
+            ],
+        ];
+
+        $overviewRows = [];
+        $tempPerTenantZips = [];
+        $totalDocumentCount = 0;
+        $includedSubsidiaryIds = [];
+
+        try {
+            foreach ($allTenants as $subTenant) {
+                $tenantId = $subTenant->getId();
+                if ($tenantId === null) {
+                    continue;
+                }
+                $includedSubsidiaryIds[] = $tenantId;
+
+                $slug = $this->slug((string) ($subTenant->getCode() ?? $subTenant->getName() ?? 'tenant-' . $tenantId));
+                if ($slug === '') {
+                    $slug = 'tenant-' . $tenantId;
+                }
+
+                // Generate the per-tenant bundle. Pass-through framework
+                // selection so each subsidiary receives the same coverage
+                // CSVs.
+                $subResult = $this->export($subTenant, $frameworks);
+                $tempPerTenantZips[] = $subResult['path'];
+                $totalDocumentCount += (int) ($subResult['document_count'] ?? 0);
+
+                // Splat the sub-zip into <slug>/... inside the konzern zip.
+                $this->copyZipInto($zip, $rootDir . '/' . $slug, $subResult['path']);
+
+                // Pull the sub-zip's INDEX.csv to feed the aggregated index
+                // with prepended tenant columns.
+                $subIndex = $this->extractSubIndex($subResult['path']);
+                foreach ($subIndex as $row) {
+                    array_unshift(
+                        $row,
+                        (string) $tenantId,
+                        (string) ($subTenant->getName() ?? ''),
+                        $slug,
+                    );
+                    $aggregatedIndexRows[] = $row;
+                }
+
+                // Per-subsidiary overview row (compliance scores per framework).
+                $overviewRows[] = $this->buildKonzernOverviewRow(
+                    $subTenant,
+                    $slug,
+                    $frameworks,
+                    $holdingTenant,
+                );
+            }
+        } finally {
+            // Ensure per-tenant temp files are removed even on errors.
+            foreach ($tempPerTenantZips as $tmp) {
+                if (is_file($tmp)) {
+                    @unlink($tmp);
+                }
+            }
+        }
+
+        $zip->addFromString($rootDir . '/INDEX.csv', $this->rowsToCsv($aggregatedIndexRows));
+
+        $overviewCsv = $this->buildKonzernOverviewCsv($overviewRows, $frameworks);
+        $zip->addFromString($rootDir . '/00_KONZERN_OVERVIEW.csv', $overviewCsv);
+
+        $zip->addFromString(
+            $rootDir . '/00_KONZERN_RACI.md',
+            $this->buildKonzernRaciMarkdown($holdingTenant, $allTenants, $frameworks),
+        );
+
+        $user = $this->security->getUser();
+        $exportedBy = $user?->getUserIdentifier() ?? 'system';
+
+        $metadata = [
+            'holdingTenantId'   => $holdingTenant->getId(),
+            'holdingTenantName' => $holdingTenant->getName(),
+            'exportDate'        => $now->format('c'),
+            'asOfDate'          => $asOfDate?->format('c'),
+            'exportedBy'        => $exportedBy,
+            'frameworks'        => $frameworks,
+            'subsidiaryCount'   => count($includedSubsidiaryIds),
+            'includedSubsidiaryIds' => $includedSubsidiaryIds,
+            'totalDocuments'    => $totalDocumentCount,
+            'sha256'            => '(computed after ZIP close)',
+        ];
+        $zip->addFromString(
+            $rootDir . '/METADATA.json',
+            json_encode($metadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+        );
+
+        $zip->close();
+
+        // Compute and inject final SHA-256.
+        $body = file_get_contents($tempPath);
+        $sha256 = $body === false ? '' : hash('sha256', $body);
+
+        $zip2 = new \ZipArchive();
+        if ($zip2->open($tempPath) === true) {
+            $metadata['sha256'] = $sha256;
+            $zip2->addFromString(
+                $rootDir . '/METADATA.json',
+                json_encode($metadata, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+            );
+            $zip2->close();
+            $body = file_get_contents($tempPath);
+            $sha256 = $body === false ? '' : hash('sha256', $body);
+        }
+
+        $filename = sprintf(
+            'ISMS_Konzern_Certification_Bundle_%s_%s.zip',
+            $this->slug((string) ($holdingTenant->getCode() ?? $holdingTenant->getName() ?? 'holding')),
+            $dateStr,
+        );
+
+        // Audit-trail (Clause 7.5.3) — Konzern-scoped action so dashboards
+        // can distinguish single-tenant from group-level exports.
+        if ($this->auditLogger !== null) {
+            try {
+                $this->auditLogger->logCustom(
+                    action: 'konzern_cert_bundle_exported',
+                    entityType: 'Tenant',
+                    entityId: $holdingTenant->getId(),
+                    oldValues: null,
+                    newValues: [
+                        'holding_tenant_id'        => $holdingTenant->getId(),
+                        'holding_tenant_name'      => $holdingTenant->getName(),
+                        'frameworks'               => $frameworks,
+                        'as_of_date'               => $asOfDate?->format('c'),
+                        'included_subsidiary_ids'  => $includedSubsidiaryIds,
+                        'subsidiary_count'         => count($includedSubsidiaryIds),
+                        'total_documents'          => $totalDocumentCount,
+                        'exported_by_user_id'      => $user instanceof User ? $user->getId() : null,
+                        'exported_by_user_email'   => $exportedBy,
+                        'sha256'                   => $sha256,
+                    ],
+                    description: sprintf(
+                        'Konzern certification bundle exported (holding=%s, subsidiaries=%d, frameworks=[%s], documents=%d, sha256=%s)',
+                        $holdingTenant->getName() ?? '',
+                        count($includedSubsidiaryIds),
+                        implode(',', $frameworks),
+                        $totalDocumentCount,
+                        substr($sha256, 0, 16) . '...',
+                    ),
+                );
+            } catch (\Throwable) {
+                // Audit failure must not abort the export — surface logged.
+            }
+        }
+
+        return [
+            'path'                    => $tempPath,
+            'filename'                => $filename,
+            'sha256'                  => $sha256,
+            'document_count'          => $totalDocumentCount,
+            'frameworks'              => $frameworks,
+            'subsidiary_count'        => count($includedSubsidiaryIds),
+            'included_subsidiary_ids' => $includedSubsidiaryIds,
+        ];
+    }
+
+    /**
+     * Copy every entry from a source ZIP into the destination ZIP under a
+     * given prefix. The source's own root-dir prefix (`ISMS_Certification_Bundle_<date>/`)
+     * is stripped so the konzern bundle does not contain doubly-nested
+     * directories like `<slug>/ISMS_Certification_Bundle_2026-05-10/...`.
+     */
+    private function copyZipInto(\ZipArchive $destination, string $destPrefix, string $sourcePath): void
+    {
+        $source = new \ZipArchive();
+        if ($source->open($sourcePath) !== true) {
+            $this->logger?->warning('CertificationBundle: failed to open per-tenant zip for copy.', ['path' => $sourcePath]);
+            return;
+        }
+
+        try {
+            for ($i = 0; $i < $source->numFiles; $i++) {
+                $name = $source->getNameIndex($i);
+                if (!is_string($name) || $name === '') {
+                    continue;
+                }
+                // Strip the well-known per-tenant root-dir prefix when present.
+                $relative = $name;
+                $firstSlash = strpos($name, '/');
+                if ($firstSlash !== false) {
+                    $head = substr($name, 0, $firstSlash);
+                    if (str_starts_with($head, 'ISMS_Certification_Bundle_')) {
+                        $relative = substr($name, $firstSlash + 1);
+                    }
+                }
+                if ($relative === '' || str_ends_with($relative, '/')) {
+                    continue;
+                }
+                $payload = $source->getFromIndex($i);
+                if ($payload === false) {
+                    continue;
+                }
+                $destination->addFromString($destPrefix . '/' . $relative, $payload);
+            }
+        } finally {
+            $source->close();
+        }
+    }
+
+    /**
+     * Read the per-tenant bundle's root INDEX.csv and return its data rows
+     * (header stripped). Returns [] when the file is absent or empty.
+     *
+     * @return list<list<string>>
+     */
+    private function extractSubIndex(string $sourcePath): array
+    {
+        $source = new \ZipArchive();
+        if ($source->open($sourcePath) !== true) {
+            return [];
+        }
+        try {
+            $rows = [];
+            for ($i = 0; $i < $source->numFiles; $i++) {
+                $name = $source->getNameIndex($i);
+                if (!is_string($name) || !str_ends_with($name, '/INDEX.csv')) {
+                    continue;
+                }
+                // Only the root INDEX.csv (one slash from rootDir) — skip
+                // 01_POLICIES/INDEX.csv and 04_EVIDENCE/INDEX.csv which are
+                // already covered by the root aggregate.
+                $relative = $name;
+                $firstSlash = strpos($name, '/');
+                if ($firstSlash !== false && substr($relative, $firstSlash + 1) !== 'INDEX.csv') {
+                    continue;
+                }
+
+                $payload = $source->getFromIndex($i);
+                if ($payload === false) {
+                    continue;
+                }
+                // Drop UTF-8 BOM if present so CSV parsing is clean.
+                if (str_starts_with($payload, "\xEF\xBB\xBF")) {
+                    $payload = substr($payload, 3);
+                }
+                $handle = fopen('php://memory', 'r+');
+                if ($handle === false) {
+                    continue;
+                }
+                fwrite($handle, $payload);
+                rewind($handle);
+                $isHeader = true;
+                while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false) {
+                    if ($isHeader) {
+                        $isHeader = false;
+                        continue;
+                    }
+                    if ($row === [null] || $row === false) {
+                        continue;
+                    }
+                    $rows[] = array_map(static fn($v): string => (string) $v, $row);
+                }
+                fclose($handle);
+                break; // only one root INDEX.csv per bundle
+            }
+            return $rows;
+        } finally {
+            $source->close();
+        }
+    }
+
+    /**
+     * Build one row for the 00_KONZERN_OVERVIEW.csv with per-framework
+     * coverage percentages plus operational metrics.
+     *
+     * @param list<string> $frameworks
+     * @return array<string, string>
+     */
+    private function buildKonzernOverviewRow(
+        Tenant $subTenant,
+        string $slug,
+        array $frameworks,
+        Tenant $holdingTenant,
+    ): array {
+        $row = [
+            'tenant_id'   => (string) ($subTenant->getId() ?? ''),
+            'tenant_name' => (string) ($subTenant->getName() ?? ''),
+            'tenant_slug' => $slug,
+        ];
+
+        // Per-framework coverage % — fall back to 0 when stats fail so the
+        // CSV stays rectangular.
+        foreach ($frameworks as $fwCode) {
+            $key = 'coverage_pct_' . $this->slug($fwCode);
+            $row[$key] = '0';
+            try {
+                $framework = $this->frameworkRepository->findOneBy(['code' => $fwCode]);
+                if ($framework !== null) {
+                    $stats = $this->complianceRequirementRepository->getFrameworkStatisticsForTenant($framework, $subTenant);
+                    $applicable = (int) ($stats['applicable'] ?? 0);
+                    $fulfilled = (int) ($stats['fulfilled'] ?? 0);
+                    $row[$key] = $applicable > 0
+                        ? (string) round(($fulfilled / $applicable) * 100, 2)
+                        : '0';
+                }
+            } catch (\Throwable $e) {
+                $this->logger?->debug(
+                    'CertificationBundle: coverage stats failed for konzern overview',
+                    [
+                        'tenant_id'  => $subTenant->getId(),
+                        'framework'  => $fwCode,
+                        'error'      => $e->getMessage(),
+                    ],
+                );
+            }
+        }
+
+        // Document/wizard counts + last audit date.
+        $documents = $this->documentRepository->findByTenant($subTenant);
+        $policyCount = 0;
+        $wizardRunIds = [];
+        foreach ($documents as $doc) {
+            if ($doc->isArchived()) {
+                continue;
+            }
+            $policyCount++;
+            $run = $doc->getGeneratedFromWizardRun();
+            if ($run !== null && $run->getId() !== null) {
+                $wizardRunIds[$run->getId()] = true;
+            }
+        }
+        $row['policy_count']      = (string) $policyCount;
+        $row['wizard_runs_count'] = (string) count($wizardRunIds);
+
+        // last_audit_date is intentionally blank in the placeholder phase —
+        // wiring InternalAuditRepository here would expand the constructor
+        // signature beyond what the Item-B refactor anticipated. Leaving
+        // empty makes the Auditor see the explicit gap.
+        $row['last_audit_date'] = '';
+
+        $row['holding_raci_role'] = $subTenant->getId() === $holdingTenant->getId() ? 'A' : 'R';
+
+        return $row;
+    }
+
+    /**
+     * Stitch the per-subsidiary overview rows into a single CSV with a
+     * stable header that names every framework column explicitly so the
+     * holding-auditor can pivot by framework in Excel.
+     *
+     * @param list<array<string, string>> $rows
+     * @param list<string>                $frameworks
+     */
+    private function buildKonzernOverviewCsv(array $rows, array $frameworks): string
+    {
+        $header = ['tenant_id', 'tenant_name', 'tenant_slug'];
+        foreach ($frameworks as $fwCode) {
+            $header[] = 'coverage_pct_' . $this->slug($fwCode);
+        }
+        $header[] = 'policy_count';
+        $header[] = 'wizard_runs_count';
+        $header[] = 'last_audit_date';
+        $header[] = 'holding_raci_role';
+
+        $out = [$header];
+        foreach ($rows as $row) {
+            $line = [];
+            foreach ($header as $col) {
+                $line[] = (string) ($row[$col] ?? '');
+            }
+            $out[] = $line;
+        }
+        return $this->rowsToCsv($out);
+    }
+
+    /**
+     * Render the placeholder RACI markdown. When the holding has no
+     * configured RACI metadata (current state — no DB field exists yet),
+     * we emit an explicit TODO so the auditor sees the gap rather than a
+     * silent fallback. A future Tenant.holdingRaci field can replace the
+     * placeholder block without changing the surrounding API.
+     *
+     * @param list<Tenant> $allTenants
+     * @param list<string> $frameworks
+     */
+    private function buildKonzernRaciMarkdown(Tenant $holding, array $allTenants, array $frameworks): string
+    {
+        $out = "# Konzern RACI — " . ($holding->getName() ?? 'Holding') . "\n\n";
+        $out .= "_TODO: Holding-RACI nicht konfiguriert. "
+              . "Diese Datei dokumentiert die geplante R/A/C/I-Verteilung pro Framework über die Konzern-Töchter — "
+              . "sobald `Tenant.holdingRaci` (oder vergleichbares Metadatenfeld) gepflegt ist, "
+              . "wird hier die effektive Verteilung gerendert._\n\n";
+        $out .= "## Geltungsbereich\n\n";
+        $out .= "- Holding (A by-default): " . ($holding->getName() ?? '?') . " (id=" . ($holding->getId() ?? 0) . ")\n";
+        $out .= "- Töchter im Bundle: " . max(0, count($allTenants) - 1) . "\n";
+        $out .= "- Frameworks: " . (implode(', ', $frameworks) ?: 'ISO27001') . "\n\n";
+        $out .= "## RACI-Tabelle (Platzhalter)\n\n";
+        $out .= "| Tenant | Rolle | Frameworks |\n";
+        $out .= "|---|---|---|\n";
+        foreach ($allTenants as $t) {
+            $role = $t->getId() === $holding->getId() ? 'A' : 'R';
+            $out .= sprintf(
+                "| %s | %s | %s |\n",
+                $t->getName() ?? '?',
+                $role,
+                implode(', ', $frameworks) ?: 'ISO27001',
+            );
+        }
+        return $out;
+    }
+
+    /**
      * Get preview counts for the index page.
      *
      * @return array{assets: int, risks: int, controls_applicable: int, controls_implemented: int, evidence_documents: int, gaps: int}
