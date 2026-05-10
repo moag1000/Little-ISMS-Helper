@@ -12,17 +12,17 @@
         name="{{ field_name }}"
         data-subcontractor-chain-editor-target="hidden">{{ hidden_value }}</textarea>
 
-    <div class="table-responsive">
-        <table class="table table-sm align-middle mb-2">
-            <thead class="table-light small">
+    <div class="fa-table-wrap">
+        <table class="fa-table fa-table--compact align-middle mb-2">
+            <thead>
                 <tr>
-                    <th scope="col" style="width: 80px;">{{ 'supplier.subcontractor.tier'|trans({}, 'suppliers') }}</th>
-                    <th scope="col">{{ 'supplier.subcontractor.name'|trans({}, 'suppliers') }}</th>
-                    <th scope="col" style="width: 150px;">{{ 'supplier.subcontractor.lei'|trans({}, 'suppliers') }}</th>
-                    <th scope="col" style="width: 80px;">{{ 'supplier.subcontractor.country'|trans({}, 'suppliers') }}</th>
-                    <th scope="col">{{ 'supplier.subcontractor.service'|trans({}, 'suppliers') }}</th>
-                    <th scope="col" style="width: 120px;">{{ 'supplier.subcontractor.criticality'|trans({}, 'suppliers') }}</th>
-                    <th scope="col" style="width: 60px;"></th>
+                    <th scope="col" class="fa-table__th" style="width: 80px;">{{ 'supplier.subcontractor.tier'|trans({}, 'suppliers') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'supplier.subcontractor.name'|trans({}, 'suppliers') }}</th>
+                    <th scope="col" class="fa-table__th" style="width: 150px;">{{ 'supplier.subcontractor.lei'|trans({}, 'suppliers') }}</th>
+                    <th scope="col" class="fa-table__th" style="width: 80px;">{{ 'supplier.subcontractor.country'|trans({}, 'suppliers') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'supplier.subcontractor.service'|trans({}, 'suppliers') }}</th>
+                    <th scope="col" class="fa-table__th" style="width: 120px;">{{ 'supplier.subcontractor.criticality'|trans({}, 'suppliers') }}</th>
+                    <th scope="col" class="fa-table__th" style="width: 60px;"></th>
                 </tr>
             </thead>
             <tbody data-subcontractor-chain-editor-target="body"></tbody>

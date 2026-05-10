@@ -50,33 +50,31 @@
     </div>
 
     <h2 class="h5 mb-3">{{ 'soa.snapshot.section.controls'|trans({}, 'soa') }}</h2>
-    <div class="table-responsive">
-        <table class="table table-sm table-hover align-middle">
-            <thead>
-                <tr>
-                    <th scope="col">{{ 'soa.snapshot.col.control_id'|trans({}, 'soa') }}</th>
-                    <th scope="col">{{ 'soa.snapshot.col.name'|trans({}, 'soa') }}</th>
-                    <th scope="col">{{ 'soa.snapshot.col.applicable'|trans({}, 'soa') }}</th>
-                    <th scope="col">{{ 'soa.snapshot.col.status'|trans({}, 'soa') }}</th>
-                    <th scope="col">{{ 'soa.snapshot.col.evidence'|trans({}, 'soa') }}</th>
-                    <th scope="col">{{ 'soa.snapshot.col.approved_by'|trans({}, 'soa') }}</th>
-                    <th scope="col">{{ 'soa.snapshot.col.approved_at'|trans({}, 'soa') }}</th>
-                </tr>
-            </thead>
-            <tbody>
+    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.control_id'|trans({}, 'soa') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.name'|trans({}, 'soa') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.applicable'|trans({}, 'soa') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.status'|trans({}, 'soa') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.evidence'|trans({}, 'soa') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.approved_by'|trans({}, 'soa') }}</th>
+                <th scope="col" class="fa-table__th">{{ 'soa.snapshot.col.approved_at'|trans({}, 'soa') }}</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
             {% for cid, c in controls %}
-                <tr>
-                    <td><strong>{{ c.control_id|default(cid) }}</strong></td>
-                    <td>{{ c.name|default('—') }}</td>
-                    <td>{{ c.applicable ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') }}</td>
-                    <td><span class="badge bg-secondary-subtle text-secondary-emphasis">{{ c.status|default('—') }}</span></td>
-                    <td>{{ c.evidence_documents is defined ? c.evidence_documents|length : 0 }}</td>
-                    <td>{{ c.approved_by_email|default('—') }}</td>
-                    <td><small>{{ c.approved_at|default('—') }}</small></td>
+                <tr class="fa-table__row">
+                    <td class="fa-table__cell"><strong>{{ c.control_id|default(cid) }}</strong></td>
+                    <td class="fa-table__cell">{{ c.name|default('—') }}</td>
+                    <td class="fa-table__cell">{{ c.applicable ? 'common.yes'|trans({}, 'messages') : 'common.no'|trans({}, 'messages') }}</td>
+                    <td class="fa-table__cell"><span class="badge bg-secondary-subtle text-secondary-emphasis">{{ c.status|default('—') }}</span></td>
+                    <td class="fa-table__cell">{{ c.evidence_documents is defined ? c.evidence_documents|length : 0 }}</td>
+                    <td class="fa-table__cell">{{ c.approved_by_email|default('—') }}</td>
+                    <td class="fa-table__cell"><small>{{ c.approved_at|default('—') }}</small></td>
                 </tr>
             {% endfor %}
-            </tbody>
-        </table>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </main>
 {% endblock %}

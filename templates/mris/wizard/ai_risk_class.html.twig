@@ -69,39 +69,37 @@
 
     {% embed '_components/_card.html.twig' %}
         {% block card_body %}
-            <div class="table-responsive">
-                <table class="table table-hover align-top mb-0">
-                    <thead>
-                        <tr>
-                            <th scope="col" style="width: 22%;">Tool</th>
-                            <th scope="col" style="width: 16%;">Empfohlene Klasse</th>
-                            <th scope="col" style="width: 24%;">AI-Act-Verweis</th>
-                            <th scope="col" style="width: 38%;">Begruendung</th>
+            {% embed '_components/_fa_table.html.twig' %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col" class="fa-table__th" style="width: 22%;">Tool</th>
+                        <th scope="col" class="fa-table__th" style="width: 16%;">Empfohlene Klasse</th>
+                        <th scope="col" class="fa-table__th" style="width: 24%;">AI-Act-Verweis</th>
+                        <th scope="col" class="fa-table__th" style="width: 38%;">Begruendung</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for tool in matrix.tools %}
+                        {% set classKey = tool.class|default('minimal')|lower %}
+                        {% set badgeVariant =
+                            classKey == 'prohibited' ? 'dark'
+                            : (classKey == 'high' ? 'danger'
+                            : (classKey == 'limited' ? 'warning'
+                            : 'success')) %}
+                        <tr class="fa-table__row">
+                            <td class="fa-table__cell"><strong>{{ tool.tool }}</strong></td>
+                            <td class="fa-table__cell">
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: badgeVariant,
+                                    content: tool.class_label|default(tool.class|default('Minimal'))
+                                } %}
+                            </td>
+                            <td class="fa-table__cell small">{{ tool.ai_act_ref|default('—') }}</td>
+                            <td class="fa-table__cell small">{{ tool.rationale|default('—') }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for tool in matrix.tools %}
-                            {% set classKey = tool.class|default('minimal')|lower %}
-                            {% set badgeVariant =
-                                classKey == 'prohibited' ? 'dark'
-                                : (classKey == 'high' ? 'danger'
-                                : (classKey == 'limited' ? 'warning'
-                                : 'success')) %}
-                            <tr>
-                                <td><strong>{{ tool.tool }}</strong></td>
-                                <td>
-                                    {% include '_components/_badge.html.twig' with {
-                                        variant: badgeVariant,
-                                        content: tool.class_label|default(tool.class|default('Minimal'))
-                                    } %}
-                                </td>
-                                <td class="small">{{ tool.ai_act_ref|default('—') }}</td>
-                                <td class="small">{{ tool.rationale|default('—') }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
         {% endblock %}
     {% endembed %}
 
