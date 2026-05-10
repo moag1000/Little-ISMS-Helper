@@ -153,10 +153,11 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 
 ### Setup und Onboarding
 
-- **Setup-Wizard** -- 8 Schritte von Tenant-Erstellung bis Framework-Auswahl
+- **Setup-Wizard** -- 12 Schritte (Welcome -> Requirements -> Datenbank -> Backup-Restore -> Admin-User -> Email -> Organisation -> Module -> Compliance-Frameworks -> Stammdaten -> Sample-Data -> Abschluss) im einheitlichen Aurora-Layout
 - **3-Bucket-Applicability** -- Frameworks automatisch in Pflicht / Empfohlen / Optional klassifiziert
 - **Guided Tours** -- Rollenbezogene Einfuehrungen (Junior, ISB, CISO, Auditor, Compliance Manager)
 - **Command Palette** -- Cmd+K / Ctrl+K fuer schnellen Zugriff
+- **Mein-Tag-Inbox** -- Zentrale Inbox aggregiert 7 Quellen (Workflow-Approvals, 4-Eyes, Audit-Findings, DSR-Requests, Policy-Acks, Notifications, Activity-Feed)
 
 ### Sicherheit und Administration
 
