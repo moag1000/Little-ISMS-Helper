@@ -3675,10 +3675,15 @@ html[data-theme="dark"] .wizard-busy-overlay {
     margin-bottom: 24px;
     flex-wrap: wrap;
     position: relative;
+    /* isolation: isolate creates a local stacking context so that the
+       ::after pseudo (z-index: -1) stays BEHIND the flex children but
+       still renders above the element's own background — preventing the
+       gradient divider from "painting through" badges or action-buttons. */
+    isolation: isolate;
 }
-/* Brand-gradient bottom-divider via pseudo-element instead of border-image
-   (border-image: <src> 1 has Browser-Glitches mit slice=1 — Strich erscheint
-   teilweise durch den Header statt unter ihm). */
+/* Brand-gradient bottom-divider via pseudo-element instead of border-image.
+   z-index: -1 (within the isolated stacking context) keeps the 2 px stripe
+   below all flex children regardless of their position/z-index properties. */
 .fa-page-header::after {
     content: '';
     position: absolute;
@@ -3688,6 +3693,7 @@ html[data-theme="dark"] .wizard-busy-overlay {
     height: 2px;
     background: var(--brand-gradient-line);
     pointer-events: none;
+    z-index: -1; /* local stacking-context */
 }
 
 .fa-page-header__meta {
@@ -3695,6 +3701,8 @@ html[data-theme="dark"] .wizard-busy-overlay {
     flex-direction: column;
     gap: 6px;
     min-width: 0;
+    position: relative; /* lift above ::after (z-index: -1) */
+    z-index: 1; /* local stacking-context */
 }
 
 .fa-page-header__badge {
@@ -3744,6 +3752,8 @@ html[data-theme="dark"] .fa-page-header__badge {
     gap: 8px;
     flex-shrink: 0;
     flex-wrap: wrap;
+    position: relative; /* lift above ::after (z-index: -1) */
+    z-index: 1; /* local stacking-context */
 }
 
 @media (max-width: 600px) {
@@ -3770,8 +3780,10 @@ html[data-theme="dark"] .fa-page-header__badge {
     padding-bottom: 10px;
     margin-bottom: 16px;
     position: relative;
+    isolation: isolate; /* stacking context for ::after z-index: -1 */
 }
-/* Bottom-divider via pseudo-element (border-image slice=1 hat Browser-Glitches). */
+/* Bottom-divider via pseudo-element (border-image slice=1 hat Browser-Glitches).
+   z-index: -1 keeps divider behind section children within isolated context. */
 .fa-section__header::after {
     content: '';
     position: absolute;
@@ -3781,6 +3793,7 @@ html[data-theme="dark"] .fa-page-header__badge {
     height: 1px;
     background: linear-gradient(90deg, var(--primary-tint), transparent);
     pointer-events: none;
+    z-index: -1; /* local stacking-context */
 }
 
 .fa-section__title {
