@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'admin' %}
 
-{% block title %}Industry-Presets · {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'industry_preset.title'|trans }} · {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
@@ -9,11 +9,11 @@
 {% block body %}
 <main class="fa-aurora-surface">
     {{ _fa_page_header.render({
-        badge:    { icon: 'collection', label: 'Setup' },
-        title:    'Industry-Presets',
-        subtitle: 'Branchen-Vorlagen für Module, Frameworks, Controls und Dokumente — in einem Schritt anwenden.',
+        badge:    { icon: 'collection', label: 'industry_preset.badge'|trans },
+        title:    'industry_preset.title'|trans,
+        subtitle: 'industry_preset.subtitle'|trans,
         actions: [
-            { label: 'Admin-Hub', variant: 'ghost', icon: 'arrow-left', href: path('admin_hub_index') }
+            { label: 'industry_preset.action.admin_hub'|trans, variant: 'ghost', icon: 'arrow-left', href: path('admin_hub_index') }
         ]
     }) }}
 
@@ -26,50 +26,53 @@
     {% if presets|length == 0 %}
         {{ _fa_empty_state.render({
             mood: 'idle',
-            title: 'Keine Presets gefunden',
-            text: 'In fixtures/library/presets/ liegen keine YAML-Dateien.'
+            title: 'industry_preset.empty.title'|trans,
+            text: 'industry_preset.empty.text'|trans
         }) }}
     {% else %}
+        {# V3 W3-Aurora: Bootstrap .card → Aurora .fa-section per preset. #}
         <div class="row g-3">
             {% for preset in presets %}
                 <div class="col-12 col-md-6 col-xl-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h2 class="h5 mb-1">{{ preset.name }}</h2>
+                    <section class="fa-section h-100">
+                        <div class="fa-section__header">
+                            <h2 class="fa-section__title mb-1">{{ preset.name }}</h2>
                             <small class="text-muted">{{ preset.id }} · {{ preset.locale|upper }}</small>
                         </div>
-                        <div class="card-body">
+                        <div class="fa-section__body">
                             <p class="text-muted small mb-3">{{ preset.description|nl2br }}</p>
                             <div class="d-flex flex-wrap gap-2 mb-3">
                                 <span class="badge bg-primary-subtle text-primary">
-                                    <i class="bi bi-box"></i> {{ preset.modules_count }} Modules
+                                    <i class="bi bi-box"></i> {{ preset.modules_count }} {{ 'industry_preset.badge_label.modules'|trans }}
                                 </span>
                                 <span class="badge bg-info-subtle text-info">
-                                    <i class="bi bi-shield-check"></i> {{ preset.frameworks_count }} Frameworks
+                                    <i class="bi bi-shield-check"></i> {{ preset.frameworks_count }} {{ 'industry_preset.badge_label.frameworks'|trans }}
                                 </span>
                                 <span class="badge bg-success-subtle text-success">
-                                    <i class="bi bi-check2-square"></i> {{ preset.controls_count }} Controls
+                                    <i class="bi bi-check2-square"></i> {{ preset.controls_count }} {{ 'industry_preset.badge_label.controls'|trans }}
                                 </span>
                                 <span class="badge bg-warning-subtle text-warning">
-                                    <i class="bi bi-file-earmark-text"></i> {{ preset.documents_count }} Documents
+                                    <i class="bi bi-file-earmark-text"></i> {{ preset.documents_count }} {{ 'industry_preset.badge_label.documents'|trans }}
                                 </span>
                             </div>
                         </div>
-                        <div class="card-footer d-flex gap-2 justify-content-end">
+                        <div class="fa-section__footer d-flex gap-2 justify-content-end">
                             <a href="{{ path('app_admin_industry_preset_preview', { preset: preset.id }) }}"
                                class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                <i class="bi bi-eye"></i> Preview
+                                <i class="bi bi-eye"></i> {{ 'industry_preset.action.preview'|trans }}
                             </a>
                             <form method="post" action="{{ path('app_admin_industry_preset_apply', { preset: preset.id }) }}"
-                                  onsubmit="return confirm('Preset wirklich anwenden? Module + Frameworks werden aktiviert, Controls und Dokumente angelegt.');"
+                                  data-controller="ui-actions"
+                                  data-action="submit->ui-actions#confirm"
+                                  data-ui-actions-message-param="{{ 'industry_preset.confirm.apply_full'|trans }}"
                                   class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('industry_preset_' ~ preset.id) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
-                                    <i class="bi bi-rocket-takeoff"></i> Anwenden
+                                    <i class="bi bi-rocket-takeoff"></i> {{ 'industry_preset.action.apply'|trans }}
                                 </button>
                             </form>
                         </div>
-                    </div>
+                    </section>
                 </div>
             {% endfor %}
         </div>
