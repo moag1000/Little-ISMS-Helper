@@ -32,6 +32,9 @@ class CommentController extends AbstractController
         'Control',
         'CorrectiveAction',
         'DataSubjectRequest',
+        // V3 W3-Aurora: Comment-Thread adoption widened to GDPR-show-pages.
+        'DataBreach',
+        'DataProtectionImpactAssessment',
     ];
 
     public function __construct(

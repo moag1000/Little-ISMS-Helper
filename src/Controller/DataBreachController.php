@@ -9,6 +9,7 @@ use DateTime;
 use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\DataBreach;
 use App\Form\DataBreachType;
+use App\Repository\CommentRepository;
 use App\Service\DataBreachService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
@@ -32,6 +33,7 @@ class DataBreachController extends AbstractController
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly ?CommentRepository $commentRepository = null,
     ) {
     }
 
@@ -136,8 +138,16 @@ class DataBreachController extends AbstractController
     {
         if ($redirect = $this->checkModuleActive('privacy')) return $redirect;
 
+        // V3 W3-Aurora: Comment-Thread (C7) — load thread for this DataBreach.
+        $comments = [];
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($this->commentRepository !== null && $tenant !== null && $dataBreach->getId() !== null) {
+            $comments = $this->commentRepository->findThread($tenant, 'DataBreach', $dataBreach->getId());
+        }
+
         return $this->render('data_breach/show.html.twig', [
             'breach' => $dataBreach,
+            'comments' => $comments,
         ]);
     }
 

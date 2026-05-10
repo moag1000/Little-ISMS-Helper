@@ -10,6 +10,7 @@ use App\Controller\Trait\ModuleGatedControllerTrait;
 use App\Entity\Asset;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Form\DataProtectionImpactAssessmentType;
+use App\Repository\CommentRepository;
 use App\Service\DataProtectionImpactAssessmentService;
 use App\Service\ModuleConfigurationService;
 use App\Service\PdfExportService;
@@ -34,6 +35,7 @@ class DPIAController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleService,
+        private readonly ?CommentRepository $commentRepository = null,
     ) {}
 
     /**
@@ -501,9 +503,17 @@ class DPIAController extends AbstractController
 
         $complianceReport = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
 
+        // V3 W3-Aurora: Comment-Thread (C7) — load thread for this DPIA.
+        $comments = [];
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if ($this->commentRepository !== null && $tenant !== null && $dataProtectionImpactAssessment->getId() !== null) {
+            $comments = $this->commentRepository->findThread($tenant, 'DataProtectionImpactAssessment', $dataProtectionImpactAssessment->getId());
+        }
+
         return $this->render('dpia/show.html.twig', [
             'dpia' => $dataProtectionImpactAssessment,
             'compliance_report' => $complianceReport,
+            'comments' => $comments,
         ]);
     }
 

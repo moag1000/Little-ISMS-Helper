@@ -368,6 +368,16 @@
             {% endblock %}
         {% endembed %}
     {% endif %}
+
+    {# V3 W3-Aurora: Comment-Thread adoption (C7 macro). #}
+    {% include '_components/_isms_comment_thread.html.twig' with {
+        comments: comments|default([]),
+        entityType: 'DataBreach',
+        entityId: breach.id,
+        showForm: true,
+        formAction: path('app_comment_post', {entityType: 'DataBreach', entityId: breach.id}),
+        csrfToken: csrf_token('isms-comment')
+    } only %}
 </div>
 
 {# Notify Supervisory Authority Modal #}
