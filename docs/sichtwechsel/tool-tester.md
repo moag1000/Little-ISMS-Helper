@@ -46,17 +46,17 @@ Critical-Befund-Quelle: Wenn ein Framework-Stamm-Control ohne Cross-Mapping blei
 
 ---
 
-## Data-Repair-Tools
+## Data-Repair + Schema-Drift-Gate
 
 Admin-Werkzeug für Schema-Drift, verwaiste Entities, Tenant-Mismatches, Duplikate. Tester provoziert Inkonsistenzen + verifiziert Fix.
-
-![Data Repair](img/tool-tester/data-repair.png)
 
 Test-Schwerpunkte:
 - Schema-Reconcile-Lauf (Dry-Run + echt)
 - Orphan-Asset-Zuordnung
 - Tenant-Mismatch-Fix (Multi-Tenant-Isolation-Test)
 - Dup-Resolver pro Entity
+
+Note: Schema-Exception-Subscriber intercepts admin-Pfade mit Schema-Drift-Gate. Vor Capture immer `php bin/console app:schema:reconcile` laufen lassen — sonst zeigen `policy-style`, `report-style`, `data-repair` nur die Gate-Seite.
 
 ---
 
@@ -113,16 +113,6 @@ User-Verwaltung + Rollen-Templates. Tester prüft RBAC-Permissions-Matrix per Ro
 ![Users](img/tool-tester/users.png)
 
 ![Roles-Templates](img/tool-tester/roles-templates.png)
-
----
-
-## Policy-Style + Report-Style
-
-Admin-Templates für Policy- und Report-Erscheinung. Aurora-Konformität pro Tenant-Branding.
-
-![Policy-Style](img/tool-tester/policy-style.png)
-
-![Report-Style](img/tool-tester/report-style.png)
 
 ---
 
