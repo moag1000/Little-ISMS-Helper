@@ -175,6 +175,7 @@
                 <div class="col-md-6">
                     {% embed '_components/_card.html.twig' %}
                         {% block card_body %}
+                            {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                             <h5>{{ 'management_reports.bcm.rto_rpo_coverage'|trans({}, 'management_reports') }}</h5>
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span>{{ 'management_reports.bcm.processes_with_rto'|trans({}, 'management_reports') }}</span>

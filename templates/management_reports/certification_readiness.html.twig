@@ -57,6 +57,7 @@
         <div class="col-md-4">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
                 {% block card_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     <h5>{{ 'cert_readiness.annex_a_coverage'|trans({}, 'management_reports') }}</h5>
                     {{ _fa_progress.render({ value: control_percentage, tone: control_percentage >= 80 ? 'success' : (control_percentage >= 60 ? 'warning' : 'danger'), showText: true, class: 'mb-2' }) }}
                     <small class="text-muted">
@@ -88,6 +89,7 @@
                     </tr>
                 {% endblock %}
                 {% block table_body %}
+                    {% import '_components/_fa_progress.html.twig' as _fa_progress %}
                     {% for key, clause in clause_compliance %}
                     <tr class="fa-table__row">
                         <td class="fa-table__cell"><strong>{{ clause.name|trans({}, 'compliance') }}</strong></td>

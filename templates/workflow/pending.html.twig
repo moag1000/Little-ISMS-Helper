@@ -54,6 +54,7 @@
         </tr>
     {% endblock %}
     {% block table_body %}
+        {% import '_macros/workflow.html.twig' as workflow_macros %}
         {% for instance in pending_approvals %}
         <tr{% if instance.overdue %} class="bg-danger-light"{% endif %}>
             <td>

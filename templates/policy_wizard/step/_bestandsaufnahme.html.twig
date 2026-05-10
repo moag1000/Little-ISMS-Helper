@@ -133,6 +133,7 @@
             </tr>
         {% endblock %}
         {% block table_body %}
+                {% import '_components/_fa_alert.html.twig' as _fa_alert %}
                 {% for row in rows %}
                     {% set doc_id = row.id %}
                     {% set persisted = persisted_decisions[doc_id]|default({}) %}
