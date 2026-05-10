@@ -9,6 +9,16 @@
     {# Level 1: Primary Navigation Categories #}
     <div class="mega-menu-primary">
         <ul class="mega-menu-categories" role="menubar">
+            {# Mein Tag — central inbox (Audit V3 C1) #}
+            <li class="mega-menu-category" role="none">
+                <a href="{{ path('app_my_day') }}"
+                   class="mega-menu-trigger {% if current_route == 'app_my_day' %}active{% endif %}"
+                   role="menuitem">
+                    <i class="bi bi-inboxes" aria-hidden="true"></i>
+                    <span>Mein Tag</span>
+                </a>
+            </li>
+
             {# Dashboard Category #}
             <li class="mega-menu-category" role="none">
                 <button class="mega-menu-trigger {% if current_route starts with 'app_home' or current_route starts with 'app_dashboard' or current_route starts with 'app_analytics_' %}active{% endif %}"
