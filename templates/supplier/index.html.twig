@@ -200,16 +200,17 @@
             {% if suppliers|length > 0 %}
             {% embed '_components/_table.html.twig' with {
                 'wrapperClass': 'card-body',
+                'class': 'table-bulk-selectable',
                 'noMargin': true
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col" class="w-40px">
+                        <th scope="col" class="bulk-select-column">
                             <input type="checkbox"
                                    class="form-check-input"
                                    data-action="bulk-actions#selectAll"
                                    data-bulk-actions-target="selectAllCheckbox"
-                                   aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
                         </th>
                         <th scope="col">{{ 'supplier.table.name'|trans({}, 'suppliers') }}</th>
                         <th scope="col">{{ 'supplier.table.service_provided'|trans({}, 'suppliers') }}</th>
@@ -224,7 +225,7 @@
                     {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                     {% for supplier in suppliers %}
                     <tr data-supplier-id="{{ supplier.id }}">
-                        <td>
+                        <td class="bulk-select-column">
                             <input type="checkbox"
                                    class="form-check-input"
                                    data-bulk-actions-target="item"
