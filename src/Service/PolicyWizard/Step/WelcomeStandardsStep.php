@@ -29,6 +29,16 @@ final class WelcomeStandardsStep extends AbstractStep
         'gdpr',
         'bcm',
         'iso27701',
+        // Compliance-Manager-Persona feedback (May 2026): mapping
+        // catalogues for these four frameworks already ship via
+        // Seed{Nis2,Tisax,Soc2,C52026}Iso27001MappingsCommand — but
+        // Step 1 hid the toggles so customers regulated by NIS2 /
+        // TISAX / SOC 2 / BSI C5 had to bolt the mapping on by hand.
+        // Surfacing them in the picker closes that vertriebs-blocker.
+        'nis2',
+        'tisax',
+        'soc2',
+        'c5',
     ];
 
     public const ALLOWED_MODES = [

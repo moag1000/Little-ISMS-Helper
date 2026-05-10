@@ -83,7 +83,13 @@ class IndustryPresetBundleTest extends TestCase
         // Junior-ISB Wish #5 (commit ea1d4870): added KEY_CUSTOM_GENERAL as
         // a fallback for tenants outside the 4 industry verticals.
         $this->assertContains(IndustryPresetBundle::KEY_CUSTOM_GENERAL, IndustryPresetBundle::ALLOWED_KEYS);
-        $this->assertCount(5, IndustryPresetBundle::ALLOWED_KEYS);
+        // Compliance-Manager-Persona feedback (May 2026): three further
+        // presets that surface the now-pickable NIS-2 / DORA / BSI-C5
+        // standards as ready-to-go sector bundles.
+        $this->assertContains(IndustryPresetBundle::KEY_DE_MITTELSTAND_NIS2, IndustryPresetBundle::ALLOWED_KEYS);
+        $this->assertContains(IndustryPresetBundle::KEY_BAFIN_DORA_MARISK_AT, IndustryPresetBundle::ALLOWED_KEYS);
+        $this->assertContains(IndustryPresetBundle::KEY_KRITIS_ENERGIE, IndustryPresetBundle::ALLOWED_KEYS);
+        $this->assertCount(8, IndustryPresetBundle::ALLOWED_KEYS);
 
         $this->assertContains(IndustryPresetBundle::STANDARD_ISO27001, IndustryPresetBundle::ALLOWED_STANDARDS);
         $this->assertContains(IndustryPresetBundle::STANDARD_ISO_GDPR, IndustryPresetBundle::ALLOWED_STANDARDS);

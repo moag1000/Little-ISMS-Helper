@@ -43,12 +43,24 @@ class IndustryPresetBundle
      */
     public const KEY_CUSTOM_GENERAL = 'custom_general';
 
+    /**
+     * Compliance-Manager-Persona feedback (May 2026):
+     * three additional industry presets that surface the now-pickable
+     * NIS2 / DORA / BSI C5 standards in pre-configured combinations.
+     */
+    public const KEY_DE_MITTELSTAND_NIS2 = 'de_mittelstand_nis2';
+    public const KEY_BAFIN_DORA_MARISK_AT = 'bafin_dora_marisk_at';
+    public const KEY_KRITIS_ENERGIE = 'kritis_energie';
+
     public const ALLOWED_KEYS = [
         self::KEY_HEALTHCARE,
         self::KEY_PUBLIC_SECTOR,
         self::KEY_B2C_SAAS,
         self::KEY_OT_IEC62443,
         self::KEY_CUSTOM_GENERAL,
+        self::KEY_DE_MITTELSTAND_NIS2,
+        self::KEY_BAFIN_DORA_MARISK_AT,
+        self::KEY_KRITIS_ENERGIE,
     ];
 
     public const STANDARD_ISO27001 = 'iso27001';

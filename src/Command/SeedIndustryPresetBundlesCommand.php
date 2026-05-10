@@ -12,7 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Policy-Wizard Sprint W4-B — seed the v1 IndustryPresetBundles.
+ * Policy-Wizard Sprint W4-B — seed the IndustryPresetBundles.
  *
  * Idempotent: existing bundles (matched by `key`) are updated in place;
  * new ones are inserted. Bundles seeded:
@@ -26,12 +26,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *                             physical-heavy A.7.1-A.7.14 applicable.
  *   5. Custom / Generic     — ISO 27001 only, balanced, no industry
  *                             assumptions (Junior-ISB fallback).
+ *   6. DE Mittelstand NIS2  — ISO 27001 + NIS2 + GDPR, conservative.
+ *                             Industrial / B2B mid-market firms now
+ *                             in scope of the NIS2UmsuCG thresholds.
+ *   7. BaFin DORA + MaRisk  — ISO 27001 + DORA + GDPR + BCM,
+ *                             very conservative; replaces VAIT/BAIT.
+ *   8. KRITIS Energie       — ISO 27001 + BSI IT-Grundschutz + NIS2
+ *                             + BCM, very conservative; BSI-KritisV +
+ *                             EnWG § 11 Abs. 1b cybersecurity baseline.
  *
  * Spec: docs/plans/policy-wizard/07-phase4-sprint-reconciliation.md §3 W4.
  */
 #[AsCommand(
     name: 'app:policy-wizard:seed-bundles',
-    description: 'Seed the v1 IndustryPresetBundles (Healthcare, Public-Sector, B2C-SaaS, OT/IEC 62443, Custom/Generic).',
+    description: 'Seed the IndustryPresetBundles (Healthcare, Public-Sector, B2C-SaaS, OT/IEC 62443, Custom/Generic, DE-Mittelstand NIS2, BaFin DORA+MaRisk-AT, KRITIS Energie).',
 )]
 final class SeedIndustryPresetBundlesCommand
 {
@@ -241,6 +249,109 @@ final class SeedIndustryPresetBundlesCommand
                 'topic_audience_overrides' => [],
                 'dpo_sections_auto_enabled' => false,
                 'regulatory_references' => [],
+                'version' => 1,
+            ],
+            // ── Compliance-Manager-Persona feedback (May 2026) ──────────
+            // Three additional industry presets that pull the now-pickable
+            // NIS-2 / DORA / BSI-C5 mapping catalogues into ready-to-go
+            // sector bundles. Mappings already exist via
+            // SeedNis2Iso27001MappingsCommand / SeedDoraIso27001MappingsCommand
+            // / SeedC52026Iso27001MappingsCommand — these presets close the
+            // sales-blocker by surfacing them in Step 1 of the Policy-Wizard.
+            [
+                'key' => IndustryPresetBundle::KEY_DE_MITTELSTAND_NIS2,
+                'label' => 'DE-Mittelstand (NIS-2-pflichtig)',
+                'description' => 'Mid-market industrial / B2B-service companies in Germany that fall '
+                    . 'under the NIS2UmsuCG thresholds (essential / important entity per § 28 BSIG-neu). '
+                    . 'Defaults assume ISO 27001 + NIS-2 + GDPR baseline with conservative risk appetite '
+                    . 'and 12-hour backup RPO.',
+                'standard' => IndustryPresetBundle::STANDARD_ISO_ALL,
+                'preselected_standards' => ['iso27001', 'nis2', 'gdpr'],
+                'default_risk_appetite_tier' => 2,
+                'default_data_classification_levels' => 4,
+                'default_backup_rpo_hours' => 12,
+                'default_patch_sla_critical_hours' => 48,
+                'annex_a_applicability_overrides' => [
+                    'A.5.7' => 'applicable',  // Threat intelligence
+                    'A.5.24' => 'applicable', // Incident management planning
+                    'A.5.25' => 'applicable', // Assessment / decision on incidents
+                    'A.5.26' => 'applicable', // Response to incidents
+                    'A.5.27' => 'applicable', // Learning from incidents
+                ],
+                'topic_audience_overrides' => [],
+                'dpo_sections_auto_enabled' => true,
+                'regulatory_references' => [
+                    'EU 2022/2555 (NIS-2)',
+                    'NIS2UmsuCG',
+                    'BSIG § 28 ff. (neu)',
+                    'GDPR / BDSG',
+                ],
+                'version' => 1,
+            ],
+            [
+                'key' => IndustryPresetBundle::KEY_BAFIN_DORA_MARISK_AT,
+                'label' => 'BaFin (DORA + MaRisk AT 11.2)',
+                'description' => 'BaFin-supervised financial institutions — banks, insurers, payment / '
+                    . 'e-money service providers, capital management companies. DORA (EU 2022/2554) is the '
+                    . 'lex specialis since Jan 2025 and replaces VAIT / BAIT / KAIT / ZAIT; MaRisk AT 11.2 '
+                    . 'continues to apply for outsourcing governance. Defaults assume ISO 27001 + DORA + '
+                    . 'GDPR + BCM baseline, very conservative risk appetite, 4-hour backup RPO.',
+                'standard' => IndustryPresetBundle::STANDARD_ISO_ALL,
+                'preselected_standards' => ['iso27001', 'dora', 'gdpr', 'bcm'],
+                'default_risk_appetite_tier' => 1,
+                'default_data_classification_levels' => 4,
+                'default_backup_rpo_hours' => 4,
+                'default_patch_sla_critical_hours' => 24,
+                'annex_a_applicability_overrides' => [
+                    'A.5.19' => 'applicable', // Information security in supplier relationships
+                    'A.5.20' => 'applicable', // Addressing infosec within supplier agreements
+                    'A.5.21' => 'applicable', // Managing infosec in the ICT supply chain
+                    'A.5.22' => 'applicable', // Monitoring & review of supplier services
+                    'A.5.23' => 'applicable', // Information security for use of cloud services
+                    'A.5.30' => 'applicable', // ICT readiness for business continuity
+                ],
+                'topic_audience_overrides' => [],
+                'dpo_sections_auto_enabled' => true,
+                'regulatory_references' => [
+                    'EU 2022/2554 (DORA)',
+                    'MaRisk AT 11.2',
+                    'KWG § 25a/b',
+                    'GDPR / BDSG',
+                ],
+                'version' => 1,
+            ],
+            [
+                'key' => IndustryPresetBundle::KEY_KRITIS_ENERGIE,
+                'label' => 'KRITIS Energie (BSI-KritisV + EnWG § 11.1b)',
+                'description' => 'KRITIS sector "Energie" operators — electricity, gas, district heating, '
+                    . 'mineral oil supply — under BSI-KritisV thresholds. Combines BSI IT-Grundschutz, '
+                    . 'NIS-2 (EU 2022/2555) and the EnWG § 11 Abs. 1b cybersecurity baseline (IT-Sicher'
+                    . 'heitskatalog Strom/Gas). Defaults assume ISO 27001 + BSI + NIS-2 + BCM, very '
+                    . 'conservative risk appetite, 4-hour backup RPO and physical-heavy controls.',
+                'standard' => IndustryPresetBundle::STANDARD_ISO_ALL,
+                'preselected_standards' => ['iso27001', 'bsi', 'nis2', 'bcm'],
+                'default_risk_appetite_tier' => 1,
+                'default_data_classification_levels' => 4,
+                'default_backup_rpo_hours' => 4,
+                'default_patch_sla_critical_hours' => 24,
+                'annex_a_applicability_overrides' => [
+                    'A.5.7' => 'applicable',  // Threat intelligence
+                    'A.5.30' => 'applicable', // ICT readiness for business continuity
+                    'A.7.1' => 'applicable',  // Physical security perimeters
+                    'A.7.2' => 'applicable',  // Physical entry
+                    'A.7.4' => 'applicable',  // Physical security monitoring
+                    'A.8.14' => 'applicable', // Redundancy of information processing facilities
+                    'A.8.16' => 'applicable', // Monitoring activities
+                ],
+                'topic_audience_overrides' => [],
+                'dpo_sections_auto_enabled' => false,
+                'regulatory_references' => [
+                    'BSI-KritisV',
+                    'BSIG § 8a / § 8b',
+                    'EnWG § 11 Abs. 1b',
+                    'IT-Sicherheitskatalog Strom/Gas',
+                    'EU 2022/2555 (NIS-2)',
+                ],
                 'version' => 1,
             ],
         ];

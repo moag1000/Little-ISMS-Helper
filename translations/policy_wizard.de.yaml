@@ -191,6 +191,10 @@ policy_wizard:
                 gdpr: 'EU-DSGVO / BDSG (Datenschutz-Sektion)'
                 bcm: 'BCM (ISO 22301 Business Continuity)'
                 iso27701: 'ISO/IEC 27701 (PIMS-Erweiterung)'
+                nis2: 'NIS-2 (EU-Richtlinie 2022/2555 — wesentliche/wichtige Einrichtungen)'
+                tisax: 'TISAX (VDA ISA — Automobil-Zulieferer)'
+                soc2: 'SOC 2 (AICPA Trust Services Criteria — US-/B2B-SaaS)'
+                c5: 'BSI C5 (Cloud Computing Compliance Criteria Catalogue)'
             preview: 'Diese Auswahl erzeugt voraussichtlich %count% Dokumente.'
             finding_reference_label: 'Audit-Finding-Referenz (optional)'
             finding_reference_help: 'Verlinkt diesen Wizard-Lauf mit einem Audit-Finding zur Nachverfolgung.'
@@ -206,6 +210,10 @@ policy_wizard:
                 gdpr: 'EU-DSGVO + nationales Recht (BDSG). Pflicht bei Verarbeitung personenbezogener Daten.'
                 bcm: 'ISO 22301 — Business Continuity Management. Empfohlen für KRITIS, Banken, Health.'
                 iso27701: 'ISO/IEC 27701 — PIMS (Privacy Information Management). Ergänzt 27001 um Datenschutz-spezifische Controls.'
+                nis2: 'EU-Richtlinie 2022/2555 (in DE umgesetzt durch NIS2UmsuCG). Pflicht für wesentliche/wichtige Einrichtungen ab ~50 MA bzw. 10 Mio EUR Umsatz. Mapping zu ISO 27001 ist hinterlegt — wir generieren Art.-21-Maßnahmen + Art.-23-Meldewege als Sektionen.'
+                tisax: 'TISAX (Trusted Information Security Assessment Exchange) auf Basis VDA ISA. Pflicht-Audit für Lieferanten der deutschen Automobilindustrie. Mapping zu ISO 27001 ist hinterlegt — Prototypenschutz + Datenschutz werden als Zusatz-Sektionen erzeugt.'
+                soc2: 'SOC 2 nach AICPA Trust Services Criteria (Security/Availability/Confidentiality/Processing Integrity/Privacy). De-facto-Standard für US-/B2B-SaaS-Verträge. Mapping zu ISO 27001 ist hinterlegt — TSC-Sektionen werden in die Richtlinien eingebettet.'
+                c5: 'BSI Cloud Computing Compliance Criteria Catalogue (C5:2020 + C5:2026). Pflicht-Vertrauensanker für Cloud-Anbieter im DACH-Bundes-/Behördenmarkt. Mapping zu ISO 27001 ist hinterlegt — C5-Basis- und Zusatzkriterien werden mit ausgewiesen.'
             # Junior-ISB Wish #1 — 1-Satz-Erklärung pro Standard.
             # Gerade ISO 27701 (PIMS) ist für Junior-Implementer nicht
             # selbsterklärend — Begriff ausschreiben + Use-Case nennen.
@@ -217,6 +225,10 @@ policy_wizard:
                 gdpr: 'EU-DSGVO + nationales Recht (BDSG). Pflicht bei Verarbeitung personenbezogener Daten — generiert die Datenschutz-Sektionen Ihrer Richtlinien.'
                 bcm: 'Business Continuity Management nach ISO 22301. Erzeugt Notfall- und Wiederherstellungsvorgaben (RTO/RPO, BIA-Methodik). Empfohlen für KRITIS, Banken und Health.'
                 iso27701: 'ISO 27701 (PIMS = Privacy Information Management System) — Datenschutz-Erweiterung von ISO 27001. Gibt Ihrem ISMS einen Datenschutz-Layer mit klausel-genauer Audit-Spur. Empfohlen wenn Sie DSGVO + ISO 27001 in einem Audit prüfen wollen.'
+                nis2: 'NIS-2 (EU-Richtlinie 2022/2555, in DE per NIS2UmsuCG umgesetzt). Pflicht ab Schwellwerten der wesentlichen/wichtigen Einrichtungen. Wir liefern das ISO-27001-Mapping vor — Sie bekommen Art.-21-Risikomaßnahmen und Art.-23-Meldewege automatisch ins Dokument.'
+                tisax: 'TISAX (VDA ISA) — Pflicht-Assessment für Zulieferer der Automobilindustrie. Wir liefern das ISO-27001-Mapping vor — Prototypenschutz und VDA-spezifische Datenschutz-Anforderungen werden in die Richtlinie eingebettet.'
+                soc2: 'SOC 2 (AICPA Trust Services Criteria). De-facto-Anforderung für US-/B2B-SaaS-Kundenverträge. Wir liefern das ISO-27001-Mapping vor — Sektionen für Security/Availability/Confidentiality/Processing Integrity/Privacy werden mit erzeugt.'
+                c5: 'BSI C5 (Cloud Computing Compliance Criteria Catalogue, Stand 2020 und 2026). Pflicht-Vertrauensanker für Cloud-Anbieter im Bundes- und Behördenmarkt. Wir liefern das ISO-27001-Mapping vor — C5-Basis- und Zusatzkriterien werden in den jeweiligen Richtlinien-Abschnitten ausgewiesen.'
             # Junior-ISB Wish #2 — NIS-2 / DORA lex specialis.
             # Banner im Wizard + Footer-Klausel im generierten DORA-Body.
             dora_nis2_lex_specialis:
@@ -1052,6 +1064,17 @@ policy_wizard:
         custom_general:
             label: 'Allgemein / Custom'
             description: 'Generisches Preset ohne Branchen-Annahmen — du füllst Schritt 4 + 5 manuell aus. Empfohlen, wenn keines der 4 Branchen-Presets passt.'
+        # Compliance-Manager-Persona (Mai 2026): drei zusätzliche Presets
+        # für die nun sichtbaren NIS-2-/DORA-/C5-Standards.
+        de_mittelstand_nis2:
+            label: 'DE-Mittelstand (NIS-2-pflichtig)'
+            description: 'Mittelständische Industrie- und B2B-Service-Unternehmen mit NIS-2-Pflicht (NIS2UmsuCG, § 28 BSIG-neu). Defaults: ISO 27001 + NIS-2 + DSGVO, konservatives Risiko-Profil, 12 h RPO, DPO-Sektionen aktiv.'
+        bafin_dora_marisk_at:
+            label: 'BaFin (DORA + MaRisk AT 11.2)'
+            description: 'BaFin-regulierte Finanzinstitute (Banken, Versicherer, Zahlungsdienstleister, KVGs). DORA seit Jan 2025 lex specialis — ersetzt VAIT/BAIT/KAIT/ZAIT. MaRisk AT 11.2 für Auslagerungs-Governance. Defaults: ISO 27001 + DORA + DSGVO + BCM, sehr konservativ, 4 h RPO.'
+        kritis_energie:
+            label: 'KRITIS Energie (BSI-KritisV + EnWG § 11.1b)'
+            description: 'KRITIS-Sektor Energie (Strom, Gas, Fernwärme, Mineralöl) nach BSI-KritisV. Kombiniert BSI IT-Grundschutz, NIS-2 und IT-Sicherheitskatalog Strom/Gas (EnWG § 11 Abs. 1b). Defaults: ISO 27001 + BSI + NIS-2 + BCM, sehr konservativ, 4 h RPO, physische Schwerpunkte.'
 
     standard_badge:
         iso27001: 'ISO 27001'
@@ -1060,6 +1083,10 @@ policy_wizard:
         dora: 'EU DORA'
         gdpr: 'GDPR / DSGVO'
         iso27701: 'ISO 27701 (PIMS)'
+        nis2: 'NIS-2'
+        tisax: 'TISAX'
+        soc2: 'SOC 2'
+        c5: 'BSI C5'
 
     csrf:
         invalid: 'Ungültiges CSRF-Token. Bitte laden Sie die Seite neu.'
