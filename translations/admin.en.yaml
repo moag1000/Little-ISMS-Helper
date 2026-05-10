@@ -79,6 +79,13 @@ admin:
         compliance:
             frameworks: 'Compliance · Frameworks'
             imports: 'Compliance · Imports'
+        # V3 W2-H6: Quick-jump sub-sections in mega-menu (max 4 items each).
+        # Full directory lives in AdminHubCatalog.
+        quick:
+            user_mgmt: 'User-Mgmt'
+            tenant_mgmt: 'Tenant-Mgmt'
+            module_config: 'Module-Config'
+            settings: Settings
     nav:
         tenants: Tenants
         users: Users
