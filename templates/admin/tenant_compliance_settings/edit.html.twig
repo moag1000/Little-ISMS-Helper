@@ -93,66 +93,64 @@
             </header>
             <div class="fa-section__body">
                 <p class="text-muted small">{{ 'admin.tenant_settings.global_help'|trans }}</p>
-                <div class="table-responsive">
-                    <table class="table table-sm">
-                        <tbody>
-                            <tr>
-                                <th>{{ 'admin.tenant_settings.mfa_roles'|trans }}</th>
-                                <td><code>{{ globals.mfa_required_roles }}</code></td>
-                            </tr>
-                            <tr>
-                                <th>{{ 'admin.tenant_settings.password_min_length'|trans }}</th>
-                                <td>{{ globals.password_min_length }} {{ 'admin.tenant_settings.chars'|trans }}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ 'admin.tenant_settings.password_complexity'|trans }}</th>
-                                <td>
-                                    {% if globals.password_require_complexity %}
-                                        <span class="fa-status-pill fa-status-pill--success">{{ 'admin.tenant_settings.enforced'|trans }}</span>
-                                    {% else %}
-                                        <span class="fa-status-pill fa-status-pill--warning">{{ 'admin.tenant_settings.disabled'|trans }}</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>{{ 'admin.tenant_settings.password_rotation'|trans }}</th>
-                                <td>
-                                    {% if globals.password_rotation_days == 0 %}
-                                        <span class="text-muted">{{ 'admin.tenant_settings.no_rotation'|trans }}</span>
-                                    {% else %}
-                                        {{ globals.password_rotation_days }} {{ 'admin.tenant_settings.days'|trans }}
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>{{ 'admin.tenant_settings.session_timeout'|trans }}</th>
-                                <td>{{ globals.session_timeout_minutes }} {{ 'admin.tenant_settings.minutes'|trans }}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ 'admin.tenant_settings.backup_schedule'|trans }}</th>
-                                <td><code>{{ globals.backup_schedule }}</code></td>
-                            </tr>
-                            <tr>
-                                <th>{{ 'admin.tenant_settings.backup_retention'|trans }}</th>
-                                <td>{{ globals.backup_retention_days }} {{ 'admin.tenant_settings.days'|trans }}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ 'admin.tenant_settings.environment_label'|trans }}</th>
-                                <td><code>{{ globals.environment_label }}</code></td>
-                            </tr>
-                            <tr>
-                                <th>{{ 'admin.tenant_settings.telemetry'|trans }}</th>
-                                <td>
-                                    {% if globals.telemetry_opt_in %}
-                                        <span class="fa-status-pill fa-status-pill--primary">opt-in</span>
-                                    {% else %}
-                                        <span class="fa-status-pill fa-status-pill--neutral">off</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                {% embed '_components/_fa_table.html.twig' with { compact: true, hover: false } %}
+                    {% block table_body %}
+                        <tr class="fa-table__row">
+                            <th scope="row" class="fa-table__cell">{{ 'admin.tenant_settings.mfa_roles'|trans }}</th>
+                            <td class="fa-table__cell"><code>{{ globals.mfa_required_roles }}</code></td>
+                        </tr>
+                        <tr class="fa-table__row">
+                            <th scope="row" class="fa-table__cell">{{ 'admin.tenant_settings.password_min_length'|trans }}</th>
+                            <td class="fa-table__cell">{{ globals.password_min_length }} {{ 'admin.tenant_settings.chars'|trans }}</td>
+                        </tr>
+                        <tr class="fa-table__row">
+                            <th scope="row" class="fa-table__cell">{{ 'admin.tenant_settings.password_complexity'|trans }}</th>
+                            <td class="fa-table__cell">
+                                {% if globals.password_require_complexity %}
+                                    <span class="fa-status-pill fa-status-pill--success">{{ 'admin.tenant_settings.enforced'|trans }}</span>
+                                {% else %}
+                                    <span class="fa-status-pill fa-status-pill--warning">{{ 'admin.tenant_settings.disabled'|trans }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr class="fa-table__row">
+                            <th scope="row" class="fa-table__cell">{{ 'admin.tenant_settings.password_rotation'|trans }}</th>
+                            <td class="fa-table__cell">
+                                {% if globals.password_rotation_days == 0 %}
+                                    <span class="text-muted">{{ 'admin.tenant_settings.no_rotation'|trans }}</span>
+                                {% else %}
+                                    {{ globals.password_rotation_days }} {{ 'admin.tenant_settings.days'|trans }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr class="fa-table__row">
+                            <th scope="row" class="fa-table__cell">{{ 'admin.tenant_settings.session_timeout'|trans }}</th>
+                            <td class="fa-table__cell">{{ globals.session_timeout_minutes }} {{ 'admin.tenant_settings.minutes'|trans }}</td>
+                        </tr>
+                        <tr class="fa-table__row">
+                            <th scope="row" class="fa-table__cell">{{ 'admin.tenant_settings.backup_schedule'|trans }}</th>
+                            <td class="fa-table__cell"><code>{{ globals.backup_schedule }}</code></td>
+                        </tr>
+                        <tr class="fa-table__row">
+                            <th scope="row" class="fa-table__cell">{{ 'admin.tenant_settings.backup_retention'|trans }}</th>
+                            <td class="fa-table__cell">{{ globals.backup_retention_days }} {{ 'admin.tenant_settings.days'|trans }}</td>
+                        </tr>
+                        <tr class="fa-table__row">
+                            <th scope="row" class="fa-table__cell">{{ 'admin.tenant_settings.environment_label'|trans }}</th>
+                            <td class="fa-table__cell"><code>{{ globals.environment_label }}</code></td>
+                        </tr>
+                        <tr class="fa-table__row">
+                            <th scope="row" class="fa-table__cell">{{ 'admin.tenant_settings.telemetry'|trans }}</th>
+                            <td class="fa-table__cell">
+                                {% if globals.telemetry_opt_in %}
+                                    <span class="fa-status-pill fa-status-pill--primary">opt-in</span>
+                                {% else %}
+                                    <span class="fa-status-pill fa-status-pill--neutral">off</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endblock %}
+                {% endembed %}
                 <a href="{{ path('app_system_settings_index') }}" class="fa-cyber-btn fa-cyber-btn--ghost btn-sm">
                     <i class="bi bi-gear me-1"></i>{{ 'admin.tenant_settings.edit_globals'|trans }}
                 </a>

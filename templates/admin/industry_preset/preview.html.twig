@@ -43,24 +43,24 @@
             <section class="fa-section mb-3">
                 <div class="fa-section__header"><h2 class="fa-section__title mb-0">{{ 'industry_preset.preview.section_frameworks'|trans }} ({{ (config.frameworks|default([]))|length }})</h2></div>
                 <div class="fa-section__body">
-                    <table class="table table-sm">
-                        <thead>
+                    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                        {% block table_head %}
                             <tr>
-                                <th>{{ 'industry_preset.preview.table.code'|trans }}</th>
-                                <th>{{ 'industry_preset.preview.table.priority'|trans }}</th>
-                                <th>{{ 'industry_preset.preview.table.activate'|trans }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'industry_preset.preview.table.code'|trans }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'industry_preset.preview.table.priority'|trans }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'industry_preset.preview.table.activate'|trans }}</th>
                             </tr>
-                        </thead>
-                        <tbody>
+                        {% endblock %}
+                        {% block table_body %}
                             {% for fw in config.frameworks|default([]) %}
-                                <tr>
-                                    <td><strong>{{ fw.code }}</strong></td>
-                                    <td><span class="badge bg-info-subtle text-info">{{ fw.priority|default('—') }}</span></td>
-                                    <td>{% if fw.activate ?? false %}<i class="bi bi-check-circle text-success"></i>{% else %}<span class="text-muted">{{ 'industry_preset.preview.table.optional'|trans }}</span>{% endif %}</td>
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell"><strong>{{ fw.code }}</strong></td>
+                                    <td class="fa-table__cell"><span class="badge bg-info-subtle text-info">{{ fw.priority|default('—') }}</span></td>
+                                    <td class="fa-table__cell">{% if fw.activate ?? false %}<i class="bi bi-check-circle text-success"></i>{% else %}<span class="text-muted">{{ 'industry_preset.preview.table.optional'|trans }}</span>{% endif %}</td>
                                 </tr>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </section>
 
