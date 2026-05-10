@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'messages' %}
+{% trans_default_domain 'my_day' %}
 
-{% block title %}Mein Tag - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
@@ -10,11 +10,11 @@
 {% block body %}
 <main class="fa-aurora-surface my-day">
     {{ _fa_page_header.render({
-        badge:    { icon: 'inboxes', label: 'My Day' },
-        title:    'Mein Tag',
-        subtitle: 'Alle offenen Punkte aus 7 Posteingängen — heute, ' ~ inbox.generated_at|date('d.m.Y H:i'),
+        badge:    { icon: 'inboxes', label: 'badge'|trans },
+        title:    'title'|trans,
+        subtitle: 'subtitle'|trans({'%generated_at%': inbox.generated_at|date('d.m.Y H:i')}),
         actions: [
-            { label: 'Standard-Dashboard', variant: 'ghost', icon: 'house', href: path('app_dashboard') }
+            { label: 'action.standard_dashboard'|trans, variant: 'ghost', icon: 'house', href: path('app_dashboard') }
         ]
     }) }}
 
@@ -22,49 +22,49 @@
     <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
         {{ _fa_feature_card.render({
             icon: 'arrow-counterclockwise',
-            label: 'Workflows offen',
+            label: 'kpi.workflows_pending'|trans,
             value: inbox.summary.workflows_pending,
             variant: inbox.summary.workflows_pending > 0 ? 'warning' : 'success',
             href: '#workflows-pending'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'exclamation-octagon',
-            label: 'Workflows überfällig',
+            label: 'kpi.workflows_overdue'|trans,
             value: inbox.summary.workflows_overdue,
             variant: inbox.summary.workflows_overdue > 0 ? 'danger' : 'success',
             href: '#workflows-overdue'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'people',
-            label: '4-Augen-Anfragen',
+            label: 'kpi.four_eyes'|trans,
             value: inbox.summary.four_eyes,
             variant: inbox.summary.four_eyes > 0 ? 'warning' : 'success',
             href: '#four-eyes'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'check2-square',
-            label: 'Policy-Ack ausstehend',
+            label: 'kpi.acknowledgements'|trans,
             value: inbox.summary.acknowledgements,
             variant: inbox.summary.acknowledgements > 0 ? 'primary' : 'success',
             href: '#acknowledgements'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'search',
-            label: 'Findings (mir)',
+            label: 'kpi.findings'|trans,
             value: inbox.summary.findings,
             variant: inbox.summary.findings > 0 ? 'warning' : 'success',
             href: '#findings'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'file-person',
-            label: 'DSR (mir)',
+            label: 'kpi.dsrs'|trans,
             value: inbox.summary.dsrs,
             variant: inbox.summary.dsrs > 0 ? 'danger' : 'success',
             href: '#dsrs'
         }) }}
         {{ _fa_feature_card.render({
             icon: 'hourglass-bottom',
-            label: 'CA überfällig',
+            label: 'kpi.corrective_actions_overdue'|trans,
             value: inbox.summary.corrective_actions_overdue,
             variant: inbox.summary.corrective_actions_overdue > 0 ? 'danger' : 'success',
             href: '#corrective-actions'
@@ -75,20 +75,20 @@
         <div class="my-4">
             {{ _fa_empty_state.render({
                 mood: 'happy',
-                title: 'Alles erledigt',
-                text: 'Aktuell keine offenen Aufgaben für dich. Gute Arbeit!',
+                title: 'empty.title'|trans,
+                text: 'empty.text'|trans,
             }) }}
         </div>
     {% else %}
 
     {% set sections = [
-        { id: 'workflows-pending', title: 'Workflows offen', items: inbox.workflows_pending },
-        { id: 'workflows-overdue', title: 'Workflows überfällig', items: inbox.workflows_overdue },
-        { id: 'four-eyes', title: '4-Augen-Approval', items: inbox.four_eyes },
-        { id: 'acknowledgements', title: 'Policy-Acknowledgements', items: inbox.acknowledgements },
-        { id: 'findings', title: 'Audit-Findings (mir zugewiesen)', items: inbox.findings },
-        { id: 'dsrs', title: 'Data-Subject-Requests', items: inbox.dsrs },
-        { id: 'corrective-actions', title: 'Korrekturmaßnahmen überfällig', items: inbox.corrective_actions_overdue },
+        { id: 'workflows-pending', title: 'section.workflows_pending'|trans, items: inbox.workflows_pending },
+        { id: 'workflows-overdue', title: 'section.workflows_overdue'|trans, items: inbox.workflows_overdue },
+        { id: 'four-eyes', title: 'section.four_eyes'|trans, items: inbox.four_eyes },
+        { id: 'acknowledgements', title: 'section.acknowledgements'|trans, items: inbox.acknowledgements },
+        { id: 'findings', title: 'section.findings'|trans, items: inbox.findings },
+        { id: 'dsrs', title: 'section.dsrs'|trans, items: inbox.dsrs },
+        { id: 'corrective-actions', title: 'section.corrective_actions_overdue'|trans, items: inbox.corrective_actions_overdue },
     ] %}
 
     {% for section in sections %}
@@ -122,7 +122,7 @@
                                 </div>
                                 <small class="text-muted">{{ item.subtitle }}</small>
                                 {% if item.due_date %}
-                                    <small class="d-block text-muted">Fällig: {{ item.due_date|date('d.m.Y') }}</small>
+                                    <small class="d-block text-muted">{{ 'item.due'|trans }}: {{ item.due_date|date('d.m.Y') }}</small>
                                 {% endif %}
                             </div>
                             <div class="text-end">
@@ -134,9 +134,9 @@
                                     <span class="badge {{ badgeClass }}">{{ item.badge }}</span>
                                 {% endif %}
                                 {% if item.priority == 'high' %}
-                                    <span class="badge bg-danger ms-1">High</span>
+                                    <span class="badge bg-danger ms-1">{{ 'priority.high'|trans }}</span>
                                 {% elseif item.priority == 'medium' %}
-                                    <span class="badge bg-warning text-dark ms-1">Med</span>
+                                    <span class="badge bg-warning text-dark ms-1">{{ 'priority.medium'|trans }}</span>
                                 {% endif %}
                             </div>
                         </a>
