@@ -112,42 +112,40 @@
     <p class="small text-muted mt-2 mb-2">
         {{ 'policy_wizard.step.operational_baselines.crypto_decision_aid_intro'|trans }}
     </p>
-    <div class="table-responsive">
-        <table class="table table-sm align-middle small mb-0">
-            <thead>
-                <tr>
-                    <th scope="col">{{ 'policy_wizard.step.operational_baselines.crypto_col.algorithm'|trans }}</th>
-                    <th scope="col">{{ 'policy_wizard.step.operational_baselines.crypto_col.purpose'|trans }}</th>
-                    <th scope="col">{{ 'policy_wizard.step.operational_baselines.crypto_col.bsi_status'|trans }}</th>
-                    <th scope="col">{{ 'policy_wizard.step.operational_baselines.crypto_col.optional_when'|trans }}</th>
+    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.operational_baselines.crypto_col.algorithm'|trans }}</th>
+                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.operational_baselines.crypto_col.purpose'|trans }}</th>
+                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.operational_baselines.crypto_col.bsi_status'|trans }}</th>
+                <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.operational_baselines.crypto_col.optional_when'|trans }}</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for algo in bsi_tr02102_algos %}
+                {% set algo_purpose_key = 'policy_wizard.step.operational_baselines.crypto_algorithms.' ~ algo ~ '.purpose' %}
+                {% set algo_bsi_key = 'policy_wizard.step.operational_baselines.crypto_algorithms.' ~ algo ~ '.bsi_status' %}
+                {% set algo_optional_key = 'policy_wizard.step.operational_baselines.crypto_algorithms.' ~ algo ~ '.optional_when' %}
+                {% set algo_purpose = algo_purpose_key|trans({}, 'policy_wizard') %}
+                {% set algo_bsi = algo_bsi_key|trans({}, 'policy_wizard') %}
+                {% set algo_optional = algo_optional_key|trans({}, 'policy_wizard') %}
+                {# Highlight "NIE abwählen" rows so a Junior cannot accidentally remove them. #}
+                {% set is_critical = ('NIE' in algo_optional) or ('NEVER' in algo_optional) %}
+                <tr class="fa-table__row{{ is_critical ? ' table-warning' : '' }}">
+                    <td class="fa-table__cell"><code>{{ algo }}</code></td>
+                    <td class="fa-table__cell">{{ algo_purpose }}</td>
+                    <td class="fa-table__cell">{{ algo_bsi }}</td>
+                    <td class="fa-table__cell">
+                        {% if is_critical %}
+                            <strong class="text-danger">{{ algo_optional }}</strong>
+                        {% else %}
+                            {{ algo_optional }}
+                        {% endif %}
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for algo in bsi_tr02102_algos %}
-                    {% set algo_purpose_key = 'policy_wizard.step.operational_baselines.crypto_algorithms.' ~ algo ~ '.purpose' %}
-                    {% set algo_bsi_key = 'policy_wizard.step.operational_baselines.crypto_algorithms.' ~ algo ~ '.bsi_status' %}
-                    {% set algo_optional_key = 'policy_wizard.step.operational_baselines.crypto_algorithms.' ~ algo ~ '.optional_when' %}
-                    {% set algo_purpose = algo_purpose_key|trans({}, 'policy_wizard') %}
-                    {% set algo_bsi = algo_bsi_key|trans({}, 'policy_wizard') %}
-                    {% set algo_optional = algo_optional_key|trans({}, 'policy_wizard') %}
-                    {# Highlight "NIE abwählen" rows so a Junior cannot accidentally remove them. #}
-                    {% set is_critical = ('NIE' in algo_optional) or ('NEVER' in algo_optional) %}
-                    <tr {% if is_critical %}class="table-warning"{% endif %}>
-                        <td><code>{{ algo }}</code></td>
-                        <td>{{ algo_purpose }}</td>
-                        <td>{{ algo_bsi }}</td>
-                        <td>
-                            {% if is_critical %}
-                                <strong class="text-danger">{{ algo_optional }}</strong>
-                            {% else %}
-                                {{ algo_optional }}
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 </details>
 
 <div class="row g-3 mb-4">

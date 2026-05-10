@@ -86,50 +86,48 @@
                 {% block card_body %}
                     {% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
                     {% if reports|length > 0 %}
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead>
-                                <tr>
-                                    <th scope="col">{{ 'table.name'|trans }}</th>
-                                    <th scope="col">{{ 'table.category'|trans }}</th>
-                                    <th scope="col">{{ 'table.layout'|trans }}</th>
-                                    <th scope="col">{{ 'table.updated'|trans }}</th>
-                                    <th scope="col" class="text-end">{{ 'table.actions'|trans }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for report in reports %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="text-decoration-none fw-bold">
-                                            {% if report.isFavorite %}<i class="fa-icon fa-icon--ui-star text-warning me-1" aria-hidden="true"></i>{% endif %}
-                                            {{ report.name }}
+                    {% embed '_components/_fa_table.html.twig' with { hover: true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" class="fa-table__th">{{ 'table.name'|trans }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'table.category'|trans }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'table.layout'|trans }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'table.updated'|trans }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'table.actions'|trans }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
+                            {% for report in reports %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">
+                                    <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="text-decoration-none fw-bold">
+                                        {% if report.isFavorite %}<i class="fa-icon fa-icon--ui-star text-warning me-1" aria-hidden="true"></i>{% endif %}
+                                        {{ report.name }}
+                                    </a>
+                                    {% if report.description %}
+                                    <br><small class="text-muted">{{ report.description|slice(0, 50) }}{% if report.description|length > 50 %}...{% endif %}</small>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">{% include '_components/_badge.html.twig' with { variant: 'secondary', content: categories[report.category]|default(report.category) } %}</td>
+                                <td class="fa-table__cell">{{ report.layout }}</td>
+                                <td class="fa-table__cell">{{ report.updatedAt ? report.updatedAt|date('d.m.Y H:i') : report.createdAt|date('d.m.Y H:i') }}</td>
+                                <td class="fa-table__cell fa-table__cell--actions">
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'action.edit'|trans }}">
+                                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
                                         </a>
-                                        {% if report.description %}
-                                        <br><small class="text-muted">{{ report.description|slice(0, 50) }}{% if report.description|length > 50 %}...{% endif %}</small>
-                                        {% endif %}
-                                    </td>
-                                    <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: categories[report.category]|default(report.category) } %}</td>
-                                    <td>{{ report.layout }}</td>
-                                    <td>{{ report.updatedAt ? report.updatedAt|date('d.m.Y H:i') : report.createdAt|date('d.m.Y H:i') }}</td>
-                                    <td class="text-end">
-                                        <div class="btn-group btn-group-sm">
-                                            <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'action.edit'|trans }}">
-                                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                            </a>
-                                            <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'action.preview'|trans }}">
-                                                <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                            </a>
-                                            <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger" title="{{ 'action.export_pdf'|trans }}">
-                                                <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                                        <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost" title="{{ 'action.preview'|trans }}">
+                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                        </a>
+                                        <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="fa-cyber-btn fa-cyber-btn--danger" title="{{ 'action.export_pdf'|trans }}">
+                                            <i class="fa-icon fa-icon--nav-file-pdf" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                     {% else %}
                     {{ _fa_empty_state.render({
                         mood: 'sleeping',

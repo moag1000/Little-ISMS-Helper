@@ -51,26 +51,24 @@
         </div>
         <div class="fa-section__body">
             {% if role.permissions|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th scope="col">{{ 'role_management.permission.name'|trans({}, 'role_management') }}</th>
-                                <th scope="col">{{ 'role_management.permission.resource'|trans({}, 'role_management') }}</th>
-                                <th scope="col">{{ 'role_management.permission.action'|trans({}, 'role_management') }}</th>
+                {% embed '_components/_fa_table.html.twig' with { hover: true } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'role_management.permission.name'|trans({}, 'role_management') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'role_management.permission.resource'|trans({}, 'role_management') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'role_management.permission.action'|trans({}, 'role_management') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for permission in role.permissions %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell"><strong>{{ permission.name }}</strong></td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--primary">{{ permission.resource }}</span></td>
+                                <td class="fa-table__cell"><span class="fa-status-pill fa-status-pill--neutral">{{ permission.action }}</span></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for permission in role.permissions %}
-                                <tr>
-                                    <td><strong>{{ permission.name }}</strong></td>
-                                    <td><span class="fa-status-pill fa-status-pill--primary">{{ permission.resource }}</span></td>
-                                    <td><span class="fa-status-pill fa-status-pill--neutral">{{ permission.action }}</span></td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 <p class="text-muted mb-0">{{ 'role_management.message.no_permissions'|trans({}, 'role_management') }}</p>
             {% endif %}
@@ -88,26 +86,24 @@
         </div>
         <div class="fa-section__body">
             {% if role.users|length > 0 %}
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th scope="col">{{ 'role_management.user.name'|trans({}, 'role_management') }}</th>
-                                <th scope="col">{{ 'role_management.user.email'|trans({}, 'role_management') }}</th>
-                                <th scope="col">{{ 'role_management.user.assigned_date'|trans({}, 'role_management') }}</th>
+                {% embed '_components/_fa_table.html.twig' with { hover: true } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'role_management.user.name'|trans({}, 'role_management') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'role_management.user.email'|trans({}, 'role_management') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'role_management.user.assigned_date'|trans({}, 'role_management') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for user in role.users %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell"><strong>{{ user.fullName }}</strong></td>
+                                <td class="fa-table__cell">{{ user.email|default('-') }}</td>
+                                <td class="fa-table__cell">{{ user.roleAssignedAt|date('d.m.Y H:i') }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for user in role.users %}
-                                <tr>
-                                    <td><strong>{{ user.fullName }}</strong></td>
-                                    <td>{{ user.email|default('-') }}</td>
-                                    <td>{{ user.roleAssignedAt|date('d.m.Y H:i') }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% else %}
                 <p class="text-muted mb-0">{{ 'role_management.message.no_users'|trans({}, 'role_management') }}</p>
             {% endif %}

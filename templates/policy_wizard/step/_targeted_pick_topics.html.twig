@@ -39,22 +39,22 @@
 
     <p class="text-muted small mb-3">{{ 'policy_wizard.step.targeted.pick.hint_max_ten'|trans({'%count%': max_topics}) }}</p>
 
-    <div class="table-responsive">
-        <table class="table table-hover align-middle"
+    <div class="fa-table-wrap">
+        <table class="fa-table fa-table--hover align-middle"
                data-controller="policy-wizard-targeted-pick"
                data-policy-wizard-targeted-pick-max-value="{{ max_topics }}">
-            <thead>
+            <thead class="fa-table__head">
                 <tr>
-                    <th scope="col" style="width:48px;">&nbsp;</th>
-                    <th scope="col">{{ 'policy_wizard.step.targeted.pick.column.topic'|trans }}</th>
-                    <th scope="col">{{ 'policy_wizard.step.targeted.pick.column.last_approved'|trans }}</th>
-                    <th scope="col">{{ 'policy_wizard.step.targeted.pick.column.next_review'|trans }}</th>
+                    <th scope="col" class="fa-table__th" style="width:48px;">&nbsp;</th>
+                    <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.targeted.pick.column.topic'|trans }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.targeted.pick.column.last_approved'|trans }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.targeted.pick.column.next_review'|trans }}</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="fa-table__body">
                 {% for topic_key, documents in existing_by_key %}
-                    <tr>
-                        <td>
+                    <tr class="fa-table__row">
+                        <td class="fa-table__cell">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -66,7 +66,7 @@
                                        {% if topic_key in picked_topics %}checked{% endif %}>
                             </div>
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             <label class="form-check-label fw-semibold" for="topic-{{ topic_key }}">
                                 {{ ('policy_wizard.step.targeted.pick.topic.' ~ topic_key)|trans|default(topic_key) }}
                             </label>
@@ -83,7 +83,7 @@
                                 </ul>
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             {% set last_approved = documents|first.lastApprovedAt|default(null) %}
                             {% if last_approved %}
                                 <small>{{ last_approved|date('Y-m-d') }}</small>
@@ -91,7 +91,7 @@
                                 <small class="text-muted">—</small>
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="fa-table__cell">
                             {% set next_review = documents|first.nextReviewDate|default(null) %}
                             {% if next_review %}
                                 <small>{{ next_review|date('Y-m-d') }}</small>

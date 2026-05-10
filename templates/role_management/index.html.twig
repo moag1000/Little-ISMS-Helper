@@ -47,66 +47,64 @@
 {# Roles Table #}
 <section class="fa-section">
     <div class="fa-section__body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">{{ 'role_management.field.name'|trans({}, 'role_management') }}</th>
-                        <th scope="col">{{ 'role_management.field.description'|trans({}, 'role_management') }}</th>
-                        <th scope="col" class="text-center">{{ 'role_management.field.permissions'|trans({}, 'role_management') }}</th>
-                        <th scope="col" class="text-center">{{ 'role_management.field.users'|trans({}, 'role_management') }}</th>
-                        <th scope="col" class="text-center">{{ 'role_management.field.type'|trans({}, 'role_management') }}</th>
-                        <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for role in roles %}
-                    <tr>
-                        <td>
-                            <strong>{{ role.name }}</strong>
-                            {% if role.systemRole %}
-                                <span class="badge bg-info ms-1">{{ 'role_management.badge.system'|trans({}, 'role_management') }}</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <small class="text-muted-color">
-                                {{ role.description|default('-') }}
-                            </small>
-                        </td>
-                        <td class="text-center">
-                            <span class="badge bg-secondary">{{ role.permissions|length }}</span>
-                        </td>
-                        <td class="text-center">
-                            <span class="badge bg-info">{{ role.users|length }}</span>
-                        </td>
-                        <td class="text-center">
-                            {% if role.systemRole %}
-                                <span class="badge bg-info">{{ 'role_management.type.system'|trans({}, 'role_management') }}</span>
-                            {% else %}
-                                <span class="badge bg-secondary">{{ 'role_management.type.custom'|trans({}, 'role_management') }}</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                            <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'role_management.aria.actions_for_role'|trans({'%name%': role.name}, 'role_management') }}">
-                                <a href="{{ path('role_management_show', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                                    👁 {{ 'common.view'|trans({}, 'messages') }}
-                                </a>
-                                <a href="{{ path('role_management_edit', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
-                                    <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="6" class="text-center-p-xl-muted">
-                            {{ 'role_management.message.no_roles'|trans({}, 'role_management') }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        {% embed '_components/_fa_table.html.twig' with { hover: true } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col" class="fa-table__th">{{ 'role_management.field.name'|trans({}, 'role_management') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'role_management.field.description'|trans({}, 'role_management') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--center">{{ 'role_management.field.permissions'|trans({}, 'role_management') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--center">{{ 'role_management.field.users'|trans({}, 'role_management') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--center">{{ 'role_management.field.type'|trans({}, 'role_management') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for role in roles %}
+                <tr class="fa-table__row">
+                    <td class="fa-table__cell">
+                        <strong>{{ role.name }}</strong>
+                        {% if role.systemRole %}
+                            <span class="badge bg-info ms-1">{{ 'role_management.badge.system'|trans({}, 'role_management') }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="fa-table__cell">
+                        <small class="text-muted-color">
+                            {{ role.description|default('-') }}
+                        </small>
+                    </td>
+                    <td class="fa-table__cell fa-table__cell--center">
+                        <span class="badge bg-secondary">{{ role.permissions|length }}</span>
+                    </td>
+                    <td class="fa-table__cell fa-table__cell--center">
+                        <span class="badge bg-info">{{ role.users|length }}</span>
+                    </td>
+                    <td class="fa-table__cell fa-table__cell--center">
+                        {% if role.systemRole %}
+                            <span class="badge bg-info">{{ 'role_management.type.system'|trans({}, 'role_management') }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ 'role_management.type.custom'|trans({}, 'role_management') }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="fa-table__cell fa-table__cell--actions">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'role_management.aria.actions_for_role'|trans({'%name%': role.name}, 'role_management') }}">
+                            <a href="{{ path('role_management_show', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                                👁 {{ 'common.view'|trans({}, 'messages') }}
+                            </a>
+                            <a href="{{ path('role_management_edit', {id: role.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
+                                <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="fa-table__cell text-center text-muted">
+                        {{ 'role_management.message.no_roles'|trans({}, 'role_management') }}
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
     </div>
 </section>
 </main>

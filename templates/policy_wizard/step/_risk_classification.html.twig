@@ -236,17 +236,17 @@
                aria-label="{{ 'policy_wizard.step.risk_classification.tooltip.annex_a'|trans }}"></i>
             {{ 'policy_wizard.step.risk_classification.annex_help'|trans }}
         </p>
-        <div class="table-responsive">
-            <table class="table table-sm align-middle annex-a-table"
+        <div class="fa-table-wrap">
+            <table class="fa-table fa-table--compact align-middle annex-a-table"
                    data-annex-a-filter-target="table"
                    data-theme="{{ group_key }}">
-                <thead>
+                <thead class="fa-table__head">
                     <tr>
-                        <th scope="col">{{ 'policy_wizard.step.risk_classification.annex_column.control'|trans }}</th>
-                        <th scope="col" style="width: 220px;">{{ 'policy_wizard.step.risk_classification.annex_column.applicable'|trans }}</th>
+                        <th scope="col" class="fa-table__th">{{ 'policy_wizard.step.risk_classification.annex_column.control'|trans }}</th>
+                        <th scope="col" class="fa-table__th" style="width: 220px;">{{ 'policy_wizard.step.risk_classification.annex_column.applicable'|trans }}</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="fa-table__body">
                     {% for ctrl in group.controls %}
                         {# Default is "applicable" — only when explicitly false do we render not_applicable. #}
                         {% set is_applicable = annex_default[ctrl] is defined ? annex_default[ctrl] : true %}
@@ -271,10 +271,11 @@
                             or ('Not-applicable' in ctrl_desc)
                             or ('not-applicable' in ctrl_desc)
                             or ('Often not-applicable' in ctrl_desc) %}
-                        <tr data-annex-a-filter-target="row"
+                        <tr class="fa-table__row"
+                            data-annex-a-filter-target="row"
                             data-control-ref="{{ ctrl }}"
                             data-search-blob="{{ (ctrl ~ ' ' ~ ctrl_title ~ ' ' ~ ctrl_desc)|lower }}">
-                            <td>
+                            <td class="fa-table__cell">
                                 <div class="d-flex flex-column">
                                     <div>
                                         <code class="me-1">{{ ctrl }}</code>
@@ -292,7 +293,7 @@
                                     {% endif %}
                                 </div>
                             </td>
-                            <td>
+                            <td class="fa-table__cell">
                                 <div class="form-check form-check-inline">
                                     <input type="hidden" name="annex_a_applicability[{{ ctrl }}]" value="0">
                                     <input class="form-check-input"
