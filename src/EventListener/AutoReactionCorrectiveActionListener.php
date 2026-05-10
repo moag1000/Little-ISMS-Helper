@@ -6,6 +6,7 @@ namespace App\EventListener;
 
 use App\Entity\AuditFinding;
 use App\Entity\CorrectiveAction;
+use App\Repository\SystemSettingsRepository;
 use App\Repository\UserRepository;
 use App\Service\AutoReactionService;
 use App\Service\EmailNotificationService;
@@ -29,11 +30,30 @@ use Psr\Log\LoggerInterface;
 #[AsEntityListener(event: Events::postUpdate, entity: AuditFinding::class)]
 class AutoReactionCorrectiveActionListener
 {
+    /**
+     * V3 W2-WS-7 — SystemSettings key for severity-based CA due-days.
+     * Stored as JSON dict, e.g. {"critical":14,"major":30,"high":30,"medium":60,"minor":90,"low":90}.
+     * Default fallbacks live in {@see DEFAULT_DUE_DAYS}.
+     */
+    public const SETTINGS_CATEGORY = 'auto_reactions';
+    public const SETTINGS_KEY_CA_DUE_DAYS = 'auto_ca_due_days';
+
+    /** @var array<string, int> */
+    private const DEFAULT_DUE_DAYS = [
+        'critical' => 14,
+        'high'     => 30,
+        'major'    => 30, // alias for type=major_nc
+        'medium'   => 60,
+        'minor'    => 90, // alias for type=minor_nc
+        'low'      => 90,
+    ];
+
     public function __construct(
         private readonly AutoReactionService $reactions,
         private readonly LoggerInterface $logger,
         private readonly ?EmailNotificationService $emailNotifier = null,
         private readonly ?UserRepository $userRepository = null,
+        private readonly ?SystemSettingsRepository $systemSettings = null,
     ) {
     }
 
@@ -87,7 +107,8 @@ class AutoReactionCorrectiveActionListener
                 $ca->setActionType(CorrectiveAction::ACTION_TYPE_CORRECTIVE);
             }
             if (method_exists($ca, 'setPlannedCompletionDate')) {
-                $ca->setPlannedCompletionDate(new DateTimeImmutable('+30 days'));
+                $dueDays = $this->resolveDueDays($severity, $type);
+                $ca->setPlannedCompletionDate(new DateTimeImmutable('+' . $dueDays . ' days'));
             }
             if (method_exists($ca, 'setStatus')) {
                 $ca->setStatus(CorrectiveAction::STATUS_PLANNED);
@@ -110,6 +131,55 @@ class AutoReactionCorrectiveActionListener
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * V3 W2-WS-7 — Map severity / type to days-until-due.
+     *
+     * Resolution order:
+     *  1. SystemSettings JSON dict (per-tenant configurable).
+     *  2. DEFAULT_DUE_DAYS fallback.
+     *  3. 30 days (legacy default).
+     *
+     * Severity (critical/high/medium/low) takes precedence over type
+     * (major_nc/minor_nc) — operationally severity is the more granular
+     * driver. When the severity key is absent we fall back to the type
+     * synonym (major_nc → major, minor_nc → minor).
+     */
+    private function resolveDueDays(?string $severity, ?string $type): int
+    {
+        $config = self::DEFAULT_DUE_DAYS;
+        if ($this->systemSettings !== null) {
+            $stored = $this->systemSettings->getSetting(
+                self::SETTINGS_CATEGORY,
+                self::SETTINGS_KEY_CA_DUE_DAYS,
+                null,
+            );
+            if (is_array($stored)) {
+                foreach ($stored as $k => $v) {
+                    $key = strtolower((string) $k);
+                    $val = (int) $v;
+                    if ($val > 0 && $val <= 365) {
+                        $config[$key] = $val;
+                    }
+                }
+            }
+        }
+
+        $sev = strtolower((string) $severity);
+        if ($sev !== '' && isset($config[$sev])) {
+            return $config[$sev];
+        }
+        // Fallback via type → severity synonym.
+        $typeKey = match ($type) {
+            AuditFinding::TYPE_MAJOR_NC => 'major',
+            AuditFinding::TYPE_MINOR_NC => 'minor',
+            default => null,
+        };
+        if ($typeKey !== null && isset($config[$typeKey])) {
+            return $config[$typeKey];
+        }
+        return 30;
     }
 
     /**
