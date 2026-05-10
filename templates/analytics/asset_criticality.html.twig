@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'analytics' %}
 
 {% block title %}{{ 'analytics.assets.title'|trans({}, 'analytics') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -157,12 +158,7 @@
                             </td>
                             <td class="text-center">{{ asset.historical_incidents }}</td>
                             <td class="text-center">
-                                <div class="progress" style="height: 20px; min-width: 80px;">
-                                    <div class="progress-bar bg-{% if asset.incident_probability >= 70 %}danger{% elseif asset.incident_probability >= 40 %}warning{% else %}info{% endif %}"
-                                         style="width: {{ asset.incident_probability }}%">
-                                        {{ asset.incident_probability }}%
-                                    </div>
-                                </div>
+                                {{ _fa_progress.render({ value: asset.incident_probability, tone: asset.incident_probability >= 70 ? 'danger' : (asset.incident_probability >= 40 ? 'warning' : 'info'), showText: true }) }}
                             </td>
                             <td>
                                 {% include '_components/_badge.html.twig' with { variant: asset.criticality_level == 'critical' ? 'danger' : (asset.criticality_level == 'high' ? 'warning' : (asset.criticality_level == 'medium' ? 'info' : 'success')), content: asset.criticality_level|title } %}

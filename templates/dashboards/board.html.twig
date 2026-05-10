@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'dashboards' %}
 
 {% block title %}{{ 'board.title'|trans({}, 'dashboards') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -245,10 +246,7 @@
                                 content: initiative.progress ~ '%'
                             } %}
                         </div>
-                        <div class="progress progress-h-6 mb-3">
-                            <div class="progress-bar bg-{% if initiative.status == 'on_track' %}success{% elseif initiative.status == 'at_risk' %}warning{% else %}danger{% endif %}"
-                                 style="width: {{ initiative.progress }}%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: initiative.progress, tone: initiative.status == 'on_track' ? 'success' : (initiative.status == 'at_risk' ? 'warning' : 'danger') }) }}
                         {% endfor %}
                     {% else %}
                         {{ _fa_empty_state.render({

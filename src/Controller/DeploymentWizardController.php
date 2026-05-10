@@ -32,6 +32,7 @@ use App\Service\IndustryBaselineApplier;
 use App\Service\EnvironmentWriter;
 use App\Service\ModuleConfigurationService;
 use App\Service\RestoreService;
+use App\Service\Setup\SetupIndustryPresetService;
 use App\Service\Setup\SetupJobStatusService;
 use App\Service\SystemRequirementsChecker;
 use Doctrine\ORM\EntityManagerInterface;
@@ -70,6 +71,7 @@ class DeploymentWizardController extends AbstractController
         private readonly \Symfony\Bundle\SecurityBundle\Security $security,
         private readonly IndustryBaselineRepository $industryBaselineRepository,
         private readonly IndustryBaselineApplier $industryBaselineApplier,
+        private readonly SetupIndustryPresetService $industryPresetService,
     ) {
     }
     /**
@@ -1170,7 +1172,8 @@ class DeploymentWizardController extends AbstractController
 
                 $this->addFlash('success', $this->translator->trans('setup.organisation.info_saved'));
 
-                return $this->redirectToRoute('setup_step7_modules');
+                // V4-EF-1: Offer Industry-Preset Express-Path before manual module selection.
+                return $this->redirectToRoute('setup_industry_preset');
             } catch (Exception $e) {
                 $this->addFlash('error', $this->translator->trans('setup.organisation.info_failed') . ': ' . $e->getMessage());
                 // Turbo requires redirect after POST
@@ -1189,6 +1192,81 @@ class DeploymentWizardController extends AbstractController
 
         return $response;
     }
+    /**
+     * V4-EF-1 — Industry-Preset Express-Path (between organisation-info and modules).
+     *
+     * Tag-1-Onboarding-Bruch-Fix: Lets the user pick a curated industry preset
+     * (e.g. "Deutscher Mittelstand mit NIS2", "SaaS-Startup ISO 27001") instead
+     * of manually clicking through module + framework selection. The chosen
+     * preset is applied to the wizard SESSION (not the tenant — tenant does not
+     * exist yet during setup) and forwards directly to step9 base-data.
+     *
+     * Skipping this screen continues the manual flow via step7-modules.
+     */
+    #[Route('/setup/industry-preset', name: 'setup_industry_preset')]
+    public function industryPreset(SessionInterface $session): Response
+    {
+        if ($guard = $this->guardPostSetup()) { return $guard; }
+
+        // Same prerequisites as step7 — admin user must exist, requirements OK.
+        if ($session->get('setup_backup_restored')) {
+            return $this->redirectToRoute('setup_step11_complete');
+        }
+        if (!$this->systemRequirementsChecker->isSystemReady()) {
+            $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements'));
+            return $this->redirectToRoute('setup_step1_requirements');
+        }
+        if (!$session->get('setup_admin_created')) {
+            $this->addFlash('error', $this->translator->trans('setup.error.create_admin_first'));
+            return $this->redirectToRoute('setup_step4_admin_user');
+        }
+
+        $presets = $this->industryPresetService->listPresets();
+
+        return $this->render('setup/industry_preset.html.twig', [
+            'presets' => $presets,
+        ]);
+    }
+
+    /**
+     * V4-EF-1 — Apply selected preset and forward into the flow.
+     * If preset == "skip", continues with manual module-selection (step7).
+     */
+    #[Route('/setup/industry-preset/apply', name: 'setup_industry_preset_apply', methods: ['POST'])]
+    public function industryPresetApply(Request $request, SessionInterface $session): Response
+    {
+        if ($guard = $this->guardPostSetup()) { return $guard; }
+
+        $token = (string) $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('setup_industry_preset', $token)) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('setup_industry_preset');
+        }
+
+        $presetId = (string) $request->request->get('preset', '');
+
+        if ($presetId === '' || $presetId === 'skip') {
+            // Manual path — clear any previous preset state so step7 starts fresh.
+            $this->industryPresetService->clearSession($session);
+            return $this->redirectToRoute('setup_step7_modules');
+        }
+
+        $applied = $this->industryPresetService->applyToSession($presetId, $session);
+        if ($applied === null) {
+            $this->addFlash('error', $this->translator->trans('setup.preset.error.unknown'));
+            return $this->redirectToRoute('setup_industry_preset');
+        }
+
+        $this->addFlash('success', $this->translator->trans('setup.preset.applied', [
+            '%modules%' => count($applied['modules']),
+            '%frameworks%' => count($applied['frameworks']),
+        ]));
+
+        // Express-Path: skip step7 (modules) + step8 (frameworks) — both already
+        // populated in the session. User lands directly on step9 base-data.
+        return $this->redirectToRoute('setup_step9_base_data');
+    }
+
     /**
      * Step 1: System Requirements Check
      * This is the first step - checks if system meets minimum requirements

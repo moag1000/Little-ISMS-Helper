@@ -191,9 +191,9 @@
     {% if category.gaps|length > 0 %}
     {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
         {% block card_header %}
-            <div class="card-header bg-danger bg-opacity-10">
-                <h2 class="card-title h5 mb-0 text-danger">
-                    <i class="fa-icon fa-icon--ui-flag me-2" aria-hidden="true"></i>{{ 'wizard.gaps_to_address'|trans({}, 'wizard') }}
+            <div class="card-header">
+                <h2 class="card-title h5 mb-0">
+                    <i class="fa-icon fa-icon--ui-flag text-danger me-2" aria-hidden="true"></i>{{ 'wizard.gaps_to_address'|trans({}, 'wizard') }}
                 </h2>
             </div>
         {% endblock %}

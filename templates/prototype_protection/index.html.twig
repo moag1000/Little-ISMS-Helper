@@ -66,64 +66,62 @@
                     message: 'prototype_protection.empty.message'|trans({}, 'prototype_protection')
                 } %}
             {% else %}
-                <div class="table-responsive">
-                    <table class="table table-sm align-middle">
-                        <thead>
-                            <tr>
-                                <th scope="col">{{ 'prototype_protection.field.title'|trans({}, 'prototype_protection') }}</th>
-                                <th scope="col">{{ 'prototype_protection.field.status'|trans({}, 'prototype_protection') }}</th>
-                                <th scope="col">{{ 'prototype_protection.field.tisax_level'|trans({}, 'prototype_protection') }}</th>
-                                <th scope="col">{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</th>
-                                <th scope="col">{{ 'prototype_protection.field.overall_result'|trans({}, 'prototype_protection') }}</th>
-                                <th scope="col">{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for a in assessments %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ path('app_prototype_protection_show', {id: a.id}) }}">{{ a.title }}</a>
-                                        {% if a.supplier %}
-                                            <div class="small text-muted">{{ a.supplier.name }}</div>
-                                        {% endif %}
-                                    </td>
-                                    <td>
+                {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.title'|trans({}, 'prototype_protection') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.status'|trans({}, 'prototype_protection') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.tisax_level'|trans({}, 'prototype_protection') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.assessment_date'|trans({}, 'prototype_protection') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.overall_result'|trans({}, 'prototype_protection') }}</th>
+                            <th scope="col" class="fa-table__th">{{ 'prototype_protection.field.next_assessment_due'|trans({}, 'prototype_protection') }}</th>
+                            <th class="fa-table__th fa-table__th--actions"></th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for a in assessments %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">
+                                    <a href="{{ path('app_prototype_protection_show', {id: a.id}) }}">{{ a.title }}</a>
+                                    {% if a.supplier %}
+                                        <div class="small text-muted">{{ a.supplier.name }}</div>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% include '_components/_badge.html.twig' with {
+                                        variant: status_variant[a.status] ?? 'secondary',
+                                        content: ('prototype_protection.status.' ~ a.status)|trans({}, 'prototype_protection')
+                                    } %}
+                                </td>
+                                <td class="fa-table__cell">{{ a.tisaxLevel ?? '—' }}</td>
+                                <td class="fa-table__cell">{{ a.assessmentDate ? a.assessmentDate|date('d.m.Y') : '—' }}</td>
+                                <td class="fa-table__cell">
+                                    {% if a.overallResult %}
                                         {% include '_components/_badge.html.twig' with {
-                                            variant: status_variant[a.status] ?? 'secondary',
-                                            content: ('prototype_protection.status.' ~ a.status)|trans({}, 'prototype_protection')
+                                            variant: result_variant[a.overallResult] ?? 'secondary',
+                                            content: ('prototype_protection.result.' ~ a.overallResult)|trans({}, 'prototype_protection')
                                         } %}
-                                    </td>
-                                    <td>{{ a.tisaxLevel ?? '—' }}</td>
-                                    <td>{{ a.assessmentDate ? a.assessmentDate|date('d.m.Y') : '—' }}</td>
-                                    <td>
-                                        {% if a.overallResult %}
-                                            {% include '_components/_badge.html.twig' with {
-                                                variant: result_variant[a.overallResult] ?? 'secondary',
-                                                content: ('prototype_protection.result.' ~ a.overallResult)|trans({}, 'prototype_protection')
-                                            } %}
-                                        {% else %}
-                                            <span class="text-muted">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if a.nextAssessmentDue %}
-                                            {{ a.nextAssessmentDue|date('d.m.Y') }}
-                                        {% else %}
-                                            <span class="text-muted">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-end">
-                                        <a href="{{ path('app_prototype_protection_edit', {id: a.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                            <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% if a.nextAssessmentDue %}
+                                        {{ a.nextAssessmentDue|date('d.m.Y') }}
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--actions">
+                                    <a href="{{ path('app_prototype_protection_edit', {id: a.id}) }}"
+                                       class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         {% endblock %}
     {% endembed %}

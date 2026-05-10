@@ -48,6 +48,9 @@ class QuickFixController extends AbstractController
         }
 
         $pendingCount = 0;
+        $pendingNames = [];
+        $pendingFsCount = 0;
+        $pendingFsNames = [];
         $driftCount = 0;
         $driftStatements = [];
         $driftDestructive = [];
@@ -55,9 +58,16 @@ class QuickFixController extends AbstractController
         try {
             $status = $maintenance->getMaintenanceStatus();
             $pendingCount = (int) ($status['migration_status']['pending'] ?? 0);
+            $pendingNames = $status['migration_status']['names'] ?? [];
             $driftCount = (int) ($status['schema_drift']['count'] ?? 0);
             $driftStatements = $status['schema_drift']['statements'] ?? [];
             $driftDestructive = $status['schema_drift']['destructive'] ?? [];
+
+            // Second source: file-system-discovered pending migrations
+            // (the same list SchemaHealthService uses to gate reconcile).
+            // Surface the count when it diverges from Doctrine's plan.
+            $pendingFsNames = $maintenance->listPendingMigrationVersionsFromFileSystem();
+            $pendingFsCount = count($pendingFsNames);
         } catch (\Throwable $e) {
             $errorMessage = $e->getMessage();
         }
@@ -88,6 +98,9 @@ class QuickFixController extends AbstractController
 
         $response = $this->render('quick_fix/index.html.twig', [
             'pending_count' => $pendingCount,
+            'pending_names' => $pendingNames,
+            'pending_fs_count' => $pendingFsCount,
+            'pending_fs_names' => $pendingFsNames,
             'drift_count' => $driftCount,
             'drift_statements' => $driftStatements,
             'drift_destructive' => $driftDestructive,
@@ -206,7 +219,37 @@ class QuickFixController extends AbstractController
             return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
         }
 
+        // First attempt: standard reconcile (will block on pending_migrations
+        // if SchemaHealthService sees file-system-discovered migrations that
+        // haven't run yet).
         $result = $maintenance->reconcileSchema('quick-fix');
+
+        // Auto-recovery: if blocked by pending_migrations, try to apply them
+        // via the Doctrine MigrationPlanCalculator first (which may differ
+        // from SchemaHealth's file-system-list — see CLAUDE.md pitfall #6
+        // PREPARE/EXECUTE silently-failing migrations leave file/DB-list
+        // inconsistent). After applying, retry reconcile with bypass=true.
+        if (!$result['success'] && ($result['blocked'] ?? null) === 'pending_migrations') {
+            $applyResult = $maintenance->executePendingMigrations('quick-fix');
+            if ($applyResult['success']) {
+                // Retry with bypass — the file-system-list may still hold
+                // entries for migrations that recorded as executed but
+                // never ran their DDL. The user already opted-in via
+                // checkbox if there's destructive drift.
+                $result = $maintenance->reconcileSchema('quick-fix', true);
+            } else {
+                $diagnosis = $applyResult['diagnosis'] ?? null;
+                $diagnosisMsg = (is_array($diagnosis) && ($diagnosis['category'] ?? 'unknown') !== 'unknown')
+                    ? sprintf('[%s] %s', $diagnosis['category'], $diagnosis['suggested_action'] ?? $diagnosis['message'] ?? '')
+                    : ($applyResult['error'] ?? 'unknown error');
+                $this->addFlash('error', sprintf(
+                    'Reconcile blockiert: %d pending Migration(en) — Apply fehlgeschlagen: %s',
+                    count($maintenance->listPendingMigrationVersionsFromFileSystem()),
+                    $diagnosisMsg,
+                ));
+                return new RedirectResponse($this->generateUrl('app_quick_fix_index'));
+            }
+        }
 
         if (!$result['success']) {
             $this->addFlash('error', sprintf('Schema-Reconcile fehlgeschlagen: %s', $result['error'] ?? ($result['blocked'] ?? 'unbekannter Fehler')));

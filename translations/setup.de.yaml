@@ -391,6 +391,34 @@ setup:
         import_selected: 'Ausgewählte Daten importieren'
         no_data_available: 'Keine Beispieldaten verfügbar.'
 
+    # V4-EF-1: Industry-Preset Express-Path (between organisation-info and modules).
+    preset:
+        title: 'Branchen-Preset wählen — Setup-Wizard'
+        header: 'Express-Setup: Branchen-Preset'
+        intro: 'Spar dir das manuelle Klicken. Ich aktiviere passende Module + Frameworks in einem Schritt.'
+        info:
+            title: 'Was passiert hier?'
+            message: 'Ein Preset bündelt typische Module und Compliance-Frameworks für dein Branchen-Profil. Du kannst alles später noch anpassen — aber so kommst du in 1 Schritt statt 5 zum Ziel.'
+        section:
+            curated: 'Kuratierte Branchen-Profile'
+        stats:
+            modules: '%count% Module'
+            frameworks: '%count% Frameworks'
+            controls: '%count% Initial-Controls'
+            documents: '%count% Vorlagen'
+        includes: 'Enthält'
+        skip:
+            title: 'Lieber manuell konfigurieren'
+            description: 'Klick dich Schritt für Schritt durch Module + Frameworks. Volle Kontrolle, etwas mehr Zeit.'
+        actions:
+            apply: 'Preset anwenden & weiter'
+        applied: 'Preset angewendet: %modules% Module und %frameworks% Frameworks vorausgewählt.'
+        busy: 'Wende Preset an…'
+        aria:
+            group: 'Branchen-Preset auswählen'
+        error:
+            unknown: 'Unbekanntes Preset. Bitte erneut auswählen.'
+
     # Step 11: Complete
     complete:
         title: 'Setup abgeschlossen - Deployment Wizard'

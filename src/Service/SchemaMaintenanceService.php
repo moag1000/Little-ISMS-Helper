@@ -188,6 +188,19 @@ class SchemaMaintenanceService
     }
 
     /**
+     * Returns file-system-discovered pending-migration list (same source
+     * SchemaHealthService::applyUpdate() gates on). Surfaces the count to
+     * the QuickFix UI even when the Doctrine MigrationPlanCalculator
+     * reports 0 (file/DB-list discrepancy).
+     *
+     * @return list<string>
+     */
+    public function listPendingMigrationVersionsFromFileSystem(): array
+    {
+        return $this->schemaHealthService->listPendingMigrationVersions();
+    }
+
+    /**
      * Returns pending migration class names sorted by version. Tolerates a
      * Categorise a Doctrine-Migrations error and emit a human-readable
      * suggestion the operator can act on. Patterns observed in production:

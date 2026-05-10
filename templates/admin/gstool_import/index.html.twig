@@ -123,26 +123,25 @@
                     <div class="tab-content">
 
                     <div class="tab-pane fade show active" id="pane-assets" role="tabpanel">
-                    <div class="table-responsive">
-                        <table class="table table-sm mb-0">
-                            <thead>
-                                <tr>
-                                    <th>{{ 'gstool_import.result.line'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.result.action'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.result.gstool_id'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.result.name'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.result.asset_type'|trans({}, 'gstool_import') }}</th>
-                                    <th class="text-end">C</th>
-                                    <th class="text-end">I</th>
-                                    <th class="text-end">A</th>
-                                    <th>{{ 'gstool_import.result.error'|trans({}, 'gstool_import') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.result.line'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.result.action'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.result.gstool_id'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.result.name'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.result.asset_type'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">C</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">I</th>
+                                <th scope="col" class="fa-table__th fa-table__th--num">A</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.result.error'|trans({}, 'gstool_import') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
                             {% for row in result.rows %}
-                                <tr>
-                                    <td class="text-muted small">{{ row.line ?? '' }}</td>
-                                    <td>
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell text-muted small">{{ row.line ?? '' }}</td>
+                                    <td class="fa-table__cell">
                                         {% if row.action == 'new' %}
                                             <span class="fa-status-pill fa-status-pill--success">{{ 'gstool_import.action.new'|trans({}, 'gstool_import') }}</span>
                                         {% elseif row.action == 'update' %}
@@ -153,18 +152,17 @@
                                             <span class="fa-status-pill fa-status-pill--neutral">{{ row.action }}</span>
                                         {% endif %}
                                     </td>
-                                    <td><code>{{ row.id ?? '' }}</code></td>
-                                    <td>{{ row.name ?? '' }}</td>
-                                    <td><code class="small">{{ row.assetType ?? '' }}</code></td>
-                                    <td class="text-end">{{ row.confidentiality ?? '–' }}</td>
-                                    <td class="text-end">{{ row.integrity ?? '–' }}</td>
-                                    <td class="text-end">{{ row.availability ?? '–' }}</td>
-                                    <td class="text-danger small">{{ row.error ?? '' }}</td>
+                                    <td class="fa-table__cell"><code>{{ row.id ?? '' }}</code></td>
+                                    <td class="fa-table__cell">{{ row.name ?? '' }}</td>
+                                    <td class="fa-table__cell"><code class="small">{{ row.assetType ?? '' }}</code></td>
+                                    <td class="fa-table__cell fa-table__cell--num">{{ row.confidentiality ?? '–' }}</td>
+                                    <td class="fa-table__cell fa-table__cell--num">{{ row.integrity ?? '–' }}</td>
+                                    <td class="fa-table__cell fa-table__cell--num">{{ row.availability ?? '–' }}</td>
+                                    <td class="fa-table__cell text-danger small">{{ row.error ?? '' }}</td>
                                 </tr>
                             {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                     </div>
 
                     {% if result.bausteine_rows is defined and result.bausteine_rows|length > 0 %}
@@ -172,33 +170,32 @@
                     <div class="fa-alert fa-alert--info mx-3 mt-3 mb-0 small">
                         {{ 'gstool_import.bausteine.note'|trans({}, 'gstool_import') }}
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-sm mb-0">
-                            <thead>
-                                <tr>
-                                    <th>{{ 'gstool_import.bausteine.legacy_id'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.bausteine.title_old'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.bausteine.kompendium_2023'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.bausteine.title_new'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.bausteine.zielobjekt'|trans({}, 'gstool_import') }}</th>
-                                    <th>{{ 'gstool_import.bausteine.status'|trans({}, 'gstool_import') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    {% embed '_components/_fa_table.html.twig' with { compact: true } %}
+                        {% block table_head %}
+                            <tr>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.bausteine.legacy_id'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.bausteine.title_old'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.bausteine.kompendium_2023'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.bausteine.title_new'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.bausteine.zielobjekt'|trans({}, 'gstool_import') }}</th>
+                                <th scope="col" class="fa-table__th">{{ 'gstool_import.bausteine.status'|trans({}, 'gstool_import') }}</th>
+                            </tr>
+                        {% endblock %}
+                        {% block table_body %}
                             {% for r in result.bausteine_rows %}
-                                <tr>
-                                    <td><code>{{ r.legacy_id }}</code></td>
-                                    <td class="small">{{ r.title_old ?? '–' }}</td>
-                                    <td>
+                                <tr class="fa-table__row">
+                                    <td class="fa-table__cell"><code>{{ r.legacy_id }}</code></td>
+                                    <td class="fa-table__cell small">{{ r.title_old ?? '–' }}</td>
+                                    <td class="fa-table__cell">
                                         {% if r.kompendium_2023_id %}
                                             <code class="text-success">{{ r.kompendium_2023_id }}</code>
                                         {% else %}
                                             <span class="text-danger small">{{ 'gstool_import.bausteine.unmapped'|trans({}, 'gstool_import') }}</span>
                                         {% endif %}
                                     </td>
-                                    <td class="small">{{ r.title_new ?? '–' }}</td>
-                                    <td><code class="small">{{ r.zielobjekt ?? '–' }}</code></td>
-                                    <td>
+                                    <td class="fa-table__cell small">{{ r.title_new ?? '–' }}</td>
+                                    <td class="fa-table__cell"><code class="small">{{ r.zielobjekt ?? '–' }}</code></td>
+                                    <td class="fa-table__cell">
                                         {% set s = r.status %}
                                         <span class="badge bg-{{ s == 'direct' ? 'success' : s == 'split' ? 'warning' : s == 'merged' ? 'info' : s == 'removed' ? 'danger' : s == 'bcm' ? 'primary' : 'secondary' }}">
                                             {{ s }}
@@ -207,9 +204,8 @@
                                     </td>
                                 </tr>
                             {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                     </div>
                     {% endif %}
 

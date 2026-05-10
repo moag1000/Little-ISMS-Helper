@@ -391,6 +391,34 @@ setup:
         import_selected: 'Import Selected Data'
         no_data_available: 'No sample data available.'
 
+    # V4-EF-1: Industry-Preset Express-Path (between organisation-info and modules).
+    preset:
+        title: 'Pick Industry Preset — Setup Wizard'
+        header: 'Express Setup: Industry Preset'
+        intro: 'Skip the manual clicks. I''ll activate the right modules + frameworks in one go.'
+        info:
+            title: 'What happens here?'
+            message: 'A preset bundles typical modules and compliance frameworks for your industry profile. You can adjust everything later — but this gets you to the finish line in 1 step instead of 5.'
+        section:
+            curated: 'Curated Industry Profiles'
+        stats:
+            modules: '%count% modules'
+            frameworks: '%count% frameworks'
+            controls: '%count% initial controls'
+            documents: '%count% templates'
+        includes: 'Includes'
+        skip:
+            title: 'Configure manually instead'
+            description: 'Walk through modules + frameworks step by step. Full control, slightly more time.'
+        actions:
+            apply: 'Apply preset & continue'
+        applied: 'Preset applied: %modules% modules and %frameworks% frameworks pre-selected.'
+        busy: 'Applying preset…'
+        aria:
+            group: 'Select industry preset'
+        error:
+            unknown: 'Unknown preset. Please choose again.'
+
     # Step 11: Complete
     complete:
         title: 'Setup Complete - Deployment Wizard'
