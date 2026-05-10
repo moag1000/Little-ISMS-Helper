@@ -1086,3 +1086,16 @@ fulfillment:
         responsible_person: 'Kontaktperson (Personenstamm) als Verantwortliche'
         responsible_deputy_persons: 'Stellvertretende Kontaktpersonen für diesen Anforderungspunkt'
         attestation_owner_person: 'Person, die die jaehrliche Konformitaets-Attestierung formal abzeichnet. Unabhaengig vom taeglichen Verantwortlichen — typischerweise CISO, Compliance-Officer oder externer Auditor.'
+
+    # V3 B6 / EF-4: Inverse-Coverage Impact-Analyse
+    coverage:
+        impact:
+            title:
+                asset: 'Compliance-Impact dieses Assets'
+                control: 'Compliance-Impact dieses Controls'
+                risk: 'Compliance-Impact dieses Risks'
+            help:
+                asset: 'Wenn dieses Asset deaktiviert oder neu klassifiziert wird, betrifft das die folgenden Framework-Anforderungen.'
+                control: 'Wenn dieses Control geändert oder deaktiviert wird, betrifft das die folgenden Framework-Anforderungen — sie verlieren u.U. ihre Erfüllung.'
+                risk: 'Dieses Risk steht in Bezug zu den folgenden Framework-Anforderungen (über gemappte Controls bzw. data-source mapping).'
+            view_modal: 'Details anzeigen'

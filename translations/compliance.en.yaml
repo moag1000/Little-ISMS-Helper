@@ -1084,5 +1084,18 @@ fulfillment:
         responsible_deputy_persons: 'Deputy contact persons for this requirement'
         attestation_owner_person: 'Person who formally signs off the yearly compliance attestation. Distinct from the day-to-day responsible owner — typically CISO, Compliance Officer, or external Auditor.'
 
+    # V3 B6 / EF-4: Inverse-Coverage Impact Analysis
+    coverage:
+        impact:
+            title:
+                asset: 'Compliance impact of this asset'
+                control: 'Compliance impact of this control'
+                risk: 'Compliance impact of this risk'
+            help:
+                asset: 'If this asset is deactivated or reclassified, it affects the following framework requirements.'
+                control: 'If this control is modified or deactivated, it affects the following framework requirements — they may lose their fulfilment.'
+                risk: 'This risk relates to the following framework requirements (via mapped controls or data-source mapping).'
+            view_modal: 'View details'
+
 nis2:
     article: Article
