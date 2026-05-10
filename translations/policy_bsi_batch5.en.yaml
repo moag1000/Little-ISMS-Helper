@@ -1,0 +1,718 @@
+policy:
+    bsi:
+        bsi_app_3_2_web_server:
+            v1:
+                title: 'Web Server Security Policy (APP.3.2)'
+                body: |-
+                    # Web Server Security Policy of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI APP.3.2 (Web Server) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic requirements mandatory, Standard requirements for normal protection needs | Cross-ref: ISO/IEC 27001:2022 Annex A.8.9, A.8.20, A.8.21, A.8.23, A.8.26 | Review interval: 12 months*
+
+                    ## 1. Purpose and Scope
+                    This policy governs the secure configuration, operation, and decommissioning of all web servers operated by {{ tenant.legal_name }} regardless of product line (e.g., Apache HTTP Server, nginx, Microsoft IIS) or deployment model (on-premises, virtualised, container, IaaS). It implements the BSI IT-Grundschutz building block APP.3.2, edition {{ bsi.kompendium_edition }}, and complements the Web Application Policy (CON.10) and the Detection Policy (DER.1).
+
+                    ## 2. Responsibilities
+                    Functional responsibility for each web server lies with the named application/platform owner. Norm conformance is owned by the ISO/CISO ({{ roles.isb.fullName }}); operational administration is performed by IT operations under the IT Administration Policy (OPS.1.1.2). Changes follow Patch & Change Management (OPS.1.1.3).
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **APP.3.2.A1 Secure web server configuration:** The web server is installed using a documented hardening profile. Default accounts and unneeded services must be disabled. Configuration baselines reference the CIS benchmark for the chosen vendor and BSI minimum standards.
+                    - **APP.3.2.A2 Protection of web server files:** File and directory permissions follow least-privilege. Configuration files are accessible only to the administration role; web content and server binaries reside in separate paths.
+                    - **APP.3.2.A3 Securing database access:** Backend database connections use dedicated service accounts with minimal rights. Credentials are stored in the secrets vault; clear-text passwords in configuration files are prohibited.
+                    - **APP.3.2.A4 Protect authentication:** Authentication mechanisms follow the Crypto Concept (CON.1) and exclusively use procedures per BSI TR-02102. Brute-force protection (rate limiting, account lockout) is mandatory.
+                    - **APP.3.2.A5 Logging of security-relevant events:** Access, error, and security events are captured and forwarded to the central log collector per OPS.1.1.5.
+                    - **APP.3.2.A6 Web server decommissioning:** Before decommissioning, configuration and content data are securely deleted per the Deletion Policy (CON.6); storage media are physically handled per BSI deletion standards.
+                    - **APP.3.2.A7 Minimum TLS configuration:** Only TLS 1.2 and TLS 1.3 with cipher suites approved by BSI TR-02102-2 are used. Certificates are obtained from a trusted PKI; HSTS is enabled.
+
+                    ## 4. Standard Requirements (Normal Protection Need)
+                    - **APP.3.2.A11 TLS encryption:** All client communication is encrypted; HTTP requests are redirected to HTTPS. Mixed content is prohibited.
+                    - Suitable web server selection: vendor support, patch frequency, hardening options, documentation quality.
+                    - Separation of functions and content across applications with different protection needs (separate instances or tenant isolation).
+                    - Reverse proxy with Web Application Firewall covering at minimum the OWASP Top 10 categories.
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    For high or very high protection needs: redundancy at application and infrastructure layer, geographic distribution, continuous DAST scanning, bug-bounty programmes, and independent verification of TLS configuration against BSI TR-02102-2.
+
+                    ## 6. Cross-References
+                    - CON.1 Crypto Concept (TLS / PKI)
+                    - CON.10 Web Applications (application logic, input validation)
+                    - OPS.1.1.3 Patch & Change Management
+                    - OPS.1.1.5 Logging
+                    - DER.1 Detection (SIEM integration)
+                    - NET.3.2 Firewall (perimeter protection)
+                    - ISO/IEC 27017 (cloud web servers)
+
+                    ## 7. Review and Approval
+                    Reviewed at least every 12 months and on event. Approval chain: {{ approval.chain }}.
+
+        bsi_app_3_4_samba:
+            v1:
+                title: 'Samba File and Print Server Policy (APP.3.4)'
+                body: |-
+                    # Samba File and Print Server Policy of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI APP.3.4 (Samba) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic requirements mandatory | Cross-ref: ISO/IEC 27001:2022 Annex A.5.15, A.8.2, A.8.20 | Review interval: 24 months*
+
+                    ## 1. Purpose and Scope
+                    This policy governs the use of Samba for file and print service delivery in heterogeneous environments at {{ tenant.legal_name }}. It covers Samba servers operated as domain members, standalone servers, or Active Directory domain-controller equivalents.
+
+                    ## 2. Responsibilities
+                    Operational administration is owned by IT operations. Functional approval of new shares is owned by the data owner; norm conformance is owned by the ISO/CISO ({{ roles.isb.fullName }}).
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **APP.3.4.A1 Planning the Samba deployment:** A documented deployment plan precedes go-live, defining authentication mechanism (Kerberos/AD preferred), protocol versions, tenant isolation, and access model.
+                    - **APP.3.4.A2 Secure base configuration:** SMB1 must be disabled without exception; only SMB2/SMB3 with signing and encryption are permitted. Anonymous logins (null sessions) are prohibited.
+                    - **APP.3.4.A3 Authentication hardening:** NTLM versions before NTLMv2 are disabled. Where feasible, Kerberos is used; passwords follow the IAM Policy (ORP.4).
+                    - **APP.3.4.A4 Restrictive access rights:** Shares follow need-to-know; default shares (ADMIN$, IPC$) are restricted or disabled. Permissions are recertified at least semi-annually.
+                    - **APP.3.4.A5 Secure configuration of Samba services:** Unneeded modules and features are disabled; configuration changes are documented per Change Management.
+                    - **APP.3.4.A6 Secure integration with external directory services:** LDAP integrations use LDAPS only; service accounts have minimal rights.
+                    - **APP.3.4.A7 Backup of Samba servers:** Backup follows the Backup Concept (CON.3); configuration files, ACLs, and data are backed up separately.
+
+                    ## 4. Standard Requirements
+                    - SMB3 encryption for all SMB connections
+                    - Audit logging for accesses and permission changes
+                    - Separation of user and administration networks for SMB traffic
+                    - Avoid using Samba as AD domain controller where possible (complexity)
+
+                    ## 5. Cross-References
+                    - ORP.4 Identity & Access Management
+                    - OPS.1.1.2 IT Administration (Privileged Access)
+                    - CON.3 Backup
+                    - NET.1.1 Network Architecture (SMB segmentation)
+                    - DER.1 Detection (log integration)
+
+                    ## 6. Review and Approval
+                    Reviewed at least every 24 months and on material Samba architecture changes. Approval chain: {{ approval.chain }}.
+
+        bsi_app_4_3_relational_database:
+            v1:
+                title: 'Database Security Policy (APP.4.3)'
+                body: |-
+                    # Database Security Policy of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI APP.4.3 (Relational Database Systems) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic requirements mandatory, Standard requirements for normal protection needs | Cross-ref: ISO/IEC 27001:2022 Annex A.8.2, A.8.13, A.8.15, A.8.24 | GDPR Art. 32 (TOMs) | Review interval: 12 months*
+
+                    ## 1. Purpose and Scope
+                    This policy governs procurement, configuration, operation, and decommissioning of relational database management systems (RDBMS) at {{ tenant.legal_name }}. It covers commercial and open-source systems (e.g., Oracle, PostgreSQL, MySQL/MariaDB, MS SQL Server, IBM Db2) on-premises and as Database-as-a-Service.
+
+                    ## 2. Responsibilities
+                    Operational DBA work is performed by IT operations. Data ownership lies with the application owner. DPO involvement ({{ roles.dpo.fullName }}) is mandatory for databases storing personal data per GDPR Art. 30.
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **APP.4.3.A1 Database security policy:** This policy fulfils the requirement.
+                    - **APP.4.3.A2 DBMS installation:** Hardened install profile; default schemas, users, and sample databases are removed or disabled.
+                    - **APP.4.3.A3 Base hardening:** Default passwords are changed immediately; unnecessary network listeners are disabled; local authentication is restricted to emergencies.
+                    - **APP.4.3.A4 Governed administration procedures:** Schema, permission, and configuration changes follow Change Management (OPS.1.1.3) and are executed only via documented procedures.
+                    - **APP.4.3.A5 Restrictive handling of database connections:** Applications connect with dedicated service accounts and minimal rights; direct end-user access to production databases is prohibited.
+                    - **APP.4.3.A6 New database users:** Created only on documented request, with DBA and data-owner approval.
+                    - **APP.4.3.A7 Authorisation concept for database access:** Role-based access control (RBAC) with semi-annual recertification per ORP.4. Privileged roles (DBA, sysadmin) are separated from application roles.
+                    - **APP.4.3.A8 Database backup:** Backup per the Backup Concept (CON.3); restore tests at least annually. Transaction log backups for high-availability protection needs.
+
+                    ## 4. Standard Requirements
+                    - **APP.4.3.A11 Administrator training:** DBAs receive product- and security-specific training per ORP.3.
+                    - Encryption of sensitive columns (Transparent Data Encryption or application-side) per the Crypto Concept (CON.1).
+                    - TLS encryption of all database connections.
+                    - Pseudonymisation/masking in test and development environments (GDPR Art. 32 (1)(a)).
+                    - Database-specific audit logging (login attempts, schema changes, privileged operations) integrated with SIEM (DER.1).
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    High availability (replication, failover clusters), continuous patch monitoring against BSI vulnerability advisories, separated hardware and network stack for critical databases, regular independent DB audits.
+
+                    ## 6. Data Protection
+                    For personal data processing under GDPR, DPO involvement is mandatory (GDPR Art. 39 (1)(a)). Deletion concepts follow the Deletion Policy (CON.6); blocking and deletion routines are documented and verifiably executed. Data subject access and rectification requests must be technically supportable (GDPR Art. 15-17).
+
+                    ## 7. Cross-References
+                    - CON.1 Crypto Concept (TDE, connection encryption)
+                    - CON.3 Backup
+                    - CON.6 Deletion / Destruction
+                    - ORP.4 Identity & Access Management
+                    - OPS.1.1.3 Patch & Change Management
+                    - OPS.1.1.5 Logging
+                    - DER.1 Detection
+
+                    ## 8. Review and Approval
+                    Reviewed at least every 12 months and on DB migration projects and major upgrades. Approval chain: {{ approval.chain }}.
+
+        bsi_app_5_3_email:
+            v1:
+                title: 'Email Security Policy (APP.5.3)'
+                body: |-
+                    # Email Security Policy of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI APP.5.3 (General Email Client and Server) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic requirements mandatory | Cross-ref: ISO/IEC 27001:2022 Annex A.5.14, A.8.20, A.8.23 | GDPR Art. 32 | Review interval: 12 months*
+
+                    ## 1. Purpose and Scope
+                    This policy governs the secure operation of email clients and servers at {{ tenant.legal_name }} as well as user behaviour with email. It covers on-premises mail servers (e.g., MS Exchange, Postfix, Dovecot) and SaaS email subscriptions.
+
+                    ## 2. Responsibilities
+                    Operational administration is owned by IT operations; functional oversight by the ISO/CISO ({{ roles.isb.fullName }}). For mail servers handling personal data, DPO involvement ({{ roles.dpo.fullName }}) is mandatory.
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **APP.5.3.A1 Email security policy:** This policy fulfils the requirement.
+                    - **APP.5.3.A2 Definitions for email use:** Business and private use are clearly delineated; private use is permitted only as agreed in the works agreement.
+                    - **APP.5.3.A3 Training on email client security:** Users are trained in safe email handling (phishing recognition, attachment handling, S/MIME usage) per ORP.3.
+                    - **APP.5.3.A4 Secure email client configuration:** Automatic display of active content (HTML, JavaScript, external images) is suppressed; attachments are not auto-executed.
+                    - **APP.5.3.A5 Malware protection:** Mail server scans inbound and outbound messages per OPS.1.1.4; active content is filtered based on risk assessment.
+                    - **APP.5.3.A6 Spam protection:** Spam filter with continuously updated detection rules; quarantine workflow with self-service release by the recipient.
+                    - **APP.5.3.A7 Encryption of mail-client-to-mail-server connections:** SMTP submission, IMAP, and POP3 only over TLS per BSI TR-02102-2.
+                    - **APP.5.3.A8 Secure mail server configuration:** Open relay must be excluded; SMTP-Auth is mandatory; SPF, DKIM, and DMARC are configured and enforced.
+
+                    ## 4. Standard Requirements
+                    - End-to-end encryption (S/MIME or OpenPGP) for protected content per classification (ORP.1)
+                    - Sandboxing of suspicious attachments
+                    - DMARC reject policy after pilot phase
+                    - Archiving per statutory retention (HGB, AO) under GDPR
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    Mandatory S/MIME signature for all outbound business email, geographic separation of mail server sites, hardware security module for key management, regular independent penetration testing.
+
+                    ## 6. User Behaviour
+                    Users must report suspicious email via the defined channel ({{ awareness.phishing_report_address }}), never transmit credentials by email, and send protected information only encrypted.
+
+                    ## 7. Cross-References
+                    - ORP.1 Organisation (classification)
+                    - ORP.3 Awareness
+                    - CON.1 Crypto Concept (S/MIME, TLS)
+                    - OPS.1.1.4 Malware Protection
+                    - DER.1 Detection
+
+                    ## 8. Data Protection
+                    Email content and connection data are personal data per GDPR. Analysis is permitted only within the scope of the works agreement; seizure/analysis in forensic measures follows the IT Forensics Policy (DER.2.2) with DPO involvement.
+
+                    ## 9. Review and Approval
+                    Reviewed at least every 12 months. Approval chain: {{ approval.chain }}.
+
+        bsi_sys_1_1_general_server:
+            v1:
+                title: 'General Server Policy (SYS.1.1)'
+                body: |-
+                    # General Server Policy of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI SYS.1.1 (General Server) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic requirements mandatory, Standard requirements for normal protection needs | Cross-ref: ISO/IEC 27001:2022 Annex A.8.1, A.8.5, A.8.8, A.8.9, A.8.18 | Review interval: 12 months*
+
+                    ## 1. Purpose and Scope
+                    This policy governs baseline security requirements for all server systems at {{ tenant.legal_name }} regardless of operating system, form factor (physical/virtual/container), or deployment model (on-premises/IaaS). It is the umbrella over the specific OS-level building blocks SYS.1.2.2 (Windows Server), SYS.1.3 (Linux/Unix), and SYS.1.6 (Container).
+
+                    ## 2. Responsibilities
+                    Per-server functional ownership is held by the application owner; operational administration by IT operations. Privileged access follows the IT Administration Policy (OPS.1.1.2).
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **SYS.1.1.A1 Suitable installation:** Servers are installed in rooms with adequate physical protection (cross-ref INF.2). Installation in general office space is prohibited.
+                    - **SYS.1.1.A2 User authentication:** Authentication uses individual accounts per ORP.4. Shared accounts are prohibited; technical service accounts are documented and limited to system-to-system communication.
+                    - **SYS.1.1.A3 Restrictive rights assignment:** Permissions follow least-privilege; administrative rights are used only in dedicated admin sessions.
+                    - **SYS.1.1.A4 Role separation:** Functional roles (user, application admin, system admin, auditor) are organisationally and technically separated.
+                    - **SYS.1.1.A5 Interface protection:** Unneeded interfaces (USB, remote consoles, maintenance ports) are disabled or restricted.
+                    - **SYS.1.1.A6 Disable unneeded services:** All unneeded services, modules, and default accounts are removed or disabled (hardening).
+                    - **SYS.1.1.A7 Updates and patches:** Patching follows OPS.1.1.3; security-critical patches deploy within documented SLAs by severity.
+                    - **SYS.1.1.A8 Regular backup:** Backup follows CON.3; restore tested at least annually.
+                    - **SYS.1.1.A9 Use of protective software:** Malware protection per OPS.1.1.4; mandatory for servers exchanging data with untrusted networks.
+                    - **SYS.1.1.A10 Logging:** Security events logged per OPS.1.1.5 and forwarded to the central log collector.
+
+                    ## 4. Standard Requirements
+                    - Disk/volume encryption (especially for mobile use or high confidentiality protection needs)
+                    - Secure boot processes (Secure Boot, Measured Boot)
+                    - Centralised configuration management (e.g., Ansible, GPO) with version control
+                    - Configuration verification against documented hardening profile at least semi-annually
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    Hardware-based security (TPM-backed encryption), redundant deployment, continuous integrity monitoring of server configuration (e.g., file integrity monitoring), out-of-band management network.
+
+                    ## 6. Cross-References
+                    - INF.2 Data Centre and Server Room (physical)
+                    - ORP.4 IAM
+                    - OPS.1.1.2 IT Administration
+                    - OPS.1.1.3 Patch & Change Management
+                    - OPS.1.1.4 Malware Protection
+                    - OPS.1.1.5 Logging
+                    - CON.3 Backup
+                    - DER.1 Detection
+
+                    ## 7. Review and Approval
+                    Reviewed at least every 12 months and after material platform changes. Approval chain: {{ approval.chain }}.
+
+        bsi_sys_1_2_2_windows_server:
+            v1:
+                title: 'Windows Server Policy (SYS.1.2.2)'
+                body: |-
+                    # Windows Server Policy of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI SYS.1.2.2 (Windows Server 2022) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic requirements mandatory | Cross-ref: ISO/IEC 27001:2022 Annex A.8.5, A.8.8, A.8.9 | Parent: SYS.1.1 | Review interval: 12 months*
+
+                    ## 1. Purpose and Scope
+                    Concretises SYS.1.1 for Microsoft Windows Server (versions from Windows Server 2019, primarily 2022) at {{ tenant.legal_name }}. Covers domain controllers, application, database, and file servers on Windows.
+
+                    ## 2. Responsibilities
+                    Operational administration by the Windows platform operations team; functional oversight by the ISO/CISO ({{ roles.isb.fullName }}). Active Directory changes are subject to elevated change procedures.
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **SYS.1.2.2.A1 Planning the Windows Server deployment:** Before go-live, documented planning (edition choice, licensing, roles, HA concept).
+                    - **SYS.1.2.2.A2 Secure installation:** Install from trusted sources (Microsoft VLSC, signed image); minimal footprint (Server Core where possible); documented build process.
+                    - **SYS.1.2.2.A3 Secure administration:** Privileged Access Workstations for administration; tier model separating Tier 0 (DCs/AD admins), Tier 1 (server admins), Tier 2 (workstation admins). Just-in-Time administration per OPS.1.1.2.
+                    - **SYS.1.2.2.A4 Secure configuration:** Hardening per Microsoft Security Baseline and CIS Benchmark Windows Server; deviations documented and justified. SMB1 disabled; LM/NTLMv1 disabled; PowerShell ConstrainedLanguage mode where applicable.
+                    - **SYS.1.2.2.A5 Malware protection:** Microsoft Defender for Endpoint or equivalent certified anti-malware with central management per OPS.1.1.4.
+                    - **SYS.1.2.2.A6 Secure authentication:** Authentication via Kerberos; LM/NTLMv1 disabled; domain admin accounts dedicated and not for daily use; multi-factor authentication per ORP.4.
+                    - **SYS.1.2.2.A7 Auto-updates / patch management:** WSUS or Endpoint Configuration Manager with classified patch rings (pilot, validation, production); emergency patches per OPS.1.1.3.
+
+                    ## 4. Standard Requirements
+                    - BitLocker volume encryption with TPM protection
+                    - Windows Defender Application Control / AppLocker for allow-listing
+                    - Windows Event Forwarding to central log aggregation (DER.1)
+                    - LAPS (Local Administrator Password Solution) for local admin password rotation
+                    - Tiering model enforced organisationally
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    Microsoft Defender for Identity for detecting Pass-the-Hash / Pass-the-Ticket / Golden Ticket attacks, separate forest for Tier 0, Just-Enough-Administration (JEA) for PowerShell remoting, continuous AD security review (e.g., PingCastle / Purple Knight).
+
+                    ## 6. Cross-References
+                    - SYS.1.1 General Server
+                    - ORP.4 IAM (MFA, privileged accounts)
+                    - OPS.1.1.2 IT Administration (tiering, JIT)
+                    - OPS.1.1.3 Patch Management
+                    - OPS.1.1.4 Malware Protection
+                    - OPS.1.1.5 Logging
+
+                    ## 7. Review and Approval
+                    Reviewed at least every 12 months and on major version upgrades. Approval chain: {{ approval.chain }}.
+
+        bsi_sys_1_3_linux_unix_server:
+            v1:
+                title: 'Linux/Unix Server Policy (SYS.1.3)'
+                body: |-
+                    # Linux/Unix Server Policy of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI SYS.1.3 (Linux/Unix Servers) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic requirements mandatory | Cross-ref: ISO/IEC 27001:2022 Annex A.8.5, A.8.8, A.8.9, A.8.18 | Parent: SYS.1.1 | Review interval: 12 months*
+
+                    ## 1. Purpose and Scope
+                    Concretises SYS.1.1 for Linux and Unix servers (e.g., RHEL, SLES, Debian, Ubuntu LTS, AIX, Solaris) at {{ tenant.legal_name }}.
+
+                    ## 2. Responsibilities
+                    Operational administration by the Linux platform operations team; functional oversight by the ISO/CISO ({{ roles.isb.fullName }}).
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **SYS.1.3.A1 Selection of a suitable distribution:** Only distributions with active vendor or community support and a long-term patch lifecycle (e.g., RHEL, SLES, Debian Stable, Ubuntu LTS).
+                    - **SYS.1.3.A2 Careful installation:** Install from signed, verified repositories; minimal package footprint; documented build process.
+                    - **SYS.1.3.A3 Secure administration:** Administrative tasks via sudo with individual authentication; SSH root login disabled; SSH only with public-key authentication per Crypto Concept (CON.1).
+                    - **SYS.1.3.A4 Secure configuration:** Hardening per CIS Benchmark for the distribution; unneeded packages and services removed.
+                    - **SYS.1.3.A5 Secure software package installation:** Install only from signed repositories; third-party repositories pre-vetted and approved.
+                    - **SYS.1.3.A6 Protection against vulnerability exploitation:** Enable ASLR, NX, kernel module signature verification, SELinux/AppArmor in enforcing mode where applicable.
+                    - **SYS.1.3.A7 Backup:** Backup per CON.3; restore tests at least annually.
+                    - **SYS.1.3.A8 Logging:** systemd-journald / syslog-ng / rsyslog with forwarding to central log collector per OPS.1.1.5.
+                    - **SYS.1.3.A10 System integrity protection:** File integrity monitoring (e.g., AIDE, Tripwire) for critical system areas.
+
+                    ## 4. Standard Requirements
+                    - Mandatory SELinux/AppArmor enforcement
+                    - Disk encryption (LUKS) for high-confidentiality storage
+                    - Container isolation (cgroups, namespaces) for shared use
+                    - Configuration management via Ansible / Puppet / Chef with Git versioning
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    Kernel live patching, hardened kernel (e.g., grsecurity-equivalent measures), Just-in-Time sudo, eBPF-based runtime monitoring.
+
+                    ## 6. Cross-References
+                    - SYS.1.1 General Server
+                    - CON.1 Crypto Concept (SSH keys, LUKS)
+                    - OPS.1.1.2 IT Administration
+                    - OPS.1.1.3 Patch Management
+                    - OPS.1.1.5 Logging
+                    - DER.1 Detection
+
+                    ## 7. Review and Approval
+                    Reviewed at least every 12 months. Approval chain: {{ approval.chain }}.
+
+        bsi_sys_2_1_general_client:
+            v1:
+                title: 'General Client Policy (SYS.2.1)'
+                body: |-
+                    # General Client Policy of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI SYS.2.1 (General Client) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic requirements mandatory | Cross-ref: ISO/IEC 27001:2022 Annex A.5.10, A.8.1, A.8.5, A.8.7 | Review interval: 12 months*
+
+                    ## 1. Purpose and Scope
+                    Governs procurement, configuration, operation, and decommissioning of end-user devices (desktops, notebooks, thin clients) at {{ tenant.legal_name }}. Umbrella over OS-specific client building blocks like SYS.2.2.3 (Windows Client) and SYS.2.5 (Client virtualisation).
+
+                    ## 2. Responsibilities
+                    Operational administration by client operations; functional oversight by the ISO/CISO ({{ roles.isb.fullName }}).
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **SYS.2.1.A1 User authentication:** Sign-on with individual accounts per ORP.4; shared accounts prohibited.
+                    - **SYS.2.1.A2 Role separation:** Users work with unprivileged accounts; administrative tasks use separate admin accounts.
+                    - **SYS.2.1.A3 Enable auto-updates:** OS and application updates distributed automatically; emergency patches within 72h.
+                    - **SYS.2.1.A4 Regular backup:** Data backed up via central sync mechanisms or user-profile sync; local data minimised.
+                    - **SYS.2.1.A5 Malware protection:** Endpoint protection per OPS.1.1.4 with central management.
+                    - **SYS.2.1.A6 Personal firewalls:** Personal firewall enabled with restrictive default ruleset.
+                    - **SYS.2.1.A7 Interface protection:** USB mass storage controlled per the Removable Media Policy (SYS.4.5); remote connections routed via VPN concentrator.
+                    - **SYS.2.1.A8 Client inventory:** All clients in the asset inventory; inventory reconciliation at least annually.
+                    - **SYS.2.1.A9 Secure login:** Screen lock after 5 minutes inactivity; boot password for mobile devices.
+                    - **SYS.2.1.A10 Configuration management:** Central configuration via MDM or Group Policy.
+
+                    ## 4. Standard Requirements
+                    - Disk encryption (BitLocker / FileVault / LUKS) mandatory for all mobile clients
+                    - Application allow-listing (AppLocker, WDAC, Gatekeeper)
+                    - TPM 2.0 for Secure Boot and key storage
+                    - Endpoint Detection and Response (EDR) with central analysis
+                    - Clear-Desk / Clear-Screen per INF.1
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    Privileged Access Workstations for administration, virtualised browsers for risky web use, hardware-token authentication (FIDO2), continuous compliance monitoring of client configuration.
+
+                    ## 6. Cross-References
+                    - ORP.4 IAM
+                    - OPS.1.1.3 Patch Management
+                    - OPS.1.1.4 Malware Protection
+                    - SYS.4.5 Removable Media
+                    - INF.1 General Building (Clear-Desk)
+                    - DER.1 Detection (EDR)
+
+                    ## 7. Review and Approval
+                    Reviewed at least every 12 months. Approval chain: {{ approval.chain }}.
+
+        bsi_sys_4_5_storage_systems:
+            v1:
+                title: 'Removable Media Policy (SYS.4.5)'
+                body: |-
+                    # Removable Media Policy of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI SYS.4.5 (Removable Media) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic requirements mandatory | Cross-ref: ISO/IEC 27001:2022 Annex A.7.10, A.7.14, A.8.10, A.8.12, A.8.24 | GDPR Art. 32 | Review interval: 24 months*
+
+                    ## 1. Purpose and Scope
+                    Governs the handling of removable media (USB storage, external drives, optical media, memory cards) at {{ tenant.legal_name }}. Complements the Deletion Policy (CON.6) and the Foreign Travel Policy (CON.7).
+
+                    ## 2. Responsibilities
+                    Procurement is centralised through IT purchasing; inventory in asset management. The ISO/CISO ({{ roles.isb.fullName }}) owns norm conformance; for personal data, DPO involvement ({{ roles.dpo.fullName }}) is mandatory.
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **SYS.4.5.A1 User awareness:** Users are trained on safe handling per ORP.3; risks (loss, malware, exfiltration) are explicit content.
+                    - **SYS.4.5.A2 Policy for use:** This policy fulfils the requirement.
+                    - **SYS.4.5.A3 Data and information protection:** Personal or confidential data may only be transported on encrypted media; encryption per Crypto Concept (CON.1).
+                    - **SYS.4.5.A4 Malware protection:** Before connecting to a client, scan for malware per OPS.1.1.4. Auto-run is disabled.
+                    - **SYS.4.5.A5 Secure storage:** Removable media with protected data are stored in locked containers per INF.1.
+                    - **SYS.4.5.A6 Secure deletion / destruction:** On decommissioning, secure deletion per CON.6 and BSI guidance (e.g., multiple overwrite or physical destruction). Defective media destroyed via certified service providers.
+
+                    ## 4. Standard Requirements
+                    - Issue only encryption-capable media (hardware-encrypted with FIPS-140 validation preferred)
+                    - Endpoint protection rule: only registered media may be attached (device control)
+                    - Inventory with owner, issue/return/destruction dates
+                    - Prohibition of private media on business clients
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    Complete prohibition of removable media use, replaced by alternative transfer (secure file transfer platforms, classified data diodes); hardware tokens with PIN and biometric protection.
+
+                    ## 6. Cross-References
+                    - ORP.3 Awareness
+                    - CON.1 Crypto Concept
+                    - CON.6 Deletion / Destruction
+                    - CON.7 Foreign Travel
+                    - OPS.1.1.4 Malware Protection
+                    - INF.1 General Building (storage)
+                    - SYS.2.1 General Client (interface protection)
+
+                    ## 7. Data Protection
+                    Loss or theft of removable media containing personal data are potentially notifiable data breaches per GDPR Art. 33/34 and are reported to the DPO ({{ roles.dpo.fullName }}) immediately.
+
+                    ## 8. Review and Approval
+                    Reviewed at least every 24 months. Approval chain: {{ approval.chain }}.
+
+        bsi_net_1_1_network_architecture:
+            v1:
+                title: 'Network Architecture and Design (NET.1.1)'
+                body: |-
+                    # Network Architecture and Design of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI NET.1.1 (Network Architecture and Design) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic and Standard requirements mandatory | Cross-ref: ISO/IEC 27001:2022 Annex A.8.20, A.8.21, A.8.22 | Review interval: 24 months*
+
+                    ## 1. Purpose and Scope
+                    This concept documents the architecture and design of the network of {{ tenant.legal_name }}. It is the basis for all downstream network building blocks (NET.1.2 Network Management, NET.3.1 Routers/Switches, NET.3.2 Firewall, NET.3.3 VPN, NET.4.x WLAN/Mobile).
+
+                    ## 2. Responsibilities
+                    Architectural authority resides with the network architecture team in IT operations; functional oversight by the ISO/CISO ({{ roles.isb.fullName }}). Changes to security zones or zone-crossing connections require explicit ISO/CISO approval.
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **NET.1.1.A1 Network security policy:** This document plus the topical NET.3.1/NET.3.2 policies fulfil the requirement.
+                    - **NET.1.1.A2 Network documentation:** Complete network documentation (topology, IP plan, VLAN structure, routing concept, security zones) under version control; updated on every material change with at least semi-annual consistency review.
+                    - **NET.1.1.A3 Requirements analysis:** Before network changes, requirements from protection needs, regulation, and business goals are documented.
+                    - **NET.1.1.A4 Network planning:** Planning uses defined security zones with differing trust levels: Untrusted (Internet), DMZ, Internal, Management, Restricted (KRITIS / personal data), ICS/OT (fully separated). Zone transitions only via controlled gateways per NET.3.2.
+                    - **NET.1.1.A5 Segmentation strategy:** Functional subnets; micro-segmentation in the server segment to reduce lateral movement.
+                    - **NET.1.1.A6 Network design specification:** Concrete hardware class selection, redundancy, bandwidth, latency requirements.
+                    - **NET.1.1.A7 Realisation of network design:** Implementation per documented sequence with tests in staging before production.
+                    - **NET.1.1.A8 Regular updates:** Architecture review at least annually or on material business changes.
+
+                    ## 4. Standard Requirements
+                    - Micro-segmentation of all server workloads via stateful firewalls or SDN
+                    - Out-of-band management network for all network components
+                    - Zero-trust building blocks for application access
+                    - Redundant connectivity to external networks (especially Internet)
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    Fully physically separated networks for crown jewels (air-gap), multi-path connectivity with different carriers, continuous network behaviour analysis, software-defined perimeter (SDP) instead of classic VPN concentrators.
+
+                    ## 6. Cross-References
+                    - NET.1.2 Network Management
+                    - NET.3.1 Routers and Switches
+                    - NET.3.2 Firewall
+                    - NET.3.3 VPN
+                    - NET.4.x WLAN / Mobile
+                    - INF.2 Data Centre (physical cabling)
+                    - DER.1 Detection (NIDS / NDR)
+
+                    ## 7. Review and Approval
+                    Reviewed at least every 24 months and on site changes. Approval chain: {{ approval.chain }}.
+
+        bsi_net_3_1_router_switches:
+            v1:
+                title: 'Router and Switch Security Policy (NET.3.1)'
+                body: |-
+                    # Router and Switch Security Policy of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI NET.3.1 (Routers and Switches) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic requirements mandatory | Cross-ref: ISO/IEC 27001:2022 Annex A.8.5, A.8.20, A.8.21 | Parent: NET.1.1 | Review interval: 12 months*
+
+                    ## 1. Purpose and Scope
+                    Governs procurement, configuration, and operation of routers and switches at {{ tenant.legal_name }}. Covers backbone components, access-layer switches, and edge routers.
+
+                    ## 2. Responsibilities
+                    Operational administration by network operations; functional oversight by the ISO/CISO. Backbone and zone-crossing changes follow elevated change procedures per OPS.1.1.3.
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **NET.3.1.A1 Secure base configuration:** Default passwords replaced immediately; unneeded services (HTTP mgmt, Telnet, CDP/LLDP as needed) disabled. Configuration from documented templates.
+                    - **NET.3.1.A2 Updates and patches:** Vendor updates per Patch Management Policy (OPS.1.1.3); security-critical updates within documented SLAs.
+                    - **NET.3.1.A3 Restrictive rights assignment:** Administrative access via least-privilege roles; central authentication (TACACS+, RADIUS) against the central IAM per ORP.4.
+                    - **NET.3.1.A4 Protection of management interfaces:** Administration only via SSH (with public-key authentication) and HTTPS from the management network; out-of-band consoles physically secured.
+                    - **NET.3.1.A5 Protection against abuse:** Port security on access switches (e.g., MAC limit, sticky-MAC); storm control; BPDU-Guard / Root-Guard in spanning tree.
+                    - **NET.3.1.A6 Emergency access:** Defined emergency access (console server, out-of-band modem) with documented emergency credentials in the key vault.
+                    - **NET.3.1.A7 Logging:** Devices log configuration changes, login attempts, and security-relevant events to the central log collector per OPS.1.1.5.
+
+                    ## 4. Standard Requirements
+                    - Daily configuration backups; version diff to detect unauthorised changes
+                    - NTP against internal time servers with authentication
+                    - 802.1X network access control at the access layer
+                    - Encrypted SNMPv3 only; SNMPv1/v2c prohibited
+                    - Separation of management and production network at VLAN level minimum, preferably physical
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    MACsec backbone encryption, redundant hardware with hot-standby, continuous configuration compliance against hardening profile.
+
+                    ## 6. Cross-References
+                    - NET.1.1 Network Architecture
+                    - NET.3.2 Firewall
+                    - ORP.4 IAM (TACACS+/RADIUS)
+                    - OPS.1.1.2 IT Administration
+                    - OPS.1.1.3 Patch Management
+                    - OPS.1.1.5 Logging
+                    - DER.1 Detection
+
+                    ## 7. Review and Approval
+                    Reviewed at least every 12 months. Approval chain: {{ approval.chain }}.
+
+        bsi_net_3_2_firewall:
+            v1:
+                title: 'Firewall Security Policy (NET.3.2)'
+                body: |-
+                    # Firewall Security Policy of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI NET.3.2 (Firewall) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic and Standard requirements mandatory (critical zone-crossing function) | Cross-ref: ISO/IEC 27001:2022 Annex A.8.20, A.8.21, A.8.22, A.8.23 | Parent: NET.1.1 | Review interval: 12 months*
+
+                    ## 1. Purpose and Scope
+                    Governs selection, configuration, and operation of all firewalls (perimeter, segment, cloud, web application firewalls) at {{ tenant.legal_name }}. Central technical implementation of the security zones defined in NET.1.1.
+
+                    ## 2. Responsibilities
+                    Operational administration by firewall operations (multiple eyes); functional oversight and ruleset approval by the ISO/CISO ({{ roles.isb.fullName }}); four-eyes principle for all rule changes at the perimeter.
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **NET.3.2.A1 Security policy:** This document fulfils the requirement.
+                    - **NET.3.2.A2 Firewall ruleset:** Default-deny; every permitted connection must be backed by a documented requirement with business justification.
+                    - **NET.3.2.A3 Suitable filter rules:** Filter rules per security-zone pair; source/destination/service/justification/owner/review-date are mandatory fields.
+                    - **NET.3.2.A4 Secure firewall configuration:** Hardening per vendor guidance and CIS Benchmark; unneeded features disabled; default certificates replaced.
+                    - **NET.3.2.A5 Restrictive management interface configuration:** Administration only from management network, with MFA and individual authentication (TACACS+/RADIUS).
+                    - **NET.3.2.A6 Protection against invalid packets:** Anti-spoofing filters, stateful inspection, protection against fragment attacks.
+                    - **NET.3.2.A7 Time synchronisation:** NTP against internal authenticated time servers.
+                    - **NET.3.2.A8 Logging:** Connection, drop, and configuration-change logs forwarded to central log collector.
+                    - **NET.3.2.A9 Emergency access:** Out-of-band emergency access with documented emergency credentials.
+                    - **NET.3.2.A10 Firmware and patch currency:** Security updates within 14 days, emergency patches within 72h.
+                    - **NET.3.2.A11 Configuration backup:** Daily configuration backups; restore tested at least annually.
+
+                    ## 4. Standard Requirements
+                    - Periodic ruleset review (at least semi-annually) for currency, necessity, and consistency
+                    - High availability (HA cluster) at the perimeter
+                    - Application-layer inspection (next-generation firewall functionality) for critical application protocols
+                    - Intrusion Prevention System (IPS) in active mode at the perimeter
+                    - Four-eyes principle technically enforced for rule commits
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    Geographically distributed perimeter architecture, vendor-diverse defence-in-depth (two firewall vendors in series), automated ruleset consistency check, threat-intelligence-based dynamic block lists.
+
+                    ## 6. Rule Lifecycle
+                    Every firewall rule has an owner, an expiration date (max 24 months), a documented business justification, and a review date. Expiring rules are flagged to the owner 30 days in advance; without renewal they auto-delete.
+
+                    ## 7. Cross-References
+                    - NET.1.1 Network Architecture (security zones)
+                    - NET.3.1 Routers and Switches
+                    - ORP.4 IAM (four-eyes, MFA)
+                    - OPS.1.1.2 IT Administration
+                    - OPS.1.1.3 Patch Management
+                    - DER.1 Detection (IPS integration)
+
+                    ## 8. Review and Approval
+                    Reviewed at least every 12 months, ruleset review semi-annually. Approval chain: {{ approval.chain }}.
+
+        bsi_inf_1_general_building:
+            v1:
+                title: 'Building Security Policy (INF.1)'
+                body: |-
+                    # Building Security Policy of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI INF.1 (General Building) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic requirements mandatory | Cross-ref: ISO/IEC 27001:2022 Annex A.7.1, A.7.2, A.7.3, A.7.5, A.7.6, A.7.7 | Review interval: 24 months*
+
+                    ## 1. Purpose and Scope
+                    Governs physical and environmental security measures for all premises of {{ tenant.legal_name }}. Umbrella over specific blocks INF.2 (Data Centre), INF.7 (Office Room), INF.9 (Mobile Workplace).
+
+                    ## 2. Responsibilities
+                    Operational ownership of building security with Facilities Management; alignment with information security requirements with the ISO/CISO ({{ roles.isb.fullName }}). Key management follows a documented procedure.
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **INF.1.A1 Building security planning:** Before occupancy or material repurposing, a documented security assessment with derived protection zones.
+                    - **INF.1.A2 Cabling adequate to current requirements:** Data and power cables physically separated; unused patch panels deactivated or physically protected.
+                    - **INF.1.A3 Compliance with fire safety:** Fire safety regulations adhered to; fire alarm system and reporting paths documented; annual fire safety briefing mandatory.
+                    - **INF.1.A4 Fire detection in buildings:** Automatic fire alarm system mandatory in technical rooms.
+                    - **INF.1.A5 Hand-held fire extinguishers:** Suitable extinguishers in fire-relevant rooms; annual maintenance.
+                    - **INF.1.A6 Closed windows and doors:** External windows and doors locked outside business hours; four-eyes verification for sensitive areas.
+                    - **INF.1.A7 Access regulations and controls:** Access to buildings and rooms via documented authorisation model; visitors must be escorted in non-public areas.
+                    - **INF.1.A8 Key management:** Keys and access tokens centrally managed; issue and return logged; loss is reportable.
+                    - **INF.1.A9 Security input into construction projects:** ISO/CISO involvement in all construction or refurbishment projects affecting IT or protected areas.
+                    - **INF.1.A10 Climate compliance:** Climate parameters for server and technical rooms monitored; deviations alarmed.
+                    - **INF.1.A11 Clear desk / clear screen:** Protected documents stored locked outside processing; screens locked when leaving the workplace.
+
+                    ## 4. Standard Requirements
+                    - Video surveillance of critical building zones (with GDPR Art. 6 / German BDSG s. 88 review; retention max. 72h absent incidents)
+                    - Intrusion alarm system connected to emergency response service
+                    - Power redundancy for technically used rooms
+                    - Sector-based access authorisation with electronic tokens
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    Multi-stage access control with mantrap interlocks, multi-factor access (token + biometrics), 24/7 security service, secure reception with vehicle-stop turnstile.
+
+                    ## 6. Cross-References
+                    - INF.2 Data Centre and Server Room
+                    - ORP.4 IAM (access authorisations)
+                    - ORP.3 Awareness (Clear-Desk)
+                    - DER.4 Emergency Management (fire, power outage)
+
+                    ## 7. Review and Approval
+                    Reviewed at least every 24 months and after material structural changes. Approval chain: {{ approval.chain }}.
+
+        bsi_inf_2_data_center:
+            v1:
+                title: 'Data Centre and Server Room Concept (INF.2)'
+                body: |-
+                    # Data Centre and Server Room Concept of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI INF.2 (Data Centre and Server Room) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic and Standard requirements mandatory (critical infrastructure) | Cross-ref: ISO/IEC 27001:2022 Annex A.7.1, A.7.4, A.7.5, A.7.8, A.7.11, A.7.12 | EN 50600 (data centre standard) | Review interval: 12 months*
+
+                    ## 1. Purpose and Scope
+                    Governs construction, operation, and security of all data centres and server rooms of {{ tenant.legal_name }}. Concretises INF.1 (General Building) and INF.7 (Office Room) for technically used spaces.
+
+                    ## 2. Responsibilities
+                    Functional ownership with DC operations; norm conformance with the ISO/CISO ({{ roles.isb.fullName }}); emergency planning with the Emergency Management Officer ({{ roles.notfallbeauftragter.fullName }}) per BSI 200-4.
+
+                    ## 3. Basic Requirements (Mandatory)
+                    - **INF.2.A1 Requirements specification:** Documented requirements analysis (availability class, protection needs, regulatory obligations) before construction.
+                    - **INF.2.A2 Security zones:** Tiered zones (public, controlled, security, high security) with escalating access control.
+                    - **INF.2.A3 Access control:** Access to DC space only with individual authentication; multi-factor (token + PIN/biometrics); logging of all accesses; mandatory escort of external persons.
+                    - **INF.2.A4 Fire detection and suppression:** Early-detection system (e.g., aspirating smoke detection) and automatic suppression (inert gas or equivalent); documented fire brigade plan.
+                    - **INF.2.A5 Climate control:** Redundant cooling with temperature and humidity monitoring; alarming on threshold breach.
+                    - **INF.2.A6 Power supply:** Redundant power feeds; UPS with adequate bridging time; standby generator for critical zones; annual load test.
+                    - **INF.2.A7 Cabling:** Structured cabling with clear power/data separation; minimised fire load; current patch documentation.
+                    - **INF.2.A8 Burglary protection:** Burglary-resistant doors and windows; intrusion alarm connected to emergency response service.
+                    - **INF.2.A9 Water damage prevention:** Raised floor with leak detection; no water lines above technical rooms.
+                    - **INF.2.A10 Hardware inventory:** Complete asset inventory; physical hardware access logged.
+                    - **INF.2.A11 Protection against unauthorised access:** Server racks lockable; documented key management.
+                    - **INF.2.A12 Building infrastructure monitoring:** Continuous monitoring of climate, power, fire, intrusion, water; alarming to 24/7 control room.
+
+                    ## 4. Standard Requirements
+                    - Availability class at least VK 3 (EN 50600) for critical workloads
+                    - Geographic separation primary / secondary DC (minimum distance per BCM requirement)
+                    - Mantrap interlocks at the entrance to high-security zone
+                    - Video surveillance with GDPR-compliant retention
+                    - Emergency and recovery plans per BSI 200-4 / DER.4
+
+                    ## 5. Requirements for Elevated Protection Needs
+                    Tier IV / VK 4 design, fully geo-redundant active-active concept, biometric access control in interlocks, EMC shielding for sensitive zones, protection against cyber-physical attacks (e.g., EMP shielding for crown jewels).
+
+                    ## 6. Cross-References
+                    - INF.1 General Building
+                    - SYS.1.1 General Server (physical installation)
+                    - DER.4 Emergency Management
+                    - BSI 200-4 Business Continuity Management
+                    - EN 50600 Data Centre Standard
+
+                    ## 7. Review and Approval
+                    Reviewed at least every 12 months; after every emergency or recovery test. Approval chain: {{ approval.chain }}.
+
+        bsi_ind_1_2_ot_network_architecture:
+            v1:
+                title: 'Process Control and Automation Technology (OT/ICS) (IND.1)'
+                body: |-
+                    # OT/ICS Security Concept (Process Control and Automation) of {{ tenant.legal_name }}
+
+                    *Norm anchor: BSI IND.1 (Process Control and Automation Technology) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Tier: Basic and Standard requirements mandatory (KRITIS-relevance) | Cross-ref: ISO/IEC 27001:2022 Annex A.5.7, A.7.4, A.8.20, A.8.21, A.8.32 | IEC 62443 (Industrial Communication Networks Security), NIS2 transposition act, BSIG s. 8a | Review interval: 12 months*
+
+                    ## 1. Purpose and Scope
+                    Governs information security for all process control, automation, SCADA, and ICS components at {{ tenant.legal_name }}. Umbrella over specific IND blocks (IND.2.x PLC, IND.2.4 Safety-instrumented systems, IND.3.x Sensors/Actuators, IND.4.x Mobile devices in ICS environments).
+
+                    ## 2. Responsibilities
+                    Functional ownership with OT leadership ({{ roles.ot_lead.fullName }}); IT-security alignment with the ISO/CISO ({{ roles.isb.fullName }}). Convergence topics (IT/OT interfaces) require parity approval. For KRITIS obligations: ISO/CISO acts as KRITIS officer per BSIG s. 8a (5).
+
+                    ## 3. OT/ICS Specifics
+                    The following characteristics distinguish OT from classic IT and shape decisions:
+
+                    - **Lifecycle 15+ years:** Components typically have 15-30 year operating lives; vendor patch availability often ends earlier. Compensating measures are mandatory.
+                    - **Availability before confidentiality:** Protection-goal hierarchy is Availability > Integrity > Confidentiality (inverse of classic IT).
+                    - **Real-time requirements:** Latencies in milliseconds; deep inspection or encryption must not disrupt the process.
+                    - **Safety implications:** Security measures must not impair functional safety; Safety Instrumented Systems (SIS) are untouchable.
+                    - **Patch strategy:** Patches are applied only in maintenance windows after lab testing; emergency patches require risk-balancing with plant operations.
+
+                    ## 4. Basic Requirements (Mandatory)
+                    - **IND.1.A1 Security policy:** This document fulfils the requirement.
+                    - **IND.1.A2 Organisational structure:** OT security organisation is documented; IT/OT/Safety interfaces defined.
+                    - **IND.1.A3 Assignment of responsibilities:** Asset owner per ICS component named; deputies regulated.
+                    - **IND.1.A4 Scope:** Scope documented per ICS zone-and-conduit model (IEC 62443-3-2).
+                    - **IND.1.A5 Identification of requirements:** Requirements from business, safety, environmental, and regulatory obligations (BSIG, NIS2 transposition act, KRITIS Regulation) captured.
+                    - **IND.1.A6 ICS environment documentation:** Complete inventory of ICS components (PLC, HMI, engineering stations, historian, field devices); network diagram with zones and conduits.
+                    - **IND.1.A7 ICS maintenance concept:** Maintenance and patch concept respects lifecycle and availability requirements; alternative protections for non-patchable components are documented.
+                    - **IND.1.A8 Secure commissioning of ICS components:** Before go-live: hardening per vendor, change of default credentials, lab pen-test.
+                    - **IND.1.A9 Restrictive access:** Engineering workstations, HMI, and field-device access only need-to-know; privileged access with MFA per ORP.4.
+                    - **IND.1.A10 Awareness and training:** Specific OT security training for plant operators, OT engineers, and external maintenance contractors.
+                    - **IND.1.A11 Logical and physical separation of ICS networks:** Strict separation IT/OT through documented conduits; air-gap preferred for safety-relevant zones.
+                    - **IND.1.A12 Secure connection to external networks:** External connections (remote maintenance, MES integration, historian replication) only via dedicated gateways with DPI inspection and control mechanisms per Remote Maintenance Policy (OPS.1.2.5).
+                    - **IND.1.A13 ICS emergency management:** OT-specific emergency and recovery plans per DER.4 / BSI 200-4 with focus on plant restoration; mandatory annual emergency exercise.
+                    - **IND.1.A14 ICS backup:** Configuration backups (PLC programs, HMI projects, historian data) with documented recovery procedures; offline copy mandatory.
+                    - **IND.1.A15 Malware protection in ICS environments:** Allow-listing approach instead of classic AV; USB sluices for maintenance media; signature-based solutions only when vendor-approved.
+
+                    ## 5. Standard Requirements
+                    - Implementation of zone-and-conduit model per IEC 62443-3-2 with documented Security Levels (SL-T) per zone
+                    - Network intrusion detection (NIDS) for ICS protocols (Modbus, Profinet, S7, OPC-UA) with baseline-based anomaly detection
+                    - Hardening of all engineering workstations per SYS blocks plus ICS-specific adjustments
+                    - Lifecycle management with documented end-of-support strategy and migration roadmap
+                    - Lab penetration tests before rollout of new ICS components
+
+                    ## 6. Requirements for Elevated Protection Needs (KRITIS, Safety-relevant Plants)
+                    Fully physical separation of IT and OT (air-gap), unidirectional data diodes for telemetry from OT, dedicated OT-SOC with 24/7 shift operation, redundant engineering workstations in protected environments, insider-threat monitoring for privileged OT operators.
+
+                    ## 7. KRITIS and NIS2 Obligations
+                    For KRITIS obligation (BSIG s. 8a) or NIS2 essentiality (NIS2 transposition act): notification obligations per BSIG s. 8b; biennial proof obligation; ISO/CISO as KRITIS officer; application of branch-specific security standard (B3S) where available.
+
+                    ## 8. Cross-References
+                    - NET.1.1 Network Architecture (IT/OT separation)
+                    - NET.3.2 Firewall (OT conduits)
+                    - OPS.1.1.3 Patch & Change Management (OT-specific strategy)
+                    - OPS.1.1.4 Malware Protection (allow-listing)
+                    - OPS.1.2.5 Remote Maintenance
+                    - DER.1 Detection (OT-NIDS)
+                    - DER.4 Emergency Management
+                    - INF.2 Data Centre (control rooms)
+                    - IEC 62443 (zones, conduits, security level)
+                    - BSI 200-4 BCM
+                    - BSIG s. 8a, NIS2 transposition act
+
+                    ## 9. Review and Approval
+                    Reviewed at least every 12 months and after material plant changes or ICS security incidents. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Mandatory for all OT/ICS areas of {{ tenant.legal_name }}. Conflicts between Safety and Security are escalated per documented escalation path and decided in favour of functional safety (Safety).*
