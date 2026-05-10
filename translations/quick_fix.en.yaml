@@ -11,7 +11,10 @@ quick_fix:
         count_label: 'pending schema statement(s)'
         show_sql: 'Show SQL'
         button: 'Reconcile schema now'
-        destructive_warning: 'Warning: %count% destructive statement(s) detected (DROP). Manual review required. Please use CLI:'
+        destructive_count_label: 'destructive statement(s) (DROP/TRUNCATE)'
+        destructive_warning: 'Destructive statements detected. Review before applying — may delete data. If you accept the risk, tick the checkbox below.'
+        destructive_confirm_label: 'I understand the risk and want to apply destructive statements'
+        destructive_button: 'Reconcile incl. destructive statements'
     ok:
         title: 'All up to date'
         body: 'No pending schema migrations.'
