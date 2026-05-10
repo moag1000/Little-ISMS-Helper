@@ -1,0 +1,43 @@
+{# V3 W2-WS-10 — Asset Schutzbedarf raised → DPIA-Bedarf-Check. #}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'emails.asset.schutzbedarf_dpia_check.subject'|trans({}, 'emails')|default('Asset Schutzbedarf raised — DPIA-Bedarf-Check') }}</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: #dc2626; color: white; padding: 20px; border-radius: 6px 6px 0 0;">
+            <h1 style="margin: 0; font-size: 18px;">
+                {{ 'emails.asset.schutzbedarf_dpia_check.title'|trans({}, 'emails')|default('DPIA-Bedarf-Check after Schutzbedarf raise') }}
+            </h1>
+        </div>
+
+        <div style="background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-radius: 0 0 6px 6px;">
+            <p>{{ 'emails.asset.schutzbedarf_dpia_check.intro'|trans({}, 'emails')|default('An asset has been raised to high / very-high protection requirement. The following processing activities are linked to this asset and have NO DPIA yet — please check whether a DPIA is now required (Art. 35 GDPR + BSI 200-2 § 3.6).') }}</p>
+
+            <div style="background: white; padding: 12px; border-left: 4px solid #dc2626; margin: 16px 0;">
+                <p style="margin: 0;"><strong>Asset:</strong> {{ asset.name|default('—') }}</p>
+                <p style="margin: 4px 0 0 0;"><strong>CIA:</strong>
+                    C={{ asset.confidentialityValue }} /
+                    I={{ asset.integrityValue }} /
+                    A={{ asset.availabilityValue }}
+                </p>
+            </div>
+
+            <div style="margin-top: 16px;">
+                <strong>{{ 'emails.asset.schutzbedarf_dpia_check.pa_list'|trans({}, 'emails')|default('Processing activities to review:') }}</strong>
+                <ul>
+                    {% for pa in activities %}
+                        <li>{{ pa.title|default('—') }} (ID {{ pa.id }})</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <p style="font-size: 13px; color: #666; margin-top: 16px;">
+                {{ 'emails.asset.schutzbedarf_dpia_check.footer'|trans({}, 'emails')|default('Tip: open the asset, switch to the linked processing activities and create a DPIA skeleton if the GDPR risk threshold is met.') }}
+            </p>
+        </div>
+    </div>
+</body>
+</html>
