@@ -1,0 +1,282 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dashboards' %}
+
+{% block title %}Compliance-Manager-Dashboard - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block body %}
+<main class="fa-aurora-surface role-dashboard compliance-manager-dashboard">
+    {{ _fa_page_header.render({
+        badge:    { icon: 'clipboard2-check', label: 'GRC' },
+        title:    'Compliance-Manager-Dashboard',
+        subtitle: 'Frameworks, Findings, Audits, Approval-Queue — Head-of-GRC-Sicht',
+        actions: [
+            { label: 'Standard-Dashboard', variant: 'ghost',   icon: 'house',     href: path('app_dashboard') },
+            { label: 'CISO-Sicht',         variant: 'ghost',   icon: 'shield-lock', href: path('app_dashboard_ciso') },
+            { label: 'Compliance-Wizards', variant: 'primary', icon: 'magic',     href: path('app_compliance_wizard_index') }
+        ]
+    }) }}
+
+    {# Top-line KPIs #}
+    <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
+        {{ _fa_feature_card.render({
+            icon: 'collection',
+            label: 'Frameworks aktiv',
+            value: dashboard.frameworks_active,
+            variant: 'primary',
+            href: path('app_compliance_wizard_index')
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'speedometer',
+            label: 'Ø Compliance',
+            value: dashboard.avg_compliance,
+            unit: '%',
+            variant: dashboard.avg_compliance >= 80 ? 'success' : (dashboard.avg_compliance >= 60 ? 'warning' : 'danger'),
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'exclamation-triangle',
+            label: 'Frameworks at-risk',
+            value: dashboard.at_risk_count,
+            variant: dashboard.at_risk_count > 0 ? 'warning' : 'success',
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'search',
+            label: 'Open Findings',
+            value: dashboard.findings_total,
+            variant: dashboard.findings_total > 0 ? 'warning' : 'success',
+            href: '#findings'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'calendar-event',
+            label: 'Audits 90d',
+            value: dashboard.upcoming_audits|length,
+            variant: 'info',
+            href: '#audit-schedule'
+        }) }}
+        {{ _fa_feature_card.render({
+            icon: 'file-earmark-check',
+            label: 'Doc-Approval-Queue',
+            value: dashboard.pending_docs|length,
+            variant: dashboard.pending_docs|length > 0 ? 'warning' : 'success',
+            href: '#approval-queue'
+        }) }}
+    </div>
+
+    {# Coverage Heatmap (table-styled) #}
+    <section class="fa-section mb-4" id="coverage-heatmap">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">Coverage-Heatmap pro Framework</h2>
+        </div>
+        <div class="fa-section__body">
+            {% if dashboard.frameworks|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th>Framework</th>
+                            <th>Coverage</th>
+                            <th>Bar</th>
+                            <th>Status</th>
+                            <th>Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fw in dashboard.frameworks %}
+                            {% set coverage = fw.compliance|default(0) %}
+                            {% set tone = coverage >= 80 ? 'success' : (coverage >= 60 ? 'warning' : 'danger') %}
+                            <tr>
+                                <td><strong>{{ fw.name|default(fw.code|default('—')) }}</strong></td>
+                                <td>{{ coverage }}%</td>
+                                <td style="min-width: 180px;">
+                                    <div class="progress" role="progressbar" aria-valuenow="{{ coverage }}" aria-valuemin="0" aria-valuemax="100" style="height: 12px;">
+                                        <div class="progress-bar bg-{{ tone }}" style="width: {{ coverage }}%;"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ tone }}">
+                                        {{ coverage >= 80 ? 'OK' : (coverage >= 60 ? 'At Risk' : 'Lücke') }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if fw.code is defined and fw.code %}
+                                        <a class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm" href="{{ path('app_compliance_wizard_start', {wizard: fw.code|lower}) }}">
+                                            <i class="bi bi-magic"></i>
+                                            Wizard
+                                        </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                {{ _fa_empty_state.render({
+                    mood: 'thinking',
+                    title: 'Noch keine Frameworks aktiv',
+                    text: 'Aktivieren Sie ein Framework über die Compliance-Wizard-Übersicht.',
+                    actions: [
+                        { label: 'Wizard wählen', variant: 'primary', icon: 'magic', href: path('app_compliance_wizard_index') }
+                    ]
+                }) }}
+            {% endif %}
+        </div>
+    </section>
+
+    {# Lowest 3 Frameworks #}
+    {% if dashboard.lowest_coverage|length > 0 %}
+    <section class="fa-section mb-4" id="lowest-coverage">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">Top-3 Frameworks mit niedrigster Coverage</h2>
+        </div>
+        <div class="fa-section__body">
+            <ol class="list-group list-group-numbered">
+                {% for fw in dashboard.lowest_coverage %}
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">{{ fw.name|default(fw.code|default('—')) }}</div>
+                            <small class="text-muted">{{ fw.compliance|default(0) }}% Coverage — Priorisiert für nächsten Sprint</small>
+                        </div>
+                        {% if fw.code is defined and fw.code %}
+                            <a class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm" href="{{ path('app_compliance_wizard_start', {wizard: fw.code|lower}) }}">
+                                <i class="bi bi-arrow-right-circle"></i>
+                                Bearbeiten
+                            </a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </section>
+    {% endif %}
+
+    {# Findings by Severity #}
+    <section class="fa-section mb-4" id="findings">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">Open Findings nach Severity</h2>
+        </div>
+        <div class="fa-section__body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    {{ _fa_feature_card.render({
+                        icon: 'shield-fill-exclamation',
+                        label: 'Critical',
+                        value: dashboard.findings_severity.critical,
+                        variant: 'danger'
+                    }) }}
+                </div>
+                <div class="col-md-3">
+                    {{ _fa_feature_card.render({
+                        icon: 'exclamation-circle',
+                        label: 'High',
+                        value: dashboard.findings_severity.high,
+                        variant: 'warning'
+                    }) }}
+                </div>
+                <div class="col-md-3">
+                    {{ _fa_feature_card.render({
+                        icon: 'info-circle',
+                        label: 'Medium',
+                        value: dashboard.findings_severity.medium,
+                        variant: 'info'
+                    }) }}
+                </div>
+                <div class="col-md-3">
+                    {{ _fa_feature_card.render({
+                        icon: 'circle',
+                        label: 'Low',
+                        value: dashboard.findings_severity.low,
+                        variant: 'success'
+                    }) }}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Audit Schedule #}
+    <section class="fa-section mb-4" id="audit-schedule">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">Audit-Schedule (nächste 90 Tage)</h2>
+        </div>
+        <div class="fa-section__body">
+            {% if dashboard.upcoming_audits|length > 0 %}
+                <div class="list-group">
+                    {% for audit in dashboard.upcoming_audits %}
+                        <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="list-group-item list-group-item-action d-flex justify-content-between">
+                            <div>
+                                <strong>{{ audit.title|default(('Audit #' ~ audit.id)) }}</strong>
+                                <small class="d-block text-muted">{{ audit.scope|default('—') }}</small>
+                            </div>
+                            <span>
+                                {% if audit.plannedDate is defined and audit.plannedDate %}
+                                    <span class="badge bg-info">{{ audit.plannedDate|date('d.m.Y') }}</span>
+                                {% endif %}
+                            </span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ _fa_empty_state.render({
+                    mood: 'idle',
+                    title: 'Keine Audits geplant',
+                    text: 'In den nächsten 90 Tagen ist kein Audit terminiert.'
+                }) }}
+            {% endif %}
+        </div>
+    </section>
+
+    {# Document Approval Queue #}
+    <section class="fa-section mb-4" id="approval-queue">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">Dokument-Approval-Queue</h2>
+        </div>
+        <div class="fa-section__body">
+            {% if dashboard.pending_docs|length > 0 %}
+                <div class="list-group">
+                    {% for doc in dashboard.pending_docs %}
+                        <a href="{{ path('app_document_show', {id: doc.id}) }}" class="list-group-item list-group-item-action d-flex justify-content-between">
+                            <div>
+                                <strong>{{ doc.title }}</strong>
+                                <small class="d-block text-muted">{{ doc.documentType|default('—') }} · v{{ doc.version|default('—') }}</small>
+                            </div>
+                            <span class="badge bg-warning text-dark">{{ doc.status }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ _fa_empty_state.render({
+                    mood: 'happy',
+                    title: 'Approval-Queue leer',
+                    text: 'Keine Dokumente warten auf Ihre Freigabe.'
+                }) }}
+            {% endif %}
+        </div>
+    </section>
+
+    {# Quick Actions #}
+    <section class="fa-section mb-4" id="quick-actions">
+        <div class="fa-section__header">
+            <h2 class="fa-section__title">Quick-Actions</h2>
+        </div>
+        <div class="fa-section__body">
+            <div class="d-flex flex-wrap gap-2">
+                <a class="fa-cyber-btn fa-cyber-btn--primary" href="{{ path('app_compliance_wizard_index') }}">
+                    <i class="bi bi-magic"></i>
+                    Neuen Wizard starten
+                </a>
+                <a class="fa-cyber-btn fa-cyber-btn--ghost" href="{{ path('app_compliance_mapping_hub') }}">
+                    <i class="bi bi-diagram-3"></i>
+                    Cross-Framework-Mapping
+                </a>
+                <a class="fa-cyber-btn fa-cyber-btn--ghost" href="{{ path('app_compliance_wizard_compare') }}">
+                    <i class="bi bi-bar-chart-steps"></i>
+                    Wizards vergleichen
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
