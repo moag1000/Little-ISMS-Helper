@@ -119,7 +119,7 @@ class ConsentType extends AbstractType
             ->add('proofDocument', EntityType::class, [
                 'label' => 'consent.form.proof_document',
                 'class' => Document::class,
-                'choice_label' => 'title',
+                'choice_label' => 'originalFilename',
                 'required' => false,
                 'help' => 'consent.form.proof_document_help',
             ])
