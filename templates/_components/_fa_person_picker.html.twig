@@ -71,18 +71,21 @@
         <small class="text-muted d-block mt-1">{{ props.helpText }}</small>
     {% endif %}
 
+    {# V3 W2-L3 — empty-state via Aurora alert tokens (Bootstrap class-free). #}
     {% if _choices|length == 0 %}
         {% set _emptyTitle = (props.emptyState.title|default(null)) ?: 'common.person_picker.empty_state.title'|trans({}, 'messages') %}
         {% set _emptyBody  = (props.emptyState.body|default(null))  ?: 'common.person_picker.empty_state.body'|trans({}, 'messages') %}
-        <div class="alert alert-info border-0 mt-2 small fa-person-picker__empty">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
-            <strong>{{ _emptyTitle }}</strong>
-            <span class="d-block">{{ _emptyBody }}</span>
-            {% if props.emptyState.ctaUrl is defined and props.emptyState.ctaLabel is defined %}
-                <a href="{{ props.emptyState.ctaUrl }}" class="btn btn-sm btn-outline-primary mt-2">
-                    {{ props.emptyState.ctaLabel }}
-                </a>
-            {% endif %}
+        <div class="fa-alert fa-alert--info mt-2 fa-person-picker__empty" role="alert">
+            <i class="fa-icon fa-icon--status-info fa-alert__icon" aria-hidden="true"></i>
+            <div class="fa-alert__body">
+                <div class="fa-alert__title">{{ _emptyTitle }}</div>
+                <p class="fa-alert__message">{{ _emptyBody }}</p>
+                {% if props.emptyState.ctaUrl is defined and props.emptyState.ctaLabel is defined %}
+                    <a href="{{ props.emptyState.ctaUrl }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm mt-2">
+                        {{ props.emptyState.ctaLabel }}
+                    </a>
+                {% endif %}
+            </div>
         </div>
     {% endif %}
 {% endmacro %}

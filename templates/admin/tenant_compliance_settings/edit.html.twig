@@ -5,6 +5,7 @@
 
 {% block admin_content %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_alert.html.twig' as _fa_alert %}
 
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
@@ -22,9 +23,11 @@
 
 <main class="fa-aurora-surface">
 
+{# V3 W2-L3 — flash banners via Aurora alert macro (variant-mapped). #}
+{% set _flash_variant_map = { 'success': 'success', 'error': 'danger', 'danger': 'danger', 'warning': 'warning', 'info': 'info', 'notice': 'info' } %}
 {% for label, msgs in app.flashes %}
     {% for msg in msgs %}
-        <div class="alert alert-{{ label }} mb-3">{{ msg|trans }}</div>
+        {{ _fa_alert.render({ variant: _flash_variant_map[label]|default('info'), body: msg|trans, class: 'mb-3' }) }}
     {% endfor %}
 {% endfor %}
 

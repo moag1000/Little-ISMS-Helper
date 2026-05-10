@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% trans_default_domain 'help' %}
 
 {% block title %}{{ 'help.iso9001_bridge.title'|trans({}, 'help') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
@@ -14,12 +15,12 @@
         ]
     } only %}
 
-    {# Page Header #}
-    {% include '_components/_page_header.html.twig' with {
+    {# Page Header — V3 W2-L1 KL-6 Aurora migration #}
+    {{ _fa_page_header.render({
+        badge: { icon: 'signpost-2', label: 'help.badge'|trans({}, 'help') },
         title: 'help.iso9001_bridge.title'|trans({}, 'help'),
-        subtitle: 'help.iso9001_bridge.subtitle'|trans({}, 'help'),
-        icon: 'bi-signpost-2'
-    } only %}
+        subtitle: 'help.iso9001_bridge.subtitle'|trans({}, 'help')
+    }) }}
 
     {# Introduction Card — 8H.4 migrated #}
     {% embed '_components/_card.html.twig' with { class: 'mb-4' } %}
