@@ -261,6 +261,32 @@ class DocumentController extends AbstractController
         ]);
     }
 
+    /**
+     * Dependency-check endpoint for the Aurora bulk-delete-confirmation
+     * Stimulus controller. Documents have no blocking FK relations
+     * preventing delete (other entities reference them via nullable FK
+     * with ON DELETE SET NULL), so we always return an empty
+     * dependencies list — the controller hides the "blocked" warning
+     * and proceeds straight to the count-confirmation prompt.
+     *
+     * Without this endpoint the JS modal renders "Fehler beim Laden
+     * der Abhängigkeiten: HTTP 404: Not Found" before letting the user
+     * confirm.
+     */
+    #[Route('/document/bulk-delete-check', name: 'app_document_bulk_delete_check', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function bulkDeleteCheck(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+        // Surface the count so the modal label can echo it back; empty
+        // dependencies list = nothing blocks deletion.
+        return $this->json([
+            'dependencies' => [],
+            'checked_count' => is_array($ids) ? count($ids) : 0,
+        ]);
+    }
+
     #[Route('/document/bulk-delete', name: 'app_document_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): Response
