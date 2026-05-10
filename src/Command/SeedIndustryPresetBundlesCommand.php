@@ -329,7 +329,7 @@ final class SeedIndustryPresetBundlesCommand
                     . 'heitskatalog Strom/Gas). Defaults assume ISO 27001 + BSI + NIS-2 + BCM, very '
                     . 'conservative risk appetite, 4-hour backup RPO and physical-heavy controls.',
                 'standard' => IndustryPresetBundle::STANDARD_ISO_ALL,
-                'preselected_standards' => ['iso27001', 'bsi', 'nis2', 'bcm'],
+                'preselected_standards' => ['iso27001', 'bsi', 'kritis', 'nis2', 'bcm'],
                 'default_risk_appetite_tier' => 1,
                 'default_data_classification_levels' => 4,
                 'default_backup_rpo_hours' => 4,
@@ -351,6 +351,7 @@ final class SeedIndustryPresetBundlesCommand
                     'EnWG § 11 Abs. 1b',
                     'IT-Sicherheitskatalog Strom/Gas',
                     'EU 2022/2555 (NIS-2)',
+                    'B3S Energie',
                 ],
                 'version' => 1,
             ],

@@ -667,6 +667,7 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         'bsi'       => ['policy_bsi_batch1', 'policy_bsi_batch2', 'policy_bsi_batch3', 'policy_bsi_batch4'],
         'bcm'       => ['policy_bcm_batch1', 'policy_bcm_batch2'],
         'dora'      => ['policy_dora'],
+        'kritis'    => ['policy_kritis'],
     ];
 
     private function resolvePolicyTranslation(string $key, ?string $standard): string
