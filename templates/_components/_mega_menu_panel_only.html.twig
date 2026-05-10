@@ -27,6 +27,7 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.dashboard'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        {% if is_granted('ROLE_MANAGER') %}
                         <li><a href="{{ path('app_analytics_dashboard') }}" class="{% if current_route starts with 'app_analytics_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-bar-chart" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -34,6 +35,8 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.analytics'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_AUDITOR') %}
                         <li><a href="{{ path('app_management_reports') }}" class="{% if current_route starts with 'app_management_reports' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-reports" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
@@ -41,6 +44,7 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.management_reports'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
@@ -689,10 +693,9 @@
                 <div class="mega-menu-section">
                     <h3 class="mega-menu-section-title">{{ 'nav.mega.section.reports'|trans({}, 'nav') }}</h3>
                     <ul class="mega-menu-links">
-                        {# AuditPackage takes a {framework} path-param; we route to compliance hub
-                           where the user picks the framework, instead of hardcoding ISO27001. #}
+                        {# AuditPackage = Certification-Bundle index. Direct route to bundle hub. #}
                         {% if is_module_active('audits') or is_module_active('compliance') %}
-                        <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_audit_package_' %}active{% endif %}" data-turbo-action="advance">
+                        <li><a href="{{ path('app_certification_bundle_index') }}" class="{% if current_route starts with 'app_certification_bundle_' or current_route starts with 'app_audit_package_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="fa-icon fa-icon--nav-download" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.audit_package'|trans({}, 'nav') }}</span>

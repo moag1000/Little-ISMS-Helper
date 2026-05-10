@@ -254,8 +254,8 @@
 
                     {% if risk.asset %}
                         <div class="subject-info card fa-section mb-3">
-                            <div class="card-header bg-primary text-white">
-                                <i class="fa-icon fa-icon--nav-cpu" aria-hidden="true"></i> {{ 'asset.title'|trans({}, 'asset') }}
+                            <div class="card-header">
+                                <i class="fa-icon fa-icon--nav-cpu text-primary" aria-hidden="true"></i> {{ 'asset.title'|trans({}, 'asset') }}
                             </div>
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.asset.name }}</div>
@@ -280,8 +280,8 @@
 
                     {% if risk.person %}
                         <div class="subject-info card fa-section mb-3">
-                            <div class="card-header bg-info text-white">
-                                <i class="fa-icon fa-icon--ui-person" aria-hidden="true"></i> {{ 'person.title'|trans({}, 'messages') }}
+                            <div class="card-header">
+                                <i class="fa-icon fa-icon--ui-person text-info" aria-hidden="true"></i> {{ 'person.title'|trans({}, 'messages') }}
                             </div>
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.person.fullName }}</div>
@@ -300,8 +300,8 @@
 
                     {% if risk.location %}
                         <div class="subject-info card fa-section mb-3">
-                            <div class="card-header bg-warning-subtle text-warning">
-                                <i class="fa-icon fa-icon--nav-location" aria-hidden="true"></i> {{ 'location.title'|trans({}, 'locations') }}
+                            <div class="card-header">
+                                <i class="fa-icon fa-icon--nav-location text-warning" aria-hidden="true"></i> {{ 'location.title'|trans({}, 'locations') }}
                             </div>
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.location.name }}</div>
@@ -320,8 +320,8 @@
 
                     {% if risk.supplier %}
                         <div class="subject-info card fa-section mb-3">
-                            <div class="card-header bg-success text-white">
-                                <i class="bi bi-truck" aria-hidden="true"></i> {{ 'supplier.title'|trans({}, 'suppliers') }}
+                            <div class="card-header">
+                                <i class="bi bi-truck text-success" aria-hidden="true"></i> {{ 'supplier.title'|trans({}, 'suppliers') }}
                             </div>
                             <div class="card-body">
                                 <div class="fw-bold fs-5">{{ risk.supplier.name }}</div>
