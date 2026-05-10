@@ -287,6 +287,89 @@ class DocumentController extends AbstractController
         ]);
     }
 
+    /**
+     * Bulk-export endpoint: pack selected Documents into a ZIP and
+     * stream it back. Wizard-generated docs render via PolicyPdfExporter
+     * (Tenant-Branding letterhead); legacy uploads stream the original
+     * file. Used by the Aurora bulk-actions controller (export-button).
+     */
+    #[Route('/document/bulk-export', name: 'app_document_bulk_export', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function bulkExport(
+        Request $request,
+        \App\Service\PolicyWizard\Export\PolicyPdfExporter $pdfExporter,
+        ?\App\Repository\TenantBrandingRepository $brandingRepository = null,
+    ): Response {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+        if (!is_array($ids) || $ids === []) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+        $branding = $tenant !== null && $brandingRepository !== null
+            ? $brandingRepository->findOneBy(['tenant' => $tenant])
+            : null;
+
+        $tmpZip = tempnam(sys_get_temp_dir(), 'doc_bulk_export_') . '.zip';
+        $zip = new \ZipArchive();
+        if ($zip->open($tmpZip, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            return $this->json(['error' => 'Cannot create ZIP'], 500);
+        }
+
+        $packed = 0;
+        foreach ($ids as $id) {
+            $doc = $this->documentRepository->find($id);
+            if (!$doc instanceof Document) {
+                continue;
+            }
+            // Tenant scope guard.
+            if ($tenant !== null && $doc->getTenant() !== $tenant) {
+                continue;
+            }
+            $safeName = preg_replace('/[^\w\.\-]+/', '_', (string) ($doc->getOriginalFilename() ?: 'document-' . $doc->getId()));
+
+            if ($doc->getGeneratedFromTemplate() !== null
+                || str_starts_with((string) $doc->getFilePath(), 'virtual:')) {
+                // Wizard-generated → render PDF on the fly.
+                try {
+                    $pdf = $pdfExporter->exportDocument($doc, $branding);
+                    $zip->addFromString($safeName . '.pdf', $pdf);
+                    $packed++;
+                } catch (\Throwable) {
+                    // skip on render error; never abort the whole ZIP
+                }
+                continue;
+            }
+
+            // Legacy uploaded file.
+            $path = (string) $doc->getFilePath();
+            if (!str_starts_with($path, '/')) {
+                $path = $this->projectDir . '/public' . (str_starts_with($path, '/') ? '' : '/') . ltrim($path, '/');
+            }
+            if (is_file($path) && is_readable($path)) {
+                $zip->addFile($path, $safeName);
+                $packed++;
+            }
+        }
+        $zip->close();
+
+        if ($packed === 0) {
+            @unlink($tmpZip);
+            return $this->json(['error' => 'No exportable documents'], 404);
+        }
+
+        $response = new BinaryFileResponse($tmpZip);
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'documents-export-' . date('Y-m-d-His') . '.zip',
+        );
+        $response->headers->set('Content-Type', 'application/zip');
+        $response->deleteFileAfterSend(true);
+        return $response;
+    }
+
     #[Route('/document/bulk-delete', name: 'app_document_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): Response
