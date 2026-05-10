@@ -15,6 +15,24 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>{{ 'mris.audit_report.title'|trans({}, 'mris') }} — {{ tenant_name }}</title>
     <style>
+        :root {
+            --primary:       var(--primary);
+            --surface:       var(--surface);
+            --surface-2:     var(--surface-2);
+            --fg:            #0f172a;
+            --fg-2:          var(--fg-2);
+            --fg-3:          var(--fg-3);
+            --border:        var(--border);
+            --success:       var(--success);
+            --success-tint:  var(--success-tint);
+            --danger:        var(--danger);
+            --danger-tint:   var(--danger-tint);
+            --warning:       var(--warning);
+            --warning-tint:  var(--warning-tint);
+            --info-tint:     var(--info-tint);
+            --info-text:     var(--info-text);
+        }
+
         @page {
             size: A4 portrait;
             margin: 2.2cm 1.8cm 2.6cm 1.8cm;
@@ -22,19 +40,19 @@
                 content: "{{ 'mris.audit_report.title'|trans({}, 'mris') }} · {{ tenant_name }}";
                 font-family: DejaVu Sans, sans-serif;
                 font-size: 7pt;
-                color: #333333;
+                color: var(--fg);
             }
             @bottom-center {
                 content: "{{ 'mris.audit_report.footer_source'|trans({}, 'mris') }}: {{ source_label }}";
                 font-family: DejaVu Sans, sans-serif;
                 font-size: 7pt;
-                color: #333333;
+                color: var(--fg);
             }
             @bottom-right {
                 content: "Seite " counter(page) " / " counter(pages);
                 font-family: DejaVu Sans, sans-serif;
                 font-size: 7pt;
-                color: #333333;
+                color: var(--fg);
             }
         }
 
@@ -44,8 +62,8 @@
             font-family: DejaVu Sans, sans-serif;
             font-size: 9.5pt;
             line-height: 1.4;
-            color: #000000;
-            background: #ffffff;
+            color: var(--fg);
+            background: var(--surface);
             margin: 0;
             padding: 0;
         }
@@ -53,7 +71,7 @@
         h1 {
             font-size: 18pt;
             margin: 0 0 6pt 0;
-            border-bottom: 2pt solid #000000;
+            border-bottom: 2pt solid var(--fg);
             padding-bottom: 4pt;
         }
 
@@ -61,8 +79,8 @@
             font-size: 12pt;
             margin: 14pt 0 6pt 0;
             padding: 2pt 0 2pt 6pt;
-            border-left: 3pt solid #000000;
-            background: #f0f0f0;
+            border-left: 3pt solid var(--fg);
+            background: var(--surface-2);
             page-break-after: avoid;
         }
 
@@ -75,7 +93,7 @@
         p { margin: 0 0 6pt 0; }
 
         .meta {
-            border: 1pt solid #000000;
+            border: 1pt solid var(--fg);
             padding: 8pt;
             margin-bottom: 14pt;
             font-size: 9pt;
@@ -86,8 +104,8 @@
         .meta-label { font-weight: bold; width: 28%; }
 
         .disclaimer {
-            border: 1pt solid #000000;
-            background: #f5f5f5;
+            border: 1pt solid var(--fg);
+            background: var(--surface-2);
             padding: 6pt 8pt;
             font-size: 8.5pt;
             margin: 8pt 0 12pt 0;
@@ -107,22 +125,22 @@
         tr { page-break-inside: avoid; }
 
         th, td {
-            border: 0.5pt solid #000000;
+            border: 0.5pt solid var(--fg);
             padding: 4pt 6pt;
             text-align: left;
             vertical-align: top;
         }
 
         th {
-            background: #000000;
-            color: #ffffff;
+            background: var(--fg);
+            color: var(--surface);
             font-weight: bold;
             font-size: 8.5pt;
             text-transform: uppercase;
             letter-spacing: 0.3pt;
         }
 
-        tbody tr:nth-child(even) td { background: #f7f7f7; }
+        tbody tr:nth-child(even) td { background: var(--surface-2); }
 
         .num { text-align: right; font-variant-numeric: tabular-nums; }
 
@@ -132,7 +150,7 @@
             width: 26%;
             vertical-align: middle;
             text-align: center;
-            border: 1pt solid #000000;
+            border: 1pt solid var(--fg);
             padding: 12pt 8pt;
         }
         .score-cell-right {
@@ -155,26 +173,26 @@
         .badge {
             display: inline-block;
             padding: 1pt 5pt;
-            border: 0.5pt solid #000000;
+            border: 0.5pt solid var(--fg);
             font-size: 8pt;
             font-weight: bold;
             text-transform: uppercase;
         }
-        .badge-inv { background: #000000; color: #ffffff; }
+        .badge-inv { background: var(--fg); color: var(--surface); }
 
         .small { font-size: 8pt; }
-        .muted { color: #555555; }
+        .muted { color: var(--fg-2); }
         .nowrap { white-space: nowrap; }
 
         .signature {
             margin-top: 18pt;
-            border: 1pt solid #000000;
+            border: 1pt solid var(--fg);
             padding: 10pt 12pt;
             page-break-inside: avoid;
         }
         .signature-line {
             margin-top: 16pt;
-            border-top: 0.5pt solid #000000;
+            border-top: 0.5pt solid var(--fg);
             padding-top: 4pt;
             font-size: 8pt;
         }
@@ -183,7 +201,7 @@
             margin-top: 14pt;
             font-size: 8pt;
             text-align: center;
-            border-top: 0.5pt solid #000000;
+            border-top: 0.5pt solid var(--fg);
             padding-top: 4pt;
         }
 
@@ -480,7 +498,7 @@
                             {% set points = points|merge([(i * step)|round(1) ~ ',' ~ y|round(1)]) %}
                         {% endfor %}
                         <svg viewBox="0 0 100 24" width="80" height="20" class="sparkline" preserveAspectRatio="none">
-                            <polyline fill="none" stroke="#000000" stroke-width="1.2" points="{{ points|join(' ') }}"/>
+                            <polyline fill="none" stroke="var(--fg)" stroke-width="1.2" points="{{ points|join(' ') }}"/>
                         </svg>
                         <div class="small muted">n={{ sparkVals|length }} · {{ minVal }}–{{ maxVal }}</div>
                     {% else %}
