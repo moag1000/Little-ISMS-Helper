@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'admin' %}
+
+{% block title %}Preview: {{ config.name|default(preset) }} · {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+
+{% block body %}
+<main class="fa-aurora-surface">
+    {{ _fa_page_header.render({
+        badge:    { icon: 'eye', label: 'Preview' },
+        title:    config.name|default(preset),
+        subtitle: 'Inhalt des Industry-Presets vor Anwendung prüfen.',
+        actions: [
+            { label: 'Zurück', variant: 'ghost', icon: 'arrow-left', href: path('app_admin_industry_preset_index') }
+        ]
+    }) }}
+
+    <div class="row g-3">
+        <div class="col-12 col-lg-8">
+            <div class="card mb-3">
+                <div class="card-header"><h2 class="h5 mb-0">Beschreibung</h2></div>
+                <div class="card-body">
+                    <p class="text-muted">{{ config.description|default('—')|nl2br }}</p>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header"><h2 class="h5 mb-0">Module ({{ (config.modules|default([]))|length }})</h2></div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for module in config.modules|default([]) %}
+                            {% set isActive = module in active_modules %}
+                            <span class="badge {{ isActive ? 'bg-success' : 'bg-secondary' }}">
+                                {{ module }}{% if isActive %} <i class="bi bi-check-circle ms-1"></i>{% endif %}
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header"><h2 class="h5 mb-0">Frameworks ({{ (config.frameworks|default([]))|length }})</h2></div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr><th>Code</th><th>Priorität</th><th>Aktivieren</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for fw in config.frameworks|default([]) %}
+                                <tr>
+                                    <td><strong>{{ fw.code }}</strong></td>
+                                    <td><span class="badge bg-info-subtle text-info">{{ fw.priority|default('—') }}</span></td>
+                                    <td>{% if fw.activate ?? false %}<i class="bi bi-check-circle text-success"></i>{% else %}<span class="text-muted">optional</span>{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {% if config.initial_controls|default([])|length > 0 %}
+            <div class="card mb-3">
+                <div class="card-header"><h2 class="h5 mb-0">Initial-Controls ({{ config.initial_controls|length }})</h2></div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for c in config.initial_controls %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span><strong>{{ c.identifier }}</strong> — {{ c.name }}</span>
+                                <span class="badge bg-secondary">{{ c.implementation_status|default('not_started') }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if config.initial_documents|default([])|length > 0 %}
+            <div class="card mb-3">
+                <div class="card-header"><h2 class="h5 mb-0">Initial-Dokumente ({{ config.initial_documents|length }})</h2></div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for d in config.initial_documents %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>{{ d.title }}</span>
+                                <span class="badge bg-secondary">{{ d.type|default('policy') }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="card sticky-top" style="top: 1rem;">
+                <div class="card-header"><h2 class="h5 mb-0">Anwenden</h2></div>
+                <div class="card-body">
+                    <p class="small text-muted mb-3">
+                        Mit dem Anwenden werden Module aktiviert, Frameworks freigeschaltet
+                        und Initial-Controls/Dokumente persistent angelegt. Bestehende
+                        Datensätze bleiben unangetastet.
+                    </p>
+                    <form method="post" action="{{ path('app_admin_industry_preset_apply', { preset: preset }) }}"
+                          onsubmit="return confirm('Preset wirklich anwenden?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('industry_preset_' ~ preset) }}">
+                        <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary w-100">
+                            <i class="bi bi-rocket-takeoff"></i> Preset anwenden
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

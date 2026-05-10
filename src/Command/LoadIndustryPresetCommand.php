@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\Control;
 use App\Entity\Document;
 use App\Entity\Tenant;
+use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -37,6 +39,7 @@ class LoadIndustryPresetCommand
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
+        private readonly ?ModuleConfigurationService $moduleService = null,
     ) {
     }
 
@@ -76,13 +79,26 @@ class LoadIndustryPresetCommand
             $io->warning('No tenant resolved — controls/documents will be skipped. Pass --tenant-id=N to apply.');
         }
 
-        // Modules
+        // V3 W2-M3: Module activation — append preset modules to active_modules.yaml
+        $modulesActivated = [];
         $io->section('Modules to enable');
         foreach ($config['modules'] ?? [] as $module) {
             $io->writeln('  - ' . $module);
         }
+        if (!$dryRun && $this->moduleService !== null && !empty($config['modules'])) {
+            $current = $this->moduleService->getActiveModules();
+            $merged = array_values(array_unique(array_merge($current, $config['modules'])));
+            if (count($merged) !== count($current)) {
+                $modulesActivated = array_values(array_diff($merged, $current));
+                $this->moduleService->saveActiveModules($merged);
+                $io->writeln(sprintf('  → Activated %d new modules', count($modulesActivated)));
+            }
+        }
 
-        // Frameworks
+        // V3 W2-M3: Framework activation — flip active=true on existing
+        // ComplianceFramework records or create skeletons. Mapping/requirement
+        // import remains a separate step (mapping-library or wizard).
+        $frameworksActivated = 0;
         $io->section('Frameworks');
         foreach ($config['frameworks'] ?? [] as $framework) {
             $io->writeln(sprintf(
@@ -91,6 +107,31 @@ class LoadIndustryPresetCommand
                 $framework['priority'] ?? '?',
                 ($framework['activate'] ?? false) ? 'activate' : 'optional',
             ));
+            if (!$dryRun && ($framework['activate'] ?? false)) {
+                $code = (string) ($framework['code'] ?? '');
+                if ($code === '') {
+                    continue;
+                }
+                $fwRepo = $this->entityManager->getRepository(ComplianceFramework::class);
+                $existing = $fwRepo->findOneBy(['code' => $code]);
+                if ($existing instanceof ComplianceFramework) {
+                    if ($existing->isActive() !== true) {
+                        $existing->setActive(true);
+                        $frameworksActivated++;
+                    }
+                } else {
+                    $fw = new ComplianceFramework();
+                    $fw->setCode($code);
+                    $fw->setName($code);
+                    $fw->setVersion('latest');
+                    $fw->setApplicableIndustry($config['name'] ?? 'all');
+                    $fw->setRegulatoryBody('—');
+                    $fw->setMandatory(($framework['priority'] ?? null) === 'primary');
+                    $fw->setActive(true);
+                    $this->entityManager->persist($fw);
+                    $frameworksActivated++;
+                }
+            }
         }
 
         // Risk categories
@@ -162,23 +203,24 @@ class LoadIndustryPresetCommand
             }
         }
 
-        if (!$dryRun && ($controlsCreated > 0 || $documentsCreated > 0)) {
+        if (!$dryRun && ($controlsCreated > 0 || $documentsCreated > 0 || $frameworksActivated > 0)) {
             $this->entityManager->flush();
         }
 
         $io->success(sprintf(
-            'Preset "%s" %s. Created %d controls, %d documents.',
+            'Preset "%s" %s. Activated %d modules, %d frameworks. Created %d controls, %d documents.',
             $preset,
             $dryRun ? 'previewed' : 'applied',
+            count($modulesActivated),
+            $frameworksActivated,
             $controlsCreated,
             $documentsCreated,
         ));
 
-        $io->note('Module activation and framework activation are surfaced in the
-            setup wizard / module-management UI. This command persists the
-            initial control/document skeletons only; admins must explicitly
-            enable modules in active_modules.yaml + activate frameworks via
-            the Compliance-Wizard.');
+        if (!$dryRun && count($modulesActivated) > 0) {
+            $io->note('Module list updated in config/active_modules.yaml — run
+                "php bin/console cache:clear" if running in production.');
+        }
 
         return Command::SUCCESS;
     }

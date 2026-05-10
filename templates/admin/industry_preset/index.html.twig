@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'admin' %}
+
+{% block title %}Industry-Presets · {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_empty_state.html.twig' as _fa_empty_state %}
+
+{% block body %}
+<main class="fa-aurora-surface">
+    {{ _fa_page_header.render({
+        badge:    { icon: 'collection', label: 'Setup' },
+        title:    'Industry-Presets',
+        subtitle: 'Branchen-Vorlagen für Module, Frameworks, Controls und Dokumente — in einem Schritt anwenden.',
+        actions: [
+            { label: 'Admin-Hub', variant: 'ghost', icon: 'arrow-left', href: path('admin_hub_index') }
+        ]
+    }) }}
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            {% include '_components/_fa_alert.html.twig' with { variant: label == 'error' ? 'danger' : label, content: message } only %}
+        {% endfor %}
+    {% endfor %}
+
+    {% if presets|length == 0 %}
+        {{ _fa_empty_state.render({
+            mood: 'idle',
+            title: 'Keine Presets gefunden',
+            text: 'In fixtures/library/presets/ liegen keine YAML-Dateien.'
+        }) }}
+    {% else %}
+        <div class="row g-3">
+            {% for preset in presets %}
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h2 class="h5 mb-1">{{ preset.name }}</h2>
+                            <small class="text-muted">{{ preset.id }} · {{ preset.locale|upper }}</small>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted small mb-3">{{ preset.description|nl2br }}</p>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge bg-primary-subtle text-primary">
+                                    <i class="bi bi-box"></i> {{ preset.modules_count }} Modules
+                                </span>
+                                <span class="badge bg-info-subtle text-info">
+                                    <i class="bi bi-shield-check"></i> {{ preset.frameworks_count }} Frameworks
+                                </span>
+                                <span class="badge bg-success-subtle text-success">
+                                    <i class="bi bi-check2-square"></i> {{ preset.controls_count }} Controls
+                                </span>
+                                <span class="badge bg-warning-subtle text-warning">
+                                    <i class="bi bi-file-earmark-text"></i> {{ preset.documents_count }} Documents
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex gap-2 justify-content-end">
+                            <a href="{{ path('app_admin_industry_preset_preview', { preset: preset.id }) }}"
+                               class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                <i class="bi bi-eye"></i> Preview
+                            </a>
+                            <form method="post" action="{{ path('app_admin_industry_preset_apply', { preset: preset.id }) }}"
+                                  onsubmit="return confirm('Preset wirklich anwenden? Module + Frameworks werden aktiviert, Controls und Dokumente angelegt.');"
+                                  class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('industry_preset_' ~ preset.id) }}">
+                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
+                                    <i class="bi bi-rocket-takeoff"></i> Anwenden
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</main>
+{% endblock %}
