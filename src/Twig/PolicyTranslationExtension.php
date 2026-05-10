@@ -38,6 +38,7 @@ final class PolicyTranslationExtension extends AbstractExtension
         'iso27001'  => ['policy_iso27001', 'policy_iso27001_batch2', 'policy_iso27001_batch3', 'policy_iso27001_batch4', 'policy_iso27001_batch5'],
         'iso27701'  => ['policy_iso27701'],
         'bsi'       => ['policy_bsi_batch1', 'policy_bsi_batch2', 'policy_bsi_batch3', 'policy_bsi_batch4'],
+        'bsi'       => ['policy_bsi_batch1', 'policy_bsi_batch2', 'policy_bsi_batch3', 'policy_bsi_batch4', 'policy_bsi_batch5'],
         'bcm'       => ['policy_bcm_batch1', 'policy_bcm_batch2'],
         'dora'      => ['policy_dora'],
         'soc2'      => ['policy_soc2'],
