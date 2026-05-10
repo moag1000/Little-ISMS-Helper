@@ -429,6 +429,16 @@
         impact: impact_coverage|default({total: 0, frameworks: []}),
         entity_label: 'risk'
     } %}
+
+    {# V3 W2-H3: Comment-Thread adoption (C7 macro). #}
+    {% include '_components/_isms_comment_thread.html.twig' with {
+        comments: comments|default([]),
+        entityType: 'Risk',
+        entityId: risk.id,
+        showForm: canEdit is not defined or canEdit,
+        formAction: path('app_comment_post', {entityType: 'Risk', entityId: risk.id}),
+        csrfToken: csrf_token('isms-comment')
+    } only %}
 </div>
 
 <style>

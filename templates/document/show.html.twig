@@ -279,6 +279,16 @@
         {% endblock %}
     {% endembed %}
 
+    {# V3 W2-H3: Comment-Thread adoption (C7 macro). #}
+    {% include '_components/_isms_comment_thread.html.twig' with {
+        comments: comments|default([]),
+        entityType: 'Document',
+        entityId: document.id,
+        showForm: canEdit is not defined or canEdit,
+        formAction: path('app_comment_post', {entityType: 'Document', entityId: document.id}),
+        csrfToken: csrf_token('isms-comment')
+    } only %}
+
     {% if is_granted('ROLE_AUDITOR') and (canEdit is not defined or canEdit) %}
         {# Effectiveness-Review Modal — Bootstrap modal (lazy-loaded
            via the existing modal-pattern documented in CLAUDE.md). #}

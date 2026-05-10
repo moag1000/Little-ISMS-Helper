@@ -89,6 +89,16 @@
         {% endblock %}
     {% endembed %}
 
+    {# V3 W2-H3: Comment-Thread adoption (C7 macro). #}
+    {% include '_components/_isms_comment_thread.html.twig' with {
+        comments: comments|default([]),
+        entityType: 'AuditFinding',
+        entityId: finding.id,
+        showForm: true,
+        formAction: path('app_comment_post', {entityType: 'AuditFinding', entityId: finding.id}),
+        csrfToken: csrf_token('isms-comment')
+    } only %}
+
     <form method="post" action="{{ path('app_audit_finding_delete', {id: finding.id}) }}" class="mt-4"
           data-controller="ui-actions"
           data-action="submit->ui-actions#confirm"

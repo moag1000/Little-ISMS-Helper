@@ -2109,3 +2109,11 @@ file_upload:
 
 pdf_switch:
     also_available: 'Auch verfügbar in'
+
+# V3 W2-H3: Comment-Thread macro (templates/_components/_isms_comment_thread.html.twig)
+comments:
+    section_title: 'Kommentare'
+    empty: 'Noch keine Kommentare.'
+    label: 'Kommentar'
+    placeholder: 'Kommentar verfassen...'
+    submit: 'Senden'

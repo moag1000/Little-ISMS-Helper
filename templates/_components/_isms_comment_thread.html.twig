@@ -17,11 +17,11 @@
 {% set _comments = comments|default([]) %}
 {% set _showForm = showForm|default(true) %}
 
-<section class="fa-section mb-3" aria-label="Kommentare">
+<section class="fa-section mb-3" aria-label="{{ 'comments.section_title'|trans({}, 'messages') }}">
     <div class="fa-section__header">
         <h2 class="fa-section__title">
             <i class="fa-icon fa-icon--ui-chat" aria-hidden="true"></i>
-            Kommentare
+            {{ 'comments.section_title'|trans({}, 'messages') }}
             <span class="badge bg-secondary ms-2">{{ _comments|length }}</span>
         </h2>
     </div>
@@ -50,24 +50,24 @@
             {% endfor %}
         </div>
         {% else %}
-            <p class="text-muted mb-0">Noch keine Kommentare.</p>
+            <p class="text-muted mb-0">{{ 'comments.empty'|trans({}, 'messages') }}</p>
         {% endif %}
 
         {% if _showForm and formAction is defined %}
         <form method="post" action="{{ formAction }}" class="isms-comment-form mt-3">
             <input type="hidden" name="_token" value="{{ csrfToken|default('') }}">
-            <label for="comment-body-{{ entityType|lower }}-{{ entityId }}" class="form-label visually-hidden">Kommentar</label>
+            <label for="comment-body-{{ entityType|lower }}-{{ entityId }}" class="form-label visually-hidden">{{ 'comments.label'|trans({}, 'messages') }}</label>
             <textarea
                 id="comment-body-{{ entityType|lower }}-{{ entityId }}"
                 name="body"
                 class="form-control fa-cyber-input__field"
                 rows="3"
                 required
-                placeholder="Kommentar verfassen..."></textarea>
+                placeholder="{{ 'comments.placeholder'|trans({}, 'messages') }}"></textarea>
             <div class="d-flex justify-content-end">
                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--primary fa-cyber-btn--sm">
                     <i class="fa-icon fa-icon--ui-send" aria-hidden="true"></i>
-                    Senden
+                    {{ 'comments.submit'|trans({}, 'messages') }}
                 </button>
             </div>
         </form>

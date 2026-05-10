@@ -8,6 +8,7 @@ use App\Entity\AuditFinding;
 use App\Entity\Tenant;
 use App\Form\AuditFindingType;
 use App\Repository\AuditFindingRepository;
+use App\Repository\CommentRepository;
 use App\Service\AuditLogger;
 use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,6 +30,7 @@ class AuditFindingController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
+        private readonly ?CommentRepository $commentRepository = null,
     ) {
     }
 
@@ -96,8 +98,17 @@ class AuditFindingController extends AbstractController
     {
         $this->denyIfWrongTenant($finding);
 
+        // V3 W2-H3: Comment-Thread (C7) — load thread for this AuditFinding.
+        $tenant = $this->tenantContext->getCurrentTenant();
+        $comments = [];
+        if ($this->commentRepository !== null && $tenant instanceof Tenant && $finding->getId() !== null) {
+            $comments = $this->commentRepository->findThread($tenant, 'AuditFinding', $finding->getId());
+        }
+
         return $this->render('audit_finding/show.html.twig', [
             'finding' => $finding,
+            // V3 W2-H3: Comments thread + form action
+            'comments' => $comments,
         ]);
     }
 
