@@ -3,6 +3,16 @@ policy_wizard:
     subtitle: Generate your policy framework with minimal typing
     badge: ISMS
 
+    # User mandate (2026-05-08): Aurora flash when routing a policy
+    # approval to top management (ROLE_TOP_MGMT, "Geschäftsführung").
+    approval_routing:
+        top_management_assigned: 'Approval for "%document%" routed to top management (%user%).'
+        top_management_assigned_short: 'Approval routed to top management'
+    # SoA auto-update on document generation — Aurora flash + audit-trail strings.
+    soa_auto_update:
+        bumped: 'SoA entry %control% bumped from "%old_status%" to "%new_status%" by Policy Wizard.'
+        self_assessment: 'Self-assessment: only one active user in tenant — implementation status for %control% recorded as self-assessment in the audit trail.'
+
     # Topic-key translations (24 ISO 27002:2022 topics + cross-cutting).
     topic:
         top_level: 'Top-level policy (ISO 27001 Cl. 5.2)'

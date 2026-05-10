@@ -13,6 +13,7 @@ use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Repository\EntityTagRepository;
+use App\Repository\UserRepository;
 use App\Repository\WorkflowRepository;
 use App\Service\AuditLogger;
 use App\Service\TenantSettingResolver\TenantSettingResolver;
@@ -60,6 +61,14 @@ final class ApprovalKickoffService
     private const string AUDIT_TAG = 'policy-approval';
     private const string TENANT_SETTING_DUAL_SIGNOFF = 'bulk_approval_dual_signoff';
 
+    /**
+     * Canonical role-name for the Top-Management persona (Geschäftsführung).
+     * Mirrored in {@see \App\Security\Voter\PolicyWizardVoter::canBulkApprove}
+     * so the bulk-approval voter and the kickoff-router agree on what
+     * "GF user" means for routing + permission decisions.
+     */
+    private const string ROLE_TOP_MGMT = 'ROLE_TOP_MGMT';
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly WorkflowRepository $workflowRepository,
@@ -67,6 +76,7 @@ final class ApprovalKickoffService
         private readonly ?TenantSettingResolver $tenantSettingResolver = null,
         private readonly LoggerInterface $logger = new NullLogger(),
         private readonly ?EntityTagRepository $entityTagRepository = null,
+        private readonly ?UserRepository $userRepository = null,
     ) {
     }
 
@@ -135,6 +145,24 @@ final class ApprovalKickoffService
             'tag'         => self::AUDIT_TAG,
         ]);
 
+        // User-mandate (2026-05-08): when the tenant has a Top-Management
+        // user (ROLE_TOP_MGMT, "Geschäftsführung"), route the approval
+        // chain explicitly to that user so a GF-Freigabeflow is emitted.
+        // Recorded in approval-history (no per-instance assignedTo column
+        // exists on WorkflowInstance) + an explicit audit-event so the
+        // dispatch shows up unambiguously in the trail.
+        $topMgmtApprover = $this->resolveTopManagementApprover($document->getTenant());
+        if ($topMgmtApprover instanceof User) {
+            $instance->addApprovalHistoryEntry([
+                'event'                 => 'approval_routed_to_top_management',
+                'top_management_user_id' => $topMgmtApprover->getId(),
+                'document_id'           => $document->getId(),
+                'wizard_run_id'         => $run?->getId(),
+                'at'                    => (new DateTimeImmutable())->format(DATE_ATOM),
+                'tag'                   => self::AUDIT_TAG,
+            ]);
+        }
+
         // §9.2.1 defang #2: regulated tenants force dual sign-off ON.
         // W4-A Task 4: DORA-supervised tenants override the resolver
         // result. Detection scans for any persisted Document carrying
@@ -182,7 +210,69 @@ final class ApprovalKickoffService
             ),
         );
 
+        // User-mandate emission: separate audit-event for the GF-routing
+        // so `policy_wizard.approval_routed_to_top_management` lands in
+        // the trail alongside the generic kickoff event.
+        if ($topMgmtApprover instanceof User) {
+            $this->auditLogger->logCustom(
+                action: 'policy_wizard.approval_routed_to_top_management',
+                entityType: 'Document',
+                entityId: $document->getId(),
+                oldValues: null,
+                newValues: [
+                    'user_id'              => $topMgmtApprover->getId(),
+                    'document_id'          => $document->getId(),
+                    'wizard_run_id'        => $run?->getId(),
+                    'workflow_instance_id' => $instance->getId(),
+                    'tag'                  => self::AUDIT_TAG,
+                ],
+                description: sprintf(
+                    '[%s] Approval routed to ROLE_TOP_MGMT user #%d for Document #%d',
+                    self::AUDIT_TAG,
+                    $topMgmtApprover->getId() ?? 0,
+                    $document->getId() ?? 0,
+                ),
+            );
+        }
+
         return $instance;
+    }
+
+    /**
+     * Resolve the Top-Management approver for the tenant.
+     *
+     * Returns the first active User carrying {@see self::ROLE_TOP_MGMT}
+     * (Geschäftsführung) within the tenant, or null when no such user
+     * exists. Falls back to null on missing repository (legacy unit
+     * tests instantiate the service without UserRepository) or on any
+     * read-side error so kickoff cannot be blocked by a routing-pipeline
+     * hiccup — the regular default-approver-chain takes over.
+     */
+    private function resolveTopManagementApprover(?Tenant $tenant): ?User
+    {
+        if (!$tenant instanceof Tenant || $this->userRepository === null) {
+            return null;
+        }
+        try {
+            $candidates = $this->userRepository->findByRoleInTenant(self::ROLE_TOP_MGMT, $tenant);
+        } catch (Throwable $error) {
+            $this->logger->warning(
+                'PolicyWizard ApprovalKickoff: top-management approver resolution failed; falling back to default chain',
+                [
+                    'tenant_id' => $tenant->getId(),
+                    'role'      => self::ROLE_TOP_MGMT,
+                    'error'     => $error->getMessage(),
+                ],
+            );
+            return null;
+        }
+
+        foreach ($candidates as $candidate) {
+            if ($candidate instanceof User) {
+                return $candidate;
+            }
+        }
+        return null;
     }
 
     private function stepByName(Workflow $workflow, string $name): ?WorkflowStep

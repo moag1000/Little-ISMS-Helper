@@ -3,6 +3,16 @@ policy_wizard:
     subtitle: Regelwerk-Generierung mit minimalem Tipp-Aufwand
     badge: ISMS
 
+    # User-Mandate (2026-05-08): Aurora-Flash beim Routen einer
+    # Policy-Freigabe an die Geschäftsführung (ROLE_TOP_MGMT).
+    approval_routing:
+        top_management_assigned: 'Freigabe für "%document%" wurde an die Geschäftsführung (%user%) geleitet.'
+        top_management_assigned_short: 'Freigabe an Geschäftsführung geleitet'
+    # SoA-Auto-Update bei Dokumentengenerierung — Aurora-Flash + Audit-Trail-Strings.
+    soa_auto_update:
+        bumped: 'SoA-Eintrag %control% von "%old_status%" auf "%new_status%" angehoben (Policy-Wizard).'
+        self_assessment: 'Selbstbewertung: Einziger Nutzer im Mandanten — Umsetzungsgrad %control% wurde im Audit-Trail als Self-Assessment markiert.'
+
     # Topic-Schluessel-Uebersetzungen (24 ISO 27002:2022 Topics + Cross-Cutting).
     # Verwendet im Bestandsaufnahme-Picker, im Targeted-Re-Run-Topic-Picker
     # und in DocumentGenerator-Vorschauen. Quelle: PolicyWizardTopicCatalogue.
