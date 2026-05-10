@@ -4,7 +4,7 @@
 
 <img src="public/logo.svg" alt="Little ISMS Helper" width="280" />
 
-**Multi-Tenant ISMS-Plattform mit Multi-Framework-Compliance -- ISO 27001:2022, NIS2, DORA, TISAX, BSI IT-Grundschutz und 20 weitere Frameworks.**
+**Multi-Tenant ISMS-Plattform mit Multi-Framework-Compliance -- ISO 27001:2022, NIS2, DORA, TISAX, BSI IT-Grundschutz und 21 weitere Frameworks.**
 
 [![PHP 8.4+](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
 [![Symfony 7.4](https://img.shields.io/badge/Symfony-7.4-000000?logo=symfony&logoColor=white)](https://symfony.com/)
@@ -15,7 +15,9 @@
 ![Frameworks](https://img.shields.io/badge/Frameworks-25_komplett-informational)
 ![Controls](https://img.shields.io/badge/ISO%2027001%20Controls-93-informational)
 ![Tests](https://img.shields.io/badge/Tests-4%2C300%2B-informational)
-![Mappings](https://img.shields.io/badge/Cross--Framework--Mappings-3%2C500%2B-informational)
+![Mappings](https://img.shields.io/badge/Cross--Framework--Mappings-3%2C543-informational)
+![Wizards](https://img.shields.io/badge/Compliance--Wizards-22-informational)
+![BSI-Bausteine](https://img.shields.io/badge/BSI--Bausteine-106-informational)
 
 [Funktionen](#funktionen) |
 [Quick Start](#quick-start) |
@@ -90,13 +92,35 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 
 ---
 
+## Was ist neu in v3.5?
+
+| Bereich | Neuerung |
+|---|---|
+| **22 Compliance-Wizards** | 4 neue Wizards (BSI C5:2026, EUCS, EU CRA, MRIS v1.5); WizardSession 22 Slots |
+| **Wizard-History-Diff-View** | Zwei Snapshots vergleichen, Compare-PDF-Export |
+| **Industry-Preset Express-Path** | Tag-1-Onboarding in 3 Fragen -- Module und Baselines werden automatisch aktiviert |
+| **106 BSI IT-Grundschutz-Bausteine** | Vollstaendiger Baustein-Katalog (vorher 15 Beispiel-Bausteine) |
+| **3.543 Cross-Framework-Mappings** | 56 kuratierte YAML-Bibliotheken; Lex-Specialis-Markierungen |
+| **5 Persona-Dashboards** | CISO, Risk-Manager, DPO, Compliance-Manager, Auditor -- rollenspezifisch verkabelt |
+| **19-Bucket Mein-Tag-Inbox** | Vollstaendige Inbox-Aggregation aus allen Modulen (vorher 7 Buckets) |
+| **Activity-Feed** | Neue Vollansicht `/de/activity-feed` mit Scope-Filter, CSV-Export, HMAC-Verknuepfung |
+| **Quick-Fix-Operator-UI** | Web-UI fuer Migrationen, Schema-Reconcile und Daten-Repair ohne CLI |
+| **14 neue Operational Modules** | BCM-Plan, Krisenstab, BC-Uebungen, Patch, Vuln, Threat-Intel, Change-Requests, Physical-Access, Crypto, Prototype-Protection, Monitoring, Scheduled-Reports, Supplier, Locations |
+| **5 Auto-Reaction-Listener** | DPIA / Training / Risk-Skeleton / Corrective-Action / Acknowledgement -- Workflow-Schritt-Abschluss loest Folgeobjekte aus |
+| **CSRF-Haertung** | 16 Forms + 6 Controller gehaertet; CommentController mit Cross-Tenant-Validation |
+| **Tenant-Scope-Guard Workflow** | Auto-Progression prueft Tenant-Zugehoerigkeit vor Ausfuehrung |
+| **180 Uebersetzungsdateien / 90 Domaenen** | Vollstaendige i18n-Abdeckung aller neuen Features (DE + EN) |
+
+---
+
 ## Funktionen
 
 ### Compliance und Frameworks
 
 - **ISO 27001:2022** -- Alle 93 Annex-A-Controls und Clauses 4-10 vollstaendig abgedeckt
-- **25 Compliance-Frameworks (vollstaendige Kataloge in der DB)** -- ISO 27001:2022 (93 Annex A), BSI IT-Grundschutz (221), BSI C5:2020 (121), BSI C5:2026 (168, BSI YAML verbatim), NIS2 (85, alle 46 Articles + Art. 21(2) Sub-Letters + Art. 23 Timeline), NIS2-UmsuCG (47, BGBl. 2025 I Nr. 301), DORA (315, Level-1 Articles + Level-2 RTS/ITS/CIR), TISAX (114), GDPR (alle 99 Articles), EU AI Act (alle 113 Articles + 13 Annexe), EU CRA (Annex I + Operative Articles), NIST CSF 2.0 (alle 106 Subcategories), SOC 2 (50), PCI-DSS 4.0.1 (75), ISO 27701:2025 (Annex A + B + Klauseln), ISO 22301 (25), ISO 42001 (Annex A + Klauseln), ISO 27017 (CLD-Erweiterungen + 27002 Cloud-Guidance, 121), ISO 27018 (Annex A + 27002 PII-Guidance, 143), KRITIS, ENISA-EUCS (Mapping-derived bis ENISA Final), MRIS v1.5, BAIT (legacy via DORA obsolet)
-- **Cross-Framework-Mapping** -- 56 kuratierte Mapping-Fixtures (~3.500 persistente Mappings), Lex-Specialis-Markierung wo zutreffend (DORA <-> NIS2, NIS2-UmsuCG <-> DORA fuer DE-Finanzdienstleister), 4-stufiger Lifecycle (draft -> review -> approved -> published) mit Provenance-Block je Mapping. Transitive Compliance-Ableitung -- ein Nachweis bedient mehrere Frameworks gleichzeitig (Data-Reuse-Prinzip)
+- **25 Compliance-Frameworks (vollstaendige Kataloge in der DB)** -- ISO 27001:2022 (93 Annex A), BSI IT-Grundschutz (106 Bausteine, vollstaendiger Katalog), BSI C5:2020 (121), BSI C5:2026 (168, BSI YAML verbatim), NIS2 (85, alle 46 Articles + Art. 21(2) Sub-Letters + Art. 23 Timeline), NIS2-UmsuCG (47, BGBl. 2025 I Nr. 301), DORA (315, Level-1 Articles + Level-2 RTS/ITS/CIR), TISAX (114), GDPR (alle 99 Articles), EU AI Act (alle 113 Articles + 13 Annexe), EU CRA (Annex I + Operative Articles), NIST CSF 2.0 (alle 106 Subcategories), SOC 2 (50), PCI-DSS 4.0.1 (75), ISO 27701:2025 (Annex A + B + Klauseln), ISO 22301 (25), ISO 42001 (Annex A + Klauseln), ISO 27017 (CLD-Erweiterungen + 27002 Cloud-Guidance, 121), ISO 27018 (Annex A + 27002 PII-Guidance, 143), KRITIS, ENISA-EUCS (Mapping-derived bis ENISA Final), MRIS v1.5, BAIT (legacy via DORA obsolet)
+- **Cross-Framework-Mapping** -- 56 kuratierte Mapping-Fixtures (~3.543 persistente Mappings), Lex-Specialis-Markierung wo zutreffend (DORA <-> NIS2, NIS2-UmsuCG <-> DORA fuer DE-Finanzdienstleister), 4-stufiger Lifecycle (draft -> review -> approved -> published) mit Provenance-Block je Mapping. Transitive Compliance-Ableitung -- ein Nachweis bedient mehrere Frameworks gleichzeitig (Data-Reuse-Prinzip)
+- **22 Compliance-Wizards** -- ISO 27001, NIS2, DORA, TISAX, GDPR, ISO 22301, ISO 27701, ISO 27017, ISO 27018, ISO 42001, BSI IT-Grundschutz, BSI C5:2020, BSI C5:2026, NIST CSF 2.0, KRITIS, PCI-DSS 4.0.1, SOC 2, EU AI Act, EUCS, EU CRA, MRIS v1.5, Industry-Preset-Express
 - **Maturity-Reife je Wizard** -- Baseline (KMU-pragmatisch) und Enhanced (audit-ready) als ausklappbare Narrative pro Kategorie in NIS2, DORA, GDPR, EU AI Act
 - **Catalogue-Coverage-KPI** -- Wizard-Result zeigt zusaetzlich zur Score `X / Y Anforderungen aus dem Framework-Katalog erfuellt` als Fortschrittsbalken
 - **Branchen-Baselines** -- 9 vorkonfigurierte Starter-Pakete (Generic, Production, Finance, KRITIS-Health, Automotive, Cloud, MSP, IT-Service, Hosting) fuer sofortigen Einstieg
@@ -154,10 +178,12 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 ### Setup und Onboarding
 
 - **Setup-Wizard** -- 12 Schritte (Welcome -> Requirements -> Datenbank -> Backup-Restore -> Admin-User -> Email -> Organisation -> Module -> Compliance-Frameworks -> Stammdaten -> Sample-Data -> Abschluss) im einheitlichen Aurora-Layout
+- **Industry-Preset Express-Path** -- 3-Fragen-Onboarding (Branche + Groesse + Zertifizierungen) aktiviert automatisch relevante Module und Branchen-Baselines (Tag-1-Onboarding)
 - **3-Bucket-Applicability** -- Frameworks automatisch in Pflicht / Empfohlen / Optional klassifiziert
 - **Guided Tours** -- Rollenbezogene Einfuehrungen (Junior, ISB, CISO, Auditor, Compliance Manager)
 - **Command Palette** -- Cmd+K / Ctrl+K fuer schnellen Zugriff
-- **Mein-Tag-Inbox** -- Zentrale Inbox aggregiert 7 Quellen (Workflow-Approvals, 4-Eyes, Audit-Findings, DSR-Requests, Policy-Acks, Notifications, Activity-Feed)
+- **Mein-Tag-Inbox** -- Zentrale Inbox aggregiert 19 Buckets aus allen Modulen (Workflow-Inbox, 4-Eyes, Audit-Findings, DSR-Requests, Policy-Acks, Risk-Reviews, Patch-Deadlines, Control-Evidence, Training, Incidents, BCM und mehr)
+- **Quick-Fix-Operator-UI** -- Web-UI unter `/quick-fix` fuer Migrationen anwenden, Schema reconcilen und Daten-Integritaet reparieren -- kein CLI-Zugriff erforderlich fuer Routinebetrieb
 
 ### Sicherheit und Administration
 
@@ -167,6 +193,13 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 - **Audit-Log** -- HMAC-SHA256-Chain, tamper-evident, NIS2-konform
 - **Audit-Freeze** -- SHA-256-versiegeltes Compliance-Abbild zum Stichtag
 - **Backup/Restore** -- AES-256-GCM-Verschluesselung, Tenant-Scoping, DR-Runbook
+
+### Persona-Dashboards und Workflow-Inbox
+
+- **5 Persona-Rollen** -- CISO, Risk-Manager, DPO, Compliance-Manager, Auditor mit je eigenem rollenspezifischen Dashboard
+- **Board-Dashboard** -- Druckoptimierte Management-Ansicht (PDF-Export) fuer Geschaeftsfuehrung und Aufsichtsgremien
+- **Activity-Feed** -- Chronologische Event-Uebersicht aus allen Modulen; `?scope=compliance` filtert auf Compliance-relevante Events
+- **Workflow-Inbox-Aggregation** -- Alle offenen Workflow-Schritte aller Typen in einer Ansicht
 
 ### Design und Barrierefreiheit
 
@@ -376,6 +409,17 @@ php bin/console isms:load-annex-a-controls --env=test
 | [Quickstart](docs/QUICKSTART.md) | Vom Klon zum laufenden ISMS in 30 Min — Setup-Wizard 11 Schritte mit Screenshots |
 | [Sichtwechsel](docs/sichtwechsel/README.md) | Sechs Persona-Perspektiven aufs Tool — ISB, CISO, Compliance-Manager, Junior, Risk-Owner, Auditor |
 | [Junior-Walkthrough](docs/JUNIOR_IMPLEMENTER_WALKTHROUGH.md) | Detail-Walkthrough aus 9001-Quereinsteiger-Sicht |
+
+### Benutzerhandbuecher (v3.5 neu)
+
+| Dokument | Thema |
+|---|---|
+| [Compliance-Wizard](docs/user-guide/COMPLIANCE_WIZARD.md) | 22 Wizards, WizardSession, Diff-View, Industry-Preset Express-Path, Cross-Framework-Mapping-Hub |
+| [Persona-Dashboards](docs/user-guide/PERSONA_DASHBOARDS.md) | 5 Rollen-Dashboards (CISO, Risk-Manager, DPO, CM, Auditor), Mega-Menu-Gating |
+| [Mein Tag](docs/user-guide/MEIN_TAG.md) | 19 Buckets, Visibility-Gating, Workflow-Inbox-Aggregation, Auto-Reactions |
+| [Activity-Feed](docs/user-guide/ACTIVITY_FEED.md) | Scope-Filter, Datenquellen, CSV-Export, Tamper-Evidenz-Verknuepfung |
+| [Quick-Fix-Operator-UI](docs/user-guide/QUICK_FIX.md) | Migrationen, Schema-Reconcile, Daten-Repair, Guard-Konfiguration |
+| [Modulverwaltung](docs/user-guide/MODULE_AKTIVIERUNG.md) | Module aktivieren und konfigurieren (User-Guide) |
 
 ### Setup und Deployment
 

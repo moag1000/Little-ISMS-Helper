@@ -50,11 +50,68 @@ The system has three layers:
 | `tisax` | TISAX (Auto-Industrie) | "Auto-Industrie-Lieferkette?" | VDA ISA |
 | `quantitative_risk` | Quantitative Risk (FAIR/CRQ) | "Quantitative Risk-Analyse gewünscht?" | FAIR methodology |
 
+### 14 Operational Modules (added v3.5)
+
+These modules gate features that were previously always-on but are now
+selectively activatable per tenant to reduce UI noise for smaller deployments.
+
+| Key | Name | Gated Feature Area |
+|---|---|---|
+| `bcm_plans` | BC-Plaene | Business-Continuity-Plan CRUD + Exercise scheduling |
+| `crisis_team` | Krisenstab | Crisis team roles + escalation paths (BSI 200-4) |
+| `bc_exercises` | BCM-Uebungen | Exercise management + post-exercise reporting |
+| `patch_mgmt` | Patch-Management | CVE/CVSS-Tracking, patch deadlines, NIS2 Art. 21(2)(e) |
+| `vulnerability_mgmt` | Schwachstellenmanagement | Vulnerability lifecycle, CVSS scoring, remediation |
+| `threat_intel` | Threat Intelligence | MITRE ATT&CK mapping, threat actor tracking |
+| `change_requests` | Aenderungsmanagement | Change-Request workflow, impact assessment |
+| `physical_access` | Physischer Zugang | Physical access logs, zone management |
+| `crypto_mgmt` | Kryptographie-Management | Key lifecycle, cipher registry (ISO 27001 A.8.24) |
+| `prototype_protection` | Prototypenschutz | TISAX-spezifisch: prototype and R&D asset protection |
+| `monitoring` | Security-Monitoring | Security event tracking, alert rules |
+| `scheduled_reports` | Geplante Berichte | Automated report scheduling + email delivery |
+| `supplier_mgmt` | Lieferantenmanagement | Supplier assessment, contract review, ISO 27001 A.5.19 |
+| `locations` | Standortverwaltung | Physical locations + asset-location-mapping |
+
 ### 1 Standalone Module
 
 | Key | Name | Notes |
 |---|---|---|
 | `bsi_grundschutz` | BSI IT-Grundschutz | Eigenständige BSI-Methodik, separates Modul |
+
+---
+
+## Wizard-Module-Mapping
+
+Compliance-Wizards activate relevant modules automatically upon completion
+(with user confirmation). The `IndustryPresetService` activates modules
+for Industry-Preset-Express-Path selections without a full wizard run.
+
+| Wizard | Auto-activated Modules |
+|---|---|
+| GDPR / ISO 27701 | `privacy` |
+| DORA / NIS2 | `nis2_dora` |
+| BSI IT-Grundschutz | `bsi_grundschutz` |
+| ISO 42001 / EU AI Act | `ai_governance` |
+| ISO 27017 / BSI C5 / C5:2026 | `cloud_security` |
+| ISO 22301 / BCM | `bcm`, `bcm_plans`, `bc_exercises` |
+| TISAX | `tisax`, `prototype_protection` |
+| Industry-Preset (Finance) | `nis2_dora`, `marisk`, `vulnerability_intel` |
+| Industry-Preset (Healthcare / KRITIS) | `nis2_dora`, `privacy`, `bcm` |
+| Industry-Preset (Cloud/Hosting) | `cloud_security`, `nis2_dora`, `vulnerability_intel` |
+| Industry-Preset (Automotive) | `tisax`, `prototype_protection` |
+
+---
+
+## Industry-Preset-Service Auto-Activation
+
+`IndustryPresetService` reads the three Express-Path answers (industry,
+size, existing certifications) and calls `ModuleConfigurationService::activateModules()`
+with the corresponding module set. Modules are activated for the current
+tenant and persisted to `config/active_modules.yaml` (or the DB override
+table if multi-tenant overrides are enabled).
+
+All auto-activated modules generate an audit log entry
+(`module.auto_activated`) with the triggering preset name.
 
 ---
 
