@@ -12,9 +12,12 @@ use App\Repository\DocumentRepository;
 use App\Service\DocumentService;
 use App\Service\FileUploadSecurityService;
 use App\Service\InverseCoverageService;
+use App\Entity\User;
+use App\Service\AuditLogger;
 use App\Service\PolicyWizard\AuditorScoreCalculator;
 use App\Service\PolicyWizard\Diff\SettingsDriftDetector;
 use App\Service\SecurityEventLogger;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -44,6 +47,7 @@ class DocumentController extends AbstractController
         private readonly ?InverseCoverageService $inverseCoverageService = null,
         private readonly ?SettingsDriftDetector $settingsDriftDetector = null,
         private readonly ?AuditorScoreCalculator $auditorScoreCalculator = null,
+        private readonly ?AuditLogger $auditLogger = null,
     ) {}
 
     #[Route('/document/', name: 'app_document_index')]
@@ -536,11 +540,55 @@ class DocumentController extends AbstractController
             return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
         }
 
+        // Snapshot the current policyBody BEFORE form binding so we can
+        // detect post-generation edits + emit an audit-trail event.
+        $policyBodyBefore = $document->getPolicyBody();
+
         $form = $this->createForm(DocumentType::class, $document);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $policyBodyAfter = $document->getPolicyBody();
+
+            // Track post-generation edits to the wizard-generated body.
+            // The change-detection compares the persisted body BEFORE
+            // the form bound the new value against the new value. Only
+            // a real diff updates the audit columns + audit-trail entry
+            // — saving the form without touching the textarea is a
+            // no-op for the policy-body audit (other fields still flush).
+            $bodyChanged = $form->has('policyBody') && $policyBodyBefore !== $policyBodyAfter;
+            if ($bodyChanged) {
+                $document->setPolicyBodyEditedAt(new DateTimeImmutable());
+                if ($user instanceof User) {
+                    $document->setPolicyBodyEditedBy($user);
+                }
+            }
+
             $this->entityManager->flush();
+
+            if ($bodyChanged && $this->auditLogger !== null) {
+                $beforeLen = is_string($policyBodyBefore) ? strlen($policyBodyBefore) : 0;
+                $afterLen = is_string($policyBodyAfter) ? strlen($policyBodyAfter) : 0;
+                $delta = $afterLen - $beforeLen;
+                $this->auditLogger->logCustom(
+                    action: 'policy_body_edited',
+                    entityType: 'Document',
+                    entityId: $document->getId(),
+                    oldValues: [
+                        'policy_body_chars' => $beforeLen,
+                    ],
+                    newValues: [
+                        'policy_body_chars' => $afterLen,
+                        'chars_delta' => $delta,
+                        'cleared' => $afterLen === 0,
+                    ],
+                    description: sprintf(
+                        'Policy body of Document #%d edited (%+d chars)',
+                        (int) $document->getId(),
+                        $delta,
+                    ),
+                );
+            }
 
             $this->addFlash('success', $this->translator->trans('document.success.updated'));
             return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);

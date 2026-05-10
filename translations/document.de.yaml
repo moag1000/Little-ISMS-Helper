@@ -138,3 +138,13 @@ document:
     drag_files: 'Dateien hierher ziehen oder klicken zum Hochladen'
     validation:
         mime_types: 'Bitte wählen Sie eine gültige Datei (PDF, Word, Excel, Bild oder Text)'
+    policy_body:
+        section_title: 'Policy-Body bearbeiten (lokale Anpassung)'
+        label: 'Policy-Body (lokale Anpassung)'
+        help: 'Markdown unterstützt. Leer lassen = Wizard-Standard verwenden. Diese Anpassung wird bei der nächsten Wizard-Re-Generierung erkannt; Konflikte werden im Diff angezeigt.'
+        edited_by: 'Zuletzt bearbeitet von %name% am %date%'
+        regen_warning_title: 'Re-Generierungs-Verhalten'
+        regeneration_conflict_warning: 'Bei einem erneuten Wizard-Lauf wird Ihre Anpassung erkannt: der angepasste Body bleibt erhalten, eine neue Wizard-Standard-Version wird als versionierte Nachfolge erstellt. Konflikte werden im Re-Generation-Diff (W7-C) sichtbar.'
+        drift_badge:
+            label: 'Lokal angepasst'
+            tooltip: 'Diese Policy hat tenant-spezifische Anpassungen — sie weicht vom Wizard-Standard ab.'

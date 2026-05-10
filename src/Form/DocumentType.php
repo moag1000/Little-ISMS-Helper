@@ -13,6 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
@@ -128,6 +130,31 @@ class DocumentType extends AbstractType
                 'help' => 'document.help.file',
             ])
         ;
+
+        // Editable policy body — only for wizard-generated documents.
+        // The field is added conditionally via PRE_SET_DATA so it
+        // never surfaces on uploaded files (would be confusing) and
+        // never on freshly-uploaded forms (no template provenance yet).
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, static function (FormEvent $event): void {
+            $data = $event->getData();
+            if (!$data instanceof Document) {
+                return;
+            }
+            if ($data->getGeneratedFromTemplate() === null) {
+                return;
+            }
+            $event->getForm()->add('policyBody', TextareaType::class, [
+                'label' => 'document.policy_body.label',
+                'required' => false,
+                'help' => 'document.policy_body.help',
+                'attr' => [
+                    'rows' => 18,
+                    'class' => 'font-monospace',
+                    'spellcheck' => 'true',
+                    'data-policy-body-editor' => 'true',
+                ],
+            ]);
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
