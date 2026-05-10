@@ -388,6 +388,39 @@ class WorkflowControllerTest extends WebTestCase
         $this->assertResponseRedirects();
     }
 
+    // ========== INSTANCE CLARIFY TESTS ==========
+    // Persona-Walkthrough Risk-Owner-Business (Task #124, KRITISCH).
+
+    #[Test]
+    public function testClarifyInstanceRequiresAuthentication(): void
+    {
+        $this->client->request('POST', '/en/workflow/instance/' . $this->testInstance->getId() . '/clarify');
+
+        $this->assertResponseRedirects();
+    }
+
+    #[Test]
+    public function testClarifyInstanceRequiresQuestion(): void
+    {
+        $this->loginAsUser($this->testUser);
+
+        // Initialize session via GET so CSRF token can be issued.
+        $this->client->request('GET', '/en/workflow/instance/' . $this->testInstance->getId());
+
+        $session = $this->client->getRequest()->getSession();
+        $tokenGenerator = new \Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator();
+        $tokenValue = $tokenGenerator->generateToken();
+        $session->set('_csrf/clarify' . $this->testInstance->getId(), $tokenValue);
+
+        $this->client->request('POST', '/en/workflow/instance/' . $this->testInstance->getId() . '/clarify', [
+            '_token'   => $tokenValue,
+            'question' => '', // empty question must be rejected
+        ]);
+
+        // Should redirect with error flash about missing question.
+        $this->assertResponseRedirects();
+    }
+
     // ========== INSTANCE CANCEL TESTS ==========
 
     #[Test]

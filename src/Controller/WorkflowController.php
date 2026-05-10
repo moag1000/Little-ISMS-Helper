@@ -11,9 +11,13 @@ use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Repository\WorkflowRepository;
 use App\Repository\WorkflowInstanceRepository;
+use App\Service\AuditLogger;
+use App\Service\EmailNotificationService;
 use App\Service\TenantContext;
 use App\Service\WorkflowService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +34,10 @@ class WorkflowController extends AbstractController
         private readonly WorkflowService $workflowService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly ?AuditLogger $auditLogger = null,
+        private readonly ?EmailNotificationService $emailNotificationService = null,
+        private readonly LoggerInterface $logger = new NullLogger(),
     ) {}
 
     /**
@@ -186,6 +193,113 @@ class WorkflowController extends AbstractController
             $this->addFlash('error', $this->translator->trans('workflow.error.not_authorized_reject'));
         }
 
+        return $this->getSmartRedirect($request, $workflowInstance);
+    }
+
+    /**
+     * Persona-Walkthrough Risk-Owner-Business (Task #124, KRITISCH).
+     *
+     * Allows the current approver to send a question to the workflow's
+     * initiator (or the ISO if no initiator is set) WITHOUT rejecting or
+     * approving the instance. The workflow stays in its current state and
+     * the question is appended to the approval-history + audit-log under
+     * action `workflow_clarification_requested`.
+     *
+     * Why: a Fachbereichsleiter:in (business owner) often has 1 specific
+     * question about the policy ("Ab wann gilt das für Bestandsverträge?")
+     * and would otherwise REJECT the document just to surface that question
+     * — blocking the entire workflow for a question that takes 5 minutes
+     * to answer. This route gives that question a dedicated channel.
+     */
+    #[Route('/workflow/instance/{id}/clarify', name: 'app_workflow_instance_clarify', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function clarifyInstance(Request $request, WorkflowInstance $workflowInstance): Response
+    {
+        if (!$this->isCsrfTokenValid('clarify' . $workflowInstance->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('error.csrf_invalid'));
+            return $this->getSmartRedirect($request, $workflowInstance);
+        }
+
+        $currentUser = $this->getUser();
+        $currentStep = $workflowInstance->getCurrentStep();
+        if (!$currentStep instanceof WorkflowStep || !$this->workflowService->canUserApprove($currentUser, $currentStep)) {
+            $this->addFlash('error', $this->translator->trans('workflow.error.not_authorized_approve'));
+            return $this->getSmartRedirect($request, $workflowInstance);
+        }
+
+        $question = trim((string) $request->request->get('question', ''));
+        if ($question === '') {
+            $this->addFlash('error', $this->translator->trans('approval.error.clarification_empty', [], 'workflows'));
+            return $this->getSmartRedirect($request, $workflowInstance);
+        }
+
+        // Append to approval-history (instance is NOT advanced).
+        $entry = [
+            'action'         => 'clarification_requested',
+            'event'          => 'clarification_requested',
+            'step_name'      => $currentStep->getName(),
+            'asker_user_id'  => method_exists($currentUser, 'getId') ? $currentUser->getId() : null,
+            'asker_name'     => method_exists($currentUser, 'getFirstName')
+                ? trim(((string) $currentUser->getFirstName()) . ' ' . ((string) $currentUser->getLastName()))
+                : (string) $currentUser->getUserIdentifier(),
+            'question'       => $question,
+            'comments'       => $question,
+            'timestamp'      => (new \DateTimeImmutable())->format(DATE_ATOM),
+            'at'             => (new \DateTimeImmutable())->format(DATE_ATOM),
+        ];
+        $workflowInstance->addApprovalHistoryEntry($entry);
+        $this->entityManager->flush();
+
+        // Audit-log — required for ISO 27001 Clause 7.5.3 (documented information).
+        if ($this->auditLogger !== null) {
+            $this->auditLogger->logCustom(
+                action: 'workflow_clarification_requested',
+                entityType: 'WorkflowInstance',
+                entityId: $workflowInstance->getId(),
+                oldValues: null,
+                newValues: [
+                    'workflow_instance_id' => $workflowInstance->getId(),
+                    'step_name'            => $currentStep->getName(),
+                    'asker_user_id'        => $entry['asker_user_id'],
+                    'question'             => $question,
+                ],
+                description: sprintf(
+                    'Approver requested clarification on WorkflowInstance #%d at step "%s"',
+                    $workflowInstance->getId() ?? 0,
+                    $currentStep->getName() ?? '',
+                ),
+            );
+        }
+
+        // Email the initiator (or skip silently if no initiator / no email service).
+        $initiator = $workflowInstance->getInitiatedBy();
+        if ($initiator !== null && $this->emailNotificationService !== null && $initiator->getEmail() !== null) {
+            try {
+                $this->emailNotificationService->sendGenericNotification(
+                    sprintf(
+                        '%s — %s #%d',
+                        $this->translator->trans('approval.clarify_modal.title', [], 'workflows'),
+                        $workflowInstance->getEntityType() ?? 'Workflow',
+                        $workflowInstance->getEntityId() ?? 0,
+                    ),
+                    'emails/workflow_clarification_request.html.twig',
+                    [
+                        'instance'      => $workflowInstance,
+                        'step'          => $currentStep,
+                        'asker_name'    => $entry['asker_name'],
+                        'question'      => $question,
+                        'recipient'     => $initiator,
+                    ],
+                    [$initiator],
+                );
+            } catch (\Throwable $e) {
+                $this->logger->warning('Failed to send clarification email to initiator', [
+                    'workflow_instance_id' => $workflowInstance->getId(),
+                    'error'                => $e->getMessage(),
+                ]);
+            }
+        }
+
+        $this->addFlash('success', $this->translator->trans('approval.success.clarification_sent', [], 'workflows'));
         return $this->getSmartRedirect($request, $workflowInstance);
     }
 

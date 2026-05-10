@@ -1,49 +1,175 @@
 {% extends 'emails/base.html.twig' %}
 
-{% block subject %}Dokument zur Genehmigung: {{ document.title|default('(Dokument)') }}{% endblock %}
+{#
+ # Approval-Email — Persona-Walkthrough Risk-Owner-Business (Task #124, KRITISCH).
+ #
+ # Vor dieser Iteration sah die Email für Fachbereichsleiter:innen wie eine
+ # ITSec-Email aus: keine Erklärung WAS sie freigeben, was bei Reject passiert,
+ # was bei Untätigkeit passiert. Frist nur als Datum ohne Hervorhebung.
+ #
+ # Neu (alle aus translations/workflows.{de,en}.yaml, Domain `workflows`):
+ #   1. Business-Summary-Block oben (4 Sätze in Klartext)
+ #   2. Frist als sichtbarer Badge (rot bei <24h)
+ #   3. Drei Action-Buttons: Genehmigen / Ablehnen / Rückfrage stellen
+ #   4. Step-Name humanisiert (workflow_step_label-Filter)
+ #
+ # Erwartete Variablen aus DocumentApprovalService::sendNotificationToUser:
+ #   - document             : App\Entity\Document — die zu genehmigende Datei
+ #   - user                 : App\Entity\User    — der Empfänger
+ #   - approval_level       : 'policy'|'procedure'|'guideline'
+ #   - is_new_document      : bool
+ #   - category             : Document.category
+ # Optionale Variablen (ab Task #124, vom Service nachgereicht wenn vorhanden):
+ #   - workflow_instance    : App\Entity\WorkflowInstance — für Frist + Step-Name
+ #   - approval_link        : string — Direktlink zum Approval-Screen
+ #   - clarify_link         : string — Direktlink zur "Rückfrage"-Aktion
+ #   - reject_link          : string — Direktlink zum "Ablehnen"-Modal
+ #   - what_is_it           : string — 1-Satz-Zusammenfassung des Dokuments (Heuristik)
+ #   - escalation_target    : string — Name der Eskalations-Person/Rolle
+ #}
+
+{% block subject %}{{ 'approval.section_title'|trans({}, 'workflows') }}: {{ document.title|default(document.originalFilename|default('(Dokument)')) }}{% endblock %}
 
 {% block content %}
-    <h2 style="color: #1e1b4b; font-size: 20px; font-weight: 600; margin: 0 0 16px 0;">
-        Dokument zur Genehmigung
+    {% set deadline = workflow_instance is defined and workflow_instance and workflow_instance.dueDate ? workflow_instance.dueDate : null %}
+    {% set step = workflow_instance is defined and workflow_instance ? workflow_instance.currentStep : null %}
+    {% set step_label = step ? step.name|workflow_step_label : null %}
+    {% set hours_remaining = deadline ? ((deadline.timestamp - "now"|date('U')) / 3600)|round(0, 'floor') : null %}
+    {% set is_critical = hours_remaining is not null and hours_remaining < 24 and hours_remaining >= 0 %}
+    {% set is_overdue = hours_remaining is not null and hours_remaining < 0 %}
+
+    <h2 style="color: #1e1b4b; font-size: 20px; font-weight: 600; margin: 0 0 8px 0;">
+        {{ 'approval.section_title'|trans({}, 'workflows') }}
     </h2>
-    <p style="font-size: 14px; color: #4c4a73; margin: 0 0 16px 0;">
-        Sie sind als Genehmiger für das folgende Dokument eingetragen:
+    <p style="font-size: 13px; color: #4c4a73; margin: 0 0 16px 0;">
+        {% if user is defined and user %}
+            {{ 'common.greeting.hello_name'|trans({'%name%': user.firstName|default(user.email)}, 'messages') }}
+        {% endif %}
     </p>
 
+    {# Document context — title + step #}
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
-           style="background-color: #f0f9ff; border-left: 4px solid #0369a1; margin-bottom: 20px;">
+           style="background-color: #f0f9ff; border-left: 4px solid #0369a1; margin-bottom: 16px;">
         <tr>
             <td style="padding: 14px 16px;">
-                <p style="margin: 0 0 4px 0; font-weight: 600; color: #1e1b4b; font-size: 14px;">
-                    {{ document.title|default('(ohne Titel)') }}
+                <p style="margin: 0 0 4px 0; font-weight: 600; color: #1e1b4b; font-size: 15px;">
+                    {{ document.title|default(document.originalFilename|default('(ohne Titel)')) }}
                 </p>
-                {% if document.type is defined %}
-                    <p style="margin: 0 0 4px 0; font-family: 'Courier New', monospace; font-size: 11px; color: #0369a1; text-transform: uppercase; letter-spacing: 0.08em;">
-                        {{ document.type }}
+                {% if step_label %}
+                    <p style="margin: 0 0 4px 0; font-size: 12px; color: #0369a1;">
+                        {{ 'workflow.field.current_step'|trans({}, 'workflows') }}: <strong>{{ step_label }}</strong>
                     </p>
                 {% endif %}
-                {% if document.requestedBy is defined %}
-                    <p style="margin: 0; font-size: 12px; color: #4c4a73;">
-                        Eingereicht von: <strong>{{ document.requestedBy }}</strong>
+                {% if document.category is defined and document.category %}
+                    <p style="margin: 0; font-family: 'Courier New', monospace; font-size: 10px; color: #6d6b92; text-transform: uppercase; letter-spacing: 0.08em;">
+                        {{ document.category }}
                     </p>
                 {% endif %}
             </td>
         </tr>
     </table>
 
-    {% if link is defined and link %}
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 8px 0 20px 0;">
+    {# Deadline badge — prominent, red when <24h remaining #}
+    {% if deadline %}
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 16px 0;">
             <tr>
-                <td style="background-color: #0369a1; border-radius: 6px;">
-                    <a href="{{ link }}" style="display: inline-block; padding: 10px 20px; color: #ffffff; text-decoration: none; font-weight: 500; font-size: 13px;">
-                        Dokument öffnen →
-                    </a>
+                <td style="background-color: {{ is_overdue ? '#dc2626' : (is_critical ? '#ea580c' : '#eef0f9') }}; border-radius: 6px; padding: 8px 14px;">
+                    <span style="font-size: 12px; font-weight: 600; color: {{ is_overdue or is_critical ? '#ffffff' : '#1e1b4b' }};">
+                        {{ 'approval.deadline.label'|trans({}, 'workflows') }}: {{ deadline|date('d.m.Y H:i') }}
+                        {% if is_overdue %}
+                            — {{ 'approval.deadline.overdue'|trans({}, 'workflows') }}
+                        {% elseif is_critical %}
+                            — {{ 'approval.deadline.critical_warning'|trans({}, 'workflows') }}
+                        {% endif %}
+                    </span>
                 </td>
             </tr>
         </table>
     {% endif %}
 
-    <p style="font-size: 12px; color: #6d6b92; margin: 0;">
-        Bitte prüfen Sie Inhalt, Gültigkeit und Vollständigkeit vor der Entscheidung.
+    {# Business Summary — 4 plain-language sentences for non-ITSec approvers #}
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+           style="background-color: #fefce8; border: 1px solid #fde68a; border-radius: 6px; margin-bottom: 20px;">
+        <tr>
+            <td style="padding: 14px 16px;">
+                <p style="margin: 0 0 10px 0; font-weight: 600; color: #1e1b4b; font-size: 13px;">
+                    {{ 'approval.business_summary.heading'|trans({}, 'workflows') }}
+                </p>
+
+                <p style="margin: 0 0 8px 0; font-size: 12.5px; color: #4c4a73; line-height: 1.55;">
+                    <strong>{{ 'approval.business_summary.what_is_it_label'|trans({}, 'workflows') }}</strong>
+                    {{ what_is_it|default('approval.business_summary.what_is_it_default'|trans({}, 'workflows')) }}
+                </p>
+
+                <p style="margin: 0 0 8px 0; font-size: 12.5px; color: #4c4a73; line-height: 1.55;">
+                    <strong>{{ 'approval.business_summary.what_expected_label'|trans({}, 'workflows') }}</strong>
+                    {{ 'approval.business_summary.what_expected'|trans({}, 'workflows') }}
+                </p>
+
+                <p style="margin: 0 0 8px 0; font-size: 12.5px; color: #4c4a73; line-height: 1.55;">
+                    <strong>{{ 'approval.business_summary.what_if_reject_label'|trans({}, 'workflows') }}</strong>
+                    {{ 'approval.business_summary.what_if_reject'|trans({}, 'workflows') }}
+                </p>
+
+                <p style="margin: 0; font-size: 12.5px; color: #4c4a73; line-height: 1.55;">
+                    <strong>{{ 'approval.business_summary.what_if_idle_label'|trans({}, 'workflows') }}</strong>
+                    {% if escalation_target is defined and escalation_target and deadline %}
+                        {{ 'approval.business_summary.what_if_idle_with_target'|trans({'%deadline%': deadline|date('d.m.Y'), '%target%': escalation_target}, 'workflows') }}
+                    {% else %}
+                        {{ 'approval.business_summary.what_if_idle'|trans({}, 'workflows') }}
+                    {% endif %}
+                </p>
+            </td>
+        </tr>
+    </table>
+
+    {# Three action buttons: Approve / Reject / Clarify #}
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 8px 0 20px 0;">
+        <tr>
+            {% set primary_link = approval_link|default(link|default(null)) %}
+            {% if primary_link %}
+                <td style="padding-right: 8px;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td style="background-color: #16a34a; border-radius: 6px;">
+                                <a href="{{ primary_link }}" style="display: inline-block; padding: 10px 18px; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 13px;">
+                                    {{ 'approval.action.approve'|trans({}, 'workflows') }} &rarr;
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            {% endif %}
+            {% if reject_link is defined and reject_link %}
+                <td style="padding-right: 8px;">
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td style="background-color: #ffffff; border: 1px solid #dc2626; border-radius: 6px;">
+                                <a href="{{ reject_link }}" style="display: inline-block; padding: 9px 17px; color: #dc2626; text-decoration: none; font-weight: 500; font-size: 13px;">
+                                    {{ 'approval.action.reject'|trans({}, 'workflows') }}
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            {% endif %}
+            {% if clarify_link is defined and clarify_link %}
+                <td>
+                    <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td style="background-color: #ffffff; border: 1px solid #0369a1; border-radius: 6px;">
+                                <a href="{{ clarify_link }}" style="display: inline-block; padding: 9px 17px; color: #0369a1; text-decoration: none; font-weight: 500; font-size: 13px;">
+                                    {{ 'approval.action.clarify'|trans({}, 'workflows') }}
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            {% endif %}
+        </tr>
+    </table>
+
+    <p style="font-size: 11px; color: #6d6b92; margin: 0;">
+        {{ 'approval.score.tooltip'|trans({}, 'workflows') }}
     </p>
 {% endblock %}

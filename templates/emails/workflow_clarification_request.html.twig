@@ -1,0 +1,54 @@
+{% extends 'emails/base.html.twig' %}
+
+{#
+ # Persona-Walkthrough Risk-Owner-Business (Task #124, KRITISCH).
+ #
+ # Sent to a workflow's initiator when an approver uses "Rückfrage stellen"
+ # on the approval-screen instead of approving / rejecting. The workflow
+ # remains in its current state — this email simply forwards the question.
+ #
+ # Variables (from WorkflowController::clarifyInstance):
+ #   - instance      : App\Entity\WorkflowInstance
+ #   - step          : App\Entity\WorkflowStep — current step
+ #   - asker_name    : string — display name of the approver who asked
+ #   - question      : string — the verbatim question
+ #   - recipient     : App\Entity\User — the workflow initiator
+ #}
+
+{% block subject %}{{ 'approval.clarify_modal.title'|trans({}, 'workflows') }}: {{ instance.entityType|default('Workflow') }} #{{ instance.entityId|default(0) }}{% endblock %}
+
+{% block content %}
+    <h2 style="color: #1e1b4b; font-size: 20px; font-weight: 600; margin: 0 0 8px 0;">
+        {{ 'approval.clarify_modal.title'|trans({}, 'workflows') }}
+    </h2>
+    <p style="font-size: 13px; color: #4c4a73; margin: 0 0 16px 0;">
+        {% if recipient is defined and recipient %}
+            {{ 'common.greeting.hello_name'|trans({'%name%': recipient.firstName|default(recipient.email)}, 'messages') }}
+        {% endif %}
+    </p>
+
+    <p style="font-size: 13px; color: #4c4a73; margin: 0 0 16px 0;">
+        <strong>{{ asker_name }}</strong> hat eine Rückfrage zur Workflow-Instanz
+        <strong>{{ instance.entityType|default('Workflow') }} #{{ instance.entityId|default(0) }}</strong>
+        ({{ 'workflow.field.current_step'|trans({}, 'workflows') }}:
+        <em>{{ step ? step.name|workflow_step_label : '-' }}</em>) gestellt.
+        Der Workflow bleibt im aktuellen Schritt — bitte beantworten Sie die Rückfrage,
+        damit der Approver entscheiden kann.
+    </p>
+
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+           style="background-color: #f0f9ff; border-left: 4px solid #0369a1; margin-bottom: 20px;">
+        <tr>
+            <td style="padding: 14px 16px;">
+                <p style="margin: 0 0 6px 0; font-weight: 600; color: #1e1b4b; font-size: 13px;">
+                    {{ 'approval.clarify_modal.question_label'|trans({}, 'workflows') }}
+                </p>
+                <p style="margin: 0; font-size: 13px; color: #4c4a73; line-height: 1.55; white-space: pre-wrap;">{{ question }}</p>
+            </td>
+        </tr>
+    </table>
+
+    <p style="font-size: 11px; color: #6d6b92; margin: 0;">
+        {{ 'approval.success.clarification_sent'|trans({}, 'workflows') }}
+    </p>
+{% endblock %}

@@ -240,6 +240,88 @@ workflow:
             rejection_reason: 'Please provide the reason for rejection...'
         help:
             rejection_reason: 'A reason helps the requester understand the rejection and make improvements if needed.'
+    # Step name humanisation — plain-language labels for the snake_case step
+    # names emitted by the seed commands. Used by the |workflow_step_label
+    # filter and instance_show.html.twig.
+    step_label:
+        prepared: 'Prepared (draft submitted)'
+        ciso_review: 'CISO Review'
+        dpo_review: 'Data Protection Officer Review'
+        dpo_cross_check: 'Data Protection Cross-Check'
+        function_owner_review: 'Function Owner Review'
+        top_mgmt_signoff: 'Top Management Sign-off'
+        management_signoff: 'Top Management Sign-off'
+        published: Published
+        risk_owner_review: 'Risk Owner Review'
+        risk_acceptance: 'Risk Acceptance'
+        risk_treatment_decision: 'Treatment Decision'
+        technical_assessment: 'Technical Assessment'
+        post_incident_review: 'Post-Incident Review'
+        notification_authority: 'Notification to Supervisory Authority'
+        notification_data_subjects: 'Information of Data Subjects'
+        dpo_assessment: 'Data Protection Officer Assessment'
+        privacy_impact_assessment: 'Data Protection Impact Assessment'
+        legal_review: 'Legal Review'
+        documentation: Documentation
+        approved: Approved
+    step_description:
+        prepared: 'The author has submitted the draft for review.'
+        ciso_review: 'The CISO reviews content from a security perspective.'
+        dpo_review: 'The Data Protection Officer reviews privacy aspects.'
+        dpo_cross_check: 'The Data Protection Officer performs a cross-check of privacy aspects.'
+        function_owner_review: 'The function owner reviews from an operational perspective (business process, customer impact).'
+        top_mgmt_signoff: 'Top Management gives formal approval.'
+        management_signoff: 'Top Management gives formal approval.'
+        published: 'The document is finally approved and published.'
+    # Business summary block for approval email + approval screen.
+    # Avoids ITSec jargon; explains context for business owners without security background.
+    approval:
+        section_title: 'For your approval'
+        business_summary:
+            heading: 'At a glance'
+            what_is_it_label: 'What is this?'
+            what_is_it_default: 'You are asked to approve an internal policy that affects your area of responsibility.'
+            what_expected_label: 'What is expected from you?'
+            what_expected: 'Please review whether the content makes sense and is feasible from your business perspective. You do not need to be an IT security expert — your business process view is what matters.'
+            what_if_reject_label: 'What happens if I reject?'
+            what_if_reject: 'The document goes back to the author with your reasoning. No project is blocked — it just gets revised.'
+            what_if_idle_label: 'What if I do nothing?'
+            what_if_idle: 'After the deadline expires, the task is escalated automatically (reminder to you and notification to your deputy / next escalation level).'
+            what_if_idle_with_target: 'After the deadline (%deadline%) expires, the task is escalated automatically to %target%.'
+        deadline:
+            label: 'Deadline'
+            overdue: overdue
+            critical_warning: 'Critical — less than 24 hours remaining'
+            no_deadline: 'No deadline set'
+            remaining_hours: '%hours% h remaining'
+            remaining_days: '%days% days remaining'
+        action:
+            approve: Approve
+            reject: 'Reject with reasoning'
+            clarify: 'Ask a question'
+            approve_short: Approve
+            reject_short: Reject
+            clarify_short: Question
+        approve_modal:
+            title: 'Confirm approval'
+            comment_label: 'Comment (optional)'
+            comment_placeholder: 'e.g. notes for publication or constraints for implementation...'
+            submit: 'Approve now'
+        clarify_modal:
+            title: 'Ask a question about this document'
+            intro: 'You can send the author a question without rejecting or approving the document. The workflow stays open with you.'
+            question_label: 'Your question'
+            question_placeholder: 'e.g. "When does this policy apply to existing contracts?" or "Who covers training costs in my area?"'
+            question_required: 'Please enter your question.'
+            submit: 'Send question'
+            cancel: Cancel
+        score:
+            tooltip: 'Auditor score (0-100): automatically rates the completeness and audit-readiness of the document. Value >70 = audit-ready. You do not need to check this score yourself — it is supporting information for top management.'
+        success:
+            clarification_sent: 'Your question has been sent to the author. The workflow stays open with you.'
+        error:
+            clarification_empty: 'Please enter your question before sending.'
+            clarification_failed: 'The question could not be sent. Please try again or contact the ISO.'
 workflow_instance:
     status:
         pending: Pending
