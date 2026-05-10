@@ -188,6 +188,50 @@ python3 check_yaml_duplicates.py
 
 ---
 
+### quality/check_twig_macro_scope.py
+
+**Zweck:** Erkennt Twig-Macro-Import-Scope-Bugs, die `lint:twig` nicht erfasst.
+
+**Das Problem:**
+```twig
+{% extends 'base.html.twig' %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}  {# FILE-SCOPE — BUG! #}
+{% block body %}
+    {{ _fa_progress.render(...) }}  {# BROKEN: "Variable '_fa_progress' does not exist" #}
+{% endblock %}
+```
+Twig parst dieses Template ohne Fehler. Der Fehler tritt erst beim Render auf.
+Korrekt: Import muss *innerhalb* des `{% block %}` stehen, in dem er genutzt wird.
+
+**Verwendung:**
+```bash
+# Vom Repo-Root:
+python3 scripts/quality/check_twig_macro_scope.py
+
+# Ausgabe in Datei:
+python3 scripts/quality/check_twig_macro_scope.py 2>&1 | tee macro_scope_report.txt
+```
+
+**Exit-Codes:**
+- `0` = Alle Templates fehlerfrei
+- `1` = Macro-Scope-Issues gefunden (CI schlägt fehl)
+- `2` = `templates/`-Verzeichnis nicht gefunden
+
+**Output-Beispiel:**
+```
+FAIL templates/foo/bar.html.twig:5: macro '_fa_progress' imported at file-scope but used inside block at line 42
+FAIL templates/baz.html.twig:3: macro '_fa_table' imported at file-scope but used inside block at line 110
+
+2 macro-scope issue(s) in 2 template(s).
+Fix: move the {% import %} statement inside the {% block %} where it is used.
+```
+
+**CI-Integration:** Läuft als `Twig Macro-Scope Check` im `code-quality`-Job in `.github/workflows/ci.yml`, direkt vor dem DQL-Field-Mismatch-Check.
+
+**Regression-Schutz für:** Commit `075e36a4` (Bulk-Fix von 48 Templates).
+
+---
+
 ### quality/check_translation_issues.py
 
 **Zweck:** Umfassender Translation Quality Checker für Twig-Templates
