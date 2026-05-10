@@ -85,6 +85,11 @@ class ShareController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function processShare(Request $request): Response
     {
+        if (!$this->isCsrfTokenValid('share_process', $request->request->get('_token'))) {
+            $this->addFlash('danger', 'common.csrf_error');
+            return $this->redirectToRoute('app_share_target', ['_locale' => $request->getLocale()]);
+        }
+
         $action = $request->request->get('action');
         $title = $request->request->get('title', '');
         $text = $request->request->get('text', '');

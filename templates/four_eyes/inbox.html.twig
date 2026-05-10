@@ -36,6 +36,7 @@
                         </div>
                         <div class="d-flex flex-column gap-2">
                             <form method="post" action="{{ path('app_four_eyes_approve', { id: r.id }) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('four_eyes_approve_' ~ r.id) }}">
                                 <button type="submit" class="fa-cyber-btn fa-cyber-btn--success fa-cyber-btn--sm">
                                     <i class="fa-icon fa-icon--ui-check" aria-hidden="true"></i>
                                     {{ 'four_eyes.approve'|trans({}, 'four_eyes') }}
@@ -55,6 +56,7 @@
                     <div class="modal-dialog">
                         <form method="post" class="modal-content"
                               action="{{ path('app_four_eyes_reject', { id: r.id }) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('four_eyes_reject_' ~ r.id) }}">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="reject-{{ r.id }}-label">
                                     {{ 'four_eyes.reject_modal.title'|trans({}, 'four_eyes') }}
