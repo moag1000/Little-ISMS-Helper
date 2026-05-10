@@ -90,17 +90,16 @@ class AutoReactionDpiaSuggestListenerTest extends TestCase
     }
 
     #[Test]
-    public function highRiskTriggersDpiaPersistOrLogsWarning(): void
+    public function highRiskTriggersDpiaPersist(): void
     {
-        // V3 W2-M5: This test covers either the success path (persist DPIA)
-        // OR the warning path. The listener currently calls
-        // ProcessingActivity::getTitle() which does not exist on the entity
-        // (only getName()), so a Throwable is caught + logged as warning.
-        // Once that pre-existing bug is fixed, this test will assert persist.
+        // V3 W2-Bug1: Listener now calls ProcessingActivity::getName() (not
+        // the non-existent getTitle()), so the success path persists the
+        // DPIA skeleton instead of logging a warning. Strict assertion.
         $this->reactions->method('isEnabled')->willReturn(true);
 
         $tenant = $this->createTenant(11);
         $activity = $this->createActivity(99, $tenant);
+        $activity->setName('GDPR-VVT Marketing-Newsletter');
         $activity->setProcessesSpecialCategories(false);
         $activity->setEstimatedDataSubjectsCount(5000);
 
@@ -112,27 +111,22 @@ class AutoReactionDpiaSuggestListenerTest extends TestCase
         $em->method('getRepository')->willReturn($repo);
         $em->method('persist')->willReturnCallback(static function ($e) use (&$persisted) { $persisted[] = $e; });
 
-        // Either info (success) or warning (caught Error from getTitle bug)
-        $loggedInfo = false;
         $loggedWarning = false;
-        $this->logger->method('info')->willReturnCallback(static function () use (&$loggedInfo) { $loggedInfo = true; });
         $this->logger->method('warning')->willReturnCallback(static function () use (&$loggedWarning) { $loggedWarning = true; });
 
         $args = new PostPersistEventArgs($activity, $em);
         $this->listener->postPersist($activity, $args);
 
-        // Either DPIA was persisted OR the catch-block fired.
         $dpiaInstances = array_values(array_filter(
             $persisted,
             static fn($e) => $e instanceof DataProtectionImpactAssessment,
         ));
-        $this->assertTrue(
-            count($dpiaInstances) === 1 || $loggedWarning,
-            'High-risk activity must trigger either DPIA persist or warning log',
-        );
-        if (count($dpiaInstances) === 1) {
-            $this->assertSame($tenant, $dpiaInstances[0]->getTenant());
-        }
+        $this->assertCount(1, $dpiaInstances, 'High-risk activity must persist DPIA skeleton');
+        $this->assertFalse($loggedWarning, 'No warning expected on success path');
+        $this->assertSame($tenant, $dpiaInstances[0]->getTenant());
+        $this->assertSame($activity, $dpiaInstances[0]->getProcessingActivity());
+        $this->assertSame('draft', $dpiaInstances[0]->getStatus());
+        $this->assertStringContainsString('GDPR-VVT Marketing-Newsletter', (string) $dpiaInstances[0]->getTitle());
     }
 
     private function createTenant(int $id): Tenant

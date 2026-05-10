@@ -238,6 +238,54 @@ class Document
     #[ORM\Column(name: 'effectiveness_review_notes', type: Types::TEXT, nullable: true)]
     private ?string $effectivenessReviewNotes = null;
 
+    /**
+     * V3 W2-LB-8 — Review-cycle (formal scheduled review of the document
+     * itself; complements the effectiveness-review event above).
+     *
+     * `nextReviewDate` is auto-populated by DocumentApprovalListener when
+     * the document transitions to status='approved': set to
+     * approvedAt + reviewIntervalMonths. Documents without a next-review
+     * date are treated as "no scheduled review" — typically uploads from
+     * before LB-8.
+     */
+    #[ORM\Column(name: 'next_review_date', type: Types::DATE_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $nextReviewDate = null;
+
+    /**
+     * V3 W2-LB-8 — Cadence in months for the review-cycle. Default 12
+     * (annual) matches the ISO 27001 Cl.7.5.2 expectation for documented
+     * information governing the ISMS.
+     */
+    #[ORM\Column(name: 'review_interval_months', type: Types::INTEGER, options: ['default' => 12])]
+    private int $reviewIntervalMonths = 12;
+
+    /**
+     * V3 W2-Bug2 — Document version label.
+     *
+     * Stored as a string, not a numeric, so that semantic versioning
+     * (`1.2.3-beta`) and date-stamped policies (`2026-Q2`) both fit.
+     * Defaults to `'1.0'` for newly uploaded files; the
+     * Auto-Acknowledgement-Campaign listener (W2-C4) requires a
+     * non-empty value to satisfy the (tenant, document, user, version)
+     * uniqueness constraint on `policy_acknowledgement`.
+     */
+    #[ORM\Column(name: 'version', length: 32, options: ['default' => '1.0'])]
+    private string $version = '1.0';
+
+    /**
+     * V3 W2-Bug2 — Requires user acknowledgement.
+     *
+     * When true and the document transitions to `status='approved'`,
+     * the {@see \App\EventListener\AutoReactionAcknowledgementCampaignListener}
+     * fans out PolicyAcknowledgement (status=pending) rows to every
+     * active user of the tenant — closing ISO 27001 A.6.3 ("policy
+     * must be communicated and acknowledged"). Default false: opt-in
+     * per document so uploaded evidence files do not silently spawn
+     * acknowledgement campaigns.
+     */
+    #[ORM\Column(name: 'requires_acknowledgement', type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $requiresAcknowledgement = false;
+
     public function __construct()
     {
         $this->uploadedAt = new DateTimeImmutable();
@@ -491,6 +539,78 @@ class Document
     {
         $this->effectivenessReviewNotes = $notes;
         return $this;
+    }
+
+    public function getNextReviewDate(): ?DateTimeInterface
+    {
+        return $this->nextReviewDate;
+    }
+
+    public function setNextReviewDate(?DateTimeInterface $nextReviewDate): static
+    {
+        $this->nextReviewDate = $nextReviewDate;
+        return $this;
+    }
+
+    public function getReviewIntervalMonths(): int
+    {
+        return $this->reviewIntervalMonths;
+    }
+
+    public function setReviewIntervalMonths(int $reviewIntervalMonths): static
+    {
+        $this->reviewIntervalMonths = max(1, $reviewIntervalMonths);
+        return $this;
+    }
+
+    /**
+     * V3 W2-Bug2 — Document version label.
+     */
+    public function getVersion(): string
+    {
+        return $this->version;
+    }
+
+    public function setVersion(string $version): static
+    {
+        // Normalise empty / whitespace-only input to the default so the
+        // Auto-Acknowledgement-Campaign listener never trips on a blank
+        // version when `requiresAcknowledgement = true` is flipped.
+        $trimmed = trim($version);
+        $this->version = $trimmed === '' ? '1.0' : $trimmed;
+        return $this;
+    }
+
+    /**
+     * V3 W2-Bug2 — Requires user acknowledgement (ISO 27001 A.6.3).
+     */
+    public function getRequiresAcknowledgement(): bool
+    {
+        return $this->requiresAcknowledgement;
+    }
+
+    public function setRequiresAcknowledgement(bool $requiresAcknowledgement): static
+    {
+        $this->requiresAcknowledgement = $requiresAcknowledgement;
+        return $this;
+    }
+
+    /** Convenience alias matching the boolean-getter idiom (`is*`). */
+    public function isRequiresAcknowledgement(): bool
+    {
+        return $this->requiresAcknowledgement;
+    }
+
+    /**
+     * V3 W2-LB-8 — true when nextReviewDate is set and is on / before today.
+     */
+    public function isReviewOverdue(?DateTimeInterface $now = null): bool
+    {
+        if (!$this->nextReviewDate instanceof DateTimeInterface) {
+            return false;
+        }
+        $now ??= new DateTimeImmutable('today');
+        return $this->nextReviewDate <= $now;
     }
 
     /**
