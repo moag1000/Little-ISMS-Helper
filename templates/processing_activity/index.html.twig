@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'privacy' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% block title %}{{ 'processing_activity.title'|trans({}, 'privacy')}}{% endblock %}
@@ -176,18 +177,8 @@
                                     {% include '_components/_badge.html.twig' with { variant: status_class, content: ('processing_activity.status.' ~ pa.status)|trans({}, 'privacy') } %}
                                 </td>
                                 <td>
-                                    <div class="progress progress-h-20">
-                                        {% set completeness = pa.completenessPercentage %}
-                                        {% set progress_class = completeness == 100 ? 'bg-success' : (completeness >= 70 ? 'bg-warning' : 'bg-danger') %}
-                                        <div class="progress-bar {{ progress_class }}"
-                                             role="progressbar"
-                                             style="width: {{ completeness }}%"
-                                             aria-valuenow="{{ completeness }}"
-                                             aria-valuemin="0"
-                                             aria-valuemax="100">
-                                            {{ completeness }}%
-                                        </div>
-                                    </div>
+                                    {% set completeness = pa.completenessPercentage %}
+                                    {{ _fa_progress.render({ value: completeness, tone: completeness == 100 ? 'success' : (completeness >= 70 ? 'warning' : 'danger'), showText: true }) }}
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">

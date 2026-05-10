@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_appetite' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ appetite.displayName }} - {{ 'risk_appetite.title'|trans({}, 'risk_appetite') }}{% endblock %}
 
@@ -140,8 +141,8 @@
 {% if risksExceedingAppetite|length > 0 %}
 {% embed '_components/_card.html.twig' with { 'class': 'border-danger mb-4' } %}
     {% block card_header %}
-        <div class="card-header bg-danger text-white">
-            <h2><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'risk_appetite.risks_exceeding_title'|trans({}, 'risk_appetite') }} ({{ risksExceedingAppetite|length }})</h2>
+        <div class="card-header">
+            <h2><i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i> {{ 'risk_appetite.risks_exceeding_title'|trans({}, 'risk_appetite') }} ({{ risksExceedingAppetite|length }})</h2>
         </div>
     {% endblock %}
     {% block card_body %}
@@ -194,8 +195,8 @@
 {% if risksWithinAppetite|length > 0 %}
 {% embed '_components/_card.html.twig' with { 'class': 'border-success mb-4' } %}
     {% block card_header %}
-        <div class="card-header bg-success text-white">
-            <h2><i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i> {{ 'risk_appetite.risks_within_title'|trans({}, 'risk_appetite') }} ({{ risksWithinAppetite|length }})</h2>
+        <div class="card-header">
+            <h2><i class="fa-icon fa-icon--status-ok text-success" aria-hidden="true"></i> {{ 'risk_appetite.risks_within_title'|trans({}, 'risk_appetite') }} ({{ risksWithinAppetite|length }})</h2>
         </div>
     {% endblock %}
     {% block card_body %}
@@ -226,16 +227,7 @@
                     </td>
                     <td class="text-center">
                         {% set percentage = appetite.getAppetitePercentage(risk.riskScore) %}
-                        <div class="progress" style="height: 20px; min-width: 100px;">
-                            <div class="progress-bar bg-{{ percentage >= 80 ? 'warning' : 'success' }}"
-                                 role="progressbar"
-                                 style="width: {{ percentage }}%"
-                                 aria-valuenow="{{ percentage }}"
-                                 aria-valuemin="0"
-                                 aria-valuemax="100">
-                                {{ percentage|number_format(0) }}%
-                            </div>
-                        </div>
+                        {{ _fa_progress.render({ value: percentage, tone: percentage >= 80 ? 'warning' : 'success', showText: true }) }}
                     </td>
                     <td>
                         {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.status ? risk.status.value : '' } %}
@@ -316,8 +308,8 @@
 {% if is_granted('ROLE_ADMIN') %}
 {% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
     {% block card_header %}
-        <div class="card-header bg-danger text-white">
-            <h2><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2>
+        <div class="card-header">
+            <h2><i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2>
         </div>
     {% endblock %}
     {% block card_body %}

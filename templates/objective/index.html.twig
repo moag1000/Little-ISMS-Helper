@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'objective'%}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
@@ -76,10 +77,7 @@
                         <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: objective.category } %}</td>
                         <td>{{ objective.targetDate|date('d.m.Y') }}</td>
                         <td>
-                            <div class="progress progress-h-20">
-                                <div class="progress-bar {% if objective.progressPercentage >= 75 %}bg-success{% elseif objective.progressPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
-                                     style="width: {{ objective.progressPercentage }}%">{{ objective.progressPercentage }}%</div>
-                            </div>
+                            {{ _fa_progress.render({ value: objective.progressPercentage, tone: objective.progressPercentage >= 75 ? 'success' : (objective.progressPercentage >= 50 ? 'warning' : 'danger'), showText: true }) }}
                         </td>
                         <td>{% include '_components/_badge.html.twig' with { variant: objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning'), content: ('objective.status.' ~ objective.status)|trans({}, 'objective') } %}</td>
                         <td>

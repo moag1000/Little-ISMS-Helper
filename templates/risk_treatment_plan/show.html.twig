@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'risk_treatment_plan' %}
 
 {% block title %}{{ plan.title }} - {{ 'risk_treatment_plan.title'|trans({}, 'risk_treatment_plan') }}{% endblock %}
@@ -49,16 +50,7 @@
         <div class="info-card">
             <div class="info-label">{{ 'risk_treatment_plan.field.completion'|trans({}, 'risk_treatment_plan') }}</div>
             <div class="info-value">
-                <div class="progress progress-h-30">
-                    <div class="progress-bar bg-{{ plan.completionPercentage >= 75 ? 'success' : (plan.completionPercentage >= 50 ? 'info' : (plan.completionPercentage >= 25 ? 'warning' : 'danger')) }}"
-                         role="progressbar"
-                         style="width: {{ plan.completionPercentage }}%"
-                         aria-valuenow="{{ plan.completionPercentage }}"
-                         aria-valuemin="0"
-                         aria-valuemax="100">
-                        <strong>{{ plan.completionPercentage }}%</strong>
-                    </div>
-                </div>
+                {{ _fa_progress.render({ value: plan.completionPercentage, tone: plan.completionPercentage >= 75 ? 'success' : (plan.completionPercentage >= 50 ? 'info' : (plan.completionPercentage >= 25 ? 'warning' : 'danger')), showText: true }) }}
             </div>
         </div>
     </div>
@@ -261,8 +253,8 @@
 {% if is_granted('ROLE_ADMIN') %}
 {% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
     {% block card_header %}
-        <div class="card-header bg-danger text-white">
-            <h2><i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2>
+        <div class="card-header">
+            <h2><i class="fa-icon fa-icon--status-warning text-danger" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2>
         </div>
     {% endblock %}
     {% block card_body %}

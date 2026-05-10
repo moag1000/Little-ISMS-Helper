@@ -6,6 +6,7 @@
 {% block body %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
 
 {% include '_components/_breadcrumb.html.twig' with {
@@ -156,16 +157,7 @@
                     {{ plan.effectiveResponsiblePerson ?? '<span class="text-muted">-</span>'|raw }}
                 </td>
                 <td class="text-center">
-                    <div class="progress progress-h-20">
-                        <div class="progress-bar bg-{{ plan.completionPercentage >= 75 ? 'success' : (plan.completionPercentage >= 50 ? 'info' : (plan.completionPercentage >= 25 ? 'warning' : 'danger')) }}"
-                             role="progressbar"
-                             style="width: {{ plan.completionPercentage }}%"
-                             aria-valuenow="{{ plan.completionPercentage }}"
-                             aria-valuemin="0"
-                             aria-valuemax="100">
-                            {{ plan.completionPercentage }}%
-                        </div>
-                    </div>
+                    {{ _fa_progress.render({ value: plan.completionPercentage, tone: plan.completionPercentage >= 75 ? 'success' : (plan.completionPercentage >= 50 ? 'info' : (plan.completionPercentage >= 25 ? 'warning' : 'danger')), showText: true }) }}
                 </td>
                 <td>
                     {{ plan.targetCompletionDate|date('Y-m-d') }}
