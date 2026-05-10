@@ -1,0 +1,520 @@
+policy:
+    tisax:
+        information_security_policies:
+            v1:
+                title: 'Information Security Policy (TISAX)'
+                body: |-
+                    # Information Security Policy of {{ tenant.legal_name }}
+
+                    *Document class: Top-level policy | Normative anchor: VDA ISA 1.1, 1.2, 1.3, 1.4 | ISO 27001:2022 A.5.1, A.5.2 | TISAX assessment catalogue: VDA ISA edition {{ tisax.isa_edition }} | Language: formal English | Review interval: 12 months*
+
+                    ## 1. Significance of Information Security
+                    As a participant in the automotive value chain, {{ tenant.legal_name }} processes substantial volumes of confidential business information from customers, suppliers and development partners, including engineering data, sourcing specifications, tooling preliminaries and – where applicable – prototype information. Top management acknowledges that maintaining the confidentiality, integrity and availability of this information is an indispensable prerequisite for retaining customer approvals (TISAX label), fulfilling contractual confidentiality obligations and protecting against significant economic, legal and reputational consequences. Top management therefore commits unreservedly to establishing, maintaining and continually improving an Information Security Management System (ISMS) based on VDA ISA edition {{ tisax.isa_edition }} and ISO/IEC 27001:2022.
+
+                    ## 2. Security Objectives
+                    This policy pursues the following overarching security objectives, derived from business goals, customer requirements and regulatory obligations:
+
+                    1. **Confidentiality** – Information is made accessible only to authorised parties; classification follows the TISAX protection-need levels *normal*, *high* and *very high*.
+                    2. **Integrity** – Information and processing methods remain unaltered and complete; manipulation is prevented or reliably detected.
+                    3. **Availability** – Information, IT processes and IT systems are available to authorised parties at the required time; business continuity and recovery are ensured.
+                    4. **Authenticity and Non-Repudiation** – Identities of users, systems and data are verified; actions are attributable in an evidentiary manner.
+                    5. **Compliance** – All legal, regulatory and contractual requirements applicable to {{ tenant.legal_name }} are observed, in particular the TISAX participation conditions of the ENX Association.
+
+                    ## 3. TISAX Maturity Model
+                    The effectiveness of ISMS measures is rated according to the VDA ISA maturity model on a scale of 0 (initial / not performed) to 5 (optimised). For all relevant assessment topics with protection-need *high* or *very high*, the target maturity is at least **3 (established)**, and for selected core topics (IAM, incident response, supplier security) at least **4 (predictable)**. Maturity is reviewed at least annually as part of the internal ISMS assessment.
+
+                    ## 4. Scope (TISAX scope)
+                    The TISAX scope is defined organisationally, geographically and technically:
+
+                    - **Organisational:** All organisational units of {{ tenant.legal_name }}, its employees, contractors, interns and any third parties processing information within the TISAX scope.
+                    - **Geographical:** All sites listed in Annex 1 of this policy; excluded sites are documented and justified in the ISMS concept.
+                    - **Technical:** All applications, IT systems, engineering workstations, OT systems and communication links over which TISAX-relevant information is processed.
+
+                    The scope covers the TISAX assessment objectives {{ tisax.assessment_objectives }} (e.g. *information with high protection need*, *prototype protection*, *connection to third parties*, *data protection in accordance with GDPR Art. 28*).
+
+                    ## 5. Reference to Legal and Contractual Obligations
+                    This policy is issued taking into account the following legal frameworks, where applicable: GDPR (Regulation (EU) 2016/679), German Federal Data Protection Act (BDSG), German Trade Secrets Act (GeschGehG), German Commercial Code (HGB) (in particular retention obligations), sector-specific supervisory requirements as well as the prevailing TISAX participation terms and customer-specific confidentiality agreements.
+
+                    ## 6. Security Organisation
+                    Responsibilities for information security are clearly assigned:
+
+                    - **Top management:** Overall accountability, provision of resources, approval of this policy, performance of the annual management review.
+                    - **Information Security Officer (CISO/ISB):** {{ roles.isb.fullName }} – steering body of the ISMS, reports directly to top management.
+                    - **Data Protection Officer (DPO):** {{ roles.dpo.fullName }} – coordinates with the ISO; identity of person between ISO and DPO is impermissible under GDPR Art. 38.
+                    - **Prototype Protection Officer:** {{ roles.prototype_officer.fullName }} – where the *Prototype Protection* assessment objective applies.
+                    - **Functional and site managers:** Functionally and operationally responsible for the security of the assigned target objects.
+
+                    ## 7. Binding Force
+                    This policy is binding for all employees and agents of {{ tenant.legal_name }}. Violations are sanctioned in accordance with the personnel policy and may result in disciplinary, employment-law, civil-law or criminal-law consequences, in particular in the case of breaches of trade secrets under GeschGehG. Contractors and suppliers are obligated contractually under the supplier security policy.
+
+                    ## 8. Commitment to Continual Improvement
+                    Top management commits to continual maintenance and improvement of the ISMS. This includes regular effectiveness reviews, evaluation of security incidents and audit results, internal audits, external TISAX assessments by accredited audit providers in a three-year cycle, management review and the derivation of corrective and preventive actions.
+
+                    ## 9. Approval
+                    This policy enters into force upon signature by top management and supersedes all previous versions. It is reviewed at least every 12 months and on an event-driven basis. Approval chain: {{ approval.chain }}.
+
+                    Approved by [Top Management] on [Date] – Signature: ____________________
+
+                    ---
+                    *This policy is the highest normative statement of the ISMS of {{ tenant.legal_name }}. Subordinate policies (organisation, personnel, physical security, IAM, IT operations, supplier security, compliance, prototype protection where applicable, data protection addendum where applicable) elaborate these requirements. Cross-reference ISO/IEC 27001:2022 clause 5.2 / Annex A 5.1.*
+
+        organisation_information_security:
+            v1:
+                title: 'Organisation of Information Security (TISAX)'
+                body: |-
+                    # Organisation of Information Security of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Normative anchor: VDA ISA 2.1.1 - 2.1.4 | ISO 27001:2022 A.5.2, A.5.3, A.5.4, A.5.5 | TISAX assessment catalogue: VDA ISA edition {{ tisax.isa_edition }} | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy regulates the organisational anchoring of information security within {{ tenant.legal_name }}. It defines roles, responsibilities, reporting lines and escalation tiers, thereby establishing the organisational prerequisite for an effective ISMS in accordance with VDA ISA and ISO/IEC 27001:2022.
+
+                    ## 2. Scope
+                    This policy applies to all organisational units, sites and employees of {{ tenant.legal_name }} within the TISAX scope as well as to outsourced functions where they perform security-relevant tasks.
+
+                    ## 3. Roles and Responsibilities
+
+                    ### 3.1 Top Management
+                    Top management bears overall responsibility for information security. It appoints the ISO, provides appropriate resources, approves the security concept and risk-acceptance criteria and conducts the management review at least annually.
+
+                    ### 3.2 Information Security Officer (ISO / CISO)
+                    The ISO {{ roles.isb.fullName }} reports directly to top management and not to IT management. The ISO steers the ISMS, coordinates the VDA ISA assessment topics, represents {{ tenant.legal_name }} towards audit providers and ENX, and reports to top management at least quarterly. Identity of person between ISO and DPO is impermissible.
+
+                    ### 3.3 IS Management Team / Security Forum
+                    The IS management team ({{ roles.is_management_team }}) meets at least quarterly. Participants are the ISO, DPO, IT manager, HR manager, procurement, production / engineering, facility management and, where applicable, the prototype protection officer. Tasks include risk assessment, alignment of cross-cutting measures and preparation of the management review.
+
+                    ### 3.4 Data Protection Officer (DPO)
+                    The DPO {{ roles.dpo.fullName }} is responsible for GDPR compliance, advises functional units on DPIA obligations and coordinates with the ISO on security incidents involving personal data.
+
+                    ### 3.5 Prototype Protection Officer
+                    Where the TISAX *Prototype Protection* assessment objective applies, a prototype protection officer ({{ roles.prototype_officer.fullName }}) is appointed. This person is responsible for implementing the PSx requirements and acts as the contact for customer-side prototype audits.
+
+                    ### 3.6 Functional and Site Managers
+                    Each functional unit and each site appoints a functional security responsibility. This person is the first point of contact for the ISO, performs local risk assessment and reports security incidents.
+
+                    ### 3.7 Employees
+                    All employees are obliged to observe the security requirements, to report vulnerabilities and incidents without delay and to take part in awareness measures.
+
+                    ## 4. Segregation of Duties
+                    Security-critical activities are distributed in such a way that no single person can carry out a complete transaction alone and conceal it afterwards. In particular, administrative IT tasks, application approvals as well as the granting and review of access rights are organisationally separated. Where separation is not feasible, compensating controls (e.g. four-eyes principle, complete logging) are established.
+
+                    ## 5. Contacts with Authorities and Interest Groups
+                    The ISO maintains contacts with the BSI, BfDI, sector-specific supervisory authorities (where applicable), the Alliance for Cyber Security, the ENX Association and relevant ISACs.
+
+                    ## 6. Reporting Lines and Escalation
+                    Security incidents are reported via the incident-response procedure. Severe incidents (severity *high* / *critical*) are escalated to top management within 24 hours. Personal-data-relevant incidents are reported to the competent supervisory authority within 72 hours in accordance with GDPR Art. 33.
+
+                    ## 7. Audit Evidence
+                    The following evidence is maintained and is auditable in the TISAX assessment: appointment of the ISO, rules of procedure of the security forum, minutes of the IS management team, role descriptions with security responsibility, segregation-of-duties matrix, appointment of the prototype protection officer (where applicable).
+
+                    ## 8. Review and Update
+                    This policy is reviewed at least every 12 months and on an event-driven basis (reorganisation, change of ISO, severe incidents).
+
+        human_resources_security:
+            v1:
+                title: 'Human Resources Security (TISAX)'
+                body: |-
+                    # Human Resources Security of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Normative anchor: VDA ISA 3.1.1 - 3.1.4 | ISO 27001:2022 A.6.1 - A.6.6 | GDPR Art. 5(1)(c), Art. 32 | BDSG § 26 | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy regulates security-relevant duties and measures before, during and after an employment relationship. It ensures that all persons with access to information within the TISAX scope are pre-screened, contractually obliged, trained and – upon departure – cleanly disconnected from access in line with the sensitivity of that access.
+
+                    ## 2. Scope
+                    This policy applies to all employees of {{ tenant.legal_name }} (permanent, temporary, part-time, working students, interns), temporary agency workers and third-party personnel who are contractually engaged and shall receive access to TISAX-relevant information.
+
+                    ## 3. Prior to Commencement of Employment
+
+                    ### 3.1 Background Check
+                    Prior to commencement, identity is verified against official documents. For positions with access to information of protection need *high* or *very high*, application documents are additionally verified (certificates, gaps in CV), references are obtained and – where legally permissible (BDSG § 26) – an extended certificate of good conduct is requested. For positions with prototype access, an additional confidentiality undertaking with contractual penalty is signed.
+
+                    ### 3.2 Contractual Duties
+                    The employment or contractor agreement contains the following obligations: commitment to data secrecy (GDPR Art. 5, BDSG § 53), commitment to safeguard trade secrets (GeschGehG), commitment to comply with internal security policies, confidentiality undertaking with adequate contractual penalty as well as – where applicable – commitment to telecommunications secrecy (TKG) and obligation under § 1 of the Verpflichtungsgesetz (VerpflG).
+
+                    ## 4. During Employment
+
+                    ### 4.1 Awareness and Training
+                    Before productive access rights are granted, all employees complete an initial training course on information security, data protection and – where applicable – prototype protection. Refresher training takes place at least annually, on an event-driven basis and whenever material security requirements change.
+
+                    ### 4.2 Disciplinary Process
+                    Violations of security requirements are sanctioned in accordance with the disciplinary code. The graduation ranges from oral warning, written warning, change-of-terms termination through to extraordinary termination; in case of breach of trade secrets, civil-law and criminal-law steps (UWG, GeschGehG, German Criminal Code §§ 17 (former) / § 23 GeschGehG) are additionally examined.
+
+                    ## 5. Termination or Change of Employment
+
+                    ### 5.1 Offboarding
+                    By the last working day at the latest, all access rights (logical and physical) are revoked, hardware (laptop, smartphone, token, keys, plant ID) is returned and the return is acknowledged in writing. In case of suspected breach of contract, access rights are revoked immediately (emergency offboarding).
+
+                    ### 5.2 Post-Termination Duties
+                    Confidentiality obligations continue beyond the end of the employment relationship. Continuing obligations are pointed out in the exit interview; written confirmation is added to the personnel file.
+
+                    ## 6. Data Protection
+                    Personal data (application, suitability and personnel files) is processed exclusively on the basis of BDSG § 26 and GDPR Art. 6(1)(b)(c)(f). Retention periods, the deletion concept and rights of access are governed in the data protection policy.
+
+                    ## 7. Audit Evidence
+                    The following evidence is maintained: template employment contract with security obligations, declaration of commitment to data secrecy, awareness training records (attendance lists, content, dates), background-check evidence according to protection need, offboarding checklists with acknowledgements.
+
+                    ## 8. Review and Update
+                    This policy is reviewed at least every 12 months and on an event-driven basis.
+
+        physical_environmental_security:
+            v1:
+                title: 'Physical and Environmental Security (TISAX)'
+                body: |-
+                    # Physical and Environmental Security of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Normative anchor: VDA ISA 4.1.1 - 4.1.4 | ISO 27001:2022 A.7.1 - A.7.14 | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy regulates the protection of sites, areas, rooms, IT infrastructure and operating equipment of {{ tenant.legal_name }} against unauthorised access, theft, damage, espionage and environmental impact. It elaborates the requirements of VDA ISA 4.x and ISO/IEC 27001:2022 A.7 for the TISAX scope.
+
+                    ## 2. Scope
+                    This policy applies to all sites and areas of {{ tenant.legal_name }} within the TISAX scope, including production, development, storage, administrative and data-centre areas as well as temporary areas (e.g. customer showrooms, off-site events).
+
+                    ## 3. Security Zone Concept
+                    Sites are classified into graded security zones:
+
+                    - **Zone 0 – Public:** Reception, foyer, visitor parking; no protection needs.
+                    - **Zone 1 – General:** Office areas with normal sensitivity; access for employees.
+                    - **Zone 2 – Confidential:** Development, design, engineering; access only with authorisation and logging.
+                    - **Zone 3 – Strictly confidential:** Prototype workshop, laboratory with protection need high / very high; access with extended authorisation, four-eyes principle and electronic logging.
+                    - **Zone 4 – High security:** Datacentre, server room, vaults; access only for a named group of persons with MFA authentication.
+
+                    ## 4. Access Protection
+
+                    ### 4.1 Perimeter Protection
+                    Sites are protected against unauthorised access by fences, walls, single-passage barriers or equivalent measures. Routes for delivery and personnel are separated. Outdoor areas are illuminated and – at protection need high / very high – under video surveillance.
+
+                    ### 4.2 Access Control
+                    Access to zones 2 - 4 is electronic (card readers, biometric procedures) with logging. The authorisation matrix (zone x person) is recertified at least every six months. Cards reported lost are blocked within 1 hour.
+
+                    ### 4.3 Visitor Management
+                    Visitors are registered at reception (name, company, purpose, host, photo ID), receive a clearly visible visitor badge and are continuously escorted in zones 2 - 4. For access to areas with prototype protection need a photo ban additionally applies; mobile phones are deposited in lockers.
+
+                    ## 5. Protection Against Environmental Impact
+                    Server rooms and areas with critical infrastructure are protected against fire (VdS-compliant early fire detection, structural fire compartments), water (raised equipment, leakage sensors), power outage (UPS with at least 15 minutes hold-up time, emergency generator for critical areas) and climate (temperature / humidity monitoring).
+
+                    ## 6. Secure Workplace Design
+                    A *clear desk / clear screen* principle applies: confidential documents are locked away outside processing, screens are locked manually or automatically after a maximum of 5 minutes when leaving the workplace. Print jobs with confidential content use *pull printing* with authentication at the device.
+
+                    ## 7. Secure Disposal
+                    Data carriers (paper, hard drives, SSDs, magnetic tapes) are destroyed in accordance with DIN 66399 according to protection need. Destruction is documented by certificate. Before disposal of IT equipment, data carriers are erased in accordance with the deletion and disposal policy.
+
+                    ## 8. Mobile Devices and Home Office
+                    Mobile devices are protected by full-disk encryption, screen locking and theft protection. For home office, a lockable workspace, screen-overlooking protection and a dedicated shredder for printed confidentialities are mandatory; home-office permission is granted on a case-by-case basis.
+
+                    ## 9. Audit Evidence
+                    The following evidence is maintained: zone and authorisation matrix, access logs (retention 90 days), recertification records, visitor book, maintenance records for UPS / climate / fire protection, destruction certificates.
+
+                    ## 10. Review and Update
+                    This policy is reviewed at least every 12 months and on an event-driven basis (relocation, reorganisation of zones).
+
+        identity_access_management:
+            v1:
+                title: 'Identity and Access Management (TISAX)'
+                body: |-
+                    # Identity and Access Management of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Normative anchor: VDA ISA 5.1.1 - 5.2.6 | ISO 27001:2022 A.5.15 - A.5.18, A.8.2 - A.8.5 | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy regulates the granting, modification, review and revocation of identities and access rights for IT systems, applications and information of {{ tenant.legal_name }}. It ensures that every access is purpose-bound, minimal, documented and auditable.
+
+                    ## 2. Scope
+                    This policy applies to all IT systems and applications within the TISAX scope, to all employees, third-party personnel, technical accounts (service accounts) as well as system and interface accounts.
+
+                    ## 3. Principles
+                    The principles *need-to-know*, *least privilege*, *need-to-use*, *segregation of duties* and *unique identification* apply. Shared accounts are generally impermissible; exceptions are admissible only in documented justified cases with compensating controls (four-eyes login, complete logging).
+
+                    ## 4. Identity Management
+
+                    ### 4.1 Provisioning
+                    A digital identity is created exclusively on the basis of an approved personnel master record (HR master) or an approved third-party-personnel request. Initial passwords are transmitted only via secured channels and must be changed on first login.
+
+                    ### 4.2 Modification
+                    On role change, previous authorisations are revoked and reassigned (no additive growth). Before reactivating dormant identities, a shortened onboarding process is performed.
+
+                    ### 4.3 Deactivation
+                    Identities are deactivated immediately upon termination of the employment relationship; personal master data is retained in accordance with the data-protection deletion concept and finally deleted.
+
+                    ## 5. Authentication
+
+                    ### 5.1 Passwords
+                    A password policy aligned with NIST SP 800-63B applies (minimum 12 characters, validation against compromised-password lists, no forced rotation without trigger, account lockout after 10 failed attempts, secure storage with Argon2id / bcrypt).
+
+                    ### 5.2 Multi-Factor Authentication
+                    Multi-factor authentication (MFA) is mandatory for: remote access (VPN, zero-trust access), administrative accounts, access to information of protection need high / very high, access to accounts in the cloud, access to prototype repositories. Phishing-resistant MFA (FIDO2 / smartcard) is preferred; SMS OTP is admissible only as a transitional means.
+
+                    ### 5.3 Privileged Access
+                    Privileged access (domain admin, database admin, hypervisor admin etc.) is performed via separate administrative accounts, uses Privileged Access Management (PAM) with session recording and is activated for each operation individually (*just-in-time access*).
+
+                    ## 6. Authorisation Granting
+
+                    ### 6.1 Role Model
+                    Authorisations are granted in a role-based model (RBAC). Roles are derived from business functions and maintained by the functional unit. Direct authorisations (outside roles) require approval and carry an expiry date.
+
+                    ### 6.2 Approval and Four-Eyes Principle
+                    Authorisation requests follow a workflow: requester (employee), approver (manager), data or application owner. Provisioning and approval are performed by different persons.
+
+                    ### 6.3 Recertification
+                    Authorisations are recertified at least every six months, privileged authorisations every quarter. Authorisations not recertified are automatically revoked.
+
+                    ## 7. Service and Technical Accounts
+                    Technical accounts are uniquely named, assigned to a person as the responsible owner, equipped with long credentials kept in a secret vault and likewise recertified annually. Using personal accounts as service accounts is prohibited.
+
+                    ## 8. Logging
+                    Authentication and authorisation events (login, failed attempt, lockout, authorisation change, privilege escalation) are logged tamper-evidently in accordance with the logging policy. Analyses are performed in the SOC.
+
+                    ## 9. Audit Evidence
+                    The following evidence is maintained: role matrix, approval workflow extracts, recertification records, MFA coverage report, PAM session logs, service-account inventory.
+
+                    ## 10. Review and Update
+                    This policy is reviewed at least every 12 months and on an event-driven basis.
+
+        it_security_operations:
+            v1:
+                title: 'IT Security Operations (TISAX)'
+                body: |-
+                    # IT Security Operations of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Normative anchor: VDA ISA 6.1.1 - 6.1.4 | ISO 27001:2022 A.8.6 - A.8.32 | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy regulates the secure operation of IT infrastructure, IT systems and applications of {{ tenant.legal_name }}. It covers configuration, patch, vulnerability, malware, backup, logging and network-security requirements and thereby ensures the operational effectiveness of the ISMS.
+
+                    ## 2. Scope
+                    This policy applies to all IT systems and applications within the TISAX scope, including servers, endpoints, network components, cloud workloads, OT and IoT systems.
+
+                    ## 3. Configuration Management
+                    The principle of *secure-by-default* applies. For relevant system and application types, hardened standard configurations exist (CIS Benchmarks or equivalent). Deviations are recorded in an exception database and reviewed periodically. Configuration changes are processed via change management.
+
+                    ## 4. Patch and Vulnerability Management
+
+                    ### 4.1 Vulnerability Scanning
+                    All IT systems are scanned for known vulnerabilities at least monthly in an automated manner. Internet-exposed systems are additionally scanned weekly.
+
+                    ### 4.2 Patch Deadlines
+                    Patches are applied according to CVSS score: critical (CVSS >= 9.0) within 7 days, high (7.0 - 8.9) within 30 days, medium (4.0 - 6.9) within 90 days, low within the regular patch cycle. Reduced deadlines apply for actively exploited vulnerabilities (zero-day): patch or compensating measure within 72 hours.
+
+                    ## 5. Malware Protection
+                    All endpoints and compatible servers run an Endpoint Detection and Response (EDR) solution with central console, automated updates and SOC integration. Removable media are scanned before use; non-authorised removable media are blocked.
+
+                    ## 6. Backup
+                    Backups follow the *3-2-1-1-0* principle (three copies, two media, one offsite, one offline / immutable, zero errors in the restore test). Restore tests for critical data are performed at least quarterly and are documented. Backup encryption is mandatory.
+
+                    ## 7. Logging and Monitoring
+                    Security-relevant events are collected centrally and tamper-evidently (SIEM) in accordance with the logging policy. Retention period at least 6 months, for privileged actions 12 months. Detection use cases cover the VDA ISA assessment topics as well as the MITRE ATT&CK Top 20 TTPs.
+
+                    ## 8. Network Security
+                    The network is segmented zone-based (office, production, engineering, OT, DMZ, out-of-band management). Inter-zone traffic is controlled by firewalls with default-deny rule sets. External access is provided via zero-trust architectures or hardened VPN. Wireless networks use WPA3 / 802.1X.
+
+                    ## 9. Cryptography
+                    Encryption is used in accordance with the crypto policy: TLS 1.2+, AES-256, Argon2id / bcrypt, RSA >= 3072 / EC >= 256. Key management is performed via dedicated key-management systems (HSM or equivalent).
+
+                    ## 10. Change Management
+                    Changes to productive systems are planned, tested, approved and documented. Emergency changes are admissible but require post-approval within 5 working days.
+
+                    ## 11. Audit Evidence
+                    The following evidence is maintained: hardening standards, vulnerability scan reports, patch compliance reports, EDR coverage report, backup / restore records, SIEM use-case catalogue, network topology and firewall rule-set reviews, crypto inventory, change tickets.
+
+                    ## 12. Review and Update
+                    This policy is reviewed at least every 12 months and on an event-driven basis.
+
+        supplier_relationships_security:
+            v1:
+                title: 'Supplier Security (TISAX)'
+                body: |-
+                    # Supplier Security of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Normative anchor: VDA ISA 7.1.1 - 7.1.3 | ISO 27001:2022 A.5.19 - A.5.23 | GDPR Art. 28 (DPA) | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy regulates the security requirements for suppliers, service providers and other third parties that receive access to information, IT systems or areas of {{ tenant.legal_name }} within the TISAX scope.
+
+                    ## 2. Scope
+                    This policy applies to all supplier relationships with security relevance, in particular ICT outsourcing, cloud services, engineering and design service providers, logistics and transport service providers, cleaning and security services as well as processors within the meaning of GDPR Art. 28.
+
+                    ## 3. Supplier Classification
+                    Suppliers are classified into four levels based on the information they process and the service they provide:
+
+                    - **Level 1 – Low:** No confidential information, no system access (e.g. office-supply vendor).
+                    - **Level 2 – Normal:** Office information with protection need normal (e.g. standard IT vendor).
+                    - **Level 3 – High:** Confidential information, cloud workloads, system access (e.g. SaaS platforms, IT outsourcer).
+                    - **Level 4 – Very high:** Prototypes, engineering data, highly sensitive personal data (e.g. engineering service providers, prototype logistics).
+
+                    ## 4. Selection and Due Diligence
+                    Prior to contract conclusion, a security assessment is performed. As a minimum the following are reviewed: relevant certificates (TISAX, ISO 27001, BSI C5), security organisation, sub-contractor chains, location (in particular third-country relevance under GDPR), financial stability. For levels 3 / 4, a supplier audit or security self-disclosure (e.g. VDA ISA supplier questionnaire) is additionally obtained.
+
+                    ## 5. Contractual Requirements
+                    Contracts with security-relevant suppliers contain the following clauses on a binding basis: applicability of the security policies of {{ tenant.legal_name }}, confidentiality and non-disclosure obligations, obligation to obtain consent for sub-contracting, audit and review rights, data-protection processor agreement (Art. 28 GDPR) including EU standard contractual clauses and Schrems-II-compliant transfer-impact-assessment obligation in case of third-country relevance, obligation to notify security incidents within 24 hours, deletion and return obligation upon contract termination, termination clauses and exit strategy.
+
+                    ## 6. Data Protection – Processing on Behalf (GDPR Art. 28)
+                    Where personal data is processed on behalf, a DPA in accordance with GDPR Art. 28 is concluded. Reviews cover: list of processing activities, technical and organisational measures (TOM), sub-processor list with consent regime, third-country transfer and Schrems II review, support for data-subject rights, deletion or return obligation upon contract termination, notification obligation for personal-data breaches within 24 hours.
+
+                    ## 7. Onboarding and Ongoing Monitoring
+                    Before productive use, technical onboarding is performed (access provisioning, security-policy training, security awareness). In operation, SLA reviews are performed at least annually and – at level 3 / 4 – security audits or re-assessments are performed. In case of incidents the escalation and reporting procedure under the incident response policy is activated.
+
+                    ## 8. Offboarding
+                    On contract termination, access rights are revoked, supplied hardware is reclaimed, data is deleted or fully returned (with deletion evidence), shared interfaces are switched off and confidentiality obligations are reaffirmed in a closing declaration.
+
+                    ## 9. Audit Evidence
+                    The following evidence is maintained: supplier classification register, due-diligence reports, contracts with security and data-protection clauses, DPA collection, audit and re-assessment reports, incident notifications, offboarding documentation.
+
+                    ## 10. Review and Update
+                    This policy is reviewed at least every 12 months and on an event-driven basis.
+
+        compliance_management:
+            v1:
+                title: 'Compliance Management (TISAX)'
+                body: |-
+                    # Compliance Management of {{ tenant.legal_name }}
+
+                    *Document class: Policy | Normative anchor: VDA ISA 8.1.1 - 8.1.4 | ISO 27001:2022 A.5.31 - A.5.36 | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy regulates the identification, maintenance and observance of legal, regulatory and contractual requirements applicable to {{ tenant.legal_name }} with relevance to information security.
+
+                    ## 2. Scope
+                    This policy applies to all business areas, sites and business processes of {{ tenant.legal_name }} as well as to third parties to the extent they fulfil requirements on behalf of {{ tenant.legal_name }}.
+
+                    ## 3. Identification of Applicable Requirements
+                    The compliance function – in coordination with the ISO and DPO – maintains a compliance requirements catalogue. As a minimum the following are considered: GDPR and BDSG, GeschGehG (German Trade Secrets Act), HGB / AO (retention and bookkeeping obligations), TKG / TDSG, ProdSG (product liability with IT relevance), sector-specific supervisory requirements, where applicable NIS2 implementing law, where applicable the German Supply Chain Due Diligence Act (LkSG), the TISAX participation conditions and customer-specific security or confidentiality agreements.
+
+                    ## 4. Intellectual Property Rights
+                    The procurement, use and disposal of software and other content protected by intellectual-property rights is performed in observance of the applicable licence terms. A software-asset-management solution documents the licences in use, monitors licence limits and supports vendor audits.
+
+                    ## 5. Protection of Records
+                    Records are retained in accordance with statutory retention periods (HGB §§ 257, AO §§ 147) and contractual requirements and are protected against loss, destruction, falsification and unauthorised access. Retention is performed electronically in tamper-evident archives with documented deletion deadlines.
+
+                    ## 6. Data Protection and Protection of Personal Data
+                    GDPR and BDSG requirements are elaborated in the data protection policy. This compliance policy refers to the DPO as the central steering function and requires observance of data-subject rights (Art. 15 - 22 GDPR), maintenance of the record of processing activities (Art. 30 GDPR), performance of DPIAs in case of high risk (Art. 35 GDPR) and notification of personal-data breaches within 72 hours (Art. 33 GDPR).
+
+                    ## 7. Trade Secret Protection (GeschGehG)
+                    Trade secrets are protected by organisational and technical measures: confidentiality classification, confidentiality undertakings with contractual penalty (employees and third parties), need-to-know access, logging of access to particularly secret-classified content. This fulfils the *adequate confidentiality measures* element under § 2 No. 1 lit. b) GeschGehG.
+
+                    ## 8. Independent Review
+                    The effectiveness of the ISMS is verified by independent reviews: annual internal audits by independent auditors, external TISAX assessment by accredited audit provider in a three-year cycle, where applicable event-driven penetration tests. Findings are tracked in a central deficiency register.
+
+                    ## 9. Audit Evidence
+                    The following evidence is maintained: compliance requirements catalogue with responsibilities and review intervals, licence register, DPA register, retention and deletion concept, audit and pen-test reports, deficiency and action register.
+
+                    ## 10. Review and Update
+                    This policy is reviewed at least every 12 months and on an event-driven basis (legislative change, new customer obligation).
+
+        prototype_protection:
+            v1:
+                title: 'Prototype Protection (TISAX PSx)'
+                body: |-
+                    # Prototype Protection of {{ tenant.legal_name }}
+
+                    *Document class: Programme document | Normative anchor: VDA ISA PS 1 - PS 8 (prototype protection, assessment objective high / very high) | ISO 27001:2022 A.5.10, A.5.13, A.5.14, A.6.6, A.7.x, A.8.12 | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This document elaborates the organisational, structural and technical measures for the protection of prototypes, components, parts and test vehicles of {{ tenant.legal_name }} and its principals. It addresses the assessment objectives *prototype protection high* and *prototype protection very high* of the TISAX VDA ISA and is binding as soon as corresponding principal requirements apply.
+
+                    ## 2. Scope
+                    This document applies to all areas, persons and processes that handle prototypes: development, design, model construction, workshops, test stands, validation departments, logistics and external test tracks as well as all suppliers engaged in the prototype development.
+
+                    ## 3. Classification and Marking
+                    Prototype information and components are classified before opening a file or making them available in a repository (*high* or *very high*). Physical prototypes are fitted with non-removable disguises (e.g. camouflage wrapping) where visual concealment is required.
+
+                    ## 4. Personnel Measures
+
+                    ### 4.1 Extended Background Check
+                    Employees and third-party personnel with access to prototypes undergo an extended background check (identity verification, CV verification, where applicable extended certificate of good conduct – to the extent BDSG § 26 permits).
+
+                    ### 4.2 Confidentiality Undertaking
+                    Before first access, all persons sign a prototype-specific confidentiality undertaking with a substantial contractual penalty and a clause prohibiting photo and video recording.
+
+                    ### 4.3 Awareness
+                    Before first access, prototype protection training is conducted; refresher training takes place at least annually. Content: confidentiality level, behaviour during testing, photo ban, behaviour in case of approaches by third parties (industrial espionage).
+
+                    ## 5. Structural Measures
+
+                    ### 5.1 Security Area
+                    Prototypes are stored in a structurally segregated security area (zone 3 / 4 according to the security zone concept). Wall heights and visual screening are designed such that external sightlines are precluded.
+
+                    ### 5.2 Access
+                    Access is electronically logged; in zone 4 it is performed under the four-eyes principle on a continuous basis. Visitors are admitted only after prior registration, with a separate justification of need and under continuous escort. On entry, mobile phones and cameras are deposited in lockers; body-worn cameras are prohibited.
+
+                    ### 5.3 Surveillance
+                    Security areas are monitored by video systems; recording duration 30 - 90 days in accordance with the data-protection concept. Sensors (motion, glass-break) are connected to the security service.
+
+                    ## 6. Logical Measures
+
+                    ### 6.1 Data-Room Separation
+                    Prototype data (CAD, CAE, test data) is held in physically and logically segregated repositories (*prototype data room*) separated from the office network. Access is performed exclusively via MFA with a phishing-resistant factor (FIDO2 / smartcard).
+
+                    ### 6.2 Endpoint Protection
+                    Engineering workstations are hardened, with USB mass-storage disabled by policy, with full-disk encryption and EDR. Logout / locking is enforced after a maximum of 5 minutes of inactivity.
+
+                    ### 6.3 DLP
+                    Data-loss prevention detects unauthorised exfiltration paths (mail, cloud sharing, web upload) for prototype-classified content and blocks or escalates.
+
+                    ## 7. Testing Outside the Security Area
+                    Test drives and external tests require written authorisation and are planned (route, stops, refuelling, escort vehicles). Where required two escort persons are deployed; breaks outside secured areas are minimised; a photo ban for outsiders is signposted on the vehicle.
+
+                    ## 8. Logistics
+                    Prototype transports are exclusively performed by certified logistics providers with security clearance. Closed transport containers, track-and-trace and – at level very high – security-escorted transport are mandatory. Loading and unloading points are video-monitored.
+
+                    ## 9. Suppliers and External Workshops
+                    External workshops, model builders and test partners undergo prototype-protection auditing prior to engagement. Contractual obligations: confidentiality, photo ban, background check of deployed personnel, observance of this programme, obligation to notify security incidents within 24 hours.
+
+                    ## 10. Incident Management
+                    On suspicion of breach of prototype protection (photo publication, information exfiltration, theft) a crisis team is convened immediately (CISO, prototype protection officer, legal, communications, where applicable principal). Forensic measures are performed in accordance with the IT forensics policy.
+
+                    ## 11. Audit Evidence
+                    The following evidence is maintained: appointment of the prototype protection officer, security-area plans, access and visitor logs, confidentiality undertakings, training records, DLP reports, logistics audit reports, audit reports of external workshops.
+
+                    ## 12. Review and Update
+                    This programme document is reviewed at least every 12 months and on an event-driven basis (new principal with elevated requirements, severe incident).
+
+        data_protection_addendum:
+            v1:
+                title: 'Data Protection Addendum (TISAX DSx)'
+                body: |-
+                    # Data Protection Addendum of {{ tenant.legal_name }}
+
+                    *Document class: Addendum to the IS policy | Normative anchor: VDA ISA DS 1 - DS 4 (data protection, assessment objective personal data) | GDPR Art. 5, 6, 24, 28, 30, 32, 33, 35, 44 ff. | BDSG § 26 | ISO 27001:2022 A.5.34 | ISO/IEC 27701:2019/2025 | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This addendum supplements the information security policy of {{ tenant.legal_name }} with the assessment topics of the TISAX *Data Protection* assessment objective (DSx) and ensures that personal data is processed in accordance with the GDPR, the BDSG and – where applicable – ISO/IEC 27701.
+
+                    ## 2. Scope
+                    This addendum applies to all processing activities of {{ tenant.legal_name }} that involve personal data of employees, applicants, customers, business partners, suppliers, visitors and other data subjects, as well as to ICT processing on behalf.
+
+                    ## 3. Principles of Processing (Art. 5 GDPR)
+                    {{ tenant.legal_name }} processes personal data in accordance with the principles of lawfulness, fairness, transparency, purpose limitation, data minimisation, accuracy, storage limitation, integrity and confidentiality as well as accountability.
+
+                    ## 4. Legal Bases (Art. 6 GDPR, BDSG § 26)
+                    Processing is performed exclusively on the basis of one of the following legal bases: consent (Art. 6(1)(a) GDPR), performance of contract (Art. 6(1)(b)), legal obligation (Art. 6(1)(c)), legitimate interest with documented balancing test (Art. 6(1)(f)). Employee data is processed on the basis of BDSG § 26.
+
+                    ## 5. Record of Processing Activities (Art. 30 GDPR)
+                    The DPO maintains a record of processing activities, kept separately for controllers and processors. For each processing activity it includes: name, controller, purposes, categories of data subjects and data, recipients (including third-country transfers), retention periods and – briefly – the implemented TOM.
+
+                    ## 6. Processing on Behalf (Art. 28 GDPR)
+                    Where personal data is processed by processors, a DPA in accordance with Art. 28 GDPR is concluded. Mandatory components: subject matter, duration, nature and purpose of processing, categories of data subjects, categories of data, processor obligations, sub-processing with consent regime, support for data-subject rights, deletion or return obligation, audit rights of the controller.
+
+                    ## 7. Third-Country Transfer and Schrems II (Art. 44 ff. GDPR)
+                    Before transferring data to third countries, a *transfer impact assessment* (Schrems II) is performed: review of the level of protection, use of EU standard contractual clauses (SCC 2021/914), assessment of access by state authorities, implementation of supplementary measures (e.g. encryption with customer-held keys, pseudonymisation). Results are documented.
+
+                    ## 8. Technical and Organisational Measures (Art. 32 GDPR)
+                    For all processing activities, risk-adequate TOM are deployed: pseudonymisation, encryption, multi-factor authentication, authorisation management, logging, backup with restore tests, recovery capability, regular effectiveness reviews. Detailed requirements arise from the other policies of this ISMS.
+
+                    ## 9. Data Protection Impact Assessment (Art. 35 GDPR)
+                    For processing activities likely to result in a high risk to the rights and freedoms of data subjects (e.g. systematic large-scale observation, processing of special data categories, new technologies) the controller – with advice from the DPO – performs a DPIA. Where a high risk remains, prior consultation of the supervisory authority is performed pursuant to Art. 36 GDPR.
+
+                    ## 10. Data-Subject Rights (Art. 12 - 22 GDPR)
+                    Requests for access, rectification, erasure, restriction, data portability or objection are answered within a deadline of one month – extendable to three months in cases of complexity. Procedural instructions, identification verification and escalation paths are documented in the data protection procedure.
+
+                    ## 11. Personal-Data Breaches (Art. 33, 34 GDPR)
+                    On the occurrence of a personal-data breach, the DPO is informed without delay, no later than within 24 hours. The controller notifies the supervisory authority of the breach within 72 hours, unless the breach is unlikely to result in a risk. Data subjects are informed without delay where the breach is likely to result in a high risk (Art. 34).
+
+                    ## 12. Training and Commitment
+                    Employees who process personal data receive data-protection training before commencing the activity and at least annually thereafter and are bound to data secrecy in accordance with BDSG § 53.
+
+                    ## 13. Audit Evidence
+                    The following evidence is maintained: record of processing activities, DPA collection with sub-processor lists, Schrems-II assessments, DPIA records, training evidence, declarations of commitment, breach register with authority confirmations.
+
+                    ## 14. Review and Update
+                    This addendum is reviewed at least every 12 months and on an event-driven basis (regulatory change, new processing activity, severe incident).
