@@ -89,6 +89,10 @@ document:
         inheritable: 'Inheritable to subsidiaries'
         override_allowed: 'Local override allowed in subsidiaries'
         data_classification: 'Classification'
+        requires_acknowledgement: 'Requires user acknowledgement'
+        # V3 W2-LB-8 — Review-cycle
+        review_interval_months: 'Review cycle (months)'
+        next_review_date: 'Next review date'
     classification:
         public: 'Public'
         internal: 'Internal'
@@ -104,11 +108,16 @@ document:
         inheritable: 'Makes the document visible to every subsidiary of this holding (default off).'
         override_allowed: 'When off: subsidiaries must use this policy verbatim (e.g. ISMS policy). When on: subsidiaries may author a local version.'
         data_classification: 'Information classification per TISAX/ISO 27001 A.8.2. Default configurable under Admin → System → Documents.'
+        version: 'Version label (e.g. "1.0", "1.2.3-beta", "2026-Q2"). Required when acknowledgement is enabled — every acknowledgement record is keyed by version.'
+        requires_acknowledgement: 'When the document transitions to "approved" the ISMS-Helper automatically requests acknowledgement from every active user of the tenant (ISO 27001 A.6.3). Use for binding policies, not for evidence or internal notes.'
+        # V3 W2-LB-8 — Review-cycle
+        review_interval_months: 'Cadence for the scheduled review-cycle (default 12 months, ISO 27001 Cl. 7.5.2). When the document is approved the next review date is auto-populated.'
     tooltip:
         category: 'Select the document type that describes the content purpose of the document (e.g. policy, procedure, evidence). The type controls filtering and assignment to ISMS areas.'
         classification: 'Information classification per TISAX/ISO 27001 A.8.2. Determines who may access the document. "Strictly Confidential" applies to documents requiring special protection (e.g. key material, security concepts).'
     placeholder:
         data_classification: '-- Select classification --'
+        version: 'e.g. 1.0'
     delete_warning: 'Deleting this document cannot be undone.'
     badge:
         controlled: Controlled

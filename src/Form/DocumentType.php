@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -86,6 +87,34 @@ class DocumentType extends AbstractType
                 ],
                 'choice_translation_domain' => 'document',
                 'help' => 'document.help.data_classification',
+            ])
+            // V3 W2-Bug2 — version label + acknowledgement-requirement.
+            ->add('version', TextType::class, [
+                'label' => 'document.field.version',
+                'help' => 'document.help.version',
+                'required' => false,
+                'attr' => [
+                    'maxlength' => 32,
+                    'placeholder' => 'document.placeholder.version',
+                ],
+            ])
+            ->add('requiresAcknowledgement', CheckboxType::class, [
+                'label' => 'document.field.requires_acknowledgement',
+                'help' => 'document.help.requires_acknowledgement',
+                'required' => false,
+            ])
+            // V3 W2-LB-8 — Review-cycle cadence. Used by
+            // DocumentApprovalListener to populate nextReviewDate
+            // when the document is approved.
+            ->add('reviewIntervalMonths', IntegerType::class, [
+                'label' => 'document.field.review_interval_months',
+                'required' => false,
+                'help' => 'document.help.review_interval_months',
+                'attr' => [
+                    'min' => 1,
+                    'max' => 60,
+                    'step' => 1,
+                ],
             ])
             // Phase 9.P2.1 — holding policy inheritance flags. Only
             // meaningful on a holding tenant; standalone tenants can

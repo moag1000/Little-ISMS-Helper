@@ -1,0 +1,33 @@
+{# V3 W2-WS-9 — CSIRT notify for approved ICT-Policy documents. #}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'emails.document.ict_policy.subject'|trans({}, 'emails')|default('Approved ICT-Policy ready for review') }}</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: #2563eb; color: white; padding: 20px; border-radius: 6px 6px 0 0;">
+            <h1 style="margin: 0; font-size: 18px;">
+                {{ 'emails.document.ict_policy.title'|trans({}, 'emails')|default('Approved ICT-Policy — CSIRT Review') }}
+            </h1>
+        </div>
+
+        <div style="background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-radius: 0 0 6px 6px;">
+            <p>{{ 'emails.document.ict_policy.intro'|trans({}, 'emails')|default('An ICT-Policy document has been approved. Please review for CSIRT operational impact before circulating to acknowledgers.') }}</p>
+
+            <div style="background: white; padding: 12px; border-left: 4px solid #2563eb; margin: 16px 0;">
+                <p style="margin: 0;"><strong>Document:</strong> {{ document.originalFilename|default(document.filename|default('—')) }}</p>
+                <p style="margin: 4px 0 0 0;"><strong>Category:</strong> {{ document.category|default('—') }}</p>
+                {% if document.nextReviewDate %}
+                    <p style="margin: 4px 0 0 0;"><strong>Next Review:</strong> {{ document.nextReviewDate|date('Y-m-d') }}</p>
+                {% endif %}
+            </div>
+
+            <p style="font-size: 13px; color: #666; margin-top: 16px;">
+                {{ 'emails.document.ict_policy.footer'|trans({}, 'emails')|default('Open the document in the ISMS to add CSIRT-relevant comments.') }}
+            </p>
+        </div>
+    </div>
+</body>
+</html>

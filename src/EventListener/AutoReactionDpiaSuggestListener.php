@@ -69,7 +69,15 @@ class AutoReactionDpiaSuggestListener
             $dpia = new DataProtectionImpactAssessment();
             $dpia->setTenant($activity->getTenant());
             $dpia->setProcessingActivity($activity);
-            $dpia->setTitle('DPIA Auto-Suggestion: ' . ($activity->getTitle() ?? 'Processing-Activity'));
+            // ProcessingActivity exposes the human-readable label via getName();
+            // earlier versions of this listener mistakenly called getTitle()
+            // which silently threw and was caught + logged as a warning, so the
+            // DPIA skeleton was never persisted. V3 W2-Bug1 fixes the call.
+            $dpia->setTitle(sprintf(
+                'DPIA Auto-Suggestion: %s (%s)',
+                $activity->getName() ?? 'Processing-Activity',
+                (new \DateTimeImmutable())->format('Y-m-d'),
+            ));
             $dpia->setStatus('draft');
             if (method_exists($dpia, 'setProcessingDescription')) {
                 $dpia->setProcessingDescription(
@@ -112,7 +120,7 @@ class AutoReactionDpiaSuggestListener
             }
             $subject = sprintf(
                 'Auto-DPIA suggested for processing activity "%s"',
-                (string) ($activity->getTitle() ?? '—')
+                (string) ($activity->getName() ?? '—')
             );
             $this->emailNotifier->sendGenericNotification(
                 $subject,
