@@ -72,6 +72,7 @@
         </div>
     {% endblock %}
     {% block card_body %}
+        {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
         <form method="post" action="{{ path('app_evidence_upload') }}" enctype="multipart/form-data">
             <input type="hidden" name="_token" value="{{ csrf_token('evidence_upload') }}">
             <div class="row g-3">

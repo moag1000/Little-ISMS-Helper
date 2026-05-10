@@ -64,52 +64,51 @@
                     title: 'audit_freeze.empty'|trans({}, 'audit_freeze')
                 }) }}
             {% else %}
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th scope="col">{{ 'audit_freeze.column.name'|trans({}, 'audit_freeze') }}</th>
-                                <th scope="col">{{ 'audit_freeze.column.stichtag'|trans({}, 'audit_freeze') }}</th>
-                                <th scope="col">{{ 'audit_freeze.column.purpose'|trans({}, 'audit_freeze') }}</th>
-                                <th scope="col">{{ 'audit_freeze.column.frameworks'|trans({}, 'audit_freeze') }}</th>
-                                <th scope="col">{{ 'audit_freeze.column.created_at'|trans({}, 'audit_freeze') }}</th>
-                                <th scope="col">{{ 'audit_freeze.column.created_by'|trans({}, 'audit_freeze') }}</th>
-                                <th scope="col" class="text-end">{{ 'audit_freeze.column.actions'|trans({}, 'audit_freeze') }}</th>
+                {# V3 W3-UX: migrated to fa-table Aurora pattern #}
+                {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
+                    {% block table_head %}
+                        <tr>
+                            <th class="fa-table__th fa-table__th--sortable" data-sort-key="name" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'audit_freeze.column.name'|trans({}, 'audit_freeze') }}</th>
+                            <th class="fa-table__th fa-table__th--sortable" data-sort-key="stichtag" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'audit_freeze.column.stichtag'|trans({}, 'audit_freeze') }}</th>
+                            <th class="fa-table__th">{{ 'audit_freeze.column.purpose'|trans({}, 'audit_freeze') }}</th>
+                            <th class="fa-table__th">{{ 'audit_freeze.column.frameworks'|trans({}, 'audit_freeze') }}</th>
+                            <th class="fa-table__th fa-table__th--sortable" data-sort-key="created_at" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'audit_freeze.column.created_at'|trans({}, 'audit_freeze') }}</th>
+                            <th class="fa-table__th">{{ 'audit_freeze.column.created_by'|trans({}, 'audit_freeze') }}</th>
+                            <th class="fa-table__th fa-table__th--actions">{{ 'audit_freeze.column.actions'|trans({}, 'audit_freeze') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for freeze in freezes %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell" data-sort-value="{{ freeze.freezeName }}">
+                                    <a href="{{ path('app_audit_freeze_show', {id: freeze.id}) }}" data-turbo-action="advance">
+                                        <strong>{{ freeze.freezeName }}</strong>
+                                    </a>
+                                </td>
+                                <td class="fa-table__cell" data-sort-value="{{ freeze.stichtag|date('Y-m-d') }}">{{ freeze.stichtag|date('Y-m-d') }}</td>
+                                <td class="fa-table__cell">
+                                    <span class="fa-status-pill fa-status-pill--neutral">
+                                        {{ ('audit_freeze.purpose.' ~ freeze.purpose)|trans({}, 'audit_freeze') }}
+                                    </span>
+                                </td>
+                                <td class="fa-table__cell">
+                                    {% for code in freeze.frameworkCodes %}
+                                        <span class="fa-status-pill fa-status-pill--primary me-1">{{ code }}</span>
+                                    {% endfor %}
+                                </td>
+                                <td class="fa-table__cell" data-sort-value="{{ freeze.createdAt|date('Y-m-d H:i') }}">{{ freeze.createdAt|date('Y-m-d H:i') }}</td>
+                                <td class="fa-table__cell">{{ freeze.createdBy.email|default('—') }}</td>
+                                <td class="fa-table__cell fa-table__cell--actions">
+                                    <a href="{{ path('app_audit_freeze_show', {id: freeze.id}) }}"
+                                       class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
+                                       aria-label="{{ 'audit_freeze.action.view'|trans({}, 'audit_freeze') }}">
+                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for freeze in freezes %}
-                                <tr>
-                                    <th scope="row">
-                                        <a href="{{ path('app_audit_freeze_show', {id: freeze.id}) }}" data-turbo-action="advance">
-                                            {{ freeze.freezeName }}
-                                        </a>
-                                    </th>
-                                    <td>{{ freeze.stichtag|date('Y-m-d') }}</td>
-                                    <td>
-                                        <span class="fa-status-pill fa-status-pill--neutral">
-                                            {{ ('audit_freeze.purpose.' ~ freeze.purpose)|trans({}, 'audit_freeze') }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        {% for code in freeze.frameworkCodes %}
-                                            <span class="fa-status-pill fa-status-pill--primary me-1">{{ code }}</span>
-                                        {% endfor %}
-                                    </td>
-                                    <td>{{ freeze.createdAt|date('Y-m-d H:i') }}</td>
-                                    <td>{{ freeze.createdBy.email|default('—') }}</td>
-                                    <td class="text-end">
-                                        <a href="{{ path('app_audit_freeze_show', {id: freeze.id}) }}"
-                                           class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm"
-                                           aria-label="{{ 'audit_freeze.action.view'|trans({}, 'audit_freeze') }}">
-                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         {% endblock %}
     {% endembed %}

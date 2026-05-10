@@ -213,6 +213,7 @@
     form_id: 'risk-filter-form'
 } %}
     {% block filters %}
+        {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
         {% if app.request.query.get('view') %}
             <input type="hidden" name="view" value="{{ app.request.query.get('view') }}">
         {% endif %}

@@ -34,55 +34,54 @@
         {% block alert_body %}<div> <strong>{{ 'loader_fixer.hint.heading'|trans({}, 'loader_fixer') }}</strong> <div class="small">{{ 'loader_fixer.hint.body'|trans({}, 'loader_fixer') }}</div> </div>{% endblock %}
     {% endembed %}
 
-    <div class="table-responsive">
-        <table class="table table-hover align-middle" aria-label="{{ 'loader_fixer.page.title'|trans({}, 'loader_fixer') }}">
-            <thead>
-                <tr>
-                    <th scope="col">{{ 'loader_fixer.table.code'|trans({}, 'loader_fixer') }}</th>
-                    <th scope="col">{{ 'loader_fixer.table.label'|trans({}, 'loader_fixer') }}</th>
-                    <th scope="col" class="text-end">{{ 'loader_fixer.table.loaded'|trans({}, 'loader_fixer') }}</th>
-                    <th scope="col" class="text-center">{{ 'loader_fixer.table.status'|trans({}, 'loader_fixer') }}</th>
-                    <th scope="col" class="text-end">{{ 'loader_fixer.table.actions'|trans({}, 'loader_fixer') }}</th>
+    {# V3 W3-UX: migrated to fa-table Aurora pattern #}
+    {% embed '_components/_fa_table.html.twig' with { hover: true, sortable: true } %}
+        {% block table_head %}
+            <tr>
+                <th class="fa-table__th fa-table__th--sortable" data-sort-key="code" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'loader_fixer.table.code'|trans({}, 'loader_fixer') }}</th>
+                <th class="fa-table__th fa-table__th--sortable" data-sort-key="label" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'loader_fixer.table.label'|trans({}, 'loader_fixer') }}</th>
+                <th class="fa-table__th fa-table__th--sortable fa-table__th--num" data-sort-key="loaded" tabindex="0" role="columnheader" aria-sort="none" data-action="click->fa-table-sort#sort keydown.enter->fa-table-sort#sort keydown.space->fa-table-sort#sort">{{ 'loader_fixer.table.loaded'|trans({}, 'loader_fixer') }}</th>
+                <th class="fa-table__th fa-table__th--center">{{ 'loader_fixer.table.status'|trans({}, 'loader_fixer') }}</th>
+                <th class="fa-table__th fa-table__th--actions">{{ 'loader_fixer.table.actions'|trans({}, 'loader_fixer') }}</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for row in rows %}
+                <tr class="fa-table__row">
+                    <td class="fa-table__cell" data-sort-value="{{ row.code }}"><code>{{ row.code }}</code></td>
+                    <td class="fa-table__cell" data-sort-value="{{ row.label }}">{{ row.label }}</td>
+                    <td class="fa-table__cell fa-table__cell--num" data-sort-value="{{ row.loaded_count }}"><strong>{{ row.loaded_count }}</strong></td>
+                    <td class="fa-table__cell fa-table__cell--center">
+                        {% if not row.exists %}
+                            <span class="fa-status-pill fa-status-pill--neutral">
+                                <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
+                                {{ 'loader_fixer.status.not_loaded'|trans({}, 'loader_fixer') }}
+                            </span>
+                        {% elseif row.loaded_count == 0 %}
+                            <span class="fa-status-pill fa-status-pill--warning">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                {{ 'loader_fixer.status.empty'|trans({}, 'loader_fixer') }}
+                            </span>
+                        {% else %}
+                            <span class="fa-status-pill fa-status-pill--success">
+                                <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
+                                {{ 'loader_fixer.status.loaded'|trans({}, 'loader_fixer') }}
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="fa-table__cell fa-table__cell--actions">
+                        <form method="post" class="d-inline"
+                              action="{{ path('admin_loader_fixer_run_one', { code: row.code }) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('loader_fixer_run_' ~ row.code) }}">
+                            <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
+                                {{ 'loader_fixer.action.run_one'|trans({}, 'loader_fixer') }}
+                            </button>
+                        </form>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for row in rows %}
-                    <tr>
-                        <th scope="row"><code>{{ row.code }}</code></th>
-                        <td>{{ row.label }}</td>
-                        <td class="text-end"><strong>{{ row.loaded_count }}</strong></td>
-                        <td class="text-center">
-                            {% if not row.exists %}
-                                <span class="fa-status-pill fa-status-pill--neutral">
-                                    <i class="fa-icon fa-icon--status-pending" aria-hidden="true"></i>
-                                    {{ 'loader_fixer.status.not_loaded'|trans({}, 'loader_fixer') }}
-                                </span>
-                            {% elseif row.loaded_count == 0 %}
-                                <span class="fa-status-pill fa-status-pill--warning">
-                                    <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
-                                    {{ 'loader_fixer.status.empty'|trans({}, 'loader_fixer') }}
-                                </span>
-                            {% else %}
-                                <span class="fa-status-pill fa-status-pill--success">
-                                    <i class="fa-icon fa-icon--status-ok" aria-hidden="true"></i>
-                                    {{ 'loader_fixer.status.loaded'|trans({}, 'loader_fixer') }}
-                                </span>
-                            {% endif %}
-                        </td>
-                        <td class="text-end">
-                            <form method="post" class="d-inline"
-                                  action="{{ path('admin_loader_fixer_run_one', { code: row.code }) }}">
-                                <input type="hidden" name="_token" value="{{ csrf_token('loader_fixer_run_' ~ row.code) }}">
-                                <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
-                                    <i class="fa-icon fa-icon--ui-refresh" aria-hidden="true"></i>
-                                    {{ 'loader_fixer.action.run_one'|trans({}, 'loader_fixer') }}
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}
