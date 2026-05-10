@@ -37,7 +37,7 @@ final class AdminReportStyleControllerTest extends TestCase
     }
 
     #[Test]
-    public function classRoutePrefixCarriesLocaleAndAdminReportStyle(): void
+    public function classRoutePrefixCarriesAdminReportStyle(): void
     {
         $reflection = new \ReflectionClass(AdminReportStyleController::class);
         $attrs = $reflection->getAttributes(Route::class);
@@ -46,7 +46,9 @@ final class AdminReportStyleControllerTest extends TestCase
         /** @var Route $route */
         $route = $attrs[0]->newInstance();
         self::assertStringContainsString('admin/report-style', $route->getPath());
-        self::assertStringContainsString('{_locale}', $route->getPath());
+        // _locale prefix is auto-applied by Symfony at kernel level (config/routes.yaml).
+        // The class-level route must NOT include {_locale} or it produces a duplicate
+        // variable in the compiled route ("/{_locale}/{_locale}/admin/report-style").
     }
 
     #[Test]

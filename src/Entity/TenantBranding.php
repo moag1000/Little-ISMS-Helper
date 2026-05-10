@@ -618,6 +618,10 @@ class TenantBranding
             'cover_logo_size' => $this->policyDocCoverLogoSize,
             'page_margin' => $this->policyDocPageMargin,
             'custom_css' => $this->policyDocCustomCss,
+            // Shared branding so the macro does not need to query the entity twice.
+            'primary_color' => $this->primaryColor,
+            'secondary_color' => $this->secondaryColor,
+            'logo_path' => $this->logoPath,
         ];
     }
 
