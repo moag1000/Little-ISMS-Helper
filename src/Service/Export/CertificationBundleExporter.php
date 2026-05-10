@@ -65,9 +65,17 @@ final class CertificationBundleExporter
     /**
      * Generate a complete certification bundle ZIP.
      *
+     * Audit-V3 EF-3: `frameworkCode` parameterised so the bundle reflects
+     * the framework actually being audited. ISO27001 stays the default
+     * for backward compatibility — existing callers don't break.
+     *
+     * @param string $frameworkCode Framework identifier (e.g. ISO27001,
+     *                              BSI_GRUNDSCHUTZ, NIS2). Stored in
+     *                              METADATA.json and used as filename
+     *                              prefix.
      * @return array{path: string, filename: string, sha256: string, document_count: int}
      */
-    public function export(Tenant $tenant): array
+    public function export(Tenant $tenant, string $frameworkCode = 'ISO27001'): array
     {
         $now = new DateTimeImmutable();
         $dateStr = $now->format('Y-m-d');
@@ -138,7 +146,7 @@ final class CertificationBundleExporter
             'tenantName' => $tenant->getName(),
             'exportDate' => $now->format('c'),
             'exportedBy' => $exportedBy,
-            'frameworkCode' => 'ISO27001',
+            'frameworkCode' => $frameworkCode,
             'counts' => [
                 'controls_total' => $controlStats['total'],
                 'controls_implemented' => $controlStats['implemented'],
@@ -171,8 +179,9 @@ final class CertificationBundleExporter
         }
 
         $filename = sprintf(
-            'ISMS_Certification_Bundle_%s_%s.zip',
+            'ISMS_Certification_Bundle_%s_%s_%s.zip',
             $this->slug((string) $tenant->getName()),
+            $this->slug($frameworkCode),
             $dateStr
         );
 
@@ -186,6 +195,7 @@ final class CertificationBundleExporter
                     oldValues: null,
                     newValues: [
                         'tenant' => $tenant->getName(),
+                        'frameworkCode' => $frameworkCode,
                         'documents' => $documentCount,
                         'gaps' => $gapCount,
                         'controls' => $controlStats['total'],
@@ -194,8 +204,9 @@ final class CertificationBundleExporter
                         'sha256' => $sha256,
                     ],
                     description: sprintf(
-                        'Certification bundle exported (tenant=%s, documents=%d, gaps=%d, sha256=%s)',
+                        'Certification bundle exported (tenant=%s, framework=%s, documents=%d, gaps=%d, sha256=%s)',
                         $tenant->getName(),
+                        $frameworkCode,
                         $documentCount,
                         $gapCount,
                         substr($sha256, 0, 16) . '...'
