@@ -55,6 +55,18 @@
 }) }}
 <main class="fa-aurora-surface">
 
+{# V3 W2-M8 / UF-3: HMAC-Chain Verify button — Auditor's "manipulationssicher?" answer #}
+<div class="d-flex justify-content-end mb-3">
+    <form method="post" action="{{ path('app_audit_log_verify') }}" class="d-inline"
+          onsubmit="this.querySelector('button').disabled = true;">
+        <input type="hidden" name="_token" value="{{ csrf_token('audit_log_verify') }}">
+        <button type="submit" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+            <i class="bi bi-shield-check"></i>
+            HMAC-Chain verifizieren
+        </button>
+    </form>
+</div>
+
 {% embed '_components/_fa_alert.html.twig' with { props: { variant: 'info' } } %}
     {% block alert_body %}
         <div class="fa-alert__title">{{ 'audit_log.section.statistics'|trans({}, 'audit_log') }}</div>

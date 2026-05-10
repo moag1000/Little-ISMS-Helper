@@ -7,6 +7,7 @@ namespace App\Controller;
 use DateTime;
 use App\Entity\AuditLog;
 use App\Repository\AuditLogRepository;
+use App\Service\AuditLogIntegrityService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,8 +18,42 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class AuditLogController extends AbstractController
 {
     public function __construct(
-        private readonly AuditLogRepository $auditLogRepository
+        private readonly AuditLogRepository $auditLogRepository,
+        private readonly ?AuditLogIntegrityService $integrityService = null,
     ) {}
+
+    /**
+     * V3 W2-M8 / UF-3: HMAC-Chain Verify endpoint surfaced as Admin button.
+     * Auditor's classic question "manipulationssicher?" → click & see green/red.
+     */
+    #[Route('/admin/audit-log/verify', name: 'app_audit_log_verify', methods: ['POST'])]
+    public function verifyChain(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('audit_log_verify', (string) $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid CSRF token.');
+            return $this->redirectToRoute('app_audit_log_index');
+        }
+
+        if ($this->integrityService === null || !$this->integrityService->isEnabled()) {
+            $this->addFlash('warning', 'Audit-log integrity verification is disabled (APP_AUDIT_HMAC_KEY missing).');
+            return $this->redirectToRoute('app_audit_log_index');
+        }
+
+        $issues = $this->integrityService->verifyChain();
+        if ($issues === []) {
+            $this->addFlash('success', 'Audit-log chain intact — no tampering detected.');
+        } else {
+            $sample = array_slice($issues, 0, 5);
+            $msg = sprintf(
+                'Integrity violations: %d. First entries: %s',
+                count($issues),
+                implode(' · ', array_map(static fn(array $i): string => sprintf('#%s (%s)', $i['id'] ?? '?', $i['reason'] ?? '?'), $sample)),
+            );
+            $this->addFlash('error', $msg);
+        }
+
+        return $this->redirectToRoute('app_audit_log_index');
+    }
 
     #[Route('/admin/audit-log/', name: 'app_audit_log_index')]
     public function index(Request $request): Response
