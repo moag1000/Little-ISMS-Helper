@@ -81,13 +81,13 @@
                             </div>
                         </div>
                         <div class="col">
-                            <div class="p-2 bg-success bg-opacity-10 rounded">
+                            <div class="p-2 rounded" style="background-color: var(--success-tint); border: 1px solid var(--success);">
                                 <h4 class="mb-0 text-success">{{ dashboard.treatment_pipeline.treated }}</h4>
                                 <small>{{ 'risk_manager.pipeline.treated'|trans({}, 'dashboards') }}</small>
                             </div>
                         </div>
                         <div class="col">
-                            <div class="p-2 bg-warning bg-opacity-10 rounded">
+                            <div class="p-2 rounded" style="background-color: var(--warning-tint); border: 1px solid var(--warning);">
                                 <h4 class="mb-0 text-warning">{{ dashboard.treatment_pipeline.untreated }}</h4>
                                 <small>{{ 'risk_manager.pipeline.untreated'|trans({}, 'dashboards') }}</small>
                             </div>

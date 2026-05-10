@@ -145,19 +145,19 @@
                 {% block card_body %}
                     <div class="row text-center">
                         <div class="col-4">
-                            <div class="p-3 bg-danger bg-opacity-10 rounded">
-                                <h3 class="text-danger mb-0">{{ dashboard.compliance_gaps.critical }}</h3>
+                            <div class="p-3 rounded" style="background-color: var(--danger-tint); border: 1px solid var(--danger);">
+                                <h3 class="mb-0" style="color: var(--danger-strong, var(--danger)); font-weight: 700;">{{ dashboard.compliance_gaps.critical }}</h3>
                                 <small>{{ 'auditor.gaps.critical'|trans({}, 'dashboards') }}</small>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="p-3 bg-warning bg-opacity-10 rounded">
-                                <h3 class="text-warning mb-0">{{ dashboard.compliance_gaps.high }}</h3>
+                            <div class="p-3 rounded" style="background-color: var(--warning-tint); border: 1px solid var(--warning);">
+                                <h3 class="mb-0" style="color: var(--warning-strong, var(--warning)); font-weight: 700;">{{ dashboard.compliance_gaps.high }}</h3>
                                 <small>{{ 'auditor.gaps.high'|trans({}, 'dashboards') }}</small>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="p-3 bg-secondary bg-opacity-10 rounded">
+                            <div class="p-3 rounded" style="background-color: var(--secondary-tint); border: 1px solid var(--secondary);">
                                 <h3 class="mb-0">{{ dashboard.compliance_gaps.total }}</h3>
                                 <small>{{ 'auditor.gaps.total'|trans({}, 'dashboards') }}</small>
                             </div>
@@ -181,20 +181,20 @@
                 {% block card_body %}
                     <div class="row text-center">
                         <div class="col-4">
-                            <div class="p-3 bg-success bg-opacity-10 rounded">
-                                <h3 class="text-success mb-0">{{ dashboard.control_status.implemented }}</h3>
+                            <div class="p-3 rounded" style="background-color: var(--success-tint); border: 1px solid var(--success);">
+                                <h3 class="mb-0" style="color: var(--success-strong, var(--success)); font-weight: 700;">{{ dashboard.control_status.implemented }}</h3>
                                 <small>{{ 'auditor.controls.implemented'|trans({}, 'dashboards') }}</small>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="p-3 bg-warning bg-opacity-10 rounded">
-                                <h3 class="text-warning mb-0">{{ dashboard.control_status.partially }}</h3>
+                            <div class="p-3 rounded" style="background-color: var(--warning-tint); border: 1px solid var(--warning);">
+                                <h3 class="mb-0" style="color: var(--warning-strong, var(--warning)); font-weight: 700;">{{ dashboard.control_status.partially }}</h3>
                                 <small>{{ 'auditor.controls.partially'|trans({}, 'dashboards') }}</small>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="p-3 bg-danger bg-opacity-10 rounded">
-                                <h3 class="text-danger mb-0">{{ dashboard.control_status.not_implemented }}</h3>
+                            <div class="p-3 rounded" style="background-color: var(--danger-tint); border: 1px solid var(--danger);">
+                                <h3 class="mb-0" style="color: var(--danger-strong, var(--danger)); font-weight: 700;">{{ dashboard.control_status.not_implemented }}</h3>
                                 <small>{{ 'auditor.controls.not_implemented'|trans({}, 'dashboards') }}</small>
                             </div>
                         </div>
@@ -219,20 +219,20 @@
                 {% block card_body %}
                     <div class="row text-center">
                         <div class="col-4">
-                            <div class="p-3 bg-danger bg-opacity-10 rounded">
-                                <h3 class="text-danger mb-0">{{ dashboard.non_conformities.major }}</h3>
+                            <div class="p-3 rounded" style="background-color: var(--danger-tint); border: 1px solid var(--danger);">
+                                <h3 class="mb-0" style="color: var(--danger-strong, var(--danger)); font-weight: 700;">{{ dashboard.non_conformities.major }}</h3>
                                 <small>{{ 'auditor.nc.major'|trans({}, 'dashboards') }}</small>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="p-3 bg-warning bg-opacity-10 rounded">
-                                <h3 class="text-warning mb-0">{{ dashboard.non_conformities.minor }}</h3>
+                            <div class="p-3 rounded" style="background-color: var(--warning-tint); border: 1px solid var(--warning);">
+                                <h3 class="mb-0" style="color: var(--warning-strong, var(--warning)); font-weight: 700;">{{ dashboard.non_conformities.minor }}</h3>
                                 <small>{{ 'auditor.nc.minor'|trans({}, 'dashboards') }}</small>
                             </div>
                         </div>
                         <div class="col-4">
-                            <div class="p-3 bg-info bg-opacity-10 rounded">
-                                <h3 class="text-info mb-0">{{ dashboard.non_conformities.observations }}</h3>
+                            <div class="p-3 rounded" style="background-color: var(--info-tint); border: 1px solid var(--info);">
+                                <h3 class="mb-0" style="color: var(--info-strong, var(--info)); font-weight: 700;">{{ dashboard.non_conformities.observations }}</h3>
                                 <small>{{ 'auditor.nc.observations'|trans({}, 'dashboards') }}</small>
                             </div>
                         </div>

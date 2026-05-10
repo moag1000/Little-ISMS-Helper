@@ -204,13 +204,13 @@
                             <div class="row text-center mb-4">
                                 <div class="col-6">
                                     <div class="bg-danger bg-opacity-10 rounded p-3">
-                                        <h3 class="text-danger mb-0">{{ velocity.last_30_days.new_risks }}</h3>
+                                        <h3 class="mb-0" style="color: var(--danger-strong, var(--danger)); font-weight: 700;">{{ velocity.last_30_days.new_risks }}</h3>
                                         <small class="text-muted">{{ 'analytics.forecast.velocity.new_risks'|trans({}, 'analytics') }}</small>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="bg-success bg-opacity-10 rounded p-3">
-                                        <h3 class="text-success mb-0">{{ velocity.last_30_days.closed_risks }}</h3>
+                                        <h3 class="mb-0" style="color: var(--success-strong, var(--success)); font-weight: 700;">{{ velocity.last_30_days.closed_risks }}</h3>
                                         <small class="text-muted">{{ 'analytics.forecast.velocity.closed_risks'|trans({}, 'analytics') }}</small>
                                     </div>
                                 </div>
