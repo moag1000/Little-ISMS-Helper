@@ -50,7 +50,7 @@
         <div class="col-lg-6">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-success', 'form': form, 'available_frameworks': available_frameworks } only %}
                 {% block card_header %}
-                    <div class="card-header bg-success-subtle">
+                    <div class="card-header">
                         <h2 class="h5 mb-0">
                             <i class="fa-icon fa-icon--attestation text-success me-2" aria-hidden="true"></i>
                             {{ 'existing_frameworks.already_certified.heading'|trans({}, 'setup_wizard') }}
@@ -106,7 +106,7 @@
         <div class="col-lg-6">
             {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary', 'form': form, 'available_frameworks': available_frameworks } only %}
                 {% block card_header %}
-                    <div class="card-header bg-primary-subtle">
+                    <div class="card-header">
                         <h2 class="h5 mb-0">
                             <i class="fa-icon text-primary me-2 fa-icon--ui-plus" aria-hidden="true"></i>
                             {{ 'existing_frameworks.newly_added.heading'|trans({}, 'setup_wizard') }}
