@@ -33,7 +33,7 @@
                 {{ 'policy_wizard.step.welcome.standard_explainer.summary'|trans }}
             </summary>
             <ul class="mt-2 mb-0 ps-3">
-                {% for code in ['iso27001', 'bsi', 'dora', 'gdpr', 'bcm', 'iso27701'] %}
+                {% for code in ['iso27001', 'bsi', 'dora', 'gdpr', 'bcm', 'iso27701', 'nis2', 'tisax', 'soc2', 'c5'] %}
                     <li class="mb-1">
                         <strong>{{ ('policy_wizard.step.welcome.standard.' ~ code)|trans }}</strong>:
                         {{ ('policy_wizard.step.welcome.standard_explainer.' ~ code)|trans }}
@@ -103,7 +103,7 @@
                 {{ 'policy_wizard.message.generate_preview'|trans({'%count%': (selected_standards|length * 4)}) }}
             </div>
 
-            {% for code in ['iso27001', 'bsi', 'dora', 'gdpr', 'bcm', 'iso27701'] %}
+            {% for code in ['iso27001', 'bsi', 'dora', 'gdpr', 'bcm', 'iso27701', 'nis2', 'tisax', 'soc2', 'c5'] %}
                 <div class="form-check">
                     <input class="form-check-input"
                            type="checkbox"

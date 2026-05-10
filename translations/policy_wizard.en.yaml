@@ -188,6 +188,10 @@ policy_wizard:
                 gdpr: 'EU GDPR / national data-protection law'
                 bcm: 'BCM (ISO 22301 business continuity)'
                 iso27701: 'ISO/IEC 27701 (PIMS extension)'
+                nis2: 'NIS-2 (EU directive 2022/2555 — essential / important entities)'
+                tisax: 'TISAX (VDA ISA — automotive supply chain)'
+                soc2: 'SOC 2 (AICPA Trust Services Criteria — US / B2B SaaS)'
+                c5: 'BSI C5 (Cloud Computing Compliance Criteria Catalogue)'
             preview: 'This selection will produce approximately %count% documents.'
             finding_reference_label: 'Audit-finding reference (optional)'
             finding_reference_help: 'Links this wizard run to a specific audit finding for traceability.'
@@ -203,6 +207,10 @@ policy_wizard:
                 gdpr: 'EU GDPR + national law (BDSG in Germany). Mandatory when processing personal data.'
                 bcm: 'ISO 22301 — Business Continuity Management. Recommended for KRITIS, banks, healthcare.'
                 iso27701: 'ISO/IEC 27701 — PIMS (Privacy Information Management). Extends 27001 with privacy-specific controls.'
+                nis2: 'EU directive 2022/2555 (transposed into German law via NIS2UmsuCG). Mandatory for essential / important entities above ~50 staff or 10M EUR turnover. ISO 27001 mapping ships out of the box — Art. 21 measures and Art. 23 reporting paths are emitted as policy sections.'
+                tisax: 'TISAX (Trusted Information Security Assessment Exchange, based on VDA ISA). Mandatory audit for German automotive suppliers. ISO 27001 mapping ships out of the box — prototype protection and privacy add-ons are emitted as extra sections.'
+                soc2: 'SOC 2 per AICPA Trust Services Criteria (Security / Availability / Confidentiality / Processing Integrity / Privacy). De-facto requirement for US / B2B SaaS contracts. ISO 27001 mapping ships out of the box — TSC sections are embedded in the policies.'
+                c5: 'BSI Cloud Computing Compliance Criteria Catalogue (C5:2020 + C5:2026). Trust anchor for cloud providers in the German federal / public-sector market. ISO 27001 mapping ships out of the box — C5 basic and additional criteria are surfaced alongside.'
             # Junior-ISB Wish #1 — one-sentence explainer per standard.
             # ISO 27701 (PIMS) especially needs the term spelled out so
             # juniors recognise it as the privacy layer for ISO 27001.
@@ -214,6 +222,10 @@ policy_wizard:
                 gdpr: 'EU GDPR + national law (BDSG in Germany). Mandatory when processing personal data — generates the data-protection sections of your policies.'
                 bcm: 'Business Continuity Management per ISO 22301. Generates incident and recovery directives (RTO/RPO, BIA methodology). Recommended for KRITIS, banks and healthcare.'
                 iso27701: 'ISO 27701 (PIMS = Privacy Information Management System) — privacy extension for ISO 27001. Adds a clause-mapped privacy layer with audit-grade traceability to your ISMS. Recommended when you want to audit GDPR + ISO 27001 in a single review.'
+                nis2: 'NIS-2 (EU directive 2022/2555, transposed in Germany via NIS2UmsuCG). Mandatory once the essential / important entity thresholds are met. We ship the ISO 27001 mapping — Art. 21 risk measures and Art. 23 reporting paths land in the document automatically.'
+                tisax: 'TISAX (VDA ISA) — mandatory assessment for automotive suppliers. We ship the ISO 27001 mapping — prototype protection and VDA-specific privacy requirements are embedded into the policy.'
+                soc2: 'SOC 2 (AICPA Trust Services Criteria). De-facto requirement for US / B2B SaaS contracts. We ship the ISO 27001 mapping — sections for Security / Availability / Confidentiality / Processing Integrity / Privacy are generated alongside.'
+                c5: 'BSI C5 (Cloud Computing Compliance Criteria Catalogue, both 2020 and 2026 editions). Trust anchor for cloud providers in the German federal / public-sector market. We ship the ISO 27001 mapping — C5 basic and additional criteria appear in the matching policy chapters.'
             # Junior-ISB Wish #2 — NIS-2 / DORA lex specialis.
             # Banner inside the wizard + footer clause inside the
             # generated DORA-body.
@@ -1050,6 +1062,17 @@ policy_wizard:
         custom_general:
             label: 'Generic / Custom'
             description: 'Generic preset without industry assumptions — fill Steps 4 + 5 manually. Recommended when none of the 4 industry presets fits.'
+        # Compliance-Manager-Persona (May 2026): three additional presets
+        # that surface the now-pickable NIS-2 / DORA / C5 mappings.
+        de_mittelstand_nis2:
+            label: 'German Mid-Market (NIS-2 in scope)'
+            description: 'German mid-market industrial / B2B-service firms in scope of the NIS2UmsuCG thresholds (essential / important entity per § 28 BSIG-neu). Defaults: ISO 27001 + NIS-2 + GDPR, conservative risk profile, 12 h RPO, DPO sections enabled.'
+        bafin_dora_marisk_at:
+            label: 'BaFin (DORA + MaRisk AT 11.2)'
+            description: 'BaFin-supervised financial institutions (banks, insurers, payment service providers, capital management companies). DORA is lex specialis since Jan 2025 — replaces VAIT/BAIT/KAIT/ZAIT. MaRisk AT 11.2 still applies for outsourcing governance. Defaults: ISO 27001 + DORA + GDPR + BCM, very conservative, 4 h RPO.'
+        kritis_energie:
+            label: 'KRITIS Energy (BSI-KritisV + EnWG § 11.1b)'
+            description: 'KRITIS sector "Energy" (electricity, gas, district heating, mineral oil) per BSI-KritisV. Combines BSI IT-Grundschutz, NIS-2 and the IT-Sicherheitskatalog Strom/Gas (EnWG § 11 Abs. 1b). Defaults: ISO 27001 + BSI + NIS-2 + BCM, very conservative, 4 h RPO, physical-heavy controls.'
 
     standard_badge:
         iso27001: 'ISO 27001'
@@ -1058,6 +1081,10 @@ policy_wizard:
         dora: 'EU DORA'
         gdpr: 'GDPR'
         iso27701: 'ISO 27701 (PIMS)'
+        nis2: 'NIS-2'
+        tisax: 'TISAX'
+        soc2: 'SOC 2'
+        c5: 'BSI C5'
 
     csrf:
         invalid: 'Invalid CSRF token. Please reload the page.'

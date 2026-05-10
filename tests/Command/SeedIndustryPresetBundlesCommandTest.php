@@ -37,16 +37,27 @@ class SeedIndustryPresetBundlesCommandTest extends TestCase
         $stats = $command->seed();
 
         // Junior-ISB-friendly defaults pulled in a 5th `custom_general`
-        // bundle in May 2026 — keep the test name for backwards-compat
-        // but assert the new total.
-        self::assertSame(5, $stats['created']);
+        // bundle in May 2026, then Compliance-Manager-Persona feedback
+        // (also May 2026) added 3 more presets covering the now-pickable
+        // NIS-2 / DORA / BSI-C5 standards. Total = 8. Test name kept
+        // for blame-history continuity.
+        self::assertSame(8, $stats['created']);
         self::assertSame(0, $stats['updated']);
-        self::assertCount(5, $persisted);
+        self::assertCount(8, $persisted);
 
         $keys = array_map(static fn (IndustryPresetBundle $b): string => $b->getKey(), $persisted);
         sort($keys);
         self::assertSame(
-            ['b2c_saas', 'custom_general', 'healthcare', 'ot_iec62443', 'public_sector'],
+            [
+                'b2c_saas',
+                'bafin_dora_marisk_at',
+                'custom_general',
+                'de_mittelstand_nis2',
+                'healthcare',
+                'kritis_energie',
+                'ot_iec62443',
+                'public_sector',
+            ],
             $keys,
         );
     }
@@ -66,16 +77,16 @@ class SeedIndustryPresetBundlesCommandTest extends TestCase
         );
 
         $em = $this->createMock(EntityManagerInterface::class);
-        // Existing bundle must NOT be persisted again. With the new
-        // `custom_general` bundle the seeder now creates 4 fresh rows
-        // alongside the in-place update of Healthcare.
-        $em->expects(self::exactly(4))->method('persist');
+        // Existing bundle must NOT be persisted again. With the
+        // Compliance-Manager-Persona additions the seeder now creates
+        // 7 fresh rows alongside the in-place update of Healthcare.
+        $em->expects(self::exactly(7))->method('persist');
         $em->expects(self::once())->method('flush');
 
         $command = new SeedIndustryPresetBundlesCommand($em, $repo);
         $stats = $command->seed();
 
-        self::assertSame(4, $stats['created']);
+        self::assertSame(7, $stats['created']);
         self::assertSame(1, $stats['updated']);
         // Existing entity is updated in place (label rewritten).
         self::assertNotSame('Stale label', $existing->getLabel());
