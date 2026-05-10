@@ -1,0 +1,38 @@
+{# Aurora-konsistente Progress-Bar.
+ # Args:
+ #   value:    int|float (0-100, oder 0-max wenn max gesetzt)
+ #   max:      int|float (default 100)
+ #   tone:     'primary'|'success'|'warning'|'danger'|'info'|'neutral' (default 'primary')
+ #   label:    string (optional, screen-reader-friendly aria-label)
+ #   showText: bool (default false, render percentage in bar)
+ #   striped:  bool (default false)
+ #   animated: bool (default false)
+ #   size:     'sm'|'md'|'lg' (default 'md')
+ #   class:    string (optional extra-classes auf .progress wrapper)
+ #}
+{% macro render(args = {}) %}
+    {% set value = args.value|default(0) %}
+    {% set max = args.max|default(100) %}
+    {% set tone = args.tone|default('primary') %}
+    {% set label = args.label|default('') %}
+    {% set showText = args.showText|default(false) %}
+    {% set striped = args.striped|default(false) %}
+    {% set animated = args.animated|default(false) %}
+    {% set size = args.size|default('md') %}
+    {% set class = args.class|default('') %}
+
+    {% set pct = max > 0 ? (value / max * 100)|round(1) : 0 %}
+    {% if pct < 0 %}{% set pct = 0 %}{% endif %}
+    {% if pct > 100 %}{% set pct = 100 %}{% endif %}
+
+    <div class="progress fa-progress fa-progress--{{ size }} fa-progress--{{ tone }} {{ class }}"
+         role="progressbar"
+         {% if label %}aria-label="{{ label }}"{% endif %}
+         aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100"
+         style="--fa-progress-value: {{ pct }}%;">
+        <div class="progress-bar bg-{{ tone == 'neutral' ? 'secondary' : tone }} {% if striped %}progress-bar-striped{% endif %} {% if animated %}progress-bar-animated{% endif %}"
+             style="width: {{ pct }}%;">
+            {% if showText %}{{ pct }}%{% endif %}
+        </div>
+    </div>
+{% endmacro %}
