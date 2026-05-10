@@ -138,6 +138,28 @@ document:
     drag_files: 'Dateien hierher ziehen oder klicken zum Hochladen'
     validation:
         mime_types: 'Bitte wählen Sie eine gültige Datei (PDF, Word, Excel, Bild oder Text)'
+    effectiveness:
+        section_title: 'Wirksamkeitsprüfung'
+        last_reviewed_at: 'Zuletzt geprüft am'
+        last_reviewed_by: 'Geprüft von'
+        notes: 'Notizen / Beobachtungen'
+        never_reviewed: 'Diese Richtlinie wurde noch nie auf Wirksamkeit geprüft. Bitte ISB / Auditor um eine erste Begutachtung.'
+        no_soa_bump_hint: 'Eine Wirksamkeitsprüfung ändert den SoA-Status NICHT automatisch auf „implemented" — die Statusbewertung bleibt eine eigene Entscheidung des ISB im Control-Register.'
+        action:
+            record: 'Wirksamkeit prüfen'
+        modal:
+            title: 'Wirksamkeit prüfen'
+            intro: 'Halten Sie Beobachtungen, Wirksamkeitsbeurteilung und ggf. abgeleitete Massnahmen fest. Der Eintrag wird im Audit-Trail dokumentiert (Audit-Event: document_effectiveness_reviewed).'
+            notes_label: 'Notizen / Beobachtungen'
+            notes_placeholder: 'z. B. Stichprobenprüfung Q1/2026: Kontrolle umgesetzt, Wirksamkeit bestätigt durch Reviewer A. Restrisiko innerhalb Akzeptanzschwelle.'
+            confirm_label: 'Ich bestätige, dass die Wirksamkeit der Richtlinie geprüft wurde.'
+            submit: 'Prüfung speichern'
+        success:
+            recorded: 'Wirksamkeitsprüfung wurde gespeichert und im Audit-Trail dokumentiert.'
+        badge:
+            overdue:
+                label: 'Wirksamkeit fällig'
+                tooltip: 'Letzte Wirksamkeitsprüfung liegt mehr als 12 Monate zurück oder hat noch nie stattgefunden. ISB / Auditor sollte eine Prüfung dokumentieren.'
     policy_body:
         section_title: 'Richtlinien-Text bearbeiten (eigene Anpassung)'
         label: 'Richtlinien-Text (eigene Anpassung)'

@@ -837,6 +837,23 @@ policy_wizard:
                 title: 'Sandbox mode active — no persisted output'
                 body: 'This run was started in sandbox mode. Pressing Generate will NOT persist any documents in the tenant. Use this mode for trial runs without audit traces.'
             audit_trail_hint: 'This generation will be recorded in the audit log with wizard run ID #%run_id%, the approver names listed below and the confirmation timestamp (ISO 27001 Clause 7.5.3).'
+            confirm_box:
+                title: 'Confirm before generation'
+                intro: 'Please review the approvers and review intervals below. These values become the per-document workflow routing and review cadence.'
+                approvers_heading: 'Approver per document template'
+                no_approvers: 'No approvers configured. Please go back to the "Lifecycle" step and set a default approver.'
+                default_approver_badge: 'Default'
+                intervals_heading: 'Review intervals (effectiveness review)'
+                default_interval: 'Default: %count% month(s)'
+                interval_months: '%count% month(s)'
+                docs_heading: 'Estimated number of documents to be generated'
+                docs_count: '%count% document(s) (estimate; final count depends on selected templates)'
+                confirm_label: 'I confirm the approvers and review intervals listed above.'
+            confirm_approvers:
+                required: 'Please confirm the approvers and review intervals before starting generation.'
+            acknowledge_warnings:
+                label: 'I have reviewed the %count% consistency warning(s) and accept generation anyway.'
+                required: 'Please confirm that you have reviewed the consistency warnings first.'
         targeted_pick_topics:
             title: 'Pick topics'
             subtitle: 'Mark up to ten existing topic policies for re-generation.'

@@ -366,6 +366,22 @@
                                     {{ 'policy_wizard.auditor_score.label'|trans({}, 'policy_wizard') }}: {{ _score.score }}
                                 </span>
                             {% endif %}
+                            {# Effectiveness-Review overdue marker —
+                               red "faellig" badge when no review has
+                               ever been recorded OR the last review
+                               is older than 12 months (standard
+                               cadence; per-policy overrides may relax
+                               but never lengthen). Auditor signal:
+                               policy lacks Wirksamkeitspruefung. #}
+                            {% if document.isEffectivenessOverdue(12) %}
+                                <span class="badge bg-danger ms-1"
+                                      data-bs-toggle="tooltip"
+                                      data-bs-placement="top"
+                                      title="{{ 'document.effectiveness.badge.overdue.tooltip'|trans({}, 'document') }}">
+                                    <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                                    {{ 'document.effectiveness.badge.overdue.label'|trans({}, 'document') }}
+                                </span>
+                            {% endif %}
                             {% if document.description %}
                             <br>
                             <small class="text-muted">{{ document.description|length > 60 ? document.description|slice(0, 60) ~ '...' : document.description }}</small>
