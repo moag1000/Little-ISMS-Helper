@@ -1,0 +1,408 @@
+policy:
+    kritis:
+        kritis_energie_b3s:
+            v1:
+                title: 'Sector-Specific Security Standard (B3S) — Energy Sector'
+                body: |-
+                    # Sector-Specific Security Standard (B3S) Energy Sector — {{ tenant.legal_name }}
+
+                    *Document class: Sector profile (B3S) | Norm anchor: BSIG § 8a + BSI-KritisV § 2 + EnWG § 11 (1b) + BNetzA IT-Security Catalogue Electricity/Gas | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English | Review interval: 24 months (BSIG § 8a (3))*
+
+                    ## 1. Scope and Thresholds
+                    This sector profile is binding for facilities of {{ tenant.legal_name }} that qualify as Critical Infrastructure (KRITIS) in the Energy sector pursuant to BSI-KritisV § 2 in conjunction with Annex 1. Covered are electricity generation, transmission, distribution, trading; gas extraction, transport, distribution, storage, trading; mineral oil supply and district heating. Thresholds (number of persons supplied, energy delivered) are conclusively listed in Annex 1 BSI-KritisV; exceeding them triggers obligations under BSIG § 8a (state-of-the-art), § 8b (notification duty), § 8c (cybersecurity strategy), and EnWG § 11 (1b) (security catalogue). The {{ roles.isb.fullName }} (CISO) updates the inventory of in-scope assets annually.
+
+                    ## 2. Sectoral Supervisory and Legal Landscape
+                    Beyond the BSI as national cybersecurity authority, the Federal Network Agency (BNetzA) exercises sectoral supervision. Key legal bases: BSIG §§ 8a/8b/8c, BSI-KritisV § 2 + Annex 1, EnWG § 11 (1b) with the BNetzA IT-Security Catalogue Electricity/Gas, KRITIS Umbrella Act (KRITIS-DachG, resilience duties), NIS2 Implementation Act, and ISO/IEC 27019:2017 (energy-supply-specific extension to ISO 27002). Complementary technical norms include IEC 62443 (industrial communication), DIN VDE 0100, FNN guidance, and BNetzA white papers on "Requirements for Secure Control and Telecommunication Systems".
+
+                    ## 3. Energy-Specific Protection Goals
+                    Beyond classical CIA, energy-sector goals include: supply security (n-1 criterion under EnWG § 11), frequency and voltage stability, blackstart capability, real-time requirements (< 100 ms in protection and control engineering), tamper-resistance of metering and billing data (PTB conformity, MID Directive), protection of Smart Meter Gateways (BSI TR-03109), and cyber resilience under hybrid threat scenarios. Protection-needs assessment routinely qualifies all process-control and substation-control technology with availability "high" or "very high"; this triggers mandatory risk analysis per BSI 200-3 and, in many cases, Core Protection (Kern-Absicherung) for individual target objects.
+
+                    ## 4. OT/IT Convergence and Smart-Grid
+                    The progressive convergence of Operational Technology (OT) and IT — Smart-Grid, Distributed Energy Resources (DER), virtual power plants, sector coupling — demands strict architectural discipline. Office IT, Process IT, and Control technology must be segregated using the Zones-and-Conduits model per IEC 62443, augmented by Demilitarised Zones (DMZ) per BSI IT-Grundschutz building blocks NET.1.1 and NET.3.2. Remote-maintenance access (vendor service, maintenance VPN) is permitted only via jump servers with multi-factor authentication, session recording, and four-eyes approval (cross-ref BSI building block OPS.1.2.5). Smart Meter Gateways must be operated strictly per BSI Protection Profiles BSI-CC-PP-0073 and TR-03109; key material must be protected within the Hardware Security Module (HSM) of the Gateway Administrator (GWA).
+
+                    ## 5. Blackstart Recovery and Emergency Management
+                    {{ tenant.legal_name }} maintains a blackstart concept per EnWG § 11 (1) and an aligned IT emergency-management programme per BSI-Standard 200-4 and building block DER.4 (cross-ref Emergency-Management Policy). The concept covers: identification of "island islands" and island-mode capability, restart sequence of ICT systems during blackstart, maintenance of control-technology communications even when public telco fails (back-up radio, public-authority radio BOS), emergency power for control rooms with UPS plus diesel generator and 72 h fuel reserve, and regular blackstart exercises at least every 24 months jointly with the Transmission System Operator. Results are documented in the emergency-exercise report and presented to auditors per BSIG § 8a (3).
+
+                    ## 6. Supply-Chain and Vendor Security
+                    Procurement of security-relevant components is subject to enhanced review per BSIG § 9b (prohibition of critical components) and KRITIS-DachG supply-chain resilience. Manufacturers of protection and substation-control technology, Smart Meter Gateways, telecontrol units, SCADA, and Energy Management Systems (EMS) must be vetted before contract on trustworthy origin, Cyber Resilience Act (CRA) conformity, patch lifecycle (≥ 10 years), and security-update availability. BSIG § 9b vendor declarations must be obtained and recorded in the asset inventory.
+
+                    ## 7. Audit, Evidence, and Notification Duties
+                    Evidence of B3S implementation is provided every 24 months to the BSI per § 8a (3) BSIG via an audit per the BSI procedure description "KRITIS proof". Additionally, {{ tenant.legal_name }} provides evidence per EnWG § 11 (1b) (every two years) to BNetzA. Security incidents must be reported without delay to the BSI via the MIRROR portal (BSIG § 8b (4)); additional reporting duties may apply to BNetzA (telco disruption), the energy-network operator, the data-protection authority, and law-enforcement (cross-ref Incident-Response Policy). A supply disruption must be reported within 24 hours.
+
+                    ## 8. Interfaces to Cross-Cutting Policies
+                    This sector profile complements and operationalises — does not replace — the cross-cutting mandatory policies of {{ tenant.legal_name }}: IT Security Policy (ISMS.1.A4), ISMS Concept (ISMS.1.A6), Emergency-Management Policy (DER.4), Detection Policy (DER.1), Incident-Response Policy (DER.2.1), IT-Administration and Remote-Maintenance policies (OPS.1.1.2 / OPS.1.2.5), Outsourcing Policy (OPS.2.3), Crypto Concept (CON.1), and Logging Policy (OPS.1.1.5). Conflicts between this B3S and cross-cutting policies are resolved in favour of the stricter requirement.
+
+                    ## 9. Responsibilities
+                    - **Top management:** Overall responsibility, approval, resource provision (BSIG § 8a (3)).
+                    - **Information Security Officer (CISO):** {{ roles.isb.fullName }} — steers implementation of this sector profile.
+                    - **OT Security Officer:** {{ roles.ot_security.fullName }} — technical owner for control and substation technology (mandatory under the IT-Security Catalogue).
+                    - **Emergency Officer:** {{ roles.notfallbeauftragter.fullName }} — blackstart concept and recovery.
+                    - **KRITIS contact to BSI:** {{ roles.kritis_contact.fullName }} — notifications, requests, audit coordination.
+
+                    ## 10. Approval and Review Interval
+                    This sector policy enters into force upon signature. Review interval: 24 months (BSIG § 8a (3)) plus event-driven review on changes to BSI-KritisV thresholds, updates to the BNetzA IT-Security Catalogue, severe incidents, or topology changes. Approval chain: {{ approval.chain }}.
+
+                    Approved by [Top Management] on [Date] — Signature: ____________________
+
+                    ---
+                    *Cross-ref ISO/IEC 27019:2017, IEC 62443-2-1, BSI 200-2 Sec. 8 (risk analysis), BSI-Standard 200-4 (BCM), BNetzA IT-Security Catalogue per § 11 (1b) EnWG (Electricity 2018 / Gas 2018).*
+
+        kritis_wasser_b3s:
+            v1:
+                title: 'Sector-Specific Security Standard (B3S) — Water Sector'
+                body: |-
+                    # Sector-Specific Security Standard (B3S) Water Sector — {{ tenant.legal_name }}
+
+                    *Document class: Sector profile (B3S) | Norm anchor: BSIG § 8a + BSI-KritisV § 3 + DVGW W 1060 (drinking water) + DVGW W 1100 (IT security) + DWA-M 1060 (wastewater) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English | Review interval: 24 months (BSIG § 8a (3))*
+
+                    ## 1. Scope and Thresholds
+                    This sector profile is binding for facilities of {{ tenant.legal_name }} in the Water sector that exceed BSI-KritisV § 3 + Annex 2 thresholds (500,000 persons supplied for drinking water; 500,000 connected for wastewater). Covered are drinking-water abstraction, treatment, and distribution as well as wastewater disposal and treatment. The duties of BSIG § 8a (state of the art) and § 8b (notification) plus the supplementary technical rule sets DVGW W 1100 ("IT Security for Water Utilities") and DWA-M 1060 ("IT Security for Wastewater Plants") apply.
+
+                    ## 2. Supervision and Legal Landscape
+                    Sectoral expert supervision lies with the public-health offices (Drinking Water Ordinance, Infection Protection Act) and the Land water-management authorities (Water Resources Act, Wastewater Ordinance). Cybersecurity supervision by the BSI. Key legal bases: BSIG §§ 8a/8b, BSI-KritisV § 3 + Annex 2, Drinking Water Ordinance (TrinkwV), Water Resources Act (WHG), KRITIS-DachG, NIS2 Implementation Act. Technical rule sets: DVGW W 1000 (qualification and organisation of water utilities), DVGW W 1060, DVGW W 1100, DWA-M 1060, DIN EN 15975 (security of drinking-water supply).
+
+                    ## 3. Water-Specific Protection Goals
+                    Focus on availability (supply and disposal as constitutional services of general interest under Art. 28 GG), integrity of process control (manipulation of chlorination, filtration, or pressure regulation can directly harm public health), and authenticity of measurement and control data. Protection-needs assessment routinely qualifies control technology (PCS, SCADA) with "high" or "very high" availability and integrity; mandatory risk analysis per BSI 200-3 follows.
+
+                    ## 4. OT Architecture and Zoning
+                    Control systems for water abstraction, treatment, and distribution must operate in a dedicated OT zone, segregated from office IT by an industrial DMZ (BSI building blocks NET.1.1 and IND.1). Radio links to elevated tanks and pumping stations must be cryptographically secured (TLS 1.3 or equivalent, mutual device-certificate authentication). Modem dial-in, unprotected public-IP exposure, and unsecured Internet/cloud connections to OT components are prohibited. Vendor maintenance access only via jump server with MFA, session recording, and four-eyes approval (BSI building block OPS.1.2.5).
+
+                    ## 5. Emergency and Recovery Management
+                    {{ tenant.legal_name }} maintains an emergency concept per BSI 200-4 and DVGW W 1020 ("Securing the Drinking-Water Supply in Crisis Situations"). The concept covers: emergency operating procedures on PCS failure (manual control, on-site level reading), emergency power for pumping stations and elevated tanks (UPS plus diesel generator, ≥ 72 h fuel reserve), redundant communication paths to control rooms, emergency drinking-water supply per WasSG with emergency wells, supply duties to THW and Federal Armed Forces in the V-case, and regular emergency exercises every 24 months. Cross-ref Emergency-Management Policy (DER.4).
+
+                    ## 6. Vendor and Supply-Chain Duties
+                    Manufacturers of process-control systems and SCADA (e.g. industrial PLC, distributed control systems) must be contractually bound to: patch lifecycle ≥ 10 years, provision of cryptographically signed firmware updates, cooperation in the KRITIS audit, Cyber Resilience Act conformity, and § 9b BSIG "trustworthy origin" warranty. Software Bills of Materials (SBOM) per NIST SP 800-218 must be requested and stored in the asset inventory.
+
+                    ## 7. Notification and Evidence
+                    Disruptions affecting drinking-water supply must be reported without delay to the BSI (MIRROR) and to the competent public-health office (BSIG § 8b (4) + § 16 IfSG). For microbiological or chemical impact, the duty to notify per § 16 TrinkwV applies additionally. Evidence per BSIG § 8a (3) every 24 months to the BSI; alternatively, BSI recognition of this B3S per BSIG § 8a (2) reduces audit scope.
+
+                    ## 8. Interfaces to Cross-Cutting Policies
+                    This sector profile complements: IT Security Policy (ISMS.1.A4), Emergency-Management Policy (DER.4), Backup Concept (CON.3), Detection (DER.1), Incident Response (DER.2.1), Outsourcing (OPS.2.3), Crypto Concept (CON.1). Conflicts resolve in favour of the stricter requirement.
+
+                    ## 9. Responsibilities
+                    - **Top management:** Overall responsibility, resource provision (BSIG § 8a (3)).
+                    - **CISO:** {{ roles.isb.fullName }} — ISMS steering.
+                    - **OT Security Officer:** {{ roles.ot_security.fullName }} — PCS/SCADA security.
+                    - **Water Protection Officer:** owns hygienic-technical objectives per DVGW.
+                    - **KRITIS contact to BSI:** {{ roles.kritis_contact.fullName }}.
+
+                    ## 10. Approval
+                    Review interval: 24 months. Event-driven on DVGW updates, threshold changes, or severe incidents. Approval chain: {{ approval.chain }}.
+
+                    Approved by [Top Management] on [Date] — Signature: ____________________
+
+                    ---
+                    *Cross-ref DVGW W 1020/W 1060/W 1100, DWA-M 1060, DIN EN 15975, IEC 62443-2-1, BSI-Standard 200-2, BSI-Standard 200-4 (BCM).*
+
+        kritis_itk_b3s:
+            v1:
+                title: 'Sector-Specific Security Standard (B3S) — IT and Telecommunications Sector'
+                body: |-
+                    # Sector-Specific Security Standard (B3S) IT/Telco Sector — {{ tenant.legal_name }}
+
+                    *Document class: Sector profile (B3S) | Norm anchor: BSIG § 8a + BSI-KritisV § 6 + TKG § 165 + BNetzA Security Requirements Catalogue + ETSI EN 303 645 (devices) + BSI TR-03116 | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English | Review interval: 24 months (BSIG § 8a (3))*
+
+                    ## 1. Scope and Thresholds
+                    This sector profile is binding for facilities of {{ tenant.legal_name }} in the IT/Telco sector that exceed BSI-KritisV § 6 + Annex 6 thresholds (subscribers for voice/data services, switching/transmission capacity, importance as access node/IXP, Domain Registry, DNS Resolver, Trust Service Provider, cloud computing). Duties arise from BSIG §§ 8a/8b plus the German Telecommunications Act (TKG), notably § 165 (security concept), § 167 (incident reporting), and § 168 (BNetzA orders).
+
+                    ## 2. Dual Supervision: BSI and BNetzA
+                    The IT/Telco sector is subject to two parallel supervision regimes: BSI as cybersecurity authority (BSIG) and BNetzA as sectoral regulator (TKG). A security concept per TKG § 165 must be submitted to BNetzA and aligned with the BNetzA Security Requirements Catalogue. Both authorities can audit independently; {{ tenant.legal_name }} maintains a unified evidence corpus that satisfies both. Cross-ref ENISA Threat Landscape Report and EECC (European Electronic Communications Code, Directive (EU) 2018/1972).
+
+                    ## 3. Protection Goals and Privacy-by-Design
+                    Goals include confidentiality (telecommunications secrecy Art. 10 GG, § 3 TTDSG), integrity of switching and routing data, availability (real-time requirements ≤ 50 ms in switching nodes), authenticity of subscriber identity, tamper-resistance of traffic data, and protection of law-enforcement intercept data (TKUE/TKUEV). Data protection per GDPR Art. 5/32 is governed by the demarcation between DPO ({{ roles.dpo.fullName }}) and CISO ({{ roles.isb.fullName }}). Traffic data is governed by § 96 TKG; subscriber data by § 95 TKG.
+
+                    ## 4. Network Architecture and Resilience
+                    {{ tenant.legal_name }} operates its networks under the following architectural principles: geo-redundancy of core nodes, BGP hijacking resistance via RPKI and ROA, DNSSEC for all owned zones, anti-DDoS provisions (scrubbing centres, BCP 38), strict separation of out-of-band management and data plane (BSI building block NET.4.1), redundant power (UPS + emergency power 72 h, cross-ref INF.2), physical access protection of switching sites (BSI building block INF.1). All configuration changes to critical network elements are subject to four-eyes principle with audit-grade logging (cross-ref OPS.1.1.5).
+
+                    ## 5. Cloud Service Providers and Trust Services
+                    Where {{ tenant.legal_name }} provides cloud-computing services (IaaS, PaaS, SaaS) of a scale falling under BSI-KritisV § 6 (1) No. 5, the following are mandatory: application of the BSI C5 criteria catalogue (Type II audit by chartered auditor), Data Protection Impact Assessment (GDPR Art. 35) for all high-risk processing, EU/EEA data residency per Schrems II case-law, encryption per BSI TR-02102, and binding Standard Contractual Clauses (SCC) for third-country transfers. Trust services (eIDAS) are additionally subject to BNetzA supervision and the Common Criteria regime.
+
+                    ## 6. Telco-Specific Notification Duties
+                    Disruptions must be reported multiple ways: to BSI per BSIG § 8b (MIRROR portal); to BNetzA per TKG § 168 (telco-specific format); to the Data Protection Authority per GDPR Art. 33 (within 72 h); and to the Federal Commissioner for Data Protection (BfDI) for federal-related services. Where lawful-intercept or subscriber-data exfiltration is involved, the TKUEV notification chain applies additionally. Notifications are coordinated by the KRITIS contact ({{ roles.kritis_contact.fullName }}) and the DPO ({{ roles.dpo.fullName }}). Cross-ref Incident-Response Policy (DER.2.1).
+
+                    ## 7. End-Device and IoT Security
+                    Where {{ tenant.legal_name }} ships end-customer devices (CPE, mobile modems, cable modems, IoT hubs), ETSI EN 303 645 applies as minimum standard (no default password, update mechanism, vulnerability disclosure policy). With the EU Cyber Resilience Act (CRA) entering into force from 2027, additional CRA requirements apply (Software Bill of Materials, cryptographically signed firmware, automatic security updates).
+
+                    ## 8. Interfaces to Cross-Cutting Policies
+                    This sector profile complements: IT Security Policy (ISMS.1.A4), Crypto Concept (CON.1), IAM Policy (ORP.4), Privacy Policy (CON.2 / GDPR), Outsourcing (OPS.2.3), Cloud-Usage Policy (OPS.2.2), Detection (DER.1), Incident Response (DER.2.1), Emergency-Management Policy (DER.4).
+
+                    ## 9. Responsibilities
+                    - **Top management:** Overall responsibility per BSIG § 8a, TKG § 165.
+                    - **CISO:** {{ roles.isb.fullName }} — steers B3S implementation.
+                    - **DPO:** {{ roles.dpo.fullName }} — GDPR + § 109 BDSG.
+                    - **Telco Security Officer:** owns the TKG § 165 security concept towards BNetzA.
+                    - **NOC/SOC head:** 24/7 operation of Network/Security Operations Centre.
+                    - **KRITIS contact:** {{ roles.kritis_contact.fullName }} — interface to BSI.
+
+                    ## 10. Approval
+                    Review interval: 24 months (BSIG § 8a (3)) plus event-driven on BNetzA Security Requirements Catalogue updates, new ENISA threat landscape, or severe incidents. Approval chain: {{ approval.chain }}.
+
+                    Approved by [Top Management] on [Date] — Signature: ____________________
+
+                    ---
+                    *Cross-ref TKG §§ 165-168, BNetzA Security Requirements Catalogue, BSI C5, BSI TR-02102, ETSI EN 303 645, EECC (EU 2018/1972), eIDAS Regulation (EU) 910/2014.*
+
+        kritis_finanz_b3s:
+            v1:
+                title: 'Sector-Specific Security Standard (B3S) — Finance and Insurance Sector'
+                body: |-
+                    # Sector-Specific Security Standard (B3S) Finance/Insurance Sector — {{ tenant.legal_name }}
+
+                    *Document class: Sector profile (B3S) | Norm anchor: BSIG § 8a + KWG §§ 25a/b + DORA (EU 2022/2554) + MaRisk AT 11.2 + VAG § 23/26/32 + ZAG | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English | Review interval: 24 months (BSIG § 8a (3)) plus annual BaFin reporting*
+
+                    ## 1. Scope and Duty Catalogue
+                    This sector profile is binding for finance and insurance providers of {{ tenant.legal_name }} that are supervised under BSI-KritisV § 7 or directly as financial entities per Art. 2 DORA. Covered are credit institutions (KWG), investment firms (WpIG), insurers (VAG), pension funds (VAG), payment service providers (ZAG), e-money institutions (ZAG), capital management companies (KAGB), central counterparties (CCP), and central securities depositories (CSDR). Since 17 January 2025, DORA applies as lex specialis and supersedes the national supervisory communications BAIT/VAIT/KAIT/ZAIT. MaRisk AT 11.2 (outsourcing) remains applicable.
+
+                    ## 2. Supervisory Landscape and Dual Regulation
+                    Supervision by BaFin (Federal Financial Supervisory Authority) and Deutsche Bundesbank under the supervisory framework; complemented by ECB supervision for SI/LSI under the SSM Regulation. ESA level: EBA, EIOPA, ESMA + ENISA as technical adviser to the ESAs. Cybersecurity supervision by the BSI for KRITIS duties. DORA is operationalised through ESA RTS/ITS and Joint-Committee guidance. Dual regulation is covered by a unified security concept (with BAIT-legacy → DORA Art. 5-15 → MaRisk AT 11.2 mappings); the tool supports this multi-compliance via the integrated ISO 27001 Annex A baseline + DORA extension per topic.
+
+                    ## 3. DORA Pillar Mapping
+                    DORA's duty framework is structured in five pillars addressed in this B3S:
+                    1. **ICT Risk Management** (Art. 5-15) — governance, risk inventory, protection objectives, asset classification, crypto lifecycle.
+                    2. **ICT-related Incident Reporting** (Art. 17-23) — four-tier classification, Major-ICT-Incident notification to BaFin/Bundesbank within 4 hours initial notification, 72 h interim report, 1 month final report.
+                    3. **Digital Operational Resilience Testing** (Art. 24-27) — TLPT (Threat-Led Penetration Testing) every 3 years for significant institutions, annual resilience tests for all financial entities.
+                    4. **Third-Party Risk** (Art. 28-44) — Register of Information (RoI) for all ICT third-party service providers, critical CTPP under direct ESA oversight (Oversight Framework).
+                    5. **Information Sharing** (Art. 45) — voluntary threat-intelligence sharing within GDPR limits.
+
+                    ## 4. Outsourcing and Vendor Governance (MaRisk AT 11.2 + DORA Art. 28-30)
+                    Outsourcing arrangements are subject to a three-stage materiality test: (a) materiality per MaRisk AT 9 / KWG § 25b, (b) criticality per DORA Art. 28, (c) classification as cloud-computing outsourcing per the EBA Cloud Outsourcing Guidelines. Contracts must contain: audit rights (BaFin + internal audit + ESAs), sub-outsourcing approval requirement, EU/EEA data residency, exit strategy and emergency handover, technical and organisational measures (TOMs) per DORA RTS Art. 30. Cross-ref Outsourcing/Vendor Policy (OPS.2.3).
+
+                    ## 5. ICT Incident Reporting (DORA Art. 17 ff.)
+                    Major ICT incidents must be reported within 4 hours of classification initially to BaFin (MVP portal), with cross-notification to Bundesbank, ESAs, and BSI (BSIG § 8b). Classification criteria per RTS Art. 18: number of customers affected, geographical reach, data criticality, reputational impact, financial loss, duration, system criticality. Significant cyber threats are also notifiable. Cross-ref Incident-Response Policy (DER.2.1).
+
+                    ## 6. Operational Resilience Testing (DORA Art. 24-27)
+                    Mandatory test types: vulnerability assessment (annual), network security assessment, source-code review for critical in-house developments, performance testing, end-to-end testing, penetration testing (≥ every 3 years; for significant institutions with TLPT methodology per TIBER-EU). TLPT requirements: White Team in the line, Red Team via external providers with minimum experience, Threat-Intelligence provider, BaFin/Bundesbank participation in scoping and test closure. Evidence is documented in run-books and the DORA Resilience Report.
+
+                    ## 7. Crypto and Key Management
+                    Cryptographic procedures follow BSI TR-02102 and the ECC Suite-B baseline; key material is held in HSMs per FIPS 140-3 Level 3 or Common Criteria EAL4+ rated modules. Centralised key-management lifecycle (generation, distribution, rotation, revocation, destruction). Quantum-Resistant-Crypto roadmap per BSI TR-02102-1 Annex 1 with hybrid pilot operation from 2026. Cross-ref Crypto Concept (CON.1).
+
+                    ## 8. Interfaces to Cross-Cutting Policies
+                    This sector profile complements: IT Security Policy (ISMS.1.A4), Emergency-Management Policy (DER.4), Outsourcing Policy (OPS.2.3), Cloud-Usage Policy (OPS.2.2), Backup Concept (CON.3), Privacy Policy (CON.2), Incident-Response Policy (DER.2.1), and the DORA mapping in the respective ISO 27001 topic policies.
+
+                    ## 9. Responsibilities
+                    - **Management Board:** Ultimate responsibility per KWG § 25a (1) sentence 2 — non-delegable.
+                    - **CISO:** {{ roles.isb.fullName }} — ISMS and DORA Art. 5 governance.
+                    - **DPO:** {{ roles.dpo.fullName }} — GDPR/BDSG oversight.
+                    - **Outsourcing Officer:** owns MaRisk AT 9 / KWG § 25b and DORA Art. 28 Register of Information.
+                    - **BCM Officer:** {{ roles.bcm.fullName }} — BSI 200-4 + DORA Art. 11-12 resilience.
+                    - **Compliance Officer:** owns regulatory compliance to BaFin/Bundesbank.
+
+                    ## 10. Approval
+                    Review interval: 24 months (BSIG § 8a (3)); annual BaFin/Bundesbank audits (PrPV/MaRisk audit); TLPT every 3 years for significant institutions. Event-driven review on DORA RTS updates, Major Incidents, or business-model change. Approval chain: {{ approval.chain }}.
+
+                    Approved by [Top Management] on [Date] — Signature: ____________________
+
+                    ---
+                    *Cross-ref EU 2022/2554 (DORA), EU 2022/2557 (CER), KWG §§ 25a/25b, VAG §§ 23/26/32, ZAG, MaRisk AT 11.2, BAIT/VAIT legacy, EBA Outsourcing Guidelines, TIBER-EU framework, BSI TR-02102.*
+
+        kritis_gesundheit_b3s:
+            v1:
+                title: 'Sector-Specific Security Standard (B3S) — Healthcare Sector'
+                body: |-
+                    # Sector-Specific Security Standard (B3S) Healthcare Sector — {{ tenant.legal_name }}
+
+                    *Document class: Sector profile (B3S) | Norm anchor: BSIG § 8a + BSI-KritisV § 7 + KHZG + § 75c SGB V + DigiG + GDPR Art. 9 + MDR (EU 2017/745) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English | Review interval: 24 months (§ 75c SGB V (2) + BSIG § 8a (3))*
+
+                    ## 1. Scope and Thresholds
+                    This sector profile is binding for facilities of {{ tenant.legal_name }} in the Healthcare sector that exceed BSI-KritisV § 7 + Annex 5 thresholds (hospitals: ≥ 30,000 inpatient cases/year; pharmacies/labs: production/distribution volumes; insurers: insured persons). Duties arise from BSIG § 8a, complemented by § 75c SGB V (independent IT-security duty for all hospitals regardless of KRITIS threshold), KHZG (Hospital Future Act, IT-security funding component), and DigiG. The "B3S Medical Care" of the German Hospital Federation (DKG), recognised by the BSI per BSIG § 8a (2), is the applicable industry standard.
+
+                    ## 2. Sectoral Supervision and Legal Landscape
+                    Supervision by the BSI (cybersecurity), the competent hospital supervisory authorities of the Länder (hospital laws), the supervisory boards of the Statutory Health Insurance Physicians Associations (statutory-physician sector), the Federal Institute for Drugs and Medical Devices (BfArM, medical-device safety), and the Land data-protection authorities. Legal bases: BSIG, BSI-KritisV § 7, § 75c SGB V, KHG, KHZG, DigiG, GDPR Art. 9 (health data as special category), § 22 BDSG, § 203 StGB (professional secrecy), MDR (EU 2017/745) for medical devices, IfSG (infection protection). Technical anchors: B3S DKG, ISO/IEC 80001-1 (Medical IT Networks), DIN EN 80001-1.
+
+                    ## 3. Protection Goals and Patient Safety
+                    In healthcare, patient safety prevails. Goals: confidentiality (professional secrecy § 203 StGB, GDPR Art. 9, Data Transparency Ordinance), integrity (manipulation of findings, medication, or imaging data can directly harm patients), availability (24/7 emergency care, obstetrics, intensive medicine non-interruptible), authenticity (unambiguous mapping caregiver ↔ patient ↔ intervention), non-repudiation for medical orders. Patient data is routinely classified "very high" in confidentiality.
+
+                    ## 4. Telematics Infrastructure (TI) and KIM
+                    {{ tenant.legal_name }} uses the German TI per gematik specifications (KIM connector, Health Professional Card (HBA), SMC-B practice/institution card, eGK card reader). Requirements: BSI Protection Profiles BSI-CC-PP-0098 (connector), BSI-CC-PP-0082 (eGK), BSI-CC-PP-0084 (HBA). KIM addresses are managed via the gematik ZSZ portal; transmission of patient data is exclusively end-to-end encrypted per KIM specification. Cross-ref IAM Policy (ORP.4) for HBA lifecycle.
+
+                    ## 5. Clinical Applications and Medical Devices
+                    Clinical information systems (HIS, RIS, PACS, LIS) and networked medical devices fall under MDR (EU 2017/745). Security requirements: ISO/IEC 80001-1-conformant risk management for Medical IT Networks, Software Bill of Materials per IMDRF/N60, cybersecurity lifecycle per IEC 81001-5-1, vulnerability disclosure per MDCG 2019-16. Patches may only be applied after vendor approval (CE conformity); non-approved patches require documented risk assessment with medical evaluation of patient safety. Cross-ref Patch-Management Policy (OPS.1.1.3).
+
+                    ## 6. Emergency Care — Non-Interruptible
+                    Emergency care per KHG § 17b and the emergency-stages concept must be ensured 24/7. Emergency plans cover: paper-based emergency documentation and orders, alternative reporting without HIS, standard operating procedures for power outage (UPS, emergency power 72 h per Hospital Construction Ordinance), redundant telco connection to rescue dispatch, cross-sector transfer agreements for own outage, regular emergency exercises every 12 months (more frequent than the standard KRITIS requirement, due to patient safety). Cross-ref Emergency-Management Policy (DER.4).
+
+                    ## 7. Data Protection and Health Data
+                    Health data are special categories of personal data (GDPR Art. 9). Processing requires legal basis under Art. 9 (2) (typically lit. h treatment or lit. i public interest in healthcare) in conjunction with § 22 BDSG. Sector-specific duties: § 630f BGB (patient record), § 78a SGB X (social secrecy), § 203 StGB (criminal-law professional secrecy), § 9 (2) GenDG (Genetic Diagnostics Act). DPIA per Art. 35 GDPR is mandatory for HIS, ePA connection, and research processing. The DPO ({{ roles.dpo.fullName }}) is organisationally independent from the CISO ({{ roles.isb.fullName }}).
+
+                    ## 8. Interfaces to Cross-Cutting Policies
+                    This sector profile complements: IT Security Policy (ISMS.1.A4), Privacy Policy (CON.2 — sector-extended for patient data), Emergency-Management Policy (DER.4), Deletion/Disposal Policy (CON.6), Backup Concept (CON.3), Detection (DER.1), Incident Response (DER.2.1), Outsourcing (OPS.2.3 — processor for hospital billing, data centre hosting), IAM (ORP.4 — HBA/SMC-B lifecycle).
+
+                    ## 9. Responsibilities
+                    - **Top management/Board:** Overall responsibility per § 75c (1) SGB V.
+                    - **CISO / IT-Security Officer:** {{ roles.isb.fullName }} — required by KHZG funding decision.
+                    - **DPO:** {{ roles.dpo.fullName }} — GDPR Art. 9, § 22 BDSG, § 203 StGB.
+                    - **Medical Director:** owns medical-clinical risk assessment of IT changes.
+                    - **Medical Device Safety Officer (MPSB):** owns § 6 MPDG / MDR.
+                    - **Emergency/BCM Officer:** {{ roles.bcm.fullName }} — emergency care.
+
+                    ## 10. Approval
+                    Review interval: 24 months (BSIG § 8a (3) / § 75c SGB V (2)). Event-driven on MDR/IVDR updates, gematik specification changes, KHZG funding-decision audits, or severe incidents. Approval chain: {{ approval.chain }}.
+
+                    Approved by [Top Management] on [Date] — Signature: ____________________
+
+                    ---
+                    *Cross-ref B3S Medical Care (DKG), ISO/IEC 80001-1, IEC 81001-5-1, MDR (EU 2017/745), gematik TI specifications, BSI TR-03116-1, MDCG 2019-16, IfSG.*
+
+        kritis_transport_logistik_b3s:
+            v1:
+                title: 'Sector-Specific Security Standard (B3S) — Transport and Logistics Sector'
+                body: |-
+                    # Sector-Specific Security Standard (B3S) Transport/Traffic Sector — {{ tenant.legal_name }}
+
+                    *Document class: Sector profile (B3S) | Norm anchor: BSIG § 8a + BSI-KritisV § 5 + AEG (railway) + LuftSiG + SeeSchG + StVG + GGVSEB + EU 2022/2557 (CER) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English | Review interval: 24 months (BSIG § 8a (3))*
+
+                    ## 1. Scope and Sub-Sectors
+                    This sector profile is binding for facilities of {{ tenant.legal_name }} in the Transport and Traffic sector that qualify per BSI-KritisV § 5 + Annex 4. Covered are: aviation (air traffic control, airports, airlines), rail (rail-infrastructure operators, railway undertakings, interlocking systems, ZB-MAN), shipping (port facilities, maritime and inland waterway), road traffic (motorway operations, traffic-control centres, logistics hubs), postal services (universal letter service). Thresholds per BSI-KritisV Annex 4.
+
+                    ## 2. Supervisory Landscape
+                    Sectoral supervision is highly fragmented:
+                    - **Aviation:** LBA, BAF, Federal Police, BMV, EASA (Regulation (EU) 2018/1139), DFS Deutsche Flugsicherung.
+                    - **Rail:** EBA (Federal Railway Authority) per AEG, ERA (European Union Agency for Railways).
+                    - **Shipping:** BSH (Federal Maritime and Hydrographic Agency), WSV (Waterways and Shipping Administration), IMO (International Maritime Organization, ISPS Code).
+                    - **Road:** BMVI/BAG, Autobahn GmbH, Land transport ministries.
+                    - **Postal:** BNetzA per PostG.
+
+                    Cybersecurity supervision cross-cuts via the BSI. Additionally applicable: EU Resilience Directive (CER, EU 2022/2557, transposed in the German KRITIS-DachG) and sectoral cyber requirements (e.g. EASA Part-IS for aviation, TS 50701 for rail, IMO 2021 Cyber Risk Management for shipping).
+
+                    ## 3. Protection Goals and Traffic Safety
+                    Traffic safety (Safety) and cybersecurity (Security) are inseparable in this sector; manipulation of interlockings, ATC, or traffic-control centres can directly endanger lives. Goals: availability (supply and movement chains, just-in-time logistics), integrity of traffic and control data, authenticity of commands to interlocking and locomotive systems, tamper-resistance of toll data, confidentiality of freight data (competitive relevance, logistics security), protection against GNSS spoofing (Galileo PRS, GPS), and protection of ITS roadside units (V2X communication).
+
+                    ## 4. OT Architecture for Traffic Control
+                    Interlocking systems (e.g. ESTW, ETCS, ZB-MAN), level-crossing protection, ATC (e.g. iCAS, P1/VAFORIT), airport A-CDM, port terminal systems, road traffic-control centres, and SCADA for railway power must be operated in dedicated OT zones strictly segregated from office IT (BSI building blocks NET.1.1 + IND.1 + IND.2). Mobile components (locomotives with ETCS on-board units, fleet telematics) require additional cryptographically secured radio (GSM-R, FRMCS, ATC, ADS-B/Mode-S). Sector-specific norms: TS 50701 (rail cyber), DO-326A/ED-202A (aviation airworthiness), IEC 62443 (industrial automation).
+
+                    ## 5. Supply-Chain and Logistics Resilience
+                    Just-in-time and just-in-sequence logistics chains demand high availability. Duties: geo-redundancy of logistics control centres, back-up communication paths (public-authority radio BOS, satellite telco), emergency plans for power outage with UPS + emergency power 72 h, mandatory connection to the EU eFTI platform (eFreight). Vendor risks (Tier-1 to Tier-N) are tracked in a vendor inventory with cyber-resilience scoring. Cross-ref Outsourcing/Vendor Policy (OPS.2.3) and KRITIS-DachG.
+
+                    ## 6. Notification Duties
+                    Security incidents are reportable to:
+                    - BSI per BSIG § 8b (cyber incidents).
+                    - Sectoral supervisory authority (LBA/EASA, EBA/ERA, BSH, BNetzA, BAG).
+                    - For personal injury, additionally Federal Bureau of Aircraft Accident Investigation (BFU), Federal Bureau of Railway Accident Investigation (BEU), Federal Bureau of Maritime Casualty Investigation (BSU).
+                    - Data Protection Authority for personal-data incidents (GDPR Art. 33).
+
+                    Cross-ref Incident-Response Policy (DER.2.1).
+
+                    ## 7. Emergency and Recovery Management
+                    Sector-specific emergency plans: substitute interlocking operation with auxiliary block on rail, procedural control for ATC failure (DFS full-failure procedures), manual port handling with paper bills of lading, manual road traffic guidance with mobile variable-message signs. Cross-ref Emergency-Management Policy (DER.4) and BSI 200-4.
+
+                    ## 8. Interfaces to Cross-Cutting Policies
+                    This sector profile complements: IT Security Policy (ISMS.1.A4), Emergency-Management Policy (DER.4), Detection (DER.1), Incident Response (DER.2.1), Outsourcing Policy (OPS.2.3), Crypto Concept (CON.1), Patch-Management Policy (OPS.1.1.3), IT-Administration Policy (OPS.1.1.2), Remote-Maintenance Policy (OPS.1.2.5).
+
+                    ## 9. Responsibilities
+                    - **Top management:** Overall responsibility per BSIG § 8a.
+                    - **CISO:** {{ roles.isb.fullName }} — ISMS steering.
+                    - **OT Security Officer:** {{ roles.ot_security.fullName }} — securing traffic-control technology.
+                    - **Safety Officer (sector-dependent):** Railway Safety Officer / SMS Manager Aviation / DPA Ship (Designated Person Ashore).
+                    - **Emergency Officer:** {{ roles.bcm.fullName }} — recovery.
+                    - **KRITIS contact:** {{ roles.kritis_contact.fullName }}.
+
+                    ## 10. Approval
+                    Review interval: 24 months (BSIG § 8a (3)). Event-driven on changes to sectoral norms (TS 50701, DO-326A, IMO 2021), major incidents, or topology change. Approval chain: {{ approval.chain }}.
+
+                    Approved by [Top Management] on [Date] — Signature: ____________________
+
+                    ---
+                    *Cross-ref BSI-KritisV § 5, EU 2022/2557 (CER), KRITIS-DachG, EASA Part-IS, TS 50701, DO-326A/ED-202A, IMO 2021 Resolution MSC.428(98), ISO 28000 (Supply-Chain Security).*
+
+        kritis_ernaehrung_b3s:
+            v1:
+                title: 'Sector-Specific Security Standard (B3S) — Food Sector'
+                body: |-
+                    # Sector-Specific Security Standard (B3S) Food Sector — {{ tenant.legal_name }}
+
+                    *Document class: Sector profile (B3S) | Norm anchor: BSIG § 8a + BSI-KritisV § 4 + LFGB + ErnSiG + IFS Food + ISO 22000 (HACCP) + EU 2022/2557 (CER) | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English | Review interval: 24 months (BSIG § 8a (3))*
+
+                    ## 1. Scope and Thresholds
+                    This sector profile is binding for facilities of {{ tenant.legal_name }} in the Food sector that exceed BSI-KritisV § 4 + Annex 3 thresholds (food production, processing, retail with annual minimum throughput; water plants for food production). Covered notably: slaughterhouses (meat ≥ 434,500 t/y), dairy (≥ 350,000 t/y), bakery (≥ 1,733,500 t/y), food retail (logistics and distribution centres). Duties arise from BSIG § 8a + § 8b plus the Food Supply Security Act (ErnSiG) and the Supply Security Act for the V-case.
+
+                    ## 2. Supervision and Legal Landscape
+                    Sectoral expert supervision by the Federal Ministry of Food and Agriculture (BMEL) and the Federal Office for Agriculture and Food (BLE). Food-safety supervision by the Land food-control authorities. Cybersecurity supervision by the BSI. Legal bases: BSIG, BSI-KritisV § 4, LFGB (Food and Feed Code), Reg. (EC) 178/2002 (Food Basis), Reg. (EC) 852/2004 (food hygiene), ErnSiG, EU 2022/2557 (CER), KRITIS-DachG. Technical rule sets: ISO 22000 (Food Safety Management), HACCP, IFS Food, BRC Global Standard.
+
+                    ## 3. Protection Goals and Food Safety
+                    Goals: availability (population supply with staple foods, especially for hospitals, care homes, armed forces, public-authority service), integrity (manipulation of recipe controls, dosing, or cold chain can directly cause health damage), authenticity (traceability per Reg. (EC) 178/2002 Art. 18 — "from production to delivery to the end consumer"), confidentiality (recipe protection, trade secrets). Manipulation of OT (e.g. milk pasteurisation, frozen-goods cold chain) is to be classified as critical for population health.
+
+                    ## 4. OT Architecture for Food Production
+                    Food-production facilities are highly automated and networked: SCADA, MES (Manufacturing Execution Systems), recipe controls, thermal-treatment plants (pasteurisation, sterilisation), cold and frozen logistics with continuous temperature monitoring, traceability systems (Track & Trace per EU mandates), labelling lines. Requirements: OT-zone segregation from office IT (BSI building blocks NET.1.1 + IND.1), redundant power with UPS + emergency power (avoid thawing of frozen goods), tamper-resistance of the hygiene measurement chain (HACCP CCP sensors). Cross-ref BSI building block IND.2 (general ICS components).
+
+                    ## 5. Supply Security and Crisis Preparedness
+                    In crisis or tension, ErnSiG and VersorgSiG apply. Duties: provision of mandatory volumes to federal and Land authorities, cooperation in supply measures, emergency operability on full IT failure (manual control, paper-based batch documentation), 72 h emergency-fuel reserve, emergency-supply plan for critical consumers (hospitals, care homes, armed forces). Emergency operability is reviewed every 24 months. Cross-ref Emergency-Management Policy (DER.4) and BSI 200-4.
+
+                    ## 6. Supply-Chain Resilience and Recall Capability
+                    For cyber incidents affecting food safety (e.g. recipe-volume manipulation, cold-chain failure), 24 h recall capability is mandatory (RASFF — Rapid Alert System for Food and Feed, EU). Track & Trace must remain operational on partial IT outage (back-up databases, paper emergency procedures). Vendor risks (raw materials, packaging, logistics) are tracked in a vendor inventory with cyber-resilience scoring.
+
+                    ## 7. Notification Duties
+                    Security incidents are reportable to:
+                    - BSI per BSIG § 8b (cyber incidents, MIRROR portal).
+                    - BLE and, where applicable, Land food-control authorities for food-safety impact.
+                    - RASFF on acute health hazard (within 24 h).
+                    - Data-protection authorities for personal-data incidents (GDPR Art. 33).
+
+                    Cross-ref Incident-Response Policy (DER.2.1).
+
+                    ## 8. Interfaces to Cross-Cutting Policies
+                    This sector profile complements: IT Security Policy (ISMS.1.A4), Emergency-Management Policy (DER.4), Outsourcing Policy (OPS.2.3 — logistics outsourcing, contract filling, cold logistics), Detection (DER.1), Incident Response (DER.2.1), Patch Management (OPS.1.1.3 — note: patches on OT plants require HACCP validation), IT Administration (OPS.1.1.2), Backup Concept (CON.3 — recipes, batch logs).
+
+                    ## 9. Responsibilities
+                    - **Top management:** Overall responsibility per BSIG § 8a and LFGB.
+                    - **CISO:** {{ roles.isb.fullName }} — ISMS steering.
+                    - **OT Security Officer:** {{ roles.ot_security.fullName }} — protection of production plants, MES, SCADA.
+                    - **HACCP/Food-Safety Officer:** owns the Cyber/Hygiene-CCP interface.
+                    - **Emergency/BCM Officer:** {{ roles.bcm.fullName }} — emergency operability, ErnSiG.
+                    - **KRITIS contact:** {{ roles.kritis_contact.fullName }}.
+
+                    ## 10. Approval
+                    Review interval: 24 months (BSIG § 8a (3)). Event-driven on IFS/BRC re-audits, food-hygiene-regulation updates, change of production plants, or severe incidents. Approval chain: {{ approval.chain }}.
+
+                    Approved by [Top Management] on [Date] — Signature: ____________________
+
+                    ---
+                    *Cross-ref BSI-KritisV § 4, ErnSiG, LFGB, Reg. (EC) 178/2002, ISO 22000 (HACCP), IFS Food v8, BRC GS Food v9, EU 2022/2557 (CER).*
+
+        kritis_staat_verwaltung_b3s:
+            v1:
+                title: 'Sector-Specific Security Standard (B3S) — State and Public Administration Sector'
+                body: |-
+                    # Sector-Specific Security Standard (B3S) State and Public Administration Sector — {{ tenant.legal_name }}
+
+                    *Document class: Sector profile (B3S) | Norm anchor: BSIG § 8 (UP Bund) + Federal IT Consolidation + OZG + Register Modernisation + GDPR + SUEG + VSA | Edition: IT-Grundschutz Compendium {{ bsi.kompendium_edition }} | Language: English | Review interval: 24 months (BSI guidance UP Bund) plus event-driven*
+
+                    ## 1. Scope and Position of the Federal Government
+                    This sector profile is binding for entities of {{ tenant.legal_name }} in the State and Administration sector. The federal administration is generally exempt from KRITIS classification under BSI-KritisV but is subject to direct duties (operationalised via the UP Bund — Federal Implementation Plan) per BSIG § 8 (Minimum Standards) and to BSIG § 8a for KRITIS-classified public-sector entities. Covered are: federal ministries, federal upper authorities, federal institutes, public-law corporations, entities with sovereign tasks (e.g. ITZBund, BSI, BfArM, BLE). At Land level, the Land implementation plans (UP Land/Kommune) and the administrative provisions of the Interior Ministries apply analogously.
+
+                    ## 2. Supervision and Legal Landscape
+                    Supervision by the BSI as national cybersecurity authority for federal entities (BSIG § 8 (2) + § 13). Federal IT consolidation by ITZBund under the lead of BMI. Data-protection supervision by BfDI for federal entities; by Land Data Protection Officers for Land/municipal entities. Additionally: Security Clearance Act (SUEG, personnel security clearance), Classified Material Directive (VSA, classified-information protection), counter-espionage powers of the BfV. Legal bases: BSIG §§ 8 ff., E-Government Act (EGovG), Online Access Act (OZG, succeeded by the Register Modernisation Act and the OZG amendment), GDPR + BDSG, SUEG, VSA, VS-NfD circular.
+
+                    ## 3. Protection Goals and Classified Material
+                    Public-administration goals include: confidentiality (legal duties of confidentiality and secrecy, protection of personal administrative data, classified-material protection), integrity (tamper-resistance of decisions, files, registers), authenticity (citizen identification via eID/online ID), availability (continuity of administrative procedures, especially sovereign tasks), tamper-resistance of voting systems and registers. Classified material is classified per VSA into VS-NfD, VS-CONFIDENTIAL, SECRET, TOP SECRET and must be protected physically and cryptographically accordingly.
+
+                    ## 4. UP Bund and Federal IT Consolidation
+                    The UP Bund defines minimum requirements at BSI protection-needs level "normal" with focus on Basic Protection per BSI 200-2. For classified-material processing entities, Standard or Core Protection with extended requirements applies. Federal IT consolidation (ITZBund) centralises data-centre and standard-application provision; participating authorities transfer IT operations to ITZBund under a GDPR Art. 28 processor agreement. Security concepts must be aligned with the ITZBund security organisation.
+
+                    ## 5. eIDAS, eID and Trust Services
+                    Citizen-facing administrative services use the electronic identification per eIDAS Regulation (EU) 910/2014: online ID function (eID card with BMI authorisation certificate), authority eID service components, qualified trust services for electronic signatures, seals, and time stamps. Authorisation certificates must be requested and managed per BSI TR-03127. Processing of eID data is subject to strict purpose-binding (PAuswG § 18).
+
+                    ## 6. Online Administration and Register Federation
+                    With OZG and the Register Modernisation Act, public administration has progressively digitalised. Security requirements: Servicekonten Bund (BundID) and Land service accounts with multi-factor authentication, unified register interfaces with eID binding, Data Protection Cockpit for citizens, identification number (Tax ID) as citizen pseudonym, data-minimisation principle per GDPR Art. 5 (1) (c). Cross-ref Privacy Policy (CON.2 / GDPR).
+
+                    ## 7. Interfaces to Cross-Cutting Policies and Classified-Material Protection
+                    This sector profile complements: IT Security Policy (ISMS.1.A4), Privacy Policy (CON.2), Emergency-Management Policy (DER.4), Outsourcing Policy (OPS.2.3 — engagement of ITZBund, federal data centres), Cloud-Usage Policy (OPS.2.2 — Federal Cloud / sovereign cloud), Detection Policy (DER.1), Incident Response (DER.2.1), Crypto Concept (CON.1 — aligned with BSI TR-02102), IAM (ORP.4 — eID binding). For classified-material areas, additionally VSA, GHB, and BSI Protection Profiles for deployed components apply.
+
+                    ## 8. Personnel Security Clearance
+                    Persons with access to classified-material areas or to security-sensitive posts are subject to security clearance per SUEG (levels Ue1, Ue2, Ue3 or Ue3 with extended security measures). Security clearance is conducted by the competent Security Officer ({{ roles.security_clearance_officer.fullName }}) in coordination with BfV. Cross-ref Personnel Policy (ORP.2).
+
+                    ## 9. Responsibilities
+                    - **Authority leadership:** Overall responsibility per BSIG § 8 + UP Bund.
+                    - **IT Security Officer (CISO) of the authority:** {{ roles.isb.fullName }} — ISMS steering.
+                    - **DPO of the authority:** {{ roles.dpo.fullName }} — GDPR/BDSG.
+                    - **Security Officer:** owns classified-material protection, personnel clearance (SUEG/VSA).
+                    - **Classified Material Registrar:** registers and administers classified material (VSA Annex I).
+                    - **Emergency Officer:** {{ roles.bcm.fullName }} — continuity of sovereign tasks.
+                    - **OZG/Digitalisation Lead:** owns provision of online services.
+
+                    ## 10. Approval
+                    Review interval: 24 months per UP Bund. Event-driven on VSA changes, BSI updates, EU rule entry into force (e.g. eIDAS 2.0 EUDI Wallet), or severe incidents. Approval chain: {{ approval.chain }}.
+
+                    Approved by [Top Management] on [Date] — Signature: ____________________
+
+                    ---
+                    *Cross-ref BSIG §§ 8, 13, UP Bund, EGovG, OZG, RegisterModG, GDPR Art. 6/9/35, BDSG, SUEG, VSA, eIDAS Reg. (EU) 910/2014, BSI TR-02102, BSI TR-03127, BSI TR-03116, ITZBund standard framework.*
