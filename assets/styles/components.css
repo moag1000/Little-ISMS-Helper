@@ -157,8 +157,17 @@
     align-items: center;
     margin-bottom: var(--spacing-lg);
     padding-bottom: var(--spacing-md);
-    border-bottom: 2px solid transparent;
-    border-image: linear-gradient(90deg, var(--primary), var(--accent)) 1;
+    position: relative;
+}
+.modal:not(.fade) .modal-header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    pointer-events: none;
 }
 
 .modal:not(.fade) .modal-title {

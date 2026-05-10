@@ -2727,14 +2727,23 @@ textarea.form-control {
     padding: var(--spacing-xl);
     color: var(--fg-2);
     margin-top: var(--spacing-2xl);
-    border-top: 2px solid transparent;
-    border-image: linear-gradient(90deg,
+    background: linear-gradient(180deg, transparent, var(--primary-tint));
+    position: relative;
+}
+.footer::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
                   transparent,
                   var(--primary-tint),
                   var(--accent-tint),
                   var(--accent-tint),
-                  transparent) 1;
-    background: linear-gradient(180deg, transparent, var(--primary-tint));
+                  transparent);
+    pointer-events: none;
 }
 
 [data-theme="dark"] .footer {
