@@ -317,16 +317,6 @@ Config-Files: `release-please-config.json`, `.release-please-manifest.json`,
 `.github/workflows/ci.yml` (`steps.meta.tags` Block). Vollstaendige Doku in
 `CONTRIBUTING.md` § *Release Cadence* + § *Dev / Pre-Release Builds*.
 
-## Policy-Wizard Branch Protocol (since 2026-05-08)
-
-Feature branch `feature/policy-wizard` is the integration target for
-the Policy-Wizard W1-W7 sprint plan. Plan corpus lives at
-`docs/plans/policy-wizard/00-README.md`. Sprint commits MUST be
-labelled `feat(policy-wizard): W<n>: <topic>` so release-please
-groups them. Between sprints (W1→W2 etc.) a specialist sign-off
-must be added to `07-phase4-sprint-reconciliation.md` §8 BEFORE the
-next sprint's commits are merged to main.
-
 ## Symfony 7.4 Best Practices (Audit Apr 2026)
 
 **Routing:** ALL routes via `#[Route]` attributes — no YAML route definitions.
