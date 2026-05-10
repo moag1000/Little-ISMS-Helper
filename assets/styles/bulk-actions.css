@@ -1,93 +1,151 @@
-/* ============================================
-   Bulk Actions Styles - Cyberpunk Fairy
-   Multi-select and bulk operations UI
-   ============================================ */
+/* ============================================================================
+ * Bulk-Action-Bar — Canonical (per docs/design_system/sections/feedback-systems.html §175-255)
+ *
+ * Floating gradient action-bar at the bottom of the viewport, appears as soon
+ * as ≥ 1 row in a `.table-bulk-selectable` is checked. Aurora-token only,
+ * `:has(input:checked)` highlights selected rows without extra JS.
+ *
+ * Markup:
+ *   <table class="table-bulk-selectable">
+ *     <thead><tr>
+ *       <th class="bulk-select-column">
+ *         <input type="checkbox" data-action="bulk-actions#selectAll">
+ *       </th>...
+ *     </tr></thead>
+ *     <tbody>
+ *       <tr><td class="bulk-select-column">
+ *         <input type="checkbox" data-bulk-actions-target="item" value="...">
+ *       </td>...</tr>
+ *     </tbody>
+ *   </table>
+ *
+ *   <div class="bulk-action-bar" hidden role="region" aria-label="..." aria-live="polite">
+ *     <div class="bulk-selection-info">
+ *       <span class="bulk-selection-count">0</span>
+ *       <span class="bulk-selection-label">ausgewählt</span>
+ *     </div>
+ *     <div class="bulk-action-divider"></div>
+ *     <div class="bulk-actions">
+ *       <button class="bulk-action-btn">…</button>
+ *       <button class="bulk-action-btn bulk-action-btn-success">Approven</button>
+ *       <button class="bulk-action-btn bulk-action-btn-danger">Löschen</button>
+ *     </div>
+ *     <button class="bulk-action-close" aria-label="Auswahl aufheben"><i class="bi bi-x"></i></button>
+ *   </div>
+ *
+ * Modifiers:
+ *   .bulk-action-btn-success    accent border, success-tinted bg
+ *   .bulk-action-btn-danger     accent border, danger-tinted bg
+ *   .bulk-action-btn.loading    disables button + animated spinner suffix
+ * ========================================================================= */
 
-/* Action Bar - Cyberpunk Style */
+/* Action Bar — Aurora gradient floating bottom-bar */
 .bulk-action-bar {
     position: fixed;
-    bottom: 24px;
+    bottom: var(--space-5);
     left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    z-index: var(--z-modal-backdrop);
-    background: linear-gradient(135deg, var(--primary-strong) 0%, var(--accent-strong) 100%);
-    color: var(--on-primary);
-    border-radius: var(--border-radius-lg);
-    box-shadow: 0 12px 24px rgb(0, 0, 0, 0.4), 0 0 30px var(--primary-glow); /* design-spec: bulk-action bar heavy lift with glow composite */
-    border: 2px solid var(--primary);
-    padding: var(--spacing-lg) var(--spacing-xl);
+    transform: translateX(-50%);
+    z-index: var(--z-sticky);
     display: flex;
     align-items: center;
-    gap: var(--spacing-lg);
-    min-width: 500px;
-    opacity: 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.bulk-action-bar .bulk-action-alva {
-    position: absolute;
-    left: -20px;
-    animation: float 2s ease-in-out infinite;
-    pointer-events: none;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--r-pill);
+    background: linear-gradient(90deg, var(--primary-strong), var(--accent-strong));
+    box-shadow: 0 8px 32px var(--primary-glow);
+    color: var(--on-primary);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    transition: opacity var(--t-base) var(--ease-out),
+                transform var(--t-base) var(--ease-out);
+    animation: bulk-action-bar-enter var(--t-base) var(--ease-out);
 }
 
 .bulk-action-bar[hidden] {
-    display: none !important;
+    display: none;
 }
 
-/* Selection Info */
+@keyframes bulk-action-bar-enter {
+    from { opacity: 0; transform: translate(-50%, 12px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bulk-action-bar { animation: none; transition: none; }
+}
+
+/* Optional Alva companion (legacy slot — fairy floats left of bar) */
+.bulk-action-bar .bulk-action-alva {
+    position: absolute;
+    left: -20px;
+    pointer-events: none;
+    animation: bulk-action-alva-float 2s ease-in-out infinite;
+}
+
+@keyframes bulk-action-alva-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bulk-action-bar .bulk-action-alva { animation: none; }
+}
+
+/* Selection Info — count + label */
 .bulk-selection-info {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    flex: 1;
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    color: var(--on-primary);
+    white-space: nowrap;
 }
 
 .bulk-selection-count {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
 }
 
 .bulk-selection-label {
     font-size: 0.875rem;
-    opacity: 0.9;
+    opacity: 0.92;
 }
 
-/* Divider */
+/* Vertical divider — semi-transparent on gradient */
 .bulk-action-divider {
     width: 1px;
-    height: 32px;
-    background: rgb(255, 255, 255, 0.3);
+    height: 24px;
+    flex-shrink: 0;
+    border-left: 1px solid rgb(255 255 255 / 0.3);
 }
 
-/* Actions */
+/* Action button group */
 .bulk-actions {
-    display: flex;
-    gap: var(--spacing-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
 }
 
+/* Canonical action button — transparent w/ light border on gradient */
 .bulk-action-btn {
-    background: rgb(255, 255, 255, 0.2);
-    color: var(--on-accent);
-    border: none;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: transparent;
+    color: var(--on-primary);
+    border: 1px solid rgb(255 255 255 / 0.4);
+    border-radius: var(--r-md);
     font-size: 0.875rem;
     font-weight: 500;
+    line-height: 1;
     cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
+    transition: background var(--t-fast) var(--ease-out),
+                border-color var(--t-fast) var(--ease-out),
+                transform var(--t-fast) var(--ease-out);
 }
 
 .bulk-action-btn:hover {
-    background: rgb(255, 255, 255, 0.3);
+    background: rgb(255 255 255 / 0.15);
     transform: translateY(-1px);
 }
 
@@ -95,91 +153,134 @@
     transform: translateY(0);
 }
 
-.bulk-action-btn-danger {
-    background: var(--danger);
+.bulk-action-btn:focus-visible {
+    outline: 2px solid var(--on-primary);
+    outline-offset: 2px;
 }
 
-.bulk-action-btn-danger:hover {
-    filter: brightness(0.9);
-}
-
+/* Success modifier — success-token border + tint */
 .bulk-action-btn-success {
-    background: var(--success);
+    border-color: var(--success);
+    background: rgb(255 255 255 / 0.1);
 }
 
 .bulk-action-btn-success:hover {
-    filter: brightness(0.9);
+    background: var(--success);
+    border-color: var(--success);
+    color: var(--on-success);
 }
 
-/* Close Button */
-.bulk-action-close {
-    background: rgb(255, 255, 255, 0.1);
-    border: none;
-    width: 32px;
-    height: 32px;
+/* Danger modifier — danger-token border + tint */
+.bulk-action-btn-danger {
+    border-color: var(--danger);
+    background: rgb(255 255 255 / 0.1);
+}
+
+.bulk-action-btn-danger:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: var(--on-danger);
+}
+
+/* Loading state — disables, spinner suffix */
+.bulk-action-btn.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+    padding-right: calc(var(--space-3) + 18px);
+}
+
+.bulk-action-btn.loading::after {
+    content: '';
+    position: absolute;
+    right: var(--space-2);
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin-top: -7px;
+    border: 2px solid rgb(255 255 255 / 0.6);
+    border-top-color: transparent;
     border-radius: 50%;
-    color: var(--on-accent);
-    cursor: pointer;
-    display: flex;
+    animation: bulk-action-btn-spin 0.6s linear infinite;
+}
+
+@keyframes bulk-action-btn-spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bulk-action-btn.loading::after { animation-duration: 1.6s; }
+}
+
+/* Close button (X right side) */
+.bulk-action-close {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: rgb(255 255 255 / 0.1);
+    color: var(--on-primary);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: var(--r-pill);
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    transition: background var(--t-fast) var(--ease-out),
+                border-color var(--t-fast) var(--ease-out);
 }
 
 .bulk-action-close:hover {
-    background: rgb(255, 255, 255, 0.2);
+    background: rgb(255 255 255 / 0.25);
+    border-color: rgb(255 255 255 / 0.4);
 }
 
-/* Checkbox Styles */
+.bulk-action-close:focus-visible {
+    outline: 2px solid var(--on-primary);
+    outline-offset: 2px;
+}
+
+/* Checkbox styling for bulk-target inputs */
 input[type="checkbox"][data-bulk-actions-target="item"],
-input[type="checkbox"][data-action*="selectAll"] {
+input[type="checkbox"][data-action*="bulk-actions#selectAll"],
+input[type="checkbox"][data-action*="bulk#selectAll"] {
     width: 18px;
     height: 18px;
     cursor: pointer;
     accent-color: var(--primary);
 }
 
-/* Indeterminate state (for select all) */
 input[type="checkbox"]:indeterminate {
     accent-color: var(--warning);
 }
 
-/* Table with bulk selection */
+/* `:has(input:checked)` row tint — pure-CSS row highlight */
 .table-bulk-selectable tbody tr {
-    transition: background-color 0.2s;
+    transition: background-color var(--t-fast) var(--ease-out);
 }
 
 .table-bulk-selectable tbody tr:has(input[type="checkbox"]:checked) {
-    background-color: rgb(var(--primary-rgb), 0.1);
+    background-color: var(--primary-tint);
 }
 
 .table-bulk-selectable tbody tr:hover {
-    background-color: rgb(0, 0, 0, 0.02); /* design-spec: ultra-faint row tint for selected state */
+    background-color: var(--surface-2);
 }
 
 .table-bulk-selectable tbody tr:has(input[type="checkbox"]:checked):hover {
-    background-color: rgb(var(--primary-rgb), 0.15);
+    background-color: var(--primary-tint);
+    filter: brightness(0.97);
 }
 
-/* Selection Column */
+/* Selection column — fixed 40px, centered */
 .bulk-select-column {
     width: 40px;
     text-align: center;
+    vertical-align: middle;
 }
 
-/* Animations */
-@keyframes slideUpFade {
-    from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-}
-
-/* Badge for selected count in header */
+/* Header-badge for selected count (legacy) */
 .bulk-selected-badge {
     background: var(--primary);
     color: var(--on-primary);
@@ -187,24 +288,33 @@ input[type="checkbox"]:indeterminate {
     font-weight: 600;
     padding: 2px 8px;
     border-radius: var(--r-xl);
-    margin-left: var(--spacing-xs);
+    margin-left: var(--space-2);
 }
 
-/* Responsive */
+/* Mobile — full-width pinned bottom, stacked actions */
 @media (max-width: 767.98px) {
     .bulk-action-bar {
-        bottom: 16px;
-        left: 16px;
-        right: 16px;
-        transform: translateY(20px);
-        min-width: auto;
+        bottom: var(--space-3);
+        left: var(--space-3);
+        right: var(--space-3);
+        transform: none;
         flex-direction: column;
         align-items: stretch;
-        gap: var(--spacing-md);
+        gap: var(--space-3);
+        border-radius: var(--r-lg);
+    }
+
+    @keyframes bulk-action-bar-enter {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
 
     .bulk-selection-info {
         justify-content: center;
+    }
+
+    .bulk-action-divider {
+        display: none;
     }
 
     .bulk-actions {
@@ -213,39 +323,25 @@ input[type="checkbox"]:indeterminate {
 
     .bulk-action-btn {
         justify-content: center;
+        width: 100%;
     }
 
-    .bulk-action-divider {
-        display: none;
+    .bulk-action-close {
+        align-self: flex-end;
     }
 }
 
-/* Loading state */
-.bulk-action-btn.loading {
-    opacity: 0.6;
-    pointer-events: none;
-    position: relative;
+/* Fairy-magic completion-flash for bulk-removed rows */
+@keyframes fairy-bulk-complete-flash {
+    0%   { background-color: var(--primary-tint); }
+    50%  { background-color: var(--success-tint); }
+    100% { background-color: transparent; }
 }
 
-.bulk-action-btn.loading::after {
-    content: '';
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border: 2px solid white;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
+.fairy-bulk-complete {
+    animation: fairy-bulk-complete-flash 0.6s var(--ease-out);
 }
 
 @media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
+    .fairy-bulk-complete { animation: none; }
 }

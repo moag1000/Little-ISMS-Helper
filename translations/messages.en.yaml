@@ -1689,8 +1689,12 @@ bulk_actions:
     export: 'Export'
     add_tag: 'Add tag'
     assign: 'Assign'
+    assign_owner: 'Assign owner'
+    tag: 'Tag'
+    approve: 'Approve'
     delete: 'Delete'
     deselect: 'Clear selection'
+    close: 'Clear selection'
     toolbar: 'Bulk actions'
 
 aria:

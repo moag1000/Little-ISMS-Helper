@@ -1223,8 +1223,12 @@ bulk_actions:
     export: 'Export'
     add_tag: 'Tag hinzufügen'
     assign: 'Zuweisen'
+    assign_owner: 'Owner zuweisen'
+    tag: 'Tag'
+    approve: 'Approven'
     delete: 'Löschen'
     deselect: 'Auswahl aufheben'
+    close: 'Auswahl aufheben'
     toolbar: 'Bulk-Aktionen'
 
 aria:
