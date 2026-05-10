@@ -59,6 +59,7 @@ final class PolicyWizardController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly PolicyTemplateRepository $policyTemplateRepository,
         private readonly PersonRepository $personRepository,
+        private readonly \App\Service\PolicyWizard\TopicApproverRoleResolver $topicApproverRoleResolver,
     ) {
     }
 
@@ -612,7 +613,47 @@ final class PolicyWizardController extends AbstractController
                 );
             }
             $extras['policy_templates'] = $templates;
-            $extras['approver_user_choices'] = $this->userRepository->findApproversInTenant($tenant);
+            $approvers = $this->userRepository->findApproversInTenant($tenant);
+            $extras['approver_user_choices'] = $approvers;
+
+            // Task #126 — per-template recommended roles + per-approver
+            // role-match map. Wizard renders a small badge per
+            // (template, approver-pick) row so the user gets immediate
+            // visual feedback ("strict_match" green / "weak_match" amber
+            // / "mismatch" amber-warning) instead of discovering the
+            // mismatch only later in the audit-trail.
+            $topicMap = [];
+            $matchMap = [];
+            foreach ($templates as $tpl) {
+                if (!method_exists($tpl, 'getTopic') || !method_exists($tpl, 'getKey')) {
+                    continue;
+                }
+                $topic = $tpl->getTopic();
+                $tplKey = $tpl->getKey();
+                if (!is_string($tplKey) || $tplKey === '') {
+                    continue;
+                }
+                $recommended = $this->topicApproverRoleResolver->recommendedRolesForTopic($topic);
+                $topicMap[$tplKey] = [
+                    'topic' => $topic,
+                    'recommended_roles' => $recommended,
+                ];
+                $perUser = [];
+                foreach ($approvers as $u) {
+                    if (!$u instanceof \App\Entity\User) {
+                        continue;
+                    }
+                    $result = $this->topicApproverRoleResolver->validateApproverForTopic($u, $topic);
+                    $perUser[$u->getId()] = [
+                        'state' => $result->state,
+                        'matched_roles' => $result->matchedRoles,
+                        'recommended_roles' => $result->recommendedRoles,
+                    ];
+                }
+                $matchMap[$tplKey] = $perUser;
+            }
+            $extras['topic_recommended_roles_map'] = $topicMap;
+            $extras['approver_match_map'] = $matchMap;
         }
 
         // Step 7 — Review & Generate: surface non-blocking warnings +
