@@ -19,6 +19,16 @@
                 </a>
             </li>
 
+            {# Activity-Feed (Audit V3 C6) #}
+            <li class="mega-menu-category" role="none">
+                <a href="{{ path('app_activity_feed') }}"
+                   class="mega-menu-trigger {% if current_route == 'app_activity_feed' %}active{% endif %}"
+                   role="menuitem">
+                    <i class="bi bi-activity" aria-hidden="true"></i>
+                    <span>Aktivität</span>
+                </a>
+            </li>
+
             {# Dashboard Category #}
             <li class="mega-menu-category" role="none">
                 <button class="mega-menu-trigger {% if current_route starts with 'app_home' or current_route starts with 'app_dashboard' or current_route starts with 'app_analytics_' %}active{% endif %}"

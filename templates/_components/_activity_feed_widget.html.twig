@@ -1,0 +1,66 @@
+{#
+ # Audit V3 C6 — Activity-Feed Widget
+ #
+ # Reusable across full-page (/activity-feed) and dashboard widgets.
+ # Renders Aurora isms-trail pattern with timestamp, icon, tone-coded dot.
+ #
+ # Variables:
+ #   items - array<{ tone, icon, title, subtitle, link, timestamp, actor, source }>
+ #   max   - max items to render (default 25)
+ #   showHeader - bool (default false) — render H3 above list
+ #   compact - bool (default false) — compact density
+ #}
+
+{% set _items = items|default([]) %}
+{% set _max = max|default(25) %}
+{% set _shown = _items|slice(0, _max) %}
+{% set _compact = compact|default(false) %}
+
+{% if showHeader|default(false) %}
+<h3 class="h5 mb-3">
+    <i class="fa-icon fa-icon--ui-circle me-1" aria-hidden="true"></i>
+    Letzte Aktivität
+</h3>
+{% endif %}
+
+{% if _shown|length > 0 %}
+<div class="isms-trail{% if _compact %} isms-trail--compact{% endif %}" data-controller="activity-feed">
+    {% for item in _shown %}
+        {% set tone = item.tone|default('neutral') %}
+        {% set icon = item.icon|default('fa-icon--ui-circle') %}
+        <article class="isms-trail__entry">
+            <span class="isms-trail__dot isms-trail__dot--{{ tone }}" aria-hidden="true">
+                <i class="fa-icon {{ icon }}"></i>
+            </span>
+            <div class="isms-trail__head">
+                <span class="isms-trail__title">
+                    {% if item.link %}
+                        <a href="{{ item.link }}" class="text-decoration-none">{{ item.title }}</a>
+                    {% else %}
+                        {{ item.title }}
+                    {% endif %}
+                </span>
+                {% if item.timestamp %}
+                    <span class="isms-trail__meta">{{ item.timestamp|date('d.m.Y H:i') }}</span>
+                {% endif %}
+            </div>
+            <div class="isms-trail__body">
+                {% if item.actor and item.actor != '—' %}
+                    <span class="isms-trail__actor">
+                        <i class="fa-icon fa-icon--nav-users" aria-hidden="true"></i>
+                        {{ item.actor }}
+                    </span>
+                {% endif %}
+                {% if item.subtitle %}
+                    <span class="text-muted ms-2 small">{{ item.subtitle }}</span>
+                {% endif %}
+                {% if item.source %}
+                    <span class="badge bg-secondary ms-2">{{ item.source }}</span>
+                {% endif %}
+            </div>
+        </article>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-muted mb-0">Noch keine Aktivität.</p>
+{% endif %}
