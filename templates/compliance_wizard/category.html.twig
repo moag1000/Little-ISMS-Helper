@@ -1,38 +1,38 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'wizard' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
 
 {% block title %}{{ category.name|trans({}, 'wizard') }} - {{ config.name }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
-    {# Breadcrumb #}
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_compliance_wizard_index') }}">{{ 'wizard.title'|trans({}, 'wizard') }}</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}">{{ config.name }}</a>
-            </li>
-            <li class="breadcrumb-item active" aria-current="page">{{ category.name|trans({}, 'wizard') }}</li>
-        </ol>
-    </nav>
+    {# Aurora Breadcrumb #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'wizard.title'|trans({}, 'wizard'), url: path('app_compliance_wizard_index') },
+            { label: config.name, url: path('app_compliance_wizard_assess', {wizard: wizard}) },
+            { label: category.name|trans({}, 'wizard') }
+        ]
+    } %}
 
-    {# Header #}
+    {# Aurora Page Header with Score Badge #}
+    {{ _fa_page_header.render({
+        title: category.name|trans({}, 'wizard'),
+        subtitle: (category.description is defined ? category.description|trans({}, 'wizard') : null),
+        badge: { icon: 'shield-check', label: config.code ~ ' · ' ~ category.score ~ '%' },
+        actions: [
+            { label: 'wizard.back'|trans({}, 'wizard'), href: path('app_compliance_wizard_assess', {wizard: wizard}), variant: 'ghost', icon: 'arrow-left' }
+        ]
+    }) }}
+
+    {# Header summary card #}
     <div class="row mb-4">
         <div class="col-lg-8">
             {% embed '_components/_card.html.twig' with { 'class': 'border-0 shadow-sm' } %}
                 {% block card_body %}
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <h1 class="h3 mb-2">
-                                <i class="{{ category.icon|default('fa-icon--status-ok') }} me-2 text-{{ config.color }}"></i>
-                                {{ category.name|trans({}, 'wizard') }}
-                            </h1>
-                            {% if category.description is defined %}
-                                <p class="text-muted mb-0">{{ category.description|trans({}, 'wizard') }}</p>
-                            {% endif %}
                             {% if category.maturity_baseline is defined or category.maturity_enhanced is defined %}
                                 <details class="mt-3 small">
                                     <summary class="text-muted" style="cursor: pointer;">
