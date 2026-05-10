@@ -39,6 +39,7 @@ final class PolicyTranslationExtension extends AbstractExtension
         'bsi'       => ['policy_bsi_batch1', 'policy_bsi_batch2', 'policy_bsi_batch3', 'policy_bsi_batch4'],
         'bcm'       => ['policy_bcm_batch1', 'policy_bcm_batch2'],
         'dora'      => ['policy_dora'],
+        'nis2'      => ['policy_nis2'],
     ];
 
     public function __construct(
