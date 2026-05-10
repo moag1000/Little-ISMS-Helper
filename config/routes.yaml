@@ -22,6 +22,26 @@ app_quick_fix_reconcile:
     controller: App\Controller\QuickFixController::reconcile
     methods: [POST]
 
+app_quick_fix_repair_orphans:
+    path: /quick-fix/repair/orphans
+    controller: App\Controller\QuickFixController::repairOrphans
+    methods: [POST]
+
+app_quick_fix_repair_mismatches:
+    path: /quick-fix/repair/tenant-mismatches
+    controller: App\Controller\QuickFixController::repairTenantMismatches
+    methods: [POST]
+
+app_quick_fix_repair_duplicates:
+    path: /quick-fix/repair/duplicates/{entityType}
+    controller: App\Controller\QuickFixController::repairDuplicates
+    methods: [POST]
+
+app_quick_fix_repair_all:
+    path: /quick-fix/repair/all
+    controller: App\Controller\QuickFixController::repairAll
+    methods: [POST]
+
 # Root redirect - smart locale detection (without locale)
 app_home:
     path: /

@@ -72,6 +72,39 @@
         .flash.error { background: rgba(248,113,113,0.15); border: 1px solid var(--danger); color: var(--danger); }
         .empty { color: var(--muted); font-size: 15px; margin-top: 8px; }
         .footer { color: var(--muted); font-size: 12px; margin-top: 24px; text-align: center; }
+        .section { margin-top: 32px; border-top: 1px solid var(--border); padding-top: 24px; }
+        .section h2 { font-size: 16px; font-weight: 600; margin: 0 0 16px; }
+        .repair-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 12px; }
+        .repair-label { font-size: 14px; color: var(--muted); flex: 1; }
+        .repair-count { font-weight: 600; color: var(--accent); min-width: 32px; text-align: right; }
+        .repair-count.ok { color: var(--success); }
+        .btn-repair {
+            background: var(--accent);
+            color: var(--bg);
+            border: 0;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-repair:hover:not(:disabled) { background: var(--accent-hover); }
+        .btn-repair:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-all {
+            background: #8b5cf6;
+            color: #fff;
+            border: 0;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            width: 100%;
+        }
+        .btn-all:hover:not(:disabled) { background: #7c3aed; }
+        .btn-all:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -133,6 +166,79 @@
             <p class="empty">{{ 'quick_fix.ok.body'|trans({}, 'quick_fix') }}</p>
             <a href="/" style="color: var(--accent);">{{ 'quick_fix.ok.return'|trans({}, 'quick_fix') }}</a>
         {% endif %}
+
+        {# ── Data-Integrity section ─────────────────────────────────────── #}
+        {% set has_integrity_issues = (orphan_count > 0) or (mismatch_count > 0) or (duplicate_counts|length > 0) %}
+        <div class="section">
+            <h2>{{ 'quick_fix.repair.section.title'|trans({}, 'quick_fix') }}</h2>
+
+            {# Orphans #}
+            <div class="repair-row">
+                <span class="repair-label">{{ 'quick_fix.repair.orphans.title'|trans({}, 'quick_fix') }}</span>
+                <span class="repair-count{% if orphan_count == 0 %} ok{% endif %}">{{ orphan_count }}</span>
+                {% if orphan_count > 0 %}
+                <form method="POST" action="{{ path('app_quick_fix_repair_orphans') }}" style="display:inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_repair_orphans') }}">
+                    <button type="submit" class="btn-repair" onclick="this.disabled=true;this.form.submit();">
+                        {{ 'quick_fix.repair.orphans.button'|trans({}, 'quick_fix') }}
+                    </button>
+                </form>
+                {% else %}
+                    <span style="font-size:12px;color:var(--success);">{{ 'quick_fix.repair.orphans.empty'|trans({}, 'quick_fix') }}</span>
+                {% endif %}
+            </div>
+
+            {# Tenant Mismatches #}
+            <div class="repair-row">
+                <span class="repair-label">{{ 'quick_fix.repair.tenant_mismatches.title'|trans({}, 'quick_fix') }}</span>
+                <span class="repair-count{% if mismatch_count == 0 %} ok{% endif %}">{{ mismatch_count }}</span>
+                {% if mismatch_count > 0 %}
+                <form method="POST" action="{{ path('app_quick_fix_repair_mismatches') }}" style="display:inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_repair_mismatches') }}">
+                    <button type="submit" class="btn-repair" onclick="this.disabled=true;this.form.submit();">
+                        {{ 'quick_fix.repair.tenant_mismatches.button'|trans({}, 'quick_fix') }}
+                    </button>
+                </form>
+                {% else %}
+                    <span style="font-size:12px;color:var(--success);">{{ 'quick_fix.repair.tenant_mismatches.empty'|trans({}, 'quick_fix') }}</span>
+                {% endif %}
+            </div>
+
+            {# Duplicates per entity type #}
+            {% if duplicate_counts|length > 0 %}
+            <div style="margin-top: 8px;">
+                <span class="repair-label" style="display:block;margin-bottom:8px;">{{ 'quick_fix.repair.duplicates.title'|trans({}, 'quick_fix') }}</span>
+                {% for type, cnt in duplicate_counts %}
+                <div class="repair-row" style="padding-left: 12px;">
+                    <span class="repair-label">{{ type }}</span>
+                    <span class="repair-count{% if cnt == 0 %} ok{% endif %}">{{ cnt }}</span>
+                    {% if cnt > 0 %}
+                    <form method="POST" action="{{ path('app_quick_fix_repair_duplicates', {entityType: type}) }}" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_repair_duplicates') }}">
+                        <button type="submit" class="btn-repair" onclick="this.disabled=true;this.form.submit();">
+                            {{ 'quick_fix.repair.duplicates.button'|trans({}, 'quick_fix') }}
+                        </button>
+                    </form>
+                    {% else %}
+                        <span style="font-size:12px;color:var(--success);">✓</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {# All-in-one repair button #}
+            {% if has_integrity_issues %}
+            <form method="POST" action="{{ path('app_quick_fix_repair_all') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('quick_fix_repair_all') }}">
+                <button type="submit" class="btn-all" onclick="this.disabled=true;this.form.submit();">
+                    🛡️ {{ 'quick_fix.repair.all.button'|trans({}, 'quick_fix') }}
+                </button>
+            </form>
+            {% else %}
+                <p style="font-size:13px;color:var(--success);margin-top:8px;">{{ 'quick_fix.repair.all.empty'|trans({}, 'quick_fix') }}</p>
+            {% endif %}
+        </div>
 
         <div class="footer">Little ISMS Helper</div>
     </main>
