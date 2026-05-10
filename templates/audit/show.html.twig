@@ -147,6 +147,64 @@
             {% endembed %}
 
             {# Findings Section #}
+            {# V3 B3: Structured Findings (preferred over free-text) #}
+            {% if audit.structuredFindings is defined and audit.structuredFindings|length > 0 %}
+                {% set _severity_variants = {
+                    'major_nc': 'danger', 'minor_nc': 'warning',
+                    'observation': 'info', 'opportunity': 'success'
+                } %}
+                {% set _status_variants = {
+                    'open': 'warning', 'in_progress': 'info',
+                    'closed': 'success', 'wont_fix': 'secondary'
+                } %}
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-warning' } %}
+                    {% block card_header %}
+                        <div class="card-header bg-warning-subtle text-warning">
+                            <h2 class="mb-0">
+                                <i class="fa-icon fa-icon--status-warning" aria-hidden="true"></i>
+                                {{ 'audit.section.structured_findings'|trans({}, 'audit') }}
+                                <span class="badge bg-warning ms-2">{{ audit.structuredFindings|length }}</span>
+                            </h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <p class="text-muted small mb-3">{{ 'audit.section.structured_findings_help'|trans({}, 'audit') }}</p>
+                        <div class="d-flex flex-column gap-2">
+                            {% for finding in audit.structuredFindings %}
+                                <div class="card fa-section">
+                                    <div class="card-body py-2 px-3">
+                                        <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                                            <a href="{{ path('app_audit_finding_show', {id: finding.id}) }}" class="text-decoration-none flex-grow-1">
+                                                <strong>{{ finding.findingNumber|default('#' ~ finding.id) }} — {{ finding.title }}</strong>
+                                            </a>
+                                            <div class="d-flex gap-2 align-items-center">
+                                                {% if finding.severity is defined and finding.severity %}
+                                                    {% set _sv = _severity_variants[finding.severity]|default('secondary') %}
+                                                    <span class="badge bg-{{ _sv }}">{{ ('audit_finding.severity.' ~ finding.severity)|trans({}, 'audits') }}</span>
+                                                {% endif %}
+                                                {% if finding.status is defined and finding.status %}
+                                                    {% set _stv = _status_variants[finding.status]|default('secondary') %}
+                                                    <span class="badge bg-{{ _stv }}-subtle text-{{ _stv }}">{{ ('audit_finding.status.' ~ finding.status)|trans({}, 'audits') }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% if finding.description %}
+                                            <small class="text-muted d-block mt-1">{{ finding.description|u.truncate(160, '…') }}</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mt-3">
+                            <a href="{{ path('app_audit_finding_new', {audit: audit.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost fa-cyber-btn--sm">
+                                <i class="fa-icon fa-icon--ui-plus" aria-hidden="true"></i>
+                                {{ 'audit_finding.action.new'|trans({}, 'audits') }}
+                            </a>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
+            {% endif %}
+
             {% if audit.findings or audit.nonConformities or audit.observations %}
             {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-warning' } %}
                 {% block card_header %}

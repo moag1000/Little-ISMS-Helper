@@ -147,6 +147,8 @@ audit:
         status: Status
         objectives: Objectives
         findings: Findings
+        structured_findings: 'Structured Findings'
+        structured_findings_help: 'Individual findings with severity, status and responsibility (complement to free-text findings).'
         recommendations: Recommendations
         documentation: Documentation
         history: History

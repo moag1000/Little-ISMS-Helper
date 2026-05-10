@@ -91,4 +91,4 @@ Aus der [Persona-Definition](../../.claude/skills/persona-auditor-external/SKILL
 
 ---
 
-[← Risk-Owner](risk-owner-business.md) · [Zurück zur Sichtwechsel-Übersicht](README.md)
+[← Risk-Owner](risk-owner-business.md) · [Übersicht](README.md) · [Nächste Persona: Tool-Tester →](tool-tester.md)

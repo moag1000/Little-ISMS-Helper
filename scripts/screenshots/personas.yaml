@@ -131,6 +131,29 @@ personas:
       - { name: consent-list,          path: /de/consent/ }
 
   # ─────────────────────────────────────────────────────────────────
+  # Tool-Tester / QA-Engineer — implementation reality + i18n + UX
+  # Canonical owner of: design-system component showcase, mapping-quality
+  # dashboard, data-repair, loader-fixer, admin-settings, tour-content
+  # admin. Reports to compliance-manager, knows UX-specialist + Aurora.
+  # ─────────────────────────────────────────────────────────────────
+  tool-tester:
+    label: "Tool-Tester / QA mit ISMS-Basics"
+    description: "Reale Umsetzung, Übersetzungen, UX-Konsistenz, Aurora-Konformität, Mapping-Qualität"
+    screens:
+      - { name: design-system,         path: /de/dev/design-system }
+      - { name: mapping-quality,       path: /de/admin/mapping-quality }
+      - { name: mapping-quality-coverage, path: /de/admin/mapping-quality/coverage/all }
+      - { name: data-repair,           path: /de/admin/data-repair/ }
+      - { name: loader-fixer,          path: /de/admin/loader-fixer }
+      - { name: admin-settings,        path: /de/admin/settings }
+      - { name: admin-settings-application, path: /de/admin/settings/application }
+      - { name: admin-settings-features, path: /de/admin/settings/features }
+      - { name: tour-content-admin,    path: /de/admin/tours/content }
+      - { name: tour-completion-admin, path: /de/admin/tours/completion }
+      - { name: en-locale-dashboard,   path: /en/dashboard }
+      - { name: en-locale-soa,         path: /en/soa/ }
+
+  # ─────────────────────────────────────────────────────────────────
   # External Auditor (ISO 19011) — evidence-driven, point-in-time
   # Canonical owner of: auditor dashboard, audit program, audit-freeze,
   # audit-log, training records, context, interested parties, objectives,

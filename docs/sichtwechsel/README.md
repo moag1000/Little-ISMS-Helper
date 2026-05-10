@@ -1,10 +1,10 @@
-# Sichtwechsel — Sechs Perspektiven auf dasselbe ISMS
+# Sichtwechsel — Sieben Perspektiven auf dasselbe ISMS
 
-> Ein ISMS sieht für jede Rolle anders aus. Der CISO will eine Heatmap, der Auditor will Evidence-zum-Stichtag, der Junior-Implementer will einen Wizard, der Fachbereichsleiter will eine Ein-Klick-Freigabe. Diese Doku führt durch **Little ISMS Helper aus sechs Blickwinkeln** — mit echten Screenshots, getriggert über die Persona-Skills im Projekt.
+> Ein ISMS sieht für jede Rolle anders aus. Der CISO will eine Heatmap, der Auditor will Evidence-zum-Stichtag, der Junior-Implementer will einen Wizard, der Fachbereichsleiter will eine Ein-Klick-Freigabe, der Tester will sehen ob es WIRKLICH funktioniert. Diese Doku führt durch **Little ISMS Helper aus sieben Blickwinkeln** — mit echten Screenshots, getriggert über die Persona-Skills im Projekt.
 
 ---
 
-## Die sechs Perspektiven
+## Die sieben Perspektiven
 
 | Persona | Was sie/er im Tool sucht | Walkthrough |
 |---|---|---|
@@ -14,6 +14,7 @@
 | **Junior-Implementer (neu in InfoSec)** | Setup-Wizard, Empty-States mit CTA, geführte Pfade | [→ Junior-Sicht](implementer-junior.md) |
 | **Risk-Owner / Fachbereichsleiter** | Eine-Aufgabe-eine-Entscheidung, Business-Sprache, mobil | [→ Risk-Owner-Sicht](risk-owner-business.md) |
 | **Externer Auditor (ISO 19011)** | Stichtag-Snapshot, NC-Detail, Konsistenz Policy↔SoA↔Evidence | [→ Auditor-Sicht](auditor-external.md) |
+| **Tool-Tester / QA mit ISMS-Basics** | Reale Umsetzung, i18n-Parität, Aurora-Konformität, Mapping-Qualität | [→ Tester-Sicht](tool-tester.md) |
 
 ---
 

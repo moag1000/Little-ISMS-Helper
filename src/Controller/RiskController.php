@@ -20,6 +20,7 @@ use App\Form\RiskType;
 use App\Repository\AuditLogRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
+use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\VulnerabilityRepository;
 use App\Service\RiskMatrixService;
 use App\Service\RiskService;
@@ -53,7 +54,8 @@ class RiskController extends AbstractController
         private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
         private readonly TagFilterService $tagFilterService,
         private readonly VulnerabilityRepository $vulnerabilityRepository,
-        private readonly IncidentRepository $incidentRepository
+        private readonly IncidentRepository $incidentRepository,
+        private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository
     ) {}
     #[Route('/risk/', name: 'app_risk_index')]
     #[IsGranted('ROLE_USER')]
@@ -957,6 +959,9 @@ class RiskController extends AbstractController
             $linkedVulnerabilities[] = $risk->getLinkedVulnerability();
         }
 
+        // Risk Treatment Plans linked to this risk (ISO 27001 Cl.6.1.3)
+        $treatmentPlans = $this->riskTreatmentPlanRepository->findByRisk($risk);
+
         return $this->render('risk/show.html.twig', [
             'risk' => $risk,
             'auditLogs' => $recentAuditLogs,
@@ -967,6 +972,8 @@ class RiskController extends AbstractController
             // Data-Reuse: one-click link matrix
             'linkedVulnerabilities' => $linkedVulnerabilities,
             'linkedIncidents' => $risk->getIncidents(),
+            // V3 B3: Treatment plans collection on Risk show
+            'treatmentPlans' => $treatmentPlans,
         ]);
     }
     #[Route('/risk/{id}/edit', name: 'app_risk_edit', requirements: ['id' => '\d+'])]

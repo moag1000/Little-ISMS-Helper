@@ -178,7 +178,7 @@ Dieses Projekt wird als Open Source (AGPL v3) entwickelt. Die Kernfunktionalitae
 
 ## Screenshots
 
-Sechs Persona-Perspektiven auf dasselbe ISMS — vollautomatisch via Playwright erzeugt. Komplette Walkthroughs unter [**Sichtwechsel**](docs/sichtwechsel/README.md).
+Sieben Persona-Perspektiven auf dasselbe ISMS — vollautomatisch via Playwright erzeugt. Komplette Walkthroughs unter [**Sichtwechsel**](docs/sichtwechsel/README.md).
 
 <table>
 <tr>
@@ -215,6 +215,13 @@ Sechs Persona-Perspektiven auf dasselbe ISMS — vollautomatisch via Playwright 
 <a href="docs/sichtwechsel/auditor-external.md"><img src="docs/sichtwechsel/img/auditor-external/auditor-dashboard.png" alt="Auditor-Dashboard" /></a><br/>
 <b>Externer Auditor (ISO 19011)</b><br/>
 <sub>Stichtag-Snapshot, Audit-Log, NC-Detail</sub>
+</td>
+</tr>
+<tr>
+<td align="center" colspan="2">
+<a href="docs/sichtwechsel/tool-tester.md"><img src="docs/sichtwechsel/img/tool-tester/design-system.png" alt="Aurora Design System (Tool-Tester)" width="50%" /></a><br/>
+<b>Tool-Tester / QA mit ISMS-Basics</b><br/>
+<sub>Reale Umsetzung, i18n-Parität, Aurora-Konformität, Mapping-Qualität — meldet Bugs an Compliance-Manager</sub>
 </td>
 </tr>
 </table>
