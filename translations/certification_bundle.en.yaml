@@ -7,6 +7,7 @@ certification_bundle:
         organization: 'Organization'
         framework: 'Framework'
         framework_help: 'Choose the standard the bundle is generated for. ISO 27001 is the default; BSI Grundschutz, NIS2, etc. show up in the metadata + filename.'
+        multi_framework_toggle: 'Composite bundle (merge multiple frameworks)'
         assets: 'Assets in Register'
         risks: 'Assessed Risks'
         controls_applicable: 'Applicable Controls'

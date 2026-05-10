@@ -69,6 +69,13 @@ class CertificationBundleController extends AbstractController
 
     /**
      * Generate and download the certification bundle ZIP.
+     *
+     * Task #122: accepts `frameworks[]` (multi-checkbox form) in addition
+     * to the legacy single `framework` field. When `frameworks[]` is
+     * present, every selected code is added via {@see CertificationBundleExporter::addFrameworkBundle()}
+     * so the resulting ZIP carries `02_FRAMEWORK_MAPPING/<code>_coverage.csv`
+     * for each one. The legacy single-`framework` field still works
+     * unchanged for back-compat.
      */
     #[Route('/export', name: 'export', methods: ['POST'])]
     public function export(Request $request): BinaryFileResponse
@@ -83,13 +90,13 @@ class CertificationBundleController extends AbstractController
             throw $this->createAccessDeniedException('No tenant context available.');
         }
 
-        $frameworks = $this->frameworkRepository->findActiveFrameworks();
-        $frameworkCode = $this->resolveFrameworkCode($request, $frameworks);
+        $activeFrameworks = $this->frameworkRepository->findActiveFrameworks();
+        $selectedCodes = $this->resolveFrameworkCodes($request, $activeFrameworks);
 
         $locale = $this->resolvePdfLocale($request);
         $result = $this->localeSwitcher->runWithLocale(
             $locale,
-            fn() => $this->exporter->export($tenant, $frameworkCode)
+            fn() => $this->exporter->export($tenant, $selectedCodes)
         );
 
         $response = new BinaryFileResponse($result['path']);
@@ -126,5 +133,49 @@ class CertificationBundleController extends AbstractController
         }
 
         return 'ISO27001';
+    }
+
+    /**
+     * Resolve the list of framework codes for a multi-framework bundle.
+     *
+     * Priority:
+     *   1) `frameworks[]` POST array — preferred multi-framework selection
+     *      from the new checkbox UI.
+     *   2) `framework` (single) — legacy single-framework form, kept for
+     *      back-compat.
+     *   3) ISO27001 fallback.
+     *
+     * Every code must match an active framework; unknown codes are
+     * silently dropped so an attacker cannot inject bogus codes into the
+     * audit-log payload.
+     *
+     * @param iterable<\App\Entity\ComplianceFramework> $frameworks
+     * @return list<string>
+     */
+    private function resolveFrameworkCodes(Request $request, iterable $frameworks): array
+    {
+        $activeCodes = [];
+        foreach ($frameworks as $fw) {
+            $activeCodes[(string) $fw->getCode()] = true;
+        }
+        // ISO27001 is always offered in the UI even if the loader hasn't
+        // populated it yet, so accept it as a safe always-allowed code.
+        $activeCodes['ISO27001'] = true;
+
+        $multi = $request->request->all('frameworks');
+        if (is_array($multi) && $multi !== []) {
+            $codes = [];
+            foreach ($multi as $code) {
+                $code = (string) $code;
+                if (isset($activeCodes[$code]) && !in_array($code, $codes, true)) {
+                    $codes[] = $code;
+                }
+            }
+            if ($codes !== []) {
+                return $codes;
+            }
+        }
+
+        return [$this->resolveFrameworkCode($request, $frameworks)];
     }
 }

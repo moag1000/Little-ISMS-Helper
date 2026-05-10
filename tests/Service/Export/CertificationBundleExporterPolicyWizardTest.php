@@ -18,12 +18,15 @@ use App\Repository\DocumentRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\TenantBrandingRepository;
+use App\Repository\WorkflowInstanceRepository;
 use App\Service\AuditLogger;
 use App\Service\Export\CertificationBundleExporter;
 use App\Service\PdfExportService;
 use App\Service\PolicyWizard\Export\PolicyPdfExporter;
 use App\Service\SoAReportService;
 use App\Service\TenantContext;
+use App\Entity\User;
+use App\Entity\WorkflowInstance;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -123,6 +126,9 @@ final class CertificationBundleExporterPolicyWizardTest extends TestCase
         array $allDocs,
         array $evidenceByRequirement = [],
         ?PolicyPdfExporter $pdfExporter = null,
+        ?WorkflowInstanceRepository $workflowInstanceRepository = null,
+        ?ComplianceFrameworkRepository $frameworkRepoOverride = null,
+        ?ComplianceRequirementRepository $reqRepoOverride = null,
     ): CertificationBundleExporter {
         $documentRepo = $this->createMock(DocumentRepository::class);
         $documentRepo->method('findByTenant')->willReturn($allDocs);
@@ -148,11 +154,15 @@ final class CertificationBundleExporterPolicyWizardTest extends TestCase
             $requirements[] = $req;
         }
 
-        $frameworkRepo = $this->createMock(ComplianceFrameworkRepository::class);
-        $frameworkRepo->method('findActiveFrameworks')->willReturn([$framework]);
+        $frameworkRepo = $frameworkRepoOverride ?? $this->createMock(ComplianceFrameworkRepository::class);
+        if ($frameworkRepoOverride === null) {
+            $frameworkRepo->method('findActiveFrameworks')->willReturn([$framework]);
+        }
 
-        $reqRepo = $this->createMock(ComplianceRequirementRepository::class);
-        $reqRepo->method('findByFramework')->willReturn($requirements);
+        $reqRepo = $reqRepoOverride ?? $this->createMock(ComplianceRequirementRepository::class);
+        if ($reqRepoOverride === null) {
+            $reqRepo->method('findByFramework')->willReturn($requirements);
+        }
 
         $pdfExporter ??= $this->createMock(PolicyPdfExporter::class);
         if ($pdfExporter instanceof \PHPUnit\Framework\MockObject\MockObject) {
@@ -178,7 +188,31 @@ final class CertificationBundleExporterPolicyWizardTest extends TestCase
             null,
             $this->createMock(TenantBrandingRepository::class),
             null,
+            $workflowInstanceRepository,
         );
+    }
+
+    private function makeUser(int $id, string $email): User
+    {
+        $user = new User();
+        $refId = new ReflectionProperty(User::class, 'id');
+        $refId->setValue($user, $id);
+        $user->setEmail($email);
+        return $user;
+    }
+
+    private function makeApprovedWorkflow(
+        int $documentId,
+        User $approver,
+        DateTimeImmutable $completedAt,
+    ): WorkflowInstance {
+        $instance = new WorkflowInstance();
+        $instance->setEntityType('Document');
+        $instance->setEntityId($documentId);
+        $instance->setStatus('approved');
+        $instance->setInitiatedBy($approver);
+        $instance->setCompletedAt($completedAt);
+        return $instance;
     }
 
     /**
@@ -392,5 +426,155 @@ final class CertificationBundleExporterPolicyWizardTest extends TestCase
         self::assertContains('BUNDLE/01_POLICIES/iso27001/Access_control.pdf', $entries);
         self::assertNotContains('BUNDLE/01_POLICIES/gdpr/Privacy_policy.pdf', $entries);
         @unlink($tmp);
+    }
+
+    // ─── Task #122: INDEX.csv approver enrichment + multi-framework ────
+
+    #[Test]
+    public function testWizardIndexCsvHasApproverColumns(): void
+    {
+        $tenant = $this->makeTenant();
+        $documents = [
+            $this->makeWizardDocument($tenant, 'iso27001', 'access_control', 1),
+        ];
+        $exporter = $this->makeExporter($documents);
+
+        [$zip, $tmp] = $this->openZip();
+        $this->callPolicyWizard($exporter, $zip, $tenant);
+        $zip->close();
+
+        $csv = $this->readZipEntry($tmp, 'BUNDLE/01_POLICIES/INDEX.csv');
+        self::assertNotSame('', $csv);
+        // Header columns required by Auditor MINOR-NC.
+        self::assertStringContainsString('approved_by_user_email', $csv);
+        self::assertStringContainsString('approved_by_user_id', $csv);
+        self::assertStringContainsString('approved_at', $csv);
+        self::assertStringContainsString('wizard_run_id', $csv);
+        self::assertStringContainsString('template_version', $csv);
+        self::assertStringContainsString('sha256', $csv);
+        @unlink($tmp);
+    }
+
+    #[Test]
+    public function testWizardIndexPopulatesShaAndTemplateVersion(): void
+    {
+        $tenant = $this->makeTenant();
+        $documents = [
+            $this->makeWizardDocument($tenant, 'iso27001', 'access_control', 1),
+        ];
+        $exporter = $this->makeExporter($documents);
+
+        [$zip, $tmp] = $this->openZip();
+        $this->callPolicyWizard($exporter, $zip, $tenant);
+        $zip->close();
+
+        $csv = $this->readZipEntry($tmp, 'BUNDLE/01_POLICIES/INDEX.csv');
+        // sha256 of 'PDFFAKE:1' as produced by the mock pdfExporter.
+        $expectedSha = hash('sha256', 'PDFFAKE:1');
+        self::assertStringContainsString($expectedSha, $csv);
+        // Template version is set to 1 in makeWizardDocument.
+        self::assertMatchesRegularExpression('/,1,[^,]+\r?\n?$/m', $csv);
+        @unlink($tmp);
+    }
+
+    #[Test]
+    public function testEvidenceIndexCsvHasApproverColumns(): void
+    {
+        $tenant = $this->makeTenant();
+        $legacy = $this->makeLegacyDocument($tenant, 99);
+        $exporter = $this->makeExporter([$legacy], ['A.5.1' => [$legacy]]);
+
+        [$zip, $tmp] = $this->openZip();
+        $this->callEvidence($exporter, $zip, $tenant);
+        $zip->close();
+
+        $csv = $this->readZipEntry($tmp, 'BUNDLE/04_EVIDENCE/INDEX.csv');
+        self::assertNotSame('', $csv);
+        self::assertStringContainsString('approved_by_user_email', $csv);
+        self::assertStringContainsString('approved_by_user_id', $csv);
+        self::assertStringContainsString('approved_at', $csv);
+        self::assertStringContainsString('sha256', $csv);
+        @unlink($tmp);
+    }
+
+    #[Test]
+    public function testApproverResolvedFromWorkflowInstance(): void
+    {
+        $tenant = $this->makeTenant();
+        $doc = $this->makeWizardDocument($tenant, 'iso27001', 'access_control', 42);
+
+        $approver = $this->makeUser(7, 'ciso@example.test');
+        $instance = $this->makeApprovedWorkflow(42, $approver, new DateTimeImmutable('2026-05-09 10:00:00'));
+
+        $workflowRepo = $this->createMock(WorkflowInstanceRepository::class);
+        $workflowRepo->method('findByEntity')->willReturn([$instance]);
+
+        $exporter = $this->makeExporter([$doc], [], null, $workflowRepo);
+
+        [$zip, $tmp] = $this->openZip();
+        $this->callPolicyWizard($exporter, $zip, $tenant);
+        $zip->close();
+
+        $csv = $this->readZipEntry($tmp, 'BUNDLE/01_POLICIES/INDEX.csv');
+        self::assertStringContainsString('ciso@example.test', $csv, 'Approver email must come from WorkflowInstance.');
+        self::assertStringContainsString('2026-05-09', $csv, 'approved_at column must be populated.');
+        @unlink($tmp);
+    }
+
+    #[Test]
+    public function testApproverEmptyWhenNoWorkflowAndNoUploader(): void
+    {
+        $tenant = $this->makeTenant();
+        // Wizard doc without uploader, without workflow, status approved.
+        $doc = $this->makeWizardDocument($tenant, 'iso27001', 'no_owner', 99);
+        $exporter = $this->makeExporter([$doc]);
+
+        [$zip, $tmp] = $this->openZip();
+        $this->callPolicyWizard($exporter, $zip, $tenant);
+        $zip->close();
+
+        $csv = $this->readZipEntry($tmp, 'BUNDLE/01_POLICIES/INDEX.csv');
+        // Should contain the doc row but the approver columns blank.
+        self::assertStringContainsString('No owner', $csv);
+        // Auditor sees the gap explicitly — three consecutive empty fields
+        // (approved_by_user_email, approved_by_user_id, approved_at).
+        self::assertMatchesRegularExpression('/,99,.*?,,,/', $csv);
+        @unlink($tmp);
+    }
+
+    #[Test]
+    public function testMultiFrameworkBundleAccumulator(): void
+    {
+        $tenant = $this->makeTenant();
+        $exporter = $this->makeExporter([]);
+
+        $exporter->addFrameworkBundle('DORA');
+        $exporter->addFrameworkBundle('NIS2');
+        // Duplicate must be ignored.
+        $exporter->addFrameworkBundle('DORA');
+
+        // Use reflection to peek at the accumulator before export() consumes it.
+        $ref = new ReflectionProperty(CertificationBundleExporter::class, 'frameworkBundles');
+        $accumulated = $ref->getValue($exporter);
+
+        self::assertSame(['DORA', 'NIS2'], $accumulated);
+    }
+
+    #[Test]
+    public function testFrameworkCoverageCsvForUnknownCode(): void
+    {
+        $tenant = $this->makeTenant();
+        $frameworkRepo = $this->createMock(ComplianceFrameworkRepository::class);
+        $frameworkRepo->method('findOneBy')->willReturn(null);
+        $frameworkRepo->method('findActiveFrameworks')->willReturn([]);
+
+        $exporter = $this->makeExporter([], [], null, null, $frameworkRepo);
+
+        $m = new ReflectionMethod(CertificationBundleExporter::class, 'generateFrameworkCoverageCsv');
+        $result = $m->invoke($exporter, $tenant, 'TOTALLY_UNKNOWN_FRAMEWORK');
+
+        self::assertIsArray($result);
+        self::assertSame(0, $result['row_count']);
+        self::assertStringContainsString('unknown_framework', $result['csv']);
     }
 }
