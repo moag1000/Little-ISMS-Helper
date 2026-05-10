@@ -1017,6 +1017,7 @@ policy_wizard:
             page_of: 'Seite'
             system_attribution: 'Erstellt mit Little ISMS Helper'
             batch_id_label: 'Batch-ID'
+            locally_edited: 'Lokal angepasste Version (zuletzt bearbeitet von %name% am %date%)'
 
     # W2 Gap-A — Krisen-Team RACI hint card on Step 3 (RolesStep).
     roles:

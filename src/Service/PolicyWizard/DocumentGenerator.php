@@ -853,14 +853,43 @@ final class DocumentGenerator implements DocumentGeneratorInterface
             }
 
             if ($isApproved && $existingHash !== $hash) {
-                // Create new version, supersedes the old.
+                // Create new version, supersedes the old. The
+                // post-generation editable-bodies feature: if the
+                // superseded doc carries tenant-specific edits
+                // (`hasPostGenerationEdits()`), the edited body is
+                // PRESERVED on the existing doc — the new wizard
+                // baseline forks via `supersedes` so the W7-C diff
+                // surfaces the conflict for manual reconciliation
+                // (drift indicator + audit-trail entry).
                 $next = $this->makeFreshDocument($run, $tenant, $template, $title, $body, $variables);
                 $next->setSupersedes($existing);
+                if ($existing->hasPostGenerationEdits()) {
+                    $this->logger->info('PolicyWizard: re-generation conflict — preserving edited policy body', [
+                        'wizard_run_id' => $run->getId(),
+                        'tenant_id' => $tenant->getId(),
+                        'existing_document_id' => $existing->getId(),
+                        'existing_edited_at' => $existing->getPolicyBodyEditedAt()?->format(DATE_ATOM),
+                        'existing_edited_by_id' => $existing->getPolicyBodyEditedBy()?->getId(),
+                        'template_key' => $template->getKey(),
+                    ]);
+                }
                 return $next;
             }
 
-            // Draft path — overwrite in place.
+            // Draft path — overwrite in place. Only overwrite
+            // `policyBody` when no post-generation edits exist; the
+            // wizard never silently destroys tenant work.
             $existing->setDescription($this->firstParagraph($body));
+            if (!$existing->hasPostGenerationEdits()) {
+                $existing->setPolicyBody($body);
+            } else {
+                $this->logger->info('PolicyWizard: draft re-render — preserving edited policy body', [
+                    'wizard_run_id' => $run->getId(),
+                    'tenant_id' => $tenant->getId(),
+                    'existing_document_id' => $existing->getId(),
+                    'template_key' => $template->getKey(),
+                ]);
+            }
             $existing->setSubstitutionVariables(array_merge($variables, ['_hash' => $hash]));
             $existing->setGeneratedFromWizardRun($run);
             $existing->setUpdatedAt(new DateTimeImmutable());
@@ -897,6 +926,12 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $doc->setFilePath('virtual:policy-wizard/' . $filename);
         $doc->setCategory($template->getDocumentType() ?? 'policy');
         $doc->setDescription($this->firstParagraph($body));
+        // Persist the full rendered body so post-generation tenant
+        // customisation has a baseline to start from and the PDF
+        // exporter does not have to re-render from translation on
+        // every export. `policyBodyEditedAt` stays NULL until a user
+        // manually edits the body — the wizard-baseline state.
+        $doc->setPolicyBody($body);
         $doc->setStatus('draft');
         $doc->setUploadedAt($now);
         $doc->setUploadedBy($run->getStartedByUser());
@@ -1512,6 +1547,9 @@ final class DocumentGenerator implements DocumentGeneratorInterface
         $doc->setFilePath('virtual:policy-wizard/' . $filename);
         $doc->setCategory('policy');
         $doc->setDescription($this->firstParagraph($body));
+        // Persist body so the exporter does not have to re-render
+        // and so a tenant can later append cross-references.
+        $doc->setPolicyBody($body);
         $doc->setStatus('draft');
         $doc->setUploadedAt($now);
         $doc->setUploadedBy($run->getStartedByUser());

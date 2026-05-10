@@ -314,6 +314,20 @@
                                     {{ 'policy_wizard.diff.title'|trans({}, 'policy_wizard') }}
                                 </a>
                             {% endif %}
+                            {# Editable-policy-body — "Lokal angepasst"
+                               chip for wizard-generated docs that carry
+                               post-generation tenant edits. Auditor
+                               signal: this body deviates from the
+                               wizard baseline. #}
+                            {% if document.generatedFromTemplate is not null and document.hasPostGenerationEdits %}
+                                <span class="badge bg-secondary ms-1"
+                                      data-bs-toggle="tooltip"
+                                      data-bs-placement="top"
+                                      title="{{ 'document.policy_body.drift_badge.tooltip'|trans({}, 'document') }}">
+                                    <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                                    {{ 'document.policy_body.drift_badge.label'|trans({}, 'document') }}
+                                </span>
+                            {% endif %}
                             {# Junior-ISB Wish #5 — Auditor-Score badge.
                                Only rendered for Wizard-generated docs
                                (provenance via generatedFromTemplate). #}

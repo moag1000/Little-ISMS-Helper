@@ -167,6 +167,46 @@ class Document
     #[ORM\JoinColumn(name: 'supersedes_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?self $supersedes = null;
 
+    /**
+     * Policy-Wizard — persisted rendered body of a wizard-generated
+     * policy. Until W7-X this column was unset and the body lived
+     * ONLY in the translation file (`policy.<standard>.<topic>.v<n>.body`)
+     * + the `substitutionVariables` JSON map; the PDF exporter
+     * re-rendered the body on every export.
+     *
+     * Storing the rendered body here unlocks tenant-specific
+     * post-generation customisation (CISO appends ABC GmbH-specific
+     * clauses) without losing the wizard-baseline reference. The
+     * exporter prefers this column when set; null falls through to
+     * the legacy translation re-render path (back-compat for legacy
+     * rows pre-W7-X).
+     *
+     * Markdown encoded — same flavour as the wizard generator emits.
+     */
+    #[ORM\Column(name: 'policy_body', type: Types::TEXT, nullable: true)]
+    private ?string $policyBody = null;
+
+    /**
+     * Policy-Wizard — timestamp of the most recent post-generation
+     * edit of `policyBody`. NULL means "never manually edited" (the
+     * persisted body is the wizard-baseline). When non-NULL the doc
+     * is considered "drifted" from the wizard baseline; re-generation
+     * preserves the edited body and surfaces the conflict in the
+     * W7-C diff UI.
+     */
+    #[ORM\Column(name: 'policy_body_edited_at', type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $policyBodyEditedAt = null;
+
+    /**
+     * Policy-Wizard — User who performed the most recent
+     * post-generation edit of `policyBody`. Paired with
+     * `policyBodyEditedAt` for the per-document audit-trail surface
+     * ("Lokal angepasste Version — zuletzt bearbeitet von X am Y").
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'policy_body_edited_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $policyBodyEditedBy = null;
+
     public function __construct()
     {
         $this->uploadedAt = new DateTimeImmutable();
@@ -341,5 +381,70 @@ class Document
     {
         $this->supersedes = $supersedes;
         return $this;
+    }
+
+    public function getPolicyBody(): ?string
+    {
+        return $this->policyBody;
+    }
+
+    public function setPolicyBody(?string $policyBody): static
+    {
+        $this->policyBody = $policyBody;
+        return $this;
+    }
+
+    public function getPolicyBodyEditedAt(): ?DateTimeImmutable
+    {
+        return $this->policyBodyEditedAt;
+    }
+
+    public function setPolicyBodyEditedAt(?DateTimeImmutable $editedAt): static
+    {
+        $this->policyBodyEditedAt = $editedAt;
+        return $this;
+    }
+
+    public function getPolicyBodyEditedBy(): ?User
+    {
+        return $this->policyBodyEditedBy;
+    }
+
+    public function setPolicyBodyEditedBy(?User $editedBy): static
+    {
+        $this->policyBodyEditedBy = $editedBy;
+        return $this;
+    }
+
+    /**
+     * Effective policy body for export / display. Returns the
+     * persisted `policyBody` when set (post-W7-X writes), null
+     * otherwise — callers fall back to translation-based re-render
+     * for legacy rows. Empty string is treated as "intentionally
+     * blank" and returned as-is so the editor can clear the body
+     * without forcing a re-render fall-back.
+     */
+    public function getEffectivePolicyBody(): ?string
+    {
+        return $this->policyBody;
+    }
+
+    /**
+     * True when a user has edited the policy body after the wizard
+     * generated it. The signal drives:
+     *  - the "Lokal angepasst" mini-chip in the document index
+     *  - the W7-C re-generation diff `policyBodyDrift` flag
+     *  - the PDF footer marker "Lokal angepasste Version"
+     *  - the re-generation conflict path (preserve edited body, fork
+     *    a new wizard-baseline version via `supersedes`)
+     *
+     * The `policyBodyEditedBy` arm catches the rare race where the
+     * timestamp survived but the user reference was nulled (FK
+     * SET NULL on user deletion).
+     */
+    public function hasPostGenerationEdits(): bool
+    {
+        return $this->policyBodyEditedAt !== null
+            || $this->policyBodyEditedBy !== null;
     }
 }

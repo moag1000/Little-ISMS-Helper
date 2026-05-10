@@ -112,6 +112,14 @@ final class PolicyDiffService
 
         $bodyHashChanged = ($previous->getSha256Hash() ?? '') !== ($current->getSha256Hash() ?? '');
 
+        // Editable-policy-body drift detection. When the previous
+        // wizard-output Document was edited post-generation by a
+        // tenant user, the re-generation path preserves the edited
+        // body on the previous Document and forks a fresh wizard
+        // baseline as `current`. Surface that signal so the W7-C
+        // diff UI can prompt for a manual merge.
+        $policyBodyDrift = $previous->hasPostGenerationEdits();
+
         $summary = $this->summariseSeverity(
             metadataDelta: $metadataDelta,
             variableChanges: $variableChanges,
@@ -132,6 +140,7 @@ final class PolicyDiffService
             sectionsModified: $sectionsModified,
             bodyHashChanged: $bodyHashChanged,
             summaryStats: $summary,
+            policyBodyDrift: $policyBodyDrift,
         );
     }
 

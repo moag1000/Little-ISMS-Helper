@@ -15,6 +15,17 @@
             &middot; {{ 'policy_wizard.export.footer.batch_id_label'|trans({}, 'policy_wizard') }}: {{ footer.batch_id }}
         {% endif %}
     </div>
+
+    {% if footer.locally_edited %}
+        {# Editable-policy-body marker — auditor signal that this PDF
+           reflects a tenant-customised body, not the wizard baseline. #}
+        <div class="locally-edited-marker">
+            {{ 'policy_wizard.export.footer.locally_edited'|trans({
+                '%name%': footer.locally_edited_by|default('—'),
+                '%date%': footer.locally_edited_at|default('—'),
+            }, 'policy_wizard') }}
+        </div>
+    {% endif %}
 </div>
 
 <script type="text/php">

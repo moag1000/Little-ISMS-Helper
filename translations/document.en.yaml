@@ -135,3 +135,13 @@ document:
     drag_files: 'Drag files here or click to upload'
     validation:
         mime_types: 'Please select a valid file (PDF, Word, Excel, Image or Text)'
+    policy_body:
+        section_title: 'Edit policy body (local customisation)'
+        label: 'Policy body (local customisation)'
+        help: 'Markdown supported. Leave empty to use the wizard default. This customisation is detected on the next wizard re-generation; conflicts are shown in the diff.'
+        edited_by: 'Last edited by %name% on %date%'
+        regen_warning_title: 'Re-generation behaviour'
+        regeneration_conflict_warning: 'On a future wizard run your customisation is detected: the edited body is preserved, a new wizard-baseline version is forked as a successor. Conflicts surface in the re-generation diff (W7-C).'
+        drift_badge:
+            label: 'Locally edited'
+            tooltip: 'This policy carries tenant-specific edits — it deviates from the wizard baseline.'

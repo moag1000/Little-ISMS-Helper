@@ -50,6 +50,12 @@ final readonly class PolicyDiff
      * @param list<DocumentSection> $sectionsRemoved
      * @param list<array{section: DocumentSection, oldHash: ?string, newHash: ?string}> $sectionsModified
      * @param array{totalChanges: int, severity: string} $summaryStats
+     * @param bool $policyBodyDrift
+     *     True when the `previous` document carried tenant-specific
+     *     post-generation edits to its `policyBody` — re-generation
+     *     preserved the edited body on `previous` and forked a new
+     *     wizard-baseline version (`current`). The diff UI surfaces
+     *     this so the CISO can manually merge the edits forward.
      */
     public function __construct(
         public Document $previous,
@@ -62,6 +68,7 @@ final readonly class PolicyDiff
         public array $sectionsModified,
         public bool $bodyHashChanged,
         public array $summaryStats,
+        public bool $policyBodyDrift = false,
     ) {
     }
 
@@ -72,7 +79,8 @@ final readonly class PolicyDiff
             || $this->sectionsAdded !== []
             || $this->sectionsRemoved !== []
             || $this->sectionsModified !== []
-            || $this->bodyHashChanged;
+            || $this->bodyHashChanged
+            || $this->policyBodyDrift;
     }
 
     public function severity(): string

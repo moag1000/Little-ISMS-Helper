@@ -54,6 +54,41 @@
                 }
             } %}
 
+            {# Policy-body editor — only rendered for wizard-generated
+               documents (DocumentType conditionally adds the field via
+               PRE_SET_DATA when generatedFromTemplate is non-null). #}
+            {% if form.policyBody is defined %}
+                <fieldset class="mb-4">
+                    <legend class="h5">
+                        <i class="fa-icon fa-icon--ui-edit" aria-hidden="true"></i>
+                        {{ 'document.policy_body.section_title'|trans({}, 'document') }}
+                    </legend>
+
+                    {{ _fa_alert.render({
+                        variant: 'warning',
+                        title: 'document.policy_body.regen_warning_title'|trans({}, 'document'),
+                        body: 'document.policy_body.regeneration_conflict_warning'|trans({}, 'document'),
+                    }) }}
+
+                    {% if document.hasPostGenerationEdits %}
+                        {{ _fa_alert.render({
+                            variant: 'info',
+                            body: 'document.policy_body.edited_by'|trans({
+                                '%name%': document.policyBodyEditedBy ? document.policyBodyEditedBy.fullName : '—',
+                                '%date%': document.policyBodyEditedAt ? document.policyBodyEditedAt|date('d.m.Y H:i') : '—',
+                            }, 'document'),
+                        }) }}
+                    {% endif %}
+
+                    <div class="mb-3">
+                        {{ form_label(form.policyBody) }}
+                        {{ form_widget(form.policyBody) }}
+                        {{ form_help(form.policyBody) }}
+                        {{ form_errors(form.policyBody) }}
+                    </div>
+                </fieldset>
+            {% endif %}
+
             <div class="form-actions d-flex gap-2 justify-content-end">
                 <a href="{{ path('app_document_show', {id: document.id}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">
                     <i class="fa-icon fa-icon--status-critical" aria-hidden="true"></i>
