@@ -442,6 +442,70 @@ php bin/console app:process-timed-workflows --dry-run
 ```
 *Mandatory 7-day waiting period (unconditional)*
 
+## Auto-Reaction Listeners (v3.5)
+
+Five dedicated event listeners trigger automatic side-effects when specific
+workflow steps complete. These listeners run *after* the step is approved
+(manual or auto) and create linked entities or notifications.
+
+### 1. DPIA Auto-Reaction
+
+**Trigger:** Risk workflow step "DPIA-Erforderlichkeit geprueft" approved
+with `dpiaRequired = true`.
+
+**Effect:** Creates a new `DPIA` entity linked to the originating Risk,
+pre-fills `processingActivity` from the Risk, sets status to `draft`.
+Notifies the DPO via the notification system.
+
+### 2. Training Auto-Reaction
+
+**Trigger:** Incident workflow "Post-Incident-Review" step approved.
+
+**Effect:** Creates a `TrainingNeed` entry linked to the Incident. The
+training need captures the incident category as training topic and assigns
+the affected team. Appears in the Training-Due bucket of "Mein Tag".
+
+### 3. Risk-Skeleton Auto-Reaction
+
+**Trigger:** Data-Breach workflow "Technical Assessment (CISO)" step approved.
+
+**Effect:** Creates a pre-filled Risk entity ("Informationssicherheitsrisiko:
+Datenpanne [Breach-ID]") with severity derived from the breach severity,
+treatment status `open`, linked back to the DataBreach entity via a relation.
+
+### 4. Corrective-Action (CA) Auto-Reaction
+
+**Trigger:** Any workflow step with `metadata.createCorrectiveAction = true`
+approved with a non-conformity comment.
+
+**Effect:** Creates a `CorrectiveAction` entity with the step comment as
+description, assigns it to the step approver, sets a due date of `+30 days`.
+
+### 5. Acknowledgement Auto-Reaction
+
+**Trigger:** Document workflow "Policy Published" step approved.
+
+**Effect:** Sends Policy-Acknowledgement requests to all users in the
+configured target groups. Acknowledgement requests appear in the
+"Policy-Acknowledgements" bucket of "Mein Tag".
+
+---
+
+## Tenant-Scope-Guard (V3 W2-C2)
+
+Auto-progression checks are tenant-scoped. Before evaluating conditions,
+`WorkflowAutoProgressionService` verifies that:
+
+1. The workflow instance belongs to the current tenant
+   (`$instance->getTenantId() === $tenantContext->getCurrentTenantId()`).
+2. The entity being updated belongs to the same tenant.
+
+If either check fails, the auto-progression is silently skipped and a
+warning is written to the application log. This prevents cross-tenant
+workflow manipulation via crafted entity updates.
+
+---
+
 ## Future Enhancements
 
 ### Planned Features
