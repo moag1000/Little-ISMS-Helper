@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'training' %}
 
 {% block title %}{{ training.title }} - {{ parent() }}{% endblock %}
@@ -266,9 +267,7 @@
                             <span class="small text-muted">{{ 'training.completion_rate'|trans({}, 'training') }}</span>
                             <span class="small fw-bold">100%</span>
                         </div>
-                        <div class="progress progress-h-8">
-                            <div class="progress-bar bg-success" style="width: 100%"></div>
-                        </div>
+                        {{ _fa_progress.render({ value: 100, tone: 'success' }) }}
                     </div>
                     <div class="d-flex justify-content-between small">
                         <span class="text-muted">{{ 'training.attendee_count'|trans({}, 'training') }}:</span>

@@ -3,6 +3,7 @@
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_components/_fa_feature_card.html.twig' as _fa_feature_card %}
 {% import '_components/_fa_cyber_field.html.twig' as _fa_cyber %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ 'soa.page.title'|trans({}, 'soa') }} - Little ISMS Helper{% endblock %}
 
@@ -130,11 +131,7 @@
                 </div>
 
                 {% set impl_percentage = applicable_controls|length > 0 ? (implemented_controls|length / applicable_controls|length * 100)|round : 0 %}
-                <div class="progress mt-2">
-                    <div class="progress-bar" style="width: {{ impl_percentage }}%">
-                        {{ impl_percentage }}%
-                    </div>
-                </div>
+                {{ _fa_progress.render({ value: impl_percentage, showText: true, class: 'mt-2' }) }}
 
                 <div class="mt-2">
                     <a href="{{ path('app_soa_by_category', {category: category}) }}" class="fa-cyber-btn fa-cyber-btn--ghost">{{ 'soa.action.view_details'|trans({}, 'soa') }}</a>
@@ -364,11 +361,7 @@
             </td>
             <td>
                 {% if control.applicable %}
-                    <div class="progress progress-compact">
-                        <div class="progress-bar" style="width: {{ control.implementationPercentage }}%; font-size: 0.75rem;">
-                            {{ control.implementationPercentage }}%
-                        </div>
-                    </div>
+                    {{ _fa_progress.render({ value: control.implementationPercentage, showText: true, size: 'sm' }) }}
                 {% else %}
                     <span class="text-center-block-light">-</span>
                 {% endif %}

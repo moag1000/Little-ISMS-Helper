@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
 {% import '_components/_fa_page_header.html.twig' as _fa_page_header %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 {% trans_default_domain 'soa' %}
 
 {% block title %}{{ control.controlId }} - {{ control.name }} - Little ISMS Helper{% endblock %}
@@ -137,11 +138,7 @@
         </div>
 
         {% if control.applicable %}
-        <div class="progress mt-3 progress-lg">
-            <div class="progress-bar" style="width: {{ control.implementationPercentage }}%; font-size: 1rem;">
-                {{ control.implementationPercentage }}%
-            </div>
-        </div>
+        {{ _fa_progress.render({ value: control.implementationPercentage, showText: true, size: 'lg', class: 'mt-3' }) }}
         {% endif %}
     {% endblock %}
 {% endembed %}

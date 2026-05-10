@@ -2,6 +2,7 @@
 {% trans_default_domain 'workflows' %}
 
 {% import '_components/_isms_approval_stages.html.twig' as _isms_approval_stages %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }} - {{ 'workflow.title.instance_show'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
@@ -130,11 +131,7 @@
         <div class="mt-3">
             <strong class="d-block mb-2">{{ 'workflow.field.progress'|trans({}, 'workflows') }}</strong>
             {% set progress = instance.progressPercentage %}
-            <div class="progress progress-h-25">
-                <div class="progress-bar bg-{{ progress == 100 ? 'success' : 'primary' }}" role="progressbar" style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
-                    {{ progress }}% ({{ instance.completedSteps|length }} / {{ instance.workflow.steps|length }})
-                </div>
-            </div>
+            {{ _fa_progress.render({ value: progress, tone: progress == 100 ? 'success' : 'primary', showText: true }) }}
         </div>
         {% endif %}
     {% endblock %}
