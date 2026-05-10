@@ -1,181 +1,194 @@
-{% trans_default_domain 'management_reports' %}
+{# ─────────────────────────────────────────────────────────────────────────
+   Compliance Report PDF — fa-report-doc 5-slot macro
+   Audience: auditor (ISO 27001 SoA / Control Status)
+   Status:   auditor-only
+   ─────────────────────────────────────────────────────────────────────── #}
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale|default('de') }}">
 <head>
     <meta charset="UTF-8">
     <title>{{ 'management_reports.compliance.title'|trans({}, 'management_reports') }}</title>
     <style>
-        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 15px; }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #0ea5e9;
-            padding-bottom: 10px;
-        }
-        .header h1 { color: var(--bg); margin: 0; font-size: 18pt; }
-        .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
-
-        .compliance-score {
-            text-align: center;
-            margin: 20px 0;
-            padding: 20px;
-            border: 3px solid #cbd5e1;
-            border-radius: 10px;
-        }
-        .compliance-score .number { font-size: 48pt; font-weight: bold; }
-        .compliance-score .label { font-size: 12pt; color: #666; }
-
-        .section { margin: 15px 0; page-break-inside: avoid; }
-        .section h2 { background: #0ea5e9; color: white; padding: 6px; font-size: 10pt; margin: 0 0 8px 0; }
-
-        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
-        th { background: var(--bg); color: var(--primary); padding: 5px; text-align: left; font-size: 8pt; }
-        td { padding: 5px; border-bottom: 1px solid #ddd; font-size: 8pt; }
-        tr:nth-child(even) { background: var(--bg); }
-
-        .badge { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
-        .badge-success { background: #dcfce7; color: #166534; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-        .badge-info { background: #e0f2fe; color: #0369a1; }
-
-        .progress-bar { background: #e5e7eb; height: 15px; border-radius: 8px; overflow: hidden; margin: 5px 0; }
-        .progress-fill { height: 100%; border-radius: 8px; }
-        .progress-fill.success { background: #16a34a; }
-        .progress-fill.warning { background: #d97706; }
-        .progress-fill.danger { background: var(--danger); }
-
-        .footer { position: fixed; bottom: 10px; left: 15px; right: 15px; text-align: center; font-size: 7pt; color: #888; border-top: 1px solid #ddd; padding-top: 5px; }
+        :root{--surface:#ffffff;--surface-2:#f6f6fa;--border:#dfe3f0;--border-strong:#b9bfd6;--fg-1:#0e0a1f;--fg-2:#4c4a73;--fg-3:#6d6b92;--primary:#0284c7;--primary-strong:#0369a1;--primary-tint:rgba(2,132,199,.10);--accent-tint:rgba(124,58,237,.10);--accent-strong:#6d28d9;--success:#059669;--success-strong:#047857;--success-tint:rgba(5,150,105,.10);--warning:#d97706;--warning-strong:#b45309;--danger:#dc2626;--danger-strong:#b91c1c;}
+        @page{size:A4 portrait;margin:14mm 12mm 18mm 12mm;}
+        body{background:#fff;font-family:'DejaVu Sans',sans-serif;margin:0;padding:0;}
+        .report-doc{background:var(--surface);color:var(--fg-1);font-size:9pt;line-height:1.45;max-width:none;margin:0;border:0;border-radius:0;}
+        .report-doc__cover{padding:16pt 14pt 12pt;border-bottom:1px solid var(--border);}
+        .report-doc__cover-top{display:table;width:100%;}
+        .report-doc__brand{display:table-cell;vertical-align:middle;}
+        .report-doc__chips{display:table-cell;text-align:right;vertical-align:middle;}
+        .report-doc__logo{display:inline-block;width:28pt;height:28pt;border-radius:5pt;background:var(--primary);color:#fff;text-align:center;line-height:28pt;font-weight:700;font-size:16pt;vertical-align:middle;margin-right:6pt;}
+        .report-doc__brand-name{font-weight:700;font-size:10pt;color:var(--fg-1);display:inline-block;vertical-align:middle;}
+        .report-doc__brand-meta{font-size:7pt;color:var(--fg-3);}
+        .report-doc__chip{display:inline-block;padding:2pt 6pt;border-radius:8pt;background:var(--surface-2);color:var(--fg-2);font-size:6pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border:1px solid var(--border);margin-left:3pt;}
+        .report-doc__chip--status-auditor_only{background:var(--accent-tint);color:var(--accent-strong);border-color:transparent;}
+        .report-doc__chip--audience-auditor{background:var(--accent-tint);color:var(--accent-strong);border-color:transparent;}
+        .report-doc__cover-center{padding:14pt 0 10pt;}
+        .report-doc__kicker{font-size:7pt;color:var(--primary);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 4pt;}
+        .report-doc__title{font-size:18pt;font-weight:800;color:var(--fg-1);margin:0 0 6pt;line-height:1.1;}
+        .report-doc__sub{font-size:9pt;color:var(--fg-2);margin:0;}
+        .report-doc__cover-grid{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8pt 0;margin:0;}
+        .report-doc__cover-grid>div{display:inline-block;width:31%;margin:0 1% 4pt 0;vertical-align:top;}
+        .report-doc__cover-label{font-size:6pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 2pt;}
+        .report-doc__cover-value{font-size:8pt;color:var(--fg-1);font-weight:600;margin:0;}
+        .report-doc__exec-summary{padding:10pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__exec-heading{font-size:11pt;font-weight:800;margin:0 0 8pt;padding-bottom:4pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__kpi-grid{display:table;width:100%;border-spacing:4pt;}
+        .report-doc__kpi-tile{display:table-cell;padding:7pt 8pt;border:1px solid var(--border);border-radius:4pt;vertical-align:top;background:var(--surface);}
+        .report-doc__kpi-tile--success{border-left:2pt solid var(--success);}
+        .report-doc__kpi-tile--warning{border-left:2pt solid var(--warning);}
+        .report-doc__kpi-tile--danger{border-left:2pt solid var(--danger);}
+        .report-doc__kpi-tile--neutral{border-left:2pt solid var(--primary);}
+        .report-doc__kpi-label{font-size:6pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:2pt;}
+        .report-doc__kpi-value{font-size:14pt;font-weight:800;color:var(--fg-1);}
+        .report-doc__tldr{background:var(--surface);border:1px solid var(--border);border-left:3pt solid var(--primary);padding:7pt 10pt;margin:0 0 10pt;}
+        .report-doc__tldr-label{font-size:6pt;color:var(--primary-strong);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:0 0 5pt;}
+        .report-doc__tldr-list{list-style:none;margin:0;padding:0;}
+        .report-doc__tldr-item{font-size:8pt;color:var(--fg-1);padding:2pt 0;}
+        .report-doc__tldr-item--ok{border-left:2pt solid var(--success);padding-left:6pt;}
+        .report-doc__tldr-item--warn{border-left:2pt solid var(--warning);padding-left:6pt;}
+        .report-doc__tldr-item--danger{border-left:2pt solid var(--danger);padding-left:6pt;}
+        .report-doc__tldr-dot{display:none;}
+        .report-doc__data-section{padding:10pt 14pt;border-bottom:1px solid var(--border);page-break-inside:avoid;}
+        .report-doc__section-heading{font-size:11pt;font-weight:700;color:var(--fg-1);margin:0 0 6pt;padding-bottom:3pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__section-body{font-size:8pt;color:var(--fg-1);margin:6pt 0;}
+        .report-doc__table{width:100%;border-collapse:collapse;font-size:7.5pt;}
+        .report-doc__table th{background:var(--surface-2);color:var(--fg-2);padding:4pt 5pt;border:.5pt solid var(--border-strong);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:6pt;text-align:left;}
+        .report-doc__table td{padding:4pt 5pt;border:.5pt solid var(--border);color:var(--fg-1);vertical-align:top;}
+        .report-doc__table tbody tr:nth-child(even) td{background:var(--surface-2);}
+        .report-doc__table-wrap{margin:8pt 0;}
+        .report-doc__appendix{padding:10pt 14pt;background:var(--surface-2);border-bottom:1px solid var(--border);}
+        .report-doc__appendix-heading{font-size:11pt;font-weight:700;margin:0 0 8pt;padding-bottom:3pt;border-bottom:2px solid var(--fg-1);}
+        .report-doc__appendix-subheading{font-size:8pt;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:7pt 0 3pt;}
+        .report-doc__appendix-body{font-size:8pt;color:var(--fg-2);}
+        .report-doc__appendix-sources{padding-left:12pt;font-size:7.5pt;color:var(--fg-2);}
+        .report-doc__footer-disclaimer{padding:10pt 14pt;background:var(--surface);border-top:1px solid var(--border-strong);}
+        .report-doc__distribution-label{font-size:6pt;color:var(--fg-3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 3pt;}
+        .report-doc__distribution-list{list-style:none;padding:0;margin:0 0 6pt;font-size:8pt;color:var(--fg-2);}
+        .report-doc__distribution-list li{display:inline-block;border-left:2pt solid var(--border);padding:0 7pt;}
+        .report-doc__disclaimer-text{font-size:7pt;color:var(--fg-3);padding:6pt;background:var(--surface-2);border:1px solid var(--border);border-radius:3pt;margin:0 0 6pt;}
+        .report-doc__footer-meta{font-size:6pt;color:var(--fg-3);}
+        .report-doc__footer-brand{font-weight:700;color:var(--fg-2);}
+        .badge{display:inline-block;padding:1pt 4pt;border-radius:3pt;font-size:6.5pt;font-weight:700;}
+        .badge-success{background:var(--success-tint);color:var(--success-strong);}
+        .badge-warning{background:rgba(217,119,6,.12);color:var(--warning-strong);}
+        .badge-danger{background:rgba(220,38,38,.12);color:var(--danger-strong);}
+        .badge-info{background:var(--primary-tint);color:var(--primary-strong);}
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>{{ 'management_reports.compliance.title'|trans({}, 'management_reports') }}</h1>
-        <div class="date">{{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
-    </div>
+{% import '_components/_fa_report_doc.html.twig' as _fa_report_doc %}
 
-    {# Overall Compliance Score #}
-    <div class="compliance-score">
-        <div class="number" style="color: {% if report.overall_compliance >= 80 %}#16a34a{% elseif report.overall_compliance >= 60 %}#d97706{% else %}var(--danger){% endif %};">
-            {{ report.overall_compliance }}%
-        </div>
-        <div class="label">{{ 'management_reports.compliance.overall'|trans({}, 'management_reports') }}</div>
-        <div class="progress-bar" style="width: 80%; margin: 10px auto;">
-            <div class="progress-fill {% if report.overall_compliance >= 80 %}success{% elseif report.overall_compliance >= 60 %}warning{% else %}danger{% endif %}" style="width: {{ report.overall_compliance }}%"></div>
-        </div>
-    </div>
+{% set _ctrl_rows = [
+    [ 'management_reports.compliance.total'|trans({}, 'management_reports'), report.controls.total, '100%' ],
+    [ 'management_reports.compliance.applicable'|trans({}, 'management_reports'), report.controls.applicable,
+      report.controls.total > 0 ? ((report.controls.applicable / report.controls.total) * 100)|round(1) ~ '%' : '0%' ],
+    [ 'management_reports.compliance.implemented'|trans({}, 'management_reports'),
+      '<span class="badge badge-success">' ~ report.controls.implemented ~ '</span>',
+      report.controls.total > 0 ? ((report.controls.implemented / report.controls.total) * 100)|round(1) ~ '%' : '0%' ],
+    [ 'management_reports.compliance.not_applicable'|trans({}, 'management_reports'),
+      '<span class="badge badge-info">' ~ report.controls.not_applicable ~ '</span>',
+      report.controls.total > 0 ? ((report.controls.not_applicable / report.controls.total) * 100)|round(1) ~ '%' : '0%' ],
+] %}
 
-    {# Control Status #}
-    <div class="section">
-        <h2>{{ 'management_reports.compliance.control_status'|trans({}, 'management_reports') }}</h2>
-        <table>
-            <tr>
-                <th scope="col">{{ 'management_reports.compliance.header.metric'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.compliance.header.count'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.compliance.header.percentage'|trans({}, 'management_reports') }}</th>
-            </tr>
-            <tr>
-                <td>{{ 'management_reports.compliance.total'|trans({}, 'management_reports') }}</td>
-                <td>{{ report.controls.total }}</td>
-                <td>100%</td>
-            </tr>
-            <tr>
-                <td>{{ 'management_reports.compliance.applicable'|trans({}, 'management_reports') }}</td>
-                <td>{{ report.controls.applicable }}</td>
-                <td>{{ report.controls.total > 0 ? ((report.controls.applicable / report.controls.total) * 100)|round(1) : 0 }}%</td>
-            </tr>
-            <tr>
-                <td>{{ 'management_reports.compliance.implemented'|trans({}, 'management_reports') }}</td>
-                <td><span class="badge badge-success">{{ report.controls.implemented }}</span></td>
-                <td>{{ report.controls.total > 0 ? ((report.controls.implemented / report.controls.total) * 100)|round(1) : 0 }}%</td>
-            </tr>
-            <tr>
-                <td>{{ 'management_reports.compliance.not_applicable'|trans({}, 'management_reports') }}</td>
-                <td><span class="badge badge-info">{{ report.controls.not_applicable }}</span></td>
-                <td>{{ report.controls.total > 0 ? ((report.controls.not_applicable / report.controls.total) * 100)|round(1) : 0 }}%</td>
-            </tr>
-        </table>
-    </div>
+{% set _fw_rows = [] %}
+{% for framework in report.frameworks %}
+    {% set _fw_rows = _fw_rows|merge([[
+        framework.name,
+        '<code>' ~ framework.code ~ '</code>',
+        framework.active
+            ? '<span class="badge badge-success">' ~ ('management_reports.compliance.active'|trans({}, 'management_reports')) ~ '</span>'
+            : '<span class="badge badge-warning">' ~ ('management_reports.compliance.inactive'|trans({}, 'management_reports')) ~ '</span>',
+    ]]) %}
+{% endfor %}
 
-    {# Frameworks #}
-    <div class="section">
-        <h2>{{ 'management_reports.compliance.frameworks'|trans({}, 'management_reports') }}</h2>
-        <table>
-            <tr>
-                <th scope="col">{{ 'management_reports.compliance.framework_name'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.compliance.framework_code'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.compliance.framework_status'|trans({}, 'management_reports') }}</th>
-            </tr>
-            {% for framework in report.frameworks %}
-            <tr>
-                <td>{{ framework.name }}</td>
-                <td><code>{{ framework.code }}</code></td>
-                <td>
-                    {% if framework.active %}
-                    <span class="badge badge-success">{{ 'management_reports.compliance.active'|trans({}, 'management_reports') }}</span>
-                    {% else %}
-                    <span class="badge badge-warning">{{ 'management_reports.compliance.inactive'|trans({}, 'management_reports') }}</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-        <p style="font-size: 8pt; color: #666; margin-top: 5px;">
-            {{ 'management_reports.compliance.active_frameworks'|trans({}, 'management_reports') }}: {{ report.active_frameworks }} / {{ report.frameworks|length }}
-        </p>
-    </div>
+{% set _assessment_tone = report.overall_compliance >= 80 ? 'ok' : (report.overall_compliance >= 60 ? 'warn' : 'danger') %}
+{% set _assessment_label = report.overall_compliance >= 80
+    ? ('management_reports.compliance.good_standing'|trans({}, 'management_reports'))
+    : (report.overall_compliance >= 60
+        ? ('management_reports.compliance.improvement_needed'|trans({}, 'management_reports'))
+        : ('management_reports.compliance.immediate_action'|trans({}, 'management_reports'))) %}
 
-    {# Compliance Status Assessment #}
-    <div class="section">
-        <h2>{{ 'management_reports.compliance.assessment_title'|trans({}, 'management_reports') }}</h2>
-        {% if report.overall_compliance >= 80 %}
-        <div style="background: #dcfce7; padding: 10px; border-radius: 5px; border: 1px solid #86efac;">
-            <strong style="color: #166534;">{{ 'management_reports.compliance.good_standing'|trans({}, 'management_reports') }}</strong>
-            <p style="margin: 5px 0 0; font-size: 8pt; color: #166534;">
-                {{ 'management_reports.compliance.good_standing_text'|trans({}, 'management_reports') }}
-            </p>
-        </div>
-        {% elseif report.overall_compliance >= 60 %}
-        <div style="background: #fef3c7; padding: 10px; border-radius: 5px; border: 1px solid #fcd34d;">
-            <strong style="color: #92400e;">{{ 'management_reports.compliance.improvement_needed'|trans({}, 'management_reports') }}</strong>
-            <p style="margin: 5px 0 0; font-size: 8pt; color: #92400e;">
-                {{ 'management_reports.compliance.improvement_text_detail'|trans({}, 'management_reports') }}
-            </p>
-        </div>
-        {% else %}
-        <div style="background: #fecaca; padding: 10px; border-radius: 5px; border: 1px solid var(--danger);">
-            <strong style="color: #991b1b;">{{ 'management_reports.compliance.immediate_action'|trans({}, 'management_reports') }}</strong>
-            <p style="margin: 5px 0 0; font-size: 8pt; color: #991b1b;">
-                {{ 'management_reports.compliance.immediate_action_text'|trans({}, 'management_reports') }}
-            </p>
-        </div>
-        {% endif %}
-    </div>
+{% set _rec_rows = [
+    [ '<span class="badge badge-success">' ~ ('management_reports.compliance.priority.high'|trans({}, 'management_reports')) ~ '</span>',
+      'management_reports.compliance.tip_1'|trans({}, 'management_reports') ],
+    [ '<span class="badge badge-warning">' ~ ('management_reports.compliance.priority.medium'|trans({}, 'management_reports')) ~ '</span>',
+      'management_reports.compliance.tip_2'|trans({}, 'management_reports') ],
+    [ '<span class="badge badge-info">' ~ ('management_reports.compliance.priority.low'|trans({}, 'management_reports')) ~ '</span>',
+      'management_reports.compliance.tip_3'|trans({}, 'management_reports') ],
+] %}
 
-    {# Recommendations #}
-    <div class="section">
-        <h2>{{ 'management_reports.compliance.recommendations_title'|trans({}, 'management_reports') }}</h2>
-        <table>
-            <tr>
-                <th scope="col">{{ 'management_reports.compliance.header.priority'|trans({}, 'management_reports') }}</th>
-                <th scope="col">{{ 'management_reports.compliance.header.action'|trans({}, 'management_reports') }}</th>
-            </tr>
-            <tr>
-                <td><span class="badge badge-success">{{ 'management_reports.compliance.priority.high'|trans({}, 'management_reports') }}</span></td>
-                <td>{{ 'management_reports.compliance.tip_1'|trans({}, 'management_reports') }}</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-warning">{{ 'management_reports.compliance.priority.medium'|trans({}, 'management_reports') }}</span></td>
-                <td>{{ 'management_reports.compliance.tip_2'|trans({}, 'management_reports') }}</td>
-            </tr>
-            <tr>
-                <td><span class="badge badge-info">{{ 'management_reports.compliance.priority.low'|trans({}, 'management_reports') }}</span></td>
-                <td>{{ 'management_reports.compliance.tip_3'|trans({}, 'management_reports') }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="footer">
-        {{ 'management_reports.compliance.footer'|trans({}, 'management_reports') }}
-    </div>
+{{ _fa_report_doc.render({
+    report: {
+        title:        'management_reports.compliance.title'|trans({}, 'management_reports'),
+        kicker:       'ISO 27001 · SoA & Controls',
+        status:       'auditor-only',
+        audience:     'auditor',
+        generated_at: generated_at|date('d.m.Y H:i'),
+        prepared_by:  version,
+    },
+    brand_name: 'Little ISMS Helper',
+    key_findings: [
+        { label: ('management_reports.compliance.overall'|trans({}, 'management_reports')) ~ ': ' ~ report.overall_compliance ~ '%',
+          tone: _assessment_tone },
+        { label: _assessment_label, tone: _assessment_tone },
+        { label: ('management_reports.compliance.active_frameworks'|trans({}, 'management_reports')) ~ ': ' ~ report.active_frameworks ~ ' / ' ~ report.frameworks|length, tone: 'ok' },
+    ],
+    kpis: [
+        { label: 'management_reports.compliance.overall'|trans({}, 'management_reports'),
+          value: report.overall_compliance ~ '%', tone: report.overall_compliance >= 80 ? 'success' : (report.overall_compliance >= 60 ? 'warning' : 'danger') },
+        { label: 'management_reports.compliance.implemented'|trans({}, 'management_reports'),
+          value: report.controls.implemented, tone: 'success' },
+        { label: 'management_reports.compliance.applicable'|trans({}, 'management_reports'),
+          value: report.controls.applicable, tone: 'neutral' },
+        { label: 'management_reports.compliance.active_frameworks'|trans({}, 'management_reports'),
+          value: report.active_frameworks, tone: 'neutral' },
+    ],
+    sections: [
+        {
+            heading: 'management_reports.compliance.control_status'|trans({}, 'management_reports'),
+            table: {
+                headers: [
+                    'management_reports.compliance.header.metric'|trans({}, 'management_reports'),
+                    'management_reports.compliance.header.count'|trans({}, 'management_reports'),
+                    'management_reports.compliance.header.percentage'|trans({}, 'management_reports'),
+                ],
+                rows: _ctrl_rows,
+            },
+        },
+        {
+            heading: 'management_reports.compliance.frameworks'|trans({}, 'management_reports'),
+            table: {
+                headers: [
+                    'management_reports.compliance.framework_name'|trans({}, 'management_reports'),
+                    'management_reports.compliance.framework_code'|trans({}, 'management_reports'),
+                    'management_reports.compliance.framework_status'|trans({}, 'management_reports'),
+                ],
+                rows: _fw_rows,
+            },
+        },
+        {
+            heading: 'management_reports.compliance.recommendations_title'|trans({}, 'management_reports'),
+            table: {
+                headers: [
+                    'management_reports.compliance.header.priority'|trans({}, 'management_reports'),
+                    'management_reports.compliance.header.action'|trans({}, 'management_reports'),
+                ],
+                rows: _rec_rows,
+            },
+        },
+    ],
+    appendix: {
+        methodology: '<p>Compliance rate = implemented controls / applicable controls × 100. Threshold: ≥80% = Good Standing, 60-79% = Improvement Needed, &lt;60% = Immediate Action.</p>',
+        sources: [
+            { label: 'ControlRepository', detail: 'findByTenant() — implementation status per Annex A control' },
+            { label: 'ComplianceFrameworkRepository', detail: 'findByTenant() — active frameworks' },
+        ],
+    },
+    distribution: [
+        { role: 'CISO',         name: '—' },
+        { role: 'Lead Auditor', name: '—' },
+    ],
+}) }}
 </body>
 </html>
