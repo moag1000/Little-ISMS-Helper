@@ -28,6 +28,20 @@ certification_bundle:
     warning_gaps: 'There are still %count% open gaps — the bundle will be generated anyway.'
     success: 'Certification document bundle was generated successfully.'
 
+    konzern_export:
+        title: 'Group Bundle (Holding)'
+        subtitle: 'Aggregates the certification bundles of all subsidiary tenants into a single ZIP — with a shared INDEX.csv, GROUP-OVERVIEW and RACI summary for holding-level audits.'
+        frameworks: 'Frameworks (multiple selectable)'
+        as_of_date: 'As-of date (optional)'
+        as_of_date_help: 'Reserved for SoA as-of date (item H). Leave empty for the current state.'
+        subsidiaries: 'Subsidiary selection'
+        subsidiaries_help: 'Leave empty to include all subsidiaries. The holding root is always included.'
+        generate: 'Generate Group Bundle'
+        note: 'Generation may take longer depending on the group size (one bundle per subsidiary).'
+        success: 'Group certification bundle was generated successfully.'
+        error:
+            not_a_holding: 'The current tenant has no subsidiaries — no group bundle possible.'
+
     # PDF-specific translations
     pdf:
         generated: 'Generated'
