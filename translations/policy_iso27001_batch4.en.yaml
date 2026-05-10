@@ -7,28 +7,92 @@ policy:
         continuity:
             v1:
                 title: 'ICT Continuity Policy'
-                body: |
-                    This ICT Continuity Policy governs how {{ tenant.legal_name }} manages the
-                    information-security aspects of recovery for information and communication
-                    technology (ICT) during and after a business disruption. It implements the
-                    requirements of ISO/IEC 27002:2022 §5.29 (Information security during
-                    disruption) and §5.30 (ICT readiness for business continuity), ensuring that
-                    confidentiality, integrity and availability of information-processing systems
-                    are preserved even under stress conditions.
+                body: |-
+                    # ICT Continuity Policy of {{ tenant.legal_name }}
 
-                    Important scope statement: this policy covers **only** ICT readiness
-                    (disaster recovery, IT redundancy, technical failover). The full Business
-                    Continuity Management System (BCMS) according to ISO 22301 — including
-                    business impact analysis (BIA), crisis-team activation, non-IT recovery plans
-                    and external communications — is governed by the separate **BCM Policy**.
-                    Where ICT and BCM provisions conflict, the BCM Policy takes precedence
-                    because it represents the strategic business view.
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.5.29 (Information security during disruption), A.5.30 (ICT readiness for business continuity), A.8.13 (Backup), A.8.14 (Redundancy of information processing facilities) | ISO/IEC 27002:2022 §§ 5.29, 5.30, 8.13, 8.14 | ISO 22301:2019 (BCMS) | ISO/IEC 27031:2011 (ICT readiness) | BSI 200-4 (BCM) | GDPR Art. 32(1)(b) and (c) | DORA Art. 11 (ICT business continuity policy), Art. 12 (Backup and restoration) | NIS2 Art. 21(2)(c) | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
 
-                    {{ roles.ciso.fullName }} is accountable for maintaining this policy in
-                    coordination with the BCM Officer. All ICT continuity measures are planned
-                    consistent with the criticality classification of the relevant business
-                    processes from the BIA — an isolated IT view without a business anchor is
-                    explicitly not permitted.
+                    ## 1. Purpose
+                    This policy mandates the information-security aspects of recovery for information and communication technology (ICT) of {{ tenant.legal_name }} during and after disruptions, including disaster recovery, IT redundancy and technical failover. It implements ISO/IEC 27001:2022 A.5.29/A.5.30/A.8.13/A.8.14 in conjunction with ISO 22301, BSI 200-4 and ISO/IEC 27031 and fulfils requirements from GDPR Art. 32, DORA Art. 11/12 and NIS2 Art. 21. The objective is the recoverability of ICT-supported business processes within the recovery objectives derived from the Business Impact Analysis (BIA).
+
+                    ## 2. Scope and demarcation
+                    Scope covers all production ICT systems, cloud services ({{ cloud.providers }}), network infrastructure, supporting services, critical third parties and associated personnel and site resources required to deliver the business processes within the ISMS scope ({{ tenant.scope_statement }}).
+
+                    This policy covers ICT readiness only. The full BCMS per ISO 22301 (BIA, crisis team, non-IT recovery plans, external communication) is governed by the separate BCM policy. Where conflict arises the BCM policy takes precedence.
+
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate change is included as an external factor in ICT continuity planning: extreme weather, heatwaves affecting data-centre availability, water shortage at sites with evaporative cooling, climate-driven energy shortages and disruption of critical suppliers and energy / telecom infrastructure are part of threat analysis, site selection and resilience tests.
+
+                    ## 3. Principles
+                    - **BIA anchor:** recovery objectives derived from the BIA per BCM policy; an isolated IT view without business anchor is not permitted.
+                    - **Defense in depth:** combination of geo-redundant architecture, automated failover, backups (A.8.13), site redundancy (A.8.14) and manual recovery procedures.
+                    - **Tested recovery:** recoverability is to be proven, not just documented.
+                    - **Secure recovery:** confidentiality, integrity and authenticity remain preserved during emergency operation; no security suspension without explicit risk acceptance.
+                    - **Lessons learned:** every activation and every exercise leads to traceable corrective and improvement actions.
+
+                    ## 4. RTO/RPO/MTPD classes
+                    Recovery objectives are derived from the BIA. Default classes:
+
+                    | Tier | RPO | RTO | MTPD | Example |
+                    |---|---|---|---|---|
+                    | 0 (mission-critical) | 1 h | 4 h | 24 h | Core banking, order management |
+                    | 1 (business-critical) | 4 h | 8 h | 48 h | CRM, customer portal |
+                    | 2 (operational) | 24 h | 24 h | 5 d | Intranet, internal tools |
+                    | 3 (archival) | 7 d | 72 h | 14 d | Archive |
+
+                    ## 5. Architecture requirements
+                    - **Site redundancy (A.8.14):** Tier 0/1 in geo-separated sites ({{ dr.sites }}); minimum distance per data-centre strategy.
+                    - **Database replication:** synchronous or asynchronous per RPO; failover automated.
+                    - **Cloud resilience:** Multi-AZ mandatory for Tier 0/1; Multi-Region for GDPR-compatible disaster cases documented.
+                    - **Network resilience:** redundant carriers via different routes; SD-WAN/load balancing.
+                    - **Security components:** SIEM, EDR, IAM, backup must themselves be Tier-0-capable.
+                    - **Personnel resilience:** deputy arrangements for key roles (CISO, ISO, IT emergency coordination).
+
+                    ## 6. Recovery procedures
+                    1. **Detection:** monitoring alert or external notification triggers evaluation.
+                    2. **Assessment:** situational assessment by IT emergency organisation; activation of the relevant DR procedure.
+                    3. **Escalation:** crisis-team activation per BCM policy for Tier-0 cases or multiple disruptions.
+                    4. **Failover/recovery:** documented per-system procedures with responsibilities and checkpoints.
+                    5. **Emergency operation:** compensating controls (manual procedures, reduced functional scope) per BC plan.
+                    6. **Recovery:** controlled return to normal operation.
+                    7. **Lessons learned:** post-event review with action catalogue.
+
+                    ## 7. Test programme
+                    - **Tabletop exercises:** semi-annually per Tier-0 system.
+                    - **Component / failover tests:** quarterly.
+                    - **Full DR tests (site switch):** at least annually.
+                    - **Ransomware recovery tests:** annually from immutable backup.
+                    - **Multi-site test:** every 24 months (or event-driven).
+
+                    Acceptance criteria: meeting RTO/RPO, full application function, data integrity, security components available. Results feed into Management Review (Clause 9.3) and BCM exercise report.
+
+                    ## 8. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Maintenance of this policy | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | BCM officer, IT operations | All |
+                    | DR architecture | IT architecture | CIO | ISO, app owners | – |
+                    | DR plans and tests | IT emergency organisation | CIO | ISO, app owners, Internal Audit | Executive board |
+                    | RPO/RTO definition | Business-process owner | Executive board | BCM officer, ISO | IT operations |
+                    | Crisis communication | Crisis-team lead | Executive board | Legal, Communications, DPO {{ roles.dpo.fullName }} | Stakeholders |
+                    | Audit / KPI | Internal Audit | CISO | ISO, BCM | Executive board |
+
+                    ## 9. Effectiveness measurement (KPI)
+                    - Share of Tier-0/1 systems with tested recoverability per quarter (target 100 percent)
+                    - Median measured recovery time vs. RTO (target less than 80 percent of RTO)
+                    - Share of DR plans with current test date (target greater than 95 percent)
+                    - Number of unplanned Tier-0 outages exceeding RTO (target 0)
+                    - Number of blocker-grade findings detected in tests (trend decreasing)
+
+                    ## 10. Escalation and incident response
+                    Disruptions and suspected sabotage or ransomware trigger the Incident policy and possibly BCM activation. Reporting obligations under NIS2 Art. 23, DORA Art. 19 and GDPR Art. 33/34 are coordinated by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}; supervisory notifications go via the crisis team with Legal involvement.
+
+                    ## 11. Exceptions and deviations
+                    Deviations require documented risk acceptance by the CISO referencing the risk register and BIA, time-bound to a maximum of 12 months.
+
+                    ## 12. Review and approval
+                    Reviewed at least annually and on relevant triggers (architecture change, supplier change, BIA refresh, incident, regulatory change). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.29, A.5.30, A.7.5, A.7.11, A.7.12, A.8.13, A.8.14; ISO 22301:2019; ISO/IEC 27031:2011; BSI 200-4; CON.3, OPS.1.1.5; GDPR Art. 32; DORA Art. 11, 12; NIS2 Art. 21(2)(c).*
 
                 section:
                     1:
@@ -110,21 +174,91 @@ policy:
         threat_intelligence:
             v1:
                 title: 'Threat Intelligence Policy'
-                body: |
-                    This policy defines how {{ tenant.legal_name }} systematically collects,
-                    evaluates, processes and disseminates information-security threat
-                    information ("threat intelligence"). It implements ISO/IEC 27002:2022 §5.7,
-                    newly introduced in the 2022 revision: "Information relating to information
-                    security threats shall be collected and analysed to produce threat
-                    intelligence."
+                body: |-
+                    # Threat Intelligence Policy of {{ tenant.legal_name }}
 
-                    The objective is to underpin decisions in vulnerability management, incident
-                    response, SOC detection, architecture reviews and supplier oversight with
-                    current and organisation-relevant threat knowledge — enabling the shift from
-                    a purely reactive to a more predictive security posture. Accountability sits
-                    with {{ roles.ciso.fullName }} or the threat-intelligence function reporting
-                    to the CISO (in smaller organisations frequently a hat worn by the SOC lead
-                    or the security officer).
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.5.7 (Threat intelligence) | ISO/IEC 27002:2022 § 5.7 | BSI DER.1 (Detection of security-relevant events) | BSI 200-3 | GDPR Art. 32 | NIS2 Art. 21(2)(a), Art. 29 (information sharing) | DORA Art. 45-49 | TLP standard (FIRST.org) | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy mandates the collection, analysis, evaluation and dissemination of threat information within the ISMS scope of {{ tenant.legal_name }}. It implements ISO/IEC 27001:2022 A.5.7 — the new control introduced with the 2022 revision — and enables the shift from a reactive to a predictive security posture. It also fulfils requirements under NIS2 Art. 21/29 (information sharing) and DORA Art. 45-49 (information sharing arrangements).
+
+                    ## 2. Scope
+                    Scope is the entire ISMS scope ({{ tenant.scope_statement }}). Covered are all threat domains: cyber threats, physical threats, insider threats, supply-chain threats, geopolitical threats and hybrid threats to critical infrastructure.
+
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate-related threats are explicitly recorded as a domain: heatwaves affecting data-centre availability, extreme weather disrupting critical suppliers, water shortages at sites with evaporative cooling, hybrid threats to climate-critical infrastructure (energy grid, water, telecoms). This intelligence feeds the risk assessment under Clause 6.1.2.
+
+                    ## 3. Sources
+                    A mix of governmental, collaborative, commercial and open-source sources:
+
+                    - **Governmental:** national CSIRT advisories (e. g. BSI WID/CERT-Bund, CERT-EU, ENISA), CISA KEV where relevant.
+                    - **Sectoral:** industry-relevant ISAC memberships ({{ isac.memberships }} — e. g. FS-ISAC for financial, Auto-ISAC, Health-ISAC).
+                    - **Commercial:** licensed premium feeds per executive procurement decision.
+                    - **Open source / OSINT:** MITRE ATT&CK, MISP communities, NVD, vendor advisories, research publications.
+                    - **Internal telemetry:** SIEM, EDR, honeypots, internal incident lessons learned (see Logging policy A.8.15/A.8.16).
+
+                    ## 4. Classification: strategic, tactical, operational
+                    - **Strategic:** geopolitics, actor profiles, long-term trends, sector risks. Audience: executive board, supervisory board. Cadence: monthly consolidated, quarterly into Management Review (Clause 9.3).
+                    - **Tactical:** TTPs per MITRE ATT&CK; actor campaigns; sector-specific modus operandi. Audience: architecture, ISO, secure-development lead. Cadence: weekly.
+                    - **Operational:** IoCs (hashes, domains, IPs, URLs, mutex names, YARA rules). Audience: SOC, EDR, firewall operations. Cadence: daily, automated.
+
+                    ## 5. Processing pipeline
+                    1. **Collection:** ingestion via STIX/TAXII, MISP, vendor APIs, government mailing lists.
+                    2. **Normalisation:** unification in the internal Threat Intelligence Platform (TIP) format.
+                    3. **Enrichment:** mapping to internal asset inventory (A.5.9), vulnerability inventory, MITRE ATT&CK tagging.
+                    4. **Evaluation:** relevance scoring (sector / asset / technology specific).
+                    5. **Distribution:** automated to SIEM/EDR/firewall for operational; briefing format for tactical/strategic.
+                    6. **Feedback loop:** hit and false-positive rates evaluated monthly; low-precision sources are re-evaluated.
+
+                    ## 6. Distribution to operational functions
+                    - **SOC:** real-time feeds via SIEM integration, automated detection rules.
+                    - **Vulnerability management:** prioritisation by exploit activity (CISA KEV, EPSS score).
+                    - **Incident response:** case-based analyst support with actor profile.
+                    - **Architecture and secure development:** TTP briefings with concrete hardening recommendations.
+                    - **Supplier management:** sector- and supplier-specific threat picture per A.5.19-A.5.23.
+
+                    Linkage to A.5.5 (authority contact) and A.5.6 (special interest groups) is in place.
+
+                    ## 7. Sharing responsibility and TLP
+                    External exchange in trust communities (ISACs, sector working groups, BSI CERT network) is encouraged. Before sharing, the Traffic Light Protocol (TLP:CLEAR / GREEN / AMBER / RED) per FIRST is observed:
+
+                    - **TLP:CLEAR** — unrestricted disclosure.
+                    - **TLP:GREEN** — community-wide disclosure within the relevant sector.
+                    - **TLP:AMBER** — disclosure only to named recipients.
+                    - **TLP:RED** — does not leave the original recipient circle.
+
+                    For reportable matters (NIS2 Art. 23, DORA Art. 19): notification by CISO {{ roles.ciso.fullName }} or designated reporter; legal review by DPO {{ roles.dpo.fullName }} and Legal.
+
+                    ## 8. Confidentiality of received information
+                    Received TLP-classified information is processed per the Classification policy (TLP:RED >= STRICTLY CONFIDENTIAL; TLP:AMBER >= CONFIDENTIAL). Onward sharing only by authorised individuals.
+
+                    ## 9. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Maintenance of this policy | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | Threat-intel lead, SOC lead | All |
+                    | Source selection | Threat-intel lead | CISO | SOC, vuln-mgmt | Consumers |
+                    | Operational analysis (IoC) | SOC | CISO | IT operations, vuln-mgmt | Executive board |
+                    | Tactical analysis (TTP) | Threat-intel lead | CISO | Architecture, secure development | Audit |
+                    | Strategic analysis | CISO | Executive board | Group security | Supervisory board |
+                    | Sharing with authorities / ISAC | CISO | Executive board | Legal, DPO {{ roles.dpo.fullName }} | Recipient circle |
+
+                    ## 10. Effectiveness measurement (KPI)
+                    - Number of consumed IoCs per month (trend monitoring)
+                    - Hit rate in SIEM (target greater than 60 percent precise hits, less than 5 percent false positives)
+                    - Share of incidents prevented or detected early via threat intel (target rising annually)
+                    - Median time-from-disclosure-to-detection-rule (target less than 24 hours for critical vulns)
+                    - Number of quarterly briefings to executive board (target 100 percent)
+
+                    ## 11. Quality assurance
+                    Sources are reviewed annually for relevance and precision. Low-precision sources are cancelled or re-weighted. False positives are centrally logged with source identifier to enable objective comparison.
+
+                    ## 12. Escalation
+                    On detection of a critical threat against the organisation: immediate escalation to CISO and executive board, evaluation of activating the incident-response process (see Incident policy), evaluation of communication to supervisor and affected interested parties per A.5.5.
+
+                    ## 13. Review and approval
+                    Reviewed at least annually and on relevant triggers (material change of threat picture, new geopolitical situation, sector actor shift, change in mandatory reporting). Previous approved versions are archived per Clause 7.5 for seven years. Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.5, A.5.6, A.5.7, A.5.9, A.5.19-A.5.23, A.5.24-A.5.27, A.8.8, A.8.15-A.8.17; BSI DER.1, DER.2.1, OPS.1.1.4; GDPR Art. 32; NIS2 Art. 21, 23, 29; DORA Art. 19, 45-49.*
 
                 section:
                     1:
@@ -201,21 +335,83 @@ policy:
         mobile_teleworking:
             v1:
                 title: 'Mobile Device and Remote Working Policy'
-                body: |
-                    This policy governs at {{ tenant.legal_name }} the conditions and restrictions
-                    for using mobile end-user devices (laptops, smartphones, tablets) and for
-                    location-independent work (home office, telework, mobile work, workation). It
-                    implements ISO/IEC 27002:2022 §6.7 (Remote working — explicitly required as a
-                    "topic-specific policy"), §7.9 (Security of off-premises assets) and §8.1
-                    (User endpoint devices).
+                body: |-
+                    # Mobile Device and Remote Working Policy of {{ tenant.legal_name }}
 
-                    Background: mobile work has established itself as a permanent operating model.
-                    It extends the classical organisational perimeter to private homes, public
-                    spaces and changing network environments, significantly increasing the attack
-                    surface. Compensating technical, organisational and behavioural controls are
-                    therefore required. Where employee-monitoring concerns arise (device telemetry,
-                    location data), employee-representation co-determination requirements apply
-                    in jurisdictions that grant such rights (in Germany: § 87 BetrVG).
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.6.7 (Remote working), A.7.9 (Security of assets off-premises), A.8.1 (User endpoint devices) | ISO/IEC 27002:2022 §§ 6.7, 7.9, 8.1 | BSI SYS.3.1 (Laptops), SYS.3.2.x (Mobile devices), INF.8 (Home office), INF.9 (Mobile workplace) | GDPR Art. 32 in conjunction with Art. 5(1)(f) | BetrVG § 87(1) No. 6 | NIS2 Art. 21(2)(e) | DORA Art. 9 | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy mandates the conditions and restrictions for the use of mobile end-user devices (laptops, smartphones, tablets) and for location-independent work (home office, telework, mobile work, workation) within the scope of {{ tenant.legal_name }}. It implements ISO/IEC 27001:2022 A.6.7 (explicitly required as a topic-specific policy), A.7.9 and A.8.1 in conjunction with the BSI building blocks SYS.3.1, SYS.3.2.x, INF.8 and INF.9. It also fulfils GDPR Art. 32, BetrVG § 87(1) No. 6, NIS2 Art. 21 and DORA Art. 9 requirements.
+
+                    ## 2. Scope
+                    All business mobile end devices (fleet: {{ mobile.fleet_size }}), private devices under approved BYOD, and all employees, contractors, interns working off-site of {{ tenant.legal_name }}. Scope is {{ tenant.scope_statement }}.
+
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate change is included as an external factor in remote-working planning: heatwaves can affect home-office workplaces (cooling, power outages); extreme weather can affect travel and workations. Backup sites and office availability are considered in emergency planning.
+
+                    ## 3. Co-determination and data protection
+                    The use of device monitoring, location data or usage analytics is subject to works-council co-determination per BetrVG § 87(1) No. 6. A works agreement must be in place. Personal-data processing is purpose-bound, agreed with DPO {{ roles.dpo.fullName }} and the works council; a DPIA is required where personal location or behavioural data are processed.
+
+                    ## 4. Approved working modes and locations
+                    - **Office:** standard workplace within secured sites.
+                    - **Home office:** permanent residence, with a delineable work area.
+                    - **Mobile work:** changing locations, including travel.
+                    - **Workation:** time-bound work at changing leisure locations; subject to prior notification.
+
+                    Data residency: processing of personal data outside EU/EEA only on a valid transfer mechanism per GDPR Chapter V (adequacy decision, SCC, BCR, Art. 49 derogations). Work from high-risk countries (sanction lists, elevated espionage risk) requires approval by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}.
+
+                    ## 5. Endpoint hardening and MDM
+                    - **Mobile Device Management:** mandatory rollout via {{ mdm.platform }}; no business data access without MDM enrolment.
+                    - **Full-disk encryption:** BitLocker (Win), FileVault (macOS), LUKS2 (Linux); mobiles via platform encryption.
+                    - **Lockscreen, auto-lock, screen lock:** maximum 5 minutes inactivity.
+                    - **Authentication:** device PIN/passphrase per Cryptography policy; biometrics complementary.
+                    - **App control:** app-store restriction or allow-list for Tier-0 profiles; sideloading forbidden.
+                    - **EDR/AV:** mandatory (see Malware policy).
+                    - **Patching:** automated security updates; compliance check in conditional access.
+                    - **Remote wipe:** for loss / theft, without consent in containerised profile permissible (BYOD: container only, no personal data).
+                    - **Root/jailbreak:** forbidden; automatic detection and blocking.
+
+                    ## 6. BYOD (bring-your-own-device)
+                    BYOD is permitted only for selected use cases with ISO approval. Prerequisites: MDM container (work profile), encryption, minimum OS version, no root/jailbreak, separation of business and personal data, right to container wipe, training.
+
+                    ## 7. Data classification and mobile processing
+                    Strictly confidential data ({{ data.classification_levels }}) may be processed mobile only in approved, MDM-managed apps; minimise offline storage. Privacy filter on laptops mandatory; avoid loud verbal communication in public; lock screen on absence.
+
+                    ## 8. Network and access
+                    - Remote access via ZTNA or VPN with MFA and device-compliance check (see Network policy).
+                    - Public WLAN only via VPN; tethering via business mobile preferred.
+                    - Printers/USB at home only when business-approved; storing data on private devices forbidden.
+
+                    ## 9. Home workplace (BSI INF.8)
+                    Requirements: separate lockable work area or at minimum physical separation from family members; protection from sightlines by third parties; secure storage of business documents (lockable cabinet); power / internet availability; recording key-personnel readiness in DR plan. Employees confirm requirements annually via self-attestation.
+
+                    ## 10. Loss, theft, damage
+                    Loss or theft is reported immediately (within 1 hour) to the IT service desk and ISO. Immediate measures: account suspension, device lock, remote wipe, evaluation of personal-data breach (GDPR Art. 33/34) by DPO {{ roles.dpo.fullName }}. Loss of strictly confidential data is reportable.
+
+                    ## 11. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Maintenance of this policy | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | HR, DPO, Works council | All |
+                    | MDM operation | IT operations | CIO | ISO | – |
+                    | Approval high-risk locations | CISO | Executive board | DPO, Legal | Applicant |
+                    | Awareness | HR | CISO | ISO | All |
+                    | Audit / KPI | Internal Audit | CISO | ISO | Executive board |
+
+                    ## 12. Effectiveness measurement (KPI)
+                    - Share of devices in MDM (target 100 percent)
+                    - Share of devices on current patch level (target greater than 98 percent)
+                    - Share of encrypted devices (target 100 percent)
+                    - Mean time-to-wipe after loss reporting (target less than 4 hours)
+                    - Share of staff with current remote-working training (target greater than 95 percent)
+                    - Number of personal-data breaches arising from mobile processing (trend decreasing)
+
+                    ## 13. Escalation and incident response
+                    Violations or incidents escalate via the ISO to the CISO. Reporting obligations under NIS2 Art. 23, DORA Art. 19 and GDPR Art. 33/34 are coordinated by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}.
+
+                    ## 14. Exceptions and review
+                    Deviations require documented risk acceptance by the CISO. Reviewed at least annually and on relevant triggers (new platform / device type, new threat picture, regulatory change). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.10, A.5.14, A.6.5, A.6.7, A.7.5, A.7.7, A.7.9, A.8.1, A.8.7, A.8.8, A.8.20-A.8.23, A.8.24; BSI SYS.3.1, SYS.3.2.x, INF.8, INF.9, ORP.4; GDPR Art. 5, 32, 33-35, 44-49; BetrVG § 87(1) No. 6; NIS2 Art. 21; DORA Art. 9.*
 
                 section:
                     1:
@@ -295,19 +491,79 @@ policy:
         asset_management:
             v1:
                 title: 'Asset Management Policy'
-                body: |
-                    This policy governs at {{ tenant.legal_name }} the identification,
-                    inventorying, ownership assignment, classification, acceptable use and
-                    orderly retirement of information and IT assets. It implements
-                    ISO/IEC 27002:2022 §5.9 (Inventory of information and other associated
-                    assets), §5.10 (Acceptable use of information and other associated assets)
-                    and §5.11 (Return of assets).
+                body: |-
+                    # Asset Management Policy of {{ tenant.legal_name }}
 
-                    Asset management is the foundation of the entire ISMS: without a complete
-                    and current inventory, no risk assessment, no classification and no
-                    protection-needs analysis is possible. The presence of a named asset owner
-                    for every asset is one of the most frequent audit checkpoints — missing
-                    owners are routinely raised as major nonconformity.
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.5.9 (Inventory of information and other associated assets), A.5.10 (Acceptable use), A.5.11 (Return of assets), A.5.12 (Classification) | ISO/IEC 27002:2022 §§ 5.9-5.12 | BSI ORP.1 (Organisation), ISMS.1 (IS management) | GDPR Art. 30, 32 | NIS2 Art. 21(2)(e) | DORA Art. 8 (Identification) | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy mandates the identification, inventory, ownership, classification, acceptable use and orderly retirement of information and IT assets ("assets") of {{ tenant.legal_name }}. It implements ISO/IEC 27001:2022 A.5.9-A.5.12 in conjunction with BSI ORP.1 and provides the indispensable data foundation for risk assessment (Clause 6.1.2), protection-need determination, supplier management and incident analysis. It also fulfils GDPR Art. 30/32, DORA Art. 8 and NIS2 Art. 21 requirements.
+
+                    ## 2. Scope
+                    All asset classes within the ISMS scope ({{ tenant.scope_statement }}): information / data, hardware, software / licences, cloud and SaaS services, network components, OT/ICS, supporting services (power, cooling, connectivity), critical personnel roles, and intangible assets (trademarks, contracts, procedures). Scope covers all employees, contractors, interns and third parties (processors per GDPR Art. 28).
+
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate change is included as an external factor: site risks (flooding, heatwave), supply risks (energy, water), supplier resilience and lifecycle aspects (energy footprint, reuse, proper recycling) are maintained in the asset inventory.
+
+                    ## 3. Principles
+                    - **Completeness:** no asset without an entry in the lead inventory.
+                    - **Unique identification:** ID, name, type, location, technical attributes.
+                    - **Ownership:** every asset has a named asset owner and an asset custodian.
+                    - **Classification:** protection need per asset and data type per the Classification policy ({{ data.classification_levels }}).
+                    - **Lifecycle:** procurement, commissioning, change, disposal — fully documented.
+                    - **Synchronicity:** automatic reconciliation CMDB <-> discovery tools daily minimum.
+
+                    ## 4. Asset categories and minimum attributes
+                    | Category | Minimum attributes |
+                    |---|---|
+                    | Information / data | owner, classification, storage location(s), retention, statutory obligations |
+                    | Hardware | manufacturer, model, serial, location, owner, custodian, warranty |
+                    | Software / licences | manufacturer, version, licence type, count, contract partner, EoL |
+                    | Cloud / SaaS service | provider, region, tenant ID, data classes, contract (DPA), key sovereignty |
+                    | Network component | manufacturer, OS/firmware, location, zone, owner |
+                    | OT / ICS | manufacturer, model, patch state, vendor support, maintenance window |
+                    | Personnel role | function, deputy, permission profile |
+                    | Supporting service | provider, SLA, redundancy, supplier |
+
+                    ## 5. Classification and handling (A.5.12-A.5.13)
+                    Classification levels ({{ data.classification_levels }}) per asset and data type. Handling rules (storage, transmission, print, destruction) are defined per level (see Classification policy).
+
+                    ## 6. Acceptable use (A.5.10)
+                    The acceptable-use policy is mandatory in the staff terms (see HR policy A.6.2). Prohibitions: private commercialisation, illegal content, third-party compromise. Private use of corporate devices: per works agreement (co-determination per BetrVG § 87).
+
+                    ## 7. Return of assets (A.5.11)
+                    Return process on staff change or contract end: devices, media, keys, tokens, ID cards, software licences. Off- / on-boarding checklist with HR and IT service desk; confirmation documented. Termination of permissions on the last working day (just-in-time revocation).
+
+                    ## 8. Disposal and reuse
+                    Secure erase per NIST SP 800-88 or physical destruction per DIN 66399 (protection class 3 minimum, higher per protection need). Disposal / destruction evidence retained at least 3 years. Climate stewardship: prioritise reuse over destruction where compatible with security.
+
+                    ## 9. Record of processing activities (GDPR Art. 30)
+                    Personal-data assets feed into the record of processing activities; cross-references are maintained. DPO {{ roles.dpo.fullName }} has read/write access. DPA contracts are referenced per affected processor.
+
+                    ## 10. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Maintenance of this policy | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | IT operations, DPO | All |
+                    | CMDB / inventory upkeep | IT operations / asset manager | CIO | Asset owner, app owner | Audit |
+                    | Asset classification | Asset owner | Executive board | ISO, DPO | Internal Audit |
+                    | Procurement / disposal | Procurement, IT operations | CIO | ISO, DPO, Legal | – |
+                    | Audit / KPI | Internal Audit | CISO | ISO | Executive board |
+
+                    ## 11. Effectiveness measurement (KPI)
+                    - Share of assets with named owner (target 100 percent)
+                    - Share of assets with classification (target 100 percent)
+                    - Discovery drift (CMDB upkeep rate, target greater than 98 percent within 7 days)
+                    - Number of audit findings "asset without owner" (target 0)
+                    - Share of complete disposal evidence (target 100 percent)
+                    - Share of personal-data assets recorded in GDPR Art. 30 register (target 100 percent)
+
+                    ## 12. Escalation and incident response
+                    Inventory gaps or missing owners are escalated quarterly to the ISMS steering. Loss/theft is handled per the Mobile policy and the Incident policy. Reporting obligations under NIS2 Art. 23, DORA Art. 19, GDPR Art. 33/34 are coordinated by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}.
+
+                    ## 13. Review and approval
+                    Reviewed at least annually and on relevant triggers (reorganisation, supplier change, new site, regulatory change). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.9-A.5.13, A.5.19-A.5.23, A.7.9, A.7.14, A.8.1, A.8.7, A.8.10-A.8.12, A.8.32; BSI ORP.1, ISMS.1, CON.1, CON.2; GDPR Art. 28, 30, 32; NIS2 Art. 21(2)(e); DORA Art. 8.*
 
                 section:
                     1:
@@ -386,27 +642,72 @@ policy:
         hr_security:
             v1:
                 title: 'Human Resources Security Policy'
-                body: |
-                    This policy governs at {{ tenant.legal_name }} all information-security
-                    relevant aspects of human resources across the employment lifecycle: pre-
-                    employment, during employment and at termination or change of role. It
-                    implements ISO/IEC 27002:2022 §6.1 (Screening), §6.2 (Terms and conditions
-                    of employment), §6.3 (Information-security awareness, education and
-                    training), §6.4 (Disciplinary process), §6.5 (Responsibilities after
-                    termination or change of employment) and §6.6 (Confidentiality or
-                    non-disclosure agreements).
+                body: |-
+                    # Human Resources Security Policy of {{ tenant.legal_name }}
 
-                    Legal basis: processing of employee personal data is governed by the
-                    applicable data-protection regime — in Germany specifically by **§ 26 BDSG
-                    (Federal Data Protection Act)** in conjunction with **Art. 88 GDPR** (which
-                    enables national specifications in the employment context). Where employee-
-                    representation co-determination applies — particularly for the introduction
-                    and use of technical means capable of monitoring behaviour or performance —
-                    co-determination must be observed (in Germany: **§ 87 (1) no. 6 BetrVG**).
-                    This includes awareness platforms with tracking, phishing simulations with
-                    person-level reporting and endpoint monitoring. Accountability sits with
-                    {{ roles.ciso.fullName }} in close coordination with HR leadership,
-                    {{ roles.dpo.fullName }} and, where applicable, the works council.
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.6.1 (Screening), A.6.2 (Terms and conditions of employment), A.6.3 (Information security awareness, education and training), A.6.4 (Disciplinary process), A.6.5 (Responsibilities after termination or change of employment), A.6.6 (Confidentiality or non-disclosure agreements), A.6.7 (Remote working) | ISO/IEC 27002:2022 §§ 6.1-6.7 | BSI ORP.2 (Personnel), ORP.3 (Awareness and training) | GDPR Art. 5, 32, 88; BDSG § 26 | BetrVG §§ 87(1) No. 6, 75 | NIS2 Art. 21(2)(g) | DORA Art. 13 (awareness) | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy mandates the information-security relevant aspects of human resources across the staff lifecycle (pre-employment, during employment, on termination or role change). It implements ISO/IEC 27001:2022 A.6.1-A.6.7 in conjunction with BSI ORP.2/ORP.3 and observes BDSG § 26, GDPR Art. 88, BetrVG §§ 75/87 and NIS2/DORA requirements.
+
+                    ## 2. Scope
+                    All staff regardless of employment relationship (permanent, fixed-term, working students, interns, agency workers, freelancers with access to information assets) and contractors within the ISMS scope ({{ tenant.scope_statement }}). Group subsidiaries per group agreement.
+
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate change is included as an external factor: changes in travel and presence patterns (e. g. transport disruption from extreme weather), health stress (heat) and psychological resilience of key personnel are considered in workforce planning and the BCP.
+
+                    ## 3. Co-determination and data protection
+                    Measures capable of monitoring behaviour or performance (awareness platforms with tracking, phishing simulations with personal reference, endpoint / device monitoring) are subject to works-council co-determination per BetrVG § 87(1) No. 6 and shall be regulated by a works agreement. Personal-data processing fulfils GDPR Art. 5 (data minimisation, purpose limitation) and is recorded in the record of processing activities; DPO {{ roles.dpo.fullName }} is involved. Disciplinary measures follow employment-law principles (hearing, proportionality).
+
+                    ## 4. Pre-employment (A.6.1, A.6.2, A.6.6)
+                    - **Screening:** risk-based; identity check, CV plausibility, references. For security-critical roles additionally police clearance per BZRG § 30, where applicable extended security clearance per SUeG.
+                    - **Contracts:** employment contract contains security and confidentiality clauses; NDA for highly sensitive functions and for externals.
+                    - **Data protection:** applicant data processed per BDSG § 26 / GDPR Art. 88; deletion per retention concept.
+
+                    ## 5. During employment (A.6.3, A.6.4)
+                    - **Onboarding training:** mandatory within the first {{ training.onboarding_days }} days. Content: ISMS basics, classification, password/MFA, phishing, data protection, incident reporting.
+                    - **Annual awareness:** mandatory refresher; topics rotating (phishing, mobile, cloud, insider risk, crisis).
+                    - **Role-based deep-dive:** additional training for risk groups (executives, HR, finance, admins, development).
+                    - **Phishing simulations:** semi-annually; results anonymised / pseudonymised; refresher training on outliers.
+                    - **Disciplinary process:** documented graduated process for violations (admonition, warning, change/termination), within employment-law principles; works-council involvement.
+
+                    ## 6. Role change and termination (A.6.5, A.5.11)
+                    Off- / on-boarding checklist with HR and IT service desk: revocation of access on the last working day (just-in-time), return of devices/tokens/keys/IDs (see Asset policy A.5.11), data handover. NDA obligations survive employment. Lessons-learned interview for key positions. Permission re-reviews every 6 months for Tier 0/1.
+
+                    ## 7. Key roles, deputies, dual control
+                    Critical functions (CISO, ISO, DPO, crypto lead, backup operator, IT emergency coordination) have named deputies (see BCM policy). Dual control for granting administrative rights and for security-critical changes.
+
+                    ## 8. Awareness programme
+                    - Content aligned with BSI guidance, ENISA materials, sector best practice.
+                    - Gamified elements and realistic scenarios.
+                    - Effectiveness measurement: knowledge tests, phish click rates, reporting rates.
+                    - Special training event-driven (incident, new threat picture, regulatory change).
+                    - External audiences: processors and suppliers receive targeted awareness materials (see Supplier policy).
+
+                    ## 9. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Maintenance of this policy | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | HR leadership, DPO {{ roles.dpo.fullName }}, Works council | All |
+                    | Screening / onboarding | HR | CHRO | ISO, DPO, Legal | Business |
+                    | Awareness | HR / ISO | CISO | DPO, Works council | All |
+                    | Disciplinary measures | HR / business | CHRO | Legal, ISO, Works council | Affected |
+                    | Off- / onboarding IT | IT service desk | CIO | HR, ISO, app owners | Business |
+                    | Audit / KPI | Internal Audit | CISO | ISO, HR | Executive board |
+
+                    ## 10. Effectiveness measurement (KPI)
+                    - Share of new joiners with onboarding training in window (target 100 percent)
+                    - Annual awareness completion rate (target greater than 95 percent)
+                    - Phish click rate (target less than 5 percent), phish report rate (target greater than 30 percent)
+                    - Share of timely off-boardings (just-in-time revocation, target 100 percent)
+                    - Number of HR-related security incidents (trend decreasing)
+
+                    ## 11. Escalation and incident response
+                    Violations or incidents (insider event, loss of data/device, breach of confidentiality) trigger the Incident policy. Reporting obligations under NIS2 Art. 23, DORA Art. 19 and GDPR Art. 33/34 are coordinated by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}.
+
+                    ## 12. Exceptions and review
+                    Deviations require documented risk acceptance by the CISO; time-bound to a maximum of 12 months. Reviewed at least annually and on relevant triggers (reorganisation, regulatory change, incident). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.10, A.5.11, A.5.16, A.5.18, A.5.24-A.5.27, A.6.1-A.6.7, A.7.4, A.7.7, A.8.1; BSI ORP.2, ORP.3, ORP.4; GDPR Art. 5, 32, 88; BDSG § 26; BetrVG §§ 75, 87; NIS2 Art. 21(2)(g); DORA Art. 13.*
 
                 section:
                     1:
@@ -505,13 +806,83 @@ policy:
         physical_security:
             v1:
                 title: 'Physical and Environmental Security Policy'
-                body: |
-                    This policy governs at {{ tenant.legal_name }} the protection of people,
-                    rooms and information-processing facilities against unauthorised physical
-                    access and against environmental threats (fire, water, power outage, extreme
-                    temperatures). It implements ISO/IEC 27002:2022 §7.1 to §7.14. For fully
-                    remote organisations on cloud-only infrastructure, the policy is leaner but
-                    not waivable — the home office is also a workplace and a protection object.
+                body: |-
+                    # Physical and Environmental Security Policy of {{ tenant.legal_name }}
+
+                    *Document class: Topic-specific policy | Normative anchors: ISO/IEC 27001:2022 A.7.1 (Physical security perimeters), A.7.2 (Physical entry), A.7.3 (Securing offices), A.7.4 (Physical security monitoring), A.7.5 (Protecting against physical and environmental threats), A.7.6 (Working in secure areas), A.7.7 (Clear desk and clear screen), A.7.8 (Equipment siting), A.7.9 (Off-premises assets), A.7.10 (Storage media), A.7.11 (Supporting utilities), A.7.12 (Cabling security), A.7.13 (Equipment maintenance), A.7.14 (Secure disposal or re-use) | ISO/IEC 27002:2022 §§ 7.1-7.14 | BSI INF.1 (General building), INF.2 (Data centre), INF.7 (Office workplace), INF.8 (Home office), INF.9 (Mobile workplace) | GDPR Art. 5, 6, 32; BDSG § 4; BetrVG § 87(1) No. 6 | DIN 66399 (media destruction); NIST SP 800-88 (media sanitization) | NIS2 Art. 21(2)(e) | DORA Art. 9 | Edition: {{ policy.edition }} | Language: English | Review interval: 12 months*
+
+                    ## 1. Purpose
+                    This policy mandates the protection of people, premises, supporting infrastructure and information-processing facilities of {{ tenant.legal_name }} against unauthorised physical access and against environmental threats (fire, water, power outage, extreme temperatures, vibration, burglary, sabotage). It implements ISO/IEC 27001:2022 A.7.1-A.7.14 in conjunction with the BSI building blocks INF.1, INF.2, INF.7-INF.9. Even for fully remote organisations on cloud-only infrastructure the policy remains applicable (home office per INF.8, mobile workplaces per INF.9, selected sites for hardware retirement).
+
+                    ## 2. Scope
+                    All owned and leased sites ({{ sites.list }}), co-location sites, home workplaces, mobile workplaces, media-sanitisation facilities, print and mail-processing areas, archives, and critical supporting infrastructure (power, UPS, generator, HVAC, fire protection). Scope is {{ tenant.scope_statement }}.
+
+                    Per ISO/IEC 27001:2022/Amd. 1:2024 climate change is included as an external factor in site and environmental planning: flooding risk (site assessment, lifting protections, relocating sensitive components above critical flood levels), heatwaves (climate resilience, redundant cooling, load shedding), water shortage (evaporative cooling), storm risk (roof and exterior wall stability, antennae, glazing), climate-driven energy scarcity (back-up power reserves, load prioritisation). These factors are documented in the risk assessment and emergency planning.
+
+                    ## 3. Security-zone model (A.7.1, A.7.2)
+                    | Zone | Example | Entry rule |
+                    |---|---|---|
+                    | Public | apron, approach | open |
+                    | Reception | entrance area | controlled, identification |
+                    | Office | office areas | employee badge |
+                    | Restricted | server room, archive | badge + PIN; dual control for Tier 0 |
+                    | High-security / DC | Tier-1 data centre | biometric + badge; dual control; mantrap |
+
+                    Visitors are registered, identified, issued a visitor badge and escorted in non-public zones. Supplier access only on appointment and escorted; on-site maintenance is logged.
+
+                    ## 4. Monitoring and data protection (A.7.4)
+                    CCTV is subject to strict data-protection control under German law: only on a lawful basis per GDPR Art. 6(1)(f) in conjunction with BDSG § 4 (publicly accessible spaces) or BDSG § 26 (employee area); co-determination per BetrVG § 87(1) No. 6 is mandatory. Information signage required. Retention limited to what is necessary (typically 72 hours, maximum 10 working days). Live monitoring without cause is prohibited; event-based review is agreed with DPO {{ roles.dpo.fullName }} and the works council. High-security areas additionally have motion, glass-break and door sensors connected to the security control room.
+
+                    ## 5. Environmental protection and utilities (A.7.5, A.7.11, A.7.12)
+                    - **Fire protection:** early-stage fire detection in all technical rooms; gas / inert-gas extinguishing or equivalent in DCs; annual maintenance and test record minimum.
+                    - **Water detection:** under raised floors, in areas below water-bearing pipes.
+                    - **HVAC:** redundant DC HVAC (N+1 minimum), temperature and humidity monitoring.
+                    - **Power:** UPS with minimum runtime for orderly shutdown; generator for Tier 0/1; full-load test annually.
+                    - **Cabling routes:** power and data separated, cabinets restricted access; labelling; protection against damage.
+
+                    ## 6. Office, clear desk and home office (A.7.7, A.7.9, INF.7-INF.9)
+                    - **Clear desk / clear screen:** classified documents locked away on leaving the workplace; screens locked when away (screen-lock max. 5 minutes).
+                    - **Off-premises assets (A.7.9):** privacy filter, anti-theft, secure storage; cable locks for laptops outside secure sites.
+                    - **Home office (INF.8):** delineable work area; privacy filter; avoid loud calls of sensitive content; secure storage of business documents.
+                    - **Mobile workplace (INF.9):** high-risk locations per Mobile policy require approval.
+
+                    ## 7. Equipment siting, maintenance and disposal (A.7.8, A.7.13, A.7.14)
+                    - **Siting:** protected from shock, vibration, sunlight; cable management; redundancy of critical components.
+                    - **Maintenance:** by authorised personnel with documented order; vendor technicians escorted; session recording where appropriate.
+                    - **Disposal and reuse:** certified media sanitisation per NIST SP 800-88, or physical destruction per DIN 66399 (protection class 3 minimum, higher per protection need). Disposal records retained at least 3 years. Reuse prioritised over destruction (climate and resource stewardship), where compatible with security.
+
+                    ## 8. Storage media and print (A.7.10)
+                    - Removable media only when business-required; encrypted per Cryptography policy.
+                    - Loss reported within 1 hour to IT service desk and ISO.
+                    - Confidential print via pull-print with authentication; standard print of Open classification on shared printers permitted.
+                    - Mail processing of confidential items in dedicated areas; outbound items with shipping protection per classification.
+
+                    ## 9. Responsibilities (RACI)
+                    | Activity | R | A | C | I |
+                    |---|---|---|---|---|
+                    | Maintenance of this policy | ISO {{ roles.isb.fullName }} | CISO {{ roles.ciso.fullName }} | Facility management, DPO, HR | All |
+                    | Access and key concept | Facility management | COO | ISO, HR, Works council | Sites |
+                    | DC operations | IT operations | CIO | ISO, Facility | – |
+                    | CCTV / sensor operations | Facility / security | COO | DPO {{ roles.dpo.fullName }}, Works council | Staff |
+                    | Media destruction | IT operations / asset management | CIO | ISO, DPO, supplier | Audit |
+                    | Audit / KPI | Internal Audit | CISO | ISO, Facility | Executive board |
+
+                    ## 10. Effectiveness measurement (KPI)
+                    - Share of current access permissions (target 100 percent in quarterly review)
+                    - Access inconsistencies per quarter (target 0)
+                    - Share of DC components with redundant supply (target 100 percent Tier 0)
+                    - Number of unauthorised access attempts per site (trend decreasing, 100 percent investigated)
+                    - Number of media disposals with evidence (target 100 percent)
+                    - Share of staff with clear-desk training (target greater than 95 percent)
+
+                    ## 11. Escalation and incident response
+                    Violations or suspected burglary, sabotage or theft trigger the Incident policy; if necessary report to the relevant law-enforcement authority with Legal involvement. Reporting obligations under NIS2 Art. 23, DORA Art. 19 and GDPR Art. 33/34 are coordinated by CISO {{ roles.ciso.fullName }} and DPO {{ roles.dpo.fullName }}.
+
+                    ## 12. Exceptions and review
+                    Deviations require documented risk acceptance by the CISO with compensating controls, time-bound to a maximum of 12 months. Reviewed at least annually and on relevant triggers (site change, refurbishment, new threat picture, incident, regulatory change). Approval chain: {{ approval.chain }}.
+
+                    ---
+                    *Cross-refs: ISO/IEC 27001:2022 A.5.10, A.5.11, A.5.30, A.6.7, A.7.1-A.7.14, A.8.1, A.8.10-A.8.14; BSI INF.1, INF.2, INF.7-INF.9, ORP.1, ORP.4; GDPR Art. 5, 6, 32; BDSG §§ 4, 26; BetrVG § 87(1) No. 6; DIN 66399; NIST SP 800-88; NIS2 Art. 21(2)(e); DORA Art. 9.*
 
                 section:
                     1:
