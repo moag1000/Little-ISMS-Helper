@@ -53,33 +53,32 @@
     {% endblock %}
     {% block card_body %}
         {% if processes|length > 0 %}
-        <div class="table-responsive">
-        <table class="table table-hover">
-            <thead>
+        {% embed '_components/_fa_table.html.twig' %}
+            {% block table_head %}
                 <tr>
-                    <th scope="col">{{ 'bcm.field.process_name'|trans({}, 'bcm') }}</th>
-                    <th scope="col">{{ 'bcm.field.criticality'|trans({}, 'bcm') }}</th>
-                    <th scope="col">{{ 'bcm.field.rto'|trans({}, 'bcm') }}</th>
-                    <th scope="col">{{ 'bcm.field.rpo'|trans({}, 'bcm') }}</th>
-                    <th scope="col">{{ 'bcm.field.mtpd'|trans({}, 'bcm') }}</th>
-                    <th scope="col" class="text-center">{{ 'bcm.field.supporting_assets'|trans({}, 'bcm') }}</th>
-                    <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'bcm.field.process_name'|trans({}, 'bcm') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'bcm.field.criticality'|trans({}, 'bcm') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'bcm.field.rto'|trans({}, 'bcm') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'bcm.field.rpo'|trans({}, 'bcm') }}</th>
+                    <th scope="col" class="fa-table__th">{{ 'bcm.field.mtpd'|trans({}, 'bcm') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--center">{{ 'bcm.field.supporting_assets'|trans({}, 'bcm') }}</th>
+                    <th scope="col" class="fa-table__th fa-table__th--actions">{{ 'common.actions'|trans({}, 'messages') }}</th>
                 </tr>
-            </thead>
-            <tbody>
+            {% endblock %}
+            {% block table_body %}
                 {% for process in processes %}
-                <tr>
-                    <td>
+                <tr class="fa-table__row">
+                    <td class="fa-table__cell">
                         <strong>{{ process.name }}</strong>
                         {% if process.description %}
                         <br><small class="text-muted">{{ process.description|slice(0, 80) }}{% if process.description|length > 80 %}...{% endif %}</small>
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="fa-table__cell">
                         {% set critColors = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
                         {% include '_components/_badge.html.twig' with { variant: critColors[process.criticality]|default('secondary'), content: ('bcm.criticality.' ~ process.criticality)|trans({}, 'bcm') } %}
                     </td>
-                    <td>
+                    <td class="fa-table__cell">
                         <strong>{{ process.rto|default('-') }}h</strong>
                         {% if process.rto|default(24) <= 1 %}
                             {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'bcm.badge.immediate'|trans({}, 'bcm'), class: 'ms-1' } %}
@@ -87,21 +86,20 @@
                             {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'bcm.badge.urgent'|trans({}, 'bcm'), class: 'ms-1' } %}
                         {% endif %}
                     </td>
-                    <td>{{ process.rpo|default('-') }}h</td>
-                    <td>{{ process.mtpd|default('-') }}h</td>
-                    <td class="text-center">
+                    <td class="fa-table__cell">{{ process.rpo|default('-') }}h</td>
+                    <td class="fa-table__cell">{{ process.mtpd|default('-') }}h</td>
+                    <td class="fa-table__cell fa-table__cell--center">
                         {% include '_components/_badge.html.twig' with { variant: 'info', content: process.supportingAssets|length } %}
                     </td>
-                    <td class="text-center">
+                    <td class="fa-table__cell fa-table__cell--actions">
                         <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
                             <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                         </a>
                     </td>
                 </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-        </div>
+            {% endblock %}
+        {% endembed %}
         {% else %}
         <div class="text-center text-muted py-5">
             <i class="fa-icon fa-icon--status-ok fs-1 d-block mb-3" aria-hidden="true"></i>

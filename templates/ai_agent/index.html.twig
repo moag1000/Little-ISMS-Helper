@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% import '_components/_fa_alert.html.twig' as _fa_alert %}
+{% import '_components/_fa_progress.html.twig' as _fa_progress %}
 
 {% block title %}AI-Agent-Inventar{% endblock %}
 
@@ -72,60 +73,54 @@
     {% else %}
         {% embed '_components/_card.html.twig' %}
             {% block card_body %}
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Anbieter</th>
-                                <th scope="col">Modell</th>
-                                <th scope="col">Risikoklasse</th>
-                                <th scope="col" class="text-center">Doku-Vollständigkeit</th>
-                                <th scope="col"></th>
+                {% embed '_components/_fa_table.html.twig' %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col" class="fa-table__th">Name</th>
+                            <th scope="col" class="fa-table__th">Anbieter</th>
+                            <th scope="col" class="fa-table__th">Modell</th>
+                            <th scope="col" class="fa-table__th">Risikoklasse</th>
+                            <th scope="col" class="fa-table__th fa-table__th--center">Doku-Vollständigkeit</th>
+                            <th scope="col" class="fa-table__th fa-table__th--actions"></th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for agent in agents %}
+                            {% set comp = completeness[agent.id] %}
+                            <tr class="fa-table__row">
+                                <td class="fa-table__cell">
+                                    <strong>{{ agent.name }}</strong>
+                                    {% if agent.aiAgentPurpose %}
+                                        <div class="small text-muted">{{ agent.aiAgentPurpose|slice(0, 60) }}{% if agent.aiAgentPurpose|length > 60 %}…{% endif %}</div>
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell">{{ agent.aiAgentProvider|default('—') }}</td>
+                                <td class="fa-table__cell"><code>{{ agent.aiAgentModelVersion|default('—') }}</code></td>
+                                <td class="fa-table__cell">
+                                    {% if agent.aiAgentClassification == 'prohibited' %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'dark', content: 'Verboten' } %}
+                                    {% elseif agent.aiAgentClassification == 'high_risk' %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'Hochrisiko' } %}
+                                    {% elseif agent.aiAgentClassification == 'limited_risk' %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Begrenzt' } %}
+                                    {% elseif agent.aiAgentClassification == 'minimal_risk' %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Minimal' } %}
+                                    {% else %}
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Nicht klassifiziert' } %}
+                                    {% endif %}
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--center">
+                                    {{ _fa_progress.render({ value: comp.percentage, tone: comp.percentage >= 80 ? 'success' : (comp.percentage >= 50 ? 'warning' : 'danger') }) }}
+                                </td>
+                                <td class="fa-table__cell fa-table__cell--actions">
+                                    <a href="{{ path('app_asset_show', {id: agent.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
+                                        <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
+                                    </a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for agent in agents %}
-                                {% set comp = completeness[agent.id] %}
-                                <tr>
-                                    <td>
-                                        <strong>{{ agent.name }}</strong>
-                                        {% if agent.aiAgentPurpose %}
-                                            <div class="small text-muted">{{ agent.aiAgentPurpose|slice(0, 60) }}{% if agent.aiAgentPurpose|length > 60 %}…{% endif %}</div>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ agent.aiAgentProvider|default('—') }}</td>
-                                    <td><code>{{ agent.aiAgentModelVersion|default('—') }}</code></td>
-                                    <td>
-                                        {% if agent.aiAgentClassification == 'prohibited' %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'dark', content: 'Verboten' } %}
-                                        {% elseif agent.aiAgentClassification == 'high_risk' %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'Hochrisiko' } %}
-                                        {% elseif agent.aiAgentClassification == 'limited_risk' %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Begrenzt' } %}
-                                        {% elseif agent.aiAgentClassification == 'minimal_risk' %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Minimal' } %}
-                                        {% else %}
-                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Nicht klassifiziert' } %}
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="progress" style="height: 18px; min-width: 120px;">
-                                            <div class="progress-bar bg-{{ comp.percentage >= 80 ? 'success' : (comp.percentage >= 50 ? 'warning' : 'danger') }}" style="width: {{ comp.percentage }}%">
-                                                {{ comp.filled }}/{{ comp.total }}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-end">
-                                        <a href="{{ path('app_asset_show', {id: agent.id}) }}" class="fa-cyber-btn fa-cyber-btn--sm fa-cyber-btn--ghost">
-                                            <i class="fa-icon fa-icon--ui-eye" aria-hidden="true"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
             {% endblock %}
         {% endembed %}
     {% endif %}
