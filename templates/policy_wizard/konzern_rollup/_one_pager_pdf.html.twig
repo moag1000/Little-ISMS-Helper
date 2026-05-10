@@ -1,0 +1,248 @@
+{# CISO-Executive Reporting (Task #130) — board-ready One-Pager.
+
+   Single-page A4-portrait layout, dompdf-friendly (inlined CSS, no JS).
+   Inherits TenantBranding letterhead pattern from
+   templates/policy_wizard/export/_pdf_document.html.twig. #}
+<!DOCTYPE html>
+<html lang="{{ app.request is defined ? app.request.locale|default('de') : 'de' }}">
+<head>
+    <meta charset="utf-8">
+    <title>{{ 'policy_wizard.konzern_rollup.one_pager.title'|trans({}, 'policy_wizard') }} — {{ konzern.legalName|default(konzern.name)|default('') }}</title>
+    <style>
+        @page { margin: 50px 40px 40px 40px; }
+        body {
+            font-family: "{{ font_family|e('html_attr') }}", "Helvetica", "Arial", sans-serif;
+            font-size: 9.5pt;
+            color: #222;
+            line-height: 1.35;
+            margin: 0;
+        }
+        h1 { color: {{ primary }}; font-size: 16pt; margin: 4pt 0 2pt 0; }
+        h2 { color: {{ primary }}; font-size: 11pt; margin: 8pt 0 4pt 0; border-bottom: 1pt solid {{ secondary }}; padding-bottom: 2pt; }
+        h3 { color: {{ secondary }}; font-size: 10pt; margin: 6pt 0 2pt 0; }
+        p { margin: 3pt 0; }
+        table { width: 100%; border-collapse: collapse; margin: 4pt 0; }
+        th, td { padding: 3pt 4pt; text-align: left; vertical-align: top; font-size: 9pt; }
+        th { background: #f0f3f7; color: {{ primary }}; border-bottom: 1pt solid {{ secondary }}; }
+        td { border-bottom: 0.5pt solid #eee; }
+        .header {
+            border-bottom: 2pt solid {{ primary }};
+            padding-bottom: 6pt;
+            margin-bottom: 10pt;
+            display: table;
+            width: 100%;
+        }
+        .header .logo-cell, .header .name-cell {
+            display: table-cell;
+            vertical-align: middle;
+        }
+        .header .logo-cell { width: 60%; text-align: left; }
+        .header .name-cell { width: 40%; text-align: right; font-weight: bold; color: {{ primary }}; }
+        .header img { max-height: 36pt; }
+        .footer {
+            border-top: 1pt solid {{ secondary }};
+            padding-top: 4pt;
+            margin-top: 12pt;
+            font-size: 7.5pt;
+            color: #666;
+        }
+        .kpi-row {
+            display: table;
+            width: 100%;
+            margin: 6pt 0 4pt 0;
+        }
+        .kpi-cell {
+            display: table-cell;
+            width: 25%;
+            padding: 6pt 4pt;
+            text-align: center;
+            border: 0.5pt solid #ddd;
+            background: #fafbfd;
+        }
+        .kpi-value {
+            font-size: 18pt;
+            font-weight: bold;
+            color: {{ primary }};
+            display: block;
+        }
+        .kpi-label {
+            font-size: 8pt;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
+        }
+        .badge {
+            display: inline-block;
+            padding: 1pt 5pt;
+            border-radius: 8pt;
+            font-size: 8pt;
+            font-weight: bold;
+        }
+        .badge-danger { background: #f8d7da; color: #842029; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-info { background: #cfe2ff; color: #084298; }
+        .badge-success { background: #d1e7dd; color: #0f5132; }
+        .meta-line {
+            font-size: 8.5pt;
+            color: #555;
+            margin: 0 0 8pt 0;
+        }
+        .ale-skeleton {
+            font-size: 8pt;
+            color: #999;
+            font-style: italic;
+        }
+        .sparkline-wrap {
+            text-align: center;
+            margin: 6pt 0;
+        }
+        .empty-line {
+            color: #999;
+            font-style: italic;
+            font-size: 8.5pt;
+        }
+    </style>
+</head>
+<body>
+    {# ---- Letterhead ---- #}
+    <div class="header">
+        <div class="logo-cell">
+            {% if logo_path is not empty %}
+                <img src="{{ logo_path }}" alt="{{ konzern.legalName|default(konzern.name)|default('Konzern') }}">
+            {% else %}
+                <strong style="font-size: 12pt; color: {{ primary }};">{{ konzern.legalName|default(konzern.name)|default('Konzern') }}</strong>
+            {% endif %}
+        </div>
+        <div class="name-cell">
+            {{ 'policy_wizard.konzern_rollup.one_pager.title'|trans({}, 'policy_wizard') }}
+        </div>
+    </div>
+
+    {% if header_html is not empty %}
+        <div>{{ header_html|raw }}</div>
+    {% endif %}
+
+    {# ---- Block 1: Heading + Stichtag + KPI tiles ---- #}
+    <h1>{{ 'policy_wizard.konzern_rollup.one_pager.heading'|trans({}, 'policy_wizard') }}</h1>
+    <p class="meta-line">
+        <strong>{{ konzern.legalName|default(konzern.name)|default('') }}</strong>
+        &middot;
+        {{ 'policy_wizard.konzern_rollup.one_pager.as_of'|trans({}, 'policy_wizard') }}: {{ as_of }}
+        &middot;
+        {{ 'policy_wizard.konzern_rollup.one_pager.subsidiaries'|trans({'%count%': subsidiary_count}, 'policy_wizard') }}
+    </p>
+
+    <div class="kpi-row">
+        <div class="kpi-cell">
+            <span class="kpi-value">{{ konzern_score_mean }}%</span>
+            <span class="kpi-label">{{ 'policy_wizard.konzern_rollup.one_pager.kpi.compliance_mean'|trans({}, 'policy_wizard') }}</span>
+        </div>
+        <div class="kpi-cell">
+            <span class="kpi-value">{{ ack_coverage_mean }}%</span>
+            <span class="kpi-label">{{ 'policy_wizard.konzern_rollup.one_pager.kpi.ack_coverage'|trans({}, 'policy_wizard') }}</span>
+        </div>
+        <div class="kpi-cell">
+            <span class="kpi-value">{{ outstanding_count }}</span>
+            <span class="kpi-label">{{ 'policy_wizard.konzern_rollup.one_pager.kpi.open_actions'|trans({}, 'policy_wizard') }}</span>
+        </div>
+        <div class="kpi-cell">
+            <span class="kpi-value">{{ drift_count }}</span>
+            <span class="kpi-label">{{ 'policy_wizard.konzern_rollup.one_pager.kpi.drift_count'|trans({}, 'policy_wizard') }}</span>
+        </div>
+    </div>
+
+    {# ---- Block 2: 4-Quartal Trend Sparkline ---- #}
+    {% if sparkline_svg %}
+        <h2>{{ 'policy_wizard.konzern_rollup.one_pager.trend.heading'|trans({}, 'policy_wizard') }}</h2>
+        <div class="sparkline-wrap">
+            {{ sparkline_svg|raw }}
+        </div>
+        <p class="meta-line" style="text-align:center;">
+            {{ 'policy_wizard.konzern_rollup.one_pager.trend.delta'|trans({
+                '%delta%': trend.konzernAverage.delta_percentage_points,
+                '%direction%': ('policy_wizard.konzern_rollup.trend.direction.' ~ trend.konzernAverage.direction)|trans({}, 'policy_wizard'),
+            }, 'policy_wizard') }}
+        </p>
+    {% endif %}
+
+    {# ---- Block 3: Top-3 Risiken + Top-3 Compliance-Gaps (side-by-side) ---- #}
+    <table style="border-collapse:separate; border-spacing:8pt 0; width:100%;">
+        <tr>
+            <td style="width:50%; vertical-align:top; padding:0;">
+                <h2>{{ 'policy_wizard.konzern_rollup.one_pager.top_risks.heading'|trans({}, 'policy_wizard') }}</h2>
+                {% if top_risks|length == 0 %}
+                    <p class="empty-line">{{ 'policy_wizard.konzern_rollup.one_pager.top_risks.empty'|trans({}, 'policy_wizard') }}</p>
+                {% else %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{{ 'policy_wizard.konzern_rollup.one_pager.col.tenant'|trans({}, 'policy_wizard') }}</th>
+                                <th>{{ 'policy_wizard.konzern_rollup.one_pager.col.action'|trans({}, 'policy_wizard') }}</th>
+                                <th>{{ 'policy_wizard.konzern_rollup.one_pager.col.severity'|trans({}, 'policy_wizard') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for risk in top_risks %}
+                                <tr>
+                                    <td>{{ risk.tenant_name }}</td>
+                                    <td>{{ risk.action }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ risk.severity == 'danger' ? 'danger' : (risk.severity == 'warning' ? 'warning' : 'info') }}">
+                                            {{ risk.severity }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </td>
+            <td style="width:50%; vertical-align:top; padding:0;">
+                <h2>{{ 'policy_wizard.konzern_rollup.one_pager.top_gaps.heading'|trans({}, 'policy_wizard') }}</h2>
+                {% if top_compliance_gaps|length == 0 %}
+                    <p class="empty-line">{{ 'policy_wizard.konzern_rollup.one_pager.top_gaps.empty'|trans({}, 'policy_wizard') }}</p>
+                {% else %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{{ 'policy_wizard.konzern_rollup.one_pager.col.tenant'|trans({}, 'policy_wizard') }}</th>
+                                <th>{{ 'policy_wizard.konzern_rollup.one_pager.col.framework'|trans({}, 'policy_wizard') }}</th>
+                                <th>{{ 'policy_wizard.konzern_rollup.one_pager.col.score'|trans({}, 'policy_wizard') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for gap in top_compliance_gaps %}
+                                <tr>
+                                    <td>{{ gap.tenant_name }}</td>
+                                    <td>{{ gap.framework_code }}</td>
+                                    <td>{{ gap.score_percentage }}%</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+
+    {# ---- ALE Placeholder (skeleton — coupling to risk-manager later) ---- #}
+    <p class="ale-skeleton">
+        {{ 'policy_wizard.konzern_rollup.one_pager.ale.skeleton'|trans({
+            '%value%': estimated_ale_eur is not null ? estimated_ale_eur ~ ' EUR' : 'n/a',
+        }, 'policy_wizard') }}
+    </p>
+
+    {# ---- Footer ---- #}
+    <div class="footer">
+        {% if footer_html is not empty %}
+            <div>{{ footer_html|raw }}</div>
+        {% endif %}
+        <div>
+            {{ 'policy_wizard.konzern_rollup.one_pager.footer.generated'|trans({
+                '%date%': as_of,
+                '%version%': app_version,
+            }, 'policy_wizard') }}
+        </div>
+    </div>
+</body>
+</html>
